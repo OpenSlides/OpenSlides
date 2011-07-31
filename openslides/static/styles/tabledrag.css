@@ -1,0 +1,50 @@
+/**
+ * TableDrag behavior.
+ *
+ * @see tabledrag.js
+ */
+body.drag {
+  cursor: move;
+}
+.draggable a.tabledrag-handle {
+  cursor: move;
+  float: left; /* LTR */
+  height: 1.7em;
+  margin: -0.4em 0 -0.4em -0.5em; /* LTR */
+  padding-right: 0.5em ; /* LTR */
+  text-decoration: none;
+}
+.draggable .tabledrag-changed {
+ padding-right: 0.2em;
+}
+a.tabledrag-handle:hover {
+  text-decoration: none;
+}
+a.tabledrag-handle .handle {
+  background: url("/static/images/draggable.png") no-repeat scroll 0 0 transparent;
+  height: 13px;
+  margin-top: 4px;
+  width: 13px;
+}
+a.tabledrag-handle-hover .handle {
+  background-position: 0 -20px;
+}
+div.indentation {
+  float: left; /* LTR */
+  height: 1.7em;
+  margin: -0.4em 0.2em -0.4em -0.4em; /* LTR */
+  padding: 0.42em 0 0.42em 0.6em; /* LTR */
+  width: 10px;
+}
+div.tree-child {
+  background: url(/static/images/tree.png) no-repeat 11px center; /* LTR */
+}
+div.tree-child-last {
+  background: url(/static/images/tree-bottom.png) no-repeat 11px center; /* LTR */
+}
+div.tree-child-horizontal {
+  background: url(/static/images/tree.png) no-repeat -11px center;
+}
+.tabledrag-toggle-weight-wrapper {
+  text-align: right; /* LTR */
+}

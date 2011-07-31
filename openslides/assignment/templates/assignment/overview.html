@@ -1,0 +1,44 @@
+{% extends "assignment/base_assignment.html" %}
+{% block title %}{{ block.super }} - {%trans "Elections" %}{% endblock %}
+
+{% block content %}
+    <h1>{%trans "Elections" %}</h1>
+
+    <p><form action="{{request.url}}" name="filter" method="get">
+        {%trans "Filter" %}:
+        <select class="default-input" name="status" onchange="document.forms['filter'].submit()">
+            <option value="---">-- {%trans "Status" %}--</option>
+            <option value="sea" {% if 'sea' in request.GET.status %}selected{% endif %}>{%trans "Searching for candidates" %}</option>
+            <option value="vot" {% if 'vot' in request.GET.status %}selected{% endif %}>{%trans "Voting" %}</option>
+            <option value="fin" {% if 'fin' in request.GET.status %}selected{% endif %}>{%trans "Finished" %}</option>
+        </select>
+        </form>
+    </p>
+    <br>
+    <table>
+        <tr>
+            <th><a href="?sort=name{% if 'name' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Elections" %}</a></th>
+            <th>{%trans "Candidates" %}</th>
+            <th><a href="?sort=status{% if 'status' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Status" %}</a></th>
+            {% if perms.assignment.can_manage_assignment %}
+                <th>{%trans "Actions" %}</th>
+            {% endif %}
+        </tr>
+    {% for assignment in assignments %}
+        <tr class="{% cycle '' 'odd' %}">
+            <td><a href="{% url assignment_view assignment.id %}">{{ assignment }}</a></td>
+            <td>{{ assignment.profile.count }} / {{ assignment.assignment_number }}</td>
+            <td>{{ assignment.get_status_display }}</td>
+            {% if perms.assignment.can_manage_assignment %}
+                <td><a href="{% url assignment_edit assignment.id %}"><img src="/static/images/icons/document-edit.png" title="{%trans 'Edit assignment' %}"></a>
+                    <a href="{% url assignment_delete assignment.id %}"><img src="/static/images/icons/edit-delete.png" title="{%trans 'Delete assignment' %}"></a>
+                </td>
+            {% endif %}
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="4"><i>{%trans "No assignments available." %}</i></td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}

@@ -1,0 +1,146 @@
+/**
+ * OpenSlides Beamer Style
+ */
+body{
+    margin : 0px;
+    padding-top: 0px;
+    padding-left : 0px;
+/*    font-family : Verdana,Futura, Geneva, Arial, Helvetica, sans-serif;*/
+    font-family: 'Lucida Grande',"Trebuchet MS",Verdana,sans-serif;
+    font-size : 18px;
+    background-color:  #FAFAFB;
+}
+
+/*** HEADER ***/
+#header {
+    position:relative;
+    background:url("../images/presentation-header-bg.png") repeat-x scroll center top #3D3020;
+    height:100px;
+}
+#logo {
+    position:absolute;
+    top: 15px;
+    left: 100px;
+}
+.event_name {
+    position:absolute;
+    text-align:right;
+    top: 10px;
+    right: 40px;
+    font-size:42px;
+    font-weight:bold;
+    color: #ffffff;
+}
+.event_description {
+    position:absolute;
+    text-align:right;
+    top:60px;
+    right:40px;
+    font-size:17px;
+    color: #cfcfcf;
+}
+#ajaxswitcher {
+    height: 20px;
+    padding: 5px;
+    position: fixed;
+    z-index: 100;
+    display: none;
+}
+#currentTime {
+    border:0 solid #000000;
+    font-size:24px;
+    position:absolute;
+    text-align:right;
+    top:110px;
+    right:40px;
+    padding-left:30px;
+    background: url(../images/icons/clock.png) no-repeat scroll 0px 4px;
+}
+
+/*** CONTENT ***/
+#content {
+    position:absolute;
+    left:100px;
+    top:150px;
+    right:40px;
+}
+.title
+{
+    position: absolute;
+    top: 58px;
+    left: 100px;
+    font-size: 30px;
+    letter-spacing:4px;
+    color: #FAFAFB;
+}
+#sidebar {
+    width: 250px;
+    float: right;
+    margin: 0 0 20px 10px;
+}
+.box {
+    border:1px solid #808080;
+    padding: 0px 10px 10px 10px;
+}
+.box h4 {
+    margin-bottom: 5px;
+    margin-top: 10px;
+    color: #333333;
+    font-weight: normal;
+    text-transform: uppercase;
+}
+
+
+/*** Items *** /
+/* item title centered */
+.item_fullscreen
+{
+    position: relative;
+    top: 110px;
+    right:30px;
+    font-size:40px;
+    font-weight:bold;
+    text-align: center;
+}
+
+/* items in a list*/
+.itemlist li
+{
+    font-size:26px;
+    padding-bottom: 15px;
+    list-style-type: none;
+}
+.itemlist .closed
+{
+    color: #9FA9B7;
+    list-style-type: none;
+}
+
+
+/* Table */
+table {
+    border-collapse:collapse;
+    border-color:#CCCCCC -moz-use-text-color #CCCCCC #CCCCCC;
+    border-style:solid none solid solid;
+    border-width:1px medium 1px 1px;
+    margin:0;
+    border-spacing:0px;
+}
+table th {
+    border-right:1px solid #CCCCCC;
+    color:#333333;
+    font-weight:normal;
+    padding:10px 10px 10px 10px;
+    text-align:left;
+    text-transform:uppercase;
+}
+table tr.odd td {
+    background:none repeat scroll 0 0 #F1F1F1;
+}
+table td {
+    background:none repeat scroll 0 0 #F7F7F7;
+    border-right:1px solid #CCCCCC;
+    line-height:120%;
+    padding: 10px 10px;
+    vertical-align:middle;
+}

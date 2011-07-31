@@ -1,0 +1,276 @@
+{% extends "application/base_application.html" %}
+{% block title %}{{ block.super }} - {% trans "Application" %} "{{ application.title }}"{% endblock %}
+{% load tags %}
+
+{% block content %}
+    <div id="sidebar">
+
+    <div class="box">
+    <h4 style="float:left;">{% trans "Submitter" %}:</h4>
+    <h4 style="text-align: right;">
+    {% if "delete" in actions %}
+        <a href="{% url application_delete application.id %}"><img src="/static/images/icons/edit-delete.png" title="{% trans 'Delete Application' %}"></a>
+    {% endif %}
+    <a href="{% url print_application application.id %}"><img src="/static/images/icons/application-pdf.png" title="{% trans 'Print Application' %}"></a>
+    </h4>
+    <span clear="all">    </span>
+    {{ application.submitter }}
+    {% if user == application.submitter %}
+    <img src="/static/images/icons/user-information.png" title="{% trans 'You!' %}">
+    {% endif %}
+
+    {% if min_supporters > 0 %}
+    <h4>{% trans "Supporters" %}: *</h4>
+    {% if application.supporter.count == 0 %}
+    -
+    {% else %}
+        {% for supporter in application.supporter.all %}
+            {{ forloop.counter }}. {{supporter }}
+            {% if not forloop.last %}<br>{% endif %}
+        {% endfor %}
+    {% endif %}
+    {% endif %}
+
+    <h4>{% trans "Status" %}:</h4>
+    {% if application.status != "pub" %}
+    {% trans application.get_status_display %}
+    <br>
+    {% endif %}
+    {% for note in application.notes %}
+        {{ note }}
+    {% if not forloop.last %}<br>{% endif %}
+    {% endfor %}
+
+    {% with application.poll_set.all as polls %}
+    {% if poll|length > 0 %}
+    <h4>{% trans "Poll result" %}:</h4>
+    {% for poll in polls %}
+        {% if poll.has_vote %}
+            {% if polls|length > 1 %}
+                {{forloop.counter}}. {% trans "Poll" %}:<br>&nbsp;&nbsp;&nbsp;
+            {% endif %}
+            {% for option in poll.options %}
+                {% trans "Yes" %}: {{ option.yes }} |
+                {% trans "No" %}:  {{ option.no }} |
+                {% trans "Abstention" %}: {{ option.undesided }}
+            {% endfor %}
+            <br>
+        {% else %}
+            {% if polls|length == 1 %}
+            <i>{% trans "Not (yet) available." %}</i>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    
+    <h4>{% trans "Creation Time" %}:</h4>
+    {{ application.creation_time }}
+    
+    <p></p>
+    {% if "edit" in actions %}
+        <a href="{% url application_edit application.id %}">
+            <button><span class="icon edit">{%trans 'Edit' %}</span></button>
+        </a>
+    {% endif %}
+    {% if "wit" in actions and user == application.submitter %}
+    <p></p>
+        <a href='{% url application_set_status application.id 'wit' %}'>
+            <button><span class="icon revert">{%trans 'Withdraw' %}</span></button>
+        </a>
+    {% endif %}
+
+    {% if perms.application.can_support_application and min_supporters > 0 %}
+        {% if "unsupport" in actions %}
+        <p></p>
+        <a href='{% url application_unsupport application.id %}'>
+            <button><span class="icon remove">{% trans 'Unsupport' %}</span></button>
+        </a>
+        {% endif %}
+        {% if "support" in actions %}
+        <p></p>
+        <a href='{% url application_support application.id %}'>
+            <button><span class="icon add">{% trans 'Support' %}</span></button>
+        </a>
+        {% endif %}
+    {% endif %}
+    </div>
+    {% if min_supporters > 0 %}
+    <small>* {% trans "minimum required supporters" %}: {{ min_supporters }}</small>
+    {% endif %}
+    
+    <br><br>
+
+    {% if perms.application.can_manage_application %}
+    <div class="box">
+    <h4><b>{% trans "Manage application" %}</b></h4>
+
+    {% if "per" in actions or "nop" in actions or "setnumber" in actions %}
+        <h4>{% trans "Formal validation" %}:</h4>
+        {% if "per" in actions %}
+        <a href='{% url application_permit application.id %}'><button><span class="icon ok-blue">{% trans 'Permit' %}</span></button></a>
+        {% endif %}
+        {% if "nop" in actions %}
+        <a href='{% url application_notpermit application.id %}'><button><span class="icon stop">{% trans 'Not permit (reject)' %}</span></button></a>
+        {% endif %}
+        {% if "setnumber" in actions %}
+        <a href='{% url application_set_number application.id %}'><button><span class="icon number">{% trans 'Set Number' %}</span></button></a>
+        {% endif %}
+        </p>
+    {% endif %}
+
+    {% if "createitem" in actions %}
+        <h4></h4>
+        <a href='{% url item_new_default 'ItemApplication' application.id %}'>
+            <button><span class="icon item">{%trans 'New agenda item' %}</span></button>
+        </a>
+    {% endif %}
+
+    {% if application.status != "pub" %}
+        <h4></h4>
+        {% for poll in application.poll_set.all %}
+            {% if poll.has_vote %}<a href="{% url application_poll_view poll.id %}">{% endif %}
+            {{ forloop.counter }}. {% trans "Poll" %}:
+            {% if poll.has_vote %}</a>{% endif %}
+            <a href="{% url application_poll_delete poll.id %}"><img src="/static/images/icons/edit-delete.png" title="{% trans 'Delete Poll' %}"></a>
+            <br>&nbsp;&nbsp;&nbsp;
+            {% if poll.has_vote %}
+                {% for option in poll.options %}
+                    {% trans "Yes" %}: {{ option.yes }} |
+                    {% trans "No" %}:  {{ option.no }} |
+                    {% trans "Abstention" %}: {{ option.undesided }}
+                {% endfor %}
+                {% if forloop.last %}
+                {% if "genpoll" in actions %}
+                    <br>
+                    <a href='{% url application_gen_poll application.id %}'>
+                        <button><span class="icon poll">{%trans 'New poll' %}</span></button>
+                    </a>
+                {% endif %}
+                {% endif %}
+            {% else %}
+                <a href="{% url application_poll_view poll.id %}">{% trans "Enter vote result!" %}</a>
+            {% endif %}
+            {% if not forloop.last %}<br>{% endif %}
+        {% empty %}
+            {% if "genpoll" in actions %}
+            <a href='{% url application_gen_poll application.id %}'>
+                <button><span class="icon poll">{%trans 'New poll' %}</span></button>
+            </a>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    {% if "acc" in actions or "rej" in actions %}
+        <h4>{% trans "Result after vote" %}:</h4>
+        {% if "acc" in actions %}
+        <a href='{% url application_set_status application.id 'acc' %}'>
+            <button><span class="icon accept">{%trans 'Accepted' %}</span></button>
+        </a>
+        {% endif %}
+        {% if "rej" in actions %}
+        <a href='{% url application_set_status application.id 'rej' %}'>
+            <button><span class="icon reject">{%trans 'Rejected' %}</span></button>
+        </a>
+        {% endif %}
+    {% endif %}
+
+    {% if "adj" in actions or "noc" in actions or "com" in actions or "wit" in actions %}
+        <h4>{% trans 'Result after debate' %}:</h4>
+        {% if "adj" in actions %}
+        <a href='{% url application_set_status application.id 'adj' %}'><button>{% trans 'Adjourned' %}</button></a><br>
+        {% endif %}
+        {% if "noc" in actions %}
+        <a href='{% url application_set_status application.id 'noc' %}'><button>{% trans 'Not Concerned' %}</button></a><br>
+        {% endif %}
+        {% if "com" in actions %}
+        <a href='{% url application_set_status application.id 'com' %}'><button>{% trans 'Commited a bill' %}</button></a><br>
+        {% endif %}
+        {% if "wit" in actions %}
+        <a href='{% url application_set_status application.id 'wit' %}'><button>{% trans 'Withdrawed by Submitter' %}</button></a>
+        {% endif %}
+    {% endif %}
+
+    <p></p>
+    <hr>
+    <h4>{%trans "For Administration only:" %}</h4>
+    <a href='{% url application_reset application.id %}'>
+        <button><span class="icon undo">{%trans 'Reset' %}</span></button>
+    </a>
+    </div>
+    {% endif %} {# end perms.application.can_support_application #}
+
+
+    </div> <!-- end sidebar -->
+
+
+
+    <div>
+    <p>{% trans "Application" %}
+    {% if application.number != None %}
+        #{{ application.number }}
+    {% else %}
+        <i>[no number]</i>
+    {% endif %}</p>
+    <h1>{{ application.title }}</h1>
+
+
+    {{ application.text|linebreaks }}
+
+    <h2>{% trans "Reason" %}:</h2>
+
+    {% if application.reason %}
+        {{ application.reason|linebreaks }}
+    {% else %}
+        -
+    {% endif %}
+
+
+    {% if application.versions|length > 1 %}
+    <h2>{% trans "Revisions" %}:</h2>
+
+    <table class="table">
+    <tr>
+        <th>#</th>
+        <th>{% trans "Time" %}</th>
+        <th>{% trans "Title" %}</th>
+        <th>{% trans "Text" %}</th>
+
+        <th>{% trans "Reason" %}</th>
+    </tr>
+    {% for revision in application.versions  %}
+    <tr>
+        <td>{{ revision.aid }} </td>
+        <td><i>{{ revision.time }}</i></td>
+        <td>
+            {% ifchanged %}
+            <b>{{ revision.title }}</b>
+            {% else %}
+            <i>[{% trans "unchanged" %}]</i>
+            {% endifchanged %}
+        </td>
+        <td>
+            {% ifchanged %}
+            {{ revision.text|linebreaks }}
+            {% else %}
+            <i>[{% trans "unchanged" %}]</i>
+            {% endifchanged %}
+        </td>
+        <td>
+            {% ifchanged %}
+            {{ revision.reason|linebreaks }}
+            {% else %}
+            <i>[{% trans "unchanged" %}]</i>
+            {% endifchanged %}
+        </td>
+    </tr>
+    {% endfor %}
+    </table>
+    {% endif %}
+
+    {% if perms.application.can_manage_application %}
+    <h2>{% trans "Log" %}:</h2>
+    {{ application.log|linebreaks }}
+    {% endif %}
+    </div>
+{% endblock %}

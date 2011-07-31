@@ -1,0 +1,50 @@
+{% extends 'application/base_application.html' %}
+{% block title %}{{ block.super }} - {{ poll.title }}{% endblock %}
+
+{% if perms.poll.can_manage_poll %}
+{% block submenu %}
+{{ block.super }}
+<br>
+<h3>{%trans "Application" %} #{{poll.application.number}}</h3>
+<ul>
+<li><a href="{% url print_application_poll poll.id %}"><img src="/static/images/icons/application-pdf.png"> {%trans 'Print Poll' %}</a></li>
+</ul>
+{% endblock %}
+{% endif %}
+
+{% block content %}
+    <h1>{{ poll.title }}</h1>
+    <h4>Title: "{{ poll.application.title }}"</h4>
+
+    {% if perms.poll.can_manage_poll %}
+        <form action="" method="post">{% csrf_token %}
+        <fieldset>
+        <legend>{{ poll.description }}</legend>
+        <p><nobr><label>{%trans "Votes in favour" %}:</label></nobr>
+        {{ options.0.form.yes.errors }}{{ options.0.form.yes }}
+        </p>
+        <p><nobr><label>{%trans "Votes against" %}:</label></nobr>
+        {{ options.0.form.no.errors }}{{ options.0.form.no }}
+        </p>
+        <p><nobr><label>{%trans "Abstentions" %}:</label></nobr>
+        {{ options.0.form.undesided.errors }}{{ options.0.form.undesided }}
+        </p>
+        <p><label>{%trans "Invalid" %}:</label>
+        {{ form.invalid.errors }}{{ form.invalid }}
+        </p>
+        <p>
+        <button type="submit">
+            <span class="icon ok">{%trans 'Apply' %}</span>
+        </button>
+        </fieldset>
+
+        <p></p>
+        <a href='{% url application_view poll.application.id %}'>
+            <button type="button">
+            <span class="icon previous">{%trans 'Back to application' %}</span>
+            </button>
+        </a>
+        
+        </form>
+    {% endif %}
+{% endblock %}

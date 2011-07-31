@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+    {% load tags %}
+    <title>{% block title %}{% get_config 'event_name' %}{% endblock %}</title>
+    <link type="text/css" rel="stylesheet" media="all" href="/static/styles/base.css" />
+    <link rel="shortcut icon" href="/static/images/favicon.png" type="image/png" />
+    {% block header %}
+    <script type="text/javascript" src="/static/javascript/jquery.js"></script>
+    {% endblock %}
+</head>
+<body>
+    <div id="header">
+        <a href="/" title="{% trans 'Home' %}"><div id="logo"><img src="/static/images/logo.png"></div></a>
+        <div id="header_title">{% get_config 'event_name' %}</div>
+        <div id="header_subtitle">{% get_config 'event_description' %}</div>
+        <div id="header_userprofile">
+            <ul>
+            {% if user.is_authenticated %}
+                <li>|<a href="{% url user_logout %}">{%trans "Logout" %}</a></li>
+                <li>|<a href="{% url user_settings %}">{%trans "Settings" %}</a></li>
+                <li>{%trans "Welcome" %} <strong>{{ user.username }}</strong></li>
+            {% else %}
+                <li><a href="{% url user_login %}">{%trans "Login" %}</a></li>
+            {% endif %}
+                <li id="last">
+                   <form action="/i18n/setlang/" method="post">
+                   {% csrf_token %}
+                   {%trans "Language" %}:
+                   <select class="small-input" name="language" onchange="document.forms[0].submit()">
+                       {% for lang in LANGUAGES %}
+                       <option value="{{ lang.0 }}" {% if lang.0 == request.LANGUAGE_CODE %}selected{% endif %}>{{ lang.0 }}</option>
+                       {% endfor %}
+                   </select>
+                   </form>
+                </li>
+            </ul>
+        </div>
+
+        <div id="mainmenu">
+           {% block mainmenu %}
+            <ul>
+                {% if perms.agenda.can_view_agenda or perms.agenda.can_manage_agenda %}
+                <li class="{% active request '/item' %}
+                           {% if request.path == '/'%}selected{% endif %}">
+                    <a href="{% url item_overview %}" title="">{%trans "Agenda" %}</a></li>
+                {% endif %}
+                {% if perms.application.can_view_application or perms.application.can_insert_application or perms.application.can_support_application or perms.application.can_manage_application %}
+                <li class="{% active request '/application' %}">
+                    <a href="{% url application_overview %}" title="">{%trans "Applications" %}</a></li>
+                {% endif %}
+                {% if perms.assignment.can_view_assignment or perms.assignment.can_nominate_other or perms.assignment.can_nominate_self or perms.assignment.can_manage_assignment %}
+                <li  class="{% active request '/assignment' %}">
+                    <a href="{% url assignment_overview %}" title="">{%trans "Elections" %}</a></li>
+                {% endif %}
+                {% if perms.poll.can_view_poll or perms.poll.can_manage_poll %}
+                <li  class="{% active request '/poll' %}">
+                    <a href="{% url poll_overview %}" title="">{%trans "Polls" %}</a></li>
+                {% endif %}
+                {% if perms.participant.can_view_participants or perms.participant.can_manage_participants %}
+                <li  class="{% active request '/participant' %}">
+                    <a href="{% url user_overview %}" title="">{%trans "Participants" %}</a></li>
+                {% endif %}
+                {% if perms.system.can_manage_system %}
+                <li  class="{% active request '/config' %}">
+                    <a href="{% url config_general %}" title="">{%trans "Configuration" %}</a></li>
+                {% endif %}
+            </ul>
+            {% endblock %}
+        </div>
+    </div>
+
+    <div id="wrapper">
+        <div id="content">
+            {% if messages %}
+                {% for message in messages %}
+                <div class="notification {% if message.tags %}{{ message.tags }}{% endif %}">
+                    <a class="close" href="#">
+                    <img alt="close" title="{% trans 'Close this notification' %}" src="/static/images/icons/cross.png">
+                    </a>
+                    <em>{{ message|safe }}</em>
+                </div>
+                {% endfor %}
+                <script>
+                    $("div.notification").click(function () {
+                        $(this).hide("fast");
+                    });
+                </script>
+            {% endif %}
+            {% block content %}
+            {% endblock %}
+            <div id="footer">
+                <small>
+                &copy; Copyright 2011 | Powered by <a href="http://openslides.org">OpenSlides</a><br />
+                Version: {{ OPENSLIDES_REVISION }}
+                </small>
+            </div>
+        </div>
+    </div> <!-- end wrapper -->
+
+    <div id="submenu">
+        <div class="section">
+            {% block submenu %}
+            {% endblock %}
+        </div>
+    </div>
+</body>
+</html>

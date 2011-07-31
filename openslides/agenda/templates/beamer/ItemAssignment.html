@@ -1,0 +1,69 @@
+{% extends "beamer.html" %}
+{% block title %}{{ block.super }} - {{ item.title }}{% endblock %}
+{% block content %}
+    {% trans "Election" %}:
+    <h1>{{ item.assignment }}</h1>
+
+    {% if item.assignment.status == "sea" or item.assignment.status == "vot" %}
+    <div id="sidebar">
+    <div class="box">
+    <h4>{% trans "Status" %}:</h4>
+    {% trans item.assignment.get_status_display %}
+    <h4>{% trans "Number of available posts" %}:</h4>
+    {{ item.assignment.assignment_number }}
+    </div>
+    </div>
+    {% endif %}
+
+    <p>
+    <div class="text">{{ item.assignment.description|linebreaks }}</div>
+    </p>
+    
+    {% if item.assignment.status != "fin" %}
+    <h3>{% trans "Candidates" %}</h3>
+    <ol>
+    {% for profile in item.assignment.profile.all|dictsort:"user.first_name" %}
+        <li>{{ profile }} </li>
+    {% empty %}
+        <li style="list-style: none outside none;">
+            <i>{% trans "No candidates available." %}</i>
+        </li>
+    {% endfor %}
+    </ol>
+    {% endif %}
+    
+    {% if item.assignment.poll_set.all.count > 0 %}
+    <p><br></p>
+    <h3>{% trans "Election results" %}</h3>
+    <table>
+    <tr>
+        <th>{% trans "Candidates" %}</th>
+        {% for poll in item.assignment.poll_set.all %}
+        <th><nobr>{{forloop.counter}}. {% trans "ballot" %}</nobr></th>
+        {% endfor %}
+    </tr>
+    {% for vote in votes %}
+    <tr class="{% cycle 'odd' '' %}">
+        {% for v in vote %}
+            <td>{% if v  %}
+                    {% if v|length == 3 %}
+                        <img src="/static/images/icons/voting-yes.png" title="{% trans 'Yes' %}"> {% if v.0 %}{{ v.0 }}{% else %}&empty;{% endif %}<br>
+                        <img src="/static/images/icons/voting-no.png" title="{% trans 'No' %}"> {% if v.1 %}{{ v.1 }}{% else %}&empty;{% endif %}<br>
+                        <img src="/static/images/icons/voting-abstention.png" title="{% trans 'Abstention' %}"> {% if v.2 %}{{ v.2 }}{% else %}&empty;{% endif %}<br>
+                    {% else %}
+                        {{ v }}
+                    {% endif %}
+                {% else %}&empty;{% endif %}
+            </td>
+        {% endfor %}
+    </tr>
+    {% empty %}
+    <tr>
+        <td {% if item.assignment.profile.exist %}colspan="2"{% endif %}><i>{% trans "No ballots available." %}</i></td>
+    </tr>
+    {% endfor %}
+    </table>
+    {% endif %}
+    
+    <br>
+{% endblock %}

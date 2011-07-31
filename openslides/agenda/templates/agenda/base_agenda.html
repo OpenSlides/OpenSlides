@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load tags %}
+
+{% block submenu %}
+    {% url item_overview as url_itemoverview %}
+    {% url item_new as url_itemnew %}
+    <h4 class="sectiontitle">{%trans "Agenda" %}</h4>
+    <ul>
+        <li class="{% if request.path == url_itemoverview %}selected{% endif %}"><a href="{% url item_overview %}">{%trans "All items" %}</a></li>
+        {% if perms.agenda.can_manage_agenda %}
+        <li class="{% active request '/item/new/' %}"><a href="{% url item_new 'ItemText' %}">{%trans "New item" %}</a></li>
+        {% endif %}
+        {% if perms.agenda.can_see_beamer %}
+        <li><a href="{% url item_beamer %}"><img src="/static/images/icons/view-presentation.png"> {%trans 'Beamer view' %}</a></li>
+        {% endif %}
+    </ul>
+{% endblock %}

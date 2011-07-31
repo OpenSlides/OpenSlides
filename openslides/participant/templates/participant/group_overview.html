@@ -1,0 +1,24 @@
+{% extends "participant/base_participant.html" %}
+{% block title %}{{ block.super }} - {%trans "Groups" %}{% endblock %}
+
+{% block content %}
+    <h1>{%trans "User groups" %}</h1>
+    <table>
+        <tr>
+            <th>{%trans "User Group" %}</th>
+            <th>{%trans "Action" %}</th>
+        </tr>
+    {% for group in groups %}
+        <tr class="{% cycle '' 'odd' %}">
+            <td>{{ group.name }}</td>
+            <td><a href="{% url user_group_edit group.id %}"><img src="/static/images/icons/document-edit.png" title="{%trans 'Edit group' %}"></a>
+            <a href="{% url user_group_delete group.id %}"><img src="/static/images/icons/edit-delete.png" title="{%trans 'Delete group' %}"></a>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+        <td colspan="5"><i>{%trans "No participants available." %}</i></td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}

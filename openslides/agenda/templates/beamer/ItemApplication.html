@@ -1,0 +1,47 @@
+{% extends "beamer.html" %}
+{% load tags %}
+{% block title %}{{ block.super }} - {{ item.title }}{% endblock %}
+{% block content %}
+    <div class="number">{% trans "Application" %} #{{ item.application.number }}</div>
+    <h1>{{ item.title }}</h1>
+
+    {% if item.application.status != "pub" and item.application.status != "per" %}
+    <div id="sidebar">
+    <div class="box">
+    <h4>{%trans "Status" %}:</h4>
+    {%trans item.application.get_status_display %}
+
+    {% with item.application.poll_set.all as poll %}
+    {% if poll|length > 0 %}
+    <h4>{% trans "Poll result" %}:</h4>
+    {% for p in poll %}
+        {% if p.has_vote %}
+            {% if poll|length > 1 %}
+                {{forloop.counter}}. {% trans "Poll" %}:<br>&nbsp;&nbsp;&nbsp;
+            {% endif %}
+            {% for option in p.get_options %}
+                {% trans "Yes" %}: {{ option.voteyes }} <br>&nbsp;&nbsp;&nbsp;
+                {% trans "No" %}:  {{ option.voteno }} <br>&nbsp;&nbsp;&nbsp;
+                {% trans "Abstention" %}: {{ option.voteundesided }}
+            {% endfor %}
+            <br>
+        {% else %}
+            {% if poll|length  == 1 %}
+            <i>{% trans "No poll results available." %}</i>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+     
+    </div>
+    </div>
+    {% endif %}
+    
+    <p>
+    <div class="text">{{ item.application.text|linebreaks }}</div>
+    <br>
+    <div class="reason"><p><b>{% trans "Reason" %}:</b></p>
+    {{ item.application.reason|linebreaks }}</div>
+    </p>
+{% endblock %}

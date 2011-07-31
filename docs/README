@@ -1,0 +1,13 @@
+The OpenSlides website based on Sphinx <http://sphinx.pocoo.org/>.
+You have to install Sphinx before you can build the website.
+
+To build the website into the ./_build directory use:
+
+  make html
+
+To clean up your build directory use:
+
+  make clean 
+
+--
+http://www.openslides.org

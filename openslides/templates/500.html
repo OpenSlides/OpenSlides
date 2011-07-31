@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load tags %}
+
+{% block mainmenu %}
+ <ul>
+     {% if perms.agenda.can_view_agenda or perms.agenda.can_manage_agenda %}
+     <li>
+         <a href="{% url item_overview %}" title="">{%trans "Agenda" %}</a></li>
+     {% endif %}
+     {% if perms.application.can_view_application or perms.application.can_insert_application or perms.application.can_support_application or perms.application.can_manage_application %}
+     <li>
+         <a href="{% url application_overview %}" title="">{%trans "Applications" %}</a></li>
+     {% endif %}
+     {% if perms.assignment.can_view_assignment or perms.assignment.can_nominate_other or perms.assignment.can_nominate_self or perms.assignment.can_manage_assignment %}
+     <li>
+         <a href="{% url assignment_overview %}" title="">{%trans "Elections" %}</a></li>
+     {% endif %}
+     {% if perms.poll.can_view_poll or perms.poll.can_manage_poll %}
+     <li>
+         <a href="{% url poll_overview %}" title="">{%trans "Polls" %}</a></li>
+     {% endif %}
+     {% if perms.participant.can_view_participants or perms.participant.can_manage_participants %}
+     <li>
+         <a href="{% url user_overview %}" title="">{%trans "Participants" %}</a></li>
+     {% endif %}
+     {% if perms.system.can_manage_system %}
+     <li>
+         <a href="{% url config_general %}" title="">{%trans "Configuration" %}</a></li>
+     {% endif %}
+ </ul>
+ {% endblock %}
+            
+{% block submenu %}
+{% endblock %}
+
+{% block content %}
+    <h1>{%trans "Server Error"%}</h1>
+{% endblock %}

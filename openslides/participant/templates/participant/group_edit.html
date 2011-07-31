@@ -1,0 +1,22 @@
+{% extends "participant/base_participant.html" %}
+{% block title %}{{ block.super }} - {%trans "User Group" %} {% endblock %}
+
+{% block content %}
+    {% if group %}
+        <h1>{%trans "Edit user group" %}</h1>
+    {% else %}
+        <h1>{%trans "New user group" %}</h1>
+    {% endif %}
+
+    <form action="" method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">
+            <span class="icon ok">{%trans 'Save' %}</span>
+        </button>
+        <a href='{% url user_overview %}'>
+            <button type="button">
+            <span class="icon cancel">{%trans 'Cancel' %}</span>
+            </button>
+        </a>
+    </form>
+{% endblock %}

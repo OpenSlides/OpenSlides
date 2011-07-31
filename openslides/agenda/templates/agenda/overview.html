@@ -1,0 +1,158 @@
+{% extends "agenda/base_agenda.html" %}
+{% load tags %}
+{% block title %}{{ block.super }} - {% trans "Agenda" %}{% endblock %}
+
+{% block header %}
+    <link type="text/css" rel="stylesheet" media="all" href="/static/styles/tabledrag.css" />
+    {% if perms.agenda.can_manage_agenda %}
+    <script type="text/javascript" src="/static/javascript/jquery.js"></script>
+    <script type="text/javascript" src="/static/javascript/jquery.once.js"></script>
+    <script type="text/javascript" src="/static/javascript/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/static/javascript/tabledrag.js"></script>
+    <script type="text/javascript">
+    <!--//--><![CDATA[//><!--
+    //This is Drupal Code
+    jQuery.extend(
+      Drupal.settings,
+    {
+    "tableDrag":
+      { "menu-overview":
+        { "menu-plid":
+          [ { "target": "menu-plid", "source": "menu-mlid", "relationship": "parent", "action": "match", "hidden": true, "limit": 8 } ],
+          "menu-weight":
+          [ { "target": "menu-weight", "source": "menu-weight", "relationship": "sibling", "action": "order", "hidden": true, "limit": 0 } ]
+        }
+      }
+    });
+    //--><!]]>
+    </script>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <h1>{% trans "Agenda" %}</h1>
+    {% if items %}
+        <form action="/item/" method="post">{% csrf_token %}
+        {% if perms.agenda.can_manage_agenda %}
+        <div id="changed-order-message" style="display:none" class="notification warning">
+            <em>{% trans "Do you want to save the changed order of agenda items?" %}<br>
+                <input type="submit" value="{% trans 'Yes' %}">
+                <input type="button" onclick="window.location.href='{% url item_overview %}';" value="{%trans 'No' %}">
+            </em>
+        </div>
+        {% endif %}
+        <table id="menu-overview" class="agendatable">
+            <tr>
+                <th style="width: 1px;">{% trans "Beamer" %}</th>
+                <th>{% trans "Item" %}</th>
+                {% if perms.agenda.can_manage_agenda %}
+                <th>{% trans "Item Type" %}</th>
+                {% endif %}
+                <th style="width: 1px;">{% if perms.agenda.can_manage_agenda %}{% trans "Actions" %}{% endif %}</th>
+                {% if perms.agenda.can_manage_agenda %}
+                <th class="tabledrag-hide">{% trans "Weight" %}</th>
+                {% endif %}
+            </tr>
+            <tr {% if overview %}class="activeline"{% endif %}>
+                <td {% if perms.agenda.can_manage_agenda %}
+                    class="select" onclick="window.location.href='{% url item_activate 0 %}'"
+                    {% endif %}>
+                    {% if overview %}
+                        <img class="center" src="/static/images/icons/task-accepted.png" title="{% trans 'Agenda selected' %}">
+                    {% else %}
+                        {% if perms.agenda.can_manage_agenda %}<img class="center" src="/static/images/icons/task-accepted-grey.png" title="{% trans 'Select agenda' %}">{% endif %}
+                    {% endif %}
+                </td>
+                <td><i>{% trans "Agenda" %} ({{ items|length }} {% trans "items" %})</i></td>
+                {% if perms.agenda.can_manage_agenda %}
+                <td></td>
+                {% endif %}
+                <td style="width: 1px;white-space: nowrap"><a href="{% url print_agenda %}" title="{%trans 'Print reduced agenda (only first parent items)' %}"><img src="/static/images/icons/application-pdf.png"></a>
+                    <a href="{% url print_agenda_full printAllItems=1 %}" title="{%trans 'Print full agenda (all items)' %}"><img src="/static/images/icons/pdf-annotations.png"></a></td>
+            </tr>
+            {% for item in items %}
+                {% if not item.hidden  or  item.hidden and perms.agenda.can_manage_agenda %}
+                <tr class="draggable {% cycle 'odd' '' %}
+                {% if item.active %}activeline{% else %}
+                {% if item.parent.active and summary %}activesummarychildline{% endif %}
+                {% endif %}">
+                <td {% if perms.agenda.can_manage_agenda %}
+                    class="select" onclick="window.location.href='{% url item_activate item.id %}'"
+                    {% endif %}>
+                    {% if item.active %}
+                        <img class="center" src="/static/images/icons/task-accepted.png" title="{% trans 'Item selected' %}"></span>
+                    {% else %}
+                        {% if perms.agenda.can_manage_agenda %}<img class="center" src="/static/images/icons/task-accepted-grey.png" title="{% trans 'Select item' %}"> {% endif %}
+                    {% endif %}
+                </td>
+                <td>
+                    {% for p in item.parents %}
+                        <div class="indentation">&nbsp;</div>
+                    {% endfor %}
+
+                    {% if perms.agenda.can_manage_agenda %}
+                        <div class="dragcell"></div>
+                    {% endif %}
+
+                    {{ item }}
+
+                </td>
+                {% if perms.agenda.can_manage_agenda %}
+                <td>
+                    {% ifequal item.type 'ItemApplication' %}
+                        <a href="{% url application_view item.cast.application.id %}">{% trans "Application" %} {{ item.cast.application.number }}</a>
+                    {% endifequal %}
+
+                    {% ifequal item.type 'ItemPoll' %}
+                        {% if item.cast.poll.application %}
+                            <a href="{% url poll_view item.cast.poll.id %}">{% trans "Poll of Application" %}</a>
+                        {% endif %}
+                        {% if item.cast.poll.assignment %}
+                            <a href="{% url poll_view item.cast.poll.id %}">{% trans "Poll of Election" %}</a>
+                        {% endif %}
+                    {% endifequal %}
+
+                    {% ifequal item.type 'ItemAssignment' %}
+                        <a href="{% url assignment_view item.cast.assignment.id %}">{% trans "Election" %}</a>
+                    {% endifequal %}
+
+                    {% ifequal item.type 'ItemText' %}
+                        Text
+                    {% endifequal %}
+                </td>
+                {% endif %}
+                <td style="width: 1px;white-space: nowrap">
+                    <a href="{{ item.get_absolute_url }}"><img src="/static/images/icons/document-preview.png" title="{% trans 'Show beamer preview' %}"></a>
+
+                    {% if  perms.agenda.can_manage_agenda %}
+                    <a href="{% url item_edit item.id %}"><img src="/static/images/icons/document-edit.png" title="{% trans 'Edit item' %}"></a>
+                    <a href="{% url item_delete item.id %}"><img src="/static/images/icons/edit-delete.png" title="{% trans 'Delete item' %}"></a>
+                    {% if item.closed %}
+                        <a href="{% url item_open item.id %}"><img src="/static/images/icons/user-offline.png" title="{% trans 'Click to open item' %}"></a>
+                    {% else %}
+                        <a href="{% url item_close item.id  %}"><img src="/static/images/icons/user-online.png" title="{% trans 'Click to close item' %}"></a>
+                    {% endif %}
+                    {% if item.children.exists %}
+                        <a href="{% url item_activate_summary item.id %}"><img src="/static/images/icons/view-list-tree.png" title="{% trans 'Select item overview' %}"></a>
+                    {% endif %}
+                    {% endif %} 
+                </td>
+                {% if perms.agenda.can_manage_agenda %}
+                <td class="tabledrag-hide">
+                    {% with form=item.weight_form %}
+                        {{ form.weight }}
+                        {{ form.self }}
+                        {{ form.parent }}
+                    {% endwith %}
+                </td>
+                {% endif %}
+                </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+
+        </form>
+    {% else %}
+        <i>{% trans "No items available." %}</i>
+    {% endif %}
+{% endblock %}

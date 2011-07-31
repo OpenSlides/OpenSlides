@@ -1,0 +1,23 @@
+{% extends "poll/base_poll.html" %}
+{% block title %}{{ block.super }} - {%trans "Poll" %}{% endblock %}
+
+{% block content %}
+    {% if option %}
+        <h1>{%trans "Edit Poll Option" %}</h1>
+    {% else %}
+        <h1>{%trans "New Poll Option" %}</h1>
+    {% endif %}
+
+    <form action="" method="post">{% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit">
+            <span class="icon ok">{%trans 'Save' %}</span>
+        </button>
+        <a href='{% url poll_overview %}'>
+            <button type="button">
+            <span class="icon cancel">{%trans 'Cancel' %}</span>
+            </button>
+        </a>
+    </form>
+{% endblock %}

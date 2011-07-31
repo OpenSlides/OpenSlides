@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load tags %}
+
+{% block submenu %}
+    {% url user_overview as url_useroverview %}
+    <h4 class="sectiontitle">{%trans "Participants" %}</h4>
+    <ul>
+        {% if perms.participant.can_view_participants %}
+        <li class="{% if request.path == url_useroverview %}selected{% endif %}"><a href="{% url user_overview %}">{%trans "All participants" %}</a></li>
+        {% endif %}
+        {% if perms.participant.can_manage_participants %}
+        <li class="{% active request '/user/new' %}"><a href="{%  url user_new %}">{%trans "New participant" %}</a></li>
+        <li><a href="{%  url user_group_overview %}">{%trans "All user groups" %}</a></li>
+        <li><a href="{%  url user_group_new %}">{%trans "New user group" %}</a></li>
+        <li><a href="{% url user_print %}"><img src="/static/images/icons/application-pdf.png"> {%trans 'Print participant list' %}</a></li>
+        <li><a href="{% url user_import %}"> {%trans 'Import' %}</a></li>
+        {% endif %}
+    </ul>
+{% endblock %}

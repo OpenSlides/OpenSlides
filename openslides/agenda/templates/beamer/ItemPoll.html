@@ -1,0 +1,19 @@
+{% extends "beamer.html" %}
+{% block title %}{{ block.super }} - {{ item.title }}{% endblock %}
+{% block content %}
+    {%trans "Poll about" %}:
+    <h1>{{ item.title }}</h1>
+
+    <table>
+    {% for option in item.poll.get_options %}
+        <tr>
+        <td>{{ option }}</td>
+        <td>{{ option.voteyes }}</td>
+        {% if item.poll.optiondecision %}
+        <td>{{ option.voteno }}</td>
+        <td>{{ option.voteundesided }}</td>
+        {% endif %}
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}

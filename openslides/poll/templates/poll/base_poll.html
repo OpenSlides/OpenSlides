@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load tags %}
+
+{% block submenu %}
+    {% url poll_overview as url_polloverview %}
+    <h4 class="sectiontitle">{%trans "Polls" %}</h4>
+    <ul>
+        <li class="{% if request.path == url_polloverview %}selected{% endif %}"><a href="{% url poll_overview %}">{%trans "All polls" %}</a></li>
+        {% if perms.poll.can_manage_poll %}
+            <li class="{% active request '/poll/new' %}"><a href="{% url poll_new %}">{%trans "New poll" %}</a></li>
+        {% endif %}
+    </ul>
+{% endblock %}

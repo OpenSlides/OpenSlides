@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load tags %}
+
+{% block submenu %}
+    {% url application_overview as url_applicationoverview %}
+    <h4>{%trans "Applications" %}</h4>
+    <ul>
+        <li class="{% if request.path == url_applicationoverview %}selected{% endif %}"><a href="{% url application_overview %}">{%trans "All applications" %}</a></li>
+        {% if perms.application.can_insert_application or perms.application.can_manage_application %}
+            <li class="{% active request '/application/new' %}"><a href="{%  url application_new %}">{%trans "New application" %}</a></li>
+        {% endif %}
+        <li><a href="{% url print_applications %}"><img src="/static/images/icons/application-pdf.png"> {%trans 'Print all applications' %}</a></li>
+    </ul>
+{% endblock %}

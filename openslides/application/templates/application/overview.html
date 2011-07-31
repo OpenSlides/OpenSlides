@@ -1,0 +1,62 @@
+{% extends "application/base_application.html" %}
+{% block title %}{{ block.super }} - {%trans "Applications" %}{% endblock %}
+{% load tags %}
+
+{% block content %}
+    <h1>{%trans "Applications" %}</h1>
+    <p><form action="{{request.url}}" name="filter" method="get">
+        {%trans "Filter" %}:
+        {% if min_supporters > 0 %}
+        <input type="checkbox" name="needsup" onchange="document.forms['filter'].submit()"
+            {% if 'on' in request.GET.needsup %}checked{% endif %}> {%trans "Need supporters" %} &nbsp;
+        {% endif %}
+        <input type="checkbox" name="number" onchange="document.forms['filter'].submit()"
+            {% if 'on' in request.GET.number %}checked{% endif %}> {%trans "Without number" %} &nbsp;
+        <input type="checkbox" name="status" onchange="document.forms['filter'].submit()"
+            {% if 'on' in request.GET.status %}checked{% endif %}> {%trans "Status" %}: 
+        <select class="default-input" name="statusvalue" onchange="{% if 'on' in request.GET.status %}document.forms['filter'].submit(){% endif %}">
+            <option value="pub" {% if 'pub' in request.GET.statusvalue %}selected{% endif %}>{%trans "Not yet permitted" %}</option>
+            <option value="per" {% if 'on' in request.GET.status and 'per' in request.GET.statusvalue %}selected{% endif %}>{%trans "Permitted" %}</option>
+            <option value="acc" {% if 'on' in request.GET.status and 'acc' in request.GET.statusvalue %}selected{% endif %}>{%trans "Accepted" %}</option>
+            <option value="rej" {% if 'on' in request.GET.status and 'rej' in request.GET.statusvalue %}selected{% endif %}>{%trans "Rejected" %}</option>
+            <option value="wit" {% if 'on' in request.GET.status and 'wit' in request.GET.statusvalue %}selected{% endif %}>{%trans "Withdrawed (by submitter)" %}</option>
+        </select>
+        </form>
+    </p>
+    <br>
+    <table>
+        <tr>
+        <th><a href="?sort=number{% if 'number' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Number" %}</a></th>
+        <th><a href="?sort=aversion__title{% if 'aversion__title' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Application title" %}</a></th>
+        {% if min_supporters > 0 %}
+        <th><a href="?sort=supporter{% if 'supporter' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Number of supporters" %}*</a></th>
+        {% endif %}
+        <th><a href="?sort=status{% if 'status' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Status" %}</a></th>
+        <th><a href="?sort=submitter{% if 'submitter' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Submitter" %}</a></th>
+        <th><a href="?sort=aversion__time{% if 'aversion__time' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Creation Time" %}<a></th>
+        </tr>
+    {% for application in applications %}
+        <tr class="{% cycle '' 'odd' %}">
+        <td>{% if application.number %}{{ application.number }}{% else %}-{% endif %}</td>
+        <td><a href="{% url application_view application.id %}">{{ application }}</a></td>
+        {% if min_supporters > 0 %}
+        <td>{{ application.supporter.count }}</td>
+        {% endif %}
+        <td>{% if application.status != "pub" %}
+            {{ application.get_status_display }}<br>
+            {% endif %}
+            {% for note in application.notes %}
+            {{ note }}
+            {% if not forloop.last %}<br>{%endif%}
+            {% endfor %}
+        </td>
+        <td>{{ application.submitter }}</td>
+        <td>{{ application.creation_time }}</td>
+        </tr>
+    {% empty %}
+        <tr>
+        <td colspan="6"><i>{%trans "No applications available." %}</i></td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}

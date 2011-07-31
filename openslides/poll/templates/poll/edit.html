@@ -1,0 +1,48 @@
+{% extends "poll/base_poll.html" %}
+{% block title %}{{ block.super }} - {%trans "Poll" %}{% endblock %}
+
+{% block content %}
+    {% if poll %}
+        <h1>{%trans "Edit poll" %}</h1>
+    {% else %}
+        <h1>{%trans "New poll" %}</h1>
+    {% endif %}
+
+    <form action="" method="post">{% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit">
+            <span class="icon ok">{%trans 'Save' %}</span>
+        </button>
+        <a href='{% url poll_overview %}'>
+            <button type="button">
+            <span class="icon cancel">{%trans 'Cancel' %}</span>
+            </button>
+        </a>
+        
+        {% if poll %}
+        <h3>{%trans "Options" %}</h3>
+        <table class="table">
+        <tr>
+            <th>{%trans "Option" %}</th>
+            <th>{%trans "Actions" %}</th>
+        </tr>
+        {% for option in options %}
+        <tr>
+            <td>{{ option }}</td>
+            <td><a href="{% url option_edit option.id %}"><img src="/static/images/icons/document-edit.png" title="{%trans 'Edit option' %}"></a>
+                <a href="{% url option_delete option.id %}"><img src="/static/images/icons/edit-delete.png" title="{%trans 'Delete option' %}"></a>
+            </td>
+        </tr>
+        {% endfor %}
+        </table>
+        <br>
+        <a href='{% url option_new_fixpoll poll.id %}'>
+            <button type="button">
+            <span class="icon add">{%trans 'Add new Option' %}</span>
+            </button>
+        </a>
+        {% endif %}
+    </form>
+
+{% endblock %}

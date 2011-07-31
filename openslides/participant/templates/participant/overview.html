@@ -1,0 +1,95 @@
+{% extends "participant/base_participant.html" %}
+{% block title %}{{ block.super }} - {%trans "Participants" %}{% endblock %}
+
+{% block content %}
+    <h1>{%trans "Participants" %}</h1>
+
+    <p><form action="{{request.url}}" name="filter" method="get">
+        {%trans "Filter" %}:
+        <select class="default-input" name="gender" onchange="document.forms['filter'].submit()">
+            <option value="---">-- {%trans "Gender" %}--</option>
+            <option value="male" {% if 'male' in request.GET.gender %}selected{% endif %}>{%trans "Male" %}</option>
+            <option value="female" {% if 'female' in request.GET.gender %}selected{% endif %}>{%trans "Female" %}</option>
+            <option value="none" {% if 'none' in request.GET.gender %}selected{% endif %}>{%trans "Not specified" %}</option>
+        </select>
+        <select class="default-input" name="group" onchange="document.forms['filter'].submit()">
+            <option value="---">-- {%trans "Group" %}--</option>
+            {% for group in groups %}
+                <option value="{{ group }}" {% if group in request.GET.group %}selected{% endif %}>
+                {{ group }}</option>
+            {% endfor %}
+        </select>
+        <select class="default-input" name="type" onchange="document.forms['filter'].submit()">
+            <option value="---">-- {%trans "Type" %}--</option>
+            <option value="delegate" {% if 'delegate' in request.GET.type %}selected{% endif %}>{%trans "Delegate" %}</option>
+            <option value="observer" {% if 'observer' in request.GET.type %}selected{% endif %}>{%trans "Observer" %}</option>
+            <option value="staff" {% if 'staff' in request.GET.type %}selected{% endif %}>{%trans "staff" %}</option>
+            <option value="guest" {% if 'guest' in request.GET.type %}selected{% endif %}>{%trans "guest" %}</option>
+        </select>
+        <select class="default-input" name="committee" onchange="document.forms['filter'].submit()">
+            <option value="---">-- {%trans "Committee" %}--</option>
+            {% for committee in committees %}
+                <option value="{{ committee }}" {% if committee in request.GET.committee %}selected{% endif %}>
+                {{ committee }}</option>
+            {% endfor %}
+        </select>
+        </form>
+    </p>
+    <br>
+    <table>
+        <tr>
+            <th><a href="?sort=first_name{% if 'first_name' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "First Name" %}</a></th>
+            <th><a href="?sort=last_name{% if 'last_name' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Last Name" %}</a></th>
+            <th><a href="?sort=gender{% if 'gender' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Gender" %}</a></th>
+            <th><a href="?sort=group{% if 'group' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Group" %}</a></th>
+            <th><a href="?sort=type{% if 'type' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Type" %}</a></th>
+            <th><a href="?sort=committee{% if 'committee' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Committee" %}</a></th>
+            <th><a href="?sort=username{% if 'username' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Username" %}</a></th>
+            <th><a href="?sort=email{% if 'email' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Email" %}</a></th>
+            <th><a href="?sort=last_login{% if 'last_login' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Last Login" %}</a></th>
+            {% if perms.participant.can_manage_participants %}
+            <th>{%trans "Actions" %}</th>
+            {% endif %}
+        </tr>
+    {% for user in users %}
+        <tr class="{% cycle '' 'odd' %}">
+            <td>{{ user.first_name }}</td>
+            <td>{{ user.last_name }}</td>
+            <td>{% if "none" not in user.profile.gender %}
+            {% if user.profile.gender == 'male' %}
+                {% trans "Male" %}
+            {% else %}
+                {% trans "Female" %}
+            {% endif %}
+            {% endif %}</td>
+            <td>{{ user.profile.group }}</td>
+            <td>{{ user.profile.type }}</td>
+            <td>{{ user.profile.committee }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{% if user.last_login > user.date_joined %}
+                {{ user.last_login }}
+                {% endif %}</td>
+            {% if perms.participant.can_manage_participants %}
+            <td style="width: 1px; white-space: nowrap;"><a href="{% url user_edit user.id %}"><img src="/static/images/icons/document-edit.png" title="{%trans 'Edit participant' %}"></a>
+                <a href="{% url user_delete user.id %}"><img src="/static/images/icons/edit-delete.png" title="{%trans 'Delete participant' %}"></a>
+                {% if user.is_active %}
+                <a href="{% url user_set_active user.id %}"><img src="/static/images/icons/user-online.png" title="{%trans 'Participiant is activated. Click to deactivate!' %}"></a>
+                {% else %}
+                <a href="{% url user_set_active user.id %}"><img src="/static/images/icons/user-offline.png" title="{%trans 'Participiant is deactivated. Click to activate!' %}"></a>
+                {% endif %}
+                {% if user.is_superuser %}
+                <a href="{% url user_set_superuser user.id %}"><img src="/static/images/icons/meeting-chair.png" title="{%trans 'Administrator. Click to get normal user!' %}"></a>
+                {% else %}
+                <a href="{% url user_set_superuser user.id %}"><img src="/static/images/icons/im-user.png" title="{%trans 'Normal user. Click to get administrator!' %}"></a>
+                {% endif %}
+            </td>
+            {% endif %}
+        </tr>
+    {% empty %}
+        <tr>
+        <td colspan="7"><i>{%trans "No participants available." %}</i></td>
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}

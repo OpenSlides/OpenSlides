@@ -1,0 +1,8 @@
+^.venv/
+^openslides/.venv/
+\.pyc$
+^openslides/settings\.py$
+^database\.db$
+~$
+\.DS_Store$
+^docs/_build

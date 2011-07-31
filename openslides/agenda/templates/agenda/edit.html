@@ -1,0 +1,35 @@
+{% extends "agenda/base_agenda.html" %}
+{% block title %}{{ block.super }} - {%trans "Item" %}{% endblock %}
+
+{% block content %}
+    {% if item %}
+        <h1>{%trans "Edit item" %}</h1>
+    {% else %}
+        <h1>{%trans "New item" %}</h1>
+
+        <p>{%trans "Choose item type:" %}</p>
+        <p>
+        <a href="{% url item_new 'ItemText' %}"
+          {% ifequal request.path '/item/new/ItemText/' %}style='font-size:15px; font-weight:bold;'{% endifequal %}
+          >{%trans "Item of Text" %}</a> |
+        <a href="{% url item_new 'ItemApplication' %}"
+          {% ifequal request.path '/item/new/ItemApplication/' %}style='font-size:15px; font-weight:bold;'{% endifequal %}
+          >{%trans "Item of Application" %}</a> |
+        <a href="{% url item_new 'ItemAssignment' %}"
+          {% ifequal request.path '/item/new/ItemAssignment/' %}style='font-size:15px; font-weight:bold;'{% endifequal %}
+          >{%trans "Item of Election" %}</a>
+        </p>
+    {% endif %}
+
+    <form action="" method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">
+            <span class="icon ok">{%trans 'Save' %}</span>
+        </button>
+        <a href='{% url item_overview %}'>
+            <button type="button">
+            <span class="icon cancel">{%trans 'Cancel' %}</span>
+            </button>
+        </a>
+    </form>
+{% endblock %}

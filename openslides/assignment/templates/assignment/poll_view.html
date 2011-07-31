@@ -1,0 +1,58 @@
+{% extends 'assignment/base_assignment.html' %}
+{% block title %}{{ block.super }} - {%trans "Poll" %} "{{ poll.title }}"{% endblock %}
+
+{% block content %}
+    <h1>{{ poll.title }}</h1>
+    <p>{{ ballotnumber }}. {%trans "ballot" %}: {{options.count}}
+    {% blocktrans count counter=options|length %}candidate{% plural %}candidates{% endblocktrans %}
+    </p>
+    <p><b>{% trans "Short description" %}:</b> {{ poll.description }}</p>
+    <form action="" method="post">{% csrf_token %}
+    <table class="table">
+        <tr>
+            <th>{%trans "Option" %}</th>
+            {% if poll.optiondecision %}
+            <th>{%trans "Yes" %}</th>
+            <th>{%trans "No" %}</th>
+            <th>{%trans "Abstention" %}</th>
+            {% else %}
+            <th>{%trans "Votes" %}</th>
+            {% endif %}
+        </tr>
+        {% for option in options %}
+        <tr>
+            <td>{{ option }}</td>
+            {% if poll.optiondecision %}
+            <td>{{ option.form.yes.errors }}{{ option.form.yes }}</td>
+            <td>{{ option.form.no.errors }}{{ option.form.no }}</td>
+            <td>{{ option.form.undesided.errors }}{{ option.form.undesided }}</td>
+            {% else %}
+            <td>{{ option.form.yes.errors }}{{ option.form.yes }}</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </table>
+
+    <label for="id_voteinvalid">{% trans "Invalid" %}:</label>
+    {{ form.invalid.errors }}{{ form.invalid }}
+
+    {% if perms.poll.can_manage_poll %}
+        <p>
+        <button type="submit">
+            <span class="icon ok">{%trans 'Apply' %}</span>
+        </button>
+        <a href='{% url assignment_view poll.assignment.id %}'>
+            <button type="button">
+            <span class="icon previous">{%trans 'Back to election' %}</span>
+            </button>
+        </a>
+        <a href='{% url print_assignment_poll poll.id ballotnumber poll.assignment.assignment_number %}'>
+            <button type="button">
+            <span class="icon pdf">{%trans 'Print ballot' %}</span>
+            </button>
+        </a>
+        </p>
+    {% endif %}
+    </form>
+
+{% endblock %}

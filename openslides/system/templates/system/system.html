@@ -1,0 +1,20 @@
+{% extends "system/base_system.html" %}
+{% block title %}{{ block.super }} - {%trans "Configuration" %}{% endblock %}
+
+{% block content %}
+    <h1>{%trans "System" %}</h1>
+    <form action="" method="post">{% csrf_token %}
+    {{ form.as_p }}
+    
+    <p>
+    <button type="submit">
+        <span class="icon ok">{%trans 'Save' %}</span>
+    </button>
+    <a href='{% url config_general %}'>
+        <button type="button">
+        <span class="icon cancel">{%trans 'Cancel' %}</span>
+        </button>
+    </a>
+    </p>
+    </form>
+{% endblock %}
