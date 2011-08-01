@@ -11,3 +11,8 @@ Quellcode-Repository eingesehen werden.
 Quellcode von OpenSlides auschecken::
   
   hg clone http://hg.openslides.org
+ 
+Wenn Sie Schreibzugriff für OpenSlides mit Ihrem SSH-Key haben, nutzen
+Sie::
+
+  hg clone ssh://hg@openslides.org/openslides

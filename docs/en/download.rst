@@ -10,3 +10,8 @@ public sourcecode repository.
 Checkout OpenSlides sourcecode::
   
   hg clone http://hg.openslides.org
+
+If you have write access (commit rights) to OpenSlides with your ssh
+key use::
+
+  hg clone ssh://hg@openslides.org/openslides

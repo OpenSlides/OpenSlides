@@ -55,8 +55,8 @@ Installation on Windows (32/64bit)
        
   5. Get OpenSlides source code (e.g. via mercurial checkout)
        
-       hg clone ssh://hg@openslides.org/openslides)
-  
+       hg clone http://hg.openslides.org
+
   6. Copy default.settings.py to settings.py 
      (in directory 'openslides')
   
@@ -100,8 +100,8 @@ system.
 
   5. Get OpenSlides source code (e.g. via mercurial checkout)
        
-       hg clone ssh://hg@openslides.org/openslides
-  
+       hg clone http://hg.openslides.org
+ 
   6. Copy default.settings.py to settings.py
      (in directory 'openslides')
   
