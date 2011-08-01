@@ -82,11 +82,11 @@ system.
 
   1. Setup virtualenv:
 
-       cd openslides
+       cd openslides (project root directory)
        virtualenv .venv
        . .venv/bin/activate
 
-  2. Install 'pip' if not available:
+  2. Install 'pip' (if not available):
      
        easy_install pip 
 
