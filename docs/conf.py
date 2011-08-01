@@ -116,7 +116,7 @@ html_theme = 'default'
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-#html_favicon = None
+html_favicon = '_static/images/favicon.ico'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -133,20 +133,10 @@ html_static_path = ['_static']
 
 # Custom sidebar templates, maps document names to template names.
 #html_sidebars = {}
-#html_sidebars = {
-#    'index': ['sidebarlogo.html', 'sidebarintro.html', 'searchbox.html'],
-#    '**':    ['sidebarlogo.html', 'localtoc.html', 'relations.html',
-#             'searchbox.html']
-#}
-html_sidebars = {
-    '**': ['menu_en.html'],
-    'de/about': ['menu_de.html'],
-}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
 #html_additional_pages = {}
-#html_additional_pages = {'de/about': 'about_de.html'}
 
 # If false, no module index is generated.
 #html_domain_indices = True
@@ -175,13 +165,13 @@ html_sidebars = {
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'OpenSlidesdoc'
+htmlhelp_basename = 'OpenSlides'
 
 
 # -- Options for LaTeX output --------------------------------------------------
 
 # The paper size ('letter' or 'a4').
-#latex_paper_size = 'letter'
+#latex_paper_size = 'a4'
 
 # The font size ('10pt', '11pt' or '12pt').
 #latex_font_size = '10pt'
@@ -189,7 +179,7 @@ htmlhelp_basename = 'OpenSlidesdoc'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'OpenSlides.tex', u'OpenSlides Documentation',
+  ('index', 'OpenSlides.tex', u'OpenSlides',
    u'OpenSlides Team', 'manual'),
 ]
 
@@ -222,10 +212,6 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'openslides', u'OpenSlides Documentation',
+    ('index', 'openslides', u'OpenSlides',
      [u'OpenSlides Team'], 1)
 ]
-
-
-# Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'http://docs.python.org/': None}

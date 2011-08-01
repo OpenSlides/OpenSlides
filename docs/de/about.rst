@@ -3,7 +3,7 @@
 
 
 Was ist OpenSlides?
-------------------
+-------------------
 
 OpenSlides ist ein freies, webbasiertes Präsentationssystem für Tagesordnung, Anträge, Abtimmungen und Wahlen.
 
