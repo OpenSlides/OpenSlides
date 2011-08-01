@@ -6,9 +6,9 @@ About OpenSlides
 What is OpenSlides?
 ------------------
 
-OpenSlides ist ein freies, webbasiertes Präsentationssystem für Tagesordnung, Anträge, Abtimmungen und Wahlen.
+OpenSlides is a free, webbased presentation system for agenda, applications, polls and elections.
 
-Über ein Webinterface lässt sich das Beamerbild mit der aktuellen Tagesordnung steuern. Änderungen an der Tagesordnung werden unmittelbar auf dem Beamer dargestellt.
+The beamer view with current agenda is controlable via a webinterface. Changes at the agenda are displayed on beamer immediatly.
 
 Darüber hinaus können sich die Teilnehmer einer Veranstaltung mit ihrem Laptop/Smartphone an OpenSlides anmelden und so z.B. Anträge (elektronisch) einreichen, für eine Wahl kandidieren, die Tagesordnung verfolgen, Abstimmungsergebnisse nachlesen u.v.m.
 
