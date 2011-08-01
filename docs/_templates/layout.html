@@ -3,46 +3,56 @@
 {%- block content %}
     
 <div class="box">
-    <div class="language">
-      {%- for lng in languages.split(' ') %}
-      {%- if lng != language %}
-        <a href="{{ pathto('../'+lng+'/'+pagename) }}"><img src="{{ pathto('_static/images/'+lng+'.png', 1) }}" alt="{{ lng }}" title="{{ lng }}" border="0" width="18px" height="13px"/></a>
-      {%- endif %}
-      {%- endfor %}
-    </div>
-      
-    <div class="header">
-        <h1><span>OpenSlides</span></h1>
-        <p>
-        {%- if language == 'de' %}
-        Tagesordnungs-Präsentation<br> mit Antrags- und Wahlsystem
-        {%- else %}
-        Agenda presentation<br> with application and voting system
-        {%- endif %}
-    </div>
+    <div id="wrapper">
+        <div id="header">
 
-    <div class="nav">
-        {%- if language == 'de' %}
-        <a href="{{ pathto('index') }}">Home</a> |
-        <a href="about.html">Über</a> |
-        <a href="download.html">Download</a> |
-        <a href="http://trac.openslides.org">Entwicklung</a> |
-        <a href="help.html">Hilfe</a>
-        {%- else %}
-        <a href="{{ pathto('index') }}">Home</a> |
-        <a href="about.html">About</a> |
-        <a href="download.html">Download</a> |
-        <a href="http://trac.openslides.org">Development</a> |
-        <a href="help.html">Help</a>
-        {%- endif %}
-    </div>
+                <div id="header_title">OpenSlides</div>
+                <div id="header_subtitle">
+                {%- if language == 'de' %}
+                Tagesordnungs-Präsentation mit Antrags- und Wahlsystem
+                {%- else %}
+                Agenda presentation with application and voting system
+                {%- endif %}
+                </div>
+        </div>
+        <div id="content">
+            {% block body %} {% endblock %}
+            <p class="footer">
+            &copy; 2011 | OpenSlides is licensed under GPLv2+.
+            </p>
+        </div>
+    </div> <!-- end wrapper -->
+
+    <div id="submenu">
+        <div id="logo">
+            <a href="{{ pathto('index') }}" title="Home"><img src="_static/images/logo.png"></a>
+        </div>
+        <div id="language">
+         {%- for lng in languages.split(' ') %}
+         {%- if lng != language %}
+           <a href="{{ pathto('../'+lng+'/'+pagename) }}" style="border: none;"><img src="{{ pathto('_static/images/'+lng+'.png', 1) }}" alt="{{ lng }}" title="{{ lng }}" border="0" width="18px" height="13px"/></a>
+         {%- endif %}
+         {%- endfor %}
+        </div>        
+        <div class="nav">
+            <ul>
+            {%- if language == 'de' %}
+            <li><a href="{{ pathto('index') }}">Home</a></li>
+            <li><a href="about.html">Über</a></li>
+            <li><a href="download.html">Download</a></li>
+            <li><a href="http://trac.openslides.org">Entwicklung</a></li>
+            <li><a href="help.html">Hilfe</a></li>
+            {%- else %}
+            <li><a href="{{ pathto('index') }}">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="download.html">Download</a></li>
+            <li><a href="http://trac.openslides.org">Development</a></li>
+            <li><a href="help.html">Help</a></li>
+            {%- endif %}
+            </ul>
+        </div>
+    </div> 
     
-    {% block body %} {% endblock %}
-
-    <p class="footer">
-    &copy; 2011 | OpenSlides is licensed under GPLv2+.
-    </p>
-
 </div>
 {%- endblock %}
 

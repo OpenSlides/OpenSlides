@@ -6,18 +6,24 @@
 
 
 
-@import url(http://fonts.googleapis.com/css?family=Ubuntu);
+/*@import url(http://fonts.googleapis.com/css?family=Ubuntu);*/
+
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Ubuntu'), url('ubuntu-v1.woff') format('woff');
+}
 
 body         { font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'Verdana',
                sans-serif; font-size: 13px; color: #000; }
 a            { color: #185F6D; border-bottom: 1px dotted #2BABC4; text-decoration: none; }
 a:hover      { color: #2794AA; border-bottom: 1px solid #2794AA; }
-.box         { width: 540px; margin: 20px auto; }
+.box         { width: 800px; margin: 20px auto; }
 h1, h2, h3   { font-family: 'Ubuntu', 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva',
                'Verdana', sans-serif; font-weight: normal; }
-.header      { height: 165px; }
-.header h1   { margin: 0 0 30px 0; background: url(logo.png) no-repeat right;
-               font-size: 50px; font-weight: bold; padding-top: 50px; height: 120px; }
+.header      { height: 100px; }
+.header h1   { margin: 0 0 30px 0; font-size: 50px; font-weight: bold; padding-top: 50px; height: 120px; }
 .header p    { font-size: 15px; margin: -90px 0 0 0; }
 h1           { font-size: 34px; margin: 25px 0 5px 0; }
 h2           { font-size: 18px; margin: 25px 0 5px 0; }
@@ -34,7 +40,7 @@ ol           { line-height: 1.4; margin: 15px 0 15px 30px; padding: 0; }
 blockquote   { margin: 15px 0; font-style: italic; color: #444; }
 .footer      { font-size: 10px; color: #888; text-align: right; margin-top: 25px; }
 .more        { text-align: right; margin-top: 0; font-size: 0.9em; font-style: italic; }
-.nav         { text-align: left; margin: 0 0 0 0; }
+.nav         { text-align: left; margin: 20px 0 0 0; }
 table        { border: 1px solid black; border-collapse: collapse;
                margin: 15px 0; }
 td, th       { border: 1px solid black; padding: 4px 10px;
@@ -43,6 +49,49 @@ th           { background: #eee; font-weight: normal; }
 
 td input     { border: none; padding: 0; }
 
+/* Header */
+#logo {
+    position:relative;
+    left: 42px;
+}
+#header_title {
+    font-family: 'Ubuntu', 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', sans-serif;
+    height:40px;
+    font-size:50px;
+    color:#444444;
+}
+#header_subtitle {
+    font-family: 'Ubuntu', 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', sans-serif;
+    color:#444444;
+    font-size:14px;
+}
+/* Wrapper */
+#wrapper {
+    float:left;
+    line-height:140%;
+    width: 100%;
+}
+/* Header */
+#header {
+    margin-left: 150px;
+    padding: 20px;
+}
+/* Content */
+#content {
+    margin-left: 150px;
+    padding: 3px 20px;
+}
+/* Sub Menu */
+#submenu {
+    float: left;
+    width: 150px;
+    margin-left: -100%;
+}
+#language {
+    position: relative;
+    left:10px;
+    top: 10px
+}
 /* latest version button */
 .latestver          { margin: 20px 0 0 0; float: right; font-style: italic; }
 .latestver strong   { font-weight: normal; }
