@@ -20,7 +20,7 @@ class ItemFormText(ModelForm):
     error_css_class = 'error'
     required_css_class = 'required'
     items = Item.objects.all().filter(parent=None).order_by('weight')
-    parent = ModelChoiceField(queryset=items, label=_("Parent item"))
+    parent = ModelChoiceField(queryset=items, label=_("Parent item"), required=False)
     class Meta:
         model = ItemText
         exclude = ('closed')
@@ -30,7 +30,7 @@ class ItemFormApplication(ModelForm):
     error_css_class = 'error'
     required_css_class = 'required'
     items = Item.objects.all().filter(parent=None).order_by('weight')
-    parent = ModelChoiceField(queryset=items, label=_("Parent item"))
+    parent = ModelChoiceField(queryset=items, label=_("Parent item"), required=False)
 
     class Meta:
         model = ItemApplication
@@ -41,7 +41,7 @@ class ItemFormPoll(ModelForm):
     error_css_class = 'error'
     required_css_class = 'required'
     items = Item.objects.all().filter(parent=None).order_by('weight')
-    parent = ModelChoiceField(queryset=items, label=_("Parent item"))
+    parent = ModelChoiceField(queryset=items, label=_("Parent item"), required=False)
 
     class Meta:
         model = ItemPoll
@@ -52,7 +52,7 @@ class ItemFormAssignment(ModelForm):
     error_css_class = 'error'
     required_css_class = 'required'
     items = Item.objects.all().filter(parent=None).order_by('weight')
-    parent = ModelChoiceField(queryset=items, label=_("Parent item"))
+    parent = ModelChoiceField(queryset=items, label=_("Parent item"), required=False)
 
     class Meta:
         model = ItemAssignment
