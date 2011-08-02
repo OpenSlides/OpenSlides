@@ -1,34 +1,3 @@
-Über OpenSlides
-===============
-
-
-Was ist OpenSlides?
--------------------
-
-OpenSlides ist ein freies, webbasiertes Präsentationssystem für Tagesordnung, Anträge, Abtimmungen und Wahlen.
-
-Über ein Webinterface lässt sich das Beamerbild mit der aktuellen Tagesordnung steuern. Änderungen an der Tagesordnung werden unmittelbar auf dem Beamer dargestellt.
-
-Darüber hinaus können sich die Teilnehmer einer Veranstaltung mit ihrem Laptop/Smartphone an OpenSlides anmelden und so z.B. Anträge (elektronisch) einreichen, für eine Wahl kandidieren, die Tagesordnung verfolgen, Abstimmungsergebnisse nachlesen u.v.m.
-
-OpenSlides ist konzipiert für den Einsatz auf Veranstaltungen wie
-Hauptversammlungen, Delegierten-/Mitgliederversammlungen und Parteitagen.
-
-Der entscheidene Vorteil gegenüber herkömmlichen Office-Präsentations-Systemen, wie MS PowerPoint oder OpenOffice Impress, ist die Bearbeitung der Folien über ein Redaktionssystem-System. Der Präsentationsmodus auf dem Beamer muss nicht verlassen werden.
-
-Systemanforderungen
--------------------
-
-- Django 1.3+
-- Python 2.5+
-- Webbrowser
-
-Lizenz
-------
-OpenSlides ist Freie Software und steht unter der **GNU General Public License (GNU GPL)** Version 2+. Die Software darf ohne Restriktionen benutzt, verändert und (geändert) weitergegeben werden.
-Eine Kopie der Lizenz liegt jedem OpenSlides-Release bei und ist auch im Quellcode-Repository nachzulesen.
-
-
 Funktionen
 ==========
 
@@ -37,7 +6,7 @@ Tagesordnung
 
 - Tagesordnung verwalten
 - Eintrag auswählen zur Anzeige am Beamer
-- Beamer-Ansicht mit automatischer Aktualisierung bei Änderung (der Beamer läuft z.B. im Browser mit Vollbildmodus auf einem 2. Monitor)
+- Beamer-Ansicht mit automatischer Aktualisierung bei Änderung (der Beamer läuft z.B. im Browser mit Vollbildmodus als 2. Monitor)
 - Eintrag während der Anzeige am Beamer im Webinterface bearbeiten
 - Eintrag per Drag&Drop in der Tagesordnung sortieren (Unterpunkte möglich)
 - Eintrag als erledigt markieren
@@ -45,11 +14,11 @@ Tagesordnung
 - Tagesordnung als pdf erzeugen
 - aktuelle Uhrzeit auf der Beameransicht
 
-  .. image:: _static/images/agenda_de.png
+  .. image:: _static/images/agenda-overview_de.png
     :width: 45%
     :alt: Tagesordnungs-Ansicht
         
-  .. image:: _static/images/agenda-beamer_de.png
+  .. image:: _static/images/beamer-agenda_de.png
     :width: 45%
     :alt: Beamer-Ansicht
     
@@ -57,7 +26,7 @@ Tagesordnung
     :width: 45%
     :alt: Neuen Tagesordnungseintrag anlegen
     
-  .. image:: _static/images/agenda-pdf_de.png
+  .. image:: _static/images/pdf-agenda_de.png
     :width: 45%
     :alt: Tagesordnung als PDF
 
@@ -113,7 +82,7 @@ Teilnehmer
 
 - Teilnehmer anlegen und verwalten (vordefinierte Felder: *Name, Vorname, E-Mail, Geschlecht, Gruppe, Typ, Amt*)
 - importieren von Teilnehmerdaten (im CSV-Format)
-- Benutzergruppe frei konfigurierbar
+- Benutzergruppe frei konfigurierbar (voreingestellt u.a.: *Präsidium, Tagesleitung, Delegierter, Beobachter, Gast*)
 
 Allgemein
 ---------
@@ -130,7 +99,28 @@ Ausblick -- Weiterentwicklungsideen für OpenSlides:
 - schnelle und einfache Erstellung eines Ergebnisprotokolls (mit allen Tagesordnungseinträgen, Beschlüssen, Anträgen, Abstimmungen und Wahlergbnissen)
 - grafische Darstellung der Wahl- und Abstimmungsergebnisse in Diagrammen
 - Einbindung von Grafiken in Tagesordnungseinträge
-- Anbindung eines elektronischen Voting-Systems
+- Anbindung eines elektronischen Abstimmungssystems (TED/Voting-System)
 
-Interesse an der Weiterentwicklung von OpenSlides? Wir freuen uns über jede Mithilfe!
+Hast Du Interesse an der Weiterentwicklung von OpenSlides? Wir freuen uns über jede Mithilfe!
+
+|
+Über OpenSlides
+===============
+
+Systemanforderungen
+-------------------
+
+- `Django 1.3+ <https://www.djangoproject.com/>`_
+- `Python 2.5+ <http://python.org/>`_
+- Webbrowser
+
+Lizenz
+------
+OpenSlides ist Freie Software und steht unter der **GNU General Public License (GNU GPL)** Version 2+. Die Software darf ohne Restriktionen benutzt, verändert und (geändert) weitergegeben werden.
+Eine Kopie der Lizenz liegt jedem OpenSlides-Release bei und ist auch im Quellcode-Repository nachzulesen.
+
+Historie
+--------
+
+Im Jahre 2005 wurde ein interner Prototyp von OpenSlides speziell für den Einsatz auf den Bundesversammlungen des Bundesverbandes der `Evangelischen StudentInnengemeinde (Bundes-ESG) <http://www.bundes-esg.de>`_ durch Emanuel Schütze in PHP entwickelt. Ende 2010 begannen Oskar Hahn und Emanuel Schütze mit einer kompletten Neuentwicklung in Python/Django und bauten ein Freies Software Projekt mit dem Namen "OpenSlides" auf. OpenSlides wurde im August 2011 unter der GPL veröffentlicht. Version 1.0 ist für September 2011 geplant, wo OpenSlides dann auch auf der nächsten ESG-Bundesversammlung in Hannover produktiv zum Einsatz kommen wird.
 

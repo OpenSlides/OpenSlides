@@ -15,10 +15,11 @@ body         { font-family: 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', 'V
                sans-serif; font-size: 13px; color: #000; }
 a            { color: #185F6D; border-bottom: 1px dotted #2BABC4; text-decoration: none; }
 a:hover      { color: #2794AA; border-bottom: 1px solid #2794AA; }
+a img        { border: none; }
 .box         { width: 800px; margin: 20px auto; }
 h1, h2, h3   { font-family: 'Ubuntu', 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva',
                'Verdana', sans-serif; font-weight: normal; }
-h1           { font-size: 34px; margin: 25px 0 5px 0; }
+h1           { font-size: 34px; margin: 25px 0 20px 0; }
 h2           { font-size: 18px; margin: 25px 0 5px 0; }
 h3           { font-size: 19px; margin: 25px 0 5px 0; }
 textarea, code,
@@ -51,7 +52,6 @@ td input     { border: none; padding: 0; }
     font-family: 'Ubuntu', 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', sans-serif;
     height:40px;
     font-size:50px;
-    color:#444444;
 }
 #header_subtitle {
     font-family: 'Ubuntu', 'Lucida Grande', 'Lucida Sans Unicode', 'Geneva', sans-serif;
@@ -81,7 +81,7 @@ td input     { border: none; padding: 0; }
 }
 #content {
     margin-left: 150px;
-    padding: 3px 20px;
+    padding: 15px 20px;
 }
 
 

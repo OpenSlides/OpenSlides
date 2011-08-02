@@ -16,3 +16,7 @@ Wenn Sie Schreibzugriff für OpenSlides mit Ihrem SSH-Key haben, nutzen
 Sie::
 
   hg clone ssh://hg@openslides.org/openslides
+
+
+Eine Installationsanleitung finden Sie unter 
+:download:`INSTALL <../../INSTALL>`.
