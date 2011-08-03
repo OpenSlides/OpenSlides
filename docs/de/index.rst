@@ -17,8 +17,10 @@ Der entscheidene Vorteil gegenüber herkömmlichen Office-Präsentations-Systeme
 |
 » Erfahren Sie mehr über die `Funktionen <about.html>`_ von OpenSlides.
 
+|image|_
 
-.. image:: _static/images/agenda-overview_de.png
-    :width: 90%
+.. |image| image:: _static/images/t550.agenda-overview_de.png
     :alt: Tagesordnungs-Ansicht von OpenSlides
+.. _image: _static/images/agenda-overview_de.png
+
     

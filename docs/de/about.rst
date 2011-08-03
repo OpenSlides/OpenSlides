@@ -14,13 +14,16 @@ Tagesordnung
 - Tagesordnung als pdf erzeugen
 - aktuelle Uhrzeit auf der Beameransicht
 
-  .. image:: _static/images/agenda-overview_de.png
-    :width: 45%
+  |agenda-overview|_   |beamer-agenda-overview|_
+
+.. |agenda-overview| image:: _static/images/t260.agenda-overview_de.png
     :alt: Tagesordnungs-Ansicht
-        
-  .. image:: _static/images/beamer-agenda-overview_de.png
-    :width: 45%
-    :alt: Beamer-Ansicht
+.. _agenda-overview: _static/images/agenda-overview_de.png
+
+.. |beamer-agenda-overview| image:: _static/images/t260.beamer-agenda-overview_de.png
+    :alt: Beamer-Ansicht der Tagesordnungs
+.. _beamer-agenda-overview: _static/images/beamer-agenda-overview_de.png
+
     
   .. image:: _static/images/agenda-new-item_de.png
     :width: 45%
