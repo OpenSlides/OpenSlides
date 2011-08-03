@@ -157,7 +157,7 @@ def firstPage(canvas, doc):
     canvas.setFont('Ubuntu',10)
     canvas.setFillGray(0.4)
     canvas.drawString(2.75*cm, 28*cm, "%s | %s" % (event_name, event_description))
-    if event_date and event_date != "" and event_location and event_location != "":
+    if event_date != "" and event_location != "":
         canvas.drawString(2.75*cm, 27.6*cm, "%s, %s" % (event_date, event_location))
     # time
     canvas.setFont('Ubuntu',7)
