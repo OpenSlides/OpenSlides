@@ -18,7 +18,7 @@ Tagesordnung
     :width: 45%
     :alt: Tagesordnungs-Ansicht
         
-  .. image:: _static/images/beamer-agenda_de.png
+  .. image:: _static/images/beamer-agenda-overview_de.png
     :width: 45%
     :alt: Beamer-Ansicht
     
@@ -47,15 +47,15 @@ Anträge
     :width: 45%
     :alt: Antragsübersicht
     
-  .. image:: _static/images/application-overview-beamer_de.png
+  .. image:: _static/images/application-new_de.png
     :width: 45%
-    :alt: Beamer-Ansicht Antragsübersicht
+    :alt: Neuer Antrag
     
   .. image:: _static/images/application-view_de.png
     :width: 45%
     :alt: Darstellung eines Antrags mit Verwaltugsfunktion
     
-  .. image:: _static/images/application-view-beamer_de.png
+  .. image:: _static/images/beamer-application-view_de.png
     :width: 45%
     :alt: Beamer-Ansicht eines einzelnen Antrags
     
