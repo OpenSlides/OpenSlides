@@ -93,7 +93,7 @@ Allgemein
 - Template für Beamer und Webinterface leicht per HTML und CSS anpassbar
 - OpenSlides ist Freie Software (`GPL v2+ Lizenz <about.html#lizenz>`_)
 - Plattformunabhängig (läuft überall dort, wo Pyhton läuft)
-- vollständige deutsche und englische Übersetzung vorhanden, weitere Sprachen möglich
+- vollständige deutsche und englische Übersetzung vorhanden, weitere Sprachen willkommen
 
 
 Ausblick -- Weiterentwicklungsideen für OpenSlides:

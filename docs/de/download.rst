@@ -2,7 +2,7 @@ Download
 ========
 
 Es ist noch kein Release von OpenSlides verfügbar.
-Das Erscheinen von Version 1.0 ist für Sommer 2011 geplant.
+Das Erscheinen von Version 1.0 ist für September 2011 geplant.
 
 Der aktuelle Entwicklungsstand kann im öffentlichen 
 Quellcode-Repository eingesehen werden.
@@ -18,5 +18,5 @@ Sie::
   hg clone ssh://hg@openslides.org/openslides
 
 
-Eine Installationsanleitung finden Sie unter 
-:download:`INSTALL <../../INSTALL>`.
+Eine Installationsanleitung finden Sie in der 
+`INSTALL <http://dev.openslides.org/browser/INSTALL>`_ Datei.

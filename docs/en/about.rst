@@ -11,7 +11,7 @@ Agenda
 - Sort item via drag and drop in the agenda (sub items possible)
 - Mark item as completed
 - Hide item in the projector view
-- Generate PDF of agenda
+- Generate agenda as pdf
 - Current time on the projector view
 
   |agenda-overview|_   |beamer-agenda-overview|_
@@ -34,17 +34,17 @@ Agenda
     :alt: Tagesordnung als PDF
 
 
-Anträge
--------
+Applications
+------------
 
-- Anträge anlegen, bearbeiten, löschen
-- Anträge von anderen Teilnehmern unterstützen lassen
-- Antragsstatus ändern und Abstimmungsergebnisse eingeben
-- Abstimmungsergebenisse aus mehreren Wahlgängen darstellen
-- Antrag als Tagesordnungseintrag anlegen und anzeigen
-- Änderungshistorie eines Antrags anzeigen
-- Antragsformular als pdf erzeugen
-- Übersicht aller Anträge als pdf
+- Create, edit and delete applications
+- Support applications from other participants
+- Change application status and enter voting results
+- View voting results of several ballots
+- Create application as agenda item
+- View change history of an application
+- Create application form as pdf
+- Create an overview of all applications as pdf
 
   .. image:: _static/images/application-overview_de.png
     :width: 45%
@@ -61,69 +61,71 @@ Anträge
   .. image:: _static/images/beamer-application-view_de.png
     :width: 45%
     :alt: Beamer-Ansicht eines einzelnen Antrags
-    
-Wahlen
-------
 
-- Kandidaten aus Teilnehmerliste für eine Wahl vorschlagen (bzw. als angemeldeter Teilnehmer selbst kandidieren)
-- Wahlschein als pdf generieren (mit Ankreuzfeld)
-- Wahlergebenisse eingeben und darstellen
-- mehrere Wahlgänge und Stichwahlen werden unterstützt
+Elections
+--------
 
-
-Abstimmungen
-------------
-
-- Abstimmungen verwalten (als Ergänzung zu Anträgen und Wahlen)
-- Ergebnisse eingeben und darstellen (analog zu Anträgen und Wahlen)
-- Abstimmungsmodus: entweder nur Ja-Stimmen oder Ja/Nein/Enthaltungs-Stimmen wählbar
-- ungültige und abgegebene Stimmen können eingegeben werden
+- Nominate candidates for an election from participants list and/or candidate
+  myself as registered participant
+- Generate a pdf ballot (with checkbox)
+- Enter and display voting results
+- Multiple ballots and runoff elections are supported
 
 
-Teilnehmer
-----------
+Polls
+-----
 
-- Teilnehmer anlegen und verwalten (vordefinierte Felder: *Name, Vorname, E-Mail, Geschlecht, Gruppe, Typ, Amt*)
-- importieren von Teilnehmerdaten (im CSV-Format)
-- Benutzergruppe frei konfigurierbar (voreingestellt u.a.: *Präsidium, Tagesleitung, Delegierter, Beobachter, Gast*)
-
-Allgemein
----------
-
-- Template für Beamer und Webinterface leicht per HTML und CSS anpassbar
-- OpenSlides ist Freie Software (`GPL v2+ Lizenz <about.html#lizenz>`_)
-- Plattformunabhängig (läuft überall dort, wo Pyhton läuft)
-- vollständige deutsche und englische Übersetzung vorhanden, weitere Sprachen möglich
+- Manage polls (in addition to applications and elections)
+- Enter and display results (analogous to appliations and elections)
+- Two voting modes supported: votes in favor or Yes/No/Abstain votes
+- Invalid votes and votes cast can be entered
 
 
-Ausblick -- Weiterentwicklungsideen für OpenSlides:
----------------------------------------------------
+Participants
+-----------
 
-- schnelle und einfache Erstellung eines Ergebnisprotokolls (mit allen Tagesordnungseinträgen, Beschlüssen, Anträgen, Abstimmungen und Wahlergbnissen)
-- grafische Darstellung der Wahl- und Abstimmungsergebnisse in Diagrammen
-- Einbindung von Grafiken in Tagesordnungseinträge
-- Anbindung eines elektronischen Abstimmungssystems (TED/Voting-System)
+- Create and manage participants (pre-defined fields: *last name, first name, email, gender, group, type, committee*)
+- Import of user data (in CSV format)
+- configurable user groups (default include: *presidium, moderation, delegate, observer, guest, staff*)
 
-Hast Du Interesse an der Weiterentwicklung von OpenSlides? Wir freuen uns über jede Mithilfe!
+
+General
+-------
+
+- Template for projector and web interface easily customizable via HTML and CSS
+- OpenSlides is Free Software (GPL v2+ license <about.html#lizenz> `` _)
+- Platform independent (runs anywhere where Pyhton is running)
+- Complete German and English translations available, other languages welcome
+
+Outlook - further development ideas for OpenSlides
+--------------------------------------------------
+
+- Fast and easy creation of a results protocol (with all agenda items, decisions, applications, electinos, polls and voting results)
+- Graphical representation of the election and voting results in graphs
+- Integration of graphics into agenda items
+- Integration of an electronic voting system (TED / voting system)
+- Integration of `deck.js <http://imakewebthings.github.com/deck.js/>`_
+- ...
+
+Are you interested in the advancement of OpenSlides? We appreciate any help!
 
 |
-Über OpenSlides
-===============
+About OpenSlides
+================
 
-Systemanforderungen
+System requirements
 -------------------
 
 - `Django 1.3+ <https://www.djangoproject.com/>`_
 - `Python 2.5+ <http://python.org/>`_
-- Webbrowser
+- Web browser
 
-Lizenz
-------
-OpenSlides ist Freie Software und steht unter der **GNU General Public License (GNU GPL)** Version 2+. Die Software darf ohne Restriktionen benutzt, verändert und (geändert) weitergegeben werden.
-Eine Kopie der Lizenz liegt jedem OpenSlides-Release bei und ist auch im Quellcode-Repository nachzulesen.
+License
+-------
 
-Historie
---------
+OpenSlides is Free Software released under the **GNU General Public License (GNU GPL)** version 2+. The software is free to use without restrictions, may be modified and that modifications may be distributed. A copy of the license is included with every release of OpenSlides and can be read also in the source code repository.
 
-Im Jahre 2005 wurde ein interner Prototyp von OpenSlides speziell für den Einsatz auf den Bundesversammlungen des Bundesverbandes der `Evangelischen StudentInnengemeinde (Bundes-ESG) <http://www.bundes-esg.de>`_ durch Emanuel Schütze in PHP entwickelt. Ende 2010 begannen Oskar Hahn und Emanuel Schütze mit einer kompletten Neuentwicklung in Python/Django und bauten ein Freies Software Projekt mit dem Namen "OpenSlides" auf. OpenSlides wurde im August 2011 unter der GPL veröffentlicht. Version 1.0 ist für September 2011 geplant, wo OpenSlides dann auch auf der nächsten ESG-Bundesversammlung in Hannover produktiv zum Einsatz kommen wird.
+History
+-------
 
+In 2005, an internal prototype of OpenSlides was developed specifically for use on general meetings of the federal association of `protestant student community (Bundes-ESG) <http://www.bundes-esg.de>`_ in Germany by Emanuel Schütze in PHP. In late 2010 Oskar Hahn and Emanuel Schütze began with a new development in Python/Django and build up a Free Software project, called "OpenSlides". OpenSlides was published under the GPL in August 2011. Version 1.0 is planned for September 2011, then OpenSlides will be used productively at the next general meeting of the ESG in Hanover/Germany.
