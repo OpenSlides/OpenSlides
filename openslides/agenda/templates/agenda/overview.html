@@ -55,13 +55,15 @@
             </tr>
             <tr {% if overview %}class="activeline"{% endif %}>
                 <td {% if perms.agenda.can_manage_agenda %}
-                    class="select" onclick="window.location.href='{% url item_activate 0 %}'"
+                    class="select"
                     {% endif %}>
+                    <a href="{% url item_activate 0 %}">
                     {% if overview %}
                         <img class="center" src="/static/images/icons/task-accepted.png" title="{% trans 'Agenda selected' %}">
                     {% else %}
                         {% if perms.agenda.can_manage_agenda %}<img class="center" src="/static/images/icons/task-accepted-grey.png" title="{% trans 'Select agenda' %}">{% endif %}
                     {% endif %}
+                    </a>
                 </td>
                 <td><i>{% trans "Agenda" %} ({{ items|length }} {% trans "items" %})</i></td>
                 {% if perms.agenda.can_manage_agenda %}
@@ -77,13 +79,15 @@
                 {% if item.parent.active and summary %}activesummarychildline{% endif %}
                 {% endif %}">
                 <td {% if perms.agenda.can_manage_agenda %}
-                    class="select" onclick="window.location.href='{% url item_activate item.id %}'"
+                    class="select"
                     {% endif %}>
+                    <a id="activate_link_{{ item.id }}" class="activate_link" href="{% url item_activate item.id %}">
                     {% if item.active %}
                         <img class="center" src="/static/images/icons/task-accepted.png" title="{% trans 'Item selected' %}"></span>
                     {% else %}
                         {% if perms.agenda.can_manage_agenda %}<img class="center" src="/static/images/icons/task-accepted-grey.png" title="{% trans 'Select item' %}"> {% endif %}
                     {% endif %}
+                    </a>
                 </td>
                 <td>
                     {% for p in item.parents %}
@@ -135,7 +139,7 @@
                     {% if item.children.exists %}
                         <a href="{% url item_activate_summary item.id %}"><img src="/static/images/icons/view-list-tree.png" title="{% trans 'Select item overview' %}"></a>
                     {% endif %}
-                    {% endif %} 
+                    {% endif %}
                 </td>
                 {% if perms.agenda.can_manage_agenda %}
                 <td class="tabledrag-hide">

@@ -43,7 +43,7 @@ def view(request, item_id):
     """
     item = Item.objects.get(id=item_id)
     votes = assignment_votes(item)
-    
+
     return render_to_response('beamer/%s.html' % item.type,
                              {
                                  'item': item.cast(),
