@@ -179,6 +179,14 @@ def set_closed(request, item_id, closed=True):
         item.set_closed(closed)
     except Item.DoesNotExist:
         messages.error(request, _('Item ID %d does not exist.') % int(item_id))
+    if request.is_ajax():
+        if closed:
+            link = reverse('item_open', args=[item.id])
+        else:
+            link = reverse('item_close', args=[item.id])
+        jsondata = {'closed': closed,
+                    'link': link}
+        return HttpResponse(json.dumps(jsondata))
     return redirect(reverse('item_overview'))
 
 

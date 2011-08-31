@@ -13,3 +13,24 @@ tr.inactiveline a.activate_link div {
     width: 20px;
     height: 20px;
 }
+
+
+a.close_link.closed div {
+    background-image: url(/static/images/icons/user-offline.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+}
+
+a.close_link.open div {
+    background-image: url(/static/images/icons/user-online.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+}
+
+

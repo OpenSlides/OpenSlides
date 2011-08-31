@@ -13,6 +13,7 @@
     <script type="text/javascript" src="/static/javascript/tabledrag.js"></script>
     <script type="text/javascript" src="/static/javascript/knockout-1.2.1.js"></script>
     <script type="text/javascript" src="/static/javascript/agenda.js"></script>
+    <script type="text/html" src="/static/javascript/agenda.slideTemplate.js"></script>
 
     <script type="text/javascript">
     <!--//--><![CDATA[//><!--
@@ -131,11 +132,11 @@
                     {% if  perms.agenda.can_manage_agenda %}
                     <a href="{% url item_edit item.id %}"><img src="/static/images/icons/document-edit.png" title="{% trans 'Edit item' %}"></a>
                     <a href="{% url item_delete item.id %}"><img src="/static/images/icons/edit-delete.png" title="{% trans 'Delete item' %}"></a>
-                    {% if item.closed %}
-                        <a href="{% url item_open item.id %}"><img src="/static/images/icons/user-offline.png" title="{% trans 'Click to open item' %}"></a>
-                    {% else %}
-                        <a href="{% url item_close item.id  %}"><img src="/static/images/icons/user-online.png" title="{% trans 'Click to close item' %}"></a>
-                    {% endif %}
+
+                    <a class="close_link {% if item.closed %}closed{% else %}open{% endif %}" href="{% if item.closed %}{% url item_open item.id %}{% else %}{% url item_close item.id %}{% endif %}">
+                        <div></div>
+                    </a>
+
                     {% if item.children.exists %}
                         <a href="{% url item_activate_summary item.id %}"><img src="/static/images/icons/view-list-tree.png" title="{% trans 'Select item overview' %}"></a>
                     {% endif %}
