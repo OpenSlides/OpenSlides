@@ -1,0 +1,15 @@
+tr.activeline a.activate_link div {
+    background-image: url(/static/images/icons/task-accepted.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 20px;
+    height: 20px;
+}
+
+tr.inactiveline a.activate_link div {
+    background-image: url(/static/images/icons/task-accepted-grey.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 20px;
+    height: 20px;
+}

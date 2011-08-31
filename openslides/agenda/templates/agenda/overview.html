@@ -4,12 +4,15 @@
 
 {% block header %}
     <link type="text/css" rel="stylesheet" media="all" href="/static/styles/tabledrag.css" />
+    <link type="text/css" rel="stylesheet" media="all" href="/static/styles/agenda.css" />
     {% if perms.agenda.can_manage_agenda %}
     <script type="text/javascript" src="/static/javascript/jquery.js"></script>
     <script type="text/javascript" src="/static/javascript/jquery.once.js"></script>
     <script type="text/javascript" src="/static/javascript/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/static/javascript/jquery.tmpl.js"></script>
     <script type="text/javascript" src="/static/javascript/tabledrag.js"></script>
-    <script type="text/javascript" src="/static/javascript/knockout-1.2.1"></script>
+    <script type="text/javascript" src="/static/javascript/knockout-1.2.1.js"></script>
+    <script type="text/javascript" src="/static/javascript/agenda.js"></script>
 
     <script type="text/javascript">
     <!--//--><![CDATA[//><!--
@@ -55,16 +58,12 @@
                 <th class="tabledrag-hide">{% trans "Weight" %}</th>
                 {% endif %}
             </tr>
-            <tr {% if overview %}class="activeline"{% endif %}>
+            <tr id="item_row_0"{% if overview %} class="activeline"{% else %}{% if perms.agenda.can_manage_agenda %} class="inactiveline"{% endif %}{% endif %}>
                 <td {% if perms.agenda.can_manage_agenda %}
                     class="select"
                     {% endif %}>
-                    <a href="{% url item_activate 0 %}">
-                    {% if overview %}
-                        <img class="center" src="/static/images/icons/task-accepted.png" title="{% trans 'Agenda selected' %}">
-                    {% else %}
-                        {% if perms.agenda.can_manage_agenda %}<img class="center" src="/static/images/icons/task-accepted-grey.png" title="{% trans 'Select agenda' %}">{% endif %}
-                    {% endif %}
+                    <a href="{% url item_activate 0 %}" class="activate_link">
+                        <div></div>
                     </a>
                 </td>
                 <td><i>{% trans "Agenda" %} ({{ items|length }} {% trans "items" %})</i></td>
@@ -75,20 +74,19 @@
                     <a href="{% url print_agenda_full printAllItems=1 %}" title="{%trans 'Print full agenda (all items)' %}"><img src="/static/images/icons/pdf-annotations.png"></a></td>
             </tr>
             {% for item in items %}
-                {% if not item.hidden  or  item.hidden and perms.agenda.can_manage_agenda %}
-                <tr class="draggable {% cycle 'odd' '' %}
-                {% if item.active %}activeline{% else %}
-                {% if item.parent.active and summary %}activesummarychildline{% endif %}
+                {% if not item.hidden or perms.agenda.can_manage_agenda %}
+
+                <tr id="item_row_{{ item.id }}" class="draggable{% cycle ' odd' '' %}
+                {% if item.active %} activeline{% else %}
+                {% if item.parent.active and summary %} activesummarychildline{% endif %}
+                {% if perms.agenda.can_manage_aenda %} inactiveline{% endif %}
                 {% endif %}">
-                <td {% if perms.agenda.can_manage_agenda %}
+                <script type="text/javascript">$(function(){ViewModel.slides.push(new Slide({{ item.json|safe }}))});</script>
+                <td {% if perms.agenda.can_manage_agenda %} {# TODO: welchen Sinn hat das? #}
                     class="select"
                     {% endif %}>
                     <a id="activate_link_{{ item.id }}" class="activate_link" href="{% url item_activate item.id %}">
-                    {% if item.active %}
-                        <img class="center" src="/static/images/icons/task-accepted.png" title="{% trans 'Item selected' %}"></span>
-                    {% else %}
-                        {% if perms.agenda.can_manage_agenda %}<img class="center" src="/static/images/icons/task-accepted-grey.png" title="{% trans 'Select item' %}"> {% endif %}
-                    {% endif %}
+                        <div></div>
                     </a>
                 </td>
                 <td>

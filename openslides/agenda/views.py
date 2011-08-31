@@ -162,6 +162,10 @@ def set_active(request, item_id, summary=False):
             item.set_active(summary)
         except Item.DoesNotExist:
             messages.error(request, _('Item ID %d does not exist.') % int(item_id))
+    if request.is_ajax():
+        jsondata = {'active': item_id}
+        return HttpResponse(json.dumps(jsondata))
+
     return redirect(reverse('item_overview'))
 
 

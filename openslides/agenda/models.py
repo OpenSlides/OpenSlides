@@ -10,6 +10,11 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+try:
+    import json
+except ImportError:
+    import simplejson as json
+
 from django.db import models
 from django.utils.translation import ugettext as _
 
@@ -137,6 +142,16 @@ class Item(InheritanceCastModel):
             return ('item_view', [str(self.id)])
         if link == 'delete':
             return ('item_delete', [str(self.id)])
+
+    @property
+    def json(self):
+        """
+        Return the model as jquery data
+        """
+        return json.dumps({
+                'id': self.id,
+                'active': self.active,
+            })
 
     def __unicode__(self):
         return self.title
