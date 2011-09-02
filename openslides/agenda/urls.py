@@ -54,9 +54,6 @@ urlpatterns = patterns('agenda.views',
     url(r'^item/(?P<item_id>\d+)/del/$', 'delete',
         name='item_delete'),
 
-    url(r'^item/print/(?P<printAllItems>\d+)/$', 'print_agenda',
-        name='print_agenda_full'),
-
     url(r'^item/print/$', 'print_agenda',
         name='print_agenda'),
 )

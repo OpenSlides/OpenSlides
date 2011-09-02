@@ -182,11 +182,6 @@ def firstPage(canvas, doc):
         canvas.setFillGray(0)
         #canvas.drawCentredString(PAGE_WIDTH/2.0, PAGE_HEIGHT-108, doc.title)
         canvas.drawString(2.75*cm, PAGE_HEIGHT-108, doc.title)
-    if doc.subtitle:
-        canvas.setFont('Ubuntu',10)
-        canvas.setFillGray(0.4)
-        #canvas.drawCentredString(PAGE_WIDTH/2.0, PAGE_HEIGHT-125, doc.subtitle)
-        canvas.drawString(2.75*cm, PAGE_HEIGHT-125, doc.subtitle)
     # footer (with page number)
     canvas.setFont('Ubuntu',8)
     canvas.setFillGray(0.4)
@@ -201,7 +196,7 @@ def laterPages(canvas, doc):
     canvas.drawString(10*cm, 1*cm, _("Page")+" %s" % doc.page)
     canvas.restoreState()
 
-def print_agenda(request, printAllItems=None):
+def print_agenda(request):
     response = HttpResponse(mimetype='application/pdf')
     filename = u'filename=%s.pdf;' % _("Agenda")
     response['Content-Disposition'] = filename.encode('utf-8')
@@ -209,25 +204,16 @@ def print_agenda(request, printAllItems=None):
     story = [Spacer(1,3*cm)]
 
     doc.title = _("Agenda")
-    if printAllItems:
-        doc.subtitle = "("+_("full")+")"
-    else:
-        doc.subtitle = "("+_("abridged")+")"
 
     # print item list
     items = children_list(Item.objects.filter(parent=None).order_by('weight'))
     for item in items:
         if item.hidden is False:
             # print all items
-            if printAllItems:
-                if item.parents:
-                    story.append(Paragraph(item.title, stylesheet['Subitem']))
-                else:
-                    story.append(Paragraph(item.title, stylesheet['Item']))
-            # print items without parents only
+            if item.parents:
+                story.append(Paragraph(item.title, stylesheet['Subitem']))
             else:
-                if item.parent is None:
-                    story.append(Paragraph(item.title, stylesheet['Subitem']))
+                story.append(Paragraph(item.title, stylesheet['Item']))
 
     doc.build(story, onFirstPage=firstPage, onLaterPages=laterPages)
     return response
@@ -240,7 +226,6 @@ def print_userlist(request):
     story = [Spacer(1,2*cm)]
 
     doc.title = _("List of Participants")
-    doc.subtitle = ""
     # Table
     data= [['#', _('Last Name'), _('First Name'), _('Group'), _('Type'), _('Committee')]]
     sort = 'last_name'
@@ -303,7 +288,6 @@ def print_application(request, application_id=None):
     response['Content-Disposition'] = filename.encode('utf-8')
     doc = SimpleDocTemplate(response)
     doc.title = None
-    doc.subtitle = None
     story = [Spacer(1,2*cm)]
     
     if application_id is None:  #print all applications
