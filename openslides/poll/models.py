@@ -78,12 +78,6 @@ class Poll(models.Model):
     def __unicode__(self):
         return self.title
 
-    class Meta:
-        permissions = (
-            ('can_view_poll', "Can view polls"),
-            ('can_manage_poll', "Can manage polls"),
-        )
-
 
 class Option(models.Model):
     text = models.CharField(max_length=100, null=True, blank=True, verbose_name = _("Text"))
