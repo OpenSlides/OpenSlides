@@ -69,8 +69,8 @@ stylesheet.add(ParagraphStyle(name = 'Bold',
                )
 stylesheet.add(ParagraphStyle(name = 'Heading1',
                               parent = stylesheet['Bold'],
-                              fontSize = 18,
-                              leading = 22,
+                              fontSize = 24,
+                              leading = 30,
                               spaceAfter = 6),
                alias = 'h1')
 stylesheet.add(ParagraphStyle(name = 'Heading2',
@@ -177,14 +177,16 @@ def firstPage(canvas, doc):
     canvas.setFont('Ubuntu',7)
     canvas.drawString(15*cm, 28*cm, _("Printed")+": %s" % time)
     # title
-    canvas.setFont('Ubuntu-Bold',24)
-    canvas.setFillGray(0)
-    #canvas.drawCentredString(PAGE_WIDTH/2.0, PAGE_HEIGHT-108, doc.title)
-    canvas.drawString(2.75*cm, PAGE_HEIGHT-108, doc.title)
-    canvas.setFont('Ubuntu',10)
-    canvas.setFillGray(0.4)
-    #canvas.drawCentredString(PAGE_WIDTH/2.0, PAGE_HEIGHT-125, doc.subtitle)
-    canvas.drawString(2.75*cm, PAGE_HEIGHT-125, doc.subtitle)
+    if doc.title:
+        canvas.setFont('Ubuntu-Bold',24)
+        canvas.setFillGray(0)
+        #canvas.drawCentredString(PAGE_WIDTH/2.0, PAGE_HEIGHT-108, doc.title)
+        canvas.drawString(2.75*cm, PAGE_HEIGHT-108, doc.title)
+    if doc.subtitle:
+        canvas.setFont('Ubuntu',10)
+        canvas.setFillGray(0.4)
+        #canvas.drawCentredString(PAGE_WIDTH/2.0, PAGE_HEIGHT-125, doc.subtitle)
+        canvas.drawString(2.75*cm, PAGE_HEIGHT-125, doc.subtitle)
     # footer (with page number)
     canvas.setFont('Ubuntu',8)
     canvas.setFillGray(0.4)
@@ -271,70 +273,55 @@ def print_userlist(request):
     doc.build(story, onFirstPage=firstPage, onLaterPages=laterPages)
     return response
 
+def get_application(application, story):
+    if application.number is None:
+        story.append(Paragraph(_("Application")+" #[-]", stylesheet['Heading1']))
+    else:
+        story.append(Paragraph(_("Application")+" #%s" % application.number, stylesheet['Heading1']))
+    story.append(Paragraph(application.title, stylesheet['Heading2']))
+    story.append(Paragraph("%s" % application.text.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+    story.append(Paragraph(_("Reason")+":", stylesheet['Heading3']))
+    story.append(Paragraph("%s" % application.reason.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+    story.append(Paragraph(_("Submitter")+": %s" % unicode(application.submitter), stylesheet['Italic']))
+    story.append(Paragraph(_("Created")+": %s" % application.time.strftime(_("%Y-%m-%d %H:%Mh")), stylesheet['Italic']))
+    supporters = ""
+    for s in application.supporter.all():
+        supporters += "%s, " % unicode(s)
+    story.append(Paragraph(_("Supporter")+": %s" % supporters, stylesheet['Italic']))
+    note = ""
+    for n in application.notes:
+        note += "%s " % unicode(n)
+    if note != "":
+        story.append(Paragraph(_("Status")+": %s | %s" % (application.get_status_display(), note), stylesheet['Italic']))
+    else:
+        story.append(Paragraph(_("Status")+": %s" % (application.get_status_display()), stylesheet['Italic']))
+    return story
+    
 def print_application(request, application_id=None):
     response = HttpResponse(mimetype='application/pdf')
     filename = u'filename=%s.pdf;' % _("Applications")
     response['Content-Disposition'] = filename.encode('utf-8')
     doc = SimpleDocTemplate(response)
+    doc.title = None
+    doc.subtitle = None
     story = [Spacer(1,2*cm)]
-
-    if application_id is None:
+    
+    if application_id is None:  #print all applications
         doc.title = _("Applications")
-        doc.subtitle = ""
-
+        # List of applications
         for application in Application.objects.exclude(number=None).order_by('number'):
             story.append(Paragraph(_("Application")+" #%s: %s" % (application.number, application.title), stylesheet['Heading3']))
-
-        # Applications (each application on single page)
+        # Applications details (each application on single page)
         for application in Application.objects.exclude(number=None).order_by('number'):
             story.append(PageBreak())
-            story.append(Paragraph(_("Application")+" #%s: %s" % (application.number, application.title), stylesheet['Heading2']))
-            story.append(Paragraph("%s" % application.text.replace('\r\n','<br/>'), stylesheet['Paragraph']))
-            story.append(Paragraph(_("Reason")+":", stylesheet['Heading3']))
-            story.append(Paragraph("%s" % application.reason.replace('\r\n','<br/>'), stylesheet['Paragraph']))
-            story.append(Paragraph(_("Submitter")+": %s" % unicode(application.submitter), stylesheet['Italic']))
-            story.append(Paragraph(_("Created")+": %s" % application.time.strftime(_("%Y-%m-%d %H:%Mh")), stylesheet['Italic']))
-            supporters = ""
-            for s in application.supporter.all():
-                supporters += "%s, " % unicode(s)
-            story.append(Paragraph(_("Supporter")+": %s" % supporters, stylesheet['Italic']))
-            note = ""
-            for n in application.notes:
-                note += "%s " % unicode(n)
-            if note != "":
-                story.append(Paragraph(_("Status")+": %s | %s" % (application.get_status_display(), note), stylesheet['Italic']))
-            else:
-                story.append(Paragraph(_("Status")+": %s" % (application.get_status_display()), stylesheet['Italic']))
-
-    else: # print selected application
+            story = get_application(application, story)
+            
+    else:  # print selected application
         application = Application.objects.get(id=application_id)
         filename = u'filename=%s%s.pdf;' % (_("Application"), str(application.number))
         response['Content-Disposition'] = filename.encode('utf-8')
-        doc = SimpleDocTemplate(response)
-        if application.number is None:
-            doc.title = _("Application")+" #[-]"
-        else:
-            doc.title = _("Application")+" #%s" % application.number
-        doc.subtitle = ""
-        
-        story.append(Paragraph(application.title, stylesheet['Heading2']))
-        story.append(Paragraph("%s" % application.text.replace('\r\n','<br/>'), stylesheet['Paragraph']))
-        story.append(Paragraph(_("Reason")+":", stylesheet['Heading3']))
-        story.append(Paragraph("%s" % application.reason.replace('\r\n','<br/>'), stylesheet['Paragraph']))
-        story.append(Paragraph(_("Submitter")+": %s" % unicode(application.submitter), stylesheet['Italic']))
-        story.append(Paragraph(_("Created")+": %s" % application.time.strftime(_("%Y-%m-%d %H:%Mh")), stylesheet['Italic']))
-        supporters = ""
-        for s in application.supporter.all():
-            supporters += "%s, " % unicode(s)
-        story.append(Paragraph(_("Supporter")+": %s" % supporters, stylesheet['Italic']))
-        note = ""
-        for n in application.notes:
-            note += "%s " % unicode(n)
-        if note != "":
-            story.append(Paragraph(_("Status")+": %s | %s" % (application.get_status_display(), note), stylesheet['Italic']))
-        else:
-            story.append(Paragraph(_("Status")+": %s" % (application.get_status_display()), stylesheet['Italic']))
-        
+        story = get_application(application, story)
+    
     doc.build(story, onFirstPage=firstPage, onLaterPages=laterPages)
     return response
 
