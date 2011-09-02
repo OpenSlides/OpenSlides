@@ -74,17 +74,10 @@ def view(request, poll_id):
                 }, prefix="o%d" % option.id)
         if request.method == 'POST' and success == options.count():
             messages.success(request, _("Votes are successfully saved.") )
-
-    if poll.application:
-        app = 'application/base_application.html'
-    elif poll.assignment:
-        app = 'assignment/base_assignment.html'
-    else:
-        app = 'poll/base_poll.html'
+    
     return {
         'poll': poll,
         'options': options,
-        'app': app,
     }
 
 
@@ -92,7 +85,7 @@ def view(request, poll_id):
 @template('poll/edit.html')
 def edit(request, poll_id=None):
     """
-    View zum editieren und neuanlegen von Wahlen
+    View to create and edit a poll object.
     """
     if poll_id is not None:
         poll = Poll.objects.get(id=poll_id)
@@ -118,14 +111,9 @@ def edit(request, poll_id=None):
             form = PollForm()
         else:
             form = PollForm(instance=poll)
-    try:
-        options = poll.option_set.all()
-    except AttributeError:
-        options = []
     return {
         'form': form,
         'poll': poll,
-        'options': options,
     }
 
 
@@ -144,7 +132,7 @@ def delete(request, poll_id):
 @template('poll/option_edit.html')
 def option_edit(request, poll_id=None, option_id=None):
     """
-    View zum editieren und neuanlegen von Optionen für eine Wahl
+    View to create and edit options of a poll object.
     """
     if option_id is not None:
         option = Option.objects.get(id=option_id)
@@ -170,7 +158,7 @@ def option_edit(request, poll_id=None, option_id=None):
             if poll_id is None:
                 form = OptionForm()
             else:
-                poll = poll = Poll.objects.get(id=poll_id)
+                poll = Poll.objects.get(id=poll_id)
                 form = OptionForm(initial={'poll': poll})
         else:
             form = OptionForm(instance=option)
