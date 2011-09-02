@@ -102,57 +102,57 @@ stylesheet.add(ParagraphStyle(name = 'Tablecell',
                               parent = stylesheet['Normal'],
                               fontSize = 9)
                )
-
-
-h3_poll = PS(name = 'h3_poll',
-        fontName = 'Ubuntu-Bold',
-        fontSize = 12,
-        leading = 14,
-        leftIndent = 30,
-        spaceAfter = 0)
-i_poll = PS(name = 'i_poll',
-        fontName = 'Ubuntu',
-        fontSize = 10,
-        leftIndent = 30,
-        rightIndent = 20,
-        spaceAfter = 0)
-small_poll = PS(name = 'small',
-        fontName = 'Ubuntu',
-        fontSize = 7,
-        leading = 14,
-        leftIndent = 30,
-        spaceAfter = 0)
-polloption = PS(name = 'polloption',
-        fontName = 'Ubuntu',
-        fontSize = 12,
-        leading = 24,
-        leftIndent = 30,
-        spaceAfter = 0)
-polloptionname = PS(name = 'polloption',
-        fontName = 'Ubuntu',
-        fontSize = 12,
-        leading = 15,
-        leftIndent = 30,
-        spaceAfter = 0)
-polloptionnameRight = PS(name = 'polloption',
-        fontName = 'Ubuntu',
-        fontSize = 12,
-        leading = 15,
-        leftIndent = 49,
-        spaceAfter = 18)
-polloptiongroup = PS(name = 'polloptiongroup',
-        fontName = 'Ubuntu',
-        fontSize = 8,
-        leading = 16,
-        leftIndent = 49,
-        spaceAfter = 0)
-polloptiongroupLeft = PS(name = 'polloptiongroupleft',
-        fontName = 'Ubuntu',
-        fontSize = 8,
-        leading = 15,
-        leftIndent = 30,
-        spaceAfter = 0)
-
+# Ballot stylesheets
+stylesheet.add(ParagraphStyle(name = 'Ballot_title',
+                              parent = stylesheet['Bold'],
+                              fontSize = 12,
+                              leading = 14,
+                              leftIndent = 30),
+               )
+stylesheet.add(ParagraphStyle(name = 'Ballot_subtitle',
+                              parent = stylesheet['Normal'],
+                              fontSize = 10,
+                              leading = 20,
+                              leftIndent = 30,
+                              rightIndent = 20),
+               )
+stylesheet.add(ParagraphStyle(name = 'Ballot_description',
+                              parent = stylesheet['Normal'],
+                              fontSize = 7,
+                              leading = 14,
+                              leftIndent = 30),
+               )
+stylesheet.add(ParagraphStyle(name = 'Ballot_option',
+                              parent = stylesheet['Normal'],
+                              fontSize = 12,
+                              leading = 24,
+                              leftIndent = 30),
+               )
+stylesheet.add(ParagraphStyle(name = 'Ballot_option_name',
+                              parent = stylesheet['Normal'],
+                              fontSize = 12,
+                              leading = 15,
+                              leftIndent = 30),
+               )
+stylesheet.add(ParagraphStyle(name = 'Ballot_option_group',
+                              parent = stylesheet['Normal'],
+                              fontSize = 8,
+                              leading = 15,
+                              leftIndent = 30),
+               )
+stylesheet.add(ParagraphStyle(name = 'Ballot_option_YNA',
+                              parent = stylesheet['Normal'],
+                              fontSize = 12,
+                              leading = 15,
+                              leftIndent = 49,
+                              spaceAfter = 18),
+               )               
+stylesheet.add(ParagraphStyle(name = 'Ballot_option_group_right',
+                              parent = stylesheet['Normal'],
+                              fontSize = 8,
+                              leading = 16,
+                              leftIndent = 49),
+               )
 
 # set event information
 event_name = config_get("event_name")
@@ -336,14 +336,14 @@ def print_application_poll(request, poll_id=None):
     circle = "<img src='openslides/static/images/circle.png' width='15' height='15'/>&nbsp;&nbsp;"
     cell = []
     cell.append(Spacer(0,0.8*cm))
-    cell.append(Paragraph(poll.title, h3_poll))
-    cell.append(Paragraph(_("Title")+": "+poll.application.title, i_poll))
+    cell.append(Paragraph(poll.title, stylesheet['Ballot_title']))
+    cell.append(Paragraph(_("Title")+": "+poll.application.title, stylesheet['Ballot_subtitle']))
     if poll.description:
-        cell.append(Paragraph(poll.description, small_poll))
+        cell.append(Paragraph(poll.description, stylesheet['Ballot_description']))
     cell.append(Spacer(0,0.5*cm))
-    cell.append(Paragraph(circle+_("Yes"), polloption))
-    cell.append(Paragraph(circle+_("No"), polloption))
-    cell.append(Paragraph(circle+_("Abstention"), polloption))
+    cell.append(Paragraph(circle+_("Yes"), stylesheet['Ballot_option']))
+    cell.append(Paragraph(circle+_("No"), stylesheet['Ballot_option']))
+    cell.append(Paragraph(circle+_("Abstention"), stylesheet['Ballot_option']))
 
     data= []
     for user in xrange(User.objects.count()/2):
@@ -367,10 +367,10 @@ def print_assignment_poll(request, poll_id=None, ballotnumber=1, posts=None):
     circle = "<img src='openslides/static/images/circle.png' width='15' height='15'/>&nbsp;"
     cell = []
     cell.append(Spacer(0,0.8*cm))
-    cell.append(Paragraph(poll.title, h3_poll))
-    cell.append(Paragraph(poll.description, i_poll))
+    cell.append(Paragraph(poll.title, stylesheet['Ballot_title']))
+    cell.append(Paragraph(poll.description, stylesheet['Ballot_subtitle']))
     options = poll.get_options().order_by('user__user__first_name')
-    cell.append(Paragraph(ballotnumber+". "+_("ballot")+", "+str(len(options))+" "+ ungettext("candidate", "candidates", len(options))+", "+posts+" "+_("available posts"), small_poll))
+    cell.append(Paragraph(ballotnumber+". "+_("ballot")+", "+str(len(options))+" "+ ungettext("candidate", "candidates", len(options))+", "+posts+" "+_("available posts"), stylesheet['Ballot_description']))
     cell.append(Spacer(0,0.4*cm))
     
     if len(options) <= int(posts):
@@ -381,12 +381,12 @@ def print_assignment_poll(request, poll_id=None, ballotnumber=1, posts=None):
     if optiondecision:
         for option in options:
             o = str(option).rsplit("(",1)
-            cell.append(Paragraph(o[0], polloptionname))
+            cell.append(Paragraph(o[0], stylesheet['Ballot_option_name']))
             if len(o) > 1:
-                cell.append(Paragraph("("+o[1], polloptiongroupLeft))
+                cell.append(Paragraph("("+o[1], stylesheet['Ballot_option_group']))
             else:
-                cell.append(Paragraph("&nbsp;", polloptiongroupLeft))
-            cell.append(Paragraph(circle+_("Yes")+"&nbsp; &nbsp; &nbsp; "+circle+_("No")+"&nbsp; &nbsp; &nbsp; "+circle+_("Abstention"), polloptionnameRight))
+                cell.append(Paragraph("&nbsp;", stylesheet['Ballot_option_group']))
+            cell.append(Paragraph(circle+_("Yes")+"&nbsp; &nbsp; &nbsp; "+circle+_("No")+"&nbsp; &nbsp; &nbsp; "+circle+_("Abstention"), stylesheet['Ballot_option_YNA']))
         data= []
         for user in xrange(User.objects.count()/2):
             data.append([cell,cell])
@@ -399,11 +399,11 @@ def print_assignment_poll(request, poll_id=None, ballotnumber=1, posts=None):
     else:
         for option in options:
             o = str(option).rsplit("(",1)
-            cell.append(Paragraph(circle+o[0], polloptionname))
+            cell.append(Paragraph(circle+o[0], stylesheet['Ballot_option_name']))
             if len(o) > 1:
-                cell.append(Paragraph("("+o[1], polloptiongroup))
+                cell.append(Paragraph("("+o[1], stylesheet['Ballot_option_group_right']))
             else:
-                cell.append(Paragraph("&nbsp;", polloptiongroup))
+                cell.append(Paragraph("&nbsp;", stylesheet['Ballot_option_group_right']))
         data= []
         for user in xrange(User.objects.count()/2):
             data.append([cell,cell])
