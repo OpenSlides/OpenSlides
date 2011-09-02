@@ -21,9 +21,9 @@ from django.contrib.auth.models import User
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
-from reportlab.lib.units import cm, inch
+from reportlab.lib.units import cm
 from reportlab.lib.styles import ParagraphStyle as PS
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.styles import StyleSheet1, ParagraphStyle
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Frame, PageBreak, Spacer, Table, LongTable, TableStyle, Image
 from reportlab.platypus.doctemplate import SimpleDocTemplate
 from reportlab.rl_config import defaultPageSize
@@ -43,50 +43,78 @@ pdfmetrics.registerFont(TTFont('Ubuntu-Bold', 'openslides/static/fonts/Ubuntu-B.
 pdfmetrics.registerFont(TTFont('Ubuntu-Italic', 'openslides/static/fonts/Ubuntu-RI.ttf'))
 
 # set style information
-styles = getSampleStyleSheet()
 PAGE_HEIGHT=defaultPageSize[1];
 PAGE_WIDTH=defaultPageSize[0]
 
-h2 = PS(name = 'h2',
-        fontName = 'Ubuntu-Bold',
-        fontSize = 14,
-        leading = 24,
-        leftIndent = 0,
-        spaceAfter = 10)
-h3 = PS(name = 'h3',
-        fontName = 'Ubuntu-Bold',
-        fontSize = 12,
-        leading = 24,
-        leftIndent = 0,
-        spaceAfter = 0)
+# set custom stylesheets
+stylesheet = StyleSheet1()
+stylesheet.add(ParagraphStyle(name = 'Normal',
+                              fontName = 'Ubuntu',
+                              fontSize = 10,
+                              leading = 12)
+               )
+stylesheet.add(ParagraphStyle(name = 'Paragraph',
+                              parent = stylesheet['Normal'],
+                              leading = 14,
+                              spaceAfter = 15)
+               )
+stylesheet.add(ParagraphStyle(name = 'Italic',
+                              parent = stylesheet['Normal'],
+                              fontName = 'Ubuntu-Italic',
+                              spaceAfter = 5)
+               )
+stylesheet.add(ParagraphStyle(name = 'Bold',
+                              parent = stylesheet['Normal'],
+                              fontName = 'Ubuntu-Bold')
+               )
+stylesheet.add(ParagraphStyle(name = 'Heading1',
+                              parent = stylesheet['Bold'],
+                              fontSize = 18,
+                              leading = 22,
+                              spaceAfter = 6),
+               alias = 'h1')
+stylesheet.add(ParagraphStyle(name = 'Heading2',
+                              parent = stylesheet['Bold'],
+                              fontSize = 14,
+                              leading = 24,
+                              spaceAfter = 10),
+               alias = 'h2')
+stylesheet.add(ParagraphStyle(name = 'Heading3',
+                              parent = stylesheet['Bold'],
+                              fontSize = 12,
+                              leading = 24),
+               alias = 'h3')
+stylesheet.add(ParagraphStyle(name = 'Item',
+                              parent = stylesheet['Normal'],
+                              fontSize = 14,
+                              leading = 12,
+                              leftIndent = 0,
+                              spaceAfter = 15)
+               )
+stylesheet.add(ParagraphStyle(name = 'Subitem',
+                              parent = stylesheet['Normal'],
+                              fontSize = 10,
+                              leading = 4,
+                              leftIndent = 20,
+                              spaceAfter = 15)
+               )
+stylesheet.add(ParagraphStyle(name = 'Tablecell',
+                              parent = stylesheet['Normal'],
+                              fontSize = 9)
+               )
+
+
 h3_poll = PS(name = 'h3_poll',
         fontName = 'Ubuntu-Bold',
         fontSize = 12,
         leading = 14,
         leftIndent = 30,
         spaceAfter = 0)
-p = PS(name = 'Normal',
-        fontName = 'Ubuntu',
-        fontSize = 10,
-        leading = 14,
-        leftIndent = 0,
-        spaceAfter = 15)
-i = PS(name = 'Italic',
-        fontName = 'Ubuntu-Italic',
-        fontSize = 10,
-        leftIndent = 0,
-        spaceAfter = 5)
 i_poll = PS(name = 'i_poll',
         fontName = 'Ubuntu',
         fontSize = 10,
         leftIndent = 30,
         rightIndent = 20,
-        spaceAfter = 0)
-small = PS(name = 'small',
-        fontName = 'Ubuntu',
-        fontSize = 7,
-        leading = 14,
-        leftIndent = 0,
         spaceAfter = 0)
 small_poll = PS(name = 'small',
         fontName = 'Ubuntu',
@@ -94,21 +122,6 @@ small_poll = PS(name = 'small',
         leading = 14,
         leftIndent = 30,
         spaceAfter = 0)
-itemstyle = PS(name = 'Normal',
-        fontName = 'Ubuntu',
-        fontSize = 14,
-        leading = 12,
-        leftIndent = 0,
-        spaceAfter = 15)
-subitemstyle = PS(name = 'Normal',
-        fontName = 'Ubuntu',
-        fontSize = 10,
-        leading = 4,
-        leftIndent = 20,
-        spaceAfter = 15)
-cellstyle = PS(name='Normal',
-        fontName = 'Ubuntu',
-        fontSize = 9)
 polloption = PS(name = 'polloption',
         fontName = 'Ubuntu',
         fontSize = 12,
@@ -151,6 +164,7 @@ event_organizer = config_get("event_organizer")
 # set print time
 time = datetime.now().strftime(_("%Y-%m-%d %H:%Mh"))
 
+
 def firstPage(canvas, doc):
     canvas.saveState()
     # page header (with event information)
@@ -165,10 +179,12 @@ def firstPage(canvas, doc):
     # title
     canvas.setFont('Ubuntu-Bold',24)
     canvas.setFillGray(0)
-    canvas.drawCentredString(PAGE_WIDTH/2.0, PAGE_HEIGHT-108, doc.title)
+    #canvas.drawCentredString(PAGE_WIDTH/2.0, PAGE_HEIGHT-108, doc.title)
+    canvas.drawString(2.75*cm, PAGE_HEIGHT-108, doc.title)
     canvas.setFont('Ubuntu',10)
     canvas.setFillGray(0.4)
-    canvas.drawCentredString(PAGE_WIDTH/2.0, PAGE_HEIGHT-125, doc.subtitle)
+    #canvas.drawCentredString(PAGE_WIDTH/2.0, PAGE_HEIGHT-125, doc.subtitle)
+    canvas.drawString(2.75*cm, PAGE_HEIGHT-125, doc.subtitle)
     # footer (with page number)
     canvas.setFont('Ubuntu',8)
     canvas.setFillGray(0.4)
@@ -203,13 +219,13 @@ def print_agenda(request, printAllItems=None):
             # print all items
             if printAllItems:
                 if item.parents:
-                    story.append(Paragraph(item.title, subitemstyle))
+                    story.append(Paragraph(item.title, stylesheet['Subitem']))
                 else:
-                    story.append(Paragraph(item.title, itemstyle))
+                    story.append(Paragraph(item.title, stylesheet['Item']))
             # print items without parents only
             else:
                 if item.parent is None:
-                    story.append(Paragraph(item.title, itemstyle))
+                    story.append(Paragraph(item.title, stylesheet['Subitem']))
 
     doc.build(story, onFirstPage=firstPage, onLaterPages=laterPages)
     return response
@@ -232,11 +248,11 @@ def print_userlist(request):
             counter += 1
             user.get_profile()
             data.append([counter,
-                    Paragraph(user.last_name, cellstyle),
-                    Paragraph(user.first_name, cellstyle),
-                    Paragraph(user.profile.group, cellstyle),
-                    Paragraph(user.profile.type, cellstyle),
-                    Paragraph(user.profile.committee, cellstyle),
+                    Paragraph(user.last_name, stylesheet['Tablecell']),
+                    Paragraph(user.first_name, stylesheet['Tablecell']),
+                    Paragraph(user.profile.group, stylesheet['Tablecell']),
+                    Paragraph(user.profile.type, stylesheet['Tablecell']),
+                    Paragraph(user.profile.committee, stylesheet['Tablecell']),
                     ])
         except Profile.DoesNotExist:
             counter -= 1
@@ -267,28 +283,28 @@ def print_application(request, application_id=None):
         doc.subtitle = ""
 
         for application in Application.objects.exclude(number=None).order_by('number'):
-            story.append(Paragraph(_("Application")+" #%s: %s" % (application.number, application.title), h3))
+            story.append(Paragraph(_("Application")+" #%s: %s" % (application.number, application.title), stylesheet['Heading3']))
 
         # Applications (each application on single page)
         for application in Application.objects.exclude(number=None).order_by('number'):
             story.append(PageBreak())
-            story.append(Paragraph(_("Application")+" #%s: %s" % (application.number, application.title), h2))
-            story.append(Paragraph("%s" % application.text.replace('\r\n','<br/>'), p))
-            story.append(Paragraph(_("Reason")+":", h3))
-            story.append(Paragraph("%s" % application.reason.replace('\r\n','<br/>'), p))
-            story.append(Paragraph(_("Submitter")+": %s" % unicode(application.submitter), i))
-            story.append(Paragraph(_("Created")+": %s" % application.time.strftime(_("%Y-%m-%d %H:%Mh")), i))
+            story.append(Paragraph(_("Application")+" #%s: %s" % (application.number, application.title), stylesheet['Heading2']))
+            story.append(Paragraph("%s" % application.text.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+            story.append(Paragraph(_("Reason")+":", stylesheet['Heading3']))
+            story.append(Paragraph("%s" % application.reason.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+            story.append(Paragraph(_("Submitter")+": %s" % unicode(application.submitter), stylesheet['Italic']))
+            story.append(Paragraph(_("Created")+": %s" % application.time.strftime(_("%Y-%m-%d %H:%Mh")), stylesheet['Italic']))
             supporters = ""
             for s in application.supporter.all():
                 supporters += "%s, " % unicode(s)
-            story.append(Paragraph(_("Supporter")+": %s" % supporters, i))
+            story.append(Paragraph(_("Supporter")+": %s" % supporters, stylesheet['Italic']))
             note = ""
             for n in application.notes:
                 note += "%s " % unicode(n)
             if note != "":
-                story.append(Paragraph(_("Status")+": %s | %s" % (application.get_status_display(), note), i))
+                story.append(Paragraph(_("Status")+": %s | %s" % (application.get_status_display(), note), stylesheet['Italic']))
             else:
-                story.append(Paragraph(_("Status")+": %s" % (application.get_status_display()), i))
+                story.append(Paragraph(_("Status")+": %s" % (application.get_status_display()), stylesheet['Italic']))
 
     else: # print selected application
         application = Application.objects.get(id=application_id)
@@ -301,23 +317,23 @@ def print_application(request, application_id=None):
             doc.title = _("Application")+" #%s" % application.number
         doc.subtitle = ""
         
-        story.append(Paragraph(application.title, h2))
-        story.append(Paragraph("%s" % application.text.replace('\r\n','<br/>'), p))
-        story.append(Paragraph(_("Reason")+":", h3))
-        story.append(Paragraph("%s" % application.reason.replace('\r\n','<br/>'), p))
-        story.append(Paragraph(_("Submitter")+": %s" % unicode(application.submitter), i))
-        story.append(Paragraph(_("Created")+": %s" % application.time.strftime(_("%Y-%m-%d %H:%Mh")), i))
+        story.append(Paragraph(application.title, stylesheet['Heading2']))
+        story.append(Paragraph("%s" % application.text.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+        story.append(Paragraph(_("Reason")+":", stylesheet['Heading3']))
+        story.append(Paragraph("%s" % application.reason.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+        story.append(Paragraph(_("Submitter")+": %s" % unicode(application.submitter), stylesheet['Italic']))
+        story.append(Paragraph(_("Created")+": %s" % application.time.strftime(_("%Y-%m-%d %H:%Mh")), stylesheet['Italic']))
         supporters = ""
         for s in application.supporter.all():
             supporters += "%s, " % unicode(s)
-        story.append(Paragraph(_("Supporter")+": %s" % supporters, i))
+        story.append(Paragraph(_("Supporter")+": %s" % supporters, stylesheet['Italic']))
         note = ""
         for n in application.notes:
             note += "%s " % unicode(n)
         if note != "":
-            story.append(Paragraph(_("Status")+": %s | %s" % (application.get_status_display(), note), i))
+            story.append(Paragraph(_("Status")+": %s | %s" % (application.get_status_display(), note), stylesheet['Italic']))
         else:
-            story.append(Paragraph(_("Status")+": %s" % (application.get_status_display()), i))
+            story.append(Paragraph(_("Status")+": %s" % (application.get_status_display()), stylesheet['Italic']))
         
     doc.build(story, onFirstPage=firstPage, onLaterPages=laterPages)
     return response
