@@ -10,9 +10,14 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+try:
+    import json
+except ImportError:
+    import simplejson as json
+
 from django.shortcuts import render_to_response, redirect
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden
 from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.core.context_processors import csrf
@@ -71,3 +76,10 @@ def delete_default_permissions():
     for p in Permission.objects.all():
         if p.codename.startswith('add') or p.codename.startswith('delete') or p.codename.startswith('change'):
             p.delete()
+
+def ajax_request(data):
+    """
+    generates a HTTPResponse-Object with json-Data for a
+    ajax response
+    """
+    return HttpResponse(json.dumps(data))
