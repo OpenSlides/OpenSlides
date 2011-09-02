@@ -26,7 +26,7 @@ class Poll(models.Model):
     assignment = models.ForeignKey(Assignment, null=True, blank=True, verbose_name = _("Election"))
     description = models.TextField(null=True, blank=True, verbose_name = _("Description"))
     votescast = models.IntegerField(null=True, blank=True, verbose_name = _("Votes cast"))
-    voteinvalid = models.IntegerField(null=True, blank=True, verbose_name = _("Votes invalid"))
+    votesinvalid = models.IntegerField(null=True, blank=True, verbose_name = _("Votes invalid"))
 
     def add_option(self, option):
         self.save()

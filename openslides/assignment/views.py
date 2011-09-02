@@ -199,7 +199,7 @@ def poll_view(request, poll_id, ballotnumber=1):
         if request.method == 'POST':
             form = PollInvalidForm(request.POST, prefix="poll")
             if form.is_valid():
-                poll.voteinvalid = form.cleaned_data['invalid'] or 0
+                poll.votesinvalid = form.cleaned_data['invalid'] or 0
                 poll.save()
 
             success = 0
@@ -214,7 +214,7 @@ def poll_view(request, poll_id, ballotnumber=1):
             if success == options.count():
                 messages.success(request, _("Votes are successfully saved.") )
         else:
-            form = PollInvalidForm(initial={'invalid': poll.voteinvalid}, prefix="poll")
+            form = PollInvalidForm(initial={'invalid': poll.votesinvalid}, prefix="poll")
             for option in options:
                 option.form = OptionResultForm(initial={
                     'yes': option.voteyes,

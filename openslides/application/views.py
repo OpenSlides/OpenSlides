@@ -323,7 +323,7 @@ def view_poll(request, poll_id):
         if request.method == 'POST':
             form = PollInvalidForm(request.POST, prefix="poll")
             if form.is_valid():
-                poll.voteinvalid = form.cleaned_data['invalid'] or 0
+                poll.votesinvalid = form.cleaned_data['invalid'] or 0
                 poll.save()
 
             for option in options:
@@ -336,7 +336,7 @@ def view_poll(request, poll_id):
                                            cleaned_data['undesided'] or 0
                     option.save()
         else:
-            form = PollInvalidForm(initial={'invalid': poll.voteinvalid}, prefix="poll")
+            form = PollInvalidForm(initial={'invalid': poll.votesinvalid}, prefix="poll")
             for option in options:
                 option.form = OptionResultForm(initial={
                     'yes': option.voteyes,
