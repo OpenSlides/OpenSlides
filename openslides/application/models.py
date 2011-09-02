@@ -355,7 +355,7 @@ class Application(models.Model):
              description = _("%s. poll") % pollcount
         else:
             description = _("Poll")
-        poll = Poll(title=_("Vote on application #%s") % self.number, \
+        poll = Poll(title=_("Application #%s") % self.number, \
                     optiondecision=True, \
                     application=self,
                     description=description)
