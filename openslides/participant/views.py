@@ -20,6 +20,7 @@ from django.contrib.auth.forms import SetPasswordForm
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
+
 from participant.models import Profile, set_first_user_passwords
 from participant.api import gen_username
 from participant.forms import UserForm, UsernameForm, ProfileForm, UsersettingsForm, UserImportForm, GroupForm, AdminPasswordChangeForm
