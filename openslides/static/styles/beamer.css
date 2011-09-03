@@ -67,6 +67,7 @@ body{
     left:100px;
     top:150px;
     right:40px;
+    z-index: -1;
 }
 .title
 {

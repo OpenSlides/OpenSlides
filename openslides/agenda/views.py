@@ -78,12 +78,29 @@ def beamer(request):
         content = render_block_to_string(template, 'content', data)
         jsondata = {'content': content,
                     'title': data['title'],
-                    'time': datetime.now().strftime('%H:%M')}
+                    'time': datetime.now().strftime('%H:%M'),
+                    'bigger': config_get('bigger'),
+                    'up': config_get('up')}
         return ajax_request(jsondata)
     else:
         return render_to_response(template,
                                   data,
                                   context_instance=RequestContext(request))
+
+@permission_required('agenda.can_manage_agenda')
+def beamer_edit(request, direction):
+    if direction == 'bigger':
+        config_set('bigger', int(config_get('bigger', 100)) + 10)
+    elif direction == 'smaller':
+        config_set('bigger', int(config_get('bigger', 100)) - 10)
+    elif direction == 'up':
+        config_set('up', int(config_get('up', 0)) - 10)
+    elif direction == 'down':
+        config_set('up', int(config_get('up', 0)) + 10)
+
+    if request.is_ajax():
+        return ajax_request({})
+    return redirect(reverse('item_overview'))
 
 
 def assignment_votes(item):
@@ -156,6 +173,8 @@ def set_active(request, item_id, summary=False):
             item.set_active(summary)
         except Item.DoesNotExist:
             messages.error(request, _('Item ID %d does not exist.') % int(item_id))
+    config_set("bigger", 100)
+    config_set("up", 0)
     if request.is_ajax():
         return ajax_request({'active': item_id})
 

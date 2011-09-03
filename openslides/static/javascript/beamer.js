@@ -9,6 +9,9 @@ function presentation_reload() {
                 $('#content').html(data.content);
                 document.title = data.title;
                 $('#currentTime').html(data.time);
+                $('#content').clearQueue();
+                $('#content').animate({'font-size': data.bigger + '%'}, 200);
+                $('#content').animate({'margin-top': data.up + 'em'}, 200);
                 setTimeout("presentation_reload()", 500);
             },
             error: function () {
