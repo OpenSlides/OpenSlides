@@ -248,6 +248,10 @@ table a.table_edit {
     padding: 5px 0;
     font-size:11px;
     margin:0;
+    width: 0;
+}
+tr.total td {
+    border-top: 1px solid #333333;
 }
 
 

@@ -29,8 +29,11 @@
         <p><nobr><label>{%trans "Abstentions" %}:</label></nobr>
         {{ options.0.form.undesided.errors }}{{ options.0.form.undesided }}
         </p>
-        <p><label>{%trans "Invalid" %}:</label>
+        <p><label>{%trans "Invalid votes" %}:</label>
         {{ form.invalid.errors }}{{ form.invalid }}
+        </p>
+        <p><label>{%trans "Votes cast" %}:</label>
+        {{ form.votescast.errors }}{{ form.votescast }}
         </p>
         <p>
         <button type="submit">

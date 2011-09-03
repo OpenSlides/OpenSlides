@@ -33,8 +33,11 @@
         {% endfor %}
     </table>
 
-    <label for="id_votesinvalid">{% trans "Invalid" %}:</label>
+    <label for="id_votesinvalid">{% trans "Invalid votes" %}:</label>
     {{ form.invalid.errors }}{{ form.invalid }}
+
+    <label for="id_votescast">{% trans "Votes cast" %}:</label>
+    {{ form.votescast.errors }}{{ form.votescast }}
 
     {% if perms.poll.can_manage_poll %}
         <p>
