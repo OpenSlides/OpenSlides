@@ -7,6 +7,6 @@
     <h4 class="sectiontitle">{%trans "Configuration" %}</h4>
     <ul>
         <li class="{% if request.path == url_config_general %}selected{% endif %}"><a href="{% url config_general %}">{%trans "General" %}</a></li>
-        {# <li class="{% if request.path == url_config_system %}selected{% endif %}"><a href="{% url config_system %}">{%trans "System" %}</a></li> #}
+        <li class="{% if request.path == url_config_system %}selected{% endif %}"><a href="{% url config_system %}">{%trans "System" %}</a></li>
     </ul>
 {% endblock %}

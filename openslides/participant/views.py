@@ -25,7 +25,7 @@ from participant.models import Profile, set_first_user_passwords
 from participant.api import gen_username
 from participant.forms import UserForm, UsernameForm, ProfileForm, UsersettingsForm, UserImportForm, GroupForm, AdminPasswordChangeForm
 from utils.utils import template, permission_required, gen_confirm_form
-from utils.pdf import print_userlist
+from utils.pdf import print_userlist, print_passwords
 
 from django.db.models import Avg, Max, Min, Count
 

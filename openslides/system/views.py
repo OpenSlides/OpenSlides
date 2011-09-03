@@ -25,14 +25,16 @@ def get_system_config(request):
     if request.method == 'POST':
         form = SystemConfigForm(request.POST)
         if form.is_valid():
-            config_set('user_registration', form.cleaned_data['user_registration'])
+            config_set('system_url', form.cleaned_data['system_url'])
+            config_set('system_welcometext', form.cleaned_data['system_welcometext'])
             messages.success(request, _('System settings successfully saved.'))
         else:
             messages.error(request, _('Please check the form for errors.'))
 
     else:
         form = SystemConfigForm(initial={
-            'user_registration': config_get('user_registration'),
+            'system_url': config_get('system_url'),
+            'system_welcometext': config_get('system_welcometext'),
         })
     return {
         'form': form,

@@ -17,7 +17,7 @@ DEFAULT_DATA  = {
     'event_description': 'Presentation and voting system',
     'application_min_supporters': 4,
     'application_preamble': 'Die Versammlung möge beschließen,',
-    'user_registration': True,
+    'sysem_url': 'http://openslides:8000',
 }
 
 class Config(models.Model):

@@ -10,7 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.forms import Form, CharField, TextInput, BooleanField, IntegerField
+from django.forms import Form, CharField, TextInput, BooleanField, IntegerField, Textarea
 from django.utils.translation import ugettext as _
 from system.api import config_get
 
@@ -18,8 +18,11 @@ class SystemConfigForm(Form):
     error_css_class = 'error'
     required_css_class = 'required'
     
-    user_registration = BooleanField(label=_("User registration"), required=False)
-
+    #user_registration = BooleanField(label=_("User registration"), required=False)
+    system_url = CharField(widget=TextInput(), required=False, label=_("System URL"))
+    system_welcometext = CharField(widget=Textarea(), required=False, label=_("Welcome text (for password PDF)"))
+    
+    
 class EventConfigForm(Form):
     error_css_class = 'error'
     required_css_class = 'required'
@@ -36,4 +39,6 @@ class ApplicationConfigForm(Form):
 
     application_min_supporters = IntegerField(widget=TextInput(attrs={'class':'small-input'}),label=_("Number of (minimum) required supporters for a application"),initial=4, min_value=0, max_value=8)
     application_preamble = CharField(widget=TextInput(), required=False, label=_("Application preamble"))
+
+
     

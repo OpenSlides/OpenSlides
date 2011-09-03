@@ -15,6 +15,7 @@
         <li><a href="{% url user_print %}"><img src="/static/images/icons/application-pdf.png"> {%trans 'Print participant list' %}</a></li>
         <li><a href="{% url user_import %}"> {%trans 'Import' %}</a></li>
         <li><a href="{% url user_gen_passwords %}">{% trans 'Generate first passwords' %}</a></li>
+        <li><a href="{% url print_passwords %}"><img src="/static/images/icons/application-pdf.png">{% trans 'Print password list' %}</a></li>
         {% endif %}
     </ul>
 {% endblock %}

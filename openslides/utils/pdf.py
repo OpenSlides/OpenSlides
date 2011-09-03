@@ -259,6 +259,47 @@ def print_userlist(request):
     doc.build(story, onFirstPage=firstPage, onLaterPages=laterPages)
     return response
 
+def print_passwords(request):
+    response = HttpResponse(mimetype='application/pdf')
+    filename = u'filename=%s.pdf;' % _("passwords")
+    response['Content-Disposition'] = filename.encode('utf-8')
+    doc = SimpleDocTemplate(response, pagesize=A4, topMargin=-6, bottomMargin=-6, leftMargin=0, rightMargin=0, showBoundary=False)
+    story = [Spacer(0,0*cm)]
+
+    data= []
+    system_url = config_get("system_url")
+    system_welcometext = config_get("system_welcometext")
+    for user in User.objects.all().order_by('last_name'):
+        try:
+            user.get_profile()
+            cell = []
+            cell.append(Spacer(0,0.8*cm))
+            cell.append(Paragraph(_("Your Password for OpenSlides"), stylesheet['Ballot_title']))
+            cell.append(Paragraph("%s %s %s" % (_("for"), user.first_name, user.last_name), stylesheet['Ballot_subtitle']))
+            cell.append(Spacer(0,0.5*cm))
+            cell.append(Paragraph("%s: %s" % (_("Username"), user.username), stylesheet['Ballot_option']))
+            cell.append(Paragraph("%s: %s" % (_("Password"), user.profile.firstpassword), stylesheet['Ballot_option']))
+            cell.append(Spacer(0,0.5*cm))
+            cell.append(Paragraph("%s: %s" % (_("URL"), system_url), stylesheet['Ballot_option']))
+            cell.append(Spacer(0,0.5*cm))
+            cell2 = []
+            cell2.append(Spacer(0,0.8*cm))
+            cell2.append(Paragraph(system_welcometext.replace('\r\n','<br/>'), stylesheet['Ballot_subtitle']))
+            
+            data.append([cell,cell2])
+        except Profile.DoesNotExist:
+            pass
+
+    t=Table(data, 10.5*cm, 7.42*cm)
+    t.setStyle(TableStyle([ ('LINEBELOW', (0,0), (-1,0), 0.25, colors.grey),
+                            ('LINEBELOW', (0,1), (-1,1), 0.25, colors.grey),
+                            ('LINEBELOW', (0,1), (-1,-1), 0.25, colors.grey),
+                            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                          ]))
+    story.append(t)
+    doc.build(story)
+    return response
+    
 def get_application(application, story):
     if application.number is None:
         story.append(Paragraph(_("Application")+" #[-]", stylesheet['Heading1']))
