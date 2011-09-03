@@ -215,8 +215,10 @@ def edit(request, item_id=None, form='ItemText', default=None):
                 messages.success(request, _('Item was successfully modified.'))
                 if "application" in request.POST:
                     item.application.writelog(_('Agenda item modified'), request.user)
-            return redirect(reverse('item_overview'))
-        messages.error(request, _('Please check the form for errors.'))
+            if not 'apply' in request.POST:
+                return redirect(reverse('item_overview'))
+        else:
+            messages.error(request, _('Please check the form for errors.'))
     else:
         initial = {}
         if default:
