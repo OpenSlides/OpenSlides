@@ -346,7 +346,7 @@ class Application(models.Model):
                 raise AttributeError(name)
         raise AttributeError(name)
 
-    def gen_poll(self, user=None, pollcount=None):
+    def gen_poll(self, user=None):
         """
         Generates a poll object for the application
         """

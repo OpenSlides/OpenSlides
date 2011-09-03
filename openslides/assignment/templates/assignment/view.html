@@ -173,7 +173,7 @@
     <tr>
         <td>{%trans 'Invalid votes' %}</td>
         {% for p in polls %}
-            <td><img src="/static/images/icons/voting-invalid.png" title="{% trans 'Invalid' %}"> {{ p.votesinvalid }}</td>
+            <td style="white-space:nowrap;"><img src="/static/images/icons/voting-invalid.png" title="{% trans 'Invalid' %}"> {{ p.votesinvalid }}</td>
         {% endfor %}
         {% if assignment.profile.count > 0 and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
             <td></td>
@@ -182,7 +182,7 @@
     <tr class="total">
         <td><b>{%trans 'Votes cast' %}</b></td>
         {% for p in polls %}
-            <td><img src="/static/images/icons/voting-total.png" title="{% trans 'Votes cast' %}"> <b>{{ p.votescast }}</b></td>
+            <td style="white-space:nowrap;"><img src="/static/images/icons/voting-total.png" title="{% trans 'Votes cast' %}"> <b>{{ p.votescast }}</b></td>
         {% endfor %}
         {% if assignment.profile.count > 0 and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
             <td></td>

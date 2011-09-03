@@ -252,6 +252,7 @@ table a.table_edit {
 }
 tr.total td {
     border-top: 1px solid #333333;
+    background-color: #e3e3e3;
 }
 
 
@@ -344,7 +345,7 @@ button .cancel{
 button .ok{
     background:url(../images/icons/dialog-ok-apply.png) no-repeat 0px 0px;
 }
-button .ok-blue{
+button .ok-blue, button .apply{
     background:url(../images/icons/dialog-ok.png) no-repeat 0px 0px;
 }
 button .edit{
@@ -411,7 +412,7 @@ button .stop{
 
 .errorlist {
     color:#DA3939;
-    font-size:10px;
+    font-size:9px;
     font-style:italic;
     height:16px;
     padding:0;
