@@ -25,12 +25,12 @@
         {% if 'vot' in assignment.status %}checked{% endif %}>{% trans 'Voting' %}<br>
     <input type="radio" name="status" onclick="window.location.href='{% url assignment_set_status assignment.id 'fin' %}';"
         {% if 'fin' in assignment.status %}checked{% endif %}>{% trans 'Finish' %}
-    
+
     <h4></h4>
     <a href="{% url assignment_edit assignment.id %}">
         <button><span class="icon edit">{%trans 'Edit' %}</span></button>
     </a>
-    
+
     {% if not assignment.itemassignment_set.all %}
     <h4></h4>
     <a href='{% url item_new_default 'ItemAssignment' assignment.id %}'>
@@ -111,7 +111,7 @@
     <h3>{% trans "Election results" %}</h3>
 
 {% if assignment.poll_set.all.count > 0 %}
-    <table style="width: auto;">
+    <table id="election_table" style="width: auto;">
     <tr>
     <th></th>
     {% with ballotnumber=assignment.poll_set.all.count %}
@@ -145,7 +145,17 @@
 
     {% for vote in votes %}
     <tr class="{% cycle 'odd' '' %}">
-        {% for v in vote %}
+        <td class="candidate">
+        {% with vote|first as candidate %}
+            {{ candidate.0 }}
+            {% if candidate.1 %}
+                <a class="election_link iselected" href='{% url assignment_user_not_elected assignment.id candidate.0.id %}'>{% trans 'not elected' %}</a>
+            {% else %}
+                <a class="election_link" href='{% url assignment_user_elected assignment.id candidate.0.id %}'>{% trans 'elected' %}</a>
+            {% endif %}
+        {% endwith %}
+        </td>
+        {% for v in vote|last %}
             <td style="white-space:nowrap;">{% if v  %}
                     {% if v|length == 3 %}
                         <img src="/static/images/icons/voting-yes.png" title="{% trans 'Yes' %}"> {% if v.0 %}{{ v.0 }}{% else %}&empty;{% endif %}<br>
@@ -167,7 +177,7 @@
 {% else %}
 
     <i>{% trans "No ballots available." %}</i>
-    
+
     {% if assignment.profile.count > 0 and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
         {% with ballotnumber=assignment.poll_set.all.count %}
         <p><a href='{% url assignment_gen_poll assignment.id ballotnumber|add:'1' %}'>

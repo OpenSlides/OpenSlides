@@ -28,6 +28,7 @@ class Assignment(models.Model):
     assignment_number = models.PositiveSmallIntegerField(verbose_name = _("Number of available posts"))
     polldescription = models.CharField(max_length=50, null=True, blank=True, verbose_name = _("Short description (for ballot paper)"))
     profile = models.ManyToManyField(Profile, null=True, blank=True)
+    elected = models.ManyToManyField(Profile, null=True, blank=True, related_name='elected_set')
     status = models.CharField(max_length=1, choices=STATUS, default='sea')
 
     def set_status(self, status):
@@ -66,28 +67,55 @@ class Assignment(models.Model):
         else:
             return False
 
+    @property
+    def candidates(self):
+        # list of candidates
+        from poll.models import Option
+        candidates = set()
+        for option in Option.objects.filter(poll__assignment=self):
+            candidates.add(option.value)
+        return candidates
+
+    def set_elected(self, profile, value=True):
+        if profile in self.candidates:
+            if value and not self.is_elected(profile):
+                self.elected.add(profile)
+            elif not value:
+                self.elected.remove(profile)
+
+    def is_elected(self, profile):
+        if profile in self.elected.all():
+            return True
+        return False
+
     def gen_poll(self):
         from poll.models import Poll
         poll = Poll()
         poll.title = _("Election for %s") % self.name
-        
+        candidates = list(self.profile.all())
+        for elected in self.elected.all():
+            try:
+                candidates.remove(elected)
+            except ValueError:
+                pass
+
         # Option A: candidates <= available posts -> yes/no/abstention
-        if self.profile.count() <= self.assignment_number:
+        if len(candidates) <= self.assignment_number - self.elected.count():
             poll.optiondecision = True
         else:
             poll.optiondecision = False
-        
+
         # Option B: candidates == 1 -> yes/no/abstention
         #if self.profile.count() == 1:
         #    poll.optiondecision = True
         #else:
         #    poll.optiondecision = False
-        
+
         poll.assignment = self
         poll.description = self.polldescription
         poll.save()
-        for profile in self.profile.get_query_set():
-            poll.add_option(profile)
+        for candidate in candidates:
+            poll.add_option(candidate)
         return poll
 
     @models.permalink

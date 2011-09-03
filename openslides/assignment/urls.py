@@ -51,4 +51,10 @@ urlpatterns = patterns('assignment.views',
 
     url(r'^assignment/poll/(?P<poll_id>\d+)/del$', 'delete_poll', \
         name='assignment_poll_delete'),
+
+    url(r'^assignment/(?P<assignment_id>\d+)/elected/(?P<profile_id>\d+)$', 'set_elected', {'elected': True}, \
+        name='assignment_user_elected'),
+
+    url(r'^assignment/(?P<assignment_id>\d+)/notelected/(?P<profile_id>\d+)$', 'set_elected', {'elected': False}, \
+        name='assignment_user_not_elected'),
 )

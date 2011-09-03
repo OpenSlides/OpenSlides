@@ -1,42 +1,25 @@
-var Slide = function (json) {
-    this.id = json.id;
-    this.active = ko.observable(json.active);
-};
-
-
-var ViewModel = {
-    slides: []
-};
-
-function getSlideByID(id) {
-    a = ViewModel.slides;
-    for (var i = 0; i < a.length; i++) {
-        if (a[i].id == id) {
-            return a[i];
-        }
-    }
-    return false;
-}
-
-function renderSlide(slide) {
-    return
-}
-
-
 $(function() {
+    $('a.iselected').parent().parent().children('td').addClass('iselected');
 
 
 
-    $('.activate_link').click(function(event) {
+    $('.election_link').click(function(event) {
         event.preventDefault();
+        line = $(this);
         $.ajax({
             type: 'GET',
-            url: $(this).attr('href'),
+            url: line.attr('href'),
             dataType: 'json',
-            data: '',
             success: function(data) {
-                $('.activeline').removeClass('activeline').addClass('inactiveline');
-                $('#item_row_' + data.active).removeClass('inactiveline').addClass('activeline');
+                if (line.hasClass('iselected') && !data.elected) {
+                    line.removeClass('iselected')
+                    line.parent().parent().children('td').removeClass('iselected')
+                } else if (!line.hasClass('iselected') && data.elected) {
+                    line.addClass('iselected')
+                    line.parent().parent().children('td').addClass('iselected')
+                }
+                line.attr('href', data.link);
+                line.text(data.text);
             },
             error: function () {
                 alert("Ajax Error");
@@ -61,5 +44,4 @@ $(function() {
             }
         });
     });
-    ko.applyBindings(ViewModel);
 });

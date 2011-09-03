@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% load tags %}
 
+{% block header %}
+    <link type="text/css" rel="stylesheet" media="all" href="/static/styles/assignment.css" />
+    <script type="text/javascript" src="/static/javascript/assignment.js"></script>
+{% endblock %}
+
 {% block submenu %}
     {% url election_overview as url_electionoverview %}
     <h4 class="sectiontitle">{%trans "Elections" %}</h4>
