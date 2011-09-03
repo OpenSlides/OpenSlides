@@ -103,13 +103,15 @@ def edit(request, assignment_id=None):
     if request.method == 'POST':
         form = AssignmentForm(request.POST, instance=assignment)
         if form.is_valid():
-            form.save()
+            assignment = form.save()
             if assignment_id is None:
                 messages.success(request, _('New election was successfully created.'))
             else:
                 messages.success(request, _('Election was successfully modified.'))
-        if not 'apply' in request.POST:
-            return redirect(reverse("assignment_overview"))
+            if not 'apply' in request.POST:
+                return redirect(reverse("assignment_overview"))
+            if assignment_id is None:
+                return redirect(reverse('assignment_edit', args=[assignment.id]))
     else:
         form = AssignmentForm(instance=assignment)
     return {

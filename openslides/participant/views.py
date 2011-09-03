@@ -101,8 +101,12 @@ def edit(request, user_id=None):
                 messages.success(request, _('New participant was successfully created.'))
             else:
                 messages.success(request, _('Participant was successfully modified.'))
-            return redirect(reverse('user_overview'))
-        messages.error(request, _('Please check the form for errors.'))
+            if not 'apply' in request.POST:
+                return redirect(reverse('user_overview'))
+            if user_id is None:
+                return redirect(reverse('user_edit', args=[user.id]))
+        else:
+            messages.error(request, _('Please check the form for errors.'))
     else:
         userform = UserForm(instance=user, prefix="user")
         try:
@@ -176,14 +180,17 @@ def group_edit(request, group_id=None):
     if request.method == 'POST':
         form = GroupForm(request.POST, instance=group)
         if form.is_valid():
-            form.save()
+            group = form.save()
             if group_id is None:
                 messages.success(request, _('New group was successfully created.'))
             else:
                 messages.success(request, _('Group was successfully modified.'))
+            if not 'apply' in request.POST:
+                return redirect(reverse('user_group_overview'))
+            if group_id is None:
+                return redirect(reverse('user_group_edit', args=[group.id]))
         else:
             messages.error(request, _('Please check the form for errors.'))
-        return redirect(reverse('user_group_overview'))
     else:
         form = GroupForm(instance=group)
     return {
@@ -198,7 +205,7 @@ def group_delete(request, group_id):
         group.delete()
         messages.success(request, _('Group <b>%s</b> was successfully deleted.') % group)
     else:
-        gen_confirm_form(request, 'Do you really want to delete <b>%s</b>?' % group, reverse('user_group_delete', args=[group_id]))
+        gen_confirm_form(request, _('Do you really want to delete <b>%s</b>?') % group, reverse('user_group_delete', args=[group_id]))
     return redirect(reverse('user_group_overview'))
 
 @login_required
@@ -280,9 +287,9 @@ def reset_password(request, user_id):
     user = User.objects.get(pk=user_id)
     if request.method == 'POST':
         user.profile.reset_password()
-        messages.success(request, _('The Password for <b>%s</b> was successfully resettet') % user)
-
+        user.profile.save()
+        messages.success(request, _('The Password for <b>%s</b> was successfully reset.') % user)
     else:
-        gen_confirm_form(request, _('Do you really want to reset the password for <b>%s</b>') % user,
-                         reverse('user_reset_passwords', args=[user_id]))
-    return redirect(reverse('user_overview'))
+        gen_confirm_form(request, _('Do you really want to reset the password for <b>%s</b>?') % user,
+                         reverse('user_overview'))
+    return redirect(reverse('user_edit', args=[user_id]))

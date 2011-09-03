@@ -128,7 +128,11 @@ def edit(request, application_id=None):
                 messages.success(request, _('New application was successfully created.'))
             else:
                 messages.success(request, _('Application was successfully modified.'))
-            return redirect(reverse('application_view', args=[application.id]))
+            
+            if not 'apply' in request.POST:
+                return redirect(reverse('application_view', args=[application.id]))
+            if application_id is None:
+                return redirect(reverse('application_edit', args=[application.id]))
     else:
         if application_id is None:
             initial = {'text': config_get('application_preamble')}
