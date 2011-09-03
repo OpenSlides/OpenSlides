@@ -18,8 +18,8 @@ from django.contrib import messages
 from django.utils.translation import ugettext as _
 
 from openslides.agenda.models import Item
-from openslides.agenda.api import get_active_item, is_summary, children_list
-
+from openslides.agenda.api import get_active_item, is_summary, children_list, \
+                                  del_confirm_form_for_items
 from openslides.agenda.forms import ElementOrderForm, MODELFORM
 from openslides.application.models import Application
 from openslides.assignment.models import Assignment
@@ -256,8 +256,15 @@ def delete(request, item_id):
     """
     item = Item.objects.get(id=item_id).cast()
     if request.method == 'POST':
-        item.delete()
-        messages.success(request, _("Item <b>%s</b> was successfully deleted.") % item)
+        if 'all' in request.POST:
+            item.delete()
+            messages.success(request, _("Item <b>%s</b> and his children were successfully deleted.") % item)
+        else:
+            for child in item.children:
+                child.parent = item.parent
+                child.save()
+            item.delete()
+            messages.success(request, _("Item <b>%s</b> was successfully deleted.") % item)
     else:
-        del_confirm_form(request, item)
+        del_confirm_form_for_items(request, item)
     return redirect(reverse('item_overview'))
