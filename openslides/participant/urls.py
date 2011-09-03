@@ -27,6 +27,8 @@ urlpatterns = patterns('participant.views',
     url(r'^participant/group/(?P<group_id>\d+)/edit$', 'group_edit', name='user_group_edit'),
     url(r'^participant/group/(?P<group_id>\d+)/del$', 'group_delete', name='user_group_delete'),
     url(r'^user/settings$', 'user_settings', name='user_settings'),
+    url(r'^participant/genpasswords$', 'gen_passwords', name='user_gen_passwords'),
+    url(r'^participant/resetpassword/(?P<user_id>\d+)$', 'reset_password', name='user_reset_passwords'),
 )
 
 urlpatterns += patterns('django.contrib.auth.views',

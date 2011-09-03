@@ -20,9 +20,9 @@ from django.contrib.auth.forms import SetPasswordForm
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
-from participant.models import Profile
+from participant.models import Profile, set_first_user_passwords
 from participant.api import gen_username
-from participant.forms import UserForm, UsernameForm, ProfileForm, UsersettingsForm, UserImportForm, GroupForm
+from participant.forms import UserForm, UsernameForm, ProfileForm, UsersettingsForm, UserImportForm, GroupForm, AdminPasswordChangeForm
 from utils.utils import template, permission_required, gen_confirm_form
 from utils.pdf import print_userlist
 
@@ -51,7 +51,7 @@ def get_overview(request):
         pass
     if 'reverse' in request.GET:
         query = query.reverse()
-    
+
     userlist = query.all()
     users = []
     for user in userlist:
@@ -81,24 +81,18 @@ def edit(request, user_id=None):
 
     if request.method == 'POST':
         userform = UserForm(request.POST, instance=user, prefix="user")
-        usernameform = UsernameForm(request.POST, instance=user, prefix="username")
         try:
             profileform = ProfileForm(request.POST, instance=user.profile, prefix="profile")
         except:
             profileform = ProfileForm(request.POST, prefix="profile")
+
         formlist = [userform, profileform]
         formerror = 0
-        if user:
-            formlist.append(usernameform)
         for f in formlist:
             if not f.is_valid():
                 formerror += 1
         if formerror == 0:
             user = userform.save()
-            if user_id is None:
-                user.username = gen_username(user.first_name, user.last_name)
-                user.set_password("%s%s" % (user.first_name, user.last_name))
-                user.save()
             profile = profileform.save(commit=False)
             profile.user = user
             profile.save()
@@ -110,14 +104,12 @@ def edit(request, user_id=None):
         messages.error(request, _('Please check the form for errors.'))
     else:
         userform = UserForm(instance=user, prefix="user")
-        usernameform = UsernameForm(instance=user, prefix="username")
         try:
             profileform = ProfileForm(instance=user.profile, prefix="profile")
         except AttributeError:
             profileform = ProfileForm(prefix="profile")
     return {
         'userform': userform,
-        'usernameform': usernameform,
         'profileform': profileform,
         'edituser': user,
     }
@@ -274,3 +266,22 @@ def user_import(request):
     return {
         'form': form,
     }
+
+
+@permission_required('participant.can_manage_participants')
+def gen_passwords(request):
+    set_first_user_passwords()
+    return redirect(reverse('user_overview'))
+
+
+@permission_required('participant.can_manage_participants')
+def reset_password(request, user_id):
+    user = User.objects.get(pk=user_id)
+    if request.method == 'POST':
+        user.profile.reset_password()
+        user.profile.save()
+        messages.success(request, _('The Password for <b>%s</b> was successfully resettet') % user)
+    else:
+        gen_confirm_form(request, _('Do you really want to reset the password for <b>%s</b>') % user,
+                         reverse('user_overview'))
+    return redirect(reverse('user_edit', args=[user_id]))

@@ -9,8 +9,18 @@
     :copyright: 2011 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
+from random import choice
+import string
 
 from django.contrib.auth.models import User
+
+
+def gen_password():
+    chars = string.letters + string.digits
+    newpassword = ''
+    for i in range(8):
+        newpassword += choice(chars)
+    return newpassword
 
 
 def gen_username(first_name, last_name):
