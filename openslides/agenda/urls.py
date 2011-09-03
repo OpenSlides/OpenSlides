@@ -56,4 +56,12 @@ urlpatterns = patterns('agenda.views',
 
     url(r'^item/print/$', 'print_agenda',
         name='print_agenda'),
+
+    url(r'^beamer/bigger$', 'beamer_edit', {'direction': 'bigger'}, name='beamer_bigger'),
+
+    url(r'^beamer/smaller$', 'beamer_edit', {'direction': 'smaller'}, name='beamer_smaller'),
+
+    url(r'^beamer/up$', 'beamer_edit', {'direction': 'up'}, name='beamer_up'),
+
+    url(r'^beamer/down$', 'beamer_edit', {'direction': 'down'}, name='beamer_down'),
 )

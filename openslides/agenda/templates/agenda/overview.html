@@ -46,6 +46,8 @@
             </em>
         </div>
         {% endif %}
+        <a class="beamer_edit" href="{% url beamer_bigger %}">+</a> <a class="beamer_edit" href="{% url beamer_smaller %}">-</a> <br>
+        <a class="beamer_edit" href="{% url beamer_up %}">+</a> <a class="beamer_edit" href="{% url beamer_down %}">-</a> <br>
         <table id="menu-overview" class="agendatable">
             <tr>
                 <th style="width: 1px;">{% trans "Beamer" %}</th>
@@ -60,9 +62,11 @@
             </tr>
             <tr id="item_row_0"{% if overview %} class="activeline"{% else %}{% if perms.agenda.can_manage_agenda %} class="inactiveline"{% endif %}{% endif %}>
                 <td class="select">
+                    {% if perms.agenda.can_manage_agenda %}
                     <a href="{% url item_activate 0 %}" class="activate_link">
                         <div></div>
                     </a>
+                    {% endif %}
                 </td>
                 <td><i>{% trans "Agenda" %} ({{ items|length }} {% trans "items" %}<span id="hiddencount"></span>)</i></td>
                 {% if perms.agenda.can_manage_agenda %}
@@ -79,7 +83,7 @@
                 <tr id="item_row_{{ item.id }}" class="draggable{% cycle ' odd' '' %}
                 {% if item.active %} activeline{% else %}
                 {% if item.parent.active and summary %} activesummarychildline{% endif %}
-                {% if perms.agenda.can_manage_aenda %} inactiveline{% endif %}
+                {% if perms.agenda.can_manage_agenda %} inactiveline{% endif %}
                 {% endif %}">
                 <script type="text/javascript">$(function(){ViewModel.slides.push(new Slide({{ item.json|safe }}))});</script>
                 <td class="select">
