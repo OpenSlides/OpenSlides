@@ -17,7 +17,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 
 from poll.models import Poll, Option
-from poll.forms import OptionResultForm, PollInvalidForm
+from poll.forms import OptionResultForm, PollForm
 from assignment.models import Assignment
 from assignment.forms import AssignmentForm, AssignmentRunForm
 from utils.utils import template, permission_required, gen_confirm_form, del_confirm_form, ajax_request
@@ -79,9 +79,14 @@ def view(request, assignment_id=None):
                 tmplist[1].append("-")
         votes.append(tmplist)
 
+    polls = []
+    for poll in assignment.poll_set.filter(assignment=assignment):
+        polls.append(poll)
+    
     return {'assignment': assignment,
             'form': form,
-            'votes': votes}
+            'votes': votes,
+            'polls': polls }
 
 
 @permission_required('assignment.can_manage_assignment')
@@ -192,9 +197,10 @@ def poll_view(request, poll_id):
     assignment = poll.assignment
     if request.user.has_perm('assignment.can_manage_assignment'):
         if request.method == 'POST':
-            form = PollInvalidForm(request.POST, prefix="poll")
+            form = PollForm(request.POST, prefix="poll")
             if form.is_valid():
                 poll.votesinvalid = form.cleaned_data['invalid'] or 0
+                poll.votescast = form.cleaned_data['votescast'] or 0
                 poll.save()
 
             success = 0
@@ -209,7 +215,7 @@ def poll_view(request, poll_id):
             if success == options.count():
                 messages.success(request, _("Votes are successfully saved.") )
         else:
-            form = PollInvalidForm(initial={'invalid': poll.votesinvalid}, prefix="poll")
+            form = PollForm(initial={'invalid': poll.votesinvalid, 'votescast': poll.votescast}, prefix="poll")
             for option in options:
                 option.form = OptionResultForm(initial={
                     'yes': option.voteyes,
