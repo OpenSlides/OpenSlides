@@ -15,6 +15,7 @@ from django.conf import settings
 from django.contrib import admin
 
 admin.autodiscover()
+handler500 = 'openslides.utils.views.server_error'
 
 urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
@@ -25,4 +26,9 @@ urlpatterns = patterns('',
     (r'', include('openslides.system.urls')),
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',  {'document_root': settings.STATIC_DOC_ROOT}),
     (r'^i18n/', include('django.conf.urls.i18n')),
+)
+
+
+urlpatterns += patterns('',
+    (r'^500/$', 'openslides.utils.views.server_error'),
 )

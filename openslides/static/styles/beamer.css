@@ -57,6 +57,10 @@ body{
     background: url(../images/icons/clock.png) no-repeat scroll 0px 4px;
 }
 
+#currentTime.ajax_error {
+    border-bottom: 4px solid red;
+}
+
 /*** CONTENT ***/
 #content {
     position:absolute;

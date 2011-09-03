@@ -9,11 +9,10 @@ function presentation_reload() {
                 $('#content').html(data.content);
                 document.title = data.title;
                 $('#currentTime').html(data.time);
-                setTimeout("presentation_reload()",500);
-
+                setTimeout("presentation_reload()", 500);
             },
             error: function () {
-                alert("Ajax Error");
+                $('#currentTime').addClass('ajax_error');
             }
         });
     }
