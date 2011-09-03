@@ -241,13 +241,13 @@
     <tr>
         <td>{{ revision.aid }}
         {% if revision.rejected %}
-            Version Abgelehnt
+            <img title="{%trans 'Version rejected' %}" src="/static/images/icons/task-reject.png">
         {% else %}
         {% if revision == application.permitted %}
-            Akzeptierte Version
+             <img title="{%trans 'Version accepted' %}" src="/static/images/icons/task-accepted.png">
         {% else %}{% if revision.id > application.permitted.id and perms.application.can_manage_application %}
-            <a href="{% url application_version_permit revision.id %}">Akzeptieren</a><br>
-            <a href="{% url application_version_reject revision.id %}">Ablehnen</a>
+            <a href="{% url application_version_permit revision.id %}"><img title="{%trans 'Accept Version' %}" src="/static/images/icons/task-accepted-grey.png"></a>
+            <a href="{% url application_version_reject revision.id %}"><img title="{%trans 'Reject Version' %}" src="/static/images/icons/task-reject-grey.png"></a>
         {% endif %}{% endif %}
         {% endif %}
         </td>
