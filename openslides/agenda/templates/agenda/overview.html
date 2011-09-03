@@ -66,11 +66,11 @@
                         <div></div>
                     </a>
                 </td>
-                <td><i>{% trans "Agenda" %} ({{ items|length }} {% trans "items" %})</i></td>
+                <td><i>{% trans "Agenda" %} ({{ items|length }} {% trans "items" %}<span id="hiddencount"></span>)</i></td>
                 {% if perms.agenda.can_manage_agenda %}
                 <td></td>
                 {% endif %}
-                <td style="width: 1px;white-space: nowrap"><a href="{% url print_agenda %}" title="{%trans 'Print agenda' %}"><img src="/static/images/icons/application-pdf.png"></a></td>
+                <td id="action_field" style="width: 1px;white-space: nowrap"><a href="{% url print_agenda %}" title="{%trans 'Print agenda' %}"><img src="/static/images/icons/application-pdf.png"></a></td>
             </tr>
             {% for item in items %}
                 {% if not item.hidden or perms.agenda.can_manage_agenda %}
