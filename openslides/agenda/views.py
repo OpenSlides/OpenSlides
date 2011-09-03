@@ -234,12 +234,6 @@ def edit(request, item_id=None, form='ItemText', default=None):
                     'application': application,
                     'title': application.title,
                 }
-            elif form == "ItemPoll":
-                poll = Poll.objects.get(pk=default)
-                initial = {
-                    'poll': poll,
-                    'title': poll.title,
-                }
 
         if item_id is None:
             form = MODELFORM[form](initial=initial)

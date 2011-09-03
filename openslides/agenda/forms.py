@@ -13,7 +13,7 @@
 from django.forms import Form, ModelForm, IntegerField, ChoiceField, \
                          ModelChoiceField, HiddenInput, Select
 from django.utils.translation import ugettext as _
-from openslides.agenda.models import Item, ItemText, ItemApplication, ItemPoll, \
+from openslides.agenda.models import Item, ItemText, ItemApplication, \
                                      ItemAssignment
 
 class ItemFormText(ModelForm):
@@ -23,7 +23,7 @@ class ItemFormText(ModelForm):
     parent = ModelChoiceField(queryset=items, label=_("Parent item"), required=False)
     class Meta:
         model = ItemText
-        exclude = ('closed')
+        exclude = ('closed', 'weight')
 
 
 class ItemFormApplication(ModelForm):
@@ -34,18 +34,7 @@ class ItemFormApplication(ModelForm):
 
     class Meta:
         model = ItemApplication
-        exclude = ('closed')
-
-
-class ItemFormPoll(ModelForm):
-    error_css_class = 'error'
-    required_css_class = 'required'
-    items = Item.objects.all().filter(parent=None).order_by('weight')
-    parent = ModelChoiceField(queryset=items, label=_("Parent item"), required=False)
-
-    class Meta:
-        model = ItemPoll
-        exclude = ('closed')
+        exclude = ('closed', 'weight')
 
 
 class ItemFormAssignment(ModelForm):
@@ -56,7 +45,7 @@ class ItemFormAssignment(ModelForm):
 
     class Meta:
         model = ItemAssignment
-        exclude = ('closed')
+        exclude = ('closed', 'weight')
 
 
 def genweightchoices():
@@ -77,6 +66,5 @@ class ElementOrderForm(Form):
 MODELFORM = {
     'ItemText': ItemFormText,
     'ItemApplication': ItemFormApplication,
-    'ItemPoll': ItemFormPoll,
     'ItemAssignment': ItemFormAssignment,
 }
