@@ -344,7 +344,7 @@ button .cancel{
 button .ok{
     background:url(../images/icons/dialog-ok-apply.png) no-repeat 0px 0px;
 }
-button .ok-blue{
+button .ok-blue, button .apply{
     background:url(../images/icons/dialog-ok.png) no-repeat 0px 0px;
 }
 button .edit{
