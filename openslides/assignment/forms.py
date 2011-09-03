@@ -23,7 +23,7 @@ class AssignmentForm(ModelForm):
 
     class Meta:
         model = Assignment
-        exclude = ('status', 'profile')
+        exclude = ('status', 'profile', 'elected')
 
 
 class AssignmentRunForm(Form):
