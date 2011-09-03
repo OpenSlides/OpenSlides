@@ -38,6 +38,12 @@ urlpatterns = patterns('application.views',
     url(r'^application/(?P<application_id>\d+)/permit$', 'permit', \
         name='application_permit'),
 
+    url(r'^application/version/(?P<aversion_id>\d+)/permit$', 'permit_version', \
+        name='application_version_permit'),
+
+    url(r'^application/version/(?P<aversion_id>\d+)/reject$', 'reject_version', \
+        name='application_version_reject'),
+
     url(r'^application/(?P<application_id>\d+)/notpermit$', 'notpermit', \
         name='application_notpermit'),
 
@@ -59,7 +65,8 @@ urlpatterns = patterns('application.views',
     url(r'^application/(?P<application_id>\d+)/print$', 'print_application', \
         name='print_application'),
 
-    url(r'^application/poll/(?P<poll_id>\d+)/print$', 'print_application_poll', name='print_application_poll'),
+    url(r'^application/poll/(?P<poll_id>\d+)/print$', 'print_application_poll', \
+        name='print_application_poll'),
 
     url(r'^application/poll/(?P<poll_id>\d+)$', 'view_poll', \
         name='application_poll_view'),

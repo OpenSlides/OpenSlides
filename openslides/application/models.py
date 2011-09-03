@@ -62,6 +62,23 @@ class Application(models.Model):
         except IndexError:
             return None
 
+    def accept_version(self, version):
+        """
+        accept a Version
+        """
+        if version.id > self.permitted.id:
+            self.permitted = version
+            self.save()
+            return True
+        return False
+
+    def reject_version(self, version):
+        if version.id > self.permitted.id:
+            version.rejected = True
+            version.save()
+            return True
+        return False
+
     @property
     def versions(self):
         """
@@ -99,11 +116,11 @@ class Application(models.Model):
         Return True if the application has unpermitted changes.
 
         The application has unpermitted changes, if the permitted-version
-        is not the lastone and the lastone is not abjected.
+        is not the lastone and the lastone is not rejected.
         TODO: rename the property in unchecked__changes
         """
         if (self.last_version != self.permitted
-        and not self.last_version.abjected):
+        and not self.last_version.rejected):
             return True
         else:
             return False
@@ -384,7 +401,7 @@ class AVersion(models.Model):
     title = models.CharField(max_length=100)
     text = models.TextField()
     reason = models.TextField(null=True, blank=True)
-    abjected = models.BooleanField()
+    rejected = models.BooleanField()
     time = models.DateTimeField(auto_now=True)
     application = models.ForeignKey(Application)
 

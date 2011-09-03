@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 
-from openslides.application.models import Application
+from openslides.application.models import Application, AVersion
 from openslides.application.forms import ApplicationForm, \
                                          ApplicationManagerForm
 from openslides.poll.models import Poll
@@ -351,3 +351,25 @@ def view_poll(request, poll_id):
         'options': options,
         'ballot': ballot,
     }
+
+@permission_required('application.can_manage_application')
+def permit_version(request, aversion_id):
+    aversion = AVersion.objects.get(pk=aversion_id)
+    application = aversion.application
+    if application.accept_version(aversion):
+        messages.success(request, _("Version accepted") )
+    else:
+        messages.error(request, _("ERROR by accepting the Version") )
+    return redirect(reverse('application_view', args=[application.id]))
+
+
+@permission_required('application.can_manage_application')
+def reject_version(request, aversion_id):
+    aversion = AVersion.objects.get(pk=aversion_id)
+    application = aversion.application
+    if application.reject_version(aversion):
+        messages.success(request, _("Version rejected") )
+    else:
+        messages.error(request, _("ERROR by rejecting the Version") )
+    return redirect(reverse('application_view', args=[application.id]))
+

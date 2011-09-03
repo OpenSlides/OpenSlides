@@ -97,10 +97,10 @@
         </ul>
         {% endwith %}
 
-    
+
     <h4>{% trans "Creation Time" %}:</h4>
     {{ application.creation_time }}
-    
+
     <p></p>
     {% if "edit" in actions %}
         <a href="{% url application_edit application.id %}">
@@ -132,7 +132,7 @@
     {% if min_supporters > 0 %}
     <small>* {% trans "minimum required supporters" %}: {{ min_supporters }}</small>
     {% endif %}
-    
+
     <br><br>
 
     {% if perms.application.can_manage_application %}
@@ -239,7 +239,18 @@
     </tr>
     {% for revision in application.versions  %}
     <tr>
-        <td>{{ revision.aid }} </td>
+        <td>{{ revision.aid }}
+        {% if revision.rejected %}
+            Version Abgelehnt
+        {% else %}
+        {% if revision == application.permitted %}
+            Akzeptierte Version
+        {% else %}{% if revision.id > application.permitted.id and perms.application.can_manage_application %}
+            <a href="{% url application_version_permit revision.id %}">Akzeptieren</a><br>
+            <a href="{% url application_version_reject revision.id %}">Ablehnen</a>
+        {% endif %}{% endif %}
+        {% endif %}
+        </td>
         <td><i>{{ revision.time }}</i></td>
         <td>
             {% ifchanged %}
