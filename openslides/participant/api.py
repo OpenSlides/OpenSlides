@@ -10,23 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.contrib.auth.models import User, get_hexdigest
-from django.shortcuts import redirect
-from django.core.urlresolvers import reverse
-from django.contrib import messages
-from django.utils.translation import ugettext as _
-
-class ChangePasswordMiddleware(object):
-    def process_request(self, request):
-        if request.user.is_authenticated() and "password_checked" not in request.session:
-            algo, salt, hsh = request.user.password.split('$')
-            bad_password = get_hexdigest(algo, salt, "%s%s" % (request.user.first_name, request.user.last_name))
-            if hsh == bad_password:
-                messages.info(request, _('You have to change your Password.'))
-                if request.path_info != '/user/settings' and 'static' not in request.path_info:
-                    return redirect(reverse('user_settings'))
-            else:
-                request.session["password_checked"] = True
+from django.contrib.auth.models import User
 
 
 def gen_username(first_name, last_name):

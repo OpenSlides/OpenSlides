@@ -104,7 +104,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.locale.LocaleMiddleware',
-    'participant.api.ChangePasswordMiddleware',
 )
 
 ROOT_URLCONF = 'openslides.urls'
