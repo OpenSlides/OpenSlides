@@ -23,7 +23,7 @@ class ItemFormText(ModelForm):
     parent = ModelChoiceField(queryset=items, label=_("Parent item"), required=False)
     class Meta:
         model = ItemText
-        exclude = ('closed')
+        exclude = ('closed', 'weight')
 
 
 class ItemFormApplication(ModelForm):
@@ -34,7 +34,7 @@ class ItemFormApplication(ModelForm):
 
     class Meta:
         model = ItemApplication
-        exclude = ('closed')
+        exclude = ('closed', 'weight')
 
 
 class ItemFormPoll(ModelForm):
@@ -45,7 +45,7 @@ class ItemFormPoll(ModelForm):
 
     class Meta:
         model = ItemPoll
-        exclude = ('closed')
+        exclude = ('closed', 'weight')
 
 
 class ItemFormAssignment(ModelForm):
@@ -56,7 +56,7 @@ class ItemFormAssignment(ModelForm):
 
     class Meta:
         model = ItemAssignment
-        exclude = ('closed')
+        exclude = ('closed', 'weight')
 
 
 def genweightchoices():
