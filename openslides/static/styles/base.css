@@ -230,10 +230,6 @@ table a.table_edit {
 .agendatable tr.activeline td {
     background-color: #bed4de;
 }
-.agendatable td.select:hover {
-    cursor:pointer;
-    background-color: #bed4de;
-}
 .agendatable td img.center {
     margin-left: 10px;
 }

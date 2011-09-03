@@ -36,7 +36,8 @@ function hideLine(object) {
 
 function hideClosedSlides(hide) {
     if (hide) {
-        $('#hidelink').text('show');
+        $('#hidelink').attr('title','show');
+        $('#hidelink').removeClass('hide').addClass('show');
         $('.close_link.closed').parent().parent().each(function() {
             hideLine($(this));
         });
@@ -44,7 +45,8 @@ function hideClosedSlides(hide) {
         $('#hiddencount').text(' ' + hidden + ' davon verborgen.');
     } else {
         $('#menu-overview tr').show();
-        $('#hidelink').text('hide');
+        $('#hidelink').attr('title','hide');
+        $('#hidelink').removeClass('show').addClass('hide');
         $('#hiddencount').text('');
     }
     return false;
@@ -87,7 +89,7 @@ $(function() {
         });
     });
     // hide closed items
-    $('#action_field a').after($('<a id="hidelink" href="#">hide</a>').click(function () {
+    $('#action_field div').after($('<a id="hidelink" class="hidelink hide" title="hide" href="#"><div></div></a>').click(function () {
         if ($.cookie('Slide.HideClosed') == 1) {
             $.cookie('Slide.HideClosed', 0);
             hideClosedSlides(false);

@@ -51,7 +51,7 @@
                 <th style="width: 1px;">{% trans "Beamer" %}</th>
                 <th>{% trans "Item" %}</th>
                 {% if perms.agenda.can_manage_agenda %}
-                <th>{% trans "Item Type" %}</th>
+                <th>{% trans "Type" %}</th>
                 {% endif %}
                 <th style="width: 1px;">{% if perms.agenda.can_manage_agenda %}{% trans "Actions" %}{% endif %}</th>
                 {% if perms.agenda.can_manage_agenda %}
@@ -59,9 +59,7 @@
                 {% endif %}
             </tr>
             <tr id="item_row_0"{% if overview %} class="activeline"{% else %}{% if perms.agenda.can_manage_agenda %} class="inactiveline"{% endif %}{% endif %}>
-                <td {% if perms.agenda.can_manage_agenda %}
-                    class="select"
-                    {% endif %}>
+                <td class="select">
                     <a href="{% url item_activate 0 %}" class="activate_link">
                         <div></div>
                     </a>
@@ -70,7 +68,10 @@
                 {% if perms.agenda.can_manage_agenda %}
                 <td></td>
                 {% endif %}
-                <td id="action_field" style="width: 1px;white-space: nowrap;"><a href="{% url print_agenda %}" title="{%trans 'Print agenda' %}"><img src="/static/images/icons/application-pdf.png"></a></td>
+                <td id="action_field" style="width: 1px;white-space: nowrap;">
+                    <div></div>
+                    <a href="{% url print_agenda %}" title="{%trans 'Print agenda' %}"><img src="/static/images/icons/application-pdf.png"></a>
+                </td>
             </tr>
             {% for item in items %}
                 {% if not item.hidden or perms.agenda.can_manage_agenda %}
@@ -81,11 +82,9 @@
                 {% if perms.agenda.can_manage_aenda %} inactiveline{% endif %}
                 {% endif %}">
                 <script type="text/javascript">$(function(){ViewModel.slides.push(new Slide({{ item.json|safe }}))});</script>
-                <td {% if perms.agenda.can_manage_agenda %} {# TODO: welchen Sinn hat das? #}
-                    class="select"
-                    {% endif %}>
+                <td class="select">
                     <a id="activate_link_{{ item.id }}" class="activate_link" href="{% url item_activate item.id %}">
-                        <div></div>
+                    <div></div>
                     </a>
                 </td>
                 <td>
