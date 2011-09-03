@@ -39,6 +39,7 @@ class Profile(models.Model):
 
     def reset_password(self):
         self.user.set_password(self.firstpassword)
+        self.user.save()
 
     def __unicode__(self):
         if self.group:

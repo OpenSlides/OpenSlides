@@ -20,6 +20,7 @@ from django.contrib.auth.forms import SetPasswordForm
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
+
 from participant.models import Profile, set_first_user_passwords
 from participant.api import gen_username
 from participant.forms import UserForm, UsernameForm, ProfileForm, UsersettingsForm, UserImportForm, GroupForm, AdminPasswordChangeForm
@@ -279,9 +280,9 @@ def reset_password(request, user_id):
     user = User.objects.get(pk=user_id)
     if request.method == 'POST':
         user.profile.reset_password()
-        user.profile.save()
         messages.success(request, _('The Password for <b>%s</b> was successfully resettet') % user)
+
     else:
         gen_confirm_form(request, _('Do you really want to reset the password for <b>%s</b>') % user,
-                         reverse('user_overview'))
-    return redirect(reverse('user_edit', args=[user_id]))
+                         reverse('user_reset_passwords', args=[user_id]))
+    return redirect(reverse('user_overview'))
