@@ -91,7 +91,7 @@ class Assignment(models.Model):
     def gen_poll(self):
         from poll.models import Poll
         poll = Poll()
- 
+
         candidates = list(self.profile.all())
         for elected in self.elected.all():
             try:
@@ -104,17 +104,17 @@ class Assignment(models.Model):
             poll.optiondecision = True
         else:
             poll.optiondecision = False
-        
+
         # Option B: candidates == 1 -> yes/no/abstention
         #if self.profile.count() == 1:
         #    poll.optiondecision = True
         #else:
         #    poll.optiondecision = False
-        
+
         poll.assignment = self
         poll.description = self.polldescription
         poll.save()
-		for candidate in candidates:
+        for candidate in candidates:
             poll.add_option(candidate)
         return poll
 

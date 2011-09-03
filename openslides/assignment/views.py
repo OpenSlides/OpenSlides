@@ -65,24 +65,18 @@ def view(request, assignment_id=None):
         if request.user.has_perm('assignment.can_nominate_other'):
             form = AssignmentRunForm()
 
-    # list of candidates
-    candidates = set()
-    for option in Option.objects.filter(poll__assignment=assignment):
-        candidates.add(option.value)
-
     votes = []
-    for candidate in candidates:
-        tmplist = []
-        tmplist.append(candidate)
+    for candidate in assignment.candidates:
+        tmplist = [[candidate, assignment.is_elected(candidate)], []]
         for poll in assignment.poll_set.all():
             if candidate in poll.options_values:
                 option = Option.objects.filter(poll=poll).filter(user=candidate)[0]
                 if poll.optiondecision:
-                    tmplist.append([option.yes, option.no, option.undesided])
+                    tmplist[1].append([option.yes, option.no, option.undesided])
                 else:
-                    tmplist.append(option.yes)
+                    tmplist[1].append(option.yes)
             else:
-                tmplist.append("-")
+                tmplist[1].append("-")
         votes.append(tmplist)
 
     return {'assignment': assignment,
@@ -241,3 +235,22 @@ def delete_poll(request, poll_id):
     else:
         del_confirm_form(request, poll, name=_("the %s. ballot") % ballot)
     return redirect(reverse('assignment_view', args=[assignment.id]))
+
+@permission_required('assignment.can_manage_assignment')
+def set_elected(request, assignment_id, profile_id, elected=True):
+    assignment = Assignment.objects.get(pk=assignment_id)
+    profile = Profile.objects.get(pk=profile_id)
+    assignment.set_elected(profile, elected)
+
+    if request.is_ajax():
+        if elected:
+            link = reverse('assignment_user_not_elected', args=[assignment.id, profile.id])
+            text = _('not elected')
+        else:
+            link = reverse('assignment_user_elected', args=[assignment.id, profile.id])
+            text = _('elected')
+        return ajax_request({'elected': elected,
+                             'link': link,
+                             'text': text})
+
+    return redirect(reverse('assignment_view', args=[assignment_id]))
