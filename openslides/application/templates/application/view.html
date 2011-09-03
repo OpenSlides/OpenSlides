@@ -41,28 +41,60 @@
     {% if not forloop.last %}<br>{% endif %}
     {% endfor %}
 
-    {% with application.poll_set.all as polls %}
-    {% if poll|length > 0 %}
-    <h4>{% trans "Poll result" %}:</h4>
-    {% for poll in polls %}
-        {% if poll.has_vote %}
-            {% if polls|length > 1 %}
-                {{forloop.counter}}. {% trans "Poll" %}:<br>&nbsp;&nbsp;&nbsp;
-            {% endif %}
-            {% for option in poll.options %}
-                {% trans "Yes" %}: {{ option.yes }} |
-                {% trans "No" %}:  {{ option.no }} |
-                {% trans "Abstention" %}: {{ option.undesided }}
-            {% endfor %}
-            <br>
-        {% else %}
-            {% if polls|length == 1 %}
-            <i>{% trans "Not (yet) available." %}</i>
+    <h4>{% trans "Vote results" %}:</h4>
+        {% with application.poll_set.all as polls %}
+        {% if polls|length == 0 %}
+            {% if perms.application.can_manage_application %}
+                {% if "genpoll" in actions %}
+                <a href='{% url application_gen_poll application.id %}'>
+                    <button><span class="icon poll">{%trans 'New vote' %}</span></button>
+                </a>
+                {% else %}
+                -
+                {% endif %}
+            {% else %}
+            -
             {% endif %}
         {% endif %}
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
+        <ul class="results">
+        {% for poll in polls %}
+            <li>
+            {% if perms.application.can_manage_application %}
+                {% if poll.has_vote %}<a href="{% url application_poll_view poll.id %}">{% endif %}
+            {% endif %}
+            <b>{{ forloop.counter }}. {% trans "Vote" %}:</b>
+            {% if perms.application.can_manage_application %}
+                {% if poll.has_vote %}</a>{% endif %}
+                <a href="{% url application_poll_delete poll.id %}"><img src="/static/images/icons/edit-delete.png" title="{% trans 'Delete Vote' %}"></a>
+            {% endif %}
+            <br>
+            {% if poll.has_vote %}
+                {% for option in poll.options %}
+                    {% trans "Yes" %}: {{ option.yes }}<br>
+                    {% trans "No" %}:  {{ option.no }}<br>
+                    {% trans "Abstention" %}: {{ option.undesided }}<br>
+                    {% trans "Invalid" %}: {{ poll.votesinvalid }}
+                {% endfor %}
+                {% if perms.application.can_manage_application %}
+                    {% if forloop.last %}
+                    {% if "genpoll" in actions %}
+                    <br>
+                    <a href='{% url application_gen_poll application.id %}'>
+                        <button><span class="icon poll">{%trans 'New vote' %}</span></button>
+                    </a>
+                    {% endif %}
+                    {% endif %}
+                {% endif %}
+            {% else %}
+                {% if perms.application.can_manage_application %}
+                <a href="{% url application_poll_view poll.id %}">{% trans "Enter vote results!" %}</a>
+                {% endif %}
+            {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+        {% endwith %}
+
     
     <h4>{% trans "Creation Time" %}:</h4>
     {{ application.creation_time }}
@@ -124,41 +156,6 @@
         <a href='{% url item_new_default 'ItemApplication' application.id %}'>
             <button><span class="icon item">{%trans 'New agenda item' %}</span></button>
         </a>
-    {% endif %}
-
-    {% if application.status != "pub" %}
-        <h4></h4>
-        {% for poll in application.poll_set.all %}
-            {% if poll.has_vote %}<a href="{% url application_poll_view poll.id %}">{% endif %}
-            {{ forloop.counter }}. {% trans "Poll" %}:
-            {% if poll.has_vote %}</a>{% endif %}
-            <a href="{% url application_poll_delete poll.id %}"><img src="/static/images/icons/edit-delete.png" title="{% trans 'Delete Poll' %}"></a>
-            <br>&nbsp;&nbsp;&nbsp;
-            {% if poll.has_vote %}
-                {% for option in poll.options %}
-                    {% trans "Yes" %}: {{ option.yes }} |
-                    {% trans "No" %}:  {{ option.no }} |
-                    {% trans "Abstention" %}: {{ option.undesided }}
-                {% endfor %}
-                {% if forloop.last %}
-                {% if "genpoll" in actions %}
-                    <br>
-                    <a href='{% url application_gen_poll application.id %}'>
-                        <button><span class="icon poll">{%trans 'New poll' %}</span></button>
-                    </a>
-                {% endif %}
-                {% endif %}
-            {% else %}
-                <a href="{% url application_poll_view poll.id %}">{% trans "Enter vote results!" %}</a>
-            {% endif %}
-            {% if not forloop.last %}<br>{% endif %}
-        {% empty %}
-            {% if "genpoll" in actions %}
-            <a href='{% url application_gen_poll application.id %}'>
-                <button><span class="icon poll">{%trans 'New poll' %}</span></button>
-            </a>
-            {% endif %}
-        {% endfor %}
     {% endif %}
 
     {% if "acc" in actions or "rej" in actions %}
