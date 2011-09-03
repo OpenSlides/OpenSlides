@@ -14,6 +14,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
+from participant.api import gen_password
+
 class Profile(models.Model):
     GENDER_CHOICES = (
         ('none', _('Not specified')),
@@ -32,6 +34,11 @@ class Profile(models.Model):
     group = models.CharField(max_length=100, null=True, blank=True, verbose_name = _("Group"))
     type = models.CharField(max_length=100, choices=TYPE_CHOICE, default='delegate', verbose_name = _("Typ"))
     committee = models.CharField(max_length=100, null=True, blank=True, verbose_name = _("Committee"))
+    firstpassword = models.CharField(max_length=100, null=True, blank=True, verbose_name = _("First Password"))
+
+
+    def reset_password(self):
+        self.user.set_password(self.firstpassword)
 
     def __unicode__(self):
         if self.group:
@@ -44,3 +51,10 @@ class Profile(models.Model):
             ('can_view_participants', "Can see the list of participants"),
             ('can_manage_participants', "Can manage the participant list"),
         )
+
+def set_first_user_passwords():
+    for user in Profile.objects.filter(firstpassword=''):
+        user.firstpassword = gen_password()
+        user.user.set_password(user.firstpassword)
+        user.user.save()
+        user.save()
