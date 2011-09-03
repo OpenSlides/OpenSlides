@@ -17,7 +17,7 @@ from participant.models import Profile
 from assignment.models import Assignment
 
 
-class AssigmentForm(ModelForm):
+class AssignmentForm(ModelForm):
     error_css_class = 'error'
     required_css_class = 'required'
 
@@ -26,7 +26,7 @@ class AssigmentForm(ModelForm):
         exclude = ('status', 'profile')
 
 
-class AssigmentRunForm(Form):
+class AssignmentRunForm(Form):
     error_css_class = 'error'
 
     candidate = ModelChoiceField(

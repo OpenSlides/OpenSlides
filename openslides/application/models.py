@@ -351,14 +351,8 @@ class Application(models.Model):
         Generates a poll object for the application
         """
         from poll.models import Poll
-        if pollcount > 1:
-             description = _("%s. poll") % pollcount
-        else:
-            description = _("Poll")
-        poll = Poll(title=_("Application #%s") % self.number, \
-                    optiondecision=True, \
-                    application=self,
-                    description=description)
+        poll = Poll(optiondecision=True, \
+                    application=self)
         poll.save()
         poll.add_option(self)
         self.writelog(_("Poll created"), user)

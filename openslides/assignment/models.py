@@ -25,7 +25,7 @@ class Assignment(models.Model):
 
     name = models.CharField(max_length=100, verbose_name = _("Name"))
     description = models.TextField(null=True, blank=True, verbose_name = _("Description"))
-    assignment_number = models.PositiveSmallIntegerField(verbose_name = _("Number of available posts"))
+    posts = models.PositiveSmallIntegerField(verbose_name = _("Number of available posts"))
     polldescription = models.CharField(max_length=50, null=True, blank=True, verbose_name = _("Short description (for ballot paper)"))
     profile = models.ManyToManyField(Profile, null=True, blank=True)
     elected = models.ManyToManyField(Profile, null=True, blank=True, related_name='elected_set')
@@ -91,7 +91,7 @@ class Assignment(models.Model):
     def gen_poll(self):
         from poll.models import Poll
         poll = Poll()
-        poll.title = _("Election for %s") % self.name
+ 
         candidates = list(self.profile.all())
         for elected in self.elected.all():
             try:
@@ -100,21 +100,21 @@ class Assignment(models.Model):
                 pass
 
         # Option A: candidates <= available posts -> yes/no/abstention
-        if len(candidates) <= self.assignment_number - self.elected.count():
+        if len(candidates) <= self.posts - self.elected.count():
             poll.optiondecision = True
         else:
             poll.optiondecision = False
-
+        
         # Option B: candidates == 1 -> yes/no/abstention
         #if self.profile.count() == 1:
         #    poll.optiondecision = True
         #else:
         #    poll.optiondecision = False
-
+        
         poll.assignment = self
         poll.description = self.polldescription
         poll.save()
-        for candidate in candidates:
+		for candidate in candidates:
             poll.add_option(candidate)
         return poll
 

@@ -182,11 +182,6 @@ def firstPage(canvas, doc):
         canvas.setFillGray(0)
         #canvas.drawCentredString(PAGE_WIDTH/2.0, PAGE_HEIGHT-108, doc.title)
         canvas.drawString(2.75*cm, PAGE_HEIGHT-108, doc.title)
-    if doc.subtitle:
-        canvas.setFont('Ubuntu',10)
-        canvas.setFillGray(0.4)
-        #canvas.drawCentredString(PAGE_WIDTH/2.0, PAGE_HEIGHT-125, doc.subtitle)
-        canvas.drawString(2.75*cm, PAGE_HEIGHT-125, doc.subtitle)
     # footer (with page number)
     canvas.setFont('Ubuntu',8)
     canvas.setFillGray(0.4)
@@ -201,7 +196,7 @@ def laterPages(canvas, doc):
     canvas.drawString(10*cm, 1*cm, _("Page")+" %s" % doc.page)
     canvas.restoreState()
 
-def print_agenda(request, printAllItems=None):
+def print_agenda(request):
     response = HttpResponse(mimetype='application/pdf')
     filename = u'filename=%s.pdf;' % _("Agenda")
     response['Content-Disposition'] = filename.encode('utf-8')
@@ -209,25 +204,16 @@ def print_agenda(request, printAllItems=None):
     story = [Spacer(1,3*cm)]
 
     doc.title = _("Agenda")
-    if printAllItems:
-        doc.subtitle = "("+_("full")+")"
-    else:
-        doc.subtitle = "("+_("abridged")+")"
 
     # print item list
     items = children_list(Item.objects.filter(parent=None).order_by('weight'))
     for item in items:
         if item.hidden is False:
             # print all items
-            if printAllItems:
-                if item.parents:
-                    story.append(Paragraph(item.title, stylesheet['Subitem']))
-                else:
-                    story.append(Paragraph(item.title, stylesheet['Item']))
-            # print items without parents only
+            if item.parents:
+                story.append(Paragraph(item.title, stylesheet['Subitem']))
             else:
-                if item.parent is None:
-                    story.append(Paragraph(item.title, stylesheet['Subitem']))
+                story.append(Paragraph(item.title, stylesheet['Item']))
 
     doc.build(story, onFirstPage=firstPage, onLaterPages=laterPages)
     return response
@@ -240,7 +226,6 @@ def print_userlist(request):
     story = [Spacer(1,2*cm)]
 
     doc.title = _("List of Participants")
-    doc.subtitle = ""
     # Table
     data= [['#', _('Last Name'), _('First Name'), _('Group'), _('Type'), _('Committee')]]
     sort = 'last_name'
@@ -303,7 +288,6 @@ def print_application(request, application_id=None):
     response['Content-Disposition'] = filename.encode('utf-8')
     doc = SimpleDocTemplate(response)
     doc.title = None
-    doc.subtitle = None
     story = [Spacer(1,2*cm)]
     
     if application_id is None:  #print all applications
@@ -336,10 +320,10 @@ def print_application_poll(request, poll_id=None):
     circle = "<img src='openslides/static/images/circle.png' width='15' height='15'/>&nbsp;&nbsp;"
     cell = []
     cell.append(Spacer(0,0.8*cm))
-    cell.append(Paragraph(poll.title, stylesheet['Ballot_title']))
-    cell.append(Paragraph(_("Title")+": "+poll.application.title, stylesheet['Ballot_subtitle']))
-    if poll.description:
-        cell.append(Paragraph(poll.description, stylesheet['Ballot_description']))
+    cell.append(Paragraph(_("Application")+" #"+str(poll.application.number), stylesheet['Ballot_title']))
+    cell.append(Paragraph(poll.application.title, stylesheet['Ballot_subtitle']))
+    #if poll.description:
+    cell.append(Paragraph(str(poll.ballot)+". "+_("Vote"), stylesheet['Ballot_description']))
     cell.append(Spacer(0,0.5*cm))
     cell.append(Paragraph(circle+_("Yes"), stylesheet['Ballot_option']))
     cell.append(Paragraph(circle+_("No"), stylesheet['Ballot_option']))
@@ -356,10 +340,10 @@ def print_application_poll(request, poll_id=None):
     doc.build(story)
     return response
 
-def print_assignment_poll(request, poll_id=None, ballotnumber=1, posts=None):
+def print_assignment_poll(request, poll_id=None):
     poll = Poll.objects.get(id=poll_id)
     response = HttpResponse(mimetype='application/pdf')
-    filename = u'filename=%s-%s-#%s.pdf;' % (_("Election"), poll.title.replace(' ','_'), ballotnumber)
+    filename = u'filename=%s-%s-#%s.pdf;' % (_("Election"), poll.assignment.name.replace(' ','_'), poll.ballot)
     response['Content-Disposition'] = filename.encode('utf-8')
     doc = SimpleDocTemplate(response, pagesize=A4, topMargin=-6, bottomMargin=-6, leftMargin=0, rightMargin=0, showBoundary=False)
     story = [Spacer(0,0*cm)]
@@ -367,18 +351,13 @@ def print_assignment_poll(request, poll_id=None, ballotnumber=1, posts=None):
     circle = "<img src='openslides/static/images/circle.png' width='15' height='15'/>&nbsp;"
     cell = []
     cell.append(Spacer(0,0.8*cm))
-    cell.append(Paragraph(poll.title, stylesheet['Ballot_title']))
+    cell.append(Paragraph(_("Election") + ": " + poll.assignment.name, stylesheet['Ballot_title']))
     cell.append(Paragraph(poll.description, stylesheet['Ballot_subtitle']))
     options = poll.get_options().order_by('user__user__first_name')
-    cell.append(Paragraph(ballotnumber+". "+_("ballot")+", "+str(len(options))+" "+ ungettext("candidate", "candidates", len(options))+", "+posts+" "+_("available posts"), stylesheet['Ballot_description']))
+    cell.append(Paragraph(str(poll.ballot)+". "+_("ballot")+", "+str(len(options))+" "+ ungettext("candidate", "candidates", len(options))+", "+str(poll.assignment.posts)+" "+_("available posts"), stylesheet['Ballot_description']))
     cell.append(Spacer(0,0.4*cm))
     
-    if len(options) <= int(posts):
-        optiondecision = True
-    else:
-        optiondecision = False
-    
-    if optiondecision:
+    if poll.optiondecision:
         for option in options:
             o = str(option).rsplit("(",1)
             cell.append(Paragraph(o[0], stylesheet['Ballot_option_name']))

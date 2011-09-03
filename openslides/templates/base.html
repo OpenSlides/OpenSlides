@@ -55,10 +55,6 @@
                 <li  class="{% active request '/assignment' %}">
                     <a href="{% url assignment_overview %}" title="">{%trans "Elections" %}</a></li>
                 {% endif %}
-                {% if perms.poll.can_view_poll or perms.poll.can_manage_poll %}
-                <li  class="{% active request '/poll' %}">
-                    <a href="{% url poll_overview %}" title="">{%trans "Polls" %}</a></li>
-                {% endif %}
                 {% if perms.participant.can_view_participants or perms.participant.can_manage_participants %}
                 <li  class="{% active request '/participant' %}">
                     <a href="{% url user_overview %}" title="">{%trans "Participants" %}</a></li>

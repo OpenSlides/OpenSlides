@@ -40,13 +40,13 @@ urlpatterns = patterns('assignment.views',
     url(r'^assignment/(?P<assignment_id>\d+)/delother/(?P<profile_id>\d+)$', 'delother', \
         name='assignment_delother'),
 
-    url(r'^assignment/poll/(?P<poll_id>\d+)/print/(?P<ballotnumber>\d+)/(?P<posts>\d+)$', 'print_assignment_poll', \
+    url(r'^assignment/poll/(?P<poll_id>\d+)/print$', 'print_assignment_poll', \
         name='print_assignment_poll'),
 
-    url(r'^assignment/(?P<assignment_id>\d+)/gen_poll/(?P<ballotnumber>\d+)$', 'gen_poll', \
+    url(r'^assignment/(?P<assignment_id>\d+)/gen_poll$', 'gen_poll', \
         name='assignment_gen_poll'),
 
-    url(r'^assignment/poll/(?P<poll_id>\d+)/(?P<ballotnumber>\d+)$', 'poll_view', \
+    url(r'^assignment/poll/(?P<poll_id>\d+)$', 'poll_view', \
         name='assignment_poll_view'),
 
     url(r'^assignment/poll/(?P<poll_id>\d+)/del$', 'delete_poll', \

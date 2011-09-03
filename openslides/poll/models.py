@@ -19,14 +19,12 @@ from participant.models import Profile
 
 
 class Poll(models.Model):
-    #TODO: Mehrheit in den Zahlen festmachen
-    title = models.CharField(max_length=100, verbose_name = _("Title"))
     optiondecision = models.BooleanField(default=True, verbose_name = _("Poll of decision (yes, no, abstention)"))
     application = models.ForeignKey(Application, null=True, blank=True, verbose_name = _("Application"))
     assignment = models.ForeignKey(Assignment, null=True, blank=True, verbose_name = _("Election"))
     description = models.TextField(null=True, blank=True, verbose_name = _("Description"))
     votescast = models.IntegerField(null=True, blank=True, verbose_name = _("Votes cast"))
-    voteinvalid = models.IntegerField(null=True, blank=True, verbose_name = _("Votes invalid"))
+    votesinvalid = models.IntegerField(null=True, blank=True, verbose_name = _("Votes invalid"))
 
     def add_option(self, option):
         self.save()
@@ -58,6 +56,30 @@ class Poll(models.Model):
     def options_values(self):
         return [option.value for option in self.options]
 
+    @property
+    def count_ballots(self):
+        if self.application:
+            return Poll.objects.filter(application=self.application).count()
+        if self.assignment:
+            return Poll.objects.filter(assignment=self.assignment).count()
+        return None
+        
+    @property
+    def ballot(self):
+        if self.application:
+            counter = 0
+            for poll in Poll.objects.filter(application=self.application):
+                counter = counter + 1
+                if self == poll:
+                    return counter
+        if self.assignment:
+            counter = 0
+            for poll in Poll.objects.filter(assignment=self.assignment):
+                counter = counter + 1
+                if self == poll:
+                    return counter
+        return None
+
     @models.permalink
     def get_absolute_url(self, link='view'):
         if self.application:
@@ -76,13 +98,10 @@ class Poll(models.Model):
             return ('poll_delete', [str(self.id)])
 
     def __unicode__(self):
-        return self.title
-
-    class Meta:
-        permissions = (
-            ('can_view_poll', "Can view polls"),
-            ('can_manage_poll', "Can manage polls"),
-        )
+        if self.application:
+            return self.application.title
+        if self.assignment:
+            return self.assignment.name
 
 
 class Option(models.Model):

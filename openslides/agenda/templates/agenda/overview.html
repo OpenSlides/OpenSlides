@@ -70,8 +70,7 @@
                 {% if perms.agenda.can_manage_agenda %}
                 <td></td>
                 {% endif %}
-                <td style="width: 1px;white-space: nowrap"><a href="{% url print_agenda %}" title="{%trans 'Print reduced agenda (only first parent items)' %}"><img src="/static/images/icons/application-pdf.png"></a>
-                    <a href="{% url print_agenda_full printAllItems=1 %}" title="{%trans 'Print full agenda (all items)' %}"><img src="/static/images/icons/pdf-annotations.png"></a></td>
+                <td style="width: 1px;white-space: nowrap"><a href="{% url print_agenda %}" title="{%trans 'Print agenda' %}"><img src="/static/images/icons/application-pdf.png"></a></td>
             </tr>
             {% for item in items %}
                 {% if not item.hidden or perms.agenda.can_manage_agenda %}

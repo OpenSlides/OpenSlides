@@ -19,7 +19,7 @@ from django.utils.translation import ugettext as _
 from poll.models import Poll, Option
 from poll.forms import OptionResultForm, PollInvalidForm
 from assignment.models import Assignment
-from assignment.forms import AssigmentForm, AssigmentRunForm
+from assignment.forms import AssignmentForm, AssignmentRunForm
 from utils.utils import template, permission_required, gen_confirm_form, del_confirm_form, ajax_request
 from utils.pdf import print_assignment_poll
 from participant.models import Profile
@@ -53,7 +53,7 @@ def view(request, assignment_id=None):
     assignment = Assignment.objects.get(pk=assignment_id)
     if request.method == 'POST':
         if request.user.has_perm('assignment.can_nominate_other'):
-            form = AssigmentRunForm(request.POST)
+            form = AssignmentRunForm(request.POST)
             if form.is_valid():
                 user = form.cleaned_data['candidate']
                 try:
@@ -63,20 +63,26 @@ def view(request, assignment_id=None):
                     messages.error(request, e)
     else:
         if request.user.has_perm('assignment.can_nominate_other'):
-            form = AssigmentRunForm()
+            form = AssignmentRunForm()
+
+    # list of candidates
+    candidates = set()
+    for option in Option.objects.filter(poll__assignment=assignment):
+        candidates.add(option.value)
 
     votes = []
-    for candidate in assignment.candidates:
-        tmplist = [[candidate, assignment.is_elected(candidate)], []]
+    for candidate in candidates:
+        tmplist = []
+        tmplist.append(candidate)
         for poll in assignment.poll_set.all():
             if candidate in poll.options_values:
                 option = Option.objects.filter(poll=poll).filter(user=candidate)[0]
                 if poll.optiondecision:
-                    tmplist[1].append([option.yes, option.no, option.undesided])
+                    tmplist.append([option.yes, option.no, option.undesided])
                 else:
-                    tmplist[1].append(option.yes)
+                    tmplist.append(option.yes)
             else:
-                tmplist[1].append("-")
+                tmplist.append("-")
         votes.append(tmplist)
 
     return {'assignment': assignment,
@@ -96,7 +102,7 @@ def edit(request, assignment_id=None):
         assignment = None
 
     if request.method == 'POST':
-        form = AssigmentForm(request.POST, instance=assignment)
+        form = AssignmentForm(request.POST, instance=assignment)
         if form.is_valid():
             form.save()
             if assignment_id is None:
@@ -105,7 +111,7 @@ def edit(request, assignment_id=None):
                 messages.success(request, _('Election was successfully modified.'))
             return redirect(reverse("assignment_overview"))
     else:
-        form = AssigmentForm(instance=assignment)
+        form = AssignmentForm(instance=assignment)
     return {
         'form': form,
         'assignment': assignment,
@@ -133,26 +139,6 @@ def set_status(request, assignment_id=None, status=None):
             messages.success(request, _('Election status was set to: <b>%s</b>.') % assignment.get_status_display())
     except Assignment.DoesNotExist:
         pass
-    return redirect(reverse('assignment_view', args=[assignment_id]))
-
-
-@permission_required('assignment.can_manage_assignment')
-def set_elected(request, assignment_id, profile_id, elected=True):
-    assignment = Assignment.objects.get(pk=assignment_id)
-    profile = Profile.objects.get(pk=profile_id)
-    assignment.set_elected(profile, elected)
-
-    if request.is_ajax():
-        if elected:
-            link = reverse('assignment_user_not_elected', args=[assignment.id, profile.id])
-            text = _('not elected')
-        else:
-            link = reverse('assignment_user_elected', args=[assignment.id, profile.id])
-            text = _('elected')
-        return ajax_request({'elected': elected,
-                             'link': link,
-                             'text': text})
-
     return redirect(reverse('assignment_view', args=[assignment_id]))
 
 
@@ -194,26 +180,27 @@ def delother(request, assignment_id, profile_id):
 
 
 @permission_required('assignment.can_manage_assignment')
-def gen_poll(request, assignment_id, ballotnumber):
+def gen_poll(request, assignment_id):
     try:
         poll = Assignment.objects.get(pk=assignment_id).gen_poll()
         messages.success(request, _("New ballot was successfully created.") )
     except Assignment.DoesNotExist:
         pass
-    return redirect(reverse('assignment_poll_view', args=[poll.id, ballotnumber]))
+    return redirect(reverse('assignment_poll_view', args=[poll.id]))
 
 
 @permission_required('assignment.can_view_assignment')
 @template('assignment/poll_view.html')
-def poll_view(request, poll_id, ballotnumber=1):
+def poll_view(request, poll_id):
     poll = Poll.objects.get(pk=poll_id)
+    ballotnumber = poll.ballot
     options = poll.options.order_by('user__user__first_name')
     assignment = poll.assignment
     if request.user.has_perm('assignment.can_manage_assignment'):
         if request.method == 'POST':
             form = PollInvalidForm(request.POST, prefix="poll")
             if form.is_valid():
-                poll.voteinvalid = form.cleaned_data['invalid'] or 0
+                poll.votesinvalid = form.cleaned_data['invalid'] or 0
                 poll.save()
 
             success = 0
@@ -228,7 +215,7 @@ def poll_view(request, poll_id, ballotnumber=1):
             if success == options.count():
                 messages.success(request, _("Votes are successfully saved.") )
         else:
-            form = PollInvalidForm(initial={'invalid': poll.voteinvalid}, prefix="poll")
+            form = PollInvalidForm(initial={'invalid': poll.votesinvalid}, prefix="poll")
             for option in options:
                 option.form = OptionResultForm(initial={
                     'yes': option.voteyes,

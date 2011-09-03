@@ -1,25 +1,25 @@
 {% extends 'application/base_application.html' %}
-{% block title %}{{ block.super }} - {{ poll.title }}{% endblock %}
+{% block title %}{{ block.super }} - {{ poll }}{% endblock %}
 
-{% if perms.poll.can_manage_poll %}
+{% if perms.application.can_manage_application %}
 {% block submenu %}
 {{ block.super }}
 <br>
-<h3>{%trans "Application" %} #{{poll.application.number}}</h3>
+<h3>{%trans "Application" %} #{{ poll.application.number }}</h3>
 <ul>
-<li><a href="{% url print_application_poll poll.id %}"><img src="/static/images/icons/application-pdf.png"> {%trans 'Print Poll' %}</a></li>
+<li><a href="{% url print_application_poll poll.id %}"><img src="/static/images/icons/application-pdf.png"> {%trans 'Print vote' %}</a></li>
 </ul>
 {% endblock %}
 {% endif %}
 
 {% block content %}
-    <h1>{{ poll.title }}</h1>
-    <h4>Title: "{{ poll.application.title }}"</h4>
+    <h1>{%trans "Application" %} #{{ poll.application.number }} - {%trans "Vote" %}</h1>
+    <h4>{{ poll.application.title }}</h4>
 
     {% if perms.poll.can_manage_poll %}
         <form action="" method="post">{% csrf_token %}
         <fieldset>
-        <legend>{{ poll.description }}</legend>
+        <legend>{%trans "Results" %}: {{ ballot }}. {%trans "Vote" %}</legend>
         <p><nobr><label>{%trans "Votes in favour" %}:</label></nobr>
         {{ options.0.form.yes.errors }}{{ options.0.form.yes }}
         </p>

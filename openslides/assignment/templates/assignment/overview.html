@@ -27,7 +27,7 @@
     {% for assignment in assignments %}
         <tr class="{% cycle '' 'odd' %}">
             <td><a href="{% url assignment_view assignment.id %}">{{ assignment }}</a></td>
-            <td>{{ assignment.profile.count }} / {{ assignment.assignment_number }}</td>
+            <td>{{ assignment.profile.count }} / {{ assignment.posts }}</td>
             <td>{{ assignment.get_status_display }}</td>
             {% if perms.assignment.can_manage_assignment %}
                 <td><a href="{% url assignment_edit assignment.id %}"><img src="/static/images/icons/document-edit.png" title="{%trans 'Edit assignment' %}"></a>
