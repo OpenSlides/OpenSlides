@@ -46,6 +46,8 @@
             </em>
         </div>
         {% endif %}
+        <a class="beamer_edit" href="{% url beamer_bigger %}">+</a> <a class="beamer_edit" href="{% url beamer_smaller %}">-</a> <br>
+        <a class="beamer_edit" href="{% url beamer_up %}">+</a> <a class="beamer_edit" href="{% url beamer_down %}">-</a> <br>
         <table id="menu-overview" class="agendatable">
             <tr>
                 <th style="width: 1px;">{% trans "Beamer" %}</th>

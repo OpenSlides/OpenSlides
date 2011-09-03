@@ -104,5 +104,18 @@ $(function() {
         hideClosedSlides(true);
     }
 
+    // controll beamer
+    $('.beamer_edit').click(function(event) {
+        event.preventDefault();
+        link = $(this);
+        $.ajax({
+            type: 'GET',
+            url: link.attr('href'),
+            dataType: 'json',
+            success: function(data) {
+            }
+        });
+    });
+
     ko.applyBindings(ViewModel);
 });
