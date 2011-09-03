@@ -217,6 +217,8 @@ def edit(request, item_id=None, form='ItemText', default=None):
                     item.application.writelog(_('Agenda item modified'), request.user)
             if not 'apply' in request.POST:
                 return redirect(reverse('item_overview'))
+            if item_id is None:
+                return redirect(reverse('item_edit', args=[item.id]))
         else:
             messages.error(request, _('Please check the form for errors.'))
     else:
