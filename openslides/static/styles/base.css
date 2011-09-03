@@ -441,7 +441,12 @@ ol {
     margin:0;
     padding-left:20px;
 }
-
+ul.results {
+    list-style:square outside none;
+    -moz-padding-start:0px;
+    margin-left: 20px;
+    padding:0;
+}
 
 /* Fieldsets */
 fieldset {
