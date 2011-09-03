@@ -108,6 +108,7 @@ def edit(request, assignment_id=None):
                 messages.success(request, _('New election was successfully created.'))
             else:
                 messages.success(request, _('Election was successfully modified.'))
+        if not 'apply' in request.POST:
             return redirect(reverse("assignment_overview"))
     else:
         form = AssignmentForm(instance=assignment)
@@ -188,7 +189,7 @@ def gen_poll(request, assignment_id):
     return redirect(reverse('assignment_poll_view', args=[poll.id]))
 
 
-@permission_required('assignment.can_view_assignment')
+@permission_required('assignment.can_manage_assignment')
 @template('assignment/poll_view.html')
 def poll_view(request, poll_id):
     poll = Poll.objects.get(pk=poll_id)
@@ -214,6 +215,8 @@ def poll_view(request, poll_id):
                     success = success + 1
             if success == options.count():
                 messages.success(request, _("Votes are successfully saved.") )
+            if not 'apply' in request.POST:
+               return redirect(reverse('assignment_view', args=[assignment.id]))
         else:
             form = PollForm(initial={'invalid': poll.votesinvalid, 'votescast': poll.votescast}, prefix="poll")
             for option in options:

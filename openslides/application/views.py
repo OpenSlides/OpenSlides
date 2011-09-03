@@ -287,12 +287,11 @@ def gen_poll(request, application_id):
     gen a poll for this application.
     """
     try:
-        count = Poll.objects.filter(application=application_id).count()
-        Application.objects.get(pk=application_id).gen_poll(user=request.user, pollcount=count+1)
-        messages.success(request, _("New poll was successfully created.") )
+        poll = Application.objects.get(pk=application_id).gen_poll(user=request.user)
+        messages.success(request, _("New vote was successfully created.") )
     except Application.DoesNotExist:
         pass
-    return redirect(reverse('application_view', args=[application_id]))
+    return redirect(reverse('application_poll_view', args=[poll.id]))
 
 
 @permission_required('application.can_manage_application')
@@ -311,7 +310,7 @@ def delete_poll(request, poll_id):
     return redirect(reverse('application_view', args=[application.id]))
 
 
-@permission_required('application.can_view_poll')
+@permission_required('application.can_manage_application')
 @template('application/poll_view.html')
 def view_poll(request, poll_id):
     """
@@ -320,7 +319,7 @@ def view_poll(request, poll_id):
     poll = Poll.objects.get(pk=poll_id)
     ballot = poll.ballot
     options = poll.options
-    if request.user.has_perm('application.can_manage_applications'):
+    if request.user.has_perm('application.can_manage_application'):
         if request.method == 'POST':
             form = PollForm(request.POST, prefix="poll")
             if form.is_valid():
@@ -337,6 +336,9 @@ def view_poll(request, poll_id):
                     option.voteundesided = option.form. \
                                            cleaned_data['undesided'] or 0
                     option.save()
+                    messages.success(request, _("Votes are successfully saved.") )
+            if not 'apply' in request.POST:
+                return redirect(reverse('application_view', args=[poll.application.id]))
         else:
             form = PollForm(initial={'invalid': poll.votesinvalid, 'votescast': poll.votescast}, prefix="poll")
             for option in options:

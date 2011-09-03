@@ -70,7 +70,7 @@
                 {% if perms.agenda.can_manage_agenda %}
                 <td></td>
                 {% endif %}
-                <td style="width: 1px;white-space: nowrap"><a href="{% url print_agenda %}" title="{%trans 'Print agenda' %}"><img src="/static/images/icons/application-pdf.png"></a></td>
+                <td style="width: 1px;white-space: nowrap;"><a href="{% url print_agenda %}" title="{%trans 'Print agenda' %}"><img src="/static/images/icons/application-pdf.png"></a></td>
             </tr>
             {% for item in items %}
                 {% if not item.hidden or perms.agenda.can_manage_agenda %}
@@ -124,7 +124,7 @@
                     {% endifequal %}
                 </td>
                 {% endif %}
-                <td style="width: 1px;white-space: nowrap">
+                <td style="width: 1px;white-space: nowrap;">
                     <a href="{{ item.get_absolute_url }}"><img src="/static/images/icons/document-preview.png" title="{% trans 'Show beamer preview' %}"></a>
 
                     {% if  perms.agenda.can_manage_agenda %}
