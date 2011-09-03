@@ -20,18 +20,11 @@ class PollForm(ModelForm):
     error_css_class = 'error'
     required_css_class = 'required'
 
-    #votescast = IntegerField(required=False,widget=TextInput(attrs={'class':'small-input'}),label=_("Votes cast"))
-    #invalid = IntegerField(required=False, min_value=0, widget=TextInput(attrs={'class': 'small-input'}), label=_("Invalid"))
+    votescast = IntegerField(required=False,widget=TextInput(attrs={'class':'small-input'}),label=_("Votes cast"))
+    invalid = IntegerField(required=False, min_value=0, widget=TextInput(attrs={'class': 'small-input'}), label=_("Invalid"))
 
     class Meta:
         model = Poll
-
-class PollInvalidForm(Form):
-    error_css_class = 'error'
-    required_css_class = 'required'
-
-    invalid = IntegerField(required=False, min_value=0, widget=TextInput(attrs={'class': 'small-input'}), label=_("Invalid"))
-
 
 class OptionForm(ModelForm):
     error_css_class = 'error'

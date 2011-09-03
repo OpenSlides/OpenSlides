@@ -20,7 +20,7 @@ from openslides.application.models import Application
 from openslides.application.forms import ApplicationForm, \
                                          ApplicationManagerForm
 from openslides.poll.models import Poll
-from openslides.poll.forms import OptionResultForm, PollInvalidForm
+from openslides.poll.forms import OptionResultForm, PollForm
 from openslides.utils.utils import template, permission_required, \
                                    render_to_forbitten, del_confirm_form
 from openslides.utils.pdf import print_application, print_application_poll
@@ -322,9 +322,10 @@ def view_poll(request, poll_id):
     options = poll.options
     if request.user.has_perm('application.can_manage_applications'):
         if request.method == 'POST':
-            form = PollInvalidForm(request.POST, prefix="poll")
+            form = PollForm(request.POST, prefix="poll")
             if form.is_valid():
                 poll.votesinvalid = form.cleaned_data['invalid'] or 0
+                poll.votescast = form.cleaned_data['votescast'] or 0
                 poll.save()
 
             for option in options:
@@ -337,7 +338,7 @@ def view_poll(request, poll_id):
                                            cleaned_data['undesided'] or 0
                     option.save()
         else:
-            form = PollInvalidForm(initial={'invalid': poll.votesinvalid}, prefix="poll")
+            form = PollForm(initial={'invalid': poll.votesinvalid, 'votescast': poll.votescast}, prefix="poll")
             for option in options:
                 option.form = OptionResultForm(initial={
                     'yes': option.voteyes,

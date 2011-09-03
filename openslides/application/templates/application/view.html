@@ -70,15 +70,17 @@
             <br>
             {% if poll.has_vote %}
                 {% for option in poll.options %}
-                    {% trans "Yes" %}: {{ option.yes }}<br>
-                    {% trans "No" %}:  {{ option.no }}<br>
-                    {% trans "Abstention" %}: {{ option.undesided }}<br>
-                    {% trans "Invalid" %}: {{ poll.votesinvalid }}
+                    <img src="/static/images/icons/voting-yes.png" title="{% trans 'Yes' %}"> {{ option.yes }}<br>
+                    <img src="/static/images/icons/voting-no.png" title="{% trans 'No' %}"> {{ option.no }}<br>
+                    <img src="/static/images/icons/voting-abstention.png" title="{% trans 'Abstention' %}"> {{ option.undesided }}<br>
+                    <img src="/static/images/icons/voting-invalid.png" title="{% trans 'Invalid' %}"> {{ poll.votesinvalid }}<br>
+                    <div style="border-top: 1px solid; padding-top: 5px; margin: 5px 0; width: 5em;">
+                    <img src="/static/images/icons/voting-total.png" title="{% trans 'Votes cast' %}"> {{ poll.votescast }}
+                    </div>
                 {% endfor %}
                 {% if perms.application.can_manage_application %}
                     {% if forloop.last %}
                     {% if "genpoll" in actions %}
-                    <br>
                     <a href='{% url application_gen_poll application.id %}'>
                         <button><span class="icon poll">{%trans 'New vote' %}</span></button>
                     </a>
