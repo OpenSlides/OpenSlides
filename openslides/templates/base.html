@@ -25,17 +25,6 @@
             {% else %}
                 <li><a href="{% url user_login %}">{%trans "Login" %}</a></li>
             {% endif %}
-                <li id="last">
-                   <form action="/i18n/setlang/" method="post">
-                   {% csrf_token %}
-                   {%trans "Language" %}:
-                   <select class="small-input" name="language" onchange="document.forms[0].submit()">
-                       {% for lang in LANGUAGES %}
-                       <option value="{{ lang.0 }}" {% if lang.0 == request.LANGUAGE_CODE %}selected{% endif %}>{{ lang.0 }}</option>
-                       {% endfor %}
-                   </select>
-                   </form>
-                </li>
             </ul>
         </div>
 
