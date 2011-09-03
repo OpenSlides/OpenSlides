@@ -9,14 +9,8 @@
     :copyright: 2011 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
-try:
-    import json
-except ImportError:
-    import simplejson as json
-
 from datetime import datetime
 
-from django.http import HttpResponse
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
@@ -33,7 +27,7 @@ from openslides.poll.models import Poll
 from openslides.system.api import config_set, config_get
 from openslides.utils.template import render_block_to_string
 from openslides.utils.utils import template, permission_required, \
-                                   del_confirm_form
+                                   del_confirm_form, ajax_request
 from openslides.utils.pdf import print_agenda
 from poll.models import Poll, Option
 
@@ -85,7 +79,7 @@ def beamer(request):
         jsondata = {'content': content,
                     'title': data['title'],
                     'time': datetime.now().strftime('%H:%M')}
-        return HttpResponse(json.dumps(jsondata))
+        return ajax_request(jsondata)
     else:
         return render_to_response(template,
                                   data,
@@ -163,8 +157,7 @@ def set_active(request, item_id, summary=False):
         except Item.DoesNotExist:
             messages.error(request, _('Item ID %d does not exist.') % int(item_id))
     if request.is_ajax():
-        jsondata = {'active': item_id}
-        return HttpResponse(json.dumps(jsondata))
+        return ajax_request({'active': item_id})
 
     return redirect(reverse('item_overview'))
 
@@ -179,14 +172,15 @@ def set_closed(request, item_id, closed=True):
         item.set_closed(closed)
     except Item.DoesNotExist:
         messages.error(request, _('Item ID %d does not exist.') % int(item_id))
+
     if request.is_ajax():
         if closed:
             link = reverse('item_open', args=[item.id])
         else:
             link = reverse('item_close', args=[item.id])
-        jsondata = {'closed': closed,
-                    'link': link}
-        return HttpResponse(json.dumps(jsondata))
+
+        return ajax_request({'closed': closed,
+                             'link': link})
     return redirect(reverse('item_overview'))
 
 
