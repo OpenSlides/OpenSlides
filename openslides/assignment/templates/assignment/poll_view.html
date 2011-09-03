@@ -1,8 +1,8 @@
 {% extends 'assignment/base_assignment.html' %}
-{% block title %}{{ block.super }} - {%trans "Poll" %} "{{ poll.title }}"{% endblock %}
+{% block title %}{{ block.super }} - {%trans "Poll" %} "{{ poll }}"{% endblock %}
 
 {% block content %}
-    <h1>{{ poll.title }}</h1>
+    <h1>{{ poll }}</h1>
     <p>{{ ballotnumber }}. {%trans "ballot" %}: {{options.count}}
     {% blocktrans count counter=options|length %}candidate{% plural %}candidates{% endblocktrans %}
     </p>
@@ -46,7 +46,7 @@
             <span class="icon previous">{%trans 'Back to election' %}</span>
             </button>
         </a>
-        <a href='{% url print_assignment_poll poll.id ballotnumber poll.assignment.assignment_number %}'>
+        <a href='{% url print_assignment_poll poll.id %}'>
             <button type="button">
             <span class="icon pdf">{%trans 'Print ballot' %}</span>
             </button>

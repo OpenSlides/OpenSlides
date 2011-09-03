@@ -318,6 +318,7 @@ def view_poll(request, poll_id):
     view a poll for this application.
     """
     poll = Poll.objects.get(pk=poll_id)
+    ballot = poll.ballot
     options = poll.options
     if request.user.has_perm('application.can_manage_applications'):
         if request.method == 'POST':
@@ -347,4 +348,5 @@ def view_poll(request, poll_id):
         'poll': poll,
         'form': form,
         'options': options,
+        'ballot': ballot,
     }

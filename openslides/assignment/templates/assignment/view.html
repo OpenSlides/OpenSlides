@@ -9,7 +9,7 @@
     {% trans assignment.get_status_display %}
 
     <h4>{% trans "Number of available posts" %}:</h4>
-    {{ assignment.assignment_number }}
+    {{ assignment.posts }}
     </div>
 
     <br><br>
@@ -122,7 +122,7 @@
     <tr>
     <th>{% trans "Candidates" %}</th>
     {% for poll in assignment.poll_set.all %}
-    <th style="vertical-align: top; white-space:nowrap;">{% if perms.assignment.can_manage_assignment %}<a href="{% url assignment_poll_view poll.id forloop.counter %}">{% endif %}
+    <th style="vertical-align: top; white-space:nowrap;">{% if perms.assignment.can_manage_assignment %}<a href="{% url assignment_poll_view poll.id %}">{% endif %}
         {{forloop.counter}}.
         {% if perms.assignment.can_manage_assignment %}
         </a>
@@ -132,13 +132,11 @@
     {% endfor %}
     {% if assignment.profile.count > 0 and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
     <th>
-        {% with ballotnumber=assignment.poll_set.all.count %}
-        <a href='{% url assignment_gen_poll assignment.id ballotnumber|add:'1' %}'>
+        <a href='{% url assignment_gen_poll assignment.id %}'>
            <button type="button">
            <span class="icon poll">{%trans 'New ballot' %}</span>
            </button>
         </a>
-        {% endwith %}
     </th>
     {% endif %}
     </tr>
@@ -169,13 +167,11 @@
     <i>{% trans "No ballots available." %}</i>
     
     {% if assignment.profile.count > 0 and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
-        {% with ballotnumber=assignment.poll_set.all.count %}
-        <p><a href='{% url assignment_gen_poll assignment.id ballotnumber|add:'1' %}'>
+        <p><a href='{% url assignment_gen_poll assignment.id %}'>
            <button type="button">
            <span class="icon poll">{%trans 'New ballot' %}</span>
            </button>
         </a></p>
-        {% endwith %}
     {% endif %}
 
 {% endif %}

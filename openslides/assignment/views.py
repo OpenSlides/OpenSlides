@@ -19,7 +19,7 @@ from django.utils.translation import ugettext as _
 from poll.models import Poll, Option
 from poll.forms import OptionResultForm, PollInvalidForm
 from assignment.models import Assignment
-from assignment.forms import AssigmentForm, AssigmentRunForm
+from assignment.forms import AssignmentForm, AssignmentRunForm
 from utils.utils import template, permission_required, gen_confirm_form, del_confirm_form
 from utils.pdf import print_assignment_poll
 from participant.models import Profile
@@ -53,7 +53,7 @@ def view(request, assignment_id=None):
     assignment = Assignment.objects.get(pk=assignment_id)
     if request.method == 'POST':
         if request.user.has_perm('assignment.can_nominate_other'):
-            form = AssigmentRunForm(request.POST)
+            form = AssignmentRunForm(request.POST)
             if form.is_valid():
                 user = form.cleaned_data['candidate']
                 try:
@@ -63,7 +63,7 @@ def view(request, assignment_id=None):
                     messages.error(request, e)
     else:
         if request.user.has_perm('assignment.can_nominate_other'):
-            form = AssigmentRunForm()
+            form = AssignmentRunForm()
 
     # list of candidates
     candidates = set()
@@ -102,7 +102,7 @@ def edit(request, assignment_id=None):
         assignment = None
 
     if request.method == 'POST':
-        form = AssigmentForm(request.POST, instance=assignment)
+        form = AssignmentForm(request.POST, instance=assignment)
         if form.is_valid():
             form.save()
             if assignment_id is None:
@@ -111,7 +111,7 @@ def edit(request, assignment_id=None):
                 messages.success(request, _('Election was successfully modified.'))
             return redirect(reverse("assignment_overview"))
     else:
-        form = AssigmentForm(instance=assignment)
+        form = AssignmentForm(instance=assignment)
     return {
         'form': form,
         'assignment': assignment,
@@ -180,19 +180,20 @@ def delother(request, assignment_id, profile_id):
 
 
 @permission_required('assignment.can_manage_assignment')
-def gen_poll(request, assignment_id, ballotnumber):
+def gen_poll(request, assignment_id):
     try:
         poll = Assignment.objects.get(pk=assignment_id).gen_poll()
         messages.success(request, _("New ballot was successfully created.") )
     except Assignment.DoesNotExist:
         pass
-    return redirect(reverse('assignment_poll_view', args=[poll.id, ballotnumber]))
+    return redirect(reverse('assignment_poll_view', args=[poll.id]))
 
 
 @permission_required('assignment.can_view_assignment')
 @template('assignment/poll_view.html')
-def poll_view(request, poll_id, ballotnumber=1):
+def poll_view(request, poll_id):
     poll = Poll.objects.get(pk=poll_id)
+    ballotnumber = poll.ballot
     options = poll.options.order_by('user__user__first_name')
     assignment = poll.assignment
     if request.user.has_perm('assignment.can_manage_assignment'):

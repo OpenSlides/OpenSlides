@@ -149,7 +149,7 @@
                 {% endif %}
                 {% endif %}
             {% else %}
-                <a href="{% url application_poll_view poll.id %}">{% trans "Enter vote result!" %}</a>
+                <a href="{% url application_poll_view poll.id %}">{% trans "Enter vote results!" %}</a>
             {% endif %}
             {% if not forloop.last %}<br>{% endif %}
         {% empty %}
@@ -206,13 +206,13 @@
 
 
     <div>
-    <p>{% trans "Application" %}
+    <h1>{% trans "Application" %}
     {% if application.number != None %}
         #{{ application.number }}
     {% else %}
         <i>[no number]</i>
-    {% endif %}</p>
-    <h1>{{ application.title }}</h1>
+    {% endif %}</h1>
+    <h2>{{ application.title }}</h2>
 
 
     {{ application.text|linebreaks }}
