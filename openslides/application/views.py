@@ -128,7 +128,7 @@ def edit(request, application_id=None):
                 messages.success(request, _('New application was successfully created.'))
             else:
                 messages.success(request, _('Application was successfully modified.'))
-            
+
             if not 'apply' in request.POST:
                 return redirect(reverse('application_view', args=[application.id]))
             if application_id is None:
@@ -362,10 +362,7 @@ def view_poll(request, poll_id):
 def permit_version(request, aversion_id):
     aversion = AVersion.objects.get(pk=aversion_id)
     application = aversion.application
-    if application.accept_version(aversion):
-        messages.success(request, _("Version accepted") )
-    else:
-        messages.error(request, _("ERROR by accepting the Version") )
+    messages.success(request, _("Version accepted") )
     return redirect(reverse('application_view', args=[application.id]))
 
 

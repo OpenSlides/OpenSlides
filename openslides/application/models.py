@@ -66,11 +66,10 @@ class Application(models.Model):
         """
         accept a Version
         """
-        if version.id > self.permitted.id:
-            self.permitted = version
-            self.save()
-            return True
-        return False
+        self.permitted = version
+        self.save()
+        version.rejected = False
+        version.save()
 
     def reject_version(self, version):
         if version.id > self.permitted.id:
