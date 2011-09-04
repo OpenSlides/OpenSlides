@@ -363,7 +363,8 @@ def print_application_poll(request, poll_id=None):
     doc = SimpleDocTemplate(response, pagesize=A4, topMargin=-6, bottomMargin=-6, leftMargin=0, rightMargin=0, showBoundary=False)
     story = [Spacer(0,0*cm)]
     
-    circle = "<img src='openslides/static/images/circle.png' width='15' height='15'/>&nbsp;&nbsp;"
+    imgpath = os.path.join(SITE_ROOT, 'static/images/circle.png')
+    circle = "<img src='%s' width='15' height='15'/>&nbsp;&nbsp;" % imgpath
     cell = []
     cell.append(Spacer(0,0.8*cm))
     cell.append(Paragraph(_("Application")+" #"+str(poll.application.number), stylesheet['Ballot_title']))
@@ -394,7 +395,8 @@ def print_assignment_poll(request, poll_id=None):
     doc = SimpleDocTemplate(response, pagesize=A4, topMargin=-6, bottomMargin=-6, leftMargin=0, rightMargin=0, showBoundary=False)
     story = [Spacer(0,0*cm)]
     
-    circle = "<img src='openslides/static/images/circle.png' width='15' height='15'/>&nbsp;"
+    imgpath = os.path.join(SITE_ROOT, 'static/images/circle.png')
+    circle = "<img src='%s' width='15' height='15'/>&nbsp;&nbsp;" % imgpath
     cell = []
     cell.append(Spacer(0,0.8*cm))
     cell.append(Paragraph(_("Election") + ": " + poll.assignment.name, stylesheet['Ballot_title']))
