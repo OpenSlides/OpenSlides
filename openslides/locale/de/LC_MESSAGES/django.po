@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-04 12:21+0200\n"
+"POT-Creation-Date: 2011-09-04 12:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -124,39 +124,39 @@ msgstr "Abstimmung"
 msgid "Agenda"
 msgstr "Tagesordnung"
 
-#: agenda/views.py:175 agenda/views.py:193 agenda/views.py:216
+#: agenda/views.py:174 agenda/views.py:192 agenda/views.py:215
 #, python-format
 msgid "Item ID %d does not exist."
 msgstr "Eintrag %d existiert nicht."
 
-#: agenda/views.py:230
+#: agenda/views.py:229
 msgid "New item was successfully created."
 msgstr "Neuer Eintrag erfolgreich angelegt."
 
-#: agenda/views.py:232
+#: agenda/views.py:231
 msgid "Agenda item created"
 msgstr "Tagesordnungseintrag angelegt"
 
-#: agenda/views.py:234
+#: agenda/views.py:233
 msgid "Item was successfully modified."
 msgstr "Eintrag wurde erfolgreich geändert."
 
-#: agenda/views.py:236
+#: agenda/views.py:235
 msgid "Agenda item modified"
 msgstr "Tagesordnungseintrag geändert"
 
-#: agenda/views.py:242 participant/views.py:108 participant/views.py:194
+#: agenda/views.py:241 participant/views.py:108 participant/views.py:194
 #: participant/views.py:223 participant/views.py:271 system/views.py:32
 #: system/views.py:59
 msgid "Please check the form for errors."
 msgstr "Bitte kontrollieren Sie das Formular nach Fehlern."
 
-#: agenda/views.py:276
+#: agenda/views.py:275
 #, python-format
 msgid "Item <b>%s</b> and his children were successfully deleted."
 msgstr "Eintrag <b>%s</b> und seine Kindelemente wurde erfolgreich gelöscht."
 
-#: agenda/views.py:282
+#: agenda/views.py:281
 #, python-format
 msgid "Item <b>%s</b> was successfully deleted."
 msgstr "Eintrag <b>%s</b> wurde erfolgreich gelöscht."
@@ -797,12 +797,12 @@ msgid "Reset"
 msgstr "Zurücksetzen"
 
 #: application/templates/application/view.html:214
-msgid "Revision"
-msgstr "Überarbeitungen"
+msgid "Version"
+msgstr "Version"
 
 #: application/templates/application/view.html:230
-msgid "Revisions"
-msgstr "Überarbeitungen"
+msgid "Version History"
+msgstr "Versionshistorie"
 
 #: application/templates/application/view.html:235
 msgid "Time"
@@ -1511,3 +1511,9 @@ msgstr "verfügbare Posten"
 #: utils/utils.py:72
 msgid "Sorry, you have no rights to see this page."
 msgstr "Bedaure, Sie haben keine Berechtigung diese Seite zu sehen."
+
+#~ msgid "Revision"
+#~ msgstr "Überarbeitungen"
+
+#~ msgid "Revisions"
+#~ msgstr "Überarbeitungen"

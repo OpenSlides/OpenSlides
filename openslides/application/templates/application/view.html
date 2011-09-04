@@ -211,7 +211,7 @@
     {% else %}
         <i>[no number]</i>
     {% endif %}</h1>
-    {% trans "Revision" %} {{ application.aid }}
+    {% trans "Version" %} {{ application.aid }}
     
     <h2>{{ application.title }}</h2>
 
@@ -227,7 +227,7 @@
 
 
     {% if application.versions|length > 1 %}
-    <h2>{% trans "Revisions" %}:</h2>
+    <h2>{% trans "Version History" %}:</h2>
 
     <table class="table valigntop">
     <tr>
