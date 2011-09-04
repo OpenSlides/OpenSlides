@@ -18,43 +18,43 @@ urlpatterns = patterns('agenda.views',
 
     url(r'^$', 'overview'),
 
-    url(r'^item/$', 'overview',
+    url(r'^agenda/$', 'overview',
         name='item_overview'),
 
-    url(r'^item/(?P<item_id>\d+)/$', 'view',
+    url(r'^agenda/(?P<item_id>\d+)/$', 'view',
         name='item_view'),
 
-    url(r'^item/(?P<item_id>\d+)/activate/$', 'set_active',
+    url(r'^agenda/(?P<item_id>\d+)/activate/$', 'set_active',
         name='item_activate'),
 
-    url(r'^item/(?P<item_id>\d+)/activate/summary/$', 'set_active',
+    url(r'^agenda/(?P<item_id>\d+)/activate/summary/$', 'set_active',
         {'summary': True},\
         name='item_activate_summary'),
 
-    url(r'^item/(?P<item_id>\d+)/close/$', 'set_closed', {'closed': True},
+    url(r'^agenda/(?P<item_id>\d+)/close/$', 'set_closed', {'closed': True},
         name='item_close'),
 
-    url(r'^item/(?P<item_id>\d+)/open/$', 'set_closed', {'closed': False},
+    url(r'^agenda/(?P<item_id>\d+)/open/$', 'set_closed', {'closed': False},
         name='item_open'),
 
-    url(r'^item/(?P<item_id>\d+)/edit/$', 'edit',
+    url(r'^agenda/(?P<item_id>\d+)/edit/$', 'edit',
         name='item_edit'),
 
-    url(r'^item/new/$', 'edit',
+    url(r'^agenda/new/$', 'edit',
         name='item_new_default'),
 
-    url(r'^item/new/(?P<form>ItemText|ItemApplication|ItemPoll|'
+    url(r'^agenda/new/(?P<form>ItemText|ItemApplication|ItemPoll|'
                            r'ItemAssignment)/$', 'edit',
         name='item_new'),
 
-    url(r'^item/new/(?P<form>ItemText|ItemApplication|ItemPoll|'
+    url(r'^agenda/new/(?P<form>ItemText|ItemApplication|ItemPoll|'
                            r'ItemAssignment)/(?P<default>\d+)/$', 'edit',
         name='item_new_default'),
 
-    url(r'^item/(?P<item_id>\d+)/del/$', 'delete',
+    url(r'^agenda/(?P<item_id>\d+)/del/$', 'delete',
         name='item_delete'),
 
-    url(r'^item/print/$', 'print_agenda',
+    url(r'^agenda/print/$', 'print_agenda',
         name='print_agenda'),
 
     url(r'^beamer/bigger$', 'beamer_edit', {'direction': 'bigger'}, name='beamer_bigger'),

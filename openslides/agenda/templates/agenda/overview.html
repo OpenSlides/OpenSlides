@@ -37,7 +37,7 @@
 {% block content %}
     <h1>{% trans "Agenda" %}</h1>
     {% if items %}
-        <form action="/item/" method="post">{% csrf_token %}
+        <form action="/agenda/" method="post">{% csrf_token %}
         {% if perms.agenda.can_manage_agenda %}
         <div id="changed-order-message" style="display:none" class="notification warning">
             <em>{% trans "Do you want to save the changed order of agenda items?" %}<br>
@@ -60,7 +60,7 @@
                 <th class="tabledrag-hide">{% trans "Weight" %}</th>
                 {% endif %}
             </tr>
-            <tr id="item_row_0"{% if overview %} class="activeline"{% else %}{% if perms.agenda.can_manage_agenda %} class="inactiveline"{% endif %}{% endif %}>
+            <tr id="item_row_0" class="topline {% if overview %} activeline {% else %}{% if perms.agenda.can_manage_agenda %} inactiveline {% endif %}{% endif %}">
                 <td class="select">
                     {% if perms.agenda.can_manage_agenda %}
                     <a href="{% url item_activate 0 %}" class="activate_link">
@@ -68,7 +68,7 @@
                     </a>
                     {% endif %}
                 </td>
-                <td><i>{% trans "Agenda" %} ({{ items|length }} {% trans "items" %}<span id="hiddencount"></span>)</i></td>
+                <td><b>{% trans "Agenda" %} ({{ items|length }} {% trans "items" %}<span id="hiddencount"></span>)</b></td>
                 {% if perms.agenda.can_manage_agenda %}
                 <td></td>
                 {% endif %}

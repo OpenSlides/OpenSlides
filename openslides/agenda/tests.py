@@ -119,7 +119,7 @@ class ViewTest(TestCase):
         response = c.get('/beamer/')
         self.assertEqual(response.status_code, 200)
 
-        response = c.get('/item/%d/' % self.item1.id)
+        response = c.get('/agenda/%d/' % self.item1.id)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['item'], self.item1.cast())
         self.assertEqual(response.templates[0].name, 'beamer/ItemText.html')
@@ -127,26 +127,26 @@ class ViewTest(TestCase):
     def testActivate(self):
         c = self.adminClient
 
-        response = c.get('/item/%d/activate/' % self.item1.id)
+        response = c.get('/agenda/%d/activate/' % self.item1.id)
         self.assertEqual(response.status_code, 302)
         self.assertTrue(self.item1.active)
         self.assertFalse(self.item2.active)
         self.assertFalse(is_summary())
 
-        response = c.get('/item/%d/activate/summary/' % self.item2.id)
+        response = c.get('/agenda/%d/activate/summary/' % self.item2.id)
         self.assertEqual(response.status_code, 302)
         self.assertTrue(self.item2.active)
         self.assertFalse(self.item1.active)
         self.assertTrue(is_summary())
 
-        response = c.get('/item/%d/activate/' % 0)
+        response = c.get('/agenda/%d/activate/' % 0)
         self.assertEqual(response.status_code, 302)
         self.assertFalse(self.item2.active)
         self.assertFalse(self.item1.active)
         with self.assertRaises(Item.DoesNotExist):
             get_active_item()
 
-        response = c.get('/item/%d/activate/' % 10000)
+        response = c.get('/agenda/%d/activate/' % 10000)
         self.assertEqual(response.status_code, 302)
         self.assertFalse(self.item2.active)
         self.assertFalse(self.item1.active)
@@ -154,40 +154,40 @@ class ViewTest(TestCase):
     def testClose(self):
         c = self.adminClient
 
-        response = c.get('/item/%d/close/' % self.item1.id)
+        response = c.get('/agenda/%d/close/' % self.item1.id)
         self.refreshItems()
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Item.objects.get(pk=self.item1.id).closed)
 
-        response = c.get('/item/%d/open/' % self.item1.id)
+        response = c.get('/agenda/%d/open/' % self.item1.id)
         self.refreshItems()
         self.assertEqual(response.status_code, 302)
         self.assertFalse(self.item1.closed)
 
-        response = c.get('/item/%d/open/' % 1000)
+        response = c.get('/agenda/%d/open/' % 1000)
         self.refreshItems()
         self.assertEqual(response.status_code, 302)
 
     def testEdit(self):
         c = self.adminClient
 
-        response = c.get('/item/%d/edit/' % self.item1.id)
+        response = c.get('/agenda/%d/edit/' % self.item1.id)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['form'].instance, self.item1.cast())
 
-        response = c.get('/item/%d/edit/' % 1000)
+        response = c.get('/agenda/%d/edit/' % 1000)
         self.assertEqual(response.status_code, 302)
 
 
         data = {'title': 'newitem1', 'text': 'item1-text', 'weight':'0'}
-        response = c.post('/item/%d/edit/' % self.item1.id, data)
+        response = c.post('/agenda/%d/edit/' % self.item1.id, data)
         self.assertEqual(response.status_code, 302)
         self.refreshItems()
         self.assertEqual(self.item1.cast().title, 'newitem1')
         self.assertEqual(self.item1.cast().text, 'item1-text')
 
         data = {'title': '', 'text': 'item1-text', 'weight': '0'}
-        response = c.post('/item/%d/edit/' % self.item1.id, data)
+        response = c.post('/agenda/%d/edit/' % self.item1.id, data)
         self.assertEqual(response.status_code, 200)
         self.refreshItems()
         self.assertEqual(self.item1.cast().title, 'newitem1')

@@ -32,7 +32,7 @@
            {% block mainmenu %}
             <ul>
                 {% if perms.agenda.can_see_agenda or perms.agenda.can_manage_agenda %}
-                <li class="{% active request '/item' %}
+                <li class="{% active request '/agenda' %}
                            {% if request.path == '/'%}selected{% endif %}">
                     <a href="{% url item_overview %}" title="">{%trans "Agenda" %}</a></li>
                 {% endif %}

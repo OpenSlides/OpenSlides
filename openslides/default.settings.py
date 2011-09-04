@@ -19,7 +19,7 @@ TEMPLATE_DEBUG = DEBUG
 
 AUTH_PROFILE_MODULE = 'participant.Profile'
 LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/item/'
+LOGIN_REDIRECT_URL = '/agenda/'
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
