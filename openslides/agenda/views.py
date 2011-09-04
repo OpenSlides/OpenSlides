@@ -130,7 +130,7 @@ def assignment_votes(item):
     return votes
 
 
-@permission_required('agenda.can_view_agenda')
+@permission_required('agenda.can_see_agenda')
 @template('agenda/overview.html')
 def overview(request):
     """

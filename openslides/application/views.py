@@ -27,7 +27,7 @@ from openslides.utils.pdf import print_application, print_application_poll
 from openslides.system.api import config_get
 
 
-@permission_required('application.can_view_application')
+@permission_required('application.can_see_application')
 @template('application/overview.html')
 def overview(request):
     """
@@ -61,7 +61,7 @@ def overview(request):
     }
 
 
-@permission_required('application.can_view_application')
+@permission_required('application.can_see_application')
 @template('application/view.html')
 def view(request, application_id):
     """
@@ -91,8 +91,8 @@ def edit(request, application_id=None):
         is_manager = False
 
     if not is_manager \
-    and not request.user.has_perm('application.can_insert_application'):
-        messages.error(request, _("You have not the necessary rights to edit or insert applications."))
+    and not request.user.has_perm('application.can_create_application'):
+        messages.error(request, _("You have not the necessary rights to create or edit applications."))
         return redirect(reverse('application_overview'))
     if application_id is not None:
         application = Application.objects.get(id=application_id)

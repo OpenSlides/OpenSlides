@@ -49,8 +49,8 @@ class Profile(models.Model):
 
     class Meta:
         permissions = (
-            ('can_view_participants', "Can see the list of participants"),
-            ('can_manage_participants', "Can manage the participant list"),
+            ('can_see_participant', "Can see participant"),
+            ('can_manage_participant', "Can manage participant"),
         )
 
 def set_first_user_passwords():

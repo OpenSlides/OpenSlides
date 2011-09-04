@@ -30,7 +30,7 @@ from utils.pdf import print_userlist, print_passwords
 from django.db.models import Avg, Max, Min, Count
 
 
-@permission_required('participant.can_view_participants')
+@permission_required('participant.can_see_participant')
 @template('participant/overview.html')
 def get_overview(request):
     query = User.objects
@@ -69,7 +69,7 @@ def get_overview(request):
         'committees': committees,
     }
 
-@permission_required('participant.can_manage_participants')
+@permission_required('participant.can_manage_participant')
 @template('participant/edit.html')
 def edit(request, user_id=None):
     """
@@ -120,7 +120,7 @@ def edit(request, user_id=None):
         'edituser': user,
     }
 
-@permission_required('participant.can_manage_participants')
+@permission_required('participant.can_manage_participant')
 @template('confirm.html')
 def user_delete(request, user_id):
     user = User.objects.get(pk=user_id)
@@ -131,7 +131,7 @@ def user_delete(request, user_id):
         gen_confirm_form(request, _('Do you really want to delete <b>%s</b>?') % user, reverse('user_delete', args=[user_id]))
     return redirect(reverse('user_overview'))
 
-@permission_required('participant.can_manage_participants')
+@permission_required('participant.can_manage_participant')
 @template('confirm.html')
 def user_set_superuser(request, user_id):
     user = User.objects.get(pk=user_id)
@@ -145,7 +145,7 @@ def user_set_superuser(request, user_id):
         messages.success(request, _('Participant <b>%s</b> is now administrator.') % user)
     return redirect(reverse('user_overview'))
 
-@permission_required('participant.can_manage_participants')
+@permission_required('participant.can_manage_participant')
 @template('confirm.html')
 def user_set_active(request, user_id):
     user = User.objects.get(pk=user_id)
@@ -159,7 +159,7 @@ def user_set_active(request, user_id):
         messages.success(request, _('Participant <b>%s</b> was successfully activated.') % user)
     return redirect(reverse('user_overview'))
 
-@permission_required('participant.can_manage_participants')
+@permission_required('participant.can_manage_participant')
 @template('participant/group_overview.html')
 def get_group_overview(request):
     groups = Group.objects.all()
@@ -167,7 +167,7 @@ def get_group_overview(request):
         'groups': groups,
     }
 
-@permission_required('participant.can_manage_participants')
+@permission_required('participant.can_manage_participant')
 @template('participant/group_edit.html')
 def group_edit(request, group_id=None):
     if group_id is not None:
@@ -199,7 +199,7 @@ def group_edit(request, group_id=None):
         'group': group,
     }
 
-@permission_required('participant.can_manage_participants')
+@permission_required('participant.can_manage_participant')
 def group_delete(request, group_id):
     group = Group.objects.get(pk=group_id)
     if request.method == 'POST':
@@ -231,7 +231,7 @@ def user_settings(request):
         'edituser': request.user,
     }
 
-@permission_required('participant.can_manage_participants')
+@permission_required('participant.can_manage_participant')
 @template('participant/import.html')
 def user_import(request):
     try:
@@ -277,13 +277,13 @@ def user_import(request):
     }
 
 
-@permission_required('participant.can_manage_participants')
+@permission_required('participant.can_manage_participant')
 def gen_passwords(request):
     set_first_user_passwords()
     return redirect(reverse('user_overview'))
 
 
-@permission_required('participant.can_manage_participants')
+@permission_required('participant.can_manage_participant')
 def reset_password(request, user_id):
     user = User.objects.get(pk=user_id)
     if request.method == 'POST':
