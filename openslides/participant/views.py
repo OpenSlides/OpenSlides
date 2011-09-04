@@ -23,7 +23,7 @@ from django.utils.translation import ugettext as _
 
 from participant.models import Profile, set_first_user_passwords
 from participant.api import gen_username
-from participant.forms import UserForm, UsernameForm, ProfileForm, UsersettingsForm, UserImportForm, GroupForm, AdminPasswordChangeForm
+from participant.forms import UserNewForm, UserEditForm, ProfileForm, UsersettingsForm, UserImportForm, GroupForm, AdminPasswordChangeForm
 from utils.utils import template, permission_required, gen_confirm_form
 from utils.pdf import print_userlist, print_passwords
 
@@ -81,19 +81,18 @@ def edit(request, user_id=None):
         user = None
 
     if request.method == 'POST':
-        userform = UserForm(request.POST, instance=user, prefix="user")
-        try:
-            profileform = ProfileForm(request.POST, instance=user.profile, prefix="profile")
-        except:
+        if user_id is None:
+            userform = UserNewForm(request.POST, prefix="user")
             profileform = ProfileForm(request.POST, prefix="profile")
+        else:
+            userform = UserEditForm(request.POST, instance=user, prefix="user")
+            profileform = ProfileForm(request.POST, instance=user.profile, prefix="profile")
 
-        formlist = [userform, profileform]
-        formerror = 0
-        for f in formlist:
-            if not f.is_valid():
-                formerror += 1
-        if formerror == 0:
+        if userform.is_valid and profileform.is_valid:
             user = userform.save()
+            if user_id is None:
+                user.username = gen_username(user.first_name, user.last_name)
+                user.save()
             profile = profileform.save(commit=False)
             profile.user = user
             profile.save()
@@ -108,11 +107,13 @@ def edit(request, user_id=None):
         else:
             messages.error(request, _('Please check the form for errors.'))
     else:
-        userform = UserForm(instance=user, prefix="user")
-        try:
-            profileform = ProfileForm(instance=user.profile, prefix="profile")
-        except AttributeError:
+        if user_id is None:
+            userform = UserNewForm(prefix="user")
             profileform = ProfileForm(prefix="profile")
+        else:
+            userform = UserEditForm(instance=user, prefix="user")
+            profileform = ProfileForm(instance=user.profile, prefix="profile")
+
     return {
         'userform': userform,
         'profileform': profileform,

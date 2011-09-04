@@ -16,7 +16,18 @@ from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.utils.translation import ugettext as _
 from participant.models import Profile
 
-class UserForm(ModelForm):
+class UserNewForm(ModelForm):
+    error_css_class = 'error'
+    required_css_class = 'required'
+
+    first_name = CharField(label=_("First name"))
+    last_name = CharField(label=_("Last name"))
+
+    class Meta:
+        model = User
+        exclude = ('username', 'password', 'is_staff', 'last_login', 'date_joined', 'user_permissions')
+
+class UserEditForm(ModelForm):
     error_css_class = 'error'
     required_css_class = 'required'
 
@@ -49,10 +60,7 @@ class GroupForm(ModelForm):
     class Meta:
         model = Group
 
-class UsersettingsForm(UserForm):
-    error_css_class = 'error'
-    required_css_class = 'required'
-
+class UsersettingsForm(UserEditForm):
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email')
