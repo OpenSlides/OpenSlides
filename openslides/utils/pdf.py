@@ -210,14 +210,16 @@ def print_agenda(request):
     story = [Spacer(1,3*cm)]
 
     doc.title = _("Agenda")
-
     # print item list
     items = children_list(Item.objects.filter(parent=None).order_by('weight'))
     for item in items:
         if item.hidden is False:
-            # print all items
+            # print all items"
             if item.parents:
-                story.append(Paragraph(item.title, stylesheet['Subitem']))
+                space = ""
+                for p in item.parents:
+                    space += "&nbsp;&nbsp;&nbsp;"
+                story.append(Paragraph(space+item.title, stylesheet['Subitem']))
             else:
                 story.append(Paragraph(item.title, stylesheet['Item']))
 
