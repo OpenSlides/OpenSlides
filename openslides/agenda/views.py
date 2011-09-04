@@ -47,7 +47,7 @@ def view(request, item_id):
                              context_instance=RequestContext(request))
 
 
-@permission_required('agenda.can_see_beamer')
+@permission_required('agenda.can_see_projector')
 def beamer(request):
     """
     Shows a active Slide.
@@ -126,7 +126,6 @@ def assignment_votes(item):
               else:
                   tmplist.append("-")
           votes.append(tmplist)
-
     return votes
 
 

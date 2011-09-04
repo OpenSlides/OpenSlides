@@ -10,7 +10,7 @@
         {% if perms.agenda.can_manage_agenda %}
         <li class="{% active request '/item/new/' %}"><a href="{% url item_new 'ItemText' %}">{%trans "New item" %}</a></li>
         {% endif %}
-        {% if perms.agenda.can_see_beamer %}
+        {% if perms.agenda.can_see_projector %}
         <li><a href="{% url item_beamer %}"><img src="/static/images/icons/view-presentation.png"> {%trans 'Beamer view' %}</a></li>
         {% endif %}
     </ul>
