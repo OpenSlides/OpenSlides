@@ -362,6 +362,7 @@ def view_poll(request, poll_id):
 def permit_version(request, aversion_id):
     aversion = AVersion.objects.get(pk=aversion_id)
     application = aversion.application
+    application.accept_version(aversion)
     messages.success(request, _("Version accepted") )
     return redirect(reverse('application_view', args=[application.id]))
 

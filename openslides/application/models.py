@@ -353,13 +353,15 @@ class Application(models.Model):
         if name is title, text, reason or time,
             Return this attribute from the newest version of the application
         """
-        if name in ('title', 'text', 'reason', 'time'):
+        if name in ('title', 'text', 'reason', 'time', 'aid'):
             try:
-                return self.last_version.__dict__[name]
+                return self.permitted.__dict__[name]
             except TypeError:
-                raise AttributeError(name)
+                return self.last_version.__dict__[name]
+                #raise AttributeError(name)
             except AttributeError:
-                raise AttributeError(name)
+                return self.last_version.__dict__[name]
+                #raise AttributeError(name)
         raise AttributeError(name)
 
     def gen_poll(self, user=None):
