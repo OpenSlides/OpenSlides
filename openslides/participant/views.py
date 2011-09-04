@@ -46,7 +46,7 @@ def get_overview(request):
         sort = request.GET['sort']
         if sort in ['first_name', 'last_name','username','last_login','email']:
             query = query.order_by(sort)
-        elif sort in ['gender', 'group', 'type', 'committee']:
+        elif sort in ['group', 'type', 'committee']:
             query = query.order_by('profile__%s' % sort)
     except KeyError:
         pass

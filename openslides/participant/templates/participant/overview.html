@@ -40,14 +40,13 @@
         <tr>
             <th><a href="?sort=first_name{% if 'first_name' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "First Name" %}</a></th>
             <th><a href="?sort=last_name{% if 'last_name' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Last Name" %}</a></th>
-            <th><a href="?sort=gender{% if 'gender' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Gender" %}</a></th>
             <th><a href="?sort=group{% if 'group' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Group" %}</a></th>
-            <th><a href="?sort=type{% if 'type' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Type" %}</a></th>
             <th><a href="?sort=committee{% if 'committee' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Committee" %}</a></th>
+            {% if perms.participant.can_manage_participants %}
+            <th><a href="?sort=type{% if 'type' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Type" %}</a></th>
             <th><a href="?sort=username{% if 'username' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Username" %}</a></th>
             <th><a href="?sort=email{% if 'email' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Email" %}</a></th>
             <th><a href="?sort=last_login{% if 'last_login' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Last Login" %}</a></th>
-            {% if perms.participant.can_manage_participants %}
             <th>{%trans "Actions" %}</th>
             {% endif %}
         </tr>
@@ -55,22 +54,15 @@
         <tr class="{% cycle '' 'odd' %}">
             <td>{{ user.first_name }}</td>
             <td>{{ user.last_name }}</td>
-            <td>{% if "none" not in user.profile.gender %}
-            {% if user.profile.gender == 'male' %}
-                {% trans "Male" %}
-            {% else %}
-                {% trans "Female" %}
-            {% endif %}
-            {% endif %}</td>
             <td>{{ user.profile.group }}</td>
-            <td>{{ user.profile.type }}</td>
             <td>{{ user.profile.committee }}</td>
+            {% if perms.participant.can_manage_participants %}
+            <td>{{ user.profile.type }}</td>
             <td>{{ user.username }}</td>
             <td>{{ user.email }}</td>
             <td>{% if user.last_login > user.date_joined %}
                 {{ user.last_login }}
                 {% endif %}</td>
-            {% if perms.participant.can_manage_participants %}
             <td style="width: 1px; white-space: nowrap;"><a href="{% url user_edit user.id %}"><img src="/static/images/icons/document-edit.png" title="{%trans 'Edit participant' %}"></a>
                 <a href="{% url user_delete user.id %}"><img src="/static/images/icons/edit-delete.png" title="{%trans 'Delete participant' %}"></a>
                 {% if user.is_active %}
