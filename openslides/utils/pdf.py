@@ -11,6 +11,8 @@
 """
 
 from datetime import datetime
+import os
+
 from django.http import HttpResponse, HttpResponseNotFound
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -36,11 +38,12 @@ from openslides.agenda.api import children_list
 from openslides.poll.models import Poll
 from openslides.participant.models import Profile
 from openslides.system.api import config_get
+from openslides.settings import SITE_ROOT
 
 # register new truetype fonts
-pdfmetrics.registerFont(TTFont('Ubuntu', 'openslides/static/fonts/Ubuntu-R.ttf'))
-pdfmetrics.registerFont(TTFont('Ubuntu-Bold', 'openslides/static/fonts/Ubuntu-B.ttf'))
-pdfmetrics.registerFont(TTFont('Ubuntu-Italic', 'openslides/static/fonts/Ubuntu-RI.ttf'))
+pdfmetrics.registerFont(TTFont('Ubuntu', os.path.join(SITE_ROOT, 'static/fonts/Ubuntu-R.ttf')))
+pdfmetrics.registerFont(TTFont('Ubuntu-Bold', os.path.join(SITE_ROOT, 'static/fonts/Ubuntu-B.ttf')))
+pdfmetrics.registerFont(TTFont('Ubuntu-Italic', os.path.join(SITE_ROOT, 'static/fonts/Ubuntu-RI.ttf')))
 
 # set style information
 PAGE_HEIGHT=defaultPageSize[1];
@@ -284,7 +287,8 @@ def print_passwords(request):
             cell.append(Spacer(0,0.5*cm))
             cell2 = []
             cell2.append(Spacer(0,0.8*cm))
-            cell2.append(Paragraph(system_welcometext.replace('\r\n','<br/>'), stylesheet['Ballot_subtitle']))
+            if system_welcometext is not None:
+                cell2.append(Paragraph(system_welcometext.replace('\r\n','<br/>'), stylesheet['Ballot_subtitle']))
             
             data.append([cell,cell2])
         except Profile.DoesNotExist:
