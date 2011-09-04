@@ -362,7 +362,6 @@ def view_poll(request, poll_id):
 def permit_version(request, aversion_id):
     aversion = AVersion.objects.get(pk=aversion_id)
     application = aversion.application
-    
     if request.method == 'POST':
         application.accept_version(aversion)
         messages.success(request, _("Version <b>%s</b> accepted.") % (aversion.aid))
@@ -374,10 +373,13 @@ def permit_version(request, aversion_id):
 @permission_required('application.can_manage_application')
 def reject_version(request, aversion_id):
     aversion = AVersion.objects.get(pk=aversion_id)
-    application = aversion.application
-    if application.reject_version(aversion):
-        messages.success(request, _("Version rejected") )
+    application = aversion.application    
+    if request.method == 'POST':
+        if application.reject_version(aversion):
+            messages.success(request, _("Version <b>%s</b> rejected.") % (aversion.aid))
+        else:
+            messages.error(request, _("ERROR by rejecting the version.") )
     else:
-        messages.error(request, _("ERROR by rejecting the Version") )
+        gen_confirm_form(request, _('Do you really want to reject version <b>%s</b>?') % aversion.aid, reverse('application_version_reject', args=[aversion.id]))
     return redirect(reverse('application_view', args=[application.id]))
 
