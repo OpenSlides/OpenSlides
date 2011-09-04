@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-04 12:34+0200\n"
+"POT-Creation-Date: 2011-09-04 17:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -62,7 +62,7 @@ msgid "Parent item"
 msgstr "Elternelement"
 
 #: agenda/models.py:35 application/forms.py:23
-#: application/templates/application/view.html:236
+#: application/templates/application/view.html:237
 msgid "Title"
 msgstr "Titel"
 
@@ -84,7 +84,7 @@ msgid "No Form for itemtype %s"
 msgstr "Kein Formular für Eintrag %s"
 
 #: agenda/models.py:189 application/forms.py:24
-#: application/templates/application/view.html:237 poll/models.py:108
+#: application/templates/application/view.html:238 poll/models.py:108
 msgid "Text"
 msgstr "Text"
 
@@ -321,7 +321,7 @@ msgstr "Keine Abstimmungen vorhanden."
 
 #: agenda/templates/beamer/ItemApplication.html:44 application/forms.py:25
 #: application/templates/application/view.html:220
-#: application/templates/application/view.html:239 utils/pdf.py:319
+#: application/templates/application/view.html:240 utils/pdf.py:319
 msgid "Reason"
 msgstr "Begründung"
 
@@ -564,23 +564,28 @@ msgstr "die %s. Abstimmung"
 msgid "Votes are successfully saved."
 msgstr "Stimmen erfolgreich gespeichert."
 
-#: application/views.py:368
+#: application/views.py:367
 #, python-format
 msgid "Version <b>%s</b> accepted."
 msgstr "Version <b>%s</b> akzeptiert."
 
-#: application/views.py:370
+#: application/views.py:369
 #, python-format
 msgid "Do you really want to permit version <b>%s</b>?"
 msgstr "Soll Version <b>%s</b> wirklich zugelassen werden?"
 
-#: application/views.py:379 application/templates/application/view.html:256
-msgid "Version rejected"
-msgstr "Version zurückgewiesen"
+#: application/views.py:379
+msgid "Version <b>%s</b> rejected."
+msgstr "Version <b>%s</b> zurückgewiesen."
 
 #: application/views.py:381
-msgid "ERROR by rejecting the Version"
+#, fuzzy
+msgid "ERROR by rejecting the version."
 msgstr "FEHLER beim Zurückweisen der Version"
+
+#: application/views.py:383
+msgid "Do you really want to reject version <b>%s</b>?"
+msgstr "Soll Version <b>%s</b> wirklich zurückgewiesen werden?"
 
 #: application/templates/application/base_application.html:6
 #: application/templates/application/overview.html:2
@@ -797,6 +802,7 @@ msgid "Reset"
 msgstr "Zurücksetzen"
 
 #: application/templates/application/view.html:214
+#: application/templates/application/view.html:235
 msgid "Version"
 msgstr "Version"
 
@@ -804,29 +810,33 @@ msgstr "Version"
 msgid "Version History"
 msgstr "Versionshistorie"
 
-#: application/templates/application/view.html:235
+#: application/templates/application/view.html:236
 msgid "Time"
 msgstr "Zeit"
 
-#: application/templates/application/view.html:246
+#: application/templates/application/view.html:247
 msgid "Version accepted"
 msgstr "Version akzeptiert"
 
-#: application/templates/application/view.html:249
+#: application/templates/application/view.html:250
 msgid "Accept Version"
 msgstr "Zugelassene Version"
 
-#: application/templates/application/view.html:252
+#: application/templates/application/view.html:253
 msgid "Reject Version"
 msgstr "Verion zurückweisen"
 
-#: application/templates/application/view.html:265
-#: application/templates/application/view.html:272
-#: application/templates/application/view.html:279
+#: application/templates/application/view.html:257
+msgid "Version rejected"
+msgstr "Version zurückgewiesen"
+
+#: application/templates/application/view.html:267
+#: application/templates/application/view.html:274
+#: application/templates/application/view.html:281
 msgid "unchanged"
 msgstr "unverändert"
 
-#: application/templates/application/view.html:288
+#: application/templates/application/view.html:290
 msgid "Log"
 msgstr "Log"
 
