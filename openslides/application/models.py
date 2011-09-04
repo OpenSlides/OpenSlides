@@ -67,7 +67,7 @@ class Application(models.Model):
         accept a Version
         """
         self.permitted = version
-        self.save()
+        self.save(nonewversion=True)
         version.rejected = False
         version.save()
 
@@ -132,11 +132,13 @@ class Application(models.Model):
         min_supporters = int(config_get('application_min_supporters'))
         return self.supporter.count() >= min_supporters
 
-    def save(self, user=None):
+    def save(self, user=None, nonewversion=False):
         """
         Save the Application, and create a new AVersion if necessary
         """
         super(Application, self).save()
+        if nonewversion:
+            return
         last_version = self.last_version
         if last_version is not None:
             if (last_version.text == self.text
