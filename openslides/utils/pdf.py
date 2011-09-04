@@ -39,6 +39,7 @@ from openslides.poll.models import Poll
 from openslides.participant.models import Profile
 from openslides.system.api import config_get
 from openslides.settings import SITE_ROOT
+from openslides.utils.utils import permission_required
 
 # register new truetype fonts
 pdfmetrics.registerFont(TTFont('Ubuntu', os.path.join(SITE_ROOT, 'static/fonts/Ubuntu-R.ttf')))
@@ -200,6 +201,7 @@ def laterPages(canvas, doc):
     canvas.drawString(10*cm, 1*cm, _("Page")+" %s" % doc.page)
     canvas.restoreState()
 
+@permission_required('agenda.can_view_agenda')
 def print_agenda(request):
     response = HttpResponse(mimetype='application/pdf')
     filename = u'filename=%s.pdf;' % _("Agenda")
@@ -222,6 +224,7 @@ def print_agenda(request):
     doc.build(story, onFirstPage=firstPage, onLaterPages=laterPages)
     return response
 
+@permission_required('participant.can_manage_participants')
 def print_userlist(request):
     response = HttpResponse(mimetype='application/pdf')
     filename = u'filename=%s.pdf;' % _("Participant-list")
@@ -262,6 +265,7 @@ def print_userlist(request):
     doc.build(story, onFirstPage=firstPage, onLaterPages=laterPages)
     return response
 
+@permission_required('participant.can_manage_participants')
 def print_passwords(request):
     response = HttpResponse(mimetype='application/pdf')
     filename = u'filename=%s.pdf;' % _("passwords")
@@ -303,7 +307,8 @@ def print_passwords(request):
     story.append(t)
     doc.build(story)
     return response
-    
+
+@permission_required('application.can_view_application')
 def get_application(application, story):
     if application.number is None:
         story.append(Paragraph(_("Application")+" #[-]", stylesheet['Heading1']))
@@ -327,7 +332,8 @@ def get_application(application, story):
     else:
         story.append(Paragraph(_("Status")+": %s" % (application.get_status_display()), stylesheet['Italic']))
     return story
-    
+
+@permission_required('application.can_view_application')
 def print_application(request, application_id=None):
     response = HttpResponse(mimetype='application/pdf')
     filename = u'filename=%s.pdf;' % _("Applications")
@@ -355,6 +361,7 @@ def print_application(request, application_id=None):
     doc.build(story, onFirstPage=firstPage, onLaterPages=laterPages)
     return response
 
+@permission_required('application.can_manage_application')
 def print_application_poll(request, poll_id=None):
     poll = Poll.objects.get(id=poll_id)
     response = HttpResponse(mimetype='application/pdf')
@@ -387,6 +394,7 @@ def print_application_poll(request, poll_id=None):
     doc.build(story)
     return response
 
+@permission_required('application.can_manage_application')
 def print_assignment_poll(request, poll_id=None):
     poll = Poll.objects.get(id=poll_id)
     response = HttpResponse(mimetype='application/pdf')
