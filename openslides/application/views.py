@@ -22,7 +22,7 @@ from openslides.application.forms import ApplicationForm, \
 from openslides.poll.models import Poll
 from openslides.poll.forms import OptionResultForm, PollForm
 from openslides.utils.utils import template, permission_required, \
-                                   render_to_forbitten, del_confirm_form
+                                   render_to_forbitten, del_confirm_form, gen_confirm_form
 from openslides.utils.pdf import print_application, print_application_poll
 from openslides.system.api import config_get
 
@@ -362,8 +362,12 @@ def view_poll(request, poll_id):
 def permit_version(request, aversion_id):
     aversion = AVersion.objects.get(pk=aversion_id)
     application = aversion.application
-    application.accept_version(aversion)
-    messages.success(request, _("Version accepted") )
+    
+    if request.method == 'POST':
+        application.accept_version(aversion)
+        messages.success(request, _("Version <b>%s</b> accepted.") % (aversion.aid))
+    else:
+        gen_confirm_form(request, _('Do you really want to permit version <b>%s</b>?') % aversion.aid, reverse('application_version_permit', args=[aversion.id]))
     return redirect(reverse('application_view', args=[application.id]))
 
 
