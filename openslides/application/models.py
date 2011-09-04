@@ -355,11 +355,14 @@ class Application(models.Model):
         """
         if name in ('title', 'text', 'reason', 'time', 'aid'):
             try:
+                if name == 'aid':
+                    return self.permitted.aid
                 return self.permitted.__dict__[name]
             except TypeError:
-                return self.last_version.__dict__[name]
-                #raise AttributeError(name)
+                raise AttributeError(name)
             except AttributeError:
+                if name == 'aid':
+                    return self.last_version.aid
                 return self.last_version.__dict__[name]
                 #raise AttributeError(name)
         raise AttributeError(name)
