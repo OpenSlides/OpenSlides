@@ -224,6 +224,9 @@ table a.table_edit {
     text-indent:-9999px;
     width:16px;
 }
+.valigntop td {
+    vertical-align:top;
+}
 .agendatable td.dragcell {
     padding: 0px 0 0px 10px;
 }
