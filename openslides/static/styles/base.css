@@ -253,6 +253,10 @@ tr.total td {
     border-top: 1px solid #333333;
     background-color: #e3e3e3;
 }
+tr.topline td {
+    border-bottom: 1px solid #333333;
+    background-color: #e3e3e3;
+}
 
 
 /* Links and Images */
