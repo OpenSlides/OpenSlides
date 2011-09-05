@@ -72,6 +72,7 @@ class Assignment(models.Model):
         # list of candidates
         from poll.models import Option
         candidates = []
+        #for option in Option.objects.values('user__user__profile').filter(poll__assignment=self).order_by('user__user__first_name').distinct():
         for option in Option.objects.filter(poll__assignment=self).order_by('user__user__first_name'):
             candidates.append(option.value)
         return candidates
