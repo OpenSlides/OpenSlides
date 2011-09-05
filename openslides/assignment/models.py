@@ -71,9 +71,9 @@ class Assignment(models.Model):
     def candidates(self):
         # list of candidates
         from poll.models import Option
-        candidates = set()
-        for option in Option.objects.filter(poll__assignment=self):
-            candidates.add(option.value)
+        candidates = []
+        for option in Option.objects.filter(poll__assignment=self).order_by('user__user__first_name'):
+            candidates.append(option.value)
         return candidates
 
     def set_elected(self, profile, value=True):
