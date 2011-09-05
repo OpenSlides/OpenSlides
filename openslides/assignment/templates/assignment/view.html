@@ -160,6 +160,7 @@
                         <img src="/static/images/icons/voting-no.png" title="{% trans 'No' %}"> {% if v.1 %}{{ v.1 }}{% else %}&empty;{% endif %}<br>
                         <img src="/static/images/icons/voting-abstention.png" title="{% trans 'Abstention' %}"> {% if v.2 %}{{ v.2 }}{% else %}&empty;{% endif %}<br>
                     {% else %}
+                        {% if v != "-" %}<img src="/static/images/icons/voting-yes.png">{% endif %}
                         {{ v }}
                     {% endif %}
                 {% else %}&empty;{% endif %}

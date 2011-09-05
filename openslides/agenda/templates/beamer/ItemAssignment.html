@@ -44,13 +44,24 @@
     </tr>
     {% for vote in votes %}
     <tr class="{% cycle 'odd' '' %}">
-        {% for v in vote %}
-            <td>{% if v  %}
+        <td class="candidate">
+        {% with vote|first as candidate %}
+            {{ candidate.0 }}
+            {% if candidate.1 %}
+                {% trans 'not elected' %}
+            {% else %}
+                {% trans 'elected' %}
+            {% endif %}
+        {% endwith %}
+        </td>
+        {% for v in vote|last %}
+            <td style="white-space:nowrap;">{% if v  %}
                     {% if v|length == 3 %}
                         <img src="/static/images/icons/voting-yes.png" title="{% trans 'Yes' %}"> {% if v.0 %}{{ v.0 }}{% else %}&empty;{% endif %}<br>
                         <img src="/static/images/icons/voting-no.png" title="{% trans 'No' %}"> {% if v.1 %}{{ v.1 }}{% else %}&empty;{% endif %}<br>
                         <img src="/static/images/icons/voting-abstention.png" title="{% trans 'Abstention' %}"> {% if v.2 %}{{ v.2 }}{% else %}&empty;{% endif %}<br>
                     {% else %}
+                        {% if v != "-" %}<img src="/static/images/icons/voting-yes.png">{% endif %}
                         {{ v }}
                     {% endif %}
                 {% else %}&empty;{% endif %}
