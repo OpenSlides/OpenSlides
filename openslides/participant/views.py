@@ -174,7 +174,7 @@ def group_edit(request, group_id=None):
         try:
             group = Group.objects.get(id=group_id)
         except Group.DoesNotExist:
-            raise NameError("There is no Group %d" % group_id)
+            raise NameError("There is no group %d" % group_id)
     else:
         group = None
 
