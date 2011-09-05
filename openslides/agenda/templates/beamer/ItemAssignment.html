@@ -4,16 +4,17 @@
     {% trans "Election" %}:
     <h1>{{ item.assignment }}</h1>
 
-    {% if item.assignment.status == "sea" or item.assignment.status == "vot" %}
+
     <div id="sidebar">
     <div class="box">
     <h4>{% trans "Status" %}:</h4>
     {% trans item.assignment.get_status_display %}
-    <h4>{% trans "Number of available posts" %}:</h4>
-    {{ item.assignment.posts }}
-    </div>
-    </div>
+    {% if item.assignment.status == "sea" or item.assignment.status == "vot" %}
+        <h4>{% trans "Number of available posts" %}:</h4>
+        {{ item.assignment.posts }}
     {% endif %}
+    </div>
+    </div>
 
     <p>
     <div class="text">{{ item.assignment.description|linebreaks }}</div>
