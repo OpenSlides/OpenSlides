@@ -151,7 +151,7 @@ stylesheet.add(ParagraphStyle(name = 'Ballot_option_YNA',
                               leading = 15,
                               leftIndent = 49,
                               spaceAfter = 18),
-               )               
+               )
 stylesheet.add(ParagraphStyle(name = 'Ballot_option_group_right',
                               parent = stylesheet['Normal'],
                               fontSize = 8,
@@ -284,18 +284,18 @@ def print_passwords(request):
             cell = []
             cell.append(Spacer(0,0.8*cm))
             cell.append(Paragraph(_("Your Account for OpenSlides"), stylesheet['Ballot_title']))
-            cell.append(Paragraph("%s %s %s" % (_("for"), user.first_name, user.last_name), stylesheet['Ballot_subtitle']))
+            cell.append(Paragraph(_("for %s") % (user.profile), stylesheet['Ballot_subtitle']))
             cell.append(Spacer(0,0.5*cm))
-            cell.append(Paragraph("%s: %s" % (_("Username"), user.username), stylesheet['Ballot_option']))
-            cell.append(Paragraph("%s: %s" % (_("Password"), user.profile.firstpassword), stylesheet['Ballot_option']))
+            cell.append(Paragraph(_("User: %s") % (user.username), stylesheet['Ballot_option']))
+            cell.append(Paragraph(_("Password: %s") % (user.profile.firstpassword), stylesheet['Ballot_option']))
             cell.append(Spacer(0,0.5*cm))
-            cell.append(Paragraph("%s: %s" % (_("URL"), system_url), stylesheet['Ballot_option']))
+            cell.append(Paragraph(_("URL: %s") % (system_url), stylesheet['Ballot_option']))
             cell.append(Spacer(0,0.5*cm))
             cell2 = []
             cell2.append(Spacer(0,0.8*cm))
             if system_welcometext is not None:
                 cell2.append(Paragraph(system_welcometext.replace('\r\n','<br/>'), stylesheet['Ballot_subtitle']))
-            
+
             data.append([cell,cell2])
         except Profile.DoesNotExist:
             pass
@@ -343,7 +343,7 @@ def print_application(request, application_id=None):
     doc = SimpleDocTemplate(response)
     doc.title = None
     story = [Spacer(1,2*cm)]
-    
+
     if application_id is None:  #print all applications
         doc.title = _("Applications")
         # List of applications
@@ -353,13 +353,13 @@ def print_application(request, application_id=None):
         for application in Application.objects.exclude(number=None).order_by('number'):
             story.append(PageBreak())
             story = get_application(application, story)
-            
+
     else:  # print selected application
         application = Application.objects.get(id=application_id)
         filename = u'filename=%s%s.pdf;' % (_("Application"), str(application.number))
         response['Content-Disposition'] = filename.encode('utf-8')
         story = get_application(application, story)
-    
+
     doc.build(story, onFirstPage=firstPage, onLaterPages=laterPages)
     return response
 
@@ -371,7 +371,7 @@ def print_application_poll(request, poll_id=None):
     response['Content-Disposition'] = filename.encode('utf-8')
     doc = SimpleDocTemplate(response, pagesize=A4, topMargin=-6, bottomMargin=-6, leftMargin=0, rightMargin=0, showBoundary=False)
     story = [Spacer(0,0*cm)]
-    
+
     imgpath = os.path.join(SITE_ROOT, 'static/images/circle.png')
     circle = "<img src='%s' width='15' height='15'/>&nbsp;&nbsp;" % imgpath
     cell = []
@@ -404,7 +404,7 @@ def print_assignment_poll(request, poll_id=None):
     response['Content-Disposition'] = filename.encode('utf-8')
     doc = SimpleDocTemplate(response, pagesize=A4, topMargin=-6, bottomMargin=-6, leftMargin=0, rightMargin=0, showBoundary=False)
     story = [Spacer(0,0*cm)]
-    
+
     imgpath = os.path.join(SITE_ROOT, 'static/images/circle.png')
     circle = "<img src='%s' width='15' height='15'/>&nbsp;&nbsp;" % imgpath
     cell = []
@@ -414,7 +414,7 @@ def print_assignment_poll(request, poll_id=None):
     options = poll.get_options().order_by('user__user__first_name')
     cell.append(Paragraph(str(poll.ballot)+". "+_("ballot")+", "+str(len(options))+" "+ ungettext("candidate", "candidates", len(options))+", "+str(poll.assignment.posts)+" "+_("available posts"), stylesheet['Ballot_description']))
     cell.append(Spacer(0,0.4*cm))
-    
+
     if poll.optiondecision:
         for option in options:
             o = str(option).rsplit("(",1)
@@ -450,7 +450,7 @@ def print_assignment_poll(request, poll_id=None):
             t=Table(data, 10.5*cm, 14.84*cm)
         else:
             t=Table(data, 10.5*cm, 29.7*cm)
-    
+
     t.setStyle(TableStyle([ ('GRID', (0,0), (-1,-1), 0.25, colors.grey),
                             ('VALIGN', (0,0), (-1,-1), 'TOP'),
                           ]))
