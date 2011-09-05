@@ -145,12 +145,19 @@
     <tr class="{% cycle 'odd' '' %}">
         <td class="candidate">
         {% with vote|first as candidate %}
-            {{ candidate.0 }}
             {% if candidate.1 %}
-                <a class="election_link iselected" href='{% url assignment_user_not_elected assignment.id candidate.0.id %}'>{% trans 'not elected' %}</a>
+                {% if perms.assignment.can_manage_assignment %}
+                <a class="election_link elected" href='{% url assignment_user_not_elected assignment.id candidate.0.id %}'></a>
+                {% else %}
+                <img src="/static/images/icons/games-highscores.png" title="{% trans 'Participant is elected' %}">
+                {% endif %}
             {% else %}
-                <a class="election_link" href='{% url assignment_user_elected assignment.id candidate.0.id %}'>{% trans 'elected' %}</a>
+                {% if perms.assignment.can_manage_assignment %}
+                <a class="election_link" href='{% url assignment_user_elected assignment.id candidate.0.id %}'></a>
+                {% endif %}
             {% endif %}
+            
+            {{ candidate.0 }}
         {% endwith %}
         </td>
         {% for v in vote|last %}

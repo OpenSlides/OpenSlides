@@ -1,5 +1,5 @@
 $(function() {
-    $('a.iselected').parent().parent().children('td').addClass('iselected');
+    $('a.elected').parent().parent().children('td').addClass('elected');
 
 
 
@@ -11,15 +11,14 @@ $(function() {
             url: line.attr('href'),
             dataType: 'json',
             success: function(data) {
-                if (line.hasClass('iselected') && !data.elected) {
-                    line.removeClass('iselected')
-                    line.parent().parent().children('td').removeClass('iselected')
-                } else if (!line.hasClass('iselected') && data.elected) {
-                    line.addClass('iselected')
-                    line.parent().parent().children('td').addClass('iselected')
+                if (line.hasClass('elected') && !data.elected) {
+                    line.removeClass('elected')
+                    line.parent().parent().children('td').removeClass('elected')
+                } else if (!line.hasClass('elected') && data.elected) {
+                    line.addClass('elected')
+                    line.parent().parent().children('td').addClass('elected')
                 }
                 line.attr('href', data.link);
-                line.text(data.text);
             },
             error: function () {
                 alert("Ajax Error");
