@@ -11,6 +11,7 @@
 """
 
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
@@ -54,7 +55,7 @@ class Profile(models.Model):
         )
 
 def set_first_user_passwords():
-    for user in Profile.objects.filter(firstpassword=''):
+    for user in Profile.objects.filter(Q(firstpassword='') | Q(firstpassword__isnull=True)):
         user.firstpassword = gen_password()
         user.user.set_password(user.firstpassword)
         user.user.save()
