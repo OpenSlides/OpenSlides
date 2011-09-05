@@ -266,6 +266,14 @@ def user_import(request):
                     profile.type = type
                     profile.committee = committee
                     profile.save()
+
+                    if type == 'delegate':
+                        delegate = Group.objects.get(name='Delegierte')
+                        user.groups.add(delegate)
+                    else:
+                        observer = Group.objects.get(name='Beobachter')
+                        user.groups.add(observer)
+
             messages.success(request, _('%d new participants were successfully imported.') % i)
         else:
             messages.error(request, _('Please check the form for errors.'))
