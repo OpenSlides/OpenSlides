@@ -29,5 +29,5 @@ class Config(models.Model):
 
     class Meta:
         permissions = (
-            ('can_manage_system', "Can manage the system"),
+            ('can_manage_system', "Can manage system configuration"),
         )

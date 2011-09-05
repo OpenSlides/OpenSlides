@@ -176,9 +176,9 @@ class Item(InheritanceCastModel):
 
     class Meta:
         permissions = (
-            ('can_view_agenda', "Can see the agenda"),
-            ('can_manage_agenda', "Can manage the agenda and its items"),
-            ('can_see_beamer', "Can see the Beamer"),
+            ('can_see_agenda', "Can see agenda"),
+            ('can_manage_agenda', "Can manage agenda"),
+            ('can_see_projector', "Can see projector"),
         )
 
 

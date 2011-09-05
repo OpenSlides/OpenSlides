@@ -396,10 +396,10 @@ class Application(models.Model):
 
     class Meta:
         permissions = (
-            ('can_view_application', _("Can see applications")),
-            ('can_insert_application', _("Can insert new applications")),
-            ('can_support_application', _("Can support applications")),
-            ('can_manage_application', _("Can manage applications")),
+            ('can_see_application', "Can see application"),
+            ('can_create_application', "Can create application"),
+            ('can_support_application', "Can support application"),
+            ('can_manage_application', "Can manage application"),
         )
 
 

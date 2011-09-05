@@ -10,13 +10,13 @@
         <p>{%trans "Choose item type:" %}</p>
         <p>
         <a href="{% url item_new 'ItemText' %}"
-          {% ifequal request.path '/item/new/ItemText/' %}style='font-size:15px; font-weight:bold;'{% endifequal %}
+          {% ifequal request.path '/agenda/new/ItemText/' %}style='font-size:15px; font-weight:bold;'{% endifequal %}
           >{%trans "Item of Text" %}</a> |
         <a href="{% url item_new 'ItemApplication' %}"
-          {% ifequal request.path '/item/new/ItemApplication/' %}style='font-size:15px; font-weight:bold;'{% endifequal %}
+          {% ifequal request.path '/agenda/new/ItemApplication/' %}style='font-size:15px; font-weight:bold;'{% endifequal %}
           >{%trans "Item of Application" %}</a> |
         <a href="{% url item_new 'ItemAssignment' %}"
-          {% ifequal request.path '/item/new/ItemAssignment/' %}style='font-size:15px; font-weight:bold;'{% endifequal %}
+          {% ifequal request.path '/agenda/new/ItemAssignment/' %}style='font-size:15px; font-weight:bold;'{% endifequal %}
           >{%trans "Item of Election" %}</a>
         </p>
     {% endif %}

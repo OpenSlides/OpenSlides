@@ -42,7 +42,7 @@ function hideClosedSlides(hide) {
             hideLine($(this));
         });
         hidden = $('#menu-overview tr:hidden').size();
-        $('#hiddencount').text(' ' + hidden + ' davon verborgen.');
+        $('#hiddencount').text(', davon ' + hidden + ' verborgen.');
     } else {
         $('#menu-overview tr').show();
         $('#hidelink').attr('title','hide');

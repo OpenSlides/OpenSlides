@@ -130,9 +130,8 @@ class Assignment(models.Model):
 
     class Meta:
         permissions = (
-            ('can_view_assignment', "Can see the assignments"),
-            ('can_nominate_other', "Can nominate another person"
-                                   " for a election"),
-            ('can_nominate_self', "Can nominate hisself for a election"),
-            ('can_manage_assignment', "Can manage assignments"),
+            ('can_see_assignment', "Can see assignment"),
+            ('can_nominate_other', "Can nominate another person"),
+            ('can_nominate_self', "Can nominate themselves"),
+            ('can_manage_assignment', "Can manage assignment"),
         )

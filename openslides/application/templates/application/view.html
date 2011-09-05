@@ -211,7 +211,7 @@
     {% else %}
         <i>[no number]</i>
     {% endif %}</h1>
-    {% trans "Revision" %} {{ application.aid }}
+    {% trans "Version" %} {{ application.aid }}
     
     <h2>{{ application.title }}</h2>
 
@@ -227,11 +227,12 @@
 
 
     {% if application.versions|length > 1 %}
-    <h2>{% trans "Revisions" %}:</h2>
+    <h2>{% trans "Version History" %}:</h2>
 
-    <table class="table valigntop">
+    <table class="table valigntop" style="width: auto;">
     <tr>
-        <th>#</th>
+        <th></th>
+        <th>{% trans "Version" %}</th>
         <th>{% trans "Time" %}</th>
         <th>{% trans "Title" %}</th>
         <th>{% trans "Text" %}</th>
@@ -240,7 +241,7 @@
     </tr>
     {% for revision in application.versions  %}
     <tr class="{% cycle 'odd' '' %}">
-        <td>{{ revision.aid }}
+        <td style="white-space:nowrap;">
         {% if application.status != "pub" %}
         {% if revision == application.permitted %}
              <img title="{%trans 'Version accepted' %}" src="/static/images/icons/task-accepted.png">
@@ -257,6 +258,7 @@
         {% endif %}
         {% endif %}
         </td>
+        <td>{{ revision.aid }}</td>
         <td><i>{{ revision.time }}</i></td>
         <td>
             {% ifchanged %}

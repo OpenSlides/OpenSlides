@@ -201,7 +201,7 @@ def laterPages(canvas, doc):
     canvas.drawString(10*cm, 1*cm, _("Page")+" %s" % doc.page)
     canvas.restoreState()
 
-@permission_required('agenda.can_view_agenda')
+@permission_required('agenda.can_see_agenda')
 def print_agenda(request):
     response = HttpResponse(mimetype='application/pdf')
     filename = u'filename=%s.pdf;' % _("Agenda")
@@ -210,21 +210,23 @@ def print_agenda(request):
     story = [Spacer(1,3*cm)]
 
     doc.title = _("Agenda")
-
     # print item list
     items = children_list(Item.objects.filter(parent=None).order_by('weight'))
     for item in items:
         if item.hidden is False:
-            # print all items
+            # print all items"
             if item.parents:
-                story.append(Paragraph(item.title, stylesheet['Subitem']))
+                space = ""
+                for p in item.parents:
+                    space += "&nbsp;&nbsp;&nbsp;"
+                story.append(Paragraph(space+item.title, stylesheet['Subitem']))
             else:
                 story.append(Paragraph(item.title, stylesheet['Item']))
 
     doc.build(story, onFirstPage=firstPage, onLaterPages=laterPages)
     return response
 
-@permission_required('participant.can_manage_participants')
+@permission_required('participant.can_manage_participant')
 def print_userlist(request):
     response = HttpResponse(mimetype='application/pdf')
     filename = u'filename=%s.pdf;' % _("Participant-list")
@@ -265,7 +267,7 @@ def print_userlist(request):
     doc.build(story, onFirstPage=firstPage, onLaterPages=laterPages)
     return response
 
-@permission_required('participant.can_manage_participants')
+@permission_required('participant.can_manage_participant')
 def print_passwords(request):
     response = HttpResponse(mimetype='application/pdf')
     filename = u'filename=%s.pdf;' % _("passwords")
@@ -281,7 +283,7 @@ def print_passwords(request):
             user.get_profile()
             cell = []
             cell.append(Spacer(0,0.8*cm))
-            cell.append(Paragraph(_("Your Password for OpenSlides"), stylesheet['Ballot_title']))
+            cell.append(Paragraph(_("Your Account for OpenSlides"), stylesheet['Ballot_title']))
             cell.append(Paragraph("%s %s %s" % (_("for"), user.first_name, user.last_name), stylesheet['Ballot_subtitle']))
             cell.append(Spacer(0,0.5*cm))
             cell.append(Paragraph("%s: %s" % (_("Username"), user.username), stylesheet['Ballot_option']))
@@ -308,7 +310,7 @@ def print_passwords(request):
     doc.build(story)
     return response
 
-@permission_required('application.can_view_application')
+@permission_required('application.can_see_application')
 def get_application(application, story):
     if application.number is None:
         story.append(Paragraph(_("Application")+" #[-]", stylesheet['Heading1']))
@@ -333,7 +335,7 @@ def get_application(application, story):
         story.append(Paragraph(_("Status")+": %s" % (application.get_status_display()), stylesheet['Italic']))
     return story
 
-@permission_required('application.can_view_application')
+@permission_required('application.can_see_application')
 def print_application(request, application_id=None):
     response = HttpResponse(mimetype='application/pdf')
     filename = u'filename=%s.pdf;' % _("Applications")

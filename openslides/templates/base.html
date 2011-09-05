@@ -31,20 +31,20 @@
         <div id="mainmenu">
            {% block mainmenu %}
             <ul>
-                {% if perms.agenda.can_view_agenda or perms.agenda.can_manage_agenda %}
-                <li class="{% active request '/item' %}
+                {% if perms.agenda.can_see_agenda or perms.agenda.can_manage_agenda %}
+                <li class="{% active request '/agenda' %}
                            {% if request.path == '/'%}selected{% endif %}">
                     <a href="{% url item_overview %}" title="">{%trans "Agenda" %}</a></li>
                 {% endif %}
-                {% if perms.application.can_view_application or perms.application.can_insert_application or perms.application.can_support_application or perms.application.can_manage_application %}
+                {% if perms.application.can_see_application or perms.application.can_create_application or perms.application.can_support_application or perms.application.can_manage_application %}
                 <li class="{% active request '/application' %}">
                     <a href="{% url application_overview %}" title="">{%trans "Applications" %}</a></li>
                 {% endif %}
-                {% if perms.assignment.can_view_assignment or perms.assignment.can_nominate_other or perms.assignment.can_nominate_self or perms.assignment.can_manage_assignment %}
+                {% if perms.assignment.can_see_assignment or perms.assignment.can_nominate_other or perms.assignment.can_nominate_self or perms.assignment.can_manage_assignment %}
                 <li  class="{% active request '/assignment' %}">
                     <a href="{% url assignment_overview %}" title="">{%trans "Elections" %}</a></li>
                 {% endif %}
-                {% if perms.participant.can_view_participants or perms.participant.can_manage_participants %}
+                {% if perms.participant.can_see_participant or perms.participant.can_manage_participant %}
                 <li  class="{% active request '/participant' %}">
                     <a href="{% url user_overview %}" title="">{%trans "Participants" %}</a></li>
                 {% endif %}

@@ -25,7 +25,7 @@ from utils.pdf import print_assignment_poll
 from participant.models import Profile
 
 
-@permission_required('assignment.can_view_assignment')
+@permission_required('assignment.can_see_assignment')
 @template('assignment/overview.html')
 def get_overview(request):
     query = Assignment.objects
@@ -46,7 +46,7 @@ def get_overview(request):
     }
 
 
-@permission_required('assignment.can_view_assignment')
+@permission_required('assignment.can_see_assignment')
 @template('assignment/view.html')
 def view(request, assignment_id=None):
     form = None
