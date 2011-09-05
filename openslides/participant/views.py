@@ -251,13 +251,13 @@ def user_import(request):
             for line in request.FILES['csvfile']:
                 i += 1
                 if i > 0:
-                    (last_name, first_name, email, gender, group, type, committee) = line.strip().split(',')
+                    (first_name, last_name, gender, group, type, committee) = line.strip().split(',')
                     user = User()
                     user.last_name = last_name
                     user.first_name = first_name
                     user.username = gen_username(first_name, last_name)
-                    user.set_password("%s%s" % (user.first_name, user.last_name))
-                    user.email = email
+                    #user.set_password("%s%s" % (user.first_name, user.last_name))
+                    #user.email = email
                     user.save()
                     profile = Profile()
                     profile.user = user

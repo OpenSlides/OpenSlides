@@ -4,8 +4,8 @@
 {% block content %}
     <h1>Import</h1>
     <p>{% trans 'Select a CSV file to import participants!' %}</p>
-    
-    <p>{% trans '(Required comma separated values: <code>last_name, first_name, email, gender, group, type, committee</code>)' %} </p>
+
+    <p>{% trans '(Required comma separated values: <code>first_name, last_name, gender, group, type, committee</code>)' %} </p>
     <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
         {{ form.as_p }}
         <button type="submit">
