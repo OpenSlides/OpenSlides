@@ -1,5 +1,5 @@
 {% extends "application/base_application.html" %}
-{% block title %}{{ block.super }} - {% trans "Application" %} "{{ application.title }}"{% endblock %}
+{% block title %}{{ block.super }} - {% trans "Application" %} "{{ version.title }}"{% endblock %}
 {% load tags %}
 
 {% block content %}
@@ -212,16 +212,23 @@
     {% else %}
         <i>[no number]</i>
     {% endif %}</h1>
-    {% trans "Version" %} {{ application.aid }}
-    
-    <h2>{{ application.title }}</h2>
+    {% trans "Version" %} {{ version.aid }}
+    {% if application.public_version != application.last_version %}
+        {% if version == application.public_version %}
+            (<a href="{% url application_view_newest application.id %}">{% trans "Show newest Version" %}</a>)
+        {% else %}
+            (<a href="{% url application_view application.id %}">{% trans "Show permitted Version" %}</a>)
+        {% endif %}
+    {% endif %}
 
-    {{ application.text|linebreaks }}
+    <h2>{{ version.title }}</h2>
+
+    {{ version.text|linebreaks }}
 
     <h2>{% trans "Reason" %}:</h2>
 
-    {% if application.reason %}
-        {{ application.reason|linebreaks }}
+    {% if version.reason %}
+        {{ version.reason|linebreaks }}
     {% else %}
         -
     {% endif %}

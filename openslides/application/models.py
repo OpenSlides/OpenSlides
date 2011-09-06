@@ -62,6 +62,16 @@ class Application(models.Model):
         except IndexError:
             return None
 
+    @property
+    def public_version(self):
+        """
+        Return permitted, if the application was permitted, else last_version
+        """
+        if self.permitted is not None:
+            return self.permitted
+        else:
+            return self.last_version
+
     def accept_version(self, version):
         """
         accept a Version
@@ -358,15 +368,12 @@ class Application(models.Model):
         if name in ('title', 'text', 'reason', 'time', 'aid'):
             try:
                 if name == 'aid':
-                    return self.permitted.aid
-                return self.permitted.__dict__[name]
+                    return self.last_version.aid
+                return self.last_version.__dict__[name]
             except TypeError:
                 raise AttributeError(name)
             except AttributeError:
-                if name == 'aid':
-                    return self.last_version.aid
-                return self.last_version.__dict__[name]
-                #raise AttributeError(name)
+                raise AttributeError(name)
         raise AttributeError(name)
 
     def gen_poll(self, user=None):

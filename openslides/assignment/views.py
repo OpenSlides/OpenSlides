@@ -82,7 +82,7 @@ def view(request, assignment_id=None):
     polls = []
     for poll in assignment.poll_set.filter(assignment=assignment):
         polls.append(poll)
-    
+
     return {'assignment': assignment,
             'form': form,
             'votes': votes,

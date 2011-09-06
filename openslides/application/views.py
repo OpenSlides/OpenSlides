@@ -63,11 +63,15 @@ def overview(request):
 
 @permission_required('application.can_see_application')
 @template('application/view.html')
-def view(request, application_id):
+def view(request, application_id, newest=False):
     """
     View one application.
     """
     application = Application.objects.get(pk=application_id)
+    if newest:
+        version = application.last_version
+    else:
+        version = application.public_version
     revisions = application.versions
     actions = application.get_allowed_actions(user=request.user)
 
@@ -76,6 +80,7 @@ def view(request, application_id):
         'revisions': revisions,
         'actions': actions,
         'min_supporters': int(config_get('application_min_supporters')),
+        'version': version
     }
 
 
@@ -373,7 +378,7 @@ def permit_version(request, aversion_id):
 @permission_required('application.can_manage_application')
 def reject_version(request, aversion_id):
     aversion = AVersion.objects.get(pk=aversion_id)
-    application = aversion.application    
+    application = aversion.application
     if request.method == 'POST':
         if application.reject_version(aversion):
             messages.success(request, _("Version <b>%s</b> rejected.") % (aversion.aid))

@@ -19,6 +19,9 @@ urlpatterns = patterns('application.views',
     url(r'^application/(?P<application_id>\d+)$', 'view', \
         name='application_view'),
 
+    url(r'^application/(?P<application_id>\d+)/newest$', 'view', {'newest': True}, \
+        name='application_view_newest'),
+
     url(r'^application/new$', 'edit', \
         name='application_new'),
 
