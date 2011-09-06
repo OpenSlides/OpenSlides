@@ -337,7 +337,7 @@ def get_application(application, story):
     if application.number is None:
         story.append(Paragraph(_("Application No.")+" [-]", stylesheet['Heading1']))
     else:
-        story.append(Paragraph(_("Application Nr.")+" %s" % application.number, stylesheet['Heading1']))
+        story.append(Paragraph(_("Application No.")+" %s" % application.number, stylesheet['Heading1']))
     # title
     story.append(Paragraph(_("Subject")+": "+application.title, stylesheet['Heading3']))
     
@@ -359,8 +359,9 @@ def get_application(application, story):
     cell2b = []
     for s in application.supporter.all():
         cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % unicode(s.profile), stylesheet['Signaturefield']))
-    for x in range(0,application.missing_supporters):
-        cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; __________________________________________",stylesheet['Signaturefield']))
+    if application.status == "pub":
+        for x in range(0,application.missing_supporters):
+            cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; __________________________________________",stylesheet['Signaturefield']))
     cell2b.append(Spacer(0,0.2*cm))
     
     # status
@@ -421,7 +422,7 @@ def print_application(request, application_id=None):
         story.append(Paragraph(_("Applications"), stylesheet['Heading1']))
         # List of applications
         for application in Application.objects.exclude(number=None).order_by('number'):
-            story.append(Paragraph(_("Application")+" #%s: %s" % (application.number, application.title), stylesheet['Heading3']))
+            story.append(Paragraph(_("Application No.")+" %s: %s" % (application.number, application.title), stylesheet['Heading3']))
         # Applications details (each application on single page)
         for application in Application.objects.exclude(number=None).order_by('number'):
             story.append(PageBreak())
@@ -449,7 +450,7 @@ def print_application_poll(request, poll_id=None):
     circle = "<img src='%s' width='15' height='15'/>&nbsp;&nbsp;" % imgpath
     cell = []
     cell.append(Spacer(0,0.8*cm))
-    cell.append(Paragraph(_("Application")+" #"+str(poll.application.number), stylesheet['Ballot_title']))
+    cell.append(Paragraph(_("Application No.")+" "+str(poll.application.number), stylesheet['Ballot_title']))
     cell.append(Paragraph(poll.application.title, stylesheet['Ballot_subtitle']))
     cell.append(Paragraph(str(poll.ballot)+". "+_("Vote"), stylesheet['Ballot_description']))
     cell.append(Spacer(0,0.5*cm))

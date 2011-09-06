@@ -14,8 +14,8 @@
         <li><a href="{%  url user_group_new %}">{%trans "New user group" %}</a></li>
         <li><a href="{% url user_print %}"><img src="/static/images/icons/application-pdf.png"> {%trans 'Print participant list' %}</a></li>
         <li><a href="{% url user_import %}"> {%trans 'Import participant' %}</a></li>
-        <li><a href="{% url user_gen_passwords %}">{% trans 'Generate first passwords' %}</a></li>
-        <li><a href="{% url print_passwords %}"><img src="/static/images/icons/application-pdf.png"> {% trans 'Print password list' %}</a></li>
+        <li><a href="{% url user_gen_passwords %}">{% trans 'Generate first time passwords' %}</a></li>
+        <li><a href="{% url print_passwords %}"><img src="/static/images/icons/application-pdf.png"> {% trans 'Print first time passwords' %}</a></li>
         {% endif %}
     </ul>
 {% endblock %}

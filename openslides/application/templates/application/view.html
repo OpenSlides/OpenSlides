@@ -206,12 +206,13 @@
 
 
     <div>
-    <h1>{% trans "Application" %}
+    <h1>
     {% if application.number != None %}
-        #{{ application.number }}
+        {% trans "Application No." %} {{ application.number }}
     {% else %}
-        <i>[no number]</i>
-    {% endif %}</h1>
+        {% trans "Application" %} <i>[no number]</i>
+    {% endif %}
+    </h1>
     {% trans "Version" %} {{ version.aid }}
     {% if application.public_version != application.last_version %}
         {% if version == application.public_version %}

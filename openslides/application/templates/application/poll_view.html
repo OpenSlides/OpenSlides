@@ -5,7 +5,7 @@
 {% block submenu %}
 {{ block.super }}
 <br>
-<h3>{%trans "Application" %} #{{ poll.application.number }}</h3>
+<h3>{%trans "Application No." %} {{ poll.application.number }}</h3>
 <ul>
 <li><a href="{% url print_application_poll poll.id %}"><img src="/static/images/icons/application-pdf.png"> {%trans 'Print vote' %}</a></li>
 </ul>
@@ -13,7 +13,7 @@
 {% endif %}
 
 {% block content %}
-    <h1>{%trans "Application" %} #{{ poll.application.number }} - {%trans "Vote" %}</h1>
+    <h1>{%trans "Application No." %} {{ poll.application.number }} - {%trans "Vote" %}</h1>
     <h3>{{ poll.application.title }}</h3>
 
     <p>{%trans "Results of" %} {{ ballot }}. {%trans "Vote" %}</p>
