@@ -69,21 +69,7 @@ class Assignment(models.Model):
 
     @property
     def candidates(self):
-        # list of candidates
-        from poll.models import Option
-        candidates = []
-
-        def unique(candidates):
-            newcandidates = []
-            for candidate in candidates:
-                if not candidate in newcandidates:
-                    newcandidates.append(candidate)
-            return newcandidates
-
-
-        for option in Option.objects.filter(poll__assignment=self).order_by('user__user__first_name'):
-            candidates.append(option.value)
-        return unique(candidates)
+        return Profile.objects.filter(option__poll__assignment=self).order_by('user__first_name').distinct()
 
     def set_elected(self, profile, value=True):
         if profile in self.candidates:
