@@ -65,6 +65,10 @@ stylesheet.add(ParagraphStyle(name = 'Paragraph',
                               leading = 14,
                               spaceAfter = 15)
                )
+stylesheet.add(ParagraphStyle(name = 'Small',
+                              parent = stylesheet['Normal'],
+                              fontSize = 8)
+               )
 stylesheet.add(ParagraphStyle(name = 'Italic',
                               parent = stylesheet['Normal'],
                               fontName = 'Ubuntu-Italic',
@@ -339,9 +343,15 @@ def get_application(application, story):
     
     # submitter
     cell1a = []
+    cell1a.append(Spacer(0,0.2*cm))
     cell1a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Submitter"), stylesheet['Heading4']))
     cell1b = []
-    cell1b.append(Paragraph(unicode(application.submitter.profile), stylesheet['Normal']))
+    cell1b.append(Spacer(0,0.2*cm))
+    if application.status == "pub":
+        cell1b.append(Paragraph("__________________________________________",stylesheet['Signaturefield']))
+        cell1b.append(Paragraph("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+unicode(application.submitter.profile), stylesheet['Small']))
+    else:
+        cell1b.append(Paragraph(unicode(application.submitter.profile), stylesheet['Normal']))
     
     # supporters
     cell2a = []
@@ -376,7 +386,6 @@ def get_application(application, story):
             cell4b.append(Paragraph("%s. %s" % (ballotcounter, _("Vote")), stylesheet['Bold']))
         cell4b.append(Paragraph("%s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s" % (_("Yes"), result[0], _("No"), result[1], _("Abstention"), result[2], _("Invalid"), result[3], _("Votes cast"), result[4]), stylesheet['Normal']))
         cell4b.append(Spacer(0,0.2*cm))
-        
     # table
     data = []
     data.append([cell1a,cell1b])
@@ -388,19 +397,14 @@ def get_application(application, story):
     t._argW[1]=11*cm
     t.setStyle(TableStyle([ ('BOX', (0,0), (-1,-1), 1, colors.black),
                             ('VALIGN', (0,0), (-1,-1), 'TOP'),
-#                            ('SPAN',(-1,-1),(-2,-2)),
                           ]))
     story.append(t)
-    
-
-
     story.append(Spacer(0,1*cm))
     # text
     story.append(Paragraph("%s" % application.text.replace('\r\n','<br/>'), stylesheet['Paragraph']))
     # reason
     story.append(Paragraph(_("Reason")+":", stylesheet['Heading3']))
     story.append(Paragraph("%s" % application.reason.replace('\r\n','<br/>'), stylesheet['Paragraph']))
-
     return story
 
 
@@ -447,7 +451,6 @@ def print_application_poll(request, poll_id=None):
     cell.append(Spacer(0,0.8*cm))
     cell.append(Paragraph(_("Application")+" #"+str(poll.application.number), stylesheet['Ballot_title']))
     cell.append(Paragraph(poll.application.title, stylesheet['Ballot_subtitle']))
-    #if poll.description:
     cell.append(Paragraph(str(poll.ballot)+". "+_("Vote"), stylesheet['Ballot_description']))
     cell.append(Spacer(0,0.5*cm))
     cell.append(Paragraph(circle+_("Yes"), stylesheet['Ballot_option']))
