@@ -45,8 +45,11 @@
                 <input type="button" onclick="window.location.href='{% url item_overview %}';" value="{%trans 'No' %}">
             </em>
         </div>
+        <div style="text-align:right; padding-bottom:3px;">
+        {% trans "Adjust projector live view" %}:
         <a class="beamer_edit" href="{% url beamer_bigger %}"><img src="/static/images/icons/zoom-in.png"></a> <a class="beamer_edit" href="{% url beamer_smaller %}"><img src="/static/images/icons/zoom-out.png"></a>
-        <a class="beamer_edit" href="{% url beamer_up %}"><img src="/static/images/icons/go-up.png"></a> <a class="beamer_edit" href="{% url beamer_down %}"><img src="/static/images/icons/go-down.png"></a> <br>
+        <a class="beamer_edit" href="{% url beamer_up %}"><img src="/static/images/icons/go-up.png"></a> <a class="beamer_edit" href="{% url beamer_down %}"><img src="/static/images/icons/go-down.png"></a>
+        </div>
         {% endif %}
         <table id="menu-overview" class="agendatable">
             <tr>
