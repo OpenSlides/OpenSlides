@@ -145,12 +145,18 @@
     <tr class="{% cycle 'odd' '' %}">
         <td class="candidate">
         {% with vote|first as candidate %}
-            {{ candidate.0 }}
             {% if candidate.1 %}
-                <a class="election_link iselected" href='{% url assignment_user_not_elected assignment.id candidate.0.id %}'>{% trans 'not elected' %}</a>
+                {% if perms.assignment.can_manage_assignment %}
+                <a class="election_link elected" href='{% url assignment_user_not_elected assignment.id candidate.0.id %}'></a>
+                {% else %}
+                <a class="elected"><img src="/static/images/icons/games-highscores.png" title="{% trans 'Candidate is elected' %}"></a>
+                {% endif %}
             {% else %}
-                <a class="election_link" href='{% url assignment_user_elected assignment.id candidate.0.id %}'>{% trans 'elected' %}</a>
+                {% if perms.assignment.can_manage_assignment %}
+                <a class="election_link" href='{% url assignment_user_elected assignment.id candidate.0.id %}'></a>
+                {% endif %}
             {% endif %}
+            {{ candidate.0 }}
         {% endwith %}
         </td>
         {% for v in vote|last %}
@@ -160,6 +166,7 @@
                         <img src="/static/images/icons/voting-no.png" title="{% trans 'No' %}"> {% if v.1 %}{{ v.1 }}{% else %}&empty;{% endif %}<br>
                         <img src="/static/images/icons/voting-abstention.png" title="{% trans 'Abstention' %}"> {% if v.2 %}{{ v.2 }}{% else %}&empty;{% endif %}<br>
                     {% else %}
+                        {% if v != "-" %}<img src="/static/images/icons/voting-yes.png" title="{% trans 'Yes' %}">{% endif %}
                         {{ v }}
                     {% endif %}
                 {% else %}&empty;{% endif %}

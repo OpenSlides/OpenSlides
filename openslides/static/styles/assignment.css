@@ -1,5 +1,25 @@
-td.iselected {
-    background-color: green !important;
+td.elected {
+    background-color: #BED4DE !important;
 }
 
+td.elected a.election_link {
+    background-image: url(/static/images/icons/games-highscores.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 16px;
+    height: 16px;
+    display: block;
+    margin-right: 5px;
+    float: left;
+}
 
+td a.election_link {
+    background-image: url(/static/images/icons/games-highscores-grey.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 16px;
+    height: 16px;
+    display: block;
+    margin-right: 5px;
+    float: left;
+}

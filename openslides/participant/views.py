@@ -19,7 +19,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import SetPasswordForm
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ungettext
 
 from participant.models import Profile, set_first_user_passwords
 from participant.api import gen_username
@@ -174,7 +174,7 @@ def group_edit(request, group_id=None):
         try:
             group = Group.objects.get(id=group_id)
         except Group.DoesNotExist:
-            raise NameError("There is no Group %d" % group_id)
+            raise NameError("There is no group %d" % group_id)
     else:
         group = None
 
@@ -287,7 +287,11 @@ def user_import(request):
 
 @permission_required('participant.can_manage_participant')
 def gen_passwords(request):
-    set_first_user_passwords()
+    count = set_first_user_passwords()
+    if count:
+        messages.success(request, ungettext('%s Password was successfully generated.', '%s Passwords were successfully generated.', count ) % count)
+    else:
+        messages.info(request, _('There are no participants which need a first time password. No passwords generated.') )
     return redirect(reverse('user_overview'))
 
 

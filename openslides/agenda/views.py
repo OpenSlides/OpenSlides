@@ -106,26 +106,21 @@ def beamer_edit(request, direction):
 def assignment_votes(item):
     votes = []
     if item.type == "ItemAssignment":
-      assignment = item.cast().assignment
-      # list of candidates
-      candidates = set()
-      for option in Option.objects.filter(poll__assignment=assignment):
-          candidates.add(option.value)
-      # list of votes
-      votes = []
-      for candidate in candidates:
-          tmplist = []
-          tmplist.append(candidate)
-          for poll in assignment.poll_set.all():
-              if candidate in poll.options_values:
-                  option = Option.objects.filter(poll=poll).filter(user=candidate)[0]
-                  if poll.optiondecision:
-                      tmplist.append([option.yes, option.no, option.undesided])
-                  else:
-                      tmplist.append(option.yes)
-              else:
-                  tmplist.append("-")
-          votes.append(tmplist)
+        assignment = item.cast().assignment
+        # list of votes
+        votes = []
+        for candidate in assignment.candidates:
+            tmplist = [[candidate, assignment.is_elected(candidate)], []]
+            for poll in assignment.poll_set.all():
+                if candidate in poll.options_values:
+                    option = Option.objects.filter(poll=poll).filter(user=candidate)[0]
+                    if poll.optiondecision:
+                        tmplist[1].append([option.yes, option.no, option.undesided])
+                    else:
+                        tmplist[1].append(option.yes)
+                else:
+                    tmplist[1].append("-")
+            votes.append(tmplist)
     return votes
 
 

@@ -1,19 +1,24 @@
 {% extends "beamer.html" %}
-{% block title %}{{ block.super }} - {{ item.title }}{% endblock %}
+{% block title %}{{ block.super }} - #{{ item.title }}{% endblock %}
+{% block header %}
+    <link type="text/css" rel="stylesheet" media="all" href="/static/styles/assignment.css" />
+    <script type="text/javascript" src="/static/javascript/assignment.js"></script>
+{% endblock %}
 {% block content %}
     {% trans "Election" %}:
     <h1>{{ item.assignment }}</h1>
 
-    {% if item.assignment.status == "sea" or item.assignment.status == "vot" %}
+
     <div id="sidebar">
     <div class="box">
     <h4>{% trans "Status" %}:</h4>
     {% trans item.assignment.get_status_display %}
-    <h4>{% trans "Number of available posts" %}:</h4>
-    {{ item.assignment.posts }}
-    </div>
-    </div>
+    {% if item.assignment.status == "sea" or item.assignment.status == "vot" %}
+        <h4>{% trans "Number of available posts" %}:</h4>
+        {{ item.assignment.posts }}
     {% endif %}
+    </div>
+    </div>
 
     <p>
     <div class="text">{{ item.assignment.description|linebreaks }}</div>
@@ -44,13 +49,22 @@
     </tr>
     {% for vote in votes %}
     <tr class="{% cycle 'odd' '' %}">
-        {% for v in vote %}
-            <td>{% if v  %}
+        <td class="candidate">
+        {% with vote|first as candidate %}
+            {% if candidate.1 %}
+                <a class="elected"><img src="/static/images/icons/games-highscores.png" title="{% trans 'Candidate is elected' %}"></a>
+            {% endif %}
+            {{ candidate.0 }}
+        {% endwith %}
+        </td>
+        {% for v in vote|last %}
+            <td style="white-space:nowrap;">{% if v  %}
                     {% if v|length == 3 %}
                         <img src="/static/images/icons/voting-yes.png" title="{% trans 'Yes' %}"> {% if v.0 %}{{ v.0 }}{% else %}&empty;{% endif %}<br>
                         <img src="/static/images/icons/voting-no.png" title="{% trans 'No' %}"> {% if v.1 %}{{ v.1 }}{% else %}&empty;{% endif %}<br>
                         <img src="/static/images/icons/voting-abstention.png" title="{% trans 'Abstention' %}"> {% if v.2 %}{{ v.2 }}{% else %}&empty;{% endif %}<br>
                     {% else %}
+                        {% if v != "-" %}<img src="/static/images/icons/voting-yes.png" title="{% trans 'Yes' %}">{% endif %}
                         {{ v }}
                     {% endif %}
                 {% else %}&empty;{% endif %}
