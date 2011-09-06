@@ -62,4 +62,4 @@ def set_first_user_passwords():
         user.user.set_password(user.firstpassword)
         user.user.save()
         user.save()
-        return count
+    return count
