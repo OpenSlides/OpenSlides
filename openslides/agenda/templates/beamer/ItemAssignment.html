@@ -1,5 +1,9 @@
 {% extends "beamer.html" %}
-{% block title %}{{ block.super }} - {{ item.title }}{% endblock %}
+{% block title %}{{ block.super }} - #{{ item.title }}{% endblock %}
+{% block header %}
+    <link type="text/css" rel="stylesheet" media="all" href="/static/styles/assignment.css" />
+    <script type="text/javascript" src="/static/javascript/assignment.js"></script>
+{% endblock %}
 {% block content %}
     {% trans "Election" %}:
     <h1>{{ item.assignment }}</h1>
@@ -47,12 +51,10 @@
     <tr class="{% cycle 'odd' '' %}">
         <td class="candidate">
         {% with vote|first as candidate %}
-            {{ candidate.0 }}
             {% if candidate.1 %}
-                {% trans 'not elected' %}
-            {% else %}
-                {% trans 'elected' %}
+                <a class="elected"><img src="/static/images/icons/games-highscores.png" title="{% trans 'Candidate is elected' %}"></a>
             {% endif %}
+            {{ candidate.0 }}
         {% endwith %}
         </td>
         {% for v in vote|last %}
@@ -62,7 +64,7 @@
                         <img src="/static/images/icons/voting-no.png" title="{% trans 'No' %}"> {% if v.1 %}{{ v.1 }}{% else %}&empty;{% endif %}<br>
                         <img src="/static/images/icons/voting-abstention.png" title="{% trans 'Abstention' %}"> {% if v.2 %}{{ v.2 }}{% else %}&empty;{% endif %}<br>
                     {% else %}
-                        {% if v != "-" %}<img src="/static/images/icons/voting-yes.png">{% endif %}
+                        {% if v != "-" %}<img src="/static/images/icons/voting-yes.png" title="{% trans 'Yes' %}">{% endif %}
                         {{ v }}
                     {% endif %}
                 {% else %}&empty;{% endif %}
