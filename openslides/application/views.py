@@ -74,13 +74,14 @@ def view(request, application_id, newest=False):
         version = application.public_version
     revisions = application.versions
     actions = application.get_allowed_actions(user=request.user)
-
+ 
     return {
         'application': application,
         'revisions': revisions,
         'actions': actions,
         'min_supporters': int(config_get('application_min_supporters')),
-        'version': version
+        'version': version,
+        'results': application.results
     }
 
 

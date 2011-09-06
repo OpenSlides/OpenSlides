@@ -89,8 +89,13 @@ stylesheet.add(ParagraphStyle(name = 'Heading2',
 stylesheet.add(ParagraphStyle(name = 'Heading3',
                               parent = stylesheet['Bold'],
                               fontSize = 12,
-                              leading = 24),
+                              leading = 20),
                alias = 'h3')
+stylesheet.add(ParagraphStyle(name = 'Heading4',
+                              parent = stylesheet['Bold'],
+                              fontSize = 10,
+                              leading = 20),
+               )
 stylesheet.add(ParagraphStyle(name = 'Item',
                               parent = stylesheet['Normal'],
                               fontSize = 14,
@@ -109,6 +114,11 @@ stylesheet.add(ParagraphStyle(name = 'Tablecell',
                               parent = stylesheet['Normal'],
                               fontSize = 9)
                )
+stylesheet.add(ParagraphStyle(name = 'Signaturefield',
+                              parent = stylesheet['Normal'],
+                              spaceBefore = 15)
+               )
+
 # Ballot stylesheets
 stylesheet.add(ParagraphStyle(name = 'Ballot_title',
                               parent = stylesheet['Bold'],
@@ -193,7 +203,7 @@ def firstPage(canvas, doc):
     # footer (with page number)
     canvas.setFont('Ubuntu',8)
     canvas.setFillGray(0.4)
-    canvas.drawString(10*cm, 1*cm, _("Page")+" 1")
+    canvas.drawString(10*cm, 1*cm, _("Page")+" %s" % doc.page)
     canvas.restoreState()
 
 
@@ -319,27 +329,78 @@ def print_passwords(request):
 
 
 def get_application(application, story):
+    # application number
     if application.number is None:
-        story.append(Paragraph(_("Application")+" #[-]", stylesheet['Heading1']))
+        story.append(Paragraph(_("Application No.")+" [-]", stylesheet['Heading1']))
     else:
-        story.append(Paragraph(_("Application")+" #%s" % application.number, stylesheet['Heading1']))
-    story.append(Paragraph(application.title, stylesheet['Heading2']))
-    story.append(Paragraph("%s" % application.text.replace('\r\n','<br/>'), stylesheet['Paragraph']))
-    story.append(Paragraph(_("Reason")+":", stylesheet['Heading3']))
-    story.append(Paragraph("%s" % application.reason.replace('\r\n','<br/>'), stylesheet['Paragraph']))
-    story.append(Paragraph(_("Submitter")+": %s" % unicode(application.submitter), stylesheet['Italic']))
-    story.append(Paragraph(_("Created")+": %s" % application.time.strftime(_("%Y-%m-%d %H:%Mh")), stylesheet['Italic']))
-    supporters = ""
+        story.append(Paragraph(_("Application Nr.")+" %s" % application.number, stylesheet['Heading1']))
+    # title
+    story.append(Paragraph(_("Subject")+": "+application.title, stylesheet['Heading3']))
+    
+    # submitter
+    cell1a = []
+    cell1a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Submitter"), stylesheet['Heading4']))
+    cell1b = []
+    cell1b.append(Paragraph(unicode(application.submitter.profile), stylesheet['Normal']))
+    
+    # supporters
+    cell2a = []
+    cell2a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font><seqreset id='counter'>" % _("Supporters"), stylesheet['Heading4']))
+    cell2b = []
     for s in application.supporter.all():
-        supporters += "%s, " % unicode(s)
-    story.append(Paragraph(_("Supporter")+": %s" % supporters, stylesheet['Italic']))
+        cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % unicode(s.profile), stylesheet['Signaturefield']))
+    for x in range(0,application.missing_supporters):
+        cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; __________________________________________",stylesheet['Signaturefield']))
+    cell2b.append(Spacer(0,0.2*cm))
+    
+    # status
     note = ""
     for n in application.notes:
         note += "%s " % unicode(n)
+    cell3a = []
+    cell3a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Status"), stylesheet['Heading4']))
+    cell3b = []
     if note != "":
-        story.append(Paragraph(_("Status")+": %s | %s" % (application.get_status_display(), note), stylesheet['Italic']))
+        cell3b.append(Paragraph("%s | %s" % (application.get_status_display(), note), stylesheet['Normal']))
     else:
-        story.append(Paragraph(_("Status")+": %s" % (application.get_status_display()), stylesheet['Italic']))
+        cell3b.append(Paragraph("%s" % application.get_status_display(), stylesheet['Normal']))
+
+    # voting results
+    cell4a = []
+    cell4a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Vote results"), stylesheet['Heading4']))
+    cell4b = []
+    ballotcounter = 0
+    for result in application.results:
+        ballotcounter += 1
+        if len(application.results) > 1:
+            cell4b.append(Paragraph("%s. %s" % (ballotcounter, _("Vote")), stylesheet['Bold']))
+        cell4b.append(Paragraph("%s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s" % (_("Yes"), result[0], _("No"), result[1], _("Abstention"), result[2], _("Invalid"), result[3], _("Votes cast"), result[4]), stylesheet['Normal']))
+        cell4b.append(Spacer(0,0.2*cm))
+        
+    # table
+    data = []
+    data.append([cell1a,cell1b])
+    data.append([cell2a,cell2b])
+    data.append([cell3a,cell3b])
+    data.append([cell4a,cell4b])
+    t=Table(data)
+    t._argW[0]=4.5*cm
+    t._argW[1]=11*cm
+    t.setStyle(TableStyle([ ('BOX', (0,0), (-1,-1), 1, colors.black),
+                            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+#                            ('SPAN',(-1,-1),(-2,-2)),
+                          ]))
+    story.append(t)
+    
+
+
+    story.append(Spacer(0,1*cm))
+    # text
+    story.append(Paragraph("%s" % application.text.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+    # reason
+    story.append(Paragraph(_("Reason")+":", stylesheet['Heading3']))
+    story.append(Paragraph("%s" % application.reason.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+
     return story
 
 
@@ -350,10 +411,10 @@ def print_application(request, application_id=None):
     response['Content-Disposition'] = filename.encode('utf-8')
     doc = SimpleDocTemplate(response)
     doc.title = None
-    story = [Spacer(1,2*cm)]
-
+    story = []
+    
     if application_id is None:  #print all applications
-        doc.title = _("Applications")
+        story.append(Paragraph(_("Applications"), stylesheet['Heading1']))
         # List of applications
         for application in Application.objects.exclude(number=None).order_by('number'):
             story.append(Paragraph(_("Application")+" #%s: %s" % (application.number, application.title), stylesheet['Heading3']))
@@ -361,14 +422,13 @@ def print_application(request, application_id=None):
         for application in Application.objects.exclude(number=None).order_by('number'):
             story.append(PageBreak())
             story = get_application(application, story)
-
     else:  # print selected application
         application = Application.objects.get(id=application_id)
         filename = u'filename=%s%s.pdf;' % (_("Application"), str(application.number))
         response['Content-Disposition'] = filename.encode('utf-8')
         story = get_application(application, story)
 
-    doc.build(story, onFirstPage=firstPage, onLaterPages=laterPages)
+    doc.build(story, onFirstPage=firstPage, onLaterPages=firstPage)
     return response
 
 

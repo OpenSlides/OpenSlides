@@ -17,6 +17,7 @@ from django.db.models import Max
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
+from openslides.participant.models import Profile
 from openslides.system.api import config_get
 
 
@@ -141,6 +142,18 @@ class Application(models.Model):
         """
         min_supporters = int(config_get('application_min_supporters'))
         return self.supporter.count() >= min_supporters
+
+    @property
+    def missing_supporters(self):
+        """
+        Return number of missing supporters
+        """
+        min_supporters = int(config_get('application_min_supporters'))
+        delta = min_supporters - self.supporter.count()
+        if delta > 0:
+            return delta
+        else:
+            return 0
 
     def save(self, user=None, nonewversion=False):
         """
@@ -293,13 +306,16 @@ class Application(models.Model):
         or (self.status == "per" \
           and user.has_perm("application.can_manage_application")):
             actions.append("wit")
-
+        try:
         # Check if the user can support and unspoort the application
-        if  self.status == "pub" \
-        and user != self.submitter \
-        and user not in self.supporter.all():
-            actions.append("support")
-
+            if  self.status == "pub" \
+            and user != self.submitter \
+            and user not in self.supporter.all() \
+            and user.profile:
+                actions.append("support")
+        except Profile.DoesNotExist:
+            pass
+        
         if self.status == "pub" and user in self.supporter.all():
             actions.append("unsupport")
 
@@ -388,6 +404,18 @@ class Application(models.Model):
         self.writelog(_("Poll created"), user)
         return poll
 
+    @property
+    def results(self):
+        """
+        Return a list of voting results
+        """
+        results = []
+        for poll in self.poll_set.all():
+            for option in poll.options:
+                if poll.votesinvalid != None and poll.votescast != None:
+                    results.append([option.yes, option.no, option.undesided, poll.votesinvalid, poll.votescast])
+        return results
+    
     @models.permalink
     def get_absolute_url(self, link='view'):
         if link == 'view':

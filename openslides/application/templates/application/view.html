@@ -60,8 +60,8 @@
         <ul class="results">
         {% for poll in polls %}
             <li>
-            {% if perms.application.can_manage_application %}
-                {% if poll.has_vote %}<a href="{% url application_poll_view poll.id %}">{% endif %}
+            {% if perms.application.can_manage_application and poll.has_vote %}
+                <a href="{% url application_poll_view poll.id %}">
             {% endif %}
             <b>{{ forloop.counter }}. {% trans "Vote" %}:</b>
             {% if perms.application.can_manage_application %}
