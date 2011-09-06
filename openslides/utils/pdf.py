@@ -41,14 +41,17 @@ from openslides.system.api import config_get
 from openslides.settings import SITE_ROOT
 from openslides.utils.utils import permission_required
 
+
 # register new truetype fonts
 pdfmetrics.registerFont(TTFont('Ubuntu', os.path.join(SITE_ROOT, 'static/fonts/Ubuntu-R.ttf')))
 pdfmetrics.registerFont(TTFont('Ubuntu-Bold', os.path.join(SITE_ROOT, 'static/fonts/Ubuntu-B.ttf')))
 pdfmetrics.registerFont(TTFont('Ubuntu-Italic', os.path.join(SITE_ROOT, 'static/fonts/Ubuntu-RI.ttf')))
 
+
 # set style information
 PAGE_HEIGHT=defaultPageSize[1];
 PAGE_WIDTH=defaultPageSize[0]
+
 
 # set custom stylesheets
 stylesheet = StyleSheet1()
@@ -193,6 +196,7 @@ def firstPage(canvas, doc):
     canvas.drawString(10*cm, 1*cm, _("Page")+" 1")
     canvas.restoreState()
 
+
 def laterPages(canvas, doc):
     canvas.saveState()
     # footer (with page number)
@@ -200,6 +204,7 @@ def laterPages(canvas, doc):
     canvas.setFillGray(0.4)
     canvas.drawString(10*cm, 1*cm, _("Page")+" %s" % doc.page)
     canvas.restoreState()
+
 
 @permission_required('agenda.can_see_agenda')
 def print_agenda(request):
@@ -225,6 +230,7 @@ def print_agenda(request):
 
     doc.build(story, onFirstPage=firstPage, onLaterPages=laterPages)
     return response
+
 
 @permission_required('participant.can_manage_participant')
 def print_userlist(request):
@@ -266,6 +272,7 @@ def print_userlist(request):
     story.append(t)
     doc.build(story, onFirstPage=firstPage, onLaterPages=laterPages)
     return response
+
 
 @permission_required('participant.can_manage_participant')
 def print_passwords(request):
@@ -310,7 +317,7 @@ def print_passwords(request):
     doc.build(story)
     return response
 
-@permission_required('application.can_see_application')
+
 def get_application(application, story):
     if application.number is None:
         story.append(Paragraph(_("Application")+" #[-]", stylesheet['Heading1']))
@@ -334,6 +341,7 @@ def get_application(application, story):
     else:
         story.append(Paragraph(_("Status")+": %s" % (application.get_status_display()), stylesheet['Italic']))
     return story
+
 
 @permission_required('application.can_see_application')
 def print_application(request, application_id=None):
@@ -362,6 +370,7 @@ def print_application(request, application_id=None):
 
     doc.build(story, onFirstPage=firstPage, onLaterPages=laterPages)
     return response
+
 
 @permission_required('application.can_manage_application')
 def print_application_poll(request, poll_id=None):
@@ -395,6 +404,7 @@ def print_application_poll(request, poll_id=None):
     story.append(t)
     doc.build(story)
     return response
+
 
 @permission_required('application.can_manage_application')
 def print_assignment_poll(request, poll_id=None):
