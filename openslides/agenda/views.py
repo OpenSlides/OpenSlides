@@ -37,12 +37,13 @@ def view(request, item_id):
     """
     item = Item.objects.get(id=item_id)
     votes = assignment_votes(item)
-
+    polls = assignment_polls(item)
     return render_to_response('beamer/%s.html' % item.type,
                              {
                                  'item': item.cast(),
                                  'ajax': 'off',
                                  'votes': votes,
+                                 'polls': polls,
                              },
                              context_instance=RequestContext(request))
 
@@ -57,6 +58,7 @@ def beamer(request):
     try:
         item = get_active_item()
         votes = assignment_votes(item)
+        polls = assignment_polls(item)
         if is_summary():
             items = item.children.filter(hidden=False)
             data['items'] = items
@@ -66,6 +68,7 @@ def beamer(request):
             data['item'] = item.cast()
             data['title'] = item.title
             data['votes'] = votes
+            data['polls'] = polls
             template = 'beamer/%s.html' % (item.type)
     except Item.DoesNotExist:
         items = Item.objects.filter(parent=None).filter(hidden=False) \
@@ -122,6 +125,14 @@ def assignment_votes(item):
                     tmplist[1].append("-")
             votes.append(tmplist)
     return votes
+
+
+def assignment_polls(item):
+    polls = []
+    if item.type == "ItemAssignment":
+        for poll in item.cast().assignment.poll_set.filter(assignment=item.cast().assignment):
+            polls.append(poll)
+    return polls
 
 
 @permission_required('agenda.can_see_agenda')

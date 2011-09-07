@@ -5,17 +5,15 @@
     <script type="text/javascript" src="/static/javascript/assignment.js"></script>
 {% endblock %}
 {% block content %}
-    {% trans "Election" %}:
-    <h1>{{ item.assignment }}</h1>
-
+    <h1>{% trans "Election" %}: {{ item.assignment }}</h1>
 
     <div id="sidebar">
     <div class="box">
-    <h4>{% trans "Status" %}:</h4>
-    {% trans item.assignment.get_status_display %}
+    <p><b>{% trans "Status" %}:</b><br>
+    {% trans item.assignment.get_status_display %}</p>
     {% if item.assignment.status == "sea" or item.assignment.status == "vot" %}
-        <h4>{% trans "Number of available posts" %}:</h4>
-        {{ item.assignment.posts }}
+        <p><b>{% trans "Number of available posts" %}:</b><br>
+        {{ item.assignment.posts }}</p>
     {% endif %}
     </div>
     </div>
@@ -70,12 +68,24 @@
                 {% else %}&empty;{% endif %}
             </td>
         {% endfor %}
-    </tr>
+    </tr>    
     {% empty %}
     <tr>
         <td {% if item.assignment.profile.exist %}colspan="2"{% endif %}><i>{% trans "No ballots available." %}</i></td>
     </tr>
     {% endfor %}
+    <tr>
+        <td>{%trans 'Invalid votes' %}</td>
+        {% for p in polls %}
+            <td style="white-space:nowrap;"><img src="/static/images/icons/voting-invalid.png" title="{% trans 'Invalid' %}"> {{ p.votesinvalid }}</td>
+        {% endfor %}
+    </tr>
+    <tr class="total">
+        <td><b>{%trans 'Votes cast' %}</b></td>
+        {% for p in polls %}
+            <td style="white-space:nowrap;"><img src="/static/images/icons/voting-total.png" title="{% trans 'Votes cast' %}"> <b>{{ p.votescast }}</b></td>
+        {% endfor %}
+    </tr>
     </table>
     {% endif %}
     

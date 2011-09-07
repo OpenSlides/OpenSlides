@@ -149,3 +149,8 @@ table td {
     padding: 10px 10px;
     vertical-align:middle;
 }
+tr.total td {
+    border-top: 1px solid #333333;
+    background-color: #e3e3e3;
+}
+
