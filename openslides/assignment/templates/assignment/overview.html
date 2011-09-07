@@ -14,7 +14,8 @@
         </select>
         </form>
     </p>
-    <br>
+   {{ assignments|length }}
+   {% blocktrans count counter=assignments|length %}Election{% plural %}Elections{% endblocktrans %}
     <table>
         <tr>
             <th><a href="?sort=name{% if 'name' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Elections" %}</a></th>

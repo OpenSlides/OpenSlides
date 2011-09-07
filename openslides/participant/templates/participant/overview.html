@@ -34,9 +34,9 @@
             {% endfor %}
         </select>
         </form>
-        {{ users|length }} {% trans "Shown Users" %}
     </p>
-    <br>
+    {{ users|length }}
+    {% blocktrans count counter=users|length %}Participant{% plural %}Participants{% endblocktrans %}
     <table>
         <tr>
             <th><a href="?sort=first_name{% if 'first_name' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "First Name" %}</a></th>

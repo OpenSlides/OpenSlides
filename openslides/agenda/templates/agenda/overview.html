@@ -46,9 +46,10 @@
             </em>
         </div>
         <div style="text-align:right; padding-bottom:3px;">
-        {% trans "Adjust projector live view" %}:
+        {% trans "Adjust projector view" %}:
         <a class="beamer_edit" href="{% url beamer_bigger %}"><img src="/static/images/icons/zoom-in.png"></a> <a class="beamer_edit" href="{% url beamer_smaller %}"><img src="/static/images/icons/zoom-out.png"></a>
         <a class="beamer_edit" href="{% url beamer_up %}"><img src="/static/images/icons/go-up.png"></a> <a class="beamer_edit" href="{% url beamer_down %}"><img src="/static/images/icons/go-down.png"></a>
+        {# <a href="{% url item_activate 0 %}"><img src="/static/images/icons/view-restore.png"></a> #} 
         </div>
         {% endif %}
         <table id="menu-overview" class="agendatable">
@@ -131,7 +132,7 @@
                 </td>
                 {% endif %}
                 <td style="width: 1px;white-space: nowrap;">
-                    <a href="{{ item.get_absolute_url }}"><img src="/static/images/icons/document-preview.png" title="{% trans 'Show beamer preview' %}"></a>
+                    <a href="{{ item.get_absolute_url }}"><img src="/static/images/icons/document-preview.png" title="{% trans 'Show projector preview' %}"></a>
 
                     {% if  perms.agenda.can_manage_agenda %}
                     <a href="{% url item_edit item.id %}"><img src="/static/images/icons/document-edit.png" title="{% trans 'Edit item' %}"></a>
