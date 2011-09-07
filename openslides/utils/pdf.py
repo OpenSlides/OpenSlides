@@ -33,8 +33,9 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
 from openslides.agenda.models import Item
-from openslides.application.models import Application
 from openslides.agenda.api import children_list
+from openslides.application.models import Application
+from openslides.assignment.models import Assignment
 from openslides.poll.models import Poll
 from openslides.participant.models import Profile
 from openslides.system.api import config_get
@@ -420,6 +421,7 @@ def print_application(request, application_id=None):
     
     if application_id is None:  #print all applications
         story.append(Paragraph(_("Applications"), stylesheet['Heading1']))
+        story.append(Spacer(0,0.75*cm))
         # List of applications
         for application in Application.objects.exclude(number=None).order_by('number'):
             story.append(Paragraph(_("Application No.")+" %s: %s" % (application.number, application.title), stylesheet['Heading3']))
@@ -469,7 +471,69 @@ def print_application_poll(request, poll_id=None):
     doc.build(story)
     return response
 
+def get_assignment(assignment, story):
+    # title
+    story.append(Paragraph(_("Election")+": %s" % assignment.name, stylesheet['Heading1']))
+    story.append(Spacer(0,0.5*cm))
+    # posts
+    cell1a = []
+    cell1a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Number of available posts"), stylesheet['Bold']))
+    cell1b = []
+    cell1b.append(Paragraph(str(assignment.posts), stylesheet['Paragraph']))
+    # candidates
+    cell2a = []
+    cell2a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font><seqreset id='counter'>" % _("Candidates"), stylesheet['Heading4']))
+    cell2b = []
+    for c in assignment.candidates:
+        cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % unicode(c), stylesheet['Signaturefield']))
+    if assignment.status == "sea":
+        for x in range(0,2*assignment.posts):
+            cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; __________________________________________",stylesheet['Signaturefield']))
+    cell2b.append(Spacer(0,0.2*cm))
+    # table
+    data = []
+    data.append([cell1a,cell1b])
+    data.append([cell2a,cell2b])
+    t=Table(data)
+    t._argW[0]=4.5*cm
+    t._argW[1]=11*cm
+    t.setStyle(TableStyle([ ('BOX', (0,0), (-1,-1), 1, colors.black),
+                            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                          ]))
+    story.append(t)
+    story.append(Spacer(0,1*cm))
+    # text
+    story.append(Paragraph("%s" % assignment.description.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+    return story
+    
+@permission_required('application.can_see_application')
+def print_assignment(request, assignment_id=None):
+    response = HttpResponse(mimetype='application/pdf')
+    filename = u'filename=%s.pdf;' % _("Elections")
+    response['Content-Disposition'] = filename.encode('utf-8')
+    doc = SimpleDocTemplate(response)
+    doc.title = None
+    story = []
+    
+    if assignment_id is None:  #print all applications
+        story.append(Paragraph(_("Elections"), stylesheet['Heading1']))
+        story.append(Spacer(0,0.75*cm))
+        # List of assignments
+        for assignment in Assignment.objects.order_by('name'):
+            story.append(Paragraph(assignment.name, stylesheet['Heading3']))
+        # Assignment details (each assignment on single page)
+        for assignment in Assignment.objects.order_by('name'):
+            story.append(PageBreak())
+            story = get_assignment(assignment, story)
+    else:  # print selected assignment
+        assignment = Assignment.objects.get(id=assignment_id)
+        filename = u'filename=%s-%s.pdf;' % (_("Assignment"), assignment.name.replace(' ','_'))
+        response['Content-Disposition'] = filename.encode('utf-8')
+        story = get_assignment(assignment, story)
 
+    doc.build(story, onFirstPage=firstPage, onLaterPages=firstPage)
+    return response
+    
 @permission_required('application.can_manage_application')
 def print_assignment_poll(request, poll_id=None):
     poll = Poll.objects.get(id=poll_id)

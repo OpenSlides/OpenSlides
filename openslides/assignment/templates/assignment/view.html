@@ -6,8 +6,11 @@
 
     <div class="box">
     <h4>{% trans "Status" %}:</h4>
+    <h4 style="text-align: right;">
+    <a href="{% url print_assignment assignment.id %}"><img src="/static/images/icons/application-pdf.png" title="{% trans 'Print Election' %}"></a>
+    </h4>
+    <span clear="all"></span>
     {% trans assignment.get_status_display %}
-
     <h4>{% trans "Number of available posts" %}:</h4>
     {{ assignment.posts }}
     </div>

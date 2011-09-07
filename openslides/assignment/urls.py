@@ -43,6 +43,12 @@ urlpatterns = patterns('assignment.views',
     url(r'^assignment/poll/(?P<poll_id>\d+)/print$', 'print_assignment_poll', \
         name='print_assignment_poll'),
 
+    url(r'^assignment/print$', 'print_assignment', \
+        name='print_assignment'),
+
+    url(r'^assignment/(?P<assignment_id>\d+)/print$', 'print_assignment', \
+        name='print_assignment'),
+
     url(r'^assignment/(?P<assignment_id>\d+)/gen_poll$', 'gen_poll', \
         name='assignment_gen_poll'),
 

@@ -21,7 +21,7 @@ from poll.forms import OptionResultForm, PollForm
 from assignment.models import Assignment
 from assignment.forms import AssignmentForm, AssignmentRunForm
 from utils.utils import template, permission_required, gen_confirm_form, del_confirm_form, ajax_request
-from utils.pdf import print_assignment_poll
+from utils.pdf import print_assignment, print_assignment_poll
 from participant.models import Profile
 
 
