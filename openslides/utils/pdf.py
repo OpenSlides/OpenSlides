@@ -336,11 +336,9 @@ def print_passwords(request):
 def get_application(application, story):
     # application number
     if application.number is None:
-        story.append(Paragraph(_("Application No.")+" [-]", stylesheet['Heading1']))
+        story.append(Paragraph(_("Application No."), stylesheet['Heading1']))
     else:
         story.append(Paragraph(_("Application No.")+" %s" % application.number, stylesheet['Heading1']))
-    # title
-    story.append(Paragraph(_("Subject")+": "+application.title, stylesheet['Heading3']))
     
     # submitter
     cell1a = []
@@ -350,7 +348,9 @@ def get_application(application, story):
     cell1b.append(Spacer(0,0.2*cm))
     if application.status == "pub":
         cell1b.append(Paragraph("__________________________________________",stylesheet['Signaturefield']))
+        cell1b.append(Spacer(0,0.1*cm))
         cell1b.append(Paragraph("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+unicode(application.submitter.profile), stylesheet['Small']))
+        cell1b.append(Spacer(0,0.2*cm))
     else:
         cell1b.append(Paragraph(unicode(application.submitter.profile), stylesheet['Normal']))
     
@@ -373,7 +373,10 @@ def get_application(application, story):
     cell3a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Status"), stylesheet['Heading4']))
     cell3b = []
     if note != "":
-        cell3b.append(Paragraph("%s | %s" % (application.get_status_display(), note), stylesheet['Normal']))
+        if application.status == "pub":
+            cell3b.append(Paragraph(note, stylesheet['Normal']))
+        else:
+            cell3b.append(Paragraph("%s | %s" % (application.get_status_display(), note), stylesheet['Normal']))
     else:
         cell3b.append(Paragraph("%s" % application.get_status_display(), stylesheet['Normal']))
 
@@ -402,6 +405,9 @@ def get_application(application, story):
                           ]))
     story.append(t)
     story.append(Spacer(0,1*cm))
+    
+    # title
+    story.append(Paragraph(application.title, stylesheet['Heading3']))
     # text
     story.append(Paragraph("%s" % application.text.replace('\r\n','<br/>'), stylesheet['Paragraph']))
     # reason
