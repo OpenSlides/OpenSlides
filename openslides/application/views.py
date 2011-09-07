@@ -144,8 +144,8 @@ def edit(request, application_id=None):
             initial = {'text': config_get('application_preamble')}
         else:
             if application.status == "pub" and application.supporter.count() > 0:
-                if request.user.has_perm('application.can_manage_applications'):
-                    messages.warning(request, _("Attention: Do you really want to edit this application? The supporters will not be removed automatically. Please check if the supports are valid after your changing."))
+                if request.user.has_perm('application.can_manage_application'):
+                    messages.warning(request, _("Attention: Do you really want to edit this application? The supporters will <b>not</b> be removed automatically because you can manage applications. Please check if the supports are valid after your changing!"))
                 else:
                     messages.warning(request, _("Attention: Do you really want to edit this application? All <b>%s</b> supporters will be removed! Try to convince the supporters again.") % application.supporter.count() )
             initial = {'title': application.title,
