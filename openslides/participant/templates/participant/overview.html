@@ -2,7 +2,7 @@
 {% block title %}{{ block.super }} - {%trans "Participants" %}{% endblock %}
 
 {% block content %}
-    <h1>{%trans "Participants" %}</h1>
+    <h1>{% trans "Participants" %}</h1>
 
     <p><form action="{{request.url}}" name="filter" method="get">
         {%trans "Filter" %}:
@@ -23,8 +23,8 @@
             <option value="---">-- {%trans "Type" %}--</option>
             <option value="delegate" {% if 'delegate' in request.GET.type %}selected{% endif %}>{%trans "Delegate" %}</option>
             <option value="observer" {% if 'observer' in request.GET.type %}selected{% endif %}>{%trans "Observer" %}</option>
-            <option value="staff" {% if 'staff' in request.GET.type %}selected{% endif %}>{%trans "staff" %}</option>
-            <option value="guest" {% if 'guest' in request.GET.type %}selected{% endif %}>{%trans "guest" %}</option>
+            <option value="staff" {% if 'staff' in request.GET.type %}selected{% endif %}>{%trans "Staff" %}</option>
+            <option value="guest" {% if 'guest' in request.GET.type %}selected{% endif %}>{%trans "Guest" %}</option>
         </select>
         <select class="default-input" name="committee" onchange="document.forms['filter'].submit()">
             <option value="---">-- {%trans "Committee" %}--</option>
@@ -35,8 +35,7 @@
         </select>
         </form>
     </p>
-    {{ users|length }}
-    {% blocktrans count counter=users|length %}Participant{% plural %}Participants{% endblocktrans %}
+    {{ users|length }} {% trans "Participant" %}
     <table>
         <tr>
             <th><a href="?sort=first_name{% if 'first_name' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "First Name" %}</a></th>
@@ -56,7 +55,11 @@
             <td>{{ user.first_name }}</td>
             <td>{{ user.last_name }}</td>
             <td>{{ user.profile.group }}</td>
-            <td>{{ user.profile.type }}</td>
+            <td>{% if user.profile.type == "delegate" %}{% trans "Delegate" %}{% endif %}
+                {% if user.profile.type == "observer" %}{% trans "Observer" %}{% endif %}
+                {% if user.profile.type == "staff" %}{% trans "Staff" %}{% endif %}
+                {% if user.profile.type == "guest" %}{% trans "Guest" %}{% endif %}
+            </td>
             <td>{{ user.profile.committee }}</td>
             {% if perms.participant.can_manage_participant %}
             <td>{{ user.username }}</td>

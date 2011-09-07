@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-07 22:14+0200\n"
+"POT-Creation-Date: 2011-09-07 22:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -93,7 +93,6 @@ msgstr "Text"
 #: agenda/models.py:199 agenda/templates/agenda/overview.html:113
 #: agenda/templates/beamer/ItemApplication.html:5
 #: application/templates/application/edit.html:2
-#: application/templates/application/overview.html:27
 #: application/templates/application/view.html:2
 #: application/templates/application/view.html:213 poll/models.py:23
 #: poll/models.py:110 system/templates/system/general.html:13 utils/pdf.py:451
@@ -103,8 +102,7 @@ msgstr "Antrag"
 
 #: agenda/models.py:206 agenda/templates/agenda/overview.html:126
 #: agenda/templates/beamer/ItemAssignment.html:8
-#: assignment/templates/assignment/edit.html:2
-#: assignment/templates/assignment/overview.html:18 poll/models.py:24
+#: assignment/templates/assignment/edit.html:2 poll/models.py:24
 #: utils/pdf.py:509 utils/pdf.py:596 utils/pdf.py:605
 msgid "Election"
 msgstr "Wahl"
@@ -298,7 +296,7 @@ msgstr "Keine Einträge vorhanden."
 #: agenda/templates/beamer/ItemApplication.html:11
 #: agenda/templates/beamer/ItemAssignment.html:14
 #: application/templates/application/overview.html:16
-#: application/templates/application/overview.html:35
+#: application/templates/application/overview.html:34
 #: application/templates/application/view.html:35
 #: assignment/templates/assignment/overview.html:10
 #: assignment/templates/assignment/overview.html:23
@@ -412,7 +410,7 @@ msgstr "Verwiesen (in Ausschuss)"
 msgid "Rejected (not permitted)"
 msgstr "Verworfen (nicht zulässig)"
 
-#: application/models.py:45 application/templates/application/overview.html:36
+#: application/models.py:45 application/templates/application/overview.html:35
 #: application/templates/application/view.html:9 utils/pdf.py:347
 msgid "Submitter"
 msgstr "Antragsteller"
@@ -600,7 +598,8 @@ msgstr "Soll Version <b>%s</b> wirklich zurückgewiesen werden?"
 
 #: application/templates/application/base_application.html:6
 #: application/templates/application/overview.html:2
-#: application/templates/application/overview.html:6 templates/base.html:41
+#: application/templates/application/overview.html:6
+#: application/templates/application/overview.html:26 templates/base.html:41
 #: utils/pdf.py:426 utils/pdf.py:433
 msgid "Applications"
 msgstr "Anträge"
@@ -648,24 +647,24 @@ msgstr "Noch nicht zugelassen"
 msgid "Withdrawed (by submitter)"
 msgstr "Zurückgezogen (durch Antragsteller)"
 
-#: application/templates/application/overview.html:30
+#: application/templates/application/overview.html:29
 msgid "Number"
 msgstr "Nummer"
 
-#: application/templates/application/overview.html:31
+#: application/templates/application/overview.html:30
 msgid "Application title"
 msgstr "Antragstitel"
 
-#: application/templates/application/overview.html:33
+#: application/templates/application/overview.html:32
 msgid "Number of supporters"
 msgstr "Anzahl der Unterstützer"
 
-#: application/templates/application/overview.html:37
+#: application/templates/application/overview.html:36
 #: application/templates/application/view.html:102
 msgid "Creation Time"
 msgstr "Erstellungszeit"
 
-#: application/templates/application/overview.html:59
+#: application/templates/application/overview.html:58
 msgid "No applications available."
 msgstr "Keine Anträge vorhanden."
 
@@ -1011,6 +1010,12 @@ msgstr "Alle Wahlen drucken"
 msgid "Edit election"
 msgstr "Wahl bearbeiten"
 
+#: assignment/templates/assignment/overview.html:18
+msgid "election"
+msgid_plural "elections"
+msgstr[0] "Wahl"
+msgstr[1] "Wahlen"
+
 #: assignment/templates/assignment/overview.html:34
 msgid "Edit assignment"
 msgstr "Wahl bearbeiten"
@@ -1107,20 +1112,24 @@ msgid "Female"
 msgstr "Weiblich"
 
 #: participant/models.py:27 participant/templates/participant/overview.html:24
+#: participant/templates/participant/overview.html:59
 msgid "Delegate"
 msgstr "Delegierter"
 
-#: participant/models.py:28
-msgid "Guest"
-msgstr "Gast"
-
-#: participant/models.py:29 participant/templates/participant/overview.html:25
+#: participant/models.py:28 participant/templates/participant/overview.html:25
+#: participant/templates/participant/overview.html:60
 msgid "Observer"
 msgstr "Beobachter"
 
-#: participant/models.py:30
+#: participant/models.py:29 participant/templates/participant/overview.html:26
+#: participant/templates/participant/overview.html:61
 msgid "Staff"
 msgstr "Mitarbeiter"
+
+#: participant/models.py:30 participant/templates/participant/overview.html:27
+#: participant/templates/participant/overview.html:62
+msgid "Guest"
+msgstr "Gast"
 
 #: participant/models.py:34 participant/templates/participant/overview.html:10
 msgid "Gender"
@@ -1278,7 +1287,7 @@ msgid "Participant"
 msgstr "Teilnehmer"
 
 #: participant/templates/participant/edit.html:6
-#: participant/templates/participant/overview.html:67
+#: participant/templates/participant/overview.html:71
 msgid "Edit participant"
 msgstr "Teilnehmer bearbeiten"
 
@@ -1316,7 +1325,7 @@ msgid "Delete group"
 msgstr "Benutzergruppe löschen"
 
 #: participant/templates/participant/group_overview.html:20
-#: participant/templates/participant/overview.html:84
+#: participant/templates/participant/overview.html:88
 msgid "No participants available."
 msgstr "Keine Teilnehmer vorhanden."
 
@@ -1355,14 +1364,6 @@ msgid "Your username and password didn't match. Please try again."
 msgstr ""
 "Benutzername und Passwort stimmen nicht überein. Bitte noch einmal versuchen."
 
-#: participant/templates/participant/overview.html:26
-msgid "staff"
-msgstr "Mitarbeiter"
-
-#: participant/templates/participant/overview.html:27
-msgid "guest"
-msgstr "Gast"
-
 #: participant/templates/participant/overview.html:42 utils/pdf.py:260
 msgid "First Name"
 msgstr "Vorname"
@@ -1383,23 +1384,23 @@ msgstr "E-Mail"
 msgid "Last Login"
 msgstr "Letzer Login"
 
-#: participant/templates/participant/overview.html:68
+#: participant/templates/participant/overview.html:72
 msgid "Delete participant"
 msgstr "Teilnehmer löschen"
 
-#: participant/templates/participant/overview.html:70
+#: participant/templates/participant/overview.html:74
 msgid "Participiant is activated. Click to deactivate!"
 msgstr "Teilnehmer ist aktiviert. Zum Deaktivieren klicken!"
 
-#: participant/templates/participant/overview.html:72
+#: participant/templates/participant/overview.html:76
 msgid "Participiant is deactivated. Click to activate!"
 msgstr "Teilnehmer ist deaktiviert, Zum Aktivieren klicken!"
 
-#: participant/templates/participant/overview.html:75
+#: participant/templates/participant/overview.html:79
 msgid "Administrator. Click to get normal user!"
 msgstr "Administrator. Klicken, um normaler Nutzer zu werden!"
 
-#: participant/templates/participant/overview.html:77
+#: participant/templates/participant/overview.html:81
 msgid "Normal user. Click to get administrator!"
 msgstr "Normaler Nutzer. Klicken, um Administrator zu werden!"
 
@@ -1574,3 +1575,8 @@ msgstr "verfügbare Posten"
 #: utils/utils.py:72
 msgid "Sorry, you have no rights to see this page."
 msgstr "Bedaure, Sie haben keine Berechtigung diese Seite zu sehen."
+
+#~ msgid "application"
+#~ msgid_plural "applications"
+#~ msgstr[0] "Antrag"
+#~ msgstr[1] "Anträge"

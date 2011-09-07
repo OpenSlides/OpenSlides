@@ -25,9 +25,9 @@ class Profile(models.Model):
     )
     TYPE_CHOICE = (
         ('delegate', _('Delegate')),
-        ('guest', _('Guest')),
         ('observer', _('Observer')),
         ('staff', _('Staff')),
+        ('guest', _('Guest')),
     )
 
     user = models.OneToOneField(User, unique=True, editable=False)
