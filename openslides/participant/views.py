@@ -300,9 +300,8 @@ def reset_password(request, user_id):
     user = User.objects.get(pk=user_id)
     if request.method == 'POST':
         user.profile.reset_password()
-        user.profile.save()
         messages.success(request, _('The Password for <b>%s</b> was successfully reset.') % user)
     else:
         gen_confirm_form(request, _('Do you really want to reset the password for <b>%s</b>?') % user,
-                         reverse('user_overview'))
+                         reverse('user_reset_passwords', args=[user_id]))
     return redirect(reverse('user_edit', args=[user_id]))
