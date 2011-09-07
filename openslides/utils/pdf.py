@@ -335,10 +335,11 @@ def print_passwords(request):
 
 def get_application(application, story):
     # application number
-    if application.number is None:
-        story.append(Paragraph(_("Application No."), stylesheet['Heading1']))
-    else:
+    if application.number:
         story.append(Paragraph(_("Application No.")+" %s" % application.number, stylesheet['Heading1']))
+    else:
+        story.append(Paragraph(_("Application No."), stylesheet['Heading1']))
+
     
     # submitter
     cell1a = []
@@ -380,23 +381,26 @@ def get_application(application, story):
     else:
         cell3b.append(Paragraph("%s" % application.get_status_display(), stylesheet['Normal']))
 
-    # voting results
-    cell4a = []
-    cell4a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Vote results"), stylesheet['Heading4']))
-    cell4b = []
-    ballotcounter = 0
-    for result in application.results:
-        ballotcounter += 1
-        if len(application.results) > 1:
-            cell4b.append(Paragraph("%s. %s" % (ballotcounter, _("Vote")), stylesheet['Bold']))
-        cell4b.append(Paragraph("%s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s" % (_("Yes"), result[0], _("No"), result[1], _("Abstention"), result[2], _("Invalid"), result[3], _("Votes cast"), result[4]), stylesheet['Normal']))
-        cell4b.append(Spacer(0,0.2*cm))
     # table
     data = []
     data.append([cell1a,cell1b])
     data.append([cell2a,cell2b])
     data.append([cell3a,cell3b])
-    data.append([cell4a,cell4b])
+    
+    # voting results
+    if len(application.results) > 0:
+        cell4a = []
+        cell4a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Vote results"), stylesheet['Heading4']))
+        cell4b = []
+        ballotcounter = 0
+        for result in application.results:
+            ballotcounter += 1
+            if len(application.results) > 1:
+                cell4b.append(Paragraph("%s. %s" % (ballotcounter, _("Vote")), stylesheet['Bold']))
+            cell4b.append(Paragraph("%s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s" % (_("Yes"), result[0], _("No"), result[1], _("Abstention"), result[2], _("Invalid"), result[3], _("Votes cast"), result[4]), stylesheet['Normal']))
+            cell4b.append(Spacer(0,0.2*cm))
+        data.append([cell4a,cell4b])
+
     t=Table(data)
     t._argW[0]=4.5*cm
     t._argW[1]=11*cm
@@ -429,15 +433,22 @@ def print_application(request, application_id=None):
         story.append(Paragraph(_("Applications"), stylesheet['Heading1']))
         story.append(Spacer(0,0.75*cm))
         # List of applications
-        for application in Application.objects.exclude(number=None).order_by('number'):
-            story.append(Paragraph(_("Application No.")+" %s: %s" % (application.number, application.title), stylesheet['Heading3']))
+        for application in Application.objects.order_by('number'):
+            if application.number:
+                story.append(Paragraph(_("Application No.")+" %s: %s" % (application.number, application.title), stylesheet['Heading3']))
+            else:
+                story.append(Paragraph(_("Application No.")+"&nbsp;&nbsp;&nbsp;: %s" % (application.title), stylesheet['Heading3']))
         # Applications details (each application on single page)
-        for application in Application.objects.exclude(number=None).order_by('number'):
+        for application in Application.objects.order_by('number'):
             story.append(PageBreak())
             story = get_application(application, story)
     else:  # print selected application
         application = Application.objects.get(id=application_id)
-        filename = u'filename=%s%s.pdf;' % (_("Application"), str(application.number))
+        if application.number:
+            number = application.number
+        else:
+            number = ""
+        filename = u'filename=%s%s.pdf;' % (_("Application"), str(number))
         response['Content-Disposition'] = filename.encode('utf-8')
         story = get_application(application, story)
 
