@@ -2,27 +2,38 @@
 {% load tags %}
 {% block title %}{{ block.super }} - {{ item.title }}{% endblock %}
 {% block content %}
-    <div class="number">{% trans "Application" %} #{{ item.application.number }}</div>
-    <h1>{{ item.title }}</h1>
 
-    {% if item.application.status != "pub" and item.application.status != "per" %}
     <div id="sidebar">
     <div class="box">
-    <h4>{%trans "Status" %}:</h4>
-    {%trans item.application.get_status_display %}
+        <p><b>{%trans "Status" %}:</b><br>
+        {% if item.application.status != "pub" %}
+            {%trans item.application.get_status_display %}
+            <br>
+        {% else %}
+            {% for note in item.application.notes %}
+            {{ note }}
+            {% endfor %}
+        {% endif %}
+        </p>
 
-    {% with item.application.poll_set.all as poll %}
-    {% if poll|length > 0 %}
-    <h4>{% trans "Poll result" %}:</h4>
-    {% for p in poll %}
+        <p><b>{% trans "Submitter" %}:</b><br>
+        {{ item.application.submitter }}</p>
+    {% with item.application.poll_set.all as polls %}
+    {% if polls|length > 0 and polls.0.has_vote %}
+    <p><b>{% trans "Poll result" %}:</b></p>
+    {% for p in polls %}
         {% if p.has_vote %}
-            {% if poll|length > 1 %}
-                {{forloop.counter}}. {% trans "Poll" %}:<br>&nbsp;&nbsp;&nbsp;
+            {% if polls|length > 1 %}
+                {{forloop.counter}}. {% trans "Vote" %}:<br>
             {% endif %}
-            {% for option in p.get_options %}
-                {% trans "Yes" %}: {{ option.voteyes }} <br>&nbsp;&nbsp;&nbsp;
-                {% trans "No" %}:  {{ option.voteno }} <br>&nbsp;&nbsp;&nbsp;
-                {% trans "Abstention" %}: {{ option.voteundesided }}
+            {% for option in p.options %}
+                <img src="/static/images/icons/voting-yes.png" title="{% trans 'Yes' %}"> {{ option.yes }} <br>
+                <img src="/static/images/icons/voting-no.png" title="{% trans 'No' %}"> {{ option.no }} <br>
+                <img src="/static/images/icons/voting-abstention.png" title="{% trans 'Abstention' %}">  {{ option.undesided }}<br>
+                <img src="/static/images/icons/voting-invalid.png" title="{% trans 'Invalid' %}"> {{ p.votesinvalid }}<br>
+                <div style="border-top: 1px solid; padding-top: 5px; margin: 5px 0; width: 5em;">
+                    <img src="/static/images/icons/voting-total.png" title="{% trans 'Votes cast' %}"> {{ p.votescast }}
+                </div>
             {% endfor %}
             <br>
         {% else %}
@@ -33,15 +44,17 @@
     {% endfor %}
     {% endif %}
     {% endwith %}
-     
     </div>
     </div>
-    {% endif %}
     
+    <h1>{% trans "Application No." %} {{ item.application.number }}</h1>
+    <b>{{ item.title }}</b>
     <p>
-    <div class="text">{{ item.application.text|linebreaks }}</div>
-    <br>
-    <div class="reason"><p><b>{% trans "Reason" %}:</b></p>
-    {{ item.application.reason|linebreaks }}</div>
+    <div class="text">{{ item.application.public_version.text|linebreaks }}</div>
+    {% if item.application.public_version.reason %}
+        <br>
+        <div class="reason"><p><b>{% trans "Reason" %}:</b></p>
+        {{ item.application.public_version.reason|linebreaks }}</div>
+    {% endif %}
     </p>
 {% endblock %}
