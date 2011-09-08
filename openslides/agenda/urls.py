@@ -64,4 +64,6 @@ urlpatterns = patterns('agenda.views',
     url(r'^beamer/up$', 'beamer_edit', {'direction': 'up'}, name='beamer_up'),
 
     url(r'^beamer/down$', 'beamer_edit', {'direction': 'down'}, name='beamer_down'),
+
+    url(r'^beamer/clean$', 'beamer_edit', {'direction': 'clean'}, name='beamer_clean'),
 )
