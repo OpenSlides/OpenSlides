@@ -55,22 +55,33 @@ Installation on Windows (32/64bit)
        
   5. Get OpenSlides source code (e.g. via mercurial checkout)
        
-       hg clone http://hg.openslides.org
+     a) Download OpenSlides as zip archive from http://openslides.org.
+        
+        OR
+
+     b) Clone mercurial repository (anonymous checkout):
+       
+        hg clone http://hg.openslides.org
+
+        If you have write access use instead: 
+        hg clone ssh://hg@openslides.org/openslides
 
   6. Copy default.settings.py to settings.py 
-     (in directory 'openslides')
+     (in subdirectory 'openslides')
   
-  7. Install OpenSlides database:
+  7. Create OpenSlides database (and follow on screen instruction):
 
        python manage.py syncdb
+
+     -> Note: Answer "yes" to create superuser!
   
   8. Run OpenSlides server:
 
-       python manage.py runserver
+       python manage.py runserver [port or address:port]
   
-  9. Open OpenSlides in your Browser:
+  9. Open OpenSlides in your browser:
 
-       http://127.0.0.1:8000/
+       http://127.0.0.1:8000/  (or customized server address:port)
 
 
 
@@ -80,42 +91,63 @@ Installation on Linux and MacOSX
 Make sure that you have python and virtualenv installed on your
 system.
 
-  1. Setup virtualenv:
+  1. Get OpenSlides source code 
 
-       cd openslides (project root directory)
-       virtualenv .venv
+     a) Download OpenSlides as zip archive from http://openslides.org.
+        
+        OR
+
+     b) Clone mercurial repository (anonymous checkout):
+       
+        hg clone http://hg.openslides.org
+
+        If you have write access use instead: 
+        hg clone ssh://hg@openslides.org/openslides
+
+  2. Setup virtualenv:
+
+       # go to the root directory of OpenSlides
+       cd openslides
+
+       # create virtualenv environment
+       virtualenv --no-site-packages .venv
+
+       # activate virtualenv environment
        . .venv/bin/activate
 
-  2. Install 'pip' (if not available):
+  3. Install 'pip' (if not available):
      
        easy_install pip 
 
-  3. Install django packages:
+  4. Install django packages:
        
        pip install django django-model-utils
   
-  4. Install packages for building PDF (reportlab, PIL):
+  5. Install packages for building PDF:
 
        pip install reportlab pil
 
-  5. Get OpenSlides source code (e.g. via mercurial checkout)
-       
-       hg clone http://hg.openslides.org
+  6. Install other required packages:
+
+       pip install simplejson mercurial
  
-  6. Copy default.settings.py to settings.py
-     (in directory 'openslides')
+  7. Copy default.settings.py to settings.py:
+
+        cp openslides/default.settings.py openslides/settings.py
   
-  7. Install OpenSlides database (and follow on screen instruction):
+  8. Create OpenSlides database (and follow on screen instruction):
 
        python manage.py syncdb
-  
-  8. Run OpenSlides server:
 
-       python manage.py runserver
+     -> Note: Answer "yes" to create superuser!
   
-  9. Open OpenSlides in your Browser:
+  9. Run OpenSlides server:
 
-       http://127.0.0.1:8000/
+       python manage.py runserver [port or address:port]
+  
+ 10. Open OpenSlides in your browser:
+
+       http://127.0.0.1:8000/  (or customized server address:port)
 
 
 --
