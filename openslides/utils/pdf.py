@@ -185,7 +185,7 @@ event_location = config_get("event_location")
 event_organizer = config_get("event_organizer")
 
 # set print time
-time = datetime.now().strftime(_("%Y-%m-%d %H:%Mh"))
+time = datetime.now().strftime(str(_("%Y-%m-%d %H:%Mh")))
 
 
 def firstPage(canvas, doc):
