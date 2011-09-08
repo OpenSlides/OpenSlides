@@ -1,6 +1,7 @@
 ^.venv/
 ^openslides/.venv/
 \.pyc$
+\.swp$
 ^openslides/settings\.py$
 ^database\.db$
 ~$
