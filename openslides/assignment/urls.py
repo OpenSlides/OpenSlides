@@ -58,6 +58,12 @@ urlpatterns = patterns('assignment.views',
     url(r'^assignment/poll/(?P<poll_id>\d+)/del$', 'delete_poll', \
         name='assignment_poll_delete'),
 
+    url(r'^assignment/poll/(?P<poll_id>\d+)/pub/$', 'set_published', {'published': True},
+        name='assignment_poll_publish'),
+
+    url(r'^assignment/poll/(?P<poll_id>\d+)/notpub/$', 'set_published', {'published': False},
+        name='assignment_poll_notpublish'),
+
     url(r'^assignment/(?P<assignment_id>\d+)/elected/(?P<profile_id>\d+)$', 'set_elected', {'elected': True}, \
         name='assignment_user_elected'),
 

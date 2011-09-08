@@ -35,14 +35,18 @@
     </ol>
     {% endif %}
     
-    {% if item.assignment.poll_set.all.count > 0 %}
+    {% with polls|first as firstpoll %}
+    {% if polls.count > 0 and firstpoll.published %}
+
     <p><br></p>
     <h3>{% trans "Election results" %}</h3>
     <table>
     <tr>
         <th>{% trans "Candidates" %}</th>
         {% for poll in item.assignment.poll_set.all %}
-        <th><nobr>{{forloop.counter}}. {% trans "ballot" %}</nobr></th>
+            {% if poll.published %}
+            <th><nobr>{{forloop.counter}}. {% trans "ballot" %}</nobr></th>
+            {% endif %}
         {% endfor %}
     </tr>
     {% for vote in votes %}
@@ -77,17 +81,22 @@
     <tr>
         <td>{%trans 'Invalid votes' %}</td>
         {% for p in polls %}
+            {% if p.published %}
             <td style="white-space:nowrap;"><img src="/static/images/icons/voting-invalid.png" title="{% trans 'Invalid' %}"> {{ p.votesinvalid }}</td>
+            {% endif %}
         {% endfor %}
     </tr>
     <tr class="total">
         <td><b>{%trans 'Votes cast' %}</b></td>
         {% for p in polls %}
+            {% if p.published %}
             <td style="white-space:nowrap;"><img src="/static/images/icons/voting-total.png" title="{% trans 'Votes cast' %}"> <b>{{ p.votescast }}</b></td>
+            {% endif %}
         {% endfor %}
     </tr>
     </table>
     {% endif %}
+    {% endwith %}
     
     <br>
 {% endblock %}

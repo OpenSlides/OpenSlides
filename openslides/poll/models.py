@@ -25,6 +25,7 @@ class Poll(models.Model):
     description = models.TextField(null=True, blank=True, verbose_name = _("Description"))
     votescast = models.IntegerField(null=True, blank=True, verbose_name = _("Votes cast"))
     votesinvalid = models.IntegerField(null=True, blank=True, verbose_name = _("Votes invalid"))
+    published = models.BooleanField(default=False)
 
     def add_option(self, option):
         self.save()
@@ -55,6 +56,13 @@ class Poll(models.Model):
     @property
     def options_values(self):
         return [option.value for option in self.options]
+
+    def set_published(self, published=True):
+        """
+        Changes the published-status of the poll.
+        """
+        self.published = published
+        self.save()
 
     @property
     def count_ballots(self):

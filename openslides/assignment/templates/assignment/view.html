@@ -130,6 +130,11 @@
         {% if perms.assignment.can_manage_assignment %}
         </a>
         <a href="{% url assignment_poll_delete poll.id %}"><img src="/static/images/icons/edit-delete.png" title="{% trans 'Delete Poll' %}"></a>
+        {% if poll.published %}
+            <a href={% url assignment_poll_notpublish poll.id %}>unpublish</a>
+        {% else %}
+            <a href={% url assignment_poll_publish poll.id %}>publish</a>
+        {% endif %}
         {% endif %}
     </th>
     {% endfor %}
