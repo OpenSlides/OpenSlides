@@ -100,6 +100,9 @@ def beamer_edit(request, direction):
         config_set('up', int(config_get('up', 0)) - 10)
     elif direction == 'down':
         config_set('up', int(config_get('up', 0)) + 10)
+    elif direction == 'clean':
+        config_set('up', 0)
+        config_set('bigger', 100)
 
     if request.is_ajax():
         return ajax_request({})
