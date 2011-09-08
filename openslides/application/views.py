@@ -19,6 +19,7 @@ from django.utils.translation import ugettext as _
 from openslides.application.models import Application, AVersion
 from openslides.application.forms import ApplicationForm, \
                                          ApplicationManagerForm
+from openslides.participant.models import Profile
 from openslides.poll.models import Poll
 from openslides.poll.forms import OptionResultForm, PollForm
 from openslides.utils.utils import template, permission_required, \
@@ -122,7 +123,11 @@ def edit(request, application_id=None):
 
         if valid:
             del_supporters = True
+            original_supporters = []
             if is_manager:
+                if application:
+                    for s in application.supporter.all():
+                        original_supporters.append(s)
                 application = managerform.save()
             elif application_id is None:
                 application = Application(submitter=request.user)
@@ -130,6 +135,29 @@ def edit(request, application_id=None):
             application.text = dataform.cleaned_data['text']
             application.reason = dataform.cleaned_data['reason']
             application.save(request.user)
+            if is_manager:
+                # log added supporters
+                supporters_added = []
+                for s in application.supporter.all():
+                    if s not in original_supporters:
+                        try:
+                            supporters_added.append(unicode(s.profile))
+                        except Profile.DoesNotExist:
+                            pass
+                if len(supporters_added) > 0:
+                    log_added = _(", ".join(supporters_added))
+                    application.writelog(_("Supporter: +%s") % log_added, request.user)
+                # log removed supporters
+                supporters_removed = []
+                for s in original_supporters:
+                    if s not in application.supporter.all():
+                        try:
+                            supporters_removed.append(unicode(s.profile))
+                        except Profile.DoesNotExist:
+                            pass
+                if len(supporters_removed) > 0:
+                    log_removed = _(", ".join(supporters_removed))
+                    application.writelog(_("Supporter: -%s") % log_removed, request.user)
             if application_id is None:
                 messages.success(request, _('New application was successfully created.'))
             else:
