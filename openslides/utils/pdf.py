@@ -36,7 +36,7 @@ from openslides.agenda.models import Item
 from openslides.agenda.api import children_list
 from openslides.application.models import Application
 from openslides.assignment.models import Assignment
-from openslides.poll.models import Poll
+from openslides.poll.models import Poll, Option
 from openslides.participant.models import Profile
 from openslides.system.api import config_get
 from openslides.settings import SITE_ROOT
@@ -488,6 +488,23 @@ def print_application_poll(request, poll_id=None):
     doc.build(story)
     return response
 
+def get_assignment_votes(assignment):
+    votes = []
+    for candidate in assignment.candidates:
+        tmplist = [[candidate, assignment.is_elected(candidate)], []]
+        for poll in assignment.poll_set.all():
+            if poll.published:
+                if candidate in poll.options_values:
+                    option = Option.objects.filter(poll=poll).filter(user=candidate)[0]
+                    if poll.optiondecision:
+                        tmplist[1].append([option.yes, option.no, option.undesided])
+                    else:
+                        tmplist[1].append(option.yes)
+                else:
+                    tmplist[1].append("-")
+        votes.append(tmplist)
+    return votes
+
 def get_assignment(assignment, story):
     # title
     story.append(Paragraph(_("Election")+": %s" % assignment.name, stylesheet['Heading1']))
@@ -507,10 +524,46 @@ def get_assignment(assignment, story):
         for x in range(0,2*assignment.posts):
             cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; __________________________________________",stylesheet['Signaturefield']))
     cell2b.append(Spacer(0,0.2*cm))
+    # vote results
+    table_votes = []
+    results = get_assignment_votes(assignment)
+    cell3a = []
+    cell3a.append(Paragraph("%s:" % (_("Vote results")), stylesheet['Heading4']))
+    if len(results[1][1]) > 1:
+        cell3a.append(Paragraph("%s %s" % (len(results[1][1]), _("ballots")), stylesheet['Normal']))
+    if len(results[1][1]) > 0:
+        data_votes = []
+        # add table head row
+        headrow = []
+        headrow.append(_("Candidates"))
+        for i in range (0,len(results[1][1])):
+            headrow.append("%s." %(str(i+1)))
+        data_votes.append(headrow)
+        # add result rows
+        for candidate in results:
+            row = []
+            row.append(str(candidate[0][0]))
+            for votes in candidate[1]:
+                row.append(str(votes))
+            data_votes.append(row)
+        table_votes=Table(data_votes)
+        table_votes.setStyle( TableStyle([
+                        ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
+                        ('VALIGN',(0,0),(-1,-1), 'TOP'),
+                        ('LINEABOVE',(0,0),(-1,0),2,colors.black),
+                        ('LINEABOVE',(0,1),(-1,1),1,colors.black),
+                        ('LINEBELOW',(0,-1),(-1,-1),2,colors.black),
+                        ('ROWBACKGROUNDS', (0, 1), (-1, -1), (colors.white, (.9, .9, .9))),
+                          ]))
+    
     # table
     data = []
     data.append([cell1a,cell1b])
-    data.append([cell2a,cell2b])
+    if not table_votes:
+        data.append([cell2a,cell2b])
+    if table_votes:
+        data.append([cell3a,table_votes])
+    data.append([Spacer(0,0.2*cm),''])
     t=Table(data)
     t._argW[0]=4.5*cm
     t._argW[1]=11*cm

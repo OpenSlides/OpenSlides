@@ -69,14 +69,15 @@ def view(request, assignment_id=None):
     for candidate in assignment.candidates:
         tmplist = [[candidate, assignment.is_elected(candidate)], []]
         for poll in assignment.poll_set.all():
-            if candidate in poll.options_values:
-                option = Option.objects.filter(poll=poll).filter(user=candidate)[0]
-                if poll.optiondecision:
-                    tmplist[1].append([option.yes, option.no, option.undesided])
+            if (poll.published and not request.user.has_perm('assignment.can_manage_assignment')) or request.user.has_perm('assignment.can_manage_assignment'):
+                if candidate in poll.options_values:
+                    option = Option.objects.filter(poll=poll).filter(user=candidate)[0]
+                    if poll.optiondecision:
+                        tmplist[1].append([option.yes, option.no, option.undesided])
+                    else:
+                        tmplist[1].append(option.yes)
                 else:
-                    tmplist[1].append(option.yes)
-            else:
-                tmplist[1].append("-")
+                    tmplist[1].append("-")
         votes.append(tmplist)
 
     polls = []
@@ -238,7 +239,6 @@ def poll_view(request, poll_id):
 def set_published(request, poll_id, published=True):
     try:
         poll = Poll.objects.get(pk=poll_id)
-        print poll.published
         poll.set_published(published)
         if poll.published:
             messages.success(request, _("Poll successfully set to published.") )
@@ -246,7 +246,7 @@ def set_published(request, poll_id, published=True):
             messages.success(request, _("Poll successfully set to unpublished.") )
     except Poll.DoesNotExist:
         messages.error(request, _('Poll ID %d does not exist.') % int(poll_id))
-    return redirect(reverse('assignment_view', args=[poll.id]))
+    return redirect(reverse('assignment_view', args=[poll.assignment.id]))
 
 @permission_required('assignment.can_manage_assignment')
 def delete_poll(request, poll_id):
