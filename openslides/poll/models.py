@@ -125,7 +125,7 @@ class Option(models.Model):
     def yes(self):
         if self.voteyes == -1:
             return _('majority')
-        if self.voteno == -2:
+        if self.voteyes == -2:
             return _('undocumented')
         if self.voteyes:
             return self.voteyes
@@ -145,7 +145,7 @@ class Option(models.Model):
     def undesided(self):
         if self.voteundesided == -1:
             return _('majority')
-        if self.voteno == -2:
+        if self.voteundesided == -2:
             return _('undocumented')
         if self.voteundesided:
             return self.voteundesided
@@ -163,5 +163,5 @@ class Option(models.Model):
 
     def __unicode__(self):
         if self.value:
-            return self.value
+            return unicode(self.value)
         return _("No options")
