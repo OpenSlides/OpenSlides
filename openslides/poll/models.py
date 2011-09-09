@@ -40,6 +40,22 @@ class Poll(models.Model):
         optionc.save()
         return optionc
 
+    @property
+    def votescastf(self):
+        if self.votescast == -2:
+            return _('undocumented')
+        elif self.votescast:
+            return self.votescast
+        return '0'
+
+    @property
+    def votesinvalidf(self):
+        if self.votesinvalid == -2:
+            return _('undocumented')
+        elif self.votesinvalid:
+            return self.votesinvalid
+        return '0'
+
     def has_vote(self):
         for option in self.options:
             if option.voteyes or option.voteno or option.voteundesided:
