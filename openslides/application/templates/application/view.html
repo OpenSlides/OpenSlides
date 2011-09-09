@@ -74,9 +74,9 @@
                     <img src="/static/images/icons/voting-yes.png" title="{% trans 'Yes' %}"> {{ option.yes }}<br>
                     <img src="/static/images/icons/voting-no.png" title="{% trans 'No' %}"> {{ option.no }}<br>
                     <img src="/static/images/icons/voting-abstention.png" title="{% trans 'Abstention' %}"> {{ option.undesided }}<br>
-                    <img src="/static/images/icons/voting-invalid.png" title="{% trans 'Invalid' %}"> {{ poll.votesinvalid }}<br>
+                    <img src="/static/images/icons/voting-invalid.png" title="{% trans 'Invalid' %}"> {{ poll.votesinvalidf }}<br>
                     <div style="border-top: 1px solid; padding-top: 5px; margin: 5px 0; width: 5em;">
-                    <img src="/static/images/icons/voting-total.png" title="{% trans 'Votes cast' %}"> {{ poll.votescast }}
+                    <img src="/static/images/icons/voting-total.png" title="{% trans 'Votes cast' %}"> {{ poll.votescastf }}
                     </div>
                 {% endfor %}
                 {% if perms.application.can_manage_application %}
