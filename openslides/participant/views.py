@@ -236,7 +236,8 @@ def user_settings(request):
 def user_import(request):
     try:
         request.user.profile
-        raise NameError("you can not use this function with a User, that has a Profile")
+        messages.error(request, _('The import function is available for the superuser (without user profile) only.'))
+        return redirect(reverse('user_overview'))
     except Profile.DoesNotExist:
         pass
 
