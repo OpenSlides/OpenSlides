@@ -125,6 +125,7 @@
     <tr>
     <th>{% trans "Candidates" %}</th>
     {% for poll in assignment.poll_set.all %}
+    {% if poll.published and not perms.assignment.can_manage_assignment or perms.assignment.can_manage_assignment %}
     <th style="vertical-align: top; white-space:nowrap;">{% if perms.assignment.can_manage_assignment %}<a href="{% url assignment_poll_view poll.id %}">{% endif %}
         {{ forloop.counter }}. {% trans 'ballot' %}
         {% if perms.assignment.can_manage_assignment %}
@@ -141,6 +142,7 @@
         <a href="{% url assignment_poll_delete poll.id %}"><img src="/static/images/icons/edit-delete.png" title="{% trans 'Delete Poll' %}"></a>
         {% endif %}
     </th>
+    {% endif %}
     {% endfor %}
     {% if assignment.profile.count > 0 and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
     <th>
@@ -192,7 +194,9 @@
     <tr>
         <td>{%trans 'Invalid votes' %}</td>
         {% for p in polls %}
+            {% if p.published and not perms.assignment.can_manage_assignment or perms.assignment.can_manage_assignment %}
             <td style="white-space:nowrap;"><img src="/static/images/icons/voting-invalid.png" title="{% trans 'Invalid' %}"> {{ p.votesinvalid }}</td>
+            {% endif %}
         {% endfor %}
         {% if assignment.profile.count > 0 and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
             <td></td>
@@ -201,7 +205,9 @@
     <tr class="total">
         <td><b>{%trans 'Votes cast' %}</b></td>
         {% for p in polls %}
+            {% if p.published and not perms.assignment.can_manage_assignment or perms.assignment.can_manage_assignment %}
             <td style="white-space:nowrap;"><img src="/static/images/icons/voting-total.png" title="{% trans 'Votes cast' %}"> <b>{{ p.votescast }}</b></td>
+            {% endif %}
         {% endfor %}
         {% if assignment.profile.count > 0 and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
             <td></td>
