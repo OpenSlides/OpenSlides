@@ -36,12 +36,17 @@ from django.db.models import Avg, Max, Min, Count
 @permission_required('participant.can_see_participant')
 @template('participant/overview.html')
 def get_overview(request):
+    def decodedict(dict):
+        newdict = {}
+        for key in dict:
+            newdict[key] = [dict[key][0].encode('utf-8')]
+        return newdict
     try:
         sortfilter = parse_qs(request.COOKIES['participant_sortfilter'])
     except KeyError:
         sortfilter = {}
 
-    for value in ['gender', 'group', 'type', 'committee', 'sort', 'reverse']:
+    for value in [u'gender', u'group', u'type', u'committee', u'sort', u'reverse']:
         if value in request.REQUEST:
             if request.REQUEST[value] == '---':
                 try:
@@ -82,7 +87,7 @@ def get_overview(request):
         'users': users,
         'groups': groups,
         'committees': committees,
-        'cookie': ['participant_sortfilter', urlencode(sortfilter, doseq=True)],
+        'cookie': ['participant_sortfilter', urlencode(decodedict(sortfilter), doseq=True)],
         'sortfilter': sortfilter,
     }
 
