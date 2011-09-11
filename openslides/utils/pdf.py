@@ -505,6 +505,8 @@ def get_assignment_votes(assignment):
                         tmplist[1].append(option.yes)
                 else:
                     tmplist[1].append("-")
+            elif len(tmplist[1]) == 0:
+                return votes
         votes.append(tmplist)
     return votes
 
@@ -532,40 +534,68 @@ def get_assignment(assignment, story):
     results = get_assignment_votes(assignment)
     cell3a = []
     cell3a.append(Paragraph("%s:" % (_("Vote results")), stylesheet['Heading4']))
-    if len(results[1][1]) > 1:
-        cell3a.append(Paragraph("%s %s" % (len(results[1][1]), _("ballots")), stylesheet['Normal']))
-    if len(results[1][1]) > 0:
-        data_votes = []
-        # add table head row
-        headrow = []
-        headrow.append(_("Candidates"))
-        for i in range (0,len(results[1][1])):
-            headrow.append("%s." %(str(i+1)))
-        data_votes.append(headrow)
-        # add result rows
-        for candidate in results:
+    if len(results) > 0:
+        if len(results[0]) >= 1:
+            cell3a.append(Paragraph("%s %s" % (len(results[0][1]), _("ballots")), stylesheet['Normal']))
+        if len(results[0][1]) > 0:
+            data_votes = []
+            # add table head row
+            headrow = []
+            headrow.append(_("Candidates"))
+            for i in range (0,len(results[0][1])):
+                headrow.append("%s." %(str(i+1)))
+            data_votes.append(headrow)
+            # add result rows
+            for candidate in results:
+                row = []
+                row.append(str(candidate[0][0]))
+                for votes in candidate[1]:
+                    if type(votes) == type(list()):
+                        tmp = "list"
+                        tmp = _("Yes")+": "+str(votes[0])+"\n"
+                        tmp += _("No")+": "+str(votes[1])+"\n"
+                        tmp += _("Abstention")+": "+str(votes[2])
+                        row.append(tmp)
+                    else:
+                        row.append(str(votes))
+
+                data_votes.append(row)
+            polls = []
+            for poll in assignment.poll_set.filter(assignment=assignment):
+                polls.append(poll)
+            # votes invalid
             row = []
-            row.append(str(candidate[0][0]))
-            for votes in candidate[1]:
-                row.append(str(votes))
+            row.append(_("Invalid votes"))
+            for p in polls:
+                if p.published:
+                    row.append(p.votesinvalid)
             data_votes.append(row)
-        table_votes=Table(data_votes)
-        table_votes.setStyle( TableStyle([
-                        ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
-                        ('VALIGN',(0,0),(-1,-1), 'TOP'),
-                        ('LINEABOVE',(0,0),(-1,0),2,colors.black),
-                        ('LINEABOVE',(0,1),(-1,1),1,colors.black),
-                        ('LINEBELOW',(0,-1),(-1,-1),2,colors.black),
-                        ('ROWBACKGROUNDS', (0, 1), (-1, -1), (colors.white, (.9, .9, .9))),
-                          ]))
+
+            # votes cast
+            row = []
+            row.append(_("Votes cast"))
+            for p in polls:
+                if p.published:
+                    row.append(p.votescast)
+            data_votes.append(row)
+
+            table_votes=Table(data_votes)
+            table_votes.setStyle( TableStyle([
+                            ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
+                            ('VALIGN',(0,0),(-1,-1), 'TOP'),
+                            ('LINEABOVE',(0,0),(-1,0),2,colors.black),
+                            ('LINEABOVE',(0,1),(-1,1),1,colors.black),
+                            ('LINEBELOW',(0,-1),(-1,-1),2,colors.black),
+                            ('ROWBACKGROUNDS', (0, 1), (-1, -1), (colors.white, (.9, .9, .9))),
+                              ]))
     
     # table
     data = []
     data.append([cell1a,cell1b])
-    if not table_votes:
-        data.append([cell2a,cell2b])
     if table_votes:
         data.append([cell3a,table_votes])
+    else:
+        data.append([cell2a,cell2b])
     data.append([Spacer(0,0.2*cm),''])
     t=Table(data)
     t._argW[0]=4.5*cm
