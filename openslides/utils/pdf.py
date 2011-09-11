@@ -104,14 +104,14 @@ stylesheet.add(ParagraphStyle(name = 'Heading4',
 stylesheet.add(ParagraphStyle(name = 'Item',
                               parent = stylesheet['Normal'],
                               fontSize = 14,
-                              leading = 12,
+                              leading = 14,
                               leftIndent = 0,
                               spaceAfter = 15)
                )
 stylesheet.add(ParagraphStyle(name = 'Subitem',
                               parent = stylesheet['Normal'],
                               fontSize = 10,
-                              leading = 4,
+                              leading = 10,
                               leftIndent = 20,
                               spaceAfter = 15)
                )
@@ -237,8 +237,11 @@ def print_agenda(request):
             # print all items"
             if item.parents:
                 space = ""
+                counter = 0
                 for p in item.parents:
-                    space += "&nbsp;&nbsp;&nbsp;"
+                    if counter != 0:
+                        space += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                    counter += 1
                 story.append(Paragraph(space+item.title, stylesheet['Subitem']))
             else:
                 story.append(Paragraph(item.title, stylesheet['Item']))
