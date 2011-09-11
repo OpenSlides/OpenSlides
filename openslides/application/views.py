@@ -145,7 +145,7 @@ def edit(request, application_id=None):
                         except Profile.DoesNotExist:
                             pass
                 if len(supporters_added) > 0:
-                    log_added = _(", ".join(supporters_added))
+                    log_added = ", ".join(supporters_added)
                     application.writelog(_("Supporter: +%s") % log_added, request.user)
                 # log removed supporters
                 supporters_removed = []
