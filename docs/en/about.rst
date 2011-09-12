@@ -45,6 +45,7 @@ Applications
 - View change history of an application
 - Create application form as pdf
 - Create an overview of all applications as pdf
+- voting mode: Yes/No/Abstain/invalid votes and votes cast
 
   .. image:: _static/images/application-overview_de.png
     :width: 45%
@@ -70,23 +71,14 @@ Elections
 - Generate a pdf ballot (with checkbox)
 - Enter and display voting results
 - Multiple ballots and runoff elections are supported
-
-
-Polls
------
-
-- Manage polls (in addition to applications and elections)
-- Enter and display results (analogous to appliations and elections)
-- Two voting modes supported: votes in favor or Yes/No/Abstain votes
-- Invalid votes and votes cast can be entered
-
+- Two voting modes supported: votes in favor or Yes/No/Abstain votes (dependend on number of candidates and posts), invalid votes and votes cast can be entered
 
 Participants
 -----------
 
-- Create and manage participants (pre-defined fields: *last name, first name, email, gender, group, type, committee*)
+- Create and manage participants (pre-defined fields: *last name, first name,  gender, group, type, committee*)
 - Import of user data (in CSV format)
-- configurable user groups (default include: *presidium, moderation, delegate, observer, guest, staff*)
+- configurable user groups (default include: *observer, delegate, moderation, participant management*)
 
 
 General

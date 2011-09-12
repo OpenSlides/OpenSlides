@@ -45,6 +45,7 @@ Anträge
 - Änderungshistorie eines Antrags anzeigen
 - Antragsformular als pdf erzeugen
 - Übersicht aller Anträge als pdf
+- Abstimmungsmodus: Ja/Nein/Enthaltungs-Stimmen sowie ungültige und abgegebene Stimmen
 
   .. image:: _static/images/application-overview_de.png
     :width: 45%
@@ -69,23 +70,16 @@ Wahlen
 - Wahlschein als pdf generieren (mit Ankreuzfeld)
 - Wahlergebenisse eingeben und darstellen
 - mehrere Wahlgänge und Stichwahlen werden unterstützt
+- Abstimmungsmodus: Ja-Stimmen oder Ja/Nein/Enthaltungs-Stimmen (abhängig von der Anzahl der Kandiaten und Posten), ungültige und abgegebene Stimmen können eingegeben werden
 
-
-Abstimmungen
-------------
-
-- Abstimmungen verwalten (als Ergänzung zu Anträgen und Wahlen)
-- Ergebnisse eingeben und darstellen (analog zu Anträgen und Wahlen)
-- Abstimmungsmodus: entweder nur Ja-Stimmen oder Ja/Nein/Enthaltungs-Stimmen wählbar
-- ungültige und abgegebene Stimmen können eingegeben werden
 
 
 Teilnehmer
 ----------
 
-- Teilnehmer anlegen und verwalten (vordefinierte Felder: *Name, Vorname, E-Mail, Geschlecht, Gruppe, Typ, Amt*)
+- Teilnehmer anlegen und verwalten (vordefinierte Felder: *Name, Vorname,  Geschlecht, Gruppe, Typ, Amt*)
 - importieren von Teilnehmerdaten (im CSV-Format)
-- Benutzergruppe frei konfigurierbar (voreingestellt u.a.: *Präsidium, Tagesleitung, Delegierter, Beobachter, Gast*)
+- Benutzergruppe frei konfigurierbar (voreingestellt sind: *Beobachter,  Delegierte, Tagesleitung, Teilnehmerverwaltung*)
 
 Allgemein
 ---------

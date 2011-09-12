@@ -1,20 +1,27 @@
 Download
 ========
 
-There is not yet a release of OpenSlides.
-Version 1.0  is scheduled for september 2011.
+OpenSlides 1.0 (2011-09-12)
+---------------------------
+
+- `zip <http://openslides.org/download/openslides-1.0.zip>`_ (1 MB)
+- `tar.gz <http://openslides.org/download/openslides-1.0.tar.gz>`_ (1 MB)
+
+Read the 
+`installation instructions <http://dev.openslides.org/browser/INSTALL>`_
+after download.
+
+Source Code
+-----------
 
 You can check the current development status in our
-public sourcecode repository.
+public sourcecode repository:
 
-Checkout OpenSlides sourcecode::
+- `Browse source <http://dev.openslides.org/browser>`_ 
+
+
+To get the latest source files from HG repository use the 
+following command in the Terminal::
   
   hg clone http://hg.openslides.org
 
-If you have write access (commit rights) to OpenSlides with your ssh
-key use::
-
-  hg clone ssh://hg@openslides.org/openslides
-
-Installation instructions can be found in the
-`INSTALL <http://dev.openslides.org/browser/INSTALL>`_ file.
