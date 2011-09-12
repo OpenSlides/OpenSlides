@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-11 22:27+0200\n"
+"POT-Creation-Date: 2011-09-12 09:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -55,7 +55,7 @@ msgstr "Ja, mit allen Kindelementen."
 msgid "No"
 msgstr "Nein"
 
-#: agenda/api.py:67 participant/views.py:153 participant/views.py:231
+#: agenda/api.py:67 participant/views.py:156 participant/views.py:234
 #: utils/utils.py:40
 #, python-format
 msgid "Do you really want to delete <b>%s</b>?"
@@ -144,8 +144,8 @@ msgstr "Eintrag wurde erfolgreich geändert."
 msgid "Agenda item modified"
 msgstr "Tagesordnungseintrag geändert"
 
-#: agenda/views.py:251 participant/views.py:130 participant/views.py:216
-#: participant/views.py:245 participant/views.py:301 system/views.py:32
+#: agenda/views.py:251 participant/views.py:133 participant/views.py:219
+#: participant/views.py:248 participant/views.py:305 system/views.py:32
 #: system/views.py:59
 msgid "Please check the form for errors."
 msgstr "Bitte kontrollieren Sie das Formular nach Fehlern."
@@ -1203,62 +1203,68 @@ msgstr "Amt"
 msgid "First Password"
 msgstr "Erstes Passwort"
 
-#: participant/views.py:122
+#: participant/views.py:125
 msgid "New participant was successfully created."
 msgstr "Neuer Teilnehmer wurde erfolgreich angelegt."
 
-#: participant/views.py:124
+#: participant/views.py:127
 msgid "Participant was successfully modified."
 msgstr "Teilnehmer wurde erfolgreich geändert."
 
-#: participant/views.py:151
+#: participant/views.py:154
 #, python-format
 msgid "Participant <b>%s</b> was successfully deleted."
 msgstr "Teilnehmer <b>%s</b> wurde erfolgreich gelöscht."
 
-#: participant/views.py:163
+#: participant/views.py:166
 #, python-format
 msgid "Participant <b>%s</b> is now a normal user."
 msgstr "Teilnehmer <b>%s</b> ist jetzt ein normaler Nutzer."
 
-#: participant/views.py:167
+#: participant/views.py:170
 #, python-format
 msgid "Participant <b>%s</b> is now administrator."
 msgstr "Teilnehmer <b>%s</b> ist jetzt ein Administrator."
 
-#: participant/views.py:177
+#: participant/views.py:180
 #, python-format
 msgid "Participant <b>%s</b> was successfully deactivated."
 msgstr "Teilnehmer <b>%s</b> wurde erfolgreich deaktiviert."
 
-#: participant/views.py:181
+#: participant/views.py:184
 #, python-format
 msgid "Participant <b>%s</b> was successfully activated."
 msgstr "Teilnehmer <b>%s</b> wurde erfolgreich aktiviert."
 
-#: participant/views.py:208
+#: participant/views.py:211
 msgid "New group was successfully created."
 msgstr "Neue Gruppe wurde erfolgreich angelegt."
 
-#: participant/views.py:210
+#: participant/views.py:213
 msgid "Group was successfully modified."
 msgstr "Gruppe wurde erfolgreich geändert."
 
-#: participant/views.py:229
+#: participant/views.py:232
 #, python-format
 msgid "Group <b>%s</b> was successfully deleted."
 msgstr "Gruppe <b>%s</b>  wurde erfolgreich gelöscht."
 
-#: participant/views.py:243
+#: participant/views.py:246
 msgid "User settings successfully saved."
 msgstr "Nutzereinstellungen wurden erfolgreich gespeichert."
 
-#: participant/views.py:299
+#: participant/views.py:264
+msgid ""
+"The import function is available for the superuser (without user profile) "
+"only."
+msgstr ""
+
+#: participant/views.py:303
 #, python-format
 msgid "%d new participants were successfully imported."
 msgstr "%d neue Teilnehmer wurden erfolgreich importiert."
 
-#: participant/views.py:303
+#: participant/views.py:307
 msgid ""
 "Attention: All existing participants will be removed if you import new "
 "participants."
@@ -1266,14 +1272,14 @@ msgstr ""
 "Achtung: Alle existierenden Teilnehmer werden gelöscht, wenn Sie neue "
 "Teilnehmer importieren."
 
-#: participant/views.py:314
+#: participant/views.py:318
 #, python-format
 msgid "%s Password was successfully generated."
 msgid_plural "%s Passwords were successfully generated."
 msgstr[0] "Es wurde %s Passwort erfolgreich generiert."
 msgstr[1] "Es wurden %s Passwörter erfolgreich generiert."
 
-#: participant/views.py:316
+#: participant/views.py:320
 msgid ""
 "There are no participants which need a first time password. No passwords "
 "generated."
@@ -1281,53 +1287,53 @@ msgstr ""
 "Es sind keine Teilnehmer ohne Erst-Passwort vorhanden. Es wurden keine "
 "Passwörter generiert."
 
-#: participant/views.py:325
+#: participant/views.py:329
 #, python-format
 msgid "The Password for <b>%s</b> was successfully reset."
 msgstr "Das Passwort für <b>%s</b> wurde erfolgreich zurückgesetzt."
 
-#: participant/views.py:327
+#: participant/views.py:331
 #, python-format
 msgid "Do you really want to reset the password for <b>%s</b>?"
 msgstr "Soll das Passwort für <b>%s</b> wirklich zurückgesetzt werden?"
 
-#: participant/templates/participant/base_participant.html:6
+#: participant/templates/participant/base_participant.html:9
 #: participant/templates/participant/overview.html:2
 #: participant/templates/participant/overview.html:5 templates/base.html:49
 msgid "Participants"
 msgstr "Teilnehmer"
 
-#: participant/templates/participant/base_participant.html:9
+#: participant/templates/participant/base_participant.html:12
 msgid "All participants"
 msgstr "Alle Teilnehmer"
 
-#: participant/templates/participant/base_participant.html:12
+#: participant/templates/participant/base_participant.html:15
 #: participant/templates/participant/edit.html:8
 msgid "New participant"
 msgstr "Neuer Teilnehmer"
 
-#: participant/templates/participant/base_participant.html:13
+#: participant/templates/participant/base_participant.html:16
 msgid "All user groups"
 msgstr "Alle Benutzergruppen"
 
-#: participant/templates/participant/base_participant.html:14
+#: participant/templates/participant/base_participant.html:17
 #: participant/templates/participant/group_edit.html:8
 msgid "New user group"
 msgstr "Neue Benutzergruppe"
 
-#: participant/templates/participant/base_participant.html:15
-msgid "Print participant list"
-msgstr "Teilnehmerliste drucken"
-
-#: participant/templates/participant/base_participant.html:16
+#: participant/templates/participant/base_participant.html:18
 msgid "Import participant"
 msgstr "Teilnehmer importieren"
 
-#: participant/templates/participant/base_participant.html:17
+#: participant/templates/participant/base_participant.html:19
+msgid "Print participant list"
+msgstr "Teilnehmerliste drucken"
+
+#: participant/templates/participant/base_participant.html:20
 msgid "Generate first time passwords"
 msgstr "Erst-Passwörter generieren"
 
-#: participant/templates/participant/base_participant.html:18
+#: participant/templates/participant/base_participant.html:21
 msgid "Print first time passwords"
 msgstr "Erst-Passwörter drucken"
 
@@ -1456,7 +1462,7 @@ msgstr "Normaler Nutzer. Klicken, um Administrator zu werden!"
 
 #: participant/templates/participant/settings.html:7
 msgid "Your Settings"
-msgstr "Deine Einstellungen"
+msgstr "Ihre Einstellungen"
 
 #: poll/forms.py:33
 msgid "Votes in favour"

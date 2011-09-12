@@ -7,10 +7,10 @@
 {% endblock %}
 
 {% block submenu %}
-    {% url election_overview as url_electionoverview %}
+    {% url assignment_overview as url_assignment_overview %}
     <h4 class="sectiontitle">{%trans "Elections" %}</h4>
     <ul>
-        <li class="{% if request.path == url_electionoverview %}selected{% endif %}"><a href="{% url assignment_overview %}">{%trans "All elections" %}</a></li>
+        <li class="{% if request.path == url_assignment_overview %}selected{% endif %}"><a href="{% url assignment_overview %}">{%trans "All elections" %}</a></li>
         {% if perms.assignment.can_manage_assignment %}
             <li class="{% active request '/assignment/new' %}"><a href="{% url assignment_new %}">{%trans "New election" %}</a></li>
         {% endif %}

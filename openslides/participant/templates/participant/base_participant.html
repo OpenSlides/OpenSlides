@@ -2,19 +2,22 @@
 {% load tags %}
 
 {% block submenu %}
-    {% url user_overview as url_useroverview %}
+    {% url user_overview as url_users %}
+    {% url user_new as url_usernew %}
+    {% url user_group_overview as url_usergroups %}
+    {% url user_import as url_userimport %}
     <h4 class="sectiontitle">{%trans "Participants" %}</h4>
     <ul>
         {% if perms.participant.can_see_participant %}
-        <li class="{% if request.path == url_useroverview %}selected{% endif %}"><a href="{% url user_overview %}">{%trans "All participants" %}</a></li>
+        <li class="{% if request.path == url_users %}selected{% endif %}"><a href="{% url user_overview %}">{%trans "All participants" %}</a></li>
         {% endif %}
         {% if perms.participant.can_manage_participant %}
-        <li class="{% active request '/user/new' %}"><a href="{%  url user_new %}">{%trans "New participant" %}</a></li>
-        <li><a href="{%  url user_group_overview %}">{%trans "All user groups" %}</a></li>
-        <li><a href="{%  url user_group_new %}">{%trans "New user group" %}</a></li>
+        <li class="{% active request url_usernew %}"><a href="{%  url user_new %}">{%trans "New participant" %}</a></li>
+        <li class="{% if request.path == url_usergroups %}selected{% endif %}"><a href="{%  url user_group_overview %}">{%trans "All user groups" %}</a></li>
+        <li class="{% active request '/participant/group/new' %}"><a href="{%  url user_group_new %}">{%trans "New user group" %}</a></li>
+        <li class="{% if request.path == url_userimport %}selected{% endif %}"><a href="{% url user_import %}"> {%trans 'Import participant' %}</a></li>
         <li><a href="{% url user_print %}"><img src="/static/images/icons/application-pdf.png"> {%trans 'Print participant list' %}</a></li>
-        <li><a href="{% url user_import %}"> {%trans 'Import participant' %}</a></li>
-        <li><a href="{% url user_gen_passwords %}">{% trans 'Generate first time passwords' %}</a></li>
+        <li><a href="{% url user_gen_passwords %}"><img src="/static/images/icons/quickopen.png"> {% trans 'Generate first time passwords' %}</a></li>
         <li><a href="{% url print_passwords %}"><img src="/static/images/icons/application-pdf.png"> {% trans 'Print first time passwords' %}</a></li>
         {% endif %}
     </ul>
