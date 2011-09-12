@@ -12,7 +12,10 @@
 
 import csv
 from urllib import urlencode
-from urlparse import parse_qs
+try:
+    from urlparse import parse_qs
+except ImportError: # old python version, grab it from cgi
+    from cgi import parse_qs
 
 from django.http import HttpResponse
 from django.shortcuts import redirect
