@@ -28,10 +28,13 @@ def _bootstrap():
         ui = hgui.ui()
         repository = localrepository(ui, join(conts, '..'))
         #repository = localrepository(ui, conts)
-        ctx = repository['tip']
-        revision = '%(num)s:%(id)s' % {
-            'num': ctx.rev(), 'id': shorthex(ctx.node())
-        }
+        ctx = repository['.']
+        if ctx.tags() and ctx.tags() != ['tip']:
+            revision = ' '.join(ctx.tags())
+        else:
+            revision = '%(num)s:%(id)s' % {
+                'num': ctx.rev(), 'id': shorthex(ctx.node())
+            }
     except TypeError:
         revision = 'unknown'
     except RepoError:

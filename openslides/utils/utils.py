@@ -49,7 +49,10 @@ def template(template_name):
             output = func(request, *args, **kw)
             if not isinstance(output, dict):
                 return output
-            return render_to_response(template_name, output, context_instance=RequestContext(request))
+            response = render_to_response(template_name, output, context_instance=RequestContext(request))
+            if 'cookie' in output:
+                response.set_cookie(output['cookie'][0], output['cookie'][1])
+            return response
         return wrapper
     return renderer
 

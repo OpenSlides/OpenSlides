@@ -36,7 +36,7 @@ from openslides.agenda.models import Item
 from openslides.agenda.api import children_list
 from openslides.application.models import Application
 from openslides.assignment.models import Assignment
-from openslides.poll.models import Poll
+from openslides.poll.models import Poll, Option
 from openslides.participant.models import Profile
 from openslides.system.api import config_get
 from openslides.settings import SITE_ROOT
@@ -104,14 +104,14 @@ stylesheet.add(ParagraphStyle(name = 'Heading4',
 stylesheet.add(ParagraphStyle(name = 'Item',
                               parent = stylesheet['Normal'],
                               fontSize = 14,
-                              leading = 12,
+                              leading = 14,
                               leftIndent = 0,
                               spaceAfter = 15)
                )
 stylesheet.add(ParagraphStyle(name = 'Subitem',
                               parent = stylesheet['Normal'],
                               fontSize = 10,
-                              leading = 4,
+                              leading = 10,
                               leftIndent = 20,
                               spaceAfter = 15)
                )
@@ -237,8 +237,11 @@ def print_agenda(request):
             # print all items"
             if item.parents:
                 space = ""
+                counter = 0
                 for p in item.parents:
-                    space += "&nbsp;&nbsp;&nbsp;"
+                    if counter != 0:
+                        space += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+                    counter += 1
                 story.append(Paragraph(space+item.title, stylesheet['Subitem']))
             else:
                 story.append(Paragraph(item.title, stylesheet['Item']))
@@ -488,6 +491,25 @@ def print_application_poll(request, poll_id=None):
     doc.build(story)
     return response
 
+def get_assignment_votes(assignment):
+    votes = []
+    for candidate in assignment.candidates:
+        tmplist = [[candidate, assignment.is_elected(candidate)], []]
+        for poll in assignment.poll_set.all():
+            if poll.published:
+                if candidate in poll.options_values:
+                    option = Option.objects.filter(poll=poll).filter(user=candidate)[0]
+                    if poll.optiondecision:
+                        tmplist[1].append([option.yes, option.no, option.undesided])
+                    else:
+                        tmplist[1].append(option.yes)
+                else:
+                    tmplist[1].append("-")
+            elif len(tmplist[1]) == 0:
+                return votes
+        votes.append(tmplist)
+    return votes
+
 def get_assignment(assignment, story):
     # title
     story.append(Paragraph(_("Election")+": %s" % assignment.name, stylesheet['Heading1']))
@@ -507,10 +529,74 @@ def get_assignment(assignment, story):
         for x in range(0,2*assignment.posts):
             cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; __________________________________________",stylesheet['Signaturefield']))
     cell2b.append(Spacer(0,0.2*cm))
+    # vote results
+    table_votes = []
+    results = get_assignment_votes(assignment)
+    cell3a = []
+    cell3a.append(Paragraph("%s:" % (_("Vote results")), stylesheet['Heading4']))
+    if len(results) > 0:
+        if len(results[0]) >= 1:
+            cell3a.append(Paragraph("%s %s" % (len(results[0][1]), _("ballots")), stylesheet['Normal']))
+        if len(results[0][1]) > 0:
+            data_votes = []
+            # add table head row
+            headrow = []
+            headrow.append(_("Candidates"))
+            for i in range (0,len(results[0][1])):
+                headrow.append("%s." %(str(i+1)))
+            data_votes.append(headrow)
+            # add result rows
+            for candidate in results:
+                row = []
+                row.append(str(candidate[0][0]))
+                for votes in candidate[1]:
+                    if type(votes) == type(list()):
+                        tmp = "list"
+                        tmp = _("Yes")+": "+str(votes[0])+"\n"
+                        tmp += _("No")+": "+str(votes[1])+"\n"
+                        tmp += _("Abstention")+": "+str(votes[2])
+                        row.append(tmp)
+                    else:
+                        row.append(str(votes))
+
+                data_votes.append(row)
+            polls = []
+            for poll in assignment.poll_set.filter(assignment=assignment):
+                polls.append(poll)
+            # votes invalid
+            row = []
+            row.append(_("Invalid votes"))
+            for p in polls:
+                if p.published:
+                    row.append(p.votesinvalid)
+            data_votes.append(row)
+
+            # votes cast
+            row = []
+            row.append(_("Votes cast"))
+            for p in polls:
+                if p.published:
+                    row.append(p.votescast)
+            data_votes.append(row)
+
+            table_votes=Table(data_votes)
+            table_votes.setStyle( TableStyle([
+                            ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
+                            ('VALIGN',(0,0),(-1,-1), 'TOP'),
+                            ('LINEABOVE',(0,0),(-1,0),2,colors.black),
+                            ('LINEABOVE',(0,1),(-1,1),1,colors.black),
+                            ('LINEBELOW',(0,-1),(-1,-1),2,colors.black),
+                            ('ROWBACKGROUNDS', (0, 1), (-1, -1), (colors.white, (.9, .9, .9))),
+                              ]))
+    
     # table
     data = []
     data.append([cell1a,cell1b])
-    data.append([cell2a,cell2b])
+    if table_votes:
+        data.append([cell3a,table_votes])
+    else:
+        data.append([cell2a,cell2b])
+    data.append([Spacer(0,0.2*cm),''])
     t=Table(data)
     t._argW[0]=4.5*cm
     t._argW[1]=11*cm

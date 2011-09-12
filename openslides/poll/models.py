@@ -40,6 +40,22 @@ class Poll(models.Model):
         optionc.save()
         return optionc
 
+    @property
+    def votescastf(self):
+        if self.votescast == -2:
+            return _('undocumented')
+        elif self.votescast:
+            return self.votescast
+        return '0'
+
+    @property
+    def votesinvalidf(self):
+        if self.votesinvalid == -2:
+            return _('undocumented')
+        elif self.votesinvalid:
+            return self.votesinvalid
+        return '0'
+
     def has_vote(self):
         for option in self.options:
             if option.voteyes or option.voteno or option.voteundesided:
@@ -71,7 +87,7 @@ class Poll(models.Model):
         if self.assignment:
             return Poll.objects.filter(assignment=self.assignment).count()
         return None
-        
+
     @property
     def ballot(self):
         if self.application:
@@ -125,6 +141,8 @@ class Option(models.Model):
     def yes(self):
         if self.voteyes == -1:
             return _('majority')
+        if self.voteyes == -2:
+            return _('undocumented')
         if self.voteyes:
             return self.voteyes
         return '0'
@@ -133,6 +151,8 @@ class Option(models.Model):
     def no(self):
         if self.voteno == -1:
             return _('majority')
+        if self.voteno == -2:
+            return _('undocumented')
         if self.voteno:
             return self.voteno
         return '0'
@@ -141,6 +161,8 @@ class Option(models.Model):
     def undesided(self):
         if self.voteundesided == -1:
             return _('majority')
+        if self.voteundesided == -2:
+            return _('undocumented')
         if self.voteundesided:
             return self.voteundesided
         return '0'
@@ -156,10 +178,6 @@ class Option(models.Model):
         return None
 
     def __unicode__(self):
-        if self.text != "" and self.text is not None:
-            return self.text
-        if self.user is not None:
-            return unicode(self.user)
-        if self.application is not None:
-            return unicode(self.application)
+        if self.value:
+            return unicode(self.value)
         return _("No options")

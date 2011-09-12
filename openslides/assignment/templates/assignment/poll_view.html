@@ -7,6 +7,7 @@
     {% blocktrans count counter=options|length %}candidate{% plural %}candidates{% endblocktrans %}
     </p>
     <p><b>{% trans "Short description" %}:</b> {{ poll.description }}</p>
+    <i>-1 := {% trans 'majority' %}, -2 := {% trans 'undocumented' %}</i>
     <form action="" method="post">{% csrf_token %}
     <table class="table" style="width:auto;">
         <tr>
@@ -41,7 +42,7 @@
         </tr>
     </table>
 
-   
+
         <p>
         <a href='{% url print_assignment_poll poll.id %}'>
             <button type="button">
@@ -49,7 +50,7 @@
             </button>
         </a>
         </p>
-        
+
         <p>
         <button type="submit">
             <span class="icon ok">{%trans 'Save' %}</span>

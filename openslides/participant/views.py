@@ -11,6 +11,9 @@
 """
 
 import csv
+from urllib import urlencode
+from urlparse import parse_qs
+
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.template import RequestContext
@@ -33,24 +36,41 @@ from django.db.models import Avg, Max, Min, Count
 @permission_required('participant.can_see_participant')
 @template('participant/overview.html')
 def get_overview(request):
-    query = User.objects
-    if 'gender' in request.GET and '---' not in request.GET['gender']:
-        query = query.filter(profile__gender__iexact=request.GET['gender'])
-    if 'group' in request.GET and '---' not in request.GET['group']:
-        query = query.filter(profile__group__iexact=request.GET['group'])
-    if 'type' in request.GET and '---' not in request.GET['type']:
-        query = query.filter(profile__type__iexact=request.GET['type'])
-    if 'committee' in request.GET and '---' not in request.GET['committee']:
-        query = query.filter(profile__committee__iexact=request.GET['committee'])
+    def decodedict(dict):
+        newdict = {}
+        for key in dict:
+            newdict[key] = [dict[key][0].encode('utf-8')]
+        return newdict
     try:
-        sort = request.GET['sort']
-        if sort in ['first_name', 'last_name','username','last_login','email']:
-            query = query.order_by(sort)
-        elif sort in ['group', 'type', 'committee']:
-            query = query.order_by('profile__%s' % sort)
+        sortfilter = parse_qs(request.COOKIES['participant_sortfilter'])
     except KeyError:
-        pass
-    if 'reverse' in request.GET:
+        sortfilter = {}
+
+    for value in [u'gender', u'group', u'type', u'committee', u'sort', u'reverse']:
+        if value in request.REQUEST:
+            if request.REQUEST[value] == '---':
+                try:
+                    del sortfilter[value]
+                except KeyError:
+                    pass
+            else:
+                sortfilter[value] = [request.REQUEST[value]]
+
+    query = User.objects
+    if 'gender' in sortfilter:
+        query = query.filter(profile__gender__iexact=sortfilter['gender'][0])
+    if 'group' in sortfilter:
+        query = query.filter(profile__group__iexact=sortfilter['group'][0])
+    if 'type' in sortfilter:
+        query = query.filter(profile__type__iexact=sortfilter['type'][0])
+    if 'committee' in sortfilter:
+        query = query.filter(profile__committee__iexact=sortfilter['committee'][0])
+    if 'sort' in sortfilter:
+        if sortfilter['sort'][0] in ['first_name', 'last_name','username','last_login','email']:
+            query = query.order_by(sortfilter['sort'][0])
+        elif sortfilter['sort'][0] in ['group', 'type', 'committee']:
+            query = query.order_by('profile__%s' % sortfilter['sort'][0])
+    if 'reverse' in sortfilter:
         query = query.reverse()
 
     userlist = query.all()
@@ -67,6 +87,8 @@ def get_overview(request):
         'users': users,
         'groups': groups,
         'committees': committees,
+        'cookie': ['participant_sortfilter', urlencode(decodedict(sortfilter), doseq=True)],
+        'sortfilter': sortfilter,
     }
 
 @permission_required('participant.can_manage_participant')

@@ -30,9 +30,9 @@
                 <img src="/static/images/icons/voting-yes.png" title="{% trans 'Yes' %}"> {{ option.yes }} <br>
                 <img src="/static/images/icons/voting-no.png" title="{% trans 'No' %}"> {{ option.no }} <br>
                 <img src="/static/images/icons/voting-abstention.png" title="{% trans 'Abstention' %}">  {{ option.undesided }}<br>
-                <img src="/static/images/icons/voting-invalid.png" title="{% trans 'Invalid' %}"> {{ p.votesinvalid }}<br>
-                <div style="border-top: 1px solid; padding-top: 5px; margin: 5px 0; width: 5em;">
-                    <img src="/static/images/icons/voting-total.png" title="{% trans 'Votes cast' %}"> {{ p.votescast }}
+                <img src="/static/images/icons/voting-invalid.png" title="{% trans 'Invalid' %}"> {{ p.votesinvalidf }}<br>
+                <div style="border-top: 1px solid; padding-top: 5px; margin: 5px 0; width: 10em;">
+                    <img src="/static/images/icons/voting-total.png" title="{% trans 'Votes cast' %}"> {{ p.votescastf }}
                 </div>
             {% endfor %}
             <br>
@@ -46,7 +46,7 @@
     {% endwith %}
     </div>
     </div>
-    
+
     <h1>{% trans "Application No." %} {{ item.application.number }}</h1>
     <b>{{ item.title }}</b>
     <p>
