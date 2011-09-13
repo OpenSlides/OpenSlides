@@ -5,18 +5,7 @@ Help
 Mailing lists
 -------------
 
-OpenSlides has two public mailing lists in English and German language
-for coordinate the development and discussing tickets, user questions or 
-special use cases. Please subscribe before you are sending an email to a list.
-
-English language::
-
-  users-en@openslides.org
-
-German language::
-
-  users-de@openslides.org
-
+**Still under constrution!**
 
 Bug reports
 -----------
@@ -33,4 +22,4 @@ From source code to localizations or artwork, any contribution is welcome!
 
 Contact
 -------
-Questions, press and support requests should be directed to `Emanuel Schütze <emanuel@openslides.com>`_.
+Questions, press and support requests should be directed to support@openslides.org.

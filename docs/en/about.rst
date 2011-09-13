@@ -7,10 +7,9 @@ Agenda
 - Manage agenda
 - Select agenda item to display on projector
 - Projector view with automatic updating on modification (the projector is running in the browser with full screen mode as 2nd monitor)
-- Edit item via web interface while viewing on the projector
+- Edit item while viewing on the projector
 - Sort item via drag and drop in the agenda (sub items possible)
-- Mark item as completed
-- Hide item in the projector view
+- Mark item as completed and hidden
 - Generate agenda as pdf
 - Current time on the projector view
 

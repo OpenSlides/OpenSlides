@@ -441,9 +441,8 @@ tt.xref, a tt {
 
 a.reference {
     text-decoration: none;
-    border-bottom: 1px dotted #2BABC4;
+    border-bottom: 0px dotted #2BABC4;
 }
-
 a.reference:hover {
     border-bottom: 1px solid #2794AA;
 }

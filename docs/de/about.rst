@@ -5,64 +5,71 @@ Tagesordnung
 ------------
 
 - Tagesordnung verwalten
-- Eintrag auswählen zur Anzeige am Beamer
-- Beamer-Ansicht mit automatischer Aktualisierung bei Änderung (der Beamer läuft z.B. im Browser mit Vollbildmodus als 2. Monitor)
-- Eintrag während der Anzeige am Beamer im Webinterface bearbeiten
-- Eintrag per Drag&Drop in der Tagesordnung sortieren (Unterpunkte möglich)
-- Eintrag als erledigt markieren
-- Eintrag auf der Beamer-Ansicht verstecken
+- Eintrag auswählen - zur Anzeige am Beamer
+- Eintrag bearbeiten - während der Anzeige am Beamer
+- Beamer-Ansicht mit automatischer Aktualisierung bei Änderung 
+  (der Beamer läuft im Browser mit Vollbildmodus, z.B. als 2. Monitor)
+- Einträge sortieren - per Drag&Drop in der Tagesordnung (Unterpunkte möglich)
+- Eintrag markieren - als erledigt und versteckt
 - Tagesordnung als pdf erzeugen
 - aktuelle Uhrzeit auf der Beameransicht
 
-  |agenda-overview|_   |beamer-agenda-overview|_
-
+  |agenda-overview|_  |agenda-projector|_ 
+  |agenda-new|_  |agenda-pdf|_
+  
 .. |agenda-overview| image:: _static/images/t260.agenda-overview_de.png
     :alt: Tagesordnungs-Ansicht
 .. _agenda-overview: _static/images/agenda-overview_de.png
 
-.. |beamer-agenda-overview| image:: _static/images/t260.beamer-agenda-overview_de.png
-    :alt: Beamer-Ansicht der Tagesordnungs
-.. _beamer-agenda-overview: _static/images/beamer-agenda-overview_de.png
+.. |agenda-projector| image:: _static/images/t260.agenda-projector_de.png
+    :alt: Beamer-Ansicht der Tagesordnung
+.. _agenda-projector: _static/images/agenda-projector_de.png
 
-    
-  .. image:: _static/images/agenda-new-item_de.png
-    :width: 45%
+.. |agenda-new| image:: _static/images/t260.agenda-new_de.png
     :alt: Neuen Tagesordnungseintrag anlegen
-    
-  .. image:: _static/images/pdf-agenda_de.png
-    :width: 45%
+.. _agenda-new: _static/images/agenda-new_de.png
+
+.. |agenda-pdf| image:: _static/images/t260.agenda-pdf_de.png
     :alt: Tagesordnung als PDF
+.. _agenda-pdf: _static/images/agenda-pdf_de.png
+
 
 
 Anträge
 -------
 
-- Anträge anlegen, bearbeiten, löschen
+- Anträge verwalten
 - Anträge von anderen Teilnehmern unterstützen lassen
-- Antragsstatus ändern und Abstimmungsergebnisse eingeben
-- Abstimmungsergebenisse aus mehreren Wahlgängen darstellen
+- Antragsstatus ändern
+- Abstimmungsergebnisse eingeben und darstellen - mehreren Abstimmungsvorgänge möglich (Abstimmungsmodus: Ja/Nein/Enthaltung sowie ungültige und abgegebene Stimmen)
 - Antrag als Tagesordnungseintrag anlegen und anzeigen
-- Änderungshistorie eines Antrags anzeigen
+- Versionshistorie eines Antrags anzeigen
+- Alle Änderungen eines Antrags (Text, Status, Unterstützer etc.) werden protokolliert
 - Antragsformular als pdf erzeugen
 - Übersicht aller Anträge als pdf
 - Abstimmungsmodus: Ja/Nein/Enthaltungs-Stimmen sowie ungültige und abgegebene Stimmen
 
-  .. image:: _static/images/application-overview_de.png
-    :width: 45%
-    :alt: Antragsübersicht
-    
-  .. image:: _static/images/application-new_de.png
-    :width: 45%
-    :alt: Neuer Antrag
-    
-  .. image:: _static/images/application-view_de.png
-    :width: 45%
-    :alt: Darstellung eines Antrags mit Verwaltugsfunktion
-    
-  .. image:: _static/images/beamer-application-view_de.png
-    :width: 45%
-    :alt: Beamer-Ansicht eines einzelnen Antrags
-    
+  |application-overview|_  |application-pdf|_
+  |application-view|_  |application-projector|_
+  
+.. |application-overview| image::   _static/images/t260.application-overview_de.png
+    :alt: Übersicht aller Anträge
+.. _application-overview: _static/images/application-overview_de.png
+
+.. |application-pdf| image:: _static/images/t260.application-pdf_de.png
+    :alt: Antrag als PDF
+.. _application-pdf: _static/images/application-pdf_de.png
+
+.. |application-view| image:: _static/images/t260.application-view_de.png
+    :alt: Darstellung eines Antrags
+.. _application-view: _static/images/application-view_de.png
+
+.. |application-projector| image:: _static/images/t260.application-projector_de.png
+    :alt: Beamer-Ansicht eines Antrags
+.. _application-projector: _static/images/application-projector_de.png
+
+
+
 Wahlen
 ------
 
@@ -72,6 +79,24 @@ Wahlen
 - mehrere Wahlgänge und Stichwahlen werden unterstützt
 - Abstimmungsmodus: Ja-Stimmen oder Ja/Nein/Enthaltungs-Stimmen (abhängig von der Anzahl der Kandiaten und Posten), ungültige und abgegebene Stimmen können eingegeben werden
 
+  |election-overview|_  |election-view|_
+  |election-pollview|_  |election-ballot-pdf|_
+  
+.. |election-overview| image:: _static/images/t260.election-overview_de.png
+    :alt: Übersicht aller Wahlen
+.. _election-overview: _static/images/election-overview_de.png
+
+.. |election-view| image:: _static/images/t260.election-view_de.png
+    :alt: Darstellung einer Wahl
+.. _election-view: _static/images/election-view_de.png
+
+.. |election-pollview| image:: _static/images/t260.election-pollview_de.png
+    :alt: Eingabe der Wahlergebnisse
+.. _election-pollview: _static/images/election-pollview_de.png
+
+.. |election-ballot-pdf| image:: _static/images/t260.election-ballot-pdf_de.png
+    :alt: Wahlschein als PDF
+.. _election-ballot-pdf: _static/images/election-ballot-pdf_de.png
 
 
 Teilnehmer
@@ -80,6 +105,7 @@ Teilnehmer
 - Teilnehmer anlegen und verwalten (vordefinierte Felder: *Name, Vorname,  Geschlecht, Gruppe, Typ, Amt*)
 - importieren von Teilnehmerdaten (im CSV-Format)
 - Benutzergruppe frei konfigurierbar (voreingestellt sind: *Beobachter,  Delegierte, Tagesleitung, Teilnehmerverwaltung*)
+
 
 Allgemein
 ---------

@@ -5,21 +5,7 @@ Hilfe
 Mailinglisten
 --------------
 
-**Achtung: Die Erstellung der OpenSlides-Mailinglisten erfolgt Anfang September!**
-
-OpenSlides hat zwei öffentliche Mailinglisten (in deutscher und englischer Sprache)
-zur Koordination der Entwicklung und Diskussion von Tickets, Nutzerfragen 
-oder speziellen Anwendungsfällen. 
-Bitte abbonieren Sie eine Mailingliste bevor Sie an diese schreiben wollen.
-
-Deutsch::
-
-  users-de@openslides.org
-
-
-Englisch::
-
-  users-en@openslides.org
+**Folgt in Kürze!**
 
 
 
@@ -42,4 +28,9 @@ jede Form der Unterstützung!
 
 Kontakt
 -------
-Fragen, Presse- und Supportanfragen richten Sie bitte an `Emanuel Schütze <emanuel@openslides.com>`_.
+Sie haben Interess an OpenSlides und denken über einen Einsatz auf 
+Ihrer Veranstaltung nach? Sie suchen professionelle Unterstützung dafür? 
+Dann kontaktieren Sie uns! Wir beraten Sie gerne.
+
+Support- und Presseanfragen sowie Ihre Rückmeldungen und Anregungen richten Sie bitte an 
+support@openslides.org.
