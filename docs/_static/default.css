@@ -34,7 +34,8 @@ ol           { line-height: 1.4; margin: 15px 0 15px 30px; padding: 0; }
 blockquote   { margin: 15px 0; font-style: italic; color: #444; }
 .footer      { font-size: 10px; color: #888; text-align: right; margin-top: 25px; }
 .more        { text-align: right; margin-top: 0; font-size: 0.9em; font-style: italic; }
-.nav         { text-align: left; margin: 55px 0 0 0; }
+.nav         { text-align: left; margin: 55px 0 0 0;}
+.nav ul      { line-height: 170%; font-size: 15px;}
 table        { border: 1px solid black; border-collapse: collapse;
                margin: 15px 0; }
 td, th       { border: 1px solid black; padding: 4px 10px;
@@ -210,15 +211,7 @@ div.sphinxsidebar form.search input[name="q"] {
  
 /* -- body styles ----------------------------------------------------------- */
  
-a {
-    color: #185F6D;
-    text-decoration: underline;
-}
- 
-a:hover {
-    color: #2794AA;
-    text-decoration: underline;
-}
+
  
 div.body h1,
 div.body h2,

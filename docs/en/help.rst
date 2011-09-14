@@ -5,7 +5,7 @@ Help
 Mailing lists
 -------------
 
-**Still under constrution!**
+**Still under constrution! Will follow shortly.**
 
 Bug reports
 -----------
@@ -22,4 +22,9 @@ From source code to localizations or artwork, any contribution is welcome!
 
 Contact
 -------
-Questions, press and support requests should be directed to support@openslides.org.
+You are intersting in OpenSlides and thinking about using OpenSlides 
+at your next event? You searching for professional support?
+Then please contact our core development and support team. We can help you.
+
+Please write your support and press requests, feedback and suggestions 
+to support@openslides.org.

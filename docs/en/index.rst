@@ -12,7 +12,7 @@ OpenSlides is designed for use at events such as assemblies of delegates, genera
 The significant advantage of OpenSlides over conventional office presentation tools, such as MS PowerPoint or OpenOffice Impress, is to edit slides on an editing system. The projector does not need to leave the presentation mode and can always display the current slide.
 
 |
-» Learn more about the `features <about.html>`_ of OpenSlides.
+» `Click here to learn more about the features of OpenSlides. <about.html>`_
 
 |image|_
 

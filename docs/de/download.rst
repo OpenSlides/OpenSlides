@@ -22,4 +22,3 @@ eingesehen werden.
 Zum Auschecken des Quellcodes von OpenSlides nutzen Sie::
   
   hg clone http://hg.openslides.org
- 

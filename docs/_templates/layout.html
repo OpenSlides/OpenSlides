@@ -17,7 +17,7 @@
         <div id="content">
             {% block body %} {% endblock %}
             <p class="footer">
-            &copy; 2011 | OpenSlides is licensed under GPLv2+.
+            &copy; 2011 | OpenSlides is licensed under GNU GPLv2+.
             </p>
         </div>
     </div> <!-- end wrapper -->
@@ -43,12 +43,14 @@
             <ul>
             {%- if language == 'de' %}
             <li><a href="{{ pathto('index') }}">Home</a></li>
+            <li><a href="features.html">Funktionen</a></li>
             <li><a href="about.html">Über</a></li>
             <li><a href="download.html">Download</a></li>
             <li><a href="http://dev.openslides.org">Entwicklung</a></li>
             <li><a href="help.html">Hilfe</a></li>
             {%- else %}
             <li><a href="{{ pathto('index') }}">Home</a></li>
+            <li><a href="features.html">Features</a></li>
             <li><a href="about.html">About</a></li>
             <li><a href="download.html">Download</a></li>
             <li><a href="http://dev.openslides.org">Development</a></li>
