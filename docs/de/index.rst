@@ -15,7 +15,7 @@ Delegierten- und Mitgliederversammlungen, Parteitagen und Hauptversammlungen. Ei
 Der entscheidene Vorteil gegenüber herkömmlichen Office-Präsentations-Systemen, wie MS PowerPoint oder OpenOffice Impress, ist die Bearbeitung der Folien über ein Redaktionssystem. Der Präsentationsmodus auf dem Beamer muss nicht verlassen werden und zeigt stets die aktuelle Folie an.
 
 |
-» `Klicken Sie hier, um mehr über die Funktionen von OpenSlides zu erfahren. <about.html>`_
+» `Klicken Sie hier, um mehr über die Funktionen von OpenSlides zu erfahren. <features.html>`_
 
 |image|_
 
