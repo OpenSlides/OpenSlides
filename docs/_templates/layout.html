@@ -1,5 +1,18 @@
 {% extends '!layout.html' %}
 
+{% block extrahead %}
+{{ super() }}
+<head>
+<meta content="OpenSlides, Präsentationssystem, Tagesordnung, Tagesordnungspunkt,
+Anträge, Wahlen, Wahlsystem, Abstimmungen, Veranstaltung, Mitgliederversammlung, Delegiertenversammlung, Hauptversammlung,
+Parteitag, Beamer, Projektor, Stimmzettel, webbasiert, frei, Open Source, webbasiert,
+presentation system, agenda, agenda item, application, election, voting system, event,
+general meeting, projector, ballot, web based, free, Open Source"
+name="keywords">
+<meta content="Agenda presentation with application and voting system" name="description">
+</head>
+{% endblock %}
+
 {%- block content %}
 
 <div class="box">
