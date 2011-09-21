@@ -568,7 +568,7 @@ def get_assignment(assignment, story):
             row.append(_("Invalid votes"))
             for p in polls:
                 if p.published:
-                    row.append(p.votesinvalid)
+                    row.append(p.votesinvalidf)
             data_votes.append(row)
 
             # votes cast
@@ -576,7 +576,7 @@ def get_assignment(assignment, story):
             row.append(_("Votes cast"))
             for p in polls:
                 if p.published:
-                    row.append(p.votescast)
+                    row.append(p.votescastf)
             data_votes.append(row)
 
             table_votes=Table(data_votes)
