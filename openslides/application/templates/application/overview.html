@@ -50,7 +50,7 @@
             {% if not forloop.last %}<br>{%endif%}
             {% endfor %}
         </td>
-        <td>{{ application.submitter }}</td>
+        <td>{{ application.submitter.profile }}</td>
         <td>{{ application.creation_time }}</td>
         </tr>
     {% empty %}

@@ -17,7 +17,7 @@
         </p>
 
         <p><b>{% trans "Submitter" %}:</b><br>
-        {{ item.application.submitter }}</p>
+        {{ item.application.submitter.profile }}</p>
     {% with item.application.poll_set.all as polls %}
     {% if polls|length > 0 and polls.0.has_vote %}
     <p><b>{% trans "Poll result" %}:</b></p>
