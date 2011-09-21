@@ -44,8 +44,14 @@ def get_overview(request):
         for key in dict:
             newdict[key] = [dict[key][0].encode('utf-8')]
         return newdict
+
+    def encodedict(dict):
+        newdict = {}
+        for key in dict:
+            newdict[key] = [unicode(dict[key][0].decode('utf-8'))]
+        return newdict
     try:
-        sortfilter = parse_qs(request.COOKIES['participant_sortfilter'])
+        sortfilter = encodedict(parse_qs(request.COOKIES['participant_sortfilter']))
     except KeyError:
         sortfilter = {}
 
