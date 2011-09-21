@@ -523,7 +523,7 @@ def get_assignment(assignment, story):
     cell2a = []
     cell2a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font><seqreset id='counter'>" % _("Candidates"), stylesheet['Heading4']))
     cell2b = []
-    for c in assignment.candidates:
+    for c in assignment.profile.all():
         cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % unicode(c), stylesheet['Signaturefield']))
     if assignment.status == "sea":
         for x in range(0,2*assignment.posts):
