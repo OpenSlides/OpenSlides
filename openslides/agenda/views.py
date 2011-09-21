@@ -120,11 +120,14 @@ def assignment_votes(item):
             for poll in assignment.poll_set.all():
                 if poll.published:
                     if candidate in poll.options_values:
-                        option = Option.objects.filter(poll=poll).filter(user=candidate)[0]
-                        if poll.optiondecision:
-                            tmplist[1].append([option.yes, option.no, option.undesided])
+                        if assignment.is_elected(candidate):
+                            option = Option.objects.filter(poll=poll).filter(user=candidate)[0]
+                            if poll.optiondecision:
+                                tmplist[1].append([option.yes, option.no, option.undesided])
+                            else:
+                                tmplist[1].append(option.yes)
                         else:
-                            tmplist[1].append(option.yes)
+                            tmplist[1].append("")
                     else:
                         tmplist[1].append("-")
             votes.append(tmplist)
