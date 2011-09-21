@@ -416,7 +416,7 @@ class Application(models.Model):
         for poll in self.poll_set.all():
             for option in poll.options:
                 if poll.votesinvalid != None and poll.votescast != None:
-                    results.append([option.yes, option.no, option.undesided, poll.votesinvalid, poll.votescast])
+                    results.append([option.yes, option.no, option.undesided, poll.votesinvalidf, poll.votescastf])
         return results
     
     @models.permalink
