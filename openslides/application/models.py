@@ -141,7 +141,10 @@ class Application(models.Model):
         Return True, if the application has enough supporters
         """
         min_supporters = int(config_get('application_min_supporters'))
-        return self.supporter.count() >= min_supporters
+        if self.status == "pub":
+            return self.supporter.count() >= min_supporters
+        else:
+            return True
 
     @property
     def missing_supporters(self):
