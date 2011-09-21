@@ -3,8 +3,7 @@
 {% block content %}
     {% if item.text %}
         <h1>{{ item.title }}</h1>
-        {# item.parse|safe #}
-        {{ item.text|linebreaks }}
+        {{ item.text|safe|linebreaks }}
     {% else %}
         <div class="item_fullscreen">{{ item.title }}</div>
     {% endif %}
