@@ -54,7 +54,11 @@
         {% endif %}
         <table id="menu-overview" class="agendatable">
             <tr>
+                {% if perms.agenda.can_manage_agenda %}
                 <th style="width: 1px;">{% trans "Projector" %}</th>
+                {% else %}
+                <th style="width: 1px;">{% trans "Done" %}</th>
+                {% endif %}
                 <th>{% trans "Item" %}</th>
                 {% if perms.agenda.can_manage_agenda %}
                 <th>{% trans "Type" %}</th>
@@ -65,13 +69,15 @@
                 {% endif %}
             </tr>
             <tr id="item_row_0" class="topline {% if overview %} activeline {% else %}{% if perms.agenda.can_manage_agenda %} inactiveline {% endif %}{% endif %}">
+                {% if perms.agenda.can_manage_agenda %}
                 <td class="select">
-                    {% if perms.agenda.can_manage_agenda %}
                     <a href="{% url item_activate 0 %}" class="activate_link">
                         <div></div>
                     </a>
-                    {% endif %}
                 </td>
+                {% else %}
+                <td></td>
+                {% endif %}
                 <td><b>{% trans "Agenda" %} ({{ items|length }} {% trans "items" %}<span id="hiddencount"></span>)</b></td>
                 {% if perms.agenda.can_manage_agenda %}
                 <td></td>
@@ -83,18 +89,25 @@
             </tr>
             {% for item in items %}
                 {% if not item.hidden or perms.agenda.can_manage_agenda %}
-
                 <tr id="item_row_{{ item.id }}" class="draggable{% cycle ' odd' '' %}
                 {% if item.active %} activeline{% else %}
                 {% if item.parent.active and summary %} activesummarychildline{% endif %}
                 {% if perms.agenda.can_manage_agenda %} inactiveline{% endif %}
                 {% endif %}">
                 <script type="text/javascript">$(function(){ViewModel.slides.push(new Slide({{ item.json|safe }}))});</script>
+                {% if perms.agenda.can_manage_agenda %}
                 <td class="select">
                     <a id="activate_link_{{ item.id }}" class="activate_link" href="{% url item_activate item.id %}">
                     <div></div>
                     </a>
                 </td>
+                {% else %}
+                <td>
+                    {% if item.closed %}
+                        <img src="/static/images/icons/task-complete.png" title="{% trans 'Item closed' %}">
+                    {% endif %}
+                </td>
+                {% endif %}
                 <td>
                     {% for p in item.parents %}
                         <div class="indentation">&nbsp;</div>
