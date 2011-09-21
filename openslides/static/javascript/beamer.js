@@ -11,6 +11,8 @@ function presentation_reload() {
                 $('#currentTime').html(data.time);
                 $('#content').clearQueue();
                 $('#content').animate({'font-size': data.bigger + '%'}, 200);
+                $('#content li').css({'font-size': data.bigger + '%'}, 200);
+                $('#content div').css({'font-size': 2 * data.bigger + '%'}, 200);
                 $('#content').animate({'margin-top': data.up + 'em'}, 200);
                 setTimeout("presentation_reload()", 500);
             },
