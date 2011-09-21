@@ -7,6 +7,7 @@
 {% block content %}
     <h1>{% trans "Election" %}: {{ item.assignment }}</h1>
 
+    {% if item.assignment.status != "fin" %}
     <div id="sidebar">
     <div class="box">
     <p><b>{% trans "Status" %}:</b><br>
@@ -17,12 +18,15 @@
     {% endif %}
     </div>
     </div>
+    {% endif %}
 
+    {% if not item.assignment.profile.exists %}
     <p>
     <div class="text">{{ item.assignment.description|linebreaks }}</div>
     </p>
+    {% endif %}
 
-    {% if item.assignment.status != "fin" %}
+    {% if item.assignment.profile.exists and item.assignment.status != "fin" %}
     <h3>{% trans "Candidates" %}</h3>
     <ol>
     {% for profile in item.assignment.profile.all|dictsort:"user.first_name" %}
@@ -33,12 +37,11 @@
         </li>
     {% endfor %}
     </ol>
+    <p><br></p>
     {% endif %}
 
     {% with polls|first as firstpoll %}
     {% if polls.count > 0 and firstpoll.published %}
-
-    <p><br></p>
     <h3>{% trans "Election results" %}</h3>
     <table>
     <tr>
