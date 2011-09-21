@@ -271,7 +271,7 @@ def print_userlist(request):
                     Paragraph(user.last_name, stylesheet['Tablecell']),
                     Paragraph(user.first_name, stylesheet['Tablecell']),
                     Paragraph(user.profile.group, stylesheet['Tablecell']),
-                    Paragraph(user.profile.type, stylesheet['Tablecell']),
+                    Paragraph(user.profile.get_type_display(), stylesheet['Tablecell']),
                     Paragraph(user.profile.committee, stylesheet['Tablecell']),
                     ])
         except Profile.DoesNotExist:
