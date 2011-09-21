@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-16 12:00+0200\n"
+"POT-Creation-Date: 2011-09-17 09:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,10 +25,10 @@ msgstr "Deutsch"
 msgid "English"
 msgstr "Englisch"
 
-#: agenda/api.py:62 agenda/templates/agenda/overview.html:44
+#: agenda/api.py:62 agenda/templates/agenda/overview.html:47
 #: agenda/templates/beamer/ItemApplication.html:30
-#: agenda/templates/beamer/ItemAssignment.html:64
-#: agenda/templates/beamer/ItemAssignment.html:68
+#: agenda/templates/beamer/ItemAssignment.html:67
+#: agenda/templates/beamer/ItemAssignment.html:71
 #: application/templates/application/poll_view.html:28
 #: application/templates/application/view.html:74
 #: assignment/templates/assignment/poll_view.html:16
@@ -43,9 +43,9 @@ msgstr "Ja"
 msgid "Yes, with all child items."
 msgstr "Ja, mit allen Kindelementen."
 
-#: agenda/api.py:62 agenda/templates/agenda/overview.html:45
+#: agenda/api.py:62 agenda/templates/agenda/overview.html:48
 #: agenda/templates/beamer/ItemApplication.html:31
-#: agenda/templates/beamer/ItemAssignment.html:65
+#: agenda/templates/beamer/ItemAssignment.html:68
 #: application/templates/application/poll_view.html:32
 #: application/templates/application/view.html:75
 #: assignment/templates/assignment/poll_view.html:17
@@ -74,7 +74,7 @@ msgstr "Titel"
 msgid "Closed"
 msgstr "Abgeschlossen"
 
-#: agenda/models.py:37 agenda/templates/agenda/overview.html:68
+#: agenda/models.py:37 agenda/templates/agenda/overview.html:71
 msgid "Weight"
 msgstr "Gewichtung"
 
@@ -92,7 +92,8 @@ msgstr "Kein Formular für Eintrag %s"
 msgid "Text"
 msgstr "Text"
 
-#: agenda/models.py:199 agenda/templates/agenda/overview.html:126
+#: agenda/models.py:199 agenda/templates/agenda/overview.html:129
+#: agenda/templates/agenda/overview.html:209
 #: application/templates/application/edit.html:2
 #: application/templates/application/view.html:2
 #: application/templates/application/view.html:213 poll/models.py:23
@@ -101,7 +102,8 @@ msgstr "Text"
 msgid "Application"
 msgstr "Antrag"
 
-#: agenda/models.py:206 agenda/templates/agenda/overview.html:139
+#: agenda/models.py:206 agenda/templates/agenda/overview.html:142
+#: agenda/templates/agenda/overview.html:220
 #: agenda/templates/beamer/ItemAssignment.html:8
 #: assignment/templates/assignment/edit.html:2 poll/models.py:24
 #: utils/pdf.py:515 utils/pdf.py:644 utils/pdf.py:653
@@ -116,46 +118,46 @@ msgstr "Abstimmung"
 #: agenda/views.py:77 agenda/templates/agenda/base_agenda.html:7
 #: agenda/templates/agenda/overview.html:3
 #: agenda/templates/agenda/overview.html:38
-#: agenda/templates/agenda/overview.html:81
+#: agenda/templates/agenda/overview.html:84
 #: agenda/templates/beamer/overview.html:3
 #: agenda/templates/beamer/overview.html:10 templates/base.html:37
 #: utils/pdf.py:227 utils/pdf.py:232
 msgid "Agenda"
 msgstr "Tagesordnung"
 
-#: agenda/views.py:184 agenda/views.py:202 agenda/views.py:225
+#: agenda/views.py:189 agenda/views.py:207 agenda/views.py:230
 #, python-format
 msgid "Item ID %d does not exist."
 msgstr "Eintrag %d existiert nicht."
 
-#: agenda/views.py:239
+#: agenda/views.py:244
 msgid "New item was successfully created."
 msgstr "Neuer Eintrag erfolgreich angelegt."
 
-#: agenda/views.py:241
+#: agenda/views.py:246
 msgid "Agenda item created"
 msgstr "Tagesordnungseintrag angelegt"
 
-#: agenda/views.py:243
+#: agenda/views.py:248
 msgid "Item was successfully modified."
 msgstr "Eintrag wurde erfolgreich geändert."
 
-#: agenda/views.py:245
+#: agenda/views.py:250
 msgid "Agenda item modified"
 msgstr "Tagesordnungseintrag geändert"
 
-#: agenda/views.py:251 participant/views.py:139 participant/views.py:225
+#: agenda/views.py:256 participant/views.py:139 participant/views.py:225
 #: participant/views.py:254 participant/views.py:311 system/views.py:32
 #: system/views.py:59
 msgid "Please check the form for errors."
 msgstr "Bitte kontrollieren Sie das Formular nach Fehlern."
 
-#: agenda/views.py:285
+#: agenda/views.py:290
 #, python-format
 msgid "Item <b>%s</b> and his children were successfully deleted."
 msgstr "Eintrag <b>%s</b> und seine Kindelemente wurde erfolgreich gelöscht."
 
-#: agenda/views.py:291
+#: agenda/views.py:296
 #, python-format
 msgid "Item <b>%s</b> was successfully deleted."
 msgstr "Eintrag <b>%s</b> wurde erfolgreich gelöscht."
@@ -174,12 +176,13 @@ msgid "Projector view"
 msgstr "Beamer-Ansicht"
 
 #: agenda/templates/agenda/edit.html:2
-#: agenda/templates/agenda/overview.html:62
+#: agenda/templates/agenda/overview.html:65
 msgid "Item"
 msgstr "Eintrag"
 
 #: agenda/templates/agenda/edit.html:6
-#: agenda/templates/agenda/overview.html:154
+#: agenda/templates/agenda/overview.html:157
+#: agenda/templates/agenda/overview.html:228
 msgid "Edit item"
 msgstr "Eintrag bearbeiten"
 
@@ -237,76 +240,89 @@ msgstr "Übernehmen"
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: agenda/templates/agenda/overview.html:43
+#: agenda/templates/agenda/overview.html:40
+msgid "Go to hidden items"
+msgstr "Zu den versteckten Einträgen"
+
+#: agenda/templates/agenda/overview.html:46
 msgid "Do you want to save the changed order of agenda items?"
 msgstr "Möchten Sie die geänderte Reihenfolge der Einträge speichern?"
 
-#: agenda/templates/agenda/overview.html:49
+#: agenda/templates/agenda/overview.html:52
 msgid "Adjust projector view"
 msgstr "Beamer-Ansicht anpassen"
 
-#: agenda/templates/agenda/overview.html:58
+#: agenda/templates/agenda/overview.html:61
 msgid "Projector"
 msgstr "Beamer"
 
-#: agenda/templates/agenda/overview.html:60
+#: agenda/templates/agenda/overview.html:63
 msgid "Done"
 msgstr "Erledigt"
 
-#: agenda/templates/agenda/overview.html:64
+#: agenda/templates/agenda/overview.html:67
 #: participant/templates/participant/overview.html:24
 #: participant/templates/participant/overview.html:45 utils/pdf.py:263
 msgid "Type"
 msgstr "Typ"
 
-#: agenda/templates/agenda/overview.html:66
+#: agenda/templates/agenda/overview.html:69
 #: assignment/templates/assignment/overview.html:25
 #: participant/templates/participant/overview.html:51
 msgid "Actions"
 msgstr "Aktionen"
 
-#: agenda/templates/agenda/overview.html:81
+#: agenda/templates/agenda/overview.html:84
 msgid "items"
 msgstr "Einträge"
 
-#: agenda/templates/agenda/overview.html:87
+#: agenda/templates/agenda/overview.html:90
 msgid "Print agenda"
 msgstr "Tagesordnung drucken"
 
-#: agenda/templates/agenda/overview.html:107
+#: agenda/templates/agenda/overview.html:110
 msgid "Item closed"
 msgstr "Eintrag erledigt"
 
-#: agenda/templates/agenda/overview.html:131
+#: agenda/templates/agenda/overview.html:134
+#: agenda/templates/agenda/overview.html:213
 msgid "Poll of Application"
 msgstr "Antragsabstimmung"
 
-#: agenda/templates/agenda/overview.html:134
+#: agenda/templates/agenda/overview.html:137
+#: agenda/templates/agenda/overview.html:216
 msgid "Poll of Election"
 msgstr "Wahlen"
 
-#: agenda/templates/agenda/overview.html:146
+#: agenda/templates/agenda/overview.html:149
 msgid "hidden"
 msgstr "versteckt"
 
-#: agenda/templates/agenda/overview.html:151
+#: agenda/templates/agenda/overview.html:154
+#: agenda/templates/agenda/overview.html:227
 msgid "Show projector preview"
 msgstr "Beamer-Vorschau anzeigen"
 
-#: agenda/templates/agenda/overview.html:155
+#: agenda/templates/agenda/overview.html:158
+#: agenda/templates/agenda/overview.html:229
 msgid "Delete item"
 msgstr "Eintrag löschen"
 
-#: agenda/templates/agenda/overview.html:162
+#: agenda/templates/agenda/overview.html:165
+#: agenda/templates/agenda/overview.html:234
 msgid "Select item overview"
 msgstr "Wähle Eintragsübersicht"
 
-#: agenda/templates/agenda/overview.html:182
+#: agenda/templates/agenda/overview.html:186
+msgid "Hidden items:"
+msgstr "Versteckte Einträge"
+
+#: agenda/templates/agenda/overview.html:251
 msgid "No items available."
 msgstr "Keine Einträge vorhanden."
 
 #: agenda/templates/beamer/ItemApplication.html:8
-#: agenda/templates/beamer/ItemAssignment.html:12
+#: agenda/templates/beamer/ItemAssignment.html:13
 #: application/templates/application/overview.html:16
 #: application/templates/application/overview.html:34
 #: application/templates/application/view.html:35
@@ -335,7 +351,7 @@ msgid "Vote"
 msgstr "Abstimmung"
 
 #: agenda/templates/beamer/ItemApplication.html:32
-#: agenda/templates/beamer/ItemAssignment.html:66
+#: agenda/templates/beamer/ItemAssignment.html:69
 #: application/templates/application/view.html:76
 #: assignment/templates/assignment/poll_view.html:18
 #: assignment/templates/assignment/view.html:181 poll/forms.py:35
@@ -345,7 +361,7 @@ msgid "Abstention"
 msgstr "Enthaltung"
 
 #: agenda/templates/beamer/ItemApplication.html:33
-#: agenda/templates/beamer/ItemAssignment.html:85
+#: agenda/templates/beamer/ItemAssignment.html:88
 #: application/templates/application/view.html:77
 #: assignment/templates/assignment/view.html:198 poll/forms.py:24
 #: utils/pdf.py:403
@@ -353,8 +369,8 @@ msgid "Invalid"
 msgstr "Ungültig"
 
 #: agenda/templates/beamer/ItemApplication.html:35
-#: agenda/templates/beamer/ItemAssignment.html:90
 #: agenda/templates/beamer/ItemAssignment.html:93
+#: agenda/templates/beamer/ItemAssignment.html:96
 #: application/templates/application/poll_view.html:44
 #: application/templates/application/view.html:79
 #: assignment/templates/assignment/poll_view.html:40
@@ -382,13 +398,13 @@ msgstr "Antrag Nr."
 msgid "Reason"
 msgstr "Begründung"
 
-#: agenda/templates/beamer/ItemAssignment.html:15 assignment/models.py:28
+#: agenda/templates/beamer/ItemAssignment.html:16 assignment/models.py:28
 #: assignment/templates/assignment/view.html:14 utils/pdf.py:519
 msgid "Number of available posts"
 msgstr "Anzahl der zur Wahl stehenden Posten"
 
-#: agenda/templates/beamer/ItemAssignment.html:26
-#: agenda/templates/beamer/ItemAssignment.html:45
+#: agenda/templates/beamer/ItemAssignment.html:30
+#: agenda/templates/beamer/ItemAssignment.html:48
 #: assignment/templates/assignment/overview.html:22
 #: assignment/templates/assignment/view.html:55
 #: assignment/templates/assignment/view.html:126 utils/pdf.py:524
@@ -396,34 +412,34 @@ msgstr "Anzahl der zur Wahl stehenden Posten"
 msgid "Candidates"
 msgstr "Kandidaten"
 
-#: agenda/templates/beamer/ItemAssignment.html:32
+#: agenda/templates/beamer/ItemAssignment.html:36
 #: assignment/templates/assignment/view.html:66
 msgid "No candidates available."
 msgstr "Keine Kandidaten vorhanden."
 
-#: agenda/templates/beamer/ItemAssignment.html:42
+#: agenda/templates/beamer/ItemAssignment.html:45
 #: assignment/templates/assignment/view.html:114
 msgid "Election results"
 msgstr "Wahlergebnisse"
 
-#: agenda/templates/beamer/ItemAssignment.html:48
+#: agenda/templates/beamer/ItemAssignment.html:51
 #: assignment/templates/assignment/poll_view.html:6
 #: assignment/templates/assignment/view.html:122
 #: assignment/templates/assignment/view.html:130 utils/pdf.py:656
 msgid "ballot"
 msgstr "Wahlgang"
 
-#: agenda/templates/beamer/ItemAssignment.html:57
+#: agenda/templates/beamer/ItemAssignment.html:60
 #: assignment/templates/assignment/view.html:166
 msgid "Candidate is elected"
 msgstr "Kandidat ist gewählt"
 
-#: agenda/templates/beamer/ItemAssignment.html:78
+#: agenda/templates/beamer/ItemAssignment.html:81
 #: assignment/templates/assignment/view.html:220
 msgid "No ballots available."
 msgstr "Keine Wahlgänge vorhanden."
 
-#: agenda/templates/beamer/ItemAssignment.html:82
+#: agenda/templates/beamer/ItemAssignment.html:85
 #: application/templates/application/poll_view.html:40
 #: assignment/templates/assignment/poll_view.html:36
 #: assignment/templates/assignment/view.html:195 utils/pdf.py:568
