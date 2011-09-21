@@ -156,7 +156,7 @@ def edit(request, application_id=None):
                         except Profile.DoesNotExist:
                             pass
                 if len(supporters_removed) > 0:
-                    log_removed = _(", ".join(supporters_removed))
+                    log_removed = ", ".join(supporters_removed)
                     application.writelog(_("Supporter: -%s") % log_removed, request.user)
             if application_id is None:
                 messages.success(request, _('New application was successfully created.'))
