@@ -658,7 +658,7 @@ def print_assignment_poll(request, poll_id=None):
 
     if poll.optiondecision:
         for option in options:
-            o = str(option).rsplit("(",1)
+            o = str(option).split("(",1)
             cell.append(Paragraph(o[0], stylesheet['Ballot_option_name']))
             if len(o) > 1:
                 cell.append(Paragraph("("+o[1], stylesheet['Ballot_option_group']))
@@ -676,7 +676,7 @@ def print_assignment_poll(request, poll_id=None):
             t=Table(data, 10.5*cm, 29.7*cm)
     else:
         for option in options:
-            o = str(option).rsplit("(",1)
+            o = str(option).split("(",1)
             cell.append(Paragraph(circle+o[0], stylesheet['Ballot_option_name']))
             if len(o) > 1:
                 cell.append(Paragraph("("+o[1], stylesheet['Ballot_option_group_right']))
