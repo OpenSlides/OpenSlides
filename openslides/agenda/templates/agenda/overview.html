@@ -142,6 +142,9 @@
                     {% ifequal item.type 'ItemText' %}
                         Text
                     {% endifequal %}
+                    {% if item.hidden %}
+                        ({% trans 'hidden' %})
+                    {% endif %}
                 </td>
                 {% endif %}
                 <td style="width: 1px;white-space: nowrap;">

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-09-16 11:00+0200\n"
+"POT-Creation-Date: 2011-09-16 12:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -179,7 +179,7 @@ msgid "Item"
 msgstr "Eintrag"
 
 #: agenda/templates/agenda/edit.html:6
-#: agenda/templates/agenda/overview.html:151
+#: agenda/templates/agenda/overview.html:154
 msgid "Edit item"
 msgstr "Eintrag bearbeiten"
 
@@ -285,19 +285,23 @@ msgstr "Antragsabstimmung"
 msgid "Poll of Election"
 msgstr "Wahlen"
 
-#: agenda/templates/agenda/overview.html:148
+#: agenda/templates/agenda/overview.html:146
+msgid "hidden"
+msgstr "versteckt"
+
+#: agenda/templates/agenda/overview.html:151
 msgid "Show projector preview"
 msgstr "Beamer-Vorschau anzeigen"
 
-#: agenda/templates/agenda/overview.html:152
+#: agenda/templates/agenda/overview.html:155
 msgid "Delete item"
 msgstr "Eintrag löschen"
 
-#: agenda/templates/agenda/overview.html:159
+#: agenda/templates/agenda/overview.html:162
 msgid "Select item overview"
 msgstr "Wähle Eintragsübersicht"
 
-#: agenda/templates/agenda/overview.html:179
+#: agenda/templates/agenda/overview.html:182
 msgid "No items available."
 msgstr "Keine Einträge vorhanden."
 
