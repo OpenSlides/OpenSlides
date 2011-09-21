@@ -16,7 +16,11 @@
         <li class="{% if request.path == url_usergroups %}selected{% endif %}"><a href="{%  url user_group_overview %}">{%trans "All user groups" %}</a></li>
         <li class="{% active request '/participant/group/new' %}"><a href="{%  url user_group_new %}">{%trans "New user group" %}</a></li>
         <li class="{% if request.path == url_userimport %}selected{% endif %}"><a href="{% url user_import %}"> {%trans 'Import participant' %}</a></li>
+        {% endif %}
+        {% if perms.participant.can_see_participant %}
         <li><a href="{% url user_print %}"><img src="/static/images/icons/application-pdf.png"> {%trans 'Print participant list' %}</a></li>
+        {% endif %}
+        {% if perms.participant.can_manage_participant %}
         <li><a href="{% url user_gen_passwords %}"><img src="/static/images/icons/quickopen.png"> {% trans 'Generate first time passwords' %}</a></li>
         <li><a href="{% url print_passwords %}"><img src="/static/images/icons/application-pdf.png"> {% trans 'Print first time passwords' %}</a></li>
         {% endif %}

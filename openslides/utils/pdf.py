@@ -250,7 +250,7 @@ def print_agenda(request):
     return response
 
 
-@permission_required('participant.can_manage_participant')
+@permission_required('participant.can_see_participant')
 def print_userlist(request):
     response = HttpResponse(mimetype='application/pdf')
     filename = u'filename=%s.pdf;' % _("Participant-list")
