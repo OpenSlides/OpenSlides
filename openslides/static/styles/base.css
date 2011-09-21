@@ -257,7 +257,12 @@ tr.topline td {
     border-bottom: 1px solid #333333;
     background-color: #e3e3e3;
 }
-
+table tr.emptyline, table tr.emptyline td, table tr.emptyline td:hover {
+    border-right: 0px;
+    border-top: 1px solid #CCCCCC;
+    border-bottom: 1px solid #CCCCCC;
+    background: none !important;
+}
 
 /* Links and Images */
 a {

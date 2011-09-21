@@ -160,13 +160,15 @@ def overview(request):
                 item.weight = form.cleaned_data['weight']
                 item.save()
 
-    items = children_list(Item.objects.filter(parent=None).order_by('weight'))
+    items = children_list(Item.objects.filter(parent=None).exclude(hidden=True).order_by('weight'))
+    items_hidden = children_list(Item.objects.filter(parent=None).exclude(hidden=False).order_by('weight'))
     try:
         overview = is_summary() and not get_active_item()
     except Item.DoesNotExist:
         overview = True
     return {
         'items': items,
+        'items_hidden': items_hidden,
         'overview': overview,
         'summary': is_summary()
         }
