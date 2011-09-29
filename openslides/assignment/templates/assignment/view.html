@@ -95,7 +95,7 @@
             <label>{{ field.label }}:</label>
             <nobr>{{ field }}
             {% if perms.participant.can_see_participant and perms.participant.can_manage_participant %}
-            <a href="{% url user_new %}"><img src="/static/images/icons/list-add-user.png" title="{% trans 'Add new participant' %}"></a>
+            <a href="{% url user_new %}" target="_blank"><img src="/static/images/icons/list-add-user.png" title="{% trans 'Add new participant' %}"></a>
             {% endif %}
             </nobr>
             {% endfor %}
