@@ -548,7 +548,11 @@ def get_assignment(assignment, story):
             # add result rows
             for candidate in results:
                 row = []
-                row.append(str(candidate[0][0]))
+                if candidate[0][1]:
+                    elected = "* "
+                else:
+                    elected = ""
+                row.append(elected+str(candidate[0][0]))
                 for votes in candidate[1]:
                     if type(votes) == type(list()):
                         tmp = "list"
@@ -594,6 +598,7 @@ def get_assignment(assignment, story):
     data.append([cell1a,cell1b])
     if table_votes:
         data.append([cell3a,table_votes])
+        data.append(['','* = '+_('elected')])
     else:
         data.append([cell2a,cell2b])
     data.append([Spacer(0,0.2*cm),''])
