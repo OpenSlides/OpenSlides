@@ -16,7 +16,7 @@ from django.contrib import messages
 from django.utils.translation import ugettext as _
 from utils.utils import template
 from utils.utils import template, permission_required
-from system.forms import SystemConfigForm, EventConfigForm, ApplicationConfigForm
+from system.forms import SystemConfigForm, EventConfigForm, ApplicationConfigForm, AssignmentConfigForm
 from system.api import config_get, config_set
 
 @permission_required('system.can_manage_system')
@@ -46,7 +46,8 @@ def get_general_config(request):
     if request.method == 'POST':
         form_event = EventConfigForm(request.POST, prefix='event')
         form_application = ApplicationConfigForm(request.POST, prefix='application')
-        if form_event.is_valid() and form_application.is_valid():
+        form_assignment = AssignmentConfigForm(request.POST, prefix='assignment')
+        if form_event.is_valid() and form_application.is_valid() and form_assignment.is_valid():
             config_set('event_name', form_event.cleaned_data['event_name'])
             config_set('event_description', form_event.cleaned_data['event_description'])
             config_set('event_date', form_event.cleaned_data['event_date'])
@@ -54,6 +55,10 @@ def get_general_config(request):
             config_set('event_organizer', form_event.cleaned_data['event_organizer'])
             config_set('application_min_supporters', form_application.cleaned_data['application_min_supporters'])
             config_set('application_preamble', form_application.cleaned_data['application_preamble'])
+            config_set('application_pdf_title', form_application.cleaned_data['application_pdf_title'])
+            config_set('application_pdf_preamble', form_application.cleaned_data['application_pdf_preamble'])
+            config_set('assignment_pdf_title', form_assignment.cleaned_data['assignment_pdf_title'])
+            config_set('assignment_pdf_preamble', form_assignment.cleaned_data['assignment_pdf_preamble'])
             messages.success(request, _('General settings successfully saved.'))
         else:
             messages.error(request, _('Please check the form for errors.'))
@@ -69,8 +74,15 @@ def get_general_config(request):
         form_application = ApplicationConfigForm(initial={
             'application_min_supporters': config_get('application_min_supporters'),
             'application_preamble': config_get('application_preamble'),
+            'application_pdf_title': config_get('application_pdf_title'),
+            'application_pdf_preamble': config_get('application_pdf_preamble'),
         }, prefix='application')
+        form_assignment = AssignmentConfigForm(initial={
+            'assignment_pdf_title': config_get('assignment_pdf_title'),
+            'assignment_pdf_preamble': config_get('assignment_pdf_preamble'),
+        }, prefix='assignment')
     return {
         'form_event': form_event,
         'form_application': form_application,
+        'form_assignment': form_assignment,
     }

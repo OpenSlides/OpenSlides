@@ -11,13 +11,16 @@
 """
 
 from django.db import models
+from django.utils.translation import ugettext as _
 
 DEFAULT_DATA  = {
     'event_name': 'OpenSlides',
     'event_description': 'Presentation and voting system',
     'application_min_supporters': 4,
     'application_preamble': 'Die Versammlung möge beschließen,',
-    'sysem_url': 'http://openslides:8000',
+    'application_pdf_title': _('Applications'),
+    'assignment_pdf_title': _('Elections'),
+    'system_url': 'http://127.0.0.1:8000',
 }
 
 class Config(models.Model):
