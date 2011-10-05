@@ -36,7 +36,7 @@ def get_overview(request):
         if sort in ['name','status']:
             query = query.order_by(sort)
     except KeyError:
-        pass
+        query = query.order_by('name')
     if 'reverse' in request.GET:
         query = query.reverse()
 

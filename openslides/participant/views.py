@@ -79,6 +79,8 @@ def get_overview(request):
             query = query.order_by(sortfilter['sort'][0])
         elif sortfilter['sort'][0] in ['group', 'type', 'committee']:
             query = query.order_by('profile__%s' % sortfilter['sort'][0])
+    else:
+        query = query.order_by('first_name')
     if 'reverse' in sortfilter:
         query = query.reverse()
 
