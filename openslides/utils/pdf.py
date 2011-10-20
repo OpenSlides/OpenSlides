@@ -555,13 +555,16 @@ def get_assignment(assignment, story):
                     elected = "* "
                 else:
                     elected = ""
-                row.append(elected+str(candidate[0][0]))
+                c = str(candidate[0][0]).split("(",1)
+                if len(c) > 1:
+                    row.append(elected+c[0]+"\n"+"("+c[1])
+                else:
+                    row.append(elected+str(candidate[0][0]))
                 for votes in candidate[1]:
                     if type(votes) == type(list()):
-                        tmp = "list"
-                        tmp = _("Yes")+": "+str(votes[0])+"\n"
-                        tmp += _("No")+": "+str(votes[1])+"\n"
-                        tmp += _("Abstention")+": "+str(votes[2])
+                        tmp = _("Y")+": "+str(votes[0])+"\n"
+                        tmp += _("N")+": "+str(votes[1])+"\n"
+                        tmp += _("A")+": "+str(votes[2])
                         row.append(tmp)
                     else:
                         row.append(str(votes))

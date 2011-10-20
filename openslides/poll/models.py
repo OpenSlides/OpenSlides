@@ -53,6 +53,10 @@ class Poll(models.Model):
         if self.votesinvalid == -2:
             return _('undocumented')
         elif self.votesinvalid:
+            if self.votescast > 0:
+                percentage = round(float(self.votesinvalid) / float(self.votescast) * 100,1)
+                invalid = "%s (%s %%)" % (str(self.votesinvalid), str(percentage))
+                return invalid
             return self.votesinvalid
         return '0'
 
@@ -144,6 +148,9 @@ class Option(models.Model):
         if self.voteyes == -2:
             return _('undocumented')
         if self.voteyes:
+            if self.poll.votescast > 0 and self.voteyes > 0:
+                percentage = round(float(self.voteyes) / float(self.poll.votescast) * 100,1)
+                return "%s (%s %%)" % (str(self.voteyes), str(percentage))
             return self.voteyes
         return '0'
 
@@ -154,6 +161,9 @@ class Option(models.Model):
         if self.voteno == -2:
             return _('undocumented')
         if self.voteno:
+            if self.poll.votescast > 0 and self.voteno > 0:
+                percentage = round(float(self.voteno) / float(self.poll.votescast) * 100,1)
+                return "%s (%s %%)" % (str(self.voteno), str(percentage))
             return self.voteno
         return '0'
 
@@ -164,6 +174,9 @@ class Option(models.Model):
         if self.voteundesided == -2:
             return _('undocumented')
         if self.voteundesided:
+            if self.poll.votescast > 0 and self.voteundesided > 0:
+                percentage = round(float(self.voteundesided) / float(self.poll.votescast) * 100,1)
+                return "%s (%s %%)" % (str(self.voteundesided), str(percentage))
             return self.voteundesided
         return '0'
 
