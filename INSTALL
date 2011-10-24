@@ -1,10 +1,15 @@
 Installation Instructions for OpenSlides
 ========================================
-2011-07-29
+
+Content
+-------
+I.  Installation on Windows (32/64bit)
+II. Installation on GNU/Linux and MacOSX
 
 
-Installation on Windows (32/64bit)
-----------------------------------
+
+I. Installation on Windows (32/64bit)
+-------------------------------------
 
   1. Install Python 2.7
 
@@ -53,13 +58,14 @@ Installation on Windows (32/64bit)
           (PIL-1.1.7.win-amd64-py2.7.exe) from
           http://www.lfd.uci.edu/~gohlke/pythonlibs/
        
-  5. Get OpenSlides source code (e.g. via mercurial checkout)
+  5. Get OpenSlides: 
        
-     a) Download OpenSlides as zip archive from http://openslides.org.
+     a) Download latest OpenSlides release from http://openslides.org.
         
         OR
 
-     b) Clone mercurial repository (anonymous checkout):
+     b) Clone development version from mercurial repository
+        (anonymous checkout):
        
         hg clone http://hg.openslides.org
 
@@ -69,7 +75,8 @@ Installation on Windows (32/64bit)
   6. Copy default.settings.py to settings.py 
      (in subdirectory 'openslides')
   
-  7. Create OpenSlides database (and follow on screen instruction):
+  7. Create OpenSlides database (and follow on screen instruction).
+     Go to the extracted OpenSlides root directory and enter:
 
        python manage.py syncdb
 
@@ -77,7 +84,10 @@ Installation on Windows (32/64bit)
   
   8. Run OpenSlides server:
 
-       python manage.py runserver [port or address:port]
+       python manage.py runserver 
+     
+     Optional: Add <port> or <address:port> to use server on custom
+     address/port.
   
   9. Open OpenSlides in your browser:
 
@@ -85,19 +95,20 @@ Installation on Windows (32/64bit)
 
 
 
-Installation on Linux and MacOSX
---------------------------------
+II. Installation on GNU/Linux and MacOSX
+----------------------------------------
 
-Make sure that you have python and virtualenv installed on your
+Make sure that you have installed python and virtualenv on your
 system.
 
-  1. Get OpenSlides source code 
+  1. Get OpenSlides: 
 
-     a) Download OpenSlides as zip archive from http://openslides.org.
+     a) Download latest OpenSlides release from http://openslides.org.
         
         OR
 
-     b) Clone mercurial repository (anonymous checkout):
+     b) Clone development version from mercurial repository (anonymous
+        checkout):
        
         hg clone http://hg.openslides.org
 
@@ -133,9 +144,10 @@ system.
  
   7. Copy default.settings.py to settings.py:
 
-        cp openslides/default.settings.py openslides/settings.py
+       cp openslides/default.settings.py openslides/settings.py
   
-  8. Create OpenSlides database (and follow on screen instruction):
+  8. Create OpenSlides database in the OpenSlides root directory
+     and follow on screen instruction:
 
        python manage.py syncdb
 
@@ -143,7 +155,10 @@ system.
   
   9. Run OpenSlides server:
 
-       python manage.py runserver [port or address:port]
+       python manage.py runserver
+     
+     Optional: Add <port> or <address:port> to use server on custom
+     address/port.
   
  10. Open OpenSlides in your browser:
 
