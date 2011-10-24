@@ -121,7 +121,7 @@ body {
     border-top:1px solid #443C3A;
     border-bottom:1px solid #B9A894;
     color:#B9A894;
-    padding:15px 20px 10px 50px;
+    padding:15px 20px 10px 5px;
     margin:0px;
     margin-bottom:0px;
     font-size: 16px;
@@ -140,7 +140,7 @@ body {
     color:#B9A894;
     display:block;
     font-size:11px;
-    padding:6px 20px;
+    padding:6px 20px 6px 2px;
     text-align:right;
     text-decoration:none;
 }
