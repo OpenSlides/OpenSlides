@@ -14,7 +14,7 @@
 import os
 
 SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 AUTH_PROFILE_MODULE = 'participant.Profile'
