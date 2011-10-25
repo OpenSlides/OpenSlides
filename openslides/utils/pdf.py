@@ -484,8 +484,23 @@ def print_application_poll(request, poll_id=None):
     cell.append(Paragraph(circle+_("Abstention"), stylesheet['Ballot_option']))
 
     data= []
-    for user in xrange(User.objects.count()/2):
+    number = 1
+    # get ballot papers config values
+    ballot_papers_selection = config_get("application_pdf_ballot_papers_selection")
+    ballot_papers_number = config_get("application_pdf_ballot_papers_number")
+    # set number of ballot papers
+    if ballot_papers_selection == "1":
+        number = User.objects.filter(profile__type__iexact="delegate").count()
+    if ballot_papers_selection == "2":
+        number = int(User.objects.count() - 1)
+    if ballot_papers_selection == "0":
+        number = int(ballot_papers_number)
+    # print ballot papers
+    for user in xrange(number/2):
         data.append([cell,cell])
+    rest = number % 2
+    if rest:
+        data.append([cell,''])
     t=Table(data, 10.5*cm, 7.42*cm)
     t.setStyle(TableStyle([ ('GRID', (0,0), (-1,-1), 0.25, colors.grey),
                             ('VALIGN', (0,0), (-1,-1), 'TOP'),
@@ -670,6 +685,11 @@ def print_assignment_poll(request, poll_id=None):
     cell.append(Paragraph(str(poll.ballot)+". "+_("ballot")+", "+str(len(options))+" "+ ungettext("candidate", "candidates", len(options))+", "+str(poll.assignment.posts)+" "+_("available posts"), stylesheet['Ballot_description']))
     cell.append(Spacer(0,0.4*cm))
 
+    data= []
+    # get ballot papers config values
+    number = 1
+    ballot_papers_selection = config_get("assignment_pdf_ballot_papers_selection")
+    ballot_papers_number = config_get("assignment_pdf_ballot_papers_number")
     if poll.optiondecision:
         for option in options:
             o = str(option).split("(",1)
@@ -679,9 +699,20 @@ def print_assignment_poll(request, poll_id=None):
             else:
                 cell.append(Paragraph("&nbsp;", stylesheet['Ballot_option_group']))
             cell.append(Paragraph(circle+_("Yes")+"&nbsp; &nbsp; &nbsp; "+circle+_("No")+"&nbsp; &nbsp; &nbsp; "+circle+_("Abstention"), stylesheet['Ballot_option_YNA']))
-        data= []
-        for user in xrange(User.objects.count()/2):
+        # set number of ballot papers
+        if ballot_papers_selection == "1":
+            number = User.objects.filter(profile__type__iexact="delegate").count()
+        if ballot_papers_selection == "2":
+            number = int(User.objects.count() - 1)
+        if ballot_papers_selection == "0":
+            number = int(ballot_papers_number)
+        # print ballot papers
+        for user in xrange(number/2):
             data.append([cell,cell])
+        rest = number % 2
+        if rest:
+            data.append([cell,''])
+        
         if len(options) <= 2:
             t=Table(data, 10.5*cm, 7.42*cm)
         elif len(options) <= 5:
@@ -696,9 +727,20 @@ def print_assignment_poll(request, poll_id=None):
                 cell.append(Paragraph("("+o[1], stylesheet['Ballot_option_group_right']))
             else:
                 cell.append(Paragraph("&nbsp;", stylesheet['Ballot_option_group_right']))
-        data= []
-        for user in xrange(User.objects.count()/2):
+        # set number of ballot papers
+        if ballot_papers_selection == "1":
+            number = User.objects.filter(profile__type__iexact="delegate").count()
+        if ballot_papers_selection == "2":
+            number = int(User.objects.count() - 1)
+        if ballot_papers_selection == "0":
+            number = int(ballot_papers_number)
+        # print ballot papers
+        for user in xrange(number/2):
             data.append([cell,cell])
+        rest = number % 2
+        if rest:
+            data.append([cell,''])
+        
         if len(options) <= 4:
             t=Table(data, 10.5*cm, 7.42*cm)
         elif len(options) <= 8:

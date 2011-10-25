@@ -48,15 +48,22 @@ def get_general_config(request):
         form_application = ApplicationConfigForm(request.POST, prefix='application')
         form_assignment = AssignmentConfigForm(request.POST, prefix='assignment')
         if form_event.is_valid() and form_application.is_valid() and form_assignment.is_valid():
+            # event form
             config_set('event_name', form_event.cleaned_data['event_name'])
             config_set('event_description', form_event.cleaned_data['event_description'])
             config_set('event_date', form_event.cleaned_data['event_date'])
             config_set('event_location', form_event.cleaned_data['event_location'])
             config_set('event_organizer', form_event.cleaned_data['event_organizer'])
+            # application form
             config_set('application_min_supporters', form_application.cleaned_data['application_min_supporters'])
             config_set('application_preamble', form_application.cleaned_data['application_preamble'])
+            config_set('application_pdf_ballot_papers_selection', form_application.cleaned_data['application_pdf_ballot_papers_selection'])
+            config_set('application_pdf_ballot_papers_number', form_application.cleaned_data['application_pdf_ballot_papers_number'])
             config_set('application_pdf_title', form_application.cleaned_data['application_pdf_title'])
             config_set('application_pdf_preamble', form_application.cleaned_data['application_pdf_preamble'])
+            # assignment form
+            config_set('assignment_pdf_ballot_papers_selection', form_assignment.cleaned_data['assignment_pdf_ballot_papers_selection'])
+            config_set('assignment_pdf_ballot_papers_number', form_assignment.cleaned_data['assignment_pdf_ballot_papers_number'])
             config_set('assignment_pdf_title', form_assignment.cleaned_data['assignment_pdf_title'])
             config_set('assignment_pdf_preamble', form_assignment.cleaned_data['assignment_pdf_preamble'])
             messages.success(request, _('General settings successfully saved.'))
@@ -74,10 +81,14 @@ def get_general_config(request):
         form_application = ApplicationConfigForm(initial={
             'application_min_supporters': config_get('application_min_supporters'),
             'application_preamble': config_get('application_preamble'),
+            'application_pdf_ballot_papers_selection': config_get('application_pdf_ballot_papers_selection'),
+            'application_pdf_ballot_papers_number': config_get('application_pdf_ballot_papers_number'),
             'application_pdf_title': config_get('application_pdf_title'),
             'application_pdf_preamble': config_get('application_pdf_preamble'),
         }, prefix='application')
         form_assignment = AssignmentConfigForm(initial={
+            'assignment_pdf_ballot_papers_selection': config_get('assignment_pdf_ballot_papers_selection'),
+            'assignment_pdf_ballot_papers_number': config_get('assignment_pdf_ballot_papers_number'),
             'assignment_pdf_title': config_get('assignment_pdf_title'),
             'assignment_pdf_preamble': config_get('assignment_pdf_preamble'),
         }, prefix='assignment')
