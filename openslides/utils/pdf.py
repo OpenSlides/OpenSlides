@@ -436,7 +436,8 @@ def print_application(request, application_id=None):
         title = config_get("application_pdf_title")
         story.append(Paragraph(title, stylesheet['Heading1']))
         preamble = config_get("application_pdf_preamble")
-        story.append(Paragraph("%s" % preamble.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+        if preamble:
+            story.append(Paragraph("%s" % preamble.replace('\r\n','<br/>'), stylesheet['Paragraph']))
         story.append(Spacer(0,0.75*cm))
         # List of applications
         for application in Application.objects.order_by('number'):
@@ -648,7 +649,8 @@ def print_assignment(request, assignment_id=None):
         title = config_get("assignment_pdf_title")
         story.append(Paragraph(title, stylesheet['Heading1']))
         preamble = config_get("assignment_pdf_preamble")
-        story.append(Paragraph("%s" % preamble.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+        if preamble:
+            story.append(Paragraph("%s" % preamble.replace('\r\n','<br/>'), stylesheet['Paragraph']))
         story.append(Spacer(0,0.75*cm))
         # List of assignments
         for assignment in Assignment.objects.order_by('name'):
