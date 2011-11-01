@@ -197,7 +197,7 @@ def edit(request, application_id=None):
         'application': application,
     }
 
-@permission_required('application.can_manage_application')
+@login_required
 @template('application/view.html')
 def delete(request, application_id):
     """
