@@ -38,7 +38,7 @@ class ApplicationConfigForm(Form):
 
     application_min_supporters = IntegerField(widget=TextInput(attrs={'class':'small-input'}),label=_("Number of (minimum) required supporters for a application"),initial=4, min_value=0, max_value=8)
     application_preamble = CharField(widget=TextInput(), required=False, label=_("Application preamble"))
-    application_pdf_ballot_papers_selection = ChoiceField(widget=Select(), required=False, label=_("Number of ballot papers (selection)"), choices=[("1", _("Number of all delegates")),("2", "Number of all participants"),("0", "Use the following custum number")])
+    application_pdf_ballot_papers_selection = ChoiceField(widget=Select(), required=False, label=_("Number of ballot papers (selection)"), choices=[("1", _("Number of all delegates")),("2", _("Number of all participants")),("0", _("Use the following custum number"))])
     application_pdf_ballot_papers_number = IntegerField(widget=TextInput(attrs={'class':'small-input'}), required=False, min_value=1, label=_("Custom number of ballot papers"))
     application_pdf_title = CharField(widget=TextInput(), required=False, label=_("Title for PDF document (all applications)"))
     application_pdf_preamble = CharField(widget=Textarea(), required=False, label=_("Preamble text for PDF document (all applications)"))
@@ -49,7 +49,7 @@ class AssignmentConfigForm(Form):
 
     assignment_pdf_title = CharField(widget=TextInput(), required=False, label=_("Title for PDF document (all elections)"))
     assignment_pdf_preamble = CharField(widget=Textarea(), required=False, label=_("Preamble text for PDF document (all elections)"))
-    assignment_pdf_ballot_papers_selection = ChoiceField(widget=Select(), required=False, label=_("Number of ballot papers (selection)"), choices=[("1", _("Number of all delegates")),("2", "Number of all participants"),("0", "Use the following custum number")])
+    assignment_pdf_ballot_papers_selection = ChoiceField(widget=Select(), required=False, label=_("Number of ballot papers (selection)"), choices=[("1", _("Number of all delegates")),("2", _("Number of all participants")),("0", _("Use the following custum number"))])
     assignment_pdf_ballot_papers_number = IntegerField(widget=TextInput(attrs={'class':'small-input'}), required=False, min_value=1, label=_("Custom number of ballot papers"))
 
     
