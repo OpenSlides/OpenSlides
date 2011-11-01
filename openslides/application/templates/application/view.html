@@ -161,6 +161,13 @@
         </a>
     {% endif %}
 
+    {% if "activateitem" in actions %}
+        <h4></h4>
+        <a href='{% url application_activate_item application.id %}'>
+            <button><span class="icon projector">{%trans 'Show agenda item' %}</span></button>
+        </a>
+    {% endif %}
+
     {% if "acc" in actions or "rej" in actions %}
         <h4>{% trans "Result after vote" %}:</h4>
         {% if "acc" in actions %}

@@ -59,6 +59,9 @@ urlpatterns = patterns('application.views',
     url(r'^application/(?P<application_id>\d+)/unsupport$', 'unsupport', \
         name='application_unsupport'),
 
+    url(r'^application/(?P<application_id>\d+)/set_active/$', 'set_active',
+        name='application_activate_item'),
+
     url(r'^application/(?P<application_id>\d+)/gen_poll$', 'gen_poll', \
         name='application_gen_poll'),
 

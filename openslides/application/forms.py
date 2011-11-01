@@ -49,7 +49,7 @@ class ApplicationManagerForm(ModelForm):
 
     users = User.objects.all().exclude(profile=None).order_by("first_name")
     submitter = UserModelChoiceField(queryset=users, label=_("Submitter"))
-    supporter = UserModelMultipleChoiceField(queryset=users, label=_("Supporters"))
+    supporter = UserModelMultipleChoiceField(queryset=users, required=False, label=_("Supporters"))
 
     class Meta:
         model = Application

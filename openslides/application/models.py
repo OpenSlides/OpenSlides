@@ -39,6 +39,7 @@ class Application(models.Model):
         # support
         # unsupport
         # createitem
+        # activateitem
         # genpoll
     )
 
@@ -355,8 +356,11 @@ class Application(models.Model):
                 actions.append("permitversion")
                 actions.append("rejectversion")
 
-        if self.number and not self.itemapplication_set.all():
-            actions.append("createitem")
+        if self.number:
+            if self.itemapplication_set.all():
+                actions.append("activateitem")
+            else:
+                actions.append("createitem")
 
         return actions
 

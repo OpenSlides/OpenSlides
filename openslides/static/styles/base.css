@@ -368,6 +368,9 @@ button .undo{
 button .item{
     background:url(../images/icons/view-list-details.png) no-repeat 0px 0px;
 }
+button .projector{
+    background:url(../images/icons/video-projector.png) no-repeat 0px 0px;
+}
 button .accept{
     background:url(../images/icons/task-complete.png) no-repeat 0px 0px;
 }
