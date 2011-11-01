@@ -16,6 +16,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 
+from openslides.agenda.models import Item
 from poll.models import Poll, Option
 from poll.forms import OptionResultForm, PollForm
 from assignment.models import Assignment
@@ -181,6 +182,12 @@ def delother(request, assignment_id, profile_id):
                         % profile, reverse('assignment_delother', args=[assignment_id, profile_id]))
     return redirect(reverse('assignment_view', args=assignment_id))
 
+
+@permission_required('assignment.can_manage_application')
+def set_active(request, assignment_id):
+    item = Item.objects.get(itemassignment__assignment__id=assignment_id)
+    item.set_active(False)
+    return redirect(reverse('assignment_view', args=[assignment_id]))
 
 @permission_required('assignment.can_manage_assignment')
 def gen_poll(request, assignment_id):

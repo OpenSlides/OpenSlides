@@ -320,15 +320,11 @@ def unsupport(request, application_id):
 
 
 @permission_required('application.can_manage_application')
-@template('application/view.html')
 def set_active(request, application_id):
-    print application_id
     item = Item.objects.get(itemapplication__application__id=application_id)
-    print item.id
     item.set_active(False)
-#    if request.is_ajax():
-#        return ajax_request({'active': item.id})
     return redirect(reverse('application_view', args=[application_id]))
+
 
 @permission_required('application.can_manage_application')
 @template('application/view.html')

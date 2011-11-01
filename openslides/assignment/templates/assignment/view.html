@@ -41,6 +41,13 @@
         <span class="icon item">{%trans 'New agenda item' %}</span>
         </button>
     </a>
+    {% else %}
+    <h4></h4>
+    <a href='{% url assignment_activate_item assignment.id %}'>
+        <button>
+        <span class="icon projector">{%trans 'Show agenda item' %}</span>
+        </button>
+    </a>
     {% endif %}
     </div>
     {% endif %}

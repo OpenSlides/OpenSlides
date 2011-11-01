@@ -40,6 +40,9 @@ urlpatterns = patterns('assignment.views',
     url(r'^assignment/(?P<assignment_id>\d+)/delother/(?P<profile_id>\d+)$', 'delother', \
         name='assignment_delother'),
 
+    url(r'^assignment/(?P<assignment_id>\d+)/set_active/$', 'set_active',
+        name='assignment_activate_item'),
+
     url(r'^assignment/poll/(?P<poll_id>\d+)/print$', 'print_assignment_poll', \
         name='print_assignment_poll'),
 
