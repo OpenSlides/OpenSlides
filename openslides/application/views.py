@@ -75,7 +75,7 @@ def view(request, application_id, newest=False):
         version = application.public_version
     revisions = application.versions
     actions = application.get_allowed_actions(user=request.user)
- 
+
     return {
         'application': application,
         'revisions': revisions,
