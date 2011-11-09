@@ -10,7 +10,6 @@
     <script type="text/javascript" src="/static/javascript/jquery.cookie.js"></script>
     <script type="text/javascript" src="/static/javascript/jquery.tmpl.js"></script>
     <script type="text/javascript" src="/static/javascript/tabledrag.js"></script>
-    <script type="text/javascript" src="/static/javascript/knockout-1.2.1.js"></script>
     <script type="text/javascript" src="/static/javascript/agenda.js"></script>
 
     <script type="text/javascript">
@@ -110,7 +109,6 @@
                 {% if item.parent.active and summary %} activesummarychildline{% endif %}
                 {% if perms.agenda.can_manage_agenda %} inactiveline{% endif %}
                 {% endif %}">
-                <script type="text/javascript">$(function(){ViewModel.slides.push(new Slide({{ item.json|safe }}))});</script>
                 {% if perms.agenda.can_manage_agenda %}
                 <td class="select">
                     <a id="activate_link_{{ item.id }}" class="activate_link" href="{% url item_activate item.id %}">
@@ -204,7 +202,6 @@
                 {% if item.parent.active and summary %} activesummarychildline{% endif %}
                 {% if perms.agenda.can_manage_agenda %} inactiveline{% endif %}
                 {% endif %}">
-                <script type="text/javascript">$(function(){ViewModel.slides.push(new Slide({{ item.json|safe }}))});</script>
                 <td class="select">
                     <a id="activate_link_{{ item.id }}" class="activate_link" href="{% url item_activate item.id %}">
                     <div></div>

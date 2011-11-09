@@ -1,27 +1,3 @@
-var Slide = function (json) {
-    this.id = json.id;
-    this.active = ko.observable(json.active);
-};
-
-
-var ViewModel = {
-    slides: []
-};
-
-function getSlideByID(id) {
-    a = ViewModel.slides;
-    for (var i = 0; i < a.length; i++) {
-        if (a[i].id == id) {
-            return a[i];
-        }
-    }
-    return false;
-}
-
-function renderSlide(slide) {
-    return
-}
-
 function hideLine(object) {
     if (object == []) {
         return;
@@ -32,7 +8,6 @@ function hideLine(object) {
         hideLine($(this));
     });
 }
-
 
 function hideClosedSlides(hide) {
     if (hide) {
@@ -51,7 +26,6 @@ function hideClosedSlides(hide) {
     }
     return false;
 }
-
 
 $(function() {
     $('.activate_link').click(function(event) {
@@ -146,6 +120,5 @@ $(function() {
                 link.attr('href', data.link);
             }
         });
-    });    
-    ko.applyBindings(ViewModel);
+    });
 });
