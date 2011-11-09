@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-09 20:57+0100\n"
+"POT-Creation-Date: 2011-11-09 22:57+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,7 +25,7 @@ msgstr "Deutsch"
 msgid "English"
 msgstr "Englisch"
 
-#: agenda/api.py:62 agenda/templates/agenda/overview.html:47
+#: agenda/api.py:62 agenda/templates/agenda/overview.html:45
 #: agenda/templates/beamer/ItemApplication.html:30
 #: agenda/templates/beamer/ItemAssignment.html:67
 #: agenda/templates/beamer/ItemAssignment.html:71
@@ -42,7 +42,7 @@ msgstr "Ja"
 msgid "Yes, with all child items."
 msgstr "Ja, mit allen Kindelementen."
 
-#: agenda/api.py:62 agenda/templates/agenda/overview.html:48
+#: agenda/api.py:62 agenda/templates/agenda/overview.html:46
 #: agenda/templates/beamer/ItemApplication.html:31
 #: agenda/templates/beamer/ItemAssignment.html:68
 #: application/templates/application/poll_view.html:32
@@ -72,7 +72,7 @@ msgstr "Titel"
 msgid "Closed"
 msgstr "Abgeschlossen"
 
-#: agenda/models.py:37 agenda/templates/agenda/overview.html:71
+#: agenda/models.py:37 agenda/templates/agenda/overview.html:83
 msgid "Weight"
 msgstr "Gewichtung"
 
@@ -90,18 +90,18 @@ msgstr "Kein Formular für Eintrag %s"
 msgid "Text"
 msgstr "Text"
 
-#: agenda/models.py:199 agenda/templates/agenda/overview.html:129
-#: agenda/templates/agenda/overview.html:209
+#: agenda/models.py:199 agenda/templates/agenda/overview.html:140
+#: agenda/templates/agenda/overview.html:219
 #: application/templates/application/edit.html:2
 #: application/templates/application/view.html:2
 #: application/templates/application/view.html:220 poll/models.py:23
-#: poll/models.py:138 system/templates/system/general.html:13 utils/pdf.py:458
+#: poll/models.py:138 system/templates/system/general.html:18 utils/pdf.py:458
 #: utils/pdf.py:470
 msgid "Application"
 msgstr "Antrag"
 
-#: agenda/models.py:206 agenda/templates/agenda/overview.html:142
-#: agenda/templates/agenda/overview.html:220
+#: agenda/models.py:206 agenda/templates/agenda/overview.html:153
+#: agenda/templates/agenda/overview.html:230
 #: agenda/templates/beamer/ItemAssignment.html:8
 #: assignment/templates/assignment/edit.html:2 poll/models.py:24
 #: utils/pdf.py:534 utils/pdf.py:675 utils/pdf.py:684
@@ -115,47 +115,48 @@ msgstr "Abstimmung"
 
 #: agenda/views.py:77 agenda/templates/agenda/base_agenda.html:7
 #: agenda/templates/agenda/overview.html:3
-#: agenda/templates/agenda/overview.html:38
-#: agenda/templates/agenda/overview.html:84
+#: agenda/templates/agenda/overview.html:36
+#: agenda/templates/agenda/overview.html:96
 #: agenda/templates/beamer/overview.html:3
-#: agenda/templates/beamer/overview.html:10 templates/base.html:37
+#: agenda/templates/beamer/overview.html:10
+#: system/templates/system/general.html:13 templates/base.html:37
 #: utils/pdf.py:227 utils/pdf.py:232
 msgid "Agenda"
 msgstr "Tagesordnung"
 
-#: agenda/views.py:189 agenda/views.py:207 agenda/views.py:230
+#: agenda/views.py:216 agenda/views.py:234 agenda/views.py:257
 #, python-format
 msgid "Item ID %d does not exist."
 msgstr "Eintrag %d existiert nicht."
 
-#: agenda/views.py:244
+#: agenda/views.py:271
 msgid "New item was successfully created."
 msgstr "Neuer Eintrag erfolgreich angelegt."
 
-#: agenda/views.py:246
+#: agenda/views.py:273
 msgid "Agenda item created"
 msgstr "Tagesordnungseintrag angelegt"
 
-#: agenda/views.py:248
+#: agenda/views.py:275
 msgid "Item was successfully modified."
 msgstr "Eintrag wurde erfolgreich geändert."
 
-#: agenda/views.py:250
+#: agenda/views.py:277
 msgid "Agenda item modified"
 msgstr "Tagesordnungseintrag geändert"
 
-#: agenda/views.py:256 application/views.py:532 participant/views.py:141
+#: agenda/views.py:283 application/views.py:526 participant/views.py:141
 #: participant/views.py:227 participant/views.py:256 participant/views.py:313
-#: system/views.py:32 system/views.py:71
+#: system/views.py:32 system/views.py:74
 msgid "Please check the form for errors."
 msgstr "Bitte kontrollieren Sie das Formular nach Fehlern."
 
-#: agenda/views.py:290
+#: agenda/views.py:317
 #, python-format
 msgid "Item <b>%s</b> and his children were successfully deleted."
 msgstr "Eintrag <b>%s</b> und seine Kindelemente wurde erfolgreich gelöscht."
 
-#: agenda/views.py:296
+#: agenda/views.py:323
 #, python-format
 msgid "Item <b>%s</b> was successfully deleted."
 msgstr "Eintrag <b>%s</b> wurde erfolgreich gelöscht."
@@ -174,13 +175,13 @@ msgid "Projector view"
 msgstr "Beamer-Ansicht"
 
 #: agenda/templates/agenda/edit.html:2
-#: agenda/templates/agenda/overview.html:65
+#: agenda/templates/agenda/overview.html:77
 msgid "Item"
 msgstr "Eintrag"
 
 #: agenda/templates/agenda/edit.html:6
-#: agenda/templates/agenda/overview.html:157
-#: agenda/templates/agenda/overview.html:228
+#: agenda/templates/agenda/overview.html:168
+#: agenda/templates/agenda/overview.html:238
 msgid "Edit item"
 msgstr "Eintrag bearbeiten"
 
@@ -208,7 +209,7 @@ msgstr "Wahleintrag"
 #: participant/templates/participant/edit.html:18
 #: participant/templates/participant/group_edit.html:14
 #: participant/templates/participant/settings.html:15
-#: system/templates/system/general.html:23
+#: system/templates/system/general.html:28
 #: system/templates/system/system.html:11
 msgid "Save"
 msgstr "Speichern"
@@ -234,89 +235,129 @@ msgstr "Übernehmen"
 #: participant/templates/participant/group_edit.html:21
 #: participant/templates/participant/import.html:16
 #: participant/templates/participant/settings.html:19
-#: system/templates/system/general.html:27
+#: system/templates/system/general.html:32
 #: system/templates/system/system.html:15
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: agenda/templates/agenda/overview.html:40
+#: agenda/templates/agenda/overview.html:38
 msgid "Go to hidden items"
 msgstr "Zu den versteckten Einträgen"
 
-#: agenda/templates/agenda/overview.html:46
+#: agenda/templates/agenda/overview.html:44
 msgid "Do you want to save the changed order of agenda items?"
 msgstr "Möchten Sie die geänderte Reihenfolge der Einträge speichern?"
 
-#: agenda/templates/agenda/overview.html:52
+#: agenda/templates/agenda/overview.html:54
+msgid "Countdown"
+msgstr "Countdown"
+
+#: agenda/templates/agenda/overview.html:54
+msgid "sec"
+msgstr "s"
+
+#: agenda/templates/agenda/overview.html:55
+msgid "Reset countdown"
+msgstr "Countdown zurücksetzen"
+
+#: agenda/templates/agenda/overview.html:56
+msgid "Start countdown"
+msgstr "Countdown starten"
+
+#: agenda/templates/agenda/overview.html:57
+msgid "Stop countdown"
+msgstr "Countdown stoppen"
+
+#: agenda/templates/agenda/overview.html:61
 msgid "Adjust projector view"
 msgstr "Beamer-Ansicht anpassen"
 
-#: agenda/templates/agenda/overview.html:61
+#: agenda/templates/agenda/overview.html:62
+msgid "Zoom in"
+msgstr "Vergrößern"
+
+#: agenda/templates/agenda/overview.html:63
+msgid "Zoom out"
+msgstr "Verkleinern"
+
+#: agenda/templates/agenda/overview.html:64
+msgid "Scroll text up"
+msgstr "Text nach oben scrollen"
+
+#: agenda/templates/agenda/overview.html:65
+msgid "Scroll text down"
+msgstr "Text nach unten scrollen"
+
+#: agenda/templates/agenda/overview.html:66
+msgid "Reset projector view"
+msgstr "Beamer-Ansicht zurücksetzen"
+
+#: agenda/templates/agenda/overview.html:73
 msgid "Projector"
 msgstr "Beamer"
 
-#: agenda/templates/agenda/overview.html:63
+#: agenda/templates/agenda/overview.html:75
 msgid "Done"
 msgstr "Erledigt"
 
-#: agenda/templates/agenda/overview.html:67
+#: agenda/templates/agenda/overview.html:79
 #: participant/templates/participant/overview.html:24
 #: participant/templates/participant/overview.html:45 utils/pdf.py:263
 msgid "Type"
 msgstr "Typ"
 
-#: agenda/templates/agenda/overview.html:69
+#: agenda/templates/agenda/overview.html:81
 #: assignment/templates/assignment/overview.html:25
 #: participant/templates/participant/overview.html:51
 msgid "Actions"
 msgstr "Aktionen"
 
-#: agenda/templates/agenda/overview.html:84
+#: agenda/templates/agenda/overview.html:96
 msgid "items"
 msgstr "Einträge"
 
-#: agenda/templates/agenda/overview.html:90
+#: agenda/templates/agenda/overview.html:102
 msgid "Print agenda"
 msgstr "Tagesordnung drucken"
 
-#: agenda/templates/agenda/overview.html:110
+#: agenda/templates/agenda/overview.html:121
 msgid "Item closed"
 msgstr "Eintrag erledigt"
 
-#: agenda/templates/agenda/overview.html:134
-#: agenda/templates/agenda/overview.html:213
+#: agenda/templates/agenda/overview.html:145
+#: agenda/templates/agenda/overview.html:223
 msgid "Poll of Application"
 msgstr "Antragsabstimmung"
 
-#: agenda/templates/agenda/overview.html:137
-#: agenda/templates/agenda/overview.html:216
+#: agenda/templates/agenda/overview.html:148
+#: agenda/templates/agenda/overview.html:226
 msgid "Poll of Election"
 msgstr "Wahlen"
 
-#: agenda/templates/agenda/overview.html:149
+#: agenda/templates/agenda/overview.html:160
 msgid "hidden"
 msgstr "versteckt"
 
-#: agenda/templates/agenda/overview.html:154
-#: agenda/templates/agenda/overview.html:227
+#: agenda/templates/agenda/overview.html:165
+#: agenda/templates/agenda/overview.html:237
 msgid "Show projector preview"
 msgstr "Beamer-Vorschau anzeigen"
 
-#: agenda/templates/agenda/overview.html:158
-#: agenda/templates/agenda/overview.html:229
+#: agenda/templates/agenda/overview.html:169
+#: agenda/templates/agenda/overview.html:239
 msgid "Delete item"
 msgstr "Eintrag löschen"
 
-#: agenda/templates/agenda/overview.html:165
-#: agenda/templates/agenda/overview.html:234
+#: agenda/templates/agenda/overview.html:176
+#: agenda/templates/agenda/overview.html:244
 msgid "Select item overview"
 msgstr "Wähle Eintragsübersicht"
 
-#: agenda/templates/agenda/overview.html:186
+#: agenda/templates/agenda/overview.html:197
 msgid "Hidden items:"
 msgstr "Versteckte Einträge"
 
-#: agenda/templates/agenda/overview.html:251
+#: agenda/templates/agenda/overview.html:261
 msgid "No items available."
 msgstr "Keine Einträge vorhanden."
 
@@ -686,45 +727,45 @@ msgstr "FEHLER beim Zurückweisen der Version."
 msgid "Do you really want to reject version <b>%s</b>?"
 msgstr "Soll Version <b>%s</b> wirklich zurückgewiesen werden?"
 
-#: application/views.py:441 participant/views.py:272
+#: application/views.py:440 participant/views.py:272
 msgid ""
 "The import function is available for the superuser (without user profile) "
 "only."
 msgstr ""
 "Die Importfunktion ist nur für den 'superuser' (ohne Nutzerprofil) verfügbar."
 
-#: application/views.py:458 application/views.py:462 application/views.py:468
-#: application/views.py:471
+#: application/views.py:460 application/views.py:464 application/views.py:470
+#: application/views.py:473
 #, python-format
 msgid "Ignoring malformed line %d in import file."
 msgstr "Fehlerhafte Zeile %d der Quelldatei wurde ignoriert."
 
-#: application/views.py:520
+#: application/views.py:514
 #, python-format
 msgid "%d application was successfully imported."
 msgid_plural "%d applications were successfully imported."
 msgstr[0] "%d Antrag wurde erfolgreich importiert."
 msgstr[1] "%d Anträge wurden erfolgreich importiert."
 
-#: application/views.py:523
+#: application/views.py:517
 #, python-format
 msgid "%d application was successfully modified."
 msgid_plural "%d applications were successfully modified."
 msgstr[0] "%d Antrag wurde erfolgreich geändert."
 msgstr[1] "%d Anträge wurden erfolgreich geändert."
 
-#: application/views.py:526
+#: application/views.py:520
 #, python-format
 msgid "%d new user was added."
 msgid_plural "%d new users were added."
 msgstr[0] "%d neuer Nutzer wurde erstellt."
 msgstr[1] "%d neue Nutzer wurden erstellt."
 
-#: application/views.py:530
+#: application/views.py:524
 msgid "Import aborted because of severe errors in the input file."
 msgstr "Import auf Grund von schweren Fehlern in der Quelldatei abgebrochen."
 
-#: application/views.py:534
+#: application/views.py:528
 msgid ""
 "Attention: Existing applications will be modified if you import new "
 "applications with the same number."
@@ -732,7 +773,7 @@ msgstr ""
 "Achtung: Existierende Anträge werden geändert wenn Sie neue Anträge mit "
 "identischer Nummer importieren."
 
-#: application/views.py:535
+#: application/views.py:529
 msgid ""
 "Attention: Importing an application without a number multiple times will "
 "create duplicates."
@@ -743,7 +784,7 @@ msgstr ""
 #: application/templates/application/base_application.html:6
 #: application/templates/application/overview.html:2
 #: application/templates/application/overview.html:6
-#: application/templates/application/overview.html:26 system/models.py:21
+#: application/templates/application/overview.html:26 system/models.py:22
 #: templates/base.html:41 utils/pdf.py:429
 msgid "Applications"
 msgstr "Anträge"
@@ -791,7 +832,7 @@ msgstr ""
 #: application/templates/application/import.html:12
 #: participant/templates/participant/import.html:12
 msgid "Import"
-msgstr "Importiern"
+msgstr "Importieren"
 
 #: application/templates/application/overview.html:8
 #: assignment/templates/assignment/overview.html:8
@@ -948,9 +989,8 @@ msgstr "Neuer Tagesordnungseintrag"
 
 #: application/templates/application/view.html:167
 #: assignment/templates/assignment/view.html:48
-#, fuzzy
 msgid "Show agenda item"
-msgstr "Neuer Tagesordnungseintrag"
+msgstr "Zeige Tagesordnungseintrag"
 
 #: application/templates/application/view.html:172
 msgid "Result after vote"
@@ -1153,8 +1193,8 @@ msgstr "gewählt"
 #: assignment/templates/assignment/base_assignment.html:11
 #: assignment/templates/assignment/overview.html:2
 #: assignment/templates/assignment/overview.html:5
-#: assignment/templates/assignment/overview.html:21 system/models.py:22
-#: system/templates/system/general.html:18 templates/base.html:45
+#: assignment/templates/assignment/overview.html:21 system/models.py:23
+#: system/templates/system/general.html:23 templates/base.html:45
 #: utils/pdf.py:642
 msgid "Elections"
 msgstr "Wahlen"
@@ -1433,6 +1473,7 @@ msgstr "Neue Benutzergruppe"
 
 #: participant/templates/participant/base_participant.html:18
 #: participant/templates/participant/import.html:2
+#: participant/templates/participant/import.html:5
 msgid "Import participants"
 msgstr "Teilnehmer/innen importieren"
 
@@ -1617,46 +1658,50 @@ msgid "Event organizer"
 msgstr "Veranstalter"
 
 #: system/forms.py:39
+msgid "Countdown (in seconds)"
+msgstr "Countdown (in Sekunden)"
+
+#: system/forms.py:45
 msgid "Number of (minimum) required supporters for a application"
 msgstr "Mindestanzahl erforderlicher Unterstützer/innen für einen Antrag"
 
-#: system/forms.py:40
+#: system/forms.py:46
 msgid "Application preamble"
 msgstr "Antragseinleitung"
 
-#: system/forms.py:41 system/forms.py:52
+#: system/forms.py:47 system/forms.py:58
 msgid "Number of ballot papers (selection)"
 msgstr "Anzahl der Wahlscheine (Vorauswahl)"
 
-#: system/forms.py:41 system/forms.py:52
+#: system/forms.py:47 system/forms.py:58
 msgid "Number of all delegates"
 msgstr "Anzahl aller Delegierten"
 
-#: system/forms.py:41 system/forms.py:52
+#: system/forms.py:47 system/forms.py:58
 msgid "Number of all participants"
 msgstr "Anzahl aller Teilnehmer/innen"
 
-#: system/forms.py:41 system/forms.py:52
+#: system/forms.py:47 system/forms.py:58
 msgid "Use the following custum number"
 msgstr "Verwende die folgende benutzerdefinierte Anzahl"
 
-#: system/forms.py:42 system/forms.py:53
+#: system/forms.py:48 system/forms.py:59
 msgid "Custom number of ballot papers"
 msgstr "Benutzerdefinierte Anzahl von Wahlscheinen"
 
-#: system/forms.py:43
+#: system/forms.py:49
 msgid "Title for PDF document (all applications)"
 msgstr "Titel für PDF-Dokuemt (alle Anträge)"
 
-#: system/forms.py:44
+#: system/forms.py:50
 msgid "Preamble text for PDF document (all applications)"
 msgstr "Einleitungstext für PDF-Dokument (alle Anträge)"
 
-#: system/forms.py:50
+#: system/forms.py:56
 msgid "Title for PDF document (all elections)"
 msgstr "Titel für PDF-Dokument (alle Wahlen)"
 
-#: system/forms.py:51
+#: system/forms.py:57
 msgid "Preamble text for PDF document (all elections)"
 msgstr "Einleitungstext für PDF-Dokument (alle Wahlen) "
 
@@ -1664,7 +1709,7 @@ msgstr "Einleitungstext für PDF-Dokument (alle Wahlen) "
 msgid "System settings successfully saved."
 msgstr "Systemeinstellungen erfolgreich gespeichert."
 
-#: system/views.py:69
+#: system/views.py:72
 msgid "General settings successfully saved."
 msgstr "Allgemeine Einstellungen erfolgreich gespeichert."
 
@@ -1783,6 +1828,3 @@ msgstr "verfügbare Posten"
 #: utils/utils.py:75
 msgid "Sorry, you have no rights to see this page."
 msgstr "Bedaure, Sie haben keine Berechtigung diese Seite zu sehen."
-
-#~ msgid "Participants Import"
-#~ msgstr "Teilnehmer/innen importieren"
