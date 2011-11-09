@@ -159,7 +159,7 @@ class Application(models.Model):
         else:
             return 0
 
-    def save(self, user=None, nonewversion=False):
+    def save(self, user=None, nonewversion=False, trivial_change=False):
         """
         Save the Application, and create a new AVersion if necessary
         """
@@ -173,6 +173,14 @@ class Application(models.Model):
             and last_version.reason == self.reason):
                 return  # No changes
         try:
+            if trivial_change and last_version is not None:
+                last_version.text = self.text
+                last_version.title = self.title
+                last_version.reason = self.reason
+                last_version.save()
+                self.writelog(_("Version %s modified") % last_version.aid, user)
+                return # Done
+
             if self.title != "":
                 version = AVersion(title=getattr(self, 'title', ''),
                            text=getattr(self, 'text', ''),

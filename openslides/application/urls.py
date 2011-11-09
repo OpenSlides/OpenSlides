@@ -25,6 +25,9 @@ urlpatterns = patterns('application.views',
     url(r'^application/new$', 'edit', \
         name='application_new'),
 
+    url(r'^application/import$', 'application_import', \
+        name='application_import'),
+
     url(r'^application/(?P<application_id>\d+)/edit$', 'edit', \
         name='application_edit'),
 

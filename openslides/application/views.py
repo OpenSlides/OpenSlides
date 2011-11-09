@@ -10,16 +10,22 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+import csv
+
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User, Group
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
+from django.utils.translation import ungettext
+from django.db import transaction
 
 from openslides.agenda.models import Item
 from openslides.application.models import Application, AVersion
 from openslides.application.forms import ApplicationForm, \
-                                         ApplicationManagerForm
+                                         ApplicationManagerForm, \
+                                         ApplicationImportForm
 from openslides.participant.models import Profile
 from openslides.poll.models import Poll
 from openslides.poll.forms import OptionResultForm, PollForm
@@ -28,6 +34,7 @@ from openslides.utils.utils import template, permission_required, \
 from openslides.utils.pdf import print_application, print_application_poll
 from openslides.system.api import config_get
 
+from openslides.participant.api import gen_username
 
 @permission_required('application.can_see_application')
 @template('application/overview.html')
@@ -135,7 +142,7 @@ def edit(request, application_id=None):
             application.title = dataform.cleaned_data['title']
             application.text = dataform.cleaned_data['text']
             application.reason = dataform.cleaned_data['reason']
-            application.save(request.user)
+            application.save(request.user, trivial_change=dataform.cleaned_data['trivial_change'])
             if is_manager:
                 # log added supporters
                 supporters_added = []
@@ -424,4 +431,105 @@ def reject_version(request, aversion_id):
     else:
         gen_confirm_form(request, _('Do you really want to reject version <b>%s</b>?') % aversion.aid, reverse('application_version_reject', args=[aversion.id]))
     return redirect(reverse('application_view', args=[application.id]))
+
+@permission_required('application.can_manage_applications')
+@template('application/import.html')
+def application_import(request):
+    try:
+        request.user.profile
+        messages.error(request, _('The import function is available for the superuser (without user profile) only.'))
+        return redirect(reverse('application_overview'))
+    except Profile.DoesNotExist:
+        pass
+
+    if request.method == 'POST':
+        form = ApplicationImportForm(request.POST, request.FILES)
+        if form.is_valid():
+            try:
+                users_generated = 0
+                applications_generated = 0
+                applications_modified = 0
+                with transaction.commit_on_success():
+                    for (lno, line) in enumerate(csv.reader(request.FILES['csvfile'])):
+                        # basic input verification
+                        if lno < 1:
+                            continue
+                        try:
+                            (number, title, text, reason, first_name, last_name) = line[:6]
+                        except ValueError:
+                            messages.error(request, _('Ignoring malformed line %d in import file.') % (lno + 1))
+                            continue
+                        form = ApplicationForm({ 'title':title, 'text':text, 'reason':reason })
+                        if not form.is_valid():
+                            messages.error(request, _('Ignoring malformed line %d in import file.') % (lno + 1))
+                            continue
+                        if number:
+                            try:
+                                number = abs(long(number))
+                                if number < 1:
+                                    messages.error(request, _('Ignoring malformed line %d in import file.') % (lno + 1))
+                                    continue
+                            except ValueError:
+                                messages.error(request, _('Ignoring malformed line %d in import file.') % (lno + 1))
+                                continue
+                        # fetch existing users or create new users as needed
+                        try:
+                            user = User.objects.get(first_name=first_name, last_name=last_name)
+                        except User.DoesNotExist:
+                            user = None
+                        if user is None:
+                            user = User()
+                            user.last_name = last_name
+                            user.first_name = first_name
+                            user.username = gen_username(first_name, last_name)
+                            user.save()
+                            profile = Profile()
+                            profile.user = user
+                            profile.group = ''
+                            profile.committee = ''
+                            profile.gender = 'none'
+                            profile.type = 'guest'
+                            profile.save()
+                            users_generated += 1
+                        # create / modify the application
+                        application = None
+                        if number:
+                            try:
+                                application = Application.objects.get(number=number)
+                                applications_modified += 1
+                            except Application.DoesNotExist:
+                                application = None
+                        if application is None:
+                            application = Application(submitter=user)
+                            if number:
+                                application.number = number
+                            applications_generated += 1
+
+                        application.title = form.cleaned_data['title']
+                        application.text = form.cleaned_data['text']
+                        application.reason = form.cleaned_data['reason']
+                        application.save(user, trivial_change=True)
+
+                if applications_generated:
+                    messages.success(request, ungettext('%d application was successfully imported.',
+                                                '%d applications were successfully imported.', applications_generated) % applications_generated)
+                if applications_modified:
+                    messages.success(request, ungettext('%d application was successfully modified.',
+                                                '%d applications were successfully modified.', applications_modified) % applications_modified)
+                if users_generated:
+                    messages.success(request, ungettext('%d new user was added.', '%d new users were added.', users_generated) % users_generated)
+                return redirect(reverse('application_overview'))
+
+            except csv.Error:
+                message.error(request, _('Import aborted because of severe errors in the input file.'))
+        else:
+            messages.error(request, _('Please check the form for errors.'))
+    else:
+        messages.warning(request, _("Attention: Existing applications will be modified if you import new applications with the same number."))
+        messages.warning(request, _("Attention: Importing an application without a number multiple times will create duplicates."))
+        form = ApplicationImportForm()
+    return {
+        'form': form,
+    }
+
 

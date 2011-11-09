@@ -1,0 +1,21 @@
+{% extends "application/base_application.html" %}
+{% block title %}{{ block.super }} - {%trans "Import applications" %} {% endblock %}
+
+{% block content %}
+    <h1>Import</h1>
+    <p>{% trans 'Select a CSV file to import applications!' %}</p>
+
+	<p>{% trans '(Required comma separated values: <code>number, title, text, reason, first_name, last_name</code> - <code>number</code> and <code>reason</code> are optional and may be empty)' %} </p>
+    <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">
+            <span class="icon import">{%trans 'Import' %}</span>
+        </button>
+        <a href="{% url application_overview%}">
+            <button type="button">
+            <span class="icon cancel">{%trans 'Cancel' %}</span>
+            </button>
+        </a>
+    </form>
+    </p>
+{% endblock %}

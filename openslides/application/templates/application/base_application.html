@@ -8,6 +8,7 @@
         <li class="{% if request.path == url_applicationoverview %}selected{% endif %}"><a href="{% url application_overview %}">{%trans "All applications" %}</a></li>
         {% if perms.application.can_create_application or perms.application.can_manage_application %}
             <li class="{% active request '/application/new' %}"><a href="{%  url application_new %}">{%trans "New application" %}</a></li>
+            <li class="{% active request '/application/import' %}"><a href="{%  url application_import %}">{%trans 'Import applications' %}</a></li>
         {% endif %}
         <li><a href="{% url print_applications %}"><img src="/static/images/icons/application-pdf.png"> {%trans 'Print all applications' %}</a></li>
     </ul>

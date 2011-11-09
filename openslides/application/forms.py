@@ -10,7 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.forms import ModelForm, Form, CharField, Textarea, TextInput, ModelMultipleChoiceField, ModelChoiceField
+from django.forms import ModelForm, Form, CharField, Textarea, TextInput, ModelMultipleChoiceField, ModelChoiceField, BooleanField, FileField, FileInput
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
@@ -41,7 +41,7 @@ class ApplicationForm(Form):
     title = CharField(widget=TextInput(), label=_("Title"))
     text = CharField(widget=Textarea(), label=_("Text"))
     reason = CharField(widget=Textarea(), required=False, label=_("Reason"))
-
+    trivial_change = BooleanField(required=False, label=_("Trivial change"), help_text=_("Trivial changes don't create a new version."))
 
 class ApplicationManagerForm(ModelForm):
     error_css_class = 'error'
@@ -54,3 +54,9 @@ class ApplicationManagerForm(ModelForm):
     class Meta:
         model = Application
         exclude = ('number', 'status', 'permitted', 'log')
+
+class ApplicationImportForm(Form):
+    error_css_class = 'error'
+    required_css_class = 'required'
+
+    csvfile = FileField(widget=FileInput(attrs={'size':'50'}), label=_("CSV File"))
