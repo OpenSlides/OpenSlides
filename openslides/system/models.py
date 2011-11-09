@@ -16,6 +16,7 @@ from django.utils.translation import ugettext as _
 DEFAULT_DATA  = {
     'event_name': 'OpenSlides',
     'event_description': 'Presentation and voting system',
+    'agenda_countdown_time': 60,
     'application_min_supporters': 4,
     'application_preamble': 'Die Versammlung möge beschließen,',
     'application_pdf_title': _('Applications'),

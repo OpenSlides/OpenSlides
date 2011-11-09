@@ -56,10 +56,22 @@ body{
     padding-left:30px;
     background: url(../images/icons/clock.png) no-repeat scroll 0px 4px;
 }
-
 #currentTime.ajax_error {
     border-bottom: 4px solid red;
 }
+#countdown {
+    display: none;
+    font-size: 4em;
+    font-weight: bold;
+    padding: 0 1em;
+    position: fixed;
+    right: 40px;
+    top: 0;
+    background: #DDD9D9;
+    border-bottom-left-radius: 0.75em;
+    border-bottom-right-radius: 0.75em;
+}
+
 
 /*** CONTENT ***/
 #content {

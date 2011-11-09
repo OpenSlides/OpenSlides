@@ -66,4 +66,14 @@ urlpatterns = patterns('agenda.views',
     url(r'^beamer/down$', 'beamer_edit', {'direction': 'down'}, name='beamer_down'),
 
     url(r'^beamer/clean$', 'beamer_edit', {'direction': 'clean'}, name='beamer_clean'),
+
+    url(r'^beamer/countdown/show$', 'beamer_countdown', {'command': 'show'}, name='countdown_open'),
+
+    url(r'^beamer/countdown/hide$', 'beamer_countdown', {'command': 'hide'}, name='countdown_close'),
+
+    url(r'^beamer/countdown/reset/(?P<time>\d+)$', 'beamer_countdown', {'command': 'reset'}, name='countdown_reset'),
+
+    url(r'^beamer/countdown/start$', 'beamer_countdown', {'command': 'start'}, name='countdown_start'),
+
+    url(r'^beamer/countdown/stop$', 'beamer_countdown', {'command': 'stop'}, name='countdown_stop'),
 )

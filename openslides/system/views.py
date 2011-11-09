@@ -16,7 +16,7 @@ from django.contrib import messages
 from django.utils.translation import ugettext as _
 from utils.utils import template
 from utils.utils import template, permission_required
-from system.forms import SystemConfigForm, EventConfigForm, ApplicationConfigForm, AssignmentConfigForm
+from system.forms import SystemConfigForm, EventConfigForm, AgendaConfigForm, ApplicationConfigForm, AssignmentConfigForm
 from system.api import config_get, config_set
 
 @permission_required('system.can_manage_system')
@@ -45,15 +45,18 @@ def get_system_config(request):
 def get_general_config(request):
     if request.method == 'POST':
         form_event = EventConfigForm(request.POST, prefix='event')
+        form_agenda = AgendaConfigForm(request.POST, prefix='agenda')
         form_application = ApplicationConfigForm(request.POST, prefix='application')
         form_assignment = AssignmentConfigForm(request.POST, prefix='assignment')
-        if form_event.is_valid() and form_application.is_valid() and form_assignment.is_valid():
+        if form_event.is_valid() and form_agenda.is_valid() and form_application.is_valid() and form_assignment.is_valid():
             # event form
             config_set('event_name', form_event.cleaned_data['event_name'])
             config_set('event_description', form_event.cleaned_data['event_description'])
             config_set('event_date', form_event.cleaned_data['event_date'])
             config_set('event_location', form_event.cleaned_data['event_location'])
             config_set('event_organizer', form_event.cleaned_data['event_organizer'])
+            # agenda form
+            config_set('agenda_countdown_time', form_agenda.cleaned_data['agenda_countdown_time'])
             # application form
             config_set('application_min_supporters', form_application.cleaned_data['application_min_supporters'])
             config_set('application_preamble', form_application.cleaned_data['application_preamble'])
@@ -78,6 +81,9 @@ def get_general_config(request):
             'event_location': config_get('event_location'),
             'event_organizer': config_get('event_organizer'),
         }, prefix='event')
+        form_agenda = AgendaConfigForm(initial={
+            'agenda_countdown_time': config_get('agenda_countdown_time'),
+        }, prefix='agenda')
         form_application = ApplicationConfigForm(initial={
             'application_min_supporters': config_get('application_min_supporters'),
             'application_preamble': config_get('application_preamble'),
@@ -94,6 +100,7 @@ def get_general_config(request):
         }, prefix='assignment')
     return {
         'form_event': form_event,
+        'form_agenda': form_agenda,
         'form_application': form_application,
         'form_assignment': form_assignment,
     }

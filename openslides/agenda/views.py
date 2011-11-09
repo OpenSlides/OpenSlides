@@ -83,7 +83,11 @@ def beamer(request):
                     'title': data['title'],
                     'time': datetime.now().strftime('%H:%M'),
                     'bigger': config_get('bigger'),
-                    'up': config_get('up')}
+                    'up': config_get('up'),
+                    'countdown_visible': config_get('countdown_visible'),
+                    'countdown_time': config_get('agenda_countdown_time'),
+                    'countdown_control': config_get('countdown_control'),
+                   }
         return ajax_request(jsondata)
     else:
         return render_to_response(template,
@@ -108,6 +112,27 @@ def beamer_edit(request, direction):
         return ajax_request({})
     return redirect(reverse('item_overview'))
 
+@permission_required('agenda.can_manage_agenda')
+def beamer_countdown(request, command, time=60):
+    if command == 'show':
+        config_set('countdown_visible', True)
+    elif command == 'hide':
+        config_set('countdown_visible', False)
+    elif command == 'reset':
+        config_set('countdown_control', 'reset')
+    elif command == 'start':
+        config_set('countdown_control', 'start')
+    elif command == 'stop':
+        config_set('countdown_control', 'stop')
+
+    if request.is_ajax():
+        if command == "show":
+            link = reverse('countdown_close')
+        else:
+            link = reverse('countdown_open')
+        return ajax_request({'countdown_visible': config_get('countdown_visible'),
+                             'link': link})
+    return redirect(reverse('item_overview'))
 
 def assignment_votes(item):
     votes = []
@@ -170,7 +195,9 @@ def overview(request):
         'items': items,
         'items_hidden': items_hidden,
         'overview': overview,
-        'summary': is_summary()
+        'summary': is_summary(),
+        'countdown_visible': config_get('countdown_visible'),
+        'countdown_time': config_get('agenda_countdown_time'),
         }
 
 

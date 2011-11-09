@@ -104,7 +104,7 @@ $(function() {
         hideClosedSlides(true);
     }
 
-    // controll beamer
+    // control beamer
     $('.beamer_edit').click(function(event) {
         event.preventDefault();
         link = $(this);
@@ -117,5 +117,35 @@ $(function() {
         });
     });
 
+    // control countdown
+    $('.beamer_countdown').click(function(event) {
+        event.preventDefault();
+        link = $(this);
+        $.ajax({
+            type: 'GET',
+            url: link.attr('href'),
+            dataType: 'json',
+            success: function(data) {
+            }
+        });
+    });
+    $('.countdown_visible_link').click(function(event) {
+        event.preventDefault();
+        link = $(this);
+        $.ajax({
+            type: 'GET',
+            url: link.attr('href'),
+            dataType: 'json',
+            success: function(data) {
+                if (data.countdown_visible == "True") {
+                    newclass = 'open';
+                } else {
+                    newclass = 'closed';
+                }
+                link.removeClass('closed open').addClass(newclass);
+                link.attr('href', data.link);
+            }
+        });
+    });    
     ko.applyBindings(ViewModel);
 });

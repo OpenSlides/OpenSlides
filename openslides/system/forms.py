@@ -32,6 +32,12 @@ class EventConfigForm(Form):
     event_location = CharField(widget=TextInput(), required=False, label=_("Event location"))
     event_organizer = CharField(widget=TextInput(), required=False, label=_("Event organizer"))
 
+class AgendaConfigForm(Form):
+    error_css_class = 'error'
+    required_css_class = 'required'
+
+    agenda_countdown_time = IntegerField(widget=TextInput(attrs={'class':'small-input'}),label=_("Countdown (in seconds)"),initial=60, min_value=0)
+
 class ApplicationConfigForm(Form):
     error_css_class = 'error'
     required_css_class = 'required'
