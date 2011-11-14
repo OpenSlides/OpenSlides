@@ -322,7 +322,6 @@ def user_import(request):
                     user.last_name = last_name
                     user.first_name = first_name
                     user.username = gen_username(first_name, last_name)
-                    #user.set_password("%s%s" % (user.first_name, user.last_name))
                     #user.email = email
                     user.save()
                     profile = Profile()
@@ -331,6 +330,8 @@ def user_import(request):
                     profile.group = group
                     profile.type = type
                     profile.committee = committee
+                    profile.firstpassword = gen_password()
+                    profile.user.set_password(profile.firstpassword)
                     profile.save()
 
                     if type == 'delegate':
