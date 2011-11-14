@@ -1,0 +1,52 @@
+CHANGELOG of OpenSlides
+http://openslides.org
+
+
+Version 1.1 (2011-11-15)
+[http://dev.openslides.org/milestone/1.1]
+
+Agenda:
+- [Feature] Agenda overview: New item-done-column for all non-manager (#7)
+- [Feature] Allow HTML-Tags in agenda item of text (#12)
+- [Feature] Split up hidden agenda items in new agenda table section (#13)
+Projector:
+- [Feature] Assignment projector view layout improvements (#9)
+- [Bugfix] Zoom problem for sidebar div in beamer view (#5)
+- [Bugfix] Blue 'candidate elected line' not visible in projector ajax view (#6)
+- [Bugfix] Assignment projector view: Show results for elected candidates only (#11)
+- [Bugfix] Missing beamer scaling (#2)
+- [Bugfix] Assigment projector view: Removed empty character for no results cell. (#10)
+Applications:
+- [Feature] Import applications (#55)
+- [Feature] Support trivial changes to an application (#56)
+- [Bugfix] Order submitter and supporter form fields by full name (#53)
+- [Bugfix] Application: Show profile instead of submitter username (#15)
+- [Bugfix] "Application: Only check enough supports in status ""pub""" (#16)
+Elections:
+- [Feature] New button to show agenda item of selected application/assignment (#54)
+- [Feature] Open add-user-url in new tab. (#32)
+Applications/Elections:
+- [Feature] Show voting results in percent (#48)
+Participants:
+- [Feature] Filter displayed permissions in group editor (#59)
+- [Feature] Generate password after user creation automatically (#58)
+- [Bugfix] Encoding error (#1)
+- [Bugfix] List of participants (pdf) link not visible for users with see-particiants-permissions (#3)
+- [Bugfix] Use user.profile.get_type_display() instead of user.profile.type (#4)
+PDF:
+- [Feature] Mark elected candidates in PDF (#31)
+- [Feature] New config option to set title and preamble text for application and assignment pdf (#33)
+- [Feature] New config option to set number of ballots in PDF (#26)
+- [Bugfix] Assignment ballot pdf: Wrong line break in group name with brackets (#8)
+- [Bugfix] Print available candidates in assignment pdf (#14)
+- [Bugfix] "Show ""undocumented"" for result ""-2"" in application and assignment pdf" (#17)
+Other:
+- [Feature] Rights for anonymous	rene	enhancement (#45)
+- [Feature] Show counter for limited speaking time (#52)
+- [Localize] i18n German: Use gender-specific strings (#51)
+- [Bugfix] <button> inside <a> tag not working in IE (#57)
+- [Bugfix] Change default sort for tables of applications, assignments, participants (#27)
+
+
+Version 1.0 (2011-09-12)
+[http://dev.openslides.org/milestone/1.0]
