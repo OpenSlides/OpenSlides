@@ -22,6 +22,7 @@ DEFAULT_DATA  = {
     'application_pdf_title': _('Applications'),
     'assignment_pdf_title': _('Elections'),
     'system_url': 'http://127.0.0.1:8000',
+    'system_welcometext': 'Welcome to OpenSlides!',
 }
 
 class Config(models.Model):
