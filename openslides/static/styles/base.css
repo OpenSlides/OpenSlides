@@ -314,7 +314,7 @@ input[type="submit"], input[type="button"]  {
     padding:4px 10px !important;
     margin: 2px 0 2px 0;
 }
-button {
+.button {
     border: 1px solid #D3D3D3;
     border-radius: 4px 4px 4px 4px;
     display: inline-block;
@@ -329,17 +329,17 @@ button {
     color: #555555;
     cursor: pointer;
 }
-button:hover {
+.button:hover {
     border: 1px solid #999999;
     background:#f9f9f9 -webkit-gradient(linear,0% 0%,0% 100%,from(rgba(255,255,255,.55)),to(rgba(0,0,0,0)));
     background:#f9f9f9 -moz-linear-gradient( top,rgba(255,255,255,.55),rgba(0,0,0,0));
 }
-button:active {
+.button:active {
     -webkit-box-shadow:inset 0 100% 0 0 rgba(0,0,0,0.2);
     background:#f9f9f9 -webkit-gradient(linear,0% 0%,0% 100%,from(rgba(0,0,0,.3)),to(rgba(0,0,0,0)));
     background:#f9f9f9 -moz-linear-gradient( top,rgba(0,0,0,.1),rgba(0,0,0,0));
 }
-button .icon {
+.button .icon {
     height: 16px;
     text-indent:20px;
     padding-top: 1px;
@@ -347,68 +347,71 @@ button .icon {
     text-transform:none;
     white-space:nowrap;
 }
-button .cancel{
+.button .cancel{
     background:url(../images/icons/dialog-cancel.png) no-repeat 0px 0px;
 }
-button .ok{
+.button .ok{
     background:url(../images/icons/dialog-ok-apply.png) no-repeat 0px 0px;
 }
-button .ok-blue, button .apply{
+.button .ok-blue, .button .apply{
     background:url(../images/icons/dialog-ok.png) no-repeat 0px 0px;
 }
-button .edit{
+.button .edit{
     background:url(../images/icons/document-edit.png) no-repeat 0px 0px;
 }
-button .revert{
+.button .revert{
     background:url(../images/icons/document-revert.png) no-repeat 0px 0px;
 }
-button .undo{
+.button .undo{
     background:url(../images/icons/edit-undo.png) no-repeat 0px 0px;
 }
-button .item{
+.button .item{
     background:url(../images/icons/view-list-details.png) no-repeat 0px 0px;
 }
-button .projector{
+.button .projector{
     background:url(../images/icons/video-projector.png) no-repeat 0px 0px;
 }
-button .accept{
+.button .accept{
     background:url(../images/icons/task-complete.png) no-repeat 0px 0px;
 }
-button .reject{
+.button .reject{
     background:url(../images/icons/task-reject.png) no-repeat 0px 0px;
 }
-button .poll{
+.button .poll{
     background:url(../images/icons/view-statistics.png) no-repeat 0px 0px;
 }
-button .previous{
+.button .previous{
     background:url(../images/icons/go-previous.png) no-repeat 0px 0px;
 }
-button .pdf{
+.button .pdf{
     background:url(../images/icons/application-pdf.png) no-repeat 0px 0px;
 }
-button .adduser{
+.button .adduser{
     background:url(../images/icons/list-add-user.png) no-repeat 0px 0px;
 }
-button .removeuser{
+.button .removeuser{
     background:url(../images/icons/list-remove-user.png) no-repeat 0px 0px;
 }
-button .export{
+.button .export{
     background:url(../images/icons/document-export.png) no-repeat 0px 0px;
 }
-button .import{
+.button .import{
     background:url(../images/icons/document-import.png) no-repeat 0px 0px;
 }
-button .add{
+.button .add{
     background:url(../images/icons/list-add.png) no-repeat 0px 0px;
 }
-button .remove{
+.button .remove{
     background:url(../images/icons/list-remove.png) no-repeat 0px 0px;
 }
-button .number{
+.button .number{
     background:url(../images/icons/milestone.png) no-repeat 0px 0px;
 }
-button .stop{
+.button .stop{
     background:url(../images/icons/process-stop.png) no-repeat 0px 0px;
+}
+.button .guest{
+    background:url(../images/icons/user-identity.png) no-repeat 0px 0px;
 }
 
 .small-input {

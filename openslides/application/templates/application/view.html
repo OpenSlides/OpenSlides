@@ -48,7 +48,7 @@
             {% if perms.application.can_manage_application %}
                 {% if "genpoll" in actions %}
                 <a href='{% url application_gen_poll application.id %}'>
-                    <button><span class="icon poll">{%trans 'New vote' %}</span></button>
+                    <span class="button"><span class="icon poll">{%trans 'New vote' %}</span></span>
                 </a>
                 {% else %}
                 -
@@ -83,7 +83,7 @@
                     {% if forloop.last %}
                     {% if "genpoll" in actions %}
                     <a href='{% url application_gen_poll application.id %}'>
-                        <button><span class="icon poll">{%trans 'New vote' %}</span></button>
+                        <span class="button"><span class="icon poll">{%trans 'New vote' %}</span></span>
                     </a>
                     {% endif %}
                     {% endif %}
@@ -105,13 +105,13 @@
     <p></p>
     {% if "edit" in actions %}
         <a href="{% url application_edit application.id %}">
-            <button><span class="icon edit">{%trans 'Edit' %}</span></button>
+            <span class="button"><span class="icon edit">{%trans 'Edit' %}</span></span>
         </a>
     {% endif %}
     {% if "wit" in actions and user == application.submitter %}
     <p></p>
         <a href='{% url application_set_status application.id 'wit' %}'>
-            <button><span class="icon revert">{%trans 'Withdraw' %}</span></button>
+            <span class="button"><span class="icon revert">{%trans 'Withdraw' %}</span></span>
         </a>
     {% endif %}
 
@@ -119,13 +119,13 @@
         {% if "unsupport" in actions %}
         <p></p>
         <a href='{% url application_unsupport application.id %}'>
-            <button><span class="icon remove">{% trans 'Unsupport' %}</span></button>
+            <span class="button"><span class="icon remove">{% trans 'Unsupport' %}</span></span>
         </a>
         {% endif %}
         {% if "support" in actions %}
         <p></p>
         <a href='{% url application_support application.id %}'>
-            <button><span class="icon add">{% trans 'Support' %}</span></button>
+            <span class="button"><span class="icon add">{% trans 'Support' %}</span></span>
         </a>
         {% endif %}
     {% endif %}
@@ -143,13 +143,13 @@
     {% if "per" in actions or "nop" in actions or "setnumber" in actions %}
         <h4>{% trans "Formal validation" %}:</h4>
         {% if "per" in actions %}
-        <a href='{% url application_permit application.id %}'><button><span class="icon ok-blue">{% trans 'Permit' %}</span></button></a>
+        <a href='{% url application_permit application.id %}'><span class="button"><span class="icon ok-blue">{% trans 'Permit' %}</span></span></a>
         {% endif %}
         {% if "nop" in actions %}
-        <a href='{% url application_notpermit application.id %}'><button><span class="icon stop">{% trans 'Not permit (reject)' %}</span></button></a>
+        <a href='{% url application_notpermit application.id %}'><span class="button"><span class="icon stop">{% trans 'Not permit (reject)' %}</span></span></a>
         {% endif %}
         {% if "setnumber" in actions %}
-        <a href='{% url application_set_number application.id %}'><button><span class="icon number">{% trans 'Set Number' %}</span></button></a>
+        <a href='{% url application_set_number application.id %}'><span class="button"><span class="icon number">{% trans 'Set Number' %}</span></span></a>
         {% endif %}
         </p>
     {% endif %}
@@ -157,14 +157,14 @@
     {% if "createitem" in actions %}
         <h4></h4>
         <a href='{% url item_new_default 'ItemApplication' application.id %}'>
-            <button><span class="icon item">{%trans 'New agenda item' %}</span></button>
+            <span class="button"><span class="icon item">{%trans 'New agenda item' %}</span></span>
         </a>
     {% endif %}
 
     {% if "activateitem" in actions %}
         <h4></h4>
         <a href='{% url application_activate_item application.id %}'>
-            <button><span class="icon projector">{%trans 'Show agenda item' %}</span></button>
+            <span class="button"><span class="icon projector">{%trans 'Show agenda item' %}</span></span>
         </a>
     {% endif %}
 
@@ -172,12 +172,12 @@
         <h4>{% trans "Result after vote" %}:</h4>
         {% if "acc" in actions %}
         <a href='{% url application_set_status application.id 'acc' %}'>
-            <button><span class="icon accept">{%trans 'Accepted' %}</span></button>
+            <span class="button"><span class="icon accept">{%trans 'Accepted' %}</span></span>
         </a>
         {% endif %}
         {% if "rej" in actions %}
         <a href='{% url application_set_status application.id 'rej' %}'>
-            <button><span class="icon reject">{%trans 'Rejected' %}</span></button>
+            <span class="button"><span class="icon reject">{%trans 'Rejected' %}</span></span>
         </a>
         {% endif %}
     {% endif %}
@@ -185,16 +185,16 @@
     {% if "adj" in actions or "noc" in actions or "com" in actions or "wit" in actions %}
         <h4>{% trans 'Result after debate' %}:</h4>
         {% if "adj" in actions %}
-        <a href='{% url application_set_status application.id 'adj' %}'><button>{% trans 'Adjourned' %}</button></a><br>
+        <a href='{% url application_set_status application.id 'adj' %}'><span class="button">{% trans 'Adjourned' %}</span></a><br>
         {% endif %}
         {% if "noc" in actions %}
-        <a href='{% url application_set_status application.id 'noc' %}'><button>{% trans 'Not Concerned' %}</button></a><br>
+        <a href='{% url application_set_status application.id 'noc' %}'><span class="button">{% trans 'Not Concerned' %}</span></a><br>
         {% endif %}
         {% if "com" in actions %}
-        <a href='{% url application_set_status application.id 'com' %}'><button>{% trans 'Commited a bill' %}</button></a><br>
+        <a href='{% url application_set_status application.id 'com' %}'><span class="button">{% trans 'Commited a bill' %}</span></a><br>
         {% endif %}
         {% if "wit" in actions %}
-        <a href='{% url application_set_status application.id 'wit' %}'><button>{% trans 'Withdrawed by Submitter' %}</button></a>
+        <a href='{% url application_set_status application.id 'wit' %}'><span class="button">{% trans 'Withdrawed by Submitter' %}</span></a>
         {% endif %}
     {% endif %}
 
@@ -202,7 +202,7 @@
     <hr>
     <h4>{%trans "For Administration only:" %}</h4>
     <a href='{% url application_reset application.id %}'>
-        <button><span class="icon undo">{%trans 'Reset' %}</span></button>
+        <span class="button"><span class="icon undo">{%trans 'Reset' %}</span></span>
     </a>
     </div>
     {% endif %} {# end perms.application.can_support_application #}

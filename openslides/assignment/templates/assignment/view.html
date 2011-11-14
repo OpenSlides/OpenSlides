@@ -31,22 +31,24 @@
 
     <h4></h4>
     <a href="{% url assignment_edit assignment.id %}">
-        <button><span class="icon edit">{%trans 'Edit' %}</span></button>
+    <span class="button">
+        <span class="icon edit">{%trans 'Edit' %}</span>
+    </span>
     </a>
 
     {% if not assignment.itemassignment_set.all %}
     <h4></h4>
     <a href='{% url item_new_default 'ItemAssignment' assignment.id %}'>
-        <button type="button">
+    <span class="button">
         <span class="icon item">{%trans 'New agenda item' %}</span>
-        </button>
+    </span>
     </a>
     {% else %}
     <h4></h4>
     <a href='{% url assignment_activate_item assignment.id %}'>
-        <button>
+    <span class="button">
         <span class="icon projector">{%trans 'Show agenda item' %}</span>
-        </button>
+    </span>
     </a>
     {% endif %}
     </div>
@@ -82,16 +84,16 @@
             {% if user.profile in assignment.profile.all %}
 
             <a href='{% url assignment_delrun assignment.id %}'>
-                <button type="button">
+            <span class="button">
                 <span class="icon removeuser">{%trans 'Withdraw self candidature' %}</span>
-                </button>
+            </span>
             </a>
             {% else %}
             {% if user.profile %}
             <a href='{% url assignment_run assignment.id %}'>
-                <button type="button">
+            <span class="button">
                 <span class="icon adduser">{%trans 'Self candidature' %}</span>
-                </button>
+            </span>
             </a>
             {% endif %}
             {% endif %}
@@ -107,7 +109,7 @@
             </nobr>
             {% endfor %}
             <p>
-            <button type="submit">
+            <button class="button" type="submit">
                 <span class="icon ok">{%trans 'Apply' %}</span>
             </button>
             </p>
@@ -154,9 +156,9 @@
     {% if assignment.profile.count > 0 and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
     <th>
         <a href='{% url assignment_gen_poll assignment.id %}'>
-           <button type="button">
+        <span class="button">
            <span class="icon poll">{%trans 'New ballot' %}</span>
-           </button>
+        </span>
         </a>
     </th>
     {% endif %}
@@ -228,9 +230,9 @@
 
     {% if assignment.profile.count > 0 and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
         <p><a href='{% url assignment_gen_poll assignment.id %}'>
-           <button type="button">
+        <span class="button">
            <span class="icon poll">{%trans 'New ballot' %}</span>
-           </button>
+        </span>
         </a></p>
     {% endif %}
 

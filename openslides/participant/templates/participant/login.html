@@ -38,12 +38,12 @@
         </tr>
         </table>
         <p>
-        <button type="submit">
+        <button class="button" type="submit">
             <span class="icon ok">{%trans 'Login' %}</span>
         </button>
         {% if os_enable_anonymous_login %}
-        <button id="anonymous_login">
-            <span class="icon ok">{%trans 'Continue as guest' %}</span>
+        <button class="button" id="anonymous_login">
+            <span class="icon guest">{%trans 'Continue as guest' %}</span>
         </button>
         {% endif %}
         <input type="hidden" name="next" value="{{ next }}" />
