@@ -53,13 +53,3 @@ class Profile(models.Model):
             ('can_see_participant', "Can see participant"),
             ('can_manage_participant', "Can manage participant"),
         )
-
-def set_first_user_passwords():
-    count = 0
-    for user in Profile.objects.filter(Q(firstpassword='') | Q(firstpassword__isnull=True)):
-        count = count + 1
-        user.firstpassword = gen_password()
-        user.user.set_password(user.firstpassword)
-        user.user.save()
-        user.save()
-    return count

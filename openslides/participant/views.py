@@ -27,7 +27,7 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _, ungettext
 
-from participant.models import Profile, set_first_user_passwords
+from participant.models import Profile
 from participant.api import gen_username, gen_password
 from participant.forms import UserNewForm, UserEditForm, ProfileForm, UsersettingsForm, UserImportForm, GroupForm, AdminPasswordChangeForm
 from utils.utils import template, permission_required, gen_confirm_form
@@ -352,16 +352,6 @@ def user_import(request):
 
 
 @permission_required('participant.can_manage_participant')
-def gen_passwords(request):
-    count = set_first_user_passwords()
-    if count:
-        messages.success(request, ungettext('%s Password was successfully generated.', '%s Passwords were successfully generated.', count ) % count)
-    else:
-        messages.info(request, _('There are no participants which need a first time password. No passwords generated.') )
-    return redirect(reverse('user_overview'))
-
-
-@permission_required('participant.can_manage_participant')
 def reset_password(request, user_id):
     user = User.objects.get(pk=user_id)
     if request.method == 'POST':
@@ -369,5 +359,5 @@ def reset_password(request, user_id):
         messages.success(request, _('The Password for <b>%s</b> was successfully reset.') % user)
     else:
         gen_confirm_form(request, _('Do you really want to reset the password for <b>%s</b>?') % user,
-                         reverse('user_reset_passwords', args=[user_id]))
+                         reverse('user_reset_password', args=[user_id]))
     return redirect(reverse('user_edit', args=[user_id]))

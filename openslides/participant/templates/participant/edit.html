@@ -12,7 +12,7 @@
         {{ userform.as_p }}
         {{ profileform.as_p }}
         {% if edituser %}
-        <a href="{% url user_reset_passwords edituser.id %}">{% trans 'Reset Password' %}</a>
+        <p><a href="{% url user_reset_password edituser.id %}">{% trans 'Reset to First Password' %}</a></p>
         {% endif %}
         <button class="button" type="submit">
             <span class="icon ok">{%trans 'Save' %}</span>
