@@ -516,6 +516,8 @@ fieldset {
     position: relative;
     line-height: 100%;
     width: 96%;
+    cursor: pointer;
+    cursor: hand;
 }
 .notification .close {
     color: #990000;
