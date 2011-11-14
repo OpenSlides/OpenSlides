@@ -34,7 +34,7 @@ from openslides.utils.utils import template, permission_required, \
 from openslides.utils.pdf import print_application, print_application_poll
 from openslides.system.api import config_get
 
-from openslides.participant.api import gen_username
+from openslides.participant.api import gen_username, gen_password
 
 @permission_required('application.can_see_application')
 @template('application/overview.html')
@@ -492,6 +492,8 @@ def application_import(request):
                             profile.committee = ''
                             profile.gender = 'none'
                             profile.type = 'guest'
+                            profile.firstpassword = gen_password()
+                            profile.user.set_password(profile.firstpassword)
                             profile.save()
                             users_generated += 1
                         # create / modify the application
