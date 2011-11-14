@@ -21,6 +21,7 @@ class SystemConfigForm(Form):
     #user_registration = BooleanField(label=_("User registration"), required=False)
     system_url = CharField(widget=TextInput(), required=False, label=_("System URL"))
     system_welcometext = CharField(widget=Textarea(), required=False, label=_("Welcome text (for password PDF)"))
+    system_enable_anonymous = BooleanField(required=False, label=_("Access for anonymous / guest users"), help_text=_("Allow access for guest users"))
     
 class EventConfigForm(Form):
     error_css_class = 'error'

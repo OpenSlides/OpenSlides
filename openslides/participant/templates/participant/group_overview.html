@@ -12,7 +12,9 @@
         <tr class="{% cycle '' 'odd' %}">
             <td>{{ group.name }}</td>
             <td><a href="{% url user_group_edit group.id %}"><img src="/static/images/icons/document-edit.png" title="{%trans 'Edit group' %}"></a>
+            {% if group.name != 'Anonymous' %}
             <a href="{% url user_group_delete group.id %}"><img src="/static/images/icons/edit-delete.png" title="{%trans 'Delete group' %}"></a>
+            {% endif %}
             </td>
         </tr>
     {% empty %}

@@ -13,6 +13,7 @@
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.contrib import messages
+from django.contrib.auth.models import Group, Permission
 from django.utils.translation import ugettext as _
 from utils.utils import template
 from utils.utils import template, permission_required
@@ -27,6 +28,22 @@ def get_system_config(request):
         if form.is_valid():
             config_set('system_url', form.cleaned_data['system_url'])
             config_set('system_welcometext', form.cleaned_data['system_welcometext'])
+            if form.cleaned_data['system_enable_anonymous']:
+                config_set('system_enable_anonymous', True)
+                # check for Anonymous group and (re)create it as needed
+                try:
+                    anonymous = Group.objects.get(name='Anonymous')
+                except Group.DoesNotExist:
+                    default_perms = [u'can_see_agenda', u'can_see_projector', u'can_see_application']
+                    anonymous = Group()
+                    anonymous.name = 'Anonymous'
+                    anonymous.save()
+                    anonymous.permissions = Permission.objects.filter(codename__in=default_perms)
+                    anonymous.save()
+                messages.success(request, _('Anonymous access enabled. Please modify the "Anonymous" group to fit your required permissions.'))
+            else:
+                # use '' - False will evaluate to uniced(False) => True..
+                config_set('system_enable_anonymous', '')
             messages.success(request, _('System settings successfully saved.'))
         else:
             messages.error(request, _('Please check the form for errors.'))
@@ -35,6 +52,7 @@ def get_system_config(request):
         form = SystemConfigForm(initial={
             'system_url': config_get('system_url'),
             'system_welcometext': config_get('system_welcometext'),
+            'system_enable_anonymous': config_get('system_enable_anonymous'),
         })
     return {
         'form': form,

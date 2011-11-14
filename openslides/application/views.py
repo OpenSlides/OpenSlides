@@ -9,9 +9,9 @@
     :copyright: 2011 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
+from __future__ import with_statement
 
 import csv
-
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -440,6 +440,9 @@ def application_import(request):
         messages.error(request, _('The import function is available for the superuser (without user profile) only.'))
         return redirect(reverse('application_overview'))
     except Profile.DoesNotExist:
+        pass
+    except AttributeError:
+        # AnonymousUser
         pass
 
     if request.method == 'POST':

@@ -32,6 +32,7 @@ from participant.api import gen_username
 from participant.forms import UserNewForm, UserEditForm, ProfileForm, UsersettingsForm, UserImportForm, GroupForm, AdminPasswordChangeForm
 from utils.utils import template, permission_required, gen_confirm_form
 from utils.pdf import print_userlist, print_passwords
+from system.api import config_get
 
 from django.db.models import Avg, Max, Min, Count
 
@@ -195,7 +196,10 @@ def user_set_active(request, user_id):
 @permission_required('participant.can_manage_participant')
 @template('participant/group_overview.html')
 def get_group_overview(request):
-    groups = Group.objects.all()
+    if config_get('system_enable_anonymous', False):
+        groups = Group.objects.all()
+    else:
+        groups = Group.objects.exclude(name='Anonymous')
     return {
         'groups': groups,
     }
@@ -214,7 +218,29 @@ def group_edit(request, group_id=None):
     if request.method == 'POST':
         form = GroupForm(request.POST, instance=group)
         if form.is_valid():
+            group_name = form.cleaned_data['name'].lower()
+
+            try:
+                anonymous_group = Group.objects.get(name='Anonymous')
+            except Group.DoesNotExist:
+                anonymous_group = None
+
+            # special handling for anonymous auth
+            if group is None and group_name.strip().lower() == 'anonymous':
+                # don't allow to create this group
+                messages.error(request, _('Group name "%s" is reserved for internal use.') % group_name)
+                return {
+                    'form' : form,
+                    'group': group
+                }
+
             group = form.save()
+            if anonymous_group is not None and \
+               anonymous_group.id == group.id:
+                # prevent name changes - XXX: I'm sure this could be done as *one* group.save()
+                group.name = 'Anonymous'
+                group.save()
+
             if group_id is None:
                 messages.success(request, _('New group was successfully created.'))
             else:
@@ -272,6 +298,9 @@ def user_import(request):
         messages.error(request, _('The import function is available for the superuser (without user profile) only.'))
         return redirect(reverse('user_overview'))
     except Profile.DoesNotExist:
+        pass
+    except AttributeError:
+        # AnonymousUser
         pass
 
     if request.method == 'POST':

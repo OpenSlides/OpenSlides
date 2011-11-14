@@ -18,6 +18,7 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 AUTH_PROFILE_MODULE = 'participant.Profile'
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', 'openslides.system.auth.AnonymousAuth',)
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/agenda/'
 
@@ -137,4 +138,5 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.core.context_processors.i18n',
     'utils.utils.revision',
+    'openslides.system.auth.anonymous_context_additions',
 )

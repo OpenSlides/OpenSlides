@@ -323,7 +323,7 @@ class Application(models.Model):
             if  self.status == "pub" \
             and user != self.submitter \
             and user not in self.supporter.all() \
-            and user.profile:
+            and getattr(user, 'profile', None):
                 actions.append("support")
         except Profile.DoesNotExist:
             pass

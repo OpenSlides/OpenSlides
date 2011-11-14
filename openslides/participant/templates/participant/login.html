@@ -25,7 +25,6 @@
             });
         </script>
     {% endif %}
-
     <form method="post" action="{% url user_login %}">
         {% csrf_token %}
         <table>
@@ -42,7 +41,20 @@
         <button type="submit">
             <span class="icon ok">{%trans 'Login' %}</span>
         </button>
+        {% if os_enable_anonymous_login %}
+        <button id="anonymous_login">
+            <span class="icon ok">{%trans 'Continue as guest' %}</span>
+        </button>
+        {% endif %}
         <input type="hidden" name="next" value="{{ next }}" />
         </p>
     </form>
+    {% if os_enable_anonymous_login %}
+        <script>
+            $("#anonymous_login").live('click', function () {
+                window.location.href = '{% url item_overview %}';
+                return false;
+            });
+        </script>
+    {% endif %}
 {% endblock %}

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-09 22:57+0100\n"
+"POT-Creation-Date: 2011-11-10 23:13+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: default.settings.py:59 settings.py:59
+#: default.settings.py:60 settings.py:60
 msgid "German"
 msgstr "Deutsch"
 
-#: default.settings.py:60 settings.py:60
+#: default.settings.py:61 settings.py:61
 msgid "English"
 msgstr "Englisch"
 
@@ -53,7 +53,7 @@ msgstr "Ja, mit allen Kindelementen."
 msgid "No"
 msgstr "Nein"
 
-#: agenda/api.py:67 participant/views.py:164 participant/views.py:242
+#: agenda/api.py:67 participant/views.py:165 participant/views.py:268
 #: utils/utils.py:40
 #, python-format
 msgid "Do you really want to delete <b>%s</b>?"
@@ -145,9 +145,9 @@ msgstr "Eintrag wurde erfolgreich geändert."
 msgid "Agenda item modified"
 msgstr "Tagesordnungseintrag geändert"
 
-#: agenda/views.py:283 application/views.py:526 participant/views.py:141
-#: participant/views.py:227 participant/views.py:256 participant/views.py:313
-#: system/views.py:32 system/views.py:74
+#: agenda/views.py:283 application/views.py:526 participant/views.py:142
+#: participant/views.py:253 participant/views.py:282 participant/views.py:339
+#: system/views.py:48 system/views.py:91
 msgid "Please check the form for errors."
 msgstr "Bitte kontrollieren Sie das Formular nach Fehlern."
 
@@ -727,7 +727,7 @@ msgstr "FEHLER beim Zurückweisen der Version."
 msgid "Do you really want to reject version <b>%s</b>?"
 msgstr "Soll Version <b>%s</b> wirklich zurückgewiesen werden?"
 
-#: application/views.py:440 participant/views.py:272
+#: application/views.py:440 participant/views.py:298
 msgid ""
 "The import function is available for the superuser (without user profile) "
 "only."
@@ -1359,62 +1359,67 @@ msgstr "Amt"
 msgid "First Password"
 msgstr "Erstes Passwort"
 
-#: participant/views.py:133
+#: participant/views.py:134
 msgid "New participant was successfully created."
 msgstr "Neue/r Teilnehmer/in wurde erfolgreich angelegt."
 
-#: participant/views.py:135
+#: participant/views.py:136
 msgid "Participant was successfully modified."
 msgstr "Teilnehmer/in wurde erfolgreich geändert."
 
-#: participant/views.py:162
+#: participant/views.py:163
 #, python-format
 msgid "Participant <b>%s</b> was successfully deleted."
 msgstr "Teilnehmer/in <b>%s</b> wurde erfolgreich gelöscht."
 
-#: participant/views.py:174
+#: participant/views.py:175
 #, python-format
 msgid "Participant <b>%s</b> is now a normal user."
 msgstr "Teilnehmer/in <b>%s</b> ist jetzt ein normaler Nutzer."
 
-#: participant/views.py:178
+#: participant/views.py:179
 #, python-format
 msgid "Participant <b>%s</b> is now administrator."
 msgstr "Teilnehmer/in <b>%s</b> ist jetzt ein Administrator."
 
-#: participant/views.py:188
+#: participant/views.py:189
 #, python-format
 msgid "Participant <b>%s</b> was successfully deactivated."
 msgstr "Teilnehmer/in <b>%s</b> wurde erfolgreich deaktiviert."
 
-#: participant/views.py:192
+#: participant/views.py:193
 #, python-format
 msgid "Participant <b>%s</b> was successfully activated."
 msgstr "Teilnehmer/in <b>%s</b> wurde erfolgreich aktiviert."
 
-#: participant/views.py:219
+#: participant/views.py:231
+#, python-format
+msgid "Group name \"%s\" is reserved for internal use."
+msgstr "Der Gruppenname \"%s\" ist für interne Verwendung reserviert."
+
+#: participant/views.py:245
 msgid "New group was successfully created."
 msgstr "Neue Gruppe wurde erfolgreich angelegt."
 
-#: participant/views.py:221
+#: participant/views.py:247
 msgid "Group was successfully modified."
 msgstr "Gruppe wurde erfolgreich geändert."
 
-#: participant/views.py:240
+#: participant/views.py:266
 #, python-format
 msgid "Group <b>%s</b> was successfully deleted."
 msgstr "Gruppe <b>%s</b>  wurde erfolgreich gelöscht."
 
-#: participant/views.py:254
+#: participant/views.py:280
 msgid "User settings successfully saved."
 msgstr "Nutzereinstellungen wurden erfolgreich gespeichert."
 
-#: participant/views.py:311
+#: participant/views.py:337
 #, python-format
 msgid "%d new participants were successfully imported."
 msgstr "%d neue Teilnehmer/innen wurden erfolgreich importiert."
 
-#: participant/views.py:315
+#: participant/views.py:341
 msgid ""
 "Attention: All existing participants will be removed if you import new "
 "participants."
@@ -1422,14 +1427,14 @@ msgstr ""
 "Achtung: Alle existierenden Teilnehmer/innen werden gelöscht, wenn Sie neue "
 "Teilnehmer/innen importieren."
 
-#: participant/views.py:326
+#: participant/views.py:352
 #, python-format
 msgid "%s Password was successfully generated."
 msgid_plural "%s Passwords were successfully generated."
 msgstr[0] "Es wurde %s Passwort erfolgreich generiert."
 msgstr[1] "Es wurden %s Passwörter erfolgreich generiert."
 
-#: participant/views.py:328
+#: participant/views.py:354
 msgid ""
 "There are no participants which need a first time password. No passwords "
 "generated."
@@ -1437,12 +1442,12 @@ msgstr ""
 "Es sind keine Teilnehmer/innen ohne Erst-Passwort vorhanden. Es wurden keine "
 "Passwörter generiert."
 
-#: participant/views.py:337
+#: participant/views.py:363
 #, python-format
 msgid "The Password for <b>%s</b> was successfully reset."
 msgstr "Das Passwort für <b>%s</b> wurde erfolgreich zurückgesetzt."
 
-#: participant/views.py:339
+#: participant/views.py:365
 #, python-format
 msgid "Do you really want to reset the password for <b>%s</b>?"
 msgstr "Soll das Passwort für <b>%s</b> wirklich zurückgesetzt werden?"
@@ -1528,11 +1533,11 @@ msgstr "Aktionen"
 msgid "Edit group"
 msgstr "Benutzergruppe bearbeiten"
 
-#: participant/templates/participant/group_overview.html:15
+#: participant/templates/participant/group_overview.html:16
 msgid "Delete group"
 msgstr "Benutzergruppe löschen"
 
-#: participant/templates/participant/group_overview.html:20
+#: participant/templates/participant/group_overview.html:22
 #: participant/templates/participant/overview.html:84
 msgid "No participants available."
 msgstr "Keine Teilnehmer/innen vorhanden."
@@ -1551,7 +1556,7 @@ msgstr ""
 
 #: participant/templates/participant/login.html:5
 #: participant/templates/participant/login.html:13
-#: participant/templates/participant/login.html:43 templates/base.html:26
+#: participant/templates/participant/login.html:42 templates/base.html:26
 msgid "Login"
 msgstr "Anmelden"
 
@@ -1563,6 +1568,10 @@ msgstr "Meldung ausblenden"
 msgid "Your username and password didn't match. Please try again."
 msgstr ""
 "Benutzername und Passwort stimmen nicht überein. Bitte noch einmal versuchen."
+
+#: participant/templates/participant/login.html:46
+msgid "Continue as guest"
+msgstr "Weiter als Gast"
 
 #: participant/templates/participant/overview.html:42 utils/pdf.py:263
 msgid "First Name"
@@ -1637,79 +1646,95 @@ msgstr "System URL"
 msgid "Welcome text (for password PDF)"
 msgstr "Willkommenstext (für Passwort-PDF-Liste)"
 
-#: system/forms.py:29
+#: system/forms.py:24
+msgid "Access for anonymous / guest users"
+msgstr "Zugriff für anonyme oder Gast-Nutzer"
+
+#: system/forms.py:24
+msgid "Allow access for guest users"
+msgstr "Zugriff für Gast-Nutzer aktivieren"
+
+#: system/forms.py:30
 msgid "Event name"
 msgstr "Veranstaltungsname"
 
-#: system/forms.py:30
+#: system/forms.py:31
 msgid "Short description of event"
 msgstr "Kurzbeschreibung der Veranstaltung"
 
-#: system/forms.py:31
+#: system/forms.py:32
 msgid "Event date"
 msgstr "Veranstaltungszeitraum"
 
-#: system/forms.py:32
+#: system/forms.py:33
 msgid "Event location"
 msgstr "Veranstaltungsort"
 
-#: system/forms.py:33
+#: system/forms.py:34
 msgid "Event organizer"
 msgstr "Veranstalter"
 
-#: system/forms.py:39
+#: system/forms.py:40
 msgid "Countdown (in seconds)"
 msgstr "Countdown (in Sekunden)"
 
-#: system/forms.py:45
+#: system/forms.py:46
 msgid "Number of (minimum) required supporters for a application"
 msgstr "Mindestanzahl erforderlicher Unterstützer/innen für einen Antrag"
 
-#: system/forms.py:46
+#: system/forms.py:47
 msgid "Application preamble"
 msgstr "Antragseinleitung"
 
-#: system/forms.py:47 system/forms.py:58
+#: system/forms.py:48 system/forms.py:59
 msgid "Number of ballot papers (selection)"
 msgstr "Anzahl der Wahlscheine (Vorauswahl)"
 
-#: system/forms.py:47 system/forms.py:58
+#: system/forms.py:48 system/forms.py:59
 msgid "Number of all delegates"
 msgstr "Anzahl aller Delegierten"
 
-#: system/forms.py:47 system/forms.py:58
+#: system/forms.py:48 system/forms.py:59
 msgid "Number of all participants"
 msgstr "Anzahl aller Teilnehmer/innen"
 
-#: system/forms.py:47 system/forms.py:58
+#: system/forms.py:48 system/forms.py:59
 msgid "Use the following custum number"
 msgstr "Verwende die folgende benutzerdefinierte Anzahl"
 
-#: system/forms.py:48 system/forms.py:59
+#: system/forms.py:49 system/forms.py:60
 msgid "Custom number of ballot papers"
 msgstr "Benutzerdefinierte Anzahl von Wahlscheinen"
 
-#: system/forms.py:49
+#: system/forms.py:50
 msgid "Title for PDF document (all applications)"
 msgstr "Titel für PDF-Dokuemt (alle Anträge)"
 
-#: system/forms.py:50
+#: system/forms.py:51
 msgid "Preamble text for PDF document (all applications)"
 msgstr "Einleitungstext für PDF-Dokument (alle Anträge)"
 
-#: system/forms.py:56
+#: system/forms.py:57
 msgid "Title for PDF document (all elections)"
 msgstr "Titel für PDF-Dokument (alle Wahlen)"
 
-#: system/forms.py:57
+#: system/forms.py:58
 msgid "Preamble text for PDF document (all elections)"
 msgstr "Einleitungstext für PDF-Dokument (alle Wahlen) "
 
-#: system/views.py:30
+#: system/views.py:42
+msgid ""
+"Anonymous access enabled. Please modify the \"Anonymous\" group to fit your "
+"required permissions."
+msgstr ""
+"Anonymer Zugriff aktiviert. Bitte setzen Sie die Rechte der Gruppe \"Anonymous\" "
+"passend zum gewünschten Zugriffslevel."
+
+#: system/views.py:46
 msgid "System settings successfully saved."
 msgstr "Systemeinstellungen erfolgreich gespeichert."
 
-#: system/views.py:72
+#: system/views.py:89
 msgid "General settings successfully saved."
 msgstr "Allgemeine Einstellungen erfolgreich gespeichert."
 
