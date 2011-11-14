@@ -43,6 +43,7 @@ PDF:
 Other:
 - [Feature] Rights for anonymous	rene	enhancement (#45)
 - [Feature] Show counter for limited speaking time (#52)
+- [Feature] Reorderd config tab subpages (#61)
 - [Localize] i18n German: Use gender-specific strings (#51)
 - [Bugfix] <button> inside <a> tag not working in IE (#57)
 - [Bugfix] Change default sort for tables of applications, assignments, participants (#27)
