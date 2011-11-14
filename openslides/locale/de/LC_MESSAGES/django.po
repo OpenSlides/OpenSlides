@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-14 22:57+0100\n"
+"POT-Creation-Date: 2011-11-14 23:35+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -95,8 +95,8 @@ msgstr "Text"
 #: application/templates/application/edit.html:2
 #: application/templates/application/view.html:2
 #: application/templates/application/view.html:220 poll/models.py:23
-#: poll/models.py:138 system/templates/system/general.html:18 utils/pdf.py:458
-#: utils/pdf.py:470
+#: poll/models.py:138 system/templates/system/base_system.html:14
+#: utils/pdf.py:458 utils/pdf.py:470
 msgid "Application"
 msgstr "Antrag"
 
@@ -104,7 +104,8 @@ msgstr "Antrag"
 #: agenda/templates/agenda/overview.html:231
 #: agenda/templates/beamer/ItemAssignment.html:8
 #: assignment/templates/assignment/edit.html:2 poll/models.py:24
-#: utils/pdf.py:534 utils/pdf.py:675 utils/pdf.py:684
+#: system/templates/system/base_system.html:15 utils/pdf.py:534
+#: utils/pdf.py:675 utils/pdf.py:684
 msgid "Election"
 msgstr "Wahl"
 
@@ -119,7 +120,7 @@ msgstr "Abstimmung"
 #: agenda/templates/agenda/overview.html:96
 #: agenda/templates/beamer/overview.html:3
 #: agenda/templates/beamer/overview.html:10
-#: system/templates/system/general.html:13 templates/base.html:37
+#: system/templates/system/base_system.html:13 templates/base.html:37
 #: utils/pdf.py:227 utils/pdf.py:232
 msgid "Agenda"
 msgstr "Tagesordnung"
@@ -147,7 +148,8 @@ msgstr "Tagesordnungseintrag geändert"
 
 #: agenda/views.py:283 application/views.py:531 participant/views.py:145
 #: participant/views.py:256 participant/views.py:285 participant/views.py:346
-#: system/views.py:49 system/views.py:92
+#: system/views.py:37 system/views.py:55 system/views.py:79
+#: system/views.py:105 system/views.py:143
 msgid "Please check the form for errors."
 msgstr "Bitte kontrollieren Sie das Formular nach Fehlern."
 
@@ -209,7 +211,10 @@ msgstr "Wahleintrag"
 #: participant/templates/participant/edit.html:18
 #: participant/templates/participant/group_edit.html:14
 #: participant/templates/participant/settings.html:15
-#: system/templates/system/general.html:28
+#: system/templates/system/agenda.html:10
+#: system/templates/system/application.html:10
+#: system/templates/system/assignment.html:10
+#: system/templates/system/general.html:10
 #: system/templates/system/system.html:11
 msgid "Save"
 msgstr "Speichern"
@@ -235,7 +240,10 @@ msgstr "Übernehmen"
 #: participant/templates/participant/group_edit.html:21
 #: participant/templates/participant/import.html:16
 #: participant/templates/participant/settings.html:19
-#: system/templates/system/general.html:32
+#: system/templates/system/agenda.html:14
+#: system/templates/system/application.html:14
+#: system/templates/system/assignment.html:14
+#: system/templates/system/general.html:14
 #: system/templates/system/system.html:15
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -800,6 +808,7 @@ msgstr "Neuer Antrag"
 
 #: application/templates/application/base_application.html:13
 #: application/templates/application/import.html:2
+#: application/templates/application/import.html:5
 msgid "Import applications"
 msgstr "Anträge importieren"
 
@@ -1194,8 +1203,7 @@ msgstr "gewählt"
 #: assignment/templates/assignment/overview.html:2
 #: assignment/templates/assignment/overview.html:5
 #: assignment/templates/assignment/overview.html:21 system/models.py:23
-#: system/templates/system/general.html:23 templates/base.html:45
-#: utils/pdf.py:642
+#: templates/base.html:45 utils/pdf.py:642
 msgid "Elections"
 msgstr "Wahlen"
 
@@ -1703,7 +1711,23 @@ msgstr "Titel für PDF-Dokument (alle Wahlen)"
 msgid "Preamble text for PDF document (all elections)"
 msgstr "Einleitungstext für PDF-Dokument (alle Wahlen) "
 
-#: system/views.py:43
+#: system/views.py:35
+msgid "General settings successfully saved."
+msgstr "Allgemeine Einstellungen erfolgreich gespeichert."
+
+#: system/views.py:53
+msgid "Agenda settings successfully saved."
+msgstr "Tagesordnungs-Einstellungen erfolgreich gespeichert."
+
+#: system/views.py:77
+msgid "Application settings successfully saved."
+msgstr "Antrags-Einstellungen erfolgreich gespeichert."
+
+#: system/views.py:103
+msgid "Election settings successfully saved."
+msgstr "Wahl-Einstellungen wurden erfolgreich gespeichert."
+
+#: system/views.py:137
 msgid ""
 "Anonymous access enabled. Please modify the \"Anonymous\" group to fit your "
 "required permissions."
@@ -1711,33 +1735,46 @@ msgstr ""
 "Anonymer Zugriff aktiviert. Bitte setzen Sie die Rechte der Gruppe "
 "\"Anonymous\" passend zum gewünschten Zugriffslevel."
 
-#: system/views.py:47
+#: system/views.py:141
 msgid "System settings successfully saved."
 msgstr "Systemeinstellungen erfolgreich gespeichert."
 
-#: system/views.py:90
-msgid "General settings successfully saved."
-msgstr "Allgemeine Einstellungen erfolgreich gespeichert."
-
-#: system/templates/system/base_system.html:7
+#: system/templates/system/agenda.html:2
+#: system/templates/system/application.html:2
+#: system/templates/system/assignment.html:2
+#: system/templates/system/base_system.html:10
 #: system/templates/system/general.html:2
 #: system/templates/system/system.html:2 templates/base.html:53
 msgid "Configuration"
 msgstr "Konfiguration"
 
-#: system/templates/system/base_system.html:9
-#: system/templates/system/general.html:5
+#: system/templates/system/agenda.html:5
+msgid "Agenda settings"
+msgstr "Tagesordnungs-Einstellungen"
+
+#: system/templates/system/application.html:5
+msgid "Application settings"
+msgstr "Antrags-Einstellungen"
+
+#: system/templates/system/assignment.html:5
+msgid "Election settings"
+msgstr "Wahl-Einstellungen"
+
+#: system/templates/system/base_system.html:12
 msgid "General"
 msgstr "Allgemein"
 
-#: system/templates/system/base_system.html:10
-#: system/templates/system/system.html:5
+#: system/templates/system/base_system.html:16
 msgid "System"
 msgstr "System"
 
-#: system/templates/system/general.html:8
-msgid "Event"
-msgstr "Veranstaltung"
+#: system/templates/system/general.html:5
+msgid "General settings"
+msgstr "Allgemeine Einstellungen"
+
+#: system/templates/system/system.html:5
+msgid "System settings"
+msgstr "System-Einstellungen"
 
 #: templates/404.html:9
 msgid "Page not found."
@@ -1834,3 +1871,6 @@ msgstr "verfügbare Posten"
 #: utils/utils.py:75
 msgid "Sorry, you have no rights to see this page."
 msgstr "Bedaure, Sie haben keine Berechtigung diese Seite zu sehen."
+
+#~ msgid "Event"
+#~ msgstr "Veranstaltung"

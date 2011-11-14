@@ -2,11 +2,17 @@
 {% load tags %}
 
 {% block submenu %}
+    {% url config_general as url_config_general %}
+    {% url config_agenda as url_config_agenda %}
+    {% url config_application as url_config_application %}
+    {% url config_assignment as url_config_assignment %}
     {% url config_system as url_config_system %}
-    {% url config_general as url_config_general %}    
     <h4 class="sectiontitle">{%trans "Configuration" %}</h4>
     <ul>
         <li class="{% if request.path == url_config_general %}selected{% endif %}"><a href="{% url config_general %}">{%trans "General" %}</a></li>
+        <li class="{% if request.path == url_config_agenda %}selected{% endif %}"><a href="{% url config_agenda %}">{%trans "Agenda" %}</a></li>
+        <li class="{% if request.path == url_config_application %}selected{% endif %}"><a href="{% url config_application %}">{%trans "Application" %}</a></li>
+        <li class="{% if request.path == url_config_assignment %}selected{% endif %}"><a href="{% url config_assignment %}">{%trans "Election" %}</a></li>
         <li class="{% if request.path == url_config_system %}selected{% endif %}"><a href="{% url config_system %}">{%trans "System" %}</a></li>
     </ul>
 {% endblock %}
