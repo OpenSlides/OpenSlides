@@ -64,7 +64,8 @@
             <td>{% if user.last_login > user.date_joined %}
                 {{ user.last_login }}
                 {% endif %}</td>
-            <td style="width: 1px; white-space: nowrap;"><a href="{% url user_edit user.id %}"><img src="/static/images/icons/document-edit.png" title="{%trans 'Edit participant' %}"></a>
+            <td><span style="width: 1px; white-space: nowrap;">
+                <a href="{% url user_edit user.id %}"><img src="/static/images/icons/document-edit.png" title="{%trans 'Edit participant' %}"></a>
                 <a href="{% url user_delete user.id %}"><img src="/static/images/icons/edit-delete.png" title="{%trans 'Delete participant' %}"></a>
                 {% if user.is_active %}
                 <a href="{% url user_set_active user.id %}"><img src="/static/images/icons/user-online.png" title="{%trans 'Participiant is activated. Click to deactivate!' %}"></a>
@@ -76,6 +77,7 @@
                 {% else %}
                 <a href="{% url user_set_superuser user.id %}"><img src="/static/images/icons/im-user.png" title="{%trans 'Normal user. Click to get administrator!' %}"></a>
                 {% endif %}
+                </span>
             </td>
             {% endif %}
         </tr>

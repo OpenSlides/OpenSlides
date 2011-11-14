@@ -97,9 +97,10 @@
                 {% if perms.agenda.can_manage_agenda %}
                 <td></td>
                 {% endif %}
-                <td id="action_field" style="width: 1px;white-space: nowrap;">
-                    <div></div>
+                <td><span id="action_field" style="width: 1px;white-space: nowrap;">
+                    <span></span>
                     <a href="{% url print_agenda %}" title="{%trans 'Print agenda' %}"><img src="/static/images/icons/application-pdf.png"></a>
+                    </span>
                 </td>
             </tr>
             {% for item in items %}
@@ -161,21 +162,21 @@
                     {% endif %}
                 </td>
                 {% endif %}
-                <td style="width: 1px;white-space: nowrap;">
+                <td><span style="width: 1px;white-space: nowrap;">
                     <a href="{{ item.get_absolute_url }}"><img src="/static/images/icons/document-preview.png" title="{% trans 'Show projector preview' %}"></a>
 
                     {% if perms.agenda.can_manage_agenda %}
                     <a href="{% url item_edit item.id %}"><img src="/static/images/icons/document-edit.png" title="{% trans 'Edit item' %}"></a>
                     <a href="{% url item_delete item.id %}"><img src="/static/images/icons/edit-delete.png" title="{% trans 'Delete item' %}"></a>
-
                     <a class="close_link {% if item.closed %}closed{% else %}open{% endif %}" href="{% if item.closed %}{% url item_open item.id %}{% else %}{% url item_close item.id %}{% endif %}">
-                        <div></div>
+                        <span></span>
                     </a>
 
                     {% if item.children.exists %}
                         <a href="{% url item_activate_summary item.id %}"><img src="/static/images/icons/view-list-tree.png" title="{% trans 'Select item overview' %}"></a>
                     {% endif %}
                     {% endif %}
+                    </span>
                 </td>
                 {% if perms.agenda.can_manage_agenda %}
                 <td class="tabledrag-hide">
@@ -233,16 +234,17 @@
                         Text
                     {% endifequal %}
                 </td>
-                <td style="width: 1px;white-space: nowrap;">
+                <td><span style="width: 1px;white-space: nowrap;">
                     <a href="{{ item.get_absolute_url }}"><img src="/static/images/icons/document-preview.png" title="{% trans 'Show projector preview' %}"></a>
                     <a href="{% url item_edit item.id %}"><img src="/static/images/icons/document-edit.png" title="{% trans 'Edit item' %}"></a>
                     <a href="{% url item_delete item.id %}"><img src="/static/images/icons/edit-delete.png" title="{% trans 'Delete item' %}"></a>
                     <a class="close_link {% if item.closed %}closed{% else %}open{% endif %}" href="{% if item.closed %}{% url item_open item.id %}{% else %}{% url item_close item.id %}{% endif %}">
-                        <div></div>
+                        <span></span>
                     </a>
                     {% if item.children.exists %}
                         <a href="{% url item_activate_summary item.id %}"><img src="/static/images/icons/view-list-tree.png" title="{% trans 'Select item overview' %}"></a>
                     {% endif %}
+                    </span>
                 </td>
                 <td class="tabledrag-hide">
                     {% with form=item.weight_form %}

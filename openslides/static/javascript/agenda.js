@@ -63,7 +63,7 @@ $(function() {
         });
     });
     // hide closed items
-    $('#action_field div').after($('<a id="hidelink" class="hidelink hide" title="hide" href="#"><div></div></a>').click(function () {
+    $('#action_field span').after($('<a id="hidelink" class="hidelink hide" title="hide" href="#"><span></span></a>').click(function () {
         if ($.cookie('Slide.HideClosed') == 1) {
             $.cookie('Slide.HideClosed', 0);
             hideClosedSlides(false);

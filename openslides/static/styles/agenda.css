@@ -13,7 +13,7 @@ tr.inactiveline a.activate_link div {
     height: 16px;
 }
 
-a.close_link.closed div {
+a.close_link.closed span {
     background-image: url(/static/images/icons/user-offline.png);
     background-repeat: no-repeat;
     background-position: center;
@@ -21,7 +21,7 @@ a.close_link.closed div {
     height: 16px;
     display: inline-block;
 }
-a.close_link.open div {
+a.close_link.open span {
     background-image: url(/static/images/icons/user-online.png);
     background-repeat: no-repeat;
     background-position: center;
@@ -30,7 +30,7 @@ a.close_link.open div {
     display: inline-block;
 }
 
-a.hidelink.hide div {
+a.hidelink.hide span {
     background-image: url(/static/images/icons/layer-visible-off.png);
     background-repeat: no-repeat;
     background-position: center;
@@ -38,7 +38,7 @@ a.hidelink.hide div {
     height: 16px;
     display: inline-block;
 }
-a.hidelink.show div {
+a.hidelink.show span {
     background-image: url(/static/images/icons/layer-visible-on.png);
     background-repeat: no-repeat;
     background-position: center;
