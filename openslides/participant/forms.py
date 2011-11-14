@@ -10,11 +10,25 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.forms import Form, ModelForm, CharField, EmailField, FileField, FileInput, MultipleChoiceField
-from django.contrib.auth.models import User, Group
+from django.forms import Form, ModelForm, CharField, EmailField, FileField, FileInput, MultipleChoiceField, ModelMultipleChoiceField
+from django.contrib.auth.models import User, Group, Permission
 from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.utils.translation import ugettext as _
+
+# required for USER_VISIBLE_PERMISSIONS
+from agenda.models import Item
+from application.models import Application
+from assignment.models import Assignment
 from participant.models import Profile
+from system.models import Config
+
+USER_VISIBLE_PERMISSIONS = reduce(list.__add__, [
+    [p[0] for p in Item._meta.permissions],
+    [p[0] for p in Application._meta.permissions],
+    [p[0] for p in Assignment._meta.permissions],
+    [p[0] for p in Profile._meta.permissions],
+    [p[0] for p in Config._meta.permissions]
+])
 
 class UserNewForm(ModelForm):
     error_css_class = 'error'
@@ -56,9 +70,16 @@ class ProfileForm(ModelForm):
 class GroupForm(ModelForm):
     error_css_class = 'error'
     required_css_class = 'required'
+    permissions = ModelMultipleChoiceField(queryset=Permission.objects.filter(codename__in=USER_VISIBLE_PERMISSIONS))
+
+    def __init__(self, *args, **kwargs):
+        super(GroupForm, self).__init__(*args, **kwargs)
+        if kwargs.get('instance', None) is not None:
+            self.fields['permissions'].initial = [p.pk for p in kwargs['instance'].permissions.all()]
 
     class Meta:
         model = Group
+        exclude = ('permissions',)
 
 class UsersettingsForm(UserEditForm):
     class Meta:
