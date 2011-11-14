@@ -28,7 +28,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _, ungettext
 
 from participant.models import Profile, set_first_user_passwords
-from participant.api import gen_username
+from participant.api import gen_username, gen_password
 from participant.forms import UserNewForm, UserEditForm, ProfileForm, UsersettingsForm, UserImportForm, GroupForm, AdminPasswordChangeForm
 from utils.utils import template, permission_required, gen_confirm_form
 from utils.pdf import print_userlist, print_passwords
@@ -129,6 +129,9 @@ def edit(request, user_id=None):
                 user.save()
             profile = profileform.save(commit=False)
             profile.user = user
+            profile.firstpassword = gen_password()
+            profile.user.set_password(profile.firstpassword)
+            user.save()
             profile.save()
             if user_id is None:
                 messages.success(request, _('New participant was successfully created.'))
