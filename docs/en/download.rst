@@ -1,14 +1,14 @@
 Download
 ========
 
-OpenSlides 1.0 (2011-09-12)
+OpenSlides 1.1 (2011-11-15)
 ---------------------------
 
-- `zip <http://openslides.org/download/openslides-1.0.zip>`_ (1 MB)
-- `tar.gz <http://openslides.org/download/openslides-1.0.tar.gz>`_ (1 MB)
+- `zip <http://openslides.org/download/openslides-1.1.zip>`_ (1 MB)
+- `tar.gz <http://openslides.org/download/openslides-1.1.tar.gz>`_ (1 MB)
 
 Read the 
-`installation instructions <http://dev.openslides.org/browser/INSTALL>`_
+`installation instructions <http://openslides.org/download/INSTALL-1.1.txt>`_
 after download.
 
 Source Code
