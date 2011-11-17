@@ -129,9 +129,9 @@ def edit(request, user_id=None):
                 user.save()
             profile = profileform.save(commit=False)
             profile.user = user
-            profile.firstpassword = gen_password()
-            profile.user.set_password(profile.firstpassword)
-            user.save()
+            if user_id is None:
+                profile.firstpassword = gen_password()
+                profile.user.set_password(profile.firstpassword)
             profile.save()
             if user_id is None:
                 messages.success(request, _('New participant was successfully created.'))
