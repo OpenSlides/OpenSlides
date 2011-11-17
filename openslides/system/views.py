@@ -38,6 +38,10 @@ def get_general_config(request):
     else:
         form_event = EventConfigForm(initial={
             'event_name': config_get('event_name'),
+            'event_description': config_get('event_description'),
+            'event_date': config_get('event_date'),
+            'event_location': config_get('event_location'),
+            'event_organizer': config_get('event_organizer'),
         }, prefix='event')
     return {
         'form_event': form_event,
