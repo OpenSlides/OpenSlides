@@ -54,9 +54,7 @@ class AssignmentConfigForm(Form):
     error_css_class = 'error'
     required_css_class = 'required'
 
-    assignment_pdf_title = CharField(widget=TextInput(), required=False, label=_("Title for PDF document (all elections)"))
-    assignment_pdf_preamble = CharField(widget=Textarea(), required=False, label=_("Preamble text for PDF document (all elections)"))
     assignment_pdf_ballot_papers_selection = ChoiceField(widget=Select(), required=False, label=_("Number of ballot papers (selection)"), choices=[("1", _("Number of all delegates")),("2", _("Number of all participants")),("0", _("Use the following custum number"))])
     assignment_pdf_ballot_papers_number = IntegerField(widget=TextInput(attrs={'class':'small-input'}), required=False, min_value=1, label=_("Custom number of ballot papers"))
-
-    
+    assignment_pdf_title = CharField(widget=TextInput(), required=False, label=_("Title for PDF document (all elections)"))
+    assignment_pdf_preamble = CharField(widget=Textarea(), required=False, label=_("Preamble text for PDF document (all elections)"))
