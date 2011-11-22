@@ -11,6 +11,7 @@
 """
 
 import csv
+import utils.csv_ext
 from urllib import urlencode
 try:
     from urlparse import parse_qs
@@ -26,6 +27,7 @@ from django.contrib.auth.forms import SetPasswordForm
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _, ungettext
+from django.db import transaction
 
 from participant.models import Profile
 from participant.api import gen_username, gen_password
@@ -309,39 +311,45 @@ def user_import(request):
     if request.method == 'POST':
         form = UserImportForm(request.POST, request.FILES)
         if form.is_valid():
-            profiles = Profile.objects.all()
-            for profile in profiles:
-                profile.user.delete()
-                profile.delete()
-            i = -1
-            for line in request.FILES['csvfile']:
-                i += 1
-                if i > 0:
-                    (first_name, last_name, gender, group, type, committee) = line.strip().split(',')
-                    user = User()
-                    user.last_name = last_name
-                    user.first_name = first_name
-                    user.username = gen_username(first_name, last_name)
-                    #user.email = email
-                    user.save()
-                    profile = Profile()
-                    profile.user = user
-                    profile.gender = gender
-                    profile.group = group
-                    profile.type = type
-                    profile.committee = committee
-                    profile.firstpassword = gen_password()
-                    profile.user.set_password(profile.firstpassword)
-                    profile.save()
+            try:
+                with transaction.commit_on_success():
+                    profiles = Profile.objects.all()
+                    for profile in profiles:
+                        profile.user.delete()
+                        profile.delete()
+                    i = -1
+                    dialect = csv.Sniffer().sniff(request.FILES['csvfile'].readline())
+                    request.FILES['csvfile'].seek(0)
+                    for line in csv.reader(request.FILES['csvfile'], dialect=dialect):
+                        i += 1
+                        if i > 0:
+                            (first_name, last_name, gender, group, type, committee) = line[:6]
+                            user = User()
+                            user.last_name = last_name
+                            user.first_name = first_name
+                            user.username = gen_username(first_name, last_name)
+                            #user.email = email
+                            user.save()
+                            profile = Profile()
+                            profile.user = user
+                            profile.gender = gender
+                            profile.group = group
+                            profile.type = type
+                            profile.committee = committee
+                            profile.firstpassword = gen_password()
+                            profile.user.set_password(profile.firstpassword)
+                            profile.save()
 
-                    if type == 'delegate':
-                        delegate = Group.objects.get(name='Delegierte')
-                        user.groups.add(delegate)
-                    else:
-                        observer = Group.objects.get(name='Beobachter')
-                        user.groups.add(observer)
+                            if type == 'delegate':
+                                delegate = Group.objects.get(name='Delegierte')
+                                user.groups.add(delegate)
+                            else:
+                                observer = Group.objects.get(name='Beobachter')
+                                user.groups.add(observer)
 
-            messages.success(request, _('%d new participants were successfully imported.') % i)
+                    messages.success(request, _('%d new participants were successfully imported.') % i)
+            except csv.Error:
+                message.error(request, _('Import aborted because of severe errors in the input file.'))
         else:
             messages.error(request, _('Please check the form for errors.'))
     else:
