@@ -319,6 +319,7 @@ def user_import(request):
                         profile.delete()
                     i = -1
                     dialect = csv.Sniffer().sniff(request.FILES['csvfile'].readline())
+                    dialect = utils.csv_ext.patchup(dialect)
                     request.FILES['csvfile'].seek(0)
                     for line in csv.reader(request.FILES['csvfile'], dialect=dialect):
                         i += 1

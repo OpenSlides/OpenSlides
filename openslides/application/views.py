@@ -13,6 +13,7 @@ from __future__ import with_statement
 
 import csv
 import utils.csv_ext
+
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -455,6 +456,7 @@ def application_import(request):
                 applications_modified = 0
                 with transaction.commit_on_success():
                     dialect = csv.Sniffer().sniff(request.FILES['csvfile'].readline())
+                    dialect = utils.csv_ext.patchup(dialect)
                     request.FILES['csvfile'].seek(0)
                     for (lno, line) in enumerate(csv.reader(request.FILES['csvfile'], dialect=dialect)):
                         # basic input verification
