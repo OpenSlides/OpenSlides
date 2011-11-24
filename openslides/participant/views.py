@@ -109,7 +109,7 @@ def get_overview(request):
 @template('participant/edit.html')
 def edit(request, user_id=None):
     """
-    View zum editieren und neuanlegen von Usern mit Profile
+    View to create and edit users with profile.
     """
     if user_id is not None:
         user = User.objects.get(id=user_id)
@@ -124,7 +124,7 @@ def edit(request, user_id=None):
             userform = UserEditForm(request.POST, instance=user, prefix="user")
             profileform = ProfileForm(request.POST, instance=user.profile, prefix="profile")
 
-        if userform.is_valid and profileform.is_valid:
+        if userform.is_valid() and profileform.is_valid():
             user = userform.save()
             if user_id is None:
                 user.username = gen_username(user.first_name, user.last_name)
