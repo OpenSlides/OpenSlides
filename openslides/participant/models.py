@@ -19,7 +19,6 @@ from participant.api import gen_password
 
 class Profile(models.Model):
     GENDER_CHOICES = (
-        ('none', _('Not specified')),
         ('male', _('Male')),
         ('female', _('Female')),
     )
@@ -31,9 +30,9 @@ class Profile(models.Model):
     )
 
     user = models.OneToOneField(User, unique=True, editable=False)
-    gender = models.CharField(max_length=50, choices=GENDER_CHOICES, default='none', verbose_name = _("Gender"))
+    gender = models.CharField(max_length=50, choices=GENDER_CHOICES, blank=True, verbose_name = _("Gender"))
     group = models.CharField(max_length=100, null=True, blank=True, verbose_name = _("Group"))
-    type = models.CharField(max_length=100, choices=TYPE_CHOICE, default='guest', verbose_name = _("Typ"))
+    type = models.CharField(max_length=100, choices=TYPE_CHOICE, blank=True, verbose_name = _("Typ"))
     committee = models.CharField(max_length=100, null=True, blank=True, verbose_name = _("Committee"))
     firstpassword = models.CharField(max_length=100, null=True, blank=True, verbose_name = _("First Password"))
 

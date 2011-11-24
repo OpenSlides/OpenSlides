@@ -41,7 +41,7 @@ PDF:
 - [Bugfix] Print available candidates in assignment pdf (#14)
 - [Bugfix] "Show ""undocumented"" for result ""-2"" in application and assignment pdf" (#17)
 Other:
-- [Feature] Rights for anonymous	rene	enhancement (#45)
+- [Feature] Rights for anonymous (#45)
 - [Feature] Show counter for limited speaking time (#52)
 - [Feature] Reorderd config tab subpages (#61)
 - [Localize] i18n German: Use gender-specific strings (#51)
