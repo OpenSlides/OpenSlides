@@ -11,7 +11,7 @@
             <option value="---">-- {%trans "Gender" %}--</option>
             <option value="male" {% if 'male' in sortfilter.gender %}selected{% endif %}>{%trans "Male" %}</option>
             <option value="female" {% if 'female' in sortfilter.gender %}selected{% endif %}>{%trans "Female" %}</option>
-            <option value="none" {% if 'none' in sortfilter.gender %}selected{% endif %}>{%trans "Not specified" %}</option>
+            <option value="" {% if '' in sortfilter.gender %}selected{% endif %}>{%trans "Not specified" %}</option>
         </select>
         <select class="default-input" name="group" onchange="document.forms['filter'].submit()">
             <option value="---">-- {%trans "Group" %}--</option>
@@ -26,6 +26,7 @@
             <option value="observer" {% if 'observer' in sortfilter.type %}selected{% endif %}>{%trans "Observer" %}</option>
             <option value="staff" {% if 'staff' in sortfilter.type %}selected{% endif %}>{%trans "Staff" %}</option>
             <option value="guest" {% if 'guest' in sortfilter.type %}selected{% endif %}>{%trans "Guest" %}</option>
+            <option value="" {% if '' in sortfilter.type %}selected{% endif %}>{%trans "Not specified" %}</option>
         </select>
         <select class="default-input" name="committee" onchange="document.forms['filter'].submit()">
             <option value="---">-- {%trans "Committee" %}--</option>
