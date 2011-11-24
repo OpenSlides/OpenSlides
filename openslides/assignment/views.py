@@ -114,6 +114,8 @@ def edit(request, assignment_id=None):
                 return redirect(reverse("assignment_overview"))
             if assignment_id is None:
                 return redirect(reverse('assignment_edit', args=[assignment.id]))
+        else:
+            messages.error(request, _('Please check the form for errors.'))
     else:
         form = AssignmentForm(instance=assignment)
     return {

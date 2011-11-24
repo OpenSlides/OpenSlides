@@ -176,6 +176,8 @@ def edit(request, application_id=None):
                 return redirect(reverse('application_view', args=[application.id]))
             if application_id is None:
                 return redirect(reverse('application_edit', args=[application.id]))
+        else:
+            messages.error(request, _('Please check the form for errors.'))
     else:
         if application_id is None:
             initial = {'text': config_get('application_preamble')}
