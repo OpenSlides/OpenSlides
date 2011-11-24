@@ -117,10 +117,8 @@ system.
 
   2. Setup virtualenv:
 
-       # go to the root directory of OpenSlides
-       cd openslides
-
-       # create virtualenv environment
+       # Go to the (extracted/cloned) root directory of OpenSlides
+       # and create virtualenv environment
        virtualenv --no-site-packages .venv
 
        # activate virtualenv environment
