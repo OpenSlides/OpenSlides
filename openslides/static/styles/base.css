@@ -467,12 +467,13 @@ ul.results {
     padding:0;
 }
 
-/* Fieldsets */
-fieldset {
-    width: 0px;
-    padding: 0 60px 0 20px;
+/* Main container */
+#main ul{
+    list-style: disc inside;
 }
-
+#main table {
+    width: auto;
+}
 
 /* Misc */
 #sidebar {
