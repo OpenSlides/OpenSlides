@@ -10,6 +10,8 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+from __future__ import with_statement
+
 import csv
 import utils.csv_ext
 from urllib import urlencode
