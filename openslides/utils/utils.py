@@ -86,3 +86,12 @@ def ajax_request(data):
     ajax response
     """
     return HttpResponse(json.dumps(data))
+
+def _propper_unicode(text):
+    res = ''
+    if not isinstance(text, unicode):
+        res = u"%s" % text.decode('UTF-8')
+    else:
+        res = text
+    return res
+

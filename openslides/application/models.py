@@ -19,6 +19,7 @@ from django.utils.translation import ugettext as _
 
 from openslides.participant.models import Profile
 from openslides.system.api import config_get
+from openslides.utils.utils import _propper_unicode
 
 
 class Application(models.Model):
@@ -385,9 +386,9 @@ class Application(models.Model):
     def writelog(self, text, user=None):
         if not self.log:
             self.log = ""
-        self.log += u"%s | %s" % (datetime.now().strftime("%d.%m.%Y %H:%M:%S"), text)
+        self.log += u"%s | %s" % (datetime.now().strftime("%d.%m.%Y %H:%M:%S"), _propper_unicode(text))
         if user is not None:
-            self.log += u" (by %s)" % (user.username)
+            self.log += u" (by %s)" % (_propper_unicode(user.username))
         self.log += "\n"
         self.save()
 
