@@ -24,8 +24,8 @@ h2           { font-size: 18px; margin: 25px 0 5px 0; }
 h3           { font-size: 19px; margin: 25px 0 5px 0; }
 textarea, code,
 pre          { font-family: 'Consolas', 'Menlo', 'Deja Vu Sans Mono', 'Bitstream Vera Sans Mono',
-               monospace!important; font-size: 15px; background: #E8EFF0; }
-pre          { padding: 7px 30px; margin: 15px -30px; line-height: 1.3; }
+               monospace!important; font-size: 15px; background: #E8EFF0;
+               padding: 7px 30px; margin: 0px 0px; line-height: 1.3; font-size:0.9em}
 .ig          { color: #888; }
 p            { line-height: 1.4; color:#444444;}
 ul           { margin: 15px 0 15px 0; padding: 0; list-style: none; line-height: 1.4; }
@@ -314,11 +314,6 @@ p.admonition-title:after {
     content: ":";
 }
 
-pre, tt {
-    font-family: 'Consolas', 'Menlo', 'Deja Vu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
-    font-size: 0.9em;
-}
-
 img.screenshot {
 }
 
@@ -403,13 +398,6 @@ ul, ol {
     margin: 10px 0 10px 30px;
     padding: 0;
 }
- 
-pre {
-    background: #E8EFF0;
-    padding: 7px 30px;
-    margin: 15px -30px;
-    line-height: 1.3em;
-}
 
 dl pre, blockquote pre, li pre {
     margin-left: -60px;
@@ -433,8 +421,8 @@ tt.xref, a tt {
 }
 
 a.reference {
-    text-decoration: none;
-    border-bottom: 0px dotted #2BABC4;
+    /*text-decoration: none;
+    border-bottom: 0px dotted #2BABC4;*/
 }
 a.reference:hover {
     border-bottom: 1px solid #2794AA;
@@ -453,4 +441,68 @@ a.footnote-reference:hover {
 
 a:hover tt {
     background: #EEE;
+}
+
+
+/* Button */
+.button {
+    border: 1px solid #D3D3D3;
+    border-radius: 4px 4px 4px 4px;
+    display: inline-block;
+    font-weight: normal;
+    padding: 4px 10px;
+    margin: 2px 0 2px 0;
+    text-align: center;
+    text-decoration: none;
+    background:#f9f9f9;
+    background:#f9f9f9 -webkit-gradient( linear,0% 0%,0% 100%,from(rgba(255,255,255,.2)),to(rgba(0,0,0,0)));
+    background:#f9f9f9 -moz-linear-gradient( top,rgba(255,255,255,.4),rgba(0,0,0,0));
+    color: #555555;
+    cursor: pointer;
+}
+.button:hover {
+    border: 1px solid #999999;
+    background:#f9f9f9 -webkit-gradient(linear,0% 0%,0% 100%,from(rgba(255,255,255,.55)),to(rgba(0,0,0,0)));
+    background:#f9f9f9 -moz-linear-gradient( top,rgba(255,255,255,.55),rgba(0,0,0,0));
+}
+.button:active {
+    -webkit-box-shadow:inset 0 100% 0 0 rgba(0,0,0,0.2);
+    background:#f9f9f9 -webkit-gradient(linear,0% 0%,0% 100%,from(rgba(0,0,0,.3)),to(rgba(0,0,0,0)));
+    background:#f9f9f9 -moz-linear-gradient( top,rgba(0,0,0,.1),rgba(0,0,0,0));
+}
+.button .icon {
+    height: 22px;
+    text-indent:30px;
+    padding-top: 1px;
+    display:block;
+    text-transform:none;
+    white-space:nowrap;
+}
+.button .run{
+    background:url(./images/icons/run.png) no-repeat 0px 0px;
+}
+.button .donate{
+    background:url(./images/icons/help-donate.png) no-repeat 0px 0px;
+}
+
+.download-button {
+    background: -moz-linear-gradient(center top , #84C63C 0%, #489615 100%) repeat scroll 0 0 transparent;
+    border-radius: 4px 4px 4px 4px;
+    color: #FFFFFF;
+    cursor: pointer;
+    width: 250px;
+    display: block;
+    line-height: 1.4em;
+    padding: 10px;
+    text-align: center;
+}
+.download-button:hover {
+    background: none repeat scroll 0 0 #45A32B;
+}
+.download-button strong {
+    color: #FFFFFF;
+    font-size: 15px;
+}
+.download-button span {
+    color: #346012;
 }

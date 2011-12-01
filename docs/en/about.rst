@@ -27,5 +27,3 @@ project, called "OpenSlides". OpenSlides was published under the GNU GPL
 in August 2011. Version 1.0 is released on September 12th 2011. 
 The first productive use of OpenSlides happened at the general meeting of
 the ESG in Hanover/Germany in mid-september 2011.
-
-You can find our contact under `Help <help.html#contact>`_.

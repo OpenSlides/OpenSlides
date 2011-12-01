@@ -11,6 +11,8 @@ Read the
 `installation instructions <http://openslides.org/download/INSTALL-1.1.txt>`_
 after download.
 
+Find older versions und checksums (sha1sums) under http://openslides.org/download.
+
 Source Code
 -----------
 
