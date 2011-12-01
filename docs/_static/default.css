@@ -486,7 +486,7 @@ a:hover tt {
 }
 
 .download-button {
-    background: -moz-linear-gradient(center top , #84C63C 0%, #489615 100%) repeat scroll 0 0 transparent;
+    background: none repeat scroll 0 0 #489615;
     border-radius: 4px 4px 4px 4px;
     color: #FFFFFF;
     cursor: pointer;
