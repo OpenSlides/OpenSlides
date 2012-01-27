@@ -100,6 +100,10 @@ def get_assignment_config(request):
     if request.method == 'POST':
         form_assignment = AssignmentConfigForm(request.POST, prefix='assignment')
         if form_assignment.is_valid():
+            if form_assignment.cleaned_data['assignment_publish_winner_results_only']:
+                config_set('assignment_publish_winner_results_only', True)
+            else:
+                config_set('assignment_publish_winner_results_only', '')
             config_set('assignment_pdf_ballot_papers_selection', form_assignment.cleaned_data['assignment_pdf_ballot_papers_selection'])
             config_set('assignment_pdf_ballot_papers_number', form_assignment.cleaned_data['assignment_pdf_ballot_papers_number'])
             config_set('assignment_pdf_title', form_assignment.cleaned_data['assignment_pdf_title'])
@@ -109,6 +113,7 @@ def get_assignment_config(request):
             messages.error(request, _('Please check the form for errors.'))
     else:
         form_assignment = AssignmentConfigForm(initial={
+            'assignment_publish_winner_results_only': config_get('assignment_publish_winner_results_only'),
             'assignment_pdf_ballot_papers_selection': config_get('assignment_pdf_ballot_papers_selection'),
             'assignment_pdf_ballot_papers_number': config_get('assignment_pdf_ballot_papers_number'),
             'assignment_pdf_title': config_get('assignment_pdf_title'),
