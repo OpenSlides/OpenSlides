@@ -12,7 +12,6 @@
 
 from django.contrib import admin
 
-from openslides.agenda.models import Item, ItemText
+from openslides.agenda.models import Item
 
 admin.site.register(Item)
-admin.site.register(ItemText)

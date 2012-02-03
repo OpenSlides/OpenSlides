@@ -187,8 +187,8 @@ def delother(request, assignment_id, profile_id):
 
 @permission_required('assignment.can_manage_application')
 def set_active(request, assignment_id):
-    item = Item.objects.get(itemassignment__assignment__id=assignment_id)
-    item.set_active(False)
+    assignment = Assignment.objects.get(pk=assignment_id)
+    assignment.set_active()
     return redirect(reverse('assignment_view', args=[assignment_id]))
 
 @permission_required('assignment.can_manage_assignment')

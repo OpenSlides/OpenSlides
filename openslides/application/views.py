@@ -332,8 +332,8 @@ def unsupport(request, application_id):
 
 @permission_required('application.can_manage_application')
 def set_active(request, application_id):
-    item = Item.objects.get(itemapplication__application__id=application_id)
-    item.set_active(False)
+    application = Application.objects.get(pk=application_id)
+    application.set_active()
     return redirect(reverse('application_view', args=[application_id]))
 
 

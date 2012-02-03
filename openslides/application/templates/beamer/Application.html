@@ -6,19 +6,19 @@
     <div id="sidebar">
     <div class="box">
         <p><b>{%trans "Status" %}:</b><br>
-        {% if item.application.status != "pub" %}
-            {%trans item.application.get_status_display %}
+        {% if application.status != "pub" %}
+            {%trans application.get_status_display %}
             <br>
         {% else %}
-            {% for note in item.application.notes %}
+            {% for note in application.notes %}
             {{ note }}
             {% endfor %}
         {% endif %}
         </p>
 
         <p><b>{% trans "Submitter" %}:</b><br>
-        {{ item.application.submitter.profile }}</p>
-    {% with item.application.poll_set.all as polls %}
+        {{ application.submitter.profile }}</p>
+    {% with application.poll_set.all as polls %}
     {% if polls|length > 0 and polls.0.has_vote %}
     <p><b>{% trans "Poll result" %}:</b></p>
     {% for p in polls %}
@@ -47,14 +47,14 @@
     </div>
     </div>
 
-    <h1>{% trans "Application No." %} {{ item.application.number }}</h1>
+    <h1>{% trans "Application No." %} {{ application.number }}</h1>
     <b>{{ item.title }}</b>
     <p>
-    <div class="text">{{ item.application.public_version.text|linebreaks }}</div>
-    {% if item.application.public_version.reason %}
+    <div class="text">{{ application.public_version.text|linebreaks }}</div>
+    {% if application.public_version.reason %}
         <br>
         <div class="reason"><p><b>{% trans "Reason" %}:</b></p>
-        {{ item.application.public_version.reason|linebreaks }}</div>
+        {{ application.public_version.reason|linebreaks }}</div>
     {% endif %}
     </p>
 {% endblock %}

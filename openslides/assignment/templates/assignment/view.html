@@ -36,21 +36,14 @@
     </span>
     </a>
 
-    {% if not assignment.itemassignment_set.all %}
-    <h4></h4>
-    <a href='{% url item_new_default 'ItemAssignment' assignment.id %}'>
-    <span class="button">
-        <span class="icon item">{%trans 'New agenda item' %}</span>
-    </span>
-    </a>
-    {% else %}
+
     <h4></h4>
     <a href='{% url assignment_activate_item assignment.id %}'>
     <span class="button">
-        <span class="icon projector">{%trans 'Show agenda item' %}</span>
+        <span class="icon projector">{%trans 'Beam assignment' %}</span>
     </span>
     </a>
-    {% endif %}
+
     </div>
     {% endif %}
 

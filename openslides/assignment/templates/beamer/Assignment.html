@@ -5,31 +5,31 @@
     <script type="text/javascript" src="/static/javascript/assignment.js"></script>
 {% endblock %}
 {% block content %}
-    <h1>{% trans "Election" %}: {{ item.assignment }}</h1>
+    <h1>{% trans "Election" %}: {{ assignment }}</h1>
 
-    {% if item.assignment.status != "fin" %}
+    {% if assignment.status != "fin" %}
     <div id="sidebar">
     <div class="box">
     <p><b>{% trans "Status" %}:</b><br>
-    {% trans item.assignment.get_status_display %}</p>
-    {% if item.assignment.status == "sea" or item.assignment.status == "vot" %}
+    {% trans assignment.get_status_display %}</p>
+    {% if assignment.status == "sea" or assignment.status == "vot" %}
         <p><b>{% trans "Number of available posts" %}:</b><br>
-        {{ item.assignment.posts }}</p>
+        {{ assignment.posts }}</p>
     {% endif %}
     </div>
     </div>
     {% endif %}
 
-    {% if not item.assignment.profile.exists %}
+    {% if not assignment.profile.exists %}
     <p>
-    <div class="text">{{ item.assignment.description|linebreaks }}</div>
+    <div class="text">{{ assignment.description|linebreaks }}</div>
     </p>
     {% endif %}
 
-    {% if item.assignment.profile.exists and item.assignment.status != "fin" %}
+    {% if assignment.profile.exists and assignment.status != "fin" %}
     <h3>{% trans "Candidates" %}</h3>
     <ol>
-    {% for profile in item.assignment.profile.all|dictsort:"user.first_name" %}
+    {% for profile in assignment.profile.all|dictsort:"user.first_name" %}
         <li>{{ profile }} </li>
     {% empty %}
         <li style="list-style: none outside none;">
@@ -46,7 +46,7 @@
     <table>
     <tr>
         <th>{% trans "Candidates" %}</th>
-        {% for poll in item.assignment.poll_set.all %}
+        {% for poll in assignment.poll_set.all %}
             {% if poll.published %}
             <th><nobr>{{forloop.counter}}. {% trans "ballot" %}</nobr></th>
             {% endif %}
@@ -78,7 +78,7 @@
     </tr>
     {% empty %}
     <tr>
-        <td {% if item.assignment.profile.exist %}colspan="2"{% endif %}><i>{% trans "No ballots available." %}</i></td>
+        <td {% if assignment.profile.exist %}colspan="2"{% endif %}><i>{% trans "No ballots available." %}</i></td>
     </tr>
     {% endfor %}
     <tr>

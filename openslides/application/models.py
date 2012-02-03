@@ -17,12 +17,16 @@ from django.db.models import Max
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
-from openslides.participant.models import Profile
-from openslides.system.api import config_get
-from openslides.utils.utils import _propper_unicode
+from beamer.api import element_register
+from beamer.models import Element
+
+from participant.models import Profile
+from system.api import config_get
+from utils.utils import _propper_unicode
 
 
-class Application(models.Model):
+class Application(models.Model, Element):
+    prefix = "application"
     STATUS = (
         ('pub', _('Published')),
         ('per', _('Permitted')),
@@ -328,7 +332,7 @@ class Application(models.Model):
                 actions.append("support")
         except Profile.DoesNotExist:
             pass
-        
+
         if self.status == "pub" and user in self.supporter.all():
             actions.append("unsupport")
 
@@ -364,12 +368,6 @@ class Application(models.Model):
             if self.unpermitted_changes:
                 actions.append("permitversion")
                 actions.append("rejectversion")
-
-        if self.number:
-            if self.itemapplication_set.all():
-                actions.append("activateitem")
-            else:
-                actions.append("createitem")
 
         return actions
 
@@ -431,7 +429,17 @@ class Application(models.Model):
                 if poll.votesinvalid != None and poll.votescast != None:
                     results.append([option.yes, option.no, option.undesided, poll.votesinvalidf, poll.votescastf])
         return results
-    
+
+    def beamer(self):
+        """
+        return the beamer dict
+        """
+        data = super(Application, self).beamer()
+        data['application'] = self
+        data['title'] = self.title
+        data['template'] = 'beamer/Application.html'
+        return data
+
     @models.permalink
     def get_absolute_url(self, link='view'):
         if link == 'view':
@@ -474,3 +482,5 @@ class AVersion(models.Model):
                 .filter(application=self.application) \
                 .filter(id__lte=self.id).count()
             return self._aid
+
+element_register(Application.prefix, Application)

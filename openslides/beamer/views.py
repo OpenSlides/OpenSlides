@@ -24,11 +24,11 @@ from utils.template import render_block_to_string
 
 from system.api import config_set, config_get
 
-from agenda.api import get_active_item, is_summary, children_list, \
+from agenda.api import is_summary, children_list, \
                                   del_confirm_form_for_items
 from agenda.models import Item
 
-from beamer.api import assignment_votes, assignment_polls
+from beamer.api import get_active_element, assignment_votes, assignment_polls
 
 
 @permission_required('agenda.can_see_projector')
@@ -36,46 +36,51 @@ def beamer(request):
     """
     Shows the active Slide.
     """
-    data = {'ajax': 'on'}
-    template = ''
     try:
-        item = get_active_item()
-        votes = assignment_votes(item)
-        polls = assignment_polls(item)
-        if is_summary():
-            items = item.children.filter(hidden=False)
-            data['items'] = items
-            data['title'] = item.title
-            template = 'beamer/overview.html'
+        element = get_active_element()
+    except Item.DoesNotExist: #TODO: It has to be an Element.DoesNotExist
+        element = None
+
+
+    if element is None:
+        data = {}
+    else:
+        data = element.beamer()
+
+    data['ajax'] = 'on'
+
+    if element is None or (type(element) == Item and is_summary()):
+
+        if element is None:
+            items = Item.objects.filter(parent=None) \
+                    .filter(hidden=False).order_by('weight')
+            data['title'] = _("Agenda")
         else:
-            data['item'] = item.cast()
-            data['title'] = item.title
-            data['votes'] = votes
-            data['polls'] = polls
-            template = 'beamer/%s.html' % (item.type)
-    except Item.DoesNotExist:
-        items = Item.objects.filter(parent=None).filter(hidden=False) \
-                            .order_by('weight')
+            items = element.children.filter(hidden=False)
+            data['title'] = element.title
         data['items'] = items
-        data['title'] = _("Agenda")
-        template = 'beamer/overview.html'
+        data['template'] = 'beamer/AgendaSummary.html'
+
 
     if request.is_ajax():
-        content = render_block_to_string(template, 'content', data)
-        jsondata = {'content': content,
-                    'title': data['title'],
-                    'time': datetime.now().strftime('%H:%M'),
-                    'bigger': config_get('bigger'),
-                    'up': config_get('up'),
-                    'countdown_visible': config_get('countdown_visible'),
-                    'countdown_time': config_get('agenda_countdown_time'),
-                    'countdown_control': config_get('countdown_control'),
-                   }
+        content = render_block_to_string(data['template'], 'content', data)
+        jsondata = {
+            'content': content,
+            'title': data['title'],
+            'time': datetime.now().strftime('%H:%M'),
+            'bigger': config_get('bigger'),
+            'up': config_get('up'),
+            'countdown_visible': config_get('countdown_visible'),
+            'countdown_time': config_get('agenda_countdown_time'),
+            'countdown_control': config_get('countdown_control'),
+        }
         return ajax_request(jsondata)
     else:
-        return render_to_response(template,
-                                  data,
-                                  context_instance=RequestContext(request))
+        return render_to_response(
+            data['template'],
+            data,
+            context_instance=RequestContext(request)
+        )
 
 
 @permission_required('agenda.can_manage_agenda')

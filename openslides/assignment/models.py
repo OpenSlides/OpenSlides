@@ -15,8 +15,12 @@ from django.utils.translation import ugettext as _
 
 from participant.models import Profile
 
+from beamer.models import Element
+from beamer.api import element_register
 
-class Assignment(models.Model):
+
+class Assignment(models.Model, Element):
+    prefix = 'assignment'
     STATUS = (
         ('sea', _('Searching for candidates')),
         ('vot', _('Voting')),
@@ -113,6 +117,16 @@ class Assignment(models.Model):
             poll.add_option(candidate)
         return poll
 
+    def beamer(self):
+        """
+        return the beamer dict
+        """
+        data = super(Assignment, self).beamer()
+        data['assignment'] = self
+        data['title'] = self.name
+        data['template'] = 'beamer/Assignment.html'
+        return data
+
     @models.permalink
     def get_absolute_url(self, link='view'):
         if link == 'view':
@@ -130,3 +144,5 @@ class Assignment(models.Model):
             ('can_nominate_self', "Can nominate themselves"),
             ('can_manage_assignment', "Can manage assignment"),
         )
+
+element_register(Assignment.prefix, Assignment)
