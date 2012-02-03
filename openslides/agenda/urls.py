@@ -13,9 +13,6 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('agenda.views',
-    url(r'^beamer/$', 'beamer',
-        name='item_beamer'),
-
     url(r'^$', 'overview'),
 
     url(r'^agenda/$', 'overview',
@@ -56,24 +53,4 @@ urlpatterns = patterns('agenda.views',
 
     url(r'^agenda/print/$', 'print_agenda',
         name='print_agenda'),
-
-    url(r'^beamer/bigger$', 'beamer_edit', {'direction': 'bigger'}, name='beamer_bigger'),
-
-    url(r'^beamer/smaller$', 'beamer_edit', {'direction': 'smaller'}, name='beamer_smaller'),
-
-    url(r'^beamer/up$', 'beamer_edit', {'direction': 'up'}, name='beamer_up'),
-
-    url(r'^beamer/down$', 'beamer_edit', {'direction': 'down'}, name='beamer_down'),
-
-    url(r'^beamer/clean$', 'beamer_edit', {'direction': 'clean'}, name='beamer_clean'),
-
-    url(r'^beamer/countdown/show$', 'beamer_countdown', {'command': 'show'}, name='countdown_open'),
-
-    url(r'^beamer/countdown/hide$', 'beamer_countdown', {'command': 'hide'}, name='countdown_close'),
-
-    url(r'^beamer/countdown/reset/(?P<time>\d+)$', 'beamer_countdown', {'command': 'reset'}, name='countdown_reset'),
-
-    url(r'^beamer/countdown/start$', 'beamer_countdown', {'command': 'start'}, name='countdown_start'),
-
-    url(r'^beamer/countdown/stop$', 'beamer_countdown', {'command': 'stop'}, name='countdown_stop'),
 )
