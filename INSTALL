@@ -41,7 +41,7 @@ I. Installation on Windows (32/64bit)
   3. Install django packages
      Open cmd and run:
 
-       easy_install django django-model-utils
+       easy_install django
   
   4. Install packages for building PDF (reportlab, PIL)
 
