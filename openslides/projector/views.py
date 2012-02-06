@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    openslides.beamer.views
+    openslides.projector.views
     ~~~~~~~~~~~~~~~~~~~~~~~
 
-    Views for the beamer app.
+    Views for the projector app.
 
     :copyright: 2011 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
@@ -28,11 +28,11 @@ from agenda.api import is_summary, children_list, \
                                   del_confirm_form_for_items
 from agenda.models import Item
 
-from beamer.api import get_active_element, assignment_votes, assignment_polls
+from projector.api import get_active_element, assignment_votes, assignment_polls
 
 
 @permission_required('agenda.can_see_projector')
-def beamer(request):
+def active_slide(request):
     """
     Shows the active Slide.
     """
@@ -45,7 +45,7 @@ def beamer(request):
     if element is None:
         data = {}
     else:
-        data = element.beamer()
+        data = element.slide()
 
     data['ajax'] = 'on'
 
@@ -59,7 +59,7 @@ def beamer(request):
             items = element.children.filter(hidden=False)
             data['title'] = element.title
         data['items'] = items
-        data['template'] = 'beamer/AgendaSummary.html'
+        data['template'] = 'projector/AgendaSummary.html'
 
 
     if request.is_ajax():
@@ -84,7 +84,7 @@ def beamer(request):
 
 
 @permission_required('agenda.can_manage_agenda')
-def beamer_edit(request, direction):
+def projector_edit(request, direction):
     if direction == 'bigger':
         config_set('bigger', int(config_get('bigger', 100)) + 10)
     elif direction == 'smaller':
@@ -103,7 +103,7 @@ def beamer_edit(request, direction):
 
 
 @permission_required('agenda.can_manage_agenda')
-def beamer_countdown(request, command, time=60):
+def projector_countdown(request, command, time=60):
     if command == 'show':
         config_set('countdown_visible', True)
     elif command == 'hide':

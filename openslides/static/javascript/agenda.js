@@ -78,8 +78,8 @@ $(function() {
         hideClosedSlides(true);
     }
 
-    // control beamer
-    $('.beamer_edit').click(function(event) {
+    // control the projector
+    $('.projector_edit').click(function(event) {
         event.preventDefault();
         link = $(this);
         $.ajax({
@@ -92,7 +92,7 @@ $(function() {
     });
 
     // control countdown
-    $('.beamer_countdown').click(function(event) {
+    $('.projector_countdown').click(function(event) {
         event.preventDefault();
         link = $(this);
         $.ajax({

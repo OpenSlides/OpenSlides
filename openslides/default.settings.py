@@ -130,7 +130,7 @@ INSTALLED_APPS = (
     'poll',
     'assignment',
     'utils',
-    'beamer',
+    'projector',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

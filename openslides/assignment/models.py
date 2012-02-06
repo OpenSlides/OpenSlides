@@ -15,8 +15,8 @@ from django.utils.translation import ugettext as _
 
 from participant.models import Profile
 
-from beamer.models import Element
-from beamer.api import element_register
+from projector.models import Element
+from projector.api import element_register
 
 
 class Assignment(models.Model, Element):
@@ -117,14 +117,14 @@ class Assignment(models.Model, Element):
             poll.add_option(candidate)
         return poll
 
-    def beamer(self):
+    def slide(self):
         """
-        return the beamer dict
+        return the slide dict
         """
-        data = super(Assignment, self).beamer()
+        data = super(Assignment, self).slide()
         data['assignment'] = self
         data['title'] = self.name
-        data['template'] = 'beamer/Assignment.html'
+        data['template'] = 'projector/Assignment.html'
         return data
 
     @models.permalink

@@ -15,7 +15,7 @@ from django.contrib import messages
 from django.core.context_processors import csrf
 
 from openslides.system.api import config_get
-from beamer.api import get_active_element
+from projector.api import get_active_element
 
 
 def is_summary():

@@ -110,20 +110,6 @@ class ViewTest(TestCase):
     def anonymClient(self):
         return Client()
 
-    def testBeamer(self):
-        c = self.anonymClient
-        response = c.get('/beamer/')
-        self.assertEqual(response.status_code, 302)
-
-        c = self.adminClient
-        response = c.get('/beamer/')
-        self.assertEqual(response.status_code, 200)
-
-        response = c.get('/agenda/%d/' % self.item1.id)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['item'], self.item1.cast())
-        self.assertEqual(response.templates[0].name, 'beamer/ItemText.html')
-
     def testActivate(self):
         c = self.adminClient
 

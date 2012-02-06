@@ -2,7 +2,7 @@ function presentation_reload() {
     if ($('#config > #ajax').html() == 'on') {
         $.ajax({
             type: 'GET',
-            url: '/beamer',
+            url: '/projector',
             dataType: 'json',
             data: '',
             success: function(data) {

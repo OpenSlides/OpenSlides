@@ -1,5 +1,5 @@
 from system.api import config_set, config_get
-from beamer.models import ELEMENT
+from projector.models import ELEMENT
 
 
 def get_element_from_eid(eid):
@@ -20,7 +20,7 @@ def get_active_element(only_eid=False):
     if only_id is True, returns only the id of this item. Returns None if not Item
     is active. Does not Raise Item.DoesNotExist
     """
-    from beamer.models import Element
+    from projector.models import Element
     eid = config_get("presentation", None)
 
     if only_eid:

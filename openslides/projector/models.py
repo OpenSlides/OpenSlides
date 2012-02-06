@@ -6,9 +6,9 @@ ELEMENT = {}
 
 class Element(object):
 
-    def beamer(self):
+    def slide(self):
         """
-        Return a map with all Data for the Beamer
+        Return a map with all Data for a Slide
         """
         return {
             'element': self,
@@ -30,7 +30,7 @@ class Element(object):
         """
         Return True, if the the element is the active one.
         """
-        from beamer.api import get_active_element
+        from projector.api import get_active_element
         return True if get_active_element(only_eid=True) == self.eid else False
 
     def set_active(self):

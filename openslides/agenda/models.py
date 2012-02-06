@@ -18,8 +18,8 @@ except ImportError:
 from django.db import models
 from django.utils.translation import ugettext as _
 
-from beamer.models import Element
-from beamer.api import element_register
+from projector.models import Element
+from projector.api import element_register
 from system.api import config_set
 from application.models import Application
 from poll.models import Poll
@@ -41,14 +41,14 @@ class Item(models.Model, Element):
     prefix = 'item'
 
 
-    def beamer(self):
+    def slide(self):
         """
-        Return a map with all Data for the Beamer
+        Return a map with all Data for the Slide
         """
         return {
             'item': self,
             'title': self.title,
-            'template': 'beamer/AgendaText.html',
+            'template': 'projector/AgendaText.html',
         }
 
     @property
@@ -137,7 +137,7 @@ class Item(models.Model, Element):
     def get_absolute_url(self, link='view'):
         """
         Return the URL to this item. By default it is the Link to its
-        beamer-view.
+        slide
 
         link can be:
         * view

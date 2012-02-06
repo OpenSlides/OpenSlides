@@ -17,8 +17,8 @@ from django.db.models import Max
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
-from beamer.api import element_register
-from beamer.models import Element
+from projector.api import element_register
+from projector.models import Element
 
 from participant.models import Profile
 from system.api import config_get
@@ -430,14 +430,14 @@ class Application(models.Model, Element):
                     results.append([option.yes, option.no, option.undesided, poll.votesinvalidf, poll.votescastf])
         return results
 
-    def beamer(self):
+    def slide(self):
         """
-        return the beamer dict
+        return the slide dict
         """
-        data = super(Application, self).beamer()
+        data = super(Application, self).slide()
         data['application'] = self
         data['title'] = self.title
-        data['template'] = 'beamer/Application.html'
+        data['template'] = 'projector/Application.html'
         return data
 
     @models.permalink

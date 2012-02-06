@@ -17,7 +17,7 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 
-from beamer.api import get_active_element
+from projector.api import get_active_element
 from agenda.models import Item
 from agenda.api import is_summary, children_list, \
                                   del_confirm_form_for_items
@@ -37,14 +37,10 @@ def view(request, item_id):
     Shows the Slide.
     """
     item = Item.objects.get(id=item_id)
-    votes = assignment_votes(item)
-    polls = assignment_polls(item)
-    return render_to_response('beamer/%s.html' % item.type,
+    return render_to_response('projector/AgendaText.html',
                              {
-                                 'item': item.cast(),
+                                 'item': item,
                                  'ajax': 'off',
-                                 'votes': votes,
-                                 'polls': polls,
                              },
                              context_instance=RequestContext(request))
 

@@ -52,18 +52,18 @@
         <input type="checkbox" name="countdown" onchange="document.location='{% if countdown_visible == "True" %}{% url countdown_close %}{% else %}{% url countdown_open %}{% endif %}'"
             {% if countdown_visible == "True" %}checked{% endif %}>
         {% trans "Countdown" %} (<a href="{% url config_agenda %}">{{countdown_time}}{% trans "sec" %}</a>){% if countdown_visible == "True" %}:
-        <a class="beamer_countdown" href="{% url countdown_reset countdown_time %}" title="{% trans 'Reset countdown' %}"><img src="/static/images/icons/media-skip-backward.png"></a>
-        <a class="beamer_countdown" href="{% url countdown_start %}" title="{% trans 'Start countdown' %}"><img src="/static/images/icons/media-playback-start.png"></a>
-        <a class="beamer_countdown" href="{% url countdown_stop %}" title="{% trans 'Stop countdown' %}"><img src="/static/images/icons/media-playback-pause.png"></a>
+        <a class="projector_countdown" href="{% url countdown_reset countdown_time %}" title="{% trans 'Reset countdown' %}"><img src="/static/images/icons/media-skip-backward.png"></a>
+        <a class="projector_countdown" href="{% url countdown_start %}" title="{% trans 'Start countdown' %}"><img src="/static/images/icons/media-playback-start.png"></a>
+        <a class="projector_countdown" href="{% url countdown_stop %}" title="{% trans 'Stop countdown' %}"><img src="/static/images/icons/media-playback-pause.png"></a>
         {% endif %}
         <p></p>
-        <!-- beamer control -->
+        <!-- projector control -->
         {% trans "Adjust projector view" %}:
-        <a class="beamer_edit" href="{% url beamer_bigger %}" title="{% trans 'Zoom in' %}"><img src="/static/images/icons/zoom-in.png"></a>
-        <a class="beamer_edit" href="{% url beamer_smaller %}" title="{% trans 'Zoom out' %}"><img src="/static/images/icons/zoom-out.png"></a>
-        <a class="beamer_edit" href="{% url beamer_up %}" title="{% trans 'Scroll text up' %}"><img src="/static/images/icons/go-up.png"></a>
-        <a class="beamer_edit" href="{% url beamer_down %}" title="{% trans 'Scroll text down' %}"><img src="/static/images/icons/go-down.png"></a>
-        <a class="beamer_edit" href="{% url beamer_clean %}" title="{% trans 'Reset projector view' %}"><img src="/static/images/icons/view-restore.png"></a>
+        <a class="projector_edit" href="{% url projector_bigger %}" title="{% trans 'Zoom in' %}"><img src="/static/images/icons/zoom-in.png"></a>
+        <a class="projector_edit" href="{% url projector_smaller %}" title="{% trans 'Zoom out' %}"><img src="/static/images/icons/zoom-out.png"></a>
+        <a class="projector_edit" href="{% url projector_up %}" title="{% trans 'Scroll text up' %}"><img src="/static/images/icons/go-up.png"></a>
+        <a class="projector_edit" href="{% url projector_down %}" title="{% trans 'Scroll text down' %}"><img src="/static/images/icons/go-down.png"></a>
+        <a class="projector_edit" href="{% url projector_clean %}" title="{% trans 'Reset projector view' %}"><img src="/static/images/icons/view-restore.png"></a>
         </div>
         {% endif %}
 
