@@ -28,7 +28,7 @@ from agenda.api import is_summary, children_list, \
                                   del_confirm_form_for_items
 from agenda.models import Item
 
-from projector.api import get_active_element, assignment_votes, assignment_polls
+from projector.api import get_active_slide
 
 
 @permission_required('agenda.can_see_projector')
@@ -37,27 +37,27 @@ def active_slide(request):
     Shows the active Slide.
     """
     try:
-        element = get_active_element()
-    except Item.DoesNotExist: #TODO: It has to be an Element.DoesNotExist
-        element = None
+        slide = get_active_slide()
+    except Item.DoesNotExist: #TODO: It has to be an Slide.DoesNotExist
+        slide = None
 
 
-    if element is None:
+    if slide is None:
         data = {}
     else:
-        data = element.slide()
+        data = slide.slide()
 
     data['ajax'] = 'on'
 
-    if element is None or (type(element) == Item and is_summary()):
+    if slide is None or (type(slide) == Item and is_summary()):
 
-        if element is None:
+        if slide is None:
             items = Item.objects.filter(parent=None) \
                     .filter(hidden=False).order_by('weight')
             data['title'] = _("Agenda")
         else:
-            items = element.children.filter(hidden=False)
-            data['title'] = element.title
+            items = slide.children.filter(hidden=False)
+            data['title'] = slide.title
         data['items'] = items
         data['template'] = 'projector/AgendaSummary.html'
 

@@ -2,25 +2,25 @@ from django.db import models
 
 from system.api import config_set, config_get
 
-ELEMENT = {}
+SLIDE = {}
 
-class Element(object):
+class Slide(object):
 
     def slide(self):
         """
         Return a map with all Data for a Slide
         """
         return {
-            'element': self,
+            'slide': self,
             'title': 'dummy-title',
         }
 
     @property
-    def eid(self):
+    def sid(self):
         """
-        Return the eid from this element
+        Return the sid from this Slide
         """
-        for key, value in ELEMENT.iteritems():
+        for key, value in SLIDE.iteritems():
             if type(self) == value:
                 return "%s %d" % (key, self.id)
         return None
@@ -28,10 +28,10 @@ class Element(object):
     @property
     def active(self):
         """
-        Return True, if the the element is the active one.
+        Return True, if the the slide is the active one.
         """
-        from projector.api import get_active_element
-        return True if get_active_element(only_eid=True) == self.eid else False
+        from projector.api import get_active_slide
+        return True if get_active_slide(only_sid=True) == self.sid else False
 
     def set_active(self):
         """

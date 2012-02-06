@@ -1,35 +1,34 @@
 from system.api import config_set, config_get
-from projector.models import ELEMENT
+from projector.models import SLIDE
 
 
-def get_element_from_eid(eid):
+def get_slide_from_sid(sid):
     try:
-        model, id = eid.split()
+        model, id = sid.split()
     except ValueError:
-        return None # We need a elementError hier
+        return None # We need a slideError hier
     except AttributeError:
         return None
-    return ELEMENT[model].objects.get(pk=id)
+    return SLIDE[model].objects.get(pk=id)
 
 
-def get_active_element(only_eid=False):
+def get_active_slide(only_sid=False):
     """
-    Returns the active element. If no element is active, or it can not find an Item,
-    it raise Element.DoesNotExist
+    Returns the active slide. If no slide is active, or it can not find an Item,
+    it raise an error
 
-    if only_id is True, returns only the id of this item. Returns None if not Item
+    if only_sid is True, returns only the id of this item. Returns None if not Item
     is active. Does not Raise Item.DoesNotExist
     """
-    from projector.models import Element
-    eid = config_get("presentation", None)
+    sid = config_get("presentation", None)
 
-    if only_eid:
-        return eid
-    return get_element_from_eid(eid)
+    if only_sid:
+        return sid
+    return get_slide_from_sid(sid)
 
 
-def element_register(prefix, model):
-    ELEMENT[prefix] = model
+def register_slidemodel(model):
+    SLIDE[model.prefix] = model
 
 
 def assignment_votes(item):

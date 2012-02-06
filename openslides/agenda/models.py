@@ -18,15 +18,15 @@ except ImportError:
 from django.db import models
 from django.utils.translation import ugettext as _
 
-from projector.models import Element
-from projector.api import element_register
+from projector.models import Slide
+from projector.api import register_slidemodel
 from system.api import config_set
 from application.models import Application
 from poll.models import Poll
 from assignment.models import Assignment
 
 
-class Item(models.Model, Element):
+class Item(models.Model, Slide):
     """
     An Agenda Item
     """
@@ -56,8 +56,8 @@ class Item(models.Model, Element):
         """
         Return True if the item has a activ parent
         """
-        if get_active_element(only_id=True) in \
-        [parent.id for parent in self.parents]:
+        if get_active_slide(only_sid=True) in \
+            [parent.id for parent in self.parents]:
             return True
         return False
 
@@ -65,7 +65,7 @@ class Item(models.Model, Element):
         """
         Appoint this item as the active one.
         """
-        Element.set_active(self)
+        Slide.set_active(self)
         if summary:
             config_set("summary", True)
         else:
@@ -105,7 +105,7 @@ class Item(models.Model, Element):
         """
         Return the WeightForm for this item.
         """
-        from agenda.forms import ElementOrderForm
+        from agenda.forms import ItemOrderForm
         try:
             parent = self.parent.id
         except AttributeError:
@@ -115,7 +115,7 @@ class Item(models.Model, Element):
             'self': self.id,
             'parent': parent,
         }
-        return ElementOrderForm(initial=initial, prefix="i%d" % self.id)
+        return ItemOrderForm(initial=initial, prefix="i%d" % self.id)
 
     def edit_form(self, post=None):
         """
@@ -191,4 +191,4 @@ ItemText = Item # ItemText is Depricated
 
 
 
-element_register(Item.prefix, Item)
+register_slidemodel(Item)

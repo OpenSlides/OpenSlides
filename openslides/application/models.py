@@ -17,15 +17,15 @@ from django.db.models import Max
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
-from projector.api import element_register
-from projector.models import Element
+from projector.api import register_slidemodel
+from projector.models import Slide
 
 from participant.models import Profile
 from system.api import config_get
 from utils.utils import _propper_unicode
 
 
-class Application(models.Model, Element):
+class Application(models.Model, Slide):
     prefix = "application"
     STATUS = (
         ('pub', _('Published')),
@@ -483,4 +483,4 @@ class AVersion(models.Model):
                 .filter(id__lte=self.id).count()
             return self._aid
 
-element_register(Application.prefix, Application)
+register_slidemodel(Application)

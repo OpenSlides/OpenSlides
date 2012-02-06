@@ -13,7 +13,7 @@
 from django.forms import Form, ModelForm, IntegerField, ChoiceField, \
                          ModelChoiceField, HiddenInput, Select
 from django.utils.translation import ugettext as _
-from openslides.agenda.models import Item, ItemText
+from openslides.agenda.models import Item
 
 class ItemFormText(ModelForm):
     error_css_class = 'error'
@@ -21,7 +21,7 @@ class ItemFormText(ModelForm):
     items = Item.objects.all().filter(parent=None).order_by('weight')
     parent = ModelChoiceField(queryset=items, label=_("Parent item"), required=False)
     class Meta:
-        model = ItemText
+        model = Item
         exclude = ('closed', 'weight')
 
 
@@ -32,7 +32,7 @@ def genweightchoices():
     return l
 
 
-class ElementOrderForm(Form):
+class ItemOrderForm(Form):
     weight = ChoiceField(choices=genweightchoices(), \
                          widget=Select(attrs={'class': 'menu-weight'}),
                          label="")

@@ -15,11 +15,11 @@ from django.utils.translation import ugettext as _
 
 from participant.models import Profile
 
-from projector.models import Element
-from projector.api import element_register
+from projector.models import Slide
+from projector.api import register_slidemodel
 
 
-class Assignment(models.Model, Element):
+class Assignment(models.Model, Slide):
     prefix = 'assignment'
     STATUS = (
         ('sea', _('Searching for candidates')),
@@ -145,4 +145,4 @@ class Assignment(models.Model, Element):
             ('can_manage_assignment', "Can manage assignment"),
         )
 
-element_register(Assignment.prefix, Assignment)
+register_slidemodel(Assignment)

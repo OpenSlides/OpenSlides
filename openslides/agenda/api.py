@@ -15,7 +15,7 @@ from django.contrib import messages
 from django.core.context_processors import csrf
 
 from openslides.system.api import config_get
-from projector.api import get_active_element
+from projector.api import get_active_slide
 
 
 def is_summary():
@@ -24,7 +24,7 @@ def is_summary():
     """
     from agenda.models import Item
     try:
-        get_active_element()
+        get_active_slide()
     except Item.DoesNotExist:
         return True
     if config_get('summary', False):

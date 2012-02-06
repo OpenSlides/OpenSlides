@@ -17,11 +17,11 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 
-from projector.api import get_active_element
+from projector.api import get_active_slide
 from agenda.models import Item
 from agenda.api import is_summary, children_list, \
                                   del_confirm_form_for_items
-from agenda.forms import ElementOrderForm, ItemFormText
+from agenda.forms import ItemOrderForm, ItemFormText
 from application.models import Application
 from assignment.models import Assignment
 from poll.models import Poll
@@ -53,7 +53,7 @@ def overview(request):
     """
     if request.method == 'POST':
         for item in Item.objects.all():
-            form = ElementOrderForm(request.POST, prefix="i%d" % item.id)
+            form = ItemOrderForm(request.POST, prefix="i%d" % item.id)
             if form.is_valid():
                 try:
                     item.parent = Item.objects.get( \
@@ -66,7 +66,7 @@ def overview(request):
     items = children_list(Item.objects.filter(parent=None).exclude(hidden=True).order_by('weight'))
     items_hidden = children_list(Item.objects.filter(parent=None).exclude(hidden=False).order_by('weight'))
     try:
-        overview = is_summary() and not get_active_element()
+        overview = is_summary() and not get_active_slide()
     except Item.DoesNotExist:
         overview = True
     return {
