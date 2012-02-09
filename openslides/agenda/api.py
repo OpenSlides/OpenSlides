@@ -22,9 +22,10 @@ def is_summary():
     """
     True, if a summery shall be displayed
     """
-    if config_get('summary', False):
+    if config_get('agenda_summary', False):
         return True
     return False
+
 
 def children_list(items):
     """
@@ -37,11 +38,13 @@ def children_list(items):
             l += children_list(item.children)
     return l
 
+
 def gen_confirm_form_for_items(request, message, url, singleitem=None):
     if singleitem:
         messages.warning(request, '%s<form action="%s" method="post"><input type="hidden" value="%s" name="csrfmiddlewaretoken"><input type="submit" value="%s" /> <input type="button" value="%s"></form>' % (message, url, csrf(request)['csrf_token'], _("Yes"), _("No")))
     else:
         messages.warning(request, '%s<form action="%s" method="post"><input type="hidden" value="%s" name="csrfmiddlewaretoken"><input type="submit" value="%s" /> <input type="submit" name="all" value="%s" /> <input type="button" value="%s"></form>' % (message, url, csrf(request)['csrf_token'], _("Yes"), _("Yes, with all child items."), _("No")))
+
 
 def del_confirm_form_for_items(request, object, name=None):
     if name is None:

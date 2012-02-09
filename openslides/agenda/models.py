@@ -21,9 +21,6 @@ from django.utils.translation import ugettext as _
 from projector.models import Slide
 from projector.api import register_slidemodel
 from system.api import config_set
-from application.models import Application
-from poll.models import Poll
-from assignment.models import Assignment
 from agenda.api import is_summary
 
 
@@ -31,15 +28,14 @@ class Item(models.Model, Slide):
     """
     An Agenda Item
     """
+    prefix = 'item'
+
     title = models.CharField(max_length=100, verbose_name=_("Title"))
     text = models.TextField(null=True, blank=True, verbose_name=_("Text"))
     transcript = models.TextField(null=True, blank=True, verbose_name=_("Transcript"))
     closed = models.BooleanField(default=False, verbose_name=_("Closed"))
     weight = models.IntegerField(default=0, verbose_name=_("Weight"))
     parent = models.ForeignKey('self', blank=True, null=True)
-    hidden = models.BooleanField(default=False,
-                                     verbose_name=_("Hidden (visible for agenda manager only)"))
-    prefix = 'item'
 
 
     def slide(self):
@@ -57,25 +53,15 @@ class Item(models.Model, Slide):
             data['template'] = 'projector/AgendaSummary.html'
         return data
 
-    @property
-    def active_parent(self):
-        """
-        Return True if the item has a activ parent
-        """
-        if get_active_slide(only_sid=True) in \
-            [parent.id for parent in self.parents]:
-            return True
-        return False
-
     def set_active(self, summary=False):
         """
         Appoint this item as the active one.
         """
         Slide.set_active(self)
         if summary:
-            config_set("summary", True)
+            config_set("agenda_summary", True)
         else:
-            config_set("summary", '')
+            config_set("agenda_summary", '')
 
     def set_closed(self, closed=True):
         """
@@ -98,11 +84,21 @@ class Item(models.Model, Slide):
         return parents
 
     @property
+    def active_parent(self):
+        """
+        Return True if the item has a active parent
+        """
+        sid = get_active_slide(only_sid=True).split()
+        if  len(sid) == 2 and sid[0] == self.prefix:
+            if sid[1] in [parent.id for parent in self.parents]:
+                return True
+        return False
+
+    @property
     def children(self):
         """
         Return a list of all childitems from the next generation. The list
-        is ordert by weight. The childitems are not cast, so there are only
-        Item-objects and not Item-type objects.
+        is ordert by weight.
         """
         return self.item_set.order_by("weight")
 
@@ -123,22 +119,6 @@ class Item(models.Model, Slide):
         }
         return ItemOrderForm(initial=initial, prefix="i%d" % self.id)
 
-    def edit_form(self, post=None):
-        """
-        Return the EditForm for this item.
-        """
-        try:
-            return self._edit_form
-        except AttributeError:
-            from agenda.forms import MODELFORM
-            try:
-                form = MODELFORM[self.type]
-            except KeyError:
-                raise NameError(_("No Form for itemtype %s") % self.type)
-
-            self._edit_form = form(post, instance=self)
-            return self._edit_form
-
     @models.permalink
     def get_absolute_url(self, link='view'):
         """
@@ -154,36 +134,8 @@ class Item(models.Model, Slide):
         if link == 'delete':
             return ('item_delete', [str(self.id)])
 
-    @property
-    def json(self):
-        """
-        Return the model as jquery data
-        """
-        return json.dumps({
-                'id': self.id,
-                'active': self.active,
-            })
-
     def __unicode__(self):
         return self.title
-
-    def cast(self):
-        try:
-            return self.realobject
-        except AttributeError:
-            self.realobject = super(Item, self).cast()
-            return self.realobject
-
-    @property
-    def type(self):
-        """
-        Return the name of the class from this item
-        """
-        try:
-            return self._type
-        except AttributeError:
-            self._type = self.cast().__class__.__name__
-            return self._type
 
     class Meta:
         permissions = (
@@ -191,6 +143,7 @@ class Item(models.Model, Slide):
             ('can_manage_agenda', "Can manage agenda"),
             ('can_see_projector', "Can see projector"),
         )
+        ordering = ['weight']
 
 
 ItemText = Item # ItemText is Depricated

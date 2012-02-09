@@ -18,7 +18,8 @@ from openslides.agenda.models import Item
 class ItemFormText(ModelForm):
     error_css_class = 'error'
     required_css_class = 'required'
-    items = Item.objects.all().filter(parent=None).order_by('weight')
+
+    items = Item.objects.all().filter(parent=None)
     parent = ModelChoiceField(queryset=items, label=_("Parent item"), required=False)
     class Meta:
         model = Item
@@ -33,7 +34,7 @@ def genweightchoices():
 
 
 class ItemOrderForm(Form):
-    weight = ChoiceField(choices=genweightchoices(), \
+    weight = ChoiceField(choices=genweightchoices(),
                          widget=Select(attrs={'class': 'menu-weight'}),
                          label="")
     self = IntegerField(widget=HiddenInput(attrs={'class': 'menu-mlid'}))

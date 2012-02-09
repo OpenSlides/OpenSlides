@@ -9,40 +9,36 @@
     :copyright: 2011 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
-from datetime import datetime
-
-from django.shortcuts import render_to_response, redirect
-from django.template import RequestContext
+from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 
-from projector.api import get_active_slide
+from projector.api import get_active_slide, set_active_slide
+
 from agenda.models import Item
 from agenda.api import is_summary, children_list, \
                                   del_confirm_form_for_items
 from agenda.forms import ItemOrderForm, ItemFormText
-from application.models import Application
-from assignment.models import Assignment
-from poll.models import Poll
+
 from system.api import config_set, config_get
-from utils.template import render_block_to_string
+
 from utils.utils import template, permission_required, \
                                    del_confirm_form, ajax_request
 from utils.pdf import print_agenda
-from poll.models import Poll, Option
 
+
+@permission_required('agenda.can_see_projector')
+@template('projector/AgendaText.html')
 def view(request, item_id):
     """
     Shows the Slide.
     """
-    item = Item.objects.get(id=item_id)
-    return render_to_response('projector/AgendaText.html',
-                             {
-                                 'item': item,
-                                 'ajax': 'off',
-                             },
-                             context_instance=RequestContext(request))
+    item = Item.objects.get(pk=item_id)
+    return {
+         'item': item,
+         'ajax': 'off',
+    }
 
 
 @permission_required('agenda.can_see_agenda')
@@ -56,14 +52,15 @@ def overview(request):
             form = ItemOrderForm(request.POST, prefix="i%d" % item.id)
             if form.is_valid():
                 try:
-                    item.parent = Item.objects.get( \
+                    item.parent = Item.objects.get(
                                        id=form.cleaned_data['parent'])
                 except Item.DoesNotExist:
                     item.parent = None
                 item.weight = form.cleaned_data['weight']
                 item.save()
 
-    items = children_list(Item.objects.filter(parent=None).order_by('weight'))
+    items = children_list(Item.objects.filter(parent=None))
+
     if get_active_slide(only_sid=True) == 'agenda_show':
         overview = True
     else:
@@ -74,7 +71,7 @@ def overview(request):
         'summary': is_summary(),
         'countdown_visible': config_get('countdown_visible'),
         'countdown_time': config_get('agenda_countdown_time'),
-        }
+    }
 
 
 @permission_required('agenda.can_manage_agenda')
@@ -83,17 +80,17 @@ def set_active(request, item_id, summary=False):
     Set an Item as the active one.
     """
     if item_id == "0":
-        config_set("presentation", "agenda_show")
+        set_active_slide("agenda_show")
     else:
         try:
-            item = Item.objects.get(id=item_id)
+            item = Item.objects.get(pk=item_id)
             item.set_active(summary)
         except Item.DoesNotExist:
             messages.error(request, _('Item ID %d does not exist.') % int(item_id))
     config_set("bigger", 100)
     config_set("up", 0)
     if request.is_ajax():
-        return ajax_request({'active': item_id})
+        return ajax_request({'active': item_id, 'summary': summary})
 
     return redirect(reverse('item_overview'))
 
@@ -104,7 +101,7 @@ def set_closed(request, item_id, closed=True):
     Close or open an Item.
     """
     try:
-        item = Item.objects.get(id=item_id)
+        item = Item.objects.get(pk=item_id)
         item.set_closed(closed)
     except Item.DoesNotExist:
         messages.error(request, _('Item ID %d does not exist.') % int(item_id))
@@ -152,8 +149,10 @@ def edit(request, item_id=None):
             messages.error(request, _('Please check the form for errors.'))
     else:
         form = ItemFormText(instance=item)
-    return { 'form': form,
-             'item': item }
+    return {
+        'form': form,
+        'item': item,
+    }
 
 
 @permission_required('agenda.can_manage_agenda')
@@ -161,7 +160,12 @@ def delete(request, item_id):
     """
     Delete an Item.
     """
-    item = Item.objects.get(id=item_id).cast()
+    try:
+        item = Item.objects.get(pk=item_id)
+    except Item.DoesNotExist:
+        messages.error(request, _('Item ID %d does not exist.') % int(item_id))
+        return redirect(reverse('item_overview'))
+
     if request.method == 'POST':
         if 'all' in request.POST:
             item.delete()

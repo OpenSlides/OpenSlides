@@ -13,39 +13,34 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('agenda.views',
-    url(r'^$', 'overview'),
-
-    url(r'^agenda/$', 'overview',
+    url(r'^$', 'overview',
         name='item_overview'),
 
-    url(r'^agenda/(?P<item_id>\d+)/$', 'view',
+    url(r'^(?P<item_id>\d+)/$', 'view',
         name='item_view'),
 
-    url(r'^agenda/(?P<item_id>\d+)/activate/$', 'set_active',
+    url(r'^(?P<item_id>\d+)/activate/$', 'set_active',
         name='item_activate'),
 
-    url(r'^agenda/(?P<item_id>\d+)/activate/summary/$', 'set_active',
+    url(r'^(?P<item_id>\d+)/activate/summary/$', 'set_active',
         {'summary': True},\
         name='item_activate_summary'),
 
-    url(r'^agenda/(?P<item_id>\d+)/close/$', 'set_closed', {'closed': True},
+    url(r'^(?P<item_id>\d+)/close/$', 'set_closed', {'closed': True},
         name='item_close'),
 
-    url(r'^agenda/(?P<item_id>\d+)/open/$', 'set_closed', {'closed': False},
+    url(r'^(?P<item_id>\d+)/open/$', 'set_closed', {'closed': False},
         name='item_open'),
 
-    url(r'^agenda/(?P<item_id>\d+)/edit/$', 'edit',
+    url(r'^(?P<item_id>\d+)/edit/$', 'edit',
         name='item_edit'),
 
-    url(r'^agenda/new/$', 'edit',
-        name='item_new_default'),
-
-    url(r'^agenda/new$', 'edit',
+    url(r'^new$', 'edit',
         name='item_new'),
 
-    url(r'^agenda/(?P<item_id>\d+)/del/$', 'delete',
+    url(r'^(?P<item_id>\d+)/del/$', 'delete',
         name='item_delete'),
 
-    url(r'^agenda/print/$', 'print_agenda',
+    url(r'^print/$', 'print_agenda',
         name='print_agenda'),
 )
