@@ -24,6 +24,7 @@ from system.api import config_set
 from application.models import Application
 from poll.models import Poll
 from assignment.models import Assignment
+from agenda.api import is_summary
 
 
 class Item(models.Model, Slide):
@@ -45,11 +46,16 @@ class Item(models.Model, Slide):
         """
         Return a map with all Data for the Slide
         """
-        return {
+        data = {
             'item': self,
             'title': self.title,
             'template': 'projector/AgendaText.html',
         }
+
+        if is_summary():
+            data['items'] = self.children.filter(hidden=False)
+            data['template'] = 'projector/AgendaSummary.html'
+        return data
 
     @property
     def active_parent(self):
@@ -189,6 +195,6 @@ class Item(models.Model, Slide):
 
 ItemText = Item # ItemText is Depricated
 
-
-
 register_slidemodel(Item)
+
+

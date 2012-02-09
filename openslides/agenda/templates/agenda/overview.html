@@ -34,10 +34,7 @@
 
 {% block content %}
     <h1>{% trans "Agenda" %}</h1>
-    {% if items_hidden and perms.agenda.can_manage_agenda %}
-        <a href="#hidden">{% trans "Go to hidden items" %}</a>
-    {% endif %}
-    {% if items or items_hidden %}
+    {% if items %}
         <form action="/agenda/" method="post">{% csrf_token %}
         {% if perms.agenda.can_manage_agenda %}
         <div id="changed-order-message" style="display:none" class="notification warning">
@@ -190,72 +187,6 @@
                 </tr>
                 {% endif %}
             {% endfor %}
-            {% if perms.agenda.can_manage_agenda %}
-            <tr class="emptyline">
-                <td colspan="4"></td>
-            </tr>
-            <tr class="topline">
-                <td colspan="4"><a name="hidden"></a>{% trans "Hidden items:" %}</td>
-            </tr>
-            {% for item in items_hidden %}
-                <tr id="item_row_{{ item.id }}" class="draggable{% cycle ' odd' '' %}
-                {% if item.active %} activeline{% else %}
-                {% if item.parent.active and summary %} activesummarychildline{% endif %}
-                {% if perms.agenda.can_manage_agenda %} inactiveline{% endif %}
-                {% endif %}">
-                <td class="select">
-                    <a id="activate_link_{{ item.id }}" class="activate_link" href="{% url item_activate item.id %}">
-                    <div></div>
-                    </a>
-                </td>
-                <td>
-                    {% for p in item.parents %}
-                        <div class="indentation">&nbsp;</div>
-                    {% endfor %}
-                    <div class="dragcell"></div>
-                    {{ item }}
-                </td>
-                <td>
-                    {% ifequal item.type 'ItemApplication' %}
-                        <a href="{% url application_view item.cast.application.id %}">{% trans "Application" %} {{ item.cast.application.number }}</a>
-                    {% endifequal %}
-                    {% ifequal item.type 'ItemPoll' %}
-                        {% if item.cast.poll.application %}
-                            <a href="{% url poll_view item.cast.poll.id %}">{% trans "Poll of Application" %}</a>
-                        {% endif %}
-                        {% if item.cast.poll.assignment %}
-                            <a href="{% url poll_view item.cast.poll.id %}">{% trans "Poll of Election" %}</a>
-                        {% endif %}
-                    {% endifequal %}
-                    {% ifequal item.type 'ItemAssignment' %}
-                        <a href="{% url assignment_view item.cast.assignment.id %}">{% trans "Election" %}</a>
-                    {% endifequal %}
-                    {% ifequal item.type 'ItemText' %}
-                        Text
-                    {% endifequal %}
-                </td>
-                <td><span style="width: 1px;white-space: nowrap;">
-                    <a href="{{ item.get_absolute_url }}"><img src="/static/images/icons/document-preview.png" title="{% trans 'Show projector preview' %}"></a>
-                    <a href="{% url item_edit item.id %}"><img src="/static/images/icons/document-edit.png" title="{% trans 'Edit item' %}"></a>
-                    <a href="{% url item_delete item.id %}"><img src="/static/images/icons/edit-delete.png" title="{% trans 'Delete item' %}"></a>
-                    <a class="close_link {% if item.closed %}closed{% else %}open{% endif %}" href="{% if item.closed %}{% url item_open item.id %}{% else %}{% url item_close item.id %}{% endif %}">
-                        <span></span>
-                    </a>
-                    {% if item.children.exists %}
-                        <a href="{% url item_activate_summary item.id %}"><img src="/static/images/icons/view-list-tree.png" title="{% trans 'Select item overview' %}"></a>
-                    {% endif %}
-                    </span>
-                </td>
-                <td class="tabledrag-hide">
-                    {% with form=item.weight_form %}
-                        {{ form.weight }}
-                        {{ form.self }}
-                        {{ form.parent }}
-                    {% endwith %}
-                </td>
-                </tr>
-            {% endfor %}
-            {% endif %}
         </table>
 
         </form>

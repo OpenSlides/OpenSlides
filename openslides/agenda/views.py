@@ -63,15 +63,13 @@ def overview(request):
                 item.weight = form.cleaned_data['weight']
                 item.save()
 
-    items = children_list(Item.objects.filter(parent=None).exclude(hidden=True).order_by('weight'))
-    items_hidden = children_list(Item.objects.filter(parent=None).exclude(hidden=False).order_by('weight'))
-    try:
-        overview = is_summary() and not get_active_slide()
-    except Item.DoesNotExist:
+    items = children_list(Item.objects.filter(parent=None).order_by('weight'))
+    if get_active_slide(only_sid=True) == 'agenda_show':
         overview = True
+    else:
+        overview = False
     return {
         'items': items,
-        'items_hidden': items_hidden,
         'overview': overview,
         'summary': is_summary(),
         'countdown_visible': config_get('countdown_visible'),
@@ -85,7 +83,7 @@ def set_active(request, item_id, summary=False):
     Set an Item as the active one.
     """
     if item_id == "0":
-        config_set("presentation", "0")
+        config_set("presentation", "agenda_show")
     else:
         try:
             item = Item.objects.get(id=item_id)

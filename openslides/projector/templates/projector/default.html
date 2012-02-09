@@ -1,0 +1,6 @@
+{% extends "base-projector.html" %}
+{% load tags %}
+{% block content %}
+    <h1>{% get_config 'event_name' %}</h1>
+    {% get_config 'event_description' %}
+{% endblock %}

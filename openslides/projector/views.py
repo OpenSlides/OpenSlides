@@ -37,30 +37,14 @@ def active_slide(request):
     Shows the active Slide.
     """
     try:
-        slide = get_active_slide()
-    except Item.DoesNotExist: #TODO: It has to be an Slide.DoesNotExist
-        slide = None
-
-
-    if slide is None:
-        data = {}
-    else:
-        data = slide.slide()
+        data = get_active_slide()
+    except AttributeError: #TODO: It has to be an Slide.DoesNotExist
+        data = {
+            'title': config_get('event_name'),
+            'template': 'projector/default.html',
+        }
 
     data['ajax'] = 'on'
-
-    if slide is None or (type(slide) == Item and is_summary()):
-
-        if slide is None:
-            items = Item.objects.filter(parent=None) \
-                    .filter(hidden=False).order_by('weight')
-            data['title'] = _("Agenda")
-        else:
-            items = slide.children.filter(hidden=False)
-            data['title'] = slide.title
-        data['items'] = items
-        data['template'] = 'projector/AgendaSummary.html'
-
 
     if request.is_ajax():
         content = render_block_to_string(data['template'], 'content', data)

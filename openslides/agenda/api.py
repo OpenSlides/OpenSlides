@@ -22,11 +22,6 @@ def is_summary():
     """
     True, if a summery shall be displayed
     """
-    from agenda.models import Item
-    try:
-        get_active_slide()
-    except Item.DoesNotExist:
-        return True
     if config_get('summary', False):
         return True
     return False
