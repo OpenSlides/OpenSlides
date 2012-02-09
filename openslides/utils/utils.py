@@ -25,10 +25,10 @@ from django.contrib import messages
 from django.contrib.auth.models import Permission
 from django.utils.translation import ugettext as _
 
-from openslides import OPENSLIDES_REVISION
+from openslides import get_version
 
 def revision(request):
-    return {'OPENSLIDES_REVISION': OPENSLIDES_REVISION}
+    return {'openslides_version': get_version()}
 
 
 def gen_confirm_form(request, message, url):

@@ -1,28 +1,49 @@
-import socket
-import os
-import sys
-from os.path import realpath, join, dirname
-try:
-    from mercurial import ui as hgui
-    from mercurial.localrepo import localrepository
-    from mercurial.node import short as shorthex
-    from mercurial.error import RepoError
-    nomercurial = False
-except:
-    nomercurial = True
+VERSION = (1, 2, 0, 'alpha', 0)
 
 from django.template import add_to_builtins
 
+def get_version(version=None):
+    """Derives a PEP386-compliant version number from VERSION."""
+    if version is None:
+        version = VERSION
+    assert len(version) == 5
+    assert version[3] in ('alpha', 'beta', 'rc', 'final')
 
-add_to_builtins('django.templatetags.i18n')
+    # Now build the two parts of the version number:
+    # main = X.Y[.Z]
+    # sub = .devN - for pre-alpha releases
+    #     | {a|b|c}N - for alpha, beta and rc releases
 
-OPENSLIDES_REVISION = 'unknown'
+    parts = 2 if version[2] == 0 else 3
+    main = '.'.join(str(x) for x in version[:parts])
 
-# Don't read ~/.hgrc, as extensions aren't available in the venvs
-os.environ['HGRCPATH'] = ''
+    sub = ''
+    if version[3] == 'alpha' and version[4] == 0:
+        mercurial_version = hg_version()
+        if mercurial_version != 'unknown':
+            sub = '.dev%s' % mercurial_version
 
+    elif version[3] != 'final':
+        mapping = {'alpha': 'a', 'beta': 'b', 'rc': 'c'}
+        sub = mapping[version[3]] + str(version[4])
 
-def _bootstrap():
+    return main + sub
+
+def hg_version():
+    import socket
+    import os
+    import sys
+    from os.path import realpath, join, dirname
+    try:
+        from mercurial import ui as hgui
+        from mercurial.localrepo import localrepository
+        from mercurial.node import short as shorthex
+        from mercurial.error import RepoError
+        nomercurial = False
+    except ImportError:
+        return 'unknown'
+
+    os.environ['HGRCPATH'] = ''
     conts = realpath(join(dirname(__file__)))
     try:
         ui = hgui.ui()
@@ -30,13 +51,13 @@ def _bootstrap():
         #repository = localrepository(ui, conts)
         ctx = repository['.']
         if ctx.tags() and ctx.tags() != ['tip']:
-            revision = ' '.join(ctx.tags())
+            version = ' '.join(ctx.tags())
         else:
-            revision = '%(num)s:%(id)s' % {
+            version = '%(num)s:%(id)s' % {
                 'num': ctx.rev(), 'id': shorthex(ctx.node())
             }
     except TypeError:
-        revision = 'unknown'
+        version = 'unknown'
     except RepoError:
         return 0
 
@@ -46,8 +67,7 @@ def _bootstrap():
     # The value *must* be a floating point value.
     socket.setdefaulttimeout(10.0)
 
-    return revision
+    return version
 
-if not nomercurial:
-    OPENSLIDES_REVISION = _bootstrap()
-del _bootstrap
+
+add_to_builtins('django.templatetags.i18n')
