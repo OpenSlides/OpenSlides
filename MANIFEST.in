@@ -1,0 +1,10 @@
+include AUTHORS
+include LICENSE
+include INSTALL
+include CHANGELOG
+include initial_data.json
+include manage.py
+include THANKS
+recursive-include openslides/static *
+recursive-include openslides/locale *.mo *.po
+recursive-include openslides *.html

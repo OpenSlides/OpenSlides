@@ -1,4 +1,7 @@
 {% extends 'application/base_application.html' %}
+
+{% load i18n %}
+
 {% block title %}{{ block.super }} - {{ poll }}{% endblock %}
 
 {% if perms.application.can_manage_application %}

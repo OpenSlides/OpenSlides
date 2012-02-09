@@ -19,8 +19,9 @@ TEMPLATE_DEBUG = DEBUG
 
 AUTH_PROFILE_MODULE = 'participant.Profile'
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', 'openslides.system.auth.AnonymousAuth',)
+
 LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/agenda/'
+LOGIN_REDIRECT_URL = '/'
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),

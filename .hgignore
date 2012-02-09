@@ -7,3 +7,8 @@
 ~$
 \.DS_Store$
 ^docs/_build
+^dist/
+^versiontools
+
+syntax:glob
+*.egg-info

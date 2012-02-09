@@ -1,6 +1,10 @@
 {% extends "application/base_application.html" %}
-{% block title %}{{ block.super }} - {% trans "Application" %} "{{ version.title }}"{% endblock %}
+
 {% load tags %}
+{% load i18n %}
+
+{% block title %}{{ block.super }} - {% trans "Application" %} "{{ version.title }}"{% endblock %}
+
 
 {% block content %}
     <div id="sidebar">

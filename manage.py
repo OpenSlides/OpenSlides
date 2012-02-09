@@ -12,12 +12,6 @@
 
 from django.core.management import execute_manager
 
-import os, site
-
-SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
-
-site.addsitedir(os.path.join(SITE_ROOT, 'openslides'))
-
 try:
     from openslides import settings
 except ImportError:

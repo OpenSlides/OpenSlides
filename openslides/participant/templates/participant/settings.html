@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+
+{% load i18n %}
+
 {% block title %}{{ block.super }} - {%trans "Your Settings" %}{% endblock %}
 
 {% block submenu %}
@@ -10,7 +13,7 @@
     <form action="" method="post">{% csrf_token %}
         {{ form_user.as_p }}
         {{ form_password.as_p }}
-        
+
         <button class="button" type="submit">
             <span class="icon ok">{%trans 'Save' %}</span>
         </button>

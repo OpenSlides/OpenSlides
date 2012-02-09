@@ -1,7 +1,5 @@
 VERSION = (1, 2, 0, 'alpha', 0)
 
-from django.template import add_to_builtins
-
 def get_version(version=None):
     """Derives a PEP386-compliant version number from VERSION."""
     if version is None:
@@ -69,5 +67,7 @@ def hg_version():
 
     return version
 
+import os, site
 
-add_to_builtins('django.templatetags.i18n')
+SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
+site.addsitedir(SITE_ROOT)

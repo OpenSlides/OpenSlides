@@ -1,12 +1,11 @@
 {% extends "participant/base_participant.html" %}
 
+{% load i18n %}
+
 {% block mainmenu %}
     <ul>
         <li class="selected"><a href="{% url user_login %}" title="">{%trans "Login" %}</a></li>
     </ul>
-{% endblock %}
-
-{% block submenu %}
 {% endblock %}
 
 {% block content %}

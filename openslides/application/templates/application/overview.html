@@ -1,6 +1,9 @@
 {% extends "application/base_application.html" %}
-{% block title %}{{ block.super }} - {%trans "Applications" %}{% endblock %}
+
 {% load tags %}
+{% load i18n %}
+
+{% block title %}{{ block.super }} - {%trans "Applications" %}{% endblock %}
 
 {% block content %}
     <h1>{%trans "Applications" %}</h1>
@@ -13,7 +16,7 @@
         <input type="checkbox" name="number" onchange="document.forms['filter'].submit()"
             {% if 'on' in request.GET.number %}checked{% endif %}> {%trans "Without number" %} &nbsp;
         <input type="checkbox" name="status" onchange="document.forms['filter'].submit()"
-            {% if 'on' in request.GET.status %}checked{% endif %}> {%trans "Status" %}: 
+            {% if 'on' in request.GET.status %}checked{% endif %}> {%trans "Status" %}:
         <select class="default-input" name="statusvalue" onchange="{% if 'on' in request.GET.status %}document.forms['filter'].submit(){% endif %}">
             <option value="pub" {% if 'pub' in request.GET.statusvalue %}selected{% endif %}>{%trans "Not yet permitted" %}</option>
             <option value="per" {% if 'on' in request.GET.status and 'per' in request.GET.statusvalue %}selected{% endif %}>{%trans "Permitted" %}</option>

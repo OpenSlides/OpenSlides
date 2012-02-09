@@ -1,4 +1,7 @@
 {% extends 'assignment/base_assignment.html' %}
+
+{% load i18n %}
+
 {% block title %}{{ block.super }} - {%trans "Poll" %} "{{ poll }}"{% endblock %}
 
 {% block content %}
