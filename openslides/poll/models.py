@@ -12,185 +12,142 @@
 
 from django.db import models
 from django.utils.translation import ugettext as _
+from django import forms
+from django.views.generic import TemplateView
+from django.http import HttpResponseRedirect
 
-from application.models import Application
-from assignment.models import Assignment
-from participant.models import Profile
+
+class OptionForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        extra = kwargs.pop('extra')
+        formid = kwargs.pop('formid')
+        kwargs['prefix'] = "option-%s" % formid
+        super(OptionForm, self).__init__(*args, **kwargs)
+
+        for key, value in extra:
+            self.fields[key] = forms.IntegerField(
+                widget=forms.TextInput(attrs={'class': 'small-input'}),
+                label=_(key),
+                initial=value,
+            )
+
+class BaseOption(models.Model):
+    poll = models.ForeignKey('BasePoll')
+
+    @property
+    def votes(self):
+        count = 0
+        for vote in Vote.objects.filter(option=self):
+            count += vote.weight
+        return weight
 
 
-class Poll(models.Model):
-    optiondecision = models.BooleanField(default=True, verbose_name = _("Poll of decision (yes, no, abstention)"))
-    application = models.ForeignKey(Application, null=True, blank=True, verbose_name = _("Application"))
-    assignment = models.ForeignKey(Assignment, null=True, blank=True, verbose_name = _("Election"))
+class TextOption(BaseOption):
+    text = models.CharField(max_length=255)
+
+    def __unicode__(self):
+        return self.text
+
+
+class Vote(models.Model):
+    option = models.ForeignKey(BaseOption)
+    #profile = models.ForeignKey(Profile) # TODO: we need a person+ here
+    weight = models.IntegerField(default=1)
+    value = models.CharField(max_length=255, null=True)
+
+
+class BasePoll(models.Model):
     description = models.TextField(null=True, blank=True, verbose_name = _("Description"))
     votescast = models.IntegerField(null=True, blank=True, verbose_name = _("Votes cast"))
     votesinvalid = models.IntegerField(null=True, blank=True, verbose_name = _("Votes invalid"))
-    published = models.BooleanField(default=False)
 
-    def add_option(self, option):
-        self.save()
-        optionc = Option()
-        optionc.poll = self
-        if isinstance(option, Application):
-            optionc.application = option
-        elif isinstance(option, Profile):
-            optionc.user = option
-        else:
-            optionc.text = str(option)
-        optionc.save()
-        return optionc
+    option_class = TextOption
+    vote_values = [_('votes')]
 
-    @property
-    def votescastf(self):
-        if self.votescast == -2:
-            return _('undocumented')
-        elif self.votescast:
-            return self.votescast
-        return '0'
-
-    @property
-    def votesinvalidf(self):
-        if self.votesinvalid == -2:
-            return _('undocumented')
-        elif self.votesinvalid:
-            if self.votescast > 0:
-                percentage = round(float(self.votesinvalid) / float(self.votescast) * 100,1)
-                invalid = "%s (%s %%)" % (str(self.votesinvalid), str(percentage))
-                return invalid
-            return self.votesinvalid
-        return '0'
-
-    def has_vote(self):
-        for option in self.options:
-            if option.voteyes or option.voteno or option.voteundesided:
-                return True
-        return False
+    def set_options(self, options_data):
+        for option_data in options_data:
+            option = self.option_class(**option_data)
+            option.poll = self
+            option.save()
 
     def get_options(self):
-        return self.option_set.all()
+        return self.get_option_class().objects.filter(poll=self)
 
-    @property
-    def options(self):
-        return self.option_set.all()
+    def get_option_class(self):
+        return self.option_class
 
-    @property
-    def options_values(self):
-        return [option.value for option in self.options]
+    def get_vote_values(self):
+        return self.vote_values
 
-    def set_published(self, published=True):
-        """
-        Changes the published-status of the poll.
-        """
-        self.published = published
-        self.save()
-
-    @property
-    def count_ballots(self):
-        if self.application:
-            return Poll.objects.filter(application=self.application).count()
-        if self.assignment:
-            return Poll.objects.filter(assignment=self.assignment).count()
-        return None
-
-    @property
-    def ballot(self):
-        if self.application:
-            counter = 0
-            for poll in Poll.objects.filter(application=self.application):
-                counter = counter + 1
-                if self == poll:
-                    return counter
-        if self.assignment:
-            counter = 0
-            for poll in Poll.objects.filter(assignment=self.assignment):
-                counter = counter + 1
-                if self == poll:
-                    return counter
-        return None
-
-    @models.permalink
-    def get_absolute_url(self, link='view'):
-        if self.application:
-            if link == 'view':
-                return ('application_poll_view', [str(self.id), 0])
-            if link == 'delete':
-                return ('application_poll_delete', [str(self.id)])
-        if self.assignment:
-            if link == 'view':
-                return ('assignment_poll_view', [str(self.id), 0])
-            if link == 'delete':
-                return ('assignment_poll_delete', [str(self.id)])
-        if link == 'view':
-            return ('poll_view', [str(self.id)])
-        if link == 'delete':
-            return ('poll_delete', [str(self.id)])
-
-    def __unicode__(self):
-        if self.application:
-            return self.application.title
-        if self.assignment:
-            return self.assignment.name
+    def set_form_values(self, option, data):
+        for value in self.get_vote_values():
+            try:
+                vote = Vote.objects.filter(option=option).get(value=value)
+            except Vote.DoesNotExist:
+                vote = Vote(option=option, value=value)
+            vote.weight = data[value]
+            vote.save()
 
 
-class Option(models.Model):
-    text = models.CharField(max_length=100, null=True, blank=True, verbose_name = _("Text"))
-    user = models.ForeignKey(Profile, null=True, blank=True, verbose_name = _("Participant"))
-    application = models.ForeignKey(Application, null=True, blank=True, verbose_name = _("Application"))
-    poll = models.ForeignKey(Poll, verbose_name = _("Poll"))
-    voteyes = models.IntegerField(null=True, blank=True)
-    voteno = models.IntegerField(null=True, blank=True)
-    voteundesided = models.IntegerField(null=True, blank=True)
+    def get_form_values(self, option_id):
+        values = []
+        for value in self.get_vote_values():
+            try:
+                vote = Vote.objects.filter(option=option_id).get(value=value)
+                weight = vote.weight
+            except Vote.DoesNotExist:
+                weight = None
+            values.append((value, weight))
+        return values
 
-    @property
-    def yes(self):
-        if self.voteyes == -1:
-            return _('majority')
-        if self.voteyes == -2:
-            return _('undocumented')
-        if self.voteyes:
-            if self.poll.votescast > 0 and self.voteyes > 0:
-                percentage = round(float(self.voteyes) / float(self.poll.votescast) * 100,1)
-                return "%s (%s %%)" % (str(self.voteyes), str(percentage))
-            return self.voteyes
-        return '0'
+    def get_vote_form(self, **kwargs):
+        return OptionForm(extra=self.get_form_values(kwargs['formid']), **kwargs)
 
-    @property
-    def no(self):
-        if self.voteno == -1:
-            return _('majority')
-        if self.voteno == -2:
-            return _('undocumented')
-        if self.voteno:
-            if self.poll.votescast > 0 and self.voteno > 0:
-                percentage = round(float(self.voteno) / float(self.poll.votescast) * 100,1)
-                return "%s (%s %%)" % (str(self.voteno), str(percentage))
-            return self.voteno
-        return '0'
+    def get_vote_forms(self, **kwargs):
+        forms = []
+        for option in self.get_options():
+            form = self.get_vote_form(formid=option.id, **kwargs)
+            form.option = option
+            forms.append(form)
 
-    @property
-    def undesided(self):
-        if self.voteundesided == -1:
-            return _('majority')
-        if self.voteundesided == -2:
-            return _('undocumented')
-        if self.voteundesided:
-            if self.poll.votescast > 0 and self.voteundesided > 0:
-                percentage = round(float(self.voteundesided) / float(self.poll.votescast) * 100,1)
-                return "%s (%s %%)" % (str(self.voteundesided), str(percentage))
-            return self.voteundesided
-        return '0'
+        return forms
 
-    @property
-    def value(self):
-        if self.text != "" and self.text is not None:
-            return self.text
-        if self.user is not None:
-            return self.user
-        if self.application is not None:
-            return self.application
-        return None
 
-    def __unicode__(self):
-        if self.value:
-            return unicode(self.value)
-        return _("No options")
+class PollFormView(TemplateView):
+    template_name = 'poll/poll.html'
+    poll_argument = 'poll_id'
+
+    def set_poll(self, poll_id):
+        poll_id = poll_id
+        self.poll = self.poll_class.objects.get(pk=poll_id)
+        self.poll.vote_values = self.vote_values
+
+    def get_context_data(self, **kwargs):
+        context = super(PollFormView, self).get_context_data(**kwargs)
+        self.set_poll(self.kwargs['poll_id'])
+        context['poll'] = self.poll
+        if not 'forms' in context:
+            context['forms'] = context['poll'].get_vote_forms()
+        return context
+
+    def get_success_url(self):
+        return self.success_url
+
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        forms = self.poll.get_vote_forms(data=self.request.POST)
+        error = False
+        for form in forms:
+            if not form.is_valid():
+                error = True
+        if error:
+            return self.render_to_response(self.get_context_data(forms=forms))
+
+        for form in forms:
+            data = {}
+            for value in self.poll.vote_values:
+                data[value] = form.cleaned_data[value]
+            print data
+            self.poll.set_form_values(form.option, data)
+        return HttpResponseRedirect(self.get_success_url())
+

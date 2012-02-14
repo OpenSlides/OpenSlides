@@ -23,6 +23,8 @@ from projector.models import Slide
 from participant.models import Profile
 from system.api import config_get
 from utils.utils import _propper_unicode
+from poll import ChoicePoll
+from poll.models import BaseOption, BasePoll
 
 
 class Application(models.Model, Slide):
@@ -410,24 +412,28 @@ class Application(models.Model, Slide):
         """
         Generates a poll object for the application
         """
-        from poll.models import Poll
-        poll = Poll(optiondecision=True, \
-                    application=self)
+        poll = ApplicationPoll()
         poll.save()
-        poll.add_option(self)
+        poll.set_options([{'application': self}])
         self.writelog(_("Poll created"), user)
         return poll
+
+    @property
+    def polls(self):
+        #todo: return an query_set
+        return [option.poll for option in self.applicationoption_set.all()]
 
     @property
     def results(self):
         """
         Return a list of voting results
         """
+        # TODO: This will propably not work
         results = []
-        for poll in self.poll_set.all():
-            for option in poll.options:
-                if poll.votesinvalid != None and poll.votescast != None:
-                    results.append([option.yes, option.no, option.undesided, poll.votesinvalidf, poll.votescastf])
+        for poll in self.polls:
+            for option in poll.get_options():
+                #if poll.votesinvalid != None and poll.votescast != None:
+                results.append([option.yes, option.no, option.undesided, poll.votesinvalidf, poll.votescastf])
         return results
 
     def slide(self):
@@ -484,3 +490,14 @@ class AVersion(models.Model):
             return self._aid
 
 register_slidemodel(Application)
+
+
+class ApplicationOption(BaseOption):
+    application = models.ForeignKey(Application)
+
+    def __unicode__(self):
+        return unicode(self.application)
+
+
+class ApplicationPoll(BasePoll):
+    option_class = ApplicationOption

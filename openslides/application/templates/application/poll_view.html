@@ -6,60 +6,45 @@
 
 {% if perms.application.can_manage_application %}
 {% block submenu %}
-{{ block.super }}
-<br>
-<h3>{%trans "Application No." %} {{ poll.application.number }}</h3>
-<ul>
-<li><a href="{% url print_application_poll poll.id %}"><img src="/static/images/icons/application-pdf.png"> {%trans 'Print vote' %}</a></li>
-</ul>
+    {{ block.super }}
+    <br>
+    <h3>{%trans "Application No." %} {{ poll.application.number }}</h3>
+    <ul>
+    <li><a href="{% url print_application_poll poll.id %}"><img src="/static/images/icons/application-pdf.png"> {%trans 'Print vote' %}</a></li>
+    </ul>
 {% endblock %}
 {% endif %}
 
 {% block content %}
-    <h1>{%trans "Application No." %} {{ poll.application.number }} - {%trans "Vote" %}</h1>
-    <h3>{{ poll.application.title }}</h3>
+    <h1>{%trans "Application No." %} {{ application.number }} - {%trans "Vote" %}</h1>
+    <h3>{{ application.title }}</h3>
 
     <p>{%trans "Results of" %} {{ ballot }}. {%trans "Vote" %}</p>
     <i>-1 := {% trans 'majority' %}, -2 := {% trans 'undocumented' %}</i>
     <form action="" method="post">{% csrf_token %}
-    <table class="table" style="width: auto;">
-    <tr>
-        <th>{%trans "Option" %}</th>
-        <th>{%trans "Votes" %}</th>
-    </tr>
-    <tr>
-        <td>{%trans "Yes" %}</td>
-        <td>{{ options.0.form.yes.errors }}{{ options.0.form.yes }}</td>
-    </tr>
-    <tr class="odd">
-        <td>{%trans "No" %}</label></td>
-        <td>{{ options.0.form.no.errors }}{{ options.0.form.no }}</td>
-    </tr>
-    <tr>
-        <td>{%trans "Abstentions" %}</td>
-        <td>{{ options.0.form.undesided.errors }}{{ options.0.form.undesided }}</td>
-    </tr>
-    <tr class="odd">
-        <td>{%trans "Invalid votes" %}</td>
-        <td>{{ form.invalid.errors }}{{ form.invalid }}</td>
-    </tr>
-    <tr class="total">
-        <td style="white-space: nowrap;"><b>{%trans "Votes cast" %}</b></td>
-        <td>{{ form.votescast.errors }}{{ form.votescast }}</td>
-    </tr>
-    </table>
-    <p>
-    <button class="button" type="submit">
-        <span class="icon ok">{%trans 'Save' %}</span>
-    </button>
-    <button class="button" type="submit" name="apply">
-        <span class="icon apply">{%trans 'Apply' %}</span>
-    </button>
-    <a href='{% url application_view poll.application.id %}'>
-    <button class="button" type="button" onclick="window.location='{% url application_view poll.application.id %}'">
-        <span class="icon cancel">{%trans 'Cancel' %}</span>
-    </button>
-    </a>
-
+        <table class="table" style="width: auto;">
+        <tr>
+            <th>{% trans "Option" %}</th>
+            <th>{% trans "Votes" %}</th>
+        </tr>
+        {% for value in forms.0 %}
+            <tr>
+                <td>{{ value.label }}</td>
+                <td>{{ value.errors }}{{ value }}</td>
+            </tr>
+        {% endfor %}
+        </table>
+        <p>
+        <button class="button" type="submit">
+            <span class="icon ok">{%trans 'Save' %}</span>
+        </button>
+        <button class="button" type="submit" name="apply">
+            <span class="icon apply">{%trans 'Apply' %}</span>
+        </button>
+        <a href='{% url application_view application.id %}'>
+        <button class="button" type="button" onclick="window.location='{% url application_view application.id %}'">
+            <span class="icon cancel">{%trans 'Cancel' %}</span>
+        </button>
+        </a>
     </form>
 {% endblock %}

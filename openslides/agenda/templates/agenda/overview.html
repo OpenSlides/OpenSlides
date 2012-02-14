@@ -137,29 +137,7 @@
                 </td>
                 {% if perms.agenda.can_manage_agenda %}
                 <td>
-                    {% ifequal item.type 'ItemApplication' %}
-                        <a href="{% url application_view item.cast.application.id %}">{% trans "Application" %} {{ item.cast.application.number }}</a>
-                    {% endifequal %}
-
-                    {% ifequal item.type 'ItemPoll' %}
-                        {% if item.cast.poll.application %}
-                            <a href="{% url poll_view item.cast.poll.id %}">{% trans "Poll of Application" %}</a>
-                        {% endif %}
-                        {% if item.cast.poll.assignment %}
-                            <a href="{% url poll_view item.cast.poll.id %}">{% trans "Poll of Election" %}</a>
-                        {% endif %}
-                    {% endifequal %}
-
-                    {% ifequal item.type 'ItemAssignment' %}
-                        <a href="{% url assignment_view item.cast.assignment.id %}">{% trans "Election" %}</a>
-                    {% endifequal %}
-
-                    {% ifequal item.type 'ItemText' %}
-                        Text
-                    {% endifequal %}
-                    {% if item.hidden %}
-                        ({% trans 'hidden' %})
-                    {% endif %}
+                    Text
                 </td>
                 {% endif %}
                 <td><span style="width: 1px;white-space: nowrap;">

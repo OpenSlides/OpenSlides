@@ -17,8 +17,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 
 from openslides.agenda.models import Item
-from poll.models import Poll, Option
-from poll.forms import OptionResultForm, PollForm
+#from poll.models import Poll, Option
+#from poll.forms import OptionResultForm, PollForm
 from assignment.models import Assignment
 from assignment.forms import AssignmentForm, AssignmentRunForm
 from utils.utils import template, permission_required, gen_confirm_form, del_confirm_form, ajax_request

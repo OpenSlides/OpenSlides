@@ -47,7 +47,7 @@
     {% endfor %}
 
     <h4>{% trans "Vote results" %}:</h4>
-        {% with application.poll_set.all as polls %}
+        {% with application.polls as polls %}
         {% if polls|length == 0 %}
             {% if perms.application.can_manage_application %}
                 {% if "genpoll" in actions %}

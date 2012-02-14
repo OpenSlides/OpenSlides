@@ -36,7 +36,7 @@ from openslides.agenda.models import Item
 from openslides.agenda.api import children_list
 from openslides.application.models import Application
 from openslides.assignment.models import Assignment
-from openslides.poll.models import Poll, Option
+#from openslides.poll.models import Poll, Option
 from openslides.participant.models import Profile
 from openslides.system.api import config_get
 from openslides.settings import SITE_ROOT
@@ -343,7 +343,7 @@ def get_application(application, story):
     else:
         story.append(Paragraph(_("Application No."), stylesheet['Heading1']))
 
-    
+
     # submitter
     cell1a = []
     cell1a.append(Spacer(0,0.2*cm))
@@ -357,7 +357,7 @@ def get_application(application, story):
         cell1b.append(Spacer(0,0.2*cm))
     else:
         cell1b.append(Paragraph(unicode(application.submitter.profile), stylesheet['Normal']))
-    
+
     # supporters
     cell2a = []
     cell2a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font><seqreset id='counter'>" % _("Supporters"), stylesheet['Heading4']))
@@ -368,7 +368,7 @@ def get_application(application, story):
         for x in range(0,application.missing_supporters):
             cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; __________________________________________",stylesheet['Signaturefield']))
     cell2b.append(Spacer(0,0.2*cm))
-    
+
     # status
     note = ""
     for n in application.notes:
@@ -389,7 +389,7 @@ def get_application(application, story):
     data.append([cell1a,cell1b])
     data.append([cell2a,cell2b])
     data.append([cell3a,cell3b])
-    
+
     # voting results
     if len(application.results) > 0:
         cell4a = []
@@ -412,7 +412,7 @@ def get_application(application, story):
                           ]))
     story.append(t)
     story.append(Spacer(0,1*cm))
-    
+
     # title
     story.append(Paragraph(application.title, stylesheet['Heading3']))
     # text
@@ -431,7 +431,7 @@ def print_application(request, application_id=None):
     doc = SimpleDocTemplate(response)
     doc.title = None
     story = []
-    
+
     if application_id is None:  #print all applications
         title = config_get("application_pdf_title")
         story.append(Paragraph(title, stylesheet['Heading1']))
@@ -614,7 +614,7 @@ def get_assignment(assignment, story):
                             ('LINEBELOW',(0,-1),(-1,-1),2,colors.black),
                             ('ROWBACKGROUNDS', (0, 1), (-1, -1), (colors.white, (.9, .9, .9))),
                               ]))
-    
+
     # table
     data = []
     data.append([cell1a,cell1b])
@@ -635,7 +635,7 @@ def get_assignment(assignment, story):
     # text
     story.append(Paragraph("%s" % assignment.description.replace('\r\n','<br/>'), stylesheet['Paragraph']))
     return story
-    
+
 @permission_required('application.can_see_application')
 def print_assignment(request, assignment_id=None):
     response = HttpResponse(mimetype='application/pdf')
@@ -644,7 +644,7 @@ def print_assignment(request, assignment_id=None):
     doc = SimpleDocTemplate(response)
     doc.title = None
     story = []
-    
+
     if assignment_id is None:  #print all applications
         title = config_get("assignment_pdf_title")
         story.append(Paragraph(title, stylesheet['Heading1']))
@@ -667,7 +667,7 @@ def print_assignment(request, assignment_id=None):
 
     doc.build(story, onFirstPage=firstPage, onLaterPages=firstPage)
     return response
-    
+
 @permission_required('application.can_manage_application')
 def print_assignment_poll(request, poll_id=None):
     poll = Poll.objects.get(id=poll_id)
@@ -714,7 +714,7 @@ def print_assignment_poll(request, poll_id=None):
         rest = number % 2
         if rest:
             data.append([cell,''])
-        
+
         if len(options) <= 2:
             t=Table(data, 10.5*cm, 7.42*cm)
         elif len(options) <= 5:
@@ -742,7 +742,7 @@ def print_assignment_poll(request, poll_id=None):
         rest = number % 2
         if rest:
             data.append([cell,''])
-        
+
         if len(options) <= 4:
             t=Table(data, 10.5*cm, 7.42*cm)
         elif len(options) <= 8:

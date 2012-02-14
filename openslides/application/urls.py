@@ -11,6 +11,10 @@
 """
 
 from django.conf.urls.defaults import *
+from django.utils.translation import ugettext as _
+
+from application.views import ViewPoll
+
 
 urlpatterns = patterns('application.views',
     url(r'^application/$', 'overview', \
@@ -77,8 +81,10 @@ urlpatterns = patterns('application.views',
     url(r'^application/poll/(?P<poll_id>\d+)/print$', 'print_application_poll', \
         name='print_application_poll'),
 
-    url(r'^application/poll/(?P<poll_id>\d+)$', 'view_poll', \
-        name='application_poll_view'),
+    url(r'^application/poll/(?P<poll_id>\d+)$',
+        ViewPoll.as_view(),
+        name='application_poll_view'
+    ),
 
     url(r'^application/poll/(?P<poll_id>\d+)/del$', 'delete_poll', \
         name='application_poll_delete'),

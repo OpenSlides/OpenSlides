@@ -23,14 +23,15 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
 from django.db import transaction
 
-from openslides.agenda.models import Item
-from openslides.application.models import Application, AVersion
-from openslides.application.forms import ApplicationForm, \
+from agenda.models import Item
+from application.models import Application, AVersion, ApplicationPoll
+from application.forms import ApplicationForm, \
                                          ApplicationManagerForm, \
                                          ApplicationImportForm
 from openslides.participant.models import Profile
-from openslides.poll.models import Poll
-from openslides.poll.forms import OptionResultForm, PollForm
+
+from poll.models import PollFormView
+
 from openslides.utils.utils import template, permission_required, \
                                    render_to_forbitten, del_confirm_form, gen_confirm_form
 from openslides.utils.pdf import print_application, print_application_poll
@@ -92,7 +93,7 @@ def view(request, application_id, newest=False):
         'actions': actions,
         'min_supporters': int(config_get('application_min_supporters')),
         'version': version,
-        'results': application.results
+        #'results': application.results
     }
 
 
@@ -347,7 +348,7 @@ def gen_poll(request, application_id):
         poll = Application.objects.get(pk=application_id).gen_poll(user=request.user)
         messages.success(request, _("New vote was successfully created.") )
     except Application.DoesNotExist:
-        pass
+        pass # TODO: do not call poll after this excaption
     return redirect(reverse('application_poll_view', args=[poll.id]))
 
 
@@ -373,9 +374,9 @@ def view_poll(request, poll_id):
     """
     view a poll for this application.
     """
-    poll = Poll.objects.get(pk=poll_id)
-    ballot = poll.ballot
-    options = poll.options
+    poll = ApplicationPoll.objects.get(pk=poll_id)
+    #ballot = poll.ballot
+    options = poll.get_options()
     if request.user.has_perm('application.can_manage_application'):
         if request.method == 'POST':
             form = PollForm(request.POST, prefix="poll")
@@ -408,8 +409,26 @@ def view_poll(request, poll_id):
         'poll': poll,
         'form': form,
         'options': options,
-        'ballot': ballot,
+        #'ballot': ballot,
     }
+
+
+class ViewPoll(PollFormView):
+    poll_class = ApplicationPoll
+    vote_values = [_('yes'), _('no'), _('contained')]
+    template_name = 'application/poll_view.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ViewPoll, self).get_context_data()
+        self.application = self.poll.get_options()[0].application
+        context['application'] = self.application
+        return context
+
+    def get_success_url(self):
+        if not 'apply' in self.request.POST:
+            return reverse('application_view', args=[self.application.id])
+        return ''
+
 
 @permission_required('application.can_manage_application')
 def permit_version(request, aversion_id):
