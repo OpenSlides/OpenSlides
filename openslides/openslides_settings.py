@@ -13,7 +13,7 @@ import os
 from django.conf.global_settings import *
 
 SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
-SITE_ROOT = os.path.join(SITE_ROOT, '..')
+#SITE_ROOT = os.path.join(SITE_ROOT, '..')
 
 
 AUTH_PROFILE_MODULE = 'participant.Profile'
@@ -100,14 +100,14 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.admin',
-    'agenda',
     'system',
-    'participant',
-    'application',
-    'poll',
-    'assignment',
     'utils',
     'projector',
+    'poll',
+    'agenda',
+    'participant',
+    'application',
+    'assignment',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

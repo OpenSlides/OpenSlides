@@ -2,17 +2,17 @@
 # -*- coding: utf-8 -*-
 
 from django import template
-from system.api import config_get
+from system import config
 
 register = template.Library()
 
 @register.simple_tag
 def get_min_supporters():
-    return config_get('application_min_supporters')
+    return config['application_min_supporters']
 
 @register.simple_tag
 def get_config(key):
-    return config_get(key)
+    return config[key]
 
 @register.simple_tag
 def active(request, pattern):

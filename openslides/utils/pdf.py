@@ -38,7 +38,7 @@ from openslides.application.models import Application
 from openslides.assignment.models import Assignment
 #from openslides.poll.models import Poll, Option
 from openslides.participant.models import Profile
-from openslides.system.api import config_get
+from system import config
 from openslides.settings import SITE_ROOT
 from openslides.utils.utils import permission_required
 
@@ -178,11 +178,11 @@ stylesheet.add(ParagraphStyle(name = 'Ballot_option_group_right',
                )
 
 # set event information
-event_name = config_get("event_name")
-event_description = config_get("event_description")
-event_date = config_get("event_date")
-event_location = config_get("event_location")
-event_organizer = config_get("event_organizer")
+event_name = config["event_name"]
+event_description = config["event_description"]
+event_date = config["event_date"]
+event_location = config["event_location"]
+event_organizer = config["event_organizer"]
 
 # set print time
 time = datetime.now().strftime(str(_("%Y-%m-%d %H:%Mh")))

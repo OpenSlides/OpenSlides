@@ -11,6 +11,6 @@
 """
 
 from django.contrib import admin
-from system.models import Config
+from system.models import ConfigStore
 
-admin.site.register(Config)
+admin.site.register(ConfigStore)

@@ -1,5 +1,8 @@
 {% extends "system/base_system.html" %}
-{% block title %}{{ block.super }} - {%trans "Configuration" %}{% endblock %}
+
+{% load i18n %}
+
+{% block title %}{{ block.super }} - {% trans "Configuration" %}{% endblock %}
 
 {% block content %}
     <h1>{%trans "Election settings" %}</h1>

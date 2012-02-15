@@ -18,9 +18,11 @@ except ImportError:
 from django.db import models
 from django.utils.translation import ugettext as _
 
+from system import config
+
 from projector.models import Slide
 from projector.api import register_slidemodel
-from system.api import config_set
+
 from agenda.api import is_summary
 
 
@@ -59,9 +61,9 @@ class Item(models.Model, Slide):
         """
         Slide.set_active(self)
         if summary:
-            config_set("agenda_summary", True)
+            config["agenda_summary"] = True
         else:
-            config_set("agenda_summary", '')
+            config["agenda_summary"] = False
 
     def set_closed(self, closed=True):
         """

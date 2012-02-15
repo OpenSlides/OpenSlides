@@ -11,7 +11,7 @@
 """
 
 # Django settings for openslides project.
-from system.openslides_settings import *
+from openslides_settings import *
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG

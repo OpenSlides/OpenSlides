@@ -21,7 +21,7 @@ from projector.api import register_slidemodel
 from projector.models import Slide
 
 from participant.models import Profile
-from system.api import config_get
+from system import config
 from utils.utils import _propper_unicode
 from poll import ChoicePoll
 from poll.models import BaseOption, BasePoll
@@ -148,7 +148,7 @@ class Application(models.Model, Slide):
         """
         Return True, if the application has enough supporters
         """
-        min_supporters = int(config_get('application_min_supporters'))
+        min_supporters = int(config['application_min_supporters'])
         if self.status == "pub":
             return self.supporter.count() >= min_supporters
         else:
@@ -159,7 +159,7 @@ class Application(models.Model, Slide):
         """
         Return number of missing supporters
         """
-        min_supporters = int(config_get('application_min_supporters'))
+        min_supporters = int(config['application_min_supporters'])
         delta = min_supporters - self.supporter.count()
         if delta > 0:
             return delta

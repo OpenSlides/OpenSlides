@@ -13,6 +13,9 @@
 from django.db import models
 from django.utils.translation import ugettext as _
 
+#from projector.api import register_slidemodel
+#from projector.models import Slide
+
 
 class BaseOption(models.Model):
     poll = models.ForeignKey('BasePoll')
@@ -39,7 +42,9 @@ class Vote(models.Model):
     value = models.CharField(max_length=255, null=True)
 
 
-class BasePoll(models.Model):
+class BasePoll(models.Model): #, Slide):
+    prefix = 'BasePoll'
+
     description = models.TextField(null=True, blank=True, verbose_name = _("Description"))
     votescast = models.IntegerField(null=True, blank=True, verbose_name = _("Votes cast"))
     votesinvalid = models.IntegerField(null=True, blank=True, verbose_name = _("Votes invalid"))
@@ -95,4 +100,6 @@ class BasePoll(models.Model):
 
         return forms
 
+
+#register_slidemodel(BasePoll)
 

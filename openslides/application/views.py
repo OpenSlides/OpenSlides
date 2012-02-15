@@ -23,21 +23,25 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
 from django.db import transaction
 
+from system import config
+
 from agenda.models import Item
+
 from application.models import Application, AVersion, ApplicationPoll
 from application.forms import ApplicationForm, \
                                          ApplicationManagerForm, \
                                          ApplicationImportForm
-from openslides.participant.models import Profile
+
+from participant.models import Profile
 
 from poll.views import PollFormView
 
-from openslides.utils.utils import template, permission_required, \
+from utils.utils import template, permission_required, \
                                    render_to_forbitten, del_confirm_form, gen_confirm_form
-from openslides.utils.pdf import print_application, print_application_poll
-from openslides.system.api import config_get
 
-from openslides.participant.api import gen_username, gen_password
+from utils.pdf import print_application, print_application_poll
+
+from participant.api import gen_username, gen_password
 
 @permission_required('application.can_see_application')
 @template('application/overview.html')
@@ -69,7 +73,7 @@ def overview(request):
         applications = query.all()
     return {
         'applications': applications,
-        'min_supporters': int(config_get('application_min_supporters')),
+        'min_supporters': int(config['application_min_supporters']),
     }
 
 
@@ -91,7 +95,7 @@ def view(request, application_id, newest=False):
         'application': application,
         'revisions': revisions,
         'actions': actions,
-        'min_supporters': int(config_get('application_min_supporters')),
+        'min_supporters': int(config['application_min_supporters']),
         'version': version,
         #'results': application.results
     }
@@ -182,7 +186,7 @@ def edit(request, application_id=None):
             messages.error(request, _('Please check the form for errors.'))
     else:
         if application_id is None:
-            initial = {'text': config_get('application_preamble')}
+            initial = {'text': config['application_preamble']}
         else:
             if application.status == "pub" and application.supporter.count() > 0:
                 if request.user.has_perm('application.can_manage_application'):
@@ -454,6 +458,7 @@ def reject_version(request, aversion_id):
     else:
         gen_confirm_form(request, _('Do you really want to reject version <b>%s</b>?') % aversion.aid, reverse('application_version_reject', args=[aversion.id]))
     return redirect(reverse('application_view', args=[application.id]))
+
 
 @permission_required('application.can_manage_applications')
 @template('application/import.html')

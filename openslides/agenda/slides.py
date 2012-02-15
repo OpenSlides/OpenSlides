@@ -1,6 +1,5 @@
 from django.utils.translation import ugettext as _
 
-from projector.api import register_slidefunc
 from agenda.models import Item
 
 def agenda_show():

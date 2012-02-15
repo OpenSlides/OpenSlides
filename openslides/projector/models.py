@@ -1,6 +1,6 @@
 from django.db import models
 
-from system.api import config_set, config_get
+from system import config
 
 SLIDE = {}
 
@@ -37,4 +37,4 @@ class Slide(object):
         """
         Appoint this item as the active one.
         """
-        config_set("presentation", "%s %d" % (self.prefix, self.id))
+        config["presentation"] = "%s %d" % (self.prefix, self.id)

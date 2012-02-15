@@ -20,7 +20,7 @@ handler500 = 'openslides.utils.views.server_error'
 urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
     (r'^$', 'agenda.views.overview'),
-    (r'agenda', include('agenda.urls')),
+    (r'^agenda', include('agenda.urls')),
     (r'', include('application.urls')),
     (r'', include('participant.urls')),
     (r'', include('assignment.urls')),

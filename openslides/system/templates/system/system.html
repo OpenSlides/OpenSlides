@@ -1,11 +1,14 @@
 {% extends "system/base_system.html" %}
-{% block title %}{{ block.super }} - {%trans "Configuration" %}{% endblock %}
+
+{% load i18n %}
+
+{% block title %}{{ block.super }} - {% trans "Configuration" %}{% endblock %}
 
 {% block content %}
     <h1>{%trans "System settings" %}</h1>
     <form action="" method="post">{% csrf_token %}
     {{ form.as_p }}
-    
+
     <p>
     <button class="button" type="submit">
         <span class="icon ok">{%trans 'Save' %}</span>

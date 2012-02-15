@@ -14,14 +14,14 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 
+from system import config
+
 from projector.api import get_active_slide, set_active_slide
 
 from agenda.models import Item
 from agenda.api import is_summary, children_list, \
                                   del_confirm_form_for_items
 from agenda.forms import ItemOrderForm, ItemFormText
-
-from system.api import config_set, config_get
 
 from utils.utils import template, permission_required, \
                                    del_confirm_form, ajax_request
@@ -69,8 +69,8 @@ def overview(request):
         'items': items,
         'overview': overview,
         'summary': is_summary(),
-        'countdown_visible': config_get('countdown_visible'),
-        'countdown_time': config_get('agenda_countdown_time'),
+        'countdown_visible': config['countdown_visible'],
+        'countdown_time': config['agenda_countdown_time'],
     }
 
 
@@ -87,8 +87,8 @@ def set_active(request, item_id, summary=False):
             item.set_active(summary)
         except Item.DoesNotExist:
             messages.error(request, _('Item ID %d does not exist.') % int(item_id))
-    config_set("bigger", 100)
-    config_set("up", 0)
+    config["bigger"] = 100
+    config["up"] = 0
     if request.is_ajax():
         return ajax_request({'active': item_id, 'summary': summary})
 

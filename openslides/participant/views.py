@@ -36,7 +36,7 @@ from participant.api import gen_username, gen_password
 from participant.forms import UserNewForm, UserEditForm, ProfileForm, UsersettingsForm, UserImportForm, GroupForm, AdminPasswordChangeForm
 from utils.utils import template, permission_required, gen_confirm_form
 from utils.pdf import print_userlist, print_passwords
-from system.api import config_get
+from system import config
 
 from django.db.models import Avg, Max, Min, Count
 
@@ -203,7 +203,7 @@ def user_set_active(request, user_id):
 @permission_required('participant.can_manage_participant')
 @template('participant/group_overview.html')
 def get_group_overview(request):
-    if config_get('system_enable_anonymous', False):
+    if config['system_enable_anonymous']:
         groups = Group.objects.all()
     else:
         groups = Group.objects.exclude(name='Anonymous')

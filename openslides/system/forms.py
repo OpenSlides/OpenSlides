@@ -12,21 +12,21 @@
 
 from django.forms import Form, CharField, TextInput, BooleanField, IntegerField, ChoiceField, Textarea, Select
 from django.utils.translation import ugettext as _
-from system.api import config_get
+from system import config
 
 class SystemConfigForm(Form):
     error_css_class = 'error'
     required_css_class = 'required'
-    
+
     #user_registration = BooleanField(label=_("User registration"), required=False)
     system_url = CharField(widget=TextInput(), required=False, label=_("System URL"))
     system_welcometext = CharField(widget=Textarea(), required=False, label=_("Welcome text (for password PDF)"))
     system_enable_anonymous = BooleanField(required=False, label=_("Access for anonymous / guest users"), help_text=_("Allow access for guest users"))
-    
+
 class EventConfigForm(Form):
     error_css_class = 'error'
     required_css_class = 'required'
-    
+
     event_name = CharField(widget=TextInput(),label=_("Event name"), max_length=30)
     event_description = CharField(widget=TextInput(),label=_("Short description of event"), max_length=100, required=False)
     event_date = CharField(widget=TextInput(), required=False, label=_("Event date"))

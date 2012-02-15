@@ -22,7 +22,7 @@ from utils.utils import template, permission_required, \
                                    del_confirm_form, ajax_request
 from utils.template import render_block_to_string
 
-from system.api import config_set, config_get
+from system import config
 
 from agenda.api import is_summary, children_list, \
                                   del_confirm_form_for_items
@@ -40,7 +40,7 @@ def active_slide(request):
         data = get_active_slide()
     except AttributeError: #TODO: It has to be an Slide.DoesNotExist
         data = {
-            'title': config_get('event_name'),
+            'title': config['event_name'],
             'template': 'projector/default.html',
         }
 
@@ -52,11 +52,11 @@ def active_slide(request):
             'content': content,
             'title': data['title'],
             'time': datetime.now().strftime('%H:%M'),
-            'bigger': config_get('bigger'),
-            'up': config_get('up'),
-            'countdown_visible': config_get('countdown_visible'),
-            'countdown_time': config_get('agenda_countdown_time'),
-            'countdown_control': config_get('countdown_control'),
+            'bigger': config['bigger'],
+            'up': config['up'],
+            'countdown_visible': config['countdown_visible'],
+            'countdown_time': config['agenda_countdown_time'],
+            'countdown_control': config['countdown_control'],
         }
         return ajax_request(jsondata)
     else:
@@ -70,16 +70,16 @@ def active_slide(request):
 @permission_required('agenda.can_manage_agenda')
 def projector_edit(request, direction):
     if direction == 'bigger':
-        config_set('bigger', int(config_get('bigger', 100)) + 10)
+        config['bigger'] = int(config['bigger']) + 10
     elif direction == 'smaller':
-        config_set('bigger', int(config_get('bigger', 100)) - 10)
+        config['bigger'] = int(config['bigger']) - 10
     elif direction == 'up':
-        config_set('up', int(config_get('up', 0)) - 10)
+        config['up'] = int(config['up']) - 10
     elif direction == 'down':
-        config_set('up', int(config_get('up', 0)) + 10)
+        config['up'] = int(config['up']) + 10
     elif direction == 'clean':
-        config_set('up', 0)
-        config_set('bigger', 100)
+        config['up'] = 0
+        config['bigger'] = 100
 
     if request.is_ajax():
         return ajax_request({})
@@ -89,21 +89,21 @@ def projector_edit(request, direction):
 @permission_required('agenda.can_manage_agenda')
 def projector_countdown(request, command, time=60):
     if command == 'show':
-        config_set('countdown_visible', True)
+        config['countdown_visible'] = True
     elif command == 'hide':
-        config_set('countdown_visible', False)
+        config['countdown_visible'] = False
     elif command == 'reset':
-        config_set('countdown_control', 'reset')
+        config['countdown_control'] = 'reset'
     elif command == 'start':
-        config_set('countdown_control', 'start')
+        config['countdown_control'] = 'start'
     elif command == 'stop':
-        config_set('countdown_control', 'stop')
+        config['countdown_control'] = 'stop'
 
     if request.is_ajax():
         if command == "show":
             link = reverse('countdown_close')
         else:
             link = reverse('countdown_open')
-        return ajax_request({'countdown_visible': config_get('countdown_visible'),
+        return ajax_request({'countdown_visible': config['countdown_visible'],
                              'link': link})
     return redirect(reverse('item_overview'))

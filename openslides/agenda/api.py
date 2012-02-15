@@ -14,7 +14,7 @@ from django.utils.translation import ugettext as _
 from django.contrib import messages
 from django.core.context_processors import csrf
 
-from openslides.system.api import config_get
+from system import config
 from projector.api import get_active_slide
 
 
@@ -22,7 +22,7 @@ def is_summary():
     """
     True, if a summery shall be displayed
     """
-    if config_get('agenda_summary', False):
+    if config['agenda_summary']:
         return True
     return False
 

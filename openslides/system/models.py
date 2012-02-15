@@ -27,14 +27,36 @@ DEFAULT_DATA  = {
     'system_welcometext': 'Welcome to OpenSlides!',
 }
 
-class Config(models.Model):
-    id = models.CharField(max_length=100, primary_key=True)
+class ConfigStore(models.Model):
+    key = models.CharField(max_length=100, primary_key=True)
     value = models.CharField(max_length=100)
 
     def __unicode__(self):
         return self.id
 
     class Meta:
+        verbose_name = 'config'
         permissions = (
             ('can_manage_system', "Can manage system configuration"),
         )
+
+
+class Config(object):
+    def __getitem__(self, key):
+        try:
+            return ConfigStore.objects.get(pk=key).value
+        except ConfigStore.DoesNotExist:
+            try:
+                return DEFAULT_DATA[key]
+            except KeyError:
+                return None
+
+    def __setitem__(self, key, value):
+        try:
+            c = ConfigStore.objects.get(pk=key)
+        except ConfigStore.DoesNotExist:
+            c = ConfigStore(pk=key)
+        c.value = value
+        c.save()
+
+

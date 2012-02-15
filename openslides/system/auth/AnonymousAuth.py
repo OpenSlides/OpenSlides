@@ -1,5 +1,5 @@
 from django.contrib.auth.models import Permission
-from openslides.system.api import config_get
+from system import config
 
 class AnonymousAuth(object):
     """
@@ -25,7 +25,7 @@ class AnonymousAuth(object):
         - try to return  the permissions for the 'Anonymous' group
         """
         if not user_obj.is_anonymous() or obj is not None or \
-           not config_get('system_enable_anonymous', False):
+           not config['system_enable_anonymous']:
             return set()
 
         perms = Permission.objects.filter(group__name='Anonymous')
@@ -47,7 +47,7 @@ class AnonymousAuth(object):
         Check if the user as a specific permission
         """
         if not user_obj.is_anonymous() or obj is not None or \
-           not config_get('system_enable_anonymous', False):
+           not config['system_enable_anonymous']:
             return False
 
         return (perm in self.get_all_permissions(user_obj))
@@ -57,7 +57,7 @@ class AnonymousAuth(object):
         Check if the user has permissions on the module app_label
         """
         if not user_obj.is_anonymous() or \
-           not config_get('system_enable_anonymous', False):
+           not config['system_enable_anonymous']:
             return False
 
         for perm in self.get_all_permissions(user_obj):
@@ -78,5 +78,5 @@ def anonymous_context_additions(RequestContext):
     Add a variable to the request context that will indicate
     if anonymous login is possible at all.
     """
-    return { 'os_enable_anonymous_login' : config_get('system_enable_anonymous', False) }
+    return { 'os_enable_anonymous_login' : config['system_enable_anonymous']}
 
