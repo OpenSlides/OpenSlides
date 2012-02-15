@@ -362,14 +362,14 @@ def delete_poll(request, poll_id):
     """
     delete a poll from this application
     """
-    poll = Poll.objects.get(pk=poll_id)
+    poll = ApplicationPoll.objects.get(pk=poll_id)
     application = poll.application
-    count = application.poll_set.filter(id__lte=poll_id).count()
+    count = application.polls.filter(id__lte=poll_id).count()
     if request.method == 'POST':
         poll.delete()
         messages.success(request, _('Poll was successfully deleted.'))
     else:
-        del_confirm_form(request, poll, name=_("the %s. poll") % count)
+        del_confirm_form(request, poll, name=_("the %s. poll") % count, delete_link=reverse('application_poll_delete', args=[poll_id]))
     return redirect(reverse('application_view', args=[application.id]))
 
 

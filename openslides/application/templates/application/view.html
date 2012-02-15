@@ -74,16 +74,16 @@
             {% endif %}
             <a href="{% url application_poll_activate poll.id %}">{% trans 'project' %}</a>
             <br>
-            {% if poll.has_vote %}
-                {% for option in poll.options %}
-                    <img src="/static/images/icons/voting-yes.png" title="{% trans 'Yes' %}"> {{ option.yes }}<br>
-                    <img src="/static/images/icons/voting-no.png" title="{% trans 'No' %}"> {{ option.no }}<br>
-                    <img src="/static/images/icons/voting-abstention.png" title="{% trans 'Abstention' %}"> {{ option.undesided }}<br>
+            {% if poll.has_votes %}
+                {% with poll.get_options.0 as option %}
+                    <img src="/static/images/icons/voting-yes.png" title="{% trans 'Yes' %}"> {{ option.yes.weight }}<br>
+                    <img src="/static/images/icons/voting-no.png" title="{% trans 'No' %}"> {{ option.no.weight }}<br>
+                    <img src="/static/images/icons/voting-abstention.png" title="{% trans 'Abstention' %}"> {{ option.contained.weight }}<br>
                     <img src="/static/images/icons/voting-invalid.png" title="{% trans 'Invalid' %}"> {{ poll.votesinvalidf }}<br>
                     <div style="border-top: 1px solid; padding-top: 5px; margin: 5px 0; width: 10em;">
-                    <img src="/static/images/icons/voting-total.png" title="{% trans 'Votes cast' %}"> {{ poll.votescastf }}
+                        <img src="/static/images/icons/voting-total.png" title="{% trans 'Votes cast' %}"> {{ poll.votescastf }}
                     </div>
-                {% endfor %}
+                {% endwith %}
                 {% if perms.application.can_manage_application %}
                     {% if forloop.last %}
                     {% if "genpoll" in actions %}

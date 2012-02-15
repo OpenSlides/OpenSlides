@@ -412,16 +412,15 @@ class Application(models.Model, Slide):
         """
         Generates a poll object for the application
         """
-        poll = ApplicationPoll()
+        poll = ApplicationPoll(application=self)
         poll.save()
-        poll.set_options([{'application': self}])
+        poll.set_options()
         self.writelog(_("Poll created"), user)
         return poll
 
     @property
     def polls(self):
-        #todo: return an query_set
-        return [option.poll for option in self.applicationoption_set.all()]
+        return self.applicationpoll_set.all()
 
     @property
     def results(self):
@@ -493,14 +492,24 @@ register_slidemodel(Application)
 
 
 class ApplicationOption(BaseOption):
-    application = models.ForeignKey(Application)
 
-    def __unicode__(self):
-        return unicode(self.application)
+    def __getattr__(self, name):
+        if name in [_('yes'), _('no'), _('contained')]:
+            print self.poll.get_vote_values()
+            try:
+                return self.get_votes().get(value=name)
+            except Vote.DoesNotExist:
+                pass
+        raise AttributeError(name)
 
 
 class ApplicationPoll(BasePoll):
     option_class = ApplicationOption
 
+    application = models.ForeignKey(Application)
+
     def get_application(self):
-        return self.get_options()[0].application
+        return self.application
+
+    def set_options(self):
+        self.get_option_class()(poll=self).save()

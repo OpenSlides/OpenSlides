@@ -35,10 +35,12 @@ def gen_confirm_form(request, message, url):
     messages.warning(request, '%s<form action="%s" method="post"><input type="hidden" value="%s" name="csrfmiddlewaretoken"><input type="submit" value="%s" /> <input type="button" value="%s"></form>' % (message, url, csrf(request)['csrf_token'], _("Yes"), _("No")))
 
 
-def del_confirm_form(request, object, name=None):
+def del_confirm_form(request, object, name=None, delete_link=None):
     if name is None:
         name = object
-    gen_confirm_form(request, _('Do you really want to delete <b>%s</b>?') % name, object.get_absolute_url('delete'))
+    if delete_link is None:
+        delete_link = object.get_absolute_url('delete')
+    gen_confirm_form(request, _('Do you really want to delete <b>%s</b>?') % name, delete_link)
 
 
 def render_response(req, *args, **kwargs):

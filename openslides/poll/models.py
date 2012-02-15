@@ -22,12 +22,8 @@ from poll.forms import OptionForm
 class BaseOption(models.Model):
     poll = models.ForeignKey('BasePoll')
 
-    @property
-    def votes(self):
-        count = 0
-        for vote in Vote.objects.filter(option=self):
-            count += vote.weight
-        return weight
+    def get_votes(self):
+        return Vote.objects.filter(option=self)
 
 
 class TextOption(BaseOption):
@@ -54,7 +50,12 @@ class BasePoll(models.Model, Slide):
     option_class = TextOption
     vote_values = [_('votes')]
 
-    def set_options(self, options_data):
+    def has_votes(self):
+        if self.get_options().filter(vote__isnull=False):
+            return True
+        return False
+
+    def set_options(self, options_data=[]):
         for option_data in options_data:
             option = self.option_class(**option_data)
             option.poll = self
@@ -77,7 +78,6 @@ class BasePoll(models.Model, Slide):
                 vote = Vote(option=option, value=value)
             vote.weight = data[value]
             vote.save()
-
 
     def get_form_values(self, option_id):
         values = []
