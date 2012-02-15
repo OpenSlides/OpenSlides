@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form action="" method="post">{% csrf_token %}
+    <table>
+        <tr>
+            <th>Option</th>
+            {% for value in poll.get_vote_values %}
+                <th>{{ value }}</th>
+            {% endfor %}
+        </tr>
+        {% for form in forms %}
+        <tr>
+            <td>{{ form.option }}</td>
+            {% for value in form %}
+            <td>
+                {{ value.errors }}
+                {{ value }}
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table>
+    <button class="button" type="submit">
+        <span class="icon ok">Save</span>
+    </button>
+    </p>
+</form>
+{% endblock %}
