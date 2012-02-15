@@ -501,3 +501,6 @@ class ApplicationOption(BaseOption):
 
 class ApplicationPoll(BasePoll):
     option_class = ApplicationOption
+
+    def get_application(self):
+        return self.get_options()[0].application

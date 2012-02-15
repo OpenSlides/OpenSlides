@@ -13,8 +13,10 @@
 from django.db import models
 from django.utils.translation import ugettext as _
 
-#from projector.api import register_slidemodel
-#from projector.models import Slide
+from projector.api import register_slidemodel
+from projector.models import Slide
+
+from poll.forms import OptionForm
 
 
 class BaseOption(models.Model):
@@ -42,7 +44,7 @@ class Vote(models.Model):
     value = models.CharField(max_length=255, null=True)
 
 
-class BasePoll(models.Model): #, Slide):
+class BasePoll(models.Model, Slide):
     prefix = 'BasePoll'
 
     description = models.TextField(null=True, blank=True, verbose_name = _("Description"))
@@ -97,9 +99,13 @@ class BasePoll(models.Model): #, Slide):
             form = self.get_vote_form(formid=option.id, **kwargs)
             form.option = option
             forms.append(form)
-
         return forms
 
+    def slide(self):
+        data = super(BasePoll, self).slide()
+        # data['template'] = 'projector/TODO.html'
+        return data
 
-#register_slidemodel(BasePoll)
+
+register_slidemodel(BasePoll)
 

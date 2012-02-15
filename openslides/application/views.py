@@ -22,6 +22,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
 from django.db import transaction
+from django.views.generic.base import RedirectView
 
 from system import config
 
@@ -424,7 +425,7 @@ class ViewPoll(PollFormView):
 
     def get_context_data(self, **kwargs):
         context = super(ViewPoll, self).get_context_data()
-        self.application = self.poll.get_options()[0].application
+        self.application = self.poll.get_application()
         context['application'] = self.application
         return context
 
@@ -432,6 +433,20 @@ class ViewPoll(PollFormView):
         if not 'apply' in self.request.POST:
             return reverse('application_view', args=[self.application.id])
         return ''
+
+
+class ActivatePoll(RedirectView):
+    permanent = False
+
+    def get_redirect_url(self, **kwargs):
+        poll = ApplicationPoll.objects.get(pk=self.kwargs['poll_id'])
+        application = poll.get_application()
+        return reverse('application_view', args=[application.id])
+
+    def get(self, request, *args, **kwargs):
+        self.poll = ApplicationPoll.objects.get(pk=self.kwargs['poll_id'])
+        self.poll.set_active()
+        return super(ActivatePoll, self).get(request, *args, **kwargs)
 
 
 @permission_required('application.can_manage_application')

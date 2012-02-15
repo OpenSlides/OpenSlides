@@ -152,4 +152,11 @@ ItemText = Item # ItemText is Depricated
 
 register_slidemodel(Item)
 
+# TODO: put this in anouther file
+
+from projector.api import register_slidefunc
+from agenda.slides import agenda_show
+
+register_slidefunc('agenda_show', agenda_show)
+
 

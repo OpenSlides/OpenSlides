@@ -13,6 +13,7 @@ class Slide(object):
         return {
             'slide': self,
             'title': 'dummy-title',
+            'template': 'projector/default.html',
         }
 
     @property

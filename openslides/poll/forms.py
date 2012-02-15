@@ -1,4 +1,5 @@
 from django import forms
+from django.utils.translation import ugettext as _
 
 class OptionForm(forms.Form):
     def __init__(self, *args, **kwargs):
