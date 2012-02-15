@@ -30,7 +30,7 @@ from application.forms import ApplicationForm, \
                                          ApplicationImportForm
 from openslides.participant.models import Profile
 
-from poll.models import PollFormView
+from poll.views import PollFormView
 
 from openslides.utils.utils import template, permission_required, \
                                    render_to_forbitten, del_confirm_form, gen_confirm_form

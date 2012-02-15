@@ -1,6 +1,7 @@
 from django.utils.translation import ugettext as _
 
-from models import PollFormView, BasePoll
+from models import BasePoll
+from views import PollFormView
 
 
 class DesicionPoll(PollFormView):
