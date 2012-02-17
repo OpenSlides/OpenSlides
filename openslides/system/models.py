@@ -9,6 +9,7 @@
     :copyright: 2011 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
+from pickle import dumps, loads
 
 from django.db import models
 from django.utils.translation import ugettext as _
@@ -44,7 +45,7 @@ class ConfigStore(models.Model):
 class Config(object):
     def __getitem__(self, key):
         try:
-            return ConfigStore.objects.get(pk=key).value
+            return loads(str(ConfigStore.objects.get(pk=key).value))
         except ConfigStore.DoesNotExist:
             try:
                 return DEFAULT_DATA[key]
@@ -56,7 +57,8 @@ class Config(object):
             c = ConfigStore.objects.get(pk=key)
         except ConfigStore.DoesNotExist:
             c = ConfigStore(pk=key)
-        c.value = value
+        c.value = dumps(value)
         c.save()
+
 
 
