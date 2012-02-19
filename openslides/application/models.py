@@ -24,7 +24,7 @@ from participant.models import Profile
 from system import config
 from utils.utils import _propper_unicode
 from poll import ChoicePoll
-from poll.models import BaseOption, BasePoll
+from poll.models import BaseOption, BasePoll, CountVotesCast, CountInvalid, Vote
 
 
 class Application(models.Model, Slide):
@@ -494,17 +494,22 @@ register_slidemodel(Application)
 class ApplicationOption(BaseOption):
 
     def __getattr__(self, name):
-        if name in [_('yes'), _('no'), _('contained')]:
-            print self.poll.get_vote_values()
+        if name in ['yes', 'no', 'contained']:
             try:
-                return self.get_votes().get(value=name)
+                value = self.get_votes().get(value=name).weight
+                if value == -1:
+                    return _('majority')
+                if value == -2:
+                    return _('undocumented')
+                return value
             except Vote.DoesNotExist:
                 pass
         raise AttributeError(name)
 
 
-class ApplicationPoll(BasePoll):
+class ApplicationPoll(BasePoll, CountInvalid, CountVotesCast):
     option_class = ApplicationOption
+    vote_values = ['yes', 'no', 'contained'] #todo: Translate the names without changing the db-key
 
     application = models.ForeignKey(Application)
 
@@ -513,3 +518,7 @@ class ApplicationPoll(BasePoll):
 
     def set_options(self):
         self.get_option_class()(poll=self).save()
+
+    def append_pollform_fields(self, fields):
+        CountInvalid.append_pollform_fields(self, fields)
+        CountVotesCast.append_pollform_fields(self, fields)

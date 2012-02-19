@@ -420,18 +420,17 @@ def view_poll(request, poll_id):
 
 class ViewPoll(PollFormView):
     poll_class = ApplicationPoll
-    vote_values = [_('yes'), _('no'), _('contained')]
     template_name = 'application/poll_view.html'
 
     def get_context_data(self, **kwargs):
-        context = super(ViewPoll, self).get_context_data()
+        context = super(ViewPoll, self).get_context_data(**kwargs)
         self.application = self.poll.get_application()
         context['application'] = self.application
         return context
 
     def get_success_url(self):
         if not 'apply' in self.request.POST:
-            return reverse('application_view', args=[self.application.id])
+            return reverse('application_view', args=[self.poll.application.id])
         return ''
 
 

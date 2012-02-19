@@ -23,18 +23,25 @@
     <i>-1 := {% trans 'majority' %}, -2 := {% trans 'undocumented' %}</i>
     <form action="" method="post">{% csrf_token %}
         <table class="table" style="width: auto;">
-        <tr>
-            <th>{% trans "Option" %}</th>
-            <th>{% trans "Votes" %}</th>
-        </tr>
-        {% for value in forms.0 %}
             <tr>
-                <td>{{ value.label }}</td>
-                <td>{{ value.errors }}{{ value }}</td>
+                <th>{% trans "Option" %}</th>
+                <th>{% trans "Votes" %}</th>
             </tr>
-        {% endfor %}
+            {% for value in forms.0 %}
+                <tr>
+                    <td>{{ value.label }}</td>
+                    <td>{{ value.errors }}{{ value }}</td>
+                </tr>
+            {% endfor %}
+            <tr class="total">
+                <td>{% trans "Invalid votes" %}</td>
+                <td>{{ pollform.votesinvalid.errors }}{{ pollform.votesinvalid }}</td>
+            </tr>
+            <tr class="total">
+                <td>{% trans "Votes cast" %}</td>
+                <td>{{ pollform.votescast.errors }}{{ pollform.votescast }}</td>
+            </tr>
         </table>
-        <p>
         <button class="button" type="submit">
             <span class="icon ok">{%trans 'Save' %}</span>
         </button>

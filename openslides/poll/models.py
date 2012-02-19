@@ -16,7 +16,7 @@ from django.utils.translation import ugettext as _
 from projector.api import register_slidemodel
 from projector.models import Slide
 
-from poll.forms import OptionForm
+
 
 
 class BaseOption(models.Model):
@@ -40,12 +40,32 @@ class Vote(models.Model):
     value = models.CharField(max_length=255, null=True)
 
 
+class CountVotesCast(models.Model):
+    votescast = models.IntegerField(null=True, blank=True, verbose_name=_("Votes cast"))
+
+    def append_pollform_fields(self, fields):
+        fields.append('votescast')
+
+    class Meta:
+        abstract = True
+
+
+class CountInvalid(models.Model):
+    votesinvalid = models.IntegerField(null=True, blank=True, verbose_name=_("Votes invalid"))
+
+    def append_pollform_fields(self, fields):
+        fields.append('votesinvalid')
+
+    class Meta:
+        abstract = True
+
+
 class BasePoll(models.Model, Slide):
+    #TODO: It would be nice if this class wouldn't be a subclass from models.Model. But it is needet aslong
+    #      BaseOption has a foreignKey on BasePoll
     prefix = 'BasePoll'
 
-    description = models.TextField(null=True, blank=True, verbose_name = _("Description"))
-    votescast = models.IntegerField(null=True, blank=True, verbose_name = _("Votes cast"))
-    votesinvalid = models.IntegerField(null=True, blank=True, verbose_name = _("Votes invalid"))
+    description = models.TextField(null=True, blank=True, verbose_name=_("Description")) #TODO: Use this field or delete it.
 
     option_class = TextOption
     vote_values = [_('votes')]
@@ -91,6 +111,7 @@ class BasePoll(models.Model, Slide):
         return values
 
     def get_vote_form(self, **kwargs):
+        from poll.forms import OptionForm
         return OptionForm(extra=self.get_form_values(kwargs['formid']), **kwargs)
 
     def get_vote_forms(self, **kwargs):
