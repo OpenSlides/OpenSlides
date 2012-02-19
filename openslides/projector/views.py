@@ -24,10 +24,6 @@ from utils.template import render_block_to_string
 
 from system import config
 
-from agenda.api import is_summary, children_list, \
-                                  del_confirm_form_for_items
-from agenda.models import Item
-
 from projector.api import get_active_slide
 
 

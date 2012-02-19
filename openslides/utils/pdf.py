@@ -33,7 +33,6 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
 from openslides.agenda.models import Item
-from openslides.agenda.api import children_list
 from openslides.application.models import Application
 from openslides.assignment.models import Assignment
 #from openslides.poll.models import Poll, Option
@@ -231,7 +230,7 @@ def print_agenda(request):
 
     doc.title = _("Agenda")
     # print item list
-    items = children_list(Item.objects.filter(parent=None).order_by('weight'))
+    items = Item.objects.all()
     for item in items:
         if item.hidden is False:
             # print all items"
