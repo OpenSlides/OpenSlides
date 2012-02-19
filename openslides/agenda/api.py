@@ -27,18 +27,6 @@ def is_summary():
     return False
 
 
-def children_list(items):
-    """
-    Return a list for items with all childitems in the right order.
-    """
-    l = []
-    for item in items:
-        l.append(item)
-        if item.children:
-            l += children_list(item.children)
-    return l
-
-
 def gen_confirm_form_for_items(request, message, url, singleitem=None):
     if singleitem:
         messages.warning(request, '%s<form action="%s" method="post"><input type="hidden" value="%s" name="csrfmiddlewaretoken"><input type="submit" value="%s" /> <input type="button" value="%s"></form>' % (message, url, csrf(request)['csrf_token'], _("Yes"), _("No")))
