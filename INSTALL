@@ -24,10 +24,10 @@ I. Installation on Windows (32/64bit)
           from http://www.python.org/download/
        b) Add python dirs to PATH (via Control Panel > System > Advanced):
           C:\Python27;C:\Python27\Scripts
-  
+
   2. Install Setuptools 0.6c11
 
-     - 32bit: 
+     - 32bit:
        Download and run 32bit binary installer
        (setuptools-0.6c11.win32-py2.7.exe)
        from http://pypi.python.org/pypi/setuptools
@@ -35,14 +35,14 @@ I. Installation on Windows (32/64bit)
      - 64bit:
        a) Download 64bit version (ez_setup.py)
           from http://pypi.python.org/pypi/setuptools
-       b) Open cmd and run to install setuptools: 
+       b) Open cmd and run to install setuptools:
             python ez_setup.py
-  
+
   3. Install django packages
      Open cmd and run:
 
-       easy_install django
-  
+       easy_install django django-mptt
+
   4. Install packages for building PDF (reportlab, PIL)
 
      - 32bit:
@@ -57,38 +57,38 @@ I. Installation on Windows (32/64bit)
        b) Download and run PIL 64bit binary installer
           (PIL-1.1.7.win-amd64-py2.7.exe) from
           http://www.lfd.uci.edu/~gohlke/pythonlibs/
-       
-  5. Get OpenSlides: 
-       
+
+  5. Get OpenSlides:
+
      a) Download latest OpenSlides release from http://openslides.org.
-        
+
         OR
 
      b) Clone development version from mercurial repository
         (anonymous checkout):
-       
+
         hg clone http://hg.openslides.org
 
-        If you have write access use instead: 
+        If you have write access use instead:
         hg clone ssh://hg@openslides.org/openslides
 
-  6. Copy default.settings.py to settings.py 
+  6. Copy default.settings.py to settings.py
      (in subdirectory 'openslides')
-  
+
   7. Create OpenSlides database (and follow on screen instruction).
      Go to the extracted OpenSlides root directory and enter:
 
        python manage.py syncdb
 
      -> Note: Answer "yes" to create superuser!
-  
+
   8. Run OpenSlides server:
 
-       python manage.py runserver 
-     
+       python manage.py runserver
+
      Optional: Add <port> or <address:port> to use server on custom
      address/port.
-  
+
   9. Open OpenSlides in your browser:
 
        http://127.0.0.1:8000/  (or customized server address:port)
@@ -101,18 +101,18 @@ II. Installation on GNU/Linux and MacOSX
 Make sure that you have installed python and virtualenv on your
 system.
 
-  1. Get OpenSlides: 
+  1. Get OpenSlides:
 
      a) Download latest OpenSlides release from http://openslides.org.
-        
+
         OR
 
      b) Clone development version from mercurial repository (anonymous
         checkout):
-       
+
         hg clone http://hg.openslides.org
 
-        If you have write access use instead: 
+        If you have write access use instead:
         hg clone ssh://hg@openslides.org/openslides
 
   2. Setup virtualenv:
@@ -125,13 +125,13 @@ system.
        . .venv/bin/activate
 
   3. Install 'pip' (if not available):
-     
-       easy_install pip 
+
+       easy_install pip
 
   4. Install django packages:
-       
+
        pip install django django-model-utils
-  
+
   5. Install packages for building PDF:
 
        pip install reportlab pil
@@ -139,25 +139,25 @@ system.
   6. Install other required packages:
 
        pip install simplejson mercurial
- 
+
   7. Copy default.settings.py to settings.py:
 
        cp openslides/default.settings.py openslides/settings.py
-  
+
   8. Create OpenSlides database in the OpenSlides root directory
      and follow on screen instruction:
 
        python manage.py syncdb
 
      -> Note: Answer "yes" to create superuser!
-  
+
   9. Run OpenSlides server:
 
        python manage.py runserver
-     
+
      Optional: Add <port> or <address:port> to use server on custom
      address/port.
-  
+
  10. Open OpenSlides in your browser:
 
        http://127.0.0.1:8000/  (or customized server address:port)
