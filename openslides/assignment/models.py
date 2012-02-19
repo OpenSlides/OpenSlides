@@ -17,6 +17,7 @@ from participant.models import Profile
 
 from projector.models import Slide
 from projector.api import register_slidemodel
+from poll.models import BasePoll, CountInvalid, CountVotesCast, BaseOption
 
 
 class Assignment(models.Model, Slide):
@@ -73,7 +74,7 @@ class Assignment(models.Model, Slide):
 
     @property
     def candidates(self):
-        return Profile.objects.filter(option__poll__assignment=self).order_by('user__first_name').distinct()
+        return self.profile.get_query_set()
 
     def set_elected(self, profile, value=True):
         if profile in self.candidates:
@@ -88,33 +89,9 @@ class Assignment(models.Model, Slide):
         return False
 
     def gen_poll(self):
-        from poll.models import Poll
-        poll = Poll()
-
-        candidates = list(self.profile.all())
-        for elected in self.elected.all():
-            try:
-                candidates.remove(elected)
-            except ValueError:
-                pass
-
-        # Option A: candidates <= available posts -> yes/no/abstention
-        if len(candidates) <= self.posts - self.elected.count():
-            poll.optiondecision = True
-        else:
-            poll.optiondecision = False
-
-        # Option B: candidates == 1 -> yes/no/abstention
-        #if self.profile.count() == 1:
-        #    poll.optiondecision = True
-        #else:
-        #    poll.optiondecision = False
-
-        poll.assignment = self
-        poll.description = self.polldescription
+        poll = AssignmentPoll(assignment=self)
         poll.save()
-        for candidate in candidates:
-            poll.add_option(candidate)
+        poll.set_options([{'candidate': profile} for profile in self.profile.all()])
         return poll
 
     def slide(self):
@@ -146,3 +123,23 @@ class Assignment(models.Model, Slide):
         )
 
 register_slidemodel(Assignment)
+
+class AssignmentOption(BaseOption):
+    candidate = models.ForeignKey(Profile)
+
+    def __unicode__(self):
+        return unicode(self.candidate)
+
+
+class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast):
+    option_class = AssignmentOption
+
+    assignment = models.ForeignKey(Assignment, related_name='poll_set')
+
+    def get_assignment(self):
+        return self.assignment
+
+
+    def append_pollform_fields(self, fields):
+        CountInvalid.append_pollform_fields(self, fields)
+        CountVotesCast.append_pollform_fields(self, fields)

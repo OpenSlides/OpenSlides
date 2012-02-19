@@ -17,8 +17,6 @@ from projector.api import register_slidemodel
 from projector.models import Slide
 
 
-
-
 class BaseOption(models.Model):
     poll = models.ForeignKey('BasePoll')
 
@@ -39,12 +37,18 @@ class Vote(models.Model):
     weight = models.IntegerField(default=1)
     value = models.CharField(max_length=255, null=True)
 
+    def __unicode__(self):
+        return print_value(self.weight)
+
 
 class CountVotesCast(models.Model):
     votescast = models.IntegerField(null=True, blank=True, verbose_name=_("Votes cast"))
 
     def append_pollform_fields(self, fields):
         fields.append('votescast')
+
+    def print_votescast(self):
+        return print_value(self.votescast)
 
     class Meta:
         abstract = True
@@ -55,6 +59,9 @@ class CountInvalid(models.Model):
 
     def append_pollform_fields(self, fields):
         fields.append('votesinvalid')
+
+    def print_votesinvalid(self):
+        return print_value(self.votesinvalid)
 
     class Meta:
         abstract = True
@@ -129,4 +136,11 @@ class BasePoll(models.Model, Slide):
 
 
 register_slidemodel(BasePoll)
+
+def print_value(value):
+    if value == -1:
+        return _('majority')
+    elif value == -2:
+        return _('undocumented')
+    return unicode(value)
 

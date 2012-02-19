@@ -12,37 +12,32 @@
     <p><b>{% trans "Short description" %}:</b> {{ poll.description }}</p>
     <i>-1 := {% trans 'majority' %}, -2 := {% trans 'undocumented' %}</i>
     <form action="" method="post">{% csrf_token %}
-    <table class="table" style="width:auto;">
+    <table>
         <tr>
-            <th>{%trans "Option" %}</th>
-            {% if poll.optiondecision %}
-            <th>{%trans "Yes" %}</th>
-            <th>{%trans "No" %}</th>
-            <th>{%trans "Abstention" %}</th>
-            {% else %}
-            <th>{%trans "Votes" %}</th>
-            {% endif %}
+            <th>Option</th>
+            {% for value in poll.get_vote_values %}
+                <th>{{ value }}</th>
+            {% endfor %}
         </tr>
-        {% for option in options %}
-        <tr class="{% cycle 'odd' '' %}">
-            <td>{{ option }}</td>
-            {% if poll.optiondecision %}
-            <td>{{ option.form.yes.errors }}{{ option.form.yes }}</td>
-            <td>{{ option.form.no.errors }}{{ option.form.no }}</td>
-            <td>{{ option.form.undesided.errors }}{{ option.form.undesided }}</td>
-            {% else %}
-            <td>{{ option.form.yes.errors }}{{ option.form.yes }}</td>
-            {% endif %}
+        {% for form in forms %}
+        <tr>
+            <td>{{ form.option }}</td>
+            {% for value in form %}
+            <td>
+                {{ value.errors }}
+                {{ value }}
+            </td>
+            {% endfor %}
         </tr>
         {% endfor %}
-        <tr class="total">
-            <td>{% trans "Invalid votes" %}</td>
-            <td {% if poll.optiondecision %}colspan="3"{% endif %}>{{ form.invalid.errors }}{{ form.invalid }}</td>
-        </tr>
-        <tr class="total">
-            <td style="white-space: nowrap;"><b>{% trans "Votes cast" %}</b></td>
-            <td {% if poll.optiondecision %}colspan="3"{% endif %}>{{ form.votescast.errors }}{{ form.votescast }}</td>
-        </tr>
+            <tr class="total">
+                <td>{% trans "Invalid votes" %}</td>
+                <td>{{ pollform.votesinvalid.errors }}{{ pollform.votesinvalid }}</td>
+            </tr>
+            <tr class="total">
+                <td>{% trans "Votes cast" %}</td>
+                <td>{{ pollform.votescast.errors }}{{ pollform.votescast }}</td>
+            </tr>
     </table>
 
         <p>

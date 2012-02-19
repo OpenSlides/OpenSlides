@@ -16,13 +16,14 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 
-from openslides.agenda.models import Item
-#from poll.models import Poll, Option
-#from poll.forms import OptionResultForm, PollForm
-from assignment.models import Assignment
-from assignment.forms import AssignmentForm, AssignmentRunForm
 from utils.utils import template, permission_required, gen_confirm_form, del_confirm_form, ajax_request
 from utils.pdf import print_assignment, print_assignment_poll
+
+from poll.views import PollFormView
+
+from assignment.models import Assignment, AssignmentPoll, AssignmentOption
+from assignment.forms import AssignmentForm, AssignmentRunForm
+
 from participant.models import Profile
 
 
@@ -69,26 +70,26 @@ def view(request, assignment_id=None):
     votes = []
     for candidate in assignment.candidates:
         tmplist = [[candidate, assignment.is_elected(candidate)], []]
+        #TODO: only show published polls
         for poll in assignment.poll_set.all():
-            if (poll.published and not request.user.has_perm('assignment.can_manage_assignment')) or request.user.has_perm('assignment.can_manage_assignment'):
-                if candidate in poll.options_values:
-                    option = Option.objects.filter(poll=poll).filter(user=candidate)[0]
-                    if poll.optiondecision:
-                        tmplist[1].append([option.yes, option.no, option.undesided])
-                    else:
-                        tmplist[1].append(option.yes)
-                else:
-                    tmplist[1].append("-")
+            #if (poll.published and not request.user.has_perm('assignment.can_manage_assignment')) or request.user.has_perm('assignment.can_manage_assignment'):
+
+            # exisitiert der Spieler in der poll
+            if poll.get_options().filter(candidate=candidate).exists():
+                option = AssignmentOption.objects.filter(poll=poll).get(candidate=candidate)
+                tmplist[1].append(option.get_votes()[0])
+            else:
+                tmplist[1].append("-")
         votes.append(tmplist)
 
-    polls = []
-    for poll in assignment.poll_set.filter(assignment=assignment):
-        polls.append(poll)
+    polls = assignment.poll_set.all()
 
-    return {'assignment': assignment,
-            'form': form,
-            'votes': votes,
-            'polls': polls }
+    return {
+        'assignment': assignment,
+        'form': form,
+        'votes': votes,
+        'polls': polls,
+    }
 
 
 @permission_required('assignment.can_manage_assignment')
@@ -193,56 +194,26 @@ def set_active(request, assignment_id):
 
 @permission_required('assignment.can_manage_assignment')
 def gen_poll(request, assignment_id):
-    try:
-        poll = Assignment.objects.get(pk=assignment_id).gen_poll()
-        messages.success(request, _("New ballot was successfully created.") )
-    except Assignment.DoesNotExist:
-        pass
+    poll = Assignment.objects.get(pk=assignment_id).gen_poll()
+    messages.success(request, _("New ballot was successfully created.") )
     return redirect(reverse('assignment_poll_view', args=[poll.id]))
 
 
-@permission_required('assignment.can_manage_assignment')
-@template('assignment/poll_view.html')
-def poll_view(request, poll_id):
-    poll = Poll.objects.get(pk=poll_id)
-    ballotnumber = poll.ballot
-    options = poll.options.order_by('user__user__first_name')
-    assignment = poll.assignment
-    if request.user.has_perm('assignment.can_manage_assignment'):
-        if request.method == 'POST':
-            form = PollForm(request.POST, prefix="poll")
-            if form.is_valid():
-                poll.votesinvalid = form.cleaned_data['invalid'] or 0
-                poll.votescast = form.cleaned_data['votescast'] or 0
-                poll.save()
+class ViewPoll(PollFormView):
+    poll_class = AssignmentPoll
+    template_name = 'assignment/poll_view.html'
 
-            success = 0
-            for option in options:
-                option.form = OptionResultForm(request.POST, prefix="o%d" % option.id)
-                if option.form.is_valid():
-                    option.voteyes = option.form.cleaned_data['yes']
-                    option.voteno = option.form.cleaned_data['no'] or 0
-                    option.voteundesided = option.form.cleaned_data['undesided'] or 0
-                    option.save()
-                    success = success + 1
-            if success == options.count():
-                messages.success(request, _("Votes are successfully saved.") )
-            if not 'apply' in request.POST:
-               return redirect(reverse('assignment_view', args=[assignment.id]))
-        else:
-            form = PollForm(initial={'invalid': poll.votesinvalid, 'votescast': poll.votescast}, prefix="poll")
-            for option in options:
-                option.form = OptionResultForm(initial={
-                    'yes': option.voteyes,
-                    'no': option.voteno,
-                    'undesided': option.voteundesided,
-                }, prefix="o%d" % option.id)
-    return {
-        'poll': poll,
-        'form': form,
-        'options': options,
-        'ballotnumber': ballotnumber,
-    }
+    def get_context_data(self, **kwargs):
+        context = super(ViewPoll, self).get_context_data(**kwargs)
+        self.assignment = self.poll.get_assignment()
+        context['application'] = self.assignment
+        return context
+
+    def get_success_url(self):
+        if not 'apply' in self.request.POST:
+            return reverse('assignment_view', args=[self.poll.assignment.id])
+        return ''
+
 
 @permission_required('assignment.can_manage_assignment')
 def set_published(request, poll_id, published=True):

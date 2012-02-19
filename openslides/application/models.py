@@ -496,12 +496,7 @@ class ApplicationOption(BaseOption):
     def __getattr__(self, name):
         if name in ['yes', 'no', 'contained']:
             try:
-                value = self.get_votes().get(value=name).weight
-                if value == -1:
-                    return _('majority')
-                if value == -2:
-                    return _('undocumented')
-                return value
+                return self.get_votes().get(value=name)
             except Vote.DoesNotExist:
                 pass
         raise AttributeError(name)
@@ -517,6 +512,7 @@ class ApplicationPoll(BasePoll, CountInvalid, CountVotesCast):
         return self.application
 
     def set_options(self):
+        #TODO: maybe it is possible with .create() to call this without poll=self
         self.get_option_class()(poll=self).save()
 
     def append_pollform_fields(self, fields):

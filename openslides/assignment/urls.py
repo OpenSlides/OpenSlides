@@ -12,6 +12,8 @@
 
 from django.conf.urls.defaults import *
 
+from assignment.views import ViewPoll #, ActivatePoll
+
 urlpatterns = patterns('assignment.views',
     url(r'^assignment/$', 'get_overview', \
         name='assignment_overview'),
@@ -55,8 +57,10 @@ urlpatterns = patterns('assignment.views',
     url(r'^assignment/(?P<assignment_id>\d+)/gen_poll$', 'gen_poll', \
         name='assignment_gen_poll'),
 
-    url(r'^assignment/poll/(?P<poll_id>\d+)$', 'poll_view', \
-        name='assignment_poll_view'),
+    url(r'^assignment/poll/(?P<poll_id>\d+)$',
+        ViewPoll.as_view(),
+        name='assignment_poll_view'
+    ),
 
     url(r'^assignment/poll/(?P<poll_id>\d+)/del$', 'delete_poll', \
         name='assignment_poll_delete'),
