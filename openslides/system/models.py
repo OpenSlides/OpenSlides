@@ -33,7 +33,7 @@ class ConfigStore(models.Model):
     value = models.CharField(max_length=100)
 
     def __unicode__(self):
-        return self.id
+        return self.key
 
     class Meta:
         verbose_name = 'config'
@@ -43,22 +43,33 @@ class ConfigStore(models.Model):
 
 
 class Config(object):
+    def load_config(self):
+        self.config = {}
+        for key, value in ConfigStore.objects.all().values_list():
+            self.config[key] = loads(str(value))
+
     def __getitem__(self, key):
         try:
-            return loads(str(ConfigStore.objects.get(pk=key).value))
-        except ConfigStore.DoesNotExist:
-            try:
-                return DEFAULT_DATA[key]
-            except KeyError:
-                return None
+            self.config
+        except AttributeError:
+            self.load_config()
+        try:
+            return self.config[key]
+        except KeyError:
+            pass
+        try:
+            return DEFAULT_DATA[key]
+        except KeyError:
+            return None
 
     def __setitem__(self, key, value):
         try:
-            c = ConfigStore.objects.get(pk=key)
+            c = self.config.get(pk=key)
         except ConfigStore.DoesNotExist:
             c = ConfigStore(pk=key)
         c.value = dumps(value)
         c.save()
+        self.config[key] = value
 
 
 
