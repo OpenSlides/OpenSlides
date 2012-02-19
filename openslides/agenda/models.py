@@ -18,6 +18,8 @@ except ImportError:
 from django.db import models
 from django.utils.translation import ugettext as _
 
+from mptt.models import MPTTModel, TreeForeignKey
+
 from system import config
 
 from projector.models import Slide
@@ -26,7 +28,7 @@ from projector.api import register_slidemodel
 from agenda.api import is_summary
 
 
-class Item(models.Model, Slide):
+class Item(MPTTModel, Slide):
     """
     An Agenda Item
     """
@@ -37,7 +39,7 @@ class Item(models.Model, Slide):
     transcript = models.TextField(null=True, blank=True, verbose_name=_("Transcript"))
     closed = models.BooleanField(default=False, verbose_name=_("Closed"))
     weight = models.IntegerField(default=0, verbose_name=_("Weight"))
-    parent = models.ForeignKey('self', blank=True, null=True)
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
 
 
     def slide(self):
@@ -73,36 +75,15 @@ class Item(models.Model, Slide):
         self.save()
 
     @property
-    def parents(self):
-        """
-        Return the parent of this item, and the parent's partent and so
-        furth a list.
-        """
-        parents = []
-        item = self
-        while item.parent is not None:
-            parents.append(item.parent)
-            item = item.parent
-        return parents
-
-    @property
     def active_parent(self):
         """
         Return True if the item has a active parent
         """
         sid = get_active_slide(only_sid=True).split()
         if  len(sid) == 2 and sid[0] == self.prefix:
-            if sid[1] in [parent.id for parent in self.parents]:
+            if self.get_ancestors().filter(pk=sid[0]).exists():
                 return True
         return False
-
-    @property
-    def children(self):
-        """
-        Return a list of all childitems from the next generation. The list
-        is ordert by weight.
-        """
-        return self.item_set.order_by("weight")
 
     @property
     def weight_form(self):
@@ -145,10 +126,11 @@ class Item(models.Model, Slide):
             ('can_manage_agenda', "Can manage agenda"),
             ('can_see_projector', "Can see projector"),
         )
-        ordering = ['weight']
+        #ordering = ['weight']
 
+    class MPTTMeta:
+        order_insertion_by = ['weight', 'title']
 
-ItemText = Item # ItemText is Depricated
 
 register_slidemodel(Item)
 

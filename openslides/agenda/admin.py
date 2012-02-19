@@ -11,7 +11,8 @@
 """
 
 from django.contrib import admin
+from mptt.admin import MPTTModelAdmin
 
 from openslides.agenda.models import Item
 
-admin.site.register(Item)
+admin.site.register(Item, MPTTModelAdmin)

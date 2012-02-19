@@ -13,7 +13,7 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('agenda.views',
-    url(r'^$', 'overview',
+    url(r'^/$', 'overview',
         name='item_overview'),
 
     url(r'^(?P<item_id>\d+)/$', 'view',
@@ -35,7 +35,7 @@ urlpatterns = patterns('agenda.views',
     url(r'^(?P<item_id>\d+)/edit/$', 'edit',
         name='item_edit'),
 
-    url(r'^new$', 'edit',
+    url(r'^new/$', 'edit',
         name='item_new'),
 
     url(r'^(?P<item_id>\d+)/del/$', 'delete',

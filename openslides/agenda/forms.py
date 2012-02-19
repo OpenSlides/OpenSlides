@@ -13,14 +13,16 @@
 from django.forms import Form, ModelForm, IntegerField, ChoiceField, \
                          ModelChoiceField, HiddenInput, Select
 from django.utils.translation import ugettext as _
-from openslides.agenda.models import Item
+
+from mptt.forms import TreeNodeChoiceField
+
+from agenda.models import Item
 
 class ItemFormText(ModelForm):
     error_css_class = 'error'
     required_css_class = 'required'
 
-    items = Item.objects.all().filter(parent=None)
-    parent = ModelChoiceField(queryset=items, label=_("Parent item"), required=False)
+    parent = TreeNodeChoiceField(queryset=Item.objects.all(), label=_("Parent item"), required=False)
     class Meta:
         model = Item
         exclude = ('closed', 'weight')

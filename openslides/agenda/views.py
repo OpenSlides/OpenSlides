@@ -19,8 +19,7 @@ from system import config
 from projector.api import get_active_slide, set_active_slide
 
 from agenda.models import Item
-from agenda.api import is_summary, children_list, \
-                                  del_confirm_form_for_items
+from agenda.api import is_summary, del_confirm_form_for_items
 from agenda.forms import ItemOrderForm, ItemFormText
 
 from utils.utils import template, permission_required, \
@@ -59,7 +58,7 @@ def overview(request):
                 item.weight = form.cleaned_data['weight']
                 item.save()
 
-    items = children_list(Item.objects.filter(parent=None))
+    items = Item.objects.all()
 
     if get_active_slide(only_sid=True) == 'agenda_show':
         overview = True
