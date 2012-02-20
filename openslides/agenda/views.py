@@ -13,6 +13,7 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.core.context_processors import csrf
+from django.views.generic.detail import SingleObjectMixin
 
 from utils.pdf import print_agenda
 from utils.views import TemplateView, RedirectView, UpdateView, CreateView, DeleteView
@@ -70,53 +71,51 @@ class Overview(TemplateView):
         return self.render_to_response(context)
 
 
-class SetActive(RedirectView):
+class SetActive(RedirectView, SingleObjectMixin):
     """
     Set an Item as the active one.
     """
     url = 'item_overview'
     allow_ajax = True
     permission_required = 'agenda.can_manage_agenda'
+    model = Item
 
     def get_ajax_context(self, **kwargs):
         context = super(SetActive, self).get_ajax_context(**kwargs)
         context.update({
-            'active': kwargs['item_id'],
+            'active': kwargs['pk'],
             'summary': is_summary(),
         })
         return context
 
     def pre_redirect(self, request, *args, **kwargs):
-        item_id = kwargs['item_id']
         summary = kwargs['summary']
-        if item_id == "0":
+        if kwargs['pk'] == "0":
             set_active_slide("agenda_show")
         else:
-            try:
-                item = Item.objects.get(pk=item_id)
-                item.set_active(summary)
-            except Item.DoesNotExist:
-                messages.error(request, _('Item ID %d does not exist.') % int(item_id))
+            self.object = self.get_object()
+            self.object.set_active(summary)
         config["bigger"] = 100
         config["up"] = 0
         return super(SetActive, self).pre_redirect(request, *args, **kwargs)
 
 
-class SetClosed(RedirectView):
+class SetClosed(RedirectView, SingleObjectMixin):
     """
     Close or open an Item.
     """
     permission_required = 'agenda.can_manage_agenda'
     allow_ajax = True
     url = 'item_overview'
+    model = Item
 
     def get_ajax_context(self, **kwargs):
         context = super(SetClosed, self).get_ajax_context(**kwargs)
         closed = kwargs['closed']
         if closed:
-            link = reverse('item_open', args=[self.item.id])
+            link = reverse('item_open', args=[self.object.id])
         else:
-            link = reverse('item_close', args=[self.item.id])
+            link = reverse('item_close', args=[self.object.id])
         context.update({
             'closed': kwargs['closed'],
             'link': link,
@@ -124,14 +123,9 @@ class SetClosed(RedirectView):
         return context
 
     def pre_redirect(self, request, *args, **kwargs):
-        item_id = kwargs['item_id']
+        self.object = self.get_object()
         closed = kwargs['closed']
-        try:
-            item = Item.objects.get(pk=item_id)
-            item.set_closed(closed)
-        except Item.DoesNotExist:
-            messages.error(request, _('Item ID %d does not exist.') % int(item_id))
-        self.item = item
+        self.object.set_closed(closed)
         return super(SetClosed, self).pre_redirect(request, *args, **kwargs)
 
 

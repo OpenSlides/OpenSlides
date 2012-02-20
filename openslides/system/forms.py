@@ -34,6 +34,7 @@ class EventConfigForm(Form, CssClassMixin):
 class AgendaConfigForm(Form, CssClassMixin):
     agenda_countdown_time = IntegerField(widget=TextInput(attrs={'class':'small-input'}),label=_("Countdown (in seconds)"),initial=60, min_value=0)
 
+
 class ApplicationConfigForm(Form, CssClassMixin):
     application_min_supporters = IntegerField(widget=TextInput(attrs={'class':'small-input'}),label=_("Number of (minimum) required supporters for a application"),initial=4, min_value=0, max_value=8)
     application_preamble = CharField(widget=TextInput(), required=False, label=_("Application preamble"))
@@ -41,6 +42,7 @@ class ApplicationConfigForm(Form, CssClassMixin):
     application_pdf_ballot_papers_number = IntegerField(widget=TextInput(attrs={'class':'small-input'}), required=False, min_value=1, label=_("Custom number of ballot papers"))
     application_pdf_title = CharField(widget=TextInput(), required=False, label=_("Title for PDF document (all applications)"))
     application_pdf_preamble = CharField(widget=Textarea(), required=False, label=_("Preamble text for PDF document (all applications)"))
+
 
 class AssignmentConfigForm(Form, CssClassMixin):
     assignment_publish_winner_results_only = BooleanField(required=False, label=_("Only publish voting results for selected winners (Projector view only)"))
