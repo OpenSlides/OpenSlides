@@ -64,7 +64,7 @@ class Config(object):
 
     def __setitem__(self, key, value):
         try:
-            c = self.config.get(pk=key)
+            c = ConfigStore.objects.get(pk=key)
         except ConfigStore.DoesNotExist:
             c = ConfigStore(pk=key)
         c.value = dumps(value)
