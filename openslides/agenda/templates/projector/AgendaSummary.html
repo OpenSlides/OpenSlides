@@ -1,4 +1,7 @@
 {% extends "base-projector.html" %}
+
+{% load i18n %}
+
 {% block title %}{{ block.super }} -
     {% if title %} {{ title }} {% else %} {%trans "Agenda" %} {% endif %}
 {% endblock %}

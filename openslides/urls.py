@@ -31,7 +31,7 @@ urlpatterns = patterns('',
     (r'', include('participant.urls')),
     (r'', include('assignment.urls')),
     (r'', include('system.urls')),
-    (r'projector', include('projector.urls')),
+    (r'projector/', include('projector.urls')),
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',  {'document_root': settings.STATIC_DOC_ROOT}),
     (r'^i18n/', include('django.conf.urls.i18n')),
 )
