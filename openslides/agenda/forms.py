@@ -18,7 +18,7 @@ from mptt.forms import TreeNodeChoiceField
 
 from agenda.models import Item
 
-class ItemFormText(ModelForm):
+class ItemForm(ModelForm):
     error_css_class = 'error'
     required_css_class = 'required'
 

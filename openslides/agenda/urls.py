@@ -11,36 +11,60 @@
 """
 
 from django.conf.urls.defaults import *
+from agenda.views import Overview, View, SetActive, SetClosed, ItemUpdate, ItemCreate, ItemDelete
 
 urlpatterns = patterns('agenda.views',
-    url(r'^/$', 'overview',
-        name='item_overview'),
+    url(r'^$',
+        Overview.as_view(),
+        name='item_overview',
+    ),
 
-    url(r'^(?P<item_id>\d+)/$', 'view',
-        name='item_view'),
+    url(r'^(?P<item_id>\d+)/$',
+        View.as_view(),
+        name='item_view',
+    ),
 
-    url(r'^(?P<item_id>\d+)/activate/$', 'set_active',
-        name='item_activate'),
+    url(r'^(?P<item_id>\d+)/activate/$',
+        SetActive.as_view(),
+        {'summary': False},
+        name='item_activate',
+    ),
 
-    url(r'^(?P<item_id>\d+)/activate/summary/$', 'set_active',
-        {'summary': True},\
-        name='item_activate_summary'),
+    url(r'^(?P<item_id>\d+)/activate/summary/$',
+        SetActive.as_view(),
+        {'summary': True},
+        name='item_activate_summary',
+    ),
 
-    url(r'^(?P<item_id>\d+)/close/$', 'set_closed', {'closed': True},
-        name='item_close'),
+    url(r'^(?P<item_id>\d+)/close/$',
+        SetClosed.as_view(),
+        {'closed': True},
+        name='item_close',
+    ),
 
-    url(r'^(?P<item_id>\d+)/open/$', 'set_closed', {'closed': False},
-        name='item_open'),
+    url(r'^(?P<item_id>\d+)/open/$',
+        SetClosed.as_view(),
+        {'closed': False},
+        name='item_open',
+    ),
 
-    url(r'^(?P<item_id>\d+)/edit/$', 'edit',
-        name='item_edit'),
+    url(r'^(?P<pk>\d+)/edit/$',
+        ItemUpdate.as_view(),
+        name='item_edit',
+    ),
 
-    url(r'^new/$', 'edit',
-        name='item_new'),
+    url(r'^new/$',
+        ItemCreate.as_view(),
+        name='item_new',
+    ),
 
-    url(r'^(?P<item_id>\d+)/del/$', 'delete',
-        name='item_delete'),
+    url(r'^(?P<pk>\d+)/del/$',
+        ItemDelete.as_view(),
+        name='item_delete',
+    ),
 
-    url(r'^print/$', 'print_agenda',
-        name='print_agenda'),
+    url(r'^print/$',
+        'print_agenda',
+        name='print_agenda',
+    ),
 )
