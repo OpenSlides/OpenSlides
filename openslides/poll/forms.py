@@ -1,8 +1,10 @@
 from django import forms
 from django.utils.translation import ugettext as _
 
+from utils.forms import CssClassMixin
 
-class OptionForm(forms.Form):
+
+class OptionForm(forms.Form, CssClassMixin):
     def __init__(self, *args, **kwargs):
         extra = kwargs.pop('extra')
         formid = kwargs.pop('formid')

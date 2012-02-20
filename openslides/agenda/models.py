@@ -126,7 +126,6 @@ class Item(MPTTModel, Slide):
             ('can_manage_agenda', "Can manage agenda"),
             ('can_see_projector', "Can see projector"),
         )
-        #ordering = ['weight']
 
     class MPTTMeta:
         order_insertion_by = ['weight', 'title']

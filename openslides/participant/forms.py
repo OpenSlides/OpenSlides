@@ -15,6 +15,8 @@ from django.contrib.auth.models import User, Group, Permission
 from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.utils.translation import ugettext as _
 
+from utils.forms import CssClassMixin
+
 # required for USER_VISIBLE_PERMISSIONS
 from agenda.models import Item
 from application.models import Application
@@ -30,10 +32,8 @@ USER_VISIBLE_PERMISSIONS = reduce(list.__add__, [
     [p[0] for p in ConfigStore._meta.permissions]
 ])
 
-class UserNewForm(ModelForm):
-    error_css_class = 'error'
-    required_css_class = 'required'
 
+class UserNewForm(ModelForm, CssClassMixin):
     first_name = CharField(label=_("First name"))
     last_name = CharField(label=_("Last name"))
 
@@ -41,10 +41,8 @@ class UserNewForm(ModelForm):
         model = User
         exclude = ('username', 'password', 'is_staff', 'last_login', 'date_joined', 'user_permissions')
 
-class UserEditForm(ModelForm):
-    error_css_class = 'error'
-    required_css_class = 'required'
 
+class UserEditForm(ModelForm, CssClassMixin):
     first_name = CharField(label=_("First name"))
     last_name = CharField(label=_("Last name"))
 
@@ -52,24 +50,17 @@ class UserEditForm(ModelForm):
         model = User
         exclude = ('password', 'is_staff', 'last_login', 'date_joined', 'user_permissions')
 
-class UsernameForm(ModelForm):
-    error_css_class = 'error'
-    required_css_class = 'required'
 
+class UsernameForm(ModelForm, CssClassMixin):
     class Meta:
         model = User
         exclude = ('first_name', 'last_name', 'email', 'is_active','is_superuser', 'groups', 'password', 'is_staff', 'last_login', 'date_joined', 'user_permissions')
 
-class ProfileForm(ModelForm):
-    error_css_class = 'error'
-    required_css_class = 'required'
-
+class ProfileForm(ModelForm, CssClassMixin):
     class Meta:
         model = Profile
 
-class GroupForm(ModelForm):
-    error_css_class = 'error'
-    required_css_class = 'required'
+class GroupForm(ModelForm, CssClassMixin):
     permissions = ModelMultipleChoiceField(queryset=Permission.objects.filter(codename__in=USER_VISIBLE_PERMISSIONS))
 
     def __init__(self, *args, **kwargs):
@@ -81,13 +72,10 @@ class GroupForm(ModelForm):
         model = Group
         exclude = ('permissions',)
 
-class UsersettingsForm(UserEditForm):
+class UsersettingsForm(UserEditForm, CssClassMixin):
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email')
 
-class UserImportForm(Form):
-    error_css_class = 'error'
-    required_css_class = 'required'
-
+class UserImportForm(Form, CssClassMixin):
     csvfile = FileField(widget=FileInput(attrs={'size':'50'}), label=_("CSV File"))

@@ -13,23 +13,20 @@
 from django.forms import ModelForm, Form, ModelChoiceField, Select
 from django.utils.translation import ugettext as _
 
+from utils.forms import CssClassMixin
 from participant.models import Profile
 from assignment.models import Assignment
 
 
-class AssignmentForm(ModelForm):
-    error_css_class = 'error'
-    required_css_class = 'required'
-
+class AssignmentForm(ModelForm, CssClassMixin):
     class Meta:
         model = Assignment
         exclude = ('status', 'profile', 'elected')
 
 
-class AssignmentRunForm(Form):
-    error_css_class = 'error'
-
+class AssignmentRunForm(Form, CssClassMixin):
     candidate = ModelChoiceField(
-                            widget=Select(attrs={'class': 'medium-input'}), \
-                            queryset=Profile.objects.all().order_by('user__first_name'), \
-                            label=_("Nominate a participant"))
+        widget=Select(attrs={'class': 'medium-input'}),
+        queryset=Profile.objects.all().order_by('user__first_name'),
+        label=_("Nominate a participant"),
+    )

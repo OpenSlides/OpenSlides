@@ -16,12 +16,12 @@ from django.utils.translation import ugettext as _
 
 from mptt.forms import TreeNodeChoiceField
 
+from utils.forms import CssClassMixin
+
 from agenda.models import Item
 
-class ItemForm(ModelForm):
-    error_css_class = 'error'
-    required_css_class = 'required'
 
+class ItemForm(ModelForm, CssClassMixin):
     parent = TreeNodeChoiceField(queryset=Item.objects.all(), label=_("Parent item"), required=False)
     class Meta:
         model = Item
@@ -35,7 +35,7 @@ def genweightchoices():
     return l
 
 
-class ItemOrderForm(Form):
+class ItemOrderForm(Form, CssClassMixin):
     weight = ChoiceField(choices=genweightchoices(),
                          widget=Select(attrs={'class': 'menu-weight'}),
                          label="")
