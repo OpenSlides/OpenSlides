@@ -13,52 +13,25 @@ I. Installation on Windows (32/64bit)
 
   1. Install Python 2.7
 
-     - 32bit:
-       a) Download and run 32bit MSI installer (python-2.7.2.msi)
-          from http://www.python.org/download/
-       b) Add python dirs to PATH (via Control Panel > System > Advanced):
-          C:\Python27;C:\Python27\Scripts
+     a) Download and run 32bit MSI installer from http://www.python.org/download/
+        e.g. version 2.7.2:
+        http://www.python.org/ftp/python/2.7.2/python-2.7.2.msi
 
-     - 64bit:
-       a) Download and run 64bit MSI installer (python-2.7.2.amd64.msi)
-          from http://www.python.org/download/
-       b) Add python dirs to PATH (via Control Panel > System > Advanced):
-          C:\Python27;C:\Python27\Scripts
+     b) Add python dirs to PATH (via Control Panel > System > Advanced):
+
+         ";C:\Python27;C:\Python27\Scripts"
 
   2. Install Setuptools 0.6c11
 
-     - 32bit:
-       Download and run 32bit binary installer
-       (setuptools-0.6c11.win32-py2.7.exe)
-       from http://pypi.python.org/pypi/setuptools
+     Download and run 32bit binary installer from http://pypi.python.org/pypi/setuptools:
+     http://pypi.python.org/packages/2.7/s/setuptools/setuptools-0.6c11.win32-py2.7.exe
 
-     - 64bit:
-       a) Download 64bit version (ez_setup.py)
-          from http://pypi.python.org/pypi/setuptools
-       b) Open cmd and run to install setuptools:
-            python ez_setup.py
+  3. Install required packages
+     Open command line (cmd) and run:
 
-  3. Install django packages
-     Open cmd and run:
+       easy_install django django-mptt reportlab pil
 
-       easy_install django django-mptt
-
-  4. Install packages for building PDF (reportlab, PIL)
-
-     - 32bit:
-       Run on cmd:
-
-         easy_install reportlab pil
-
-     - 64bit:
-       a) Download and run Reportlab 64bit binary installer
-          (reportlab-2.5-win-amd64-py2.7.exe) from
-          http://www.reportlab.com/ftp/
-       b) Download and run PIL 64bit binary installer
-          (PIL-1.1.7.win-amd64-py2.7.exe) from
-          http://www.lfd.uci.edu/~gohlke/pythonlibs/
-
-  5. Get OpenSlides:
+  4. Get OpenSlides:
 
      a) Download latest OpenSlides release from http://openslides.org.
 
@@ -72,24 +45,24 @@ I. Installation on Windows (32/64bit)
         If you have write access use instead:
         hg clone ssh://hg@openslides.org/openslides
 
-  6. Copy default.settings.py to settings.py
+  5. Copy default.settings.py to settings.py
      (in subdirectory 'openslides')
 
-  7. Create OpenSlides database (and follow on screen instruction).
+  6. Create OpenSlides database (and follow on screen instruction).
      Go to the extracted OpenSlides root directory and enter:
 
        python manage.py syncdb
 
      -> Note: Answer "yes" to create superuser!
 
-  8. Run OpenSlides server:
+  7. Run OpenSlides server:
 
        python manage.py runserver
 
      Optional: Add <port> or <address:port> to use server on custom
      address/port.
 
-  9. Open OpenSlides in your browser:
+  8. Open OpenSlides in your browser:
 
        http://127.0.0.1:8000/  (or customized server address:port)
 
@@ -128,42 +101,34 @@ system.
 
        easy_install pip
 
-  4. Install django packages:
+  4. Install required packages:
 
-       pip install django django-model-utils
+       pip install django django-mptt reportlab pil simplejson mercurial
 
-  5. Install packages for building PDF:
-
-       pip install reportlab pil
-
-  6. Install other required packages:
-
-       pip install simplejson mercurial
-
-  7. Copy default.settings.py to settings.py:
+  5. Copy default.settings.py to settings.py:
 
        cp openslides/default.settings.py openslides/settings.py
 
-  8. Create OpenSlides database in the OpenSlides root directory
+  6. Create OpenSlides database in the OpenSlides root directory
      and follow on screen instruction:
 
        python manage.py syncdb
 
      -> Note: Answer "yes" to create superuser!
 
-  9. Run OpenSlides server:
+  7. Run OpenSlides server:
 
        python manage.py runserver
 
      Optional: Add <port> or <address:port> to use server on custom
      address/port.
 
- 10. Open OpenSlides in your browser:
+  8. Open OpenSlides in your browser:
 
        http://127.0.0.1:8000/  (or customized server address:port)
 
 
 --
-If you need help ask on OpenSlides users mailinglist.
+If you need help ask on OpenSlides users mailing list.
 See www.openslides.org for more information.
 
