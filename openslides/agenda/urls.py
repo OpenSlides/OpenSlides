@@ -11,7 +11,7 @@
 """
 
 from django.conf.urls.defaults import *
-from agenda.views import Overview, View, SetActive, SetClosed, ItemUpdate, ItemCreate, ItemDelete
+from agenda.views import Overview, View, SetActive, SetClosed, ItemUpdate, ItemCreate, ItemDelete, ItemPDF
 
 urlpatterns = patterns('agenda.views',
     url(r'^$',
@@ -64,7 +64,7 @@ urlpatterns = patterns('agenda.views',
     ),
 
     url(r'^print/$',
-        'print_agenda',
+        ItemPDF.as_view(),
         name='print_agenda',
     ),
 )

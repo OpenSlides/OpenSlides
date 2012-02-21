@@ -2,7 +2,7 @@ function presentation_reload() {
     if ($('#config > #ajax').html() == 'on') {
         $.ajax({
             type: 'GET',
-            url: '/projector',
+            url: '/projector/',
             dataType: 'json',
             data: '',
             success: function(data) {
@@ -14,9 +14,10 @@ function presentation_reload() {
                 $('#content li').css({'font-size': data.bigger + '%'}, 200);
                 $('#content #sidebar').css({'font-size': '16px'}, 0);
                 $('#content').animate({'margin-top': data.up + 'em'}, 200);
-                if (data.countdown_visible == "True")
+
+                if (data.countdown_visible == true)
                     $('#countdown').slideDown();
-                if (data.countdown_visible == "False")
+                if (data.countdown_visible == false)
                     $('#countdown').slideUp();
                 if (data.countdown_control == "reset")
                     resetTimer(data.countdown_time);
