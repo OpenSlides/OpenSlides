@@ -1,4 +1,8 @@
 {% extends "base-projector.html" %}
+
+{% load tags %}
+{% load i18n %}
+
 {% block title %}{{ block.super }} - #{{ item.title }}{% endblock %}
 {% block header %}
     <link type="text/css" rel="stylesheet" media="all" href="/static/styles/assignment.css" />
