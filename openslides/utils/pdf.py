@@ -300,8 +300,8 @@ def print_passwords(request):
     story = [Spacer(0,0*cm)]
 
     data= []
-    system_url = config_get("system_url")
-    system_welcometext = config_get("system_welcometext")
+    system_url = config["system_url"]
+    system_welcometext = config["system_welcometext"]
     for user in User.objects.all().order_by('last_name'):
         try:
             user.get_profile()
@@ -432,9 +432,9 @@ def print_application(request, application_id=None):
     story = []
 
     if application_id is None:  #print all applications
-        title = config_get("application_pdf_title")
+        title = config["application_pdf_title"]
         story.append(Paragraph(title, stylesheet['Heading1']))
-        preamble = config_get("application_pdf_preamble")
+        preamble = config["application_pdf_preamble"]
         if preamble:
             story.append(Paragraph("%s" % preamble.replace('\r\n','<br/>'), stylesheet['Paragraph']))
         story.append(Spacer(0,0.75*cm))
@@ -486,8 +486,8 @@ def print_application_poll(request, poll_id=None):
     data= []
     number = 1
     # get ballot papers config values
-    ballot_papers_selection = config_get("application_pdf_ballot_papers_selection")
-    ballot_papers_number = config_get("application_pdf_ballot_papers_number")
+    ballot_papers_selection = config["application_pdf_ballot_papers_selection"]
+    ballot_papers_number = config["application_pdf_ballot_papers_number"]
     # set number of ballot papers
     if ballot_papers_selection == "1":
         number = User.objects.filter(profile__type__iexact="delegate").count()
@@ -645,9 +645,9 @@ def print_assignment(request, assignment_id=None):
     story = []
 
     if assignment_id is None:  #print all applications
-        title = config_get("assignment_pdf_title")
+        title = config["assignment_pdf_title"]
         story.append(Paragraph(title, stylesheet['Heading1']))
-        preamble = config_get("assignment_pdf_preamble")
+        preamble = config["assignment_pdf_preamble"]
         if preamble:
             story.append(Paragraph("%s" % preamble.replace('\r\n','<br/>'), stylesheet['Paragraph']))
         story.append(Spacer(0,0.75*cm))
@@ -689,8 +689,8 @@ def print_assignment_poll(request, poll_id=None):
     data= []
     # get ballot papers config values
     number = 1
-    ballot_papers_selection = config_get("assignment_pdf_ballot_papers_selection")
-    ballot_papers_number = config_get("assignment_pdf_ballot_papers_number")
+    ballot_papers_selection = config["assignment_pdf_ballot_papers_selection"]
+    ballot_papers_number = config["assignment_pdf_ballot_papers_number"]
     if poll.optiondecision:
         for option in options:
             o = str(option).split("(",1)
