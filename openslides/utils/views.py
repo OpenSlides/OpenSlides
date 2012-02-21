@@ -3,6 +3,14 @@ try:
 except ImportError:
     import simplejson as json
 
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Frame, PageBreak, Spacer, Table, LongTable, TableStyle, Image
+from reportlab.lib.units import cm
+
 from django.conf import settings
 from django.http import HttpResponseServerError, HttpResponse
 from django.core.urlresolvers import reverse
@@ -13,10 +21,12 @@ from django.utils.decorators import method_decorator
 from django.views.generic import (TemplateView as _TemplateView,
                                   RedirectView as _RedirectView,
                                   UpdateView as _UpdateView,
-                                  CreateView as _CreateView,)
+                                  CreateView as _CreateView,
+                                  View,)
 from django.views.generic.detail import SingleObjectMixin
 
 from utils import render_to_forbitten
+from pdf import firstPage, laterPages
 
 FREE_TO_GO = 'free to go'
 
@@ -97,6 +107,36 @@ class DeleteView(RedirectView, SingleObjectMixin):
 
     def pre_post_redirect(self, request, *args, **kwargs):
         pass
+
+class PDFView(View, PermissionMixin):
+    filename = 'No_Name'
+
+    def render_to_response(self, filename):
+        response = HttpResponse(mimetype='application/pdf')
+        filename = u'filename=%s.pdf;' % filename
+        response['Content-Disposition'] = filename.encode('utf-8')
+
+        buffer = StringIO()
+        pdf_document = SimpleDocTemplate(buffer)
+        story = [Spacer(1,3*cm)]
+
+        self.append_to_pdf(story)
+
+        pdf_document.build(story, onFirstPage=firstPage, onLaterPages=laterPages)
+
+        pdf = buffer.getvalue()
+        buffer.close()
+        response.write(pdf)
+        return response
+
+    def append_to_pdf(self, story):
+        pass
+
+    def get_filename(self):
+        return self.filename
+
+    def get(self, request, *args, **kwargs):
+        return self.render_to_response(self.get_filename())
 
 
 def server_error(request, template_name='500.html'):

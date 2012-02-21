@@ -31,6 +31,8 @@ from agenda.api import is_summary
 class Item(MPTTModel, Slide):
     """
     An Agenda Item
+
+    MPTT-model. See http://django-mptt.github.com/django-mptt/
     """
     prefix = 'item'
 

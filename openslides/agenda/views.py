@@ -9,14 +9,16 @@
     :copyright: 2011 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
+from reportlab.platypus import Paragraph
+
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.core.context_processors import csrf
 from django.views.generic.detail import SingleObjectMixin
 
-from utils.pdf import print_agenda
-from utils.views import TemplateView, RedirectView, UpdateView, CreateView, DeleteView
+from utils.pdf import stylesheet
+from utils.views import TemplateView, RedirectView, UpdateView, CreateView, DeleteView, PDFView
 
 from system import config
 
@@ -181,3 +183,17 @@ class ItemDelete(DeleteView):
             self.gen_confirm_form(request, _('Do you really want to delete <b>%s</b>?') % name, object.get_absolute_url('delete'), False)
         else:
             self.gen_confirm_form(request, _('Do you really want to delete <b>%s</b>?') % name, object.get_absolute_url('delete'), True)
+
+
+class ItemPDF(PDFView):
+    permission_required = 'agenda.can_see_agenda'
+    filename = _('Agenda')
+
+    def append_to_pdf(self, story):
+        for item in Item.objects.all():
+            ancestors = item.get_ancestors()
+            if ancestors:
+                space = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" * ancestors.count()
+                story.append(Paragraph("%s%s" % (space, item.title), stylesheet['Subitem']))
+            else:
+                story.append(Paragraph(item.title, stylesheet['Item']))

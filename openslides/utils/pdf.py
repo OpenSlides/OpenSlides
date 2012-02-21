@@ -183,8 +183,6 @@ event_date = config["event_date"]
 event_location = config["event_location"]
 event_organizer = config["event_organizer"]
 
-# set print time
-time = datetime.now().strftime(str(_("%Y-%m-%d %H:%Mh")))
 
 
 def firstPage(canvas, doc):
@@ -197,6 +195,7 @@ def firstPage(canvas, doc):
         canvas.drawString(2.75*cm, 27.6*cm, "%s, %s" % (event_date, event_location))
     # time
     canvas.setFont('Ubuntu',7)
+    time = datetime.now().strftime(str(_("%Y-%m-%d %H:%Mh")))
     canvas.drawString(15*cm, 28*cm, _("Printed")+": %s" % time)
     # title
     if doc.title:
@@ -217,36 +216,7 @@ def laterPages(canvas, doc):
     canvas.setFont('Ubuntu',7)
     canvas.setFillGray(0.4)
     canvas.drawString(10*cm, 1*cm, _("Page")+" %s" % doc.page)
-    canvas.restoreState()
-
-
-@permission_required('agenda.can_see_agenda')
-def print_agenda(request):
-    response = HttpResponse(mimetype='application/pdf')
-    filename = u'filename=%s.pdf;' % _("Agenda")
-    response['Content-Disposition'] = filename.encode('utf-8')
-    doc = SimpleDocTemplate(response)
-    story = [Spacer(1,3*cm)]
-
-    doc.title = _("Agenda")
-    # print item list
-    items = Item.objects.all()
-    for item in items:
-        if item.hidden is False:
-            # print all items"
-            if item.parents:
-                space = ""
-                counter = 0
-                for p in item.parents:
-                    if counter != 0:
-                        space += "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
-                    counter += 1
-                story.append(Paragraph(space+item.title, stylesheet['Subitem']))
-            else:
-                story.append(Paragraph(item.title, stylesheet['Item']))
-
-    doc.build(story, onFirstPage=firstPage, onLaterPages=laterPages)
-    return response
+    canvas.restoreState()s
 
 
 @permission_required('participant.can_see_participant')
