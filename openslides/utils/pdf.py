@@ -176,47 +176,39 @@ stylesheet.add(ParagraphStyle(name = 'Ballot_option_group_right',
                               leftIndent = 49),
                )
 
-# set event information
-event_name = config["event_name"]
-event_description = config["event_description"]
-event_date = config["event_date"]
-event_location = config["event_location"]
-event_organizer = config["event_organizer"]
-
-
 
 def firstPage(canvas, doc):
     canvas.saveState()
     # page header (with event information)
-    canvas.setFont('Ubuntu',10)
+    canvas.setFont('Ubuntu', 10)
     canvas.setFillGray(0.4)
-    canvas.drawString(2.75*cm, 28*cm, "%s | %s" % (event_name, event_description))
-    if event_date and event_location:
-        canvas.drawString(2.75*cm, 27.6*cm, "%s, %s" % (event_date, event_location))
+    canvas.drawString(2.75*cm, 28*cm, "%s | %s" % (config["event_name"], config["event_description"]))
+    if config["event_date"] and config["event_location"]:
+        canvas.drawString(2.75 * cm, 27.6 * cm, "%s, %s" % (config["event_date"], config["event_location"]))
     # time
-    canvas.setFont('Ubuntu',7)
+    canvas.setFont('Ubuntu', 7)
     time = datetime.now().strftime(str(_("%Y-%m-%d %H:%Mh")))
-    canvas.drawString(15*cm, 28*cm, _("Printed")+": %s" % time)
+    canvas.drawString(15 * cm, 28 * cm, _("Printed") + ": %s" % time)
     # title
     if doc.title:
-        canvas.setFont('Ubuntu-Bold',24)
+        canvas.setFont('Ubuntu-Bold', 24)
         canvas.setFillGray(0)
         #canvas.drawCentredString(PAGE_WIDTH/2.0, PAGE_HEIGHT-108, doc.title)
-        canvas.drawString(2.75*cm, PAGE_HEIGHT-108, doc.title)
+        canvas.drawString(2.75 * cm, PAGE_HEIGHT - 108, doc.title)
     # footer (with page number)
-    canvas.setFont('Ubuntu',8)
+    canvas.setFont('Ubuntu', 8)
     canvas.setFillGray(0.4)
-    canvas.drawString(10*cm, 1*cm, _("Page")+" %s" % doc.page)
+    canvas.drawString(10 * cm, 1*cm, _("Page") + " %s" % doc.page)
     canvas.restoreState()
 
 
 def laterPages(canvas, doc):
     canvas.saveState()
     # footer (with page number)
-    canvas.setFont('Ubuntu',7)
+    canvas.setFont('Ubuntu', 7)
     canvas.setFillGray(0.4)
-    canvas.drawString(10*cm, 1*cm, _("Page")+" %s" % doc.page)
-    canvas.restoreState()s
+    canvas.drawString(10 * cm, 1 * cm, _("Page") + " %s" % doc.page)
+    canvas.restoreState()
 
 
 @permission_required('participant.can_see_participant')

@@ -105,8 +105,6 @@ class DeleteView(RedirectView, SingleObjectMixin):
         self.object = self.get_object()
         self.confirm_form(request, self.object)
 
-    def pre_post_redirect(self, request, *args, **kwargs):
-        pass
 
 class PDFView(View, PermissionMixin):
     filename = 'No_Name'
