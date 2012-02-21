@@ -164,7 +164,7 @@ class ItemDelete(DeleteView):
             self.object.delete()
             messages.success(request, _("Item <b>%s</b> and his children were successfully deleted.") % self.object)
         else:
-            for child in self.object.children:
+            for child in self.object.get_children():
                 child.parent = self.object.parent
                 child.save()
             self.object.delete()
