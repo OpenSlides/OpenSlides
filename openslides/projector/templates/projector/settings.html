@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% load tags %}
+{% load i18n %}
+
+{% block content %}
+    <h1>{% trans 'Projector' %}</h1>
+
+    <ul>
+    {% for category, slides in categories.items %}
+        <h2>{{ category }}</h2>
+        {% for slide in slides %}
+            {% if slide.model_slide %}
+                {% for item in slide.get_items %}
+                    <li><a href="{% url projector_activate_slide item.sid %}">{{ item }}</a></li>
+                {% endfor %}
+            {% else %}
+                <li><a href="{% url projector_activate_slide slide.key %}">{{ slide.key }}</a></li>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+    </ul>
+{% endblock %}

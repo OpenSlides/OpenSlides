@@ -58,3 +58,13 @@ class Slide(object):
 
     def get_items(self):
         return self.model.objects.all()
+
+    def get_dict(self):
+        return {
+            'key': self.key,
+            'category': self.category,
+            'model_slide': self.model_slide,
+            'func': self.func,
+            'model': self.model,
+            'self': self,
+        }

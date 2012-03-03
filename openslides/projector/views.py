@@ -34,8 +34,13 @@ class SettingView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(SettingView, self).get_context_data(**kwargs)
+        categories = {}
+        for slide in SLIDE.values():
+            if not categories.has_key(slide.category):
+                categories[slide.category] = []
+            categories[slide.category].append(slide)
         context.update({
-            'slides': SLIDE.values(),
+            'categories': categories,
         })
         return context
 

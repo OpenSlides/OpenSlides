@@ -133,13 +133,13 @@ class Item(MPTTModel, SlideMixin):
         order_insertion_by = ['weight', 'title']
 
 
-register_slidemodel(Item)
+register_slidemodel(Item, category=_('Agenda'))
 
 # TODO: put this in another file
 
 from projector.api import register_slidefunc
 from agenda.slides import agenda_show
 
-register_slidefunc('agenda_show', agenda_show)
+register_slidefunc('agenda_show', agenda_show, category=_('Agenda'))
 
 
