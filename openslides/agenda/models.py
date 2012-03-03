@@ -22,13 +22,13 @@ from mptt.models import MPTTModel, TreeForeignKey
 
 from system import config
 
-from projector.models import Slide
+from projector.models import SlideMixin
 from projector.api import register_slidemodel
 
 from agenda.api import is_summary
 
 
-class Item(MPTTModel, Slide):
+class Item(MPTTModel, SlideMixin):
     """
     An Agenda Item
 
@@ -55,7 +55,7 @@ class Item(MPTTModel, Slide):
         }
 
         if is_summary():
-            data['items'] = self.children.filter(hidden=False)
+            data['items'] = self.children.all()
             data['template'] = 'projector/AgendaSummary.html'
         return data
 
@@ -63,7 +63,7 @@ class Item(MPTTModel, Slide):
         """
         Appoint this item as the active one.
         """
-        Slide.set_active(self)
+        super(Item, self).set_active()
         if summary:
             config["agenda_summary"] = True
         else:
@@ -135,7 +135,7 @@ class Item(MPTTModel, Slide):
 
 register_slidemodel(Item)
 
-# TODO: put this in anouther file
+# TODO: put this in another file
 
 from projector.api import register_slidefunc
 from agenda.slides import agenda_show

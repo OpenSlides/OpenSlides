@@ -18,7 +18,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
 from projector.api import register_slidemodel
-from projector.models import Slide
+from projector.models import SlideMixin
 
 from participant.models import Profile
 from system import config
@@ -27,7 +27,7 @@ from poll import ChoicePoll
 from poll.models import BaseOption, BasePoll, CountVotesCast, CountInvalid, Vote
 
 
-class Application(models.Model, Slide):
+class Application(models.Model, SlideMixin):
     prefix = "application"
     STATUS = (
         ('pub', _('Published')),

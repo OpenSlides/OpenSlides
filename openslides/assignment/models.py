@@ -15,12 +15,12 @@ from django.utils.translation import ugettext as _
 
 from participant.models import Profile
 
-from projector.models import Slide
+from projector.models import SlideMixin
 from projector.api import register_slidemodel
 from poll.models import BasePoll, CountInvalid, CountVotesCast, BaseOption
 
 
-class Assignment(models.Model, Slide):
+class Assignment(models.Model, SlideMixin):
     prefix = 'assignment'
     STATUS = (
         ('sea', _('Searching for candidates')),

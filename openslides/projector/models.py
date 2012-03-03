@@ -4,7 +4,7 @@ from system import config
 
 SLIDE = {}
 
-class Slide(object):
+class SlideMixin(object):
 
     def slide(self):
         """
@@ -22,8 +22,8 @@ class Slide(object):
         Return the sid from this Slide
         """
         for key, value in SLIDE.iteritems():
-            if type(self) == value:
-                return "%s %d" % (key, self.id)
+            if type(self) == value.model:
+                return "%s-%d" % (key, self.id)
         return None
 
     @property
@@ -38,4 +38,23 @@ class Slide(object):
         """
         Appoint this item as the active one.
         """
-        config["presentation"] = "%s %d" % (self.prefix, self.id)
+        config["presentation"] = "%s-%d" % (self.prefix, self.id)
+
+
+class Slide(object):
+    def __init__(self, model_slide=False, func=None, model=None, category=None, key=None):
+        """
+        model_slide: Boolean if the value is a Model.
+        func: The function to call. Only if modelslide is False.
+        model: The model. Only if modelslide is True.
+        category: The category to show this Slide.
+        key: the key in the slide object to find myself.
+        """
+        self.model_slide = model_slide
+        self.func = func
+        self.model = model
+        self.category = category
+        self.key = key
+
+    def get_items(self):
+        return self.model.objects.all()

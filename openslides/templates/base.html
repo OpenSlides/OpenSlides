@@ -22,7 +22,7 @@
             <ul>
             {% if user.is_authenticated %}
                 <li>|<a href="{% url user_logout %}">{%trans "Logout" %}</a></li>
-                <li>|<a href="{% url user_settings %}">{%trans "Settings" %}</a></li>
+                <li>|<a href="{% url user_settings %}">{%trans "Usersettings" %}</a></li>
                 <li>{%trans "Welcome" %}, <strong>{{ user.username }}</strong></li>
             {% else %}
                 <li><a href="{% url user_login %}">{%trans "Login" %}</a></li>
@@ -33,6 +33,9 @@
         <div id="mainmenu">
            {% block mainmenu %}
             <ul>
+                <li class="{% active request '/projector' %}">
+                    <a href="{% url projector_settings %}" title="">{%trans "Projector" %}</a>
+                </li>
                 {% if perms.agenda.can_see_agenda or perms.agenda.can_manage_agenda %}
                 <li class="{% active request '/agenda' %}
                            {% if request.path == '/'%}selected{% endif %}">

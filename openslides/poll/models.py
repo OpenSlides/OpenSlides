@@ -14,7 +14,7 @@ from django.db import models
 from django.utils.translation import ugettext as _
 
 from projector.api import register_slidemodel
-from projector.models import Slide
+from projector.models import SlideMixin
 
 
 class BaseOption(models.Model):
@@ -67,7 +67,7 @@ class CountInvalid(models.Model):
         abstract = True
 
 
-class BasePoll(models.Model, Slide):
+class BasePoll(models.Model, SlideMixin):
     #TODO: It would be nice if this class wouldn't be a subclass from models.Model. But it is needet aslong
     #      BaseOption has a foreignKey on BasePoll
     prefix = 'BasePoll'

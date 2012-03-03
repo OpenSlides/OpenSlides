@@ -36,7 +36,7 @@ class View(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(View, self).get_context_data(**kwargs)
         context.update({
-            'item': Item.objects.get(pk=kwargs['item_id']),
+            'item': Item.objects.get(pk=kwargs['pk']),
             'ajax': 'off',
         })
         return context

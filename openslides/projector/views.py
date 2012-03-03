@@ -18,13 +18,38 @@ from django.contrib import messages
 from django.utils.translation import ugettext as _
 
 
+from utils.views import TemplateView, RedirectView
 from utils.utils import template, permission_required, \
                                    del_confirm_form, ajax_request
 from utils.template import render_block_to_string
 
 from system import config
 
-from projector.api import get_active_slide
+from projector.api import get_active_slide, set_active_slide
+from projector.models import SLIDE
+
+
+class SettingView(TemplateView):
+    template_name = 'projector/settings.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SettingView, self).get_context_data(**kwargs)
+        context.update({
+            'slides': SLIDE.values(),
+        })
+        return context
+
+
+class ActivateView(RedirectView):
+    url = 'projector_settings'
+    allow_ajax = True
+
+    def pre_redirect(self, request, *args, **kwargs):
+        set_active_slide(kwargs['sid'])
+
+    def get_ajax_context(self, **kwargs):
+        context = super(ActivateView, self).get_ajax_context()
+        return context
 
 
 @permission_required('agenda.can_see_projector')
@@ -35,6 +60,9 @@ def active_slide(request):
     try:
         data = get_active_slide()
     except AttributeError: #TODO: It has to be an Slide.DoesNotExist
+        data = None
+
+    if data is None:
         data = {
             'title': config['event_name'],
             'template': 'projector/default.html',
