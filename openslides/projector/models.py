@@ -42,29 +42,21 @@ class SlideMixin(object):
 
 
 class Slide(object):
-    def __init__(self, model_slide=False, func=None, model=None, category=None, key=None):
+    def __init__(self, model_slide=False, func=None, model=None, category=None, key=None, model_name=''):
         """
         model_slide: Boolean if the value is a Model.
         func: The function to call. Only if modelslide is False.
         model: The model. Only if modelslide is True.
+        model_name: The name shown for the model.
         category: The category to show this Slide.
         key: the key in the slide object to find myself.
         """
         self.model_slide = model_slide
         self.func = func
         self.model = model
+        self.model_name = model_name
         self.category = category
         self.key = key
 
     def get_items(self):
         return self.model.objects.all()
-
-    def get_dict(self):
-        return {
-            'key': self.key,
-            'category': self.category,
-            'model_slide': self.model_slide,
-            'func': self.func,
-            'model': self.model,
-            'self': self,
-        }

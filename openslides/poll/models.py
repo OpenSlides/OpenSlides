@@ -67,6 +67,17 @@ class CountInvalid(models.Model):
         abstract = True
 
 
+class PublishPollMixin(models.Model):
+    published = models.BooleanField(default=False)
+
+    def set_published(self, published):
+        self.published = published
+        self.save()
+
+    class Meta:
+        abstract = True
+
+
 class BasePoll(models.Model, SlideMixin):
     #TODO: It would be nice if this class wouldn't be a subclass from models.Model. But it is needet aslong
     #      BaseOption has a foreignKey on BasePoll
@@ -134,8 +145,6 @@ class BasePoll(models.Model, SlideMixin):
         # data['template'] = 'projector/TODO.html'
         return data
 
-
-register_slidemodel(BasePoll)
 
 def print_value(value):
     if value == -1:

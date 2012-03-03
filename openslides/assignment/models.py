@@ -17,7 +17,7 @@ from participant.models import Profile
 
 from projector.models import SlideMixin
 from projector.api import register_slidemodel
-from poll.models import BasePoll, CountInvalid, CountVotesCast, BaseOption
+from poll.models import BasePoll, CountInvalid, CountVotesCast, BaseOption, PublishPollMixin
 
 
 class Assignment(models.Model, SlideMixin):
@@ -122,7 +122,8 @@ class Assignment(models.Model, SlideMixin):
             ('can_manage_assignment', "Can manage assignment"),
         )
 
-register_slidemodel(Assignment)
+register_slidemodel(Assignment, category=_('Assignment'))
+
 
 class AssignmentOption(BaseOption):
     candidate = models.ForeignKey(Profile)
@@ -131,7 +132,7 @@ class AssignmentOption(BaseOption):
         return unicode(self.candidate)
 
 
-class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast):
+class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
     option_class = AssignmentOption
 
     assignment = models.ForeignKey(Assignment, related_name='poll_set')
@@ -143,3 +144,5 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast):
     def append_pollform_fields(self, fields):
         CountInvalid.append_pollform_fields(self, fields)
         CountVotesCast.append_pollform_fields(self, fields)
+
+register_slidemodel(AssignmentPoll, category=_('Assignment'))

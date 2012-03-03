@@ -11,9 +11,12 @@
         <h2>{{ category }}</h2>
         {% for slide in slides %}
             {% if slide.model_slide %}
+                <h3>{{ slide.model_name }}</h3>
+                <ul>
                 {% for item in slide.get_items %}
                     <li><a href="{% url projector_activate_slide item.sid %}">{{ item }}</a></li>
                 {% endfor %}
+                </ul>
             {% else %}
                 <li><a href="{% url projector_activate_slide slide.key %}">{{ slide.key }}</a></li>
             {% endif %}

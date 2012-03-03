@@ -192,6 +192,7 @@ def set_active(request, assignment_id):
     assignment.set_active()
     return redirect(reverse('assignment_view', args=[assignment_id]))
 
+
 @permission_required('assignment.can_manage_assignment')
 def gen_poll(request, assignment_id):
     poll = Assignment.objects.get(pk=assignment_id).gen_poll()
@@ -218,15 +219,16 @@ class ViewPoll(PollFormView):
 @permission_required('assignment.can_manage_assignment')
 def set_published(request, poll_id, published=True):
     try:
-        poll = Poll.objects.get(pk=poll_id)
+        poll = AssignmentPoll.objects.get(pk=poll_id)
         poll.set_published(published)
         if poll.published:
             messages.success(request, _("Poll successfully set to published.") )
         else:
             messages.success(request, _("Poll successfully set to unpublished.") )
-    except Poll.DoesNotExist:
+    except AssignmentPoll.DoesNotExist:
         messages.error(request, _('Poll ID %d does not exist.') % int(poll_id))
     return redirect(reverse('assignment_view', args=[poll.assignment.id]))
+
 
 @permission_required('assignment.can_manage_assignment')
 def delete_poll(request, poll_id):
@@ -239,6 +241,7 @@ def delete_poll(request, poll_id):
     else:
         del_confirm_form(request, poll, name=_("the %s. ballot") % ballot)
     return redirect(reverse('assignment_view', args=[assignment.id]))
+
 
 @permission_required('assignment.can_manage_assignment')
 def set_elected(request, assignment_id, profile_id, elected=True):
