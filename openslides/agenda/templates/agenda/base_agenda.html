@@ -12,8 +12,5 @@
         {% if perms.agenda.can_manage_agenda %}
         <li class="{% active request '/agenda/new/' %}"><a href="{% url item_new %}">{%trans "New item" %}</a></li>
         {% endif %}
-        {% if perms.agenda.can_see_projector %}
-        <li><a href="{% url projector_show %}"><img src="/static/images/icons/video-projector.png"> {%trans 'Projector view' %}</a></li>
-        {% endif %}
     </ul>
 {% endblock %}

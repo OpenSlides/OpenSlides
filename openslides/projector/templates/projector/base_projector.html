@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% load tags %}
+{% load i18n %}
+
+{% block submenu %}
+    {% url item_overview as url_itemoverview %}
+    {% url item_new as url_itemnew %}
+    <h4 class="sectiontitle">{%trans "Projector" %}</h4>
+    <ul>
+        {% if perms.agenda.can_see_projector %}
+        <li><a href="{% url projector_show %}"><img src="/static/images/icons/video-projector.png"> {%trans 'Projector view' %}</a></li>
+        {% endif %}
+    </ul>
+{% endblock %}
