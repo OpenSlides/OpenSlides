@@ -1,8 +1,7 @@
 from django.utils.translation import ugettext as _
 
-from agenda.models import Item
-
 def agenda_show():
+    from agenda.models import Item
     data = {}
     items = Item.objects.filter(parent=None)
     data['title'] = _("Agenda")
