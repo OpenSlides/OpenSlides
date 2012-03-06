@@ -22,7 +22,7 @@ urlpatterns = patterns('',
     (r'^admin/', include(admin.site.urls)),
     # frontpage
     (r'^$', RedirectView.as_view(
-        url='agenda/',
+        url='projector/control',
         permanent = False,
     )),
 

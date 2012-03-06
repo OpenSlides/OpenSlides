@@ -34,7 +34,7 @@
            {% block mainmenu %}
             <ul>
                 <li class="{% active request '/projector' %}">
-                    <a href="{% url projector_settings %}" title="">{%trans "Projector" %}</a>
+                    <a href="{% url projector_control %}" title="">{%trans "Projector" %}</a>
                 </li>
                 {% if perms.agenda.can_see_agenda or perms.agenda.can_manage_agenda %}
                 <li class="{% active request '/agenda' %}

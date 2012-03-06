@@ -18,9 +18,9 @@ urlpatterns = patterns('projector.views',
     url(r'^$', 'active_slide',
         name='projector_show'),
 
-    url(r'^settings$',
+    url(r'^control$',
         SettingView.as_view(),
-        name='projector_settings',
+        name='projector_control',
     ),
 
     url(r'^activate/(?P<sid>[^/]*)/$',

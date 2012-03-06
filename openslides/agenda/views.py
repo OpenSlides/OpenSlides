@@ -52,8 +52,6 @@ class Overview(TemplateView):
             'items': Item.objects.all(),
             'overview': get_active_slide(only_sid=True) == 'agenda_show',
             'summary': is_summary(),
-            'countdown_visible': config['countdown_visible'],
-            'countdown_time': config['agenda_countdown_time'],
         })
         return context
 

@@ -30,7 +30,7 @@ from projector.models import SLIDE
 
 
 class SettingView(TemplateView):
-    template_name = 'projector/settings.html'
+    template_name = 'projector/control.html'
 
     def get_context_data(self, **kwargs):
         context = super(SettingView, self).get_context_data(**kwargs)
@@ -41,12 +41,14 @@ class SettingView(TemplateView):
             categories[slide.category].append(slide)
         context.update({
             'categories': categories,
+            'countdown_visible': config['countdown_visible'],
+            'countdown_time': config['agenda_countdown_time'],
         })
         return context
 
 
 class ActivateView(RedirectView):
-    url = 'projector_settings'
+    url = 'projector_control'
     allow_ajax = True
 
     def pre_redirect(self, request, *args, **kwargs):
@@ -112,7 +114,7 @@ def projector_edit(request, direction):
 
     if request.is_ajax():
         return ajax_request({})
-    return redirect(reverse('item_overview'))
+    return redirect(reverse('projector_control'))
 
 
 @permission_required('agenda.can_manage_agenda')
@@ -135,4 +137,4 @@ def projector_countdown(request, command, time=60):
             link = reverse('countdown_open')
         return ajax_request({'countdown_visible': config['countdown_visible'],
                              'link': link})
-    return redirect(reverse('item_overview'))
+    return redirect(reverse('projector_control'))
