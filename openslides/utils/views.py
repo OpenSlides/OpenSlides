@@ -26,6 +26,7 @@ from django.views.generic import (TemplateView as _TemplateView,
 from django.views.generic.detail import SingleObjectMixin
 
 from utils import render_to_forbitten
+from openslides.utils.signals import template_manipulation
 from pdf import firstPage, laterPages
 
 FREE_TO_GO = 'free to go'
@@ -55,8 +56,12 @@ class PermissionMixin(object):
         return super(LoginMixin, self).dispatch(request, *args, **kwargs)
 
 
+
 class TemplateView(_TemplateView, PermissionMixin):
-    pass
+    def get_context_data(self, **kwargs):
+        context = super(TemplateView, self).get_context_data(**kwargs)
+        template_manipulation.send(sender=self, context=context, blub=True)
+        return context
 
 
 class RedirectView(_RedirectView, PermissionMixin):

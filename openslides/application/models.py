@@ -23,7 +23,6 @@ from projector.models import SlideMixin
 from participant.models import Profile
 from system import config
 from utils.utils import _propper_unicode
-from poll import ChoicePoll
 from poll.models import BaseOption, BasePoll, CountVotesCast, CountInvalid, Vote
 
 

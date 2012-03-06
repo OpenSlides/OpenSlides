@@ -35,8 +35,10 @@ def set_active_slide(sid):
     config["presentation"] = sid
 
 
-def register_slidemodel(model, category=None, model_name=''):
+def register_slidemodel(model, category=None, model_name=None):
     #TODO: Warn if there already is a slide with this prefix
+    if model_name is None:
+        model_name = model.prefix
     SLIDE[model.prefix] = Slide(
         model_slide=True,
         model=model,

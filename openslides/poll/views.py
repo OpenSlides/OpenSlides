@@ -1,6 +1,8 @@
-from django.views.generic import TemplateView
 from django.http import HttpResponseRedirect
 from django.forms.models import modelform_factory
+
+from utils.views import TemplateView
+
 
 class PollFormView(TemplateView):
     template_name = 'poll/poll.html'
