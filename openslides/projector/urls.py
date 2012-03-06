@@ -12,14 +12,14 @@
 
 from django.conf.urls.defaults import *
 
-from projector.views import SettingView, ActivateView
+from projector.views import ControlView, ActivateView
 
 urlpatterns = patterns('projector.views',
     url(r'^$', 'active_slide',
         name='projector_show'),
 
     url(r'^control$',
-        SettingView.as_view(),
+        ControlView.as_view(),
         name='projector_control',
     ),
 
