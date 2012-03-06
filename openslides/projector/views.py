@@ -29,11 +29,11 @@ from projector.api import get_active_slide, set_active_slide
 from projector.models import SLIDE
 
 
-class SettingView(TemplateView):
+class ControlView(TemplateView):
     template_name = 'projector/control.html'
 
     def get_context_data(self, **kwargs):
-        context = super(SettingView, self).get_context_data(**kwargs)
+        context = super(ControlView, self).get_context_data(**kwargs)
         categories = {}
         for slide in SLIDE.values():
             if not categories.has_key(slide.category):
