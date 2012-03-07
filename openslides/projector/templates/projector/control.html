@@ -14,6 +14,38 @@
             $("#accordion").accordion({ header: "h2" });
         });
     </script>
+    <style>
+    .column { width: 50%; float: left; padding-bottom: 0px; }
+    .portlet { margin: 0 1em 1em 0; }
+    .portlet-header { margin: 0.3em; padding-bottom: 4px; padding-left: 0.2em; }
+    .portlet-header .ui-icon { float: right; }
+    .portlet-content { padding: 0.4em; }
+    .ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
+    .ui-sortable-placeholder * { visibility: hidden; }
+    </style>
+    <script>
+    $(function() {
+        $( ".column" ).sortable({
+            connectWith: ".column"
+        });
+
+        $( ".portlet" ).addClass( "ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" )
+            .find( ".portlet-header" )
+                .addClass( "ui-widget-header ui-corner-all" )
+                .prepend( "<span class='ui-icon ui-icon-minusthick'></span>")
+                .end()
+            .find( ".portlet-content" );
+
+        $( ".portlet-header .ui-icon" ).click(function() {
+            $( this ).toggleClass( "ui-icon-minusthick" ).toggleClass( "ui-icon-plusthick" );
+            $( this ).parents( ".portlet:first" ).find( ".portlet-content" ).toggle();
+        });
+
+        $( ".column" ).disableSelection();
+    });
+    </script>
+
+
 {% endblock %}
 
 {% block content %}
@@ -55,13 +87,13 @@
             </a>
         </div>
     {% endif %}
+    
 
-    <div id="accordion">
-    {% for category, slides in categories.items %}
-    <div>
-        <h2 class="ui-accordion-header ui-helper-reset ui-state-active ui-corner-top" style="margin-top:0;">
-        <a href="#{{ category }}">{{ category }}</a></h2>
-        <div>
+{% for category, slides in categories.items %}
+<div class="column">
+    <div class="portlet">
+        <div class="portlet-header">{{ category }}</div>
+        <div class="portlet-content">
         {% for slide in slides %}
             {% if slide.model_slide %}
                 <ul>
@@ -70,11 +102,27 @@
                 {% endfor %}
                 </ul>
             {% else %}
-                <li># <a href="{% url projector_activate_slide slide.key %}">{{ slide.key }}</a></li>
+                # <a href="{% url projector_activate_slide slide.key %}">{{ slide.key }}</a>
             {% endif %}
         {% endfor %}
         </div>
     </div>
-    {% endfor %}
+</div>
+{% endfor %}
+
+<div class="column">
+    <div class="portlet">
+        <div class="portlet-header">{% trans "Live View" %}</div>
+        <div class="portlet-content">
+        <iframe src="{% url projector_show %}" width="100%" style="zoom:15%;">
+        </div>
     </div>
+    <div class="portlet">
+        <div class="portlet-header">{% trans "Hidden information" %}</div>
+        <div class="portlet-content">
+        TODO: list hidden agenda items
+        </div>
+     </div>
+</div>
+
 {% endblock %}
