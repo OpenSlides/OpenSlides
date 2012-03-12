@@ -15,7 +15,7 @@ from django.utils.translation import ugettext as _
 
 from participant.models import Profile
 
-from projector.models import SlideMixin
+from projector.projector import SlideMixin
 from projector.api import register_slidemodel
 from poll.models import BasePoll, CountInvalid, CountVotesCast, BaseOption, PublishPollMixin
 
