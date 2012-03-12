@@ -22,7 +22,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 
 from system import config
 
-from projector.models import SlideMixin
+from projector.projector import SlideMixin
 from projector.api import register_slidemodel
 
 from agenda.api import is_summary
@@ -126,7 +126,6 @@ class Item(MPTTModel, SlideMixin):
         permissions = (
             ('can_see_agenda', "Can see agenda"),
             ('can_manage_agenda', "Can manage agenda"),
-            ('can_see_projector', "Can see projector"),
         )
 
     class MPTTMeta:

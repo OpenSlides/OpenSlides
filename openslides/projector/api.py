@@ -1,5 +1,5 @@
 from system import config
-from projector.models import SLIDE, Slide
+from projector import SLIDE, Slide
 
 
 def get_slide_from_sid(sid):

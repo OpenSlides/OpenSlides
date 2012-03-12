@@ -25,8 +25,8 @@ from utils.template import render_block_to_string
 
 from system import config
 
-from projector.api import get_active_slide, set_active_slide
-from projector.models import SLIDE
+from api import get_active_slide, set_active_slide
+from projector import SLIDE
 
 
 class ControlView(TemplateView):
@@ -59,7 +59,7 @@ class ActivateView(RedirectView):
         return context
 
 
-@permission_required('agenda.can_see_projector')
+@permission_required('projector.can_see_projector')
 def active_slide(request):
     """
     Shows the active Slide.
