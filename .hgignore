@@ -6,6 +6,7 @@
 ^database\.db$
 ~$
 \.DS_Store$
+^extras/website/_build
 ^docs/_build
 ^dist/
 ^versiontools
