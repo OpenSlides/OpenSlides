@@ -10,4 +10,7 @@ OpenSlides uses parts of the following projects:
    <http://www.jquery.com>
 
 * Drupal (tabledrag function)
-  <http://www.drupal.org/> 
+  <http://www.drupal.org/>
+
+* Django
+  <https://www.djangoproject.com/>
