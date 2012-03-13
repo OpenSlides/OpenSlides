@@ -10,6 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 from pickle import dumps, loads
+import base64
 
 from django.db import models
 from django.utils.translation import ugettext as _
@@ -41,12 +42,15 @@ class ConfigStore(models.Model):
             ('can_manage_system', "Can manage system configuration"),
         )
 
+# TODO:
+# I used base64 to save pickled Data, there has to be another way see:
+# http://stackoverflow.com/questions/2524970/djangounicodedecodeerror-while-storing-pickled-data
 
 class Config(object):
     def load_config(self):
         self.config = {}
         for key, value in ConfigStore.objects.all().values_list():
-            self.config[key] = loads(str(value))
+            self.config[key] = base64.decodestring(loads(str(value)))
 
     def __getitem__(self, key):
         try:
@@ -67,7 +71,7 @@ class Config(object):
             c = ConfigStore.objects.get(pk=key)
         except ConfigStore.DoesNotExist:
             c = ConfigStore(pk=key)
-        c.value = dumps(value)
+        c.value = base64.encodestring(dumps(value))
         c.save()
         self.config[key] = value
 
