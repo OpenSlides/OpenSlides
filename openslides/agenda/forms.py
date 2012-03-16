@@ -11,7 +11,7 @@
 """
 
 from django.forms import Form, ModelForm, IntegerField, ChoiceField, \
-                         ModelChoiceField, HiddenInput, Select
+                         ModelChoiceField, HiddenInput, Select, TextInput
 from django.utils.translation import ugettext as _
 
 from mptt.forms import TreeNodeChoiceField
@@ -41,3 +41,7 @@ class ItemOrderForm(Form, CssClassMixin):
                          label="")
     self = IntegerField(widget=HiddenInput(attrs={'class': 'menu-mlid'}))
     parent = IntegerField(widget=HiddenInput(attrs={'class': 'menu-plid'}))
+
+
+class ConfigForm(Form, CssClassMixin):
+    agenda_countdown_time = IntegerField(widget=TextInput(attrs={'class':'small-input'}),label=_("Countdown (in seconds)"),initial=60, min_value=0)

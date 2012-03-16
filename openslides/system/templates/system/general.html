@@ -7,7 +7,7 @@
 {% block content %}
     <h1>{%trans "General settings" %}</h1>
     <form action="" method="post">{% csrf_token %}
-    {{ form_event.as_p }}
+    {{ form.as_p }}
     <p>
     <button class="button" type="submit">
         <span class="icon ok">{%trans 'Save' %}</span>

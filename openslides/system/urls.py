@@ -11,20 +11,31 @@
 """
 
 from django.conf.urls.defaults import *
+from django.utils.importlib import import_module
+
+import settings
+
+from views import GeneralConfig
 
 urlpatterns = patterns('system.views',
-    url(r'^config/general$', 'get_general_config',
-        name='config_general'),
-
-    url(r'^config/agenda$', 'get_agenda_config',
-        name='config_agenda'),
-
-    url(r'^config/application$', 'get_application_config',
-        name='config_application'),
-
-    url(r'^config/assignment$', 'get_assignment_config',
-        name='config_assignment'),
-
-    url(r'^config/system$', 'get_system_config',
-        name='config_system'),
+    url(r'^general/$',
+        GeneralConfig.as_view(),
+        name='config_general',
+    ),
 )
+
+for app in settings.INSTALLED_APPS:
+    try:
+        mod = import_module(app + '.views')
+    except ImportError:
+        continue
+    appname = mod.__name__.split('.')[0]
+    try:
+        urlpatterns += patterns('', url(
+            r'^%s/$' % appname,
+            mod.Config.as_view(),
+            name='config_%s' % appname,
+        ))
+    except AttributeError:
+        continue
+

@@ -29,9 +29,12 @@ from system import config
 from agenda.models import Item
 
 from application.models import Application, AVersion, ApplicationPoll
-from application.forms import ApplicationForm, \
-                                         ApplicationManagerForm, \
-                                         ApplicationImportForm
+from application.forms import (
+    ApplicationForm,
+    ApplicationManagerForm,
+    ApplicationImportForm,
+    ConfigForm,
+)
 
 from participant.models import Profile
 
@@ -39,6 +42,7 @@ from poll.views import PollFormView
 
 from utils.utils import template, permission_required, \
                                    render_to_forbitten, del_confirm_form, gen_confirm_form
+from utils.views import FormView
 
 from utils.pdf import print_application, print_application_poll
 
@@ -583,3 +587,27 @@ def application_import(request):
     }
 
 
+class Config(FormView):
+    permission_required = 'system.can_manage_system'
+    form_class = ConfigForm
+    template_name = 'application/config.html'
+
+    def get_initial(self):
+        return {
+            'application_min_supporters': config['application_min_supporters'],
+            'application_preamble': config['application_preamble'],
+            'application_pdf_ballot_papers_selection': config['application_pdf_ballot_papers_selection'],
+            'application_pdf_ballot_papers_number': config['application_pdf_ballot_papers_number'],
+            'application_pdf_title': config['application_pdf_title'],
+            'application_pdf_preamble': config['application_pdf_preamble'],
+        }
+
+    def form_valid(self, form):
+        config['application_min_supporters'] = form.cleaned_data['application_min_supporters']
+        config['application_preamble'] = form.cleaned_data['application_preamble']
+        config['application_pdf_ballot_papers_selection'] = form.cleaned_data['application_pdf_ballot_papers_selection']
+        config['application_pdf_ballot_papers_number'] = form.cleaned_data['application_pdf_ballot_papers_number']
+        config['application_pdf_title'] = form.cleaned_data['application_pdf_title']
+        config['application_pdf_preamble'] = form.cleaned_data['application_pdf_preamble']
+        messages.success(self.request, _('Application settings successfully saved.'))
+        return super(Config, self).form_valid(form)

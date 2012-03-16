@@ -18,11 +18,14 @@ from django.utils.translation import ugettext as _
 
 from utils.utils import template, permission_required, gen_confirm_form, del_confirm_form, ajax_request
 from utils.pdf import print_assignment, print_assignment_poll
+from utils.views import FormView
+
+from system import config
 
 from poll.views import PollFormView
 
 from assignment.models import Assignment, AssignmentPoll, AssignmentOption
-from assignment.forms import AssignmentForm, AssignmentRunForm
+from assignment.forms import AssignmentForm, AssignmentRunForm, ConfigForm
 
 from participant.models import Profile
 
@@ -261,3 +264,30 @@ def set_elected(request, assignment_id, profile_id, elected=True):
                              'text': text})
 
     return redirect(reverse('assignment_view', args=[assignment_id]))
+
+
+class Config(FormView):
+    permission_required = 'system.can_manage_system'
+    form_class = ConfigForm
+    template_name = 'assignment/config.html'
+
+    def get_initial(self):
+        return {
+            'assignment_publish_winner_results_only': config['assignment_publish_winner_results_only'],
+            'assignment_pdf_ballot_papers_selection': config['assignment_pdf_ballot_papers_selection'],
+            'assignment_pdf_ballot_papers_number': config['assignment_pdf_ballot_papers_number'],
+            'assignment_pdf_title': config['assignment_pdf_title'],
+            'assignment_pdf_preamble': config['assignment_pdf_preamble'],
+        }
+
+    def form_valid(self, form):
+        if form.cleaned_data['assignment_publish_winner_results_only']:
+            config['assignment_publish_winner_results_only'] = True
+        else:
+            config['assignment_publish_winner_results_only'] = False
+        config['assignment_pdf_ballot_papers_selection'] = form.cleaned_data['assignment_pdf_ballot_papers_selection']
+        config['assignment_pdf_ballot_papers_number'] = form.cleaned_data['assignment_pdf_ballot_papers_number']
+        config['assignment_pdf_title'] = form.cleaned_data['assignment_pdf_title']
+        config['assignment_pdf_preamble'] = form.cleaned_data['assignment_pdf_preamble']
+        messages.success(self.request, _('Election settings successfully saved.'))
+        return super(Config, self).form_valid(form)

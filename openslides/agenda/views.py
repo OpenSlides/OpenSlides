@@ -18,7 +18,7 @@ from django.core.context_processors import csrf
 from django.views.generic.detail import SingleObjectMixin
 
 from utils.pdf import stylesheet
-from utils.views import TemplateView, RedirectView, UpdateView, CreateView, DeleteView, PDFView
+from utils.views import TemplateView, RedirectView, UpdateView, CreateView, DeleteView, PDFView, FormView
 
 from system import config
 
@@ -26,7 +26,7 @@ from projector.api import get_active_slide, set_active_slide
 
 from agenda.models import Item
 from agenda.api import is_summary
-from agenda.forms import ItemOrderForm, ItemForm
+from agenda.forms import ItemOrderForm, ItemForm, ConfigForm
 
 
 class View(TemplateView):
@@ -195,3 +195,17 @@ class ItemPDF(PDFView):
                 story.append(Paragraph("%s%s" % (space, item.title), stylesheet['Subitem']))
             else:
                 story.append(Paragraph(item.title, stylesheet['Item']))
+
+
+class Config(FormView):
+    permission_required = 'system.can_manage_system'
+    form_class = ConfigForm
+    template_name = 'agenda/config.html'
+
+    def get_initial(self):
+        return {'agenda_countdown_time': config['agenda_countdown_time']}
+
+    def form_valid(self, form):
+        config['agenda_countdown_time'] = form.cleaned_data['agenda_countdown_time']
+        messages.success(self.request, _('Agenda settings successfully saved.'))
+        return super(Config, self).form_valid(form)

@@ -12,17 +12,23 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Frame, PageBreak, S
 from reportlab.lib.units import cm
 
 from django.conf import settings
+from django.contrib import messages
+from django.utils.translation import ugettext as _
 from django.http import HttpResponseServerError, HttpResponse
 from django.core.urlresolvers import reverse
 from django.template import loader, RequestContext
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from django.views.generic import (TemplateView as _TemplateView,
-                                  RedirectView as _RedirectView,
-                                  UpdateView as _UpdateView,
-                                  CreateView as _CreateView,
-                                  View,)
+from django.views.generic import (
+    TemplateView as _TemplateView,
+    RedirectView as _RedirectView,
+    UpdateView as _UpdateView,
+    CreateView as _CreateView,
+    View,
+    FormView as _FormView,
+)
+
 from django.views.generic.detail import SingleObjectMixin
 
 from utils import render_to_forbitten
@@ -54,7 +60,6 @@ class PermissionMixin(object):
             else:
                 return render_to_forbitten(request)
         return super(LoginMixin, self).dispatch(request, *args, **kwargs)
-
 
 
 class TemplateView(_TemplateView, PermissionMixin):
@@ -91,11 +96,32 @@ class RedirectView(_RedirectView, PermissionMixin):
         return {}
 
 
+class FormView(_FormView, PermissionMixin):
+    def get_success_url(self):
+        if not self.success_url:
+            return ''
+        return reverse(super(FormView, self).get_success_url())
+
+    def get_context_data(self, **kwargs):
+        context = super(FormView, self).get_context_data(**kwargs)
+        template_manipulation.send(sender=self, request=self.request, context=context)
+        return context
+
+    def form_invalid(self, form):
+        messages.error(self.request, _('Please check the form for errors.'))
+        return super(FormView, self).form_invalid(form)
+
+
 class UpdateView(_UpdateView, PermissionMixin):
     def get_success_url(self):
         if 'apply' in self.request.POST:
             return ''
         return reverse(super(UpdateView, self).get_success_url())
+
+    def get_context_data(self, **kwargs):
+        context = super(UpdateView, self).get_context_data(**kwargs)
+        template_manipulation.send(sender=self, context=context)
+        return context
 
 
 class CreateView(_CreateView, PermissionMixin):

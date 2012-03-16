@@ -29,24 +29,3 @@ class EventConfigForm(Form, CssClassMixin):
     event_date = CharField(widget=TextInput(), required=False, label=_("Event date"))
     event_location = CharField(widget=TextInput(), required=False, label=_("Event location"))
     event_organizer = CharField(widget=TextInput(), required=False, label=_("Event organizer"))
-
-
-class AgendaConfigForm(Form, CssClassMixin):
-    agenda_countdown_time = IntegerField(widget=TextInput(attrs={'class':'small-input'}),label=_("Countdown (in seconds)"),initial=60, min_value=0)
-
-
-class ApplicationConfigForm(Form, CssClassMixin):
-    application_min_supporters = IntegerField(widget=TextInput(attrs={'class':'small-input'}),label=_("Number of (minimum) required supporters for a application"),initial=4, min_value=0, max_value=8)
-    application_preamble = CharField(widget=TextInput(), required=False, label=_("Application preamble"))
-    application_pdf_ballot_papers_selection = ChoiceField(widget=Select(), required=False, label=_("Number of ballot papers (selection)"), choices=[("1", _("Number of all delegates")),("2", _("Number of all participants")),("0", _("Use the following custum number"))])
-    application_pdf_ballot_papers_number = IntegerField(widget=TextInput(attrs={'class':'small-input'}), required=False, min_value=1, label=_("Custom number of ballot papers"))
-    application_pdf_title = CharField(widget=TextInput(), required=False, label=_("Title for PDF document (all applications)"))
-    application_pdf_preamble = CharField(widget=Textarea(), required=False, label=_("Preamble text for PDF document (all applications)"))
-
-
-class AssignmentConfigForm(Form, CssClassMixin):
-    assignment_publish_winner_results_only = BooleanField(required=False, label=_("Only publish voting results for selected winners (Projector view only)"))
-    assignment_pdf_ballot_papers_selection = ChoiceField(widget=Select(), required=False, label=_("Number of ballot papers (selection)"), choices=[("1", _("Number of all delegates")),("2", _("Number of all participants")),("0", _("Use the following custum number"))])
-    assignment_pdf_ballot_papers_number = IntegerField(widget=TextInput(attrs={'class':'small-input'}), required=False, min_value=1, label=_("Custom number of ballot papers"))
-    assignment_pdf_title = CharField(widget=TextInput(), required=False, label=_("Title for PDF document (all elections)"))
-    assignment_pdf_preamble = CharField(widget=Textarea(), required=False, label=_("Preamble text for PDF document (all elections)"))

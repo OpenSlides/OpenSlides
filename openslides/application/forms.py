@@ -10,7 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.forms import ModelForm, Form, CharField, Textarea, TextInput, ModelMultipleChoiceField, ModelChoiceField, BooleanField, FileField, FileInput
+from django.forms import ModelForm, Form, CharField, Textarea, TextInput, ModelMultipleChoiceField, ModelChoiceField, BooleanField, FileField, FileInput, IntegerField, ChoiceField, Select
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
@@ -27,6 +27,7 @@ class UserModelChoiceField(ModelChoiceField):
     def label_from_instance(self, obj):
         return obj.get_full_name()
 
+
 class UserModelMultipleChoiceField(ModelMultipleChoiceField):
     """
     Extend ModelMultipleChoiceField for users so that the choices are
@@ -42,6 +43,7 @@ class ApplicationForm(Form, CssClassMixin):
     reason = CharField(widget=Textarea(), required=False, label=_("Reason"))
     trivial_change = BooleanField(required=False, label=_("Trivial change"), help_text=_("Trivial changes don't create a new version."))
 
+
 class ApplicationManagerForm(ModelForm, CssClassMixin):
     users = User.objects.all().exclude(profile=None).order_by("first_name")
     submitter = UserModelChoiceField(queryset=users, label=_("Submitter"))
@@ -51,5 +53,47 @@ class ApplicationManagerForm(ModelForm, CssClassMixin):
         model = Application
         exclude = ('number', 'status', 'permitted', 'log')
 
+
 class ApplicationImportForm(Form, CssClassMixin):
     csvfile = FileField(widget=FileInput(attrs={'size':'50'}), label=_("CSV File"))
+
+
+class ConfigForm(Form, CssClassMixin):
+    application_min_supporters = IntegerField(
+        widget=TextInput(attrs={'class':'small-input'}),
+        label=_("Number of (minimum) required supporters for a application"),
+        initial=4,
+        min_value=0,
+        max_value=8,
+    )
+    application_preamble = CharField(
+        widget=TextInput(),
+        required=False,
+        label=_("Application preamble")
+    )
+    application_pdf_ballot_papers_selection = ChoiceField(
+        widget=Select(),
+        required=False,
+        label=_("Number of ballot papers (selection)"),
+        choices=[
+            ("1", _("Number of all delegates")),
+            ("2", _("Number of all participants")),
+            ("0", _("Use the following custum number")),
+        ]
+    )
+    application_pdf_ballot_papers_number = IntegerField(
+        widget=TextInput(attrs={'class':'small-input'}),
+        required=False,
+        min_value=1,
+        label=_("Custom number of ballot papers")
+    )
+    application_pdf_title = CharField(
+        widget=TextInput(),
+        required=False,
+        label=_("Title for PDF document (all applications)")
+    )
+    application_pdf_preamble = CharField(
+        widget=Textarea(),
+        required=False,
+        label=_("Preamble text for PDF document (all applications)")
+    )
