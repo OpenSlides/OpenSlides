@@ -4,11 +4,6 @@
 {% load i18n %}
 
 {% block submenu %}
-    {% url config_general as url_config_general %}
-    {% url config_agenda as url_config_agenda %}
-    {% url config_application as url_config_application %}
-    {% url config_assignment as url_config_assignment %}
-    {% url config_system as url_config_system %}
     <h4 class="sectiontitle">{%trans "Configuration" %}</h4>
     <ul>
         {% for menu_link in menu_links %}
