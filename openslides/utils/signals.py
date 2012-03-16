@@ -12,4 +12,4 @@
 
 from django.dispatch import Signal
 
-template_manipulation = Signal(providing_args=['context'])
+template_manipulation = Signal(providing_args=['request', 'context'])
