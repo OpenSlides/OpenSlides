@@ -29,7 +29,13 @@
             {% now "H:i" %}
         </div>
 
-        <div id="countdown">0:00</div>
+        <div id="messages">
+            <ul>
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+        </div>
 
         <div id="content">
         {% block content %}

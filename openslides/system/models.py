@@ -50,7 +50,7 @@ class Config(object):
     def load_config(self):
         self.config = {}
         for key, value in ConfigStore.objects.all().values_list():
-            self.config[key] = base64.decodestring(loads(str(value)))
+            self.config[key] = loads(base64.decodestring(str(value)))
 
     def __getitem__(self, key):
         try:

@@ -3,7 +3,7 @@
 {% load tags %}
 {% load i18n %}
 
-{% block title %}foasdfasdfafs {% endblock %}
+{% block title %}{{ block.super}} – {% trans 'Projector' %} {% endblock %}
 
 {% block submenu %}
     {% url item_overview as url_itemoverview %}

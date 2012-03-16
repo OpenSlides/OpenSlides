@@ -14,6 +14,7 @@ function presentation_reload() {
                 $('#content li').css({'font-size': data.bigger + '%'}, 200);
                 $('#content #sidebar').css({'font-size': '16px'}, 0);
                 $('#content').animate({'margin-top': data.up + 'em'}, 200);
+                /*TODO: messages neu schreiben*/
 
                 if (data.countdown_visible == true)
                     $('#countdown').slideDown();

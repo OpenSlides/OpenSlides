@@ -27,6 +27,7 @@ from system import config
 
 from api import get_active_slide, set_active_slide
 from projector import SLIDE
+from openslides.projector.signals import projector_messages
 
 
 class ControlView(TemplateView):
@@ -76,6 +77,11 @@ def active_slide(request):
         }
 
     data['ajax'] = 'on'
+    data['messages'] = []
+    for receiver, response in projector_messages.send(sender='active_slide'):
+        if response is not None:
+            data['messages'].append(response)
+
 
     if request.is_ajax():
         content = render_block_to_string(data['template'], 'content', data)
@@ -117,18 +123,19 @@ def projector_edit(request, direction):
     return redirect(reverse('projector_control'))
 
 
-@permission_required('agenda.can_manage_agenda')
+@permission_required('projector.can_manage_projector')
 def projector_countdown(request, command, time=60):
+    #todo: why is there the time argument?
     if command == 'show':
         config['countdown_visible'] = True
     elif command == 'hide':
         config['countdown_visible'] = False
     elif command == 'reset':
-        config['countdown_control'] = 'reset'
+        config['countdown_start'] = datetime.now()
     elif command == 'start':
-        config['countdown_control'] = 'start'
+        config['countdown_run'] = True
     elif command == 'stop':
-        config['countdown_control'] = 'stop'
+        config['countdown_run'] = False
 
     if request.is_ajax():
         if command == "show":

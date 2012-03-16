@@ -54,8 +54,8 @@
         <!-- countdown -->
         <input type="checkbox" name="countdown" onchange="document.location='{% if countdown_visible %}{% url countdown_close %}{% else %}{% url countdown_open %}{% endif %}'"{% if countdown_visible %} checked{% endif %}>
         {% trans "Countdown" %} (<a href="{% url config_agenda %}">{{countdown_time}}{% trans "sec" %}</a>)
-        {% if countdown_visible == "True" %}:
-            <a class="projector_countdown" href="{% url countdown_reset countdown_time %}" title="{% trans 'Reset countdown' %}">
+        {% if countdown_visible %}:
+            <a class="projector_countdown" href="{% url countdown_reset %}" title="{% trans 'Reset countdown' %}">
                 <img src="/static/images/icons/media-skip-backward.png" />
             </a>
             <a class="projector_countdown" href="{% url countdown_start %}" title="{% trans 'Start countdown' %}">

@@ -63,7 +63,7 @@ urlpatterns = patterns('projector.views',
     url(r'^countdown/hide/$', 'projector_countdown', {'command': 'hide'},
         name='countdown_close'),
 
-    url(r'^countdown/reset/(?P<time>\d+)/$', 'projector_countdown', {'command': 'reset'},
+    url(r'^countdown/reset/$', 'projector_countdown', {'command': 'reset'},
         name='countdown_reset'),
 
     url(r'^countdown/start/$', 'projector_countdown', {'command': 'start'},

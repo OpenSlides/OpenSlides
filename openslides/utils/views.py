@@ -60,7 +60,7 @@ class PermissionMixin(object):
 class TemplateView(_TemplateView, PermissionMixin):
     def get_context_data(self, **kwargs):
         context = super(TemplateView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self, context=context, blub=True)
+        template_manipulation.send(sender=self, context=context)
         return context
 
 

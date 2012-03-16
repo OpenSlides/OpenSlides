@@ -1,4 +1,11 @@
+from datetime import datetime
+
+from django.dispatch import receiver
+
 from system import config
+
+from openslides.projector.signals import projector_messages
+
 
 SLIDE = {}
 
@@ -58,3 +65,15 @@ class Slide(object):
 
     def get_items(self):
         return self.model.objects.all()
+
+
+@receiver(projector_messages, dispatch_uid="projector_countdown")
+def countdown(sender, **kwargs):
+    if config['countdown_visible']:
+        starttime = config['countdown_start']
+        if type(starttime) != type(datetime.now()):
+            config['countdown_start'] = datetime.now()
+            starttime = config['countdown_start']
+            #todo: return the time passt sinth starttime
+        return  datetime.now() - starttime
+    return None
