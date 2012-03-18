@@ -32,6 +32,7 @@ from openslides.projector.signals import projector_messages
 
 class ControlView(TemplateView):
     template_name = 'projector/control.html'
+    permission_required = 'projector.can_manage_projector'
 
     def get_context_data(self, **kwargs):
         context = super(ControlView, self).get_context_data(**kwargs)

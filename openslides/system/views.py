@@ -93,7 +93,7 @@ class Config(FormView):
 
 
 @receiver(template_manipulation, dispatch_uid="system_base_system")
-def set_submenu(sender, request, **kwargs):
+def set_submenu(sender, request, context, **kwargs):
     selected = True if request.path == reverse('config_general') else False
     menu_links = [
         (reverse('config_general'), _('General'), selected),
@@ -111,6 +111,6 @@ def set_submenu(sender, request, **kwargs):
             (reverse('config_%s' % appname), _(appname.title()), selected)
         )
 
-    kwargs['context'].update({
+    context.update({
         'menu_links': menu_links,
     })
