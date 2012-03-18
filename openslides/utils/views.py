@@ -14,7 +14,7 @@ from reportlab.lib.units import cm
 from django.conf import settings
 from django.contrib import messages
 from django.utils.translation import ugettext as _
-from django.http import HttpResponseServerError, HttpResponse
+from django.http import HttpResponseServerError, HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.template import loader, RequestContext
 from django.template.loader import render_to_string
@@ -25,7 +25,7 @@ from django.views.generic import (
     RedirectView as _RedirectView,
     UpdateView as _UpdateView,
     CreateView as _CreateView,
-    View,
+    View as _View,
     FormView as _FormView,
 )
 
@@ -37,6 +37,8 @@ from pdf import firstPage, laterPages
 
 FREE_TO_GO = 'free to go'
 
+
+View = _View
 
 class LoginMixin(object):
     @method_decorator(login_required)
@@ -53,23 +55,23 @@ class PermissionMixin(object):
         else:
             has_permission = request.user.has_perm(self.permission_required)
 
-        if has_permission:
-            if request.user.is_authenticated():
-                path = urlquote(request.get_full_path())
+        if not has_permission:
+            if not request.user.is_authenticated():
+                path = request.get_full_path()
                 return HttpResponseRedirect("%s?next=%s" % (settings.LOGIN_URL, path))
             else:
                 return render_to_forbitten(request)
-        return super(LoginMixin, self).dispatch(request, *args, **kwargs)
+        return _View.dispatch(self, request, *args, **kwargs)
 
 
-class TemplateView(_TemplateView, PermissionMixin):
+class TemplateView(PermissionMixin, _TemplateView):
     def get_context_data(self, **kwargs):
         context = super(TemplateView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self, context=context)
+        template_manipulation.send(sender=self, request=self.request, context=context)
         return context
 
 
-class RedirectView(_RedirectView, PermissionMixin):
+class RedirectView(PermissionMixin, _RedirectView):
     permanent = False
     allow_ajax = False
 
@@ -96,7 +98,7 @@ class RedirectView(_RedirectView, PermissionMixin):
         return {}
 
 
-class FormView(_FormView, PermissionMixin):
+class FormView(PermissionMixin, _FormView):
     def get_success_url(self):
         if not self.success_url:
             return ''
@@ -112,7 +114,7 @@ class FormView(_FormView, PermissionMixin):
         return super(FormView, self).form_invalid(form)
 
 
-class UpdateView(_UpdateView, PermissionMixin):
+class UpdateView(PermissionMixin, _UpdateView):
     def get_success_url(self):
         if 'apply' in self.request.POST:
             return ''
@@ -124,7 +126,7 @@ class UpdateView(_UpdateView, PermissionMixin):
         return context
 
 
-class CreateView(_CreateView, PermissionMixin):
+class CreateView(PermissionMixin, _CreateView):
     def get_success_url(self):
         if 'apply' in self.request.POST:
             return reverse('item_edit', args=[self.object.id])
@@ -137,7 +139,7 @@ class DeleteView(RedirectView, SingleObjectMixin):
         self.confirm_form(request, self.object)
 
 
-class PDFView(View, PermissionMixin):
+class PDFView(PermissionMixin, View):
     filename = 'No_Name'
 
     def render_to_response(self, filename):
