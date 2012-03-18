@@ -101,14 +101,14 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.admin',
     'mptt',
-    'system',
     'utils',
-    'projector',
     'poll',
+    'projector',
     'agenda',
-    'participant',
     'application',
     'assignment',
+    'participant',
+    'system',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

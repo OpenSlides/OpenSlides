@@ -75,5 +75,37 @@ class Config(object):
         c.save()
         self.config[key] = value
 
+from django.dispatch import receiver
+from django.core.urlresolvers import reverse
+from django.utils.importlib import import_module
+import settings
+
+from openslides.utils.signals import template_manipulation
+
+
+
+@receiver(template_manipulation, dispatch_uid="system_base_system")
+def set_submenu(sender, request, context, **kwargs):
+    selected = True if request.path == reverse('config_general') else False
+    menu_links = [
+        (reverse('config_general'), _('General'), selected),
+    ]
+    for app in settings.INSTALLED_APPS:
+        try:
+            mod = import_module(app + '.views')
+            mod.Config
+        except (ImportError, AttributeError):
+            continue
+
+        appname = mod.__name__.split('.')[0]
+        selected = True if reverse('config_%s' % appname) == request.path else False
+        menu_links.append(
+            (reverse('config_%s' % appname), _(appname.title()), selected)
+        )
+
+    context.update({
+        'menu_links': menu_links,
+    })
+
 
 

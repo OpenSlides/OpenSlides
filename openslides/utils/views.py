@@ -20,6 +20,7 @@ from django.template import loader, RequestContext
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.dispatch import receiver
 from django.views.generic import (
     TemplateView as _TemplateView,
     RedirectView as _RedirectView,
@@ -28,8 +29,9 @@ from django.views.generic import (
     View as _View,
     FormView as _FormView,
 )
-
 from django.views.generic.detail import SingleObjectMixin
+from django.utils.importlib import import_module
+import settings
 
 from utils import render_to_forbitten
 from openslides.utils.signals import template_manipulation
@@ -132,6 +134,11 @@ class CreateView(PermissionMixin, _CreateView):
             return reverse('item_edit', args=[self.object.id])
         return reverse(super(CreateView, self).get_success_url())
 
+    def get_context_data(self, **kwargs):
+        context = super(CreateView, self).get_context_data(**kwargs)
+        template_manipulation.send(sender=self, request=self.request, context=context)
+        return context
+
 
 class DeleteView(RedirectView, SingleObjectMixin):
     def pre_redirect(self, request, *args, **kwargs):
@@ -181,3 +188,21 @@ def server_error(request, template_name='500.html'):
     """
     t = loader.get_template("500.html") # You need to create a 500.html template.
     return HttpResponseServerError(render_to_string('500.html', context_instance=RequestContext(request)))
+
+
+@receiver(template_manipulation, dispatch_uid="send_register_tab")
+def send_register_tab(sender, request, context, **kwargs):
+    #del kwargs['signal']
+    #register_tab.send(sender='register', request=request, context=context, **kwargs)
+
+    tabs = []
+    for app in settings.INSTALLED_APPS:
+        try:
+            mod = import_module(app + '.views')
+            tabs.append(mod.register_tab(request))
+        except (ImportError, AttributeError):
+            continue
+
+    context.update({
+        'tabs': tabs,
+    })

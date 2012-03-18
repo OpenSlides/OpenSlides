@@ -52,4 +52,3 @@ class Profile(models.Model):
             ('can_see_participant', "Can see participant"),
             ('can_manage_participant', "Can manage participant"),
         )
-

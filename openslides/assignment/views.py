@@ -19,6 +19,7 @@ from django.utils.translation import ugettext as _
 from utils.utils import template, permission_required, gen_confirm_form, del_confirm_form, ajax_request
 from utils.pdf import print_assignment, print_assignment_poll
 from utils.views import FormView
+from utils.template import Tab
 
 from system import config
 
@@ -291,3 +292,13 @@ class Config(FormView):
         config['assignment_pdf_preamble'] = form.cleaned_data['assignment_pdf_preamble']
         messages.success(self.request, _('Election settings successfully saved.'))
         return super(Config, self).form_valid(form)
+
+
+def register_tab(request):
+    selected = True if request.path.startswith('/assignment/') else False
+    return Tab(
+        title=_('Elections'),
+        url=reverse('assignment_overview'),
+        permission=request.user.has_perm('assignment.can_see_assignment') or request.user.has_perm('assignment.can_nominate_other') or request.user.has_perm('assignment.can_nominate_self') or request.user.has_perm('assignment.can_manage_assignment'),
+        selected=selected,
+    )

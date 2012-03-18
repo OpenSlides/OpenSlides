@@ -25,7 +25,10 @@ from django.contrib import messages
 from django.contrib.auth.models import Permission
 from django.utils.translation import ugettext as _
 
+from openslides.utils.signals import template_manipulation
+
 from openslides import get_version
+
 
 def revision(request):
     return {'openslides_version': get_version()}
@@ -50,10 +53,13 @@ def render_response(req, *args, **kwargs):
 
 def template(template_name):
     def renderer(func):
-        def wrapper(request, *args, **kw):
-            output = func(request, *args, **kw)
+        def wrapper(request, *args, **kwargs):
+            output = func(request, *args, **kwargs)
             if not isinstance(output, dict):
                 return output
+            context = {}
+            template_manipulation.send(sender='utils_template', request=request, context=context)
+            output.update(context)
             response = render_to_response(template_name, output, context_instance=RequestContext(request))
             if 'cookie' in output:
                 response.set_cookie(output['cookie'][0], output['cookie'][1])

@@ -22,6 +22,7 @@ from utils.views import TemplateView, RedirectView
 from utils.utils import template, permission_required, \
                                    del_confirm_form, ajax_request
 from utils.template import render_block_to_string
+from utils.template import Tab
 
 from system import config
 
@@ -146,3 +147,14 @@ def projector_countdown(request, command, time=60):
         return ajax_request({'countdown_visible': config['countdown_visible'],
                              'link': link})
     return redirect(reverse('projector_control'))
+
+
+def register_tab(request):
+    selected = True if request.path.startswith('/projector/') else False
+    return Tab(
+        title=_('Projector'),
+        url=reverse('projector_control'),
+        permission=request.user.has_perm('projector.can_manag_projector'),
+        selected=selected,
+    )
+

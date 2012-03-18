@@ -19,6 +19,7 @@ from django.views.generic.detail import SingleObjectMixin
 
 from utils.pdf import stylesheet
 from utils.views import TemplateView, RedirectView, UpdateView, CreateView, DeleteView, PDFView, FormView
+from utils.template import Tab
 
 from system import config
 
@@ -47,7 +48,7 @@ class Overview(TemplateView):
     template_name = 'agenda/overview.html'
 
     def get_context_data(self, **kwargs):
-        context = super(TemplateView, self).get_context_data(**kwargs)
+        context = super(Overview, self).get_context_data(**kwargs)
         context.update({
             'items': Item.objects.all(),
             'overview': get_active_slide(only_sid=True) == 'agenda_show',
@@ -56,6 +57,7 @@ class Overview(TemplateView):
         return context
 
     def post(self, request, *args, **kwargs):
+        #todo: check for permission
         context = self.get_context_data(**kwargs)
         #todo: check for any erros in the forms befor saving the data
         for item in Item.objects.all():
@@ -209,3 +211,13 @@ class Config(FormView):
         config['agenda_countdown_time'] = form.cleaned_data['agenda_countdown_time']
         messages.success(self.request, _('Agenda settings successfully saved.'))
         return super(Config, self).form_valid(form)
+
+
+def register_tab(request):
+    selected = True if request.path.startswith('/agenda/') else False
+    return Tab(
+        title=_('Agenda'),
+        url=reverse('item_overview'),
+        permission=request.user.has_perm('agenda.can_see_agenda') or request.user.has_perm('agenda.can_manage_agenda'),
+        selected=selected,
+    )

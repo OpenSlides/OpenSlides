@@ -24,3 +24,4 @@ class ProjectorSlide(models.Model, SlideMixin):
         )
 
 register_slidemodel(ProjectorSlide, category=_('Projector'), model_name=_('Projector Slide'))
+

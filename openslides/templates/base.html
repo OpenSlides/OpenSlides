@@ -33,30 +33,13 @@
         <div id="mainmenu">
            {% block mainmenu %}
             <ul>
-                <li class="{% active request '/projector' %}">
-                    <a href="{% url projector_control %}" title="">{%trans "Projector" %}</a>
-                </li>
-                {% if perms.agenda.can_see_agenda or perms.agenda.can_manage_agenda %}
-                <li class="{% active request '/agenda' %}
-                           {% if request.path == '/'%}selected{% endif %}">
-                    <a href="{% url item_overview %}" title="">{%trans "Agenda" %}</a></li>
-                {% endif %}
-                {% if perms.application.can_see_application or perms.application.can_create_application or perms.application.can_support_application or perms.application.can_manage_application %}
-                <li class="{% active request '/application' %}">
-                    <a href="{% url application_overview %}" title="">{%trans "Applications" %}</a></li>
-                {% endif %}
-                {% if perms.assignment.can_see_assignment or perms.assignment.can_nominate_other or perms.assignment.can_nominate_self or perms.assignment.can_manage_assignment %}
-                <li  class="{% active request '/assignment' %}">
-                    <a href="{% url assignment_overview %}" title="">{%trans "Elections" %}</a></li>
-                {% endif %}
-                {% if perms.participant.can_see_participant or perms.participant.can_manage_participant %}
-                <li  class="{% active request '/participant' %}">
-                    <a href="{% url user_overview %}" title="">{%trans "Participants" %}</a></li>
-                {% endif %}
-                {% if perms.system.can_manage_system %}
-                <li  class="{% active request '/config' %}">
-                    <a href="{% url config_general %}" title="">{%trans "Configuration" %}</a></li>
-                {% endif %}
+                {% for tab in tabs %}
+                    {% if tab.permission %}
+                    <li{% if tab.selected%} class="selected"{% endif %}>
+                        <a href="{{ tab.url }}">{{ tab.title }}</a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
             </ul>
             {% endblock %}
         </div>

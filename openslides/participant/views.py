@@ -36,6 +36,7 @@ from participant.api import gen_username, gen_password
 from participant.forms import UserNewForm, UserEditForm, ProfileForm, UsersettingsForm, UserImportForm, GroupForm, AdminPasswordChangeForm
 from utils.utils import template, permission_required, gen_confirm_form
 from utils.pdf import print_userlist, print_passwords
+from utils.template import Tab
 from system import config
 
 from django.db.models import Avg, Max, Min, Count
@@ -373,3 +374,13 @@ def reset_password(request, user_id):
         gen_confirm_form(request, _('Do you really want to reset the password for <b>%s</b>?') % user,
                          reverse('user_reset_password', args=[user_id]))
     return redirect(reverse('user_edit', args=[user_id]))
+
+
+def register_tab(request):
+    selected = True if request.path.startswith('/participant/') else False
+    return Tab(
+        title=_('Participants'),
+        url=reverse('user_overview'),
+        permission=request.user.has_perm('participant.can_see_participant') or request.user.has_perm('participant.can_manage_participant'),
+        selected=selected,
+    )

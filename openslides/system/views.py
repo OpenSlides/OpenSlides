@@ -15,19 +15,16 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.contrib.auth.models import Group, Permission
 from django.utils.translation import ugettext as _
-from django.dispatch import receiver
 from django.template.loader import render_to_string
-from django.utils.importlib import import_module
 
 from utils.utils import template, permission_required
 from utils.views import FormView
+from utils.template import Tab
 
 from system.forms import SystemConfigForm, EventConfigForm
 
-from openslides.utils.signals import template_manipulation
-
 from system import config
-import settings
+
 
 
 class GeneralConfig(FormView):
@@ -92,25 +89,12 @@ class Config(FormView):
         return super(Config, self).form_valid(form)
 
 
-@receiver(template_manipulation, dispatch_uid="system_base_system")
-def set_submenu(sender, request, context, **kwargs):
-    selected = True if request.path == reverse('config_general') else False
-    menu_links = [
-        (reverse('config_general'), _('General'), selected),
-    ]
-    for app in settings.INSTALLED_APPS:
-        try:
-            mod = import_module(app + '.views')
-            mod.Config
-        except (ImportError, AttributeError):
-            continue
+def register_tab(request):
+    selected = True if request.path.startswith('/config/') else False
+    return Tab(
+        title=_('Configuration'),
+        url=reverse('config_general'),
+        permission=request.user.has_perm('system.can_manage_system'),
+        selected=selected,
+    )
 
-        appname = mod.__name__.split('.')[0]
-        selected = True if reverse('config_%s' % appname) == request.path else False
-        menu_links.append(
-            (reverse('config_%s' % appname), _(appname.title()), selected)
-        )
-
-    context.update({
-        'menu_links': menu_links,
-    })

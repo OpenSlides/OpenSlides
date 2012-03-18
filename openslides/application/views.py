@@ -43,6 +43,7 @@ from poll.views import PollFormView
 from utils.utils import template, permission_required, \
                                    render_to_forbitten, del_confirm_form, gen_confirm_form
 from utils.views import FormView
+from utils.template import Tab
 
 from utils.pdf import print_application, print_application_poll
 
@@ -611,3 +612,13 @@ class Config(FormView):
         config['application_pdf_preamble'] = form.cleaned_data['application_pdf_preamble']
         messages.success(self.request, _('Application settings successfully saved.'))
         return super(Config, self).form_valid(form)
+
+
+def register_tab(request):
+    selected = True if request.path.startswith('/application/') else False
+    return Tab(
+        title=_('Application'),
+        url=reverse('application_overview'),
+        permission=request.user.has_perm('application.can_see_application') or request.user.has_perm('application.can_support_application') or request.user.has_perm('application.can_support_application') or request.user.has_perm('application.can_manage_application'),
+        selected=selected,
+    )

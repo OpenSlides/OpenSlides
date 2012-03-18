@@ -146,3 +146,4 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
         CountVotesCast.append_pollform_fields(self, fields)
 
 #register_slidemodel(AssignmentPoll, category=_('Elections'))
+
