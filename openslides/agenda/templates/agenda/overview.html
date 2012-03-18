@@ -36,111 +36,60 @@
     {% endif %}
 {% endblock %}
 
+
 {% block content %}
     <h1>{% trans "Agenda" %}</h1>
     {% if items %}
         <form action="/agenda/" method="post">{% csrf_token %}
-        {% if perms.agenda.can_manage_agenda %}
+            {% if perms.agenda.can_manage_agenda %}
             <div id="changed-order-message" style="display:none" class="notification warning">
                 <em>{% trans "Do you want to save the changed order of agenda items?" %}<br>
                     <input type="submit" value="{% trans 'Yes' %}">
                     <input type="button" onclick="window.location.href='{% url item_overview %}';" value="{%trans 'No' %}">
                 </em>
             </div>
-        {% endif %}
+            {% endif %}
 
-        <table id="menu-overview" class="agendatable">
-            <tr>
-                {% if perms.agenda.can_manage_agenda %}
-                    <th style="width: 1px;">{% trans "Projector" %}</th>
-                {% else %}
-                    <th style="width: 1px;">{% trans "Done" %}</th>
-                {% endif %}
-                <th>{% trans "Item" %}</th>
-                <th style="width: 1px;">{% if perms.agenda.can_manage_agenda %}{% trans "Actions" %}{% endif %}</th>
-                {% if perms.agenda.can_manage_agenda %}
-                    <th class="tabledrag-hide">{% trans "Weight" %}</th>
-                {% endif %}
-            </tr>
-            <tr id="item_row_0" class="topline {% if overview %} activeline {% else %}{% if perms.agenda.can_manage_agenda %} inactiveline {% endif %}{% endif %}">
-                {% if perms.agenda.can_manage_agenda %}
-                    <td class="select">
-                        <a href="{% url item_activate 0 %}" class="activate_link">
-                            <div></div>
-                        </a>
-                    </td>
-                {% else %}
-                    <td></td>
-                {% endif %}
-                <td>
-                    <b>{% trans "Agenda" %} ({{ items|length }} {% trans "items" %}<span id="hiddencount"></span>)</b>
-                </td>
-                <td>
-                    <span id="action_field" style="width: 1px;white-space: nowrap;">
-                        <span></span>
-                        <a href="{% url print_agenda %}" title="{%trans 'Print agenda' %}"><img src="/static/images/icons/application-pdf.png"></a>
-                    </span>
-                </td>
-            </tr>
-            {% for item in items %}
-                <tr id="item_row_{{ item.id }}" class="draggable{% cycle ' odd' '' %}
-                {% if item.active %} activeline{% else %}
-                {% if perms.agenda.can_manage_agenda %} inactiveline{% endif %}
-                {% endif %}">
-                {% if perms.agenda.can_manage_agenda %}
-                    <td class="select">
-                        <a id="activate_link_{{ item.id }}" class="activate_link" href="{% url item_activate item.id %}">
-                            <div></div>
-                        </a>
-                    </td>
-                {% else %}
-                    <td>
-                        {% if item.closed %}
-                            <img src="/static/images/icons/task-complete.png" title="{% trans 'Item closed' %}">
-                        {% endif %}
-                    </td>
-                {% endif %}
-                <td>
-                    {% for p in item.get_ancestors %}
-                        <div class="indentation">&nbsp;</div>
-                    {% endfor %}
-
+            <table id="menu-overview" class="agendatable">
+                <tr>
                     {% if perms.agenda.can_manage_agenda %}
-                        <div class="dragcell"></div>
+                        <th style="width: 1px;">{% trans "Projector" %}</th>
+                    {% else %}
+                        <th style="width: 1px;">{% trans "Done" %}</th>
                     {% endif %}
-
-                    {{ item }}
-
-                </td>
-                <td>
-                    <span style="width: 1px;white-space: nowrap;">
-                        <a href="{{ item.get_absolute_url }}"><img src="/static/images/icons/document-preview.png" title="{% trans 'Show projector preview' %}"></a>
-
-                        {% if perms.agenda.can_manage_agenda %}
-                            <a href="{% url item_edit item.id %}"><img src="/static/images/icons/document-edit.png" title="{% trans 'Edit item' %}"></a>
-                            <a href="{% url item_delete item.id %}"><img src="/static/images/icons/edit-delete.png" title="{% trans 'Delete item' %}"></a>
-                            <a class="close_link {% if item.closed %}closed{% else %}open{% endif %}" href="{% if item.closed %}{% url item_open item.id %}{% else %}{% url item_close item.id %}{% endif %}">
-                                <span></span>
-                            </a>
-
-                            {% if item.children.exists %}
-                                <a href="{% url item_activate_summary item.id %}"><img src="/static/images/icons/view-list-tree.png" title="{% trans 'Select item overview' %}"></a>
-                            {% endif %}
-                        {% endif %}
-                    </span>
-                </td>
-                {% if perms.agenda.can_manage_agenda %}
-                <td class="tabledrag-hide">
-                    {% with form=item.weight_form %}
-                        {{ form.weight }}
-                        {{ form.self }}
-                        {{ form.parent }}
-                    {% endwith %}
-                </td>
-                {% endif %}
+                    <th>{% trans "Item" %}</th>
+                    <th style="width: 1px;">{% if perms.agenda.can_manage_agenda %}{% trans "Actions" %}{% endif %}</th>
+                    {% if perms.agenda.can_manage_agenda %}
+                        <th class="tabledrag-hide">{% trans "Weight" %}</th>
+                    {% endif %}
                 </tr>
-            {% endfor %}
-        </table>
+                <tr id="item_row_0" class="topline{% if overview %} activeline{% else %}{% if perms.agenda.can_manage_agenda %} inactiveline {% endif %}{% endif %}">
+                    {% if perms.agenda.can_manage_agenda %}
+                        <td class="select">
+                            <a href="{% url item_activate 0 %}" class="activate_link">
+                                <div></div>
+                            </a>
+                        </td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                    <td>
+                        <b>{% trans "Agenda" %} ({{ items|length }} {% trans "items" %}<span id="hiddencount"></span>)</b>
+                    </td>
+                    <td>
+                        <span id="action_field" style="width: 1px;white-space: nowrap;">
+                            <span></span>
+                        </span>
+                        <a href="{% url print_agenda %}" title="{%trans 'Print agenda' %}" class="pdficon">
+                            <span></span>
+                        </a>
+                    </td>
+                </tr>
+
+                {% for item in items %}
+                    {% include "agenda/item_row.html" %}
+                {% endfor %}
+            </table>
         </form>
     {% else %}
         <i>{% trans "No items available." %}</i>

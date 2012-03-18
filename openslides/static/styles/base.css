@@ -477,8 +477,8 @@ ul.results {
 
 /* Misc */
 #sidebar {
-    width: 250px; 
-    float: right; 
+    width: 250px;
+    float: right;
     margin:50px 0 20px 10px;
 }
 .box {
@@ -553,3 +553,11 @@ ul.results {
     border-color: #A2B4EE;
     color: #585B66;
 }
+
+.pdficon span {
+    background-image: url("/static/images/icons/application-pdf.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
