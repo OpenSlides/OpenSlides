@@ -617,7 +617,7 @@ class Config(FormView):
 def register_tab(request):
     selected = True if request.path.startswith('/application/') else False
     return Tab(
-        title=_('Application'),
+        title=_('Applications'),
         url=reverse('application_overview'),
         permission=request.user.has_perm('application.can_see_application') or request.user.has_perm('application.can_support_application') or request.user.has_perm('application.can_support_application') or request.user.has_perm('application.can_manage_application'),
         selected=selected,
