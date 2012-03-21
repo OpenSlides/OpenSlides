@@ -93,13 +93,21 @@
             <div class="portlet-content">
             {% for slide in slides %}
                 {% if slide.model_slide %}
-                    <ul>
+                    <ul style="line-height: 180%">
                     {% for item in slide.get_items %}
-                        <li><a href="{% url projector_activate_slide item.sid %}">{{ item }}</a></li>
+                        <li><a href="{% url projector_activate_slide item.sid %}" 
+                        {% if item.active %}
+                            class="inactivate_link"
+                        {% else %}
+                            class="activate_link"
+                        {% endif %}
+                        ><div></div></a>{{ item }}</li>
                     {% endfor %}
                     </ul>
                 {% else %}
-                    # <a href="{% url projector_activate_slide slide.key %}">{{ slide.key }}</a>
+                    <a href="{% url projector_activate_slide slide.key %}"
+                            class="activate_link"
+                    ><div></div></a>{{ slide.key }}
                 {% endif %}
             {% endfor %}
             </div>
@@ -110,10 +118,12 @@
     <div class="column">
         <div class="portlet">
             <div class="portlet-header">
-                {% trans "Live View" %}
+                {% trans "Projector Live View" %}
             </div>
             <div class="portlet-content">
-                <iframe src="{% url projector_show %}" width="100%" style="zoom:15%;"></iframe>
+                <div id="iframewrapper">
+                <iframe id="iframe" src="{% url projector_show %}"></iframe>
+                </div>
             </div>
         </div>
         <div class="portlet">
