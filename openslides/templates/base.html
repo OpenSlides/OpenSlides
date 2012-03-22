@@ -22,7 +22,7 @@
             <ul>
             {% if user.is_authenticated %}
                 <li>|<a href="{% url user_logout %}">{%trans "Logout" %}</a></li>
-                <li>|<a href="{% url user_settings %}">{%trans "Usersettings" %}</a></li>
+                <li>|<a href="{% url user_settings %}">{%trans "User Settings" %}</a></li>
                 <li>{%trans "Welcome" %}, <strong>{{ user.username }}</strong></li>
             {% else %}
                 <li><a href="{% url user_login %}">{%trans "Login" %}</a></li>
