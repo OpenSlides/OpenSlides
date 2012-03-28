@@ -28,13 +28,11 @@ from agenda.api import get_active_item, is_summary, children_list, \
                                   del_confirm_form_for_items
 from agenda.models import Item
 
-from beamer.api import assignment_votes, assignment_polls
-
 
 @permission_required('agenda.can_see_projector')
 def beamer(request):
     """
-    Shows the active Slide.
+    Shows a active Slide.
     """
     data = {'ajax': 'on'}
     template = ''
