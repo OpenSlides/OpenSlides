@@ -7,8 +7,6 @@ def get_element_from_eid(eid):
         model, id = eid.split()
     except ValueError:
         return None # We need a elementError hier
-    except AttributeError:
-        return None
     return ELEMENT[model].objects.get(pk=id)
 
 

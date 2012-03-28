@@ -2,7 +2,25 @@
 {% block title %}{{ block.super }} - {%trans "Item" %}{% endblock %}
 
 {% block content %}
-    <h1>{%trans "Edit item" %}</h1>
+    {% if item %}
+        <h1>{%trans "Edit item" %}</h1>
+    {% else %}
+        <h1>{%trans "New item" %}</h1>
+
+        <p>{%trans "Choose item type:" %}</p>
+        <p>
+        <a href="{% url item_new 'ItemText' %}"
+          {% ifequal request.path '/agenda/new/ItemText/' %}style='font-size:15px; font-weight:bold;'{% endifequal %}
+          >{%trans "Item of Text" %}</a> |
+        <a href="{% url item_new 'ItemApplication' %}"
+          {% ifequal request.path '/agenda/new/ItemApplication/' %}style='font-size:15px; font-weight:bold;'{% endifequal %}
+          >{%trans "Item of Application" %}</a> |
+        <a href="{% url item_new 'ItemAssignment' %}"
+          {% ifequal request.path '/agenda/new/ItemAssignment/' %}style='font-size:15px; font-weight:bold;'{% endifequal %}
+          >{%trans "Item of Election" %}</a>
+        </p>
+    {% endif %}
+
     <form action="" method="post">{% csrf_token %}
         {{ form.as_p }}
         <button class="button" type="submit">

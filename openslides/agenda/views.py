@@ -128,13 +128,13 @@ def set_closed(request, item_id, closed=True):
 
 @permission_required('agenda.can_manage_agenda')
 @template('agenda/edit.html')
-def edit(request, item_id=None):
+def edit(request, item_id=None, form='ItemText', default=None):
     """
     Show a form to edit an existing Item, or create a new one.
     """
     if item_id is not None:
         try:
-            item = Item.objects.get(pk=item_id)
+            item = Item.objects.get(id=item_id).cast()
         except Item.DoesNotExist:
             messages.error(request, _('Item ID %d does not exist.') % int(item_id))
             return redirect(reverse('item_overview'))
@@ -142,14 +142,21 @@ def edit(request, item_id=None):
         item = None
 
     if request.method == 'POST':
-        form = ItemFormText(request.POST, instance=item)
+        if item_id is None:
+            form = MODELFORM[form](request.POST)
+        else:
+            form = item.edit_form(request.POST)
 
         if form.is_valid():
             item = form.save()
             if item_id is None:
                 messages.success(request, _('New item was successfully created.'))
+                if "application" in request.POST:
+                    item.application.writelog(_('Agenda item created'), request.user)
             else:
                 messages.success(request, _('Item was successfully modified.'))
+                if "application" in request.POST:
+                    item.application.writelog(_('Agenda item modified'), request.user)
             if not 'apply' in request.POST:
                 return redirect(reverse('item_overview'))
             if item_id is None:
@@ -157,7 +164,7 @@ def edit(request, item_id=None):
         else:
             messages.error(request, _('Please check the form for errors.'))
     else:
-        form = ItemFormText(instance=item)
+        form = ItemFormText()
     return { 'form': form,
              'item': item }
 
