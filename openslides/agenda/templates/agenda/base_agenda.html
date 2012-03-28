@@ -11,7 +11,7 @@
         <li class="{% active request '/agenda/new/' %}"><a href="{% url item_new 'ItemText' %}">{%trans "New item" %}</a></li>
         {% endif %}
         {% if perms.agenda.can_see_projector %}
-        <li><a href="{% url beamer_show %}"><img src="/static/images/icons/video-projector.png"> {%trans 'Projector view' %}</a></li>
+        <li><a href="{% url item_beamer %}"><img src="/static/images/icons/video-projector.png"> {%trans 'Projector view' %}</a></li>
         {% endif %}
     </ul>
 {% endblock %}

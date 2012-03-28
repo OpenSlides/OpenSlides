@@ -2,7 +2,7 @@ function presentation_reload() {
     if ($('#config > #ajax').html() == 'on') {
         $.ajax({
             type: 'GET',
-            url: '/beamer',
+            url: '/beamer/',
             dataType: 'json',
             data: '',
             success: function(data) {
@@ -51,7 +51,7 @@ $(document).ready(function() {
     presentation_reload();
 });
 
-// *** Countdown variables and functions ***
+// *** Countdown variables and functions *** 
 var timer_value;
 var timer_is_running=false;
 var timer_is_visible=false;

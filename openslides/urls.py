@@ -24,7 +24,6 @@ urlpatterns = patterns('',
     (r'', include('openslides.participant.urls')),
     (r'', include('openslides.assignment.urls')),
     (r'', include('openslides.system.urls')),
-    (r'beamer', include('beamer.urls')),
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',  {'document_root': settings.STATIC_DOC_ROOT}),
     (r'^i18n/', include('django.conf.urls.i18n')),
 )
