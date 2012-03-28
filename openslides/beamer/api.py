@@ -1,35 +1,3 @@
-from system.api import config_set, config_get
-from beamer.models import ELEMENT
-
-
-def get_element_from_eid(eid):
-    try:
-        model, id = eid.split()
-    except ValueError:
-        return None # We need a elementError hier
-    return ELEMENT[model].objects.get(pk=id)
-
-
-def get_active_element(only_eid=False):
-    """
-    Returns the active element. If no element is active, or it can not find an Item,
-    it raise Element.DoesNotExist
-
-    if only_id is True, returns only the id of this item. Returns None if not Item
-    is active. Does not Raise Item.DoesNotExist
-    """
-    from beamer.models import Element
-    eid = config_get("presentation", None)
-
-    if only_eid:
-        return eid
-    return get_element_from_eid(eid)
-
-
-def element_register(prefix, model):
-    ELEMENT[prefix] = model
-
-
 def assignment_votes(item):
     votes = []
     if item.type == "ItemAssignment":

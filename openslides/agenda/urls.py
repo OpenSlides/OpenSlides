@@ -40,8 +40,13 @@ urlpatterns = patterns('agenda.views',
     url(r'^agenda/new/$', 'edit',
         name='item_new_default'),
 
-    url(r'^agenda/new$', 'edit',
+    url(r'^agenda/new/(?P<form>ItemText|ItemApplication|ItemPoll|'
+                           r'ItemAssignment)/$', 'edit',
         name='item_new'),
+
+    url(r'^agenda/new/(?P<form>ItemText|ItemApplication|ItemPoll|'
+                           r'ItemAssignment)/(?P<default>\d+)/$', 'edit',
+        name='item_new_default'),
 
     url(r'^agenda/(?P<item_id>\d+)/del/$', 'delete',
         name='item_delete'),

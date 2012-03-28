@@ -17,19 +17,18 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 
-from beamer.api import get_active_element
-from agenda.models import Item
-from agenda.api import is_summary, children_list, \
+from openslides.agenda.models import Item
+from openslides.agenda.api import get_active_item, is_summary, children_list, \
                                   del_confirm_form_for_items
-from agenda.forms import ElementOrderForm, ItemFormText
-from application.models import Application
-from assignment.models import Assignment
-from poll.models import Poll
-from system.api import config_set, config_get
-from utils.template import render_block_to_string
-from utils.utils import template, permission_required, \
+from openslides.agenda.forms import ElementOrderForm, MODELFORM
+from openslides.application.models import Application
+from openslides.assignment.models import Assignment
+from openslides.poll.models import Poll
+from openslides.system.api import config_set, config_get
+from openslides.utils.template import render_block_to_string
+from openslides.utils.utils import template, permission_required, \
                                    del_confirm_form, ajax_request
-from utils.pdf import print_agenda
+from openslides.utils.pdf import print_agenda
 from poll.models import Poll, Option
 
 def view(request, item_id):
@@ -70,7 +69,7 @@ def overview(request):
     items = children_list(Item.objects.filter(parent=None).exclude(hidden=True).order_by('weight'))
     items_hidden = children_list(Item.objects.filter(parent=None).exclude(hidden=False).order_by('weight'))
     try:
-        overview = is_summary() and not get_active_element()
+        overview = is_summary() and not get_active_item()
     except Item.DoesNotExist:
         overview = True
     return {
@@ -164,7 +163,25 @@ def edit(request, item_id=None, form='ItemText', default=None):
         else:
             messages.error(request, _('Please check the form for errors.'))
     else:
-        form = ItemFormText()
+        initial = {}
+        if default:
+            if form == "ItemAssignment":
+                assignment = Assignment.objects.get(pk=default)
+                initial = {
+                    'assignment': assignment,
+                    'title': assignment.name,
+                }
+            elif form == "ItemApplication":
+                application = Application.objects.get(pk=default)
+                initial = {
+                    'application': application,
+                    'title': application.title,
+                }
+
+        if item_id is None:
+            form = MODELFORM[form](initial=initial)
+        else:
+            form = item.edit_form()
     return { 'form': form,
              'item': item }
 

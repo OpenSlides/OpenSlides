@@ -18,45 +18,40 @@ except ImportError:
 from django.db import models
 from django.utils.translation import ugettext as _
 
-from beamer.models import Element
-from beamer.api import element_register
-from system.api import config_set
-from application.models import Application
-from poll.models import Poll
-from assignment.models import Assignment
+from model_utils.models import InheritanceCastModel
+
+from openslides.agenda.api import get_active_item
+from openslides.system.api import config_set
+from openslides.application.models import Application
+from openslides.poll.models import Poll
+from openslides.assignment.models import Assignment
 
 
-class Item(models.Model, Element):
+class Item(InheritanceCastModel):
     """
-    An Agenda Item
+    The BasisItem.
+    Has all the attributes all Items need.
     """
     title = models.CharField(max_length=100, verbose_name=_("Title"))
-    text = models.TextField(null=True, blank=True, verbose_name=_("Text"))
-    transcript = models.TextField(null=True, blank=True, verbose_name=_("Transcript"))
     closed = models.BooleanField(default=False, verbose_name=_("Closed"))
     weight = models.IntegerField(default=0, verbose_name=_("Weight"))
     parent = models.ForeignKey('self', blank=True, null=True)
     hidden = models.BooleanField(default=False,
                                      verbose_name=_("Hidden (visible for agenda manager only)"))
-    prefix = 'item'
 
-
-    def beamer(self):
+    @property
+    def active(self):
         """
-        Return a map with all Data for the Beamer
+        Return True, if the the item is the active one.
         """
-        return {
-            'item': self,
-            'title': self.title,
-            'template': 'beamer/AgendaText.html',
-        }
+        return True if get_active_item(only_id=True) == self.id else False
 
     @property
     def active_parent(self):
         """
         Return True if the item has a activ parent
         """
-        if get_active_element(only_id=True) in \
+        if get_active_item(only_id=True) in \
         [parent.id for parent in self.parents]:
             return True
         return False
@@ -65,7 +60,7 @@ class Item(models.Model, Element):
         """
         Appoint this item as the active one.
         """
-        Element.set_active(self)
+        config_set("presentation", self.id)
         if summary:
             config_set("summary", True)
         else:
@@ -187,8 +182,32 @@ class Item(models.Model, Element):
         )
 
 
-ItemText = Item # ItemText is Depricated
+class ItemText(Item):
+    """
+    An Item with a TextField.
+    """
+    text = models.TextField(null=True, blank=True, verbose_name=_("Text"))
+
+    class Meta:
+        pass
 
 
+class ItemApplication(Item):
+    """
+    An Item which is connected to an application.
+    """
+    application = models.ForeignKey(Application, verbose_name=_("Application"))
 
-element_register(Item.prefix, Item)
+
+class ItemAssignment(Item):
+    """
+    An Item which is connected to an assignment.
+    """
+    assignment = models.ForeignKey(Assignment, verbose_name=_("Election"))
+
+
+class ItemPoll(Item):
+    """
+    An Item which is connected to a poll
+    """
+    poll = models.ForeignKey(Poll, verbose_name=_("Poll"))
