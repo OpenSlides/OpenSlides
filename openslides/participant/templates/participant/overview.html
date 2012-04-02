@@ -4,6 +4,13 @@
 
 {% block title %}{{ block.super }} - {%trans "Participants" %}{% endblock %}
 
+{% block header %}
+    {% if perms.agenda.can_manage_agenda %}
+    <link type="text/css" rel="stylesheet" media="all" href="/static/styles/participant.css" />
+    <script type="text/javascript" src="/static/javascript/participant.js"></script>
+    {% endif %}
+{% endblock %}
+
 {% block content %}
     <h1>{% trans "Participants" %}</h1>
 
@@ -76,16 +83,16 @@
             <td><span style="width: 1px; white-space: nowrap;">
                 <a href="{% url user_edit user.id %}"><img src="/static/images/icons/document-edit.png" title="{%trans 'Edit participant' %}"></a>
                 <a href="{% url user_delete user.id %}"><img src="/static/images/icons/edit-delete.png" title="{%trans 'Delete participant' %}"></a>
-                {% if user.is_active %}
-                <a href="{% url user_set_active user.id %}"><img src="/static/images/icons/user-online.png" title="{%trans 'Participiant is activated. Click to deactivate!' %}"></a>
-                {% else %}
-                <a href="{% url user_set_active user.id %}"><img src="/static/images/icons/user-offline.png" title="{%trans 'Participiant is deactivated. Click to activate!' %}"></a>
-                {% endif %}
-                {% if user.is_superuser %}
-                <a href="{% url user_set_superuser user.id %}"><img src="/static/images/icons/meeting-chair.png" title="{%trans 'Administrator. Click to get normal user!' %}"></a>
-                {% else %}
-                <a href="{% url user_set_superuser user.id %}"><img src="/static/images/icons/im-user.png" title="{%trans 'Normal user. Click to get administrator!' %}"></a>
-                {% endif %}
+                <a class="status_link {% if user.is_active %}active{% else %}inactive{% endif %}"
+                    href="{% if user.is_active %}{% url user_inactive user.id %}{% else %}{% url user_active user.id %}{% endif %}"
+                    title="{%trans 'Change status (active/inactive)' %}">
+                    <span></span>
+                </a>
+                <a class="superuser_link {% if user.is_superuser %}superuser{% else %}normaluser{% endif %}"
+                    href="{% if user.is_superuser %}{% url user_normaluser user.id %}{% else %}{% url user_superuser user.id %}{% endif %}"
+                    title="{%trans 'Change administrator rights (Superuser/Normal user)' %}">
+                    <span></span>
+                </a>
                 </span>
             </td>
             {% endif %}

@@ -1,0 +1,33 @@
+a.status_link.active span {
+    background-image: url(/static/images/icons/user-online.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+}
+a.status_link.inactive span {
+    background-image: url(/static/images/icons/user-offline.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+}
+
+a.superuser_link.superuser span {
+    background-image: url(/static/images/icons/meeting-chair.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+}
+a.superuser_link.normaluser span {
+    background-image: url(/static/images/icons/im-user.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+}

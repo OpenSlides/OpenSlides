@@ -34,7 +34,7 @@ from django.db import transaction
 from participant.models import Profile
 from participant.api import gen_username, gen_password
 from participant.forms import UserNewForm, UserEditForm, ProfileForm, UsersettingsForm, UserImportForm, GroupForm, AdminPasswordChangeForm
-from utils.utils import template, permission_required, gen_confirm_form
+from utils.utils import template, permission_required, gen_confirm_form, ajax_request
 from utils.pdf import print_userlist, print_passwords
 from utils.template import Tab
 from system import config
@@ -177,30 +177,40 @@ def user_delete(request, user_id):
 
 @permission_required('participant.can_manage_participant')
 @template('confirm.html')
-def user_set_superuser(request, user_id):
-    user = User.objects.get(pk=user_id)
-    if user.is_superuser:
-        user.is_superuser = False
+def user_set_superuser(request, user_id, superuser=True):
+    try:
+        user = User.objects.get(pk=user_id)
+        user.is_superuser = superuser
         user.save()
-        messages.success(request, _('Participant <b>%s</b> is now a normal user.') % user)
-    else:
-        user.is_superuser = True
-        user.save()
-        messages.success(request, _('Participant <b>%s</b> is now administrator.') % user)
+    except User.DoesNotExist:
+        messages.error(request, _('Participant %d does not exist.') % int(user_id))
+
+    if request.is_ajax():
+        if superuser:
+            link = reverse('user_normaluser', args=[user.id])
+        else:
+            link = reverse('user_superuser', args=[user.id])
+        return ajax_request({'superuser': superuser,
+                             'link': link})
     return redirect(reverse('user_overview'))
 
 @permission_required('participant.can_manage_participant')
 @template('confirm.html')
-def user_set_active(request, user_id):
-    user = User.objects.get(pk=user_id)
-    if user.is_active:
-        user.is_active = False
+def user_set_active(request, user_id, active=True):
+    try:
+        user = User.objects.get(pk=user_id)
+        user.is_active = active
         user.save()
-        messages.success(request, _('Participant <b>%s</b> was successfully deactivated.') % user)
-    else:
-        user.is_active = True
-        user.save()
-        messages.success(request, _('Participant <b>%s</b> was successfully activated.') % user)
+    except User.DoesNotExist:
+        messages.error(request, _('Participant %d does not exist.') % int(user_id))
+
+    if request.is_ajax():
+        if active:
+            link = reverse('user_inactive', args=[user.id])
+        else:
+            link = reverse('user_active', args=[user.id])
+        return ajax_request({'active': active,
+                             'link': link})
     return redirect(reverse('user_overview'))
 
 @permission_required('participant.can_manage_participant')
