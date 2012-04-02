@@ -61,7 +61,7 @@
         {% with vote|first as candidate %}
         <td class="candidate {% if candidate.1 %}elected{% endif %}">
             {% if candidate.1 %}
-                <a class="elected"><img src="/static/images/icons/games-highscores.png" title="{% trans 'Candidate is elected' %}"></a>
+                <a class="elected"><img src="/static/images/icons/voting-yes.png" title="{% trans 'Candidate is elected' %}"></a>
             {% endif %}
             {{ candidate.0 }}
         </td>
