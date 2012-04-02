@@ -52,7 +52,11 @@
         </select>
         </form>
     </p>
-    {{ users|length }} {% trans "Participant" %}
+    {% if users|length == allusers|length %}
+        {{ users|length }} {% trans "Participants" %}
+    {% else %}
+        {{ users|length }} {% trans "of" %} {{ allusers|length }} {% trans "Participants" %} (= {{ percent }} %)
+    {% endif %}
     <table>
         <tr>
             <th><a href="?sort=first_name&reverse={% if 'first_name' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{%trans "First Name" %}</a></th>

@@ -92,6 +92,7 @@ def get_overview(request):
     if 'reverse' in sortfilter:
         query = query.reverse()
 
+    # list of filtered users (with profile)
     userlist = query.all()
     users = []
     for user in userlist:
@@ -100,10 +101,27 @@ def get_overview(request):
             users.append(user)
         except Profile.DoesNotExist:
             pass
+    # list of all existing users (with profile)
+    allusers = []
+    for user in User.objects.all():
+        try:
+            user.get_profile()
+            allusers.append(user)
+        except Profile.DoesNotExist:
+            pass
+    # quotient of selected users and all users
+    if len(allusers) > 0:
+        percent = float(len(users)) * 100 / float(len(allusers))
+    else:
+        percent = 0
+    # list of all existing groups
     groups = [p['group'] for p in Profile.objects.values('group').exclude(group='').distinct()]
+    # list of all existing committees
     committees = [p['committee'] for p in Profile.objects.values('committee').exclude(committee='').distinct()]
     return {
         'users': users,
+        'allusers': allusers,
+        'percent': round(percent, 1),
         'groups': groups,
         'committees': committees,
         'cookie': ['participant_sortfilter', urlencode(decodedict(sortfilter), doseq=True)],
