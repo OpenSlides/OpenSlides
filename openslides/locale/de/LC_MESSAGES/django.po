@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-22 17:10+0100\n"
+"POT-Creation-Date: 2012-04-02 08:40+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -107,8 +107,8 @@ msgstr "Nein"
 msgid "Yes, with all child items."
 msgstr "Ja, mit allen Kindelementen."
 
-#: agenda/views.py:183 agenda/views.py:185 participant/views.py:173
-#: participant/views.py:276 utils/utils.py:46
+#: agenda/views.py:183 agenda/views.py:185 participant/views.py:193
+#: participant/views.py:306 utils/utils.py:46
 #, python-format
 msgid "Do you really want to delete <b>%s</b>?"
 msgstr "Soll <b>%s</b> wirklich gelöscht werden?"
@@ -164,7 +164,7 @@ msgstr "Speichern"
 #: assignment/templates/assignment/poll_view.html:60
 #: participant/templates/participant/edit.html:28
 #: participant/templates/participant/group_edit.html:24
-#: participant/templates/participant/import.html:19
+#: participant/templates/participant/import.html:21
 #: participant/templates/participant/settings.html:22
 #: projector/templates/projector/new.html:20
 #: system/templates/system/general.html:17
@@ -227,7 +227,7 @@ msgstr "Erledigt"
 
 #: agenda/templates/agenda/overview.html:61
 #: assignment/templates/assignment/overview.html:29
-#: participant/templates/participant/overview.html:55
+#: participant/templates/participant/overview.html:70
 msgid "Actions"
 msgstr "Aktionen"
 
@@ -441,8 +441,8 @@ msgid "Application was successfully modified."
 msgstr "Antrag wurde erfolgreich geändert."
 
 #: application/views.py:192 application/views.py:581 assignment/views.py:123
-#: participant/views.py:150 participant/views.py:261 participant/views.py:290
-#: participant/views.py:358 system/views.py:54 utils/views.py:115
+#: participant/views.py:170 participant/views.py:291 participant/views.py:320
+#: participant/views.py:390 system/views.py:54 utils/views.py:115
 msgid "Please check the form for errors."
 msgstr "Bitte kontrollieren Sie das Formular nach Fehlern."
 
@@ -545,7 +545,7 @@ msgstr "FEHLER beim Zurückweisen der Version."
 msgid "Do you really want to reject version <b>%s</b>?"
 msgstr "Soll Version <b>%s</b> wirklich zurückgewiesen werden?"
 
-#: application/views.py:487 participant/views.py:306
+#: application/views.py:487 participant/views.py:336
 msgid ""
 "The import function is available for the superuser (without user profile) "
 "only."
@@ -579,7 +579,7 @@ msgid_plural "%d new users were added."
 msgstr[0] "%d neuer Nutzer wurde erstellt."
 msgstr[1] "%d neue Nutzer wurden erstellt."
 
-#: application/views.py:579 participant/views.py:356
+#: application/views.py:579 participant/views.py:388
 msgid "Import aborted because of severe errors in the input file."
 msgstr "Import auf Grund von schweren Fehlern in der Quelldatei abgebrochen."
 
@@ -656,13 +656,13 @@ msgstr ""
 "sind optional und können auch leer sein)"
 
 #: application/templates/application/import.html:15
-#: participant/templates/participant/import.html:15
+#: participant/templates/participant/import.html:17
 msgid "Import"
 msgstr "Importieren"
 
 #: application/templates/application/overview.html:11
 #: assignment/templates/assignment/overview.html:12
-#: participant/templates/participant/overview.html:12
+#: participant/templates/participant/overview.html:19
 msgid "Filter"
 msgstr "Filter"
 
@@ -681,7 +681,8 @@ msgstr "Ohne Nummer"
 #: assignment/templates/assignment/overview.html:14
 #: assignment/templates/assignment/overview.html:27
 #: assignment/templates/assignment/view.html:12
-#: assignment/templates/projector/Assignment.html:17 utils/pdf.py:338
+#: assignment/templates/projector/Assignment.html:17
+#: participant/templates/participant/overview.html:49 utils/pdf.py:338
 msgid "Status"
 msgstr "Status"
 
@@ -1269,36 +1270,36 @@ msgstr "Vorname"
 msgid "Last name"
 msgstr "Nachname"
 
-#: participant/models.py:22 participant/templates/participant/overview.html:15
+#: participant/models.py:22 participant/templates/participant/overview.html:22
 msgid "Male"
 msgstr "Männlich"
 
-#: participant/models.py:23 participant/templates/participant/overview.html:16
+#: participant/models.py:23 participant/templates/participant/overview.html:23
 msgid "Female"
 msgstr "Weiblich"
 
-#: participant/models.py:26 participant/templates/participant/overview.html:28
+#: participant/models.py:26 participant/templates/participant/overview.html:35
 msgid "Delegate"
 msgstr "Delegierter"
 
-#: participant/models.py:27 participant/templates/participant/overview.html:29
+#: participant/models.py:27 participant/templates/participant/overview.html:36
 msgid "Observer"
 msgstr "Beobachter"
 
-#: participant/models.py:28 participant/templates/participant/overview.html:30
+#: participant/models.py:28 participant/templates/participant/overview.html:37
 msgid "Staff"
 msgstr "Mitarbeiter"
 
-#: participant/models.py:29 participant/templates/participant/overview.html:31
+#: participant/models.py:29 participant/templates/participant/overview.html:38
 msgid "Guest"
 msgstr "Gast"
 
-#: participant/models.py:33 participant/templates/participant/overview.html:14
+#: participant/models.py:33 participant/templates/participant/overview.html:21
 msgid "Gender"
 msgstr "Geschlecht"
 
-#: participant/models.py:34 participant/templates/participant/overview.html:20
-#: participant/templates/participant/overview.html:48 utils/pdf.py:224
+#: participant/models.py:34 participant/templates/participant/overview.html:27
+#: participant/templates/participant/overview.html:64 utils/pdf.py:224
 msgid "Group"
 msgstr "Gruppe"
 
@@ -1306,76 +1307,64 @@ msgstr "Gruppe"
 msgid "Typ"
 msgstr "Typ"
 
-#: participant/models.py:36 participant/templates/participant/overview.html:35
-#: participant/templates/participant/overview.html:50 utils/pdf.py:224
+#: participant/models.py:36 participant/templates/participant/overview.html:42
+#: participant/templates/participant/overview.html:66 utils/pdf.py:224
 msgid "Committee"
 msgstr "Amt"
 
-#: participant/models.py:37
+#: participant/models.py:37 participant/templates/participant/overview.html:68
+msgid "Comment"
+msgstr "Kommentar"
+
+#: participant/models.py:38
 msgid "First Password"
 msgstr "Erst-Passwort"
 
-#: participant/views.py:142
+#: participant/views.py:162
 msgid "New participant was successfully created."
 msgstr "Neue/r Teilnehmer/in wurde erfolgreich angelegt."
 
-#: participant/views.py:144
+#: participant/views.py:164
 msgid "Participant was successfully modified."
 msgstr "Teilnehmer/in wurde erfolgreich geändert."
 
-#: participant/views.py:171
+#: participant/views.py:191
 #, python-format
 msgid "Participant <b>%s</b> was successfully deleted."
 msgstr "Teilnehmer/in <b>%s</b> wurde erfolgreich gelöscht."
 
-#: participant/views.py:183
-#, python-format
-msgid "Participant <b>%s</b> is now a normal user."
-msgstr "Teilnehmer/in <b>%s</b> ist jetzt ein normaler Nutzer."
+#: participant/views.py:204 participant/views.py:223
+msgid "Participant %d does not exist."
+msgstr "Teilnehmer/in %d existiert nicht."
 
-#: participant/views.py:187
-#, python-format
-msgid "Participant <b>%s</b> is now administrator."
-msgstr "Teilnehmer/in <b>%s</b> ist jetzt ein Administrator."
-
-#: participant/views.py:197
-#, python-format
-msgid "Participant <b>%s</b> was successfully deactivated."
-msgstr "Teilnehmer/in <b>%s</b> wurde erfolgreich deaktiviert."
-
-#: participant/views.py:201
-#, python-format
-msgid "Participant <b>%s</b> was successfully activated."
-msgstr "Teilnehmer/in <b>%s</b> wurde erfolgreich aktiviert."
-
-#: participant/views.py:239
+#: participant/views.py:269
 #, python-format
 msgid "Group name \"%s\" is reserved for internal use."
 msgstr "Der Gruppenname \"%s\" ist für interne Verwendung reserviert."
 
-#: participant/views.py:253
+#: participant/views.py:283
 msgid "New group was successfully created."
 msgstr "Neue Gruppe wurde erfolgreich angelegt."
 
-#: participant/views.py:255
+#: participant/views.py:285
 msgid "Group was successfully modified."
 msgstr "Gruppe wurde erfolgreich geändert."
 
-#: participant/views.py:274
+#: participant/views.py:304
 #, python-format
 msgid "Group <b>%s</b> was successfully deleted."
 msgstr "Gruppe <b>%s</b>  wurde erfolgreich gelöscht."
 
-#: participant/views.py:288
+#: participant/views.py:318
 msgid "User settings successfully saved."
 msgstr "Nutzereinstellungen wurden erfolgreich gespeichert."
 
-#: participant/views.py:354
+#: participant/views.py:385
 #, python-format
 msgid "%d new participants were successfully imported."
 msgstr "%d neue Teilnehmer/innen wurden erfolgreich importiert."
 
-#: participant/views.py:360
+#: participant/views.py:392
 msgid ""
 "Attention: All existing participants will be removed if you import new "
 "participants."
@@ -1383,20 +1372,22 @@ msgstr ""
 "Achtung: Alle existierenden Teilnehmer/innen werden gelöscht, wenn Sie neue "
 "Teilnehmer/innen importieren."
 
-#: participant/views.py:372
+#: participant/views.py:404
 #, python-format
 msgid "The Password for <b>%s</b> was successfully reset."
 msgstr "Das Passwort für <b>%s</b> wurde erfolgreich zurückgesetzt."
 
-#: participant/views.py:374
+#: participant/views.py:406
 #, python-format
 msgid "Do you really want to reset the password for <b>%s</b>?"
 msgstr "Soll das Passwort für <b>%s</b> wirklich zurückgesetzt werden?"
 
-#: participant/views.py:382
+#: participant/views.py:414
 #: participant/templates/participant/base_participant.html:11
 #: participant/templates/participant/overview.html:5
-#: participant/templates/participant/overview.html:8
+#: participant/templates/participant/overview.html:15
+#: participant/templates/participant/overview.html:56
+#: participant/templates/participant/overview.html:58
 msgid "Participants"
 msgstr "Teilnehmer/innen"
 
@@ -1433,12 +1424,11 @@ msgid "Print first time passwords"
 msgstr "Erst-Passwörter drucken"
 
 #: participant/templates/participant/edit.html:5
-#: participant/templates/participant/overview.html:43
 msgid "Participant"
 msgstr "Teilnehmer/in"
 
 #: participant/templates/participant/edit.html:9
-#: participant/templates/participant/overview.html:72
+#: participant/templates/participant/overview.html:86
 msgid "Edit participant"
 msgstr "Teilnehmer/in bearbeiten"
 
@@ -1476,7 +1466,7 @@ msgid "Delete group"
 msgstr "Benutzergruppe löschen"
 
 #: participant/templates/participant/group_overview.html:25
-#: participant/templates/participant/overview.html:90
+#: participant/templates/participant/overview.html:104
 msgid "No participants available."
 msgstr "Keine Teilnehmer/innen vorhanden."
 
@@ -1486,11 +1476,15 @@ msgstr "Wählen Sie eine CSV-Datei zum Importieren von Teilnehmer/innen aus!"
 
 #: participant/templates/participant/import.html:11
 msgid ""
-"(Required comma separated values: <code>first_name, last_name, gender, "
-"group, type, committee</code>)"
+"Required comma separated values: <code>first_name, last_name, gender, group, "
+"type, committee, comment</code>"
 msgstr ""
 "(Erfordert kommaseparierte Werte: <code>Vorname, Nachname, Geschlecht, "
-"Gruppe, Typ, Amt</code>)"
+"Gruppe, Typ, Amt, Kommentar</code>)"
+
+#: participant/templates/participant/import.html:12
+msgid "CSV file encoding: UTF-8 (Unicode)."
+msgstr "CSV-Datei-Encoding: UTF-8 (Unicode)."
 
 #: participant/templates/participant/login.html:7
 #: participant/templates/participant/login.html:15
@@ -1511,55 +1505,51 @@ msgstr ""
 msgid "Continue as guest"
 msgstr "Weiter als Gast"
 
-#: participant/templates/participant/overview.html:17
-#: participant/templates/participant/overview.html:32
+#: participant/templates/participant/overview.html:24
+#: participant/templates/participant/overview.html:39
 msgid "Not specified"
 msgstr "Nicht angegeben"
 
-#: participant/templates/participant/overview.html:27
-#: participant/templates/participant/overview.html:49 utils/pdf.py:224
+#: participant/templates/participant/overview.html:34
+#: participant/templates/participant/overview.html:65 utils/pdf.py:224
 msgid "Type"
 msgstr "Typ"
 
-#: participant/templates/participant/overview.html:46 utils/pdf.py:224
+#: participant/templates/participant/overview.html:50
+msgid "Active"
+msgstr "Aktiv (anwesend)"
+
+#: participant/templates/participant/overview.html:51
+msgid "Inactive"
+msgstr "Inaktiv (abwesend)"
+
+#: participant/templates/participant/overview.html:58
+msgid "of"
+msgstr "von"
+
+#: participant/templates/participant/overview.html:62 utils/pdf.py:224
 msgid "First Name"
 msgstr "Vorname"
 
-#: participant/templates/participant/overview.html:47 utils/pdf.py:224
+#: participant/templates/participant/overview.html:63 utils/pdf.py:224
 msgid "Last Name"
 msgstr "Nachname"
 
-#: participant/templates/participant/overview.html:52
-msgid "Username"
-msgstr "Nutzername"
-
-#: participant/templates/participant/overview.html:53
-msgid "Email"
-msgstr "E-Mail"
-
-#: participant/templates/participant/overview.html:54
+#: participant/templates/participant/overview.html:69
 msgid "Last Login"
 msgstr "Letzer Login"
 
-#: participant/templates/participant/overview.html:73
+#: participant/templates/participant/overview.html:87
 msgid "Delete participant"
 msgstr "Teilnehmer/in löschen"
 
-#: participant/templates/participant/overview.html:75
-msgid "Participiant is activated. Click to deactivate!"
-msgstr "Teilnehmer/in ist aktiviert. Zum Deaktivieren klicken!"
+#: participant/templates/participant/overview.html:90
+msgid "Change status (active/inactive)"
+msgstr "Status ändern (aktiv/inaktiv)"
 
-#: participant/templates/participant/overview.html:77
-msgid "Participiant is deactivated. Click to activate!"
-msgstr "Teilnehmer/in ist deaktiviert, Zum Aktivieren klicken!"
-
-#: participant/templates/participant/overview.html:80
-msgid "Administrator. Click to get normal user!"
-msgstr "Administrator. Klicken, um normaler Nutzer zu werden!"
-
-#: participant/templates/participant/overview.html:82
-msgid "Normal user. Click to get administrator!"
-msgstr "Normaler Nutzer. Klicken, um Administrator zu werden!"
+#: participant/templates/participant/overview.html:95
+msgid "Change administrator rights (Superuser/Normal user)"
+msgstr "Adminstratorrechte ändern (Superuser/normaler Nutzer)"
 
 #: participant/templates/participant/settings.html:5
 #: participant/templates/participant/settings.html:11
@@ -1803,6 +1793,36 @@ msgstr "verfügbare Posten"
 #: utils/utils.py:87
 msgid "Sorry, you have no rights to see this page."
 msgstr "Bedaure, Sie haben keine Berechtigung diese Seite zu sehen."
+
+#~ msgid "Participant <b>%s</b> is now a normal user."
+#~ msgstr "Teilnehmer/in <b>%s</b> ist jetzt ein normaler Nutzer."
+
+#~ msgid "Participant <b>%s</b> is now administrator."
+#~ msgstr "Teilnehmer/in <b>%s</b> ist jetzt ein Administrator."
+
+#~ msgid "Participant <b>%s</b> was successfully deactivated."
+#~ msgstr "Teilnehmer/in <b>%s</b> wurde erfolgreich deaktiviert."
+
+#~ msgid "Participant <b>%s</b> was successfully activated."
+#~ msgstr "Teilnehmer/in <b>%s</b> wurde erfolgreich aktiviert."
+
+#~ msgid "Username"
+#~ msgstr "Nutzername"
+
+#~ msgid "Email"
+#~ msgstr "E-Mail"
+
+#~ msgid "Participiant is activated. Click to deactivate!"
+#~ msgstr "Teilnehmer/in ist aktiviert. Zum Deaktivieren klicken!"
+
+#~ msgid "Participiant is deactivated. Click to activate!"
+#~ msgstr "Teilnehmer/in ist deaktiviert, Zum Aktivieren klicken!"
+
+#~ msgid "Administrator. Click to get normal user!"
+#~ msgstr "Administrator. Klicken, um normaler Nutzer zu werden!"
+
+#~ msgid "Normal user. Click to get administrator!"
+#~ msgstr "Normaler Nutzer. Klicken, um Administrator zu werden!"
 
 #~ msgid "Hidden (visible for agenda manager only)"
 #~ msgstr "Versteckt (sichtbar nur für die Tagesordnungs-Verwaltung)"
