@@ -83,9 +83,9 @@ def get_overview(request):
     if 'status' in sortfilter:
         query = query.filter(is_active=sortfilter['status'][0])
     if 'sort' in sortfilter:
-        if sortfilter['sort'][0] in ['first_name', 'last_name','username','last_login','email']:
+        if sortfilter['sort'][0] in ['first_name', 'last_name', 'last_login']:
             query = query.order_by(sortfilter['sort'][0])
-        elif sortfilter['sort'][0] in ['group', 'type', 'committee']:
+        elif sortfilter['sort'][0] in ['group', 'type', 'committee', 'comment']:
             query = query.order_by('profile__%s' % sortfilter['sort'][0])
     else:
         query = query.order_by('first_name')
@@ -339,7 +339,7 @@ def user_import(request):
                     for line in csv.reader(request.FILES['csvfile'], dialect=dialect):
                         i += 1
                         if i > 0:
-                            (first_name, last_name, gender, group, type, committee) = line[:6]
+                            (first_name, last_name, gender, group, type, committee, comment) = line[:7]
                             user = User()
                             user.last_name = last_name
                             user.first_name = first_name
@@ -352,6 +352,7 @@ def user_import(request):
                             profile.group = group
                             profile.type = type
                             profile.committee = committee
+                            profile.comment = comment
                             profile.firstpassword = gen_password()
                             profile.user.set_password(profile.firstpassword)
                             profile.save()
@@ -364,6 +365,7 @@ def user_import(request):
                                 user.groups.add(observer)
 
                     messages.success(request, _('%d new participants were successfully imported.') % i)
+                    return redirect(reverse('user_overview'))
             except csv.Error:
                 message.error(request, _('Import aborted because of severe errors in the input file.'))
         else:

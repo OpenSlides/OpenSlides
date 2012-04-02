@@ -8,7 +8,9 @@
     <h1>{% trans 'Import participants' %}</h1>
     <p>{% trans 'Select a CSV file to import participants!' %}</p>
 
-    <p>{% trans '(Required comma separated values: <code>first_name, last_name, gender, group, type, committee</code>)' %} </p>
+    <p>{% trans 'Required comma separated values: <code>first_name, last_name, gender, group, type, committee, comment</code>' %}<br>
+    {% trans 'CSV file encoding: UTF-8 (Unicode).' %}
+    </p>
     <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
         {{ form.as_p }}
         <button class="button" type="submit">

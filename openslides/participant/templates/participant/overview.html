@@ -61,8 +61,7 @@
             <th><a href="?sort=type&reverse={% if 'type' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{%trans "Type" %}</a></th>
             <th><a href="?sort=committee&reverse={% if 'committee' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{%trans "Committee" %}</a></th>
             {% if perms.participant.can_manage_participant %}
-            <th><a href="?sort=username&reverse={% if 'username' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{%trans "Username" %}</a></th>
-            <th><a href="?sort=email&reverse={% if 'email' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{%trans "Email" %}</a></th>
+            <th><a href="?sort=comment&reverse={% if 'comment' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{%trans "Comment" %}</a></th>
             <th><a href="?sort=last_login&reverse={% if 'last_login' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{%trans "Last Login" %}</a></th>
             <th>{%trans "Actions" %}</th>
             {% endif %}
@@ -75,8 +74,7 @@
             <td>{{ user.profile.get_type_display }}</td>
             <td>{{ user.profile.committee }}</td>
             {% if perms.participant.can_manage_participant %}
-            <td>{{ user.username }}</td>
-            <td>{{ user.email }}</td>
+            <td>{{ user.profile.comment }}</td>
             <td>{% if user.last_login > user.date_joined %}
                 {{ user.last_login }}
                 {% endif %}</td>
