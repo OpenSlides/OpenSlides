@@ -172,7 +172,7 @@
                 {% if perms.assignment.can_manage_assignment %}
                 <a class="election_link elected" href='{% url assignment_user_not_elected assignment.id candidate.0.id %}'></a>
                 {% else %}
-                <a class="elected"><img src="/static/images/icons/games-highscores.png" title="{% trans 'Candidate is elected' %}"></a>
+                <a class="elected"><img src="/static/images/icons/voting-yes.png" title="{% trans 'Candidate is elected' %}"></a>
                 {% endif %}
             {% else %}
                 {% if perms.assignment.can_manage_assignment %}
