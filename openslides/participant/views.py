@@ -60,7 +60,7 @@ def get_overview(request):
     except KeyError:
         sortfilter = {}
 
-    for value in [u'gender', u'group', u'type', u'committee', u'sort', u'reverse']:
+    for value in [u'gender', u'group', u'type', u'committee', u'status', u'sort', u'reverse']:
         if value in request.REQUEST:
             if request.REQUEST[value] == '---':
                 try:
@@ -79,6 +79,8 @@ def get_overview(request):
         query = query.filter(profile__type__iexact=sortfilter['type'][0])
     if 'committee' in sortfilter:
         query = query.filter(profile__committee__iexact=sortfilter['committee'][0])
+    if 'status' in sortfilter:
+        query = query.filter(is_active=sortfilter['status'][0])
     if 'sort' in sortfilter:
         if sortfilter['sort'][0] in ['first_name', 'last_name','username','last_login','email']:
             query = query.order_by(sortfilter['sort'][0])

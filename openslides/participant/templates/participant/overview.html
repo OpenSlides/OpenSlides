@@ -8,20 +8,20 @@
         {% csrf_token %}
         {%trans "Filter" %}:
         <select class="default-input" name="gender" onchange="document.forms['filter'].submit()">
-            <option value="---">-- {%trans "Gender" %}--</option>
+            <option value="---">-- {%trans "Gender" %} --</option>
             <option value="male" {% if 'male' in sortfilter.gender %}selected{% endif %}>{%trans "Male" %}</option>
             <option value="female" {% if 'female' in sortfilter.gender %}selected{% endif %}>{%trans "Female" %}</option>
             <option value="" {% if '' in sortfilter.gender %}selected{% endif %}>{%trans "Not specified" %}</option>
         </select>
         <select class="default-input" name="group" onchange="document.forms['filter'].submit()">
-            <option value="---">-- {%trans "Group" %}--</option>
+            <option value="---">-- {%trans "Group" %} --</option>
             {% for group in groups %}
                 <option value="{{ group }}" {% if group in sortfilter.group %}selected{% endif %}>
                 {{ group }}</option>
             {% endfor %}
         </select>
         <select class="default-input" name="type" onchange="document.forms['filter'].submit()">
-            <option value="---">-- {%trans "Type" %}--</option>
+            <option value="---">-- {%trans "Type" %} --</option>
             <option value="delegate" {% if 'delegate' in sortfilter.type %}selected{% endif %}>{%trans "Delegate" %}</option>
             <option value="observer" {% if 'observer' in sortfilter.type %}selected{% endif %}>{%trans "Observer" %}</option>
             <option value="staff" {% if 'staff' in sortfilter.type %}selected{% endif %}>{%trans "Staff" %}</option>
@@ -29,11 +29,16 @@
             <option value="" {% if '' in sortfilter.type %}selected{% endif %}>{%trans "Not specified" %}</option>
         </select>
         <select class="default-input" name="committee" onchange="document.forms['filter'].submit()">
-            <option value="---">-- {%trans "Committee" %}--</option>
+            <option value="---">-- {%trans "Committee" %} --</option>
             {% for committee in committees %}
                 <option value="{{ committee }}" {% if committee in sortfilter.committee %}selected{% endif %}>
                 {{ committee }}</option>
             {% endfor %}
+        </select>
+        <select class="default-input" name="status" onchange="document.forms['filter'].submit()">
+            <option value="---">-- {%trans "Status" %} --</option>
+            <option value="1" {% if '1' in sortfilter.status %}selected{% endif %}>{%trans "Active" %}</option>
+            <option value="0" {% if '0' in sortfilter.status %}selected{% endif %}>{%trans "Inactive" %}</option>
         </select>
         </form>
     </p>
