@@ -34,6 +34,7 @@ class Profile(models.Model):
     group = models.CharField(max_length=100, null=True, blank=True, verbose_name = _("Group"))
     type = models.CharField(max_length=100, choices=TYPE_CHOICE, blank=True, verbose_name = _("Typ"))
     committee = models.CharField(max_length=100, null=True, blank=True, verbose_name = _("Committee"))
+    comment = models.CharField(max_length=255, null=True, blank=True, verbose_name = _("Comment"))
     firstpassword = models.CharField(max_length=100, null=True, blank=True, verbose_name = _("First Password"))
 
 
