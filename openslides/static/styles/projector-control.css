@@ -23,6 +23,9 @@
     padding: 0.4em;
     overflow: hidden;
 }
+.portlet-content li{
+    padding: 4px 0;
+}
 .ui-sortable-placeholder {
     border: 1px dotted black;
     visibility: visible !important;
@@ -69,7 +72,10 @@ a.activate_link div {
     float: left;
     width: 16px;
     height: 16px;
-    padding-right: 10px;
+    padding-right: 16px;
+    position: relative;
+    top: 4px;
+    left: 4px;
 }
 a.activate_link.active div {
     background-image: url(/static/images/icons/task-accepted.png);

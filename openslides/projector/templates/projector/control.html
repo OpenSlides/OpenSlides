@@ -78,15 +78,24 @@
                 {% if slide.model_slide %}
                     <ul style="line-height: 180%">
                     {% for item in slide.get_items %}
-                        <li><a href="{% url projector_activate_slide item.sid %}" 
+                        <li class="{% if item.active %}activeline{% endif %}"><a href="{% url projector_activate_slide item.sid %}" 
                         class="activate_link {% if item.active %}active{% endif %}"
-                        ><div></div></a><a href="{% url projector_edit_slide item.id %}">{{ item }}</a></li>
+                        ><div></div></a>
+                        {% for i in item.get_ancestors %}&nbsp;&nbsp;&nbsp;{% endfor %}
+                        <a href="{% url projector_edit_slide item.id %}">{{ item }}</a>
+                        {% if item.children.exists %}
+                            <a href="{% url projector_activate_summary item.sid %}"><img src="/static/images/icons/view-list-tree.png" title="{% trans 'Select item overview' %}"></a>
+                        {% endif %}
+                        </li>
                     {% endfor %}
                     </ul>
                 {% else %}
-                    <a href="{% url projector_activate_slide slide.key %}"
+                <hr>
+                    <ul style="line-height: 180%">
+                    <li><a href="{% url projector_activate_slide slide.key %}"
                             class="activate_link {% if slide.active %}active{% endif %}"
-                    ><div></div></a>{{ slide.key }}
+                    ><div></div></a>{{ slide.key }}</li>
+                    </ul>
                 {% endif %}
             {% endfor %}
             </div>

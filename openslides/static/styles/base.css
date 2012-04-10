@@ -230,7 +230,7 @@ table a.table_edit {
 .agendatable td.dragcell {
     padding: 0px 0 0px 10px;
 }
-.agendatable tr.activeline td {
+.agendatable tr.activeline td, .activeline {
     background-color: #bed4de;
 }
 .agendatable td img.center {

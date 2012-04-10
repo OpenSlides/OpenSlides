@@ -10,6 +10,7 @@ $(function() {
             data: '',
             success: function(data) {
                 $('.activate_link').removeClass('active');
+                $('li').removeClass('activeline');
                 link.addClass('active');
             },
             error: function () {

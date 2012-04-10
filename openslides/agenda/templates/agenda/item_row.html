@@ -25,9 +25,6 @@
                 <a class="close_link {% if item.closed %}closed{% else %}open{% endif %}" href="{% if item.closed %}{% url item_open item.id %}{% else %}{% url item_close item.id %}{% endif %}">
                     <span></span>
                 </a>
-                {% if item.children.exists %}
-                    <a href="{% url item_activate_summary item.id %}"><img src="/static/images/icons/view-list-tree.png" title="{% trans 'Select item overview' %}"></a>
-                {% endif %}
             {% endif %}
         </span>
     </td>

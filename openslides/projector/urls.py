@@ -33,6 +33,12 @@ urlpatterns = patterns('projector.views',
         name='projector_activate_slide',
     ),
 
+    url(r'^activate/(?P<sid>[^/]*)/summary/$',
+        ActivateView.as_view(),
+        {'summary': True},
+        name='projector_activate_summary',
+    ),
+
     url(r'^edit/(?P<pk>\d+)/$',
         ItemUpdate.as_view(),
         name='projector_edit_slide',
