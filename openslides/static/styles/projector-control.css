@@ -1,0 +1,76 @@
+/**
+ * OpenSlides projector control template style
+ */
+
+/* Portlet */
+.column {
+    width: 50%;
+    float: left;
+    padding-bottom: 0px;
+}
+.portlet {
+    margin: 0 1em 1em 0;
+}
+.portlet-header {
+    margin: 0.3em;
+    padding-bottom: 4px;
+    padding-left: 0.2em;
+}
+.portlet-header .ui-icon {
+    float: right;
+}
+.portlet-content {
+    padding: 0.4em;
+    overflow: hidden;
+}
+.ui-sortable-placeholder {
+    border: 1px dotted black;
+    visibility: visible !important;
+    height: 50px !important;
+}
+.ui-sortable-placeholder * {
+    visibility: hidden;
+}
+
+/* iframe */
+#iframe {
+    -moz-transform: scale(0.25, 0.25) translate(-150%, -150%);
+    -webkit-transform: scale(0.25, 0.25) translate(-150%, -150%);
+    -o-transform: scale(0.25, 0.25) translate(-150%, -150%);
+    transform: scale(0.25, 0.25) translate(-150%, -150%);
+    width: 400%;
+    height: 400%;
+}
+#iframewrapper {
+    width: 256px;/*100%;*/
+    height: 192px;/*230px;*/
+}
+/* countdown */
+a.countdown_visible_link.closed div {
+    background-image: url(/static/images/icons/user-offline.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+}
+a.countdown_visible_link.open div {
+    background-image: url(/static/images/icons/user-online.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+}
+/* activate link */
+a.activate_link div {
+    background-image: url(/static/images/icons/task-accepted-grey.png);
+    background-repeat: no-repeat;
+    float: left;
+    width: 16px;
+    height: 16px;
+    padding-right: 10px;
+}
+a.activate_link.active div {
+    background-image: url(/static/images/icons/task-accepted.png);
+}

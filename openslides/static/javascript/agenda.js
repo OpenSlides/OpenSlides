@@ -28,22 +28,6 @@ function hideClosedSlides(hide) {
 }
 
 $(function() {
-    $('.activate_link').click(function(event) {
-        event.preventDefault();
-        $.ajax({
-            type: 'GET',
-            url: $(this).attr('href'),
-            dataType: 'json',
-            data: '',
-            success: function(data) {
-                $('.activeline').removeClass('activeline').addClass('inactiveline');
-                $('#item_row_' + data.active).removeClass('inactiveline').addClass('activeline');
-            },
-            error: function () {
-                alert("Ajax Error");
-            }
-        });
-    });
     $('.close_link').click(function(event) {
         event.preventDefault();
         slide = $(this);
@@ -77,48 +61,4 @@ $(function() {
     } else if ($.cookie('Slide.HideClosed') == 1) {
         hideClosedSlides(true);
     }
-
-    // control the projector
-    $('.projector_edit').click(function(event) {
-        event.preventDefault();
-        link = $(this);
-        $.ajax({
-            type: 'GET',
-            url: link.attr('href'),
-            dataType: 'json',
-            success: function(data) {
-            }
-        });
-    });
-
-    // control countdown
-    $('.projector_countdown').click(function(event) {
-        event.preventDefault();
-        link = $(this);
-        $.ajax({
-            type: 'GET',
-            url: link.attr('href'),
-            dataType: 'json',
-            success: function(data) {
-            }
-        });
-    });
-    $('.countdown_visible_link').click(function(event) {
-        event.preventDefault();
-        link = $(this);
-        $.ajax({
-            type: 'GET',
-            url: link.attr('href'),
-            dataType: 'json',
-            success: function(data) {
-                if (data.countdown_visible == "True") {
-                    newclass = 'open';
-                } else {
-                    newclass = 'closed';
-                }
-                link.removeClass('closed open').addClass(newclass);
-                link.attr('href', data.link);
-            }
-        });
-    });
 });

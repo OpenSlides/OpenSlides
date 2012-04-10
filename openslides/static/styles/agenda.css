@@ -1,34 +1,3 @@
-a.activate_link div {
-    background-image: url(/static/images/icons/task-accepted-grey.png);
-    background-repeat: no-repeat;
-    float: left;
-    width: 16px;
-    height: 16px;
-    padding-right: 10px;
-}
-a.inactivate_link div {
-    background-image: url(/static/images/icons/task-accepted.png);
-    background-repeat: no-repeat;
-    float: left;
-    width: 16px;
-    height: 16px;
-    padding-right: 10px;
-}
-tr.activeline a.activate_link div {
-    background-image: url(/static/images/icons/task-accepted.png);
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 16px;
-    height: 16px;
-}
-tr.inactiveline a.activate_link div {
-    background-image: url(/static/images/icons/task-accepted-grey.png);
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 16px;
-    height: 16px;
-}
-
 a.close_link.closed span {
     background-image: url(/static/images/icons/user-offline.png);
     background-repeat: no-repeat;
@@ -63,33 +32,3 @@ a.hidelink.show span {
     display: inline-block;
 }
 
-a.countdown_visible_link.closed div {
-    background-image: url(/static/images/icons/user-offline.png);
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 16px;
-    height: 16px;
-    display: inline-block;
-}
-a.countdown_visible_link.open div {
-    background-image: url(/static/images/icons/user-online.png);
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 16px;
-    height: 16px;
-    display: inline-block;
-}
-
-
-#iframe {
-    -moz-transform: scale(0.25, 0.25) translate(-150%, -150%);
-    -webkit-transform: scale(0.25, 0.25) translate(-150%, -150%);
-    -o-transform: scale(0.25, 0.25) translate(-150%, -150%);
-    transform: scale(0.25, 0.25) translate(-150%, -150%);
-    width: 400%;
-    height: 400%;
-}
-#iframewrapper {
-    width: 256px;/*100%;*/
-    height: 192px;/*230px;*/
-}

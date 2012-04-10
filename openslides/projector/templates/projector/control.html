@@ -5,42 +5,25 @@
 
 {% block header %}
     <link type="text/css" href="/static/styles/ui-lightness/jquery-ui-1.8.18.custom.css" rel="stylesheet" />
-    <link type="text/css" rel="stylesheet" media="all" href="/static/styles/agenda.css" />
+    <link type="text/css" rel="stylesheet" media="all" href="/static/styles/projector-control.css" />
     <script type="text/javascript" src="/static/javascript/jquery-ui-1.8.18.custom.min.js"></script>
     <script type="text/javascript" src="/static/javascript/projector-control.js"></script>
     <script type="text/javascript" src="/static/javascript/jquery.cookie.js"></script>
     <script type="text/javascript">
-        $(function(){
-            $("#accordion").accordion({ header: "h2" });
-        });
-    </script>
-    <style>
-    .column { width: 50%; float: left; padding-bottom: 0px; }
-    .portlet { margin: 0 1em 1em 0; }
-    .portlet-header { margin: 0.3em; padding-bottom: 4px; padding-left: 0.2em; }
-    .portlet-header .ui-icon { float: right; }
-    .portlet-content { padding: 0.4em; overflow: hidden; }
-    .ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
-    .ui-sortable-placeholder * { visibility: hidden; }
-    </style>
-    <script>
     $(function() {
         $( ".column" ).sortable({
             connectWith: ".column"
         });
-
         $( ".portlet" ).addClass( "ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" )
             .find( ".portlet-header" )
                 .addClass( "ui-widget-header ui-corner-all" )
                 .prepend( "<span class='ui-icon ui-icon-minusthick'></span>")
                 .end()
             .find( ".portlet-content" );
-
         $( ".portlet-header .ui-icon" ).click(function() {
             $( this ).toggleClass( "ui-icon-minusthick" ).toggleClass( "ui-icon-plusthick" );
             $( this ).parents( ".portlet:first" ).find( ".portlet-content" ).toggle();
         });
-
         $( ".column" ).disableSelection();
     });
     </script>
@@ -85,9 +68,9 @@
         </a>
     </div>
 
-
-    {% for category, slides in categories.items %}
     <div class="column">
+    {% for category, slides in categories.items %}
+
         <div class="portlet">
             <div class="portlet-header">{{ category }}</div>
             <div class="portlet-content">
@@ -96,24 +79,20 @@
                     <ul style="line-height: 180%">
                     {% for item in slide.get_items %}
                         <li><a href="{% url projector_activate_slide item.sid %}" 
-                        {% if item.active %}
-                            class="inactivate_link"
-                        {% else %}
-                            class="activate_link"
-                        {% endif %}
-                        ><div></div></a>{{ item }}</li>
+                        class="activate_link {% if item.active %}active{% endif %}"
+                        ><div></div></a><a href="{% url projector_edit_slide item.id %}">{{ item }}</a></li>
                     {% endfor %}
                     </ul>
                 {% else %}
                     <a href="{% url projector_activate_slide slide.key %}"
-                            class="activate_link"
+                            class="activate_link {% if slide.active %}active{% endif %}"
                     ><div></div></a>{{ slide.key }}
                 {% endif %}
             {% endfor %}
             </div>
         </div>
-    </div>
     {% endfor %}
+    </div>
 
     <div class="column">
         <div class="portlet">

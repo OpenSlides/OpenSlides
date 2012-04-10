@@ -15,6 +15,7 @@ from django.conf.urls.defaults import *
 from utils.views import CreateView
 
 from views import ControlView, ActivateView
+from agenda.views import ItemUpdate
 from models import ProjectorSlide
 
 
@@ -30,6 +31,11 @@ urlpatterns = patterns('projector.views',
     url(r'^activate/(?P<sid>[^/]*)/$',
         ActivateView.as_view(),
         name='projector_activate_slide',
+    ),
+
+    url(r'^edit/(?P<pk>\d+)/$',
+        ItemUpdate.as_view(),
+        name='projector_edit_slide',
     ),
 
     url(r'^new/$',

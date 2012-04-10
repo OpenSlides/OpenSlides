@@ -52,32 +52,20 @@
 
             <table id="menu-overview" class="agendatable">
                 <tr>
-                    {% if perms.agenda.can_manage_agenda %}
-                        <th style="width: 1px;">{% trans "Projector" %}</th>
-                    {% else %}
-                        <th style="width: 1px;">{% trans "Done" %}</th>
-                    {% endif %}
+                    <th style="width: 1px;">{% trans "Done" %}</th>
                     <th>{% trans "Item" %}</th>
                     <th style="width: 1px;">{% if perms.agenda.can_manage_agenda %}{% trans "Actions" %}{% endif %}</th>
                     {% if perms.agenda.can_manage_agenda %}
                         <th class="tabledrag-hide">{% trans "Weight" %}</th>
                     {% endif %}
                 </tr>
-                <tr id="item_row_0" class="topline{% if overview %} activeline{% else %}{% if perms.agenda.can_manage_agenda %} inactiveline {% endif %}{% endif %}">
-                    {% if perms.agenda.can_manage_agenda %}
-                        <td class="select">
-                            <a href="{% url item_activate 0 %}" class="activate_link">
-                                <div></div>
-                            </a>
-                        </td>
-                    {% else %}
-                        <td></td>
-                    {% endif %}
+                <tr class="topline {% if overview %}activeline{% endif %}">
+                    <td>{{overview}}</td>
                     <td>
                         <b>{% trans "Agenda" %} ({{ items|length }} {% trans "items" %}<span id="hiddencount"></span>)</b>
                     </td>
                     <td>
-                        <span id="action_field" style="width: 1px;white-space: nowrap;">
+                        <span id="action_field" style="width: 1px; white-space: nowrap;">
                             <span></span>
                         </span>
                         <a href="{% url print_agenda %}" title="{%trans 'Print agenda' %}" class="pdficon">
