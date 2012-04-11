@@ -10,7 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.forms import Form, ModelForm, CharField, EmailField, FileField, FileInput, MultipleChoiceField, ModelMultipleChoiceField
+from django.forms import Form, ModelForm, CharField, EmailField, FileField, FileInput, MultipleChoiceField, ModelMultipleChoiceField, ChoiceField, BooleanField
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.utils.translation import ugettext as _
@@ -29,6 +29,12 @@ USER_VISIBLE_PERMISSIONS = reduce(list.__add__, [
     [p[0] for p in Profile._meta.permissions],
     [p[0] for p in Config._meta.permissions]
 ])
+
+USER_APPLICATION_IMPORT_OPTIONS = [
+    ('REASSIGN', _('Keep applications, try to reassign submitter')),
+    ('INREVIEW', _('Keep applications, set status to "needs review"')),
+    ('DISCARD' , _('Discard applications'))
+]
 
 class UserNewForm(ModelForm):
     error_css_class = 'error'
@@ -91,3 +97,4 @@ class UserImportForm(Form):
     required_css_class = 'required'
 
     csvfile = FileField(widget=FileInput(attrs={'size':'50'}), label=_("CSV File"))
+    application_handling = ChoiceField(required=True, choices=USER_APPLICATION_IMPORT_OPTIONS, label=_("For existing applications"))

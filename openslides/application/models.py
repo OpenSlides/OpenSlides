@@ -33,6 +33,7 @@ class Application(models.Model):
         ('noc', _('Not Concerned')),
         ('com', _('Commited a bill')),
         ('nop', _('Rejected (not permitted)')),
+        ('rev', _('Needs Review')),
         #additional actions:
         # edit
         # delete
@@ -319,6 +320,11 @@ class Application(models.Model):
         or (self.status == "per" \
           and user.has_perm("application.can_manage_application")):
             actions.append("wit")
+        #Check if the user can review the application
+        if self.status == "rev" \
+        and (self.submitter == user \
+          or user.has_perm("application.can_manage_application")):
+            actions.append("pub")
         try:
         # Check if the user can support and unspoort the application
             if  self.status == "pub" \

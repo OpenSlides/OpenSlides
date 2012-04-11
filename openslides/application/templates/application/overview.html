@@ -20,6 +20,7 @@
             <option value="acc" {% if 'on' in request.GET.status and 'acc' in request.GET.statusvalue %}selected{% endif %}>{%trans "Accepted" %}</option>
             <option value="rej" {% if 'on' in request.GET.status and 'rej' in request.GET.statusvalue %}selected{% endif %}>{%trans "Rejected" %}</option>
             <option value="wit" {% if 'on' in request.GET.status and 'wit' in request.GET.statusvalue %}selected{% endif %}>{%trans "Withdrawed (by submitter)" %}</option>
+            <option value="rev" {% if 'rev' in request.GET.statusvalue %}selected{% endif %}>{%trans "Needs Review" %}</option>
         </select>
         </form>
     </p>
