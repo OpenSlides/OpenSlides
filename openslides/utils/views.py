@@ -28,6 +28,7 @@ from django.views.generic import (
     CreateView as _CreateView,
     View as _View,
     FormView as _FormView,
+    ListView as _ListView,
 )
 from django.views.generic.detail import SingleObjectMixin
 from django.utils.importlib import import_module
@@ -69,6 +70,13 @@ class PermissionMixin(object):
 class TemplateView(PermissionMixin, _TemplateView):
     def get_context_data(self, **kwargs):
         context = super(TemplateView, self).get_context_data(**kwargs)
+        template_manipulation.send(sender=self, request=self.request, context=context)
+        return context
+
+
+class ListView(PermissionMixin, _ListView):
+    def get_context_data(self, **kwargs):
+        context = super(ListView, self).get_context_data(**kwargs)
         template_manipulation.send(sender=self, request=self.request, context=context)
         return context
 
@@ -124,20 +132,24 @@ class UpdateView(PermissionMixin, _UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(UpdateView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self, context=context)
+        template_manipulation.send(sender=self, request=self.request, context=context)
         return context
 
 
 class CreateView(PermissionMixin, _CreateView):
     def get_success_url(self):
         if 'apply' in self.request.POST:
-            return reverse('item_edit', args=[self.object.id])
+            return reverse(self.get_apply_url(), args=[self.object.id])
         return reverse(super(CreateView, self).get_success_url())
 
     def get_context_data(self, **kwargs):
         context = super(CreateView, self).get_context_data(**kwargs)
         template_manipulation.send(sender=self, request=self.request, context=context)
         return context
+
+    def get_apply_url(self):
+        #todo: Versuche apply url automatisch anhand on self.object herauszufindne
+        return self.apply_url
 
 
 class DeleteView(RedirectView, SingleObjectMixin):

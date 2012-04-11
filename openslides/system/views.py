@@ -26,7 +26,6 @@ from system.forms import SystemConfigForm, EventConfigForm
 from system import config
 
 
-
 class GeneralConfig(FormView):
     permission_required = 'system.can_manage_system'
     form_class = EventConfigForm
@@ -97,4 +96,3 @@ def register_tab(request):
         permission=request.user.has_perm('system.can_manage_system'),
         selected=selected,
     )
-
