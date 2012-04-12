@@ -43,6 +43,7 @@ FREE_TO_GO = 'free to go'
 
 View = _View
 
+
 class LoginMixin(object):
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
@@ -79,6 +80,14 @@ class ListView(PermissionMixin, _ListView):
         context = super(ListView, self).get_context_data(**kwargs)
         template_manipulation.send(sender=self, request=self.request, context=context)
         return context
+
+
+class AjaxView(PermissionMixin, View):
+    def get(self, request, *args, **kwargs):
+        return HttpResponse(json.dumps(self.get_ajax_context(**kwargs)))
+
+    def get_ajax_context(self, **kwargs):
+        return {}
 
 
 class RedirectView(PermissionMixin, _RedirectView):

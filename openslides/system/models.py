@@ -86,7 +86,7 @@ from openslides.utils.signals import template_manipulation
 
 @receiver(template_manipulation, dispatch_uid="system_base_system")
 def set_submenu(sender, request, context, **kwargs):
-    if sender.__class__.__module__ != 'system.views':
+    if not request.path.startswith('/config/'):
         return None
     selected = True if request.path == reverse('config_general') else False
     menu_links = [
