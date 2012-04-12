@@ -145,8 +145,11 @@
     <div class="box">
     <h4><b>{% trans "Manage application" %}</b></h4>
 
-    {% if "per" in actions or "nop" in actions or "setnumber" in actions %}
+    {% if "pub" in actions or "per" in actions or "nop" in actions or "setnumber" in actions %}
         <h4>{% trans "Formal validation" %}:</h4>
+        {% if "pub" in actions %}
+        <a href='{% url application_set_status application.id 'pub' %}'><span class="button"><span class="icon ok-blue">{% trans 'Publish' %}</span></span></a>
+        {% endif %}
         {% if "per" in actions %}
         <a href='{% url application_permit application.id %}'><span class="button"><span class="icon ok-blue">{% trans 'Permit' %}</span></span></a>
         {% endif %}

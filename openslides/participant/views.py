@@ -34,6 +34,7 @@ from django.db import transaction
 from participant.models import Profile
 from participant.api import gen_username, gen_password
 from participant.forms import UserNewForm, UserEditForm, ProfileForm, UsersettingsForm, UserImportForm, GroupForm, AdminPasswordChangeForm
+from application.models import Application
 from utils.utils import template, permission_required, gen_confirm_form, ajax_request
 from utils.pdf import print_userlist, print_passwords
 from utils.template import Tab
@@ -346,6 +347,43 @@ def user_import(request):
         if form.is_valid():
             try:
                 with transaction.commit_on_success():
+                    
+                    old_users = {}
+                    applications_mapped = 0
+                    applications_review = 0
+                    applications_removed = 0
+
+                    try:
+                        janitor = User.objects.get(username='__system__.janitor')
+                    except User.DoesNotExist:
+                        janitor = User()
+                        janitor.first_name = ''
+                        janitor.last_name = ''
+                        janitor.username = '__system__.janitor'
+                        janitor.save()
+
+                    applications = Application.objects.all()
+                    for application in applications:
+                        if form.cleaned_data['application_handling'] == 'DISCARD':
+                            # need to do this explicit since some applications may belong
+                            # to __system__.janitor which is a permanent user
+                            application.delete(force=True)
+                            applications_removed += 1
+                        else:
+                            # collect all applications and map them to their submitters
+                            submitter = application.submitter
+                            skey = '%s_%s' % (submitter.first_name, submitter.last_name)
+
+                            if not skey in old_users:
+                                old_users[skey] = []
+                            old_users[skey].append(application.id)
+
+                            application.submitter = janitor
+                            application.save()
+
+                            if application.supporter.all():
+                                application.writelog(_('Supporters removed after user import.'), user=request.user)
+
                     profiles = Profile.objects.all()
                     for profile in profiles:
                         profile.user.delete()
@@ -382,6 +420,44 @@ def user_import(request):
                                 observer = Group.objects.get(name='Beobachter')
                                 user.groups.add(observer)
 
+                            if form.cleaned_data['application_handling'] == 'REASSIGN':
+                                # live remap
+                                skey = '%s_%s' % (user.first_name, user.last_name)
+                                if skey in old_users:
+                                    for appid in old_users[skey]:
+                                        try:
+                                            application = Application.objects.get(id=appid)
+                                            application.submitter = user
+                                            application.save()
+                                            application.writelog(_('Reassigned to "%s" after (re)importing users.') % ("%s %s" % (user.first_name, user.last_name)), user=request.user)
+                                            applications_mapped += 1
+                                        except Application.DoesNotExist:
+                                            messages.error(request, _('Could not reassing application %d - object not found!') % appid)
+                                    del old_users[skey]
+
+                    if old_users:
+                        # mark all applications without a valid user as 'needs review'
+                        # this will account for *all* applications if application_mode == 'INREVIEW'
+                        for skey in old_users:
+                            for appid in old_users[skey]:
+                                try:
+                                    application = Application.objects.get(id=appid)
+                                    if application.status != 'rev':
+                                        application.set_status(user=request.user, status='rev', force=True)
+                                    applications_review += 1
+                                except Application.DoesNotExist:
+                                    messages.error(request, _('Could not reassing application %d - object not found!') % appid)
+
+                    if applications_review:
+                        messages.warning(request, ungettext('%d application could not be reassigned and needs a review!',
+                                                    '%d applications could not be reassigned and need a review!', applications_review) % applications_review)
+                    if applications_mapped:
+                        messages.success(request, ungettext('%d application was successfully reassigned.',
+                                                    '%d applications were successfully reassigned.', applications_mapped) % applications_mapped)
+                    if applications_removed:
+                        messages.warning(request, ungettext('%d application was discarded.',
+                                                    '%d applications were discarded.', applications_removed) % applications_removed)
+
                     messages.success(request, _('%d new participants were successfully imported.') % i)
                     return redirect(reverse('user_overview'))
             except csv.Error:
@@ -390,6 +466,9 @@ def user_import(request):
             messages.error(request, _('Please check the form for errors.'))
     else:
         messages.warning(request, _("Attention: All existing participants will be removed if you import new participants."))
+        if Application.objects.all():
+            messages.warning(request, _("Attention: Supporters from all existing applications will be removed."))
+            messages.warning(request, _("Attention: Applications which can't be mapped to new users will be set to 'Needs Review'."))
         form = UserImportForm()
     return {
         'form': form,
