@@ -81,7 +81,10 @@ def view(request, assignment_id=None):
             # exisitiert der Spieler in der poll
             if poll.get_options().filter(candidate=candidate).exists():
                 option = AssignmentOption.objects.filter(poll=poll).get(candidate=candidate)
-                tmplist[1].append(option.get_votes()[0])
+                try:
+                    tmplist[1].append(option.get_votes()[0])
+                except IndexError:
+                    tmplist[1].append('–')
             else:
                 tmplist[1].append("-")
         votes.append(tmplist)
