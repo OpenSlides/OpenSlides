@@ -21,7 +21,7 @@
 
     <p>{%trans "Results of" %} {{ ballot }}. {%trans "Vote" %}</p>
     <i>-1 := {% trans 'majority' %}, -2 := {% trans 'undocumented' %}</i>
-    <form action="" method="post">{% csrf_token %}
+    <form action="" method="post" class="small-form">{% csrf_token %}
         <span id="poll_id" style="display:none">{{ poll.id }}</span>
         <table class="table" style="width: auto;">
             <tr>

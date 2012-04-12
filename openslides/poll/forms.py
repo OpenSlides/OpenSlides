@@ -13,7 +13,6 @@ class OptionForm(forms.Form, CssClassMixin):
 
         for key, value in extra:
             self.fields[key] = forms.IntegerField(
-                widget=forms.TextInput(attrs={'class': 'small-input'}),
                 label=_(key),
                 initial=value,
             )

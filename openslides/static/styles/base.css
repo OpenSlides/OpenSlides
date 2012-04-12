@@ -417,6 +417,11 @@ input[type="submit"], input[type="button"]  {
 .small-input {
     width: 40px !important;
 }
+
+.small-form input {
+    width: 40px !important;
+}
+
 .medium-input {
     width: 200px !important;
 }

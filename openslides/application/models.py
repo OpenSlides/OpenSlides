@@ -16,6 +16,7 @@ from django.db import models
 from django.db.models import Max
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
+from django.core.urlresolvers import reverse
 
 from projector.api import register_slidemodel
 from projector.models import SlideMixin
@@ -517,3 +518,6 @@ class ApplicationPoll(BasePoll, CountInvalid, CountVotesCast):
     def append_pollform_fields(self, fields):
         CountInvalid.append_pollform_fields(self, fields)
         CountVotesCast.append_pollform_fields(self, fields)
+
+    def get_absolute_url(self):
+        return reverse('application_poll_view', args=[self.id])

@@ -145,6 +145,9 @@ class BasePoll(models.Model, SlideMixin):
         # data['template'] = 'projector/TODO.html'
         return data
 
+    def get_absolute_url(self):
+        return ''
+
 
 def print_value(value):
     if value == -1:
