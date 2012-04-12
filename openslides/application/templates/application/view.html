@@ -81,7 +81,7 @@
                     <img src="/static/images/icons/voting-abstention.png" title="{% trans 'Abstention' %}"> {{ option.contained }}<br>
                     <img src="/static/images/icons/voting-invalid.png" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}<br>
                     <div style="border-top: 1px solid; padding-top: 5px; margin: 5px 0; width: 10em;">
-                        <img src="/static/images/icons/voting-total.png" title="{% trans 'Votes cast' %}"> {{ poll.poll_votescast }}
+                        <img src="/static/images/icons/voting-total.png" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
                     </div>
                 {% endwith %}
                 {% if perms.application.can_manage_application %}

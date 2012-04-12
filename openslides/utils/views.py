@@ -32,6 +32,7 @@ from django.views.generic import (
 )
 from django.views.generic.detail import SingleObjectMixin
 from django.utils.importlib import import_module
+from django.core.context_processors import csrf
 import settings
 
 from utils import render_to_forbitten
@@ -165,6 +166,19 @@ class DeleteView(RedirectView, SingleObjectMixin):
     def pre_redirect(self, request, *args, **kwargs):
         self.object = self.get_object()
         self.confirm_form(request, self.object)
+
+    def pre_post_redirect(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        messages.success(request, _("Item <b>%s</b> was successfully deleted.") % self.object)
+
+    def confirm_form(self, request, object, name=None):
+        if name is None:
+            name = object
+        self.gen_confirm_form(request, _('Do you really want to delete <b>%s</b>?') % name, object.get_absolute_url('delete'))
+
+    def gen_confirm_form(self, request, message, url):
+        messages.warning(request, '%s<form action="%s" method="post"><input type="hidden" value="%s" name="csrfmiddlewaretoken"><input type="submit" value="%s" /> <input type="button" value="%s"></form>' % (message, url, csrf(request)['csrf_token'], _("Yes"), _("No")))
 
 
 class PDFView(PermissionMixin, View):

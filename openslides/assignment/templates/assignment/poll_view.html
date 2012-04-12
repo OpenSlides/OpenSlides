@@ -11,8 +11,8 @@
     </p>
     <p><b>{% trans "Short description" %}:</b> {{ poll.description }}</p>
     <i>-1 := {% trans 'majority' %}, -2 := {% trans 'undocumented' %}</i>
-    <form action="" method="post">{% csrf_token %}
-    <table>
+    <form action="" method="post" class="small-form">{% csrf_token %}
+    <table style="width:auto">
         <tr>
             <th>Option</th>
             {% for value in poll.get_vote_values %}
