@@ -13,7 +13,7 @@
 from django.conf.urls.defaults import *
 from agenda.views import Overview, View, SetActive, SetClosed, ItemUpdate, ItemCreate, ItemDelete, ItemPDF
 
-urlpatterns = patterns('agenda.views',
+urlpatterns = patterns('',
     url(r'^$',
         Overview.as_view(),
         name='item_overview',
