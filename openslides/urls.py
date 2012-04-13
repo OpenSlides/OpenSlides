@@ -10,9 +10,8 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.conf.urls.defaults import *
+from django.conf.urls.defaults import patterns, url, include
 from django.conf import settings
-from django.contrib import admin
 from django.views.generic import RedirectView
 from django.utils.importlib import import_module
 import settings
@@ -20,7 +19,6 @@ import settings
 handler500 = 'openslides.utils.views.server_error'
 
 urlpatterns = patterns('',
-
     # frontpage
     (r'^$', RedirectView.as_view(
         url='projector/control',
@@ -40,7 +38,7 @@ urlpatterns = patterns('',
 for plugin in settings.INSTALLED_PLUGINS:
     try:
         mod = import_module(plugin + '.urls')
-    except (ImportError):
+    except ImportError, err:
         continue
 
     plugin_name = mod.__name__.split('.')[0]

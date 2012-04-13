@@ -20,6 +20,8 @@ def get_version(version=None):
         mercurial_version = hg_version()
         if mercurial_version != 'unknown':
             sub = '.dev%s' % mercurial_version
+        else:
+            sub = '.dev'
 
     elif version[3] != 'final':
         mapping = {'alpha': 'a', 'beta': 'b', 'rc': 'c'}
