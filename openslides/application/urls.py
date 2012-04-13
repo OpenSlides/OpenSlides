@@ -13,7 +13,7 @@
 from django.conf.urls.defaults import *
 from django.utils.translation import ugettext as _
 
-from application.views import ViewPoll, ActivatePoll
+from application.views import ViewPoll, ActivatePoll, ApplicationPDF, ApplicationPollPDF
 
 urlpatterns = patterns('application.views',
     url(r'^$',
@@ -108,17 +108,17 @@ urlpatterns = patterns('application.views',
     ),
 
     url(r'^print/$',
-        'print_application',
+        ApplicationPDF.as_view(),
         name='print_applications',
     ),
 
     url(r'^(?P<application_id>\d+)/print/$',
-        'print_application',
+        ApplicationPDF.as_view(),
         name='print_application',
     ),
 
     url(r'^poll/(?P<poll_id>\d+)/print/$',
-        'print_application_poll',
+        ApplicationPollPDF.as_view(),
         name='print_application_poll',
     ),
 

@@ -1,3 +1,15 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+    openslides.utils.views
+    ~~~~~~~~~~~~~~~~~~~~~~
+
+    Views for utils.
+
+    :copyright: 2011 by the OpenSlides team, see AUTHORS.
+    :license: GNU GPL, see LICENSE for more details.
+"""
+
 try:
     import json
 except ImportError:
@@ -192,6 +204,10 @@ class DeleteView(RedirectView, SingleObjectMixin):
 
 class PDFView(PermissionMixin, View):
     filename = 'No_Name'
+    top_space = 3
+
+    def get_top_space(self):
+        return self.top_space
 
     def render_to_response(self, filename):
         response = HttpResponse(mimetype='application/pdf')
@@ -200,7 +216,7 @@ class PDFView(PermissionMixin, View):
 
         buffer = StringIO()
         pdf_document = SimpleDocTemplate(buffer)
-        story = [Spacer(1,3*cm)]
+        story = [Spacer(1, self.get_top_space()*cm)]
 
         self.append_to_pdf(story)
 

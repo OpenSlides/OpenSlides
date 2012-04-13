@@ -13,6 +13,7 @@ from __future__ import with_statement
 
 import csv
 import utils.csv_ext
+import os
 
 from django.shortcuts import redirect
 from django.contrib import messages
@@ -24,7 +25,14 @@ from django.utils.translation import ungettext
 from django.db import transaction
 from django.views.generic.base import RedirectView
 
+from reportlab.lib import colors
+from reportlab.lib.units import cm
+from reportlab.platypus import PageBreak, Paragraph, Spacer, Table, TableStyle
+
 from system import config
+from settings import SITE_ROOT
+from utils.pdf import stylesheet
+from utils.views import PDFView
 
 from agenda.models import Item
 
@@ -44,8 +52,6 @@ from utils.utils import template, permission_required, \
                                    render_to_forbitten, del_confirm_form, gen_confirm_form
 from utils.views import FormView
 from utils.template import Tab
-
-from utils.pdf import print_application, print_application_poll
 
 from participant.api import gen_username, gen_password
 
@@ -479,7 +485,7 @@ def reject_version(request, aversion_id):
     return redirect(reverse('application_view', args=[application.id]))
 
 
-@permission_required('application.can_manage_applications')
+@permission_required('application.can_manage_application')
 @template('application/import.html')
 def application_import(request):
     try:
@@ -586,6 +592,177 @@ def application_import(request):
     return {
         'form': form,
     }
+
+
+class ApplicationPDF(PDFView):
+    permission_required = 'application.can_manage_application'
+    filename = u'filename=%s.pdf;' % _("Applications")
+    top_space = 0
+
+    def append_to_pdf(self, story):
+        try:
+            application_id = self.kwargs['application_id']
+        except KeyError:
+            application_id = None
+        if application_id is None:  #print all applications
+            title = config["application_pdf_title"]
+            story.append(Paragraph(title, stylesheet['Heading1']))
+            preamble = config["application_pdf_preamble"]
+            if preamble:
+                story.append(Paragraph("%s" % preamble.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+            story.append(Spacer(0,0.75*cm))
+            # List of applications
+            for application in Application.objects.order_by('number'):
+                if application.number:
+                    story.append(Paragraph(_("Application No.")+" %s: %s" % (application.number, application.title), stylesheet['Heading3']))
+                else:
+                    story.append(Paragraph(_("Application No.")+"&nbsp;&nbsp;&nbsp;: %s" % (application.title), stylesheet['Heading3']))
+            # Applications details (each application on single page)
+            for application in Application.objects.order_by('number'):
+                story.append(PageBreak())
+                story = self.get_application(application, story)
+        else:  # print selected application
+            application = Application.objects.get(id=application_id)
+            if application.number:
+                number = application.number
+            else:
+                number = ""
+            filename = u'filename=%s%s.pdf;' % (_("Application"), str(number))
+            story = self.get_application(application, story)
+
+    def get_application(self, application, story):
+        # application number
+        if application.number:
+            story.append(Paragraph(_("Application No.")+" %s" % application.number, stylesheet['Heading1']))
+        else:
+            story.append(Paragraph(_("Application No."), stylesheet['Heading1']))
+
+        # submitter
+        cell1a = []
+        cell1a.append(Spacer(0,0.2*cm))
+        cell1a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Submitter"), stylesheet['Heading4']))
+        cell1b = []
+        cell1b.append(Spacer(0,0.2*cm))
+        if application.status == "pub":
+            cell1b.append(Paragraph("__________________________________________",stylesheet['Signaturefield']))
+            cell1b.append(Spacer(0,0.1*cm))
+            cell1b.append(Paragraph("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+unicode(application.submitter.profile), stylesheet['Small']))
+            cell1b.append(Spacer(0,0.2*cm))
+        else:
+            cell1b.append(Paragraph(unicode(application.submitter.profile), stylesheet['Normal']))
+
+        # supporters
+        cell2a = []
+        cell2a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font><seqreset id='counter'>" % _("Supporters"), stylesheet['Heading4']))
+        cell2b = []
+        for s in application.supporter.all():
+            cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % unicode(s.profile), stylesheet['Signaturefield']))
+        if application.status == "pub":
+            for x in range(0,application.missing_supporters):
+                cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; __________________________________________",stylesheet['Signaturefield']))
+        cell2b.append(Spacer(0,0.2*cm))
+
+        # status
+        note = ""
+        for n in application.notes:
+            note += "%s " % unicode(n)
+        cell3a = []
+        cell3a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Status"), stylesheet['Heading4']))
+        cell3b = []
+        if note != "":
+            if application.status == "pub":
+                cell3b.append(Paragraph(note, stylesheet['Normal']))
+            else:
+                cell3b.append(Paragraph("%s | %s" % (application.get_status_display(), note), stylesheet['Normal']))
+        else:
+            cell3b.append(Paragraph("%s" % application.get_status_display(), stylesheet['Normal']))
+
+        # table
+        data = []
+        data.append([cell1a,cell1b])
+        data.append([cell2a,cell2b])
+        data.append([cell3a,cell3b])
+
+        # voting results
+        if len(application.results) > 0:
+            cell4a = []
+            cell4a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Vote results"), stylesheet['Heading4']))
+            cell4b = []
+            ballotcounter = 0
+            for result in application.results:
+                ballotcounter += 1
+                if len(application.results) > 1:
+                    cell4b.append(Paragraph("%s. %s" % (ballotcounter, _("Vote")), stylesheet['Bold']))
+                cell4b.append(Paragraph("%s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s" % (_("Yes"), result[0], _("No"), result[1], _("Abstention"), result[2], _("Invalid"), result[3], _("Votes cast"), result[4]), stylesheet['Normal']))
+                cell4b.append(Spacer(0,0.2*cm))
+            data.append([cell4a,cell4b])
+
+        t=Table(data)
+        t._argW[0]=4.5*cm
+        t._argW[1]=11*cm
+        t.setStyle(TableStyle([ ('BOX', (0,0), (-1,-1), 1, colors.black),
+                                ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                              ]))
+        story.append(t)
+        story.append(Spacer(0,1*cm))
+
+        # title
+        story.append(Paragraph(application.title, stylesheet['Heading3']))
+        # text
+        story.append(Paragraph("%s" % application.text.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+        # reason
+        story.append(Paragraph(_("Reason")+":", stylesheet['Heading3']))
+        story.append(Paragraph("%s" % application.reason.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+        return story
+
+
+class ApplicationPollPDF(PDFView):
+    permission_required = 'application.can_manage_application'
+    top_space = 0
+
+    def get(self, request, *args, **kwargs):
+        self.poll = ApplicationPoll.objects.get(id=self.kwargs['poll_id'])
+        return super(ApplicationPollPDF, self).get(request, *args, **kwargs)
+
+    def get_filename(self):
+        filename = u'filename=%s%s_%s.pdf;' % (_("Application"), str(self.poll.application.number), _("Poll"))
+        return filename
+
+    def append_to_pdf(self, story):
+        imgpath = os.path.join(SITE_ROOT, 'static/images/circle.png')
+        circle = "<img src='%s' width='15' height='15'/>&nbsp;&nbsp;" % imgpath
+        cell = []
+        cell.append(Spacer(0,0.8*cm))
+        cell.append(Paragraph(_("Application No.")+" "+str(self.poll.application.number), stylesheet['Ballot_title']))
+        cell.append(Paragraph(self.poll.application.title, stylesheet['Ballot_subtitle']))
+        #cell.append(Paragraph(str(self.poll.ballot)+". "+_("Vote"), stylesheet['Ballot_description']))
+        cell.append(Spacer(0,0.5*cm))
+        cell.append(Paragraph(circle+_("Yes"), stylesheet['Ballot_option']))
+        cell.append(Paragraph(circle+_("No"), stylesheet['Ballot_option']))
+        cell.append(Paragraph(circle+_("Abstention"), stylesheet['Ballot_option']))
+        data= []
+        number = 1
+        # get ballot papers config values
+        ballot_papers_selection = config["application_pdf_ballot_papers_selection"]
+        ballot_papers_number = config["application_pdf_ballot_papers_number"]
+        # set number of ballot papers
+        if ballot_papers_selection == "1":
+            number = User.objects.filter(profile__type__iexact="delegate").count()
+        if ballot_papers_selection == "2":
+            number = int(User.objects.count() - 1)
+        if ballot_papers_selection == "0":
+            number = int(ballot_papers_number)
+        # print ballot papers
+        for user in xrange(number/2):
+            data.append([cell,cell])
+        rest = number % 2
+        if rest:
+            data.append([cell,''])
+        t=Table(data, 10.5*cm, 7.42*cm)
+        t.setStyle(TableStyle([ ('GRID', (0,0), (-1,-1), 0.25, colors.grey),
+                                ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                              ]))
+        story.append(t)
 
 
 class Config(FormView):
