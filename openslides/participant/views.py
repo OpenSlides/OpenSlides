@@ -339,6 +339,10 @@ def user_import(request):
         form = UserImportForm(request.POST, request.FILES)
         if form.is_valid():
             try:
+                # check for valid encoding (will raise UnicodeDecodeError if not)
+                request.FILES['csvfile'].read().decode('utf-8')
+                request.FILES['csvfile'].seek(0)
+
                 with transaction.commit_on_success():
 
                     old_users = {}
@@ -385,6 +389,7 @@ def user_import(request):
                     dialect = csv.Sniffer().sniff(request.FILES['csvfile'].readline())
                     dialect = utils.csv_ext.patchup(dialect)
                     request.FILES['csvfile'].seek(0)
+
                     for (lno, line) in enumerate(csv.reader(request.FILES['csvfile'], dialect=dialect)):
                         i += 1
                         if i > 0:
@@ -461,6 +466,8 @@ def user_import(request):
                     return redirect(reverse('user_overview'))
             except csv.Error:
                 message.error(request, _('Import aborted because of severe errors in the input file.'))
+            except UnicodeDecodeError:
+                messages.error(request, _('Import file has wrong character encoding, only UTF-8 is supported!'))
         else:
             messages.error(request, _('Please check the form for errors.'))
     else:

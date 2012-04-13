@@ -497,6 +497,10 @@ def application_import(request):
         if form.is_valid():
             import_permitted = form.cleaned_data['import_permitted']
             try:
+                # check for valid encoding (will raise UnicodeDecodeError if not)
+                request.FILES['csvfile'].read().decode('utf-8')
+                request.FILES['csvfile'].seek(0)
+                
                 users_generated = 0
                 applications_generated = 0
                 applications_modified = 0
@@ -581,6 +585,8 @@ def application_import(request):
 
             except csv.Error:
                 message.error(request, _('Import aborted because of severe errors in the input file.'))
+            except UnicodeDecodeError:
+                messages.error(request, _('Import file has wrong character encoding, only UTF-8 is supported!'))
         else:
             messages.error(request, _('Please check the form for errors.'))
     else:
