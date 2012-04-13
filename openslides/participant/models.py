@@ -42,6 +42,21 @@ class Profile(models.Model):
         self.user.set_password(self.firstpassword)
         self.user.save()
 
+
+    @models.permalink
+    def get_absolute_url(self, link='edit'):
+        """
+        Return the URL to this user.
+
+        link can be:
+        * edit
+        * delete
+        """
+        if link == 'edit':
+            return ('user_edit', [str(self.user.id)])
+        if link == 'delete':
+            return ('user_delete', [str(self.user.id)])
+
     def __unicode__(self):
         if self.group:
             return "%s (%s)" % (self.user.get_full_name(), self.group)

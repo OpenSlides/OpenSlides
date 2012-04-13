@@ -31,6 +31,7 @@ from django.views.generic import (
     ListView as _ListView,
 )
 from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.list import TemplateResponseMixin
 from django.utils.importlib import import_module
 from django.core.context_processors import csrf
 import settings
@@ -43,6 +44,14 @@ FREE_TO_GO = 'free to go'
 
 
 View = _View
+
+
+class SetCookieMixin(object):
+    def render_to_response(self, context, **response_kwargs):
+        response = TemplateResponseMixin.render_to_response(self, context, **response_kwargs)
+        if 'cookie' in context:
+            response.set_cookie(context['cookie'][0], context['cookie'][1])
+        return response
 
 
 class LoginMixin(object):
@@ -76,7 +85,7 @@ class TemplateView(PermissionMixin, _TemplateView):
         return context
 
 
-class ListView(PermissionMixin, _ListView):
+class ListView(PermissionMixin, SetCookieMixin, _ListView):
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
         template_manipulation.send(sender=self, request=self.request, context=context)

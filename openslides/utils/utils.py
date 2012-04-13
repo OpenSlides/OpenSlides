@@ -110,3 +110,16 @@ def _propper_unicode(text):
         res = text
     return res
 
+
+def decodedict(dict):
+    newdict = {}
+    for key in dict:
+        newdict[key] = [dict[key][0].encode('utf-8')]
+    return newdict
+
+
+def encodedict(dict):
+    newdict = {}
+    for key in dict:
+        newdict[key] = [unicode(dict[key][0].decode('utf-8'))]
+    return newdict

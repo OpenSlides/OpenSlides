@@ -15,9 +15,10 @@ from __future__ import with_statement
 import csv
 import utils.csv_ext
 from urllib import urlencode
+
 try:
     from urlparse import parse_qs
-except ImportError: # old python version, grab it from cgi
+except ImportError: # python <= 2.5 grab it from cgi
     from cgi import parse_qs
 
 from django.http import HttpResponse
@@ -33,9 +34,12 @@ from django.db import transaction
 
 from participant.models import Profile
 from participant.api import gen_username, gen_password
-from participant.forms import UserNewForm, UserEditForm, ProfileForm, UsersettingsForm, UserImportForm, GroupForm, AdminPasswordChangeForm
+from participant.forms import (UserNewForm, UserEditForm, ProfileForm,
+                               UsersettingsForm, UserImportForm, GroupForm,
+                               AdminPasswordChangeForm)
 from application.models import Application
-from utils.utils import template, permission_required, gen_confirm_form, ajax_request
+from utils.utils import (template, permission_required, gen_confirm_form,
+                         ajax_request, decodedict, encodedict)
 from utils.pdf import print_userlist, print_passwords
 from utils.template import Tab
 from system import config
@@ -46,17 +50,6 @@ from django.db.models import Avg, Max, Min, Count
 @permission_required('participant.can_see_participant')
 @template('participant/overview.html')
 def get_overview(request):
-    def decodedict(dict):
-        newdict = {}
-        for key in dict:
-            newdict[key] = [dict[key][0].encode('utf-8')]
-        return newdict
-
-    def encodedict(dict):
-        newdict = {}
-        for key in dict:
-            newdict[key] = [unicode(dict[key][0].decode('utf-8'))]
-        return newdict
     try:
         sortfilter = encodedict(parse_qs(request.COOKIES['participant_sortfilter']))
     except KeyError:
@@ -347,7 +340,7 @@ def user_import(request):
         if form.is_valid():
             try:
                 with transaction.commit_on_success():
-                    
+
                     old_users = {}
                     applications_mapped = 0
                     applications_review = 0
