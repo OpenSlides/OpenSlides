@@ -22,3 +22,11 @@ LANGUAGE_CODE = 'de'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '=(v@$58k$fcl4y8t2#q15y-9p=^45y&!$!ap$7xo6ub$akg-!5'
+
+# Put your OpenSlides Plugins in this List
+INSTALLED_PLUGINS = (
+
+)
+
+
+INSTALLED_APPS += INSTALLED_PLUGINS
