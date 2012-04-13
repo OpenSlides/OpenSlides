@@ -385,10 +385,15 @@ def user_import(request):
                     dialect = csv.Sniffer().sniff(request.FILES['csvfile'].readline())
                     dialect = utils.csv_ext.patchup(dialect)
                     request.FILES['csvfile'].seek(0)
-                    for line in csv.reader(request.FILES['csvfile'], dialect=dialect):
+                    for (lno, line) in enumerate(csv.reader(request.FILES['csvfile'], dialect=dialect)):
                         i += 1
                         if i > 0:
-                            (first_name, last_name, gender, group, type, committee, comment) = line[:7]
+                            try:
+                                (first_name, last_name, gender, group, type, committee, comment) = line[:7]
+                            except ValueError:
+                                messages.error(request, _('Ignoring malformed line %d in import file.') % (lno + 1))
+                                i -= 1
+                                continue
                             user = User()
                             user.last_name = last_name
                             user.first_name = first_name
@@ -451,7 +456,8 @@ def user_import(request):
                         messages.warning(request, ungettext('%d application was discarded.',
                                                     '%d applications were discarded.', applications_removed) % applications_removed)
 
-                    messages.success(request, _('%d new participants were successfully imported.') % i)
+                    if i > 0:
+                        messages.success(request, _('%d new participants were successfully imported.') % i)
                     return redirect(reverse('user_overview'))
             except csv.Error:
                 message.error(request, _('Import aborted because of severe errors in the input file.'))
