@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-12 16:50+0200\n"
+"POT-Creation-Date: 2012-04-13 21:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: openslides_settings.py:42 settings.py:60
+#: openslides_settings.py:42
 msgid "German"
 msgstr "Deutsch"
 
-#: openslides_settings.py:43 settings.py:61
+#: openslides_settings.py:43
 msgid "English"
 msgstr "Englisch"
 
@@ -246,14 +246,14 @@ msgstr "Triviale Änderung"
 msgid "Trivial changes don't create a new version."
 msgstr "Triviale Änderungen erzeugen keine neue Version."
 
-#: application/forms.py:49 application/models.py:53
+#: application/forms.py:49 application/models.py:54
 #: application/templates/application/overview.html:39
 #: application/templates/application/view.html:13
 #: application/templates/projector/Application.html:22 utils/pdf.py:311
 msgid "Submitter"
 msgstr "Antragsteller/in"
 
-#: application/forms.py:50 application/models.py:55
+#: application/forms.py:50 application/models.py:56
 #: application/templates/application/view.html:27 utils/pdf.py:324
 msgid "Supporters"
 msgstr "Unterstützer/innen"
@@ -261,6 +261,14 @@ msgstr "Unterstützer/innen"
 #: application/forms.py:58 participant/forms.py:87
 msgid "CSV File"
 msgstr "CSV-Datei"
+
+#: application/forms.py:59
+msgid "Import applications with status \"permitted\""
+msgstr "Anträge als \"Zugelassen\" importieren"
+
+#: application/forms.py:59
+msgid "Set the initial status for each application to \"permitted\""
+msgstr "Setzt den initialen Status für jeden Antrag auf \"zugelassen\""
 
 #: application/forms.py:64
 msgid "Number of (minimum) required supporters for a application"

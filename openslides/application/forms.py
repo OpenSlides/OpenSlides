@@ -56,7 +56,7 @@ class ApplicationManagerForm(ModelForm, CssClassMixin):
 
 class ApplicationImportForm(Form, CssClassMixin):
     csvfile = FileField(widget=FileInput(attrs={'size':'50'}), label=_("CSV File"))
-
+    import_permitted = BooleanField(required=False, label=_("Import applications with status \"permitted\""), help_text=_("Set the initial status for each application to \"permitted\""))
 
 class ConfigForm(Form, CssClassMixin):
     application_min_supporters = IntegerField(

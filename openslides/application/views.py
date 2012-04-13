@@ -495,6 +495,7 @@ def application_import(request):
     if request.method == 'POST':
         form = ApplicationImportForm(request.POST, request.FILES)
         if form.is_valid():
+            import_permitted = form.cleaned_data['import_permitted']
             try:
                 users_generated = 0
                 applications_generated = 0
@@ -563,6 +564,9 @@ def application_import(request):
                         application.title = form.cleaned_data['title']
                         application.text = form.cleaned_data['text']
                         application.reason = form.cleaned_data['reason']
+                        if import_permitted:
+                            application.status = 'per'
+
                         application.save(user, trivial_change=True)
 
                 if applications_generated:
