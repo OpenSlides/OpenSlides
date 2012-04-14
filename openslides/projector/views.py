@@ -18,6 +18,8 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.utils.datastructures import SortedDict
+from django.dispatch import receiver
+from django.template.loader import render_to_string
 
 
 from utils.views import TemplateView, RedirectView
@@ -31,8 +33,9 @@ from config.models import config
 from api import get_active_slide, set_active_slide
 from projector import SLIDE
 from models import ProjectorMessage
-from openslides.projector.signals import projector_messages
+from openslides.projector.signals import projector_messages, projector_control_box
 
+from django.utils.importlib import import_module
 import settings
 
 
@@ -69,12 +72,20 @@ class ControlView(TemplateView):
                 categories[slide.category] = []
             categories[slide.category].append(slide)
 
-        ordered_categories = SortedDict()
+        tmp_categories = categories
+        categories = SortedDict()
         for app in settings.INSTALLED_APPS:
-            if app in categories:
-                ordered_categories[app] = categories[app]
+            if app in tmp_categories:
+                tmp_categories[app].sort(key=lambda slide: slide.weight)
+                categories[app] = tmp_categories[app]
+
+
+        ## for receiver, response in projector_control_box.send(sender='ControllView'):
+            ## if response is not None:
+                ## categories[response[0]] = response[1]
+
         context.update({
-            'categories': ordered_categories,
+            'categories': categories,
             'countdown_visible': config['countdown_visible'],
             'countdown_time': config['agenda_countdown_time'],
             'projector_messages': self.get_projector_messages(),
@@ -195,3 +206,7 @@ def register_tab(request):
         selected=selected,
     )
 
+
+## @receiver(projector_control_box, dispatch_uid="openslides.projector.views.projector_box")
+## def projector_box(sender, **kwargs):
+    ## return ('header', 'text')

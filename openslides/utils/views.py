@@ -258,9 +258,6 @@ def server_error(request, template_name='500.html'):
 
 @receiver(template_manipulation, dispatch_uid="send_register_tab")
 def send_register_tab(sender, request, context, **kwargs):
-    #del kwargs['signal']
-    #register_tab.send(sender='register', request=request, context=context, **kwargs)
-
     tabs = []
     for app in settings.INSTALLED_APPS:
         try:

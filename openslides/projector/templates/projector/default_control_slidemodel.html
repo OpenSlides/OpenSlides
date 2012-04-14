@@ -1,0 +1,14 @@
+{% load staticfiles %}
+{% load i18n %}
+
+<ul style="line-height: 180%">
+{% for slide in slides.get_items %}
+    <li class="{% if slide.active %}activeline{% endif %}">
+        <a href="{% url projector_activate_slide slide.sid %}" class="activate_link {% if slide.active %}active{% endif %}">
+            <div></div>
+        </a>
+        <a href="{% url projector_edit_slide slide.id %}">{{ slide }}</a>
+    </li>
+{% endfor %}
+</ul>
+
