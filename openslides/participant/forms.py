@@ -19,19 +19,8 @@ from utils.forms import CssClassMixin
 from utils.translation_ext import LocalizedModelMultipleChoiceField
 
 # required for USER_VISIBLE_PERMISSIONS
-from agenda.models import Item
-from application.models import Application
-from assignment.models import Assignment
 from participant.models import Profile
-from config.models import ConfigStore
 
-USER_VISIBLE_PERMISSIONS = reduce(list.__add__, [
-    [p[0] for p in Item._meta.permissions],
-    [p[0] for p in Application._meta.permissions],
-    [p[0] for p in Assignment._meta.permissions],
-    [p[0] for p in Profile._meta.permissions],
-    [p[0] for p in ConfigStore._meta.permissions]
-])
 
 
 USER_APPLICATION_IMPORT_OPTIONS = [
@@ -63,26 +52,25 @@ class UsernameForm(ModelForm, CssClassMixin):
         model = User
         exclude = ('first_name', 'last_name', 'email', 'is_active','is_superuser', 'groups', 'password', 'is_staff', 'last_login', 'date_joined', 'user_permissions')
 
+
 class ProfileForm(ModelForm, CssClassMixin):
     class Meta:
         model = Profile
 
-class GroupForm(ModelForm, CssClassMixin):
-    permissions = LocalizedModelMultipleChoiceField(queryset=Permission.objects.filter(codename__in=USER_VISIBLE_PERMISSIONS))
 
-    def __init__(self, *args, **kwargs):
-        super(GroupForm, self).__init__(*args, **kwargs)
-        if kwargs.get('instance', None) is not None:
-            self.fields['permissions'].initial = [p.pk for p in kwargs['instance'].permissions.all()]
+class GroupForm(ModelForm, CssClassMixin):
+    permissions = LocalizedModelMultipleChoiceField(queryset=Permission.objects.all())
 
     class Meta:
         model = Group
         exclude = ('permissions',)
 
+
 class UsersettingsForm(UserEditForm, CssClassMixin):
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email')
+
 
 class UserImportForm(Form, CssClassMixin):
     csvfile = FileField(widget=FileInput(attrs={'size':'50'}), label=_("CSV File"))

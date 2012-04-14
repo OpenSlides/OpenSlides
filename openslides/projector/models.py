@@ -4,7 +4,7 @@ from api import register_slidemodel
 from projector import SlideMixin
 
 from config.models import config
-from utils.translation_ext import xugettext as _
+from utils.translation_ext import ugettext as _
 
 
 class ProjectorSlide(models.Model, SlideMixin):

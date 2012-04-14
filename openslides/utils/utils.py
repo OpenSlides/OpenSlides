@@ -24,6 +24,7 @@ from django.core.context_processors import csrf
 from django.contrib import messages
 from django.contrib.auth.models import Permission
 from django.utils.translation import ugettext as _
+from django.db.models import signals
 
 from openslides.utils.signals import template_manipulation
 
@@ -88,7 +89,7 @@ def render_to_forbitten(request, error=_("Sorry, you have no rights to see this 
     return HttpResponseForbidden(render_to_string('403.html', {'error': error}, context_instance=RequestContext(request)))
 
 
-def delete_default_permissions():
+def delete_default_permissions(**kwargs):
     for p in Permission.objects.all():
         if p.codename.startswith('add') or p.codename.startswith('delete') or p.codename.startswith('change'):
             p.delete()
@@ -123,3 +124,7 @@ def encodedict(dict):
     for key in dict:
         newdict[key] = [unicode(dict[key][0].decode('utf-8'))]
     return newdict
+
+
+signals.post_syncdb.connect(delete_default_permissions,
+    dispatch_uid = "openslides.utils.utils.delete_default_permissions")

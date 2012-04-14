@@ -14,7 +14,7 @@ from django.db import models
 
 from projector.api import register_slidemodel
 from projector.models import SlideMixin
-from utils.translation_ext import xugettext as _
+from utils.translation_ext import ugettext as _
 
 class BaseOption(models.Model):
     poll = models.ForeignKey('BasePoll')
