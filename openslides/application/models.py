@@ -528,6 +528,9 @@ class ApplicationPoll(BasePoll, CountInvalid, CountVotesCast):
     def get_absolute_url(self):
         return reverse('application_poll_view', args=[self.id])
 
+    def ballot(self):
+        return self.application.applicationpoll_set.filter(id__lte=self.id).count()
+
 
 from django.dispatch import receiver
 from openslides.config.signals import default_config_value
