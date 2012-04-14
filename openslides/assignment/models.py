@@ -17,7 +17,7 @@ from participant.models import Profile
 from projector.projector import SlideMixin
 from projector.api import register_slidemodel
 from poll.models import BasePoll, CountInvalid, CountVotesCast, BaseOption, PublishPollMixin
-from utils.translation_ext import xugettext as _
+from utils.translation_ext import ugettext as _
 
 class Assignment(models.Model, SlideMixin):
     prefix = 'assignment'

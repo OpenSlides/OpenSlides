@@ -14,7 +14,7 @@ from django.db import models
 from django.db.models import Q
 from django.contrib.auth.models import User
 
-from utils.translation_ext import xugettext as _
+from utils.translation_ext import ugettext as _
 from participant.api import gen_password
 
 class Profile(models.Model):

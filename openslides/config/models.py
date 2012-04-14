@@ -15,7 +15,7 @@ import base64
 from django.db import models
 from django.dispatch import receiver
 
-from utils.translation_ext import xugettext as _
+from utils.translation_ext import ugettext as _
 
 from openslides.config.signals import default_config_value
 

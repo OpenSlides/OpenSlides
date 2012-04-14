@@ -25,7 +25,7 @@ from projector.projector import SlideMixin
 from projector.api import register_slidemodel
 
 from agenda.api import is_summary
-from utils.translation_ext import xugettext as _
+from utils.translation_ext import ugettext as _
 
 
 class Item(MPTTModel, SlideMixin):

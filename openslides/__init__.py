@@ -29,6 +29,7 @@ def get_version(version=None):
 
     return main + sub
 
+
 def hg_version():
     import socket
     import os
@@ -68,6 +69,7 @@ def hg_version():
     socket.setdefaulttimeout(10.0)
 
     return version
+
 
 import os, site
 
