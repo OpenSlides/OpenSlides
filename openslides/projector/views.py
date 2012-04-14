@@ -40,6 +40,27 @@ class ControlView(TemplateView):
     template_name = 'projector/control.html'
     permission_required = 'projector.can_manage_projector'
 
+    def get_projector_messages(self):
+        messages = []
+        for receiver, name in projector_messages.send(sender='registerer', register=True):
+            if name is not None:
+                try:
+                    projector_message = ProjectorMessage.objects.get(def_name=name)
+                except ProjectorMessage.DoesNotExist:
+                    projector_message = ProjectorMessage(def_name=name, active=False)
+                    projector_message.save()
+                messages.append(projector_message)
+        return messages
+
+    def post(self, request, *args, **kwargs):
+        for message in self.get_projector_messages():
+            if message.def_name in request.POST:
+                message.active = True
+            else:
+                message.active = False
+            message.save()
+        return self.get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super(ControlView, self).get_context_data(**kwargs)
         categories = {}
@@ -56,6 +77,7 @@ class ControlView(TemplateView):
             'categories': ordered_categories,
             'countdown_visible': config['countdown_visible'],
             'countdown_time': config['agenda_countdown_time'],
+            'projector_messages': self.get_projector_messages(),
         })
         return context
 
@@ -119,38 +141,6 @@ def active_slide(request):
             context_instance=RequestContext(request)
         )
 
-
-class MessagesView(TemplateView):
-    permission_required = 'projector.can_manage_projector'
-    template_name = 'projector/messages.html'
-
-    def get_projector_messages(self):
-        messages = []
-        for receiver, name in projector_messages.send(sender='registerer', register=True):
-            if name is not None:
-                try:
-                    projector_message = ProjectorMessage.objects.get(def_name=name)
-                except ProjectorMessage.DoesNotExist:
-                    projector_message = ProjectorMessage(def_name=name, active=False)
-                    projector_message.save()
-                messages.append(projector_message)
-        return messages
-
-    def post(self, request, *args, **kwargs):
-        for message in self.get_projector_messages():
-            if message.def_name in request.POST:
-                message.active = True
-            else:
-                message.active = False
-            message.save()
-
-        return self.get(request, *args, **kwargs)
-
-
-    def get_context_data(self, **kwargs):
-        context = super(MessagesView, self).get_context_data(**kwargs)
-        context['projector_messages'] = self.get_projector_messages()
-        return context
 
 
 @permission_required('agenda.can_manage_agenda')

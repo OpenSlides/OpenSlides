@@ -71,7 +71,7 @@
 
     <div class="column">
     {% for category, slides in categories.items %}
-
+        {% if category != 'projector' %}
         <div class="portlet">
             <div class="portlet-header">{{ category }}</div>
             <div class="portlet-content">
@@ -100,11 +100,13 @@
                 {% endif %}
             {% endfor %}
             </div>
-        </div>
+        </div> <!-- end portlet-->
+       {% endif %}
     {% endfor %}
-    </div>
+    </div> <!-- end column-->
 
     <div class="column">
+        <!-- Projector Live View -->
         <div class="portlet">
             <div class="portlet-header">
                 {% trans "Projector Live View" %}
@@ -114,13 +116,68 @@
                 <iframe id="iframe" src="{% url projector_show %}"></iframe>
                 </div>
             </div>
-        </div>
-        <div class="portlet">
-            <div class="portlet-header">{% trans "Hidden information" %}</div>
-            <div class="portlet-content">
-            TODO: list hidden agenda items
-            </div>
-         </div>
-    </div>
+        </div> <!-- end portlet-->
 
+        <!-- Single Slides -->
+        {% for category, slides in categories.items %}
+            {% if category == 'projector' %}
+            <div class="portlet">
+                <div class="portlet-header">{{ category }}</div>
+                <div class="portlet-content">
+                {% for slide in slides %}
+                    {% if slide.model_slide %}
+                        <ul style="line-height: 180%">
+                        {% for slide in slide.get_items %}
+                            <li class="{% if slide.active %}activeline{% endif %}"><a href="{% url projector_activate_slide slide.sid %}"
+                            class="activate_link {% if slide.active %}active{% endif %}"
+                            ><div></div></a>
+                            {% for i in slide.get_ancestors %}&nbsp;&nbsp;&nbsp;{% endfor %}
+                            <a href="{% url projector_edit_slide slide.id %}">{{ slide }}</a>
+                            {% if slide.children.exists %}
+                                <a href="{% url projector_activate_summary slide.sid %}"><img src="{% static 'images/icons/view-list-tree.png' %}" title="{% trans 'Select item overview' %}"></a>
+                            {% endif %}
+                            </li>
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                    <hr>
+                        <ul style="line-height: 180%">
+                        <li><a href="{% url projector_activate_slide slide.key %}"
+                                class="activate_link {% if slide.active %}active{% endif %}"
+                        ><div></div></a>{{ slide.key }}</li>
+                        </ul>
+                    {% endif %}
+                {% endfor %}
+                </div>
+            </div> <!-- end portlet-->
+           {% endif %}
+        {% endfor %}
+
+        <!-- Messages (Countdown etc.)-->
+        <div class="portlet">
+            <div class="portlet-header">{% trans 'Messages' %}</div>
+            <div class="portlet-content">
+                <ul style="line-height: 180%">
+                <form action="" method="post">{% csrf_token %}
+                    <ul>
+                    {% for message in projector_messages %}
+                        <li>
+                            <input type="checkbox" name="{{ message }}"{% if message.active %} checked="checked"{% endif %}> {{ message }}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                    <button class="button" type="submit">
+                        <span class="icon ok">{%trans 'Save' %}</span>
+                    </button>
+                    <button class="button" type="submit" name="apply">
+                        <span class="icon apply">{%trans 'Apply' %}</span>
+                    </button>
+                    <button class="button" type="button" onclick="window.location='{% url projector_control %}'">
+                        <span class="icon cancel">{%trans 'Cancel' %}</span>
+                    </button>
+                </form>
+                </ul>
+            </div>
+        </div> <!-- end portlet-->
+    </div> <!-- end column -->
 {% endblock %}

@@ -70,7 +70,7 @@ class Slide(object):
 
 @receiver(projector_messages, dispatch_uid="projector_countdown")
 def countdown(sender, **kwargs):
-    name = _('Projector Countdown')
+    name = _('Countdown')
     if kwargs['register']:
         return name
     if name in kwargs['call']:

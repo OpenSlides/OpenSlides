@@ -14,7 +14,7 @@ from django.conf.urls.defaults import *
 
 from utils.views import CreateView
 
-from views import ControlView, ActivateView, MessagesView
+from views import ControlView, ActivateView
 from agenda.views import ItemUpdate
 from models import ProjectorSlide
 
@@ -52,11 +52,6 @@ urlpatterns = patterns('projector.views',
             permission_required='projector.can_manage_projector'
         ),
         name='projector_new',
-    ),
-
-    url(r'^messages/$',
-        MessagesView.as_view(),
-        name='projector_messages',
     ),
 
     url(r'^bigger/$', 'projector_edit', {'direction': 'bigger'},
