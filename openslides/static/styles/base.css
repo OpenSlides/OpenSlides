@@ -314,6 +314,9 @@ input[type="submit"], input[type="button"]  {
     padding:4px 10px !important;
     margin: 2px 0 2px 0;
 }
+#id_permissions {
+    height: 310px;
+}
 .button {
     border: 1px solid #D3D3D3;
     border-radius: 4px 4px 4px 4px;
