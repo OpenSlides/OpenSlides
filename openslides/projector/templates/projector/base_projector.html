@@ -12,12 +12,19 @@
     <ul>
         {% if perms.projector.can_manage_projector %}
         <li class="{% if request.path == url_projectoroverview %}selected{% endif %}">
-          <a href="{% url projector_control %}">{% trans 'Overview' %}</a></li>
+          <a href="{% url projector_control %}">{% trans 'Overview' %}</a>
+        </li>
+        <li class="{% if request.path == projector_messages %}selected{% endif %}">
+          <a href="{% url projector_messages %}">{% trans 'Messages' %}</a>
+        </li>
         {% endif %}
         {% if perms.projector.can_see_projector %}
         <li class="{% if request.path == url_projectornew %}selected{% endif %}">
-          <a href="{% url projector_new %}">{% trans 'New Slide' %}</a></li>
-        <li><a href="{% url projector_show %}"><img src="/static/images/icons/video-projector.png"> {% trans 'Projector view' %}</a></li>
+            <a href="{% url projector_new %}">{% trans 'New Slide' %}</a>
+        </li>
+        <li>
+            <a href="{% url projector_show %}"><img src="/static/images/icons/video-projector.png"> {% trans 'Projector view' %}</a>
+        </li>
         {% endif %}
     </ul>
 {% endblock %}
