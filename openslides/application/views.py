@@ -608,6 +608,7 @@ class ApplicationPDF(PDFView):
     permission_required = 'application.can_manage_application'
     filename = u'filename=%s.pdf;' % _("Applications")
     top_space = 0
+    document_title = ''
 
     def append_to_pdf(self, story):
         try:

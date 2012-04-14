@@ -203,11 +203,15 @@ class DeleteView(RedirectView, SingleObjectMixin):
 
 
 class PDFView(PermissionMixin, View):
-    filename = 'No_Name'
+    filename = _('No name')
     top_space = 3
+    document_title = _('No title')
 
     def get_top_space(self):
         return self.top_space
+
+    def get_document_title(self):
+        return self.document_title
 
     def render_to_response(self, filename):
         response = HttpResponse(mimetype='application/pdf')
@@ -216,6 +220,7 @@ class PDFView(PermissionMixin, View):
 
         buffer = StringIO()
         pdf_document = SimpleDocTemplate(buffer)
+        pdf_document.title = self.get_document_title()
         story = [Spacer(1, self.get_top_space()*cm)]
 
         self.append_to_pdf(story)
