@@ -1,70 +1,212 @@
 [
    {
-      "pk":2,
-      "model":"auth.group",
-      "fields":{
-         "name":"Beobachter",
-         "permissions":[
-            28,
-            56,
-            55,
-            73,
-            71,
-            50
+      "pk": 2,
+      "model": "auth.group",
+      "fields": {
+         "name": "Beobachter",
+         "permissions": [
+            [
+               "can_see_agenda",
+               "agenda",
+               "item"
+            ],
+            [
+               "can_create_application",
+               "application",
+               "application"
+            ],
+            [
+               "can_see_application",
+               "application",
+               "application"
+            ],
+            [
+               "can_nominate_other",
+               "assignment",
+               "assignment"
+            ],
+            [
+               "can_nominate_self",
+               "assignment",
+               "assignment"
+            ],
+            [
+               "can_see_assignment",
+               "assignment",
+               "assignment"
+            ],
+            [
+               "can_see_participant",
+               "participant",
+               "profile"
+            ],
+            [
+               "can_see_projector",
+               "projector",
+               "projectorslide"
+            ]
          ]
       }
    },
    {
-      "pk":3,
-      "model":"auth.group",
-      "fields":{
-         "name":"Delegierte",
-         "permissions":[
-            30,
-            28,
-            56,
-            57,
-            55,
-            72,
-            73,
-            71,
-            50
+      "pk": 3,
+      "model": "auth.group",
+      "fields": {
+         "name": "Delegierte",
+         "permissions": [
+            [
+               "can_see_agenda",
+               "agenda",
+               "item"
+            ],
+            [
+               "can_create_application",
+               "application",
+               "application"
+            ],
+            [
+               "can_see_application",
+               "application",
+               "application"
+            ],
+            [
+               "can_support_application",
+               "application",
+               "application"
+            ],
+            [
+               "can_nominate_other",
+               "assignment",
+               "assignment"
+            ],
+            [
+               "can_nominate_self",
+               "assignment",
+               "assignment"
+            ],
+            [
+               "can_see_assignment",
+               "assignment",
+               "assignment"
+            ],
+            [
+               "can_see_participant",
+               "participant",
+               "profile"
+            ],
+            [
+               "can_see_projector",
+               "projector",
+               "projectorslide"
+            ]
          ]
       }
    },
    {
-      "pk":4,
-      "model":"auth.group",
-      "fields":{
-         "name":"Tagesleitung",
-         "permissions":[
-            29,
-            30,
-            28,
-            56,
-            58,
-            55,
-            74,
-            72,
-            73,
-            71,
-            51,
-            50,
-            46
+      "pk": 4,
+      "model": "auth.group",
+      "fields": {
+         "name": "Tagesleitung",
+         "permissions": [
+            [
+               "can_manage_agenda",
+               "agenda",
+               "item"
+            ],
+            [
+               "can_see_agenda",
+               "agenda",
+               "item"
+            ],
+            [
+               "can_create_application",
+               "application",
+               "application"
+            ],
+            [
+               "can_manage_application",
+               "application",
+               "application"
+            ],
+            [
+               "can_see_application",
+               "application",
+               "application"
+            ],
+            [
+               "can_manage_assignment",
+               "assignment",
+               "assignment"
+            ],
+            [
+               "can_nominate_other",
+               "assignment",
+               "assignment"
+            ],
+            [
+               "can_nominate_self",
+               "assignment",
+               "assignment"
+            ],
+            [
+               "can_see_assignment",
+               "assignment",
+               "assignment"
+            ],
+            [
+               "can_manage_config",
+               "config",
+               "configstore"
+            ],
+            [
+               "can_manage_participant",
+               "participant",
+               "profile"
+            ],
+            [
+               "can_see_participant",
+               "participant",
+               "profile"
+            ],
+            [
+               "can_manage_projector",
+               "projector",
+               "projectorslide"
+            ],
+            [
+               "can_see_projector",
+               "projector",
+               "projectorslide"
+            ]
          ]
       }
    },
    {
-      "pk":5,
-      "model":"auth.group",
-      "fields":{
-         "name":"Teilnehmerverwaltung",
-         "permissions":[
-            30,
-            28,
-            55,
-            51,
-            50
+      "pk": 5,
+      "model": "auth.group",
+      "fields": {
+         "name": "Teilnehmerverwaltung",
+         "permissions": [
+            [
+               "can_see_agenda",
+               "agenda",
+               "item"
+            ],
+            [
+               "can_manage_participant",
+               "participant",
+               "profile"
+            ],
+            [
+               "can_see_participant",
+               "participant",
+               "profile"
+            ],
+            [
+               "can_see_projector",
+               "projector",
+               "projectorslide"
+            ]
          ]
       }
    }
