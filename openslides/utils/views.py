@@ -52,8 +52,7 @@ from utils import render_to_forbitten
 from openslides.utils.signals import template_manipulation
 from pdf import firstPage, laterPages
 
-FREE_TO_GO = 'free to go'
-
+NO_PERMISSION_REQUIRED = 'No permission required'
 
 View = _View
 
@@ -73,10 +72,10 @@ class LoginMixin(object):
 
 
 class PermissionMixin(object):
-    permission_required = FREE_TO_GO
+    permission_required = NO_PERMISSION_REQUIRED
 
     def dispatch(self, request, *args, **kwargs):
-        if self.permission_required == FREE_TO_GO:
+        if self.permission_required == NO_PERMISSION_REQUIRED:
             has_permission = True
         else:
             has_permission = request.user.has_perm(self.permission_required)
@@ -205,9 +204,9 @@ class DeleteView(RedirectView, SingleObjectMixin):
 
 
 class PDFView(PermissionMixin, View):
-    filename = _('No name')
+    filename = _('undefined-filename')
     top_space = 3
-    document_title = _('No title')
+    document_title = None
 
     def get_top_space(self):
         return self.top_space
