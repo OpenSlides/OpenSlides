@@ -21,7 +21,6 @@ class ProjectorSlide(models.Model, SlideMixin):
             'template': 'projector/ProjectorSlide.html',
         }
 
-
     def __unicode__(self):
         return self.title
 

@@ -15,9 +15,6 @@
         <li class="{% if request.path == url_projectoroverview %}selected{% endif %}">
           <a href="{% url projector_control %}">{% trans 'Overview' %}</a>
         </li>
-        <li class="{% if request.path == projector_messages %}selected{% endif %}">
-          <a href="{% url projector_messages %}">{% trans 'Messages' %}</a>
-        </li>
         {% endif %}
         {% if perms.projector.can_see_projector %}
         <li class="{% if request.path == url_projectornew %}selected{% endif %}">
