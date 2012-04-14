@@ -15,21 +15,9 @@ function presentation_reload() {
                 $('#content li').css({'font-size': data.bigger + '%'}, 200);
                 $('#content #sidebar').css({'font-size': '16px'}, 0);
                 $('#content').animate({'margin-top': data.up + 'em'}, 200);
-                /*
-                 * Gehe durch alle messages li durch. Wenn der Wert in der data steht, lasse es,
-                 * ansonsten füge ein neues li ein und lösche es aus der data weg.
-                 * Alles was jetzt noch in der data ist, muss als neues li eingefügt werden.
-                 */
-
-                //# $.each($('#messages li'), function (index, value) {
-                    //# message_id = value.attr('id').split('_')[1];
-                    //# if (message_id in data) {
-                        //# this.html(data[message_id]);
-                    //# }
-                //# });
                 $('#messages li').remove();
                 $.each(data['messages'], function (index, value){
-                    $('#messages ul').append('<li>' + value[1] + '</li>');
+                    $('#messages ul').append('<li id="message_' + value[0] + '">' + value[1] + '</li>');
                 });
                 setTimeout("presentation_reload()", 500);
             },
