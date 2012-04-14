@@ -11,14 +11,13 @@
 """
 
 from django.db import models
-from django.utils.translation import ugettext as _
 
 from participant.models import Profile
 
 from projector.projector import SlideMixin
 from projector.api import register_slidemodel
 from poll.models import BasePoll, CountInvalid, CountVotesCast, BaseOption, PublishPollMixin
-
+from utils.translation_ext import xugettext as _
 
 class Assignment(models.Model, SlideMixin):
     prefix = 'assignment'
@@ -116,10 +115,10 @@ class Assignment(models.Model, SlideMixin):
 
     class Meta:
         permissions = (
-            ('can_see_assignment', "Can see assignment"),
-            ('can_nominate_other', "Can nominate another person"),
-            ('can_nominate_self', "Can nominate themselves"),
-            ('can_manage_assignment', "Can manage assignment"),
+            ('can_see_assignment', _("Can see assignment", fixstr=True)),
+            ('can_nominate_other', _("Can nominate another person", fixstr=True)),
+            ('can_nominate_self', _("Can nominate themselves", fixstr=True)),
+            ('can_manage_assignment', _("Can manage assignment", fixstr=True)),
         )
 
 register_slidemodel(Assignment, category=_('Elections'))

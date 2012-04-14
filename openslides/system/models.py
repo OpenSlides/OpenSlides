@@ -13,7 +13,7 @@ from pickle import dumps, loads
 import base64
 
 from django.db import models
-from django.utils.translation import ugettext as _
+from utils.translation_ext import xugettext as _
 
 DEFAULT_DATA  = {
     'event_name': 'OpenSlides',
@@ -39,7 +39,7 @@ class ConfigStore(models.Model):
     class Meta:
         verbose_name = 'config'
         permissions = (
-            ('can_manage_system', "Can manage system configuration"),
+            ('can_manage_system', _("Can manage system configuration", fixstr=True)),
         )
 
 # TODO:

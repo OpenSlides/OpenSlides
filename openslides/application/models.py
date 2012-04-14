@@ -15,7 +15,6 @@ from datetime import datetime
 from django.db import models
 from django.db.models import Max
 from django.contrib.auth.models import User
-from django.utils.translation import ugettext as _
 from django.core.urlresolvers import reverse
 
 from projector.api import register_slidemodel
@@ -24,6 +23,7 @@ from projector.models import SlideMixin
 from participant.models import Profile
 from system import config
 from utils.utils import _propper_unicode
+from utils.translation_ext import xugettext as _
 from poll.models import BaseOption, BasePoll, CountVotesCast, CountInvalid, Vote
 
 
@@ -466,10 +466,10 @@ class Application(models.Model, SlideMixin):
 
     class Meta:
         permissions = (
-            ('can_see_application', "Can see application"),
-            ('can_create_application', "Can create application"),
-            ('can_support_application', "Can support application"),
-            ('can_manage_application', "Can manage application"),
+            ('can_see_application', _("Can see application", fixstr=True)),
+            ('can_create_application', _("Can create application", fixstr=True)),
+            ('can_support_application', _("Can support application", fixstr=True)),
+            ('can_manage_application', _("Can manage application", fixstr=True)),
         )
 
 

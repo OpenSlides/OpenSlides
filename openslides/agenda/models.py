@@ -16,7 +16,6 @@ except ImportError:
     import simplejson as json
 
 from django.db import models
-from django.utils.translation import ugettext as _
 
 from mptt.models import MPTTModel, TreeForeignKey
 
@@ -26,7 +25,7 @@ from projector.projector import SlideMixin
 from projector.api import register_slidemodel
 
 from agenda.api import is_summary
-
+from utils.translation_ext import xugettext as _
 
 class Item(MPTTModel, SlideMixin):
     """
@@ -124,8 +123,8 @@ class Item(MPTTModel, SlideMixin):
 
     class Meta:
         permissions = (
-            ('can_see_agenda', "Can see agenda"),
-            ('can_manage_agenda', "Can manage agenda"),
+            ('can_see_agenda', _("Can see agenda", fixstr=True)),
+            ('can_manage_agenda', _("Can manage agenda", fixstr=True)),
         )
 
     class MPTTMeta:

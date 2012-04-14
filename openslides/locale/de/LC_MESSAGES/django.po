@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-13 21:24+0200\n"
+"POT-Creation-Date: 2012-04-14 01:00+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -33,30 +33,38 @@ msgstr "Elternelement"
 msgid "Countdown (in seconds)"
 msgstr "Countdown (in Sekunden)"
 
-#: agenda/models.py:39 application/forms.py:41
-#: application/templates/application/view.html:249 projector/models.py:13
+#: agenda/models.py:38 application/forms.py:41
+#: application/templates/application/view.html:249 projector/models.py:12
 msgid "Title"
 msgstr "Titel"
 
-#: agenda/models.py:40 application/forms.py:42
-#: application/templates/application/view.html:250 projector/models.py:14
+#: agenda/models.py:39 application/forms.py:42
+#: application/templates/application/view.html:250 projector/models.py:13
 msgid "Text"
 msgstr "Text"
 
-#: agenda/models.py:41
+#: agenda/models.py:40
 msgid "Transcript"
 msgstr ""
 
-#: agenda/models.py:42
+#: agenda/models.py:41
 msgid "Closed"
 msgstr "Abgeschlossen"
 
-#: agenda/models.py:43 agenda/templates/agenda/overview.html:59
-#: projector/models.py:15
+#: agenda/models.py:42 agenda/templates/agenda/overview.html:59
+#: projector/models.py:14
 msgid "Weight"
 msgstr "Gewichtung"
 
-#: agenda/models.py:135 agenda/models.py:142 agenda/slides.py:7
+#: agenda/models.py:126
+msgid "Can see agenda"
+msgstr "Kann die Tagesordnung sehen"
+
+#: agenda/models.py:127
+msgid "Can manage agenda"
+msgstr "Kann die Tagesordnug verwalten"
+
+#: agenda/models.py:134 agenda/models.py:141 agenda/slides.py:7
 #: agenda/views.py:190 agenda/views.py:219
 #: agenda/templates/agenda/base_agenda.html:9
 #: agenda/templates/agenda/overview.html:7
@@ -67,7 +75,7 @@ msgstr "Gewichtung"
 msgid "Agenda"
 msgstr "Tagesordnung"
 
-#: agenda/models.py:135
+#: agenda/models.py:134
 msgid "Agenda Item"
 msgstr "Tagesordnungseintrag"
 
@@ -76,7 +84,7 @@ msgstr "Tagesordnungseintrag"
 msgid "Item <b>%s</b> and his children were successfully deleted."
 msgstr "Eintrag <b>%s</b> und seine Kindelemente wurde erfolgreich gelöscht."
 
-#: agenda/views.py:171
+#: agenda/views.py:171 utils/views.py:182
 #, python-format
 msgid "Item <b>%s</b> was successfully deleted."
 msgstr "Eintrag <b>%s</b> wurde erfolgreich gelöscht."
@@ -89,7 +97,7 @@ msgstr "Eintrag <b>%s</b> wurde erfolgreich gelöscht."
 #: assignment/templates/assignment/view.html:190
 #: assignment/templates/projector/Assignment.html:71
 #: assignment/templates/projector/Assignment.html:75 utils/pdf.py:364
-#: utils/pdf.py:444 utils/pdf.py:664 utils/utils.py:38
+#: utils/pdf.py:444 utils/pdf.py:664 utils/utils.py:38 utils/views.py:190
 msgid "Yes"
 msgstr "Ja"
 
@@ -99,7 +107,7 @@ msgstr "Ja"
 #: application/templates/projector/Application.html:34
 #: assignment/templates/assignment/view.html:187
 #: assignment/templates/projector/Assignment.html:72 utils/pdf.py:364
-#: utils/pdf.py:445 utils/pdf.py:664 utils/utils.py:38
+#: utils/pdf.py:445 utils/pdf.py:664 utils/utils.py:38 utils/views.py:190
 msgid "No"
 msgstr "Nein"
 
@@ -107,8 +115,8 @@ msgstr "Nein"
 msgid "Yes, with all child items."
 msgstr "Ja, mit allen Kindelementen."
 
-#: agenda/views.py:183 agenda/views.py:185 participant/views.py:194
-#: participant/views.py:307 utils/utils.py:46
+#: agenda/views.py:183 agenda/views.py:185 participant/views.py:187
+#: participant/views.py:300 utils/utils.py:46 utils/views.py:187
 #, python-format
 msgid "Do you really want to delete <b>%s</b>?"
 msgstr "Soll <b>%s</b> wirklich gelöscht werden?"
@@ -258,7 +266,7 @@ msgstr "Antragsteller/in"
 msgid "Supporters"
 msgstr "Unterstützer/innen"
 
-#: application/forms.py:58 participant/forms.py:87
+#: application/forms.py:58 participant/forms.py:88
 msgid "CSV File"
 msgstr "CSV-Datei"
 
@@ -306,115 +314,131 @@ msgstr "Titel für PDF-Dokuemt (alle Anträge)"
 msgid "Preamble text for PDF document (all applications)"
 msgstr "Einleitungstext für PDF-Dokument (alle Anträge)"
 
-#: application/models.py:32
+#: application/models.py:33
 msgid "Published"
 msgstr "Veröffentlicht"
 
-#: application/models.py:33 application/templates/application/overview.html:22
+#: application/models.py:34 application/templates/application/overview.html:22
 msgid "Permitted"
 msgstr "Zugelassen"
 
-#: application/models.py:34 application/templates/application/overview.html:23
+#: application/models.py:35 application/templates/application/overview.html:23
 #: application/templates/application/view.html:174
 msgid "Accepted"
 msgstr "Angenommen"
 
-#: application/models.py:35 application/templates/application/overview.html:24
+#: application/models.py:36 application/templates/application/overview.html:24
 #: application/templates/application/view.html:179
 msgid "Rejected"
 msgstr "Abgelehnt"
 
-#: application/models.py:36
+#: application/models.py:37
 msgid "Withdrawed"
 msgstr "Zurückgezogen"
 
-#: application/models.py:37 application/templates/application/view.html:187
+#: application/models.py:38 application/templates/application/view.html:187
 msgid "Adjourned"
 msgstr "Vertagt"
 
 # please check!
-#: application/models.py:38 application/templates/application/view.html:190
+#: application/models.py:39 application/templates/application/view.html:190
 msgid "Not Concerned"
 msgstr "Nicht befasst"
 
 # please check!
-#: application/models.py:39 application/templates/application/view.html:193
+#: application/models.py:40 application/templates/application/view.html:193
 msgid "Commited a bill"
 msgstr "Verwiesen (in Ausschuss)"
 
-#: application/models.py:40
+#: application/models.py:41
 msgid "Rejected (not permitted)"
 msgstr "Verworfen (nicht zulässig)"
 
-#: application/models.py:41 application/templates/application/overview.html:26
+#: application/models.py:42 application/templates/application/overview.html:26
 msgid "Needs Review"
 msgstr "Benötigt Review"
 
-#: application/models.py:124
+#: application/models.py:125
 msgid "Searching for supporters."
 msgstr "Auf Unterstützersuche."
 
-#: application/models.py:126
+#: application/models.py:127
 msgid "Not yet permitted."
 msgstr "Noch nicht zugelassen."
 
-#: application/models.py:128
+#: application/models.py:129
 msgid "Not yet permitted changes."
 msgstr "Noch nicht zugelassene Änderungen."
 
-#: application/models.py:188
+#: application/models.py:189
 #, python-format
 msgid "Version %s modified"
 msgstr "Version %s bearbeitet"
 
-#: application/models.py:197
+#: application/models.py:198
 #, python-format
 msgid "Version %s created"
 msgstr "Version %s erstellt"
 
-#: application/models.py:206
+#: application/models.py:207
 msgid "Supporters removed"
 msgstr "Unterstützer/innen gelöscht"
 
-#: application/models.py:215
+#: application/models.py:216
 #, python-format
 msgid "Status reseted to: %s"
 msgstr "Status zurückgesetzt auf: %s"
 
-#: application/models.py:228 application/views.py:170
+#: application/models.py:229 application/views.py:170
 #, python-format
 msgid "Supporter: +%s"
 msgstr "Unterstützer/in: +%s"
 
-#: application/models.py:238 application/views.py:181
+#: application/models.py:239 application/views.py:181
 #, python-format
 msgid "Supporter: -%s"
 msgstr "Unterstützer/in: -%s"
 
-#: application/models.py:254
+#: application/models.py:255
 #, python-format
 msgid "Number set: %s"
 msgstr "Nummer gesetzt: %s"
 
-#: application/models.py:267
+#: application/models.py:268
 #, python-format
 msgid "Version %s permitted"
 msgstr "Version %s zugelassen"
 
-#: application/models.py:281
+#: application/models.py:282
 #, python-format
 msgid "Version %s not permitted"
 msgstr "Version %s nicht zugelassen"
 
-#: application/models.py:307
+#: application/models.py:308
 msgid "Status modified"
 msgstr "Status geändert"
 
-#: application/models.py:423
+#: application/models.py:424
 msgid "Poll created"
 msgstr "Abstimmung erstellt"
 
-#: application/models.py:496 application/views.py:620
+#: application/models.py:469
+msgid "Can see application"
+msgstr "Kann Anträge sehen"
+
+#: application/models.py:470
+msgid "Can create application"
+msgstr "Kann Anträge erstellen"
+
+#: application/models.py:471
+msgid "Can support application"
+msgstr "Kann Anträge unterstützen"
+
+#: application/models.py:472
+msgid "Can manage application"
+msgstr "Kann Anträge verwalten"
+
+#: application/models.py:497 application/views.py:630
 #: application/templates/application/base_application.html:8
 #: application/templates/application/overview.html:6
 #: application/templates/application/overview.html:9
@@ -441,9 +465,9 @@ msgstr "Neuer Antrag wurde erfolgreich angelegt."
 msgid "Application was successfully modified."
 msgstr "Antrag wurde erfolgreich geändert."
 
-#: application/views.py:192 application/views.py:581 assignment/views.py:123
-#: participant/views.py:171 participant/views.py:292 participant/views.py:321
-#: participant/views.py:466 system/views.py:53 utils/views.py:132
+#: application/views.py:192 application/views.py:591 assignment/views.py:126
+#: participant/views.py:164 participant/views.py:285 participant/views.py:314
+#: participant/views.py:472 system/views.py:53 utils/views.py:142
 msgid "Please check the form for errors."
 msgstr "Bitte kontrollieren Sie das Formular nach Fehlern."
 
@@ -546,45 +570,49 @@ msgstr "FEHLER beim Zurückweisen der Version."
 msgid "Do you really want to reject version <b>%s</b>?"
 msgstr "Soll Version <b>%s</b> wirklich zurückgewiesen werden?"
 
-#: application/views.py:487 participant/views.py:337
+#: application/views.py:487 participant/views.py:330
 msgid ""
 "The import function is available for the superuser (without user profile) "
 "only."
 msgstr ""
 "Die Importfunktion ist nur für den 'superuser' (ohne Nutzerprofil) verfügbar."
 
-#: application/views.py:513 application/views.py:517 application/views.py:523
-#: application/views.py:526
+#: application/views.py:518 application/views.py:522 application/views.py:528
+#: application/views.py:531 participant/views.py:399
 #, python-format
 msgid "Ignoring malformed line %d in import file."
 msgstr "Fehlerhafte Zeile %d der Quelldatei wurde ignoriert."
 
-#: application/views.py:569
+#: application/views.py:577
 #, python-format
 msgid "%d application was successfully imported."
 msgid_plural "%d applications were successfully imported."
 msgstr[0] "%d Antrag wurde erfolgreich importiert."
 msgstr[1] "%d Anträge wurden erfolgreich importiert."
 
-#: application/views.py:572
+#: application/views.py:580
 #, python-format
 msgid "%d application was successfully modified."
 msgid_plural "%d applications were successfully modified."
 msgstr[0] "%d Antrag wurde erfolgreich geändert."
 msgstr[1] "%d Anträge wurden erfolgreich geändert."
 
-#: application/views.py:575
+#: application/views.py:583
 #, python-format
 msgid "%d new user was added."
 msgid_plural "%d new users were added."
 msgstr[0] "%d neuer Nutzer wurde erstellt."
 msgstr[1] "%d neue Nutzer wurden erstellt."
 
-#: application/views.py:579 participant/views.py:464
+#: application/views.py:587 participant/views.py:468
 msgid "Import aborted because of severe errors in the input file."
 msgstr "Import auf Grund von schweren Fehlern in der Quelldatei abgebrochen."
 
-#: application/views.py:583
+#: application/views.py:589 participant/views.py:470
+msgid "Import file has wrong character encoding, only UTF-8 is supported!"
+msgstr "Die Quelldatei benutzt eine ungültige Zeichenkodierung, es wird nur UTF-8 wird unterstützt!"
+
+#: application/views.py:593
 msgid ""
 "Attention: Existing applications will be modified if you import new "
 "applications with the same number."
@@ -592,7 +620,7 @@ msgstr ""
 "Achtung: Existierende Anträge werden geändert wenn Sie neue Anträge mit "
 "identischer Nummer importieren."
 
-#: application/views.py:584
+#: application/views.py:594
 msgid ""
 "Attention: Importing an application without a number multiple times will "
 "create duplicates."
@@ -600,7 +628,7 @@ msgstr ""
 "Achtung: Bei mehrfachem Import eines Antrags ohne Nummer können Duplikate "
 "entstehen."
 
-#: application/views.py:613
+#: application/views.py:623
 msgid "Application settings successfully saved."
 msgstr "Antrags-Einstellungen erfolgreich gespeichert."
 
@@ -741,12 +769,12 @@ msgid "Results of"
 msgstr "Ergebnis der"
 
 #: application/templates/application/poll_view.html:23
-#: assignment/templates/assignment/poll_view.html:13 poll/models.py:151
+#: assignment/templates/assignment/poll_view.html:13 poll/models.py:154
 msgid "majority"
 msgstr "Mehrheit"
 
 #: application/templates/application/poll_view.html:23
-#: assignment/templates/assignment/poll_view.html:13 poll/models.py:153
+#: assignment/templates/assignment/poll_view.html:13 poll/models.py:156
 msgid "undocumented"
 msgstr "nicht erfasst"
 
@@ -966,58 +994,74 @@ msgstr "Titel für PDF-Dokument (alle Wahlen)"
 msgid "Preamble text for PDF document (all elections)"
 msgstr "Einleitungstext für PDF-Dokument (alle Wahlen) "
 
-#: assignment/models.py:26 assignment/templates/assignment/overview.html:15
+#: assignment/models.py:25 assignment/templates/assignment/overview.html:15
 #: assignment/templates/assignment/view.html:30
 msgid "Searching for candidates"
 msgstr "Auf Kandidatensuche"
 
-#: assignment/models.py:27 assignment/templates/assignment/overview.html:16
+#: assignment/models.py:26 assignment/templates/assignment/overview.html:16
 #: assignment/templates/assignment/view.html:32
 msgid "Voting"
 msgstr "Im Wahlvorgang"
 
-#: assignment/models.py:28 assignment/templates/assignment/overview.html:17
+#: assignment/models.py:27 assignment/templates/assignment/overview.html:17
 msgid "Finished"
 msgstr "Abgeschlossen"
 
-#: assignment/models.py:31
+#: assignment/models.py:30
 msgid "Name"
 msgstr "Name"
 
-#: assignment/models.py:32 poll/models.py:86
+#: assignment/models.py:31 poll/models.py:86
 msgid "Description"
 msgstr "Beschreibung"
 
-#: assignment/models.py:33 assignment/templates/assignment/view.html:18
+#: assignment/models.py:32 assignment/templates/assignment/view.html:18
 #: assignment/templates/projector/Assignment.html:20 utils/pdf.py:499
 msgid "Number of available posts"
 msgstr "Anzahl der zur Wahl stehenden Posten"
 
-#: assignment/models.py:34
+#: assignment/models.py:33
 msgid "Short description (for ballot paper)"
 msgstr "Kurzbeschreibung (für Stimmzettel)"
 
-#: assignment/models.py:46
+#: assignment/models.py:45
 #, python-format
 msgid "%s is not a valid status."
 msgstr "%s ist kein gültiger Status."
 
-#: assignment/models.py:48
+#: assignment/models.py:47
 #, python-format
 msgid "The assignment status is already %s."
 msgstr "Der Wahlstatus ist bereits %s."
 
-#: assignment/models.py:57
+#: assignment/models.py:56
 #, python-format
 msgid "<b>%s</b> is already a candidate."
 msgstr "<b>%s</b> ist bereits ein/e Kandidat/in."
 
-#: assignment/models.py:67
+#: assignment/models.py:66
 #, python-format
 msgid "%s is no candidate"
 msgstr "%s ist kein/e Kandidat/in"
 
-#: assignment/models.py:125 assignment/views.py:300
+#: assignment/models.py:118
+msgid "Can see assignment"
+msgstr "Kann Wahlen sehen"
+
+#: assignment/models.py:119
+msgid "Can nominate another person"
+msgstr "Kann eine andere Person wählen"
+
+#: assignment/models.py:120
+msgid "Can nominate themselves"
+msgstr "Kann sich selbst wählen"
+
+#: assignment/models.py:121
+msgid "Can manage assignment"
+msgstr "Kann Wahlen verwalten"
+
+#: assignment/models.py:124 assignment/views.py:303
 #: assignment/templates/assignment/base_assignment.html:13
 #: assignment/templates/assignment/overview.html:6
 #: assignment/templates/assignment/overview.html:9
@@ -1031,83 +1075,83 @@ msgstr "Wahlen"
 msgid "Candidate <b>%s</b> was nominated successfully."
 msgstr "Kandidat/in <b>%s</b> wurde erfolgreich vorgeschlagen."
 
-#: assignment/views.py:115
+#: assignment/views.py:118
 msgid "New election was successfully created."
 msgstr "Neue Wahl wurde erfolgreich angelegt."
 
-#: assignment/views.py:117
+#: assignment/views.py:120
 msgid "Election was successfully modified."
 msgstr "Wahl wurde erfolgreich geändert."
 
-#: assignment/views.py:137
+#: assignment/views.py:140
 #, python-format
 msgid "Election <b>%s</b> was successfully deleted."
 msgstr "Wahl <b>%s</b> wurde erfolgreich gelöscht."
 
-#: assignment/views.py:150
+#: assignment/views.py:153
 #, python-format
 msgid "Election status was set to: <b>%s</b>."
 msgstr "Wahlstatus wurde gesetzt auf: <b>%s</b>."
 
-#: assignment/views.py:161
+#: assignment/views.py:164
 msgid "You have set your candidature successfully."
 msgstr "Sie haben Ihre Kandidatur erfolgreich gesetzt."
 
-#: assignment/views.py:166
+#: assignment/views.py:169
 msgid "You can't candidate. Your user account is only for administration."
 msgstr ""
 "Sie können nicht kandidieren. Ihr Nutzerkonto ist nur zur Administration."
 
-#: assignment/views.py:174
+#: assignment/views.py:177
 msgid "You have withdrawn your candidature successfully."
 msgstr "Sie haben Ihre Kandidatur erfolgreich zurückgezogen."
 
-#: assignment/views.py:185
+#: assignment/views.py:188
 #, python-format
 msgid "Candidate <b>%s</b> was withdrawn successfully."
 msgstr "Die Kandidatur von <b>%s</b> wurde erfolgreich zurückgezogen."
 
-#: assignment/views.py:188
+#: assignment/views.py:191
 #, python-format
 msgid "Do you really want to withdraw <b>%s</b> from the election?"
 msgstr "Soll <b>%s</b> wirklich von der Wahl zurückgezogen werden?"
 
-#: assignment/views.py:203
+#: assignment/views.py:206
 msgid "New ballot was successfully created."
 msgstr "Neuer Wahlgang erfolgreich angelegt."
 
-#: assignment/views.py:229
+#: assignment/views.py:232
 msgid "Poll successfully set to published."
 msgstr "Abstimmung wurde erfolgreich veröffentlicht."
 
-#: assignment/views.py:231
+#: assignment/views.py:234
 msgid "Poll successfully set to unpublished."
 msgstr "Abstimmung wurde erfolgreich unveröffentlicht."
 
-#: assignment/views.py:233
+#: assignment/views.py:236
 #, python-format
 msgid "Poll ID %d does not exist."
 msgstr "Abstimmungs-ID %d existiert nicht."
 
-#: assignment/views.py:244
+#: assignment/views.py:247
 #, python-format
 msgid "The %s. ballot was successfully deleted."
 msgstr "Der %s. Wahlgang wurde erfolgreich gelöscht."
 
-#: assignment/views.py:246
+#: assignment/views.py:249
 #, python-format
 msgid "the %s. ballot"
 msgstr "der %s. Wahlgang"
 
-#: assignment/views.py:259
+#: assignment/views.py:262
 msgid "not elected"
 msgstr "nicht gewählt"
 
-#: assignment/views.py:262 utils/pdf.py:584
+#: assignment/views.py:265 utils/pdf.py:584
 msgid "elected"
 msgstr "gewählt"
 
-#: assignment/views.py:293
+#: assignment/views.py:296
 msgid "Election settings successfully saved."
 msgstr "Wahl-Einstellungen wurden erfolgreich gespeichert."
 
@@ -1267,27 +1311,27 @@ msgstr "Kandidat/in ist gewählt"
 msgid "No ballots available."
 msgstr "Keine Wahlgänge vorhanden."
 
-#: participant/forms.py:37
+#: participant/forms.py:38
 msgid "Keep applications, try to reassign submitter"
 msgstr "Anträge beibehalten, versuchen Antragssteller erneut zuzuweisen"
 
-#: participant/forms.py:38
+#: participant/forms.py:39
 msgid "Keep applications, set status to \"needs review\""
 msgstr "Anträge beibehalten, Stauts auf \"Benötigt Review\" setzen"
 
-#: participant/forms.py:39
+#: participant/forms.py:40
 msgid "Discard applications"
 msgstr "Alle Anträge löschen"
 
-#: participant/forms.py:43 participant/forms.py:52
+#: participant/forms.py:44 participant/forms.py:53
 msgid "First name"
 msgstr "Vorname"
 
-#: participant/forms.py:44 participant/forms.py:53
+#: participant/forms.py:45 participant/forms.py:54
 msgid "Last name"
 msgstr "Nachname"
 
-#: participant/forms.py:88
+#: participant/forms.py:89
 msgid "For existing applications"
 msgstr "Bei existierenden Anträgen"
 
@@ -1341,88 +1385,99 @@ msgstr "Kommentar"
 msgid "First Password"
 msgstr "Erst-Passwort"
 
-#: participant/views.py:163
+#: participant/models.py:68
+msgid "Can see participant"
+msgstr "Kann Teilnehmer/inen sehen"
+
+#: participant/models.py:69
+msgid "Can manage participant"
+msgstr "Kann Teilnehmer/inen verwalten"
+
+#: participant/views.py:156
 msgid "New participant was successfully created."
 msgstr "Neue/r Teilnehmer/in wurde erfolgreich angelegt."
 
-#: participant/views.py:165
+#: participant/views.py:158
 msgid "Participant was successfully modified."
 msgstr "Teilnehmer/in wurde erfolgreich geändert."
 
-#: participant/views.py:192
+#: participant/views.py:185
 #, python-format
 msgid "Participant <b>%s</b> was successfully deleted."
 msgstr "Teilnehmer/in <b>%s</b> wurde erfolgreich gelöscht."
 
-#: participant/views.py:205 participant/views.py:224
+#: participant/views.py:198 participant/views.py:217
 #, python-format
 msgid "Participant %d does not exist."
 msgstr "Teilnehmer/in %d existiert nicht."
 
-#: participant/views.py:270
+#: participant/views.py:263
 #, python-format
 msgid "Group name \"%s\" is reserved for internal use."
 msgstr "Der Gruppenname \"%s\" ist für interne Verwendung reserviert."
 
-#: participant/views.py:284
+#: participant/views.py:277
 msgid "New group was successfully created."
 msgstr "Neue Gruppe wurde erfolgreich angelegt."
 
-#: participant/views.py:286
+#: participant/views.py:279
 msgid "Group was successfully modified."
 msgstr "Gruppe wurde erfolgreich geändert."
 
-#: participant/views.py:305
+#: participant/views.py:298
 #, python-format
 msgid "Group <b>%s</b> was successfully deleted."
 msgstr "Gruppe <b>%s</b>  wurde erfolgreich gelöscht."
 
-#: participant/views.py:319
+#: participant/views.py:312
 msgid "User settings successfully saved."
 msgstr "Nutzereinstellungen wurden erfolgreich gespeichert."
 
-#: participant/views.py:385
+#: participant/views.py:382
 msgid "Supporters removed after user import."
 msgstr "Unterstützer/innen nach Benutzerimport zurückgesetzt."
 
-#: participant/views.py:432
+#: participant/views.py:435
 #, python-format
 msgid "Reassigned to \"%s\" after (re)importing users."
 msgstr "Nach Benutzerimport erneut \"%s\" zugeordnet."
 
-#: participant/views.py:435 participant/views.py:449
+#: participant/views.py:438 participant/views.py:452
 #, python-format
 msgid "Could not reassing application %d - object not found!"
-msgstr "Antrag Id#%d konnte nicht neu zugewiesen werden - "
-"Das Objekt wurde nicht gefunden!"
+msgstr ""
+"Antrag Id#%d konnte nicht neu zugewiesen werden - Das Objekt wurde nicht "
+"gefunden!"
 
-#: participant/views.py:452
+#: participant/views.py:455
 #, python-format
 msgid "%d application could not be reassigned and needs a review!"
 msgid_plural "%d applications could not be reassigned and need a review!"
-msgstr[0] "%d Antrag konnte nicht neu zugewiesen werden and benötigt ein Review!"
-msgstr[1] "%d Anträge konnten nicht neu zugewiesen werden und benötigen ein Review!"
+msgstr[0] ""
+"%d Antrag konnte nicht neu zugewiesen werden and benötigt ein Review!"
+msgstr[1] ""
+"%d Anträge konnten nicht neu zugewiesen werden und benötigen ein Review!"
 
-#: participant/views.py:455
+#: participant/views.py:458
 #, python-format
 msgid "%d application was successfully reassigned."
 msgid_plural "%d applications were successfully reassigned."
 msgstr[0] "%d Antrag wurde erfolgreich neu zugewiesen."
 msgstr[1] "%d Anträge wurden erfolgreich neu zugewiesen."
 
-#: participant/views.py:458
+#: participant/views.py:461
 #, python-format
 msgid "%d application was discarded."
 msgid_plural "%d applications were discarded."
 msgstr[0] "%d Antrag wurde gelöscht."
 msgstr[1] "%d Anträge wurden gelöscht."
 
-#: participant/views.py:461
+#: participant/views.py:465
 #, python-format
 msgid "%d new participants were successfully imported."
 msgstr "%d neue Teilnehmer/innen wurden erfolgreich importiert."
 
-#: participant/views.py:468
+#: participant/views.py:474
 msgid ""
 "Attention: All existing participants will be removed if you import new "
 "participants."
@@ -1430,29 +1485,30 @@ msgstr ""
 "Achtung: Alle existierenden Teilnehmer/innen werden gelöscht, wenn Sie neue "
 "Teilnehmer/innen importieren."
 
-#: participant/views.py:470
+#: participant/views.py:476
 msgid "Attention: Supporters from all existing applications will be removed."
 msgstr ""
 "Achtung: Alle Unterstützer/innen werden von existiernden Anträgen gelöscht."
 
-#: participant/views.py:471
+#: participant/views.py:477
 msgid ""
 "Attention: Applications which can't be mapped to new users will be set to "
 "'Needs Review'."
-msgstr "Achtung: Anträge welche keinem Nutzer zugeordnet werden können"
-" bekommen automatisch den Status \"Benötigt Review\"."
+msgstr ""
+"Achtung: Anträge welche keinem Nutzer zugeordnet werden können bekommen "
+"automatisch den Status \"Benötigt Review\"."
 
-#: participant/views.py:483
+#: participant/views.py:489
 #, python-format
 msgid "The Password for <b>%s</b> was successfully reset."
 msgstr "Das Passwort für <b>%s</b> wurde erfolgreich zurückgesetzt."
 
-#: participant/views.py:485
+#: participant/views.py:491
 #, python-format
 msgid "Do you really want to reset the password for <b>%s</b>?"
 msgstr "Soll das Passwort für <b>%s</b> wirklich zurückgesetzt werden?"
 
-#: participant/views.py:493
+#: participant/views.py:499
 #: participant/templates/participant/base_participant.html:11
 #: participant/templates/participant/overview.html:5
 #: participant/templates/participant/overview.html:15
@@ -1634,14 +1690,22 @@ msgstr "Ungültige Stimmen"
 msgid "votes"
 msgstr "Stimmen"
 
-#: projector/models.py:26 projector/views.py:155
+#: projector/models.py:21
+msgid "Can manage the projector"
+msgstr "Kann den Beamer verwalten"
+
+#: projector/models.py:22
+msgid "Can see projector"
+msgstr "Kann den Beamer sehen"
+
+#: projector/models.py:25 projector/views.py:155
 #: projector/templates/projector/base_projector.html:6
 #: projector/templates/projector/base_projector.html:11
 #: projector/templates/projector/control.html:35
 msgid "Projector"
 msgstr "Beamer"
 
-#: projector/models.py:26
+#: projector/models.py:25
 msgid "Projector Slide"
 msgstr "Beamer-Folie"
 
@@ -1750,6 +1814,10 @@ msgstr "Veranstaltungsort"
 #: system/forms.py:31
 msgid "Event organizer"
 msgstr "Veranstalter"
+
+#: system/models.py:42
+msgid "Can manage system configuration"
+msgstr "Kann die Systemkonfiguration verwalten"
 
 #: system/models.py:93
 msgid "General"

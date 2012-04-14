@@ -11,11 +11,10 @@
 """
 
 from django.db import models
-from django.utils.translation import ugettext as _
 
 from projector.api import register_slidemodel
 from projector.models import SlideMixin
-
+from utils.translation_ext import xugettext as _
 
 class BaseOption(models.Model):
     poll = models.ForeignKey('BasePoll')

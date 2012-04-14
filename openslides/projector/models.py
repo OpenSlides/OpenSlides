@@ -1,11 +1,10 @@
 from django.db import models
-from django.utils.translation import ugettext as _
 
 from api import register_slidemodel
 from projector import SlideMixin
 
 from system import config
-
+from utils.translation_ext import xugettext as _
 
 class ProjectorSlide(models.Model, SlideMixin):
     prefix = 'ProjectorSlide'
@@ -19,8 +18,8 @@ class ProjectorSlide(models.Model, SlideMixin):
 
     class Meta:
         permissions = (
-            ('can_manage_projector', "Can manage the projector"),
-            ('can_see_projector', "Can see projector"),
+            ('can_manage_projector', _("Can manage the projector", fixstr=True)),
+            ('can_see_projector', _("Can see projector", fixstr=True)),
         )
 
 register_slidemodel(ProjectorSlide, category=_('Projector'), model_name=_('Projector Slide'))

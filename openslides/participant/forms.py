@@ -16,6 +16,7 @@ from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.utils.translation import ugettext as _
 
 from utils.forms import CssClassMixin
+from utils.translation_ext import LocalizedModelMultipleChoiceField
 
 # required for USER_VISIBLE_PERMISSIONS
 from agenda.models import Item
@@ -67,7 +68,7 @@ class ProfileForm(ModelForm, CssClassMixin):
         model = Profile
 
 class GroupForm(ModelForm, CssClassMixin):
-    permissions = ModelMultipleChoiceField(queryset=Permission.objects.filter(codename__in=USER_VISIBLE_PERMISSIONS))
+    permissions = LocalizedModelMultipleChoiceField(queryset=Permission.objects.filter(codename__in=USER_VISIBLE_PERMISSIONS))
 
     def __init__(self, *args, **kwargs):
         super(GroupForm, self).__init__(*args, **kwargs)
