@@ -34,22 +34,7 @@
 
 {% block content %}
     <h1>{% trans 'Projector' %}</h1>
-    <div style="text-align: right; padding: 0 5px 5px 0; margin-top:-20px;">
-        <!-- countdown -->
-        <input type="checkbox" name="countdown" onchange="document.location='{% if countdown_visible %}{% url countdown_close %}{% else %}{% url countdown_open %}{% endif %}'"{% if countdown_visible %} checked{% endif %}>
-        {% trans "Countdown" %} (<a href="{% url config_agenda %}">{{countdown_time}}{% trans "sec" %}</a>)
-        {% if countdown_visible %}:
-            <a class="projector_countdown" href="{% url countdown_reset %}" title="{% trans 'Reset countdown' %}">
-                <img src="{% static 'images/icons/media-skip-backward.png' %}" />
-            </a>
-            <a class="projector_countdown" href="{% url countdown_start %}" title="{% trans 'Start countdown' %}">
-                <img src="{% static 'images/icons/media-playback-start.png' %}" />
-            </a>
-            <a class="projector_countdown" href="{% url countdown_stop %}" title="{% trans 'Stop countdown' %}">
-                <img src="{% static 'images/icons/media-playback-pause.png' %}" />
-            </a>
-        {% endif %}
-        <p></p>
+    <div style="text-align: right; padding: 0 10px 5px 0; margin-top:-20px;">
         <!-- projector control -->
         {% trans "Adjust projector view" %}:
         <a class="projector_edit" href="{% url projector_bigger %}" title="{% trans 'Zoom in' %}">
@@ -112,9 +97,11 @@
                 {% trans "Projector Live View" %}
             </div>
             <div class="portlet-content">
+                <a href="{% url projector_show %}" target="_blank" title="{% trans 'Open Projector view' %}" >
                 <div id="iframewrapper">
-                <iframe id="iframe" src="{% url projector_show %}"></iframe>
+                    <iframe id="iframe" src="{% url projector_show %}"></iframe>
                 </div>
+                </a>
             </div>
         </div> <!-- end portlet-->
 
@@ -122,7 +109,7 @@
         {% for category, slides in categories.items %}
             {% if category == 'projector' %}
             <div class="portlet">
-                <div class="portlet-header">{{ category }}</div>
+                <div class="portlet-header">{% trans "Static Slides" %}</div>
                 <div class="portlet-content">
                 {% for slide in slides %}
                     {% if slide.model_slide %}
@@ -162,19 +149,24 @@
                     <ul>
                     {% for message in projector_messages %}
                         <li>
-                            <input type="checkbox" name="{{ message }}"{% if message.active %} checked="checked"{% endif %}> {{ message }}
+                            <input type="checkbox" name="{{ message }}" onchange="submit()"
+                            {% if message.active %} checked="checked"{% endif %}> {{ message }}
+                            {% if message.def_name == "Countdown" %}
+                                |
+                                <a href="{% url config_agenda %}">{{countdown_time}}{% trans "sec" %}</a>
+                                <a class="projector_countdown" href="{% url countdown_reset %}" title="{% trans 'Reset countdown' %}">
+                                    <img src="{% static 'images/icons/media-skip-backward.png' %}" />
+                                </a>
+                                <a class="projector_countdown" href="{% url countdown_start %}" title="{% trans 'Start countdown' %}">
+                                    <img src="{% static 'images/icons/media-playback-start.png' %}" />
+                                </a>
+                                <a class="projector_countdown" href="{% url countdown_stop %}" title="{% trans 'Stop countdown' %}">
+                                    <img src="{% static 'images/icons/media-playback-pause.png' %}" />
+                                </a>
+                            {% endif %}
                         </li>
                     {% endfor %}
                     </ul>
-                    <button class="button" type="submit">
-                        <span class="icon ok">{%trans 'Save' %}</span>
-                    </button>
-                    <button class="button" type="submit" name="apply">
-                        <span class="icon apply">{%trans 'Apply' %}</span>
-                    </button>
-                    <button class="button" type="button" onclick="window.location='{% url projector_control %}'">
-                        <span class="icon cancel">{%trans 'Cancel' %}</span>
-                    </button>
                 </form>
                 </ul>
             </div>
