@@ -90,6 +90,8 @@ def active_slide(request):
 
     data['ajax'] = 'on'
     data['messages'] = []
+
+    # Projector Messages
     active_defs = ProjectorMessage.objects.filter(active=True).values_list('def_name', flat=True)
     for receiver, response in projector_messages.send(sender='active_slide', register=False, call=active_defs):
         if response is not None:

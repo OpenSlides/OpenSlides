@@ -13,6 +13,14 @@ class ProjectorSlide(models.Model, SlideMixin):
     text = models.TextField(null=True, blank=True, verbose_name=_("Text"))
     weight = models.IntegerField(default=0, verbose_name=_("Weight"))
 
+    def slide(self):
+        return {
+            'slide': self,
+            'title': self.title,
+            'template': 'projector/ProjectorSlide.html',
+        }
+
+
     def __unicode__(self):
         return self.title
 

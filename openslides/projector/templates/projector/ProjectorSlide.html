@@ -1,0 +1,14 @@
+{% extends "base-projector.html" %}
+
+{% load i18n %}
+
+{% block title %}{{ block.super }} - {{ slide.title }}{% endblock %}
+
+{% block content %}
+    {% if slide.text %}
+        <h1>{{ slide.title }}</h1>
+        {{ slide.text|safe|linebreaks }}
+    {% else %}
+        <div class="item_fullscreen">{{ slide.title }}</div>
+    {% endif %}
+{% endblock %}
