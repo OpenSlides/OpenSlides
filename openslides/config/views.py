@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    openslides.system.views
+    openslides.config.views
     ~~~~~~~~~~~~~~~~~~~~~~~
 
-    Views for the system app.
+    Views for the config app.
 
     :copyright: 2011 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
@@ -21,15 +21,15 @@ from utils.utils import template, permission_required
 from utils.views import FormView
 from utils.template import Tab
 
-from system.forms import SystemConfigForm, EventConfigForm
+from forms import SystemConfigForm, EventConfigForm
 
-from system import config
+from models import config
 
 
 class GeneralConfig(FormView):
-    permission_required = 'system.can_manage_system'
+    permission_required = 'config.can_manage_config'
     form_class = EventConfigForm
-    template_name = 'system/general.html'
+    template_name = 'config/general.html'
 
     def get_initial(self):
         return {
@@ -55,9 +55,9 @@ class GeneralConfig(FormView):
 
 
 class Config(FormView):
-    permission_required = 'system.can_manage_system'
+    permission_required = 'config.can_manage_config'
     form_class = SystemConfigForm
-    template_name = 'system/system.html'
+    template_name = 'config/config.html'
 
     def get_initial(self):
         return {
@@ -93,6 +93,6 @@ def register_tab(request):
     return Tab(
         title=_('Configuration'),
         url=reverse('config_general'),
-        permission=request.user.has_perm('system.can_manage_system'),
+        permission=request.user.has_perm('config.can_manage_config'),
         selected=selected,
     )

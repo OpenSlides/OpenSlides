@@ -21,7 +21,7 @@ from utils.pdf import print_assignment, print_assignment_poll
 from utils.views import FormView
 from utils.template import Tab
 
-from system import config
+from config.models import config
 
 from poll.views import PollFormView
 
@@ -271,7 +271,7 @@ def set_elected(request, assignment_id, profile_id, elected=True):
 
 
 class Config(FormView):
-    permission_required = 'system.can_manage_system'
+    permission_required = 'config.can_manage_config'
     form_class = ConfigForm
     template_name = 'assignment/config.html'
 

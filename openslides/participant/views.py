@@ -42,7 +42,7 @@ from utils.utils import (template, permission_required, gen_confirm_form,
                          ajax_request, decodedict, encodedict)
 from utils.pdf import print_userlist, print_passwords
 from utils.template import Tab
-from system import config
+from config.models import config
 
 from django.db.models import Avg, Max, Min, Count
 

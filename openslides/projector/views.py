@@ -26,7 +26,7 @@ from utils.utils import template, permission_required, \
 from utils.template import render_block_to_string
 from utils.template import Tab
 
-from system import config
+from config.models import config
 
 from api import get_active_slide, set_active_slide
 from projector import SLIDE

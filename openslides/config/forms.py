@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    openslides.system.forms
+    openslides.config.forms
     ~~~~~~~~~~~~~~~~~~~~~~~
 
-    Forms for the system app.
+    Forms for the config app.
 
     :copyright: 2011 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
@@ -14,7 +14,7 @@ from django.forms import Form, CharField, TextInput, BooleanField, IntegerField,
 from django.utils.translation import ugettext as _
 
 from utils.forms import CssClassMixin
-from system import config
+from models import config
 
 
 class SystemConfigForm(Form, CssClassMixin):

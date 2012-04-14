@@ -23,7 +23,7 @@ from agenda.models import Item
 from application.models import Application
 from assignment.models import Assignment
 from participant.models import Profile
-from system.models import ConfigStore
+from config.models import ConfigStore
 
 USER_VISIBLE_PERMISSIONS = reduce(list.__add__, [
     [p[0] for p in Item._meta.permissions],

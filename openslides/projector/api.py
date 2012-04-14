@@ -1,4 +1,4 @@
-from system import config
+from config.models import config
 from projector import SLIDE, Slide
 
 

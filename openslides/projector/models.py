@@ -3,8 +3,9 @@ from django.db import models
 from api import register_slidemodel
 from projector import SlideMixin
 
-from system import config
+from config.models import config
 from utils.translation_ext import xugettext as _
+
 
 class ProjectorSlide(models.Model, SlideMixin):
     prefix = 'ProjectorSlide'
