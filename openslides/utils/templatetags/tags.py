@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from django import template
-from system import config
+from config.models import config
 
 register = template.Library()
 

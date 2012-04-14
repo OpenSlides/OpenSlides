@@ -29,7 +29,7 @@ from reportlab.lib import colors
 from reportlab.lib.units import cm
 from reportlab.platypus import PageBreak, Paragraph, Spacer, Table, TableStyle
 
-from system import config
+from config.models import config
 from settings import SITE_ROOT
 from utils.pdf import stylesheet
 from utils.views import PDFView
@@ -506,7 +506,7 @@ def application_import(request):
                 # check for valid encoding (will raise UnicodeDecodeError if not)
                 request.FILES['csvfile'].read().decode('utf-8')
                 request.FILES['csvfile'].seek(0)
-                
+
                 users_generated = 0
                 applications_generated = 0
                 applications_modified = 0
@@ -777,7 +777,7 @@ class ApplicationPollPDF(PDFView):
 
 
 class Config(FormView):
-    permission_required = 'system.can_manage_system'
+    permission_required = 'config.can_manage_config'
     form_class = ConfigForm
     template_name = 'application/config.html'
 

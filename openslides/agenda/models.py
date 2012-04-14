@@ -19,13 +19,14 @@ from django.db import models
 
 from mptt.models import MPTTModel, TreeForeignKey
 
-from system import config
+from config.models import config
 
 from projector.projector import SlideMixin
 from projector.api import register_slidemodel
 
 from agenda.api import is_summary
 from utils.translation_ext import xugettext as _
+
 
 class Item(MPTTModel, SlideMixin):
     """
@@ -131,11 +132,23 @@ class Item(MPTTModel, SlideMixin):
         order_insertion_by = ['weight', 'title']
 
 
-register_slidemodel(Item, category=_('Agenda'), model_name=_('Agenda Item'))
+register_slidemodel(Item, model_name=_('Agenda Item'))
 
 # TODO: put this in another file
 
 from projector.api import register_slidefunc
 from agenda.slides import agenda_show
 
-register_slidefunc(_('Agenda'), agenda_show, category=_('Agenda'))
+register_slidefunc(_('Agenda'), agenda_show)
+
+
+from django.dispatch import receiver
+from openslides.config.signals import default_config_value
+
+
+@receiver(default_config_value, dispatch_uid="agenda_default_config")
+def default_config(sender, key, **kwargs):
+    return {
+        'agenda_countdown_time': 60,
+    }.get(key)
+

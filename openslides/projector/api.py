@@ -1,4 +1,4 @@
-from system import config
+from config.models import config
 from projector import SLIDE, Slide
 
 
@@ -35,10 +35,12 @@ def set_active_slide(sid):
     config["presentation"] = sid
 
 
-def register_slidemodel(model, category=None, model_name=None):
+def register_slidemodel(model, model_name=None):
     #TODO: Warn if there already is a slide with this prefix
     if model_name is None:
         model_name = model.prefix
+
+    category = model.__module__.split('.')[0]
     SLIDE[model.prefix] = Slide(
         model_slide=True,
         model=model,
@@ -48,8 +50,9 @@ def register_slidemodel(model, category=None, model_name=None):
     )
 
 
-def register_slidefunc(key, func, category=None):
+def register_slidefunc(key, func):
     #TODO: Warn if there already is a slide with this prefix
+    category = func.__module__.split('.')[0]
     SLIDE[key] = Slide(
         model_slide=False,
         func=func,

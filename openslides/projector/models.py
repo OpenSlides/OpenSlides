@@ -3,8 +3,9 @@ from django.db import models
 from api import register_slidemodel
 from projector import SlideMixin
 
-from system import config
+from config.models import config
 from utils.translation_ext import xugettext as _
+
 
 class ProjectorSlide(models.Model, SlideMixin):
     prefix = 'ProjectorSlide'
@@ -12,6 +13,14 @@ class ProjectorSlide(models.Model, SlideMixin):
     title = models.CharField(max_length=100, verbose_name=_("Title"))
     text = models.TextField(null=True, blank=True, verbose_name=_("Text"))
     weight = models.IntegerField(default=0, verbose_name=_("Weight"))
+
+    def slide(self):
+        return {
+            'slide': self,
+            'title': self.title,
+            'template': 'projector/ProjectorSlide.html',
+        }
+
 
     def __unicode__(self):
         return self.title
@@ -31,5 +40,5 @@ class ProjectorMessage(models.Model):
         return self.def_name
 
 
-register_slidemodel(ProjectorSlide, category=_('Projector'), model_name=_('Projector Slide'))
+register_slidemodel(ProjectorSlide, model_name=_('Projector Slide'))
 

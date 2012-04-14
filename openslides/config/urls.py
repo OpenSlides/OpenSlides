@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    openslides.system.urls
+    openslides.config.urls
     ~~~~~~~~~~~~~~~~~~~~~~
 
-    URL list for the system app.
+    URL list for the config app.
 
     :copyright: 2011 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
@@ -17,7 +17,7 @@ import settings
 
 from views import GeneralConfig
 
-urlpatterns = patterns('system.views',
+urlpatterns = patterns('config.views',
     url(r'^general/$',
         GeneralConfig.as_view(),
         name='config_general',

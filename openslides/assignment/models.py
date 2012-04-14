@@ -121,7 +121,7 @@ class Assignment(models.Model, SlideMixin):
             ('can_manage_assignment', _("Can manage assignment", fixstr=True)),
         )
 
-register_slidemodel(Assignment, category=_('Elections'))
+register_slidemodel(Assignment)
 
 
 class AssignmentOption(BaseOption):
@@ -150,5 +150,14 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
         if link == 'delete':
             return ('assignment_poll_delete', [str(self.id)])
 
-#register_slidemodel(AssignmentPoll, category=_('Elections'))
 
+from django.dispatch import receiver
+from openslides.config.signals import default_config_value
+
+
+@receiver(default_config_value, dispatch_uid="assignment_default_config")
+def default_config(sender, key, **kwargs):
+    return {
+        'assignment_pdf_ballot_papers_selection': '1',
+        'assignment_pdf_title': _('Elections'),
+    }.get(key)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    openslides.system.opennslides_settings
+    openslides.opennslides_settings
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     OpenSlides default settings.
@@ -103,7 +103,7 @@ INSTALLED_APPS = (
     'application',
     'assignment',
     'participant',
-    'system',
+    'config',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

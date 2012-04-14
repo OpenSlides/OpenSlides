@@ -21,7 +21,7 @@ from utils.pdf import stylesheet
 from utils.views import TemplateView, RedirectView, UpdateView, CreateView, DeleteView, PDFView, FormView
 from utils.template import Tab
 
-from system import config
+from config.models import config
 
 from projector.api import get_active_slide, set_active_slide
 
@@ -201,7 +201,7 @@ class AgendaPDF(PDFView):
 
 
 class Config(FormView):
-    permission_required = 'system.can_manage_system'
+    permission_required = 'config.can_manage_config'
     form_class = ConfigForm
     template_name = 'agenda/config.html'
 

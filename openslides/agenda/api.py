@@ -10,7 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from system import config
+from config.models import config
 
 
 def is_summary():

@@ -20,7 +20,7 @@ from reportlab.lib import colors
 from reportlab.lib.units import cm
 from reportlab.platypus import PageBreak, Paragraph, Spacer, Table, TableStyle
 
-from system import config
+from config.models import config
 
 from utils.utils import template, permission_required, gen_confirm_form, del_confirm_form, ajax_request
 from utils.pdf import print_assignment_poll
@@ -439,7 +439,7 @@ class AssignmentPDF(PDFView):
 
 
 class Config(FormView):
-    permission_required = 'system.can_manage_system'
+    permission_required = 'config.can_manage_config'
     form_class = ConfigForm
     template_name = 'assignment/config.html'
 

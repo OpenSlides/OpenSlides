@@ -3,7 +3,7 @@ from time import time
 from django.dispatch import receiver
 from django.utils.translation import ugettext as _
 
-from system import config
+from config.models import config
 
 from openslides.projector.signals import projector_messages
 

@@ -21,7 +21,7 @@ from projector.api import register_slidemodel
 from projector.models import SlideMixin
 
 from participant.models import Profile
-from system import config
+from config.models import config
 from utils.utils import _propper_unicode
 from utils.translation_ext import xugettext as _
 from poll.models import BaseOption, BasePoll, CountVotesCast, CountInvalid, Vote
@@ -494,7 +494,7 @@ class AVersion(models.Model):
                 .filter(id__lte=self.id).count()
             return self._aid
 
-register_slidemodel(Application, category=_('Applications'))
+register_slidemodel(Application)
 
 
 class ApplicationOption(BaseOption):
@@ -527,3 +527,17 @@ class ApplicationPoll(BasePoll, CountInvalid, CountVotesCast):
 
     def get_absolute_url(self):
         return reverse('application_poll_view', args=[self.id])
+
+
+from django.dispatch import receiver
+from openslides.config.signals import default_config_value
+
+
+@receiver(default_config_value, dispatch_uid="application_default_config")
+def default_config(sender, key, **kwargs):
+    return {
+        'application_min_supporters': 4,
+        'application_preamble': 'Die Versammlung möge beschließen,',
+        'application_pdf_ballot_papers_selection': '1',
+        'application_pdf_title': _('Applications'),
+    }.get(key)

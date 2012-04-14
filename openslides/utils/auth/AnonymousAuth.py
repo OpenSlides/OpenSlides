@@ -1,5 +1,5 @@
 from django.contrib.auth.models import Permission
-from system import config
+from config.models import config
 
 class AnonymousAuth(object):
     """

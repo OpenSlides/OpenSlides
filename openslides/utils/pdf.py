@@ -36,7 +36,7 @@ from openslides.agenda.models import Item
 from openslides.application.models import Application
 from openslides.assignment.models import Assignment
 from openslides.participant.models import Profile
-from system import config
+from config.models import config
 from openslides.settings import SITE_ROOT
 from openslides.utils.utils import permission_required
 
