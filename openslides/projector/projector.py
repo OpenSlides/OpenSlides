@@ -48,14 +48,15 @@ class SlideMixin(object):
 
 
 class Slide(object):
-    def __init__(self, model_slide=False, func=None, model=None, category=None, key=None, model_name=''):
+    def __init__(self, model_slide=False, func=None, model=None, category=None,
+                 key=None, model_name='', control_template='', weight=0):
         """
         model_slide: Boolean if the value is a Model.
         func: The function to call. Only if modelslide is False.
         model: The model. Only if modelslide is True.
         model_name: The name shown for the model.
         category: The category to show this Slide.
-        key: the key in the slide object to find myself.
+        key: the key in the slide object to find itself.
         """
         self.model_slide = model_slide
         self.func = func
@@ -63,9 +64,14 @@ class Slide(object):
         self.model_name = model_name
         self.category = category
         self.key = key
+        self.control_template = control_template
+        self.weight = weight
 
     def get_items(self):
-        return self.model.objects.all()
+        try:
+            return self.model.objects.all()
+        except AttributeError:
+            return 'No Model'
 
 
 @receiver(projector_messages, dispatch_uid="projector_countdown")
