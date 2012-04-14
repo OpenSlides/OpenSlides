@@ -121,7 +121,7 @@ class Assignment(models.Model, SlideMixin):
             ('can_manage_assignment', _("Can manage assignment", fixstr=True)),
         )
 
-register_slidemodel(Assignment, category=_('Elections'))
+register_slidemodel(Assignment)
 
 
 class AssignmentOption(BaseOption):
@@ -143,6 +143,4 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
     def append_pollform_fields(self, fields):
         CountInvalid.append_pollform_fields(self, fields)
         CountVotesCast.append_pollform_fields(self, fields)
-
-#register_slidemodel(AssignmentPoll, category=_('Elections'))
 

@@ -31,5 +31,5 @@ class ProjectorMessage(models.Model):
         return self.def_name
 
 
-register_slidemodel(ProjectorSlide, category=_('Projector'), model_name=_('Projector Slide'))
+register_slidemodel(ProjectorSlide, model_name=_('Projector Slide'))
 
