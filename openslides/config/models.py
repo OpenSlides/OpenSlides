@@ -30,7 +30,7 @@ class ConfigStore(models.Model):
     class Meta:
         verbose_name = 'config'
         permissions = (
-            ('can_manage_config', _("Can manage config configuration", fixstr=True)),
+            ('can_manage_config', _("Can manage configuration", fixstr=True)),
         )
 
 
