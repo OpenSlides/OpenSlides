@@ -103,15 +103,3 @@ urlpatterns = patterns('participant.views',
         name='print_passwords',
     ),
 )
-
-urlpatterns += patterns('django.contrib.auth.views',
-    url(r'^login/$',
-        'login',
-        {'template_name': 'participant/login.html'},
-        name='user_login',
-    ),
-    url(r'^logout/$',
-        'logout_then_login',
-        name='user_logout',
-    )
-)

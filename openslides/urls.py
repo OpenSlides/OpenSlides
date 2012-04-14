@@ -29,8 +29,8 @@ urlpatterns = patterns('',
     (r'^application/', include('application.urls')),
     (r'^assignment/', include('assignment.urls')),
     (r'^participant/', include('participant.urls')),
-    (r'config/', include('system.urls')),
-    (r'projector/', include('projector.urls')),
+    (r'^config/', include('system.urls')),
+    (r'^projector/', include('projector.urls')),
     (r'^static/(?P<path>.*)$', 'django.views.static.serve',  {'document_root': settings.STATIC_DOC_ROOT}),
     (r'^i18n/', include('django.conf.urls.i18n')),
 )
@@ -47,4 +47,15 @@ for plugin in settings.INSTALLED_PLUGINS:
 
 urlpatterns += patterns('',
     (r'^500/$', 'openslides.utils.views.server_error'),
+
+    url(r'^login/$',
+        'django.contrib.auth.views.login',
+        {'template_name': 'participant/login.html'},
+        name='user_login',
+    ),
+
+    url(r'^logout/$',
+        'django.contrib.auth.views.logout_then_login',
+        name='user_logout',
+    )
 )
