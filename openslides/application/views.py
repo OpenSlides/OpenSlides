@@ -391,7 +391,7 @@ def view_poll(request, poll_id):
     view a poll for this application.
     """
     poll = ApplicationPoll.objects.get(pk=poll_id)
-    #ballot = poll.ballot
+    ballot = poll.ballot
     options = poll.get_options()
     if request.user.has_perm('application.can_manage_application'):
         if request.method == 'POST':
@@ -425,7 +425,7 @@ def view_poll(request, poll_id):
         'poll': poll,
         'form': form,
         'options': options,
-        #'ballot': ballot,
+        'ballot': ballot,
     }
 
 
@@ -608,7 +608,6 @@ class ApplicationPDF(PDFView):
     permission_required = 'application.can_manage_application'
     filename = u'filename=%s.pdf;' % _("Applications")
     top_space = 0
-    document_title = ''
 
     def append_to_pdf(self, story):
         try:

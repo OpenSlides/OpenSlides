@@ -49,7 +49,7 @@
 
     <h4>{% trans "Vote results" %}:</h4>
         {% with application.polls as polls %}
-        {% if polls.exists %}
+        {% if not polls.exists %}
             {% if perms.application.can_manage_application %}
                 {% if "genpoll" in actions %}
                 <a href='{% url application_gen_poll application.id %}'>

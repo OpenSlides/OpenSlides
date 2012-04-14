@@ -277,17 +277,16 @@ class AssignmentPollDelete(DeleteView):
         super(AssignmentPollDelete, self).pre_post_redirect(request, *args, **kwargs)
 
     def set_assignment(self):
-	self.assignment = self.object.assignment
+        self.assignment = self.object.assignment
 
     def get_redirect_url(self, **kwargs):
-    	return reverse('assignment_view', args=[self.assignment.id])
-	
+        return reverse('assignment_view', args=[self.assignment.id])
+
 
 class AssignmentPDF(PDFView):
     permission_required = 'assignment.can_manage_assignment'
     filename = u'filename=%s.pdf;' % _("Elections")
     top_space = 0
-    document_title = None
 
     def append_to_pdf(self, story):
         try:
