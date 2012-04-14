@@ -138,7 +138,7 @@
                     </a>
                     {% if poll.published %}
                         <a href={% url assignment_poll_notpublish poll.id %}><img
-                            src="%{ static 'images/icons/user-online.png' %}"
+                            src="{% static 'images/icons/user-online.png' %}"
                             title="{% trans 'Unpublish results' %}"></a>
                     {% else %}
                         <a href={% url assignment_poll_publish poll.id %}><img
