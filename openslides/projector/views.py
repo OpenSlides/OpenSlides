@@ -17,6 +17,7 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.utils.translation import ugettext as _
+from django.utils.datastructures import SortedDict
 
 
 from utils.views import TemplateView, RedirectView
@@ -32,6 +33,8 @@ from projector import SLIDE
 from models import ProjectorMessage
 from openslides.projector.signals import projector_messages
 
+import settings
+
 
 class ControlView(TemplateView):
     template_name = 'projector/control.html'
@@ -44,8 +47,13 @@ class ControlView(TemplateView):
             if not categories.has_key(slide.category):
                 categories[slide.category] = []
             categories[slide.category].append(slide)
+
+        ordered_categories = SortedDict()
+        for app in settings.INSTALLED_APPS:
+            if app in categories:
+                ordered_categories[app] = categories[app]
         context.update({
-            'categories': categories,
+            'categories': ordered_categories,
             'countdown_visible': config['countdown_visible'],
             'countdown_time': config['agenda_countdown_time'],
         })

@@ -494,7 +494,7 @@ class AVersion(models.Model):
                 .filter(id__lte=self.id).count()
             return self._aid
 
-register_slidemodel(Application, category=_('Applications'))
+register_slidemodel(Application)
 
 
 class ApplicationOption(BaseOption):
