@@ -185,9 +185,10 @@ class ItemDelete(DeleteView):
             self.gen_confirm_form(request, _('Do you really want to delete <b>%s</b>?') % name, object.get_absolute_url('delete'), True)
 
 
-class ItemPDF(PDFView):
+class AgendaPDF(PDFView):
     permission_required = 'agenda.can_see_agenda'
     filename = _('Agenda')
+    document_title = _('Agenda')
 
     def append_to_pdf(self, story):
         for item in Item.objects.all():
