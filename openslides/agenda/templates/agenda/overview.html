@@ -3,18 +3,19 @@
 {% load tags %}
 {% load i18n %}
 {% load mptt_tags %}
+{% load staticfiles %}
 
 {% block title %}{{ block.super }} - {% trans "Agenda" %}{% endblock %}
 
 {% block header %}
-    <link type="text/css" rel="stylesheet" media="all" href="/static/styles/tabledrag.css" />
-    <link type="text/css" rel="stylesheet" media="all" href="/static/styles/agenda.css" />
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/tabledrag.css' %}" />
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/agenda.css' %}" />
     {% if perms.agenda.can_manage_agenda %}
-        <script type="text/javascript" src="/static/javascript/jquery.once.js"></script>
-        <script type="text/javascript" src="/static/javascript/jquery.cookie.js"></script>
-        <script type="text/javascript" src="/static/javascript/jquery.tmpl.js"></script>
-        <script type="text/javascript" src="/static/javascript/tabledrag.js"></script>
-        <script type="text/javascript" src="/static/javascript/agenda.js"></script>
+        <script type="text/javascript" src="{% static 'javascript/jquery.once.js' %}"></script>
+        <script type="text/javascript" src="{% static 'javascript/jquery.cookie.js' %}"></script>
+        <script type="text/javascript" src="{% static 'javascript/jquery.tmpl.js' %}"></script>
+        <script type="text/javascript" src="{% static 'javascript/tabledrag.js' %}"></script>
+        <script type="text/javascript" src="{% static 'javascript/agenda.js' %}"></script>
 
         <script type="text/javascript">
         <!--//--><![CDATA[//><!--

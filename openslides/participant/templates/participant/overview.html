@@ -1,13 +1,14 @@
 {% extends "participant/base_participant.html" %}
 
 {% load i18n %}
+{% load staticfiles %}
 
 {% block title %}{{ block.super }} - {%trans "Participants" %}{% endblock %}
 
 {% block header %}
     {% if perms.agenda.can_manage_agenda %}
-    <link type="text/css" rel="stylesheet" media="all" href="/static/styles/participant.css" />
-    <script type="text/javascript" src="/static/javascript/participant.js"></script>
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/participant.css' %}" />
+    <script type="text/javascript" src="{% static 'javascript/participant.js' %}"></script>
     {% endif %}
 {% endblock %}
 
@@ -83,8 +84,8 @@
                 {{ user.last_login }}
                 {% endif %}</td>
             <td><span style="width: 1px; white-space: nowrap;">
-                <a href="{% url user_edit user.id %}"><img src="/static/images/icons/document-edit.png" title="{%trans 'Edit participant' %}"></a>
-                <a href="{% url user_delete user.id %}"><img src="/static/images/icons/edit-delete.png" title="{%trans 'Delete participant' %}"></a>
+                <a href="{% url user_edit user.id %}"><img src="{% static 'images/icons/document-edit.png' %}" title="{%trans 'Edit participant' %}"></a>
+                <a href="{% url user_delete user.id %}"><img src="{% static 'images/icons/edit-delete.png' %}" title="{%trans 'Delete participant' %}"></a>
                 <a class="status_link {% if user.is_active %}active{% else %}inactive{% endif %}"
                     href="{% if user.is_active %}{% url user_inactive user.id %}{% else %}{% url user_active user.id %}{% endif %}"
                     title="{%trans 'Change status (active/inactive)' %}">

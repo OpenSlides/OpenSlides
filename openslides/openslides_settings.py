@@ -61,8 +61,20 @@ MEDIA_ROOT = ''
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 MEDIA_URL = ''
 
+# Absolute path to the directory that holds static media from ``collectstatic``
+# Example: "/home/media/static.lawrence.com/"
+STATIC_ROOT = os.path.join(SITE_ROOT, '../site-static')
 
-STATIC_DOC_ROOT = os.path.join(SITE_ROOT, 'static')
+# URL that handles the media served from STATIC_ROOT. Make sure to use a
+# trailing slash if there is a path component (optional in other cases).
+# Examples: "http://static.lawrence.com", "http://example.com/static/"
+STATIC_URL  = '/static/'
+
+# Additional directories containing static files (not application specific)
+# Examples: "/home/media/lawrence.com/extra-static/"
+STATICFILES_DIRS = (
+    os.path.join(SITE_ROOT, 'static'),
+)
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 
@@ -95,6 +107,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'django.contrib.staticfiles',
     'mptt',
     'utils',
     'poll',
@@ -111,6 +124,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.messages.context_processors.messages',
     'django.core.context_processors.request',
     'django.core.context_processors.i18n',
+    'django.core.context_processors.static',
     'utils.utils.revision',
     'openslides.utils.auth.anonymous_context_additions',
 )

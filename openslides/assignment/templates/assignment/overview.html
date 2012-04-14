@@ -1,7 +1,7 @@
 {% extends "assignment/base_assignment.html" %}
 
 {% load i18n %}
-
+{% load staticfiles %}
 
 {% block title %}{{ block.super }} - {%trans "Elections" %}{% endblock %}
 
@@ -35,8 +35,8 @@
             <td>{{ assignment.profile.count }} / {{ assignment.posts }}</td>
             <td>{{ assignment.get_status_display }}</td>
             {% if perms.assignment.can_manage_assignment %}
-                <td><a href="{% url assignment_edit assignment.id %}"><img src="/static/images/icons/document-edit.png" title="{%trans 'Edit assignment' %}"></a>
-                    <a href="{% url assignment_delete assignment.id %}"><img src="/static/images/icons/edit-delete.png" title="{%trans 'Delete assignment' %}"></a>
+                <td><a href="{% url assignment_edit assignment.id %}"><img src="{% static 'images/icons/document-edit.png' %}" title="{%trans 'Edit assignment' %}"></a>
+                    <a href="{% url assignment_delete assignment.id %}"><img src="{% static 'images/icons/edit-delete.png' %}" title="{%trans 'Delete assignment' %}"></a>
                 </td>
             {% endif %}
         </tr>

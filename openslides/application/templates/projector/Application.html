@@ -2,6 +2,7 @@
 
 {% load tags %}
 {% load i18n %}
+{% load staticfiles %}
 
 {% block title %}{{ block.super }} - {{ item.title }}{% endblock %}
 {% block content %}
@@ -30,12 +31,12 @@
                 {{forloop.counter}}. {% trans "Vote" %}:<br>
             {% endif %}
             {% for option in p.options %}
-                <img src="/static/images/icons/voting-yes.png" title="{% trans 'Yes' %}"> {{ option.yes }} <br>
-                <img src="/static/images/icons/voting-no.png" title="{% trans 'No' %}"> {{ option.no }} <br>
-                <img src="/static/images/icons/voting-abstention.png" title="{% trans 'Abstention' %}">  {{ option.undesided }}<br>
-                <img src="/static/images/icons/voting-invalid.png" title="{% trans 'Invalid' %}"> {{ p.votesinvalidf }}<br>
+                <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.yes }} <br>
+                <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.no }} <br>
+                <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}">  {{ option.undesided }}<br>
+                <img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ p.votesinvalidf }}<br>
                 <div style="border-top: 1px solid; padding-top: 5px; margin: 5px 0; width: 10em;">
-                    <img src="/static/images/icons/voting-total.png" title="{% trans 'Votes cast' %}"> {{ p.votescastf }}
+                    <img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ p.votescastf }}
                 </div>
             {% endfor %}
             <br>

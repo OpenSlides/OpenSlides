@@ -1,6 +1,7 @@
 {% extends "participant/base_participant.html" %}
 
 {% load i18n %}
+{% load staticfiles %}
 
 {% block mainmenu %}
     <ul>
@@ -17,7 +18,7 @@
     {% if form.errors %}
         <div class="notification error">
             <a class="close" href="#">
-            <img alt="close" title="{% trans 'Close this notification' %}" src="/static/images/icons/cross.png">
+            <img alt="close" title="{% trans 'Close this notification' %}" src="{% static 'images/icons/cross.png' %}">
             </a>
             <em>{%trans "Your username and password didn't match. Please try again." %}</em>
         </div>

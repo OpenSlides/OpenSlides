@@ -2,6 +2,7 @@
 
 {% load tags %}
 {% load i18n %}
+{% load staticfiles %}
 
 {% block title %}{{ block.super }} - {% trans "Application" %} "{{ version.title }}"{% endblock %}
 
@@ -13,14 +14,14 @@
     <h4 style="float:left;">{% trans "Submitter" %}:</h4>
     <h4 style="text-align: right;">
     {% if "delete" in actions %}
-        <a href="{% url application_delete application.id %}"><img src="/static/images/icons/edit-delete.png" title="{% trans 'Delete Application' %}"></a>
+        <a href="{% url application_delete application.id %}"><img src="{% static 'images/icons/edit-delete.png' %}" title="{% trans 'Delete Application' %}"></a>
     {% endif %}
-    <a href="{% url print_application application.id %}"><img src="/static/images/icons/application-pdf.png" title="{% trans 'Print Application' %}"></a>
+    <a href="{% url print_application application.id %}"><img src="{% static 'images/icons/application-pdf.png' %}" title="{% trans 'Print Application' %}"></a>
     </h4>
     <span clear="all"></span>
     {{ application.submitter.profile }}
     {% if user == application.submitter %}
-    <img src="/static/images/icons/user-information.png" title="{% trans 'You!' %}">
+    <img src="{% static 'images/icons/user-information.png' %}" title="{% trans 'You!' %}">
     {% endif %}
 
     {% if min_supporters > 0 %}
@@ -70,18 +71,18 @@
             <b>{{ forloop.counter }}. {% trans "Vote" %}:</b>
             {% if perms.application.can_manage_application %}
                 {% if poll.has_vote %}</a>{% endif %}
-                <a href="{% url application_poll_delete poll.id %}"><img src="/static/images/icons/edit-delete.png" title="{% trans 'Delete Vote' %}"></a>
+                <a href="{% url application_poll_delete poll.id %}"><img src="{% static 'images/icons/edit-delete.png' %}" title="{% trans 'Delete Vote' %}"></a>
             {% endif %}
             <a href="{% url application_poll_activate poll.id %}">{% trans 'project' %}</a>
             <br>
             {% if poll.has_votes %}
                 {% with poll.get_options.0 as option %}
-                    <img src="/static/images/icons/voting-yes.png" title="{% trans 'Yes' %}"> {{ option.yes }}<br>
-                    <img src="/static/images/icons/voting-no.png" title="{% trans 'No' %}"> {{ option.no }}<br>
-                    <img src="/static/images/icons/voting-abstention.png" title="{% trans 'Abstention' %}"> {{ option.contained }}<br>
-                    <img src="/static/images/icons/voting-invalid.png" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}<br>
+                    <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.yes }}<br>
+                    <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.no }}<br>
+                    <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ option.contained }}<br>
+                    <img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}<br>
                     <div style="border-top: 1px solid; padding-top: 5px; margin: 5px 0; width: 10em;">
-                        <img src="/static/images/icons/voting-total.png" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
+                        <img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
                     </div>
                 {% endwith %}
                 {% if perms.application.can_manage_application %}
@@ -256,17 +257,17 @@
         <td style="white-space:nowrap;">
         {% if application.status != "pub" %}
         {% if revision == application.permitted %}
-             <img title="{%trans 'Version accepted' %}" src="/static/images/icons/task-accepted.png">
+             <img title="{%trans 'Version accepted' %}" src="{% static 'images/icons/task-accepted.png' %}">
         {% else %}
              {% if perms.application.can_manage_application %}
-                 <a href="{% url application_version_permit revision.id %}"><img title="{%trans 'Accept Version' %}" src="/static/images/icons/task-accepted-grey.png"></a>
+                 <a href="{% url application_version_permit revision.id %}"><img title="{%trans 'Accept Version' %}" src="{% static 'images/icons/task-accepted-grey.png' %}"></a>
              {% endif %}
              {% if not revision.rejected and revision.id > application.permitted.id and perms.application.can_manage_application %}
-                 <a href="{% url application_version_reject revision.id %}"><img title="{%trans 'Reject Version' %}" src="/static/images/icons/task-reject-grey.png"></a>
+                 <a href="{% url application_version_reject revision.id %}"><img title="{%trans 'Reject Version' %}" src="{% static 'images/icons/task-reject-grey.png' %}"></a>
              {% endif %}
         {% endif %}
         {% if revision.rejected %}
-            <img title="{%trans 'Version rejected' %}" src="/static/images/icons/task-reject.png">
+            <img title="{%trans 'Version rejected' %}" src="{% static 'images/icons/task-reject.png' %}">
         {% endif %}
         {% endif %}
         </td>

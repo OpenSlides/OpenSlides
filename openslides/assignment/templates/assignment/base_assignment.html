@@ -2,10 +2,11 @@
 
 {% load tags %}
 {% load i18n %}
+{% load staticfiles %}
 
 {% block header %}
-    <link type="text/css" rel="stylesheet" media="all" href="/static/styles/assignment.css" />
-    <script type="text/javascript" src="/static/javascript/assignment.js"></script>
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/assignment.css' %}" />
+    <script type="text/javascript" src="{% static 'javascript/assignment.js' %}"></script>
 {% endblock %}
 
 {% block submenu %}
@@ -16,6 +17,6 @@
         {% if perms.assignment.can_manage_assignment %}
             <li class="{% active request '/assignment/new' %}"><a href="{% url assignment_new %}">{%trans "New election" %}</a></li>
         {% endif %}
-        <li><a href="{% url print_assignment %}"><img src="/static/images/icons/application-pdf.png"> {%trans 'Print all elections' %}</a></li>
+        <li><a href="{% url print_assignment %}"><img src="{% static 'images/icons/application-pdf.png' %}"> {%trans 'Print all elections' %}</a></li>
     </ul>
 {% endblock %}

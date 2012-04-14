@@ -1,5 +1,5 @@
 a.close_link.closed span {
-    background-image: url(/static/images/icons/user-offline.png);
+    background-image: url(../images/icons/user-offline.png);
     background-repeat: no-repeat;
     background-position: center;
     width: 16px;
@@ -7,7 +7,7 @@ a.close_link.closed span {
     display: inline-block;
 }
 a.close_link.open span {
-    background-image: url(/static/images/icons/user-online.png);
+    background-image: url(../images/icons/user-online.png);
     background-repeat: no-repeat;
     background-position: center;
     width: 16px;
@@ -16,7 +16,7 @@ a.close_link.open span {
 }
 
 a.hidelink.hide span {
-    background-image: url(/static/images/icons/layer-visible-off.png);
+    background-image: url(../images/icons/layer-visible-off.png);
     background-repeat: no-repeat;
     background-position: center;
     width: 16px;
@@ -24,7 +24,7 @@ a.hidelink.hide span {
     display: inline-block;
 }
 a.hidelink.show span {
-    background-image: url(/static/images/icons/layer-visible-on.png);
+    background-image: url(../images/icons/layer-visible-on.png);
     background-repeat: no-repeat;
     background-position: center;
     width: 16px;

@@ -1,10 +1,11 @@
 {% load i18n %}
+{% load staticfiles %}
 
 <tr class="draggable{% cycle ' odd' '' %}
     {% if item.active %}activeline{% endif %}">
     <td>
         {% if item.closed %}
-            <img src="/static/images/icons/task-complete.png" title="{% trans 'Item closed' %}">
+            <img src="{% static 'images/icons/task-complete.png' %}" title="{% trans 'Item closed' %}">
         {% endif %}
     </td>
     <td>
@@ -18,10 +19,10 @@
     </td>
     <td>
         <span style="width: 1px; white-space: nowrap;">
-            <a href="{{ item.get_absolute_url }}"><img src="/static/images/icons/document-preview.png" title="{% trans 'Show projector preview' %}"></a>
+            <a href="{{ item.get_absolute_url }}"><img src="{% static 'images/icons/document-preview.png' %}" title="{% trans 'Show projector preview' %}"></a>
             {% if perms.agenda.can_manage_agenda %}
-                <a href="{% url item_edit item.id %}"><img src="/static/images/icons/document-edit.png" title="{% trans 'Edit item' %}"></a>
-                <a href="{% url item_delete item.id %}"><img src="/static/images/icons/edit-delete.png" title="{% trans 'Delete item' %}"></a>
+                <a href="{% url item_edit item.id %}"><img src="{% static 'images/icons/document-edit.png' %}" title="{% trans 'Edit item' %}"></a>
+                <a href="{% url item_delete item.id %}"><img src="{% static 'images/icons/edit-delete.png' %}" title="{% trans 'Delete item' %}"></a>
                 <a class="close_link {% if item.closed %}closed{% else %}open{% endif %}" href="{% if item.closed %}{% url item_open item.id %}{% else %}{% url item_close item.id %}{% endif %}">
                     <span></span>
                 </a>

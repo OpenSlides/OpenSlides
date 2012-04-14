@@ -539,28 +539,28 @@ ul.results {
     padding: 10px 20px 10px 36px;
 }
 .notification.success {
-    background: url("/static/images/icons/task-complete.png") repeat scroll 0 0 #D5FFCE;
+    background: url("../images/icons/task-complete.png") repeat scroll 0 0 #D5FFCE;
     border-color: #9ADF8F;
     color: #556652;
 }
 .notification.error {
-    background: url("/static/images/icons/task-reject.png") repeat scroll 0 0 #FFCECE;
+    background: url("../images/icons/task-reject.png") repeat scroll 0 0 #FFCECE;
     border-color: #DF8F8F;
     color: #665252;
 }
 .notification.warning {
-    background: url("/static/images/icons/task-attention.png") repeat scroll 0 0 #FFFBCC;
+    background: url("../images/icons/task-attention.png") repeat scroll 0 0 #FFFBCC;
     border-color: #E6DB55;
     color: #666452;
 }
 .notification.info {
-    background: url("/static/images/icons/dialog-information.png") repeat scroll 0 0 #DBE3FF;
+    background: url("../images/icons/dialog-information.png") repeat scroll 0 0 #DBE3FF;
     border-color: #A2B4EE;
     color: #585B66;
 }
 
 .pdficon span {
-    background-image: url("/static/images/icons/application-pdf.png");
+    background-image: url("../images/icons/application-pdf.png");
     background-repeat: no-repeat;
     background-position: center;
     width: 16px;

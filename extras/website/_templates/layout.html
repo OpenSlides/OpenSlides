@@ -1,4 +1,5 @@
 {% extends '!layout.html' %}
+{% load staticfiles %}
 
 {% block extrahead %}
 {{ super() }}
@@ -37,14 +38,14 @@ name="keywords">
 
     <div id="sidebar">
         <div id="logo">
-            <a href="{{ pathto('index') }}" title="Home" style="border: none;"><img src="_static/images/logo.png"></a>
+            <a href="{{ pathto('index') }}" title="Home" style="border: none;"><img src="{% static 'images/logo.png' %}"></a>
         </div>
         <div id="language">
         {%- for lng in languages.split(' ') %}
             {%- if lng != language %}
                 <a href="{{ pathto('../'+lng+'/'+pagename) }}">
             {%- endif %}
-            <img src="{{ pathto('_static/images/'+lng+'.png', 1) }}" alt="{{ lng }}" title="{{ lng }}" {%- if lng == language %} width="18px" height="13px" {%- endif %} />
+            <img src="{% static {{ 'images/'+lng+'.png' }} %}" alt="{{ lng }}" title="{{ lng }}" {%- if lng == language %} width="18px" height="13px" {%- endif %} />
 
             {%- if lng != language %}
                 </a>

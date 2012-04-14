@@ -50,7 +50,7 @@
 }
 /* countdown */
 a.countdown_visible_link.closed div {
-    background-image: url(/static/images/icons/user-offline.png);
+    background-image: url(../images/icons/user-offline.png);
     background-repeat: no-repeat;
     background-position: center;
     width: 16px;
@@ -58,7 +58,7 @@ a.countdown_visible_link.closed div {
     display: inline-block;
 }
 a.countdown_visible_link.open div {
-    background-image: url(/static/images/icons/user-online.png);
+    background-image: url(../images/icons/user-online.png);
     background-repeat: no-repeat;
     background-position: center;
     width: 16px;
@@ -67,7 +67,7 @@ a.countdown_visible_link.open div {
 }
 /* activate link */
 a.activate_link div {
-    background-image: url(/static/images/icons/task-accepted-grey.png);
+    background-image: url(../images/icons/task-accepted-grey.png);
     background-repeat: no-repeat;
     float: left;
     width: 16px;
@@ -78,5 +78,5 @@ a.activate_link div {
     left: 4px;
 }
 a.activate_link.active div {
-    background-image: url(/static/images/icons/task-accepted.png);
+    background-image: url(../images/icons/task-accepted.png);
 }

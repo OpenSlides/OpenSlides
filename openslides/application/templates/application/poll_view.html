@@ -1,6 +1,7 @@
 {% extends 'application/base_application.html' %}
 
 {% load i18n %}
+{% load staticfiles %}
 
 {% block title %}{{ block.super }} - {{ poll }}{% endblock %}
 
@@ -10,7 +11,7 @@
     <br>
     <h3>{%trans "Application No." %} {{ poll.application.number }}</h3>
     <ul>
-    <li><a href="{% url print_application_poll poll.id %}"><img src="/static/images/icons/application-pdf.png"> {%trans 'Print vote' %}</a></li>
+    <li><a href="{% url print_application_poll poll.id %}"><img src="{% static 'images/icons/application-pdf.png' %}"> {%trans 'Print vote' %}</a></li>
     </ul>
 {% endblock %}
 {% endif %}
