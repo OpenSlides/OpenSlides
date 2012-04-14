@@ -61,6 +61,11 @@ class ProfileForm(ModelForm, CssClassMixin):
 class GroupForm(ModelForm, CssClassMixin):
     permissions = LocalizedModelMultipleChoiceField(queryset=Permission.objects.all())
 
+    def __init__(self, *args, **kwargs):
+        super(GroupForm, self).__init__(*args, **kwargs)
+        if kwargs.get('instance', None) is not None:
+            self.fields['permissions'].initial = [p.pk for p in kwargs['instance'].permissions.all()]
+
     class Meta:
         model = Group
         exclude = ('permissions',)
