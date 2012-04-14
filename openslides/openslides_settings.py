@@ -17,7 +17,7 @@ SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 
 
 AUTH_PROFILE_MODULE = 'participant.Profile'
-AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', 'openslides.system.auth.AnonymousAuth',)
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', 'openslides.utils.auth.AnonymousAuth',)
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
@@ -112,5 +112,5 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.core.context_processors.i18n',
     'utils.utils.revision',
-    'openslides.system.auth.anonymous_context_additions',
+    'openslides.utils.auth.anonymous_context_additions',
 )
