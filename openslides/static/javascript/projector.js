@@ -6,6 +6,7 @@ function presentation_reload() {
             dataType: 'json',
             data: '',
             success: function(data) {
+                $('#currentTime').removeClass('ajax_error');
                 $('#content').html(data.content);
                 document.title = data.title;
                 $('#currentTime').html(data.time);
@@ -14,24 +15,27 @@ function presentation_reload() {
                 $('#content li').css({'font-size': data.bigger + '%'}, 200);
                 $('#content #sidebar').css({'font-size': '16px'}, 0);
                 $('#content').animate({'margin-top': data.up + 'em'}, 200);
-                /*TODO: messages neu schreiben*/
+                /*
+                 * Gehe durch alle messages li durch. Wenn der Wert in der data steht, lasse es,
+                 * ansonsten füge ein neues li ein und lösche es aus der data weg.
+                 * Alles was jetzt noch in der data ist, muss als neues li eingefügt werden.
+                 */
 
-                if (data.countdown_visible == true)
-                    $('#countdown').slideDown();
-                if (data.countdown_visible == false)
-                    $('#countdown').slideUp();
-                if (data.countdown_control == "reset")
-                    resetTimer(data.countdown_time);
-                if (data.countdown_control == 'start') {
-                    if (!timer_is_running)
-                        startTimer();
-                }
-                if (data.countdown_control == 'stop')
-                    stopTimer();
+                //# $.each($('#messages li'), function (index, value) {
+                    //# message_id = value.attr('id').split('_')[1];
+                    //# if (message_id in data) {
+                        //# this.html(data[message_id]);
+                    //# }
+                //# });
+                $('#messages li').remove();
+                $.each(data['messages'], function (index, value){
+                    $('#messages ul').append('<li>' + value[1] + '</li>');
+                });
                 setTimeout("presentation_reload()", 500);
             },
             error: function () {
                 $('#currentTime').addClass('ajax_error');
+                setTimeout("presentation_reload()", 1000);
             }
         });
     }

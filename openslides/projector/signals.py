@@ -12,4 +12,4 @@
 
 from django.dispatch import Signal
 
-projector_messages = Signal()
+projector_messages = Signal(providing_args=['register', 'call'])

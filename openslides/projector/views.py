@@ -10,6 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 from datetime import datetime
+from time import time
 
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
@@ -28,6 +29,7 @@ from system import config
 
 from api import get_active_slide, set_active_slide
 from projector import SLIDE
+from models import ProjectorMessage
 from openslides.projector.signals import projector_messages
 
 
@@ -80,7 +82,8 @@ def active_slide(request):
 
     data['ajax'] = 'on'
     data['messages'] = []
-    for receiver, response in projector_messages.send(sender='active_slide'):
+    active_defs = ProjectorMessage.objects.filter(active=True).values_list('def_name', flat=True)
+    for receiver, response in projector_messages.send(sender='active_slide', register=False, call=active_defs):
         if response is not None:
             data['messages'].append(response)
 
@@ -89,6 +92,7 @@ def active_slide(request):
         content = render_block_to_string(data['template'], 'content', data)
         jsondata = {
             'content': content,
+            'messages': data['messages'],
             'title': data['title'],
             'time': datetime.now().strftime('%H:%M'),
             'bigger': config['bigger'],
@@ -104,6 +108,39 @@ def active_slide(request):
             data,
             context_instance=RequestContext(request)
         )
+
+
+class MessagesView(TemplateView):
+    permission_required = 'projector.can_manage_projector'
+    template_name = 'projector/messages.html'
+
+    def get_projector_messages(self):
+        messages = []
+        for receiver, name in projector_messages.send(sender='registerer', register=True):
+            if name is not None:
+                try:
+                    projector_message = ProjectorMessage.objects.get(def_name=name)
+                except ProjectorMessage.DoesNotExist:
+                    projector_message = ProjectorMessage(def_name=name, active=False)
+                    projector_message.save()
+                messages.append(projector_message)
+        return messages
+
+    def post(self, request, *args, **kwargs):
+        for message in self.get_projector_messages():
+            if message.def_name in request.POST:
+                message.active = True
+            else:
+                message.active = False
+            message.save()
+
+        return self.get(request, *args, **kwargs)
+
+
+    def get_context_data(self, **kwargs):
+        context = super(MessagesView, self).get_context_data(**kwargs)
+        context['projector_messages'] = self.get_projector_messages()
+        return context
 
 
 @permission_required('agenda.can_manage_agenda')
@@ -126,14 +163,14 @@ def projector_edit(request, direction):
 
 
 @permission_required('projector.can_manage_projector')
-def projector_countdown(request, command, time=60):
+def projector_countdown(request, command):
     #todo: why is there the time argument?
     if command == 'show':
         config['countdown_visible'] = True
     elif command == 'hide':
         config['countdown_visible'] = False
     elif command == 'reset':
-        config['countdown_start'] = datetime.now()
+        config['countdown_start'] = time()
     elif command == 'start':
         config['countdown_run'] = True
     elif command == 'stop':

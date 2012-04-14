@@ -1,6 +1,7 @@
-from datetime import datetime
+from time import time
 
 from django.dispatch import receiver
+from django.utils.translation import ugettext as _
 
 from system import config
 
@@ -69,11 +70,11 @@ class Slide(object):
 
 @receiver(projector_messages, dispatch_uid="projector_countdown")
 def countdown(sender, **kwargs):
-    if config['countdown_visible']:
+    name = _('Projector Countdown')
+    if kwargs['register']:
+        return name
+    if name in kwargs['call']:
         starttime = config['countdown_start']
-        if type(starttime) != type(datetime.now()):
-            config['countdown_start'] = datetime.now()
-            starttime = config['countdown_start']
-            #todo: return the time passt sinth starttime
-        return  datetime.now() - starttime
+        seconds = max(0, int(starttime + config['agenda_countdown_time'] - time()))
+        return (name, seconds)
     return None

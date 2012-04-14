@@ -32,7 +32,7 @@
         <div id="messages">
             <ul>
             {% for message in messages %}
-                <li>{{ message }}</li>
+                <li id="message_{{ message.0 }}">{{ message.1 }}</li>
             {% endfor %}
             </ul>
         </div>

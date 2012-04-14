@@ -22,5 +22,14 @@ class ProjectorSlide(models.Model, SlideMixin):
             ('can_see_projector', _("Can see projector", fixstr=True)),
         )
 
+
+class ProjectorMessage(models.Model):
+    active = models.BooleanField(verbose_name=_('Active'))
+    def_name = models.CharField(max_length=64)
+
+    def __unicode__(self):
+        return self.def_name
+
+
 register_slidemodel(ProjectorSlide, category=_('Projector'), model_name=_('Projector Slide'))
 

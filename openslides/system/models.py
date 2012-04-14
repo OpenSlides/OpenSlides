@@ -73,7 +73,11 @@ class Config(object):
             c = ConfigStore(pk=key)
         c.value = base64.encodestring(dumps(value))
         c.save()
-        self.config[key] = value
+        try:
+            self.config[key] = value
+        except AttributeError:
+            self.load_config()
+            self.config[key] = value
 
 from django.dispatch import receiver
 from django.core.urlresolvers import reverse
