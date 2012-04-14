@@ -139,10 +139,16 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
     def get_assignment(self):
         return self.assignment
 
-
     def append_pollform_fields(self, fields):
         CountInvalid.append_pollform_fields(self, fields)
         CountVotesCast.append_pollform_fields(self, fields)
+
+    @models.permalink
+    def get_absolute_url(self, link='view'):
+        if link == 'view':
+            return ('assignment_poll_view', [str(self.id)])
+        if link == 'delete':
+            return ('assignment_poll_delete', [str(self.id)])
 
 #register_slidemodel(AssignmentPoll, category=_('Elections'))
 

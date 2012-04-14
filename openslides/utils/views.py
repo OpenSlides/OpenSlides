@@ -185,13 +185,15 @@ class CreateView(PermissionMixin, _CreateView):
 
 class DeleteView(RedirectView, SingleObjectMixin):
     def pre_redirect(self, request, *args, **kwargs):
-        self.object = self.get_object()
         self.confirm_form(request, self.object)
 
     def pre_post_redirect(self, request, *args, **kwargs):
-        self.object = self.get_object()
         self.object.delete()
         messages.success(request, _("Item <b>%s</b> was successfully deleted.") % self.object)
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super(DeleteView, self).get(request, *args, **kwargs)
 
     def confirm_form(self, request, object, name=None):
         if name is None:

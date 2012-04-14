@@ -16,12 +16,17 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils.translation import ugettext as _
 
-from utils.utils import template, permission_required, gen_confirm_form, del_confirm_form, ajax_request
-from utils.pdf import print_assignment, print_assignment_poll
-from utils.views import FormView
-from utils.template import Tab
+from reportlab.lib import colors
+from reportlab.lib.units import cm
+from reportlab.platypus import PageBreak, Paragraph, Spacer, Table, TableStyle
 
 from system import config
+
+from utils.utils import template, permission_required, gen_confirm_form, del_confirm_form, ajax_request
+from utils.pdf import print_assignment_poll
+from utils.pdf import stylesheet
+from utils.views import FormView, DeleteView, PDFView
+from utils.template import Tab
 
 from poll.views import PollFormView
 
@@ -74,20 +79,18 @@ def view(request, assignment_id=None):
     votes = []
     for candidate in assignment.candidates:
         tmplist = [[candidate, assignment.is_elected(candidate)], []]
-        #TODO: only show published polls
         for poll in assignment.poll_set.all():
-            #if (poll.published and not request.user.has_perm('assignment.can_manage_assignment')) or request.user.has_perm('assignment.can_manage_assignment'):
-
-            # exisitiert der Spieler in der poll
-            if poll.get_options().filter(candidate=candidate).exists():
-                option = AssignmentOption.objects.filter(poll=poll).get(candidate=candidate)
-                try:
-                    tmplist[1].append(option.get_votes()[0])
-                except IndexError:
-                    tmplist[1].append('–')
-            else:
-                tmplist[1].append("-")
-        votes.append(tmplist)
+            if (poll.published and not request.user.has_perm('assignment.can_manage_assignment')) or request.user.has_perm('assignment.can_manage_assignment'):
+            	# candidate exists in poll
+            	if poll.get_options().filter(candidate=candidate).exists():
+                    option = AssignmentOption.objects.filter(poll=poll).get(candidate=candidate)
+                    try:
+                        tmplist[1].append(option.get_votes()[0])
+                    except IndexError:
+                        tmplist[1].append('–')
+                else:
+                    tmplist[1].append("-")
+            votes.append(tmplist)
 
     polls = assignment.poll_set.all()
 
@@ -237,18 +240,6 @@ def set_published(request, poll_id, published=True):
     return redirect(reverse('assignment_view', args=[poll.assignment.id]))
 
 
-@permission_required('assignment.can_manage_assignment')
-def delete_poll(request, poll_id):
-    poll = Poll.objects.get(pk=poll_id)
-    assignment = poll.assignment
-    ballot = assignment.poll_set.filter(id__lte=poll_id).count()
-    if request.method == 'POST':
-        poll.delete()
-        messages.success(request, _('The %s. ballot was successfully deleted.') % ballot)
-    else:
-        del_confirm_form(request, poll, name=_("the %s. ballot") % ballot)
-    return redirect(reverse('assignment_view', args=[assignment.id]))
-
 
 @permission_required('assignment.can_manage_assignment')
 def set_elected(request, assignment_id, profile_id, elected=True):
@@ -268,6 +259,183 @@ def set_elected(request, assignment_id, profile_id, elected=True):
                              'text': text})
 
     return redirect(reverse('assignment_view', args=[assignment_id]))
+
+
+class AssignmentPollDelete(DeleteView):
+    """
+    Delete an assignment poll object.
+    """
+    permission_required = 'assignment.can_manage_assignment'
+    model = AssignmentPoll
+
+    def pre_redirect(self, request, *args, **kwargs):
+        self.set_assignment()
+        super(AssignmentPollDelete, self).pre_redirect(request, *args, **kwargs)
+
+    def pre_post_redirect(self, request, *args, **kwargs):
+        self.set_assignment()
+        super(AssignmentPollDelete, self).pre_post_redirect(request, *args, **kwargs)
+
+    def set_assignment(self):
+	self.assignment = self.object.assignment
+
+    def get_redirect_url(self, **kwargs):
+    	return reverse('assignment_view', args=[self.assignment.id])
+	
+
+class AssignmentPDF(PDFView):
+    permission_required = 'assignment.can_manage_assignment'
+    filename = u'filename=%s.pdf;' % _("Elections")
+    top_space = 0
+    document_title = None
+
+    def append_to_pdf(self, story):
+        try:
+            assignment_id = self.kwargs['assignment_id']
+        except KeyError:
+            assignment_id = None
+        if assignment_id is None:  #print all applications
+            title = config["assignment_pdf_title"]
+            story.append(Paragraph(title, stylesheet['Heading1']))
+            preamble = config["assignment_pdf_preamble"]
+            if preamble:
+                story.append(Paragraph("%s" % preamble.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+            story.append(Spacer(0,0.75*cm))
+            # List of assignments
+            for assignment in Assignment.objects.order_by('name'):
+                story.append(Paragraph(assignment.name, stylesheet['Heading3']))
+            # Assignment details (each assignment on single page)
+            for assignment in Assignment.objects.order_by('name'):
+                story.append(PageBreak())
+                story = self.get_assignment(assignment, story)
+        else:  # print selected assignment
+            assignment = Assignment.objects.get(id=assignment_id)
+            filename = u'filename=%s-%s.pdf;' % (_("Assignment"), assignment.name.replace(' ','_'))
+            story = self.get_assignment(assignment, story)
+
+    def get_assignment(self, assignment, story):
+        # title
+        story.append(Paragraph(_("Election")+": %s" % assignment.name, stylesheet['Heading1']))
+        story.append(Spacer(0,0.5*cm))
+        # posts
+        cell1a = []
+        cell1a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Number of available posts"), stylesheet['Bold']))
+        cell1b = []
+        cell1b.append(Paragraph(str(assignment.posts), stylesheet['Paragraph']))
+        # candidates
+        cell2a = []
+        cell2a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font><seqreset id='counter'>" % _("Candidates"), stylesheet['Heading4']))
+        cell2b = []
+        for c in assignment.profile.all():
+            cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % unicode(c), stylesheet['Signaturefield']))
+        if assignment.status == "sea":
+            for x in range(0,2*assignment.posts):
+                cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; __________________________________________",stylesheet['Signaturefield']))
+        cell2b.append(Spacer(0,0.2*cm))
+        # vote results
+        table_votes = []
+        results = self.get_assignment_votes(assignment)
+        cell3a = []
+        cell3a.append(Paragraph("%s:" % (_("Vote results")), stylesheet['Heading4']))
+        if len(results) > 0:
+            if len(results[0]) >= 1:
+                cell3a.append(Paragraph("%s %s" % (len(results[0][1]), _("ballots")), stylesheet['Normal']))
+            if len(results[0][1]) > 0:
+                data_votes = []
+                # add table head row
+                headrow = []
+                headrow.append(_("Candidates"))
+                for i in range (0,len(results[0][1])):
+                    headrow.append("%s." %(str(i+1)))
+                data_votes.append(headrow)
+                # add result rows
+                for candidate in results:
+                    row = []
+                    if candidate[0][1]:
+                        elected = "* "
+                    else:
+                        elected = ""
+                    c = str(candidate[0][0]).split("(",1)
+                    if len(c) > 1:
+                        row.append(elected+c[0]+"\n"+"("+c[1])
+                    else:
+                        row.append(elected+str(candidate[0][0]))
+                    for votes in candidate[1]:
+                        if type(votes) == type(list()):
+                            tmp = _("Y")+": "+str(votes[0])+"\n"
+                            tmp += _("N")+": "+str(votes[1])+"\n"
+                            tmp += _("A")+": "+str(votes[2])
+                            row.append(tmp)
+                        else:
+                            row.append(str(votes))
+
+                    data_votes.append(row)
+                polls = []
+                for poll in assignment.poll_set.filter(assignment=assignment):
+                    polls.append(poll)
+                # votes invalid
+                row = []
+                row.append(_("Invalid votes"))
+                for p in polls:
+                    if p.published:
+                        row.append(p.votesinvalid)
+                data_votes.append(row)
+
+                # votes cast
+                row = []
+                row.append(_("Votes cast"))
+                for p in polls:
+                    if p.published:
+                        row.append(p.votescast)
+                data_votes.append(row)
+
+                table_votes=Table(data_votes)
+                table_votes.setStyle( TableStyle([
+                                ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
+                                ('VALIGN',(0,0),(-1,-1), 'TOP'),
+                                ('LINEABOVE',(0,0),(-1,0),2,colors.black),
+                                ('LINEABOVE',(0,1),(-1,1),1,colors.black),
+                                ('LINEBELOW',(0,-1),(-1,-1),2,colors.black),
+                                ('ROWBACKGROUNDS', (0, 1), (-1, -1), (colors.white, (.9, .9, .9))),
+                                  ]))
+
+        # table
+        data = []
+        data.append([cell1a,cell1b])
+        if table_votes:
+            data.append([cell3a,table_votes])
+            data.append(['','* = '+_('elected')])
+        else:
+            data.append([cell2a,cell2b])
+        data.append([Spacer(0,0.2*cm),''])
+        t=Table(data)
+        t._argW[0]=4.5*cm
+        t._argW[1]=11*cm
+        t.setStyle(TableStyle([ ('BOX', (0,0), (-1,-1), 1, colors.black),
+                                ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                              ]))
+        story.append(t)
+        story.append(Spacer(0,1*cm))
+        # text
+        story.append(Paragraph("%s" % assignment.description.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+        return story
+
+    def get_assignment_votes(self, assignment):
+        votes = []
+        for candidate in assignment.candidates:
+            tmplist = [[candidate, assignment.is_elected(candidate)], []]
+            for poll in assignment.poll_set.all():
+                if poll.published:
+            	    if poll.get_options().filter(candidate=candidate).exists():
+                        option = AssignmentOption.objects.filter(poll=poll).get(candidate=candidate)
+                        try:
+                            tmplist[1].append(option.get_votes()[0])
+                        except IndexError:
+                            tmplist[1].append('–')
+                    else:
+                        tmplist[1].append("-")
+                votes.append(tmplist)
+        return votes
 
 
 class Config(FormView):
