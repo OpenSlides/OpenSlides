@@ -3,10 +3,10 @@
 
 <ul style="line-height: 180%">
     <li>
-        <a href="{% url projector_activate_slide slide.key %}" class="activate_link {% if slide.active %}active{% endif %}">
+        <a href="{% url projector_activate_slide slides.key %}" class="activate_link {% if slides.active %}active{% endif %}">
             <div></div>
         </a>
-        {{ slides.key }}
+        {{ slides.name }}
     </li>
 </ul>
 

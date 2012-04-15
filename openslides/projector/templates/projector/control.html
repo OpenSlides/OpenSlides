@@ -97,41 +97,6 @@
             </div>
         </div> <!-- end portlet-->
 
-        <!-- Single Slides -->
-        {% for category, slides in categories.items %}
-            {% if category == 'projector' %}
-            <div class="portlet">
-                <div class="portlet-header">{% trans "Static Slides" %}</div>
-                <div class="portlet-content">
-                {% for slide in slides %}
-                    {% if slide.model_slide %}
-                        <ul style="line-height: 180%">
-                        {% for slide in slide.get_items %}
-                            <li class="{% if slide.active %}activeline{% endif %}"><a href="{% url projector_activate_slide slide.sid %}"
-                            class="activate_link {% if slide.active %}active{% endif %}"
-                            ><div></div></a>
-                            {% for i in slide.get_ancestors %}&nbsp;&nbsp;&nbsp;{% endfor %}
-                            <a href="{% url projector_edit_slide slide.id %}">{{ slide }}</a>
-                            {% if slide.children.exists %}
-                                <a href="{% url projector_activate_summary slide.sid %}"><img src="{% static 'images/icons/view-list-tree.png' %}" title="{% trans 'Select item overview' %}"></a>
-                            {% endif %}
-                            </li>
-                        {% endfor %}
-                        </ul>
-                    {% else %}
-                    <hr>
-                        <ul style="line-height: 180%">
-                        <li><a href="{% url projector_activate_slide slide.key %}"
-                                class="activate_link {% if slide.active %}active{% endif %}"
-                        ><div></div></a>{{ slide.key }}</li>
-                        </ul>
-                    {% endif %}
-                {% endfor %}
-                </div>
-            </div> <!-- end portlet-->
-           {% endif %}
-        {% endfor %}
-
         <!-- Messages (Countdown etc.)-->
         <div class="portlet">
             <div class="portlet-header">{% trans 'Messages' %}</div>

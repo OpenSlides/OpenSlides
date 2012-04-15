@@ -124,7 +124,7 @@ register_slidemodel(Item, model_name=_('Agenda Item'))
 from projector.api import register_slidefunc
 from agenda.slides import agenda_show
 
-register_slidefunc(_('Agenda'), agenda_show, weight=-1)
+register_slidefunc('agenda', agenda_show, weight=-1, name=_('Agenda'))
 
 
 from django.dispatch import receiver

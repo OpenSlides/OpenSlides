@@ -49,7 +49,7 @@ class SlideMixin(object):
 
 class Slide(object):
     def __init__(self, model_slide=False, func=None, model=None, category=None,
-                 key=None, model_name='', control_template='', weight=0):
+                 key=None, model_name='', control_template='', weight=0, name=''):
         """
         model_slide: Boolean if the value is a Model.
         func: The function to call. Only if modelslide is False.
@@ -66,6 +66,7 @@ class Slide(object):
         self.key = key
         self.control_template = control_template
         self.weight = weight
+        self.name = name
 
     def get_items(self):
         try:

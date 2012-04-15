@@ -56,7 +56,7 @@ def register_slidemodel(model, model_name=None, control_template=None, weight=0)
     )
 
 
-def register_slidefunc(key, func, control_template=None, weight=0):
+def register_slidefunc(key, func, control_template=None, weight=0, name=''):
     #TODO: Warn if there already is a slide with this prefix
     if control_template is None:
         control_template = 'projector/default_control_slidefunc.html'
@@ -68,4 +68,5 @@ def register_slidefunc(key, func, control_template=None, weight=0):
         key=key,
         control_template=control_template,
         weight=weight,
+        name=name,
     )
