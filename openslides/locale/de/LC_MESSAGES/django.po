@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-15 09:45+0200\n"
+"POT-Creation-Date: 2012-04-15 10:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -165,7 +165,7 @@ msgstr "Speichern"
 #: agenda/templates/agenda/config.html:17 agenda/templates/agenda/edit.html:19
 #: application/templates/application/config.html:17
 #: application/templates/application/edit.html:28
-#: application/templates/application/import.html:19
+#: application/templates/application/import.html:26
 #: application/templates/application/poll_view.html:56
 #: assignment/templates/assignment/config.html:17
 #: assignment/templates/assignment/edit.html:24
@@ -174,7 +174,7 @@ msgstr "Speichern"
 #: config/templates/config/general.html:17
 #: participant/templates/participant/edit.html:28
 #: participant/templates/participant/group_edit.html:24
-#: participant/templates/participant/import.html:21
+#: participant/templates/participant/import.html:26
 #: participant/templates/participant/settings.html:22
 #: projector/templates/projector/new.html:20
 msgid "Cancel"
@@ -744,16 +744,26 @@ msgstr "Wählen Sie eine CSV-Datei zum Importieren von Anträgen aus!"
 
 #: application/templates/application/import.html:11
 msgid ""
-"(Required comma separated values: <code>number, title, text, reason, "
-"first_name, last_name</code> - <code>number</code> and <code>reason</code> "
+"Required comma separated values: <code>{number, title, text, reason, "
+"first_name, last_name}</code> (<code>number</code> and <code>reason</code> "
 "are optional and may be empty)"
 msgstr ""
-"(Erfordert kommaseparierte Werte: <code>Nummer, Titel, Text, Begründung, "
-"Vorname, Nachname</code> - <code>Nummer</code> und <code>Begründung</code> "
+"Erforderliche kommaseparierte Werte: <code>{Nummer, Titel, Text, Begründung, "
+"Vorname, Nachname}</code> (<code>Nummer</code> und <code>Begründung</code> "
 "sind optional und können auch leer sein)"
 
-#: application/templates/application/import.html:15
-#: participant/templates/participant/import.html:17
+#: application/templates/application/import.html:13
+#: participant/templates/participant/import.html:13
+msgid "Required CSV file encoding: UTF-8 (Unicode)."
+msgstr "Erforderliches CSV-Datei-Encoding: UTF-8 (Unicode)."
+
+#: application/templates/application/import.html:16
+#: participant/templates/participant/import.html:16
+msgid "A CSV example file is available in OpenSlides Wiki."
+msgstr "Eine CSV-Beispiel-Datei gibt es im OpenSlides Wiki."
+
+#: application/templates/application/import.html:22
+#: participant/templates/participant/import.html:22
 msgid "Import"
 msgstr "Importieren"
 
@@ -1676,15 +1686,11 @@ msgstr "Wählen Sie eine CSV-Datei zum Importieren von Teilnehmer/innen aus!"
 
 #: participant/templates/participant/import.html:11
 msgid ""
-"Required comma separated values: <code>first_name, last_name, gender, group, "
-"type, committee, comment</code>"
+"Required comma separated values: <code>{first_name, last_name, gender, "
+"group, type, committee, comment}</code>"
 msgstr ""
-"(Erfordert kommaseparierte Werte: <code>Vorname, Nachname, Geschlecht, "
-"Gruppe, Typ, Amt, Kommentar</code>)"
-
-#: participant/templates/participant/import.html:12
-msgid "CSV file encoding: UTF-8 (Unicode)."
-msgstr "CSV-Datei-Encoding: UTF-8 (Unicode)."
+"Erforderliche kommaseparierte Werte: <code>{Vorname, Nachname, Geschlecht, "
+"Gruppe, Typ, Amt, Kommentar}</code>"
 
 #: participant/templates/participant/login.html:8
 #: participant/templates/participant/login.html:16
