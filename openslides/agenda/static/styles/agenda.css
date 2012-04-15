@@ -1,5 +1,5 @@
 a.close_link.closed span {
-    background-image: url(../images/icons/user-offline.png);
+    background-image: url(../images/icons/task-complete-grey.png);
     background-repeat: no-repeat;
     background-position: center;
     width: 16px;
@@ -7,7 +7,7 @@ a.close_link.closed span {
     display: inline-block;
 }
 a.close_link.open span {
-    background-image: url(../images/icons/user-online.png);
+    background-image: url(../images/icons/task-complete.png);
     background-repeat: no-repeat;
     background-position: center;
     width: 16px;
