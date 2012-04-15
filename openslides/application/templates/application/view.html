@@ -65,44 +65,43 @@
         <ul class="results">
         {% for poll in polls %}
             <li>
-            {% if perms.application.can_manage_application and poll.has_vote %}
-                <a href="{% url application_poll_view poll.id %}">
-            {% endif %}
-            <b>{{ forloop.counter }}. {% trans "Vote" %}:</b>
-            {% if perms.application.can_manage_application %}
-                {% if poll.has_vote %}</a>{% endif %}
-                <a href="{% url application_poll_delete poll.id %}"><img src="{% static 'images/icons/edit-delete.png' %}" title="{% trans 'Delete Vote' %}"></a>
-            {% endif %}
-            <br>
-            {% if poll.has_votes %}
-                {% with poll.get_options.0 as option %}
-                    <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.yes }}<br>
-                    <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.no }}<br>
-                    <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ option.contained }}<br>
-                    <img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}<br>
-                    <div style="border-top: 1px solid; padding-top: 5px; margin: 5px 0; width: 10em;">
-                        <img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
-                    </div>
-                {% endwith %}
                 {% if perms.application.can_manage_application %}
-                    {% if forloop.last %}
-                    {% if "genpoll" in actions %}
-                    <a href='{% url application_gen_poll application.id %}'>
-                        <span class="button"><span class="icon poll">{%trans 'New vote' %}</span></span>
+                    <a href="{% url application_poll_view poll.id %}">
+                        <b>{{ forloop.counter }}. {% trans "Vote" %}:</b>
                     </a>
+                    <a href="{% url application_poll_delete poll.id %}">
+                        <img src="{% static 'images/icons/edit-delete.png' %}" title="{% trans 'Delete Vote' %}">
+                    </a>
+                {% endif %}
+                <br>
+                {% if poll.has_votes %}
+                    {% with poll.get_options.0 as option %}
+                        <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.yes }}<br>
+                        <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.no }}<br>
+                        <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ option.contained }}<br>
+                        <img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}<br>
+                        <div style="border-top: 1px solid; padding-top: 5px; margin: 5px 0; width: 10em;">
+                            <img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
+                        </div>
+                    {% endwith %}
+                    {% if perms.application.can_manage_application %}
+                        {% if forloop.last %}
+                        {% if "genpoll" in actions %}
+                        <a href='{% url application_gen_poll application.id %}'>
+                            <span class="button"><span class="icon poll">{%trans 'New vote' %}</span></span>
+                        </a>
+                        {% endif %}
+                        {% endif %}
                     {% endif %}
+                {% else %}
+                    {% if perms.application.can_manage_application %}
+                    <a href="{% url application_poll_view poll.id %}">{% trans "Enter vote results!" %}</a>
                     {% endif %}
                 {% endif %}
-            {% else %}
-                {% if perms.application.can_manage_application %}
-                <a href="{% url application_poll_view poll.id %}">{% trans "Enter vote results!" %}</a>
-                {% endif %}
-            {% endif %}
             </li>
         {% endfor %}
         </ul>
         {% endwith %}
-
 
     <h4>{% trans "Creation Time" %}:</h4>
     {{ application.creation_time }}
