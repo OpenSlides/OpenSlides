@@ -203,11 +203,16 @@ class DeleteView(RedirectView, SingleObjectMixin):
         messages.warning(request, '%s<form action="%s" method="post"><input type="hidden" value="%s" name="csrfmiddlewaretoken"><input type="submit" value="%s" /> <input type="button" value="%s"></form>' % (message, url, csrf(request)['csrf_token'], _("Yes"), _("No")))
 
 
-class DetailView(SingleObjectMixin, TemplateView):
+class DetailView(TemplateView, SingleObjectMixin):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         context = self.get_context_data(object=self.object)
-        return TemplateView.get(self, request, *args, **kwargs)
+        return super(DetailView, self).get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(DetailView, self).get_context_data(**kwargs)
+        context.update(SingleObjectMixin.get_context_data(self, **kwargs))
+        return context
 
 
 class PDFView(PermissionMixin, View):
