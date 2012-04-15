@@ -165,19 +165,19 @@ class ItemDelete(DeleteView):
             self.object.delete()
             messages.success(request, _("Item <b>%s</b> was successfully deleted.") % self.object)
 
-    def gen_confirm_form(self, request, message, url, singleitem=None):
+    def gen_confirm_form(self, request, message, url, singleitem=False):
         if singleitem:
             messages.warning(request, '%s<form action="%s" method="post"><input type="hidden" value="%s" name="csrfmiddlewaretoken"><input type="submit" value="%s" /> <input type="button" value="%s"></form>' % (message, url, csrf(request)['csrf_token'], _("Yes"), _("No")))
         else:
             messages.warning(request, '%s<form action="%s" method="post"><input type="hidden" value="%s" name="csrfmiddlewaretoken"><input type="submit" value="%s" /> <input type="submit" name="all" value="%s" /> <input type="button" value="%s"></form>' % (message, url, csrf(request)['csrf_token'], _("Yes"), _("Yes, with all child items."), _("No")))
 
-    def confirm_form(self, request, object, name=None):
-        if name is None:
-            name = object
-        if object.children:
-            self.gen_confirm_form(request, _('Do you really want to delete <b>%s</b>?') % name, object.get_absolute_url('delete'), False)
+    def confirm_form(self, request, object, item=None):
+        if item is None:
+            item = object
+        if item.get_children():
+            self.gen_confirm_form(request, _('Do you really want to delete <b>%s</b>?') % item, item.get_absolute_url('delete'), False)
         else:
-            self.gen_confirm_form(request, _('Do you really want to delete <b>%s</b>?') % name, object.get_absolute_url('delete'), True)
+            self.gen_confirm_form(request, _('Do you really want to delete <b>%s</b>?') % item, item.get_absolute_url('delete'), True)
 
 
 class AgendaPDF(PDFView):
