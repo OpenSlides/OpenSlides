@@ -91,11 +91,6 @@
                     title="{%trans 'Change status (active/inactive)' %}">
                     <span></span>
                 </a>
-                <a class="superuser_link {% if user.is_superuser %}superuser{% else %}normaluser{% endif %}"
-                    href="{% if user.is_superuser %}{% url user_normaluser user.id %}{% else %}{% url user_superuser user.id %}{% endif %}"
-                    title="{%trans 'Change administrator rights (Superuser/Normal user)' %}">
-                    <span></span>
-                </a>
                 </span>
             </td>
             {% endif %}
