@@ -17,8 +17,10 @@ from django.contrib.auth.models import Group, Permission
 from django.utils.translation import ugettext as _
 from django.template.loader import render_to_string
 
+from openslides import get_version
+
 from utils.utils import template, permission_required
-from utils.views import FormView
+from utils.views import FormView, TemplateView
 from utils.template import Tab
 
 from forms import SystemConfigForm, EventConfigForm
@@ -52,6 +54,16 @@ class GeneralConfig(FormView):
     def form_invalid(self, form):
         messages.error(self.request, _('Please check the form for errors.'))
         return super(Config, self).form_invalid(form)
+
+
+class VersionConfig(TemplateView):
+    permission_required = 'config.can_manage_config'
+    template_name = 'config/version.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(VersionConfig, self).get_context_data(**kwargs)
+        context['version'] = get_version()
+        return context
 
 
 class Config(FormView):

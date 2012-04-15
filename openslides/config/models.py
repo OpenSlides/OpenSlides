@@ -101,10 +101,10 @@ from openslides.utils.signals import template_manipulation
 def set_submenu(sender, request, context, **kwargs):
     if not request.path.startswith('/config/'):
         return None
-    selected = True if request.path == reverse('config_general') else False
     menu_links = [
-        (reverse('config_general'), _('General'), selected),
+        (reverse('config_general'), _('General'), request.path == reverse('config_general') ),
     ]
+
     for app in settings.INSTALLED_APPS:
         try:
             mod = import_module(app + '.views')
@@ -118,9 +118,10 @@ def set_submenu(sender, request, context, **kwargs):
             (reverse('config_%s' % appname), _(appname.title()), selected)
         )
 
+    menu_links.append (
+        (reverse('config_version'), _('Version'), request.path == reverse('config_version') )
+    )
+
     context.update({
         'menu_links': menu_links,
     })
-
-
-

@@ -1,0 +1,11 @@
+{% extends "config/base_config.html" %}
+
+{% load i18n %}
+
+{% block title %}{{ block.super }} - {% trans "Version" %}{% endblock %}
+
+{% block content %}
+    <h1>{% trans "Version" %}</h1>
+
+    <p>{% trans "OpenSlides Version" %}: {{ version }}</p>
+{% endblock %}
