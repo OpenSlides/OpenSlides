@@ -31,4 +31,16 @@ a.hidelink.show span {
     height: 16px;
     display: inline-block;
 }
+/* activate link */
+a.activate_link span {
+    background-image: url(../images/icons/task-accepted-grey.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+}
+a.activate_link.active span {
+    background-image: url(../images/icons/task-accepted.png);
+}
 
