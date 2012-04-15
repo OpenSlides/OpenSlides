@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-15 09:22+0200\n"
+"POT-Creation-Date: 2012-04-15 09:45+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -116,7 +116,7 @@ msgid "Yes, with all child items."
 msgstr "Ja, mit allen Kindelementen."
 
 #: agenda/views.py:183 agenda/views.py:185 participant/views.py:187
-#: participant/views.py:300 utils/utils.py:47 utils/views.py:200
+#: participant/views.py:281 utils/utils.py:47 utils/views.py:200
 #, python-format
 msgid "Do you really want to delete <b>%s</b>?"
 msgstr "Soll <b>%s</b> wirklich gelöscht werden?"
@@ -224,6 +224,7 @@ msgstr "Erledigt"
 
 #: agenda/templates/agenda/overview.html:58
 #: assignment/templates/assignment/overview.html:29
+#: participant/templates/participant/group_overview.html:13
 #: participant/templates/participant/overview.html:71
 msgid "Actions"
 msgstr "Aktionen"
@@ -466,8 +467,8 @@ msgid "Application was successfully modified."
 msgstr "Antrag wurde erfolgreich geändert."
 
 #: application/views.py:198 application/views.py:597 assignment/views.py:129
-#: config/views.py:53 participant/views.py:164 participant/views.py:285
-#: participant/views.py:314 participant/views.py:472 utils/views.py:153
+#: config/views.py:53 participant/views.py:164 participant/views.py:266
+#: participant/views.py:295 participant/views.py:453 utils/views.py:153
 msgid "Please check the form for errors."
 msgstr "Bitte kontrollieren Sie das Formular nach Fehlern."
 
@@ -570,7 +571,7 @@ msgstr "FEHLER beim Zurückweisen der Version."
 msgid "Do you really want to reject version <b>%s</b>?"
 msgstr "Soll Version <b>%s</b> wirklich zurückgewiesen werden?"
 
-#: application/views.py:493 participant/views.py:330
+#: application/views.py:493 participant/views.py:311
 msgid ""
 "The import function is available for the superuser (without user profile) "
 "only."
@@ -578,7 +579,7 @@ msgstr ""
 "Die Importfunktion ist nur für den 'superuser' (ohne Nutzerprofil) verfügbar."
 
 #: application/views.py:524 application/views.py:528 application/views.py:534
-#: application/views.py:537 participant/views.py:399
+#: application/views.py:537 participant/views.py:380
 #, python-format
 msgid "Ignoring malformed line %d in import file."
 msgstr "Fehlerhafte Zeile %d der Quelldatei wurde ignoriert."
@@ -604,11 +605,11 @@ msgid_plural "%d new users were added."
 msgstr[0] "%d neuer Nutzer wurde erstellt."
 msgstr[1] "%d neue Nutzer wurden erstellt."
 
-#: application/views.py:593 participant/views.py:468
+#: application/views.py:593 participant/views.py:449
 msgid "Import aborted because of severe errors in the input file."
 msgstr "Import auf Grund von schweren Fehlern in der Quelldatei abgebrochen."
 
-#: application/views.py:595 participant/views.py:470
+#: application/views.py:595 participant/views.py:451
 msgid "Import file has wrong character encoding, only UTF-8 is supported!"
 msgstr ""
 "Die Quelldatei benutzt eine ungültige Zeichenkodierung, es wird nur UTF-8 "
@@ -1073,7 +1074,6 @@ msgstr "Darf Wahlen verwalten"
 #: assignment/templates/assignment/base_assignment.html:14
 #: assignment/templates/assignment/overview.html:6
 #: assignment/templates/assignment/overview.html:9
-#: assignment/templates/assignment/overview.html:25
 msgid "Elections"
 msgstr "Wahlen"
 
@@ -1153,6 +1153,7 @@ msgid "Assignment"
 msgstr "Wahl"
 
 #: assignment/views.py:317 assignment/templates/assignment/edit.html:5
+#: assignment/templates/assignment/overview.html:25
 #: assignment/templates/projector/Assignment.html:13 utils/pdf.py:304
 #: utils/pdf.py:313
 msgid "Election"
@@ -1483,50 +1484,50 @@ msgstr "Teilnehmer/in wurde erfolgreich geändert."
 msgid "Participant <b>%s</b> was successfully deleted."
 msgstr "Teilnehmer/in <b>%s</b> wurde erfolgreich gelöscht."
 
-#: participant/views.py:198 participant/views.py:217
+#: participant/views.py:198
 #, python-format
 msgid "Participant %d does not exist."
 msgstr "Teilnehmer/in %d existiert nicht."
 
-#: participant/views.py:263
+#: participant/views.py:244
 #, python-format
 msgid "Group name \"%s\" is reserved for internal use."
 msgstr "Der Gruppenname \"%s\" ist für interne Verwendung reserviert."
 
-#: participant/views.py:277
+#: participant/views.py:258
 msgid "New group was successfully created."
 msgstr "Neue Gruppe wurde erfolgreich angelegt."
 
-#: participant/views.py:279
+#: participant/views.py:260
 msgid "Group was successfully modified."
 msgstr "Gruppe wurde erfolgreich geändert."
 
-#: participant/views.py:298
+#: participant/views.py:279
 #, python-format
 msgid "Group <b>%s</b> was successfully deleted."
 msgstr "Gruppe <b>%s</b>  wurde erfolgreich gelöscht."
 
-#: participant/views.py:312
+#: participant/views.py:293
 msgid "User settings successfully saved."
 msgstr "Nutzereinstellungen wurden erfolgreich gespeichert."
 
-#: participant/views.py:382
+#: participant/views.py:363
 msgid "Supporters removed after user import."
 msgstr "Unterstützer/innen nach Benutzerimport zurückgesetzt."
 
-#: participant/views.py:435
+#: participant/views.py:416
 #, python-format
 msgid "Reassigned to \"%s\" after (re)importing users."
 msgstr "Nach Benutzerimport erneut \"%s\" zugeordnet."
 
-#: participant/views.py:438 participant/views.py:452
+#: participant/views.py:419 participant/views.py:433
 #, python-format
 msgid "Could not reassing application %d - object not found!"
 msgstr ""
 "Antrag Id#%d konnte nicht neu zugewiesen werden - Das Objekt wurde nicht "
 "gefunden!"
 
-#: participant/views.py:455
+#: participant/views.py:436
 #, python-format
 msgid "%d application could not be reassigned and needs a review!"
 msgid_plural "%d applications could not be reassigned and need a review!"
@@ -1535,26 +1536,26 @@ msgstr[0] ""
 msgstr[1] ""
 "%d Anträge konnten nicht neu zugewiesen werden und benötigen ein Review!"
 
-#: participant/views.py:458
+#: participant/views.py:439
 #, python-format
 msgid "%d application was successfully reassigned."
 msgid_plural "%d applications were successfully reassigned."
 msgstr[0] "%d Antrag wurde erfolgreich neu zugewiesen."
 msgstr[1] "%d Anträge wurden erfolgreich neu zugewiesen."
 
-#: participant/views.py:461
+#: participant/views.py:442
 #, python-format
 msgid "%d application was discarded."
 msgid_plural "%d applications were discarded."
 msgstr[0] "%d Antrag wurde gelöscht."
 msgstr[1] "%d Anträge wurden gelöscht."
 
-#: participant/views.py:465
+#: participant/views.py:446
 #, python-format
 msgid "%d new participants were successfully imported."
 msgstr "%d neue Teilnehmer/innen wurden erfolgreich importiert."
 
-#: participant/views.py:474
+#: participant/views.py:455
 msgid ""
 "Attention: All existing participants will be removed if you import new "
 "participants."
@@ -1562,12 +1563,12 @@ msgstr ""
 "Achtung: Alle existierenden Teilnehmer/innen werden gelöscht, wenn Sie neue "
 "Teilnehmer/innen importieren."
 
-#: participant/views.py:476
+#: participant/views.py:457
 msgid "Attention: Supporters from all existing applications will be removed."
 msgstr ""
 "Achtung: Alle Unterstützer/innen werden von existiernden Anträgen gelöscht."
 
-#: participant/views.py:477
+#: participant/views.py:458
 msgid ""
 "Attention: Applications which can't be mapped to new users will be set to "
 "'Needs Review'."
@@ -1575,17 +1576,17 @@ msgstr ""
 "Achtung: Anträge welche keinem Nutzer zugeordnet werden können bekommen "
 "automatisch den Status \"Benötigt Review\"."
 
-#: participant/views.py:489
+#: participant/views.py:470
 #, python-format
 msgid "The Password for <b>%s</b> was successfully reset."
 msgstr "Das Passwort für <b>%s</b> wurde erfolgreich zurückgesetzt."
 
-#: participant/views.py:491
+#: participant/views.py:472
 #, python-format
 msgid "Do you really want to reset the password for <b>%s</b>?"
 msgstr "Soll das Passwort für <b>%s</b> wirklich zurückgesetzt werden?"
 
-#: participant/views.py:499
+#: participant/views.py:480
 #: participant/templates/participant/base_participant.html:12
 #: participant/templates/participant/overview.html:6
 #: participant/templates/participant/overview.html:16
@@ -1605,12 +1606,12 @@ msgstr "Neue/r Teilnehmer/in"
 
 #: participant/templates/participant/base_participant.html:19
 msgid "All user groups"
-msgstr "Alle Benutzergruppen"
+msgstr "Alle Benutzerrollen"
 
 #: participant/templates/participant/base_participant.html:20
 #: participant/templates/participant/group_edit.html:11
 msgid "New user group"
-msgstr "Neue Benutzergruppe"
+msgstr "Neue Benutzerrolle"
 
 #: participant/templates/participant/base_participant.html:21
 #: participant/templates/participant/import.html:5
@@ -1642,11 +1643,11 @@ msgstr "Auf Erst-Passwort zurücksetzen"
 #: participant/templates/participant/group_edit.html:5
 #: participant/templates/participant/group_overview.html:12
 msgid "User Group"
-msgstr "Benutzergruppe"
+msgstr "Benutzerrolle"
 
 #: participant/templates/participant/group_edit.html:9
 msgid "Edit user group"
-msgstr "Benutzergruppe bearbeiten"
+msgstr "Benutzerrolle bearbeiten"
 
 #: participant/templates/participant/group_overview.html:6
 msgid "Groups"
@@ -1654,22 +1655,18 @@ msgstr "Gruppen"
 
 #: participant/templates/participant/group_overview.html:9
 msgid "User groups"
-msgstr "Benutzergruppen"
-
-#: participant/templates/participant/group_overview.html:13
-msgid "Action"
-msgstr "Aktionen"
+msgstr "Benutzerrollen"
 
 #: participant/templates/participant/group_overview.html:18
 msgid "Edit group"
-msgstr "Benutzergruppe bearbeiten"
+msgstr "Benutzerrolle bearbeiten"
 
 #: participant/templates/participant/group_overview.html:20
 msgid "Delete group"
-msgstr "Benutzergruppe löschen"
+msgstr "Benutzerrolle löschen"
 
 #: participant/templates/participant/group_overview.html:26
-#: participant/templates/participant/overview.html:105
+#: participant/templates/participant/overview.html:100
 msgid "No participants available."
 msgstr "Keine Teilnehmer/innen vorhanden."
 
@@ -1749,10 +1746,6 @@ msgstr "Teilnehmer/in löschen"
 #: participant/templates/participant/overview.html:91
 msgid "Change status (active/inactive)"
 msgstr "Status ändern (aktiv/inaktiv)"
-
-#: participant/templates/participant/overview.html:96
-msgid "Change administrator rights (Superuser/Normal user)"
-msgstr "Adminstratorrechte ändern (Superuser/normaler Nutzer)"
 
 #: participant/templates/participant/settings.html:5
 #: participant/templates/participant/settings.html:11

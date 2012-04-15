@@ -22,7 +22,7 @@
    {% blocktrans count counter=assignments|length %}election{% plural %}elections{% endblocktrans %}
     <table>
         <tr>
-            <th><a href="?sort=name{% if 'name' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Elections" %}</a></th>
+            <th><a href="?sort=name{% if 'name' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Election" %}</a></th>
             <th>{%trans "Candidates" %}</th>
             <th><a href="?sort=status{% if 'status' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Status" %}</a></th>
             {% if perms.assignment.can_manage_assignment %}
