@@ -38,7 +38,7 @@ class Item(MPTTModel, SlideMixin):
 
     title = models.CharField(max_length=100, verbose_name=_("Title"))
     text = models.TextField(null=True, blank=True, verbose_name=_("Text"))
-    transcript = models.TextField(null=True, blank=True, verbose_name=_("Transcript"))
+    comment = models.TextField(null=True, blank=True, verbose_name=_("Comment"))
     closed = models.BooleanField(default=False, verbose_name=_("Closed"))
     weight = models.IntegerField(default=0, verbose_name=_("Weight"))
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
