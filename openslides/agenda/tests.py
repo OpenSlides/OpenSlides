@@ -18,7 +18,6 @@ from django.db.models.query import EmptyQuerySet
 from projector.api import get_active_slide
 
 from agenda.models import Item
-from agenda.api import is_summary
 
 class ItemTest(TestCase):
     def setUp(self):
@@ -90,28 +89,16 @@ class ViewTest(TestCase):
     def testActivate(self):
         c = self.adminClient
 
-        response = c.get('/agenda/%d/activate/' % self.item1.id)
+        response = c.get('/projector/activate/%s/' % self.item1.sid)
         self.assertEqual(response.status_code, 302)
         self.assertTrue(self.item1.active)
         self.assertFalse(self.item2.active)
-        self.assertFalse(is_summary())
 
-        response = c.get('/agenda/%d/activate/summary/' % self.item2.id)
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(self.item2.active)
-        self.assertFalse(self.item1.active)
-        self.assertTrue(is_summary())
-
-        response = c.get('/agenda/%d/activate/' % 0)
+        response = c.get('/projector/activate/%s/' % 'agenda')
         self.assertEqual(response.status_code, 302)
         self.assertFalse(self.item2.active)
         self.assertFalse(self.item1.active)
-        self.assertEqual(get_active_slide(only_sid=True), 'agenda_show')
-
-        response = c.get('/agenda/%d/activate/' % 10000)
-        self.assertEqual(response.status_code, 404)
-        self.assertFalse(self.item2.active)
-        self.assertFalse(self.item1.active)
+        self.assertEqual(get_active_slide(only_sid=True), 'agenda')
 
     def testClose(self):
         c = self.adminClient
