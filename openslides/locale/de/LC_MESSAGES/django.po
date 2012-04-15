@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-14 19:22+0200\n"
+"POT-Creation-Date: 2012-04-15 09:22+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1720,11 +1720,11 @@ msgstr "Typ"
 
 #: participant/templates/participant/overview.html:51 projector/models.py:35
 msgid "Active"
-msgstr "Aktiv (anwesend)"
+msgstr "Aktiv"
 
 #: participant/templates/participant/overview.html:52
 msgid "Inactive"
-msgstr "Inaktiv (abwesend)"
+msgstr "Inaktiv"
 
 #: participant/templates/participant/overview.html:59
 msgid "of"
@@ -1779,11 +1779,11 @@ msgstr "Darf den Beamer sehen"
 msgid "Projector Slide"
 msgstr "Beamer-Folie"
 
-#: projector/projector.py:73
+#: projector/projector.py:79
 msgid "Countdown"
 msgstr "Countdown"
 
-#: projector/views.py:192 projector/templates/projector/base_projector.html:7
+#: projector/views.py:203 projector/templates/projector/base_projector.html:7
 #: projector/templates/projector/base_projector.html:12
 #: projector/templates/projector/control.html:36
 msgid "Projector"
@@ -1827,40 +1827,39 @@ msgstr "Text nach unten scrollen"
 msgid "Reset projector view"
 msgstr "Beamer-Ansicht zurücksetzen"
 
-#: projector/templates/projector/control.html:73
-#: projector/templates/projector/control.html:124
-msgid "Select item overview"
-msgstr "Wähle Eintragsübersicht"
-
-#: projector/templates/projector/control.html:97
+#: projector/templates/projector/control.html:83
 msgid "Projector Live View"
 msgstr "Beamer-Live-Ansicht"
 
-#: projector/templates/projector/control.html:100
+#: projector/templates/projector/control.html:86
 msgid "Open Projector view"
 msgstr "Beamer-Ansicht öffnen"
 
-#: projector/templates/projector/control.html:112
+#: projector/templates/projector/control.html:98
 msgid "Static Slides"
 msgstr "Statische Folien"
 
-#: projector/templates/projector/control.html:145
+#: projector/templates/projector/control.html:110
+msgid "Select item overview"
+msgstr "Wähle Eintragsübersicht"
+
+#: projector/templates/projector/control.html:131
 msgid "Messages"
 msgstr "Nachrichten"
 
-#: projector/templates/projector/control.html:156
+#: projector/templates/projector/control.html:142
 msgid "sec"
 msgstr "s"
 
-#: projector/templates/projector/control.html:157
+#: projector/templates/projector/control.html:143
 msgid "Reset countdown"
 msgstr "Countdown zurücksetzen"
 
-#: projector/templates/projector/control.html:160
+#: projector/templates/projector/control.html:146
 msgid "Start countdown"
 msgstr "Countdown starten"
 
-#: projector/templates/projector/control.html:163
+#: projector/templates/projector/control.html:149
 msgid "Stop countdown"
 msgstr "Countdown stoppen"
 
@@ -1947,4 +1946,3 @@ msgstr "Bedaure, Sie haben keine Berechtigung diese Seite zu sehen."
 #: utils/views.py:207
 msgid "undefined-filename"
 msgstr "undefinierter-dateiname"
-
