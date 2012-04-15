@@ -2,15 +2,16 @@
 
 {% load i18n %}
 
-{% block title %}{{ block.super }} – {{ item.title }}{% endblock %}
+{% block title %}{{ block.super }} – {% trans "Home" %}{% endblock %}
 
 {% block content %}
-    <h1>{% trans 'Wellcome' %}</h1>
-    {{ wellcome_text|safe }}
+    <h1>{{ title }}</h1>
+    <p>{{ welcometext|safe|linebreaks }}</p>
+
+    {% trans "You have access to the following pages:" %}
     <ul>
     {% for app in apps %}
         <li><a href="{{ app.url }}">{{ app.title }}</a></li>
     {% endfor %}
     </ul>
-
 {% endblock %}

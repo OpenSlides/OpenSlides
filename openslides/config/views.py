@@ -41,15 +41,24 @@ class GeneralConfig(FormView):
             'event_date': config['event_date'],
             'event_location': config['event_location'],
             'event_organizer': config['event_organizer'],
+            'frontpage_title': config['frontpage_title'],
+            'frontpage_welcometext': config['frontpage_welcometext'],
             'system_enable_anonymous': config['system_enable_anonymous'],
         }
 
     def form_valid(self, form):
+        # event
         config['event_name'] = form.cleaned_data['event_name']
         config['event_description'] = form.cleaned_data['event_description']
         config['event_date'] = form.cleaned_data['event_date']
         config['event_location'] = form.cleaned_data['event_location']
         config['event_organizer'] = form.cleaned_data['event_organizer']
+
+        # frontpage
+        config['frontpage_welcometext'] = form.cleaned_data['frontpage_welcometext']
+        config['frontpage_welcometext'] = form.cleaned_data['frontpage_welcometext']
+
+        # system
         if form.cleaned_data['system_enable_anonymous']:
             config['system_enable_anonymous'] = True
             # check for Anonymous group and (re)create it as needed
@@ -65,6 +74,7 @@ class GeneralConfig(FormView):
             messages.success(self.request, _('Anonymous access enabled. Please modify the "Anonymous" group to fit your required permissions.'))
         else:
             config['system_enable_anonymous'] = False
+
         messages.success(self.request, _('General settings successfully saved.'))
         return super(GeneralConfig, self).form_valid(form)
 

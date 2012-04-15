@@ -24,3 +24,5 @@ class GeneralConfigForm(Form, CssClassMixin):
     event_location = CharField(widget=TextInput(), required=False, label=_("Event location"))
     event_organizer = CharField(widget=TextInput(), required=False, label=_("Event organizer"))
     system_enable_anonymous = BooleanField(required=False, label=_("Allow access for anonymous guest users") )
+    frontpage_title = CharField(widget=TextInput(), required=False, label=_("Title") )
+    frontpage_welcometext = CharField(widget=Textarea(), required=False, label=_("Welcome text") )

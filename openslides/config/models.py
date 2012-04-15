@@ -81,6 +81,8 @@ def default_config(sender, key, **kwargs):
     return {
         'event_name': 'OpenSlides',
         'event_description': 'Presentation and voting system',
+        'frontpage_title': 'Welcome',
+        'frontpage_welcometext': 'Welcome to OpenSlides!',
     }.get(key)
 
 

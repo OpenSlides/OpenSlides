@@ -278,7 +278,11 @@ class FrontPage(TemplateView):
                 continue
             if tab.permission:
                 apps.append(tab)
-        context['apps'] = apps
+        context.update({
+            'apps': apps,
+            'title': config['frontpage_title'],
+            'welcometext': config['frontpage_welcometext'],
+        })
         return context
 
 

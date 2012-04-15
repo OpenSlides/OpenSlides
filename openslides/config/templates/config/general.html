@@ -22,6 +22,21 @@
         {% endfor %}
     </fieldset>
     <p></p>
+    <fieldset>
+        <legend>{%trans "Frontpage" %}</legend>
+        {% for field in form %}
+            {% if "id_frontpage" in field.label_tag %}
+            <p>
+            {{ field.errors }}
+            {{ field.required }}
+            {{ field.label_tag }}
+            {{ field }}
+            {{ field.help_text }}
+            </p>
+            {% endif %}
+        {% endfor %}
+    </fieldset>
+    <p></p>
     <fieldset style="width: 410px;">
         <legend>{%trans "System" %}</legend>
         {% for field in form %}
