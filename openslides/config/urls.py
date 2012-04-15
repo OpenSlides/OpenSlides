@@ -15,12 +15,17 @@ from django.utils.importlib import import_module
 
 import settings
 
-from views import GeneralConfig
+from views import GeneralConfig, VersionConfig
 
 urlpatterns = patterns('config.views',
     url(r'^general/$',
         GeneralConfig.as_view(),
         name='config_general',
+    ),
+
+    url(r'^version/$',
+        VersionConfig.as_view(),
+        name='config_version',
     ),
 )
 
