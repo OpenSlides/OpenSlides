@@ -26,21 +26,6 @@
             $( this ).parents( ".portlet:first" ).find( ".portlet-content" ).toggle();
         });
         $( ".column" ).disableSelection();
-
-        var overlay_placement = function(){
-            var if_top    = $("#iframe").offset().top;
-            var if_left   = $("#iframe").offset().left;
-
-            // the overlay uses absolute positioning, 
-            // place it over the iframe
-            $("#iframeoverlay").css({'display' : 'block',
-                                     'top'     : if_top,
-                                     'left'    : if_left
-            });
-        };
-
-        $("document").ready(overlay_placement);
-        $(window).resize(overlay_placement);
     });
     </script>
 
@@ -100,7 +85,7 @@
             <div class="portlet-content">
                 <a href="{% url projector_show %}" target="_blank" title="{% trans 'Open Projector view' %}" >
                 <div id="iframewrapper">
-                    <iframe id="iframe" src="{% url projector_show %}"></iframe>
+                    <iframe id="iframe" src="{% url projector_show %}" frameborder="0"></iframe>
                     <div id="iframeoverlay"></div>
                 </div>
                 </a>
