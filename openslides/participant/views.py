@@ -36,12 +36,13 @@ from participant.models import Profile
 from participant.api import gen_username, gen_password
 from participant.forms import (UserNewForm, UserEditForm, ProfileForm,
                                UsersettingsForm, UserImportForm, GroupForm,
-                               AdminPasswordChangeForm)
+                               AdminPasswordChangeForm, ConfigForm)
 from application.models import Application
 from utils.utils import (template, permission_required, gen_confirm_form,
                          ajax_request, decodedict, encodedict)
 from utils.pdf import print_userlist, print_passwords
 from utils.template import Tab
+from utils.views import FormView
 from config.models import config
 
 from django.db.models import Avg, Max, Min, Count
@@ -482,3 +483,21 @@ def register_tab(request):
         permission=request.user.has_perm('participant.can_see_participant') or request.user.has_perm('participant.can_manage_participant'),
         selected=selected,
     )
+
+
+class Config(FormView):
+    permission_required = 'config.can_manage_config'
+    form_class = ConfigForm
+    template_name = 'participant/config.html'
+
+    def get_initial(self):
+        return {
+            'participant_pdf_system_url': config['participant_pdf_system_url'],
+            'participant_pdf_welcometext': config['participant_pdf_welcometext'],
+        }
+
+    def form_valid(self, form):
+        config['participant_pdf_system_url'] = form.cleaned_data['participant_pdf_system_url']
+        config['participant_pdf_welcometext'] = form.cleaned_data['participant_pdf_welcometext']
+        messages.success(self.request, _('Participants settings successfully saved.'))
+        return super(Config, self).form_valid(form)
