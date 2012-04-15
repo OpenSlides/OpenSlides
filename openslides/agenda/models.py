@@ -117,7 +117,7 @@ class Item(MPTTModel, SlideMixin):
         order_insertion_by = ['weight', 'title']
 
 
-register_slidemodel(Item, model_name=_('Agenda Item'))
+register_slidemodel(Item)
 
 # TODO: put this in another file
 
