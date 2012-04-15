@@ -6,6 +6,11 @@
 
 {% block content %}
     <h1>{{ item.title }}</h1>
-    {{ item.text }}
+    <p>{{ item.text|safe|linebreaks }}</p>
+
+    {% if perms.agenda.can_manage_agenda and item.comment %}
+    <h2>{% trans "Comment" %}</h2>
+    <p>{{ item.comment|linebreaks }}</p>
+    {% endif %}
 
 {% endblock %}
