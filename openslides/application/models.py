@@ -539,7 +539,7 @@ from openslides.config.signals import default_config_value
 @receiver(default_config_value, dispatch_uid="application_default_config")
 def default_config(sender, key, **kwargs):
     return {
-        'application_min_supporters': 4,
+        'application_min_supporters': 0,
         'application_preamble': 'Die Versammlung möge beschließen,',
         'application_pdf_ballot_papers_selection': '1',
         'application_pdf_title': _('Applications'),
