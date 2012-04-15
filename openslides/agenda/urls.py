@@ -11,7 +11,7 @@
 """
 
 from django.conf.urls.defaults import *
-from agenda.views import Overview, View, SetActive, SetClosed, ItemUpdate, ItemCreate, ItemDelete, AgendaPDF
+from agenda.views import Overview, View, SetClosed, ItemUpdate, ItemCreate, ItemDelete, AgendaPDF
 
 urlpatterns = patterns('',
     url(r'^$',
@@ -22,18 +22,6 @@ urlpatterns = patterns('',
     url(r'^(?P<pk>\d+)/$',
         View.as_view(),
         name='item_view',
-    ),
-
-    url(r'^(?P<pk>\d+)/activate/$',
-        SetActive.as_view(),
-        {'summary': False},
-        name='item_activate',
-    ),
-
-    url(r'^(?P<pk>\d+)/activate/summary/$',
-        SetActive.as_view(),
-        {'summary': True},
-        name='item_activate_summary',
     ),
 
     url(r'^(?P<pk>\d+)/close/$',

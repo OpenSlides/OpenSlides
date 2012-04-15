@@ -27,7 +27,6 @@ from config.models import config
 from projector.api import get_active_slide, set_active_slide
 
 from agenda.models import Item
-from agenda.api import is_summary
 from agenda.forms import ItemOrderForm, ItemForm, ConfigForm
 
 
@@ -40,7 +39,6 @@ class Overview(TemplateView):
         context.update({
             'items': Item.objects.all(),
             'overview': get_active_slide(only_sid=True) == 'agenda_show',
-            'summary': is_summary(),
         })
         return context
 
@@ -66,35 +64,6 @@ class View(DetailView):
     template_name = 'agenda/view.html'
     model = Item
     context_object_name = 'item'
-
-
-class SetActive(RedirectView, SingleObjectMixin):
-    """
-    Set an Item as the active one.
-    """
-    url = 'item_overview'
-    allow_ajax = True
-    permission_required = 'agenda.can_manage_agenda'
-    model = Item
-
-    def get_ajax_context(self, **kwargs):
-        context = super(SetActive, self).get_ajax_context(**kwargs)
-        context.update({
-            'active': kwargs['pk'],
-            'summary': is_summary(),
-        })
-        return context
-
-    def pre_redirect(self, request, *args, **kwargs):
-        summary = kwargs['summary']
-        if kwargs['pk'] == "0":
-            set_active_slide("agenda_show")
-        else:
-            self.object = self.get_object()
-            self.object.set_active(summary)
-        config["bigger"] = 100
-        config["up"] = 0
-        return super(SetActive, self).pre_redirect(request, *args, **kwargs)
 
 
 class SetClosed(RedirectView, SingleObjectMixin):

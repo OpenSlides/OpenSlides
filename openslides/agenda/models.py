@@ -24,7 +24,6 @@ from config.models import config
 from projector.projector import SlideMixin
 from projector.api import register_slidemodel
 
-from agenda.api import is_summary
 from utils.translation_ext import ugettext as _
 
 
@@ -53,21 +52,7 @@ class Item(MPTTModel, SlideMixin):
             'title': self.title,
             'template': 'projector/AgendaText.html',
         }
-
-        if is_summary():
-            data['items'] = self.children.all()
-            data['template'] = 'projector/AgendaSummary.html'
         return data
-
-    def set_active(self, summary=False):
-        """
-        Appoint this item as the active one.
-        """
-        super(Item, self).set_active()
-        if summary:
-            config["agenda_summary"] = True
-        else:
-            config["agenda_summary"] = False
 
     def set_closed(self, closed=True):
         """
