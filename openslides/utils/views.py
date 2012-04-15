@@ -52,8 +52,8 @@ import settings
 from utils import render_to_forbitten
 from openslides.utils.signals import template_manipulation
 from pdf import firstPage, laterPages
+from config.models import config
 
-import settings
 
 NO_PERMISSION_REQUIRED = 'No permission required'
 
@@ -276,10 +276,9 @@ class FrontPage(TemplateView):
                 tab = mod.register_tab(self.request)
             except (ImportError, AttributeError):
                 continue
-            if self.request.user.has_perm(tab.permission):
+            if tab.permission:
                 apps.append(tab)
         context['apps'] = apps
-        #context['wellcome_text'] = config['wellcome_text']
         return context
 
 

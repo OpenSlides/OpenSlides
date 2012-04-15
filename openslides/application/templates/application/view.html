@@ -72,6 +72,8 @@
                     <a href="{% url application_poll_delete poll.id %}">
                         <img src="{% static 'images/icons/edit-delete.png' %}" title="{% trans 'Delete Vote' %}">
                     </a>
+                {% elif poll.has_votes %}
+                    <b>{{ forloop.counter }}. {% trans "Vote" %}:</b>
                 {% endif %}
                 <br>
                 {% if poll.has_votes %}

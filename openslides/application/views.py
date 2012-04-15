@@ -681,7 +681,6 @@ class ApplicationPDF(PDFView):
         data.append([cell3a,cell3b])
 
         poll_results = application.get_poll_results()
-        print poll_results
         # voting results
         if poll_results:
             cell4a = []
