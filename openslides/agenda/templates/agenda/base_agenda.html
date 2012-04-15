@@ -2,6 +2,7 @@
 
 {% load tags %}
 {% load i18n %}
+{% load staticfiles %}
 
 {% block submenu %}
     {% url item_overview as url_itemoverview %}
@@ -12,5 +13,6 @@
         {% if perms.agenda.can_manage_agenda %}
         <li class="{% active request '/agenda/new/' %}"><a href="{% url item_new %}">{%trans "New item" %}</a></li>
         {% endif %}
+        <li><a href="{% url print_agenda %}"><img src="{% static 'images/icons/application-pdf.png' %}"> {%trans 'Agenda as PDF' %}</a></li>
     </ul>
 {% endblock %}
