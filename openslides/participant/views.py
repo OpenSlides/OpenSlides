@@ -189,25 +189,6 @@ def user_delete(request, user_id):
 
 @permission_required('participant.can_manage_participant')
 @template('confirm.html')
-def user_set_superuser(request, user_id, superuser=True):
-    try:
-        user = User.objects.get(pk=user_id)
-        user.is_superuser = superuser
-        user.save()
-    except User.DoesNotExist:
-        messages.error(request, _('Participant %d does not exist.') % int(user_id))
-
-    if request.is_ajax():
-        if superuser:
-            link = reverse('user_normaluser', args=[user.id])
-        else:
-            link = reverse('user_superuser', args=[user.id])
-        return ajax_request({'superuser': superuser,
-                             'link': link})
-    return redirect(reverse('user_overview'))
-
-@permission_required('participant.can_manage_participant')
-@template('confirm.html')
 def user_set_active(request, user_id, active=True):
     try:
         user = User.objects.get(pk=user_id)

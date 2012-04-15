@@ -35,7 +35,7 @@ class UserNewForm(ModelForm, CssClassMixin):
 
     class Meta:
         model = User
-        exclude = ('username', 'password', 'is_staff', 'last_login', 'date_joined', 'user_permissions')
+        exclude = ('username', 'password', 'is_staff', 'is_superuser', 'last_login', 'date_joined', 'user_permissions')
 
 
 class UserEditForm(ModelForm, CssClassMixin):
@@ -44,13 +44,13 @@ class UserEditForm(ModelForm, CssClassMixin):
 
     class Meta:
         model = User
-        exclude = ('password', 'is_staff', 'last_login', 'date_joined', 'user_permissions')
+        exclude = ('password', 'is_staff', 'is_superuser', 'last_login', 'date_joined', 'user_permissions')
 
 
 class UsernameForm(ModelForm, CssClassMixin):
     class Meta:
         model = User
-        exclude = ('first_name', 'last_name', 'email', 'is_active','is_superuser', 'groups', 'password', 'is_staff', 'last_login', 'date_joined', 'user_permissions')
+        exclude = ('first_name', 'last_name', 'email', 'is_active', 'is_superuser', 'groups', 'password', 'is_staff', 'last_login', 'date_joined', 'user_permissions')
 
 
 class ProfileForm(ModelForm, CssClassMixin):

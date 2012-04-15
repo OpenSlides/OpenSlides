@@ -14,20 +14,3 @@ a.status_link.inactive span {
     height: 16px;
     display: inline-block;
 }
-
-a.superuser_link.superuser span {
-    background-image: url(../images/icons/meeting-chair.png);
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 16px;
-    height: 16px;
-    display: inline-block;
-}
-a.superuser_link.normaluser span {
-    background-image: url(../images/icons/im-user.png);
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 16px;
-    height: 16px;
-    display: inline-block;
-}

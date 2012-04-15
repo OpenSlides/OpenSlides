@@ -51,18 +51,6 @@ urlpatterns = patterns('participant.views',
         name='user_inactive',
     ),
 
-    url(r'^(?P<user_id>\d+)/superuser/$',
-        'user_set_superuser',
-        {'superuser': True},
-        name='user_superuser',
-    ),
-
-    url(r'^(?P<user_id>\d+)/normaluser/$',
-        'user_set_superuser',
-        {'superuser': False},
-        name='user_normaluser',
-    ),
-
     url(r'^import$',
         'user_import',
         name='user_import',
