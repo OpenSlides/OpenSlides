@@ -30,32 +30,32 @@
    {{ applications|length }} {% trans "Applications" %}
     <table>
         <tr>
-        <th><a href="?sort=number{% if 'number' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Number" %}</a></th>
-        <th><a href="?sort=aversion__title{% if 'aversion__title' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Application title" %}</a></th>
-        {% if min_supporters > 0 %}
-        <th><a href="?sort=supporter{% if 'supporter' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Number of supporters" %}</a></th>
-        {% endif %}
-        <th><a href="?sort=status{% if 'status' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Status" %}</a></th>
-        <th><a href="?sort=submitter{% if 'submitter' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Submitter" %}</a></th>
-        <th><a href="?sort=aversion__time{% if 'aversion__time' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Creation Time" %}<a></th>
+            <th><a href="?sort=number{% if 'number' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Number" %}</a></th>
+            <th><a href="?sort=aversion__title{% if 'aversion__title' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Application title" %}</a></th>
+            {% if min_supporters > 0 %}
+            <th><a href="?sort=supporter{% if 'supporter' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Number of supporters" %}</a></th>
+            {% endif %}
+            <th><a href="?sort=status{% if 'status' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Status" %}</a></th>
+            <th><a href="?sort=submitter{% if 'submitter' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Submitter" %}</a></th>
+            <th><a href="?sort=aversion__time{% if 'aversion__time' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Creation Time" %}<a></th>
         </tr>
     {% for application in applications %}
         <tr class="{% cycle '' 'odd' %}">
-        <td>{% if application.number %}{{ application.number }}{% else %}-{% endif %}</td>
-        <td><a href="{% url application_view application.id %}">{{ application }}</a></td>
+            <td>{% if application.number %}{{ application.number }}{% else %}-{% endif %}</td>
+            <td><a href="{% url application_view application.id %}">{{ application }}</a></td>
         {% if min_supporters > 0 %}
-        <td>{{ application.supporter.count }}</td>
+            <td>{{ application.supporter.count }}</td>
         {% endif %}
-        <td>{% if application.status != "pub" %}
-            {{ application.get_status_display }}<br>
-            {% endif %}
-            {% for note in application.notes %}
-            {{ note }}
-            {% if not forloop.last %}<br>{%endif%}
-            {% endfor %}
-        </td>
-        <td>{{ application.submitter.profile }}</td>
-        <td>{{ application.creation_time }}</td>
+            <td>{% if application.status != "pub" %}
+                {{ application.get_status_display }}<br>
+                {% endif %}
+                {% for note in application.notes %}
+                {{ note }}
+                {% if not forloop.last %}<br>{%endif%}
+                {% endfor %}
+            </td>
+            <td>{{ application.submitter.profile }}</td>
+            <td>{{ application.creation_time }}</td>
         </tr>
     {% empty %}
         <tr>

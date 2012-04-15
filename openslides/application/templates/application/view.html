@@ -64,6 +64,7 @@
         {% endif %}
         <ul class="results">
         {% for poll in polls %}
+        {% if perms.application.can_manage_application or poll.has_votes %}
             <li>
                 {% if perms.application.can_manage_application %}
                     <a href="{% url application_poll_view poll.id %}">
@@ -101,6 +102,7 @@
                     {% endif %}
                 {% endif %}
             </li>
+        {% endif %}
         {% endfor %}
         </ul>
         {% endwith %}

@@ -55,6 +55,7 @@ from utils.template import Tab
 
 from participant.api import gen_username, gen_password
 
+
 @permission_required('application.can_see_application')
 @template('application/overview.html')
 def overview(request):

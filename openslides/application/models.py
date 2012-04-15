@@ -315,28 +315,30 @@ class Application(models.Model, SlideMixin):
         actions = []
 
         # check if user allowed to withdraw an application
-        if   (self.status == "pub"
-          and self.number \
-          and user == self.submitter) \
-        or   (self.status == "pub" \
-          and self.number \
-          and user.has_perm("application.can_manage_application")) \
-        or   (self.status == "per" \
-          and user == self.submitter) \
-        or (self.status == "per" \
-          and user.has_perm("application.can_manage_application")):
+        if  ((self.status == "pub"
+          and self.number
+          and user == self.submitter)
+        or   (self.status == "pub"
+          and self.number
+          and user.has_perm("application.can_manage_application"))
+        or   (self.status == "per"
+          and user == self.submitter)
+        or (self.status == "per"
+          and user.has_perm("application.can_manage_application"))):
             actions.append("wit")
         #Check if the user can review the application
-        if self.status == "rev" \
-        and (self.submitter == user \
-          or user.has_perm("application.can_manage_application")):
+        if  (self.status == "rev"
+        and (self.submitter == user
+          or user.has_perm("application.can_manage_application"))):
             actions.append("pub")
-        try:
+
         # Check if the user can support and unspoort the application
-            if  self.status == "pub" \
-            and user != self.submitter \
-            and user not in self.supporter.all() \
-            and getattr(user, 'profile', None):
+        try:
+            if  (self.status == "pub"
+              and user != self.submitter
+              and user not in self.supporter.all()
+              and getattr(user, 'profile', None)):
+                print "es ist ok"
                 actions.append("support")
         except Profile.DoesNotExist:
             pass
