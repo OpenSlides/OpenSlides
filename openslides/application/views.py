@@ -445,20 +445,6 @@ class ViewPoll(PollFormView):
         return ''
 
 
-class ActivatePoll(RedirectView):
-    permanent = False
-
-    def get_redirect_url(self, **kwargs):
-        poll = ApplicationPoll.objects.get(pk=self.kwargs['poll_id'])
-        application = poll.get_application()
-        return reverse('application_view', args=[application.id])
-
-    def get(self, request, *args, **kwargs):
-        self.poll = ApplicationPoll.objects.get(pk=self.kwargs['poll_id'])
-        self.poll.set_active()
-        return super(ActivatePoll, self).get(request, *args, **kwargs)
-
-
 @permission_required('application.can_manage_application')
 def permit_version(request, aversion_id):
     aversion = AVersion.objects.get(pk=aversion_id)

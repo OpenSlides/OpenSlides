@@ -73,7 +73,6 @@
                 {% if poll.has_vote %}</a>{% endif %}
                 <a href="{% url application_poll_delete poll.id %}"><img src="{% static 'images/icons/edit-delete.png' %}" title="{% trans 'Delete Vote' %}"></a>
             {% endif %}
-            <a href="{% url application_poll_activate poll.id %}">{% trans 'project' %}</a>
             <br>
             {% if poll.has_votes %}
                 {% with poll.get_options.0 as option %}
