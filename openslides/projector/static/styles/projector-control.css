@@ -48,6 +48,16 @@
     width: 256px;/*100%;*/
     height: 192px;/*230px;*/
 }
+
+#iframeoverlay {
+    width: 256px;
+    height: 192px;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    display: none;
+    z-index: 1;
+}
 /* countdown */
 a.countdown_visible_link.closed div {
     background-image: url(../images/icons/user-offline.png);
