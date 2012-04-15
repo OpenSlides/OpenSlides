@@ -6,19 +6,28 @@
 
 {% block title %}{{ block.super }} - {% trans "Application" %} "{{ version.title }}"{% endblock %}
 
+{% if perms.application.can_manage_application %}
+{% block submenu %}
+    {{ block.super }}
+    <br>
+    <h3>{%trans "Application No." %} {{ application.number }}</h3>
+    <ul>
+    <li><a href="{% url application_view application.id  %}">{%trans 'Application' %} {{ application.number }}</a></li>
+    {% if "edit" in actions %}
+    <li><a href="{% url application_edit application.id  %}">{%trans 'Edit Application' %}</a></li>
+    {% endif %}
+    {% if "delete" in actions %}
+    <li><a href="{% url application_delete application.id  %}">{%trans 'Delete Application' %}</a></li>
+    {% endif %}
+    <li><a href="{% url print_application application.id  %}"><img src="{% static 'images/icons/application-pdf.png' %}"> {%trans 'Application as PDF' %}</a></li>
+    </ul>
+{% endblock %}
+{% endif %}
 
 {% block content %}
-    <div id="sidebar">
-
+<div id="sidebar">
     <div class="box">
-    <h4 style="float:left;">{% trans "Submitter" %}:</h4>
-    <h4 style="text-align: right;">
-    {% if "delete" in actions %}
-        <a href="{% url application_delete application.id %}"><img src="{% static 'images/icons/edit-delete.png' %}" title="{% trans 'Delete Application' %}"></a>
-    {% endif %}
-    <a href="{% url print_application application.id %}"><img src="{% static 'images/icons/application-pdf.png' %}" title="{% trans 'Print Application' %}"></a>
-    </h4>
-    <span clear="all"></span>
+    <h4>{% trans "Submitter" %}:</h4>
     {{ application.submitter.profile }}
     {% if user == application.submitter %}
     <img src="{% static 'images/icons/user-information.png' %}" title="{% trans 'You!' %}">
@@ -111,11 +120,6 @@
     {{ application.creation_time }}
 
     <p></p>
-    {% if "edit" in actions %}
-        <a href="{% url application_edit application.id %}">
-            <span class="button"><span class="icon edit">{%trans 'Edit' %}</span></span>
-        </a>
-    {% endif %}
     {% if "wit" in actions and user == application.submitter %}
     <p></p>
         <a href='{% url application_set_status application.id 'wit' %}'>
@@ -208,10 +212,10 @@
     </a>
     </div>
     {% endif %} {# end perms.application.can_support_application #}
-    </div> <!-- end sidebar -->
+</div> <!-- end sidebar -->
 
 
-    <div id="main">
+<div id="main">
     <h1>
     {% if application.number != None %}
         {% trans "Application No." %} {{ application.number }}
@@ -305,5 +309,5 @@
     <h2>{% trans "Log" %}:</h2>
     {{ application.log|linebreaks }}
     {% endif %}
-    </div>
+</div>
 {% endblock %}

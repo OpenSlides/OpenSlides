@@ -15,6 +15,6 @@
         {% if perms.application.can_manage_application %}
             <li class="{% active request '/application/import' %}"><a href="{%  url application_import %}">{%trans 'Import applications' %}</a></li>
         {% endif %}
-        <li><a href="{% url print_applications %}"><img src="{% static 'images/icons/application-pdf.png' %}"> {%trans 'Print all applications' %}</a></li>
+        <li><a href="{% url print_applications %}"><img src="{% static 'images/icons/application-pdf.png' %}"> {%trans 'All applications as PDF' %}</a></li>
     </ul>
 {% endblock %}
