@@ -76,13 +76,14 @@ def view(request, assignment_id=None):
         if request.user.has_perm('assignment.can_nominate_other'):
             form = AssignmentRunForm()
 
+    polls = assignment.poll_set.all()
     votes = []
     for candidate in assignment.candidates:
-        tmplist = [[candidate, assignment.is_elected(candidate)], []]
-        for poll in assignment.poll_set.all():
+        tmplist = ((candidate, assignment.is_elected(candidate)), [])
+        for poll in polls:
             if (poll.published and not request.user.has_perm('assignment.can_manage_assignment')) or request.user.has_perm('assignment.can_manage_assignment'):
-            	# candidate exists in poll
-            	if poll.get_options().filter(candidate=candidate).exists():
+                # candidate exists in poll
+                if poll.get_options().filter(candidate=candidate).exists():
                     option = AssignmentOption.objects.filter(poll=poll).get(candidate=candidate)
                     try:
                         tmplist[1].append(option.get_votes()[0])
@@ -90,9 +91,7 @@ def view(request, assignment_id=None):
                         tmplist[1].append('–')
                 else:
                     tmplist[1].append("-")
-            votes.append(tmplist)
-
-    polls = assignment.poll_set.all()
+        votes.append(tmplist)
 
     return {
         'assignment': assignment,
@@ -422,10 +421,10 @@ class AssignmentPDF(PDFView):
     def get_assignment_votes(self, assignment):
         votes = []
         for candidate in assignment.candidates:
-            tmplist = [[candidate, assignment.is_elected(candidate)], []]
+            tmplist = ((candidate, assignment.is_elected(candidate)), [])
             for poll in assignment.poll_set.all():
                 if poll.published:
-            	    if poll.get_options().filter(candidate=candidate).exists():
+                    if poll.get_options().filter(candidate=candidate).exists():
                         option = AssignmentOption.objects.filter(poll=poll).get(candidate=candidate)
                         try:
                             tmplist[1].append(option.get_votes()[0])
@@ -433,7 +432,7 @@ class AssignmentPDF(PDFView):
                             tmplist[1].append('–')
                     else:
                         tmplist[1].append("-")
-                votes.append(tmplist)
+            votes.append(tmplist)
         return votes
 
 
