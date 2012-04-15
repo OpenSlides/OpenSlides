@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}{{ block.super }} – {{ item.title }}{% endblock %}
+
+{% block content %}
+    <h1>{% trans 'Wellcome' %}</h1>
+    {{ wellcome_text|safe }}
+    <ul>
+    {% for app in apps %}
+        <li><a href="{{ app.url }}">{{ app.title }}</a></li>
+    {% endfor %}
+    </ul>
+
+{% endblock %}

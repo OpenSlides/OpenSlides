@@ -33,6 +33,7 @@ from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.dispatch import receiver
+from django.utils.importlib import import_module
 from django.views.generic import (
     TemplateView as _TemplateView,
     RedirectView as _RedirectView,
@@ -51,6 +52,8 @@ import settings
 from utils import render_to_forbitten
 from openslides.utils.signals import template_manipulation
 from pdf import firstPage, laterPages
+
+import settings
 
 NO_PERMISSION_REQUIRED = 'No permission required'
 
@@ -74,13 +77,14 @@ class LoginMixin(object):
 class PermissionMixin(object):
     permission_required = NO_PERMISSION_REQUIRED
 
-    def dispatch(self, request, *args, **kwargs):
+    def has_permission(self, request):
         if self.permission_required == NO_PERMISSION_REQUIRED:
-            has_permission = True
+            return True
         else:
-            has_permission = request.user.has_perm(self.permission_required)
+            return request.user.has_perm(self.permission_required)
 
-        if not has_permission:
+    def dispatch(self, request, *args, **kwargs):
+        if not self.has_permission(request):
             if not request.user.is_authenticated():
                 path = request.get_full_path()
                 return HttpResponseRedirect("%s?next=%s" % (settings.LOGIN_URL, path))
@@ -253,6 +257,30 @@ class PDFView(PermissionMixin, View):
 
     def get(self, request, *args, **kwargs):
         return self.render_to_response(self.get_filename())
+
+
+class FrontPage(TemplateView):
+    template_name = 'front_page.html'
+
+    def has_permission(self, request):
+        if request.user.is_authenticated() or config['system_enable_anonymous']:
+            return True
+        return False
+
+    def get_context_data(self, **kwargs):
+        context = super(FrontPage, self).get_context_data(**kwargs)
+        apps = []
+        for app in settings.INSTALLED_APPS:
+            try:
+                mod = import_module(app + '.views')
+                tab = mod.register_tab(self.request)
+            except (ImportError, AttributeError):
+                continue
+            if self.request.user.has_perm(tab.permission):
+                apps.append(tab)
+        context['apps'] = apps
+        #context['wellcome_text'] = config['wellcome_text']
+        return context
 
 
 def server_error(request, template_name='500.html'):

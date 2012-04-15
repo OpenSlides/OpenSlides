@@ -12,18 +12,16 @@
 
 from django.conf.urls.defaults import patterns, url, include
 from django.conf import settings
-from django.views.generic import RedirectView
 from django.utils.importlib import import_module
 import settings
+
+from utils.views import FrontPage
 
 handler500 = 'openslides.utils.views.server_error'
 
 urlpatterns = patterns('',
     # frontpage
-    (r'^$', RedirectView.as_view(
-        url='projector/control',
-        permanent = False,
-    )),
+    (r'^$', FrontPage.as_view()),
 
     (r'^agenda/', include('agenda.urls')),
     (r'^application/', include('application.urls')),
