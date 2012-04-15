@@ -430,16 +430,19 @@ class Application(models.Model, SlideMixin):
 
     @property
     def results(self):
+        return self.get_poll_results()
+
+    def get_poll_results(self):
         """
         Return a list of voting results
         """
-        # TODO: This will propably not work
         results = []
         for poll in self.polls:
             for option in poll.get_options():
-                #if poll.votesinvalid != None and poll.votescast != None:
-                results.append([option.yes, option.no, option.undesided, poll.votesinvalidf, poll.votescastf])
+                if option.get_votes().exists():
+                    results.append((option.yes, option.no, option.contained, poll.print_votesinvalid(), poll.print_votescast()))
         return results
+
 
     def slide(self):
         """
@@ -498,13 +501,12 @@ register_slidemodel(Application)
 
 
 class ApplicationOption(BaseOption):
-
     def __getattr__(self, name):
         if name in ['yes', 'no', 'contained']:
             try:
                 return self.get_votes().get(value=name)
             except Vote.DoesNotExist:
-                pass
+                return None
         raise AttributeError(name)
 
 

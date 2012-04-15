@@ -509,7 +509,7 @@ def application_import(request):
                         except ValueError:
                             messages.error(request, _('Ignoring malformed line %d in import file.') % (lno + 1))
                             continue
-                        form = ApplicationForm({ 'title':title, 'text':text, 'reason':reason })
+                        form = ApplicationForm({'title': title, 'text': text, 'reason': reason})
                         if not form.is_valid():
                             messages.error(request, _('Ignoring malformed line %d in import file.') % (lno + 1))
                             continue
@@ -600,6 +600,7 @@ class ApplicationPDF(PDFView):
             application_id = self.kwargs['application_id']
         except KeyError:
             application_id = None
+
         if application_id is None:  #print all applications
             title = config["application_pdf_title"]
             story.append(Paragraph(title, stylesheet['Heading1']))
@@ -679,15 +680,17 @@ class ApplicationPDF(PDFView):
         data.append([cell2a,cell2b])
         data.append([cell3a,cell3b])
 
+        poll_results = application.get_poll_results()
+        print poll_results
         # voting results
-        if len(application.results) > 0:
+        if poll_results:
             cell4a = []
             cell4a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Vote results"), stylesheet['Heading4']))
             cell4b = []
             ballotcounter = 0
-            for result in application.results:
+            for result in poll_results:
                 ballotcounter += 1
-                if len(application.results) > 1:
+                if len(poll_results) > 1:
                     cell4b.append(Paragraph("%s. %s" % (ballotcounter, _("Vote")), stylesheet['Bold']))
                 cell4b.append(Paragraph("%s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s" % (_("Yes"), result[0], _("No"), result[1], _("Abstention"), result[2], _("Invalid"), result[3], _("Votes cast"), result[4]), stylesheet['Normal']))
                 cell4b.append(Spacer(0,0.2*cm))
