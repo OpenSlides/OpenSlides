@@ -261,8 +261,8 @@ def print_passwords(request):
     story = [Spacer(0,0*cm)]
 
     data= []
-    system_url = config["system_url"]
-    system_welcometext = config["system_welcometext"]
+    participant_pdf_system_url = config["participant_pdf_system_url"]
+    participant_pdf_welcometext = config["participant_pdf_welcometext"]
     for user in User.objects.all().order_by('last_name'):
         try:
             user.get_profile()
@@ -274,12 +274,12 @@ def print_passwords(request):
             cell.append(Paragraph(_("User: %s") % (user.username), stylesheet['Ballot_option']))
             cell.append(Paragraph(_("Password: %s") % (user.profile.firstpassword), stylesheet['Ballot_option']))
             cell.append(Spacer(0,0.5*cm))
-            cell.append(Paragraph(_("URL: %s") % (system_url), stylesheet['Ballot_option']))
+            cell.append(Paragraph(_("URL: %s") % (participant_pdf_system_url), stylesheet['Ballot_option']))
             cell.append(Spacer(0,0.5*cm))
             cell2 = []
             cell2.append(Spacer(0,0.8*cm))
-            if system_welcometext is not None:
-                cell2.append(Paragraph(system_welcometext.replace('\r\n','<br/>'), stylesheet['Ballot_subtitle']))
+            if participant_pdf_welcometext is not None:
+                cell2.append(Paragraph(participant_pdf_welcometext.replace('\r\n','<br/>'), stylesheet['Ballot_subtitle']))
 
             data.append([cell,cell2])
         except Profile.DoesNotExist:

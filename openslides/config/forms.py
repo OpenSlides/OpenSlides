@@ -17,15 +17,10 @@ from utils.forms import CssClassMixin
 from models import config
 
 
-class SystemConfigForm(Form, CssClassMixin):
-    system_url = CharField(widget=TextInput(), required=False, label=_("System URL"))
-    system_welcometext = CharField(widget=Textarea(), required=False, label=_("Welcome text (for password PDF)"))
-    system_enable_anonymous = BooleanField(required=False, label=_("Access for anonymous / guest users"), help_text=_("Allow access for guest users"))
-
-
-class EventConfigForm(Form, CssClassMixin):
+class GeneralConfigForm(Form, CssClassMixin):
     event_name = CharField(widget=TextInput(),label=_("Event name"), max_length=30)
     event_description = CharField(widget=TextInput(),label=_("Short description of event"), max_length=100, required=False)
     event_date = CharField(widget=TextInput(), required=False, label=_("Event date"))
     event_location = CharField(widget=TextInput(), required=False, label=_("Event location"))
     event_organizer = CharField(widget=TextInput(), required=False, label=_("Event organizer"))
+    system_enable_anonymous = BooleanField(required=False, label=_("Allow access for anonymous guest users") )

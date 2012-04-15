@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-15 10:06+0200\n"
+"POT-Creation-Date: 2012-04-15 12:24+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -43,9 +43,10 @@ msgstr "Titel"
 msgid "Text"
 msgstr "Text"
 
-#: agenda/models.py:41
-msgid "Transcript"
-msgstr ""
+#: agenda/models.py:41 participant/models.py:37
+#: participant/templates/participant/overview.html:69
+msgid "Comment"
+msgstr "Kommentar"
 
 #: agenda/models.py:42
 msgid "Closed"
@@ -68,8 +69,8 @@ msgstr "Darf die Tagesordung verwalten"
 msgid "Agenda Item"
 msgstr "Tagesordnungseintrag"
 
-#: agenda/models.py:142 agenda/slides.py:7 agenda/views.py:190
-#: agenda/views.py:191 agenda/views.py:220
+#: agenda/models.py:142 agenda/slides.py:7 agenda/views.py:185
+#: agenda/views.py:186 agenda/views.py:215
 #: agenda/templates/agenda/base_agenda.html:9
 #: agenda/templates/agenda/overview.html:8
 #: agenda/templates/agenda/overview.html:42
@@ -79,17 +80,17 @@ msgstr "Tagesordnungseintrag"
 msgid "Agenda"
 msgstr "Tagesordnung"
 
-#: agenda/views.py:165
+#: agenda/views.py:160
 #, python-format
 msgid "Item <b>%s</b> and his children were successfully deleted."
 msgstr "Eintrag <b>%s</b> und seine Kindelemente wurde erfolgreich gelöscht."
 
-#: agenda/views.py:171 utils/views.py:191
+#: agenda/views.py:166 utils/views.py:191
 #, python-format
 msgid "Item <b>%s</b> was successfully deleted."
 msgstr "Eintrag <b>%s</b> wurde erfolgreich gelöscht."
 
-#: agenda/views.py:175 agenda/views.py:177
+#: agenda/views.py:170 agenda/views.py:172
 #: agenda/templates/agenda/overview.html:48 application/views.py:706
 #: application/views.py:750 application/templates/application/view.html:80
 #: application/templates/projector/Application.html:34
@@ -101,7 +102,7 @@ msgstr "Eintrag <b>%s</b> wurde erfolgreich gelöscht."
 msgid "Yes"
 msgstr "Ja"
 
-#: agenda/views.py:175 agenda/views.py:177
+#: agenda/views.py:170 agenda/views.py:172
 #: agenda/templates/agenda/overview.html:49 application/views.py:706
 #: application/views.py:751 application/templates/application/view.html:81
 #: application/templates/projector/Application.html:35
@@ -111,17 +112,17 @@ msgstr "Ja"
 msgid "No"
 msgstr "Nein"
 
-#: agenda/views.py:177
+#: agenda/views.py:172
 msgid "Yes, with all child items."
 msgstr "Ja, mit allen Kindelementen."
 
-#: agenda/views.py:183 agenda/views.py:185 participant/views.py:187
-#: participant/views.py:281 utils/utils.py:47 utils/views.py:200
+#: agenda/views.py:178 agenda/views.py:180 participant/views.py:188
+#: participant/views.py:282 utils/utils.py:47 utils/views.py:200
 #, python-format
 msgid "Do you really want to delete <b>%s</b>?"
 msgstr "Soll <b>%s</b> wirklich gelöscht werden?"
 
-#: agenda/views.py:213
+#: agenda/views.py:208
 msgid "Agenda settings successfully saved."
 msgstr "Tagesordnungs-Einstellungen erfolgreich gespeichert."
 
@@ -133,16 +134,7 @@ msgstr "Alle Einträge"
 msgid "New item"
 msgstr "Neuer Eintrag"
 
-#: agenda/templates/agenda/config.html:5
-#: application/templates/application/config.html:5
-#: assignment/templates/assignment/config.html:5 config/views.py:94
-#: config/templates/config/base_config.html:7
-#: config/templates/config/config.html:5
-#: config/templates/config/general.html:5
-msgid "Configuration"
-msgstr "Konfiguration"
-
-#: agenda/templates/agenda/config.html:8
+#: agenda/templates/agenda/config.html:5 agenda/templates/agenda/config.html:8
 msgid "Agenda settings"
 msgstr "Tagesordnungs-Einstellungen"
 
@@ -153,8 +145,8 @@ msgstr "Tagesordnungs-Einstellungen"
 #: assignment/templates/assignment/config.html:13
 #: assignment/templates/assignment/edit.html:17
 #: assignment/templates/assignment/poll_view.html:53
-#: config/templates/config/config.html:14
-#: config/templates/config/general.html:13
+#: config/templates/config/general.html:41
+#: participant/templates/participant/config.html:13
 #: participant/templates/participant/edit.html:21
 #: participant/templates/participant/group_edit.html:17
 #: participant/templates/participant/settings.html:18
@@ -170,8 +162,8 @@ msgstr "Speichern"
 #: assignment/templates/assignment/config.html:17
 #: assignment/templates/assignment/edit.html:24
 #: assignment/templates/assignment/poll_view.html:60
-#: config/templates/config/config.html:18
-#: config/templates/config/general.html:17
+#: config/templates/config/general.html:45
+#: participant/templates/participant/config.html:17
 #: participant/templates/participant/edit.html:28
 #: participant/templates/participant/group_edit.html:24
 #: participant/templates/participant/import.html:26
@@ -186,7 +178,7 @@ msgid "Item"
 msgstr "Eintrag"
 
 #: agenda/templates/agenda/edit.html:8
-#: agenda/templates/agenda/item_row.html:24
+#: agenda/templates/agenda/item_row.html:23
 msgid "Edit item"
 msgstr "Eintrag bearbeiten"
 
@@ -206,11 +198,7 @@ msgstr "Übernehmen"
 msgid "Item closed"
 msgstr "Eintrag erledigt"
 
-#: agenda/templates/agenda/item_row.html:22
-msgid "Show projector preview"
-msgstr "Beamer-Vorschau anzeigen"
-
-#: agenda/templates/agenda/item_row.html:25
+#: agenda/templates/agenda/item_row.html:24
 msgid "Delete item"
 msgstr "Eintrag löschen"
 
@@ -467,8 +455,8 @@ msgid "Application was successfully modified."
 msgstr "Antrag wurde erfolgreich geändert."
 
 #: application/views.py:198 application/views.py:597 assignment/views.py:129
-#: config/views.py:53 participant/views.py:164 participant/views.py:266
-#: participant/views.py:295 participant/views.py:453 utils/views.py:153
+#: participant/views.py:165 participant/views.py:267 participant/views.py:296
+#: participant/views.py:454 utils/views.py:153
 msgid "Please check the form for errors."
 msgstr "Bitte kontrollieren Sie das Formular nach Fehlern."
 
@@ -571,7 +559,7 @@ msgstr "FEHLER beim Zurückweisen der Version."
 msgid "Do you really want to reject version <b>%s</b>?"
 msgstr "Soll Version <b>%s</b> wirklich zurückgewiesen werden?"
 
-#: application/views.py:493 participant/views.py:311
+#: application/views.py:493 participant/views.py:312
 msgid ""
 "The import function is available for the superuser (without user profile) "
 "only."
@@ -579,7 +567,7 @@ msgstr ""
 "Die Importfunktion ist nur für den 'superuser' (ohne Nutzerprofil) verfügbar."
 
 #: application/views.py:524 application/views.py:528 application/views.py:534
-#: application/views.py:537 participant/views.py:380
+#: application/views.py:537 participant/views.py:381
 #, python-format
 msgid "Ignoring malformed line %d in import file."
 msgstr "Fehlerhafte Zeile %d der Quelldatei wurde ignoriert."
@@ -605,11 +593,11 @@ msgid_plural "%d new users were added."
 msgstr[0] "%d neuer Nutzer wurde erstellt."
 msgstr[1] "%d neue Nutzer wurden erstellt."
 
-#: application/views.py:593 participant/views.py:449
+#: application/views.py:593 participant/views.py:450
 msgid "Import aborted because of severe errors in the input file."
 msgstr "Import auf Grund von schweren Fehlern in der Quelldatei abgebrochen."
 
-#: application/views.py:595 participant/views.py:451
+#: application/views.py:595 participant/views.py:452
 msgid "Import file has wrong character encoding, only UTF-8 is supported!"
 msgstr ""
 "Die Quelldatei benutzt eine ungültige Zeichenkodierung, es wird nur UTF-8 "
@@ -726,6 +714,7 @@ msgstr "Anträge importieren"
 msgid "Print all applications"
 msgstr "Alle Anträge drucken"
 
+#: application/templates/application/config.html:5
 #: application/templates/application/config.html:8
 msgid "Application settings"
 msgstr "Antrags-Einstellungen"
@@ -942,7 +931,9 @@ msgid "Reset"
 msgstr "Zurücksetzen"
 
 #: application/templates/application/view.html:220
-#: application/templates/application/view.html:248
+#: application/templates/application/view.html:248 config/models.py:120
+#: config/templates/config/version.html:5
+#: config/templates/config/version.html:8
 msgid "Version"
 msgstr "Version"
 
@@ -972,7 +963,7 @@ msgstr "Zugelassene Version"
 
 #: application/templates/application/view.html:266
 msgid "Reject Version"
-msgstr "Verion zurückweisen"
+msgstr "Version zurückweisen"
 
 #: application/templates/application/view.html:270
 msgid "Version rejected"
@@ -1211,6 +1202,7 @@ msgstr "Neue Wahl"
 msgid "Print all elections"
 msgstr "Alle Wahlen drucken"
 
+#: assignment/templates/assignment/config.html:5
 #: assignment/templates/assignment/config.html:8
 msgid "Election settings"
 msgstr "Wahl-Einstellungen"
@@ -1332,72 +1324,69 @@ msgid "No ballots available."
 msgstr "Keine Wahlgänge vorhanden."
 
 #: config/forms.py:21
-msgid "System URL"
-msgstr "System URL"
-
-#: config/forms.py:22
-msgid "Welcome text (for password PDF)"
-msgstr "Willkommenstext (für Passwort-PDF-Liste)"
-
-#: config/forms.py:23
-msgid "Access for anonymous / guest users"
-msgstr "Zugriff für anonyme oder Gast-Nutzer"
-
-#: config/forms.py:23
-msgid "Allow access for guest users"
-msgstr "Zugriff für Gast-Nutzer aktivieren"
-
-#: config/forms.py:27
 msgid "Event name"
 msgstr "Veranstaltungsname"
 
-#: config/forms.py:28
+#: config/forms.py:22
 msgid "Short description of event"
 msgstr "Kurzbeschreibung der Veranstaltung"
 
-#: config/forms.py:29
+#: config/forms.py:23
 msgid "Event date"
 msgstr "Veranstaltungszeitraum"
 
-#: config/forms.py:30
+#: config/forms.py:24
 msgid "Event location"
 msgstr "Veranstaltungsort"
 
-#: config/forms.py:31
+#: config/forms.py:25
 msgid "Event organizer"
 msgstr "Veranstalter"
+
+#: config/forms.py:26
+msgid "Allow access for anonymous guest users"
+msgstr "Erlaube Zugriff für anonyme Gast-Nutzer"
 
 #: config/models.py:33
 msgid "Can manage configuration"
 msgstr "Darf die Konfiguration verwalten"
 
-#: config/models.py:106
+#: config/models.py:103
 msgid "General"
 msgstr "Allgemein"
 
-#: config/views.py:49
-msgid "General settings successfully saved."
-msgstr "Allgemeine Einstellungen erfolgreich gespeichert."
-
-#: config/views.py:84
+#: config/views.py:65
 msgid ""
 "Anonymous access enabled. Please modify the \"Anonymous\" group to fit your "
 "required permissions."
 msgstr ""
-"Anonymer Zugriff aktiviert. Bitte setzen Sie die Rechte der Gruppe "
+"Anonymer Zugriff aktiviert. Bitte setzen Sie die Rechte der Benutzerrolle "
 "\"Anonymous\" passend zum gewünschten Zugriffslevel."
 
-#: config/views.py:87
-msgid "System settings successfully saved."
-msgstr "Systemeinstellungen erfolgreich gespeichert."
+#: config/views.py:68
+msgid "General settings successfully saved."
+msgstr "Allgemeine Einstellungen erfolgreich gespeichert."
 
-#: config/templates/config/config.html:8
-msgid "System settings"
-msgstr "System-Einstellungen"
+#: config/views.py:85 config/templates/config/base_config.html:7
+msgid "Configuration"
+msgstr "Konfiguration"
 
+#: config/templates/config/general.html:5
 #: config/templates/config/general.html:8
 msgid "General settings"
 msgstr "Allgemeine Einstellungen"
+
+#: config/templates/config/general.html:11
+msgid "Event"
+msgstr "Veranstaltung"
+
+#: config/templates/config/general.html:26 templates/base.html:28
+msgid "Welcome"
+msgstr "Willkommen"
+
+#: config/templates/config/version.html:10
+msgid "OpenSlides Version"
+msgstr "OpenSlides Version"
 
 #: participant/forms.py:27
 msgid "Keep applications, try to reassign submitter"
@@ -1422,6 +1411,15 @@ msgstr "Nachname"
 #: participant/forms.py:82
 msgid "For existing applications"
 msgstr "Bei existierenden Anträgen"
+
+#: participant/forms.py:89
+msgid "System URL"
+msgstr "System URL"
+
+#: participant/forms.py:95
+#, fuzzy
+msgid "Welcome text"
+msgstr "Willkommen"
 
 #: participant/models.py:22 participant/templates/participant/overview.html:23
 msgid "Male"
@@ -1465,10 +1463,6 @@ msgstr "Typ"
 msgid "Committee"
 msgstr "Amt"
 
-#: participant/models.py:37 participant/templates/participant/overview.html:69
-msgid "Comment"
-msgstr "Kommentar"
-
 #: participant/models.py:38
 msgid "First Password"
 msgstr "Erst-Passwort"
@@ -1481,63 +1475,63 @@ msgstr "Darf die Teilnehmer/inen sehen"
 msgid "Can manage participant"
 msgstr "Darf die Teilnehmer/inen verwalten"
 
-#: participant/views.py:156
+#: participant/views.py:157
 msgid "New participant was successfully created."
 msgstr "Neue/r Teilnehmer/in wurde erfolgreich angelegt."
 
-#: participant/views.py:158
+#: participant/views.py:159
 msgid "Participant was successfully modified."
 msgstr "Teilnehmer/in wurde erfolgreich geändert."
 
-#: participant/views.py:185
+#: participant/views.py:186
 #, python-format
 msgid "Participant <b>%s</b> was successfully deleted."
 msgstr "Teilnehmer/in <b>%s</b> wurde erfolgreich gelöscht."
 
-#: participant/views.py:198
+#: participant/views.py:199
 #, python-format
 msgid "Participant %d does not exist."
 msgstr "Teilnehmer/in %d existiert nicht."
 
-#: participant/views.py:244
+#: participant/views.py:245
 #, python-format
 msgid "Group name \"%s\" is reserved for internal use."
 msgstr "Der Gruppenname \"%s\" ist für interne Verwendung reserviert."
 
-#: participant/views.py:258
+#: participant/views.py:259
 msgid "New group was successfully created."
 msgstr "Neue Gruppe wurde erfolgreich angelegt."
 
-#: participant/views.py:260
+#: participant/views.py:261
 msgid "Group was successfully modified."
 msgstr "Gruppe wurde erfolgreich geändert."
 
-#: participant/views.py:279
+#: participant/views.py:280
 #, python-format
 msgid "Group <b>%s</b> was successfully deleted."
 msgstr "Gruppe <b>%s</b>  wurde erfolgreich gelöscht."
 
-#: participant/views.py:293
+#: participant/views.py:294
 msgid "User settings successfully saved."
 msgstr "Nutzereinstellungen wurden erfolgreich gespeichert."
 
-#: participant/views.py:363
+#: participant/views.py:364
 msgid "Supporters removed after user import."
 msgstr "Unterstützer/innen nach Benutzerimport zurückgesetzt."
 
-#: participant/views.py:416
+#: participant/views.py:417
 #, python-format
 msgid "Reassigned to \"%s\" after (re)importing users."
 msgstr "Nach Benutzerimport erneut \"%s\" zugeordnet."
 
-#: participant/views.py:419 participant/views.py:433
+#: participant/views.py:420 participant/views.py:434
 #, python-format
 msgid "Could not reassing application %d - object not found!"
 msgstr ""
 "Antrag Id#%d konnte nicht neu zugewiesen werden - Das Objekt wurde nicht "
 "gefunden!"
 
-#: participant/views.py:436
+#: participant/views.py:437
 #, python-format
 msgid "%d application could not be reassigned and needs a review!"
 msgid_plural "%d applications could not be reassigned and need a review!"
@@ -1546,26 +1540,26 @@ msgstr[0] ""
 msgstr[1] ""
 "%d Anträge konnten nicht neu zugewiesen werden und benötigen ein Review!"
 
-#: participant/views.py:439
+#: participant/views.py:440
 #, python-format
 msgid "%d application was successfully reassigned."
 msgid_plural "%d applications were successfully reassigned."
 msgstr[0] "%d Antrag wurde erfolgreich neu zugewiesen."
 msgstr[1] "%d Anträge wurden erfolgreich neu zugewiesen."
 
-#: participant/views.py:442
+#: participant/views.py:443
 #, python-format
 msgid "%d application was discarded."
 msgid_plural "%d applications were discarded."
 msgstr[0] "%d Antrag wurde gelöscht."
 msgstr[1] "%d Anträge wurden gelöscht."
 
-#: participant/views.py:446
+#: participant/views.py:447
 #, python-format
 msgid "%d new participants were successfully imported."
 msgstr "%d neue Teilnehmer/innen wurden erfolgreich importiert."
 
-#: participant/views.py:455
+#: participant/views.py:456
 msgid ""
 "Attention: All existing participants will be removed if you import new "
 "participants."
@@ -1573,12 +1567,12 @@ msgstr ""
 "Achtung: Alle existierenden Teilnehmer/innen werden gelöscht, wenn Sie neue "
 "Teilnehmer/innen importieren."
 
-#: participant/views.py:457
+#: participant/views.py:458
 msgid "Attention: Supporters from all existing applications will be removed."
 msgstr ""
 "Achtung: Alle Unterstützer/innen werden von existiernden Anträgen gelöscht."
 
-#: participant/views.py:458
+#: participant/views.py:459
 msgid ""
 "Attention: Applications which can't be mapped to new users will be set to "
 "'Needs Review'."
@@ -1586,17 +1580,17 @@ msgstr ""
 "Achtung: Anträge welche keinem Nutzer zugeordnet werden können bekommen "
 "automatisch den Status \"Benötigt Review\"."
 
-#: participant/views.py:470
+#: participant/views.py:471
 #, python-format
 msgid "The Password for <b>%s</b> was successfully reset."
 msgstr "Das Passwort für <b>%s</b> wurde erfolgreich zurückgesetzt."
 
-#: participant/views.py:472
+#: participant/views.py:473
 #, python-format
 msgid "Do you really want to reset the password for <b>%s</b>?"
 msgstr "Soll das Passwort für <b>%s</b> wirklich zurückgesetzt werden?"
 
-#: participant/views.py:480
+#: participant/views.py:481
 #: participant/templates/participant/base_participant.html:12
 #: participant/templates/participant/overview.html:6
 #: participant/templates/participant/overview.html:16
@@ -1604,6 +1598,11 @@ msgstr "Soll das Passwort für <b>%s</b> wirklich zurückgesetzt werden?"
 #: participant/templates/participant/overview.html:59
 msgid "Participants"
 msgstr "Teilnehmer/innen"
+
+#: participant/views.py:502
+#, fuzzy
+msgid "Participants settings successfully saved."
+msgstr "Wahl-Einstellungen wurden erfolgreich gespeichert."
 
 #: participant/templates/participant/base_participant.html:15
 msgid "All participants"
@@ -1636,6 +1635,12 @@ msgstr "Teilnehmerliste drucken"
 #: participant/templates/participant/base_participant.html:27
 msgid "Print first time passwords"
 msgstr "Erst-Passwörter drucken"
+
+#: participant/templates/participant/config.html:5
+#: participant/templates/participant/config.html:8
+#, fuzzy
+msgid "Participant settings"
+msgstr "Teilnehmer/innen"
 
 #: participant/templates/participant/edit.html:5
 msgid "Participant"
@@ -1694,11 +1699,11 @@ msgstr ""
 
 #: participant/templates/participant/login.html:8
 #: participant/templates/participant/login.html:16
-#: participant/templates/participant/login.html:45 templates/base.html:29
+#: participant/templates/participant/login.html:45 templates/base.html:30
 msgid "Login"
 msgstr "Anmelden"
 
-#: participant/templates/participant/login.html:21 templates/base.html:55
+#: participant/templates/participant/login.html:21 templates/base.html:56
 msgid "Close this notification"
 msgstr "Meldung ausblenden"
 
@@ -1870,21 +1875,17 @@ msgstr "Seite nicht gefunden."
 msgid "Server Error"
 msgstr "Serverfehler"
 
-#: templates/base.html:19
+#: templates/base.html:20
 msgid "Home"
 msgstr "Startseite"
 
-#: templates/base.html:25
+#: templates/base.html:26
 msgid "Logout"
 msgstr "Abmelden"
 
-#: templates/base.html:26
+#: templates/base.html:27
 msgid "User Settings"
 msgstr "Benutzereinstellungen"
-
-#: templates/base.html:27
-msgid "Welcome"
-msgstr "Willkommen"
 
 #: utils/pdf.py:189
 msgid "%Y-%m-%d %H:%Mh"
@@ -1942,6 +1943,10 @@ msgstr "verfügbare Posten"
 msgid "Sorry, you have no rights to see this page."
 msgstr "Bedaure, Sie haben keine Berechtigung diese Seite zu sehen."
 
-#: utils/views.py:207
+#: utils/views.py:219
 msgid "undefined-filename"
 msgstr "undefinierter-dateiname"
+
+#, fuzzy
+#~ msgid "Access for guest users"
+#~ msgstr "Zugriff für Gast-Nutzer aktivieren"

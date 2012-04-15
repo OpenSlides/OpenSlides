@@ -68,3 +68,15 @@ class Profile(models.Model):
             ('can_see_participant', _("Can see participant", fixstr=True)),
             ('can_manage_participant', _("Can manage participant", fixstr=True)),
         )
+
+
+from django.dispatch import receiver
+from openslides.config.signals import default_config_value
+
+
+@receiver(default_config_value, dispatch_uid="participant_default_config")
+def default_config(sender, key, **kwargs):
+    return {
+        'participant_pdf_system_url': 'http://example.com:8000',
+        'participant_pdf_welcometext': 'Welcome to OpenSlides!',
+    }.get(key)

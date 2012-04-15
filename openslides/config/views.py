@@ -23,14 +23,15 @@ from utils.utils import template, permission_required
 from utils.views import FormView, TemplateView
 from utils.template import Tab
 
-from forms import SystemConfigForm, EventConfigForm
+from forms import GeneralConfigForm
+
 
 from models import config
 
 
 class GeneralConfig(FormView):
     permission_required = 'config.can_manage_config'
-    form_class = EventConfigForm
+    form_class = GeneralConfigForm
     template_name = 'config/general.html'
 
     def get_initial(self):
@@ -40,6 +41,7 @@ class GeneralConfig(FormView):
             'event_date': config['event_date'],
             'event_location': config['event_location'],
             'event_organizer': config['event_organizer'],
+            'system_enable_anonymous': config['system_enable_anonymous'],
         }
 
     def form_valid(self, form):
@@ -48,39 +50,6 @@ class GeneralConfig(FormView):
         config['event_date'] = form.cleaned_data['event_date']
         config['event_location'] = form.cleaned_data['event_location']
         config['event_organizer'] = form.cleaned_data['event_organizer']
-        messages.success(self.request, _('General settings successfully saved.'))
-        return super(GeneralConfig, self).form_valid(form)
-
-    def form_invalid(self, form):
-        messages.error(self.request, _('Please check the form for errors.'))
-        return super(Config, self).form_invalid(form)
-
-
-class VersionConfig(TemplateView):
-    permission_required = 'config.can_manage_config'
-    template_name = 'config/version.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(VersionConfig, self).get_context_data(**kwargs)
-        context['version'] = get_version()
-        return context
-
-
-class Config(FormView):
-    permission_required = 'config.can_manage_config'
-    form_class = SystemConfigForm
-    template_name = 'config/config.html'
-
-    def get_initial(self):
-        return {
-        'system_url': config['system_url'],
-        'system_welcometext': config['system_welcometext'],
-        'system_enable_anonymous': config['system_enable_anonymous'],
-        }
-
-    def form_valid(self, form):
-        config['system_url'] = form.cleaned_data['system_url']
-        config['system_welcometext'] = form.cleaned_data['system_welcometext']
         if form.cleaned_data['system_enable_anonymous']:
             config['system_enable_anonymous'] = True
             # check for Anonymous group and (re)create it as needed
@@ -96,8 +65,18 @@ class Config(FormView):
             messages.success(self.request, _('Anonymous access enabled. Please modify the "Anonymous" group to fit your required permissions.'))
         else:
             config['system_enable_anonymous'] = False
-        messages.success(self.request, _('System settings successfully saved.'))
-        return super(Config, self).form_valid(form)
+        messages.success(self.request, _('General settings successfully saved.'))
+        return super(GeneralConfig, self).form_valid(form)
+
+
+class VersionConfig(TemplateView):
+    permission_required = 'config.can_manage_config'
+    template_name = 'config/version.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(VersionConfig, self).get_context_data(**kwargs)
+        context['version'] = get_version()
+        return context
 
 
 def register_tab(request):

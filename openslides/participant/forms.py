@@ -10,7 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.forms import Form, ModelForm, CharField, EmailField, FileField, FileInput, MultipleChoiceField, ModelMultipleChoiceField, ChoiceField, BooleanField
+from django.forms import Form, ModelForm, CharField, EmailField, FileField, FileInput, TextInput, Textarea, MultipleChoiceField, ModelMultipleChoiceField, ChoiceField, BooleanField
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.utils.translation import ugettext as _
@@ -80,3 +80,18 @@ class UsersettingsForm(UserEditForm, CssClassMixin):
 class UserImportForm(Form, CssClassMixin):
     csvfile = FileField(widget=FileInput(attrs={'size':'50'}), label=_("CSV File"))
     application_handling = ChoiceField(required=True, choices=USER_APPLICATION_IMPORT_OPTIONS, label=_("For existing applications"))
+
+
+class ConfigForm(Form, CssClassMixin):
+    participant_pdf_system_url = CharField(
+        widget=TextInput(),
+        required=False,
+        label=_("System URL"),
+        help_text="Printed in PDF of first time passwords only.",
+    )
+    participant_pdf_welcometext = CharField(
+        widget=Textarea(),
+        required=False,
+        label=_("Welcome text"),
+        help_text="Printed in PDF of first time passwords only.",
+    )

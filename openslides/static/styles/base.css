@@ -456,6 +456,12 @@ form input:after {
     font-weight: bold;
 }
 
+/* Fieldsets */
+fieldset {
+    width: 0px;
+    padding: 0 60px 0 20px;
+}
+
 /* Lists */
 ul {
     list-style:none outside none;
