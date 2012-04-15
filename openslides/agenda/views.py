@@ -18,7 +18,8 @@ from django.core.context_processors import csrf
 from django.views.generic.detail import SingleObjectMixin
 
 from utils.pdf import stylesheet
-from utils.views import TemplateView, RedirectView, UpdateView, CreateView, DeleteView, PDFView, FormView
+from utils.views import (TemplateView, RedirectView, UpdateView, CreateView,
+                         DeleteView, PDFView, FormView, DetailView)
 from utils.template import Tab
 
 from config.models import config
@@ -28,19 +29,6 @@ from projector.api import get_active_slide, set_active_slide
 from agenda.models import Item
 from agenda.api import is_summary
 from agenda.forms import ItemOrderForm, ItemForm, ConfigForm
-
-
-class View(TemplateView):
-    permission_required = 'agenda.can_see_projector'
-    template_name = 'projector/AgendaText.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(View, self).get_context_data(**kwargs)
-        context.update({
-            'item': Item.objects.get(pk=kwargs['pk']),
-            'ajax': 'off',
-        })
-        return context
 
 
 class Overview(TemplateView):
@@ -71,6 +59,13 @@ class Overview(TemplateView):
                 item.weight = form.cleaned_data['weight']
                 item.save()
         return self.render_to_response(context)
+
+
+class View(DetailView):
+    permission_required = 'agenda.can_see_agenda'
+    template_name = 'agenda/view.html'
+    model = Item
+    context_object_name = 'item'
 
 
 class SetActive(RedirectView, SingleObjectMixin):
