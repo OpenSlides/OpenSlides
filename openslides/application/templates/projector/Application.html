@@ -21,23 +21,23 @@
 
         <p><b>{% trans "Submitter" %}:</b><br>
         {{ application.submitter.profile }}</p>
-    {% with application.poll_set.all as polls %}
-    {% if polls|length > 0 and polls.0.has_vote %}
+    {% with application.polls as polls %}
+    {% if polls.exists and polls.0.has_votes %}
     <p><b>{% trans "Poll result" %}:</b></p>
-    {% for p in polls %}
-        {% if p.has_vote %}
+    {% for poll in polls %}
+        {% if poll.has_votes %}
             {% if polls|length > 1 %}
                 {{forloop.counter}}. {% trans "Vote" %}:<br>
             {% endif %}
-            {% for option in p.options %}
+            {% with poll.get_options.0 as option %}
                 <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.yes }} <br>
                 <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.no }} <br>
-                <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}">  {{ option.undesided }}<br>
-                <img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ p.votesinvalidf }}<br>
+                <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}">  {{ option.contained }}<br>
+                <img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}<br>
                 <div style="border-top: 1px solid; padding-top: 5px; margin: 5px 0; width: 10em;">
-                    <img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ p.votescastf }}
+                    <img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
                 </div>
-            {% endfor %}
+            {% endwith %}
             <br>
         {% else %}
             {% if poll|length  == 1 %}
