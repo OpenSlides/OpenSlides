@@ -96,7 +96,6 @@ import settings
 from openslides.utils.signals import template_manipulation
 
 
-
 @receiver(template_manipulation, dispatch_uid="config_submenu")
 def set_submenu(sender, request, context, **kwargs):
     if not request.path.startswith('/config/'):
@@ -107,15 +106,20 @@ def set_submenu(sender, request, context, **kwargs):
 
     for app in settings.INSTALLED_APPS:
         try:
-            mod = import_module(app + '.views')
-            mod.Config
+            mod = import_module(app)
+            views = mod.views
+            views.Config
         except (ImportError, AttributeError):
             continue
 
         appname = mod.__name__.split('.')[0]
-        selected = True if reverse('config_%s' % appname) == request.path else False
+        selected = reverse('config_%s' % appname) == request.path
+        try:
+            title = mod.NAME
+        except AttributeError:
+            title = appname.title()
         menu_links.append(
-            (reverse('config_%s' % appname), _(appname.title()), selected)
+            (reverse('config_%s' % appname), _(title), selected)
         )
 
     menu_links.append (
