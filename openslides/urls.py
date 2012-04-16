@@ -17,7 +17,9 @@ import settings
 
 from utils.views import FrontPage
 
+
 handler500 = 'openslides.utils.views.server_error'
+
 
 urlpatterns = patterns('',
     # frontpage
@@ -32,6 +34,10 @@ urlpatterns = patterns('',
     (r'^i18n/', include('django.conf.urls.i18n')),
 )
 
+js_info_dict = {
+    'packages': [],
+}
+
 for plugin in settings.INSTALLED_PLUGINS:
     try:
         mod = import_module(plugin + '.urls')
@@ -40,10 +46,12 @@ for plugin in settings.INSTALLED_PLUGINS:
 
     plugin_name = mod.__name__.split('.')[0]
     urlpatterns += patterns('', (r'^%s/' % plugin_name, include('%s.urls' % plugin_name)))
+    js_info_dict['packages'].append(plugin_name)
 
 
 urlpatterns += patterns('',
     (r'^500/$', 'openslides.utils.views.server_error'),
+    (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
 
     url(r'^login/$',
         'django.contrib.auth.views.login',
