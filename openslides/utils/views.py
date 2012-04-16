@@ -96,14 +96,14 @@ class PermissionMixin(object):
 class TemplateView(PermissionMixin, _TemplateView):
     def get_context_data(self, **kwargs):
         context = super(TemplateView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self, request=self.request, context=context)
+        template_manipulation.send(sender=self.__class__, request=self.request, context=context)
         return context
 
 
 class ListView(PermissionMixin, SetCookieMixin, _ListView):
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self, request=self.request, context=context)
+        template_manipulation.send(sender=self.__class__, request=self.request, context=context)
         return context
 
 
@@ -150,7 +150,7 @@ class FormView(PermissionMixin, _FormView):
 
     def get_context_data(self, **kwargs):
         context = super(FormView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self, request=self.request, context=context)
+        template_manipulation.send(sender=self.__class__, request=self.request, context=context)
         return context
 
     def form_invalid(self, form):
@@ -166,7 +166,7 @@ class UpdateView(PermissionMixin, _UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(UpdateView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self, request=self.request, context=context)
+        template_manipulation.send(sender=self.__class__, request=self.request, context=context)
         return context
 
 
@@ -178,7 +178,7 @@ class CreateView(PermissionMixin, _CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(CreateView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self, request=self.request, context=context)
+        template_manipulation.send(sender=self.__class__, request=self.request, context=context)
         return context
 
     def get_apply_url(self):
