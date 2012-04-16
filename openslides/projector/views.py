@@ -30,7 +30,7 @@ from utils.template import Tab
 
 from config.models import config
 
-from api import get_active_slide, set_active_slide, projector_message_set
+from api import get_active_slide, set_active_slide, projector_message_set, projector_message_delete
 from projector import SLIDE
 from models import ProjectorOverlay
 from openslides.projector.signals import projector_overlays, projector_control_box
@@ -59,6 +59,8 @@ class ControlView(TemplateView):
     def post(self, request, *args, **kwargs):
         if 'message' in request.POST:
             projector_message_set(request.POST['message_text'])
+        elif 'message-clean' in request.POST:
+            projector_message_delete()
         else:
             for overlay in self.get_projector_overlays():
                 if overlay.def_name in request.POST:
