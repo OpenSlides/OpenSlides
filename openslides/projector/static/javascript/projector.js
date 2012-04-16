@@ -15,9 +15,9 @@ function presentation_reload() {
                 $('#content li').css({'font-size': data.bigger + '%'}, 200);
                 $('#content #sidebar').css({'font-size': '16px'}, 0);
                 $('#content').animate({'margin-top': data.up + 'em'}, 200);
-                $('#messages li').remove();
-                $.each(data['messages'], function (index, value){
-                    $('#messages ul').append('<li id="message_' + value[0] + '">' + value[1] + '</li>');
+                $('#overlays li').remove();
+                $.each(data['overlays'], function (index, value){
+                    $('#overlays ul').append('<li id="overlay' + value[0] + '">' + value[1] + '</li>');
                 });
                 setTimeout("presentation_reload()", 500);
             },

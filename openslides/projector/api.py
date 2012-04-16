@@ -3,18 +3,28 @@ from projector import SLIDE, Slide
 from django.template.loader import render_to_string
 
 
-def get_slide_from_sid(sid):
+def split_sid(sid):
     data = sid.split('-')
     if len(data) == 2:
         model = data[0]
         id = data[1]
-        return SLIDE[model].model.objects.get(pk=id).slide()
+        return (model, id)
     if len(data) == 1:
         try:
-            return SLIDE[data[0]].func()
+            return (SLIDE[data[0]].func(), None)
         except KeyError:
             return None
     return None
+
+
+def get_slide_from_sid(sid):
+    key, id = split_sid(sid)
+    if id is not None:
+        return SLIDE[key].model.objects.get(pk=id).slide()
+    try:
+        return SLIDE[key].func()
+    except KeyError:
+        return None
 
 
 def get_active_slide(only_sid=False):
@@ -70,3 +80,19 @@ def register_slidefunc(key, func, control_template=None, weight=0, name=''):
         weight=weight,
         name=name,
     )
+
+
+def projector_message_set(message, sid=None):
+    from models import ProjectorOverlay
+    config['projector_message'] = message
+    try:
+        overlay = ProjectorOverlay.objects.get(def_name='Message')
+    except ProjectorOverlay.DoesNotExist:
+        overlay = ProjectorOverlay(def_name='Message', active=True)
+    print "hier mal ein ", sid
+    overlay.sid=sid
+    overlay.save()
+
+
+def projector_message_delete():
+    config['projector_message'] = ''

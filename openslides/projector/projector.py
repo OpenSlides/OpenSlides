@@ -5,7 +5,7 @@ from django.utils.translation import ugettext as _
 
 from config.models import config
 
-from openslides.projector.signals import projector_messages
+from openslides.projector.signals import projector_overlays
 
 
 SLIDE = {}
@@ -75,13 +75,25 @@ class Slide(object):
             return 'No Model'
 
 
-@receiver(projector_messages, dispatch_uid="projector_countdown")
+@receiver(projector_overlays, dispatch_uid="projector_countdown")
 def countdown(sender, **kwargs):
-    name = _('Countdown')
+    name = 'Countdown'
     if kwargs['register']:
         return name
     if name in kwargs['call']:
         starttime = config['countdown_start']
         seconds = max(0, int(starttime + config['agenda_countdown_time'] - time()))
         return (name, seconds)
+    return None
+
+
+@receiver(projector_overlays, dispatch_uid="projector_message")
+def projector_message(sender, **kwargs):
+    name = 'Message'
+    if kwargs['register']:
+        return name
+    if name in kwargs['call']:
+        message = config['projector_message']
+        if message != '':
+            return (name, message)
     return None

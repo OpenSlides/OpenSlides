@@ -39,6 +39,10 @@
 
 {% block content %}
     <h1>{% trans 'Projector' %}</h1>
+    <form action="" method="post">{% csrf_token %}
+        <input name='message_text' type='text' value="{% get_config 'projector_message' %}">
+        <button type="submit" class="button" name='message'><span class="icon ok">{% trans 'Save' %}</span></button>
+    </form>
     <div style="text-align: right; padding: 0 10px 5px 0; margin-top:-20px;">
         <!-- projector control -->
         {% trans "Adjust projector view" %}:
@@ -97,18 +101,18 @@
             </div>
         </div> <!-- end portlet-->
 
-        <!-- Messages (Countdown etc.)-->
+        <!-- Overlays (Countdown etc.)-->
         <div class="portlet">
-            <div class="portlet-header">{% trans 'Messages' %}</div>
+            <div class="portlet-header">{% trans 'Overlays' %}</div>
             <div class="portlet-content">
                 <ul style="line-height: 180%">
                 <form action="" method="post">{% csrf_token %}
                     <ul>
-                    {% for message in projector_messages %}
+                    {% for overlay in overlays %}
                         <li>
-                            <input type="checkbox" name="{{ message }}" onchange="submit()"
-                            {% if message.active %} checked="checked"{% endif %}> {{ message }}
-                            {% if message.def_name == "Countdown" %}
+                            <input type="checkbox" name="{{ overlay }}" onchange="submit()"
+                            {% if overlay.active %} checked="checked"{% endif %}> {{ overlay }}
+                            {% if overlay.def_name == "Countdown" %}
                                 |
                                 <a href="{% url config_agenda %}">{{countdown_time}}{% trans "sec" %}</a>
                                 <a class="projector_countdown" href="{% url countdown_reset %}" title="{% trans 'Reset countdown' %}">

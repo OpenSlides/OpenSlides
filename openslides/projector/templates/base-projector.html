@@ -30,10 +30,10 @@
             {% now "H:i" %}
         </div>
 
-        <div id="messages">
+        <div id="overlays">
             <ul>
-            {% for message in messages %}
-                <li id="message_{{ message.0 }}">{{ message.1 }}</li>
+            {% for overlay in overlays %}
+                <li id="overlay_{{ overlay.0 }}">{{ overlay.1 }}</li>
             {% endfor %}
             </ul>
         </div>

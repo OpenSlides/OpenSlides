@@ -15,11 +15,11 @@ from time import time
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
-from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.utils.datastructures import SortedDict
 from django.dispatch import receiver
 from django.template.loader import render_to_string
+from django.db.models import Q
 
 
 from utils.views import TemplateView, RedirectView
@@ -30,10 +30,11 @@ from utils.template import Tab
 
 from config.models import config
 
-from api import get_active_slide, set_active_slide
+from api import get_active_slide, set_active_slide, projector_message_set
 from projector import SLIDE
-from models import ProjectorMessage
-from openslides.projector.signals import projector_messages, projector_control_box
+from models import ProjectorOverlay
+from openslides.projector.signals import projector_overlays, projector_control_box
+from openslides.utils.signals import template_manipulation
 
 from django.utils.importlib import import_module
 import settings
@@ -43,25 +44,28 @@ class ControlView(TemplateView):
     template_name = 'projector/control.html'
     permission_required = 'projector.can_manage_projector'
 
-    def get_projector_messages(self):
-        messages = []
-        for receiver, name in projector_messages.send(sender='registerer', register=True):
+    def get_projector_overlays(self):
+        overlays = []
+        for receiver, name in projector_overlays.send(sender='registerer', register=True):
             if name is not None:
                 try:
-                    projector_message = ProjectorMessage.objects.get(def_name=name)
-                except ProjectorMessage.DoesNotExist:
-                    projector_message = ProjectorMessage(def_name=name, active=False)
-                    projector_message.save()
-                messages.append(projector_message)
-        return messages
+                    projector_overlay = ProjectorOverlay.objects.get(def_name=name)
+                except ProjectorOverlay.DoesNotExist:
+                    projector_overlay = ProjectorOverlay(def_name=name, active=False)
+                    projector_overlay.save()
+                overlays.append(projector_overlay)
+        return overlays
 
     def post(self, request, *args, **kwargs):
-        for message in self.get_projector_messages():
-            if message.def_name in request.POST:
-                message.active = True
-            else:
-                message.active = False
-            message.save()
+        if 'message' in request.POST:
+            projector_message_set(request.POST['message_text'])
+        else:
+            for overlay in self.get_projector_overlays():
+                if overlay.def_name in request.POST:
+                    overlay.active = True
+                else:
+                    overlay.active = False
+                overlay.save()
         return self.get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -88,7 +92,7 @@ class ControlView(TemplateView):
             'categories': categories,
             'countdown_visible': config['countdown_visible'],
             'countdown_time': config['agenda_countdown_time'],
-            'projector_messages': self.get_projector_messages(),
+            'overlays': self.get_projector_overlays(),
         })
         return context
 
@@ -122,20 +126,23 @@ def active_slide(request):
         }
 
     data['ajax'] = 'on'
-    data['messages'] = []
+    data['overlays'] = []
+    data['overlay'] = ''
 
-    # Projector Messages
-    active_defs = ProjectorMessage.objects.filter(active=True).values_list('def_name', flat=True)
-    for receiver, response in projector_messages.send(sender='active_slide', register=False, call=active_defs):
+    # Projector Overlays
+    sid = get_active_slide(True)
+    active_defs = ProjectorOverlay.objects.filter(active=True).filter(Q(sid=sid) | Q(sid=None)).values_list('def_name', flat=True)
+    for receiver, response in projector_overlays.send(sender=sid, register=False, call=active_defs):
         if response is not None:
-            data['messages'].append(response)
+            data['overlays'].append(response)
 
 
+    template_manipulation.send(sender='projector', request=request, context=data)
     if request.is_ajax():
         content = render_block_to_string(data['template'], 'content', data)
         jsondata = {
             'content': content,
-            'messages': data['messages'],
+            'overlays': data['overlays'],
             'title': data['title'],
             'time': datetime.now().strftime('%H:%M'),
             'bigger': config['bigger'],
@@ -143,6 +150,7 @@ def active_slide(request):
             'countdown_visible': config['countdown_visible'],
             'countdown_time': config['agenda_countdown_time'],
             'countdown_control': config['countdown_control'],
+            'overlay': data['overlay']
         }
         return ajax_request(jsondata)
     else:
@@ -151,7 +159,6 @@ def active_slide(request):
             data,
             context_instance=RequestContext(request)
         )
-
 
 
 @permission_required('agenda.can_manage_agenda')

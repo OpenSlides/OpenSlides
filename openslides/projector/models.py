@@ -1,4 +1,7 @@
 from django.db import models
+from django.dispatch import receiver
+
+from openslides.config.signals import default_config_value
 
 from api import register_slidemodel
 from projector import SlideMixin
@@ -31,13 +34,22 @@ class ProjectorSlide(models.Model, SlideMixin):
         )
 
 
-class ProjectorMessage(models.Model):
+class ProjectorOverlay(models.Model):
     active = models.BooleanField(verbose_name=_('Active'))
     def_name = models.CharField(max_length=64)
+    sid = models.CharField(max_length=64, null=True, blank=True)
 
     def __unicode__(self):
+        if self.sid:
+            return "%s on %s" % (self.def_name, self.sid)
         return self.def_name
 
 
 register_slidemodel(ProjectorSlide, model_name=_('Projector Slide'))
 
+
+@receiver(default_config_value, dispatch_uid="config_default_config")
+def default_config(sender, key, **kwargs):
+    return {
+        'projector_message': '',
+    }.get(key)

@@ -61,7 +61,7 @@ body{
     border-bottom: 4px solid red;
 }
 
-#messages ul li {
+#overlays ul li {
     font-size: 4em;
     font-weight: bold;
     padding: 0 1em;
