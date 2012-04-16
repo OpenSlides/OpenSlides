@@ -61,18 +61,26 @@ body{
     border-bottom: 4px solid red;
 }
 
-#overlays ul li {
+#overlays div {
     font-size: 4em;
     font-weight: bold;
     padding: 0 1em;
     position: fixed;
-    right: 40px;
-    top: 0;
+
     background: #DDD9D9;
     border-bottom-left-radius: 0.75em;
     border-bottom-right-radius: 0.75em;
 }
 
+#overlay_Countdown {
+    right: 40px;
+    top: 0;
+}
+
+#overlay_Message {
+    right: 20%;
+    top: 50%;
+}
 
 /*** CONTENT ***/
 #content {

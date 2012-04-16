@@ -31,9 +31,8 @@
         </div>
 
         <div id="overlays">
-            <ul>
             {% for overlay in overlays %}
-                <li id="overlay_{{ overlay.0 }}">{{ overlay.1 }}</li>
+                <div id="overlay_{{ overlay.0 }}">{{ overlay.1 }}</div>
             {% endfor %}
             </ul>
         </div>
