@@ -14,7 +14,8 @@ $(function () {
 
 
 function new_message(text, type) {
-    message = $('#dummy-notification').clone(true);
-    $(message).show().addClass(type).children('em').html(text);
+    var message = $('#dummy-notification').clone(true);
+    $(message).removeAttr('id').addClass(type).children('em').html(text);
     $('#notifications').append(message);
+    message.slideDown('fast');
 }
