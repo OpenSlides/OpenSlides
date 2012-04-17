@@ -416,6 +416,10 @@ input[type="submit"], input[type="button"]  {
 .button .guest{
     background:url(../images/icons/user-identity.png) no-repeat 0px 0px;
 }
+.button .clear{
+    background:url(../images/icons/clear.png) no-repeat 0px 0px;
+    text-indent:12px;
+}
 
 .small-input {
     width: 40px !important;

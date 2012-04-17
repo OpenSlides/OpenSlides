@@ -5,7 +5,7 @@
 {% load staticfiles %}
 
 {% block header %}
-    <link type="text/css" href="{% static 'styles/ui-lightness/jquery-ui-1.8.18.custom.css' %}" rel="stylesheet" />
+    <link type="text/css" href="{% static 'styles/humanity/jquery-ui-1.8.18.custom.css' %}" rel="stylesheet" />
     <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/projector-control.css' %}" />
     <script type="text/javascript" src="{% static 'javascript/jquery-ui-1.8.18.custom.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascript/projector-control.js' %}"></script>
@@ -25,7 +25,7 @@
             $( this ).toggleClass( "ui-icon-minusthick" ).toggleClass( "ui-icon-plusthick" );
             $( this ).parents( ".portlet:first" ).find( ".portlet-content" ).toggle();
         });
-        $( ".column" ).disableSelection();
+        //$( ".column" ).disableSelection();
         $( "document" ).ready(function(){
             if ($.browser.msie) {
                 $( "#iframe" ).css('zoom', '0.25');
@@ -39,11 +39,6 @@
 
 {% block content %}
     <h1>{% trans 'Projector' %}</h1>
-    <form action="" method="post">{% csrf_token %}
-        <input name='message_text' type='text' value="{% get_config 'projector_message' %}">
-        <button type="submit" class="button" name='message'><span class="icon ok">{% trans 'Save' %}</span></button>
-        <button type="submit" class="button" name='message-clean'><span class="icon cancel">{% trans 'Clean' %}</span></button>
-    </form>
     <div style="text-align: right; padding: 0 10px 5px 0; margin-top:-20px;">
         <!-- projector control -->
         {% trans "Adjust projector view" %}:
@@ -113,6 +108,7 @@
                         <li>
                             <input type="checkbox" name="{{ overlay }}" onchange="submit()"
                             {% if overlay.active %} checked="checked"{% endif %}> {{ overlay }}
+                            {# Countdown #}
                             {% if overlay.def_name == "Countdown" %}
                                 |
                                 <a href="{% url config_agenda %}">{{countdown_time}}{% trans "sec" %}</a>
@@ -125,6 +121,21 @@
                                 <a class="projector_countdown" href="{% url countdown_stop %}" title="{% trans 'Stop countdown' %}">
                                     <img src="{% static 'images/icons/media-playback-pause.png' %}" />
                                 </a>
+                            {% endif %}
+                            {# Message #}
+                            {% if overlay.def_name == "Message" %}
+                                <form action="" method="post">{% csrf_token %}
+                                    <input name='message_text' type='text' style='width: 70%'
+                                       value="{% get_config 'projector_message' %}">
+                                    <button type="submit"
+                                        class="button" style="padding:4px 0;" name='message-clean'>
+                                        <span class="icon
+                                            clear">&nbsp;</span>
+                                    </button>
+                                    <button type="submit" class="button" name='message'>
+                                        <span class="icon ok">{% trans 'Apply' %}</span>
+                                    </button>
+                                </form>
                             {% endif %}
                         </li>
                     {% endfor %}
