@@ -376,7 +376,7 @@ class AssignmentPDF(PDFView):
                 row.append(_("Invalid votes"))
                 for p in polls:
                     if p.published:
-                        row.append(p.votesinvalid)
+                        row.append(p.print_votesinvalid())
                 data_votes.append(row)
 
                 # votes cast
@@ -384,7 +384,7 @@ class AssignmentPDF(PDFView):
                 row.append(_("Votes cast"))
                 for p in polls:
                     if p.published:
-                        row.append(p.votescast)
+                        row.append(p.print_votescast())
                 data_votes.append(row)
 
                 table_votes=Table(data_votes)
