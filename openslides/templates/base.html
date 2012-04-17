@@ -50,7 +50,13 @@
 
     <div id="wrapper">
         <div id="content">
-            {% if messages %}
+            <div id="notifications">
+                <div id="dummy-notification" class="notification" style="display:none">
+                    <a class="close" href="#">
+                    <img alt="close" title="{% trans 'Close this notification' %}" src="{% static 'images/icons/cross.png' %}">
+                    </a>
+                    <em></em>
+                </div>
                 {% for message in messages %}
                 <div class="notification {% if message.tags %}{{ message.tags }}{% endif %}">
                     <a class="close" href="#">
@@ -64,7 +70,7 @@
                         $(this).hide("fast");
                     });
                 </script>
-            {% endif %}
+            </div>
             {% block content %}
             {% endblock %}
             <div id="footer">
