@@ -36,8 +36,14 @@ class Vote(models.Model):
     weight = models.IntegerField(default=1)
     value = models.CharField(max_length=255, null=True)
 
-    def __unicode__(self):
+    def get_weight(self):
         return print_value(self.weight)
+
+    def get_value(self):
+        return _(self.value)
+
+    def __unicode__(self):
+        return self.get_weight()
 
 
 class CountVotesCast(models.Model):
@@ -85,29 +91,50 @@ class BasePoll(models.Model, SlideMixin):
     description = models.TextField(null=True, blank=True, verbose_name=_("Description")) #TODO: Use this field or delete it.
 
     option_class = TextOption
-    vote_values = [_('votes')]
+    vote_values = [_('votes', fixstr=True)]
 
     def has_votes(self):
+        """
+        Return True, the there are votes in the poll.
+        """
         if self.get_options().filter(vote__isnull=False):
             return True
         return False
 
     def set_options(self, options_data=[]):
+        """
+        Add new Option pbjects to the poll.
+
+        option_data: A List of arguments for the Option.
+        """
         for option_data in options_data:
-            option = self.option_class(**option_data)
+            option = self.get_option_class()(**option_data)
             option.poll = self
             option.save()
 
     def get_options(self):
+        """
+        Return the option objects for the poll.
+        """
         return self.get_option_class().objects.filter(poll=self)
 
     def get_option_class(self):
+        """
+        Return the option class for the poll. Default is self.option_class.
+        """
         return self.option_class
 
     def get_vote_values(self):
+        """
+        Return the possible values for the poll as list.
+        """
         return self.vote_values
 
     def set_form_values(self, option, data):
+        # TODO: recall this function. It has nothing to do with a form
+        """
+        Create or update the vote objects for the poll.
+        """
         for value in self.get_vote_values():
             try:
                 vote = Vote.objects.filter(option=option).get(value=value)
@@ -117,21 +144,30 @@ class BasePoll(models.Model, SlideMixin):
             vote.save()
 
     def get_form_values(self, option_id):
+        # TODO: recall this function. It has nothing to do with a form
+        """
+        Return a the values and the weight of the values as a list with two elements.
+        """
         values = []
         for value in self.get_vote_values():
             try:
                 vote = Vote.objects.filter(option=option_id).get(value=value)
-                weight = vote.weight
+                values.append(vote)
             except Vote.DoesNotExist:
-                weight = None
-            values.append((value, weight))
+                values.append(value)
         return values
 
     def get_vote_form(self, **kwargs):
+        """
+        Return the form for one option of the poll.
+        """
         from poll.forms import OptionForm
         return OptionForm(extra=self.get_form_values(kwargs['formid']), **kwargs)
 
     def get_vote_forms(self, **kwargs):
+        """
+        Return a list of forms for the poll
+        """
         forms = []
         for option in self.get_options():
             form = self.get_vote_form(formid=option.id, **kwargs)
@@ -140,6 +176,9 @@ class BasePoll(models.Model, SlideMixin):
         return forms
 
     def slide(self):
+        """
+        show a Slide for the Poll.
+        """
         data = super(BasePoll, self).slide()
         # data['template'] = 'projector/TODO.html'
         return data

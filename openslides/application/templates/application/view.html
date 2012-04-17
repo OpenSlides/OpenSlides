@@ -88,9 +88,9 @@
                 <br>
                 {% if poll.has_votes %}
                     {% with poll.get_options.0 as option %}
-                        <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.yes }}<br>
-                        <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.no }}<br>
-                        <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ option.contained }}<br>
+                        <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.Yes }}<br>
+                        <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.No }}<br>
+                        <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ option.Abstain }}<br>
                         <img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}<br>
                         <div style="border-top: 1px solid; padding-top: 5px; margin: 5px 0; width: 10em;">
                             <img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}

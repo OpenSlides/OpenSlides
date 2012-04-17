@@ -504,7 +504,7 @@ register_slidemodel(Application)
 
 class ApplicationOption(BaseOption):
     def __getattr__(self, name):
-        if name in ['yes', 'no', 'contained']:
+        if name in ['Yes', 'No', 'Abstain']:
             try:
                 return self.get_votes().get(value=name)
             except Vote.DoesNotExist:
@@ -514,7 +514,7 @@ class ApplicationOption(BaseOption):
 
 class ApplicationPoll(BasePoll, CountInvalid, CountVotesCast):
     option_class = ApplicationOption
-    vote_values = ['yes', 'no', 'contained'] #todo: Translate the names without changing the db-key
+    vote_values = [_('Yes', fixstr=True), _('No', fixstr=True), _('Abstain', fixstr=True)]
 
     application = models.ForeignKey(Application)
 
