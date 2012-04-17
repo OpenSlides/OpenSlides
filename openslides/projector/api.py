@@ -4,7 +4,10 @@ from django.template.loader import render_to_string
 
 
 def split_sid(sid):
-    data = sid.split('-')
+    try:
+        data = sid.split('-')
+    except AttributeError:
+        return None
     if len(data) == 2:
         model = data[0]
         id = data[1]
@@ -18,7 +21,11 @@ def split_sid(sid):
 
 
 def get_slide_from_sid(sid):
-    key, id = split_sid(sid)
+    try:
+        key, id = split_sid(sid)
+    except TypeError:
+        return None
+
     if id is not None:
         return SLIDE[key].model.objects.get(pk=id).slide()
     try:
