@@ -45,26 +45,9 @@ I. Installation on Windows (32/64bit)
         If you have write access use instead:
         hg clone ssh://hg@openslides.org/openslides
 
-  5. Copy default.settings.py to settings.py
-     (in subdirectory 'openslides')
+  5. Run start.py
 
-  6. Create OpenSlides database (and follow on screen instruction).
-     Go to the extracted OpenSlides root directory and enter:
-
-       python manage.py syncdb
-
-     -> Note: Answer "yes" to create superuser!
-
-  7. Run OpenSlides server:
-
-       python manage.py runserver
-
-     Optional: Add <port> or <address:port> to use server on custom
-     address/port.
-
-  8. Open OpenSlides in your browser:
-
-       http://127.0.0.1:8000/  (or customized server address:port)
+       python start.py
 
 
 
@@ -105,27 +88,9 @@ system.
 
        pip install django django-mptt reportlab pil simplejson mercurial
 
-  5. Copy default.settings.py to settings.py:
+  5. Run start.py
 
-       cp openslides/default.settings.py openslides/settings.py
-
-  6. Create OpenSlides database in the OpenSlides root directory
-     and follow on screen instruction:
-
-       python manage.py syncdb
-
-     -> Note: Answer "yes" to create superuser!
-
-  7. Run OpenSlides server:
-
-       python manage.py runserver
-
-     Optional: Add <port> or <address:port> to use server on custom
-     address/port.
-
-  8. Open OpenSlides in your browser:
-
-       http://127.0.0.1:8000/  (or customized server address:port)
+       python start.py
 
 
 --
