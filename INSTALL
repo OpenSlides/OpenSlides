@@ -49,6 +49,8 @@ I. Installation on Windows (32/64bit)
 
        python start.py
 
+The Username and Password for the first created Useraccount is 'admin'
+
 
 
 II. Installation on GNU/Linux and MacOSX
@@ -91,6 +93,8 @@ system.
   5. Run start.py
 
        python start.py
+
+The Username and Password for the first created Useraccount is 'admin'
 
 
 --
