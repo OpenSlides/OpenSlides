@@ -21,9 +21,16 @@ from models import ProjectorSlide
 
 urlpatterns = patterns('projector.views',
     url(r'^$', 'active_slide',
-        name='projector_show'),
+        {'sid': None},
+        name='projector_show',
+    ),
 
-    url(r'^control$',
+    url(r'^preview/(?P<sid>[^/]*)/$',
+        'active_slide',
+        name='projctor_preview_slide',
+    ),
+
+    url(r'^control/$',
         ControlView.as_view(),
         name='projector_control',
     ),

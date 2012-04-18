@@ -30,7 +30,7 @@ from utils.template import Tab
 
 from config.models import config
 
-from api import get_active_slide, set_active_slide, projector_message_set, projector_message_delete
+from api import get_active_slide, set_active_slide, projector_message_set, projector_message_delete, get_slide_from_sid
 from projector import SLIDE
 from models import ProjectorOverlay
 from openslides.projector.signals import projector_overlays, projector_control_box
@@ -112,22 +112,25 @@ class ActivateView(RedirectView):
 
 
 @permission_required('projector.can_see_projector')
-def active_slide(request):
+def active_slide(request, sid=None):
     """
     Shows the active Slide.
     """
-    try:
-        data = get_active_slide()
-    except AttributeError: #TODO: It has to be an Slide.DoesNotExist
-        data = None
+    if sid is None:
+        try:
+            data = get_active_slide()
+        except AttributeError: #TODO: It has to be an Slide.DoesNotExist
+            data = None
+        data['ajax'] = 'on'
+    else:
+        data = get_slide_from_sid(sid)
+        data['ajax'] = 'off'
 
     if data is None:
         data = {
             'title': config['event_name'],
             'template': 'projector/default.html',
         }
-
-    data['ajax'] = 'on'
     data['overlays'] = []
     data['overlay'] = ''
 

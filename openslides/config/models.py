@@ -88,8 +88,6 @@ def default_config(sender, key, **kwargs):
     }.get(key)
 
 
-
-
 from django.dispatch import receiver
 from django.core.urlresolvers import reverse
 from django.utils.importlib import import_module

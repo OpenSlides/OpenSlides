@@ -14,7 +14,7 @@ def split_sid(sid):
         return (model, id)
     if len(data) == 1:
         try:
-            return (SLIDE[data[0]].func(), None)
+            return (SLIDE[data[0]].key, None)
         except KeyError:
             return None
     return None

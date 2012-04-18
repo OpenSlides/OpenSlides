@@ -7,6 +7,7 @@
         <a href="{% url projector_activate_slide slide.sid %}" class="activate_link {% if slide.active %}active{% endif %}">
             <div></div>
         </a>
+        <a href="{% url projctor_preview_slide slide.sid %}">preview</a>
         <a href="{{ slide.get_absolute_url }}">{{ slide }}</a>
     </li>
 {% endfor %}
