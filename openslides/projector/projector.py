@@ -68,6 +68,11 @@ class Slide(object):
         self.weight = weight
         self.name = name
 
+    @property
+    def active(self):
+        from api import get_active_slide
+        return get_active_slide(True) == self.key
+
     def get_items(self):
         try:
             return self.model.objects.all()

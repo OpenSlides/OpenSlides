@@ -2,7 +2,7 @@
 {% load i18n %}
 
 <ul style="line-height: 180%">
-    <li>
+    <li class="{% if slides.active %}activeline{% endif %}">
         <a href="{% url projector_activate_slide slides.key %}" class="activate_link {% if slides.active %}active{% endif %}">
             <div></div>
         </a>

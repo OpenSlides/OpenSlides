@@ -2,7 +2,7 @@ $(function() {
     // activate an element to show it on projector
     $('.activate_link').click(function(event) {
         event.preventDefault();
-        link = $(this);
+        var link = $(this);
         $.ajax({
             type: 'GET',
             url: $(this).attr('href'),
@@ -12,6 +12,7 @@ $(function() {
                 $('.activate_link').removeClass('active');
                 $('li').removeClass('activeline');
                 link.addClass('active');
+                link.parent().addClass('activeline');
             },
             error: function () {
                 alert("Ajax Error");
