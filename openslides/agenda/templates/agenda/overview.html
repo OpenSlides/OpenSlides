@@ -40,6 +40,12 @@
 
 {% block content %}
     <h1>{% trans "Agenda" %}</h1>
+
+    <p>
+    {%trans "Filter" %}:
+    <input type="checkbox" id="hide_closed_items"> {%trans "Hide closed items" %}
+    </p>
+    {{ items|length }} {% trans "items" %}<span id="hiddencount"></span>
     {% if items %}
         <form action="/agenda/" method="post">{% csrf_token %}
             {% if perms.agenda.can_manage_agenda %}
@@ -50,7 +56,6 @@
                 </em>
             </div>
             {% endif %}
-
             <table id="menu-overview" class="agendatable">
                 <tr>
                     <th style="width: 1px;">{% trans "Done" %}</th>
@@ -63,13 +68,9 @@
                 <tr class="topline {% if overview %}activeline{% endif %}">
                     <td></td>
                     <td>
-                        <b>{% trans "Agenda" %} ({{ items|length }} {% trans "items" %}<span id="hiddencount"></span>)</b>
+                        <b>{% trans "Agenda" %}</b>
                     </td>
-                    <td>
-                        <span id="action_field" style="width: 1px; white-space: nowrap;">
-                            <span></span>
-                        </span>
-                    </td>
+                    <td></td>
                 </tr>
 
                 {% for item in items %}

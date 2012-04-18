@@ -65,19 +65,25 @@ $(function() {
             }
         });
     });
-    // hide closed items
-    $('#action_field span').after($('<a id="hidelink" class="hidelink hide" title="hide" href="#"><span></span></a>').click(function () {
+    // filter to show/hide closed items
+    $('#hide_closed_items').click(function(event) {
+        // show all items
         if ($.cookie('Slide.HideClosed') == 1) {
             $.cookie('Slide.HideClosed', 0);
             hideClosedSlides(false);
-        } else {
+            $('#hide_closed_items').attr('checked', false);
+        } 
+        else { // hide closed items
             $.cookie('Slide.HideClosed', 1);
             hideClosedSlides(true);
+            $('#hide_closed_items').attr('checked', true);
         }
-    }));
+    });
     if ($.cookie('Slide.HideClosed') === null) {
+        $('#hide_closed_items').attr('checked', false);
         $.cookie('Slide.HideClosed', 0);
     } else if ($.cookie('Slide.HideClosed') == 1) {
         hideClosedSlides(true);
+        $('#hide_closed_items').attr('checked', true);
     }
 });
