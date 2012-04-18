@@ -143,7 +143,7 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
         CountInvalid.append_pollform_fields(self, fields)
         CountVotesCast.append_pollform_fields(self, fields)
 
-    def ballot(self):
+    def get_ballot(self):
         return self.assignment.assignmentpoll_set.filter(id__lte=self.id).count()
 
     @models.permalink
