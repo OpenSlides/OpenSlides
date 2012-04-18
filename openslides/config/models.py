@@ -18,6 +18,7 @@ from django.dispatch import receiver
 from utils.translation_ext import ugettext as _
 
 from openslides.config.signals import default_config_value
+import settings
 
 
 class ConfigStore(models.Model):
@@ -58,6 +59,8 @@ class Config(object):
         for receiver, value in default_config_value.send(sender='config', key=key):
             if value is not None:
                 return value
+        if settings.DEBUG:
+            print "No default value for: %s" % key
         return None
 
     def __setitem__(self, key, value):
@@ -81,10 +84,12 @@ def default_config(sender, key, **kwargs):
     return {
         'event_name': _('OpenSlides'),
         'event_description': _('Presentation and voting system'),
+        'presentation': '',
         'frontpage_title': _('Welcome'),
         'frontpage_welcometext': _('Welcome to OpenSlides!'),
         'show_help_text': True,
         'help_text': _('If you need any help wieth OpenSlides, you can find commercial support on our <a href="http://openslides.org/en/support">Webpage</a>.'),
+        'system_enable_anonymous': False,
     }.get(key)
 
 

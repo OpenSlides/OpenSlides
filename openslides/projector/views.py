@@ -51,7 +51,8 @@ class ControlView(TemplateView):
                 try:
                     projector_overlay = ProjectorOverlay.objects.get(def_name=name)
                 except ProjectorOverlay.DoesNotExist:
-                    projector_overlay = ProjectorOverlay(def_name=name, active=False)
+                    active = name == 'Message'
+                    projector_overlay = ProjectorOverlay(def_name=name, active=active)
                     projector_overlay.save()
                 overlays.append(projector_overlay)
         return overlays
@@ -92,7 +93,6 @@ class ControlView(TemplateView):
 
         context.update({
             'categories': categories,
-            'countdown_visible': config['countdown_visible'],
             'countdown_time': config['agenda_countdown_time'],
             'overlays': self.get_projector_overlays(),
         })
@@ -121,10 +121,10 @@ def active_slide(request, sid=None):
             data = get_active_slide()
         except AttributeError: #TODO: It has to be an Slide.DoesNotExist
             data = None
-        data['ajax'] = 'on'
+        ajax = 'on'
     else:
         data = get_slide_from_sid(sid)
-        data['ajax'] = 'off'
+        ajax = 'off'
 
     if data is None:
         data = {
@@ -133,6 +133,7 @@ def active_slide(request, sid=None):
         }
     data['overlays'] = []
     data['overlay'] = ''
+    data['ajax'] = ajax
 
     # Projector Overlays
     sid = get_active_slide(True)
