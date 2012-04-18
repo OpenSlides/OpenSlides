@@ -572,10 +572,17 @@ ul.results {
     color: #585B66;
 }
 
-.pdficon span {
-    background-image: url("../images/icons/application-pdf.png");
+/* Icons */
+.icon span {
     background-repeat: no-repeat;
     background-position: center;
     width: 16px;
     height: 16px;
     display: inline-block;
+}
+.right {
+    float: right
+}
+.preview {
+    background:url("../images/icons/preview.png") no-repeat 0px 0px;
+}
