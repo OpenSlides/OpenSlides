@@ -8,7 +8,6 @@
 
 {% block submenu %}
     {% url projector_control as url_projectoroverview %}
-    {% url projector_new as url_projectornew %}
     <h4 class="sectiontitle">{%trans "Projector" %}</h4>
     <ul>
         {% if perms.projector.can_manage_projector %}
@@ -17,9 +16,6 @@
         </li>
         {% endif %}
         {% if perms.projector.can_see_projector %}
-        <li class="{% if request.path == url_projectornew %}selected{% endif %}">
-            <a href="{% url projector_new %}">{% trans 'New Slide' %}</a>
-        </li>
         <li>
             <a href="{% url projector_show %}"><img src="{% static 'images/icons/video-projector.png' %}"> {% trans 'Projector view' %}</a>
         </li>
