@@ -122,7 +122,6 @@
                                     <img src="{% static 'images/icons/media-playback-pause.png' %}" />
                                 </a>
                             {% endif %}
-                            {# Message #}
                             {% if overlay.def_name == "Message" %}
                                 <form action="" method="post">{% csrf_token %}
                                     <input name='message_text' type='text' style='width: 70%'

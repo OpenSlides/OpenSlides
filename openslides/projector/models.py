@@ -48,7 +48,7 @@ class ProjectorOverlay(models.Model):
 register_slidemodel(ProjectorSlide, model_name=_('Projector Slide'))
 
 
-@receiver(default_config_value, dispatch_uid="config_default_config")
+@receiver(default_config_value, dispatch_uid="projector_default_config")
 def default_config(sender, key, **kwargs):
     return {
         'projector_message': '',
