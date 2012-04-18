@@ -230,6 +230,9 @@ class PDFView(PermissionMixin, View):
     def get_document_title(self):
         return self.document_title
 
+    def get_get_filename(self):
+        return self.filename
+
     def render_to_response(self, filename):
         response = HttpResponse(mimetype='application/pdf')
         filename = u'filename=%s.pdf;' % self.get_filename()

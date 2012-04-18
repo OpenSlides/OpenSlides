@@ -15,6 +15,12 @@ import csv
 import utils.csv_ext
 import os
 
+from urllib import urlencode
+try:
+    from urlparse import parse_qs
+except ImportError: # python <= 2.5
+    from cgi import parse_qs
+
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -62,28 +68,51 @@ def overview(request):
     """
     View all applications
     """
-    query = Application.objects
-    if 'number' in request.GET:
-        query = query.filter(number=None)
-    if 'status' in request.GET:
-        if 'statusvalue' in request.GET and 'on' in request.GET['status']:
-            query = query.filter(status__iexact=request.GET['statusvalue'])
     try:
-        sort = request.GET['sort']
-        if sort in ['number', 'supporter', 'status', 'submitter', \
-                    'aversion__time', 'aversion__title']:
-            query = query.order_by(sort)
+        sortfilter = parse_qs(request.COOKIES['votecollector_sortfilter'])
+        for value in sortfilter:
+            sortfilter[value] = sortfilter[value][0]
     except KeyError:
-        query = query.order_by("number")
-    if 'reverse' in request.GET:
+        sortfilter = {}
+
+    for value in [u'sort', u'reverse', u'number', u'status', u'needsup', u'statusvalue']:
+        if value in request.REQUEST:
+            if request.REQUEST[value] == '0':
+                try:
+                    del sortfilter[value]
+                except KeyError:
+                    pass
+            else:
+                sortfilter[value] = request.REQUEST[value]
+
+    query = Application.objects.all()
+    if 'number' in sortfilter:
+        query = query.filter(number=None)
+    if 'status' in sortfilter:
+        if 'statusvalue' in sortfilter and 'on' in sortfilter['status']:
+            query = query.filter(status__iexact=sortfilter['statusvalue'])
+
+    if 'sort' in sortfilter:
+        if sortfilter['sort'] == 'title':
+            sort = 'aversion__title'
+        elif sortfilter['sort'] == 'time':
+            sort = 'aversion__time'
+        else:
+            sort = sortfilter['sort']
+        query = query.order_by(sort)
+
+    if 'reverse' in sortfilter:
         query = query.reverse()
-    if 'needsup' in request.GET:
+
+    # todo: rewrite this with a .filter()
+    if 'needsup' in sortfilter:
         applications = []
         for application in query.all():
             if not application.enough_supporters:
                 applications.append(application)
     else:
-        applications = query.all()
+        applications = query
+
     return {
         'applications': applications,
         'min_supporters': int(config['application_min_supporters']),
