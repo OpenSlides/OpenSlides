@@ -6,23 +6,31 @@
 
 {% block title %}{{ block.super }} - {% trans "Application" %} "{{ version.title }}"{% endblock %}
 
-{% if perms.application.can_manage_application %}
+
 {% block submenu %}
     {{ block.super }}
     <br>
-    <h3>{%trans "Application No." %} {{ application.number }}</h3>
+    <h3>{% trans "Application No." %}
+    {% if application.number != None %}
+        {{ application.number }}
+    {% else %}
+        <i>[-]</i>
+    {% endif %}
+    </h3>
     <ul>
-    <li><a href="{% url application_view application.id  %}">{%trans 'Application' %} {{ application.number }}</a></li>
+    <li><a href="{% url application_view application.id  %}">{%trans 'View Application' %}</a></li>
     {% if "edit" in actions %}
     <li><a href="{% url application_edit application.id  %}">{%trans 'Edit Application' %}</a></li>
     {% endif %}
     {% if "delete" in actions %}
     <li><a href="{% url application_delete application.id  %}">{%trans 'Delete Application' %}</a></li>
     {% endif %}
+    {% if perms.projector.can_manage_projector %}
+    <li><a href="{% url application_activate_item application.id  %}"><img src="{% static 'images/icons/video-projector.png' %}"> {%trans 'Show Application' %}</a></li>
+    {% endif %}
     <li><a href="{% url print_application application.id  %}"><img src="{% static 'images/icons/application-pdf.png' %}"> {%trans 'Application as PDF' %}</a></li>
     </ul>
 {% endblock %}
-{% endif %}
 
 {% block content %}
 <div id="sidebar">
@@ -170,10 +178,6 @@
     {% endif %}
 
     <h4></h4>
-    <a href='{% url application_activate_item application.id %}'>
-        <span class="button"><span class="icon projector">{%trans 'Beam Application' %}</span></span>
-    </a>
-
     {% if "acc" in actions or "rej" in actions %}
         <h4>{% trans "Result after vote" %}:</h4>
         {% if "acc" in actions %}
@@ -220,7 +224,7 @@
     {% if application.number != None %}
         {% trans "Application No." %} {{ application.number }}
     {% else %}
-        {% trans "Application" %} <i>[no number]</i>
+        {% trans "Application" %} <i>[{% trans "no number" %}]</i>
     {% endif %}
     </h1>
     {% trans "Version" %} {{ version.aid }}
