@@ -7,7 +7,10 @@
         <a href="{% url projector_activate_slide slide.sid %}" class="activate_link {% if slide.active %}active{% endif %}">
             <div></div>
         </a>
-        <a href="{{ slide.get_absolute_url }}">{{ slide }}</a>
+        {% for p in slide.get_ancestors %}
+            <span class="indentation">&nbsp;</span>
+        {% endfor %}
+        <a href="{% url item_edit slide.id %}">{{ slide }}</a>
     </li>
 {% endfor %}
 </ul>
