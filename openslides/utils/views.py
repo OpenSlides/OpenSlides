@@ -232,7 +232,7 @@ class PDFView(PermissionMixin, View):
 
     def render_to_response(self, filename):
         response = HttpResponse(mimetype='application/pdf')
-        filename = u'filename=%s.pdf;' % filename
+        filename = u'filename=%s.pdf;' % self.get_filename()
         response['Content-Disposition'] = filename.encode('utf-8')
 
         buffer = StringIO()

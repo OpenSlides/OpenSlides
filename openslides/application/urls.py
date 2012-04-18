@@ -109,6 +109,7 @@ urlpatterns = patterns('application.views',
 
     url(r'^print/$',
         ApplicationPDF.as_view(),
+        {'application_id': None},
         name='print_applications',
     ),
 

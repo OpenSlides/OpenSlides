@@ -593,15 +593,23 @@ def application_import(request):
 
 class ApplicationPDF(PDFView):
     permission_required = 'application.can_manage_application'
-    filename = u'filename=%s.pdf;' % _("Applications")
     top_space = 0
 
-    def append_to_pdf(self, story):
-        try:
-            application_id = self.kwargs['application_id']
-        except KeyError:
-            application_id = None
+    def get_filename(self):
+        application_id = self.kwargs['application_id']
+        if application_id is None:
+            filename = _("Applications")
+        else:
+            application = Application.objects.get(id=application_id)
+            if application.number:
+                number = application.number
+            else:
+                number = ""
+            filename = u'%s%s' % (_("Application"), str(number))
+        return filename
 
+    def append_to_pdf(self, story):
+        application_id = self.kwargs['application_id']
         if application_id is None:  #print all applications
             title = config["application_pdf_title"]
             story.append(Paragraph(title, stylesheet['Heading1']))
@@ -621,11 +629,6 @@ class ApplicationPDF(PDFView):
                 story = self.get_application(application, story)
         else:  # print selected application
             application = Application.objects.get(id=application_id)
-            if application.number:
-                number = application.number
-            else:
-                number = ""
-            filename = u'filename=%s%s.pdf;' % (_("Application"), str(number))
             story = self.get_application(application, story)
 
     def get_application(self, application, story):
