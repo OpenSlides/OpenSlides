@@ -1,4 +1,5 @@
-a.close_link.closed span {
+/* agenda item open/closed */
+a.close_link span {
     background-image: url(../images/icons/task-complete-grey.png);
     background-repeat: no-repeat;
     background-position: center;
@@ -6,32 +7,11 @@ a.close_link.closed span {
     height: 16px;
     display: inline-block;
 }
-a.close_link.open span {
+a.close_link.closed span {
     background-image: url(../images/icons/task-complete.png);
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 16px;
-    height: 16px;
-    display: inline-block;
 }
 
-a.hidelink.hide span {
-    background-image: url(../images/icons/layer-visible-off.png);
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 16px;
-    height: 16px;
-    display: inline-block;
-}
-a.hidelink.show span {
-    background-image: url(../images/icons/layer-visible-on.png);
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 16px;
-    height: 16px;
-    display: inline-block;
-}
-/* activate link */
+/* agenda item inactive/active */
 a.activate_link span {
     background-image: url(../images/icons/task-accepted-grey.png);
     background-repeat: no-repeat;
@@ -43,4 +23,3 @@ a.activate_link span {
 a.activate_link.active span {
     background-image: url(../images/icons/task-accepted.png);
 }
-
