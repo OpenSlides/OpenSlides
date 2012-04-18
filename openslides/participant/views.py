@@ -44,6 +44,7 @@ from utils.pdf import print_userlist, print_passwords
 from utils.template import Tab
 from utils.views import FormView
 from config.models import config
+from utils.utils import delete_default_permissions
 
 from django.db.models import Avg, Max, Min, Count
 
@@ -228,6 +229,7 @@ def group_edit(request, group_id=None):
             raise NameError("There is no group %d" % group_id)
     else:
         group = None
+    delete_default_permissions()
 
     if request.method == 'POST':
         form = GroupForm(request.POST, instance=group)

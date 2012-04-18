@@ -124,7 +124,3 @@ def encodedict(dict):
     for key in dict:
         newdict[key] = [unicode(dict[key][0].decode('utf-8'))]
     return newdict
-
-
-signals.post_syncdb.connect(delete_default_permissions,
-    dispatch_uid = "openslides.utils.utils.delete_default_permissions")
