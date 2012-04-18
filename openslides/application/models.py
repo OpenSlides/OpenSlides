@@ -338,7 +338,6 @@ class Application(models.Model, SlideMixin):
               and user != self.submitter
               and user not in self.supporter.all()
               and getattr(user, 'profile', None)):
-                print "es ist ok"
                 actions.append("support")
         except Profile.DoesNotExist:
             pass
@@ -533,7 +532,6 @@ class ApplicationPoll(BasePoll, CountInvalid, CountVotesCast):
         return reverse('application_poll_view', args=[self.id])
 
     def get_ballot(self):
-        print "Ballot"
         return self.application.applicationpoll_set.filter(id__lte=self.id).count()
 
 
