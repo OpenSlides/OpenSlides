@@ -533,6 +533,7 @@ class ApplicationPoll(BasePoll, CountInvalid, CountVotesCast):
         return reverse('application_poll_view', args=[self.id])
 
     def get_ballot(self):
+        print "Ballot"
         return self.application.applicationpoll_set.filter(id__lte=self.id).count()
 
 
@@ -546,5 +547,6 @@ def default_config(sender, key, **kwargs):
         'application_min_supporters': 0,
         'application_preamble': 'Die Versammlung möge beschließen,',
         'application_pdf_ballot_papers_selection': '1',
+        'application_pdf_ballot_papers_number': '0',
         'application_pdf_title': _('Applications'),
     }.get(key)

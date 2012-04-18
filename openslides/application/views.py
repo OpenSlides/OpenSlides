@@ -385,52 +385,8 @@ def delete_poll(request, poll_id):
     return redirect(reverse('application_view', args=[application.id]))
 
 
-@permission_required('application.can_manage_application')
-@template('application/poll_view.html')
-def view_poll(request, poll_id):
-    """
-    view a poll for this application.
-    """
-    poll = ApplicationPoll.objects.get(pk=poll_id)
-    ballot = poll.ballot
-    options = poll.get_options()
-    if request.user.has_perm('application.can_manage_application'):
-        if request.method == 'POST':
-            form = PollForm(request.POST, prefix="poll")
-            if form.is_valid():
-                poll.votesinvalid = form.cleaned_data['invalid'] or 0
-                poll.votescast = form.cleaned_data['votescast'] or 0
-                poll.save()
-
-            for option in options:
-                option.form = OptionResultForm(request.POST,
-                                               prefix="o%d" % option.id)
-                if option.form.is_valid():
-                    option.voteyes = option.form.cleaned_data['yes']
-                    option.voteno = option.form.cleaned_data['no'] or 0
-                    option.voteundesided = option.form. \
-                                           cleaned_data['undesided'] or 0
-                    option.save()
-                    messages.success(request, _("Votes are successfully saved.") )
-            if not 'apply' in request.POST:
-                return redirect(reverse('application_view', args=[poll.application.id]))
-        else:
-            form = PollForm(initial={'invalid': poll.votesinvalid, 'votescast': poll.votescast}, prefix="poll")
-            for option in options:
-                option.form = OptionResultForm(initial={
-                    'yes': option.voteyes,
-                    'no': option.voteno,
-                    'undesided': option.voteundesided,
-                }, prefix="o%d" % option.id)
-    return {
-        'poll': poll,
-        'form': form,
-        'options': options,
-        'ballot': ballot,
-    }
-
-
 class ViewPoll(PollFormView):
+    permission_required = 'application.can_manage_application'
     poll_class = ApplicationPoll
     template_name = 'application/poll_view.html'
 
@@ -438,6 +394,7 @@ class ViewPoll(PollFormView):
         context = super(ViewPoll, self).get_context_data(**kwargs)
         self.application = self.poll.get_application()
         context['application'] = self.application
+        context['ballot'] = self.poll.get_ballot()
         return context
 
     def get_success_url(self):
@@ -727,7 +684,7 @@ class ApplicationPollPDF(PDFView):
         return super(ApplicationPollPDF, self).get(request, *args, **kwargs)
 
     def get_filename(self):
-        filename = u'filename=%s%s_%s.pdf;' % (_("Application"), str(self.poll.application.number), _("Poll"))
+        filename = u'%s%s_%s' % (_("Application"), str(self.poll.application.number), _("Poll"))
         return filename
 
     def append_to_pdf(self, story):
@@ -737,7 +694,7 @@ class ApplicationPollPDF(PDFView):
         cell.append(Spacer(0,0.8*cm))
         cell.append(Paragraph(_("Application No.")+" "+str(self.poll.application.number), stylesheet['Ballot_title']))
         cell.append(Paragraph(self.poll.application.title, stylesheet['Ballot_subtitle']))
-        #cell.append(Paragraph(str(self.poll.ballot)+". "+_("Vote"), stylesheet['Ballot_description']))
+        cell.append(Paragraph(str(self.poll.get_ballot())+". "+_("Vote"), stylesheet['Ballot_description']))
         cell.append(Spacer(0,0.5*cm))
         cell.append(Paragraph(circle+_("Yes"), stylesheet['Ballot_option']))
         cell.append(Paragraph(circle+_("No"), stylesheet['Ballot_option']))
@@ -755,16 +712,17 @@ class ApplicationPollPDF(PDFView):
         if ballot_papers_selection == "0":
             number = int(ballot_papers_number)
         # print ballot papers
-        for user in xrange(number/2):
-            data.append([cell,cell])
-        rest = number % 2
-        if rest:
-            data.append([cell,''])
-        t=Table(data, 10.5*cm, 7.42*cm)
-        t.setStyle(TableStyle([ ('GRID', (0,0), (-1,-1), 0.25, colors.grey),
+        if number > 0:
+            for user in xrange(number/2):
+                data.append([cell,cell])
+            rest = number % 2
+            if rest:
+                data.append([cell,''])
+            t=Table(data, 10.5*cm, 7.42*cm)
+            t.setStyle(TableStyle([ ('GRID', (0,0), (-1,-1), 0.25, colors.grey),
                                 ('VALIGN', (0,0), (-1,-1), 'TOP'),
                               ]))
-        story.append(t)
+            story.append(t)
 
 
 class Config(FormView):
