@@ -93,7 +93,7 @@ def prepare_openslides(always_syncdb = False):
     try:
         # settings is a lazy object, force the settings module
         # to be imported
-        dir(django.conf.settings)
+        getattr(django.conf.settings, "DATABASES", None)
     except ImportError:
         pass
     else:
