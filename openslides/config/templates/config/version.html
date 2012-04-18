@@ -7,5 +7,7 @@
 {% block content %}
     <h1>{% trans "Version" %}</h1>
 
-    <p>{% trans "OpenSlides Version" %}: {{ version }}</p>
+    {% for version in versions %}
+        <p>{{ version.0 }} {% trans "Version" %}: {{ version.1 }}</p>
+    {% endfor %}
 {% endblock %}

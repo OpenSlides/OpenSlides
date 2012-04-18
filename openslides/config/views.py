@@ -16,6 +16,8 @@ from django.contrib import messages
 from django.contrib.auth.models import Group, Permission
 from django.utils.translation import ugettext as _
 from django.template.loader import render_to_string
+from django.utils.importlib import import_module
+import settings
 
 from openslides import get_version
 
@@ -24,7 +26,6 @@ from utils.views import FormView, TemplateView
 from utils.template import Tab
 
 from forms import GeneralConfigForm
-
 
 from models import config
 
@@ -85,7 +86,20 @@ class VersionConfig(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(VersionConfig, self).get_context_data(**kwargs)
-        context['version'] = get_version()
+        context['versions'] = [('OpenSlides', get_version())]
+        for plugin in settings.INSTALLED_PLUGINS:
+            try:
+                mod = import_module(plugin)
+                plugin_version = get_version(mod.VERSION)
+            except (ImportError, AttributeError, AssertionError):
+                continue
+            try:
+                plugin_name = mod.NAME
+            except AttributeError:
+                plugin_name = mod.__name__.split('.')[0]
+
+            context['versions'].append((plugin_name, plugin_version))
+
         return context
 
 
