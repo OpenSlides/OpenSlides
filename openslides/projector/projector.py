@@ -86,8 +86,9 @@ def countdown(sender, **kwargs):
     if kwargs['register']:
         return name
     if name in kwargs['call']:
-        starttime = config['countdown_start']
-        seconds = max(0, int(starttime + config['agenda_countdown_time'] - time()))
+        if config['countdown_start'] is False:
+             config['countdown_start'] = time()
+        seconds = max(0, int(config['countdown_start'] + config['countdown_time'] - time()))
         return (name, seconds)
     return None
 

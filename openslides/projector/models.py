@@ -1,3 +1,4 @@
+
 from django.db import models
 from django.dispatch import receiver
 
@@ -52,4 +53,8 @@ register_slidemodel(ProjectorSlide, model_name=_('Projector Slide'))
 def default_config(sender, key, **kwargs):
     return {
         'projector_message': '',
+        'countdown_time': 60,
+        'countdown_start': False,
+        'bigger': 100,
+        'up': 0,
     }.get(key)

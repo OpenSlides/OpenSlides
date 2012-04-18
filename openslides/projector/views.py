@@ -153,9 +153,6 @@ def active_slide(request, sid=None):
             'time': datetime.now().strftime('%H:%M'),
             'bigger': config['bigger'],
             'up': config['up'],
-            'countdown_visible': config['countdown_visible'],
-            'countdown_time': config['agenda_countdown_time'],
-            'countdown_control': config['countdown_control'],
             'overlay': data['overlay']
         }
         return ajax_request(jsondata)
@@ -189,11 +186,7 @@ def projector_edit(request, direction):
 @permission_required('projector.can_manage_projector')
 def projector_countdown(request, command):
     #todo: why is there the time argument?
-    if command == 'show':
-        config['countdown_visible'] = True
-    elif command == 'hide':
-        config['countdown_visible'] = False
-    elif command == 'reset':
+    if command == 'reset':
         config['countdown_start'] = time()
     elif command == 'start':
         config['countdown_run'] = True
