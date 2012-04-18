@@ -11,6 +11,7 @@
 """
 from reportlab.platypus import Paragraph
 
+from django.db.models import Model
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.utils.translation import ugettext as _
@@ -50,12 +51,14 @@ class Overview(TemplateView):
             form = ItemOrderForm(request.POST, prefix="i%d" % item.id)
             if form.is_valid():
                 try:
-                    item.parent = Item.objects.get(
-                                       id=form.cleaned_data['parent'])
+                    parent = Item.objects.get(id=form.cleaned_data['parent'])
                 except Item.DoesNotExist:
-                    item.parent = None
+                    parent = None
                 item.weight = form.cleaned_data['weight']
-                item.save()
+                item.parent = parent
+                Model.save(item)
+
+        Item.objects.rebuild()
         return self.render_to_response(context)
 
 

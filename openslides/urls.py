@@ -11,12 +11,14 @@
 """
 
 from django.conf.urls.defaults import patterns, url, include
+
+#todo: use this in evry file
 from django.conf import settings
+
 from django.utils.importlib import import_module
 import settings
 
 from utils.views import FrontPage
-
 
 handler500 = 'openslides.utils.views.server_error'
 
