@@ -29,7 +29,6 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
 from django.db import transaction
-from django.views.generic.base import RedirectView
 
 from reportlab.lib import colors
 from reportlab.lib.units import cm
@@ -38,7 +37,7 @@ from reportlab.platypus import PageBreak, Paragraph, Spacer, Table, TableStyle
 from config.models import config
 from settings import SITE_ROOT
 from utils.pdf import stylesheet
-from utils.views import PDFView
+from utils.views import PDFView, RedirectView
 
 from agenda.models import Item
 
@@ -378,13 +377,6 @@ def unsupport(request, application_id):
 
 
 @permission_required('application.can_manage_application')
-def set_active(request, application_id):
-    application = Application.objects.get(pk=application_id)
-    application.set_active()
-    return redirect(reverse('application_view', args=[application_id]))
-
-
-@permission_required('application.can_manage_application')
 @template('application/view.html')
 def gen_poll(request, application_id):
     """
@@ -575,6 +567,18 @@ def application_import(request):
     return {
         'form': form,
     }
+
+
+class CreateAgendaItem(RedirectView):
+    permission_required = 'agenda.can_manage_agenda'
+
+    def pre_redirect(self, request, *args, **kwargs):
+        self.application = Application.objects.get(pk=kwargs['application_id'])
+        self.item = Item(releated_sid=self.application.sid)
+        self.item.save()
+
+    def get_redirect_url(self, **kwargs):
+        return reverse('item_view', args=[self.item.id])
 
 
 class ApplicationPDF(PDFView):

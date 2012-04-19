@@ -25,7 +25,7 @@ class ItemForm(ModelForm, CssClassMixin):
     parent = TreeNodeChoiceField(queryset=Item.objects.all(), label=_("Parent item"), required=False)
     class Meta:
         model = Item
-        exclude = ('closed', 'weight')
+        exclude = ('closed', 'weight', 'releated_sid')
 
 
 def genweightchoices():

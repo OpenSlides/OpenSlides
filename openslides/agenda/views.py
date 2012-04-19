@@ -162,9 +162,9 @@ class AgendaPDF(PDFView):
             ancestors = item.get_ancestors()
             if ancestors:
                 space = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" * ancestors.count()
-                story.append(Paragraph("%s%s" % (space, item.title), stylesheet['Subitem']))
+                story.append(Paragraph("%s%s" % (space, item.get_title()), stylesheet['Subitem']))
             else:
-                story.append(Paragraph(item.title, stylesheet['Item']))
+                story.append(Paragraph(item.get_title(), stylesheet['Item']))
 
 
 class Config(FormView):

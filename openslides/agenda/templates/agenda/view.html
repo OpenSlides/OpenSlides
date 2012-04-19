@@ -5,8 +5,8 @@
 {% block title %}{{ block.super }} – {{ item.title }}{% endblock %}
 
 {% block content %}
-    <h1>{{ item.title }}</h1>
-    <p>{{ item.text|safe|linebreaks }}</p>
+    <h1>{{ item }}</h1>
+    <p>{{ item.get_text|safe|linebreaks }}</p>
 
     {% if perms.agenda.can_manage_agenda and item.comment %}
     <h2>{% trans "Comment" %}</h2>

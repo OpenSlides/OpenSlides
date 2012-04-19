@@ -2,13 +2,13 @@
 
 {% load i18n %}
 
-{% block title %}{{ block.super }} - {{ item.title }}{% endblock %}
+{% block title %}{{ block.super }} - {{ item }}{% endblock %}
 
 {% block content %}
-    {% if item.text %}
-        <h1>{{ item.title }}</h1>
-        {{ item.text|safe|linebreaks }}
+    {% if item.get_text %}
+        <h1>{{ item }}</h1>
+        {{ item.get_text|safe|linebreaks }}
     {% else %}
-        <div class="item_fullscreen">{{ item.title }}</div>
+        <div class="item_fullscreen">{{ item }}</div>
     {% endif %}
 {% endblock %}

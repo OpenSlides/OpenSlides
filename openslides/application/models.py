@@ -399,6 +399,12 @@ class Application(models.Model, SlideMixin):
         self.log += "\n"
         self.save()
 
+    def get_agenda_title(self):
+        return self.title
+
+    def get_agenda_text(self):
+        return 'TODO'
+
     def __getattr__(self, name):
         """
         if name is title, text, reason or time,

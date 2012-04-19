@@ -22,7 +22,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 from config.models import config
 
 from projector.projector import SlideMixin
-from projector.api import register_slidemodel
+from projector.api import register_slidemodel, get_slide_from_sid
 
 from utils.translation_ext import ugettext as _
 
@@ -35,12 +35,26 @@ class Item(MPTTModel, SlideMixin):
     """
     prefix = 'item'
 
-    title = models.CharField(max_length=100, verbose_name=_("Title"))
+    title = models.CharField(null=True, max_length=100, verbose_name=_("Title"))
     text = models.TextField(null=True, blank=True, verbose_name=_("Text"))
     comment = models.TextField(null=True, blank=True, verbose_name=_("Comment"))
     closed = models.BooleanField(default=False, verbose_name=_("Closed"))
     weight = models.IntegerField(default=0, verbose_name=_("Weight"))
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+    releated_sid = models.CharField(null=True, blank=True, max_length=64)
+
+    def get_releated_slide(self):
+        return get_slide_from_sid(self.releated_sid, True)
+
+    def get_title(self):
+        if self.releated_sid is None:
+            return self.title
+        return self.get_releated_slide().get_agenda_title()
+
+    def get_text(self):
+        if self.releated_sid is None:
+            return self.text
+        return self.get_releated_slide().get_agenda_text()
 
 
     def slide(self):
@@ -49,7 +63,7 @@ class Item(MPTTModel, SlideMixin):
         """
         data = {
             'item': self,
-            'title': self.title,
+            'title': self.get_title(),
             'template': 'projector/AgendaText.html',
         }
         return data
@@ -105,7 +119,7 @@ class Item(MPTTModel, SlideMixin):
             return ('item_delete', [str(self.id)])
 
     def __unicode__(self):
-        return self.title
+        return self.get_title()
 
     class Meta:
         permissions = (
@@ -114,7 +128,7 @@ class Item(MPTTModel, SlideMixin):
         )
 
     class MPTTMeta:
-        order_insertion_by = ['weight', 'title']
+        order_insertion_by = ['weight']
 
 
 register_slidemodel(Item, control_template='agenda/control_item.html')

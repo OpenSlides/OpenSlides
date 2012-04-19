@@ -20,14 +20,17 @@ def split_sid(sid):
     return None
 
 
-def get_slide_from_sid(sid):
+def get_slide_from_sid(sid, element=False):
     try:
         key, id = split_sid(sid)
     except TypeError:
         return None
 
     if id is not None:
-        return SLIDE[key].model.objects.get(pk=id).slide()
+        object = SLIDE[key].model.objects.get(pk=id)
+        if element:
+            return object
+        return object.slide()
     try:
         return SLIDE[key].func()
     except KeyError:

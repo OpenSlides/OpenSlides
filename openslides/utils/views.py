@@ -127,7 +127,7 @@ class RedirectView(PermissionMixin, _RedirectView):
 
     def get(self, request, *args, **kwargs):
         if request.method == 'GET':
-            self.pre_redirect( request, *args, **kwargs)
+            self.pre_redirect(request, *args, **kwargs)
         elif request.method == 'POST':
             self.pre_post_redirect(request, *args, **kwargs)
 

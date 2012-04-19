@@ -10,10 +10,10 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.conf.urls.defaults import *
+from django.conf.urls.defaults import url, patterns
 from django.utils.translation import ugettext as _
 
-from application.views import ViewPoll, ApplicationPDF, ApplicationPollPDF
+from application.views import ViewPoll, ApplicationPDF, ApplicationPollPDF, CreateAgendaItem
 
 urlpatterns = patterns('application.views',
     url(r'^$',
@@ -24,6 +24,11 @@ urlpatterns = patterns('application.views',
     url(r'^(?P<application_id>\d+)/$',
         'view',
         name='application_view',
+    ),
+
+    url(r'^(?P<application_id>\d+)/agenda/$',
+        CreateAgendaItem.as_view(),
+        name='application_create_agenda',
     ),
 
     url(r'^(?P<application_id>\d+)/newest/$',
@@ -95,11 +100,6 @@ urlpatterns = patterns('application.views',
     url(r'^(?P<application_id>\d+)/unsupport/$',
         'unsupport',
         name='application_unsupport',
-    ),
-
-    url(r'^(?P<application_id>\d+)/set_active/$',
-        'set_active',
-        name='application_activate_item',
     ),
 
     url(r'^(?P<application_id>\d+)/gen_poll/$',
