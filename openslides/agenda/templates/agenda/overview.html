@@ -46,8 +46,7 @@
     <input type="checkbox" id="hide_closed_items"> {%trans "Hide closed items" %}
     </p>
     {{ items|length }}
-    {% blocktrans count counter=items|length %}item
-    {% plural %}items{% endblocktrans %}
+    {% blocktrans count counter=items|length %}item{% plural %}items{% endblocktrans %}
     <span id="hiddencount"></span>
         <form action="/agenda/" method="post">{% csrf_token %}
             {% if perms.agenda.can_manage_agenda %}

@@ -733,7 +733,6 @@ class ApplicationPollPDF(PDFView):
         cell.append(Paragraph(circle+_("No"), stylesheet['Ballot_option']))
         cell.append(Paragraph(circle+_("Abstention"), stylesheet['Ballot_option']))
         data= []
-        number = 1
         # get ballot papers config values
         ballot_papers_selection = config["application_pdf_ballot_papers_selection"]
         ballot_papers_number = config["application_pdf_ballot_papers_number"]

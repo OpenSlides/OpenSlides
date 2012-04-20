@@ -82,8 +82,8 @@ config = Config()
 @receiver(default_config_value, dispatch_uid="config_default_config")
 def default_config(sender, key, **kwargs):
     return {
-        'event_name': _('OpenSlides'),
-        'event_description': _('Presentation and voting system'),
+        'event_name': 'OpenSlides',
+        'event_description': _('Presentation system for agenda, applications, elections and participants'),
         'event_date': '',
         'event_location': '',
         'event_organizer': '',
@@ -91,7 +91,7 @@ def default_config(sender, key, **kwargs):
         'frontpage_title': _('Welcome'),
         'frontpage_welcometext': _('Welcome to OpenSlides!'),
         'show_help_text': True,
-        'help_text': _('If you need any help with OpenSlides, you can find commercial support on the <a href="http://openslides.org/en/support">OpenSlides webpage</a>.'),
+        'help_text': _("Buy our commercial support on <a href='http://openslides.org/'>www.openslides.org</a> to get professional assistance for OpenSlides."),
         'system_enable_anonymous': False,
     }.get(key)
 

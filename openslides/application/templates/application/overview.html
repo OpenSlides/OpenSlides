@@ -28,8 +28,7 @@
         </form>
     </p>
     {{ applications|length }}
-    {% blocktrans count counter=applications|length %}application
-    {% plural %}applications{% endblocktrans %}
+    {% blocktrans count counter=applications|length %}application{% plural %}applications{% endblocktrans %}
     <table>
         <tr>
             <th><a href="?sort=number{% if 'number' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Number" %}</a></th>

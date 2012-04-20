@@ -4,7 +4,7 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block title %}{{ block.super }} - {{ item.title }}{% endblock %}
+{% block title %}{{ block.super }} - {%trans "Application" %} {{ application.number }}{% endblock %}
 {% block content %}
     <div id="sidebar">
     <div class="box">
@@ -52,7 +52,7 @@
 
     <h1>{% trans "Application No." %} {{ application.number }}</h1>
     <h2>{{ application.title }}</h2>
-    <b>{{ item.title }}</b>
+    <b>{{ application.title }}</b>
     <p>
     <div class="text">{{ application.public_version.text|linebreaks }}</div>
     {% if application.public_version.reason %}
