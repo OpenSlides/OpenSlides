@@ -162,8 +162,10 @@ def edit(request, application_id=None):
         if not request.user == application.submitter and not is_manager:
             messages.error(request, _("You can not edit this application. You are not the submitter."))
             return redirect(reverse('application_view', args=[application.id]))
+        actions = application.get_allowed_actions(user=request.user)
     else:
         application = None
+        actions = None
 
     if request.method == 'POST':
         dataform = ApplicationForm(request.POST, prefix="data")
@@ -253,6 +255,7 @@ def edit(request, application_id=None):
         'form': dataform,
         'managerform': managerform,
         'application': application,
+        'actions': actions,
     }
 
 @login_required
@@ -416,6 +419,7 @@ class ViewPoll(PollFormView):
         self.application = self.poll.get_application()
         context['application'] = self.application
         context['ballot'] = self.poll.get_ballot()
+        context['actions'] = self.application.get_allowed_actions(user=self.request.user)
         return context
 
     def get_success_url(self):

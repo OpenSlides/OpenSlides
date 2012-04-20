@@ -586,3 +586,6 @@ ul.results {
 .preview {
     background:url("../images/icons/preview.png") no-repeat 0px 0px;
 }
+.poll {
+    background:url("../images/icons/view-statistics.png") no-repeat 0px 0px;
+}

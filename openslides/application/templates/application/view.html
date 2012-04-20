@@ -9,30 +9,7 @@
 
 {% block submenu %}
     {{ block.super }}
-    <br>
-    <h3>{% trans "Application No." %}
-    {% if application.number != None %}
-        {{ application.number }}
-    {% else %}
-        <i>[-]</i>
-    {% endif %}
-    </h3>
-    <ul>
-    <li><a href="{% url application_view application.id  %}">{%trans 'View application' %}</a></li>
-    {% if "edit" in actions %}
-    <li><a href="{% url application_edit application.id  %}">{%trans 'Edit application' %}</a></li>
-    {% endif %}
-    {% if "delete" in actions %}
-    <li><a href="{% url application_delete application.id  %}">{%trans 'Delete application' %}</a></li>
-    {% endif %}
-    {% if perms.projector.can_manage_projector %}
-    <li><a href="{% url projector_activate_slide application.sid  %}"><img src="{% static 'images/icons/video-projector.png' %}"> {%trans 'Show Application' %}</a></li>
-    {% endif %}
-    {% if perms.agenda.can_manage_agenda %}
-    <li><a href="{% url application_create_agenda application.id  %}">{%trans 'Create agenda item' %}</a></li>
-    {% endif %}
-    <li><a href="{% url print_application application.id  %}"><img src="{% static 'images/icons/application-pdf.png' %}"> {%trans 'Application as PDF' %}</a></li>
-    </ul>
+
 {% endblock %}
 
 {% block content %}
@@ -210,7 +187,10 @@
         <a href='{% url application_set_status application.id 'wit' %}'><span class="button">{% trans 'Withdrawed by Submitter' %}</span></a>
         {% endif %}
     {% endif %}
-
+    <p></p>
+    {% if perms.agenda.can_manage_agenda %}
+        <a href="{% url application_create_agenda application.id  %}"><span class="button">{%trans 'New agenda item' %}</span></a>
+    {% endif %}
     <p></p>
     <hr>
     <h4>{%trans "For Administration only:" %}</h4>
