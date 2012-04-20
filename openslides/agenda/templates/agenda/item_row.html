@@ -1,8 +1,6 @@
 {% load i18n %}
 {% load staticfiles %}
 
-<tr class="draggable{% cycle ' odd' '' %}
-    {% if item.active %}activeline{% endif %}">
     <td>
         {% if perms.agenda.can_manage_agenda %}
             <a class="close_link {% if item.closed %}closed{% endif %}" href="{% if item.closed %}{% url item_open item.id %}{% else %}{% url item_close item.id %}{% endif %}">
@@ -24,7 +22,7 @@
     {% if perms.agenda.can_manage_agenda %}
     <td>
         <span style="width: 1px; white-space: nowrap;">
-                <a class="activate_link {% if item.active %}active{% endif %}" href="{% url projector_activate_slide item.sid %}">
+                <a class="activate_link {% if item.active %}active{% endif %}" href="{% url projector_activate_slide item.sid %}" title="{% trans 'Activate item' %}">
                     <span></span>
                 </a>
                 <a href="{% url item_edit item.id %}"><img src="{% static 'images/icons/document-edit.png' %}" title="{% trans 'Edit item' %}"></a>
@@ -39,4 +37,3 @@
         {% endwith %}
     </td>
     {% endif %}
-</tr>

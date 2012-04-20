@@ -2,6 +2,7 @@
 
 {% load tags %}
 {% load i18n %}
+{% load staticfiles %}
 
 {% block title %}{{ block.super }} - {%trans "Applications" %}{% endblock %}
 
@@ -39,9 +40,11 @@
             <th><a href="?sort=status{% if 'status' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Status" %}</a></th>
             <th><a href="?sort=submitter{% if 'submitter' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Submitter" %}</a></th>
             <th><a href="?sort=time{% if 'time' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Creation Time" %}<a></th>
+            <th style="width: 1px;">{% trans "Actions" %}</th>
         </tr>
     {% for application in applications %}
-        <tr class="{% cycle '' 'odd' %}">
+        <tr class="{% cycle '' 'odd' %} 
+            {% if application.active %}activeline{% endif %}">
             <td>{% if application.number %}{{ application.number }}{% else %}-{% endif %}</td>
             <td><a href="{% url application_view application.id %}">{{ application }}</a></td>
         {% if min_supporters > 0 %}
@@ -57,10 +60,19 @@
             </td>
             <td>{{ application.submitter.profile }}</td>
             <td>{{ application.creation_time }}</td>
+            <td>
+                <span style="width: 1px; white-space: nowrap;">
+                        <a class="activate_link {% if application.active %}active{% endif %}" href="{% url projector_activate_slide application.sid %}" title="{% trans 'Activate item' %}">
+                            <span></span>
+                        </a>
+                        <a href="{% url application_edit application.id %}"><img src="{% static 'images/icons/document-edit.png' %}" title="{% trans 'Edit application' %}"></a>
+                        <a href="#"><img src="{% static 'images/icons/edit-delete.png' %}" title="{% trans 'Delete application' %}"></a>
+                </span>
+            </td>
         </tr>
     {% empty %}
         <tr>
-        <td colspan="6"><i>{%trans "No applications available." %}</i></td>
+        <td colspan="7"><i>{%trans "No applications available." %}</i></td>
         </tr>
     {% endfor %}
     </table>

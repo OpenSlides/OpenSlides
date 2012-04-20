@@ -50,7 +50,13 @@
     </div>
     </div>
 
-    <h1>{% trans "Application No." %} {{ application.number }}</h1>
+    <h1>
+    {% if application.number != None %}
+        {% trans "Application No." %} {{ application.number }}
+    {% else %}
+        {% trans "Application" %} <i>[{% trans "no number" %}]</i>
+    {% endif %}
+    </h1>
     <h2>{{ application.title }}</h2>
     <b>{{ application.title }}</b>
     <p>

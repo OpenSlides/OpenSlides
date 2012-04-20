@@ -78,7 +78,10 @@
                 </tr>
 
                 {% for item in items %}
+                <tr class="draggable{% cycle ' odd' '' %}
+    {% if item.active %}activeline{% endif %}">
                     {% include "agenda/item_row.html" %}
+                </tr>
                 {% endfor %}
             {% else %}
                 <tr>

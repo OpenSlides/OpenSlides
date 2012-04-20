@@ -10,6 +10,26 @@ $(function () {
             }, 1000);
         }
     });
+   // activate an element to show it on projector
+    $('.activate_link').click(function(event) {
+        event.preventDefault();
+        var link = $(this);
+        $.ajax({
+            type: 'GET',
+            url: $(this).attr('href'),
+            dataType: 'json',
+            data: '',
+            success: function(data) {
+                $('.activate_link').removeClass('active');
+                $('tr').removeClass('activeline');
+                link.parent().parent().parent().addClass('activeline');
+                link.addClass('active');
+            },
+            error: function () {
+                alert("Ajax Error");
+            }
+        });
+    });
 });
 
 

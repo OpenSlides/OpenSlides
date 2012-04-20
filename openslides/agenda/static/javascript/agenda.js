@@ -46,25 +46,6 @@ $(function() {
             }
         });
     });
-    // activate an element to show it on projector
-    $('.activate_link').click(function(event) {
-        event.preventDefault();
-        link = $(this);
-        $.ajax({
-            type: 'GET',
-            url: $(this).attr('href'),
-            dataType: 'json',
-            data: '',
-            success: function(data) {
-                $('.activate_link').removeClass('active');
-                //$('li').removeClass('activeline');
-                link.addClass('active');
-            },
-            error: function () {
-                alert("Ajax Error");
-            }
-        });
-    });
     // filter to show/hide closed items
     $('#hide_closed_items').click(function(event) {
         // show all items
