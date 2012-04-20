@@ -45,8 +45,10 @@
     {%trans "Filter" %}:
     <input type="checkbox" id="hide_closed_items"> {%trans "Hide closed items" %}
     </p>
-    {{ items|length }} {% trans "items" %}<span id="hiddencount"></span>
-    {% if items %}
+    {{ items|length }}
+    {% blocktrans count counter=items|length %}item
+    {% plural %}items{% endblocktrans %}
+    <span id="hiddencount"></span>
         <form action="/agenda/" method="post">{% csrf_token %}
             {% if perms.agenda.can_manage_agenda %}
             <div id="changed-order-message" style="display:none" class="notification warning">
@@ -60,25 +62,30 @@
                 <tr>
                     <th style="width: 1px;">{% trans "Done" %}</th>
                     <th>{% trans "Item" %}</th>
-                    <th style="width: 1px;">{% if perms.agenda.can_manage_agenda %}{% trans "Actions" %}{% endif %}</th>
                     {% if perms.agenda.can_manage_agenda %}
+                        <th style="width: 1px;">{% trans "Actions" %}</th>
                         <th class="tabledrag-hide">{% trans "Weight" %}</th>
                     {% endif %}
                 </tr>
+            {% if items %}
                 <tr class="topline {% if overview %}activeline{% endif %}">
                     <td></td>
                     <td>
                         <b>{% trans "Agenda" %}</b>
                     </td>
+                    {% if perms.agenda.can_manage_agenda %}
                     <td></td>
+                    {% endif %}
                 </tr>
 
                 {% for item in items %}
                     {% include "agenda/item_row.html" %}
                 {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="3"><i>{%trans "No items available." %}</i></td>
+                </tr>
+            {% endif %}
             </table>
         </form>
-    {% else %}
-        <i>{% trans "No items available." %}</i>
-    {% endif %}
 {% endblock %}

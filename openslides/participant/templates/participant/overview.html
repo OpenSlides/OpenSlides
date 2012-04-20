@@ -54,7 +54,9 @@
         </form>
     </p>
     {% if users|length == allusers|length %}
-        {{ users|length }} {% trans "Participants" %}
+        {{ users|length }}
+        {% blocktrans count counter=users|length %}participant
+        {% plural %}participants{% endblocktrans %}
     {% else %}
         {{ users|length }} {% trans "of" %} {{ allusers|length }} {% trans "Participants" %} (= {{ percent }} %)
     {% endif %}
