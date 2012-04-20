@@ -19,16 +19,22 @@
         {% endif %}
         <a href="{{ item.get_absolute_url }}">{{ item }}</a>
     </td>
-    {% if perms.agenda.can_manage_agenda %}
+    {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
     <td>
         <span style="width: 1px; white-space: nowrap;">
-                <a class="activate_link {% if item.active %}active{% endif %}" href="{% url projector_activate_slide item.sid %}" title="{% trans 'Activate item' %}">
-                    <span></span>
-                </a>
-                <a href="{% url item_edit item.id %}"><img src="{% static 'images/icons/document-edit.png' %}" title="{% trans 'Edit item' %}"></a>
-                <a href="{% url item_delete item.id %}"><img src="{% static 'images/icons/edit-delete.png' %}" title="{% trans 'Delete item' %}"></a>
+        {% if perms.projector.can_manage_projector %}
+            <a class="activate_link {% if item.active %}active{% endif %}" href="{% url projector_activate_slide item.sid %}" title="{% trans 'Activate item' %}">
+                <span></span>
+            </a>
+        {% endif %}
+        {% if perms.agenda.can_manage_agenda %}
+            <a href="{% url item_edit item.id %}"><img src="{% static 'images/icons/document-edit.png' %}" title="{% trans 'Edit item' %}"></a>
+            <a href="{% url item_delete item.id %}"><img src="{% static 'images/icons/edit-delete.png' %}" title="{% trans 'Delete item' %}"></a>
+        {% endif %}
         </span>
     </td>
+    {% endif %}
+    {% if perms.agenda.can_manage_agenda %}
     <td class="tabledrag-hide">
         {% with form=item.weight_form %}
             {{ form.weight }}

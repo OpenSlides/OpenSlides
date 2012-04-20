@@ -62,12 +62,14 @@
             <td>{{ application.creation_time }}</td>
             <td>
                 <span style="width: 1px; white-space: nowrap;">
+                {% if perms.projector.can_manage_projector %}
+                    <a class="activate_link {% if application.active %}active{% endif %}" href="{% url projector_activate_slide application.sid %}" title="{% trans 'Activate application' %}">
+                        <span></span>
+                    </a>
+                {% endif %}
                 {% if perms.application.can_manage_application %}
-                        <a class="activate_link {% if application.active %}active{% endif %}" href="{% url projector_activate_slide application.sid %}" title="{% trans 'Activate application' %}">
-                            <span></span>
-                        </a>
-                        <a href="{% url application_edit application.id %}"><img src="{% static 'images/icons/document-edit.png' %}" title="{% trans 'Edit application' %}"></a>
-                        <a href="#"><img src="{% static 'images/icons/edit-delete.png' %}" title="{% trans 'Delete application' %}"></a>
+                    <a href="{% url application_edit application.id %}"><img src="{% static 'images/icons/document-edit.png' %}" title="{% trans 'Edit application' %}"></a>
+                    <a href="#"><img src="{% static 'images/icons/edit-delete.png' %}" title="{% trans 'Delete application' %}"></a>
                 {% endif %}
                 <a href="{% url print_application application.id  %}" title="{%trans 'Application as PDF' %}"><img src="{% static 'images/icons/application-pdf.png' %}"></a>
                 </span>
