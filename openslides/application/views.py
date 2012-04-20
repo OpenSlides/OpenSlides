@@ -743,6 +743,8 @@ class ApplicationPollPDF(PDFView):
             number = int(User.objects.count() - 1)
         if ballot_papers_selection == "0":
             number = int(ballot_papers_number)
+        if number == 0:
+            number = 1
         # print ballot papers
         if number > 0:
             for user in xrange(number/2):
