@@ -23,7 +23,7 @@ $(function() {
     // control the projector
     $('.projector_edit').click(function(event) {
         event.preventDefault();
-        link = $(this);
+        var link = $(this);
         $.ajax({
             type: 'GET',
             url: link.attr('href'),
@@ -36,7 +36,7 @@ $(function() {
     // control countdown
     $('.projector_countdown').click(function(event) {
         event.preventDefault();
-        link = $(this);
+        var link = $(this);
         $.ajax({
             type: 'GET',
             url: link.attr('href'),
@@ -47,7 +47,7 @@ $(function() {
     });
     $('.countdown_visible_link').click(function(event) {
         event.preventDefault();
-        link = $(this);
+        var link = $(this);
         $.ajax({
             type: 'GET',
             url: link.attr('href'),
