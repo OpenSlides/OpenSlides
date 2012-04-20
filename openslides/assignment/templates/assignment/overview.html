@@ -25,20 +25,27 @@
             <th><a href="?sort=name{% if 'name' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Election" %}</a></th>
             <th>{%trans "Candidates" %}</th>
             <th><a href="?sort=status{% if 'status' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Status" %}</a></th>
-            {% if perms.assignment.can_manage_assignment %}
-                <th>{%trans "Actions" %}</th>
-            {% endif %}
+            <th style="width: 1px;">{% trans "Actions" %}</th>
         </tr>
     {% for assignment in assignments %}
         <tr class="{% cycle '' 'odd' %}">
             <td><a href="{% url assignment_view assignment.id %}">{{ assignment }}</a></td>
             <td>{{ assignment.profile.count }} / {{ assignment.posts }}</td>
             <td>{{ assignment.get_status_display }}</td>
-            {% if perms.assignment.can_manage_assignment %}
-                <td><a href="{% url assignment_edit assignment.id %}"><img src="{% static 'images/icons/document-edit.png' %}" title="{%trans 'Edit assignment' %}"></a>
-                    <a href="{% url assignment_delete assignment.id %}"><img src="{% static 'images/icons/edit-delete.png' %}" title="{%trans 'Delete assignment' %}"></a>
-                </td>
-            {% endif %}
+            <td>
+                <span style="width: 1px; white-space: nowrap;">
+                {% if perms.projector.can_manage_projector %}
+                    <a class="activate_link {% if assignment.active %}active{% endif %}" href="{% url projector_activate_slide assignment.sid %}" title="{% trans 'Activate election' %}">
+                        <span></span>
+                    </a>
+                {% endif %}
+                {% if perms.assignment.can_manage_assignment %}
+                    <a href="{% url assignment_edit assignment.id %}"><img src="{% static 'images/icons/document-edit.png' %}" title="{%trans 'Edit election' %}"></a>
+                    <a href="{% url assignment_delete assignment.id %}"><img src="{% static 'images/icons/edit-delete.png' %}" title="{%trans 'Delete election' %}"></a>
+                {% endif %}
+                <a href="{% url print_assignment assignment.id %}" title="{% trans 'Election as PDF' %}"><img src="{% static 'images/icons/application-pdf.png' %}"></a>
+                </span>
+            </td>
         </tr>
     {% empty %}
         <tr>
