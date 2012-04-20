@@ -12,7 +12,7 @@
 
 from django.conf.urls.defaults import *
 
-from assignment.views import ViewPoll, AssignmentPDF, AssignmentPollDelete
+from assignment.views import ViewPoll, AssignmentPDF, AssignmentPollPDF, AssignmentPollDelete
 
 urlpatterns = patterns('assignment.views',
     url(r'^$',
@@ -65,7 +65,7 @@ urlpatterns = patterns('assignment.views',
     ),
 
     url(r'^poll/(?P<poll_id>\d+)/print$',
-        'print_assignment_poll',
+        AssignmentPollPDF.as_view(),
         name='print_assignment_poll',
     ),
 

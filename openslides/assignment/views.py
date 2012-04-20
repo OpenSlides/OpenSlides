@@ -10,10 +10,12 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+import os
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
 from reportlab.lib import colors
@@ -23,7 +25,6 @@ from reportlab.platypus import PageBreak, Paragraph, Spacer, Table, TableStyle
 from config.models import config
 
 from utils.utils import template, permission_required, gen_confirm_form, del_confirm_form, ajax_request
-from utils.pdf import print_assignment_poll
 from utils.pdf import stylesheet
 from utils.views import FormView, DeleteView, PDFView
 from utils.template import Tab
@@ -35,6 +36,7 @@ from assignment.forms import AssignmentForm, AssignmentRunForm, ConfigForm
 
 from participant.models import Profile
 
+from settings import SITE_ROOT
 
 @permission_required('assignment.can_see_assignment')
 @template('assignment/overview.html')
@@ -434,6 +436,108 @@ class AssignmentPDF(PDFView):
                         tmplist[1].append("-")
             votes.append(tmplist)
         return votes
+
+
+class AssignmentPollPDF(PDFView):
+    permission_required = 'assignment.can_manage_assignment'
+    top_space = 0
+
+    def get(self, request, *args, **kwargs):
+        self.poll = AssignmentPoll.objects.get(id=self.kwargs['poll_id'])
+        return super(AssignmentPollPDF, self).get(request, *args, **kwargs)
+
+    def get_filename(self):
+        filename = u'%s-%s-#%s' % (_("Election"), self.poll.assignment.name.replace(' ','_'), 1)#self.poll.get_ballot())
+        return filename
+
+    def append_to_pdf(self, story):
+        #doc = SimpleDocTemplate(response, pagesize=A4, topMargin=-6, bottomMargin=-6, leftMargin=0, rightMargin=0, showBoundary=False)
+        #story = [Spacer(0,0*cm)]
+
+        imgpath = os.path.join(SITE_ROOT, 'static/images/circle.png')
+        circle = "<img src='%s' width='15' height='15'/>&nbsp;&nbsp;" % imgpath
+        cell = []
+        cell.append(Spacer(0,0.8*cm))
+        cell.append(Paragraph(_("Election") + ": " + self.poll.assignment.name, stylesheet['Ballot_title']))
+        cell.append(Paragraph(self.poll.assignment.description, stylesheet['Ballot_subtitle']))
+
+        #options = self.poll.assignment.get_options().order_by('user__user__first_name')
+        options = self.poll.get_options().order_by('candidate')
+      
+        #cell.append(Paragraph(str(self.poll.get_ballot())+". "+_("ballot")+", "+str(len(options))+" "+ ungettext("candidate", "candidates", len(options))+", "+str(self.poll.assignment.posts)+" "+_("available posts"), stylesheet['Ballot_description']))
+        cell.append(Spacer(0,0.4*cm))
+
+        data= []
+        # get ballot papers config values
+        number = 1
+        ballot_papers_selection = config["assignment_pdf_ballot_papers_selection"]
+        ballot_papers_number = config["assignment_pdf_ballot_papers_number"]
+        # TODO: 'optiondecision'
+        #if self.poll.optiondecision:
+        #    for option in options:
+        #        o = str(option).split("(",1)
+        #        cell.append(Paragraph(o[0], stylesheet['Ballot_option_name']))
+        #        if len(o) > 1:
+        #            cell.append(Paragraph("("+o[1], stylesheet['Ballot_option_group']))
+        #        else:
+        #            cell.append(Paragraph("&nbsp;", stylesheet['Ballot_option_group']))
+        #        cell.append(Paragraph(circle+_("Yes")+"&nbsp; &nbsp; &nbsp; "+circle+_("No")+"&nbsp; &nbsp; &nbsp; "+circle+_("Abstention"), stylesheet['Ballot_option_YNA']))
+        #    # set number of ballot papers
+        #    if ballot_papers_selection == "1":
+        #        number = User.objects.filter(profile__type__iexact="delegate").count()
+        #    if ballot_papers_selection == "2":
+        #        number = int(User.objects.count() - 1)
+        #    if ballot_papers_selection == "0":
+        #        number = int(ballot_papers_number)
+        #    # print ballot papers
+        #    for user in xrange(number/2):
+        #        data.append([cell,cell])
+        #    rest = number % 2
+        #    if rest:
+        #        data.append([cell,''])
+
+        #    if len(options) <= 2:
+        #        t=Table(data, 10.5*cm, 7.42*cm)
+        #    elif len(options) <= 5:
+        #        t=Table(data, 10.5*cm, 14.84*cm)
+        #    else:
+        #        t=Table(data, 10.5*cm, 29.7*cm)
+        #else:
+        for option in options:
+            o = str(option).split("(",1)
+            cell.append(Paragraph(circle+o[0], stylesheet['Ballot_option_name']))
+            if len(o) > 1:
+                cell.append(Paragraph("("+o[1], stylesheet['Ballot_option_group_right']))
+            else:
+                cell.append(Paragraph("&nbsp;", stylesheet['Ballot_option_group_right']))
+        # set number of ballot papers
+        if ballot_papers_selection == "1":
+            number = User.objects.filter(profile__type__iexact="delegate").count()
+        if ballot_papers_selection == "2":
+            number = int(User.objects.count() - 1)
+        if ballot_papers_selection == "0":
+            number = int(ballot_papers_number)
+        if number == 0:
+            number = 1
+        # print ballot papers
+        if number > 0:
+            for user in xrange(number/2):
+                data.append([cell,cell])
+            rest = number % 2
+            if rest:
+                data.append([cell,''])
+
+        if len(options) <= 4:
+            t=Table(data, 10.5*cm, 7.42*cm)
+        elif len(options) <= 8:
+            t=Table(data, 10.5*cm, 14.84*cm)
+        else:
+            t=Table(data, 10.5*cm, 29.7*cm)
+
+        t.setStyle(TableStyle([ ('GRID', (0,0), (-1,-1), 0.25, colors.grey),
+                                ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                              ]))
+        story.append(t)
 
 
 class Config(FormView):
