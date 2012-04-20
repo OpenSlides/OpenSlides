@@ -13,6 +13,8 @@
 from django.conf.urls.defaults import *
 from django.core.urlresolvers import reverse
 
+from participant.views import ParticipantsListPDF, ParticipantsPasswordsPDF
+
 urlpatterns = patterns('participant.views',
     url(r'^$',
         'get_overview',
@@ -30,7 +32,7 @@ urlpatterns = patterns('participant.views',
     ),
 
     url(r'^print$',
-        'print_userlist',
+        ParticipantsListPDF.as_view(),
         name='user_print',
     ),
 
@@ -87,7 +89,7 @@ urlpatterns = patterns('participant.views',
     ),
 
     url(r'^passwords/print$',
-        'print_passwords',
+        ParticipantsPasswordsPDF.as_view(),
         name='print_passwords',
     ),
 )

@@ -31,6 +31,11 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _, ungettext
 from django.db import transaction
+from django.db.models import Avg, Max, Min, Count
+
+from reportlab.lib import colors
+from reportlab.lib.units import cm
+from reportlab.platypus import PageBreak, Paragraph, LongTable, Spacer, Table, TableStyle
 
 from participant.models import Profile
 from participant.api import gen_username, gen_password
@@ -38,15 +43,15 @@ from participant.forms import (UserNewForm, UserEditForm, ProfileForm,
                                UsersettingsForm, UserImportForm, GroupForm,
                                AdminPasswordChangeForm, ConfigForm)
 from application.models import Application
+
+from config.models import config
+
 from utils.utils import (template, permission_required, gen_confirm_form,
                          ajax_request, decodedict, encodedict)
-from utils.pdf import print_userlist, print_passwords
+from utils.pdf import stylesheet
 from utils.template import Tab
-from utils.views import FormView
-from config.models import config
+from utils.views import (FormView, PDFView)
 from utils.utils import delete_default_permissions
-
-from django.db.models import Avg, Max, Min, Count
 
 
 @permission_required('participant.can_see_participant')
@@ -485,6 +490,84 @@ def register_tab(request):
         permission=request.user.has_perm('participant.can_see_participant') or request.user.has_perm('participant.can_manage_participant'),
         selected=selected,
     )
+
+
+class ParticipantsListPDF(PDFView):
+    permission_required = 'participant.can_see_participant'
+    filename = _("Participant-list")
+    document_title = _('List of Participants')
+
+    def append_to_pdf(self, story):
+        data= [['#', _('Last Name'), _('First Name'), _('Group'), _('Type'), _('Committee')]]
+        sort = 'last_name'
+        counter = 0
+        for user in User.objects.all().order_by(sort):
+            try:
+                counter += 1
+                user.get_profile()
+                data.append([counter,
+                        Paragraph(user.last_name, stylesheet['Tablecell']),
+                        Paragraph(user.first_name, stylesheet['Tablecell']),
+                        Paragraph(user.profile.group, stylesheet['Tablecell']),
+                        Paragraph(user.profile.get_type_display(), stylesheet['Tablecell']),
+                        Paragraph(user.profile.committee, stylesheet['Tablecell']),
+                        ])
+            except Profile.DoesNotExist:
+                counter -= 1
+                pass
+        t=LongTable(data,
+                        style=[
+                            ('VALIGN',(0,0),(-1,-1), 'TOP'),
+                            ('LINEABOVE',(0,0),(-1,0),2,colors.black),
+                            ('LINEABOVE',(0,1),(-1,1),1,colors.black),
+                            ('LINEBELOW',(0,-1),(-1,-1),2,colors.black),
+                            ('ROWBACKGROUNDS', (0, 1), (-1, -1), (colors.white, (.9, .9, .9))),
+                            ])
+        t._argW[0]=0.75*cm
+        story.append(t)
+
+
+class ParticipantsPasswordsPDF(PDFView):
+    permission_required = 'participant.can_manage_participant'
+    filename = _("Participant-passwords")
+    top_space = 0
+    
+    def append_to_pdf(self, story):
+        #doc = SimpleDocTemplate(response, pagesize=A4, topMargin=-6, bottomMargin=-6, leftMargin=0, rightMargin=0, showBoundary=False)
+        #story = [Spacer(0,0*cm)]
+        data= []
+        participant_pdf_system_url = config["participant_pdf_system_url"]
+        participant_pdf_welcometext = config["participant_pdf_welcometext"]
+        for user in User.objects.all().order_by('last_name'):
+            try:
+                user.get_profile()
+                cell = []
+                cell.append(Spacer(0,0.8*cm))
+                cell.append(Paragraph(_("Your Account for OpenSlides"), stylesheet['Ballot_title']))
+                cell.append(Paragraph(_("for %s") % (user.profile), stylesheet['Ballot_subtitle']))
+                cell.append(Spacer(0,0.5*cm))
+                cell.append(Paragraph(_("User: %s") % (user.username), stylesheet['Ballot_option']))
+                cell.append(Paragraph(_("Password: %s") % (user.profile.firstpassword), stylesheet['Ballot_option']))
+                cell.append(Spacer(0,0.5*cm))
+                cell.append(Paragraph(_("URL: %s") % (participant_pdf_system_url), stylesheet['Ballot_option']))
+                cell.append(Spacer(0,0.5*cm))
+                cell2 = []
+                cell2.append(Spacer(0,0.8*cm))
+                if participant_pdf_welcometext is not None:
+                    cell2.append(Paragraph(participant_pdf_welcometext.replace('\r\n','<br/>'), stylesheet['Ballot_subtitle']))
+    
+                data.append([cell,cell2])
+            except Profile.DoesNotExist:
+                pass
+    
+        t=Table(data, 10.5*cm, 7.42*cm)
+        t.setStyle(TableStyle([ ('LINEBELOW', (0,0), (-1,0), 0.25, colors.grey),
+                                ('LINEBELOW', (0,1), (-1,1), 0.25, colors.grey),
+                                ('LINEBELOW', (0,1), (-1,-1), 0.25, colors.grey),
+                                ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                              ]))
+        story.append(t)
+
 
 
 class Config(FormView):
