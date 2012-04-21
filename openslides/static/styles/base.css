@@ -437,7 +437,7 @@ input[type="submit"], input[type="button"]  {
     color:#DA3939;
     font-size:9px;
     font-style:italic;
-    height:16px;
+    height:13px;
     padding:0;
 }
 form .required label:after {
@@ -456,7 +456,11 @@ form .error input, form .error textarea {
 form input:after {
     font-weight: bold;
 }
-
+form .helptext {
+    font-size:9px;
+    display: block;
+    color: #556652;
+}
 /* Fieldsets */
 fieldset {
     width: 0px;
