@@ -197,7 +197,7 @@ def delother(request, assignment_id, profile_id):
     return redirect(reverse('assignment_view', args=assignment_id))
 
 
-@permission_required('assignment.can_manage_application')
+@permission_required('assignment.can_manage_assignment')
 def set_active(request, assignment_id):
     assignment = Assignment.objects.get(pk=assignment_id)
     assignment.set_active()
@@ -218,7 +218,9 @@ class ViewPoll(PollFormView):
     def get_context_data(self, **kwargs):
         context = super(ViewPoll, self).get_context_data(**kwargs)
         self.assignment = self.poll.get_assignment()
-        context['application'] = self.assignment
+        context['assignment'] = self.assignment
+        context['poll'] = self.poll
+        #context['ballotnumber'] = self.poll.get_ballot()
         return context
 
     def get_success_url(self):
@@ -294,7 +296,7 @@ class AssignmentPDF(PDFView):
             assignment_id = self.kwargs['assignment_id']
         except KeyError:
             assignment_id = None
-        if assignment_id is None:  #print all applications
+        if assignment_id is None:  #print all assignments
             title = config["assignment_pdf_title"]
             story.append(Paragraph(title, stylesheet['Heading1']))
             preamble = config["assignment_pdf_preamble"]

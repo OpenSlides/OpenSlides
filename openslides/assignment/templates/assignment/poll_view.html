@@ -2,14 +2,14 @@
 
 {% load i18n %}
 
-{% block title %}{{ block.super }} - {%trans "Poll" %} "{{ poll }}"{% endblock %}
+{% block title %}{{ block.super }} - {%trans "Election" %} "{{ assignment }}"{% endblock %}
 
 {% block content %}
-    <h1>{{ poll }}</h1>
-    <p>{{ ballotnumber }}. {%trans "ballot" %}: {{options.count}}
+    <h1>{%trans "Election" %}: {{ assignment }}</h1>
+    <p>{{ ballotnumber }}. {%trans "ballot" %}: {{assignment.poll.get_options}}
     {% blocktrans count counter=options|length %}candidate{% plural %}candidates{% endblocktrans %}
     </p>
-    <p><b>{% trans "Short description" %}:</b> {{ poll.description }}</p>
+    <p><b>{% trans "Short description" %}:</b> {{ assignment.polldescription }}</p>
     <i>-1 := {% trans 'majority' %}, -2 := {% trans 'undocumented' %}</i>
     <form action="" method="post" class="small-form">{% csrf_token %}
     <table style="width:auto">
