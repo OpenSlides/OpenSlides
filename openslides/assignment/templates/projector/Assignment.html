@@ -4,7 +4,7 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block title %}{{ block.super }} - #{{ item.title }}{% endblock %}
+{% block title %}{{ block.super }} - {{ item.title }}{% endblock %}
 {% block header %}
     <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/assignment.css' %}" />
     <script type="text/javascript" src="{% static 'javascript/assignment.js' %}"></script>
@@ -90,7 +90,7 @@
         <td>{%trans 'Invalid votes' %}</td>
         {% for p in polls %}
             {% if p.published %}
-            <td style="white-space:nowrap;"><img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ p.votesinvalidf }}</td>
+            <td style="white-space:nowrap;"><img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ p.print_votesinvalid }}</td>
             {% endif %}
         {% endfor %}
     </tr>
@@ -98,7 +98,7 @@
         <td><b>{%trans 'Votes cast' %}</b></td>
         {% for p in polls %}
             {% if p.published %}
-            <td style="white-space:nowrap;"><img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}"> <b>{{ p.votescastf }}</b></td>
+            <td style="white-space:nowrap;"><img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}"> <b>{{ p.print_votescast }}</b></td>
             {% endif %}
         {% endfor %}
     </tr>

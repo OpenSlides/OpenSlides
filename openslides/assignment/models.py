@@ -12,12 +12,15 @@
 
 from django.db import models
 
+from config.models import config
+
 from participant.models import Profile
 
 from projector.projector import SlideMixin
 from projector.api import register_slidemodel
 from poll.models import BasePoll, CountInvalid, CountVotesCast, BaseOption, PublishPollMixin
 from utils.translation_ext import ugettext as _
+
 
 class Assignment(models.Model, SlideMixin):
     prefix = 'assignment'
@@ -90,8 +93,41 @@ class Assignment(models.Model, SlideMixin):
     def gen_poll(self):
         poll = AssignmentPoll(assignment=self)
         poll.save()
-        poll.set_options([{'candidate': profile} for profile in self.profile.all()])
+        candidates = list(self.profile.all())
+        for elected in self.elected.all():
+            try:
+                candidates.remove(elected)
+            except ValueError:
+                pass
+        poll.set_options([{'candidate': profile} for profile in candidates])
         return poll
+
+    @property
+    def vote_results(self):
+        votes = []
+        publish_winner_results_only = config["assignment_publish_winner_results_only"]
+        # list of votes
+        votes = []
+        for candidate in self.candidates:
+            tmplist = [[candidate, self.is_elected(candidate)], []]
+            for poll in self.poll_set.all():
+                if poll.published:
+                    if poll.get_options().filter(candidate=candidate).exists():
+                        # check config option 'publish_winner_results_only'
+                        if not publish_winner_results_only \
+                        or publish_winner_results_only and self.is_elected(candidate):
+                            option = AssignmentOption.objects.filter(poll=poll).get(candidate=candidate)
+                            try:
+                                tmplist[1].append(option.get_votes()[0])
+                            except IndexError:
+                                tmplist[1].append('–')
+                        else:
+                            tmplist[1].append("")
+                    else:
+                        tmplist[1].append("-")
+            votes.append(tmplist)
+        return votes
+
 
     def slide(self):
         """
@@ -100,6 +136,8 @@ class Assignment(models.Model, SlideMixin):
         data = super(Assignment, self).slide()
         data['assignment'] = self
         data['title'] = self.name
+        data['polls'] = self.poll_set.all()
+        data['votes'] = self.vote_results
         data['template'] = 'projector/Assignment.html'
         return data
 
@@ -163,4 +201,5 @@ def default_config(sender, key, **kwargs):
     return {
         'assignment_pdf_ballot_papers_selection': '1',
         'assignment_pdf_title': _('Elections'),
+        'assignment_publish_winner_results_only': False,
     }.get(key)
