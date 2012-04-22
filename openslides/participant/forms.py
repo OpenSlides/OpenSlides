@@ -87,11 +87,11 @@ class ConfigForm(Form, CssClassMixin):
         widget=TextInput(),
         required=False,
         label=_("System URL"),
-        help_text="Printed in PDF of first time passwords only.",
+        help_text=_("Printed in PDF of first time passwords only."),
     )
     participant_pdf_welcometext = CharField(
         widget=Textarea(),
         required=False,
         label=_("Welcome text"),
-        help_text="Printed in PDF of first time passwords only.",
+        help_text=_("Printed in PDF of first time passwords only."),
     )
