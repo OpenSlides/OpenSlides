@@ -551,6 +551,7 @@ def default_config(sender, key, **kwargs):
         'application_min_supporters': 0,
         'application_preamble': 'Die Versammlung möge beschließen,',
         'application_pdf_ballot_papers_selection': '1',
-        'application_pdf_ballot_papers_number': '0',
+        'application_pdf_ballot_papers_number': '1',
         'application_pdf_title': _('Applications'),
+        'application_pdf_preamble': '',
     }.get(key)
