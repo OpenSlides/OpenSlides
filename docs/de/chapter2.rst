@@ -1,125 +1,81 @@
-Openslides in 30 Minuten
-========================
+Erste Schritte
+==============
 
-In dieser Kurzanleitung (Tutorial) lernen Sie die grundlegenden Eigenschaften von Openslides kennen, indem Sie eine Veranstaltung in Kurzform erstellen.
-
-
-An allen Stellen wo offensichtlich später z.B. der Name Ihres Vereins/Ihrer Partei etc. verwendet wird können Sie gerne sofort Ihre eigenen Daten verwenden, allerdings unterscheiden sich dann später aber Bildschirmkopien von Ihrer aktuellen Umgebung.
+In diesem Kapitel werden die ersten Schritte bei OpenSlides erklärt.
 
 
-Voraussetzungen
----------------
-Es wird vorausgesetzt dass Openslides auf einem Rechner bereits lokal in Betrieb genommen wurde und Sie mit einer frischen (leeren) Datenbank starten (http://openslides.org/download/INSTALL-1.1.txt). Sie müssen wissen für welchen Port (TODO: Indexeintrag) Openslides bei der Installation konfiguriert wurde, um das Programm starten zu können.
+Installation
+++++++++++++
 
-Wir gehen zunächst davon aus, dass Sie der Installationsanleitung gefolgt sind und der Port "8000" ist. Als weitere Grundlage gehen wir davon aus, dass ein Benutzer "benutzer" mit dem Passwort "openslides" und Mail "benutzer@mail.de" beim Erstellen der Datenbank angelegt wurde. Überall wo diese Daten eingegeben werden müssen, sollten Sie den evtl. den von Ihnen anders benannten Benutzer bzw. Passwort verwenden.
+OpenSlides muss auf einem Computer installiert werden. Dieser fungiert im Netzwerk als Server. (Im Präsentationsmodus Single gibt es kein Netzwerk und daher auch keinen Server. OpenSlides muss dann auf dem einen verwendeten Computer installiert werden.
 
+Die Systemvoraussetzungen finden Sie hier: **TODO**
 
-Desweiteren sollten Sie einen Web-Browser (Firefox, Safari, Internet Explorer o.ä.) zum Zugriff auf Webseiten zur Verfügung haben.
+Die Installationsanleitung finden Sie hier: **TODO**
 
-
-Zusammenstellen der Veranstaltung
----------------------------------
-
-Starten Sie mit der Eingabe "http://localhost:8000" im Web-Browser und bestätigen Sie mit "Enter".
-
-Es wird automatisch die Seite "http://localhost:8000/login/" angezeigt:
-
-.. image:: _static/images/login.png
-
-Geben Sie "benutzer" als Nutzername und "openslides" als Passwort ein (bzw. Ihre anders gewählten Daten) und klicken Sie "Anmelden".
-
-Sie sehen nun den Startbildschirm. Oben rechts wird der angemeldete Benutzer angezeigt.
-
-.. image:: _static/images/init_start.png
+Hinweise zur technischen Ausstattung (des Servers) finden Sie hier: **TODO** (Mindestanforderungen, empfohlene Anforderungen für Teilnehmermodus mit soundsoviel Clients)
 
 
-Klicken Sie auf die obere Lasche "Konfiguration"
+Konfiguration
++++++++++++++
 
-.. image:: _static/images/config_tab.png
-
-und geben Sie die Daten wie angezeigt ein:
-
-.. image:: _static/images/config_tab_common.png
-
-danach klicken Sie "Speichern".
-
-.. image:: _static/images/config_tab_common_saved.png
-
-Solche Bestätigungen werden häufiger im Browser eingeblendet! Die gespeicherten Daten werden in der Überschrift angezeigt.
-
-Klicken Sie nun auf die linke Lasche "Wahl" (oben ist noch "Konfiguration" gewählt).
-
-.. image:: _static/images/config_tab_election.png
-
-Schreiben Sie den Einleitungstext in das vorgesehene Feld und klicken Sie "Speichern".
-
-.. image:: _static/images/config_tab_election_introduction.png
-
-Auch hier erhalten Sie eine Bestätigung des Vorgangs.
-
-Wählen Sie nun "Antrag":
-
-.. image:: _static/images/config_tab_application.png
-
-und geben Sie "Mindestanzahl..."  0 ein sowie den Einleitungstext:
-
-.. image:: _static/images/config_tab_application_introduction.png
-
-Hiermit ist die Konfiguration zunächst abgeschlossen.
-
-Klicken Sie nun auf "Tagesordnung" um diese anzuzeigen. Die Liste ist zunächst leer und wir legen mit "Neuer Eintrag" einen neuen Tagesordnungspunkt an: (TODO: Bild falsch)
-
-.. image:: _static/images/top_new.png
-
-Klicken Sie "Speichern" und schauen Sie bitte auf die nun erscheinende List:
-
-.. image:: _static/images/top_initial_top.png
-
-Geben Sie einen weitere Tagesordnungspunkt "Bericht des Vorstands" ein:
-
-.. image:: _static/images/top_second_top_list.png
-
-Klicken Sie nun auf die Lasche "Teilnehmer/innen"
-
-.. image:: _static/images/participants_tab.png
-
-Um Anträge anlegen und Wahlen veranstalten zu können werden Sie nun Teilnehmer anlegen. Hierzu wählen Sie "Neue/r Teilnehmer/in" aus, so dass das Eingabefomular für Teilnehmer erscheint. Erfassen Sie nun 3 Teilnehmer. Zunächst Rudolf Ratlos wie dargestellt, die Einstellung für die Gruppen können Sie wie im Erläuterungstext beschrieben mehrfach markieren.
-
-.. image:: _static/images/participant_new.png
-
-und klicken Sie "Speichern". In der Liste sehen Sie nun einen Eintrag für Rudolf Ratlos.
-
-.. image:: _static/images/participant_added.png
-
-Klicken Sie auf das "Bearbeiten" Symbol am Ende der Zeile (Papier mit Stift). Sie sehen, dass dem Teilnehmer ein weiteres Feld "Benutzername" mit dem automatisch generierten Benutzernamen zugefügt wurde und im Feld "Erst-Passwort" (unten) etwas kryptisches eingetragen wurde.
-(TODO: Benutzernamen und passwort ändern???). Klicken Se einfach erneut "Speichern".
-
-Legen Sie nun Thea Tatendrang und Werner Wichtig genauso an wie eben, nur dass als Gruppe lediglich "Delegierte", das korrekte Geschlecht und kein Amt eingetragen wird. Die Liste sieht dann wie folgt aus:
-
-.. image:: _static/images/participant_all_added_list.png
+Nach der Installation ist OpenSlides bereits vorkonfiguriert. Die beim ersten Start ereugte (leere) Datenbank enthält einige Musterdaten. Die Konfiguration kann im laufenden Programm unter dem Tab „Konfiguration“ vorgenommen werden. Weitere Einstellungsmöglichkeiten für erfahrene Benutzer sind in den Dateien ``openslides_settings.py`` und ``settings.py`` möglich.
 
 
+Start des Servers
++++++++++++++++++
+
+Verwendung der Windows-Version (Portable) (**TODO**)
+----------------------------------------------------
+
+Wenn Sie die Windows-Version (**TODO**) verwenden, brauchen Sie nur die ``openslides.exe`` ausführen. Mit dieser Datei wird der Server gestartet.
+
+OpenSlides kann jederzeit mit der Tastenkombination ``Strg`` + ``Pause`` beendet werden. Alle eingegebenen Daten bleiben in der Datenbank gespeichert.
+
+Verwendung der anderen Version (**TODO**)
+-----------------------------------------
+
+Starten Sie den Server, indem Sie in der Kommandozeile eingeben::
+
+  python start.py
+
+Danach wird dort angezeigt:: 
+
+  Validating models...
+  
+  0 errors found
+  Django version 1.4, using settings 'openslides.settings'
+  Development server is running at http://192.168.x.y:80/
+  Quit the server with CTRL-BREAK.
+
+OpenSlides kann jederzeit mit der Tastenkombination ``Strg`` + ``Pause`` beendet werden. Alle eingegebenen Daten bleiben in der Datenbank gespeichert.
+
+Im *Präsentationsmodus Single* kann man den Server auch mit folgender Eingabe gestartet werden::
+
+  python manage.py runserver
 
 
-Durchführen der Veranstaltung
------------------------------
-Alle notwendigen Daten wurden im vorigen Abschnitt erfasst. In dieser Kurzanleitung wird die Veranstaltung als eine Art "Präsentation" durchgeführt, d.h. es gibt einen Rechner im Raum, ein Anwesender bedient diesen und alle anderen Anwesenden können den Ablauf auf einer Leinwand (Beamer erforderlich) verfolgen.
+Öffnen des Browsers
++++++++++++++++++++
 
-Es wird davon ausgegangen, dass der Erstbenutzer "benutzer" mit dem Passwort "openslides" angemeldet ist und die Ansicht zeigt die Tagesordnung.
+OpenSlides kann nun über den Browser aufgerufen werden. In dies Adresszeile muss die IP-Adresse des Servers eingetragen werden. Sie hat oft die Form ``http://192.168.x.y/``, wobei x und y für eine bestimmte Zahl mit ein bis drei Ziffern stehen. Am Computer, auf dem OpenSlides gestartet wurde, kann OpenSlides auch über ``http://localhost/`` aufgerufen werden. OpenSlides versucht normalerweise, den Browser gleich mit der richtigen Adresse zu öffnen.
 
-Starten Sie ein weiteres Browser-Fenster und geben Sie dort ebenfalls "http://localhost:8000" ein. Sie landen ebenfalls auf der Tagesordnung. Dort wählen Sie nun links "Beamer-Ansicht". (Platzieren Sie dieses Browser-Fenster so, dass es vom Beamer dargestellt wird. Das zweite Fenster mit der Tagesordnung verbleibt auf dem "alternativen" Bildschirm und stellt das Arbeitsfenster dar. Eventuell muss am Computer oder am Beamer etwas eingestellt werden, damit 2 verschiedene Bildschirme verwaltet werden können. Dies zu beschreiben geht über den Horizont der Kurzanleitung hinaus.)
+Sollten die angegebenen Adresse nicht funktionieren, versuchen Sie die Adresse, die in der Kommandozeile angegeben ist. Möglicherweise muss ``:8000`` angefügt werden.
 
-Im Beamer-Fenster ist folgendes sichtbar (Ausschnitt):
-
-.. image:: _static/images/beamer_view_top_part.png
+Der Login als Administrator ist mit dem Benutzernamen und dem Passwort möglich, den Sie während der Installation eingebenen haben. (**TODO**)
 
 
-Die Beamer-Ansicht wird über die Tagesordnung gesteuert und aktualisiert sich innerhalb kurzer Zeit nach einer Änderung. Ohne Ihr Zutun wird die vollständige Tagesordnung dargestellt.
+Arbeiten mit OpenSlides
++++++++++++++++++++++++
 
-Klicken Sie nun in der Tagesordnung auf den Haken links neben "Begrüssung" und beachten Sie das Beamer-Fenster. Dort wird jetzt fett "Begrüssung" angezeigt und die Anwesenden können den Fortschritt der Sitzung verfolgen.
+Im Webinterface von OpenSlides können Sie über die verschiedenen Tabs alle Inhalte in OpenSlides eingeben und verwalten.
+
+.. image:: _static/images/index.png
+
+Im Tab „Beamer“ steuern Sie, welche Folien auf dem Beamer angezeigt werden. Dazu klicken Sie einfach auf den jeweiligen grauen Haken. Im Tab „Tagesordnung“ können Sie die Tagesordnung der Veranstaltung im Vorfeld anlegen und entsprechende Folien vorbereiten. In den Tabs „Anträge“ und „Wahlen“ verwalten Sie die gestellten Anträge und die Wahlämter mit den Kandidaten sowie die dazugehörigen Abstimmungen und Wahlen. Der Tab „Teilnehmer/innen“ ermöglicht einen Zugriff auf die Personenprofile. Im Tab „Konfiguration“ können einige Einstellungen vorgenommen werden.
+
+Das Beamerbild wird unter folgender URL aufgerufen: ``http://192.168.x.y/projector/`` Loggen Sie sich an dem Computer, an dem der Beamer angeschlossen ist, in OpenSlides ein und rufen Sie die URL auf. Legen Sie die Anzeige in einem eigenen Browserfenster auf den Beamer und projizieren Sie sie so auf die Leinwand. Im *Präsentationsmodus Single* müssen Sie die Bildschirmanzeige auf Erweiterung/erweiterter Desktop stellen und das Browserfenster mit dem Beamerbild auf den Beamer schieben.
+
+Das Beamerbild aktualisiert sich vollkommen automatisch. Sollte die Aktualisierung auf Grund eines Fehlers, zum Beispiel einer Unterbrechung der Verbindung zum Server, aussetzen, sehen Sie auf den Folien unter der Uhrzeit eine rote Linie. Regelmäßig kann das Beamerbild an dem Computer, an dem der Beamer angeschlossen ist, mit der Taste ``F5`` zurückgesetzt werden.
 
 
-Bereinigung der Daten
----------------------
-
-Nachdem Sie diese Kurzanleitung mit Testdaten durchgespielt haben sollten Sie die Datenbank neu erstellen/löschen. (TODO: löschen???)

@@ -1,3 +1,0 @@
-Präsentationsmodus
-------------------
-TODO
