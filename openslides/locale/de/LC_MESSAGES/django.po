@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-23 22:04+0200\n"
+"POT-Creation-Date: 2012-04-23 22:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1901,10 +1901,6 @@ msgstr "Darf den Beamer steuern"
 msgid "Can see projector"
 msgstr "Darf den Beamer sehen"
 
-#: projector/models.py:49
-msgid "Projector Slide"
-msgstr "Beamer-Folie"
-
 #: projector/views.py:209 projector/templates/projector/base_projector.html:7
 #: projector/templates/projector/base_projector.html:11
 #: projector/templates/projector/control.html:41
@@ -2027,27 +2023,3 @@ msgstr "Bedaure, Sie haben keine Berechtigung diese Seite zu sehen."
 #: utils/views.py:223
 msgid "undefined-filename"
 msgstr "undefinierter-dateiname"
-
-#~ msgid "Print all elections"
-#~ msgstr "Alle Wahlen drucken"
-
-#~ msgid "Print Election"
-#~ msgstr "Wahl drucken"
-
-#~ msgid "Print participant list"
-#~ msgstr "Teilnehmerliste drucken"
-
-#~ msgid "Edit assignment"
-#~ msgstr "Wahl bearbeiten"
-
-#~ msgid "Delete assignment"
-#~ msgstr "Wahl löschen"
-
-#~ msgid "passwords"
-#~ msgstr "Passwörter"
-
-#~ msgid "Print vote"
-#~ msgstr "Abstimmung drucken"
-
-#~ msgid "available posts"
-#~ msgstr "verfügbare Posten"

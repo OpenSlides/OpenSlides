@@ -46,7 +46,7 @@ class ProjectorOverlay(models.Model):
         return self.def_name
 
 
-register_slidemodel(ProjectorSlide, model_name=_('Projector Slide'))
+register_slidemodel(ProjectorSlide, model_name='customslide')
 
 
 @receiver(default_config_value, dispatch_uid="projector_default_config")
