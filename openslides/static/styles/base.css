@@ -357,61 +357,52 @@ input[type="submit"], input[type="button"]  {
     background:url(../images/icons/dialog-ok.png) no-repeat 0px 0px;
 }
 .button .edit{
-    background:url(../images/icons/document-edit.png) no-repeat 0px 0px;
+    background:url(../images/icons/edit.png) no-repeat 0px 0px;
 }
 .button .revert{
-    background:url(../images/icons/document-revert.png) no-repeat 0px 0px;
+    background:url(../images/icons/revert.png) no-repeat 0px 0px;
 }
 .button .undo{
-    background:url(../images/icons/edit-undo.png) no-repeat 0px 0px;
+    background:url(../images/icons/undo.png) no-repeat 0px 0px;
 }
 .button .item{
     background:url(../images/icons/view-list-details.png) no-repeat 0px 0px;
 }
 .button .projector{
-    background:url(../images/icons/video-projector.png) no-repeat 0px 0px;
+    background:url(../images/icons/projector.png) no-repeat 0px 0px;
 }
-.button .accept{
-    background:url(../images/icons/task-complete.png) no-repeat 0px 0px;
+.button .done{
+    background:url(../images/icons/done.png) no-repeat 0px 0px;
 }
 .button .reject{
-    background:url(../images/icons/task-reject.png) no-repeat 0px 0px;
+    background:url(../images/icons/reject.png) no-repeat 0px 0px;
 }
-.button .poll{
-    background:url(../images/icons/view-statistics.png) no-repeat 0px 0px;
-}
-.button .previous{
-    background:url(../images/icons/go-previous.png) no-repeat 0px 0px;
+.statistics{
+    background:url(../images/icons/statistics.png) no-repeat 0px 0px;
 }
 .button .pdf{
     background:url(../images/icons/pdf.png) no-repeat 0px 0px;
 }
 .button .adduser{
-    background:url(../images/icons/list-add-user.png) no-repeat 0px 0px;
+    background:url(../images/icons/add-user.png) no-repeat 0px 0px;
 }
 .button .removeuser{
-    background:url(../images/icons/list-remove-user.png) no-repeat 0px 0px;
+    background:url(../images/icons/remove-user.png) no-repeat 0px 0px;
 }
 .button .export{
-    background:url(../images/icons/document-export.png) no-repeat 0px 0px;
+    background:url(../images/icons/export.png) no-repeat 0px 0px;
 }
 .button .import{
-    background:url(../images/icons/document-import.png) no-repeat 0px 0px;
+    background:url(../images/icons/import.png) no-repeat 0px 0px;
 }
 .button .add{
-    background:url(../images/icons/list-add.png) no-repeat 0px 0px;
-}
-.button .remove{
-    background:url(../images/icons/list-remove.png) no-repeat 0px 0px;
+    background:url(../images/icons/add.png) no-repeat 0px 0px;
 }
 .button .number{
-    background:url(../images/icons/milestone.png) no-repeat 0px 0px;
-}
-.button .stop{
-    background:url(../images/icons/process-stop.png) no-repeat 0px 0px;
+    background:url(../images/icons/number.png) no-repeat 0px 0px;
 }
 .button .guest{
-    background:url(../images/icons/user-identity.png) no-repeat 0px 0px;
+    background:url(../images/icons/guest.png) no-repeat 0px 0px;
 }
 .button .clear{
     background:url(../images/icons/clear.png) no-repeat 0px 0px;
@@ -553,7 +544,7 @@ ul.results {
     padding: 10px 20px 10px 36px;
 }
 .notification.success {
-    background: url("../images/icons/task-complete.png") repeat scroll 0 0 #D5FFCE;
+    background: url("../images/icons/done.png") repeat scroll 0 0 #D5FFCE;
     border-color: #9ADF8F;
     color: #556652;
 }
@@ -563,7 +554,7 @@ ul.results {
     color: #665252;
 }
 .notification.warning {
-    background: url("../images/icons/task-attention.png") repeat scroll 0 0 #FFFBCC;
+    background: url("../images/icons/warning.png") repeat scroll 0 0 #FFFBCC;
     border-color: #E6DB55;
     color: #666452;
 }
@@ -587,14 +578,12 @@ ul.results {
 .preview {
     background:url("../images/icons/preview.png") no-repeat 0px 0px;
 }
-.poll {
-    background:url("../images/icons/view-statistics.png") no-repeat 0px 0px;
-}
+
 
 
 /* inactive/active */
 a.activate_link span {
-    background-image: url(../images/icons/task-accepted-grey.png);
+    background-image: url(../images/icons/accepted-grey.png);
     background-repeat: no-repeat;
     background-position: center;
     width: 16px;
@@ -602,7 +591,7 @@ a.activate_link span {
     display: inline-block;
 }
 a.activate_link.active span {
-    background-image: url(../images/icons/task-accepted.png);
+    background-image: url(../images/icons/accepted.png);
 }
 tr.activeline td, .activeline {
     background-color: #bed4de !important;

@@ -1007,7 +1007,7 @@ msgstr "Version akzeptiert"
 
 #: application/templates/application/view.html:256
 msgid "Accept Version"
-msgstr "Zugelassene Version"
+msgstr "Version zulassen"
 
 #: application/templates/application/view.html:259
 msgid "Reject Version"

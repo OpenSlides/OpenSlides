@@ -55,7 +55,7 @@
             <img src="{% static 'images/icons/go-down.png' %}" />
         </a>
         <a class="projector_edit" href="{% url projector_clean %}" title="{% trans 'Reset projector view' %}">
-            <img src="{% static 'images/icons/view-restore.png' %}" />
+            <img src="{% static 'images/icons/view-reset.png' %}" />
         </a>
     </div>
 
@@ -113,13 +113,13 @@
                                 |
                                 <a href="{% url config_agenda %}">{{countdown_time}}{% trans "sec" %}</a>
                                 <a class="projector_countdown" href="{% url countdown_reset %}" title="{% trans 'Reset countdown' %}">
-                                    <img src="{% static 'images/icons/media-skip-backward.png' %}" />
+                                    <img src="{% static 'images/icons/skip-backward.png' %}" />
                                 </a>
                                 <a class="projector_countdown" href="{% url countdown_start %}" title="{% trans 'Start countdown' %}">
-                                    <img src="{% static 'images/icons/media-playback-start.png' %}" />
+                                    <img src="{% static 'images/icons/play.png' %}" />
                                 </a>
                                 <a class="projector_countdown" href="{% url countdown_stop %}" title="{% trans 'Stop countdown' %}">
-                                    <img src="{% static 'images/icons/media-playback-pause.png' %}" />
+                                    <img src="{% static 'images/icons/pause.png' %}" />
                                 </a>
                             {% endif %}
                             {% if overlay.def_name == "Message" %}

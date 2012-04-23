@@ -7,7 +7,7 @@
                 <span></span>
             </a>
         {% elif item.closed %}
-                <img src="{% static 'images/icons/task-complete.png' %}" title="{% trans 'Item closed' %}">
+                <img src="{% static 'images/icons/done.png' %}" title="{% trans 'Item closed' %}">
         {% endif %}
     </td>
     <td>
@@ -29,7 +29,7 @@
         {% endif %}
         {% if perms.agenda.can_manage_agenda %}
             <a href="{% url item_edit item.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit item' %}"></a>
-            <a href="{% url item_delete item.id %}"><img src="{% static 'images/icons/edit-delete.png' %}" title="{% trans 'Delete item' %}"></a>
+            <a href="{% url item_delete item.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete item' %}"></a>
         {% endif %}
         </span>
     </td>

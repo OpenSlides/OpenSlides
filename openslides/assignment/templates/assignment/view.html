@@ -64,7 +64,7 @@
         <li>{{ profile }}
         {% if perms.assignment.can_manage_assignment %}
         {% if assignment.status == "sea" or assignment.status == "vot" %}
-        <a href="{% url assignment_delother assignment.id profile.id %}"><img src="{% static 'images/icons/edit-delete.png' %}" title="{% trans 'Remove candidate' %}"></a>
+        <a href="{% url assignment_delother assignment.id profile.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Remove candidate' %}"></a>
         {% endif %}
         {% endif %}
         </li>
@@ -101,7 +101,7 @@
             <label>{{ field.label }}:</label>
             <nobr>{{ field }}
             {% if perms.participant.can_see_participant and perms.participant.can_manage_participant %}
-            <a href="{% url user_new %}" target="_blank"><img src="{% static 'images/icons/list-add-user.png' %}" title="{% trans 'Add new participant' %}"></a>
+            <a href="{% url user_new %}" target="_blank"><img src="{% static 'images/icons/add-user.png' %}" title="{% trans 'Add new participant' %}"></a>
             {% endif %}
             </nobr>
             {% endfor %}
@@ -138,14 +138,14 @@
                     </a>
                     {% if poll.published %}
                         <a href={% url assignment_poll_notpublish poll.id %}><img
-                            src="{% static 'images/icons/user-online.png' %}"
+                            src="{% static 'images/icons/on.png' %}"
                             title="{% trans 'Unpublish results' %}"></a>
                     {% else %}
                         <a href={% url assignment_poll_publish poll.id %}><img
-                            src="{% static 'images/icons/user-offline.png' %}"
+                            src="{% static 'images/icons/off.png' %}"
                             title="{% trans 'Publish results' %}"></a>
                     {% endif %}
-                    <a href="{% url assignment_poll_delete poll.id %}"><img src="{% static 'images/icons/edit-delete.png' %}" title="{% trans 'Delete Poll' %}"></a>
+                    <a href="{% url assignment_poll_delete poll.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete Poll' %}"></a>
                     {% endif %}
                 </th>
             {# endif #}
@@ -154,7 +154,7 @@
             <th>
                 <a href='{% url assignment_gen_poll assignment.id %}'>
                     <span class="button">
-                       <span class="icon poll">{%trans 'New ballot' %}</span>
+                       <span class="icon statistics">{%trans 'New ballot' %}</span>
                     </span>
                 </a>
             </th>
@@ -231,7 +231,7 @@
     {% if assignment.profile.count > 0 and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
         <p><a href='{% url assignment_gen_poll assignment.id %}'>
         <span class="button">
-           <span class="icon poll">{%trans 'New ballot' %}</span>
+           <span class="icon statistics">{%trans 'New ballot' %}</span>
         </span>
         </a></p>
     {% endif %}

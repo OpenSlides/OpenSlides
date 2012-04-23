@@ -68,8 +68,8 @@
                     </a>
                 {% endif %}
                 {% if perms.application.can_manage_application %}
-                    <a href="{% url application_edit application.id %}"><img src="{% static 'images/icons/document-edit.png' %}" title="{% trans 'Edit application' %}"></a>
-                    <a href="#"><img src="{% static 'images/icons/edit-delete.png' %}" title="{% trans 'Delete application' %}"></a>
+                    <a href="{% url application_edit application.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit application' %}"></a>
+                    <a href="#"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete application' %}"></a>
                 {% endif %}
                 <a href="{% url print_application application.id  %}" title="{%trans 'Application as PDF' %}"><img src="{% static 'pdf.png' %}"></a>
                 </span>

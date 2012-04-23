@@ -1,6 +1,6 @@
 /* agenda item open/closed */
 a.close_link span {
-    background-image: url(../images/icons/task-complete-grey.png);
+    background-image: url(../images/icons/done-grey.png);
     background-repeat: no-repeat;
     background-position: center;
     width: 16px;
@@ -8,5 +8,5 @@ a.close_link span {
     display: inline-block;
 }
 a.close_link.closed span {
-    background-image: url(../images/icons/task-complete.png);
+    background-image: url(../images/icons/done.png);
 }
