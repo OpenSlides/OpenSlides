@@ -45,9 +45,9 @@
             <li><a href="{% url print_application application.id  %}"><img src="{% static 'images/icons/pdf.png' %}"> {%trans 'Application as PDF' %}</a></li>
         {# activate and polls #}
             {% if perms.projector.can_manage_projector %}
-                <li><a href="{% url projector_activate_slide application.sid  %}"><img src="{% static 'images/icons/video-projector.png' %}"> {%trans 'Show Application' %}</a></li>
+                <li><a href="{% url projector_activate_slide application.sid  %}"><img src="{% static 'images/icons/projector.png' %}"> {%trans 'Show Application' %}</a></li>
                 {% if "genpoll" in actions %}
-                <li><a href='{% url application_gen_poll application.id %}'><img src="{% static 'images/icons/view-statistics.png' %}"> {%trans 'New vote' %}</a></li>
+                <li><a href='{% url application_gen_poll application.id %}'><img src="{% static 'images/icons/statistics.png' %}"> {%trans 'New vote' %}</a></li>
                 {% endif %}
                 {% for poll in application.polls %}
                     {% url application_poll_view poll.id as url_applicationpollview %}

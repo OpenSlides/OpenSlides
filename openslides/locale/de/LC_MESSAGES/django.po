@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-22 16:46+0200\n"
+"POT-Creation-Date: 2012-04-23 22:16+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -54,7 +54,6 @@ msgid "Closed"
 msgstr "Abgeschlossen"
 
 #: agenda/models.py:42 agenda/templates/agenda/overview.html:66
-#: projector/models.py:19
 msgid "Weight"
 msgstr "Gewichtung"
 
@@ -1007,7 +1006,7 @@ msgstr "Version akzeptiert"
 
 #: application/templates/application/view.html:256
 msgid "Accept Version"
-msgstr "Zugelassene Version"
+msgstr "Version zulassen"
 
 #: application/templates/application/view.html:259
 msgid "Reject Version"
@@ -1119,7 +1118,7 @@ msgstr "Darf selbst für Wahlen kandidieren"
 msgid "Can manage assignment"
 msgstr "Darf Wahlen verwalten"
 
-#: assignment/models.py:203 assignment/views.py:291 assignment/views.py:575
+#: assignment/models.py:205 assignment/views.py:291 assignment/views.py:575
 #: assignment/templates/assignment/base_assignment.html:14
 #: assignment/templates/assignment/overview.html:6
 #: assignment/templates/assignment/overview.html:9
@@ -1249,8 +1248,8 @@ msgid "New election"
 msgstr "Neue Wahl"
 
 #: assignment/templates/assignment/base_assignment.html:20
-msgid "Print all elections"
-msgstr "Alle Wahlen drucken"
+msgid "All elections as PDF"
+msgstr "Alle Wahlen als PDF"
 
 #: assignment/templates/assignment/config.html:5
 #: assignment/templates/assignment/config.html:8
@@ -1277,6 +1276,7 @@ msgid "Delete election"
 msgstr "Wahl löschen"
 
 #: assignment/templates/assignment/overview.html:46
+#: assignment/templates/assignment/view.html:14
 msgid "Election as PDF"
 msgstr "Wahl als PDF"
 
@@ -1304,10 +1304,6 @@ msgstr "Kurzbeschreibung"
 #: assignment/templates/assignment/poll_view.html:46
 msgid "Print ballot"
 msgstr "Stimmzettel drucken"
-
-#: assignment/templates/assignment/view.html:14
-msgid "Print Election"
-msgstr "Wahl drucken"
 
 #: assignment/templates/assignment/view.html:26
 msgid "Manage election"
@@ -1408,7 +1404,7 @@ msgstr "Erlaube Zugriff für anonyme Gast-Nutzer"
 
 #: config/forms.py:28 participant/forms.py:95
 msgid "Welcome text"
-msgstr "Willkommens text"
+msgstr "Willkommenstext"
 
 #: config/models.py:34
 msgid "Can manage configuration"
@@ -1762,12 +1758,12 @@ msgid "Import participants"
 msgstr "Teilnehmer/innen importieren"
 
 #: participant/templates/participant/base_participant.html:24
-msgid "Print participant list"
-msgstr "Teilnehmerliste drucken"
+msgid "List of participants as PDF"
+msgstr "Teilnehmerliste als PDF"
 
 #: participant/templates/participant/base_participant.html:27
-msgid "Print first time passwords"
-msgstr "Erst-Passwörter drucken"
+msgid "First time passwords as PDF"
+msgstr "Erst-Passwörter als PDF"
 
 #: participant/templates/participant/config.html:5
 #: participant/templates/participant/config.html:8
@@ -1905,10 +1901,6 @@ msgstr "Darf den Beamer steuern"
 msgid "Can see projector"
 msgstr "Darf den Beamer sehen"
 
-#: projector/models.py:49
-msgid "Projector Slide"
-msgstr "Beamer-Folie"
-
 #: projector/views.py:209 projector/templates/projector/base_projector.html:7
 #: projector/templates/projector/base_projector.html:11
 #: projector/templates/projector/control.html:41
@@ -1975,10 +1967,18 @@ msgstr "Countdown starten"
 msgid "Stop countdown"
 msgstr "Countdown stoppen"
 
+#: projector/templates/projector/control.html:151
+msgid "Custom slides"
+msgstr "Benutzerdefinierte Folien"
+
+#: projector/templates/projector/control.html:163
+msgid "New slide"
+msgstr "Neue Folie"
+
 #: projector/templates/projector/new.html:6
 #: projector/templates/projector/new.html:9
-msgid "New Slide"
-msgstr "Neue Folie"
+msgid "New custom slide"
+msgstr "Neue benutzerdefinierte Folie"
 
 #: templates/404.html:7
 msgid "Page not found."
@@ -2023,18 +2023,3 @@ msgstr "Bedaure, Sie haben keine Berechtigung diese Seite zu sehen."
 #: utils/views.py:223
 msgid "undefined-filename"
 msgstr "undefinierter-dateiname"
-
-#~ msgid "Edit assignment"
-#~ msgstr "Wahl bearbeiten"
-
-#~ msgid "Delete assignment"
-#~ msgstr "Wahl löschen"
-
-#~ msgid "passwords"
-#~ msgstr "Passwörter"
-
-#~ msgid "Print vote"
-#~ msgstr "Abstimmung drucken"
-
-#~ msgid "available posts"
-#~ msgstr "verfügbare Posten"

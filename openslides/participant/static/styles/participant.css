@@ -1,5 +1,5 @@
 a.status_link.active span {
-    background-image: url(../images/icons/user-online.png);
+    background-image: url(../images/icons/on.png);
     background-repeat: no-repeat;
     background-position: center;
     width: 16px;
@@ -7,7 +7,7 @@ a.status_link.active span {
     display: inline-block;
 }
 a.status_link.inactive span {
-    background-image: url(../images/icons/user-offline.png);
+    background-image: url(../images/icons/off.png);
     background-repeat: no-repeat;
     background-position: center;
     width: 16px;

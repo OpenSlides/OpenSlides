@@ -16,7 +16,7 @@ class ProjectorSlide(models.Model, SlideMixin):
 
     title = models.CharField(max_length=100, verbose_name=_("Title"))
     text = models.TextField(null=True, blank=True, verbose_name=_("Text"))
-    weight = models.IntegerField(default=0, verbose_name=_("Weight"))
+    #weight = models.IntegerField(default=0, verbose_name=_("Weight"))
 
     def slide(self):
         return {
@@ -46,7 +46,7 @@ class ProjectorOverlay(models.Model):
         return self.def_name
 
 
-register_slidemodel(ProjectorSlide, model_name=_('Projector Slide'))
+register_slidemodel(ProjectorSlide, model_name='customslide')
 
 
 @receiver(default_config_value, dispatch_uid="projector_default_config")

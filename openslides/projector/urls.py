@@ -53,7 +53,7 @@ urlpatterns = patterns('projector.views',
             template_name='projector/new.html',
             permission_required='projector.can_manage_projector'
         ),
-        name='projector_new',
+        name='custom_slides_new',
     ),
 
     url(r'^bigger/$', 'projector_edit', {'direction': 'bigger'},

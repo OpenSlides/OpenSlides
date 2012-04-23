@@ -50,7 +50,7 @@
             {% if perms.application.can_manage_application %}
                 {% if "genpoll" in actions %}
                 <a href='{% url application_gen_poll application.id %}'>
-                    <span class="button"><span class="icon poll">{%trans 'New vote' %}</span></span>
+                    <span class="button"><span class="icon statistics">{%trans 'New vote' %}</span></span>
                 </a>
                 {% else %}
                 -
@@ -68,7 +68,7 @@
                         <b>{{ forloop.counter }}. {% trans "Vote" %}:</b>
                     </a>
                     <a href="{% url application_poll_delete poll.id %}">
-                        <img src="{% static 'images/icons/edit-delete.png' %}" title="{% trans 'Delete Vote' %}">
+                        <img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete Vote' %}">
                     </a>
                 {% elif poll.has_votes %}
                     <b>{{ forloop.counter }}. {% trans "Vote" %}:</b>
@@ -88,7 +88,7 @@
                         {% if forloop.last %}
                         {% if "genpoll" in actions %}
                         <a href='{% url application_gen_poll application.id %}'>
-                            <span class="button"><span class="icon poll">{%trans 'New vote' %}</span></span>
+                            <span class="button"><span class="icon statistics">{%trans 'New vote' %}</span></span>
                         </a>
                         {% endif %}
                         {% endif %}
@@ -149,7 +149,7 @@
         <a href='{% url application_permit application.id %}'><span class="button"><span class="icon ok-blue">{% trans 'Permit' %}</span></span></a>
         {% endif %}
         {% if "nop" in actions %}
-        <a href='{% url application_notpermit application.id %}'><span class="button"><span class="icon stop">{% trans 'Not permit (reject)' %}</span></span></a>
+        <a href='{% url application_notpermit application.id %}'><span class="button"><span class="icon reject">{% trans 'Not permit (reject)' %}</span></span></a>
         {% endif %}
         {% if "setnumber" in actions %}
         <a href='{% url application_set_number application.id %}'><span class="button"><span class="icon number">{% trans 'Set Number' %}</span></span></a>
@@ -162,7 +162,7 @@
         <h4>{% trans "Result after vote" %}:</h4>
         {% if "acc" in actions %}
         <a href='{% url application_set_status application.id 'acc' %}'>
-            <span class="button"><span class="icon accept">{%trans 'Accepted' %}</span></span>
+            <span class="button"><span class="icon done">{%trans 'Accepted' %}</span></span>
         </a>
         {% endif %}
         {% if "rej" in actions %}
@@ -250,17 +250,17 @@
         <td style="white-space:nowrap;">
         {% if application.status != "pub" %}
         {% if revision == application.permitted %}
-             <img title="{%trans 'Version accepted' %}" src="{% static 'images/icons/task-accepted.png' %}">
+             <img title="{%trans 'Version accepted' %}" src="{% static 'images/icons/accept.png' %}">
         {% else %}
              {% if perms.application.can_manage_application %}
-                 <a href="{% url application_version_permit revision.id %}"><img title="{%trans 'Accept Version' %}" src="{% static 'images/icons/task-accepted-grey.png' %}"></a>
+                 <a href="{% url application_version_permit revision.id %}"><img title="{%trans 'Accept Version' %}" src="{% static 'images/icons/accept-grey.png' %}"></a>
              {% endif %}
              {% if not revision.rejected and revision.id > application.permitted.id and perms.application.can_manage_application %}
-                 <a href="{% url application_version_reject revision.id %}"><img title="{%trans 'Reject Version' %}" src="{% static 'images/icons/task-reject-grey.png' %}"></a>
+                 <a href="{% url application_version_reject revision.id %}"><img title="{%trans 'Reject Version' %}" src="{% static 'images/icons/reject-grey.png' %}"></a>
              {% endif %}
         {% endif %}
         {% if revision.rejected %}
-            <img title="{%trans 'Version rejected' %}" src="{% static 'images/icons/task-reject.png' %}">
+            <img title="{%trans 'Version rejected' %}" src="{% static 'images/icons/reject.png' %}">
         {% endif %}
         {% endif %}
         </td>

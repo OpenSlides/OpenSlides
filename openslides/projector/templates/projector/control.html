@@ -55,7 +55,7 @@
             <img src="{% static 'images/icons/go-down.png' %}" />
         </a>
         <a class="projector_edit" href="{% url projector_clean %}" title="{% trans 'Reset projector view' %}">
-            <img src="{% static 'images/icons/view-restore.png' %}" />
+            <img src="{% static 'images/icons/view-reset.png' %}" />
         </a>
     </div>
 
@@ -64,7 +64,7 @@
         {% if category != 'projector' %}
         <div class="portlet">
             {% with category_big=category|capfirst %}
-            <div class="portlet-header">{% trans  category_big %}</div>
+            <div class="portlet-header">{% trans category_big %}</div>
             {% endwith %}
             <div class="portlet-content">
             {% for slides in group %}
@@ -113,13 +113,13 @@
                                 |
                                 <a href="{% url config_agenda %}">{{countdown_time}}{% trans "sec" %}</a>
                                 <a class="projector_countdown" href="{% url countdown_reset %}" title="{% trans 'Reset countdown' %}">
-                                    <img src="{% static 'images/icons/media-skip-backward.png' %}" />
+                                    <img src="{% static 'images/icons/skip-backward.png' %}" />
                                 </a>
                                 <a class="projector_countdown" href="{% url countdown_start %}" title="{% trans 'Start countdown' %}">
-                                    <img src="{% static 'images/icons/media-playback-start.png' %}" />
+                                    <img src="{% static 'images/icons/play.png' %}" />
                                 </a>
                                 <a class="projector_countdown" href="{% url countdown_stop %}" title="{% trans 'Stop countdown' %}">
-                                    <img src="{% static 'images/icons/media-playback-pause.png' %}" />
+                                    <img src="{% static 'images/icons/pause.png' %}" />
                                 </a>
                             {% endif %}
                             {% if overlay.def_name == "Message" %}
@@ -143,5 +143,29 @@
                 </ul>
             </div>
         </div> <!-- end portlet-->
+
+        <!-- Custom slides -->
+        {% for category, group in categories.items %}
+            {% if category == 'projector' %}
+            <div class="portlet">
+                <div class="portlet-header">{% trans "Custom slides" %}</div>
+                <div class="portlet-content">
+                {% for slides in group %}
+                    {% if slides.control_template %}
+                        {% include slides.control_template %}
+                    {% endif %}
+                    {% if not forloop.last %}
+                        <hr>
+                    {% endif %}
+                {% endfor %}
+                <a href='{% url custom_slides_new %}'>
+                <button class="button" type="button" onclick="window.location='{% url custom_slides_new %}'">
+                    <span class="icon add">{%trans 'New slide' %}</span>
+                </button>
+                </a>
+                </div>
+            </div> <!-- end portlet-->
+           {% endif %}
+        {% endfor %}
     </div> <!-- end column -->
 {% endblock %}
