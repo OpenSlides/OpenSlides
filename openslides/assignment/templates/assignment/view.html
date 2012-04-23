@@ -11,7 +11,7 @@
     <div class="box">
     <h4 style="float:left;">{% trans "Status" %}:</h4>
     <h4 style="text-align: right;">
-    <a href="{% url print_assignment assignment.id %}"><img src="{% static 'images/icons/application-pdf.png' %}" title="{% trans 'Print Election' %}"></a>
+    <a href="{% url print_assignment assignment.id %}"><img src="{% static 'images/icons/pdf.png' %}" title="{% trans 'Election as PDF' %}"></a>
     </h4>
     <span clear="all"></span>
     {% trans assignment.get_status_display %}

@@ -15,7 +15,7 @@
         {% if perms.application.can_manage_application %}
             <li class="{% active request '/application/import' %}"><a href="{%  url application_import %}">{%trans 'Import applications' %}</a></li>
         {% endif %}
-        <li><a href="{% url print_applications %}"><img src="{% static 'images/icons/application-pdf.png' %}"> {%trans 'All applications as PDF' %}</a></li>
+        <li><a href="{% url print_applications %}"><img src="{% static 'images/icons/pdf.png' %}"> {%trans 'All applications as PDF' %}</a></li>
     </ul>
 
     {# second submenu #}
@@ -42,7 +42,7 @@
             <li><a href="{% url application_delete application.id  %}">{%trans 'Delete application' %}</a></li>
             {% endif %}
         {# PDF #}
-            <li><a href="{% url print_application application.id  %}"><img src="{% static 'images/icons/application-pdf.png' %}"> {%trans 'Application as PDF' %}</a></li>
+            <li><a href="{% url print_application application.id  %}"><img src="{% static 'images/icons/pdf.png' %}"> {%trans 'Application as PDF' %}</a></li>
         {# activate and polls #}
             {% if perms.projector.can_manage_projector %}
                 <li><a href="{% url projector_activate_slide application.sid  %}"><img src="{% static 'images/icons/video-projector.png' %}"> {%trans 'Show Application' %}</a></li>
@@ -53,7 +53,7 @@
                     {% url application_poll_view poll.id as url_applicationpollview %}
                     <li class="{% if request.path == url_applicationpollview %}selected{% endif %}"><a href="{% url application_poll_view poll.id %}">{% trans "View Vote" %} {% if forloop.counter > 1 %}(#{{ forloop.counter }}){% endif %}</a></li>
                     {% url print_application_poll poll.id as url_applicationedit %}
-                    <li><a href="{% url print_application_poll poll.id %}"><img src="{% static 'images/icons/application-pdf.png' %}"> {%trans 'Ballot paper' %} {% if forloop.counter > 1 %}(#{{ forloop.counter }}){% endif %}</a></li>
+                    <li><a href="{% url print_application_poll poll.id %}"><img src="{% static 'images/icons/pdf.png' %}"> {%trans 'Ballot paper' %} {% if forloop.counter > 1 %}(#{{ forloop.counter }}){% endif %}</a></li>
                 {% endfor %}
             {% endif %}
         </ul>

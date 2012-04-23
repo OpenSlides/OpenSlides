@@ -17,6 +17,6 @@
         {% if perms.assignment.can_manage_assignment %}
             <li class="{% active request '/assignment/new' %}"><a href="{% url assignment_new %}">{%trans "New election" %}</a></li>
         {% endif %}
-        <li><a href="{% url print_assignment %}"><img src="{% static 'images/icons/application-pdf.png' %}"> {%trans 'Print all elections' %}</a></li>
+        <li><a href="{% url print_assignment %}"><img src="{% static 'images/icons/pdf.png' %}"> {%trans 'All elections as PDF' %}</a></li>
     </ul>
 {% endblock %}

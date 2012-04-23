@@ -384,7 +384,7 @@ input[type="submit"], input[type="button"]  {
     background:url(../images/icons/go-previous.png) no-repeat 0px 0px;
 }
 .button .pdf{
-    background:url(../images/icons/application-pdf.png) no-repeat 0px 0px;
+    background:url(../images/icons/pdf.png) no-repeat 0px 0px;
 }
 .button .adduser{
     background:url(../images/icons/list-add-user.png) no-repeat 0px 0px;
@@ -558,7 +558,7 @@ ul.results {
     color: #556652;
 }
 .notification.error {
-    background: url("../images/icons/task-reject.png") repeat scroll 0 0 #FFCECE;
+    background: url("../images/icons/error.png") repeat scroll 0 0 #FFCECE;
     border-color: #DF8F8F;
     color: #665252;
 }
@@ -568,7 +568,7 @@ ul.results {
     color: #666452;
 }
 .notification.info {
-    background: url("../images/icons/dialog-information.png") repeat scroll 0 0 #DBE3FF;
+    background: url("../images/icons/information.png") repeat scroll 0 0 #DBE3FF;
     border-color: #A2B4EE;
     color: #585B66;
 }

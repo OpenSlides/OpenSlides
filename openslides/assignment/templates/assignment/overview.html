@@ -43,7 +43,7 @@
                     <a href="{% url assignment_edit assignment.id %}"><img src="{% static 'images/icons/document-edit.png' %}" title="{%trans 'Edit election' %}"></a>
                     <a href="{% url assignment_delete assignment.id %}"><img src="{% static 'images/icons/edit-delete.png' %}" title="{%trans 'Delete election' %}"></a>
                 {% endif %}
-                <a href="{% url print_assignment assignment.id %}" title="{% trans 'Election as PDF' %}"><img src="{% static 'images/icons/application-pdf.png' %}"></a>
+                <a href="{% url print_assignment assignment.id %}" title="{% trans 'Election as PDF' %}"><img src="{% static 'images/icons/pdf.png' %}"></a>
                 </span>
             </td>
         </tr>
