@@ -277,6 +277,9 @@ def main():
     copy_dlls(odir)
     copy_msvcr(odir)
 
+    shutil.copytree("extras/win32-portable/licenses",
+        os.path.join(odir, "licenses"))
+
     fp = os.path.join("dist", "openslides-{0}-portable.zip".format(
         openslides.get_version()))
 
