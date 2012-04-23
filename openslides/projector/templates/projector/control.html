@@ -64,7 +64,7 @@
         {% if category != 'projector' %}
         <div class="portlet">
             {% with category_big=category|capfirst %}
-            <div class="portlet-header">{% trans  category_big %}</div>
+            <div class="portlet-header">{% trans category_big %}</div>
             {% endwith %}
             <div class="portlet-content">
             {% for slides in group %}
@@ -143,5 +143,29 @@
                 </ul>
             </div>
         </div> <!-- end portlet-->
+
+        <!-- Custom slides -->
+        {% for category, group in categories.items %}
+            {% if category == 'projector' %}
+            <div class="portlet">
+                <div class="portlet-header">{% trans "Custom slides" %}</div>
+                <div class="portlet-content">
+                {% for slides in group %}
+                    {% if slides.control_template %}
+                        {% include slides.control_template %}
+                    {% endif %}
+                    {% if not forloop.last %}
+                        <hr>
+                    {% endif %}
+                {% endfor %}
+                <a href='{% url custom_slides_new %}'>
+                <button class="button" type="button" onclick="window.location='{% url custom_slides_new %}'">
+                    <span class="icon add">{%trans 'New slide' %}</span>
+                </button>
+                </a>
+                </div>
+            </div> <!-- end portlet-->
+           {% endif %}
+        {% endfor %}
     </div> <!-- end column -->
 {% endblock %}

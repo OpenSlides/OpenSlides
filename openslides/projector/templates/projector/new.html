@@ -3,10 +3,10 @@
 {% load tags %}
 {% load i18n %}
 
-{% block title %}{{ block.super }} – {%trans "New Slide" %}{% endblock %}
+{% block title %}{{ block.super }} – {%trans "New custom slide" %}{% endblock %}
 
 {% block content %}
-    <h1>{% trans 'New Slide' %}</h1>
+    <h1>{% trans 'New custom slide' %}</h1>
     <form action="" method="post">{% csrf_token %}
         {{ form.as_p }}
         <button class="button" type="submit">

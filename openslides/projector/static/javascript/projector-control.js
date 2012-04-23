@@ -11,6 +11,7 @@ $(function() {
             success: function(data) {
                 $('.activate_link').removeClass('active');
                 $('li').removeClass('activeline');
+                $('div').removeClass('activeline');
                 link.addClass('active');
                 link.parent().addClass('activeline');
             },

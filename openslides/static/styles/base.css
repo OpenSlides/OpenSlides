@@ -395,7 +395,7 @@ input[type="submit"], input[type="button"]  {
 .button .import{
     background:url(../images/icons/import.png) no-repeat 0px 0px;
 }
-.button .add{
+.add{
     background:url(../images/icons/add.png) no-repeat 0px 0px;
 }
 .button .number{
