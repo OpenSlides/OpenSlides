@@ -12,6 +12,7 @@ import distutils.ccompiler
 import distutils.sysconfig
 
 from contextlib import nested
+from string import Template
 
 import pkg_resources
 
@@ -245,6 +246,22 @@ def copy_msvcr(odir):
     dest = os.path.join(msvcr_dest_dir, "{0}.manifest".format(MSVCR_NAME))
     shutil.copyfile(src, dest)
 
+
+def write_readme(template_file, outfile):
+    with open(template_file, "rU") as f:
+        tmpl = Template(f.read())
+
+    packages = ["openslides-{0}".format(openslides.get_version())]
+    for pkg in SITE_PACKAGES:
+        dist = pkg_resources.get_distribution(pkg)
+        packages.append("{0}-{1}".format(dist.project_name, dist.version))
+
+    tmpl_vars = {"PACKAGE_LIST": "\n".join(packages)}
+
+    with open(outfile, "w") as f:
+        f.write(tmpl.substitute(tmpl_vars))
+
+
 def main():
     prefix = os.path.dirname(sys.executable)
     libdir = os.path.join(prefix, "Lib")
@@ -282,6 +299,9 @@ def main():
 
     fp = os.path.join("dist", "openslides-{0}-portable.zip".format(
         openslides.get_version()))
+
+    write_readme("extras/win32-portable/README.txt.in",
+        os.path.join(odir, "README.txt"))
 
     with zipfile.ZipFile(fp, "w", zipfile.ZIP_DEFLATED) as zf:
         for dp, dnames, fnames in os.walk(odir):
