@@ -38,5 +38,6 @@ Veranstaltungen, auf denen OpenSlides eingesetzt wurde
 - Bundesversammlung der `Evangelischen StudentInnengemeinde in der
   Bundesrepublik Deutschland (ESG) <http://www.bundes-esg.de>`_
 - Mitgliederversammlung der `Arbeitsgemeinschaft der Evangelischen Jugend in Deutschland e. V. (aej) <http://aej-online.de>`_
-- Bundesparteitag der `Piratenpartei Deutschland <http://www.piratenpartei.de>`_
-
+- Parteitage der `Piratenpartei Deutschland <http://www.piratenpartei.de>`_ (Bundes- Landes-, Kreisparteitage)
+- Landesparteitag von `BÜNDNIS 90/DIE GRÜNEN Landesverband Hamburg <http://hamburg.gruene.de/>`_
+- ...
