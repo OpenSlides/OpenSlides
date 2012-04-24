@@ -57,8 +57,11 @@
         {% trans "Application" %} <i>[{% trans "no number" %}]</i>
     {% endif %}
     </h1>
-    <h2>{{ application.title }}</h2>
     <b>{{ application.title }}</b>
+    <hr>
+{% endblock %}
+
+{% block scrollcontent %}
     <p>
     <div class="text">{{ application.public_version.text|linebreaks }}</div>
     {% if application.public_version.reason %}

@@ -108,6 +108,8 @@ class ActivateView(RedirectView):
 
     def get_ajax_context(self, **kwargs):
         context = super(ActivateView, self).get_ajax_context()
+        config['up'] = 0
+        config['bigger'] = 100
         return context
 
 
@@ -146,8 +148,10 @@ def active_slide(request, sid=None):
     template_manipulation.send(sender='projector', request=request, context=data)
     if request.is_ajax():
         content = render_block_to_string(data['template'], 'content', data)
+        scrollcontent = render_block_to_string(data['template'], 'scrollcontent', data)
         jsondata = {
             'content': content,
+            'scrollcontent': scrollcontent,
             'overlays': data['overlays'],
             'title': data['title'],
             'time': datetime.now().strftime('%H:%M'),
@@ -167,13 +171,14 @@ def active_slide(request, sid=None):
 @permission_required('agenda.can_manage_agenda')
 def projector_edit(request, direction):
     if direction == 'bigger':
-        config['bigger'] = int(config['bigger']) + 10
+        config['bigger'] = int(config['bigger']) + 20
     elif direction == 'smaller':
-        config['bigger'] = int(config['bigger']) - 10
+        config['bigger'] = int(config['bigger']) - 20
     elif direction == 'up':
         config['up'] = int(config['up']) - 10
     elif direction == 'down':
-        config['up'] = int(config['up']) + 10
+        if config['up'] < 0:
+            config['up'] = int(config['up']) + 10
     elif direction == 'clean':
         config['up'] = 0
         config['bigger'] = 100

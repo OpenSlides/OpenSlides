@@ -24,7 +24,9 @@
     </div>
     </div>
     {% endif %}
+{% endblock %}
 
+{% block scrollcontent %}
     {% if not assignment.profile.exists %}
     <p>
     <div class="text">{{ assignment.description|linebreaks }}</div>

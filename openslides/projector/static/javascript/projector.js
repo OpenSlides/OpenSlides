@@ -8,14 +8,17 @@ function presentation_reload() {
             success: function(data) {
                 $('#currentTime').removeClass('ajax_error');
                 $('#content').html(data.content);
+                $('#scrollcontent').html(data.scrollcontent);
                 document.title = data.title;
                 $('#currentTime').html(data.time);
                 $('#content').clearQueue();
+                // content font-size
                 $('#content').animate({'font-size': data.bigger + '%'}, 200);
-                $('#content li').css({'font-size': data.bigger + '%'}, 200);
-                $('#content #sidebar').css({'font-size': '16px'}, 0);
-                $('#content').animate({'margin-top': data.up + 'em'}, 200);
-
+                $('#content #sidebar').css({'font-size': '18px'}, 0);
+                $('#scrollcontent').animate({'font-size': data.bigger + '%'}, 200);
+                // content position
+                $('#scrollcontent').animate({'margin-top': data.up + 'em'}, 200);
+                // overlays
                 $('#overlays div').remove();
                 $.each(data['overlays'], function (index, value){
                     $('#overlays').append('<div id="overlay_' + value[0] + '">' + value[1] + '</div>');

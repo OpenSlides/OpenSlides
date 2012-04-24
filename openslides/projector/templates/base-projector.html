@@ -37,9 +37,17 @@
             </ul>
         </div>
 
-        <div id="content">
-        {% block content %}
-        {% endblock %}
+        <div id="contentwrapper">
+            <div id="content">
+            {% block content %}
+            {% endblock %}
+            </div>
+            <div id="scrollcontentcontainer">
+                <div id="scrollcontent">
+                {% block scrollcontent %}
+                {% endblock %}
+                </div>
+            </div>
         </div>
     </body>
 </html>

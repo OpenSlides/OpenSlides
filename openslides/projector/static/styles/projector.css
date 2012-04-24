@@ -1,14 +1,13 @@
 /**
- * OpenSlides projector Style
+ * OpenSlides projector style
  */
 body{
     margin : 0px;
     padding-top: 0px;
     padding-left : 0px;
-/*    font-family : Verdana,Futura, Geneva, Arial, Helvetica, sans-serif;*/
     font-family: 'Lucida Grande',"Trebuchet MS",Verdana,sans-serif;
-    font-size : 18px;
-    background-color:  #FAFAFB;
+    font-size : 20px;
+    background-color: #FAFAFB;
 }
 
 /*** HEADER ***/
@@ -83,12 +82,17 @@ body{
 }
 
 /*** CONTENT ***/
-#content {
+#contentwrapper {
     position:absolute;
     left:100px;
     top:150px;
     right:40px;
     z-index: -1;
+}
+#scrollcontentcontainer {
+    position: relative;
+    margin-top: -11px;
+    overflow: hidden;
 }
 .title
 {
@@ -116,7 +120,6 @@ body{
     text-transform: uppercase;
 }
 
-
 /*** Items *** /
 /* item title centered */
 .item_fullscreen
@@ -124,7 +127,7 @@ body{
     position: relative;
     top: 110px;
     right:30px;
-    font-size:40px;
+    font-size:230%;
     font-weight:bold;
     text-align: center;
 }
@@ -132,7 +135,7 @@ body{
 /* items in a list*/
 .itemlist li
 {
-    font-size:26px;
+    font-size:130%;
     padding-bottom: 15px;
     list-style-type: none;
 }

@@ -7,8 +7,13 @@
 {% block content %}
     {% if item.get_text %}
         <h1>{{ item }}</h1>
-        {{ item.get_text|safe|linebreaks }}
     {% else %}
         <div class="item_fullscreen">{{ item }}</div>
+    {% endif %}
+{% endblock %}
+
+{% block scrollcontent %}
+    {% if item.get_text %}
+        <span>{{ item.get_text|safe|linebreaks }}</span>
     {% endif %}
 {% endblock %}
