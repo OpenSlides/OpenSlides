@@ -190,12 +190,19 @@ def collect_site_packages(sitedir, odir):
     copy_pil(odir)
 
 def compile_openslides_launcher():
-    cc = distutils.ccompiler.new_compiler()
+    try:
+        cc = distutils.ccompiler.new_compiler()
+        if not cc.initialized:
+            cc.initialize()
+    except distutils.errors.DistutilsError:
+        return False
+
     cc.add_include_dir(distutils.sysconfig.get_python_inc())
     cc.add_library_dir(os.path.join(sys.exec_prefix, "Libs"))
 
     objs = cc.compile(["extras/win32-portable/openslides.c"])
     cc.link_executable(objs, "extras/win32-portable/openslides")
+    return True
 
 def copy_dlls(odir):
     dll_src = os.path.join(sys.exec_prefix, "DLLs")
@@ -282,11 +289,8 @@ def main():
     exclude = get_pkg_exclude("openslides", OPENSLIDES_EXCLUDE)
     copy_dir_exclude(exclude, ".", "openslides", odir)
 
-    try:
-        compile_openslides_launcher()
-    except distutils.errors.DistutilsError:
-        sys.stderr.write("openslides.exe could not be build, "
-            "trying to use existing file\n")
+    if not compile_openslides_launcher():
+        sys.stdout.write("Using prebuild openslides.exe\n")
 
     shutil.copyfile("extras/win32-portable/openslides.exe",
         os.path.join(odir, "openslides.exe"))
@@ -297,18 +301,20 @@ def main():
     shutil.copytree("extras/win32-portable/licenses",
         os.path.join(odir, "licenses"))
 
-    fp = os.path.join("dist", "openslides-{0}-portable.zip".format(
+    zip_fp = os.path.join("dist", "openslides-{0}-portable.zip".format(
         openslides.get_version()))
 
     write_readme("extras/win32-portable/README.txt.in",
         os.path.join(odir, "README.txt"))
 
-    with zipfile.ZipFile(fp, "w", zipfile.ZIP_DEFLATED) as zf:
+    with zipfile.ZipFile(zip_fp, "w", zipfile.ZIP_DEFLATED) as zf:
         for dp, dnames, fnames in os.walk(odir):
             for fn in fnames:
                 fp = os.path.join(dp, fn)
                 rp = relpath(odir, fp)
                 zf.write(fp, rp)
+
+    print("Successfully build {0}".format(zip_fp))
 
 
 if __name__ == "__main__":
