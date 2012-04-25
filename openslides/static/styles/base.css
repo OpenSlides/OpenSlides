@@ -8,7 +8,7 @@ body {
     font-family:'Lucida Grande',"Trebuchet MS",Verdana,sans-serif;
     font-size:12px;
     position:relative;
-    width:100%
+    width:100%;
     overflow:hidden;
 }
 
@@ -528,7 +528,6 @@ ul.results {
     line-height: 100%;
     width: 96%;
     cursor: pointer;
-    cursor: hand;
 }
 .notification .close {
     color: #990000;
