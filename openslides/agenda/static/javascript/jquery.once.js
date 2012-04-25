@@ -1,5 +1,3 @@
-// $Id: jquery.once.js,v 1.1 2009/08/31 15:52:26 webchick Exp $
-
 /**
  * jQuery Once Plugin v1.2
  * http://plugins.jquery.com/project/once
