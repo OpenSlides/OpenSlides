@@ -191,12 +191,33 @@ def projector_edit(request, direction):
 @permission_required('projector.can_manage_projector')
 def projector_countdown(request, command):
     #todo: why is there the time argument?
-    if command == 'reset':
-        config['countdown_start'] = time()
+    if command in ['reset','start','stop']:
+        config['countdown_time'] = config['agenda_countdown_time']
+
+    if command =='reset':
+        if command == 'reset':
+            config['countdown_start_stamp'] = time()
+            config['countdown_pause_stamp'] = 0
+            config['countdown_state'] = 'inactive'
+
     elif command == 'start':
-        config['countdown_run'] = True
+            # if we had stopped the countdown resume were we left of
+            if config['countdown_state'] == 'paused':
+                s = config['countdown_start_stamp']
+                p = config['countdown_pause_stamp']
+                n = time()
+
+                config['countdown_start_stamp'] = n - (p - s)
+            else:
+                config['countdown_start_stamp'] = time()
+
+            config['countdown_state'] = 'active'
+            config['countdown_pause_stamp'] = 0
+
     elif command == 'stop':
-        config['countdown_run'] = False
+        if config['countdown_state'] == 'active':
+            config['countdown_pause_stamp'] = time()
+            config['countdown_state'] = 'paused'
 
     if request.is_ajax():
         if command == "show":

@@ -54,7 +54,9 @@ def default_config(sender, key, **kwargs):
     return {
         'projector_message': '',
         'countdown_time': 60,
-        'countdown_start': False,
+        'countdown_start_stamp': 0,
+        'countdown_pause_stamp': 0,
+        'countdown_state': 'inactive',
         'bigger': 100,
         'up': 0,
     }.get(key)

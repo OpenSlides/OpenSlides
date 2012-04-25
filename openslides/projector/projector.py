@@ -86,10 +86,19 @@ def countdown(sender, **kwargs):
     if kwargs['register']:
         return name
     if name in kwargs['call']:
-        if config['countdown_start'] is False:
-             config['countdown_start'] = time()
-        seconds = max(0, int(config['countdown_start'] + config['countdown_time'] - time()))
-        return (name, seconds)
+        if config['countdown_state'] == 'active':
+            seconds = max(0, int(config['countdown_start_stamp'] + config['countdown_time'] - time()))
+        elif config['countdown_state'] == 'paused':
+            seconds = max(0, int(config['countdown_start_stamp'] + config['countdown_time'] - config['countdown_pause_stamp']))
+        elif config['countdown_state'] == 'inactive':
+            seconds = max(0, int(config['countdown_time']))
+        else:
+            seconds = 0
+
+        if seconds == 0:
+            config['countdown_state'] = 'expired'
+
+        return (name, '%02d:%02d' % (seconds / 60, seconds % 60))
     return None
 
 

@@ -58,6 +58,8 @@ class Config(object):
 
         for receiver, value in default_config_value.send(sender='config', key=key):
             if value is not None:
+#                if settings.DEBUG:
+#                    print 'Using default for %s' % key
                 return value
         if settings.DEBUG:
             print "No default value for: %s" % key
