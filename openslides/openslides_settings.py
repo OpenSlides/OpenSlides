@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    openslides.opennslides_settings
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    openslides.openslides_settings
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     OpenSlides default settings.
 
-    :copyright: 2011 by the OpenSlides team, see AUTHORS.
+    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
+
 import os
 from django.conf.global_settings import *
 

@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 """
     openslides.utils.translation_ext
-    ~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Localizable descriptions for django permissions.
 
-    :copyright: 2011 by the OpenSlides team, see AUTHORS.
+    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 

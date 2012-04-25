@@ -1,3 +1,15 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+    openslides.main
+    ~~~~~~~~~~~~~~~
+
+    Main script to start and set up OpenSlides.
+
+    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :license: GNU GPL, see LICENSE for more details.
+"""
+
 from __future__ import with_statement
 
 import os

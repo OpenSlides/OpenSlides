@@ -1,12 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    openslides.manage
-    ~~~~~~~~~~~~~~~~~
-
     Django's execute manager.
 
-    :copyright: 2011 by the OpenSlides team, see AUTHORS.
+    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 

@@ -6,7 +6,7 @@
 
     Views for the agenda app.
 
-    :copyright: 2011 by the OpenSlides team, see AUTHORS.
+    :copyright: 2011, 2012 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 from reportlab.platypus import Paragraph

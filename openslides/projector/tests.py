@@ -1,8 +1,13 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 """
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
+    openslides.projector.tests
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Replace this with more appropriate tests for your application.
+    Unit tests for the projector app.
+
+    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :license: GNU GPL, see LICENSE for more details.
 """
 
 from django.test import TestCase
