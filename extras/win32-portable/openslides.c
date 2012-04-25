@@ -1,3 +1,8 @@
+/*
+    :copyright: 2012 by OpenSlides team, see AUTHORS.
+    :license: GNU GPL, see LICENSE for more details.
+*/
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
