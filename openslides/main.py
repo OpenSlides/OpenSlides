@@ -10,8 +10,10 @@ import webbrowser
 from contextlib import nested
 
 import django.conf
+from django.db import DatabaseError
 from django.core.management import execute_from_command_line
 from django.utils.crypto import get_random_string
+from django.contrib.auth.models import User
 
 import openslides
 
@@ -97,7 +99,7 @@ def prepare_openslides(always_syncdb = False):
     except ImportError:
         pass
     else:
-        if always_syncdb:
+        if not check_database() and always_syncdb:
             run_syncdb()
         return True # import worked, settings are already configured
 
@@ -127,8 +129,18 @@ def run_syncdb():
     argv = ["", "syncdb", "--noinput"]
     execute_from_command_line(argv)
 
+def check_database():
+    """Detect if database was deleted and recreate if necessary"""
+
+    try:
+        User.objects.count()
+    except DatabaseError:
+        run_syncdb()
+        create_or_reset_admin_user()
+        return True
+    return False
+
 def create_or_reset_admin_user():
-    from django.contrib.auth.models import User
 
     try:
         obj = User.objects.get(username = "admin")
@@ -137,8 +149,10 @@ def create_or_reset_admin_user():
             username = "admin",
             password = "admin",
             email = "admin@example.com")
+        print("Created default admin user")
         return
 
+    print("Password for user admin was reset to 'admin'")
     obj.set_password("admin")
     obj.save()
 
