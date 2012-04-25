@@ -7,10 +7,10 @@ OpenSlides uses parts of the following projects:
   <https://www.djangoproject.com/>
 
 * jQuery
-  <http://www.jquery.com>
+  <http://www.jquery.com/>
 
 * jQuery UI
-  <http://jqueryui.com>
+  <http://jqueryui.com/>
 
 * ReportLab
   <http://www.reportlab.com/software/opensource/rl-toolkit/>
