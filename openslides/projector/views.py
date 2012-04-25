@@ -94,6 +94,7 @@ class ControlView(TemplateView):
         context.update({
             'categories': categories,
             'countdown_time': config['agenda_countdown_time'],
+            'countdown_state' : config['countdown_state'],
             'overlays': self.get_projector_overlays(),
         })
         return context
