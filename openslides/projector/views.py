@@ -221,6 +221,16 @@ def projector_countdown(request, command):
             config['countdown_pause_stamp'] = time()
             config['countdown_state'] = 'paused'
 
+    elif command == 'set_default':
+        try:
+            config['agenda_countdown_time'] = int(request.GET['countdown_time'])
+
+        except ValueError:
+            pass
+
+        except AttributeError:
+            pass
+
     if request.is_ajax():
         if command == "show":
             link = reverse('countdown_close')

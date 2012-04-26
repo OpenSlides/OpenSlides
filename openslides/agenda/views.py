@@ -167,18 +167,20 @@ class AgendaPDF(PDFView):
                 story.append(Paragraph(item.get_title(), stylesheet['Item']))
 
 
-class Config(FormView):
-    permission_required = 'config.can_manage_config'
-    form_class = ConfigForm
-    template_name = 'agenda/config.html'
-
-    def get_initial(self):
-        return {'agenda_countdown_time': config['agenda_countdown_time']}
-
-    def form_valid(self, form):
-        config['agenda_countdown_time'] = form.cleaned_data['agenda_countdown_time']
-        messages.success(self.request, _('Agenda settings successfully saved.'))
-        return super(Config, self).form_valid(form)
+#
+# rene: empty for now so comment it out to keep it from appearing in the settings
+#
+#class Config(FormView):
+#    permission_required = 'config.can_manage_config'
+#    form_class = ConfigForm
+#    template_name = 'agenda/config.html'
+#
+#    def get_initial(self):
+#        return {}
+#
+#    def form_valid(self, form):
+#        messages.success(self.request, _('Agenda settings successfully saved.'))
+#        return super(Config, self).form_valid(form)
 
 
 def register_tab(request):

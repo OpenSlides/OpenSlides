@@ -38,6 +38,35 @@
     visibility: hidden;
 }
 
+/*.projector_countdown_spinval {*/
+#countdown_time {
+    width: 40px;
+    height: 16px;
+}
+
+.projector_countdown_spinbox {
+    height: 16px;
+    width: auto;
+    position: relative;
+    display: inline-block;
+}
+
+.projector_countdown_spinup {
+    position: absolute;
+    top: 0px;
+    left: 35px;
+}
+
+.projector_countdown_spindown {
+    position: absolute;
+    top: 8px;
+    left: 35px;
+}
+
+.projector_countdown_btn {
+    margin-top: auto;
+}
+
 /* iframe */
 #iframe {
     -ms-zoom: 0.25;
