@@ -32,9 +32,11 @@
 
         <div id="overlays">
             {% for overlay in overlays %}
-                <div id="overlay_{{ overlay.0 }}">{{ overlay.1 }}</div>
+                {% if overlay.0 != "Countdown" %}
+                    <span id="overlay_transparent"></span>
+                {% endif %}
+                <div id="overlay_{{ overlay.0 }}">{{ overlay.1|safe }}</div>
             {% endfor %}
-            </ul>
         </div>
 
         <div id="contentwrapper">
