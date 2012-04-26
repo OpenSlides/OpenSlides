@@ -17,6 +17,7 @@
         {% if edituser %}
         <p><a href="{% url user_reset_password edituser.id %}">{% trans 'Reset to First Password' %}</a></p>
         {% endif %}
+        <p>
         <button class="button" type="submit">
             <span class="icon ok">{%trans 'Save' %}</span>
         </button>
@@ -28,5 +29,7 @@
             <span class="icon cancel">{%trans 'Cancel' %}</span>
         </button>
         </a>
+        </p>
+        <small>* {% trans "required." %}</small>
     </form>
 {% endblock %}

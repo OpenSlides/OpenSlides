@@ -18,6 +18,7 @@
 
     <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
         {{ form.as_p }}
+        <p>
         <button class="button" type="submit">
             <span class="icon import">{%trans 'Import' %}</span>
         </button>
@@ -26,6 +27,7 @@
             <span class="icon cancel">{%trans 'Cancel' %}</span>
         </button>
         </a>
+        </p>
+        <small>* {% trans "required." %}</small>
     </form>
-    </p>
 {% endblock %}

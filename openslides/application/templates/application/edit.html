@@ -15,7 +15,6 @@
     <form action="" method="post">{% csrf_token %}
         {{ form.as_p }}
         {{ managerform.as_p }}
-        <small>* {%trans "required" %}</small>
         <p>
         <button class="button" type="submit">
             <span class="icon ok">{%trans 'Save' %}</span>
@@ -29,6 +28,7 @@
         </button>
         </a>
         </p>
+        <small>* {%trans "required" %}</small>
     </form>
 
 {% endblock %}

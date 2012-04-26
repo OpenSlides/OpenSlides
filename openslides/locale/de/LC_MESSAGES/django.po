@@ -932,7 +932,7 @@ msgstr "Formale Gültigkeitsprüfung"
 
 #: application/templates/application/view.html:146
 msgid "Publish"
-msgstr "Veröffentlen"
+msgstr "Veröffentlichen"
 
 #: application/templates/application/view.html:149
 msgid "Permit"
