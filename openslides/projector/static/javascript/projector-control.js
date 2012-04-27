@@ -60,20 +60,6 @@ $(function() {
         });
     });
 
-    $('.projector_countdown_spindown').click(function(event) {
-        event.preventDefault();
-        var count = parseInt($( "#countdown_time" ).val());
-
-        $( "#countdown_time" ).val( ((count - 1 >= 0) ? count - 1 : count));
-    });
-
-    $('.projector_countdown_spinup').click(function(event) {
-        event.preventDefault();
-        var count = parseInt($( "#countdown_time" ).val());
-
-        $( "#countdown_time" ).val(count + 1);
-    });
-
     $('.countdown_visible_link').click(function(event) {
         event.preventDefault();
         var link = $(this);

@@ -144,13 +144,7 @@
                             {% if overlay.def_name == "Countdown" %}
                                 |
                                 <span class="projector_countdown_spinbox">
-                                    <input class="projector_countdown_spinval" id="countdown_time" name="countdown_time" type="text" value="{{countdown_time}}">
-                                    <a class="projector_countdown_spinup" href="#">
-                                        <img src="{% static 'images/icons/spin-up.png' %}" />
-                                    </a>
-                                    <a class="projector_countdown_spindown" href="#">
-                                        <img src="{% static 'images/icons/spin-down.png' %}" />
-                                    </a>
+                                    <input class="projector_countdown_spinval" id="countdown_time" name="countdown_time" type="number" min="0" value="{{countdown_time}}">
                                     {% trans "sec" %}
                                     &nbsp;
                                     <a id="countdown_set" class="projector_countdown_btn" href="{% url countdown_set_default %}" title="{% trans 'Save as default' %}">
