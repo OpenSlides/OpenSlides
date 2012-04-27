@@ -39,6 +39,16 @@
 
 
 {% block content %}
+   <form action="/agenda/" method="post">{% csrf_token %}
+       {% if perms.agenda.can_manage_agenda %}
+       <div id="changed-order-message" style="display:none" class="notification warning">
+           <em>{% trans "Do you want to save the changed order of agenda items?" %}<br>
+               <input type="submit" value="{% trans 'Yes' %}">
+               <input type="button" onclick="window.location.href='{% url item_overview %}';" value="{%trans 'No' %}">
+           </em>
+       </div>
+       {% endif %}
+
     <h1>{% trans "Agenda" %}</h1>
 
     <p>
@@ -46,17 +56,7 @@
     <input type="checkbox" id="hide_closed_items"> {%trans "Hide closed items" %}
     </p>
     {{ items|length }}
-    {% blocktrans count counter=items|length %}item{% plural %}items{% endblocktrans %}
-    <span id="hiddencount"></span>
-        <form action="/agenda/" method="post">{% csrf_token %}
-            {% if perms.agenda.can_manage_agenda %}
-            <div id="changed-order-message" style="display:none" class="notification warning">
-                <em>{% trans "Do you want to save the changed order of agenda items?" %}<br>
-                    <input type="submit" value="{% trans 'Yes' %}">
-                    <input type="button" onclick="window.location.href='{% url item_overview %}';" value="{%trans 'No' %}">
-                </em>
-            </div>
-            {% endif %}
+    {% blocktrans count counter=items|length %}item{% plural %}items{% endblocktrans %}<span id="hiddencount"></span>
             <table id="menu-overview" class="agendatable">
                 <tr>
                     <th style="width: 1px;">{% trans "Done" %}</th>
@@ -89,5 +89,5 @@
                 </tr>
             {% endif %}
             </table>
-        </form>
+    </form>
 {% endblock %}
