@@ -1,5 +1,5 @@
-Installation Instructions for OpenSlides
-========================================
+Installation Instructions for OpenSlides 1.2
+============================================
 
 Content
 -------
@@ -37,19 +37,21 @@ I. Installation on Windows (32/64bit)
 
         OR
 
-     b) Clone development version from mercurial repository
-        (anonymous checkout):
+     b) Clone development version from mercurial repository:
 
         hg clone http://hg.openslides.org
 
-        If you have write access use instead:
-        hg clone ssh://hg@openslides.org/openslides
-
-  5. Run start.py
+  5. Start OpenSlides server and open URL in your default browser:
 
        python start.py
 
-The Username and Password for the first created Useraccount is 'admin'
+     If you run this script the first time new database and admin account
+     are created. Please change the password after first login!
+
+       Username: admin
+       Password: admin 
+
+     Use 'python start.py --help' to show all start options.
 
 
 
@@ -65,13 +67,9 @@ system.
 
         OR
 
-     b) Clone development version from mercurial repository (anonymous
-        checkout):
+     b) Clone development version from mercurial repository:
 
         hg clone http://hg.openslides.org
-
-        If you have write access use instead:
-        hg clone ssh://hg@openslides.org/openslides
 
   2. Setup virtualenv:
 
@@ -90,11 +88,17 @@ system.
 
        pip install django django-mptt reportlab pil simplejson mercurial
 
-  5. Run start.py
+  5. Start OpenSlides server and open URL in your default browser:
 
        python start.py
 
-The Username and Password for the first created Useraccount is 'admin'
+     If you run this script the first time new database and admin account
+     are created. Please change the password after first login!
+
+       Username: admin
+       Password: admin 
+
+     Use 'python start.py --help' to show all start options.
 
 
 --
