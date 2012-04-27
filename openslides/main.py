@@ -67,7 +67,10 @@ def main(argv = None):
 
 def detect_listen_opts(address, port):
     if address is None:
-        address = socket.gethostbyname(socket.gethostname())
+        try:
+            address = socket.gethostbyname(socket.gethostname())
+        except socket.error:
+            address = "127.0.0.1"
 
     if port is None:
         # test if we can use port 80
