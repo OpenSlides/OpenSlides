@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-23 22:16+0200\n"
+"POT-Creation-Date: 2012-04-27 08:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: German <LL@li.org>\n"
@@ -16,11 +16,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
-#: openslides_settings.py:42
+#: openslides_settings.py:43
 msgid "German"
 msgstr "Deutsch"
 
-#: openslides_settings.py:43
+#: openslides_settings.py:44
 msgid "English"
 msgstr "Englisch"
 
@@ -34,12 +34,12 @@ msgstr "Countdown (in Sekunden)"
 
 #: agenda/models.py:38 application/forms.py:40
 #: application/templates/application/view.html:243 config/forms.py:27
-#: projector/models.py:17
+#: projector/models.py:28
 msgid "Title"
 msgstr "Titel"
 
 #: agenda/models.py:39 application/forms.py:41
-#: application/templates/application/view.html:244 projector/models.py:18
+#: application/templates/application/view.html:244 projector/models.py:29
 msgid "Text"
 msgstr "Text"
 
@@ -64,14 +64,14 @@ msgstr "Darf die Tagesordnung sehen"
 msgid "Can manage agenda"
 msgstr "Darf die Tagesordung verwalten"
 
-#: agenda/models.py:141 agenda/slides.py:7 agenda/views.py:157
+#: agenda/models.py:141 agenda/slides.py:19 agenda/views.py:157
 #: agenda/views.py:158 agenda/views.py:187
 #: agenda/templates/agenda/base_agenda.html:10
 #: agenda/templates/agenda/overview.html:8
 #: agenda/templates/agenda/overview.html:42
 #: agenda/templates/agenda/overview.html:73
-#: agenda/templates/projector/AgendaSummary.html:7
-#: agenda/templates/projector/AgendaSummary.html:11
+#: agenda/templates/projector/AgendaSummary.html:6
+#: agenda/templates/projector/AgendaSummary.html:10
 msgid "Agenda"
 msgstr "Tagesordnung"
 
@@ -92,8 +92,8 @@ msgstr "Eintrag <b>%s</b> wurde erfolgreich gelöscht."
 #: application/templates/projector/Application.html:33
 #: assignment/templates/assignment/view.html:186
 #: assignment/templates/assignment/view.html:190
-#: assignment/templates/projector/Assignment.html:72
-#: assignment/templates/projector/Assignment.html:76 utils/utils.py:39
+#: assignment/templates/projector/Assignment.html:74
+#: assignment/templates/projector/Assignment.html:78 utils/utils.py:39
 #: utils/views.py:207
 msgid "Yes"
 msgstr "Ja"
@@ -104,7 +104,7 @@ msgstr "Ja"
 #: application/templates/application/view.html:80
 #: application/templates/projector/Application.html:34
 #: assignment/templates/assignment/view.html:187
-#: assignment/templates/projector/Assignment.html:73 utils/utils.py:39
+#: assignment/templates/projector/Assignment.html:75 utils/utils.py:39
 #: utils/views.py:207
 msgid "No"
 msgstr "Nein"
@@ -139,35 +139,35 @@ msgstr "Tagesordnung als PDF"
 msgid "Agenda settings"
 msgstr "Tagesordnungs-Einstellungen"
 
-#: agenda/templates/agenda/config.html:13 agenda/templates/agenda/edit.html:12
+#: agenda/templates/agenda/config.html:13 agenda/templates/agenda/edit.html:13
 #: application/templates/application/config.html:13
-#: application/templates/application/edit.html:21
+#: application/templates/application/edit.html:20
 #: application/templates/application/poll_view.html:40
 #: assignment/templates/assignment/config.html:13
-#: assignment/templates/assignment/edit.html:17
+#: assignment/templates/assignment/edit.html:18
 #: assignment/templates/assignment/poll_view.html:53
 #: config/templates/config/general.html:56
 #: participant/templates/participant/config.html:13
-#: participant/templates/participant/edit.html:21
-#: participant/templates/participant/group_edit.html:17
+#: participant/templates/participant/edit.html:22
+#: participant/templates/participant/group_edit.html:18
 #: participant/templates/participant/settings.html:18
 #: projector/templates/projector/new.html:13
 msgid "Save"
 msgstr "Speichern"
 
-#: agenda/templates/agenda/config.html:17 agenda/templates/agenda/edit.html:19
+#: agenda/templates/agenda/config.html:17 agenda/templates/agenda/edit.html:20
 #: application/templates/application/config.html:17
-#: application/templates/application/edit.html:28
-#: application/templates/application/import.html:26
+#: application/templates/application/edit.html:27
+#: application/templates/application/import.html:27
 #: application/templates/application/poll_view.html:47
 #: assignment/templates/assignment/config.html:17
-#: assignment/templates/assignment/edit.html:24
+#: assignment/templates/assignment/edit.html:25
 #: assignment/templates/assignment/poll_view.html:60
 #: config/templates/config/general.html:60
 #: participant/templates/participant/config.html:17
-#: participant/templates/participant/edit.html:28
-#: participant/templates/participant/group_edit.html:24
-#: participant/templates/participant/import.html:26
+#: participant/templates/participant/edit.html:29
+#: participant/templates/participant/group_edit.html:25
+#: participant/templates/participant/import.html:27
 #: participant/templates/participant/settings.html:22
 #: projector/templates/projector/new.html:20
 msgid "Cancel"
@@ -189,18 +189,28 @@ msgstr "Eintrag"
 msgid "Edit item"
 msgstr "Eintrag bearbeiten"
 
-#: agenda/templates/agenda/edit.html:15
-#: application/templates/application/edit.html:24
+#: agenda/templates/agenda/edit.html:16
+#: application/templates/application/edit.html:23
 #: application/templates/application/poll_view.html:43
-#: assignment/templates/assignment/edit.html:20
+#: assignment/templates/assignment/edit.html:21
 #: assignment/templates/assignment/poll_view.html:56
 #: assignment/templates/assignment/view.html:110
-#: participant/templates/participant/edit.html:24
-#: participant/templates/participant/group_edit.html:20
-#: projector/templates/projector/control.html:135
+#: participant/templates/participant/edit.html:25
+#: participant/templates/participant/group_edit.html:21
+#: projector/templates/projector/control.html:156
 #: projector/templates/projector/new.html:16
 msgid "Apply"
 msgstr "Übernehmen"
+
+#: agenda/templates/agenda/edit.html:24
+#: application/templates/application/edit.html:31
+#: application/templates/application/import.html:31
+#: assignment/templates/assignment/edit.html:29
+#: participant/templates/participant/edit.html:33
+#: participant/templates/participant/group_edit.html:29
+#: participant/templates/participant/import.html:31
+msgid "required"
+msgstr "erforderlich"
 
 #: agenda/templates/agenda/item_row.html:10
 msgid "Item closed"
@@ -254,7 +264,7 @@ msgstr "Keine Einträge vorhanden."
 #: application/forms.py:42 application/views.py:710
 #: application/templates/application/view.html:226
 #: application/templates/application/view.html:246
-#: application/templates/projector/Application.html:66
+#: application/templates/projector/Application.html:69
 msgid "Reason"
 msgstr "Begründung"
 
@@ -692,14 +702,14 @@ msgstr "Abstimmung"
 #: application/templates/application/view.html:81
 #: application/templates/projector/Application.html:35
 #: assignment/templates/assignment/view.html:188
-#: assignment/templates/projector/Assignment.html:74
+#: assignment/templates/projector/Assignment.html:76
 msgid "Abstention"
 msgstr "Enthaltung"
 
 #: application/views.py:692 application/templates/application/view.html:82
 #: application/templates/projector/Application.html:36
 #: assignment/templates/assignment/view.html:207
-#: assignment/templates/projector/Assignment.html:93
+#: assignment/templates/projector/Assignment.html:95
 msgid "Invalid"
 msgstr "Ungültig"
 
@@ -710,8 +720,8 @@ msgstr "Ungültig"
 #: assignment/templates/assignment/poll_view.html:38
 #: assignment/templates/assignment/view.html:215
 #: assignment/templates/assignment/view.html:218
-#: assignment/templates/projector/Assignment.html:98
-#: assignment/templates/projector/Assignment.html:101 poll/models.py:50
+#: assignment/templates/projector/Assignment.html:100
+#: assignment/templates/projector/Assignment.html:103 poll/models.py:50
 msgid "Votes cast"
 msgstr "Abgegebene Stimmen"
 
@@ -785,10 +795,6 @@ msgstr "Stimmzettel"
 msgid "Application settings"
 msgstr "Antrags-Einstellungen"
 
-#: application/templates/application/edit.html:18
-msgid "required"
-msgstr "erforderlich"
-
 #: application/templates/application/import.html:9
 msgid "Select a CSV file to import applications!"
 msgstr "Wählen Sie eine CSV-Datei zum Importieren von Anträgen aus!"
@@ -813,8 +819,8 @@ msgstr "Erforderliches CSV-Datei-Encoding: UTF-8 (Unicode)."
 msgid "A CSV example file is available in OpenSlides Wiki."
 msgstr "Eine CSV-Beispiel-Datei gibt es im OpenSlides Wiki."
 
-#: application/templates/application/import.html:22
-#: participant/templates/participant/import.html:22
+#: application/templates/application/import.html:23
+#: participant/templates/participant/import.html:23
 msgid "Import"
 msgstr "Importieren"
 
@@ -890,7 +896,7 @@ msgstr "Stimmen"
 #: application/templates/application/poll_view.html:29 assignment/views.py:380
 #: assignment/templates/assignment/poll_view.html:34
 #: assignment/templates/assignment/view.html:204
-#: assignment/templates/projector/Assignment.html:90
+#: assignment/templates/projector/Assignment.html:92
 msgid "Invalid votes"
 msgstr "Ungültige Stimmen"
 
@@ -976,7 +982,7 @@ msgid "no number"
 msgstr "ohne Nummer"
 
 #: application/templates/application/view.html:213
-#: application/templates/application/view.html:241 config/models.py:134
+#: application/templates/application/view.html:241 config/models.py:136
 #: config/templates/config/version.html:5
 #: config/templates/config/version.html:8
 #: config/templates/config/version.html:11
@@ -1212,8 +1218,8 @@ msgstr "Wahl"
 #: assignment/templates/assignment/overview.html:26
 #: assignment/templates/assignment/view.html:61
 #: assignment/templates/assignment/view.html:132
-#: assignment/templates/projector/Assignment.html:35
-#: assignment/templates/projector/Assignment.html:53
+#: assignment/templates/projector/Assignment.html:37
+#: assignment/templates/projector/Assignment.html:55
 msgid "Candidates"
 msgstr "Kandidaten/innen"
 
@@ -1286,7 +1292,7 @@ msgstr "Keine Wahlen vorhanden."
 #: assignment/templates/assignment/poll_view.html:9
 #: assignment/templates/assignment/view.html:128
 #: assignment/templates/assignment/view.html:136
-#: assignment/templates/projector/Assignment.html:56
+#: assignment/templates/projector/Assignment.html:58
 msgid "ballot"
 msgstr "Wahlgang"
 
@@ -1329,7 +1335,7 @@ msgid "Remove candidate"
 msgstr "Kandidate/in entfernen"
 
 #: assignment/templates/assignment/view.html:72
-#: assignment/templates/projector/Assignment.html:41
+#: assignment/templates/projector/Assignment.html:43
 msgid "No candidates available."
 msgstr "Keine Kandidaten/innen vorhanden."
 
@@ -1346,7 +1352,7 @@ msgid "Add new participant"
 msgstr "Neue/n Teilnehmer/in hinzufügen"
 
 #: assignment/templates/assignment/view.html:120
-#: assignment/templates/projector/Assignment.html:50
+#: assignment/templates/projector/Assignment.html:52
 msgid "Election results"
 msgstr "Wahlergebnisse"
 
@@ -1368,12 +1374,12 @@ msgid "New ballot"
 msgstr "Neuer Wahlgang"
 
 #: assignment/templates/assignment/view.html:172
-#: assignment/templates/projector/Assignment.html:65
+#: assignment/templates/projector/Assignment.html:67
 msgid "Candidate is elected"
 msgstr "Kandidat/in ist gewählt"
 
 #: assignment/templates/assignment/view.html:229
-#: assignment/templates/projector/Assignment.html:86
+#: assignment/templates/projector/Assignment.html:88
 msgid "No ballots available."
 msgstr "Keine Wahlgänge vorhanden."
 
@@ -1409,20 +1415,20 @@ msgstr "Willkommenstext"
 msgid "Can manage configuration"
 msgstr "Darf die Konfiguration verwalten"
 
-#: config/models.py:86
+#: config/models.py:88
 msgid ""
 "Presentation system for agenda, applications, elections and participants"
 msgstr "Präsentationssystem für Tagesordnung, Anträge, Wahlen und Teilnehmer"
 
-#: config/models.py:91 templates/base.html:29
+#: config/models.py:93 templates/base.html:29
 msgid "Welcome"
 msgstr "Willkommen"
 
-#: config/models.py:92 participant/models.py:81
+#: config/models.py:94 participant/models.py:81
 msgid "Welcome to OpenSlides!"
 msgstr "Willkommen bei OpenSlides!"
 
-#: config/models.py:94
+#: config/models.py:96
 msgid ""
 "Buy our commercial support on <a href='http://openslides.org/'>www."
 "openslides.org</a> to get professional assistance for OpenSlides."
@@ -1431,7 +1437,7 @@ msgstr ""
 "org/'>www.openslides.org</a>, um professionelle Unterstützung für OpenSlides "
 "zu bekommen."
 
-#: config/models.py:112
+#: config/models.py:114
 msgid "General"
 msgstr "Allgemein"
 
@@ -1849,7 +1855,7 @@ msgstr "Weiter als Gast"
 msgid "Not specified"
 msgstr "Nicht angegeben"
 
-#: participant/templates/participant/overview.html:51 projector/models.py:39
+#: participant/templates/participant/overview.html:51 projector/models.py:50
 msgid "Active"
 msgstr "Aktiv"
 
@@ -1892,17 +1898,17 @@ msgstr "Ungültige Stimmen"
 msgid "votes"
 msgstr "Stimmen"
 
-#: projector/models.py:33
+#: projector/models.py:44
 msgid "Can manage the projector"
 msgstr "Darf den Beamer steuern"
 
-#: projector/models.py:34
+#: projector/models.py:45
 msgid "Can see projector"
 msgstr "Darf den Beamer sehen"
 
-#: projector/views.py:209 projector/templates/projector/base_projector.html:7
+#: projector/views.py:237 projector/templates/projector/base_projector.html:7
 #: projector/templates/projector/base_projector.html:11
-#: projector/templates/projector/control.html:41
+#: projector/templates/projector/control.html:62
 msgid "Projector"
 msgstr "Beamer"
 
@@ -1914,63 +1920,63 @@ msgstr "Übersicht"
 msgid "Projector view"
 msgstr "Beamer-Ansicht"
 
-#: projector/templates/projector/control.html:44
+#: projector/templates/projector/control.html:65
 msgid "Adjust projector view"
 msgstr "Beamer-Ansicht anpassen"
 
-#: projector/templates/projector/control.html:45
+#: projector/templates/projector/control.html:66
 msgid "Zoom in"
 msgstr "Vergrößern"
 
-#: projector/templates/projector/control.html:48
+#: projector/templates/projector/control.html:69
 msgid "Zoom out"
 msgstr "Verkleinern"
 
-#: projector/templates/projector/control.html:51
+#: projector/templates/projector/control.html:72
 msgid "Scroll text up"
 msgstr "Text nach oben scrollen"
 
-#: projector/templates/projector/control.html:54
+#: projector/templates/projector/control.html:75
 msgid "Scroll text down"
 msgstr "Text nach unten scrollen"
 
-#: projector/templates/projector/control.html:57
+#: projector/templates/projector/control.html:78
 msgid "Reset projector view"
 msgstr "Beamer-Ansicht zurücksetzen"
 
-#: projector/templates/projector/control.html:88
+#: projector/templates/projector/control.html:109
 msgid "Projector Live View"
 msgstr "Beamer-Live-Ansicht"
 
-#: projector/templates/projector/control.html:91
+#: projector/templates/projector/control.html:112
 msgid "Open Projector view"
 msgstr "Beamer-Ansicht öffnen"
 
-#: projector/templates/projector/control.html:102
+#: projector/templates/projector/control.html:123
 msgid "Overlays"
 msgstr "Einblendungen"
 
-#: projector/templates/projector/control.html:114
+#: projector/templates/projector/control.html:135
 msgid "sec"
 msgstr "s"
 
-#: projector/templates/projector/control.html:115
+#: projector/templates/projector/control.html:136
 msgid "Reset countdown"
 msgstr "Countdown zurücksetzen"
 
-#: projector/templates/projector/control.html:118
+#: projector/templates/projector/control.html:139
 msgid "Start countdown"
 msgstr "Countdown starten"
 
-#: projector/templates/projector/control.html:121
+#: projector/templates/projector/control.html:142
 msgid "Stop countdown"
 msgstr "Countdown stoppen"
 
-#: projector/templates/projector/control.html:151
+#: projector/templates/projector/control.html:172
 msgid "Custom slides"
 msgstr "Benutzerdefinierte Folien"
 
-#: projector/templates/projector/control.html:163
+#: projector/templates/projector/control.html:184
 msgid "New slide"
 msgstr "Neue Folie"
 
