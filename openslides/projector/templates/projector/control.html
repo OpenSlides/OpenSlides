@@ -139,38 +139,43 @@
                     {% for overlay in overlays %}
                         <li>
                             <input type="checkbox" name="{{ overlay }}" onchange="submit()"
-                            {% if overlay.active %} checked="checked"{% endif %}> {{ overlay }}
+                            {% if overlay.active %} checked="checked"{% endif %}> {{ overlay }}:
                             {# Countdown #}
                             {% if overlay.def_name == "Countdown" %}
-                                |
                                 <span class="projector_countdown_spinbox">
-                                    <input class="projector_countdown_spinval" id="countdown_time" name="countdown_time" type="number" min="0" value="{{countdown_time}}">
-                                    {% trans "sec" %}
-                                    &nbsp;
+                                    <input class="projector_countdown_spinval" id="countdown_time" name="countdown_time" type="number" min="0" value="{{countdown_time}}">{% trans "sec" %}
                                     <a id="countdown_set" class="projector_countdown_btn" href="{% url countdown_set_default %}" title="{% trans 'Save as default' %}">
                                         <img src="{% static 'images/icons/document-save.png' %}" />
                                     </a>
-                                    <span class="icon clear">&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                                    <a class="projector_countdown_btn" href="{% url countdown_reset %}" title="{% trans 'Reset countdown' %}" onclick="javascript:switchButtons('play')">
-                                        <img src="{% static 'images/icons/skip-backward.png' %}" />
-                                    </a>
-                                    <a id="countdown_play" class="projector_countdown_btn" href="{% url countdown_start %}" title="{% trans 'Start countdown' %}" onclick="javascript:switchButtons('stop')">
-                                        <img src="{% static 'images/icons/play.png' %}" />
-                                    </a>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <a class="projector_countdown_btn" href="{% url countdown_reset %}" title="{% trans 'Reset countdown' %}" onclick="javascript:switchButtons('play')"><button 
+                                        type="submit" class="button" style="padding:4px;" name='message-clean'>
+                                           <span class="icon backward">&nbsp;</span>
+                                        </button></a>&nbsp;
+                                    <a id="countdown_play" class="projector_countdown_btn" href="{% url countdown_start %}" title="{% trans 'Start countdown' %}" onclick="javascript:switchButtons('stop')"><button
+                                         type="submit" class="button" style="padding:4px;" name='message-clean'>
+                                           <span class="icon play">&nbsp;</span>
+                                        </button></a>
                                     <a id="countdown_stop" class="projector_countdown_btn" href="{% url countdown_stop %}" title="{% trans 'Stop countdown' %}" onclick="javascript:switchButtons('play')">
-                                        <img src="{% static 'images/icons/pause.png' %}" />
+                                        <button type="submit" class="button" style="padding:4px;" name='message-clean'>
+                                           <span class="icon pause">&nbsp;</span>
+                                        </button>
                                     </a>
                                 </span>
+                                <p></p>
                             {% endif %}
                             {% if overlay.def_name == "Message" %}
-                                <form action="" method="post">{% csrf_token %}
+                               <form action="" method="post">{% csrf_token %}
+                                    <br>
+                                    <nobr>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <input name='message_text' type='text' style='width: 70%'
                                        value="{% get_config 'projector_message' %}">
                                     <button type="submit"
                                         class="button" style="padding:4px 0;" name='message-clean'>
-                                        <span class="icon
-                                            clear">&nbsp;</span>
+                                        <span class="icon clear">&nbsp;</span>
                                     </button>
+                                    </nobr>
+                                    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <button type="submit" class="button" name='message'>
                                         <span class="icon ok">{% trans 'Apply' %}</span>
                                     </button>

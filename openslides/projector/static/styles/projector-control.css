@@ -67,6 +67,23 @@
     margin-top: auto;
 }
 
+/* countdown control buttons */
+.play{
+    background:url(../images/icons/play.png) no-repeat 0px 0px;
+    text-indent:22px !important;
+    height: 22px !important;
+}
+.pause{
+    background:url(../images/icons/pause.png) no-repeat 0px 0px;
+    text-indent:22px !important;
+    height: 22px !important;
+}
+.backward{
+    background:url(../images/icons/skip-backward.png) no-repeat 0px 0px;
+    text-indent:22px !important;
+    height: 22px !important;
+}
+
 /* iframe */
 #iframe {
     -ms-zoom: 0.25;
@@ -97,23 +114,7 @@
     display: block;
     z-index: 1;
 }
-/* countdown */
-a.countdown_visible_link.closed div {
-    background-image: url(../images/icons/off.png);
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 16px;
-    height: 16px;
-    display: inline-block;
-}
-a.countdown_visible_link.open div {
-    background-image: url(../images/icons/on.png);
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 16px;
-    height: 16px;
-    display: inline-block;
-}
+
 /* activate link */
 a.activate_link div {
     background-image: url(../images/icons/accept-grey.png);
