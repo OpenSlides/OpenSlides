@@ -19,7 +19,6 @@ import distutils.ccompiler
 import distutils.sysconfig
 
 from contextlib import nested
-from string import Template
 
 import pkg_resources
 
@@ -99,6 +98,16 @@ PY_DLLS = [
 MSVCR_PUBLIC_KEY = "1fc8b3b9a1e18e3b"
 MSVCR_VERSION = "9.0.21022.8"
 MSVCR_NAME = "Microsoft.VC90.CRT"
+
+README_LICENSE_SECTION = """
+
+License
+=======
+OpenSlides is distributed under the GNU General Public License
+version 2. For details about this license and the licenses of the
+bundled packages, please refer to the corresponding file in the
+licenses/ directory.
+"""
 
 def compile_re_list(patterns):
     expr = "|".join("(?:{0})".format(x) for x in patterns)
@@ -261,20 +270,19 @@ def copy_msvcr(odir):
     shutil.copyfile(src, dest)
 
 
-def write_readme(template_file, outfile):
-    with open(template_file, "rU") as f:
-        tmpl = Template(f.read())
+def write_readme(orig_readme, outfile):
+    with open(orig_readme, "rU") as f:
+        text = [l for l in f]
 
-    packages = ["openslides-{0}".format(openslides.get_version())]
-    for pkg in SITE_PACKAGES:
+    text.extend(["\n", "\n", "Included Packages\n", 17 * "=" + "\n"])
+    for pkg in sorted(SITE_PACKAGES):
         dist = pkg_resources.get_distribution(pkg)
-        packages.append("{0}-{1}".format(dist.project_name, dist.version))
+        text.append("{0}-{1}\n".format(dist.project_name, dist.version))
 
-    tmpl_vars = {"PACKAGE_LIST": "\n".join(packages),
-                 "VERSION": openslides.get_version()}
 
     with open(outfile, "w") as f:
-        f.write(tmpl.substitute(tmpl_vars))
+        f.writelines(text)
+        f.write(README_LICENSE_SECTION)
 
 
 def main():
@@ -312,7 +320,7 @@ def main():
     zip_fp = os.path.join("dist", "openslides-{0}-portable.zip".format(
         openslides.get_version()))
 
-    write_readme("extras/win32-portable/README.txt.in",
+    write_readme("README.txt",
         os.path.join(odir, "README.txt"))
 
     with zipfile.ZipFile(zip_fp, "w", zipfile.ZIP_DEFLATED) as zf:
