@@ -149,6 +149,13 @@ stylesheet.add(ParagraphStyle(name = 'Ballot_option',
                               leading = 24,
                               leftIndent = 30),
                )
+stylesheet.add(ParagraphStyle(name = 'Monotype',
+                              parent = stylesheet['Normal'],
+                              fontName = 'Courier',
+                              fontSize = 12,
+                              leading = 24,
+                              leftIndent = 30),
+               )
 stylesheet.add(ParagraphStyle(name = 'Ballot_option_name',
                               parent = stylesheet['Normal'],
                               fontSize = 12,
