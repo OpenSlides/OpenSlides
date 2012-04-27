@@ -105,6 +105,13 @@ class ItemUpdate(UpdateView):
     context_object_name = 'item'
     form_class = ItemForm
     success_url = 'item_overview'
+    apply_url = 'item_edit'
+
+    def get_success_url(self):
+        messages.success(self.request, _("Item <b>%s</b> was successfully modified.") % self.request.POST['title'])
+        if 'apply' in self.request.POST:
+            return ''
+        return reverse(super(UpdateView, self).get_success_url())
 
 
 class ItemCreate(CreateView):
@@ -114,6 +121,13 @@ class ItemCreate(CreateView):
     context_object_name = 'item'
     form_class = ItemForm
     success_url = 'item_overview'
+    apply_url = 'item_edit'
+
+    def get_success_url(self):
+        messages.success(self.request, _("Item <b>%s</b> was successfully created.") % self.request.POST['title'])
+        if 'apply' in self.request.POST:
+            return reverse(self.get_apply_url(), args=[self.object.id])
+        return reverse(super(CreateView, self).get_success_url())
 
 
 class ItemDelete(DeleteView):

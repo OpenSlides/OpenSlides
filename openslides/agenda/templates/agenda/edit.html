@@ -5,7 +5,11 @@
 {% block title %}{{ block.super }} - {%trans "Item" %}{% endblock %}
 
 {% block content %}
-    <h1>{%trans "Edit item" %}</h1>
+    {% if item %}
+        <h1>{%trans "Edit item" %}</h1>
+    {% else %}
+        <h1>{%trans "New item" %}</h1>
+    {% endif %}
     <form action="" method="post">{% csrf_token %}
         {{ form.as_p }}
         <p>
