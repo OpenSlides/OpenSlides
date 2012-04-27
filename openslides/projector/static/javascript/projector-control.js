@@ -42,17 +42,24 @@ $(function() {
     });
 
     // control countdown
-    $('.projector_countdown').click(function(event) {
+    $('.projector_countdown_btn').click(function(event) {
         event.preventDefault();
         var link = $(this);
+        var requestData = {};
+
+        if (link.attr('id') == "countdown_set") {
+            requestData = { "countdown_time" : $( "#countdown_time" ).val() };
+        }
         $.ajax({
             type: 'GET',
             url: link.attr('href'),
+            data: requestData,
             dataType: 'json',
             success: function(data) {
             }
         });
     });
+
     $('.countdown_visible_link').click(function(event) {
         event.preventDefault();
         var link = $(this);

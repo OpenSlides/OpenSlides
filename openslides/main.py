@@ -22,10 +22,8 @@ import webbrowser
 from contextlib import nested
 
 import django.conf
-from django.db import DatabaseError
 from django.core.management import execute_from_command_line
 from django.utils.crypto import get_random_string
-from django.contrib.auth.models import User
 
 import openslides
 
@@ -143,6 +141,10 @@ def run_syncdb():
 
 def check_database():
     """Detect if database was deleted and recreate if necessary"""
+    # can't be imported in global scope as they already require
+    # the settings module during import
+    from django.db import DatabaseError
+    from django.contrib.auth.models import User
 
     try:
         User.objects.count()
@@ -153,7 +155,9 @@ def check_database():
     return False
 
 def create_or_reset_admin_user():
-
+    # can't be imported in global scope as it already requires
+    # the settings module during import
+    from django.contrib.auth.models import User
     try:
         obj = User.objects.get(username = "admin")
     except User.DoesNotExist:

@@ -44,4 +44,5 @@ class ItemOrderForm(Form, CssClassMixin):
 
 
 class ConfigForm(Form, CssClassMixin):
-    agenda_countdown_time = IntegerField(widget=TextInput(attrs={'class':'small-input'}),label=_("Countdown (in seconds)"),initial=60, min_value=0)
+    pass
+

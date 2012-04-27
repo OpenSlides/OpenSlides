@@ -25,6 +25,17 @@
         return true;
     };
 
+    function spinCount(delta) {
+        var count = parseInt($( "#countdown_time" ).val());
+
+        if (count + delta < 0) {
+            delta = 0;
+        }
+
+        $( "#countdown_time" ).val(count + delta);
+        return false;
+    };
+
     $(function() {
         $( ".column" ).sortable({
             connectWith: ".column"
@@ -132,16 +143,24 @@
                             {# Countdown #}
                             {% if overlay.def_name == "Countdown" %}
                                 |
-                                <a href="{% url config_agenda %}">{{countdown_time}}{% trans "sec" %}</a>
-                                <a class="projector_countdown" href="{% url countdown_reset %}" title="{% trans 'Reset countdown' %}">
-                                    <img src="{% static 'images/icons/skip-backward.png' %}" />
-                                </a>
-                                <a id="countdown_play" class="projector_countdown" href="{% url countdown_start %}" title="{% trans 'Start countdown' %}" onclick="javascript:switchButtons('stop')">
-                                    <img src="{% static 'images/icons/play.png' %}" />
-                                </a>
-                                <a id="countdown_stop" class="projector_countdown" href="{% url countdown_stop %}" title="{% trans 'Stop countdown' %}" onclick="javascript:switchButtons('play')">
-                                    <img src="{% static 'images/icons/pause.png' %}" />
-                                </a>
+                                <span class="projector_countdown_spinbox">
+                                    <input class="projector_countdown_spinval" id="countdown_time" name="countdown_time" type="number" min="0" value="{{countdown_time}}">
+                                    {% trans "sec" %}
+                                    &nbsp;
+                                    <a id="countdown_set" class="projector_countdown_btn" href="{% url countdown_set_default %}" title="{% trans 'Save as default' %}">
+                                        <img src="{% static 'images/icons/document-save.png' %}" />
+                                    </a>
+                                    <span class="icon clear">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                                    <a class="projector_countdown_btn" href="{% url countdown_reset %}" title="{% trans 'Reset countdown' %}" onclick="javascript:switchButtons('play')">
+                                        <img src="{% static 'images/icons/skip-backward.png' %}" />
+                                    </a>
+                                    <a id="countdown_play" class="projector_countdown_btn" href="{% url countdown_start %}" title="{% trans 'Start countdown' %}" onclick="javascript:switchButtons('stop')">
+                                        <img src="{% static 'images/icons/play.png' %}" />
+                                    </a>
+                                    <a id="countdown_stop" class="projector_countdown_btn" href="{% url countdown_stop %}" title="{% trans 'Stop countdown' %}" onclick="javascript:switchButtons('play')">
+                                        <img src="{% static 'images/icons/pause.png' %}" />
+                                    </a>
+                                </span>
                             {% endif %}
                             {% if overlay.def_name == "Message" %}
                                 <form action="" method="post">{% csrf_token %}
