@@ -313,6 +313,13 @@ class Application(models.Model, SlideMixin):
         Return a list of all the allowed status.
         """
         actions = []
+        is_admin = False
+        if user:
+            try:
+                user.profile
+                is_admin = True
+            except Profile.DoesNotExist:
+                pass
 
         # check if user allowed to withdraw an application
         if  ((self.status == "pub"
@@ -350,11 +357,13 @@ class Application(models.Model, SlideMixin):
         or user.has_perm("application.can_manage_application"):
             actions.append("edit")
 
-        #Check if the user can delete the application
-        if  self.number is None \
-        and self.status == "pub" \
-        and (self.submitter == user \
-          or user.has_perm("application.can_manage_application")):
+        # Check if the user can delete the application (admin, manager, owner)
+        # reworked as requiered in #100
+        if is_admin \
+        or (user.has_perm("application.can_manage_application") \
+            and (self.status == "pub" or self.number is None))  \
+        or (self.submitter == user \
+            and (self.status == "pub" or self.number is None)):
             actions.append("delete")
 
         #For the rest, all actions need the manage permission

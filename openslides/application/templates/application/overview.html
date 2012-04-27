@@ -42,7 +42,8 @@
             <th><a href="?sort=time{% if 'time' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Creation Time" %}<a></th>
             <th style="width: 1px;">{% trans "Actions" %}</th>
         </tr>
-    {% for application in applications %}
+    {% for app_info in applications %}
+    {% with application=app_info.application useractions=app_info.actions %}
         <tr class="{% cycle '' 'odd' %} 
             {% if application.active %}activeline{% endif %}">
             <td>{% if application.number %}{{ application.number }}{% else %}-{% endif %}</td>
@@ -69,12 +70,15 @@
                 {% endif %}
                 {% if perms.application.can_manage_application %}
                     <a href="{% url application_edit application.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit application' %}"></a>
+                    {% if "delete" in useractions %}
                     <a href="{% url application_delete application.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete application' %}"></a>
+                    {% endif %}
                 {% endif %}
                 <a href="{% url print_application application.id  %}" title="{%trans 'Application as PDF' %}"><img src="{% static 'pdf.png' %}"></a>
                 </span>
             </td>
         </tr>
+    {% endwith %}
     {% empty %}
         <tr>
         <td colspan="7"><i>{%trans "No applications available." %}</i></td>

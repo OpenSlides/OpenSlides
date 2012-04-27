@@ -113,6 +113,24 @@ def overview(request):
     else:
         applications = query
 
+    if type(applications) is not list:
+        applications = list(query.all())
+
+    # not the most efficient way to do this but 'get_allowed_actions'
+    # is not callable from within djangos templates..
+    for (i, application) in enumerate(applications):
+        try:
+            applications[i] = { 
+                'actions'     : application.get_allowed_actions(request.user),
+                'application' : application
+            }
+        except:
+            # todo: except what?
+            applications[i] = { 
+                'actions'     : [],
+                'application' : application
+            }
+
     return {
         'applications': applications,
         'min_supporters': int(config['application_min_supporters']),
