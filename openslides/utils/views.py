@@ -169,6 +169,10 @@ class UpdateView(PermissionMixin, _UpdateView):
         template_manipulation.send(sender=self.__class__, request=self.request, context=context)
         return context
 
+    def form_invalid(self, form):
+        messages.error(self.request, _('Please check the form for errors.'))
+        return super(UpdateView, self).form_invalid(form)
+
 
 class CreateView(PermissionMixin, _CreateView):
     def get_success_url(self):
@@ -184,6 +188,10 @@ class CreateView(PermissionMixin, _CreateView):
     def get_apply_url(self):
         #todo: Versuche apply url automatisch anhand on self.object herauszufindne
         return self.apply_url
+
+    def form_invalid(self, form):
+        messages.error(self.request, _('Please check the form for errors.'))
+        return super(CreateView, self).form_invalid(form)
 
 
 class DeleteView(RedirectView, SingleObjectMixin):
