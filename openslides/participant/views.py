@@ -531,7 +531,7 @@ class ParticipantsPasswordsPDF(PDFView):
     permission_required = 'participant.can_manage_participant'
     filename = _("Participant-passwords")
     top_space = 0
-    
+
     def append_to_pdf(self, story):
         #doc = SimpleDocTemplate(response, pagesize=A4, topMargin=-6, bottomMargin=-6, leftMargin=0, rightMargin=0, showBoundary=False)
         #story = [Spacer(0,0*cm)]
@@ -546,8 +546,8 @@ class ParticipantsPasswordsPDF(PDFView):
                 cell.append(Paragraph(_("Your Account for OpenSlides"), stylesheet['Ballot_title']))
                 cell.append(Paragraph(_("for %s") % (user.profile), stylesheet['Ballot_subtitle']))
                 cell.append(Spacer(0,0.5*cm))
-                cell.append(Paragraph(_("User: %s") % (user.username), stylesheet['Ballot_option']))
-                cell.append(Paragraph(_("Password: %s") % (user.profile.firstpassword), stylesheet['Ballot_option']))
+                cell.append(Paragraph(_("User: %s") % (user.username), stylesheet['Monotype']))
+                cell.append(Paragraph(_("Password: %s") % (user.profile.firstpassword), stylesheet['Monotype']))
                 cell.append(Spacer(0,0.5*cm))
                 cell.append(Paragraph(_("URL: %s") % (participant_pdf_system_url), stylesheet['Ballot_option']))
                 cell.append(Spacer(0,0.5*cm))
@@ -555,11 +555,11 @@ class ParticipantsPasswordsPDF(PDFView):
                 cell2.append(Spacer(0,0.8*cm))
                 if participant_pdf_welcometext is not None:
                     cell2.append(Paragraph(participant_pdf_welcometext.replace('\r\n','<br/>'), stylesheet['Ballot_subtitle']))
-    
+
                 data.append([cell,cell2])
             except Profile.DoesNotExist:
                 pass
-    
+
         t=Table(data, 10.5*cm, 7.42*cm)
         t.setStyle(TableStyle([ ('LINEBELOW', (0,0), (-1,0), 0.25, colors.grey),
                                 ('LINEBELOW', (0,1), (-1,1), 0.25, colors.grey),
