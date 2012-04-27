@@ -26,6 +26,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.core.urlresolvers import reverse
+from django.core.context_processors import csrf
 from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
 from django.db import transaction
@@ -37,7 +38,7 @@ from reportlab.platypus import PageBreak, Paragraph, Spacer, Table, TableStyle
 from config.models import config
 from settings import SITE_ROOT
 from utils.pdf import stylesheet
-from utils.views import PDFView, RedirectView
+from utils.views import PDFView, RedirectView, DeleteView
 
 from agenda.models import Item
 
@@ -258,28 +259,6 @@ def edit(request, application_id=None):
         'actions': actions,
     }
 
-@login_required
-@template('application/view.html')
-def delete(request, application_id):
-    """
-    delete a application.
-    """
-    application = Application.objects.get(id=application_id)
-    if not 'delete' in application.get_allowed_actions(user=request.user):
-        messages.error(request, _("You can not delete application <b>%s</b>.") % application)
-    else:
-        if request.method == 'POST':
-            try:
-                title = str(application)
-                application.delete()
-                messages.success(request, _("Application <b>%s</b> was successfully deleted.") % title)
-            except NameError, name:
-                messages.error(request, name)
-        else:
-            del_confirm_form(request, application)
-    return redirect(reverse('application_overview'))
-
-
 @permission_required('application.can_manage_application')
 @template('application/view.html')
 def set_number(request, application_id):
@@ -408,6 +387,77 @@ def delete_poll(request, poll_id):
         del_confirm_form(request, poll, name=_("the %s. poll") % count, delete_link=reverse('application_poll_delete', args=[poll_id]))
     return redirect(reverse('application_view', args=[application.id]))
 
+class ApplicationDelete(DeleteView):
+    """
+    Delete one or more Applications.
+    """
+    permission_required = 'application.can_manage_application'
+    model = Application
+    url = 'application_overview'
+
+    def get_object(self):
+        self.applications = []
+
+        if self.kwargs.get('application_id', None):
+            try:
+                return Application.objects.get(id=int(self.kwargs['application_id']))
+            except Application.DoesNotExist:
+                return None
+
+        if self.kwargs.get('application_ids', []):
+            for appid in self.kwargs['application_ids']:
+                try:
+                    self.applications.append(Application.objects.get(id=int(appid)))
+                except Application.DoesNotExist:
+                    pass
+
+            if self.applications:
+                return self.applications[0]
+        return None
+
+    def pre_post_redirect(self, request, *args, **kwargs):
+        self.object = self.get_object()
+
+        if len(self.applications):
+            for application in self.applications:
+                if not 'delete' in application.get_allowed_actions(user=request.user):
+                    messages.error(request, _("You can not delete application <b>%s</b>.") % application)
+                    continue
+
+                title = application.title
+                application.delete(force=True)
+                messages.success(request, _("Application <b>%s</b> was successfully deleted.") % title)
+
+        elif self.object:
+                if not 'delete' in self.object.get_allowed_actions(user=request.user):
+                    messages.error(request, _("You can not delete application <b>%s</b>.") % self.object)
+                else:
+                    title = self.object.title
+                    self.object.delete(force=True)
+                    messages.success(request, _("Application <b>%s</b> was successfully deleted.") % title)
+        else:
+            messages.error(request, _("Invalid request"))
+
+    def gen_confirm_form(self, request, message, url):
+        formbase = '%s<form action="%s" method="post"><input type="hidden" value="%s" name="csrfmiddlewaretoken">' % (message, url, csrf(request)['csrf_token'])
+        
+        if len(self.applications):
+            for application in self.applications:
+                formbase += '<input type="hidden" name="application_ids" value="%s">' % application.id
+        elif self.object:
+            formbase += '<input type="hidden" name="application_id" value="%s">' % self.object.id
+
+        formbase +='<input type="submit" value="%s" /><input type="button" value="%s"></form>' %  (_("Yes"), _("No"))
+        messages.warning(request, formbase)
+
+
+    def confirm_form(self, request, object, item=None):
+        self.object = self.get_object()
+
+        if len(self.applications):
+            self.gen_confirm_form(request, _('Do you really want to delete multiple applications?') % self.object.get_absolute_url('delete'))
+        else:
+            self.gen_confirm_form(request, _('Do you really want to delete <b>%s</b>?') % self.object, self.object.get_absolute_url('delete'))
 
 class ViewPoll(PollFormView):
     permission_required = 'application.can_manage_application'

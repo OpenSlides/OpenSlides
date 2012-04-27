@@ -13,7 +13,7 @@
 from django.conf.urls.defaults import url, patterns
 from django.utils.translation import ugettext as _
 
-from application.views import ViewPoll, ApplicationPDF, ApplicationPollPDF, CreateAgendaItem
+from application.views import ApplicationDelete, ViewPoll, ApplicationPDF, ApplicationPollPDF, CreateAgendaItem
 
 urlpatterns = patterns('application.views',
     url(r'^$',
@@ -53,7 +53,13 @@ urlpatterns = patterns('application.views',
     ),
 
     url(r'^(?P<application_id>\d+)/del/$',
-        'delete',
+        ApplicationDelete.as_view(),
+        name='application_delete',
+    ),
+    
+    url(r'^del/$',
+        ApplicationDelete.as_view(),
+        { 'application_id' : None , 'application_ids' : None },
         name='application_delete',
     ),
 
