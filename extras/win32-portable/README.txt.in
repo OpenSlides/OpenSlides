@@ -1,11 +1,21 @@
+            English README file for OpenSlides
+            ==================================
 
-**XXX** Maybe add an introduction section (what is openslides, link to homepage, etc.)?
-**XXX** Add a note that openslides should only be run on trusted networks
+This is OpenSlides, version ${VERSION}.
+
+
+What is OpenSlides?
+===================
+OpenSlides is a free, web-based presentation system for displaying and
+controlling of agendas, applications and elections of an event.
+
+See http://www.openslides.org for more information.
+
 
 Getting started
 ===============
-Simply running openslides.exe will start openslides using djangos
-development server. It will also try to open openslides in your
+Simply running openslides.exe will start OpenSlides using djangos
+development server. It will also try to open OpenSlides in your
 default webbrowser.
 
 The server will listen on the IP address of your current hostname on
@@ -47,8 +57,16 @@ Example 2: Like above, but also specify the port as 8080
 
 Supported operating systems and browsers
 ========================================
-Windows XP or newer (32 and 64bit)
-**TODO** browsers
+Operating Systems:
+  Windows XP or newe r (32 and 64bit) [use openslids.exe]
+  MacOS X
+  GNU/Linux
+
+Browsers:
+  Firefox 3.6+
+  IE 7+
+  Chrome
+  Safari
 
 
 Included Packages
@@ -58,7 +76,7 @@ ${PACKAGE_LIST}
 
 License
 =======
-openslides is distributed under the GNU General Public License
+OpenSlides is distributed under the GNU General Public License
 version 2. For details about this license and the licenses of the
 bundled packages, please refer to the corresponding file in the
 licenses/ directory.

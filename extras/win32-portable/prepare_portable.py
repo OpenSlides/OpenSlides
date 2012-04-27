@@ -270,7 +270,8 @@ def write_readme(template_file, outfile):
         dist = pkg_resources.get_distribution(pkg)
         packages.append("{0}-{1}".format(dist.project_name, dist.version))
 
-    tmpl_vars = {"PACKAGE_LIST": "\n".join(packages)}
+    tmpl_vars = {"PACKAGE_LIST": "\n".join(packages),
+                 "VERSION": openslides.get_version()}
 
     with open(outfile, "w") as f:
         f.write(tmpl.substitute(tmpl_vars))
