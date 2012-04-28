@@ -53,6 +53,12 @@
         //$( ".column" ).disableSelection();
         $( "document" ).ready(function(){
             if ($.browser.msie) {
+                if ($.browser.version >= 8.0 && $.browser.version < 9.0)
+                {
+                    /* scaling bug in IE8.. iframe has to be 4 times bigger */
+                    $( "#iframe" ).css('width', 1024 * 4);
+                    $( "#iframe" ).css('height', 768 * 4);
+                }
                 $( "#iframe" ).css('zoom', '0.25');
             }
 
