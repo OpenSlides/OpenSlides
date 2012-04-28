@@ -36,21 +36,75 @@
         return false;
     };
 
+    // function that writes the list order to a cookie
+    function saveOrder() {
+        $(".column").each(function(index, value){
+            var colid = value.id;
+            var cookieName = "cookie-" + colid;
+            // Get the order for this column.
+            var order = $('#' + colid).sortable("toArray");
+            // For each portlet in the column
+            for ( var i = 0, n = order.length; i < n; i++ ) {
+                // Determine if it is 'opened' or 'closed'
+                var v = $('#' + order[i] ).find('.portlet-content').is(':visible');
+                // Modify the array we're saving to indicate what's open and
+                //  what's not.
+                order[i] = order[i] + ":" + v;
+            }
+            $.cookie(cookieName, order, { path: "/", expiry: new Date(2012, 1, 1)});
+        });
+    }
+
+    // function that restores the list order from a cookie
+    function restoreOrder() {
+        $(".column").each(function(index, value) {
+            var colid = value.id;
+            var cookieName = "cookie-" + colid
+            var cookie = $.cookie(cookieName);
+            if ( cookie == null ) { return; }
+            var IDs = cookie.split(",");
+            for (var i = 0, n = IDs.length; i < n; i++ ) {
+                var toks = IDs[i].split(":");
+                if ( toks.length != 2 ) {
+                    continue;
+                }
+                var portletID = toks[0];
+                var visible = toks[1]
+                var portlet = $(".column")
+                    .find('#' + portletID)
+                    .appendTo($('#' + colid));
+                if (visible === 'false') {
+                    portlet.find(".ui-icon").toggleClass("ui-icon-minus");
+                    portlet.find(".ui-icon").toggleClass("ui-icon-plus");
+                    portlet.find(".portlet-content").hide();
+                }
+            }
+        });
+    }
     $(function() {
         $( ".column" ).sortable({
-            connectWith: ".column"
+            connectWith: ".column",
+            stop: function() { saveOrder(); }
         });
-        $( ".portlet" ).addClass( "ui-widget ui-widget-content ui-helper-clearfix ui-corner-all" )
-            .find( ".portlet-header" )
-                .addClass( "ui-widget-header ui-corner-all" )
-                .prepend( "<span class='ui-icon ui-icon-minusthick'></span>")
-                .end()
-            .find( ".portlet-content" );
-        $( ".portlet-header .ui-icon" ).click(function() {
-            $( this ).toggleClass( "ui-icon-minusthick" ).toggleClass( "ui-icon-plusthick" );
-            $( this ).parents( ".portlet:first" ).find( ".portlet-content" ).toggle();
+
+        $(".portlet")
+             .addClass("ui-widget ui-widget-content")
+             .addClass("ui-helper-clearfix ui-corner-all")
+             .find(".portlet-header")
+             .addClass("ui-widget-header ui-corner-all")
+             .prepend('<span class="ui-icon ui-icon-minus"></span>')
+             .end()
+             .find(".portlet-content");
+
+        restoreOrder();
+
+        $(".portlet-header .ui-icon").click(function() {
+            $(this).toggleClass("ui-icon-minus");
+            $(this).toggleClass("ui-icon-plus");
+            $(this).parents(".portlet:first").find(".portlet-content").toggle();
+            saveOrder(); // This is important
         });
-        //$( ".column" ).disableSelection();
+
         $( "document" ).ready(function(){
             if ($.browser.msie) {
                 if ($.browser.version >= 8.0 && $.browser.version < 9.0)
@@ -69,7 +123,6 @@
             {% endif %}
         });
     });
-
     </script>
 
 
@@ -97,10 +150,10 @@
         </a>
     </div>
 
-    <div class="column">
+    <div class="column" id="col1">
     {% for category, group in categories.items %}
         {% if category != 'projector' %}
-        <div class="portlet">
+        <div class="portlet" id="portlet_{{category}}">
             {% with category_big=category|capfirst %}
             <div class="portlet-header">{% trans category_big %}</div>
             {% endwith %}
@@ -119,9 +172,9 @@
     {% endfor %}
     </div> <!-- end column-->
 
-    <div class="column">
+    <div class="column" id="col2">
         <!-- Projector Live View -->
-        <div class="portlet">
+        <div class="portlet" id="portlet_liveview">
             <div class="portlet-header">
                 {% trans "Projector Live View" %}
             </div>
@@ -136,7 +189,7 @@
         </div> <!-- end portlet-->
 
         <!-- Overlays (Countdown etc.)-->
-        <div class="portlet">
+        <div class="portlet" id="portlet_overlays">
             <div class="portlet-header">{% trans 'Overlays' %}</div>
             <div class="portlet-content">
                 <ul style="line-height: 180%">
@@ -198,7 +251,7 @@
         <!-- Custom slides -->
         {% for category, group in categories.items %}
             {% if category == 'projector' %}
-            <div class="portlet">
+            <div class="portlet" id="portlet_customslides">
                 <div class="portlet-header">{% trans "Custom slides" %}</div>
                 <div class="portlet-content">
                 {% for slides in group %}
