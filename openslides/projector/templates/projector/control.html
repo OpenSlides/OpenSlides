@@ -21,22 +21,19 @@
             $( "#countdown_play" ).show();
             $( "#countdown_stop" ).hide();
         }
-
         return true;
     };
 
     function spinCount(delta) {
         var count = parseInt($( "#countdown_time" ).val());
-
         if (count + delta < 0) {
             delta = 0;
         }
-
         $( "#countdown_time" ).val(count + delta);
         return false;
     };
 
-    // function that writes the list order to a cookie
+    // function that writes the portlet list order to a cookie
     function saveOrder() {
         $(".column").each(function(index, value){
             var colid = value.id;
@@ -55,7 +52,7 @@
         });
     }
 
-    // function that restores the list order from a cookie
+    // function that restores the portlet list order from a cookie
     function restoreOrder() {
         $(".column").each(function(index, value) {
             var colid = value.id;
