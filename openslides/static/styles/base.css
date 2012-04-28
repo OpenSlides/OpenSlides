@@ -133,11 +133,12 @@ body {
 #submenu .section h3 {
     border-bottom:1px dashed #B9A894;
     color:#B9A894;
-    padding:15px 20px 10px 50px;
+    padding:15px 20px 10px 5px;
     margin:0px;
     margin-bottom:0px;
     font-size: 16px;
     text-align:right;
+    overflow:hidden;
 }
 #submenu li a {
     color:#B9A894;

@@ -130,9 +130,14 @@ def edit(request, assignment_id=None):
             messages.error(request, _('Please check the form for errors.'))
     else:
         form = AssignmentForm(instance=assignment)
+    if assignment:
+        polls = assignment.poll_set.filter(assignment=assignment)
+    else:
+        polls = None
     return {
         'form': form,
         'assignment': assignment,
+        'polls': polls,
     }
 
 
@@ -220,6 +225,7 @@ class ViewPoll(PollFormView):
         self.assignment = self.poll.get_assignment()
         context['assignment'] = self.assignment
         context['poll'] = self.poll
+        context['polls'] = self.assignment.poll_set.filter(assignment=self.assignment)
         #context['ballotnumber'] = self.poll.get_ballot()
         return context
 

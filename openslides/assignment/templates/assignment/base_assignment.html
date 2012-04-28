@@ -19,4 +19,44 @@
         {% endif %}
         <li><a href="{% url print_assignment %}"><img src="{% static 'images/icons/pdf.png' %}"> {%trans 'All elections as PDF' %}</a></li>
     </ul>
+
+    {# second submenu #}
+    {% if assignment %}
+        <br>
+        <h3>{{assignment}}</h3>
+        <ul>
+            {# view assignemnt #}
+            {% url assignment_view assignment.id as url_assignmentview %}
+            <li class="{% if request.path == url_assignmentview %}selected{% endif %}"><a href="{% url assignment_view assignment.id  %}">{%trans 'View election' %}</a></li>
+
+            {% if perms.assignment.can_manage_assignment %}
+            {# edit assignemnt #}
+            {% url assignment_edit assignment.id as url_assignmentedit %}
+            <li class="{% if request.path == url_assignmentedit %}selected{% endif %}"><a href="{% url assignment_edit assignment.id  %}">{%trans 'Edit election' %}</a></li>
+            {# delete assignment #}
+            <li><a href="{% url assignment_delete assignment.id  %}"><img src="{% static 'images/icons/delete.png' %}"> {%trans 'Delete election' %}</a></li>
+            {% endif %}
+
+            {# PDF #}
+            <li><a href="{% url print_assignment assignment.id  %}"><img src="{% static 'images/icons/pdf.png' %}"> {%trans 'Election as PDF' %}</a></li>
+
+            {# activate #}
+            {% if perms.projector.can_manage_projector %}
+            <li><a href="{% url projector_activate_slide assignment.sid  %}"><img src="{% static 'images/icons/projector.png' %}"> {%trans 'Show election' %}</a></li>
+            {% endif %}
+
+            {# polls #}
+            {% if assignment.profile.count > 0 and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
+            <li><a href='{% url assignment_gen_poll assignment.id %}'><img src="{% static 'images/icons/statistics.png' %}"> {%trans 'New vote' %}</a></li>
+            {% endif %}
+            {% if perms.projector.can_manage_projector %}
+            {% for poll in polls %}
+                {% url assignment_poll_view poll.id as url_assignmentpollview %}
+                <li class="{% if request.path == url_assignmentpollview %}selected{% endif %}"><a href="{% url assignment_poll_view poll.id %}">{% trans "View Vote" %} {% if forloop.counter > 1 %}(#{{ forloop.counter }}){% endif %}</a></li>
+                {% url print_assignment_poll poll.id as url_assignmentedit %}
+                <li><a href="{% url print_assignment_poll poll.id %}"><img src="{% static 'images/icons/pdf.png' %}"> {%trans 'Ballot paper' %} {% if forloop.counter > 1 %}(#{{ forloop.counter }}){% endif %}</a></li>
+            {% endfor %}
+            {% endif %}
+        </ul>
+    {% endif %}
 {% endblock %}
