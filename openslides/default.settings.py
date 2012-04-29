@@ -4,19 +4,21 @@
     openslides.default.settings
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Global settings file.
+    Global Django settings file for OpenSlides.
 
     :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
-
-# Django settings for openslides project.
 from openslides_settings import *
 
+# Use 'DEBUG = True' to get more details for server errors (Default for relaeses: 'False')
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 TIME_ZONE = 'Europe/Berlin'
+
+# Default language for model/form translation strings
+LANGUAGE_CODE = 'de'
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '=(v@$58k$fcl4y8t2#q15y-9p=^45y&!$!ap$7xo6ub$akg-!5'
