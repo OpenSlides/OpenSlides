@@ -238,8 +238,14 @@ class PDFView(PermissionMixin, View):
     def get_document_title(self):
         return self.document_title
 
-    def get_get_filename(self):
+    def get_filename(self):
         return self.filename
+
+    def get_template(self, buffer):
+        return SimpleDocTemplate(buffer)
+
+    def build_document(self, pdf_document, story):
+        pdf_document.build(story, onFirstPage=firstPage, onLaterPages=laterPages)
 
     def render_to_response(self, filename):
         response = HttpResponse(mimetype='application/pdf')
@@ -247,13 +253,13 @@ class PDFView(PermissionMixin, View):
         response['Content-Disposition'] = filename.encode('utf-8')
 
         buffer = StringIO()
-        pdf_document = SimpleDocTemplate(buffer)
+        pdf_document = self.get_template(buffer)
         pdf_document.title = self.get_document_title()
         story = [Spacer(1, self.get_top_space()*cm)]
 
         self.append_to_pdf(story)
 
-        pdf_document.build(story, onFirstPage=firstPage, onLaterPages=laterPages)
+        self.build_document(pdf_document, story)
 
         pdf = buffer.getvalue()
         buffer.close()

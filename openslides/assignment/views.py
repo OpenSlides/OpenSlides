@@ -20,7 +20,7 @@ from django.utils.translation import ugettext as _
 
 from reportlab.lib import colors
 from reportlab.lib.units import cm
-from reportlab.platypus import PageBreak, Paragraph, Spacer, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, PageBreak, Paragraph, Spacer, Table, TableStyle
 
 from config.models import config
 
@@ -294,8 +294,16 @@ class AssignmentPollDelete(DeleteView):
 
 class AssignmentPDF(PDFView):
     permission_required = 'assignment.can_manage_assignment'
-    filename = u'filename=%s.pdf;' % _("Elections")
     top_space = 0
+
+    def get_filename(self):
+        try:
+            assignment_id = self.kwargs['assignment_id']
+            assignment = Assignment.objects.get(id=assignment_id)
+            filename = u'%s-%s' % (_("Assignment"), assignment.name.replace(' ','_'))
+        except:
+            filename = _("Elections")
+        return filename
 
     def append_to_pdf(self, story):
         try:
@@ -318,7 +326,6 @@ class AssignmentPDF(PDFView):
                 story = self.get_assignment(assignment, story)
         else:  # print selected assignment
             assignment = Assignment.objects.get(id=assignment_id)
-            filename = u'filename=%s-%s.pdf;' % (_("Assignment"), assignment.name.replace(' ','_'))
             story = self.get_assignment(assignment, story)
 
     def get_assignment(self, assignment, story):
@@ -458,10 +465,13 @@ class AssignmentPollPDF(PDFView):
         filename = u'%s-%s-#%s' % (_("Election"), self.poll.assignment.name.replace(' ','_'), 1)#self.poll.get_ballot())
         return filename
 
-    def append_to_pdf(self, story):
-        #doc = SimpleDocTemplate(response, pagesize=A4, topMargin=-6, bottomMargin=-6, leftMargin=0, rightMargin=0, showBoundary=False)
-        #story = [Spacer(0,0*cm)]
+    def get_template(self, buffer):
+        return SimpleDocTemplate(buffer, topMargin=-6, bottomMargin=-6, leftMargin=0, rightMargin=0, showBoundary=False)
 
+    def build_document(self, pdf_document, story):
+        pdf_document.build(story)
+
+    def append_to_pdf(self, story):
         imgpath = os.path.join(SITE_ROOT, 'static/images/circle.png')
         circle = "<img src='%s' width='15' height='15'/>&nbsp;&nbsp;" % imgpath
         cell = []

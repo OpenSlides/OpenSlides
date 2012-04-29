@@ -33,7 +33,7 @@ from django.db import transaction
 
 from reportlab.lib import colors
 from reportlab.lib.units import cm
-from reportlab.platypus import PageBreak, Paragraph, Spacer, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, PageBreak, Paragraph, Spacer, Table, TableStyle
 
 from config.models import config
 from settings import SITE_ROOT
@@ -795,6 +795,12 @@ class ApplicationPollPDF(PDFView):
     def get_filename(self):
         filename = u'%s%s_%s' % (_("Application"), str(self.poll.application.number), _("Poll"))
         return filename
+
+    def get_template(self, buffer):
+        return SimpleDocTemplate(buffer, topMargin=-6, bottomMargin=-6, leftMargin=0, rightMargin=0, showBoundary=False)
+
+    def build_document(self, pdf_document, story):
+        pdf_document.build(story)
 
     def append_to_pdf(self, story):
         imgpath = os.path.join(SITE_ROOT, 'static/images/circle.png')
