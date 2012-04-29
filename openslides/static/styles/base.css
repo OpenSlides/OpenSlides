@@ -205,7 +205,7 @@ table td {
     padding: 10px 10px;
     vertical-align:middle;
 }
-table td:hover, tr.odd td:hover  {
+table tr:hover td, tr.odd:hover td {
     background:none repeat scroll 0 0 #E8E4DE;
 }
 table a.table_delete {
