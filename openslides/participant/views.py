@@ -35,7 +35,7 @@ from django.db.models import Avg, Max, Min, Count
 
 from reportlab.lib import colors
 from reportlab.lib.units import cm
-from reportlab.platypus import PageBreak, Paragraph, LongTable, Spacer, Table, TableStyle
+from reportlab.platypus import SimpleDocTemplate, PageBreak, Paragraph, LongTable, Spacer, Table, TableStyle
 
 from participant.models import Profile
 from participant.api import gen_username, gen_password
@@ -532,9 +532,13 @@ class ParticipantsPasswordsPDF(PDFView):
     filename = _("Participant-passwords")
     top_space = 0
 
+    def get_template(self, buffer):
+        return SimpleDocTemplate(buffer, topMargin=-6, bottomMargin=-6, leftMargin=0, rightMargin=0, showBoundary=False)
+
+    def build_document(self, pdf_document, story):
+        pdf_document.build(story)
+
     def append_to_pdf(self, story):
-        #doc = SimpleDocTemplate(response, pagesize=A4, topMargin=-6, bottomMargin=-6, leftMargin=0, rightMargin=0, showBoundary=False)
-        #story = [Spacer(0,0*cm)]
         data= []
         participant_pdf_system_url = config["participant_pdf_system_url"]
         participant_pdf_welcometext = config["participant_pdf_welcometext"]
@@ -543,7 +547,7 @@ class ParticipantsPasswordsPDF(PDFView):
                 user.get_profile()
                 cell = []
                 cell.append(Spacer(0,0.8*cm))
-                cell.append(Paragraph(_("Your Account for OpenSlides"), stylesheet['Ballot_title']))
+                cell.append(Paragraph(_("Account for OpenSlides"), stylesheet['Ballot_title']))
                 cell.append(Paragraph(_("for %s") % (user.profile), stylesheet['Ballot_subtitle']))
                 cell.append(Spacer(0,0.5*cm))
                 cell.append(Paragraph(_("User: %s") % (user.username), stylesheet['Monotype']))
