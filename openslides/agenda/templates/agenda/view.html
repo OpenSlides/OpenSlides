@@ -13,4 +13,11 @@
     <p>{{ item.comment|linebreaks }}</p>
     {% endif %}
 
+    <p>
+    <a href='{% url item_edit item.id %}'>
+    <button class="button" type="button" onclick="window.location='{% url item_edit item.id %}'">
+        <span class="icon edit">{%trans 'Edit agenda item' %}</span>
+    </button>
+    </a>
+    </p>
 {% endblock %}
