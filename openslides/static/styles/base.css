@@ -451,7 +451,7 @@ form .error input, form .error textarea {
 form input:after {
     font-weight: bold;
 }
-form .helptext {
+.helptext {
     font-size:9px;
     display: block;
     color: #556652;

@@ -9,8 +9,10 @@
     <p>{{ ballotnumber }}. {%trans "ballot" %}: {{assignment.poll.get_options}}
     {% blocktrans count counter=options|length %}candidate{% plural %}candidates{% endblocktrans %}
     </p>
-    <p><b>{% trans "Short description" %}:</b> {{ assignment.polldescription }}</p>
-    <i>-1 := {% trans 'majority' %}, -2 := {% trans 'undocumented' %}</i>
+    {% if assignment.polldescription %}
+        <p><b>{% trans "Short description" %}:</b> {{ assignment.polldescription }}</p>
+    {% endif %}
+    <i class="helptext">{% trans "Special values" %}: -1 = {% trans 'majority' %}; -2 = {% trans 'undocumented' %}</i>
     <form action="" method="post" class="small-form">{% csrf_token %}
     <table style="width:auto">
         <tr>
@@ -39,28 +41,18 @@
                 <td>{{ pollform.votescast.errors }}{{ pollform.votescast }}</td>
             </tr>
     </table>
-
-        <p>
-        <a href='{% url print_assignment_poll poll.id %}'>
-        <span class="button">
-            <span class="icon pdf">{%trans 'Print ballot' %}</span>
-        </span>
-        </a>
-        </p>
-
-        <p>
-        <button class="button" type="submit">
-            <span class="icon ok">{%trans 'Save' %}</span>
-        </button>
-        <button class="button" type="submit" name="apply">
-            <span class="icon apply">{%trans 'Apply' %}</span>
-        </button>
-        <a href='{% url assignment_view poll.assignment.id %}'>
-        <button class="button" type="button" onclick="window.location='{% url assignment_view poll.assignment.id %}'">
-            <span class="icon cancel">{%trans 'Cancel' %}</span>
-        </button>
-        </a>
-        </p>
+    <p>
+    <button class="button" type="submit">
+        <span class="icon ok">{%trans 'Save' %}</span>
+    </button>
+    <button class="button" type="submit" name="apply">
+        <span class="icon apply">{%trans 'Apply' %}</span>
+    </button>
+    <a href='{% url assignment_view poll.assignment.id %}'>
+    <button class="button" type="button" onclick="window.location='{% url assignment_view poll.assignment.id %}'">
+        <span class="icon cancel">{%trans 'Cancel' %}</span>
+    </button>
+    </a>
+    </p>
     </form>
-
 {% endblock %}

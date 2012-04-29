@@ -10,7 +10,7 @@
     <h3>{{ application.title }}</h3>
 
     <p>{%trans "Results of" %} {{ ballot }}. {%trans "Vote" %}</p>
-    <i>-1 := {% trans 'majority' %}, -2 := {% trans 'undocumented' %}</i>
+    <i class="helptext">{% trans "Special values" %}: -1 = {% trans 'majority' %}; -2 = {% trans 'undocumented' %}</i>
     <form action="" method="post" class="small-form">{% csrf_token %}
         {{ pre_form }}
         <span id="poll_id" style="display:none">{{ poll.id }}</span>
