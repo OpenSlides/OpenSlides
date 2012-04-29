@@ -5,7 +5,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-VERSION = (1, 2, 0, 'alpha', 0)
+VERSION = (1, 2, 0, 'beta', 1)
 
 def get_version(version=None):
     """Derives a PEP386-compliant version number from VERSION."""
@@ -31,8 +31,7 @@ def get_version(version=None):
             sub = '.dev'
 
     elif version[3] != 'final':
-        mapping = {'alpha': 'a', 'beta': 'b', 'rc': 'c'}
-        sub = mapping[version[3]] + str(version[4])
+        sub = "-" + version[3] + str(version[4])
 
     return main + sub
 
