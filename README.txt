@@ -1,7 +1,16 @@
             English README file for OpenSlides
             ==================================
 
-This is OpenSlides, version 1.2-beta1.
+   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+   Attention: This is a BETA version of OpenSlides.  This means, some
+   functionalities might be missing or NOT WORKING CORRECTLY.
+
+   Beta versions are intended for testing to learn about the upcoming
+   version and to suggest changes. They should not be used in a
+   production environment.
+   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+This is OpenSlides, version 1.2-beta1 (2012-04-30).
 
 
 What is OpenSlides?
@@ -59,8 +68,8 @@ Supported operating systems and browsers
 ========================================
 Operating Systems:
   Windows XP or newer (32 and 64bit) [use openslides.exe]
-  MacOS X
-  GNU/Linux
+  MacOS X [use start.py, see INSTALL]
+  GNU/Linux [use start.py, see INSTALL]
 
 Browsers:
   Firefox 3.6+
