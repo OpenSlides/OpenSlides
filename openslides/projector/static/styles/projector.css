@@ -138,6 +138,11 @@ body{
     text-transform: uppercase;
 }
 
+.box .results {
+    font-size: 120%;
+    margin-top: -12px;
+}
+
 /*** Items *** /
 /* item title centered */
 .item_fullscreen

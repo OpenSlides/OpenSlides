@@ -24,37 +24,37 @@
         {% endif %}
         </p>
 
+        {% with application.polls as polls %}
+        {% if polls.exists and polls.0.has_votes %}
+        <p><b>{% trans "Poll result" %}:</b><br>
+        {% for poll in polls %}
+            {% if poll.has_votes %}
+                {% if polls|length > 1 %}
+                    {{forloop.counter}}. {% trans "Vote" %}:
+                {% endif %}
+                {% with poll.get_options.0 as option %}
+                <div class="results">
+                    <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.Yes }} <br>
+                    <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.No }} <br>
+                    <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}">  {{ option.Abstain }}<br>
+                    <img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}<br>
+                    <hr>
+                    <img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
+                </div>
+                {% endwith %}
+            {% else %}
+                {% if poll|length  == 1 %}
+                <i>{% trans "No poll results available." %}</i>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        </p>
+        {% endif %}
+        {% endwith %}
+
         <p><b>{% trans "Submitter" %}:</b><br>
         {{ application.submitter.profile }}
         </p>
-
-    {% with application.polls as polls %}
-    {% if polls.exists and polls.0.has_votes %}
-    <p><b>{% trans "Poll result" %}:</b><br>
-    {% for poll in polls %}
-        {% if poll.has_votes %}
-            {% if polls|length > 1 %}
-                {{forloop.counter}}. {% trans "Vote" %}:<br>
-            {% endif %}
-            {% with poll.get_options.0 as option %}
-            <div class="results" style="font-size: 120%;">
-                <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.Yes }} <br>
-                <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.No }} <br>
-                <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}">  {{ option.Abstain }}<br>
-                <img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}<br>
-                <hr>
-                <img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
-            </div>
-            {% endwith %}
-        {% else %}
-            {% if poll|length  == 1 %}
-            <i>{% trans "No poll results available." %}</i>
-            {% endif %}
-        {% endif %}
-    {% endfor %}
-    </p>
-    {% endif %}
-    {% endwith %}
     </div>
     </div>
 
