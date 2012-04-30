@@ -469,7 +469,7 @@ class ApplicationDelete(DeleteView):
         elif self.object:
             formbase += '<input type="hidden" name="application_id" value="%s">' % self.object.id
 
-        formbase +='<input type="submit" value="%s" /><input type="button" value="%s"></form>' %  (_("Yes"), _("No"))
+        formbase +='<input type="submit" value="%s" /> <input type="button" value="%s"></form>' %  (_("Yes"), _("No"))
         messages.warning(request, formbase)
 
 

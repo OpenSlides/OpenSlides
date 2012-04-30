@@ -317,9 +317,8 @@ class Application(models.Model, SlideMixin):
         if user:
             try:
                 user.profile
-                is_admin = True
             except Profile.DoesNotExist:
-                pass
+                is_admin = True
 
         # check if user allowed to withdraw an application
         if  ((self.status == "pub"
