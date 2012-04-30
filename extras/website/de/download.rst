@@ -1,6 +1,29 @@
 Download
 ========
 
+OpenSlides 1.2-beta1 (2012-04-30)
+--------------------------------
+
+|
+.. raw:: html
+
+    <span>
+    <a href="http://openslides.org/download/Beta/openslides-1.2-beta1-portable.zip" class="download-button">
+    <strong>OpenSlides 1.2-beta1<br>(für Windows)</strong><br>
+    <span>.zip &mdash; 10 <small>MB</small><br>(Portable Version mit openslides.exe)</span></a>
+    </span>
+    
+    <br>
+    
+    <span>
+    <a href="http://openslides.org/download/Beta/openslides-1.2-beta1.tar.gz" class="download-button">
+    <strong>OpenSlides 1.2-beta1<br>(für Linux/MacOSX)</strong><br>
+    <span>.tar.gz &mdash; 1 <small>MB</small></span></a>
+    </span>
+    
+Für Linux/MacOS: Lesen Sie nach dem Download die 
+`Installationsanleitung <http://openslides.org/download/Beta/INSTALL-1.2-beta1.txt>`_.
+
 
 OpenSlides 1.1 (2011-11-15)
 ---------------------------
