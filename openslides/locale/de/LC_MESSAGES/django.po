@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-29 20:31+0200\n"
+"POT-Creation-Date: 2012-04-30 08:04+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: German <LL@li.org>\n"
@@ -72,10 +72,12 @@ msgid "Agenda"
 msgstr "Tagesordnung"
 
 #: agenda/views.py:111
+#, python-format
 msgid "Item <b>%s</b> was successfully modified."
 msgstr "Eintrag <b>%s</b> wurde erfolgreich bearbeitet."
 
 #: agenda/views.py:127
+#, python-format
 msgid "Item <b>%s</b> was successfully created."
 msgstr "Eintrag <b>%s</b> wurde erfolgreich angelegt."
 
@@ -896,7 +898,7 @@ msgstr "Ergebnis der"
 #: application/templates/application/poll_view.html:13
 #: assignment/templates/assignment/poll_view.html:15
 msgid "Special values"
-msgstr ""
+msgstr "Spezielle Werte"
 
 #: application/templates/application/poll_view.html:13
 #: assignment/templates/assignment/poll_view.html:15 poll/models.py:192
@@ -1447,12 +1449,11 @@ msgstr "Willkommen bei OpenSlides!"
 
 #: config/models.py:96
 msgid ""
-"Buy our commercial support on <a href='http://openslides.org/'>www."
-"openslides.org</a> to get professional assistance for OpenSlides."
+"Get professional support for OpenSlides on <a href='http://openslides.org/' "
+"target='_blank'>www.openslides.org</a>."
 msgstr ""
-"Kaufen Sie unseren kommerziellen Support auf <a href='http://openslides."
-"org/'>www.openslides.org</a>, um professionelle Unterstützung für OpenSlides "
-"zu bekommen."
+"Professionelle Unterstützung für OpenSlides gibt es unter <a href='http://openslides.org"
+"target='_blank'>www.openslides.org</a>."
 
 #: config/models.py:114
 msgid "General"
