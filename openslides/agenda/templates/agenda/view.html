@@ -8,7 +8,8 @@
     <h1>{{ item }}</h1>
     <p>{{ item.get_text|safe|linebreaks }}</p>
 
-    {% if perms.agenda.can_manage_agenda and item.comment %}
+    {% if perms.agenda.can_manage_agenda %}
+    {% if item.comment %}
     <h2>{% trans "Comment" %}</h2>
     <p>{{ item.comment|linebreaks }}</p>
     {% endif %}
@@ -20,4 +21,5 @@
     </button>
     </a>
     </p>
+    {% endif %}
 {% endblock %}
