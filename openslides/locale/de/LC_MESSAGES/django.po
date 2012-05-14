@@ -1071,7 +1071,7 @@ msgstr "Teilnehmer/in vorschlagen"
 
 #: assignment/forms.py:39
 msgid "Only publish voting results for selected winners (Projector view only)"
-msgstr "Wahlergebnisse der nicht gewählten Kandidaten auf dem Beamer verbergen"
+msgstr "Wahlergebnisse der nicht gewählten Kandidaten auf dem Projektor verbergen"
 
 #: assignment/forms.py:59
 msgid "Title for PDF document (all elections)"
@@ -1922,17 +1922,17 @@ msgstr "Stimmen"
 
 #: projector/models.py:44
 msgid "Can manage the projector"
-msgstr "Darf den Beamer steuern"
+msgstr "Darf den Projektor steuern"
 
 #: projector/models.py:45
 msgid "Can see projector"
-msgstr "Darf den Beamer sehen"
+msgstr "Darf den Projektor sehen"
 
 #: projector/views.py:247 projector/templates/projector/base_projector.html:7
 #: projector/templates/projector/base_projector.html:11
 #: projector/templates/projector/control.html:129
 msgid "Projector"
-msgstr "Beamer"
+msgstr "Projektor"
 
 #: projector/templates/projector/base_projector.html:15
 msgid "Overview"
@@ -1940,11 +1940,11 @@ msgstr "Übersicht"
 
 #: projector/templates/projector/base_projector.html:20
 msgid "Projector view"
-msgstr "Beamer-Ansicht"
+msgstr "Projektor-Ansicht"
 
 #: projector/templates/projector/control.html:132
 msgid "Adjust projector view"
-msgstr "Beamer-Ansicht anpassen"
+msgstr "Projektor-Ansicht anpassen"
 
 #: projector/templates/projector/control.html:133
 msgid "Zoom in"
@@ -1964,15 +1964,15 @@ msgstr "Text nach unten scrollen"
 
 #: projector/templates/projector/control.html:145
 msgid "Reset projector view"
-msgstr "Beamer-Ansicht zurücksetzen"
+msgstr "Projektor-Ansicht zurücksetzen"
 
 #: projector/templates/projector/control.html:176
 msgid "Projector Live View"
-msgstr "Beamer-Live-Ansicht"
+msgstr "Projektor-Live-Ansicht"
 
 #: projector/templates/projector/control.html:179
 msgid "Open Projector view"
-msgstr "Beamer-Ansicht öffnen"
+msgstr "Projektor-Ansicht öffnen"
 
 #: projector/templates/projector/control.html:190
 msgid "Overlays"
