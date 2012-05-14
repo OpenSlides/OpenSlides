@@ -182,7 +182,7 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
         CountVotesCast.append_pollform_fields(self, fields)
 
     def get_ballot(self):
-        return self.assignment.assignmentpoll_set.filter(id__lte=self.id).count()
+        return self.assignment.poll_set.filter(id__lte=self.id).count()
 
     @models.permalink
     def get_absolute_url(self, link='view'):

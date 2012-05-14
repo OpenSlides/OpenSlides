@@ -16,7 +16,7 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.utils.translation import ugettext as _
+from django.utils.translation import ungettext, ugettext as _
 
 from reportlab.lib import colors
 from reportlab.lib.units import cm
@@ -226,7 +226,7 @@ class ViewPoll(PollFormView):
         context['assignment'] = self.assignment
         context['poll'] = self.poll
         context['polls'] = self.assignment.poll_set.filter(assignment=self.assignment)
-        #context['ballotnumber'] = self.poll.get_ballot()
+        context['ballotnumber'] = self.poll.get_ballot()
         return context
 
     def get_success_url(self):
@@ -477,12 +477,9 @@ class AssignmentPollPDF(PDFView):
         cell = []
         cell.append(Spacer(0,0.8*cm))
         cell.append(Paragraph(_("Election") + ": " + self.poll.assignment.name, stylesheet['Ballot_title']))
-        cell.append(Paragraph(self.poll.assignment.description, stylesheet['Ballot_subtitle']))
-
-        #options = self.poll.assignment.get_options().order_by('user__user__first_name')
+        cell.append(Paragraph(self.poll.assignment.polldescription, stylesheet['Ballot_subtitle']))
         options = self.poll.get_options().order_by('candidate')
-      
-        #cell.append(Paragraph(str(self.poll.get_ballot())+". "+_("ballot")+", "+str(len(options))+" "+ ungettext("candidate", "candidates", len(options))+", "+str(self.poll.assignment.posts)+" "+_("available posts"), stylesheet['Ballot_description']))
+        cell.append(Paragraph(str(self.poll.get_ballot())+". "+_("ballot")+", "+str(len(options))+" "+ ungettext("candidate", "candidates", len(options))+", "+str(self.poll.assignment.posts)+" "+_("available posts"), stylesheet['Ballot_description']))
         cell.append(Spacer(0,0.4*cm))
 
         data= []
