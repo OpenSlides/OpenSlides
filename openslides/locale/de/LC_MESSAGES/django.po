@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-14 10:10+0200\n"
+"POT-Creation-Date: 2012-05-14 22:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: German\n"
@@ -39,8 +39,9 @@ msgstr "Titel"
 msgid "Text"
 msgstr "Text"
 
-#: agenda/models.py:40 agenda/templates/agenda/view.html:12
-#: participant/models.py:37 participant/templates/participant/overview.html:70
+#: agenda/models.py:40 agenda/templates/agenda/overview.html:65
+#: agenda/templates/agenda/view.html:13 participant/models.py:37
+#: participant/templates/participant/overview.html:70
 msgid "Comment"
 msgstr "Kommentar"
 
@@ -48,7 +49,7 @@ msgstr "Kommentar"
 msgid "Closed"
 msgstr "Abgeschlossen"
 
-#: agenda/models.py:42 agenda/templates/agenda/overview.html:66
+#: agenda/models.py:42 agenda/templates/agenda/overview.html:67
 msgid "Weight"
 msgstr "Gewichtung"
 
@@ -65,7 +66,7 @@ msgstr "Darf die Tagesordung verwalten"
 #: agenda/templates/agenda/base_agenda.html:10
 #: agenda/templates/agenda/overview.html:8
 #: agenda/templates/agenda/overview.html:52
-#: agenda/templates/agenda/overview.html:73
+#: agenda/templates/agenda/overview.html:74
 #: agenda/templates/projector/AgendaSummary.html:6
 #: agenda/templates/projector/AgendaSummary.html:10
 msgid "Agenda"
@@ -189,7 +190,7 @@ msgid "Item"
 msgstr "Eintrag"
 
 #: agenda/templates/agenda/edit.html:9
-#: agenda/templates/agenda/item_row.html:31
+#: agenda/templates/agenda/item_row.html:40
 msgid "Edit item"
 msgstr "Eintrag bearbeiten"
 
@@ -220,11 +221,11 @@ msgstr "erforderlich"
 msgid "Item closed"
 msgstr "Eintrag erledigt"
 
-#: agenda/templates/agenda/item_row.html:26
+#: agenda/templates/agenda/item_row.html:35
 msgid "Activate item"
 msgstr "Eintrag projizieren"
 
-#: agenda/templates/agenda/item_row.html:32
+#: agenda/templates/agenda/item_row.html:41
 msgid "Delete item"
 msgstr "Eintrag löschen"
 
@@ -253,7 +254,7 @@ msgstr[1] "Einträge"
 msgid "Done"
 msgstr "Erledigt"
 
-#: agenda/templates/agenda/overview.html:65
+#: agenda/templates/agenda/overview.html:66
 #: application/templates/application/overview.html:43
 #: assignment/templates/assignment/overview.html:28
 #: participant/templates/participant/group_overview.html:13
@@ -261,11 +262,11 @@ msgstr "Erledigt"
 msgid "Actions"
 msgstr "Aktionen"
 
-#: agenda/templates/agenda/overview.html:88
+#: agenda/templates/agenda/overview.html:90
 msgid "No items available."
 msgstr "Keine Einträge vorhanden."
 
-#: agenda/templates/agenda/view.html:19
+#: agenda/templates/agenda/view.html:20
 msgid "Edit agenda item"
 msgstr "Tagesordnungseintrag bearbeiten"
 
@@ -1148,7 +1149,7 @@ msgstr "Darf selbst für Wahlen kandidieren"
 msgid "Can manage assignment"
 msgstr "Darf Wahlen verwalten"
 
-#: assignment/models.py:205 assignment/views.py:305 assignment/views.py:591
+#: assignment/models.py:205 assignment/views.py:305 assignment/views.py:588
 #: assignment/templates/assignment/base_assignment.html:14
 #: assignment/templates/assignment/overview.html:6
 #: assignment/templates/assignment/overview.html:9
@@ -1264,7 +1265,24 @@ msgstr "N"
 msgid "A"
 msgstr "E"
 
-#: assignment/views.py:584
+#: assignment/views.py:482 assignment/templates/assignment/poll_view.html:9
+#: assignment/templates/assignment/view.html:106
+#: assignment/templates/assignment/view.html:114
+#: assignment/templates/projector/Assignment.html:58
+msgid "ballot"
+msgstr "Wahlgang"
+
+#: assignment/views.py:482 assignment/templates/assignment/poll_view.html:10
+msgid "candidate"
+msgid_plural "candidates"
+msgstr[0] "Kandidat/in"
+msgstr[1] "Kandidaten/innen"
+
+#: assignment/views.py:482
+msgid "available posts"
+msgstr "verfügbare Posten"
+
+#: assignment/views.py:581
 msgid "Election settings successfully saved."
 msgstr "Wahl-Einstellungen wurden erfolgreich gespeichert."
 
@@ -1323,19 +1341,6 @@ msgstr "Wahl projizieren"
 #: assignment/templates/assignment/overview.html:52
 msgid "No assignments available."
 msgstr "Keine Wahlen vorhanden."
-
-#: assignment/templates/assignment/poll_view.html:9
-#: assignment/templates/assignment/view.html:106
-#: assignment/templates/assignment/view.html:114
-#: assignment/templates/projector/Assignment.html:58
-msgid "ballot"
-msgstr "Wahlgang"
-
-#: assignment/templates/assignment/poll_view.html:10
-msgid "candidate"
-msgid_plural "candidates"
-msgstr[0] "Kandidat/in"
-msgstr[1] "Kandidaten/innen"
 
 #: assignment/templates/assignment/poll_view.html:13
 msgid "Short description"
@@ -1435,9 +1440,8 @@ msgid "Can manage configuration"
 msgstr "Darf die Konfiguration verwalten"
 
 #: config/models.py:88
-msgid ""
-"Presentation system for agenda, applications, elections and participants"
-msgstr "Präsentationssystem für Tagesordnung, Anträge, Wahlen und Teilnehmer"
+msgid "Presentation system for agenda, applications and elections"
+msgstr "Präsentationssystem für Tagesordnung, Anträge und Wahlen"
 
 #: config/models.py:93 templates/base.html:29
 msgid "Welcome"
@@ -2050,21 +2054,3 @@ msgstr "Bedaure, Sie haben keine Berechtigung diese Seite zu sehen."
 #: utils/views.py:231
 msgid "undefined-filename"
 msgstr "undefinierter-dateiname"
-
-#~ msgid "Countdown (in seconds)"
-#~ msgstr "Countdown (in Sekunden)"
-
-#~ msgid "Agenda settings successfully saved."
-#~ msgstr "Tagesordnungs-Einstellungen erfolgreich gespeichert."
-
-#~ msgid "Print ballot"
-#~ msgstr "Stimmzettel drucken"
-
-#~ msgid "Manage election"
-#~ msgstr "Wahl verwalten"
-
-#~ msgid "Edit"
-#~ msgstr "Bearbeiten"
-
-#~ msgid "Beam election"
-#~ msgstr "Wahl projizieren"
