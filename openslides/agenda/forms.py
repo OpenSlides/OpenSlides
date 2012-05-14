@@ -12,11 +12,11 @@
 
 from django.forms import Form, ModelForm, IntegerField, ChoiceField, \
                          ModelChoiceField, HiddenInput, Select, TextInput
-from django.utils.translation import ugettext as _
 
 from mptt.forms import TreeNodeChoiceField
 
 from utils.forms import CssClassMixin
+from utils.translation_ext import ugettext as _
 
 from agenda.models import Item
 

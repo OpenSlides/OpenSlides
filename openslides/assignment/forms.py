@@ -12,9 +12,9 @@
 
 from django import forms
 from django.forms import ModelForm, Form, ModelChoiceField, Select
-from django.utils.translation import ugettext as _
 
 from utils.forms import CssClassMixin
+from utils.translation_ext import ugettext as _
 from participant.models import Profile
 from assignment.models import Assignment
 

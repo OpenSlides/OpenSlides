@@ -11,10 +11,10 @@
 """
 
 from django.forms import Form, CharField, TextInput, BooleanField, IntegerField, ChoiceField, Textarea, Select
-from django.utils.translation import ugettext as _
 
 from utils.forms import CssClassMixin
 from models import config
+from utils.translation_ext import ugettext as _
 
 
 class GeneralConfigForm(Form, CssClassMixin):

@@ -23,10 +23,10 @@ from django.template.loader import render_to_string
 from django.core.context_processors import csrf
 from django.contrib import messages
 from django.contrib.auth.models import Permission
-from django.utils.translation import ugettext as _
 from django.db.models import signals
 
 from openslides.utils.signals import template_manipulation
+from openslides.utils.translation_ext import ugettext as _
 
 from openslides import get_version
 

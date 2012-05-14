@@ -10,7 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.utils.translation import ugettext as _ugettext
+from django.utils.translation import ugettext_lazy
 from django.forms import ChoiceField, ModelChoiceField, ModelMultipleChoiceField
 
 
@@ -53,4 +53,4 @@ def ugettext(msg, fixstr=False):
     if fixstr:
         return msg
     else:
-        return _ugettext(msg)
+        return ugettext_lazy(msg)

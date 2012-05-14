@@ -13,10 +13,9 @@
 from django.forms import Form, ModelForm, CharField, EmailField, FileField, FileInput, TextInput, Textarea, MultipleChoiceField, ModelMultipleChoiceField, ChoiceField, BooleanField
 from django.contrib.auth.models import User, Group, Permission
 from django.contrib.auth.forms import AdminPasswordChangeForm
-from django.utils.translation import ugettext as _
 
 from utils.forms import CssClassMixin
-from utils.translation_ext import LocalizedModelMultipleChoiceField
+from utils.translation_ext import LocalizedModelMultipleChoiceField, ugettext as _
 
 # required for USER_VISIBLE_PERMISSIONS
 from participant.models import Profile

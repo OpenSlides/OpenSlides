@@ -11,7 +11,6 @@
 """
 
 from django.conf.urls.defaults import url, patterns
-from django.utils.translation import ugettext as _
 
 from application.views import ApplicationDelete, ViewPoll, ApplicationPDF, ApplicationPollPDF, CreateAgendaItem
 

@@ -12,9 +12,9 @@
 
 from django.forms import ModelForm, Form, CharField, Textarea, TextInput, ModelMultipleChoiceField, ModelChoiceField, BooleanField, FileField, FileInput, IntegerField, ChoiceField, Select
 from django.contrib.auth.models import User
-from django.utils.translation import ugettext as _
 
 from utils.forms import CssClassMixin
+from utils.translation_ext import ugettext as _
 from application.models import Application
 
 
