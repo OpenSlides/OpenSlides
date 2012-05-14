@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-30 08:04+0200\n"
+"POT-Creation-Date: 2012-05-14 10:10+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: German\n"
@@ -92,10 +92,10 @@ msgid "Item <b>%s</b> was successfully deleted."
 msgstr "Eintrag <b>%s</b> wurde erfolgreich gelöscht."
 
 #: agenda/views.py:156 agenda/views.py:158
-#: agenda/templates/agenda/overview.html:46 application/models.py:531
+#: agenda/templates/agenda/overview.html:46 application/models.py:530
 #: application/views.py:472 application/views.py:764 application/views.py:814
 #: application/templates/application/view.html:79
-#: application/templates/projector/Application.html:33
+#: application/templates/projector/Application.html:37
 #: assignment/templates/assignment/view.html:164
 #: assignment/templates/assignment/view.html:168
 #: assignment/templates/projector/Assignment.html:74
@@ -105,10 +105,10 @@ msgid "Yes"
 msgstr "Ja"
 
 #: agenda/views.py:156 agenda/views.py:158
-#: agenda/templates/agenda/overview.html:47 application/models.py:531
+#: agenda/templates/agenda/overview.html:47 application/models.py:530
 #: application/views.py:472 application/views.py:764 application/views.py:815
 #: application/templates/application/view.html:80
-#: application/templates/projector/Application.html:34
+#: application/templates/projector/Application.html:38
 #: assignment/templates/assignment/view.html:165
 #: assignment/templates/projector/Assignment.html:75 utils/utils.py:39
 #: utils/views.py:215
@@ -272,7 +272,7 @@ msgstr "Tagesordnungseintrag bearbeiten"
 #: application/forms.py:42 application/views.py:782
 #: application/templates/application/view.html:226
 #: application/templates/application/view.html:246
-#: application/templates/projector/Application.html:69
+#: application/templates/projector/Application.html:77
 msgid "Reason"
 msgstr "Begründung"
 
@@ -287,7 +287,7 @@ msgstr "Triviale Änderungen erzeugen keine neue Version."
 #: application/forms.py:48 application/models.py:54 application/views.py:710
 #: application/templates/application/overview.html:41
 #: application/templates/application/view.html:18
-#: application/templates/projector/Application.html:22
+#: application/templates/projector/Application.html:55
 msgid "Submitter"
 msgstr "Antragsteller/in"
 
@@ -448,35 +448,35 @@ msgstr "Version %s nicht zugelassen"
 msgid "Status modified"
 msgstr "Status geändert"
 
-#: application/models.py:407
+#: application/models.py:406
 msgid "by"
 msgstr "von"
 
-#: application/models.py:440
+#: application/models.py:439
 msgid "Poll created"
 msgstr "Abstimmung erstellt"
 
-#: application/models.py:488
+#: application/models.py:487
 msgid "Can see application"
 msgstr "Darf Anträge sehen"
 
-#: application/models.py:489
+#: application/models.py:488
 msgid "Can create application"
 msgstr "Darf Anträge erstellen"
 
-#: application/models.py:490
+#: application/models.py:489
 msgid "Can support application"
 msgstr "Darf Anträge unterstützen"
 
-#: application/models.py:491
+#: application/models.py:490
 msgid "Can manage application"
 msgstr "Darf Anträge verwalten"
 
-#: application/models.py:531
+#: application/models.py:530
 msgid "Abstain"
 msgstr "Enthaltung"
 
-#: application/models.py:564 application/views.py:667 application/views.py:873
+#: application/models.py:563 application/views.py:667 application/views.py:873
 #: application/templates/application/base_application.html:9
 #: application/templates/application/overview.html:7
 #: application/templates/application/overview.html:10
@@ -676,7 +676,7 @@ msgstr ""
 #: application/templates/application/view.html:7
 #: application/templates/application/view.html:210
 #: application/templates/projector/Application.html:7
-#: application/templates/projector/Application.html:57
+#: application/templates/projector/Application.html:65
 msgid "Application"
 msgstr "Antrag"
 
@@ -685,7 +685,7 @@ msgstr "Antrag"
 #: application/templates/application/base_application.html:24
 #: application/templates/application/poll_view.html:9
 #: application/templates/application/view.html:208
-#: application/templates/projector/Application.html:55
+#: application/templates/projector/Application.html:63
 msgid "Application No."
 msgstr "Antrag Nr."
 
@@ -711,20 +711,20 @@ msgstr "Abstimmungsergebnis"
 #: application/templates/application/poll_view.html:12
 #: application/templates/application/view.html:68
 #: application/templates/application/view.html:74
-#: application/templates/projector/Application.html:30
+#: application/templates/projector/Application.html:33
 msgid "Vote"
 msgstr "Abstimmung"
 
 #: application/views.py:764 application/views.py:816
 #: application/templates/application/view.html:81
-#: application/templates/projector/Application.html:35
+#: application/templates/projector/Application.html:39
 #: assignment/templates/assignment/view.html:166
 #: assignment/templates/projector/Assignment.html:76
 msgid "Abstention"
 msgstr "Enthaltung"
 
 #: application/views.py:764 application/templates/application/view.html:82
-#: application/templates/projector/Application.html:36
+#: application/templates/projector/Application.html:40
 #: assignment/templates/assignment/view.html:185
 #: assignment/templates/projector/Assignment.html:95
 msgid "Invalid"
@@ -733,7 +733,7 @@ msgstr "Ungültig"
 #: application/views.py:764
 #: application/templates/application/poll_view.html:33
 #: application/templates/application/view.html:84
-#: application/templates/projector/Application.html:38 assignment/views.py:401
+#: application/templates/projector/Application.html:42 assignment/views.py:401
 #: assignment/templates/assignment/poll_view.html:40
 #: assignment/templates/assignment/view.html:193
 #: assignment/templates/assignment/view.html:196
@@ -1002,7 +1002,7 @@ msgid "Reset"
 msgstr "Zurücksetzen"
 
 #: application/templates/application/view.html:210
-#: application/templates/projector/Application.html:57
+#: application/templates/projector/Application.html:65
 msgid "no number"
 msgstr "ohne Nummer"
 
@@ -1056,11 +1056,11 @@ msgstr "unverändert"
 msgid "Log"
 msgstr "Log"
 
-#: application/templates/projector/Application.html:26
+#: application/templates/projector/Application.html:29
 msgid "Poll result"
 msgstr "Abstimmungsergebnis"
 
-#: application/templates/projector/Application.html:44
+#: application/templates/projector/Application.html:47
 msgid "No poll results available."
 msgstr "Keine Abstimmungen vorhanden."
 
@@ -1452,8 +1452,8 @@ msgid ""
 "Get professional support for OpenSlides on <a href='http://openslides.org/' "
 "target='_blank'>www.openslides.org</a>."
 msgstr ""
-"Professionelle Unterstützung für OpenSlides gibt es unter <a href='http://openslides.org"
-"target='_blank'>www.openslides.org</a>."
+"Professionelle Unterstützung für OpenSlides gibt es unter <a href='http://"
+"openslides.orgtarget='_blank'>www.openslides.org</a>."
 
 #: config/models.py:114
 msgid "General"
