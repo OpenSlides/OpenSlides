@@ -33,6 +33,7 @@ class UserNewForm(ModelForm, CssClassMixin):
     first_name = CharField(label=_("First name"))
     last_name = CharField(label=_("Last name"))
     groups = ModelMultipleChoiceField(queryset=Group.objects.all(), label=_("User groups"), required=False)
+    is_active = BooleanField(label=_("Active"), required=False)
 
     class Meta:
         model = User
@@ -43,6 +44,7 @@ class UserEditForm(ModelForm, CssClassMixin):
     first_name = CharField(label=_("First name"))
     last_name = CharField(label=_("Last name"))
     groups = ModelMultipleChoiceField(queryset=Group.objects.all(), label=_("User groups"), required=False)
+    is_active = BooleanField(label=_("Active"), required=False)
 
     class Meta:
         model = User
