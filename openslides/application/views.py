@@ -658,7 +658,7 @@ class CreateAgendaItem(RedirectView):
 
 
 class ApplicationPDF(PDFView):
-    permission_required = 'application.can_manage_application'
+    permission_required = 'application.can_see_application'
     top_space = 0
 
     def get_filename(self):
