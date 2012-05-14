@@ -1503,7 +1503,7 @@ msgstr "Anträge beibehalten, versuchen Antragssteller erneut zuzuweisen"
 
 #: participant/forms.py:28
 msgid "Keep applications, set status to \"needs review\""
-msgstr "Anträge beibehalten, Stauts auf \"Benötigt Review\" setzen"
+msgstr "Anträge beibehalten, Status auf \"Benötigt Review\" setzen"
 
 #: participant/forms.py:29
 msgid "Discard applications"
