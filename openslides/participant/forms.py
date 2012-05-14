@@ -32,6 +32,7 @@ USER_APPLICATION_IMPORT_OPTIONS = [
 class UserNewForm(ModelForm, CssClassMixin):
     first_name = CharField(label=_("First name"))
     last_name = CharField(label=_("Last name"))
+    groups = ModelMultipleChoiceField(queryset=Group.objects.all(), label=_("User groups"), required=False)
 
     class Meta:
         model = User
@@ -41,6 +42,7 @@ class UserNewForm(ModelForm, CssClassMixin):
 class UserEditForm(ModelForm, CssClassMixin):
     first_name = CharField(label=_("First name"))
     last_name = CharField(label=_("Last name"))
+    groups = ModelMultipleChoiceField(queryset=Group.objects.all(), label=_("User groups"), required=False)
 
     class Meta:
         model = User
@@ -59,7 +61,7 @@ class ProfileForm(ModelForm, CssClassMixin):
 
 
 class GroupForm(ModelForm, CssClassMixin):
-    permissions = LocalizedModelMultipleChoiceField(queryset=Permission.objects.all())
+    permissions = LocalizedModelMultipleChoiceField(queryset=Permission.objects.all(), label=_("Persmissions"))
 
     def __init__(self, *args, **kwargs):
         super(GroupForm, self).__init__(*args, **kwargs)

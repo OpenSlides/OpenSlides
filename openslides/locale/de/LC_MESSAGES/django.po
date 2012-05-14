@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-14 22:06+0200\n"
+"POT-Creation-Date: 2012-05-14 22:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: German\n"
@@ -1071,7 +1071,8 @@ msgstr "Teilnehmer/in vorschlagen"
 
 #: assignment/forms.py:39
 msgid "Only publish voting results for selected winners (Projector view only)"
-msgstr "Wahlergebnisse der nicht gewählten Kandidaten auf dem Projektor verbergen"
+msgstr ""
+"Wahlergebnisse der nicht gewählten Kandidaten auf dem Projektor verbergen"
 
 #: assignment/forms.py:59
 msgid "Title for PDF document (all elections)"
@@ -1516,6 +1517,10 @@ msgstr "Vorname"
 msgid "Last name"
 msgstr "Nachname"
 
+#: participant/forms.py:62
+msgid "Persmissions"
+msgstr "Rechte"
+
 #: participant/forms.py:82
 msgid "For existing applications"
 msgstr "Bei existierenden Anträgen"
@@ -1820,9 +1825,6 @@ msgid "Edit user group"
 msgstr "Benutzerrolle bearbeiten"
 
 #: participant/templates/participant/group_overview.html:6
-msgid "Groups"
-msgstr "Gruppen"
-
 #: participant/templates/participant/group_overview.html:9
 msgid "User groups"
 msgstr "Benutzerrollen"
