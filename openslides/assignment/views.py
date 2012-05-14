@@ -293,7 +293,7 @@ class AssignmentPollDelete(DeleteView):
 
 
 class AssignmentPDF(PDFView):
-    permission_required = 'assignment.can_manage_assignment'
+    permission_required = 'assignment.can_see_assignment'
     top_space = 0
 
     def get_filename(self):
