@@ -403,7 +403,7 @@ class Application(models.Model, SlideMixin):
             self.log = ""
         self.log += u"%s | %s" % (datetime.now().strftime("%d.%m.%Y %H:%M:%S"), _propper_unicode(text))
         if user is not None:
-            self.log += u" ("+_("by")+" %s)" % (_propper_unicode(user.username))
+            self.log += u" (%s %s)" % (_("by"), _propper_unicode(user.username))
         self.log += "\n"
         self.save()
 
