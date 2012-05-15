@@ -26,11 +26,11 @@
 
         {% with application.polls as polls %}
         {% if polls.exists and polls.0.has_votes %}
-        <p><b>{% trans "Poll result" %}:</b><br>
+        <p><b>{% trans "Poll result" %}:</b>
         {% for poll in polls %}
             {% if poll.has_votes %}
                 {% if polls|length > 1 %}
-                    {{forloop.counter}}. {% trans "Vote" %}:
+                    <p>{{forloop.counter}}. {% trans "Vote" %}:</p>
                 {% endif %}
                 {% with poll.get_options.0 as option %}
                 <div class="results">
