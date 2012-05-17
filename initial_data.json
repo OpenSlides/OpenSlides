@@ -52,7 +52,7 @@
       "pk": 3,
       "model": "auth.group",
       "fields": {
-         "name": "Delegierte",
+         "name": "Delegierter",
          "permissions": [
             [
                "can_see_agenda",

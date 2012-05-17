@@ -406,7 +406,7 @@ def user_import(request):
                             profile.save()
 
                             if type == 'delegate':
-                                delegate = Group.objects.get(name='Delegierte')
+                                delegate = Group.objects.get(name='Delegierter')
                                 user.groups.add(delegate)
                             else:
                                 observer = Group.objects.get(name='Beobachter')
