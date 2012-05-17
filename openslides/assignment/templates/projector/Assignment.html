@@ -4,7 +4,7 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block title %}{{ block.super }} - {{ item.title }}{% endblock %}
+{% block title %}{{ block.super }} - {{ assignment }}{% endblock %}
 {% block header %}
     <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/assignment.css' %}" />
     <script type="text/javascript" src="{% static 'javascript/assignment.js' %}"></script>
