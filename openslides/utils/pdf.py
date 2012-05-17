@@ -188,9 +188,9 @@ def firstPage(canvas, doc):
     # page header (with event information)
     canvas.setFont('Ubuntu', 10)
     canvas.setFillGray(0.4)
-    canvas.drawString(2.75*cm, 28*cm, "%s | %s" % (config["event_name"], config["event_description"]))
+    canvas.drawString(2.75*cm, 28*cm, u"%s | %s" % (config["event_name"], config["event_description"]))
     if config["event_date"] and config["event_location"]:
-        canvas.drawString(2.75 * cm, 27.6 * cm, "%s, %s" % (config["event_date"], config["event_location"]))
+        canvas.drawString(2.75 * cm, 27.6 * cm, u"%s, %s" % (config["event_date"], config["event_location"]))
     # time
     canvas.setFont('Ubuntu', 7)
     time = datetime.now().strftime(str(_("%Y-%m-%d %H:%Mh")))
