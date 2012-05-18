@@ -35,7 +35,7 @@ class Item(MPTTModel, SlideMixin):
     """
     prefix = 'item'
 
-    title = models.CharField(null=True, max_length=100, verbose_name=_("Title"))
+    title = models.CharField(null=True, max_length=256, verbose_name=_("Title"))
     text = models.TextField(null=True, blank=True, verbose_name=_("Text"))
     comment = models.TextField(null=True, blank=True, verbose_name=_("Comment"))
     closed = models.BooleanField(default=False, verbose_name=_("Closed"))
