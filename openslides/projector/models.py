@@ -25,7 +25,7 @@ from utils.translation_ext import ugettext as _
 class ProjectorSlide(models.Model, SlideMixin):
     prefix = 'ProjectorSlide'
 
-    title = models.CharField(max_length=100, verbose_name=_("Title"))
+    title = models.CharField(max_length=256, verbose_name=_("Title"))
     text = models.TextField(null=True, blank=True, verbose_name=_("Text"))
     #weight = models.IntegerField(default=0, verbose_name=_("Weight"))
 
@@ -57,7 +57,7 @@ class ProjectorOverlay(models.Model):
         return self.def_name
 
 
-register_slidemodel(ProjectorSlide, model_name='customslide')
+register_slidemodel(ProjectorSlide, control_template='projector/control_customslide.html')
 
 
 @receiver(default_config_value, dispatch_uid="projector_default_config")
