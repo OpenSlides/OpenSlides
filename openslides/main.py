@@ -55,7 +55,9 @@ def main(argv = None):
     if opts.reset_admin:
         create_or_reset_admin_user()
 
-    argv = ["", "runserver", "--noreload"]
+    # NOTE: --insecure is needed so static files will be served if 
+    #       DEBUG is set to False
+    argv = ["", "runserver", "--noreload", "--insecure"]
     if opts.nothread:
         argv.append("--nothread")
 
