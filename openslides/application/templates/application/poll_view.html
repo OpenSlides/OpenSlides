@@ -14,6 +14,13 @@
     <form action="" method="post" class="small-form">{% csrf_token %}
         {{ pre_form }}
         <span id="poll_id" style="display:none">{{ poll.id }}</span>
+        <span style="float:right;">
+        <a href='{% url print_application_poll poll.id %}'>
+        <button class="button" type="button" onclick="window.location='{% url print_application_poll poll.id %}'">
+            <span class="icon pdf">{%trans 'Ballot paper as PDF' %}</span>
+        </button>
+        </a>
+        </span>
         <table class="table" style="width: auto;">
             <tr>
                 <th>{% trans "Option" %}</th>

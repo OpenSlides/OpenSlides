@@ -39,21 +39,18 @@
             {% endif %}
         {# delete application #}
             {% if "delete" in actions %}
-            <li><a href="{% url application_delete application.id  %}">{%trans 'Delete application' %}</a></li>
+            <li><a href="{% url application_delete application.id  %}"><img src="{% static 'images/icons/delete.png' %}"> {%trans 'Delete application' %}</a></li>
             {% endif %}
         {# PDF #}
             <li><a href="{% url print_application application.id  %}"><img src="{% static 'images/icons/pdf.png' %}"> {%trans 'Application as PDF' %}</a></li>
         {# activate and polls #}
             {% if perms.projector.can_manage_projector %}
                 <li><a href="{% url projector_activate_slide application.sid  %}"><img src="{% static 'images/icons/projector.png' %}"> {%trans 'Show Application' %}</a></li>
-                {% if "genpoll" in actions %}
-                <li><a href='{% url application_gen_poll application.id %}'><img src="{% static 'images/icons/statistics.png' %}"> {%trans 'New vote' %}</a></li>
-                {% endif %}
+            {% endif %}
+            {% if perms.application.can_manage_application %}
                 {% for poll in application.polls %}
                     {% url application_poll_view poll.id as url_applicationpollview %}
-                    <li class="{% if request.path == url_applicationpollview %}selected{% endif %}"><a href="{% url application_poll_view poll.id %}">{% trans "View Vote" %} {% if forloop.counter > 1 %}(#{{ forloop.counter }}){% endif %}</a></li>
-                    {% url print_application_poll poll.id as url_applicationedit %}
-                    <li><a href="{% url print_application_poll poll.id %}"><img src="{% static 'images/icons/pdf.png' %}"> {%trans 'Ballot paper' %} {% if forloop.counter > 1 %}(#{{ forloop.counter }}){% endif %}</a></li>
+                    <li class="{% if request.path == url_applicationpollview %}selected{% endif %}"><a href="{% url application_poll_view poll.id %}">{{ forloop.counter }}. {% trans "Vote" %}</a></li>
                 {% endfor %}
             {% endif %}
         </ul>
