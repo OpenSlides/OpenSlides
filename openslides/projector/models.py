@@ -36,6 +36,11 @@ class ProjectorSlide(models.Model, SlideMixin):
             'template': 'projector/ProjectorSlide.html',
         }
 
+    @models.permalink
+    def get_absolute_url(self, link='delete'):
+        if link == 'delete':
+            return ('customslide_delete', [str(self.id)])
+
     def __unicode__(self):
         return self.title
 

@@ -24,7 +24,7 @@ from django.template.loader import render_to_string
 from django.db.models import Q
 
 
-from utils.views import TemplateView, RedirectView, CreateView, UpdateView
+from utils.views import TemplateView, RedirectView, CreateView, UpdateView, DeleteView
 from utils.utils import template, permission_required, \
                                    del_confirm_form, ajax_request
 from utils.template import render_block_to_string
@@ -115,6 +115,7 @@ class ActivateView(RedirectView):
         config['bigger'] = 100
         return context
 
+
 class CustomSlideCreateView(CreateView):
     permission_required = 'agenda.can_manage_agenda'
     template_name = 'projector/new.html'
@@ -129,6 +130,7 @@ class CustomSlideCreateView(CreateView):
             return reverse(self.get_apply_url(), args=[self.object.id])
         return reverse(super(CreateView, self).get_success_url())
 
+
 class CustomSlideUpdateView(UpdateView):
     permission_required = 'projector.can_manage_projector'
     template_name = 'projector/new.html'
@@ -142,6 +144,18 @@ class CustomSlideUpdateView(UpdateView):
         if 'apply' in self.request.POST:
             return ''
         return reverse(super(UpdateView, self).get_success_url())
+
+
+class CustomSlideDeleteView(DeleteView):
+    permission_required = 'projector.can_manage_projector'
+    model = ProjectorSlide
+    url = 'projector_control'
+
+    def pre_post_redirect(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        messages.success(request, _("Custom slide <b>%s</b> was successfully deleted.") % self.object)
+
 
 @permission_required('projector.can_see_projector')
 def active_slide(request, sid=None):
