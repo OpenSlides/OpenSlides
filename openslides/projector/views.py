@@ -13,6 +13,7 @@
 from datetime import datetime
 from time import time
 
+from django.contrib import messages
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
@@ -23,7 +24,7 @@ from django.template.loader import render_to_string
 from django.db.models import Q
 
 
-from utils.views import TemplateView, RedirectView
+from utils.views import TemplateView, RedirectView, CreateView, UpdateView, DeleteView
 from utils.utils import template, permission_required, \
                                    del_confirm_form, ajax_request
 from utils.template import render_block_to_string
@@ -33,7 +34,7 @@ from config.models import config
 
 from api import get_active_slide, set_active_slide, projector_message_set, projector_message_delete, get_slide_from_sid
 from projector import SLIDE
-from models import ProjectorOverlay
+from models import ProjectorOverlay, ProjectorSlide
 from openslides.projector.signals import projector_overlays, projector_control_box
 from openslides.utils.signals import template_manipulation
 
@@ -113,6 +114,47 @@ class ActivateView(RedirectView):
         config['up'] = 0
         config['bigger'] = 100
         return context
+
+
+class CustomSlideCreateView(CreateView):
+    permission_required = 'agenda.can_manage_agenda'
+    template_name = 'projector/new.html'
+    model = ProjectorSlide
+    context_object_name = 'customslide'
+    success_url = 'projector_control'
+    apply_url = 'customslide_edit'
+
+    def get_success_url(self):
+        messages.success(self.request, _("Custom slide <b>%s</b> was successfully created.") % self.request.POST['title'])
+        if 'apply' in self.request.POST:
+            return reverse(self.get_apply_url(), args=[self.object.id])
+        return reverse(super(CreateView, self).get_success_url())
+
+
+class CustomSlideUpdateView(UpdateView):
+    permission_required = 'projector.can_manage_projector'
+    template_name = 'projector/new.html'
+    model = ProjectorSlide
+    context_object_name = 'customslide'
+    success_url = 'projector_control'
+    apply_url = 'customslide_edit'
+
+    def get_success_url(self):
+        messages.success(self.request, _("Custom slide <b>%s</b> was successfully modified.") % self.request.POST['title'])
+        if 'apply' in self.request.POST:
+            return ''
+        return reverse(super(UpdateView, self).get_success_url())
+
+
+class CustomSlideDeleteView(DeleteView):
+    permission_required = 'projector.can_manage_projector'
+    model = ProjectorSlide
+    url = 'projector_control'
+
+    def pre_post_redirect(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        messages.success(request, _("Custom slide <b>%s</b> was successfully deleted.") % self.object)
 
 
 @permission_required('projector.can_see_projector')
