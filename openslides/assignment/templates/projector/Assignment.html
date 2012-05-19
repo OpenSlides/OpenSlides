@@ -47,8 +47,7 @@
     <p><br></p>
     {% endif %}
 
-    {% with polls|first as firstpoll %}
-    {% if polls.count > 0 and firstpoll.published %}
+    {% if polls.count > 0  %}
     <h3>{% trans "Election results" %}</h3>
     <table>
     <tr>
@@ -106,7 +105,6 @@
     </tr>
     </table>
     {% endif %}
-    {% endwith %}
 
     <br>
 {% endblock %}
