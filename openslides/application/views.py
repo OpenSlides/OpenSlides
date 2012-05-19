@@ -505,7 +505,7 @@ def permit_version(request, aversion_id):
     aversion = AVersion.objects.get(pk=aversion_id)
     application = aversion.application
     if request.method == 'POST':
-        application.accept_version(aversion)
+        application.accept_version(aversion, user = request.user)
         messages.success(request, _("Version <b>%s</b> accepted.") % (aversion.aid))
     else:
         gen_confirm_form(request, _('Do you really want to permit version <b>%s</b>?') % aversion.aid, reverse('application_version_permit', args=[aversion.id]))
@@ -517,7 +517,7 @@ def reject_version(request, aversion_id):
     aversion = AVersion.objects.get(pk=aversion_id)
     application = aversion.application
     if request.method == 'POST':
-        if application.reject_version(aversion):
+        if application.reject_version(aversion, user = request.user):
             messages.success(request, _("Version <b>%s</b> rejected.") % (aversion.aid))
         else:
             messages.error(request, _("ERROR by rejecting the version.") )

@@ -82,7 +82,7 @@ class Application(models.Model, SlideMixin):
         else:
             return self.last_version
 
-    def accept_version(self, version):
+    def accept_version(self, version, user = None):
         """
         accept a Version
         """
@@ -90,11 +90,15 @@ class Application(models.Model, SlideMixin):
         self.save(nonewversion=True)
         version.rejected = False
         version.save()
+        self.writelog(_("Application version %d allowed") % (version.aid, ),
+            user)
 
-    def reject_version(self, version):
+    def reject_version(self, version, user = None):
         if version.id > self.permitted.id:
             version.rejected = True
             version.save()
+            self.writelog(_("Application version %d rejected")
+                % (version.aid, ), user)
             return True
         return False
 
@@ -175,10 +179,11 @@ class Application(models.Model, SlideMixin):
         if nonewversion:
             return
         last_version = self.last_version
+        fields = ["text", "title", "reason"]
         if last_version is not None:
-            if (last_version.text == self.text
-            and last_version.title == self.title
-            and last_version.reason == self.reason):
+            changed_fields = [f for f in fields
+                if getattr(last_version, f) != getattr(self, f)]
+            if not changed_fields:
                 return  # No changes
         try:
             if trivial_change and last_version is not None:
@@ -186,7 +191,15 @@ class Application(models.Model, SlideMixin):
                 last_version.title = self.title
                 last_version.reason = self.reason
                 last_version.save()
-                self.writelog(_("Version %s modified") % last_version.aid, user)
+
+                meta = AVersion._meta
+                field_names = [unicode(meta.get_field(f).verbose_name)
+                    for f in changed_fields]
+
+                self.writelog(_("Trivial changes to version %(version)d; "
+                    "changed fields: %(changed_fields)s")
+                    % dict(version = last_version.aid,
+                        changed_fields = ", ".join(field_names)))
                 return # Done
 
             if self.title != "":
@@ -492,9 +505,9 @@ class Application(models.Model, SlideMixin):
 
 
 class AVersion(models.Model):
-    title = models.CharField(max_length=100)
-    text = models.TextField()
-    reason = models.TextField(null=True, blank=True)
+    title = models.CharField(max_length=100, verbose_name = _("Title"))
+    text = models.TextField(verbose_name = _("Text"))
+    reason = models.TextField(null=True, blank=True, verbose_name = _("Reason"))
     rejected = models.BooleanField()
     time = models.DateTimeField(auto_now=True)
     application = models.ForeignKey(Application)
