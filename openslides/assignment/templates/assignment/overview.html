@@ -28,7 +28,8 @@
             <th style="width: 1px;">{% trans "Actions" %}</th>
         </tr>
     {% for assignment in assignments %}
-        <tr class="{% cycle '' 'odd' %}">
+        <tr class="{% cycle '' 'odd' %}
+            {% if assignment.active %}activeline{% endif %}">
             <td><a href="{% url assignment_view assignment.id %}">{{ assignment }}</a></td>
             <td>{{ assignment.profile.count }} / {{ assignment.posts }}</td>
             <td>{{ assignment.get_status_display }}</td>
