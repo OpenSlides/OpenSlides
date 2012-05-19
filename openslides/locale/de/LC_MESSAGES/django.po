@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-05-14 22:39+0200\n"
+"POT-Creation-Date: 2012-05-19 08:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: German\n"
@@ -99,8 +99,8 @@ msgstr "Eintrag <b>%s</b> wurde erfolgreich gelöscht."
 #: application/templates/projector/Application.html:37
 #: assignment/templates/assignment/view.html:164
 #: assignment/templates/assignment/view.html:168
-#: assignment/templates/projector/Assignment.html:74
-#: assignment/templates/projector/Assignment.html:78 utils/utils.py:39
+#: assignment/templates/projector/Assignment.html:73
+#: assignment/templates/projector/Assignment.html:77 utils/utils.py:39
 #: utils/views.py:215
 msgid "Yes"
 msgstr "Ja"
@@ -111,7 +111,7 @@ msgstr "Ja"
 #: application/templates/application/view.html:80
 #: application/templates/projector/Application.html:38
 #: assignment/templates/assignment/view.html:165
-#: assignment/templates/projector/Assignment.html:75 utils/utils.py:39
+#: assignment/templates/projector/Assignment.html:74 utils/utils.py:39
 #: utils/views.py:215
 msgid "No"
 msgstr "Nein"
@@ -140,6 +140,25 @@ msgstr "Neuer Eintrag"
 msgid "Agenda as PDF"
 msgstr "Tagesordnung als PDF"
 
+#: agenda/templates/agenda/base_agenda.html:26
+msgid "View item"
+msgstr "Eintrag anzeigen"
+
+#: agenda/templates/agenda/base_agenda.html:29
+#: agenda/templates/agenda/edit.html:9
+#: agenda/templates/agenda/item_row.html:40
+msgid "Edit item"
+msgstr "Eintrag bearbeiten"
+
+#: agenda/templates/agenda/base_agenda.html:31
+#: agenda/templates/agenda/item_row.html:41
+msgid "Delete item"
+msgstr "Eintrag löschen"
+
+#: agenda/templates/agenda/base_agenda.html:34
+msgid "Show item"
+msgstr "Eintrag projizieren"
+
 #: agenda/templates/agenda/config.html:5 agenda/templates/agenda/config.html:8
 msgid "Agenda settings"
 msgstr "Tagesordnungs-Einstellungen"
@@ -147,10 +166,10 @@ msgstr "Tagesordnungs-Einstellungen"
 #: agenda/templates/agenda/config.html:13 agenda/templates/agenda/edit.html:17
 #: application/templates/application/config.html:13
 #: application/templates/application/edit.html:20
-#: application/templates/application/poll_view.html:40
+#: application/templates/application/poll_view.html:47
 #: assignment/templates/assignment/config.html:13
 #: assignment/templates/assignment/edit.html:18
-#: assignment/templates/assignment/poll_view.html:46
+#: assignment/templates/assignment/poll_view.html:53
 #: config/templates/config/general.html:56
 #: participant/templates/participant/config.html:13
 #: participant/templates/participant/edit.html:22
@@ -164,10 +183,10 @@ msgstr "Speichern"
 #: application/templates/application/config.html:17
 #: application/templates/application/edit.html:27
 #: application/templates/application/import.html:27
-#: application/templates/application/poll_view.html:47
+#: application/templates/application/poll_view.html:54
 #: assignment/templates/assignment/config.html:17
 #: assignment/templates/assignment/edit.html:25
-#: assignment/templates/assignment/poll_view.html:53
+#: assignment/templates/assignment/poll_view.html:60
 #: config/templates/config/general.html:60
 #: participant/templates/participant/config.html:17
 #: participant/templates/participant/edit.html:29
@@ -179,6 +198,7 @@ msgid "Cancel"
 msgstr "Abbrechen"
 
 #: agenda/templates/agenda/control_item.html:10
+#: projector/templates/projector/control_customslide.html:11
 #: projector/templates/projector/default_control_slidefunc.html:9
 #: projector/templates/projector/default_control_slidemodel.html:10
 msgid "Preview"
@@ -189,16 +209,11 @@ msgstr "Vorschau"
 msgid "Item"
 msgstr "Eintrag"
 
-#: agenda/templates/agenda/edit.html:9
-#: agenda/templates/agenda/item_row.html:40
-msgid "Edit item"
-msgstr "Eintrag bearbeiten"
-
 #: agenda/templates/agenda/edit.html:20
 #: application/templates/application/edit.html:23
-#: application/templates/application/poll_view.html:43
+#: application/templates/application/poll_view.html:50
 #: assignment/templates/assignment/edit.html:21
-#: assignment/templates/assignment/poll_view.html:49
+#: assignment/templates/assignment/poll_view.html:56
 #: assignment/templates/assignment/view.html:88
 #: participant/templates/participant/edit.html:25
 #: participant/templates/participant/group_edit.html:21
@@ -224,10 +239,6 @@ msgstr "Eintrag erledigt"
 #: agenda/templates/agenda/item_row.html:35
 msgid "Activate item"
 msgstr "Eintrag projizieren"
-
-#: agenda/templates/agenda/item_row.html:41
-msgid "Delete item"
-msgstr "Eintrag löschen"
 
 #: agenda/templates/agenda/overview.html:45
 msgid "Do you want to save the changed order of agenda items?"
@@ -266,10 +277,6 @@ msgstr "Aktionen"
 msgid "No items available."
 msgstr "Keine Einträge vorhanden."
 
-#: agenda/templates/agenda/view.html:20
-msgid "Edit agenda item"
-msgstr "Tagesordnungseintrag bearbeiten"
-
 #: application/forms.py:42 application/views.py:782
 #: application/templates/application/view.html:226
 #: application/templates/application/view.html:246
@@ -297,7 +304,7 @@ msgstr "Antragsteller/in"
 msgid "Supporters"
 msgstr "Unterstützer/innen"
 
-#: application/forms.py:57 participant/forms.py:81
+#: application/forms.py:57 participant/forms.py:84
 msgid "CSV File"
 msgstr "CSV-Datei"
 
@@ -708,6 +715,7 @@ msgid "Vote results"
 msgstr "Abstimmungsergebnis"
 
 #: application/views.py:763 application/views.py:812
+#: application/templates/application/base_application.html:53
 #: application/templates/application/poll_view.html:9
 #: application/templates/application/poll_view.html:12
 #: application/templates/application/view.html:68
@@ -720,26 +728,26 @@ msgstr "Abstimmung"
 #: application/templates/application/view.html:81
 #: application/templates/projector/Application.html:39
 #: assignment/templates/assignment/view.html:166
-#: assignment/templates/projector/Assignment.html:76
+#: assignment/templates/projector/Assignment.html:75
 msgid "Abstention"
 msgstr "Enthaltung"
 
 #: application/views.py:764 application/templates/application/view.html:82
 #: application/templates/projector/Application.html:40
 #: assignment/templates/assignment/view.html:185
-#: assignment/templates/projector/Assignment.html:95
+#: assignment/templates/projector/Assignment.html:94
 msgid "Invalid"
 msgstr "Ungültig"
 
 #: application/views.py:764
-#: application/templates/application/poll_view.html:33
+#: application/templates/application/poll_view.html:40
 #: application/templates/application/view.html:84
 #: application/templates/projector/Application.html:42 assignment/views.py:401
-#: assignment/templates/assignment/poll_view.html:40
+#: assignment/templates/assignment/poll_view.html:47
 #: assignment/templates/assignment/view.html:193
 #: assignment/templates/assignment/view.html:196
-#: assignment/templates/projector/Assignment.html:100
-#: assignment/templates/projector/Assignment.html:103 poll/models.py:50
+#: assignment/templates/projector/Assignment.html:99
+#: assignment/templates/projector/Assignment.html:102 poll/models.py:50
 msgid "Votes cast"
 msgstr "Abgegebene Stimmen"
 
@@ -793,23 +801,6 @@ msgstr "Antrag als PDF"
 #: application/templates/application/base_application.html:48
 msgid "Show Application"
 msgstr "Antrag projizieren"
-
-#: application/templates/application/base_application.html:50
-#: application/templates/application/view.html:53
-#: application/templates/application/view.html:91
-#: assignment/templates/assignment/base_assignment.html:50
-msgid "New vote"
-msgstr "Neue Abstimmung"
-
-#: application/templates/application/base_application.html:54
-#: assignment/templates/assignment/base_assignment.html:55
-msgid "View Vote"
-msgstr "Abstimmung anzeigen"
-
-#: application/templates/application/base_application.html:56
-#: assignment/templates/assignment/base_assignment.html:57
-msgid "Ballot paper"
-msgstr "Stimmzettel"
 
 #: application/templates/application/config.html:5
 #: application/templates/application/config.html:8
@@ -911,24 +902,34 @@ msgstr "Mehrheit"
 msgid "undocumented"
 msgstr "nicht erfasst"
 
-#: application/templates/application/poll_view.html:19
+#: application/templates/application/poll_view.html:20
+#: assignment/templates/assignment/poll_view.html:20
+msgid "Ballot paper as PDF"
+msgstr "Stimmzettel als PDF"
+
+#: application/templates/application/poll_view.html:26
 msgid "Option"
 msgstr "Wahlmöglichkeit"
 
-#: application/templates/application/poll_view.html:20
+#: application/templates/application/poll_view.html:27
 msgid "Votes"
 msgstr "Stimmen"
 
-#: application/templates/application/poll_view.html:29 assignment/views.py:393
-#: assignment/templates/assignment/poll_view.html:36
+#: application/templates/application/poll_view.html:36 assignment/views.py:393
+#: assignment/templates/assignment/poll_view.html:43
 #: assignment/templates/assignment/view.html:182
-#: assignment/templates/projector/Assignment.html:92
+#: assignment/templates/projector/Assignment.html:91
 msgid "Invalid votes"
 msgstr "Ungültige Stimmen"
 
 #: application/templates/application/view.html:21
 msgid "You!"
 msgstr "Sie!"
+
+#: application/templates/application/view.html:53
+#: application/templates/application/view.html:91
+msgid "New vote"
+msgstr "Neue Abstimmung"
 
 #: application/templates/application/view.html:71
 msgid "Delete Vote"
@@ -1246,7 +1247,7 @@ msgstr "Wahl"
 #: assignment/templates/assignment/view.html:39
 #: assignment/templates/assignment/view.html:110
 #: assignment/templates/projector/Assignment.html:37
-#: assignment/templates/projector/Assignment.html:55
+#: assignment/templates/projector/Assignment.html:54
 msgid "Candidates"
 msgstr "Kandidaten/innen"
 
@@ -1266,10 +1267,12 @@ msgstr "N"
 msgid "A"
 msgstr "E"
 
-#: assignment/views.py:482 assignment/templates/assignment/poll_view.html:9
+#: assignment/views.py:482
+#: assignment/templates/assignment/base_assignment.html:52
+#: assignment/templates/assignment/poll_view.html:9
 #: assignment/templates/assignment/view.html:106
 #: assignment/templates/assignment/view.html:114
-#: assignment/templates/projector/Assignment.html:58
+#: assignment/templates/projector/Assignment.html:57
 msgid "ballot"
 msgstr "Wahlgang"
 
@@ -1306,17 +1309,17 @@ msgstr "Wahl anzeigen"
 
 #: assignment/templates/assignment/base_assignment.html:35
 #: assignment/templates/assignment/edit.html:9
-#: assignment/templates/assignment/overview.html:43
+#: assignment/templates/assignment/overview.html:44
 msgid "Edit election"
 msgstr "Wahl bearbeiten"
 
 #: assignment/templates/assignment/base_assignment.html:37
-#: assignment/templates/assignment/overview.html:44
+#: assignment/templates/assignment/overview.html:45
 msgid "Delete election"
 msgstr "Wahl löschen"
 
 #: assignment/templates/assignment/base_assignment.html:41
-#: assignment/templates/assignment/overview.html:46
+#: assignment/templates/assignment/overview.html:47
 msgid "Election as PDF"
 msgstr "Wahl als PDF"
 
@@ -1335,11 +1338,11 @@ msgid_plural "elections"
 msgstr[0] "Wahl"
 msgstr[1] "Wahlen"
 
-#: assignment/templates/assignment/overview.html:38
+#: assignment/templates/assignment/overview.html:39
 msgid "Activate election"
 msgstr "Wahl projizieren"
 
-#: assignment/templates/assignment/overview.html:52
+#: assignment/templates/assignment/overview.html:53
 msgid "No assignments available."
 msgstr "Keine Wahlen vorhanden."
 
@@ -1377,7 +1380,7 @@ msgid "Add new participant"
 msgstr "Neue/n Teilnehmer/in hinzufügen"
 
 #: assignment/templates/assignment/view.html:98
-#: assignment/templates/projector/Assignment.html:52
+#: assignment/templates/projector/Assignment.html:51
 msgid "Election results"
 msgstr "Wahlergebnisse"
 
@@ -1399,12 +1402,12 @@ msgid "New ballot"
 msgstr "Neuer Wahlgang"
 
 #: assignment/templates/assignment/view.html:150
-#: assignment/templates/projector/Assignment.html:67
+#: assignment/templates/projector/Assignment.html:66
 msgid "Candidate is elected"
 msgstr "Kandidat/in ist gewählt"
 
 #: assignment/templates/assignment/view.html:207
-#: assignment/templates/projector/Assignment.html:88
+#: assignment/templates/projector/Assignment.html:87
 msgid "No ballots available."
 msgstr "Keine Wahlgänge vorhanden."
 
@@ -1432,7 +1435,7 @@ msgstr "Veranstalter"
 msgid "Allow access for anonymous guest users"
 msgstr "Erlaube Zugriff für anonyme Gast-Nutzer"
 
-#: config/forms.py:28 participant/forms.py:95
+#: config/forms.py:28 participant/forms.py:98
 msgid "Welcome text"
 msgstr "Willkommenstext"
 
@@ -1497,39 +1500,50 @@ msgstr "Startseite"
 msgid "System"
 msgstr "System"
 
-#: participant/forms.py:27
+#: participant/forms.py:26
 msgid "Keep applications, try to reassign submitter"
 msgstr "Anträge beibehalten, versuchen Antragssteller erneut zuzuweisen"
 
-#: participant/forms.py:28
+#: participant/forms.py:27
 msgid "Keep applications, set status to \"needs review\""
 msgstr "Anträge beibehalten, Status auf \"Benötigt Review\" setzen"
 
-#: participant/forms.py:29
+#: participant/forms.py:28
 msgid "Discard applications"
 msgstr "Alle Anträge löschen"
 
-#: participant/forms.py:33 participant/forms.py:42
+#: participant/forms.py:32 participant/forms.py:43
 msgid "First name"
 msgstr "Vorname"
 
-#: participant/forms.py:34 participant/forms.py:43
+#: participant/forms.py:33 participant/forms.py:44
 msgid "Last name"
 msgstr "Nachname"
 
-#: participant/forms.py:62
+#: participant/forms.py:34 participant/forms.py:45
+#: participant/templates/participant/group_overview.html:6
+#: participant/templates/participant/group_overview.html:9
+msgid "User groups"
+msgstr "Benutzerrollen"
+
+#: participant/forms.py:35 participant/forms.py:46
+#: participant/templates/participant/overview.html:51 projector/models.py:55
+msgid "Active"
+msgstr "Aktiv"
+
+#: participant/forms.py:65
 msgid "Persmissions"
 msgstr "Rechte"
 
-#: participant/forms.py:82
+#: participant/forms.py:85
 msgid "For existing applications"
 msgstr "Bei existierenden Anträgen"
 
-#: participant/forms.py:89
+#: participant/forms.py:92
 msgid "System URL"
 msgstr "System URL"
 
-#: participant/forms.py:90 participant/forms.py:96
+#: participant/forms.py:93 participant/forms.py:99
 msgid "Printed in PDF of first time passwords only."
 msgstr "Erscheint nur im PDF der Erst-Passwörter"
 
@@ -1824,11 +1838,6 @@ msgstr "Benutzerrolle"
 msgid "Edit user group"
 msgstr "Benutzerrolle bearbeiten"
 
-#: participant/templates/participant/group_overview.html:6
-#: participant/templates/participant/group_overview.html:9
-msgid "User groups"
-msgstr "Benutzerrollen"
-
 #: participant/templates/participant/group_overview.html:18
 msgid "Edit group"
 msgstr "Benutzerrolle bearbeiten"
@@ -1866,9 +1875,9 @@ msgid "Close this notification"
 msgstr "Meldung ausblenden"
 
 #: participant/templates/participant/login.html:23
-msgid "Your username and password didn't match. Please try again."
+msgid "Your username and password were not accepted. Please try again."
 msgstr ""
-"Benutzername und Passwort stimmen nicht überein. Bitte noch einmal versuchen."
+"Benutzername und Passwort wurden nicht akzeptiert. Bitte versuchen Sie es erneut."
 
 #: participant/templates/participant/login.html:49
 msgid "Continue as guest"
@@ -1878,10 +1887,6 @@ msgstr "Weiter als Gast"
 #: participant/templates/participant/overview.html:40
 msgid "Not specified"
 msgstr "Nicht angegeben"
-
-#: participant/templates/participant/overview.html:51 projector/models.py:50
-msgid "Active"
-msgstr "Aktiv"
 
 #: participant/templates/participant/overview.html:52
 msgid "Inactive"
@@ -1922,15 +1927,30 @@ msgstr "Ungültige Stimmen"
 msgid "votes"
 msgstr "Stimmen"
 
-#: projector/models.py:44
+#: projector/models.py:49
 msgid "Can manage the projector"
 msgstr "Darf den Projektor steuern"
 
-#: projector/models.py:45
+#: projector/models.py:50
 msgid "Can see projector"
 msgstr "Darf den Projektor sehen"
 
-#: projector/views.py:247 projector/templates/projector/base_projector.html:7
+#: projector/views.py:128
+#, python-format
+msgid "Custom slide <b>%s</b> was successfully created."
+msgstr "Benutzerdefinierte Folie <b>%s</b> wurde erfolgreich angelegt."
+
+#: projector/views.py:143
+#, python-format
+msgid "Custom slide <b>%s</b> was successfully modified."
+msgstr "Benutzerdefinierte Folie <b>%s</b> wurde erfolgreich bearbeitet."
+
+#: projector/views.py:157
+#, python-format
+msgid "Custom slide <b>%s</b> was successfully deleted."
+msgstr "Benutzerdefinierte Folie <b>%s</b> wurde erfolgreich gelöscht."
+
+#: projector/views.py:289 projector/templates/projector/base_projector.html:7
 #: projector/templates/projector/base_projector.html:11
 #: projector/templates/projector/control.html:129
 msgid "Projector"
@@ -2008,10 +2028,14 @@ msgstr "Benutzerdefinierte Folien"
 msgid "New slide"
 msgstr "Neue Folie"
 
+#: projector/templates/projector/control_customslide.html:10
+msgid "Delete slide"
+msgstr "Folie löschen"
+
 #: projector/templates/projector/new.html:6
 #: projector/templates/projector/new.html:9
-msgid "New custom slide"
-msgstr "Neue benutzerdefinierte Folie"
+msgid "Custom slide"
+msgstr "Benutzerdefinierte Folie"
 
 #: templates/404.html:7
 msgid "Page not found."
