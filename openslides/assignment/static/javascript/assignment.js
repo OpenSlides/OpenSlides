@@ -8,8 +8,6 @@
 $(function() {
     $('a.elected').parent().parent().children('td').addClass('elected');
 
-
-
     $('.election_link').click(function(event) {
         event.preventDefault();
         line = $(this);
@@ -47,6 +45,23 @@ $(function() {
                 }
                 slide.removeClass('closed open').addClass(newclass);
                 slide.attr('href', data.link);
+            }
+        });
+    });
+    $('.publish_link').click(function(event) {
+        event.preventDefault();
+        link = $(this);
+        $.ajax({
+            type: 'GET',
+            url: link.attr('href'),
+            dataType: 'json',
+            success: function(data) {
+                if (data.published) {
+                    link.addClass('published');
+                } else {
+                    link.removeClass('published');
+                }
+                link.attr('href', data.link);
             }
         });
     });

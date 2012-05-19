@@ -30,3 +30,15 @@ td a.election_link {
     margin-right: 5px;
     float: left;
 }
+
+a.publish_link span {
+    background-image: url(../images/icons/off.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+}
+a.publish_link.published span {
+    background-image: url(../images/icons/on.png);
+}

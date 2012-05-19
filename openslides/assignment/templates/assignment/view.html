@@ -114,15 +114,11 @@
                     {{ forloop.counter }}. {% trans 'ballot' %}
                     {% if perms.assignment.can_manage_assignment %}
                     </a>
-                    {% if poll.published %}
-                        <a href={% url assignment_poll_notpublish poll.id %}><img
-                            src="{% static 'images/icons/on.png' %}"
-                            title="{% trans 'Unpublish results' %}"></a>
-                    {% else %}
-                        <a href={% url assignment_poll_publish poll.id %}><img
-                            src="{% static 'images/icons/off.png' %}"
-                            title="{% trans 'Publish results' %}"></a>
-                    {% endif %}
+                    <a class="publish_link {% if poll.published %}published{% endif %}"
+                    href="{% if poll.published %}{% url assignment_poll_notpublish poll.id %}{% else %}{% url assignment_poll_publish poll.id %}{% endif %}"
+                    title="{%trans 'Publish/unpublish results' %}">
+                    <span></span>
+                    </a>
                     <a href="{% url assignment_poll_delete poll.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete Poll' %}"></a>
                     {% endif %}
                 </th>

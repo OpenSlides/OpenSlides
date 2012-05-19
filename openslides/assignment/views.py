@@ -246,6 +246,14 @@ def set_published(request, poll_id, published=True):
             messages.success(request, _("Poll successfully set to unpublished.") )
     except AssignmentPoll.DoesNotExist:
         messages.error(request, _('Poll ID %d does not exist.') % int(poll_id))
+
+    if request.is_ajax():
+        if published:
+            link = reverse('assignment_poll_notpublish', args=[poll_id])
+        else:
+            link = reverse('assignment_poll_publish', args=[poll_id])
+        return ajax_request({'published': published,
+                             'link': link})
     return redirect(reverse('assignment_view', args=[poll.assignment.id]))
 
 
