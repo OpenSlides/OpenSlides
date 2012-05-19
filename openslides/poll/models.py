@@ -40,7 +40,7 @@ class Vote(models.Model):
         return print_value(self.weight)
 
     def get_value(self):
-        return _(self.value)
+        return unicode(_(self.value))
 
     def __unicode__(self):
         return self.get_weight()
@@ -189,8 +189,8 @@ class BasePoll(models.Model, SlideMixin):
 
 def print_value(value):
     if value == -1:
-        return _('majority')
+        value = _('majority')
     elif value == -2:
-        return _('undocumented')
+        value = _('undocumented')
     return unicode(value)
 
