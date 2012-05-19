@@ -20,7 +20,12 @@
             <a class="close" href="#">
             <img alt="close" title="{% trans 'Close this notification' %}" src="{% static 'images/icons/cross.png' %}">
             </a>
-            <em>{%trans "Your username and password were not accepted. Please try again." %}</em>
+            {% for msg in form.non_field_errors %}
+                <em>{{ msg }}</em>
+                {% if not forloop.last %}<br />{% endif %}
+            {% empty %}
+                <em>{%trans "Your username and password were not accepted. Please try again." %}</em>
+            {% endfor %}
         </div>
         <script>
             $("div.notification").click(function () {
