@@ -87,8 +87,8 @@
             <td><span style="width: 1px; white-space: nowrap;">
                 <a href="{% url user_edit user.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{%trans 'Edit participant' %}"></a>
                 <a href="{% url user_delete user.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{%trans 'Delete participant' %}"></a>
-                <a class="status_link {% if user.is_active %}active{% else %}inactive{% endif %}"
-                    href="{% if user.is_active %}{% url user_inactive user.id %}{% else %}{% url user_active user.id %}{% endif %}"
+                <a class="status_link {% if user.is_active %}active{% endif %}"
+                    href="{% url user_status user.id %}"
                     title="{%trans 'Change status (active/inactive)' %}">
                     <span></span>
                 </a>

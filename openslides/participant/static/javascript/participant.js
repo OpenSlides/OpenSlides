@@ -15,12 +15,10 @@ $(function() {
             dataType: 'json',
             success: function(data) {
                 if (data.active) {
-                    newclass = 'active';
+                    link.addClass('active');
                 } else {
-                    newclass = 'inactive';
+                    link.removeClass('active');
                 }
-                link.removeClass('active inactive').addClass(newclass);
-                link.attr('href', data.link);
             }
         });
     });

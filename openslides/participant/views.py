@@ -198,21 +198,26 @@ def user_delete(request, user_id):
 
 @permission_required('participant.can_manage_participant')
 @template('confirm.html')
-def user_set_active(request, user_id, active=True):
+def user_set_status(request, user_id):
     try:
         user = User.objects.get(pk=user_id)
-        user.is_active = active
+        if user.is_active:
+            user.is_active = False
+        else:
+            user.is_active = True
         user.save()
     except User.DoesNotExist:
-        messages.error(request, _('Participant %d does not exist.') % int(user_id))
+        messages.error(request, _('Participant ID %d does not exist.') % int(user_id))
+        return redirect(reverse('user_overview'))
 
     if request.is_ajax():
-        if active:
-            link = reverse('user_inactive', args=[user.id])
-        else:
-            link = reverse('user_active', args=[user.id])
-        return ajax_request({'active': active,
-                             'link': link})
+        link = reverse('user_status', args=[user.id])
+        return ajax_request({'active': user.is_active})
+    # set success messages for page reload only (= not ajax request)
+    if user.is_active:
+        messages.success(request, _('<b>%s</b> is now <b>present</b>.') % user)
+    else:
+        messages.success(request, _('<b>%s</b> is now <b>absent</b>.') % user)
     return redirect(reverse('user_overview'))
 
 @permission_required('participant.can_manage_participant')
