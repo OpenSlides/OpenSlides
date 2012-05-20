@@ -599,6 +599,6 @@ a.activate_link span {
 a.activate_link.active span {
     background-image: url(../images/icons/accept.png);
 }
-tr.activeline td, .activeline {
+tr.activeline td, li.activeline {
     background-color: #bed4de !important;
 }
