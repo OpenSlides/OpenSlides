@@ -58,10 +58,11 @@ $(function() {
             success: function(data) {
                 if (data.published) {
                     link.addClass('published');
+                    //link.attr('title', gettext('Unpublish ballot'))
                 } else {
                     link.removeClass('published');
+                    //link.attr('title', 'Publish ballot')
                 }
-                link.attr('href', data.link);
             }
         });
     });

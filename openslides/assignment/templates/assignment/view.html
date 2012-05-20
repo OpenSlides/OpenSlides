@@ -115,7 +115,7 @@
                     {% if perms.assignment.can_manage_assignment %}
                     </a>
                     <a class="publish_link {% if poll.published %}published{% endif %}"
-                    href="{% if poll.published %}{% url assignment_poll_notpublish poll.id %}{% else %}{% url assignment_poll_publish poll.id %}{% endif %}"
+                    href="{% url assignment_poll_publish_status poll.id %}"
                     title="{%trans 'Publish/unpublish results' %}">
                     <span></span>
                     </a>

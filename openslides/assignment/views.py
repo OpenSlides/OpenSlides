@@ -236,26 +236,25 @@ class ViewPoll(PollFormView):
 
 
 @permission_required('assignment.can_manage_assignment')
-def set_published(request, poll_id, published=True):
+def set_publish_status(request, poll_id):
     try:
         poll = AssignmentPoll.objects.get(pk=poll_id)
-        poll.set_published(published)
         if poll.published:
-            messages.success(request, _("Poll successfully set to published.") )
+            poll.set_published(False)
         else:
-            messages.success(request, _("Poll successfully set to unpublished.") )
+            poll.set_published(True)
     except AssignmentPoll.DoesNotExist:
-        messages.error(request, _('Poll ID %d does not exist.') % int(poll_id))
+        messages.error(request, _('Ballot ID %d does not exist.') % int(poll_id))
+        return redirect(reverse('assignment_view', args=[poll.assignment.id]))
 
     if request.is_ajax():
-        if published:
-            link = reverse('assignment_poll_notpublish', args=[poll_id])
-        else:
-            link = reverse('assignment_poll_publish', args=[poll_id])
-        return ajax_request({'published': published,
-                             'link': link})
-    return redirect(reverse('assignment_view', args=[poll.assignment.id]))
+        return ajax_request({'published': poll.published})
 
+    if poll.published:
+        messages.success(request, _("Ballot successfully published.") )
+    else:
+        messages.success(request, _("Ballot successfully unpublished.") )
+    return redirect(reverse('assignment_view', args=[poll.assignment.id]))
 
 
 @permission_required('assignment.can_manage_assignment')
