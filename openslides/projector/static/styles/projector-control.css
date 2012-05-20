@@ -40,7 +40,7 @@
 
 /*.projector_countdown_spinval {*/
 #countdown_time {
-    width: 40px;
+    width: 22px;
     height: 16px;
 }
 
@@ -63,25 +63,23 @@
     left: 35px;
 }
 
-.projector_countdown_btn {
-    margin-top: auto;
+.projector_countdown_btn img {
+    padding-top: 8px;
+    position: absolute;
 }
 
 /* countdown control buttons */
 .play{
     background:url(../images/icons/play.png) no-repeat 0px 0px;
-    text-indent:22px !important;
-    height: 22px !important;
+    text-indent: 14px !important;
 }
 .pause{
     background:url(../images/icons/pause.png) no-repeat 0px 0px;
-    text-indent:22px !important;
-    height: 22px !important;
+    text-indent: 14px !important;
 }
 .backward{
     background:url(../images/icons/skip-backward.png) no-repeat 0px 0px;
-    text-indent:22px !important;
-    height: 22px !important;
+    text-indent: 14px !important;
 }
 
 /* iframe */

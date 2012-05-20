@@ -288,7 +288,7 @@ label {
     display:block;
     padding:5px 0;
 }
-input[type="text"], input[type="email"], input[type="password"], textarea, select {
+input[type="text"], input[type="email"], input[type="password"], input[type="number"], textarea, select {
     background:none repeat scroll 0 0 #F7F7F7;
     border:1px solid #CCCCCC;
     outline:medium none;
@@ -297,7 +297,7 @@ input[type="text"], input[type="email"], input[type="password"], textarea, selec
     width: 400px;
     size:800px;
 }
-input[type="text"], input[type="email"], input[type="password"] {
+input[type="text"], input[type="email"], input[type="password"], input[type="number"] {
     height:17px;
 }
 textarea {
