@@ -288,7 +288,7 @@ def register_tab(request):
     return Tab(
         title=_('Projector'),
         url=reverse('projector_control'),
-        permission=request.user.has_perm('projector.can_manag_projector'),
+        permission=request.user.has_perm('projector.can_manage_projector'),
         selected=selected,
     )
 
