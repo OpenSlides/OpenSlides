@@ -404,6 +404,7 @@ def delete_poll(request, poll_id):
     count = application.polls.filter(id__lte=poll_id).count()
     if request.method == 'POST':
         poll.delete()
+        application.writelog(_("Poll deleted"), request.user)
         messages.success(request, _('Poll was successfully deleted.'))
     else:
         del_confirm_form(request, poll, name=_("the %s. poll") % count, delete_link=reverse('application_poll_delete', args=[poll_id]))
@@ -493,6 +494,19 @@ class ViewPoll(PollFormView):
         context['ballot'] = self.poll.get_ballot()
         context['actions'] = self.application.get_allowed_actions(user=self.request.user)
         return context
+
+    def get_modelform_class(self):
+        cls = super(ViewPoll, self).get_modelform_class()
+        user = self.request.user
+
+        class ViewPollFormClass(cls):
+            def save(self, commit = True):
+                instance = super(ViewPollFormClass, self).save(commit)
+                application = instance.application
+                application.writelog(_("Poll was updated"), user)
+                return instance
+
+        return ViewPollFormClass
 
     def get_success_url(self):
         if not 'apply' in self.request.POST:
