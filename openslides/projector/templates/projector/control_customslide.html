@@ -1,0 +1,19 @@
+{% load staticfiles %}
+{% load i18n %}
+
+<ul style="line-height: 180%">
+{% for slide in slides.get_items %}
+    <li class="{% if slide.active %}activeline{% endif %}">
+        <a href="{% url projector_activate_slide slide.sid %}" class="activate_link {% if slide.active %}active{% endif %}">
+            <div></div>
+        </a>
+        <a href="{% url customslide_delete slide.id %}" title="{% trans 'Delete slide' %}" class="icon delete right"><span></span></a>
+        <a href="{% url projctor_preview_slide slide.sid %}" title="{% trans 'Preview' %}" class="icon preview right"><span></span></a>
+        {% for p in slide.get_ancestors %}
+            <span class="indentation">&nbsp;</span>
+        {% endfor %}
+        <a href="{% url customslide_edit slide.id %}">{{ slide }}</a>
+    </li>
+{% endfor %}
+</ul>
+
