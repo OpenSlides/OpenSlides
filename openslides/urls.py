@@ -64,5 +64,11 @@ urlpatterns += patterns('',
     url(r'^logout/$',
         'django.contrib.auth.views.logout_then_login',
         name='user_logout',
-    )
+    ),
+
+    url(r'^usersettings$',
+        'participant.views.user_settings',
+        name='user_settings',
+    ),
+
 )

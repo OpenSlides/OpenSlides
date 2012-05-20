@@ -71,11 +71,6 @@ urlpatterns = patterns('participant.views',
         name='user_group_delete',
     ),
 
-    url(r'^user/settings$',
-        'user_settings',
-        name='user_settings',
-    ),
-
     url(r'^resetpassword/(?P<user_id>\d+)$',
         'reset_password',
         name='user_reset_password',
