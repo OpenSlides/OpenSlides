@@ -63,7 +63,11 @@
                     <th>{% trans "Item" %}</th>
                     {% if perms.agenda.can_manage_agenda %}
                         <th style="width: 1px;">{% trans "Comment" %}</th>
+                    {% endif %}
+                    {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
                         <th style="width: 1px;">{% trans "Actions" %}</th>
+                    {% endif %}
+                    {% if perms.agenda.can_manage_agenda %}
                         <th class="tabledrag-hide">{% trans "Weight" %}</th>
                     {% endif %}
                 </tr>
@@ -75,6 +79,8 @@
                     </td>
                     {% if perms.agenda.can_manage_agenda %}
                     <td></td>
+                    {% endif %}
+                    {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
                     <td></td>
                     {% endif %}
                 </tr>
