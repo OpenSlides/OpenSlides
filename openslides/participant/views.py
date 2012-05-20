@@ -211,7 +211,6 @@ def user_set_status(request, user_id):
         return redirect(reverse('user_overview'))
 
     if request.is_ajax():
-        link = reverse('user_status', args=[user.id])
         return ajax_request({'active': user.is_active})
     # set success messages for page reload only (= not ajax request)
     if user.is_active:
