@@ -69,7 +69,7 @@ system.
 
      b) Clone development version from mercurial repository:
 
-        hg clone http://hg.openslides.org
+        hg clone -r 1.2-dev http://hg.openslides.org
 
   2. Setup virtualenv:
 
@@ -96,7 +96,7 @@ system.
      are created. Please change the password after first login!
 
        Username: admin
-       Password: admin 
+       Password: admin
 
      Use 'python start.py --help' to show all start options.
 
