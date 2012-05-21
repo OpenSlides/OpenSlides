@@ -311,6 +311,9 @@ def main():
     shutil.copyfile("extras/win32-portable/openslides.exe",
         os.path.join(odir, "openslides.exe"))
 
+    shutil.copyfile("initial_data.json",
+        os.path.join(odir, "initial_data.json"))
+
     copy_dlls(odir)
     copy_msvcr(odir)
 
