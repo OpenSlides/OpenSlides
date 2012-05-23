@@ -23,9 +23,9 @@
     </span>
     <table style="width:auto">
         <tr>
-            <th>Option</th>
+            <th>{% trans "Candidates" %}</th>
             {% for value in poll.get_vote_values %}
-                <th>{{ value }}</th>
+                <th>{% trans value %}</th>
             {% endfor %}
         </tr>
         {% for form in forms %}
