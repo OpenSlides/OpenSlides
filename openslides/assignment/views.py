@@ -36,6 +36,8 @@ from assignment.forms import AssignmentForm, AssignmentRunForm, ConfigForm
 
 from participant.models import Profile
 
+from settings import SITE_ROOT
+
 @permission_required('assignment.can_see_assignment')
 @template('assignment/overview.html')
 def get_overview(request):
