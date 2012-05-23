@@ -15,6 +15,9 @@ from openslides_settings import *
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+# Set timezone
+TIME_ZONE = 'Europe/Berlin'
+
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '=(v@$58k$fcl4y8t2#q15y-9p=^45y&!$!ap$7xo6ub$akg-!5'
 
