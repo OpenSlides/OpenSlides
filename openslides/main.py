@@ -49,7 +49,13 @@ def main(argv = None):
         parser.print_help()
         sys.exit(1)
 
-    if not prepare_openslides(opts.syncdb):
+    addr, port = detect_listen_opts(opts.address, opts.port)
+    if port == 80:
+        url = "http://%s" % (addr, )
+    else:
+        url = "http://%s:%d" % (addr, port)
+
+    if not prepare_openslides(url, opts.syncdb):
         sys.exit(1)
 
     if opts.reset_admin:
@@ -61,10 +67,9 @@ def main(argv = None):
     if opts.nothread:
         argv.append("--nothread")
 
-    addr, port = detect_listen_opts(opts.address, opts.port)
     argv.append("%s:%d" % (addr, port))
 
-    start_browser(addr, port)
+    start_browser(url)
     execute_from_command_line(argv)
 
 def detect_listen_opts(address, port):
@@ -88,11 +93,7 @@ def detect_listen_opts(address, port):
 
     return address, port
 
-def start_browser(addr, port):
-    if port == 80:
-        url = "http://%s" % (addr, )
-    else:
-        url = "http://%s:%d" % (addr, port)
+def start_browser(url):
     browser = webbrowser.get()
     def f():
         time.sleep(1)
@@ -101,7 +102,7 @@ def start_browser(addr, port):
     t = threading.Thread(target = f)
     t.start()
 
-def prepare_openslides(always_syncdb = False):
+def prepare_openslides(url, always_syncdb = False):
     settings_module = os.environ.get(django.conf.ENVIRONMENT_VARIABLE)
     if not settings_module:
         os.environ[django.conf.ENVIRONMENT_VARIABLE] = "openslides.settings"
@@ -114,8 +115,8 @@ def prepare_openslides(always_syncdb = False):
     except ImportError:
         pass
     else:
-        if not check_database() and always_syncdb:
-            run_syncdb()
+        if not check_database(url) and always_syncdb:
+            run_syncdb(url)
         return True # import worked, settings are already configured
 
 
@@ -135,16 +136,18 @@ def prepare_openslides(always_syncdb = False):
             dest.write(l)
 
 
-    run_syncdb()
+    run_syncdb(url)
     create_or_reset_admin_user()
     return True
 
-def run_syncdb():
+def run_syncdb(url):
     # now initialize the database
     argv = ["", "syncdb", "--noinput"]
     execute_from_command_line(argv)
 
-def check_database():
+    set_system_url(url)
+
+def check_database(url):
     """Detect if database was deleted and recreate if necessary"""
     # can't be imported in global scope as they already require
     # the settings module during import
@@ -154,7 +157,7 @@ def check_database():
     try:
         User.objects.count()
     except DatabaseError:
-        run_syncdb()
+        run_syncdb(url)
         create_or_reset_admin_user()
         return True
     return False
@@ -176,6 +179,21 @@ def create_or_reset_admin_user():
     print("Password for user admin was reset to 'admin'")
     obj.set_password("admin")
     obj.save()
+
+def set_system_url(url):
+    # can't be imported in global scope as it already requires
+    # the settings module during import
+    from openslides.config.models import config
+
+    key = "participant_pdf_system_url"
+    try:
+        if key in config.config:
+            return
+    except AttributeError:
+        config.load_config()
+        if key in config.config:
+            return
+    config[key] = url
 
 
 def generate_secret_key():
