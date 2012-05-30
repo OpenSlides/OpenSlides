@@ -11,7 +11,14 @@
 """
 
 import os
+import sys
 from django.conf.global_settings import *
+
+_fs_encoding = sys.getfilesystemencoding() or sys.getdefaultencoding()
+def _fs2unicode(s):
+    if isinstance(s, unicode):
+        return s
+    return s.decode(_fs_encoding)
 
 SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 #SITE_ROOT = os.path.join(SITE_ROOT, '..')
@@ -23,7 +30,7 @@ AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', 'opensli
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 
-DBPATH = os.path.join(os.path.join(SITE_ROOT, '..'), 'database.db')
+DBPATH = _fs2unicode(os.path.join(os.path.join(SITE_ROOT, '..'), 'database.db'))
 
 DATABASES = {
     'default': {
@@ -64,7 +71,7 @@ MEDIA_URL = ''
 
 # Absolute path to the directory that holds static media from ``collectstatic``
 # Example: "/home/media/static.lawrence.com/"
-STATIC_ROOT = os.path.join(SITE_ROOT, '../site-static')
+STATIC_ROOT = _fs2unicode(os.path.join(SITE_ROOT, '../site-static'))
 
 # URL that handles the media served from STATIC_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -74,7 +81,7 @@ STATIC_URL  = '/static/'
 # Additional directories containing static files (not application specific)
 # Examples: "/home/media/lawrence.com/extra-static/"
 STATICFILES_DIRS = (
-    os.path.join(SITE_ROOT, 'static'),
+    _fs2unicode(os.path.join(SITE_ROOT, 'static')),
 )
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
@@ -100,7 +107,7 @@ TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    os.path.join(SITE_ROOT, 'templates'),
+    _fs2unicode(os.path.join(SITE_ROOT, 'templates')),
 )
 
 INSTALLED_APPS = (
