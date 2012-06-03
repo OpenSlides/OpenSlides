@@ -16,6 +16,7 @@ except ImportError:
     import simplejson as json
 
 from django.db import models
+from django.core.urlresolvers import reverse
 
 from mptt.models import MPTTModel, TreeForeignKey
 
@@ -46,21 +47,20 @@ class Item(MPTTModel, SlideMixin):
     def get_releated_slide(self):
         return get_slide_from_sid(self.releated_sid, True)
 
+    def get_releated_type(self):
+        return self.get_releated_slide().prefix
+
     def get_title(self):
         if self.releated_sid is None:
             return self.title
         return self.get_releated_slide().get_agenda_title()
 
-    def get_text(self):
-        if self.releated_sid is None:
-            return self.text
-        return self.get_releated_slide().get_agenda_text()
-
-
     def slide(self):
         """
         Return a map with all Data for the Slide
         """
+        if self.releated_sid:
+            return self.get_releated_slide().slide()
         data = {
             'item': self,
             'title': self.get_title(),
@@ -103,7 +103,6 @@ class Item(MPTTModel, SlideMixin):
         }
         return ItemOrderForm(initial=initial, prefix="i%d" % self.id)
 
-    @models.permalink
     def get_absolute_url(self, link='view'):
         """
         Return the URL to this item. By default it is the Link to its
@@ -113,10 +112,14 @@ class Item(MPTTModel, SlideMixin):
         * view
         * delete
         """
+        if self.releated_sid:
+            return self.get_releated_slide().get_absolute_url(link)
         if link == 'view':
-            return ('item_view', [str(self.id)])
+            return reverse('item_view', args=[str(self.id)])
+        if link == 'edit':
+            return reverse('item_edit', args=[str(self.id)])
         if link == 'delete':
-            return ('item_delete', [str(self.id)])
+            return reverse('item_delete', args=[str(self.id)])
 
     def __unicode__(self):
         return self.get_title()

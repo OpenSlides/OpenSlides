@@ -30,3 +30,7 @@ def active(request, pattern):
     if request.path.startswith(pattern):
         return 'selected'
     return ''
+
+@register.simple_tag
+def model_url(object, link='view'):
+    return object.get_absolute_url(link)

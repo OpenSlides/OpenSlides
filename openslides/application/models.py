@@ -423,9 +423,6 @@ class Application(models.Model, SlideMixin):
     def get_agenda_title(self):
         return self.title
 
-    def get_agenda_text(self):
-        return 'TODO'
-
     def __getattr__(self, name):
         """
         if name is title, text, reason or time,
@@ -482,12 +479,13 @@ class Application(models.Model, SlideMixin):
         data['template'] = 'projector/Application.html'
         return data
 
-    @models.permalink
     def get_absolute_url(self, link='view'):
         if link == 'view':
-            return ('application_view', [str(self.id)])
+            return reverse('application_view', args=[str(self.id)])
+        if link == 'edit':
+            return reverse('application_edit', args=[str(self.id)])
         if link == 'delete':
-            return ('application_delete', [str(self.id)])
+            return reverse('application_delete', args=[str(self.id)])
 
     def __unicode__(self):
         try:

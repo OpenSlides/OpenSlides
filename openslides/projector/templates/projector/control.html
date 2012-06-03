@@ -204,8 +204,8 @@
                                         <img src="{% static 'images/icons/document-save.png' %}" />
                                     </a>
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <a class="projector_countdown_btn" href="{% url countdown_reset %}" title="{% trans 'Reset countdown' %}" onclick="javascript:switchButtons('play')"><button
-                                        type="submit" class="button" style="padding:4px;" name='message-clean'>
+                                    <a class="projector_countdown_btn" href="{% url countdown_reset %}" title="{% trans 'Reset countdown' %}" onclick="javascript:switchButtons('play')">
+                                        <button type="submit" class="button" style="padding:4px;" name='message-clean'>
                                            <span class="icon backward">&nbsp;</span>
                                         </button></a>&nbsp;
                                     <a id="countdown_play" class="projector_countdown_btn" href="{% url countdown_start %}" title="{% trans 'Start countdown' %}" onclick="javascript:switchButtons('stop')"><button
