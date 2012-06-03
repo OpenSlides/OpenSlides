@@ -124,13 +124,13 @@ def overview(request):
     # is not callable from within djangos templates..
     for (i, application) in enumerate(applications):
         try:
-            applications[i] = { 
+            applications[i] = {
                 'actions'     : application.get_allowed_actions(request.user),
                 'application' : application
             }
         except:
             # todo: except what?
-            applications[i] = { 
+            applications[i] = {
                 'actions'     : [],
                 'application' : application
             }
@@ -463,7 +463,7 @@ class ApplicationDelete(DeleteView):
 
     def gen_confirm_form(self, request, message, url):
         formbase = '%s<form action="%s" method="post"><input type="hidden" value="%s" name="csrfmiddlewaretoken">' % (message, url, csrf(request)['csrf_token'])
-        
+
         if len(self.applications):
             for application in self.applications:
                 formbase += '<input type="hidden" name="application_ids" value="%s">' % application.id
@@ -668,7 +668,7 @@ class CreateAgendaItem(RedirectView):
         self.item.save()
 
     def get_redirect_url(self, **kwargs):
-        return reverse('item_view', args=[self.item.id])
+        return reverse('item_overview')
 
 
 class ApplicationPDF(PDFView):

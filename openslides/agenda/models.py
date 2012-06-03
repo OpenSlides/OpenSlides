@@ -112,11 +112,13 @@ class Item(MPTTModel, SlideMixin):
         * view
         * delete
         """
-        if self.releated_sid:
-            return self.get_releated_slide().get_absolute_url(link)
         if link == 'view':
+            if self.releated_sid:
+                return self.get_releated_slide().get_absolute_url(link)
             return reverse('item_view', args=[str(self.id)])
         if link == 'edit':
+            if self.releated_sid:
+                return self.get_releated_slide().get_absolute_url(link)
             return reverse('item_edit', args=[str(self.id)])
         if link == 'delete':
             return reverse('item_delete', args=[str(self.id)])
