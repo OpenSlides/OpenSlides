@@ -11,7 +11,7 @@
     <script type="text/javascript" src="{% static 'javascript/projector-control.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascript/jquery.cookie.js' %}"></script>
     <script type="text/javascript">
-    
+
     function switchButtons(which) {
         if (which == 'stop') {
             $( "#countdown_play" ).hide();
@@ -194,8 +194,8 @@
                     <ul>
                     {% for overlay in overlays %}
                         <li>
-                            <input type="checkbox" name="{{ overlay }}" onchange="submit()"
-                            {% if overlay.active %} checked="checked"{% endif %}> {{ overlay }}:
+                            <input type="checkbox" name="{{ overlay.def_name }}" onchange="submit()"
+                                {% if overlay.active %} checked="checked"{% endif %}> {{ overlay }}:
                             {# Countdown #}
                             {% if overlay.def_name == "Countdown" %}
                                 <span class="projector_countdown_spinbox">
@@ -204,7 +204,7 @@
                                         <img src="{% static 'images/icons/document-save.png' %}" />
                                     </a>
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <a class="projector_countdown_btn" href="{% url countdown_reset %}" title="{% trans 'Reset countdown' %}" onclick="javascript:switchButtons('play')"><button 
+                                    <a class="projector_countdown_btn" href="{% url countdown_reset %}" title="{% trans 'Reset countdown' %}" onclick="javascript:switchButtons('play')"><button
                                         type="submit" class="button" style="padding:4px;" name='message-clean'>
                                            <span class="icon backward">&nbsp;</span>
                                         </button></a>&nbsp;
@@ -221,21 +221,18 @@
                                 <p></p>
                             {% endif %}
                             {% if overlay.def_name == "Message" %}
-                               <form action="" method="post">{% csrf_token %}
-                                    <br>
-                                    <nobr>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <input name='message_text' type='text' style='width: 70%'
-                                       value="{% get_config 'projector_message' %}">
-                                    <button type="submit"
-                                        class="button" style="padding:4px 0;" name='message-clean'>
-                                        <span class="icon clear">&nbsp;</span>
-                                    </button>
-                                    </nobr>
-                                    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <button type="submit" class="button" name='message'>
-                                        <span class="icon ok">{% trans 'Apply' %}</span>
-                                    </button>
-                                </form>
+                                <nobr>
+                                <input name='message_text' type='text' style='width: 70%'
+                                   value="{% get_config 'projector_message' %}">
+                                <button type="submit"
+                                    class="button" style="padding:4px 0;" name='message-clean'>
+                                    <span class="icon clear">&nbsp;</span>
+                                </button>
+                                </nobr>
+                                <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <button type="submit" class="button" name='message'>
+                                    <span class="icon ok">{% trans 'Apply' %}</span>
+                                </button>
                             {% endif %}
                         </li>
                     {% endfor %}
