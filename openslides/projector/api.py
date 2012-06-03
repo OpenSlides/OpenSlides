@@ -39,7 +39,10 @@ def get_slide_from_sid(sid, element=False):
         return None
 
     if id is not None:
-        object = SLIDE[key].model.objects.get(pk=id)
+        try:
+            object = SLIDE[key].model.objects.get(pk=id)
+        except SLIDE[key].DoesNotExist:
+            return None
         if element:
             return object
         return object.slide()
