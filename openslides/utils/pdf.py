@@ -181,7 +181,29 @@ stylesheet.add(ParagraphStyle(name = 'Ballot_option_group_right',
                               leading = 16,
                               leftIndent = 49),
                )
+stylesheet.add(ParagraphStyle(name = 'Badge_title',
+                              parent = stylesheet['Bold'],
+                              fontSize = 16,
+                              leading = 22,
+                              leftIndent = 30),
+               )
+stylesheet.add(ParagraphStyle(name = 'Badge_subtitle',
+                              parent = stylesheet['Normal'],
+                              fontSize = 12,
+                              leading = 24,
+                              leftIndent = 30),
+               )
+stylesheet.add(ParagraphStyle(name = 'Badge_italic',
+                              parent = stylesheet['Italic'],
+                              fontSize = 12,
+                              leading = 24,
+                              leftIndent = 30),
+               )
 
+stylesheet.add(ParagraphStyle(name = 'Badge_qrcode',
+                              fontSize = 12,
+                              leftIndent = 190),
+               )
 
 def firstPage(canvas, doc):
     canvas.saveState()

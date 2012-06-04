@@ -53,6 +53,8 @@ from utils.template import Tab
 from utils.views import (FormView, PDFView)
 from utils.utils import delete_default_permissions
 
+from openslides import settings
+import qrcode
 
 @permission_required('participant.can_see_participant')
 @template('participant/overview.html')
@@ -551,6 +553,10 @@ class ParticipantsPasswordsPDF(PDFView):
         for user in User.objects.all().order_by('last_name'):
             try:
                 user.get_profile()
+                qrcode_img = qrcode.make(participant_pdf_system_url)
+                qrcode_img.save( settings.MEDIA_ROOT + 'qr-code_systemurl.png', 'PNG')
+                imgfile = settings.MEDIA_ROOT + 'qr-code_systemurl.png';
+                qrcode_systemurl = "<img src='%s' width='50' height='50'/>" % imgfile
                 cell = []
                 cell.append(Spacer(0,0.8*cm))
                 cell.append(Paragraph(_("Account for OpenSlides"), stylesheet['Ballot_title']))
@@ -560,7 +566,8 @@ class ParticipantsPasswordsPDF(PDFView):
                 cell.append(Paragraph(_("Password: %s") % (user.profile.firstpassword), stylesheet['Monotype']))
                 cell.append(Spacer(0,0.5*cm))
                 cell.append(Paragraph(_("URL: %s") % (participant_pdf_system_url), stylesheet['Ballot_option']))
-                cell.append(Spacer(0,0.5*cm))
+                cell.append(Spacer(0,1*cm))
+                cell.append(Paragraph(qrcode_systemurl, stylesheet['Ballot_option']))
                 cell2 = []
                 cell2.append(Spacer(0,0.8*cm))
                 if participant_pdf_welcometext is not None:
@@ -578,7 +585,44 @@ class ParticipantsPasswordsPDF(PDFView):
                               ]))
         story.append(t)
 
+class ParticipantsBadgePDF(PDFView):
+    permission_required = 'participant.can_manage_participant'
+    filename = _("participant-badges")
+    top_space = 0
 
+    def get_template(self, buffer):
+        return SimpleDocTemplate(buffer, topMargin=-6, bottomMargin=-6, leftMargin=0, rightMargin=0, showBoundary=False)
+
+    def build_document(self, pdf_document, story):
+        pdf_document.build(story)
+
+    def append_to_pdf(self, story):
+        data= []
+        for user in User.objects.all().order_by('last_name'):
+            try:
+                user.get_profile()
+                qrcode_img = qrcode.make( "%s%s" % (config['participant_pdf_system_url'], reverse('user_status', args=[user.id])) )
+                qrcode_img.save( settings.MEDIA_ROOT + 'qr-code_statusurl.png', 'PNG')
+                imgfile = settings.MEDIA_ROOT + 'qr-code_statusurl.png';
+                qrcode_statusurl = "<img src='%s' width='80' height='80'/>" % imgfile
+                cell = []
+                cell.append(Spacer(0,0.8*cm))
+                cell.append(Paragraph("%s %s" % (user.first_name, user.last_name), stylesheet['Badge_title']))
+                cell.append(Spacer(0,0.5*cm))
+                cell.append(Paragraph("%s" % (user.profile.group), stylesheet['Badge_subtitle']))
+                cell.append(Paragraph("%s" % (user.profile.committee), stylesheet['Badge_italic']))
+                cell.append(Spacer(0,2.25*cm))
+                cell.append(Paragraph(qrcode_statusurl, stylesheet['Badge_qrcode']))
+                # print cards
+                data.append([cell,cell])
+            except Profile.DoesNotExist:
+                pass
+
+        t=Table(data, 10.5*cm, 7.42*cm)
+        t.setStyle(TableStyle([ ('GRID', (0,0), (-1,-1), 0.25, colors.grey),
+                                ('VALIGN', (0,0), (-1,-1), 'TOP'),
+                              ]))
+        story.append(t)
 
 class Config(FormView):
     permission_required = 'config.can_manage_config'
