@@ -25,7 +25,6 @@
         {% endif %}
         {% if perms.participant.can_manage_participant %}
         <li><a href="{% url print_passwords %}"><img src="{% static 'images/icons/pdf.png' %}"> {% trans 'First time passwords as PDF' %}</a></li>
-        <li><a href="{% url print_badges %}"><img src="{% static 'images/icons/pdf.png' %}"> Namenskarten als PDF</a></li>
         {% endif %}
     </ul>
 {% endblock %}

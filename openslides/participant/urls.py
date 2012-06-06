@@ -13,7 +13,7 @@
 from django.conf.urls.defaults import *
 from django.core.urlresolvers import reverse
 
-from participant.views import ParticipantsListPDF, ParticipantsPasswordsPDF, ParticipantsBadgePDF
+from participant.views import ParticipantsListPDF, ParticipantsPasswordsPDF
 
 urlpatterns = patterns('participant.views',
     url(r'^$',
@@ -80,10 +80,4 @@ urlpatterns = patterns('participant.views',
         ParticipantsPasswordsPDF.as_view(),
         name='print_passwords',
     ),
-
-    url(r'^badges/print$',
-        ParticipantsBadgePDF.as_view(),
-        name='print_badges',
-    ),
-
 )
