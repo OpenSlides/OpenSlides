@@ -74,11 +74,10 @@ class GroupForm(ModelForm, CssClassMixin):
         exclude = ('permissions',)
 
 
-class UsersettingsForm(UserEditForm, CssClassMixin):
+class UsersettingsForm(ModelForm, CssClassMixin):
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email')
-
 
 class UserImportForm(Form, CssClassMixin):
     csvfile = FileField(widget=FileInput(attrs={'size':'50'}), label=_("CSV File"))
