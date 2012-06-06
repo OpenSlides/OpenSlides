@@ -10,7 +10,7 @@
    production environment.
    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-This is OpenSlides, version 1.2-beta2 (2012-05-21).
+This is OpenSlides, version 1.2-beta3 (2012-06-06).
 
 
 What is OpenSlides?
