@@ -410,6 +410,7 @@ def delete_poll(request, poll_id):
         del_confirm_form(request, poll, name=_("the %s. poll") % count, delete_link=reverse('application_poll_delete', args=[poll_id]))
     return redirect(reverse('application_view', args=[application.id]))
 
+
 class ApplicationDelete(DeleteView):
     """
     Delete one or more Applications.

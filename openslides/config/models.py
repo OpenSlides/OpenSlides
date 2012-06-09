@@ -46,14 +46,20 @@ class Config(object):
             self.config[key] = loads(base64.decodestring(str(value)))
 
     def __getitem__(self, key):
-        try:
-            self.config
-        except AttributeError:
-            self.load_config()
+        # Had to be deactivated, because in more than one thread the values have
+        # to be loaded on each request.
+        ## try:
+            ## self.config
+        ## except AttributeError:
+            ## self.load_config()
+        ## try:
+            ## return self.config[key]
+        ## except KeyError:
+            ## pass
 
         try:
-            return self.config[key]
-        except KeyError:
+            return loads(base64(ConfigStore.objects.get(key=key).value))
+        except ConfigStore.DoesNotExist:
             pass
 
         for receiver, value in default_config_value.send(sender='config', key=key):
