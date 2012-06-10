@@ -25,8 +25,8 @@ from django.db.models import Q
 
 
 from utils.views import TemplateView, RedirectView, CreateView, UpdateView, DeleteView
-from utils.utils import template, permission_required, \
-                                   del_confirm_form, ajax_request
+from utils.utils import (template, permission_required, del_confirm_form,
+                         ajax_request, load_models)
 from utils.template import render_block_to_string
 from utils.template import Tab
 
@@ -41,6 +41,7 @@ from openslides.utils.signals import template_manipulation
 from django.utils.importlib import import_module
 import settings
 
+load_models()
 
 class ControlView(TemplateView):
     template_name = 'projector/control.html'
