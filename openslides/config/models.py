@@ -58,7 +58,7 @@ class Config(object):
             ## pass
 
         try:
-            return loads(base64(ConfigStore.objects.get(key=key).value))
+            return loads(base64(str(ConfigStore.objects.get(key=key).value)))
         except ConfigStore.DoesNotExist:
             pass
 
