@@ -126,11 +126,3 @@ def encodedict(dict):
     for key in dict:
         newdict[key] = [unicode(dict[key][0].decode('utf-8'))]
     return newdict
-
-
-def load_models():
-    for app in settings.INSTALLED_APPS:
-        try:
-            mod = import_module(app + '.models')
-        except ImportError:
-            continue

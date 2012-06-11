@@ -148,24 +148,15 @@
     </div>
 
     <div class="column" id="col1">
-    {% for category, group in categories.items %}
-        {% if category != 'projector' %}
-        <div class="portlet" id="portlet_{{category}}">
-            {% with category_big=category|capfirst %}
-            <div class="portlet-header">{% trans category_big %}</div>
-            {% endwith %}
-            <div class="portlet-content">
-            {% for slides in group %}
-                {% if slides.control_template %}
-                    {% include slides.control_template %}
-                {% endif %}
-                {% if not forloop.last %}
-                    <hr>
-                {% endif %}
-            {% endfor %}
+    {% for name, widget in widgets.items %}
+        {% if name != 'projector' %}
+            <div class="portlet" id="portlet_{{ widget.get_name }}">
+                <div class="portlet-header">{% trans widget.get_title %}</div>
+                <div class="portlet-content">
+                    {{ widget.html }}
+                </div>
             </div>
-        </div> <!-- end portlet-->
-       {% endif %}
+        {% endif %}
     {% endfor %}
     </div> <!-- end column-->
 
@@ -243,27 +234,13 @@
         </div> <!-- end portlet-->
 
         <!-- Custom slides -->
-        {% for category, group in categories.items %}
-            {% if category == 'projector' %}
+        {% with widget=widgets.projector %}
             <div class="portlet" id="portlet_customslides">
                 <div class="portlet-header">{% trans "Custom slides" %}</div>
                 <div class="portlet-content">
-                {% for slides in group %}
-                    {% if slides.control_template %}
-                        {% include slides.control_template %}
-                    {% endif %}
-                    {% if not forloop.last %}
-                        <hr>
-                    {% endif %}
-                {% endfor %}
-                <a href='{% url customslide_new %}'>
-                <button class="button" type="button" onclick="window.location='{% url customslide_new %}'">
-                    <span class="icon add">{%trans 'New slide' %}</span>
-                </button>
-                </a>
+                    {{ widget.html }}
                 </div>
             </div> <!-- end portlet-->
-           {% endif %}
-        {% endfor %}
+        {% endwith %}
     </div> <!-- end column -->
 {% endblock %}

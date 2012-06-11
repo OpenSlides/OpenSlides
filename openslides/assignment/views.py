@@ -11,6 +11,11 @@
 """
 
 import os
+
+from reportlab.lib import colors
+from reportlab.lib.units import cm
+from reportlab.platypus import SimpleDocTemplate, PageBreak, Paragraph, Spacer, Table, TableStyle
+
 from django.shortcuts import redirect
 from django.core.urlresolvers import reverse
 from django.contrib import messages
@@ -18,16 +23,15 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.utils.translation import ungettext, ugettext as _
 
-from reportlab.lib import colors
-from reportlab.lib.units import cm
-from reportlab.platypus import SimpleDocTemplate, PageBreak, Paragraph, Spacer, Table, TableStyle
-
 from config.models import config
+from settings import SITE_ROOT
 
 from utils.utils import template, permission_required, gen_confirm_form, del_confirm_form, ajax_request
 from utils.pdf import stylesheet
 from utils.views import FormView, DeleteView, PDFView
 from utils.template import Tab
+
+from projector.api import get_model_widget
 
 from poll.views import PollFormView
 
@@ -36,7 +40,6 @@ from assignment.forms import AssignmentForm, AssignmentRunForm, ConfigForm
 
 from participant.models import Profile
 
-from settings import SITE_ROOT
 
 @permission_required('assignment.can_see_assignment')
 @template('assignment/overview.html')
@@ -597,3 +600,7 @@ def register_tab(request):
         permission=request.user.has_perm('assignment.can_see_assignment') or request.user.has_perm('assignment.can_nominate_other') or request.user.has_perm('assignment.can_nominate_self') or request.user.has_perm('assignment.can_manage_assignment'),
         selected=selected,
     )
+
+
+def get_widgets(request):
+    return [get_model_widget(name='assignments', model=Assignment)]

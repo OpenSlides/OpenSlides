@@ -11,6 +11,7 @@
 """
 
 from django.db import models
+from django.core.urlresolvers import reverse
 
 from config.models import config
 
@@ -141,12 +142,13 @@ class Assignment(models.Model, SlideMixin):
         data['template'] = 'projector/Assignment.html'
         return data
 
-    @models.permalink
     def get_absolute_url(self, link='view'):
         if link == 'view':
-            return ('assignment_view', [str(self.id)])
+            return reverse('assignment_view', [str(self.id)])
+        if link == 'edit':
+            return reverse('assignment_edit', args=[str(self.id)])
         if link == 'delete':
-            return ('assignment_delete', [str(self.id)])
+            return reverse('assignment_delete', [str(self.id)])
 
     def __unicode__(self):
         return self.name

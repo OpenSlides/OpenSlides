@@ -155,4 +155,3 @@ def default_config(sender, key, **kwargs):
     return {
         'agenda_countdown_time': 60,
     }.get(key)
-

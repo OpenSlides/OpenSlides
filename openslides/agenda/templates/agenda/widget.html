@@ -1,0 +1,33 @@
+{% load staticfiles %}
+{% load i18n %}
+{% load tags %}
+
+<ul style="line-height: 180%">
+    <li class="{% if agenda.active %}activeline{% endif %}">
+        <a href="{% url projector_activate_slide agenda.key %}" class="activate_link {% if agenda.active %}active{% endif %}">
+            <div></div>
+        </a>
+        <a href="{% url projctor_preview_slide agenda.key %}" title="{% trans 'Preview' %}" class="icon preview right">
+            <span></span>
+        </a>
+        {{ agenda.name }}
+    </li>
+</ul>
+<hr>
+<ul style="line-height: 180%">
+{% for item in items %}
+    <li class="{% if item.active %}activeline{% endif %}">
+        <a href="{% url projector_activate_slide item.sid %}" class="activate_link {% if item.active %}active{% endif %}">
+            <div></div>
+        </a>
+        <a href="{% url projctor_preview_slide item.sid %}" title="{% trans 'Preview' %}" class="icon preview right">
+            <span></span>
+        </a>
+        {% for p in item.get_ancestors %}
+            <span class="indentation">&nbsp;</span>
+        {% endfor %}
+        <a href="{% model_url item 'edit' %}">{{ item }}</a>
+    </li>
+{% endfor %}
+</ul>
+

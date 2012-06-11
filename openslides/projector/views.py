@@ -19,6 +19,7 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.utils.datastructures import SortedDict
+from django.utils.importlib import import_module
 from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.db.models import Q
@@ -26,22 +27,18 @@ from django.db.models import Q
 
 from utils.views import TemplateView, RedirectView, CreateView, UpdateView, DeleteView
 from utils.utils import (template, permission_required, del_confirm_form,
-                         ajax_request, load_models)
-from utils.template import render_block_to_string
-from utils.template import Tab
-
-from config.models import config
-
-from api import get_active_slide, set_active_slide, projector_message_set, projector_message_delete, get_slide_from_sid
-from projector import SLIDE
-from models import ProjectorOverlay, ProjectorSlide
-from openslides.projector.signals import projector_overlays, projector_control_box
+                         ajax_request)
+from utils.template import render_block_to_string, Tab
 from openslides.utils.signals import template_manipulation
 
-from django.utils.importlib import import_module
+from config.models import config
 import settings
 
-load_models()
+from api import get_active_slide, set_active_slide, projector_message_set, projector_message_delete, get_slide_from_sid
+from projector import SLIDE, Widget
+from models import ProjectorOverlay, ProjectorSlide
+from openslides.projector.signals import projector_overlays, projector_control_box
+
 
 class ControlView(TemplateView):
     template_name = 'projector/control.html'
@@ -76,29 +73,28 @@ class ControlView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(ControlView, self).get_context_data(**kwargs)
-        categories = {}
-        for slide in SLIDE.values():
-            if not categories.has_key(slide.category):
-                categories[slide.category] = []
-            categories[slide.category].append(slide)
 
-        tmp_categories = categories
-        categories = SortedDict()
+        widgets = SortedDict()
         for app in settings.INSTALLED_APPS:
-            if app in tmp_categories:
-                tmp_categories[app].sort(key=lambda slide: slide.weight)
-                categories[app] = tmp_categories[app]
+            try:
+                mod = import_module(app + '.views')
+            except ImportError:
+                continue
+            appname = mod.__name__.split('.')[0]
+            try:
+                modul_widgets = mod.get_widgets(self.request)
+            except AttributeError:
+                continue
 
+            for widget in modul_widgets:
+                widgets[widget.get_name()] = widget
 
-        ## for receiver, response in projector_control_box.send(sender='ControllView'):
-            ## if response is not None:
-                ## categories[response[0]] = response[1]
 
         context.update({
-            'categories': categories,
             'countdown_time': config['agenda_countdown_time'],
             'countdown_state' : config['countdown_state'],
             'overlays': self.get_projector_overlays(),
+            'widgets': widgets,
         })
         return context
 
@@ -294,6 +290,13 @@ def register_tab(request):
     )
 
 
-## @receiver(projector_control_box, dispatch_uid="openslides.projector.views.projector_box")
-## def projector_box(sender, **kwargs):
-    ## return ('header', 'text')
+def get_widgets(request):
+    return [
+        Widget(
+            name='projector',
+            template='projector/widget.html',
+            context={
+                'slides': ProjectorSlide.objects.all(),
+            }
+        ),
+    ]

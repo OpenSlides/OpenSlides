@@ -21,6 +21,10 @@ try:
 except ImportError: # python <= 2.5
     from cgi import parse_qs
 
+from reportlab.lib import colors
+from reportlab.lib.units import cm
+from reportlab.platypus import SimpleDocTemplate, PageBreak, Paragraph, Spacer, Table, TableStyle
+
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -31,14 +35,20 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
 from django.db import transaction
 
-from reportlab.lib import colors
-from reportlab.lib.units import cm
-from reportlab.platypus import SimpleDocTemplate, PageBreak, Paragraph, Spacer, Table, TableStyle
-
 from config.models import config
+
 from settings import SITE_ROOT
+
 from utils.pdf import stylesheet
-from utils.views import PDFView, RedirectView, DeleteView
+from utils.views import PDFView, RedirectView, DeleteView, FormView
+
+from utils.utils import template, permission_required, \
+                                   render_to_forbitten, del_confirm_form, gen_confirm_form
+from utils.template import Tab
+
+from projector.api import get_model_widget
+
+from poll.views import PollFormView
 
 from agenda.models import Item
 
@@ -51,14 +61,6 @@ from application.forms import (
 )
 
 from participant.models import Profile
-
-from poll.views import PollFormView
-
-from utils.utils import template, permission_required, \
-                                   render_to_forbitten, del_confirm_form, gen_confirm_form
-from utils.views import FormView
-from utils.template import Tab
-
 from participant.api import gen_username, gen_password
 
 
@@ -890,3 +892,7 @@ def register_tab(request):
         permission=request.user.has_perm('application.can_see_application') or request.user.has_perm('application.can_support_application') or request.user.has_perm('application.can_support_application') or request.user.has_perm('application.can_manage_application'),
         selected=selected,
     )
+
+
+def get_widgets(request):
+    return [get_model_widget(name='applications', model=Application)]

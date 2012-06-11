@@ -13,6 +13,7 @@
 from time import time
 
 from django.dispatch import receiver
+from django.template.loader import render_to_string
 
 from config.models import config
 
@@ -22,6 +23,9 @@ from openslides.projector.signals import projector_overlays
 SLIDE = {}
 
 class SlideMixin(object):
+    """
+    A Mixin for a Django-Model, for making the model a slide.
+    """
 
     def slide(self):
         """
@@ -89,6 +93,24 @@ class Slide(object):
             return self.model.objects.all()
         except AttributeError:
             return 'No Model'
+
+
+class Widget(object):
+    def __init__(self, name, html=None, template=None, context={}):
+        self.name = name
+        if html is not None:
+            self.html = html
+        elif template is not None:
+            self.html = render_to_string(template, context)
+
+    def get_name(self):
+        return self.name
+
+    def get_html(self):
+        return self.html
+
+    def get_title(self):
+        return self.name.capitalize()
 
 
 @receiver(projector_overlays, dispatch_uid="projector_countdown")

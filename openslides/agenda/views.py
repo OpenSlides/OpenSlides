@@ -26,6 +26,7 @@ from utils.template import Tab
 from config.models import config
 
 from projector.api import get_active_slide, set_active_slide
+from projector.projector import Widget, SLIDE
 
 from agenda.models import Item
 from agenda.forms import ItemOrderForm, ItemForm, ConfigForm
@@ -205,3 +206,16 @@ def register_tab(request):
         permission=request.user.has_perm('agenda.can_see_agenda') or request.user.has_perm('agenda.can_manage_agenda'),
         selected=selected,
     )
+
+
+def get_widgets(request):
+    return [
+        Widget(
+            name='agenda',
+            template='agenda/widget.html',
+            context={
+                'agenda': SLIDE['agenda'],
+                'items': Item.objects.all(),
+            }
+        ),
+    ]

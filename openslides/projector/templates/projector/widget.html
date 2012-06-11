@@ -1,0 +1,28 @@
+{% load staticfiles %}
+{% load i18n %}
+{% load tags %}
+
+<ul style="line-height: 180%">
+{% for slide in slides %}
+    <li class="{% if slide.active %}activeline{% endif %}">
+        <a href="{% url projector_activate_slide slide.sid %}" class="activate_link {% if slide.active %}active{% endif %}">
+            <div></div>
+        </a>
+        <a href="{% url customslide_delete slide.id %}" title="{% trans 'Delete slide' %}" class="icon delete right">
+            <span></span>
+        </a>
+        <a href="{% url projctor_preview_slide slide.sid %}" title="{% trans 'Preview' %}" class="icon preview right">
+            <span></span>
+        </a>
+        <a href="{% url customslide_edit slide.id %}">{{ slide }}</a>
+    </li>
+{% endfor %}
+</ul>
+<hr>
+<a href='{% url customslide_new %}'>
+    <button class="button" type="button" onclick="window.location='{% url customslide_new %}'">
+        <span class="icon add">{%trans 'New slide' %}</span>
+    </button>
+</a>
+
+

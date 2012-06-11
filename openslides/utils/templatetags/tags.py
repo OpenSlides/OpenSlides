@@ -15,6 +15,7 @@ from config.models import config
 
 register = template.Library()
 
+
 @register.simple_tag
 def get_min_supporters():
     return config['application_min_supporters']
@@ -30,6 +31,7 @@ def active(request, pattern):
     if request.path.startswith(pattern):
         return 'selected'
     return ''
+
 
 @register.simple_tag
 def model_url(object, link='view'):
