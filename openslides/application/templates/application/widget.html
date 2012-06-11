@@ -1,0 +1,23 @@
+{% load staticfiles %}
+{% load i18n %}
+{% load tags %}
+
+<ul style="line-height: 180%">
+{% for application in applications %}
+    <li class="{% if application.active %}activeline{% endif %}">
+        <a href="{% url projector_activate_slide application.sid %}" class="activate_link {% if application.active %}active{% endif %}">
+            <div></div>
+        </a>
+        <a href="{% url projctor_preview_slide application.sid %}" title="{% trans 'Preview' %}" class="icon preview right">
+            <span></span>
+        </a>
+        <a href="{% model_url application 'edit' %}">
+            {% if application.number %}
+                {% trans 'Application' %} {{ application.number }}:
+            {% endif %}
+            {{ application }}
+        </a>
+    </li>
+{% endfor %}
+</ul>
+

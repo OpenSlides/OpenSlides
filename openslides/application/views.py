@@ -46,7 +46,7 @@ from utils.utils import template, permission_required, \
                                    render_to_forbitten, del_confirm_form, gen_confirm_form
 from utils.template import Tab
 
-from projector.api import get_model_widget
+from projector.projector import Widget
 
 from poll.views import PollFormView
 
@@ -895,4 +895,7 @@ def register_tab(request):
 
 
 def get_widgets(request):
-    return [get_model_widget(name='applications', model=Application)]
+    return [
+        Widget(name='applications', template='application/widget.html',
+               context={'applications': Application.objects.all()})
+    ]
