@@ -25,14 +25,9 @@ class OptionForm(forms.Form, CssClassMixin):
         super(OptionForm, self).__init__(*args, **kwargs)
 
         for vote in extra:
-            if type(vote) is Vote:
-                key = vote.value
-                value = vote.get_value()
-                weight = vote.get_weight(raw = True)
-            else:
-                key = vote
-                value = _(vote)
-                weight = None
+            key = vote.value
+            value = vote.get_value()
+            weight = vote.get_weight(raw=True)
             self.fields[key] = forms.IntegerField(
                 label=value,
                 initial=weight,

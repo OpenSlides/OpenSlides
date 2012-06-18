@@ -91,7 +91,7 @@ def view(request, assignment_id=None):
                 if poll.get_options().filter(candidate=candidate).exists():
                     option = AssignmentOption.objects.filter(poll=poll).get(candidate=candidate)
                     try:
-                        tmplist[1].append(option.get_votes()[0])
+                        tmplist[1].append(poll.get_form_values(option.id))
                     except IndexError:
                         tmplist[1].append('–')
                 else:
@@ -577,6 +577,7 @@ class Config(FormView):
             'assignment_pdf_ballot_papers_number': config['assignment_pdf_ballot_papers_number'],
             'assignment_pdf_title': config['assignment_pdf_title'],
             'assignment_pdf_preamble': config['assignment_pdf_preamble'],
+            'assignment_poll_vote_values': config['assignment_poll_vote_values'],
         }
 
     def form_valid(self, form):
@@ -588,6 +589,7 @@ class Config(FormView):
         config['assignment_pdf_ballot_papers_number'] = form.cleaned_data['assignment_pdf_ballot_papers_number']
         config['assignment_pdf_title'] = form.cleaned_data['assignment_pdf_title']
         config['assignment_pdf_preamble'] = form.cleaned_data['assignment_pdf_preamble']
+        config['assignment_poll_vote_values'] = form.cleaned_data['assignment_poll_vote_values']
         messages.success(self.request, _('Election settings successfully saved.'))
         return super(Config, self).form_valid(form)
 

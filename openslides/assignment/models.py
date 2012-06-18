@@ -175,9 +175,28 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
     option_class = AssignmentOption
 
     assignment = models.ForeignKey(Assignment, related_name='poll_set')
+    yesnoababstain = models.NullBooleanField()
 
     def get_assignment(self):
         return self.assignment
+
+    def get_vote_values(self):
+        if not self.yesnoababstain:
+            if config['assignment_poll_vote_values'] == 'votes':
+                self.yesnoababstain = False
+            elif config['assignment_poll_vote_values'] == 'yesnoabstain':
+                self.yesnoababstain = True
+            else:
+                # candidates <= available posts -> yes/no/abstain
+                if self.assignment.candidates.count() <= self.assignment.posts - self.assignment.elected.count():
+                    self.yesnoababstain = True
+                else:
+                    self.yesnoababstain = False
+            self.save()
+        if self.yesnoababstain:
+            return ['yes', 'no', 'abstain']
+        else:
+            return ['votes']
 
     def append_pollform_fields(self, fields):
         CountInvalid.append_pollform_fields(self, fields)
@@ -206,4 +225,5 @@ def default_config(sender, key, **kwargs):
         'assignment_pdf_ballot_papers_number': '1',
         'assignment_pdf_title': _('Elections'),
         'assignment_pdf_preamble': '',
+        'assignment_poll_vote_values': 'auto',
     }.get(key)

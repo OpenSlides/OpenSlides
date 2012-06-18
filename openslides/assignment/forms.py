@@ -41,11 +41,11 @@ class ConfigForm(Form, CssClassMixin):
     assignment_pdf_ballot_papers_selection = forms.ChoiceField(widget=forms.Select(),
         required=False,
         label=_("Number of ballot papers (selection)"),
-        choices=[
+        choices=(
             ("1", _("Number of all delegates")),
             ("2", _("Number of all participants")),
             ("0", _("Use the following custum number"))
-        ]
+        )
     )
     assignment_pdf_ballot_papers_number = forms.IntegerField(
         widget=forms.TextInput(attrs={'class':'small-input'}),
@@ -62,4 +62,13 @@ class ConfigForm(Form, CssClassMixin):
         widget=forms.Textarea(),
         required=False,
         label=_("Preamble text for PDF document (all elections)")
+    )
+    assignment_poll_vote_values = forms.ChoiceField(widget=forms.Select(),
+        required=False,
+        label=_("Values for the election"),
+        choices=(
+            ("auto", _("Choose the right method.")),
+            ("votes", _("One option per candidate.")),
+            ("yesnoabstain", _("Yes-No-Abatain per candidate.")),
+        )
     )

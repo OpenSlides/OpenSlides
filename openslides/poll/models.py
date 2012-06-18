@@ -36,7 +36,7 @@ class Vote(models.Model):
     weight = models.IntegerField(default=1)
     value = models.CharField(max_length=255, null=True)
 
-    def get_weight(self, raw = False):
+    def get_weight(self, raw=False):
         if raw:
             return self.weight
         return print_value(self.weight)
@@ -156,7 +156,7 @@ class BasePoll(models.Model, SlideMixin):
                 vote = Vote.objects.filter(option=option_id).get(value=value)
                 values.append(vote)
             except Vote.DoesNotExist:
-                values.append(value)
+                values.append(Vote(value=value, weight=''))
         return values
 
     def get_vote_form(self, **kwargs):

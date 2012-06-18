@@ -68,7 +68,7 @@ class PollFormView(TemplateView):
 
         for form in forms:
             data = {}
-            for value in self.poll.vote_values:
+            for value in self.poll.get_vote_values():
                 data[value] = form.cleaned_data[value]
             self.poll.set_form_values(form.option, data)
 

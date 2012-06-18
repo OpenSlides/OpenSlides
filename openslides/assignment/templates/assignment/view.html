@@ -162,7 +162,7 @@
                         <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {% if v.2 %}{{ v.2 }}{% else %}&empty;{% endif %}<br>
                     {% else %}
                         {% if v != "-" %}<img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}">{% endif %}
-                        {{ v }}
+                        {{ v.0 }}
                     {% endif %}
                 {% else %}
                     &empty;
