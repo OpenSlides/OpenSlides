@@ -6,7 +6,7 @@
 
 {% block content %}
     <h1>{{ item }}</h1>
-    <p>{{ item.get_text|safe|linebreaks }}</p>
+    <p>{{ item.text|safe|linebreaks }}</p>
 
     {% if perms.agenda.can_manage_agenda %}
     {% if item.comment %}

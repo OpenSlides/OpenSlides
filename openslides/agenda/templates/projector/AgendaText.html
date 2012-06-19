@@ -5,7 +5,7 @@
 {% block title %}{{ block.super }} - {{ item }}{% endblock %}
 
 {% block content %}
-    {% if item.get_text %}
+    {% if item.text %}
         <h1>{{ item }}</h1>
     {% else %}
         <div class="item_fullscreen">{{ item }}</div>
@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block scrollcontent %}
-    {% if item.get_text %}
-        <span>{{ item.get_text|safe|linebreaks }}</span>
+    {% if item.text %}
+        <span>{{ item.text|safe|linebreaks }}</span>
     {% endif %}
 {% endblock %}
