@@ -202,13 +202,12 @@ class Application(models.Model, SlideMixin):
                         changed_fields = ", ".join(field_names)))
                 return # Done
 
-            if self.title != "":
-                version = AVersion(title=getattr(self, 'title', ''),
-                           text=getattr(self, 'text', ''),
-                           reason=getattr(self, 'reason', ''),
-                           application=self)
-                version.save()
-                self.writelog(_("Version %s created") % version.aid, user)
+            version = AVersion(title=getattr(self, 'title', ''),
+                       text=getattr(self, 'text', ''),
+                       reason=getattr(self, 'reason', ''),
+                       application=self)
+            version.save()
+            self.writelog(_("Version %s created") % version.aid, user)
             is_manager = user.has_perm('application.can_manage_application')
         except AttributeError:
             is_manager = False
