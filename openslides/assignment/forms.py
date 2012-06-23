@@ -65,10 +65,10 @@ class ConfigForm(Form, CssClassMixin):
     )
     assignment_poll_vote_values = forms.ChoiceField(widget=forms.Select(),
         required=False,
-        label=_("Values for the election"),
+        label=_("Election method"),
         choices=(
             ("auto", _("Choose the right method.")),
-            ("votes", _("One option per candidate.")),
-            ("yesnoabstain", _("Yes-No-Abatain per candidate.")),
+            ("votes", _("Always one option per candidate.")),
+            ("yesnoabstain", _("Always Yes-No-Abstain per candidate.")),
         )
     )
