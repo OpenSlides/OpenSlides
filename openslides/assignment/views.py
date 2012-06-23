@@ -28,12 +28,14 @@ from settings import SITE_ROOT
 
 from utils.utils import template, permission_required, gen_confirm_form, del_confirm_form, ajax_request
 from utils.pdf import stylesheet
-from utils.views import FormView, DeleteView, PDFView
+from utils.views import FormView, DeleteView, PDFView, RedirectView
 from utils.template import Tab
 
 from projector.api import get_model_widget
 
 from poll.views import PollFormView
+
+from agenda.models import Item
 
 from assignment.models import Assignment, AssignmentPoll, AssignmentOption
 from assignment.forms import AssignmentForm, AssignmentRunForm, ConfigForm
@@ -461,6 +463,18 @@ class AssignmentPDF(PDFView):
                         tmplist[1].append("-")
             votes.append(tmplist)
         return votes
+
+
+class CreateAgendaItem(RedirectView):
+    permission_required = 'agenda.can_manage_agenda'
+
+    def pre_redirect(self, request, *args, **kwargs):
+        self.assignment = Assignment.objects.get(pk=kwargs['assignment_id'])
+        self.item = Item(releated_sid=self.assignment.sid)
+        self.item.save()
+
+    def get_redirect_url(self, **kwargs):
+        return reverse('item_overview')
 
 
 class AssignmentPollPDF(PDFView):

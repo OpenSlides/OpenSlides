@@ -129,6 +129,8 @@ class Assignment(models.Model, SlideMixin):
             votes.append(tmplist)
         return votes
 
+    def get_agenda_title(self):
+        return self.name
 
     def slide(self):
         """
@@ -144,11 +146,11 @@ class Assignment(models.Model, SlideMixin):
 
     def get_absolute_url(self, link='view'):
         if link == 'view':
-            return reverse('assignment_view', [str(self.id)])
+            return reverse('assignment_view', args=(str(self.id)))
         if link == 'edit':
-            return reverse('assignment_edit', args=[str(self.id)])
+            return reverse('assignment_edit', args=(str(self.id)))
         if link == 'delete':
-            return reverse('assignment_delete', [str(self.id)])
+            return reverse('assignment_delete', args=(str(self.id)))
 
     def __unicode__(self):
         return self.name

@@ -12,7 +12,8 @@
 
 from django.conf.urls.defaults import *
 
-from assignment.views import ViewPoll, AssignmentPDF, AssignmentPollPDF, AssignmentPollDelete
+from assignment.views import (ViewPoll, AssignmentPDF, AssignmentPollPDF,
+    AssignmentPollDelete, CreateAgendaItem)
 
 urlpatterns = patterns('assignment.views',
     url(r'^$',
@@ -64,12 +65,17 @@ urlpatterns = patterns('assignment.views',
         name='assignment_activate_item',
     ),
 
-    url(r'^poll/(?P<poll_id>\d+)/print$',
+    url(r'^poll/(?P<poll_id>\d+)/print/$',
         AssignmentPollPDF.as_view(),
         name='print_assignment_poll',
     ),
 
-    url(r'^print$',
+    url(r'^(?P<assignment_id>\d+)/agenda/$',
+        CreateAgendaItem.as_view(),
+        name='assignment_create_agenda',
+    ),
+
+    url(r'^print/$',
         AssignmentPDF.as_view(),
         name='print_assignment',
     ),

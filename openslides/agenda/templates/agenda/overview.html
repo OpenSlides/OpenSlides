@@ -39,7 +39,7 @@
 
 
 {% block content %}
-   <form action="/agenda/" method="post">{% csrf_token %}
+   <form action="" method="post">{% csrf_token %}
        {% if perms.agenda.can_manage_agenda %}
        <div id="changed-order-message" style="display:none" class="notification warning">
            <em>{% trans "Do you want to save the changed order of agenda items?" %}<br>

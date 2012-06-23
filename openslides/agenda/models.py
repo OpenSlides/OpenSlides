@@ -110,6 +110,7 @@ class Item(MPTTModel, SlideMixin):
 
         link can be:
         * view
+        * edit
         * delete
         """
         if link == 'view':
