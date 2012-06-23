@@ -221,6 +221,9 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
         if link == 'delete':
             return ('assignment_poll_delete', [str(self.id)])
 
+    def __unicode__(self):
+        return _("Ballot %d") % self.get_ballot()
+
 
 from django.dispatch import receiver
 from openslides.config.signals import default_config_value
