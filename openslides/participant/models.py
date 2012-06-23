@@ -30,12 +30,18 @@ class Profile(models.Model):
     )
 
     user = models.OneToOneField(User, unique=True, editable=False)
-    gender = models.CharField(max_length=50, choices=GENDER_CHOICES, blank=True, verbose_name = _("Gender"))
-    group = models.CharField(max_length=100, null=True, blank=True, verbose_name = _("Group"))
-    type = models.CharField(max_length=100, choices=TYPE_CHOICE, blank=True, verbose_name = _("Typ"))
-    committee = models.CharField(max_length=100, null=True, blank=True, verbose_name = _("Committee"))
-    comment = models.CharField(max_length=255, null=True, blank=True, verbose_name = _("Comment"))
-    firstpassword = models.CharField(max_length=100, null=True, blank=True, verbose_name = _("First Password"))
+    group = models.CharField(max_length=100, null=True, blank=True,
+        verbose_name = _("Group"), help_text=_('Shown behind the name.'))
+    gender = models.CharField(max_length=50, choices=GENDER_CHOICES, blank=True,
+        verbose_name = _("Gender"), help_text=_('Only for filter the userlist.'))
+    type = models.CharField(max_length=100, choices=TYPE_CHOICE, blank=True,
+        verbose_name = _("Typ"), help_text=_('Only for filter the userlist.'))
+    committee = models.CharField(max_length=100, null=True, blank=True,
+        verbose_name = _("Committee"), help_text=_('Only for filter the userlist.'))
+    comment = models.TextField(null=True, blank=True, verbose_name = _('Comment'),
+        help_text=_('Only for notes.'))
+    firstpassword = models.CharField(max_length=100, null=True, blank=True,
+        verbose_name = _("First Password"))
 
 
     def reset_password(self):
@@ -56,6 +62,14 @@ class Profile(models.Model):
             return ('user_edit', [str(self.user.id)])
         if link == 'delete':
             return ('user_delete', [str(self.user.id)])
+
+    def get_comment_line(self):
+        lines = self.comment.split('\n')
+        if len(lines) > 1 or len(lines[0]) > 40:
+            s = "%s ..."
+        else:
+            s = "%s"
+        return s % lines[0][:40]
 
     def __unicode__(self):
         if self.group:
