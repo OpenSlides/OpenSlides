@@ -8,10 +8,16 @@
         <a href="{% url projector_activate_slide application.sid %}" class="activate_link {% if application.active %}active{% endif %}">
             <div></div>
         </a>
+        <a href="{% model_url application 'delete' %}" title="{% trans 'Delete' %}" class="icon delete right">
+            <span></span>
+        </a>
+        <a href="{% model_url application 'edit' %}" title="{% trans 'Edit' %}" class="icon edit right">
+            <span></span>
+        </a>
         <a href="{% url projctor_preview_slide application.sid %}" title="{% trans 'Preview' %}" class="icon preview right">
             <span></span>
         </a>
-        <a href="{% model_url application 'edit' %}">
+        <a href="{% model_url application 'view' %}">
             {% if application.number %}
                 {% trans 'Application' %} {{ application.number }}:
             {% endif %}

@@ -122,13 +122,3 @@ def projector_message_set(message, sid=None):
 
 def projector_message_delete():
     config['projector_message'] = ''
-
-
-def get_model_widget(name, model):
-    return Widget(
-            name=name,
-            template='projector/model_widget.html',
-            context={
-                'slides': model.objects.all(),
-            }
-        )

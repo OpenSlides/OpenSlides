@@ -31,7 +31,7 @@ from utils.pdf import stylesheet
 from utils.views import FormView, DeleteView, PDFView, RedirectView
 from utils.template import Tab
 
-from projector.api import get_model_widget
+from projector.projector import Widget
 
 from poll.views import PollFormView
 
@@ -619,4 +619,7 @@ def register_tab(request):
 
 
 def get_widgets(request):
-    return [get_model_widget(name='assignments', model=Assignment)]
+    return [
+        Widget(name='assignments', template='assignment/widget.html',
+               context={'assignments': Assignment.objects.all()})
+    ]

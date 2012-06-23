@@ -8,7 +8,10 @@
         <a href="{% url projector_activate_slide slide.sid %}" class="activate_link {% if slide.active %}active{% endif %}">
             <div></div>
         </a>
-        <a href="{% url customslide_delete slide.id %}" title="{% trans 'Delete slide' %}" class="icon delete right">
+        <a href="{% url customslide_delete slide.id %}" title="{% trans 'Delete' %}" class="icon delete right">
+            <span></span>
+        </a>
+        <a href="{% url customslide_edit slide.id %}" title="{% trans 'Edit' %}" class="icon edit right">
             <span></span>
         </a>
         <a href="{% url projctor_preview_slide slide.sid %}" title="{% trans 'Preview' %}" class="icon preview right">

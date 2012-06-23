@@ -581,6 +581,9 @@ ul.results {
 .preview {
     background:url("../images/icons/preview.png") no-repeat 0px 0px;
 }
+.edit {
+    background:url("../images/icons/edit.png") no-repeat 0px 0px;
+}
 .delete {
     background:url("../images/icons/delete.png") no-repeat 0px 0px;
 }
