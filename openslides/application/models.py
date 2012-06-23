@@ -26,6 +26,8 @@ from utils.utils import _propper_unicode
 from utils.translation_ext import ugettext as _
 from poll.models import BaseOption, BasePoll, CountVotesCast, CountInvalid, Vote
 
+from agenda.models import Item
+
 
 class Application(models.Model, SlideMixin):
     prefix = "application"
@@ -408,6 +410,10 @@ class Application(models.Model, SlideMixin):
         if self.number and not force:
             raise NameError('The application has already a number. ' \
                             'You can not delete it.')
+
+
+        for item in Item.objects.filter(releated_sid=self.sid):
+            item.delete()
         super(Application, self).delete()
 
     def writelog(self, text, user=None):

@@ -22,6 +22,8 @@ from projector.api import register_slidemodel
 from poll.models import BasePoll, CountInvalid, CountVotesCast, BaseOption, PublishPollMixin
 from utils.translation_ext import ugettext as _
 
+from agenda.models import Item
+
 
 class Assignment(models.Model, SlideMixin):
     prefix = 'assignment'
@@ -131,6 +133,11 @@ class Assignment(models.Model, SlideMixin):
 
     def get_agenda_title(self):
         return self.name
+
+    def delete(self):
+        for item in Item.objects.filter(releated_sid=self.sid):
+            item.delete()
+        super(Assignment, self).delete()
 
     def slide(self):
         """

@@ -103,6 +103,17 @@ class Item(MPTTModel, SlideMixin):
         }
         return ItemOrderForm(initial=initial, prefix="i%d" % self.id)
 
+    def delete(self, with_children=False):
+        """
+        Delete the Item.
+        """
+        if not with_children:
+            for child in self.get_children():
+                child.move_to(self.parent)
+                child.save()
+        super(Item, self).delete()
+        Item.objects.rebuild()
+
     def get_absolute_url(self, link='view'):
         """
         Return the URL to this item. By default it is the Link to its

@@ -143,13 +143,10 @@ class ItemDelete(DeleteView):
         self.object = self.get_object()
 
         if 'all' in request.POST:
-            self.object.delete()
+            self.object.delete(with_children=True)
             messages.success(request, _("Item <b>%s</b> and his children were successfully deleted.") % self.object)
         else:
-            for child in self.object.get_children():
-                child.parent = self.object.parent
-                child.save()
-            self.object.delete()
+            self.object.delete(with_children=False)
             messages.success(request, _("Item <b>%s</b> was successfully deleted.") % self.object)
 
     def gen_confirm_form(self, request, message, url, singleitem=False):
