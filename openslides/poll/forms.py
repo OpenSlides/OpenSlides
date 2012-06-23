@@ -31,4 +31,5 @@ class OptionForm(forms.Form, CssClassMixin):
             self.fields[key] = forms.IntegerField(
                 label=value,
                 initial=weight,
+                min_value=-2,
             )
