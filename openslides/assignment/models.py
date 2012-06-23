@@ -39,7 +39,7 @@ class Assignment(models.Model, SlideMixin):
     polldescription = models.CharField(max_length=100, null=True, blank=True, verbose_name = _("Short description (for ballot paper)"))
     profile = models.ManyToManyField(Profile, null=True, blank=True)
     elected = models.ManyToManyField(Profile, null=True, blank=True, related_name='elected_set')
-    status = models.CharField(max_length=1, choices=STATUS, default='sea')
+    status = models.CharField(max_length=3, choices=STATUS, default='sea')
 
     def set_status(self, status):
         error = True

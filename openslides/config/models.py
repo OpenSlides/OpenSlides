@@ -23,7 +23,7 @@ import settings
 
 class ConfigStore(models.Model):
     key = models.CharField(max_length=100, primary_key=True)
-    value = models.CharField(max_length=100)
+    value = models.TextField()
 
     def __unicode__(self):
         return self.key
