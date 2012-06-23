@@ -50,7 +50,7 @@
             {% if perms.application.can_manage_application %}
                 {% for poll in application.polls %}
                     {% url application_poll_view poll.id as url_applicationpollview %}
-                    <li class="{% if request.path == url_applicationpollview %}selected{% endif %}"><a href="{% url application_poll_view poll.id %}">{{ forloop.counter }}. {% trans "Vote" %}</a></li>
+                    <li class="{% if request.path == url_applicationpollview %}selected{% endif %}"><a href="{% url application_poll_view poll.id %}"><img src="{% static 'images/icons/edit.png' %}"> {{ forloop.counter }}. {% trans "Vote" %}</a></li>
                 {% endfor %}
             {% endif %}
         </ul>
