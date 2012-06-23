@@ -12,3 +12,6 @@ How to create a new portable Windows distribution of OpenSlides:
 
 3.) The portable OpenSlides distribution is now ready as a zip in the
     'dist/' directory
+
+Note: Creating the portable Windows distribution of OpenSlides is not possible,
+if Python is installed in 64-bit version. 

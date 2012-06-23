@@ -30,6 +30,9 @@ I. Installation on Windows (32/64bit)
      Open command line (cmd) and run:
 
        easy_install django django-mptt reportlab pil
+     
+     If you, nevertheless, use a 64bit version of Python, you have to install reportlab
+     and pil not by using easy_install but manually.
 
   4. Get OpenSlides:
 
@@ -101,7 +104,6 @@ system.
      Use 'python start.py --help' to show all start options.
 
 
---
+-- 
 If you need help ask on OpenSlides users mailing list.
 See www.openslides.org for more information.
-
