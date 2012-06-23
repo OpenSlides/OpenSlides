@@ -35,7 +35,7 @@
         {# edit application #}
             {% if "edit" in actions %}
             {% url application_edit application.id as url_applicationedit %}
-            <li class="{% if request.path == url_applicationedit %}selected{% endif %}"><a href="{% url application_edit application.id  %}">{%trans 'Edit application' %}</a></li>
+            <li class="{% if request.path == url_applicationedit %}selected{% endif %}"><a href="{% url application_edit application.id  %}"><img src="{% static 'images/icons/edit.png' %}"> {%trans 'Edit application' %}</a></li>
             {% endif %}
         {# delete application #}
             {% if "delete" in actions %}

@@ -32,7 +32,7 @@
             {% if perms.assignment.can_manage_assignment %}
             {# edit assignemnt #}
             {% url assignment_edit assignment.id as url_assignmentedit %}
-            <li class="{% if request.path == url_assignmentedit %}selected{% endif %}"><a href="{% url assignment_edit assignment.id  %}">{%trans 'Edit election' %}</a></li>
+            <li class="{% if request.path == url_assignmentedit %}selected{% endif %}"><a href="{% url assignment_edit assignment.id  %}"><img src="{% static 'images/icons/edit.png' %}"> {%trans 'Edit election' %}</a></li>
             {# delete assignment #}
             <li><a href="{% url assignment_delete assignment.id  %}"><img src="{% static 'images/icons/delete.png' %}"> {%trans 'Delete election' %}</a></li>
             {% endif %}
