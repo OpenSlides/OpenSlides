@@ -568,6 +568,10 @@ ul.results {
 }
 
 /* Icons */
+.icon {
+    font-size: 14px;
+}
+
 .icon span {
     background-repeat: no-repeat;
     background-position: center;

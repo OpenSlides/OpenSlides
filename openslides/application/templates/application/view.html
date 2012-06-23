@@ -64,14 +64,11 @@
         {% if perms.application.can_manage_application or poll.has_votes %}
             <li>
                 {% if perms.application.can_manage_application %}
-                    <a href="{% url application_poll_view poll.id %}">
-                        <b>{{ forloop.counter }}. {% trans "Vote" %}:</b>
-                    </a>
-                    <a href="{% url application_poll_delete poll.id %}">
-                        <img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete Vote' %}">
-                    </a>
+                    <strong>{{ forloop.counter }}. {% trans "Vote" %} </strong>
+                    <a class="icon edit" href="{% url application_poll_view poll.id %}" title="{% trans 'Edit Vote' %}"><span></span></a>
+                    <a class="icon delete" href="{% url application_poll_delete poll.id %}" title="{% trans 'Delete Vote' %}"><span></span></a>
                 {% elif poll.has_votes %}
-                    <b>{{ forloop.counter }}. {% trans "Vote" %}:</b>
+                    <strong>{{ forloop.counter }}. {% trans "Vote" %}:</strong>
                 {% endif %}
                 <br>
                 {% if poll.has_votes %}

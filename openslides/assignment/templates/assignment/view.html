@@ -110,16 +110,17 @@
         <th>{% trans "Candidates" %}</th>
         {% for poll in polls %}
             {# if poll.published and not perms.assignment.can_manage_assignment or perms.assignment.can_manage_assignment #}
-                <th style="vertical-align: top; white-space:nowrap;">{% if perms.assignment.can_manage_assignment %}<a href="{% url assignment_poll_view poll.id %}">{% endif %}
+                <th style="vertical-align: top; white-space:nowrap;">
                     {{ forloop.counter }}. {% trans 'ballot' %}
                     {% if perms.assignment.can_manage_assignment %}
-                    </a>
+                    <br>
                     <a class="publish_link {% if poll.published %}published{% endif %}"
                     href="{% url assignment_poll_publish_status poll.id %}"
                     title="{%trans 'Publish/unpublish results' %}">
                     <span></span>
                     </a>
-                    <a href="{% url assignment_poll_delete poll.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete Poll' %}"></a>
+                    <a href="{% url assignment_poll_view poll.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit' %}"></a>
+                    <a href="{% url assignment_poll_delete poll.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete' %}"></a>
                     {% endif %}
                 </th>
             {# endif #}

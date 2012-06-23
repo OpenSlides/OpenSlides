@@ -56,7 +56,7 @@
             {% if perms.assignment.can_manage_assignment %}
             {% for poll in polls %}
                 {% url assignment_poll_view poll.id as url_assignmentpollview %}
-                <li class="{% if request.path == url_assignmentpollview %}selected{% endif %}"><a href="{% url assignment_poll_view poll.id %}">{{ forloop.counter }}. {% trans "ballot" %}</a></li>
+                <li class="{% if request.path == url_assignmentpollview %}selected{% endif %}"><a href="{% url assignment_poll_view poll.id %}"><img src="{% static 'images/icons/edit.png' %}"> {{ forloop.counter }}. {% trans "ballot" %}</a></li>
             {% endfor %}
             {% endif %}
         </ul>
