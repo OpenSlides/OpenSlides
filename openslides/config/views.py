@@ -56,7 +56,7 @@ class GeneralConfig(FormView):
         config['event_organizer'] = form.cleaned_data['event_organizer']
 
         # frontpage
-        config['frontpage_welcometext'] = form.cleaned_data['frontpage_welcometext']
+        config['frontpage_title'] = form.cleaned_data['frontpage_title']
         config['frontpage_welcometext'] = form.cleaned_data['frontpage_welcometext']
 
         # system
