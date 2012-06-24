@@ -33,10 +33,10 @@ class Assignment(models.Model, SlideMixin):
         ('fin', _('Finished')),
     )
 
-    name = models.CharField(max_length=100, verbose_name = _("Name"))
-    description = models.TextField(null=True, blank=True, verbose_name = _("Description"))
-    posts = models.PositiveSmallIntegerField(verbose_name = _("Number of available posts"))
-    polldescription = models.CharField(max_length=100, null=True, blank=True, verbose_name = _("Short description (for ballot paper)"))
+    name = models.CharField(max_length=100, verbose_name=_("Name"))
+    description = models.TextField(null=True, blank=True, verbose_name=_("Description"))
+    posts = models.PositiveSmallIntegerField(verbose_name=_("Number of available posts"))
+    polldescription = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("Short description (for ballot paper)"))
     profile = models.ManyToManyField(Profile, null=True, blank=True)
     elected = models.ManyToManyField(Profile, null=True, blank=True, related_name='elected_set')
     status = models.CharField(max_length=3, choices=STATUS, default='sea')

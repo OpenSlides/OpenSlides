@@ -20,7 +20,7 @@ from assignment.models import Assignment
 
 
 class AssignmentForm(ModelForm, CssClassMixin):
-    posts = forms.IntegerField(min_value=1)
+    posts = forms.IntegerField(min_value=1, label=_("Number of available posts"))
     class Meta:
         model = Assignment
         exclude = ('status', 'profile', 'elected')
