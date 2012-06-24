@@ -107,6 +107,7 @@ class Assignment(models.Model, SlideMixin):
 
     @property
     def vote_results(self):
+        # TODO: Rewrite this code. Use a matrix and transform it.
         votes = []
         publish_winner_results_only = config["assignment_publish_winner_results_only"]
         # list of votes
@@ -190,7 +191,7 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
         return self.assignment
 
     def get_vote_values(self):
-        if not self.yesnoababstain:
+        if self.yesnoababstain is None:
             if config['assignment_poll_vote_values'] == 'votes':
                 self.yesnoababstain = False
             elif config['assignment_poll_vote_values'] == 'yesnoabstain':

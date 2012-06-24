@@ -84,9 +84,14 @@ def view(request, assignment_id=None):
         if request.user.has_perm('assignment.can_nominate_other'):
             form = AssignmentRunForm()
 
+    # why not use assignment.vote_results?
     polls = assignment.poll_set.all()
     votes = []
-    for candidate in assignment.candidates:
+    options = []
+    for poll in polls:
+        options += poll.get_options()
+
+    for candidate in set([option.candidate for option in options]):
         tmplist = ((candidate, assignment.is_elected(candidate)), [])
         for poll in polls:
             if (poll.published and not request.user.has_perm('assignment.can_manage_assignment')) or request.user.has_perm('assignment.can_manage_assignment'):
@@ -100,7 +105,6 @@ def view(request, assignment_id=None):
                 else:
                     tmplist[1].append("-")
         votes.append(tmplist)
-
     return {
         'assignment': assignment,
         'form': form,
