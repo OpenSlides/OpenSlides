@@ -30,6 +30,7 @@ from utils.utils import template, permission_required, gen_confirm_form, del_con
 from utils.pdf import stylesheet
 from utils.views import FormView, DeleteView, PDFView, RedirectView
 from utils.template import Tab
+from utils.translation_ext import ugettext
 
 from projector.projector import Widget
 
@@ -620,6 +621,6 @@ def register_tab(request):
 
 def get_widgets(request):
     return [
-        Widget(name='assignments', template='assignment/widget.html',
+        Widget(name=ugettext('Assignments'), template='assignment/widget.html',
                context={'assignments': Assignment.objects.all()})
     ]

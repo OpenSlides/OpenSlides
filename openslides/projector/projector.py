@@ -104,7 +104,7 @@ class Widget(object):
             self.html = render_to_string(template, context)
 
     def get_name(self):
-        return self.name
+        return self.name.lower()
 
     def get_html(self):
         return self.html
