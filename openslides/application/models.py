@@ -41,7 +41,7 @@ class Application(models.Model, SlideMixin):
         ('noc', _('Not Concerned')),
         ('com', _('Commited a bill')),
         ('nop', _('Rejected (not permitted)')),
-        ('rev', _('Needs Review')),
+        ('rev', _('Needs Review')), # Where is this status used?
         #additional actions:
         # edit
         # delete
@@ -366,7 +366,8 @@ class Application(models.Model, SlideMixin):
             actions.append("unsupport")
 
         #Check if the user can edit the application
-        if user == self.submitter \
+        if (user == self.submitter \
+          and (self.status in ('pub', 'per'))) \
         or user.has_perm("application.can_manage_application"):
             actions.append("edit")
 
