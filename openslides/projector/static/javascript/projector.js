@@ -33,7 +33,7 @@ function presentation_reload() {
                         $('#overlays').append('<span id="overlay_transparent"></span>')
                     $('#overlays').append('<div id="overlay_' + value[0] + '">' + value[1] + '</div>');
                 });
-                setTimeout("presentation_reload()", 500);
+                setTimeout("presentation_reload()", 1000);
             },
             error: function () {
                 $('#currentTime').addClass('ajax_error');
