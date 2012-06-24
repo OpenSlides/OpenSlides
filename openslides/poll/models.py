@@ -33,7 +33,7 @@ class TextOption(BaseOption):
 class Vote(models.Model):
     option = models.ForeignKey(BaseOption)
     #profile = models.ForeignKey(Profile) # TODO: we need a person+ here
-    weight = models.IntegerField(default=1)
+    weight = models.IntegerField(default=1, null=True)
     value = models.CharField(max_length=255, null=True)
 
     def get_weight(self, raw=False):

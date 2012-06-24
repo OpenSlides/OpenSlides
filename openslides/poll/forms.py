@@ -32,4 +32,5 @@ class OptionForm(forms.Form, CssClassMixin):
                 label=value,
                 initial=weight,
                 min_value=-2,
+                required=False,
             )
