@@ -53,6 +53,12 @@
                     <li class="{% if request.path == url_applicationpollview %}selected{% endif %}"><a href="{% url application_poll_view poll.id %}"><img src="{% static 'images/icons/edit.png' %}"> {{ forloop.counter }}. {% trans "Vote" %}</a></li>
                 {% endfor %}
             {% endif %}
+        {# Agenda Item #}
+            {% if perms.agenda.can_manage_agenda %}
+            <li>
+                <a href="{% url application_create_agenda application.id  %}">{%trans 'New agenda item' %}</a>
+            </li>
+            {% endif %}
         </ul>
     {% endif %}
 {% endblock %}

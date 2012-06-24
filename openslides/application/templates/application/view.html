@@ -185,10 +185,6 @@
         {% endif %}
     {% endif %}
     <p></p>
-    {% if perms.agenda.can_manage_agenda %}
-        <a href="{% url application_create_agenda application.id  %}"><span class="button">{%trans 'New agenda item' %}</span></a>
-    {% endif %}
-    <p></p>
     <hr>
     <h4>{%trans "For Administration only:" %}</h4>
     <a href='{% url application_reset application.id %}'>
