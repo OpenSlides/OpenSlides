@@ -68,6 +68,7 @@ class Assignment(models.Model, SlideMixin):
         """
         if self.is_candidate(profile):
             self.profile.remove(profile)
+            self.elected.remove(profile)
         else:
             raise NameError(_('%s is no candidate') % profile)
 
