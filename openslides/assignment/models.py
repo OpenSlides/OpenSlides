@@ -37,7 +37,7 @@ class Assignment(models.Model, SlideMixin):
     description = models.TextField(null=True, blank=True, verbose_name=_("Description"))
     posts = models.PositiveSmallIntegerField(verbose_name=_("Number of available posts"))
     polldescription = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("Short description (for ballot paper)"))
-    profile = models.ManyToManyField(Profile, null=True, blank=True)
+    profile = models.ManyToManyField(Profile, null=True, blank=True) # Rename it in candidate
     elected = models.ManyToManyField(Profile, null=True, blank=True, related_name='elected_set')
     status = models.CharField(max_length=3, choices=STATUS, default='sea')
 
@@ -185,25 +185,25 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
     option_class = AssignmentOption
 
     assignment = models.ForeignKey(Assignment, related_name='poll_set')
-    yesnoababstain = models.NullBooleanField()
+    yesnoabstain = models.NullBooleanField()
 
     def get_assignment(self):
         return self.assignment
 
     def get_vote_values(self):
-        if self.yesnoababstain is None:
+        if self.yesnoabstain is None:
             if config['assignment_poll_vote_values'] == 'votes':
-                self.yesnoababstain = False
+                self.yesnoabstain = False
             elif config['assignment_poll_vote_values'] == 'yesnoabstain':
-                self.yesnoababstain = True
+                self.yesnoabstain = True
             else:
                 # candidates <= available posts -> yes/no/abstain
                 if self.assignment.candidates.count() <= self.assignment.posts - self.assignment.elected.count():
-                    self.yesnoababstain = True
+                    self.yesnoabstain = True
                 else:
-                    self.yesnoababstain = False
+                    self.yesnoabstain = False
             self.save()
-        if self.yesnoababstain:
+        if self.yesnoabstain:
             return [_('Yes', fixstr=True), _('No', fixstr=True), _('Abstain', fixstr=True)]
         else:
             return [_('Votes', fixstr=True)]
