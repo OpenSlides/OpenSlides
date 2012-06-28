@@ -186,7 +186,7 @@ def run(request, assignment_id):
     except Profile.DoesNotExist:
         messages.error(request,
                        _("You can't candidate. Your user account is only for administration."))
-    return redirect(reverse('assignment_view', args=assignment_id))
+    return redirect(reverse('assignment_view', args=[assignment_id]))
 
 
 @login_required
@@ -194,7 +194,7 @@ def delrun(request, assignment_id):
     assignment = Assignment.objects.get(pk=assignment_id)
     assignment.delrun(request.user.profile)
     messages.success(request, _("You have withdrawn your candidature successfully.") )
-    return redirect(reverse('assignment_view', args=assignment_id))
+    return redirect(reverse('assignment_view', args=[assignment_id]))
 
 
 @permission_required('assignment.can_manage_assignment')
@@ -209,7 +209,7 @@ def delother(request, assignment_id, profile_id):
         gen_confirm_form(request,
                        _("Do you really want to withdraw <b>%s</b> from the election?") \
                         % profile, reverse('assignment_delother', args=[assignment_id, profile_id]))
-    return redirect(reverse('assignment_view', args=assignment_id))
+    return redirect(reverse('assignment_view', args=[assignment_id]))
 
 
 @permission_required('assignment.can_manage_assignment')
