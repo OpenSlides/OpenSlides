@@ -235,8 +235,8 @@ from openslides.config.signals import default_config_value
 def default_config(sender, key, **kwargs):
     return {
         'assignment_publish_winner_results_only': False,
-        'assignment_pdf_ballot_papers_selection': '1',
-        'assignment_pdf_ballot_papers_number': '1',
+        'assignment_pdf_ballot_papers_selection': 'CUSTOM_NUMBER',
+        'assignment_pdf_ballot_papers_number': '8',
         'assignment_pdf_title': _('Elections'),
         'assignment_pdf_preamble': '',
         'assignment_poll_vote_values': 'auto',

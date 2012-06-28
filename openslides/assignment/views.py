@@ -513,68 +513,60 @@ class AssignmentPollPDF(PDFView):
 
         data= []
         # get ballot papers config values
-        number = 1
         ballot_papers_selection = config["assignment_pdf_ballot_papers_selection"]
         ballot_papers_number = config["assignment_pdf_ballot_papers_number"]
+
+        # set number of ballot papers
+        if ballot_papers_selection == "NUMBER_OF_DELEGATES":
+            number = User.objects.filter(profile__type__iexact="delegate").count()
+        elif ballot_papers_selection == "NUMBER_OF_ALL_PARTICIPANTS":
+            number = int(Profile.objects.count())
+        else: # ballot_papers_selection == "CUSTOM_NUMBER"
+            number = int(ballot_papers_number)
+        number = max(1, number)
+
         # Choose kind of ballot paper
         if self.poll.yesnoabstain:
             for option in options:
-                o = str(option).split("(",1)
-                cell.append(Paragraph(o[0], stylesheet['Ballot_option_name']))
-                if len(o) > 1:
-                    cell.append(Paragraph("("+o[1], stylesheet['Ballot_option_group']))
+                candidate = option.candidate
+                cell.append(Paragraph(candidate.user.get_full_name(), stylesheet['Ballot_option_name']))
+                if candidate.group:
+                    cell.append(Paragraph("(%s)" % candidate.group, stylesheet['Ballot_option_group']))
                 else:
                     cell.append(Paragraph("&nbsp;", stylesheet['Ballot_option_group']))
                 cell.append(Paragraph(circle+_("Yes")+"&nbsp; &nbsp; &nbsp; "+circle+_("No")+"&nbsp; &nbsp; &nbsp; "+circle+_("Abstention"), stylesheet['Ballot_option_YNA']))
-            # set number of ballot papers
-            if ballot_papers_selection == "1":
-                number = User.objects.filter(profile__type__iexact="delegate").count()
-            if ballot_papers_selection == "2":
-                number = int(User.objects.count() - 1)
-            if ballot_papers_selection == "0":
-                number = int(ballot_papers_number)
             # print ballot papers
-            for user in xrange(number/2):
-                data.append([cell,cell])
+            for user in xrange(number / 2):
+                data.append([cell, cell])
             rest = number % 2
             if rest:
-                data.append([cell,''])
+                data.append([cell, ''])
             if len(options) <= 2:
-                t=Table(data, 10.5*cm, 7.42*cm)
+                t = Table(data, 10.5*cm, 7.42*cm)
             elif len(options) <= 5:
-                t=Table(data, 10.5*cm, 14.84*cm)
+                t = Table(data, 10.5*cm, 14.84*cm)
             else:
-                t=Table(data, 10.5*cm, 29.7*cm)
+                t = Table(data, 10.5*cm, 29.7*cm)
         else:
             for option in options:
-                o = str(option).split("(",1)
-                cell.append(Paragraph(circle+o[0], stylesheet['Ballot_option_name']))
-                if len(o) > 1:
-                    cell.append(Paragraph("("+o[1], stylesheet['Ballot_option_group_right']))
+                candidate = option.candidate
+                cell.append(Paragraph(circle + candidate.user.get_full_name(), stylesheet['Ballot_option_name']))
+                if candidate.group:
+                    cell.append(Paragraph("(%s)" % candidate.group, stylesheet['Ballot_option_group_right']))
                 else:
                     cell.append(Paragraph("&nbsp;", stylesheet['Ballot_option_group_right']))
-            # set number of ballot papers
-            if ballot_papers_selection == "1":
-                number = User.objects.filter(profile__type__iexact="delegate").count()
-            if ballot_papers_selection == "2":
-                number = int(User.objects.count() - 1)
-            if ballot_papers_selection == "0":
-                number = int(ballot_papers_number)
-            if number == 0:
-                number = 1
             # print ballot papers
-            if number > 0:
-                for user in xrange(number/2):
-                    data.append([cell,cell])
-                rest = number % 2
-                if rest:
-                    data.append([cell,''])
+            for user in xrange(number / 2):
+                data.append([cell, cell])
+            rest = number % 2
+            if rest:
+                data.append([cell, ''])
             if len(options) <= 4:
-                t=Table(data, 10.5*cm, 7.42*cm)
+                t = Table(data, 10.5*cm, 7.42*cm)
             elif len(options) <= 8:
-                t=Table(data, 10.5*cm, 14.84*cm)
+                t = Table(data, 10.5*cm, 14.84*cm)
             else:
-                t=Table(data, 10.5*cm, 29.7*cm)
+                t = Table(data, 10.5*cm, 29.7*cm)
 
         t.setStyle(TableStyle([ ('GRID', (0,0), (-1,-1), 0.25, colors.grey),
                                 ('VALIGN', (0,0), (-1,-1), 'TOP'),

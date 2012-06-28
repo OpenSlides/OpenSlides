@@ -43,9 +43,9 @@ class ConfigForm(Form, CssClassMixin):
         required=False,
         label=_("Number of ballot papers (selection)"),
         choices=(
-            ("1", _("Number of all delegates")),
-            ("2", _("Number of all participants")),
-            ("0", _("Use the following custum number"))
+            ("NUMBER_OF_DELEGATES", _("Number of all delegates")),
+            ("NUMBER_OF_ALL_PARTICIPANTS", _("Number of all participants")),
+            ("CUSTOM_NUMBER", _("Use the following custom number"))
         )
     )
     assignment_pdf_ballot_papers_number = forms.IntegerField(

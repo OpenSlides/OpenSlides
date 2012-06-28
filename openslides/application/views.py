@@ -835,15 +835,16 @@ class ApplicationPollPDF(PDFView):
         # get ballot papers config values
         ballot_papers_selection = config["application_pdf_ballot_papers_selection"]
         ballot_papers_number = config["application_pdf_ballot_papers_number"]
+
         # set number of ballot papers
-        if ballot_papers_selection == "1":
+        if ballot_papers_selection == "NUMBER_OF_DELEGATES":
             number = User.objects.filter(profile__type__iexact="delegate").count()
-        if ballot_papers_selection == "2":
-            number = int(User.objects.count() - 1)
-        if ballot_papers_selection == "0":
+        elif ballot_papers_selection == "NUMBER_OF_ALL_PARTICIPANTS":
+            number = int(Profile.objects.count())
+        else: # ballot_papers_selection == "CUSTOM_NUMBER"
             number = int(ballot_papers_number)
-        if number == 0:
-            number = 1
+        number = max(1, number)
+
         # print ballot papers
         if number > 0:
             for user in xrange(number/2):
