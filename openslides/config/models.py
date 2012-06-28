@@ -99,7 +99,7 @@ def default_config(sender, key, **kwargs):
         'frontpage_title': _('Welcome'),
         'frontpage_welcometext': _('Welcome to OpenSlides!'),
         'show_help_text': True,
-        'help_text': "%s <a href='http://openslides.org/' target='_blank'>www.openslides.org</a>." % _("Get professional support for OpenSlides on"),
+        'help_text': _("Get professional support for OpenSlides on %s.") % "<a href='http://openslides.org/' target='_blank'>www.openslides.org</a>",
         'system_enable_anonymous': False,
     }.get(key)
 

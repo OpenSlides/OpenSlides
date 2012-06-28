@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-29 00:25+0200\n"
+"POT-Creation-Date: 2012-06-29 00:34+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: German\n"
@@ -1525,8 +1525,8 @@ msgid "Welcome to OpenSlides!"
 msgstr "Willkommen bei OpenSlides!"
 
 #: config/models.py:102
-msgid "Get professional support for OpenSlides on"
-msgstr "Professionelle Unterstützung für OpenSlides gibt es unter"
+msgid "Get professional support for OpenSlides on %s."
+msgstr "Professionelle Unterstützung für OpenSlides gibt es unter %s."
 
 #: config/models.py:120
 msgid "General"
