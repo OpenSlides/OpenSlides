@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-06-24 21:53+0200\n"
+"POT-Creation-Date: 2012-06-29 00:25+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: German\n"
@@ -29,13 +29,13 @@ msgid "Parent item"
 msgstr "Elternelement"
 
 #: agenda/models.py:39 application/forms.py:40 application/models.py:512
-#: application/templates/application/view.html:240 config/forms.py:27
+#: application/templates/application/view.html:236 config/forms.py:27
 #: projector/models.py:28
 msgid "Title"
 msgstr "Titel"
 
 #: agenda/models.py:40 application/forms.py:41 application/models.py:513
-#: application/templates/application/view.html:241 projector/models.py:29
+#: application/templates/application/view.html:237 projector/models.py:29
 msgid "Text"
 msgstr "Text"
 
@@ -97,10 +97,11 @@ msgstr "Eintrag <b>%s</b> wurde erfolgreich gelöscht."
 #: application/views.py:476 application/views.py:781 application/views.py:831
 #: application/templates/application/view.html:76
 #: application/templates/projector/Application.html:37
+#: assignment/models.py:208 assignment/views.py:537
 #: assignment/templates/assignment/view.html:161
 #: assignment/templates/assignment/view.html:165
-#: assignment/templates/projector/Assignment.html:73
-#: assignment/templates/projector/Assignment.html:77 utils/utils.py:41
+#: assignment/templates/projector/Assignment.html:72
+#: assignment/templates/projector/Assignment.html:76 utils/utils.py:41
 #: utils/views.py:215
 msgid "Yes"
 msgstr "Ja"
@@ -110,8 +111,9 @@ msgstr "Ja"
 #: application/views.py:476 application/views.py:781 application/views.py:832
 #: application/templates/application/view.html:77
 #: application/templates/projector/Application.html:38
+#: assignment/models.py:208 assignment/views.py:537
 #: assignment/templates/assignment/view.html:162
-#: assignment/templates/projector/Assignment.html:74 utils/utils.py:41
+#: assignment/templates/projector/Assignment.html:73 utils/utils.py:41
 #: utils/views.py:215
 msgid "No"
 msgstr "Nein"
@@ -295,8 +297,8 @@ msgid "Edit"
 msgstr "Bearbeiten"
 
 #: application/forms.py:42 application/models.py:514 application/views.py:799
-#: application/templates/application/view.html:223
-#: application/templates/application/view.html:243
+#: application/templates/application/view.html:219
+#: application/templates/application/view.html:239
 #: application/templates/projector/Application.html:77
 msgid "Reason"
 msgstr "Begründung"
@@ -341,23 +343,23 @@ msgstr "Mindestanzahl erforderlicher Unterstützer/innen für einen Antrag"
 msgid "Application preamble"
 msgstr "Antragseinleitung"
 
-#: application/forms.py:77 assignment/forms.py:43
+#: application/forms.py:77 assignment/forms.py:44
 msgid "Number of ballot papers (selection)"
 msgstr "Anzahl der Stimmzettel (Vorauswahl)"
 
-#: application/forms.py:79 assignment/forms.py:45
+#: application/forms.py:79 assignment/forms.py:46
 msgid "Number of all delegates"
 msgstr "Anzahl aller Delegierten"
 
-#: application/forms.py:80 assignment/forms.py:46
+#: application/forms.py:80 assignment/forms.py:47
 msgid "Number of all participants"
 msgstr "Anzahl aller Teilnehmer/innen"
 
-#: application/forms.py:81 assignment/forms.py:47
-msgid "Use the following custum number"
+#: application/forms.py:81 assignment/forms.py:48
+msgid "Use the following custom number"
 msgstr "Verwende die folgende benutzerdefinierte Anzahl"
 
-#: application/forms.py:88 assignment/forms.py:54
+#: application/forms.py:88 assignment/forms.py:55
 msgid "Custom number of ballot papers"
 msgstr "Benutzerdefinierte Anzahl von Stimmzetteln"
 
@@ -510,11 +512,15 @@ msgstr "Darf Anträge unterstützen"
 msgid "Can manage application"
 msgstr "Darf Anträge verwalten"
 
-#: application/models.py:547
+#: application/models.py:547 assignment/models.py:208
 msgid "Abstain"
 msgstr "Enthaltung"
 
-#: application/models.py:580 application/views.py:684 application/views.py:890
+#: application/models.py:577
+msgid "The Assembly may decide,"
+msgstr "Die Versammlung möge beschließen,"
+
+#: application/models.py:580 application/views.py:684 application/views.py:891
 #: application/templates/application/base_application.html:9
 #: application/templates/application/overview.html:7
 #: application/templates/application/overview.html:10
@@ -539,7 +545,7 @@ msgstr "Neuer Antrag wurde erfolgreich angelegt."
 msgid "Application was successfully modified."
 msgstr "Antrag wurde erfolgreich geändert."
 
-#: application/views.py:254 application/views.py:655 assignment/views.py:136
+#: application/views.py:254 application/views.py:655 assignment/views.py:140
 #: participant/views.py:173 participant/views.py:280 participant/views.py:309
 #: participant/views.py:467 utils/views.py:157 utils/views.py:173
 #: utils/views.py:193
@@ -720,7 +726,7 @@ msgstr ""
 #: application/views.py:691 application/views.py:813
 #: application/templates/application/edit.html:6
 #: application/templates/application/view.html:7
-#: application/templates/application/view.html:207
+#: application/templates/application/view.html:203
 #: application/templates/application/widget.html:22
 #: application/templates/projector/Application.html:7
 #: application/templates/projector/Application.html:65
@@ -731,7 +737,7 @@ msgstr "Antrag"
 #: application/views.py:722 application/views.py:827
 #: application/templates/application/base_application.html:24
 #: application/templates/application/poll_view.html:9
-#: application/templates/application/view.html:205
+#: application/templates/application/view.html:201
 #: application/templates/projector/Application.html:63
 msgid "Application No."
 msgstr "Antrag Nr."
@@ -743,13 +749,13 @@ msgstr "Antrag Nr."
 #: assignment/templates/assignment/overview.html:14
 #: assignment/templates/assignment/overview.html:27
 #: assignment/templates/assignment/view.html:12
-#: assignment/templates/projector/Assignment.html:18
+#: assignment/templates/projector/Assignment.html:16
 #: participant/templates/participant/overview.html:50
 msgid "Status"
 msgstr "Status"
 
 #: application/views.py:774 application/templates/application/view.html:47
-#: assignment/views.py:367
+#: assignment/views.py:371
 msgid "Vote results"
 msgstr "Abstimmungsergebnis"
 
@@ -765,28 +771,28 @@ msgstr "Abstimmung"
 
 #: application/views.py:781 application/views.py:833
 #: application/templates/application/view.html:78
-#: application/templates/projector/Application.html:39
+#: application/templates/projector/Application.html:39 assignment/views.py:537
 #: assignment/templates/assignment/view.html:163
-#: assignment/templates/projector/Assignment.html:75
+#: assignment/templates/projector/Assignment.html:74
 msgid "Abstention"
 msgstr "Enthaltung"
 
 #: application/views.py:781 application/templates/application/view.html:79
 #: application/templates/projector/Application.html:40
 #: assignment/templates/assignment/view.html:182
-#: assignment/templates/projector/Assignment.html:94
+#: assignment/templates/projector/Assignment.html:93
 msgid "Invalid"
 msgstr "Ungültig"
 
 #: application/views.py:781
 #: application/templates/application/poll_view.html:40
 #: application/templates/application/view.html:81
-#: application/templates/projector/Application.html:42 assignment/views.py:414
+#: application/templates/projector/Application.html:42 assignment/views.py:418
 #: assignment/templates/assignment/poll_view.html:47
 #: assignment/templates/assignment/view.html:190
 #: assignment/templates/assignment/view.html:193
-#: assignment/templates/projector/Assignment.html:99
-#: assignment/templates/projector/Assignment.html:102 poll/models.py:52
+#: assignment/templates/projector/Assignment.html:98
+#: assignment/templates/projector/Assignment.html:101 poll/models.py:52
 msgid "Votes cast"
 msgstr "Abgegebene Stimmen"
 
@@ -794,7 +800,7 @@ msgstr "Abgegebene Stimmen"
 msgid "Poll"
 msgstr "Abstimmung"
 
-#: application/views.py:883
+#: application/views.py:884
 msgid "Application settings successfully saved."
 msgstr "Antrags-Einstellungen erfolgreich gespeichert."
 
@@ -840,6 +846,11 @@ msgstr "Antrag als PDF"
 #: application/templates/application/base_application.html:48
 msgid "Show Application"
 msgstr "Antrag projizieren"
+
+#: application/templates/application/base_application.html:59
+#: assignment/templates/assignment/base_assignment.html:51
+msgid "New agenda item"
+msgstr "Neuer Tagesordnungseintrag"
 
 #: application/templates/application/config.html:5
 #: application/templates/application/config.html:8
@@ -951,13 +962,14 @@ msgid "Option"
 msgstr "Wahlmöglichkeit"
 
 #: application/templates/application/poll_view.html:27
+#: assignment/models.py:210
 msgid "Votes"
 msgstr "Stimmen"
 
-#: application/templates/application/poll_view.html:36 assignment/views.py:406
+#: application/templates/application/poll_view.html:36 assignment/views.py:410
 #: assignment/templates/assignment/poll_view.html:43
 #: assignment/templates/assignment/view.html:179
-#: assignment/templates/projector/Assignment.html:91
+#: assignment/templates/projector/Assignment.html:90
 msgid "Invalid votes"
 msgstr "Ungültige Stimmen"
 
@@ -1035,70 +1047,65 @@ msgid "Withdrawed by Submitter"
 msgstr "Zurückgezogen durch Antragsteller/in"
 
 #: application/templates/application/view.html:189
-#: assignment/templates/assignment/base_assignment.html:51
-msgid "New agenda item"
-msgstr "Neuer Tagesordnungseintrag"
-
-#: application/templates/application/view.html:193
 msgid "For Administration only:"
 msgstr "Nur zur Administration:"
 
-#: application/templates/application/view.html:195
+#: application/templates/application/view.html:191
 msgid "Reset"
 msgstr "Zurücksetzen"
 
-#: application/templates/application/view.html:207
+#: application/templates/application/view.html:203
 #: application/templates/projector/Application.html:65
 msgid "no number"
 msgstr "ohne Nummer"
 
-#: application/templates/application/view.html:210
-#: application/templates/application/view.html:238 config/models.py:142
+#: application/templates/application/view.html:206
+#: application/templates/application/view.html:234 config/models.py:142
 #: config/templates/config/version.html:5
 #: config/templates/config/version.html:8
 #: config/templates/config/version.html:11
 msgid "Version"
 msgstr "Version"
 
-#: application/templates/application/view.html:213
+#: application/templates/application/view.html:209
 msgid "Show newest Version"
 msgstr "Neuste Version anzeigen"
 
-#: application/templates/application/view.html:215
+#: application/templates/application/view.html:211
 msgid "Show permitted Version"
 msgstr "Zugelassene Version anzeigen"
 
-#: application/templates/application/view.html:233
+#: application/templates/application/view.html:229
 msgid "Version History"
 msgstr "Versionshistorie"
 
-#: application/templates/application/view.html:239
+#: application/templates/application/view.html:235
 msgid "Time"
 msgstr "Zeit"
 
-#: application/templates/application/view.html:250
+#: application/templates/application/view.html:246
 msgid "Version accepted"
 msgstr "Version akzeptiert"
 
-#: application/templates/application/view.html:253
+#: application/templates/application/view.html:249
 msgid "Accept Version"
 msgstr "Version zulassen"
 
-#: application/templates/application/view.html:256
+#: application/templates/application/view.html:252
 msgid "Reject Version"
 msgstr "Version zurückweisen"
 
-#: application/templates/application/view.html:260
+#: application/templates/application/view.html:256
 msgid "Version rejected"
 msgstr "Version zurückgewiesen"
 
-#: application/templates/application/view.html:270
-#: application/templates/application/view.html:277
-#: application/templates/application/view.html:284
+#: application/templates/application/view.html:266
+#: application/templates/application/view.html:273
+#: application/templates/application/view.html:280
 msgid "unchanged"
 msgstr "unverändert"
 
-#: application/templates/application/view.html:293
+#: application/templates/application/view.html:289
 msgid "Log"
 msgstr "Log"
 
@@ -1110,36 +1117,42 @@ msgstr "Abstimmungsergebnis"
 msgid "No poll results available."
 msgstr "Keine Abstimmungen vorhanden."
 
-#: assignment/forms.py:32
+#: assignment/forms.py:23 assignment/models.py:38 assignment/views.py:354
+#: assignment/templates/assignment/view.html:14
+#: assignment/templates/projector/Assignment.html:19
+msgid "Number of available posts"
+msgstr "Anzahl der zur Wahl stehenden Posten"
+
+#: assignment/forms.py:33
 msgid "Nominate a participant"
 msgstr "Teilnehmer/in vorschlagen"
 
-#: assignment/forms.py:39
+#: assignment/forms.py:40
 msgid "Only publish voting results for selected winners (Projector view only)"
 msgstr ""
 "Wahlergebnisse der nicht gewählten Kandidaten auf dem Projektor verbergen"
 
-#: assignment/forms.py:59
+#: assignment/forms.py:60
 msgid "Title for PDF document (all elections)"
 msgstr "Titel für PDF-Dokument (alle Wahlen)"
 
-#: assignment/forms.py:64
+#: assignment/forms.py:65
 msgid "Preamble text for PDF document (all elections)"
 msgstr "Einleitungstext für PDF-Dokument (alle Wahlen) "
 
-#: assignment/forms.py:68
+#: assignment/forms.py:69
 msgid "Election method"
 msgstr "Wahlmethode"
 
-#: assignment/forms.py:70
+#: assignment/forms.py:71
 msgid "Choose the right method."
 msgstr "Wähle die passende Methode."
 
-#: assignment/forms.py:71
+#: assignment/forms.py:72
 msgid "Always one option per candidate."
 msgstr "Eine Stimme pro Kandidat/in."
 
-#: assignment/forms.py:72
+#: assignment/forms.py:73
 msgid "Always Yes-No-Abstain per candidate."
 msgstr "Ja, Nein, Enthaltung pro Kandidat/in."
 
@@ -1165,12 +1178,6 @@ msgstr "Name"
 msgid "Description"
 msgstr "Beschreibung"
 
-#: assignment/models.py:38 assignment/views.py:350
-#: assignment/templates/assignment/view.html:14
-#: assignment/templates/projector/Assignment.html:21
-msgid "Number of available posts"
-msgstr "Anzahl der zur Wahl stehenden Posten"
-
 #: assignment/models.py:39
 msgid "Short description (for ballot paper)"
 msgstr "Kurzbeschreibung (für Stimmzettel)"
@@ -1190,33 +1197,33 @@ msgstr "Der Wahlstatus ist bereits %s."
 msgid "<b>%s</b> is already a candidate."
 msgstr "<b>%s</b> ist bereits ein/e Kandidat/in."
 
-#: assignment/models.py:72
+#: assignment/models.py:73
 #, python-format
 msgid "%s is no candidate"
 msgstr "%s ist kein/e Kandidat/in"
 
-#: assignment/models.py:167
+#: assignment/models.py:169
 msgid "Can see assignment"
 msgstr "Darf Wahlen sehen"
 
-#: assignment/models.py:168
+#: assignment/models.py:170
 msgid "Can nominate another person"
 msgstr "Darf andere Personen für Wahlen vorschlagen"
 
-#: assignment/models.py:169
+#: assignment/models.py:171
 msgid "Can nominate themselves"
 msgstr "Darf selbst für Wahlen kandidieren"
 
-#: assignment/models.py:170
+#: assignment/models.py:172
 msgid "Can manage assignment"
 msgstr "Darf Wahlen verwalten"
 
-#: assignment/models.py:225
+#: assignment/models.py:227
 #, python-format
 msgid "Ballot %d"
 msgstr "Wahlgang %d"
 
-#: assignment/models.py:238 assignment/views.py:318 assignment/views.py:615
+#: assignment/models.py:240 assignment/views.py:322 assignment/views.py:609
 #: assignment/templates/assignment/base_assignment.html:14
 #: assignment/templates/assignment/overview.html:6
 #: assignment/templates/assignment/overview.html:9
@@ -1228,135 +1235,135 @@ msgstr "Wahlen"
 msgid "Candidate <b>%s</b> was nominated successfully."
 msgstr "Kandidat/in <b>%s</b> wurde erfolgreich vorgeschlagen."
 
-#: assignment/views.py:128
+#: assignment/views.py:132
 msgid "New election was successfully created."
 msgstr "Neue Wahl wurde erfolgreich angelegt."
 
-#: assignment/views.py:130
+#: assignment/views.py:134
 msgid "Election was successfully modified."
 msgstr "Wahl wurde erfolgreich geändert."
 
-#: assignment/views.py:155
+#: assignment/views.py:159
 #, python-format
 msgid "Election <b>%s</b> was successfully deleted."
 msgstr "Wahl <b>%s</b> wurde erfolgreich gelöscht."
 
-#: assignment/views.py:168
+#: assignment/views.py:172
 #, python-format
 msgid "Election status was set to: <b>%s</b>."
 msgstr "Wahlstatus wurde gesetzt auf: <b>%s</b>."
 
-#: assignment/views.py:179
+#: assignment/views.py:183
 msgid "You have set your candidature successfully."
 msgstr "Sie haben Ihre Kandidatur erfolgreich gesetzt."
 
-#: assignment/views.py:184
+#: assignment/views.py:188
 msgid "You can't candidate. Your user account is only for administration."
 msgstr ""
 "Sie können nicht kandidieren. Ihr Nutzerkonto ist nur zur Administration."
 
-#: assignment/views.py:192
+#: assignment/views.py:196
 msgid "You have withdrawn your candidature successfully."
 msgstr "Sie haben Ihre Kandidatur erfolgreich zurückgezogen."
 
-#: assignment/views.py:203
+#: assignment/views.py:207
 #, python-format
 msgid "Candidate <b>%s</b> was withdrawn successfully."
 msgstr "Die Kandidatur von <b>%s</b> wurde erfolgreich zurückgezogen."
 
-#: assignment/views.py:206
+#: assignment/views.py:210
 #, python-format
 msgid "Do you really want to withdraw <b>%s</b> from the election?"
 msgstr "Soll <b>%s</b> wirklich von der Wahl zurückgezogen werden?"
 
-#: assignment/views.py:221
+#: assignment/views.py:225
 msgid "New ballot was successfully created."
 msgstr "Neuer Wahlgang erfolgreich angelegt."
 
-#: assignment/views.py:253
+#: assignment/views.py:257
 #, python-format
 msgid "Ballot ID %d does not exist."
 msgstr "Wahlgang-ID %d existiert nicht."
 
-#: assignment/views.py:260
+#: assignment/views.py:264
 msgid "Ballot successfully published."
 msgstr "Wahlgang wurde erfolgreich veröffentlicht."
 
-#: assignment/views.py:262
+#: assignment/views.py:266
 msgid "Ballot successfully unpublished."
 msgstr "Wahlgang wurde erfolgreich unveröffentlicht."
 
-#: assignment/views.py:275
+#: assignment/views.py:279
 msgid "not elected"
 msgstr "nicht gewählt"
 
-#: assignment/views.py:278 assignment/views.py:435
+#: assignment/views.py:282 assignment/views.py:439
 msgid "elected"
 msgstr "gewählt"
 
-#: assignment/views.py:316 assignment/templates/assignment/view.html:6
+#: assignment/views.py:320 assignment/templates/assignment/view.html:6
 msgid "Assignment"
 msgstr "Wahl"
 
-#: assignment/views.py:346 assignment/views.py:490 assignment/views.py:504
+#: assignment/views.py:350 assignment/views.py:494 assignment/views.py:508
 #: assignment/templates/assignment/edit.html:5
 #: assignment/templates/assignment/overview.html:25
 #: assignment/templates/assignment/poll_view.html:5
 #: assignment/templates/assignment/poll_view.html:8
-#: assignment/templates/projector/Assignment.html:13
+#: assignment/templates/projector/Assignment.html:25
 msgid "Election"
 msgstr "Wahl"
 
-#: assignment/views.py:355 assignment/views.py:375
+#: assignment/views.py:359 assignment/views.py:379
 #: assignment/templates/assignment/overview.html:26
 #: assignment/templates/assignment/poll_view.html:26
 #: assignment/templates/assignment/view.html:39
 #: assignment/templates/assignment/view.html:110
-#: assignment/templates/projector/Assignment.html:37
-#: assignment/templates/projector/Assignment.html:54
+#: assignment/templates/projector/Assignment.html:36
+#: assignment/templates/projector/Assignment.html:53
 msgid "Candidates"
 msgstr "Kandidaten/innen"
 
-#: assignment/views.py:370
+#: assignment/views.py:374
 msgid "ballots"
 msgstr "Wahlgänge"
 
-#: assignment/views.py:393
+#: assignment/views.py:397
 msgid "Y"
 msgstr "J"
 
-#: assignment/views.py:394
+#: assignment/views.py:398
 msgid "N"
 msgstr "N"
 
-#: assignment/views.py:395
+#: assignment/views.py:399
 msgid "A"
 msgstr "E"
 
-#: assignment/views.py:507
+#: assignment/views.py:511
 #: assignment/templates/assignment/base_assignment.html:59
 #: assignment/templates/assignment/poll_view.html:9
 #: assignment/templates/assignment/view.html:106
 #: assignment/templates/assignment/view.html:114
-#: assignment/templates/projector/Assignment.html:57
+#: assignment/templates/projector/Assignment.html:56
 msgid "ballot"
 msgstr "Wahlgang"
 
-#: assignment/views.py:507 assignment/templates/assignment/poll_view.html:10
+#: assignment/views.py:511 assignment/templates/assignment/poll_view.html:10
 msgid "candidate"
 msgid_plural "candidates"
 msgstr[0] "Kandidat/in"
 msgstr[1] "Kandidaten/innen"
 
-#: assignment/views.py:507
+#: assignment/views.py:511
 msgid "available posts"
 msgstr "verfügbare Posten"
 
-#: assignment/views.py:608
+#: assignment/views.py:602
 msgid "Election settings successfully saved."
 msgstr "Wahl-Einstellungen wurden erfolgreich gespeichert."
 
-#: assignment/views.py:624
+#: assignment/views.py:618
 msgid "Assignments"
 msgstr "Wahlen"
 
@@ -1433,7 +1440,7 @@ msgid "Remove candidate"
 msgstr "Kandidate/in entfernen"
 
 #: assignment/templates/assignment/view.html:50
-#: assignment/templates/projector/Assignment.html:43
+#: assignment/templates/projector/Assignment.html:42
 msgid "No candidates available."
 msgstr "Keine Kandidaten/innen vorhanden."
 
@@ -1450,7 +1457,7 @@ msgid "Add new participant"
 msgstr "Neue/n Teilnehmer/in hinzufügen"
 
 #: assignment/templates/assignment/view.html:98
-#: assignment/templates/projector/Assignment.html:51
+#: assignment/templates/projector/Assignment.html:50
 msgid "Election results"
 msgstr "Wahlergebnisse"
 
@@ -1464,12 +1471,12 @@ msgid "New ballot"
 msgstr "Neuer Wahlgang"
 
 #: assignment/templates/assignment/view.html:147
-#: assignment/templates/projector/Assignment.html:66
+#: assignment/templates/projector/Assignment.html:65
 msgid "Candidate is elected"
 msgstr "Kandidat/in ist gewählt"
 
 #: assignment/templates/assignment/view.html:204
-#: assignment/templates/projector/Assignment.html:87
+#: assignment/templates/projector/Assignment.html:86
 msgid "No ballots available."
 msgstr "Keine Wahlgänge vorhanden."
 
@@ -1518,12 +1525,8 @@ msgid "Welcome to OpenSlides!"
 msgstr "Willkommen bei OpenSlides!"
 
 #: config/models.py:102
-msgid ""
-"Get professional support for OpenSlides on <a href='http://openslides.org/' "
-"target='_blank'>www.openslides.org</a>."
-msgstr ""
-"Professionelle Unterstützung für OpenSlides gibt es unter <a href='http://"
-"openslides.orgtarget='_blank'>www.openslides.org</a>."
+msgid "Get professional support for OpenSlides on"
+msgstr "Professionelle Unterstützung für OpenSlides gibt es unter"
 
 #: config/models.py:120
 msgid "General"
@@ -1641,7 +1644,7 @@ msgstr "Gruppe"
 
 #: participant/models.py:34
 msgid "Shown behind the name."
-msgstr ""
+msgstr "Hinter dem Namen angezeigt."
 
 #: participant/models.py:36 participant/templates/participant/overview.html:22
 msgid "Gender"
@@ -1649,7 +1652,7 @@ msgstr "Geschlecht"
 
 #: participant/models.py:36 participant/models.py:38 participant/models.py:40
 msgid "Only for filter the userlist."
-msgstr ""
+msgstr "Nur zum Filtern der Benutzerliste."
 
 #: participant/models.py:38
 msgid "Typ"
@@ -1663,7 +1666,7 @@ msgstr "Amt"
 
 #: participant/models.py:42
 msgid "Only for notes."
-msgstr ""
+msgstr "Nur für Notizen."
 
 #: participant/models.py:44
 msgid "First Password"
@@ -2170,3 +2173,10 @@ msgstr "Bedaure, Sie haben keine Berechtigung diese Seite zu sehen."
 #: utils/views.py:231
 msgid "undefined-filename"
 msgstr "undefinierter-dateiname"
+
+#~ msgid ""
+#~ "Get professional support for OpenSlides on <a href='http://openslides."
+#~ "org/' target='_blank'>www.openslides.org</a>."
+#~ msgstr ""
+#~ "Professionelle Unterstützung für OpenSlides gibt es unter <a href='http://"
+#~ "openslides.org' target='_blank'>www.openslides.org</a>."
