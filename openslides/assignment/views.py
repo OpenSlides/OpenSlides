@@ -517,7 +517,7 @@ class AssignmentPollPDF(PDFView):
         ballot_papers_selection = config["assignment_pdf_ballot_papers_selection"]
         ballot_papers_number = config["assignment_pdf_ballot_papers_number"]
         # Choose kind of ballot paper
-        if self.poll.yesnoababstain:
+        if self.poll.yesnoabstain:
             for option in options:
                 o = str(option).split("(",1)
                 cell.append(Paragraph(o[0], stylesheet['Ballot_option_name']))
@@ -575,7 +575,7 @@ class AssignmentPollPDF(PDFView):
                 t=Table(data, 10.5*cm, 14.84*cm)
             else:
                 t=Table(data, 10.5*cm, 29.7*cm)
-        
+
         t.setStyle(TableStyle([ ('GRID', (0,0), (-1,-1), 0.25, colors.grey),
                                 ('VALIGN', (0,0), (-1,-1), 'TOP'),
                               ]))
