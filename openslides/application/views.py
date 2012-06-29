@@ -767,20 +767,29 @@ class ApplicationPDF(PDFView):
         data.append([cell2a,cell2b])
         data.append([cell3a,cell3b])
 
+        # Version number (aid)
+        if application.public_version.aid > 1:
+            cell4a = []
+            cell4a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Version"), stylesheet['Heading4']))
+            cell4b = []
+            cell4b.append(Paragraph("%s" % application.public_version.aid, stylesheet['Normal']))
+            data.append([cell4a,cell4b])
+        
         poll_results = application.get_poll_results()
+
         # voting results
         if poll_results:
-            cell4a = []
-            cell4a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Vote results"), stylesheet['Heading4']))
-            cell4b = []
+            cell5a = []
+            cell5a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Vote results"), stylesheet['Heading4']))
+            cell5b = []
             ballotcounter = 0
             for result in poll_results:
                 ballotcounter += 1
                 if len(poll_results) > 1:
-                    cell4b.append(Paragraph("%s. %s" % (ballotcounter, _("Vote")), stylesheet['Bold']))
-                cell4b.append(Paragraph("%s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s" % (_("Yes"), result[0], _("No"), result[1], _("Abstention"), result[2], _("Invalid"), result[3], _("Votes cast"), result[4]), stylesheet['Normal']))
-                cell4b.append(Spacer(0,0.2*cm))
-            data.append([cell4a,cell4b])
+                    cell5b.append(Paragraph("%s. %s" % (ballotcounter, _("Vote")), stylesheet['Bold']))
+                cell5b.append(Paragraph("%s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s" % (_("Yes"), result[0], _("No"), result[1], _("Abstention"), result[2], _("Invalid"), result[3], _("Votes cast"), result[4]), stylesheet['Normal']))
+                cell5b.append(Spacer(0,0.2*cm))
+            data.append([cell5a,cell5b])
 
         t=Table(data)
         t._argW[0]=4.5*cm
@@ -792,12 +801,12 @@ class ApplicationPDF(PDFView):
         story.append(Spacer(0,1*cm))
 
         # title
-        story.append(Paragraph(application.title, stylesheet['Heading3']))
+        story.append(Paragraph(application.public_version.title, stylesheet['Heading3']))
         # text
-        story.append(Paragraph("%s" % application.text.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+        story.append(Paragraph("%s" % application.public_version.text.replace('\r\n','<br/>'), stylesheet['Paragraph']))
         # reason
         story.append(Paragraph(_("Reason")+":", stylesheet['Heading3']))
-        story.append(Paragraph("%s" % application.reason.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+        story.append(Paragraph("%s" % application.public_version.reason.replace('\r\n','<br/>'), stylesheet['Paragraph']))
         return story
 
 
