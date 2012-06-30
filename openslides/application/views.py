@@ -752,14 +752,17 @@ class ApplicationPDF(PDFView):
 
         # supporters
         cell2a = []
-        cell2a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font><seqreset id='counter'>" % _("Supporters"), stylesheet['Heading4']))
         cell2b = []
-        for s in application.supporter.all():
-            cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % unicode(s.profile), stylesheet['Signaturefield']))
-        if application.status == "pub":
-            for x in range(0,application.missing_supporters):
-                cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; __________________________________________",stylesheet['Signaturefield']))
-        cell2b.append(Spacer(0,0.2*cm))
+        if config['application_min_supporters']:
+
+            cell2a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font><seqreset id='counter'>" % _("Supporters"), stylesheet['Heading4']))
+
+            for s in application.supporter.all():
+                cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % unicode(s.profile), stylesheet['Signaturefield']))
+            if application.status == "pub":
+                for x in range(0,application.missing_supporters):
+                    cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; __________________________________________",stylesheet['Signaturefield']))
+            cell2b.append(Spacer(0,0.2*cm))
 
         # status
         note = ""
@@ -789,7 +792,7 @@ class ApplicationPDF(PDFView):
             cell4b = []
             cell4b.append(Paragraph("%s" % application.public_version.aid, stylesheet['Normal']))
             data.append([cell4a,cell4b])
-        
+
         poll_results = application.get_poll_results()
 
         # voting results
