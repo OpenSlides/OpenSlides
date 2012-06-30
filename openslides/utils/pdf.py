@@ -210,7 +210,11 @@ def firstPage(canvas, doc):
     # page header (with event information)
     canvas.setFont('Ubuntu', 10)
     canvas.setFillGray(0.4)
-    canvas.drawString(2.75*cm, 28*cm, u"%s | %s" % (config["event_name"], config["event_description"]))
+
+    title_line = u"%s | %s" % (config["event_name"], config["event_description"])
+    if len(title_line) > 75:
+        title_line = "%s ..." % title_line[:70]
+    canvas.drawString(2.75*cm, 28*cm, title_line)
     if config["event_date"] and config["event_location"]:
         canvas.drawString(2.75 * cm, 27.6 * cm, u"%s, %s" % (config["event_date"], config["event_location"]))
     # time
