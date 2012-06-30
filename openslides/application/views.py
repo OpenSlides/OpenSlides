@@ -227,8 +227,12 @@ def edit(request, application_id=None):
             application.title = dataform.cleaned_data['title']
             application.text = dataform.cleaned_data['text']
             application.reason = dataform.cleaned_data['reason']
-            trivial_change = config['application_allow_trivial_change'] \
-                and dataform.cleaned_data['trivial_change']
+
+            try:
+                trivial_change = config['application_allow_trivial_change'] \
+                    and dataform.cleaned_data['trivial_change']
+            except KeyError:
+                trivial_change = False
             application.save(request.user, trivial_change=trivial_change)
             if is_manager:
                 # log added supporters
@@ -294,6 +298,7 @@ def edit(request, application_id=None):
         'application': application,
         'actions': actions,
     }
+
 
 @permission_required('application.can_manage_application')
 @template('application/view.html')
