@@ -334,14 +334,15 @@ class AssignmentPDF(PDFView):
             if preamble:
                 story.append(Paragraph("%s" % preamble.replace('\r\n','<br/>'), stylesheet['Paragraph']))
             story.append(Spacer(0,0.75*cm))
-            if not Assignment.objects.exists(): # No assignments existing
-                story.append(Paragraph(_("No elections existing."), stylesheet['Heading3']))
+            assignments = Assignment.objects.order_by('name')
+            if not assignments: # No assignments existing
+                story.append(Paragraph(_("No assignments available."), stylesheet['Heading3']))
             else: # Print all assignments
                 # List of assignments
-                for assignment in Assignment.objects.order_by('name'):
+                for assignment in assignments:
                     story.append(Paragraph(assignment.name, stylesheet['Heading3']))
                 # Assignment details (each assignment on single page)
-                for assignment in Assignment.objects.order_by('name'):
+                for assignment in assignments:
                     story.append(PageBreak())
                     story = self.get_assignment(assignment, story)
         else:  # print selected assignment
