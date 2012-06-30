@@ -16,6 +16,7 @@ from django.db import models
 from django.db.models import Max
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.utils.translation import pgettext
 
 from projector.api import register_slidemodel
 from projector.models import SlideMixin
@@ -24,6 +25,7 @@ from participant.models import Profile
 from config.models import config
 from utils.utils import _propper_unicode
 from utils.translation_ext import ugettext as _
+
 from poll.models import BaseOption, BasePoll, CountVotesCast, CountInvalid, Vote
 
 from agenda.models import Item
@@ -92,14 +94,14 @@ class Application(models.Model, SlideMixin):
         self.save(nonewversion=True)
         version.rejected = False
         version.save()
-        self.writelog(_("Application version %d allowed") % (version.aid, ),
+        self.writelog(_("Version %d permitted") % (version.aid, ),
             user)
 
     def reject_version(self, version, user = None):
         if version.id > self.permitted.id:
             version.rejected = True
             version.save()
-            self.writelog(_("Application version %d rejected")
+            self.writelog(pgettext("Rejected meens not permittd", "Version %d rejected")
                 % (version.aid, ), user)
             return True
         return False
@@ -512,7 +514,7 @@ class AVersion(models.Model):
     title = models.CharField(max_length=100, verbose_name = _("Title"))
     text = models.TextField(verbose_name = _("Text"))
     reason = models.TextField(null=True, blank=True, verbose_name = _("Reason"))
-    rejected = models.BooleanField()
+    rejected = models.BooleanField() # = Not Permitted
     time = models.DateTimeField(auto_now=True)
     application = models.ForeignKey(Application)
 

@@ -243,17 +243,17 @@
         <td style="white-space:nowrap;">
         {% if application.status != "pub" %}
         {% if revision == application.permitted %}
-             <img title="{%trans 'Version accepted' %}" src="{% static 'images/icons/accept.png' %}">
+             <img title="{%trans 'Version permitted' %}" src="{% static 'images/icons/accept.png' %}">
         {% else %}
              {% if perms.application.can_manage_application %}
-                 <a href="{% url application_version_permit revision.id %}"><img title="{%trans 'Accept Version' %}" src="{% static 'images/icons/accept-grey.png' %}"></a>
+                 <a href="{% url application_version_permit revision.id %}"><img title="{% trans 'Permit Version' %}" src="{% static 'images/icons/accept-grey.png' %}"></a>
              {% endif %}
              {% if not revision.rejected and revision.id > application.permitted.id and perms.application.can_manage_application %}
-                 <a href="{% url application_version_reject revision.id %}"><img title="{%trans 'Reject Version' %}" src="{% static 'images/icons/reject-grey.png' %}"></a>
+                 <a href="{% url application_version_reject revision.id %}"><img title="{% trans 'Reject Version' %}" src="{% static 'images/icons/reject-grey.png' %}"></a>
              {% endif %}
         {% endif %}
         {% if revision.rejected %}
-            <img title="{%trans 'Version rejected' %}" src="{% static 'images/icons/reject.png' %}">
+            <img title="{% trans 'Version rejected' %}" src="{% static 'images/icons/reject.png' %}">
         {% endif %}
         {% endif %}
         </td>
