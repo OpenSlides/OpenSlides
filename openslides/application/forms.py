@@ -77,6 +77,7 @@ class ConfigForm(Form, CssClassMixin):
         initial=4,
         min_value=0,
         max_value=8,
+        help_text=_("Choose 0 to disable the supporting system"),
     )
     application_preamble = CharField(
         widget=TextInput(),
