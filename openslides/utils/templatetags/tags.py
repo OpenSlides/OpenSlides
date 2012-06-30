@@ -36,3 +36,16 @@ def active(request, pattern):
 @register.simple_tag
 def model_url(object, link='view'):
     return object.get_absolute_url(link)
+
+
+@register.filter
+def first_line(text):
+    try:
+        lines = text.split('\n')
+    except AttributeError:
+        return ''
+    if len(lines) > 1 or len(lines[0]) > 40:
+        s = "%s ..."
+    else:
+        s = "%s"
+    return s % lines[0][:40]

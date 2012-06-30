@@ -17,3 +17,7 @@ a.close_link span {
 a.close_link.closed span {
     background-image: url(../images/icons/done.png);
 }
+
+table#menu-overview {
+    white-space: nowrap;
+}

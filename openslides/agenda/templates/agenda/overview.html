@@ -49,53 +49,53 @@
        </div>
        {% endif %}
 
-    <h1>{% trans "Agenda" %}</h1>
+        <h1>{% trans "Agenda" %}</h1>
 
-    <p>
-    {%trans "Filter" %}:
-    <input type="checkbox" id="hide_closed_items"> {%trans "Hide closed items" %}
-    </p>
-    {{ items|length }}
-    {% blocktrans count counter=items|length %}item{% plural %}items{% endblocktrans %}<span id="hiddencount"></span>
-            <table id="menu-overview" class="agendatable">
-                <tr>
-                    <th style="width: 1px;">{% trans "Done" %}</th>
-                    <th>{% trans "Item" %}</th>
-                    {% if perms.agenda.can_manage_agenda %}
-                        <th style="width: 1px;">{% trans "Comment" %}</th>
-                    {% endif %}
-                    {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
-                        <th style="width: 1px;">{% trans "Actions" %}</th>
-                    {% endif %}
-                    {% if perms.agenda.can_manage_agenda %}
-                        <th class="tabledrag-hide">{% trans "Weight" %}</th>
-                    {% endif %}
-                </tr>
-            {% if items %}
-                <tr class="topline {% if overview %}activeline{% endif %}">
-                    <td></td>
-                    <td>
-                        <b>{% trans "Agenda" %}</b>
-                    </td>
-                    {% if perms.agenda.can_manage_agenda %}
-                    <td></td>
-                    {% endif %}
-                    {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
-                    <td></td>
-                    {% endif %}
-                </tr>
+        <p>
+        {%trans "Filter" %}:
+        <input type="checkbox" id="hide_closed_items"> {%trans "Hide closed items" %}
+        </p>
+        {{ items|length }}
+        {% blocktrans count counter=items|length %}item{% plural %}items{% endblocktrans %}<span id="hiddencount"></span>
+        <table id="menu-overview" class="agendatable">
+            <tr>
+                <th width="50">{% trans "Done" %}</th>
+                <th>{% trans "Item" %}</th>
+                {% if perms.agenda.can_manage_agenda %}
+                    <th width="200">{% trans "Comment" %}</th>
+                {% endif %}
+                {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
+                    <th width="50">{% trans "Actions" %}</th>
+                {% endif %}
+                {% if perms.agenda.can_manage_agenda %}
+                    <th class="tabledrag-hide">{% trans "Weight" %}</th>
+                {% endif %}
+            </tr>
+        {% if items %}
+            <tr class="topline {% if overview %}activeline{% endif %}">
+                <td></td>
+                <td>
+                    <b>{% trans "Agenda" %}</b>
+                </td>
+                {% if perms.agenda.can_manage_agenda %}
+                <td></td>
+                {% endif %}
+                {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
+                <td></td>
+                {% endif %}
+            </tr>
 
-                {% for item in items %}
-                <tr class="draggable{% cycle ' odd' '' %}
-    {% if item.active %}activeline{% endif %}">
-                    {% include "agenda/item_row.html" %}
-                </tr>
-                {% endfor %}
-            {% else %}
-                <tr>
-                    <td colspan="4"><i>{%trans "No items available." %}</i></td>
-                </tr>
-            {% endif %}
-            </table>
+            {% for item in items %}
+            <tr class="draggable{% cycle ' odd' '' %}
+{% if item.active %}activeline{% endif %}">
+                {% include "agenda/item_row.html" %}
+            </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="4"><i>{%trans "No items available." %}</i></td>
+            </tr>
+        {% endif %}
+        </table>
     </form>
 {% endblock %}

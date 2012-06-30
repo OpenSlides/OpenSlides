@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load staticfiles %}
+{% load tags %}
 
 {% block title %}{{ block.super }} - {%trans "Participants" %}{% endblock %}
 
@@ -80,7 +81,7 @@
             <td>{{ user.profile.get_type_display }}</td>
             <td>{{ user.profile.committee }}</td>
             {% if perms.participant.can_manage_participant %}
-            <td>{{ user.profile.get_comment_line }}</td>
+            <td>{{ user.profile.comment|first_line }}</td>
             <td>{% if user.last_login > user.date_joined %}
                 {{ user.last_login }}
                 {% endif %}</td>

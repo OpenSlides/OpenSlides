@@ -20,12 +20,12 @@
         {% endif %}
         <a href="{{ item.get_absolute_url }}">{{ item }}</a>
         {% if item.releated_sid %}
-        ({{ item.get_releated_type }})
+            ({{ item.get_releated_type }})
         {% endif %}
     </td>
     {% if perms.agenda.can_manage_agenda %}
     <td>
-        {{ item.comment }}
+        {{ item.comment|first_line }}
     </td>
     {% endif %}
     {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}

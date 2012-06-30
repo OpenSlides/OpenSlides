@@ -63,14 +63,6 @@ class Profile(models.Model):
         if link == 'delete':
             return ('user_delete', [str(self.user.id)])
 
-    def get_comment_line(self):
-        lines = self.comment.split('\n')
-        if len(lines) > 1 or len(lines[0]) > 40:
-            s = "%s ..."
-        else:
-            s = "%s"
-        return s % lines[0][:40]
-
     def __unicode__(self):
         if self.group:
             return "%s (%s)" % (self.user.get_full_name(), self.group)
