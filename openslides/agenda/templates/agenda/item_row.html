@@ -20,7 +20,7 @@
         {% endif %}
         <a href="{{ item.get_absolute_url }}">{{ item }}</a>
         {% if item.releated_sid %}
-            ({{ item.get_releated_type }})
+            ({{ item.print_releated_type }})
         {% endif %}
     </td>
     {% if perms.agenda.can_manage_agenda %}

@@ -50,6 +50,15 @@ class Item(MPTTModel, SlideMixin):
     def get_releated_type(self):
         return self.get_releated_slide().prefix
 
+    def print_releated_type(self):
+        """
+        Print the type of the releated item.
+
+        For use in Template
+        ??Why does {% trans item.print_releated_type|capfirst %} not work??
+        """
+        return _(self.get_releated_type().capitalize())
+
     def get_title(self):
         if self.releated_sid is None:
             return self.title
