@@ -57,6 +57,7 @@ from application.forms import (
     ApplicationForm,
     ApplicationFormTrivialChanges,
     ApplicationManagerForm,
+    ApplicationManagerFormSupporter,
     ApplicationImportForm,
     ConfigForm,
 )
@@ -197,12 +198,16 @@ def edit(request, application_id=None):
                 if config['application_allow_trivial_change'] and application_id \
                 else ApplicationForm
 
+    managerformclass = ApplicationManagerFormSupporter \
+                       if config['application_min_supporters'] \
+                       else ApplicationManagerForm
+
     if request.method == 'POST':
         dataform = formclass(request.POST, prefix="data")
         valid = dataform.is_valid()
 
         if is_manager:
-            managerform = ApplicationManagerForm(request.POST,
+            managerform = managerformclass(request.POST,
                             instance=application,
                             prefix="manager")
             valid = valid and managerform.is_valid()
@@ -263,7 +268,7 @@ def edit(request, application_id=None):
         if application_id is None:
             initial = {'text': config['application_preamble']}
         else:
-            if application.status == "pub" and application.supporter.count() > 0:
+            if application.status == "pub" and application.supporter.exists():
                 if request.user.has_perm('application.can_manage_application'):
                     messages.warning(request, _("Attention: Do you really want to edit this application? The supporters will <b>not</b> be removed automatically because you can manage applications. Please check if the supports are valid after your changing!"))
                 else:
@@ -278,7 +283,7 @@ def edit(request, application_id=None):
                 initial = {'submitter': str(request.user.id)}
             else:
                 initial = {}
-            managerform = ApplicationManagerForm(initial=initial, \
+            managerform = managerformclass(initial=initial, \
                                                  instance=application, \
                                                  prefix="manager")
         else:

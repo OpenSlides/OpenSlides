@@ -48,13 +48,21 @@ class ApplicationFormTrivialChanges(ApplicationForm):
 
 
 class ApplicationManagerForm(ModelForm, CssClassMixin):
-    users = User.objects.all().exclude(profile=None).order_by("first_name")
-    submitter = UserModelChoiceField(queryset=users, label=_("Submitter"))
-    supporter = UserModelMultipleChoiceField(queryset=users, required=False, label=_("Supporters"))
+    submitter = UserModelChoiceField(
+        queryset=User.objects.all().exclude(profile=None).order_by("first_name"),
+        label=_("Submitter"),
+    )
 
     class Meta:
         model = Application
-        exclude = ('number', 'status', 'permitted', 'log')
+        exclude = ('number', 'status', 'permitted', 'log', 'supporter')
+
+
+class ApplicationManagerFormSupporter(ApplicationManagerForm):
+    supporter = UserModelMultipleChoiceField(
+        queryset=User.objects.all().exclude(profile=None).order_by("first_name"),
+        required=False, label=_("Supporters"),
+    )
 
 
 class ApplicationImportForm(Form, CssClassMixin):
