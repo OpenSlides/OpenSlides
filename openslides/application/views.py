@@ -55,6 +55,7 @@ from agenda.models import Item
 from application.models import Application, AVersion, ApplicationPoll
 from application.forms import (
     ApplicationForm,
+    ApplicationFormTrivialChanges,
     ApplicationManagerForm,
     ApplicationImportForm,
     ConfigForm,
@@ -192,13 +193,17 @@ def edit(request, application_id=None):
         application = None
         actions = None
 
+    formclass = ApplicationFormTrivialChanges \
+                if config['application_allow_trivial_change'] and application_id \
+                else ApplicationForm
+
     if request.method == 'POST':
-        dataform = ApplicationForm(request.POST, prefix="data")
+        dataform = formclass(request.POST, prefix="data")
         valid = dataform.is_valid()
 
         if is_manager:
-            managerform = ApplicationManagerForm(request.POST, \
-                            instance=application, \
+            managerform = ApplicationManagerForm(request.POST,
+                            instance=application,
                             prefix="manager")
             valid = valid and managerform.is_valid()
         else:
@@ -217,7 +222,9 @@ def edit(request, application_id=None):
             application.title = dataform.cleaned_data['title']
             application.text = dataform.cleaned_data['text']
             application.reason = dataform.cleaned_data['reason']
-            application.save(request.user, trivial_change=dataform.cleaned_data['trivial_change'])
+            trivial_change = config['application_allow_trivial_change'] \
+                and dataform.cleaned_data['trivial_change']
+            application.save(request.user, trivial_change=trivial_change)
             if is_manager:
                 # log added supporters
                 supporters_added = []
@@ -265,7 +272,7 @@ def edit(request, application_id=None):
                        'text': application.text,
                        'reason': application.reason}
 
-        dataform = ApplicationForm(initial=initial, prefix="data")
+        dataform = formclass(initial=initial, prefix="data")
         if is_manager:
             if application_id is None:
                 initial = {'submitter': str(request.user.id)}
@@ -884,6 +891,7 @@ class Config(FormView):
             'application_pdf_ballot_papers_number': config['application_pdf_ballot_papers_number'],
             'application_pdf_title': config['application_pdf_title'],
             'application_pdf_preamble': config['application_pdf_preamble'],
+            'application_allow_trivial_change': config['application_allow_trivial_change'],
         }
 
     def form_valid(self, form):
@@ -893,6 +901,7 @@ class Config(FormView):
         config['application_pdf_ballot_papers_number'] = form.cleaned_data['application_pdf_ballot_papers_number']
         config['application_pdf_title'] = form.cleaned_data['application_pdf_title']
         config['application_pdf_preamble'] = form.cleaned_data['application_pdf_preamble']
+        config['application_allow_trivial_change'] = form.cleaned_data['application_allow_trivial_change']
         messages.success(self.request, _('Application settings successfully saved.'))
         return super(Config, self).form_valid(form)
 

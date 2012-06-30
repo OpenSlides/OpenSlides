@@ -579,4 +579,5 @@ def default_config(sender, key, **kwargs):
         'application_pdf_ballot_papers_number': '8',
         'application_pdf_title': _('Applications'),
         'application_pdf_preamble': '',
+        'application_allow_trivial_change': False,
     }.get(key)

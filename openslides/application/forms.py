@@ -40,7 +40,11 @@ class ApplicationForm(Form, CssClassMixin):
     title = CharField(widget=TextInput(), label=_("Title"))
     text = CharField(widget=Textarea(), label=_("Text"))
     reason = CharField(widget=Textarea(), required=False, label=_("Reason"))
-    trivial_change = BooleanField(required=False, label=_("Trivial change"), help_text=_("Trivial changes don't create a new version."))
+
+
+class ApplicationFormTrivialChanges(ApplicationForm):
+    trivial_change = BooleanField(required=False, label=_("Trivial change"),
+        help_text=_("Trivial changes don't create a new version."))
 
 
 class ApplicationManagerForm(ModelForm, CssClassMixin):
@@ -96,4 +100,10 @@ class ConfigForm(Form, CssClassMixin):
         widget=Textarea(),
         required=False,
         label=_("Preamble text for PDF document (all applications)")
+    )
+
+    application_allow_trivial_change = BooleanField(
+        label=_("Allow trivial changes"),
+        help_text=_('Warning: Trivial changes undermine the application permission system.'),
+        required=False,
     )
