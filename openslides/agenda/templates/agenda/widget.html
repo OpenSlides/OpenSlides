@@ -34,6 +34,8 @@
         {% endfor %}
         <a href="{% model_url item 'view' %}">{{ item }}</a>
     </li>
+{% empty %}
+    <li>{% trans 'No items available.' %}</li>
 {% endfor %}
 </ul>
 

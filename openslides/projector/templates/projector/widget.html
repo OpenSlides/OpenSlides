@@ -19,6 +19,8 @@
         </a>
         <a href="{% url customslide_edit slide.id %}">{{ slide }}</a>
     </li>
+{% empty %}
+    <li>{% trans 'No items available.' %}</li>
 {% endfor %}
 </ul>
 <hr>

@@ -24,6 +24,8 @@
             {{ application }}
         </a>
     </li>
+{% empty %}
+    <li>{% trans 'No applications available.' %}</li>
 {% endfor %}
 </ul>
 

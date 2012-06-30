@@ -19,6 +19,8 @@
         </a>
         <a href="{% model_url assignment 'view' %}">{{ assignment }}</a>
     </li>
+{% empty %}
+    <li>{% trans 'No assignments available.' %}</li>
 {% endfor %}
 </ul>
 
