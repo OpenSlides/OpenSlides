@@ -712,17 +712,18 @@ class ApplicationPDF(PDFView):
             if preamble:
                 story.append(Paragraph("%s" % preamble.replace('\r\n','<br/>'), stylesheet['Paragraph']))
             story.append(Spacer(0,0.75*cm))
-            if not Application.objects.exists(): # No applications existing
-                story.append(Paragraph(_("No applications existing."), stylesheet['Heading3']))
+            applications = Application.objects.order_by('number')
+            if not applications: # No applications existing
+                story.append(Paragraph(_("No applications available."), stylesheet['Heading3']))
             else: # Print all Applications
                 # List of applications
-                for application in Application.objects.order_by('number'):
+                for application in applications:
                     if application.number:
                         story.append(Paragraph(_("Application No.")+" %s: %s" % (application.number, application.title), stylesheet['Heading3']))
                     else:
                         story.append(Paragraph(_("Application No.")+"&nbsp;&nbsp;&nbsp;: %s" % (application.title), stylesheet['Heading3']))
                 # Applications details (each application on single page)
-                for application in Application.objects.order_by('number'):
+                for application in applications:
                     story.append(PageBreak())
                     story = self.get_application(application, story)
         else:  # print selected application
