@@ -99,7 +99,10 @@ class ActivateView(RedirectView):
     allow_ajax = True
 
     def pre_redirect(self, request, *args, **kwargs):
-        set_active_slide(kwargs['sid'])
+        try:
+            set_active_slide(kwargs['sid'], kwargs['argument'])
+        except KeyError:
+            set_active_slide(kwargs['sid'])
         config['up'] = 0
         config['bigger'] = 100
 
@@ -164,7 +167,6 @@ class Projector(TemplateView, AjaxMixin):
         else:
             data = get_slide_from_sid(sid)
             ajax = 'off'
-        print data
 
         if data is None:
             data = {

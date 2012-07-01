@@ -68,8 +68,9 @@ def get_active_slide(only_sid=False):
     return get_slide_from_sid(sid)
 
 
-def set_active_slide(sid):
+def set_active_slide(sid, argument=None):
     config["presentation"] = sid
+    config['presentation_argument'] = argument
 
 
 def register_slidemodel(model, model_name=None, control_template=None, weight=0):
@@ -115,7 +116,6 @@ def projector_message_set(message, sid=None):
         overlay = ProjectorOverlay.objects.get(def_name='Message')
     except ProjectorOverlay.DoesNotExist:
         overlay = ProjectorOverlay(def_name='Message', active=True)
-    print "hier mal ein ", sid
     overlay.sid=sid
     overlay.save()
 

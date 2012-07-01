@@ -68,13 +68,21 @@ class Item(MPTTModel, SlideMixin):
         """
         Return a map with all Data for the Slide
         """
-        if self.releated_sid:
-            return self.get_releated_slide().slide()
-        data = {
-            'item': self,
-            'title': self.get_title(),
-            'template': 'projector/AgendaText.html',
-        }
+        if config['presentation_argument'] == 'summary':
+            print 'soweit schonmal'
+            data = {
+                'title': self.get_title(),
+                'items': self.get_children(),
+                'template': 'projector/AgendaSummary.html',
+            }
+        elif self.releated_sid:
+            data = self.get_releated_slide().slide()
+        else:
+            data = {
+                'item': self,
+                'title': self.get_title(),
+                'template': 'projector/AgendaText.html',
+            }
         return data
 
     def set_closed(self, closed=True):
