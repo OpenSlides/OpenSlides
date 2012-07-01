@@ -308,6 +308,9 @@ class AssignmentPollDelete(DeleteView):
     def get_redirect_url(self, **kwargs):
         return reverse('assignment_view', args=[self.assignment.id])
 
+    def get_success_message(self):
+        return  _('Ballot was successfully deleted.') % self.object
+
 
 class AssignmentPDF(PDFView):
     permission_required = 'assignment.can_see_assignment'
