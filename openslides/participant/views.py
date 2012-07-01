@@ -26,7 +26,6 @@ from django.shortcuts import redirect
 from django.template import RequestContext
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import SetPasswordForm
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _, ungettext
@@ -299,21 +298,17 @@ def group_delete(request, group_id):
 @template('participant/settings.html')
 def user_settings(request):
     if request.method == 'POST':
-        form_user = UsersettingsForm(request.POST,instance=request.user, prefix='user')
-        form_password = SetPasswordForm(request.user,request.POST,prefix='password')
-        if form_user.is_valid() and form_password.is_valid():
+        form_user = UsersettingsForm(request.POST,instance=request.user)
+        if form_user.is_valid():
             form_user.save()
-            form_password.save()
             messages.success(request, _('User settings successfully saved.'))
         else:
             messages.error(request, _('Please check the form for errors.'))
     else:
-        form_user = UsersettingsForm(instance=request.user, prefix='user')
-        form_password = SetPasswordForm(request.user,prefix='password')
+        form_user = UsersettingsForm(instance=request.user)
 
     return {
         'form_user': form_user,
-        'form_password': form_password,
         'edituser': request.user,
     }
 

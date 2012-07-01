@@ -11,14 +11,11 @@
 """
 
 from django.conf.urls.defaults import patterns, url, include
-
-#todo: use this in evry file
 from django.conf import settings
-
 from django.utils.importlib import import_module
-import settings
+from django.shortcuts import redirect
 
-from utils.views import FrontPage
+from openslides.utils.views import FrontPage
 
 handler500 = 'openslides.utils.views.server_error'
 
@@ -66,9 +63,15 @@ urlpatterns += patterns('',
         name='user_logout',
     ),
 
-    url(r'^usersettings$',
+    url(r'^usersettings/$',
         'participant.views.user_settings',
         name='user_settings',
     ),
 
+    url(r'^usersettings/changepassword/$',
+        'django.contrib.auth.views.password_change',
+        {'template_name': 'participant/password_change.html',
+         'post_change_redirect': '/usersettings/'},
+        name='password_change',
+    ),
 )
