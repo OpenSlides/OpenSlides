@@ -35,11 +35,23 @@
         {% endfor %}
             <tr class="total">
                 <td>{% trans "Invalid votes" %}</td>
-                <td>{{ pollform.votesinvalid.errors }}{{ pollform.votesinvalid }}</td>
+                {% for value in poll.get_vote_values %}
+                    {% if forloop.first %}
+                        <td>{{ pollform.votesinvalid.errors }}{{ pollform.votesinvalid }}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                {% endfor %}
             </tr>
             <tr class="total">
                 <td>{% trans "Votes cast" %}</td>
-                <td>{{ pollform.votescast.errors }}{{ pollform.votescast }}</td>
+                {% for value in poll.get_vote_values %}
+                    {% if forloop.first %}
+                        <td>{{ pollform.votescast.errors }}{{ pollform.votescast }}</td>
+                    {% else %}
+                        <td></td>
+                    {% endif %}
+                {% endfor %}
             </tr>
     </table>
     
