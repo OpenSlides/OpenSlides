@@ -12,11 +12,13 @@
 
 from django.conf.urls.defaults import *
 
-from utils.views import CreateView
+from openslides.utils.views import CreateView
 
-from views import ControlView, ActivateView, CustomSlideCreateView, CustomSlideUpdateView, CustomSlideDeleteView
-from agenda.views import ItemUpdate
-from models import ProjectorSlide
+from openslides.projector.models import ProjectorSlide
+from openslides.projector.views import (ControlView, ActivateView,
+    CustomSlideCreateView, CustomSlideUpdateView, CustomSlideDeleteView,
+    CountdownEdit)
+
 
 
 urlpatterns = patterns('projector.views',
@@ -76,21 +78,47 @@ urlpatterns = patterns('projector.views',
     url(r'^clean/$', 'projector_edit', {'direction': 'clean'},
         name='projector_clean'),
 
-    url(r'^countdown/show/$', 'projector_countdown', {'command': 'show'},
-        name='countdown_open'),
+# TODO: Merge the following lines with this one:
+    ## url(r'^countdown/(?P<command>[^/]*)/$',
+        ## CountdownEdit.as_view(),
+        ## name='countdown_edit',
+    ## ),
 
-    url(r'^countdown/hide/$', 'projector_countdown', {'command': 'hide'},
-        name='countdown_close'),
 
-    url(r'^countdown/reset/$', 'projector_countdown', {'command': 'reset'},
-        name='countdown_reset'),
 
-    url(r'^countdown/start/$', 'projector_countdown', {'command': 'start'},
-        name='countdown_start'),
+    url(r'^countdown/show/$',
+        CountdownEdit.as_view(),
+         {'command': 'show'},
+        name='countdown_open',
+    ),
 
-    url(r'^countdown/stop/$', 'projector_countdown', {'command': 'stop'},
-        name='countdown_stop'),
+    url(r'^countdown/hide/$',
+        CountdownEdit.as_view(),
+         {'command': 'hide'},
+        name='countdown_close',
+    ),
 
-    url(r'^countdown/set-default/$', 'projector_countdown', {'command': 'set_default'},
-        name='countdown_set_default'),
+    url(r'^countdown/reset/$',
+        CountdownEdit.as_view(),
+         {'command': 'reset'},
+        name='countdown_reset',
+    ),
+
+    url(r'^countdown/start/$',
+        CountdownEdit.as_view(),
+         {'command': 'start'},
+        name='countdown_start',
+    ),
+
+    url(r'^countdown/stop/$',
+        CountdownEdit.as_view(),
+         {'command': 'stop'},
+        name='countdown_stop',
+    ),
+
+    url(r'^countdown/set-default/$',
+        CountdownEdit.as_view(),
+         {'command': 'set-default'},
+        name='countdown_set_default',
+    ),
 )

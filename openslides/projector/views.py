@@ -91,7 +91,7 @@ class ControlView(TemplateView):
 
 
         context.update({
-            'countdown_time': config['agenda_countdown_time'],
+            'countdown_time': config['countdown_time'],
             'countdown_state' : config['countdown_state'],
             'overlays': self.get_projector_overlays(),
             'widgets': widgets,
@@ -229,55 +229,44 @@ def projector_edit(request, direction):
     return redirect(reverse('projector_control'))
 
 
-@permission_required('projector.can_manage_projector')
-def projector_countdown(request, command):
-    #todo: why is there the time argument?
-    if command in ['reset','start','stop']:
-        config['countdown_time'] = config['agenda_countdown_time']
+class CountdownEdit(RedirectView):
+    permission_required = 'projector.can_manage_projector'
+    url = 'projector_control'
+    allow_ajax = True
 
-    if command =='reset':
+    def pre_redirect(self, request, *args, **kwargs):
+        self.command = command = self.kwargs['command']
+        if command in ['reset', 'start', 'stop']:
+            config['countdown_time'] = config['countdown_time']
+
         if command == 'reset':
             config['countdown_start_stamp'] = time()
             config['countdown_pause_stamp'] = 0
             config['countdown_state'] = 'inactive'
-
-    elif command == 'start':
+        elif command == 'start':
             # if we had stopped the countdown resume were we left of
             if config['countdown_state'] == 'paused':
-                s = config['countdown_start_stamp']
-                p = config['countdown_pause_stamp']
-                n = time()
+                start_stamp = config['countdown_start_stamp']
+                pause_stamp = config['countdown_pause_stamp']
+                now = time()
 
-                config['countdown_start_stamp'] = n - (p - s)
+                config['countdown_start_stamp'] = now - (pause_stamp - start_stamp)
             else:
                 config['countdown_start_stamp'] = time()
 
             config['countdown_state'] = 'active'
             config['countdown_pause_stamp'] = 0
-
-    elif command == 'stop':
-        if config['countdown_state'] == 'active':
-            config['countdown_pause_stamp'] = time()
-            config['countdown_state'] = 'paused'
-
-    elif command == 'set_default':
-        try:
-            config['agenda_countdown_time'] = int(request.GET['countdown_time'])
-
-        except ValueError:
-            pass
-
-        except AttributeError:
-            pass
-
-    if request.is_ajax():
-        if command == "show":
-            link = reverse('countdown_close')
-        else:
-            link = reverse('countdown_open')
-        return ajax_request({'countdown_visible': config['countdown_visible'],
-                             'link': link})
-    return redirect(reverse('projector_control'))
+        elif command == 'stop':
+            if config['countdown_state'] == 'active':
+                config['countdown_pause_stamp'] = time()
+                config['countdown_state'] = 'paused'
+        elif command == 'set-default':
+            try:
+                config['countdown_time'] = int(self.request.GET['countdown_time'])
+            except ValueError:
+                pass
+            except AttributeError:
+                pass
 
 
 def register_tab(request):
