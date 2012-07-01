@@ -27,22 +27,34 @@
         <ul>
             {# view assignemnt #}
             {% url assignment_view assignment.id as url_assignmentview %}
-            <li class="{% if request.path == url_assignmentview %}selected{% endif %}"><a href="{% url assignment_view assignment.id  %}">{%trans 'View election' %}</a></li>
+            <li class="{% if request.path == url_assignmentview %}selected{% endif %}">
+                <a href="{% url assignment_view assignment.id  %}">{%trans 'View election' %}</a>
+            </li>
 
             {% if perms.assignment.can_manage_assignment %}
-            {# edit assignemnt #}
-            {% url assignment_edit assignment.id as url_assignmentedit %}
-            <li class="{% if request.path == url_assignmentedit %}selected{% endif %}"><a href="{% url assignment_edit assignment.id  %}"><img src="{% static 'images/icons/edit.png' %}"> {%trans 'Edit election' %}</a></li>
-            {# delete assignment #}
-            <li><a href="{% url assignment_delete assignment.id  %}"><img src="{% static 'images/icons/delete.png' %}"> {%trans 'Delete election' %}</a></li>
+
+                {# edit assignemnt #}
+                {% url assignment_edit assignment.id as url_assignmentedit %}
+                <li class="{% if request.path == url_assignmentedit %}selected{% endif %}">
+                    <a href="{% url assignment_edit assignment.id  %}"><img src="{% static 'images/icons/edit.png' %}"> {%trans 'Edit election' %}</a>
+                </li>
+
+                {# delete assignment #}
+                <li>
+                    <a href="{% url assignment_delete assignment.id  %}"><img src="{% static 'images/icons/delete.png' %}"> {%trans 'Delete election' %}</a>
+                </li>
             {% endif %}
 
             {# PDF #}
-            <li><a href="{% url print_assignment assignment.id  %}"><img src="{% static 'images/icons/pdf.png' %}"> {%trans 'Election as PDF' %}</a></li>
+            <li>
+                <a href="{% url print_assignment assignment.id  %}"><img src="{% static 'images/icons/pdf.png' %}"> {%trans 'Election as PDF' %}</a>
+            </li>
 
             {# activate #}
             {% if perms.projector.can_manage_projector %}
-            <li><a href="{% url projector_activate_slide assignment.sid  %}"><img src="{% static 'images/icons/projector.png' %}"> {%trans 'Show election' %}</a></li>
+            <li>
+                <a class="activate_link {% if item.active %}active{% endif %}" href="{% url projector_activate_slide assignment.sid  %}"><img src="{% static 'images/icons/projector.png' %}"> {%trans 'Show election' %}</a>
+            </li>
             {% endif %}
 
             {# agenda #}

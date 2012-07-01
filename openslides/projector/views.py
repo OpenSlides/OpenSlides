@@ -105,12 +105,8 @@ class ActivateView(RedirectView):
 
     def pre_redirect(self, request, *args, **kwargs):
         set_active_slide(kwargs['sid'])
-
-    def get_ajax_context(self, **kwargs):
-        context = super(ActivateView, self).get_ajax_context()
         config['up'] = 0
         config['bigger'] = 100
-        return context
 
 
 class CustomSlideCreateView(CreateView):

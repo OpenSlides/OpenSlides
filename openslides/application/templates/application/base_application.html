@@ -45,7 +45,9 @@
             <li><a href="{% url print_application application.id  %}"><img src="{% static 'images/icons/pdf.png' %}"> {%trans 'Application as PDF' %}</a></li>
         {# activate and polls #}
             {% if perms.projector.can_manage_projector %}
-                <li><a href="{% url projector_activate_slide application.sid  %}"><img src="{% static 'images/icons/projector.png' %}"> {%trans 'Show Application' %}</a></li>
+                <li>
+                    <a class="activate_link {% if item.active %}active{% endif %}" href="{% url projector_activate_slide application.sid  %}"><img src="{% static 'images/icons/projector.png' %}"> {%trans 'Show Application' %}</a>
+                </li>
             {% endif %}
             {% if perms.application.can_manage_application %}
                 {% for poll in application.polls %}
