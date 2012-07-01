@@ -7,7 +7,7 @@
 {% endblock %}
 
 {% block content %}
-    <h1>{%trans "Agenda" %}</h1>
+    <h1>{% if title %}{{ title }}{% else %}{% trans "Agenda" %}{% endif %}</h1>
 {% endblock %}
 
 {% block scrollcontent %}

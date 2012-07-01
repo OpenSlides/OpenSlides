@@ -17,18 +17,19 @@ from openslides.utils.views import CreateView
 from openslides.projector.models import ProjectorSlide
 from openslides.projector.views import (ControlView, ActivateView,
     CustomSlideCreateView, CustomSlideUpdateView, CustomSlideDeleteView,
-    CountdownEdit, ProjectorEdit)
+    CountdownEdit, ProjectorEdit, Projector)
 
 
 
 urlpatterns = patterns('projector.views',
-    url(r'^$', 'active_slide',
+    url(r'^$',
+        Projector.as_view(),
         {'sid': None},
         name='projector_show',
     ),
 
     url(r'^preview/(?P<sid>[^/]*)/$',
-        'active_slide',
+        Projector.as_view(),
         name='projctor_preview_slide',
     ),
 
@@ -42,10 +43,9 @@ urlpatterns = patterns('projector.views',
         name='projector_activate_slide',
     ),
 
-    url(r'^activate/(?P<sid>[^/]*)/summary/$',
+    url(r'^activate/(?P<sid>[^/]*)/(?P<argument>[^/]*)/$',
         ActivateView.as_view(),
-        {'summary': True},
-        name='projector_activate_summary',
+        name='projector_activate_slide',
     ),
 
     url(r'^new/$',

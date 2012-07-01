@@ -18,18 +18,18 @@ from django.utils.translation import ugettext as _
 from django.core.context_processors import csrf
 from django.views.generic.detail import SingleObjectMixin
 
-from utils.pdf import stylesheet
-from utils.views import (TemplateView, RedirectView, UpdateView, CreateView,
+from openslides.utils.pdf import stylesheet
+from openslides.utils.views import (TemplateView, RedirectView, UpdateView, CreateView,
                          DeleteView, PDFView, FormView, DetailView)
-from utils.template import Tab
+from openslides.utils.template import Tab
 
-from config.models import config
+from openslides.config.models import config
 
-from projector.api import get_active_slide, set_active_slide
-from projector.projector import Widget, SLIDE
+from openslides.projector.api import get_active_slide, set_active_slide
+from openslides.projector.projector import Widget, SLIDE
 
-from agenda.models import Item
-from agenda.forms import ItemOrderForm, ItemForm, ConfigForm
+from openslides.agenda.models import Item
+from openslides.agenda.forms import ItemOrderForm, ItemForm, ConfigForm
 
 
 class Overview(TemplateView):

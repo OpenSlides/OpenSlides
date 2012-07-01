@@ -33,6 +33,9 @@
             <span class="indentation">&nbsp;</span>
         {% endfor %}
         <a href="{% model_url item 'view' %}">{{ item }}</a>
+        {% if not item.is_leaf_node %}
+            <a class="activate_link" href="{% url projector_activate_slide item.sid 'summary' %}"><img src="{% static 'images/icons/view-list-tree.png' %}" title="{% trans 'Activate summary for this item' %}"></a>
+        {% endif %}
     </li>
 {% empty %}
     <li>{% trans 'No items available.' %}</li>
