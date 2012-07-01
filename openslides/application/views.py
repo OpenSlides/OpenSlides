@@ -217,10 +217,10 @@ def edit(request, application_id=None):
             del_supporters = True
             original_supporters = []
             if is_manager:
-                if application:
+                if application: # Edit application
                     for s in application.supporter.all():
                         original_supporters.append(s)
-                application = managerform.save()
+                application = managerform.save(commit=False)
             elif application_id is None:
                 application = Application(submitter=request.user)
             application.title = dataform.cleaned_data['title']
