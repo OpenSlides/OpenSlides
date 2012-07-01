@@ -14,13 +14,7 @@
     {% endif %}
     <i class="helptext">{% trans "Special values" %}: -1 = {% trans 'majority' %}; -2 = {% trans 'undocumented' %}</i>
     <form action="" method="post" class="small-form">{% csrf_token %}
-    <span style="float:right;">
-    <a href='{% url print_assignment_poll poll.id %}'>
-    <button class="button" type="button" onclick="window.location='{% url print_assignment_poll poll.id %}'">
-        <span class="icon pdf">{%trans 'Ballot paper as PDF' %}</span>
-    </button>
-    </a>
-    </span>
+
     <table style="width:auto">
         <tr>
             <th>{% trans "Candidates" %}</th>
@@ -48,6 +42,15 @@
                 <td>{{ pollform.votescast.errors }}{{ pollform.votescast }}</td>
             </tr>
     </table>
+    
+    <p>
+    <a href='{% url print_assignment_poll poll.id %}'>
+    <button class="button" type="button" onclick="window.location='{% url print_assignment_poll poll.id %}'">
+        <span class="icon pdf">{%trans 'Ballot paper as PDF' %}</span>
+    </button>
+    </a>
+    </p>
+    
     <p>
     <button class="button" type="submit">
         <span class="icon ok">{%trans 'Save' %}</span>
@@ -61,5 +64,6 @@
     </button>
     </a>
     </p>
+    
     </form>
 {% endblock %}
