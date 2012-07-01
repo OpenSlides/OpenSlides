@@ -14,30 +14,25 @@ from datetime import datetime
 from time import time
 
 from django.contrib import messages
-from django.shortcuts import render_to_response, redirect
-from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.utils.datastructures import SortedDict
 from django.utils.importlib import import_module
 from django.dispatch import receiver
-from django.template.loader import render_to_string
 from django.db.models import Q
+from django.conf import settings
 
+from openslides.utils.views import (TemplateView, RedirectView, CreateView,
+    UpdateView, DeleteView, AjaxMixin)
+from openslides.utils.template import render_block_to_string, Tab
 
-from utils.views import TemplateView, RedirectView, CreateView, UpdateView, DeleteView
-from utils.utils import (template, permission_required, del_confirm_form,
-                         ajax_request)
-from utils.template import render_block_to_string, Tab
-from openslides.utils.signals import template_manipulation
+from openslides.config.models import config
 
-from config.models import config
-import settings
-
-from api import get_active_slide, set_active_slide, projector_message_set, projector_message_delete, get_slide_from_sid
-from projector import SLIDE, Widget
-from models import ProjectorOverlay, ProjectorSlide
-from openslides.projector.signals import projector_overlays, projector_control_box
+from openslides.projector.api import (get_active_slide, set_active_slide,
+    projector_message_set, projector_message_delete, get_slide_from_sid)
+from openslides.projector.projector import SLIDE, Widget
+from openslides.projector.models import ProjectorOverlay, ProjectorSlide
+from openslides.projector.signals import projector_overlays
 
 
 class ControlView(TemplateView):
@@ -150,59 +145,73 @@ class CustomSlideDeleteView(DeleteView):
         messages.success(request, _("Custom slide <b>%s</b> was successfully deleted.") % self.object)
 
 
-@permission_required('projector.can_see_projector')
-def active_slide(request, sid=None):
-    """
-    Shows the active Slide.
-    """
-    if sid is None:
+class Projector(TemplateView, AjaxMixin):
+    permission_required = 'projector.can_see_projector'
+
+    @property
+    def data(self):
         try:
-            data = get_active_slide()
-        except AttributeError: #TODO: It has to be an Slide.DoesNotExist
-            data = None
-        ajax = 'on'
-    else:
-        data = get_slide_from_sid(sid)
-        ajax = 'off'
+            return self._data
+        except AttributeError:
+            pass
+        sid = self.kwargs['sid']
+        if sid is None:
+            try:
+                data = get_active_slide()
+            except AttributeError: #TODO: It has to be an Slide.DoesNotExist
+                data = None
+            ajax = 'on'
+        else:
+            data = get_slide_from_sid(sid)
+            ajax = 'off'
+        print data
 
-    if data is None:
-        data = {
-            'title': config['event_name'],
-            'template': 'projector/default.html',
-        }
-    data['overlays'] = []
-    data['overlay'] = ''
-    data['ajax'] = ajax
+        if data is None:
+            data = {
+                'title': config['event_name'],
+                'template': 'projector/default.html',
+            }
+        data['overlays'] = []
+        data['ajax'] = ajax
 
-    # Projector Overlays
-    sid = get_active_slide(True)
-    active_defs = ProjectorOverlay.objects.filter(active=True).filter(Q(sid=sid) | Q(sid=None)).values_list('def_name', flat=True)
-    for receiver, response in projector_overlays.send(sender=sid, register=False, call=active_defs):
-        if response is not None:
-            data['overlays'].append(response)
+        # Projector Overlays
+        if self.kwargs['sid'] is None:
+            active_defs = ProjectorOverlay.objects.filter(active=True).filter(Q(sid=sid) | Q(sid=None)).values_list('def_name', flat=True)
+            for receiver, response in projector_overlays.send(sender=sid, register=False, call=active_defs):
+                if response is not None:
+                    data['overlays'].append(response)
+        self._data = data
+        return data
 
+    def get_template_names(self):
+        return [self.data['template']]
 
-    template_manipulation.send(sender='projector', request=request, context=data)
-    if request.is_ajax():
-        content = render_block_to_string(data['template'], 'content', data)
-        scrollcontent = render_block_to_string(data['template'], 'scrollcontent', data)
-        jsondata = {
+    def get_context_data(self, **kwargs):
+        context = super(Projector, self).get_context_data(**kwargs)
+        context.update(self.data)
+        return context
+
+    def get_ajax_context(self, **kwargs):
+        content = render_block_to_string(self.get_template_names()[0], 'content', self.data)
+        scrollcontent = render_block_to_string(self.get_template_names()[0], 'scrollcontent', self.data)
+
+        context = super(Projector, self).get_ajax_context(**kwargs)
+        context.update({
             'content': content,
             'scrollcontent': scrollcontent,
-            'overlays': data['overlays'],
-            'title': data['title'],
             'time': datetime.now().strftime('%H:%M'),
+            'overlays': self.data['overlays'],
+            'title': self.data['title'],
             'bigger': config['bigger'],
             'up': config['up'],
-            'overlay': data['overlay']
-        }
-        return ajax_request(jsondata)
-    else:
-        return render_to_response(
-            data['template'],
-            data,
-            context_instance=RequestContext(request)
-        )
+        })
+        return context
+
+    def get(self, request, *args, **kwargs):
+        if request.is_ajax():
+            return self.ajax_get(request, *args, **kwargs)
+        return super(Projector, self).get(request, *args, **kwargs)
+
 
 
 class ProjectorEdit(RedirectView):

@@ -15,7 +15,7 @@ from time import time
 from django.dispatch import receiver
 from django.template.loader import render_to_string
 
-from config.models import config
+from openslides.config.models import config
 
 from openslides.projector.signals import projector_overlays
 
@@ -42,10 +42,7 @@ class SlideMixin(object):
         """
         Return the sid from this Slide
         """
-        for key, value in SLIDE.iteritems():
-            if type(self) == value.model:
-                return "%s-%d" % (key, self.id)
-        return None
+        return "%s-%d" % (self.prefix, self.id)
 
     @property
     def active(self):

@@ -13,27 +13,31 @@
 try:
     import json
 except ImportError:
+    # for python 2.5 support
     import simplejson as json
 
 try:
     from cStringIO import StringIO
 except ImportError:
+    # Is this exception realy necessary?
     from StringIO import StringIO
 
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Frame, PageBreak, Spacer, Table, LongTable, TableStyle, Image
+from reportlab.platypus import (SimpleDocTemplate, Paragraph, Frame, PageBreak,
+    Spacer, Table, LongTable, TableStyle, Image)
 from reportlab.lib.units import cm
 
-from django.conf import settings
 from django.contrib import messages
-from django.utils.translation import ugettext as _
-from django.http import HttpResponseServerError, HttpResponse, HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
+from django.conf import settings
+from django.dispatch import receiver
+from django.http import HttpResponseServerError, HttpResponse, HttpResponseRedirect
+from django.utils.decorators import method_decorator
+from django.utils.translation import ugettext as _
+from django.utils.importlib import import_module
 from django.template import loader, RequestContext
 from django.template.loader import render_to_string
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from django.dispatch import receiver
-from django.utils.importlib import import_module
 from django.views.generic import (
     TemplateView as _TemplateView,
     RedirectView as _RedirectView,
@@ -45,14 +49,12 @@ from django.views.generic import (
 )
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.list import TemplateResponseMixin
-from django.utils.importlib import import_module
-from django.core.context_processors import csrf
-import settings
 
-from utils import render_to_forbitten
+from openslides.config.models import config
+
+from openslides.utils.utils import render_to_forbitten
 from openslides.utils.signals import template_manipulation
-from pdf import firstPage, laterPages
-from config.models import config
+from openslides.utils.pdf import firstPage, laterPages
 
 
 NO_PERMISSION_REQUIRED = 'No permission required'
@@ -93,6 +95,14 @@ class PermissionMixin(object):
         return _View.dispatch(self, request, *args, **kwargs)
 
 
+class AjaxMixin(object):
+    def get_ajax_context(self, **kwargs):
+        return {}
+
+    def ajax_get(self, request, *args, **kwargs):
+        return HttpResponse(json.dumps(self.get_ajax_context(**kwargs)))
+
+
 class TemplateView(PermissionMixin, _TemplateView):
     def get_context_data(self, **kwargs):
         context = super(TemplateView, self).get_context_data(**kwargs)
@@ -107,15 +117,12 @@ class ListView(PermissionMixin, SetCookieMixin, _ListView):
         return context
 
 
-class AjaxView(PermissionMixin, View):
+class AjaxView(PermissionMixin, AjaxMixin, View):
     def get(self, request, *args, **kwargs):
-        return HttpResponse(json.dumps(self.get_ajax_context(**kwargs)))
-
-    def get_ajax_context(self, **kwargs):
-        return {}
+        return self.ajax_get(request, *args, **kwargs)
 
 
-class RedirectView(PermissionMixin, _RedirectView):
+class RedirectView(PermissionMixin, AjaxMixin, _RedirectView):
     permanent = False
     allow_ajax = False
 
@@ -132,14 +139,11 @@ class RedirectView(PermissionMixin, _RedirectView):
             self.pre_post_redirect(request, *args, **kwargs)
 
         if self.request.is_ajax() and self.allow_ajax:
-            return HttpResponse(json.dumps(self.get_ajax_context(**kwargs)))
+            return self.ajax_get(request, *args, **kwargs)
         return super(RedirectView, self).get(request, *args, **kwargs)
 
     def get_redirect_url(self, **kwargs):
         return reverse(super(RedirectView, self).get_redirect_url(**kwargs))
-
-    def get_ajax_context(self, **kwargs):
-        return {}
 
 
 class FormView(PermissionMixin, _FormView):

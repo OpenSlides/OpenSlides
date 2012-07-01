@@ -34,26 +34,28 @@ from django.core.context_processors import csrf
 from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
 from django.db import transaction
+from django.conf import settings
 
-from config.models import config
+from openslides.config.models import config
 
-from settings import SITE_ROOT
+from openslides.utils.pdf import stylesheet
+from openslides.utils.views import PDFView, RedirectView, DeleteView, FormView
 
-from utils.pdf import stylesheet
-from utils.views import PDFView, RedirectView, DeleteView, FormView
-
-from utils.utils import template, permission_required, \
+from openslides.utils.utils import template, permission_required, \
                                    render_to_forbitten, del_confirm_form, gen_confirm_form
-from utils.template import Tab
+from openslides.utils.template import Tab
 
-from projector.projector import Widget
+from openslides.projector.projector import Widget
 
-from poll.views import PollFormView
+from openslides.poll.views import PollFormView
 
-from agenda.models import Item
+from openslides.participant.models import Profile
+from openslides.participant.api import gen_username, gen_password
 
-from application.models import Application, AVersion, ApplicationPoll
-from application.forms import (
+from openslides.agenda.models import Item
+
+from openslides.application.models import Application, AVersion, ApplicationPoll
+from openslides.application.forms import (
     ApplicationForm,
     ApplicationFormTrivialChanges,
     ApplicationManagerForm,
@@ -61,9 +63,6 @@ from application.forms import (
     ApplicationImportForm,
     ConfigForm,
 )
-
-from participant.models import Profile
-from participant.api import gen_username, gen_password
 
 
 @permission_required('application.can_see_application')
@@ -853,7 +852,7 @@ class ApplicationPollPDF(PDFView):
         pdf_document.build(story)
 
     def append_to_pdf(self, story):
-        imgpath = os.path.join(SITE_ROOT, 'static/images/circle.png')
+        imgpath = os.path.join(settings.SITE_ROOT, 'static/images/circle.png')
         circle = "<img src='%s' width='15' height='15'/>&nbsp;&nbsp;" % imgpath
         cell = []
         cell.append(Spacer(0,0.8*cm))

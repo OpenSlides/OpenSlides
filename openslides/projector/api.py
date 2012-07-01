@@ -12,8 +12,8 @@
 
 from django.template.loader import render_to_string
 
-from config.models import config
-from projector import SLIDE, Slide, Widget
+from openslides.config.models import config
+from openslides.projector.projector import SLIDE, Slide, Widget
 
 
 def split_sid(sid):
