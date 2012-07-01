@@ -17,7 +17,7 @@ from openslides.utils.views import CreateView
 from openslides.projector.models import ProjectorSlide
 from openslides.projector.views import (ControlView, ActivateView,
     CustomSlideCreateView, CustomSlideUpdateView, CustomSlideDeleteView,
-    CountdownEdit)
+    CountdownEdit, ProjectorEdit)
 
 
 
@@ -63,20 +63,35 @@ urlpatterns = patterns('projector.views',
         name='customslide_delete',
     ),
 
-    url(r'^bigger/$', 'projector_edit', {'direction': 'bigger'},
-        name='projector_bigger'),
+    url(r'^bigger/$',
+        ProjectorEdit.as_view(),
+        {'direction': 'bigger'},
+        name='projector_bigger',
+    ),
 
-    url(r'^smaller/$', 'projector_edit', {'direction': 'smaller'},
-        name='projector_smaller'),
+    url(r'^smaller/$',
+        ProjectorEdit.as_view(),
+        {'direction': 'smaller'},
+        name='projector_smaller',
+    ),
 
-    url(r'^up/$', 'projector_edit', {'direction': 'up'},
-        name='projector_up'),
+    url(r'^up/$',
+        ProjectorEdit.as_view(),
+        {'direction': 'up'},
+        name='projector_up',
+    ),
 
-    url(r'^down/$', 'projector_edit', {'direction': 'down'},
-        name='projector_down'),
+    url(r'^down/$',
+        ProjectorEdit.as_view(),
+        {'direction': 'down'},
+        name='projector_down',
+    ),
 
-    url(r'^clean/$', 'projector_edit', {'direction': 'clean'},
-        name='projector_clean'),
+    url(r'^clean/$',
+        ProjectorEdit.as_view(),
+        {'direction': 'clean'},
+        name='projector_clean',
+    ),
 
 # TODO: Merge the following lines with this one:
     ## url(r'^countdown/(?P<command>[^/]*)/$',

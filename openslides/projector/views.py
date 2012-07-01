@@ -209,24 +209,25 @@ def active_slide(request, sid=None):
         )
 
 
-@permission_required('agenda.can_manage_agenda')
-def projector_edit(request, direction):
-    if direction == 'bigger':
-        config['bigger'] = int(config['bigger']) + 20
-    elif direction == 'smaller':
-        config['bigger'] = int(config['bigger']) - 20
-    elif direction == 'up':
-        config['up'] = int(config['up']) - 10
-    elif direction == 'down':
-        if config['up'] < 0:
-            config['up'] = int(config['up']) + 10
-    elif direction == 'clean':
-        config['up'] = 0
-        config['bigger'] = 100
+class ProjectorEdit(RedirectView):
+    permission_required = 'projector.can_manage_projector'
+    url = 'projector_control'
+    allow_ajax = True
 
-    if request.is_ajax():
-        return ajax_request({})
-    return redirect(reverse('projector_control'))
+    def pre_redirect(self, request, *args, **kwargs):
+        direction = kwargs['direction']
+        if direction == 'bigger':
+            config['bigger'] = int(config['bigger']) + 20
+        elif direction == 'smaller':
+            config['bigger'] = int(config['bigger']) - 20
+        elif direction == 'up':
+            config['up'] = int(config['up']) - 10
+        elif direction == 'down':
+            if config['up'] < 0:
+                config['up'] = int(config['up']) + 10
+        elif direction == 'clean':
+            config['up'] = 0
+            config['bigger'] = 100
 
 
 class CountdownEdit(RedirectView):
@@ -235,7 +236,7 @@ class CountdownEdit(RedirectView):
     allow_ajax = True
 
     def pre_redirect(self, request, *args, **kwargs):
-        self.command = command = self.kwargs['command']
+        command = kwargs['command']
         if command in ['reset', 'start', 'stop']:
             config['countdown_time'] = config['countdown_time']
 
