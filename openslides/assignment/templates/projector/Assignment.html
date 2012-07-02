@@ -46,7 +46,7 @@
     <p><br></p>
     {% endif %}
 
-    {% if polls.count > 0  %}
+    {% if polls.exists %}
     <h3>{% trans "Election results" %}</h3>
     <table>
     <tr>
@@ -60,25 +60,30 @@
     {% for vote in votes %}
     <tr class="{% cycle 'odd' '' %}">
         {% with vote|first as candidate %}
-        <td class="candidate {% if candidate.1 %}elected{% endif %}">
-            {% if candidate.1 %}
-                <a class="elected"><img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Candidate is elected' %}"></a>
-            {% endif %}
-            {{ candidate.0 }}
-        </td>
-        {% for v in vote|last %}
-            <td style="white-space:nowrap;" {% if candidate.1 %}class="elected"{% endif %}>{% if v  %}
-                {% if v|length == 3 %}
-                    <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {% if v.0 %}{{ v.0 }}{% else %}&empty;{% endif %}<br>
-                    <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {% if v.1 %}{{ v.1 }}{% else %}&empty;{% endif %}<br>
-                    <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {% if v.2 %}{{ v.2 }}{% else %}&empty;{% endif %}<br>
-                {% else %}
-                    {% if v != "-" %}<img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}">{% endif %}
-                        {{ v }}
+            <td class="candidate{% if candidate.1 %} elected{% endif %}">
+                {% if candidate.1 %}
+                    <a class="elected">
+                        <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Candidate is elected' %}">
+                    </a>
+                {% endif %}
+                {{ candidate.0 }}
+            </td>
+            {% for v in vote|last %}
+                <td style="white-space:nowrap;" {% if candidate.1 %}class="elected"{% endif %}>
+                {% if v  %}
+                    {% if v|length == 3 %}
+                        <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {% if v.0 %}{{ v.0 }}{% else %}&empty;{% endif %}<br>
+                        <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {% if v.1 %}{{ v.1 }}{% else %}&empty;{% endif %}<br>
+                        <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {% if v.2 %}{{ v.2 }}{% else %}&empty;{% endif %}<br>
+                    {% else %}
+                        {% if v != "-" %}
+                            <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}">
+                        {% endif %}
+                        {{ v.0 }}
                     {% endif %}
                 {% endif %}
-            </td>
-        {% endfor %}
+                </td>
+            {% endfor %}
         {% endwith %}
     </tr>
     {% empty %}

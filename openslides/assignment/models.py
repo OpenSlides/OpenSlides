@@ -113,9 +113,13 @@ class Assignment(models.Model, SlideMixin):
         publish_winner_results_only = config["assignment_publish_winner_results_only"]
         # list of votes
         votes = []
-        for candidate in self.candidates:
+        options = []
+        polls = self.poll_set.all()
+        for poll in polls:
+            options += poll.get_options()
+        for candidate in set([option.candidate for option in options]):
             tmplist = [[candidate, self.is_elected(candidate)], []]
-            for poll in self.poll_set.all():
+            for poll in polls:
                 if poll.published:
                     if poll.get_options().filter(candidate=candidate).exists():
                         # check config option 'publish_winner_results_only'
@@ -123,7 +127,7 @@ class Assignment(models.Model, SlideMixin):
                         or publish_winner_results_only and self.is_elected(candidate):
                             option = AssignmentOption.objects.filter(poll=poll).get(candidate=candidate)
                             try:
-                                tmplist[1].append(option.get_votes()[0])
+                                tmplist[1].append(option.get_votes())
                             except IndexError:
                                 tmplist[1].append('–')
                         else:
