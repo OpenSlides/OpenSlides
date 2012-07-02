@@ -16,6 +16,7 @@ from projector.api import register_slidemodel
 from projector.models import SlideMixin
 from utils.translation_ext import ugettext as _
 
+
 class BaseOption(models.Model):
     poll = models.ForeignKey('BasePoll')
 
@@ -194,5 +195,7 @@ def print_value(value):
         value = _('majority')
     elif value == -2:
         value = _('undocumented')
+    elif value is None:
+        value = ''
     return unicode(value)
 

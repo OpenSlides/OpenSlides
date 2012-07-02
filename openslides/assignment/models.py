@@ -82,6 +82,7 @@ class Assignment(models.Model, SlideMixin):
     def candidates(self):
         return self.profile.get_query_set()
 
+
     def set_elected(self, profile, value=True):
         if profile in self.candidates:
             if value and not self.is_elected(profile):
@@ -106,36 +107,39 @@ class Assignment(models.Model, SlideMixin):
         poll.set_options([{'candidate': profile} for profile in candidates])
         return poll
 
+
     @property
     def vote_results(self):
-        # TODO: Rewrite this code. Use a matrix and transform it.
-        votes = []
-        publish_winner_results_only = config["assignment_publish_winner_results_only"]
-        # list of votes
-        votes = []
-        options = []
+        """
+        returns a table represented as a list with all candidates from all
+        releated polls and their vote results.
+        """
+        vote_results_dict = {}
+        # All polls releated to this assigment
         polls = self.poll_set.all()
+        # All PollOption-Objects releated to this assignment
+        options = []
         for poll in polls:
             options += poll.get_options()
-        for candidate in set([option.candidate for option in options]):
-            tmplist = [[candidate, self.is_elected(candidate)], []]
+
+        for option in options:
+            candidate = option.candidate
+            if candidate in vote_results_dict:
+                continue
+            vote_results_dict[candidate] = []
             for poll in polls:
-                if poll.published:
-                    if poll.get_options().filter(candidate=candidate).exists():
-                        # check config option 'publish_winner_results_only'
-                        if not publish_winner_results_only \
-                        or publish_winner_results_only and self.is_elected(candidate):
-                            option = AssignmentOption.objects.filter(poll=poll).get(candidate=candidate)
-                            try:
-                                tmplist[1].append(option.get_votes())
-                            except IndexError:
-                                tmplist[1].append('–')
-                        else:
-                            tmplist[1].append("")
-                    else:
-                        tmplist[1].append("-")
-            votes.append(tmplist)
-        return votes
+                try:
+                    polloption = poll.get_options().get(candidate=candidate)
+                    # candidate is releated to this poll
+                    votes = {}
+                    for vote in polloption.get_votes():
+                        votes[vote.value] = vote.get_weight()
+                    vote_results_dict[candidate].append(votes)
+                except AssignmentOption.DoesNotExist:
+                    # candidate not in releated to this poll
+                    vote_results_dict[candidate].append(None)
+        return vote_results_dict
+
 
     def get_agenda_title(self):
         return self.name
