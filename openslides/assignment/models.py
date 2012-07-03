@@ -157,7 +157,7 @@ class Assignment(models.Model, SlideMixin):
         data['assignment'] = self
         data['title'] = self.name
         data['polls'] = self.poll_set.all()
-        data['votes'] = self.vote_results
+        data['vote_results'] = self.vote_results
         data['template'] = 'projector/Assignment.html'
         return data
 
