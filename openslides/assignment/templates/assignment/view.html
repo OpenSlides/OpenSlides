@@ -97,7 +97,7 @@
     <p><br></p>
     <h3>{% trans "Election results" %}</h3>
 
-{% if polls %}
+{% if polls.exists %}
     <table id="election_table" style="width: auto;">
 
     <tr>
@@ -160,8 +160,8 @@
         </td>
         {% for poll_dict in poll_list %}
             {% if perms.assignment.can_manage_assignment or poll_dict.published %}
-                <td style="white-space:nowrap;">
-                    {% with vote=poll_dict.votes %}
+                {% with vote=poll_dict.votes %}
+                    <td style="white-space:nowrap;">
                         {% if 'Yes' in vote and 'No' in vote and 'Abstain' in vote %}
                             <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Yes }}<br>
                             <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ vote.No }}<br>
@@ -173,8 +173,8 @@
                         {% else %}
                             &nbsp;
                         {% endif %}
-                    {% endwith %}
-                </td>
+                    </td>
+                {% endwith %}
             {% endif %}
         {% endfor %}
         {% if assignment.profile.exists and perms.assignment.can_manage_assignment and assignment.status == "vot" %}

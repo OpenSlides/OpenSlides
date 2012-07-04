@@ -5,10 +5,12 @@
 {% load staticfiles %}
 
 {% block title %}{{ block.super }} - {{ assignment }}{% endblock %}
+
 {% block header %}
     <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/assignment.css' %}" />
     <script type="text/javascript" src="{% static 'javascript/assignment.js' %}"></script>
 {% endblock %}
+
 {% block content %}
     {% if assignment.status != "fin" %}
     <div id="sidebar">
@@ -49,7 +51,7 @@
     {% if polls.exists %}
         <h3>{% trans "Election results" %}</h3>
         <table>
-        
+
         <tr>
             <th>{% trans "Candidates" %}</th>
             {% for poll in assignment.poll_set.all %}
@@ -58,8 +60,8 @@
                 {% endif %}
             {% endfor %}
         </tr>
-        
-        {% for candidate, votes in vote_results.items %}
+
+        {% for candidate, poll_list in vote_results.items %}
             <tr class="{% cycle 'odd' '' %}">
                 <td class="candidate{% if candidate.1 %} elected{% endif %}">
                     {% if candidate in assignment.elected.all %}
@@ -69,25 +71,28 @@
                     {% endif %}
                     {{ candidate }}
                 </td>
-            {% for vote in votes %}
-                {# Hier stimmt es noch nicht. Es muss rein, dass nur veröffentlichte Wahlergebnisse angezeigt werden sollen #}
-                <td style="white-space:nowrap;"{% if candidate in assignment.elected.all %} class="elected"{% endif %}>
-                     {% if 'Yes' in vote and 'No' in vote and 'Abstain' in vote %}
-                        <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Yes }}<br>
-                        <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ vote.No }}<br>
-                        <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ vote.Abstain }}<br>
-                    {% elif 'Votes' in vote %}
-                        <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Votes }}
-                    {% elif vote == None %}
-                        {% trans 'was not a <br> candidate'%}
-                    {% else %}
-                        &nbsp;
-                    {% endif %}
-                </td>
+            {% for poll_dict in poll_list %}
+                {% if poll_dict.published %}
+                    {% with vote=poll_dict.votes %}
+                        <td style="white-space:nowrap;"{% if candidate in assignment.elected.all %} class="elected"{% endif %}>
+                             {% if 'Yes' in vote and 'No' in vote and 'Abstain' in vote %}
+                                <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Yes }}<br>
+                                <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ vote.No }}<br>
+                                <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ vote.Abstain }}<br>
+                            {% elif 'Votes' in vote %}
+                                <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Votes }}
+                            {% elif vote == None %}
+                                {% trans 'was not a <br> candidate'%}
+                            {% else %}
+                                &nbsp;
+                            {% endif %}
+                        </td>
+                    {% endwith %}
+                {% endif %}
             {% endfor %}
             </tr>
         {% endfor %}
-    
+
         <tr>
             <td>{%trans 'Invalid votes' %}</td>
             {% for poll in polls %}
@@ -96,7 +101,7 @@
                 {% endif %}
             {% endfor %}
         </tr>
-        
+
         <tr class="total">
             <td><b>{%trans 'Votes cast' %}</b></td>
             {% for poll in polls %}
