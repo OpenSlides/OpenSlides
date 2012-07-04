@@ -463,7 +463,7 @@ class CreateAgendaItem(RedirectView):
 
     def pre_redirect(self, request, *args, **kwargs):
         self.assignment = Assignment.objects.get(pk=kwargs['assignment_id'])
-        self.item = Item(releated_sid=self.assignment.sid)
+        self.item = Item(related_sid=self.assignment.sid)
         self.item.save()
 
     def get_redirect_url(self, **kwargs):

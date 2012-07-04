@@ -11,28 +11,33 @@
 """
 from reportlab.platypus import Paragraph
 
-from django.db.models import Model
+from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.contrib import messages
+from django.db import transaction
+from django.db.models import Model
 from django.utils.translation import ugettext as _
-from django.core.context_processors import csrf
 from django.views.generic.detail import SingleObjectMixin
 
 from openslides.utils.pdf import stylesheet
-from openslides.utils.views import (TemplateView, RedirectView, UpdateView, CreateView,
-                         DeleteView, PDFView, FormView, DetailView)
+from openslides.utils.views import (TemplateView, RedirectView, UpdateView,
+    CreateView, DeleteView, PDFView, DetailView)
 from openslides.utils.template import Tab
+from openslides.utils.utils import html_strong
 
 from openslides.config.models import config
 
-from openslides.projector.api import get_active_slide, set_active_slide
+from openslides.projector.api import get_active_slide
 from openslides.projector.projector import Widget, SLIDE
 
 from openslides.agenda.models import Item
-from openslides.agenda.forms import ItemOrderForm, ItemForm, ConfigForm
+from openslides.agenda.forms import ItemOrderForm, ItemForm
 
 
 class Overview(TemplateView):
+    """
+    Show all agenda items, and update there range via post.
+    """
     permission_required = 'agenda.can_see_agenda'
     template_name = 'agenda/overview.html'
 
@@ -40,14 +45,18 @@ class Overview(TemplateView):
         context = super(Overview, self).get_context_data(**kwargs)
         context.update({
             'items': Item.objects.all(),
-            'overview': get_active_slide(only_sid=True) == 'agenda_show',
+            'active_sid': get_active_slide(only_sid=True),
         })
         return context
 
+    @transaction.commit_manually
     def post(self, request, *args, **kwargs):
-        #todo: check for permission
         context = self.get_context_data(**kwargs)
-        #todo: check for any erros in the forms befor saving the data
+        if not request.user.has_perm('agenda.can_manage_agenda'):
+            messages.error(request,
+                _('You are not permitted to manage the agenda.'))
+            return self.render_to_response(context)
+        transaction.commit()
         for item in Item.objects.all():
             form = ItemOrderForm(request.POST, prefix="i%d" % item.id)
             if form.is_valid():
@@ -58,12 +67,21 @@ class Overview(TemplateView):
                 item.weight = form.cleaned_data['weight']
                 item.parent = parent
                 Model.save(item)
-
+            else:
+                transaction.rollback()
+                messages.error(request,
+                    _('Errors when reordering of the agenda'))
+                return self.render_to_response(context)
         Item.objects.rebuild()
+        # TODO: assure, that it is a valid tree
+        transaction.commit()
         return self.render_to_response(context)
 
 
 class View(DetailView):
+    """
+    Show an agenda item.
+    """
     permission_required = 'agenda.can_see_agenda'
     template_name = 'agenda/view.html'
     model = Item
@@ -72,7 +90,7 @@ class View(DetailView):
 
 class SetClosed(RedirectView, SingleObjectMixin):
     """
-    Close or open an Item.
+    Close or open an item.
     """
     permission_required = 'agenda.can_manage_agenda'
     allow_ajax = True
@@ -100,6 +118,9 @@ class SetClosed(RedirectView, SingleObjectMixin):
 
 
 class ItemUpdate(UpdateView):
+    """
+    Update an existing item.
+    """
     permission_required = 'agenda.can_manage_agenda'
     template_name = 'agenda/edit.html'
     model = Item
@@ -109,13 +130,18 @@ class ItemUpdate(UpdateView):
     apply_url = 'item_edit'
 
     def get_success_url(self):
-        messages.success(self.request, _("Item <b>%s</b> was successfully modified.") % self.request.POST['title'])
+        messages.success(self.request,
+            _("Item %s was successfully modified.") \
+            % html_strong(self.request.POST['title']))
         if 'apply' in self.request.POST:
             return ''
         return reverse(super(UpdateView, self).get_success_url())
 
 
 class ItemCreate(CreateView):
+    """
+    Create a new item.
+    """
     permission_required = 'agenda.can_manage_agenda'
     template_name = 'agenda/edit.html'
     model = Item
@@ -125,7 +151,9 @@ class ItemCreate(CreateView):
     apply_url = 'item_edit'
 
     def get_success_url(self):
-        messages.success(self.request, _("Item <b>%s</b> was successfully created.") % self.request.POST['title'])
+        messages.success(self.request,
+            _("Item %s was successfully created.") \
+            % html_strong(self.request.POST['title']))
         if 'apply' in self.request.POST:
             return reverse(self.get_apply_url(), args=[self.object.id])
         return reverse(super(CreateView, self).get_success_url())
@@ -133,7 +161,7 @@ class ItemCreate(CreateView):
 
 class ItemDelete(DeleteView):
     """
-    Delete an Item.
+    Delete an item.
     """
     permission_required = 'agenda.can_manage_agenda'
     model = Item
@@ -144,27 +172,69 @@ class ItemDelete(DeleteView):
 
         if 'all' in request.POST:
             self.object.delete(with_children=True)
-            messages.success(request, _("Item <b>%s</b> and his children were successfully deleted.") % self.object)
+            messages.success(request,
+                _("Item %s and his children were successfully deleted.") \
+                % html_strong(self.object))
         else:
             self.object.delete(with_children=False)
-            messages.success(request, _("Item <b>%s</b> was successfully deleted.") % self.object)
+            messages.success(request,
+                _("Item %s was successfully deleted.") \
+                % html_strong(self.object))
 
     def gen_confirm_form(self, request, message, url, singleitem=False):
         if singleitem:
-            messages.warning(request, '%s<form action="%s" method="post"><input type="hidden" value="%s" name="csrfmiddlewaretoken"><input type="submit" value="%s" /> <input type="button" value="%s"></form>' % (message, url, csrf(request)['csrf_token'], _("Yes"), _("No")))
+            messages.warning(
+                request,
+                """
+                %s
+                <form action="%s" method="post">
+                    <input type="hidden" value="%s" name="csrfmiddlewaretoken">
+                    <input type="submit" value="%s">
+                    <input type="button" value="%s">
+                </form>
+                """
+                % (message, url, csrf(request)['csrf_token'], _("Yes"),
+                    _("No"))
+            )
         else:
-            messages.warning(request, '%s<form action="%s" method="post"><input type="hidden" value="%s" name="csrfmiddlewaretoken"><input type="submit" value="%s" /> <input type="submit" name="all" value="%s" /> <input type="button" value="%s"></form>' % (message, url, csrf(request)['csrf_token'], _("Yes"), _("Yes, with all child items."), _("No")))
+            messages.warning(
+                request,
+                """
+                %s
+                <form action="%s" method="post">
+                    <input type="hidden" value="%s" name="csrfmiddlewaretoken">
+                    <input type="submit" value="%s">
+                    <input type="submit" name="all" value="%s">
+                    <input type="button" value="%s">
+                </form>
+                """
+                % (message, url, csrf(request)['csrf_token'], _("Yes"),
+                    _("Yes, with all child items."), _("No"))
+            )
 
     def confirm_form(self, request, object, item=None):
         if item is None:
             item = object
         if item.get_children():
-            self.gen_confirm_form(request, _('Do you really want to delete <b>%s</b>?') % item, item.get_absolute_url('delete'), False)
+            self.gen_confirm_form(
+                request,
+                _('Do you really want to delete %s?') % html_strong(item),
+                item.get_absolute_url('delete'),
+                False,
+            )
         else:
-            self.gen_confirm_form(request, _('Do you really want to delete <b>%s</b>?') % item, item.get_absolute_url('delete'), True)
+            self.gen_confirm_form(
+                request,
+                _('Do you really want to delete %s?') % html_strong(item),
+                item.get_absolute_url('delete'),
+                True,
+            )
 
 
 class AgendaPDF(PDFView):
+    """
+    Create a full agenda-PDF.
+    """
     permission_required = 'agenda.can_see_agenda'
     filename = _('Agenda')
     document_title = _('Agenda')
@@ -173,39 +243,31 @@ class AgendaPDF(PDFView):
         for item in Item.objects.all():
             ancestors = item.get_ancestors()
             if ancestors:
-                space = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" * ancestors.count()
-                story.append(Paragraph("%s%s" % (space, item.get_title()), stylesheet['Subitem']))
+                space = "&nbsp;" * 6 * ancestors.count()
+                story.append(Paragraph("%s%s" % (space, item.get_title()),
+                    stylesheet['Subitem']))
             else:
                 story.append(Paragraph(item.get_title(), stylesheet['Item']))
 
 
-#
-# rene: empty for now so comment it out to keep it from appearing in the settings
-#
-#class Config(FormView):
-#    permission_required = 'config.can_manage_config'
-#    form_class = ConfigForm
-#    template_name = 'agenda/config.html'
-#
-#    def get_initial(self):
-#        return {}
-#
-#    def form_valid(self, form):
-#        messages.success(self.request, _('Agenda settings successfully saved.'))
-#        return super(Config, self).form_valid(form)
-
-
 def register_tab(request):
+    """
+    register the agenda tab.
+    """
     selected = True if request.path.startswith('/agenda/') else False
     return Tab(
         title=_('Agenda'),
         url=reverse('item_overview'),
-        permission=request.user.has_perm('agenda.can_see_agenda') or request.user.has_perm('agenda.can_manage_agenda'),
+        permission=request.user.has_perm('agenda.can_see_agenda')
+            or request.user.has_perm('agenda.can_manage_agenda'),
         selected=selected,
     )
 
 
 def get_widgets(request):
+    """
+    return the agenda widget for the projector-tab.
+    """
     return [
         Widget(
             name='agenda',

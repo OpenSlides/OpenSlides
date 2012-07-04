@@ -31,9 +31,6 @@ $(function () {
                 $('tr').removeClass('activeline');
                 link.parent().parent().parent().addClass('activeline');
                 link.addClass('active');
-            },
-            error: function () {
-                alert("Ajax Error");
             }
         });
     });

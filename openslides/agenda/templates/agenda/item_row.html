@@ -19,8 +19,8 @@
             <div class="dragcell"></div>
         {% endif %}
         <a href="{{ item.get_absolute_url }}">{{ item }}</a>
-        {% if item.releated_sid %}
-            ({{ item.print_releated_type }})
+        {% if item.related_sid %}
+            ({{ item.print_related_type }})
         {% endif %}
     </td>
     {% if perms.agenda.can_manage_agenda %}

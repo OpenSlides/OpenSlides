@@ -126,3 +126,7 @@ def encodedict(dict):
     for key in dict:
         newdict[key] = [unicode(dict[key][0].decode('utf-8'))]
     return newdict
+
+
+def html_strong(string):
+    return "<strong>%s</strong>" % string

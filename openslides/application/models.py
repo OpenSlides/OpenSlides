@@ -415,7 +415,7 @@ class Application(models.Model, SlideMixin):
                             'You can not delete it.')
 
 
-        for item in Item.objects.filter(releated_sid=self.sid):
+        for item in Item.objects.filter(related_sid=self.sid):
             item.delete()
         super(Application, self).delete()
 
