@@ -231,6 +231,7 @@ class Projector(TemplateView, AjaxMixin):
         scrollcontent = render_block_to_string(self.get_template_names()[0], 'scrollcontent', self.data)
 
         context = super(Projector, self).get_ajax_context(**kwargs)
+        content_hash = hash(content)
         context.update({
             'content': content,
             'scrollcontent': scrollcontent,
@@ -239,6 +240,7 @@ class Projector(TemplateView, AjaxMixin):
             'title': self.data['title'],
             'bigger': config['bigger'],
             'up': config['up'],
+            'content_hash': content_hash,
         })
         return context
 

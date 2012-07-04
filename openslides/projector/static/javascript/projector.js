@@ -5,16 +5,22 @@
  * :license: GNU GPL, see LICENSE for more details.
  */
 
+content_hash = null;
+
 function presentation_reload() {
+    
     if ($('#config > #ajax').html() == 'on') {
         $.ajax({
             type: 'GET',
             url: '/projector/',
             dataType: 'json',
-            data: '',
             success: function(data) {
                 $('#currentTime').removeClass('ajax_error');
-                $('#content').html(data.content);
+                var new_content_hash = data['content_hash'];
+                if (new_content_hash != content_hash) {
+                    $('#content').html(data.content);
+                    content_hash = new_content_hash;
+                }
                 $('#scrollcontent').html(data.scrollcontent);
                 document.title = data.title;
                 $('#currentTime').html(data.time);
