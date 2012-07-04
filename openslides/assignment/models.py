@@ -112,12 +112,12 @@ class Assignment(models.Model, SlideMixin):
     def vote_results(self):
         """
         returns a table represented as a list with all candidates from all
-        releated polls and their vote results.
+        related polls and their vote results.
         """
         vote_results_dict = {}
-        # All polls releated to this assigment
+        # All polls related to this assigment
         polls = self.poll_set.all()
-        # All PollOption-Objects releated to this assignment
+        # All PollOption-Objects related to this assignment
         options = []
         for poll in polls:
             options += poll.get_options()
@@ -130,13 +130,13 @@ class Assignment(models.Model, SlideMixin):
             for poll in polls:
                 try:
                     polloption = poll.get_options().get(candidate=candidate)
-                    # candidate is releated to this poll
+                    # candidate is related to this poll
                     votes = {}
                     for vote in polloption.get_votes():
                         votes[vote.value] = vote.get_weight()
                     vote_results_dict[candidate].append(votes)
                 except AssignmentOption.DoesNotExist:
-                    # candidate not in releated to this poll
+                    # candidate not in related to this poll
                     vote_results_dict[candidate].append(None)
         return vote_results_dict
 
@@ -145,7 +145,7 @@ class Assignment(models.Model, SlideMixin):
         return self.name
 
     def delete(self):
-        for item in Item.objects.filter(releated_sid=self.sid):
+        for item in Item.objects.filter(related_sid=self.sid):
             item.delete()
         super(Assignment, self).delete()
 

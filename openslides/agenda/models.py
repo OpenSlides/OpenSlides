@@ -42,27 +42,27 @@ class Item(MPTTModel, SlideMixin):
     closed = models.BooleanField(default=False, verbose_name=_("Closed"))
     weight = models.IntegerField(default=0, verbose_name=_("Weight"))
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
-    releated_sid = models.CharField(null=True, blank=True, max_length=64)
+    related_sid = models.CharField(null=True, blank=True, max_length=64)
 
-    def get_releated_slide(self):
-        return get_slide_from_sid(self.releated_sid, True)
+    def get_related_slide(self):
+        return get_slide_from_sid(self.related_sid, True)
 
-    def get_releated_type(self):
-        return self.get_releated_slide().prefix
+    def get_related_type(self):
+        return self.get_related_slide().prefix
 
-    def print_releated_type(self):
+    def print_related_type(self):
         """
-        Print the type of the releated item.
+        Print the type of the related item.
 
         For use in Template
-        ??Why does {% trans item.print_releated_type|capfirst %} not work??
+        ??Why does {% trans item.print_related_type|capfirst %} not work??
         """
-        return _(self.get_releated_type().capitalize())
+        return _(self.get_related_type().capitalize())
 
     def get_title(self):
-        if self.releated_sid is None:
+        if self.related_sid is None:
             return self.title
-        return self.get_releated_slide().get_agenda_title()
+        return self.get_related_slide().get_agenda_title()
 
     def slide(self):
         """
@@ -75,8 +75,8 @@ class Item(MPTTModel, SlideMixin):
                 'items': self.get_children(),
                 'template': 'projector/AgendaSummary.html',
             }
-        elif self.releated_sid:
-            data = self.get_releated_slide().slide()
+        elif self.related_sid:
+            data = self.get_related_slide().slide()
         else:
             data = {
                 'item': self,
@@ -142,12 +142,12 @@ class Item(MPTTModel, SlideMixin):
         * delete
         """
         if link == 'view':
-            if self.releated_sid:
-                return self.get_releated_slide().get_absolute_url(link)
+            if self.related_sid:
+                return self.get_related_slide().get_absolute_url(link)
             return reverse('item_view', args=[str(self.id)])
         if link == 'edit':
-            if self.releated_sid:
-                return self.get_releated_slide().get_absolute_url(link)
+            if self.related_sid:
+                return self.get_related_slide().get_absolute_url(link)
             return reverse('item_edit', args=[str(self.id)])
         if link == 'delete':
             return reverse('item_delete', args=[str(self.id)])
