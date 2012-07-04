@@ -39,47 +39,10 @@
 }
 
 /*.projector_countdown_spinval {*/
+
 #countdown_time {
     width: 40px;
     height: 16px;
-}
-
-.projector_countdown_spinbox {
-    height: 16px;
-    width: auto;
-    position: relative;
-    display: inline-block;
-}
-
-.projector_countdown_spinup {
-    position: absolute;
-    top: 0px;
-    left: 35px;
-}
-
-.projector_countdown_spindown {
-    position: absolute;
-    top: 8px;
-    left: 35px;
-}
-
-.projector_countdown_btn img {
-    padding-top: 8px;
-    position: absolute;
-}
-
-/* countdown control buttons */
-.play{
-    background:url(../images/icons/play.png) no-repeat 0px 0px;
-    text-indent: 14px !important;
-}
-.pause{
-    background:url(../images/icons/pause.png) no-repeat 0px 0px;
-    text-indent: 14px !important;
-}
-.backward{
-    background:url(../images/icons/skip-backward.png) no-repeat 0px 0px;
-    text-indent: 14px !important;
 }
 
 /* iframe */
@@ -127,3 +90,22 @@ a.activate_link div {
 a.activate_link.active div {
     background-image: url(../images/icons/accept.png);
 }
+
+a.overlay div {
+    background-image: url(../images/icons/accept-grey.png);
+    background-repeat: no-repeat;
+    float: left;
+    width: 16px;
+    height: 16px;
+    padding-right: 16px;
+    position: relative;
+    top: 4px;
+    left: 4px;
+}
+
+a.overlay.active div {
+    background-image: url(../images/icons/accept.png);
+}
+
+
+

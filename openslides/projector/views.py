@@ -35,7 +35,7 @@ from openslides.projector.models import ProjectorOverlay, ProjectorSlide
 from openslides.projector.signals import projector_overlays
 
 
-class ControlView(TemplateView):
+class ControlView(TemplateView, AjaxMixin):
     template_name = 'projector/control.html'
     permission_required = 'projector.can_manage_projector'
 
@@ -64,6 +64,8 @@ class ControlView(TemplateView):
                 else:
                     overlay.active = False
                 overlay.save()
+        if request.is_ajax():
+            return ajax_get(request, *args, **kwargs)
         return self.get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -92,6 +94,32 @@ class ControlView(TemplateView):
             'widgets': widgets,
         })
         return context
+
+
+class ActivateOverlay(RedirectView):
+    url = 'projector_control'
+    allow_ajax = True
+
+    @property
+    def overlay(self):
+        try:
+            return self._overlay
+        except AttributeError:
+            self._overlay = ProjectorOverlay.objects.get(def_name=self.kwargs['name'])
+            return self._overlay
+
+    def pre_redirect(self, request, *args, **kwargs):
+        if kwargs['activate']:
+            self.overlay.active = True
+        else:
+            self.overlay.active = False
+        self.overlay.save()
+
+    def get_ajax_context(self, **kwargs):
+        return {
+            'active': self.overlay.active,
+            'def_name': self.overlay.def_name,
+        }
 
 
 class ActivateView(RedirectView):
@@ -244,6 +272,7 @@ class CountdownEdit(RedirectView):
 
     def pre_redirect(self, request, *args, **kwargs):
         command = kwargs['command']
+        # countdown_state is one of 'inactive', 'paused' and 'active', 'expired'
         if command in ['reset', 'start', 'stop']:
             config['countdown_time'] = config['countdown_time']
 
@@ -275,6 +304,12 @@ class CountdownEdit(RedirectView):
                 pass
             except AttributeError:
                 pass
+
+    def get_ajax_context(self, **kwargs):
+        return {
+            'state': config['countdown_state'],
+            'countdown_time': config['countdown_time'],
+        }
 
 
 def register_tab(request):

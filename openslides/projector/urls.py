@@ -17,8 +17,7 @@ from openslides.utils.views import CreateView
 from openslides.projector.models import ProjectorSlide
 from openslides.projector.views import (ControlView, ActivateView,
     CustomSlideCreateView, CustomSlideUpdateView, CustomSlideDeleteView,
-    CountdownEdit, ProjectorEdit, Projector)
-
+    CountdownEdit, ProjectorEdit, Projector, ActivateOverlay)
 
 
 urlpatterns = patterns('projector.views',
@@ -99,20 +98,6 @@ urlpatterns = patterns('projector.views',
         ## name='countdown_edit',
     ## ),
 
-
-
-    url(r'^countdown/show/$',
-        CountdownEdit.as_view(),
-         {'command': 'show'},
-        name='countdown_open',
-    ),
-
-    url(r'^countdown/hide/$',
-        CountdownEdit.as_view(),
-         {'command': 'hide'},
-        name='countdown_close',
-    ),
-
     url(r'^countdown/reset/$',
         CountdownEdit.as_view(),
          {'command': 'reset'},
@@ -135,5 +120,17 @@ urlpatterns = patterns('projector.views',
         CountdownEdit.as_view(),
          {'command': 'set-default'},
         name='countdown_set_default',
+    ),
+
+    url('^overlay/(?P<name>[^/]*)/activate/$',
+        ActivateOverlay.as_view(),
+        {'activate': True},
+        name='projector_overlay_activate',
+    ),
+
+    url('^overlay/(?P<name>[^/]*)/deactivate/$',
+        ActivateOverlay.as_view(),
+        {'activate': False},
+        name='projector_overlay_deactivate',
     ),
 )

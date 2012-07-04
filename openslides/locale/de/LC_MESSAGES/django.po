@@ -2105,7 +2105,7 @@ msgstr "Einblendungen"
 
 #: projector/templates/projector/control.html:193
 msgid "sec"
-msgstr "s"
+msgstr "sek"
 
 #: projector/templates/projector/control.html:194
 msgid "Save as default"

@@ -10,119 +10,7 @@
     <script type="text/javascript" src="{% static 'javascript/jquery-ui-1.8.18.custom.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascript/projector-control.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascript/jquery.cookie.js' %}"></script>
-    <script type="text/javascript">
-
-    function switchButtons(which) {
-        if (which == 'stop') {
-            $( "#countdown_play" ).hide();
-            $( "#countdown_stop" ).show();
-        }
-        else {
-            $( "#countdown_play" ).show();
-            $( "#countdown_stop" ).hide();
-        }
-        return true;
-    };
-
-    function spinCount(delta) {
-        var count = parseInt($( "#countdown_time" ).val());
-        if (count + delta < 0) {
-            delta = 0;
-        }
-        $( "#countdown_time" ).val(count + delta);
-        return false;
-    };
-
-    // function that writes the portlet list order to a cookie
-    function saveOrder() {
-        $(".column").each(function(index, value){
-            var colid = value.id;
-            var cookieName = "cookie-" + colid;
-            // Get the order for this column.
-            var order = $('#' + colid).sortable("toArray");
-            // For each portlet in the column
-            for ( var i = 0, n = order.length; i < n; i++ ) {
-                // Determine if it is 'opened' or 'closed'
-                var v = $('#' + order[i] ).find('.portlet-content').is(':visible');
-                // Modify the array we're saving to indicate what's open and
-                //  what's not.
-                order[i] = order[i] + ":" + v;
-            }
-            $.cookie(cookieName, order, { path: "/", expiry: new Date(2012, 1, 1)});
-        });
-    }
-
-    // function that restores the portlet list order from a cookie
-    function restoreOrder() {
-        $(".column").each(function(index, value) {
-            var colid = value.id;
-            var cookieName = "cookie-" + colid
-            var cookie = $.cookie(cookieName);
-            if ( cookie == null ) { return; }
-            var IDs = cookie.split(",");
-            for (var i = 0, n = IDs.length; i < n; i++ ) {
-                var toks = IDs[i].split(":");
-                if ( toks.length != 2 ) {
-                    continue;
-                }
-                var portletID = toks[0];
-                var visible = toks[1]
-                var portlet = $(".column")
-                    .find('#' + portletID)
-                    .appendTo($('#' + colid));
-                if (visible === 'false') {
-                    portlet.find(".ui-icon").toggleClass("ui-icon-minus");
-                    portlet.find(".ui-icon").toggleClass("ui-icon-plus");
-                    portlet.find(".portlet-content").hide();
-                }
-            }
-        });
-    }
-    $(function() {
-        $( ".column" ).sortable({
-            connectWith: ".column",
-            stop: function() { saveOrder(); }
-        });
-
-        $(".portlet")
-             .addClass("ui-widget ui-widget-content")
-             .addClass("ui-helper-clearfix ui-corner-all")
-             .find(".portlet-header")
-             .addClass("ui-widget-header ui-corner-all")
-             .prepend('<span class="ui-icon ui-icon-minus"></span>')
-             .end()
-             .find(".portlet-content");
-
-        restoreOrder();
-
-        $(".portlet-header .ui-icon").click(function() {
-            $(this).toggleClass("ui-icon-minus");
-            $(this).toggleClass("ui-icon-plus");
-            $(this).parents(".portlet:first").find(".portlet-content").toggle();
-            saveOrder(); // This is important
-        });
-
-        $( "document" ).ready(function(){
-            if ($.browser.msie) {
-                if ($.browser.version >= 8.0 && $.browser.version < 9.0)
-                {
-                    /* scaling bug in IE8.. iframe has to be 4 times bigger */
-                    $( "#iframe" ).css('width', 1024 * 4);
-                    $( "#iframe" ).css('height', 768 * 4);
-                }
-                $( "#iframe" ).css('zoom', '0.25');
-            }
-
-            {% if countdown_state == "active" %}
-            switchButtons('stop');
-            {% else %}
-            switchButtons('play');
-            {% endif %}
-        });
-    });
-    </script>
-
-
+    <script type="text/javascript" src="{% static 'javascript/jquery.form.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -180,55 +68,27 @@
         <div class="portlet" id="portlet_overlays">
             <div class="portlet-header">{% trans 'Overlays' %}</div>
             <div class="portlet-content">
-                <ul style="line-height: 180%">
-                <form action="" method="post">{% csrf_token %}
-                    <ul>
-                    {% for overlay in overlays %}
-                        <li>
-                            <input type="checkbox" name="{{ overlay.def_name }}" onchange="submit()"
-                                {% if overlay.active %} checked="checked"{% endif %}> {{ overlay }}:
-                            {# Countdown #}
-                            {% if overlay.def_name == "Countdown" %}
-                                <span class="projector_countdown_spinbox">
-                                    <input class="projector_countdown_spinval" id="countdown_time" name="countdown_time" type="number" min="0" value="{{countdown_time}}">{% trans "sec" %}
-                                    <a id="countdown_set" class="projector_countdown_btn" href="{% url countdown_set_default %}" title="{% trans 'Save as default' %}">
-                                        <img src="{% static 'images/icons/document-save.png' %}" />
-                                    </a>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <a class="projector_countdown_btn" href="{% url countdown_reset %}" title="{% trans 'Reset countdown' %}" onclick="javascript:switchButtons('play')">
-                                        <button type="submit" class="button" style="padding:4px;" name='message-clean'>
-                                           <span class="icon backward">&nbsp;</span>
-                                        </button></a>&nbsp;
-                                    <a id="countdown_play" class="projector_countdown_btn" href="{% url countdown_start %}" title="{% trans 'Start countdown' %}" onclick="javascript:switchButtons('stop')"><button
-                                         type="submit" class="button" style="padding:4px;" name='message-clean'>
-                                           <span class="icon play">&nbsp;</span>
-                                        </button></a>
-                                    <a id="countdown_stop" class="projector_countdown_btn" href="{% url countdown_stop %}" title="{% trans 'Stop countdown' %}" onclick="javascript:switchButtons('play')">
-                                        <button type="submit" class="button" style="padding:4px;" name='message-clean'>
-                                           <span class="icon pause">&nbsp;</span>
-                                        </button>
-                                    </a>
-                                </span>
-                                <p></p>
-                            {% endif %}
-                            {% if overlay.def_name == "Message" %}
-                                <nobr>
-                                <input name='message_text' type='text' style='width: 70%'
-                                   value="{% get_config 'projector_message' %}">
-                                <button type="submit"
-                                    class="button" style="padding:4px 0;" name='message-clean' title="{% trans 'Clean message' %}">
-                                    <span class="icon clear">&nbsp;</span>
-                                </button>
-                                </nobr>
-                                <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <button type="submit" class="button" name='message'>
-                                    <span class="icon ok">{% trans 'Apply' %}</span>
-                                </button>
-                            {% endif %}
-                        </li>
-                    {% endfor %}
-                    </ul>
-                </form>
+                <ul>
+                {% for overlay in overlays %}
+                    <li>
+                        <a id="{{ overlay.def_name }}_inactive" href="{% url projector_overlay_activate overlay.def_name %}" class="overlay"{% if overlay.active %} style="display:none"{% endif %}>
+                            <div></div>
+                        </a>
+                        <a id="{{ overlay.def_name }}_active" href="{% url projector_overlay_deactivate overlay.def_name %}" class="overlay active"{% if not overlay.active %} style="display:none"{% endif %}>
+                            <div></div>
+                        </a>
+
+                        {{ overlay }}:
+                        {# TODO: Call the html via overlay.html #}
+                        {# Countdown #}
+                        {% if overlay.def_name == "Countdown" %}
+                            {% include 'projector/control_countdown.html' %}
+                        {% endif %}
+                        {% if overlay.def_name == "Message" %}
+                            {% include 'projector/control_overlay_message.html' %}
+                        {% endif %}
+                    </li>
+                {% endfor %}
                 </ul>
             </div>
         </div> <!-- end portlet-->
