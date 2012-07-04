@@ -10,13 +10,13 @@
 {% block header %}
     <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/tabledrag.css' %}" />
     <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/agenda.css' %}" />
+    <script type="text/javascript" src="{% static 'javascript/agenda.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascript/jquery.cookie.js' %}"></script>
     {% if perms.agenda.can_manage_agenda %}
         <script type="text/javascript" src="{% static 'javascript/jquery.once.js' %}"></script>
-        <script type="text/javascript" src="{% static 'javascript/jquery.cookie.js' %}"></script>
+
         <script type="text/javascript" src="{% static 'javascript/jquery.tmpl.js' %}"></script>
         <script type="text/javascript" src="{% static 'javascript/tabledrag.js' %}"></script>
-        <script type="text/javascript" src="{% static 'javascript/agenda.js' %}"></script>
-
         <script type="text/javascript">
         <!--//--><![CDATA[//><!--
         //This is Drupal Code
@@ -33,7 +33,7 @@
           }
         });
         //--><!]]>
-    </script>
+        </script>
     {% endif %}
 {% endblock %}
 
@@ -93,8 +93,7 @@
             </tr>
         {% if items %}
             {% for item in items %}
-            <tr class="draggable{% cycle ' odd' '' %}
-{% if item.active %}activeline{% endif %}">
+            <tr class="itemline draggable{% cycle ' odd' '' %}{% if item.active %} activeline{% endif %}">
                 {% include "agenda/item_row.html" %}
             </tr>
             {% endfor %}

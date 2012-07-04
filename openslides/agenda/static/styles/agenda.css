@@ -6,7 +6,7 @@
  */
 
 /* agenda item open/closed */
-a.close_link span {
+.close_link span {
     background-image: url(../images/icons/done-grey.png);
     background-repeat: no-repeat;
     background-position: center;
@@ -14,7 +14,8 @@ a.close_link span {
     height: 16px;
     display: inline-block;
 }
-a.close_link.closed span {
+
+.close_link.closed span {
     background-image: url(../images/icons/done.png);
 }
 

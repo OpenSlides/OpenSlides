@@ -3,13 +3,15 @@
 {% load tags %}
 
     <td>
-        {% if perms.agenda.can_manage_agenda %}
-            <a class="close_link {% if item.closed %}closed{% endif %}" href="{% if item.closed %}{% url item_open item.id %}{% else %}{% url item_close item.id %}{% endif %}">
-                <span></span>
-            </a>
-        {% elif item.closed %}
+        <span class="close_link{% if item.closed %} closed{% endif %}">
+            {% if perms.agenda.can_manage_agenda %}
+                <a href="{% if item.closed %}{% url item_open item.id %}{% else %}{% url item_close item.id %}{% endif %}">
+                    <span></span>
+                </a>
+            {% elif item.closed %}
                 <img src="{% static 'images/icons/done.png' %}" title="{% trans 'Item closed' %}">
-        {% endif %}
+            {% endif %}
+        </span>
     </td>
     <td>
         {% for p in item.get_ancestors %}

@@ -4,7 +4,7 @@
  * :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
  * :license: GNU GPL, see LICENSE for more details.
  */
- 
+
 function hideLine(object) {
     if (object == []) {
         return;
@@ -18,7 +18,7 @@ function hideLine(object) {
 
 function hideClosedSlides(hide) {
     if (hide) {
-        $('#hidelink').attr('title','show');
+        $('#hidelink').attr('title', 'show');
         $('#hidelink').removeClass('hide').addClass('show');
         $('.close_link.closed').parent().parent().each(function() {
             hideLine($(this));
@@ -60,7 +60,7 @@ $(function() {
             $.cookie('Slide.HideClosed', 0);
             hideClosedSlides(false);
             $('#hide_closed_items').attr('checked', false);
-        } 
+        }
         else { // hide closed items
             $.cookie('Slide.HideClosed', 1);
             hideClosedSlides(true);
