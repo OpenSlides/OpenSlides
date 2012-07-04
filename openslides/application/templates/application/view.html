@@ -204,11 +204,13 @@
     {% endif %}
     </h1>
     {% trans "Version" %} {{ version.aid }}
+    
     {% if application.public_version != application.last_version %}
+        &#8901;
         {% if version == application.public_version %}
-            (<a href="{% url application_view_newest application.id %}">{% trans "Show newest Version" %}</a>)
+            {% trans "This is not the newest version." %} <a href="{% url application_view_newest application.id %}">{% trans "Go to version" %} {{ application.last_version.aid }}.</a>
         {% else %}
-            (<a href="{% url application_view application.id %}">{% trans "Show permitted Version" %}</a>)
+            {% trans "This is not the permitted version." %} <a href="{% url application_view application.id %}">{% trans "Go to version" %} {{ application.public_version.aid }}.</a>
         {% endif %}
     {% endif %}
 

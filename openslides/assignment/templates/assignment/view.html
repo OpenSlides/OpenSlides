@@ -99,6 +99,7 @@
 
 {% if polls %}
     <table id="election_table" style="width: auto;">
+    
     <tr>
         <th></th>
         {% with ballotnumber=polls.count %}
@@ -107,24 +108,25 @@
         </th>
         {% endwith %}
     </tr>
+    
     <tr>
         <th>{% trans "Candidates" %}</th>
         {% for poll in polls %}
-            {# if poll.published and not perms.assignment.can_manage_assignment or perms.assignment.can_manage_assignment #}
+            {% if poll.published or perms.assignment.can_manage_assignment %}
                 <th style="vertical-align: top; white-space:nowrap;">
                     {{ forloop.counter }}. {% trans 'ballot' %}
                     {% if perms.assignment.can_manage_assignment %}
-                    <br>
-                    <a class="publish_link {% if poll.published %}published{% endif %}"
-                    href="{% url assignment_poll_publish_status poll.id %}"
-                    title="{%trans 'Publish/unpublish results' %}">
-                    <span></span>
-                    </a>
-                    <a href="{% url assignment_poll_view poll.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit' %}"></a>
-                    <a href="{% url assignment_poll_delete poll.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete' %}"></a>
+                        <br>
+                        <a class="publish_link {% if poll.published %}published{% endif %}"
+                        href="{% url assignment_poll_publish_status poll.id %}"
+                        title="{%trans 'Publish/unpublish results' %}">
+                        <span></span>
+                        </a>
+                        <a href="{% url assignment_poll_view poll.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit' %}"></a>
+                        <a href="{% url assignment_poll_delete poll.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete' %}"></a>
                     {% endif %}
                 </th>
-            {# endif #}
+            {% endif %}
         {% endfor %}
         {% if assignment.profile.exists and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
             <th>
@@ -136,46 +138,51 @@
             </th>
         {% endif %}
     </tr>
+    
     {% for candidate, votes in vote_results.items %}
-        <tr class="{% cycle 'odd' '' %}">
-            <td class="candidate">
-                {% if candidate in assignment.elected.all %}
-                    {% if perms.assignment.can_manage_assignment %}
-                        <a class="election_link elected" href='{% url assignment_user_not_elected assignment.id candidate.id %}'></a>
-                    {% else %}
-                        <a class="elected"><img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Candidate is elected' %}"></a>
-                    {% endif %}
+    <tr class="{% cycle 'odd' '' %}">
+        <td class="candidate">
+            {% if candidate in assignment.elected.all %}
+                {% if perms.assignment.can_manage_assignment %}
+                    <a class="election_link elected" href='{% url assignment_user_not_elected assignment.id candidate.id %}'></a>
                 {% else %}
-                    {% if perms.assignment.can_manage_assignment %}
-                        <a class="election_link" href='{% url assignment_user_elected assignment.id candidate.id %}'></a>
-                    {% endif %}
+                    <a class="elected"><img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Candidate is elected' %}"></a>
                 {% endif %}
-                {{ candidate }}
-            </td>
-            {% for vote in votes %}
+            {% else %}
+                {% if perms.assignment.can_manage_assignment %}
+                    <a class="election_link" href='{% url assignment_user_elected assignment.id candidate.id %}'></a>
+                {% endif %}
+            {% endif %}
+            {{ candidate }}
+        </td>
+        {% for vote in votes %}
+            {% if perms.assignment.can_manage_assignment %}
+            {# Hier stimmt es noch nicht. Es muss rein, dass veröffentlichte Wahlergebnisse für jedermann sichtbar sind #}
                 <td style="white-space:nowrap;">
-                    {% if vote %}
-                        {% if 'Yes' in vote and 'No' in vote and 'Abstain' in vote %}
-                            <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {% if vote.Yes %}{{ vote.Yes }}{% else %}&empty;{% endif %}<br>
-                            <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {% if vote.No %}{{ vote.No }}{% else %}&empty;{% endif %}<br>
-                            <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {% if vote.Abstain %}{{ vote.Abstain }}{% else %}&empty;{% endif %}<br>
-                        {% elif 'Votes' in vote %}
-                            <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {% if vote.Votes %}{{ vote.Votes }}{% else %}&empty;{% endif %}
-                        {% endif %}
+                    {% if 'Yes' in vote and 'No' in vote and 'Abstain' in vote %}
+                        <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Yes }}<br>
+                        <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ vote.No }}<br>
+                        <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ vote.Abstain }}<br>
+                    {% elif 'Votes' in vote %}
+                        <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Votes }}
+                    {% elif vote == None %}
+                        {% trans 'was not a <br> candidate'%}
                     {% else %}
-                        –
+                        &nbsp;
                     {% endif %}
                 </td>
-            {% endfor %}
-            {% if assignment.profile.exists and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
-                <td></td>
             {% endif %}
-        </tr>
+        {% endfor %}
+        {% if assignment.profile.exists and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
+            <td></td>
+        {% endif %}
+    </tr>
     {% endfor %}
+    
     <tr>
         <td>{%trans 'Invalid votes' %}</td>
         {% for poll in polls %}
-            {% if poll.published and not perms.assignment.can_manage_assignment or perms.assignment.can_manage_assignment %}
+            {% if poll.published or perms.assignment.can_manage_assignment %}
                 <td style="white-space:nowrap;"><img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}</td>
             {% endif %}
         {% endfor %}
@@ -183,10 +190,11 @@
             <td></td>
         {% endif %}
     </tr>
+    
     <tr class="total">
-        <td><b>{%trans 'Votes cast' %}</b></td>
+        <td><strong>{%trans 'Votes cast' %}</strong></td>
         {% for poll in polls %}
-            {% if poll.published and not perms.assignment.can_manage_assignment or perms.assignment.can_manage_assignment %}
+            {% if poll.published or perms.assignment.can_manage_assignment %}
                 <td style="white-space:nowrap;"><img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}"> <strong>{{ poll.print_votescast }}</strong></td>
             {% endif %}
         {% endfor %}
