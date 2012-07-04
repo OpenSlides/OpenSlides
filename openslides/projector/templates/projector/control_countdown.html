@@ -3,7 +3,7 @@
 {% load tags %}
 
 <span class="projector_countdown_spinbox">
-    <input class="projector_countdown_spinval" id="countdown_time" name="countdown_time" type="number" min="0" value="{{ countdown_time }}"> {% trans "sec" %}
+    <input class="projector_countdown_spinval" id="countdown_time" name="countdown_time" type="number" min="0" value="{{ countdown_time }}"> {% trans "s" context "seconds" %}
     <a id="countdown_set" class="countdown_control" href="{% url countdown_set_default %}" title="{% trans 'Save as default' %}">
         <img src="{% static 'images/icons/document-save.png' %}" alt="{% url countdown_set_default %}">
     </a>
