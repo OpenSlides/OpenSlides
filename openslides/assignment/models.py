@@ -161,6 +161,7 @@ class Assignment(models.Model, SlideMixin):
         data['title'] = self.name
         data['polls'] = self.poll_set.all()
         data['vote_results'] = self.vote_results
+        data['assignment_publish_winner_results_only'] = config['assignment_publish_winner_results_only']
         data['template'] = 'projector/Assignment.html'
         return data
 

@@ -75,14 +75,18 @@
                 {% if poll_dict.published %}
                     {% with vote=poll_dict.votes %}
                         <td style="white-space:nowrap;"{% if candidate in assignment.elected.all %} class="elected"{% endif %}>
-                             {% if 'Yes' in vote and 'No' in vote and 'Abstain' in vote %}
-                                <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Yes }}<br>
-                                <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ vote.No }}<br>
-                                <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ vote.Abstain }}<br>
-                            {% elif 'Votes' in vote %}
-                                <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Votes }}
-                            {% elif vote == None %}
-                                {% trans 'was not a <br> candidate'%}
+                            {% if not assignment_publish_winner_results_only or candidate in assignment.elected.all %}
+                                {% if 'Yes' in vote and 'No' in vote and 'Abstain' in vote %}
+                                    <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Yes }}<br>
+                                    <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ vote.No }}<br>
+                                    <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ vote.Abstain }}<br>
+                                {% elif 'Votes' in vote %}
+                                    <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Votes }}
+                                {% elif vote == None %}
+                                    {% trans 'was not a <br> candidate'%}
+                                {% else %}
+                                    &nbsp;
+                                {% endif %}
                             {% else %}
                                 &nbsp;
                             {% endif %}
