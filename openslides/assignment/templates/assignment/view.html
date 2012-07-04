@@ -99,7 +99,7 @@
 
 {% if polls %}
     <table id="election_table" style="width: auto;">
-    
+
     <tr>
         <th></th>
         {% with ballotnumber=polls.count %}
@@ -108,7 +108,7 @@
         </th>
         {% endwith %}
     </tr>
-    
+
     <tr>
         <th>{% trans "Candidates" %}</th>
         {% for poll in polls %}
@@ -138,15 +138,18 @@
             </th>
         {% endif %}
     </tr>
-    
-    {% for candidate, votes in vote_results.items %}
+
+    {% for candidate, poll_list in vote_results.items %}
     <tr class="{% cycle 'odd' '' %}">
         <td class="candidate">
             {% if candidate in assignment.elected.all %}
                 {% if perms.assignment.can_manage_assignment %}
+                    {# What does this line do #}
                     <a class="election_link elected" href='{% url assignment_user_not_elected assignment.id candidate.id %}'></a>
                 {% else %}
-                    <a class="elected"><img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Candidate is elected' %}"></a>
+                    <a class="elected">
+                        <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Candidate is elected' %}">
+                    </a>
                 {% endif %}
             {% else %}
                 {% if perms.assignment.can_manage_assignment %}
@@ -155,21 +158,22 @@
             {% endif %}
             {{ candidate }}
         </td>
-        {% for vote in votes %}
-            {% if perms.assignment.can_manage_assignment %}
-            {# Hier stimmt es noch nicht. Es muss rein, dass veröffentlichte Wahlergebnisse für jedermann sichtbar sind #}
+        {% for poll_dict in poll_list %}
+            {% if perms.assignment.can_manage_assignment or poll_dict.published %}
                 <td style="white-space:nowrap;">
-                    {% if 'Yes' in vote and 'No' in vote and 'Abstain' in vote %}
-                        <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Yes }}<br>
-                        <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ vote.No }}<br>
-                        <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ vote.Abstain }}<br>
-                    {% elif 'Votes' in vote %}
-                        <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Votes }}
-                    {% elif vote == None %}
-                        {% trans 'was not a <br> candidate'%}
-                    {% else %}
-                        &nbsp;
-                    {% endif %}
+                    {% with vote=poll_dict.votes %}
+                        {% if 'Yes' in vote and 'No' in vote and 'Abstain' in vote %}
+                            <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Yes }}<br>
+                            <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ vote.No }}<br>
+                            <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ vote.Abstain }}<br>
+                        {% elif 'Votes' in vote %}
+                            <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Votes }}
+                        {% elif vote == None %}
+                            {% trans 'was not a <br> candidate'%}
+                        {% else %}
+                            &nbsp;
+                        {% endif %}
+                    {% endwith %}
                 </td>
             {% endif %}
         {% endfor %}
@@ -178,7 +182,7 @@
         {% endif %}
     </tr>
     {% endfor %}
-    
+
     <tr>
         <td>{%trans 'Invalid votes' %}</td>
         {% for poll in polls %}
@@ -190,7 +194,7 @@
             <td></td>
         {% endif %}
     </tr>
-    
+
     <tr class="total">
         <td><strong>{%trans 'Votes cast' %}</strong></td>
         {% for poll in polls %}

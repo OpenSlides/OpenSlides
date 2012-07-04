@@ -128,16 +128,19 @@ class Assignment(models.Model, SlideMixin):
                 continue
             vote_results_dict[candidate] = []
             for poll in polls:
+                votes = {
+                    'votes': {},
+                    'published': poll.published,
+                }
                 try:
-                    polloption = poll.get_options().get(candidate=candidate)
-                    # candidate is related to this poll
-                    votes = {}
-                    for vote in polloption.get_votes():
-                        votes[vote.value] = vote.get_weight()
-                    vote_results_dict[candidate].append(votes)
+                    # candidate related to this poll
+                    poll_option = poll.get_options().get(candidate=candidate)
+                    for vote in poll_option.get_votes():
+                        votes['votes'][vote.value] = vote.get_weight()
                 except AssignmentOption.DoesNotExist:
                     # candidate not in related to this poll
-                    vote_results_dict[candidate].append(None)
+                    votes['votes'] = None
+                vote_results_dict[candidate].append(votes)
         return vote_results_dict
 
 
