@@ -65,8 +65,13 @@ class ControlView(TemplateView, AjaxMixin):
                     overlay.active = False
                 overlay.save()
         if request.is_ajax():
-            return ajax_get(request, *args, **kwargs)
+            return self.ajax_get(request, *args, **kwargs)
         return self.get(request, *args, **kwargs)
+
+    def get_ajax_context(self, **kwargs):
+        return {
+            'overlay_message': config['projector_message'],
+        }
 
     def get_context_data(self, **kwargs):
         context = super(ControlView, self).get_context_data(**kwargs)

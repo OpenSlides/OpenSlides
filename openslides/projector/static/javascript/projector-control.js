@@ -84,6 +84,7 @@ $(function() {
         }
         $( "#iframe" ).css('zoom', '0.25');
     }
+
     // activate an element to show it on projector
     $('.activate_link').click(function(event) {
         event.preventDefault();
@@ -183,7 +184,10 @@ $(function() {
         });
     });
 
-    $('#overlay-form').ajaxForm(function() {
-        alert("Thank you for your comment!");
+    $('#overlay_message').ajaxForm({
+        dataType: 'json',
+        success: function(data) {
+            $('#overlay_message_text').val(data['overlay_message']);
+        }
     });
 });
