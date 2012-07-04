@@ -13,19 +13,22 @@
 try:
     import json
 except ImportError:
+    # for python 2.5 support
     import simplejson as json
 
 from django.db import models
 from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext as _, ugettext_noop
 
 from mptt.models import MPTTModel, TreeForeignKey
 
-from config.models import config
+from openslides.config.models import config
 
-from projector.projector import SlideMixin
-from projector.api import register_slidemodel, get_slide_from_sid
+from openslides.projector.projector import SlideMixin
+from openslides.projector.api import (register_slidemodel, get_slide_from_sid,
+    register_slidefunc, split_sid)
 
-from utils.translation_ext import ugettext as _
+from openslides.agenda.slides import agenda_show
 
 
 class Item(MPTTModel, SlideMixin):
@@ -36,18 +39,25 @@ class Item(MPTTModel, SlideMixin):
     """
     prefix = 'item'
 
-    title = models.CharField(null=True, max_length=256, verbose_name=_("Title"))
+    title = models.CharField(null=True, max_length=255, verbose_name=_("Title"))
     text = models.TextField(null=True, blank=True, verbose_name=_("Text"))
     comment = models.TextField(null=True, blank=True, verbose_name=_("Comment"))
     closed = models.BooleanField(default=False, verbose_name=_("Closed"))
     weight = models.IntegerField(default=0, verbose_name=_("Weight"))
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
-    related_sid = models.CharField(null=True, blank=True, max_length=64)
+    parent = TreeForeignKey('self', null=True, blank=True,
+        related_name='children')
+    related_sid = models.CharField(null=True, blank=True, max_length=63)
 
     def get_related_slide(self):
+        """
+        return the object, of which the item points.
+        """
         return get_slide_from_sid(self.related_sid, True)
 
     def get_related_type(self):
+        """
+        return the type of the releated slide.
+        """
         return self.get_related_slide().prefix
 
     def print_related_type(self):
@@ -60,6 +70,9 @@ class Item(MPTTModel, SlideMixin):
         return _(self.get_related_type().capitalize())
 
     def get_title(self):
+        """
+        return the title of this item.
+        """
         if self.related_sid is None:
             return self.title
         return self.get_related_slide().get_agenda_title()
@@ -69,7 +82,6 @@ class Item(MPTTModel, SlideMixin):
         Return a map with all Data for the Slide
         """
         if config['presentation_argument'] == 'summary':
-            print 'soweit schonmal'
             data = {
                 'title': self.get_title(),
                 'items': self.get_children(),
@@ -92,16 +104,16 @@ class Item(MPTTModel, SlideMixin):
         self.closed = closed
         self.save()
 
-    @property
-    def active_parent(self):
-        """
-        Return True if the item has a active parent
-        """
-        sid = get_active_slide(only_sid=True).split()
-        if  len(sid) == 2 and sid[0] == self.prefix:
-            if self.get_ancestors().filter(pk=sid[0]).exists():
-                return True
-        return False
+    ## @property
+    ## def active_parent(self):
+        ## """
+        ## Return True if the item has an active parent.
+        ## """
+        ## sid = get_active_slide(only_sid=True).split()
+        ## if  len(sid) == 2 and sid[0] == self.prefix:
+            ## if self.get_ancestors().filter(pk=sid[0]).exists():
+                ## return True
+        ## return False
 
     @property
     def weight_form(self):
@@ -157,8 +169,8 @@ class Item(MPTTModel, SlideMixin):
 
     class Meta:
         permissions = (
-            ('can_see_agenda', _("Can see agenda", fixstr=True)),
-            ('can_manage_agenda', _("Can manage agenda", fixstr=True)),
+            ('can_see_agenda', ugettext_noop("Can see agenda")),
+            ('can_manage_agenda', ugettext_noop("Can manage agenda")),
         )
 
     class MPTTMeta:
@@ -166,21 +178,4 @@ class Item(MPTTModel, SlideMixin):
 
 
 register_slidemodel(Item, control_template='agenda/control_item.html')
-
-# TODO: put this in another file
-
-from projector.api import register_slidefunc
-from agenda.slides import agenda_show
-
 register_slidefunc('agenda', agenda_show, weight=-1, name=_('Agenda'))
-
-
-from django.dispatch import receiver
-from openslides.config.signals import default_config_value
-
-
-@receiver(default_config_value, dispatch_uid="agenda_default_config")
-def default_config(sender, key, **kwargs):
-    return {
-        'agenda_countdown_time': 60,
-    }.get(key)

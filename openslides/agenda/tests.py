@@ -47,7 +47,8 @@ class ItemTest(TestCase):
         self.assertFalse(self.item4 in self.item1.get_children())
 
         l = Item.objects.all()
-        self.assertEqual(str(l), "[<Item: item1>, <Item: item1A>, <Item: item1Aa>, <Item: item2>]")
+        self.assertEqual(str(l),
+         "[<Item: item1>, <Item: item1A>, <Item: item1Aa>, <Item: item2>]")
 
     def testForms(self):
         for item in Item.objects.all():

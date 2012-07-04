@@ -71,20 +71,27 @@
                     <th class="tabledrag-hide">{% trans "Weight" %}</th>
                 {% endif %}
             </tr>
-        {% if items %}
-            <tr class="topline {% if overview %}activeline{% endif %}">
+            <tr class="topline{% if active_sid == 'agenda' %} activeline{% endif %}">
                 <td></td>
                 <td>
-                    <b>{% trans "Agenda" %}</b>
+                    <strong>{% trans "Agenda" %}</strong>
                 </td>
                 {% if perms.agenda.can_manage_agenda %}
                 <td></td>
                 {% endif %}
                 {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
-                <td></td>
+                <td>
+                {% if perms.projector.can_manage_projector %}
+                    <span>
+                        <a class="activate_link{% if active_sid == 'agenda' %} active{% endif %}" href="{% url projector_activate_slide 'agenda' %}" title="{% trans 'Activate item' %}">
+                            <span></span>
+                        </a>
+                    </span>
+                {% endif %}
+                </td>
                 {% endif %}
             </tr>
-
+        {% if items %}
             {% for item in items %}
             <tr class="draggable{% cycle ' odd' '' %}
 {% if item.active %}activeline{% endif %}">

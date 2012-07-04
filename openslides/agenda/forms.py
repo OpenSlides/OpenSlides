@@ -10,39 +10,46 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.forms import Form, ModelForm, IntegerField, ChoiceField, \
-                         ModelChoiceField, HiddenInput, Select, TextInput
+from django import forms
+from django.utils.translation import ugettext as _
 
 from mptt.forms import TreeNodeChoiceField
 
 from utils.forms import CssClassMixin
-from utils.translation_ext import ugettext as _
 
 from agenda.models import Item
 
 
-class ItemForm(ModelForm, CssClassMixin):
-    parent = TreeNodeChoiceField(queryset=Item.objects.all(), label=_("Parent item"), required=False)
+class ItemForm(forms.ModelForm, CssClassMixin):
+    """
+    Form to create of update an item.
+    """
+    parent = TreeNodeChoiceField(queryset=Item.objects.all(),
+        label=_("Parent item"), required=False)
+
     class Meta:
         model = Item
         exclude = ('closed', 'weight', 'related_sid')
 
 
-def genweightchoices():
-    l = []
-    for i in range(-50, 51):
-        l.append(('%d' % i, i))
-    return l
+def gen_weight_choices():
+    """
+    Creates a list of tuples (n, n) for n from -49 to 50.
+    """
+    return zip(*(range(-50, 51), range(-50, 51)))
 
 
-class ItemOrderForm(Form, CssClassMixin):
-    weight = ChoiceField(choices=genweightchoices(),
-                         widget=Select(attrs={'class': 'menu-weight'}),
-                         label="")
-    self = IntegerField(widget=HiddenInput(attrs={'class': 'menu-mlid'}))
-    parent = IntegerField(widget=HiddenInput(attrs={'class': 'menu-plid'}))
-
-
-class ConfigForm(Form, CssClassMixin):
-    pass
-
+class ItemOrderForm(forms.Form, CssClassMixin):
+    """
+    Form to change the order of the items.
+    """
+    weight = forms.ChoiceField(
+        choices=gen_weight_choices(),
+        widget=forms.Select(attrs={'class': 'menu-weight'}),
+    )
+    self = forms.IntegerField(
+        widget=forms.HiddenInput(attrs={'class': 'menu-mlid'}),
+    )
+    parent = forms.IntegerField(
+        widget=forms.HiddenInput(attrs={'class': 'menu-plid'}),
+    )

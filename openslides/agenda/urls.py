@@ -10,8 +10,9 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.conf.urls.defaults import *
-from agenda.views import Overview, View, SetClosed, ItemUpdate, ItemCreate, ItemDelete, AgendaPDF
+from django.conf.urls.defaults import url, patterns
+from agenda.views import (Overview, View, SetClosed, ItemUpdate, ItemCreate,
+    ItemDelete, AgendaPDF)
 
 urlpatterns = patterns('',
     url(r'^$',
