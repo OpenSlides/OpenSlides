@@ -334,6 +334,7 @@ def get_widgets(request):
             template='projector/widget.html',
             context={
                 'slides': ProjectorSlide.objects.all(),
+                'welcomepage_is_active': not bool(config["presentation"]),
             }
         ),
     ]

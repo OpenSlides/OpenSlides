@@ -2,6 +2,19 @@
 {% load i18n %}
 {% load tags %}
 
+
+<ul style="line-height: 180%">
+    <li class="{% if welcomepage_is_active %}activeline{% endif %}">
+        <a href="{% url projector_activate_welcomepage %}" class="activate_link {% if welcomepage_is_active %}active{% endif %}">
+            <div></div>
+        </a>
+        <a href="{% url projctor_preview_welcomepage %}" title="{% trans 'Preview' %}" class="icon preview right">
+            <span></span>
+        </a>
+        {% trans 'Welcome Page' %}
+    </li>
+</ul>
+<hr>
 <ul style="line-height: 180%">
 {% for slide in slides %}
     <li class="{% if slide.active %}activeline{% endif %}">
