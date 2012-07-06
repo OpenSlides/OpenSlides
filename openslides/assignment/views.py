@@ -352,72 +352,78 @@ class AssignmentPDF(PDFView):
             for x in range(0,2*assignment.posts):
                 cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; __________________________________________",stylesheet['Signaturefield']))
         cell2b.append(Spacer(0,0.2*cm))
-        # vote results
-        table_votes = []
-        results = self.get_assignment_votes(assignment)
+        
+        # Vote results
+
+        # Preparing
+        vote_results = assignment.vote_results
+        data_votes = []
+
+        # Left side
         cell3a = []
         cell3a.append(Paragraph("%s:" % (_("Vote results")), stylesheet['Heading4']))
-        if len(results) > 0:
-            if len(results[0]) >= 1:
-                cell3a.append(Paragraph("%s %s" % (len(results[0][1]), _("ballots")), stylesheet['Normal']))
-            if len(results[0][1]) > 0:
-                data_votes = []
-                # add table head row
-                headrow = []
-                headrow.append(_("Candidates"))
-                for i in range (0,len(results[0][1])):
-                    headrow.append("%s." %(str(i+1)))
-                data_votes.append(headrow)
-                # add result rows
-                for candidate in results:
-                    row = []
-                    if candidate[0][1]:
-                        elected = "* "
+
+        if assignment.poll_set.count() > 1:
+            cell3a.append(Paragraph("%s %s" % (assignment.poll_set.count(), _("ballots")), stylesheet['Normal']))
+
+        # Add table head row
+        headrow = []
+        headrow.append(_("Candidates"))
+        for poll in assignment.poll_set.all():
+            if poll.published:
+                headrow.append("%s." % poll.get_ballot())
+        data_votes.append(headrow)
+
+        # Add result rows
+        for candidate, poll_list in vote_results.iteritems():
+            row = []
+            if candidate in assignment.elected.all():
+                row.append("* %s" % str(candidate).split('(',1)[0])
+            else:
+                row.append(candidate)
+            for poll_dict in poll_list:
+                if poll_dict['published']:
+                    vote = poll_dict['votes']
+                    if vote == None:
+                        row.append(_('was not a \ncandidate'))
+                    elif 'Yes' in vote and 'No' in vote and 'Abstain' in vote:
+                        tmp = _("Y")+": "+str(vote['Yes'])+"\n"
+                        tmp += _("N")+": "+str(vote['No'])+"\n"
+                        tmp += _("A")+": "+str(vote['Abstain'])
+                        row.append(tmp)
+                    elif 'Votes' in vote:
+                        row.append(str(vote['Votes']))
                     else:
-                        elected = ""
-                    c = str(candidate[0][0]).split("(",1)
-                    if len(c) > 1:
-                        row.append(elected+c[0]+"\n"+"("+c[1])
-                    else:
-                        row.append(elected+str(candidate[0][0]))
-                    for votes in candidate[1]:
-                        if type(votes) == type(list()):
-                            tmp = _("Y")+": "+str(votes[0])+"\n"
-                            tmp += _("N")+": "+str(votes[1])+"\n"
-                            tmp += _("A")+": "+str(votes[2])
-                            row.append(tmp)
-                        else:
-                            row.append(str(votes))
+                        pass
+                else:
+                    pass
+            data_votes.append(row)
 
-                    data_votes.append(row)
-                polls = []
-                for poll in assignment.poll_set.filter(assignment=assignment):
-                    polls.append(poll)
-                # votes invalid
-                row = []
-                row.append(_("Invalid votes"))
-                for p in polls:
-                    if p.published:
-                        row.append(p.print_votesinvalid())
-                data_votes.append(row)
+        # Add votes invalid row
+        footrow_one = []
+        footrow_one.append(_("Invalid votes"))
+        for poll in assignment.poll_set.all():
+            if poll.published:
+                footrow_one.append(poll.print_votesinvalid())
+        data_votes.append(footrow_one)
 
-                # votes cast
-                row = []
-                row.append(_("Votes cast"))
-                for p in polls:
-                    if p.published:
-                        row.append(p.print_votescast())
-                data_votes.append(row)
+        # Add votes cast row
+        footrow_two = []
+        footrow_two.append(_("Votes cast"))
+        for poll in assignment.poll_set.all():
+            if poll.published:
+                footrow_two.append(poll.print_votescast())
+        data_votes.append(footrow_two)
 
-                table_votes=Table(data_votes)
-                table_votes.setStyle( TableStyle([
-                                ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
-                                ('VALIGN',(0,0),(-1,-1), 'TOP'),
-                                ('LINEABOVE',(0,0),(-1,0),2,colors.black),
-                                ('LINEABOVE',(0,1),(-1,1),1,colors.black),
-                                ('LINEBELOW',(0,-1),(-1,-1),2,colors.black),
-                                ('ROWBACKGROUNDS', (0, 1), (-1, -1), (colors.white, (.9, .9, .9))),
-                                  ]))
+        table_votes=Table(data_votes)
+        table_votes.setStyle( TableStyle([
+                        ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
+                        ('VALIGN',(0,0),(-1,-1), 'TOP'),
+                        ('LINEABOVE',(0,0),(-1,0),2,colors.black),
+                        ('LINEABOVE',(0,1),(-1,1),1,colors.black),
+                        ('LINEBELOW',(0,-1),(-1,-1),2,colors.black),
+                        ('ROWBACKGROUNDS', (0, 1), (-1, -1), (colors.white, (.9, .9, .9))),
+                          ]))
 
         # table
         data = []
