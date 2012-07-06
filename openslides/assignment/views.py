@@ -380,7 +380,7 @@ class AssignmentPDF(PDFView):
             if candidate in assignment.elected.all():
                 row.append("* %s" % str(candidate).split('(',1)[0])
             else:
-                row.append(candidate)
+                row.append(str(candidate).split('(',1)[0])
             for poll_dict in poll_list:
                 if poll_dict['published']:
                     vote = poll_dict['votes']
