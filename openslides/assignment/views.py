@@ -352,7 +352,7 @@ class AssignmentPDF(PDFView):
             for x in range(0,2*assignment.posts):
                 cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; __________________________________________",stylesheet['Signaturefield']))
         cell2b.append(Spacer(0,0.2*cm))
-        
+
         # Vote results
 
         # Preparing
