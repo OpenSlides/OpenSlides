@@ -828,8 +828,9 @@ class ApplicationPDF(PDFView):
         # text
         story.append(Paragraph("%s" % application.public_version.text.replace('\r\n','<br/>'), stylesheet['Paragraph']))
         # reason
-        story.append(Paragraph(_("Reason")+":", stylesheet['Heading3']))
-        story.append(Paragraph("%s" % application.public_version.reason.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+        if application.public_version.reason:
+            story.append(Paragraph(_("Reason")+":", stylesheet['Heading3']))
+            story.append(Paragraph("%s" % application.public_version.reason.replace('\r\n','<br/>'), stylesheet['Paragraph']))
         return story
 
 
