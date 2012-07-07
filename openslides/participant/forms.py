@@ -10,16 +10,15 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.forms import Form, ModelForm, CharField, EmailField, FileField, FileInput, TextInput, Textarea, MultipleChoiceField, ModelMultipleChoiceField, ChoiceField, BooleanField
-from django.contrib.auth.models import User, Group, Permission
+from django import forms
 from django.contrib.auth.forms import AdminPasswordChangeForm
+from django.contrib.auth.models import User, Group, Permission
+from django.utils.translation import ugettext as _, ugettext_noop
 
-from utils.forms import CssClassMixin
-from utils.translation_ext import LocalizedModelMultipleChoiceField, ugettext as _
+from openslides.utils.forms import CssClassMixin
+from openslides.utils.translation_ext import LocalizedModelMultipleChoiceField
 
-# required for USER_VISIBLE_PERMISSIONS
-from participant.models import Profile
-
+from openslides.participant.models import Profile
 
 
 USER_APPLICATION_IMPORT_OPTIONS = [
@@ -28,71 +27,85 @@ USER_APPLICATION_IMPORT_OPTIONS = [
     ('DISCARD' , _('Discard applications'))
 ]
 
-class UserNewForm(ModelForm, CssClassMixin):
-    first_name = CharField(label=_("First name"))
-    last_name = CharField(label=_("Last name"))
-    groups = ModelMultipleChoiceField(queryset=Group.objects.all(), label=_("User groups"), required=False)
-    is_active = BooleanField(label=_("Active"), required=False, initial=True)
+class UserNewForm(forms.ModelForm, CssClassMixin):
+    first_name = forms.CharField(label=_("First name"))
+    last_name = forms.CharField(label=_("Last name"))
+    groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(),
+        label=_("User groups"), required=False)
+    is_active = forms.BooleanField(label=_("Active"), required=False,
+        initial=True)
 
     class Meta:
         model = User
-        exclude = ('username', 'password', 'is_staff', 'is_superuser', 'last_login', 'date_joined', 'user_permissions')
+        exclude = ('username', 'password', 'is_staff', 'is_superuser',
+            'last_login', 'date_joined', 'user_permissions')
 
 
-class UserEditForm(ModelForm, CssClassMixin):
-    first_name = CharField(label=_("First name"))
-    last_name = CharField(label=_("Last name"))
-    groups = ModelMultipleChoiceField(queryset=Group.objects.all(), label=_("User groups"), required=False)
-    is_active = BooleanField(label=_("Active"), required=False)
+class UserEditForm(forms.ModelForm, CssClassMixin):
+    first_name = forms.CharField(label=_("First name"))
+    last_name = forms.CharField(label=_("Last name"))
+    groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(),
+        label=_("User groups"), required=False)
+    is_active = forms.BooleanField(label=_("Active"), required=False)
 
     class Meta:
         model = User
-        exclude = ('password', 'is_staff', 'is_superuser', 'last_login', 'date_joined', 'user_permissions')
+        exclude = ('password', 'is_staff', 'is_superuser', 'last_login',
+            'date_joined', 'user_permissions')
 
 
-class UsernameForm(ModelForm, CssClassMixin):
+class UsernameForm(forms.ModelForm, CssClassMixin):
     class Meta:
         model = User
-        exclude = ('first_name', 'last_name', 'email', 'is_active', 'is_superuser', 'groups', 'password', 'is_staff', 'last_login', 'date_joined', 'user_permissions')
+        exclude = ('first_name', 'last_name', 'email', 'is_active',
+            'is_superuser', 'groups', 'password', 'is_staff', 'last_login',
+            'date_joined', 'user_permissions')
 
 
-class ProfileForm(ModelForm, CssClassMixin):
+class ProfileForm(forms.ModelForm, CssClassMixin):
     class Meta:
         model = Profile
 
 
-class GroupForm(ModelForm, CssClassMixin):
-    permissions = LocalizedModelMultipleChoiceField(queryset=Permission.objects.all(), label=_("Persmissions"))
+class GroupForm(forms.ModelForm, CssClassMixin):
+    permissions = LocalizedModelMultipleChoiceField(
+        queryset=Permission.objects.all(), label=_("Persmissions"))
 
     def __init__(self, *args, **kwargs):
         super(GroupForm, self).__init__(*args, **kwargs)
         if kwargs.get('instance', None) is not None:
-            self.fields['permissions'].initial = [p.pk for p in kwargs['instance'].permissions.all()]
+            self.fields['permissions'].initial = \
+                [p.pk for p in kwargs['instance'].permissions.all()]
 
     class Meta:
         model = Group
         exclude = ('permissions',)
 
 
-class UsersettingsForm(ModelForm, CssClassMixin):
+class UsersettingsForm(forms.ModelForm, CssClassMixin):
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email')
 
-class UserImportForm(Form, CssClassMixin):
-    csvfile = FileField(widget=FileInput(attrs={'size':'50'}), label=_("CSV File"))
-    application_handling = ChoiceField(required=True, choices=USER_APPLICATION_IMPORT_OPTIONS, label=_("For existing applications"))
+class UserImportForm(forms.Form, CssClassMixin):
+    csvfile = forms.FileField(widget=forms.FileInput(attrs={'size':'50'}),
+        label=_("CSV File"))
+    application_handling = forms.ChoiceField(
+        required=True,
+        choices=USER_APPLICATION_IMPORT_OPTIONS,
+        label=_("For existing applications"),
+    )
 
 
-class ConfigForm(Form, CssClassMixin):
-    participant_pdf_system_url = CharField(
-        widget=TextInput(),
+class ConfigForm(forms.Form, CssClassMixin):
+    participant_pdf_system_url = forms.CharField(
+        widget=forms.TextInput(),
         required=False,
         label=_("System URL"),
         help_text=_("Printed in PDF of first time passwords only."),
     )
-    participant_pdf_welcometext = CharField(
-        widget=Textarea(),
+    participant_pdf_welcometext = forms.CharField(
+        widget=forms.Textarea(),
         required=False,
         label=_("Welcome text"),
         help_text=_("Printed in PDF of first time passwords only."),

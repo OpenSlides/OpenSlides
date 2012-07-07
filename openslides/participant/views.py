@@ -10,10 +10,10 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+# for python 2.5 support
 from __future__ import with_statement
 
 import csv
-import utils.csv_ext
 from urllib import urlencode
 
 try:
@@ -21,47 +21,50 @@ try:
 except ImportError: # python <= 2.5 grab it from cgi
     from cgi import parse_qs
 
-from django.http import HttpResponse
-from django.shortcuts import redirect
-from django.template import RequestContext
-from django.contrib.auth.models import User, Group
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext as _, ungettext
-from django.db import transaction
-from django.db.models import Avg, Max, Min, Count
-
 from reportlab.lib import colors
 from reportlab.lib.units import cm
-from reportlab.platypus import SimpleDocTemplate, PageBreak, Paragraph, LongTable, Spacer, Table, TableStyle
+from reportlab.platypus import (SimpleDocTemplate, PageBreak, Paragraph,
+    LongTable, Spacer, Table, TableStyle)
 
-from participant.models import Profile
-from participant.api import gen_username, gen_password
-from participant.forms import (UserNewForm, UserEditForm, ProfileForm,
-                               UsersettingsForm, UserImportForm, GroupForm,
-                               AdminPasswordChangeForm, ConfigForm)
-from application.models import Application
+from django.db import transaction
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User, Group
+from django.core.urlresolvers import reverse
+from django.shortcuts import redirect
+from django.utils.translation import ugettext as _, ungettext
 
-from config.models import config
+from openslides.utils import csv_ext
+from openslides.utils.pdf import stylesheet
+from openslides.utils.template import Tab
+from openslides.utils.utils import (template, permission_required,
+    gen_confirm_form, ajax_request, decodedict, encodedict,
+    delete_default_permissions)
+from openslides.utils.views import FormView, PDFView
 
-from utils.utils import (template, permission_required, gen_confirm_form,
-                         ajax_request, decodedict, encodedict)
-from utils.pdf import stylesheet
-from utils.template import Tab
-from utils.views import (FormView, PDFView)
-from utils.utils import delete_default_permissions
+from openslides.config.models import config
+
+from openslides.participant.models import Profile
+from openslides.participant.api import gen_username, gen_password
+from openslides.participant.forms import (UserNewForm, UserEditForm,
+    ProfileForm, sersettingsForm, UserImportForm, GroupForm,
+    AdminPasswordChangeForm, ConfigForm)
 
 
 @permission_required('participant.can_see_participant')
 @template('participant/overview.html')
 def get_overview(request):
+    """
+    Show all users.
+    """
     try:
-        sortfilter = encodedict(parse_qs(request.COOKIES['participant_sortfilter']))
+        sortfilter = encodedict(parse_qs(
+            request.COOKIES['participant_sortfilter']))
     except KeyError:
         sortfilter = {}
 
-    for value in [u'gender', u'group', u'type', u'committee', u'status', u'sort', u'reverse']:
+    for value in [u'gender', u'group', u'type', u'committee', u'status',
+                  u'sort', u'reverse']:
         if value in request.REQUEST:
             if request.REQUEST[value] == '---':
                 try:
@@ -79,7 +82,8 @@ def get_overview(request):
     if 'type' in sortfilter:
         query = query.filter(profile__type__iexact=sortfilter['type'][0])
     if 'committee' in sortfilter:
-        query = query.filter(profile__committee__iexact=sortfilter['committee'][0])
+        query = query. \
+            filter(profile__committee__iexact=sortfilter['committee'][0])
     if 'status' in sortfilter:
         query = query.filter(is_active=sortfilter['status'][0])
     if 'sort' in sortfilter:
@@ -115,18 +119,22 @@ def get_overview(request):
     else:
         percent = 0
     # list of all existing groups
-    groups = [p['group'] for p in Profile.objects.values('group').exclude(group='').distinct()]
+    groups = [p['group'] for p in Profile.objects.values('group') \
+        .exclude(group='').distinct()]
     # list of all existing committees
-    committees = [p['committee'] for p in Profile.objects.values('committee').exclude(committee='').distinct()]
+    committees = [p['committee'] for p in Profile.objects.values('committee') \
+        .exclude(committee='').distinct()]
     return {
         'users': users,
         'allusers': allusers,
         'percent': round(percent, 1),
         'groups': groups,
         'committees': committees,
-        'cookie': ['participant_sortfilter', urlencode(decodedict(sortfilter), doseq=True)],
+        'cookie': ['participant_sortfilter', urlencode(decodedict(sortfilter),
+            doseq=True)],
         'sortfilter': sortfilter,
     }
+
 
 @permission_required('participant.can_manage_participant')
 @template('participant/edit.html')
@@ -145,7 +153,8 @@ def edit(request, user_id=None):
             profileform = ProfileForm(request.POST, prefix="profile")
         else:
             userform = UserEditForm(request.POST, instance=user, prefix="user")
-            profileform = ProfileForm(request.POST, instance=user.profile, prefix="profile")
+            profileform = ProfileForm(request.POST, instance=user.profile,
+                prefix="profile")
 
         if userform.is_valid() and profileform.is_valid():
             user = userform.save()
@@ -161,9 +170,11 @@ def edit(request, user_id=None):
                 profile.user.save()
             profile.save()
             if user_id is None:
-                messages.success(request, _('New participant was successfully created.'))
+                messages.success(request,
+                    _('New participant was successfully created.'))
             else:
-                messages.success(request, _('Participant was successfully modified.'))
+                messages.success(request,
+                    _('Participant was successfully modified.'))
             if not 'apply' in request.POST:
                 return redirect(reverse('user_overview'))
             if user_id is None:
@@ -184,20 +195,31 @@ def edit(request, user_id=None):
         'edituser': user,
     }
 
+
 @permission_required('participant.can_manage_participant')
 @template('confirm.html')
 def user_delete(request, user_id):
+    """
+    Delete an user.
+    """
     user = User.objects.get(pk=user_id)
     if request.method == 'POST':
         user.delete()
-        messages.success(request, _('Participant <b>%s</b> was successfully deleted.') % user)
+        messages.success(request,
+            _('Participant <b>%s</b> was successfully deleted.') % user)
     else:
-        gen_confirm_form(request, _('Do you really want to delete <b>%s</b>?') % user, reverse('user_delete', args=[user_id]))
+        gen_confirm_form(request,
+            _('Do you really want to delete <b>%s</b>?') % user,
+            reverse('user_delete', args=[user_id]))
     return redirect(reverse('user_overview'))
+
 
 @permission_required('participant.can_manage_participant')
 @template('confirm.html')
 def user_set_status(request, user_id):
+    """
+    Set the status of an user.
+    """
     try:
         user = User.objects.get(pk=user_id)
         if user.is_active:
@@ -206,7 +228,8 @@ def user_set_status(request, user_id):
             user.is_active = True
         user.save()
     except User.DoesNotExist:
-        messages.error(request, _('Participant ID %d does not exist.') % int(user_id))
+        messages.error(request,
+            _('Participant ID %d does not exist.') % int(user_id))
         return redirect(reverse('user_overview'))
 
     if request.is_ajax():
@@ -218,9 +241,13 @@ def user_set_status(request, user_id):
         messages.success(request, _('<b>%s</b> is now <b>absent</b>.') % user)
     return redirect(reverse('user_overview'))
 
+
 @permission_required('participant.can_manage_participant')
 @template('participant/group_overview.html')
 def get_group_overview(request):
+    """
+    Show all groups.
+    """
     if config['system_enable_anonymous']:
         groups = Group.objects.all()
     else:
@@ -229,9 +256,13 @@ def get_group_overview(request):
         'groups': groups,
     }
 
+
 @permission_required('participant.can_manage_participant')
 @template('participant/group_edit.html')
 def group_edit(request, group_id=None):
+    """
+    Edit a group.
+    """
     if group_id is not None:
         try:
             group = Group.objects.get(id=group_id)
@@ -254,7 +285,9 @@ def group_edit(request, group_id=None):
             # special handling for anonymous auth
             if group is None and group_name.strip().lower() == 'anonymous':
                 # don't allow to create this group
-                messages.error(request, _('Group name "%s" is reserved for internal use.') % group_name)
+                messages.error(request,
+                    _('Group name "%s" is reserved for internal use.')
+                    % group_name)
                 return {
                     'form' : form,
                     'group': group
@@ -263,12 +296,14 @@ def group_edit(request, group_id=None):
             group = form.save()
             if anonymous_group is not None and \
                anonymous_group.id == group.id:
-                # prevent name changes - XXX: I'm sure this could be done as *one* group.save()
+                # prevent name changes -
+                # XXX: I'm sure this could be done as *one* group.save()
                 group.name = 'Anonymous'
                 group.save()
 
             if group_id is None:
-                messages.success(request, _('New group was successfully created.'))
+                messages.success(request,
+                    _('New group was successfully created.'))
             else:
                 messages.success(request, _('Group was successfully modified.'))
             if not 'apply' in request.POST:
@@ -284,19 +319,30 @@ def group_edit(request, group_id=None):
         'group': group,
     }
 
+
 @permission_required('participant.can_manage_participant')
 def group_delete(request, group_id):
+    """
+    Delete a group.
+    """
     group = Group.objects.get(pk=group_id)
     if request.method == 'POST':
         group.delete()
-        messages.success(request, _('Group <b>%s</b> was successfully deleted.') % group)
+        messages.success(request,
+            _('Group <b>%s</b> was successfully deleted.') % group)
     else:
-        gen_confirm_form(request, _('Do you really want to delete <b>%s</b>?') % group, reverse('user_group_delete', args=[group_id]))
+        gen_confirm_form(request,
+            _('Do you really want to delete <b>%s</b>?') % group,
+            reverse('user_group_delete', args=[group_id]))
     return redirect(reverse('user_group_overview'))
+
 
 @login_required
 @template('participant/settings.html')
 def user_settings(request):
+    """
+    Edit own user account.
+    """
     if request.method == 'POST':
         form_user = UsersettingsForm(request.POST,instance=request.user)
         if form_user.is_valid():
@@ -312,9 +358,14 @@ def user_settings(request):
         'edituser': request.user,
     }
 
+
 @permission_required('participant.can_manage_participant')
 @template('participant/import.html')
 def user_import(request):
+    """
+    Import Users via csv.
+    """
+    from openslides.application.models import Application
     try:
         request.user.profile
         messages.error(request, _('The import function is available for the superuser (without user profile) only.'))
@@ -377,7 +428,7 @@ def user_import(request):
                         profile.delete()
                     i = -1
                     dialect = csv.Sniffer().sniff(request.FILES['csvfile'].readline())
-                    dialect = utils.csv_ext.patchup(dialect)
+                    dialect = csv_ext.patchup(dialect)
                     request.FILES['csvfile'].seek(0)
 
                     for (lno, line) in enumerate(csv.reader(request.FILES['csvfile'], dialect=dialect)):
@@ -473,33 +524,46 @@ def user_import(request):
 
 @permission_required('participant.can_manage_participant')
 def reset_password(request, user_id):
+    """
+    Reset the Password.
+    """
     user = User.objects.get(pk=user_id)
     if request.method == 'POST':
         user.profile.reset_password()
-        messages.success(request, _('The Password for <b>%s</b> was successfully reset.') % user)
+        messages.success(request,
+            _('The Password for <b>%s</b> was successfully reset.') % user)
     else:
-        gen_confirm_form(request, _('Do you really want to reset the password for <b>%s</b>?') % user,
-                         reverse('user_reset_password', args=[user_id]))
+        gen_confirm_form(request,
+            _('Do you really want to reset the password for <b>%s</b>?') % user,
+            reverse('user_reset_password', args=[user_id]))
     return redirect(reverse('user_edit', args=[user_id]))
 
 
 def register_tab(request):
-    selected = True if request.path.startswith('/participant/') else False
+    """
+    Register the participant tab.
+    """
+    selected = request.path.startswith('/participant/')
     return Tab(
         title=_('Participants'),
         url=reverse('user_overview'),
-        permission=request.user.has_perm('participant.can_see_participant') or request.user.has_perm('participant.can_manage_participant'),
+        permission=request.user.has_perm('participant.can_see_participant')
+            or request.user.has_perm('participant.can_manage_participant'),
         selected=selected,
     )
 
 
 class ParticipantsListPDF(PDFView):
+    """
+    Generate the userliste as PDF.
+    """
     permission_required = 'participant.can_see_participant'
     filename = _("Participant-list")
     document_title = _('List of Participants')
 
     def append_to_pdf(self, story):
-        data= [['#', _('Last Name'), _('First Name'), _('Group'), _('Type'), _('Committee')]]
+        data= [['#', _('Last Name'), _('First Name'), _('Group'), _('Type'),
+            _('Committee')]]
         sort = 'last_name'
         counter = 0
         for user in User.objects.all().order_by(sort):
@@ -507,34 +571,40 @@ class ParticipantsListPDF(PDFView):
                 counter += 1
                 user.get_profile()
                 data.append([counter,
-                        Paragraph(user.last_name, stylesheet['Tablecell']),
-                        Paragraph(user.first_name, stylesheet['Tablecell']),
-                        Paragraph(user.profile.group, stylesheet['Tablecell']),
-                        Paragraph(user.profile.get_type_display(), stylesheet['Tablecell']),
-                        Paragraph(user.profile.committee, stylesheet['Tablecell']),
-                        ])
+                    Paragraph(user.last_name, stylesheet['Tablecell']),
+                    Paragraph(user.first_name, stylesheet['Tablecell']),
+                    Paragraph(user.profile.group, stylesheet['Tablecell']),
+                    Paragraph(user.profile.get_type_display(),
+                        stylesheet['Tablecell']),
+                    Paragraph(user.profile.committee, stylesheet['Tablecell']),
+                    ])
             except Profile.DoesNotExist:
                 counter -= 1
                 pass
-        t=LongTable(data,
-                        style=[
-                            ('VALIGN',(0,0),(-1,-1), 'TOP'),
-                            ('LINEABOVE',(0,0),(-1,0),2,colors.black),
-                            ('LINEABOVE',(0,1),(-1,1),1,colors.black),
-                            ('LINEBELOW',(0,-1),(-1,-1),2,colors.black),
-                            ('ROWBACKGROUNDS', (0, 1), (-1, -1), (colors.white, (.9, .9, .9))),
-                            ])
+        t = LongTable(data,
+            style=[
+                ('VALIGN',(0,0),(-1,-1), 'TOP'),
+                ('LINEABOVE',(0,0),(-1,0),2,colors.black),
+                ('LINEABOVE',(0,1),(-1,1),1,colors.black),
+                ('LINEBELOW',(0,-1),(-1,-1),2,colors.black),
+                ('ROWBACKGROUNDS', (0, 1), (-1, -1),
+                    (colors.white, (.9, .9, .9))),
+                ])
         t._argW[0]=0.75*cm
         story.append(t)
 
 
 class ParticipantsPasswordsPDF(PDFView):
+    """
+    Generate the Welcomepaper for the users.
+    """
     permission_required = 'participant.can_manage_participant'
     filename = _("Participant-passwords")
     top_space = 0
 
     def get_template(self, buffer):
-        return SimpleDocTemplate(buffer, topMargin=-6, bottomMargin=-6, leftMargin=0, rightMargin=0, showBoundary=False)
+        return SimpleDocTemplate(buffer, topMargin=-6, bottomMargin=-6,
+            leftMargin=0, rightMargin=0, showBoundary=False)
 
     def build_document(self, pdf_document, story):
         pdf_document.build(story)
@@ -548,34 +618,45 @@ class ParticipantsPasswordsPDF(PDFView):
                 user.get_profile()
                 cell = []
                 cell.append(Spacer(0,0.8*cm))
-                cell.append(Paragraph(_("Account for OpenSlides"), stylesheet['Ballot_title']))
-                cell.append(Paragraph(_("for %s") % (user.profile), stylesheet['Ballot_subtitle']))
+                cell.append(Paragraph(_("Account for OpenSlides"),
+                    stylesheet['Ballot_title']))
+                cell.append(Paragraph(_("for %s") % (user.profile),
+                    stylesheet['Ballot_subtitle']))
                 cell.append(Spacer(0,0.5*cm))
-                cell.append(Paragraph(_("User: %s") % (user.username), stylesheet['Monotype']))
-                cell.append(Paragraph(_("Password: %s") % (user.profile.firstpassword), stylesheet['Monotype']))
+                cell.append(Paragraph(_("User: %s") % (user.username),
+                    stylesheet['Monotype']))
+                cell.append(Paragraph(_("Password: %s")
+                    % (user.profile.firstpassword), stylesheet['Monotype']))
                 cell.append(Spacer(0,0.5*cm))
-                cell.append(Paragraph(_("URL: %s") % (participant_pdf_system_url), stylesheet['Ballot_option']))
+                cell.append(Paragraph(_("URL: %s")
+                    % (participant_pdf_system_url),
+                    stylesheet['Ballot_option']))
                 cell.append(Spacer(0,0.5*cm))
                 cell2 = []
                 cell2.append(Spacer(0,0.8*cm))
                 if participant_pdf_welcometext is not None:
-                    cell2.append(Paragraph(participant_pdf_welcometext.replace('\r\n','<br/>'), stylesheet['Ballot_subtitle']))
+                    cell2.append(Paragraph(
+                        participant_pdf_welcometext.replace('\r\n','<br/>'),
+                        stylesheet['Ballot_subtitle']))
 
                 data.append([cell,cell2])
             except Profile.DoesNotExist:
                 pass
 
         t=Table(data, 10.5*cm, 7.42*cm)
-        t.setStyle(TableStyle([ ('LINEBELOW', (0,0), (-1,0), 0.25, colors.grey),
-                                ('LINEBELOW', (0,1), (-1,1), 0.25, colors.grey),
-                                ('LINEBELOW', (0,1), (-1,-1), 0.25, colors.grey),
-                                ('VALIGN', (0,0), (-1,-1), 'TOP'),
-                              ]))
+        t.setStyle(TableStyle([
+            ('LINEBELOW', (0,0), (-1,0), 0.25, colors.grey),
+            ('LINEBELOW', (0,1), (-1,1), 0.25, colors.grey),
+            ('LINEBELOW', (0,1), (-1,-1), 0.25, colors.grey),
+            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        ]))
         story.append(t)
 
 
-
 class Config(FormView):
+    """
+    Config page for the participant app.
+    """
     permission_required = 'config.can_manage_config'
     form_class = ConfigForm
     template_name = 'participant/config.html'
@@ -583,11 +664,14 @@ class Config(FormView):
     def get_initial(self):
         return {
             'participant_pdf_system_url': config['participant_pdf_system_url'],
-            'participant_pdf_welcometext': config['participant_pdf_welcometext'],
+            'participant_pdf_welcometext': config['participant_pdf_welcometext']
         }
 
     def form_valid(self, form):
-        config['participant_pdf_system_url'] = form.cleaned_data['participant_pdf_system_url']
-        config['participant_pdf_welcometext'] = form.cleaned_data['participant_pdf_welcometext']
-        messages.success(self.request, _('Participants settings successfully saved.'))
+        config['participant_pdf_system_url'] = \
+            form.cleaned_data['participant_pdf_system_url']
+        config['participant_pdf_welcometext'] = \
+            form.cleaned_data['participant_pdf_welcometext']
+        messages.success(self.request,
+            _('Participants settings successfully saved.'))
         return super(Config, self).form_valid(form)

@@ -17,6 +17,9 @@ from django.contrib.auth.models import User
 
 
 def gen_password():
+    """
+    generates a random passwort.
+    """
     chars = string.letters + string.digits
     newpassword = ''
     for i in range(8):
@@ -25,6 +28,9 @@ def gen_password():
 
 
 def gen_username(first_name, last_name):
+    """
+    generates the username for new users.
+    """
     testname = "%s%s" % (first_name, last_name)
     try:
         User.objects.get(username=testname)
