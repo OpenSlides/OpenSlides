@@ -129,4 +129,4 @@ def encodedict(dict):
 
 
 def html_strong(string):
-    return "<strong>%s</strong>" % string
+    return u"<strong>%s</strong>" % string
