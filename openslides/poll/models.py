@@ -12,9 +12,10 @@
 
 from django.db import models
 
-from projector.api import register_slidemodel
-from projector.models import SlideMixin
-from utils.translation_ext import ugettext as _
+from openslides.projector.api import register_slidemodel
+from openslides.projector.models import SlideMixin
+from openslides.utils.translation_ext import ugettext as _ # TODO
+from openslides.utils.modelfields import MinMaxIntegerField
 
 
 class BaseOption(models.Model):
@@ -34,7 +35,7 @@ class TextOption(BaseOption):
 class Vote(models.Model):
     option = models.ForeignKey(BaseOption)
     #profile = models.ForeignKey(Profile) # TODO: we need a person+ here
-    weight = models.IntegerField(default=1, null=True)
+    weight = models.IntegerField(default=1, null=True) # Use MinMaxIntegerField
     value = models.CharField(max_length=255, null=True)
 
     def get_weight(self, raw=False):
@@ -50,7 +51,7 @@ class Vote(models.Model):
 
 
 class CountVotesCast(models.Model):
-    votescast = models.IntegerField(null=True, blank=True, verbose_name=_("Votes cast"))
+    votescast = MinMaxIntegerField(null=True, blank=True, min_value=-2, verbose_name=_("Votes cast"))
 
     def append_pollform_fields(self, fields):
         fields.append('votescast')
@@ -63,7 +64,7 @@ class CountVotesCast(models.Model):
 
 
 class CountInvalid(models.Model):
-    votesinvalid = models.IntegerField(null=True, blank=True, verbose_name=_("Votes invalid"))
+    votesinvalid = MinMaxIntegerField(null=True, blank=True, min_value=-2, verbose_name=_("Votes invalid"))
 
     def append_pollform_fields(self, fields):
         fields.append('votesinvalid')
