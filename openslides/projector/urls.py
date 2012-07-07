@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
     openslides.projector.urls
-    ~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
 
     URL list for the projector app.
 
@@ -10,11 +10,8 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.conf.urls.defaults import *
+from django.conf.urls.defaults import patterns, url
 
-from openslides.utils.views import CreateView
-
-from openslides.projector.models import ProjectorSlide
 from openslides.projector.views import (ControlView, ActivateView,
     CustomSlideCreateView, CustomSlideUpdateView, CustomSlideDeleteView,
     CountdownEdit, ProjectorEdit, Projector, ActivateOverlay)
@@ -103,12 +100,6 @@ urlpatterns = patterns('projector.views',
         {'direction': 'clean'},
         name='projector_clean',
     ),
-
-# TODO: Merge the following lines with this one:
-    ## url(r'^countdown/(?P<command>[^/]*)/$',
-        ## CountdownEdit.as_view(),
-        ## name='countdown_edit',
-    ## ),
 
     url(r'^countdown/reset/$',
         CountdownEdit.as_view(),

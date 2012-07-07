@@ -52,7 +52,7 @@ from django.views.generic.list import TemplateResponseMixin
 
 from openslides.config.models import config
 
-from openslides.utils.utils import render_to_forbitten
+from openslides.utils.utils import render_to_forbitten, html_strong
 from openslides.utils.signals import template_manipulation
 from openslides.utils.pdf import firstPage, laterPages
 
@@ -164,6 +164,7 @@ class FormView(PermissionMixin, _FormView):
 
 class UpdateView(PermissionMixin, _UpdateView):
     def get_success_url(self):
+        messages.success(self.request, self.get_success_message())
         if 'apply' in self.request.POST:
             return ''
         return reverse(super(UpdateView, self).get_success_url())
@@ -177,9 +178,13 @@ class UpdateView(PermissionMixin, _UpdateView):
         messages.error(self.request, _('Please check the form for errors.'))
         return super(UpdateView, self).form_invalid(form)
 
+    def get_success_message(self):
+        return _('%s was successfully modified.') % html_strong(self.object)
+
 
 class CreateView(PermissionMixin, _CreateView):
     def get_success_url(self):
+        messages.success(self.request, self.get_success_message())
         if 'apply' in self.request.POST:
             return reverse(self.get_apply_url(), args=[self.object.id])
         return reverse(super(CreateView, self).get_success_url())
@@ -197,13 +202,16 @@ class CreateView(PermissionMixin, _CreateView):
         messages.error(self.request, _('Please check the form for errors.'))
         return super(CreateView, self).form_invalid(form)
 
+    def get_success_message(self):
+        return _('%s was successfully created.') % html_strong(self.object)
+
 
 class DeleteView(RedirectView, SingleObjectMixin):
     def get_confirm_question(self):
-        return _('Do you really want to delete <b>%s</b>?') % self.object
+        return _('Do you really want to delete %s?') % html_strong(self.object)
 
     def get_success_message(self):
-        return  _('Item <b>%s</b> was successfully deleted.') % self.object
+        return  _('%s was successfully deleted.') % html_strong(self.object)
 
     def pre_redirect(self, request, *args, **kwargs):
         self.confirm_form(request, self.object)

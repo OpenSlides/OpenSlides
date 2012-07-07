@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
     openslides.projector.models
-    ~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Models for the projector app.
 
@@ -12,22 +12,25 @@
 
 from django.db import models
 from django.dispatch import receiver
+from django.utils.translation import ugettext as _, ugettext_noop
 
 from openslides.config.signals import default_config_value
 
-from api import register_slidemodel
-from projector import SlideMixin
+from openslides.projector.api import register_slidemodel
+from openslides.projector.projector import SlideMixin
 
-from config.models import config
-from utils.translation_ext import ugettext as _
+from openslides.config.models import config
+
 
 
 class ProjectorSlide(models.Model, SlideMixin):
+    """
+    Model for Slides, only for the projector. Also called custom slides.
+    """
     prefix = 'ProjectorSlide'
 
     title = models.CharField(max_length=256, verbose_name=_("Title"))
     text = models.TextField(null=True, blank=True, verbose_name=_("Text"))
-    #weight = models.IntegerField(default=0, verbose_name=_("Weight"))
 
     def slide(self):
         return {
@@ -46,12 +49,19 @@ class ProjectorSlide(models.Model, SlideMixin):
 
     class Meta:
         permissions = (
-            ('can_manage_projector', _("Can manage the projector", fixstr=True)),
-            ('can_see_projector', _("Can see projector", fixstr=True)),
+            ('can_manage_projector', ugettext_noop("Can manage the projector")),
+            ('can_see_projector', ugettext_noop("Can see projector")),
         )
 
 
+register_slidemodel(ProjectorSlide,
+    control_template='projector/control_customslide.html')
+
+
 class ProjectorOverlay(models.Model):
+    """
+    Save information for a overlay.
+    """
     active = models.BooleanField(verbose_name=_('Active'))
     def_name = models.CharField(max_length=64)
     sid = models.CharField(max_length=64, null=True, blank=True)
@@ -60,9 +70,6 @@ class ProjectorOverlay(models.Model):
         if self.sid:
             return "%s on %s" % (self.def_name, self.sid)
         return self.def_name
-
-
-register_slidemodel(ProjectorSlide, control_template='projector/control_customslide.html')
 
 
 @receiver(default_config_value, dispatch_uid="projector_default_config")

@@ -13,5 +13,3 @@
 from django.dispatch import Signal
 
 projector_overlays = Signal(providing_args=['register', 'call'])
-
-projector_control_box = Signal()

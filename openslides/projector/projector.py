@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
     openslides.projector.projector
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Slide functions for the projector app.
 
@@ -29,7 +29,7 @@ class SlideMixin(object):
 
     def slide(self):
         """
-        Return a map with all Data for a Slide
+        Return a map with all Data for the Slide.
         """
         return {
             'slide': self,
@@ -47,19 +47,22 @@ class SlideMixin(object):
     @property
     def active(self):
         """
-        Return True, if the the slide is the active one.
+        Return True, if the the slide is the active slide.
         """
         from api import get_active_slide
-        return True if get_active_slide(only_sid=True) == self.sid else False
+        return get_active_slide(only_sid=True) == self.sid
 
     def set_active(self):
         """
-        Appoint this item as the active one.
+        Appoint this item as the active slide.
         """
-        config["presentation"] = "%s-%d" % (self.prefix, self.id)
+        set_active_slide(self.sid)
 
 
 class Slide(object):
+    """
+    Represents a Slide for the projector. Can be a modelinstanz, or a function.
+    """
     def __init__(self, model_slide=False, func=None, model=None, category=None,
                  key=None, model_name='', control_template='', weight=0, name=''):
         """
@@ -82,10 +85,16 @@ class Slide(object):
 
     @property
     def active(self):
+        """
+        Return True if the Slide is active, else: False.
+        """
         from api import get_active_slide
         return get_active_slide(True) == self.key
 
     def get_items(self):
+        """
+        If the Slide is a Slide from a Model, return all Objects.
+        """
         try:
             return self.model.objects.all()
         except AttributeError:
@@ -93,6 +102,9 @@ class Slide(object):
 
 
 class Widget(object):
+    """
+    Class for a Widget for the Projector-Tab.
+    """
     def __init__(self, name, html=None, template=None, context={}):
         self.name = name
         if html is not None:

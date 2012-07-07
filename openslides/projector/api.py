@@ -17,6 +17,9 @@ from openslides.projector.projector import SLIDE, Slide, Widget
 
 
 def split_sid(sid):
+    """
+    Slit a SID in the model-part and in the model-id
+    """
     try:
         data = sid.split('-')
     except AttributeError:
@@ -34,6 +37,11 @@ def split_sid(sid):
 
 
 def get_slide_from_sid(sid, element=False):
+    """
+    Return the Slide for an given sid.
+    If element== False, return the slide-dict,
+    else, return the object.
+    """
     try:
         key, id = split_sid(sid)
     except TypeError:
@@ -56,10 +64,10 @@ def get_slide_from_sid(sid, element=False):
 def get_active_slide(only_sid=False):
     """
     Returns the active slide. If no slide is active, or it can not find an Item,
-    it raise an error
+    return None
 
-    if only_sid is True, returns only the id of this item. Returns None if not Item
-    is active. Does not Raise Item.DoesNotExist
+    if only_sid is True, returns only the id of this item. Returns None if not
+    Item is active.
     """
     sid = config["presentation"]
 
@@ -69,12 +77,18 @@ def get_active_slide(only_sid=False):
 
 
 def set_active_slide(sid, argument=None):
+    """
+    Set the active Slide.
+    """
     config["presentation"] = sid
     config['presentation_argument'] = argument
 
 
-def register_slidemodel(model, model_name=None, control_template=None, weight=0):
-    #TODO: Warn if there already is a slide with this prefix
+def register_slidemodel(model, model_name=None, control_template=None,
+    weight=0):
+    """
+    Register a Model as a slide.
+    """
     if model_name is None:
         model_name = model.prefix
 
@@ -94,7 +108,9 @@ def register_slidemodel(model, model_name=None, control_template=None, weight=0)
 
 
 def register_slidefunc(key, func, control_template=None, weight=0, name=''):
-    #TODO: Warn if there already is a slide with this prefix
+    """
+    Register a function for as a slide.
+    """
     if control_template is None:
         control_template = 'projector/default_control_slidefunc.html'
     category = func.__module__.split('.')[0]
@@ -110,6 +126,10 @@ def register_slidefunc(key, func, control_template=None, weight=0, name=''):
 
 
 def projector_message_set(message, sid=None):
+    """
+    Set the overlay-message.
+    if sid is set, only show the message on the sid-slide.
+    """
     from models import ProjectorOverlay
     config['projector_message'] = message
     try:
@@ -121,4 +141,7 @@ def projector_message_set(message, sid=None):
 
 
 def projector_message_delete():
+    """
+    Delete the overlay-message.
+    """
     config['projector_message'] = ''
