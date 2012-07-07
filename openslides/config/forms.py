@@ -10,19 +10,59 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.forms import Form, CharField, TextInput, BooleanField, IntegerField, ChoiceField, Textarea, Select
+from django import forms
 
 from utils.forms import CssClassMixin
 from models import config
 from utils.translation_ext import ugettext as _
 
 
-class GeneralConfigForm(Form, CssClassMixin):
-    event_name = CharField(widget=TextInput(),label=_("Event name"), max_length=30)
-    event_description = CharField(widget=TextInput(),label=_("Short description of event"), max_length=100, required=False)
-    event_date = CharField(widget=TextInput(), required=False, label=_("Event date"))
-    event_location = CharField(widget=TextInput(), required=False, label=_("Event location"))
-    event_organizer = CharField(widget=TextInput(), required=False, label=_("Event organizer"))
-    system_enable_anonymous = BooleanField(required=False, label=_("Allow access for anonymous guest users") )
-    frontpage_title = CharField(widget=TextInput(), required=False, label=_("Title") )
-    frontpage_welcometext = CharField(widget=Textarea(), required=False, label=_("Welcome text") )
+class GeneralConfigForm(forms.Form, CssClassMixin):
+    event_name = forms.CharField(
+        widget=forms.TextInput(),
+        label=_("Event name"),
+        max_length=30,
+    )
+
+    event_description = forms.CharField(
+        widget=forms.TextInput(),
+        label=_("Short description of event"),
+        required=False,
+        max_length=100,
+
+    )
+
+    event_date = forms.CharField(
+        widget=forms.TextInput(),
+        label=_("Event date"),
+        required=False,
+    )
+
+    event_location = forms.CharField(
+        widget=forms.TextInput(),
+        label=_("Event location"),
+        required=False,
+    )
+
+    event_organizer = forms.CharField(
+        widget=forms.TextInput(),
+        label=_("Event organizer"),
+        required=False,
+    )
+
+    system_enable_anonymous = forms.BooleanField(
+        label=_("Allow access for anonymous guest users"),
+        required=False,
+    )
+
+    frontpage_title = forms.CharField(
+        widget=forms.TextInput(),
+        label=_("Title"),
+        required=False,
+    )
+
+    frontpage_welcometext = forms.CharField(
+        widget=forms.Textarea(),
+        label=_("Welcome text"),
+        required=False,
+    )

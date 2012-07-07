@@ -10,14 +10,13 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.conf.urls.defaults import *
+from django.conf import settings
+from django.conf.urls.defaults import patterns, url
 from django.utils.importlib import import_module
 
-import settings
+from openslides.config.views import GeneralConfig, VersionConfig
 
-from views import GeneralConfig, VersionConfig
-
-urlpatterns = patterns('config.views',
+urlpatterns = patterns('',
     url(r'^general/$',
         GeneralConfig.as_view(),
         name='config_general',

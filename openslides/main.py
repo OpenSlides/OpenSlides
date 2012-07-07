@@ -61,7 +61,7 @@ def main(argv = None):
     if opts.reset_admin:
         create_or_reset_admin_user()
 
-    # NOTE: --insecure is needed so static files will be served if 
+    # NOTE: --insecure is needed so static files will be served if
     #       DEBUG is set to False
     argv = ["", "runserver", "--noreload", "--insecure"]
     if opts.nothread:
@@ -186,13 +186,8 @@ def set_system_url(url):
     from openslides.config.models import config
 
     key = "participant_pdf_system_url"
-    try:
-        if key in config.config:
-            return
-    except AttributeError:
-        config.load_config()
-        if key in config.config:
-            return
+    if key in config:
+        return
     config[key] = url
 
 

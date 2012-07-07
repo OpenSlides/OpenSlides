@@ -9,21 +9,26 @@
     :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
-from pickle import dumps, loads
-import base64
 
+from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.dispatch import receiver
+from django.utils.importlib import import_module
+from django.utils.translation import ugettext as _, ugettext_noop
 
-from utils.translation_ext import ugettext as _
+from openslides.utils.jsonfield import JSONField
+from openslides.utils.signals import template_manipulation
 
 from openslides.config.signals import default_config_value
-import settings
 
 
 class ConfigStore(models.Model):
+    """
+    Stores the config values.
+    """
     key = models.CharField(max_length=100, primary_key=True)
-    value = models.TextField()
+    value = JSONField()
 
     def __unicode__(self):
         return self.key
@@ -31,41 +36,23 @@ class ConfigStore(models.Model):
     class Meta:
         verbose_name = 'config'
         permissions = (
-            ('can_manage_config', _("Can manage configuration", fixstr=True)),
+            ('can_manage_config', ugettext_noop("Can manage configuration")),
         )
 
 
-# TODO:
-# I used base64 to save pickled Data, there has to be another way see:
-# http://stackoverflow.com/questions/2524970/djangounicodedecodeerror-while-storing-pickled-data
-
 class Config(object):
-    def load_config(self):
-        self.config = {}
-        for key, value in ConfigStore.objects.all().values_list():
-            self.config[key] = loads(base64.decodestring(str(value)))
-
+    """
+    Access the config values via config[...]
+    """
     def __getitem__(self, key):
-        # Had to be deactivated, because in more than one thread the values have
-        # to be loaded on each request.
-        ## try:
-            ## self.config
-        ## except AttributeError:
-            ## self.load_config()
-        ## try:
-            ## return self.config[key]
-        ## except KeyError:
-            ## pass
-
         try:
-            return loads(base64.decodestring(str(ConfigStore.objects.get(key=key).value)))
+            return ConfigStore.objects.get(key=key).value
         except ConfigStore.DoesNotExist:
             pass
 
-        for receiver, value in default_config_value.send(sender='config', key=key):
+        for receiver, value in default_config_value.send(sender='config',
+                                key=key):
             if value is not None:
-#                if settings.DEBUG:
-#                    print 'Using default for %s' % key
                 return value
         if settings.DEBUG:
             print "No default value for: %s" % key
@@ -76,22 +63,25 @@ class Config(object):
             c = ConfigStore.objects.get(pk=key)
         except ConfigStore.DoesNotExist:
             c = ConfigStore(pk=key)
-        c.value = base64.encodestring(dumps(value))
+        c.value = value
         c.save()
-        try:
-            self.config[key] = value
-        except AttributeError:
-            self.load_config()
-            self.config[key] = value
+
+    def __contains__(self, item):
+        return ConfigStore.objects.filter(key=item).exists()
+
 
 config = Config()
 
 
 @receiver(default_config_value, dispatch_uid="config_default_config")
 def default_config(sender, key, **kwargs):
+    """
+    Global default values.
+    """
     return {
         'event_name': 'OpenSlides',
-        'event_description': _('Presentation system for agenda, applications and elections'),
+        'event_description':
+            _('Presentation system for agenda, applications and elections'),
         'event_date': '',
         'event_location': '',
         'event_organizer': '',
@@ -99,25 +89,23 @@ def default_config(sender, key, **kwargs):
         'frontpage_title': _('Welcome'),
         'frontpage_welcometext': _('Welcome to OpenSlides!'),
         'show_help_text': True,
-        'help_text': _("Get professional support for OpenSlides on %s.") % "<a href='http://openslides.org/' target='_blank'>www.openslides.org</a>",
+        'help_text': _("Get professional support for OpenSlides on %s.") %
+            "<a href='http://openslides.org/' target='_blank'> \
+            www.openslides.org</a>",
         'system_enable_anonymous': False,
     }.get(key)
 
 
-from django.dispatch import receiver
-from django.core.urlresolvers import reverse
-from django.utils.importlib import import_module
-import settings
-
-from openslides.utils.signals import template_manipulation
-
-
 @receiver(template_manipulation, dispatch_uid="config_submenu")
 def set_submenu(sender, request, context, **kwargs):
+    """
+    Submenu for the config tab.
+    """
     if not request.path.startswith('/config/'):
         return None
     menu_links = [
-        (reverse('config_general'), _('General'), request.path == reverse('config_general') ),
+        (reverse('config_general'), _('General'),
+            request.path == reverse('config_general')),
     ]
 
     for app in settings.INSTALLED_APPS:
@@ -139,7 +127,8 @@ def set_submenu(sender, request, context, **kwargs):
         )
 
     menu_links.append (
-        (reverse('config_version'), _('Version'), request.path == reverse('config_version') )
+        (reverse('config_version'), _('Version'),
+            request.path == reverse('config_version'))
     )
 
     context.update({

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
     openslides.config.signals
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Defines Signals for the config.
 
