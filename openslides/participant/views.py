@@ -47,7 +47,7 @@ from openslides.config.models import config
 from openslides.participant.models import Profile
 from openslides.participant.api import gen_username, gen_password
 from openslides.participant.forms import (UserNewForm, UserEditForm,
-    ProfileForm, sersettingsForm, UserImportForm, GroupForm,
+    ProfileForm, UsersettingsForm, UserImportForm, GroupForm,
     AdminPasswordChangeForm, ConfigForm)
 
 
