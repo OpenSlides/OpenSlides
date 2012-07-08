@@ -12,9 +12,9 @@
 
 from django import forms
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext as _, ugettext_noop
 
 from openslides.utils.forms import CssClassMixin
-from openslides.utils.translation_ext import ugettext as _
 from openslides.application.models import Application
 
 
@@ -39,17 +39,20 @@ class UserModelMultipleChoiceField(forms.ModelMultipleChoiceField):
 class ApplicationForm(forms.Form, CssClassMixin):
     title = forms.CharField(widget=forms.TextInput(), label=_("Title"))
     text = forms.CharField(widget=forms.Textarea(), label=_("Text"))
-    reason = forms.CharField(widget=forms.Textarea(), required=False, label=_("Reason"))
+    reason = forms.CharField(widget=forms.Textarea(), required=False,
+        label=_("Reason"))
 
 
 class ApplicationFormTrivialChanges(ApplicationForm):
-    trivial_change = forms.BooleanField(required=False, label=_("Trivial change"),
+    trivial_change = forms.BooleanField(required=False,
+        label=_("Trivial change"),
         help_text=_("Trivial changes don't create a new version."))
 
 
 class ApplicationManagerForm(forms.ModelForm, CssClassMixin):
     submitter = UserModelChoiceField(
-        queryset=User.objects.all().exclude(profile=None).order_by("first_name"),
+        queryset=User.objects.all().exclude(profile=None).
+        order_by("first_name"),
         label=_("Submitter"),
     )
 
@@ -60,7 +63,8 @@ class ApplicationManagerForm(forms.ModelForm, CssClassMixin):
 
 class ApplicationManagerFormSupporter(ApplicationManagerForm):
     supporter = UserModelMultipleChoiceField(
-        queryset=User.objects.all().exclude(profile=None).order_by("first_name"),
+        queryset=User.objects.all().exclude(profile=None).
+        order_by("first_name"),
         required=False, label=_("Supporters"),
     )
 
@@ -73,7 +77,8 @@ class ApplicationImportForm(forms.Form, CssClassMixin):
     import_permitted = forms.BooleanField(
         required=False,
         label=_("Import applications with status \"permitted\""),
-        help_text=_("Set the initial status for each application to \"permitted\""),
+        help_text=_('Set the initial status for each application to \
+        "permitted"'),
     )
 
 
@@ -120,6 +125,7 @@ class ConfigForm(forms.Form, CssClassMixin):
 
     application_allow_trivial_change = forms.BooleanField(
         label=_("Allow trivial changes"),
-        help_text=_('Warning: Trivial changes undermine the application permission system.'),
+        help_text=_('Warning: Trivial changes undermine the application \
+        permission system.'),
         required=False,
     )

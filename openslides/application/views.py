@@ -9,13 +9,13 @@
     :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
+
+# for python 2.5 support
 from __future__ import with_statement
 
 import csv
-import utils.csv_ext
 import os
 
-from urllib import urlencode
 try:
     from urlparse import parse_qs
 except ImportError: # python <= 2.5
@@ -23,46 +23,41 @@ except ImportError: # python <= 2.5
 
 from reportlab.lib import colors
 from reportlab.lib.units import cm
-from reportlab.platypus import SimpleDocTemplate, PageBreak, Paragraph, Spacer, Table, TableStyle
+from reportlab.platypus import (SimpleDocTemplate, PageBreak, Paragraph, Spacer,
+    Table, TableStyle)
 
-from django.shortcuts import redirect
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
-from django.core.urlresolvers import reverse
 from django.core.context_processors import csrf
-from django.utils.translation import ugettext as _
-from django.utils.translation import ungettext
+from django.core.urlresolvers import reverse
 from django.db import transaction
-from django.conf import settings
+from django.shortcuts import redirect
+from django.utils.translation import ugettext as _, ungettext
 
-from openslides.config.models import config
-
+from openslides.utils import csv_ext
 from openslides.utils.pdf import stylesheet
+from openslides.utils.template import Tab
+from openslides.utils.utils import (template, permission_required,
+    del_confirm_form, gen_confirm_form)
 from openslides.utils.views import PDFView, RedirectView, DeleteView, FormView
 
-from openslides.utils.utils import template, permission_required, \
-                                   render_to_forbitten, del_confirm_form, gen_confirm_form
-from openslides.utils.template import Tab
+from openslides.config.models import config
 
 from openslides.projector.projector import Widget
 
 from openslides.poll.views import PollFormView
 
-from openslides.participant.models import Profile
 from openslides.participant.api import gen_username, gen_password
+from openslides.participant.models import Profile
 
 from openslides.agenda.models import Item
 
 from openslides.application.models import Application, AVersion, ApplicationPoll
-from openslides.application.forms import (
-    ApplicationForm,
-    ApplicationFormTrivialChanges,
-    ApplicationManagerForm,
-    ApplicationManagerFormSupporter,
-    ApplicationImportForm,
-    ConfigForm,
-)
+from openslides.application.forms import (ApplicationForm,
+    ApplicationFormTrivialChanges, ApplicationManagerForm,
+    ApplicationManagerFormSupporter, ApplicationImportForm, ConfigForm)
 
 
 @permission_required('application.can_see_application')
@@ -194,8 +189,8 @@ def edit(request, application_id=None):
         actions = None
 
     formclass = ApplicationFormTrivialChanges \
-                if config['application_allow_trivial_change'] and application_id \
-                else ApplicationForm
+        if config['application_allow_trivial_change'] and application_id \
+        else ApplicationForm
 
     managerformclass = ApplicationManagerFormSupporter \
                        if config['application_min_supporters'] \

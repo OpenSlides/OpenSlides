@@ -17,18 +17,21 @@ from django.db.models import Max
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.translation import pgettext
+from django.utils.translation import ugettext as _, ugettext_noop
 
-from projector.api import register_slidemodel
-from projector.models import SlideMixin
+from openslides.utils.utils import _propper_unicode
 
-from participant.models import Profile
-from config.models import config
-from utils.utils import _propper_unicode
-from utils.translation_ext import ugettext as _
+from openslides.config.models import config
 
-from poll.models import BaseOption, BasePoll, CountVotesCast, CountInvalid, Vote
+from openslides.participant.models import Profile
 
-from agenda.models import Item
+from openslides.poll.models import (BaseOption, BasePoll, CountVotesCast,
+    CountInvalid, Vote)
+
+from openslides.projector.api import register_slidemodel
+from openslides.projector.models import SlideMixin
+
+from openslides.agenda.models import Item
 
 
 class Application(models.Model, SlideMixin):
@@ -503,10 +506,10 @@ class Application(models.Model, SlideMixin):
 
     class Meta:
         permissions = (
-            ('can_see_application', _("Can see application", fixstr=True)),
-            ('can_create_application', _("Can create application", fixstr=True)),
-            ('can_support_application', _("Can support application", fixstr=True)),
-            ('can_manage_application', _("Can manage application", fixstr=True)),
+            ('can_see_application', ugettext_noop("Can see application")),
+            ('can_create_application', ugettext_noop("Can create application")),
+            ('can_support_application', ugettext_noop("Can support application")),
+            ('can_manage_application', ugettext_noop("Can manage application")),
         )
 
 
@@ -546,7 +549,8 @@ class ApplicationOption(BaseOption):
 
 class ApplicationPoll(BasePoll, CountInvalid, CountVotesCast):
     option_class = ApplicationOption
-    vote_values = [_('Yes', fixstr=True), _('No', fixstr=True), _('Abstain', fixstr=True)]
+    vote_values = [ugettext_noop('Yes'), ugettext_noop('No'),
+        ugettext_noop('Abstain')]
 
     application = models.ForeignKey(Application)
 

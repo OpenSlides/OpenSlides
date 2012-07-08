@@ -12,7 +12,8 @@
 
 from django.conf.urls.defaults import url, patterns
 
-from application.views import ApplicationDelete, ViewPoll, ApplicationPDF, ApplicationPollPDF, CreateAgendaItem
+from application.views import (ApplicationDelete, ViewPoll, ApplicationPDF,
+    ApplicationPollPDF, CreateAgendaItem)
 
 urlpatterns = patterns('application.views',
     url(r'^$',
@@ -55,7 +56,7 @@ urlpatterns = patterns('application.views',
         ApplicationDelete.as_view(),
         name='application_delete',
     ),
-    
+
     url(r'^del/$',
         ApplicationDelete.as_view(),
         { 'application_id' : None , 'application_ids' : None },
@@ -67,7 +68,7 @@ urlpatterns = patterns('application.views',
         name='application_set_number',
     ),
 
-    url(r'^(?P<application_id>\d+)/setstatus/' '(?P<status>[a-z]{3})/$',
+    url(r'^(?P<application_id>\d+)/setstatus/(?P<status>[a-z]{3})/$',
         'set_status',
         name='application_set_status',
     ),
