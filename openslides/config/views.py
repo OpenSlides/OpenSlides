@@ -15,7 +15,7 @@ from django.contrib import messages
 from django.contrib.auth.models import Group, Permission
 from django.core.urlresolvers import reverse
 from django.utils.importlib import import_module
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from openslides import get_version
 

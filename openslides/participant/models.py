@@ -14,7 +14,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import Q
 from django.dispatch import receiver
-from django.utils.translation import ugettext as _, ugettext_noop
+from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
 from openslides.config.signals import default_config_value
 

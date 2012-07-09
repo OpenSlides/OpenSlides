@@ -13,7 +13,7 @@
 from django import forms
 from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.contrib.auth.models import User, Group, Permission
-from django.utils.translation import ugettext as _, ugettext_noop
+from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
 from openslides.utils.forms import CssClassMixin
 from openslides.utils.translation_ext import LocalizedModelMultipleChoiceField

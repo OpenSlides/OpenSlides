@@ -20,7 +20,7 @@ from django.db.models import Q
 from django.dispatch import receiver
 from django.utils.datastructures import SortedDict
 from django.utils.importlib import import_module
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy as _
 
 from openslides.utils.template import render_block_to_string, Tab
 from openslides.utils.utils import html_strong

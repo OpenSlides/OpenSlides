@@ -14,7 +14,7 @@ from django.db import models
 
 from openslides.projector.api import register_slidemodel
 from openslides.projector.models import SlideMixin
-from openslides.utils.translation_ext import ugettext as _ # TODO
+from openslides.utils.translation_ext import ugettext_lazy as _
 from openslides.utils.modelfields import MinMaxIntegerField
 
 

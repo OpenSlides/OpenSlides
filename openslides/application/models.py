@@ -17,7 +17,7 @@ from django.db.models import Max
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.translation import pgettext
-from django.utils.translation import ugettext as _, ugettext_noop
+from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
 from openslides.utils.utils import _propper_unicode
 

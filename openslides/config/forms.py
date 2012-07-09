@@ -14,7 +14,7 @@ from django import forms
 
 from utils.forms import CssClassMixin
 from models import config
-from utils.translation_ext import ugettext as _
+from utils.translation_ext import ugettext_lazy as _
 
 
 class GeneralConfigForm(forms.Form, CssClassMixin):

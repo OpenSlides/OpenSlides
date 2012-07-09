@@ -15,7 +15,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.dispatch import receiver
 from django.utils.importlib import import_module
-from django.utils.translation import ugettext as _, ugettext_noop
+from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
 from openslides.utils.jsonfield import JSONField
 from openslides.utils.signals import template_manipulation

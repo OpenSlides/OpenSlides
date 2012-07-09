@@ -13,7 +13,7 @@
 from django import forms
 
 from utils.forms import CssClassMixin
-from utils.translation_ext import ugettext as _
+from utils.translation_ext import ugettext_lazy as _
 from models import Vote
 
 

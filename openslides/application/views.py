@@ -34,7 +34,7 @@ from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.shortcuts import redirect
-from django.utils.translation import ugettext as _, ungettext
+from django.utils.translation import ugettext_lazy as _, ungettext
 
 from openslides.utils import csv_ext
 from openslides.utils.pdf import stylesheet

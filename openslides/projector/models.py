@@ -12,7 +12,7 @@
 
 from django.db import models
 from django.dispatch import receiver
-from django.utils.translation import ugettext as _, ugettext_noop
+from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
 from openslides.config.signals import default_config_value
 
