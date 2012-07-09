@@ -84,8 +84,14 @@ def view(request, assignment_id=None):
         if request.user.has_perm('assignment.can_nominate_other'):
             form = AssignmentRunForm()
 
-    vote_results = assignment.vote_results
+
     polls = assignment.poll_set.all()
+    if not request.user.has_perm('assignment.can_manage_assignment'):
+        polls = assignment.poll_set.filter(published=True)
+        vote_results = assignment.vote_results(only_published=True)
+    else:
+        polls = assignment.poll_set.all()
+        vote_results = assignment.vote_results(only_published=False)
     return {
         'assignment': assignment,
         'form': form,
@@ -328,10 +334,12 @@ class AssignmentPDF(PDFView):
                 # Assignment details (each assignment on single page)
                 for assignment in assignments:
                     story.append(PageBreak())
-                    story = self.get_assignment(assignment, story)
+                    # append the assignment to the story-object
+                    self.get_assignment(assignment, story)
         else:  # print selected assignment
             assignment = Assignment.objects.get(id=assignment_id)
-            story = self.get_assignment(assignment, story)
+            # append the assignment to the story-object
+            self.get_assignment(assignment, story)
 
     def get_assignment(self, assignment, story):
         # title
@@ -349,52 +357,56 @@ class AssignmentPDF(PDFView):
         for c in assignment.profile.all():
             cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % unicode(c), stylesheet['Signaturefield']))
         if assignment.status == "sea":
-            for x in range(0,2*assignment.posts):
+            for x in range(0, 2 * assignment.posts):
                 cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; __________________________________________",stylesheet['Signaturefield']))
         cell2b.append(Spacer(0,0.2*cm))
 
         # Vote results
 
         # Preparing
-        vote_results = assignment.vote_results
+        vote_results = assignment.vote_results(only_published=True)
+        polls = assignment.poll_set.filter(published=True)
         data_votes = []
+
 
         # Left side
         cell3a = []
         cell3a.append(Paragraph("%s:" % (_("Vote results")), stylesheet['Heading4']))
 
-        if assignment.poll_set.count() > 1:
-            cell3a.append(Paragraph("%s %s" % (assignment.poll_set.count(), _("ballots")), stylesheet['Normal']))
+        if polls.count() == 1:
+            cell3a.append(Paragraph("%s %s" % (polls.count(), _("ballot")), stylesheet['Normal']))
+        elif polls.count() > 1:
+            cell3a.append(Paragraph("%s %s" % (polls.count(), _("ballots")), stylesheet['Normal']))
 
         # Add table head row
         headrow = []
         headrow.append(_("Candidates"))
-        for poll in assignment.poll_set.all():
-            if poll.published:
-                headrow.append("%s." % poll.get_ballot())
+        for poll in polls:
+            headrow.append("%s." % poll.get_ballot())
         data_votes.append(headrow)
 
+
         # Add result rows
+        elected_candidates = assignment.elected.all()
         for candidate, poll_list in vote_results.iteritems():
             row = []
-            if candidate in assignment.elected.all():
-                row.append("* %s" % str(candidate).split('(',1)[0])
-            else:
-                row.append(str(candidate).split('(',1)[0])
-            for poll_dict in poll_list:
-                if poll_dict['published']:
-                    vote = poll_dict['votes']
-                    if vote == None:
-                        row.append(_('was not a \ncandidate'))
-                    elif 'Yes' in vote and 'No' in vote and 'Abstain' in vote:
-                        tmp = _("Y")+": "+str(vote['Yes'])+"\n"
-                        tmp += _("N")+": "+str(vote['No'])+"\n"
-                        tmp += _("A")+": "+str(vote['Abstain'])
-                        row.append(tmp)
-                    elif 'Votes' in vote:
-                        row.append(str(vote['Votes']))
-                    else:
-                        pass
+
+            candidate_string = candidate.user.get_full_name()
+            if candidate in elected_candidates:
+                candidate_string = "* " + candidate_string
+            if candidate.group:
+                candidate_string += "\n(%s)" % candidate.group
+            row.append(candidate_string)
+            for vote in poll_list:
+                if vote == None:
+                    row.append('–')
+                elif 'Yes' in vote and 'No' in vote and 'Abstain' in vote:
+                    tmp = _("Y")+": " + vote['Yes'] + "\n"
+                    tmp += _("N")+": " + vote['No'] + "\n"
+                    tmp += _("A")+": " + vote['Abstain']
+                    row.append(tmp)
+                elif 'Votes' in vote:
+                    row.append(vote['Votes'])
                 else:
                     pass
             data_votes.append(row)
@@ -402,37 +414,35 @@ class AssignmentPDF(PDFView):
         # Add votes invalid row
         footrow_one = []
         footrow_one.append(_("Invalid votes"))
-        for poll in assignment.poll_set.all():
-            if poll.published:
-                footrow_one.append(poll.print_votesinvalid())
+        for poll in polls:
+            footrow_one.append(poll.print_votesinvalid())
         data_votes.append(footrow_one)
 
         # Add votes cast row
         footrow_two = []
         footrow_two.append(_("Votes cast"))
-        for poll in assignment.poll_set.all():
-            if poll.published:
-                footrow_two.append(poll.print_votescast())
+        for poll in polls:
+            footrow_two.append(poll.print_votescast())
         data_votes.append(footrow_two)
 
         table_votes=Table(data_votes)
         table_votes.setStyle( TableStyle([
-                        ('GRID', (0,0), (-1,-1), 0.5, colors.grey),
-                        ('VALIGN',(0,0),(-1,-1), 'TOP'),
-                        ('LINEABOVE',(0,0),(-1,0),2,colors.black),
-                        ('LINEABOVE',(0,1),(-1,1),1,colors.black),
-                        ('LINEBELOW',(0,-1),(-1,-1),2,colors.black),
-                        ('ROWBACKGROUNDS', (0, 1), (-1, -1), (colors.white, (.9, .9, .9))),
-                          ]))
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ('VALIGN',(0, 0),(-1, -1), 'TOP'),
+            ('LINEABOVE',(0, 0),(-1, 0), 2, colors.black),
+            ('LINEABOVE',(0, 1),(-1, 1), 1, colors.black),
+            ('LINEBELOW',(0, -1),(-1, -1), 2, colors.black),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), (colors.white, (.9, .9, .9))),
+        ]))
 
         # table
         data = []
         data.append([cell1a,cell1b])
-        if table_votes:
+        if polls:
             data.append([cell3a,table_votes])
-            data.append(['','* = '+_('elected')])
+            data.append(['', '* = '+_('elected')])
         else:
-            data.append([cell2a,cell2b])
+            data.append([cell2a, cell2b])
         data.append([Spacer(0,0.2*cm),''])
         t=Table(data)
         t._argW[0]=4.5*cm
@@ -442,26 +452,9 @@ class AssignmentPDF(PDFView):
                               ]))
         story.append(t)
         story.append(Spacer(0,1*cm))
+
         # text
         story.append(Paragraph("%s" % assignment.description.replace('\r\n','<br/>'), stylesheet['Paragraph']))
-        return story
-
-    def get_assignment_votes(self, assignment):
-        votes = []
-        for candidate in assignment.candidates:
-            tmplist = ((candidate, assignment.is_elected(candidate)), [])
-            for poll in assignment.poll_set.all():
-                if poll.published:
-                    if poll.get_options().filter(candidate=candidate).exists():
-                        option = AssignmentOption.objects.filter(poll=poll).get(candidate=candidate)
-                        try:
-                            tmplist[1].append(option.get_votes()[0])
-                        except IndexError:
-                            tmplist[1].append('–')
-                    else:
-                        tmplist[1].append("-")
-            votes.append(tmplist)
-        return votes
 
 
 class CreateAgendaItem(RedirectView):

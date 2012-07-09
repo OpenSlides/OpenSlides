@@ -108,8 +108,7 @@ class Assignment(models.Model, SlideMixin):
         return poll
 
 
-    @property
-    def vote_results(self):
+    def vote_results(self, only_published):
         """
         returns a table represented as a list with all candidates from all
         related polls and their vote results.
@@ -117,6 +116,8 @@ class Assignment(models.Model, SlideMixin):
         vote_results_dict = {}
         # All polls related to this assigment
         polls = self.poll_set.all()
+        if only_published:
+            polls = polls.filter(published=True)
         # All PollOption-Objects related to this assignment
         options = []
         for poll in polls:
@@ -128,18 +129,15 @@ class Assignment(models.Model, SlideMixin):
                 continue
             vote_results_dict[candidate] = []
             for poll in polls:
-                votes = {
-                    'votes': {},
-                    'published': poll.published,
-                }
+                votes = {}
                 try:
                     # candidate related to this poll
                     poll_option = poll.get_options().get(candidate=candidate)
                     for vote in poll_option.get_votes():
-                        votes['votes'][vote.value] = vote.get_weight()
+                        votes[vote.value] = vote.get_weight()
                 except AssignmentOption.DoesNotExist:
                     # candidate not in related to this poll
-                    votes['votes'] = None
+                    votes = None
                 vote_results_dict[candidate].append(votes)
         return vote_results_dict
 
@@ -159,8 +157,8 @@ class Assignment(models.Model, SlideMixin):
         data = super(Assignment, self).slide()
         data['assignment'] = self
         data['title'] = self.name
-        data['polls'] = self.poll_set.all()
-        data['vote_results'] = self.vote_results
+        data['polls'] = self.poll_set.filter(published=True)
+        data['vote_results'] = self.vote_results(only_published=True)
         data['assignment_publish_winner_results_only'] = config['assignment_publish_winner_results_only']
         data['template'] = 'projector/Assignment.html'
         return data
