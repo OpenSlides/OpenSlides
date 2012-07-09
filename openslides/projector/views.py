@@ -52,9 +52,8 @@ class ControlView(TemplateView, AjaxMixin):
                     projector_overlay = ProjectorOverlay.objects.get(
                         def_name=name)
                 except ProjectorOverlay.DoesNotExist:
-                    active = name == 'Message'
                     projector_overlay = ProjectorOverlay(def_name=name,
-                        active=active)
+                        active=False)
                     projector_overlay.save()
                 overlays.append(projector_overlay)
         return overlays

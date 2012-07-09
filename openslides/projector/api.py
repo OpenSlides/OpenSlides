@@ -135,7 +135,7 @@ def projector_message_set(message, sid=None):
     try:
         overlay = ProjectorOverlay.objects.get(def_name='Message')
     except ProjectorOverlay.DoesNotExist:
-        overlay = ProjectorOverlay(def_name='Message', active=True)
+        overlay = ProjectorOverlay(def_name='Message', active=False)
     overlay.sid=sid
     overlay.save()
 
