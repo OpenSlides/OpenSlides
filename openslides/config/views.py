@@ -75,8 +75,8 @@ class GeneralConfig(FormView):
                     codename__in=default_perms)
                 anonymous.save()
             messages.success(self.request,
-                _('Anonymous access enabled. Please modify the "Anonymous" \
-                group to fit your required permissions.'))
+                _('Anonymous access enabled. Please modify the "Anonymous" ' \
+                'group to fit your required permissions.'))
         else:
             config['system_enable_anonymous'] = False
 
