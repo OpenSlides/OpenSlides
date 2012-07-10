@@ -13,7 +13,7 @@
 from django.http import HttpResponseRedirect
 from django.forms.models import modelform_factory
 
-from utils.views import TemplateView
+from openslides.utils.views import TemplateView
 
 
 class PollFormView(TemplateView):
@@ -34,7 +34,8 @@ class PollFormView(TemplateView):
         else:
             context['forms'] = self.poll.get_vote_forms()
             FormClass = self.get_modelform_class()
-            context['pollform'] = FormClass(instance=self.poll, prefix='pollform')
+            context['pollform'] = FormClass(instance=self.poll,
+                prefix='pollform')
         return context
 
     def get_success_url(self):
@@ -50,7 +51,8 @@ class PollFormView(TemplateView):
         forms = self.poll.get_vote_forms(data=self.request.POST)
 
         FormClass = self.get_modelform_class()
-        pollform = FormClass(data=self.request.POST, instance=self.poll, prefix='pollform')
+        pollform = FormClass(data=self.request.POST, instance=self.poll,
+            prefix='pollform')
 
         error = False
         for form in forms:

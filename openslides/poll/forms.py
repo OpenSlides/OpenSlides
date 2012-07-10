@@ -11,10 +11,10 @@
 """
 
 from django import forms
+from django.utils.translation import ugettext_lazy as _
 
-from utils.forms import CssClassMixin
-from utils.translation_ext import ugettext_lazy as _
-from models import Vote
+from openslides.utils.forms import CssClassMixin
+from openslides.poll.models import Vote
 
 
 class OptionForm(forms.Form, CssClassMixin):

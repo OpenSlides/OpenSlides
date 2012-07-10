@@ -11,10 +11,8 @@
 """
 
 from django.db import models
+from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
-from openslides.projector.api import register_slidemodel
-from openslides.projector.models import SlideMixin
-from openslides.utils.translation_ext import ugettext_lazy as _
 from openslides.utils.modelfields import MinMaxIntegerField
 
 
@@ -51,7 +49,8 @@ class Vote(models.Model):
 
 
 class CountVotesCast(models.Model):
-    votescast = MinMaxIntegerField(null=True, blank=True, min_value=-2, verbose_name=_("Votes cast"))
+    votescast = MinMaxIntegerField(null=True, blank=True, min_value=-2,
+        verbose_name=_("Votes cast"))
 
     def append_pollform_fields(self, fields):
         fields.append('votescast')
@@ -64,7 +63,8 @@ class CountVotesCast(models.Model):
 
 
 class CountInvalid(models.Model):
-    votesinvalid = MinMaxIntegerField(null=True, blank=True, min_value=-2, verbose_name=_("Votes invalid"))
+    votesinvalid = MinMaxIntegerField(null=True, blank=True, min_value=-2,
+        verbose_name=_("Votes invalid"))
 
     def append_pollform_fields(self, fields):
         fields.append('votesinvalid')
@@ -87,15 +87,9 @@ class PublishPollMixin(models.Model):
         abstract = True
 
 
-class BasePoll(models.Model, SlideMixin):
-    #TODO: It would be nice if this class wouldn't be a subclass from models.Model. But it is needet aslong
-    #      BaseOption has a foreignKey on BasePoll
-    prefix = 'BasePoll'
-
-    description = models.TextField(null=True, blank=True, verbose_name=_("Description")) #TODO: Use this field or delete it.
-
+class BasePoll(models.Model):
     option_class = TextOption
-    vote_values = [_('votes', fixstr=True)]
+    vote_values = [ugettext_noop('votes')]
 
     def has_votes(self):
         """
@@ -150,7 +144,8 @@ class BasePoll(models.Model, SlideMixin):
     def get_form_values(self, option_id):
         # TODO: recall this function. It has nothing to do with a form
         """
-        Return a the values and the weight of the values as a list with two elements.
+        Return a the values and the weight of the values as a list with two
+        elements.
         """
         values = []
         for value in self.get_vote_values():
@@ -166,7 +161,8 @@ class BasePoll(models.Model, SlideMixin):
         Return the form for one option of the poll.
         """
         from poll.forms import OptionForm
-        return OptionForm(extra=self.get_form_values(kwargs['formid']), **kwargs)
+        return OptionForm(extra=self.get_form_values(kwargs['formid']),
+            **kwargs)
 
     def get_vote_forms(self, **kwargs):
         """
@@ -179,17 +175,6 @@ class BasePoll(models.Model, SlideMixin):
             forms.append(form)
         return forms
 
-    def slide(self):
-        """
-        show a Slide for the Poll.
-        """
-        data = super(BasePoll, self).slide()
-        # data['template'] = 'projector/TODO.html'
-        return data
-
-    def get_absolute_url(self):
-        return ''
-
 
 def print_value(value):
     if value == -1:
@@ -199,4 +184,3 @@ def print_value(value):
     elif value is None:
         value = ''
     return unicode(value)
-
