@@ -13,35 +13,37 @@
 import os
 
 from reportlab.lib import colors
+from reportlab.platypus import (SimpleDocTemplate, PageBreak, Paragraph,
+    Spacer, Table, TableStyle)
 from reportlab.lib.units import cm
-from reportlab.platypus import SimpleDocTemplate, PageBreak, Paragraph, Spacer, Table, TableStyle
 
-from django.shortcuts import redirect
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.utils.translation import ungettext, ugettext as _
+from django.shortcuts import redirect
+from django.utils.translation import ungettext, ugettext_lazy as _
 
-from config.models import config
-from settings import SITE_ROOT
-
-from utils.utils import template, permission_required, gen_confirm_form, del_confirm_form, ajax_request
 from utils.pdf import stylesheet
-from utils.views import FormView, DeleteView, PDFView, RedirectView
 from utils.template import Tab
-from utils.translation_ext import ugettext
+from utils.utils import (template, permission_required, gen_confirm_form,
+    del_confirm_form, ajax_request)
+from utils.views import FormView, DeleteView, PDFView, RedirectView
 
-from projector.projector import Widget
+from openslides.config.models import config
+from openslides.participant.models import Profile
 
-from poll.views import PollFormView
+from openslides.projector.projector import Widget
 
-from agenda.models import Item
+from openslides.poll.views import PollFormView
 
-from assignment.models import Assignment, AssignmentPoll, AssignmentOption
-from assignment.forms import AssignmentForm, AssignmentRunForm, ConfigForm
+from openslides.agenda.models import Item
 
-from participant.models import Profile
+from openslides.assignment.models import (Assignment, AssignmentPoll,
+    AssignmentOption)
+from openslides.assignment.forms import (AssignmentForm, AssignmentRunForm,
+    ConfigForm)
 
 
 @permission_required('assignment.can_see_assignment')
@@ -307,7 +309,8 @@ class AssignmentPDF(PDFView):
         try:
             assignment_id = self.kwargs['assignment_id']
             assignment = Assignment.objects.get(id=assignment_id)
-            filename = u'%s-%s' % (_("Assignment"), assignment.name.replace(' ','_'))
+            filename = u'%s-%s' % (_("Assignment"),
+                assignment.name.replace(' ','_'))
         except:
             filename = _("Elections")
         return filename
@@ -322,15 +325,18 @@ class AssignmentPDF(PDFView):
             story.append(Paragraph(title, stylesheet['Heading1']))
             preamble = config["assignment_pdf_preamble"]
             if preamble:
-                story.append(Paragraph("%s" % preamble.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+                story.append(Paragraph("%s" % preamble.replace('\r\n','<br/>'),
+                    stylesheet['Paragraph']))
             story.append(Spacer(0,0.75*cm))
             assignments = Assignment.objects.order_by('name')
             if not assignments: # No assignments existing
-                story.append(Paragraph(_("No assignments available."), stylesheet['Heading3']))
+                story.append(Paragraph(_("No assignments available."),
+                    stylesheet['Heading3']))
             else: # Print all assignments
                 # List of assignments
                 for assignment in assignments:
-                    story.append(Paragraph(assignment.name, stylesheet['Heading3']))
+                    story.append(Paragraph(assignment.name,
+                        stylesheet['Heading3']))
                 # Assignment details (each assignment on single page)
                 for assignment in assignments:
                     story.append(PageBreak())
@@ -343,22 +349,28 @@ class AssignmentPDF(PDFView):
 
     def get_assignment(self, assignment, story):
         # title
-        story.append(Paragraph(_("Election")+": %s" % assignment.name, stylesheet['Heading1']))
+        story.append(Paragraph(_("Election")+": %s" % assignment.name,
+            stylesheet['Heading1']))
         story.append(Spacer(0,0.5*cm))
         # posts
         cell1a = []
-        cell1a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Number of available posts"), stylesheet['Bold']))
+        cell1a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" %
+            _("Number of available posts"), stylesheet['Bold']))
         cell1b = []
         cell1b.append(Paragraph(str(assignment.posts), stylesheet['Paragraph']))
         # candidates
         cell2a = []
-        cell2a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font><seqreset id='counter'>" % _("Candidates"), stylesheet['Heading4']))
+        cell2a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font><seqreset" \
+            " id='counter'>" % _("Candidates"), stylesheet['Heading4']))
         cell2b = []
-        for c in assignment.profile.all():
-            cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % unicode(c), stylesheet['Signaturefield']))
+        for candidate in assignment.profile.all():
+            cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % candidate,
+                stylesheet['Signaturefield']))
         if assignment.status == "sea":
             for x in range(0, 2 * assignment.posts):
-                cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; __________________________________________",stylesheet['Signaturefield']))
+                cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; "
+                    "__________________________________________",
+                    stylesheet['Signaturefield']))
         cell2b.append(Spacer(0,0.2*cm))
 
         # Vote results
@@ -371,12 +383,15 @@ class AssignmentPDF(PDFView):
 
         # Left side
         cell3a = []
-        cell3a.append(Paragraph("%s:" % (_("Vote results")), stylesheet['Heading4']))
+        cell3a.append(Paragraph("%s:" % (_("Vote results")),
+            stylesheet['Heading4']))
 
         if polls.count() == 1:
-            cell3a.append(Paragraph("%s %s" % (polls.count(), _("ballot")), stylesheet['Normal']))
+            cell3a.append(Paragraph("%s %s" % (polls.count(), _("ballot")),
+                stylesheet['Normal']))
         elif polls.count() > 1:
-            cell3a.append(Paragraph("%s %s" % (polls.count(), _("ballots")), stylesheet['Normal']))
+            cell3a.append(Paragraph("%s %s" % (polls.count(), _("ballots")),
+                stylesheet['Normal']))
 
         # Add table head row
         headrow = []
@@ -443,18 +458,19 @@ class AssignmentPDF(PDFView):
             data.append(['', '* = '+_('elected')])
         else:
             data.append([cell2a, cell2b])
-        data.append([Spacer(0,0.2*cm),''])
+        data.append([Spacer(0, 0.2 * cm), ''])
         t=Table(data)
-        t._argW[0]=4.5*cm
-        t._argW[1]=11*cm
-        t.setStyle(TableStyle([ ('BOX', (0,0), (-1,-1), 1, colors.black),
-                                ('VALIGN', (0,0), (-1,-1), 'TOP'),
-                              ]))
+        t._argW[0] = 4.5 * cm
+        t._argW[1] = 11 * cm
+        t.setStyle(TableStyle([ ('BOX', (0,0), (-1, -1), 1, colors.black),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ]))
         story.append(t)
-        story.append(Spacer(0,1*cm))
+        story.append(Spacer(0, 1 * cm))
 
         # text
-        story.append(Paragraph("%s" % assignment.description.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+        story.append(Paragraph("%s" % assignment.description.replace('\r\n',
+            '<br/>'), stylesheet['Paragraph']))
 
 
 class CreateAgendaItem(RedirectView):
@@ -478,25 +494,35 @@ class AssignmentPollPDF(PDFView):
         return super(AssignmentPollPDF, self).get(request, *args, **kwargs)
 
     def get_filename(self):
-        filename = u'%s-%s-#%s' % (_("Election"), self.poll.assignment.name.replace(' ','_'), 1)#self.poll.get_ballot())
+        filename = u'%s-%s-#%s' % (_("Election"), self.poll.assignment.name
+            .replace(' ', '_'), 1)
         return filename
 
     def get_template(self, buffer):
-        return SimpleDocTemplate(buffer, topMargin=-6, bottomMargin=-6, leftMargin=0, rightMargin=0, showBoundary=False)
+        return SimpleDocTemplate(buffer, topMargin=-6, bottomMargin=-6,
+            leftMargin=0, rightMargin=0, showBoundary=False)
 
     def build_document(self, pdf_document, story):
         pdf_document.build(story)
 
     def append_to_pdf(self, story):
-        imgpath = os.path.join(SITE_ROOT, 'static/images/circle.png')
+        imgpath = os.path.join(settings.SITE_ROOT, 'static/images/circle.png')
         circle = "<img src='%s' width='15' height='15'/>&nbsp;&nbsp;" % imgpath
         cell = []
         cell.append(Spacer(0,0.8*cm))
-        cell.append(Paragraph(_("Election") + ": " + self.poll.assignment.name, stylesheet['Ballot_title']))
-        cell.append(Paragraph(self.poll.assignment.polldescription, stylesheet['Ballot_subtitle']))
+        cell.append(Paragraph(_("Election") + ": " + self.poll.assignment.name,
+            stylesheet['Ballot_title']))
+        cell.append(Paragraph(self.poll.assignment.polldescription,
+            stylesheet['Ballot_subtitle']))
         options = self.poll.get_options().order_by('candidate')
-        cell.append(Paragraph(str(self.poll.get_ballot())+". "+_("ballot")+", "+str(len(options))+" "+ ungettext("candidate", "candidates", len(options))+", "+str(self.poll.assignment.posts)+" "+_("available posts"), stylesheet['Ballot_description']))
-        cell.append(Spacer(0,0.4*cm))
+
+        ballot_string = _("%d. ballot") % self.poll.get_ballot()
+        candidate_string = ungettext("%d candidate", "%d candidates",
+            len(options)) % len(options)
+        available_posts_string = _("%d available posts") % self.poll.assignment.posts
+        cell.append(Paragraph("%s, %s, %s" % (ballot_string, candidate_string,
+            available_posts_string), stylesheet['Ballot_description']))
+        cell.append(Spacer(0, 0.4 * cm))
 
         data= []
         # get ballot papers config values
@@ -516,12 +542,17 @@ class AssignmentPollPDF(PDFView):
         if self.poll.yesnoabstain:
             for option in options:
                 candidate = option.candidate
-                cell.append(Paragraph(candidate.user.get_full_name(), stylesheet['Ballot_option_name']))
+                cell.append(Paragraph(candidate.user.get_full_name(),
+                    stylesheet['Ballot_option_name']))
                 if candidate.group:
-                    cell.append(Paragraph("(%s)" % candidate.group, stylesheet['Ballot_option_group']))
+                    cell.append(Paragraph("(%s)" % candidate.group,
+                        stylesheet['Ballot_option_group']))
                 else:
-                    cell.append(Paragraph("&nbsp;", stylesheet['Ballot_option_group']))
-                cell.append(Paragraph(circle+_("Yes")+"&nbsp; &nbsp; &nbsp; "+circle+_("No")+"&nbsp; &nbsp; &nbsp; "+circle+_("Abstention"), stylesheet['Ballot_option_YNA']))
+                    cell.append(Paragraph("&nbsp;",
+                        stylesheet['Ballot_option_group']))
+                cell.append(Paragraph(circle + _("Yes") + "&nbsp; " * 3 + circle
+                    + _("No") + "&nbsp; " * 3 + circle+ _("Abstention"),
+                    stylesheet['Ballot_option_YNA']))
             # print ballot papers
             for user in xrange(number / 2):
                 data.append([cell, cell])
@@ -529,19 +560,22 @@ class AssignmentPollPDF(PDFView):
             if rest:
                 data.append([cell, ''])
             if len(options) <= 2:
-                t = Table(data, 10.5*cm, 7.42*cm)
+                t = Table(data, 10.5 * cm, 7.42 * cm)
             elif len(options) <= 5:
-                t = Table(data, 10.5*cm, 14.84*cm)
+                t = Table(data, 10.5 * cm, 14.84 * cm)
             else:
-                t = Table(data, 10.5*cm, 29.7*cm)
+                t = Table(data, 10.5 * cm, 29.7 * cm)
         else:
             for option in options:
                 candidate = option.candidate
-                cell.append(Paragraph(circle + candidate.user.get_full_name(), stylesheet['Ballot_option_name']))
+                cell.append(Paragraph(circle + candidate.user.get_full_name(),
+                    stylesheet['Ballot_option_name']))
                 if candidate.group:
-                    cell.append(Paragraph("(%s)" % candidate.group, stylesheet['Ballot_option_group_right']))
+                    cell.append(Paragraph("(%s)" % candidate.group,
+                        stylesheet['Ballot_option_group_right']))
                 else:
-                    cell.append(Paragraph("&nbsp;", stylesheet['Ballot_option_group_right']))
+                    cell.append(Paragraph("&nbsp;",
+                        stylesheet['Ballot_option_group_right']))
             # print ballot papers
             for user in xrange(number / 2):
                 data.append([cell, cell])
@@ -549,15 +583,15 @@ class AssignmentPollPDF(PDFView):
             if rest:
                 data.append([cell, ''])
             if len(options) <= 4:
-                t = Table(data, 10.5*cm, 7.42*cm)
+                t = Table(data, 10.5 * cm, 7.42 * cm)
             elif len(options) <= 8:
-                t = Table(data, 10.5*cm, 14.84*cm)
+                t = Table(data, 10.5 * cm, 14.84 * cm)
             else:
-                t = Table(data, 10.5*cm, 29.7*cm)
+                t = Table(data, 10.5 * cm, 29.7 * cm)
 
-        t.setStyle(TableStyle([ ('GRID', (0,0), (-1,-1), 0.25, colors.grey),
-                                ('VALIGN', (0,0), (-1,-1), 'TOP'),
-                              ]))
+        t.setStyle(TableStyle([('GRID', (0, 0), (-1, -1), 0.25, colors.grey),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ]))
         story.append(t)
 
 
@@ -568,12 +602,16 @@ class Config(FormView):
 
     def get_initial(self):
         return {
-            'assignment_publish_winner_results_only': config['assignment_publish_winner_results_only'],
-            'assignment_pdf_ballot_papers_selection': config['assignment_pdf_ballot_papers_selection'],
-            'assignment_pdf_ballot_papers_number': config['assignment_pdf_ballot_papers_number'],
+            'assignment_publish_winner_results_only':
+                config['assignment_publish_winner_results_only'],
+            'assignment_pdf_ballot_papers_selection':
+                config['assignment_pdf_ballot_papers_selection'],
+            'assignment_pdf_ballot_papers_number':
+                config['assignment_pdf_ballot_papers_number'],
             'assignment_pdf_title': config['assignment_pdf_title'],
             'assignment_pdf_preamble': config['assignment_pdf_preamble'],
-            'assignment_poll_vote_values': config['assignment_poll_vote_values'],
+            'assignment_poll_vote_values':
+                config['assignment_poll_vote_values'],
         }
 
     def form_valid(self, form):
@@ -581,21 +619,30 @@ class Config(FormView):
             config['assignment_publish_winner_results_only'] = True
         else:
             config['assignment_publish_winner_results_only'] = False
-        config['assignment_pdf_ballot_papers_selection'] = form.cleaned_data['assignment_pdf_ballot_papers_selection']
-        config['assignment_pdf_ballot_papers_number'] = form.cleaned_data['assignment_pdf_ballot_papers_number']
-        config['assignment_pdf_title'] = form.cleaned_data['assignment_pdf_title']
-        config['assignment_pdf_preamble'] = form.cleaned_data['assignment_pdf_preamble']
-        config['assignment_poll_vote_values'] = form.cleaned_data['assignment_poll_vote_values']
-        messages.success(self.request, _('Election settings successfully saved.'))
+        config['assignment_pdf_ballot_papers_selection'] = \
+            form.cleaned_data['assignment_pdf_ballot_papers_selection']
+        config['assignment_pdf_ballot_papers_number'] = \
+            form.cleaned_data['assignment_pdf_ballot_papers_number']
+        config['assignment_pdf_title'] = \
+            form.cleaned_data['assignment_pdf_title']
+        config['assignment_pdf_preamble'] = \
+            form.cleaned_data['assignment_pdf_preamble']
+        config['assignment_poll_vote_values'] = \
+            form.cleaned_data['assignment_poll_vote_values']
+        messages.success(self.request,
+            _('Election settings successfully saved.'))
         return super(Config, self).form_valid(form)
 
 
 def register_tab(request):
-    selected = True if request.path.startswith('/assignment/') else False
+    selected = request.path.startswith('/assignment/')
     return Tab(
         title=_('Elections'),
         url=reverse('assignment_overview'),
-        permission=request.user.has_perm('assignment.can_see_assignment') or request.user.has_perm('assignment.can_nominate_other') or request.user.has_perm('assignment.can_nominate_self') or request.user.has_perm('assignment.can_manage_assignment'),
+        permission=request.user.has_perm('assignment.can_see_assignment')
+            or request.user.has_perm('assignment.can_nominate_other')
+            or request.user.has_perm('assignment.can_nominate_self')
+            or request.user.has_perm('assignment.can_manage_assignment'),
         selected=selected,
     )
 

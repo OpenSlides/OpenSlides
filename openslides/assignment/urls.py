@@ -10,7 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.conf.urls.defaults import *
+from django.conf.urls.defaults import url, patterns
 
 from assignment.views import (ViewPoll, AssignmentPDF, AssignmentPollPDF,
     AssignmentPollDelete, CreateAgendaItem)
@@ -21,41 +21,41 @@ urlpatterns = patterns('assignment.views',
         name='assignment_overview',
     ),
 
-    url(r'^(?P<assignment_id>\d+)$',
+    url(r'^(?P<assignment_id>\d+)/$',
         'view',
         name='assignment_view'),
 
-    url(r'^new$',
+    url(r'^new/$',
         'edit',
         name='assignment_new',
     ),
 
-    url(r'^(?P<assignment_id>\d+)/edit$',
+    url(r'^(?P<assignment_id>\d+)/edit/$',
         'edit',
         name='assignment_edit',
     ),
 
-    url(r'^(?P<assignment_id>\d+)/del$',
+    url(r'^(?P<assignment_id>\d+)/del/$',
         'delete',
         name='assignment_delete',
     ),
 
-    url(r'^(?P<assignment_id>\d+)/setstatus/(?P<status>[a-z]{3})$',
+    url(r'^(?P<assignment_id>\d+)/setstatus/(?P<status>[a-z]{3})/$',
         'set_status',
         name='assignment_set_status',
     ),
 
-    url(r'^(?P<assignment_id>\d+)/run$',
+    url(r'^(?P<assignment_id>\d+)/run/$',
         'run',
         name='assignment_run',
     ),
 
-    url(r'^(?P<assignment_id>\d+)/delrun$',
+    url(r'^(?P<assignment_id>\d+)/delrun/$',
         'delrun',
         name='assignment_delrun',
     ),
 
-    url(r'^(?P<assignment_id>\d+)/delother/(?P<profile_id>\d+)$',
+    url(r'^(?P<assignment_id>\d+)/delother/(?P<profile_id>\d+)/$',
         'delother',
         name='assignment_delother',
     ),
@@ -80,22 +80,22 @@ urlpatterns = patterns('assignment.views',
         name='print_assignment',
     ),
 
-    url(r'^(?P<assignment_id>\d+)/print$',
+    url(r'^(?P<assignment_id>\d+)/print/$',
         AssignmentPDF.as_view(),
         name='print_assignment',
     ),
 
-    url(r'^(?P<assignment_id>\d+)/gen_poll$',
+    url(r'^(?P<assignment_id>\d+)/gen_poll/$',
         'gen_poll',
         name='assignment_gen_poll',
     ),
 
-    url(r'^poll/(?P<poll_id>\d+)$',
+    url(r'^poll/(?P<poll_id>\d+)/$',
         ViewPoll.as_view(),
         name='assignment_poll_view',
     ),
 
-    url(r'^poll/(?P<pk>\d+)/del$',
+    url(r'^poll/(?P<pk>\d+)/del/$',
         AssignmentPollDelete.as_view(),
         name='assignment_poll_delete',
     ),
@@ -105,13 +105,13 @@ urlpatterns = patterns('assignment.views',
         name='assignment_poll_publish_status',
     ),
 
-    url(r'^(?P<assignment_id>\d+)/elected/(?P<profile_id>\d+)$',
+    url(r'^(?P<assignment_id>\d+)/elected/(?P<profile_id>\d+)/$',
         'set_elected',
         {'elected': True},
         name='assignment_user_elected',
     ),
 
-    url(r'^(?P<assignment_id>\d+)/notelected/(?P<profile_id>\d+)$',
+    url(r'^(?P<assignment_id>\d+)/notelected/(?P<profile_id>\d+)/$',
         'set_elected',
         {'elected': False},
         name='assignment_user_not_elected',

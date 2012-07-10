@@ -29,7 +29,7 @@ from reportlab.platypus import (SimpleDocTemplate, PageBreak, Paragraph, Spacer,
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.db import transaction

@@ -10,17 +10,21 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.db import models
 from django.core.urlresolvers import reverse
+from django.db import models
+from django.dispatch import receiver
+from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
-from config.models import config
+from openslides.config.models import config
+from openslides.config.signals import default_config_value
 
-from participant.models import Profile
+from openslides.projector.api import register_slidemodel
+from openslides.projector.projector import SlideMixin
 
-from projector.projector import SlideMixin
-from projector.api import register_slidemodel
-from poll.models import BasePoll, CountInvalid, CountVotesCast, BaseOption, PublishPollMixin
-from utils.translation_ext import ugettext as _
+from openslides.participant.models import Profile
+
+from openslides.poll.models import (BasePoll, CountInvalid, CountVotesCast,
+    BaseOption, PublishPollMixin)
 
 from agenda.models import Item
 
@@ -34,11 +38,15 @@ class Assignment(models.Model, SlideMixin):
     )
 
     name = models.CharField(max_length=100, verbose_name=_("Name"))
-    description = models.TextField(null=True, blank=True, verbose_name=_("Description"))
-    posts = models.PositiveSmallIntegerField(verbose_name=_("Number of available posts"))
-    polldescription = models.CharField(max_length=100, null=True, blank=True, verbose_name=_("Short description (for ballot paper)"))
-    profile = models.ManyToManyField(Profile, null=True, blank=True) # Rename it in candidate
-    elected = models.ManyToManyField(Profile, null=True, blank=True, related_name='elected_set')
+    description = models.TextField(null=True, blank=True,
+        verbose_name=_("Description"))
+    posts = models.PositiveSmallIntegerField(
+        verbose_name=_("Number of available posts"))
+    polldescription = models.CharField(max_length=100, null=True, blank=True,
+        verbose_name=_("Short description (for ballot paper)"))
+    profile = models.ManyToManyField(Profile, null=True, blank=True)
+    elected = models.ManyToManyField(Profile, null=True, blank=True,
+        related_name='elected_set')
     status = models.CharField(max_length=3, choices=STATUS, default='sea')
 
     def set_status(self, status):
@@ -50,7 +58,8 @@ class Assignment(models.Model, SlideMixin):
         if error:
             raise NameError(_('%s is not a valid status.') % status)
         if self.status == status:
-            raise NameError(_('The assignment status is already %s.') % self.status)
+            raise NameError(_('The assignment status is already %s.')
+                % self.status)
         self.status = status
         self.save()
 
@@ -159,7 +168,8 @@ class Assignment(models.Model, SlideMixin):
         data['title'] = self.name
         data['polls'] = self.poll_set.filter(published=True)
         data['vote_results'] = self.vote_results(only_published=True)
-        data['assignment_publish_winner_results_only'] = config['assignment_publish_winner_results_only']
+        data['assignment_publish_winner_results_only'] = \
+            config['assignment_publish_winner_results_only']
         data['template'] = 'projector/Assignment.html'
         return data
 
@@ -176,10 +186,11 @@ class Assignment(models.Model, SlideMixin):
 
     class Meta:
         permissions = (
-            ('can_see_assignment', _("Can see assignment", fixstr=True)),
-            ('can_nominate_other', _("Can nominate another person", fixstr=True)),
-            ('can_nominate_self', _("Can nominate themselves", fixstr=True)),
-            ('can_manage_assignment', _("Can manage assignment", fixstr=True)),
+            ('can_see_assignment', ugettext_noop("Can see assignment")),
+            ('can_nominate_other',
+                ugettext_noop("Can nominate another person")),
+            ('can_nominate_self', ugettext_noop("Can nominate themselves")),
+            ('can_manage_assignment', ugettext_noop("Can manage assignment")),
         )
 
 register_slidemodel(Assignment)
@@ -209,15 +220,16 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
                 self.yesnoabstain = True
             else:
                 # candidates <= available posts -> yes/no/abstain
-                if self.assignment.candidates.count() <= self.assignment.posts - self.assignment.elected.count():
+                if self.assignment.candidates.count() <= (self.assignment.posts
+                        - self.assignment.elected.count()):
                     self.yesnoabstain = True
                 else:
                     self.yesnoabstain = False
             self.save()
         if self.yesnoabstain:
-            return [_('Yes', fixstr=True), _('No', fixstr=True), _('Abstain', fixstr=True)]
+            return [_('Yes'), _('No'), _('Abstain')]
         else:
-            return [_('Votes', fixstr=True)]
+            return [_('Votes')]
 
     def append_pollform_fields(self, fields):
         CountInvalid.append_pollform_fields(self, fields)
@@ -237,8 +249,6 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
         return _("Ballot %d") % self.get_ballot()
 
 
-from django.dispatch import receiver
-from openslides.config.signals import default_config_value
 
 
 @receiver(default_config_value, dispatch_uid="assignment_default_config")
