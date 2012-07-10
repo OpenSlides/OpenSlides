@@ -116,7 +116,8 @@ def set_submenu(sender, request, context, **kwargs):
         except (ImportError, AttributeError):
             continue
 
-        appname = mod.__name__.split('.')[0]
+        appname = mod.__name__.split('.')[-1]
+
         selected = reverse('config_%s' % appname) == request.path
         try:
             title = mod.NAME

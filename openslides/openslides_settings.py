@@ -12,7 +12,6 @@
 
 import os
 import sys
-from django.conf.global_settings import *
 
 _fs_encoding = sys.getfilesystemencoding() or sys.getdefaultencoding()
 def _fs2unicode(s):
@@ -21,11 +20,10 @@ def _fs2unicode(s):
     return s.decode(_fs_encoding)
 
 SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
-#SITE_ROOT = os.path.join(SITE_ROOT, '..')
-
 
 AUTH_PROFILE_MODULE = 'participant.Profile'
-AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', 'openslides.utils.auth.AnonymousAuth',)
+AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',
+    'openslides.utils.auth.AnonymousAuth',)
 
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
@@ -34,15 +32,14 @@ DBPATH = _fs2unicode(os.path.join(os.path.join(SITE_ROOT, '..'), 'database.db'))
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': DBPATH,                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': DBPATH,
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
     }
 }
-
 
 ugettext = lambda s: s
 
@@ -111,7 +108,8 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'openslides.urls'
 
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+    # Put strings here, like "/home/html/django_templates" or
+    # "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     _fs2unicode(os.path.join(SITE_ROOT, 'templates')),
@@ -124,14 +122,14 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mptt',
-    'utils',
-    'poll',
-    'projector',
-    'agenda',
-    'application',
-    'assignment',
-    'participant',
-    'config',
+    'openslides.utils',
+    'openslides.poll',
+    'openslides.projector',
+    'openslides.agenda',
+    'openslides.application',
+    'openslides.assignment',
+    'openslides.participant',
+    'openslides.config',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -140,6 +138,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.core.context_processors.i18n',
     'django.core.context_processors.static',
-    'utils.utils.revision',
+    'openslides.utils.utils.revision',
     'openslides.utils.auth.anonymous_context_additions',
 )

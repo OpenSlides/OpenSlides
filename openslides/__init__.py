@@ -55,7 +55,6 @@ def hg_version():
     try:
         ui = hgui.ui()
         repository = localrepository(ui, join(conts, '..'))
-        #repository = localrepository(ui, conts)
         ctx = repository['.']
         if ctx.tags() and ctx.tags() != ['tip']:
             version = ' '.join(ctx.tags())
@@ -77,7 +76,7 @@ def hg_version():
     return version
 
 
-import os, site
-
-SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
-site.addsitedir(SITE_ROOT)
+## import os, site
+##
+## SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
+## site.addsitedir(SITE_ROOT)

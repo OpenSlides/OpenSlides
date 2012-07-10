@@ -10,6 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+# for python 2.5 support
 from __future__ import with_statement
 
 import os
@@ -72,6 +73,7 @@ def main(argv = None):
     start_browser(url)
     execute_from_command_line(argv)
 
+
 def detect_listen_opts(address, port):
     if address is None:
         try:
@@ -93,6 +95,7 @@ def detect_listen_opts(address, port):
 
     return address, port
 
+
 def start_browser(url):
     browser = webbrowser.get()
     def f():
@@ -101,6 +104,7 @@ def start_browser(url):
 
     t = threading.Thread(target = f)
     t.start()
+
 
 def prepare_openslides(url, always_syncdb = False):
     settings_module = os.environ.get(django.conf.ENVIRONMENT_VARIABLE)
@@ -140,12 +144,14 @@ def prepare_openslides(url, always_syncdb = False):
     create_or_reset_admin_user()
     return True
 
+
 def run_syncdb(url):
     # now initialize the database
     argv = ["", "syncdb", "--noinput"]
     execute_from_command_line(argv)
 
     set_system_url(url)
+
 
 def check_database(url):
     """Detect if database was deleted and recreate if necessary"""
@@ -161,6 +167,7 @@ def check_database(url):
         create_or_reset_admin_user()
         return True
     return False
+
 
 def create_or_reset_admin_user():
     # can't be imported in global scope as it already requires
@@ -180,6 +187,7 @@ def create_or_reset_admin_user():
     obj.set_password("admin")
     obj.save()
 
+
 def set_system_url(url):
     # can't be imported in global scope as it already requires
     # the settings module during import
@@ -195,6 +203,7 @@ def generate_secret_key():
     # same chars/ length as used in djangos startproject command
     chars = "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)"
     return get_random_string(50, chars)
+
 
 if __name__ == "__main__":
     main()

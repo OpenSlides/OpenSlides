@@ -25,11 +25,11 @@ from django.contrib.auth.models import User
 from django.shortcuts import redirect
 from django.utils.translation import ungettext, ugettext as _
 
-from utils.pdf import stylesheet
-from utils.template import Tab
-from utils.utils import (template, permission_required, gen_confirm_form,
-    del_confirm_form, ajax_request)
-from utils.views import FormView, DeleteView, PDFView, RedirectView
+from openslides.utils.pdf import stylesheet
+from openslides.utils.template import Tab
+from openslides.utils.utils import (template, permission_required,
+    gen_confirm_form, del_confirm_form, ajax_request)
+from openslides.utils.views import FormView, DeleteView, PDFView, RedirectView
 
 from openslides.config.models import config
 from openslides.participant.models import Profile

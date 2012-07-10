@@ -12,10 +12,10 @@
 
 from django.conf.urls.defaults import url, patterns
 
-from assignment.views import (ViewPoll, AssignmentPDF, AssignmentPollPDF,
-    AssignmentPollDelete, CreateAgendaItem)
+from openslides.assignment.views import (ViewPoll, AssignmentPDF,
+    AssignmentPollPDF, AssignmentPollDelete, CreateAgendaItem)
 
-urlpatterns = patterns('assignment.views',
+urlpatterns = patterns('openslides.assignment.views',
     url(r'^$',
         'get_overview',
         name='assignment_overview',

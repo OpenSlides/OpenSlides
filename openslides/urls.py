@@ -10,26 +10,25 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.conf.urls.defaults import patterns, url, include
 from django.conf import settings
-from django.utils.importlib import import_module
+from django.conf.urls.defaults import patterns, url, include
 from django.shortcuts import redirect
+from django.utils.importlib import import_module
 
 from openslides.utils.views import FrontPage
 
 handler500 = 'openslides.utils.views.server_error'
 
-
 urlpatterns = patterns('',
     # frontpage
     (r'^$', FrontPage.as_view()),
 
-    (r'^agenda/', include('agenda.urls')),
-    (r'^application/', include('application.urls')),
-    (r'^assignment/', include('assignment.urls')),
-    (r'^participant/', include('participant.urls')),
-    (r'^config/', include('config.urls')),
-    (r'^projector/', include('projector.urls')),
+    (r'^agenda/', include('openslides.agenda.urls')),
+    (r'^application/', include('openslides.application.urls')),
+    (r'^assignment/', include('openslides.assignment.urls')),
+    (r'^participant/', include('openslides.participant.urls')),
+    (r'^config/', include('openslides.config.urls')),
+    (r'^projector/', include('openslides.projector.urls')),
     (r'^i18n/', include('django.conf.urls.i18n')),
 )
 
@@ -44,7 +43,8 @@ for plugin in settings.INSTALLED_PLUGINS:
         continue
 
     plugin_name = mod.__name__.split('.')[0]
-    urlpatterns += patterns('', (r'^%s/' % plugin_name, include('%s.urls' % plugin_name)))
+    urlpatterns += patterns('', (r'^%s/' % plugin_name, include('%s.urls'
+        % plugin_name)))
     js_info_dict['packages'].append(plugin_name)
 
 
@@ -64,7 +64,7 @@ urlpatterns += patterns('',
     ),
 
     url(r'^usersettings/$',
-        'participant.views.user_settings',
+        'openslides.participant.views.user_settings',
         name='user_settings',
     ),
 

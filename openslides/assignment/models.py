@@ -26,7 +26,7 @@ from openslides.participant.models import Profile
 from openslides.poll.models import (BasePoll, CountInvalid, CountVotesCast,
     BaseOption, PublishPollMixin)
 
-from agenda.models import Item
+from openslides.agenda.models import Item
 
 
 class Assignment(models.Model, SlideMixin):

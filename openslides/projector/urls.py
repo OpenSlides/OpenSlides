@@ -17,7 +17,7 @@ from openslides.projector.views import (ControlView, ActivateView,
     CountdownEdit, ProjectorEdit, Projector, ActivateOverlay)
 
 
-urlpatterns = patterns('projector.views',
+urlpatterns = patterns('',
     url(r'^$',
         Projector.as_view(),
         {'sid': None},

@@ -33,7 +33,7 @@ for app in settings.INSTALLED_APPS:
         mod = import_module(app + '.views')
     except ImportError:
         continue
-    appname = mod.__name__.split('.')[0]
+    appname = mod.__name__.split('.')[-2]
     try:
         urlpatterns += patterns('', url(
             r'^%s/$' % appname,

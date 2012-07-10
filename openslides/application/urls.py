@@ -12,10 +12,10 @@
 
 from django.conf.urls.defaults import url, patterns
 
-from application.views import (ApplicationDelete, ViewPoll, ApplicationPDF,
-    ApplicationPollPDF, CreateAgendaItem)
+from openslides.application.views import (ApplicationDelete, ViewPoll,
+    ApplicationPDF, ApplicationPollPDF, CreateAgendaItem)
 
-urlpatterns = patterns('application.views',
+urlpatterns = patterns('openslides.application.views',
     url(r'^$',
         'overview',
         name='application_overview',

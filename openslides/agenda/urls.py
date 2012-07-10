@@ -11,8 +11,8 @@
 """
 
 from django.conf.urls.defaults import url, patterns
-from agenda.views import (Overview, View, SetClosed, ItemUpdate, ItemCreate,
-    ItemDelete, AgendaPDF)
+from openslides.agenda.views import (Overview, View, SetClosed, ItemUpdate,
+    ItemCreate, ItemDelete, AgendaPDF)
 
 urlpatterns = patterns('',
     url(r'^$',

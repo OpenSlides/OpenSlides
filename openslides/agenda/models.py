@@ -104,23 +104,12 @@ class Item(MPTTModel, SlideMixin):
         self.closed = closed
         self.save()
 
-    ## @property
-    ## def active_parent(self):
-        ## """
-        ## Return True if the item has an active parent.
-        ## """
-        ## sid = get_active_slide(only_sid=True).split()
-        ## if  len(sid) == 2 and sid[0] == self.prefix:
-            ## if self.get_ancestors().filter(pk=sid[0]).exists():
-                ## return True
-        ## return False
-
     @property
     def weight_form(self):
         """
         Return the WeightForm for this item.
         """
-        from agenda.forms import ItemOrderForm
+        from openslides.agenda.forms import ItemOrderForm
         try:
             parent = self.parent.id
         except AttributeError:

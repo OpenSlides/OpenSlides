@@ -13,10 +13,10 @@
 from django import forms
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
-from utils.forms import CssClassMixin
+from openslides.utils.forms import CssClassMixin
 
-from participant.models import Profile
-from assignment.models import Assignment
+from openslides.participant.models import Profile
+from openslides.assignment.models import Assignment
 
 
 class AssignmentForm(forms.ModelForm, CssClassMixin):

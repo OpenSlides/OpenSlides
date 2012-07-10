@@ -90,7 +90,7 @@ stylesheet.add(ParagraphStyle(
     leading=20,
 ), alias='h3')
 stylesheet.add(ParagraphStyle(
-    name 'Heading4',
+    name='Heading4',
     parent=stylesheet['Bold'],
     fontSize=10,
     leading=20,

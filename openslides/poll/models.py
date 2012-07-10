@@ -160,7 +160,7 @@ class BasePoll(models.Model):
         """
         Return the form for one option of the poll.
         """
-        from poll.forms import OptionForm
+        from openslides.poll.forms import OptionForm
         return OptionForm(extra=self.get_form_values(kwargs['formid']),
             **kwargs)
 
