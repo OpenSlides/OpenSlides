@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-10 02:09+0200\n"
+"POT-Creation-Date: 2012-07-10 02:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: German\n"
@@ -182,8 +182,8 @@ msgstr "Tagesordnungs-Einstellungen"
 #: participant/templates/participant/config.html:13
 #: participant/templates/participant/edit.html:22
 #: participant/templates/participant/group_edit.html:18
-#: participant/templates/participant/password_change.html:17
-#: participant/templates/participant/settings.html:17
+#: participant/templates/participant/password_change.html:22
+#: participant/templates/participant/settings.html:22
 #: projector/templates/projector/new.html:13
 msgid "Save"
 msgstr "Speichern"
@@ -201,8 +201,8 @@ msgstr "Speichern"
 #: participant/templates/participant/edit.html:29
 #: participant/templates/participant/group_edit.html:25
 #: participant/templates/participant/import.html:27
-#: participant/templates/participant/password_change.html:21
-#: participant/templates/participant/settings.html:21
+#: participant/templates/participant/password_change.html:26
+#: participant/templates/participant/settings.html:26
 #: projector/templates/projector/new.html:20
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -2061,17 +2061,25 @@ msgstr "Keine Teilnehmer/innen vorhanden."
 
 #: participant/templates/participant/password_change.html:5
 #: participant/templates/participant/password_change.html:11
+#: participant/templates/participant/settings.html:11
+msgid "Password Settings"
+msgstr "Passwort Einstellungen"
+
+#: participant/templates/participant/password_change.html:8
+#: participant/templates/participant/settings.html:8 templates/base.html:29
+msgid "User Settings"
+msgstr "Benutzereinstellungen"
+
+#: participant/templates/participant/password_change.html:10
+#: participant/templates/participant/settings.html:5
+#: participant/templates/participant/settings.html:10
+#: participant/templates/participant/settings.html:16
+msgid "Personal Settings"
+msgstr "Persönliche Einstellungen"
+
+#: participant/templates/participant/password_change.html:16
 msgid "New password"
 msgstr "Neues Passwort"
-
-#: participant/templates/participant/settings.html:5
-#: participant/templates/participant/settings.html:11
-msgid "Your Settings"
-msgstr "Ihre Einstellungen"
-
-#: participant/templates/participant/settings.html:25
-msgid "Change your password"
-msgstr "Ändere dein Passwort"
 
 #: poll/models.py:67
 msgid "Votes invalid"
@@ -2199,10 +2207,6 @@ msgstr "Startseite"
 #: templates/base.html:27
 msgid "Logout"
 msgstr "Abmelden"
-
-#: templates/base.html:29
-msgid "User Settings"
-msgstr "Benutzereinstellungen"
 
 #: templates/front_page.html:12
 msgid "You have access to the following pages:"
