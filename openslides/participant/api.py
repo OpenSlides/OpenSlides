@@ -31,7 +31,7 @@ def gen_username(first_name, last_name):
     """
     generates the username for new users.
     """
-    testname = "%s%s" % (first_name, last_name)
+    testname = "%s %s" % (first_name.strip(), last_name.strip())
     try:
         User.objects.get(username=testname)
     except User.DoesNotExist:
