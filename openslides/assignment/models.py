@@ -227,9 +227,10 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
                     self.yesnoabstain = False
             self.save()
         if self.yesnoabstain:
-            return [_('Yes'), _('No'), _('Abstain')]
+            return [ugettext_noop('Yes'), ugettext_noop('No'),
+                ugettext_noop('Abstain')]
         else:
-            return [_('Votes')]
+            return [ugettext_noop('Votes')]
 
     def append_pollform_fields(self, fields):
         CountInvalid.append_pollform_fields(self, fields)

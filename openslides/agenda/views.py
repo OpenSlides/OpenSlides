@@ -16,7 +16,7 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Model
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 from django.views.generic.detail import SingleObjectMixin
 
 from openslides.utils.pdf import stylesheet
@@ -254,7 +254,7 @@ def register_tab(request):
     """
     register the agenda tab.
     """
-    selected = True if request.path.startswith('/agenda/') else False
+    selected = request.path.startswith('/agenda/')
     return Tab(
         title=_('Agenda'),
         url=reverse('item_overview'),

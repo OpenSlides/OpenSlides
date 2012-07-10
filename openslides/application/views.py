@@ -34,7 +34,7 @@ from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.shortcuts import redirect
-from django.utils.translation import ugettext_lazy as _, ungettext
+from django.utils.translation import ugettext as _, ungettext
 
 from openslides.utils import csv_ext
 from openslides.utils.pdf import stylesheet
@@ -852,13 +852,13 @@ class ApplicationPollPDF(PDFView):
         circle = "<img src='%s' width='15' height='15'/>&nbsp;&nbsp;" % imgpath
         cell = []
         cell.append(Spacer(0,0.8*cm))
-        cell.append(Paragraph(_("Application No.")+" "+str(self.poll.application.number), stylesheet['Ballot_title']))
+        cell.append(Paragraph(_("Application No. %s") % self.poll.application.number, stylesheet['Ballot_title']))
         cell.append(Paragraph(self.poll.application.title, stylesheet['Ballot_subtitle']))
-        cell.append(Paragraph(str(self.poll.get_ballot())+". "+_("Vote"), stylesheet['Ballot_description']))
+        cell.append(Paragraph(_("%d. Vote") % self.poll.get_ballot(), stylesheet['Ballot_description']))
         cell.append(Spacer(0,0.5*cm))
-        cell.append(Paragraph(circle+_("Yes"), stylesheet['Ballot_option']))
-        cell.append(Paragraph(circle+_("No"), stylesheet['Ballot_option']))
-        cell.append(Paragraph(circle+_("Abstention"), stylesheet['Ballot_option']))
+        cell.append(Paragraph(circle + unicode(_("Yes")), stylesheet['Ballot_option']))
+        cell.append(Paragraph(circle + unicode(_("No")), stylesheet['Ballot_option']))
+        cell.append(Paragraph(circle + unicode(_("Abstention")), stylesheet['Ballot_option']))
         data= []
         # get ballot papers config values
         ballot_papers_selection = config["application_pdf_ballot_papers_selection"]
@@ -875,15 +875,15 @@ class ApplicationPollPDF(PDFView):
 
         # print ballot papers
         if number > 0:
-            for user in xrange(number/2):
-                data.append([cell,cell])
+            for user in xrange(number / 2):
+                data.append([cell, cell])
             rest = number % 2
             if rest:
-                data.append([cell,''])
-            t=Table(data, 10.5*cm, 7.42*cm)
-            t.setStyle(TableStyle([ ('GRID', (0,0), (-1,-1), 0.25, colors.grey),
-                                ('VALIGN', (0,0), (-1,-1), 'TOP'),
-                              ]))
+                data.append([cell, ''])
+            t=Table(data, 10.5 * cm, 7.42 * cm)
+            t.setStyle(TableStyle([('GRID', (0, 0), (-1, -1), 0.25, colors.grey),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ]))
             story.append(t)
 
 

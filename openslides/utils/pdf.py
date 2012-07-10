@@ -214,23 +214,22 @@ def firstPage(canvas, doc):
     title_line = u"%s | %s" % (config["event_name"], config["event_description"])
     if len(title_line) > 75:
         title_line = "%s ..." % title_line[:70]
-    canvas.drawString(2.75*cm, 28*cm, title_line)
+    canvas.drawString(2.75 * cm, 28 * cm, title_line)
     if config["event_date"] and config["event_location"]:
         canvas.drawString(2.75 * cm, 27.6 * cm, u"%s, %s" % (config["event_date"], config["event_location"]))
     # time
     canvas.setFont('Ubuntu', 7)
     time = datetime.now().strftime(str(_("%Y-%m-%d %H:%Mh")))
-    canvas.drawString(15 * cm, 28 * cm, _("Printed") + ": %s" % time)
+    canvas.drawString(15 * cm, 28 * cm, unicode(_("Printed: %s") % time))
     # title
     if doc.title:
         canvas.setFont('Ubuntu-Bold', 24)
         canvas.setFillGray(0)
-        #canvas.drawCentredString(PAGE_WIDTH/2.0, PAGE_HEIGHT-108, doc.title)
-        canvas.drawString(2.75 * cm, PAGE_HEIGHT - 108, doc.title)
+        canvas.drawString(2.75 * cm, PAGE_HEIGHT - 108, unicode(doc.title))
     # footer (with page number)
     canvas.setFont('Ubuntu', 8)
     canvas.setFillGray(0.4)
-    canvas.drawString(10 * cm, 1*cm, _("Page") + " %s" % doc.page)
+    canvas.drawString(10 * cm, 1 * cm, unicode(_("Page %s") % doc.page))
     canvas.restoreState()
 
 
@@ -239,5 +238,5 @@ def laterPages(canvas, doc):
     # footer (with page number)
     canvas.setFont('Ubuntu', 7)
     canvas.setFillGray(0.4)
-    canvas.drawString(10 * cm, 1 * cm, _("Page") + " %s" % doc.page)
+    canvas.drawString(10 * cm, 1 * cm, unicode(_("Page %s") % doc.page))
     canvas.restoreState()

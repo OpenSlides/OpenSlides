@@ -23,7 +23,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
-from django.utils.translation import ungettext, ugettext_lazy as _
+from django.utils.translation import ungettext, ugettext as _
 
 from utils.pdf import stylesheet
 from utils.template import Tab
@@ -325,9 +325,9 @@ class AssignmentPDF(PDFView):
             story.append(Paragraph(title, stylesheet['Heading1']))
             preamble = config["assignment_pdf_preamble"]
             if preamble:
-                story.append(Paragraph("%s" % preamble.replace('\r\n','<br/>'),
+                story.append(Paragraph("%s" % preamble.replace('\r\n', '<br/>'),
                     stylesheet['Paragraph']))
-            story.append(Spacer(0,0.75*cm))
+            story.append(Spacer(0, 0.75 * cm))
             assignments = Assignment.objects.order_by('name')
             if not assignments: # No assignments existing
                 story.append(Paragraph(_("No assignments available."),
@@ -349,9 +349,9 @@ class AssignmentPDF(PDFView):
 
     def get_assignment(self, assignment, story):
         # title
-        story.append(Paragraph(_("Election")+": %s" % assignment.name,
+        story.append(Paragraph(_("Election: %s") % assignment.name,
             stylesheet['Heading1']))
-        story.append(Spacer(0,0.5*cm))
+        story.append(Spacer(0, 0.5 * cm))
         # posts
         cell1a = []
         cell1a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" %
@@ -371,7 +371,7 @@ class AssignmentPDF(PDFView):
                 cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; "
                     "__________________________________________",
                     stylesheet['Signaturefield']))
-        cell2b.append(Spacer(0,0.2*cm))
+        cell2b.append(Spacer(0, 0.2 * cm))
 
         # Vote results
 
@@ -379,7 +379,6 @@ class AssignmentPDF(PDFView):
         vote_results = assignment.vote_results(only_published=True)
         polls = assignment.poll_set.filter(published=True)
         data_votes = []
-
 
         # Left side
         cell3a = []
@@ -416,10 +415,8 @@ class AssignmentPDF(PDFView):
                 if vote == None:
                     row.append('–')
                 elif 'Yes' in vote and 'No' in vote and 'Abstain' in vote:
-                    tmp = _("Y")+": " + vote['Yes'] + "\n"
-                    tmp += _("N")+": " + vote['No'] + "\n"
-                    tmp += _("A")+": " + vote['Abstain']
-                    row.append(tmp)
+                    row.append(_("Y: %s\nN: %s\nA: %s") % (vote['Yes'],
+                        vote['No'], vote['Abstain']))
                 elif 'Votes' in vote:
                     row.append(vote['Votes'])
                 else:
@@ -452,10 +449,10 @@ class AssignmentPDF(PDFView):
 
         # table
         data = []
-        data.append([cell1a,cell1b])
+        data.append([cell1a, cell1b])
         if polls:
-            data.append([cell3a,table_votes])
-            data.append(['', '* = '+_('elected')])
+            data.append([cell3a, table_votes])
+            data.append(['', '* = ' + _('elected')])
         else:
             data.append([cell2a, cell2b])
         data.append([Spacer(0, 0.2 * cm), ''])
@@ -649,6 +646,6 @@ def register_tab(request):
 
 def get_widgets(request):
     return [
-        Widget(name=ugettext('Assignments'), template='assignment/widget.html',
+        Widget(name=_('Assignments'), template='assignment/widget.html',
                context={'assignments': Assignment.objects.all()})
     ]

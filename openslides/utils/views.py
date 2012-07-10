@@ -282,9 +282,6 @@ class PDFView(PermissionMixin, View):
         response.write(pdf)
         return response
 
-    def append_to_pdf(self, story):
-        pass
-
     def get_filename(self):
         return self.filename
 
