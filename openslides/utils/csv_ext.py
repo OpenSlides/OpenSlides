@@ -12,6 +12,7 @@
 
 from csv import Dialect, excel, register_dialect
 
+
 class excel_semikolon(Dialect):
     delimiter = ';'
     doublequote = True
@@ -19,6 +20,7 @@ class excel_semikolon(Dialect):
     quotechar = '"'
     quoting = 0
     skipinitialspace = False
+
 
 def patchup(dialect):
     if dialect:

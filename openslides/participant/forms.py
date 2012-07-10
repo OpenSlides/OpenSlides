@@ -15,8 +15,7 @@ from django.contrib.auth.forms import AdminPasswordChangeForm
 from django.contrib.auth.models import User, Group, Permission
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
-from openslides.utils.forms import CssClassMixin
-from openslides.utils.translation_ext import LocalizedModelMultipleChoiceField
+from openslides.utils.forms import CssClassMixin, LocalizedModelMultipleChoiceField
 
 from openslides.participant.models import Profile
 
@@ -26,6 +25,7 @@ USER_APPLICATION_IMPORT_OPTIONS = [
     ('INREVIEW', _('Keep applications, set status to "needs review"')),
     ('DISCARD' , _('Discard applications'))
 ]
+
 
 class UserNewForm(forms.ModelForm, CssClassMixin):
     first_name = forms.CharField(label=_("First name"))

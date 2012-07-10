@@ -11,10 +11,11 @@
 """
 
 from django import forms
+from django.utils.translation import ugettext_lazy as _
 
-from utils.forms import CssClassMixin
-from models import config
-from utils.translation_ext import ugettext_lazy as _
+from openslides.utils.forms import CssClassMixin
+
+from openslides.config.models import config
 
 
 class GeneralConfigForm(forms.Form, CssClassMixin):

@@ -64,7 +64,8 @@ View = _View
 
 class SetCookieMixin(object):
     def render_to_response(self, context, **response_kwargs):
-        response = TemplateResponseMixin.render_to_response(self, context, **response_kwargs)
+        response = TemplateResponseMixin.render_to_response(self, context,
+            **response_kwargs)
         if 'cookie' in context:
             response.set_cookie(context['cookie'][0], context['cookie'][1])
         return response
@@ -89,7 +90,8 @@ class PermissionMixin(object):
         if not self.has_permission(request):
             if not request.user.is_authenticated():
                 path = request.get_full_path()
-                return HttpResponseRedirect("%s?next=%s" % (settings.LOGIN_URL, path))
+                return HttpResponseRedirect("%s?next=%s" % (settings.LOGIN_URL,
+                    path))
             else:
                 return render_to_forbitten(request)
         return _View.dispatch(self, request, *args, **kwargs)
@@ -106,14 +108,16 @@ class AjaxMixin(object):
 class TemplateView(PermissionMixin, _TemplateView):
     def get_context_data(self, **kwargs):
         context = super(TemplateView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self.__class__, request=self.request, context=context)
+        template_manipulation.send(sender=self.__class__, request=self.request,
+            context=context)
         return context
 
 
 class ListView(PermissionMixin, SetCookieMixin, _ListView):
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self.__class__, request=self.request, context=context)
+        template_manipulation.send(sender=self.__class__, request=self.request,
+            context=context)
         return context
 
 
@@ -154,7 +158,8 @@ class FormView(PermissionMixin, _FormView):
 
     def get_context_data(self, **kwargs):
         context = super(FormView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self.__class__, request=self.request, context=context)
+        template_manipulation.send(sender=self.__class__, request=self.request,
+            context=context)
         return context
 
     def form_invalid(self, form):
@@ -171,7 +176,8 @@ class UpdateView(PermissionMixin, _UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(UpdateView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self.__class__, request=self.request, context=context)
+        template_manipulation.send(sender=self.__class__, request=self.request,
+            context=context)
         return context
 
     def form_invalid(self, form):
@@ -191,11 +197,11 @@ class CreateView(PermissionMixin, _CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(CreateView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self.__class__, request=self.request, context=context)
+        template_manipulation.send(sender=self.__class__, request=self.request,
+            context=context)
         return context
 
     def get_apply_url(self):
-        #todo: Versuche apply url automatisch anhand on self.object herauszufindne
         return self.apply_url
 
     def form_invalid(self, form):
@@ -225,10 +231,19 @@ class DeleteView(RedirectView, SingleObjectMixin):
         return super(DeleteView, self).get(request, *args, **kwargs)
 
     def confirm_form(self, request, object):
-        self.gen_confirm_form(request, self.get_confirm_question(), object.get_absolute_url('delete'))
+        self.gen_confirm_form(request, self.get_confirm_question(),
+            object.get_absolute_url('delete'))
 
     def gen_confirm_form(self, request, message, url):
-        messages.warning(request, '%s<form action="%s" method="post"><input type="hidden" value="%s" name="csrfmiddlewaretoken"><input type="submit" value="%s" /> <input type="button" value="%s"></form>' % (message, url, csrf(request)['csrf_token'], _("Yes"), _("No")))
+        messages.warning(request,
+        """
+        %s
+        <form action="%s" method="post">
+            <input type="hidden" value="%s" name="csrfmiddlewaretoken">
+            <input type="submit" value="%s">
+            <input type="button" value="%s">
+        </form>
+        """ % (message, url, csrf(request)['csrf_token'], _("Yes"), _("No")))
 
 
 class DetailView(TemplateView, SingleObjectMixin):
@@ -261,7 +276,8 @@ class PDFView(PermissionMixin, View):
         return SimpleDocTemplate(buffer)
 
     def build_document(self, pdf_document, story):
-        pdf_document.build(story, onFirstPage=firstPage, onLaterPages=laterPages)
+        pdf_document.build(story, onFirstPage=firstPage,
+            onLaterPages=laterPages)
 
     def render_to_response(self, filename):
         response = HttpResponse(mimetype='application/pdf')
@@ -323,12 +339,10 @@ def server_error(request, template_name='500.html'):
     500 error handler.
 
     Templates: `500.html`
-    Context:
-        MEDIA_URL
-            Path of static media (e.g. "media.example.org")
     """
-    t = loader.get_template("500.html") # You need to create a 500.html template.
-    return HttpResponseServerError(render_to_string('500.html', context_instance=RequestContext(request)))
+    t = loader.get_template("500.html")
+    return HttpResponseServerError(render_to_string('500.html',
+        context_instance=RequestContext(request)))
 
 
 @receiver(template_manipulation, dispatch_uid="send_register_tab")

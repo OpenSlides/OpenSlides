@@ -11,7 +11,7 @@
 """
 
 from django import template
-from config.models import config
+from openslides.config.models import config
 
 register = template.Library()
 

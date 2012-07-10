@@ -15,9 +15,9 @@ from django.utils.translation import ugettext_lazy as _
 
 from mptt.forms import TreeNodeChoiceField
 
-from utils.forms import CssClassMixin
+from openslides.utils.forms import CssClassMixin
 
-from agenda.models import Item
+from openslides.agenda.models import Item
 
 
 class ItemForm(forms.ModelForm, CssClassMixin):

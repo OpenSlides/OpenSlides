@@ -12,25 +12,23 @@
 
 try:
     import json
-except ImportError:
+except ImportError: # For python 2.5 support
     import simplejson as json
 
-from django.shortcuts import render_to_response, redirect
-from django.core.urlresolvers import reverse
-from django.http import HttpResponse, HttpResponseForbidden
-from django.template import RequestContext
-from django.template.loader import render_to_string
-from django.core.context_processors import csrf
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import Permission
-from django.db.models import signals
-from django.utils.importlib import import_module
+from django.core.context_processors import csrf
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseForbidden
+from django.shortcuts import render_to_response, redirect
+from django.template import RequestContext
+from django.template.loader import render_to_string
+from django.utils.translation import ugettext as _
 
 from openslides.utils.signals import template_manipulation
-from openslides.utils.translation_ext import ugettext as _
 
 from openslides import get_version
-import settings
 
 
 def revision(request):
@@ -38,15 +36,35 @@ def revision(request):
 
 
 def gen_confirm_form(request, message, url):
-    messages.warning(request, '%s<form action="%s" method="post"><input type="hidden" value="%s" name="csrfmiddlewaretoken"><input type="submit" value="%s" /> <input type="button" value="%s"></form>' % (message, url, csrf(request)['csrf_token'], _("Yes"), _("No")))
+    """
+    Generate a message-form.
+
+    Deprecated. Use Class base Views instead.
+    """
+    messages.warning(request,
+    """
+    %s
+    <form action="%s" method="post">
+        <input type="hidden" value="%s" name="csrfmiddlewaretoken">
+        <input type="submit" value="%s">
+        <input type="button" value="%s">
+    </form>
+    """
+    % (message, url, csrf(request)['csrf_token'], _("Yes"), _("No")))
 
 
 def del_confirm_form(request, object, name=None, delete_link=None):
+    """
+    Creates a question to delete an object.
+
+    Deprecated. Use Class base Views instead.
+    """
     if name is None:
         name = object
     if delete_link is None:
         delete_link = object.get_absolute_url('delete')
-    gen_confirm_form(request, _('Do you really want to delete <b>%s</b>?') % name, delete_link)
+    gen_confirm_form(request, _('Do you really want to delete %s?')
+        % html_strong(name), delete_link)
 
 
 def render_response(req, *args, **kwargs):
@@ -61,9 +79,11 @@ def template(template_name):
             if not isinstance(output, dict):
                 return output
             context = {}
-            template_manipulation.send(sender='utils_template', request=request, context=context)
+            template_manipulation.send(sender='utils_template', request=request,
+                context=context)
             output.update(context)
-            response = render_to_response(template_name, output, context_instance=RequestContext(request))
+            response = render_to_response(template_name, output,
+                context_instance=RequestContext(request))
             if 'cookie' in output:
                 response.set_cookie(output['cookie'][0], output['cookie'][1])
             return response
@@ -87,13 +107,20 @@ def permission_required(perm, login_url=None):
     return renderer
 
 
-def render_to_forbitten(request, error=_("Sorry, you have no rights to see this page.")):
-    return HttpResponseForbidden(render_to_string('403.html', {'error': error}, context_instance=RequestContext(request)))
+def render_to_forbitten(request, error=
+    _("Sorry, you have no rights to see this page.")):
+    return HttpResponseForbidden(render_to_string('403.html',
+        {'error': error}, context_instance=RequestContext(request)))
 
 
 def delete_default_permissions(**kwargs):
+    """
+    Deletes the permissions, django creates by default for the admin.
+    """
     for p in Permission.objects.all():
-        if p.codename.startswith('add') or p.codename.startswith('delete') or p.codename.startswith('change'):
+        if p.codename.startswith('add') \
+        or p.codename.startswith('delete') \
+        or p.codename.startswith('change'):
             p.delete()
 
 
