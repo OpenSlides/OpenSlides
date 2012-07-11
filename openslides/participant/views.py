@@ -30,6 +30,7 @@ from django.db import transaction
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
+from django.contrib.auth.forms import PasswordChangeForm
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _, ungettext
@@ -356,6 +357,28 @@ def user_settings(request):
     return {
         'form_user': form_user,
         'edituser': request.user,
+    }
+
+
+@login_required
+@template('participant/password_change.html')
+def user_settings_password(request):
+    """
+    Edit own password.
+    """
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, _('Password successfully changed.'))
+            return redirect(reverse('user_settings'))
+        else:
+            messages.error(request, _('Please check the form for errors.'))
+    else:
+        form = PasswordChangeForm(user=request.user)
+
+    return {
+        'form': form,
     }
 
 

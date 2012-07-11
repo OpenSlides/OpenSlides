@@ -69,9 +69,7 @@ urlpatterns += patterns('',
     ),
 
     url(r'^usersettings/changepassword/$',
-        'django.contrib.auth.views.password_change',
-        {'template_name': 'participant/password_change.html',
-         'post_change_redirect': '/usersettings/'},
+        'openslides.participant.views.user_settings_password',
         name='password_change',
     ),
 )
