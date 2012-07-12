@@ -2,7 +2,15 @@
 
 {% load i18n %}
 
-{% block title %}{{ block.super }} - {%trans "Election" %}{% endblock %}
+{% block title %}
+    {{ block.super }} – 
+    {% if assignment %}
+        {% trans "Edit election" %}
+    {% else %}
+        {% trans "New election" %}
+    {% endif %}
+{% endblock %}
+
 
 {% block content %}
     {% if assignment %}

@@ -6,7 +6,7 @@
     {{ block.super }} – 
     {% if item %}
         {{ item.title }} – {% trans "Edit item" %}
-    {%else %}
+    {% else %}
         {% trans "New item" %}
     {% endif %}
 {% endblock %}

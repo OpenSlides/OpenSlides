@@ -2,7 +2,14 @@
 
 {% load i18n %}
 
-{% block title %}{{ block.super }} - {%trans "User Group" %} {% endblock %}
+{% block title %}
+    {{ block.super }} – 
+    {% if group %}
+        {% trans "Edit user group" %}
+    {% else %}
+        {% trans "New user group" %}
+    {% endif %}
+{% endblock %}
 
 {% block content %}
     {% if group %}

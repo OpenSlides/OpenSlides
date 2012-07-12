@@ -2,7 +2,15 @@
 
 {% load i18n %}
 
-{% block title %}{{ block.super }} - {%trans "Participant" %} {% endblock %}
+{% block title %}
+    {{ block.super }} – 
+    {% if edituser %}
+        {% trans "Edit participant" %}
+    {% else %}
+        {% trans "New participant" %}
+    {% endif %}
+{% endblock %}
+
 
 {% block content %}
     {% if edituser %}

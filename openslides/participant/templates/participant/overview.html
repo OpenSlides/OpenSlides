@@ -4,7 +4,7 @@
 {% load staticfiles %}
 {% load tags %}
 
-{% block title %}{{ block.super }} - {%trans "Participants" %}{% endblock %}
+{% block title %}{{ block.super }} – {% trans "Participants" %}{% endblock %}
 
 {% block header %}
     {% if perms.agenda.can_manage_agenda %}
