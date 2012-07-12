@@ -10,10 +10,11 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
+
 
 def agenda_show():
-    from agenda.models import Item
+    from openslides.agenda.models import Item
     data = {}
     items = Item.objects.filter(parent=None)
     data['title'] = _("Agenda")
