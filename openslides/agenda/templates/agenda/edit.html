@@ -2,7 +2,14 @@
 
 {% load i18n %}
 
-{% block title %}{{ block.super }} - {%trans "Item" %}{% endblock %}
+{% block title %}
+    {{ block.super }} – 
+    {% if item %}
+        {{ item.title }} – {% trans "Edit item" %}
+    {%else %}
+        {% trans "New item" %}
+    {% endif %}
+{% endblock %}
 
 {% block content %}
     {% if item %}

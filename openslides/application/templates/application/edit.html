@@ -2,8 +2,14 @@
 
 {% load i18n %}
 
-
-{% block title %}{{ block.super }} - {%trans "Application" %}{% endblock %}
+{% block title %}
+    {{ block.super }} – 
+    {% if application %}
+        {% trans "Edit application" %}
+    {%else %}
+        {% trans "New application" %}
+    {% endif %}
+{% endblock %}
 
 {% block content %}
     {% if application %}
