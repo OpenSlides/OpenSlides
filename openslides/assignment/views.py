@@ -415,8 +415,9 @@ class AssignmentPDF(PDFView):
                 if vote == None:
                     row.append('–')
                 elif 'Yes' in vote and 'No' in vote and 'Abstain' in vote:
-                    row.append(_("Y: %s\nN: %s\nA: %s") % (vote['Yes'],
-                        vote['No'], vote['Abstain']))
+                    row.append(_("Y: %(YES)s\nN: %(NO)s\nA: %(ABSTAIN)s")
+                        % {'YES':vote['Yes'], 'NO': vote['No'],
+                        'ABSTAIN': vote['Abstain']})
                 elif 'Votes' in vote:
                     row.append(vote['Votes'])
                 else:
