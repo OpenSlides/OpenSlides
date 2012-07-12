@@ -478,6 +478,7 @@ def user_import(request):
                             profile.comment = comment
                             profile.firstpassword = gen_password()
                             profile.user.set_password(profile.firstpassword)
+                            profile.user.save()
                             profile.save()
 
                             if type == 'delegate':
