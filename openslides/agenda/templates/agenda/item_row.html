@@ -5,7 +5,7 @@
     <td>
         <span class="close_link{% if item.closed %} closed{% endif %}">
             {% if perms.agenda.can_manage_agenda %}
-                <a href="{% if item.closed %}{% url item_open item.id %}{% else %}{% url item_close item.id %}{% endif %}">
+                <a href="{% if item.closed %}{% url item_open item.id %}{% else %}{% url item_close item.id %}{% endif %}" title="{% trans 'Close/open item' %}">
                     <span></span>
                 </a>
             {% elif item.closed %}
