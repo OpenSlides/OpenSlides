@@ -42,7 +42,9 @@
             <a href="{% model_url item 'edit' %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit item' %}"></a>
             <a href="{% model_url item 'delete' %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete item' %}"></a>
             {% if not item.is_leaf_node %}
-                <a class="activate_link" href="{% url projector_activate_slide item.sid 'summary' %}"><img src="{% static 'images/icons/view-list-tree.png' %}" title="{% trans 'Activate summary for this item' %}"></a>
+                <a class="activate_link" href="{% url projector_activate_slide item.sid 'summary' %}">
+                    <img src="{% static 'images/icons/summary.png' %}" title="{% trans 'Activate summary for this item' %}">
+                </a>
             {% endif %}
         {% endif %}
         </span>
