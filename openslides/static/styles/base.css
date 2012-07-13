@@ -268,10 +268,11 @@ table tr.emptyline, table tr.emptyline td, table tr.emptyline td:hover {
 /* Links and Images */
 a {
     color:#41829F;
-    text-decoration: none
+    text-decoration: none;
+    display: inline-block;
 }
 a:hover {
-    text-decoration: underline
+    text-decoration: underline;
 }
 img {
     border:none;
