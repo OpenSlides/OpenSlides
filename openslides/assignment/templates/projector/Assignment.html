@@ -61,7 +61,7 @@
 
         {% for candidate, poll_list in vote_results.items %}
             <tr class="{% cycle 'odd' '' %}">
-                <td class="candidate{% if candidate.1 %} elected{% endif %}">
+                <td class="candidate{% if candidate in assignment.elected.all %} elected{% endif %}">
                     {% if candidate in assignment.elected.all %}
                         <a class="elected">
                             <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Candidate is elected' %}">
