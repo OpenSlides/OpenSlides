@@ -496,6 +496,7 @@ class ApplicationDelete(DeleteView):
         else:
             self.gen_confirm_form(request, _('Do you really want to delete <b>%s</b>?') % self.object, self.object.get_absolute_url('delete'))
 
+
 class ViewPoll(PollFormView):
     permission_required = 'application.can_manage_application'
     poll_class = ApplicationPoll

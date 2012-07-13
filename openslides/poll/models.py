@@ -10,6 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
@@ -17,35 +18,57 @@ from openslides.utils.modelfields import MinMaxIntegerField
 
 
 class BaseOption(models.Model):
-    poll = models.ForeignKey('BasePoll')
+    """
+    Base option class for a Poll.
+
+    Subclasses have to define a poll-field, which are a subclass of BasePoll.
+    """
 
     def get_votes(self):
-        return Vote.objects.filter(option=self)
+        return self.get_vote_class().objects.filter(option=self)
+
+    def __getitem__(self, name):
+        try:
+            return self.get_votes().get(value=name)
+        except self.get_vote_class().DoesNotExist:
+            return None
+
+    def get_vote_class(self):
+        return self.vote_class
+
+    class Meta:
+        abstract = True
 
 
-class TextOption(BaseOption):
-    text = models.CharField(max_length=255)
+class BaseVote(models.Model):
+    """
+    Base Vote class for an option.
 
-    def __unicode__(self):
-        return self.text
-
-
-class Vote(models.Model):
-    option = models.ForeignKey(BaseOption)
-    #profile = models.ForeignKey(Profile) # TODO: we need a person+ here
+    Subclasses have to define a option-field, which are a subclass of
+    BaseOption.
+    """
     weight = models.IntegerField(default=1, null=True) # Use MinMaxIntegerField
     value = models.CharField(max_length=255, null=True)
 
-    def get_weight(self, raw=False):
+    def print_weight(self, raw=False):
         if raw:
             return self.weight
-        return print_value(self.weight)
+        try:
+            percent_base = self.option.poll.percent_base()
+        except AttributeError:
+            # The poll class is no child of CountVotesCast
+            percent_base = 0
+
+        return print_value(self.weight, percent_base)
 
     def get_value(self):
-        return unicode(_(self.value))
+        return _(self.value)
 
     def __unicode__(self):
-        return self.get_weight()
+        return self.print_weight()
+
+    class Meta:
+        abstract = True
 
 
 class CountVotesCast(models.Model):
@@ -57,6 +80,9 @@ class CountVotesCast(models.Model):
 
     def print_votescast(self):
         return print_value(self.votescast)
+
+    def percent_base(self):
+        return 100 / float(self.votescast)
 
     class Meta:
         abstract = True
@@ -70,7 +96,13 @@ class CountInvalid(models.Model):
         fields.append('votesinvalid')
 
     def print_votesinvalid(self):
-        return print_value(self.votesinvalid)
+        try:
+            percent_base = self.percent_base()
+        except AttributeError:
+            # The poll class is no child of CountVotesCast
+            percent_base = 0
+
+        return print_value(self.votesinvalid, percent_base)
 
     class Meta:
         abstract = True
@@ -88,14 +120,16 @@ class PublishPollMixin(models.Model):
 
 
 class BasePoll(models.Model):
-    option_class = TextOption
+    """
+    Base poll class.
+    """
     vote_values = [ugettext_noop('votes')]
 
     def has_votes(self):
         """
         Return True, the there are votes in the poll.
         """
-        if self.get_options().filter(vote__isnull=False):
+        if self.get_votes().exists():
             return True
         return False
 
@@ -128,6 +162,19 @@ class BasePoll(models.Model):
         """
         return self.vote_values
 
+
+    def get_vote_class(self):
+        """
+        Return the releatet vote class.
+        """
+        return self.get_option_class().vote_class
+
+    def get_votes(self):
+        """
+        Return a QuerySet with all vote objects, releatet to this poll.
+        """
+        return self.get_vote_class().objects
+
     def set_form_values(self, option, data):
         # TODO: recall this function. It has nothing to do with a form
         """
@@ -135,9 +182,9 @@ class BasePoll(models.Model):
         """
         for value in self.get_vote_values():
             try:
-                vote = Vote.objects.filter(option=option).get(value=value)
-            except Vote.DoesNotExist:
-                vote = Vote(option=option, value=value)
+                vote = self.get_votes().filter(option=option).get(value=value)
+            except ObjectDoesNotExist:
+                vote = self.get_vote_class()(option=option, value=value)
             vote.weight = data[value]
             vote.save()
 
@@ -150,10 +197,11 @@ class BasePoll(models.Model):
         values = []
         for value in self.get_vote_values():
             try:
-                vote = Vote.objects.filter(option=option_id).get(value=value)
+                vote = self.get_votes().filter(option=option_id) \
+                    .get(value=value)
                 values.append(vote)
-            except Vote.DoesNotExist:
-                values.append(Vote(value=value, weight=''))
+            except ObjectDoesNotExist:
+                values.append(self.get_vote_class()(value=value, weight=''))
         return values
 
     def get_vote_form(self, **kwargs):
@@ -175,12 +223,19 @@ class BasePoll(models.Model):
             forms.append(form)
         return forms
 
+    class Meta:
+        abstract = True
 
-def print_value(value):
+
+def print_value(value, percent_base=0):
+
     if value == -1:
-        value = _('majority')
+        return unicode(_('majority'))
     elif value == -2:
-        value = _('undocumented')
+        return unicode(_('undocumented'))
     elif value is None:
-        value = ''
-    return unicode(value)
+        return u''
+    if not percent_base:
+        return u'%s' % value
+
+    return u'%d (%.2f %%)' % (value, value * percent_base)

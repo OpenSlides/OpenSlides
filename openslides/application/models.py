@@ -12,21 +12,23 @@
 
 from datetime import datetime
 
-from django.db import models
-from django.db.models import Max
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.db import models
+from django.db.models import Max
+from django.dispatch import receiver
 from django.utils.translation import pgettext
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
 from openslides.utils.utils import _propper_unicode
 
 from openslides.config.models import config
+from openslides.config.signals import default_config_value
 
 from openslides.participant.models import Profile
 
 from openslides.poll.models import (BaseOption, BasePoll, CountVotesCast,
-    CountInvalid, Vote)
+    CountInvalid, BaseVote)
 
 from openslides.projector.api import register_slidemodel
 from openslides.projector.models import SlideMixin
@@ -537,14 +539,13 @@ class AVersion(models.Model):
 register_slidemodel(Application)
 
 
+class ApplicationVote(BaseVote):
+    option = models.ForeignKey('ApplicationOption')
+
+
 class ApplicationOption(BaseOption):
-    def __getattr__(self, name):
-        if name in ['Yes', 'No', 'Abstain']:
-            try:
-                return self.get_votes().get(value=name)
-            except Vote.DoesNotExist:
-                return None
-        raise AttributeError(name)
+    poll = models.ForeignKey('ApplicationPoll')
+    vote_class = ApplicationVote
 
 
 class ApplicationPoll(BasePoll, CountInvalid, CountVotesCast):
@@ -570,10 +571,6 @@ class ApplicationPoll(BasePoll, CountInvalid, CountVotesCast):
 
     def get_ballot(self):
         return self.application.applicationpoll_set.filter(id__lte=self.id).count()
-
-
-from django.dispatch import receiver
-from openslides.config.signals import default_config_value
 
 
 @receiver(default_config_value, dispatch_uid="application_default_config")

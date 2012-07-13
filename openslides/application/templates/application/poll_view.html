@@ -6,10 +6,10 @@
 {% block title %}{{ block.super }} – {% trans "Application No." %} {{ application.number }} – {% trans "Vote" %}{% endblock %}
 
 {% block content %}
-    <h1>{%trans "Application No." %} {{ application.number }} – {%trans "Vote" %}</h1>
+    <h1>{% trans "Application No." %} {{ application.number }} – {% trans "Vote" %}</h1>
     <h3>{{ application.title }}</h3>
 
-    <p>{%trans "Results of" %} {{ ballot }}. {%trans "Vote" %}</p>
+    <p>{% trans "Results of" %} {{ ballot }}. {% trans "Vote" %}</p>
     <i class="helptext">{% trans "Special values" %}: -1 = {% trans 'majority' %}; -2 = {% trans 'undocumented' %}</i>
     <form action="" method="post" class="small-form">{% csrf_token %}
         {{ pre_form }}

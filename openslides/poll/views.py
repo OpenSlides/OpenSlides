@@ -48,14 +48,14 @@ class PollFormView(TemplateView):
 
     def post(self, request, *args, **kwargs):
         self.set_poll(self.kwargs['poll_id'])
-        forms = self.poll.get_vote_forms(data=self.request.POST)
+        option_forms = self.poll.get_vote_forms(data=self.request.POST)
 
         FormClass = self.get_modelform_class()
         pollform = FormClass(data=self.request.POST, instance=self.poll,
             prefix='pollform')
 
         error = False
-        for form in forms:
+        for form in option_forms:
             if not form.is_valid():
                 error = True
 
@@ -64,11 +64,11 @@ class PollFormView(TemplateView):
 
         if error:
             return self.render_to_response(self.get_context_data(
-                forms=forms,
+                forms=option_forms,
                 pollform=pollform,
             ))
 
-        for form in forms:
+        for form in option_forms:
             data = {}
             for value in self.poll.get_vote_values():
                 data[value] = form.cleaned_data[value]

@@ -24,7 +24,7 @@ from openslides.projector.projector import SlideMixin
 from openslides.participant.models import Profile
 
 from openslides.poll.models import (BasePoll, CountInvalid, CountVotesCast,
-    BaseOption, PublishPollMixin)
+    BaseOption, PublishPollMixin, BaseVote)
 
 from openslides.agenda.models import Item
 
@@ -143,7 +143,7 @@ class Assignment(models.Model, SlideMixin):
                     # candidate related to this poll
                     poll_option = poll.get_options().get(candidate=candidate)
                     for vote in poll_option.get_votes():
-                        votes[vote.value] = vote.get_weight()
+                        votes[vote.value] = vote.print_weight()
                 except AssignmentOption.DoesNotExist:
                     # candidate not in related to this poll
                     votes = None
@@ -196,8 +196,14 @@ class Assignment(models.Model, SlideMixin):
 register_slidemodel(Assignment)
 
 
+class AssignmentVote(BaseVote):
+    option = models.ForeignKey('AssignmentOption')
+
+
 class AssignmentOption(BaseOption):
+    poll = models.ForeignKey('AssignmentPoll')
     candidate = models.ForeignKey(Profile)
+    vote_class = AssignmentVote
 
     def __unicode__(self):
         return unicode(self.candidate)

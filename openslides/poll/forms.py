@@ -14,7 +14,6 @@ from django import forms
 from django.utils.translation import ugettext_lazy as _
 
 from openslides.utils.forms import CssClassMixin
-from openslides.poll.models import Vote
 
 
 class OptionForm(forms.Form, CssClassMixin):
@@ -27,7 +26,7 @@ class OptionForm(forms.Form, CssClassMixin):
         for vote in extra:
             key = vote.value
             value = vote.get_value()
-            weight = vote.get_weight(raw=True)
+            weight = vote.print_weight(raw=True)
             self.fields[key] = forms.IntegerField(
                 label=value,
                 initial=weight,

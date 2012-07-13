@@ -50,7 +50,9 @@
             {% if perms.application.can_manage_application %}
                 {% if "genpoll" in actions %}
                 <a href='{% url application_gen_poll application.id %}'>
-                    <span class="button"><span class="icon statistics">{%trans 'New vote' %}</span></span>
+                    <span class="button">
+                        <span class="icon statistics">{%trans 'New vote' %}</span>
+                    </span>
                 </a>
                 {% else %}
                 -
@@ -65,8 +67,12 @@
             <li>
                 {% if perms.application.can_manage_application %}
                     <strong>{{ forloop.counter }}. {% trans "Vote" %} </strong>
-                    <a class="icon edit" href="{% url application_poll_view poll.id %}" title="{% trans 'Edit Vote' %}"><span></span></a>
-                    <a class="icon delete" href="{% url application_poll_delete poll.id %}" title="{% trans 'Delete Vote' %}"><span></span></a>
+                    <a class="icon edit" href="{% url application_poll_view poll.id %}" title="{% trans 'Edit Vote' %}">
+                            <span></span>
+                    </a>
+                    <a class="icon delete" href="{% url application_poll_delete poll.id %}" title="{% trans 'Delete Vote' %}">
+                        <span></span>
+                    </a>
                 {% elif poll.has_votes %}
                     <strong>{{ forloop.counter }}. {% trans "Vote" %}:</strong>
                 {% endif %}
@@ -206,7 +212,7 @@
     {% endif %}
     </h1>
     {% trans "Version" %} {{ version.aid }}
-    
+
     {% if application.public_version != application.last_version %}
         &#8901;
         {% if version == application.public_version %}
