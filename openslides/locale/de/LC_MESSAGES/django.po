@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-13 07:29+0200\n"
+"POT-Creation-Date: 2012-07-13 07:42+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: German\n"
@@ -29,13 +29,13 @@ msgid "Parent item"
 msgstr "Elternelement"
 
 #: agenda/models.py:42 application/forms.py:40 application/models.py:517
-#: application/templates/application/view.html:238 config/forms.py:61
+#: application/templates/application/view.html:240 config/forms.py:61
 #: projector/models.py:32
 msgid "Title"
 msgstr "Titel"
 
 #: agenda/models.py:43 application/forms.py:41 application/models.py:518
-#: application/templates/application/view.html:239 projector/models.py:33
+#: application/templates/application/view.html:241 projector/models.py:33
 msgid "Text"
 msgstr "Text"
 
@@ -318,8 +318,8 @@ msgid "Edit"
 msgstr "Bearbeiten"
 
 #: application/forms.py:43 application/models.py:519 application/views.py:827
-#: application/templates/application/view.html:221
-#: application/templates/application/view.html:241
+#: application/templates/application/view.html:223
+#: application/templates/application/view.html:243
 #: application/templates/projector/Application.html:77
 msgid "Reason"
 msgstr "Begründung"
@@ -414,12 +414,12 @@ msgid "Permitted"
 msgstr "Zugelassen"
 
 #: application/models.py:42 application/templates/application/overview.html:24
-#: application/templates/application/view.html:162
+#: application/templates/application/view.html:164
 msgid "Accepted"
 msgstr "Angenommen"
 
 #: application/models.py:43 application/templates/application/overview.html:25
-#: application/templates/application/view.html:167
+#: application/templates/application/view.html:169
 msgid "Rejected"
 msgstr "Abgelehnt"
 
@@ -427,17 +427,17 @@ msgstr "Abgelehnt"
 msgid "Withdrawed"
 msgstr "Zurückgezogen"
 
-#: application/models.py:45 application/templates/application/view.html:175
+#: application/models.py:45 application/templates/application/view.html:177
 msgid "Adjourned"
 msgstr "Vertagt"
 
 # please check!
-#: application/models.py:46 application/templates/application/view.html:178
+#: application/models.py:46 application/templates/application/view.html:180
 msgid "Not Concerned"
 msgstr "Nicht befasst"
 
 # please check!
-#: application/models.py:47 application/templates/application/view.html:181
+#: application/models.py:47 application/templates/application/view.html:183
 msgid "Commited a bill"
 msgstr "Verwiesen (in Ausschuss)"
 
@@ -765,7 +765,7 @@ msgstr ""
 
 #: application/views.py:702 application/views.py:841
 #: application/templates/application/view.html:7
-#: application/templates/application/view.html:203
+#: application/templates/application/view.html:205
 #: application/templates/application/widget.html:22
 #: application/templates/projector/Application.html:7
 #: application/templates/projector/Application.html:65
@@ -782,7 +782,7 @@ msgstr "Keine Anträge vorhanden."
 #: application/templates/application/base_application.html:24
 #: application/templates/application/poll_view.html:6
 #: application/templates/application/poll_view.html:9
-#: application/templates/application/view.html:201
+#: application/templates/application/view.html:203
 #: application/templates/projector/Application.html:63
 msgid "Application No."
 msgstr "Antrag Nr."
@@ -799,8 +799,8 @@ msgstr "Antrag Nr."
 msgid "Status"
 msgstr "Status"
 
-#: application/views.py:791 application/templates/application/view.html:206
-#: application/templates/application/view.html:236 config/models.py:131
+#: application/views.py:791 application/templates/application/view.html:208
+#: application/templates/application/view.html:238 config/models.py:131
 #: config/templates/config/version.html:5
 #: config/templates/config/version.html:8
 #: config/templates/config/version.html:11
@@ -987,7 +987,7 @@ msgid "Number of supporters"
 msgstr "Anzahl der Unterstützer/innen"
 
 #: application/templates/application/overview.html:42
-#: application/templates/application/view.html:104
+#: application/templates/application/view.html:106
 msgid "Creation Time"
 msgstr "Erstellungszeit"
 
@@ -1052,119 +1052,119 @@ msgstr "Abstimmung bearbeiten"
 msgid "Delete Vote"
 msgstr "Abstimmung löschen"
 
-#: application/templates/application/view.html:95
-msgid "Enter vote results!"
-msgstr "Abstimmungsergebnisse eingeben!"
+#: application/templates/application/view.html:96
+msgid "Enter result"
+msgstr "Ergebnis eingeben"
 
-#: application/templates/application/view.html:111
+#: application/templates/application/view.html:113
 msgid "Withdraw"
 msgstr "Zurückziehen"
 
-#: application/templates/application/view.html:119
+#: application/templates/application/view.html:121
 msgid "Unsupport"
 msgstr "Nicht unterstützen"
 
-#: application/templates/application/view.html:125
+#: application/templates/application/view.html:127
 msgid "Support"
 msgstr "Unterstützen"
 
-#: application/templates/application/view.html:131
+#: application/templates/application/view.html:133
 msgid "minimum required supporters"
 msgstr "minimal erforderliche Unterstützer/innen"
 
-#: application/templates/application/view.html:138
+#: application/templates/application/view.html:140
 msgid "Manage application"
 msgstr "Antrag verwalten"
 
-#: application/templates/application/view.html:141
+#: application/templates/application/view.html:143
 msgid "Formal validation"
 msgstr "Formale Gültigkeitsprüfung"
 
-#: application/templates/application/view.html:143
+#: application/templates/application/view.html:145
 msgid "Publish"
 msgstr "Veröffentlichen"
 
-#: application/templates/application/view.html:146
+#: application/templates/application/view.html:148
 msgid "Permit"
 msgstr "Zulassen"
 
-#: application/templates/application/view.html:149
+#: application/templates/application/view.html:151
 msgid "Not permit (reject)"
 msgstr "Nicht zulassen (verwerfen)"
 
-#: application/templates/application/view.html:152
+#: application/templates/application/view.html:154
 msgid "Set Number"
 msgstr "Setze Nummer"
 
-#: application/templates/application/view.html:159
+#: application/templates/application/view.html:161
 msgid "Result after vote"
 msgstr "Ergebnis nach der Abstimmung"
 
-#: application/templates/application/view.html:173
+#: application/templates/application/view.html:175
 msgid "Result after debate"
 msgstr "Ergebnis nach der Debatte"
 
-#: application/templates/application/view.html:184
+#: application/templates/application/view.html:186
 msgid "Withdrawed by Submitter"
 msgstr "Zurückgezogen durch Antragsteller/in"
 
-#: application/templates/application/view.html:189
+#: application/templates/application/view.html:191
 msgid "For Administration only:"
 msgstr "Nur zur Administration:"
 
-#: application/templates/application/view.html:191
+#: application/templates/application/view.html:193
 msgid "Reset"
 msgstr "Zurücksetzen"
 
-#: application/templates/application/view.html:203
+#: application/templates/application/view.html:205
 #: application/templates/projector/Application.html:65
 msgid "no number"
 msgstr "ohne Nummer"
 
-#: application/templates/application/view.html:211
+#: application/templates/application/view.html:213
 msgid "This is not the newest version."
 msgstr "Dies ist nicht die neuste Version."
 
-#: application/templates/application/view.html:211
 #: application/templates/application/view.html:213
+#: application/templates/application/view.html:215
 msgid "Go to version"
 msgstr "Gehe zu Version"
 
-#: application/templates/application/view.html:213
+#: application/templates/application/view.html:215
 msgid "This is not the permitted version."
 msgstr "Dies ist nicht die zugelassene Version."
 
-#: application/templates/application/view.html:231
+#: application/templates/application/view.html:233
 msgid "Version History"
 msgstr "Versionshistorie"
 
-#: application/templates/application/view.html:237
+#: application/templates/application/view.html:239
 msgid "Time"
 msgstr "Zeit"
 
-#: application/templates/application/view.html:248
+#: application/templates/application/view.html:250
 msgid "Version permitted"
 msgstr "Version zugelassen"
 
-#: application/templates/application/view.html:251
+#: application/templates/application/view.html:253
 msgid "Permit Version"
 msgstr "Version zulassen"
 
-#: application/templates/application/view.html:254
+#: application/templates/application/view.html:256
 msgid "Reject Version"
 msgstr "Version verwerfen"
 
-#: application/templates/application/view.html:258
+#: application/templates/application/view.html:260
 msgid "Version rejected"
 msgstr "Version verworfen"
 
-#: application/templates/application/view.html:268
-#: application/templates/application/view.html:275
-#: application/templates/application/view.html:282
+#: application/templates/application/view.html:270
+#: application/templates/application/view.html:277
+#: application/templates/application/view.html:284
 msgid "unchanged"
 msgstr "unverändert"
 
-#: application/templates/application/view.html:291
+#: application/templates/application/view.html:293
 msgid "Log"
 msgstr "Log"
 

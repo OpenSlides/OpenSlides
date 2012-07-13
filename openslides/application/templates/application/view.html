@@ -92,8 +92,10 @@
                     {% endif %}
                 {% else %}
                     {% if perms.application.can_manage_application %}
-                    <a href="{% url application_poll_view poll.id %}">{% trans "Enter vote results!" %}</a>
-                    {% endif %}
+                        <a href='{% url application_poll_view poll.id %}'>
+                            <span class="button"><span class="icon statistics">{%trans 'Enter result' %}</span></span>
+                        </a>
+                     {% endif %}
                 {% endif %}
             </li>
         {% endif %}
