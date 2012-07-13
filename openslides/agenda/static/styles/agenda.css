@@ -7,7 +7,7 @@
 
 /* agenda item open/closed */
 .close_link span {
-    background-image: url(../images/icons/done-grey.png);
+    background-image: url(../images/icons/close-grey.png);
     background-repeat: no-repeat;
     background-position: center;
     width: 16px;
@@ -16,7 +16,7 @@
 }
 
 .close_link.closed span {
-    background-image: url(../images/icons/done.png);
+    background-image: url(../images/icons/close.png);
 }
 
 table#menu-overview {

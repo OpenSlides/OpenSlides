@@ -378,6 +378,9 @@ input[type="submit"], input[type="button"]  {
 .button .done{
     background:url(../images/icons/done.png) no-repeat 0px 0px;
 }
+.button .close{
+    background:url(../images/icons/close.png) no-repeat 0px 0px;
+}
 .button .reject{
     background:url(../images/icons/reject.png) no-repeat 0px 0px;
 }
