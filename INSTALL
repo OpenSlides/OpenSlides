@@ -6,117 +6,133 @@ Content
 I.  Installation on Windows (32/64bit)
 II. Installation on GNU/Linux and MacOSX
 
+If you need help ask on OpenSlides users mailing list.
+See http://openslides.org for more information.
 
 
 I. Installation on Windows (32/64bit)
 -------------------------------------
 
-  1. Install Python 2.7
+  1. Install requirements:
 
-     a) Download and run 32bit MSI installer from http://www.python.org/download/
-        e.g. version 2.7.2:
-        http://www.python.org/ftp/python/2.7.2/python-2.7.2.msi
-
+        OpenSlides requires following programs, which should be
+        installed first: Python Programming Language 2.7,
+        Setuptools, ReportLab Toolkit, Python Imaging Library (PIL),
+        Django and django-mptt:
+        
+     a) Download and run 32bit MSI installer from http://www.python.org/:
+        
+        http://python.org/ftp/python/2.7.3/python-2.7.3.msi
+        
      b) Add python dirs to PATH (via Control Panel > System > Advanced):
 
-         ";C:\Python27;C:\Python27\Scripts"
+        ";C:\Python27;C:\Python27\Scripts"
 
-  2. Install Setuptools 0.6c11
+     c) Install Setuptools:
 
-     Download and run 32bit binary installer from http://pypi.python.org/pypi/setuptools:
-     http://pypi.python.org/packages/2.7/s/setuptools/setuptools-0.6c11.win32-py2.7.exe
+        Download and run 32bit binary installer from
+        http://pypi.python.org/pypi/setuptools:
+        
+        http://pypi.python.org/packages/2.7/s/setuptools/setuptools-0.6c11.win32-py2.7.exe
 
-  3. Install required packages
-     Open command line (cmd) and run:
+     d) Install ReportLab Toolkit, Python Imaging Library (PIL), Django
+        and django-mptt:
+     
+        Open command line (cmd) and run:
 
-       easy_install django django-mptt reportlab pil
+        easy_install django django-mptt reportlab pil
 
-     If you, nevertheless, use a 64bit version of Python, you have to install reportlab
-     and pil not by using easy_install but manually.
+        If you use a 64bit version of Python, you have to install reportlab
+        and pil not by using easy_install but manually.
 
-  4. Get OpenSlides:
+  2. Get OpenSlides:
 
-     a) Download latest OpenSlides release from http://openslides.org.
+     a)  Download latest OpenSlides release from http://openslides.org.
 
-        OR
+     OR
 
-     b) Clone development version from mercurial repository:
+     b) Clone development version from mercurial repository
+        http://hg.openslides.org. This requires Mercurial source control
+        management (hg), see http://mercurial.selenic.com.
+        
+        Open command line (cmd) and run:
+        
+        hg clone http://hg.openslides.org OpenSlides
 
-        hg clone http://hg.openslides.org
+  3. Start OpenSlides server and open URL in your default browser:
 
-  5. Start OpenSlides server and open URL in your default browser:
+        python start.py
 
-       python start.py
+        If you run this script the first time a new database and the
+        admin account are created. Please change the password after
+        first login!
 
-     If you run this script the first time new database and admin account
-     are created. Please change the password after first login!
+        Username: admin
+        Password: admin
 
-       Username: admin
-       Password: admin
-
-     Use 'python start.py --help' to show all start options.
-
+        Use 'python start.py --help' to show all start options.
 
 
 II. Installation on GNU/Linux and MacOSX
 ----------------------------------------
 
-Make sure that you have installed python and virtualenv on your
-system.
+  1. Install requirements:
 
-  1. OpenSlides requires following programs, which should be
-     installed first: python 2 (>=2.5), virtualenv, reportlab, pil
+        OpenSlides requires following programs, which should be
+        installed first: Python Programming Language 2 (>= 2.5),
+        virtualenv (>= 1.4.1), ReportLab Toolkit and 
+        Python Imaging Library (PIL):
 
-     E.g. for ubuntu run:
-     $ sudo apt-get install python python-virtualenv python-reportlab python-imagin
+        E.g. for ubuntu run:
+        $ sudo apt-get install python python-virtualenv python-reportlab python-imagin
 
   2. Get OpenSlides:
 
-     a) Download latest OpenSlides release from http://openslides.org.
+     a)  Download latest OpenSlides release from http://openslides.org.
 
-        OR
+     OR
 
-     b) Clone development version from mercurial repository:
-
-        $ hg clone -r 1.2-dev http://hg.openslides.org
-
-      You have to install mercurial. For Ubuntu run:
-
+     b) Clone development version from mercurial repository
+        http://hg.openslides.org. This requires Mercurial source control
+        management (hg):
+        
+        E.g. for Ubuntu run:
         $ sudo apt-get install mercurial
+        $ hg clone http://hg.openslides.org OpenSlides
 
-  3. Setup virtualenv:
+  3. Setup your virtual environment with virtualenv:
 
         Go to the (extracted/cloned) root directory of OpenSlides
         and create virtualenv environment:
 
         $ virtualenv --system-site-packages .venv
 
-        Activate the virtualenv environment:
+  4. Activate the virtual environment:
 
         $ . .venv/bin/activate
 
-
-  4. Install required packages:
+  5. Install the required python-packages:
 
         $ pip install django django-mptt
 
-        If you use python 2.5 you also have to install 'simplejson'
+        If you use python < 2.6 you also have to install simplejson:
 
         $ pip install simplejson
 
-  5. Start OpenSlides server and open URL in your default browser:
+  6. Start OpenSlides server and open URL in your default browser:
 
-       $ python start.py
+        $ python start.py
 
-     If you run this script the first time new database and admin account
-     are created. Please change the password after first login!
+        If you run this script the first time a new database and the
+        admin account are created. Please change the password after
+        first login!
 
-       Username: admin
-       Password: admin
+        Username: admin
+        Password: admin
 
-     Use 'python start.py --help' to show all start options.
+        Use 'python start.py --help' to show all start options.
 
+  7. Restart OpenSlides:
 
---
-If you need help ask on OpenSlides users mailing list.
-See http://openslides.org for more information.
+        To restart OpenSlides after closing the terminal activate the
+        virtual envirnonment (see 4.) before starting the server (see 5.)
