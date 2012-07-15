@@ -30,7 +30,7 @@ I. Installation on Windows (32/64bit)
      Open command line (cmd) and run:
 
        easy_install django django-mptt reportlab pil
-     
+
      If you, nevertheless, use a 64bit version of Python, you have to install reportlab
      and pil not by using easy_install but manually.
 
@@ -52,7 +52,7 @@ I. Installation on Windows (32/64bit)
      are created. Please change the password after first login!
 
        Username: admin
-       Password: admin 
+       Password: admin
 
      Use 'python start.py --help' to show all start options.
 
@@ -64,7 +64,13 @@ II. Installation on GNU/Linux and MacOSX
 Make sure that you have installed python and virtualenv on your
 system.
 
-  1. Get OpenSlides:
+  1. OpenSlides requires following programs, which should be
+     installed first: python 2 (>=2.5), virtualenv, reportlab, pil
+
+     E.g. for ubuntu run:
+     $ sudo apt-get install python python-virtualenv python-reportlab python-imagin
+
+  2. Get OpenSlides:
 
      a) Download latest OpenSlides release from http://openslides.org.
 
@@ -72,28 +78,35 @@ system.
 
      b) Clone development version from mercurial repository:
 
-        hg clone -r 1.2-dev http://hg.openslides.org
+        $ hg clone -r 1.2-dev http://hg.openslides.org
 
-  2. Setup virtualenv:
+      You have to install mercurial. For Ubuntu run:
 
-       # Go to the (extracted/cloned) root directory of OpenSlides
-       # and create virtualenv environment
-       virtualenv --no-site-packages .venv
+        $ sudo apt-get install mercurial
 
-       # activate virtualenv environment
-       . .venv/bin/activate
+  3. Setup virtualenv:
 
-  3. Install 'pip' (if not available):
+        Go to the (extracted/cloned) root directory of OpenSlides
+        and create virtualenv environment:
 
-       easy_install pip
+        $ virtualenv --system-site-packages .venv
+
+        Activate the virtualenv environment:
+
+        $ . .venv/bin/activate
+
 
   4. Install required packages:
 
-       pip install django django-mptt reportlab pil simplejson mercurial
+        $ pip install django django-mptt
+
+        If you use python 2.5 you also have to install 'simplejson'
+
+        $ pip install simplejson
 
   5. Start OpenSlides server and open URL in your default browser:
 
-       python start.py
+       $ python start.py
 
      If you run this script the first time new database and admin account
      are created. Please change the password after first login!
@@ -104,6 +117,6 @@ system.
      Use 'python start.py --help' to show all start options.
 
 
--- 
+--
 If you need help ask on OpenSlides users mailing list.
-See www.openslides.org for more information.
+See http://openslides.org for more information.
