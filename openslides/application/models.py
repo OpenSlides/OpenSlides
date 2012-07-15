@@ -434,7 +434,7 @@ class Application(models.Model, SlideMixin):
         self.save()
 
     def get_agenda_title(self):
-        return self.title
+        return self.public_version.title
 
     def __getattr__(self, name):
         """
