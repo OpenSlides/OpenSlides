@@ -47,7 +47,7 @@
         <tr class="{% cycle '' 'odd' %} 
             {% if application.active %}activeline{% endif %}">
             <td>{% if application.number %}{{ application.number }}{% else %}-{% endif %}</td>
-            <td><a href="{% url application_view application.id %}">{{ application }}</a></td>
+            <td><a href="{% url application_view application.id %}">{{ application.public_version.title }}</a></td>
         {% if min_supporters > 0 %}
             <td>{{ application.supporter.count }}</td>
         {% endif %}

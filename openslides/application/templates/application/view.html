@@ -205,12 +205,15 @@
 
 <div id="main">
     <h1>
-    {% if application.number != None %}
-        {% trans "Application No." %} {{ application.number }}
-    {% else %}
-        {% trans "Application" %} <i>[{% trans "no number" %}]</i>
-    {% endif %}
+        {{ version.title }}
+        ({% trans "Application" %}
+        {% if application.number != None %}
+            {{ application.number }})
+        {% else %}
+            <i>[{% trans "no number" %}]</i>)
+        {% endif %}
     </h1>
+
     {% trans "Version" %} {{ version.aid }}
 
     {% if application.public_version != application.last_version %}
@@ -222,7 +225,7 @@
         {% endif %}
     {% endif %}
 
-    <h2>{{ version.title }}</h2>
+    <h2>{% trans "Application" %}:</h2>
 
     {{ version.text|linebreaks }}
 
@@ -231,7 +234,7 @@
     {% if version.reason %}
         {{ version.reason|linebreaks }}
     {% else %}
-        -
+        –
     {% endif %}
 
 
