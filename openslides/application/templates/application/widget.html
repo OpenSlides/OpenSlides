@@ -18,10 +18,13 @@
             <span></span>
         </a>
         <a href="{% model_url application 'view' %}">
+            {{ application.public_version.title }}
+            ({% trans 'Application' %}
             {% if application.number %}
-                {% trans 'Application' %} {{ application.number }}:
+                {{ application.number }})
+            {% else %}
+                <i>[{% trans "no number" %}]</i>)
             {% endif %}
-            {{ application }}
         </a>
     </li>
 {% empty %}
