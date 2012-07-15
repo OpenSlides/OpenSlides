@@ -20,7 +20,7 @@ from openslides.assignment.models import Assignment
 
 
 class AssignmentForm(forms.ModelForm, CssClassMixin):
-    posts = forms.IntegerField(min_value=1,
+    posts = forms.IntegerField(min_value=1, initial=1,
         label=_("Number of available posts"))
 
     class Meta:
