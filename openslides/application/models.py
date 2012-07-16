@@ -478,7 +478,9 @@ class Application(models.Model, SlideMixin):
         for poll in self.polls:
             for option in poll.get_options():
                 if option.get_votes().exists():
-                    results.append((option.Yes, option.No, option.Abstain, poll.print_votesinvalid(), poll.print_votescast()))
+                    results.append((option['Yes'], option['No'],
+                        option['Abstain'], poll.print_votesinvalid(),
+                        poll.print_votescast()))
         return results
 
 
