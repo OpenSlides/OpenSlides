@@ -135,4 +135,5 @@ II. Installation on GNU/Linux and MacOSX
   7. Restart OpenSlides:
 
         To restart OpenSlides after closing the terminal activate the
-        virtual envirnonment (see 4.) before starting the server (see 5.)
+        virtual envirnonment (see 4.) before starting the server (see 6.).
+
