@@ -63,18 +63,22 @@ class Assignment(models.Model, SlideMixin):
         self.status = status
         self.save()
 
-    def run(self, profile):
+    def run(self, profile, user=None):
         """
         run for a vote
         """
         if self.is_candidate(profile):
             raise NameError(_('<b>%s</b> is already a candidate.') % profile)
+        if not user.has_perm("assignment.can_manage_assignment") and self.status != 'sea':
+            raise NameError(_('The candidate list is already closed.'))
         self.profile.add(profile)
 
-    def delrun(self, profile):
+    def delrun(self, profile, user=None):
         """
         stop running for a vote
         """
+        if not user.has_perm("assignment.can_manage_assignment") and self.status != 'sea':
+            raise NameError(_('The candidate list is already closed.'))
         if self.is_candidate(profile):
             self.profile.remove(profile)
             self.elected.remove(profile)

@@ -78,7 +78,7 @@ def view(request, assignment_id=None):
             if form.is_valid():
                 user = form.cleaned_data['candidate']
                 try:
-                    assignment.run(user)
+                    assignment.run(user, request.user)
                     messages.success(request, _("Candidate <b>%s</b> was nominated successfully.") % (user))
                 except NameError, e:
                     messages.error(request, e)
@@ -168,7 +168,7 @@ def set_status(request, assignment_id=None, status=None):
 def run(request, assignment_id):
     assignment = Assignment.objects.get(pk=assignment_id)
     try:
-        assignment.run(request.user.profile)
+        assignment.run(request.user.profile, request.user)
         messages.success(request, _('You have set your candidature successfully.') )
     except NameError, e:
         messages.error(request, e)
@@ -181,8 +181,11 @@ def run(request, assignment_id):
 @login_required
 def delrun(request, assignment_id):
     assignment = Assignment.objects.get(pk=assignment_id)
-    assignment.delrun(request.user.profile)
-    messages.success(request, _("You have withdrawn your candidature successfully.") )
+    try:
+        assignment.delrun(request.user.profile, request.user)
+        messages.success(request, _("You have withdrawn your candidature successfully.") )
+    except NameError, e:
+        messages.error(request, e)
     return redirect(reverse('assignment_view', args=[assignment_id]))
 
 
@@ -192,8 +195,11 @@ def delother(request, assignment_id, profile_id):
     profile = Profile.objects.get(pk=profile_id)
 
     if request.method == 'POST':
-        assignment.delrun(profile)
-        messages.success(request, _("Candidate <b>%s</b> was withdrawn successfully.") % (profile))
+        try:
+            assignment.delrun(profile, request.user)
+            messages.success(request, _("Candidate <b>%s</b> was withdrawn successfully.") % (profile))
+        except NameError, e:
+            messages.error(request, e)
     else:
         gen_confirm_form(request,
                        _("Do you really want to withdraw <b>%s</b> from the election?") \
