@@ -12,8 +12,10 @@
 
 from django.conf import settings
 from django.conf.urls.defaults import patterns, url, include
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.shortcuts import redirect
 from django.utils.importlib import import_module
+
 
 from openslides.utils.views import FrontPage
 
@@ -30,6 +32,10 @@ urlpatterns = patterns('',
     (r'^config/', include('openslides.config.urls')),
     (r'^projector/', include('openslides.projector.urls')),
     (r'^i18n/', include('django.conf.urls.i18n')),
+)
+
+urlpatterns += patterns('django.contrib.staticfiles.views',
+    url(r'^static/(?P<path>.*)$', 'serve', {'insecure':True}),
 )
 
 js_info_dict = {

@@ -12,7 +12,7 @@
 from openslides_settings import *
 
 # Use 'DEBUG = True' to get more details for server errors (Default for relaeses: 'False')
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 # Set timezone
