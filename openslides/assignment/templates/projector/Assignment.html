@@ -55,7 +55,9 @@
         <tr>
             <th>{% trans "Candidates" %}</th>
             {% for poll in polls %}
-                <th><nobr>{{ poll.get_ballot }}. {% trans "ballot" %}</nobr></th>
+                <th>
+                    <nobr>{{ poll.get_ballot }}. {% trans "ballot" %}</nobr>
+                </th>
             {% endfor %}
         </tr>
 
@@ -94,18 +96,28 @@
         <tr>
             <td>{% trans 'Invalid votes' %}</td>
             {% for poll in polls %}
-                {% if poll.published %}
-                <td style="white-space:nowrap;"><img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}</td>
-                {% endif %}
+                <td style="white-space:nowrap;">
+                    {% if  poll.has_votes %}
+                        <img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}">
+                        {{ poll.print_votesinvalid }}
+                    {% endif %}
+                </td>
+
             {% endfor %}
         </tr>
 
         <tr class="total">
-            <td><b>{% trans 'Votes cast' %}</b></td>
+            <td>
+                <strong>{% trans 'Votes cast' %}</strong>
+            </td>
             {% for poll in polls %}
-                {% if poll.published %}
-                <td style="white-space:nowrap;"><img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}"> <b>{{ poll.print_votescast }}</b></td>
-                {% endif %}
+
+                <td style="white-space:nowrap;">
+                    {% if poll.has_votes %}
+                        <img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}">
+                        <strong>{{ poll.print_votescast }}</strong>
+                    {% endif %}
+                </td>
             {% endfor %}
         </tr>
 

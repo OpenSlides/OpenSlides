@@ -175,7 +175,7 @@ class BasePoll(models.Model):
         """
         Return a QuerySet with all vote objects, releatet to this poll.
         """
-        return self.get_vote_class().objects
+        return self.get_vote_class().objects.filter(option__poll__id=self.id)
 
     def set_form_values(self, option, data):
         # TODO: recall this function. It has nothing to do with a form

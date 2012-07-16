@@ -7,29 +7,26 @@
 
 {% block content %}
 <div id="sidebar">
-
     <div class="box">
-    <h4>{% trans "Status" %}:</h4>
-    {% trans assignment.get_status_display %}
-    <h4>{% trans "Number of available posts" %}:</h4>
-    {{ assignment.posts }}
+        <h4>{% trans "Status" %}:</h4>
+        {% trans assignment.get_status_display %}
+        <h4>{% trans "Number of available posts" %}:</h4>
+        {{ assignment.posts }}
     </div>
 
     <br><br>
 
     {% if perms.assignment.can_manage_assignment %}
-    <div class="box">
-    <h4>{% trans "Change status" %}:</h4>
-    <input type="radio" name="status" onclick="window.location.href='{% url assignment_set_status assignment.id 'sea' %}';"
-        {% if 'sea' in assignment.status %}checked{% endif %}>{% trans 'Searching for candidates' %}<br>
-    <input type="radio" name="status" onclick="window.location.href='{% url assignment_set_status assignment.id 'vot' %}';"
-        {% if 'vot' in assignment.status %}checked{% endif %}>{% trans 'Voting' %}<br>
-    <input type="radio" name="status" onclick="window.location.href='{% url assignment_set_status assignment.id 'fin' %}';"
-        {% if 'fin' in assignment.status %}checked{% endif %}>{% trans 'Finish' %}
-    </div>
+        <div class="box">
+        <h4>{% trans "Change status" %}:</h4>
+        <input type="radio" name="status" onclick="window.location.href='{% url assignment_set_status assignment.id 'sea' %}';"
+            {% if 'sea' in assignment.status %}checked{% endif %}>{% trans 'Searching for candidates' %}<br>
+        <input type="radio" name="status" onclick="window.location.href='{% url assignment_set_status assignment.id 'vot' %}';"
+            {% if 'vot' in assignment.status %}checked{% endif %}>{% trans 'Voting' %}<br>
+        <input type="radio" name="status" onclick="window.location.href='{% url assignment_set_status assignment.id 'fin' %}';"
+            {% if 'fin' in assignment.status %}checked{% endif %}>{% trans 'Finish' %}
+        </div>
     {% endif %}
-
-
 </div>
 
 <div style="margin-right: 250px; min-width: 400px;">
@@ -180,7 +177,12 @@
         <td>{% trans 'Invalid votes' %}</td>
         {% for poll in polls %}
             {% if poll.published or perms.assignment.can_manage_assignment %}
-                <td style="white-space:nowrap;"><img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}</td>
+                <td style="white-space:nowrap;">
+                    {% if poll.has_votes %}
+                        <img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}">
+                        {{ poll.print_votesinvalid }}
+                    {% endif %}
+                </td>
             {% endif %}
         {% endfor %}
         {% if assignment.profile.exists and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
@@ -192,7 +194,12 @@
         <td><strong>{% trans 'Votes cast' %}</strong></td>
         {% for poll in polls %}
             {% if poll.published or perms.assignment.can_manage_assignment %}
-                <td style="white-space:nowrap;"><img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}"> <strong>{{ poll.print_votescast }}</strong></td>
+                <td style="white-space:nowrap;">
+                    {% if poll.has_votes %}
+                        <img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}">
+                        <strong>{{ poll.print_votescast }}</strong>
+                    {% endif %}
+                </td>
             {% endif %}
         {% endfor %}
         {% if assignment.profile.exists and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
