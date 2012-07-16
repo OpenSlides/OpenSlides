@@ -24,7 +24,7 @@
         <input type="radio" name="status" onclick="window.location.href='{% url assignment_set_status assignment.id 'vot' %}';"
             {% if 'vot' in assignment.status %}checked{% endif %}>{% trans 'Voting' %}<br>
         <input type="radio" name="status" onclick="window.location.href='{% url assignment_set_status assignment.id 'fin' %}';"
-            {% if 'fin' in assignment.status %}checked{% endif %}>{% trans 'Finish' %}
+            {% if 'fin' in assignment.status %}checked{% endif %}>{% trans 'Finished' %}
         </div>
     {% endif %}
 </div>
