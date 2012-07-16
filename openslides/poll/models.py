@@ -82,10 +82,9 @@ class CountVotesCast(models.Model):
         return print_value(self.votescast)
 
     def percent_base(self):
-        try:
+        if self.votescast > 0:
             return 100 / float(self.votescast)
-        except TypeError:
-            return 0
+        return 0
 
     class Meta:
         abstract = True
