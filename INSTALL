@@ -19,11 +19,11 @@ I. Installation on Windows (32/64bit)
         installed first: Python Programming Language 2.7,
         Setuptools, ReportLab Toolkit, Python Imaging Library (PIL),
         Django and django-mptt:
-        
+
      a) Download and run 32bit MSI installer from http://www.python.org/:
-        
+
         http://python.org/ftp/python/2.7.3/python-2.7.3.msi
-        
+
      b) Add python dirs to PATH (via Control Panel > System > Advanced):
 
         ";C:\Python27;C:\Python27\Scripts"
@@ -32,12 +32,12 @@ I. Installation on Windows (32/64bit)
 
         Download and run 32bit binary installer from
         http://pypi.python.org/pypi/setuptools:
-        
+
         http://pypi.python.org/packages/2.7/s/setuptools/setuptools-0.6c11.win32-py2.7.exe
 
      d) Install ReportLab Toolkit, Python Imaging Library (PIL), Django
         and django-mptt:
-     
+
         Open command line (cmd) and run:
 
         easy_install django django-mptt reportlab pil
@@ -54,9 +54,9 @@ I. Installation on Windows (32/64bit)
      b) Clone development version from mercurial repository
         http://hg.openslides.org. This requires Mercurial source control
         management (hg), see http://mercurial.selenic.com.
-        
+
         Open command line (cmd) and run:
-        
+
         hg clone http://hg.openslides.org OpenSlides
 
   3. Start OpenSlides server and open URL in your default browser:
@@ -80,7 +80,7 @@ II. Installation on GNU/Linux and MacOSX
 
         OpenSlides requires following programs, which should be
         installed first: Python Programming Language 2 (>= 2.5),
-        virtualenv (>= 1.4.1), ReportLab Toolkit and 
+        virtualenv (>= 1.4.1), ReportLab Toolkit and
         Python Imaging Library (PIL):
 
         E.g. for ubuntu run:
@@ -95,7 +95,7 @@ II. Installation on GNU/Linux and MacOSX
      b) Clone development version from mercurial repository
         http://hg.openslides.org. This requires Mercurial source control
         management (hg):
-        
+
         E.g. for Ubuntu run:
         $ sudo apt-get install mercurial
         $ hg clone http://hg.openslides.org OpenSlides
@@ -135,5 +135,5 @@ II. Installation on GNU/Linux and MacOSX
   7. Restart OpenSlides:
 
         To restart OpenSlides after closing the terminal activate the
-        virtual envirnonment (see 4.) before starting the server (see 6.).
+        virtual environment (see 4.) before starting the server (see 6.).
 

@@ -9,19 +9,19 @@
     {% url user_new as url_usernew %}
     {% url user_group_overview as url_usergroups %}
     {% url user_import as url_userimport %}
-    <h4 class="sectiontitle">{%trans "Participants" %}</h4>
+    <h4 class="sectiontitle">{% trans "Participants" %}</h4>
     <ul>
         {% if perms.participant.can_see_participant %}
-        <li class="{% if request.path == url_users %}selected{% endif %}"><a href="{% url user_overview %}">{%trans "All participants" %}</a></li>
+        <li class="{% if request.path == url_users %}selected{% endif %}"><a href="{% url user_overview %}">{% trans "All participants" %}</a></li>
         {% endif %}
         {% if perms.participant.can_manage_participant %}
-        <li class="{% active request url_usernew %}"><a href="{%  url user_new %}">{%trans "New participant" %}</a></li>
-        <li class="{% if request.path == url_usergroups %}selected{% endif %}"><a href="{%  url user_group_overview %}">{%trans "All user groups" %}</a></li>
-        <li class="{% active request '/participant/group/new' %}"><a href="{%  url user_group_new %}">{%trans "New user group" %}</a></li>
-        <li class="{% if request.path == url_userimport %}selected{% endif %}"><a href="{% url user_import %}"> {%trans 'Import participants' %}</a></li>
+        <li class="{% active request url_usernew %}"><a href="{%  url user_new %}">{% trans "New participant" %}</a></li>
+        <li class="{% if request.path == url_usergroups %}selected{% endif %}"><a href="{%  url user_group_overview %}">{% trans "All user groups" %}</a></li>
+        <li class="{% active request '/participant/group/new' %}"><a href="{%  url user_group_new %}">{% trans "New user group" %}</a></li>
+        <li class="{% if request.path == url_userimport %}selected{% endif %}"><a href="{% url user_import %}"> {% trans 'Import participants' %}</a></li>
         {% endif %}
         {% if perms.participant.can_see_participant %}
-        <li><a href="{% url user_print %}"><img src="{% static 'images/icons/pdf.png' %}"> {%trans 'List of participants as PDF' %}</a></li>
+        <li><a href="{% url user_print %}"><img src="{% static 'images/icons/pdf.png' %}"> {% trans 'List of participants as PDF' %}</a></li>
         {% endif %}
         {% if perms.participant.can_manage_participant %}
         <li><a href="{% url print_passwords %}"><img src="{% static 'images/icons/pdf.png' %}"> {% trans 'First time passwords as PDF' %}</a></li>

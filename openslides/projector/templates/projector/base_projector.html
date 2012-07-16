@@ -8,7 +8,7 @@
 
 {% block submenu %}
     {% url projector_control as url_projectoroverview %}
-    <h4 class="sectiontitle">{%trans "Projector" %}</h4>
+    <h4 class="sectiontitle">{% trans "Projector" %}</h4>
     <ul>
         {% if perms.projector.can_manage_projector %}
         <li class="{% if request.path == url_projectoroverview %}selected{% endif %}">

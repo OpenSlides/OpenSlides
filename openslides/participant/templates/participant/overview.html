@@ -18,39 +18,39 @@
 
     <p><form action="{{request.url}}" name="filter" method="post">
         {% csrf_token %}
-        {%trans "Filter" %}:
+        {% trans "Filter" %}:
         <select class="default-input" name="gender" onchange="document.forms['filter'].submit()">
-            <option value="---">-- {%trans "Gender" %} --</option>
-            <option value="male" {% if 'male' in sortfilter.gender %}selected{% endif %}>{%trans "Male" %}</option>
-            <option value="female" {% if 'female' in sortfilter.gender %}selected{% endif %}>{%trans "Female" %}</option>
-            <option value="" {% if '' in sortfilter.gender %}selected{% endif %}>{%trans "Not specified" %}</option>
+            <option value="---">-- {% trans "Gender" %} --</option>
+            <option value="male" {% if 'male' in sortfilter.gender %}selected{% endif %}>{% trans "Male" %}</option>
+            <option value="female" {% if 'female' in sortfilter.gender %}selected{% endif %}>{% trans "Female" %}</option>
+            <option value="" {% if '' in sortfilter.gender %}selected{% endif %}>{% trans "Not specified" %}</option>
         </select>
         <select class="default-input" name="group" onchange="document.forms['filter'].submit()">
-            <option value="---">-- {%trans "Group" %} --</option>
+            <option value="---">-- {% trans "Group" %} --</option>
             {% for group in groups %}
                 <option value="{{ group }}" {% if group in sortfilter.group %}selected{% endif %}>
                 {{ group }}</option>
             {% endfor %}
         </select>
         <select class="default-input" name="type" onchange="document.forms['filter'].submit()">
-            <option value="---">-- {%trans "Type" %} --</option>
-            <option value="delegate" {% if 'delegate' in sortfilter.type %}selected{% endif %}>{%trans "Delegate" %}</option>
-            <option value="observer" {% if 'observer' in sortfilter.type %}selected{% endif %}>{%trans "Observer" %}</option>
-            <option value="staff" {% if 'staff' in sortfilter.type %}selected{% endif %}>{%trans "Staff" %}</option>
-            <option value="guest" {% if 'guest' in sortfilter.type %}selected{% endif %}>{%trans "Guest" %}</option>
-            <option value="" {% if '' in sortfilter.type %}selected{% endif %}>{%trans "Not specified" %}</option>
+            <option value="---">-- {% trans "Type" %} --</option>
+            <option value="delegate" {% if 'delegate' in sortfilter.type %}selected{% endif %}>{% trans "Delegate" %}</option>
+            <option value="observer" {% if 'observer' in sortfilter.type %}selected{% endif %}>{% trans "Observer" %}</option>
+            <option value="staff" {% if 'staff' in sortfilter.type %}selected{% endif %}>{% trans "Staff" %}</option>
+            <option value="guest" {% if 'guest' in sortfilter.type %}selected{% endif %}>{% trans "Guest" %}</option>
+            <option value="" {% if '' in sortfilter.type %}selected{% endif %}>{% trans "Not specified" %}</option>
         </select>
         <select class="default-input" name="committee" onchange="document.forms['filter'].submit()">
-            <option value="---">-- {%trans "Committee" %} --</option>
+            <option value="---">-- {% trans "Committee" %} --</option>
             {% for committee in committees %}
                 <option value="{{ committee }}" {% if committee in sortfilter.committee %}selected{% endif %}>
                 {{ committee }}</option>
             {% endfor %}
         </select>
         <select class="default-input" name="status" onchange="document.forms['filter'].submit()">
-            <option value="---">-- {%trans "Status" %} --</option>
-            <option value="1" {% if '1' in sortfilter.status %}selected{% endif %}>{%trans "Active" %}</option>
-            <option value="0" {% if '0' in sortfilter.status %}selected{% endif %}>{%trans "Inactive" %}</option>
+            <option value="---">-- {% trans "Status" %} --</option>
+            <option value="1" {% if '1' in sortfilter.status %}selected{% endif %}>{% trans "Active" %}</option>
+            <option value="0" {% if '0' in sortfilter.status %}selected{% endif %}>{% trans "Inactive" %}</option>
         </select>
         </form>
     </p>
@@ -62,15 +62,15 @@
     {% endif %}
     <table>
         <tr>
-            <th><a href="?sort=first_name&reverse={% if 'first_name' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{%trans "First Name" %}</a></th>
-            <th><a href="?sort=last_name&reverse={% if 'last_name' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{%trans "Last Name" %}</a></th>
-            <th><a href="?sort=group&reverse={% if 'group' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{%trans "Group" %}</a></th>
-            <th><a href="?sort=type&reverse={% if 'type' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{%trans "Type" %}</a></th>
-            <th><a href="?sort=committee&reverse={% if 'committee' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{%trans "Committee" %}</a></th>
+            <th><a href="?sort=first_name&reverse={% if 'first_name' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "First Name" %}</a></th>
+            <th><a href="?sort=last_name&reverse={% if 'last_name' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Last Name" %}</a></th>
+            <th><a href="?sort=group&reverse={% if 'group' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Group" %}</a></th>
+            <th><a href="?sort=type&reverse={% if 'type' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Type" %}</a></th>
+            <th><a href="?sort=committee&reverse={% if 'committee' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Committee" %}</a></th>
             {% if perms.participant.can_manage_participant %}
-            <th><a href="?sort=comment&reverse={% if 'comment' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{%trans "Comment" %}</a></th>
-            <th><a href="?sort=last_login&reverse={% if 'last_login' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{%trans "Last Login" %}</a></th>
-            <th>{%trans "Actions" %}</th>
+            <th><a href="?sort=comment&reverse={% if 'comment' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Comment" %}</a></th>
+            <th><a href="?sort=last_login&reverse={% if 'last_login' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Last Login" %}</a></th>
+            <th>{% trans "Actions" %}</th>
             {% endif %}
         </tr>
     {% for user in users %}
@@ -86,11 +86,11 @@
                 {{ user.last_login }}
                 {% endif %}</td>
             <td><span style="width: 1px; white-space: nowrap;">
-                <a href="{% url user_edit user.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{%trans 'Edit participant' %}"></a>
-                <a href="{% url user_delete user.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{%trans 'Delete participant' %}"></a>
+                <a href="{% url user_edit user.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit participant' %}"></a>
+                <a href="{% url user_delete user.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete participant' %}"></a>
                 <a class="status_link {% if user.is_active %}active{% endif %}"
                     href="{% url user_status user.id %}"
-                    title="{%trans 'Change status (active/inactive)' %}">
+                    title="{% trans 'Change status (active/inactive)' %}">
                     <span></span>
                 </a>
                 </span>
@@ -99,7 +99,7 @@
         </tr>
     {% empty %}
         <tr>
-        <td colspan="9"><i>{%trans "No participants available." %}</i></td>
+        <td colspan="9"><i>{% trans "No participants available." %}</i></td>
         </tr>
     {% endfor %}
     </table>

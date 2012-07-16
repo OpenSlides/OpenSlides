@@ -3,7 +3,7 @@
 {% load i18n %}
 
 {% block title %}
-    {{ block.super }} – 
+    {{ block.super }} –
     {% if edituser %}
         {% trans "Edit participant" %}
     {% else %}
@@ -14,9 +14,9 @@
 
 {% block content %}
     {% if edituser %}
-        <h1>{%trans "Edit participant" %}</h1>
+        <h1>{% trans "Edit participant" %}</h1>
     {% else %}
-        <h1>{%trans "New participant" %}</h1>
+        <h1>{% trans "New participant" %}</h1>
     {% endif %}
 
     <form action="" method="post">{% csrf_token %}
@@ -27,14 +27,14 @@
         {% endif %}
         <p>
         <button class="button" type="submit">
-            <span class="icon ok">{%trans 'Save' %}</span>
+            <span class="icon ok">{% trans 'Save' %}</span>
         </button>
         <button class="button" type="submit" name="apply">
-            <span class="icon apply">{%trans 'Apply' %}</span>
+            <span class="icon apply">{% trans 'Apply' %}</span>
         </button>
         <a href='{% url user_overview %}'>
         <button class="button" type="button" onclick="window.location='{% url user_overview %}'">
-            <span class="icon cancel">{%trans 'Cancel' %}</span>
+            <span class="icon cancel">{% trans 'Cancel' %}</span>
         </button>
         </a>
         </p>

@@ -6,24 +6,24 @@
 {% block title %}{{ block.super }} – {% trans "User groups" %}{% endblock %}
 
 {% block content %}
-    <h1>{%trans "User groups" %}</h1>
+    <h1>{% trans "User groups" %}</h1>
     <table>
         <tr>
-            <th>{%trans "User Group" %}</th>
-            <th>{%trans "Actions" %}</th>
+            <th>{% trans "User Group" %}</th>
+            <th>{% trans "Actions" %}</th>
         </tr>
     {% for group in groups %}
         <tr class="{% cycle '' 'odd' %}">
             <td>{{ group.name }}</td>
-            <td><a href="{% url user_group_edit group.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{%trans 'Edit group' %}"></a>
+            <td><a href="{% url user_group_edit group.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit group' %}"></a>
             {% if group.name != 'Anonymous' %}
-            <a href="{% url user_group_delete group.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{%trans 'Delete group' %}"></a>
+            <a href="{% url user_group_delete group.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete group' %}"></a>
             {% endif %}
             </td>
         </tr>
     {% empty %}
         <tr>
-        <td colspan="5"><i>{%trans "No user groups available." %}</i></td>
+        <td colspan="5"><i>{% trans "No user groups available." %}</i></td>
         </tr>
     {% endfor %}
     </table>

@@ -4,7 +4,7 @@
 {% load i18n %}
 
 {% block submenu %}
-    <h4 class="sectiontitle">{%trans "Configuration" %}</h4>
+    <h4 class="sectiontitle">{% trans "Configuration" %}</h4>
     <ul>
         {% for menu_link in menu_links %}
             <li{% if menu_link.2 %} class="selected"{% endif %}><a href="{{ menu_link.0 }}">{{ menu_link.1 }}</a></li>

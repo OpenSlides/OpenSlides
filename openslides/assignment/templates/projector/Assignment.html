@@ -92,7 +92,7 @@
         {% endfor %}
 
         <tr>
-            <td>{%trans 'Invalid votes' %}</td>
+            <td>{% trans 'Invalid votes' %}</td>
             {% for poll in polls %}
                 {% if poll.published %}
                 <td style="white-space:nowrap;"><img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}</td>
@@ -101,7 +101,7 @@
         </tr>
 
         <tr class="total">
-            <td><b>{%trans 'Votes cast' %}</b></td>
+            <td><b>{% trans 'Votes cast' %}</b></td>
             {% for poll in polls %}
                 {% if poll.published %}
                 <td style="white-space:nowrap;"><img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}"> <b>{{ poll.print_votescast }}</b></td>

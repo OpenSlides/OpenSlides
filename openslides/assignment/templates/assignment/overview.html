@@ -6,15 +6,15 @@
 {% block title %}{{ block.super }} – {% trans "Elections" %}{% endblock %}
 
 {% block content %}
-    <h1>{%trans "Elections" %}</h1>
+    <h1>{% trans "Elections" %}</h1>
 
     <p><form action="{{request.url}}" name="filter" method="get">
-        {%trans "Filter" %}:
+        {% trans "Filter" %}:
         <select class="default-input" name="status" onchange="document.forms['filter'].submit()">
-            <option value="---">-- {%trans "Status" %}--</option>
-            <option value="sea" {% if 'sea' in request.GET.status %}selected{% endif %}>{%trans "Searching for candidates" %}</option>
-            <option value="vot" {% if 'vot' in request.GET.status %}selected{% endif %}>{%trans "Voting" %}</option>
-            <option value="fin" {% if 'fin' in request.GET.status %}selected{% endif %}>{%trans "Finished" %}</option>
+            <option value="---">-- {% trans "Status" %}--</option>
+            <option value="sea" {% if 'sea' in request.GET.status %}selected{% endif %}>{% trans "Searching for candidates" %}</option>
+            <option value="vot" {% if 'vot' in request.GET.status %}selected{% endif %}>{% trans "Voting" %}</option>
+            <option value="fin" {% if 'fin' in request.GET.status %}selected{% endif %}>{% trans "Finished" %}</option>
         </select>
         </form>
     </p>
@@ -22,9 +22,9 @@
    {% blocktrans count counter=assignments|length %}election{% plural %}elections{% endblocktrans %}
     <table>
         <tr>
-            <th><a href="?sort=name{% if 'name' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Election" %}</a></th>
-            <th>{%trans "Candidates" %}</th>
-            <th><a href="?sort=status{% if 'status' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{%trans "Status" %}</a></th>
+            <th><a href="?sort=name{% if 'name' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Election" %}</a></th>
+            <th>{% trans "Candidates" %}</th>
+            <th><a href="?sort=status{% if 'status' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Status" %}</a></th>
             <th style="width: 1px;">{% trans "Actions" %}</th>
         </tr>
     {% for assignment in assignments %}
@@ -41,8 +41,8 @@
                     </a>
                 {% endif %}
                 {% if perms.assignment.can_manage_assignment %}
-                    <a href="{% url assignment_edit assignment.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{%trans 'Edit election' %}"></a>
-                    <a href="{% url assignment_delete assignment.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{%trans 'Delete election' %}"></a>
+                    <a href="{% url assignment_edit assignment.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit election' %}"></a>
+                    <a href="{% url assignment_delete assignment.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete election' %}"></a>
                 {% endif %}
                 <a href="{% url print_assignment assignment.id %}" title="{% trans 'Election as PDF' %}"><img src="{% static 'images/icons/pdf.png' %}"></a>
                 </span>
@@ -50,7 +50,7 @@
         </tr>
     {% empty %}
         <tr>
-            <td colspan="4"><i>{%trans "No assignments available." %}</i></td>
+            <td colspan="4"><i>{% trans "No assignments available." %}</i></td>
         </tr>
     {% endfor %}
     </table>

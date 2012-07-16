@@ -4,11 +4,11 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block title %}{{ block.super }} - {%trans "Application" %} {{ application.number }}{% endblock %}
+{% block title %}{{ block.super }} - {% trans "Application" %} {{ application.number }}{% endblock %}
 {% block content %}
     <div id="sidebar">
     <div class="box">
-        <p><b>{%trans "Status" %}:</b><br>
+        <p><b>{% trans "Status" %}:</b><br>
         {% if application.status != "pub" %}
             {% if application.status == "acc" %}
             <img src="{% static 'images/icons/voting-yes.png' %}">
@@ -16,7 +16,7 @@
             {% if application.status == "rej" %}
             <img src="{% static 'images/icons/voting-no.png' %}">
             {% endif %}
-            {%trans application.get_status_display %}
+            {% trans application.get_status_display %}
         {% else %}
             {% for note in application.notes %}
             {{ note }}

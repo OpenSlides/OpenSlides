@@ -60,14 +60,14 @@
 
             <a href='{% url assignment_delrun assignment.id %}'>
             <span class="button">
-                <span class="icon removeuser">{%trans 'Withdraw self candidature' %}</span>
+                <span class="icon removeuser">{% trans 'Withdraw self candidature' %}</span>
             </span>
             </a>
             {% else %}
             {% if user.profile %}
             <a href='{% url assignment_run assignment.id %}'>
             <span class="button">
-                <span class="icon adduser">{%trans 'Self candidature' %}</span>
+                <span class="icon adduser">{% trans 'Self candidature' %}</span>
             </span>
             </a>
             {% endif %}
@@ -85,7 +85,7 @@
             {% endfor %}
             <p>
             <button class="button" type="submit">
-                <span class="icon ok">{%trans 'Apply' %}</span>
+                <span class="icon ok">{% trans 'Apply' %}</span>
             </button>
             </p>
         {% endif %}
@@ -118,7 +118,7 @@
                     <br>
                     <a class="publish_link {% if poll.published %}published{% endif %}"
                     href="{% url assignment_poll_publish_status poll.id %}"
-                    title="{%trans 'Publish/unpublish results' %}">
+                    title="{% trans 'Publish/unpublish results' %}">
                     <span></span>
                     </a>
                     <a href="{% url assignment_poll_view poll.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit' %}"></a>
@@ -130,7 +130,7 @@
             <th>
                 <a href='{% url assignment_gen_poll assignment.id %}'>
                     <span class="button">
-                       <span class="icon statistics">{%trans 'New ballot' %}</span>
+                       <span class="icon statistics">{% trans 'New ballot' %}</span>
                     </span>
                 </a>
             </th>
@@ -177,7 +177,7 @@
     {% endfor %}
 
     <tr>
-        <td>{%trans 'Invalid votes' %}</td>
+        <td>{% trans 'Invalid votes' %}</td>
         {% for poll in polls %}
             {% if poll.published or perms.assignment.can_manage_assignment %}
                 <td style="white-space:nowrap;"><img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}</td>
@@ -189,7 +189,7 @@
     </tr>
 
     <tr class="total">
-        <td><strong>{%trans 'Votes cast' %}</strong></td>
+        <td><strong>{% trans 'Votes cast' %}</strong></td>
         {% for poll in polls %}
             {% if poll.published or perms.assignment.can_manage_assignment %}
                 <td style="white-space:nowrap;"><img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}"> <strong>{{ poll.print_votescast }}</strong></td>
@@ -208,7 +208,7 @@
     {% if assignment.profile.count > 0 and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
         <p><a href='{% url assignment_gen_poll assignment.id %}'>
         <span class="button">
-           <span class="icon statistics">{%trans 'New ballot' %}</span>
+           <span class="icon statistics">{% trans 'New ballot' %}</span>
         </span>
         </a></p>
     {% endif %}

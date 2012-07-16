@@ -5,7 +5,7 @@
 
 {% block mainmenu %}
     <ul>
-        <li class="selected"><a href="{% url user_login %}" title="">{%trans "Login" %}</a></li>
+        <li class="selected"><a href="{% url user_login %}" title="">{% trans "Login" %}</a></li>
     </ul>
 {% endblock %}
 
@@ -13,7 +13,7 @@
 {% endblock %}
 
 {% block content %}
-    <h1>{%trans "Login" %}</h1>
+    <h1>{% trans "Login" %}</h1>
 
     {% if form.errors %}
         <div class="notification error">
@@ -24,7 +24,7 @@
                 <em>{{ msg }}</em>
                 {% if not forloop.last %}<br />{% endif %}
             {% empty %}
-                <em>{%trans "Your username and password were not accepted. Please try again." %}</em>
+                <em>{% trans "Your username and password were not accepted. Please try again." %}</em>
             {% endfor %}
         </div>
         <script>
@@ -47,11 +47,11 @@
         </table>
         <p>
         <button class="button" type="submit">
-            <span class="icon ok">{%trans 'Login' %}</span>
+            <span class="icon ok">{% trans 'Login' %}</span>
         </button>
         {% if os_enable_anonymous_login %}
         <button class="button" id="anonymous_login">
-            <span class="icon guest">{%trans 'Continue as guest' %}</span>
+            <span class="icon guest">{% trans 'Continue as guest' %}</span>
         </button>
         {% endif %}
         <input type="hidden" name="next" value="{{ next }}" />
