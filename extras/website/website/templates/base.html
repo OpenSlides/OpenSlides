@@ -38,9 +38,8 @@
           <ul class="nav">
             <li class="{% block mainmenu_about %}{% endblock %}"><a href="{% url about %}">{% trans "Über OpenSlides" %}</a></li>
             <li class="{% block mainmenu_download %}{% endblock %}"><a href="{% url download %}">{% trans "Download" %}</a></li>
-            <li class="{% block mainmenu_support %}{% endblock %}"><a href="{% url support %}">{% trans "Support" %}</a></li>
+            <li class="{% block mainmenu_support %}{% endblock %}"><a href="{% url support %}">{% trans "Support & Dokumentation" %}</a></li>
             <li class="{% block mainmenu_development %}{% endblock %}"><a href="{% url development %}">{% trans "Entwicklung" %}</a></li>
-            <li id="demo" class="{% block mainmenu_demo %}{% endblock %}"><a href="{% url demo %}">{% trans "Demo" %}</a></li>
           </ul>
           <ul class="nav pull-right">
             <li class="{% block mainmenu_contact %}{% endblock %}"><a href="{% url contact %}">{% trans "Kontakt" %}</a></li>
@@ -96,7 +95,6 @@
                  <li><a href="{% url support %}">Professioneller Support</a></li>
                  <li><a href="#">FAQ</a></li>
                  <li><a href="#">Handbuch</a></li>
-                 <li><a href="http://dev.openslides.org/">Wiki</a></li>
              </ul>
            </div>
            <div class="span3">
@@ -109,10 +107,11 @@
              </ul>
            </div>
            <div class="span3">
-             <h4>More</h4>
+             <h4>Mehr</h4>
              <ul class="unstyled">
                <li><a href="#">Spenden</a></li>
                <li><a href="{% url contact %}">Kontakt</a></li>
+               <li><a href="{% url impressum %}">Impressum</a></li>
              </ul>
            </div>
          </div>

@@ -9,7 +9,6 @@ from django.views.generic import TemplateView
 
 urlpatterns = patterns('',
     url(r'^$', TemplateView.as_view(template_name="home.html"), name='home',),
-    url(r'^index/$', TemplateView.as_view(template_name="index.html"), name='index',),
     url(r'^about/$', TemplateView.as_view(template_name="about.html"), name='about',),
     url(r'^about/features$', TemplateView.as_view(template_name="features.html"), name='features',),
     url(r'^about/license$', TemplateView.as_view(template_name="license.html"), name='license',),
@@ -20,4 +19,5 @@ urlpatterns = patterns('',
     url(r'^development/$', TemplateView.as_view(template_name="development.html"), name='development',),
     url(r'^contact/$', TemplateView.as_view(template_name="contact.html"), name='contact',),
     url(r'^demo/$', TemplateView.as_view(template_name="demo.html"), name='demo',),
+    url(r'^impressum/$', TemplateView.as_view(template_name="impressum.html"), name='impressum',),
 )
