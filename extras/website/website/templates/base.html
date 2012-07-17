@@ -1,0 +1,125 @@
+{% load i18n %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="description" content="Agenda presentation system" />
+    <meta name="keywords" content="OpenSlides, agenda, application" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}OpenSlides{% endblock %}</title>
+    <link type="text/css" href="/static/css/bootstrap.css" rel="stylesheet" />
+    <link type="text/css" href="/static/css/style.css" rel="stylesheet" />
+    <link href="/static/img/favicon.ico" rel="shortcut icon" />
+    <script type="text/javascript" src="/static/js/jquery.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.js"></script>
+
+    <!-- for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+
+{% block mainmenu %}
+  <div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container">
+        <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </a>
+        <a class="brand" href="/" style="padding: 4px 20px;">
+        <img src="/static/img/openslides-logo.png" height="33px"> OpenSlides
+        </a>
+        <div class="nav-collapse">
+          <ul class="nav">
+            <li class="{% block mainmenu_about %}{% endblock %}"><a href="{% url about %}">{% trans "Über OpenSlides" %}</a></li>
+            <li class="{% block mainmenu_download %}{% endblock %}"><a href="{% url download %}">{% trans "Download" %}</a></li>
+            <li class="{% block mainmenu_support %}{% endblock %}"><a href="{% url support %}">{% trans "Support" %}</a></li>
+            <li class="{% block mainmenu_development %}{% endblock %}"><a href="{% url development %}">{% trans "Entwicklung" %}</a></li>
+            <li id="demo" class="{% block mainmenu_demo %}{% endblock %}"><a href="{% url demo %}">{% trans "Demo" %}</a></li>
+          </ul>
+          <ul class="nav pull-right">
+            <li class="{% block mainmenu_contact %}{% endblock %}"><a href="{% url contact %}">{% trans "Kontakt" %}</a></li>
+            <li class="divider-vertical"></li>
+            {% get_available_languages as languages %}
+            {% for lang_code, lang_name in languages %}
+                {% language lang_code %}
+                <li {% if LANGUAGE_CODE == lang_code %}class="active"{% endif %}><a href="{{lang_code}}"><i class="icon-flag icon-white"></i> {{ lang_name }}</a></li>
+                {% endlanguage %}
+            {% endfor %}
+        </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+
+<div class="container">
+{% block container %}
+    {% block header %}
+    <header id="overview" class="jumbotron subhead">
+      <h1>{% block headline %}{% endblock %}</h1>
+      <p class="lead">{% block lead %}{% endblock %}</p>
+      {% block submenu %}{% endblock %}
+    </header>
+    {% endblock %}
+    {% block content %}{% endblock %}
+{% endblock %}
+</div> <!-- /container -->
+
+
+<footer>
+  <div class="container">
+     <div class="row">
+       <div class="span12">
+         <div class="row">
+           <div class="span3">
+             <h4>Produkt</h4>
+             <ul class="unstyled">
+               <li><a href="{% url about %}">Was ist OpenSlides?</a></li>
+               <li><a href="{% url features %}">Funktionen</a></li>
+               <li><a href="{% url license %}">Lizenz</a></li>
+               <li><a href="{% url references %}">Referenzen</a></li>
+               <li><a href="{% url press %}">Presse</a></li>
+               <li><a href="{% url download %}">Download</a></li>
+               <li><a href="{% url demo %}">Demo</a></li>
+             </ul>
+           </div>
+           <div class="span3">
+             <h4>Support & Dokumentation</h4>
+             <ul class="unstyled">
+                 <li><a href="{% url support %}">Professioneller Support</a></li>
+                 <li><a href="#">FAQ</a></li>
+                 <li><a href="#">Handbuch</a></li>
+                 <li><a href="http://dev.openslides.org/">Wiki</a></li>
+             </ul>
+           </div>
+           <div class="span3">
+             <h4>Entwicklung</h4>
+             <ul class="unstyled">
+                 <li><a href="http://dev.openslides.org">Wiki</a></li>
+                 <li><a href="http://dev.openslides.org/roadmap">Roadmap</a></li>
+                 <li><a href="http://dev.openslides.org/report/3">Tickets</a></li>
+                 <li><a href="http://dev.openslides.org/browser">Quellcode durchsuchen</a></li>
+             </ul>
+           </div>
+           <div class="span3">
+             <h4>More</h4>
+             <ul class="unstyled">
+               <li><a href="#">Spenden</a></li>
+               <li><a href="{% url contact %}">Kontakt</a></li>
+             </ul>
+           </div>
+         </div>
+       </div>
+     </div>
+  </div>
+</footer>
+
+</body>
+</html>

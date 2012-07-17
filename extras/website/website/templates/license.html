@@ -1,0 +1,26 @@
+{% extends "base_about.html" %}
+
+{% load i18n %}
+
+{% block title %}{{ block.super }} - {% trans "Lizenz" %}{% endblock %}
+{% block headline %}{% trans "Lizenz" %}{% endblock %}
+
+{% block submenu_license %}active{% endblock %}
+
+{% block lead %}
+OpenSlides ist Freie Open Source Software.
+{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <div class="span9">
+OpenSlides steht unter der <strong>GNU General Public
+License (GNU GPL) Version 2+</strong> und darf ohne Restriktionen
+(unter den Bedingungen der Lizenz) benutzt, verändert und (geändert)
+weitergegeben werden. Eine Kopie der Lizenz liegt jedem
+OpenSlides-Release bei und ist auch in der 
+<a href="http://dev.openslides.org/browser/LICENSE">LICENSE-Datei</a> im
+Quellcode-Repository nachzulesen.
+    </div>
+  </div>
+{% endblock %}

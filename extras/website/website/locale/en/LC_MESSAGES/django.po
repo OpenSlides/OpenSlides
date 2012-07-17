@@ -1,0 +1,73 @@
+# English translations for OpenSlides website
+# Copyright (C) 2012 by OpenSlides team, see AUTHORS
+# This file is distributed under the same license as the OpenSlides package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version:OpenSlides Website\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-07-17 09:51+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
+"Language-Team: English \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: settings.py:41
+msgid "Deutsch"
+msgstr "German"
+
+#: settings.py:42
+msgid "Englisch"
+msgstr "English"
+
+#: templates/about.html:5 templates/base.html:39
+msgid "Über OpenSlides"
+msgstr "About OpenSlides"
+
+#: templates/about.html:6 templates/base_about.html:10
+msgid "Was ist OpenSlides?"
+msgstr "What is OpenSlides?"
+
+#: templates/base.html:40
+msgid "Download"
+msgstr "Download"
+
+#: templates/base.html:41
+msgid "Support"
+msgstr "Support"
+
+#: templates/base.html:42 templates/development.html:5
+#: templates/development.html.py:6
+msgid "Entwicklung"
+msgstr ""
+
+#: templates/base.html:43
+msgid "Demo"
+msgstr "Demo"
+
+#: templates/base.html:46 templates/contact.html:5 templates/contact.html.py:6
+msgid "Kontakt"
+msgstr "Contact"
+
+#: templates/base_about.html:11 templates/features.html:5
+#: templates/features.html.py:6
+msgid "Funktionen"
+msgstr "Features"
+
+#: templates/base_about.html:12 templates/license.html:5
+#: templates/license.html.py:6
+msgid "Lizenz"
+msgstr "License"
+
+#: templates/base_about.html:13 templates/references.html:5
+#: templates/references.html.py:6
+msgid "Referenzen"
+msgstr "References"
+
+#: templates/base_about.html:14 templates/press.html:5
+#: templates/press.html.py:6
+msgid "Presse"
+msgstr "Press"

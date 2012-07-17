@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}{{ block.super }} - {% trans "Entwicklung" %}{% endblock %}
+{% block headline %}{% trans "Entwicklung" %}{% endblock %}
+
+{% block mainmenu_development %}active{% endblock %}
+ 
+{% block content %}
+
+  <div class="row">
+    <div class="span3">
+        <h3>Wiki</h3>
+        <p>TODO</p>
+        <p><a class="btn" href="http://dev.openslides.org">Wiki &raquo;</a></p>
+    </div>
+    <div class="span3">
+        <h3>Roadmap</h3>
+        <p>TODO</p>
+        <p><a class="btn" href="http://dev.openslides.org/roadmap">Roadmap &raquo;</a></p>
+    </div>
+    <div class="span3">
+        <h3>Tickets</h3>
+        <p>TODO</p>
+        <p><a class="btn" href="http://dev.openslides.org/report/3">Tickets &raquo;</a></p>
+    </div>
+    <div class="span3">
+        <h3>Quellcode durchsuchen</h3>
+        <p>TODO</p>
+        <p><a class="btn" href="http://dev.openslides.org/browser">Quellcode durchsuchen &raquo;</a></p>
+    </div>
+  </div>
+    
+{% endblock %}
+
+

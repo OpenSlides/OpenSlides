@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block mainmenu_support %}active{% endblock %}
+
+{% block submenu %}
+  <div class="subnav subnav-fixed">
+    <ul class="nav nav-pills">
+        <li class="{% block submenu_support %}{% endblock %}"><a href="{% url support %}">Professioneller Support</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Handbuch</a></li>
+        <li><a href="http://dev.openslides.org/">Wiki</a></li>
+    </ul>
+  </div>
+{% endblock %}

@@ -1,0 +1,208 @@
+{% extends "base_about.html" %}
+
+{% load i18n %}
+
+{% block title %}{{ block.super }} - {% trans "Funktionen" %}{% endblock %}
+{% block headline %}{% trans "Funktionen" %}{% endblock %}
+
+{% block submenu_features %}active{% endblock %}
+
+{% block lead %}
+Alle Funktionen von OpenSlides im Überblick.
+{% endblock %}
+
+{% block content %}
+
+  <div class="page-header">
+    <h1>Tagesordnung</h1>
+  </div>
+  
+  <div class="row">
+    <div class="span4">
+        <h3>Verwalten & Steuern</h3>
+        <p>Mit OpenSlides können alle Inhalte einer Veranstaltung, wie Tagesordnung, Antragstexte, 
+        Redelisten, Kandidatenlisten, Wahlergebnisse usw. zeitaktuell an die Leinwand projiziert 
+        werden. Die Versammlungsleitung steuert und bearbeitet diese Inhalte interaktiv. 
+        Außerdem verwaltet OpenSlides die anwesenden Teilnehmer, um so leicht Kandidaten für 
+        anstehende Wahlen aufzustellen, vorgedruckte Wahlscheine zu generieren und ausgezählte 
+        Wahl- und Abstimmungsergebnisse anzuzeigen.
+        </p>
+    </div>
+    <div class="span4">
+        <h3>Projizieren</h3>
+        <p>Neuartig ist vor allem die Funktion, das Plenum mit einzubeziehen: Jeder Teilnehmer auf
+        einer Veranstaltung hat die Möglichkeit, sich mit dem eigenen Laptop oder Smartphone per
+        WLAN bei OpenSlides anzumelden. Dabei kann der Teilnehmer z.B. einen Antrag einreichen,
+        Anträge anderer Teilnehmer unterstützen, bei anstehenden Wahlen kandidieren, Kandidaten
+        vorschlagen oder Abstimmungsergebnisse nachlesen.
+        </p>
+        <p>OpenSlides ist konzipiert für den Einsatz auf Veranstaltungen wie Delegierten- und
+        Mitgliederversammlungen, Parteitagen und Hauptversammlungen. Eine Teilnehmerbeschränkung
+        gibt es nicht.
+        </p>
+    </div>
+    <div class="span4">
+        <h3>PDF erzeugen</h3>
+        <p>Der entscheidende Vorteil gegenüber herkömmlichen Office-Präsentations-Systemen,
+        wie MS PowerPoint oder OpenOffice Impress, ist die Bearbeitung der Folien über ein
+        Redaktionssystem. Der Präsentationsmodus auf dem Beamer muss nicht verlassen werden
+        und zeigt stets die aktuelle Folie an.
+        </p>
+        <ul>
+        <li>Tagesordnung verwalten</li>
+        <li>Eintrag auswählen - zur Anzeige am Beamer</li>
+        <li>Eintrag bearbeiten - während der Anzeige am Beamer</li>
+        <li>Beamer-Ansicht mit automatischer Aktualisierung bei Änderung (der Beamer läuft im Browser mit Vollbildmodus, z.B. als 2. Monitor)</li>
+        <li>Einträge sortieren - per Drag&Drop in der Tagesordnung (Unterpunkte möglich)</li>
+        <li>Eintrag markieren - als erledigt und versteckt</li>
+        <li>Tagesordnung als PDF erzeugen</li>
+        <li>aktuelle Uhrzeit auf der Beameransicht</li>
+        </ul>
+    </div>
+  </div>
+  
+  
+  
+  <div class="page-header">
+    <h1>Anträge</h1>
+  </div>
+  
+  <div class="row">
+    <div class="span4">
+        <h3>Verwalten & Steuern</h3>
+        <p>
+        <ul>
+        <li>Anträge verwalten</li>
+        <li>Anträge von anderen Teilnehmern unterstützen lassen</li>
+        <li>Antragsstatus ändern</li>
+        <li>Abstimmungsergebnisse eingeben und darstellen - mehreren Abstimmungsvorgänge möglich (Abstimmungsmodus: Ja/Nein/Enthaltung sowie ungültige und abgegebene Stimmen)</li>
+        <li>Antrag als Tagesordnungseintrag anlegen und anzeigen</li>
+        <li>Versionshistorie eines Antrags anzeigen</li>
+        <li>Alle Änderungen eines Antrags (Text, Status, Unterstützer etc.) werden protokolliert</li>
+        <li>Antragsformular und Übersicht aller Anträge als PDF erzeugen</li>
+        </ul>
+        </p>
+    </div>
+    <div class="span4">
+        <h3>Projizieren</h3>
+        <p>TODO
+        </p>
+    </div>
+    <div class="span4">
+        <p><a class="thumbnail" href="#">
+        <img alt="" src="http://placehold.it/260x180">
+        </a></p>
+    </div>
+  </div>
+
+  <div class="page-header">
+    <h1>Wahlen</h1>
+  </div>
+  <div class="row">
+    <div class="span4">
+        <h3>Verwalten & Steuern</h3>
+        <p>
+        <ul>
+        <li>Wahlen verwalten</li>
+        <li>Kandidaten aus Teilnehmerliste für eine Wahl vorschlagen (bzw. als angemeldeter Teilnehmer selbst kandidieren)</li>
+        <li>Wahlschein als pdf generieren (mit Ankreuzfeldern)</li>
+        <li>Wahlergebenisse eingeben und darstellen - mehrere Wahlgänge und Stichwahlen werden unterstützt</li>
+        <li>Wahlmodus: nur Ja-Stimmen oder Ja/Nein/Enthaltungs-Stimmen (abhängig von der Anzahl der Kandiaten und Posten), ungültige und abgegebene Stimmen können immer eingegeben werden</li>
+        </ul>
+        </p>
+    </div>
+    <div class="span4">
+        <h3>Projizieren</h3>
+        <p>TODO
+        </p>
+    </div>
+    <div class="span4">
+        <p><a class="thumbnail" href="#">
+        <img alt="" src="http://placehold.it/260x180">
+        </a></p>
+    </div>
+  </div>
+
+  <div class="page-header">
+    <h1>Teilnehmer</h1>
+  </div>
+  <div class="row">
+    <div class="span4">
+        <h3>Verwalten & Steuern</h3>
+        <p>
+        <ul>
+        <li>Teilnehmer verwalten (vordefinierte Felder: Name, Vorname, Geschlecht, E-Mail, Gruppe, Typ, Amt)</li>
+        <li>importieren von Teilnehmerdaten (im CSV-Format)</li>
+        <li>Benutzergruppe frei konfigurierbar (voreingestellt sind: Beobachter, Delegierte, Tagesleitung, Teilnehmerverwaltung)</li>
+        </ul>
+        </p>
+    </div>
+    <div class="span4">
+        <h3>Projizieren</h3>
+        <p>TODO
+        </p>
+    </div>
+    <div class="span4">
+        <p><a class="thumbnail" href="#">
+        <img alt="" src="http://placehold.it/260x180">
+        </a></p>
+    </div>
+  </div>
+
+
+  <div class="page-header">
+    <h1>Allgemein</h1>
+  </div>
+  <div class="row">
+    <div class="span4">
+        <h3>TODO</h3>
+        <p>
+        <ul>
+        <li>Template für Beamer und Webinterface leicht per HTML und CSS anpassbar</li>
+        <li>Veranstaltungssepzifische Daten (Veranstaltungsname, Ort, Zeitraum, Antragseinleitungssatz, minimale Unterstützeranzahl, Sprache) konfigurierbar</li>
+        <li>OpenSlides ist Freie Software (GNU GPL v2+ Lizenz)</li>
+        <li>Plattformunabhängig (OpenSlides läuft überall dort, wo Pyhton läuft)</li>
+        <li>vollständige deutsche und englische Übersetzung vorhanden - weitere Sprachen willkommen!</li>
+        </ul>
+        </p>
+    </div>
+    <div class="span4">
+        <h3>TODO</h3>
+        <p>TODO
+        </p>
+    </div>
+    <div class="span4">
+        <p><a class="thumbnail" href="#">
+        <img alt="" src="http://placehold.it/260x180">
+        </a></p>
+    </div>
+  </div>
+
+ 
+   <div class="page-header">
+    <h1>Aublick <small>Weiterentwicklungsideen für OpenSlides</small></h1>
+  </div>
+  <div class="row">
+    <div class="span4">
+        <h3>TODO</h3>
+        <p>
+        <ul>
+        <li>schnelle und einfache Erstellung eines Ergebnisprotokolls (mit allen Tagesordnungseinträgen, Beschlüssen, Anträgen, Abstimmungen und Wahlergbnissen)</li>
+        <li>grafische Darstellung der Wahl- und Abstimmungsergebnisse in Diagrammen</li>
+        <li>Einbindung von Grafiken in Tagesordnungseinträge</li>
+        <li>... (mehr im <a href="http://dev.openslides.org/report/3">Trac-Ticketsystem</a>)</li>
+        </ul>
+        </p>
+    </div>
+    <div class="span4">
+        <h3>TODO</h3>
+        <p>TODO
+        </p>
+    </div>
+    <div class="span4">
+        <p><a class="thumbnail" href="#">
+        <img alt="" src="http://placehold.it/260x180">
+        </a></p>
+    </div>
+  </div>
+{% endblock %}
