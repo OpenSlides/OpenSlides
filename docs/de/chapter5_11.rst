@@ -1,2 +1,0 @@
-Wiederverwendung einer Veranstaltung
-------------------------------------

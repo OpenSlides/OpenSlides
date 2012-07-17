@@ -1,4 +1,4 @@
-Netwerktechnik für Openslides Dummies
--------------------------------------
+Eigenes Logo einfügen
+---------------------
 
-TODO:
+TODO

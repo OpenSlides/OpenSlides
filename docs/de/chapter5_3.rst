@@ -1,4 +1,2 @@
-Einstellungen
--------------
-
-TODO:
+Projektorsteuerung
+++++++++++++++++++

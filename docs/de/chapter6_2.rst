@@ -1,4 +1,6 @@
-Datenschutz
------------
+Eigene Datenbank anbinden
+-------------------------
 
-TODO:
+TODO
+
+Z. B. Anleitung zur Anbindung von MySQL
