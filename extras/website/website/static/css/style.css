@@ -7,7 +7,9 @@
 body {
     padding-top: 85px;
 }
-
+.navbar .nav > li > a {
+    color: #cccccc;
+}
 .subhead {
     margin-bottom: 9px;
     padding-bottom: 0;
