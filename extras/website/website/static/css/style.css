@@ -10,6 +10,10 @@ body {
 .navbar .nav > li > a {
     color: #cccccc;
 }
+.hero-unit {
+    margin-top: -15px;
+    padding: 40px 60px;
+}
 .subhead {
     margin-bottom: 9px;
     padding-bottom: 0;
