@@ -31,7 +31,7 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </a>
-        <a class="brand" href="/" style="padding: 4px 20px;" title="Home">
+        <a class="brand" href="{% url home %}" style="padding: 4px 20px;" title="Home">
         <img src="/static/img/openslides-logo_wide-light.png" height="31px">
         </a>
         <div class="nav-collapse">
@@ -93,11 +93,11 @@
              </ul>
            </div>
            <div class="span2">
-             <h4>Support & Dokumentation</h4>
+             <h4>Hilfe</h4>
              <ul class="unstyled">
-                 <li><a href="{% url support %}">Professioneller Support</a></li>
-                 <li><a href="#">FAQ</a></li>
-                 <li><a href="#">Handbuch</a></li>
+                 <li><a href="{% url support %}">Support</a></li>
+                 <li><a href="{% url documentation %}">Handbuch</a></li>
+                 <li><a href="{% url faq %}">FAQ</a></li>
              </ul>
            </div>
            <div class="span2">
@@ -106,13 +106,13 @@
                  <li><a href="http://dev.openslides.org">Wiki</a></li>
                  <li><a href="http://dev.openslides.org/roadmap">Roadmap</a></li>
                  <li><a href="http://dev.openslides.org/report/3">Tickets</a></li>
-                 <li><a href="http://dev.openslides.org/browser">Quellcode durchsuchen</a></li>
+                 <li><a href="http://dev.openslides.org/browser">Quellcode</a></li>
              </ul>
            </div>
            <div class="span2">
              <h4>Mehr</h4>
              <ul class="unstyled">
-               <li><a href="#">Spenden</a></li>
+               <li><a href="{% url donate %}">Spenden</a></li>
                <li><a href="{% url contact %}">Kontakt</a></li>
                <li><a href="{% url impressum %}">Impressum</a></li>
              </ul>

@@ -22,6 +22,7 @@ urlpatterns = i18n_patterns('',
     url(r'^faq/$', TemplateView.as_view(template_name="faq.html"), name='faq',),
     url(r'^development/$', TemplateView.as_view(template_name="development.html"), name='development',),
     url(r'^contact/$', 'website.views.contact', name='contact',),
+    url(r'^donate/$', TemplateView.as_view(template_name="donate.html"), name='donate',),
     url(r'^demo/$', TemplateView.as_view(template_name="demo.html"), name='demo',),
     url(r'^impressum/$', TemplateView.as_view(template_name="impressum.html"), name='impressum',),
 )
