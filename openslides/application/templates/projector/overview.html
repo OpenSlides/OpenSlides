@@ -1,0 +1,17 @@
+{% extends "beamer.html" %}
+{% block title %}{{ block.super }} -
+    {% if title %} {{ title }} {% else %} {%trans "Agenda" %} {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if title %}
+    <h1>{{ title }}</h1>
+    {% else %}
+    <h1>{%trans "Agenda" %}</h1>
+    {% endif %}
+    <ul class="itemlist">
+    {% for item in items %}
+        <li{% if item.closed %} class="closed"{% endif %}>{{ item }}</li>
+    {% endfor %}
+    </ul>
+{% endblock %}
