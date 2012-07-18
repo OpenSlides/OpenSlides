@@ -13,6 +13,12 @@ Kontaktmöglichkeiten zur OpenSlides Community
 
 {% block content %}
 
+<form action="" method="post">{% csrf_token %}
+{{ form.name_of_field.errors }}
+{{ form.as_p }}
+<input type="submit" value="Submit" />
+</form>
+
 <h3>Mailinglisten</h3>
 
 <p>OpenSlides bietet öffentliche Mailinglisten zur Koordination der Entwicklung 

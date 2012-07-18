@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.conf.urls.i18n import i18n_patterns
 from django.views.generic import TemplateView
+from website import views
 
 #from views import TemplateView
 # Uncomment the next two lines to enable the admin:
@@ -18,7 +19,8 @@ urlpatterns = i18n_patterns('',
     url(r'^download/$', TemplateView.as_view(template_name="download.html"), name='download',),
     url(r'^support/$', TemplateView.as_view(template_name="support.html"), name='support',),
     url(r'^development/$', TemplateView.as_view(template_name="development.html"), name='development',),
-    url(r'^contact/$', TemplateView.as_view(template_name="contact.html"), name='contact',),
+    url(r'^contact/$', 'website.views.contact', name='contact',),
+    #url(r'^contact/$', TemplateView.as_view(template_name="contact.html"), name='contact',),
     url(r'^demo/$', TemplateView.as_view(template_name="demo.html"), name='demo',),
     url(r'^impressum/$', TemplateView.as_view(template_name="impressum.html"), name='impressum',),
 )
