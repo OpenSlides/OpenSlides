@@ -9,6 +9,10 @@ body {
 }
 .navbar .nav > li > a {
     color: #cccccc;
+    font-size: 14px;
+}
+.navbar .nav.pull-right > li > a {
+    font-size: 12px;
 }
 .hero-unit {
     margin-top: -15px;

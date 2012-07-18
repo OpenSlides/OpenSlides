@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block mainmenu_documentation %}active{% endblock %}
+
+{% block submenu %}
+  <div class="subnav subnav-fixed">
+    <ul class="nav nav-pills">
+        <li class="{% block submenu_documentation %}{% endblock %}"><a href="{% url documentation %}">Handbuch</a></li>
+        <li class="{% block submenu_faq %}{% endblock %}"><a href="{% url faq %}">FAQ</a></li>
+    </ul>
+  </div>
+{% endblock %}
