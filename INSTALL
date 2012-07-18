@@ -105,6 +105,9 @@ II. Installation on GNU/Linux and MacOSX
         Go to the (extracted/cloned) root directory of OpenSlides
         and create virtualenv environment:
 
+        $ virtualenv .venv
+
+	For virtualenv >= 1.7 use:
         $ virtualenv --system-site-packages .venv
 
   4. Activate the virtual environment:
