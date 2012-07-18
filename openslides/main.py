@@ -173,13 +173,15 @@ def create_or_reset_admin_user():
     # can't be imported in global scope as it already requires
     # the settings module during import
     from django.contrib.auth.models import User
+    from openslides.config.models import config
     try:
         obj = User.objects.get(username = "admin")
     except User.DoesNotExist:
         User.objects.create_superuser(
-            username = "admin",
-            password = "admin",
-            email = "admin@example.com")
+            username="admin",
+            password="admin",
+            email="admin@example.com")
+        config['admin_password'] = "admin"
         print("Created default admin user")
         return
 

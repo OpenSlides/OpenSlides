@@ -31,6 +31,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.views import login as django_login
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _, ungettext
@@ -40,7 +41,7 @@ from openslides.utils.pdf import stylesheet
 from openslides.utils.template import Tab
 from openslides.utils.utils import (template, permission_required,
     gen_confirm_form, ajax_request, decodedict, encodedict,
-    delete_default_permissions)
+    delete_default_permissions, html_strong)
 from openslides.utils.views import FormView, PDFView
 
 from openslides.config.models import config
@@ -561,6 +562,21 @@ def reset_password(request, user_id):
             _('Do you really want to reset the password for <b>%s</b>?') % user,
             reverse('user_reset_password', args=[user_id]))
     return redirect(reverse('user_edit', args=[user_id]))
+
+
+def login(request):
+    try:
+        admin = User.objects.get(pk=1)
+        if admin.check_password(config['admin_password']):
+            first_time_message = _("The password for the user %(user)s is "
+                "%(password)s. Please change it") % {
+                'user': html_strong(admin.username),
+                'password': html_strong(config['admin_password'])}
+        else:
+            first_time_message = None
+    except User.DoesNotExist:
+        first_time_message = None
+    return django_login(request, template_name='participant/login.html', extra_context={'first_time_message': first_time_message})
 
 
 def register_tab(request):

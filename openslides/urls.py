@@ -16,8 +16,8 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.shortcuts import redirect
 from django.utils.importlib import import_module
 
-
 from openslides.utils.views import FrontPage
+
 
 handler500 = 'openslides.utils.views.server_error'
 
@@ -59,8 +59,7 @@ urlpatterns += patterns('',
     (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
 
     url(r'^login/$',
-        'django.contrib.auth.views.login',
-        {'template_name': 'participant/login.html'},
+        'openslides.participant.views.login',
         name='user_login',
     ),
 

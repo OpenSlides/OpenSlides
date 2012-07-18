@@ -27,12 +27,20 @@
                 <em>{% trans "Your username and password were not accepted. Please try again." %}</em>
             {% endfor %}
         </div>
-        <script>
-            $("div.notification").click(function () {
-                $(this).hide("fast");
-            });
-        </script>
     {% endif %}
+    {% if first_time_message %}
+        <div class="notification info">
+            <a class="close" href="#">
+            <img alt="close" title="{% trans 'Close this notification' %}" src="{% static 'images/icons/cross.png' %}">
+            </a>
+            <em>{{ first_time_message|safe }}</em>
+        </div>
+    {% endif %}
+    <script>
+        $("div.notification").click(function () {
+            $(this).hide("fast");
+        });
+    </script>
     <form method="post" action="{% url user_login %}">
         {% csrf_token %}
         <table>
