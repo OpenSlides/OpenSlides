@@ -109,7 +109,7 @@ II. Installation on GNU/Linux and MacOSX
 
         $ virtualenv .venv
 
-        For virtualenv >= 1.7 use:
+        For virtualenv >= 1.7 use instead:
         $ virtualenv --system-site-packages .venv
 
   4. Activate the virtual environment:
