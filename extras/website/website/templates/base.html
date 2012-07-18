@@ -47,7 +47,9 @@
             {% get_available_languages as languages %}
             {% for lang_code, lang_name in languages %}
                 {% language lang_code %}
-                <li {% if LANGUAGE_CODE == lang_code %}class="active"{% endif %}><a href="{{lang_code}}"><i class="icon-flag icon-white"></i> {{ lang_name }}</a></li>
+                <li {% if LANGUAGE_CODE == lang_code %}class="active"{% endif %}>
+                  <a href="{% url home %}"><i class="icon-flag icon-white"></i> {{ lang_name }}</a>
+                </li>
                 {% endlanguage %}
             {% endfor %}
         </ul>

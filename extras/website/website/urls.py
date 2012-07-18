@@ -7,7 +7,8 @@ from django.views.generic import TemplateView
 # from django.contrib import admin
 # admin.autodiscover()
 
-urlpatterns = patterns('',
+urlpatterns = i18n_patterns('',
+    url(r'^i18n/', include('django.conf.urls.i18n')),
     url(r'^$', TemplateView.as_view(template_name="home.html"), name='home',),
     url(r'^about/$', TemplateView.as_view(template_name="about.html"), name='about',),
     url(r'^about/features$', TemplateView.as_view(template_name="features.html"), name='features',),
