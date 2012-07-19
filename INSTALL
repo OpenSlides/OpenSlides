@@ -79,12 +79,14 @@ II. Installation on GNU/Linux and MacOSX
   1. Install requirements:
 
         OpenSlides requires following programs, which should be
-        installed first: Python Programming Language 2 (>= 2.5),
-        virtualenv (>= 1.4.1), ReportLab Toolkit and
-        Python Imaging Library (PIL):
+        installed first:
+          + Python Programming Language 2 (>= 2.5),
+          + virtualenv (>= 1.4.1),
+          + ReportLab Toolkit and
+          + Python Imaging Library (PIL)
 
         E.g. for ubuntu run:
-        $ sudo apt-get install python python-virtualenv python-reportlab python-imagin
+        $ sudo apt-get install python python-virtualenv python-reportlab python-imaging
 
   2. Get OpenSlides:
 
@@ -105,6 +107,9 @@ II. Installation on GNU/Linux and MacOSX
         Go to the (extracted/cloned) root directory of OpenSlides
         and create virtualenv environment:
 
+        $ virtualenv .venv
+
+        For virtualenv >= 1.7 use instead:
         $ virtualenv --system-site-packages .venv
 
   4. Activate the virtual environment:
@@ -116,8 +121,10 @@ II. Installation on GNU/Linux and MacOSX
         $ pip install django django-mptt
 
         If you use python < 2.6 you also have to install simplejson:
-
         $ pip install simplejson
+
+        If requirements reportlab or PIL still missing (see 1.):
+        $ pip install reportlab pil
 
   6. Start OpenSlides server and open URL in your default browser:
 

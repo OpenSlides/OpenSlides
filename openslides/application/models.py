@@ -106,7 +106,7 @@ class Application(models.Model, SlideMixin):
         if version.id > self.permitted.id:
             version.rejected = True
             version.save()
-            self.writelog(pgettext("Rejected meens not permittd", "Version %d rejected")
+            self.writelog(pgettext("Rejected means not permitted", "Version %d rejected")
                 % (version.aid, ), user)
             return True
         return False

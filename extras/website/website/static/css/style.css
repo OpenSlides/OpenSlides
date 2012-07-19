@@ -9,6 +9,10 @@ body {
 }
 .navbar .nav > li > a {
     color: #cccccc;
+    font-size: 14px;
+}
+.navbar .nav.pull-right > li > a {
+    font-size: 12px;
 }
 .hero-unit {
     margin-top: -15px;
@@ -124,4 +128,27 @@ footer a {
 footer a:hover {
     color: #FFFFFF;
     text-decoration: underline;
+}
+
+ul.errorlist {
+    margin: 0;
+    padding: 0;
+    list-style: none outside none;
+}
+.errorlist li {
+    color: #DA3939;
+    font-size: 9px;
+    font-style: italic;
+    height: 13px;
+    padding: 0;
+}
+form .error {
+    color: #DA3939;
+    font-weight: bold;
+}
+form p.error {
+    margin-top: 0;
+}
+form .error input, form .error textarea {
+    border: 1px solid #DA3939;
 }

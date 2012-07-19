@@ -392,7 +392,7 @@ def user_import(request):
     from openslides.application.models import Application
     try:
         request.user.profile
-        messages.error(request, _('The import function is available for the superuser (without user profile) only.'))
+        messages.error(request, _('The import function is available for the admin (without user profile) only.'))
         return redirect(reverse('user_overview'))
     except Profile.DoesNotExist:
         pass
@@ -568,8 +568,11 @@ def login(request):
     try:
         admin = User.objects.get(pk=1)
         if admin.check_password(config['admin_password']):
-            first_time_message = _("The password for the user %(user)s is "
-                "%(password)s. Please change it") % {
+            first_time_message = _("Installation was successfully! Use %(user)s "
+                    "(password: %(password)s) for first login.<br>"
+                    "<strong>Important:</strong> Please change the password after "
+                    "first login! Otherwise this message still appears for everyone "
+                    "and could be a security risk.") % {
                 'user': html_strong(admin.username),
                 'password': html_strong(config['admin_password'])}
         else:

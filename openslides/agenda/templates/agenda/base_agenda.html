@@ -14,6 +14,11 @@
         <li class="{% active request '/agenda/new/' %}"><a href="{% url item_new %}">{% trans "New item" %}</a></li>
         {% endif %}
         <li><a href="{% url print_agenda %}"><img src="{% static 'images/icons/pdf.png' %}"> {% trans 'Agenda as PDF' %}</a></li>
+        {% if perms.projector.can_see_projector %}
+        <li>
+            <a href="{% url projector_show %}"><img src="{% static 'images/icons/projector.png' %}"> {% trans 'Projector view' %}</a>
+        </li>
+        {% endif %}
     </ul>
 
     {# second submenu #}

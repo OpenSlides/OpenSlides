@@ -560,7 +560,7 @@ def reject_version(request, aversion_id):
 def application_import(request):
     try:
         request.user.profile
-        messages.error(request, _('The import function is available for the superuser (without user profile) only.'))
+        messages.error(request, _('The import function is available for the admin (without user profile) only.'))
         return redirect(reverse('application_overview'))
     except Profile.DoesNotExist:
         pass
