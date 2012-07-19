@@ -565,21 +565,22 @@ def reset_password(request, user_id):
 
 
 def login(request):
+    extra_content = {}
     try:
         admin = User.objects.get(pk=1)
         if admin.check_password(config['admin_password']):
-            first_time_message = _("Installation was successfully! Use %(user)s "
-                    "(password: %(password)s) for first login.<br>"
-                    "<strong>Important:</strong> Please change the password after "
-                    "first login! Otherwise this message still appears for everyone "
-                    "and could be a security risk.") % {
+            extra_content['first_time_essage'] = _(
+                "Installation was successfully! Use %(user)s "
+                "(password: %(password)s) for first login.<br>"
+                "<strong>Important:</strong> Please change the password after "
+                "first login! Otherwise this message still appears for everyone "
+                "and could be a security risk.") % {
                 'user': html_strong(admin.username),
                 'password': html_strong(config['admin_password'])}
-        else:
-            first_time_message = None
+            extra_content['next'] = reverse('password_change')
     except User.DoesNotExist:
-        first_time_message = None
-    return django_login(request, template_name='participant/login.html', extra_context={'first_time_message': first_time_message})
+        pass
+    return django_login(request, template_name='participant/login.html', extra_context=extra_content)
 
 
 def register_tab(request):

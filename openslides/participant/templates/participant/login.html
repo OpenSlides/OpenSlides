@@ -41,7 +41,7 @@
             $(this).hide("fast");
         });
     </script>
-    <form method="post" action="{% url user_login %}">
+    <form method="post" action="{% url user_login %}{% if next %}?next={{ next }}{% endif %}">
         {% csrf_token %}
         <table>
         <tr>
