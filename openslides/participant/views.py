@@ -569,7 +569,10 @@ def login(request):
         admin = User.objects.get(pk=1)
         if admin.check_password(config['admin_password']):
             first_time_message = _("Installation was successfully! Use %(user)s "
-                "(password: %(password)s) for first login and change password!") % {
+                    "(password: %(password)s) for first login.<br>"
+                    "<strong>Important:</strong> Please change the password after "
+                    "first login! Otherwise this message still appears for everyone "
+                    "and could be a security risk.") % {
                 'user': html_strong(admin.username),
                 'password': html_strong(config['admin_password'])}
         else:

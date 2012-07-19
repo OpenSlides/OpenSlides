@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-18 21:11+0200\n"
+"POT-Creation-Date: 2012-07-19 08:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: German\n"
@@ -156,22 +156,28 @@ msgstr "Neuer Eintrag"
 msgid "Agenda as PDF"
 msgstr "Tagesordnung als PDF"
 
-#: agenda/templates/agenda/base_agenda.html:26
+#: agenda/templates/agenda/base_agenda.html:19
+#: projector/templates/projector/base_projector.html:20
+#: templates/front_page.html:25
+msgid "Projector view"
+msgstr "Projektor-Ansicht"
+
+#: agenda/templates/agenda/base_agenda.html:31
 msgid "View item"
 msgstr "Eintrag anzeigen"
 
-#: agenda/templates/agenda/base_agenda.html:31
+#: agenda/templates/agenda/base_agenda.html:36
 #: agenda/templates/agenda/edit.html:8 agenda/templates/agenda/edit.html:16
 #: agenda/templates/agenda/item_row.html:49
 msgid "Edit item"
 msgstr "Eintrag bearbeiten"
 
-#: agenda/templates/agenda/base_agenda.html:33
+#: agenda/templates/agenda/base_agenda.html:38
 #: agenda/templates/agenda/item_row.html:50
 msgid "Delete item"
 msgstr "Eintrag löschen"
 
-#: agenda/templates/agenda/base_agenda.html:38
+#: agenda/templates/agenda/base_agenda.html:43
 msgid "Show item"
 msgstr "Eintrag projizieren"
 
@@ -483,6 +489,12 @@ msgstr "Benötigt Review"
 #, python-format
 msgid "Version %d permitted"
 msgstr "Version %d zugelassen"
+
+#: application/models.py:109
+#, python-format
+msgctxt "Rejected means not permitted"
+msgid "Version %d rejected"
+msgstr "Version %d verworfen"
 
 #: application/models.py:138
 msgid "Searching for supporters."
@@ -1744,7 +1756,7 @@ msgstr "Mitarbeiter"
 msgid "Guest"
 msgstr "Gast"
 
-#: participant/models.py:39 participant/views.py:605
+#: participant/models.py:39 participant/views.py:608
 #: participant/templates/participant/overview.html:29
 #: participant/templates/participant/overview.html:67
 msgid "Group"
@@ -1766,7 +1778,7 @@ msgstr "Nur zum Filtern der Benutzerliste."
 msgid "Typ"
 msgstr "Typ"
 
-#: participant/models.py:46 participant/views.py:606
+#: participant/models.py:46 participant/views.py:609
 #: participant/templates/participant/overview.html:44
 #: participant/templates/participant/overview.html:69
 msgid "Committee"
@@ -1921,12 +1933,16 @@ msgstr "Soll das Passwort für <b>%s</b> wirklich zurückgesetzt werden?"
 #, python-format
 msgid ""
 "Installation was successfully! Use %(user)s (password: %(password)s) for "
-"first login and change password!"
+"first login.<br><strong>Important:</strong> Please change the password after "
+"first login! Otherwise this message still appears for everyone and could be "
+"a security risk."
 msgstr ""
-"Die Installation war erfolgreich! Bitte %(user)s (Passwort: %(password)s) für "
-"die erste Anmeldung verwenden und das Passwort ändern!"
+"Die Installation war erfolgreich! Bitte %(user)s (Passwort: %(password)s) "
+"für die erste Anmeldung verwenden.<br><strong>Wichtig:</strong> Bitte ändern "
+"Sie das Passwort direkt nach der erster Anmeldung! Andernfalls erscheint "
+"diese Nachricht für alle Teilnehmer/innen und wäre ein Sicherheitsrisiko."
 
-#: participant/views.py:588
+#: participant/views.py:591
 #: participant/templates/participant/base_participant.html:12
 #: participant/templates/participant/overview.html:7
 #: participant/templates/participant/overview.html:17
@@ -1934,56 +1950,56 @@ msgstr ""
 msgid "Participants"
 msgstr "Teilnehmer/innen"
 
-#: participant/views.py:601
+#: participant/views.py:604
 msgid "Participant-list"
 msgstr "Teilnehmerliste"
 
-#: participant/views.py:602
+#: participant/views.py:605
 msgid "List of Participants"
 msgstr "Teilnehmerliste"
 
-#: participant/views.py:605 participant/templates/participant/overview.html:66
+#: participant/views.py:608 participant/templates/participant/overview.html:66
 msgid "Last Name"
 msgstr "Nachname"
 
-#: participant/views.py:605 participant/templates/participant/overview.html:65
+#: participant/views.py:608 participant/templates/participant/overview.html:65
 msgid "First Name"
 msgstr "Vorname"
 
-#: participant/views.py:605 participant/templates/participant/overview.html:36
+#: participant/views.py:608 participant/templates/participant/overview.html:36
 #: participant/templates/participant/overview.html:68
 msgid "Type"
 msgstr "Typ"
 
-#: participant/views.py:642
+#: participant/views.py:645
 msgid "Participant-passwords"
 msgstr "Teilnehmer-Passwoerter"
 
-#: participant/views.py:661
+#: participant/views.py:664
 msgid "Account for OpenSlides"
 msgstr "Zugang für OpenSlides"
 
-#: participant/views.py:663
+#: participant/views.py:666
 #, python-format
 msgid "for %s"
 msgstr "für %s"
 
-#: participant/views.py:666
+#: participant/views.py:669
 #, python-format
 msgid "User: %s"
 msgstr "Nutzername: %s"
 
-#: participant/views.py:668
+#: participant/views.py:671
 #, python-format
 msgid "Password: %s"
 msgstr "Passwort: %s"
 
-#: participant/views.py:671
+#: participant/views.py:674
 #, python-format
 msgid "URL: %s"
 msgstr "URL: %s"
 
-#: participant/views.py:716
+#: participant/views.py:719
 msgid "Participants settings successfully saved."
 msgstr "Teilnehmer/innen-Einstellungen wurden erfolgreich gespeichert."
 
@@ -2171,11 +2187,6 @@ msgstr "Projektor"
 msgid "Overview"
 msgstr "Übersicht"
 
-#: projector/templates/projector/base_projector.html:20
-#: templates/front_page.html:25
-msgid "Projector view"
-msgstr "Projektor-Ansicht"
-
 #: projector/templates/projector/control.html:20
 msgid "Adjust projector view"
 msgstr "Projektor-Ansicht anpassen"
@@ -2217,6 +2228,7 @@ msgid "Custom slides"
 msgstr "Benutzerdefinierte Folien"
 
 #: projector/templates/projector/control_countdown.html:6
+msgctxt "seconds"
 msgid "s"
 msgstr "s"
 
