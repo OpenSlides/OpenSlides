@@ -84,7 +84,7 @@ body {
     font-size:12px;
 }
 #mainmenu li a {
-    -moz-border-radius:6px 6px 0px 0px;
+    border-radius:6px 6px 0px 0px;
     background:none repeat scroll 0 0 #4F4743;
     color:#A59A92;
     display:block;
