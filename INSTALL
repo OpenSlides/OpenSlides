@@ -16,9 +16,14 @@ I. Installation on Windows (32/64bit)
   1. Install requirements:
 
         OpenSlides requires following programs, which should be
-        installed first: Python Programming Language 2.7,
-        Setuptools, ReportLab Toolkit, Python Imaging Library (PIL),
-        Django and django-mptt:
+        installed first:
+          + Python Programming Language 2 (>= 2.5),
+          + Setuptools
+          + ReportLab Toolkit
+          + Python Imaging Library (PIL)
+          + Django
+          + django-mptt
+
 
      a) Download and run 32bit MSI installer from http://www.python.org/:
 
@@ -80,9 +85,9 @@ II. Installation on GNU/Linux and MacOSX
 
         OpenSlides requires following programs, which should be
         installed first:
-          + Python Programming Language 2 (>= 2.5),
-          + virtualenv (>= 1.4.1),
-          + ReportLab Toolkit and
+          + Python Programming Language 2 (>= 2.5)
+          + virtualenv (>= 1.4.1)
+          + ReportLab Toolkit
           + Python Imaging Library (PIL)
 
         E.g. for ubuntu run:
@@ -114,7 +119,7 @@ II. Installation on GNU/Linux and MacOSX
 
   4. Activate the virtual environment:
 
-        $ . .venv/bin/activate
+        $ source .venv/bin/activate
 
   5. Install the required python-packages:
 
@@ -143,4 +148,3 @@ II. Installation on GNU/Linux and MacOSX
 
         To restart OpenSlides after closing the terminal activate the
         virtual environment (see 4.) before starting the server (see 6.).
-
