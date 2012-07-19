@@ -3,39 +3,188 @@
 {% load i18n %}
 
 {% block title %}{{ block.super }} - Support{% endblock %}
-{% block headline %}Support{% endblock %}
+{% block headline %}Preise{% endblock %}
 
 {% block mainmenu_support %}active{% endblock %}
  
 {% block lead %}
-Die Intevation GmbH bietet Ihnen professionellen Support beim Einsatz von OpenSlides auf Ihrer Veranstaltung an.
+Die Intevation GmbH bietet Ihnen professionelle
+<strong>Supportpakete</strong> für den Einsatz von OpenSlides auf Ihrer Veranstaltung an.
 {% endblock %}
 
 {% block content %}
+    <table class="table table-bordered table-striped packagetable">
+        <thead>
+          <tr>
+            <th class="span4">Paketinhalte</th>
+            <th class="span2"><h3>Community</h3></th>
+            <th class="span2"><h3>Starter</h3></th>
+            <th class="span2"><h3>Business</h3></th>
+            <th class="span2"><h3>Premium</h3></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="leftcolumn">Paketpreis</td>
+            <td><p class="price">0,- &euro;<small>&nbsp;</small></p>
+                <p><a class="btn" href="#">Herunterladen</a></p>
+                </td>
+                <td><p class="price">TODO,- &euro;
+                    <small>zzgl. 19% MwSt.</small></p>
+                <p><a class="btn btn-primary" href="#">Bestellen</a></p></td>
+            <td><p class="price">TODO,- &euro;<small>zzgl. 19% MwSt.</small></p>
+                <p><a class="btn btn-primary" href="#">Bestellen</a></p></td>
+            <td><p class="price">TODO,- &euro;<small>zzgl. 19% MwSt.</small></p>
+                <p><a class="btn btn-primary" href="#">Bestellen</a></p></td>
+          </tr>
+          <tr>
+            <td class="leftcolumn">Anzahl der Teilnehmer</td>
+            <td></td>
+            <td>bis ca. 75</td>
+            <td>bis ca. 200</td>
+            <td>unbegrenzt</td>
+          </tr>
+          <tr>
+            <td class="leftcolumn">Supportkontingent
+                (Telefon/E-Mail) <sup>1</sup></td>
+            <td>-</td>
+            <td>2 Stunden<br><small>Laufzeit: 1 Monat</small></td>
+            <td>6 Stunden<br><small>Laufzeit: 2 Monate</small></td>
+            <td>unbegrenzt</td>
+          </tr>
+          <tr>
+            <td class="leftcolumn">OpenSlides 1.2+ <small>inkl. qualitätsgesicherte Updates aus
+                      der stabilen Entwicklungsversion</small></td>
+            <td>-</td>
+            <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
+          </tr>
+          <tr>
+            <td class="leftcolumn">Werbefrei <small>Kein Verweis auf den professional Support</small></td>
+            <td>-</td>
+            <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
+          </tr>
+          <tr>
+            <td class="leftcolumn">USB-Stick mit eingraviertem OpenSlides-Logo
+            <small>"OpenSlides portable" bereits vorinstalliert und
+                direkt vom USB-Stick startbar</small></td>
+            <td>-</td>
+            <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
+          </tr>
+          <tr>
+            <td class="leftcolumn">Werkzeug zum Datenexport ins CSV-Format <sup>2</sup></td>
+            <td>-</td>
+            <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
+          </tr>
+          <tr>
+            <td class="leftcolumn">Veranstaltungsdaten vorkonfiguriert <small>nach
+                     Vorlage</small></td>
+            <td>-</td>
+            <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
+          </tr>
+          <tr>
+            <td class="leftcolumn">Namenskarten mit QR-Code <span class="label
+                    label-important">Neu</span>
+               <small>Für schnelle Anwesenheitserfassung der Teilnehmer</small></td>
+            <td>-</td>
+            <td>-</td>
+            <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
+          </tr>
+          <tr>
+            <td class="leftcolumn">Anpassung des Projektortemplates 
+                <span class="label label-important">Tipp</span> 
+                <small>nach Vorlage</small></td>
+            <td>-</td>
+            <td>-</td>
+            <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
+          </tr>
+          <tr>
+              <td class="leftcolumn">OpenSlides-Schulung vor
+                  Ort<small>1 Tag</small></td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td><i class="icon-ok"></i></td>
+          </tr>
+          <tr>
+            <td class="leftcolumn">Unterstützung bei Umstellung auf
+             leistungsfähigere Datenbank und Webserver</td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td><i class="icon-ok"></i></td>
+          </tr>
+          <tr>
+            <td></td>
+            <td><a class="btn" href="#">Alle Funktionen</a></td>
+            <td><a class="btn" href="#">Details</a></td>
+            <td><a class="btn" href="#">Details</a></td>
+            <td><a class="btn" href="#">Details</a></td>
+          </tr>
+        </tbody>
+      </table>
 
-  <div class="page-header">
-    <h1>OpenSlides Professional Pakete</h1>
-  </div>
-  <div class="row">
-    <div class="span3">
-        <h3>Paket 1</h3>
-        <p>TODO</p>
-        <p><a class="btn" href="#">Details &raquo;</a></p>
-    </div>
-    <div class="span3">
-        <h3>Paket 2</h3>
-        <p>TODO</p>
-        <p><a class="btn" href="#">Details &raquo;</a></p>
-    </div>
-    <div class="span3">
-        <h3>Paket 3</h3>
-        <p>TODO</p>
-        <p><a class="btn" href="#">Details &raquo;</a></p>
-    </div>
-    <div class="span3">
-        <h3>Paket 4</h3>
-        <p>TODO</p>
-        <p><a class="btn" href="#">Details &raquo;</a></p>
-    </div>
-  </div>
+    <h4>Zusatzleistungen</h3>
+    <table class="table table-bordered table-striped packagetable">
+        <tbody>
+          <tr>
+            <td class="span4 leftcolumn">Support (Telefon/E-Mail)</td>
+            <td class="span2">-</td>
+            <td class="span2">110,- &euro;/h<small>zzgl. 19% MwSt.</small></td>
+            <td class="span2">100,- &euro;/h<small>zzgl. 19% MwSt.</small></td>
+            <td class="span2">-</td>
+          </tr>
+          <tr>
+            <td class="leftcolumn">Vor-Ort-Service <sup>3</sup>
+                  <small>Schulung, Beratung, technische
+                      Durchführung</small></td>
+            <td>-</td>
+            <td>1000,- &euro;/d<small>zzgl. 19% MwSt.</small></td>
+            <td>900,- &euro;/d<small>zzgl. 19% MwSt.</small></td>
+            <td>800,- &euro;/d<small>zzgl. 19% MwSt.</small></td>
+          </tr>
+          <tr>
+            <td class="leftcolumn">Verleih bzw. Verkauf eines
+                elektronischen Abstimmugssystems mit Anbindung an
+                OpenSlides</td>
+            <td>-</td>
+            <td>-</td>
+            <td>auf Anfrage</td>
+            <td>auf Anfrage</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><strong>
+        <small>
+         Alle Preisangaben gelten zuzüglich der gesetzlich gültigen MwSt.
+        </small>
+        <br>
+        <small>Alle Pakete unterliegen der <a href="{% url license %}">Freien Software
+         Lizenz GNU GPL v2+</a> (wie OpenSlides).</small>
+        </strong></p>
+    <p>
+    <small>1) Zählung pro angefangene 15-Minuten; begrenzt auf die
+        angegebene Supportlaufzeit.</small>
+    <br>
+    <small>2) Export anhand der sqlite-Datenbank; enthält
+        Grunddaten aus Tagesordnung, Anträge, Wahlen und Teillnehmer.
+        Weiterverarbeitung möglich.</small>
+    <br>
+    <small>3) zzgl. Spesen</small>
+    </p>
+
+
+
 {% endblock %}

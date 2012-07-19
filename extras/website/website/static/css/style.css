@@ -152,3 +152,21 @@ form p.error {
 form .error input, form .error textarea {
     border: 1px solid #DA3939;
 }
+.price {
+    font-size: 21px;
+    font-style: italic;
+    margin: 10px 0;
+}
+.packagetable td, .packagetable th {
+    text-align: center;
+}
+.packagetable td.leftcolumn {
+    text-align: left;
+}
+.packagetable small {
+    color: #999999;
+    display: block;
+    line-height: 18px;
+    font-size: 11px;
+}
+
