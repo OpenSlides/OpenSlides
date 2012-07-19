@@ -569,7 +569,7 @@ def login(request):
     try:
         admin = User.objects.get(pk=1)
         if admin.check_password(config['admin_password']):
-            extra_content['first_time_essage'] = _(
+            extra_content['first_time_message'] = _(
                 "Installation was successfully! Use %(user)s "
                 "(password: %(password)s) for first login.<br>"
                 "<strong>Important:</strong> Please change the password after "
