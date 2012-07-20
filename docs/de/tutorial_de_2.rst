@@ -29,7 +29,7 @@ Klicken Sie anschließend auf ``Speichern``.
 
 Erweitern Sie nun die Tagesordnung um folgende Einträge: Bericht des Vorstands, Satzungsänderung, Gartenfest, Sonstiges, Wahlen der Vereinsämter.
 
-Die Übersicht über die Einträge (links unter links bei „Alle Einträge“) müsste nun so aussehen:
+Die Übersicht über die Einträge (links bei „Alle Einträge“) müsste nun so aussehen:
 
 .. image:: _static/images/tutorial_de_2_03.png
  :class: screenshot
@@ -39,7 +39,7 @@ Sie können nun nachträglich die Reihenfolge der Einträge verändern und auch 
 .. image:: _static/images/tutorial_de_2_04.png
  :class: screenshot
 
-Klicken Sie auf ``Ja``, um die geänderte Reihenfolge zu speichern. Solange Sie die veränderte Reihenfolge nicht gespeichert haben, wir die Veränderung nicht in der Datenbank hinterlegt. Dies wird Ihnen durch die kleinen Sternchen hinter den verschobenen Tagesordnungspunkten angezeigt.
+Klicken Sie auf ``Ja``, um die geänderte Reihenfolge zu speichern. Solange Sie die veränderte Reihenfolge nicht gespeichert haben, wird die Veränderung nicht in der Datenbank hinterlegt. Dies wird Ihnen durch die kleinen Sternchen hinter den verschobenen Tagesordnungspunkten angezeigt.
 
 *Zu jedem Antrag und zu jedem Wahlamt können Sie über einen Link im Seitenmenü des betreffenden Antrags oder Wahlamts auch einen eigenen Eintrag in der Tagesordnung erstellen, der direkt mit der Antrags- bzw. Wahlfolie verknüpft ist. Dies empfiehlt sich, wenn ein einzelner Antrag oder eine einzelne Wahl an einer bestimmten Stelle der Tagesordnung behandelt werden soll.*
 
@@ -67,6 +67,9 @@ Wenn Sie in den Tab „Projektor“ wechseln
  :class: screenshot
 
 können Sie durch einen Klick auf den jeweiligen grauen Haken eine bestimmte Folie auswählen. Die jeweils aktive Folie zeigt einen blauen Haken. Probieren Sie, verschiedene Tagesordnungspunkte auf dem Beamer anzuzeigen.
+
+.. image:: _static/images/tutorial_de_2_07.png
+ :class: screenshot
 
 Weiter geht es mit dem dritten Teil des Tutorials: `Teilnehmer/innen verwalten`__
 

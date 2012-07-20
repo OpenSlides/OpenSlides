@@ -1,7 +1,7 @@
 Tutorial – Präsentationsmodus
 =============================
 
-In diesem Tutorial lernen Sie am Beispiel der Mitgliederversammlung eines Kleingartenvereins, wie Sie OpenSlides im Präsentationsmodus bedienen. 
+In diesem Tutorial sehen Sie am Beispiel der Mitgliederversammlung eines Kleingartenvereins, wie Sie OpenSlides im Präsentationsmodus bedienen. 
 
 Zunächst lernen Sie, OpenSlides allgemein einzurichten und Folien auf dem Beamer zu zeigen. Anschließend können Sie die einzelnen Tutorials für Tagesordnung, Teilnehmerverwaltung, Anträge und Wahlen durcharbeiten.
 

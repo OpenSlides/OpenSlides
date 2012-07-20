@@ -46,7 +46,7 @@ Wenn Sie anschließend links auf „Alle Teilnehmer/innen“ klicken, sehen Sie 
 Bearbeiten eines Teilnehmers
 ----------------------------
 
-Die können die Angaben zu einem Teilnehmer jederzeit bearbeiten. Klicken Sie zum Beispiel beim Teilnehmer „Max Mustermann“ unter der Rubrik „Aktionen“ auf das Bearbeiten-Symbol |document-edit| und weisen Sie der Person die Benutzerrollen „Tagesleitung“ und „Delegierter“ zu. Um mehrere Einträge auszuwählen, halten Sie beim Anklicken die Taste ``Strg`` gedrückt.
+Sie können die Angaben zu einem Teilnehmer jederzeit bearbeiten. Klicken Sie zum Beispiel beim Teilnehmer „Max Mustermann“ unter der Rubrik „Aktionen“ auf das Bearbeiten-Symbol |document-edit| und weisen Sie der Person die Benutzerrollen „Tagesleitung“ und „Delegierter“ zu. Um mehrere Einträge auszuwählen, halten Sie beim Anklicken die Taste ``Strg`` gedrückt.
 
 .. image:: _static/images/tutorial_de_3_04.png
  :class: screenshot
@@ -56,13 +56,17 @@ Die können die Angaben zu einem Teilnehmer jederzeit bearbeiten. Klicken Sie zu
 Passworts eines Teilnehmers
 ---------------------------
 
-Beim Anlegen eines Teilnehmers wird automatisch ein zufälliges Erst-Passwort gesetzt. Sie können das Erst-Passwort aus einer PDF-Datei ablesen, die Sie durch Klick auf den Link „Erst-Passwörter als PDF“ im linken Seitenmenu erreichen.
+Beim Anlegen eines Teilnehmers wird automatisch ein zufälliges Erst-Passwort gesetzt. Sie können das Erst-Passwort aus einer PDF-Datei ablesen, die Sie durch Klick auf den Link „Erst-Passwörter als PDF“ im linken Seitenmenü erreichen.
 
 Bitten Sie jeden, dem Sie sein Erst-Passwort aushändigen, dieses nach dem ersten Login zu ändern.
 
-Um als Administrator das Passwort von zum Beispiel Max Mustermann neu zu setzen, klicken Sie erneut auf das Bearbeiten-Symbol |document-edit| und tragen Sie unten unter „Erst-Passwort“ ein neues, selbstgewähltes Passwort ein.  Für dieses Tutorial sei als Passwort ``geheim`` gewählt. Anschließend klicken Sie auf ``Übernehmen``. In einem zweiten Schritt müssen Sie auf den Link „Auf Erst-Passwort zurücksetzen“ klicken, um im System gespeicherte Passwort mit Ihrem neu eingegebenen zu ersetzen. Bestätigen Sie den oben auf der Seite erscheinenden Dialog mit ``Ja``.
+Um als Administrator das Passwort von zum Beispiel Max Mustermann neu zu setzen, klicken Sie erneut auf das Bearbeiten-Symbol |document-edit| und tragen Sie unten unter „Erst-Passwort“ ein neues, selbstgewähltes Passwort ein.  Für dieses Tutorial sei als Passwort ``geheim`` gewählt. Anschließend klicken Sie auf ``Übernehmen``. In einem zweiten Schritt müssen Sie auf den Link „Auf Erst-Passwort zurücksetzen“ klicken, um das im System gespeicherte Passwort mit Ihrem neu eingegebenen zu ersetzen. Bestätigen Sie den oben auf der Seite erscheinenden Dialog mit ``Ja``.
 
 .. image:: _static/images/tutorial_de_3_05.png
  :class: screenshot
 
 .. |document-edit| image:: _static/images/document-edit.png
+
+Weiter geht es mit dem vierten Teil des Tutorials: `Anträge verwalten und behandeln`__
+
+.. __: tutorial_de_4.html
