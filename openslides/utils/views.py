@@ -267,7 +267,7 @@ class PDFView(PermissionMixin, View):
         return self.top_space
 
     def get_document_title(self):
-        return self.document_title
+        return unicode(self.document_title)
 
     def get_filename(self):
         return self.filename
