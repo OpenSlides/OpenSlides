@@ -18,7 +18,7 @@ from django.db import models
 from django.db.models import Max
 from django.dispatch import receiver
 from django.utils.translation import pgettext
-from django.utils.translation import ugettext_lazy as _, ugettext_noop
+from django.utils.translation import ugettext_lazy as _, ugettext_noop, ugettext
 
 from openslides.utils.utils import _propper_unicode
 
@@ -435,6 +435,10 @@ class Application(models.Model, SlideMixin):
 
     def get_agenda_title(self):
         return self.public_version.title
+
+    def get_agenda_title_supplement(self):
+        number = self.number or '<i>[%s]</i>' % ugettext('no number')
+        return '(%s %s)' % (ugettext('Application'), number)
 
     def __getattr__(self, name):
         """
