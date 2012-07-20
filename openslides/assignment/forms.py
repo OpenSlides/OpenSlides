@@ -72,7 +72,7 @@ class ConfigForm(forms.Form, CssClassMixin):
         required=False,
         label=_("Election method"),
         choices=(
-            ("auto", _("Choose the right method.")),
+            ("auto", _("Automatic assign of method.")),
             ("votes", _("Always one option per candidate.")),
             ("yesnoabstain", _("Always Yes-No-Abstain per candidate.")),
         )
