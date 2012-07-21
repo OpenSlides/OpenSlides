@@ -73,17 +73,17 @@ Falls dies wegen Ihrer Browsereinstellungen nicht gelingt, rufen Sie das OpenSli
 Erster Login
 ------------
 
-Der erste Login als Administrator ist mit dem Benutzernamen ``admin`` und dem Passwort ``admin`` möglich. Sie sollten das Passwort nach dem ersten Start ändern, um Unbefugten keinen Zugriff auf Ihre Daten zu gewähren.
+Der erste Login als Administrator ist mit dem Benutzernamen ``admin`` und dem Passwort ``admin`` möglich. Sie sollten das Passwort nach dem ersten Start ändern__, um Unbefugten keinen Zugriff auf Ihre Daten zu gewähren.
 
-(**TODO Link zum Passwort ändern einfügen**)
-
+.. __: chapter5_1.html#
 
 Arbeiten mit OpenSlides
 +++++++++++++++++++++++
 
 Im Webinterface von OpenSlides können Sie über die verschiedenen Tabs alle Inhalte in OpenSlides eingeben und verwalten.
 
-.. image:: _static/images/index.png
+.. image:: _static/images/chapter2_01.png
+ :class: screenshot
 
 Im Tab „Projektor“ steuern Sie, welche Folien auf dem Beamer angezeigt werden. Dazu klicken Sie einfach auf das jeweilige graue Beamersymbol. Im Tab „Tagesordnung“ können Sie die Tagesordnung der Veranstaltung im Vorfeld anlegen und entsprechende Folien vorbereiten. In den Tabs „Anträge“ und „Wahlen“ verwalten Sie die gestellten Anträge und die Wahlämter mit den Kandidaten sowie die dazugehörigen Abstimmungen und Wahlen. Der Tab „Teilnehmer/innen“ ermöglicht einen Zugriff auf die Personenprofile. Im Tab „Konfiguration“ können einige Einstellungen vorgenommen werden.
 

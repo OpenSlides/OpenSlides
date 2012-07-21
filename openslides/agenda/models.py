@@ -18,7 +18,7 @@ except ImportError:
 
 from django.db import models
 from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _, ugettext_noop
+from django.utils.translation import ugettext_lazy as _, ugettext_noop, ugettext
 
 from mptt.models import MPTTModel, TreeForeignKey
 
@@ -67,7 +67,7 @@ class Item(MPTTModel, SlideMixin):
         For use in Template
         ??Why does {% trans item.print_related_type|capfirst %} not work??
         """
-        return _(self.get_related_type().capitalize())
+        return ugettext(self.get_related_type().capitalize())
 
     def get_title(self):
         """
@@ -76,6 +76,18 @@ class Item(MPTTModel, SlideMixin):
         if self.related_sid is None:
             return self.title
         return self.get_related_slide().get_agenda_title()
+
+
+    def get_title_supplement(self):
+        """
+        return a supplement for the title.
+        """
+        if self.related_sid is None:
+            return ''
+        try:
+            return self.get_related_slide().get_agenda_title_supplement()
+        except AttributeError:
+            return '(%s)' % self.print_related_type()
 
     def slide(self):
         """

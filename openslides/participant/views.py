@@ -34,7 +34,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import login as django_login
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
-from django.utils.translation import ugettext as _, ungettext
+from django.utils.translation import ugettext as _, ungettext, ugettext_lazy
 
 from openslides.utils import csv_ext
 from openslides.utils.pdf import stylesheet
@@ -94,7 +94,7 @@ def get_overview(request):
         elif sortfilter['sort'][0] in ['group', 'type', 'committee', 'comment']:
             query = query.order_by('profile__%s' % sortfilter['sort'][0])
     else:
-        query = query.order_by('first_name')
+        query = query.order_by('last_name')
     if 'reverse' in sortfilter:
         query = query.reverse()
 
@@ -603,7 +603,7 @@ class ParticipantsListPDF(PDFView):
     """
     permission_required = 'participant.can_see_participant'
     filename = _("Participant-list")
-    document_title = _('List of Participants')
+    document_title = ugettext_lazy('List of Participants')
 
     def append_to_pdf(self, story):
         data= [['#', _('Last Name'), _('First Name'), _('Group'), _('Type'),

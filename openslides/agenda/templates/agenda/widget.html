@@ -40,16 +40,7 @@
             <span class="indentation">&nbsp;</span>
         {% endfor %}
         <a href="{% model_url item 'view' %}">{{ item }}</a>
-        {% if item.get_related_type == 'application' %}
-            ({% trans 'Application' %}
-            {% if item.get_related_slide.number %}
-                {{ item.get_related_slide.number }})
-            {% else %}
-                <i>[{% trans "no number" %}]</i>)
-            {% endif %}
-        {% elif item.related_sid %}
-            ({{ item.print_related_type }})
-        {% endif %}
+        {{ item.get_title_supplement }}
     </li>
 {% empty %}
     <li>{% trans 'No items available.' %}</li>
