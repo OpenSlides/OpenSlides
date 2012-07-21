@@ -9,9 +9,9 @@
     <ul class="nav nav-pills">
         <li class="{% block submenu_about %}{% endblock %}"><a href="{% url about %}">{% trans "Was ist OpenSlides?" %}</a></li>
         <li class="{% block submenu_features %}{% endblock %}"><a href="{% url features %}">{% trans "Funktionen" %}</a></li>
-        <li class="{% block submenu_license %}{% endblock %}"><a href="{% url license %}">{% trans "Lizenz" %}</a></li>
         <li class="{% block submenu_references %}{% endblock %}"><a href="{% url references %}">{% trans "Referenzen" %}</a></li>
         <li class="{% block submenu_press %}{% endblock %}"><a href="{% url press %}">{% trans "Presse" %}</a></li>
+        <li class="{% block submenu_license %}{% endblock %}"><a href="{% url license %}">{% trans "Lizenz" %}</a></li>
     </ul>
   </div>
 {% endblock %}

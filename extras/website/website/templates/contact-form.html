@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}{{ block.super }} - {% trans "Kontaktformular" %}{% endblock %}
+{% block headline %}{% trans "Kontaktformular" %}{% endblock %}
+
+{% block mainmenu_contact %}active{% endblock %}
+
+{% block lead %}
+Nehmen Sie Kontakt zu uns auf!
+{% endblock %}
+
+{% block content %}
+
+<form action="" method="post">{% csrf_token %}
+{{ form.name_of_field.errors }}
+{{ form.as_p }}
+<input type="submit" value="Submit" />
+</form>
+
+{% endblock %}

@@ -13,68 +13,63 @@ Kontaktmöglichkeiten zur OpenSlides Community
 
 {% block content %}
 
-<form action="" method="post">{% csrf_token %}
-{{ form.name_of_field.errors }}
-{{ form.as_p }}
-<input type="submit" value="Submit" />
-</form>
-
-<h3>Mailinglisten</h3>
-
-<p>OpenSlides bietet öffentliche Mailinglisten zur Koordination der Entwicklung 
-sowie Diskussion von Tickets, Anwenderfragen und speziellen Anwendungsfällen. 
-Bei Problemen und Fragen zu OpenSlides schreiben Sie einfach an die 
-OpenSlides-Mailingliste in Ihrer Sprache. 
-Hinweis: Bitte abonnieren Sie eine Mailingliste bevor Sie an diese schreiben wollen!</p>
-
-
-<blockquote>
-<p><strong>users-de@openslides.org</strong><small>Deutschsprachige Mailingliste für Anwender und Entwickler</small></p>
-<p><a class="btn btn-primary" href="http://mail.openslides.org/listinfo/users-de/ ">Abonnieren &raquo;</a>
-<a class="btn" href="http://mail.openslides.org/pipermail/users-de/ ">Archiv &raquo;</a></p>
+<p><a class="btn btn-primary" href="{% url contactform %}">Zum Kontaktformular &raquo;</a></p>
 <br>
-<p><strong>users-en@openslides.org</strong><small>Englischsprachige Mailingliste für Anwender und Entwickler</small></p>
-<p><a class="btn btn-primary" href="http://mail.openslides.org/listinfo/users-en/">Abonnieren &raquo;</a>
-<a class="btn" href="http://mail.openslides.org/pipermail/users-en/">Archiv &raquo;</a></p>
-<br>
-<p><strong>commit@openslides.org<small>HG-commit-Mailingliste von hg.openslides.org (moderiert), für Entwickler</small></strong></p>
-<p><a class="btn btn-primary" href="http://mail.openslides.org/listinfo/commit/">Abonnieren &raquo;</a>
-<a class="btn" href="http://mail.openslides.org/pipermail/commit/">Archiv &raquo;</a></p>
-</blockquote>
+<div class="row">
+    <div class="span4">
+        <h3>Mailinglisten</h3>
+        
+        <p>OpenSlides bietet öffentliche Mailinglisten zur Koordination der Entwicklung 
+        sowie Diskussion von Tickets, Anwenderfragen und speziellen Anwendungsfällen. 
+        Bei Problemen und Fragen zu OpenSlides schreiben Sie einfach an die 
+        OpenSlides-Mailingliste in Ihrer Sprache. 
+        Hinweis: Bitte abonnieren Sie eine Mailingliste bevor Sie an diese schreiben wollen!</p>
+        
+        
+        <blockquote>
+        <p><strong>users-de@openslides.org</strong><small>Deutschsprachige Mailingliste für Anwender und Entwickler</small></p>
+        <p><a class="btn btn-primary" href="http://mail.openslides.org/listinfo/users-de/ ">Abonnieren &raquo;</a>
+        <a class="btn" href="http://mail.openslides.org/pipermail/users-de/ ">Archiv &raquo;</a></p>
+        <br>
+        <p><strong>users-en@openslides.org</strong><small>Englischsprachige Mailingliste für Anwender und Entwickler</small></p>
+        <p><a class="btn btn-primary" href="http://mail.openslides.org/listinfo/users-en/">Abonnieren &raquo;</a>
+        <a class="btn" href="http://mail.openslides.org/pipermail/users-en/">Archiv &raquo;</a></p>
+        <br>
+        <p><strong>commit@openslides.org<small>HG-commit-Mailingliste von hg.openslides.org (moderiert), für Entwickler</small></strong></p>
+        <p><a class="btn btn-primary" href="http://mail.openslides.org/listinfo/commit/">Abonnieren &raquo;</a>
+        <a class="btn" href="http://mail.openslides.org/pipermail/commit/">Archiv &raquo;</a></p>
+        </blockquote>
+    </div>
 
+    <div class="span4">
+        <h3>Professionelle Unterstützung</h3>
+        <p>Sie haben Interesse an OpenSlides und denken über einen Einsatz auf Ihrer 
+        Veranstaltung nach? Sie suchen dafür professionelle, technische Unterstützung 
+        bei der Vorbereitung? Dann kontaktieren Sie uns! Wir beraten Sie gerne.</p>
+        
+        <p>Ihr Ansprechpartner:<p>
+        
+        <blockquote>
+        <p>Emanuel Schütze<br>
+        Intevation GmbH<br>
+        Neuer Graben 17<br>
+        D-49074 Osnabrück<br>
+        E-Mail: <a href="mailto:emanuel.schuetze@intevation.de">emanuel.schuetze@intevation.de</a><br>
+        Tel: ++49-541-335083-746</p>
+        </blockquote>
+    </div>
 
-<h3>Professionelle Unterstützung</h3>
-<p>Sie haben Interesse an OpenSlides und denken über einen Einsatz auf Ihrer 
-Veranstaltung nach? Sie suchen dafür professionelle, technische Unterstützung 
-bei der Vorbereitung? Dann kontaktieren Sie uns! Wir beraten Sie gerne.</p>
-
-<p>Ihr Ansprechpartner:<p>
-
-<blockquote>
-<p>Emanuel Schütze<br>
-Intevation GmbH<br>
-Neuer Graben 17<br>
-D-49074 Osnabrück<br>
-E-Mail: <a href="mailto:emanuel.schuetze@intevation.de">emanuel.schuetze@intevation.de</a><br>
-Tel: ++49-541-335083-746</p>
-</blockquote>
-
-
-<h3>IRC</h3>
-
-<p>Für den direkten Kontakt zwischen interessierten OpenSlides-Anwendern 
-und -Entwicklern nutzen Sie IRC (ein textbasierter Chat):</p>
-
-<blockquote>
-<p>Netzwerk: freenode<br>
-Kanal: #openslides</p>
-
-<p><a class="btn btn-primary" href="irc://irc.freenode.net/#openslides">IRC Chat starten &raquo;</a></p>
-</blockquote>
-
-
-<h3>Probleme berichten</h3>
-
-<p>Bitte nutzen Sie unser <a href="http://dev.openslides.org/report/3">Ticketsystem</a> 
-um Problem mit OpenSlides zu berichten.</p>
+    <div class="span4">
+        <h3>IRC</h3>
+        <p>Für den direkten Kontakt zwischen interessierten OpenSlides-Anwendern 
+        und -Entwicklern nutzen Sie IRC (ein textbasierter Chat):</p>
+        
+        <blockquote>
+        <p>Netzwerk: freenode<br>
+        Kanal: #openslides</p>
+        <br>
+        <p><a class="btn btn-primary" href="irc://irc.freenode.net/#openslides">IRC Chat starten &raquo;</a></p>
+        </blockquote>
+    </div>
+</div>
 {% endblock %}

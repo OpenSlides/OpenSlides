@@ -11,7 +11,7 @@ from website.forms import ContactForm
 #        return context
 
 
-def contact(request):
+def contactform(request):
     if request.method == 'POST': # If the form has been submitted...
         form = ContactForm(request.POST) # A form bound to the POST data
         if form.is_valid(): # All validation rules pass
@@ -29,6 +29,6 @@ def contact(request):
     else:
         form = ContactForm() # An unbound form
 
-    return render(request, 'contact.html', {
+    return render(request, 'contact-form.html', {
         'form': form,
     })

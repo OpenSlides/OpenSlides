@@ -12,7 +12,7 @@ body {
     font-size: 14px;
 }
 .navbar .nav.pull-right > li > a {
-    font-size: 12px;
+    font-size: 11px;
 }
 .hero-unit {
     margin-top: -15px;
@@ -157,6 +157,9 @@ form .error input, form .error textarea {
     font-style: italic;
     margin: 10px 0;
 }
+.packagetable th {
+    vertical-align: top !important;
+}
 .packagetable td, .packagetable th {
     text-align: center;
 }
@@ -170,3 +173,7 @@ form .error input, form .error textarea {
     font-size: 11px;
 }
 
+.references .thumbnail {
+    float: left;
+    margin-right: 20px;
+}
