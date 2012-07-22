@@ -7,7 +7,7 @@ Zunächst lernen Sie, OpenSlides allgemein einzurichten und Folien auf dem Beame
 
 Alle Tutorials gehen von folgenden Rahmenbedingungen aus:
 
-Der Verein „Schreberverein Nord e. V.“ hält am 3. März 2012 seine jährliche Mitgliederversammlung ab. Der Vorstand erwartet etwa 40 Teilnehmer. Auf der Versammlung werden verschiedene Berichte gehalten und über eine Satzungsänderung und einen Antrag für ein Gartenfest abgestimmt. Außerdem finden Wahlen zum Vorstand (drei Personen) und zum Beirat (sieben Personen) statt.
+Der Verein „Schreberverein Nord e. V.“ hält am 3. März 2012 seine jährliche Mitgliederversammlung ab. Der Vorstand erwartet etwa 40 Teilnehmer. Auf der Versammlung werden verschiedene Berichte gehalten und über eine Satzungsänderung abgestimmt. Außerdem finden Wahlen zum Vorstand (drei Personen) und zum Beirat (sieben Personen) statt.
 
 Die einzelen Tutorials:
 

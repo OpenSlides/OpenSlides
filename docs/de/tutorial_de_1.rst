@@ -124,15 +124,3 @@ Schalten Sie die Einblendung wieder aus, indem Sie erneut auf den (nunmehr blaue
 Weiter geht es mit dem zweiten Teil des Tutorials: `Tagesordnung verwalten`__
 
 .. __: tutorial_de_2.html
-
-
-
-
-
-
-
-
-
-
-
-
