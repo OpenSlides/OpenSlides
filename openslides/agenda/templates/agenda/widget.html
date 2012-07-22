@@ -40,7 +40,7 @@
             <span class="indentation">&nbsp;</span>
         {% endfor %}
         <a href="{% model_url item 'view' %}">{{ item }}</a>
-        {{ item.get_title_supplement }}
+        {{ item.get_title_supplement|safe }}
     </li>
 {% empty %}
     <li>{% trans 'No items available.' %}</li>
