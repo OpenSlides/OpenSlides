@@ -36,14 +36,19 @@
         </a>
         <div class="nav-collapse">
           <ul class="nav">
-            <li class="{% block mainmenu_about %}{% endblock %}"><a href="{% url about %}">{% trans "Über OpenSlides" %}</a></li>
-            <li class="{% block mainmenu_download %}{% endblock %}"><a href="{% url download %}">{% trans "Download" %}</a></li>
-            <li class="{% block mainmenu_support %}{% endblock %}"><a href="{% url support %}">{% trans "Support" %}</a></li>
-            <li class="{% block mainmenu_documentation %}{% endblock %}"><a href="{% url documentation %}">{% trans "Dokumentation" %}</a></li>
+            <li class="{% block mainmenu_about %}{% endblock %}"><a
+                href="{% url about %}">{% trans "Über OpenSlides" %}</a></li>
+            <li class="{% block mainmenu_download %}{% endblock %}"><a
+                href="{% url download %}">{% trans "Download" %}</a></li>
+            <li class="{% block mainmenu_pricing %}{% endblock %}"><a
+                href="{% url pricing %}">{% trans "Preise" %}</a></li>
+            <li class="{% block mainmenu_manual %}{% endblock %}"><a
+                href="{% url manual %}">{% trans "Handbuch" %}</a></li>
             <li class="{% block mainmenu_development %}{% endblock %}"><a href="{% url development %}">{% trans "Entwicklung" %}</a></li>
           </ul>
           <ul class="nav pull-right">
-            <li class="{% block mainmenu_contact %}{% endblock %}"><a href="{% url contact %}">{% trans "Kontakt" %}</a></li>
+            <li class="{% block mainmenu_contact %}{% endblock %}"><a
+                href="{% url contact %}">{% trans "Kontakt" %}</a></li>
             <li class="divider-vertical"></li>
             {% get_available_languages as languages %}
             {% for lang_code, lang_name in languages %}
@@ -93,10 +98,10 @@
              </ul>
            </div>
            <div class="span2">
-             <h4>Hilfe</h4>
+             <h4>Support</h4>
              <ul class="unstyled">
-                 <li><a href="{% url support %}">Support</a></li>
-                 <li><a href="{% url documentation %}">Handbuch</a></li>
+                 <li><a href="{% url pricing %}">Preise</a></li>
+                 <li><a href="{% url manual %}">Handbuch</a></li>
                  <li><a href="{% url faq %}">FAQ</a></li>
              </ul>
            </div>
