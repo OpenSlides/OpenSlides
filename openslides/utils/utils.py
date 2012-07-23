@@ -24,7 +24,7 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ugettext_lazy
 
 from openslides.utils.signals import template_manipulation
 
@@ -108,7 +108,7 @@ def permission_required(perm, login_url=None):
 
 
 def render_to_forbitten(request, error=
-    _("Sorry, you have no rights to see this page.")):
+    ugettext_lazy("Sorry, you have no rights to see this page.")):
     return HttpResponseForbidden(render_to_string('403.html',
         {'error': error}, context_instance=RequestContext(request)))
 
