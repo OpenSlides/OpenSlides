@@ -106,7 +106,7 @@
       "pk": 4,
       "model": "auth.group",
       "fields": {
-         "name": "Tagesleitung",
+         "name": "Versammlungsleitung",
          "permissions": [
             [
                "can_manage_agenda",
