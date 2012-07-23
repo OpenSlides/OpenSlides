@@ -2,11 +2,55 @@ CHANGELOG of OpenSlides
 http://openslides.org
 
 
-Version 1.2 (unreleased)
+Version 1.2 (2012-07-25)
+========================
 [http://dev.openslides.org/milestone/1.2]
+
+General:
+- New welcome page with customizable title and text.
+- OpenSlides portable win32 binary distribution.
+- New start script (start.py) to automatically create the default settings and the
+  database, start the server and the default browser.
+- Add plugin system. Allow other django-apps to interact with OpenSlides.
+Projector:
+- New projector dashboard to control all slides on projector.
+- New projector live view on projector dashboard.
+- Countdown calculation works now on server-side.
+- New Overlay messages to show additional information on a second
+  projector layer.
+- Add custom slides.
+- Add a welcome slide.
+- Project application and assignment slides without an agenda item.
+- Update the projector once per second (only).
+Agenda:
+- Add new comment field for agenda items.
+Elections (Assignments):
+- New config option to publish voting results for selected winners only.
+Applications:
+- Now, it's possible to deactivate the whole supporter system.
+- New import option: set status of all imported applications to
+  'permit'.
+- More log entries for all application actions.
+Participant:
+- Add new comment field for participants.
+- Show translated permissions strings in user rols form.
+- Admin is redirect to 'change password' page.
+- New default user name: "firstname lastname".
+Other:
+- Use Django's class based views.
+- Update to Django 1.4. Drop python 2.4 support for this reason.
+- Separate the code for the projector.
+- Rewrite the vote results table.
+- Rewrite the poll API.
+- Rewrite the config API. (Now any data which are JSON serializable
+  can be stored.)
+- Improved CSV import for application and participants.
+- GUI improvements of web interface (e.g. sub navigations, overview tables).
+- Several minor and medium issues and errors were fixed.
 
 
 Version 1.1 (2011-11-15)
+========================
 [http://dev.openslides.org/milestone/1.1]
 
 Agenda:
@@ -54,4 +98,5 @@ Other:
 
 
 Version 1.0 (2011-09-12)
+========================
 [http://dev.openslides.org/milestone/1.0]
