@@ -686,7 +686,10 @@ class ParticipantsPasswordsPDF(PDFView):
                 data.append([cell,cell2])
             except Profile.DoesNotExist:
                 pass
-
+        # add empty table line if no participants available
+        if data == []:
+            data.append(['',''])
+        # build table
         t=Table(data, 10.5*cm, 7.42*cm)
         t.setStyle(TableStyle([
             ('LINEBELOW', (0,0), (-1,0), 0.25, colors.grey),
