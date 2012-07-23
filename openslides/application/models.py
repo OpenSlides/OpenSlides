@@ -312,9 +312,9 @@ class Application(models.Model, SlideMixin):
                 error = False
                 break
         if error:
-            raise NameError('%s is not a valid status.' % status)
+            raise NameError(_('%s is not a valid status.') % status)
         if self.status == status:
-            raise NameError('The application status is already %s.' \
+            raise NameError(_('The application status is already \'%s.\'') \
                             % self.status)
 
         actions = []

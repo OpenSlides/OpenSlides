@@ -348,6 +348,8 @@ def set_status(request, application_id=None, status=None):
             messages.success(request, _("Application status was set to: <b>%s</b>.") % application.get_status_display())
     except Application.DoesNotExist:
         pass
+    except NameError, e:
+        messages.error(request, e)
     return redirect(reverse('application_view', args=[application_id]))
 
 
