@@ -43,7 +43,7 @@ class Assignment(models.Model, SlideMixin):
     posts = models.PositiveSmallIntegerField(
         verbose_name=_("Number of available posts"))
     polldescription = models.CharField(max_length=100, null=True, blank=True,
-        verbose_name=_("Comment on the ballot paper."))
+        verbose_name=_("Comment on the ballot paper"))
     profile = models.ManyToManyField(Profile, null=True, blank=True)
     elected = models.ManyToManyField(Profile, null=True, blank=True,
         related_name='elected_set')
