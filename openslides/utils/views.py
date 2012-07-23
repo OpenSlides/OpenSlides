@@ -270,7 +270,7 @@ class PDFView(PermissionMixin, View):
         if self.document_title:
             return unicode(self.document_title)
         else:
-            return self.document_title
+            return ''
 
     def get_filename(self):
         return self.filename
