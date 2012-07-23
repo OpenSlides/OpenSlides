@@ -1,11 +1,9 @@
 Web-Links
 ---------
 
-TODO
+Die Dokumentation von Django finden Sie unter:
 
-Weitere Dokumentation finden Sie unter:
-
-* http://openslides.org
+* https://docs.djangoproject.com/en/1.4/
 
 Entwickler können sich hier über alles weitere informieren:
 

@@ -17,9 +17,7 @@ Hinweise zur technischen Ausstattung (des Servers) finden Sie hier: **TODO** (Mi
 Verwendung der Windows-Version (Portable Version mit openslides.exe)
 --------------------------------------------------------------------
 
-Laden Sie die Datei ``openslides-1.2-portable.zip`` herunter und extrahieren Sie den Inhalt in einen beliebigen Ordner. OpenSlides muss nun nicht weiter installiert werden. Alle notwendigen Programmelemente sind in dem Ordner enthalten.
-
-(**TODO Link zum Download-Bereich**)
+Laden Sie die Datei ``openslides-1.2-portable.zip`` hier (**TODO**) herunter und extrahieren Sie den Inhalt in einen beliebigen Ordner. OpenSlides muss nun nicht weiter installiert werden. Alle notwendigen Programmelemente sind in dem Ordner enthalten.
 
 
 Verwendung der Linux-Version oder des Quellcodes aus dem OpenSlides-Repository
@@ -50,6 +48,8 @@ Verwendung der Linux-Version oder des Quellcodes aus dem OpenSlides-Repository
 ------------------------------------------------------------------------------
 
 Starten Sie den Server, indem Sie in der Kommandozeile in den Ordner wechseln, der die Datei ``start.py`` enthält, und eingeben::
+
+  source .venv/bin/activate
 
   python start.py
 

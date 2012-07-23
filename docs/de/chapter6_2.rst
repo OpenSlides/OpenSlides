@@ -1,6 +1,6 @@
 Eigene Datenbank anbinden
--------------------------
++++++++++++++++++++++++++
 
-TODO
+Dieses Tutorial ist noch nicht fertiggestellt. Wenn Sie Interesse haben, uns zu unterstützen, schreiben Sie uns einfach eine E-Mail::
 
-Z. B. Anleitung zur Anbindung von MySQL
+  users-de@openslides.org

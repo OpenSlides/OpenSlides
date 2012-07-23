@@ -7,7 +7,7 @@ In diesem Teil lernen Sie, Anträge in das System einzugeben und zu verwalten so
 Konfiguration des Antragssystems
 --------------------------------
 
-Zunächst können Sie im Tab „Konfiguration“ einige Einstellungen vornehmen. Wechsel Sie zu diesem Tag und klicken Sie links auf „Antrag“. Stellen Sie die Antragseinleitung und die Anzahl der Stimmzettel wie folgt ein:
+Zunächst können Sie im Tab „Konfiguration“ einige Einstellungen vornehmen. Wechseln Sie zu diesem Tab und klicken Sie links auf „Antrag“. Stellen Sie die Antragseinleitung und die Anzahl der Stimmzettel wie folgt ein:
 
 Antragseinleitung:
   Die Mitgliederversammlung möge beschließen,
@@ -34,7 +34,7 @@ Wechseln Sie zum Tab „Anträge“ und klicken Sie links auf „Neuer Antrag“
 .. image:: _static/images/tutorial_de_4_02.png
  :class: screenshot
 
-Geben Sie einen Antrag wie folgt ein:
+Geben Sie einen Antrag, mit dem die Vereinssatzung geändert und die Zahl der Mitglieder des Beirats erhöht werden soll, wie folgt ein:
 
 Titel:
   Satzungsänderung
@@ -79,12 +79,12 @@ Die Antragsansicht sieht dann wie folgt aus:
 .. image:: _static/images/tutorial_de_4_07.png
  :class: screenshot
 
-Nach Abschluss der Diskussion ruft der Vorsitzende zur Abstimmung. Klicken Sie auf „Neue Abstimmung“ und tragen Sie das Abstimmungsergebnis wie folgt in das Formular ein:
+Nach Abschluss der Diskussion ruft der Vorsitzende zur Abstimmung. Klicken Sie rechts auf „Neue Abstimmung“ und tragen Sie das Abstimmungsergebnis wie folgt in das Formular ein:
 
 .. image:: _static/images/tutorial_de_4_08.png
  :class: screenshot
 
-Der Vorsitzende stellt fest, dass der Antrag angenommen ist. Klicken Sie deshalb auf „Angenommen“.
+Der Vorsitzende stellt fest, dass der Antrag angenommen ist. Klicken Sie deshalb auf der rechten Seite auf „Angenommen“.
 
 Das Beamerbild sieht nun wie folgt aus:
 

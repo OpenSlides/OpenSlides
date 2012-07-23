@@ -1,4 +1,6 @@
-Netwerktechnik für Openslides Dummies
--------------------------------------
+Netwerktechnik für Dummies
+++++++++++++++++++++++++++
 
-TODO:
+Dieses Tutorial ist noch nicht fertiggestellt. Wenn Sie Interesse haben, uns zu unterstützen, schreiben Sie uns einfach eine E-Mail::
+
+  users-de@openslides.org

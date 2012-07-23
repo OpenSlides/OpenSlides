@@ -23,4 +23,5 @@ Die einzelen Tutorials:
  tutorial_de_4
 
  tutorial_de_5
- 
+
+ tutorial_de_6 

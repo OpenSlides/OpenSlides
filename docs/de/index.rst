@@ -17,10 +17,6 @@ Inhalt:
 
  tutorial_de
 
- chapter3
-
- chapter4
-
  chapter5
 
  chapter6

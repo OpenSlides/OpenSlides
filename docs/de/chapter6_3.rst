@@ -1,6 +1,6 @@
 Eigenen Webserver einsetzen
----------------------------
++++++++++++++++++++++++++++
 
-TODO
+Dieses Tutorial ist noch nicht fertiggestellt. Wenn Sie Interesse haben, uns zu unterstützen, schreiben Sie uns einfach eine E-Mail::
 
-Z. B. Einsatz eines eigenen Apache
+  users-de@openslides.org
