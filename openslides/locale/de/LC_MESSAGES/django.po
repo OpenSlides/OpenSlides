@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-20 11:03+0200\n"
+"POT-Creation-Date: 2012-07-23 09:30+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: German\n"
@@ -28,13 +28,13 @@ msgstr "Englisch"
 msgid "Parent item"
 msgstr "Elternelement"
 
-#: agenda/models.py:42 application/forms.py:40 application/models.py:521
+#: agenda/models.py:42 application/forms.py:40 application/models.py:525
 #: application/templates/application/view.html:249 config/forms.py:61
 #: projector/models.py:32
 msgid "Title"
 msgstr "Titel"
 
-#: agenda/models.py:43 application/forms.py:41 application/models.py:522
+#: agenda/models.py:43 application/forms.py:41 application/models.py:526
 #: application/templates/application/view.html:250 projector/models.py:33
 msgid "Text"
 msgstr "Text"
@@ -53,15 +53,15 @@ msgstr "Abgeschlossen"
 msgid "Weight"
 msgstr "Gewichtung"
 
-#: agenda/models.py:161
+#: agenda/models.py:173
 msgid "Can see agenda"
 msgstr "Darf die Tagesordnung sehen"
 
-#: agenda/models.py:162
+#: agenda/models.py:174
 msgid "Can manage agenda"
 msgstr "Darf die Tagesordung verwalten"
 
-#: agenda/models.py:170 agenda/slides.py:20 agenda/views.py:239
+#: agenda/models.py:182 agenda/slides.py:20 agenda/views.py:239
 #: agenda/views.py:240 agenda/views.py:259
 #: agenda/templates/agenda/base_agenda.html:10
 #: agenda/templates/agenda/overview.html:8
@@ -101,7 +101,7 @@ msgid "Item %s was successfully deleted."
 msgstr "Eintrag %s wurde erfolgreich gelöscht."
 
 #: agenda/views.py:196 agenda/views.py:211
-#: agenda/templates/agenda/overview.html:46 application/models.py:555
+#: agenda/templates/agenda/overview.html:46 application/models.py:559
 #: application/views.py:487 application/views.py:809 application/views.py:860
 #: application/templates/application/view.html:82
 #: application/templates/projector/Application.html:37
@@ -115,7 +115,7 @@ msgid "Yes"
 msgstr "Ja"
 
 #: agenda/views.py:197 agenda/views.py:212
-#: agenda/templates/agenda/overview.html:47 application/models.py:555
+#: agenda/templates/agenda/overview.html:47 application/models.py:559
 #: application/views.py:487 application/views.py:809 application/views.py:861
 #: application/templates/application/view.html:83
 #: application/templates/projector/Application.html:38
@@ -161,12 +161,12 @@ msgstr "Eintrag anzeigen"
 
 #: agenda/templates/agenda/base_agenda.html:36
 #: agenda/templates/agenda/edit.html:8 agenda/templates/agenda/edit.html:16
-#: agenda/templates/agenda/item_row.html:49
+#: agenda/templates/agenda/item_row.html:40
 msgid "Edit item"
 msgstr "Eintrag bearbeiten"
 
 #: agenda/templates/agenda/base_agenda.html:38
-#: agenda/templates/agenda/item_row.html:50
+#: agenda/templates/agenda/item_row.html:41
 msgid "Delete item"
 msgstr "Eintrag löschen"
 
@@ -245,33 +245,12 @@ msgstr "Eintrag als erledigt markieren"
 msgid "Item closed"
 msgstr "Eintrag erledigt"
 
-#: agenda/templates/agenda/item_row.html:25
-#: agenda/templates/agenda/widget.html:44 application/views.py:703
-#: application/views.py:842 application/templates/application/poll_view.html:7
-#: application/templates/application/poll_view.html:12
-#: application/templates/application/view.html:7
-#: application/templates/application/view.html:209
-#: application/templates/application/view.html:228
-#: application/templates/application/widget.html:22
-#: application/templates/projector/Application.html:7
-#: application/templates/projector/Application.html:65
-msgid "Application"
-msgstr "Antrag"
-
-#: agenda/templates/agenda/item_row.html:29
-#: agenda/templates/agenda/widget.html:48
-#: application/templates/application/view.html:213
-#: application/templates/application/widget.html:26
-#: application/templates/projector/Application.html:65
-msgid "no number"
-msgstr "ohne Nummer"
-
-#: agenda/templates/agenda/item_row.html:44
+#: agenda/templates/agenda/item_row.html:35
 #: agenda/templates/agenda/overview.html:86
 msgid "Activate item"
 msgstr "Eintrag projizieren"
 
-#: agenda/templates/agenda/item_row.html:53
+#: agenda/templates/agenda/item_row.html:44
 #: agenda/templates/agenda/widget.html:35
 msgid "Activate summary for this item"
 msgstr "Zusammenfassung für diesen Eintrag projizieren"
@@ -314,7 +293,7 @@ msgid "Actions"
 msgstr "Aktionen"
 
 #: agenda/templates/agenda/overview.html:102
-#: agenda/templates/agenda/widget.html:55
+#: agenda/templates/agenda/widget.html:46
 #: projector/templates/projector/widget.html:36
 msgid "No items available."
 msgstr "Keine Einträge vorhanden."
@@ -344,7 +323,7 @@ msgstr "Löschen"
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: application/forms.py:43 application/models.py:523 application/views.py:828
+#: application/forms.py:43 application/models.py:527 application/views.py:828
 #: application/templates/application/view.html:232
 #: application/templates/application/view.html:252
 #: application/templates/projector/Application.html:77
@@ -554,35 +533,53 @@ msgstr "Status geändert"
 msgid "by"
 msgstr "von"
 
-#: application/models.py:462
+#: application/models.py:440 application/templates/application/view.html:213
+#: application/templates/application/widget.html:26
+#: application/templates/projector/Application.html:65
+msgid "no number"
+msgstr "ohne Nummer"
+
+#: application/models.py:441 application/views.py:703 application/views.py:842
+#: application/templates/application/poll_view.html:7
+#: application/templates/application/poll_view.html:12
+#: application/templates/application/view.html:7
+#: application/templates/application/view.html:209
+#: application/templates/application/view.html:228
+#: application/templates/application/widget.html:22
+#: application/templates/projector/Application.html:7
+#: application/templates/projector/Application.html:65
+msgid "Application"
+msgstr "Antrag"
+
+#: application/models.py:466
 msgid "Poll created"
 msgstr "Abstimmung erstellt"
 
-#: application/models.py:513
+#: application/models.py:517
 msgid "Can see application"
 msgstr "Darf Anträge sehen"
 
-#: application/models.py:514
+#: application/models.py:518
 msgid "Can create application"
 msgstr "Darf Anträge erstellen"
 
-#: application/models.py:515
+#: application/models.py:519
 msgid "Can support application"
 msgstr "Darf Anträge unterstützen"
 
-#: application/models.py:516
+#: application/models.py:520
 msgid "Can manage application"
 msgstr "Darf Anträge verwalten"
 
-#: application/models.py:556 assignment/models.py:241
+#: application/models.py:560 assignment/models.py:241
 msgid "Abstain"
 msgstr "Enthaltung"
 
-#: application/models.py:582
+#: application/models.py:586
 msgid "The Assembly may decide,"
 msgstr "Die Versammlung möge beschließen,"
 
-#: application/models.py:585 application/views.py:696 application/views.py:922
+#: application/models.py:589 application/views.py:696 application/views.py:922
 #: application/templates/application/base_application.html:9
 #: application/templates/application/overview.html:7
 #: application/templates/application/overview.html:10
@@ -1242,9 +1239,9 @@ msgstr "Name"
 msgid "Description"
 msgstr "Beschreibung"
 
-#: assignment/models.py:46 assignment/templates/assignment/poll_view.html:10
-msgid "Short description (for ballot paper)"
-msgstr "Kurzbeschreibung (für Stimmzettel)"
+#: assignment/models.py:46
+msgid "Comment on the ballot paper"
+msgstr "Kommentar für den Wahlzettel"
 
 #: assignment/models.py:59
 #, python-format
@@ -1508,6 +1505,10 @@ msgstr[1] "Wahlen"
 #: assignment/templates/assignment/overview.html:39
 msgid "Activate election"
 msgstr "Wahl projizieren"
+
+#: assignment/templates/assignment/poll_view.html:10
+msgid "Short description (for ballot paper)"
+msgstr "Kurzbeschreibung (für Stimmzettel)"
 
 #: assignment/templates/assignment/view.html:21
 msgid "Change status"
