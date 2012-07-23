@@ -498,8 +498,7 @@ class AssignmentPollPDF(PDFView):
         return super(AssignmentPollPDF, self).get(request, *args, **kwargs)
 
     def get_filename(self):
-        filename = u'%s-%s-#%s' % (_("Election"), self.poll.assignment.name
-            .replace(' ', '_'), 1)
+        filename = u'%s-%s_%s' % (_("Election"), self.poll.assignment.name.replace(' ', '_'), self.poll.get_ballot())
         return filename
 
     def get_template(self, buffer):
