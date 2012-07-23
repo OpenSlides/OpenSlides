@@ -749,7 +749,10 @@ class ApplicationPDF(PDFView):
             cell1b.append(Paragraph("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+unicode(application.submitter.profile), stylesheet['Small']))
             cell1b.append(Spacer(0,0.2*cm))
         else:
-            cell1b.append(Paragraph(unicode(application.submitter.profile), stylesheet['Normal']))
+            try:
+                cell1b.append(Paragraph(unicode(application.submitter.profile), stylesheet['Normal']))
+            except Profile.DoesNotExist:
+                pass
 
         # supporters
         cell2a = []
