@@ -582,7 +582,7 @@ def application_import(request):
                 applications_modified = 0
                 with transaction.commit_on_success():
                     dialect = csv.Sniffer().sniff(request.FILES['csvfile'].readline())
-                    dialect = utils.csv_ext.patchup(dialect)
+                    dialect = csv_ext.patchup(dialect)
                     request.FILES['csvfile'].seek(0)
                     for (lno, line) in enumerate(csv.reader(request.FILES['csvfile'], dialect=dialect)):
                         # basic input verification
