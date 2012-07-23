@@ -16,7 +16,7 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Model
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ugettext_lazy
 from django.views.generic.detail import SingleObjectMixin
 
 from openslides.utils.pdf import stylesheet
@@ -236,8 +236,8 @@ class AgendaPDF(PDFView):
     Create a full agenda-PDF.
     """
     permission_required = 'agenda.can_see_agenda'
-    filename = _('Agenda')
-    document_title = _('Agenda')
+    filename = ugettext_lazy('Agenda')
+    document_title = ugettext_lazy('Agenda')
 
     def append_to_pdf(self, story):
         for item in Item.objects.all():

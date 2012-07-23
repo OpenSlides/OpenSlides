@@ -602,7 +602,7 @@ class ParticipantsListPDF(PDFView):
     Generate the userliste as PDF.
     """
     permission_required = 'participant.can_see_participant'
-    filename = _("Participant-list")
+    filename = ugettext_lazy("Participant-list")
     document_title = ugettext_lazy('List of Participants')
 
     def append_to_pdf(self, story):
@@ -643,7 +643,7 @@ class ParticipantsPasswordsPDF(PDFView):
     Generate the Welcomepaper for the users.
     """
     permission_required = 'participant.can_manage_participant'
-    filename = _("Participant-passwords")
+    filename = ugettext_lazy("Participant-passwords")
     top_space = 0
 
     def get_template(self, buffer):
