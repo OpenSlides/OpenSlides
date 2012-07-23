@@ -177,3 +177,7 @@ form .error input, form .error textarea {
     float: left;
     margin-right: 20px;
 }
+
+input, textarea {
+    width: 380px;
+}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}{{ block.super }} - Bestellbestätigung{% endblock %}
+{% block headline %}Danke für Ihre Bestellung!{% endblock %}
+
+{% block mainmenu_pricing %}active{% endblock %}
+ 
+{% block lead %}
+Vielen Dank für die Bestellung Ihres OpenSlides-Supportpakets! 
+Sie werden in Kürze von uns Antwort erhalten.
+{% endblock %}
+
+{% block content %}
+<p>Ein USB-Stick mit Ihrer individuell vorkonfigurierten OpenSlides-Installation wird erstellt.</p>
+
+{% endblock %}

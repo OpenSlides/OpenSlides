@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}{{ block.super }} - {% trans "Bestellformular" %}{% endblock %}
+{% block headline %}{% trans "Bestellformular" %}{% endblock %}
+
+{% block mainmenu_pricing %}active{% endblock %}
+
+{% block lead %}
+Supportpaket OpenSlides
+<strong>
+{% if package == '1' %}Starter{% endif %}
+{% if package == '2' %}Business{% endif %}
+{% if package == '3' %}Premium{% endif %}
+</strong>
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="span7">
+    <form action="" method="post">{% csrf_token %}
+        <fieldset>
+            <legend>{% trans "Ihre Veranstaltung" %}</legend>
+            
+            {{ form_event.as_p }}
+        </fieldset>
+    
+        <fieldset>
+            <legend>{% trans "Ihre Kontaktdaten" %}</legend>
+            {{ form_contact.as_p }}
+        </fieldset>
+        <input type="submit" value="Submit" />
+    </form>
+    </div>
+    <div class="span4 well">
+        <h3>OpenSlides {% if package == '1' %}Starter{% endif %}
+        {% if package == '2' %}Business{% endif %}
+        {% if package == '3' %}Premium{% endif %}
+        </h3>
+        <p class="price">
+        {% if package == '1' %}TODO,-{% endif %}
+        {% if package == '2' %}TODO,-{% endif %}
+        {% if package == '3' %}TODO,-{% endif %} &euro;
+        <small>zzgl. 19% MwSt.</small></p>
+
+        <br>
+        <p>Haben Sie noch Fragen?</p>
+        <p>Emanuel Schütze<br>
+        Intevation GmbH<br>
+        Neuer Graben 17<br>
+        D-49074 Osnabrück<br>
+        E-Mail: <a href="mailto:emanuel.schuetze@intevation.de">emanuel.schuetze@intevation.de</a><br>
+        Tel: ++49-541-335083-746</p>
+    </div>
+</div>
+{% endblock %}

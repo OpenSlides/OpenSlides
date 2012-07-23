@@ -2,7 +2,7 @@
 
 {% load i18n %}
 
-{% block title %}{{ block.super }} - Support{% endblock %}
+{% block title %}{{ block.super }} - {% trans "Preise" %}{% endblock %}
 {% block headline %}Preise{% endblock %}
 
 {% block mainmenu_pricing %}active{% endblock %}
@@ -31,11 +31,11 @@ Die Intevation GmbH bietet Ihnen professionelle
                 </td>
                 <td><p class="price">TODO,- &euro;
                     <small>zzgl. 19% MwSt.</small></p>
-                <p><a class="btn btn-primary" href="#">Bestellen</a></p></td>
+                <p><a class="btn btn-primary" href="{% url orderform '1' %}">Bestellen</a></p></td>
             <td><p class="price">TODO,- &euro;<small>zzgl. 19% MwSt.</small></p>
-                <p><a class="btn btn-primary" href="#">Bestellen</a></p></td>
+                <p><a class="btn btn-primary" href="{% url orderform '2' %}">Bestellen</a></p></td>
             <td><p class="price">TODO,- &euro;<small>zzgl. 19% MwSt.</small></p>
-                <p><a class="btn btn-primary" href="#">Bestellen</a></p></td>
+                <p><a class="btn btn-primary" href="{% url orderform '3' %}">Bestellen</a></p></td>
           </tr>
           <tr>
             <td class="leftcolumn">Lizenzkostenfreie Nutzung<small>OpenSlides 

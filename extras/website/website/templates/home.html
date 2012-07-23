@@ -13,25 +13,29 @@
 
 {% block container %}
   <div class="hero-unit">
-    <div class="thumbnail span5" style="float:right; margin: 5px;">
-      <img src="/static/img/agenda-overview_de.png" alt="">
-    </div>
-    <span>
+    <div class="row">
+    <div class="span5">
     <h1>OpenSlides</h1>
     <br>
-    <p>Mehr Transparenz.<br> Mehr Offenheit.<br> Mehr Effizienz.<br>
+    <p>Mehr Transparenz.<br> Mehr Flexibilität.<br> Mehr Effizienz.<br>
     <strong>Die Lösung für Ihre Versammlung!</strong></p>
     <br>
     <br>
-    <a class="btn btn-primary btn-large" href="{% url download %}">
-    Download &raquo;
+    <a class="jumbotron btn btn-primary btn-large" href="{% url download %}">
+    Download
     </a>
 
-    <a class="btn  btn-large" href="{% url demo %}">
+    <a class="jumbotron btn btn-large" href="{% url demo %}">
     Demo
     </a>
     </p>
-    </span>
+    </div>
+    <div class="span5">
+        <div class="thumbnail">
+          <img src="/static/img/agenda-overview_de.png" alt="">
+        </div>
+    </div>
+    </div>
   </div>
 
   <div class="row">
