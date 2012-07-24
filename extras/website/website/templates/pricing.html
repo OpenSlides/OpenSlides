@@ -8,8 +8,9 @@
 {% block mainmenu_pricing %}active{% endblock %}
  
 {% block lead %}
-Die Intevation GmbH bietet Ihnen professionelle
-<strong>Supportpakete</strong> für den Einsatz von OpenSlides auf Ihrer Veranstaltung an.
+Sie wollen OpenSlides professionell und erfolgreich auf Ihrer
+Veranstaltung einsetzen? Dann nutzen Sie unsere abgestimmten 
+<strong>Supportpakete</strong> von der Intevation GmbH!
 {% endblock %}
 
 {% block content %}
@@ -17,25 +18,28 @@ Die Intevation GmbH bietet Ihnen professionelle
         <thead>
           <tr>
             <th class="span4"></th>
-            <th class="span2"><h3>OpenSlides 1.2</h3><small>Community-Paket</small></th>
-            <th class="span2"><h3>Starter</h3><small>bis ca. 75 Teilnehmer</small></th>
-            <th class="span2"><h3>Business</h3><small>bis ca. 150 Teilnehmer</small></th>
-            <th class="span2"><h3>Premium</h3><small>Teilnehmer unbegrenzt</small></th>
+            <th class="span1"><h3>OpenSlides v1.2</h3><small>Community-Paket</small></th>
+            <th class="span1"><h3>Starter</h3><small>bis <nobr>75 Teilnehmer</nobr></small></th>
+            <th class="span1"><h3>Business</h3><small>bis <nobr>150 Teilnehmer</nobr></small></th>
+            <th class="span1"><h3>Premium</h3><small>bis <nobr>1000 Teilnehmer</nobr></small></th>
+            <th class="span1"><h3>Premium Plus</h3><small><nobr>&gt; 1000 Teilnehmer</nobr></small></th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td class="leftcolumn">Paketpreis</td>
             <td><p class="price">0,- &euro;<small>&nbsp;</small></p>
-                <p><a class="btn" href="#">Herunterladen</a></p>
+                <p><a class="btn" href="{% url download %}">Herunterladen</a></p>
                 </td>
-                <td><p class="price">TODO,- &euro;
+                <td><p class="price">499,- &euro;
                     <small>zzgl. 19% MwSt.</small></p>
                 <p><a class="btn btn-primary" href="{% url orderform '1' %}">Bestellen</a></p></td>
-            <td><p class="price">TODO,- &euro;<small>zzgl. 19% MwSt.</small></p>
+            <td><p class="price">1.999,- &euro;<small>zzgl. 19% MwSt.</small></p>
                 <p><a class="btn btn-primary" href="{% url orderform '2' %}">Bestellen</a></p></td>
-            <td><p class="price">TODO,- &euro;<small>zzgl. 19% MwSt.</small></p>
+            <td><p class="price">5.999,- &euro;<small>zzgl. 19% MwSt.</small></p>
                 <p><a class="btn btn-primary" href="{% url orderform '3' %}">Bestellen</a></p></td>
+            <td><p class="price">29.999,- &euro;<small>zzgl. 19% MwSt.</small></p>
+                <p><a class="btn btn-primary" href="{% url orderform '4' %}">Bestellen</a></p></td>
           </tr>
           <tr>
             <td class="leftcolumn">Lizenzkostenfreie Nutzung<small>OpenSlides 
@@ -44,13 +48,14 @@ Die Intevation GmbH bietet Ihnen professionelle
             <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
           </tr>
           <tr>
-            <td class="leftcolumn">Supportkontingent
-                (Telefon/E-Mail) <sup>1</sup></td>
+            <td class="leftcolumn">Supportkontingent <sup>1</sup></td>
             <td>-</td>
             <td>2 Stunden<br><small>Laufzeit: 1 Monat</small></td>
             <td>6 Stunden<br><small>Laufzeit: 2 Monate</small></td>
+            <td>12 Stunden<br><small>Laufzeit: 3 Monate</small></td>
             <td>unbegrenzt<br><small>Laufzeit: 3 Monate</small></td>
           </tr>
           <tr>
@@ -60,10 +65,12 @@ Die Intevation GmbH bietet Ihnen professionelle
             <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
           </tr>
           <tr>
             <td class="leftcolumn">Werbefrei <small>Kein Verweis auf den professional Support</small></td>
             <td>-</td>
+            <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
@@ -76,18 +83,21 @@ Die Intevation GmbH bietet Ihnen professionelle
             <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
-          </tr>
-          <tr>
-            <td class="leftcolumn">Werkzeug zum Datenexport ins CSV-Format <sup>2</sup></td>
-            <td>-</td>
-            <td><i class="icon-ok"></i></td>
-            <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
           </tr>
           <tr>
             <td class="leftcolumn">Veranstaltungsdaten vorkonfiguriert <small>nach
                      Vorlage</small></td>
             <td>-</td>
+            <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
+          </tr>
+          <tr>
+            <td class="leftcolumn">Werkzeug zum Datenexport ins CSV-Format <sup>2</sup></td>
+            <td>-</td>
+            <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
@@ -100,6 +110,7 @@ Die Intevation GmbH bietet Ihnen professionelle
             <td>-</td>
             <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
           </tr>
           <tr>
             <td class="leftcolumn">Anpassung des Projektortemplates 
@@ -107,6 +118,7 @@ Die Intevation GmbH bietet Ihnen professionelle
                 <small>nach Vorlage</small></td>
             <td>-</td>
             <td>-</td>
+            <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
           </tr>
@@ -117,6 +129,7 @@ Die Intevation GmbH bietet Ihnen professionelle
             <td>-</td>
             <td>-</td>
             <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
           </tr>
           <tr>
             <td class="leftcolumn">Unterstützung bei Umstellung auf
@@ -125,41 +138,44 @@ Die Intevation GmbH bietet Ihnen professionelle
             <td>-</td>
             <td>-</td>
             <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
           </tr>
         </tbody>
       </table>
 
-    <h4>Zusatzleistungen</h3>
-    <table class="table table-bordered table-striped packagetable">
-        <tbody>
-          <tr>
-            <td class="span4 leftcolumn">Support (Telefon/E-Mail)</td>
-            <td class="span2">-</td>
-            <td class="span2">110,- &euro;/h<small>zzgl. 19% MwSt.</small></td>
-            <td class="span2">100,- &euro;/h<small>zzgl. 19% MwSt.</small></td>
-            <td class="span2">-</td>
-          </tr>
-          <tr>
-            <td class="leftcolumn">Vor-Ort-Service <sup>3</sup>
-                  <small>z.B.: Beratung, Schulung, technische Durchführung</small></td>
-            <td>-</td>
-            <td>1000,- &euro;/d<small>zzgl. 19% MwSt.</small></td>
-            <td>900,- &euro;/d<small>zzgl. 19% MwSt.</small></td>
-            <td>800,- &euro;/d<small>zzgl. 19% MwSt.</small></td>
-          </tr>
-          <tr>
-            <td class="leftcolumn">Verleih oder Verkauf eines
-                elektronischen Abstimmugssystems <span class="label label-important">Profi-Tipp</span>
-                <small>Anbindung an OpenSlides über Plugin
-                    "VoteCollector"</small></td>
-            <td>-</td>
-            <td>-</td>
-            <td>auf Anfrage</td>
-            <td>auf Anfrage</td>
-        </tr>
-      </tbody>
-    </table>
 
+    <div class="row">
+        <div class="span6 well">
+        <h3>Zusatzleistungen</h3>
+        <ul>
+            <li><p>zusätzliche Supportstunde<br> 
+               <em>100,- &euro;/h <small>zzgl. 19% MwSt.</small></p></em>
+            </li>
+            <li><p>Vor-Ort-Service (z.B.: Beratung, Schulung, technische Durchführung)
+                <br>
+                <em>1000,- &euro;/d <small> zzgl. 19% MwSt. und Spesen</small></em>
+                </p>
+            </li>
+            <li><p>Verleih oder Verkauf eines elektronischen
+                Abstimmugssystems mit Anbindung an OpenSlides <span class="label label-important">Profi-Tipp</span>
+                <br>
+                <em>Preis auf Anfrage</em></p>
+            </li>
+        </ul>
+        </div>
+        <div class="span5 well">
+            <h3>Kontakt</h3>
+            <p><strong>Haben Sie noch Fragen? Wir beraten Sie gerne.</strong>
+            <br>Ihr Ansprechpartner:</p>
+            <p><a href="mailto:emanuel.schuetze@intevation.de">Emanuel Schütze</a><br>
+            Intevation GmbH<br>
+            Neuer Graben 17<br>
+            D-49074 Osnabrück<br>
+            <strong>Telefon: ++49-541-335083-746</strong></p>
+        </div>
+    </div>
+
+    <hr>            
     <p><strong>
         <small>
          Alle Preisangaben gelten zuzüglich der gesetzlich gültigen MwSt.
@@ -167,31 +183,11 @@ Die Intevation GmbH bietet Ihnen professionelle
         </strong></p>
     <p>
     <small>1) Zählung pro angefangene 15-Minuten; begrenzt auf die
-        angegebene Supportlaufzeit.</small>
+        angegebene Supportlaufzeit. Enthält kein Vor-Ort-Support.</small>
     <br>
     <small>2) Export anhand der sqlite-Datenbank; enthält
         Grunddaten aus Tagesordnung, Anträge, Wahlen und Teillnehmer.
         Weiterverarbeitung möglich.</small>
-    <br>
-    <small>3) zzgl. Spesen</small>
     </p>
-
-  <div style="margin-left: -20px">
-  <div class="span5 well">
-        <h3>Kontakt</h3>
-
-        <p>Sie haben Interesse an professionellen OpenSlides-Paketen?
-        Sie benötigen aber ein individuelleres Angebot für Ihre
-        Veranstaltung? Kontaktieren Sie unseren Ansprechpartner! Wir beraten Sie gerne.</p>
-        <blockquote>
-        <p>Emanuel Schütze<br>
-        Intevation GmbH<br>
-        Neuer Graben 17<br>
-        D-49074 Osnabrück<br>
-        E-Mail: <a href="mailto:emanuel.schuetze@intevation.de">emanuel.schuetze@intevation.de</a><br>
-        Tel: ++49-541-335083-746</p>
-        </blockquote>
-    </div>
-</div>
 
 {% endblock %}

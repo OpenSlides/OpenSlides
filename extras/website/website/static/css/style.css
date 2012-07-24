@@ -172,9 +172,6 @@ form .error input, form .error textarea {
     line-height: 18px;
     font-size: 11px;
 }
-.box h3 {
-    margin-bottom: 10px;
-}
 .box .header {
     margin-bottom: 20px;
     border-bottom: 1px solid #CCCCCC;
@@ -184,13 +181,13 @@ form .error input, form .error textarea {
     font-size: 21px;
     font-style: italic;
     margin: 10px 0;
+    white-space: nowrap;
 }
 .box ul {
     padding-left: 21px;
     text-align: left;
 }
 .box ul li {
-    /*font-weight: bold;*/
     list-style-image: url("/static/img/ok.png");
 }
 

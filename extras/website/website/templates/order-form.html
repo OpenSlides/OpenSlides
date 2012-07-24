@@ -13,6 +13,7 @@ Supportpaket OpenSlides
 {% if package == '1' %}Starter{% endif %}
 {% if package == '2' %}Business{% endif %}
 {% if package == '3' %}Premium{% endif %}
+{% if package == '4' %}Premium Plus{% endif %}
 </strong>
 {% endblock %}
 
@@ -39,7 +40,8 @@ Supportpaket OpenSlides
     {% if package == '1' %}
         <div class="header">  
             <h3>OpenSlides Starter</h3>
-            <p class="price">TODO,- €
+            <small>bis <nobr>75 Teilnehmer</nobr></small>
+            <p class="price">499,- €
             <small>zzgl. 19% MwSt.</small></p>
         </div>
         <ul class="unstyled">
@@ -55,9 +57,9 @@ Supportpaket OpenSlides
             <li>USB-Stick mit eingraviertem OpenSlides-Logo
                 <small>"OpenSlides portable" bereits vorinstalliert und
                 direkt vom USB-Stick startbar</small></li>
-            <li>Werkzeug zum Datenexport ins CSV-Format</li>
             <li>Veranstaltungsdaten vorkonfiguriert <small>nach
-                Vorlage</small><br><br></li>
+                Vorlage</small></li>
+            <li>Werkzeug zum Datenexport ins CSV-Format<br><br></li>
             <li><span class="label label-important">Optional</span>
             Vor-Ort-Service <small>z.B.: Beratung, Schulung,
                 technische Durchführung<br>1000,- &euro;/d zzgl. 19% MwSt.
@@ -67,7 +69,8 @@ Supportpaket OpenSlides
     {% if package == '2' %}
         <div class="header">  
             <h3>OpenSlides Business</h3>
-            <p class="price">TODO,- €
+            <small>bis <nobr>150 Teilnehmer</nobr></small>
+            <p class="price">1.999,- €
             <small>zzgl. 19% MwSt.</small></p>
         </div>
         <ul class="unstyled">
@@ -83,22 +86,22 @@ Supportpaket OpenSlides
             <li>USB-Stick mit eingraviertem OpenSlides-Logo
                 <small>"OpenSlides portable" bereits vorinstalliert und
                 direkt vom USB-Stick startbar</small></li>
-            <li>Werkzeug zum Datenexport ins CSV-Format</li>
             <li>Veranstaltungsdaten vorkonfiguriert <small>nach
                 Vorlage</small></li>
+            <li>Werkzeug zum Datenexport ins CSV-Format</li>
             <li><strong>Namenskarten mit QR-Code</strong>
                <small>Für schnelle Anwesenheitserfassung der
                    Teilnehmer</small></li>
                <li><strong>Anpassung des Projektortemplates</strong> 
-               <small>nach Vorlage</small><br><br></li>
+               <small>nach Vorlage</small><br></li>
             <li><span class="label label-important">Optional</span>
             Vor-Ort-Service <small>z.B.: Beratung, Schulung,
-                technische Durchführung<br>900,- &euro;/d zzgl. 19% MwSt.
+                technische Durchführung<br>1000,- &euro;/d zzgl. 19% MwSt.
             </small></li>
             <li><span class="label label-important">Optional</span>
             Verleih oder Verkauf eines
                 elektronischen Abstimmugssystems
-                <small>Anbindung an OpenSlides über Plugin
+                <small>mit Anbindung an OpenSlides über Plugin
                     "VoteCollector"<br>Preis auf Anfrage</small></li>
         </ul>
     {% endif %}
@@ -106,14 +109,15 @@ Supportpaket OpenSlides
     {% if package == '3' %}
         <div class="header">  
             <h3>OpenSlides Premium</h3>
-            <p class="price">TODO,- €
+            <small>bis <nobr>1000 Teilnehmer</nobr></small>
+            <p class="price">5.999,- €
             <small>zzgl. 19% MwSt.</small></p>
         </div>
         <ul class="unstyled">
             <li>Lizenzkostenfreie Nutzung<small>OpenSlides 
             ist Freie Software unter der <a href="{% url license
                 %}">GNU GPL v2+</a>.</small></li>
-            <li><strong>TODOh Supportkontingent</strong>
+            <li><strong>12h Supportkontingent</strong>
                 <small>Laufzeit: 3 Monat</small></li>
             <li>OpenSlides 1.2+ <small>inkl. qualitätsgesicherte
                 Updates aus der stabilen Entwicklungsversion</small></li>
@@ -122,9 +126,9 @@ Supportpaket OpenSlides
             <li>USB-Stick mit eingraviertem OpenSlides-Logo
                 <small>"OpenSlides portable" bereits vorinstalliert und
                 direkt vom USB-Stick startbar</small></li>
-            <li>Werkzeug zum Datenexport ins CSV-Format</li>
             <li>Veranstaltungsdaten vorkonfiguriert <small>nach
                 Vorlage</small></li>
+            <li>Werkzeug zum Datenexport ins CSV-Format</li>
             <li>Namenskarten mit QR-Code<small>Für schnelle
                 Anwesenheitserfassung der Teilnehmer</small></li>
             <li>Anpassung des Projektortemplates <small>nach Vorlage</small></li>
@@ -134,24 +138,67 @@ Supportpaket OpenSlides
                 <br><br></li>
             <li><span class="label label-important">Optional</span>
             Vor-Ort-Service <small>z.B.: Beratung, Schulung,
-                technische Durchführung<br>800,- &euro;/d zzgl. 19% MwSt.
+                technische Durchführung<br>1000,- &euro;/d zzgl. 19% MwSt.
             </small></li>
             <li><span class="label label-important">Optional</span>
             Verleih oder Verkauf eines
                 elektronischen Abstimmugssystems
-                <small>Anbindung an OpenSlides über Plugin
+                <small>mit Anbindung an OpenSlides über Plugin
                     "VoteCollector"<br>Preis auf Anfrage</small></li>
         </ul>
     {% endif %}
-        <br>
+    
+    {% if package == '4' %}
+        <div class="header">  
+            <h3>OpenSlides Premium Plus</h3>
+            <small>ab 1000 Teilnehmer</small>
+            <p class="price">29.999,- €
+            <small>zzgl. 19% MwSt.</small></p>
+        </div>
+        <ul class="unstyled">
+            <li>Lizenzkostenfreie Nutzung<small>OpenSlides 
+            ist Freie Software unter der <a href="{% url license
+                %}">GNU GPL v2+</a>.</small></li>
+            <li><strong>unbegrenztes Supportkontingent</strong>
+                <small>Laufzeit: 3 Monat</small></li>
+            <li>OpenSlides 1.2+ <small>inkl. qualitätsgesicherte
+                Updates aus der stabilen Entwicklungsversion</small></li>
+            <li>Werbefrei <small>Kein Verweis auf den professional
+                Support</small></li>
+            <li>USB-Stick mit eingraviertem OpenSlides-Logo
+                <small>"OpenSlides portable" bereits vorinstalliert und
+                direkt vom USB-Stick startbar</small></li>
+            <li>Veranstaltungsdaten vorkonfiguriert <small>nach
+                Vorlage</small></li>
+            <li>Werkzeug zum Datenexport ins CSV-Format</li>
+            <li>Namenskarten mit QR-Code<small>Für schnelle
+                Anwesenheitserfassung der Teilnehmer</small></li>
+            <li>Anpassung des Projektortemplates <small>nach Vorlage</small></li>
+            <li>OpenSlides-Schulung vor Ort<small>1 Tag</small></li>
+            <li>Unterstützung bei Umstellung auf
+                leistungsfähigere Datenbank und Webserver
+                <br><br></li>
+            <li><span class="label label-important">Optional</span>
+            Vor-Ort-Service <small>z.B.: Beratung, Schulung,
+                technische Durchführung<br>1000,- &euro;/d zzgl. 19% MwSt.
+            </small></li>
+            <li><span class="label label-important">Optional</span>
+            Verleih oder Verkauf eines
+                elektronischen Abstimmugssystems
+                <small>mit Anbindung an OpenSlides über Plugin
+                    "VoteCollector"<br>Preis auf Anfrage</small></li>
+        </ul>
+    {% endif %}
+    </div>
+
+    <div class="span4 well box">
         <p><strong>Haben Sie noch Fragen? Wir beraten Sie gerne.</strong>
         <br>Ihr Ansprechpartner:</p>
-        <p>Emanuel Schütze<br>
+        <p><a href="mailto:emanuel.schuetze@intevation.de">Emanuel Schütze</a><br>
         Intevation GmbH<br>
         Neuer Graben 17<br>
         D-49074 Osnabrück<br>
-        E-Mail: <a href="mailto:emanuel.schuetze@intevation.de">emanuel.schuetze@intevation.de</a><br>
-        Tel: ++49-541-335083-746</p>
+        <strong>Telefon: ++49-541-335083-746</strong></p>
     </div>
 </div>
 {% endblock %}
