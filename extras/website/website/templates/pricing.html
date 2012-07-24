@@ -79,7 +79,7 @@ Veranstaltung einsetzen? Dann nutzen Sie unsere abgestimmten
           </tr>
           <tr>
             <td class="leftcolumn">{% trans 'USB-Stick mit eingraviertem OpenSlides-Logo' %}
-            <small>{% trans '"OpenSlides portable" bereits vorinstalliert und direkt vom USB-Stick startbar' %}</small></td>
+            <small>{% trans '"OpenSlides portable" bereits vorinstalliert und direkt vom USB-Stick startbar' %}, {% trans 'Foto siehe unten' %}</small></td>
             <td>-</td>
             <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
@@ -146,7 +146,8 @@ Veranstaltung einsetzen? Dann nutzen Sie unsere abgestimmten
 
 
     <div class="row">
-        <div class="span6 well">
+        <div class="span4">
+        <div class="well">
         <img class="os-icon" src="/static/img/icons/glyphicons_069_gift.png">
         <h2>{% trans 'Zusatzleistungen' %}</h2>
         <ul>
@@ -165,7 +166,14 @@ Veranstaltung einsetzen? Dann nutzen Sie unsere abgestimmten
             </li>
         </ul>
         </div>
-        <div class="span5 well">
+        </div>
+        <div class="span4">
+        <div class="well thumbnail">
+            <img src="/static/img/usb-stick-openslides.jpg">
+        </div>
+        </div>
+        <div class="span4">
+        <div class="well">
             <img class="os-icon" src="/static/img/icons/glyphicons_352_nameplate.png">
             <h2>{% trans 'Kontakt' %}</h2>
             <p><strong>{% trans 'Haben Sie noch Fragen? Wir beraten Sie gerne.' %}</strong>
@@ -176,9 +184,10 @@ Veranstaltung einsetzen? Dann nutzen Sie unsere abgestimmten
             D-49074 Osnabrück<br>
             <strong>Telefon: ++49-541-335083-746</strong></p>
         </div>
+       </div>
     </div>
 
-    <hr>            
+    <hr>
     <p><strong>
         <small>
          {% trans 'Alle Preisangaben gelten zuzüglich der gesetzlich gültigen MwSt.' %}
