@@ -3,14 +3,14 @@
 {% load i18n %}
 
 {% block title %}{{ block.super }} - {% trans "Preise" %}{% endblock %}
-{% block headline %}Preise{% endblock %}
+{% block headline %}{% trans 'Preise' %}{% endblock %}
 
 {% block mainmenu_pricing %}active{% endblock %}
  
 {% block lead %}
-Sie wollen OpenSlides professionell und erfolgreich auf Ihrer
+{% blocktrans %}Sie wollen OpenSlides professionell und erfolgreich auf Ihrer
 Veranstaltung einsetzen? Dann nutzen Sie unsere abgestimmten 
-<strong>Supportpakete</strong> von der Intevation GmbH!
+<strong>Supportpakete</strong> von der Intevation GmbH!{% endblocktrans %}
 {% endblock %}
 
 {% block content %}
@@ -18,33 +18,34 @@ Veranstaltung einsetzen? Dann nutzen Sie unsere abgestimmten
         <thead>
           <tr>
             <th class="span4"></th>
-            <th class="span1"><h3>OpenSlides v1.2</h3><small>Community-Paket</small></th>
-            <th class="span1"><h3>Starter</h3><small>bis <nobr>75 Teilnehmer</nobr></small></th>
-            <th class="span1"><h3>Business</h3><small>bis <nobr>150 Teilnehmer</nobr></small></th>
-            <th class="span1"><h3>Premium</h3><small>bis <nobr>1000 Teilnehmer</nobr></small></th>
-            <th class="span1"><h3>Premium Plus</h3><small><nobr>&gt; 1000 Teilnehmer</nobr></small></th>
+            <th class="span1"><h3>OpenSlides v1.2</h3><small>{% trans 'Community-Paket' %}</small></th>
+            <th class="span1"><h3>Starter</h3><small>{% trans 'bis' %} <nobr>75 {% trans 'Teilnehmer' %}</nobr></small></th>
+            <th class="span1"><h3>Business</h3><small>{% trans 'bis' %} <nobr>150 {% trans 'Teilnehmer' %}</nobr></small></th>
+            <th class="span1"><h3>Premium</h3><small>{% trans 'bis' %} <nobr>1000 {% trans 'Teilnehmer' %}</nobr></small></th>
+            <th class="span1"><h3>Premium Plus</h3><small><nobr>&gt; 1000 {% trans 'Teilnehmer' %}</nobr></small></th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td class="leftcolumn">Paketpreis</td>
+            <td class="leftcolumn">{% trans 'Paketpreis' %}</td>
             <td><p class="price">0,- &euro;<small>&nbsp;</small></p>
                 <p class="orderbutton"><a class="btn" href="{% url download %}"><i
-                        class="icon-download"></i> Herunterladen</a></p>
+                        class="icon-download"></i> {% trans 'Herunterladen' %}</a></p>
                 </td>
                 <td><p class="price">499,- &euro;
-                    <small>zzgl. 19% MwSt.</small></p>
-                <p class="orderbutton"><a class="btn btn-primary" href="{% url orderform '1' %}"><i class="icon-shopping-cart icon-white"></i> Bestellen</a></p></td>
-            <td><p class="price">1.999,- &euro;<small>zzgl. 19% MwSt.</small></p>
-                <p class="orderbutton"><a class="btn btn-primary" href="{% url orderform '2' %}"><i class="icon-shopping-cart icon-white"></i> Bestellen</a></p></td>
-            <td><p class="price">5.999,- &euro;<small>zzgl. 19% MwSt.</small></p>
-                <p class="orderbutton"><a class="btn btn-primary" href="{% url orderform '3' %}"><i class="icon-shopping-cart icon-white"></i> Bestellen</a></p></td>
-            <td><p class="price">29.999,- &euro;<small>zzgl. 19% MwSt.</small></p>
-                <p class="orderbutton"><a class="btn btn-primary" href="{% url orderform '4' %}"><i class="icon-shopping-cart icon-white"></i> Bestellen</a></p></td>
+                    <small>{% trans 'zzgl. 19% MwSt.' %}</small></p>
+                <p class="orderbutton"><a class="btn btn-primary" href="{% url orderform '1' %}"><i class="icon-shopping-cart icon-white"></i> {% trans 'Bestellen' %}</a></p></td>
+            <td><p class="price">1.999,- &euro;<small>{% trans 'zzgl. 19% MwSt.' %}</small></p>
+                <p class="orderbutton"><a class="btn btn-primary" href="{% url orderform '2' %}"><i class="icon-shopping-cart icon-white"></i> {% trans 'Bestellen' %}</a></p></td>
+            <td><p class="price">5.999,- &euro;<small>{% trans 'zzgl. 19% MwSt.' %}</small></p>
+                <p class="orderbutton"><a class="btn btn-primary" href="{% url orderform '3' %}"><i class="icon-shopping-cart icon-white"></i> {% trans 'Bestellen' %}</a></p></td>
+            <td><p class="price">29.999,- &euro;<small>{% trans 'zzgl. 19% MwSt.' %}</small></p>
+                <p class="orderbutton"><a class="btn btn-primary" href="{% url orderform '4' %}"><i class="icon-shopping-cart icon-white"></i> {% trans 'Bestellen' %}</a></p></td>
           </tr>
           <tr>
-            <td class="leftcolumn">Lizenzkostenfreie Nutzung<small>OpenSlides 
-            ist Freie Software unter der <a href="{% url license %}">GNU GPL v2+</a>.</small></td>
+            <td class="leftcolumn">{% url license as license_url %}
+            {% blocktrans  %}Lizenzkostenfreie Nutzung<small>OpenSlides 
+            ist Freie Software unter der <a href="{{ license_url }}">GNU GPL v2+</a>.</small>{% endblocktrans %}</td>
             <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
@@ -52,24 +53,16 @@ Veranstaltung einsetzen? Dann nutzen Sie unsere abgestimmten
             <td><i class="icon-ok"></i></td>
           </tr>
           <tr>
-            <td class="leftcolumn">Supportkontingent <sup>1</sup></td>
+            <td class="leftcolumn">{% trans 'Supportkontingent' %} <sup>1</sup></td>
             <td>-</td>
-            <td>2 Stunden<br><small>Laufzeit: 1 Monat</small></td>
-            <td>6 Stunden<br><small>Laufzeit: 2 Monate</small></td>
-            <td>12 Stunden<br><small>Laufzeit: 3 Monate</small></td>
-            <td>unbegrenzt<br><small>Laufzeit: 3 Monate</small></td>
+            <td>2 {% trans 'Stunden' %}<br><small>{% trans 'Laufzeit' %}: 1 {% trans 'Monat' %}</small></td>
+            <td>6 {% trans 'Stunden' %}<br><small>{% trans 'Laufzeit' %}: 2 {% trans 'Monate' %}</small></td>
+            <td>12 {% trans 'Stunden' %}<br><small>{% trans 'Laufzeit' %}: 3 {% trans 'Monate' %}</small></td>
+            <td>{% trans 'unbegrenzt' %}<br><small>{% trans 'Laufzeit' %}: 3 {% trans 'Monate' %}</small></td>
           </tr>
           <tr>
-            <td class="leftcolumn">OpenSlides 1.2+ <small>inkl. qualitätsgesicherte Updates aus
-                      der stabilen Entwicklungsversion</small></td>
-            <td>-</td>
-            <td><i class="icon-ok"></i></td>
-            <td><i class="icon-ok"></i></td>
-            <td><i class="icon-ok"></i></td>
-            <td><i class="icon-ok"></i></td>
-          </tr>
-          <tr>
-            <td class="leftcolumn">Werbefrei <small>Kein Verweis auf den professional Support</small></td>
+            <td class="leftcolumn">OpenSlides 1.2+ <small>{% blocktrans %}inkl. qualitätsgesicherte Updates aus
+                      der stabilen Entwicklungsversion{% endblocktrans %}</small></td>
             <td>-</td>
             <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
@@ -77,9 +70,7 @@ Veranstaltung einsetzen? Dann nutzen Sie unsere abgestimmten
             <td><i class="icon-ok"></i></td>
           </tr>
           <tr>
-            <td class="leftcolumn">USB-Stick mit eingraviertem OpenSlides-Logo
-            <small>"OpenSlides portable" bereits vorinstalliert und
-                direkt vom USB-Stick startbar</small></td>
+            <td class="leftcolumn">{% trans 'Werbefrei' %} <small>{% trans 'Kein Verweis auf den professional Support' %}</small></td>
             <td>-</td>
             <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
@@ -87,8 +78,8 @@ Veranstaltung einsetzen? Dann nutzen Sie unsere abgestimmten
             <td><i class="icon-ok"></i></td>
           </tr>
           <tr>
-            <td class="leftcolumn">Veranstaltungsdaten vorkonfiguriert <small>nach
-                     Vorlage</small></td>
+            <td class="leftcolumn">{% trans 'USB-Stick mit eingraviertem OpenSlides-Logo' %}
+            <small>{% trans '"OpenSlides portable" bereits vorinstalliert und direkt vom USB-Stick startbar' %}</small></td>
             <td>-</td>
             <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
@@ -96,7 +87,8 @@ Veranstaltung einsetzen? Dann nutzen Sie unsere abgestimmten
             <td><i class="icon-ok"></i></td>
           </tr>
           <tr>
-            <td class="leftcolumn">Werkzeug zum Datenexport ins CSV-Format <sup>2</sup></td>
+            <td class="leftcolumn">{% trans 'Veranstaltungsdaten vorkonfiguriert' %}
+                    <small>{% trans 'nach Vorlage' %}</small></td>
             <td>-</td>
             <td><i class="icon-ok"></i></td>
             <td><i class="icon-ok"></i></td>
@@ -104,9 +96,17 @@ Veranstaltung einsetzen? Dann nutzen Sie unsere abgestimmten
             <td><i class="icon-ok"></i></td>
           </tr>
           <tr>
-            <td class="leftcolumn">Namenskarten mit QR-Code <span class="label
-                    label-important">Neu</span>
-               <small>Für schnelle Anwesenheitserfassung der Teilnehmer</small></td>
+            <td class="leftcolumn">{% trans 'Werkzeug zum Datenexport ins CSV-Format' %} <sup>2</sup></td>
+            <td>-</td>
+            <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
+            <td><i class="icon-ok"></i></td>
+          </tr>
+          <tr>
+            <td class="leftcolumn">{% trans 'Namenskarten mit QR-Code' %} <span class="label
+                    label-important">{% trans 'Neu' %}</span>
+               <small>{% trans 'Für schnelle Anwesenheitserfassung der Teilnehmer' %}</small></td>
             <td>-</td>
             <td>-</td>
             <td><i class="icon-ok"></i></td>
@@ -114,9 +114,9 @@ Veranstaltung einsetzen? Dann nutzen Sie unsere abgestimmten
             <td><i class="icon-ok"></i></td>
           </tr>
           <tr>
-            <td class="leftcolumn">Anpassung des Projektortemplates 
-                <span class="label label-important">Tipp</span>
-                <small>nach Vorlage</small></td>
+            <td class="leftcolumn">{% trans 'Anpassung des Projektortemplates' %} 
+                <span class="label label-important">{% trans 'Tipp' %}</span>
+                <small>{% trans 'nach Vorlage' %}</small></td>
             <td>-</td>
             <td>-</td>
             <td><i class="icon-ok"></i></td>
@@ -124,8 +124,8 @@ Veranstaltung einsetzen? Dann nutzen Sie unsere abgestimmten
             <td><i class="icon-ok"></i></td>
           </tr>
           <tr>
-              <td class="leftcolumn">OpenSlides-Schulung vor
-                  Ort<small>1 Tag</small></td>
+              <td class="leftcolumn">{% trans 'OpenSlides-Schulung vor Ort' %}
+                  <small>1 {% trans 'Tag' %}</small></td>
             <td>-</td>
             <td>-</td>
             <td>-</td>
@@ -133,8 +133,8 @@ Veranstaltung einsetzen? Dann nutzen Sie unsere abgestimmten
             <td><i class="icon-ok"></i></td>
           </tr>
           <tr>
-            <td class="leftcolumn">Unterstützung bei Umstellung auf
-             leistungsfähigere Datenbank und Webserver</td>
+            <td class="leftcolumn">{% blocktrans %}Unterstützung bei Umstellung auf
+             leistungsfähigere Datenbank und Webserver{% endblocktrans %}</td>
             <td>-</td>
             <td>-</td>
             <td>-</td>
@@ -148,28 +148,28 @@ Veranstaltung einsetzen? Dann nutzen Sie unsere abgestimmten
     <div class="row">
         <div class="span6 well">
         <img class="os-icon" src="/static/img/icons/glyphicons_069_gift.png">
-        <h2>Zusatzleistungen</h2>
+        <h2>{% trans 'Zusatzleistungen' %}</h2>
         <ul>
-            <li><p>zusätzliche Supportstunde<br> 
-               <em>100,- &euro;/h <small>zzgl. 19% MwSt.</small></p></em>
+            <li><p>{% trans 'zusätzliche Supportstunde' %}<br> 
+               <em>100,- &euro;/h <small>{% trans 'zzgl. 19% MwSt.' %}</small></p></em>
             </li>
-            <li><p>Vor-Ort-Service (z.B.: Beratung, Schulung, technische Durchführung)
+            <li><p>{% trans 'Vor-Ort-Service (z.B.: Beratung, Schulung, technische Durchführung)' %}
                 <br>
-                <em>1000,- &euro;/d <small> zzgl. 19% MwSt. und Spesen</small></em>
+                <em>1000,- &euro;/d <small> {% trans 'zzgl. 19% MwSt. und Spesen' %}</small></em>
                 </p>
             </li>
-            <li><p>Verleih oder Verkauf eines elektronischen
-                Abstimmugssystems mit Anbindung an OpenSlides <span class="label label-important">Profi-Tipp</span>
+            <li><p>{% blocktrans %}Verleih oder Verkauf eines elektronischen
+                Abstimmugssystems mit Anbindung an OpenSlides{% endblocktrans %} <span class="label label-important">{% trans 'Profi-Tipp' %}</span>
                 <br>
-                <em>Preis auf Anfrage</em></p>
+                <em>{% trans 'Preis auf Anfrage' %}</em></p>
             </li>
         </ul>
         </div>
         <div class="span5 well">
             <img class="os-icon" src="/static/img/icons/glyphicons_352_nameplate.png">
-            <h2>Kontakt</h2>
-            <p><strong>Haben Sie noch Fragen? Wir beraten Sie gerne.</strong>
-            <br>Ihr Ansprechpartner:</p>
+            <h2>{% trans 'Kontakt' %}</h2>
+            <p><strong>{% trans 'Haben Sie noch Fragen? Wir beraten Sie gerne.' %}</strong>
+            <br>{% trans 'Ihr Ansprechpartner' %}:</p>
             <p><a href="mailto:emanuel.schuetze@intevation.de">Emanuel Schütze</a><br>
             Intevation GmbH<br>
             Neuer Graben 17<br>
@@ -181,16 +181,16 @@ Veranstaltung einsetzen? Dann nutzen Sie unsere abgestimmten
     <hr>            
     <p><strong>
         <small>
-         Alle Preisangaben gelten zuzüglich der gesetzlich gültigen MwSt.
+         {% trans 'Alle Preisangaben gelten zuzüglich der gesetzlich gültigen MwSt.' %}
         </small>
         </strong></p>
     <p>
-    <small>1) Zählung pro angefangene 15-Minuten; begrenzt auf die
-        angegebene Supportlaufzeit. Enthält kein Vor-Ort-Support.</small>
+    <small>{% blocktrans %}1) Zählung pro angefangene 15-Minuten; begrenzt auf die
+        angegebene Supportlaufzeit. Enthält kein Vor-Ort-Support.{% endblocktrans %}</small>
     <br>
-    <small>2) Export anhand der sqlite-Datenbank; enthält
+    <small>{% blocktrans %}2) Export anhand der sqlite-Datenbank; enthält
         Grunddaten aus Tagesordnung, Anträge, Wahlen und Teillnehmer.
-        Weiterverarbeitung möglich.</small>
+        Weiterverarbeitung möglich.{% endblocktrans %}</small>
     </p>
 
 {% endblock %}
