@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:OpenSlides Website\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-24 23:54+0200\n"
+"POT-Creation-Date: 2012-07-25 00:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: English \n"
@@ -142,9 +142,174 @@ msgstr "License"
 msgid "Kontaktformular"
 msgstr "Contact form"
 
+#: templates/development.html:10
+msgid ""
+"OpenSlides ist eine engagierte Freie\n"
+"Software-Initiative von Freiwilligen. Entsprechend offen und\n"
+"frei zugänglich ist auch die Entwicklung. Nutze die Möglichkeit und wirf "
+"einen Blick\n"
+"in unsere Trac-Entwicklungsplattform. - Jede Mitarbeit ist sehr willkommen:\n"
+"Bugreports erstellen, Arbeiten am Quellcode, Übersetzungen oder "
+"Grafikdesign. Wir freuen\n"
+"uns über jede Form der Unterstützung!"
+msgstr ""
+"OpenSlides is a dedicated free software initiative of volunteers. It's "
+"development is Accordingly open and freely accessible. Use the change and "
+"take a look into our development platform Trac. Every contribution is very "
+"welcome:Create bug reports, work on the source code, translations or the "
+"graphics design. We appreciate any form of support!"
+
+#: templates/development.html:17
+#, python-format
+msgid ""
+"<a href=\"%(contact_url)s\">Kontaktiere</a> uns einfach! Wir finden sicher "
+"interessante\n"
+"Aufgaben für Dich."
+msgstr ""
+"Simply <a href=\"%(contact_url)s\">contact</a> us!We will surly find some "
+"interesting tasks for you."
+
+#: templates/development.html:27 templates/development.html.py:33
+msgid "Wiki"
+msgstr "Wiki"
+
+#: templates/development.html:28
+msgid ""
+"Das OpenSlides-Wiki dient als technische Dokumentation von\n"
+"        Dingen, die (noch) nicht im Handbuch stehen oder einfach\n"
+"        irgendwo erfasst und nicht vergessen werden sollen."
+msgstr ""
+"The OpenSlides wiki serves as technical documentation for things that are "
+"not (yet) mentioned in the handbook, or simply should be recored somewhere "
+"so they won't be forgotten."
+
+#: templates/development.html:31
+msgid ""
+"Wir freuen uns über Unterstützung beim Erstellen neuer\n"
+"        hilfreicher Seiten."
+msgstr "We appreciate support in creating new helpful pages."
+
+#: templates/development.html:37 templates/development.html.py:43
+msgid "Roadmap"
+msgstr "Roadmap"
+
+#: templates/development.html:38
+msgid ""
+"Wann steht eine neue OpenSlides-Version an? Welche Tickets sind\n"
+"        für welchen Meilenstein geplant und welche Tickets sind\n"
+"        bereits erledigt?"
+msgstr ""
+"When is the next OpenSlides version planned? Which tickets are planed for "
+"which milestone and which are already closed?"
+
+#: templates/development.html:41
+msgid ""
+"Diesen Überblick gibt uns die Roadmap und dient zur Planung\n"
+"        und Information über neue OpenSlides-Versionen."
+msgstr ""
+"This overview is provided to us by the roadmap and serves for the planning "
+"of and as information about new OpenSlides versions."
+
+#: templates/development.html:47
+msgid "Tickets"
+msgstr "Tickets"
+
+#: templates/development.html:48
+msgid ""
+"Probleme und Wünsche an OpenSlides erfassen wir in\n"
+"        einzelnen Tickets im Trac. Um ein Problem oder Wunsch zu berichten,\n"
+"        melde Dich im Trac an und lege ein <a href=\"http://dev.openslides."
+"org/newticket\">neues\n"
+"            Ticket</a> an. "
+msgstr ""
+"Problems and feature requests for OpenSlides are recored as separate tickts "
+"in Trac.To report a problem or request a new feature log in to Trac and "
+"create a <a href=\"http://dev.openslides.org/newticket\">new ticket</a>."
+
+#: templates/development.html:52
+#, python-format
+msgid ""
+"Alternativ kannst Du Dein Rückmeldung zu OpenSlides auch an die\n"
+"            <a href=\"%(contact_url)s\">Mailingliste</a> senden."
+msgstr ""
+"Alternatively you can send your feedback about OpenSlides to the <a href="
+"\"%(contact_url)s\">mailing list</a>."
+
+#: templates/development.html:55
+msgid "Alle offene Tickets"
+msgstr "All open tickets"
+
+#: templates/development.html:59 templates/download.html:45
+msgid "Quellcode"
+msgstr "Source code"
+
+#: templates/development.html:60
+msgid ""
+"Werfe einen Blick in den aktuellen OpenSlides-Quellcode ohne ihn extra (per\n"
+"        HG/Mercurial) zu clonen. Trac bietet die Möglichkeit den Quellcode "
+"aus\n"
+"        dem angebundenden hg-Repository zu \"durchbrowsen\"."
+msgstr ""
+"Take a look at OpenSlides source code without having to clone it (via HG/"
+"Mercurial). Trac provides the possibility to \"browse\" the source code of "
+"the connected hg repository."
+
+#: templates/development.html:64
+#, python-format
+msgid ""
+"Eine Anleitung zum Clonen gibt es unter <a href=\"%(download_url)s"
+"\">Download</a>."
+msgstr ""
+"A guide to cloning the repository is available under <a href="
+"\"%(download_url)s>Download</a>."
+
+#: templates/development.html:65
+msgid "Quellcode durchsuchen"
+msgstr "Browse the source code"
+
 #: templates/donate.html:5 templates/donate.html.py:6
 msgid "Spenden"
 msgstr "Donate"
+
+#: templates/download.html:10
+msgid "Aktuelle Version: OpenSlides 1.2-rc1 (veröffentlicht am 16.7.2012)"
+msgstr "Current version: OpenSlides 1.2-rc1 (released on Jul. 16th 2012)"
+
+#: templates/download.html:17
+msgid "Für Windows"
+msgstr "For Windows"
+
+#: templates/download.html:21 templates/download.html.py:32
+msgid "Download OpenSlides"
+msgstr "Download OpenSlides?"
+
+#: templates/download.html:24
+msgid "Portable Version mit openslides.exe"
+msgstr "Portable version with openslides.exe"
+
+#: templates/download.html:25 templates/download.html.py:34
+msgid "Installationsanleitung"
+msgstr "Installation instructions"
+
+#: templates/download.html:28
+msgid "Für Linux/MacOS"
+msgstr "For Linux/MacOS"
+
+#: templates/download.html:41
+msgid "Ältere Versionen und Prüfsummen"
+msgstr "Older versions and checksums"
+
+#: templates/download.html:46
+msgid ""
+"Der aktuelle Entwicklungstand von OpenSlides kann im öffentlichen \n"
+"  Quellcode-Repository eingesehen werden."
+msgstr ""
+"The current development version of OpenSlides can be seen in the public "
+"source code repository"
+
+#: templates/download.html:49
+msgid "Zum Auschecken des Quellcodes von OpenSlides nutzen Sie:"
+msgstr "To check out the source code of OpenSlides use:"
 
 #: templates/faq.html:5 templates/faq.html.py:6
 msgid "FAQ"
@@ -154,7 +319,7 @@ msgstr "FAQ"
 #: templates/features.html:214 templates/features.html.py:250
 #: templates/features.html:285 templates/features.html.py:321
 msgid "Nach oben"
-msgstr ""
+msgstr "Top"
 
 #: templates/home.html:20
 msgid "Mehr Transparenz."

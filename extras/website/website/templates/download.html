@@ -7,46 +7,46 @@
 
 {% block mainmenu_download %}active{% endblock %}
 
-{% block lead %}Aktuelle Version: OpenSlides 1.2-rc1 (veröffentlicht am 16.7.2012){% endblock %}
+{% block lead %}{% trans 'Aktuelle Version: OpenSlides 1.2-rc1 (veröffentlicht am 16.7.2012)' %}{% endblock %}
 
 
 {% block content %}
 
   <div class="row">
     <div class="span6">
-      <h3>Für Windows</h3>
+      <h3>{% trans 'Für Windows' %}</h3>
       <p>
       <a class="jumbotron btn btn-primary btn-large"
       href="http://openslides.org/download/Beta/openslides-1.2-rc1-portable.zip">
-      Download OpenSlides<br>
+      {% trans 'Download OpenSlides' %}<br>
       <small>v1.2-rc1 | .zip | 10 MB</small></a>
       </p>
-      <p>Portable Version mit openslides.exe</p>
-      <p><a href="#">Installationsanleitung</a></p>
+      <p>{% trans 'Portable Version mit openslides.exe' %}</p>
+      <p><a href="#">{% trans 'Installationsanleitung' %}</a></p>
     </div>
     <div class="span6">
-      <h3>Für Linux/MacOS</h3>
+      <h3>{% trans 'Für Linux/MacOS' %}</h3>
       <p>
       <a class="jumbotron btn btn-primary btn-large"
       href="http://openslides.org/download/Beta/openslides-1.2-rc1-portable.tar.gz">
-      Download OpenSlides <br><small>v1.2-rc1 | .tar.gz | 1 MB</small></a>
+      {% trans 'Download OpenSlides' %} <br><small>v1.2-rc1 | .tar.gz | 1 MB</small></a>
       </p>
-      <p><a href="#">Installationsanleitung</a></p>
+      <p><a href="#">{% trans 'Installationsanleitung' %}</a></p>
     </div>
   </div>
   <br>
   <p>
   <a class="btn btn-large"
   href="http://openslides.org/download/">
-  Ältere Versionen und Prüfsummen &raquo;</a>
+  {% trans 'Ältere Versionen und Prüfsummen' %} &raquo;</a>
   </p>
   <br>
   
-  <h2>Quellcode</h2>
-  <p>Der aktuelle Entwicklungstand von OpenSlides kann im öffentlichen 
-  Quellcode-Repository eingesehen werden.</p>
+  <h2>{% trans 'Quellcode' %}</h2>
+  <p>{% blocktrans %}Der aktuelle Entwicklungstand von OpenSlides kann im öffentlichen 
+  Quellcode-Repository eingesehen werden.{% endblocktrans %}</p>
   
-  <p>Zum Auschecken des Quellcodes von OpenSlides nutzen Sie:</p>
+  <p>{% trans 'Zum Auschecken des Quellcodes von OpenSlides nutzen Sie:' %}</p>
 
   <p><code>hg clone http://hg.openslides.org</code></p>
 
