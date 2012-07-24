@@ -20,7 +20,6 @@
     <p>Mehr Transparenz.<br> Mehr Flexibilität.<br> Mehr Effizienz.<br>
     <strong>Die Lösung für Ihre Versammlung!</strong></p>
     <br>
-    <br>
     <a class="jumbotron btn btn-primary btn-large" href="{% url download %}">
     Download
     </a>
@@ -40,6 +39,7 @@
 
   <div class="row">
     <div class="span4">
+      <img class="os-icon" src="/static/img/icons/glyphicons_064_lightbulb.png">
       <h2>Was ist OpenSlides?</h2>
        <p>OpenSlides ist ein freies, webbasiertes Präsentationssystem zur 
        Darstellung und Steuerung von Tagesordnungen, Anträgen und Wahlen 
@@ -48,17 +48,23 @@
        Jeder Teilnehmer auf einer Veranstaltung hat die Möglichkeit, sich mit
        dem eigenen Laptop oder Smartphone per WLAN bei OpenSlides anzumelden.</p>
        
-      <p><a class="btn" href="#">Mehr &raquo;</a></p>
+       <p><a class="btn" href="{% url about %}">Mehr &raquo;</a></p>
     </div>
     <div class="span4">
-      <h2>Support</h2>
-       <p>Für den professionellen Einsatz von OpenSlides gibt es angepasste
-       Pakte mit professionellen Support. Sie unterstützen damit gleichzeitig 
-       die Weiterentwicklung von OpenSlides. - 
-       Wählen Sie Ihr passendes Produkt aus! </p>
-      <p><a class="btn" href="#">OpenSlides-Pakete &raquo;</a></p>
+      <img class="os-icon" src="/static/img/icons/glyphicons_341_briefcase.png">
+      <h2>Preise und Supportpakete</h2>
+       <p>Sie wollen OpenSlides professionell und erfolgreich auf
+       Ihrer Veranstaltung einsetzen? Dann nutzen Sie unsere
+       abgestimmten Supportpakete von der Intevation GmbH.</p>
+       <p>OpenSlides ist <strong>Freie Software</strong>. 
+       Mit dem Kauf eines Supportpakets leisten Sie gleichzeitig einen
+       wichtigen Beitrag, um die Weiterentwicklung von OpenSlides zu
+       sichern.</p> 
+       <p>Wählen Sie jetzt Ihr passendes Paket aus! </p>
+       <p><a class="btn" href="{% url pricing %}">OpenSlides-Supportpakete &raquo;</a></p>
    </div>
     <div class="span4">
+      <img class="os-icon" src="/static/img/icons/glyphicons_332_certificate.png">
       <h2>Referenzen</h2>
       <p>OpenSlides war bereits erfolgreich im Einsatz bei:</p>
       <ul class="thumbnails">
@@ -83,7 +89,7 @@
           </span>
         </li>
       </ul>
-      <a class="btn" href="{% url references %}">Mehr &raquo;</a>
+      <a class="btn" href="{% url references %}">Weitere Referenzen &raquo;</a>
     </div>
   </div>
 

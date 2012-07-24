@@ -156,6 +156,10 @@ form .error input, form .error textarea {
     font-size: 21px;
     font-style: italic;
     margin: 10px 0;
+    white-space: nowrap;
+}
+.orderbutton {
+    white-space: nowrap;
 }
 .packagetable th {
     vertical-align: top !important;
@@ -177,18 +181,12 @@ form .error input, form .error textarea {
     border-bottom: 1px solid #CCCCCC;
     text-align: center;
 }    
-.price {
-    font-size: 21px;
-    font-style: italic;
-    margin: 10px 0;
-    white-space: nowrap;
-}
 .box ul {
     padding-left: 21px;
     text-align: left;
 }
 .box ul li {
-    list-style-image: url("/static/img/ok.png");
+    list-style-image: url("/static/img/icons/ok.png");
 }
 
 
@@ -200,4 +198,25 @@ form .error input, form .error textarea {
 
 input, textarea {
     width: 380px;
+}
+.os-icon {
+    float: left;
+    margin: 7px 10px 0 0;
+    opacity: 0.8;
+}
+h2 {
+    font-size: 22px;
+    font-weight: 300;
+    line-height: 36px;
+    margin-bottom: 1px;
+}
+h3 {
+    font-size: 18px;
+    line-height: 27px;
+    font-weight: 300;
+}
+
+.license {
+    margin-top: 70px;
+    font-size: 11px;
 }

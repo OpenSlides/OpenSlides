@@ -7,9 +7,63 @@
 
 {% block mainmenu_donate %}active{% endblock %}
 
+{% block lead %}
+Sie profitieren vom Einsatz von OpenSlides oder sind einfach von
+der OpenSlides-Idee begeistert?  Dann unterstützen Sie OpenSlides mit
+Ihrer Spende!
+{% endblock %}
 
 {% block content %}
+<div class="row">
+<div class="span6">
+    
+    <img class="os-icon" src="/static/img/icons/glyphicons_049_star.png">
+    <h2>Helfen Sie!</h2>
 
-<p>TODO</p>
+    <p>Die Pflege und Weiterentwicklung eines Freien Software Produkts kostet Geld. Mit Ihrer
+    Spende helfen Sie uns diese nötigen Ausgaben zu finanzieren und die OpenSlides-Initiative
+    voranzutreiben.</p>
+
+    <form method="post" action="https://www.paypal.com/de/cgi-bin/webscr">
+        <input type="hidden" value="_donations" name="cmd">
+        <input type="hidden" value="paypal@intevation.de" name="business">
+        <input type="hidden" value="1" name="undefined_quantity">
+        <input type="hidden" value="OpenSlides" name="item_name">
+        <input type="hidden" value="3000" name="item_number">
+        <input type="hidden" value="1" name="no_shipping">
+        <input type="hidden" value="Kommentar an das OpenSlides-Entwicklerteam (Lob/Kritik)" name="cn">
+        <input type="hidden" value="EUR" name="currency_code">
+        <input type="hidden" value="PP-BuyNowBF" name="bn">
+        <input type="hidden" value="Veroeffentlichung des Spendernamens zugestimmt?" name="on0">
+        <input type="hidden" value="Nein" name="os0">
+        <input type="hidden" value="http://dev.openslides.org/export/1ddcb76c8e5537f807f6401556cbe3e56ea12268/extras/logo/openlides-logo_wide75.png" name="image_url">
+        <input type="hidden" value="http://openslides.org/" name="return">
+        <input type="hidden" value="Zurück zu OpenSlides" name="cbt">
+        <button class="btn btn-large btn-primary" type="submit" class="button">
+           <i class="icon-heart icon-white"></i> Jetzt Spenden (über PayPal)</span>
+       </button><br>
+        <input type="checkbox" checked="checked" value="Ja" name="os0"> Spendernamen veröffentlichen
+    </form>
+
+    <p>Das <a href="http://dev.openslides.org/browser/AUTHORS" class="reference external">OpenSlides-Team</a> bedankt sich für Ihre Unterstützung und freut sich über Ihre
+    Rückmeldungen und Anregungen!</p>
+
+</div>
+<div class="span6">
+    <div class="well">
+        <img class="os-icon" src="/static/img/icons/glyphicons_049_star.png">
+        <h2>Spender</h2>
+        <p>Wir sagen Danke für Ihre Spende und veröffentlichen
+        hier Ihren Namen oder Organisation (sofern gewünscht):</p>
+        <p><i>Noch keine Spender vorhanden. Seien Sie der/die Erste!</i></p>
+        <br>
+        
+        <img class="os-icon" src="/static/img/icons/glyphicons_040_stats.png">
+        <h2>Spendenbarometer</h2>
+        <br>
+        <p>Bisheriger Spendeneingang: <strong class="price">0,- &euro;</strong></p>
+    </div>
+</div>
+</div>
 
 {% endblock %}

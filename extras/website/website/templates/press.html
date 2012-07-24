@@ -11,41 +11,63 @@
 Lesen Sie, was die Pressestimmen über OpenSlides berichten.{% endblock %}
 
 {% block content %}
-<h2>OpenSlides in der Presse</h2>
-<ul>
-<li><a href="http://www.heise.de/download/openslides-3682916.html">Artikel aus c't 26/2011 zu OpenSlides 1.1</a></li>
-<li><a href="http://www.av-views.de/aktuell/archiv/2011/2011-5/thema1.php">Artikel aus AV-views 2011/5 zu OpenSlides 1.1</a></li>
-<li><a href="http://www.pro-linux.de/news/1/17504/openslides-10-vorgestellt.html">Pro-Linux-Meldung zu OpenSlides 1.0</a></li>
-</ul>
 
-<h2>Pressemitteilungen</h2>
-<ul>
-<li>2011-09-15:<br>
-<a href="{% url pm-20110915 %}">OpenSlides 1.0 - Neues Präsentationssystem für Veranstaltungen mit Tagesordnungen, Anträgen und Wahlen</a></li>
-</ul>
+<div class="row">
+<div class="span4">
+    <img class="os-icon" src="/static/img/icons/glyphicons_050_link.png">
+    <h2>OpenSlides in der Presse</h2>
+    <ul>
+    <li><a href="http://www.heise.de/download/openslides-3682916.html">Artikel aus c't 26/2011 zu OpenSlides 1.1</a></li>
+    <li><a href="http://www.av-views.de/aktuell/archiv/2011/2011-5/thema1.php">Artikel aus AV-views 2011/5 zu OpenSlides 1.1</a></li>
+    <li><a href="http://www.pro-linux.de/news/1/17504/openslides-10-vorgestellt.html">Pro-Linux-Meldung zu OpenSlides 1.0</a></li>
+    </ul>
+</div>
 
-<h2>Logos</h2>
-    <div class="thumbnails">
-        <a class="thumbnail span3" href="/static/img/openslides-logo.png" title="OpenSlides Logo">
-          <img alt="Logo" src="/static/img/openslides-logo.png">
-        </a>
-        <br>
-        <a class="thumbnail span3" href="/static/img/openslides-logo_wide75.png" title="OpenSlides Logo">
-          <img alt="Logo" src="/static/img/openslides-logo_wide75.png">
-        </a>
-    </div>
-    <br>
-    <p><a href="http://dev.openslides.org/browser/extras/logo/">Alle Größen und Varianten des OpenSlides Logos &raquo;</a></p>
+<div class="span4">
+    <img class="os-icon" src="/static/img/icons/glyphicons_029_notes_2.png">
+    <h2>Pressemitteilungen</h2>
+    <dl>
+    <dt>2011-09-15<dt>
+    <dd><a href="{% url pm-20110915 %}">OpenSlides 1.0 - Neues
+        Präsentationssystem für Veranstaltungen mit Tagesordnungen,
+        Anträgen und Wahlen</a></dd>
+    </dl>
+</div>
+
+<div class="span4">
+    <img class="os-icon" src="/static/img/icons/glyphicons_352_nameplate.png">
+    <h2>Pressekontakt</h2>
+    <p><a href="mailto:emanuel.schuetze@intevation.de">Emanuel Schütze</a><br>
+    Intevation GmbH<br>
+    Neuer Graben 17<br>
+    D-49074 Osnabrück<br>
+    <strong>Tel: ++49-541-335083-746</strong></p>
+</div>
+</div>
 
 
-<h2>Pressekontakt</h2>
-
-<p><strong>Emanuel Schütze</strong><br>
-Intevation GmbH<br>
-Neuer Graben 17<br>
-49074 Osnabrück<br>
-E-Mail: emanuel.schuetze@intevation.de<br>
-Telefon: 0541-335083-746</p>
+<div class="row">
+<div class="span4">
+    <img class="os-icon" src="/static/img/icons/glyphicons_062_attach.png">
+    <h2>Logos</h2>
+    <p>Das Motiv von OpenSlides ist ein Overheadprojektor (auch
+    Polylux oder Tageslichtprojektor).</p>
+    <p><a href="http://dev.openslides.org/browser/extras/logo/">Alle
+        Größen und Varianten des OpenSlides Logos &raquo;</a></p>
+</div>
+<div class="span4">
+    <h2>&nbsp;</h2>
+    <a class="thumbnail" href="/static/img/openslides-logo.png" title="OpenSlides Logo">
+      <img alt="Logo" src="/static/img/openslides-logo.png">
+    </a>
+</div>
+<div class="span4">
+    <h2>&nbsp;</h2>
+    <a class="thumbnail" href="/static/img/openslides-logo_wide75.png" title="OpenSlides Logo">
+      <img alt="Logo" src="/static/img/openslides-logo_wide75.png">
+    </a>
+</div>
+</div>
 
 
 {% endblock %}

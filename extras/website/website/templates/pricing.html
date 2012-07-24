@@ -29,17 +29,18 @@ Veranstaltung einsetzen? Dann nutzen Sie unsere abgestimmten
           <tr>
             <td class="leftcolumn">Paketpreis</td>
             <td><p class="price">0,- &euro;<small>&nbsp;</small></p>
-                <p><a class="btn" href="{% url download %}">Herunterladen</a></p>
+                <p class="orderbutton"><a class="btn" href="{% url download %}"><i
+                        class="icon-download"></i> Herunterladen</a></p>
                 </td>
                 <td><p class="price">499,- &euro;
                     <small>zzgl. 19% MwSt.</small></p>
-                <p><a class="btn btn-primary" href="{% url orderform '1' %}">Bestellen</a></p></td>
+                <p class="orderbutton"><a class="btn btn-primary" href="{% url orderform '1' %}"><i class="icon-shopping-cart icon-white"></i> Bestellen</a></p></td>
             <td><p class="price">1.999,- &euro;<small>zzgl. 19% MwSt.</small></p>
-                <p><a class="btn btn-primary" href="{% url orderform '2' %}">Bestellen</a></p></td>
+                <p class="orderbutton"><a class="btn btn-primary" href="{% url orderform '2' %}"><i class="icon-shopping-cart icon-white"></i> Bestellen</a></p></td>
             <td><p class="price">5.999,- &euro;<small>zzgl. 19% MwSt.</small></p>
-                <p><a class="btn btn-primary" href="{% url orderform '3' %}">Bestellen</a></p></td>
+                <p class="orderbutton"><a class="btn btn-primary" href="{% url orderform '3' %}"><i class="icon-shopping-cart icon-white"></i> Bestellen</a></p></td>
             <td><p class="price">29.999,- &euro;<small>zzgl. 19% MwSt.</small></p>
-                <p><a class="btn btn-primary" href="{% url orderform '4' %}">Bestellen</a></p></td>
+                <p class="orderbutton"><a class="btn btn-primary" href="{% url orderform '4' %}"><i class="icon-shopping-cart icon-white"></i> Bestellen</a></p></td>
           </tr>
           <tr>
             <td class="leftcolumn">Lizenzkostenfreie Nutzung<small>OpenSlides 
@@ -146,7 +147,8 @@ Veranstaltung einsetzen? Dann nutzen Sie unsere abgestimmten
 
     <div class="row">
         <div class="span6 well">
-        <h3>Zusatzleistungen</h3>
+        <img class="os-icon" src="/static/img/icons/glyphicons_069_gift.png">
+        <h2>Zusatzleistungen</h2>
         <ul>
             <li><p>zusätzliche Supportstunde<br> 
                <em>100,- &euro;/h <small>zzgl. 19% MwSt.</small></p></em>
@@ -164,7 +166,8 @@ Veranstaltung einsetzen? Dann nutzen Sie unsere abgestimmten
         </ul>
         </div>
         <div class="span5 well">
-            <h3>Kontakt</h3>
+            <img class="os-icon" src="/static/img/icons/glyphicons_352_nameplate.png">
+            <h2>Kontakt</h2>
             <p><strong>Haben Sie noch Fragen? Wir beraten Sie gerne.</strong>
             <br>Ihr Ansprechpartner:</p>
             <p><a href="mailto:emanuel.schuetze@intevation.de">Emanuel Schütze</a><br>

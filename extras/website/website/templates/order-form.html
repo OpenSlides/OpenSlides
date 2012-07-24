@@ -8,8 +8,8 @@
 {% block mainmenu_pricing %}active{% endblock %}
 
 {% block lead %}
-Supportpaket OpenSlides
-<strong>
+Supportpaket 
+<strong>OpenSlides
 {% if package == '1' %}Starter{% endif %}
 {% if package == '2' %}Business{% endif %}
 {% if package == '3' %}Premium{% endif %}
@@ -19,13 +19,23 @@ Supportpaket OpenSlides
 
 {% block content %}
 
-<p><a href="{% url pricing %}">&laquo; {% trans "Zurück zur Paketübersicht" %}</a></p>
+
+
+
 <div class="row">
     <div class="span7">
+        <p>Hiermit bestelle ich das Supportpaket 
+<strong>OpenSlides
+{% if package == '1' %}Starter{% endif %}
+{% if package == '2' %}Business{% endif %}
+{% if package == '3' %}Premium{% endif %}
+{% if package == '4' %}Premium Plus{% endif %}
+</strong> zu den rechts angegebenen Leistungen und Kosten.</p>
+
     <form action="" method="post">{% csrf_token %}
         <fieldset>
             <legend>{% trans "Ihre Veranstaltung" %}</legend>
-            
+            <input type="hidden" name="package" value="{{package}}">
             {{ form_event.as_p }}
         </fieldset>
     
@@ -33,10 +43,14 @@ Supportpaket OpenSlides
             <legend>{% trans "Ihre Kontaktdaten" %}</legend>
             {{ form_contact.as_p }}
         </fieldset>
-        <input type="submit" value="Submit" />
+        <button class="btn btn-large btn-primary" type="submit">
+           Bestellung absenden</span>
+       </button><br>
     </form>
     </div>
-    <div class="span4 well box">
+    <div class="span5">
+    <p style="text-align: right;"><a href="{% url pricing %}">&laquo; {% trans "Zurück zur Paketübersicht" %}</a></p>
+    <div class="well box">
     {% if package == '1' %}
         <div class="header">  
             <h3>OpenSlides Starter</h3>
@@ -188,10 +202,20 @@ Supportpaket OpenSlides
                 <small>mit Anbindung an OpenSlides über Plugin
                     "VoteCollector"<br>Preis auf Anfrage</small></li>
         </ul>
-    {% endif %}
+        {% endif %}
+        <br>
+        <h3>Lieferung und Zahlung</h3>
+        <p>Nach Bestelleingang wird Ihr persönlicher
+        <strong>USB-Stick</strong> mit
+        OpenSlides zusammengestellt und gemeinsam mit der
+        <strong>Rechnung</strong> an Sie per Post verschickt. Ihre
+        Zahlung wird nach Erhalt der Rechnung innerhalb von 14 Tagen
+        gefordert.</p>
+    </div>
     </div>
 
-    <div class="span4 well box">
+    <div class="span5">
+    <div class="well box">
         <p><strong>Haben Sie noch Fragen? Wir beraten Sie gerne.</strong>
         <br>Ihr Ansprechpartner:</p>
         <p><a href="mailto:emanuel.schuetze@intevation.de">Emanuel Schütze</a><br>
@@ -199,6 +223,7 @@ Supportpaket OpenSlides
         Neuer Graben 17<br>
         D-49074 Osnabrück<br>
         <strong>Telefon: ++49-541-335083-746</strong></p>
+    </div>
     </div>
 </div>
 {% endblock %}

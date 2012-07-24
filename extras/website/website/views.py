@@ -1,7 +1,7 @@
 #from django.views.generic import TemplateView
-from django.shortcuts import render_to_response, render
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-
+from django.shortcuts import render_to_response, render
 from website.forms import ContactForm, OrderEventForm, OrderContactForm
 
 def contactform(request):
@@ -17,7 +17,7 @@ def contactform(request):
                 recipients.append(sender)
             from django.core.mail import send_mail
             send_mail(subject, message, sender, recipients)
-            return HttpResponseRedirect('/contact/')
+            return HttpResponseRedirect(reverse('contact'))
     else:
         form = ContactForm()
     return render(request, 'contact-form.html', {
@@ -25,7 +25,7 @@ def contactform(request):
     })
 
 
-def orderform(request, package='2'):
+def orderform(request, package):
     if request.method == 'POST':
         form_event = OrderEventForm(request.POST)
         form_contact = OrderContactForm(request.POST)
@@ -35,17 +35,45 @@ def orderform(request, package='2'):
             event_description = form_event.cleaned_data['event_description']
             event_date = form_event.cleaned_data['event_date']
             event_location = form_event.cleaned_data['event_location']
+            event_participants = form_event.cleaned_data['event_participants']
             # contact
+            contact_organisation = form_contact.cleaned_data['contact_organisation']
+            contact_street = form_contact.cleaned_data['contact_street']
+            contact_postcode = form_contact.cleaned_data['contact_postcode']
+            contact_location = form_contact.cleaned_data['contact_location']
             contact_name = form_contact.cleaned_data['contact_name']
             contact_phone = form_contact.cleaned_data['contact_phone']
             contact_email = form_contact.cleaned_data['contact_email']
             # mail
             recipients = ['emanuel@intevation.de']
 #            recipients.append(contact_email)
-            message = "%s" % event_name
+            message = "Neue Bestellung: OpenSlides Paket #%s\n\n"\
+                "Veranstaltungsname: %s\n"\
+                "Kurzbeschreibung der Veranstaltung: %s\n"\
+                "Veranstaltungszeitraum: %s\n"\
+                "Veranstaltungsort: %s\n"\
+                "Erwartete Teilnehmer: %s\n\n"\
+                "Organisation: %s\n"\
+                "Strasse: %s\n"\
+                "PLZ: %s\n"\
+                "Ort: %s\n"\
+                "Ansprechpartner: %s\n"\
+                "Telefon: %s\n"\
+                "E-Mail: %s\n"\
+                % (package, event_name, event_description, event_date, event_location,
+                    event_participants, contact_organisation, contact_street,
+                    contact_postcode, contact_location, contact_name, contact_phone,
+                    contact_email)
             from django.core.mail import send_mail
-            send_mail("Bestellung", message, contact_email, recipients)
-            return HttpResponseRedirect('/pricing/thanks')
+            send_mail("Bestellung OpenSlides-Supportpaket", message, contact_email, recipients)
+            print message
+            #for key in request.POST:
+            #    value = request.POST['key']
+            # loop through keys and values
+            #for key, value in request.POST.iteritems():
+            #    print key, value
+            return HttpResponseRedirect(reverse('thanksorder'))
+
     else:
         form_event = OrderEventForm()
         form_contact = OrderContactForm()

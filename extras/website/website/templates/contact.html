@@ -8,7 +8,8 @@
 {% block mainmenu_contact %}active{% endblock %}
 
 {% block lead %}
-Kontaktmöglichkeiten zur OpenSlides Community
+Ihnen gefällt OpenSlides? Sie haben Fragen oder Anregungen? Geben Sie
+uns Ihre Rückmeldung!
 {% endblock %}
 
 {% block content %}
@@ -17,15 +18,14 @@ Kontaktmöglichkeiten zur OpenSlides Community
 <br>
 <div class="row">
     <div class="span4">
-        <h3>Mailinglisten</h3>
-        
+        <div class="well">
+        <img class="os-icon" src="/static/img/icons/glyphicons_399_e-mail.png">
+        <h2>Mailinglisten</h2>
         <p>OpenSlides bietet öffentliche Mailinglisten zur Koordination der Entwicklung 
         sowie Diskussion von Tickets, Anwenderfragen und speziellen Anwendungsfällen. 
-        Bei Problemen und Fragen zu OpenSlides schreiben Sie einfach an die 
+        Bei Problemen und Fragen zu OpenSlides schreiben Sie an die 
         OpenSlides-Mailingliste in Ihrer Sprache. 
-        Hinweis: Bitte abonnieren Sie eine Mailingliste bevor Sie an diese schreiben wollen!</p>
-        
-        
+               
         <blockquote>
         <p><strong>users-de@openslides.org</strong><small>Deutschsprachige Mailingliste für Anwender und Entwickler</small></p>
         <p><a class="btn btn-primary" href="http://mail.openslides.org/listinfo/users-de/ ">Abonnieren &raquo;</a>
@@ -35,32 +35,41 @@ Kontaktmöglichkeiten zur OpenSlides Community
         <p><a class="btn btn-primary" href="http://mail.openslides.org/listinfo/users-en/">Abonnieren &raquo;</a>
         <a class="btn" href="http://mail.openslides.org/pipermail/users-en/">Archiv &raquo;</a></p>
         <br>
-        <p><strong>commit@openslides.org<small>HG-commit-Mailingliste von hg.openslides.org (moderiert), für Entwickler</small></strong></p>
+        <p><strong>commit@openslides.org</strong><small>HG-commit-Mailingliste von hg.openslides.org (moderiert), für Entwickler</small></p>
         <p><a class="btn btn-primary" href="http://mail.openslides.org/listinfo/commit/">Abonnieren &raquo;</a>
         <a class="btn" href="http://mail.openslides.org/pipermail/commit/">Archiv &raquo;</a></p>
         </blockquote>
+        <p><small>Hinweis: Bitte abonnieren Sie eine Mailingliste bevor
+            Sie an diese schreiben!</small></p>
+        </div>
     </div>
 
     <div class="span4">
-        <h3>Professionelle Unterstützung</h3>
+        <div class="well">
+        <img class="os-icon" src="/static/img/icons/glyphicons_352_nameplate.png">
+        <h2>Professionelle Unterstützung</h2>
         <p>Sie haben Interesse an OpenSlides und denken über einen Einsatz auf Ihrer 
-        Veranstaltung nach? Sie suchen dafür professionelle, technische Unterstützung 
-        bei der Vorbereitung? Dann kontaktieren Sie uns! Wir beraten Sie gerne.</p>
+        Veranstaltung nach? Sie suchen dafür professionelle Unterstützung 
+        bei der Vorbereitung? Sie haben Fragen zu unseren 
+        <a href="{% url pricing %}">Supportpaketen</a>?</p>
+        <p>Kontaktieren Sie uns! Wir beraten Sie gerne.</p>
         
         <p>Ihr Ansprechpartner:<p>
         
         <blockquote>
-        <p>Emanuel Schütze<br>
+        <p><a href="mailto:emanuel.schuetze@intevation.de">Emanuel Schütze</a><br>
         Intevation GmbH<br>
         Neuer Graben 17<br>
         D-49074 Osnabrück<br>
-        E-Mail: <a href="mailto:emanuel.schuetze@intevation.de">emanuel.schuetze@intevation.de</a><br>
-        Tel: ++49-541-335083-746</p>
+        <strong>Tel: ++49-541-335083-746</strong></p>
         </blockquote>
+        </div>
     </div>
 
     <div class="span4">
-        <h3>IRC</h3>
+        <div class="well">
+        <img class="os-icon" src="/static/img/icons/glyphicons_245_chat.png">
+        <h2>IRC</h2>
         <p>Für den direkten Kontakt zwischen interessierten OpenSlides-Anwendern 
         und -Entwicklern nutzen Sie IRC (ein textbasierter Chat):</p>
         
@@ -70,6 +79,7 @@ Kontaktmöglichkeiten zur OpenSlides Community
         <br>
         <p><a class="btn btn-primary" href="irc://irc.freenode.net/#openslides">IRC Chat starten &raquo;</a></p>
         </blockquote>
+        </div>
     </div>
 </div>
 {% endblock %}
