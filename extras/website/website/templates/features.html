@@ -12,7 +12,31 @@ Alle Funktionen von OpenSlides im Überblick.
 {% endblock %}
 
 {% block content %}
-
+<ul class="pager">
+    <li>
+    <a href="#agenda">Tagesordnung</a>
+    </li>
+    <li>
+    <a href="#projector">Projektor</a>
+    </li>
+    <li>
+    <a href="#applications">Anträge</a>
+    </li>
+    <li>
+    <a href="#elections">Wahlen</a>
+    </li>
+    <li>
+    <a href="#participants">Teilnehmer</a>
+    </li>
+    <li>
+    <a href="#general">Allgemein</a>
+    </li>
+    <li>
+    <a href="#future">Ausblick</a>
+    </li>
+    </ul>
+ 
+  <a name="agenda"></a>
   <div class="page-header">
     <h1>Tagesordnung</h1>
   </div>
@@ -22,101 +46,173 @@ Alle Funktionen von OpenSlides im Überblick.
         <h3>Tagesordnung verwalten</h3>
         <p>Jeder Tagesordungseintrag besteht aus einem Titel sowie - optional - aus einem 
         zusätzlichen Text und einem internen Kommentar (z.B. für Regieanweisungen der
-        Versammlungsleitung).</p>
-        <p><a class="thumbnail" href="#">
+        Versammlungsleitung). Im Text können HTML-Tags verwendet werden, um z.B. Bilder oder Videos
+        einzubetten.</p>
+        <p class="thumbnail">
         <img alt="" src="http://placehold.it/260x130">
-        </a></p>
+        </p>
         
         <h3>Am Projektor anzeigen</h3>
-        Jeder Tagesordnungseintrag lässt sich per Mausklick auf dem Projektor anzeigen.
-        Egal in welcher Reihenfolge!
+        <p>Jeder Tagesordnungseintrag lässt sich per Mausklick auf dem Projektor anzeigen.
+        Egal in welcher Reihenfolge!</p>
+        
+    </div>
+    <div class="span4">
         
         <h3>Automatische Projektoransicht</h3>
-        Der Projektor aktualisiert sich jede Sekunde automatisch. Änderung an der 
+        <p>Der Projektor aktualisiert sich jede Sekunde automatisch. Änderung an der 
         Tagesordnung werden so unmittelbar am Projektor sichtbar.
         Technisch läuft der Projektor im Vollbildmodus des Browsers; z.B. auf einem 
-        erweiterten zweiten Monitor.
-        
-
- 
+        erweiterten zweiten Monitor.</p>
+        <p class="thumbnail">
+        <img alt="" src="http://placehold.it/260x130">
+        </p>
     </div>
     <div class="span4">
         <h3>Tagesordnung sortieren</h3>
-        Einträge lassen sich in der Tagesordnung frei per Drag&Drop sortieren 
-        - mit beliebig vielen Unterpunkten.
+        <p>Einträge lassen sich in der Tagesordnung frei per Drag&Drop sortieren 
+        - mit beliebig vielen Unterpunkten.</p>
         
         <h3>Erledigt markieren</h3>
-        Abgeschlossene Tagesordnungspunkte können als erledigt markiert und 
-        anschließend zur besseren Übersicht ausgeblendet werden.
+        <p>Abgeschlossene Tagesordnungspunkte können als erledigt markiert und 
+        anschließend zur besseren Übersicht ausgeblendet werden.</p>
         
         <h3>PDF</h3>
-        Die vollständige Tagesordnung lässt sich als PDF erzeugen.
+        <p>Die vollständige Tagesordnung lässt sich als PDF erzeugen.</p>
         
-
-    </div>
-    <div class="span4">
-        <h3>TODO</h3>
 
     </div>
   </div>
-  
-   <div class="page-header">
+
+  <a name="projector"></a>
+  <br>
+  <br>
+  <br>
+  <br>
+  <div class="page-header">
     <h1>Projektor</h1>
+    <span class="pager"><span class="next">
+    <a href="#">&uarr; {% trans "Nach oben" %}</a>
+    </span></span>
   </div> 
   
   <div class="row">
     <div class="span4">
+        <h3>Dashboard</h3>
+        <p>Alle Folien (zu Tagesordnung, Anträgen und Wahlen)
+        werden auf dem Dashboard übersichtlich in zusammenklappbaren Widgets 
+        aufgelistet. Eine verkleinerte
+        Projektor-Live-Ansicht zeigt immer die aktuell ausgewählte Folie an.</p>
+        <p class="thumbnail">
+        <img alt="" src="/static/img/projector-control_de.png">
+        </p>
+    </div>
+    <div class="span4">
         <h3>Uhrzeit und Countdown</h3>
-        Alle Teilnehmer haben die aktuelle Uhrzeit auf der Projektoransicht 
+        <p>Alle Teilnehmer haben die aktuelle Uhrzeit auf der Projektoransicht 
         jederzeit im Blick. Für eine Redezeitbeschränkung bietet OpenSlides 
-        einen Countdown. Die Startzeit lässt sich frei definieren. Der Server 
-        dient als Taktgeber für den Countdown, d.h. der Timer kann auch von einem
-        anderen Browser gestoppt werden als er gestartet wurde.
+        einen Countdown. Die Startzeit lässt sich frei definieren. </p>
+        <p class="thumbnail">
+        <!--<img alt="" src="/static/img/countdown_{{LANGUAGE_CODE}}.png">-->
+        <img alt="" src="/static/img/countdown_de.png">
+        </p>
+        <h3>Eigene Folien erstellen</h3>
+        <p>Über das Dashboard können Sie benutzerdefinierte Folien anlegen,
+        die sich gut für Themen abseits der dynamischen Folien zu Tagesordnung, 
+        Anträgen und Wahlen eignen.</p>
     </div>
     <div class="span4">
-        <h3></h3>
-
-    </div>
-    <div class="span4">
-        <h3></h3>
-
+        <h3>Überblendungen</h3>
+        <p>Overlay-Nachrichten lassen sich über normale Folien einblenden.
+        Dies kann sinnvoll sein, wenn z.B. organisatorische Informationen angezeigt, 
+        die aktuelle Folie aber nicht zu verlassen werden soll. </p>
+        <p class="thumbnail">
+        <img alt="" src="/static/img/overlay-message_de.png">
+        </p>
     </div>
   </div>
   
+  <a name="applications"></a>
+  <br>
+  <br>
+  <br>
+  <br>
   <div class="page-header">
     <h1>Anträge</h1>
+    <span class="pager"><span class="next">
+    <a href="#">&uarr; {% trans "Nach oben" %}</a>
+    </span></span>
   </div>
   
   <div class="row">
     <div class="span4">
-        <h3>Verwalten & Steuern</h3>
-        <p>
-        <ul>
-        <li>Anträge verwalten</li>
-        <li>Anträge von anderen Teilnehmern unterstützen lassen</li>
-        <li>Antragsstatus ändern</li>
-        <li>Abstimmungsergebnisse eingeben und darstellen - mehreren Abstimmungsvorgänge möglich (Abstimmungsmodus: Ja/Nein/Enthaltung sowie ungültige und abgegebene Stimmen)</li>
-        <li>Antrag als Tagesordnungseintrag anlegen und anzeigen</li>
-        <li>Versionshistorie eines Antrags anzeigen</li>
-        <li>Alle Änderungen eines Antrags (Text, Status, Unterstützer etc.) werden protokolliert</li>
-        <li>Antragsformular und Übersicht aller Anträge als PDF erzeugen</li>
-        </ul>
+        <h3>Anträge verwalten</h3>
+        <p>Jeder Antrag besteht aus Titel, Text und Antragsteller sowie - optional - aus
+        einer zusätzlicher Begründung und Unterstützerliste.</p>
+        <p class="thumbnail">
+        <img alt="" src="http://placehold.it/260x130">
+        </p>
+        
+        <h3>Zugriffsrechte für Anträge regeln</h3>
+        <p>Über ein Rechtemanagement können Sie genau entscheiden, welche Benutzergruppen
+        Anträge sehen, erstellen, verwalten und unterstützen darf.
+        </p>
+        <h3>Unterstützen von Anträgen</h3>
+        <p>Sie können entscheiden, wie viele Unterstützer nötig sind, um einen Antrag zuzulassen.
+        Teilnehmer können direkt in OpenSlides Ihre Zustimmung für einen Antrag äußern.
+        Abschalten lässt sich dieses Feature natürlich auch.</p>
+        
+        
         </p>
     </div>
     <div class="span4">
-        <h3>Projizieren</h3>
-        <p>TODO
+        <h3>Antragsstatus ändern</h3>
+        <p>Jeder Antrag durchläuft verschiedene Phasen in demokratischen Versammlungen. 
+        OpenSlides bildet diese ab; z.B. angefangen bei <i>noch nicht zugelassen</i> und <i>auf Unterstützersuche</i>
+        bis hin zu <i>angenommen</i>, <i>abgelehnt</i>, <i>vertagt</i> oder <i>zurückgezogen</i>.
         </p>
+        
+        <h3>Anträge abstimmen</h3>
+        <p>Nach Abstimmung eines Antrags im Plenum wird das ausgezählte 
+        Ergebnis in OpenSlides eingegeben (mit OpenSlides selbst wird nicht abgestimmt!).
+        Dabei sind auch spezielle Werte für die <i>Mehrheit</i> der Stimmen, oder <i>nicht erfasste</i> Stimmen möglich.
+        Anträge werden immer mit Ja-Nein-Enthaltung abgestimmt. Optional sind die abgegebenen Stimmen. Zusätzlich unterstützt OpenSlides
+        ungültige Stimmen und PDF-Stimmzettel zum Ausdrucken für geheime Abstimmungen.</p>
     </div>
     <div class="span4">
-        <p><a class="thumbnail" href="#">
-        <img alt="" src="http://placehold.it/260x180">
-        </a></p>
+        <h3>Anträge in die Tagesordnung</h3>
+        <p>Jeder Antrag lässt sich als Referenz zusätzlich in die Tagesordnung 
+        einsortieren.</p>
+
+        <h3>Versionshistorie</h3>
+        <p>Nur Antragsteller und Versammlungsleiter dürfen Anträge ändern. Dabei werden
+        Änderungen als neue Version abgespeichert. Mit der Option <i>triviale Änderung</i> 
+        wird keine neue Version angelegt, dies kann z.B. bei Korrektur von Tippfehlern sinnvoll sein.
+        </p>
+
+        <h3>Aktionen protokollieren</h3>
+        <p>Jede Aktion, die Sie an einem Antrag durchführen, wird von OpenSlides protokolliert.
+        Das bietet Ihnen als Versammlungsleiter immer die nötige Rückverfolgung, welcher Teilnehmer wann einen Antrag 
+        erstellt, bearbeiten oder dessen Status geändert hat.
+
+        <h3>Antragsbücher als PDF</h3>
+        <p>Alle vorhandenen Anträge lassen sich übersichtlich in ein PDF erstellen;
+        inkl. Informationen zu Antragsteller, Abstimmgungsergebnis und Begründung eine Antrags.
+        </p>
+
     </div>
   </div>
 
+  <a name="elections"></a>
+  <br>
+  <br>
+  <br>
+  <br>
   <div class="page-header">
     <h1>Wahlen</h1>
+    <span class="pager"><span class="next">
+    <a href="#">&uarr; {% trans "Nach oben" %}</a>
+    </span></span>
   </div>
   <div class="row">
     <div class="span4">
@@ -143,8 +239,16 @@ Alle Funktionen von OpenSlides im Überblick.
     </div>
   </div>
 
+  <a name="participants"></a>
+  <br>
+  <br>
+  <br>
+  <br>
   <div class="page-header">
     <h1>Teilnehmer</h1>
+    <span class="pager"><span class="next">
+    <a href="#">&uarr; {% trans "Nach oben" %}</a>
+    </span></span>
   </div>
   <div class="row">
     <div class="span4">
@@ -170,8 +274,16 @@ Alle Funktionen von OpenSlides im Überblick.
   </div>
 
 
+  <a name="general"></a>
+  <br>
+  <br>
+  <br>
+  <br>
   <div class="page-header">
     <h1>Allgemein</h1>
+    <span class="pager"><span class="next">
+    <a href="#">&uarr; {% trans "Nach oben" %}</a>
+    </span></span>
   </div>
   <div class="row">
     <div class="span4">
@@ -198,9 +310,16 @@ Alle Funktionen von OpenSlides im Überblick.
     </div>
   </div>
 
- 
-   <div class="page-header">
-    <h1>Aublick <small>Weiterentwicklungsideen für OpenSlides</small></h1>
+  <a name="future"></a>
+  <br>
+  <br>
+  <br>
+  <br>
+  <div class="page-header">
+    <h1>Ausblick <small>Weiterentwicklungsideen für OpenSlides</small></h1>
+    <span class="pager"><span class="next">
+    <a href="#">&uarr; {% trans "Nach oben" %}</a>
+    </span></span>
   </div>
   <div class="row">
     <div class="span4">

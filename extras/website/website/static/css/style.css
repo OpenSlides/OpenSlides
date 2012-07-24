@@ -220,3 +220,6 @@ h3 {
     margin-top: 70px;
     font-size: 11px;
 }
+.page-header .pager:before, .page-header .pager:after {
+    display: inline !important;
+}
