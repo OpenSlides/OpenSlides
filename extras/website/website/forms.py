@@ -16,6 +16,7 @@ class OrderEventForm(forms.Form):
     event_description = forms.CharField(max_length=100, label=_("Kurzbeschreibung der Veranstaltung"))
     event_date = forms.CharField(label=_("Veranstaltungszeitraum"))
     event_location = forms.CharField(label=_("Veranstaltungsort"))
+    event_participants = forms.CharField(label=_("Erwartete Teilnehmer"))
 
 class OrderContactForm(forms.Form):
     error_css_class = 'error'

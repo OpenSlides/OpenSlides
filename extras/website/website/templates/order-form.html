@@ -34,19 +34,117 @@ Supportpaket OpenSlides
         <input type="submit" value="Submit" />
     </form>
     </div>
-    <div class="span4 well">
-        <h3>OpenSlides {% if package == '1' %}Starter{% endif %}
-        {% if package == '2' %}Business{% endif %}
-        {% if package == '3' %}Premium{% endif %}
-        </h3>
-        <p class="price">
-        {% if package == '1' %}TODO,-{% endif %}
-        {% if package == '2' %}TODO,-{% endif %}
-        {% if package == '3' %}TODO,-{% endif %} &euro;
-        <small>zzgl. 19% MwSt.</small></p>
+    <div class="span4 well box">
+    {% if package == '1' %}
+        <div class="header">  
+            <h3>OpenSlides Starter</h3>
+            <p class="price">TODO,- €
+            <small>zzgl. 19% MwSt.</small></p>
+        </div>
+        <ul class="unstyled">
+            <li>Lizenzkostenfreie Nutzung<small>OpenSlides 
+            ist Freie Software unter der <a href="{% url license
+                %}">GNU GPL v2+</a>.</small></li>
+            <li><strong>2h Supportkontingent</strong>
+                <small>Laufzeit: 1 Monat</small></li>
+            <li>OpenSlides 1.2+ <small>inkl. qualitätsgesicherte
+                Updates aus der stabilen Entwicklungsversion</small></li>
+            <li>Werbefrei <small>Kein Verweis auf den professional
+                Support</small></li>
+            <li>USB-Stick mit eingraviertem OpenSlides-Logo
+                <small>"OpenSlides portable" bereits vorinstalliert und
+                direkt vom USB-Stick startbar</small></li>
+            <li>Werkzeug zum Datenexport ins CSV-Format</li>
+            <li>Veranstaltungsdaten vorkonfiguriert <small>nach
+                Vorlage</small><br><br></li>
+            <li><span class="label label-important">Optional</span>
+            Vor-Ort-Service <small>z.B.: Beratung, Schulung,
+                technische Durchführung<br>1000,- &euro;/d zzgl. 19% MwSt.
+                </small></li>
+        </ul>
+    {% endif %}
+    {% if package == '2' %}
+        <div class="header">  
+            <h3>OpenSlides Business</h3>
+            <p class="price">TODO,- €
+            <small>zzgl. 19% MwSt.</small></p>
+        </div>
+        <ul class="unstyled">
+            <li>Lizenzkostenfreie Nutzung<small>OpenSlides 
+            ist Freie Software unter der <a href="{% url license
+                %}">GNU GPL v2+</a>.</small></li>
+            <li><strong>6h Supportkontingent</strong>
+                <small>Laufzeit: 2 Monat</small></li>
+            <li>OpenSlides 1.2+ <small>inkl. qualitätsgesicherte
+                Updates aus der stabilen Entwicklungsversion</small></li>
+            <li>Werbefrei <small>Kein Verweis auf den professional
+                Support</small></li>
+            <li>USB-Stick mit eingraviertem OpenSlides-Logo
+                <small>"OpenSlides portable" bereits vorinstalliert und
+                direkt vom USB-Stick startbar</small></li>
+            <li>Werkzeug zum Datenexport ins CSV-Format</li>
+            <li>Veranstaltungsdaten vorkonfiguriert <small>nach
+                Vorlage</small></li>
+            <li><strong>Namenskarten mit QR-Code</strong>
+               <small>Für schnelle Anwesenheitserfassung der
+                   Teilnehmer</small></li>
+               <li><strong>Anpassung des Projektortemplates</strong> 
+               <small>nach Vorlage</small><br><br></li>
+            <li><span class="label label-important">Optional</span>
+            Vor-Ort-Service <small>z.B.: Beratung, Schulung,
+                technische Durchführung<br>900,- &euro;/d zzgl. 19% MwSt.
+            </small></li>
+            <li><span class="label label-important">Optional</span>
+            Verleih oder Verkauf eines
+                elektronischen Abstimmugssystems
+                <small>Anbindung an OpenSlides über Plugin
+                    "VoteCollector"<br>Preis auf Anfrage</small></li>
+        </ul>
+    {% endif %}
 
+    {% if package == '3' %}
+        <div class="header">  
+            <h3>OpenSlides Premium</h3>
+            <p class="price">TODO,- €
+            <small>zzgl. 19% MwSt.</small></p>
+        </div>
+        <ul class="unstyled">
+            <li>Lizenzkostenfreie Nutzung<small>OpenSlides 
+            ist Freie Software unter der <a href="{% url license
+                %}">GNU GPL v2+</a>.</small></li>
+            <li><strong>TODOh Supportkontingent</strong>
+                <small>Laufzeit: 3 Monat</small></li>
+            <li>OpenSlides 1.2+ <small>inkl. qualitätsgesicherte
+                Updates aus der stabilen Entwicklungsversion</small></li>
+            <li>Werbefrei <small>Kein Verweis auf den professional
+                Support</small></li>
+            <li>USB-Stick mit eingraviertem OpenSlides-Logo
+                <small>"OpenSlides portable" bereits vorinstalliert und
+                direkt vom USB-Stick startbar</small></li>
+            <li>Werkzeug zum Datenexport ins CSV-Format</li>
+            <li>Veranstaltungsdaten vorkonfiguriert <small>nach
+                Vorlage</small></li>
+            <li>Namenskarten mit QR-Code<small>Für schnelle
+                Anwesenheitserfassung der Teilnehmer</small></li>
+            <li>Anpassung des Projektortemplates <small>nach Vorlage</small></li>
+            <li><strong>OpenSlides-Schulung vor Ort</strong><small>1 Tag</small></li>
+            <li><strong>Unterstützung bei Umstellung auf
+                leistungsfähigere Datenbank und Webserver</strong>
+                <br><br></li>
+            <li><span class="label label-important">Optional</span>
+            Vor-Ort-Service <small>z.B.: Beratung, Schulung,
+                technische Durchführung<br>800,- &euro;/d zzgl. 19% MwSt.
+            </small></li>
+            <li><span class="label label-important">Optional</span>
+            Verleih oder Verkauf eines
+                elektronischen Abstimmugssystems
+                <small>Anbindung an OpenSlides über Plugin
+                    "VoteCollector"<br>Preis auf Anfrage</small></li>
+        </ul>
+    {% endif %}
         <br>
-        <p>Haben Sie noch Fragen?</p>
+        <p><strong>Haben Sie noch Fragen? Wir beraten Sie gerne.</strong>
+        <br>Ihr Ansprechpartner:</p>
         <p>Emanuel Schütze<br>
         Intevation GmbH<br>
         Neuer Graben 17<br>
