@@ -320,8 +320,11 @@ class Application(models.Model, SlideMixin):
         actions = []
         actions = self.get_allowed_actions(user)
         if status not in actions and not force:
-            raise NameError('The application status is: %s. You can not set' \
-                            ' the status to %s.' % (self.status, status))
+            raise NameError(_('The application status is: \'%(currentstatus)s\'. '\
+                    'You can not set the status to \'%(newstatus)s\'.') % {
+                        'currentstatus': self.status, 
+                        'newstatus': status
+                        })
 
         oldstatus = self.get_status_display()
         self.status = status

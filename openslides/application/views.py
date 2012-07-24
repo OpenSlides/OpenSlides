@@ -321,6 +321,8 @@ def permit(request, application_id):
         messages.success(request, _("Application was successfully permitted."))
     except Application.DoesNotExist:
         pass
+    except NameError, e:
+        messages.error(request, e)
     return redirect(reverse('application_view', args=[application_id]))
 
 @permission_required('application.can_manage_application')
@@ -334,6 +336,8 @@ def notpermit(request, application_id):
         messages.success(request, _("Application was successfully rejected."))
     except Application.DoesNotExist:
         pass
+    except NameError, e:
+        messages.error(request, e)
     return redirect(reverse('application_view', args=[application_id]))
 
 @template('application/view.html')
