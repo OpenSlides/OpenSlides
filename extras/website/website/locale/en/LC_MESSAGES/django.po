@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:OpenSlides Website\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-24 19:07+0200\n"
+"POT-Creation-Date: 2012-07-24 23:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: English \n"
@@ -17,67 +17,67 @@ msgstr ""
 
 #: forms.py:7
 msgid "Betreff"
-msgstr ""
+msgstr "Subject"
 
 #: forms.py:8
 msgid "Nachricht"
-msgstr ""
+msgstr "Message"
 
 #: forms.py:9
 msgid "Absender"
-msgstr ""
+msgstr "Sender"
 
 #: forms.py:10
 msgid "Kopie an meine Adresse"
-msgstr ""
+msgstr "Send copy to my address"
 
 #: forms.py:15
 msgid "Veranstaltungsname"
-msgstr ""
+msgstr "Event name"
 
 #: forms.py:16
 msgid "Kurzbeschreibung der Veranstaltung"
-msgstr ""
+msgstr "Short description of the event"
 
 #: forms.py:17
 msgid "Veranstaltungszeitraum"
-msgstr ""
+msgstr "Event period"
 
 #: forms.py:18
 msgid "Veranstaltungsort"
-msgstr ""
+msgstr "Event location"
 
 #: forms.py:19
 msgid "Erwartete Teilnehmer"
-msgstr ""
+msgstr "Expected number of participants"
 
 #: forms.py:24
 msgid "Organisation"
-msgstr ""
+msgstr "Organization"
 
 #: forms.py:25
 msgid "Strasse"
-msgstr ""
+msgstr "Street"
 
 #: forms.py:26
 msgid "PLZ"
-msgstr ""
+msgstr "Zip code"
 
 #: forms.py:27
 msgid "Ort"
-msgstr ""
+msgstr "City"
 
 #: forms.py:28
 msgid "Ansprechpartner"
-msgstr ""
+msgstr "Contact person"
 
 #: forms.py:29
 msgid "Telefon"
-msgstr ""
+msgstr "Phone"
 
 #: forms.py:30
 msgid "E-Mail"
-msgstr ""
+msgstr "E-Mail"
 
 #: settings.py:43
 msgid "Deutsch"
@@ -99,13 +99,13 @@ msgstr "What is OpenSlides?"
 msgid "Download"
 msgstr "Download"
 
-#: templates/base.html:44 templates/pricing.html:5
+#: templates/base.html:44 templates/pricing.html:5 templates/pricing.html.py:6
 msgid "Preise"
 msgstr "Prices"
 
 #: templates/base.html:46 templates/manual.html:5 templates/manual.html.py:6
 msgid "Handbuch"
-msgstr ""
+msgstr "Handbook"
 
 #: templates/base.html:47 templates/development.html:5
 #: templates/development.html.py:6
@@ -113,7 +113,7 @@ msgid "Entwicklung"
 msgstr "Development"
 
 #: templates/base.html:51 templates/contact.html:5 templates/contact.html.py:6
-#: templates/impressum.html:5
+#: templates/impressum.html:5 templates/pricing.html:178
 msgid "Kontakt"
 msgstr "Contact"
 
@@ -139,20 +139,24 @@ msgid "Lizenz"
 msgstr "License"
 
 #: templates/contact-form.html:5 templates/contact-form.html.py:6
-#, fuzzy
 msgid "Kontaktformular"
-msgstr "Contact"
+msgstr "Contact form"
 
 #: templates/donate.html:5 templates/donate.html.py:6
 msgid "Spenden"
-msgstr ""
+msgstr "Donate"
 
 #: templates/faq.html:5 templates/faq.html.py:6
 msgid "FAQ"
+msgstr "FAQ"
+
+#: templates/features.html:95 templates/features.html.py:143
+#: templates/features.html:214 templates/features.html.py:250
+#: templates/features.html:285 templates/features.html.py:321
+msgid "Nach oben"
 msgstr ""
 
 #: templates/home.html:20
-#, fuzzy
 msgid "Mehr Transparenz."
 msgstr "More transparency."
 
@@ -163,6 +167,10 @@ msgstr "More flexibility."
 #: templates/home.html:20
 msgid "Mehr Effizienz."
 msgstr "More efficiency."
+
+#: templates/home.html:21
+msgid "Die Lösung für Ihre Versammlung!"
+msgstr "The solution for your event!"
 
 #: templates/home.html:28
 msgid "Demo"
@@ -217,8 +225,8 @@ msgid ""
 "       wichtigen Beitrag, um die Weiterentwicklung von OpenSlides zu\n"
 "       sichern."
 msgstr ""
-"By buying a support package you simultaneously make an important contribution "
-"to sustain the further development of OpenSlides."
+"By buying a support package you simultaneously make an important "
+"contribution to sustain the further development of OpenSlides."
 
 #: templates/home.html:63
 msgid "Wählen Sie jetzt Ihr passendes Paket aus!"
@@ -242,38 +250,233 @@ msgstr "Imprint"
 
 #: templates/order-form.html:5 templates/order-form.html.py:6
 msgid "Bestellformular"
-msgstr ""
+msgstr "Order form"
 
 #: templates/order-form.html:37
 msgid "Ihre Veranstaltung"
-msgstr ""
+msgstr "Your Event"
 
 #: templates/order-form.html:43
 msgid "Ihre Kontaktdaten"
-msgstr ""
+msgstr "Your contact details"
 
 #: templates/order-form.html:52
 msgid "Zurück zur Paketübersicht"
+msgstr "Back to the package overview"
+
+#: templates/pricing.html:11
+msgid ""
+"Sie wollen OpenSlides professionell und erfolgreich auf Ihrer\n"
+"Veranstaltung einsetzen? Dann nutzen Sie unsere abgestimmten \n"
+"<strong>Supportpakete</strong> von der Intevation GmbH!"
 msgstr ""
+"You want to utilize OpenSlides professionally and successfully on your event?"
+"Then use our matched <strong>support packages</strong> by Intevation GmbH!"
 
-#~ msgid "Support"
-#~ msgstr "Support"
+#: templates/pricing.html:21
+msgid "Community-Paket"
+msgstr "Community package"
 
-#~ msgid "Mehr Offenheit."
-#~ msgstr "More openness."
+#: templates/pricing.html:22 templates/pricing.html.py:23
+#: templates/pricing.html:24
+msgid "bis"
+msgstr "up to"
 
-#  Versammlung => assembly?
-#, fuzzy
-#~ msgid "Die Lösung für Ihre Versammlung!"
-#~ msgstr "The solution for your assembly!"
+#: templates/pricing.html:22 templates/pricing.html.py:23
+#: templates/pricing.html:24 templates/pricing.html.py:25
+msgid "Teilnehmer"
+msgstr "Participants"
 
-#~ msgid ""
-#~ "Für den professionellen Einsatz von OpenSlides gibt es angepasste\n"
-#~ "       Pakte mit professionellen Support. Sie unterstützen damit "
-#~ "gleichzeitig \n"
-#~ "       die Weiterentwicklung von OpenSlides. - \n"
-#~ "       Wählen Sie Ihr passendes Produkt aus!"
-#~ msgstr ""
-#~ "For professional use, customized packages with professional support are "
-#~ "available.Additionally with this you will aid the further development of "
-#~ "OpenSlides, -Please choose the appropriate product!"
+#: templates/pricing.html:30
+msgid "Paketpreis"
+msgstr "Package price"
+
+#: templates/pricing.html:33
+msgid "Herunterladen"
+msgstr "Download"
+
+#: templates/pricing.html:36 templates/pricing.html.py:38
+#: templates/pricing.html:40 templates/pricing.html.py:42
+#: templates/pricing.html:155
+#, python-format
+msgid "zzgl. 19%% MwSt."
+msgstr "plus 19%% VAT."
+
+#: templates/pricing.html:37 templates/pricing.html.py:39
+#: templates/pricing.html:41 templates/pricing.html.py:43
+msgid "Bestellen"
+msgstr "Order"
+
+#: templates/pricing.html:47
+#, python-format
+msgid ""
+"Lizenzkostenfreie Nutzung<small>OpenSlides \n"
+"            ist Freie Software unter der <a href=\"%(license_url)s\">GNU GPL "
+"v2+</a>.</small>"
+msgstr ""
+"Usage without license fee<small>OpenSlides \n"
+"            is free software under <a href=\"%(license_url)s\">GNU GPL v2+</"
+"a>.</small>"
+
+#: templates/pricing.html:56
+msgid "Supportkontingent"
+msgstr "Support quota"
+
+#: templates/pricing.html:58 templates/pricing.html.py:59
+#: templates/pricing.html:60
+msgid "Stunden"
+msgstr "Hours"
+
+#: templates/pricing.html:58 templates/pricing.html.py:59
+#: templates/pricing.html:60 templates/pricing.html.py:61
+msgid "Laufzeit"
+msgstr "Duration"
+
+#: templates/pricing.html:58
+msgid "Monat"
+msgstr "Month"
+
+#: templates/pricing.html:59 templates/pricing.html.py:60
+#: templates/pricing.html:61
+msgid "Monate"
+msgstr "Months"
+
+#: templates/pricing.html:61
+msgid "unbegrenzt"
+msgstr "unlimited"
+
+#: templates/pricing.html:64
+msgid ""
+"inkl. qualitätsgesicherte Updates aus\n"
+"                      der stabilen Entwicklungsversion"
+msgstr "incl. quality-assured updates of the stable development version"
+
+#: templates/pricing.html:73
+msgid "Werbefrei"
+msgstr "Ad free"
+
+#: templates/pricing.html:73
+msgid "Kein Verweis auf den professional Support"
+msgstr "No reference to the professional support"
+
+#: templates/pricing.html:81
+msgid "USB-Stick mit eingraviertem OpenSlides-Logo"
+msgstr "USB-Stick with engraved OpenSlides logo"
+
+#: templates/pricing.html:82
+msgid ""
+"\"OpenSlides portable\" bereits vorinstalliert und direkt vom USB-Stick "
+"startbar"
+msgstr ""
+"\"OpenSlides portable\" preinstalled and directly runable from the USB stick"
+
+#: templates/pricing.html:82
+msgid "Foto siehe unten"
+msgstr "see the photo below"
+
+#: templates/pricing.html:90
+msgid "Veranstaltungsdaten vorkonfiguriert"
+msgstr "Event preconfigured"
+
+#: templates/pricing.html:91 templates/pricing.html.py:119
+msgid "nach Vorlage"
+msgstr "after submittal"
+
+#: templates/pricing.html:99
+msgid "Werkzeug zum Datenexport ins CSV-Format"
+msgstr "Tool for exporting data to the CSV format"
+
+#: templates/pricing.html:107
+msgid "Namenskarten mit QR-Code"
+msgstr "Name tags with QR code"
+
+#: templates/pricing.html:108
+msgid "Neu"
+msgstr "New"
+
+#: templates/pricing.html:109
+msgid "Für schnelle Anwesenheitserfassung der Teilnehmer"
+msgstr "To quickly check the attendance of participants"
+
+#: templates/pricing.html:117
+msgid "Anpassung des Projektortemplates"
+msgstr "Customization of the projector template"
+
+#: templates/pricing.html:118
+msgid "Tipp"
+msgstr "Tip"
+
+#: templates/pricing.html:127
+msgid "OpenSlides-Schulung vor Ort"
+msgstr "On site training of OpenSlides"
+
+#: templates/pricing.html:128
+msgid "Tag"
+msgstr "Day"
+
+#: templates/pricing.html:136
+msgid ""
+"Unterstützung bei Umstellung auf\n"
+"             leistungsfähigere Datenbank und Webserver"
+msgstr "Support for switching to a more powerful database and webserver"
+
+#: templates/pricing.html:152
+msgid "Zusatzleistungen"
+msgstr "Additional services"
+
+#: templates/pricing.html:154
+msgid "zusätzliche Supportstunde"
+msgstr "Additional support hour"
+
+#: templates/pricing.html:157
+msgid "Vor-Ort-Service (z.B.: Beratung, Schulung, technische Durchführung)"
+msgstr "On site service (e.g.: consulting, training, technical implementation)"
+
+#: templates/pricing.html:159
+#, python-format
+msgid "zzgl. 19%% MwSt. und Spesen"
+msgstr "plus 19%% VAT and expenses"
+
+#: templates/pricing.html:162
+msgid ""
+"Verleih oder Verkauf eines elektronischen\n"
+"                Abstimmugssystems mit Anbindung an OpenSlides"
+msgstr ""
+"Rental or sale of an electronic voting system with support for OpenSlides"
+
+#: templates/pricing.html:163
+msgid "Profi-Tipp"
+msgstr "Pro tip"
+
+#: templates/pricing.html:165
+msgid "Preis auf Anfrage"
+msgstr "Price by request"
+
+#: templates/pricing.html:179
+msgid "Haben Sie noch Fragen? Wir beraten Sie gerne."
+msgstr "Do you have further questions? We are happy to help."
+
+#: templates/pricing.html:180
+msgid "Ihr Ansprechpartner"
+msgstr "Your contact person"
+
+#: templates/pricing.html:193
+msgid "Alle Preisangaben gelten zuzüglich der gesetzlich gültigen MwSt."
+msgstr "All prices are plus the statutory VAT."
+
+#: templates/pricing.html:197
+msgid ""
+"1) Zählung pro angefangene 15-Minuten; begrenzt auf die\n"
+"        angegebene Supportlaufzeit. Enthält kein Vor-Ort-Support."
+msgstr ""
+"1) Payment per started 15 minutes; limited to the mentioned support "
+"duration. Does not include on site support."
+
+#: templates/pricing.html:200
+msgid ""
+"2) Export anhand der sqlite-Datenbank; enthält\n"
+"        Grunddaten aus Tagesordnung, Anträge, Wahlen und Teillnehmer.\n"
+"        Weiterverarbeitung möglich."
+msgstr ""
+"2) Export based on the sqlite database; includes base data of the agenda, "
+"applications, votes and participants. Further processing possible."
