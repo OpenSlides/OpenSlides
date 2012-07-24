@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:OpenSlides Website\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-17 09:51+0200\n"
+"POT-Creation-Date: 2012-07-24 19:07+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: English \n"
@@ -15,40 +15,105 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: settings.py:41
+#: forms.py:7
+msgid "Betreff"
+msgstr ""
+
+#: forms.py:8
+msgid "Nachricht"
+msgstr ""
+
+#: forms.py:9
+msgid "Absender"
+msgstr ""
+
+#: forms.py:10
+msgid "Kopie an meine Adresse"
+msgstr ""
+
+#: forms.py:15
+msgid "Veranstaltungsname"
+msgstr ""
+
+#: forms.py:16
+msgid "Kurzbeschreibung der Veranstaltung"
+msgstr ""
+
+#: forms.py:17
+msgid "Veranstaltungszeitraum"
+msgstr ""
+
+#: forms.py:18
+msgid "Veranstaltungsort"
+msgstr ""
+
+#: forms.py:19
+msgid "Erwartete Teilnehmer"
+msgstr ""
+
+#: forms.py:24
+msgid "Organisation"
+msgstr ""
+
+#: forms.py:25
+msgid "Strasse"
+msgstr ""
+
+#: forms.py:26
+msgid "PLZ"
+msgstr ""
+
+#: forms.py:27
+msgid "Ort"
+msgstr ""
+
+#: forms.py:28
+msgid "Ansprechpartner"
+msgstr ""
+
+#: forms.py:29
+msgid "Telefon"
+msgstr ""
+
+#: forms.py:30
+msgid "E-Mail"
+msgstr ""
+
+#: settings.py:43
 msgid "Deutsch"
 msgstr "German"
 
-#: settings.py:42
+#: settings.py:44
 msgid "Englisch"
 msgstr "English"
 
-#: templates/about.html:5 templates/base.html:39
+#: templates/about.html:5 templates/base.html:40
 msgid "Über OpenSlides"
 msgstr "About OpenSlides"
 
-#: templates/about.html:6 templates/base_about.html:10
+#: templates/about.html:6 templates/base_about.html:10 templates/home.html:43
 msgid "Was ist OpenSlides?"
 msgstr "What is OpenSlides?"
 
-#: templates/base.html:40
+#: templates/base.html:42 templates/home.html:24
 msgid "Download"
 msgstr "Download"
 
-#: templates/base.html:41
-msgid "Support"
-msgstr "Support"
+#: templates/base.html:44 templates/pricing.html:5
+msgid "Preise"
+msgstr "Prices"
 
-#: templates/base.html:42 templates/development.html:5
-#: templates/development.html.py:6
-msgid "Entwicklung"
+#: templates/base.html:46 templates/manual.html:5 templates/manual.html.py:6
+msgid "Handbuch"
 msgstr ""
 
-#: templates/base.html:43
-msgid "Demo"
-msgstr "Demo"
+#: templates/base.html:47 templates/development.html:5
+#: templates/development.html.py:6
+msgid "Entwicklung"
+msgstr "Development"
 
-#: templates/base.html:46 templates/contact.html:5 templates/contact.html.py:6
+#: templates/base.html:51 templates/contact.html:5 templates/contact.html.py:6
+#: templates/impressum.html:5
 msgid "Kontakt"
 msgstr "Contact"
 
@@ -57,17 +122,158 @@ msgstr "Contact"
 msgid "Funktionen"
 msgstr "Features"
 
-#: templates/base_about.html:12 templates/license.html:5
+#: templates/base_about.html:12 templates/home.html:68
+#: templates/references.html:5 templates/references.html.py:6
+msgid "Referenzen"
+msgstr "References"
+
+#: templates/base_about.html:13 templates/pm-20110915.html:5
+#: templates/pm-20110915.html.py:6 templates/press.html:5
+#: templates/press.html.py:6
+msgid "Presse"
+msgstr "Press"
+
+#: templates/base_about.html:14 templates/license.html:5
 #: templates/license.html.py:6
 msgid "Lizenz"
 msgstr "License"
 
-#: templates/base_about.html:13 templates/references.html:5
-#: templates/references.html.py:6
-msgid "Referenzen"
-msgstr "References"
+#: templates/contact-form.html:5 templates/contact-form.html.py:6
+#, fuzzy
+msgid "Kontaktformular"
+msgstr "Contact"
 
-#: templates/base_about.html:14 templates/press.html:5
-#: templates/press.html.py:6
-msgid "Presse"
-msgstr "Press"
+#: templates/donate.html:5 templates/donate.html.py:6
+msgid "Spenden"
+msgstr ""
+
+#: templates/faq.html:5 templates/faq.html.py:6
+msgid "FAQ"
+msgstr ""
+
+#: templates/home.html:20
+#, fuzzy
+msgid "Mehr Transparenz."
+msgstr "More transparency."
+
+#: templates/home.html:20
+msgid "Mehr Flexibilität."
+msgstr "More flexibility."
+
+#: templates/home.html:20
+msgid "Mehr Effizienz."
+msgstr "More efficiency."
+
+#: templates/home.html:28
+msgid "Demo"
+msgstr "Demo"
+
+#  not sure "controlling" is the best word here
+#: templates/home.html:44
+#, fuzzy
+msgid ""
+"OpenSlides ist ein freies, webbasiertes Präsentationssystem zur \n"
+"       Darstellung und Steuerung von Tagesordnungen, Anträgen und Wahlen \n"
+"       einer Veranstaltung."
+msgstr ""
+"OpenSlides is a free web based presentation system for visualizing and "
+"controlling agendas, applications and votes of an event."
+
+#: templates/home.html:47
+msgid ""
+"Neuartig ist vor allem die Funktion, das Plenum mit einzubeziehen: \n"
+"       Jeder Teilnehmer auf einer Veranstaltung hat die Möglichkeit, sich "
+"mit\n"
+"       dem eigenen Laptop oder Smartphone per WLAN bei OpenSlides anzumelden."
+msgstr ""
+"Particularly novel is the involvement of the plenum. Via WLAN, Every "
+"participant of the event can log into OpenSlides with his laptop or smart "
+"phone."
+
+#: templates/home.html:51
+msgid "Mehr"
+msgstr "More"
+
+#: templates/home.html:55
+msgid "Preise und Supportpakete"
+msgstr "Prices and support packages"
+
+#: templates/home.html:56
+msgid ""
+"Sie wollen OpenSlides professionell und erfolgreich auf\n"
+"       Ihrer Veranstaltung einsetzen? Dann nutzen Sie unsere\n"
+"       abgestimmten Supportpakete von der Intevation GmbH."
+msgstr ""
+"You want to utilize OpenSlides professionally and successfully on your event?"
+"Then use our matched support packages by Intevation GmbH."
+
+#: templates/home.html:59
+msgid "OpenSlides ist <strong>Freie Software</strong>."
+msgstr "OpenSlides is <strong>free software</strong>."
+
+#: templates/home.html:60
+msgid ""
+"Mit dem Kauf eines Supportpakets leisten Sie gleichzeitig einen\n"
+"       wichtigen Beitrag, um die Weiterentwicklung von OpenSlides zu\n"
+"       sichern."
+msgstr ""
+"By buying a support package you simultaneously make an important contribution "
+"to sustain the further development of OpenSlides."
+
+#: templates/home.html:63
+msgid "Wählen Sie jetzt Ihr passendes Paket aus!"
+msgstr "Please choose your matching package!"
+
+#: templates/home.html:64
+msgid "OpenSlides-Supportpakete"
+msgstr "OpenSlides support packages"
+
+#: templates/home.html:69
+msgid "OpenSlides war bereits erfolgreich im Einsatz bei:"
+msgstr "OpenSlides was already successfully in use by:"
+
+#: templates/home.html:92
+msgid "Weitere Referenzen"
+msgstr "Further References"
+
+#: templates/impressum.html:6
+msgid "Impressum"
+msgstr "Imprint"
+
+#: templates/order-form.html:5 templates/order-form.html.py:6
+msgid "Bestellformular"
+msgstr ""
+
+#: templates/order-form.html:37
+msgid "Ihre Veranstaltung"
+msgstr ""
+
+#: templates/order-form.html:43
+msgid "Ihre Kontaktdaten"
+msgstr ""
+
+#: templates/order-form.html:52
+msgid "Zurück zur Paketübersicht"
+msgstr ""
+
+#~ msgid "Support"
+#~ msgstr "Support"
+
+#~ msgid "Mehr Offenheit."
+#~ msgstr "More openness."
+
+#  Versammlung => assembly?
+#, fuzzy
+#~ msgid "Die Lösung für Ihre Versammlung!"
+#~ msgstr "The solution for your assembly!"
+
+#~ msgid ""
+#~ "Für den professionellen Einsatz von OpenSlides gibt es angepasste\n"
+#~ "       Pakte mit professionellen Support. Sie unterstützen damit "
+#~ "gleichzeitig \n"
+#~ "       die Weiterentwicklung von OpenSlides. - \n"
+#~ "       Wählen Sie Ihr passendes Produkt aus!"
+#~ msgstr ""
+#~ "For professional use, customized packages with professional support are "
+#~ "available.Additionally with this you will aid the further development of "
+#~ "OpenSlides, -Please choose the appropriate product!"
