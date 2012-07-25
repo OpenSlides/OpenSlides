@@ -1,6 +1,6 @@
 include AUTHORS
 include LICENSE
-include INSTALL
+include INSTALL.txt
 include CHANGELOG
 include initial_data.json
 include manage.py
