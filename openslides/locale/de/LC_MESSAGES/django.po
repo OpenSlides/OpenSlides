@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-24 07:30+0200\n"
+"POT-Creation-Date: 2012-07-25 22:46+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: German\n"
@@ -459,12 +459,6 @@ msgstr "Benötigt Review"
 #, python-format
 msgid "Version %d permitted"
 msgstr "Version %d zugelassen"
-
-#: application/models.py:109
-#, python-format
-msgctxt "Rejected means not permitted"
-msgid "Version %d rejected"
-msgstr "Version %d verworfen"
 
 #: application/models.py:138
 msgid "Searching for supporters."
@@ -1260,7 +1254,7 @@ msgstr "Beschreibung"
 
 #: assignment/models.py:46
 msgid "Comment on the ballot paper"
-msgstr "Kommentar für den Wahlzettel"
+msgstr "Kommentar für den Stimmzettel"
 
 #: assignment/models.py:61
 #, python-format
@@ -2211,7 +2205,6 @@ msgid "Custom slides"
 msgstr "Benutzerdefinierte Folien"
 
 #: projector/templates/projector/control_countdown.html:6
-msgctxt "seconds"
 msgid "s"
 msgstr "s"
 
@@ -2310,7 +2303,3 @@ msgstr "undefinierter-dateiname"
 #: utils/jsonfield/fields.py:21
 msgid "Enter valid JSON"
 msgstr "Gebe valides JSON ein"
-
-#, fuzzy
-#~ msgid "The application status is: '%(currentstatus)s'. "
-#~ msgstr "Der Antragsstatus ist bereits '%s'."
