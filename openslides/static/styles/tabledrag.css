@@ -47,4 +47,5 @@ div.tree-child-horizontal {
 }
 .tabledrag-toggle-weight-wrapper {
   text-align: right; /* LTR */
+  display: none;
 }
