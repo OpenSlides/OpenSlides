@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:OpenSlides Website\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-25 19:48+0200\n"
+"POT-Creation-Date: 2012-07-25 20:43+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: English \n"
@@ -311,6 +311,109 @@ msgstr "License"
 #: templates/contact-form.html:5 templates/contact-form.html.py:6
 msgid "Kontaktformular"
 msgstr "Contact form"
+
+#: templates/contact.html:11
+msgid ""
+"Ihnen gefällt OpenSlides? Sie haben Fragen oder Anregungen? Geben Sie\n"
+"uns Ihre Rückmeldung!"
+msgstr ""
+"You like OpenSlides? You have questions or suggestions? Give us your "
+"feedback!"
+
+#: templates/contact.html:17
+msgid "Zum Kontaktformular"
+msgstr "Contact form"
+
+#: templates/contact.html:23
+msgid "Mailinglisten"
+msgstr "Mailing lists"
+
+#: templates/contact.html:24
+msgid ""
+"OpenSlides bietet öffentliche Mailinglisten zur Koordination der "
+"Entwicklung \n"
+"        sowie Diskussion von Tickets, Anwenderfragen und speziellen "
+"Anwendungsfällen. \n"
+"        Bei Problemen und Fragen zu OpenSlides schreiben Sie an die \n"
+"        OpenSlides-Mailingliste in Ihrer Sprache."
+msgstr ""
+"OpenSlides offers public mailing lists for coordination of development, "
+"discussion of ticks and user questions as well as specific use cases. For "
+"problems and questions regarding OpenSlides write to the mailing list in "
+"your language."
+
+#: templates/contact.html:30
+msgid "Deutschsprachige Mailingliste für Anwender und Entwickler"
+msgstr "German speaking mailing list for users and developers"
+
+#: templates/contact.html:31 templates/contact.html.py:35
+#: templates/contact.html:39
+msgid "Abonnieren"
+msgstr "Subscribe"
+
+#: templates/contact.html:32 templates/contact.html.py:36
+#: templates/contact.html:40
+msgid "Archiv"
+msgstr "Archive"
+
+#: templates/contact.html:34
+msgid "Englischsprachige Mailingliste für Anwender und Entwickler"
+msgstr "English speaking mailing list for users and developers"
+
+#: templates/contact.html:38
+msgid ""
+"HG-commit-Mailingliste von hg.openslides.org (moderiert), für Entwickler"
+msgstr ""
+"HG commit mailing list of hg.openslides.org (moderated), for developers"
+
+#: templates/contact.html:42
+msgid ""
+"Hinweis: Bitte abonnieren Sie eine Mailingliste bevor Sie an diese schreiben!"
+msgstr "Note: Please subscribe a mailing list before writing to it!"
+
+#: templates/contact.html:49
+msgid "Professionelle Unterstützung"
+msgstr "Professional support"
+
+#: templates/contact.html:52
+#, python-format
+msgid ""
+"Sie haben Interesse an OpenSlides und denken über einen Einsatz auf Ihrer \n"
+"        Veranstaltung nach? Sie suchen dafür professionelle Unterstützung \n"
+"        bei der Vorbereitung? Sie haben Fragen zu unseren \n"
+"        <a href=\"%(pricing_url)s\">Supportpaketen</a>?"
+msgstr ""
+"You are interested in OpenSlides and think about using it on your event? You "
+"are looking for professional support for the preparations? You have "
+"questions regarding our <a href=\"%(pricing_url)s\">support packages</a>?"
+
+#: templates/contact.html:56
+msgid "Kontaktieren Sie uns! Wir beraten Sie gerne."
+msgstr "Contact us!  We are happy to help."
+
+#: templates/contact.html:58 templates/pricing.html:180
+msgid "Ihr Ansprechpartner"
+msgstr "Your contact person"
+
+#: templates/contact.html:74
+msgid ""
+"Für den direkten Kontakt zwischen interessierten OpenSlides-Anwendern \n"
+"        und -Entwicklern nutzen Sie IRC (ein textbasierter Chat):"
+msgstr ""
+"For direct contact between interested OpenSlides users and developers please "
+"use IRC (a text based Chat):"
+
+#: templates/contact.html:78
+msgid "Netzwerk"
+msgstr "Network"
+
+#: templates/contact.html:79
+msgid "Kanal"
+msgstr "Channel"
+
+#: templates/contact.html:81
+msgid "IRC Chat starten"
+msgstr "start IRC chat"
 
 #: templates/development.html:10
 msgid ""
@@ -825,10 +928,6 @@ msgstr "Price by request"
 #: templates/pricing.html:179
 msgid "Haben Sie noch Fragen? Wir beraten Sie gerne."
 msgstr "Do you have further questions? We are happy to help."
-
-#: templates/pricing.html:180
-msgid "Ihr Ansprechpartner"
-msgstr "Your contact person"
 
 #: templates/pricing.html:193
 msgid "Alle Preisangaben gelten zuzüglich der gesetzlich gültigen MwSt."
