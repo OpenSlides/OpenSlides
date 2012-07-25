@@ -1,6 +1,8 @@
 from django.conf.urls import patterns, include, url
 from django.conf.urls.i18n import i18n_patterns
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.views.generic import TemplateView
+
 from website import views
 
 #from views import TemplateView
@@ -29,4 +31,8 @@ urlpatterns = i18n_patterns('',
     url(r'^demo/$', TemplateView.as_view(template_name="demo.html"), name='demo',),
     url(r'^impressum/$', TemplateView.as_view(template_name="impressum.html"), name='impressum',),
     url(r'^about/press/20110915/$', TemplateView.as_view(template_name="pm-20110915.html"), name='pm-20110915',),
+)
+
+urlpatterns += patterns('django.contrib.staticfiles.views',
+    url(r'^static/(?P<path>.*)$', 'serve', {'insecure':True}),
 )
