@@ -7,8 +7,8 @@
 {% block submenu %}
   <div class="subnav subnav-fixed">
     <ul class="nav nav-pills">
-        <li class="{% block submenu_manual %}{% endblock %}"><a href="{% url manual %}">Handbuch</a></li>
-        <li class="{% block submenu_faq %}{% endblock %}"><a href="{% url faq %}">FAQ</a></li>
+        <li class="{% block submenu_manual %}{% endblock %}"><a href="{% url manual %}">{% trans 'Handbuch' %}</a></li>
+        <li class="{% block submenu_faq %}{% endblock %}"><a href="{% url faq %}">{% trans 'FAQ' %}</a></li>
     </ul>
   </div>
 {% endblock %}

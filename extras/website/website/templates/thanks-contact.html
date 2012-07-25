@@ -2,11 +2,11 @@
 
 {% load i18n %}
 
-{% block title %}{{ block.super }} - Absendebestätigung{% endblock %}
-{% block headline %}Vielen Dank!{% endblock %}
+{% block title %}{{ block.super }} - {% trans 'Absendebestätigung' %}{% endblock %}
+{% block headline %}{% trans 'Vielen Dank!' %}{% endblock %}
 
 {% block mainmenu_pricing %}active{% endblock %}
  
 {% block lead %}
-Vielen Dank für Ihre Nachricht! 
+{% trans 'Vielen Dank für Ihre Nachricht!' %} 
 {% endblock %}

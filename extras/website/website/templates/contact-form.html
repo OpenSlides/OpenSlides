@@ -8,9 +8,9 @@
 {% block mainmenu_contact %}active{% endblock %}
 
 {% block lead %}
-Haben Sie Fragen oder Anregungen zu OpenSlides? 
+{% blocktrans %}Haben Sie Fragen oder Anregungen zu OpenSlides? 
 Sie können hier das Hauptentwicklerteam direkt kontaktieren.
-Wir freuen uns auf Ihre Anfrage!
+Wir freuen uns auf Ihre Anfrage!{% endblocktrans %}
 {% endblock %}
 
 {% block content %}
@@ -19,7 +19,7 @@ Wir freuen uns auf Ihre Anfrage!
 {{ form.name_of_field.errors }}
 {{ form.as_p }}
 <button class="btn btn-large btn-primary" type="submit">
-    Senden</span>
+    {% trans 'Senden' %}</span>
 </button><br>
 </form>
 

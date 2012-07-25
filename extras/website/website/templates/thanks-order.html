@@ -2,18 +2,18 @@
 
 {% load i18n %}
 
-{% block title %}{{ block.super }} - Bestellbestätigung{% endblock %}
-{% block headline %}Vielen Dank!{% endblock %}
+{% block title %}{{ block.super }} - {% trans 'Bestellbestätigung' %}{% endblock %}
+{% block headline %}{% trans 'Vielen Dank!' %}{% endblock %}
 
 {% block mainmenu_pricing %}active{% endblock %}
  
 {% block lead %}
-Vielen Dank für die Bestellung Ihres OpenSlides-Supportpakets! 
-Ihre Bestellung wird bearbeiten. Sie erhalten in Kürze eine Antwort.
+{% blocktrans %}Vielen Dank für die Bestellung Ihres OpenSlides-Supportpakets! 
+Ihre Bestellung wird bearbeitet. Sie erhalten in Kürze eine Antwort.
 Ein USB-Stick mit Ihrer individuell OpenSlides-Installation wird
-erstellt und Ihnen per Post zugeschickt.
+erstellt und Ihnen per Post zugeschickt.{% endblocktrans %}
 {% endblock %}
 
 {% block content %}
-<p>Sollten Sie noch Fragen haben, melden Sie sich gerne!</p>
+<p>{% trans 'Sollten Sie noch Fragen haben, melden Sie sich gerne!' %}</p>
 {% endblock %}

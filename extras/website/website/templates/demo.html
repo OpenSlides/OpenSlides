@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}{{ block.super }} - Demo{% endblock %}
-{% block headline %}Demo{% endblock %}
+{% block title %}{{ block.super }} - {% trans 'Demo' %}{% endblock %}
+{% block headline %}{% trans 'Demo' %}{% endblock %}
 
 
 {% block lead %}
-Entdecken Sie die Funktionen von OpenSlides in dieser Online-Demo.
+{% trans 'Entdecken Sie die Funktionen von OpenSlides in dieser Online-Demo.' %}
 {% endblock %}
 
 
@@ -17,22 +17,22 @@ Entdecken Sie die Funktionen von OpenSlides in dieser Online-Demo.
     </a>
 </p>
 
-<p>Es sind drei Demo-Nutzer mit unterschiedlichen Rechten eingerichtet:</p>
+<p>{% trans 'Es sind drei Demo-Nutzer mit unterschiedlichen Rechten eingerichtet:' %}</p>
 
 <blockquote>
-<p><strong>Tagesleitung</strong></p>
-<p>Nutzername: demo<br>
-    Passwort: demo</p>
+<p><strong>{% trans 'Tagesleitung' %}</strong></p>
+<p>{% trans 'Nutzername' %}: demo<br>
+    {% trans 'Passwort' %}: demo</p>
 
 <br>
-<p><strong>Delegierter</strong></p>
-<p>Nutzername: delegierter<br>
-    Passwort: demo</p>
+<p><strong>{% trans 'Delegierter' %}</strong></p>
+<p>{% trans 'Nutzername' %}: delegierter<br>
+    {% trans 'Passwort' %}: demo</p>
 
 <br>
-<p><strong>Gast:</strong></p>
-<p>ohne Zugangsdaten</p>
+<p><strong>{% trans 'Gast' %}:</strong></p>
+<p>{% trans 'ohne Zugangsdaten' %}</p>
 </blockquote>
 
-<p><span class="label label-warning">Achtung:</span> Die Demo wird täglich zurückgesetzt!</p>
+<p><span class="label label-warning">{% trans 'Achtung' %}:</span> {% trans 'Die Demo wird täglich zurückgesetzt!' %}</p>
 {% endblock %}

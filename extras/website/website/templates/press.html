@@ -7,8 +7,8 @@
 
 {% block submenu_press %}active{% endblock %}
 
-{% block lead %}Die neue Idee von OpenSlides hat Eindruck hinterlassen. 
-Lesen Sie, was die Pressestimmen über OpenSlides berichten.{% endblock %}
+{% block lead %}{% blocktrans %}Die neue Idee von OpenSlides hat Eindruck hinterlassen. 
+Lesen Sie, was die Pressestimmen über OpenSlides berichten.{% endblocktrans %}{% endblock %}
 
 {% block content %}
 
@@ -17,9 +17,9 @@ Lesen Sie, was die Pressestimmen über OpenSlides berichten.{% endblock %}
     <img class="os-icon" src="/static/img/icons/glyphicons_050_link.png">
     <h2>OpenSlides in der Presse</h2>
     <ul>
-    <li><a href="http://www.heise.de/download/openslides-3682916.html">Artikel aus c't 26/2011 zu OpenSlides 1.1</a></li>
-    <li><a href="http://www.av-views.de/aktuell/archiv/2011/2011-5/thema1.php">Artikel aus AV-views 2011/5 zu OpenSlides 1.1</a></li>
-    <li><a href="http://www.pro-linux.de/news/1/17504/openslides-10-vorgestellt.html">Pro-Linux-Meldung zu OpenSlides 1.0</a></li>
+    <li><a href="http://www.heise.de/download/openslides-3682916.html">{% trans "Artikel aus c't 26/2011 zu OpenSlides 1.1" %}</a></li>
+    <li><a href="http://www.av-views.de/aktuell/archiv/2011/2011-5/thema1.php">{% trans 'Artikel aus AV-views 2011/5 zu OpenSlides 1.1' %}</a></li>
+    <li><a href="http://www.pro-linux.de/news/1/17504/openslides-10-vorgestellt.html">{% trans 'Pro-Linux-Meldung zu OpenSlides 1.0' %}</a></li>
     </ul>
 </div>
 
@@ -28,15 +28,13 @@ Lesen Sie, was die Pressestimmen über OpenSlides berichten.{% endblock %}
     <h2>Pressemitteilungen</h2>
     <dl>
     <dt>2011-09-15<dt>
-    <dd><a href="{% url pm-20110915 %}">OpenSlides 1.0 - Neues
-        Präsentationssystem für Veranstaltungen mit Tagesordnungen,
-        Anträgen und Wahlen</a></dd>
+    <dd><a href="{% url pm-20110915 %}">{% trans 'OpenSlides 1.0 - Neues Präsentationssystem für Veranstaltungen mit Tagesordnungen, Anträgen und Wahlen' %}</a></dd>
     </dl>
 </div>
 
 <div class="span4">
     <img class="os-icon" src="/static/img/icons/glyphicons_352_nameplate.png">
-    <h2>Pressekontakt</h2>
+    <h2>{% trans 'Pressekontakt' %}</h2>
     <p><a href="mailto:emanuel.schuetze@intevation.de">Emanuel Schütze</a><br>
     Intevation GmbH<br>
     Neuer Graben 17<br>
@@ -49,11 +47,9 @@ Lesen Sie, was die Pressestimmen über OpenSlides berichten.{% endblock %}
 <div class="row">
 <div class="span4">
     <img class="os-icon" src="/static/img/icons/glyphicons_062_attach.png">
-    <h2>Logos</h2>
-    <p>Das Motiv von OpenSlides ist ein Overheadprojektor (auch
-    Polylux oder Tageslichtprojektor).</p>
-    <p><a href="http://dev.openslides.org/browser/extras/logo/">Alle
-        Größen und Varianten des OpenSlides Logos &raquo;</a></p>
+    <h2>{% trans 'Logos' %}</h2>
+    <p>{% trans 'Das Motiv von OpenSlides ist ein Overheadprojektor (auch Polylux oder Tageslichtprojektor).' %}</p>
+    <p><a href="http://dev.openslides.org/browser/extras/logo/">{% trans 'Alle Größen und Varianten des OpenSlides Logos' %} &raquo;</a></p>
 </div>
 <div class="span4">
     <h2>&nbsp;</h2>
