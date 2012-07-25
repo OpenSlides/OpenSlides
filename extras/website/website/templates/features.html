@@ -42,7 +42,6 @@ Alle Funktionen von OpenSlides im Überblick.
   <br>
   <br>
   <br>
-  <br>
   <div class="page-header">
     <h1>Projektor</h1>
     <span class="pager"><span class="next">
@@ -95,7 +94,6 @@ Alle Funktionen von OpenSlides im Überblick.
   </div>
 
   <a name="agenda"></a>
-  <br>
   <br>
   <br>
   <br>
@@ -153,7 +151,6 @@ Alle Funktionen von OpenSlides im Überblick.
   </div>
 
   <a name="applications"></a>
-  <br>
   <br>
   <br>
   <br>
@@ -222,7 +219,6 @@ Alle Funktionen von OpenSlides im Überblick.
   <br>
   <br>
   <br>
-  <br>
   <div class="page-header">
     <h1>Wahlen</h1>
     <span class="pager"><span class="next">
@@ -231,31 +227,39 @@ Alle Funktionen von OpenSlides im Überblick.
   </div>
   <div class="row">
     <div class="span4">
-        <h3>Verwalten & Steuern</h3>
+        <h3>Wahlen verwalten</h3>
+        <p>Jede Wahl besteht aus Name und Anzahl der zur Wahl stehenden Posten sowie - optional - aus
+        einer Beschreibung und einem Kommentar für den Stimmzettel.</p>
+
+        <h3>Kandiatenliste aufstellen</h3>
+        Kandidaten können für eine Wahl direkt aus der Teilnehmerliste vorgeschlagen werden.
+        Angemeldete Teilnehmer können per Mausklick sogar selbst kandidieren - sofern Sie die Berechtigung dazu haben.</p>
         <p>
-        <ul>
-        <li>Wahlen verwalten</li>
-        <li>Kandidaten aus Teilnehmerliste für eine Wahl vorschlagen (bzw. als angemeldeter Teilnehmer selbst kandidieren)</li>
-        <li>Wahlschein als pdf generieren (mit Ankreuzfeldern)</li>
-        <li>Wahlergebenisse eingeben und darstellen - mehrere Wahlgänge und Stichwahlen werden unterstützt</li>
-        <li>Wahlmodus: nur Ja-Stimmen oder Ja/Nein/Enthaltungs-Stimmen (abhängig von der Anzahl der Kandiaten und Posten), ungültige und abgegebene Stimmen können immer eingegeben werden</li>
-        </ul>
-        </p>
     </div>
     <div class="span4">
-        <h3>Projizieren</h3>
-        <p>TODO
-        </p>
+        <h3>Stimmzettel als PDF</h3>
+        <p>Geheime Wahlen benötgen Stimmzettel. Und diese können Sie schnell und unkompliziert direkt mit OpenSlides
+        generieren - mit passenden Ankreuzfeldern vor jedem Kandidaten.</p>
+
+        <h3>Wahlergebnisse eingeben und darstellen</h3>
+        <p>Sind die Wahlergebnisse ausgezählt, werden sie in OpenSlides vom Versammlungsleiter eingegeben. 
+        Per Knopfdruck (z.B. zeitgleich mit der Verkündigung des Resultats) werden die Zahlen auch 
+        für alle anderen Teilnehmer am Projektor und im Webinterface sichtbar.</p>
     </div>
     <div class="span4">
-        <p><a class="thumbnail" href="#">
-        <img alt="" src="http://placehold.it/260x180">
-        </a></p>
+        <h3>Unterstützte Wahlmethoden</h3>
+        <p>OpenSlides unterstützt die Auswahl von 2 Wahlmethoden: "Eine Stimme pro Kandidat/in" oder 
+        "Ja, Nein, Enthaltungs pro Kandidat/in". Eine automatische Zuordnung beider Methoden, abhängig 
+        von der Anzahl der Kandidaten und zu vergebenen Posten, ist die Voreinstellung in OpenSlides.
+        Ungültige und abgegebene Stimmen können zusätzlich immer erfasst werden.</p>
+        
+        <h3>Mehrere Wahlgänge</h3>
+        <p>Mit OpenSlides können Sie beliebig viele Wahlgänge durchführen - und diese übersichtlich nebeneinander darstellen.
+        Auch Stichwahlen sind leicht damit möglich.</p>
     </div>
   </div>
 
   <a name="participants"></a>
-  <br>
   <br>
   <br>
   <br>
@@ -267,30 +271,26 @@ Alle Funktionen von OpenSlides im Überblick.
   </div>
   <div class="row">
     <div class="span4">
-        <h3>Verwalten & Steuern</h3>
-        <p>
-        <ul>
-        <li>Teilnehmer verwalten (vordefinierte Felder: Name, Vorname, Geschlecht, E-Mail, Gruppe, Typ, Amt)</li>
-        <li>importieren von Teilnehmerdaten (im CSV-Format)</li>
-        <li>Benutzergruppe frei konfigurierbar (voreingestellt sind: Beobachter, Delegierte, Tagesleitung, Teilnehmerverwaltung)</li>
-        </ul>
-        </p>
+        <h3>Teilnehmer/innen verwalten</h3>
+        <p>Neben Name, E-Mail und Geschlecht können Sie für jeden Teilnehmer Angaben zur zugehörigen Gruppe (d.h. eine Teilgruppe Ihrer Veranstaltung, 
+        z.B. der Ortsverband Berlin) und zum Amt/Gremium machen. Optional ist ein Kommentar für interne Notizen der Versammlungsleitung.</p>
     </div>
     <div class="span4">
-        <h3>Projizieren</h3>
-        <p>TODO
-        </p>
+        <h3>Benutzerrollen festlegen</h3>
+        <p>Was jeder Teilnehmer sehen darf und was nicht definieren Sie mit einzelnen Rechten. Mehrere Rechteeinstellungen
+        können Sie in einer Benutzerrolle zusammenfassen (voreingestellte Rollen sind: Gast, Beobachter, Delegierte, Versammlungsleitung, Teilnehmerverwaltung). 
+        Jeder Teilnehmer kann eine oder mehrere Benutzerrollen zugewiesen bekommen. Auch ein Gast/Anonymous-Nutzer ist so aktivierbar.</p>
     </div>
     <div class="span4">
-        <p><a class="thumbnail" href="#">
-        <img alt="" src="http://placehold.it/260x180">
-        </a></p>
+        <h3>Teilnehmer/innen aus CSV-Dateien importieren</h3>
+        <p>Sie können Ihre vorhandenen Teilnehmerlisten im CSV-Format abspeichern und in OpenSlides importieren.
+        Eine Beispieldatei mit den erforderlichen Feldern gibt im 
+        <a href="http://dev.openslides.org/wiki/CSVImport">OpenSlides-Wiki</a>.</p>
     </div>
   </div>
 
 
   <a name="general"></a>
-  <br>
   <br>
   <br>
   <br>
@@ -326,7 +326,6 @@ Alle Funktionen von OpenSlides im Überblick.
   </div>
 
   <a name="future"></a>
-  <br>
   <br>
   <br>
   <br>
