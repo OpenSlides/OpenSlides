@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:OpenSlides Website\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-25 22:11+0200\n"
+"POT-Creation-Date: 2012-07-25 22:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: English \n"
@@ -104,9 +104,7 @@ msgstr "About OpenSlides"
 msgid "Was ist OpenSlides?"
 msgstr "What is OpenSlides?"
 
-#  not sure "controlling" is the best word here
 #: templates/about.html:10
-#, fuzzy
 msgid ""
 "OpenSlides ist ein freies, webbasiertes Präsentationssystem zur "
 "Darstellung \n"
@@ -152,11 +150,7 @@ msgstr ""
 msgid "Einsatz vor Ort"
 msgstr "Usage on site"
 
-#  XXX: hier fehlt mir domain specific knowledge ;)
-#       wenn ich danach suche übersetzen sich die diversen
-#       versammlungsarten irgendwie alle als general assembly (oder general meeting(
 #: templates/about.html:35
-#, fuzzy
 msgid ""
 "OpenSlides ist konzipiert für den Einsatz auf\n"
 "        Veranstaltungen wie Delegierten-/Mitgliederversammlungen, "
@@ -483,10 +477,6 @@ msgstr "Network"
 msgid "Kanal"
 msgstr "Channel"
 
-#: templates/contact.html:81
-msgid "IRC Chat starten"
-msgstr "start IRC chat"
-
 #: templates/demo.html:8
 msgid "Entdecken Sie die Funktionen von OpenSlides in dieser Online-Demo."
 msgstr "Discover the functions of OpenSlides in this online demo."
@@ -496,8 +486,8 @@ msgid "Es sind drei Demo-Nutzer mit unterschiedlichen Rechten eingerichtet:"
 msgstr "Three users with different permissions are configured:"
 
 #: templates/demo.html:23
-msgid "Tagesleitung"
-msgstr ""
+msgid "Versammlungsleitung"
+msgstr "Event management"
 
 #: templates/demo.html:24 templates/demo.html.py:29
 msgid "Nutzername"
@@ -777,9 +767,9 @@ msgstr ""
 "\"support@openslides.org\">support@openslides.org</a>! Then we can compile a "
 "helpful selection of FAQs here soon."
 
-#: templates/features.html:95 templates/features.html.py:143
-#: templates/features.html:214 templates/features.html.py:250
-#: templates/features.html:285 templates/features.html.py:321
+#: templates/features.html:49 templates/features.html.py:164
+#: templates/features.html:235 templates/features.html.py:271
+#: templates/features.html:306 templates/features.html.py:342
 msgid "Nach oben"
 msgstr "Top"
 
@@ -799,9 +789,7 @@ msgstr "More efficiency."
 msgid "Die Lösung für Ihre Versammlung!"
 msgstr "The solution for your event!"
 
-#  not sure "controlling" is the best word here
 #: templates/home.html:44
-#, fuzzy
 msgid ""
 "OpenSlides ist ein freies, webbasiertes Präsentationssystem zur \n"
 "       Darstellung und Steuerung von Tagesordnungen, Anträgen und Wahlen \n"
@@ -927,9 +915,7 @@ msgstr "Back to the package overview"
 msgid "Pressemitteilung"
 msgstr "Press release"
 
-#  not sure "controlling" is the best word here
 #: templates/pm-20110915.html:16 templates/press.html:31
-#, fuzzy
 msgid ""
 "OpenSlides 1.0 - Neues Präsentationssystem für Veranstaltungen mit "
 "Tagesordnungen, Anträgen und Wahlen"
@@ -941,9 +927,7 @@ msgstr ""
 msgid "15. September 2011"
 msgstr "September 15th, 2011"
 
-#  not sure "controlling" is the best word here
 #: templates/pm-20110915.html:21
-#, fuzzy
 msgid ""
 "OpenSlides - ein webbasiertes Präsentationssystem zur Darstellung und\n"
 "Steuerung von Tagesordnungen, Anträgen und Wahlen auf einer\n"
@@ -989,11 +973,7 @@ msgstr ""
 "participant does not have to install any software - a web browser is "
 "sufficient."
 
-#  XXX: hier fehlt mir domain specific knowledge ;)
-#       wenn ich danach suche übersetzen sich die diversen
-#       versammlungsarten irgendwie alle als general assembly (oder general meeting(
 #: templates/pm-20110915.html:44
-#, fuzzy
 msgid ""
 "OpenSlides ist konzipiert für den Einsatz vor Ort auf Veranstaltungen\n"
 "wie Delegierten- und Mitgliederversammlungen, Parteitagen und\n"
@@ -1294,37 +1274,36 @@ msgstr ""
 "\">support@openslides.org</a>!"
 
 #: templates/references.html:23
-#, fuzzy
 msgid ""
 "Erstmaliger Einsatz von OpenSildes: Bundesparteitag 12/2011; weitere "
 "Einsätze auf Bundes-, Landes- und Kreisparteitagen."
-msgstr "First use of OpenSlides:"
+msgstr ""
+"First use of OpenSlides: Bundesparteitag 12/2011; further uses on Bundes-, "
+"Landes- and Kreisparteitagen."
 
 #: templates/references.html:29
-#, fuzzy
 msgid "Erstmaliger Einsatz von OpenSlides: Landesparteitag 04/2012"
-msgstr "First use of OpenSlides:"
+msgstr "First use of OpenSlides: Landesparteitag 04/2012"
 
 #: templates/references.html:35
-#, fuzzy
 msgid ""
 "Erstmaliger Einsatz von OpenSlides: Kreissynode des Evangelischen "
 "Kirchenkreises Krefeld-Viersen 06/2012"
-msgstr "First use of OpenSlides:"
+msgstr ""
+"First use of OpenSlides: Kreissynode des Evangelischen Kirchenkreises "
+"Krefeld-Viersen 06/2012"
 
 #: templates/references.html:43
-#, fuzzy
 msgid "Erstmaliger Einsatz von OpenSildes: Bundesversammlung 09/2011"
-msgstr "First use of OpenSlides:"
+msgstr "First use of OpenSlides: Bundesversammlung 09/2011"
 
 #: templates/references.html:44
 msgid "Ein erster Prototyp von OpenSlides wurde bereits seit 2005 verwendet."
 msgstr "A first prototype of OpenSlides was already used since 2005."
 
 #: templates/references.html:50
-#, fuzzy
 msgid "Erstmaliger Einsatz von OpenSlides: Mitgliederversammlung 11/2011"
-msgstr "First use of OpenSlides: "
+msgstr "First use of OpenSlides: general assembly 11/2011"
 
 #: templates/thanks-contact.html:5
 msgid "Absendebestätigung"
@@ -1356,3 +1335,6 @@ msgstr ""
 #: templates/thanks-order.html:18
 msgid "Sollten Sie noch Fragen haben, melden Sie sich gerne!"
 msgstr "If you have further questions don't hesitate to contact us!"
+
+#~ msgid "IRC Chat starten"
+#~ msgstr "start IRC chat"
