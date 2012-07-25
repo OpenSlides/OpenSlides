@@ -1,7 +1,7 @@
-#from django.views.generic import TemplateView
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.shortcuts import render_to_response, render
+
 from website.forms import ContactForm, OrderEventForm, OrderContactForm
 
 def contactform(request):
@@ -12,12 +12,12 @@ def contactform(request):
             message = form.cleaned_data['message']
             sender = form.cleaned_data['sender']
             cc_myself = form.cleaned_data['cc_myself']
-            recipients = ['emanuel@intevation.de']
+            recipients = ['support@openslides.org']
             if cc_myself:
                 recipients.append(sender)
             from django.core.mail import send_mail
             send_mail(subject, message, sender, recipients)
-            return HttpResponseRedirect(reverse('contact'))
+            return HttpResponseRedirect(reverse('thankscontact'))
     else:
         form = ContactForm()
     return render(request, 'contact-form.html', {
@@ -46,7 +46,6 @@ def orderform(request, package):
             contact_email = form_contact.cleaned_data['contact_email']
             # mail
             recipients = ['emanuel@intevation.de']
-#            recipients.append(contact_email)
             message = "Neue Bestellung: OpenSlides Paket #%s\n\n"\
                 "Veranstaltungsname: %s\n"\
                 "Kurzbeschreibung der Veranstaltung: %s\n"\
@@ -66,12 +65,6 @@ def orderform(request, package):
                     contact_email)
             from django.core.mail import send_mail
             send_mail("Bestellung OpenSlides-Supportpaket", message, contact_email, recipients)
-            print message
-            #for key in request.POST:
-            #    value = request.POST['key']
-            # loop through keys and values
-            #for key, value in request.POST.iteritems():
-            #    print key, value
             return HttpResponseRedirect(reverse('thanksorder'))
 
     else:
