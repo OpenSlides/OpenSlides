@@ -8,12 +8,19 @@
 {% block submenu_manual %}active{% endblock %}
 
 {% block lead %}
+{% blocktrans %}Sie brauchen Hilfe zu OpenSlides? Werfen Sie mal einen Blick 
+in unser Handbuch!{% endblocktrans %}
 {% endblock %}
 
 {% block content %}
   <div class="row">
     <div class="span6">
-    <p>TODO</p>
+    <p>{% blocktrans %}Das OpenSlides-Handbuch ist noch im Aufbau. 
+    Eine aktuelle Version finden Sie hier:{% endblocktrans %}</p>
+      <a class="btn btn-primary btn-large"
+      href="http://docs.openslides.org/de">
+      <i class="icon-question-sign icon-white"></i>
+      {% trans 'OpenSlides-Handbuch' %}  &raquo;</a>
     </div>
   </div>
   <p><br></p>
