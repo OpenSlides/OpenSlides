@@ -7,31 +7,33 @@
 
 {% block mainmenu_download %}active{% endblock %}
 
-{% block lead %}{% trans 'Aktuelle Version: OpenSlides 1.2-rc1 (veröffentlicht am 16.7.2012)' %}{% endblock %}
+{% block lead %}{% trans 'Aktuelle Version: OpenSlides 1.2 (veröffentlicht am 25.7.2012)' %}{% endblock %}
 
 
 {% block content %}
 
   <div class="row">
-    <div class="span6">
+    <div class="span4 well">
       <h3>{% trans 'Für Windows' %}</h3>
       <p>
       <a class="jumbotron btn btn-primary btn-large"
-      href="http://openslides.org/download/Beta/openslides-1.2-rc1-portable.zip">
+      href="http://openslides.org/download/openslides-1.2-portable.zip">
       {% trans 'Download OpenSlides' %}<br>
-      <small>v1.2-rc1 | .zip | 10 MB</small></a>
+      <small>v1.2 | .zip | 10 MB</small></a>
       </p>
-      <p>{% trans 'Portable Version mit openslides.exe' %}</p>
-      <p><a href="#">{% trans 'Installationsanleitung' %}</a></p>
+      <p>{% blocktrans %}Dies ist eine <strong>portable Version</strong>. 
+      OpenSlides muss nicht installiert werden. Einfach herunterladen, entpacken und openslides.exe starten!
+      {% endblocktrans %}</p>
     </div>
-    <div class="span6">
+    <div class="span4 well">
       <h3>{% trans 'Für Linux/MacOS' %}</h3>
       <p>
       <a class="jumbotron btn btn-primary btn-large"
-      href="http://openslides.org/download/Beta/openslides-1.2-rc1-portable.tar.gz">
-      {% trans 'Download OpenSlides' %} <br><small>v1.2-rc1 | .tar.gz | 1 MB</small></a>
+      href="http://openslides.org/download/openslides-1.2.tar.gz">
+      {% trans 'Download OpenSlides' %} <br><small>v1.2 | .tar.gz | 1 MB</small></a>
       </p>
-      <p><a href="#">{% trans 'Installationsanleitung' %}</a></p>
+      <p>Folgen Sie der <a href="http://openslides.org/download/INSTALL-1.2.txt">{% trans 'Installationsanleitung' %}</a> 
+      nach dem Download. Die Anleitung liegt auch im Archiv bei.<br><br></p>
     </div>
   </div>
   <br>
