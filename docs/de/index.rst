@@ -23,9 +23,4 @@ Inhalt:
 
  chapter7
 
-Anhang
-======
-
-* :ref:`genindex`
-* :ref:`search`
-
+ impressum

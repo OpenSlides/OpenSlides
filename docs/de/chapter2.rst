@@ -7,23 +7,26 @@ In diesem Kapitel werden die ersten Schritte bei OpenSlides erklärt.
 Installation
 ++++++++++++
 
-OpenSlides muss auf einem Computer installiert werden. Dieser fungiert im Netzwerk als Server. Im Präsentationsmodus Single gibt es kein Netzwerk und daher auch keinen Server. OpenSlides muss dann auf dem einen verwendeten Computer installiert werden.
-
-Die Systemvoraussetzungen finden Sie hier: **TODO**
-
-Hinweise zur technischen Ausstattung (des Servers) finden Sie hier: **TODO** (Mindestanforderungen, empfohlene Anforderungen für Teilnehmermodus mit soundsoviel Clients)
+OpenSlides muss auf einem Computer installiert werden. Dieser fungiert im Netzwerk als Server. Im Präsentationsmodus Single gibt es kein Netzwerk. OpenSlides muss dann auf dem einen verwendeten Computer installiert werden.
 
 
 Verwendung der Windows-Version (Portable Version mit openslides.exe)
 --------------------------------------------------------------------
 
-Laden Sie die Datei ``openslides-1.2-portable.zip`` hier (**TODO**) herunter und extrahieren Sie den Inhalt in einen beliebigen Ordner. OpenSlides muss nun nicht weiter installiert werden. Alle notwendigen Programmelemente sind in dem Ordner enthalten.
+Laden Sie die aktuelle OpenSlides Version für Windows von
+http://www.openslides.org herunter.  Extrahieren Sie das zip-Archiv
+(z.B. ``openslides-1.2-portable.zip``) in einen beliebigen Ordner.
+OpenSlides muss nun nicht weiter installiert werden. Alle notwendigen
+Programmelemente sind in dem Ordner enthalten.
 
 
-Verwendung der Linux-Version oder des Quellcodes aus dem OpenSlides-Repository
-------------------------------------------------------------------------------
+Verwendung der Linux/MacOS-Version oder des Quellcodes aus dem OpenSlides-Repository
+------------------------------------------------------------------------------------
 
-Die Installationsanleitung für diese Versionen finden Sie hier: **TODO**
+Laden Sie die aktuelle OpenSlides Version für Linux/MacOS von
+http://www.openslides.org herunter. Die Installationsanleitung für
+diese Version finden Sie in der beiliegenden INSTALL.txt. Folgen Sie
+den Anweisungen der Anleitung.
 
 
 
@@ -44,8 +47,8 @@ Wenn Sie die Windows-Version (Portable Version mit openslides.exe) verwenden, br
 OpenSlides kann jederzeit im schwarzen Fenster der Kommandozeile mit der Tastenkombination ``Strg`` + ``Pause`` beendet werden. Alle eingegebenen Daten bleiben in der Datenbank gespeichert.
 
 
-Verwendung der Linux-Version oder des Quellcodes aus dem OpenSlides-Repository
-------------------------------------------------------------------------------
+Verwendung der Linux/MacOS-Version oder des Quellcodes aus dem OpenSlides-Repository
+------------------------------------------------------------------------------------
 
 Starten Sie den Server, indem Sie in der Kommandozeile in den Ordner wechseln, der die Datei ``start.py`` enthält, und eingeben::
 
