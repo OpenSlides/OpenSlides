@@ -8,6 +8,7 @@
 ~$
 \.DS_Store$
 ^extras/website/_build
+^extras/website/site-static
 ^docs/_build
 ^dist/
 ^versiontools
