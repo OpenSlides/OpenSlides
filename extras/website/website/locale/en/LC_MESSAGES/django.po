@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:OpenSlides Website\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-26 01:21+0200\n"
+"POT-Creation-Date: 2012-07-26 10:26+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: English \n"
@@ -210,19 +210,19 @@ msgstr ""
 "content management system. There is no need to leave the presentation mode "
 "of the projector which always displays the current slide."
 
-#: templates/about.html:64
+#: templates/about.html:63
 msgid "Screenshots & Funktionen"
 msgstr "Screeshots & functions"
 
-#: templates/about.html:69
+#: templates/about.html:68
 msgid "Unterstützen Sie OpenSlides mit Ihrer Spende"
 msgstr "Support OpenSlides with your donation"
 
-#: templates/about.html:73
+#: templates/about.html:72
 msgid "Historie"
 msgstr "History"
 
-#: templates/about.html:74
+#: templates/about.html:73
 msgid ""
 "Im Jahre 2005 wurde ein interner PHP-Prototyp von OpenSlides speziell für\n"
 "            den Einsatz auf der Bundesversammlung der\n"
@@ -235,7 +235,7 @@ msgstr ""
 "\"http://www.bundes-esg.de\">Evangelischen StudentInnengemeinde (Bundes-ESG)"
 "</a>."
 
-#: templates/about.html:78
+#: templates/about.html:77
 msgid ""
 "Ende 2010 begannen Oskar Hahn und Emanuel Schütze mit einer kompletten\n"
 "            Neuentwicklung in Python/Django und bauten ein Freies Software "
@@ -246,7 +246,7 @@ msgstr ""
 "development in Python/Django and created a free software project called "
 "\"OpenSlides\"."
 
-#: templates/about.html:81
+#: templates/about.html:80
 msgid ""
 "OpenSlides wurde im August 2011 unter\n"
 "            der GNU GPL v2+ veröffentlicht. Version 1.0 ist am 12. September "
@@ -267,13 +267,13 @@ msgstr "Download"
 #: templates/base.html:44 templates/base.html.py:104 templates/pricing.html:5
 #: templates/pricing.html.py:6
 msgid "Preise"
-msgstr "Prices"
+msgstr "Pricing"
 
 #: templates/base.html:46 templates/base.html.py:105
 #: templates/base_manual.html:10 templates/manual.html:5
 #: templates/manual.html.py:6
 msgid "Handbuch"
-msgstr "Handbook"
+msgstr "Manual"
 
 #: templates/base.html:47 templates/base.html.py:110
 #: templates/development.html:5 templates/development.html.py:6
@@ -551,7 +551,7 @@ msgid ""
 "        irgendwo erfasst und nicht vergessen werden sollen."
 msgstr ""
 "The OpenSlides wiki serves as technical documentation for things that are "
-"not (yet) mentioned in the handbook, or simply should be recored somewhere "
+"not (yet) mentioned in the manual, or simply should be recored somewhere "
 "so they won't be forgotten."
 
 #: templates/development.html:31
@@ -729,9 +729,8 @@ msgid ""
 "entpacken und openslides.exe starten!\n"
 "      "
 msgstr ""
-"This is a <strong>portable version</strong>. "
-"OpenSlides doesn't have to be installed. Just download, unpack and "
-"run openslides.exe!"
+"This is a <strong>portable version</strong>. OpenSlides doesn't have to be "
+"installed. Just download, unpack and run openslides.exe!"
 
 #: templates/download.html:29
 msgid "Für Linux/MacOS"
@@ -739,12 +738,12 @@ msgstr "For Linux/MacOS"
 
 #: templates/download.html:35
 msgid ""
-"Folgen Sie der <a href=\"http://openslides.org/download/INSTALL-1.2.txt"
+"Folgen Sie der <a href=\"http://files.openslides.org/INSTALL-1.2.txt"
 "\">Installationsanleitung</a> \n"
 "      nach dem Download. Die Anleitung liegt auch im Archiv bei."
 msgstr ""
-"After the download follow the <a href=\"http://openslides.org/download/INSTALL-1.2.txt\">"
-"installation instructions</a>. The instructions are also included in the archive."
+"After the download follow the <a href=\"http://files.openslides.org/INSTALL-1.2.txt\">installation instructions</a>. The instructions are also "
+"included in the archive."
 
 #: templates/download.html:43
 msgid "Ältere Versionen und Prüfsummen"
@@ -779,9 +778,9 @@ msgstr ""
 "\"support@openslides.org\">support@openslides.org</a>! Then we can compile a "
 "helpful selection of FAQs here soon."
 
-#: templates/features.html:48 templates/features.html.py:160
-#: templates/features.html:225 templates/features.html.py:269
-#: templates/features.html:300 templates/features.html.py:335
+#: templates/features.html:49 templates/features.html.py:161
+#: templates/features.html:226 templates/features.html.py:270
+#: templates/features.html:301 templates/features.html.py:330
 msgid "Nach oben"
 msgstr "Top"
 
@@ -893,19 +892,19 @@ msgstr ""
 msgid ""
 "Sie brauchen Hilfe zu OpenSlides? Werfen Sie mal einen Blick \n"
 "in unser Handbuch!"
-msgstr "Do you need help with OpenSlides? Take a look at our handbook!"
+msgstr "Do you need help with OpenSlides? Take a look at our manual!"
 
 #: templates/manual.html:18
 msgid ""
 "Das OpenSlides-Handbuch ist noch im Aufbau. \n"
 "    Eine aktuelle Version finden Sie hier:"
 msgstr ""
-"The OpenSlides handbook is still under construction. The current version can "
+"The OpenSlides manual is still under construction. The current version can "
 "be found here:"
 
 #: templates/manual.html:23
 msgid "OpenSlides-Handbuch"
-msgstr "OpenSlides handbook"
+msgstr "OpenSlides manual (German)"
 
 #: templates/order-form.html:5 templates/order-form.html.py:6
 msgid "Bestellformular"
@@ -1096,9 +1095,8 @@ msgstr "Download"
 #: templates/pricing.html:36 templates/pricing.html.py:38
 #: templates/pricing.html:40 templates/pricing.html.py:42
 #: templates/pricing.html:155
-#, python-format
-msgid "zzgl. 19%% MwSt."
-msgstr "plus 19%% VAT."
+msgid "zzgl. 19% MwSt."
+msgstr "plus VAT."
 
 #: templates/pricing.html:37 templates/pricing.html.py:39
 #: templates/pricing.html:41 templates/pricing.html.py:43
@@ -1227,9 +1225,8 @@ msgid "Vor-Ort-Service (z.B.: Beratung, Schulung, technische Durchführung)"
 msgstr "On site service (e.g.: consulting, training, technical implementation)"
 
 #: templates/pricing.html:159
-#, python-format
-msgid "zzgl. 19%% MwSt. und Spesen"
-msgstr "plus 19%% VAT and expenses"
+msgid "zzgl. 19% MwSt. und Spesen"
+msgstr "plus VAT and expenses"
 
 #: templates/pricing.html:162
 msgid ""
@@ -1348,11 +1345,3 @@ msgstr ""
 msgid "Sollten Sie noch Fragen haben, melden Sie sich gerne!"
 msgstr "If you have further questions don't hesitate to contact us!"
 
-#~ msgid "Portable Version mit openslides.exe"
-#~ msgstr "Portable version with openslides.exe"
-
-#~ msgid "Installationsanleitung"
-#~ msgstr "Installation instructions"
-
-#~ msgid "IRC Chat starten"
-#~ msgstr "start IRC chat"
