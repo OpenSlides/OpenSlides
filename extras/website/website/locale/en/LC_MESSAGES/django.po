@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:OpenSlides Website\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-26 10:26+0200\n"
+"POT-Creation-Date: 2012-07-26 10:39+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: English \n"
@@ -67,7 +67,7 @@ msgstr "Zip code"
 msgid "Ort"
 msgstr "City"
 
-#: forms.py:28 templates/pm-20110915.html:64
+#: forms.py:28 templates/pm-20110915.html:64 templates/pm-20120416.html:51
 msgid "Ansprechpartner"
 msgstr "Contact person"
 
@@ -301,8 +301,9 @@ msgid "Referenzen"
 msgstr "References"
 
 #: templates/base.html:95 templates/base_about.html:13
-#: templates/pm-20110915.html:5 templates/pm-20110915.html.py:6
-#: templates/press.html:5 templates/press.html.py:6
+#: templates/pm-20110915.html:6 templates/pm-20120416.html:6
+#: templates/pm-20120726.html:6 templates/press.html:5
+#: templates/press.html.py:6
 msgid "Presse"
 msgstr "Press"
 
@@ -428,9 +429,9 @@ msgstr "English speaking mailing list for users and developers"
 
 #: templates/contact.html:38
 msgid ""
-"HG-commit-Mailingliste von hg.openslides.org (moderiert), für Entwickler"
+"HG-commits-Mailingliste von hg.openslides.org (moderiert), für Entwickler"
 msgstr ""
-"HG commit mailing list of hg.openslides.org (moderated), for developers"
+"HG commits mailing list of hg.openslides.org (moderated), for developers"
 
 #: templates/contact.html:42
 msgid ""
@@ -551,8 +552,8 @@ msgid ""
 "        irgendwo erfasst und nicht vergessen werden sollen."
 msgstr ""
 "The OpenSlides wiki serves as technical documentation for things that are "
-"not (yet) mentioned in the manual, or simply should be recored somewhere "
-"so they won't be forgotten."
+"not (yet) mentioned in the manual, or simply should be recored somewhere so "
+"they won't be forgotten."
 
 #: templates/development.html:31
 msgid ""
@@ -742,7 +743,8 @@ msgid ""
 "\">Installationsanleitung</a> \n"
 "      nach dem Download. Die Anleitung liegt auch im Archiv bei."
 msgstr ""
-"After the download follow the <a href=\"http://files.openslides.org/INSTALL-1.2.txt\">installation instructions</a>. The instructions are also "
+"After the download follow the <a href=\"http://files.openslides.org/"
+"INSTALL-1.2.txt\">installation instructions</a>. The instructions are also "
 "included in the archive."
 
 #: templates/download.html:43
@@ -922,11 +924,13 @@ msgstr "Your contact details"
 msgid "Zurück zur Paketübersicht"
 msgstr "Back to the package overview"
 
-#: templates/pm-20110915.html:14
+#: templates/pm-20110915.html:5 templates/pm-20110915.html.py:14
+#: templates/pm-20120416.html:5 templates/pm-20120416.html.py:14
+#: templates/pm-20120726.html:5 templates/pm-20120726.html.py:14
 msgid "Pressemitteilung"
 msgstr "Press release"
 
-#: templates/pm-20110915.html:16 templates/press.html:31
+#: templates/pm-20110915.html:16 templates/press.html:36
 msgid ""
 "OpenSlides 1.0 - Neues Präsentationssystem für Veranstaltungen mit "
 "Tagesordnungen, Anträgen und Wahlen"
@@ -1019,7 +1023,7 @@ msgstr ""
 "OpenSlides is platform independet and runs as a server application anywhere "
 "that has Python available (e.g. on Windows, MacOSX, GNU/Linux)."
 
-#: templates/pm-20110915.html:60
+#: templates/pm-20110915.html:60 templates/pm-20120416.html:47
 msgid "Download und weitere Informationen auf der offiziellen Webseite"
 msgstr "Download and further information on the official web page"
 
@@ -1043,21 +1047,21 @@ msgstr "Article from AV-views 2011/5 for OpenSlides 1.1"
 msgid "Pro-Linux-Meldung zu OpenSlides 1.0"
 msgstr "Pro-Linux news for OpenSlides 1.0"
 
-#: templates/press.html:37
+#: templates/press.html:42
 msgid "Pressekontakt"
 msgstr "Press contact"
 
-#: templates/press.html:50
+#: templates/press.html:55
 msgid "Logos"
 msgstr "Logos"
 
-#: templates/press.html:51
+#: templates/press.html:56
 msgid ""
 "Das Motiv von OpenSlides ist ein Overheadprojektor (auch Polylux oder "
 "Tageslichtprojektor)."
 msgstr "The motive of OpenSlides is an overhead projector."
 
-#: templates/press.html:52
+#: templates/press.html:57
 msgid "Alle Größen und Varianten des OpenSlides Logos"
 msgstr "All sizes and variants of the OpenSlides logo"
 
@@ -1344,4 +1348,3 @@ msgstr ""
 #: templates/thanks-order.html:18
 msgid "Sollten Sie noch Fragen haben, melden Sie sich gerne!"
 msgstr "If you have further questions don't hesitate to contact us!"
-
