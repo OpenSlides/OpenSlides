@@ -27,6 +27,8 @@ urlpatterns = i18n_patterns('',
     url(r'^demo/$', TemplateView.as_view(template_name="demo.html"), name='demo',),
     url(r'^impressum/$', TemplateView.as_view(template_name="impressum.html"), name='impressum',),
     url(r'^about/press/20110915/$', TemplateView.as_view(template_name="pm-20110915.html"), name='pm-20110915',),
+    url(r'^about/press/20120416/$', TemplateView.as_view(template_name="pm-20120416.html"), name='pm-20120416',),
+    url(r'^about/press/20120726/$', TemplateView.as_view(template_name="pm-20120726.html"), name='pm-20120726',),
 )
 
 urlpatterns += patterns('django.contrib.staticfiles.views',

@@ -1,0 +1,60 @@
+{% extends "base_about.html" %}
+
+{% load i18n %}
+
+{% block title %}{{ block.super }} - {% trans "Pressemitteilung" %}{% endblock %}
+{% block headline %}{% trans "Presse" %}{% endblock %}
+
+{% block submenu_press %}active{% endblock %}
+
+
+{% block content %}
+<p><i><a href="{% url press %}">&laquo; Zurück</a></i></p>
+
+<h3>{% trans 'Pressemitteilung' %}</h3>
+<br>
+<h4>+++ Intevation veranstaltet OpenSlides-Entwicklertreffen +++</h4>
+<br>
+<p><em>Osnabrück, 16. April 2012</em></p>
+
+<p>Am vergangenen Wochendende (13.-15.4.2012) trafen sich die Entwickler
+der Freien Präsentationssoftware OpenSlides zu ihrem ersten
+öffentlichen Entwicklertreffen. Die Intevation GmbH förderte dieses
+Treffen als Gastgeber. Personelle und finanzielle Unterstützung
+erhielt das OpenSlides-Entwicklertreffen durch die Piratenpartei
+Deutschland, die OpenSlides bereits auf ihren Parteitagen
+einsetzen.</p>
+
+<p>Ziel des "Code-Sprint-Meetings" war die Vorbereitung der neuen
+OpenSlides Version 1.2, die in wenigen Wochen erscheinen soll.  
+"Es war ein sehr produktives Treffen. Wir sind einen großen Schritt
+weitergekommen und es gab viele innovative Ideen für die Zukunft von
+OpenSlides.", sagt Emanuel Schütze, Hauptentwickler von OpenSlides und
+Mitarbeiter der Intevation GmbH. Interessierte Nutzer können die
+aktuelle Entwicklungsversion schon jetzt ausprobieren. Eine
+Veröffentlichung der finalen Version 1.2 ist für Anfang Mai geplant.
+Auch die Planung für den OpenSlides-Stand auf dem LinuxTag 2012 in
+Berlin stand auf der Agenda des Treffens.</p>
+
+<p>OpenSlides ist ein freies, webbasiertes Präsentationssystem zur
+professionellen Darstellung und Steuerung von Tagesordnung, Anträgen
+und Wahlen einer Veranstaltung. Die große Stärke der Software ist die
+Bearbeitung der Folien über ein Redaktionssystem während der
+Präsentationsmodus läuft. Transparenz schafft OpenSlides durch die
+Möglichkeit Teilnehmer mit ihren Mobilgeräten auf die Inhalte von
+OpenSlides zugreifen zu lassen.</p>
+
+<p>{% trans 'Download und weitere Informationen auf der offiziellen Webseite' %}:<br>
+<a href="http://openslides.org">http://openslides.org</a></p>
+
+
+<p>{% trans 'Ansprechpartner' %}:</p>
+
+<p>Emanuel Schütze<br>
+Intevation GmbH<br>
+Neuer Graben 17<br>
+49074 Osnabrück<br>
+E-Mail: emanuel.schuetze@intevation.de<br>
+Telefon: 0541-335083-746</p>
+
+{% endblock %}
