@@ -1235,7 +1235,7 @@ msgstr "plus VAT and expenses"
 #: templates/pricing.html:162
 msgid ""
 "Verleih oder Verkauf eines elektronischen\n"
-"                Abstimmugssystems mit Anbindung an OpenSlides"
+"                Abstimmungssystems mit Anbindung an OpenSlides"
 msgstr ""
 "Rental or sale of an electronic voting system with support for OpenSlides"
 
