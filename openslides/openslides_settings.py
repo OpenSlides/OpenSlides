@@ -28,6 +28,8 @@ AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 
+SESSION_COOKIE_NAME = 'OpenSlidesSessionID'
+
 DBPATH = _fs2unicode(os.path.join(os.path.join(SITE_ROOT, '..'), 'database.db'))
 
 DATABASES = {
