@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:OpenSlides Website\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-26 10:39+0200\n"
+"POT-Creation-Date: 2012-07-27 13:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: English \n"
@@ -312,7 +312,7 @@ msgstr "Press"
 msgid "Lizenz"
 msgstr "License"
 
-#: templates/base.html:98 templates/demo.html:3 templates/demo.html.py:4
+#: templates/base.html:98 templates/demo.html:5 templates/demo.html.py:6
 #: templates/home.html:28
 msgid "Demo"
 msgstr "Demo"
@@ -478,43 +478,43 @@ msgstr "Network"
 msgid "Kanal"
 msgstr "Channel"
 
-#: templates/demo.html:8
+#: templates/demo.html:10
 msgid "Entdecken Sie die Funktionen von OpenSlides in dieser Online-Demo."
 msgstr "Discover the functions of OpenSlides in this online demo."
 
-#: templates/demo.html:20
+#: templates/demo.html:22
 msgid "Es sind drei Demo-Nutzer mit unterschiedlichen Rechten eingerichtet:"
 msgstr "Three users with different permissions are configured:"
 
-#: templates/demo.html:23
+#: templates/demo.html:25
 msgid "Versammlungsleitung"
 msgstr "Event management"
 
-#: templates/demo.html:24 templates/demo.html.py:29
+#: templates/demo.html:26 templates/demo.html.py:31
 msgid "Nutzername"
 msgstr "Username"
 
-#: templates/demo.html:25 templates/demo.html.py:30
+#: templates/demo.html:27 templates/demo.html.py:32
 msgid "Passwort"
 msgstr "Password"
 
-#: templates/demo.html:28
+#: templates/demo.html:30
 msgid "Delegierter"
 msgstr "Delegate"
 
-#: templates/demo.html:33
+#: templates/demo.html:35
 msgid "Gast"
 msgstr "Guest"
 
-#: templates/demo.html:34
+#: templates/demo.html:36
 msgid "ohne Zugangsdaten"
 msgstr "no login data"
 
-#: templates/demo.html:37
+#: templates/demo.html:39
 msgid "Achtung"
 msgstr "Attention"
 
-#: templates/demo.html:37
+#: templates/demo.html:39
 msgid "Die Demo wird täglich zurückgesetzt!"
 msgstr "The demo will be reset daily!"
 
@@ -620,8 +620,8 @@ msgid ""
 "Eine Anleitung zum Clonen gibt es unter <a href=\"%(download_url)s"
 "\">Download</a>."
 msgstr ""
-"A guide to cloning the repository is available under <a href="
-"\"%(download_url)s>Download</a>."
+"A guide to cloning the OpenSlides repository is available under <a href="
+"\"%(download_url)s\">Download</a>."
 
 #: templates/development.html:65
 msgid "Quellcode durchsuchen"
@@ -930,7 +930,7 @@ msgstr "Back to the package overview"
 msgid "Pressemitteilung"
 msgstr "Press release"
 
-#: templates/pm-20110915.html:16 templates/press.html:36
+#: templates/pm-20110915.html:16 templates/press.html:40
 msgid ""
 "OpenSlides 1.0 - Neues Präsentationssystem für Veranstaltungen mit "
 "Tagesordnungen, Anträgen und Wahlen"
@@ -1035,33 +1035,45 @@ msgstr ""
 "The new idea of OpenSlides has made impressions. Read what the press writes "
 "about OpenSlides."
 
-#: templates/press.html:20
+#: templates/press.html:21
+msgid "Linux-Magazin-Meldung zu OpenSlides 1.2"
+msgstr "Linux Magazin news for OpenSlides 1.2"
+
+#: templates/press.html:22
+msgid "Heise-Meldung zu OpenSlides 1.2"
+msgstr "Heise news for OpenSlides 1.2"
+
+#: templates/press.html:23
+msgid "Pro-Linux-Meldung zu OpenSlides 1.2"
+msgstr "Pro-Linux news for OpenSlides 1.2"
+
+#: templates/press.html:24
 msgid "Artikel aus c't 26/2011 zu OpenSlides 1.1"
 msgstr "Article from c't 26/2011 zu OpenSlides 1.1"
 
-#: templates/press.html:21
+#: templates/press.html:25
 msgid "Artikel aus AV-views 2011/5 zu OpenSlides 1.1"
 msgstr "Article from AV-views 2011/5 for OpenSlides 1.1"
 
-#: templates/press.html:22
+#: templates/press.html:26
 msgid "Pro-Linux-Meldung zu OpenSlides 1.0"
 msgstr "Pro-Linux news for OpenSlides 1.0"
 
-#: templates/press.html:42
+#: templates/press.html:46
 msgid "Pressekontakt"
 msgstr "Press contact"
 
-#: templates/press.html:55
+#: templates/press.html:59
 msgid "Logos"
 msgstr "Logos"
 
-#: templates/press.html:56
+#: templates/press.html:60
 msgid ""
 "Das Motiv von OpenSlides ist ein Overheadprojektor (auch Polylux oder "
 "Tageslichtprojektor)."
 msgstr "The motive of OpenSlides is an overhead projector."
 
-#: templates/press.html:57
+#: templates/press.html:61
 msgid "Alle Größen und Varianten des OpenSlides Logos"
 msgstr "All sizes and variants of the OpenSlides logo"
 
@@ -1099,7 +1111,8 @@ msgstr "Download"
 #: templates/pricing.html:36 templates/pricing.html.py:38
 #: templates/pricing.html:40 templates/pricing.html.py:42
 #: templates/pricing.html:155
-msgid "zzgl. 19% MwSt."
+#, python-format
+msgid "zzgl. 19%% MwSt."
 msgstr "plus VAT."
 
 #: templates/pricing.html:37 templates/pricing.html.py:39
@@ -1229,7 +1242,8 @@ msgid "Vor-Ort-Service (z.B.: Beratung, Schulung, technische Durchführung)"
 msgstr "On site service (e.g.: consulting, training, technical implementation)"
 
 #: templates/pricing.html:159
-msgid "zzgl. 19% MwSt. und Spesen"
+#, python-format
+msgid "zzgl. 19%% MwSt. und Spesen"
 msgstr "plus VAT and expenses"
 
 #: templates/pricing.html:162
