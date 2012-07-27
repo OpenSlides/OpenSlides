@@ -322,7 +322,7 @@ class Application(models.Model, SlideMixin):
         if status not in actions and not force:
             raise NameError(_('The application status is: \'%(currentstatus)s\'. '\
                     'You can not set the status to \'%(newstatus)s\'.') % {
-                        'currentstatus': self.status, 
+                        'currentstatus': self.status,
                         'newstatus': status
                         })
 
@@ -343,6 +343,9 @@ class Application(models.Model, SlideMixin):
                 user.profile
             except Profile.DoesNotExist:
                 is_admin = True
+            except AttributeError:
+                # For the anonymous-user
+                pass
 
         # check if user allowed to withdraw an application
         if  ((self.status == "pub"
