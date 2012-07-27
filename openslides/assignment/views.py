@@ -250,7 +250,7 @@ def set_publish_status(request, poll_id):
             poll.set_published(True)
     except AssignmentPoll.DoesNotExist:
         messages.error(request, _('Ballot ID %d does not exist.') % int(poll_id))
-        return redirect(reverse('assignment_view', args=[poll.assignment.id]))
+        return redirect(reverse('assignment_overview'))
 
     if request.is_ajax():
         return ajax_request({'published': poll.published})
