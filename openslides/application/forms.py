@@ -77,8 +77,8 @@ class ApplicationImportForm(forms.Form, CssClassMixin):
     import_permitted = forms.BooleanField(
         required=False,
         label=_("Import applications with status \"permitted\""),
-        help_text=_('Set the initial status for each application to ' \
-        'permitted"'),
+        help_text=_('Set the initial status for each application to '
+            '"permitted"'),
     )
 
 
