@@ -1,26 +1,27 @@
 # German translations for OpenSlides package.
 # Copyright (C) 2011, 2012 by OpenSlides team, see AUTHORS.
 # This file is distributed under the same license as the OpenSlides package.
+# Oskar Hahn <mail@oshahn.de>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-25 22:46+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
-"Language-Team: German\n"
+"POT-Creation-Date: 2012-07-28 11:02+0200\n"
+"PO-Revision-Date: 2012-07-28 11:07+0200\n"
+"Last-Translator: Oskar Hahn <mail@oshahn.de>\n"
+"Language-Team: Deutsch <mail@oshahn.de>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: openslides_settings.py:47
+#: openslides_settings.py:49
 msgid "German"
 msgstr "Deutsch"
 
-#: openslides_settings.py:48
+#: openslides_settings.py:50
 msgid "English"
 msgstr "Englisch"
 
@@ -28,13 +29,13 @@ msgstr "Englisch"
 msgid "Parent item"
 msgstr "Elternelement"
 
-#: agenda/models.py:42 application/forms.py:40 application/models.py:528
+#: agenda/models.py:42 application/forms.py:40 application/models.py:531
 #: application/templates/application/view.html:249 config/forms.py:61
 #: projector/models.py:32
 msgid "Title"
 msgstr "Titel"
 
-#: agenda/models.py:43 application/forms.py:41 application/models.py:529
+#: agenda/models.py:43 application/forms.py:41 application/models.py:532
 #: application/templates/application/view.html:250 projector/models.py:33
 msgid "Text"
 msgstr "Text"
@@ -101,7 +102,7 @@ msgid "Item %s was successfully deleted."
 msgstr "Eintrag %s wurde erfolgreich gelöscht."
 
 #: agenda/views.py:196 agenda/views.py:211
-#: agenda/templates/agenda/overview.html:46 application/models.py:562
+#: agenda/templates/agenda/overview.html:46 application/models.py:565
 #: application/views.py:493 application/views.py:818 application/views.py:869
 #: application/templates/application/view.html:82
 #: application/templates/projector/Application.html:37
@@ -115,7 +116,7 @@ msgid "Yes"
 msgstr "Ja"
 
 #: agenda/views.py:197 agenda/views.py:212
-#: agenda/templates/agenda/overview.html:47 application/models.py:562
+#: agenda/templates/agenda/overview.html:47 application/models.py:565
 #: application/views.py:493 application/views.py:818 application/views.py:870
 #: application/templates/application/view.html:83
 #: application/templates/projector/Application.html:38
@@ -323,7 +324,7 @@ msgstr "Löschen"
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: application/forms.py:43 application/models.py:530 application/views.py:837
+#: application/forms.py:43 application/models.py:533 application/views.py:837
 #: application/templates/application/view.html:232
 #: application/templates/application/view.html:252
 #: application/templates/projector/Application.html:77
@@ -359,7 +360,7 @@ msgid "Import applications with status \"permitted\""
 msgstr "Anträge als \"Zugelassen\" importieren"
 
 #: application/forms.py:80
-msgid "Set the initial status for each application to permitted\""
+msgid "Set the initial status for each application to \"permitted\""
 msgstr "Setzt den initialen Status für jeden Antrag auf \"zugelassen\""
 
 #: application/forms.py:88
@@ -460,6 +461,12 @@ msgstr "Benötigt Review"
 msgid "Version %d permitted"
 msgstr "Version %d zugelassen"
 
+#: application/models.py:109
+#, python-format
+msgctxt "Rejected means not permitted"
+msgid "Version %d rejected"
+msgstr "Version %d verworfen"
+
 #: application/models.py:138
 msgid "Searching for supporters."
 msgstr "Auf Unterstützersuche."
@@ -542,17 +549,17 @@ msgstr ""
 msgid "Status modified"
 msgstr "Status geändert"
 
-#: application/models.py:435
+#: application/models.py:438
 msgid "by"
 msgstr "von"
 
-#: application/models.py:443 application/templates/application/view.html:213
+#: application/models.py:446 application/templates/application/view.html:213
 #: application/templates/application/widget.html:27
 #: application/templates/projector/Application.html:65
 msgid "no number"
 msgstr "ohne Nummer"
 
-#: application/models.py:444 application/views.py:709 application/views.py:851
+#: application/models.py:447 application/views.py:709 application/views.py:851
 #: application/templates/application/poll_view.html:7
 #: application/templates/application/poll_view.html:12
 #: application/templates/application/view.html:7
@@ -564,35 +571,35 @@ msgstr "ohne Nummer"
 msgid "Application"
 msgstr "Antrag"
 
-#: application/models.py:469
+#: application/models.py:472
 msgid "Poll created"
 msgstr "Abstimmung erstellt"
 
-#: application/models.py:520
+#: application/models.py:523
 msgid "Can see application"
 msgstr "Darf Anträge sehen"
 
-#: application/models.py:521
+#: application/models.py:524
 msgid "Can create application"
 msgstr "Darf Anträge erstellen"
 
-#: application/models.py:522
+#: application/models.py:525
 msgid "Can support application"
 msgstr "Darf Anträge unterstützen"
 
-#: application/models.py:523
+#: application/models.py:526
 msgid "Can manage application"
 msgstr "Darf Anträge verwalten"
 
-#: application/models.py:563 assignment/models.py:241
+#: application/models.py:566 assignment/models.py:241
 msgid "Abstain"
 msgstr "Enthaltung"
 
-#: application/models.py:589
+#: application/models.py:592
 msgid "The Assembly may decide,"
 msgstr "Die Versammlung möge beschließen,"
 
-#: application/models.py:592 application/views.py:702 application/views.py:931
+#: application/models.py:595 application/views.py:702 application/views.py:931
 #: application/templates/application/base_application.html:9
 #: application/templates/application/overview.html:7
 #: application/templates/application/overview.html:10
@@ -2205,6 +2212,7 @@ msgid "Custom slides"
 msgstr "Benutzerdefinierte Folien"
 
 #: projector/templates/projector/control_countdown.html:6
+msgctxt "seconds"
 msgid "s"
 msgstr "s"
 
