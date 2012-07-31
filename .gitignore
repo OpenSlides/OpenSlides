@@ -1,0 +1,11 @@
+.venv/*
+openslides/.venv/
+*.pyc
+*.swp
+openslides/settings.py
+database.db
+*~
+extras/website/*
+extras/website-old/*
+docs/_build/*
+*.egg-info
