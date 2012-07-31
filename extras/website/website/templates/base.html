@@ -109,6 +109,7 @@
            <div class="span2">
              <h4>{% trans 'Entwicklung' %}</h4>
              <ul class="unstyled">
+                 <li><a href="{% url authors %}">{% trans 'Autoren' %}</a></li>
                  <li><a href="http://dev.openslides.org">{% trans 'Wiki' %}</a></li>
                  <li><a href="http://dev.openslides.org/roadmap">{% trans 'Roadmap' %}</a></li>
                  <li><a href="http://dev.openslides.org/report/3">{% trans 'Tickets' %}</a></li>
@@ -127,7 +128,7 @@
              <a href="https://twitter.com/openslides" class="twitter-follow-button" data-show-count="false" data-lang="de" data-size="large">{% trans '@openslides folgen' %}</a>
              <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 
-              <div class="license"> 
+              <div class="license">
               <p>OpenSlides is licensed under the <a href="{% url license %}">GNU GPL v2+</a>.<br>
                 Icons from <a href="http://glyphicons.com">Glyphicons
                  Free</a>, licensed under <a
