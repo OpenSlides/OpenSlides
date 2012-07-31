@@ -1,19 +1,20 @@
 # English translations for OpenSlides website
 # Copyright (C) 2012 by OpenSlides team, see AUTHORS
 # This file is distributed under the same license as the OpenSlides package.
+# Oskar Hahn <mail@oshahn.de>, 2012.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version:OpenSlides Website\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-27 13:03+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
-"Language-Team: English \n"
+"POT-Creation-Date: 2012-07-31 10:25+0200\n"
+"PO-Revision-Date: 2012-07-31 10:33+0200\n"
+"Last-Translator: Oskar Hahn <mail@oshahn.de>\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: forms.py:7
 msgid "Betreff"
@@ -260,6 +261,77 @@ msgstr ""
 "production was in the middle of September 2011 during the federal assembly "
 "of the ESG in Hannover."
 
+#: templates/authors.html:5 templates/authors.html.py:6
+#: templates/base.html:112
+msgid "Autoren"
+msgstr "Authors"
+
+#: templates/authors.html:11
+msgid ""
+"\n"
+"            OpenSlides ist eine Software von:\n"
+"            <ul>\n"
+"                <li>Emanuel Schütze</li>\n"
+"                <li>Norman Jäckel</li>\n"
+"                <li>Oskar Hahn</li>\n"
+"            </ul>\n"
+"            Mit unterstützung von:\n"
+"            <ul>\n"
+"                <li>Andy Kittner</li>\n"
+"                <li>René Köcher</li>\n"
+"            </ul>\n"
+"            OpenSlides baut auf folgender Software auf:\n"
+"            <ul>\n"
+"                <li><a href=\"http://www.python.org/\">Python</a></li>\n"
+"                <li><a href=\"https://www.djangoproject.com/\">Django</a></"
+"li>\n"
+"                <li><a href=\"https://github.com/django-mptt/django-mptt/"
+"\">django-mptt</a></li>\n"
+"                <li><a href=\"https://github.com/bradjasper/django-jsonfield"
+"\">django-jsonfield</a></li>\n"
+"                <li><a href=\"http://www.reportlab.com/software/opensource/"
+"rl-toolkit/\">ReportLab</a></li>\n"
+"                <li><a href=\"http://www.jquery.com/\">jQuery</a></li>\n"
+"                <li><a href=\"http://www.drupal.org/\">Drupal (tabledrag "
+"function)</a></li>\n"
+"                <li><a href=\"http://jqueryui.com/\">jQuery UI</a></li>\n"
+"                <li><a href=\"http://font.ubuntu.com/\">Ubuntu TrueType "
+"Font</a></li>\n"
+"            </ul>\n"
+"        "
+msgstr ""
+"\n"
+"            OpenSlides is a software from:\n"
+"            <ul>\n"
+"                <li>Emanuel Schütze</li>\n"
+"                <li>Norman Jäckel</li>\n"
+"                <li>Oskar Hahn</li>\n"
+"            </ul>\n"
+"            With  support from:\n"
+"            <ul>\n"
+"                <li>Andy Kittner</li>\n"
+"                <li>René Köcher</li>\n"
+"            </ul>\n"
+"            OpenSlides uses parts of the following projects:\n"
+"            <ul>\n"
+"                <li><a href=\"http://www.python.org/\">Python</a></li>\n"
+"                <li><a href=\"https://www.djangoproject.com/\">Django</a></"
+"li>\n"
+"                <li><a href=\"https://github.com/django-mptt/django-mptt/"
+"\">django-mptt</a></li>\n"
+"                <li><a href=\"https://github.com/bradjasper/django-jsonfield"
+"\">django-jsonfield</a></li>\n"
+"                <li><a href=\"http://www.reportlab.com/software/opensource/"
+"rl-toolkit/\">ReportLab</a></li>\n"
+"                <li><a href=\"http://www.jquery.com/\">jQuery</a></li>\n"
+"                <li><a href=\"http://www.drupal.org/\">Drupal (tabledrag "
+"function)</a></li>\n"
+"                <li><a href=\"http://jqueryui.com/\">jQuery UI</a></li>\n"
+"                <li><a href=\"http://font.ubuntu.com/\">Ubuntu TrueType "
+"Font</a></li>\n"
+"            </ul>\n"
+"        "
+
 #: templates/base.html:42 templates/base.html.py:97 templates/home.html:24
 msgid "Download"
 msgstr "Download"
@@ -280,7 +352,7 @@ msgstr "Manual"
 msgid "Entwicklung"
 msgstr "Development"
 
-#: templates/base.html:51 templates/base.html.py:122 templates/contact.html:5
+#: templates/base.html:51 templates/base.html.py:123 templates/contact.html:5
 #: templates/contact.html.py:6 templates/impressum.html:5
 #: templates/pricing.html:178
 msgid "Kontakt"
@@ -330,34 +402,34 @@ msgstr "Support"
 msgid "FAQ"
 msgstr "FAQ"
 
-#: templates/base.html:112 templates/development.html:27
+#: templates/base.html:113 templates/development.html:27
 #: templates/development.html.py:33
 msgid "Wiki"
 msgstr "Wiki"
 
-#: templates/base.html:113 templates/development.html:37
+#: templates/base.html:114 templates/development.html:37
 #: templates/development.html.py:43
 msgid "Roadmap"
 msgstr "Roadmap"
 
-#: templates/base.html:114 templates/development.html:47
+#: templates/base.html:115 templates/development.html:47
 msgid "Tickets"
 msgstr "Tickets"
 
-#: templates/base.html:115 templates/development.html:59
+#: templates/base.html:116 templates/development.html:59
 #: templates/download.html:47
 msgid "Quellcode"
 msgstr "Source code"
 
-#: templates/base.html:121 templates/donate.html:5 templates/donate.html.py:6
+#: templates/base.html:122 templates/donate.html:5 templates/donate.html.py:6
 msgid "Spenden"
 msgstr "Donate"
 
-#: templates/base.html:123 templates/impressum.html:6
+#: templates/base.html:124 templates/impressum.html:6
 msgid "Impressum"
 msgstr "Imprint"
 
-#: templates/base.html:127
+#: templates/base.html:128
 msgid "@openslides folgen"
 msgstr "follow @openslides"
 
