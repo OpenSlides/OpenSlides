@@ -21,6 +21,7 @@ from django.utils.translation import pgettext
 from django.utils.translation import ugettext_lazy as _, ugettext_noop, ugettext
 
 from openslides.utils.utils import _propper_unicode
+from openslides.utils.user import UserField
 
 from openslides.config.models import config
 from openslides.config.signals import default_config_value
@@ -60,7 +61,7 @@ class Application(models.Model, SlideMixin):
         # genpoll
     )
 
-    submitter = models.ForeignKey(User, verbose_name=_("Submitter"))
+    submitter = UserField(verbose_name=_("Submitter"))
     supporter = models.ManyToManyField(User, related_name='supporter', \
                                        null=True, blank=True, verbose_name=_("Supporters"))
     number = models.PositiveSmallIntegerField(blank=True, null=True,

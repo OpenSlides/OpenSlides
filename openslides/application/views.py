@@ -180,7 +180,7 @@ def edit(request, application_id=None):
         return redirect(reverse('application_overview'))
     if application_id is not None:
         application = Application.objects.get(id=application_id)
-        if not request.user == application.submitter and not is_manager:
+        if not request.user == application.submitter.user and not is_manager:
             messages.error(request, _("You can not edit this application. You are not the submitter."))
             return redirect(reverse('application_view', args=[application.id]))
         actions = application.get_allowed_actions(user=request.user)
@@ -217,7 +217,7 @@ def edit(request, application_id=None):
                         original_supporters.append(s)
                 application = managerform.save(commit=False)
             elif application_id is None:
-                application = Application(submitter=request.user)
+                application = Application(submitter=request.user.profile)
             application.title = dataform.cleaned_data['title']
             application.text = dataform.cleaned_data['text']
             application.reason = dataform.cleaned_data['reason']
@@ -278,12 +278,14 @@ def edit(request, application_id=None):
         dataform = formclass(initial=initial, prefix="data")
         if is_manager:
             if application_id is None:
-                initial = {'submitter': str(request.user.id)}
+                try:
+                    initial = {'submitter': request.user.profile.uid}
+                except Profile.DoesNotExist:
+                    initial = {}
             else:
-                initial = {}
-            managerform = managerformclass(initial=initial, \
-                                                 instance=application, \
-                                                 prefix="manager")
+                initial = {'submitter': application.submitter.uid}
+            managerform = managerformclass(initial=initial,
+                instance=application, prefix="manager")
         else:
             managerform = None
     return {

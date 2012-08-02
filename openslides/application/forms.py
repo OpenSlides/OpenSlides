@@ -15,6 +15,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
 from openslides.utils.forms import CssClassMixin
+from openslides.utils.user import UserFormField
 from openslides.application.models import Application
 
 
@@ -50,11 +51,7 @@ class ApplicationFormTrivialChanges(ApplicationForm):
 
 
 class ApplicationManagerForm(forms.ModelForm, CssClassMixin):
-    submitter = UserModelChoiceField(
-        queryset=User.objects.all().exclude(profile=None).
-        order_by("first_name"),
-        label=_("Submitter"),
-    )
+    submitter = UserFormField()
 
     class Meta:
         model = Application

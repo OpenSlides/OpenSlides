@@ -10,19 +10,22 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.db import models
 from django.db.models import Q
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
+
+from openslides.utils.user import UserMixin
+from openslides.utils.user.signals import receiv_users
 
 from openslides.config.signals import default_config_value
 
 from openslides.participant.api import gen_password
 
 
-
-class Profile(models.Model):
+class Profile(models.Model, UserMixin):
+    user_prefix = 'participant'
     GENDER_CHOICES = (
         ('male', _('Male')),
         ('female', _('Female')),
@@ -84,6 +87,42 @@ class Profile(models.Model):
             ('can_see_participant', ugettext_noop("Can see participant")),
             ('can_manage_participant', ugettext_noop("Can manage participant")),
         )
+
+
+class ParticipantUsers(object):
+    user_prefix = Profile.user_prefix
+
+    def __iter__(self):
+        for profile in Profile.objects.all():
+            yield profile
+
+    def __getitem__(self, key):
+        return Profile.objects.get(pk=key)
+
+
+class DjangoGroup(models.Model, UserMixin):
+    user_prefix = 'djangogroup'
+
+    group = models.OneToOneField(Group)
+
+    def __unicode__(self):
+        return unicode(self.group)
+
+
+class DjangoGroupUsers(object):
+    user_prefix = DjangoGroup.user_prefix
+
+    def __iter__(self):
+        for group in DjangoGroup.objects.all():
+            yield group
+
+    def __getitem__(self, key):
+        return DjangoGroup.objects.get(pk=key)
+
+
+@receiver(receiv_users, dispatch_uid="participant_profile")
+def receiv_users(sender, **kwargs):
+    return [ParticipantUsers(), DjangoGroupUsers()]
 
 
 @receiver(default_config_value, dispatch_uid="participant_default_config")

@@ -16,8 +16,8 @@
 <div id="sidebar">
     <div class="box">
     <h4>{% trans "Submitter" %}:</h4>
-    {{ application.submitter.profile }}
-    {% if user == application.submitter %}
+    {{ application.submitter }}
+    {% if user == application.submitter.user %}
     <img src="{% static 'images/icons/user-information.png' %}" title="{% trans 'You!' %}">
     {% endif %}
 
@@ -113,7 +113,7 @@
     {{ application.creation_time }}
 
     <p></p>
-    {% if "wit" in actions and user == application.submitter %}
+    {% if "wit" in actions and user == application.submitter.user %}
     <p></p>
         <a href='{% url application_set_status application.id 'wit' %}'>
             <span class="button"><span class="icon revert">{% trans 'Withdraw' %}</span></span>
