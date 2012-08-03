@@ -68,6 +68,9 @@ class ProfileForm(forms.ModelForm, CssClassMixin):
 
 
 class GroupForm(forms.ModelForm, CssClassMixin):
+    as_user = forms.BooleanField(initial=False, required=False,
+        label=_("Treat Group as User"),
+        help_text=_("The Group will appear on any place, other user does."))
     permissions = LocalizedModelMultipleChoiceField(
         queryset=Permission.objects.all(), label=_("Persmissions"))
 

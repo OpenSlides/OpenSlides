@@ -46,7 +46,7 @@ from openslides.utils.views import FormView, PDFView
 
 from openslides.config.models import config
 
-from openslides.participant.models import Profile
+from openslides.participant.models import Profile, DjangoGroup
 from openslides.participant.api import gen_username, gen_password
 from openslides.participant.forms import (UserNewForm, UserEditForm,
     ProfileForm, UsersettingsForm, UserImportForm, GroupForm,
@@ -269,6 +269,7 @@ def group_edit(request, group_id=None):
         try:
             group = Group.objects.get(id=group_id)
         except Group.DoesNotExist:
+            # TODO: return a 404 Object
             raise NameError("There is no group %d" % group_id)
     else:
         group = None
@@ -277,14 +278,18 @@ def group_edit(request, group_id=None):
     if request.method == 'POST':
         form = GroupForm(request.POST, instance=group)
         if form.is_valid():
+            # TODO: This can be done inside the form
             group_name = form.cleaned_data['name'].lower()
 
+            # TODO: Why is this code called on any request and not only, if the
+            # anonymous_group is edited?
             try:
                 anonymous_group = Group.objects.get(name='Anonymous')
             except Group.DoesNotExist:
                 anonymous_group = None
 
             # special handling for anonymous auth
+            # TODO: This code should be a form validator.
             if group is None and group_name.strip().lower() == 'anonymous':
                 # don't allow to create this group
                 messages.error(request,
@@ -296,6 +301,16 @@ def group_edit(request, group_id=None):
                 }
 
             group = form.save()
+            try:
+                django_group = DjangoGroup.objects.get(group=group)
+            except DjangoGroup.DoesNotExist:
+                django_group = None
+            if form.cleaned_data['as_user'] and django_group is None:
+                DjangoGroup(group=group).save()
+            elif not form.cleaned_data['as_user'] and django_group:
+                django_group.delete()
+
+
             if anonymous_group is not None and \
                anonymous_group.id == group.id:
                 # prevent name changes -
@@ -315,7 +330,12 @@ def group_edit(request, group_id=None):
         else:
             messages.error(request, _('Please check the form for errors.'))
     else:
-        form = GroupForm(instance=group)
+        if group and DjangoGroup.objects.filter(group=group).exists():
+            initial = {'as_user': True}
+        else:
+            initial = {'as_user': False}
+
+        form = GroupForm(instance=group, initial=initial)
     return {
         'form': form,
         'group': group,

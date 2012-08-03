@@ -16,7 +16,7 @@ from django import forms
 from openslides.utils.user.signals import receiv_users
 
 
-class UserChoices():
+class UserChoices(object):
     def __init__(self, field):
         self.field = field
 
@@ -29,7 +29,6 @@ class UserChoices():
 
 class UserFormField(forms.fields.ChoiceField):
     def __init__(self, required=True, initial=None, empty_label=u"---------", *args, **kwargs):
-
         if required and (initial is not None):
             self.empty_label = None
         else:
@@ -38,7 +37,6 @@ class UserFormField(forms.fields.ChoiceField):
         super(UserFormField, self).__init__(choices=UserChoices(field=self), required=required, initial=initial, *args, **kwargs)
 
     def to_python(self, value):
-        print value
         return get_user(value)
 
     def valid_value(self, value):
@@ -109,9 +107,7 @@ class Users(object):
         for receiver, users_list in receiv_users.send(sender='users'):
             for users in users_list:
                 # Does iter(users) work?
-                print users
                 for user in users:
-                    print user
                     yield user
 
 
@@ -122,7 +118,6 @@ def generate_uid(prefix, id):
     return "%s:%d" % (prefix, id)
 
 
-# TODO: I dont need this object any more
 class UserMixin(object):
     @property
     def uid(self):
