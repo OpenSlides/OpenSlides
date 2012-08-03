@@ -33,8 +33,22 @@ class UserFormField(forms.fields.ChoiceField):
             self.empty_label = None
         else:
             self.empty_label = empty_label
-        #TODO use a own self.choices property, see ModelChoiceField
-        super(UserFormField, self).__init__(choices=UserChoices(field=self), required=required, initial=initial, *args, **kwargs)
+        forms.fields.Field.__init__(self, required=required, initial=initial, *args, **kwargs)
+        self.widget.choices = self.choices
+
+    def __deepcopy__(self, memo):
+        result = super(forms.fields.ChoiceField, self).__deepcopy__(memo)
+        return result
+
+
+    def _get_choices(self):
+        # If self._choices is set, then somebody must have manually set
+        # the property self.choices. In this case, just return self._choices.
+        if hasattr(self, '_choices'):
+            return self._choices
+        return UserChoices(self)
+
+    choices = property(_get_choices, forms.fields.ChoiceField._set_choices)
 
     def to_python(self, value):
         return get_user(value)
@@ -104,19 +118,17 @@ class Users(object):
 
     def __iter__(self):
         for receiver, users in receiv_users.send(sender='users', user_prefix=self.user_prefix, id=self.id):
-            # Does iter(users) work?
             for user in users:
                 yield user
 
     def __getitem__(self, key):
         user_list = list(self)
-        print user_list
         return user_list[key]
 
 
 def generate_uid(prefix, id):
     if ':' in prefix:
-        # TODO: Use the right Error.
+        # TODO: Use the right Exception.
         raise Exception("':' is not allowed in a the 'user_prefix'")
     return "%s:%d" % (prefix, id)
 
@@ -125,7 +137,7 @@ class UserMixin(object):
     @property
     def uid(self):
         try:
-            return generate_uid(self.user_prefix, self.id)
+            return generate_uid(self.user_prefix, self.pk)
         except AttributeError:
             raise AttributeError("%s has to have a attribute 'user_prefix'" % self)
 
