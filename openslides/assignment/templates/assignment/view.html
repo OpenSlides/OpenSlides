@@ -35,13 +35,14 @@
 
     <h3>{% trans "Candidates" %}</h3>
     <ol>
-    {% for profile in assignment.profile.all|dictsort:"user.first_name" %}
-        <li>{{ profile }}
-        {% if perms.assignment.can_manage_assignment %}
-        {% if assignment.status == "sea" or assignment.status == "vot" %}
-        <a href="{% url assignment_delother assignment.id profile.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Remove candidate' %}"></a>
-        {% endif %}
-        {% endif %}
+    {% for user in assignment.candidates %}
+        <li>
+            {{ user }}
+            {% if perms.assignment.can_manage_assignment %}
+                {% if assignment.status == "sea" or assignment.status == "vot" %}
+                    <a href="{% url assignment_delother assignment.id user.uid %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Remove candidate' %}"></a>
+                {% endif %}
+            {% endif %}
         </li>
     {% empty %}
         <li style="list-style: none outside none;"><i>{% trans "No candidates available." %}</i></li>

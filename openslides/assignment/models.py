@@ -15,6 +15,8 @@ from django.db import models
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
+from openslides.utils.user import UserField
+
 from openslides.config.models import config
 from openslides.config.signals import default_config_value
 
@@ -27,6 +29,15 @@ from openslides.poll.models import (BasePoll, CountInvalid, CountVotesCast,
     BaseOption, PublishPollMixin, BaseVote)
 
 from openslides.agenda.models import Item
+
+
+class AssignmentCandidate(models.Model):
+    assignment = models.ForeignKey("Assignment")
+    user = UserField(unique=True, db_index=True)
+    elected = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return unicode(self.user)
 
 
 class Assignment(models.Model, SlideMixin):
@@ -44,10 +55,15 @@ class Assignment(models.Model, SlideMixin):
         verbose_name=_("Number of available posts"))
     polldescription = models.CharField(max_length=100, null=True, blank=True,
         verbose_name=_("Comment on the ballot paper"))
-    profile = models.ManyToManyField(Profile, null=True, blank=True)
-    elected = models.ManyToManyField(Profile, null=True, blank=True,
-        related_name='elected_set')
     status = models.CharField(max_length=3, choices=STATUS, default='sea')
+
+    @property
+    def profile(self):
+        return AssignmentCandidate.objects.filter(assignment=self).filter(elected=False)
+
+    @property
+    def elected(self):
+        return AssignmentCandidate.objects.filter(assignment=self).filter(elected=True)
 
     def set_status(self, status):
         error = True
@@ -71,29 +87,31 @@ class Assignment(models.Model, SlideMixin):
             raise NameError(_('<b>%s</b> is already a candidate.') % profile)
         if not user.has_perm("assignment.can_manage_assignment") and self.status != 'sea':
             raise NameError(_('The candidate list is already closed.'))
-        self.profile.add(profile)
+        AssignmentCandidate(assignment=self, user=profile, elected=False).save()
 
-    def delrun(self, profile, user=None):
+    def delrun(self, user):
         """
         stop running for a vote
         """
-        if not user.has_perm("assignment.can_manage_assignment") and self.status != 'sea':
-            raise NameError(_('The candidate list is already closed.'))
-        if self.is_candidate(profile):
-            self.profile.remove(profile)
-            self.elected.remove(profile)
+        if self.status != 'sea':
+            # TODO: Use an OpenSlides Error
+            raise Exception(_('The candidate list is already closed.'))
+        if self.is_candidate(user):
+            AssignmentCandidate.objects.get(user=user).delete()
         else:
-            raise NameError(_('%s is no candidate') % profile)
+            # TODO: Use an OpenSlides Error
+            raise Exception(_('%s is no candidate') % user)
 
-    def is_candidate(self, profile):
-        if profile in self.profile.get_query_set():
+    def is_candidate(self, user):
+        if AssignmentCandidate.objects.filter(user=user).exists():
             return True
         else:
             return False
 
     @property
     def candidates(self):
-        return self.profile.get_query_set()
+        for candidate in AssignmentCandidate.objects.filter(assignment=self).filter(elected=False):
+            yield candidate.user
 
 
     def set_elected(self, profile, value=True):

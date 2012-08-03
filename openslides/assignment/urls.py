@@ -55,7 +55,7 @@ urlpatterns = patterns('openslides.assignment.views',
         name='assignment_delrun',
     ),
 
-    url(r'^(?P<assignment_id>\d+)/delother/(?P<profile_id>\d+)/$',
+    url(r'^(?P<assignment_id>\d+)/delother/(?P<user_id>[^/]+)/$',
         'delother',
         name='assignment_delother',
     ),

@@ -30,6 +30,7 @@ from openslides.utils.template import Tab
 from openslides.utils.utils import (template, permission_required,
     gen_confirm_form, del_confirm_form, ajax_request)
 from openslides.utils.views import FormView, DeleteView, PDFView, RedirectView
+from openslides.utils.user import get_user
 
 from openslides.config.models import config
 from openslides.participant.models import Profile
@@ -182,28 +183,30 @@ def run(request, assignment_id):
 def delrun(request, assignment_id):
     assignment = Assignment.objects.get(pk=assignment_id)
     try:
-        assignment.delrun(request.user.profile, request.user)
-        messages.success(request, _("You have withdrawn your candidature successfully.") )
-    except NameError, e:
+        assignment.delrun(request.user.profile)
+    except Exception, e:
         messages.error(request, e)
+    else:
+        messages.success(request, _("You have withdrawn your candidature successfully.") )
     return redirect(reverse('assignment_view', args=[assignment_id]))
 
 
 @permission_required('assignment.can_manage_assignment')
-def delother(request, assignment_id, profile_id):
+def delother(request, assignment_id, user_id):
     assignment = Assignment.objects.get(pk=assignment_id)
-    profile = Profile.objects.get(pk=profile_id)
+    user = get_user(user_id)
 
     if request.method == 'POST':
         try:
-            assignment.delrun(profile, request.user)
-            messages.success(request, _("Candidate <b>%s</b> was withdrawn successfully.") % (profile))
-        except NameError, e:
+            assignment.delrun(user)
+        except Exception, e:
             messages.error(request, e)
+        else:
+            messages.success(request, _("Candidate <b>%s</b> was withdrawn successfully.") % (user))
     else:
         gen_confirm_form(request,
-                       _("Do you really want to withdraw <b>%s</b> from the election?") \
-                        % profile, reverse('assignment_delother', args=[assignment_id, profile_id]))
+           _("Do you really want to withdraw <b>%s</b> from the election?") \
+            % user, reverse('assignment_delother', args=[assignment_id, user_id]))
     return redirect(reverse('assignment_view', args=[assignment_id]))
 
 
