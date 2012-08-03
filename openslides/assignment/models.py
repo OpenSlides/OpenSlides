@@ -131,7 +131,7 @@ class Assignment(models.Model, SlideMixin):
 
 
     def set_elected(self, user, value=True):
-        candidate = AssignmentCandidate.objects.get(user=user)
+        candidate = self.assignment_candidats.get(user=user)
         candidate.elected = value
         candidate.save()
 
@@ -255,8 +255,7 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
                 self.yesnoabstain = True
             else:
                 # candidates <= available posts -> yes/no/abstain
-                if self.assignment.assignment_candidats.filter(elected=False).count() <= (self.assignment.posts
-                        - self.assignment.assignment_candidats.filter(elected=True).count()):
+                if self.assignment.assignment_candidats.filter(elected=False).count() <= (self.assignment.posts):
                     self.yesnoabstain = True
                 else:
                     self.yesnoabstain = False
