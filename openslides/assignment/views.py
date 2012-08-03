@@ -266,21 +266,19 @@ def set_publish_status(request, poll_id):
 
 
 @permission_required('assignment.can_manage_assignment')
-def set_elected(request, assignment_id, profile_id, elected=True):
+def set_elected(request, assignment_id, user_id, elected=True):
     assignment = Assignment.objects.get(pk=assignment_id)
-    profile = Profile.objects.get(pk=profile_id)
-    assignment.set_elected(profile, elected)
+    user = get_user(user_id)
+    assignment.set_elected(user, elected)
 
     if request.is_ajax():
         if elected:
-            link = reverse('assignment_user_not_elected', args=[assignment.id, profile.id])
+            link = reverse('assignment_user_not_elected', args=[assignment.id, user.uid])
             text = _('not elected')
         else:
-            link = reverse('assignment_user_elected', args=[assignment.id, profile.id])
+            link = reverse('assignment_user_elected', args=[assignment.id, user.uid])
             text = _('elected')
-        return ajax_request({'elected': elected,
-                             'link': link,
-                             'text': text})
+        return ajax_request({'elected': elected, 'link': link, 'text': text})
 
     return redirect(reverse('assignment_view', args=[assignment_id]))
 

@@ -33,7 +33,7 @@ from openslides.agenda.models import Item
 
 class AssignmentCandidate(models.Model):
     assignment = models.ForeignKey("Assignment")
-    user = UserField(unique=True, db_index=True)
+    user = UserField(db_index=True)
     elected = models.BooleanField(default=False)
 
     def __unicode__(self):
@@ -56,14 +56,6 @@ class Assignment(models.Model, SlideMixin):
     polldescription = models.CharField(max_length=100, null=True, blank=True,
         verbose_name=_("Comment on the ballot paper"))
     status = models.CharField(max_length=3, choices=STATUS, default='sea')
-
-    @property
-    def profile(self):
-        return AssignmentCandidate.objects.filter(assignment=self).filter(elected=False)
-
-    @property
-    def elected(self):
-        return AssignmentCandidate.objects.filter(assignment=self).filter(elected=True)
 
     def set_status(self, status):
         error = True
@@ -97,45 +89,59 @@ class Assignment(models.Model, SlideMixin):
             # TODO: Use an OpenSlides Error
             raise Exception(_('The candidate list is already closed.'))
         if self.is_candidate(user):
-            AssignmentCandidate.objects.get(user=user).delete()
+            assignment_candidats.get(user=user).delete()
         else:
             # TODO: Use an OpenSlides Error
             raise Exception(_('%s is no candidate') % user)
 
     def is_candidate(self, user):
-        if AssignmentCandidate.objects.filter(user=user).exists():
+        if self.assignment_candidats.filter(user=user).exists():
             return True
         else:
             return False
 
     @property
+    def assignment_candidats(self):
+        return AssignmentCandidate.objects.filter(assignment=self)
+
+    @property
     def candidates(self):
-        for candidate in AssignmentCandidate.objects.filter(assignment=self).filter(elected=False):
-            yield candidate.user
+        return self.get_participants(only_candidate=True)
+
+    @property
+    def elected(self):
+        return self.get_participants(only_elected=True)
+
+    def get_participants(self, only_elected=False, only_candidate=False):
+        candidates = self.assignment_candidats
+
+        if only_elected and only_candidate:
+            # TODO: Use right Exception
+            raise Exception("only_elected and only_candidate can not both be Treu")
+
+        if only_elected:
+            candidates = candidates.filter(elected=True)
+
+        if only_candidate:
+            candidates = candidates.filter(elected=False)
+
+        return [candidate.user for candidate in candidates]
+        #for candidate in candidates:
+        #    yield candidate.user
 
 
-    def set_elected(self, profile, value=True):
-        if profile in self.candidates:
-            if value and not self.is_elected(profile):
-                self.elected.add(profile)
-            elif not value:
-                self.elected.remove(profile)
+    def set_elected(self, user, value=True):
+        candidate = AssignmentCandidate.objects.get(user=user)
+        candidate.elected = value
+        candidate.save()
 
-    def is_elected(self, profile):
-        if profile in self.elected.all():
-            return True
-        return False
+    def is_elected(self, user):
+        return user in self.elected
 
     def gen_poll(self):
         poll = AssignmentPoll(assignment=self)
         poll.save()
-        candidates = list(self.profile.all())
-        for elected in self.elected.all():
-            try:
-                candidates.remove(elected)
-            except ValueError:
-                pass
-        poll.set_options([{'candidate': profile} for profile in candidates])
+        poll.set_options([{'candidate': user} for user in self.candidates])
         return poll
 
 
@@ -177,6 +183,7 @@ class Assignment(models.Model, SlideMixin):
         return self.name
 
     def delete(self):
+        # Remove any Agenda-Item, which is related to this application.
         for item in Item.objects.filter(related_sid=self.sid):
             item.delete()
         super(Assignment, self).delete()
@@ -224,7 +231,7 @@ class AssignmentVote(BaseVote):
 
 class AssignmentOption(BaseOption):
     poll = models.ForeignKey('AssignmentPoll')
-    candidate = models.ForeignKey(Profile)
+    candidate = UserField()
     vote_class = AssignmentVote
 
     def __unicode__(self):
@@ -248,8 +255,8 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
                 self.yesnoabstain = True
             else:
                 # candidates <= available posts -> yes/no/abstain
-                if self.assignment.candidates.count() <= (self.assignment.posts
-                        - self.assignment.elected.count()):
+                if self.assignment.assignment_candidats.filter(elected=False).count() <= (self.assignment.posts
+                        - self.assignment.assignment_candidats.filter(elected=True).count()):
                     self.yesnoabstain = True
                 else:
                     self.yesnoabstain = False
@@ -276,8 +283,6 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
 
     def __unicode__(self):
         return _("Ballot %d") % self.get_ballot()
-
-
 
 
 @receiver(default_config_value, dispatch_uid="assignment_default_config")
