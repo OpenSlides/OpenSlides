@@ -87,28 +87,31 @@ def split_uid(uid):
 
 def get_user(uid):
     try:
-        user_type, id = split_uid(uid)
+        user_prefix, id = split_uid(uid)
     except TypeError:
         return EmtyUser()
 
-    for receiver, users_list in receiv_users.send(sender='get_user'):
-        for users in users_list:
-            if users.user_prefix == user_type:
-                return users[id]
-    # TODO: Use own Exception
-    raise Exception('User with uid %s does not exist' % uid)
+    return Users(user_prefix=user_prefix, id=id)[0]
 
 
 class Users(object):
     """
     A Storage for a multiplicity of different User-Objects.
     """
+    def __init__(self, user_prefix=None, id=None):
+        self.user_prefix = user_prefix
+        self.id = id
+
     def __iter__(self):
-        for receiver, users_list in receiv_users.send(sender='users'):
-            for users in users_list:
-                # Does iter(users) work?
-                for user in users:
-                    yield user
+        for receiver, users in receiv_users.send(sender='users', user_prefix=self.user_prefix, id=self.id):
+            # Does iter(users) work?
+            for user in users:
+                yield user
+
+    def __getitem__(self, key):
+        user_list = list(self)
+        print user_list
+        return user_list[key]
 
 
 def generate_uid(prefix, id):

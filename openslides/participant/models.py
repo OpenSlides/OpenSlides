@@ -89,17 +89,6 @@ class Profile(models.Model, UserMixin):
         )
 
 
-class ParticipantUsers(object):
-    user_prefix = Profile.user_prefix
-
-    def __iter__(self):
-        for profile in Profile.objects.all():
-            yield profile
-
-    def __getitem__(self, key):
-        return Profile.objects.get(pk=key)
-
-
 class DjangoGroup(models.Model, UserMixin):
     user_prefix = 'djangogroup'
 
@@ -109,20 +98,33 @@ class DjangoGroup(models.Model, UserMixin):
         return unicode(self.group)
 
 
-class DjangoGroupUsers(object):
-    user_prefix = DjangoGroup.user_prefix
+class ParticipantUsers(object):
+    def __init__(self, user_prefix=None, id=None):
+        self.user_prefix = user_prefix
+        self.id = id
 
     def __iter__(self):
-        for group in DjangoGroup.objects.all():
-            yield group
+        if not self.user_prefix or self.user_prefix == Profile.user_prefix:
+            if self.id:
+                yield Profile.objects.get(pk=self.id)
+            else:
+                for profile in Profile.objects.all():
+                    yield profile
+
+        if not self.user_prefix or self.user_prefix == DjangoGroup.user_prefix:
+            if self.id:
+                yield DjangoGroup.objects.get(pk=self.id)
+            else:
+                for group in DjangoGroup.objects.all():
+                    yield group
 
     def __getitem__(self, key):
-        return DjangoGroup.objects.get(pk=key)
+        return Profile.objects.get(pk=key)
 
 
 @receiver(receiv_users, dispatch_uid="participant_profile")
 def receiv_users(sender, **kwargs):
-    return [ParticipantUsers(), DjangoGroupUsers()]
+    return ParticipantUsers(user_prefix=kwargs['user_prefix'], id=kwargs['id'])
 
 
 @receiver(default_config_value, dispatch_uid="participant_default_config")

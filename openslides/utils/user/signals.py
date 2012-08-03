@@ -12,4 +12,4 @@
 
 from django.dispatch import Signal
 
-receiv_users = Signal(providing_args=[])
+receiv_users = Signal(providing_args=['user_prefix', 'id'])
