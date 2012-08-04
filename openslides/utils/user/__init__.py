@@ -145,8 +145,7 @@ class Users(object):
 
 def generate_uid(prefix, id):
     if ':' in prefix:
-        # TODO: Use the right Exception.
-        raise Exception("':' is not allowed in a the 'user_prefix'")
+        raise ValueError("':' is not allowed in a the 'user_prefix'")
     return "%s:%d" % (prefix, id)
 
 
