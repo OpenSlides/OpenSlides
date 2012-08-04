@@ -748,13 +748,10 @@ class ApplicationPDF(PDFView):
         if application.status == "pub":
             cell1b.append(Paragraph("__________________________________________",stylesheet['Signaturefield']))
             cell1b.append(Spacer(0,0.1*cm))
-            cell1b.append(Paragraph("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+unicode(application.submitter.profile), stylesheet['Small']))
+            cell1b.append(Paragraph("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+unicode(application.submitter), stylesheet['Small']))
             cell1b.append(Spacer(0,0.2*cm))
         else:
-            try:
-                cell1b.append(Paragraph(unicode(application.submitter.profile), stylesheet['Normal']))
-            except Profile.DoesNotExist:
-                pass
+            cell1b.append(Paragraph(unicode(application.submitter), stylesheet['Normal']))
 
         # supporters
         cell2a = []
@@ -764,7 +761,7 @@ class ApplicationPDF(PDFView):
             cell2a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font><seqreset id='counter'>" % _("Supporters"), stylesheet['Heading4']))
 
             for supporter in application.supporters:
-                cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % unicode(s.profile), stylesheet['Signaturefield']))
+                cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % unicode(supporter), stylesheet['Signaturefield']))
             if application.status == "pub":
                 for x in range(0,application.missing_supporters):
                     cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; __________________________________________",stylesheet['Signaturefield']))

@@ -54,21 +54,18 @@
     <form action="" method="post">{% csrf_token %}
         {% if perms.assignment.can_nominate_self %}
             <p>
-            {% if user.profile in assignment.profile.all %}
-
-            <a href='{% url assignment_delrun assignment.id %}'>
-            <span class="button">
-                <span class="icon removeuser">{% trans 'Withdraw self candidature' %}</span>
-            </span>
-            </a>
+            {% if user in assignment.candidates %}
+                <a href='{% url assignment_delrun assignment.id %}'>
+                    <span class="button">
+                        <span class="icon removeuser">{% trans 'Withdraw self candidature' %}</span>
+                    </span>
+                </a>
             {% else %}
-            {% if user.profile %}
-            <a href='{% url assignment_run assignment.id %}'>
-            <span class="button">
-                <span class="icon adduser">{% trans 'Self candidature' %}</span>
-            </span>
-            </a>
-            {% endif %}
+                <a href='{% url assignment_run assignment.id %}'>
+                    <span class="button">
+                        <span class="icon adduser">{% trans 'Self candidature' %}</span>
+                    </span>
+                </a>
             {% endif %}
             </p>
         {% endif %}

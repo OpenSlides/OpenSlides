@@ -16,7 +16,6 @@ from django.utils.translation import ugettext_lazy as _, ugettext_noop
 from openslides.utils.forms import CssClassMixin
 from openslides.utils.user import UserFormField
 
-from openslides.participant.models import Profile
 from openslides.assignment.models import Assignment
 
 
@@ -26,7 +25,7 @@ class AssignmentForm(forms.ModelForm, CssClassMixin):
 
     class Meta:
         model = Assignment
-        exclude = ('status', 'profile', 'elected')
+        exclude = ('status', 'elected')
 
 
 class AssignmentRunForm(forms.Form, CssClassMixin):

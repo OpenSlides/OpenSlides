@@ -33,7 +33,9 @@ from openslides.utils.views import FormView, DeleteView, PDFView, RedirectView
 from openslides.utils.user import get_user
 
 from openslides.config.models import config
+
 from openslides.participant.models import Profile
+from openslides.participant.api import user2djangouser
 
 from openslides.projector.projector import Widget
 
@@ -169,13 +171,10 @@ def set_status(request, assignment_id=None, status=None):
 def run(request, assignment_id):
     assignment = Assignment.objects.get(pk=assignment_id)
     try:
-        assignment.run(request.user.profile, request.user)
+        assignment.run(user2djangouser(request.user), request.user)
         messages.success(request, _('You have set your candidature successfully.') )
     except NameError, e:
         messages.error(request, e)
-    except Profile.DoesNotExist:
-        messages.error(request,
-                       _("You can't candidate. Your user account is only for administration."))
     return redirect(reverse('assignment_view', args=[assignment_id]))
 
 
@@ -183,7 +182,10 @@ def run(request, assignment_id):
 def delrun(request, assignment_id):
     assignment = Assignment.objects.get(pk=assignment_id)
     try:
-        assignment.delrun(request.user.profile)
+        if assignment.status == 'sea' or user.has_perm("assignment.can_manage_assignment"):
+            assignment.delrun(user2djangouser(request.user))
+        else:
+            messages.error(request, _('The candidate list is already closed.'))
     except Exception, e:
         messages.error(request, e)
     else:
@@ -370,7 +372,7 @@ class AssignmentPDF(PDFView):
         cell2a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font><seqreset" \
             " id='counter'>" % _("Candidates"), stylesheet['Heading4']))
         cell2b = []
-        for candidate in assignment.profile.all():
+        for candidate in assignment.candidates:
             cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % candidate,
                 stylesheet['Signaturefield']))
         if assignment.status == "sea":

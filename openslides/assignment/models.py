@@ -23,8 +23,6 @@ from openslides.config.signals import default_config_value
 from openslides.projector.api import register_slidemodel
 from openslides.projector.projector import SlideMixin
 
-from openslides.participant.models import Profile
-
 from openslides.poll.models import (BasePoll, CountInvalid, CountVotesCast,
     BaseOption, PublishPollMixin, BaseVote)
 
@@ -71,28 +69,27 @@ class Assignment(models.Model, SlideMixin):
         self.status = status
         self.save()
 
-    def run(self, profile, user=None):
+    def run(self, candidate, user=None):
         """
         run for a vote
         """
-        if self.is_candidate(profile):
-            raise NameError(_('<b>%s</b> is already a candidate.') % profile)
+        # TODO: don't make any permission checks here.
+        #       Use other Exceptions
+        if self.is_candidate(candidate):
+            raise NameError(_('<b>%s</b> is already a candidate.') % candidate)
         if not user.has_perm("assignment.can_manage_assignment") and self.status != 'sea':
             raise NameError(_('The candidate list is already closed.'))
-        AssignmentCandidate(assignment=self, user=profile, elected=False).save()
+        AssignmentCandidate(assignment=self, user=candidate, elected=False).save()
 
-    def delrun(self, user):
+    def delrun(self, candidate):
         """
         stop running for a vote
         """
-        if self.status != 'sea':
-            # TODO: Use an OpenSlides Error
-            raise Exception(_('The candidate list is already closed.'))
-        if self.is_candidate(user):
-            assignment_candidats.get(user=user).delete()
+        if self.is_candidate(candidate):
+            self.assignment_candidats.get(user=candidate).delete()
         else:
             # TODO: Use an OpenSlides Error
-            raise Exception(_('%s is no candidate') % user)
+            raise Exception(_('%s is no candidate') % candidate)
 
     def is_candidate(self, user):
         if self.assignment_candidats.filter(user=user).exists():
