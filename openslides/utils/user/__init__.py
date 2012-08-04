@@ -13,7 +13,7 @@
 from openslides.utils.user.signals import receiv_users
 from openslides.utils.user.api import generate_uid, split_uid, get_user, Users
 from openslides.utils.user.forms import UserFormField, MultipleUserFormField
-from openslides.utils.user.model import UserField, UserMixin
+from openslides.utils.user.models import UserField, UserMixin
 
 
 class EmtyUser(UserMixin):

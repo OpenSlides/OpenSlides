@@ -12,6 +12,7 @@
 
 from openslides.utils.user.signals import receiv_users
 
+
 class Users(object):
     """
     A Storage for a multiplicity of different User-Objects.
@@ -48,6 +49,6 @@ def get_user(uid):
     try:
         user_prefix, id = split_uid(uid)
     except TypeError:
+        from openslides.utils.user import EmtyUser
         return EmtyUser()
-
     return Users(user_prefix=user_prefix, id=id)[0]

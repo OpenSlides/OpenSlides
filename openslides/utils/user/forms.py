@@ -14,6 +14,7 @@ from django import forms
 
 from openslides.utils.user.api import Users, get_user
 
+
 class UserChoices(object):
     def __init__(self, field):
         self.field = field
@@ -39,7 +40,6 @@ class UserFormField(forms.fields.ChoiceField):
     def __deepcopy__(self, memo):
         result = super(forms.fields.ChoiceField, self).__deepcopy__(memo)
         return result
-
 
     def _get_choices(self):
         # If self._choices is set, then somebody must have manually set
