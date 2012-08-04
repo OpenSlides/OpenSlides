@@ -15,7 +15,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
 from openslides.utils.forms import CssClassMixin
-from openslides.utils.user import UserFormField
+from openslides.utils.user import UserFormField, MultipleUserFormField
 from openslides.application.models import Application
 
 
@@ -59,11 +59,8 @@ class ApplicationManagerForm(forms.ModelForm, CssClassMixin):
 
 
 class ApplicationManagerFormSupporter(ApplicationManagerForm):
-    supporter = UserModelMultipleChoiceField(
-        queryset=User.objects.all().exclude(profile=None).
-        order_by("first_name"),
-        required=False, label=_("Supporters"),
-    )
+    # TODO: Do not show the submitter in the user-list
+    supporter = MultipleUserFormField(required=False, label=_("Supporters"))
 
 
 class ApplicationImportForm(forms.Form, CssClassMixin):

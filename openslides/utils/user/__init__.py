@@ -57,6 +57,23 @@ class UserFormField(forms.fields.ChoiceField):
         return super(UserFormField, self).valid_value(value.uid)
 
 
+class MultipleUserFormField(UserFormField):
+    widget = forms.widgets.SelectMultiple
+
+    def __init__(self, *args, **kwargs):
+        super(MultipleUserFormField, self).__init__(empty_label=None, *args, **kwargs)
+
+    def to_python(self, value):
+        if hasattr(value, '__iter__'):
+            return [super(MultipleUserFormField, self).to_python(v) for v in value]
+        return super(MultipleUserFormField, self).to_python(value)
+
+    def valid_value(self, value):
+        if hasattr(value, '__iter__'):
+            return [super(MultipleUserFormField, self).valid_value(v) for v in value]
+        return super(MultipleUserFormField, self).valid_value(value)
+
+
 class UserField(models.fields.Field):
     __metaclass__ = models.SubfieldBase
 

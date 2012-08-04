@@ -21,8 +21,6 @@ from openslides.utils.user.signals import receiv_users
 
 from openslides.config.signals import default_config_value
 
-from openslides.participant.api import gen_password
-
 
 class Profile(models.Model, UserMixin):
     user_prefix = 'participant'
@@ -53,14 +51,12 @@ class Profile(models.Model, UserMixin):
     firstpassword = models.CharField(max_length=100, null=True, blank=True,
         verbose_name = _("First Password"))
 
-
     def reset_password(self):
         """
         Reset the password for the user to his default-password.
         """
         self.user.set_password(self.firstpassword)
         self.user.save()
-
 
     @models.permalink
     def get_absolute_url(self, link='edit'):
@@ -98,6 +94,17 @@ class DjangoGroup(models.Model, UserMixin):
         return unicode(self.group)
 
 
+class DjangoUser(User, UserMixin):
+    user_prefix = 'djangouser'
+
+    def has_no_profile(self):
+        # TODO: Make ths with a Manager, so it does manipulate the sql query
+        return not hasattr(self, 'profile')
+
+    class Meta:
+        proxy = True
+
+
 class ParticipantUsers(object):
     def __init__(self, user_prefix=None, id=None):
         self.user_prefix = user_prefix
@@ -117,6 +124,17 @@ class ParticipantUsers(object):
             else:
                 for group in DjangoGroup.objects.all():
                     yield group
+
+        if not self.user_prefix or self.user_prefix == DjangoUser.user_prefix:
+            if self.id:
+                yield DjangoUser.objects.get(pk=self.id)
+            else:
+                for user in DjangoUser.objects.all():
+                    if user.has_no_profile():
+                        yield user
+                    elif self.user_prefix:
+                        # If only users where requested, return the profile object.
+                        yield user.profile
 
     def __getitem__(self, key):
         return Profile.objects.get(pk=key)

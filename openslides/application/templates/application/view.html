@@ -22,16 +22,16 @@
     {% endif %}
 
     {% if min_supporters > 0 %}
-    <h4>{% trans "Supporters" %}: *</h4>
-    {% if application.supporter.count == 0 %}
-    -
-    {% else %}
-        <ol>
-        {% for supporter in application.supporter.all %}
-            <li> {{ supporter.profile }}</li>
-        {% endfor %}
-        </ol>
-    {% endif %}
+        <h4>{% trans "Supporters" %}: *</h4>
+        {% if not application.supporters %}
+        -
+        {% else %}
+            <ol>
+            {% for supporter in application.supporters %}
+                <li> {{ supporter }}</li>
+            {% endfor %}
+            </ol>
+        {% endif %}
     {% endif %}
 
     <h4>{% trans "Status" %}:</h4>

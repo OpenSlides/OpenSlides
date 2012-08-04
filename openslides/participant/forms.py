@@ -90,6 +90,7 @@ class UsersettingsForm(forms.ModelForm, CssClassMixin):
         model = User
         fields = ('username', 'first_name', 'last_name', 'email')
 
+
 class UserImportForm(forms.Form, CssClassMixin):
     csvfile = forms.FileField(widget=forms.FileInput(attrs={'size':'50'}),
         label=_("CSV File"))

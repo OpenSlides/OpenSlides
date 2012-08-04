@@ -42,6 +42,7 @@ from openslides.utils.template import Tab
 from openslides.utils.utils import (template, permission_required,
     del_confirm_form, gen_confirm_form)
 from openslides.utils.views import PDFView, RedirectView, DeleteView, FormView
+from openslides.utils.user import get_user
 
 from openslides.config.models import config
 
@@ -49,7 +50,7 @@ from openslides.projector.projector import Widget
 
 from openslides.poll.views import PollFormView
 
-from openslides.participant.api import gen_username, gen_password
+from openslides.participant.api import gen_username, gen_password, user2djangouser
 from openslides.participant.models import Profile
 
 from openslides.agenda.models import Item
@@ -123,7 +124,7 @@ def overview(request):
     for (i, application) in enumerate(applications):
         try:
             applications[i] = {
-                'actions'     : application.get_allowed_actions(request.user),
+                'actions'     : application.get_allowed_actions(user2djangouser(request.user)),
                 'application' : application
             }
         except:
@@ -151,7 +152,8 @@ def view(request, application_id, newest=False):
     else:
         version = application.public_version
     revisions = application.versions
-    actions = application.get_allowed_actions(user=request.user)
+    user = user2djangouser(request.user)
+    actions = application.get_allowed_actions(user=user)
 
     return {
         'application': application,
@@ -181,11 +183,11 @@ def edit(request, application_id=None):
     if application_id is not None:
         application = Application.objects.get(id=application_id)
         if (not hasattr(application.submitter, 'user') or
-            not request.user == application.submitter.user) \
+            not user2djangouser(request.user) == application.submitter.user) \
             and not is_manager:
             messages.error(request, _("You can not edit this application. You are not the submitter."))
             return redirect(reverse('application_view', args=[application.id]))
-        actions = application.get_allowed_actions(user=request.user)
+        actions = application.get_allowed_actions(user=user2djangouser(request.user))
     else:
         application = None
         actions = None
@@ -212,14 +214,14 @@ def edit(request, application_id=None):
 
         if valid:
             del_supporters = True
-            original_supporters = []
             if is_manager:
                 if application: # Edit application
-                    for s in application.supporter.all():
-                        original_supporters.append(s)
+                    original_supporters = list(application.supporters)
+                else:
+                    original_supporters = []
                 application = managerform.save(commit=False)
             elif application_id is None:
-                application = Application(submitter=request.user.profile)
+                application = Application(submitter=user2djangouser(request.user))
             application.title = dataform.cleaned_data['title']
             application.text = dataform.cleaned_data['text']
             application.reason = dataform.cleaned_data['reason']
@@ -229,30 +231,17 @@ def edit(request, application_id=None):
                     and dataform.cleaned_data['trivial_change']
             except KeyError:
                 trivial_change = False
-            application.save(request.user, trivial_change=trivial_change)
+            application.save(user2djangouser(request.user), trivial_change=trivial_change)
             if is_manager:
-                # log added supporters
-                supporters_added = []
-                for s in application.supporter.all():
-                    if s not in original_supporters:
-                        try:
-                            supporters_added.append(unicode(s.profile))
-                        except Profile.DoesNotExist:
-                            pass
-                if len(supporters_added) > 0:
-                    log_added = ", ".join(supporters_added)
-                    application.writelog(_("Supporter: +%s") % log_added, request.user)
-                # log removed supporters
-                supporters_removed = []
-                for s in original_supporters:
-                    if s not in application.supporter.all():
-                        try:
-                            supporters_removed.append(unicode(s.profile))
-                        except Profile.DoesNotExist:
-                            pass
-                if len(supporters_removed) > 0:
-                    log_removed = ", ".join(supporters_removed)
-                    application.writelog(_("Supporter: -%s") % log_removed, request.user)
+                # TODO: Deal with the case, that the form has no field 'supporters'
+                old_supporters = set(application.supporters)
+                new_supporters = set(managerform.cleaned_data['supporter'])
+                # add new supporters
+                for supporter in new_supporters.difference(old_supporters):
+                    application.support(supporter)
+                # remove old supporters
+                for supporter in old_supporters.difference(new_supporters):
+                    application.unsupport(supporter)
             if application_id is None:
                 messages.success(request, _('New application was successfully created.'))
             else:
@@ -268,11 +257,11 @@ def edit(request, application_id=None):
         if application_id is None:
             initial = {'text': config['application_preamble']}
         else:
-            if application.status == "pub" and application.supporter.exists():
+            if application.status == "pub" and application.supporters:
                 if request.user.has_perm('application.can_manage_application'):
                     messages.warning(request, _("Attention: Do you really want to edit this application? The supporters will <b>not</b> be removed automatically because you can manage applications. Please check if the supports are valid after your changing!"))
                 else:
-                    messages.warning(request, _("Attention: Do you really want to edit this application? All <b>%s</b> supporters will be removed! Try to convince the supporters again.") % application.supporter.count() )
+                    messages.warning(request, _("Attention: Do you really want to edit this application? All <b>%s</b> supporters will be removed! Try to convince the supporters again.") % len(application.supporters) )
             initial = {'title': application.title,
                        'text': application.text,
                        'reason': application.reason}
@@ -280,12 +269,10 @@ def edit(request, application_id=None):
         dataform = formclass(initial=initial, prefix="data")
         if is_manager:
             if application_id is None:
-                try:
-                    initial = {'submitter': request.user.profile.uid}
-                except Profile.DoesNotExist:
-                    initial = {}
+                initial = {'submitter': user2djangouser(request.user).uid}
             else:
                 initial = {'submitter': application.submitter.uid}
+            initial['supporter'] = [supporter.uid for supporter in application.supporters]
             managerform = managerformclass(initial=initial,
                 instance=application, prefix="manager")
         else:
@@ -305,7 +292,7 @@ def set_number(request, application_id):
     set a number for an application.
     """
     try:
-        Application.objects.get(pk=application_id).set_number(user=request.user)
+        Application.objects.get(pk=application_id).set_number(user=user2djangouser(request.user))
         messages.success(request, _("Application number was successfully set."))
     except Application.DoesNotExist:
         pass
@@ -321,7 +308,7 @@ def permit(request, application_id):
     permit an application.
     """
     try:
-        Application.objects.get(pk=application_id).permit(user=request.user)
+        Application.objects.get(pk=application_id).permit(user=user2djangouser(request.user))
         messages.success(request, _("Application was successfully permitted."))
     except Application.DoesNotExist:
         pass
@@ -336,7 +323,7 @@ def notpermit(request, application_id):
     reject (not permit) an application.
     """
     try:
-        Application.objects.get(pk=application_id).notpermit(user=request.user)
+        Application.objects.get(pk=application_id).notpermit(user=user2djangouser(request.user))
         messages.success(request, _("Application was successfully rejected."))
     except Application.DoesNotExist:
         pass
@@ -352,7 +339,7 @@ def set_status(request, application_id=None, status=None):
     try:
         if status is not None:
             application = Application.objects.get(pk=application_id)
-            application.set_status(user=request.user, status=status)
+            application.set_status(user=user2djangouser(request.user), status=status)
             messages.success(request, _("Application status was set to: <b>%s</b>.") % application.get_status_display())
     except Application.DoesNotExist:
         pass
@@ -368,7 +355,7 @@ def reset(request, application_id):
     reset an application.
     """
     try:
-        Application.objects.get(pk=application_id).reset(user=request.user)
+        Application.objects.get(pk=application_id).reset(user=user2djangouser(request.user))
         messages.success(request, _("Application status was reset.") )
     except Application.DoesNotExist:
         pass
@@ -382,7 +369,7 @@ def support(request, application_id):
     support an application.
     """
     try:
-        Application.objects.get(pk=application_id).support(user=request.user)
+        Application.objects.get(pk=application_id).support(user=user2djangouser(request.user))
         messages.success(request, _("You have support the application successfully.") )
     except Application.DoesNotExist:
         pass
@@ -396,7 +383,7 @@ def unsupport(request, application_id):
     unsupport an application.
     """
     try:
-        Application.objects.get(pk=application_id).unsupport(user=request.user)
+        Application.objects.get(pk=application_id).unsupport(user=user2djangouser(request.user))
         messages.success(request, _("You have unsupport the application successfully.") )
     except Application.DoesNotExist:
         pass
@@ -410,7 +397,7 @@ def gen_poll(request, application_id):
     gen a poll for this application.
     """
     try:
-        poll = Application.objects.get(pk=application_id).gen_poll(user=request.user)
+        poll = Application.objects.get(pk=application_id).gen_poll(user=user2djangouser(request.user))
         messages.success(request, _("New vote was successfully created.") )
     except Application.DoesNotExist:
         pass # TODO: do not call poll after this excaption
@@ -427,7 +414,7 @@ def delete_poll(request, poll_id):
     count = application.polls.filter(id__lte=poll_id).count()
     if request.method == 'POST':
         poll.delete()
-        application.writelog(_("Poll deleted"), request.user)
+        application.writelog(_("Poll deleted"), user2djangouser(request.user))
         messages.success(request, _('Poll was successfully deleted.'))
     else:
         del_confirm_form(request, poll, name=_("the %s. poll") % count, delete_link=reverse('application_poll_delete', args=[poll_id]))
@@ -467,7 +454,7 @@ class ApplicationDelete(DeleteView):
 
         if len(self.applications):
             for application in self.applications:
-                if not 'delete' in application.get_allowed_actions(user=request.user):
+                if not 'delete' in application.get_allowed_actions(user=user2djangouser(request.user)):
                     messages.error(request, _("You can not delete application <b>%s</b>.") % application)
                     continue
 
@@ -476,12 +463,12 @@ class ApplicationDelete(DeleteView):
                 messages.success(request, _("Application <b>%s</b> was successfully deleted.") % title)
 
         elif self.object:
-                if not 'delete' in self.object.get_allowed_actions(user=request.user):
-                    messages.error(request, _("You can not delete application <b>%s</b>.") % self.object)
-                else:
-                    title = self.object.title
-                    self.object.delete(force=True)
-                    messages.success(request, _("Application <b>%s</b> was successfully deleted.") % title)
+            if not 'delete' in self.object.get_allowed_actions(user=user2djangouser(request.user)):
+                messages.error(request, _("You can not delete application <b>%s</b>.") % self.object)
+            else:
+                title = self.object.title
+                self.object.delete(force=True)
+                messages.success(request, _("Application <b>%s</b> was successfully deleted.") % title)
         else:
             messages.error(request, _("Invalid request"))
 
@@ -517,12 +504,12 @@ class ViewPoll(PollFormView):
         self.application = self.poll.get_application()
         context['application'] = self.application
         context['ballot'] = self.poll.get_ballot()
-        context['actions'] = self.application.get_allowed_actions(user=self.request.user)
+        context['actions'] = self.application.get_allowed_actions(user=user2djangouser(self.request.user))
         return context
 
     def get_modelform_class(self):
         cls = super(ViewPoll, self).get_modelform_class()
-        user = self.request.user
+        user = user2djangouser(self.request.user)
 
         class ViewPollFormClass(cls):
             def save(self, commit = True):
@@ -544,7 +531,7 @@ def permit_version(request, aversion_id):
     aversion = AVersion.objects.get(pk=aversion_id)
     application = aversion.application
     if request.method == 'POST':
-        application.accept_version(aversion, user = request.user)
+        application.accept_version(aversion, user=user2djangouser(request.user))
         messages.success(request, _("Version <b>%s</b> accepted.") % (aversion.aid))
     else:
         gen_confirm_form(request, _('Do you really want to permit version <b>%s</b>?') % aversion.aid, reverse('application_version_permit', args=[aversion.id]))
@@ -556,7 +543,7 @@ def reject_version(request, aversion_id):
     aversion = AVersion.objects.get(pk=aversion_id)
     application = aversion.application
     if request.method == 'POST':
-        if application.reject_version(aversion, user = request.user):
+        if application.reject_version(aversion, user=user2djangouser(request.user)):
             messages.success(request, _("Version <b>%s</b> rejected.") % (aversion.aid))
         else:
             messages.error(request, _("ERROR by rejecting the version.") )
@@ -570,13 +557,14 @@ def reject_version(request, aversion_id):
 def application_import(request):
     try:
         request.user.profile
-        messages.error(request, _('The import function is available for the admin (without user profile) only.'))
-        return redirect(reverse('application_overview'))
     except Profile.DoesNotExist:
         pass
     except AttributeError:
         # AnonymousUser
         pass
+    else:
+        messages.error(request, _('The import function is available for the admin (without user profile) only.'))
+        return redirect(reverse('application_overview'))
 
     if request.method == 'POST':
         form = ApplicationImportForm(request.POST, request.FILES)
@@ -771,7 +759,7 @@ class ApplicationPDF(PDFView):
 
             cell2a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font><seqreset id='counter'>" % _("Supporters"), stylesheet['Heading4']))
 
-            for s in application.supporter.all():
+            for supporter in application.supporters:
                 cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % unicode(s.profile), stylesheet['Signaturefield']))
             if application.status == "pub":
                 for x in range(0,application.missing_supporters):
