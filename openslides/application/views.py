@@ -233,15 +233,19 @@ def edit(request, application_id=None):
                 trivial_change = False
             application.save(user2djangouser(request.user), trivial_change=trivial_change)
             if is_manager:
-                # TODO: Deal with the case, that the form has no field 'supporters'
-                old_supporters = set(application.supporters)
-                new_supporters = set(managerform.cleaned_data['supporter'])
-                # add new supporters
-                for supporter in new_supporters.difference(old_supporters):
-                    application.support(supporter)
-                # remove old supporters
-                for supporter in old_supporters.difference(new_supporters):
-                    application.unsupport(supporter)
+                try:
+                    new_supporters = set(managerform.cleaned_data['supporter'])
+                except KeyError:
+                    # The managerform has no field for the supporters
+                    pass
+                else:
+                    old_supporters = set(application.supporters)
+                    # add new supporters
+                    for supporter in new_supporters.difference(old_supporters):
+                        application.support(supporter)
+                    # remove old supporters
+                    for supporter in old_supporters.difference(new_supporters):
+                        application.unsupport(supporter)
             if application_id is None:
                 messages.success(request, _('New application was successfully created.'))
             else:
@@ -271,8 +275,8 @@ def edit(request, application_id=None):
             if application_id is None:
                 initial = {'submitter': user2djangouser(request.user).uid}
             else:
-                initial = {'submitter': application.submitter.uid}
-            initial['supporter'] = [supporter.uid for supporter in application.supporters]
+                initial = {'submitter': application.submitter.uid,
+                    'supporter': [supporter.uid for supporter in application.supporters]}
             managerform = managerformclass(initial=initial,
                 instance=application, prefix="manager")
         else:
