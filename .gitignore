@@ -9,3 +9,5 @@ extras/website/*
 extras/website-old/*
 docs/_build/*
 *.egg-info
+build/*
+dist/*

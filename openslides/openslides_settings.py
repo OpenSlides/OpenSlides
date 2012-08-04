@@ -30,18 +30,6 @@ LOGIN_REDIRECT_URL = '/'
 
 SESSION_COOKIE_NAME = 'OpenSlidesSessionID'
 
-DBPATH = _fs2unicode(os.path.join(os.path.join(SITE_ROOT, '..'), 'database.db'))
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': DBPATH,
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
-    }
-}
 
 ugettext = lambda s: s
 

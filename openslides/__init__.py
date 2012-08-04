@@ -5,7 +5,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-VERSION = (1, 2, 0, 'final', 1)
+VERSION = (1, 3, 0, 'alpha', 0)
 
 def get_version(version=None):
     """Derives a PEP386-compliant version number from VERSION."""

@@ -19,6 +19,7 @@ import optparse
 import socket
 import time
 import threading
+import base64
 import webbrowser
 from contextlib import nested
 
@@ -28,27 +29,63 @@ from django.utils.crypto import get_random_string
 
 import openslides
 
+CONFIG_TEMPLATE = """
+from openslides.openslides_settings import *
 
-def main(argv = None):
+# Use 'DEBUG = True' to get more details for server errors (Default for relaeses: 'False')
+DEBUG = False
+TEMPLATE_DEBUG = DEBUG
+
+DBPATH = %(dbpath)r
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': DBPATH,
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
+    }
+}
+
+# Set timezone
+TIME_ZONE = 'Europe/Berlin'
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = %(default_key)r
+
+# Add OpenSlides plugins to this list (see example entry in comment)
+INSTALLED_PLUGINS = (
+#    'pluginname',
+)
+
+INSTALLED_APPS += INSTALLED_PLUGINS
+"""
+
+KEY_LENGTH = 30
+
+def main(argv=None):
     if argv is None:
         argv = sys.argv[1:]
 
-    parser = optparse.OptionParser(description = "Run openslides using "
-        "django's builtin webserver")
-    parser.add_option("-a", "--address", help = "IP Address to listen on")
-    parser.add_option("-p", "--port", type = "int", help = "Port to listen on")
-    parser.add_option("--nothread", action = "store_true",
-        help = "Do not use threading")
-    parser.add_option("--syncdb", action = "store_true",
-        help = "Update/create database before starting the server")
-    parser.add_option("--reset-admin", action = "store_true",
-        help = "Make sure the user 'admin' exists and uses 'admin' as password")
+    parser = optparse.OptionParser(
+        description="Run openslides using django's builtin webserver")
+    parser.add_option("-a", "--address", help="IP Address to listen on")
+    parser.add_option("-p", "--port", type="int", help="Port to listen on")
+    parser.add_option("--nothread", action="store_true",
+        help="Do not use threading")
+    parser.add_option("--syncdb", action="store_true",
+        help="Update/create database before starting the server")
+    parser.add_option("--reset-admin", action="store_true",
+        help="Make sure the user 'admin' exists and uses 'admin' as password")
 
     opts, args = parser.parse_args(argv)
-    if args:
-        sys.stderr.write("This command does not take arguments!\n\n")
+    if not args:
         parser.print_help()
         sys.exit(1)
+
+    command = args[0]
 
     addr, port = detect_listen_opts(opts.address, opts.port)
     if port == 80:
@@ -56,22 +93,31 @@ def main(argv = None):
     else:
         url = "http://%s:%d" % (addr, port)
 
-    if not prepare_openslides(url, opts.syncdb):
-        sys.exit(1)
+    try:
+        environment_name = args[1]
+    except IndexError:
+        environment_name = None
 
-    if opts.reset_admin:
-        create_or_reset_admin_user()
+    if command == 'init':
+        create_environment(environment_name or 'openslides', url)
 
-    # NOTE: --insecure is needed so static files will be served if
-    #       DEBUG is set to False
-    argv = ["", "runserver", "--noreload", "--insecure"]
-    if opts.nothread:
-        argv.append("--nothread")
+    elif command == 'start':
+        set_setting_environment(environment_name or os.getcwd())
+        # NOTE: --insecure is needed so static files will be served if
+        #       DEBUG is set to False
+        argv = ["", "runserver", "--noreload", "--insecure"]
+        if opts.nothread:
+            argv.append("--nothread")
 
-    argv.append("%s:%d" % (addr, port))
+        argv.append("%s:%d" % (addr, port))
 
-    start_browser(url)
-    execute_from_command_line(argv)
+        start_browser(url)
+        execute_from_command_line(argv)
+
+
+def set_setting_environment(environment):
+    sys.path.append(environment)
+    os.environ[django.conf.ENVIRONMENT_VARIABLE] = 'settings'
 
 
 def detect_listen_opts(address, port):
@@ -106,51 +152,33 @@ def start_browser(url):
     t.start()
 
 
-def prepare_openslides(url, always_syncdb = False):
-    settings_module = os.environ.get(django.conf.ENVIRONMENT_VARIABLE)
-    if not settings_module:
-        os.environ[django.conf.ENVIRONMENT_VARIABLE] = "openslides.settings"
-        settings_module = "openslides.settings"
+def create_environment(environment, url=None):
+    output = CONFIG_TEMPLATE % dict(
+        default_key=base64.b64encode(os.urandom(KEY_LENGTH)),
+        dbpath=os.path.join(os.path.abspath(environment), 'database.db'))
 
-    try:
-        # settings is a lazy object, force the settings module
-        # to be imported
-        getattr(django.conf.settings, "DATABASES", None)
-    except ImportError:
-        pass
-    else:
-        if not check_database(url) and always_syncdb:
-            run_syncdb(url)
-        return True # import worked, settings are already configured
+    dirname = environment
+    if dirname and not os.path.exists(dirname):
+        os.makedirs(dirname)
 
+    setting = os.path.join(environment, 'settings.py')
 
-    if settings_module != "openslides.settings":
-        sys.stderr.write("Settings module '%s' cannot be imported.\n"
-            % (django.conf.ENVIRONMENT_VARIABLE, ))
-        return False
+    with open(setting, 'w') as fp:
+        fp.write(output)
 
-    openslides_dir = os.path.dirname(openslides.__file__)
-    src_fp = os.path.join(openslides_dir, "default.settings.py")
-    dest_fp = os.path.join(openslides_dir, "settings.py")
-
-    with nested(open(dest_fp, "w"), open(src_fp, "r")) as (dest, src):
-        for l in src:
-            if l.startswith("SECRET_KEY ="):
-                l = "SECRET_KEY = '%s'\n" % (generate_secret_key(), )
-            dest.write(l)
-
+    set_setting_environment(environment)
 
     run_syncdb(url)
     create_or_reset_admin_user()
-    return True
 
 
-def run_syncdb(url):
+def run_syncdb(url=None):
     # now initialize the database
     argv = ["", "syncdb", "--noinput"]
     execute_from_command_line(argv)
 
-    set_system_url(url)
+    if url is not None:
+        set_system_url(url)
 
 
 def check_database(url):
@@ -199,12 +227,6 @@ def set_system_url(url):
     if key in config:
         return
     config[key] = url
-
-
-def generate_secret_key():
-    # same chars/ length as used in djangos startproject command
-    chars = "abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)"
-    return get_random_string(50, chars)
 
 
 if __name__ == "__main__":
