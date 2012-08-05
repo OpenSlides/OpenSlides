@@ -212,9 +212,6 @@ def edit(request, application_id=None):
             del_supporters = True
             original_supporters = []
             if is_manager:
-                if application: # Edit application
-                    for s in application.supporter.all():
-                        original_supporters.append(s)
                 application = managerform.save(commit=False)
             elif application_id is None:
                 application = Application(submitter=request.user)
@@ -229,28 +226,20 @@ def edit(request, application_id=None):
                 trivial_change = False
             application.save(request.user, trivial_change=trivial_change)
             if is_manager:
-                # log added supporters
-                supporters_added = []
-                for s in application.supporter.all():
-                    if s not in original_supporters:
-                        try:
-                            supporters_added.append(unicode(s.profile))
-                        except Profile.DoesNotExist:
-                            pass
-                if len(supporters_added) > 0:
-                    log_added = ", ".join(supporters_added)
-                    application.writelog(_("Supporter: +%s") % log_added, request.user)
-                # log removed supporters
-                supporters_removed = []
-                for s in original_supporters:
-                    if s not in application.supporter.all():
-                        try:
-                            supporters_removed.append(unicode(s.profile))
-                        except Profile.DoesNotExist:
-                            pass
-                if len(supporters_removed) > 0:
-                    log_removed = ", ".join(supporters_removed)
-                    application.writelog(_("Supporter: -%s") % log_removed, request.user)
+                try:
+                    new_supporters = set(managerform.cleaned_data['supporter'])
+                except KeyError:
+                    # The managerform has no field for the supporters
+                    pass
+                else:
+                    old_supporters = set(application.supporter.all())
+                    # add new supporters
+                    for supporter in new_supporters.difference(old_supporters):
+                        application.support(supporter)
+                    # remove old supporters
+                    for supporter in old_supporters.difference(new_supporters):
+                        application.unsupport(supporter)
+
             if application_id is None:
                 messages.success(request, _('New application was successfully created.'))
             else:
@@ -280,10 +269,9 @@ def edit(request, application_id=None):
             if application_id is None:
                 initial = {'submitter': str(request.user.id)}
             else:
-                initial = {}
-            managerform = managerformclass(initial=initial, \
-                                                 instance=application, \
-                                                 prefix="manager")
+                initial = {'supporter': application.supporter.all()}
+            managerform = managerformclass(
+                initial=initial, instance=application, prefix="manager")
         else:
             managerform = None
     return {
