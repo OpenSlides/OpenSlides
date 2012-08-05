@@ -5,10 +5,11 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-VERSION = (1, 2, 0, 'final', 1)
+VERSION = (1, 2, 1, 'alpha', 0)
 
 def get_version(version=None):
     """Derives a PEP386-compliant version number from VERSION."""
+    # TODO: Get the Version Hash from GIT.
     if version is None:
         version = VERSION
     assert len(version) == 5
@@ -24,59 +25,9 @@ def get_version(version=None):
 
     sub = ''
     if version[3] == 'alpha' and version[4] == 0:
-        mercurial_version = hg_version()
-        if mercurial_version != 'unknown':
-            sub = '.dev%s' % mercurial_version
-        else:
-            sub = '.dev'
+        sub = '.dev'
 
     elif version[3] != 'final':
         sub = "-" + version[3] + str(version[4])
 
     return main + sub
-
-
-def hg_version():
-    import socket
-    import os
-    import sys
-    from os.path import realpath, join, dirname
-    try:
-        from mercurial import ui as hgui
-        from mercurial.localrepo import localrepository
-        from mercurial.node import short as shorthex
-        from mercurial.error import RepoError
-        nomercurial = False
-    except ImportError:
-        return 'unknown'
-
-    os.environ['HGRCPATH'] = ''
-    conts = realpath(join(dirname(__file__)))
-    try:
-        ui = hgui.ui()
-        repository = localrepository(ui, join(conts, '..'))
-        ctx = repository['.']
-        if ctx.tags() and ctx.tags() != ['tip']:
-            version = ' '.join(ctx.tags())
-        else:
-            version = '%(num)s:%(id)s' % {
-                'num': ctx.rev(), 'id': shorthex(ctx.node())
-            }
-    except TypeError:
-        version = 'unknown'
-    except RepoError:
-        return 0
-
-    # This value defines the timeout for sockets in seconds.  Per default python
-    # sockets do never timeout and as such we have blocking workers.
-    # Socket timeouts are set globally within the whole application.
-    # The value *must* be a floating point value.
-    socket.setdefaulttimeout(10.0)
-
-    return version
-
-
-## import os, site
-##
-## SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
-## site.addsitedir(SITE_ROOT)
