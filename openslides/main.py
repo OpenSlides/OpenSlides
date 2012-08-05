@@ -32,7 +32,8 @@ import openslides
 CONFIG_TEMPLATE = """
 from openslides.openslides_settings import *
 
-# Use 'DEBUG = True' to get more details for server errors (Default for relaeses: 'False')
+# Use 'DEBUG = True' to get more details for server errors
+# (Default for relaeses: 'False')
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
@@ -82,8 +83,9 @@ def main(argv=None):
 
     opts, args = parser.parse_args(argv)
     if not args:
-        parser.print_help()
-        sys.exit(1)
+        main(argv + ['init', 'openslides'])
+        main(argv + ['start', 'openslides'])
+        return 0
 
     command = args[0]
 
@@ -99,10 +101,16 @@ def main(argv=None):
         environment_name = None
 
     if command == 'init':
+        if check_environment(environment_name):
+            print "'%s' is allready an environment" % environment_name
+            return 1
         create_environment(environment_name or 'openslides', url)
 
     elif command == 'start':
-        set_setting_environment(environment_name or os.getcwd())
+        set_settings_environment(environment_name or os.getcwd())
+        if not check_environment():
+            print "'%s' is not a valid OpenSlides environment." % environment_name
+            sys.exit(1)
         # NOTE: --insecure is needed so static files will be served if
         #       DEBUG is set to False
         argv = ["", "runserver", "--noreload", "--insecure"]
@@ -115,7 +123,7 @@ def main(argv=None):
         execute_from_command_line(argv)
 
 
-def set_setting_environment(environment):
+def set_settings_environment(environment):
     sys.path.append(environment)
     os.environ[django.conf.ENVIRONMENT_VARIABLE] = 'settings'
 
@@ -153,7 +161,7 @@ def start_browser(url):
 
 
 def create_environment(environment, url=None):
-    output = CONFIG_TEMPLATE % dict(
+    setting_content = CONFIG_TEMPLATE % dict(
         default_key=base64.b64encode(os.urandom(KEY_LENGTH)),
         dbpath=os.path.join(os.path.abspath(environment), 'database.db'))
 
@@ -161,12 +169,12 @@ def create_environment(environment, url=None):
     if dirname and not os.path.exists(dirname):
         os.makedirs(dirname)
 
-    setting = os.path.join(environment, 'settings.py')
+    settings = os.path.join(environment, 'settings.py')
+    if not os.path.exists(settings):
+        with open(settings, 'w') as fp:
+            fp.write(setting_content)
 
-    with open(setting, 'w') as fp:
-        fp.write(output)
-
-    set_setting_environment(environment)
+    set_settings_environment(environment)
 
     run_syncdb(url)
     create_or_reset_admin_user()
@@ -181,7 +189,19 @@ def run_syncdb(url=None):
         set_system_url(url)
 
 
-def check_database(url):
+def check_environment(environment=None):
+    if environment is not None:
+        set_settings_environment(environment)
+    try:
+        import settings
+    except ImportError:
+        return False
+    if not check_database():
+        return False
+    return True
+
+
+def check_database():
     """Detect if database was deleted and recreate if necessary"""
     # can't be imported in global scope as they already require
     # the settings module during import
@@ -191,10 +211,9 @@ def check_database(url):
     try:
         User.objects.count()
     except DatabaseError:
-        run_syncdb(url)
-        create_or_reset_admin_user()
+        return False
+    else:
         return True
-    return False
 
 
 def create_or_reset_admin_user():
