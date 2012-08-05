@@ -15,9 +15,9 @@ from django.test.client import Client
 from django.contrib.auth.models import User
 from django.db.models.query import EmptyQuerySet
 
-from projector.api import get_active_slide
+from openslides.projector.api import get_active_slide
 
-from agenda.models import Item
+from openslides.agenda.models import Item
 
 class ItemTest(TestCase):
     def setUp(self):
@@ -59,6 +59,10 @@ class ItemTest(TestCase):
             else:
                 self.assertEqual(initial['parent'], 0)
             self.assertEqual(initial['weight'], item.weight)
+
+    def testRelated_sid(self):
+        self.item1.related_sid = 'foobar'
+        self.assertFalse(self.item1.get_related_slide() is None)
 
 
 class ViewTest(TestCase):
