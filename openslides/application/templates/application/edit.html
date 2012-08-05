@@ -5,17 +5,17 @@
 {% block title %}
     {{ block.super }} –
     {% if application %}
-        {% trans "Edit application" %}
+        {% trans "Edit motion" %}
     {% else %}
-        {% trans "New application" %}
+        {% trans "New motion" %}
     {% endif %}
 {% endblock %}
 
 {% block content %}
     {% if application %}
-        <h1>{% trans "Edit application" %}</h1>
+        <h1>{% trans "Edit motion" %}</h1>
     {% else %}
-        <h1>{% trans "New application" %}</h1>
+        <h1>{% trans "New motion" %}</h1>
     {% endif %}
 
     <form action="" method="post">{% csrf_token %}

@@ -176,12 +176,12 @@ def edit(request, application_id=None):
 
     if not is_manager \
     and not request.user.has_perm('application.can_create_application'):
-        messages.error(request, _("You have not the necessary rights to create or edit applications."))
+        messages.error(request, _("You have not the necessary rights to create or edit motions."))
         return redirect(reverse('application_overview'))
     if application_id is not None:
         application = Application.objects.get(id=application_id)
         if not request.user == application.submitter and not is_manager:
-            messages.error(request, _("You can not edit this application. You are not the submitter."))
+            messages.error(request, _("You can not edit this motion. You are not the submitter."))
             return redirect(reverse('application_view', args=[application.id]))
         actions = application.get_allowed_actions(user=request.user)
     else:
@@ -241,9 +241,9 @@ def edit(request, application_id=None):
                         application.unsupport(supporter)
 
             if application_id is None:
-                messages.success(request, _('New application was successfully created.'))
+                messages.success(request, _('New motion was successfully created.'))
             else:
-                messages.success(request, _('Application was successfully modified.'))
+                messages.success(request, _('Motion was successfully modified.'))
 
             if not 'apply' in request.POST:
                 return redirect(reverse('application_view', args=[application.id]))
@@ -257,9 +257,9 @@ def edit(request, application_id=None):
         else:
             if application.status == "pub" and application.supporter.exists():
                 if request.user.has_perm('application.can_manage_application'):
-                    messages.warning(request, _("Attention: Do you really want to edit this application? The supporters will <b>not</b> be removed automatically because you can manage applications. Please check if the supports are valid after your changing!"))
+                    messages.warning(request, _("Attention: Do you really want to edit this motion? The supporters will <b>not</b> be removed automatically because you can manage motions. Please check if the supports are valid after your changing!"))
                 else:
-                    messages.warning(request, _("Attention: Do you really want to edit this application? All <b>%s</b> supporters will be removed! Try to convince the supporters again.") % application.supporter.count() )
+                    messages.warning(request, _("Attention: Do you really want to edit this motion? All <b>%s</b> supporters will be removed! Try to convince the supporters again.") % application.supporter.count() )
             initial = {'title': application.title,
                        'text': application.text,
                        'reason': application.reason}
@@ -290,7 +290,7 @@ def set_number(request, application_id):
     """
     try:
         Application.objects.get(pk=application_id).set_number(user=request.user)
-        messages.success(request, _("Application number was successfully set."))
+        messages.success(request, _("Motion number was successfully set."))
     except Application.DoesNotExist:
         pass
     except NameError:
@@ -306,7 +306,7 @@ def permit(request, application_id):
     """
     try:
         Application.objects.get(pk=application_id).permit(user=request.user)
-        messages.success(request, _("Application was successfully permitted."))
+        messages.success(request, _("Motion was successfully authorized."))
     except Application.DoesNotExist:
         pass
     except NameError, e:
@@ -321,7 +321,7 @@ def notpermit(request, application_id):
     """
     try:
         Application.objects.get(pk=application_id).notpermit(user=request.user)
-        messages.success(request, _("Application was successfully rejected."))
+        messages.success(request, _("Motion was successfully rejected."))
     except Application.DoesNotExist:
         pass
     except NameError, e:
@@ -337,7 +337,7 @@ def set_status(request, application_id=None, status=None):
         if status is not None:
             application = Application.objects.get(pk=application_id)
             application.set_status(user=request.user, status=status)
-            messages.success(request, _("Application status was set to: <b>%s</b>.") % application.get_status_display())
+            messages.success(request, _("Motion status was set to: <b>%s</b>.") % application.get_status_display())
     except Application.DoesNotExist:
         pass
     except NameError, e:
@@ -353,7 +353,7 @@ def reset(request, application_id):
     """
     try:
         Application.objects.get(pk=application_id).reset(user=request.user)
-        messages.success(request, _("Application status was reset.") )
+        messages.success(request, _("Motion status was reset.") )
     except Application.DoesNotExist:
         pass
     return redirect(reverse('application_view', args=[application_id]))
@@ -367,7 +367,7 @@ def support(request, application_id):
     """
     try:
         Application.objects.get(pk=application_id).support(user=request.user)
-        messages.success(request, _("You have support the application successfully.") )
+        messages.success(request, _("You have support the motion successfully.") )
     except Application.DoesNotExist:
         pass
     return redirect(reverse('application_view', args=[application_id]))
@@ -381,7 +381,7 @@ def unsupport(request, application_id):
     """
     try:
         Application.objects.get(pk=application_id).unsupport(user=request.user)
-        messages.success(request, _("You have unsupport the application successfully.") )
+        messages.success(request, _("You have unsupport the motion successfully.") )
     except Application.DoesNotExist:
         pass
     return redirect(reverse('application_view', args=[application_id]))
@@ -452,20 +452,20 @@ class ApplicationDelete(DeleteView):
         if len(self.applications):
             for application in self.applications:
                 if not 'delete' in application.get_allowed_actions(user=request.user):
-                    messages.error(request, _("You can not delete application <b>%s</b>.") % application)
+                    messages.error(request, _("You can not delete motion <b>%s</b>.") % application)
                     continue
 
                 title = application.title
                 application.delete(force=True)
-                messages.success(request, _("Application <b>%s</b> was successfully deleted.") % title)
+                messages.success(request, _("Motion <b>%s</b> was successfully deleted.") % title)
 
         elif self.object:
                 if not 'delete' in self.object.get_allowed_actions(user=request.user):
-                    messages.error(request, _("You can not delete application <b>%s</b>.") % self.object)
+                    messages.error(request, _("You can not delete motion <b>%s</b>.") % self.object)
                 else:
                     title = self.object.title
                     self.object.delete(force=True)
-                    messages.success(request, _("Application <b>%s</b> was successfully deleted.") % title)
+                    messages.success(request, _("Motion <b>%s</b> was successfully deleted.") % title)
         else:
             messages.error(request, _("Invalid request"))
 
@@ -486,7 +486,7 @@ class ApplicationDelete(DeleteView):
         self.object = self.get_object()
 
         if len(self.applications):
-            self.gen_confirm_form(request, _('Do you really want to delete multiple applications?') % self.object.get_absolute_url('delete'))
+            self.gen_confirm_form(request, _('Do you really want to delete multiple motions?') % self.object.get_absolute_url('delete'))
         else:
             self.gen_confirm_form(request, _('Do you really want to delete <b>%s</b>?') % self.object, self.object.get_absolute_url('delete'))
 
@@ -531,7 +531,7 @@ def permit_version(request, aversion_id):
         application.accept_version(aversion, user = request.user)
         messages.success(request, _("Version <b>%s</b> accepted.") % (aversion.aid))
     else:
-        gen_confirm_form(request, _('Do you really want to permit version <b>%s</b>?') % aversion.aid, reverse('application_version_permit', args=[aversion.id]))
+        gen_confirm_form(request, _('Do you really want to authorize version <b>%s</b>?') % aversion.aid, reverse('application_version_permit', args=[aversion.id]))
     return redirect(reverse('application_view', args=[application.id]))
 
 
@@ -644,11 +644,11 @@ def application_import(request):
                         application.save(user, trivial_change=True)
 
                 if applications_generated:
-                    messages.success(request, ungettext('%d application was successfully imported.',
-                                                '%d applications were successfully imported.', applications_generated) % applications_generated)
+                    messages.success(request, ungettext('%d motion was successfully imported.',
+                                                '%d motions were successfully imported.', applications_generated) % applications_generated)
                 if applications_modified:
-                    messages.success(request, ungettext('%d application was successfully modified.',
-                                                '%d applications were successfully modified.', applications_modified) % applications_modified)
+                    messages.success(request, ungettext('%d motion was successfully modified.',
+                                                '%d motions were successfully modified.', applications_modified) % applications_modified)
                 if users_generated:
                     messages.success(request, ungettext('%d new user was added.', '%d new users were added.', users_generated) % users_generated)
                 return redirect(reverse('application_overview'))
@@ -660,8 +660,8 @@ def application_import(request):
         else:
             messages.error(request, _('Please check the form for errors.'))
     else:
-        messages.warning(request, _("Attention: Existing applications will be modified if you import new applications with the same number."))
-        messages.warning(request, _("Attention: Importing an application without a number multiple times will create duplicates."))
+        messages.warning(request, _("Attention: Existing motions will be modified if you import new motions with the same number."))
+        messages.warning(request, _("Attention: Importing an motions without a number multiple times will create duplicates."))
         form = ApplicationImportForm()
     return {
         'form': form,
@@ -708,14 +708,14 @@ class ApplicationPDF(PDFView):
             story.append(Spacer(0,0.75*cm))
             applications = Application.objects.order_by('number')
             if not applications: # No applications existing
-                story.append(Paragraph(_("No applications available."), stylesheet['Heading3']))
+                story.append(Paragraph(_("No motions available."), stylesheet['Heading3']))
             else: # Print all Applications
                 # List of applications
                 for application in applications:
                     if application.number:
-                        story.append(Paragraph(_("Application No.")+" %s: %s" % (application.number, application.title), stylesheet['Heading3']))
+                        story.append(Paragraph(_("Motion No.")+" %s: %s" % (application.number, application.title), stylesheet['Heading3']))
                     else:
-                        story.append(Paragraph(_("Application No.")+"&nbsp;&nbsp;&nbsp;: %s" % (application.title), stylesheet['Heading3']))
+                        story.append(Paragraph(_("Motion No.")+"&nbsp;&nbsp;&nbsp;: %s" % (application.title), stylesheet['Heading3']))
                 # Applications details (each application on single page)
                 for application in applications:
                     story.append(PageBreak())
@@ -727,9 +727,9 @@ class ApplicationPDF(PDFView):
     def get_application(self, application, story):
         # application number
         if application.number:
-            story.append(Paragraph(_("Application No.")+" %s" % application.number, stylesheet['Heading1']))
+            story.append(Paragraph(_("Motion No.")+" %s" % application.number, stylesheet['Heading1']))
         else:
-            story.append(Paragraph(_("Application No."), stylesheet['Heading1']))
+            story.append(Paragraph(_("Motion No."), stylesheet['Heading1']))
 
         # submitter
         cell1a = []
@@ -909,7 +909,7 @@ class Config(FormView):
         config['application_pdf_title'] = form.cleaned_data['application_pdf_title']
         config['application_pdf_preamble'] = form.cleaned_data['application_pdf_preamble']
         config['application_allow_trivial_change'] = form.cleaned_data['application_allow_trivial_change']
-        messages.success(self.request, _('Application settings successfully saved.'))
+        messages.success(self.request, _('Motion settings successfully saved.'))
         return super(Config, self).form_valid(form)
 
 

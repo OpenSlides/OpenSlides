@@ -54,7 +54,7 @@ class Overview(TemplateView):
         context = self.get_context_data(**kwargs)
         if not request.user.has_perm('agenda.can_manage_agenda'):
             messages.error(request,
-                _('You are not permitted to manage the agenda.'))
+                _('You are not authorized to manage the agenda.'))
             return self.render_to_response(context)
         transaction.commit()
         for item in Item.objects.all():

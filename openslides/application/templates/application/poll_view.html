@@ -4,12 +4,12 @@
 {% load staticfiles %}
 
 {% block title %}
-    {{ block.super }} – {% trans "Application" %} "{{ application.public_version.title }}"
+    {{ block.super }} – {% trans "Motion" %} "{{ application.public_version.title }}"
     – {{ ballot }}. {% trans "Vote" %}
 {% endblock %}
 
 {% block content %}
-    <h1>{{ application.public_version.title }} ({% trans "Application" %}
+    <h1>{{ application.public_version.title }} ({% trans "Motion" %}
     {{ application.number }}) – {{ ballot }}. {% trans "Vote" %}</h1>
     <i class="helptext">{% trans "Special values" %}: -1 = {% trans 'majority' %}; -2 = {% trans 'undocumented' %}</i>
     <form action="" method="post" class="small-form">{% csrf_token %}
