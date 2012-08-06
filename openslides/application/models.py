@@ -362,7 +362,7 @@ class Application(models.Model, SlideMixin):
         is_admin = False
         if user:
             try:
-                user.profile
+                user = user.profile
             except Profile.DoesNotExist:
                 is_admin = True
             except AttributeError:

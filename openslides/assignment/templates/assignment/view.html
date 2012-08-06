@@ -54,7 +54,7 @@
     <form action="" method="post">{% csrf_token %}
         {% if perms.assignment.can_nominate_self %}
             <p>
-            {% if user in assignment.candidates %}
+            {% if user_is_candidate %}
                 <a href='{% url assignment_delrun assignment.id %}'>
                     <span class="button">
                         <span class="icon removeuser">{% trans 'Withdraw self candidature' %}</span>

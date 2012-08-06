@@ -97,11 +97,14 @@ def view(request, assignment_id=None):
     else:
         polls = assignment.poll_set.all()
         vote_results = assignment.vote_results(only_published=False)
+
+    user = user2djangouser(request.user)
     return {
         'assignment': assignment,
         'form': form,
         'vote_results': vote_results,
         'polls': polls,
+        'user_is_candidate': assignment.is_candidate(user)
     }
 
 

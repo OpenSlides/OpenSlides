@@ -58,6 +58,9 @@ class Profile(models.Model, UserMixin):
         self.user.set_password(self.firstpassword)
         self.user.save()
 
+    def has_perm(self, perm):
+        return self.user.has_perm(perm)
+
     @models.permalink
     def get_absolute_url(self, link='edit'):
         """
