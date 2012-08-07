@@ -22,14 +22,25 @@ class Users(object):
         self.id = id
 
     def __iter__(self):
-        for receiver, users in receiv_users.send(
-                sender='users', user_prefix=self.user_prefix, id=self.id):
-            for user in users:
-                yield user
+        try:
+            return iter(self._cache)
+        except AttributeError:
+            return iter(self.iter_users())
+
+    def __len__(self):
+        return len(list(self.__iter__()))
 
     def __getitem__(self, key):
         user_list = list(self)
         return user_list[key]
+
+    def iter_users(self):
+        self._cache = list()
+        for receiver, users in receiv_users.send(
+                sender='users', user_prefix=self.user_prefix, id=self.id):
+            for user in users:
+                self._cache.append(user)
+                yield user
 
 
 def generate_uid(prefix, id):
