@@ -46,10 +46,10 @@ from openslides.utils.views import FormView, PDFView
 
 from openslides.config.models import config
 
-from openslides.participant.models import Profile, DjangoGroup
+from openslides.participant.models import OpenSlidesUser, OpenSlidesGroup
 from openslides.participant.api import gen_username, gen_password
 from openslides.participant.forms import (UserNewForm, UserEditForm,
-    ProfileForm, UsersettingsForm, UserImportForm, GroupForm,
+    OpenSlidesUserForm, UsersettingsForm, UserImportForm, GroupForm,
     AdminPasswordChangeForm, ConfigForm)
 
 
@@ -78,53 +78,55 @@ def get_overview(request):
 
     query = User.objects
     if 'gender' in sortfilter:
-        query = query.filter(profile__gender__iexact=sortfilter['gender'][0])
+        query = query.filter(openslidesuser__gender__iexact=sortfilter['gender'][0])
     if 'group' in sortfilter:
-        query = query.filter(profile__group__iexact=sortfilter['group'][0])
+        query = query.filter(openslidesuser__group__iexact=sortfilter['name_surfix'][0])
     if 'type' in sortfilter:
-        query = query.filter(profile__type__iexact=sortfilter['type'][0])
+        query = query.filter(openslidesuser__type__iexact=sortfilter['type'][0])
     if 'committee' in sortfilter:
         query = query. \
-            filter(profile__committee__iexact=sortfilter['committee'][0])
+            filter(openslidesuser__committee__iexact=sortfilter['committee'][0])
     if 'status' in sortfilter:
         query = query.filter(is_active=sortfilter['status'][0])
     if 'sort' in sortfilter:
         if sortfilter['sort'][0] in ['first_name', 'last_name', 'last_login']:
             query = query.order_by(sortfilter['sort'][0])
-        elif sortfilter['sort'][0] in ['group', 'type', 'committee', 'comment']:
-            query = query.order_by('profile__%s' % sortfilter['sort'][0])
+        elif sortfilter['sort'][0] in ['name_surfix', 'type', 'committee', 'comment']:
+            query = query.order_by('openslidesuser__%s' % sortfilter['sort'][0])
     else:
         query = query.order_by('last_name')
     if 'reverse' in sortfilter:
         query = query.reverse()
 
-    # list of filtered users (with profile)
+    # list of filtered users
     userlist = query.all()
     users = []
     for user in userlist:
         try:
-            user.get_profile()
-            users.append(user)
-        except Profile.DoesNotExist:
+            user.openslidesuser
+        except OpenSlidesUser.DoesNotExist:
             pass
-    # list of all existing users (with profile)
+        else:
+            users.append(user)
+    # list of all existing users
     allusers = []
     for user in User.objects.all():
         try:
-            user.get_profile()
-            allusers.append(user)
-        except Profile.DoesNotExist:
+            user.openslidesuser
+        except OpenSlidesUser.DoesNotExist:
             pass
+        else:
+            allusers.append(user)
     # quotient of selected users and all users
     if len(allusers) > 0:
         percent = float(len(users)) * 100 / float(len(allusers))
     else:
         percent = 0
     # list of all existing groups
-    groups = [p['group'] for p in Profile.objects.values('group') \
-        .exclude(group='').distinct()]
+    groups = [p['name_surfix'] for p in OpenSlidesUser.objects.values('name_surfix') \
+        .exclude(name_surfix='').distinct()]
     # list of all existing committees
-    committees = [p['committee'] for p in Profile.objects.values('committee') \
+    committees = [p['committee'] for p in OpenSlidesUser.objects.values('committee') \
         .exclude(committee='').distinct()]
     return {
         'users': users,
@@ -142,7 +144,7 @@ def get_overview(request):
 @template('participant/edit.html')
 def edit(request, user_id=None):
     """
-    View to create and edit users with profile.
+    View to create and edit users.
     """
     if user_id is not None:
         user = User.objects.get(id=user_id)
@@ -151,26 +153,31 @@ def edit(request, user_id=None):
 
     if request.method == 'POST':
         if user_id is None:
-            userform = UserNewForm(request.POST, prefix="user")
-            profileform = ProfileForm(request.POST, prefix="profile")
+            user_form = UserNewForm(request.POST, prefix="user")
+            openslides_user_form = OpenSlidesUserForm(request.POST, prefix="openslidesuser")
         else:
-            userform = UserEditForm(request.POST, instance=user, prefix="user")
-            profileform = ProfileForm(request.POST, instance=user.profile,
-                prefix="profile")
+            user_form = UserEditForm(request.POST, instance=user, prefix="user")
+            openslides_user_form = OpenSlidesUserForm(request.POST, instance=user.openslidesuser,
+                prefix="openslidesuser")
 
-        if userform.is_valid() and profileform.is_valid():
-            user = userform.save()
+        if user_form.is_valid() and openslides_user_form.is_valid():
+            user = user_form.save(commit=False)
             if user_id is None:
+                # TODO: call first_name and last_name though openslides_user
                 user.username = gen_username(user.first_name, user.last_name)
                 user.save()
-            profile = profileform.save(commit=False)
-            profile.user = user
+                openslides_user = user.openslidesuser
+                openslides_user_form = OpenSlidesUserForm(request.POST, instance=openslides_user, prefix="openslidesuser")
+                openslides_user_form.is_valid()
+            openslides_user = openslides_user_form.save(commit=False)
+            openslides_user.user = user
             if user_id is None:
-                if not profile.firstpassword:
-                    profile.firstpassword = gen_password()
-                profile.user.set_password(profile.firstpassword)
-                profile.user.save()
-            profile.save()
+                if not openslides_user.firstpassword:
+                    openslides_user.firstpassword = gen_password()
+                openslides_user.user.set_password(openslides_user.firstpassword)
+            # TODO: Try not to save the user object
+            openslides_user.user.save()
+            openslides_user.save()
             if user_id is None:
                 messages.success(request,
                     _('New participant was successfully created.'))
@@ -185,15 +192,15 @@ def edit(request, user_id=None):
             messages.error(request, _('Please check the form for errors.'))
     else:
         if user_id is None:
-            userform = UserNewForm(prefix="user")
-            profileform = ProfileForm(prefix="profile")
+            user_form = UserNewForm(prefix="user")
+            openslides_user_form = OpenSlidesUserForm(prefix="openslidesuser")
         else:
-            userform = UserEditForm(instance=user, prefix="user")
-            profileform = ProfileForm(instance=user.profile, prefix="profile")
-
+            user_form = UserEditForm(instance=user, prefix="user")
+            openslides_user_form = OpenSlidesUserForm(instance=user.openslidesuser, prefix="openslidesuser")
+    # TODO: rename template vars
     return {
-        'userform': userform,
-        'profileform': profileform,
+        'userform': user_form,
+        'profileform': openslides_user_form,
         'edituser': user,
     }
 
@@ -330,7 +337,7 @@ def group_edit(request, group_id=None):
         else:
             messages.error(request, _('Please check the form for errors.'))
     else:
-        if group and DjangoGroup.objects.filter(group=group).exists():
+        if group and OpenSlidesGroup.objects.filter(group=group).exists():
             initial = {'as_user': True}
         else:
             initial = {'as_user': False}

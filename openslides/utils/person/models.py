@@ -1,25 +1,25 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    openslides.utils.user.models
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    openslides.utils.person.models
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Models and ModelFields for the OpenSlides user api.
+    Models and ModelFields for the OpenSlides person api.
 
     :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 from django.db import models
 
-from openslides.utils.user.forms import UserFormField
-from openslides.utils.user.api import get_user, generate_uid
+from openslides.utils.person.forms import PersonFormField
+from openslides.utils.person.api import get_person, generate_person_id
 
 
-class UserField(models.fields.Field):
+class PersonField(models.fields.Field):
     __metaclass__ = models.SubfieldBase
 
     def __init__(self, *args, **kwargs):
-        super(UserField, self).__init__(max_length=255, *args, **kwargs)
+        super(PersonField, self).__init__(max_length=255, *args, **kwargs)
         # TODO: Validate the uid
 
     def get_internal_type(self):
@@ -29,36 +29,36 @@ class UserField(models.fields.Field):
         """
         Convert string value to a User Object.
         """
-        if hasattr(value, 'uid'):
-            user = value
+        if hasattr(value, 'person_id'):
+            person = value
         else:
-            user = get_user(value)
+            person = get_person(value)
 
-        user.prepare_database_save = (
-            lambda unused: UserField().get_prep_value(user))
-        return user
+        person.prepare_database_save = (
+            lambda unused: PersonField().get_prep_value(person))
+        return person
 
     def get_prep_value(self, value):
-        return value.uid
+        return value.person_id
 
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)
         return self.get_prep_value(value)
 
     def formfield(self, **kwargs):
-        defaults = {'form_class': UserFormField}
+        defaults = {'form_class': PersonFormField}
         defaults.update(kwargs)
-        return super(UserField, self).formfield(**defaults)
+        return super(PersonField, self).formfield(**defaults)
 
 
-class UserMixin(object):
+class PersonMixin(object):
     @property
-    def uid(self):
+    def person_id(self):
         try:
-            return generate_uid(self.user_prefix, self.pk)
+            return generate_person_id(self.person_prefix, self.pk)
         except AttributeError:
             raise AttributeError("%s has to have a attribute 'user_prefix'"
                                  % self)
 
     def __repr__(self):
-        return 'User: %s' % self.uid
+        return 'Person: %s' % self.person_id

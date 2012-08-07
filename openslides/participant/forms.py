@@ -17,7 +17,7 @@ from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
 from openslides.utils.forms import CssClassMixin, LocalizedModelMultipleChoiceField
 
-from openslides.participant.models import Profile
+from openslides.participant.models import OpenSlidesUser
 
 
 USER_APPLICATION_IMPORT_OPTIONS = [
@@ -62,9 +62,9 @@ class UsernameForm(forms.ModelForm, CssClassMixin):
             'date_joined', 'user_permissions')
 
 
-class ProfileForm(forms.ModelForm, CssClassMixin):
+class OpenSlidesUserForm(forms.ModelForm, CssClassMixin):
     class Meta:
-        model = Profile
+        model = OpenSlidesUser
 
 
 class GroupForm(forms.ModelForm, CssClassMixin):

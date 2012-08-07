@@ -30,12 +30,11 @@ from openslides.utils.template import Tab
 from openslides.utils.utils import (template, permission_required,
     gen_confirm_form, del_confirm_form, ajax_request)
 from openslides.utils.views import FormView, DeleteView, PDFView, RedirectView
-from openslides.utils.user import get_user
+from openslides.utils.person import get_person
 
 from openslides.config.models import config
 
-from openslides.participant.models import Profile
-from openslides.participant.api import user2djangouser
+from openslides.participant.models import OpenSlidesUser
 
 from openslides.projector.projector import Widget
 
@@ -98,7 +97,7 @@ def view(request, assignment_id=None):
         polls = assignment.poll_set.all()
         vote_results = assignment.vote_results(only_published=False)
 
-    user = user2djangouser(request.user)
+    user = request.user.openslidesuser
     return {
         'assignment': assignment,
         'form': form,
@@ -174,7 +173,7 @@ def set_status(request, assignment_id=None, status=None):
 def run(request, assignment_id):
     assignment = Assignment.objects.get(pk=assignment_id)
     try:
-        assignment.run(user2djangouser(request.user), request.user)
+        assignment.run(request.user.openslidesuser, request.user)
         messages.success(request, _('You have set your candidature successfully.') )
     except NameError, e:
         messages.error(request, e)
@@ -186,7 +185,7 @@ def delrun(request, assignment_id):
     assignment = Assignment.objects.get(pk=assignment_id)
     try:
         if assignment.status == 'sea' or user.has_perm("assignment.can_manage_assignment"):
-            assignment.delrun(user2djangouser(request.user))
+            assignment.delrun(request.user.openslidesuser)
         else:
             messages.error(request, _('The candidate list is already closed.'))
     except Exception, e:
@@ -199,19 +198,19 @@ def delrun(request, assignment_id):
 @permission_required('assignment.can_manage_assignment')
 def delother(request, assignment_id, user_id):
     assignment = Assignment.objects.get(pk=assignment_id)
-    user = get_user(user_id)
+    person = get_person(user_id)
 
     if request.method == 'POST':
         try:
-            assignment.delrun(user)
+            assignment.delrun(person)
         except Exception, e:
             messages.error(request, e)
         else:
-            messages.success(request, _("Candidate <b>%s</b> was withdrawn successfully.") % (user))
+            messages.success(request, _("Candidate <b>%s</b> was withdrawn successfully.") % (person))
     else:
         gen_confirm_form(request,
            _("Do you really want to withdraw <b>%s</b> from the election?") \
-            % user, reverse('assignment_delother', args=[assignment_id, user_id]))
+            % person, reverse('assignment_delother', args=[assignment_id, user_id]))
     return redirect(reverse('assignment_view', args=[assignment_id]))
 
 
@@ -273,15 +272,15 @@ def set_publish_status(request, poll_id):
 @permission_required('assignment.can_manage_assignment')
 def set_elected(request, assignment_id, user_id, elected=True):
     assignment = Assignment.objects.get(pk=assignment_id)
-    user = get_user(user_id)
-    assignment.set_elected(user, elected)
+    person = get_person(user_id)
+    assignment.set_elected(person, elected)
 
     if request.is_ajax():
         if elected:
-            link = reverse('assignment_user_not_elected', args=[assignment.id, user.uid])
+            link = reverse('assignment_user_not_elected', args=[assignment.id, person.person_id])
             text = _('not elected')
         else:
-            link = reverse('assignment_user_elected', args=[assignment.id, user.uid])
+            link = reverse('assignment_user_elected', args=[assignment.id, person.person_id])
             text = _('elected')
         return ajax_request({'elected': elected, 'link': link, 'text': text})
 
@@ -554,8 +553,8 @@ class AssignmentPollPDF(PDFView):
                 candidate = option.candidate
                 cell.append(Paragraph(candidate.user.get_full_name(),
                     stylesheet['Ballot_option_name']))
-                if candidate.group:
-                    cell.append(Paragraph("(%s)" % candidate.group,
+                if candidate.name_surfix:
+                    cell.append(Paragraph("(%s)" % candidate.name_surfix,
                         stylesheet['Ballot_option_group']))
                 else:
                     cell.append(Paragraph("&nbsp;",

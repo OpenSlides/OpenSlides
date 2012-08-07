@@ -21,12 +21,12 @@ from django.utils.translation import pgettext
 from django.utils.translation import ugettext_lazy as _, ugettext_noop, ugettext
 
 from openslides.utils.utils import _propper_unicode
-from openslides.utils.user import UserField
+from openslides.utils.person import PersonField
 
 from openslides.config.models import config
 from openslides.config.signals import default_config_value
 
-from openslides.participant.models import Profile
+from openslides.participant.models import OpenSlidesUser
 
 from openslides.poll.models import (BaseOption, BasePoll, CountVotesCast,
     CountInvalid, BaseVote)
@@ -39,7 +39,7 @@ from openslides.agenda.models import Item
 
 class ApplicationSupporter(models.Model):
     application = models.ForeignKey("Application")
-    user = UserField()
+    person = PersonField()
 
 
 class Application(models.Model, SlideMixin):
@@ -66,7 +66,7 @@ class Application(models.Model, SlideMixin):
         # genpoll
     )
 
-    submitter = UserField(verbose_name=_("Submitter"))
+    submitter = PersonField(verbose_name=_("Submitter"))
     number = models.PositiveSmallIntegerField(blank=True, null=True,
                                         unique=True)
     status = models.CharField(max_length=3, choices=STATUS, default='pub')
@@ -163,10 +163,11 @@ class Application(models.Model, SlideMixin):
 
     @property
     def supporters(self):
-        return [object.user for object in self.applicationsupporter_set.all()]
+        for object in self.applicationsupporter_set.all():
+            yield object.person
 
-    def is_supporter(self, user):
-        return self.applicationsupporter_set.filter(user=user).exists()
+    def is_supporter(self, person):
+        return self.applicationsupporter_set.filter(person=person).exists()
 
     @property
     def enough_supporters(self):
@@ -251,20 +252,20 @@ class Application(models.Model, SlideMixin):
         self.save()
         self.writelog(_("Status reseted to: %s") % (self.get_status_display()), user)
 
-    def support(self, user):
+    def support(self, person):
         """
         Add a Supporter to the list of supporters of the application.
         """
-        if user == self.submitter:
+        if person == self.submitter:
             # TODO: Use own Exception
             raise NameError('Supporter can not be the submitter of a ' \
                             'application.')
         if self.permitted is not None:
             # TODO: Use own Exception
             raise NameError('This application is already permitted.')
-        if not self.is_supporter(user):
-            ApplicationSupporter(application=self, user=user).save()
-            self.writelog(_("Supporter: +%s") % (user))
+        if not self.is_supporter(person):
+            ApplicationSupporter(application=self, person=person).save()
+            self.writelog(_("Supporter: +%s") % (person))
 
     def unsupport(self, user):
         """
@@ -362,8 +363,8 @@ class Application(models.Model, SlideMixin):
         is_admin = False
         if user:
             try:
-                user = user.profile
-            except Profile.DoesNotExist:
+                user = user.openslidesuser
+            except OpenSlidesUser.DoesNotExist:
                 is_admin = True
             except AttributeError:
                 # For the anonymous-user

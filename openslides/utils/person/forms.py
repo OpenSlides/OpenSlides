@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    openslides.utils.user.forms
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    openslides.utils.person.forms
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Forms and FormFields for the OpenSlides user api.
+    Forms and FormFields for the OpenSlides person api.
 
     :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
@@ -12,21 +12,21 @@
 
 from django import forms
 
-from openslides.utils.user.api import Users, get_user
+from openslides.utils.person.api import Persons, get_person
 
 
-class UserChoices(object):
+class PersonChoices(object):
     def __init__(self, field):
         self.field = field
 
     def __iter__(self):
         if self.field.empty_label is not None:
             yield (u"", self.field.empty_label)
-        for user in Users():
-            yield (user.uid, user)
+        for person in Persons():
+            yield (person.person_id, person)
 
 
-class UserFormField(forms.fields.ChoiceField):
+class PersonFormField(forms.fields.ChoiceField):
     def __init__(self, required=True, initial=None, empty_label=u"---------",
                  *args, **kwargs):
         if required and (initial is not None):
@@ -46,32 +46,32 @@ class UserFormField(forms.fields.ChoiceField):
         # the property self.choices. In this case, just return self._choices.
         if hasattr(self, '_choices'):
             return self._choices
-        return UserChoices(self)
+        return PersonChoices(self)
 
     choices = property(_get_choices, forms.fields.ChoiceField._set_choices)
 
     def to_python(self, value):
-        return get_user(value)
+        return get_person(value)
 
     def valid_value(self, value):
-        return super(UserFormField, self).valid_value(value.uid)
+        return super(PersonFormField, self).valid_value(value.person_id)
 
 
-class MultipleUserFormField(UserFormField):
+class MultiplePersonFormField(PersonFormField):
     widget = forms.widgets.SelectMultiple
 
     def __init__(self, *args, **kwargs):
-        super(MultipleUserFormField, self).__init__(empty_label=None,
+        super(MultiplePersonFormField, self).__init__(empty_label=None,
                                                     *args, **kwargs)
 
     def to_python(self, value):
         if hasattr(value, '__iter__'):
-            return [super(MultipleUserFormField, self).to_python(v)
+            return [super(MultiplePersonFormField, self).to_python(v)
                     for v in value]
-        return super(MultipleUserFormField, self).to_python(value)
+        return super(MultiplePersonFormField, self).to_python(value)
 
     def valid_value(self, value):
         if hasattr(value, '__iter__'):
-            return [super(MultipleUserFormField, self).valid_value(v)
+            return [super(MultiplePersonFormField, self).valid_value(v)
                     for v in value]
-        return super(MultipleUserFormField, self).valid_value(value)
+        return super(MultiplePersonFormField, self).valid_value(value)

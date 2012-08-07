@@ -21,7 +21,6 @@ def _fs2unicode(s):
 
 SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 
-AUTH_PROFILE_MODULE = 'participant.Profile'
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',
     'openslides.utils.auth.AnonymousAuth',)
 
@@ -124,6 +123,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'mptt',
+    'openslides.utils',
     'openslides.poll',
     'openslides.projector',
     'openslides.agenda',

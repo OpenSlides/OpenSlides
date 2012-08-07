@@ -15,8 +15,8 @@ import string
 
 from django.contrib.auth.models import User
 
-from openslides.utils.user import get_user
-from openslides.participant.models import Profile
+from openslides.utils.person import get_person
+from openslides.participant.models import OpenSlidesUser
 
 
 def gen_password():
@@ -47,11 +47,3 @@ def gen_username(first_name, last_name):
             User.objects.get(username=testname)
         except User.DoesNotExist:
             return testname
-
-
-def user2djangouser(user):
-    u = get_user('djangouser:%d' % user.id)
-    try:
-        return u.profile
-    except Profile.DoesNotExist:
-        return u

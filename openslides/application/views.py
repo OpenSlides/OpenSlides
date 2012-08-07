@@ -42,7 +42,7 @@ from openslides.utils.template import Tab
 from openslides.utils.utils import (template, permission_required,
     del_confirm_form, gen_confirm_form)
 from openslides.utils.views import PDFView, RedirectView, DeleteView, FormView
-from openslides.utils.user import get_user
+from openslides.utils.person import get_person
 
 from openslides.config.models import config
 
@@ -50,8 +50,8 @@ from openslides.projector.projector import Widget
 
 from openslides.poll.views import PollFormView
 
-from openslides.participant.api import gen_username, gen_password, user2djangouser
-from openslides.participant.models import Profile
+from openslides.participant.api import gen_username, gen_password
+from openslides.participant.models import OpenSlidesUser
 
 from openslides.agenda.models import Item
 
@@ -124,7 +124,7 @@ def overview(request):
     for (i, application) in enumerate(applications):
         try:
             applications[i] = {
-                'actions'     : application.get_allowed_actions(user2djangouser(request.user)),
+                'actions'     : application.get_allowed_actions(request.user.openslidesuser),
                 'application' : application
             }
         except:
@@ -152,7 +152,7 @@ def view(request, application_id, newest=False):
     else:
         version = application.public_version
     revisions = application.versions
-    user = user2djangouser(request.user)
+    user = request.user.openslidesuser
     actions = application.get_allowed_actions(user=user)
 
     return {
@@ -183,11 +183,11 @@ def edit(request, application_id=None):
     if application_id is not None:
         application = Application.objects.get(id=application_id)
         if (not hasattr(application.submitter, 'user') or
-            not user2djangouser(request.user) == application.submitter.user) \
+            not request.user.openslidesuser == application.submitter.user) \
             and not is_manager:
             messages.error(request, _("You can not edit this application. You are not the submitter."))
             return redirect(reverse('application_view', args=[application.id]))
-        actions = application.get_allowed_actions(user=user2djangouser(request.user))
+        actions = application.get_allowed_actions(user=request.user.openslidesuser)
     else:
         application = None
         actions = None
@@ -221,7 +221,7 @@ def edit(request, application_id=None):
                     original_supporters = []
                 application = managerform.save(commit=False)
             elif application_id is None:
-                application = Application(submitter=user2djangouser(request.user))
+                application = Application(submitter=request.user.openslidesuser)
             application.title = dataform.cleaned_data['title']
             application.text = dataform.cleaned_data['text']
             application.reason = dataform.cleaned_data['reason']
@@ -231,7 +231,7 @@ def edit(request, application_id=None):
                     and dataform.cleaned_data['trivial_change']
             except KeyError:
                 trivial_change = False
-            application.save(user2djangouser(request.user), trivial_change=trivial_change)
+            application.save(request.user.openslidesuser, trivial_change=trivial_change)
             if is_manager:
                 try:
                     new_supporters = set(managerform.cleaned_data['supporter'])
@@ -273,10 +273,10 @@ def edit(request, application_id=None):
         dataform = formclass(initial=initial, prefix="data")
         if is_manager:
             if application_id is None:
-                initial = {'submitter': user2djangouser(request.user).uid}
+                initial = {'submitter': request.user.openslidesuser.person_id}
             else:
-                initial = {'submitter': application.submitter.uid,
-                    'supporter': [supporter.uid for supporter in application.supporters]}
+                initial = {'submitter': application.submitter.person_id,
+                    'supporter': [supporter.person_id for supporter in application.supporters]}
             managerform = managerformclass(initial=initial,
                 instance=application, prefix="manager")
         else:
@@ -296,7 +296,7 @@ def set_number(request, application_id):
     set a number for an application.
     """
     try:
-        Application.objects.get(pk=application_id).set_number(user=user2djangouser(request.user))
+        Application.objects.get(pk=application_id).set_number(user=request.user.openslidesuser)
         messages.success(request, _("Application number was successfully set."))
     except Application.DoesNotExist:
         pass
@@ -312,7 +312,7 @@ def permit(request, application_id):
     permit an application.
     """
     try:
-        Application.objects.get(pk=application_id).permit(user=user2djangouser(request.user))
+        Application.objects.get(pk=application_id).permit(user=request.user.openslidesuser)
         messages.success(request, _("Application was successfully permitted."))
     except Application.DoesNotExist:
         pass
@@ -327,7 +327,7 @@ def notpermit(request, application_id):
     reject (not permit) an application.
     """
     try:
-        Application.objects.get(pk=application_id).notpermit(user=user2djangouser(request.user))
+        Application.objects.get(pk=application_id).notpermit(user=request.user.openslidesuser)
         messages.success(request, _("Application was successfully rejected."))
     except Application.DoesNotExist:
         pass
@@ -343,7 +343,7 @@ def set_status(request, application_id=None, status=None):
     try:
         if status is not None:
             application = Application.objects.get(pk=application_id)
-            application.set_status(user=user2djangouser(request.user), status=status)
+            application.set_status(user=request.user.openslidesuser, status=status)
             messages.success(request, _("Application status was set to: <b>%s</b>.") % application.get_status_display())
     except Application.DoesNotExist:
         pass
@@ -359,7 +359,7 @@ def reset(request, application_id):
     reset an application.
     """
     try:
-        Application.objects.get(pk=application_id).reset(user=user2djangouser(request.user))
+        Application.objects.get(pk=application_id).reset(user=request.user.openslides.user)
         messages.success(request, _("Application status was reset.") )
     except Application.DoesNotExist:
         pass
@@ -373,7 +373,7 @@ def support(request, application_id):
     support an application.
     """
     try:
-        Application.objects.get(pk=application_id).support(user=user2djangouser(request.user))
+        Application.objects.get(pk=application_id).support(user=request.user.openslides.user)
         messages.success(request, _("You have support the application successfully.") )
     except Application.DoesNotExist:
         pass
@@ -387,7 +387,7 @@ def unsupport(request, application_id):
     unsupport an application.
     """
     try:
-        Application.objects.get(pk=application_id).unsupport(user=user2djangouser(request.user))
+        Application.objects.get(pk=application_id).unsupport(user=request.user.openslidesuser)
         messages.success(request, _("You have unsupport the application successfully.") )
     except Application.DoesNotExist:
         pass
@@ -401,7 +401,7 @@ def gen_poll(request, application_id):
     gen a poll for this application.
     """
     try:
-        poll = Application.objects.get(pk=application_id).gen_poll(user=user2djangouser(request.user))
+        poll = Application.objects.get(pk=application_id).gen_poll(user=request.user.openslidesuser)
         messages.success(request, _("New vote was successfully created.") )
     except Application.DoesNotExist:
         pass # TODO: do not call poll after this excaption
@@ -418,7 +418,7 @@ def delete_poll(request, poll_id):
     count = application.polls.filter(id__lte=poll_id).count()
     if request.method == 'POST':
         poll.delete()
-        application.writelog(_("Poll deleted"), user2djangouser(request.user))
+        application.writelog(_("Poll deleted"), request.user.openslidesuser)
         messages.success(request, _('Poll was successfully deleted.'))
     else:
         del_confirm_form(request, poll, name=_("the %s. poll") % count, delete_link=reverse('application_poll_delete', args=[poll_id]))
@@ -458,7 +458,7 @@ class ApplicationDelete(DeleteView):
 
         if len(self.applications):
             for application in self.applications:
-                if not 'delete' in application.get_allowed_actions(user=user2djangouser(request.user)):
+                if not 'delete' in application.get_allowed_actions(user=request.user.openslidesuser):
                     messages.error(request, _("You can not delete application <b>%s</b>.") % application)
                     continue
 
@@ -467,7 +467,7 @@ class ApplicationDelete(DeleteView):
                 messages.success(request, _("Application <b>%s</b> was successfully deleted.") % title)
 
         elif self.object:
-            if not 'delete' in self.object.get_allowed_actions(user=user2djangouser(request.user)):
+            if not 'delete' in self.object.get_allowed_actions(user=request.user.openslidesuser):
                 messages.error(request, _("You can not delete application <b>%s</b>.") % self.object)
             else:
                 title = self.object.title
@@ -508,12 +508,12 @@ class ViewPoll(PollFormView):
         self.application = self.poll.get_application()
         context['application'] = self.application
         context['ballot'] = self.poll.get_ballot()
-        context['actions'] = self.application.get_allowed_actions(user=user2djangouser(self.request.user))
+        context['actions'] = self.application.get_allowed_actions(user=self.request.user.openslidesuser)
         return context
 
     def get_modelform_class(self):
         cls = super(ViewPoll, self).get_modelform_class()
-        user = user2djangouser(self.request.user)
+        user = self.request.user.openslidesuser
 
         class ViewPollFormClass(cls):
             def save(self, commit = True):
@@ -535,7 +535,7 @@ def permit_version(request, aversion_id):
     aversion = AVersion.objects.get(pk=aversion_id)
     application = aversion.application
     if request.method == 'POST':
-        application.accept_version(aversion, user=user2djangouser(request.user))
+        application.accept_version(aversion, user=request.user.openslidesuser)
         messages.success(request, _("Version <b>%s</b> accepted.") % (aversion.aid))
     else:
         gen_confirm_form(request, _('Do you really want to permit version <b>%s</b>?') % aversion.aid, reverse('application_version_permit', args=[aversion.id]))
@@ -547,7 +547,7 @@ def reject_version(request, aversion_id):
     aversion = AVersion.objects.get(pk=aversion_id)
     application = aversion.application
     if request.method == 'POST':
-        if application.reject_version(aversion, user=user2djangouser(request.user)):
+        if application.reject_version(aversion, user=request.user.openslidesuser):
             messages.success(request, _("Version <b>%s</b> rejected.") % (aversion.aid))
         else:
             messages.error(request, _("ERROR by rejecting the version.") )
@@ -560,8 +560,8 @@ def reject_version(request, aversion_id):
 @template('application/import.html')
 def application_import(request):
     try:
-        request.user.profile
-    except Profile.DoesNotExist:
+        request.user.openslidesuser
+    except OpenSlidesUser.DoesNotExist:
         pass
     except AttributeError:
         # AnonymousUser

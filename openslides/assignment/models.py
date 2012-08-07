@@ -15,7 +15,7 @@ from django.db import models
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
-from openslides.utils.user import UserField
+from openslides.utils.person import PersonField
 
 from openslides.config.models import config
 from openslides.config.signals import default_config_value
@@ -31,11 +31,11 @@ from openslides.agenda.models import Item
 
 class AssignmentCandidate(models.Model):
     assignment = models.ForeignKey("Assignment")
-    user = UserField(db_index=True)
+    person = PersonField(db_index=True)
     elected = models.BooleanField(default=False)
 
     def __unicode__(self):
-        return unicode(self.user)
+        return unicode(self.person)
 
 
 class Assignment(models.Model, SlideMixin):
@@ -69,7 +69,7 @@ class Assignment(models.Model, SlideMixin):
         self.status = status
         self.save()
 
-    def run(self, candidate, user=None):
+    def run(self, candidate, person=None):
         """
         run for a vote
         """
@@ -77,22 +77,22 @@ class Assignment(models.Model, SlideMixin):
         #       Use other Exceptions
         if self.is_candidate(candidate):
             raise NameError(_('<b>%s</b> is already a candidate.') % candidate)
-        if not user.has_perm("assignment.can_manage_assignment") and self.status != 'sea':
+        if not person.has_perm("assignment.can_manage_assignment") and self.status != 'sea':
             raise NameError(_('The candidate list is already closed.'))
-        AssignmentCandidate(assignment=self, user=candidate, elected=False).save()
+        AssignmentCandidate(assignment=self, person=candidate, elected=False).save()
 
     def delrun(self, candidate):
         """
         stop running for a vote
         """
         if self.is_candidate(candidate):
-            self.assignment_candidats.get(user=candidate).delete()
+            self.assignment_candidats.get(person=candidate).delete()
         else:
             # TODO: Use an OpenSlides Error
             raise Exception(_('%s is no candidate') % candidate)
 
-    def is_candidate(self, user):
-        if self.assignment_candidats.filter(user=user).exists():
+    def is_candidate(self, person):
+        if self.assignment_candidats.filter(person=person).exists():
             return True
         else:
             return False
@@ -122,23 +122,22 @@ class Assignment(models.Model, SlideMixin):
         if only_candidate:
             candidates = candidates.filter(elected=False)
 
-        return [candidate.user for candidate in candidates]
-        #for candidate in candidates:
-        #    yield candidate.user
+        for candidate in candidates.all():
+            yield candidate.person
 
 
-    def set_elected(self, user, value=True):
-        candidate = self.assignment_candidats.get(user=user)
+    def set_elected(self, person, value=True):
+        candidate = self.assignment_candidats.get(person=person)
         candidate.elected = value
         candidate.save()
 
-    def is_elected(self, user):
-        return user in self.elected
+    def is_elected(self, person):
+        return person in self.elected
 
     def gen_poll(self):
         poll = AssignmentPoll(assignment=self)
         poll.save()
-        poll.set_options([{'candidate': user} for user in self.candidates])
+        poll.set_options([{'candidate': person} for person in self.candidates])
         return poll
 
 
@@ -228,7 +227,7 @@ class AssignmentVote(BaseVote):
 
 class AssignmentOption(BaseOption):
     poll = models.ForeignKey('AssignmentPoll')
-    candidate = UserField()
+    candidate = PersonField()
     vote_class = AssignmentVote
 
     def __unicode__(self):

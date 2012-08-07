@@ -35,12 +35,12 @@
 
     <h3>{% trans "Candidates" %}</h3>
     <ol>
-    {% for user in assignment.candidates %}
+    {% for person in assignment.candidates %}
         <li>
-            {{ user }}
+            {{ person }}
             {% if perms.assignment.can_manage_assignment %}
                 {% if assignment.status == "sea" or assignment.status == "vot" %}
-                    <a href="{% url assignment_delother assignment.id user.uid %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Remove candidate' %}"></a>
+                    <a href="{% url assignment_delother assignment.id person.person_id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Remove candidate' %}"></a>
                 {% endif %}
             {% endif %}
         </li>
@@ -137,7 +137,7 @@
         <td class="candidate">
             {% if candidate in assignment.elected %}
                 {% if perms.assignment.can_manage_assignment %}
-                    <a class="election_link elected" href='{% url assignment_user_not_elected assignment.id candidate.uid %}'></a>
+                    <a class="election_link elected" href='{% url assignment_user_not_elected assignment.id candidate.person_id %}'></a>
                 {% else %}
                     <a class="elected">
                         <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Candidate is elected' %}">
@@ -145,7 +145,7 @@
                 {% endif %}
             {% else %}
                 {% if perms.assignment.can_manage_assignment %}
-                    <a class="election_link" href='{% url assignment_user_elected assignment.id candidate.uid %}'></a>
+                    <a class="election_link" href='{% url assignment_user_elected assignment.id candidate.person_id %}'></a>
                 {% endif %}
             {% endif %}
             {{ candidate }}
