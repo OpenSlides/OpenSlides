@@ -38,7 +38,7 @@
             [
                "can_see_participant",
                "participant",
-               "profile"
+               "openslidesuser"
             ],
             [
                "can_see_projector",
@@ -92,7 +92,7 @@
             [
                "can_see_participant",
                "participant",
-               "profile"
+               "openslidesuser"
             ],
             [
                "can_see_projector",
@@ -161,12 +161,12 @@
             [
                "can_manage_participant",
                "participant",
-               "profile"
+               "openslidesuser"
             ],
             [
                "can_see_participant",
                "participant",
-               "profile"
+               "openslidesuser"
             ],
             [
                "can_manage_projector",
@@ -195,12 +195,12 @@
             [
                "can_manage_participant",
                "participant",
-               "profile"
+               "openslidesuser"
             ],
             [
                "can_see_participant",
                "participant",
-               "profile"
+               "openslidesuser"
             ],
             [
                "can_see_projector",

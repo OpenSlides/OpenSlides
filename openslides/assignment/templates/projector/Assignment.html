@@ -28,17 +28,17 @@
 {% endblock %}
 
 {% block scrollcontent %}
-    {% if not assignment.profile.exists %}
+    {% if not assignment.candidates %}
         <p>
             <div class="text">{{ assignment.description|linebreaks }}</div>
         </p>
     {% endif %}
 
-    {% if assignment.profile.exists and assignment.status != "fin" %}
+    {% if assignment.candidates and assignment.status != "fin" %}
         <h3>{% trans "Candidates" %}</h3>
         <ol>
-            {% for profile in assignment.profile.all|dictsort:"user.first_name" %}
-                <li>{{ profile }} </li>
+            {% for candidate in assignment.candidates %}
+                <li>{{ candidate }} </li>
             {% empty %}
                 <li style="list-style: none outside none;">
                     <i>{% trans "No candidates available." %}</i>
@@ -122,7 +122,7 @@
         </tr>
 
         </table>
-    {% elif assignment.profile.exists %}
+    {% elif assignment.candidates %}
         <i>{% trans "No ballots available." %}</i>
     {% endif %}
     <br>
