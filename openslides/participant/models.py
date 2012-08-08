@@ -51,11 +51,13 @@ class OpenSlidesUser(models.Model, PersonMixin):
     firstpassword = models.CharField(max_length=100, null=True, blank=True,
         verbose_name = _("First Password"))
 
-    def reset_password(self):
+    def reset_password(self, password=None):
         """
         Reset the password for the user to his default-password.
         """
-        self.user.set_password(self.firstpassword)
+        if password is None:
+            password = self.firstpassword
+        self.user.set_password(password)
         self.user.save()
 
     def has_perm(self, perm):
@@ -114,7 +116,7 @@ class OpenSlidesUsersConnecter(object):
 
         if not self.person_prefix or self.person_prefix == OpenSlidesGroup.person_prefix:
             if self.id:
-                yield OpenSlidesObject.objects.get(pk=self.id)
+                yield OpenSlidesGroup.objects.get(pk=self.id)
             else:
                 for group in OpenSlidesGroup.objects.all():
                     yield group
