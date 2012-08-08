@@ -36,20 +36,24 @@ class OpenSlidesUser(models.Model, PersonMixin):
     )
 
     user = models.OneToOneField(User, unique=True, editable=False)
-    name_surfix = models.CharField(max_length=100, null=True, blank=True,
-        verbose_name = _("Name Surfix"), help_text=_('Shown behind the name.'))
-    gender = models.CharField(max_length=50, choices=GENDER_CHOICES, blank=True,
-        verbose_name = _("Gender"),
+    name_surfix = models.CharField(
+        max_length=100, null=True, blank=True, verbose_name=_("Name Surfix"),
+        help_text=_('Shown behind the name.'))
+    gender = models.CharField(
+        max_length=50, choices=GENDER_CHOICES, blank=True,
+        verbose_name=_("Gender"), help_text=_('Only for filter the userlist.'))
+    type = models.CharField(
+        max_length=100, choices=TYPE_CHOICE, blank=True,
+        verbose_name=_("Typ"), help_text=_('Only for filter the userlist.'))
+    committee = models.CharField(
+        max_length=100, null=True, blank=True, verbose_name=_("Committee"),
         help_text=_('Only for filter the userlist.'))
-    type = models.CharField(max_length=100, choices=TYPE_CHOICE, blank=True,
-        verbose_name = _("Typ"), help_text=_('Only for filter the userlist.'))
-    committee = models.CharField(max_length=100, null=True, blank=True,
-        verbose_name = _("Committee"),
-        help_text=_('Only for filter the userlist.'))
-    comment = models.TextField(null=True, blank=True,
-        verbose_name = _('Comment'), help_text=_('Only for notes.'))
-    firstpassword = models.CharField(max_length=100, null=True, blank=True,
-        verbose_name = _("First Password"))
+    comment = models.TextField(
+        null=True, blank=True, verbose_name=_('Comment'),
+        help_text=_('Only for notes.'))
+    firstpassword = models.CharField(
+        max_length=100, null=True, blank=True,
+        verbose_name=_("First Password"))
 
     def reset_password(self, password=None):
         """
@@ -82,12 +86,12 @@ class OpenSlidesUser(models.Model, PersonMixin):
             return "%s (%s)" % (self.user.get_full_name(), self.name_surfix)
         return "%s" % self.user.get_full_name()
 
-
     class Meta:
         # Rename permissions
         permissions = (
             ('can_see_participant', ugettext_noop("Can see participant")),
-            ('can_manage_participant', ugettext_noop("Can manage participant")),
+            ('can_manage_participant',
+                ugettext_noop("Can manage participant")),
         )
 
 
@@ -107,14 +111,16 @@ class OpenSlidesUsersConnecter(object):
         self.id = id
 
     def __iter__(self):
-        if not self.person_prefix or self.person_prefix == OpenSlidesUser.person_prefix:
+        if (not self.person_prefix or
+                self.person_prefix == OpenSlidesUser.person_prefix):
             if self.id:
                 yield OpenSlidesUser.objects.get(pk=self.id)
             else:
                 for user in OpenSlidesUser.objects.all():
                     yield user
 
-        if not self.person_prefix or self.person_prefix == OpenSlidesGroup.person_prefix:
+        if (not self.person_prefix or
+                self.person_prefix == OpenSlidesGroup.person_prefix):
             if self.id:
                 yield OpenSlidesGroup.objects.get(pk=self.id)
             else:
@@ -127,7 +133,8 @@ class OpenSlidesUsersConnecter(object):
 
 @receiver(receiv_persons, dispatch_uid="participant")
 def receiv_persons(sender, **kwargs):
-    return OpenSlidesUsersConnecter(person_prefix=kwargs['person_prefix'], id=kwargs['id'])
+    return OpenSlidesUsersConnecter(person_prefix=kwargs['person_prefix'],
+                                    id=kwargs['id'])
 
 
 @receiver(default_config_value, dispatch_uid="participant_default_config")

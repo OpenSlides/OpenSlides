@@ -18,13 +18,14 @@ from urllib import urlencode
 
 try:
     from urlparse import parse_qs
-except ImportError: # python <= 2.5 grab it from cgi
+except ImportError:  # python <= 2.5 grab it from cgi
     from cgi import parse_qs
 
 from reportlab.lib import colors
 from reportlab.lib.units import cm
-from reportlab.platypus import (SimpleDocTemplate, PageBreak, Paragraph,
-    LongTable, Spacer, Table, TableStyle)
+from reportlab.platypus import (
+    SimpleDocTemplate, PageBreak, Paragraph, LongTable, Spacer, Table,
+    TableStyle)
 
 from django.db import transaction
 from django.contrib import messages
@@ -39,18 +40,18 @@ from django.utils.translation import ugettext as _, ungettext, ugettext_lazy
 from openslides.utils import csv_ext
 from openslides.utils.pdf import stylesheet
 from openslides.utils.template import Tab
-from openslides.utils.utils import (template, permission_required,
-    gen_confirm_form, ajax_request, decodedict, encodedict,
-    delete_default_permissions, html_strong)
+from openslides.utils.utils import (
+    template, permission_required, gen_confirm_form, ajax_request, decodedict,
+    encodedict, delete_default_permissions, html_strong)
 from openslides.utils.views import FormView, PDFView
 
 from openslides.config.models import config
 
 from openslides.participant.models import OpenSlidesUser, OpenSlidesGroup
 from openslides.participant.api import gen_username, gen_password
-from openslides.participant.forms import (UserNewForm, UserEditForm,
-    OpenSlidesUserForm, UsersettingsForm, UserImportForm, GroupForm,
-    AdminPasswordChangeForm, ConfigForm)
+from openslides.participant.forms import (
+    UserNewForm, UserEditForm, OpenSlidesUserForm, UsersettingsForm,
+    UserImportForm, GroupForm, AdminPasswordChangeForm, ConfigForm)
 
 
 @permission_required('participant.can_see_participant')
@@ -78,21 +79,26 @@ def get_overview(request):
 
     query = User.objects
     if 'gender' in sortfilter:
-        query = query.filter(openslidesuser__gender__iexact=sortfilter['gender'][0])
+        query = query.filter(
+            openslidesuser__gender__iexact=sortfilter['gender'][0])
     if 'group' in sortfilter:
-        query = query.filter(openslidesuser__group__iexact=sortfilter['name_surfix'][0])
+        query = query.filter(
+            openslidesuser__group__iexact=sortfilter['name_surfix'][0])
     if 'type' in sortfilter:
-        query = query.filter(openslidesuser__type__iexact=sortfilter['type'][0])
+        query = query.filter(
+            openslidesuser__type__iexact=sortfilter['type'][0])
     if 'committee' in sortfilter:
-        query = query. \
-            filter(openslidesuser__committee__iexact=sortfilter['committee'][0])
+        query = query.filter(
+            openslidesuser__committee__iexact=sortfilter['committee'][0])
     if 'status' in sortfilter:
         query = query.filter(is_active=sortfilter['status'][0])
     if 'sort' in sortfilter:
         if sortfilter['sort'][0] in ['first_name', 'last_name', 'last_login']:
             query = query.order_by(sortfilter['sort'][0])
-        elif sortfilter['sort'][0] in ['name_surfix', 'type', 'committee', 'comment']:
-            query = query.order_by('openslidesuser__%s' % sortfilter['sort'][0])
+        elif (sortfilter['sort'][0] in
+                ['name_surfix', 'type', 'committee', 'comment']):
+            query = query.order_by(
+                'openslidesuser__%s' % sortfilter['sort'][0])
     else:
         query = query.order_by('last_name')
     if 'reverse' in sortfilter:
@@ -123,10 +129,10 @@ def get_overview(request):
     else:
         percent = 0
     # list of all existing groups
-    groups = [p['name_surfix'] for p in OpenSlidesUser.objects.values('name_surfix') \
+    groups = [p['name_surfix'] for p in OpenSlidesUser.objects.values('name_surfix')
         .exclude(name_surfix='').distinct()]
     # list of all existing committees
-    committees = [p['committee'] for p in OpenSlidesUser.objects.values('committee') \
+    committees = [p['committee'] for p in OpenSlidesUser.objects.values('committee')
         .exclude(committee='').distinct()]
     return {
         'users': users,
@@ -303,7 +309,7 @@ def group_edit(request, group_id=None):
                     _('Group name "%s" is reserved for internal use.')
                     % group_name)
                 return {
-                    'form' : form,
+                    'form': form,
                     'group': group
                 }
 
@@ -316,7 +322,6 @@ def group_edit(request, group_id=None):
                 DjangoGroup(group=group).save()
             elif not form.cleaned_data['as_user'] and django_group:
                 django_group.delete()
-
 
             if anonymous_group is not None and \
                anonymous_group.id == group.id:
@@ -373,7 +378,7 @@ def user_settings(request):
     Edit own user account.
     """
     if request.method == 'POST':
-        form_user = UsersettingsForm(request.POST,instance=request.user)
+        form_user = UsersettingsForm(request.POST, instance=request.user)
         if form_user.is_valid():
             form_user.save()
             messages.success(request, _('User settings successfully saved.'))
@@ -633,7 +638,7 @@ class ParticipantsListPDF(PDFView):
     document_title = ugettext_lazy('List of Participants')
 
     def append_to_pdf(self, story):
-        data= [['#', _('Last Name'), _('First Name'), _('Group'), _('Type'),
+        data = [['#', _('Last Name'), _('First Name'), _('Group'), _('Type'),
             _('Committee')]]
         sort = 'last_name'
         counter = 0
@@ -641,27 +646,27 @@ class ParticipantsListPDF(PDFView):
             try:
                 counter += 1
                 user.get_profile()
-                data.append([counter,
+                data.append([
+                    counter,
                     Paragraph(user.last_name, stylesheet['Tablecell']),
                     Paragraph(user.first_name, stylesheet['Tablecell']),
                     Paragraph(user.profile.group, stylesheet['Tablecell']),
                     Paragraph(user.profile.get_type_display(),
                         stylesheet['Tablecell']),
-                    Paragraph(user.profile.committee, stylesheet['Tablecell']),
-                    ])
+                    Paragraph(user.profile.committee, stylesheet['Tablecell'])
+                ])
             except Profile.DoesNotExist:
                 counter -= 1
                 pass
         t = LongTable(data,
             style=[
-                ('VALIGN',(0,0),(-1,-1), 'TOP'),
-                ('LINEABOVE',(0,0),(-1,0),2,colors.black),
-                ('LINEABOVE',(0,1),(-1,1),1,colors.black),
-                ('LINEBELOW',(0,-1),(-1,-1),2,colors.black),
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ('LINEABOVE', (0, 0), (-1, 0), 2, colors.black),
+                ('LINEABOVE', (0, 1), (-1, 1), 1, colors.black),
+                ('LINEBELOW', (0, -1), (-1, -1), 2, colors.black),
                 ('ROWBACKGROUNDS', (0, 1), (-1, -1),
-                    (colors.white, (.9, .9, .9))),
-                ])
-        t._argW[0]=0.75*cm
+                    (colors.white, (.9, .9, .9)))])
+        t._argW[0] = 0.75 * cm
         story.append(t)
 
 
@@ -681,48 +686,48 @@ class ParticipantsPasswordsPDF(PDFView):
         pdf_document.build(story)
 
     def append_to_pdf(self, story):
-        data= []
+        data = []
         participant_pdf_system_url = config["participant_pdf_system_url"]
         participant_pdf_welcometext = config["participant_pdf_welcometext"]
         for user in User.objects.all().order_by('last_name'):
             try:
                 user.get_profile()
                 cell = []
-                cell.append(Spacer(0,0.8*cm))
+                cell.append(Spacer(0, 0.8 * cm))
                 cell.append(Paragraph(_("Account for OpenSlides"),
-                    stylesheet['Ballot_title']))
+                            stylesheet['Ballot_title']))
                 cell.append(Paragraph(_("for %s") % (user.profile),
-                    stylesheet['Ballot_subtitle']))
-                cell.append(Spacer(0,0.5*cm))
+                            stylesheet['Ballot_subtitle']))
+                cell.append(Spacer(0, 0.5 * cm))
                 cell.append(Paragraph(_("User: %s") % (user.username),
-                    stylesheet['Monotype']))
+                            stylesheet['Monotype']))
                 cell.append(Paragraph(_("Password: %s")
                     % (user.profile.firstpassword), stylesheet['Monotype']))
-                cell.append(Spacer(0,0.5*cm))
+                cell.append(Spacer(0, 0.5 * cm))
                 cell.append(Paragraph(_("URL: %s")
                     % (participant_pdf_system_url),
                     stylesheet['Ballot_option']))
-                cell.append(Spacer(0,0.5*cm))
+                cell.append(Spacer(0, 0.5 * cm))
                 cell2 = []
-                cell2.append(Spacer(0,0.8*cm))
+                cell2.append(Spacer(0, 0.8 * cm))
                 if participant_pdf_welcometext is not None:
                     cell2.append(Paragraph(
-                        participant_pdf_welcometext.replace('\r\n','<br/>'),
+                        participant_pdf_welcometext.replace('\r\n', '<br/>'),
                         stylesheet['Ballot_subtitle']))
 
-                data.append([cell,cell2])
-            except Profile.DoesNotExist:
+                data.append([cell, cell2])
+            except OpenSlidesUser.DoesNotExist:
                 pass
         # add empty table line if no participants available
         if data == []:
-            data.append(['',''])
+            data.append(['', ''])
         # build table
-        t=Table(data, 10.5*cm, 7.42*cm)
+        t = Table(data, 10.5 * cm, 7.42 * cm)
         t.setStyle(TableStyle([
-            ('LINEBELOW', (0,0), (-1,0), 0.25, colors.grey),
-            ('LINEBELOW', (0,1), (-1,1), 0.25, colors.grey),
-            ('LINEBELOW', (0,1), (-1,-1), 0.25, colors.grey),
-            ('VALIGN', (0,0), (-1,-1), 'TOP'),
+            ('LINEBELOW', (0, 0), (-1, 0), 0.25, colors.grey),
+            ('LINEBELOW', (0, 1), (-1, 1), 0.25, colors.grey),
+            ('LINEBELOW', (0, 1), (-1, -1), 0.25, colors.grey),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
         ]))
         story.append(t)
 
