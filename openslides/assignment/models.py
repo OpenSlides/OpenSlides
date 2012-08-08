@@ -15,18 +15,27 @@ from django.db import models
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
+from openslides.utils.person import PersonField
+
 from openslides.config.models import config
 from openslides.config.signals import default_config_value
 
 from openslides.projector.api import register_slidemodel
 from openslides.projector.projector import SlideMixin
 
-from openslides.participant.models import Profile
-
 from openslides.poll.models import (BasePoll, CountInvalid, CountVotesCast,
     BaseOption, PublishPollMixin, BaseVote)
 
 from openslides.agenda.models import Item
+
+
+class AssignmentCandidate(models.Model):
+    assignment = models.ForeignKey("Assignment")
+    person = PersonField(db_index=True)
+    elected = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return unicode(self.person)
 
 
 class Assignment(models.Model, SlideMixin):
@@ -44,9 +53,6 @@ class Assignment(models.Model, SlideMixin):
         verbose_name=_("Number of available posts"))
     polldescription = models.CharField(max_length=100, null=True, blank=True,
         verbose_name=_("Comment on the ballot paper"))
-    profile = models.ManyToManyField(Profile, null=True, blank=True)
-    elected = models.ManyToManyField(Profile, null=True, blank=True,
-        related_name='elected_set')
     status = models.CharField(max_length=3, choices=STATUS, default='sea')
 
     def set_status(self, status):
@@ -63,61 +69,75 @@ class Assignment(models.Model, SlideMixin):
         self.status = status
         self.save()
 
-    def run(self, profile, user=None):
+    def run(self, candidate, person=None):
         """
         run for a vote
         """
-        if self.is_candidate(profile):
-            raise NameError(_('<b>%s</b> is already a candidate.') % profile)
-        if not user.has_perm("assignment.can_manage_assignment") and self.status != 'sea':
+        # TODO: don't make any permission checks here.
+        #       Use other Exceptions
+        if self.is_candidate(candidate):
+            raise NameError(_('<b>%s</b> is already a candidate.') % candidate)
+        if not person.has_perm("assignment.can_manage_assignment") and self.status != 'sea':
             raise NameError(_('The candidate list is already closed.'))
-        self.profile.add(profile)
+        AssignmentCandidate(assignment=self, person=candidate, elected=False).save()
 
-    def delrun(self, profile, user=None):
+    def delrun(self, candidate):
         """
         stop running for a vote
         """
-        if not user.has_perm("assignment.can_manage_assignment") and self.status != 'sea':
-            raise NameError(_('The candidate list is already closed.'))
-        if self.is_candidate(profile):
-            self.profile.remove(profile)
-            self.elected.remove(profile)
+        if self.is_candidate(candidate):
+            self.assignment_candidats.get(person=candidate).delete()
         else:
-            raise NameError(_('%s is no candidate') % profile)
+            # TODO: Use an OpenSlides Error
+            raise Exception(_('%s is no candidate') % candidate)
 
-    def is_candidate(self, profile):
-        if profile in self.profile.get_query_set():
+    def is_candidate(self, person):
+        if self.assignment_candidats.filter(person=person).exists():
             return True
         else:
             return False
 
     @property
+    def assignment_candidats(self):
+        return AssignmentCandidate.objects.filter(assignment=self)
+
+    @property
     def candidates(self):
-        return self.profile.get_query_set()
+        return self.get_participants(only_candidate=True)
+
+    @property
+    def elected(self):
+        return self.get_participants(only_elected=True)
+
+    def get_participants(self, only_elected=False, only_candidate=False):
+        candidates = self.assignment_candidats
+
+        if only_elected and only_candidate:
+            # TODO: Use right Exception
+            raise Exception("only_elected and only_candidate can not both be Treu")
+
+        if only_elected:
+            candidates = candidates.filter(elected=True)
+
+        if only_candidate:
+            candidates = candidates.filter(elected=False)
+
+        for candidate in candidates.all():
+            yield candidate.person
 
 
-    def set_elected(self, profile, value=True):
-        if profile in self.candidates:
-            if value and not self.is_elected(profile):
-                self.elected.add(profile)
-            elif not value:
-                self.elected.remove(profile)
+    def set_elected(self, person, value=True):
+        candidate = self.assignment_candidats.get(person=person)
+        candidate.elected = value
+        candidate.save()
 
-    def is_elected(self, profile):
-        if profile in self.elected.all():
-            return True
-        return False
+    def is_elected(self, person):
+        return person in self.elected
 
     def gen_poll(self):
         poll = AssignmentPoll(assignment=self)
         poll.save()
-        candidates = list(self.profile.all())
-        for elected in self.elected.all():
-            try:
-                candidates.remove(elected)
-            except ValueError:
-                pass
-        poll.set_options([{'candidate': profile} for profile in candidates])
+        poll.set_options([{'candidate': person} for person in self.candidates])
         return poll
 
 
@@ -159,6 +179,7 @@ class Assignment(models.Model, SlideMixin):
         return self.name
 
     def delete(self):
+        # Remove any Agenda-Item, which is related to this application.
         for item in Item.objects.filter(related_sid=self.sid):
             item.delete()
         super(Assignment, self).delete()
@@ -206,7 +227,7 @@ class AssignmentVote(BaseVote):
 
 class AssignmentOption(BaseOption):
     poll = models.ForeignKey('AssignmentPoll')
-    candidate = models.ForeignKey(Profile)
+    candidate = PersonField()
     vote_class = AssignmentVote
 
     def __unicode__(self):
@@ -230,8 +251,7 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
                 self.yesnoabstain = True
             else:
                 # candidates <= available posts -> yes/no/abstain
-                if self.assignment.candidates.count() <= (self.assignment.posts
-                        - self.assignment.elected.count()):
+                if self.assignment.assignment_candidats.filter(elected=False).count() <= (self.assignment.posts):
                     self.yesnoabstain = True
                 else:
                     self.yesnoabstain = False
@@ -258,8 +278,6 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
 
     def __unicode__(self):
         return _("Ballot %d") % self.get_ballot()
-
-
 
 
 @receiver(default_config_value, dispatch_uid="assignment_default_config")

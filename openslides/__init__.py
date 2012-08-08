@@ -5,10 +5,11 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-VERSION = (1, 3, 0, 'alpha', 0)
+VERSION = (1, 2, 0, 'final', 1)
 
 def get_version(version=None):
     """Derives a PEP386-compliant version number from VERSION."""
+    # TODO: Get the Version Hash from GIT.
     if version is None:
         version = VERSION
     assert len(version) == 5

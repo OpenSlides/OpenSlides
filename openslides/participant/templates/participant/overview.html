@@ -77,11 +77,11 @@
         <tr class="{% cycle '' 'odd' %}">
             <td>{{ user.first_name }}</td>
             <td>{{ user.last_name }}</td>
-            <td>{{ user.profile.group }}</td>
-            <td>{{ user.profile.get_type_display }}</td>
-            <td>{{ user.profile.committee }}</td>
+            <td>{{ user.openslidesuser.name_surfix }}</td>
+            <td>{{ user.openslidesuser.get_type_display }}</td>
+            <td>{{ user.openslidesuser.committee }}</td>
             {% if perms.participant.can_manage_participant %}
-            <td>{{ user.profile.comment|first_line }}</td>
+            <td>{{ user.openslidesuser.comment|first_line }}</td>
             <td>{% if user.last_login > user.date_joined %}
                 {{ user.last_login }}
                 {% endif %}</td>

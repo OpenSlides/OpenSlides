@@ -15,6 +15,9 @@ import string
 
 from django.contrib.auth.models import User
 
+from openslides.utils.person import get_person
+from openslides.participant.models import OpenSlidesUser
+
 
 def gen_password():
     """
