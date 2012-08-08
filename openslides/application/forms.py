@@ -11,29 +11,11 @@
 """
 
 from django import forms
-from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
 from openslides.utils.forms import CssClassMixin
+from openslides.utils.person import PersonFormField, MultiplePersonFormField
 from openslides.application.models import Application
-
-
-class UserModelChoiceField(forms.ModelChoiceField):
-    """
-    Extend ModelChoiceField for users so that the choices are
-    listed as 'first_name last_name' instead of just 'username'.
-    """
-    def label_from_instance(self, obj):
-        return obj.get_full_name()
-
-
-class UserModelMultipleChoiceField(forms.ModelMultipleChoiceField):
-    """
-    Extend ModelMultipleChoiceField for users so that the choices are
-    listed as 'first_name last_name' instead of just 'username'.
-    """
-    def label_from_instance(self, obj):
-        return obj.get_full_name()
 
 
 class ApplicationForm(forms.Form, CssClassMixin):
@@ -50,11 +32,7 @@ class ApplicationFormTrivialChanges(ApplicationForm):
 
 
 class ApplicationManagerForm(forms.ModelForm, CssClassMixin):
-    submitter = UserModelChoiceField(
-        queryset=User.objects.all().exclude(profile=None).
-        order_by("first_name"),
-        label=_("Submitter"),
-    )
+    submitter = PersonFormField()
 
     class Meta:
         model = Application
@@ -62,11 +40,8 @@ class ApplicationManagerForm(forms.ModelForm, CssClassMixin):
 
 
 class ApplicationManagerFormSupporter(ApplicationManagerForm):
-    supporter = UserModelMultipleChoiceField(
-        queryset=User.objects.all().exclude(profile=None).
-        order_by("first_name"),
-        required=False, label=_("Supporters"),
-    )
+    # TODO: Do not show the submitter in the user-list
+    supporter = MultiplePersonFormField(required=False, label=_("Supporters"))
 
 
 class ApplicationImportForm(forms.Form, CssClassMixin):
