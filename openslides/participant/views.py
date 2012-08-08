@@ -83,7 +83,7 @@ def get_overview(request):
             openslidesuser__gender__iexact=sortfilter['gender'][0])
     if 'group' in sortfilter:
         query = query.filter(
-            openslidesuser__group__iexact=sortfilter['name_surfix'][0])
+            openslidesuser__name_surfix__iexact=sortfilter['group'][0])
     if 'type' in sortfilter:
         query = query.filter(
             openslidesuser__type__iexact=sortfilter['type'][0])
@@ -315,11 +315,11 @@ def group_edit(request, group_id=None):
 
             group = form.save()
             try:
-                django_group = DjangoGroup.objects.get(group=group)
-            except DjangoGroup.DoesNotExist:
+                openslides_group = OpenSlidesGroup.objects.get(group=group)
+            except OpenSlidesGroup.DoesNotExist:
                 django_group = None
             if form.cleaned_data['as_user'] and django_group is None:
-                DjangoGroup(group=group).save()
+                OpenSlidesGroup(group=group).save()
             elif not form.cleaned_data['as_user'] and django_group:
                 django_group.delete()
 

@@ -412,7 +412,7 @@ class AssignmentPDF(PDFView):
 
 
         # Add result rows
-        elected_candidates = assignment.elected.all()
+        elected_candidates = list(assignment.elected)
         for candidate, poll_list in vote_results.iteritems():
             row = []
 
