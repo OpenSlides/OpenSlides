@@ -52,7 +52,14 @@ class Item(MPTTModel, SlideMixin):
         """
         return the object, of which the item points.
         """
-        return get_slide_from_sid(self.related_sid, True)
+        object = get_slide_from_sid(self.related_sid, element=True)
+        if object is None:
+            self.title = 'Item for deleted slide: %s' % self.related_sid
+            self.related_sid = None
+            self.save()
+            return self
+        else:
+            return object
 
     def get_related_type(self):
         """

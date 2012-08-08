@@ -20,7 +20,7 @@ class ApplicationTest(TestCase):
     def setUp(self):
         self.admin = User.objects.create_user('testadmin', '', 'default')
         self.anonym = User.objects.create_user('testanoym', '', 'default')
-        self.app1 = Application(submitter=self.admin)
+        self.app1 = Application(submitter=self.admin.openslidesuser)
         self.app1.save()
 
     def refresh(self):
