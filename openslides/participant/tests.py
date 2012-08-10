@@ -39,7 +39,7 @@ class OpenSlidesUserTest(TestCase):
         self.assertEqual(unicode(self.openslidesuser1), u'Max Mustermann')
 
     def test_name_surfix(self):
-        self.openslidesuser1.name_surfix = u'München'
+        self.openslidesuser1.category = u'München'
         self.openslidesuser1.save()
         self.assertEqual(unicode(self.openslidesuser1), u'Max Mustermann (München)')
 
@@ -56,6 +56,16 @@ class OpenSlidesUserTest(TestCase):
         self.assertEqual(self.openslidesuser1.person_id, 'openslides_user:1')
         self.assertEqual(get_person('openslides_user:1'), self.openslidesuser1)
         self.assertEqual(len(Persons()), 1)
+
+    def test_save_name(self):
+        self.assertEqual(self.openslidesuser1.first_name, self.user1.first_name)
+        self.assertEqual(self.openslidesuser1.last_name, self.user1.last_name)
+        self.openslidesuser1.first_name = 'foo'
+        self.openslidesuser1.last_name = 'bar'
+        self.openslidesuser1.save()
+        user1 = User.objects.get(pk=1)
+        self.assertEqual(user1.first_name, 'foo')
+        self.assertEqual(user1.last_name, 'bar')
 
 
 class OpenSlidesGroupTest(TestCase):
