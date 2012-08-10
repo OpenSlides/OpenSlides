@@ -90,15 +90,18 @@
                     </td>
                     <td>
                         <span style="width: 1px; white-space: nowrap;">
-                        <a href="{% url user_edit user.id %}">
-                            <img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit participant' %}">
-                        </a>
-                        <a href="{% url user_delete user.id %}">
-                            <img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete participant' %}">
-                        </a>
-                        <a class="status_link{% if user.is_active %} active{% endif %}" href="{% url user_status user.id %}" title="{% trans 'Change status (active/inactive)' %}">
-                            <span></span>
-                        </a>
+                            <a href="{% url user_edit user.id %}">
+                                <img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit participant' %}">
+                            </a>
+                            <a href="{% url user_delete user.id %}">
+                                <img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete participant' %}">
+                            </a>
+                            <a class="status_link deactivate" href="{% url user_status_deactivate user.id %}" title="{% trans 'Change status to inactive' %}"{% if not user.is_active %} style="display:none"{% endif %}>
+                                <span></span>
+                            </a>
+                            <a class="status_link activate" href="{% url user_status_activate user.id %}" title="{% trans 'Change status to active' %}"{% if user.is_active %} style="display:none"{% endif %}>
+                                <span></span>
+                            </a>
                         </span>
                     </td>
                 {% endif %}

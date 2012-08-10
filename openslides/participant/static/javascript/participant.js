@@ -9,15 +9,18 @@ $(function() {
     $('.status_link').click(function(event) {
         event.preventDefault();
         link = $(this);
+        group = $(this).parent();
         $.ajax({
             type: 'GET',
             url: link.attr('href'),
             dataType: 'json',
             success: function(data) {
                 if (data.active) {
-                    link.addClass('active');
+                    group.children('.status_link.deactivate').show();
+                    group.children('.status_link.activate').hide();
                 } else {
-                    link.removeClass('active');
+                    group.children('.status_link.deactivate').hide();
+                    group.children('.status_link.activate').show();
                 }
             }
         });

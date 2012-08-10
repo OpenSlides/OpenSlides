@@ -44,7 +44,8 @@ from openslides.utils.utils import (
     template, permission_required, gen_confirm_form, ajax_request, decodedict,
     encodedict, delete_default_permissions, html_strong)
 from openslides.utils.views import (
-    FormView, PDFView, TemplateView, CreateView, UpdateView, DeleteView)
+    FormView, PDFView, TemplateView, CreateView, UpdateView, DeleteView,
+    RedirectView, SingleObjectMixin, ListView)
 
 from openslides.config.models import config
 
@@ -55,15 +56,15 @@ from openslides.participant.forms import (
     UserImportForm, GroupForm, AdminPasswordChangeForm, ConfigForm)
 
 
-class Overview(TemplateView):
+class Overview(ListView):
     """
     Show all participants.
     """
     permission_required = 'participant.can_see_participant'
     template_name = 'participant/overview.html'
+    context_object_name = 'users'
 
-    def get_context_data(self, **kwargs):
-        context = super(Overview, self).get_context_data(**kwargs)
+    def get_queryset(self):
         try:
             sortfilter = encodedict(parse_qs(
                 self.request.COOKIES['participant_sortfilter']))
@@ -81,19 +82,15 @@ class Overview(TemplateView):
                 else:
                     sortfilter[value] = [self.request.REQUEST[value]]
 
-        query = User.objects
+        query = OpenSlidesUser.objects
         if 'gender' in sortfilter:
-            query = query.filter(
-                openslidesuser__gender__iexact=sortfilter['gender'][0])
+            query = query.filter(gender__iexact=sortfilter['gender'][0])
         if 'category' in sortfilter:
-            query = query.filter(
-                openslidesuser__category__iexact=sortfilter['category'][0])
+            query = query.filter(category__iexact=sortfilter['category'][0])
         if 'type' in sortfilter:
-            query = query.filter(
-                openslidesuser__type__iexact=sortfilter['type'][0])
+            query = query.filter(type__iexact=sortfilter['type'][0])
         if 'committee' in sortfilter:
-            query = query.filter(
-                openslidesuser__committee__iexact=sortfilter['committee'][0])
+            query = query.filter(committee__iexact=sortfilter['committee'][0])
         if 'status' in sortfilter:
             query = query.filter(is_active=sortfilter['status'][0])
         if 'sort' in sortfilter:
@@ -109,15 +106,18 @@ class Overview(TemplateView):
         if 'reverse' in sortfilter:
             query = query.reverse()
 
-        # list of filtered users
-        users = query.all()
+        self.sortfilter = sortfilter
 
-        # list of all existing users
+        return query.all()
+
+    def get_context_data(self, **kwargs):
+        context = super(Overview, self).get_context_data(**kwargs)
+
         all_users = User.objects.count()
 
         # quotient of selected users and all users
         if all_users > 0:
-            percent = float(len(users)) * 100 / float(all_users)
+            percent = self.object_list.count() * 100 / float(all_users)
         else:
             percent = 0
 
@@ -129,14 +129,13 @@ class Overview(TemplateView):
         committees = [p['committee'] for p in OpenSlidesUser.objects.values('committee')
             .exclude(committee='').distinct()]
         context.update({
-            'users': users,
             'allusers': all_users,
             'percent': round(percent, 1),
             'categories': categories,
             'committees': committees,
-            'cookie': ['participant_sortfilter', urlencode(decodedict(sortfilter),
+            'cookie': ['participant_sortfilter', urlencode(decodedict(self.sortfilter),
                 doseq=True)],
-            'sortfilter': sortfilter})
+            'sortfilter': self.sortfilter})
         return context
 
 
@@ -154,6 +153,8 @@ class UserCreateView(CreateView):
 
     def manipulate_object(self, form):
         self.object.username = gen_username(form.cleaned_data['first_name'], form.cleaned_data['last_name'])
+        if not self.object.firstpassword:
+            self.object.firstpassword = gen_password()
 
 
 class UserUpdateView(UpdateView):
@@ -178,164 +179,125 @@ class UserDeleteView(DeleteView):
     url = 'user_overview'
 
 
-@permission_required('participant.can_manage_participant')
-@template('confirm.html')
-def user_delete(request, user_id):
+class SetUserStatusView(RedirectView, SingleObjectMixin):
     """
-    Delete an user.
+    Activate or deactivate an user.
     """
-    user = User.objects.get(pk=user_id)
-    if request.method == 'POST':
-        user.delete()
-        messages.success(request,
-            _('Participant <b>%s</b> was successfully deleted.') % user)
-    else:
-        gen_confirm_form(request,
-            _('Do you really want to delete <b>%s</b>?') % user,
-            reverse('user_delete', args=[user_id]))
-    return redirect(reverse('user_overview'))
+    permission_required = 'participant.can_manage_participant'
+    allow_ajax = True
+    url = 'user_overview'
+    model = OpenSlidesUser
+
+    def pre_redirect(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        action = kwargs['action']
+        if action == 'activate':
+            self.object.is_active = True
+        elif action == 'deactivate':
+            self.object.is_active = False
+        elif action == 'toggle':
+            self.object.is_active = not self.object.is_active
+        self.object.save()
+        return super(SetUserStatusView, self).pre_redirect(request, *args, **kwargs)
+
+    def get_ajax_context(self, **kwargs):
+        context = super(SetUserStatusView, self).get_ajax_context(**kwargs)
+        context['active'] = self.object.is_active
+        return context
 
 
-@permission_required('participant.can_manage_participant')
-@template('confirm.html')
-def user_set_status(request, user_id):
+class ParticipantsListPDF(PDFView):
     """
-    Set the status of an user.
+    Generate the userliste as PDF.
     """
-    try:
-        user = User.objects.get(pk=user_id)
-        if user.is_active:
-            user.is_active = False
-        else:
-            user.is_active = True
-        user.save()
-    except User.DoesNotExist:
-        messages.error(request,
-            _('Participant ID %d does not exist.') % int(user_id))
-        return redirect(reverse('user_overview'))
+    permission_required = 'participant.can_see_participant'
+    filename = ugettext_lazy("Participant-list")
+    document_title = ugettext_lazy('List of Participants')
 
-    if request.is_ajax():
-        return ajax_request({'active': user.is_active})
-    # set success messages for page reload only (= not ajax request)
-    if user.is_active:
-        messages.success(request, _('<b>%s</b> is now <b>present</b>.') % user)
-    else:
-        messages.success(request, _('<b>%s</b> is now <b>absent</b>.') % user)
-    return redirect(reverse('user_overview'))
+    def append_to_pdf(self, story):
+        data = [['#', _('Last Name'), _('First Name'), _('Group'), _('Type'),
+            _('Committee')]]
+        sort = 'last_name'
+        counter = 0
+        for user in OpenSlidesUser.objects.all().order_by(sort):
+            counter += 1
+            data.append([
+                counter,
+                Paragraph(user.last_name, stylesheet['Tablecell']),
+                Paragraph(user.first_name, stylesheet['Tablecell']),
+                Paragraph(user.category, stylesheet['Tablecell']),
+                Paragraph(user.type, stylesheet['Tablecell']),
+                Paragraph(user.committee, stylesheet['Tablecell'])
+            ])
+        t = LongTable(data,
+            style=[
+                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                ('LINEABOVE', (0, 0), (-1, 0), 2, colors.black),
+                ('LINEABOVE', (0, 1), (-1, 1), 1, colors.black),
+                ('LINEBELOW', (0, -1), (-1, -1), 2, colors.black),
+                ('ROWBACKGROUNDS', (0, 1), (-1, -1),
+                    (colors.white, (.9, .9, .9)))])
+        t._argW[0] = 0.75 * cm
+        story.append(t)
 
 
-@permission_required('participant.can_manage_participant')
-@template('participant/group_overview.html')
-def get_group_overview(request):
+class ParticipantsPasswordsPDF(PDFView):
     """
-    Show all groups.
+    Generate the Welcomepaper for the users.
     """
-    if config['system_enable_anonymous']:
-        groups = Group.objects.all()
-    else:
-        groups = Group.objects.exclude(name='Anonymous')
-    return {
-        'groups': groups,
-    }
+    permission_required = 'participant.can_manage_participant'
+    filename = ugettext_lazy("Participant-passwords")
+    top_space = 0
 
+    def get_template(self, buffer):
+        return SimpleDocTemplate(buffer, topMargin=-6, bottomMargin=-6,
+            leftMargin=0, rightMargin=0, showBoundary=False)
 
-@permission_required('participant.can_manage_participant')
-@template('participant/group_edit.html')
-def group_edit(request, group_id=None):
-    """
-    Edit a group.
-    """
-    if group_id is not None:
-        try:
-            group = Group.objects.get(id=group_id)
-        except Group.DoesNotExist:
-            # TODO: return a 404 Object
-            raise NameError("There is no group %d" % group_id)
-    else:
-        group = None
-    delete_default_permissions()
+    def build_document(self, pdf_document, story):
+        pdf_document.build(story)
 
-    if request.method == 'POST':
-        form = GroupForm(request.POST, instance=group)
-        if form.is_valid():
-            # TODO: This can be done inside the form
-            group_name = form.cleaned_data['name'].lower()
+    def append_to_pdf(self, story):
+        data = []
+        participant_pdf_system_url = config["participant_pdf_system_url"]
+        participant_pdf_welcometext = config["participant_pdf_welcometext"]
+        for user in OpenSlidesUser.objects.all().order_by('last_name'):
+            cell = []
+            cell.append(Spacer(0, 0.8 * cm))
+            cell.append(Paragraph(_("Account for OpenSlides"),
+                        stylesheet['Ballot_title']))
+            cell.append(Paragraph(_("for %s") % (user),
+                        stylesheet['Ballot_subtitle']))
+            cell.append(Spacer(0, 0.5 * cm))
+            cell.append(Paragraph(_("User: %s") % (user.username),
+                        stylesheet['Monotype']))
+            cell.append(Paragraph(_("Password: %s")
+                % (user.firstpassword), stylesheet['Monotype']))
+            cell.append(Spacer(0, 0.5 * cm))
+            cell.append(Paragraph(_("URL: %s")
+                % (participant_pdf_system_url),
+                stylesheet['Ballot_option']))
+            cell.append(Spacer(0, 0.5 * cm))
+            cell2 = []
+            cell2.append(Spacer(0, 0.8 * cm))
+            if participant_pdf_welcometext is not None:
+                cell2.append(Paragraph(
+                    participant_pdf_welcometext.replace('\r\n', '<br/>'),
+                    stylesheet['Ballot_subtitle']))
 
-            # TODO: Why is this code called on any request and not only, if the
-            # anonymous_group is edited?
-            try:
-                anonymous_group = Group.objects.get(name='Anonymous')
-            except Group.DoesNotExist:
-                anonymous_group = None
+            data.append([cell, cell2])
 
-            # special handling for anonymous auth
-            # TODO: This code should be a form validator.
-            if group is None and group_name.strip().lower() == 'anonymous':
-                # don't allow to create this group
-                messages.error(request,
-                    _('Group name "%s" is reserved for internal use.')
-                    % group_name)
-                return {
-                    'form': form,
-                    'group': group
-                }
-
-            group = form.save()
-            try:
-                openslides_group = OpenSlidesGroup.objects.get(group=group)
-            except OpenSlidesGroup.DoesNotExist:
-                django_group = None
-            if form.cleaned_data['as_user'] and django_group is None:
-                OpenSlidesGroup(group=group).save()
-            elif not form.cleaned_data['as_user'] and django_group:
-                django_group.delete()
-
-            if anonymous_group is not None and \
-               anonymous_group.id == group.id:
-                # prevent name changes -
-                # XXX: I'm sure this could be done as *one* group.save()
-                group.name = 'Anonymous'
-                group.save()
-
-            if group_id is None:
-                messages.success(request,
-                    _('New group was successfully created.'))
-            else:
-                messages.success(request, _('Group was successfully modified.'))
-            if not 'apply' in request.POST:
-                return redirect(reverse('user_group_overview'))
-            if group_id is None:
-                return redirect(reverse('user_group_edit', args=[group.id]))
-        else:
-            messages.error(request, _('Please check the form for errors.'))
-    else:
-        if group and OpenSlidesGroup.objects.filter(group=group).exists():
-            initial = {'as_user': True}
-        else:
-            initial = {'as_user': False}
-
-        form = GroupForm(instance=group, initial=initial)
-    return {
-        'form': form,
-        'group': group,
-    }
-
-
-@permission_required('participant.can_manage_participant')
-def group_delete(request, group_id):
-    """
-    Delete a group.
-    """
-    group = Group.objects.get(pk=group_id)
-    if request.method == 'POST':
-        group.delete()
-        messages.success(request,
-            _('Group <b>%s</b> was successfully deleted.') % group)
-    else:
-        gen_confirm_form(request,
-            _('Do you really want to delete <b>%s</b>?') % group,
-            reverse('user_group_delete', args=[group_id]))
-    return redirect(reverse('user_group_overview'))
+        # add empty table line if no participants available
+        if not data:
+            data.append(['', ''])
+        # build table
+        t = Table(data, 10.5 * cm, 7.42 * cm)
+        t.setStyle(TableStyle([
+            ('LINEBELOW', (0, 0), (-1, 0), 0.25, colors.grey),
+            ('LINEBELOW', (0, 1), (-1, 1), 0.25, colors.grey),
+            ('LINEBELOW', (0, 1), (-1, -1), 0.25, colors.grey),
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ]))
+        story.append(t)
 
 
 @login_required
@@ -582,121 +544,120 @@ def login(request):
     return django_login(request, template_name='participant/login.html', extra_context=extra_content)
 
 
-def register_tab(request):
-    """
-    Register the participant tab.
-    """
-    selected = request.path.startswith('/participant/')
-    return Tab(
-        title=_('Participants'),
-        url=reverse('user_overview'),
-        permission=request.user.has_perm('participant.can_see_participant')
-            or request.user.has_perm('participant.can_manage_participant'),
-        selected=selected,
-    )
 
 
-class ParticipantsListPDF(PDFView):
+@permission_required('participant.can_manage_participant')
+@template('participant/group_overview.html')
+def get_group_overview(request):
     """
-    Generate the userliste as PDF.
+    Show all groups.
     """
-    permission_required = 'participant.can_see_participant'
-    filename = ugettext_lazy("Participant-list")
-    document_title = ugettext_lazy('List of Participants')
+    if config['system_enable_anonymous']:
+        groups = Group.objects.all()
+    else:
+        groups = Group.objects.exclude(name='Anonymous')
+    return {
+        'groups': groups,
+    }
 
-    def append_to_pdf(self, story):
-        data = [['#', _('Last Name'), _('First Name'), _('Group'), _('Type'),
-            _('Committee')]]
-        sort = 'last_name'
-        counter = 0
-        for user in User.objects.all().order_by(sort):
+
+@permission_required('participant.can_manage_participant')
+@template('participant/group_edit.html')
+def group_edit(request, group_id=None):
+    """
+    Edit a group.
+    """
+    if group_id is not None:
+        try:
+            group = Group.objects.get(id=group_id)
+        except Group.DoesNotExist:
+            # TODO: return a 404 Object
+            raise NameError("There is no group %d" % group_id)
+    else:
+        group = None
+    delete_default_permissions()
+
+    if request.method == 'POST':
+        form = GroupForm(request.POST, instance=group)
+        if form.is_valid():
+            # TODO: This can be done inside the form
+            group_name = form.cleaned_data['name'].lower()
+
+            # TODO: Why is this code called on any request and not only, if the
+            # anonymous_group is edited?
             try:
-                counter += 1
-                user.get_profile()
-                data.append([
-                    counter,
-                    Paragraph(user.last_name, stylesheet['Tablecell']),
-                    Paragraph(user.first_name, stylesheet['Tablecell']),
-                    Paragraph(user.profile.group, stylesheet['Tablecell']),
-                    Paragraph(user.profile.get_type_display(),
-                        stylesheet['Tablecell']),
-                    Paragraph(user.profile.committee, stylesheet['Tablecell'])
-                ])
-            except Profile.DoesNotExist:
-                counter -= 1
-                pass
-        t = LongTable(data,
-            style=[
-                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-                ('LINEABOVE', (0, 0), (-1, 0), 2, colors.black),
-                ('LINEABOVE', (0, 1), (-1, 1), 1, colors.black),
-                ('LINEBELOW', (0, -1), (-1, -1), 2, colors.black),
-                ('ROWBACKGROUNDS', (0, 1), (-1, -1),
-                    (colors.white, (.9, .9, .9)))])
-        t._argW[0] = 0.75 * cm
-        story.append(t)
+                anonymous_group = Group.objects.get(name='Anonymous')
+            except Group.DoesNotExist:
+                anonymous_group = None
 
+            # special handling for anonymous auth
+            # TODO: This code should be a form validator.
+            if group is None and group_name.strip().lower() == 'anonymous':
+                # don't allow to create this group
+                messages.error(request,
+                    _('Group name "%s" is reserved for internal use.')
+                    % group_name)
+                return {
+                    'form': form,
+                    'group': group
+                }
 
-class ParticipantsPasswordsPDF(PDFView):
-    """
-    Generate the Welcomepaper for the users.
-    """
-    permission_required = 'participant.can_manage_participant'
-    filename = ugettext_lazy("Participant-passwords")
-    top_space = 0
-
-    def get_template(self, buffer):
-        return SimpleDocTemplate(buffer, topMargin=-6, bottomMargin=-6,
-            leftMargin=0, rightMargin=0, showBoundary=False)
-
-    def build_document(self, pdf_document, story):
-        pdf_document.build(story)
-
-    def append_to_pdf(self, story):
-        data = []
-        participant_pdf_system_url = config["participant_pdf_system_url"]
-        participant_pdf_welcometext = config["participant_pdf_welcometext"]
-        for user in User.objects.all().order_by('last_name'):
+            group = form.save()
             try:
-                user.get_profile()
-                cell = []
-                cell.append(Spacer(0, 0.8 * cm))
-                cell.append(Paragraph(_("Account for OpenSlides"),
-                            stylesheet['Ballot_title']))
-                cell.append(Paragraph(_("for %s") % (user.profile),
-                            stylesheet['Ballot_subtitle']))
-                cell.append(Spacer(0, 0.5 * cm))
-                cell.append(Paragraph(_("User: %s") % (user.username),
-                            stylesheet['Monotype']))
-                cell.append(Paragraph(_("Password: %s")
-                    % (user.profile.firstpassword), stylesheet['Monotype']))
-                cell.append(Spacer(0, 0.5 * cm))
-                cell.append(Paragraph(_("URL: %s")
-                    % (participant_pdf_system_url),
-                    stylesheet['Ballot_option']))
-                cell.append(Spacer(0, 0.5 * cm))
-                cell2 = []
-                cell2.append(Spacer(0, 0.8 * cm))
-                if participant_pdf_welcometext is not None:
-                    cell2.append(Paragraph(
-                        participant_pdf_welcometext.replace('\r\n', '<br/>'),
-                        stylesheet['Ballot_subtitle']))
+                openslides_group = OpenSlidesGroup.objects.get(group=group)
+            except OpenSlidesGroup.DoesNotExist:
+                django_group = None
+            if form.cleaned_data['as_user'] and django_group is None:
+                OpenSlidesGroup(group=group).save()
+            elif not form.cleaned_data['as_user'] and django_group:
+                django_group.delete()
 
-                data.append([cell, cell2])
-            except OpenSlidesUser.DoesNotExist:
-                pass
-        # add empty table line if no participants available
-        if data == []:
-            data.append(['', ''])
-        # build table
-        t = Table(data, 10.5 * cm, 7.42 * cm)
-        t.setStyle(TableStyle([
-            ('LINEBELOW', (0, 0), (-1, 0), 0.25, colors.grey),
-            ('LINEBELOW', (0, 1), (-1, 1), 0.25, colors.grey),
-            ('LINEBELOW', (0, 1), (-1, -1), 0.25, colors.grey),
-            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ]))
-        story.append(t)
+            if anonymous_group is not None and \
+               anonymous_group.id == group.id:
+                # prevent name changes -
+                # XXX: I'm sure this could be done as *one* group.save()
+                group.name = 'Anonymous'
+                group.save()
+
+            if group_id is None:
+                messages.success(request,
+                    _('New group was successfully created.'))
+            else:
+                messages.success(request, _('Group was successfully modified.'))
+            if not 'apply' in request.POST:
+                return redirect(reverse('user_group_overview'))
+            if group_id is None:
+                return redirect(reverse('user_group_edit', args=[group.id]))
+        else:
+            messages.error(request, _('Please check the form for errors.'))
+    else:
+        if group and OpenSlidesGroup.objects.filter(group=group).exists():
+            initial = {'as_user': True}
+        else:
+            initial = {'as_user': False}
+
+        form = GroupForm(instance=group, initial=initial)
+    return {
+        'form': form,
+        'group': group,
+    }
+
+
+@permission_required('participant.can_manage_participant')
+def group_delete(request, group_id):
+    """
+    Delete a group.
+    """
+    group = Group.objects.get(pk=group_id)
+    if request.method == 'POST':
+        group.delete()
+        messages.success(request,
+            _('Group <b>%s</b> was successfully deleted.') % group)
+    else:
+        gen_confirm_form(request,
+            _('Do you really want to delete <b>%s</b>?') % group,
+            reverse('user_group_delete', args=[group_id]))
+    return redirect(reverse('user_group_overview'))
 
 
 class Config(FormView):
@@ -721,3 +682,17 @@ class Config(FormView):
         messages.success(self.request,
             _('Participants settings successfully saved.'))
         return super(Config, self).form_valid(form)
+
+
+def register_tab(request):
+    """
+    Register the participant tab.
+    """
+    selected = request.path.startswith('/participant/')
+    return Tab(
+        title=_('Participants'),
+        url=reverse('user_overview'),
+        permission=request.user.has_perm('participant.can_see_participant')
+            or request.user.has_perm('participant.can_manage_participant'),
+        selected=selected,
+    )
