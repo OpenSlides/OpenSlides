@@ -107,18 +107,14 @@ class AjaxMixin(object):
 
 class QuestionMixin(object):
     question = ugettext_lazy('Are you sure?')
+    success_message = ugettext_lazy('Thank you for your answer')
     answer_options = [('yes', ugettext_lazy("Yes")), ('no', ugettext_lazy("No"))]
 
     def get_answer_options(self):
         return self.answer_options
 
-    def get_confirm_question(self):
-        return self.questions
-
-    def get_success_message(self, option=None):
-        if option is None:
-            return _('Invalid answer')
-        return _('You choose %s') % option
+    def get_question(self):
+        return unicode(self.question)
 
     def get_answer(self):
         for option in self.get_answer_options():
@@ -141,7 +137,7 @@ class QuestionMixin(object):
                 %(option_fields)s
             </form>
             """ % {
-                'message': self.get_confirm_question(),
+                'message': self.get_question(),
                 'url': self.get_answer_url(),
                 'csrf': csrf(self.request)['csrf_token'],
                 'option_fields': option_fields})
@@ -150,8 +146,7 @@ class QuestionMixin(object):
         self.confirm_form(request, self.object)
 
     def pre_post_redirect(self, request, *args, **kwargs):
-        option = self.get_answer()
-        messages.success(request, self.get_success_message(option))
+        messages.success(request)
 
 
 class TemplateView(PermissionMixin, _TemplateView):
@@ -271,7 +266,7 @@ class CreateView(PermissionMixin, _CreateView):
 
 
 class DeleteView(RedirectView, SingleObjectMixin, QuestionMixin):
-    def get_confirm_question(self):
+    def get_question(self):
         return _('Do you really want to delete %s?') % html_strong(self.object)
 
     def get_success_message(self):

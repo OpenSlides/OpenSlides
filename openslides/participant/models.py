@@ -51,6 +51,7 @@ class OpenSlidesUser(User, PersonMixin):
     comment = models.TextField(
         null=True, blank=True, verbose_name=_('Comment'),
         help_text=_('Only for notes.'))
+    # TODO: Rename this fild to default_password
     firstpassword = models.CharField(
         max_length=100, null=True, blank=True,
         verbose_name=_("First Password"))

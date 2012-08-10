@@ -45,7 +45,7 @@ from openslides.utils.utils import (
     encodedict, delete_default_permissions, html_strong)
 from openslides.utils.views import (
     FormView, PDFView, TemplateView, CreateView, UpdateView, DeleteView,
-    RedirectView, SingleObjectMixin, ListView)
+    RedirectView, SingleObjectMixin, ListView, QuestionMixin)
 
 from openslides.config.models import config
 
@@ -318,21 +318,33 @@ class UserImportView(FormView):
         return super(UserImportView, self).form_valid(form)
 
 
-@permission_required('participant.can_manage_participant')
-def reset_password(request, user_id):
+class ResetPasswordView(RedirectView, SingleObjectMixin, QuestionMixin):
     """
-    Reset the Password.
+    Set the Passwort for a user to his firstpassword.
     """
-    user = User.objects.get(pk=user_id)
-    if request.method == 'POST':
-        user.profile.reset_password()
-        messages.success(request,
-            _('The Password for <b>%s</b> was successfully reset.') % user)
-    else:
-        gen_confirm_form(request,
-            _('Do you really want to reset the password for <b>%s</b>?') % user,
-            reverse('user_reset_password', args=[user_id]))
-    return redirect(reverse('user_edit', args=[user_id]))
+    permission_required = 'participant.can_manage_participant'
+    model = OpenSlidesUser
+    allow_ajax = True
+    question = ugettext_lazy('Do you really want to reset the password?')
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super(ResetPasswordView, self).get(request, *args, **kwargs)
+
+    def get_redirect_url(self, **kwargs):
+        return reverse('user_edit', args=[self.object.id])
+
+    def pre_redirect(self, request, *args, **kwargs):
+        self.confirm_form()
+
+    def pre_post_redirect(self, request, *args, **kwargs):
+        if self.get_answer().lower() == 'yes':
+            self.object.reset_password()
+            messages.success(request,
+                _('The Password for <b>%s</b> was successfully reset.') % self.object)
+
+    def get_answer_url(self):
+        return reverse('user_reset_password', args=[self.object.id])
 
 
 @login_required
