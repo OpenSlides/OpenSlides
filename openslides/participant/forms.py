@@ -90,9 +90,6 @@ class UsersettingsForm(forms.ModelForm, CssClassMixin):
 class UserImportForm(forms.Form, CssClassMixin):
     csvfile = forms.FileField(widget=forms.FileInput(attrs={'size': '50'}),
                               label=_("CSV File"))
-    application_handling = forms.ChoiceField(
-        required=True, choices=USER_APPLICATION_IMPORT_OPTIONS,
-        label=_("For existing applications"))
 
 
 class ConfigForm(forms.Form, CssClassMixin):

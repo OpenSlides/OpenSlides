@@ -15,7 +15,7 @@ from django.core.urlresolvers import reverse
 
 from openslides.participant.views import (
     ParticipantsListPDF, ParticipantsPasswordsPDF, Overview, UserCreateView,
-    UserUpdateView, UserDeleteView, SetUserStatusView)
+    UserUpdateView, UserDeleteView, SetUserStatusView, UserImportView)
 
 urlpatterns = patterns('openslides.participant.views',
     url(r'^$',
@@ -62,7 +62,7 @@ urlpatterns = patterns('openslides.participant.views',
     ),
 
     url(r'^import/$',
-        'user_import',
+        UserImportView.as_view(),
         name='user_import',
     ),
 

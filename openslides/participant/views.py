@@ -50,7 +50,7 @@ from openslides.utils.views import (
 from openslides.config.models import config
 
 from openslides.participant.models import OpenSlidesUser, OpenSlidesGroup
-from openslides.participant.api import gen_username, gen_password
+from openslides.participant.api import gen_username, gen_password, import_users
 from openslides.participant.forms import (
     UserCreateForm, UserUpdateForm, OpenSlidesUserForm, UsersettingsForm,
     UserImportForm, GroupForm, AdminPasswordChangeForm, ConfigForm)
@@ -300,6 +300,41 @@ class ParticipantsPasswordsPDF(PDFView):
         story.append(t)
 
 
+class UserImportView(FormView):
+    """
+    Import Users via csv.
+    """
+    permission_required = 'participant.can_manage_participant'
+    template_name = 'participant/import.html'
+    form_class = UserImportForm
+
+    def form_valid(self, form):
+        # check for valid encoding (will raise UnicodeDecodeError if not)
+        success, error_messages = import_users(self.request.FILES['csvfile'])
+        for message in error_messages:
+            messages.error(self.request, message)
+        if success:
+            messages.success(self.request, _('%d new participants were successfully imported.') % success)
+        return super(UserImportView, self).form_valid(form)
+
+
+@permission_required('participant.can_manage_participant')
+def reset_password(request, user_id):
+    """
+    Reset the Password.
+    """
+    user = User.objects.get(pk=user_id)
+    if request.method == 'POST':
+        user.profile.reset_password()
+        messages.success(request,
+            _('The Password for <b>%s</b> was successfully reset.') % user)
+    else:
+        gen_confirm_form(request,
+            _('Do you really want to reset the password for <b>%s</b>?') % user,
+            reverse('user_reset_password', args=[user_id]))
+    return redirect(reverse('user_edit', args=[user_id]))
+
+
 @login_required
 @template('participant/settings.html')
 def user_settings(request):
@@ -343,186 +378,6 @@ def user_settings_password(request):
         'form': form,
     }
 
-
-@permission_required('participant.can_manage_participant')
-@template('participant/import.html')
-def user_import(request):
-    """
-    Import Users via csv.
-    """
-    from openslides.application.models import Application
-    try:
-        request.user.profile
-        messages.error(request, _('The import function is available for the admin (without user profile) only.'))
-        return redirect(reverse('user_overview'))
-    except Profile.DoesNotExist:
-        pass
-    except AttributeError:
-        # AnonymousUser
-        pass
-
-    if request.method == 'POST':
-        form = UserImportForm(request.POST, request.FILES)
-        if form.is_valid():
-            try:
-                # check for valid encoding (will raise UnicodeDecodeError if not)
-                request.FILES['csvfile'].read().decode('utf-8')
-                request.FILES['csvfile'].seek(0)
-
-                with transaction.commit_on_success():
-
-                    old_users = {}
-                    applications_mapped = 0
-                    applications_review = 0
-                    applications_removed = 0
-
-                    try:
-                        janitor = User.objects.get(username='__system__.janitor')
-                    except User.DoesNotExist:
-                        janitor = User()
-                        janitor.first_name = ''
-                        janitor.last_name = ''
-                        janitor.username = '__system__.janitor'
-                        janitor.save()
-
-                    applications = Application.objects.all()
-                    for application in applications:
-                        if form.cleaned_data['application_handling'] == 'DISCARD':
-                            # need to do this explicit since some applications may belong
-                            # to __system__.janitor which is a permanent user
-                            application.delete(force=True)
-                            applications_removed += 1
-                        else:
-                            # collect all applications and map them to their submitters
-                            submitter = application.submitter
-                            skey = '%s_%s' % (submitter.first_name, submitter.last_name)
-
-                            if not skey in old_users:
-                                old_users[skey] = []
-                            old_users[skey].append(application.id)
-
-                            application.submitter = janitor
-                            application.save()
-
-                            if application.supporter.all():
-                                application.writelog(_('Supporters removed after user import.'), user=request.user)
-
-                    profiles = Profile.objects.all()
-                    for profile in profiles:
-                        profile.user.delete()
-                        profile.delete()
-                    i = -1
-                    dialect = csv.Sniffer().sniff(request.FILES['csvfile'].readline())
-                    dialect = csv_ext.patchup(dialect)
-                    request.FILES['csvfile'].seek(0)
-
-                    for (lno, line) in enumerate(csv.reader(request.FILES['csvfile'], dialect=dialect)):
-                        i += 1
-                        if i > 0:
-                            try:
-                                (first_name, last_name, gender, group, type, committee, comment) = line[:7]
-                            except ValueError:
-                                messages.error(request, _('Ignoring malformed line %d in import file.') % (lno + 1))
-                                i -= 1
-                                continue
-                            user = User()
-                            user.last_name = last_name
-                            user.first_name = first_name
-                            user.username = gen_username(first_name, last_name)
-                            #user.email = email
-                            user.save()
-                            profile = Profile()
-                            profile.user = user
-                            profile.gender = gender
-                            profile.group = group
-                            profile.type = type
-                            profile.committee = committee
-                            profile.comment = comment
-                            profile.firstpassword = gen_password()
-                            profile.user.set_password(profile.firstpassword)
-                            profile.user.save()
-                            profile.save()
-
-                            if type == 'delegate':
-                                delegate = Group.objects.get(name='Delegierter')
-                                user.groups.add(delegate)
-                            else:
-                                observer = Group.objects.get(name='Beobachter')
-                                user.groups.add(observer)
-
-                            if form.cleaned_data['application_handling'] == 'REASSIGN':
-                                # live remap
-                                skey = '%s_%s' % (user.first_name, user.last_name)
-                                if skey in old_users:
-                                    for appid in old_users[skey]:
-                                        try:
-                                            application = Application.objects.get(id=appid)
-                                            application.submitter = user
-                                            application.save()
-                                            application.writelog(_('Reassigned to "%s" after (re)importing users.') % ("%s %s" % (user.first_name, user.last_name)), user=request.user)
-                                            applications_mapped += 1
-                                        except Application.DoesNotExist:
-                                            messages.error(request, _('Could not reassing application %d - object not found!') % appid)
-                                    del old_users[skey]
-
-                    if old_users:
-                        # mark all applications without a valid user as 'needs review'
-                        # this will account for *all* applications if application_mode == 'INREVIEW'
-                        for skey in old_users:
-                            for appid in old_users[skey]:
-                                try:
-                                    application = Application.objects.get(id=appid)
-                                    if application.status != 'rev':
-                                        application.set_status(user=request.user, status='rev', force=True)
-                                    applications_review += 1
-                                except Application.DoesNotExist:
-                                    messages.error(request, _('Could not reassing application %d - object not found!') % appid)
-
-                    if applications_review:
-                        messages.warning(request, ungettext('%d application could not be reassigned and needs a review!',
-                                                    '%d applications could not be reassigned and need a review!', applications_review) % applications_review)
-                    if applications_mapped:
-                        messages.success(request, ungettext('%d application was successfully reassigned.',
-                                                    '%d applications were successfully reassigned.', applications_mapped) % applications_mapped)
-                    if applications_removed:
-                        messages.warning(request, ungettext('%d application was discarded.',
-                                                    '%d applications were discarded.', applications_removed) % applications_removed)
-
-                    if i > 0:
-                        messages.success(request, _('%d new participants were successfully imported.') % i)
-                    return redirect(reverse('user_overview'))
-            except csv.Error:
-                message.error(request, _('Import aborted because of severe errors in the input file.'))
-            except UnicodeDecodeError:
-                messages.error(request, _('Import file has wrong character encoding, only UTF-8 is supported!'))
-        else:
-            messages.error(request, _('Please check the form for errors.'))
-    else:
-        messages.warning(request, _("Attention: All existing participants will be removed if you import new participants."))
-        if Application.objects.all():
-            messages.warning(request, _("Attention: Supporters from all existing applications will be removed."))
-            messages.warning(request, _("Attention: Applications which can't be mapped to new users will be set to 'Needs Review'."))
-        form = UserImportForm()
-    return {
-        'form': form,
-    }
-
-
-@permission_required('participant.can_manage_participant')
-def reset_password(request, user_id):
-    """
-    Reset the Password.
-    """
-    user = User.objects.get(pk=user_id)
-    if request.method == 'POST':
-        user.profile.reset_password()
-        messages.success(request,
-            _('The Password for <b>%s</b> was successfully reset.') % user)
-    else:
-        gen_confirm_form(request,
-            _('Do you really want to reset the password for <b>%s</b>?') % user,
-            reverse('user_reset_password', args=[user_id]))
-    return redirect(reverse('user_edit', args=[user_id]))
 
 
 def login(request):
