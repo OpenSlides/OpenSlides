@@ -55,7 +55,7 @@ class OpenSlidesUserTest(TestCase):
         self.assertTrue(hasattr(self.openslidesuser1, 'person_id'))
         self.assertEqual(self.openslidesuser1.person_id, 'openslides_user:1')
         self.assertEqual(get_person('openslides_user:1'), self.openslidesuser1)
-        self.assertEqual(len(Persons()), 1)
+        self.assertEqual(len(Persons(person_prefix='openslides_user')), 1)
 
     def test_save_name(self):
         self.assertEqual(self.openslidesuser1.first_name, self.user1.first_name)
