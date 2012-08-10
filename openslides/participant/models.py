@@ -74,6 +74,9 @@ class OpenSlidesUser(models.Model, PersonMixin):
 
     first_name = property(get_first_name, set_first_name)
 
+    def get_full_name(self):
+        return "%s %s" % self.first_name, self.last_name
+
     def get_last_name(self):
         return self.user.last_name
 
@@ -114,8 +117,8 @@ class OpenSlidesUser(models.Model, PersonMixin):
 
     def __unicode__(self):
         if self.name_surfix:
-            return "%s (%s)" % (self.user.get_full_name(), self.name_surfix)
-        return "%s" % self.user.get_full_name()
+            return u"%s (%s)" % (self.get_full_name(), self.name_surfix)
+        return u"%s" % self.get_full_name()
 
     def save(self, *args, **kwargs):
         if self.save_user_object:

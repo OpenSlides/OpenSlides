@@ -66,6 +66,7 @@ class OpenSlidesUserTest(TestCase):
         user1 = User.objects.get(pk=1)
         self.assertEqual(user1.first_name, 'foo')
         self.assertEqual(user1.last_name, 'bar')
+        self.assertEqual(user1.get_full_name(), 'foo bar')
 
 
 class OpenSlidesGroupTest(TestCase):
