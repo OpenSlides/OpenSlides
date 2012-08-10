@@ -14,7 +14,7 @@ from django.conf.urls.defaults import url, patterns
 from django.core.urlresolvers import reverse
 
 from openslides.participant.views import (
-    ParticipantsListPDF, ParticipantsPasswordsPDF, Overview)
+    ParticipantsListPDF, ParticipantsPasswordsPDF, Overview, UserCreateView, UserUpdateView)
 
 urlpatterns = patterns('openslides.participant.views',
     url(r'^$',
@@ -23,12 +23,12 @@ urlpatterns = patterns('openslides.participant.views',
     ),
 
     url(r'^new/$',
-        'edit',
+        UserCreateView.as_view(),
         name='user_new',
     ),
 
-    url(r'^(?P<user_id>\d+)/edit/$',
-        'edit',
+    url(r'^(?P<pk>\d+)/edit/$',
+        UserUpdateView.as_view(),
         name='user_edit',
     ),
 

@@ -208,8 +208,17 @@ class CreateView(PermissionMixin, _CreateView):
         messages.error(self.request, _('Please check the form for errors.'))
         return super(CreateView, self).form_invalid(form)
 
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.manipulate_object(form)
+        self.object.save()
+        return HttpResponseRedirect(self.get_success_url())
+
     def get_success_message(self):
         return _('%s was successfully created.') % html_strong(self.object)
+
+    def manipulate_object(self, form):
+        pass
 
 
 class DeleteView(RedirectView, SingleObjectMixin):

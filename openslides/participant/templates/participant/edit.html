@@ -4,7 +4,7 @@
 
 {% block title %}
     {{ block.super }} –
-    {% if edituser %}
+    {% if edit_user %}
         {% trans "Edit participant" %}
     {% else %}
         {% trans "New participant" %}
@@ -13,30 +13,31 @@
 
 
 {% block content %}
-    {% if edituser %}
+    {% if edit_user %}
         <h1>{% trans "Edit participant" %}</h1>
     {% else %}
         <h1>{% trans "New participant" %}</h1>
     {% endif %}
 
     <form action="" method="post">{% csrf_token %}
-        {{ userform.as_p }}
-        {{ profileform.as_p }}
-        {% if edituser %}
-        <p><a href="{% url user_reset_password edituser.id %}">{% trans 'Reset to First Password' %}</a></p>
+        {{ form.as_p }}
+        {% if edit_user %}
+            <p>
+                <a href="{% url user_reset_password edit_user.id %}">{% trans 'Reset to First Password' %}</a>
+            </p>
         {% endif %}
         <p>
-        <button class="button" type="submit">
-            <span class="icon ok">{% trans 'Save' %}</span>
-        </button>
-        <button class="button" type="submit" name="apply">
-            <span class="icon apply">{% trans 'Apply' %}</span>
-        </button>
-        <a href='{% url user_overview %}'>
-        <button class="button" type="button" onclick="window.location='{% url user_overview %}'">
-            <span class="icon cancel">{% trans 'Cancel' %}</span>
-        </button>
-        </a>
+            <button class="button" type="submit">
+                <span class="icon ok">{% trans 'Save' %}</span>
+            </button>
+            <button class="button" type="submit" name="apply">
+                <span class="icon apply">{% trans 'Apply' %}</span>
+            </button>
+            <a href='{% url user_overview %}'>
+                <button class="button" type="button" onclick="window.location='{% url user_overview %}'">
+                    <span class="icon cancel">{% trans 'Cancel' %}</span>
+                </button>
+            </a>
         </p>
         <small>* {% trans "required" %}</small>
     </form>

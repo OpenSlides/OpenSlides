@@ -43,14 +43,15 @@ from openslides.utils.template import Tab
 from openslides.utils.utils import (
     template, permission_required, gen_confirm_form, ajax_request, decodedict,
     encodedict, delete_default_permissions, html_strong)
-from openslides.utils.views import FormView, PDFView, TemplateView
+from openslides.utils.views import (
+    FormView, PDFView, TemplateView, CreateView, UpdateView)
 
 from openslides.config.models import config
 
 from openslides.participant.models import OpenSlidesUser, OpenSlidesGroup
 from openslides.participant.api import gen_username, gen_password
 from openslides.participant.forms import (
-    UserNewForm, UserEditForm, OpenSlidesUserForm, UsersettingsForm,
+    UserCreateForm, UserUpdateForm, OpenSlidesUserForm, UsersettingsForm,
     UserImportForm, GroupForm, AdminPasswordChangeForm, ConfigForm)
 
 
@@ -139,69 +140,30 @@ class Overview(TemplateView):
         return context
 
 
-@permission_required('participant.can_manage_participant')
-@template('participant/edit.html')
-def edit(request, user_id=None):
+class UserCreateView(CreateView):
     """
-    View to create and edit users.
+    Create a new participant.
     """
-    if user_id is not None:
-        user = User.objects.get(id=user_id)
-    else:
-        user = None
+    permission_required = 'participant.can_manage_participant'
+    template_name = 'participant/edit.html'
+    model = OpenSlidesUser
+    context_object_name = 'edit_user'
+    form_class = UserCreateForm
+    success_url = 'user_overview'
+    apply_url = 'participant_edit'
 
-    if request.method == 'POST':
-        if user_id is None:
-            user_form = UserNewForm(request.POST, prefix="user")
-            openslides_user_form = OpenSlidesUserForm(request.POST, prefix="openslidesuser")
-        else:
-            user_form = UserEditForm(request.POST, instance=user, prefix="user")
-            openslides_user_form = OpenSlidesUserForm(request.POST, instance=user.openslidesuser,
-                prefix="openslidesuser")
+    def manipulate_object(self, form):
+        self.object.username = gen_username(form.cleaned_data['first_name'], form.cleaned_data['last_name'])
 
-        if user_form.is_valid() and openslides_user_form.is_valid():
-            user = user_form.save(commit=False)
-            if user_id is None:
-                # TODO: call first_name and last_name though openslides_user
-                user.username = gen_username(user.first_name, user.last_name)
-                user.save()
-                openslides_user = user.openslidesuser
-                openslides_user_form = OpenSlidesUserForm(request.POST, instance=openslides_user, prefix="openslidesuser")
-                openslides_user_form.is_valid()
-            openslides_user = openslides_user_form.save(commit=False)
-            openslides_user.user = user
-            if user_id is None:
-                if not openslides_user.firstpassword:
-                    openslides_user.firstpassword = gen_password()
-                openslides_user.user.set_password(openslides_user.firstpassword)
-            # TODO: Try not to save the user object
-            openslides_user.user.save()
-            openslides_user.save()
-            if user_id is None:
-                messages.success(request,
-                    _('New participant was successfully created.'))
-            else:
-                messages.success(request,
-                    _('Participant was successfully modified.'))
-            if not 'apply' in request.POST:
-                return redirect(reverse('user_overview'))
-            if user_id is None:
-                return redirect(reverse('user_edit', args=[user.id]))
-        else:
-            messages.error(request, _('Please check the form for errors.'))
-    else:
-        if user_id is None:
-            user_form = UserNewForm(prefix="user")
-            openslides_user_form = OpenSlidesUserForm(prefix="openslidesuser")
-        else:
-            user_form = UserEditForm(instance=user, prefix="user")
-            openslides_user_form = OpenSlidesUserForm(instance=user.openslidesuser, prefix="openslidesuser")
-    # TODO: rename template vars
-    return {
-        'userform': user_form,
-        'profileform': openslides_user_form,
-        'edituser': user,
-    }
+
+class UserUpdateView(UpdateView):
+    permission_required = 'participant.can_manage_participant'
+    template_name = 'participant/edit.html'
+    model = OpenSlidesUser
+    context_object_name = 'edit_user'
+    form_class = UserUpdateForm
+    success_url = 'user_overview'
+    apply_url = 'participant_edit'
 
 
 @permission_required('participant.can_manage_participant')

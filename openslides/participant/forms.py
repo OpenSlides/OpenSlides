@@ -28,7 +28,7 @@ USER_APPLICATION_IMPORT_OPTIONS = [
 ]
 
 
-class UserNewForm(forms.ModelForm, CssClassMixin):
+class UserCreateForm(forms.ModelForm, CssClassMixin):
     first_name = forms.CharField(label=_("First name"))
     last_name = forms.CharField(label=_("Last name"))
     groups = forms.ModelMultipleChoiceField(
@@ -37,22 +37,17 @@ class UserNewForm(forms.ModelForm, CssClassMixin):
         label=_("Active"), required=False, initial=True)
 
     class Meta:
-        model = User
-        exclude = ('username', 'password', 'is_staff', 'is_superuser',
-                   'last_login', 'date_joined', 'user_permissions')
+        model = OpenSlidesUser
+        fields = ('first_name', 'last_name', 'is_active', 'groups', 'category',
+                  'gender', 'type', 'committee', 'comment', 'firstpassword')
 
 
-class UserEditForm(forms.ModelForm, CssClassMixin):
-    first_name = forms.CharField(label=_("First name"))
-    last_name = forms.CharField(label=_("Last name"))
-    groups = forms.ModelMultipleChoiceField(
-        queryset=Group.objects.all(), label=_("User groups"), required=False)
-    is_active = forms.BooleanField(label=_("Active"), required=False)
-
+class UserUpdateForm(UserCreateForm):
     class Meta:
-        model = User
-        exclude = ('password', 'is_staff', 'is_superuser', 'last_login',
-                   'date_joined', 'user_permissions')
+        model = OpenSlidesUser
+        fields = ('username', 'first_name', 'last_name', 'is_active', 'groups',
+                  'category', 'gender', 'type', 'committee', 'comment',
+                  'firstpassword')
 
 
 class UsernameForm(forms.ModelForm, CssClassMixin):
