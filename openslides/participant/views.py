@@ -44,7 +44,7 @@ from openslides.utils.utils import (
     template, permission_required, gen_confirm_form, ajax_request, decodedict,
     encodedict, delete_default_permissions, html_strong)
 from openslides.utils.views import (
-    FormView, PDFView, TemplateView, CreateView, UpdateView)
+    FormView, PDFView, TemplateView, CreateView, UpdateView, DeleteView)
 
 from openslides.config.models import config
 
@@ -157,6 +157,9 @@ class UserCreateView(CreateView):
 
 
 class UserUpdateView(UpdateView):
+    """
+    Update an existing participant.
+    """
     permission_required = 'participant.can_manage_participant'
     template_name = 'participant/edit.html'
     model = OpenSlidesUser
@@ -164,6 +167,15 @@ class UserUpdateView(UpdateView):
     form_class = UserUpdateForm
     success_url = 'user_overview'
     apply_url = 'participant_edit'
+
+
+class UserDeleteView(DeleteView):
+    """
+    Delete an participant.
+    """
+    permission_required = 'participant.can_manage_participant'
+    model = OpenSlidesUser
+    url = 'user_overview'
 
 
 @permission_required('participant.can_manage_participant')
