@@ -13,12 +13,12 @@
 from django.conf.urls.defaults import url, patterns
 from django.core.urlresolvers import reverse
 
-from openslides.participant.views import (ParticipantsListPDF,
-    ParticipantsPasswordsPDF)
+from openslides.participant.views import (
+    ParticipantsListPDF, ParticipantsPasswordsPDF, Overview)
 
 urlpatterns = patterns('openslides.participant.views',
     url(r'^$',
-        'get_overview',
+        Overview.as_view(),
         name='user_overview',
     ),
 

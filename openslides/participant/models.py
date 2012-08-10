@@ -37,7 +37,7 @@ class OpenSlidesUser(models.Model, PersonMixin):
 
     user = models.OneToOneField(User, unique=True, editable=False)
     category = models.CharField(
-        max_length=100, null=True, blank=True, verbose_name=_("Name Surfix"),
+        max_length=100, null=True, blank=True, verbose_name=_("Category"),
         help_text=_('Shown behind the name.'))
     gender = models.CharField(
         max_length=50, choices=GENDER_CHOICES, blank=True,
@@ -140,6 +140,7 @@ class OpenSlidesGroup(models.Model, PersonMixin):
 
     group = models.OneToOneField(Group)
     group_as_person = models.BooleanField(default=False)
+    description = models.TextField(blank=True)
 
     def __unicode__(self):
         return unicode(self.group)
@@ -193,4 +194,10 @@ def default_config(sender, key, **kwargs):
 @receiver(signals.post_save, sender=User)
 def user_post_save(sender, instance, signal, *args, **kwargs):
     # Creates OpenSlidesUser
-    profile, new = OpenSlidesUser.objects.get_or_create(user=instance)
+    openslidesuser, new = OpenSlidesUser.objects.get_or_create(user=instance)
+
+
+@receiver(signals.post_save, sender=Group)
+def group_post_save(sender, instance, signal, *args, **kwargs):
+    # Creates OpenSlidesGroup
+    openslidesgroup, new = OpenSlidesGroup.objects.get_or_create(group=instance)

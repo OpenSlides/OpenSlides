@@ -43,7 +43,7 @@ from openslides.utils.template import Tab
 from openslides.utils.utils import (
     template, permission_required, gen_confirm_form, ajax_request, decodedict,
     encodedict, delete_default_permissions, html_strong)
-from openslides.utils.views import FormView, PDFView
+from openslides.utils.views import FormView, PDFView, TemplateView
 
 from openslides.config.models import config
 
@@ -54,96 +54,89 @@ from openslides.participant.forms import (
     UserImportForm, GroupForm, AdminPasswordChangeForm, ConfigForm)
 
 
-@permission_required('participant.can_see_participant')
-@template('participant/overview.html')
-def get_overview(request):
+class Overview(TemplateView):
     """
-    Show all users.
+    Show all participants.
     """
-    try:
-        sortfilter = encodedict(parse_qs(
-            request.COOKIES['participant_sortfilter']))
-    except KeyError:
-        sortfilter = {}
+    permission_required = 'participant.can_see_participant'
+    template_name = 'participant/overview.html'
 
-    for value in [u'gender', u'group', u'type', u'committee', u'status',
-                  u'sort', u'reverse']:
-        if value in request.REQUEST:
-            if request.REQUEST[value] == '---':
-                try:
-                    del sortfilter[value]
-                except KeyError:
-                    pass
-            else:
-                sortfilter[value] = [request.REQUEST[value]]
-
-    query = User.objects
-    if 'gender' in sortfilter:
-        query = query.filter(
-            openslidesuser__gender__iexact=sortfilter['gender'][0])
-    if 'group' in sortfilter:
-        query = query.filter(
-            openslidesuser__name_surfix__iexact=sortfilter['group'][0])
-    if 'type' in sortfilter:
-        query = query.filter(
-            openslidesuser__type__iexact=sortfilter['type'][0])
-    if 'committee' in sortfilter:
-        query = query.filter(
-            openslidesuser__committee__iexact=sortfilter['committee'][0])
-    if 'status' in sortfilter:
-        query = query.filter(is_active=sortfilter['status'][0])
-    if 'sort' in sortfilter:
-        if sortfilter['sort'][0] in ['first_name', 'last_name', 'last_login']:
-            query = query.order_by(sortfilter['sort'][0])
-        elif (sortfilter['sort'][0] in
-                ['name_surfix', 'type', 'committee', 'comment']):
-            query = query.order_by(
-                'openslidesuser__%s' % sortfilter['sort'][0])
-    else:
-        query = query.order_by('last_name')
-    if 'reverse' in sortfilter:
-        query = query.reverse()
-
-    # list of filtered users
-    userlist = query.all()
-    users = []
-    for user in userlist:
+    def get_context_data(self, **kwargs):
+        context = super(Overview, self).get_context_data(**kwargs)
         try:
-            user.openslidesuser
-        except OpenSlidesUser.DoesNotExist:
-            pass
+            sortfilter = encodedict(parse_qs(
+                self.request.COOKIES['participant_sortfilter']))
+        except KeyError:
+            sortfilter = {}
+
+        for value in [u'gender', u'category', u'type', u'committee', u'status',
+                      u'sort', u'reverse']:
+            if value in self.request.REQUEST:
+                if self.request.REQUEST[value] == '---':
+                    try:
+                        del sortfilter[value]
+                    except KeyError:
+                        pass
+                else:
+                    sortfilter[value] = [self.request.REQUEST[value]]
+
+        query = User.objects
+        if 'gender' in sortfilter:
+            query = query.filter(
+                openslidesuser__gender__iexact=sortfilter['gender'][0])
+        if 'category' in sortfilter:
+            query = query.filter(
+                openslidesuser__category__iexact=sortfilter['category'][0])
+        if 'type' in sortfilter:
+            query = query.filter(
+                openslidesuser__type__iexact=sortfilter['type'][0])
+        if 'committee' in sortfilter:
+            query = query.filter(
+                openslidesuser__committee__iexact=sortfilter['committee'][0])
+        if 'status' in sortfilter:
+            query = query.filter(is_active=sortfilter['status'][0])
+        if 'sort' in sortfilter:
+            if sortfilter['sort'][0] in ['first_name', 'last_name', 'last_login']:
+                query = query.order_by(sortfilter['sort'][0])
+            elif (sortfilter['sort'][0] in
+                    ['category', 'type', 'committee', 'comment']):
+                query = query.order_by(
+                    'openslidesuser__%s' % sortfilter['sort'][0])
         else:
-            users.append(user)
-    # list of all existing users
-    allusers = []
-    for user in User.objects.all():
-        try:
-            user.openslidesuser
-        except OpenSlidesUser.DoesNotExist:
-            pass
+            query = query.order_by('last_name')
+
+        if 'reverse' in sortfilter:
+            query = query.reverse()
+
+        # list of filtered users
+        users = query.all()
+
+        # list of all existing users
+        all_users = User.objects.count()
+
+        # quotient of selected users and all users
+        if all_users > 0:
+            percent = float(len(users)) * 100 / float(all_users)
         else:
-            allusers.append(user)
-    # quotient of selected users and all users
-    if len(allusers) > 0:
-        percent = float(len(users)) * 100 / float(len(allusers))
-    else:
-        percent = 0
-    # list of all existing groups
-    groups = [p['name_surfix'] for p in OpenSlidesUser.objects.values('name_surfix')
-        .exclude(name_surfix='').distinct()]
-    # list of all existing committees
-    committees = [p['committee'] for p in OpenSlidesUser.objects.values('committee')
-        .exclude(committee='').distinct()]
-    return {
-        'users': users,
-        'allusers': allusers,
-        'percent': round(percent, 1),
-        'groups': groups,
-        'committees': committees,
-        'cookie': ['participant_sortfilter', urlencode(decodedict(sortfilter),
-            doseq=True)],
-        'sortfilter': sortfilter,
-    }
+            percent = 0
+
+        # list of all existing categories
+        categories = [p['category'] for p in OpenSlidesUser.objects.values('category')
+            .exclude(category='').distinct()]
+
+        # list of all existing committees
+        committees = [p['committee'] for p in OpenSlidesUser.objects.values('committee')
+            .exclude(committee='').distinct()]
+        context.update({
+            'users': users,
+            'allusers': all_users,
+            'percent': round(percent, 1),
+            'categories': categories,
+            'committees': committees,
+            'cookie': ['participant_sortfilter', urlencode(decodedict(sortfilter),
+                doseq=True)],
+            'sortfilter': sortfilter})
+        return context
 
 
 @permission_required('participant.can_manage_participant')
