@@ -16,7 +16,8 @@ from django.core.urlresolvers import reverse
 from openslides.participant.views import (
     ParticipantsListPDF, ParticipantsPasswordsPDF, Overview, UserCreateView,
     UserUpdateView, UserDeleteView, SetUserStatusView, UserImportView,
-    ResetPasswordView)
+    ResetPasswordView, GroupOverviewView, GroupCreateView, GroupUpdateView,
+    GroupDeleteView)
 
 urlpatterns = patterns('openslides.participant.views',
     url(r'^$',
@@ -44,11 +45,6 @@ urlpatterns = patterns('openslides.participant.views',
         name='user_reset_password',
     ),
 
-        url(r'^print/$',
-        ParticipantsListPDF.as_view(),
-        name='user_print',
-    ),
-
     url(r'^(?P<pk>\d+)/status/toggle/$',
         SetUserStatusView.as_view(),
         {'action': 'toggle'},
@@ -73,23 +69,28 @@ urlpatterns = patterns('openslides.participant.views',
     ),
 
     url(r'^group/$',
-        'get_group_overview',
+        GroupOverviewView.as_view(),
         name='user_group_overview',
     ),
 
     url(r'^group/new/$',
-        'group_edit',
+        GroupCreateView.as_view(),
         name='user_group_new',
     ),
 
-    url(r'^group/(?P<group_id>\d+)/edit/$',
-        'group_edit',
+    url(r'^group/(?P<pk>\d+)/edit/$',
+        GroupUpdateView.as_view(),
         name='user_group_edit',
     ),
 
-    url(r'^group/(?P<group_id>\d+)/del/$',
-        'group_delete',
+    url(r'^group/(?P<pk>\d+)/del/$',
+        GroupDeleteView.as_view(),
         name='user_group_delete',
+    ),
+
+    url(r'^print/$',
+        ParticipantsListPDF.as_view(),
+        name='user_print',
     ),
 
     url(r'^passwords/print/$',

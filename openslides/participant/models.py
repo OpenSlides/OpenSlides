@@ -35,7 +35,7 @@ class OpenSlidesUser(User, PersonMixin):
         ('guest', _('Guest')),
     )
 
-    user = models.OneToOneField(User, unique=True, editable=False, parent_link=True)
+    user = models.OneToOneField(User, editable=False, parent_link=True)
     category = models.CharField(
         max_length=100, null=True, blank=True, verbose_name=_("Category"),
         help_text=_('Will be shown behind the name.'))
@@ -85,9 +85,9 @@ class OpenSlidesUser(User, PersonMixin):
         * delete
         """
         if link == 'edit':
-            return ('user_edit', [str(self.user.id)])
+            return ('user_edit', [str(self.id)])
         if link == 'delete':
-            return ('user_delete', [str(self.user.id)])
+            return ('user_delete', [str(self.id)])
 
     def __unicode__(self):
         if self.name_surfix:
@@ -103,12 +103,26 @@ class OpenSlidesUser(User, PersonMixin):
         )
 
 
-class OpenSlidesGroup(models.Model, PersonMixin):
+class OpenSlidesGroup(Group, PersonMixin):
     person_prefix = 'openslides_group'
 
-    group = models.OneToOneField(Group)
+    group = models.OneToOneField(Group, editable=False, parent_link=True)
     group_as_person = models.BooleanField(default=False)
     description = models.TextField(blank=True)
+
+    @models.permalink
+    def get_absolute_url(self, link='edit'):
+        """
+        Return the URL to this user.
+
+        link can be:
+        * edit
+        * delete
+        """
+        if link == 'edit':
+            return ('user_group_edit', [str(self.id)])
+        if link == 'delete':
+            return ('user_group_delete', [str(self.id)])
 
     def __unicode__(self):
         return unicode(self.group)
@@ -169,5 +183,7 @@ def user_post_save(sender, instance, signal, *args, **kwargs):
 
 @receiver(signals.post_save, sender=Group)
 def group_post_save(sender, instance, signal, *args, **kwargs):
-    # Creates OpenSlidesGroup
-    openslidesgroup, new = OpenSlidesGroup.objects.get_or_create(group=instance)
+    try:
+        instance.openslidesgroup
+    except OpenSlidesGroup.DoesNotExist:
+        OpenSlidesGroup(group=instance).save_base(raw=True)

@@ -52,7 +52,7 @@ from openslides.config.models import config
 from openslides.participant.models import OpenSlidesUser, OpenSlidesGroup
 from openslides.participant.api import gen_username, gen_password, import_users
 from openslides.participant.forms import (
-    UserCreateForm, UserUpdateForm, OpenSlidesUserForm, UsersettingsForm,
+    UserCreateForm, UserUpdateForm, UsersettingsForm,
     UserImportForm, GroupForm, AdminPasswordChangeForm, ConfigForm)
 
 
@@ -113,7 +113,7 @@ class Overview(ListView):
     def get_context_data(self, **kwargs):
         context = super(Overview, self).get_context_data(**kwargs)
 
-        all_users = User.objects.count()
+        all_users = OpenSlidesUser.objects.count()
 
         # quotient of selected users and all users
         if all_users > 0:
@@ -347,6 +347,84 @@ class ResetPasswordView(RedirectView, SingleObjectMixin, QuestionMixin):
         return reverse('user_reset_password', args=[self.object.id])
 
 
+class GroupOverviewView(ListView):
+    """
+    Overview over all groups.
+    """
+    permission_required = 'participant.can_manage_participant'
+    template_name = 'participant/group_overview.html'
+    context_object_name = 'groups'
+    model = OpenSlidesGroup
+
+
+class GroupEditMixin(object):
+    """
+    Methodes for the GroupCreateView and GroupUpdateView.
+    """
+    def get_form_class(self):
+        delete_default_permissions()
+        return self.form_class
+
+
+class GroupCreateView(CreateView, GroupEditMixin):
+    """
+    Create a new group.
+    """
+    permission_required = 'participant.can_manage_participant'
+    template_name = 'participant/group_edit.html'
+    context_object_name = 'group'
+    model = OpenSlidesGroup
+    form_class = GroupForm
+    success_url = 'user_group_overview'
+    apply_url = 'user_group_edit'
+
+
+class GroupUpdateView(UpdateView, GroupEditMixin):
+    """
+    Update an existing group.
+    """
+    permission_required = 'participant.can_manage_participant'
+    template_name = 'participant/group_edit.html'
+    model = OpenSlidesGroup
+    context_object_name = 'group'
+    form_class = GroupForm
+    success_url = 'user_group_overview'
+    apply_url = 'user_group_edit'
+
+
+class GroupDeleteView(DeleteView):
+    """
+    Delete a Group.
+    """
+    permission_required = 'participant.can_manage_participant'
+    model = OpenSlidesGroup
+    url = 'user_group_overview'
+
+
+class Config(FormView):
+    """
+    Config page for the participant app.
+    """
+    permission_required = 'config.can_manage_config'
+    form_class = ConfigForm
+    template_name = 'participant/config.html'
+
+    def get_initial(self):
+        return {
+            'participant_pdf_system_url': config['participant_pdf_system_url'],
+            'participant_pdf_welcometext': config['participant_pdf_welcometext']
+        }
+
+    def form_valid(self, form):
+        config['participant_pdf_system_url'] = \
+            form.cleaned_data['participant_pdf_system_url']
+        config['participant_pdf_welcometext'] = \
+            form.cleaned_data['participant_pdf_welcometext']
+        messages.success(self.request,
+            _('Participants settings successfully saved.'))
+        return super(Config, self).form_valid(form)
+
+
 @login_required
 @template('participant/settings.html')
 def user_settings(request):
@@ -391,7 +469,6 @@ def user_settings_password(request):
     }
 
 
-
 def login(request):
     extra_content = {}
     try:
@@ -409,146 +486,6 @@ def login(request):
     except User.DoesNotExist:
         pass
     return django_login(request, template_name='participant/login.html', extra_context=extra_content)
-
-
-
-
-@permission_required('participant.can_manage_participant')
-@template('participant/group_overview.html')
-def get_group_overview(request):
-    """
-    Show all groups.
-    """
-    if config['system_enable_anonymous']:
-        groups = Group.objects.all()
-    else:
-        groups = Group.objects.exclude(name='Anonymous')
-    return {
-        'groups': groups,
-    }
-
-
-@permission_required('participant.can_manage_participant')
-@template('participant/group_edit.html')
-def group_edit(request, group_id=None):
-    """
-    Edit a group.
-    """
-    if group_id is not None:
-        try:
-            group = Group.objects.get(id=group_id)
-        except Group.DoesNotExist:
-            # TODO: return a 404 Object
-            raise NameError("There is no group %d" % group_id)
-    else:
-        group = None
-    delete_default_permissions()
-
-    if request.method == 'POST':
-        form = GroupForm(request.POST, instance=group)
-        if form.is_valid():
-            # TODO: This can be done inside the form
-            group_name = form.cleaned_data['name'].lower()
-
-            # TODO: Why is this code called on any request and not only, if the
-            # anonymous_group is edited?
-            try:
-                anonymous_group = Group.objects.get(name='Anonymous')
-            except Group.DoesNotExist:
-                anonymous_group = None
-
-            # special handling for anonymous auth
-            # TODO: This code should be a form validator.
-            if group is None and group_name.strip().lower() == 'anonymous':
-                # don't allow to create this group
-                messages.error(request,
-                    _('Group name "%s" is reserved for internal use.')
-                    % group_name)
-                return {
-                    'form': form,
-                    'group': group
-                }
-
-            group = form.save()
-            try:
-                openslides_group = OpenSlidesGroup.objects.get(group=group)
-            except OpenSlidesGroup.DoesNotExist:
-                django_group = None
-            if form.cleaned_data['as_user'] and django_group is None:
-                OpenSlidesGroup(group=group).save()
-            elif not form.cleaned_data['as_user'] and django_group:
-                django_group.delete()
-
-            if anonymous_group is not None and \
-               anonymous_group.id == group.id:
-                # prevent name changes -
-                # XXX: I'm sure this could be done as *one* group.save()
-                group.name = 'Anonymous'
-                group.save()
-
-            if group_id is None:
-                messages.success(request,
-                    _('New group was successfully created.'))
-            else:
-                messages.success(request, _('Group was successfully modified.'))
-            if not 'apply' in request.POST:
-                return redirect(reverse('user_group_overview'))
-            if group_id is None:
-                return redirect(reverse('user_group_edit', args=[group.id]))
-        else:
-            messages.error(request, _('Please check the form for errors.'))
-    else:
-        if group and OpenSlidesGroup.objects.filter(group=group).exists():
-            initial = {'as_user': True}
-        else:
-            initial = {'as_user': False}
-
-        form = GroupForm(instance=group, initial=initial)
-    return {
-        'form': form,
-        'group': group,
-    }
-
-
-@permission_required('participant.can_manage_participant')
-def group_delete(request, group_id):
-    """
-    Delete a group.
-    """
-    group = Group.objects.get(pk=group_id)
-    if request.method == 'POST':
-        group.delete()
-        messages.success(request,
-            _('Group <b>%s</b> was successfully deleted.') % group)
-    else:
-        gen_confirm_form(request,
-            _('Do you really want to delete <b>%s</b>?') % group,
-            reverse('user_group_delete', args=[group_id]))
-    return redirect(reverse('user_group_overview'))
-
-
-class Config(FormView):
-    """
-    Config page for the participant app.
-    """
-    permission_required = 'config.can_manage_config'
-    form_class = ConfigForm
-    template_name = 'participant/config.html'
-
-    def get_initial(self):
-        return {
-            'participant_pdf_system_url': config['participant_pdf_system_url'],
-            'participant_pdf_welcometext': config['participant_pdf_welcometext']
-        }
-
-    def form_valid(self, form):
-        config['participant_pdf_system_url'] = \
-            form.cleaned_data['participant_pdf_system_url']
-        config['participant_pdf_welcometext'] = \
-            form.cleaned_data['participant_pdf_welcometext']
-        messages.success(self.request,
-            _('Participants settings successfully saved.'))
-        return super(Config, self).form_valid(form)
 
 
 def register_tab(request):
