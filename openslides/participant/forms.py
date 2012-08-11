@@ -24,8 +24,8 @@ class UserCreateForm(forms.ModelForm, CssClassMixin):
     first_name = forms.CharField(label=_("First name"))
     last_name = forms.CharField(label=_("Last name"))
     groups = forms.ModelMultipleChoiceField(
-        queryset=OpenSlidesGroup.objects.all(), label=_("User groups"),
-        required=False)
+        queryset=OpenSlidesGroup.objects.exclude(name__iexact='anonymous'),
+        label=_("User groups"), required=False)
     is_active = forms.BooleanField(
         label=_("Active"), required=False, initial=True)
 

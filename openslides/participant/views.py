@@ -28,6 +28,7 @@ from reportlab.platypus import (
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.models import User
 from django.contrib.auth.views import login as django_login
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
@@ -143,7 +144,7 @@ class UserCreateView(CreateView):
     context_object_name = 'edit_user'
     form_class = UserCreateForm
     success_url = 'user_overview'
-    apply_url = 'participant_edit'
+    apply_url = 'user_edit'
 
     def manipulate_object(self, form):
         self.object.username = gen_username(form.cleaned_data['first_name'],

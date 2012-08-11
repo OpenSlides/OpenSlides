@@ -256,6 +256,7 @@ class CreateView(PermissionMixin, _CreateView):
         self.object = form.save(commit=False)
         self.manipulate_object(form)
         self.object.save()
+        form.save_m2m()
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_message(self):
