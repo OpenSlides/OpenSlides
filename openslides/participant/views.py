@@ -13,7 +13,6 @@
 # for python 2.5 support
 from __future__ import with_statement
 
-import csv
 from urllib import urlencode
 
 try:
@@ -24,36 +23,31 @@ except ImportError:  # python <= 2.5 grab it from cgi
 from reportlab.lib import colors
 from reportlab.lib.units import cm
 from reportlab.platypus import (
-    SimpleDocTemplate, PageBreak, Paragraph, LongTable, Spacer, Table,
-    TableStyle)
+    SimpleDocTemplate, Paragraph, LongTable, Spacer, Table, TableStyle)
 
-from django.db import transaction
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User, Group
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import login as django_login
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
-from django.utils.translation import ugettext as _, ungettext, ugettext_lazy
+from django.utils.translation import ugettext as _, ugettext_lazy
 
-from openslides.utils import csv_ext
 from openslides.utils.pdf import stylesheet
 from openslides.utils.template import Tab
 from openslides.utils.utils import (
-    template, permission_required, gen_confirm_form, ajax_request, decodedict,
-    encodedict, delete_default_permissions, html_strong)
+    template, decodedict, encodedict, delete_default_permissions, html_strong)
 from openslides.utils.views import (
-    FormView, PDFView, TemplateView, CreateView, UpdateView, DeleteView,
+    FormView, PDFView, CreateView, UpdateView, DeleteView,
     RedirectView, SingleObjectMixin, ListView, QuestionMixin)
 
 from openslides.config.models import config
 
-from openslides.participant.models import OpenSlidesUser, OpenSlidesGroup
 from openslides.participant.api import gen_username, gen_password, import_users
 from openslides.participant.forms import (
     UserCreateForm, UserUpdateForm, UsersettingsForm,
-    UserImportForm, GroupForm, AdminPasswordChangeForm, ConfigForm)
+    UserImportForm, GroupForm, ConfigForm)
+from openslides.participant.models import OpenSlidesUser, OpenSlidesGroup
 
 
 class Overview(ListView):
@@ -152,7 +146,8 @@ class UserCreateView(CreateView):
     apply_url = 'participant_edit'
 
     def manipulate_object(self, form):
-        self.object.username = gen_username(form.cleaned_data['first_name'], form.cleaned_data['last_name'])
+        self.object.username = gen_username(form.cleaned_data['first_name'],
+            form.cleaned_data['last_name'])
         if not self.object.firstpassword:
             self.object.firstpassword = gen_password()
 
@@ -216,7 +211,7 @@ class ParticipantsListPDF(PDFView):
 
     def append_to_pdf(self, story):
         data = [['#', _('Last Name'), _('First Name'), _('Group'), _('Type'),
-            _('Committee')]]
+                 _('Committee')]]
         sort = 'last_name'
         counter = 0
         for user in OpenSlidesUser.objects.all().order_by(sort):
@@ -227,16 +222,14 @@ class ParticipantsListPDF(PDFView):
                 Paragraph(user.first_name, stylesheet['Tablecell']),
                 Paragraph(user.category, stylesheet['Tablecell']),
                 Paragraph(user.type, stylesheet['Tablecell']),
-                Paragraph(user.committee, stylesheet['Tablecell'])
-            ])
-        t = LongTable(data,
-            style=[
-                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-                ('LINEABOVE', (0, 0), (-1, 0), 2, colors.black),
-                ('LINEABOVE', (0, 1), (-1, 1), 1, colors.black),
-                ('LINEBELOW', (0, -1), (-1, -1), 2, colors.black),
-                ('ROWBACKGROUNDS', (0, 1), (-1, -1),
-                    (colors.white, (.9, .9, .9)))])
+                Paragraph(user.committee, stylesheet['Tablecell'])])
+        t = LongTable(data, style=[
+            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+            ('LINEABOVE', (0, 0), (-1, 0), 2, colors.black),
+            ('LINEABOVE', (0, 1), (-1, 1), 1, colors.black),
+            ('LINEBELOW', (0, -1), (-1, -1), 2, colors.black),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1),
+                (colors.white, (.9, .9, .9)))])
         t._argW[0] = 0.75 * cm
         story.append(t)
 
@@ -250,7 +243,8 @@ class ParticipantsPasswordsPDF(PDFView):
     top_space = 0
 
     def get_template(self, buffer):
-        return SimpleDocTemplate(buffer, topMargin=-6, bottomMargin=-6,
+        return SimpleDocTemplate(
+            buffer, topMargin=-6, bottomMargin=-6,
             leftMargin=0, rightMargin=0, showBoundary=False)
 
     def build_document(self, pdf_document, story):
@@ -270,12 +264,15 @@ class ParticipantsPasswordsPDF(PDFView):
             cell.append(Spacer(0, 0.5 * cm))
             cell.append(Paragraph(_("User: %s") % (user.username),
                         stylesheet['Monotype']))
-            cell.append(Paragraph(_("Password: %s")
-                % (user.firstpassword), stylesheet['Monotype']))
+            cell.append(
+                Paragraph(
+                    _("Password: %s")
+                    % (user.firstpassword), stylesheet['Monotype']))
             cell.append(Spacer(0, 0.5 * cm))
-            cell.append(Paragraph(_("URL: %s")
-                % (participant_pdf_system_url),
-                stylesheet['Ballot_option']))
+            cell.append(
+                Paragraph(
+                    _("URL: %s") % (participant_pdf_system_url),
+                    stylesheet['Ballot_option']))
             cell.append(Spacer(0, 0.5 * cm))
             cell2 = []
             cell2.append(Spacer(0, 0.8 * cm))
@@ -314,7 +311,9 @@ class UserImportView(FormView):
         for message in error_messages:
             messages.error(self.request, message)
         if success:
-            messages.success(self.request, _('%d new participants were successfully imported.') % success)
+            messages.success(
+                self.request,
+                _('%d new participants were successfully imported.') % success)
         return super(UserImportView, self).form_valid(form)
 
 
@@ -341,7 +340,7 @@ class ResetPasswordView(RedirectView, SingleObjectMixin, QuestionMixin):
         if self.get_answer().lower() == 'yes':
             self.object.reset_password()
             messages.success(request,
-                _('The Password for <b>%s</b> was successfully reset.') % self.object)
+                _('The Password for %s was successfully reset.') % html_strong(self.object))
 
     def get_answer_url(self):
         return reverse('user_reset_password', args=[self.object.id])
@@ -412,15 +411,15 @@ class Config(FormView):
     def get_initial(self):
         return {
             'participant_pdf_system_url': config['participant_pdf_system_url'],
-            'participant_pdf_welcometext': config['participant_pdf_welcometext']
-        }
+            'participant_pdf_welcometext': config['participant_pdf_welcometext']}
 
     def form_valid(self, form):
-        config['participant_pdf_system_url'] = \
-            form.cleaned_data['participant_pdf_system_url']
-        config['participant_pdf_welcometext'] = \
-            form.cleaned_data['participant_pdf_welcometext']
-        messages.success(self.request,
+        config['participant_pdf_system_url'] = (
+            form.cleaned_data['participant_pdf_system_url'])
+        config['participant_pdf_welcometext'] = (
+            form.cleaned_data['participant_pdf_welcometext'])
+        messages.success(
+            self.request,
             _('Participants settings successfully saved.'))
         return super(Config, self).form_valid(form)
 
@@ -478,10 +477,10 @@ def login(request):
                 "Installation was successfully! Use %(user)s "
                 "(password: %(password)s) for first login.<br>"
                 "<strong>Important:</strong> Please change the password after "
-                "first login! Otherwise this message still appears for everyone "
-                "and could be a security risk.") % {
-                'user': html_strong(admin.username),
-                'password': html_strong(config['admin_password'])}
+                "first login! Otherwise this message still appears for "
+                "everyone  and could be a security risk.") % {
+                    'user': html_strong(admin.username),
+                    'password': html_strong(config['admin_password'])}
             extra_content['next'] = reverse('password_change')
     except User.DoesNotExist:
         pass
@@ -496,7 +495,6 @@ def register_tab(request):
     return Tab(
         title=_('Participants'),
         url=reverse('user_overview'),
-        permission=request.user.has_perm('participant.can_see_participant')
-            or request.user.has_perm('participant.can_manage_participant'),
-        selected=selected,
-    )
+        permission=request.user.has_perm('participant.can_see_participant') or
+            request.user.has_perm('participant.can_manage_participant'),
+        selected=selected)

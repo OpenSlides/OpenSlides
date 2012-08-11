@@ -12,7 +12,7 @@
 
 from django.contrib.auth.models import User, Group
 from django.db import models
-from django.db.models import Q, signals
+from django.db.models import signals
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 

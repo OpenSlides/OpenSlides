@@ -12,8 +12,6 @@
 
 from django.test import TestCase
 from django.test.client import Client
-from django.contrib.auth.models import User, Group
-from django.db.models.query import EmptyQuerySet
 from django.contrib.auth.hashers import check_password
 
 from openslides.utils.person import get_person, Persons
@@ -23,10 +21,11 @@ from openslides.participant.models import OpenSlidesUser, OpenSlidesGroup
 
 class OpenSlidesUserTest(TestCase):
     def setUp(self):
-        self.user1 = User(first_name=u'Max', last_name=u'Mustermann')
-        self.user1.username = gen_username(self.user1.first_name, self.user1.last_name)
-        self.user1.save()
-        self.openslidesuser1 = self.user1.openslidesuser
+        self.openslidesuser1 = OpenSlidesUser()
+        self.openslidesuser1.first_name = u'Max'
+        self.openslidesuser1.last_name = u'Mustermann'
+        self.openslidesuser1.username = gen_username(
+            self.openslidesuser1.first_name, self.openslidesuser1.last_name)
         self.openslidesuser1.firstpassword = gen_password()
         self.openslidesuser1.save()
         self.user1 = self.openslidesuser1.user
@@ -57,27 +56,17 @@ class OpenSlidesUserTest(TestCase):
         self.assertEqual(get_person('openslides_user:1'), self.openslidesuser1)
         self.assertEqual(len(Persons(person_prefix='openslides_user')), 1)
 
-    def test_save_name(self):
-        self.assertEqual(self.openslidesuser1.first_name, self.user1.first_name)
-        self.assertEqual(self.openslidesuser1.last_name, self.user1.last_name)
-        self.openslidesuser1.first_name = 'foo'
-        self.openslidesuser1.last_name = 'bar'
-        self.openslidesuser1.save()
-        user1 = User.objects.get(pk=1)
-        self.assertEqual(user1.first_name, 'foo')
-        self.assertEqual(user1.last_name, 'bar')
-        self.assertEqual(user1.get_full_name(), 'foo bar')
-
 
 class OpenSlidesGroupTest(TestCase):
     def setUp(self):
-        self.group1 = Group.objects.create(name='Test Group')
-        self.openslidesgroup1 = OpenSlidesGroup.objects.create(group=self.group1)
+        self.openslidesgroup1 = OpenSlidesGroup.objects.create(name='Test Group')
+        self.group1 = self.openslidesgroup1.group
 
     def test_group_openslidesgroup(self):
         self.assertEqual(self.openslidesgroup1.group, self.group1)
 
     def test_person_api(self):
         self.assertTrue(hasattr(self.openslidesgroup1, 'person_id'))
-        self.assertEqual(self.openslidesgroup1.person_id, 'openslides_group:1')
-        self.assertEqual(get_person('openslides_group:1'), self.openslidesgroup1)
+        person_id = "openslides_group:%d" % self.openslidesgroup1.id
+        self.assertEqual(self.openslidesgroup1.person_id, person_id)
+        self.assertEqual(get_person(person_id), self.openslidesgroup1)

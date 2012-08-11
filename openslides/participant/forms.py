@@ -11,9 +11,8 @@
 """
 
 from django import forms
-from django.contrib.auth.forms import AdminPasswordChangeForm
-from django.contrib.auth.models import User, Group, Permission
-from django.utils.translation import ugettext_lazy as _, ugettext_noop
+from django.contrib.auth.models import Permission
+from django.utils.translation import ugettext_lazy as _
 
 from openslides.utils.forms import (
     CssClassMixin, LocalizedModelMultipleChoiceField)
@@ -25,7 +24,8 @@ class UserCreateForm(forms.ModelForm, CssClassMixin):
     first_name = forms.CharField(label=_("First name"))
     last_name = forms.CharField(label=_("Last name"))
     groups = forms.ModelMultipleChoiceField(
-        queryset=Group.objects.all(), label=_("User groups"), required=False)
+        queryset=OpenSlidesGroup.objects.all(), label=_("User groups"),
+        required=False)
     is_active = forms.BooleanField(
         label=_("Active"), required=False, initial=True)
 
@@ -67,14 +67,13 @@ class GroupForm(forms.ModelForm, CssClassMixin):
                     _('Group name "%s" is reserved for internal use.') % data)
         return data
 
-
     class Meta:
         model = OpenSlidesGroup
 
 
 class UsersettingsForm(forms.ModelForm, CssClassMixin):
     class Meta:
-        model = User
+        model = OpenSlidesUser
         fields = ('username', 'first_name', 'last_name', 'email')
 
 

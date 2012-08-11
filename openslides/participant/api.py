@@ -21,7 +21,6 @@ from django.contrib.auth.models import User
 from django.db import transaction
 
 from openslides.utils import csv_ext
-from openslides.utils.person import get_person
 
 from openslides.participant.models import OpenSlidesUser
 
@@ -55,6 +54,7 @@ def gen_username(first_name, last_name):
         except User.DoesNotExist:
             return testname
 
+
 def import_users(csv_file):
     error_messages = []
     count_success = 0
@@ -68,7 +68,8 @@ def import_users(csv_file):
             dialect = csv_ext.patchup(dialect)
             csv_file.seek(0)
 
-            for (line_no, line) in enumerate(csv.reader(csv_file, dialect=dialect)):
+            for (line_no, line) in enumerate(csv.reader(csv_file,
+                                                        dialect=dialect)):
                 if line_no:
                     try:
                         (first_name, last_name, gender, category, type, committee, comment) = line[:7]
