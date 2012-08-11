@@ -90,9 +90,10 @@ class OpenSlidesUser(User, PersonMixin):
             return ('user_delete', [str(self.id)])
 
     def __unicode__(self):
+        name = self.get_full_name() or _("No Name yet")
         if self.name_surfix:
-            return u"%s (%s)" % (self.get_full_name(), self.name_surfix)
-        return u"%s" % self.get_full_name()
+            return u"%s (%s)" % (name, self.name_surfix)
+        return u"%s" % name
 
     class Meta:
         # Rename permissions

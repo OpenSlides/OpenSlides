@@ -47,14 +47,39 @@ class GroupForm(forms.ModelForm, CssClassMixin):
     permissions = LocalizedModelMultipleChoiceField(
         queryset=Permission.objects.all(), label=_("Persmissions"),
         required=False)
+    users = forms.ModelMultipleChoiceField(
+        queryset=OpenSlidesUser.objects.all(),
+        label=_("Users"), required=False)
 
     def __init__(self, *args, **kwargs):
-        super(GroupForm, self).__init__(*args, **kwargs)
+        # Initial users
         if kwargs.get('instance', None) is not None:
-            self.fields['permissions'].initial = (
-                [p.pk for p in kwargs['instance'].permissions.all()])
+            initial = kwargs.setdefault('initial', {})
+            initial['users'] = [user.pk for user in kwargs['instance'].user_set.all()]
+
+        super(GroupForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        instance = forms.ModelForm.save(self, False)
+
+        old_save_m2m = self.save_m2m
+        def save_m2m():
+           old_save_m2m()
+
+           instance.user_set.clear()
+           for user in self.cleaned_data['users']:
+               instance.user_set.add(user)
+        self.save_m2m = save_m2m
+
+        if commit:
+            instance.save()
+            self.save_m2m()
+
+        return instance
 
     def clean_name(self):
+        # Do not allow to change the name "anonymous" or give another group
+        # this name
         data = self.cleaned_data['name']
         if self.instance.name.lower() == 'anonymous':
             # Editing the anonymous-user

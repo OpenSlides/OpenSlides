@@ -357,16 +357,7 @@ class GroupOverviewView(ListView):
     model = OpenSlidesGroup
 
 
-class GroupEditMixin(object):
-    """
-    Methodes for the GroupCreateView and GroupUpdateView.
-    """
-    def get_form_class(self):
-        delete_default_permissions()
-        return self.form_class
-
-
-class GroupCreateView(CreateView, GroupEditMixin):
+class GroupCreateView(CreateView):
     """
     Create a new group.
     """
@@ -378,8 +369,12 @@ class GroupCreateView(CreateView, GroupEditMixin):
     success_url = 'user_group_overview'
     apply_url = 'user_group_edit'
 
+    def get(self, request, *args, **kwargs):
+        delete_default_permissions()
+        return super(GroupCreateView, self).get(request, *args, **kwargs)
 
-class GroupUpdateView(UpdateView, GroupEditMixin):
+
+class GroupUpdateView(UpdateView):
     """
     Update an existing group.
     """
@@ -390,6 +385,10 @@ class GroupUpdateView(UpdateView, GroupEditMixin):
     form_class = GroupForm
     success_url = 'user_group_overview'
     apply_url = 'user_group_edit'
+
+    def get(self, request, *args, **kwargs):
+        delete_default_permissions()
+        return super(GroupUpdateView, self).get(request, *args, **kwargs)
 
 
 class GroupDeleteView(DeleteView):
