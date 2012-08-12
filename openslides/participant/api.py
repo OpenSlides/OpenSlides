@@ -22,7 +22,7 @@ from django.db import transaction
 
 from openslides.utils import csv_ext
 
-from openslides.participant.models import OpenSlidesUser
+from openslides.participant.models import User
 
 
 def gen_password():
@@ -76,7 +76,7 @@ def import_users(csv_file):
                     except ValueError:
                         error_messages.append(_('Ignoring malformed line %d in import file.') % line_no + 1)
                         continue
-                    user = OpenSlidesUser()
+                    user = User()
                     user.last_name = last_name
                     user.first_name = first_name
                     user.username = gen_username(first_name, last_name)

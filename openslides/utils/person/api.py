@@ -43,6 +43,8 @@ class Persons(object):
 
 
 def generate_person_id(prefix, id):
+    assert prefix is not None
+    assert id is not None
     if ':' in prefix:
         raise ValueError("':' is not allowed in a the 'person_prefix'")
     return "%s:%d" % (prefix, id)

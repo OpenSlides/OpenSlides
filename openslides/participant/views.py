@@ -48,7 +48,7 @@ from openslides.participant.api import gen_username, gen_password, import_users
 from openslides.participant.forms import (
     UserCreateForm, UserUpdateForm, UsersettingsForm,
     UserImportForm, GroupForm, ConfigForm)
-from openslides.participant.models import OpenSlidesUser, OpenSlidesGroup
+from openslides.participant.models import User, Group
 
 
 class Overview(ListView):
@@ -77,7 +77,7 @@ class Overview(ListView):
                 else:
                     sortfilter[value] = [self.request.REQUEST[value]]
 
-        query = OpenSlidesUser.objects
+        query = User.objects
         if 'gender' in sortfilter:
             query = query.filter(gender__iexact=sortfilter['gender'][0])
         if 'category' in sortfilter:
@@ -94,7 +94,7 @@ class Overview(ListView):
             elif (sortfilter['sort'][0] in
                     ['category', 'type', 'committee', 'comment']):
                 query = query.order_by(
-                    'openslidesuser__%s' % sortfilter['sort'][0])
+                    '%s' % sortfilter['sort'][0])
         else:
             query = query.order_by('last_name')
 
@@ -108,7 +108,7 @@ class Overview(ListView):
     def get_context_data(self, **kwargs):
         context = super(Overview, self).get_context_data(**kwargs)
 
-        all_users = OpenSlidesUser.objects.count()
+        all_users = User.objects.count()
 
         # quotient of selected users and all users
         if all_users > 0:
@@ -117,11 +117,11 @@ class Overview(ListView):
             percent = 0
 
         # list of all existing categories
-        categories = [p['category'] for p in OpenSlidesUser.objects.values('category')
+        categories = [p['category'] for p in User.objects.values('category')
             .exclude(category='').distinct()]
 
         # list of all existing committees
-        committees = [p['committee'] for p in OpenSlidesUser.objects.values('committee')
+        committees = [p['committee'] for p in User.objects.values('committee')
             .exclude(committee='').distinct()]
         context.update({
             'allusers': all_users,
@@ -140,7 +140,7 @@ class UserCreateView(CreateView):
     """
     permission_required = 'participant.can_manage_participant'
     template_name = 'participant/edit.html'
-    model = OpenSlidesUser
+    model = User
     context_object_name = 'edit_user'
     form_class = UserCreateForm
     success_url = 'user_overview'
@@ -159,7 +159,7 @@ class UserUpdateView(UpdateView):
     """
     permission_required = 'participant.can_manage_participant'
     template_name = 'participant/edit.html'
-    model = OpenSlidesUser
+    model = User
     context_object_name = 'edit_user'
     form_class = UserUpdateForm
     success_url = 'user_overview'
@@ -171,7 +171,7 @@ class UserDeleteView(DeleteView):
     Delete an participant.
     """
     permission_required = 'participant.can_manage_participant'
-    model = OpenSlidesUser
+    model = User
     url = 'user_overview'
 
 
@@ -182,7 +182,7 @@ class SetUserStatusView(RedirectView, SingleObjectMixin):
     permission_required = 'participant.can_manage_participant'
     allow_ajax = True
     url = 'user_overview'
-    model = OpenSlidesUser
+    model = User
 
     def pre_redirect(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -215,7 +215,7 @@ class ParticipantsListPDF(PDFView):
                  _('Committee')]]
         sort = 'last_name'
         counter = 0
-        for user in OpenSlidesUser.objects.all().order_by(sort):
+        for user in User.objects.all().order_by(sort):
             counter += 1
             data.append([
                 counter,
@@ -255,7 +255,7 @@ class ParticipantsPasswordsPDF(PDFView):
         data = []
         participant_pdf_system_url = config["participant_pdf_system_url"]
         participant_pdf_welcometext = config["participant_pdf_welcometext"]
-        for user in OpenSlidesUser.objects.all().order_by('last_name'):
+        for user in User.objects.all().order_by('last_name'):
             cell = []
             cell.append(Spacer(0, 0.8 * cm))
             cell.append(Paragraph(_("Account for OpenSlides"),
@@ -323,7 +323,7 @@ class ResetPasswordView(RedirectView, SingleObjectMixin, QuestionMixin):
     Set the Passwort for a user to his firstpassword.
     """
     permission_required = 'participant.can_manage_participant'
-    model = OpenSlidesUser
+    model = User
     allow_ajax = True
     question = ugettext_lazy('Do you really want to reset the password?')
 
@@ -354,7 +354,7 @@ class GroupOverviewView(ListView):
     permission_required = 'participant.can_manage_participant'
     template_name = 'participant/group_overview.html'
     context_object_name = 'groups'
-    model = OpenSlidesGroup
+    model = Group
 
 
 class GroupCreateView(CreateView):
@@ -364,7 +364,7 @@ class GroupCreateView(CreateView):
     permission_required = 'participant.can_manage_participant'
     template_name = 'participant/group_edit.html'
     context_object_name = 'group'
-    model = OpenSlidesGroup
+    model = Group
     form_class = GroupForm
     success_url = 'user_group_overview'
     apply_url = 'user_group_edit'
@@ -380,7 +380,7 @@ class GroupUpdateView(UpdateView):
     """
     permission_required = 'participant.can_manage_participant'
     template_name = 'participant/group_edit.html'
-    model = OpenSlidesGroup
+    model = Group
     context_object_name = 'group'
     form_class = GroupForm
     success_url = 'user_group_overview'
@@ -396,7 +396,7 @@ class GroupDeleteView(DeleteView):
     Delete a Group.
     """
     permission_required = 'participant.can_manage_participant'
-    model = OpenSlidesGroup
+    model = Group
     url = 'user_group_overview'
 
 

@@ -10,7 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User as DjangoUser, Group as DjangoGroup
 from django.db import models
 from django.db.models import signals
 from django.dispatch import receiver
@@ -22,8 +22,8 @@ from openslides.utils.person.signals import receiv_persons
 from openslides.config.signals import default_config_value
 
 
-class OpenSlidesUser(User, PersonMixin):
-    person_prefix = 'openslides_user'
+class User(DjangoUser, PersonMixin):
+    person_prefix = 'user'
     GENDER_CHOICES = (
         ('male', _('Male')),
         ('female', _('Female')),
@@ -35,7 +35,7 @@ class OpenSlidesUser(User, PersonMixin):
         ('guest', _('Guest')),
     )
 
-    user = models.OneToOneField(User, editable=False, parent_link=True)
+    django_user = models.OneToOneField(DjangoUser, editable=False, parent_link=True)
     category = models.CharField(
         max_length=100, null=True, blank=True, verbose_name=_("Category"),
         help_text=_('Will be shown behind the name.'))
@@ -72,8 +72,8 @@ class OpenSlidesUser(User, PersonMixin):
         """
         if password is None:
             password = self.firstpassword
-        self.user.set_password(password)
-        self.user.save()
+        self.set_password(password)
+        self.save()
 
     @models.permalink
     def get_absolute_url(self, link='edit'):
@@ -104,10 +104,10 @@ class OpenSlidesUser(User, PersonMixin):
         )
 
 
-class OpenSlidesGroup(Group, PersonMixin):
-    person_prefix = 'openslides_group'
+class Group(DjangoGroup, PersonMixin):
+    person_prefix = 'group'
 
-    group = models.OneToOneField(Group, editable=False, parent_link=True)
+    django_group = models.OneToOneField(DjangoGroup, editable=False, parent_link=True)
     group_as_person = models.BooleanField(default=False)
     description = models.TextField(blank=True)
 
@@ -126,38 +126,38 @@ class OpenSlidesGroup(Group, PersonMixin):
             return ('user_group_delete', [str(self.id)])
 
     def __unicode__(self):
-        return unicode(self.group)
+        return unicode(self.name)
 
 
-class OpenSlidesUsersConnecter(object):
+class UsersConnecter(object):
     def __init__(self, person_prefix=None, id=None):
         self.person_prefix = person_prefix
         self.id = id
 
     def __iter__(self):
         if (not self.person_prefix or
-                self.person_prefix == OpenSlidesUser.person_prefix):
+                self.person_prefix == User.person_prefix):
             if self.id:
-                yield OpenSlidesUser.objects.get(pk=self.id)
+                yield User.objects.get(pk=self.id)
             else:
-                for user in OpenSlidesUser.objects.all():
+                for user in User.objects.all():
                     yield user
 
         if (not self.person_prefix or
-                self.person_prefix == OpenSlidesGroup.person_prefix):
+                self.person_prefix == Group.person_prefix):
             if self.id:
-                yield OpenSlidesGroup.objects.get(pk=self.id)
+                yield Group.objects.filter(group_as_person=True).get(pk=self.id)
             else:
-                for group in OpenSlidesGroup.objects.all():
+                for group in Group.objects.filter(group_as_person=True):
                     yield group
 
     def __getitem__(self, key):
-        return OpenSlidesUser.objects.get(pk=key)
+        return User.objects.get(pk=key)
 
 
 @receiver(receiv_persons, dispatch_uid="participant")
 def receiv_persons(sender, **kwargs):
-    return OpenSlidesUsersConnecter(person_prefix=kwargs['person_prefix'],
+    return UsersConnecter(person_prefix=kwargs['person_prefix'],
                                     id=kwargs['id'])
 
 
@@ -174,17 +174,17 @@ def default_config(sender, key, **kwargs):
     }.get(key)
 
 
-@receiver(signals.post_save, sender=User)
+@receiver(signals.post_save, sender=DjangoUser)
 def user_post_save(sender, instance, signal, *args, **kwargs):
     try:
-        instance.openslidesuser
-    except OpenSlidesUser.DoesNotExist:
-        OpenSlidesUser(user=instance).save_base(raw=True)
+        instance.user
+    except User.DoesNotExist:
+        User(django_user=instance).save_base(raw=True)
 
 
-@receiver(signals.post_save, sender=Group)
+@receiver(signals.post_save, sender=DjangoGroup)
 def group_post_save(sender, instance, signal, *args, **kwargs):
     try:
-        instance.openslidesgroup
-    except OpenSlidesGroup.DoesNotExist:
-        OpenSlidesGroup(group=instance).save_base(raw=True)
+        instance.group
+    except Group.DoesNotExist:
+        Group(django_group=instance).save_base(raw=True)

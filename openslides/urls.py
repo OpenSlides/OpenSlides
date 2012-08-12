@@ -55,7 +55,6 @@ for plugin in settings.INSTALLED_PLUGINS:
 
 
 urlpatterns += patterns('',
-    (r'^500/$', 'openslides.utils.views.server_error'),
     (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
 
     url(r'^login/$',

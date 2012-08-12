@@ -17,27 +17,27 @@ from django.utils.translation import ugettext_lazy as _
 from openslides.utils.forms import (
     CssClassMixin, LocalizedModelMultipleChoiceField)
 
-from openslides.participant.models import OpenSlidesUser, OpenSlidesGroup
+from openslides.participant.models import User, Group
 
 
 class UserCreateForm(forms.ModelForm, CssClassMixin):
     first_name = forms.CharField(label=_("First name"))
     last_name = forms.CharField(label=_("Last name"))
     groups = forms.ModelMultipleChoiceField(
-        queryset=OpenSlidesGroup.objects.exclude(name__iexact='anonymous'),
+        queryset=Group.objects.exclude(name__iexact='anonymous'),
         label=_("User groups"), required=False)
     is_active = forms.BooleanField(
         label=_("Active"), required=False, initial=True)
 
     class Meta:
-        model = OpenSlidesUser
+        model = User
         fields = ('first_name', 'last_name', 'is_active', 'groups', 'category',
                   'gender', 'type', 'committee', 'comment', 'firstpassword')
 
 
 class UserUpdateForm(UserCreateForm):
     class Meta:
-        model = OpenSlidesUser
+        model = User
         fields = ('username', 'first_name', 'last_name', 'is_active', 'groups',
                   'category', 'gender', 'type', 'committee', 'comment',
                   'firstpassword')
@@ -48,14 +48,13 @@ class GroupForm(forms.ModelForm, CssClassMixin):
         queryset=Permission.objects.all(), label=_("Persmissions"),
         required=False)
     users = forms.ModelMultipleChoiceField(
-        queryset=OpenSlidesUser.objects.all(),
-        label=_("Users"), required=False)
+        queryset=User.objects.all(), label=_("Users"), required=False)
 
     def __init__(self, *args, **kwargs):
         # Initial users
         if kwargs.get('instance', None) is not None:
             initial = kwargs.setdefault('initial', {})
-            initial['users'] = [user.pk for user in kwargs['instance'].user_set.all()]
+            initial['users'] = [django_user.user.pk for django_user in kwargs['instance'].user_set.all()]
 
         super(GroupForm, self).__init__(*args, **kwargs)
 
@@ -93,12 +92,12 @@ class GroupForm(forms.ModelForm, CssClassMixin):
         return data
 
     class Meta:
-        model = OpenSlidesGroup
+        model = Group
 
 
 class UsersettingsForm(forms.ModelForm, CssClassMixin):
     class Meta:
-        model = OpenSlidesUser
+        model = User
         fields = ('username', 'first_name', 'last_name', 'email')
 
 

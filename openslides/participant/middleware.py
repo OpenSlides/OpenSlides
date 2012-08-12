@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
     openslides.utils.middleware
-    ~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Additional definitions for OpenSlides forms.
 
@@ -19,4 +19,4 @@ class AuthenticationMiddleware(_AuthenticationMiddleware):
         super(AuthenticationMiddleware, self).process_request(request)
 
         if not isinstance(request.user, AnonymousUser):
-            request.user = request.user.openslidesuser
+            request.user = request.user.user
