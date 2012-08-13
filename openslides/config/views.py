@@ -67,7 +67,7 @@ class GeneralConfig(FormView):
                 anonymous = Group.objects.get(name='Anonymous')
             except Group.DoesNotExist:
                 default_perms = [u'can_see_agenda', u'can_see_projector',
-                    u'can_see_application', 'can_see_assignment']
+                    u'can_see_application', u'can_see_assignment']
                 anonymous = Group()
                 anonymous.name = 'Anonymous'
                 anonymous.save()
