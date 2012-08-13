@@ -21,18 +21,14 @@ from openslides.participant.models import User, Group
 
 
 class UserCreateForm(forms.ModelForm, CssClassMixin):
-    first_name = forms.CharField(label=_("First name"))
-    last_name = forms.CharField(label=_("Last name"))
     groups = forms.ModelMultipleChoiceField(
         queryset=Group.objects.exclude(name__iexact='anonymous'),
         label=_("User groups"), required=False)
-    is_active = forms.BooleanField(
-        label=_("Active"), required=False, initial=True)
 
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'is_active', 'groups', 'category',
-                  'gender', 'type', 'committee', 'comment', 'firstpassword')
+                  'gender', 'type', 'committee', 'comment', 'default_password')
 
 
 class UserUpdateForm(UserCreateForm):
@@ -40,7 +36,7 @@ class UserUpdateForm(UserCreateForm):
         model = User
         fields = ('username', 'first_name', 'last_name', 'is_active', 'groups',
                   'category', 'gender', 'type', 'committee', 'comment',
-                  'firstpassword')
+                  'default_password')
 
 
 class GroupForm(forms.ModelForm, CssClassMixin):

@@ -70,4 +70,7 @@ class GroupTest(TestCase):
         self.assertTrue(hasattr(self.group1, 'person_id'))
         person_id = "group:%d" % self.group1.id
         self.assertEqual(self.group1.person_id, person_id)
+        self.assertRaises(Group.DoesNotExist)
+        self.group1.group_as_person = True
+        self.group1.save()
         self.assertEqual(get_person(person_id), self.group1)

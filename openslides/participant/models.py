@@ -17,7 +17,7 @@ from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
 from openslides.utils.person import PersonMixin
-from openslides.utils.person.signals import receiv_persons
+from openslides.utils.person.signals import receive_persons
 
 from openslides.config.signals import default_config_value
 
@@ -51,27 +51,24 @@ class User(DjangoUser, PersonMixin):
     comment = models.TextField(
         null=True, blank=True, verbose_name=_('Comment'),
         help_text=_('Only for notes.'))
-    # TODO: Rename this fild to default_password
-    firstpassword = models.CharField(
+    default_password = models.CharField(
         max_length=100, null=True, blank=True,
-        verbose_name=_("First Password"))
+        verbose_name=_("Default password"))
 
-    save_user_object = False
-
-    def get_name_surfix(self):
+    def get_name_suffix(self):
         return self.category
 
-    def set_name_surfix(self, value):
+    def set_name_suffix(self, value):
         self.category = value
 
-    name_surfix = property(get_name_surfix, set_name_surfix)
+    name_suffix = property(get_name_suffix, set_name_suffix)
 
     def reset_password(self, password=None):
         """
         Reset the password for the user to his default-password.
         """
         if password is None:
-            password = self.firstpassword
+            password = self.default_password
         self.set_password(password)
         self.save()
 
@@ -90,9 +87,9 @@ class User(DjangoUser, PersonMixin):
             return ('user_delete', [str(self.id)])
 
     def __unicode__(self):
-        name = self.get_full_name() or _("No Name yet")
-        if self.name_surfix:
-            return u"%s (%s)" % (name, self.name_surfix)
+        name = self.get_full_name() or self.username
+        if self.name_suffix:
+            return u"%s (%s)" % (name, self.name_suffix)
         return u"%s" % name
 
     class Meta:
@@ -129,36 +126,38 @@ class Group(DjangoGroup, PersonMixin):
         return unicode(self.name)
 
 
-class UsersConnecter(object):
-    def __init__(self, person_prefix=None, id=None):
-        self.person_prefix = person_prefix
-        self.id = id
+class UsersConnector(object):
+    def __init__(self, person_prefix_filter=None, id_filter=None):
+        self.person_prefix_filter = person_prefix_filter
+        self.id_filter = id_filter
+        self.users = User.objects.all()
+        self.groups = Group.objects.filter(group_as_person=True)
 
     def __iter__(self):
-        if (not self.person_prefix or
-                self.person_prefix == User.person_prefix):
-            if self.id:
-                yield User.objects.get(pk=self.id)
+        if (not self.person_prefix_filter or
+                self.person_prefix_filter == User.person_prefix):
+            if self.id_filter:
+                yield users.get(pk=self.id_filter)
             else:
-                for user in User.objects.all():
+                for user in self.users:
                     yield user
 
-        if (not self.person_prefix or
-                self.person_prefix == Group.person_prefix):
-            if self.id:
-                yield Group.objects.filter(group_as_person=True).get(pk=self.id)
+        if (not self.person_prefix_filter or
+                self.person_prefix_filter == Group.person_prefix):
+            if self.id_filter:
+                yield groups.get(pk=self.id_filter)
             else:
-                for group in Group.objects.filter(group_as_person=True):
+                for group in self.groups:
                     yield group
 
     def __getitem__(self, key):
         return User.objects.get(pk=key)
 
 
-@receiver(receiv_persons, dispatch_uid="participant")
-def receiv_persons(sender, **kwargs):
-    return UsersConnecter(person_prefix=kwargs['person_prefix'],
-                                    id=kwargs['id'])
+@receiver(receive_persons, dispatch_uid="participant")
+def receive_persons(sender, **kwargs):
+    return UsersConnecter(person_prefix_filter=kwargs['person_prefix_filter'],
+                                    id=kwargs['id_filter'])
 
 
 @receiver(default_config_value, dispatch_uid="participant_default_config")

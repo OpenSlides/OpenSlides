@@ -149,8 +149,8 @@ class UserCreateView(CreateView):
     def manipulate_object(self, form):
         self.object.username = gen_username(form.cleaned_data['first_name'],
             form.cleaned_data['last_name'])
-        if not self.object.firstpassword:
-            self.object.firstpassword = gen_password()
+        if not self.object.default_password:
+            self.object.default_password = gen_password()
 
 
 class UserUpdateView(UpdateView):

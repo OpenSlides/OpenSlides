@@ -12,4 +12,4 @@
 
 from django.dispatch import Signal
 
-receiv_persons = Signal(providing_args=['person_prefix', 'id'])
+receive_persons = Signal(providing_args=['person_prefix_filter', 'id_filter'])
