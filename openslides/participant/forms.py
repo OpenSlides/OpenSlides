@@ -21,9 +21,9 @@ from openslides.participant.models import Profile
 
 
 USER_APPLICATION_IMPORT_OPTIONS = [
-    ('REASSIGN', _('Keep applications, try to reassign submitter')),
-    ('INREVIEW', _('Keep applications, set status to "needs review"')),
-    ('DISCARD' , _('Discard applications'))
+    ('REASSIGN', _('Keep motions, try to reassign submitter')),
+    ('INREVIEW', _('Keep motions, set status to "needs review"')),
+    ('DISCARD' , _('Discard motions'))
 ]
 
 
@@ -93,7 +93,7 @@ class UserImportForm(forms.Form, CssClassMixin):
     application_handling = forms.ChoiceField(
         required=True,
         choices=USER_APPLICATION_IMPORT_OPTIONS,
-        label=_("For existing applications"),
+        label=_("For existing motions"),
     )
 
 

@@ -20,7 +20,7 @@
         <a href="{% model_url application 'view' %}">
             {{ application.public_version.title }}
         </a>
-        ({% trans 'Application' %}
+        ({% trans "motion" %}
         {% if application.number %}
             {{ application.number }})
         {% else %}
@@ -28,7 +28,7 @@
         {% endif %}
     </li>
 {% empty %}
-    <li>{% trans 'No applications available.' %}</li>
+    <li>{% trans 'No motion available.' %}</li>
 {% endfor %}
 </ul>
 
