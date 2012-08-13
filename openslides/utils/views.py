@@ -34,7 +34,7 @@ from django.conf import settings
 from django.dispatch import receiver
 from django.http import HttpResponseServerError, HttpResponse, HttpResponseRedirect
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ugettext_noop, ugettext_lazy
 from django.utils.importlib import import_module
 from django.template import loader, RequestContext
 from django.template.loader import render_to_string
@@ -103,6 +103,50 @@ class AjaxMixin(object):
 
     def ajax_get(self, request, *args, **kwargs):
         return HttpResponse(json.dumps(self.get_ajax_context(**kwargs)))
+
+
+class QuestionMixin(object):
+    question = ugettext_lazy('Are you sure?')
+    success_message = ugettext_lazy('Thank you for your answer')
+    answer_options = [('yes', ugettext_lazy("Yes")), ('no', ugettext_lazy("No"))]
+
+    def get_answer_options(self):
+        return self.answer_options
+
+    def get_question(self):
+        return unicode(self.question)
+
+    def get_answer(self):
+        for option in self.get_answer_options():
+            if option[0] in self.request.POST:
+                return option[0]
+        return None
+
+    def get_answer_url(self):
+        return self.answer_url
+
+    def confirm_form(self):
+        option_fields = "\n".join([
+            '<input type="submit" name="%s" value="%s">' % (option[0], unicode(option[1]))
+            for option in self.get_answer_options()])
+        messages.warning(self.request,
+            """
+            %(message)s
+            <form action="%(url)s" method="post">
+                <input type="hidden" value="%(csrf)s" name="csrfmiddlewaretoken">
+                %(option_fields)s
+            </form>
+            """ % {
+                'message': self.get_question(),
+                'url': self.get_answer_url(),
+                'csrf': csrf(self.request)['csrf_token'],
+                'option_fields': option_fields})
+
+    def pre_redirect(self, request, *args, **kwargs):
+        self.confirm_form(request, self.object)
+
+    def pre_post_redirect(self, request, *args, **kwargs):
+        messages.success(request)
 
 
 class TemplateView(PermissionMixin, _TemplateView):
@@ -208,42 +252,41 @@ class CreateView(PermissionMixin, _CreateView):
         messages.error(self.request, _('Please check the form for errors.'))
         return super(CreateView, self).form_invalid(form)
 
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        self.manipulate_object(form)
+        self.object.save()
+        form.save_m2m()
+        return HttpResponseRedirect(self.get_success_url())
+
     def get_success_message(self):
         return _('%s was successfully created.') % html_strong(self.object)
 
+    def manipulate_object(self, form):
+        pass
 
-class DeleteView(RedirectView, SingleObjectMixin):
-    def get_confirm_question(self):
+
+class DeleteView(RedirectView, SingleObjectMixin, QuestionMixin):
+    def get_question(self):
         return _('Do you really want to delete %s?') % html_strong(self.object)
 
     def get_success_message(self):
         return  _('%s was successfully deleted.') % html_strong(self.object)
 
     def pre_redirect(self, request, *args, **kwargs):
-        self.confirm_form(request, self.object)
+        self.confirm_form()
 
     def pre_post_redirect(self, request, *args, **kwargs):
-        self.object.delete()
-        messages.success(request, self.get_success_message())
+        if self.get_answer().lower() == 'yes':
+            self.object.delete()
+            messages.success(request, self.get_success_message())
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         return super(DeleteView, self).get(request, *args, **kwargs)
 
-    def confirm_form(self, request, object):
-        self.gen_confirm_form(request, self.get_confirm_question(),
-            object.get_absolute_url('delete'))
-
-    def gen_confirm_form(self, request, message, url):
-        messages.warning(request,
-        """
-        %s
-        <form action="%s" method="post">
-            <input type="hidden" value="%s" name="csrfmiddlewaretoken">
-            <input type="submit" value="%s">
-            <input type="button" value="%s">
-        </form>
-        """ % (message, url, csrf(request)['csrf_token'], _("Yes"), _("No")))
+    def get_answer_url(self):
+        return self.object.get_absolute_url('delete')
 
 
 class DetailView(TemplateView, SingleObjectMixin):

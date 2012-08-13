@@ -57,7 +57,7 @@ class PersonMixin(object):
         try:
             return generate_person_id(self.person_prefix, self.pk)
         except AttributeError:
-            raise AttributeError("%s has to have a attribute 'user_prefix'"
+            raise AttributeError("%s has to have a attribute 'person_prefix'"
                                  % self)
 
     def __repr__(self):
