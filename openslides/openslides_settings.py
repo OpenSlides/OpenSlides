@@ -58,6 +58,10 @@ USE_I18N = True
 # calendars according to the current locale
 USE_L10N = True
 
+LOCALE_PATHS = (
+    _fs2unicode(os.path.join(SITE_ROOT, 'locale'))
+)
+
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = _fs2unicode(os.path.join(SITE_ROOT, './static/'))

@@ -26,7 +26,7 @@ class UserTest(TestCase):
         self.user1.last_name = u'Mustermann'
         self.user1.username = gen_username(
             self.user1.first_name, self.user1.last_name)
-        self.user1.firstpassword = gen_password()
+        self.user1.default_password = gen_password()
         self.user1.save()
         self.django_user1 = self.user1.django_user
 
@@ -43,18 +43,18 @@ class UserTest(TestCase):
         self.assertEqual(unicode(self.user1), u'Max Mustermann (München)')
 
     def test_reset_password(self):
-        self.assertIsInstance(self.user1.firstpassword, basestring)
-        self.assertEqual(len(self.user1.firstpassword), 8)
+        self.assertIsInstance(self.user1.default_password, basestring)
+        self.assertEqual(len(self.user1.default_password), 8)
         self.user1.set_unusable_password()
-        self.assertFalse(self.user1.check_password(self.user1.firstpassword))
+        self.assertFalse(self.user1.check_password(self.user1.default_password))
         self.user1.reset_password()
-        self.assertTrue(self.user1.check_password(self.user1.firstpassword))
+        self.assertTrue(self.user1.check_password(self.user1.default_password))
 
     def test_person_api(self):
         self.assertTrue(hasattr(self.user1, 'person_id'))
         self.assertEqual(self.user1.person_id, 'user:1')
         self.assertEqual(get_person('user:1'), self.user1)
-        self.assertEqual(len(Persons(person_prefix='user')), 1)
+        self.assertEqual(len(Persons(person_prefix_filter='user')), 1)
 
 
 class GroupTest(TestCase):

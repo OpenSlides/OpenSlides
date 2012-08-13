@@ -137,7 +137,7 @@ class UsersConnector(object):
         if (not self.person_prefix_filter or
                 self.person_prefix_filter == User.person_prefix):
             if self.id_filter:
-                yield users.get(pk=self.id_filter)
+                yield self.users.get(pk=self.id_filter)
             else:
                 for user in self.users:
                     yield user
@@ -145,7 +145,7 @@ class UsersConnector(object):
         if (not self.person_prefix_filter or
                 self.person_prefix_filter == Group.person_prefix):
             if self.id_filter:
-                yield groups.get(pk=self.id_filter)
+                yield self.groups.get(pk=self.id_filter)
             else:
                 for group in self.groups:
                     yield group
@@ -156,8 +156,8 @@ class UsersConnector(object):
 
 @receiver(receive_persons, dispatch_uid="participant")
 def receive_persons(sender, **kwargs):
-    return UsersConnecter(person_prefix_filter=kwargs['person_prefix_filter'],
-                                    id=kwargs['id_filter'])
+    return UsersConnector(person_prefix_filter=kwargs['person_prefix_filter'],
+                                    id_filter=kwargs['id_filter'])
 
 
 @receiver(default_config_value, dispatch_uid="participant_default_config")
