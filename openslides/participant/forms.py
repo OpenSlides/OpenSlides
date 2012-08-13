@@ -11,79 +11,84 @@
 """
 
 from django import forms
-from django.contrib.auth.forms import AdminPasswordChangeForm
-from django.contrib.auth.models import User, Group, Permission
-from django.utils.translation import ugettext_lazy as _, ugettext_noop
+from django.contrib.auth.models import Permission
+from django.utils.translation import ugettext_lazy as _
 
 from openslides.utils.forms import (
     CssClassMixin, LocalizedModelMultipleChoiceField)
 
-from openslides.participant.models import OpenSlidesUser
+from openslides.participant.models import User, Group
 
 
-USER_APPLICATION_IMPORT_OPTIONS = [
-    ('REASSIGN', _('Keep applications, try to reassign submitter')),
-    ('INREVIEW', _('Keep applications, set status to "needs review"')),
-    ('DISCARD', _('Discard applications'))
-]
-
-
-class UserNewForm(forms.ModelForm, CssClassMixin):
-    first_name = forms.CharField(label=_("First name"))
-    last_name = forms.CharField(label=_("Last name"))
+class UserCreateForm(forms.ModelForm, CssClassMixin):
     groups = forms.ModelMultipleChoiceField(
-        queryset=Group.objects.all(), label=_("User groups"), required=False)
-    is_active = forms.BooleanField(
-        label=_("Active"), required=False, initial=True)
+        queryset=Group.objects.exclude(name__iexact='anonymous'),
+        label=_("User groups"), required=False)
 
     class Meta:
         model = User
-        exclude = ('username', 'password', 'is_staff', 'is_superuser',
-                   'last_login', 'date_joined', 'user_permissions')
+        fields = ('first_name', 'last_name', 'is_active', 'groups', 'category',
+                  'gender', 'type', 'committee', 'comment', 'default_password')
 
 
-class UserEditForm(forms.ModelForm, CssClassMixin):
-    first_name = forms.CharField(label=_("First name"))
-    last_name = forms.CharField(label=_("Last name"))
-    groups = forms.ModelMultipleChoiceField(
-        queryset=Group.objects.all(), label=_("User groups"), required=False)
-    is_active = forms.BooleanField(label=_("Active"), required=False)
-
+class UserUpdateForm(UserCreateForm):
     class Meta:
         model = User
-        exclude = ('password', 'is_staff', 'is_superuser', 'last_login',
-                   'date_joined', 'user_permissions')
-
-
-class UsernameForm(forms.ModelForm, CssClassMixin):
-    class Meta:
-        model = User
-        exclude = ('first_name', 'last_name', 'email', 'is_active',
-                   'is_superuser', 'groups', 'password', 'is_staff',
-                   'last_login', 'date_joined', 'user_permissions')
-
-
-class OpenSlidesUserForm(forms.ModelForm, CssClassMixin):
-    class Meta:
-        model = OpenSlidesUser
+        fields = ('username', 'first_name', 'last_name', 'is_active', 'groups',
+                  'category', 'gender', 'type', 'committee', 'comment',
+                  'default_password')
 
 
 class GroupForm(forms.ModelForm, CssClassMixin):
-    as_user = forms.BooleanField(
-        initial=False, required=False, label=_("Treat Group as User"),
-        help_text=_("The Group will appear on any place, other user does."))
     permissions = LocalizedModelMultipleChoiceField(
-        queryset=Permission.objects.all(), label=_("Persmissions"))
+        queryset=Permission.objects.all(), label=_("Persmissions"),
+        required=False)
+    users = forms.ModelMultipleChoiceField(
+        queryset=User.objects.all(), label=_("Users"), required=False)
 
     def __init__(self, *args, **kwargs):
-        super(GroupForm, self).__init__(*args, **kwargs)
+        # Initial users
         if kwargs.get('instance', None) is not None:
-            self.fields['permissions'].initial = (
-                [p.pk for p in kwargs['instance'].permissions.all()])
+            initial = kwargs.setdefault('initial', {})
+            initial['users'] = [django_user.user.pk for django_user in kwargs['instance'].user_set.all()]
+
+        super(GroupForm, self).__init__(*args, **kwargs)
+
+    def save(self, commit=True):
+        instance = forms.ModelForm.save(self, False)
+
+        old_save_m2m = self.save_m2m
+        def save_m2m():
+           old_save_m2m()
+
+           instance.user_set.clear()
+           for user in self.cleaned_data['users']:
+               instance.user_set.add(user)
+        self.save_m2m = save_m2m
+
+        if commit:
+            instance.save()
+            self.save_m2m()
+
+        return instance
+
+    def clean_name(self):
+        # Do not allow to change the name "anonymous" or give another group
+        # this name
+        data = self.cleaned_data['name']
+        if self.instance.name.lower() == 'anonymous':
+            # Editing the anonymous-user
+            if self.instance.name.lower() != data.lower():
+                raise forms.ValidationError(
+                    _('You can not edit the name for the anonymous user'))
+        else:
+            if data.lower() == 'anonymous':
+                raise forms.ValidationError(
+                    _('Group name "%s" is reserved for internal use.') % data)
+        return data
 
     class Meta:
         model = Group
-        exclude = ('permissions',)
 
 
 class UsersettingsForm(forms.ModelForm, CssClassMixin):
@@ -95,9 +100,6 @@ class UsersettingsForm(forms.ModelForm, CssClassMixin):
 class UserImportForm(forms.Form, CssClassMixin):
     csvfile = forms.FileField(widget=forms.FileInput(attrs={'size': '50'}),
                               label=_("CSV File"))
-    application_handling = forms.ChoiceField(
-        required=True, choices=USER_APPLICATION_IMPORT_OPTIONS,
-        label=_("For existing applications"))
 
 
 class ConfigForm(forms.Form, CssClassMixin):

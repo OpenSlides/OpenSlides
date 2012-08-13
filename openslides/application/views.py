@@ -51,7 +51,7 @@ from openslides.projector.projector import Widget
 from openslides.poll.views import PollFormView
 
 from openslides.participant.api import gen_username, gen_password
-from openslides.participant.models import OpenSlidesUser
+from openslides.participant.models import User
 
 from openslides.agenda.models import Item
 
@@ -124,7 +124,7 @@ def overview(request):
     for (i, application) in enumerate(applications):
         try:
             applications[i] = {
-                'actions'     : application.get_allowed_actions(request.user.openslidesuser),
+                'actions'     : application.get_allowed_actions(request.user),
                 'application' : application
             }
         except:
@@ -152,8 +152,7 @@ def view(request, application_id, newest=False):
     else:
         version = application.public_version
     revisions = application.versions
-    user = request.user.openslidesuser
-    actions = application.get_allowed_actions(user=user)
+    actions = application.get_allowed_actions(user=request.user)
 
     return {
         'application': application,
@@ -183,11 +182,11 @@ def edit(request, application_id=None):
     if application_id is not None:
         application = Application.objects.get(id=application_id)
         if (not hasattr(application.submitter, 'user') or
-            not request.user.openslidesuser == application.submitter.user) \
+            not request.user == application.submitter.user) \
             and not is_manager:
             messages.error(request, _("You can not edit this application. You are not the submitter."))
             return redirect(reverse('application_view', args=[application.id]))
-        actions = application.get_allowed_actions(user=request.user.openslidesuser)
+        actions = application.get_allowed_actions(user=request.user)
     else:
         application = None
         actions = None
@@ -221,7 +220,7 @@ def edit(request, application_id=None):
                     original_supporters = []
                 application = managerform.save(commit=False)
             elif application_id is None:
-                application = Application(submitter=request.user.openslidesuser)
+                application = Application(submitter=request.user)
             application.title = dataform.cleaned_data['title']
             application.text = dataform.cleaned_data['text']
             application.reason = dataform.cleaned_data['reason']
@@ -231,7 +230,7 @@ def edit(request, application_id=None):
                     and dataform.cleaned_data['trivial_change']
             except KeyError:
                 trivial_change = False
-            application.save(request.user.openslidesuser, trivial_change=trivial_change)
+            application.save(request.user, trivial_change=trivial_change)
             if is_manager:
                 try:
                     new_supporters = set(managerform.cleaned_data['supporter'])
@@ -273,7 +272,7 @@ def edit(request, application_id=None):
         dataform = formclass(initial=initial, prefix="data")
         if is_manager:
             if application_id is None:
-                initial = {'submitter': request.user.openslidesuser.person_id}
+                initial = {'submitter': request.user.person_id}
             else:
                 initial = {'submitter': application.submitter.person_id,
                     'supporter': [supporter.person_id for supporter in application.supporters]}
@@ -296,7 +295,7 @@ def set_number(request, application_id):
     set a number for an application.
     """
     try:
-        Application.objects.get(pk=application_id).set_number(user=request.user.openslidesuser)
+        Application.objects.get(pk=application_id).set_number(user=request.user)
         messages.success(request, _("Application number was successfully set."))
     except Application.DoesNotExist:
         pass
@@ -312,7 +311,7 @@ def permit(request, application_id):
     permit an application.
     """
     try:
-        Application.objects.get(pk=application_id).permit(user=request.user.openslidesuser)
+        Application.objects.get(pk=application_id).permit(user=request.user)
         messages.success(request, _("Application was successfully permitted."))
     except Application.DoesNotExist:
         pass
@@ -327,7 +326,7 @@ def notpermit(request, application_id):
     reject (not permit) an application.
     """
     try:
-        Application.objects.get(pk=application_id).notpermit(user=request.user.openslidesuser)
+        Application.objects.get(pk=application_id).notpermit(user=request.user)
         messages.success(request, _("Application was successfully rejected."))
     except Application.DoesNotExist:
         pass
@@ -343,7 +342,7 @@ def set_status(request, application_id=None, status=None):
     try:
         if status is not None:
             application = Application.objects.get(pk=application_id)
-            application.set_status(user=request.user.openslidesuser, status=status)
+            application.set_status(user=request.user, status=status)
             messages.success(request, _("Application status was set to: <b>%s</b>.") % application.get_status_display())
     except Application.DoesNotExist:
         pass
@@ -387,7 +386,7 @@ def unsupport(request, application_id):
     unsupport an application.
     """
     try:
-        Application.objects.get(pk=application_id).unsupport(user=request.user.openslidesuser)
+        Application.objects.get(pk=application_id).unsupport(user=request.user)
         messages.success(request, _("You have unsupport the application successfully.") )
     except Application.DoesNotExist:
         pass
@@ -401,7 +400,7 @@ def gen_poll(request, application_id):
     gen a poll for this application.
     """
     try:
-        poll = Application.objects.get(pk=application_id).gen_poll(user=request.user.openslidesuser)
+        poll = Application.objects.get(pk=application_id).gen_poll(user=request.user)
         messages.success(request, _("New vote was successfully created.") )
     except Application.DoesNotExist:
         pass # TODO: do not call poll after this excaption
@@ -418,7 +417,7 @@ def delete_poll(request, poll_id):
     count = application.polls.filter(id__lte=poll_id).count()
     if request.method == 'POST':
         poll.delete()
-        application.writelog(_("Poll deleted"), request.user.openslidesuser)
+        application.writelog(_("Poll deleted"), request.user)
         messages.success(request, _('Poll was successfully deleted.'))
     else:
         del_confirm_form(request, poll, name=_("the %s. poll") % count, delete_link=reverse('application_poll_delete', args=[poll_id]))
@@ -458,7 +457,7 @@ class ApplicationDelete(DeleteView):
 
         if len(self.applications):
             for application in self.applications:
-                if not 'delete' in application.get_allowed_actions(user=request.user.openslidesuser):
+                if not 'delete' in application.get_allowed_actions(user=request.user):
                     messages.error(request, _("You can not delete application <b>%s</b>.") % application)
                     continue
 
@@ -467,7 +466,7 @@ class ApplicationDelete(DeleteView):
                 messages.success(request, _("Application <b>%s</b> was successfully deleted.") % title)
 
         elif self.object:
-            if not 'delete' in self.object.get_allowed_actions(user=request.user.openslidesuser):
+            if not 'delete' in self.object.get_allowed_actions(user=request.user):
                 messages.error(request, _("You can not delete application <b>%s</b>.") % self.object)
             else:
                 title = self.object.title
@@ -508,12 +507,12 @@ class ViewPoll(PollFormView):
         self.application = self.poll.get_application()
         context['application'] = self.application
         context['ballot'] = self.poll.get_ballot()
-        context['actions'] = self.application.get_allowed_actions(user=self.request.user.openslidesuser)
+        context['actions'] = self.application.get_allowed_actions(user=self.request.user)
         return context
 
     def get_modelform_class(self):
         cls = super(ViewPoll, self).get_modelform_class()
-        user = self.request.user.openslidesuser
+        user = self.request.user
 
         class ViewPollFormClass(cls):
             def save(self, commit = True):
@@ -535,7 +534,7 @@ def permit_version(request, aversion_id):
     aversion = AVersion.objects.get(pk=aversion_id)
     application = aversion.application
     if request.method == 'POST':
-        application.accept_version(aversion, user=request.user.openslidesuser)
+        application.accept_version(aversion, user=request.user)
         messages.success(request, _("Version <b>%s</b> accepted.") % (aversion.aid))
     else:
         gen_confirm_form(request, _('Do you really want to permit version <b>%s</b>?') % aversion.aid, reverse('application_version_permit', args=[aversion.id]))
@@ -547,7 +546,7 @@ def reject_version(request, aversion_id):
     aversion = AVersion.objects.get(pk=aversion_id)
     application = aversion.application
     if request.method == 'POST':
-        if application.reject_version(aversion, user=request.user.openslidesuser):
+        if application.reject_version(aversion, user=request.user):
             messages.success(request, _("Version <b>%s</b> rejected.") % (aversion.aid))
         else:
             messages.error(request, _("ERROR by rejecting the version.") )
@@ -559,17 +558,6 @@ def reject_version(request, aversion_id):
 @permission_required('application.can_manage_application')
 @template('application/import.html')
 def application_import(request):
-    try:
-        request.user.openslidesuser
-    except OpenSlidesUser.DoesNotExist:
-        pass
-    except AttributeError:
-        # AnonymousUser
-        pass
-    else:
-        messages.error(request, _('The import function is available for the admin (without user profile) only.'))
-        return redirect(reverse('application_overview'))
-
     if request.method == 'POST':
         form = ApplicationImportForm(request.POST, request.FILES)
         if form.is_valid():

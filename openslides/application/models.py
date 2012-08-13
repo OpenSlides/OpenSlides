@@ -12,7 +12,6 @@
 
 from datetime import datetime
 
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Max
@@ -25,8 +24,6 @@ from openslides.utils.person import PersonField
 
 from openslides.config.models import config
 from openslides.config.signals import default_config_value
-
-from openslides.participant.models import OpenSlidesUser
 
 from openslides.poll.models import (BaseOption, BasePoll, CountVotesCast,
     CountInvalid, BaseVote)
@@ -360,15 +357,6 @@ class Application(models.Model, SlideMixin):
         Return a list of all the allowed status.
         """
         actions = []
-        is_admin = False
-        if user:
-            try:
-                user = user.openslidesuser
-            except OpenSlidesUser.DoesNotExist:
-                is_admin = True
-            except AttributeError:
-                # For the anonymous-user
-                pass
 
         # check if user allowed to withdraw an application
         if  ((self.status == "pub"
@@ -405,11 +393,10 @@ class Application(models.Model, SlideMixin):
 
         # Check if the user can delete the application (admin, manager, owner)
         # reworked as requiered in #100
-        if is_admin \
-        or (user.has_perm("application.can_manage_application") \
-            and (self.status == "pub" or self.number is None))  \
-        or (self.submitter == user \
-            and (self.status == "pub" or self.number is None)):
+        if (user.has_perm("applicatoin.can_delete_all_applications") or
+           (user.has_perm("application.can_manage_application") and
+               self.number is None) or
+           (self.submitter == user and self.number is None)):
             actions.append("delete")
 
         #For the rest, all actions need the manage permission
@@ -543,6 +530,7 @@ class Application(models.Model, SlideMixin):
             ('can_create_application', ugettext_noop("Can create application")),
             ('can_support_application', ugettext_noop("Can support application")),
             ('can_manage_application', ugettext_noop("Can manage application")),
+            ('can_delete_all_applications', ugettext_noop("Can delete all applications")),
         )
 
 
