@@ -46,6 +46,10 @@ USE_I18N = True
 # calendars according to the current locale
 USE_L10N = True
 
+LOCALE_PATHS = (
+    _fs2unicode(os.path.join(SITE_ROOT, 'locale'))
+)
+
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = _fs2unicode(os.path.join(SITE_ROOT, './static/'))
@@ -89,7 +93,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'openslides.participant.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.locale.LocaleMiddleware',
 )

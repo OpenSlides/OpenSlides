@@ -12,15 +12,17 @@
 
 from django.test import TestCase
 from django.test.client import Client
-from django.contrib.auth.models import User
 
+from openslides.participant.models import User
 from openslides.application.models import Application, AVersion
 
 class ApplicationTest(TestCase):
     def setUp(self):
-        self.admin = User.objects.create_user('testadmin', '', 'default')
-        self.anonym = User.objects.create_user('testanoym', '', 'default')
-        self.app1 = Application(submitter=self.admin.openslidesuser)
+        self.admin = User(username='testadmin')
+        self.admin.save()
+        self.anonym = User(username='testanoym')
+        self.anonym.save()
+        self.app1 = Application(submitter=self.admin)
         self.app1.save()
 
     def refresh(self):

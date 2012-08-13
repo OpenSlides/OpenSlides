@@ -12,7 +12,6 @@
 
 from datetime import datetime
 
-from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Max
@@ -25,8 +24,6 @@ from openslides.utils.person import PersonField
 
 from openslides.config.models import config
 from openslides.config.signals import default_config_value
-
-from openslides.participant.models import OpenSlidesUser
 
 from openslides.poll.models import (BaseOption, BasePoll, CountVotesCast,
     CountInvalid, BaseVote)
@@ -53,7 +50,7 @@ class Application(models.Model, SlideMixin):
         ('adj', _('Adjourned')),
         ('noc', _('Not Concerned')),
         ('com', _('Commited a bill')),
-        ('nop', _('Rejected (not permitted)')),
+        ('nop', _('Rejected (not authorized)')),
         ('rev', _('Needs Review')), # Where is this status used?
         #additional actions:
         # edit
@@ -103,14 +100,14 @@ class Application(models.Model, SlideMixin):
         self.save(nonewversion=True)
         version.rejected = False
         version.save()
-        self.writelog(_("Version %d permitted") % (version.aid, ),
+        self.writelog(_("Version %d authorized") % (version.aid, ),
             user)
 
     def reject_version(self, version, user = None):
         if version.id > self.permitted.id:
             version.rejected = True
             version.save()
-            self.writelog(pgettext("Rejected means not permitted", "Version %d rejected")
+            self.writelog(pgettext("Rejected means not authorized", "Version %d rejected")
                 % (version.aid, ), user)
             return True
         return False
@@ -141,9 +138,9 @@ class Application(models.Model, SlideMixin):
         if self.status == "pub" and not self.enough_supporters:
             note.append(_("Searching for supporters."))
         if self.status == "pub" and self.permitted is None:
-            note.append(_("Not yet permitted."))
+            note.append(_("Not yet authorized."))
         elif self.unpermitted_changes and self.permitted:
-            note.append(_("Not yet permitted changes."))
+            note.append(_("Not yet authorized changes."))
         return note
 
     @property
@@ -309,7 +306,7 @@ class Application(models.Model, SlideMixin):
             self.set_number()
         self.permitted = aversion
         self.save()
-        self.writelog(_("Version %s permitted") % (aversion.aid), user)
+        self.writelog(_("Version %s authorized") % (aversion.aid), user)
         return self.permitted
 
     def notpermit(self, user=None):
@@ -323,7 +320,7 @@ class Application(models.Model, SlideMixin):
         if self.number is None:
             self.set_number()
         self.save()
-        self.writelog(_("Version %s not permitted") % (self.last_version.aid), user)
+        self.writelog(_("Version %s not authorized") % (self.last_version.aid), user)
 
     def set_status(self, user, status, force=False):
         """
@@ -335,19 +332,22 @@ class Application(models.Model, SlideMixin):
                 error = False
                 break
         if error:
+            #TODO: Use the Right Error
             raise NameError(_('%s is not a valid status.') % status)
         if self.status == status:
-            raise NameError(_('The application status is already \'%s.\'') \
+            #TODO: Use the Right Error
+            raise NameError(_('The motion status is already \'%s.\'') \
                             % self.status)
 
         actions = []
         actions = self.get_allowed_actions(user)
         if status not in actions and not force:
-            raise NameError(_('The application status is: \'%(currentstatus)s\'. '\
-                    'You can not set the status to \'%(newstatus)s\'.') % {
-                        'currentstatus': self.status,
-                        'newstatus': status
-                        })
+            #TODO: Use the Right Error
+            raise NameError(_(
+                'The motion status is: \'%(currentstatus)s\'. '
+                'You can not set the status to \'%(newstatus)s\'.') % {
+                    'currentstatus': self.status,
+                    'newstatus': status})
 
         oldstatus = self.get_status_display()
         self.status = status
@@ -360,15 +360,6 @@ class Application(models.Model, SlideMixin):
         Return a list of all the allowed status.
         """
         actions = []
-        is_admin = False
-        if user:
-            try:
-                user = user.openslidesuser
-            except OpenSlidesUser.DoesNotExist:
-                is_admin = True
-            except AttributeError:
-                # For the anonymous-user
-                pass
 
         # check if user allowed to withdraw an application
         if  ((self.status == "pub"
@@ -405,11 +396,10 @@ class Application(models.Model, SlideMixin):
 
         # Check if the user can delete the application (admin, manager, owner)
         # reworked as requiered in #100
-        if is_admin \
-        or (user.has_perm("application.can_manage_application") \
-            and (self.status == "pub" or self.number is None))  \
-        or (self.submitter == user \
-            and (self.status == "pub" or self.number is None)):
+        if (user.has_perm("applicatoin.can_delete_all_applications") or
+           (user.has_perm("application.can_manage_application") and
+               self.number is None) or
+           (self.submitter == user and self.number is None)):
             actions.append("delete")
 
         #For the rest, all actions need the manage permission
@@ -463,7 +453,7 @@ class Application(models.Model, SlideMixin):
 
     def get_agenda_title_supplement(self):
         number = self.number or '<i>[%s]</i>' % ugettext('no number')
-        return '(%s %s)' % (ugettext('Application'), number)
+        return '(%s %s)' % (ugettext('motion'), number)
 
     def __getattr__(self, name):
         """
@@ -539,10 +529,10 @@ class Application(models.Model, SlideMixin):
 
     class Meta:
         permissions = (
-            ('can_see_application', ugettext_noop("Can see application")),
-            ('can_create_application', ugettext_noop("Can create application")),
-            ('can_support_application', ugettext_noop("Can support application")),
-            ('can_manage_application', ugettext_noop("Can manage application")),
+            ('can_see_application', ugettext_noop("Can see motions")),
+            ('can_create_application', ugettext_noop("Can create motions")),
+            ('can_support_application', ugettext_noop("Can support motions")),
+            ('can_manage_application', ugettext_noop("Can manage motions")),
         )
 
 
@@ -611,7 +601,7 @@ def default_config(sender, key, **kwargs):
         'application_preamble': _('The Assembly may decide,'),
         'application_pdf_ballot_papers_selection': 'CUSTOM_NUMBER',
         'application_pdf_ballot_papers_number': '8',
-        'application_pdf_title': _('Applications'),
+        'application_pdf_title': _('Motions'),
         'application_pdf_preamble': '',
         'application_allow_trivial_change': False,
     }.get(key)

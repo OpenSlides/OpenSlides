@@ -34,7 +34,7 @@ from openslides.utils.person import get_person
 
 from openslides.config.models import config
 
-from openslides.participant.models import OpenSlidesUser
+from openslides.participant.models import User
 
 from openslides.projector.projector import Widget
 
@@ -97,13 +97,12 @@ def view(request, assignment_id=None):
         polls = assignment.poll_set.all()
         vote_results = assignment.vote_results(only_published=False)
 
-    user = request.user.openslidesuser
     return {
         'assignment': assignment,
         'form': form,
         'vote_results': vote_results,
         'polls': polls,
-        'user_is_candidate': assignment.is_candidate(user)
+        'user_is_candidate': assignment.is_candidate(request.user)
     }
 
 
@@ -173,7 +172,7 @@ def set_status(request, assignment_id=None, status=None):
 def run(request, assignment_id):
     assignment = Assignment.objects.get(pk=assignment_id)
     try:
-        assignment.run(request.user.openslidesuser, request.user)
+        assignment.run(request.user, request.user)
         messages.success(request, _('You have set your candidature successfully.') )
     except NameError, e:
         messages.error(request, e)
@@ -185,7 +184,7 @@ def delrun(request, assignment_id):
     assignment = Assignment.objects.get(pk=assignment_id)
     try:
         if assignment.status == 'sea' or user.has_perm("assignment.can_manage_assignment"):
-            assignment.delrun(request.user.openslidesuser)
+            assignment.delrun(request.user)
         else:
             messages.error(request, _('The candidate list is already closed.'))
     except Exception, e:

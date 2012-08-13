@@ -51,16 +51,16 @@ class ApplicationImportForm(forms.Form, CssClassMixin):
     )
     import_permitted = forms.BooleanField(
         required=False,
-        label=_("Import applications with status \"permitted\""),
-        help_text=_('Set the initial status for each application to '
-            '"permitted"'),
+        label=_("Import motions with status \"authorized\""),
+        help_text=_('Set the initial status for each motion to '
+            '"authorized"'),
     )
 
 
 class ConfigForm(forms.Form, CssClassMixin):
     application_min_supporters = forms.IntegerField(
         widget=forms.TextInput(attrs={'class':'small-input'}),
-        label=_("Number of (minimum) required supporters for a application"),
+        label=_("Number of (minimum) required supporters for a motion"),
         initial=4,
         min_value=0,
         max_value=8,
@@ -69,7 +69,7 @@ class ConfigForm(forms.Form, CssClassMixin):
     application_preamble = forms.CharField(
         widget=forms.TextInput(),
         required=False,
-        label=_("Application preamble")
+        label=_("Motion preamble")
     )
     application_pdf_ballot_papers_selection = forms.ChoiceField(
         widget=forms.Select(),
@@ -90,17 +90,17 @@ class ConfigForm(forms.Form, CssClassMixin):
     application_pdf_title = forms.CharField(
         widget=forms.TextInput(),
         required=False,
-        label=_("Title for PDF document (all applications)")
+        label=_("Title for PDF document (all motions)")
     )
     application_pdf_preamble = forms.CharField(
         widget=forms.Textarea(),
         required=False,
-        label=_("Preamble text for PDF document (all applications)")
+        label=_("Preamble text for PDF document (all motions)")
     )
 
     application_allow_trivial_change = forms.BooleanField(
         label=_("Allow trivial changes"),
-        help_text=_('Warning: Trivial changes undermine the application ' \
-        'permission system.'),
+        help_text=_('Warning: Trivial changes undermine the motions '
+            'autorisation system.'),
         required=False,
     )

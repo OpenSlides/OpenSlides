@@ -54,7 +54,7 @@ class Overview(TemplateView):
         context = self.get_context_data(**kwargs)
         if not request.user.has_perm('agenda.can_manage_agenda'):
             messages.error(request,
-                _('You are not permitted to manage the agenda.'))
+                _('You are not authorized to manage the agenda.'))
             return self.render_to_response(context)
         transaction.commit()
         for item in Item.objects.all():
@@ -167,68 +167,23 @@ class ItemDelete(DeleteView):
     model = Item
     url = 'item_overview'
 
-    def pre_post_redirect(self, request, *args, **kwargs):
-        self.object = self.get_object()
+    def get_answer_options(self):
+        if self.object.children.exists():
+            return [('all', _("Yes, with all child items."))] + self.answer_options
+        else:
+            return self.answer_options
 
-        if 'all' in request.POST:
+    def pre_post_redirect(self, request, *args, **kwargs):
+        if self.get_answer() == 'all':
             self.object.delete(with_children=True)
             messages.success(request,
                 _("Item %s and his children were successfully deleted.") \
                 % html_strong(self.object))
-        else:
+        elif self.get_answer() == 'yes':
             self.object.delete(with_children=False)
             messages.success(request,
                 _("Item %s was successfully deleted.") \
                 % html_strong(self.object))
-
-    def gen_confirm_form(self, request, message, url, singleitem=False):
-        if singleitem:
-            messages.warning(
-                request,
-                """
-                %s
-                <form action="%s" method="post">
-                    <input type="hidden" value="%s" name="csrfmiddlewaretoken">
-                    <input type="submit" value="%s">
-                    <input type="button" value="%s">
-                </form>
-                """
-                % (message, url, csrf(request)['csrf_token'], _("Yes"),
-                    _("No"))
-            )
-        else:
-            messages.warning(
-                request,
-                """
-                %s
-                <form action="%s" method="post">
-                    <input type="hidden" value="%s" name="csrfmiddlewaretoken">
-                    <input type="submit" value="%s">
-                    <input type="submit" name="all" value="%s">
-                    <input type="button" value="%s">
-                </form>
-                """
-                % (message, url, csrf(request)['csrf_token'], _("Yes"),
-                    _("Yes, with all child items."), _("No"))
-            )
-
-    def confirm_form(self, request, object, item=None):
-        if item is None:
-            item = object
-        if item.get_children():
-            self.gen_confirm_form(
-                request,
-                _('Do you really want to delete %s?') % html_strong(item),
-                item.get_absolute_url('delete'),
-                False,
-            )
-        else:
-            self.gen_confirm_form(
-                request,
-                _('Do you really want to delete %s?') % html_strong(item),
-                item.get_absolute_url('delete'),
-                True,
-            )
 
 
 class AgendaPDF(PDFView):

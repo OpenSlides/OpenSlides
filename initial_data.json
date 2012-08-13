@@ -1,6 +1,6 @@
 [
    {
-      "pk": 2,
+      "pk": 1,
       "model": "auth.group",
       "fields": {
          "name": "Beobachter",
@@ -38,7 +38,7 @@
             [
                "can_see_participant",
                "participant",
-               "openslidesuser"
+               "user"
             ],
             [
                "can_see_projector",
@@ -49,7 +49,7 @@
       }
    },
    {
-      "pk": 3,
+      "pk": 2,
       "model": "auth.group",
       "fields": {
          "name": "Delegierter",
@@ -92,7 +92,7 @@
             [
                "can_see_participant",
                "participant",
-               "openslidesuser"
+               "user"
             ],
             [
                "can_see_projector",
@@ -103,7 +103,7 @@
       }
    },
    {
-      "pk": 4,
+      "pk": 3,
       "model": "auth.group",
       "fields": {
          "name": "Versammlungsleitung",
@@ -161,12 +161,12 @@
             [
                "can_manage_participant",
                "participant",
-               "openslidesuser"
+               "user"
             ],
             [
                "can_see_participant",
                "participant",
-               "openslidesuser"
+               "user"
             ],
             [
                "can_manage_projector",
@@ -182,7 +182,7 @@
       }
    },
    {
-      "pk": 5,
+      "pk": 4,
       "model": "auth.group",
       "fields": {
          "name": "Teilnehmerverwaltung",
@@ -195,12 +195,12 @@
             [
                "can_manage_participant",
                "participant",
-               "openslidesuser"
+               "user"
             ],
             [
                "can_see_participant",
                "participant",
-               "openslidesuser"
+               "user"
             ],
             [
                "can_see_projector",

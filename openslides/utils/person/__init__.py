@@ -10,7 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from openslides.utils.person.signals import receiv_persons
+from openslides.utils.person.signals import receive_persons
 from openslides.utils.person.api import generate_person_id, get_person, Persons
 from openslides.utils.person.forms import PersonFormField, MultiplePersonFormField
 from openslides.utils.person.models import PersonField, PersonMixin

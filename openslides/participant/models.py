@@ -10,20 +10,20 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User as DjangoUser, Group as DjangoGroup
 from django.db import models
-from django.db.models import Q, signals
+from django.db.models import signals
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
 from openslides.utils.person import PersonMixin
-from openslides.utils.person.signals import receiv_persons
+from openslides.utils.person.signals import receive_persons
 
 from openslides.config.signals import default_config_value
 
 
-class OpenSlidesUser(models.Model, PersonMixin):
-    person_prefix = 'openslides_user'
+class User(DjangoUser, PersonMixin):
+    person_prefix = 'user'
     GENDER_CHOICES = (
         ('male', _('Male')),
         ('female', _('Female')),
@@ -35,10 +35,10 @@ class OpenSlidesUser(models.Model, PersonMixin):
         ('guest', _('Guest')),
     )
 
-    user = models.OneToOneField(User, unique=True, editable=False)
-    name_surfix = models.CharField(
-        max_length=100, null=True, blank=True, verbose_name=_("Name Surfix"),
-        help_text=_('Shown behind the name.'))
+    django_user = models.OneToOneField(DjangoUser, editable=False, parent_link=True)
+    category = models.CharField(
+        max_length=100, null=True, blank=True, verbose_name=_("Category"),
+        help_text=_('Will be shown behind the name.'))
     gender = models.CharField(
         max_length=50, choices=GENDER_CHOICES, blank=True,
         verbose_name=_("Gender"), help_text=_('Only for filter the userlist.'))
@@ -51,21 +51,26 @@ class OpenSlidesUser(models.Model, PersonMixin):
     comment = models.TextField(
         null=True, blank=True, verbose_name=_('Comment'),
         help_text=_('Only for notes.'))
-    firstpassword = models.CharField(
+    default_password = models.CharField(
         max_length=100, null=True, blank=True,
-        verbose_name=_("First Password"))
+        verbose_name=_("Default password"))
+
+    def get_name_suffix(self):
+        return self.category
+
+    def set_name_suffix(self, value):
+        self.category = value
+
+    name_suffix = property(get_name_suffix, set_name_suffix)
 
     def reset_password(self, password=None):
         """
         Reset the password for the user to his default-password.
         """
         if password is None:
-            password = self.firstpassword
-        self.user.set_password(password)
-        self.user.save()
-
-    def has_perm(self, perm):
-        return self.user.has_perm(perm)
+            password = self.default_password
+        self.set_password(password)
+        self.save()
 
     @models.permalink
     def get_absolute_url(self, link='edit'):
@@ -77,14 +82,15 @@ class OpenSlidesUser(models.Model, PersonMixin):
         * delete
         """
         if link == 'edit':
-            return ('user_edit', [str(self.user.id)])
+            return ('user_edit', [str(self.id)])
         if link == 'delete':
-            return ('user_delete', [str(self.user.id)])
+            return ('user_delete', [str(self.id)])
 
     def __unicode__(self):
-        if self.name_surfix:
-            return "%s (%s)" % (self.user.get_full_name(), self.name_surfix)
-        return "%s" % self.user.get_full_name()
+        name = self.get_full_name() or self.username
+        if self.name_suffix:
+            return u"%s (%s)" % (name, self.name_suffix)
+        return u"%s" % name
 
     class Meta:
         # Rename permissions
@@ -95,46 +101,63 @@ class OpenSlidesUser(models.Model, PersonMixin):
         )
 
 
-class OpenSlidesGroup(models.Model, PersonMixin):
-    person_prefix = 'openslides_group'
+class Group(DjangoGroup, PersonMixin):
+    person_prefix = 'group'
 
-    group = models.OneToOneField(Group)
+    django_group = models.OneToOneField(DjangoGroup, editable=False, parent_link=True)
     group_as_person = models.BooleanField(default=False)
+    description = models.TextField(blank=True)
+
+    @models.permalink
+    def get_absolute_url(self, link='edit'):
+        """
+        Return the URL to this user.
+
+        link can be:
+        * edit
+        * delete
+        """
+        if link == 'edit':
+            return ('user_group_edit', [str(self.id)])
+        if link == 'delete':
+            return ('user_group_delete', [str(self.id)])
 
     def __unicode__(self):
-        return unicode(self.group)
+        return unicode(self.name)
 
 
-class OpenSlidesUsersConnecter(object):
-    def __init__(self, person_prefix=None, id=None):
-        self.person_prefix = person_prefix
-        self.id = id
+class UsersConnector(object):
+    def __init__(self, person_prefix_filter=None, id_filter=None):
+        self.person_prefix_filter = person_prefix_filter
+        self.id_filter = id_filter
+        self.users = User.objects.all()
+        self.groups = Group.objects.filter(group_as_person=True)
 
     def __iter__(self):
-        if (not self.person_prefix or
-                self.person_prefix == OpenSlidesUser.person_prefix):
-            if self.id:
-                yield OpenSlidesUser.objects.get(pk=self.id)
+        if (not self.person_prefix_filter or
+                self.person_prefix_filter == User.person_prefix):
+            if self.id_filter:
+                yield self.users.get(pk=self.id_filter)
             else:
-                for user in OpenSlidesUser.objects.all():
+                for user in self.users:
                     yield user
 
-        if (not self.person_prefix or
-                self.person_prefix == OpenSlidesGroup.person_prefix):
-            if self.id:
-                yield OpenSlidesGroup.objects.get(pk=self.id)
+        if (not self.person_prefix_filter or
+                self.person_prefix_filter == Group.person_prefix):
+            if self.id_filter:
+                yield self.groups.get(pk=self.id_filter)
             else:
-                for group in OpenSlidesGroup.objects.all():
+                for group in self.groups:
                     yield group
 
     def __getitem__(self, key):
-        return OpenSlidesUser.objects.get(pk=key)
+        return User.objects.get(pk=key)
 
 
-@receiver(receiv_persons, dispatch_uid="participant")
-def receiv_persons(sender, **kwargs):
-    return OpenSlidesUsersConnecter(person_prefix=kwargs['person_prefix'],
-                                    id=kwargs['id'])
+@receiver(receive_persons, dispatch_uid="participant")
+def receive_persons(sender, **kwargs):
+    return UsersConnector(person_prefix_filter=kwargs['person_prefix_filter'],
+                                    id_filter=kwargs['id_filter'])
 
 
 @receiver(default_config_value, dispatch_uid="participant_default_config")
@@ -150,7 +173,17 @@ def default_config(sender, key, **kwargs):
     }.get(key)
 
 
-@receiver(signals.post_save, sender=User)
+@receiver(signals.post_save, sender=DjangoUser)
 def user_post_save(sender, instance, signal, *args, **kwargs):
-    # Creates OpenSlidesUser
-    profile, new = OpenSlidesUser.objects.get_or_create(user=instance)
+    try:
+        instance.user
+    except User.DoesNotExist:
+        User(django_user=instance).save_base(raw=True)
+
+
+@receiver(signals.post_save, sender=DjangoGroup)
+def group_post_save(sender, instance, signal, *args, **kwargs):
+    try:
+        instance.group
+    except Group.DoesNotExist:
+        Group(django_group=instance).save_base(raw=True)

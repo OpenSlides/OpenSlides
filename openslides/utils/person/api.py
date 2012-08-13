@@ -10,16 +10,16 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from openslides.utils.person.signals import receiv_persons
+from openslides.utils.person.signals import receive_persons
 
 
 class Persons(object):
     """
     A Storage for a multiplicity of different Person-Objects.
     """
-    def __init__(self, person_prefix=None, id=None):
-        self.person_prefix = person_prefix
-        self.id = id
+    def __init__(self, person_prefix_filter=None, id_filter=None):
+        self.person_prefix_filter = person_prefix_filter
+        self.id_filter = id_filter
 
     def __iter__(self):
         try:
@@ -35,14 +35,16 @@ class Persons(object):
 
     def iter_persons(self):
         self._cache = list()
-        for receiver, persons in receiv_persons.send(
-                sender='persons', person_prefix=self.person_prefix, id=self.id):
+        for receiver, persons in receive_persons.send(
+                sender='persons', person_prefix_filter=self.person_prefix_filter, id_filter=self.id_filter):
             for person in persons:
                 self._cache.append(person)
                 yield person
 
 
 def generate_person_id(prefix, id):
+    assert prefix is not None
+    assert id is not None
     if ':' in prefix:
         raise ValueError("':' is not allowed in a the 'person_prefix'")
     return "%s:%d" % (prefix, id)
@@ -61,4 +63,4 @@ def get_person(person_id):
     except TypeError:
         from openslides.utils.person import EmtyPerson
         return EmtyPerson()
-    return Persons(person_prefix=person_prefix, id=id)[0]
+    return Persons(person_prefix_filter=person_prefix, id_filter=id)[0]
