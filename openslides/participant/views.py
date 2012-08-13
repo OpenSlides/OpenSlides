@@ -501,7 +501,7 @@ def user_import(request):
                                             application.writelog(_('Reassigned to "%s" after (re)importing users.') % ("%s %s" % (user.first_name, user.last_name)), user=request.user)
                                             applications_mapped += 1
                                         except Application.DoesNotExist:
-                                            messages.error(request, _('Could not reassing application %d - object not found!') % appid)
+                                            messages.error(request, _('Could not reassing motion %d - object not found!') % appid)
                                     del old_users[skey]
 
                     if old_users:
@@ -515,17 +515,17 @@ def user_import(request):
                                         application.set_status(user=request.user, status='rev', force=True)
                                     applications_review += 1
                                 except Application.DoesNotExist:
-                                    messages.error(request, _('Could not reassing application %d - object not found!') % appid)
+                                    messages.error(request, _('Could not reassing motion %d - object not found!') % appid)
 
                     if applications_review:
-                        messages.warning(request, ungettext('%d application could not be reassigned and needs a review!',
-                                                    '%d applications could not be reassigned and need a review!', applications_review) % applications_review)
+                        messages.warning(request, ungettext('%d motion could not be reassigned and needs a review!',
+                                                    '%d motions could not be reassigned and need a review!', applications_review) % applications_review)
                     if applications_mapped:
-                        messages.success(request, ungettext('%d application was successfully reassigned.',
-                                                    '%d applications were successfully reassigned.', applications_mapped) % applications_mapped)
+                        messages.success(request, ungettext('%d motion was successfully reassigned.',
+                                                    '%d motions were successfully reassigned.', applications_mapped) % applications_mapped)
                     if applications_removed:
-                        messages.warning(request, ungettext('%d application was discarded.',
-                                                    '%d applications were discarded.', applications_removed) % applications_removed)
+                        messages.warning(request, ungettext('%d motion was discarded.',
+                                                    '%d motions were discarded.', applications_removed) % applications_removed)
 
                     if i > 0:
                         messages.success(request, _('%d new participants were successfully imported.') % i)
@@ -539,8 +539,8 @@ def user_import(request):
     else:
         messages.warning(request, _("Attention: All existing participants will be removed if you import new participants."))
         if Application.objects.all():
-            messages.warning(request, _("Attention: Supporters from all existing applications will be removed."))
-            messages.warning(request, _("Attention: Applications which can't be mapped to new users will be set to 'Needs Review'."))
+            messages.warning(request, _("Attention: Supporters from all existing motions will be removed."))
+            messages.warning(request, _("Attention: Motions which can't be mapped to new users will be set to 'Needs Review'."))
         form = UserImportForm()
     return {
         'form': form,
