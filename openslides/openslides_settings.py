@@ -47,7 +47,7 @@ USE_I18N = True
 USE_L10N = True
 
 LOCALE_PATHS = (
-    _fs2unicode(os.path.join(SITE_ROOT, 'locale'))
+    _fs2unicode(os.path.join(SITE_ROOT, 'locale')),
 )
 
 # Absolute path to the directory that holds media.

@@ -7,7 +7,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-import openslides.main
+from openslides.main import main
 
 if __name__ == "__main__":
-    openslides.main.main()
+    main()

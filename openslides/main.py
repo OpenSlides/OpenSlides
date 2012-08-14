@@ -21,13 +21,9 @@ import time
 import threading
 import base64
 import webbrowser
-from contextlib import nested
 
 import django.conf
 from django.core.management import execute_from_command_line
-from django.utils.crypto import get_random_string
-
-import openslides
 
 CONFIG_TEMPLATE = """
 from openslides.openslides_settings import *
@@ -66,6 +62,7 @@ INSTALLED_APPS += INSTALLED_PLUGINS
 
 KEY_LENGTH = 30
 
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv[1:]
@@ -74,58 +71,76 @@ def main(argv=None):
         description="Run openslides using django's builtin webserver")
     parser.add_option("-a", "--address", help="IP Address to listen on")
     parser.add_option("-p", "--port", type="int", help="Port to listen on")
-    parser.add_option("--nothread", action="store_true",
-        help="Do not use threading")
-    parser.add_option("--syncdb", action="store_true",
+    parser.add_option(
+        "--syncdb", action="store_true",
         help="Update/create database before starting the server")
-    parser.add_option("--reset-admin", action="store_true",
+    parser.add_option(
+        "--reset-admin", action="store_true",
         help="Make sure the user 'admin' exists and uses 'admin' as password")
+    parser.add_option("-s", "--settings", help="Path to the setting.")
+    parser.add_option(
+        "--no-reload", action="store_true", help="Do not reload the development server")
 
     opts, args = parser.parse_args(argv)
-    if not args:
-        main(argv + ['init', 'openslides'])
-        main(argv + ['start', 'openslides'])
-        return 0
+    if args:
+        sys.stderr.write("This command does not take arguments!\n\n")
+        parser.print_help()
+        sys.exit(1)
 
-    command = args[0]
+    # Find the path to the settings
+    settings = opts.settings or \
+        os.path.expanduser('~/.openslides/openslidessettings.py')
 
+    # Create settings if necessary
+    if not os.path.exists(settings):
+        create_settings(settings)
+
+    # Set the django environment to the settings
+    setup_django_environment(settings)
+
+    # Find url to openslides
     addr, port = detect_listen_opts(opts.address, opts.port)
     if port == 80:
-        url = "http://%s" % (addr, )
+        url = "http://%s" % addr
     else:
         url = "http://%s:%d" % (addr, port)
 
-    try:
-        environment_name = args[1]
-    except IndexError:
-        environment_name = None
+    # Create Database if necessary
+    if not database_exists() or opts.syncdb:
+        run_syncdb()
+        set_system_url(url)
+        create_or_reset_admin_user()
 
-    if command == 'init':
-        if check_environment(environment_name):
-            print "'%s' is allready an environment" % environment_name
-            return 1
-        create_environment(environment_name or 'openslides', url)
+    # Reset Admin
+    elif opts.reset_admin:
+        create_or_reset_admin_user()
 
-    elif command == 'start':
-        set_settings_environment(environment_name or os.getcwd())
-        if not check_environment():
-            print "'%s' is not a valid OpenSlides environment." % environment_name
-            sys.exit(1)
-        # NOTE: --insecure is needed so static files will be served if
-        #       DEBUG is set to False
-        argv = ["", "runserver", "--noreload", "--insecure"]
-        if opts.nothread:
-            argv.append("--nothread")
-
-        argv.append("%s:%d" % (addr, port))
-
-        start_browser(url)
-        execute_from_command_line(argv)
+    # Start OpenSlides
+    if opts.no_reload:
+        extra_args = ['--noreload']
+    else:
+        extra_args = []
+    start_openslides(addr, port, start_browser_url=url, extra_args=extra_args)
 
 
-def set_settings_environment(environment):
-    sys.path.append(environment)
-    os.environ[django.conf.ENVIRONMENT_VARIABLE] = 'settings'
+def create_settings(settings):
+    path_to_dir = os.path.dirname(settings)
+
+    setting_content = CONFIG_TEMPLATE % dict(
+        default_key=base64.b64encode(os.urandom(KEY_LENGTH)),
+        dbpath=os.path.join(path_to_dir, 'database.db'))
+
+    if not os.path.exists(path_to_dir):
+        os.makedirs(path_to_dir)
+
+    with open(settings, 'w') as settings_file:
+        settings_file.write(setting_content)
+
+
+def setup_django_environment(settings):
+    sys.path.append(os.path.dirname(settings))
+    setting_module = os.path.basename(settings)[:-3]
+    os.environ[django.conf.ENVIRONMENT_VARIABLE] = setting_module
 
 
 def detect_listen_opts(address, port):
@@ -150,91 +165,29 @@ def detect_listen_opts(address, port):
     return address, port
 
 
-def start_browser(url):
-    browser = webbrowser.get()
-    def f():
-        time.sleep(1)
-        browser.open(url)
-
-    t = threading.Thread(target = f)
-    t.start()
-
-
-def create_environment(environment, url=None):
-    setting_content = CONFIG_TEMPLATE % dict(
-        default_key=base64.b64encode(os.urandom(KEY_LENGTH)),
-        dbpath=os.path.join(os.path.abspath(environment), 'database.db'))
-
-    dirname = environment
-    if dirname and not os.path.exists(dirname):
-        os.makedirs(dirname)
-
-    settings = os.path.join(environment, 'settings.py')
-    if not os.path.exists(settings):
-        with open(settings, 'w') as fp:
-            fp.write(setting_content)
-
-    set_settings_environment(environment)
-
-    run_syncdb(url)
-    create_or_reset_admin_user()
-
-
-def run_syncdb(url=None):
-    # now initialize the database
-    argv = ["", "syncdb", "--noinput"]
-    execute_from_command_line(argv)
-
-    if url is not None:
-        set_system_url(url)
-
-
-def check_environment(environment=None):
-    if environment is not None:
-        set_settings_environment(environment)
-    try:
-        import settings
-    except ImportError:
-        return False
-    if not check_database():
-        return False
-    return True
-
-
-def check_database():
-    """Detect if database was deleted and recreate if necessary"""
+def database_exists():
+    """Detect if database exists"""
     # can't be imported in global scope as they already require
     # the settings module during import
     from django.db import DatabaseError
-    from django.contrib.auth.models import User
+    from django.core.exceptions import ImproperlyConfigured
+    from openslides.participant.models import User
 
     try:
         User.objects.count()
     except DatabaseError:
         return False
+    except ImproperlyConfigured:
+        print "Your settings file seems broken"
+        sys.exit(0)
     else:
         return True
 
 
-def create_or_reset_admin_user():
-    # can't be imported in global scope as it already requires
-    # the settings module during import
-    from django.contrib.auth.models import User
-    from openslides.config.models import config
-    try:
-        obj = User.objects.get(username = "admin")
-    except User.DoesNotExist:
-        User.objects.create_superuser(
-            username="admin",
-            password="admin",
-            email="admin@example.com")
-        config['admin_password'] = "admin"
-        print("Created default admin user")
-        return
-
-    print("Password for user admin was reset to 'admin'")
-    obj.set_password("admin")
-    obj.save()
+def run_syncdb():
+    # now initialize the database
+    argv = ["", "syncdb", "--noinput"]
+    execute_from_command_line(argv)
 
 
 def set_system_url(url):
@@ -246,6 +199,46 @@ def set_system_url(url):
     if key in config:
         return
     config[key] = url
+
+
+def create_or_reset_admin_user():
+    # can't be imported in global scope as it already requires
+    # the settings module during import
+    from openslides.participant.models import User
+    try:
+        admin = User.objects.get(username="admin")
+        print("Password for user admin was reset to 'admin'")
+    except User.DoesNotExist:
+        admin = User()
+        admin.username = 'admin'
+        admin.last_name = 'Admin User'
+        print("Created default admin user")
+
+    admin.is_superuser = True
+    admin.default_password = 'admin'
+    admin.set_password(admin.default_password)
+    admin.save()
+
+
+def start_openslides(addr, port, start_browser_url=None, extra_args=[]):
+    argv = ["", "runserver", '--noreload'] + extra_args
+
+    argv.append("%s:%d" % (addr, port))
+
+    if start_browser_url:
+        start_browser(start_browser_url)
+    execute_from_command_line(argv)
+
+
+def start_browser(url):
+    browser = webbrowser.get()
+
+    def f():
+        time.sleep(1)
+        browser.open(url)
+
+    t = threading.Thread(target=f)
+    t.start()
 
 
 if __name__ == "__main__":

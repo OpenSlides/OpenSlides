@@ -169,7 +169,6 @@ def default_config(sender, key, **kwargs):
     return {
         'participant_pdf_system_url': 'http://example.com:8000',
         'participant_pdf_welcometext': _('Welcome to OpenSlides!'),
-        'admin_password': None,
     }.get(key)
 
 
