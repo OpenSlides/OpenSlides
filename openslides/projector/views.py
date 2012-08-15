@@ -15,6 +15,7 @@ from time import time
 
 from django.conf import settings
 from django.contrib import messages
+from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.db.models import Q
@@ -45,21 +46,6 @@ class DashboardView(TemplateView, AjaxMixin):
     """
     template_name = 'projector/dashboard.html'
     permission_required = 'projector.can_see_dashboard'
-
-    def post(self, request, *args, **kwargs):
-        # TODO: Try to put this code in the widget
-        if 'message' in request.POST:
-            projector_message_set(request.POST['message_text'])
-        elif 'message-clean' in request.POST:
-            projector_message_delete()
-        if request.is_ajax():
-            return self.ajax_get(request, *args, **kwargs)
-        return self.get(request, *args, **kwargs)
-
-    def get_ajax_context(self, **kwargs):
-        return {
-            'overlay_message': config['projector_message'],
-        }
 
     def get_context_data(self, **kwargs):
         context = super(DashboardView, self).get_context_data(**kwargs)
@@ -279,6 +265,28 @@ class CountdownEdit(RedirectView):
         }
 
 
+class OverlayMessageView(RedirectView):
+    """
+    Sets or clears the overlay message
+    """
+    url = 'dashboard'
+    allow_ajax = True
+    permission_required = 'projector.can_manage_projector'
+
+    def pre_post_redirect(self, request, *args, **kwargs):
+        if 'message' in request.POST:
+            projector_message_set(request.POST['message_text'])
+        elif 'message-clean' in request.POST:
+            projector_message_delete()
+
+
+    def get_ajax_context(self, **kwargs):
+        return {
+            'overlay_message': config['projector_message'],
+        }
+
+
+
 class ActivateOverlay(RedirectView):
     """
     Activate or deactivate an overlay.
@@ -384,25 +392,30 @@ def get_widgets(request):
                     active=False)
                 projector_overlay.save()
             overlays.append(projector_overlay)
+
+    context = {
+            'overlays':overlays,
+            'countdown_time': config['countdown_time'],
+            'countdown_state' : config['countdown_state']}
+    context.update(csrf(request))
     widgets.append(Widget(
         name='overlays',
         display_name=_('Manage Overlays'),
         template='projector/overlay_widget.html',
         permission_required='projector.can_manage_projector',
         default_column=2,
-        context={
-            'overlays':overlays,
-            'countdown_time': config['countdown_time'],
-            'countdown_state' : config['countdown_state']}))
+        context=context))
+
 
     # Custom slide widget
+    context = {
+        'slides': ProjectorSlide.objects.all(),
+        'welcomepage_is_active': not bool(config["presentation"])}
     widgets.append(Widget(
         name='custom_slide',
         display_name=_('Custom Slide'),
         template='projector/custom_slide_widget.html',
-        context={
-            'slides': ProjectorSlide.objects.all(),
-            'welcomepage_is_active': not bool(config["presentation"])},
+        context=context,
         permission_required='projector.can_manage_projector',
         default_column=2))
 

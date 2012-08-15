@@ -165,7 +165,6 @@ def get_all_widgets(request, session=False):
             continue
 
         for widget in modul_widgets:
-            print widget, session_widgets.get(widget, True)
             if (widget.permission_required is None or
                     request.user.has_perm(widget.permission_required)):
                 if not session or session_widgets.get(widget.get_name(), True):
