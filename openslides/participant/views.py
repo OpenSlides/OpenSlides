@@ -151,6 +151,7 @@ class UserCreateView(CreateView):
             form.cleaned_data['last_name'])
         if not self.object.default_password:
             self.object.default_password = gen_password()
+        self.object.set_password(self.object.default_password)
 
 
 class UserUpdateView(UpdateView):
