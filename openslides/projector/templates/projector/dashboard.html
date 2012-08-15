@@ -15,87 +15,51 @@
 
 {% block content %}
     <h1>{% trans 'Dashboard' %}</h1>
-    <div style="text-align: right; padding: 0 10px 5px 0; margin-top:-20px;">
-        <!-- projector control -->
-        {% trans "Adjust projector view" %}:
-        <a class="projector_edit" href="{% url projector_bigger %}" title="{% trans 'Zoom in' %}">
-            <img src="{% static 'images/icons/zoom-in.png' %}" /></a>
-        <a class="projector_edit" href="{% url projector_smaller %}" title="{% trans 'Zoom out' %}">
-            <img src="{% static 'images/icons/zoom-out.png' %}" /></a>
-        <a class="projector_edit" href="{% url projector_up %}" title="{% trans 'Scroll text up' %}">
-            <img src="{% static 'images/icons/go-up.png' %}" /></a>
-        <a class="projector_edit" href="{% url projector_down %}" title="{% trans 'Scroll text down' %}">
-            <img src="{% static 'images/icons/go-down.png' %}" /></a>
-        <a class="projector_edit" href="{% url projector_clean %}" title="{% trans 'Reset projector view' %}">
-            <img src="{% static 'images/icons/view-reset.png' %}" /></a>
-    </div>
+    {% if perms.projector.can_manage_projector %}
+        <div style="text-align: right; padding: 0 10px 5px 0; margin-top:-20px;">
+            <!-- projector control -->
+            {% trans "Adjust projector view" %}:
+            <a class="projector_edit" href="{% url projector_bigger %}" title="{% trans 'Zoom in' %}">
+                <img src="{% static 'images/icons/zoom-in.png' %}" />
+            </a>
+            <a class="projector_edit" href="{% url projector_smaller %}" title="{% trans 'Zoom out' %}">
+                <img src="{% static 'images/icons/zoom-out.png' %}" />
+            </a>
+            <a class="projector_edit" href="{% url projector_up %}" title="{% trans 'Scroll text up' %}">
+                <img src="{% static 'images/icons/go-up.png' %}" />
+            </a>
+            <a class="projector_edit" href="{% url projector_down %}" title="{% trans 'Scroll text down' %}">
+                <img src="{% static 'images/icons/go-down.png' %}" />
+            </a>
+            <a class="projector_edit" href="{% url projector_clean %}" title="{% trans 'Reset projector view' %}">
+                <img src="{% static 'images/icons/view-reset.png' %}" />
+            </a>
+        </div>
+    {% endif %}
 
     <div class="column" id="col1">
-    {% for name, widget in widgets.items %}
-        {% if name != 'projector' %}
-            <div class="portlet" id="portlet_{{ widget.get_name }}">
-                <div class="portlet-header">{% trans widget.get_title %}</div>
-                <div class="portlet-content">
-                    {{ widget.html }}
+        {% for name, widget in widgets.items %}
+            {% if widget.default_column == 1 %}
+                <div class="portlet" id="portlet_{{ widget.get_name }}">
+                    <div class="portlet-header">{% trans widget.get_title %}</div>
+                    <div class="portlet-content">
+                        {{ widget.html }}
+                    </div>
                 </div>
-            </div>
-        {% endif %}
-    {% endfor %}
+            {% endif %}
+        {% endfor %}
     </div> <!-- end column-->
 
     <div class="column" id="col2">
-        <!-- Projector Live View -->
-        <div class="portlet" id="portlet_liveview">
-            <div class="portlet-header">
-                {% trans "Projector Live View" %}
-            </div>
-            <div class="portlet-content">
-                <a href="{% url projector_show %}" target="_blank" title="{% trans 'Open Projector view' %}" >
-                <div id="iframewrapper">
-                    <iframe id="iframe" src="{% url projector_show %}" frameborder="0"></iframe>
-                    <div id="iframeoverlay"></div>
+        {% for name, widget in widgets.items %}
+            {% if widget.default_column == 2 %}
+                <div class="portlet" id="portlet_{{ widget.get_name }}">
+                    <div class="portlet-header">{% trans widget.get_title %}</div>
+                    <div class="portlet-content">
+                        {{ widget.html }}
+                    </div>
                 </div>
-                </a>
-            </div>
-        </div> <!-- end portlet-->
-
-        <!-- Overlays (Countdown etc.)-->
-        <div class="portlet" id="portlet_overlays">
-            <div class="portlet-header">{% trans 'Overlays' %}</div>
-            <div class="portlet-content">
-                <ul>
-                {% for overlay in overlays %}
-                    <li>
-                        <a id="{{ overlay.def_name }}_inactive" href="{% url projector_overlay_activate overlay.def_name %}" class="overlay"{% if overlay.active %} style="display:none"{% endif %}>
-                            <div></div>
-                        </a>
-                        <a id="{{ overlay.def_name }}_active" href="{% url projector_overlay_deactivate overlay.def_name %}" class="overlay active"{% if not overlay.active %} style="display:none"{% endif %}>
-                            <div></div>
-                        </a>
-
-                        {{ overlay }}:
-                        {# TODO: Call the html via overlay.html #}
-                        {# Countdown #}
-                        {% if overlay.def_name == "Countdown" %}
-                            {% include 'projector/control_countdown.html' %}
-                        {% endif %}
-                        {% if overlay.def_name == "Message" %}
-                            {% include 'projector/control_overlay_message.html' %}
-                        {% endif %}
-                    </li>
-                {% endfor %}
-                </ul>
-            </div>
-        </div> <!-- end portlet-->
-
-        <!-- Custom slides -->
-        {% with widget=widgets.projector %}
-            <div class="portlet" id="portlet_customslides">
-                <div class="portlet-header">{% trans "Custom slides" %}</div>
-                <div class="portlet-content">
-                    {{ widget.html }}
-                </div>
-            </div> <!-- end portlet-->
-        {% endwith %}
+            {% endif %}
+        {% endfor %}
     </div> <!-- end column -->
 {% endblock %}

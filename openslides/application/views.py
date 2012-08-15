@@ -917,6 +917,8 @@ def register_tab(request):
 
 def get_widgets(request):
     return [
-        Widget(name='applications', template='application/widget.html',
-               context={'applications': Application.objects.all()})
-    ]
+        Widget(
+            name='applications',
+            template='application/widget.html',
+            context={'applications': Application.objects.all()},
+            permission_required='application.can_manage_application')]

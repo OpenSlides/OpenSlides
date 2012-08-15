@@ -1,0 +1,10 @@
+{% load i18n %}
+{% load tags %}
+
+
+<a href="{% url projector_show %}" target="_blank">
+    <div id="iframewrapper">
+        <iframe id="iframe" src="{% url projector_show %}" frameborder="0"></iframe>
+        <div id="iframeoverlay"></div>
+    </div>
+</a>

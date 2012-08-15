@@ -657,6 +657,8 @@ def register_tab(request):
 
 def get_widgets(request):
     return [
-        Widget(name=_('Assignments'), template='assignment/widget.html',
-               context={'assignments': Assignment.objects.all()})
-    ]
+        Widget(
+            name=_('Assignments'),
+            template='assignment/widget.html',
+            context={'assignments': Assignment.objects.all()},
+            permission_required='assignment.can_manage_assignment')]

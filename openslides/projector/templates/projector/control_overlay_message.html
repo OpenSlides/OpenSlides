@@ -1,6 +1,7 @@
 {% load staticfiles %}
 {% load i18n %}
 {% load tags %}
+
 <form id="overlay_message" action="" method="post" style="display:inline">{% csrf_token %}
     <input id="overlay_message_text" name='message_text' type='text' style='width: 40%' value="{% get_config 'projector_message' %}">
     <button type="submit" class="button" name='message'>

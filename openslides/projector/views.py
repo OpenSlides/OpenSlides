@@ -43,22 +43,8 @@ class DashboardView(TemplateView, AjaxMixin):
     template_name = 'projector/dashboard.html'
     permission_required = 'projector.can_see_dashboard'
 
-    def get_projector_overlays(self):
-        overlays = []
-        for receiver, name in projector_overlays.send(sender='registerer',
-                                register=True):
-            if name is not None:
-                try:
-                    projector_overlay = ProjectorOverlay.objects.get(
-                        def_name=name)
-                except ProjectorOverlay.DoesNotExist:
-                    projector_overlay = ProjectorOverlay(def_name=name,
-                        active=False)
-                    projector_overlay.save()
-                overlays.append(projector_overlay)
-        return overlays
-
     def post(self, request, *args, **kwargs):
+        # TODO: Try to put this code in the widget
         if 'message' in request.POST:
             projector_message_set(request.POST['message_text'])
         elif 'message-clean' in request.POST:
@@ -88,16 +74,13 @@ class DashboardView(TemplateView, AjaxMixin):
                 continue
 
             for widget in modul_widgets:
-                if self.request.user.has_perm(widget.permission_required):
+                if (widget.permission_required is None or
+                        self.request.user.has_perm(widget.permission_required)):
                     widgets[widget.get_name()] = widget
+                    print widget, widget.permission_required
 
 
-        context.update({
-            'countdown_time': config['countdown_time'],
-            'countdown_state' : config['countdown_state'],
-            'overlays': self.get_projector_overlays(),
-            'widgets': widgets,
-        })
+        context['widgets'] = widgets
         return context
 
 
@@ -350,15 +333,51 @@ def register_tab(request):
 
 def get_widgets(request):
     """
-    Return the custom slide widget.
+    Return the widgets of the projector app
     """
-    return [
-        Widget(
-            name='projector',
-            template='projector/widget.html',
-            context={
-                'slides': ProjectorSlide.objects.all(),
-                'welcomepage_is_active': not bool(config["presentation"])},
-            permission_required = 'projector.can_manage_projector',
-        ),
-    ]
+    widgets = []
+
+    # Projector live view widget
+    widgets.append(Widget(
+        name='live_view',
+        display_name=_('Projector live view'),
+        template='projector/live_view_widget.html',
+        permission_required='projector.can_see_projector',
+        default_column=2))
+
+    # Overlay Widget
+    overlays = []
+    for receiver, name in projector_overlays.send(sender='registerer',
+                                                  register=True):
+        if name is not None:
+            try:
+                projector_overlay = ProjectorOverlay.objects.get(
+                    def_name=name)
+            except ProjectorOverlay.DoesNotExist:
+                projector_overlay = ProjectorOverlay(def_name=name,
+                    active=False)
+                projector_overlay.save()
+            overlays.append(projector_overlay)
+    widgets.append(Widget(
+        name='overlays',
+        display_name=_('Manage Overlays'),
+        template='projector/overlay_widget.html',
+        permission_required='projector.can_manage_projector',
+        default_column=2,
+        context={
+            'overlays':overlays,
+            'countdown_time': config['countdown_time'],
+            'countdown_state' : config['countdown_state']}))
+
+    # Custom slide widget
+    widgets.append(Widget(
+        name='custom_slide',
+        display_name=_('Custom Slide'),
+        template='projector/custom_slide_widget.html',
+        context={
+            'slides': ProjectorSlide.objects.all(),
+            'welcomepage_is_active': not bool(config["presentation"])},
+        permission_required='projector.can_manage_projector',
+        default_column=2))
+
+    return widgets

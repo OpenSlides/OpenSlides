@@ -229,7 +229,5 @@ def get_widgets(request):
             template='agenda/widget.html',
             context={
                 'agenda': SLIDE['agenda'],
-                'items': Item.objects.all(),
-            }
-        ),
-    ]
+                'items': Item.objects.all()},
+            permission_required='agenda.can_manage_agenda')]
