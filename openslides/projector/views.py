@@ -16,6 +16,7 @@ from time import time
 from django.conf import settings
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.db import transaction
 from django.db.models import Q
 from django.dispatch import receiver
 from django.utils.datastructures import SortedDict
@@ -30,7 +31,9 @@ from openslides.utils.views import (TemplateView, RedirectView, CreateView,
 from openslides.config.models import config
 
 from openslides.projector.api import (get_active_slide, set_active_slide,
-    projector_message_set, projector_message_delete, get_slide_from_sid)
+    projector_message_set, projector_message_delete, get_slide_from_sid,
+    get_all_widgets)
+from openslides.projector.forms import SelectWidgetsForm
 from openslides.projector.models import ProjectorOverlay, ProjectorSlide
 from openslides.projector.projector import SLIDE, Widget
 from openslides.projector.signals import projector_overlays
@@ -61,26 +64,7 @@ class DashboardView(TemplateView, AjaxMixin):
     def get_context_data(self, **kwargs):
         context = super(DashboardView, self).get_context_data(**kwargs)
 
-        widgets = SortedDict()
-        for app in settings.INSTALLED_APPS:
-            try:
-                mod = import_module(app + '.views')
-            except ImportError:
-                continue
-            appname = mod.__name__.split('.')[0]
-            try:
-                modul_widgets = mod.get_widgets(self.request)
-            except AttributeError:
-                continue
-
-            for widget in modul_widgets:
-                if (widget.permission_required is None or
-                        self.request.user.has_perm(widget.permission_required)):
-                    widgets[widget.get_name()] = widget
-                    print widget, widget.permission_required
-
-
-        context['widgets'] = widgets
+        context['widgets'] = get_all_widgets(self.request, session=True)
         return context
 
 
@@ -176,6 +160,48 @@ class ActivateView(RedirectView):
             set_active_slide(kwargs['sid'])
         config['up'] = 0
         config['bigger'] = 100
+
+
+class SelectWidgetsView(TemplateView):
+    """
+    Show a Form to Select the widgets.
+    """
+    permission_required = 'projector.can_see_dashboard'
+    template_name = 'projector/select_widgets.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SelectWidgetsView, self). get_context_data(**kwargs)
+        widgets = get_all_widgets(self.request)
+        activated_widgets = self.request.session.get('widgets', {})
+        for name, widget in widgets.items():
+            initial = {'widget': activated_widgets.get(name, True)}
+            if self.request.method == 'POST':
+                widget.form = SelectWidgetsForm(self.request.POST, prefix=name,
+                                                initial=initial)
+            else:
+                widget.form = SelectWidgetsForm(prefix=name, initial=initial)
+
+        context['widgets'] = widgets
+        return context
+
+    @transaction.commit_manually
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        activated_widgets = self.request.session.get('widgets', {})
+
+        transaction.commit()
+        for name, widget in context['widgets'].items():
+            if widget.form.is_valid():
+                activated_widgets[name] = widget.form.cleaned_data['widget']
+            else:
+                transaction.rollback()
+                messages.error(request, _('Errors in the form'))
+                break
+        else:
+            transaction.commit()
+            self.request.session['widgets'] = activated_widgets
+        return self.render_to_response(context)
+
 
 
 class ProjectorEdit(RedirectView):

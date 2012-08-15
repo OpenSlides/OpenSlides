@@ -8,13 +8,15 @@
 
 {% block submenu %}
     {% url dashboard as url_dashboard %}
+    {% url projector_select_widgets as url_select_widget %}
     <h4 class="sectiontitle">{% trans "Projector" %}</h4>
     <ul>
-        {% if perms.projector.can_manage_projector %}
-            <li{% if request.path == url_dashboard %} class="selected"{% endif %}>
-              <a href="{% url dashboard %}">{% trans 'Overview' %}</a>
-            </li>
-        {% endif %}
+        <li{% if request.path == url_dashboard %} class="selected"{% endif %}>
+          <a href="{% url dashboard %}">{% trans 'Overview' %}</a>
+        </li>
+        <li{% if request.path == url_select_widget %} class="selected"{% endif %}>
+          <a href="{{ url_select_widget }}">{% trans 'Select widgets' %}</a>
+        </li>
         {% if perms.projector.can_see_projector %}
             <li>
                 <a href="{% url projector_show %}"><img src="{% static 'images/icons/projector.png' %}"> {% trans 'Projector view' %}</a>

@@ -14,7 +14,7 @@ from django.conf.urls.defaults import patterns, url
 
 from openslides.projector.views import (DashboardView, ActivateView,
     CustomSlideCreateView, CustomSlideUpdateView, CustomSlideDeleteView,
-    CountdownEdit, ProjectorEdit, Projector, ActivateOverlay)
+    CountdownEdit, ProjectorEdit, Projector, ActivateOverlay, SelectWidgetsView)
 
 
 urlpatterns = patterns('',
@@ -54,6 +54,11 @@ urlpatterns = patterns('',
     url(r'^activate/(?P<sid>[^/]*)/(?P<argument>[^/]*)/$',
         ActivateView.as_view(),
         name='projector_activate_slide',
+    ),
+
+    url(r'^widgets/$',
+        SelectWidgetsView.as_view(),
+        name='projector_select_widgets',
     ),
 
     url(r'^new/$',

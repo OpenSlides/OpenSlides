@@ -10,7 +10,10 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+from django.conf import settings
 from django.template.loader import render_to_string
+from django.utils.datastructures import SortedDict
+from django.utils.importlib import import_module
 
 from openslides.config.models import config
 from openslides.projector.projector import SLIDE, Slide, Widget
@@ -145,3 +148,26 @@ def projector_message_delete():
     Delete the overlay-message.
     """
     config['projector_message'] = ''
+
+
+def get_all_widgets(request, session=False):
+    widgets = SortedDict()
+    session_widgets = request.session.get('widgets', {})
+    for app in settings.INSTALLED_APPS:
+        try:
+            mod = import_module(app + '.views')
+        except ImportError:
+            continue
+        appname = mod.__name__.split('.')[0]
+        try:
+            modul_widgets = mod.get_widgets(request)
+        except AttributeError:
+            continue
+
+        for widget in modul_widgets:
+            print widget, session_widgets.get(widget, True)
+            if (widget.permission_required is None or
+                    request.user.has_perm(widget.permission_required)):
+                if not session or session_widgets.get(widget.get_name(), True):
+                    widgets[widget.get_name()] = widget
+    return widgets

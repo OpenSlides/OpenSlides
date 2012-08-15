@@ -1,0 +1,26 @@
+{% extends "projector/base_projector.html" %}
+
+{% load i18n %}
+
+{% block title %}{{ block.super }} – {% trans 'Select widgets' %}{% endblock %}
+
+{% block content %}
+    <h1>{% trans 'Select widgets' %}</h1>
+
+    <form action="" method="post">{% csrf_token %}
+        <ul>
+            {% for widget_name, widget in widgets.items %}
+                <li>
+                    {{ widget.form.widget }} {{ widget }}
+                </li>
+            {% empty %}
+                <li>{% trans 'No widgets available' %}</li>
+            {% endfor %}
+        </ul>
+        <p>
+            <button class="button" type="submit">
+                <span class="icon ok">{% trans 'Save' %}</span>
+            </button>
+        </p>
+    </form>
+{% endblock %}
