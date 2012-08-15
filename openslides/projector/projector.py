@@ -105,12 +105,14 @@ class Widget(object):
     """
     Class for a Widget for the Projector-Tab.
     """
-    def __init__(self, name, html=None, template=None, context={}):
+    def __init__(self, name, html=None, template=None, context={},
+            permission_required=None):
         self.name = name
         if html is not None:
             self.html = html
         elif template is not None:
             self.html = render_to_string(template, context)
+        self.permission_required = permission_required
 
     def get_name(self):
         return self.name.lower()

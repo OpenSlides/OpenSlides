@@ -36,12 +36,12 @@ from openslides.projector.projector import SLIDE, Widget
 from openslides.projector.signals import projector_overlays
 
 
-class ControlView(TemplateView, AjaxMixin):
+class DashboardView(TemplateView, AjaxMixin):
     """
     Overview over all possible slides, the overlays and a liveview.
     """
-    template_name = 'projector/control.html'
-    permission_required = 'projector.can_manage_projector'
+    template_name = 'projector/dashboard.html'
+    permission_required = 'projector.can_see_dashboard'
 
     def get_projector_overlays(self):
         overlays = []
@@ -73,7 +73,7 @@ class ControlView(TemplateView, AjaxMixin):
         }
 
     def get_context_data(self, **kwargs):
-        context = super(ControlView, self).get_context_data(**kwargs)
+        context = super(DashboardView, self).get_context_data(**kwargs)
 
         widgets = SortedDict()
         for app in settings.INSTALLED_APPS:
@@ -88,7 +88,8 @@ class ControlView(TemplateView, AjaxMixin):
                 continue
 
             for widget in modul_widgets:
-                widgets[widget.get_name()] = widget
+                if self.request.user.has_perm(widget.permission_required):
+                    widgets[widget.get_name()] = widget
 
 
         context.update({
@@ -182,7 +183,7 @@ class ActivateView(RedirectView):
     Activate a Slide.
     """
     permission_required = 'projector.can_manage_projector'
-    url = 'projector_control'
+    url = 'dashboard'
     allow_ajax = True
 
     def pre_redirect(self, request, *args, **kwargs):
@@ -199,7 +200,7 @@ class ProjectorEdit(RedirectView):
     Scale or scroll the projector.
     """
     permission_required = 'projector.can_manage_projector'
-    url = 'projector_control'
+    url = 'dashboard'
     allow_ajax = True
 
     def pre_redirect(self, request, *args, **kwargs):
@@ -223,7 +224,7 @@ class CountdownEdit(RedirectView):
     Start, stop or reset the countdown.
     """
     permission_required = 'projector.can_manage_projector'
-    url = 'projector_control'
+    url = 'dashboard'
     allow_ajax = True
 
     def pre_redirect(self, request, *args, **kwargs):
@@ -273,7 +274,7 @@ class ActivateOverlay(RedirectView):
     """
     Activate or deactivate an overlay.
     """
-    url = 'projector_control'
+    url = 'dashboard'
     allow_ajax = True
     permission_required = 'projector.can_manage_projector'
 
@@ -308,7 +309,7 @@ class CustomSlideCreateView(CreateView):
     template_name = 'projector/new.html'
     model = ProjectorSlide
     context_object_name = 'customslide'
-    success_url = 'projector_control'
+    success_url = 'dashboard'
     apply_url = 'customslide_edit'
 
 
@@ -320,7 +321,7 @@ class CustomSlideUpdateView(UpdateView):
     template_name = 'projector/new.html'
     model = ProjectorSlide
     context_object_name = 'customslide'
-    success_url = 'projector_control'
+    success_url = 'dashboard'
     apply_url = 'customslide_edit'
 
 
@@ -330,7 +331,7 @@ class CustomSlideDeleteView(DeleteView):
     """
     permission_required = 'projector.can_manage_projector'
     model = ProjectorSlide
-    url = 'projector_control'
+    url = 'dashboard'
 
 
 def register_tab(request):
@@ -339,9 +340,10 @@ def register_tab(request):
     """
     selected = True if request.path.startswith('/projector/') else False
     return Tab(
-        title=_('Projector'),
-        url=reverse('projector_control'),
-        permission=request.user.has_perm('projector.can_manage_projector'),
+        title=_('Dashboard'),
+        url=reverse('dashboard'),
+        permission=request.user.has_perm('projector.can_manage_projector') or
+            request.user.has_perm('projector.can_see_dashboard'),
         selected=selected,
     )
 
@@ -356,7 +358,7 @@ def get_widgets(request):
             template='projector/widget.html',
             context={
                 'slides': ProjectorSlide.objects.all(),
-                'welcomepage_is_active': not bool(config["presentation"]),
-            }
+                'welcomepage_is_active': not bool(config["presentation"])},
+            permission_required = 'projector.can_manage_projector',
         ),
     ]

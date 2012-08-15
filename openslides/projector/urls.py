@@ -12,7 +12,7 @@
 
 from django.conf.urls.defaults import patterns, url
 
-from openslides.projector.views import (ControlView, ActivateView,
+from openslides.projector.views import (DashboardView, ActivateView,
     CustomSlideCreateView, CustomSlideUpdateView, CustomSlideDeleteView,
     CountdownEdit, ProjectorEdit, Projector, ActivateOverlay)
 
@@ -35,9 +35,9 @@ urlpatterns = patterns('',
         name='projctor_preview_slide',
     ),
 
-    url(r'^control/$',
-        ControlView.as_view(),
-        name='projector_control',
+    url(r'^dashboard/$',
+        DashboardView.as_view(),
+        name='dashboard',
     ),
 
     url(r'^activate/$',

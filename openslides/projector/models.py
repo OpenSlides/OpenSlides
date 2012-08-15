@@ -50,7 +50,8 @@ class ProjectorSlide(models.Model, SlideMixin):
     class Meta:
         permissions = (
             ('can_manage_projector', ugettext_noop("Can manage the projector")),
-            ('can_see_projector', ugettext_noop("Can see projector")),
+            ('can_see_projector', ugettext_noop("Can see the projector")),
+            ('can_see_dashboard', ugettext_noop("Can see the dashboard")),
         )
 
 
