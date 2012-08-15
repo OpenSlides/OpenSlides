@@ -24,21 +24,6 @@ class UserCreateForm(forms.ModelForm, CssClassMixin):
     groups = forms.ModelMultipleChoiceField(
         queryset=Group.objects.exclude(name__iexact='anonymous'),
         label=_("User groups"), required=False)
-    is_active = forms.BooleanField(label=_("Active"), required=False,
-        initial=True)
-
-    class Meta:
-        model = User
-        exclude = ('username', 'password', 'is_staff', 'is_superuser',
-            'last_login', 'date_joined', 'user_permissions')
-
-
-class UserEditForm(forms.ModelForm, CssClassMixin):
-    first_name = forms.CharField(label=_("First name"))
-    last_name = forms.CharField(label=_("Last name"))
-    groups = forms.ModelMultipleChoiceField(queryset=Group.objects.all(),
-        label=_("User groups"), required=False)
-    is_active = forms.BooleanField(label=_("Active"), required=False)
 
     class Meta:
         model = User
@@ -110,6 +95,7 @@ class UsersettingsForm(forms.ModelForm, CssClassMixin):
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email')
+
 
 class UserImportForm(forms.Form, CssClassMixin):
     csvfile = forms.FileField(widget=forms.FileInput(attrs={'size': '50'}),
