@@ -6,9 +6,9 @@
 
 {% block header %}
     <link type="text/css" href="{% static 'styles/humanity/jquery-ui-1.8.18.custom.css' %}" rel="stylesheet" />
-    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/projector-control.css' %}" />
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/dashboard.css' %}" />
     <script type="text/javascript" src="{% static 'javascript/jquery-ui-1.8.18.custom.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascript/projector-control.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascript/dashboard.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascript/jquery.cookie.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascript/jquery.form.js' %}"></script>
 {% endblock %}
@@ -17,7 +17,7 @@
     <h1>{% trans 'Dashboard' %}</h1>
     {% if perms.projector.can_manage_projector %}
         <div style="text-align: right; padding: 0 10px 5px 0; margin-top:-20px;">
-            <!-- projector control -->
+            <!-- control projector view -->
             {% trans "Adjust projector view" %}:
             <a class="projector_edit" href="{% url projector_bigger %}" title="{% trans 'Zoom in' %}">
                 <img src="{% static 'images/icons/zoom-in.png' %}" />
