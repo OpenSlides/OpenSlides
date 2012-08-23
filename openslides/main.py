@@ -25,7 +25,9 @@ import webbrowser
 import django.conf
 from django.core.management import execute_from_command_line
 
-CONFIG_TEMPLATE = """
+CONFIG_TEMPLATE = """#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 from openslides.openslides_settings import *
 
 # Use 'DEBUG = True' to get more details for server errors
@@ -63,6 +65,13 @@ INSTALLED_APPS += INSTALLED_PLUGINS
 KEY_LENGTH = 30
 
 
+_fs_encoding = sys.getfilesystemencoding() or sys.getdefaultencoding()
+def _fs2unicode(s):
+    if isinstance(s, unicode):
+        return s
+    return s.decode(_fs_encoding)
+
+
 def main(argv=None):
     if argv is None:
         argv = sys.argv[1:]
@@ -89,7 +98,7 @@ def main(argv=None):
 
     # Find the path to the settings
     settings = opts.settings or \
-        os.path.expanduser('~/.openslides/openslidessettings.py')
+        os.path.join(os.path.expanduser('~'),'.openslides','settings.py')
 
     # Create settings if necessary
     if not os.path.exists(settings):
@@ -128,7 +137,7 @@ def create_settings(settings):
 
     setting_content = CONFIG_TEMPLATE % dict(
         default_key=base64.b64encode(os.urandom(KEY_LENGTH)),
-        dbpath=os.path.join(path_to_dir, 'database.db'))
+        dbpath=_fs2unicode((os.path.join(path_to_dir, 'database.db'))))
 
     if not os.path.exists(path_to_dir):
         os.makedirs(path_to_dir)
