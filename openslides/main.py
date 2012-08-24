@@ -28,7 +28,7 @@ from django.core.management import execute_from_command_line
 CONFIG_TEMPLATE = """#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from openslides.openslides_settings import *
+from openslides.openslides_global_settings import *
 
 # Use 'DEBUG = True' to get more details for server errors
 # (Default for relaeses: 'False')
@@ -98,7 +98,7 @@ def main(argv=None):
 
     # Find the path to the settings
     settings = opts.settings or \
-        os.path.join(os.path.expanduser('~'),'.openslides','settings.py')
+        os.path.join(os.path.expanduser('~'),'.openslides','openslides_personal_settings.py')
 
     # Create settings if necessary
     if not os.path.exists(settings):
