@@ -9,3 +9,6 @@ extras/website/*
 extras/website-old/*
 docs/_build/*
 *.egg-info
+.DS_Store
+.idea/
+
