@@ -23,7 +23,7 @@ static const char *site_code =
 
 static const char *run_openslides_code =
     "import openslides.main;"
-    "openslides.main.main()";
+    "openslides.main.win32_portable_main()";
 
 /* determine the path to the executable
  * NOTE: Py_GetFullProgramPath() can't be used because
