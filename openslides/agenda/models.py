@@ -74,7 +74,11 @@ class Item(MPTTModel, SlideMixin):
         return the title of this item.
         """
         if self.related_sid is None:
-            return self.title
+            if config["agenda_enable_auto_numbering"]:
+                return '%s %s %s' % (config['agenda_number_prefix'], self.item_no, self.title)
+            else:
+                return self.title
+
         return self.get_related_slide().get_agenda_title()
 
 
@@ -133,7 +137,8 @@ class Item(MPTTModel, SlideMixin):
         }
         return ItemOrderForm(initial=initial, prefix="i%d" % self.id)
 
-    def get_item_no(self):
+    @property
+    def item_no(self):
         if self.is_root_node():
             return '%s' % self.tree_id
         else:
@@ -183,12 +188,7 @@ class Item(MPTTModel, SlideMixin):
             return reverse('item_delete', args=[str(self.id)])
 
     def __unicode__(self):
-        enable_auto_numbering = config["agenda_enable_auto_numbering"]
-
-        if enable_auto_numbering:
-            return '%s %s  %s' % (config['agenda_number_prefix'], self.get_item_no(), self.get_title())
-        else:
-            return self.get_title()
+        return self.get_title()
 
     class Meta:
         permissions = (
