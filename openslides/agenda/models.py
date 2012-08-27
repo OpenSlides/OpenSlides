@@ -133,6 +133,23 @@ class Item(MPTTModel, SlideMixin):
         }
         return ItemOrderForm(initial=initial, prefix="i%d" % self.id)
 
+    def get_item_no(self):
+        if self.is_root_node():
+            return '%s' % self.tree_id
+        else:
+            return '%s.%s' % (self.parent.get_item_no(), self._get_prev_sibling_count() +1)
+
+    def _get_prev_sibling_count(self):
+        count_prev = 0
+        prev_sibling = self.get_previous_sibling()
+        while True:
+            if prev_sibling == None:
+                break
+            else:
+                count_prev = count_prev +1
+                prev_sibling = prev_sibling.get_previous_sibling()
+        return count_prev
+
     def delete(self, with_children=False):
         """
         Delete the Item.
@@ -166,7 +183,12 @@ class Item(MPTTModel, SlideMixin):
             return reverse('item_delete', args=[str(self.id)])
 
     def __unicode__(self):
-        return self.get_title()
+        enable_auto_numbering = config["agenda_enable_auto_numbering"]
+
+        if enable_auto_numbering:
+            return '%s %s  %s' % (config['agenda_number_prefix'], self.get_item_no(), self.get_title())
+        else:
+            return self.get_title()
 
     class Meta:
         permissions = (

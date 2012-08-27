@@ -12,6 +12,7 @@
 
 from django import forms
 from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
 from mptt.forms import TreeNodeChoiceField
 
@@ -53,3 +54,9 @@ class ItemOrderForm(forms.Form, CssClassMixin):
     parent = forms.IntegerField(
         widget=forms.HiddenInput(attrs={'class': 'menu-plid'}),
     )
+
+
+class ConfigForm(forms.Form, CssClassMixin):
+    agenda_enable_auto_numbering = forms.BooleanField(label=_("Enable automatic numbering"), required=False)
+    agenda_number_prefix = forms.CharField(label=_("Numbering prefix"), required=False)
+

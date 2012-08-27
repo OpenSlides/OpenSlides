@@ -21,7 +21,7 @@ from django.views.generic.detail import SingleObjectMixin
 
 from openslides.utils.pdf import stylesheet
 from openslides.utils.views import (TemplateView, RedirectView, UpdateView,
-    CreateView, DeleteView, PDFView, DetailView)
+    CreateView, DeleteView, PDFView, DetailView, FormView)
 from openslides.utils.template import Tab
 from openslides.utils.utils import html_strong
 
@@ -31,7 +31,7 @@ from openslides.projector.api import get_active_slide
 from openslides.projector.projector import Widget, SLIDE
 
 from openslides.agenda.models import Item
-from openslides.agenda.forms import ItemOrderForm, ItemForm
+from openslides.agenda.forms import ItemOrderForm, ItemForm, ConfigForm
 
 
 class Overview(TemplateView):
@@ -278,3 +278,25 @@ def get_widgets(request):
             }
         ),
     ]
+
+
+class Config(FormView):
+    """
+     Config page for the agenda app.
+    """
+
+    permission_required = 'config.can_manage_config'
+    form_class = ConfigForm
+    template_name = 'agenda/config.html'
+
+    def get_initial(self):
+        return {
+            'agenda_enable_auto_numbering': config['agenda_enable_auto_numbering'],
+            'agenda_number_prefix': config['agenda_number_prefix']
+        }
+
+    def form_valid(self, form):
+        config['agenda_enable_auto_numbering'] = form.cleaned_data['agenda_enable_auto_numbering']
+        config['agenda_number_prefix'] = form.cleaned_data['agenda_number_prefix']
+        messages.success(self.request, _('Agenda settings successfully saved.'))
+        return super(Config, self).form_valid(form)

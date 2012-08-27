@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-07-28 11:02+0200\n"
+"POT-Creation-Date: 2012-08-27 17:20+0200\n"
 "PO-Revision-Date: 2012-07-28 11:07+0200\n"
 "Last-Translator: Oskar Hahn <mail@oshahn.de>\n"
 "Language-Team: Deutsch <mail@oshahn.de>\n"
@@ -17,17 +17,25 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: openslides_settings.py:49
+#: openslides_settings.py:49 settings.py:49
 msgid "German"
 msgstr "Deutsch"
 
-#: openslides_settings.py:50
+#: openslides_settings.py:50 settings.py:50
 msgid "English"
 msgstr "Englisch"
 
 #: agenda/forms.py:28
 msgid "Parent item"
 msgstr "Elternelement"
+
+#: agenda/forms.py:59
+msgid "Enable automatic numbering"
+msgstr "Automatische Numerierung aktivieren"
+
+#: agenda/forms.py:60
+msgid "Numbering prefix"
+msgstr "Präfix für Nummerierung"
 
 #: agenda/models.py:42 application/forms.py:40 application/models.py:531
 #: application/templates/application/view.html:249 config/forms.py:61
@@ -54,15 +62,15 @@ msgstr "Abgeschlossen"
 msgid "Weight"
 msgstr "Gewichtung"
 
-#: agenda/models.py:173
+#: agenda/models.py:195
 msgid "Can see agenda"
 msgstr "Darf die Tagesordnung sehen"
 
-#: agenda/models.py:174
+#: agenda/models.py:196
 msgid "Can manage agenda"
 msgstr "Darf die Tagesordung verwalten"
 
-#: agenda/models.py:182 agenda/slides.py:20 agenda/views.py:239
+#: agenda/models.py:204 agenda/slides.py:20 agenda/views.py:239
 #: agenda/views.py:240 agenda/views.py:259
 #: agenda/templates/agenda/base_agenda.html:10
 #: agenda/templates/agenda/overview.html:8
@@ -136,6 +144,10 @@ msgstr "Ja, mit allen Kindelementen."
 #, python-format
 msgid "Do you really want to delete %s?"
 msgstr "Soll %s wirklich gelöscht werden?"
+
+#: agenda/views.py:301
+msgid "Agenda settings successfully saved."
+msgstr "Allgemeine Einstellungen erfolgreich gespeichert."
 
 #: agenda/templates/agenda/base_agenda.html:12
 msgid "All items"
@@ -1983,7 +1995,7 @@ msgstr "Passwort: %s"
 msgid "URL: %s"
 msgstr "URL: %s"
 
-#: participant/views.py:723
+#: participant/views.py:724
 msgid "Participants settings successfully saved."
 msgstr "Teilnehmer/innen-Einstellungen wurden erfolgreich gespeichert."
 
