@@ -72,7 +72,7 @@ def _fs2unicode(s):
     return s.decode(_fs_encoding)
 
 
-def main(argv=None, opt_defaults = None):
+def main(argv=None, opt_defaults=None):
     if argv is None:
         argv = sys.argv[1:]
 
@@ -261,7 +261,7 @@ def win32_portable_main(argv=None):
     #       python interpreter
     portable_dir = os.path.dirname(os.path.abspath(sys.executable))
     try:
-        fd, test_file = tempfile.mkstemp(dir = portable_dir)
+        fd, test_file = tempfile.mkstemp(dir=portable_dir)
     except OSError:
         portable_dir_writeable = False
     else:
@@ -291,7 +291,7 @@ def win32_portable_main(argv=None):
         default_settings = os.path.join(buf.value, "openslides",
             "openslides_personal_settings.py")
 
-    main(argv, opt_defaults = { "settings": default_settings })
+    main(argv, opt_defaults={ "settings": default_settings })
 
 
 if __name__ == "__main__":
