@@ -72,7 +72,7 @@ def _fs2unicode(s):
     return s.decode(_fs_encoding)
 
 
-def main(argv=None):
+def main(argv=None, opt_defaults=None):
     if argv is None:
         argv = sys.argv[1:]
 
@@ -89,6 +89,9 @@ def main(argv=None):
     parser.add_option("-s", "--settings", help="Path to the setting.")
     parser.add_option(
         "--no-reload", action="store_true", help="Do not reload the development server")
+
+    if not opt_defaults is None:
+        parser.set_defaults(**opt_defaults)
 
     opts, args = parser.parse_args(argv)
     if args:
@@ -248,6 +251,47 @@ def start_browser(url):
 
     t = threading.Thread(target=f)
     t.start()
+
+def win32_portable_main(argv=None):
+    """special entry point for the win32 portable version"""
+    import tempfile
+
+    # NOTE: sys.executable will be the path to openslides.exe
+    #       since it is essentially a small wrapper that embeds the
+    #       python interpreter
+    portable_dir = os.path.dirname(os.path.abspath(sys.executable))
+    try:
+        fd, test_file = tempfile.mkstemp(dir=portable_dir)
+    except OSError:
+        portable_dir_writeable = False
+    else:
+        portable_dir_writeable = True
+        os.close(fd)
+        os.unlink(test_file)
+
+    if portable_dir_writeable:
+        default_settings = os.path.join(portable_dir, "openslides",
+            "openslides_personal_settings.py")
+    else:
+        import ctypes
+
+        shell32 = ctypes.WinDLL("shell32.dll")
+        SHGetFolderPath = shell32.SHGetFolderPathW
+        SHGetFolderPath.argtypes = (ctypes.c_void_p, ctypes.c_int,
+            ctypes.c_void_p, ctypes.c_uint32, ctypes.c_wchar_p)
+        SHGetFolderPath.restype = ctypes.c_uint32
+
+        CSIDL_LOCAL_APPDATA = 0x001c
+        MAX_PATH = 260
+
+        buf = ctypes.create_unicode_buffer(MAX_PATH)
+        res = SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, 0, 0, buf)
+        if res != 0:
+            raise Exception("Could not deterime APPDATA path")
+        default_settings = os.path.join(buf.value, "openslides",
+            "openslides_personal_settings.py")
+
+    main(argv, opt_defaults={ "settings": default_settings })
 
 
 if __name__ == "__main__":
