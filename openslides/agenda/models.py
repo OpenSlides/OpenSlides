@@ -142,18 +142,12 @@ class Item(MPTTModel, SlideMixin):
         if self.is_root_node():
             return '%s' % self.tree_id
         else:
-            return '%s.%s' % (self.parent.get_item_no(), self._get_prev_sibling_count() +1)
+            return '%s.%s' % (self.parent.item_no, self.sibling_count)
 
-    def _get_prev_sibling_count(self):
-        count_prev = 0
-        prev_sibling = self.get_previous_sibling()
-        while True:
-            if prev_sibling == None:
-                break
-            else:
-                count_prev = count_prev +1
-                prev_sibling = prev_sibling.get_previous_sibling()
-        return count_prev
+    @property
+    def sibling_count(self):
+        return self.get_siblings(True).filter(lft__lte=self.lft).count()
+
 
     def delete(self, with_children=False):
         """
