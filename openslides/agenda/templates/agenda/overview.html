@@ -61,7 +61,6 @@
             <tr>
                 <th width="50">{% trans "Done" %}</th>
                 <th>{% trans "Item" %}</th>
-                <th width="50">{% trans "Duration" %}</th>
                 {% if perms.agenda.can_manage_agenda %}
                     <th width="200">{% trans "Comment" %}</th>
                 {% endif %}
@@ -77,7 +76,6 @@
                 <td>
                     <strong>{% trans "Agenda" %}</strong>
                 </td>
-                <td></td>
                 {% if perms.agenda.can_manage_agenda %}
                 <td></td>
                 {% endif %}
