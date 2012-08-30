@@ -4,7 +4,7 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block title %}{{ block.super }} - {% trans "Application" %} {{ application.number }}{% endblock %}
+{% block title %}{{ block.super }} - {% trans "Motion" %} {{ application.number }}{% endblock %}
 {% block content %}
     <div id="sidebar">
     <div class="box">
@@ -53,16 +53,16 @@
         {% endwith %}
 
         <p><b>{% trans "Submitter" %}:</b><br>
-        {{ application.submitter.profile }}
+        {{ application.submitter }}
         </p>
     </div>
     </div>
 
     <h1>
     {% if application.number != None %}
-        {% trans "Application No." %} {{ application.number }}
+        {% trans "Motion No." %} {{ application.number }}
     {% else %}
-        {% trans "Application" %} <i>[{% trans "no number" %}]</i>
+        {% trans "Motion" %} <i>[{% trans "no number" %}]</i>
     {% endif %}
     </h1>
     <b>{{ application.public_version.title }}</b>

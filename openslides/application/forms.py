@@ -11,29 +11,11 @@
 """
 
 from django import forms
-from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
 from openslides.utils.forms import CssClassMixin
+from openslides.utils.person import PersonFormField, MultiplePersonFormField
 from openslides.application.models import Application
-
-
-class UserModelChoiceField(forms.ModelChoiceField):
-    """
-    Extend ModelChoiceField for users so that the choices are
-    listed as 'first_name last_name' instead of just 'username'.
-    """
-    def label_from_instance(self, obj):
-        return obj.get_full_name()
-
-
-class UserModelMultipleChoiceField(forms.ModelMultipleChoiceField):
-    """
-    Extend ModelMultipleChoiceField for users so that the choices are
-    listed as 'first_name last_name' instead of just 'username'.
-    """
-    def label_from_instance(self, obj):
-        return obj.get_full_name()
 
 
 class ApplicationForm(forms.Form, CssClassMixin):
@@ -50,11 +32,7 @@ class ApplicationFormTrivialChanges(ApplicationForm):
 
 
 class ApplicationManagerForm(forms.ModelForm, CssClassMixin):
-    submitter = UserModelChoiceField(
-        queryset=User.objects.all().exclude(profile=None).
-        order_by("first_name"),
-        label=_("Submitter"),
-    )
+    submitter = PersonFormField()
 
     class Meta:
         model = Application
@@ -62,11 +40,8 @@ class ApplicationManagerForm(forms.ModelForm, CssClassMixin):
 
 
 class ApplicationManagerFormSupporter(ApplicationManagerForm):
-    supporter = UserModelMultipleChoiceField(
-        queryset=User.objects.all().exclude(profile=None).
-        order_by("first_name"),
-        required=False, label=_("Supporters"),
-    )
+    # TODO: Do not show the submitter in the user-list
+    supporter = MultiplePersonFormField(required=False, label=_("Supporters"))
 
 
 class ApplicationImportForm(forms.Form, CssClassMixin):
@@ -76,16 +51,16 @@ class ApplicationImportForm(forms.Form, CssClassMixin):
     )
     import_permitted = forms.BooleanField(
         required=False,
-        label=_("Import applications with status \"permitted\""),
-        help_text=_('Set the initial status for each application to '
-            '"permitted"'),
+        label=_("Import motions with status \"authorized\""),
+        help_text=_('Set the initial status for each motion to '
+            '"authorized"'),
     )
 
 
 class ConfigForm(forms.Form, CssClassMixin):
     application_min_supporters = forms.IntegerField(
         widget=forms.TextInput(attrs={'class':'small-input'}),
-        label=_("Number of (minimum) required supporters for a application"),
+        label=_("Number of (minimum) required supporters for a motion"),
         initial=4,
         min_value=0,
         max_value=8,
@@ -94,7 +69,7 @@ class ConfigForm(forms.Form, CssClassMixin):
     application_preamble = forms.CharField(
         widget=forms.TextInput(),
         required=False,
-        label=_("Application preamble")
+        label=_("Motion preamble")
     )
     application_pdf_ballot_papers_selection = forms.ChoiceField(
         widget=forms.Select(),
@@ -115,17 +90,17 @@ class ConfigForm(forms.Form, CssClassMixin):
     application_pdf_title = forms.CharField(
         widget=forms.TextInput(),
         required=False,
-        label=_("Title for PDF document (all applications)")
+        label=_("Title for PDF document (all motions)")
     )
     application_pdf_preamble = forms.CharField(
         widget=forms.Textarea(),
         required=False,
-        label=_("Preamble text for PDF document (all applications)")
+        label=_("Preamble text for PDF document (all motions)")
     )
 
     application_allow_trivial_change = forms.BooleanField(
         label=_("Allow trivial changes"),
-        help_text=_('Warning: Trivial changes undermine the application ' \
-        'permission system.'),
+        help_text=_('Warning: Trivial changes undermine the motions '
+            'autorisation system.'),
         required=False,
     )

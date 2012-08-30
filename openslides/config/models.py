@@ -81,7 +81,7 @@ def default_config(sender, key, **kwargs):
     return {
         'event_name': 'OpenSlides',
         'event_description':
-            _('Presentation system for agenda, applications and elections'),
+            _('Presentation system for agenda, motions and elections'),
         'event_date': '',
         'event_location': '',
         'event_organizer': '',

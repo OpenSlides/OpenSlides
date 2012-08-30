@@ -105,12 +105,21 @@ class Widget(object):
     """
     Class for a Widget for the Projector-Tab.
     """
-    def __init__(self, name, html=None, template=None, context={}):
+    def __init__(self, name, html=None, template=None, context={},
+            permission_required=None, display_name=None, default_column=1):
         self.name = name
+        if display_name is None:
+            self.display_name = name.capitalize()
+        else:
+            self.display_name = display_name
+
         if html is not None:
             self.html = html
         elif template is not None:
             self.html = render_to_string(template, context)
+
+        self.permission_required = permission_required
+        self.default_column = default_column
 
     def get_name(self):
         return self.name.lower()
@@ -119,7 +128,10 @@ class Widget(object):
         return self.html
 
     def get_title(self):
-        return self.name.capitalize()
+        return self.display_name
+
+    def __repr__(self):
+        return unicode(self.display_name)
 
 
 @receiver(projector_overlays, dispatch_uid="projector_countdown")

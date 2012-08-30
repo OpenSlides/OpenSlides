@@ -4,7 +4,7 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block title %}{{ block.super }} – {% trans "Application" %} "{{ version.title }}"{% endblock %}
+{% block title %}{{ block.super }} – {% trans "Motion" %} "{{ version.title }}"{% endblock %}
 
 
 {% block submenu %}
@@ -16,22 +16,22 @@
 <div id="sidebar">
     <div class="box">
     <h4>{% trans "Submitter" %}:</h4>
-    {{ application.submitter.profile }}
-    {% if user == application.submitter %}
+    {{ application.submitter }}
+    {% if user == application.submitter.user %}
     <img src="{% static 'images/icons/user-information.png' %}" title="{% trans 'You!' %}">
     {% endif %}
 
     {% if min_supporters > 0 %}
-    <h4>{% trans "Supporters" %}: *</h4>
-    {% if application.supporter.count == 0 %}
-    -
-    {% else %}
-        <ol>
-        {% for supporter in application.supporter.all %}
-            <li> {{ supporter.profile }}</li>
-        {% endfor %}
-        </ol>
-    {% endif %}
+        <h4>{% trans "Supporters" %}: *</h4>
+        {% if not application.supporters %}
+        -
+        {% else %}
+            <ol>
+            {% for supporter in application.supporters %}
+                <li> {{ supporter }}</li>
+            {% endfor %}
+            </ol>
+        {% endif %}
     {% endif %}
 
     <h4>{% trans "Status" %}:</h4>
@@ -113,7 +113,7 @@
     {{ application.creation_time }}
 
     <p></p>
-    {% if "wit" in actions and user == application.submitter %}
+    {% if "wit" in actions and user == application.submitter.user %}
     <p></p>
         <a href='{% url application_set_status application.id 'wit' %}'>
             <span class="button"><span class="icon revert">{% trans 'Withdraw' %}</span></span>
@@ -143,7 +143,7 @@
 
     {% if perms.application.can_manage_application %}
     <div class="box">
-    <h4><b>{% trans "Manage application" %}</b></h4>
+    <h4><b>{% trans "Manage motion" %}</b></h4>
 
     {% if "pub" in actions or "per" in actions or "nop" in actions or "setnumber" in actions %}
         <h4>{% trans "Formal validation" %}:</h4>
@@ -206,7 +206,7 @@
 <div id="main">
     <h1>
         {{ version.title }}
-        ({% trans "Application" %}
+        ({% trans "Motion" %}
         {% if application.number != None %}
             {{ application.number }})
         {% else %}
@@ -221,11 +221,11 @@
         {% if version == application.public_version %}
             {% trans "This is not the newest version." %} <a href="{% url application_view_newest application.id %}">{% trans "Go to version" %} {{ application.last_version.aid }}.</a>
         {% else %}
-            {% trans "This is not the permitted version." %} <a href="{% url application_view application.id %}">{% trans "Go to version" %} {{ application.public_version.aid }}.</a>
+            {% trans "This is not the authorized version." %} <a href="{% url application_view application.id %}">{% trans "Go to version" %} {{ application.public_version.aid }}.</a>
         {% endif %}
     {% endif %}
 
-    <h2>{% trans "Application" %}:</h2>
+    <h2>{% trans "Motion" %}:</h2>
 
     {{ version.text|linebreaks }}
 
@@ -256,7 +256,7 @@
         <td style="white-space:nowrap;">
         {% if application.status != "pub" %}
         {% if revision == application.permitted %}
-             <img title="{% trans 'Version permitted' %}" src="{% static 'images/icons/accept.png' %}">
+             <img title="{% trans 'Version authorized' %}" src="{% static 'images/icons/accept.png' %}">
         {% else %}
              {% if perms.application.can_manage_application %}
                  <a href="{% url application_version_permit revision.id %}"><img title="{% trans 'Permit Version' %}" src="{% static 'images/icons/accept-grey.png' %}"></a>

@@ -21,36 +21,36 @@
             {% endfor %}
         </tr>
         {% for form in forms %}
-        <tr>
-            <td>{{ form.option }}</td>
-            {% for value in form %}
-            <td>
-                {{ value.errors }}
-                {{ value }}
-            </td>
+            <tr>
+                <td>{{ form.option }}</td>
+                {% for value in form %}
+                <td>
+                    {{ value.errors }}
+                    {{ value }}
+                </td>
+                {% endfor %}
+            </tr>
+        {% endfor %}
+        <tr class="total">
+            <td>{% trans "Invalid votes" %}</td>
+            {% for value in poll.get_vote_values %}
+                {% if forloop.first %}
+                    <td>{{ pollform.votesinvalid.errors }}{{ pollform.votesinvalid }}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
             {% endfor %}
         </tr>
-        {% endfor %}
-            <tr class="total">
-                <td>{% trans "Invalid votes" %}</td>
-                {% for value in poll.get_vote_values %}
-                    {% if forloop.first %}
-                        <td>{{ pollform.votesinvalid.errors }}{{ pollform.votesinvalid }}</td>
-                    {% else %}
-                        <td></td>
-                    {% endif %}
-                {% endfor %}
-            </tr>
-            <tr class="total">
-                <td>{% trans "Votes cast" %}</td>
-                {% for value in poll.get_vote_values %}
-                    {% if forloop.first %}
-                        <td>{{ pollform.votescast.errors }}{{ pollform.votescast }}</td>
-                    {% else %}
-                        <td></td>
-                    {% endif %}
-                {% endfor %}
-            </tr>
+        <tr class="total">
+            <td>{% trans "Votes cast" %}</td>
+            {% for value in poll.get_vote_values %}
+                {% if forloop.first %}
+                    <td>{{ pollform.votescast.errors }}{{ pollform.votescast }}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+            {% endfor %}
+        </tr>
     </table>
 
     <p>

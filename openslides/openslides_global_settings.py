@@ -21,7 +21,6 @@ def _fs2unicode(s):
 
 SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 
-AUTH_PROFILE_MODULE = 'participant.Profile'
 AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',
     'openslides.utils.auth.AnonymousAuth',)
 
@@ -30,18 +29,6 @@ LOGIN_REDIRECT_URL = '/'
 
 SESSION_COOKIE_NAME = 'OpenSlidesSessionID'
 
-DBPATH = _fs2unicode(os.path.join(os.path.join(SITE_ROOT, '..'), 'database.db'))
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': DBPATH,
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
-    }
-}
 
 ugettext = lambda s: s
 
@@ -58,6 +45,10 @@ USE_I18N = True
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale
 USE_L10N = True
+
+LOCALE_PATHS = (
+    _fs2unicode(os.path.join(SITE_ROOT, 'locale')),
+)
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
@@ -102,7 +93,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'openslides.participant.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.locale.LocaleMiddleware',
 )

@@ -15,7 +15,9 @@ from time import time
 
 from django.conf import settings
 from django.contrib import messages
+from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
+from django.db import transaction
 from django.db.models import Q
 from django.dispatch import receiver
 from django.utils.datastructures import SortedDict
@@ -30,73 +32,25 @@ from openslides.utils.views import (TemplateView, RedirectView, CreateView,
 from openslides.config.models import config
 
 from openslides.projector.api import (get_active_slide, set_active_slide,
-    projector_message_set, projector_message_delete, get_slide_from_sid)
+    projector_message_set, projector_message_delete, get_slide_from_sid,
+    get_all_widgets)
+from openslides.projector.forms import SelectWidgetsForm
 from openslides.projector.models import ProjectorOverlay, ProjectorSlide
 from openslides.projector.projector import SLIDE, Widget
 from openslides.projector.signals import projector_overlays
 
 
-class ControlView(TemplateView, AjaxMixin):
+class DashboardView(TemplateView, AjaxMixin):
     """
     Overview over all possible slides, the overlays and a liveview.
     """
-    template_name = 'projector/control.html'
-    permission_required = 'projector.can_manage_projector'
-
-    def get_projector_overlays(self):
-        overlays = []
-        for receiver, name in projector_overlays.send(sender='registerer',
-                                register=True):
-            if name is not None:
-                try:
-                    projector_overlay = ProjectorOverlay.objects.get(
-                        def_name=name)
-                except ProjectorOverlay.DoesNotExist:
-                    projector_overlay = ProjectorOverlay(def_name=name,
-                        active=False)
-                    projector_overlay.save()
-                overlays.append(projector_overlay)
-        return overlays
-
-    def post(self, request, *args, **kwargs):
-        if 'message' in request.POST:
-            projector_message_set(request.POST['message_text'])
-        elif 'message-clean' in request.POST:
-            projector_message_delete()
-        if request.is_ajax():
-            return self.ajax_get(request, *args, **kwargs)
-        return self.get(request, *args, **kwargs)
-
-    def get_ajax_context(self, **kwargs):
-        return {
-            'overlay_message': config['projector_message'],
-        }
+    template_name = 'projector/dashboard.html'
+    permission_required = 'projector.can_see_dashboard'
 
     def get_context_data(self, **kwargs):
-        context = super(ControlView, self).get_context_data(**kwargs)
+        context = super(DashboardView, self).get_context_data(**kwargs)
 
-        widgets = SortedDict()
-        for app in settings.INSTALLED_APPS:
-            try:
-                mod = import_module(app + '.views')
-            except ImportError:
-                continue
-            appname = mod.__name__.split('.')[0]
-            try:
-                modul_widgets = mod.get_widgets(self.request)
-            except AttributeError:
-                continue
-
-            for widget in modul_widgets:
-                widgets[widget.get_name()] = widget
-
-
-        context.update({
-            'countdown_time': config['countdown_time'],
-            'countdown_state' : config['countdown_state'],
-            'overlays': self.get_projector_overlays(),
-            'widgets': widgets,
-        })
+        context['widgets'] = get_all_widgets(self.request, session=True)
         return context
 
 
@@ -182,7 +136,7 @@ class ActivateView(RedirectView):
     Activate a Slide.
     """
     permission_required = 'projector.can_manage_projector'
-    url = 'projector_control'
+    url = 'dashboard'
     allow_ajax = True
 
     def pre_redirect(self, request, *args, **kwargs):
@@ -194,12 +148,54 @@ class ActivateView(RedirectView):
         config['bigger'] = 100
 
 
+class SelectWidgetsView(TemplateView):
+    """
+    Show a Form to Select the widgets.
+    """
+    permission_required = 'projector.can_see_dashboard'
+    template_name = 'projector/select_widgets.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SelectWidgetsView, self). get_context_data(**kwargs)
+        widgets = get_all_widgets(self.request)
+        activated_widgets = self.request.session.get('widgets', {})
+        for name, widget in widgets.items():
+            initial = {'widget': activated_widgets.get(name, True)}
+            if self.request.method == 'POST':
+                widget.form = SelectWidgetsForm(self.request.POST, prefix=name,
+                                                initial=initial)
+            else:
+                widget.form = SelectWidgetsForm(prefix=name, initial=initial)
+
+        context['widgets'] = widgets
+        return context
+
+    @transaction.commit_manually
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        activated_widgets = self.request.session.get('widgets', {})
+
+        transaction.commit()
+        for name, widget in context['widgets'].items():
+            if widget.form.is_valid():
+                activated_widgets[name] = widget.form.cleaned_data['widget']
+            else:
+                transaction.rollback()
+                messages.error(request, _('Errors in the form'))
+                break
+        else:
+            transaction.commit()
+            self.request.session['widgets'] = activated_widgets
+        return self.render_to_response(context)
+
+
+
 class ProjectorEdit(RedirectView):
     """
     Scale or scroll the projector.
     """
     permission_required = 'projector.can_manage_projector'
-    url = 'projector_control'
+    url = 'dashboard'
     allow_ajax = True
 
     def pre_redirect(self, request, *args, **kwargs):
@@ -223,7 +219,7 @@ class CountdownEdit(RedirectView):
     Start, stop or reset the countdown.
     """
     permission_required = 'projector.can_manage_projector'
-    url = 'projector_control'
+    url = 'dashboard'
     allow_ajax = True
 
     def pre_redirect(self, request, *args, **kwargs):
@@ -269,11 +265,33 @@ class CountdownEdit(RedirectView):
         }
 
 
+class OverlayMessageView(RedirectView):
+    """
+    Sets or clears the overlay message
+    """
+    url = 'dashboard'
+    allow_ajax = True
+    permission_required = 'projector.can_manage_projector'
+
+    def pre_post_redirect(self, request, *args, **kwargs):
+        if 'message' in request.POST:
+            projector_message_set(request.POST['message_text'])
+        elif 'message-clean' in request.POST:
+            projector_message_delete()
+
+
+    def get_ajax_context(self, **kwargs):
+        return {
+            'overlay_message': config['projector_message'],
+        }
+
+
+
 class ActivateOverlay(RedirectView):
     """
     Activate or deactivate an overlay.
     """
-    url = 'projector_control'
+    url = 'dashboard'
     allow_ajax = True
     permission_required = 'projector.can_manage_projector'
 
@@ -308,7 +326,7 @@ class CustomSlideCreateView(CreateView):
     template_name = 'projector/new.html'
     model = ProjectorSlide
     context_object_name = 'customslide'
-    success_url = 'projector_control'
+    success_url = 'dashboard'
     apply_url = 'customslide_edit'
 
 
@@ -320,7 +338,7 @@ class CustomSlideUpdateView(UpdateView):
     template_name = 'projector/new.html'
     model = ProjectorSlide
     context_object_name = 'customslide'
-    success_url = 'projector_control'
+    success_url = 'dashboard'
     apply_url = 'customslide_edit'
 
 
@@ -330,7 +348,7 @@ class CustomSlideDeleteView(DeleteView):
     """
     permission_required = 'projector.can_manage_projector'
     model = ProjectorSlide
-    url = 'projector_control'
+    url = 'dashboard'
 
 
 def register_tab(request):
@@ -339,24 +357,66 @@ def register_tab(request):
     """
     selected = True if request.path.startswith('/projector/') else False
     return Tab(
-        title=_('Projector'),
-        url=reverse('projector_control'),
-        permission=request.user.has_perm('projector.can_manage_projector'),
+        title=_('Dashboard'),
+        url=reverse('dashboard'),
+        permission=request.user.has_perm('projector.can_manage_projector') or
+            request.user.has_perm('projector.can_see_dashboard'),
         selected=selected,
     )
 
 
 def get_widgets(request):
     """
-    Return the custom slide widget.
+    Return the widgets of the projector app
     """
-    return [
-        Widget(
-            name='projector',
-            template='projector/widget.html',
-            context={
-                'slides': ProjectorSlide.objects.all(),
-                'welcomepage_is_active': not bool(config["presentation"]),
-            }
-        ),
-    ]
+    widgets = []
+
+    # Projector live view widget
+    widgets.append(Widget(
+        name='live_view',
+        display_name=_('Projector live view'),
+        template='projector/live_view_widget.html',
+        permission_required='projector.can_see_projector',
+        default_column=2))
+
+    # Overlay Widget
+    overlays = []
+    for receiver, name in projector_overlays.send(sender='registerer',
+                                                  register=True):
+        if name is not None:
+            try:
+                projector_overlay = ProjectorOverlay.objects.get(
+                    def_name=name)
+            except ProjectorOverlay.DoesNotExist:
+                projector_overlay = ProjectorOverlay(def_name=name,
+                    active=False)
+                projector_overlay.save()
+            overlays.append(projector_overlay)
+
+    context = {
+            'overlays':overlays,
+            'countdown_time': config['countdown_time'],
+            'countdown_state' : config['countdown_state']}
+    context.update(csrf(request))
+    widgets.append(Widget(
+        name='overlays',
+        display_name=_('Manage Overlays'),
+        template='projector/overlay_widget.html',
+        permission_required='projector.can_manage_projector',
+        default_column=2,
+        context=context))
+
+
+    # Custom slide widget
+    context = {
+        'slides': ProjectorSlide.objects.all(),
+        'welcomepage_is_active': not bool(config["presentation"])}
+    widgets.append(Widget(
+        name='custom_slide',
+        display_name=_('Custom Slide'),
+        template='projector/custom_slide_widget.html',
+        context=context,
+        permission_required='projector.can_manage_projector',
+        default_column=2))
+
+    return widgets

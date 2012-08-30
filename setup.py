@@ -11,6 +11,7 @@ from setuptools import setup
 from setuptools import find_packages
 from openslides import get_version
 
+
 setup(
     name='openslides',
     description='Presentation-System',
@@ -35,8 +36,14 @@ setup(
         'versiontools >= 1.6',
     ],
     install_requires=[
-        'django >= 1.3',
+        'django >= 1.4',
+        'django-mptt',
         'reportlab',
         'pil',
-    ]
+    ],
+    entry_points={
+        'console_scripts': [
+            'openslides = openslides.main:main',
+        ],
+    },
 )

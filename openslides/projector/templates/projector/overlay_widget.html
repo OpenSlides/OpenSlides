@@ -1,0 +1,24 @@
+{% load i18n %}
+{% load tags %}
+
+<ul>
+    {% for overlay in overlays %}
+        <li>
+            <a id="{{ overlay.def_name }}_inactive" href="{% url projector_overlay_activate overlay.def_name %}" class="overlay"{% if overlay.active %} style="display:none"{% endif %}>
+                <div></div>
+            </a>
+            <a id="{{ overlay.def_name }}_active" href="{% url projector_overlay_deactivate overlay.def_name %}" class="overlay active"{% if not overlay.active %} style="display:none"{% endif %}>
+                <div></div>
+            </a>
+
+            {{ overlay }}:
+            {# TODO: Call the html via overlay.html #}
+            {% if overlay.def_name == "Countdown" %}
+                {% include 'projector/control_countdown.html' %}
+            {% endif %}
+            {% if overlay.def_name == "Message" %}
+                {% include 'projector/control_overlay_message.html' %}
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>

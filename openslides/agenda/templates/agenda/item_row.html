@@ -23,6 +23,11 @@
         <a href="{% model_url item 'view' %}">{{ item }}</a>
         {{ item.get_title_supplement|safe }}
     </td>
+    <td>
+        {% if item.durtion %}
+            {{ item.duration }}
+        {% endif %}
+    </td>
     {% if perms.agenda.can_manage_agenda %}
     <td>
         {{ item.comment|first_line }}

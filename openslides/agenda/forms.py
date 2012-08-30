@@ -12,7 +12,6 @@
 
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
 from mptt.forms import TreeNodeChoiceField
 
