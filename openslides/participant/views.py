@@ -495,6 +495,7 @@ def register_tab(request):
     selected = request.path.startswith('/participant/')
     return Tab(
         title=_('Participants'),
+        app='participant',
         url=reverse('user_overview'),
         permission=request.user.has_perm('participant.can_see_participant') or
             request.user.has_perm('participant.can_manage_participant'),

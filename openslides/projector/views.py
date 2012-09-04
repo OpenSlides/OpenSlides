@@ -358,6 +358,7 @@ def register_tab(request):
     selected = True if request.path.startswith('/projector/') else False
     return Tab(
         title=_('Dashboard'),
+        app='dashboard',
         url=reverse('dashboard'),
         permission=request.user.has_perm('projector.can_manage_projector') or
             request.user.has_perm('projector.can_see_dashboard'),

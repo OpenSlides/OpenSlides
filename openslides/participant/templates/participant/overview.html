@@ -61,7 +61,7 @@
     {% else %}
         {{ users.count }} {% trans "of" %} {{ allusers }} {% trans "Participants" %} (= {{ percent }} %)
     {% endif %}
-    <table>
+    <table class="table table-striped table-bordered">
         <tr>
             <th><a href="?sort=first_name&reverse={% if 'first_name' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "First Name" %}</a></th>
             <th><a href="?sort=last_name&reverse={% if 'last_name' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Last Name" %}</a></th>

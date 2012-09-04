@@ -16,10 +16,7 @@
     <h1>{% trans "Login" %}</h1>
 
     {% if form.errors %}
-        <div class="notification error">
-            <a class="close" href="#">
-            <img alt="close" title="{% trans 'Close this notification' %}" src="{% static 'images/icons/cross.png' %}">
-            </a>
+        <div class="alert alert-error">
             {% for msg in form.non_field_errors %}
                 <em>{{ msg }}</em>
                 {% if not forloop.last %}<br />{% endif %}
@@ -29,18 +26,10 @@
         </div>
     {% endif %}
     {% if first_time_message %}
-        <div class="notification info">
-            <a class="close" href="#">
-            <img alt="close" title="{% trans 'Close this notification' %}" src="{% static 'images/icons/cross.png' %}">
-            </a>
+        <div class="alert alert-info">
             <em>{{ first_time_message|safe }}</em>
         </div>
     {% endif %}
-    <script>
-        $("div.notification").click(function () {
-            $(this).hide("fast");
-        });
-    </script>
     <form method="post" action="{% url user_login %}{% if next %}?next={{ next }}{% endif %}">
         {% csrf_token %}
         <table>

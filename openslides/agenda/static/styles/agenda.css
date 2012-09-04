@@ -18,7 +18,3 @@
 .close_link.closed span {
     background-image: url(../images/icons/close.png);
 }
-
-table#menu-overview {
-    white-space: nowrap;
-}

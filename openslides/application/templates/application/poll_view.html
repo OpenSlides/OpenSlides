@@ -1,22 +1,48 @@
-{% extends 'application/base_application.html' %}
+{% extends 'base.html' %}
 
 {% load i18n %}
 {% load staticfiles %}
 
 {% block title %}
-    {{ block.super }} – {% trans "Motion" %} "{{ application.public_version.title }}"
-    – {{ ballot }}. {% trans "Vote" %}
+    {{ block.super }} - {% trans "Motion" %} {{ application.number }}, {{ ballot }}. {% trans "Vote" %}
 {% endblock %}
 
 {% block content %}
-    <h1>{{ application.public_version.title }} ({% trans "Motion" %}
-    {{ application.number }}) – {{ ballot }}. {% trans "Vote" %}</h1>
-    <i class="helptext">{% trans "Special values" %}: -1 = {% trans 'majority' %}; -2 = {% trans 'undocumented' %}</i>
+<h1>
+    {{ application.title }}
+    <small>
+    {% trans "Motion" %} {{ application.number }}, {{ ballot }}. {% trans "Vote" %}
+    </small>
+    <small class="pull-right">
+    <div class="btn-toolbar">
+        <a href="{% url application_view application.id %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to motion" %}</a>
+        <div class="btn-group">
+            <a data-toggle="dropdown" href="#" class="btn btn-mini dropdown-toggle">
+                {% trans 'More actions' %}
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu pull-right">
+                <!-- delete -->
+                {% if "delete" in actions %}
+                    <li><a href="{% url application_poll_delete poll.id %}"><i class="icon-remove"></i> {% trans 'Delete Vote' %}</a></li>
+                {% endif %}
+                <!-- activate projector -->
+                {% if perms.projector.can_manage_projector %}
+                    <li>
+                        <a class="activate_link {% if item.active %}active{% endif %}" href="{% url projector_activate_slide application.sid  %}"><i class="icon-facetime-video"></i> {% trans 'Show Application' %}</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+    </small>
+</h1>
+
+<i class="helptext">{% trans "Special values" %}: -1 = {% trans 'majority' %}; -2 = {% trans 'undocumented' %}</i>
     <form action="" method="post" class="small-form">{% csrf_token %}
         {{ pre_form }}
         <span id="poll_id" style="display:none">{{ poll.id }}</span>
-
-        <table class="table" style="width: auto;">
+        <table class="table table-striped table-bordered" style="width: auto;">
             <tr>
                 <th>{% trans "Option" %}</th>
                 <th>{% trans "Votes" %}</th>
@@ -36,29 +62,24 @@
                 <td>{{ pollform.votescast.errors }}{{ pollform.votescast }}</td>
             </tr>
         </table>
-
         {{ post_form }}
-
+        <!-- ballot paper button -->
         <p>
-        <a href='{% url print_application_poll poll.id %}'>
-        <button class="button" type="button" onclick="window.location='{% url print_application_poll poll.id %}'">
-            <span class="icon pdf">{% trans 'Ballot paper as PDF' %}</span>
-        </button>
+        <a href='{% url print_application_poll poll.id %}' class="btn">
+            <i class="icon-print"></i> {% trans 'Ballot paper as PDF' %}
         </a>
         </p>
-
-        <p>
-        <button class="button" type="submit">
-            <span class="icon ok">{% trans 'Save' %}</span>
-        </button>
-        <button class="button" type="submit" name="apply">
-            <span class="icon apply">{% trans 'Apply' %}</span>
-        </button>
-        <a href='{% url application_view application.id %}'>
-        <button class="button" type="button" onclick="window.location='{% url application_view application.id %}'">
-            <span class="icon cancel">{% trans 'Cancel' %}</span>
-        </button>
-        </a>
-        </p>
+        <!-- Control buttons -->
+        <div class="control-group">
+            <button type="submit" class="btn btn-primary">
+                {% trans 'Save' %}
+            </button>
+            <button type="submit" name="apply" class="btn">
+                {% trans 'Apply' %}
+            </button>
+            <a href='{% url application_view application.id %}' class="btn">
+                {% trans 'Cancel' %}
+            </a>
+        </div>
     </form>
 {% endblock %}

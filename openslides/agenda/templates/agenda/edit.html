@@ -1,4 +1,4 @@
-{% extends "agenda/base_agenda.html" %}
+{% extends "base.html" %}
 
 {% load i18n %}
 
@@ -12,26 +12,42 @@
 {% endblock %}
 
 {% block content %}
+    <h1>
     {% if item %}
-        <h1>{% trans "Edit item" %}</h1>
+        {% trans "Edit item" %}
     {% else %}
-        <h1>{% trans "New item" %}</h1>
+        {% trans "New item" %}
     {% endif %}
+    <small class="pull-right">
+    <a href="{% url item_overview %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+    </small>
+    </h1>
     <form action="" method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <p>
-        <button class="button" type="submit">
-            <span class="icon ok">{% trans 'Save' %}</span>
-        </button>
-        <button class="button" type="submit" name="apply">
-            <span class="icon apply">{% trans 'Apply' %}</span>
-        </button>
-        <a href='{% url item_overview %}'>
-        <button class="button" type="button" onclick="window.location='{% url item_overview %}'">
-            <span class="icon cancel">{% trans 'Cancel' %}</span>
-        </button>
-        </a>
-        </p>
+        {% for field in form %}
+        <div class="control-group{% if field.errors %} error{% endif%}">
+            <label for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}:</label>
+            {{ field }}
+            {% if field.errors %}
+            <span class="help-inline">{{ field.errors }}</span>
+            {% endif %}
+            {% if field.help_text %}
+            <span class="help-inline">{{ field.help_text }})</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <div class="control-group">
+            <button class="btn btn-primary" type="submit">
+                {% trans 'Save' %}
+            </button>
+            <button class="btn" type="submit" name="apply">
+                {% trans 'Apply' %}
+            </button>
+            <a href='{% url item_overview %}'>
+            <button class="btn" type="button" onclick="window.location='{% url item_overview %}'">
+                {% trans 'Cancel' %}</span>
+            </button>
+            </a>
+        </div>
         <small>* {% trans "required" %}</small>
     </form>
 {% endblock %}

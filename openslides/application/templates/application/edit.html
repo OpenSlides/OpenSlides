@@ -1,4 +1,4 @@
-{% extends "application/base_application.html" %}
+{% extends "base.html" %}
 
 {% load i18n %}
 
@@ -12,28 +12,43 @@
 {% endblock %}
 
 {% block content %}
+    <h1>
     {% if application %}
-        <h1>{% trans "Edit motion" %}</h1>
+        {% trans "Edit motion" %}
     {% else %}
-        <h1>{% trans "New motion" %}</h1>
+        {% trans "New motion" %}
     {% endif %}
-
+    <small class="pull-right">
+    <a href="{% url application_overview %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+    </small>
+    </h1>
     <form action="" method="post">{% csrf_token %}
-        {{ form.as_p }}
+        {% for field in form %}
+        <div class="control-group{% if field.errors %} error{% endif%}">
+            <label for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}:</label>
+            {{ field }}
+            {% if field.errors %}
+            <span class="help-inline">{{ field.errors }}</span>
+            {% endif %}
+            {% if field.help_text %}
+            <span class="help-inline">{{ field.help_text }})</span>
+            {% endif %}
+        </div>
+        {% endfor %}
         {{ managerform.as_p }}
-        <p>
-        <button class="button" type="submit">
-            <span class="icon ok">{% trans 'Save' %}</span>
+        <div class="control-group">
+        <button class="btn btn-primary" type="submit">
+            {% trans 'Save' %}
         </button>
-        <button class="button" type="submit" name="apply">
-            <span class="icon apply">{% trans 'Apply' %}</span>
+        <button class="btn" type="submit" name="apply">
+            {% trans 'Apply' %}
         </button>
         <a href='{% url application_overview %}'>
-        <button class="button" type="button" onclick="window.location='{% url application_overview %}'">
-            <span class="icon cancel">{% trans 'Cancel' %}</span>
+        <button class="btn" type="button" onclick="window.location='{% url application_overview %}'">
+            {% trans 'Cancel' %}</span>
         </button>
         </a>
-        </p>
+        </div>
         <small>* {% trans "required" %}</small>
     </form>
 

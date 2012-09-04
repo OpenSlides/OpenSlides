@@ -646,6 +646,7 @@ def register_tab(request):
     selected = request.path.startswith('/assignment/')
     return Tab(
         title=_('Elections'),
+        app='assignment',
         url=reverse('assignment_overview'),
         permission=request.user.has_perm('assignment.can_see_assignment')
             or request.user.has_perm('assignment.can_nominate_other')

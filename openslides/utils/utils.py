@@ -46,8 +46,8 @@ def gen_confirm_form(request, message, url):
     %s
     <form action="%s" method="post">
         <input type="hidden" value="%s" name="csrfmiddlewaretoken">
-        <input type="submit" value="%s">
-        <input type="button" value="%s">
+        <button type="submit" class="btn">%s</button>
+        <button class="btn">%s</button>
     </form>
     """
     % (message, url, csrf(request)['csrf_token'], _("Yes"), _("No")))

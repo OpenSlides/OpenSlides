@@ -20,7 +20,7 @@
     </p>
    {{ assignments|length }}
    {% blocktrans count counter=assignments|length %}election{% plural %}elections{% endblocktrans %}
-    <table>
+    <table class="table table-striped table-bordered">
         <tr>
             <th><a href="?sort=name{% if 'name' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Election" %}</a></th>
             <th>{% trans "Candidates" %}</th>
