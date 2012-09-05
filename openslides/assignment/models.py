@@ -110,11 +110,12 @@ class Assignment(models.Model, SlideMixin):
         return self.get_participants(only_elected=True)
 
     def get_participants(self, only_elected=False, only_candidate=False):
+        # TODO Rename method an variables. It is more like "get_related_persons".
         candidates = self.assignment_candidats
 
         if only_elected and only_candidate:
             # TODO: Use right Exception
-            raise Exception("only_elected and only_candidate can not both be Treu")
+            raise Exception("only_elected and only_candidate can not both be True")
 
         if only_elected:
             candidates = candidates.filter(elected=True)
@@ -122,8 +123,11 @@ class Assignment(models.Model, SlideMixin):
         if only_candidate:
             candidates = candidates.filter(elected=False)
 
+        participants = []
         for candidate in candidates.all():
-            yield candidate.person
+            participants.append(candidate.person)
+        
+        return participants
 
 
     def set_elected(self, person, value=True):
