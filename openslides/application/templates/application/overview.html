@@ -47,14 +47,14 @@
     </i></small>
     <table class="table table-striped table-bordered">
         <tr>
-            <th><a href="?sort=number{% if 'number' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Number" %}</a></th>
+            <th><a href="?sort=number{% if 'number' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "#" %}</a></th>
             <th><a href="?sort=title{% if 'title' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Motion title" %}</a></th>
             {% if min_supporters > 0 %}
             <th><a href="?sort=supporter{% if 'supporter' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Number of supporters" %}</a></th>
             {% endif %}
             <th><a href="?sort=status{% if 'status' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Status" %}</a></th>
             <th><a href="?sort=submitter{% if 'submitter' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Submitter" %}</a></th>
-            <th><a href="?sort=time{% if 'time' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Creation Time" %}<a></th>
+            <th class="optional"><a href="?sort=time{% if 'time' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Creation Time" %}<a></th>
             <th style="width: 1px;">{% trans "Actions" %}</th>
         </tr>
     {% for app_info in applications %}
@@ -75,7 +75,7 @@
                 {% endfor %}
             </td>
             <td>{{ application.submitter }}</td>
-            <td>{{ application.creation_time }}</td>
+            <td class="optional">{{ application.creation_time }}</td>
             <td>
                 <span style="width: 1px; white-space: nowrap;">
                 {% if perms.projector.can_manage_projector %}

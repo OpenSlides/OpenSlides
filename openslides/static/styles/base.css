@@ -47,6 +47,10 @@ a:hover {
     text-decoration: none;
 }
 
+/* show optional column */
+.optional {
+    display: block;
+}
 
 
 
@@ -192,5 +196,9 @@ textarea {
     }
     #content {
         margin: 0 5px 0 45px;
+    }
+    /* hide optional column */ 
+    .optional {
+        display: none;
     }
 }
