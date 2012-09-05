@@ -288,6 +288,7 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
 def default_config(sender, key, **kwargs):
     return {
         'assignment_publish_winner_results_only': False,
+        'assignment_sort_candidates_by_first_name': False,
         'assignment_pdf_ballot_papers_selection': 'CUSTOM_NUMBER',
         'assignment_pdf_ballot_papers_number': '8',
         'assignment_pdf_title': _('Elections'),
