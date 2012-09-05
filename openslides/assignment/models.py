@@ -126,7 +126,23 @@ class Assignment(models.Model, SlideMixin):
         participants = []
         for candidate in candidates.all():
             participants.append(candidate.person)
-        
+
+        if participants:
+            if config['assignment_sort_candidates_by_first_name']:
+                try:
+                    participants[0].first_name
+                except AttributeError:
+                    pass
+                else:
+                    participants = sorted(participants, key=lambda participant: participant.first_name)
+            else:
+                try:
+                    participants[0].last_name
+                except AttributeError:
+                    pass
+                else:
+                    participants = sorted(participants, key=lambda participant: participant.last_name)
+
         return participants
 
 
