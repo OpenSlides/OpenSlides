@@ -110,11 +110,12 @@ class Assignment(models.Model, SlideMixin):
         return self.get_participants(only_elected=True)
 
     def get_participants(self, only_elected=False, only_candidate=False):
+        # TODO Rename method an variables. It is more like "get_related_persons".
         candidates = self.assignment_candidats
 
         if only_elected and only_candidate:
             # TODO: Use right Exception
-            raise Exception("only_elected and only_candidate can not both be Treu")
+            raise Exception("only_elected and only_candidate can not both be True")
 
         if only_elected:
             candidates = candidates.filter(elected=True)
@@ -122,8 +123,27 @@ class Assignment(models.Model, SlideMixin):
         if only_candidate:
             candidates = candidates.filter(elected=False)
 
+        participants = []
         for candidate in candidates.all():
-            yield candidate.person
+            participants.append(candidate.person)
+
+        if participants:
+            if config['assignment_sort_candidates_by_first_name']:
+                try:
+                    participants[0].first_name
+                except AttributeError:
+                    pass
+                else:
+                    participants = sorted(participants, key=lambda participant: participant.first_name)
+            else:
+                try:
+                    participants[0].last_name
+                except AttributeError:
+                    pass
+                else:
+                    participants = sorted(participants, key=lambda participant: participant.last_name)
+
+        return participants
 
 
     def set_elected(self, person, value=True):
@@ -284,6 +304,7 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
 def default_config(sender, key, **kwargs):
     return {
         'assignment_publish_winner_results_only': False,
+        'assignment_sort_candidates_by_first_name': False,
         'assignment_pdf_ballot_papers_selection': 'CUSTOM_NUMBER',
         'assignment_pdf_ballot_papers_number': '8',
         'assignment_pdf_title': _('Elections'),

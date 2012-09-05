@@ -41,6 +41,10 @@ class ConfigForm(forms.Form, CssClassMixin):
         label=_("Only publish voting results for selected winners "
             "(Projector view only)")
     )
+    assignment_sort_candidates_by_first_name = forms.BooleanField(
+        required=False,
+        label=_("Sort candidates by first name")
+    )
     assignment_pdf_ballot_papers_selection = forms.ChoiceField(
         widget=forms.Select(),
         required=False,

@@ -612,6 +612,8 @@ class Config(FormView):
         return {
             'assignment_publish_winner_results_only':
                 config['assignment_publish_winner_results_only'],
+            'assignment_sort_candidates_by_first_name':
+                config['assignment_sort_candidates_by_first_name'],
             'assignment_pdf_ballot_papers_selection':
                 config['assignment_pdf_ballot_papers_selection'],
             'assignment_pdf_ballot_papers_number':
@@ -627,6 +629,10 @@ class Config(FormView):
             config['assignment_publish_winner_results_only'] = True
         else:
             config['assignment_publish_winner_results_only'] = False
+        if form.cleaned_data['assignment_sort_candidates_by_first_name']:
+            config['assignment_sort_candidates_by_first_name'] = True
+        else:
+            config['assignment_sort_candidates_by_first_name'] = False
         config['assignment_pdf_ballot_papers_selection'] = \
             form.cleaned_data['assignment_pdf_ballot_papers_selection']
         config['assignment_pdf_ballot_papers_number'] = \
@@ -660,5 +666,5 @@ def get_widgets(request):
         Widget(
             name=_('Assignments'),
             template='assignment/widget.html',
-            context={'assignments': Assignment.objects.all()},
+            context={'assignments': Assignment.objects.all().order_by('name')},
             permission_required='assignment.can_manage_assignment')]
