@@ -921,5 +921,5 @@ def get_widgets(request):
         Widget(
             name='applications',
             template='application/widget.html',
-            context={'applications': Application.objects.all()},
+            context={'applications': Application.objects.all().order_by('number')},
             permission_required='application.can_manage_application')]
