@@ -42,7 +42,7 @@
                             <li><a href="{% url user_logout %}"><i class="icon-off"></i> {% trans "Logout" %}</a></li>
                         </ul>
                         {% else %}
-                            <a href="{% url user_login %}">{% trans "Login" %}</a>
+                            <a href="{% url user_login %}" class="btn">{% trans "Login" %}</a>
                         {% endif %}
                     </div>
                 </div> <!--/#header-->

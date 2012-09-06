@@ -49,10 +49,11 @@ a:hover {
 
 /* show optional column */
 .optional {
-    display: block;
+    display: auto;
 }
-
-
+.help-inline {
+    font-size: 11px;
+}
 
 
 /* Left Menu */

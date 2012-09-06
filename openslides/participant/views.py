@@ -451,17 +451,17 @@ def user_settings(request):
     Edit own user account.
     """
     if request.method == 'POST':
-        form_user = UsersettingsForm(request.POST, instance=request.user)
-        if form_user.is_valid():
-            form_user.save()
+        form = UsersettingsForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
             messages.success(request, _('User settings successfully saved.'))
         else:
             messages.error(request, _('Please check the form for errors.'))
     else:
-        form_user = UsersettingsForm(instance=request.user)
+        form = UsersettingsForm(instance=request.user)
 
     return {
-        'form_user': form_user,
+        'form': form,
         'edituser': request.user,
     }
 

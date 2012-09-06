@@ -1,16 +1,7 @@
-{% extends "participant/base_participant.html" %}
+{% extends "base.html" %}
 
 {% load i18n %}
 {% load staticfiles %}
-
-{% block mainmenu %}
-    <ul>
-        <li class="selected"><a href="{% url user_login %}" title="">{% trans "Login" %}</a></li>
-    </ul>
-{% endblock %}
-
-{% block submenu %}
-{% endblock %}
 
 {% block content %}
     <h1>{% trans "Login" %}</h1>

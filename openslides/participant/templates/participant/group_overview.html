@@ -1,4 +1,4 @@
-{% extends "participant/base_participant.html" %}
+{% extends "base.html" %}
 
 {% load i18n %}
 {% load staticfiles %}
@@ -6,8 +6,14 @@
 {% block title %}{{ block.super }} – {% trans "User groups" %}{% endblock %}
 
 {% block content %}
-    <h1>{% trans "User groups" %}</h1>
-    <table>
+    <h1>{% trans "User groups" %}
+        <small class="pull-right">
+        <a href="{% url user_group_new %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New user group' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
+        <a href="{% url user_overview %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Participants" %}</a>
+        </small>
+    </h1>
+
+    <table class="table table-striped table-bordered">
         <tr>
             <th>{% trans "User Group" %}</th>
             <th>{% trans "Actions" %}</th>
