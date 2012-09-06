@@ -7,8 +7,9 @@
 {% block title %}{{ block.super }} – {% trans "Motions" %}{% endblock %}
 
 {% block content %}
-    <h1>{% trans "Motions" %}
-    <small class="pull-right">
+    <h1>
+        {% trans "Motions" %}
+        <small class="pull-right">
         {% if perms.application.can_manage_application %}
             <a href="{% url application_new %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New motion' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
             <a href="{% url application_import %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import motions' %}"><i class="icon-share-alt"></i> {% trans 'Import' %}</a>

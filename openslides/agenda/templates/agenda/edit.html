@@ -13,14 +13,14 @@
 
 {% block content %}
     <h1>
-    {% if item %}
-        {% trans "Edit item" %}
-    {% else %}
-        {% trans "New item" %}
-    {% endif %}
-    <small class="pull-right">
-    <a href="{% url item_overview %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
-    </small>
+        {% if item %}
+            {% trans "Edit item" %}
+        {% else %}
+            {% trans "New item" %}
+        {% endif %}
+        <small class="pull-right">
+        <a href="{% url item_overview %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        </small>
     </h1>
     <form action="" method="post">{% csrf_token %}
         {% for field in form %}
