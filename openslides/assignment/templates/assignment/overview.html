@@ -1,30 +1,41 @@
-{% extends "assignment/base_assignment.html" %}
+{% extends "base.html" %}
 
 {% load i18n %}
 {% load staticfiles %}
 
 {% block title %}{{ block.super }} – {% trans "Elections" %}{% endblock %}
 
-{% block content %}
-    <h1>{% trans "Elections" %}</h1>
 
-    <p><form action="{{request.url}}" name="filter" method="get">
+{% block content %}
+    <h1>{% trans "Elections" %}
+        <small class="pull-right">
+        {% if perms.assignment.can_manage_assignment %}
+            <a href="{% url assignment_new %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New election' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
+        {% endif %}
+        {% if perms.assignment.can_see_assignment %}
+            <a href="{% url print_assignment %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print all elections as PDF' %}"><i class="icon-print"></i> PDF</a>
+        {% endif %}
+        </small>
+    </h1>
+
+    <form action="{{request.url}}" name="filter" method="get">
         {% trans "Filter" %}:
-        <select class="default-input" name="status" onchange="document.forms['filter'].submit()">
+        <select class="span3" name="status" onchange="document.forms['filter'].submit()">
             <option value="---">-- {% trans "Status" %}--</option>
             <option value="sea" {% if 'sea' in request.GET.status %}selected{% endif %}>{% trans "Searching for candidates" %}</option>
             <option value="vot" {% if 'vot' in request.GET.status %}selected{% endif %}>{% trans "Voting" %}</option>
             <option value="fin" {% if 'fin' in request.GET.status %}selected{% endif %}>{% trans "Finished" %}</option>
         </select>
-        </form>
-    </p>
-   {{ assignments|length }}
-   {% blocktrans count counter=assignments|length %}election{% plural %}elections{% endblocktrans %}
+    </form>
+
+    <small><i>{{ assignments|length }}
+    {% blocktrans count counter=assignments|length %}election{% plural %}elections{% endblocktrans %}
+    </i></small>
     <table class="table table-striped table-bordered">
         <tr>
             <th><a href="?sort=name{% if 'name' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Election" %}</a></th>
             <th>{% trans "Candidates" %}</th>
-            <th><a href="?sort=status{% if 'status' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Status" %}</a></th>
+            <th class="optional"><a href="?sort=status{% if 'status' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Status" %}</a></th>
             <th style="width: 1px;">{% trans "Actions" %}</th>
         </tr>
     {% for assignment in assignments %}
@@ -32,7 +43,7 @@
             {% if assignment.active %}activeline{% endif %}">
             <td><a href="{% url assignment_view assignment.id %}">{{ assignment }}</a></td>
             <td>{{ assignment.candidates|length }} / {{ assignment.posts }}</td>
-            <td>{{ assignment.get_status_display }}</td>
+            <td class="optional">{{ assignment.get_status_display }}</td>
             <td>
                 <span style="width: 1px; white-space: nowrap;">
                 {% if perms.projector.can_manage_projector %}
