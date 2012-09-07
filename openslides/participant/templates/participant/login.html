@@ -3,8 +3,9 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block content %}
-    <h1>{% trans "Login" %}</h1>
+{% block body %}
+<div id="login-page" class="container">
+    <h2><img src="/static/img/logo-login.png" width="250px"></h2>
 
     {% if form.errors %}
         <div class="alert alert-error">
@@ -21,7 +22,7 @@
             <em>{{ first_time_message|safe }}</em>
         </div>
     {% endif %}
-    <form method="post" action="{% url user_login %}{% if next %}?next={{ next }}{% endif %}">
+    <form method="post" action="{% url user_login %}{% if next %}?next={{ next }}{% endif %}" class="well">
         {% csrf_token %}
         <div class="input-prepend">
             <span class="add-on"><i class="icon-user"></i></span>
@@ -52,4 +53,5 @@
             });
         </script>
     {% endif %}
+</div>
 {% endblock %}

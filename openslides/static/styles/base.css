@@ -1,3 +1,7 @@
+body {
+   background-color: #FAFAFA;
+}
+
 /* Header */
 #header {
     background-color: #333333;
@@ -22,6 +26,7 @@
     color: #999999;
 }
 
+/* Headings and Links */
 h1 {
     border-bottom: 1px solid #EEEEEE;
     margin: 0px 0 30px;
@@ -30,11 +35,37 @@ h1 {
 h5 {
     margin-bottom: 0px;
 }
-
 a:hover {
     text-decoration: none;
 }
 
+/* Login page */
+#login-page.container {
+    width: 320px;
+    margin-top: 20px;
+}
+#login-page h2 {
+    margin-left: 30px;
+    margin-bottom: 20px;
+}
+#login-page .well {
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 6px 6px 6px 6px;
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+    margin-top: 20px;
+    padding-bottom: 20px;
+    line-height: 45px;
+}
+#login-page input {
+    width: 240px;
+    height: 30px;
+    font-size: 20px;
+}
+#login-page span.add-on {
+    height: 26px;
+    padding: 8px 5px 4px 5px;
+}
 /* show optional column */
 .optional {
     display: auto;
