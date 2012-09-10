@@ -1,3 +1,10 @@
+/**
+ * OpenSlides default template style
+ *
+ * :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+ * :license: GNU GPL, see LICENSE for more details.
+ */
+
 body {
    background-color: #FBFBFB;
 }
@@ -70,16 +77,48 @@ a:hover {
     padding: 8px 5px 4px 5px;
 }
 
+
+/** Utils **/
+.nopadding {
+    padding: 0;
+}
+.alert form {
+    margin-bottom: 0;
+}
+tr.total td {
+    border-top: 1px solid #333333;
+}
+.nobr {
+    white-space: nowrap;
+}
 /* show optional column */
 .optional {
     display: auto;
 }
+
+
+/** Forms **/
+input, textarea {
+    width: 320px;
+}
+textarea {
+    height: 100px;
+}
 .help-inline {
     font-size: 11px;
 }
+.errorlist{
+    margin: 0;
+}
+.errorlist li {
+    list-style: none outside none;
+}
+form .required label:after {
+    content: " *";
+}
 
 
-/* Left Menu */
+/** Left sitebar navigation **/
 .leftmenu ul {
     margin: 0;
     list-style: none; 
@@ -117,10 +156,10 @@ a:hover {
 }
 .leftmenu ul li a, .leftmenu ul li a span.ico {
     -webkit-transition: background 0.2s ease-in-out;
-       -moz-transition: background 0.2s ease-in-out;
-        -ms-transition: background 0.2s ease-in-out;
-         -o-transition: background 0.2s ease-in-out;
-            transition: background 0.2s ease-in-out;
+    -moz-transition: background 0.2s ease-in-out;
+    -ms-transition: background 0.2s ease-in-out;
+    -o-transition: background 0.2s ease-in-out;
+    transition: background 0.2s ease-in-out;
 }
 .leftmenu ul li a:hover {
     background-color: #f5f5f5;
@@ -183,38 +222,6 @@ a:hover {
     background-position: -360px -144px;
 }
 
-/** Utils **/
-.nopadding {
-    padding: 0;
-}
-.alert form {
-    margin-bottom: 0;
-}
-tr.total td {
-    border-top: 1px solid #333333;
-}
-.nobr {
-    white-space: nowrap;
-}
-
-/** Forms **/
-.errorlist{
-    margin: 0;
-}
-.errorlist li {
-    list-style: none outside none;
-}
-form .required label:after {
-    content: " *";
-}
-.helptext {
-    font-size:9px;
-    display: block;
-    color: #556652;
-}
-textarea {
-    height: 100px;
-}
 
 /** Responsive **/
 @media (max-width: 767px) {
