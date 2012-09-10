@@ -16,14 +16,3 @@
     {% endfor %}
     </ul>
 {% endblock %}
-
-{% block submenu %}
-    {% if perms.projector.can_see_projector %}
-    <h4 class="sectiontitle">{% trans "Home" %}</h4>
-    <ul>
-        <li>
-            <a href="{% url projector_show %}"><img src="{% static 'images/icons/projector.png' %}"> {% trans 'Projector view' %}</a>
-        </li>
-    </ul>
-    {% endif %}
-{% endblock %}
