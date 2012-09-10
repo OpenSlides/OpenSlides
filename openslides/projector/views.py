@@ -401,7 +401,7 @@ def get_widgets(request):
     context.update(csrf(request))
     widgets.append(Widget(
         name='overlays',
-        display_name=_('Manage Overlays'),
+        display_name=_('Overlays'),
         template='projector/overlay_widget.html',
         permission_required='projector.can_manage_projector',
         default_column=2,
@@ -414,7 +414,7 @@ def get_widgets(request):
         'welcomepage_is_active': not bool(config["presentation"])}
     widgets.append(Widget(
         name='custom_slide',
-        display_name=_('Custom Slide'),
+        display_name=_('Custom Slides'),
         template='projector/custom_slide_widget.html',
         context=context,
         permission_required='projector.can_manage_projector',

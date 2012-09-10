@@ -209,13 +209,13 @@ form .required label:after {
 .icon-agenda {
     background-position: -264px 0;
 }
-.icon-application {
+.icon-application, .icon-applications {
     background-position: -24px -24px;
 }
-.icon-assignment {
+.icon-assignment, .icon-assignments {
     background-position: -144px -72px;
 }
-.icon-participant {
+.icon-participant, .icon-participants {
     background-position: -168px 0;
 }
 .icon-config {
