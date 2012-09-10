@@ -118,6 +118,11 @@ $(document).ready(function(){
       selector: "a[rel=tooltip]",
       placement: 'right'
     });
+    $(this).tooltip({
+      selector: "a[rel=tooltip]",
+      placement: 'bottom'
+    });
+
     $('h1').tooltip({
       selector: "a[rel=tooltip]",
       placement: 'bottom'

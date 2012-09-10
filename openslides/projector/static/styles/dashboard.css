@@ -5,32 +5,65 @@
  * :license: GNU GPL, see LICENSE for more details.
  */
 
-/* Portlet */
+/** Widgets **/
 .column {
     width: 50%;
     float: left;
     padding-bottom: 100px;
 }
-.portlet {
+.widget {
     margin: 0 10px 10px 0;
 }
-.portlet-header {
-    margin: 0.3em;
-    padding-bottom: 4px;
-    padding-left: 0.2em;
+.widget-header {
+    height: 30px;
+    background: #E9E9E9;
+    background:-moz-linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%); /* FF3.6+ */
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#FAFAFA), color-stop(100%,#E9E9E9)); /* Chrome,Safari4+ */
+    background:-webkit-linear-gradient(top, #FAFAFA 0%,#E9E9E9 100%); /* Chrome10+,Safari5.1+ */
+    background:-o-linear-gradient(top, #FAFAFA 0%,#E9E9E9 100%); /* Opera11.10+ */
+    background:-ms-linear-gradient(top, #FAFAFA 0%,#E9E9E9 100%); /* IE10+ */
+    background:linear-gradient(top, #FAFAFA 0%,#E9E9E9 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA', endColorstr='#E9E9E9');
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA', endColorstr='#E9E9E9')";
+    border: 1px solid #D5D5D5;
+    border-radius: 5px 5px 0 0;
+    -moz-border-radius: 5px 5px 0 0;
+    -webkit-border-radius: 5px 5px 0 0;
+
 }
-.portlet-header .ui-icon {
-    float: right;
+.widget-header h3 {
+    padding-left: 7px;
+    margin: 7px 0;
+    display: inline-block;
+    font-size: 14px;
+    color: #555;
+    line-height: 18px;
 }
-.portlet-content {
-    padding: 0.4em;
-    overflow: hidden;
+
+.widget-header [class^="icon-"], .widget-header [class*=" icon-"] {
+    display: inline-block;
+    margin: -2px 0 0 13px;
+    color: #555;
+    vertical-align: middle;
 }
-.portlet-content li{
+.widget-content {
+    padding: 20px 15px 15px 13px;
+    background: #FFF;
+    border: 1px solid #D5D5D5;
+    border-radius: 0 0 5px 5px;
+    -moz-border-radius: 0 0 5px 5px;
+    -webkit-border-radius: 0 0 5px 5px;
+}
+.widget-content li{
     padding: 4px 0;
 }
+.widget-content ul {
+    list-style: none inside none;
+    margin: 0;
+}
+
 .ui-sortable-placeholder {
-    border: 1px dotted black;
+    border: 2px dashed #555555;
     visibility: visible !important;
     height: 50px !important;
 }
@@ -42,7 +75,6 @@
 
 #countdown_time {
     width: 40px;
-    height: 16px;
 }
 
 /* iframe */

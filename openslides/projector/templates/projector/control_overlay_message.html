@@ -2,14 +2,15 @@
 {% load i18n %}
 {% load tags %}
 
-<form id="overlay_message" action="{% url projector_overlay_message %}" method="post" style="display:inline">{% csrf_token %}
-    <input id="overlay_message_text" name='message_text' type='text' style='width: 40%' value="{% get_config 'projector_message' %}">
-    <button type="submit" class="button" name='message'>
-        <span class="icon ok">{% trans 'Apply' %}</span>
-    </button>
-    <button type="submit"
-        class="button" style="padding:4px 0;" name='message-clean' title="{% trans 'Clean message' %}">
-        <span class="icon clear">&nbsp;</span>
-    </button>
+<form id="overlay_message" action="{% url projector_overlay_message %}" method="post" style="display:inline-block;">{% csrf_token %}
+    <div class="input-append">
+        <input id="overlay_message_text" name='message_text' type='text' value="{% get_config 'projector_message' %}">
+        <button type="submit" class="btn btn-primary" name="message" rel="tooltip" data-original-title="{% trans 'Apply' %}">
+            <i class="icon-refresh icon-white"></i>
+        </button>
+        <button type="submit" class="btn" name='message-clean' title="{% trans 'Clean message' %}">
+            <i class="icon-remove"></i>
+        </button>
+    </div>
 </form>
 
