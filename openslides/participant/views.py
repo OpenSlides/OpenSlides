@@ -477,7 +477,7 @@ def user_settings_password(request):
         if form.is_valid():
             form.save()
             messages.success(request, _('Password successfully changed.'))
-            return redirect(reverse('user_settings'))
+            return redirect(reverse('dashboard'))
         else:
             messages.error(request, _('Please check the form for errors.'))
     else:
