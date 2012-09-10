@@ -1,5 +1,5 @@
 body {
-   background-color: #FAFAFA;
+   background-color: #FBFBFB;
 }
 
 /* Header */
@@ -48,6 +48,9 @@ a:hover {
     margin-left: 30px;
     margin-bottom: 20px;
 }
+#login-page h2 img {
+    width: 250px;
+}
 #login-page .well {
     background-color: white;
     border: 1px solid rgba(0, 0, 0, 0.2);
@@ -66,6 +69,7 @@ a:hover {
     height: 26px;
     padding: 8px 5px 4px 5px;
 }
+
 /* show optional column */
 .optional {
     display: auto;
