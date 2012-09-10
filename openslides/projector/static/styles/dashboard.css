@@ -61,6 +61,9 @@
     list-style: none inside none;
     margin: 0;
 }
+.widget-content hr {
+    margin: 5px 0;
+}
 
 .ui-sortable-placeholder {
     border: 2px dashed #555555;
@@ -95,6 +98,7 @@
     height: 192px;/*230px;*/
     position: relative;
     overflow: hidden;
+    border: 1px solid #D5D5D5;
 }
 
 #iframeoverlay {
