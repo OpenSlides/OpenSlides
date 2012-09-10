@@ -5,7 +5,9 @@
 {% block title %}{{ block.super }} – {% trans "Participant settings" %}{% endblock %}
 
 {% block content %}
-    <h1>{% trans "Participant settings" %}</h1>
+    <h1>{% trans "Configuration" %}: {% trans "Participants" %}
+        {% block config_submenu %}{{ block.super }}{% endblock %}
+    </h1>
     <form action="" method="post">{% csrf_token %}
         {% include "form.html" %}
         <p>
