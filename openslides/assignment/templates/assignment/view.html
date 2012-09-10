@@ -17,6 +17,9 @@
     <h1>{{ assignment }}
         <small class="pull-right">
         <a href="{% url assignment_overview %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        {% if perms.projector.can_manage_projector %}
+            <a href="{% url projector_activate_slide assignment.sid  %}" class="btn btn-primary btn-mini" title="{% trans 'Show election' %}"><i class="icon-facetime-video icon-white"></i></a>
+        {% endif %}
         </small>
     </h1>
 
@@ -53,11 +56,11 @@
         {% if perms.assignment.can_nominate_self %}
             <p>
             {% if user_is_candidate %}
-                <a href='{% url assignment_delrun assignment.id %}' class="btn">
+                <a href='{% url assignment_delrun assignment.id %}' class="btn btn-mini">
                     <i class="icon-remove"></i> {% trans 'Withdraw self candidature' %}
                 </a>
             {% else %}
-                <a href='{% url assignment_run assignment.id %}' class="btn">
+                <a href='{% url assignment_run assignment.id %}' class="btn btn-mini">
                     <i class="icon-plus"></i> {% trans 'Self candidature' %}
                 </a>
             {% endif %}
@@ -66,16 +69,16 @@
         {% if perms.assignment.can_nominate_other %}
             {% for field in form %}
                 <label>{{ field.label }}:</label>
-                <nobr>{{ field }}
-                {% if perms.participant.can_see_participant and perms.participant.can_manage_participant %}
-                    <a href="{% url user_new %}" target="_blank"><img src="{% static 'images/icons/add-user.png' %}" title="{% trans 'Add new participant' %}"></a>
-                {% endif %}
-                </nobr>
+                <div class="input-append">
+                    {{ field }}
+                    <button class="btn btn-primary" type="submit">{% trans 'Apply' %}</button>
+                    {% if perms.participant.can_see_participant and perms.participant.can_manage_participant %}
+                        <a href="{% url user_new %}" target="_blank" class="btn"><img src="{% static 'images/icons/add-user.png' %}" title="{% trans 'Add new participant' %}"></a>
+                    {% endif %}
+                </div>
             {% endfor %}
             <p>
-            <button class="btn" type="submit">
-                {% trans 'Apply' %}
-            </button>
+  
             </p>
         {% endif %}
     </form>
@@ -112,7 +115,7 @@
             {% endfor %}
             {% if assignment.candidates and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
                 <th class="span1 nobr">
-                    <a href='{% url assignment_gen_poll assignment.id %}' class="btn">
+                    <a href='{% url assignment_gen_poll assignment.id %}' class="btn btn-mini">
                        <i class="icon-plus"></i> {% trans 'New ballot' %}
                     </a>
                 </th>
