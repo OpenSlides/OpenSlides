@@ -81,9 +81,12 @@ def view(request, assignment_id=None):
                 user = form.cleaned_data['candidate']
                 try:
                     assignment.run(user, request.user)
-                    messages.success(request, _("Candidate <b>%s</b> was nominated successfully.") % (user))
                 except NameError, e:
                     messages.error(request, e)
+                else:
+                    messages.success(request, _(
+                        "Candidate <b>%s</b> was nominated successfully.")
+                        % user)
     else:
         if request.user.has_perm('assignment.can_nominate_other'):
             form = AssignmentRunForm()
@@ -184,7 +187,7 @@ def delrun(request, assignment_id):
     assignment = Assignment.objects.get(pk=assignment_id)
     try:
         if assignment.status == 'sea' or user.has_perm("assignment.can_manage_assignment"):
-            assignment.delrun(request.user)
+            assignment.delrun(request.user, blocked=True)
         else:
             messages.error(request, _('The candidate list is already closed.'))
     except Exception, e:
@@ -201,7 +204,7 @@ def delother(request, assignment_id, user_id):
 
     if request.method == 'POST':
         try:
-            assignment.delrun(person)
+            assignment.delrun(person, blocked=False)
         except Exception, e:
             messages.error(request, e)
         else:
