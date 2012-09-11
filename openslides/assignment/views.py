@@ -660,5 +660,5 @@ def get_widgets(request):
         Widget(
             name=_('Assignments'),
             template='assignment/widget.html',
-            context={'assignments': Assignment.objects.all()},
+            context={'assignments': Assignment.objects.all().order_by('name')},
             permission_required='assignment.can_manage_assignment')]
