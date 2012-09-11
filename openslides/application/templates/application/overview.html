@@ -10,8 +10,10 @@
     <h1>
         {% trans "Motions" %}
         <small class="pull-right">
-        {% if perms.application.can_manage_application %}
+        {% if perms.application.can_create_application %}
             <a href="{% url application_new %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New motion' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
+        {% endif %}
+        {% if perms.application.can_manage_application %}
             <a href="{% url application_import %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import motions' %}"><i class="icon-share-alt"></i> {% trans 'Import' %}</a>
         {% endif %}
         <a href="{% url print_applications %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print all motions as PDF' %}"><i class="icon-print"></i> PDF</a>
