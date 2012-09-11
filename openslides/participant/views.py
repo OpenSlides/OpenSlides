@@ -269,7 +269,7 @@ class ParticipantsPasswordsPDF(PDFView):
             cell.append(
                 Paragraph(
                     _("Password: %s")
-                    % (user.firstpassword), stylesheet['Monotype']))
+                    % (user.default_password), stylesheet['Monotype']))
             cell.append(Spacer(0, 0.5 * cm))
             cell.append(
                 Paragraph(
@@ -321,7 +321,7 @@ class UserImportView(FormView):
 
 class ResetPasswordView(RedirectView, SingleObjectMixin, QuestionMixin):
     """
-    Set the Passwort for a user to his firstpassword.
+    Set the Passwort for a user to his default password.
     """
     permission_required = 'participant.can_manage_participant'
     model = User
