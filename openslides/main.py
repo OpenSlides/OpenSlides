@@ -25,8 +25,10 @@ import webbrowser
 import django.conf
 from django.core.management import execute_from_command_line
 
-CONFIG_TEMPLATE = """
-from openslides.openslides_settings import *
+CONFIG_TEMPLATE = """#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from openslides.openslides_global_settings import *
 
 # Use 'DEBUG = True' to get more details for server errors
 # (Default for relaeses: 'False')
@@ -63,7 +65,14 @@ INSTALLED_APPS += INSTALLED_PLUGINS
 KEY_LENGTH = 30
 
 
-def main(argv=None):
+_fs_encoding = sys.getfilesystemencoding() or sys.getdefaultencoding()
+def _fs2unicode(s):
+    if isinstance(s, unicode):
+        return s
+    return s.decode(_fs_encoding)
+
+
+def main(argv=None, opt_defaults=None):
     if argv is None:
         argv = sys.argv[1:]
 
@@ -81,6 +90,9 @@ def main(argv=None):
     parser.add_option(
         "--no-reload", action="store_true", help="Do not reload the development server")
 
+    if not opt_defaults is None:
+        parser.set_defaults(**opt_defaults)
+
     opts, args = parser.parse_args(argv)
     if args:
         sys.stderr.write("This command does not take arguments!\n\n")
@@ -89,7 +101,7 @@ def main(argv=None):
 
     # Find the path to the settings
     settings = opts.settings or \
-        os.path.expanduser('~/.openslides/openslidessettings.py')
+        os.path.join(os.path.expanduser('~'),'.openslides','openslides_personal_settings.py')
 
     # Create settings if necessary
     if not os.path.exists(settings):
@@ -128,7 +140,7 @@ def create_settings(settings):
 
     setting_content = CONFIG_TEMPLATE % dict(
         default_key=base64.b64encode(os.urandom(KEY_LENGTH)),
-        dbpath=os.path.join(path_to_dir, 'database.db'))
+        dbpath=_fs2unicode((os.path.join(path_to_dir, 'database.db'))))
 
     if not os.path.exists(path_to_dir):
         os.makedirs(path_to_dir)
@@ -239,6 +251,47 @@ def start_browser(url):
 
     t = threading.Thread(target=f)
     t.start()
+
+def win32_portable_main(argv=None):
+    """special entry point for the win32 portable version"""
+    import tempfile
+
+    # NOTE: sys.executable will be the path to openslides.exe
+    #       since it is essentially a small wrapper that embeds the
+    #       python interpreter
+    portable_dir = os.path.dirname(os.path.abspath(sys.executable))
+    try:
+        fd, test_file = tempfile.mkstemp(dir=portable_dir)
+    except OSError:
+        portable_dir_writeable = False
+    else:
+        portable_dir_writeable = True
+        os.close(fd)
+        os.unlink(test_file)
+
+    if portable_dir_writeable:
+        default_settings = os.path.join(portable_dir, "openslides",
+            "openslides_personal_settings.py")
+    else:
+        import ctypes
+
+        shell32 = ctypes.WinDLL("shell32.dll")
+        SHGetFolderPath = shell32.SHGetFolderPathW
+        SHGetFolderPath.argtypes = (ctypes.c_void_p, ctypes.c_int,
+            ctypes.c_void_p, ctypes.c_uint32, ctypes.c_wchar_p)
+        SHGetFolderPath.restype = ctypes.c_uint32
+
+        CSIDL_LOCAL_APPDATA = 0x001c
+        MAX_PATH = 260
+
+        buf = ctypes.create_unicode_buffer(MAX_PATH)
+        res = SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, 0, 0, buf)
+        if res != 0:
+            raise Exception("Could not deterime APPDATA path")
+        default_settings = os.path.join(buf.value, "openslides",
+            "openslides_personal_settings.py")
+
+    main(argv, opt_defaults={ "settings": default_settings })
 
 
 if __name__ == "__main__":

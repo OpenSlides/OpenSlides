@@ -99,10 +99,11 @@ def overview(request):
         else:
             sort = sortfilter['sort']
         query = query.order_by(sort)
-
         if sort.startswith('aversion_'):
             # limit result to last version of an application
             query = query.filter(aversion__id__in=[x.last_version.id for x in Application.objects.all()])
+    else:
+        query = query.order_by('number')
 
     if 'reverse' in sortfilter:
         query = query.reverse()
@@ -920,5 +921,5 @@ def get_widgets(request):
         Widget(
             name='applications',
             template='application/widget.html',
-            context={'applications': Application.objects.all()},
+            context={'applications': Application.objects.all().order_by('number')},
             permission_required='application.can_manage_application')]

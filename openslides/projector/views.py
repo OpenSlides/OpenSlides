@@ -409,11 +409,11 @@ def get_widgets(request):
 
     # Custom slide widget
     context = {
-        'slides': ProjectorSlide.objects.all(),
+        'slides': ProjectorSlide.objects.all().order_by('weight'),
         'welcomepage_is_active': not bool(config["presentation"])}
     widgets.append(Widget(
         name='custom_slide',
-        display_name=_('Custom Slide'),
+        display_name=_('Custom Slides'),
         template='projector/custom_slide_widget.html',
         context=context,
         permission_required='projector.can_manage_projector',
