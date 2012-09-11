@@ -87,7 +87,7 @@ class Assignment(models.Model, SlideMixin):
             # if the candidation is blocked and anotherone tries to run the
             # candidate
             raise NameError(
-                _('The %s does not want to be a candidate.') % candidate)
+                _('%s does not want to be a candidate.') % candidate)
         elif candidation and candidate == person:
             candidation[0].blocked = False
             candidation[0].save()
