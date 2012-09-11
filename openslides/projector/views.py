@@ -400,7 +400,7 @@ def get_widgets(request):
     context.update(csrf(request))
     widgets.append(Widget(
         name='overlays',
-        display_name=_('Manage Overlays'),
+        display_name=_('Overlays'),
         template='projector/overlay_widget.html',
         permission_required='projector.can_manage_projector',
         default_column=2,
