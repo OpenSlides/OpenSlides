@@ -358,6 +358,7 @@ def register_tab(request):
     selected = True if request.path.startswith('/projector/') else False
     return Tab(
         title=_('Dashboard'),
+        app='dashboard',
         url=reverse('dashboard'),
         permission=request.user.has_perm('projector.can_manage_projector') or
             request.user.has_perm('projector.can_see_dashboard'),
@@ -400,7 +401,7 @@ def get_widgets(request):
     context.update(csrf(request))
     widgets.append(Widget(
         name='overlays',
-        display_name=_('Manage Overlays'),
+        display_name=_('Overlays'),
         template='projector/overlay_widget.html',
         permission_required='projector.can_manage_projector',
         default_column=2,

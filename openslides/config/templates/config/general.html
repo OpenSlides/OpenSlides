@@ -5,7 +5,9 @@
 {% block title %}{{ block.super }} – {% trans "General settings" %}{% endblock %}
 
 {% block content %}
-    <h1>{% trans "General settings" %}</h1>
+    <h1>{% trans "Configuration" %}: {% trans "General" %}
+        {% block config_submenu %}{{ block.super }}{% endblock %}
+    </h1>
     <form action="" method="post">{% csrf_token %}
     <fieldset>
         <legend>{% trans "Event" %}</legend>

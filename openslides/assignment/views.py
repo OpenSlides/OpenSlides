@@ -649,6 +649,7 @@ def register_tab(request):
     selected = request.path.startswith('/assignment/')
     return Tab(
         title=_('Elections'),
+        app='assignment',
         url=reverse('assignment_overview'),
         permission=request.user.has_perm('assignment.can_see_assignment')
             or request.user.has_perm('assignment.can_nominate_other')
@@ -661,7 +662,7 @@ def register_tab(request):
 def get_widgets(request):
     return [
         Widget(
-            name=_('Assignments'),
+            name='assignments',
             template='assignment/widget.html',
             context={'assignments': Assignment.objects.all().order_by('name')},
             permission_required='assignment.can_manage_assignment')]

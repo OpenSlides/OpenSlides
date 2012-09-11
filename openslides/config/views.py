@@ -117,6 +117,7 @@ def register_tab(request):
     selected = request.path.startswith('/config/')
     return Tab(
         title=_('Configuration'),
+        app='config',
         url=reverse('config_general'),
         permission=request.user.has_perm('config.can_manage_config'),
         selected=selected,

@@ -1,4 +1,4 @@
-{% extends "application/base_application.html" %}
+{% extends "base.html" %}
 
 {% load tags %}
 {% load i18n %}
@@ -7,17 +7,34 @@
 {% block title %}{{ block.super }} – {% trans "Motions" %}{% endblock %}
 
 {% block content %}
-    <h1>{% trans "Motions" %}</h1>
-    <p><form action="{{ request.url }}" name="filter" method="get">
-        {% trans "Filter" %}:
+    <h1>
+        {% trans "Motions" %}
+        <small class="pull-right">
+        {% if perms.application.can_create_application %}
+            <a href="{% url application_new %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New motion' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
+        {% endif %}
+        {% if perms.application.can_manage_application %}
+            <a href="{% url application_import %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import motions' %}"><i class="icon-share-alt"></i> {% trans 'Import' %}</a>
+        {% endif %}
+        <a href="{% url print_applications %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print all motions as PDF' %}"><i class="icon-print"></i> PDF</a>
+        </small>
+    </h1>
+
+    <form action="{{ request.url }}" name="filter" method="get" class="form-inline">
         {% if min_supporters > 0 %}
+        <label class="checkbox">
         <input type="checkbox" name="needsup" onchange="document.forms['filter'].submit()"
             {% if 'on' in request.GET.needsup %}checked{% endif %}> {% trans "Need supporters" %} &nbsp;
+        </label>
         {% endif %}
+        <label class="checkbox">
         <input type="checkbox" name="number" onchange="document.forms['filter'].submit()"
             {% if 'on' in request.GET.number %}checked{% endif %}> {% trans "Without number" %} &nbsp;
+        </label>
+        <label class="checkbox">
         <input type="checkbox" name="status" onchange="document.forms['filter'].submit()"
             {% if 'on' in request.GET.status %}checked{% endif %}> {% trans "Status" %}:
+        </label>
         <select class="default-input" name="statusvalue" onchange="{% if 'on' in request.GET.status %}document.forms['filter'].submit(){% endif %}">
             <option value="pub" {% if 'pub' in request.GET.statusvalue %}selected{% endif %}>{% trans "Not yet authorized" %}</option>
             <option value="per" {% if 'on' in request.GET.status and 'per' in request.GET.statusvalue %}selected{% endif %}>{% trans "Authorized" %}</option>
@@ -26,20 +43,21 @@
             <option value="wit" {% if 'on' in request.GET.status and 'wit' in request.GET.statusvalue %}selected{% endif %}>{% trans "Withdrawen (by submitter)" %}</option>
             <option value="rev" {% if 'rev' in request.GET.statusvalue %}selected{% endif %}>{% trans "Needs Review" %}</option>
         </select>
-        </form>
-    </p>
-    {{ applications|length }}
+
+    </form>
+    <small><i>{{ applications|length }}
     {% blocktrans count counter=applications|length %}motion{% plural %}motions{% endblocktrans %}
-    <table>
+    </i></small>
+    <table class="table table-striped table-bordered">
         <tr>
-            <th><a href="?sort=number{% if 'number' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Number" %}</a></th>
+            <th><a href="?sort=number{% if 'number' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "#" %}</a></th>
             <th><a href="?sort=title{% if 'title' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Motion title" %}</a></th>
             {% if min_supporters > 0 %}
             <th><a href="?sort=supporter{% if 'supporter' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Number of supporters" %}</a></th>
             {% endif %}
             <th><a href="?sort=status{% if 'status' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Status" %}</a></th>
             <th><a href="?sort=submitter{% if 'submitter' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Submitter" %}</a></th>
-            <th><a href="?sort=time{% if 'time' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Creation Time" %}<a></th>
+            <th class="optional"><a href="?sort=time{% if 'time' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Creation Time" %}<a></th>
             <th style="width: 1px;">{% trans "Actions" %}</th>
         </tr>
     {% for app_info in applications %}
@@ -60,7 +78,7 @@
                 {% endfor %}
             </td>
             <td>{{ application.submitter }}</td>
-            <td>{{ application.creation_time }}</td>
+            <td class="optional">{{ application.creation_time }}</td>
             <td>
                 <span style="width: 1px; white-space: nowrap;">
                 {% if perms.projector.can_manage_projector %}

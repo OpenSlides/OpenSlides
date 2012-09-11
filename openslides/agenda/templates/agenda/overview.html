@@ -1,4 +1,4 @@
-{% extends "agenda/base_agenda.html" %}
+{% extends "base.html" %}
 
 {% load tags %}
 {% load i18n %}
@@ -10,6 +10,9 @@
 {% block header %}
     <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/tabledrag.css' %}" />
     <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/agenda.css' %}" />
+{% endblock %}
+
+{% block javascript %}
     <script type="text/javascript" src="{% static 'javascript/agenda.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascript/jquery.cookie.js' %}"></script>
     {% if perms.agenda.can_manage_agenda %}
@@ -37,29 +40,38 @@
     {% endif %}
 {% endblock %}
 
-
 {% block content %}
    <form action="" method="post">{% csrf_token %}
        {% if perms.agenda.can_manage_agenda %}
-       <div id="changed-order-message" style="display:none" class="notification warning">
-           <em>{% trans "Do you want to save the changed order of agenda items?" %}<br>
-               <input type="submit" value="{% trans 'Yes' %}">
-               <input type="button" onclick="window.location.href='{% url item_overview %}';" value="{% trans 'No' %}">
-           </em>
+       <div id="changed-order-message" style="display:none" class="alert alert-warning">
+           <button type="button" class="close" data-dismiss="alert">×</button>
+           <p>{% trans "Do you want to save the changed order of agenda items?" %}</p>
+           <p>
+               <button class="btn" type="submit">{% trans 'Yes' %}</button>
+               <a href="{% url item_overview %}" class="btn">{% trans 'No' %}</a>
+            </p>
        </div>
        {% endif %}
 
-        <h1>{% trans "Agenda" %}</h1>
+        <h1>{% trans "Agenda" %} 
+            <small class="pull-right">
+            {% if perms.agenda.can_manage_agenda %}
+            <a href="{% url item_new %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New item' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
+            {% endif %}
+            <a href="{% url print_agenda %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print agenda as PDF' %}"><i class="icon-print"></i> PDF</a>
+            </small>
+        </h1>
 
-        <p>
-        {% trans "Filter" %}:
+        <label class="checkbox">
         <input type="checkbox" id="hide_closed_items"> {% trans "Hide closed items" %}
-        </p>
-        {{ items|length }}
+        </label>
+
+        <small><i>{{ items|length }}
         {% blocktrans count counter=items|length %}item{% plural %}items{% endblocktrans %}<span id="hiddencount"></span>
-        <table id="menu-overview" class="agendatable">
+        </i></small>
+        <table id="menu-overview" class="table table-striped table-bordered">
             <tr>
-                <th width="50">{% trans "Done" %}</th>
+                <th width="10px"></th>
                 <th>{% trans "Item" %}</th>
                 {% if perms.agenda.can_manage_agenda %}
                     <th width="200">{% trans "Comment" %}</th>
@@ -68,7 +80,7 @@
                     <th width="50">{% trans "Actions" %}</th>
                 {% endif %}
                 {% if perms.agenda.can_manage_agenda %}
-                    <th class="tabledrag-hide">{% trans "Weight" %}</th>
+                    <th class="tabledrag-hide" style="display: none;">{% trans "Weight" %}</th>
                 {% endif %}
             </tr>
             <tr class="topline{% if active_sid == 'agenda' %} activeline{% endif %}">

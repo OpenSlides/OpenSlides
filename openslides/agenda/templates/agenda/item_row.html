@@ -49,7 +49,7 @@
     </td>
     {% endif %}
     {% if perms.agenda.can_manage_agenda %}
-    <td class="tabledrag-hide">
+    <td class="tabledrag-hide" style="display: none;">
         {% with form=item.weight_form %}
             {{ form.weight }}
             {{ form.self }}
