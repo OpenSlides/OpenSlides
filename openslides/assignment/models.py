@@ -33,6 +33,7 @@ class AssignmentCandidate(models.Model):
     assignment = models.ForeignKey("Assignment")
     person = PersonField(db_index=True)
     elected = models.BooleanField(default=False)
+    blocked = models.BooleanField(default=False)
 
     def __unicode__(self):
         return unicode(self.person)
@@ -72,6 +73,8 @@ class Assignment(models.Model, SlideMixin):
     def run(self, candidate, person=None):
         """
         run for a vote
+        candidate: The user who will be a candidate
+        person: The user who chooses the candidate
         """
         # TODO: don't make any permission checks here.
         #       Use other Exceptions
@@ -79,23 +82,39 @@ class Assignment(models.Model, SlideMixin):
             raise NameError(_('<b>%s</b> is already a candidate.') % candidate)
         if not person.has_perm("assignment.can_manage_assignment") and self.status != 'sea':
             raise NameError(_('The candidate list is already closed.'))
-        AssignmentCandidate(assignment=self, person=candidate, elected=False).save()
+        candidation = self.assignment_candidats.filter(person=candidate)
+        if candidation and candidate != person:
+            # if the candidation is blocked and anotherone tries to run the
+            # candidate
+            raise NameError(
+                _('The %s does not want to be a candidate.') % candidate)
+        elif candidation and candidate == person:
+            candidation[0].blocked = False
+            candidation[0].save()
+        else:
+            AssignmentCandidate(assignment=self, person=candidate).save()
 
-    def delrun(self, candidate):
+    def delrun(self, candidate, blocked=True):
         """
         stop running for a vote
         """
         if self.is_candidate(candidate):
-            self.assignment_candidats.get(person=candidate).delete()
+            candidation = self.assignment_candidats.get(person=candidate)
+            if blocked:
+                candidation.blocked = True
+                candidation.save()
+            else:
+                candidation.delete()
         else:
             # TODO: Use an OpenSlides Error
             raise Exception(_('%s is no candidate') % candidate)
 
     def is_candidate(self, person):
-        if self.assignment_candidats.filter(person=person).exists():
-            return True
-        else:
-            return False
+        """
+        return True, if person is a candidate.
+        """
+        return self.assignment_candidats.filter(person=person) \
+                   .exclude(blocked=True).exists()
 
     @property
     def assignment_candidats(self):
@@ -110,7 +129,7 @@ class Assignment(models.Model, SlideMixin):
         return self.get_participants(only_elected=True)
 
     def get_participants(self, only_elected=False, only_candidate=False):
-        candidates = self.assignment_candidats
+        candidates = self.assignment_candidats.exclude(blocked=True)
 
         if only_elected and only_candidate:
             # TODO: Use right Exception
