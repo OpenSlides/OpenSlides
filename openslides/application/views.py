@@ -264,7 +264,7 @@ def edit(request, application_id=None):
                 if request.user.has_perm('application.can_manage_application'):
                     messages.warning(request, _("Attention: Do you really want to edit this motion? The supporters will <b>not</b> be removed automatically because you can manage motions. Please check if the supports are valid after your changing!"))
                 else:
-                    messages.warning(request, _("Attention: Do you really want to edit this motion? All <b>%s</b> supporters will be removed! Try to convince the supporters again.") % application.supporter.count() )
+                    messages.warning(request, _("Attention: Do you really want to edit this motion? All <b>%s</b> supporters will be removed! Try to convince the supporters again.") % application.count_supporters() )
             initial = {'title': application.title,
                        'text': application.text,
                        'reason': application.reason}
@@ -372,7 +372,7 @@ def support(request, application_id):
     support an application.
     """
     try:
-        Application.objects.get(pk=application_id).support(user=request.user)
+        Application.objects.get(pk=application_id).support(person=request.user)
         messages.success(request, _("You have support the motion successfully.") )
     except Application.DoesNotExist:
         pass
@@ -386,7 +386,7 @@ def unsupport(request, application_id):
     unsupport an application.
     """
     try:
-        Application.objects.get(pk=application_id).unsupport(user=request.user)
+        Application.objects.get(pk=application_id).unsupport(person=request.user)
         messages.success(request, _("You have unsupport the motion successfully.") )
     except Application.DoesNotExist:
         pass

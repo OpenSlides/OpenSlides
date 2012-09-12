@@ -236,7 +236,7 @@ def print_value(value, percent_base=0):
     elif value == -2:
         return unicode(_('undocumented'))
     elif value is None:
-        return u''
+        return unicode(_('undocumented'))
     if not percent_base:
         return u'%s' % value
 

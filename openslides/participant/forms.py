@@ -94,7 +94,7 @@ class GroupForm(forms.ModelForm, CssClassMixin):
 class UsersettingsForm(forms.ModelForm, CssClassMixin):
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email')
+        fields = ('username', 'first_name', 'last_name', 'email', 'gender')
 
 
 class UserImportForm(forms.Form, CssClassMixin):
