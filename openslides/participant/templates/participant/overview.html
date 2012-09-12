@@ -65,7 +65,7 @@
         <tr>
             <th><a href="?sort=first_name&reverse={% if 'first_name' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "First Name" %}</a></th>
             <th><a href="?sort=last_name&reverse={% if 'last_name' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Last Name" %}</a></th>
-            <th><a href="?sort=group&reverse={% if 'category' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Category" %}</a></th>
+            <th><a href="?sort=category&reverse={% if 'category' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Category" %}</a></th>
             <th><a href="?sort=type&reverse={% if 'type' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Type" %}</a></th>
             <th><a href="?sort=committee&reverse={% if 'committee' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Committee" %}</a></th>
             {% if perms.participant.can_manage_participant %}

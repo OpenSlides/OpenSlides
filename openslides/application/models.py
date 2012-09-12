@@ -264,7 +264,7 @@ class Application(models.Model, SlideMixin):
             ApplicationSupporter(application=self, person=person).save()
             self.writelog(_("Supporter: +%s") % (person))
 
-    def unsupport(self, user):
+    def unsupport(self, person):
         """
         remove a supporter from the list of supporters of the application
         """
@@ -272,11 +272,11 @@ class Application(models.Model, SlideMixin):
             # TODO: Use own Exception
             raise NameError('This application is already permitted.')
         try:
-            object = self.applicationsupporter_set.get(user=user).delete()
+            object = self.applicationsupporter_set.get(person=person).delete()
         except ApplicationSupporter.DoesNotExist:
             pass
         else:
-            self.writelog(_("Supporter: -%s") % (user))
+            self.writelog(_("Supporter: -%s") % (person))
 
     def set_number(self, number=None, user=None):
         """
