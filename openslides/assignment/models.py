@@ -131,9 +131,7 @@ class Assignment(models.Model, SlideMixin):
     def get_participants(self, only_elected=False, only_candidate=False):
         candidates = self.assignment_candidats.exclude(blocked=True)
 
-        if only_elected and only_candidate:
-            # TODO: Use right Exception
-            raise Exception("only_elected and only_candidate can not both be Treu")
+        assert not (only_elected and only_candidate)
 
         if only_elected:
             candidates = candidates.filter(elected=True)
@@ -141,8 +139,11 @@ class Assignment(models.Model, SlideMixin):
         if only_candidate:
             candidates = candidates.filter(elected=False)
 
+        participants = []
         for candidate in candidates.all():
-            yield candidate.person
+            participants.append(candidate.person)
+        return participants
+        #return candidates.values_list('person', flat=True)
 
 
     def set_elected(self, person, value=True):
