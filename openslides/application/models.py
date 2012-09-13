@@ -598,7 +598,7 @@ class ApplicationPoll(BasePoll, CountInvalid, CountVotesCast):
 def default_config(sender, key, **kwargs):
     return {
         'application_min_supporters': 0,
-        'application_preamble': _('The Assembly may decide,'),
+        'application_preamble': _('The assembly may decide,'),
         'application_pdf_ballot_papers_selection': 'CUSTOM_NUMBER',
         'application_pdf_ballot_papers_number': '8',
         'application_pdf_title': _('Motions'),
