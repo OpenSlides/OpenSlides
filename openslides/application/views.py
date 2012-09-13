@@ -475,27 +475,6 @@ class ApplicationDelete(DeleteView):
         else:
             messages.error(request, _("Invalid request"))
 
-    def gen_confirm_form(self, request, message, url):
-        formbase = '%s<form action="%s" method="post"><input type="hidden" value="%s" name="csrfmiddlewaretoken">' % (message, url, csrf(request)['csrf_token'])
-
-        if len(self.applications):
-            for application in self.applications:
-                formbase += '<input type="hidden" name="application_ids" value="%s">' % application.id
-        elif self.object:
-            formbase += '<input type="hidden" name="application_id" value="%s">' % self.object.id
-
-        formbase +='<input type="submit" value="%s" /> <input type="button" value="%s"></form>' %  (_("Yes"), _("No"))
-        messages.warning(request, formbase)
-
-
-    def confirm_form(self, request, object, item=None):
-        self.object = self.get_object()
-
-        if len(self.applications):
-            self.gen_confirm_form(request, _('Do you really want to delete multiple motions?') % self.object.get_absolute_url('delete'))
-        else:
-            self.gen_confirm_form(request, _('Do you really want to delete <b>%s</b>?') % self.object, self.object.get_absolute_url('delete'))
-
 
 class ViewPoll(PollFormView):
     permission_required = 'application.can_manage_application'
