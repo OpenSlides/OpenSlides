@@ -182,8 +182,8 @@ def edit(request, application_id=None):
         return redirect(reverse('application_overview'))
     if application_id is not None:
         application = Application.objects.get(id=application_id)
-        if not request.user == application.submitter and not is_manager:
-            messages.error(request, _("You can not edit this motion. You are not the submitter."))
+        if not 'edit' in application.get_allowed_actions(request.user):
+            messages.error(request, _("You can not edit this motion."))
             return redirect(reverse('application_view', args=[application.id]))
         actions = application.get_allowed_actions(user=request.user)
     else:
