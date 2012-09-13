@@ -136,11 +136,11 @@ class Application(models.Model, SlideMixin):
         """
         note = []
         if self.status == "pub" and not self.enough_supporters:
-            note.append(_("Searching for supporters."))
+            note.append(ugettext("Searching for supporters."))
         if self.status == "pub" and self.permitted is None:
-            note.append(_("Not yet authorized."))
+            note.append(ugettext("Not yet authorized."))
         elif self.unpermitted_changes and self.permitted:
-            note.append(_("Not yet authorized changes."))
+            note.append(ugettext("Not yet authorized changes."))
         return note
 
     @property

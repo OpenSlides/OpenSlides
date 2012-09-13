@@ -700,6 +700,9 @@ class ApplicationPDF(PDFView):
             story = self.get_application(application, story)
 
     def get_application(self, application, story):
+        # Preparing Table
+        data = []
+
         # application number
         if application.number:
             story.append(Paragraph(_("Motion No.")+" %s" % application.number, stylesheet['Heading1']))
@@ -708,85 +711,81 @@ class ApplicationPDF(PDFView):
 
         # submitter
         cell1a = []
-        cell1a.append(Spacer(0,0.2*cm))
+        cell1a.append(Spacer(0, 0.2 * cm))
         cell1a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Submitter"), stylesheet['Heading4']))
         cell1b = []
-        cell1b.append(Spacer(0,0.2*cm))
+        cell1b.append(Spacer(0, 0.2 * cm))
+        cell1b.append(Paragraph("%s" % application.submitter, stylesheet['Normal']))
+        data.append([cell1a, cell1b])
+
         if application.status == "pub":
-            cell1b.append(Paragraph("__________________________________________",stylesheet['Signaturefield']))
-            cell1b.append(Spacer(0,0.1*cm))
-            cell1b.append(Paragraph(_("Signature: %s") % application.submitter, stylesheet['Small']))
-            cell1b.append(Spacer(0,0.2*cm))
-        else:
-            cell1b.append(Paragraph(unicode(application.submitter), stylesheet['Normal']))
+            # Cell for the signature
+            cell2a = []
+            cell2b = []
+            cell2a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Signature"), stylesheet['Heading4']))
+            cell2b.append(Paragraph("__________________________________________", stylesheet['Signaturefield']))
+            cell2b.append(Spacer(0, 0.1 * cm))
+            cell2b.append(Spacer(0,0.2*cm))
+            data.append([cell2a, cell2b])
 
         # supporters
-        cell2a = []
-        cell2b = []
         if config['application_min_supporters']:
-
-            cell2a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font><seqreset id='counter'>" % _("Supporters"), stylesheet['Heading4']))
-
+            cell3a = []
+            cell3b = []
+            cell3a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font><seqreset id='counter'>" % _("Supporters"), stylesheet['Heading4']))
             for supporter in application.supporters:
-                cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % unicode(supporter), stylesheet['Signaturefield']))
+                cell3b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % supporter, stylesheet['Signaturefield']))
             if application.status == "pub":
-                for x in range(0,application.missing_supporters):
-                    cell2b.append(Paragraph("<seq id='counter'/>.&nbsp; __________________________________________",stylesheet['Signaturefield']))
-            cell2b.append(Spacer(0,0.2*cm))
+                for x in range(application.missing_supporters):
+                    cell3b.append(Paragraph("<seq id='counter'/>.&nbsp; __________________________________________",stylesheet['Signaturefield']))
+            cell3b.append(Spacer(0, 0.2 * cm))
+            data.append([cell3a, cell3b])
 
         # status
-        note = ""
-        for n in application.notes:
-            note += "%s " % unicode(n)
-        cell3a = []
-        cell3a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Status"), stylesheet['Heading4']))
-        cell3b = []
+        cell4a = []
+        cell4b = []
+        note = " ".join(application.notes)
+        cell4a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Status"), stylesheet['Heading4']))
         if note != "":
             if application.status == "pub":
-                cell3b.append(Paragraph(note, stylesheet['Normal']))
+                cell4b.append(Paragraph(note, stylesheet['Normal']))
             else:
-                cell3b.append(Paragraph("%s | %s" % (application.get_status_display(), note), stylesheet['Normal']))
+                cell4b.append(Paragraph("%s | %s" % (application.get_status_display(), note), stylesheet['Normal']))
         else:
-            cell3b.append(Paragraph("%s" % application.get_status_display(), stylesheet['Normal']))
-
-        # table
-        data = []
-        data.append([cell1a,cell1b])
-        data.append([cell2a,cell2b])
-        data.append([cell3a,cell3b])
+            cell4b.append(Paragraph("%s" % application.get_status_display(), stylesheet['Normal']))
+        data.append([cell4a, cell4b])
 
         # Version number (aid)
         if application.public_version.aid > 1:
-            cell4a = []
-            cell4a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Version"), stylesheet['Heading4']))
-            cell4b = []
-            cell4b.append(Paragraph("%s" % application.public_version.aid, stylesheet['Normal']))
-            data.append([cell4a,cell4b])
-
-        poll_results = application.get_poll_results()
+            cell5a = []
+            cell5b = []
+            cell5a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Version"), stylesheet['Heading4']))
+            cell5b.append(Paragraph("%s" % application.public_version.aid, stylesheet['Normal']))
+            data.append([cell5a, cell5b])
 
         # voting results
+        poll_results = application.get_poll_results()
         if poll_results:
-            cell5a = []
-            cell5a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Vote results"), stylesheet['Heading4']))
-            cell5b = []
+            cell6a = []
+            cell6a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Vote results"), stylesheet['Heading4']))
+            cell6b = []
             ballotcounter = 0
             for result in poll_results:
                 ballotcounter += 1
                 if len(poll_results) > 1:
-                    cell5b.append(Paragraph("%s. %s" % (ballotcounter, _("Vote")), stylesheet['Bold']))
-                cell5b.append(Paragraph("%s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s" % (_("Yes"), result[0], _("No"), result[1], _("Abstention"), result[2], _("Invalid"), result[3], _("Votes cast"), result[4]), stylesheet['Normal']))
-                cell5b.append(Spacer(0,0.2*cm))
-            data.append([cell5a,cell5b])
+                    cell6b.append(Paragraph("%s. %s" % (ballotcounter, _("Vote")), stylesheet['Bold']))
+                cell6b.append(Paragraph("%s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s" % (_("Yes"), result[0], _("No"), result[1], _("Abstention"), result[2], _("Invalid"), result[3], _("Votes cast"), result[4]), stylesheet['Normal']))
+                cell6b.append(Spacer(0, 0.2*cm))
+            data.append([cell6a, cell6b])
 
-        t=Table(data)
-        t._argW[0]=4.5*cm
-        t._argW[1]=11*cm
-        t.setStyle(TableStyle([ ('BOX', (0,0), (-1,-1), 1, colors.black),
-                                ('VALIGN', (0,0), (-1,-1), 'TOP'),
-                              ]))
+        # Creating Table
+        t = Table(data)
+        t._argW[0] = 4.5 * cm
+        t._argW[1] = 11 * cm
+        t.setStyle(TableStyle([('BOX', (0, 0), (-1, -1), 1, colors.black),
+                               ('VALIGN', (0,0), (-1,-1), 'TOP')]))
         story.append(t)
-        story.append(Spacer(0,1*cm))
+        story.append(Spacer(0, 1 * cm))
 
         # title
         story.append(Paragraph(application.public_version.title, stylesheet['Heading3']))
