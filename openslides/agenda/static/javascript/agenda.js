@@ -24,7 +24,7 @@ function hideClosedSlides(hide) {
             hideLine($(this));
         });
         hidden = $('#menu-overview tr:hidden').size();
-        $('#hiddencount').text(interpolate(gettext(', therefrom %s hidden.'), [hidden]));
+        $('#hiddencount').text(interpolate(gettext(', of which %s hidden.'), [hidden]));
     } else {
         $('#menu-overview tr').show();
         $('#hidelink').attr('title','hide');
