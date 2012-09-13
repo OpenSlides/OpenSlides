@@ -715,7 +715,7 @@ class ApplicationPDF(PDFView):
         if application.status == "pub":
             cell1b.append(Paragraph("__________________________________________",stylesheet['Signaturefield']))
             cell1b.append(Spacer(0,0.1*cm))
-            cell1b.append(Paragraph("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+unicode(application.submitter), stylesheet['Small']))
+            cell1b.append(Paragraph(_("Signature: %s") % application.submitter, stylesheet['Small']))
             cell1b.append(Spacer(0,0.2*cm))
         else:
             cell1b.append(Paragraph(unicode(application.submitter), stylesheet['Normal']))
