@@ -88,8 +88,18 @@
 
     {% endif %}
     {% endif %}
-
-    <p><br></p>
+{% if perms.assignment.can_manage_assignments %}
+    <h3>{% trans "Blocked Candidates" %}</h3>
+    <ul>
+    {% for candidate in blocked_candidates %}
+        <li>
+            {{ candidate }}<a href="{% url assignment_delother assignment.id candidate.person_id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Remove candidate' %}"></a>
+        </li>
+    {% empty %}
+        <li>{% trans "There are no blocked candidates." %}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
     <h3>{% trans "Election results" %}</h3>
 
 {% if polls.exists %}

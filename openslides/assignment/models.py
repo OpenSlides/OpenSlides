@@ -38,6 +38,9 @@ class AssignmentCandidate(models.Model):
     def __unicode__(self):
         return unicode(self.person)
 
+    class Meta:
+        unique_together = ("assignment", "person")
+
 
 class Assignment(models.Model, SlideMixin):
     prefix = 'assignment'
@@ -83,12 +86,13 @@ class Assignment(models.Model, SlideMixin):
         if not person.has_perm("assignment.can_manage_assignment") and self.status != 'sea':
             raise NameError(_('The candidate list is already closed.'))
         candidation = self.assignment_candidats.filter(person=candidate)
-        if candidation and candidate != person:
+        if candidation and candidate != person and \
+                not person.has_perm("assignment.can_manage_assignment"):
             # if the candidation is blocked and anotherone tries to run the
             # candidate
             raise NameError(
                 _('The %s does not want to be a candidate.') % candidate)
-        elif candidation and candidate == person:
+        elif candidation:
             candidation[0].blocked = False
             candidation[0].save()
         else:
@@ -98,16 +102,21 @@ class Assignment(models.Model, SlideMixin):
         """
         stop running for a vote
         """
-        if self.is_candidate(candidate):
+        try:
             candidation = self.assignment_candidats.get(person=candidate)
+        except AssignmentCandidate.DoesNotExist:
+            # TODO: Use an OpenSlides Error
+            raise Exception(_('%s is no candidate') % candidate)
+
+        if not candidation.blocked:
             if blocked:
                 candidation.blocked = True
                 candidation.save()
             else:
                 candidation.delete()
         else:
-            # TODO: Use an OpenSlides Error
-            raise Exception(_('%s is no candidate') % candidate)
+            candidation.delete()
+
 
     def is_candidate(self, person):
         """
@@ -115,6 +124,13 @@ class Assignment(models.Model, SlideMixin):
         """
         return self.assignment_candidats.filter(person=person) \
                    .exclude(blocked=True).exists()
+
+    def is_blocked(self, person):
+        """
+        return True, if the person is blockt for candidation.
+        """
+        return self.assignment_candidats.filter(person=person) \
+                   .filter(blocked=True).exists()
 
     @property
     def assignment_candidats(self):
