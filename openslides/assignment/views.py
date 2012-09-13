@@ -187,15 +187,16 @@ def run(request, assignment_id):
 @login_required
 def delrun(request, assignment_id):
     assignment = Assignment.objects.get(pk=assignment_id)
-    try:
-        if assignment.status == 'sea' or user.has_perm("assignment.can_manage_assignment"):
+    if assignment.status == 'sea' or request.user.has_perm("assignment.can_manage_assignment"):
+        try:
             assignment.delrun(request.user, blocked=True)
+        except Exception, e:
+            messages.error(request, e)
         else:
-            messages.error(request, _('The candidate list is already closed.'))
-    except Exception, e:
-        messages.error(request, e)
+            messages.success(request, _("You have withdrawn your candidature successfully.") )
     else:
-        messages.success(request, _("You have withdrawn your candidature successfully.") )
+        messages.error(request, _('The candidate list is already closed.'))
+
     return redirect(reverse('assignment_view', args=[assignment_id]))
 
 
