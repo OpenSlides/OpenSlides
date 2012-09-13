@@ -28,7 +28,7 @@ class User(DjangoUser, PersonMixin):
         ('male', _('Male')),
         ('female', _('Female')),
     )
-    TYPE_CHOICE = (
+    TYPE_CHOICES = (
         ('delegate', _('Delegate')),
         ('observer', _('Observer')),
         ('staff', _('Staff')),
@@ -43,7 +43,7 @@ class User(DjangoUser, PersonMixin):
         max_length=50, choices=GENDER_CHOICES, blank=True,
         verbose_name=_("Gender"), help_text=_('Only for filter the userlist.'))
     type = models.CharField(
-        max_length=100, choices=TYPE_CHOICE, blank=True,
+        max_length=100, choices=TYPE_CHOICES, blank=True,
         verbose_name=_("Typ"), help_text=_('Only for filter the userlist.'))
     committee = models.CharField(
         max_length=100, null=True, blank=True, verbose_name=_("Committee"),
