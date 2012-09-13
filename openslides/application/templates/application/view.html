@@ -17,9 +17,6 @@
     <div class="box">
     <h4>{% trans "Submitter" %}:</h4>
     {{ application.submitter }}
-    {% if user == application.submitter.user %}
-    <img src="{% static 'images/icons/user-information.png' %}" title="{% trans 'You!' %}">
-    {% endif %}
 
     {% if min_supporters > 0 %}
         <h4>{% trans "Supporters" %}: *</h4>
