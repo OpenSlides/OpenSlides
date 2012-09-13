@@ -29,11 +29,10 @@ def gen_password():
     """
     generates a random passwort.
     """
-    chars = string.letters + string.digits
-    newpassword = ''
-    for i in range(8):
-        newpassword += choice(chars)
-    return newpassword
+    chars = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+    size = 8
+
+    return ''.join([choice(chars) for i in range(size)])
 
 
 def gen_username(first_name, last_name):
