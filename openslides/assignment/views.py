@@ -193,7 +193,9 @@ def delrun(request, assignment_id):
         except Exception, e:
             messages.error(request, e)
         else:
-            messages.success(request, _("You have withdrawn your candidature successfully.") )
+            messages.success(request,
+                _("You have withdrawn your candidature successfully. "
+                  "You can not be nominated by other participants anymore."))
     else:
         messages.error(request, _('The candidate list is already closed.'))
 
@@ -204,6 +206,7 @@ def delrun(request, assignment_id):
 def delother(request, assignment_id, user_id):
     assignment = Assignment.objects.get(pk=assignment_id)
     person = get_person(user_id)
+    is_blocked = assignment.is_blocked(person)
 
     if request.method == 'POST':
         try:
@@ -211,11 +214,17 @@ def delother(request, assignment_id, user_id):
         except Exception, e:
             messages.error(request, e)
         else:
-            messages.success(request, _("Candidate <b>%s</b> was withdrawn successfully.") % (person))
+            if not is_blocked:
+                message = _("Candidate <b>%s</b> was withdrawn successfully.") % person
+            else:
+                message = _("<b>%s</b> was unblocked successfully.") % person
+            messages.success(request, message)
     else:
-        gen_confirm_form(request,
-           _("Do you really want to withdraw <b>%s</b> from the election?") \
-            % person, reverse('assignment_delother', args=[assignment_id, user_id]))
+        if not is_blocked:
+            message = _("Do you really want to withdraw <b>%s</b> from the election?") % person
+        else:
+            message = _("Do you really want to unblock <b>%s</b> from the election?") % person
+        gen_confirm_form(request, message, reverse('assignment_delother', args=[assignment_id, user_id]))
     return redirect(reverse('assignment_view', args=[assignment_id]))
 
 
