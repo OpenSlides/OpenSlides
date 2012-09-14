@@ -126,12 +126,16 @@ class Group(DjangoGroup, PersonMixin):
         return unicode(self.name)
 
 
-class UsersConnector(object):
+class UsersAndGroupsToPersons(object):
+    """
+    Object to send all Users and Groups or a special User or Group to
+    the Person-API via receice_persons()
+    """
     def __init__(self, person_prefix_filter=None, id_filter=None):
         self.person_prefix_filter = person_prefix_filter
         self.id_filter = id_filter
-        self.users = User.objects.all()
-        self.groups = Group.objects.filter(group_as_person=True)
+        self.users = User.objects.all().order_by('last_name')
+        self.groups = Group.objects.filter(group_as_person=True).order_by('name')
 
     def __iter__(self):
         if (not self.person_prefix_filter or
@@ -150,13 +154,17 @@ class UsersConnector(object):
                 for group in self.groups:
                     yield group
 
+    # Are the following two lines superfluous? They only return Users not Groups.
     def __getitem__(self, key):
         return User.objects.get(pk=key)
 
 
 @receiver(receive_persons, dispatch_uid="participant")
 def receive_persons(sender, **kwargs):
-    return UsersConnector(person_prefix_filter=kwargs['person_prefix_filter'],
+    """
+    Answers to the Person-API
+    """
+    return UsersAndGroupsToPersons(person_prefix_filter=kwargs['person_prefix_filter'],
                                     id_filter=kwargs['id_filter'])
 
 
