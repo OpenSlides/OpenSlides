@@ -162,10 +162,6 @@ class UsersAndGroupsToPersons(object):
                 for group in self.groups:
                     yield group
 
-    # Are the following two lines superfluous? They only return Users not Groups.
-    def __getitem__(self, key):
-        return User.objects.get(pk=key)
-
 
 @receiver(receive_persons, dispatch_uid="participant")
 def receive_persons(sender, **kwargs):

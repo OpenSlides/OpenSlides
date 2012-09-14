@@ -102,8 +102,6 @@ def overview(request):
         if sort.startswith('aversion_'):
             # limit result to last version of an application
             query = query.filter(aversion__id__in=[x.last_version.id for x in Application.objects.all()])
-    else:
-        pass
 
     if 'reverse' in sortfilter:
         query = query.reverse()
