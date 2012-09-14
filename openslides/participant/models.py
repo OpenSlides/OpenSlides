@@ -19,6 +19,7 @@ from django.utils.translation import ugettext_lazy as _, ugettext_noop
 from openslides.utils.person import PersonMixin
 from openslides.utils.person.signals import receive_persons
 
+from openslides.config.models import config
 from openslides.config.signals import default_config_value
 
 
@@ -134,7 +135,10 @@ class UsersAndGroupsToPersons(object):
     def __init__(self, person_prefix_filter=None, id_filter=None):
         self.person_prefix_filter = person_prefix_filter
         self.id_filter = id_filter
-        self.users = User.objects.all().order_by('last_name')
+        if config['participant_sort_users_by_first_name']:
+            self.users = User.objects.all().order_by('first_name')
+        else:
+            self.users = User.objects.all().order_by('last_name')
         self.groups = Group.objects.filter(group_as_person=True).order_by('name')
 
     def __iter__(self):
