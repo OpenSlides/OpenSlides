@@ -412,13 +412,16 @@ class Config(FormView):
     def get_initial(self):
         return {
             'participant_pdf_system_url': config['participant_pdf_system_url'],
-            'participant_pdf_welcometext': config['participant_pdf_welcometext']}
+            'participant_pdf_welcometext': config['participant_pdf_welcometext'],
+            'participant_sort_users_by_first_name': config['participant_sort_users_by_first_name']}
 
     def form_valid(self, form):
         config['participant_pdf_system_url'] = (
             form.cleaned_data['participant_pdf_system_url'])
         config['participant_pdf_welcometext'] = (
             form.cleaned_data['participant_pdf_welcometext'])
+        config['participant_sort_users_by_first_name'] = (
+            form.cleaned_data['participant_sort_users_by_first_name'])
         messages.success(
             self.request,
             _('Participants settings successfully saved.'))
