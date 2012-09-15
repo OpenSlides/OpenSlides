@@ -102,8 +102,6 @@ def overview(request):
         if sort.startswith('aversion_'):
             # limit result to last version of an application
             query = query.filter(aversion__id__in=[x.last_version.id for x in Application.objects.all()])
-    else:
-        query = query.order_by('number')
 
     if 'reverse' in sortfilter:
         query = query.reverse()
@@ -681,7 +679,7 @@ class ApplicationPDF(PDFView):
             if preamble:
                 story.append(Paragraph("%s" % preamble.replace('\r\n','<br/>'), stylesheet['Paragraph']))
             story.append(Spacer(0,0.75*cm))
-            applications = Application.objects.order_by('number')
+            applications = Application.objects.all()
             if not applications: # No applications existing
                 story.append(Paragraph(_("No motions available."), stylesheet['Heading3']))
             else: # Print all Applications
@@ -899,5 +897,5 @@ def get_widgets(request):
         Widget(
             name='applications',
             template='application/widget.html',
-            context={'applications': Application.objects.all().order_by('number')},
+            context={'applications': Application.objects.all()},
             permission_required='application.can_manage_application')]

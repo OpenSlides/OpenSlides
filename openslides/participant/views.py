@@ -53,7 +53,7 @@ from openslides.participant.models import User, Group
 
 class Overview(ListView):
     """
-    Show all participants.
+    Show all participants (users).
     """
     permission_required = 'participant.can_see_participant'
     template_name = 'participant/overview.html'
@@ -96,7 +96,8 @@ class Overview(ListView):
                 query = query.order_by(
                     '%s' % sortfilter['sort'][0])
         else:
-            query = query.order_by('last_name')
+            if config['participant_sort_users_by_first_name']:
+                query = query.order_by('first_name')
 
         if 'reverse' in sortfilter:
             query = query.reverse()
@@ -412,13 +413,16 @@ class Config(FormView):
     def get_initial(self):
         return {
             'participant_pdf_system_url': config['participant_pdf_system_url'],
-            'participant_pdf_welcometext': config['participant_pdf_welcometext']}
+            'participant_pdf_welcometext': config['participant_pdf_welcometext'],
+            'participant_sort_users_by_first_name': config['participant_sort_users_by_first_name']}
 
     def form_valid(self, form):
         config['participant_pdf_system_url'] = (
             form.cleaned_data['participant_pdf_system_url'])
         config['participant_pdf_welcometext'] = (
             form.cleaned_data['participant_pdf_welcometext'])
+        config['participant_sort_users_by_first_name'] = (
+            form.cleaned_data['participant_sort_users_by_first_name'])
         messages.success(
             self.request,
             _('Participants settings successfully saved.'))
