@@ -12,6 +12,7 @@ body{
     font-family: 'Lucida Grande',"Trebuchet MS",Verdana,sans-serif;
     font-size : 20px;
     background-color: #FAFAFB;
+    overflow: hidden;
 }
 
 /*** HEADER ***/
