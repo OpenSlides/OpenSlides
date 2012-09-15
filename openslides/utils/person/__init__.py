@@ -16,7 +16,7 @@ from openslides.utils.person.forms import PersonFormField, MultiplePersonFormFie
 from openslides.utils.person.models import PersonField, PersonMixin
 
 
-class EmtyPerson(PersonMixin):
+class EmptyPerson(PersonMixin):
     @property
     def person_id(self):
-        return 'emtyuser'
+        return 'empty'

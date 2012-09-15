@@ -137,7 +137,10 @@ class UsersConnector(object):
         if (not self.person_prefix_filter or
                 self.person_prefix_filter == User.person_prefix):
             if self.id_filter:
-                yield self.users.get(pk=self.id_filter)
+                try:
+                    yield self.users.get(pk=self.id_filter)
+                except User.DoesNotExist:
+                    pass
             else:
                 for user in self.users:
                     yield user
@@ -145,13 +148,13 @@ class UsersConnector(object):
         if (not self.person_prefix_filter or
                 self.person_prefix_filter == Group.person_prefix):
             if self.id_filter:
-                yield self.groups.get(pk=self.id_filter)
+                try:
+                    yield self.groups.get(pk=self.id_filter)
+                except Group.DoesNotExist:
+                    pass
             else:
                 for group in self.groups:
                     yield group
-
-    def __getitem__(self, key):
-        return User.objects.get(pk=key)
 
 
 @receiver(receive_persons, dispatch_uid="participant")

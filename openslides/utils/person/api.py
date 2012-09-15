@@ -25,13 +25,17 @@ class Persons(object):
         try:
             return iter(self._cache)
         except AttributeError:
-            return iter(self.iter_persons())
+            return self.iter_persons()
 
     def __len__(self):
         return len(list(self.__iter__()))
 
     def __getitem__(self, key):
-        return list(self)[key]
+        try:
+            return list(self)[key]
+        except IndexError:
+            from openslides.utils.person import EmptyPerson
+            return EmptyPerson()
 
     def iter_persons(self):
         self._cache = list()
@@ -61,6 +65,6 @@ def get_person(person_id):
     try:
         person_prefix, id = split_person_id(person_id)
     except TypeError:
-        from openslides.utils.person import EmtyPerson
-        return EmtyPerson()
+        from openslides.utils.person import EmptyPerson
+        return EmptyPerson()
     return Persons(person_prefix_filter=person_prefix, id_filter=id)[0]
