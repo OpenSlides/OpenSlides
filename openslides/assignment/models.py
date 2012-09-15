@@ -253,6 +253,7 @@ class Assignment(models.Model, SlideMixin):
             ('can_nominate_self', ugettext_noop("Can nominate themselves")),
             ('can_manage_assignment', ugettext_noop("Can manage assignment")),
         )
+        ordering = ('name',)
 
 register_slidemodel(Assignment)
 

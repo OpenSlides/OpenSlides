@@ -534,6 +534,7 @@ class Application(models.Model, SlideMixin):
             ('can_support_application', ugettext_noop("Can support motions")),
             ('can_manage_application', ugettext_noop("Can manage motions")),
         )
+        ordering = ('number',)
 
 
 class AVersion(models.Model):

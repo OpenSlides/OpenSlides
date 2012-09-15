@@ -59,7 +59,7 @@ def get_overview(request):
         if sort in ['name','status']:
             query = query.order_by(sort)
     except KeyError:
-        query = query.order_by('name')
+        pass
     if 'reverse' in request.GET:
         query = query.reverse()
 
@@ -353,7 +353,7 @@ class AssignmentPDF(PDFView):
                 story.append(Paragraph("%s" % preamble.replace('\r\n', '<br/>'),
                     stylesheet['Paragraph']))
             story.append(Spacer(0, 0.75 * cm))
-            assignments = Assignment.objects.order_by('name')
+            assignments = Assignment.objects.all()
             if not assignments: # No assignments existing
                 story.append(Paragraph(_("No assignments available."),
                     stylesheet['Heading3']))
@@ -675,5 +675,5 @@ def get_widgets(request):
         Widget(
             name=_('Assignments'),
             template='assignment/widget.html',
-            context={'assignments': Assignment.objects.all().order_by('name')},
+            context={'assignments': Assignment.objects.all()},
             permission_required='assignment.can_manage_assignment')]
