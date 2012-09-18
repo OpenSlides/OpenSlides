@@ -554,9 +554,9 @@ class AssignmentPollPDF(PDFView):
 
         # set number of ballot papers
         if ballot_papers_selection == "NUMBER_OF_DELEGATES":
-            number = User.objects.filter(profile__type__iexact="delegate").count()
+            number = User.objects.filter(type__iexact="delegate").count()
         elif ballot_papers_selection == "NUMBER_OF_ALL_PARTICIPANTS":
-            number = int(Profile.objects.count())
+            number = int(User.objects.count())
         else: # ballot_papers_selection == "CUSTOM_NUMBER"
             number = int(ballot_papers_number)
         number = max(1, number)
@@ -567,8 +567,8 @@ class AssignmentPollPDF(PDFView):
                 candidate = option.candidate
                 cell.append(Paragraph(candidate.user.get_full_name(),
                     stylesheet['Ballot_option_name']))
-                if candidate.name_surfix:
-                    cell.append(Paragraph("(%s)" % candidate.name_surfix,
+                if candidate.name_suffix:
+                    cell.append(Paragraph("(%s)" % candidate.name_suffix,
                         stylesheet['Ballot_option_group']))
                 else:
                     cell.append(Paragraph("&nbsp;",
