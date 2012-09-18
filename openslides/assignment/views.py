@@ -567,8 +567,8 @@ class AssignmentPollPDF(PDFView):
                 candidate = option.candidate
                 cell.append(Paragraph(candidate.user.get_full_name(),
                     stylesheet['Ballot_option_name']))
-                if candidate.name_surfix:
-                    cell.append(Paragraph("(%s)" % candidate.name_surfix,
+                if candidate.name_suffix:
+                    cell.append(Paragraph("(%s)" % candidate.name_suffix,
                         stylesheet['Ballot_option_group']))
                 else:
                     cell.append(Paragraph("&nbsp;",
