@@ -49,7 +49,7 @@
             <td>{% if application.number %}{{ application.number }}{% else %}-{% endif %}</td>
             <td><a href="{% url application_view application.id %}">{{ application.public_version.title }}</a></td>
         {% if min_supporters > 0 %}
-            <td>{{ application.supporter.count }}</td>
+            <td>{{ application.count_supporters }}</td>
         {% endif %}
             <td>{% if application.status != "pub" %}
                 {{ application.get_status_display }}<br>
