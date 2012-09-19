@@ -164,7 +164,10 @@ class Application(models.Model, SlideMixin):
             yield object.person
 
     def is_supporter(self, person):
-        return self.applicationsupporter_set.filter(person=person).exists()
+        try:
+            return self.applicationsupporter_set.filter(person=person).exists()
+        except AttributeError:
+            return False
 
     @property
     def enough_supporters(self):
