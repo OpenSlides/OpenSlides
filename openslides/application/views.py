@@ -466,7 +466,7 @@ class ApplicationDelete(DeleteView):
         elif self.object:
             if not 'delete' in self.object.get_allowed_actions(user=request.user):
                 messages.error(request, _("You can not delete motion <b>%s</b>.") % self.object)
-            else:
+            elif self.get_answer() == 'yes':
                 title = self.object.title
                 self.object.delete(force=True)
                 messages.success(request, _("Motion <b>%s</b> was successfully deleted.") % title)
