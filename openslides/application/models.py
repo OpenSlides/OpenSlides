@@ -263,6 +263,7 @@ class Application(models.Model, SlideMixin):
         if not self.is_supporter(person):
             ApplicationSupporter(application=self, person=person).save()
             self.writelog(_("Supporter: +%s") % (person))
+        # TODO: Raise a precise exception for the view in else-clause
 
     def unsupport(self, person):
         """
@@ -274,6 +275,7 @@ class Application(models.Model, SlideMixin):
         try:
             object = self.applicationsupporter_set.get(person=person).delete()
         except ApplicationSupporter.DoesNotExist:
+            # TODO: Don't do nothing but raise a precise exception for the view
             pass
         else:
             self.writelog(_("Supporter: -%s") % (person))
