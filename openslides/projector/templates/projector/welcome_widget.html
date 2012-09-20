@@ -1,0 +1,13 @@
+{% load i18n %}
+{% load tags %}
+
+{% if welcometext %}
+    <p>{{ welcometext|safe|linebreaks }}</p>
+{% endif %}
+
+<p>{% trans "You have access to the following pages:" %}</p>
+<ul>
+{% for app in apps %}
+    <li><a href="{{ app.url }}">{{ app.title }}</a></li>
+{% endfor %}
+</ul>

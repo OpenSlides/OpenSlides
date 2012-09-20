@@ -371,6 +371,27 @@ def get_widgets(request):
     """
     widgets = []
 
+    # welcome widget
+    apps = []
+    for app in settings.INSTALLED_APPS:
+        try:
+            mod = import_module(app + '.views')
+            tab = mod.register_tab(request)
+        except (ImportError, AttributeError):
+            continue
+        if tab.permission:
+            apps.append(tab)
+    context = {
+        'apps': apps,
+        'welcometext': config['frontpage_welcometext']}
+    widgets.append(Widget(
+        name='welcome',
+        display_name=config['frontpage_title'],
+        template='projector/welcome_widget.html',
+        context=context,
+        permission_required='projector.can_see_dashboard',
+        default_column=1))
+
     # Projector live view widget
     widgets.append(Widget(
         name='live_view',
