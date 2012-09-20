@@ -164,7 +164,10 @@ class Application(models.Model, SlideMixin):
             yield object.person
 
     def is_supporter(self, person):
-        return self.applicationsupporter_set.filter(person=person).exists()
+        try:
+            return self.applicationsupporter_set.filter(person=person).exists()
+        except AttributeError:
+            return False
 
     @property
     def enough_supporters(self):
@@ -534,6 +537,7 @@ class Application(models.Model, SlideMixin):
             ('can_support_application', ugettext_noop("Can support motions")),
             ('can_manage_application', ugettext_noop("Can manage motions")),
         )
+        ordering = ('number',)
 
 
 class AVersion(models.Model):

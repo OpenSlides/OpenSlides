@@ -122,8 +122,11 @@ class Assignment(models.Model, SlideMixin):
         """
         return True, if person is a candidate.
         """
-        return self.assignment_candidats.filter(person=person) \
+        try:
+            return self.assignment_candidats.filter(person=person) \
                    .exclude(blocked=True).exists()
+        except AttributeError:
+            return False
 
     def is_blocked(self, person):
         """
@@ -253,6 +256,7 @@ class Assignment(models.Model, SlideMixin):
             ('can_nominate_self', ugettext_noop("Can nominate themselves")),
             ('can_manage_assignment', ugettext_noop("Can manage assignment")),
         )
+        ordering = ('name',)
 
 register_slidemodel(Assignment)
 

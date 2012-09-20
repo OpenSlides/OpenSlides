@@ -102,8 +102,6 @@ def overview(request):
         if sort.startswith('aversion_'):
             # limit result to last version of an application
             query = query.filter(aversion__id__in=[x.last_version.id for x in Application.objects.all()])
-    else:
-        query = query.order_by('number')
 
     if 'reverse' in sortfilter:
         query = query.reverse()
@@ -468,7 +466,7 @@ class ApplicationDelete(DeleteView):
         elif self.object:
             if not 'delete' in self.object.get_allowed_actions(user=request.user):
                 messages.error(request, _("You can not delete motion <b>%s</b>.") % self.object)
-            else:
+            elif self.get_answer() == 'yes':
                 title = self.object.title
                 self.object.delete(force=True)
                 messages.success(request, _("Motion <b>%s</b> was successfully deleted.") % title)
@@ -681,7 +679,7 @@ class ApplicationPDF(PDFView):
             if preamble:
                 story.append(Paragraph("%s" % preamble.replace('\r\n','<br/>'), stylesheet['Paragraph']))
             story.append(Spacer(0,0.75*cm))
-            applications = Application.objects.order_by('number')
+            applications = Application.objects.all()
             if not applications: # No applications existing
                 story.append(Paragraph(_("No motions available."), stylesheet['Heading3']))
             else: # Print all Applications
@@ -835,9 +833,9 @@ class ApplicationPollPDF(PDFView):
 
         # set number of ballot papers
         if ballot_papers_selection == "NUMBER_OF_DELEGATES":
-            number = User.objects.filter(profile__type__iexact="delegate").count()
+            number = User.objects.filter(type__iexact="delegate").count()
         elif ballot_papers_selection == "NUMBER_OF_ALL_PARTICIPANTS":
-            number = int(Profile.objects.count())
+            number = int(User.objects.count())
         else: # ballot_papers_selection == "CUSTOM_NUMBER"
             number = int(ballot_papers_number)
         number = max(1, number)
@@ -899,5 +897,5 @@ def get_widgets(request):
         Widget(
             name='applications',
             template='application/widget.html',
-            context={'applications': Application.objects.all().order_by('number')},
+            context={'applications': Application.objects.all()},
             permission_required='application.can_manage_application')]

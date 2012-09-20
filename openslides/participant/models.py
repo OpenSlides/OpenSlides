@@ -19,6 +19,7 @@ from django.utils.translation import ugettext_lazy as _, ugettext_noop
 from openslides.utils.person import PersonMixin
 from openslides.utils.person.signals import receive_persons
 
+from openslides.config.models import config
 from openslides.config.signals import default_config_value
 
 
@@ -28,7 +29,7 @@ class User(DjangoUser, PersonMixin):
         ('male', _('Male')),
         ('female', _('Female')),
     )
-    TYPE_CHOICE = (
+    TYPE_CHOICES = (
         ('delegate', _('Delegate')),
         ('observer', _('Observer')),
         ('staff', _('Staff')),
@@ -43,7 +44,7 @@ class User(DjangoUser, PersonMixin):
         max_length=50, choices=GENDER_CHOICES, blank=True,
         verbose_name=_("Gender"), help_text=_('Only for filter the userlist.'))
     type = models.CharField(
-        max_length=100, choices=TYPE_CHOICE, blank=True,
+        max_length=100, choices=TYPE_CHOICES, blank=True,
         verbose_name=_("Typ"), help_text=_('Only for filter the userlist.'))
     committee = models.CharField(
         max_length=100, null=True, blank=True, verbose_name=_("Committee"),
@@ -99,6 +100,7 @@ class User(DjangoUser, PersonMixin):
             ('can_manage_participant',
                 ugettext_noop("Can manage participant")),
         )
+        ordering = ('last_name',)
 
 
 class Group(DjangoGroup, PersonMixin):
@@ -125,12 +127,22 @@ class Group(DjangoGroup, PersonMixin):
     def __unicode__(self):
         return unicode(self.name)
 
+    class Meta:
+        ordering = ('name',)
 
-class UsersConnector(object):
+
+class UsersAndGroupsToPersons(object):
+    """
+    Object to send all Users and Groups or a special User or Group to
+    the Person-API via receice_persons()
+    """
     def __init__(self, person_prefix_filter=None, id_filter=None):
         self.person_prefix_filter = person_prefix_filter
         self.id_filter = id_filter
-        self.users = User.objects.all()
+        if config['participant_sort_users_by_first_name']:
+            self.users = User.objects.all().order_by('first_name')
+        else:
+            self.users = User.objects.all()
         self.groups = Group.objects.filter(group_as_person=True)
 
     def __iter__(self):
@@ -159,7 +171,10 @@ class UsersConnector(object):
 
 @receiver(receive_persons, dispatch_uid="participant")
 def receive_persons(sender, **kwargs):
-    return UsersConnector(person_prefix_filter=kwargs['person_prefix_filter'],
+    """
+    Answers to the Person-API
+    """
+    return UsersAndGroupsToPersons(person_prefix_filter=kwargs['person_prefix_filter'],
                                     id_filter=kwargs['id_filter'])
 
 
@@ -172,6 +187,7 @@ def default_config(sender, key, **kwargs):
     return {
         'participant_pdf_system_url': 'http://example.com:8000',
         'participant_pdf_welcometext': _('Welcome to OpenSlides!'),
+        'participant_sort_users_by_first_name': False,
     }.get(key)
 
 

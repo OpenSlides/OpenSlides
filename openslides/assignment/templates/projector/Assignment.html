@@ -63,8 +63,8 @@
 
         {% for candidate, poll_list in vote_results.items %}
             <tr class="{% cycle 'odd' '' %}">
-                <td class="candidate{% if candidate in assignment.elected.all %} elected{% endif %}">
-                    {% if candidate in assignment.elected.all %}
+                <td class="candidate{% if candidate in assignment.elected %} elected{% endif %}">
+                    {% if candidate in assignment.elected %}
                         <a class="elected">
                             <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Candidate is elected' %}">
                         </a>
@@ -72,8 +72,8 @@
                     {{ candidate }}
                 </td>
             {% for vote in poll_list %}
-                <td style="white-space:nowrap;"{% if candidate in assignment.elected.all %} class="elected"{% endif %}>
-                    {% if not assignment_publish_winner_results_only or candidate in assignment.elected.all %}
+                <td style="white-space:nowrap;"{% if candidate in assignment.elected %} class="elected"{% endif %}>
+                    {% if not assignment_publish_winner_results_only or candidate in assignment.elected %}
                         {% if 'Yes' in vote and 'No' in vote and 'Abstain' in vote %}
                             <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Yes }}<br>
                             <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ vote.No }}<br>
