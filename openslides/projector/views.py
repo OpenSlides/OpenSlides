@@ -73,6 +73,7 @@ class Projector(TemplateView, AjaxMixin):
             except AttributeError: #TODO: It has to be an Slide.DoesNotExist
                 data = None
             ajax = 'on'
+            active_sid = get_active_slide(True)
         else:
             data = get_slide_from_sid(sid)
             ajax = 'off'
@@ -88,7 +89,7 @@ class Projector(TemplateView, AjaxMixin):
         # Projector Overlays
         if self.kwargs['sid'] is None:
             active_defs = ProjectorOverlay.objects.filter(active=True) \
-                .filter(Q(sid=sid) | Q(sid=None)).values_list('def_name',
+                .filter(Q(sid=active_sid) | Q(sid=None)).values_list('def_name',
                 flat=True)
             for receiver, response in projector_overlays.send(sender=sid,
                                         register=False, call=active_defs):
