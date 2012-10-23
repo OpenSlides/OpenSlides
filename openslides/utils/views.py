@@ -143,7 +143,7 @@ class QuestionMixin(object):
                 'option_fields': option_fields})
 
     def pre_redirect(self, request, *args, **kwargs):
-        self.confirm_form(request, self.object)
+        self.confirm_form()
 
     def pre_post_redirect(self, request, *args, **kwargs):
         messages.success(request)
