@@ -364,13 +364,13 @@ def reset(request, application_id):
     return redirect(reverse('application_view', args=[application_id]))
 
 
-class SupportView(RedirectView, SingleObjectMixin, QuestionMixin):
+class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
     """
     Support or unsupport an application
     """
     permission_required = 'application.can_support_application'
     model = Application
-    pk_url_kwarg = 'application_id' # TODO: Is this line neccessary?
+    pk_url_kwarg = 'application_id'
     unsupport = False # Must be given in SupportView.as_view()
     answer_url = None # Must be given in SupportView.as_view()
 
@@ -380,24 +380,18 @@ class SupportView(RedirectView, SingleObjectMixin, QuestionMixin):
         else:
             return _('Do you really want to unsupport this motion?')
 
-    # TODO: Why do we have to overwrite this method?
-    def pre_redirect(self, request, *args, **kwargs):
-        self.confirm_form()
-
     def pre_post_redirect(self, request, *args, **kwargs):
         if self.get_answer().lower() == 'yes':
             if not self.unsupport:
-                Application.objects.get(pk=kwargs['application_id']).support(person=request.user)
-                # Should the Exception Application.DoesNotExist be kept or not?
+                self.get_object().support(person=request.user)
                 self.success_message = _("You have supported this motion successfully.")
             else:
-                Application.objects.get(pk=kwargs['application_id']).unsupport(person=request.user)
-                # Should the Exception Application.DoesNotExist be kept or not?
+                self.get_object().unsupport(person=request.user)
                 self.success_message = _("You have unsupported this motion successfully.")
             messages.success(request, self.success_message)
 
     def get_redirect_url(self, **kwargs):
-        return reverse('application_view', args=[kwargs['application_id']])
+        return reverse('application_view', args=[kwargs[self.pk_url_kwarg]])
 
 
 @permission_required('application.can_manage_application')
