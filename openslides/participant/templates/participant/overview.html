@@ -26,11 +26,11 @@
                 <option value="female"{% if 'female' in sortfilter.gender %} selected{% endif %}>{% trans "Female" %}</option>
                 <option value=""{% if '' in sortfilter.gender %} selected{% endif %}>{% trans "Not specified" %}</option>
             </select>
-            <select class="default-input" name="category" onchange="document.forms['filter'].submit()">
-                <option value="---">-- {% trans "Category" %} --</option>
-                {% for category in categories %}
-                    <option value="{{ category }}"{% if category in sortfilter.category %} selected{% endif %}>
-                    {{ category }}</option>
+            <select class="default-input" name="detail" onchange="document.forms['filter'].submit()">
+                <option value="---">-- {% trans "Detail" %} --</option>
+                {% for detail in details %}
+                    <option value="{{ detail }}"{% if detail in sortfilter.detail %} selected{% endif %}>
+                    {{ detail }}</option>
                 {% endfor %}
             </select>
             <select class="default-input" name="type" onchange="document.forms['filter'].submit()">
@@ -65,7 +65,7 @@
         <tr>
             <th><a href="?sort=first_name&reverse={% if 'first_name' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "First Name" %}</a></th>
             <th><a href="?sort=last_name&reverse={% if 'last_name' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Last Name" %}</a></th>
-            <th><a href="?sort=category&reverse={% if 'category' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Category" %}</a></th>
+            <th><a href="?sort=detail&reverse={% if 'detail' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Detail" %}</a></th>
             <th><a href="?sort=type&reverse={% if 'type' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Type" %}</a></th>
             <th><a href="?sort=committee&reverse={% if 'committee' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Committee" %}</a></th>
             {% if perms.participant.can_manage_participant %}
@@ -78,7 +78,7 @@
             <tr class="{% cycle '' 'odd' %}">
                 <td>{{ user.first_name }}</td>
                 <td>{{ user.last_name }}</td>
-                <td>{{ user.category }}</td>
+                <td>{{ user.detail }}</td>
                 <td>{{ user.get_type_display }}</td>
                 <td>{{ user.committee }}</td>
                 {% if perms.participant.can_manage_participant %}

@@ -27,7 +27,7 @@ class UserCreateForm(forms.ModelForm, CssClassMixin):
 
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'is_active', 'groups', 'category',
+        fields = ('first_name', 'last_name', 'is_active', 'groups', 'detail',
                   'gender', 'type', 'committee', 'comment', 'default_password')
 
 
@@ -35,7 +35,7 @@ class UserUpdateForm(UserCreateForm):
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'is_active', 'groups',
-                  'category', 'gender', 'type', 'committee', 'comment',
+                  'detail', 'gender', 'type', 'committee', 'comment',
                   'default_password')
 
 

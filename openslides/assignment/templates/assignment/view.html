@@ -31,7 +31,7 @@
 
 <div style="margin-right: 250px; min-width: 400px;">
     <h1>{{ assignment }}</h1>
-    <p>{{ assignment.description }}</p>
+    <p>{{ assignment.description|linebreaks }}</p>
 
     <h3>{% trans "Candidates" %}</h3>
     <ol>

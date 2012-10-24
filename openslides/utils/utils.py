@@ -101,13 +101,13 @@ def permission_required(perm, login_url=None):
             if request.user.has_perm(perm):
                 return func(request, *args, **kw)
             if request.user.is_authenticated():
-                return render_to_forbitten(request)
+                return render_to_forbidden(request)
             return redirect(reverse('user_login'))
         return wrapper
     return renderer
 
 
-def render_to_forbitten(request, error=
+def render_to_forbidden(request, error=
     ugettext_lazy("Sorry, you have no rights to see this page.")):
     return HttpResponseForbidden(render_to_string('403.html',
         {'error': error}, context_instance=RequestContext(request)))
