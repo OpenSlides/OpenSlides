@@ -16,14 +16,14 @@ from django.db.models import signals
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
-from openslides.utils.person import PersonMixin
+from openslides.utils.person import PersonMixin, Person
 from openslides.utils.person.signals import receive_persons
 
 from openslides.config.models import config
 from openslides.config.signals import default_config_value
 
 
-class User(DjangoUser, PersonMixin):
+class User(DjangoUser, PersonMixin, Person):
     person_prefix = 'user'
     GENDER_CHOICES = (
         ('male', _('Male')),
@@ -37,8 +37,8 @@ class User(DjangoUser, PersonMixin):
     )
 
     django_user = models.OneToOneField(DjangoUser, editable=False, parent_link=True)
-    category = models.CharField(
-        max_length=100, null=True, blank=True, verbose_name=_("Category"),
+    detail = models.CharField(
+        max_length=100, blank=True, default='', verbose_name=_("Detail"),
         help_text=_('Will be shown behind the name.'))
     gender = models.CharField(
         max_length=50, choices=GENDER_CHOICES, blank=True,
@@ -47,20 +47,24 @@ class User(DjangoUser, PersonMixin):
         max_length=100, choices=TYPE_CHOICES, blank=True,
         verbose_name=_("Typ"), help_text=_('Only for filter the userlist.'))
     committee = models.CharField(
-        max_length=100, null=True, blank=True, verbose_name=_("Committee"),
+        max_length=100, blank=True, default='', verbose_name=_("Committee"),
         help_text=_('Only for filter the userlist.'))
     comment = models.TextField(
-        null=True, blank=True, verbose_name=_('Comment'),
+        blank=True, default='', verbose_name=_('Comment'),
         help_text=_('Only for notes.'))
     default_password = models.CharField(
-        max_length=100, null=True, blank=True,
+        max_length=100, blank=True, default='',
         verbose_name=_("Default password"))
 
+    @property
+    def clean_name(self):
+        return self.get_full_name() or self.username
+
     def get_name_suffix(self):
-        return self.category
+        return self.detail
 
     def set_name_suffix(self, value):
-        self.category = value
+        self.detail = value
 
     name_suffix = property(get_name_suffix, set_name_suffix)
 
@@ -88,10 +92,9 @@ class User(DjangoUser, PersonMixin):
             return ('user_delete', [str(self.id)])
 
     def __unicode__(self):
-        name = self.get_full_name() or self.username
         if self.name_suffix:
-            return u"%s (%s)" % (name, self.name_suffix)
-        return u"%s" % name
+            return u"%s (%s)" % (self.clean_name, self.name_suffix)
+        return u"%s" % self.clean_name
 
     class Meta:
         # Rename permissions
@@ -103,7 +106,7 @@ class User(DjangoUser, PersonMixin):
         ordering = ('last_name',)
 
 
-class Group(DjangoGroup, PersonMixin):
+class Group(DjangoGroup, PersonMixin, Person):
     person_prefix = 'group'
 
     django_group = models.OneToOneField(DjangoGroup, editable=False, parent_link=True)

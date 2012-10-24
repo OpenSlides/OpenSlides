@@ -35,12 +35,12 @@ class UserTest(TestCase):
         self.assertEqual(self.django_user1, self.user1.django_user)
 
     def test_repr(self):
-        self.assertEqual(unicode(self.user1), u'Max Mustermann')
+        self.assertEqual(unicode(self.user1), 'Max Mustermann')
 
     def test_name_surfix(self):
-        self.user1.category = u'München'
+        self.user1.detail = 'München'
         self.user1.save()
-        self.assertEqual(unicode(self.user1), u'Max Mustermann (München)')
+        self.assertEqual(unicode(self.user1), 'Max Mustermann (München)')
 
     def test_reset_password(self):
         self.assertIsInstance(self.user1.default_password, basestring)
