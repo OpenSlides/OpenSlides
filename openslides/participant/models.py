@@ -37,8 +37,8 @@ class User(DjangoUser, PersonMixin, Person):
     )
 
     django_user = models.OneToOneField(DjangoUser, editable=False, parent_link=True)
-    category = models.CharField(
-        max_length=100, null=True, blank=True, verbose_name=_("Category"),
+    detail = models.CharField(
+        max_length=100, blank=True, default='', verbose_name=_("Detail"),
         help_text=_('Will be shown behind the name.'))
     gender = models.CharField(
         max_length=50, choices=GENDER_CHOICES, blank=True,
@@ -47,13 +47,13 @@ class User(DjangoUser, PersonMixin, Person):
         max_length=100, choices=TYPE_CHOICES, blank=True,
         verbose_name=_("Typ"), help_text=_('Only for filter the userlist.'))
     committee = models.CharField(
-        max_length=100, null=True, blank=True, verbose_name=_("Committee"),
+        max_length=100, blank=True, default='', verbose_name=_("Committee"),
         help_text=_('Only for filter the userlist.'))
     comment = models.TextField(
-        null=True, blank=True, verbose_name=_('Comment'),
+        blank=True, default='', verbose_name=_('Comment'),
         help_text=_('Only for notes.'))
     default_password = models.CharField(
-        max_length=100, null=True, blank=True,
+        max_length=100, blank=True, default='',
         verbose_name=_("Default password"))
 
     @property
@@ -61,10 +61,10 @@ class User(DjangoUser, PersonMixin, Person):
         return self.get_full_name() or self.username
 
     def get_name_suffix(self):
-        return self.category
+        return self.detail
 
     def set_name_suffix(self, value):
-        self.category = value
+        self.detail = value
 
     name_suffix = property(get_name_suffix, set_name_suffix)
 

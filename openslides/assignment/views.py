@@ -433,8 +433,8 @@ class AssignmentPDF(PDFView):
             candidate_string = candidate.clean_name
             if candidate in elected_candidates:
                 candidate_string = "* " + candidate_string
-            if candidate.category:
-                candidate_string += "\n(%s)" % candidate.category
+            if candidate.name_suffix:
+                candidate_string += "\n(%s)" % candidate.name_suffix
             row.append(candidate_string)
             for vote in poll_list:
                 if vote == None:
@@ -594,7 +594,7 @@ class AssignmentPollPDF(PDFView):
                 cell.append(Paragraph(circle + candidate.clean_name,
                     stylesheet['Ballot_option_name']))
                 if candidate.name_suffix:
-                    cell.append(Paragraph("(%s)" % candidate.category,
+                    cell.append(Paragraph("(%s)" % candidate.name_suffix,
                         stylesheet['Ballot_option_group_right']))
                 else:
                     cell.append(Paragraph("&nbsp;",
