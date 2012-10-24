@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    openslides.application.forms
+    openslides.motion.forms
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Forms for the application app.
+    Forms for the motion app.
 
     :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
@@ -15,36 +15,36 @@ from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
 from openslides.utils.forms import CssClassMixin
 from openslides.utils.person import PersonFormField, MultiplePersonFormField
-from openslides.application.models import Application
+from openslides.motion.models import Motion
 
 
-class ApplicationForm(forms.Form, CssClassMixin):
+class MotionForm(forms.Form, CssClassMixin):
     title = forms.CharField(widget=forms.TextInput(), label=_("Title"))
     text = forms.CharField(widget=forms.Textarea(), label=_("Text"))
     reason = forms.CharField(widget=forms.Textarea(), required=False,
         label=_("Reason"))
 
 
-class ApplicationFormTrivialChanges(ApplicationForm):
+class MotionFormTrivialChanges(MotionForm):
     trivial_change = forms.BooleanField(required=False,
         label=_("Trivial change"),
         help_text=_("Trivial changes don't create a new version."))
 
 
-class ApplicationManagerForm(forms.ModelForm, CssClassMixin):
+class MotionManagerForm(forms.ModelForm, CssClassMixin):
     submitter = PersonFormField()
 
     class Meta:
-        model = Application
+        model = Motion
         exclude = ('number', 'status', 'permitted', 'log', 'supporter')
 
 
-class ApplicationManagerFormSupporter(ApplicationManagerForm):
+class MotionManagerFormSupporter(MotionManagerForm):
     # TODO: Do not show the submitter in the user-list
     supporter = MultiplePersonFormField(required=False, label=_("Supporters"))
 
 
-class ApplicationImportForm(forms.Form, CssClassMixin):
+class MotionImportForm(forms.Form, CssClassMixin):
     csvfile = forms.FileField(
         widget=forms.FileInput(attrs={'size':'50'}),
         label=_("CSV File"),
@@ -58,7 +58,7 @@ class ApplicationImportForm(forms.Form, CssClassMixin):
 
 
 class ConfigForm(forms.Form, CssClassMixin):
-    application_min_supporters = forms.IntegerField(
+    motion_min_supporters = forms.IntegerField(
         widget=forms.TextInput(attrs={'class':'small-input'}),
         label=_("Number of (minimum) required supporters for a motion"),
         initial=4,
@@ -66,12 +66,12 @@ class ConfigForm(forms.Form, CssClassMixin):
         max_value=8,
         help_text=_("Choose 0 to disable the supporting system"),
     )
-    application_preamble = forms.CharField(
+    motion_preamble = forms.CharField(
         widget=forms.TextInput(),
         required=False,
         label=_("Motion preamble")
     )
-    application_pdf_ballot_papers_selection = forms.ChoiceField(
+    motion_pdf_ballot_papers_selection = forms.ChoiceField(
         widget=forms.Select(),
         required=False,
         label=_("Number of ballot papers (selection)"),
@@ -81,24 +81,24 @@ class ConfigForm(forms.Form, CssClassMixin):
             ("CUSTOM_NUMBER", _("Use the following custom number")),
         ]
     )
-    application_pdf_ballot_papers_number = forms.IntegerField(
+    motion_pdf_ballot_papers_number = forms.IntegerField(
         widget=forms.TextInput(attrs={'class':'small-input'}),
         required=False,
         min_value=1,
         label=_("Custom number of ballot papers")
     )
-    application_pdf_title = forms.CharField(
+    motion_pdf_title = forms.CharField(
         widget=forms.TextInput(),
         required=False,
         label=_("Title for PDF document (all motions)")
     )
-    application_pdf_preamble = forms.CharField(
+    motion_pdf_preamble = forms.CharField(
         widget=forms.Textarea(),
         required=False,
         label=_("Preamble text for PDF document (all motions)")
     )
 
-    application_allow_trivial_change = forms.BooleanField(
+    motion_allow_trivial_change = forms.BooleanField(
         label=_("Allow trivial changes"),
         help_text=_('Warning: Trivial changes undermine the motions '
             'autorisation system.'),

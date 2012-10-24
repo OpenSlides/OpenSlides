@@ -26,7 +26,7 @@ urlpatterns = patterns('',
     (r'^$', FrontPage.as_view()),
 
     (r'^agenda/', include('openslides.agenda.urls')),
-    (r'^application/', include('openslides.application.urls')),
+    (r'^motion/', include('openslides.motion.urls')),
     (r'^assignment/', include('openslides.assignment.urls')),
     (r'^participant/', include('openslides.participant.urls')),
     (r'^config/', include('openslides.config.urls')),
