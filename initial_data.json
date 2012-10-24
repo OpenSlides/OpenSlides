@@ -44,6 +44,11 @@
                "can_see_projector",
                "projector",
                "projectorslide"
+            ],
+            [
+               "can_see_dashboard",
+               "projector",
+               "projectorslide"
             ]
          ]
       }
@@ -96,6 +101,11 @@
             ],
             [
                "can_see_projector",
+               "projector",
+               "projectorslide"
+            ],
+            [
+               "can_see_dashboard",
                "projector",
                "projectorslide"
             ]
@@ -177,6 +187,11 @@
                "can_see_projector",
                "projector",
                "projectorslide"
+            ],
+            [
+               "can_see_dashboard",
+               "projector",
+               "projectorslide"
             ]
          ]
       }
@@ -204,6 +219,11 @@
             ],
             [
                "can_see_projector",
+               "projector",
+               "projectorslide"
+            ],
+            [
+               "can_see_dashboard",
                "projector",
                "projectorslide"
             ]
