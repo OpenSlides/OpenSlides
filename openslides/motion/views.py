@@ -426,9 +426,12 @@ class MotionDelete(DeleteView):
     """
     Delete one or more Motions.
     """
-    permission_required = 'motion.can_manage_motion'
     model = Motion
     url = 'motion_overview'
+
+    def has_permission(self, request, *args, **kwargs):
+        self.kwargs = kwargs
+        return self.get_object().get_allowed_actions(request.user)
 
     def get_object(self):
         self.motions = []

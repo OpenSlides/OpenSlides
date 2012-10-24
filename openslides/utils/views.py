@@ -80,14 +80,14 @@ class LoginMixin(object):
 class PermissionMixin(object):
     permission_required = NO_PERMISSION_REQUIRED
 
-    def has_permission(self, request):
+    def has_permission(self, request, *args, **kwargs):
         if self.permission_required == NO_PERMISSION_REQUIRED:
             return True
         else:
             return request.user.has_perm(self.permission_required)
 
     def dispatch(self, request, *args, **kwargs):
-        if not self.has_permission(request):
+        if not self.has_permission(request, *args, **kwargs):
             if not request.user.is_authenticated():
                 path = request.get_full_path()
                 return HttpResponseRedirect("%s?next=%s" % (settings.LOGIN_URL,
