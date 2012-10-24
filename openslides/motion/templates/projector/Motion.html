@@ -4,27 +4,27 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block title %}{{ block.super }} - {% trans "Motion" %} {{ application.number }}{% endblock %}
+{% block title %}{{ block.super }} - {% trans "Motion" %} {{ motion.number }}{% endblock %}
 {% block content %}
     <div id="sidebar">
     <div class="box">
         <p><b>{% trans "Status" %}:</b><br>
-        {% if application.status != "pub" %}
-            {% if application.status == "acc" %}
+        {% if motion.status != "pub" %}
+            {% if motion.status == "acc" %}
             <img src="{% static 'images/icons/voting-yes.png' %}">
             {% endif %}
-            {% if application.status == "rej" %}
+            {% if motion.status == "rej" %}
             <img src="{% static 'images/icons/voting-no.png' %}">
             {% endif %}
-            {% trans application.get_status_display %}
+            {% trans motion.get_status_display %}
         {% else %}
-            {% for note in application.notes %}
+            {% for note in motion.notes %}
             {{ note }}
             {% endfor %}
         {% endif %}
         </p>
 
-        {% with application.polls as polls %}
+        {% with motion.polls as polls %}
         {% if polls.exists and polls.0.has_votes %}
         <p><b>{% trans "Poll result" %}:</b>
         {% for poll in polls %}
@@ -53,29 +53,29 @@
         {% endwith %}
 
         <p><b>{% trans "Submitter" %}:</b><br>
-        {{ application.submitter }}
+        {{ motion.submitter }}
         </p>
     </div>
     </div>
 
     <h1>
-    {% if application.number != None %}
-        {% trans "Motion No." %} {{ application.number }}
+    {% if motion.number != None %}
+        {% trans "Motion No." %} {{ motion.number }}
     {% else %}
         {% trans "Motion" %} <i>[{% trans "no number" %}]</i>
     {% endif %}
     </h1>
-    <b>{{ application.public_version.title }}</b>
+    <b>{{ motion.public_version.title }}</b>
     <hr>
 {% endblock %}
 
 {% block scrollcontent %}
     <p>
-    <div class="text">{{ application.public_version.text|linebreaks }}</div>
-    {% if application.public_version.reason %}
+    <div class="text">{{ motion.public_version.text|linebreaks }}</div>
+    {% if motion.public_version.reason %}
         <br>
         <div class="reason"><p><b>{% trans "Reason" %}:</b></p>
-        {{ application.public_version.reason|linebreaks }}</div>
+        {{ motion.public_version.reason|linebreaks }}</div>
     {% endif %}
     </p>
 {% endblock %}

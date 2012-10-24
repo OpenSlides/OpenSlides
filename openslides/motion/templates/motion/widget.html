@@ -1,0 +1,34 @@
+{% load staticfiles %}
+{% load i18n %}
+{% load tags %}
+
+<ul style="line-height: 180%">
+{% for motion in motions %}
+    <li class="{% if motion.active %}activeline{% endif %}">
+        <a href="{% url projector_activate_slide motion.sid %}" class="activate_link {% if motion.active %}active{% endif %}">
+            <div></div>
+        </a>
+        <a href="{% model_url motion 'delete' %}" title="{% trans 'Delete' %}" class="icon delete right">
+            <span></span>
+        </a>
+        <a href="{% model_url motion 'edit' %}" title="{% trans 'Edit' %}" class="icon edit right">
+            <span></span>
+        </a>
+        <a href="{% url projctor_preview_slide motion.sid %}" title="{% trans 'Preview' %}" class="icon preview right">
+            <span></span>
+        </a>
+        <a href="{% model_url motion 'view' %}">
+            {{ motion.public_version.title }}
+        </a>
+        ({% trans "motion" %}
+        {% if motion.number %}
+            {{ motion.number }})
+        {% else %}
+            <i>[{% trans "no number" %}]</i>)
+        {% endif %}
+    </li>
+{% empty %}
+    <li>{% trans 'No motion available.' %}</li>
+{% endfor %}
+</ul>
+

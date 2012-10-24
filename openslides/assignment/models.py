@@ -218,7 +218,7 @@ class Assignment(models.Model, SlideMixin):
         return self.name
 
     def delete(self):
-        # Remove any Agenda-Item, which is related to this application.
+        # Remove any Agenda-Item, which is related to this assignment.
         for item in Item.objects.filter(related_sid=self.sid):
             item.delete()
         super(Assignment, self).delete()
