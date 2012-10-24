@@ -52,7 +52,7 @@ from django.views.generic.list import TemplateResponseMixin
 
 from openslides.config.models import config
 
-from openslides.utils.utils import render_to_forbitten, html_strong
+from openslides.utils.utils import render_to_forbidden, html_strong
 from openslides.utils.signals import template_manipulation
 from openslides.utils.pdf import firstPage, laterPages
 
@@ -93,7 +93,7 @@ class PermissionMixin(object):
                 return HttpResponseRedirect("%s?next=%s" % (settings.LOGIN_URL,
                     path))
             else:
-                return render_to_forbitten(request)
+                return render_to_forbidden(request)
         return _View.dispatch(self, request, *args, **kwargs)
 
 
