@@ -16,14 +16,14 @@ from django.db.models import signals
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
-from openslides.utils.person import PersonMixin
+from openslides.utils.person import PersonMixin, Person
 from openslides.utils.person.signals import receive_persons
 
 from openslides.config.models import config
 from openslides.config.signals import default_config_value
 
 
-class User(DjangoUser, PersonMixin):
+class User(DjangoUser, PersonMixin, Person):
     person_prefix = 'user'
     GENDER_CHOICES = (
         ('male', _('Male')),
@@ -55,6 +55,10 @@ class User(DjangoUser, PersonMixin):
     default_password = models.CharField(
         max_length=100, null=True, blank=True,
         verbose_name=_("Default password"))
+
+    @property
+    def clean_name(self):
+        return self.get_full_name() or self.username
 
     def get_name_suffix(self):
         return self.category
@@ -88,10 +92,9 @@ class User(DjangoUser, PersonMixin):
             return ('user_delete', [str(self.id)])
 
     def __unicode__(self):
-        name = self.get_full_name() or self.username
         if self.name_suffix:
-            return u"%s (%s)" % (name, self.name_suffix)
-        return u"%s" % name
+            return u"%s (%s)" % (self.clean_name, self.name_suffix)
+        return u"%s" % self.clean_name
 
     class Meta:
         # Rename permissions
@@ -103,7 +106,7 @@ class User(DjangoUser, PersonMixin):
         ordering = ('last_name',)
 
 
-class Group(DjangoGroup, PersonMixin):
+class Group(DjangoGroup, PersonMixin, Person):
     person_prefix = 'group'
 
     django_group = models.OneToOneField(DjangoGroup, editable=False, parent_link=True)
