@@ -230,6 +230,7 @@ class Assignment(models.Model, SlideMixin):
         data = super(Assignment, self).slide()
         data['assignment'] = self
         data['title'] = self.name
+        data['polls_available'] = self.poll_set.exists()
         data['polls'] = self.poll_set.filter(published=True)
         data['vote_results'] = self.vote_results(only_published=True)
         data['assignment_publish_winner_results_only'] = \
