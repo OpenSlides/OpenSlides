@@ -372,7 +372,6 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
     model = Application
     pk_url_kwarg = 'application_id'
     unsupport = False # Must be given in SupportView.as_view()
-    answer_url = None # Must be given in SupportView.as_view()
 
     def get_question(self):
         if not self.unsupport:
