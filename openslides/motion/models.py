@@ -258,11 +258,8 @@ class Motion(models.Model, SlideMixin):
         """
         if person == self.submitter:
             # TODO: Use own Exception
-            raise NameError('Supporter can not be the submitter of a ' \
+            raise NameError('Supporter can not be the submitter of a '
                             'motion.')
-        if self.permitted is not None:
-            # TODO: Use own Exception
-            raise NameError('This motion is already permitted.')
         if not self.is_supporter(person):
             MotionSupporter(motion=self, person=person).save()
             self.writelog(_("Supporter: +%s") % (person))
@@ -272,9 +269,6 @@ class Motion(models.Model, SlideMixin):
         """
         remove a supporter from the list of supporters of the motion
         """
-        if self.permitted is not None:
-            # TODO: Use own Exception
-            raise NameError('This motion is already permitted.')
         try:
             object = self.motionsupporter_set.get(person=person).delete()
         except MotionSupporter.DoesNotExist:

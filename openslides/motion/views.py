@@ -381,14 +381,32 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
             return _('Do you really want to unsupport this motion?')
 
     def pre_post_redirect(self, request, *args, **kwargs):
-        if self.get_answer().lower() == 'yes':
-            if not self.unsupport:
-                self.get_object().support(person=request.user)
-                self.success_message = _("You have supported this motion successfully.")
+        motion = self.get_object()
+        allowed_actions = motion.get_allowed_actions(request.user)
+        if not self.get_answer().lower() == 'yes':
+            return
+        if not self.unsupport:
+            if 'support' in allowed_actions:
+                motion.support(person=request.user)
+                messages.success(
+                    request,
+                    _("You have supported this motion successfully."))
+
             else:
+                messages.error(
+                    request,
+                    _('You can not support this motion.'))
+        else:
+            if 'unsupport' in allowed_actions:
                 self.get_object().unsupport(person=request.user)
-                self.success_message = _("You have unsupported this motion successfully.")
-            messages.success(request, self.success_message)
+                messages.success(
+                    request,
+                    _("You have unsupported this motion successfully."))
+            else:
+                messages.error(
+                    request,
+                    _('You can not support this motion.'))
+
 
     def get_redirect_url(self, **kwargs):
         return reverse('motion_view', args=[kwargs[self.pk_url_kwarg]])

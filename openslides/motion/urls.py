@@ -13,7 +13,7 @@
 from django.conf.urls.defaults import url, patterns
 
 from openslides.motion.views import (MotionDelete, ViewPoll,
-    MotionPDF, MotionPollPDF, CreateAgendaItem)
+    MotionPDF, MotionPollPDF, CreateAgendaItem, SupportView)
 
 urlpatterns = patterns('openslides.motion.views',
     url(r'^$',
@@ -99,12 +99,12 @@ urlpatterns = patterns('openslides.motion.views',
     ),
 
     url(r'^(?P<motion_id>\d+)/support/$',
-        'support',
+        SupportView.as_view(unsupport=False, answer_url='support/'),
         name='motion_support',
     ),
 
     url(r'^(?P<motion_id>\d+)/unsupport/$',
-        'unsupport',
+        SupportView.as_view(unsupport=True, answer_url='unsupport/'),
         name='motion_unsupport',
     ),
 
