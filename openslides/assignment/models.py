@@ -122,8 +122,11 @@ class Assignment(models.Model, SlideMixin):
         """
         return True, if person is a candidate.
         """
-        return self.assignment_candidats.filter(person=person) \
+        try:
+            return self.assignment_candidats.filter(person=person) \
                    .exclude(blocked=True).exists()
+        except AttributeError:
+            return False
 
     def is_blocked(self, person):
         """
@@ -215,7 +218,7 @@ class Assignment(models.Model, SlideMixin):
         return self.name
 
     def delete(self):
-        # Remove any Agenda-Item, which is related to this application.
+        # Remove any Agenda-Item, which is related to this assignment.
         for item in Item.objects.filter(related_sid=self.sid):
             item.delete()
         super(Assignment, self).delete()

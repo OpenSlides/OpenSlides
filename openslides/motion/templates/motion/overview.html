@@ -1,4 +1,4 @@
-{% extends "application/base_application.html" %}
+{% extends "motion/base_motion.html" %}
 
 {% load tags %}
 {% load i18n %}
@@ -28,8 +28,8 @@
         </select>
         </form>
     </p>
-    {{ applications|length }}
-    {% blocktrans count counter=applications|length %}motion{% plural %}motions{% endblocktrans %}
+    {{ motions|length }}
+    {% blocktrans count counter=motions|length %}motion{% plural %}motions{% endblocktrans %}
     <table>
         <tr>
             <th><a href="?sort=number{% if 'number' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Number" %}</a></th>
@@ -42,39 +42,39 @@
             <th><a href="?sort=time{% if 'time' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Creation Time" %}<a></th>
             <th style="width: 1px;">{% trans "Actions" %}</th>
         </tr>
-    {% for app_info in applications %}
-    {% with application=app_info.application useractions=app_info.actions %}
+    {% for app_info in motions %}
+    {% with motion=app_info.motion useractions=app_info.actions %}
         <tr class="{% cycle '' 'odd' %}
-            {% if application.active %}activeline{% endif %}">
-            <td>{% if application.number %}{{ application.number }}{% else %}-{% endif %}</td>
-            <td><a href="{% url application_view application.id %}">{{ application.public_version.title }}</a></td>
+            {% if motion.active %}activeline{% endif %}">
+            <td>{% if motion.number %}{{ motion.number }}{% else %}-{% endif %}</td>
+            <td><a href="{% url motion_view motion.id %}">{{ motion.public_version.title }}</a></td>
         {% if min_supporters > 0 %}
-            <td>{{ application.supporter.count }}</td>
+            <td>{{ motion.count_supporters }}</td>
         {% endif %}
-            <td>{% if application.status != "pub" %}
-                {{ application.get_status_display }}<br>
+            <td>{% if motion.status != "pub" %}
+                {{ motion.get_status_display }}<br>
                 {% endif %}
-                {% for note in application.notes %}
+                {% for note in motion.notes %}
                 {{ note }}
                 {% if not forloop.last %}<br>{%endif%}
                 {% endfor %}
             </td>
-            <td>{{ application.submitter }}</td>
-            <td>{{ application.creation_time }}</td>
+            <td>{{ motion.submitter }}</td>
+            <td>{{ motion.creation_time }}</td>
             <td>
                 <span style="width: 1px; white-space: nowrap;">
                 {% if perms.projector.can_manage_projector %}
-                    <a class="activate_link {% if application.active %}active{% endif %}" href="{% url projector_activate_slide application.sid %}" title="{% trans 'Activate motion' %}">
+                    <a class="activate_link {% if motion.active %}active{% endif %}" href="{% url projector_activate_slide motion.sid %}" title="{% trans 'Activate motion' %}">
                         <span></span>
                     </a>
                 {% endif %}
-                {% if perms.application.can_manage_application %}
-                    <a href="{% url application_edit application.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit motion' %}"></a>
+                {% if perms.motion.can_manage_motion %}
+                    <a href="{% url motion_edit motion.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit motion' %}"></a>
                     {% if "delete" in useractions %}
-                    <a href="{% url application_delete application.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete motion' %}"></a>
+                    <a href="{% url motion_delete motion.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete motion' %}"></a>
                     {% endif %}
                 {% endif %}
-                <a href="{% url print_application application.id  %}" title="{% trans 'Motion as PDF' %}"><img src="{% static 'images/icons/pdf.png' %}"></a>
+                <a href="{% url print_motion motion.id  %}" title="{% trans 'Motion as PDF' %}"><img src="{% static 'images/icons/pdf.png' %}"></a>
                 </span>
             </td>
         </tr>

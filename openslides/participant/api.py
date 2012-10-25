@@ -47,7 +47,7 @@ def gen_username(first_name, last_name):
     i = 0
     while True:
         i += 1
-        testname = "%s%s%s" % (first_name, last_name, i)
+        testname = "%s %s %s" % (first_name, last_name, i)
         try:
             User.objects.get(username=testname)
         except User.DoesNotExist:

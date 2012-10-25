@@ -119,7 +119,7 @@ INSTALLED_APPS = (
     'openslides.poll',
     'openslides.projector',
     'openslides.agenda',
-    'openslides.application',
+    'openslides.motion',
     'openslides.assignment',
     'openslides.participant',
     'openslides.config',

@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    openslides.application.models
+    openslides.motion.models
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Models for the application app.
+    Models for the motion app.
 
     :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
@@ -34,13 +34,13 @@ from openslides.projector.models import SlideMixin
 from openslides.agenda.models import Item
 
 
-class ApplicationSupporter(models.Model):
-    application = models.ForeignKey("Application")
+class MotionSupporter(models.Model):
+    motion = models.ForeignKey("Motion")
     person = PersonField()
 
 
-class Application(models.Model, SlideMixin):
-    prefix = "application"
+class Motion(models.Model, SlideMixin):
+    prefix = "motion"
     STATUS = (
         ('pub', _('Published')),
         ('per', _('Permitted')),
@@ -74,10 +74,10 @@ class Application(models.Model, SlideMixin):
     @property
     def last_version(self):
         """
-        Return last version of the application.
+        Return last version of the motion.
         """
         try:
-            return AVersion.objects.filter(application=self).order_by('id') \
+            return AVersion.objects.filter(motion=self).order_by('id') \
                                    .reverse()[0]
         except IndexError:
             return None
@@ -85,7 +85,7 @@ class Application(models.Model, SlideMixin):
     @property
     def public_version(self):
         """
-        Return permitted, if the application was permitted, else last_version
+        Return permitted, if the motion was permitted, else last_version
         """
         if self.permitted is not None:
             return self.permitted
@@ -115,14 +115,14 @@ class Application(models.Model, SlideMixin):
     @property
     def versions(self):
         """
-        Return a list of all versions of the application.
+        Return a list of all versions of the motion.
         """
-        return AVersion.objects.filter(application=self)
+        return AVersion.objects.filter(motion=self)
 
     @property
     def creation_time(self):
         """
-        Return the time of the creation of the application.
+        Return the time of the creation of the motion.
         """
         try:
             return self.versions[0].time
@@ -132,7 +132,7 @@ class Application(models.Model, SlideMixin):
     @property
     def notes(self):
         """
-        Return some information of the application.
+        Return some information of the motion.
         """
         note = []
         if self.status == "pub" and not self.enough_supporters:
@@ -146,9 +146,9 @@ class Application(models.Model, SlideMixin):
     @property
     def unpermitted_changes(self):
         """
-        Return True if the application has unpermitted changes.
+        Return True if the motion has unpermitted changes.
 
-        The application has unpermitted changes, if the permitted-version
+        The motion has unpermitted changes, if the permitted-version
         is not the lastone and the lastone is not rejected.
         TODO: rename the property in unchecked__changes
         """
@@ -160,32 +160,35 @@ class Application(models.Model, SlideMixin):
 
     @property
     def supporters(self):
-        for object in self.applicationsupporter_set.all():
+        for object in self.motionsupporter_set.all():
             yield object.person
 
     def is_supporter(self, person):
-        return self.applicationsupporter_set.filter(person=person).exists()
+        try:
+            return self.motionsupporter_set.filter(person=person).exists()
+        except AttributeError:
+            return False
 
     @property
     def enough_supporters(self):
         """
-        Return True, if the application has enough supporters
+        Return True, if the motion has enough supporters
         """
-        min_supporters = int(config['application_min_supporters'])
+        min_supporters = int(config['motion_min_supporters'])
         if self.status == "pub":
             return self.count_supporters() >= min_supporters
         else:
             return True
 
     def count_supporters(self):
-        return self.applicationsupporter_set.count()
+        return self.motionsupporter_set.count()
 
     @property
     def missing_supporters(self):
         """
         Return number of missing supporters
         """
-        min_supporters = int(config['application_min_supporters'])
+        min_supporters = int(config['motion_min_supporters'])
         delta = min_supporters - self.count_supporters()
         if delta > 0:
             return delta
@@ -194,9 +197,9 @@ class Application(models.Model, SlideMixin):
 
     def save(self, user=None, nonewversion=False, trivial_change=False):
         """
-        Save the Application, and create a new AVersion if necessary
+        Save the Motion, and create a new AVersion if necessary
         """
-        super(Application, self).save()
+        super(Motion, self).save()
         if nonewversion:
             return
         last_version = self.last_version
@@ -226,14 +229,14 @@ class Application(models.Model, SlideMixin):
             version = AVersion(title=getattr(self, 'title', ''),
                        text=getattr(self, 'text', ''),
                        reason=getattr(self, 'reason', ''),
-                       application=self)
+                       motion=self)
             version.save()
             self.writelog(_("Version %s created") % version.aid, user)
-            is_manager = user.has_perm('application.can_manage_application')
+            is_manager = user.has_perm('motion.can_manage_motion')
         except AttributeError:
             is_manager = False
 
-        supporters = self.applicationsupporter_set.all()
+        supporters = self.motionsupporter_set.all()
         if (self.status == "pub"
         and supporters
         and not is_manager):
@@ -242,7 +245,7 @@ class Application(models.Model, SlideMixin):
 
     def reset(self, user):
         """
-        Reset the application.
+        Reset the motion.
         """
         self.status = "pub"
         self.permitted = None
@@ -251,30 +254,30 @@ class Application(models.Model, SlideMixin):
 
     def support(self, person):
         """
-        Add a Supporter to the list of supporters of the application.
+        Add a Supporter to the list of supporters of the motion.
         """
         if person == self.submitter:
             # TODO: Use own Exception
             raise NameError('Supporter can not be the submitter of a ' \
-                            'application.')
+                            'motion.')
         if self.permitted is not None:
             # TODO: Use own Exception
-            raise NameError('This application is already permitted.')
+            raise NameError('This motion is already permitted.')
         if not self.is_supporter(person):
-            ApplicationSupporter(application=self, person=person).save()
+            MotionSupporter(motion=self, person=person).save()
             self.writelog(_("Supporter: +%s") % (person))
         # TODO: Raise a precise exception for the view in else-clause
 
     def unsupport(self, person):
         """
-        remove a supporter from the list of supporters of the application
+        remove a supporter from the list of supporters of the motion
         """
         if self.permitted is not None:
             # TODO: Use own Exception
-            raise NameError('This application is already permitted.')
+            raise NameError('This motion is already permitted.')
         try:
-            object = self.applicationsupporter_set.get(person=person).delete()
-        except ApplicationSupporter.DoesNotExist:
+            object = self.motionsupporter_set.get(person=person).delete()
+        except MotionSupporter.DoesNotExist:
             # TODO: Don't do nothing but raise a precise exception for the view
             pass
         else:
@@ -282,14 +285,14 @@ class Application(models.Model, SlideMixin):
 
     def set_number(self, number=None, user=None):
         """
-        Set a number for ths application.
+        Set a number for ths motion.
         """
         if self.number is not None:
             # TODO: Use own Exception
-            raise NameError('This application has already a number.')
+            raise NameError('This motion has already a number.')
         if number is None:
             try:
-                number = Application.objects.aggregate(Max('number')) \
+                number = Motion.objects.aggregate(Max('number')) \
                             ['number__max'] + 1
             except TypeError:
                 number = 1
@@ -300,7 +303,7 @@ class Application(models.Model, SlideMixin):
 
     def permit(self, user=None):
         """
-        Change the status of this application to permit.
+        Change the status of this motion to permit.
         """
         self.set_status(user, "per")
         aversion = self.last_version
@@ -313,7 +316,7 @@ class Application(models.Model, SlideMixin):
 
     def notpermit(self, user=None):
         """
-        Change the status of this application to 'not permitted (rejected)'.
+        Change the status of this motion to 'not permitted (rejected)'.
         """
         self.set_status(user, "nop")
         #TODO: reject last version
@@ -326,10 +329,10 @@ class Application(models.Model, SlideMixin):
 
     def set_status(self, user, status, force=False):
         """
-        Set the status of the application.
+        Set the status of the motion.
         """
         error = True
-        for a, b in Application.STATUS:
+        for a, b in Motion.STATUS:
             if status == a:
                 error = False
                 break
@@ -363,25 +366,25 @@ class Application(models.Model, SlideMixin):
         """
         actions = []
 
-        # check if user allowed to withdraw an application
+        # check if user allowed to withdraw an motion
         if  ((self.status == "pub"
           and self.number
           and user == self.submitter)
         or   (self.status == "pub"
           and self.number
-          and user.has_perm("application.can_manage_application"))
+          and user.has_perm("motion.can_manage_motion"))
         or   (self.status == "per"
           and user == self.submitter)
         or (self.status == "per"
-          and user.has_perm("application.can_manage_application"))):
+          and user.has_perm("motion.can_manage_motion"))):
             actions.append("wit")
-        #Check if the user can review the application
+        #Check if the user can review the motion
         if  (self.status == "rev"
         and (self.submitter == user
-          or user.has_perm("application.can_manage_application"))):
+          or user.has_perm("motion.can_manage_motion"))):
             actions.append("pub")
 
-        # Check if the user can support and unspoort the application
+        # Check if the user can support and unspoort the motion
         if  (self.status == "pub"
           and user != self.submitter
           and not self.is_supporter(user)):
@@ -390,22 +393,22 @@ class Application(models.Model, SlideMixin):
         if self.status == "pub" and self.is_supporter(user):
             actions.append("unsupport")
 
-        #Check if the user can edit the application
+        #Check if the user can edit the motion
         if (user == self.submitter \
           and (self.status in ('pub', 'per'))) \
-        or user.has_perm("application.can_manage_application"):
+        or user.has_perm("motion.can_manage_motion"):
             actions.append("edit")
 
-        # Check if the user can delete the application (admin, manager, owner)
+        # Check if the user can delete the motion (admin, manager, owner)
         # reworked as requiered in #100
-        if (user.has_perm("applicatoin.can_delete_all_applications") or
-           (user.has_perm("application.can_manage_application") and
+        if (user.has_perm("motion.can_delete_all_motions") or
+           (user.has_perm("motion.can_manage_motion") and
                self.number is None) or
            (self.submitter == user and self.number is None)):
             actions.append("delete")
 
         #For the rest, all actions need the manage permission
-        if not user.has_perm("application.can_manage_application"):
+        if not user.has_perm("motion.can_manage_motion"):
             return actions
 
         if self.status == "pub":
@@ -429,17 +432,17 @@ class Application(models.Model, SlideMixin):
 
     def delete(self, force=False):
         """
-        Delete the application. It is not possible, if the application has
+        Delete the motion. It is not possible, if the motion has
         allready a number
         """
         if self.number and not force:
-            raise NameError('The application has already a number. ' \
+            raise NameError('The motion has already a number. ' \
                             'You can not delete it.')
 
 
         for item in Item.objects.filter(related_sid=self.sid):
             item.delete()
-        super(Application, self).delete()
+        super(Motion, self).delete()
 
     def writelog(self, text, user=None):
         if not self.log:
@@ -460,7 +463,7 @@ class Application(models.Model, SlideMixin):
     def __getattr__(self, name):
         """
         if name is title, text, reason or time,
-            Return this attribute from the newest version of the application
+            Return this attribute from the newest version of the motion
         """
         if name in ('title', 'text', 'reason', 'time', 'aid'):
             try:
@@ -475,9 +478,9 @@ class Application(models.Model, SlideMixin):
 
     def gen_poll(self, user=None):
         """
-        Generates a poll object for the application
+        Generates a poll object for the motion
         """
-        poll = ApplicationPoll(application=self)
+        poll = MotionPoll(motion=self)
         poll.save()
         poll.set_options()
         self.writelog(_("Poll created"), user)
@@ -485,7 +488,7 @@ class Application(models.Model, SlideMixin):
 
     @property
     def polls(self):
-        return self.applicationpoll_set.all()
+        return self.motionpoll_set.all()
 
     @property
     def results(self):
@@ -509,19 +512,19 @@ class Application(models.Model, SlideMixin):
         """
         return the slide dict
         """
-        data = super(Application, self).slide()
-        data['application'] = self
+        data = super(Motion, self).slide()
+        data['motion'] = self
         data['title'] = self.title
-        data['template'] = 'projector/Application.html'
+        data['template'] = 'projector/Motion.html'
         return data
 
     def get_absolute_url(self, link='view'):
         if link == 'view':
-            return reverse('application_view', args=[str(self.id)])
+            return reverse('motion_view', args=[str(self.id)])
         if link == 'edit':
-            return reverse('application_edit', args=[str(self.id)])
+            return reverse('motion_edit', args=[str(self.id)])
         if link == 'delete':
-            return reverse('application_delete', args=[str(self.id)])
+            return reverse('motion_delete', args=[str(self.id)])
 
     def __unicode__(self):
         try:
@@ -531,10 +534,10 @@ class Application(models.Model, SlideMixin):
 
     class Meta:
         permissions = (
-            ('can_see_application', ugettext_noop("Can see motions")),
-            ('can_create_application', ugettext_noop("Can create motions")),
-            ('can_support_application', ugettext_noop("Can support motions")),
-            ('can_manage_application', ugettext_noop("Can manage motions")),
+            ('can_see_motion', ugettext_noop("Can see motions")),
+            ('can_create_motion', ugettext_noop("Can create motions")),
+            ('can_support_motion', ugettext_noop("Can support motions")),
+            ('can_manage_motion', ugettext_noop("Can manage motions")),
         )
         ordering = ('number',)
 
@@ -545,7 +548,7 @@ class AVersion(models.Model):
     reason = models.TextField(null=True, blank=True, verbose_name = _("Reason"))
     rejected = models.BooleanField() # = Not Permitted
     time = models.DateTimeField(auto_now=True)
-    application = models.ForeignKey(Application)
+    motion = models.ForeignKey(Motion)
 
     def __unicode__(self):
         return "%s %s" % (self.id, self.title)
@@ -556,31 +559,31 @@ class AVersion(models.Model):
             return self._aid
         except AttributeError:
             self._aid = AVersion.objects \
-                .filter(application=self.application) \
+                .filter(motion=self.motion) \
                 .filter(id__lte=self.id).count()
             return self._aid
 
-register_slidemodel(Application)
+register_slidemodel(Motion)
 
 
-class ApplicationVote(BaseVote):
-    option = models.ForeignKey('ApplicationOption')
+class MotionVote(BaseVote):
+    option = models.ForeignKey('MotionOption')
 
 
-class ApplicationOption(BaseOption):
-    poll = models.ForeignKey('ApplicationPoll')
-    vote_class = ApplicationVote
+class MotionOption(BaseOption):
+    poll = models.ForeignKey('MotionPoll')
+    vote_class = MotionVote
 
 
-class ApplicationPoll(BasePoll, CountInvalid, CountVotesCast):
-    option_class = ApplicationOption
+class MotionPoll(BasePoll, CountInvalid, CountVotesCast):
+    option_class = MotionOption
     vote_values = [ugettext_noop('Yes'), ugettext_noop('No'),
         ugettext_noop('Abstain')]
 
-    application = models.ForeignKey(Application)
+    motion = models.ForeignKey(Motion)
 
-    def get_application(self):
-        return self.application
+    def get_motion(self):
+        return self.motion
 
     def set_options(self):
         #TODO: maybe it is possible with .create() to call this without poll=self
@@ -591,20 +594,20 @@ class ApplicationPoll(BasePoll, CountInvalid, CountVotesCast):
         CountVotesCast.append_pollform_fields(self, fields)
 
     def get_absolute_url(self):
-        return reverse('application_poll_view', args=[self.id])
+        return reverse('motion_poll_view', args=[self.id])
 
     def get_ballot(self):
-        return self.application.applicationpoll_set.filter(id__lte=self.id).count()
+        return self.motion.motionpoll_set.filter(id__lte=self.id).count()
 
 
-@receiver(default_config_value, dispatch_uid="application_default_config")
+@receiver(default_config_value, dispatch_uid="motion_default_config")
 def default_config(sender, key, **kwargs):
     return {
-        'application_min_supporters': 0,
-        'application_preamble': _('The assembly may decide,'),
-        'application_pdf_ballot_papers_selection': 'CUSTOM_NUMBER',
-        'application_pdf_ballot_papers_number': '8',
-        'application_pdf_title': _('Motions'),
-        'application_pdf_preamble': '',
-        'application_allow_trivial_change': False,
+        'motion_min_supporters': 0,
+        'motion_preamble': _('The assembly may decide,'),
+        'motion_pdf_ballot_papers_selection': 'CUSTOM_NUMBER',
+        'motion_pdf_ballot_papers_number': '8',
+        'motion_pdf_title': _('Motions'),
+        'motion_pdf_preamble': '',
+        'motion_allow_trivial_change': False,
     }.get(key)

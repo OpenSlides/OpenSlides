@@ -11,14 +11,14 @@
                "item"
             ],
             [
-               "can_create_application",
-               "application",
-               "application"
+               "can_create_motion",
+               "motion",
+               "motion"
             ],
             [
-               "can_see_application",
-               "application",
-               "application"
+               "can_see_motion",
+               "motion",
+               "motion"
             ],
             [
                "can_nominate_other",
@@ -44,6 +44,11 @@
                "can_see_projector",
                "projector",
                "projectorslide"
+            ],
+            [
+               "can_see_dashboard",
+               "projector",
+               "projectorslide"
             ]
          ]
       }
@@ -60,19 +65,19 @@
                "item"
             ],
             [
-               "can_create_application",
-               "application",
-               "application"
+               "can_create_motion",
+               "motion",
+               "motion"
             ],
             [
-               "can_see_application",
-               "application",
-               "application"
+               "can_see_motion",
+               "motion",
+               "motion"
             ],
             [
-               "can_support_application",
-               "application",
-               "application"
+               "can_support_motion",
+               "motion",
+               "motion"
             ],
             [
                "can_nominate_other",
@@ -96,6 +101,11 @@
             ],
             [
                "can_see_projector",
+               "projector",
+               "projectorslide"
+            ],
+            [
+               "can_see_dashboard",
                "projector",
                "projectorslide"
             ]
@@ -119,19 +129,19 @@
                "item"
             ],
             [
-               "can_create_application",
-               "application",
-               "application"
+               "can_create_motion",
+               "motion",
+               "motion"
             ],
             [
-               "can_manage_application",
-               "application",
-               "application"
+               "can_manage_motion",
+               "motion",
+               "motion"
             ],
             [
-               "can_see_application",
-               "application",
-               "application"
+               "can_see_motion",
+               "motion",
+               "motion"
             ],
             [
                "can_manage_assignment",
@@ -177,6 +187,11 @@
                "can_see_projector",
                "projector",
                "projectorslide"
+            ],
+            [
+               "can_see_dashboard",
+               "projector",
+               "projectorslide"
             ]
          ]
       }
@@ -204,6 +219,11 @@
             ],
             [
                "can_see_projector",
+               "projector",
+               "projectorslide"
+            ],
+            [
+               "can_see_dashboard",
                "projector",
                "projectorslide"
             ]
