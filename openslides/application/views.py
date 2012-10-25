@@ -390,6 +390,12 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
                 self.success_message = _("You have unsupported this motion successfully.")
             messages.success(request, self.success_message)
 
+    def get_answer_url(self):
+        if not self.unsupport:
+            return reverse('application_support', args=[self.get_object().pk])
+        else:
+            return reverse('application_unsupport', args=[self.get_object().pk])
+
     def get_redirect_url(self, **kwargs):
         return reverse('application_view', args=[kwargs[self.pk_url_kwarg]])
 
