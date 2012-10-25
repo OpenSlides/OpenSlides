@@ -15,6 +15,7 @@ from time import time
 
 from django.conf import settings
 from django.contrib import messages
+from django.core.cache import cache
 from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.db import transaction
@@ -107,10 +108,19 @@ class Projector(TemplateView, AjaxMixin):
         return context
 
     def get_ajax_context(self, **kwargs):
-        content = render_block_to_string(self.get_template_names()[0],
-            'content', self.data)
-        scrollcontent = render_block_to_string(self.get_template_names()[0],
-            'scrollcontent', self.data)
+        content = cache.get('projector_content')
+        if not content:
+            content = render_block_to_string(
+                self.get_template_names()[0],
+                'content', self.data)
+            cache.set('projector_content', content)
+
+        scrollcontent = cache.get('projector_scrollcontent')
+        if not scrollcontent:
+            scrollcontent = render_block_to_string(
+                self.get_template_names()[0],
+                'scrollcontent', self.data)
+            cache.set('projector_scrollcontent', scrollcontent)
 
         context = super(Projector, self).get_ajax_context(**kwargs)
         content_hash = hash(content)

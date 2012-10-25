@@ -134,3 +134,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'openslides.utils.utils.revision',
     'openslides.utils.auth.anonymous_context_additions',
 )
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'openslidecache'
+    }
+}

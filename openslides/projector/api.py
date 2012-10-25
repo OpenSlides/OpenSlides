@@ -11,6 +11,7 @@
 """
 
 from django.conf import settings
+from django.core.cache import cache
 from django.template.loader import render_to_string
 from django.utils.datastructures import SortedDict
 from django.utils.importlib import import_module
@@ -85,6 +86,8 @@ def set_active_slide(sid, argument=None):
     """
     config["presentation"] = sid
     config['presentation_argument'] = argument
+    cache.delete('projector_content')
+    cache.delete('projector_scrollcontent')
 
 
 def register_slidemodel(model, model_name=None, control_template=None,
