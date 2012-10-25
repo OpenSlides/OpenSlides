@@ -99,12 +99,12 @@ urlpatterns = patterns('openslides.motion.views',
     ),
 
     url(r'^(?P<motion_id>\d+)/support/$',
-        SupportView.as_view(unsupport=False, answer_url='support/'),
+        SupportView.as_view(support=True),
         name='motion_support',
     ),
 
     url(r'^(?P<motion_id>\d+)/unsupport/$',
-        SupportView.as_view(unsupport=True, answer_url='unsupport/'),
+        SupportView.as_view(support=False),
         name='motion_unsupport',
     ),
 

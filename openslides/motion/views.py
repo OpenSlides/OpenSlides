@@ -371,11 +371,10 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
     permission_required = 'motion.can_support_motion'
     model = Motion
     pk_url_kwarg = 'motion_id'
-    unsupport = False # Must be given in SupportView.as_view()
-    answer_url = None # Must be given in SupportView.as_view()
+    support = True
 
     def get_question(self):
-        if not self.unsupport:
+        if self.support:
             return _('Do you really want to support this motion?')
         else:
             return _('Do you really want to unsupport this motion?')
@@ -385,7 +384,7 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
         allowed_actions = motion.get_allowed_actions(request.user)
         if not self.get_answer().lower() == 'yes':
             return
-        if not self.unsupport:
+        if self.support:
             if 'support' in allowed_actions:
                 motion.support(person=request.user)
                 messages.success(
@@ -405,11 +404,18 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
             else:
                 messages.error(
                     request,
-                    _('You can not support this motion.'))
-
+                    _('You can not unsupport this motion.'))
 
     def get_redirect_url(self, **kwargs):
         return reverse('motion_view', args=[kwargs[self.pk_url_kwarg]])
+
+    def get_answer_url(self):
+        if self.support:
+            answer_url = 'motion_support'
+        else:
+            answer_url = 'motion_unsupport'
+        return reverse(answer_url, args=[self.kwargs[self.pk_url_kwarg]])
+
 
 @permission_required('motion.can_manage_motion')
 @template('motion/view.html')
