@@ -44,6 +44,11 @@ from openslides.utils.views import (
 
 from openslides.config.models import config
 
+from openslides.projector.projector import Widget
+
+from openslides.motion.models import Motion
+from openslides.assignment.models import Assignment
+
 from openslides.participant.api import gen_username, gen_password, import_users
 from openslides.participant.forms import (
     UserCreateForm, UserUpdateForm, UsersettingsForm,
@@ -503,3 +508,50 @@ def register_tab(request):
         permission=request.user.has_perm('participant.can_see_participant') or
             request.user.has_perm('participant.can_manage_participant'),
         selected=selected)
+
+
+def get_widgets(request):
+    """
+    Returns all widgets of the participant app. This is a user_widget, a
+    group_widget and a personal_info_widget.
+    """
+    return [
+        get_personal_info_widget(request),
+        #get_user_widget(request),
+        #get_group_widget(request)
+        ]
+
+
+def get_personal_info_widget(request):
+    """
+    Provides a widget for personal info. It shows your submitted motions
+    and where you are supporter or candidate.
+    """
+    personal_info_context = {
+    'submitted_motions': Motion.objects.filter(submitter=request.user),
+    'config_motion_min_supporters': config['motion_min_supporters'],
+    'supported_motions': Motion.objects.filter(motionsupporter=request.user),
+    'assignments': [ assignment for assignment in Assignment.objects.all() if assignment.is_candidate(request.user) ],}
+    return Widget(
+        name='personal_info',
+        display_name=_('On You'),
+        template='participant/personal_info_widget.html',
+        context=personal_info_context,
+        permission_required=None,
+        default_column=1)
+
+
+def get_user_widget(request):
+    """
+    Provides a widget with all users. This is for short activation of
+    user slides.
+    """
+    pass
+
+
+def get_group_widget(request):
+    """
+    Provides a widget with all groups. This is for short activation of
+    group slides.
+    """
+    pass
