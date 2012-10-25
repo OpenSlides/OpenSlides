@@ -382,6 +382,15 @@ def get_widgets(request):
     """
     widgets = []
 
+    # Static Info widget
+    widgets.append(Widget(
+        name='static_info',
+        display_name=config['frontpage_title'],
+        template='projector/static_info_widget.html',
+        context={'welcometext': config['frontpage_welcometext'],},
+        permission_required=None,
+        default_column=1))
+
     # Projector live view widget
     widgets.append(Widget(
         name='live_view',
