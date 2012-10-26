@@ -531,7 +531,9 @@ def get_personal_info_widget(request):
     'submitted_motions': Motion.objects.filter(submitter=request.user),
     'config_motion_min_supporters': config['motion_min_supporters'],
     'supported_motions': Motion.objects.filter(motionsupporter=request.user),
-    'assignments': [ assignment for assignment in Assignment.objects.all() if assignment.is_candidate(request.user) ],}
+    'assignments': Assignment.objects.filter(
+        assignmentcandidate__person=request.user,
+        assignmentcandidate__blocked=False),}
     return Widget(
         name='personal_info',
         display_name=_('On You'),
