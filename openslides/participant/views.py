@@ -517,9 +517,8 @@ def get_widgets(request):
     """
     return [
         get_personal_info_widget(request),
-        #get_user_widget(request),
-        #get_group_widget(request)
-        ]
+        get_user_widget(request),
+        get_group_widget(request)]
 
 
 def get_personal_info_widget(request):
@@ -548,7 +547,13 @@ def get_user_widget(request):
     Provides a widget with all users. This is for short activation of
     user slides.
     """
-    pass
+    return Widget(
+        name='user',
+        display_name=_('Users'),
+        template='participant/user_widget.html',
+        context={'users': User.objects.all(),},
+        permission_required='projector.can_manage_projector',
+        default_column=1)
 
 
 def get_group_widget(request):
@@ -556,4 +561,10 @@ def get_group_widget(request):
     Provides a widget with all groups. This is for short activation of
     group slides.
     """
-    pass
+    return Widget(
+        name='group',
+        display_name=_('Groups'),
+        template='participant/group_widget.html',
+        context={'groups': Group.objects.all(),},
+        permission_required='projector.can_manage_projector',
+        default_column=1)
