@@ -56,7 +56,7 @@ from openslides.participant.forms import (
 from openslides.participant.models import User, Group
 
 
-class Overview(ListView):
+class UserOverview(ListView):
     """
     Show all participants (users).
     """
@@ -112,7 +112,7 @@ class Overview(ListView):
         return query.all()
 
     def get_context_data(self, **kwargs):
-        context = super(Overview, self).get_context_data(**kwargs)
+        context = super(UserOverview, self).get_context_data(**kwargs)
 
         all_users = User.objects.count()
 
@@ -138,6 +138,21 @@ class Overview(ListView):
                 doseq=True)],
             'sortfilter': self.sortfilter})
         return context
+
+
+from django.views.generic.detail import DetailView
+class UserDetailView(DetailView):
+    """
+    Classed based view to show a specific user in the interface.
+    """
+    model = User
+
+
+class GroupDetailView(DetailView):
+    """
+    Classed based view to show a specific group in the interface.
+    """
+    model = Group
 
 
 class UserCreateView(CreateView):
@@ -354,7 +369,7 @@ class ResetPasswordView(RedirectView, SingleObjectMixin, QuestionMixin):
         return reverse('user_reset_password', args=[self.object.id])
 
 
-class GroupOverviewView(ListView):
+class GroupOverview(ListView):
     """
     Overview over all groups.
     """
