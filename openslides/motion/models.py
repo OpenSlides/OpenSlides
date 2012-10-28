@@ -258,25 +258,21 @@ class Motion(models.Model, SlideMixin):
         """
         if person == self.submitter:
             # TODO: Use own Exception
-            raise NameError('Supporter can not be the submitter of a ' \
+            raise NameError('Supporter can not be the submitter of a '
                             'motion.')
-        if self.permitted is not None:
-            # TODO: Use own Exception
-            raise NameError('This motion is already permitted.')
         if not self.is_supporter(person):
             MotionSupporter(motion=self, person=person).save()
             self.writelog(_("Supporter: +%s") % (person))
+        # TODO: Raise a precise exception for the view in else-clause
 
     def unsupport(self, person):
         """
         remove a supporter from the list of supporters of the motion
         """
-        if self.permitted is not None:
-            # TODO: Use own Exception
-            raise NameError('This motion is already permitted.')
         try:
             object = self.motionsupporter_set.get(person=person).delete()
         except MotionSupporter.DoesNotExist:
+            # TODO: Don't do nothing but raise a precise exception for the view
             pass
         else:
             self.writelog(_("Supporter: -%s") % (person))
@@ -399,7 +395,7 @@ class Motion(models.Model, SlideMixin):
 
         # Check if the user can delete the motion (admin, manager, owner)
         # reworked as requiered in #100
-        if (user.has_perm("applicatoin.can_delete_all_motions") or
+        if (user.has_perm("motion.can_delete_all_motions") or
            (user.has_perm("motion.can_manage_motion") and
                self.number is None) or
            (self.submitter == user and self.number is None)):
