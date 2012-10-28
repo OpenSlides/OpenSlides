@@ -320,7 +320,7 @@ class UserImportView(FormView):
         return super(UserImportView, self).form_valid(form)
 
 
-class ResetPasswordView(RedirectView, SingleObjectMixin, QuestionMixin):
+class ResetPasswordView(SingleObjectMixin, QuestionMixin, RedirectView):
     """
     Set the Passwort for a user to his default password.
     """
@@ -336,17 +336,11 @@ class ResetPasswordView(RedirectView, SingleObjectMixin, QuestionMixin):
     def get_redirect_url(self, **kwargs):
         return reverse('user_edit', args=[self.object.id])
 
-    def pre_redirect(self, request, *args, **kwargs):
-        self.confirm_form()
+    def case_yes(self):
+        self.object.reset_password()
 
-    def pre_post_redirect(self, request, *args, **kwargs):
-        if self.get_answer().lower() == 'yes':
-            self.object.reset_password()
-            messages.success(request,
-                _('The Password for %s was successfully reset.') % html_strong(self.object))
-
-    def get_answer_url(self):
-        return reverse('user_reset_password', args=[self.object.id])
+    def get_success_message(self):
+        return _('The Password for %s was successfully reset.') % html_strong(self.object)
 
 
 class GroupOverviewView(ListView):
