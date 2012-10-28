@@ -366,7 +366,8 @@ def reset(request, motion_id):
 
 class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
     """
-    Support or unsupport an motion.
+    Classed based view to support or unsupport a motion. Use
+    support=True or support=False in urls.py
     """
     permission_required = 'motion.can_support_motion'
     model = Motion
@@ -379,32 +380,25 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
         else:
             return _('Do you really want to unsupport this motion?')
 
+    def pre_redirect(self, request, *args, **kwargs):
+        allowed_actions = self.get_object().get_allowed_actions(request.user)
+        if self.support and not 'support' in allowed_actions:
+            messages.error(request, _('You can not support this motion.'))
+        elif not self.support and not 'unsupport' in allowed_actions:
+            messages.error(request, _('You can not unsupport this motion.'))
+        else:
+            super(SupportView, self).pre_redirect(request, *args, **kwargs)
+
     def pre_post_redirect(self, request, *args, **kwargs):
         motion = self.get_object()
-        allowed_actions = motion.get_allowed_actions(request.user)
-        if not self.get_answer().lower() == 'yes':
-            return
-        if self.support:
-            if 'support' in allowed_actions:
+        if self.get_answer().lower() == 'yes':
+            if self.support:
                 motion.support(person=request.user)
-                messages.success(
-                    request,
-                    _("You have supported this motion successfully."))
-
+                self.success_message = _("You have supported this motion successfully.")
             else:
-                messages.error(
-                    request,
-                    _('You can not support this motion.'))
-        else:
-            if 'unsupport' in allowed_actions:
-                self.get_object().unsupport(person=request.user)
-                messages.success(
-                    request,
-                    _("You have unsupported this motion successfully."))
-            else:
-                messages.error(
-                    request,
-                    _('You can not unsupport this motion.'))
+                motion.unsupport(person=request.user)
+                self.success_message = _("You have unsupported this motion successfully.")
+            messages.success(request, self.success_message)
 
     def get_redirect_url(self, **kwargs):
         return reverse('motion_view', args=[kwargs[self.pk_url_kwarg]])
