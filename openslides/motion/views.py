@@ -41,7 +41,8 @@ from openslides.utils.pdf import stylesheet
 from openslides.utils.template import Tab
 from openslides.utils.utils import (template, permission_required,
     del_confirm_form, gen_confirm_form)
-from openslides.utils.views import PDFView, RedirectView, DeleteView, FormView
+from openslides.utils.views import (PDFView, RedirectView, DeleteView,
+    FormView, SingleObjectMixin, QuestionMixin)
 from openslides.utils.person import get_person
 
 from openslides.config.models import config
@@ -363,32 +364,51 @@ def reset(request, motion_id):
     return redirect(reverse('motion_view', args=[motion_id]))
 
 
-@permission_required('motion.can_support_motion')
-@template('motion/view.html')
-def support(request, motion_id):
+class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
     """
-    support an motion.
+    Classed based view to support or unsupport a motion. Use
+    support=True or support=False in urls.py
     """
-    try:
-        Motion.objects.get(pk=motion_id).support(person=request.user)
-        messages.success(request, _("You have support the motion successfully.") )
-    except Motion.DoesNotExist:
-        pass
-    return redirect(reverse('motion_view', args=[motion_id]))
+    permission_required = 'motion.can_support_motion'
+    model = Motion
+    pk_url_kwarg = 'motion_id'
+    support = True
 
+    def get_question(self):
+        if self.support:
+            return _('Do you really want to support this motion?')
+        else:
+            return _('Do you really want to unsupport this motion?')
 
-@permission_required('motion.can_support_motion')
-@template('motion/view.html')
-def unsupport(request, motion_id):
-    """
-    unsupport an motion.
-    """
-    try:
-        Motion.objects.get(pk=motion_id).unsupport(person=request.user)
-        messages.success(request, _("You have unsupport the motion successfully.") )
-    except Motion.DoesNotExist:
-        pass
-    return redirect(reverse('motion_view', args=[motion_id]))
+    def pre_redirect(self, request, *args, **kwargs):
+        allowed_actions = self.get_object().get_allowed_actions(request.user)
+        if self.support and not 'support' in allowed_actions:
+            messages.error(request, _('You can not support this motion.'))
+        elif not self.support and not 'unsupport' in allowed_actions:
+            messages.error(request, _('You can not unsupport this motion.'))
+        else:
+            super(SupportView, self).pre_redirect(request, *args, **kwargs)
+
+    def pre_post_redirect(self, request, *args, **kwargs):
+        motion = self.get_object()
+        if self.get_answer().lower() == 'yes':
+            if self.support:
+                motion.support(person=request.user)
+                self.success_message = _("You have supported this motion successfully.")
+            else:
+                motion.unsupport(person=request.user)
+                self.success_message = _("You have unsupported this motion successfully.")
+            messages.success(request, self.success_message)
+
+    def get_redirect_url(self, **kwargs):
+        return reverse('motion_view', args=[kwargs[self.pk_url_kwarg]])
+
+    def get_answer_url(self):
+        if self.support:
+            answer_url = 'motion_support'
+        else:
+            answer_url = 'motion_unsupport'
+        return reverse(answer_url, args=[self.kwargs[self.pk_url_kwarg]])
 
 
 @permission_required('motion.can_manage_motion')
