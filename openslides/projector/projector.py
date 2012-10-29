@@ -58,6 +58,12 @@ class SlideMixin(object):
         """
         set_active_slide(self.sid)
 
+    def save(self, *args, **kwargs):
+        if self.active:
+            from api import clear_projector_cache
+            clear_projector_cache()
+        return super(SlideMixin, self).save(*args, **kwargs)
+
 
 class Slide(object):
     """

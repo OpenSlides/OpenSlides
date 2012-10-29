@@ -122,14 +122,21 @@ class Projector(TemplateView, AjaxMixin):
                 'scrollcontent', self.data)
             cache.set('projector_scrollcontent', scrollcontent)
 
+
+        # TODO: do not call the hole data-methode, if we only need some vars
+        data = cache.get('projector_data')
+        if not data:
+            data = self.data
+            cache.set('projector_data', data)
+
         context = super(Projector, self).get_ajax_context(**kwargs)
         content_hash = hash(content)
         context.update({
             'content': content,
             'scrollcontent': scrollcontent,
             'time': datetime.now().strftime('%H:%M'),
-            'overlays': self.data['overlays'],
-            'title': self.data['title'],
+            'overlays': data['overlays'],
+            'title': data['title'],
             'bigger': config['bigger'],
             'up': config['up'],
             'content_hash': content_hash,
