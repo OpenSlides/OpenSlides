@@ -1,9 +1,40 @@
 {% extends "participant/base_participant.html" %}
 
-{% block title %}{{ block.super }} – {{ object }}{% endblock %}
+{% load i18n %}
+{% load tags %}
+
+{% block title %}{{ block.super }} – {{ shown_user }}{% endblock %}
 
 {% block content %}
 
-{{ object }}
+<h1>{{ shown_user }}</h1>
+
+<p>{{ shown_user.email }}</p>
+
+<h2>{% trans "Groups" %}</h2>
+<p>
+    {% for group in shown_user.groups.all %}
+    {{ group }},
+    {% endfor %}
+</p>
+
+<h2>{% trans "Gender" %}</h2>
+<p>{{ shown_user.get_gender_display }}</p>
+
+<h2>{% trans "Type" %}</h2>
+<p>{{ shown_user.get_type_display }}</p>
+
+<h2>{% trans "Committee" %}</h2>
+<p>{{ shown_user.committee }}</p>
+
+{% if perms.participant.can_manage_participant %}
+    <h2>{% trans "Comment" %}</h2>
+    <p>{{ shown_user.comment }}</p>
+
+    <h2>{% trans "Last Login" %}</h2>
+    {% if shown_user.last_login > shown_user.date_joined %}
+        <p>{{ shown_user.last_login }}</p>
+    {% endif %}
+{% endif %}
 
 {% endblock %}

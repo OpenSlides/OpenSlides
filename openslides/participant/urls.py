@@ -34,7 +34,7 @@ urlpatterns = patterns('',
 
     url(r'^(?P<pk>\d+)/$',
         UserDetailView.as_view(),
-        name='user_detail',
+        name='user_view',
     ),
 
     url(r'^(?P<pk>\d+)/edit/$',
@@ -88,7 +88,7 @@ urlpatterns = patterns('',
 
     url(r'^group/(?P<pk>\d+)/$',
         GroupDetailView.as_view(),
-        name='user_group_detail',
+        name='user_group_view',
     ),
 
     url(r'^group/(?P<pk>\d+)/edit/$',

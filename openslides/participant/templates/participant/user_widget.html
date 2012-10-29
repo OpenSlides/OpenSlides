@@ -16,7 +16,7 @@
         <a href="{% url projctor_preview_slide user.sid %}" title="{% trans 'Preview' %}" class="icon preview right">
             <span></span>
         </a>
-        <a href="{% model_url user 'edit' %}">{{ user }}</a>
+        <a href="{% model_url user 'view' %}">{{ user }}</a>
     </li>
 {% empty %}
     <li>{% trans 'No users available.' %}</li>

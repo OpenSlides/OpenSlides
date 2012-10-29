@@ -140,19 +140,25 @@ class UserOverview(ListView):
         return context
 
 
-from django.views.generic.detail import DetailView
-class UserDetailView(DetailView):
+from openslides.utils.views import DetailView, PermissionMixin
+class UserDetailView(DetailView, PermissionMixin):
     """
     Classed based view to show a specific user in the interface.
     """
+    permission_required = 'participant.can_see_participant'
     model = User
+    template_name = 'participant/user_detail.html'
+    context_object_name = 'shown_user'
 
 
-class GroupDetailView(DetailView):
+class GroupDetailView(DetailView, PermissionMixin):
     """
     Classed based view to show a specific group in the interface.
     """
+    permission_required = 'participant.can_manage_participant'
     model = Group
+    template_name = 'participant/group_detail.html'
+    context_object_name = 'group'
 
 
 class UserCreateView(CreateView):
