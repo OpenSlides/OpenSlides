@@ -37,7 +37,7 @@ class UserTest(TestCase):
     def test_repr(self):
         self.assertEqual(unicode(self.user1), 'Max Mustermann')
 
-    def test_name_surfix(self):
+    def test_name_suffix(self):
         self.user1.detail = 'München'
         self.user1.save()
         self.assertEqual(unicode(self.user1), 'Max Mustermann (München)')
