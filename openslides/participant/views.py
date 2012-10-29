@@ -44,6 +44,11 @@ from openslides.utils.views import (
 
 from openslides.config.models import config
 
+from openslides.projector.projector import Widget
+
+from openslides.motion.models import Motion
+from openslides.assignment.models import Assignment
+
 from openslides.participant.api import gen_username, gen_password, import_users
 from openslides.participant.forms import (
     UserCreateForm, UserUpdateForm, UsersettingsForm,
@@ -51,7 +56,7 @@ from openslides.participant.forms import (
 from openslides.participant.models import User, Group
 
 
-class Overview(ListView):
+class UserOverview(ListView):
     """
     Show all participants (users).
     """
@@ -107,7 +112,7 @@ class Overview(ListView):
         return query.all()
 
     def get_context_data(self, **kwargs):
-        context = super(Overview, self).get_context_data(**kwargs)
+        context = super(UserOverview, self).get_context_data(**kwargs)
 
         all_users = User.objects.count()
 
@@ -133,6 +138,27 @@ class Overview(ListView):
                 doseq=True)],
             'sortfilter': self.sortfilter})
         return context
+
+
+from openslides.utils.views import DetailView, PermissionMixin
+class UserDetailView(DetailView, PermissionMixin):
+    """
+    Classed based view to show a specific user in the interface.
+    """
+    permission_required = 'participant.can_see_participant'
+    model = User
+    template_name = 'participant/user_detail.html'
+    context_object_name = 'shown_user'
+
+
+class GroupDetailView(DetailView, PermissionMixin):
+    """
+    Classed based view to show a specific group in the interface.
+    """
+    permission_required = 'participant.can_manage_participant'
+    model = Group
+    template_name = 'participant/group_detail.html'
+    context_object_name = 'group'
 
 
 class UserCreateView(CreateView):
@@ -343,7 +369,7 @@ class ResetPasswordView(SingleObjectMixin, QuestionMixin, RedirectView):
         return _('The Password for %s was successfully reset.') % html_strong(self.object)
 
 
-class GroupOverviewView(ListView):
+class GroupOverview(ListView):
     """
     Overview over all groups.
     """
@@ -497,3 +523,63 @@ def register_tab(request):
         permission=request.user.has_perm('participant.can_see_participant') or
             request.user.has_perm('participant.can_manage_participant'),
         selected=selected)
+
+
+def get_widgets(request):
+    """
+    Returns all widgets of the participant app. This is a user_widget, a
+    group_widget and a personal_info_widget.
+    """
+    return [
+        get_personal_info_widget(request),
+        get_user_widget(request),
+        get_group_widget(request)]
+
+
+def get_personal_info_widget(request):
+    """
+    Provides a widget for personal info. It shows your submitted motions
+    and where you are supporter or candidate.
+    """
+    personal_info_context = {
+    'submitted_motions': Motion.objects.filter(submitter=request.user),
+    'config_motion_min_supporters': config['motion_min_supporters'],
+    'supported_motions': Motion.objects.filter(motionsupporter=request.user),
+    'assignments': Assignment.objects.filter(
+        assignmentcandidate__person=request.user,
+        assignmentcandidate__blocked=False),}
+    return Widget(
+        name='personal_info',
+        display_name=_('On You'),
+        template='participant/personal_info_widget.html',
+        context=personal_info_context,
+        permission_required=None,
+        default_column=1)
+
+
+def get_user_widget(request):
+    """
+    Provides a widget with all users. This is for short activation of
+    user slides.
+    """
+    return Widget(
+        name='user',
+        display_name=_('Users'),
+        template='participant/user_widget.html',
+        context={'users': User.objects.all(),},
+        permission_required='projector.can_manage_projector',
+        default_column=1)
+
+
+def get_group_widget(request):
+    """
+    Provides a widget with all groups. This is for short activation of
+    group slides.
+    """
+    return Widget(
+        name='group',
+        display_name=_('Groups'),
+        template='participant/group_widget.html',
+        context={'groups': Group.objects.all(),},
+        permission_required='projector.can_manage_projector',
+        default_column=1)

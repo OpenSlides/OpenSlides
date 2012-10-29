@@ -78,14 +78,17 @@ class User(DjangoUser, PersonMixin, Person):
         self.save()
 
     @models.permalink
-    def get_absolute_url(self, link='edit'):
+    def get_absolute_url(self, link='view'):
         """
         Return the URL to this user.
 
         link can be:
+        * view
         * edit
         * delete
         """
+        if link == 'view':
+            return ('user_view', [str(self.id)])
         if link == 'edit':
             return ('user_edit', [str(self.id)])
         if link == 'delete':
@@ -114,14 +117,17 @@ class Group(DjangoGroup, PersonMixin, Person):
     description = models.TextField(blank=True)
 
     @models.permalink
-    def get_absolute_url(self, link='edit'):
+    def get_absolute_url(self, link='view'):
         """
         Return the URL to this user.
 
         link can be:
+        * view
         * edit
         * delete
         """
+        if link == 'view':
+            return ('user_group_view', [str(self.id)])
         if link == 'edit':
             return ('user_group_edit', [str(self.id)])
         if link == 'delete':
