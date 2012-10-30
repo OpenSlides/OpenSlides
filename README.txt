@@ -2,7 +2,7 @@
             English README file for OpenSlides
             ==================================
 
-This is OpenSlides, version 1.2 (2012-07-25).
+This is OpenSlides, version 1.3-beta1 (2012-10-30).
 
 
 What is OpenSlides?
@@ -47,17 +47,27 @@ Command line options
 --------------------
 The following command line options are available:
 
+-h, --help
+    Shows all options
+
 -a, --address=ADDRESS
     Changes the address on which the server will listen for connections
 
--p, --port
+-p PORT, --port=PORT
     Changes the port on which the server will listen for connections
 
 --syncdb
-    Create/ update the database
+    Creates/updates database before starting the server
 
 --reset-admin
-    This will reset the password of the user
+    Resets the password to 'admin' for user 'admin'
+
+-s SETTINGS, --settings=SETTINGS
+    Sets the path to the settings file.
+
+--no-reload
+    Does not reload the development server
+
 
 Example 1: Openslides should only be accessible on this computer:
   openslides.exe -a 127.0.0.1
@@ -82,4 +92,3 @@ Browsers:
   IE 7+
   Chrome
   Safari
-
