@@ -41,10 +41,10 @@ class UserUpdateForm(UserCreateForm):
 
 class GroupForm(forms.ModelForm, CssClassMixin):
     permissions = LocalizedModelMultipleChoiceField(
-        queryset=Permission.objects.all(), label=_("Persmissions"),
+        queryset=Permission.objects.all(), label=_("Permissions"),
         required=False)
     users = forms.ModelMultipleChoiceField(
-        queryset=User.objects.all(), label=_("Users"), required=False)
+        queryset=User.objects.all(), label=_("Participants"), required=False)
 
     def __init__(self, *args, **kwargs):
         # Initial users

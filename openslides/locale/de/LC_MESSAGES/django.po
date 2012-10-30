@@ -7,10 +7,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-24 12:51+0200\n"
+"POT-Creation-Date: 2012-10-30 21:52+0100\n"
 "PO-Revision-Date: 2012-07-28 11:07+0200\n"
-"Last-Translator: Oskar Hahn <mail@oshahn.de>\n"
-"Language-Team: Deutsch <mail@oshahn.de>\n"
+"Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
+"Language-Team: support@openslides.de\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -30,12 +30,12 @@ msgid "Parent item"
 msgstr "Elternelement"
 
 #: agenda/models.py:42 config/forms.py:61 motion/forms.py:22
-#: motion/models.py:544 motion/templates/motion/view.html:246
+#: motion/models.py:540 motion/templates/motion/view.html:246
 #: projector/models.py:32
 msgid "Title"
 msgstr "Titel"
 
-#: agenda/models.py:43 motion/forms.py:23 motion/models.py:545
+#: agenda/models.py:43 motion/forms.py:23 motion/models.py:541
 #: motion/templates/motion/view.html:247 projector/models.py:33
 msgid "Text"
 msgstr "Text"
@@ -225,8 +225,8 @@ msgstr "Möchten Sie die geänderte Reihenfolge der Einträge speichern?"
 #: assignment/views.py:576 assignment/templates/assignment/view.html:166
 #: assignment/templates/assignment/view.html:170
 #: assignment/templates/projector/Assignment.html:78
-#: assignment/templates/projector/Assignment.html:82 motion/models.py:578
-#: motion/views.py:778 motion/views.py:829
+#: assignment/templates/projector/Assignment.html:82 motion/models.py:574
+#: motion/views.py:807 motion/views.py:858
 #: motion/templates/motion/view.html:79
 #: motion/templates/projector/Motion.html:37 utils/utils.py:53
 #: utils/views.py:111
@@ -235,8 +235,8 @@ msgstr "Ja"
 
 #: agenda/templates/agenda/overview.html:47 assignment/models.py:300
 #: assignment/views.py:577 assignment/templates/assignment/view.html:167
-#: assignment/templates/projector/Assignment.html:79 motion/models.py:578
-#: motion/views.py:778 motion/views.py:830
+#: assignment/templates/projector/Assignment.html:79 motion/models.py:574
+#: motion/views.py:807 motion/views.py:859
 #: motion/templates/motion/view.html:80
 #: motion/templates/projector/Motion.html:38 utils/utils.py:53
 #: utils/views.py:111
@@ -385,7 +385,7 @@ msgstr "Abgeschlossen"
 msgid "Name"
 msgstr "Name"
 
-#: assignment/models.py:55
+#: assignment/models.py:55 participant/models.py:114
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -393,7 +393,7 @@ msgstr "Beschreibung"
 msgid "Comment on the ballot paper"
 msgstr "Kommentar für den Stimmzettel"
 
-#: assignment/models.py:69 motion/models.py:339
+#: assignment/models.py:69 motion/models.py:335
 #, python-format
 msgid "%s is not a valid status."
 msgstr "%s ist kein gültiger Status."
@@ -438,7 +438,7 @@ msgstr "Darf selbst für Wahlen kandidieren"
 msgid "Can manage assignment"
 msgstr "Darf Wahlen verwalten"
 
-#: assignment/models.py:301 motion/models.py:579
+#: assignment/models.py:301 motion/models.py:575
 msgid "Abstain"
 msgstr "Enthaltung"
 
@@ -471,9 +471,9 @@ msgstr "Neue Wahl wurde erfolgreich angelegt."
 msgid "Election was successfully modified."
 msgstr "Wahl wurde erfolgreich geändert."
 
-#: assignment/views.py:138 motion/views.py:256 motion/views.py:637
-#: participant/views.py:463 participant/views.py:486 utils/views.py:210
-#: utils/views.py:228 utils/views.py:252
+#: assignment/views.py:138 motion/views.py:257 motion/views.py:666
+#: participant/views.py:457 participant/views.py:480 utils/views.py:225
+#: utils/views.py:243 utils/views.py:267
 msgid "Please check the form for errors."
 msgstr "Bitte kontrollieren Sie das Formular nach Fehlern."
 
@@ -572,7 +572,7 @@ msgstr "Wahlen: %s"
 msgid "Candidates"
 msgstr "Kandidaten/innen"
 
-#: assignment/views.py:410 motion/views.py:771
+#: assignment/views.py:410 motion/views.py:800
 #: motion/templates/motion/view.html:44
 msgid "Vote results"
 msgstr "Abstimmungsergebnis"
@@ -613,7 +613,7 @@ msgstr "Ungültige Stimmen"
 #: assignment/templates/assignment/view.html:202
 #: assignment/templates/assignment/view.html:207
 #: assignment/templates/projector/Assignment.html:111
-#: assignment/templates/projector/Assignment.html:117 motion/views.py:778
+#: assignment/templates/projector/Assignment.html:117 motion/views.py:807
 #: motion/templates/motion/poll_view.html:35
 #: motion/templates/motion/view.html:84
 #: motion/templates/projector/Motion.html:42 poll/models.py:76
@@ -646,8 +646,8 @@ msgid "%d available posts"
 msgstr "%d verfügbare Posten"
 
 #: assignment/views.py:577 assignment/templates/assignment/view.html:168
-#: assignment/templates/projector/Assignment.html:80 motion/views.py:778
-#: motion/views.py:831 motion/templates/motion/view.html:81
+#: assignment/templates/projector/Assignment.html:80 motion/views.py:807
+#: motion/views.py:860 motion/templates/motion/view.html:81
 #: motion/templates/projector/Motion.html:39
 msgid "Abstention"
 msgstr "Enthaltung"
@@ -712,7 +712,7 @@ msgstr "Wahl-Einstellungen"
 #: assignment/templates/assignment/overview.html:14
 #: assignment/templates/assignment/overview.html:27
 #: assignment/templates/assignment/view.html:11
-#: assignment/templates/projector/Assignment.html:18 motion/views.py:749
+#: assignment/templates/projector/Assignment.html:18 motion/views.py:778
 #: motion/templates/motion/overview.html:20
 #: motion/templates/motion/overview.html:40
 #: motion/templates/motion/view.html:34
@@ -815,7 +815,7 @@ msgid "was not a <br> candidate"
 msgstr "war kein Kandidat"
 
 #: assignment/templates/assignment/view.html:190
-#: assignment/templates/projector/Assignment.html:101 motion/views.py:778
+#: assignment/templates/projector/Assignment.html:101 motion/views.py:807
 #: motion/templates/motion/view.html:82
 #: motion/templates/projector/Motion.html:40
 msgid "Invalid"
@@ -859,16 +859,16 @@ msgid "Can manage configuration"
 msgstr "Darf die Konfiguration verwalten"
 
 #: config/models.py:84
-msgid "Presentation system for agenda, motions and elections"
-msgstr "Präsentationssystem für Tagesordnung, Anträge und Wahlen"
+msgid "Presentation and assembly system"
+msgstr "Präsentations- und Versammlungssystem"
 
-#: config/models.py:89 templates/base.html:30
-msgid "Welcome"
-msgstr "Willkommen"
+#: config/models.py:89
+msgid "Welcome to OpenSlides"
+msgstr "Willkommen bei OpenSlides"
 
-#: config/models.py:90 participant/models.py:192
-msgid "Welcome to OpenSlides!"
-msgstr "Willkommen bei OpenSlides!"
+#: config/models.py:90
+msgid "[Place for your welcome text.]"
+msgstr "[Platz für Ihren Begrüßungstext.]"
 
 #: config/models.py:92
 #, python-format
@@ -881,7 +881,7 @@ msgstr "Allgemein"
 
 #: config/models.py:131 config/templates/config/version.html:5
 #: config/templates/config/version.html:8
-#: config/templates/config/version.html:11 motion/views.py:763
+#: config/templates/config/version.html:11 motion/views.py:792
 #: motion/templates/motion/view.html:214 motion/templates/motion/view.html:244
 msgid "Version"
 msgstr "Version"
@@ -919,7 +919,7 @@ msgstr "Startseite"
 msgid "System"
 msgstr "System"
 
-#: motion/forms.py:25 motion/models.py:546 motion/views.py:797
+#: motion/forms.py:25 motion/models.py:542 motion/views.py:826
 #: motion/templates/motion/view.html:229 motion/templates/motion/view.html:249
 #: motion/templates/projector/Motion.html:77
 msgid "Reason"
@@ -933,7 +933,7 @@ msgstr "Triviale Änderung"
 msgid "Trivial changes don't create a new version."
 msgstr "Triviale Änderungen erzeugen keine neue Version."
 
-#: motion/forms.py:44 motion/views.py:736 motion/templates/motion/view.html:22
+#: motion/forms.py:44 motion/views.py:765 motion/templates/motion/view.html:22
 msgid "Supporters"
 msgstr "Unterstützer/innen"
 
@@ -1022,7 +1022,7 @@ msgstr "Verworfen (nicht zulässig)"
 msgid "Needs Review"
 msgstr "Benötigt Review"
 
-#: motion/models.py:66 motion/views.py:716
+#: motion/models.py:66 motion/views.py:745
 #: motion/templates/motion/overview.html:41
 #: motion/templates/motion/view.html:18
 #: motion/templates/projector/Motion.html:55
@@ -1033,11 +1033,6 @@ msgstr "Antragsteller/in"
 #, python-format
 msgid "Version %d authorized"
 msgstr "Version %d zugelassen"
-
-#: motion/models.py:110
-msgctxt "Rejected means not authorized"
-msgid "Version %d rejected"
-msgstr "Version %d zurückgewiesen"
 
 #: motion/models.py:139
 msgid "Searching for supporters."
@@ -1073,37 +1068,37 @@ msgstr "Unterstützer/innen gelöscht"
 msgid "Status reseted to: %s"
 msgstr "Status zurückgesetzt auf: %s"
 
-#: motion/models.py:268
+#: motion/models.py:265
 #, python-format
 msgid "Supporter: +%s"
 msgstr "Unterstützer/in: +%s"
 
-#: motion/models.py:282
+#: motion/models.py:278
 #, python-format
 msgid "Supporter: -%s"
 msgstr "Unterstützer/in: -%s"
 
-#: motion/models.py:299
+#: motion/models.py:295
 #, python-format
 msgid "Number set: %s"
 msgstr "Nummer gesetzt: %s"
 
-#: motion/models.py:312
+#: motion/models.py:308
 #, python-format
 msgid "Version %s authorized"
 msgstr "Version %s zugelassen"
 
-#: motion/models.py:326
+#: motion/models.py:322
 #, python-format
 msgid "Version %s not authorized"
 msgstr "Version %s nicht zugelassen"
 
-#: motion/models.py:342
+#: motion/models.py:338
 #, python-format
 msgid "The motion status is already '%s.'"
 msgstr "Der Antragsstatus ist bereits '%s'."
 
-#: motion/models.py:350
+#: motion/models.py:346
 #, python-format
 msgid ""
 "The motion status is: '%(currentstatus)s'. You can not set the status to "
@@ -1112,75 +1107,75 @@ msgstr ""
 "Der Antragsstatus ist: '%(currentstatus)s'. Sie können den Status nicht auf "
 "'%(newstatus)s' setzen."
 
-#: motion/models.py:358
+#: motion/models.py:354
 msgid "Status modified"
 msgstr "Status geändert"
 
-#: motion/models.py:450
+#: motion/models.py:446
 msgid "by"
 msgstr "von"
 
-#: motion/models.py:458 motion/templates/motion/view.html:210
+#: motion/models.py:454 motion/templates/motion/view.html:210
 #: motion/templates/motion/widget.html:27
 #: motion/templates/projector/Motion.html:65
 msgid "no number"
 msgstr "ohne Nummer"
 
-#: motion/models.py:459 motion/templates/motion/overview.html:32
+#: motion/models.py:455 motion/templates/motion/overview.html:32
 #: motion/templates/motion/widget.html:23
 msgid "motion"
 msgstr "Antrag"
 
-#: motion/models.py:484
+#: motion/models.py:480
 msgid "Poll created"
 msgstr "Abstimmung erstellt"
 
-#: motion/models.py:535
+#: motion/models.py:531
 msgid "Can see motions"
 msgstr "Darf Anträge sehen"
 
-#: motion/models.py:536
+#: motion/models.py:532
 msgid "Can create motions"
 msgstr "Darf Anträge erstellen"
 
-#: motion/models.py:537
+#: motion/models.py:533
 msgid "Can support motions"
 msgstr "Darf Anträge unterstützen"
 
-#: motion/models.py:538
+#: motion/models.py:534
 msgid "Can manage motions"
 msgstr "Darf Anträge verwalten"
 
-#: motion/models.py:605
+#: motion/models.py:601
 msgid "The assembly may decide,"
 msgstr "Die Versammlung möge beschließen,"
 
-#: motion/models.py:608 motion/views.py:666 motion/views.py:891
+#: motion/models.py:604 motion/views.py:695 motion/views.py:920
 #: motion/templates/motion/base_motion.html:9
 #: motion/templates/motion/overview.html:7
 #: motion/templates/motion/overview.html:10
 msgid "Motions"
 msgstr "Anträge"
 
-#: motion/views.py:179
+#: motion/views.py:180
 msgid "You have not the necessary rights to create or edit motions."
 msgstr ""
 "Sie haben nicht die nötigen Rechte, um Anträge zu erstellen oder zu "
 "bearbeiten."
 
-#: motion/views.py:184
+#: motion/views.py:185
 msgid "You can not edit this motion."
 msgstr "Sie dürfen diesen Antrag nicht bearbeiten."
 
-#: motion/views.py:247
+#: motion/views.py:248
 msgid "New motion was successfully created."
 msgstr "Neuer Antrag wurde erfolgreich angelegt."
 
-#: motion/views.py:249
+#: motion/views.py:250
 msgid "Motion was successfully modified."
 msgstr "Antrag wurde erfolgreich geändert."
 
-#: motion/views.py:263
+#: motion/views.py:264
 msgid ""
 "Attention: Do you really want to edit this motion? The supporters will "
 "<b>not</b> be removed automatically because you can manage motions. Please "
@@ -1190,7 +1185,7 @@ msgstr ""
 "werden <b>nicht</b> automatisch entfernt, da Sie Anträge verwalten dürfen. "
 "Prüfen Sie, ob die Unterstützungen noch gültig sind."
 
-#: motion/views.py:265
+#: motion/views.py:266
 #, python-format
 msgid ""
 "Attention: Do you really want to edit this motion? All <b>%s</b> supporters "
@@ -1199,132 +1194,148 @@ msgstr ""
 "Wollen Sie den Antrag wirklich ändern? Alle <b>%s</b> Unterstützer/innen "
 "werden dann automatisch entfernt. Versuchen Sie diese erneut zu gewinnen."
 
-#: motion/views.py:297
+#: motion/views.py:298
 msgid "Motion number was successfully set."
 msgstr "Antragsnummer wurde erfolgreich gesetzt."
 
-#: motion/views.py:313
+#: motion/views.py:314
 msgid "Motion was successfully authorized."
 msgstr "Antrag wurde erfolgreich zugelassen."
 
-#: motion/views.py:328
+#: motion/views.py:329
 msgid "Motion was successfully rejected."
 msgstr "Antrag wurde erfolgreich verworfen."
 
-#: motion/views.py:344
+#: motion/views.py:345
 #, python-format
 msgid "Motion status was set to: <b>%s</b>."
 msgstr "Antragsstatus wurde gesetzt auf: <b>%s</b>."
 
-#: motion/views.py:360
+#: motion/views.py:361
 msgid "Motion status was reset."
 msgstr "Antragsstatus wurde zurückgesetzt."
 
-#: motion/views.py:374
-msgid "You have support the motion successfully."
-msgstr "Sie haben den Antrag erfolgreich unterstützt."
-
 #: motion/views.py:388
-msgid "You have unsupport the motion successfully."
-msgstr "Sie haben dem Antrag erfolgreich Ihre Unterstützung entzogen."
+msgid "You can not support this motion."
+msgstr "Sie dürfen diesen Antrag nicht unterstützen."
+
+#: motion/views.py:391
+msgid "You can not unsupport this motion."
+msgstr "Sie dürfen Ihre Unterstützung für diesen Antrag nicht entziehen."
 
 #: motion/views.py:402
+msgid "Do you really want to support this motion?"
+msgstr "Wollen Sie wirklich diesen Antrag unterstützen?"
+
+#: motion/views.py:404
+msgid "Do you really want to unsupport this motion?"
+msgstr "Wollen Sie wirklich Ihre Unterstützung für diesen Antrag entziehen?"
+
+#: motion/views.py:415
+msgid "You have supported this motion successfully."
+msgstr "Sie haben den Antrag erfolgreich unterstützt."
+
+#: motion/views.py:417
+msgid "You have unsupported this motion successfully."
+msgstr "Sie haben dem Antrag erfolgreich Ihre Unterstützung entzogen."
+
+#: motion/views.py:431
 msgid "New vote was successfully created."
 msgstr "Neue Abstimmung erfolgreich angelegt."
 
-#: motion/views.py:418
+#: motion/views.py:447
 msgid "Poll deleted"
 msgstr "Abstimmung gelöscht"
 
-#: motion/views.py:419
+#: motion/views.py:448
 msgid "Poll was successfully deleted."
 msgstr "Abstimmung wurde erfolgreich gelöscht."
 
-#: motion/views.py:421
+#: motion/views.py:450
 #, python-format
 msgid "the %s. poll"
 msgstr "die %s. Abstimmung"
 
-#: motion/views.py:462 motion/views.py:471
+#: motion/views.py:491 motion/views.py:500
 #, python-format
 msgid "You can not delete motion <b>%s</b>."
 msgstr "Sie können Antrag <b>%s</b> nicht löschen."
 
-#: motion/views.py:467 motion/views.py:475
+#: motion/views.py:496 motion/views.py:504
 #, python-format
 msgid "Motion <b>%s</b> was successfully deleted."
 msgstr "Antrag <b>%s</b> wurde erfolgreich gelöscht."
 
-#: motion/views.py:477
+#: motion/views.py:506
 msgid "Invalid request"
 msgstr "Ungültige Anfrage"
 
-#: motion/views.py:501
+#: motion/views.py:530
 msgid "Poll was updated"
 msgstr "Abstimmung wurde aktualisiert"
 
-#: motion/views.py:518
+#: motion/views.py:547
 #, python-format
 msgid "Version <b>%s</b> accepted."
 msgstr "Version <b>%s</b> akzeptiert."
 
-#: motion/views.py:520
+#: motion/views.py:549
 #, python-format
 msgid "Do you really want to authorize version <b>%s</b>?"
 msgstr "Soll Version <b>%s</b> wirklich zugelassen werden?"
 
-#: motion/views.py:530
+#: motion/views.py:559
 #, python-format
 msgid "Version <b>%s</b> rejected."
 msgstr "Version <b>%s</b> zurückgewiesen."
 
-#: motion/views.py:532
+#: motion/views.py:561
 msgid "ERROR by rejecting the version."
 msgstr "FEHLER beim Zurückweisen der Version."
 
-#: motion/views.py:534
+#: motion/views.py:563
 #, python-format
 msgid "Do you really want to reject version <b>%s</b>?"
 msgstr "Soll Version <b>%s</b> wirklich zurückgewiesen werden?"
 
-#: motion/views.py:564 motion/views.py:568 motion/views.py:574
-#: motion/views.py:577 participant/api.py:76
+#: motion/views.py:593 motion/views.py:597 motion/views.py:603
+#: motion/views.py:606 participant/api.py:76
 #, python-format
 msgid "Ignoring malformed line %d in import file."
 msgstr "Fehlerhafte Zeile %d der Quelldatei wurde ignoriert."
 
-#: motion/views.py:623
+#: motion/views.py:652
 #, python-format
 msgid "%d motion was successfully imported."
 msgid_plural "%d motions were successfully imported."
 msgstr[0] "%d Antrag wurde erfolgreich importiert."
 msgstr[1] "%d Anträge wurden erfolgreich importiert."
 
-#: motion/views.py:626
+#: motion/views.py:655
 #, python-format
 msgid "%d motion was successfully modified."
 msgid_plural "%d motions were successfully modified."
 msgstr[0] "%d Antrag wurde erfolgreich geändert."
 msgstr[1] "%d Anträge wurden erfolgreich geändert."
 
-#: motion/views.py:629
+#: motion/views.py:658
 #, python-format
 msgid "%d new user was added."
 msgid_plural "%d new users were added."
 msgstr[0] "%d neuer Nutzer wurde erstellt."
 msgstr[1] "%d neue Nutzer wurden erstellt."
 
-#: motion/views.py:633 participant/api.py:92
+#: motion/views.py:662 participant/api.py:92
 msgid "Import aborted because of severe errors in the input file."
 msgstr "Import auf Grund von schweren Fehlern in der Quelldatei abgebrochen."
 
-#: motion/views.py:635 participant/api.py:94
+#: motion/views.py:664 participant/api.py:94
 msgid "Import file has wrong character encoding, only UTF-8 is supported!"
 msgstr ""
 "Die Quelldatei benutzt eine ungültige Zeichenkodierung, es wird nur UTF-8 "
 "wird unterstützt!"
 
-#: motion/views.py:639
+#: motion/views.py:668
 msgid ""
 "Attention: Existing motions will be modified if you import new motions with "
 "the same number."
@@ -1332,7 +1343,7 @@ msgstr ""
 "Achtung: Existierende Anträge werden geändert wenn Sie neue Anträge mit "
 "identischer Nummer importieren."
 
-#: motion/views.py:640
+#: motion/views.py:669
 msgid ""
 "Attention: Importing an motions without a number multiple times will create "
 "duplicates."
@@ -1340,7 +1351,7 @@ msgstr ""
 "Achtung: Bei mehrfachem Import eines Antrags ohne Nummer können Duplikate "
 "entstehen."
 
-#: motion/views.py:673 motion/views.py:811
+#: motion/views.py:702 motion/views.py:840
 #: motion/templates/motion/poll_view.html:7
 #: motion/templates/motion/poll_view.html:12
 #: motion/templates/motion/view.html:7 motion/templates/motion/view.html:206
@@ -1350,21 +1361,21 @@ msgstr ""
 msgid "Motion"
 msgstr "Antrag"
 
-#: motion/views.py:687 motion/templates/motion/overview.html:84
+#: motion/views.py:716 motion/templates/motion/overview.html:84
 msgid "No motions available."
 msgstr "Keine Anträge vorhanden."
 
-#: motion/views.py:692 motion/views.py:694 motion/views.py:709
-#: motion/views.py:711 motion/templates/motion/base_motion.html:24
+#: motion/views.py:721 motion/views.py:723 motion/views.py:738
+#: motion/views.py:740 motion/templates/motion/base_motion.html:24
 #: motion/templates/projector/Motion.html:63
 msgid "Motion No."
 msgstr "Antrag Nr."
 
-#: motion/views.py:726
+#: motion/views.py:755
 msgid "Signature"
 msgstr "Unterschrift"
 
-#: motion/views.py:777 motion/templates/motion/base_motion.html:55
+#: motion/views.py:806 motion/templates/motion/base_motion.html:55
 #: motion/templates/motion/poll_view.html:8
 #: motion/templates/motion/poll_view.html:13
 #: motion/templates/motion/view.html:66 motion/templates/motion/view.html:74
@@ -1372,20 +1383,21 @@ msgstr "Unterschrift"
 msgid "Vote"
 msgstr "Abstimmung"
 
-#: motion/views.py:811
+#: motion/views.py:840
 msgid "Poll"
 msgstr "Abstimmung"
 
-#: motion/views.py:825
+#: motion/views.py:854
+#, python-format
 msgid "Motion No. %s"
 msgstr "Antrag Nr. %s"
 
-#: motion/views.py:827
+#: motion/views.py:856
 #, python-format
 msgid "%d. Vote"
 msgstr "%d. Abstimmung"
 
-#: motion/views.py:884
+#: motion/views.py:913
 msgid "Motion settings successfully saved."
 msgstr "Antrags-Einstellungen wurden erfolgreich gespeichert."
 
@@ -1429,7 +1441,7 @@ msgstr "Antrag als PDF"
 
 #: motion/templates/motion/base_motion.html:49
 msgid "Show Motion"
-msgstr "Zeige Antrag"
+msgstr "Antrag projizieren"
 
 #: motion/templates/motion/config.html:5 motion/templates/motion/config.html:8
 msgid "Motion settings"
@@ -1653,12 +1665,16 @@ msgid "User groups"
 msgstr "Benutzerrollen"
 
 #: participant/forms.py:44
-msgid "Persmissions"
+msgid "Permissions"
 msgstr "Rechte"
 
-#: participant/forms.py:47
-msgid "Users"
-msgstr "Benutzer"
+#: participant/forms.py:47 participant/views.py:495
+#: participant/templates/participant/base_participant.html:12
+#: participant/templates/participant/overview.html:7
+#: participant/templates/participant/overview.html:18
+#: participant/templates/participant/overview.html:62
+msgid "Participants"
+msgstr "Teilnehmer/innen"
 
 #: participant/forms.py:83
 msgid "You can not edit the name for the anonymous user"
@@ -1711,7 +1727,7 @@ msgid "Detail"
 msgstr "Detail"
 
 #: participant/models.py:42
-msgid "Will be shown behind the name."
+msgid "Will be shown after the name."
 msgstr "Wird nach dem Namen angezeigt."
 
 #: participant/models.py:45 participant/templates/participant/overview.html:24
@@ -1719,8 +1735,8 @@ msgid "Gender"
 msgstr "Geschlecht"
 
 #: participant/models.py:45 participant/models.py:48 participant/models.py:51
-msgid "Only for filter the userlist."
-msgstr "Nur zum Filtern der Benutzerliste."
+msgid "Only for filtering the participant list."
+msgstr "Nur zum Filtern der Teilnehmerliste."
 
 #: participant/models.py:48
 msgid "Typ"
@@ -1747,6 +1763,18 @@ msgstr "Darf die Teilnehmer/inen sehen"
 #: participant/models.py:104
 msgid "Can manage participant"
 msgstr "Darf die Teilnehmer/inen verwalten"
+
+#: participant/models.py:113
+msgid "Use this user group as participant"
+msgstr "Verwende diese Benutzerrolle als Teilnehmer/in"
+
+#: participant/models.py:113
+msgid "For example as submitter of a motion."
+msgstr "Zum Beispiel als Antragsteller."
+
+#: participant/models.py:192
+msgid "Welcome to OpenSlides!"
+msgstr "Willkommen bei OpenSlides!"
 
 #: participant/views.py:212
 msgid "Participant-list"
@@ -1810,16 +1838,16 @@ msgstr "%d neue Teilnehmer/innen wurden erfolgreich importiert."
 msgid "Do you really want to reset the password?"
 msgstr "Soll das Passwort wirklich zurückgesetzt werden?"
 
-#: participant/views.py:346
+#: participant/views.py:343
 #, python-format
 msgid "The Password for %s was successfully reset."
 msgstr "Das Passwort für %s wurde erfolgreich zurückgesetzt."
 
-#: participant/views.py:428
+#: participant/views.py:422
 msgid "Participants settings successfully saved."
 msgstr "Teilnehmer/innen-Einstellungen wurden erfolgreich gespeichert."
 
-#: participant/views.py:438
+#: participant/views.py:432
 #, python-format
 msgid ""
 "Installation was successfully! Use %(user)s (password: %(password)s) for "
@@ -1832,21 +1860,13 @@ msgstr ""
 "Sie das Passwort nach der ersten Anmeldung! Anderenfalls erscheint diese "
 "Meldung weiterhin für alle und ist ein Sicherheitsrisiko."
 
-#: participant/views.py:461
+#: participant/views.py:455
 msgid "User settings successfully saved."
 msgstr "Nutzereinstellungen wurden erfolgreich gespeichert."
 
-#: participant/views.py:483
+#: participant/views.py:477
 msgid "Password successfully changed."
-msgstr "Password wurde erfolgreich geändert."
-
-#: participant/views.py:501
-#: participant/templates/participant/base_participant.html:12
-#: participant/templates/participant/overview.html:7
-#: participant/templates/participant/overview.html:18
-#: participant/templates/participant/overview.html:62
-msgid "Participants"
-msgstr "Teilnehmer/innen"
+msgstr "Passwort wurde erfolgreich geändert."
 
 #: participant/templates/participant/base_participant.html:15
 msgid "All participants"
@@ -2034,23 +2054,23 @@ msgstr "Darf den Projektor sehen"
 msgid "Can see the dashboard"
 msgstr "Darf das Dashboard sehen"
 
-#: projector/views.py:185
+#: projector/views.py:202
 msgid "Errors in the form"
 msgstr "Fehler im Formular"
 
-#: projector/views.py:361 projector/templates/projector/dashboard.html:17
+#: projector/views.py:378 projector/templates/projector/dashboard.html:17
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: projector/views.py:378
+#: projector/views.py:406
 msgid "Projector live view"
 msgstr "Projektor-Live-Ansicht"
 
-#: projector/views.py:404
+#: projector/views.py:432
 msgid "Overlays"
 msgstr "Einblendungen"
 
-#: projector/views.py:417
+#: projector/views.py:445
 msgid "Custom Slides"
 msgstr "Benutzerdefinierte Folien"
 
@@ -2075,7 +2095,6 @@ msgid "Projector view"
 msgstr "Projektor-Ansicht"
 
 #: projector/templates/projector/control_countdown.html:6
-msgctxt "seconds"
 msgid "s"
 msgstr "s"
 
@@ -2158,6 +2177,10 @@ msgstr "Startseite"
 msgid "Logout"
 msgstr "Abmelden"
 
+#: templates/base.html:30
+msgid "Welcome"
+msgstr "Willkommen"
+
 #: templates/front_page.html:12
 msgid "You have access to the following pages:"
 msgstr "Sie haben Zugriff auf folgende Seiten:"
@@ -2176,7 +2199,7 @@ msgstr "Gedruckt am: %s"
 msgid "Page %s"
 msgstr "Seite %s"
 
-#: utils/utils.py:66 utils/views.py:271
+#: utils/utils.py:66 utils/views.py:290
 #, python-format
 msgid "Do you really want to delete %s?"
 msgstr "Soll %s wirklich gelöscht werden?"
@@ -2193,22 +2216,22 @@ msgstr "Sind Sie sicher?"
 msgid "Thank you for your answer"
 msgstr "Danke für Ihre Antwort"
 
-#: utils/views.py:232
+#: utils/views.py:247
 #, python-format
 msgid "%s was successfully modified."
 msgstr "%s wurde erfolgreich bearbeitet."
 
-#: utils/views.py:263
+#: utils/views.py:278
 #, python-format
 msgid "%s was successfully created."
 msgstr "%s wurde erfolgreich angelegt."
 
-#: utils/views.py:274
+#: utils/views.py:296
 #, python-format
 msgid "%s was successfully deleted."
 msgstr "%s wurde erfolgreich gelöscht."
 
-#: utils/views.py:305
+#: utils/views.py:312
 msgid "undefined-filename"
 msgstr "undefinierter-dateiname"
 
@@ -2216,32 +2239,5 @@ msgstr "undefinierter-dateiname"
 msgid "Enter valid JSON"
 msgstr "Gebe valides JSON ein"
 
-#~ msgid "Applications"
-#~ msgstr "Anträge"
-
-#~ msgid "Application"
-#~ msgstr "Antrag"
-
-#~ msgid "Application No. %s"
-#~ msgstr "Antrag Nr. %s"
-
-#~ msgid "Application No."
-#~ msgstr "Antrag Nr."
-
-#~ msgid "Show Application"
-#~ msgstr "Antrag projizieren"
-
-#~ msgid "Application settings"
-#~ msgstr "Antrags-Einstellungen"
-
-#~ msgid "Category"
-#~ msgstr "Kategorie"
-
-#~ msgid "Do you really want to delete multiple motions?"
-#~ msgstr "Wollen Sie wirklich mehrere Anträge löschen?"
-
-#~ msgid "Do you really want to delete <b>%s</b>?"
-#~ msgstr "Soll <b>%s</b> wirklich gelöscht werden?"
-
-#~ msgid "You!"
-#~ msgstr "Sie!"
+#~ msgid "Users"
+#~ msgstr "Benutzer"
