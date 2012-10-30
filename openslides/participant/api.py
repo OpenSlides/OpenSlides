@@ -84,7 +84,7 @@ def import_users(csv_file):
                     user.type = type
                     user.committee = committee
                     user.comment = comment
-                    user.firstpassword = gen_password()
+                    user.default_password = gen_password()
                     user.save()
                     user.reset_password()
                     count_success += 1

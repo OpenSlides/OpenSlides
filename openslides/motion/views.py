@@ -619,7 +619,7 @@ def motion_import(request):
                             user.committee = ''
                             user.gender = ''
                             user.type = ''
-                            user.firstpassword = gen_password()
+                            user.default_password = gen_password()
                             user.save()
                             user.reset_password()
                             users_generated += 1
