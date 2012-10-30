@@ -34,7 +34,7 @@ from openslides.config.models import config
 
 from openslides.projector.api import (get_active_slide, set_active_slide,
     projector_message_set, projector_message_delete, get_slide_from_sid,
-    get_all_widgets)
+    get_all_widgets, clear_projector_cache)
 from openslides.projector.forms import SelectWidgetsForm
 from openslides.projector.models import ProjectorOverlay, ProjectorSlide
 from openslides.projector.projector import SLIDE, Widget
@@ -128,7 +128,9 @@ class Projector(TemplateView, AjaxMixin):
         if not data:
             data = self.data
             cache.set('projector_data', data)
-
+        # clear cache if countdown is enabled
+        if config['countdown_state'] == 'active':
+            clear_projector_cache()
         context = super(Projector, self).get_ajax_context(**kwargs)
         content_hash = hash(content)
         context.update({
@@ -277,6 +279,7 @@ class CountdownEdit(RedirectView):
                 pass
 
     def get_ajax_context(self, **kwargs):
+        clear_projector_cache()
         return {
             'state': config['countdown_state'],
             'countdown_time': config['countdown_time'],
@@ -299,6 +302,7 @@ class OverlayMessageView(RedirectView):
 
 
     def get_ajax_context(self, **kwargs):
+        clear_projector_cache()
         return {
             'overlay_message': config['projector_message'],
         }
@@ -330,6 +334,7 @@ class ActivateOverlay(RedirectView):
         self.overlay.save()
 
     def get_ajax_context(self, **kwargs):
+        clear_projector_cache()
         return {
             'active': self.overlay.active,
             'def_name': self.overlay.def_name,
