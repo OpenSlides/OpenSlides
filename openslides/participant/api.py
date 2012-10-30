@@ -71,7 +71,7 @@ def import_users(csv_file):
                                                         dialect=dialect)):
                 if line_no:
                     try:
-                        (first_name, last_name, gender, category, type, committee, comment) = line[:7]
+                        (first_name, last_name, gender, detail, type, committee, comment) = line[:7]
                     except ValueError:
                         error_messages.append(_('Ignoring malformed line %d in import file.') % line_no + 1)
                         continue
@@ -80,7 +80,7 @@ def import_users(csv_file):
                     user.first_name = first_name
                     user.username = gen_username(first_name, last_name)
                     user.gender = gender
-                    user.category = category
+                    user.detail = detail
                     user.type = type
                     user.committee = committee
                     user.comment = comment
