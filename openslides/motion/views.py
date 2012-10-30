@@ -615,16 +615,13 @@ def motion_import(request):
                             user.last_name = last_name
                             user.first_name = first_name
                             user.username = gen_username(first_name, last_name)
+                            user.detail = ''
+                            user.committee = ''
+                            user.gender = ''
+                            user.type = ''
+                            user.firstpassword = gen_password()
                             user.save()
-                            profile = Profile()
-                            profile.user = user
-                            profile.group = ''
-                            profile.committee = ''
-                            profile.gender = 'none'
-                            profile.type = 'guest'
-                            profile.firstpassword = gen_password()
-                            profile.user.set_password(profile.firstpassword)
-                            profile.save()
+                            user.reset_password()
                             users_generated += 1
                         # create / modify the motion
                         motion = None
