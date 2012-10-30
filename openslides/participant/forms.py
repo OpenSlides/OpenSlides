@@ -115,4 +115,5 @@ class ConfigForm(forms.Form, CssClassMixin):
         help_text=_("Printed in PDF of first time passwords only."))
     participant_sort_users_by_first_name = forms.BooleanField(
         required=False,
-        label=_("Sort users by first name"))
+        label=_("Sort participants by first name"),
+        help_text=_("Disable for sorting by last name"))
