@@ -13,6 +13,37 @@
 from openslides.utils.person.signals import receive_persons
 
 
+class Person(object):
+    """
+    Meta-class for all person objects
+    """
+    def person_id(self):
+        """
+        Return an id for representation of ths person. Has to be unique.
+        """
+        raise NotImplementedError('Any person object needs a person_id')
+
+    def __repr__(self):
+        """
+        Return a string for this person.
+        """
+        return str(self.person_id)
+
+    @property
+    def clean_name(self):
+        """
+        Return the name of this person without a suffix
+        """
+        return unicode(self)
+
+    @property
+    def name_suffix(self):
+        """
+        Return a suffix for the person-name.
+        """
+        return ''
+
+
 class Persons(object):
     """
     A Storage for a multiplicity of different Person-Objects.

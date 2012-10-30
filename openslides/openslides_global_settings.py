@@ -119,7 +119,7 @@ INSTALLED_APPS = (
     'openslides.poll',
     'openslides.projector',
     'openslides.agenda',
-    'openslides.application',
+    'openslides.motion',
     'openslides.assignment',
     'openslides.participant',
     'openslides.config',
@@ -134,3 +134,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'openslides.utils.utils.revision',
     'openslides.utils.auth.anonymous_context_additions',
 )
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'openslidecache'
+    }
+}

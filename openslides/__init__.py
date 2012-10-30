@@ -5,11 +5,14 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-VERSION = (1, 2, 0, 'final', 1)
+VERSION = (1, 3, 0, 'alpha', 1)
+
 
 def get_version(version=None):
-    """Derives a PEP386-compliant version number from VERSION."""
-    # TODO: Get the Version Hash from GIT.
+    """
+    Derives a PEP386-compliant version number from VERSION. Adds id of
+    the current git commit.
+    """
     if version is None:
         version = VERSION
     assert len(version) == 5
@@ -17,67 +20,24 @@ def get_version(version=None):
 
     # Now build the two parts of the version number:
     # main = X.Y[.Z]
-    # sub = .devN - for pre-alpha releases
-    #     | {a|b|c}N - for alpha, beta and rc releases
+    # sub = {a|b|c}N for alpha, beta and rc releases
+    #       git's commit id is added
 
-    parts = 2 if version[2] == 0 else 3
-    main = '.'.join(str(x) for x in version[:parts])
+    main_parts = 2 if version[2] == 0 else 3
+    main = '.'.join(str(x) for x in version[:main_parts])
 
-    sub = ''
-    if version[3] == 'alpha' and version[4] == 0:
-        mercurial_version = hg_version()
-        if mercurial_version != 'unknown':
-            sub = '.dev%s' % mercurial_version
+    if version[3] != 'final':
+        mapping = {'alpha': 'a', 'beta': 'b', 'rc': 'c'}
+        sub = mapping[version[3]] + str(version[4])
+        try:
+            git_head_path = '.git/' + open('.git/HEAD', 'r').read()[5:].rstrip()
+        except IOError:
+            git_commit_id = 'unknown'
         else:
-            sub = '.dev'
-
-    elif version[3] != 'final':
-        sub = "-" + version[3] + str(version[4])
+            import os
+            git_commit_id = open(os.path.abspath(git_head_path), 'r').read().rstrip()
+        sub = '%s commit %s' % (sub, git_commit_id)
+    else:
+        sub = ''
 
     return main + sub
-
-
-def hg_version():
-    import socket
-    import os
-    import sys
-    from os.path import realpath, join, dirname
-    try:
-        from mercurial import ui as hgui
-        from mercurial.localrepo import localrepository
-        from mercurial.node import short as shorthex
-        from mercurial.error import RepoError
-        nomercurial = False
-    except ImportError:
-        return 'unknown'
-
-    os.environ['HGRCPATH'] = ''
-    conts = realpath(join(dirname(__file__)))
-    try:
-        ui = hgui.ui()
-        repository = localrepository(ui, join(conts, '..'))
-        ctx = repository['.']
-        if ctx.tags() and ctx.tags() != ['tip']:
-            version = ' '.join(ctx.tags())
-        else:
-            version = '%(num)s:%(id)s' % {
-                'num': ctx.rev(), 'id': shorthex(ctx.node())
-            }
-    except TypeError:
-        version = 'unknown'
-    except RepoError:
-        return 0
-
-    # This value defines the timeout for sockets in seconds.  Per default python
-    # sockets do never timeout and as such we have blocking workers.
-    # Socket timeouts are set globally within the whole application.
-    # The value *must* be a floating point value.
-    socket.setdefaulttimeout(10.0)
-
-    return version
-
-
-## import os, site
-##
-## SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
-## site.addsitedir(SITE_ROOT)

@@ -52,7 +52,7 @@ from django.views.generic.list import TemplateResponseMixin
 
 from openslides.config.models import config
 
-from openslides.utils.utils import render_to_forbitten, html_strong
+from openslides.utils.utils import render_to_forbidden, html_strong
 from openslides.utils.signals import template_manipulation
 from openslides.utils.pdf import firstPage, laterPages
 
@@ -80,20 +80,20 @@ class LoginMixin(object):
 class PermissionMixin(object):
     permission_required = NO_PERMISSION_REQUIRED
 
-    def has_permission(self, request):
+    def has_permission(self, request, *args, **kwargs):
         if self.permission_required == NO_PERMISSION_REQUIRED:
             return True
         else:
             return request.user.has_perm(self.permission_required)
 
     def dispatch(self, request, *args, **kwargs):
-        if not self.has_permission(request):
+        if not self.has_permission(request, *args, **kwargs):
             if not request.user.is_authenticated():
                 path = request.get_full_path()
                 return HttpResponseRedirect("%s?next=%s" % (settings.LOGIN_URL,
                     path))
             else:
-                return render_to_forbitten(request)
+                return render_to_forbidden(request)
         return _View.dispatch(self, request, *args, **kwargs)
 
 
@@ -110,20 +110,21 @@ class QuestionMixin(object):
     success_message = ugettext_lazy('Thank you for your answer')
     answer_options = [('yes', ugettext_lazy("Yes")), ('no', ugettext_lazy("No"))]
 
-    def get_answer_options(self):
-        return self.answer_options
+    def pre_redirect(self, request, *args, **kwargs):
+        # Prints the question in a GET request
+        self.confirm_form()
 
     def get_question(self):
         return unicode(self.question)
 
-    def get_answer(self):
-        for option in self.get_answer_options():
-            if option[0] in self.request.POST:
-                return option[0]
-        return None
+    def get_answer_options(self):
+        return self.answer_options
 
     def get_answer_url(self):
-        return self.answer_url
+        try:
+            return self.answer_url
+        except AttributeError:
+            return self.request.path
 
     def confirm_form(self):
         option_fields = "\n".join([
@@ -142,11 +143,25 @@ class QuestionMixin(object):
                 'csrf': csrf(self.request)['csrf_token'],
                 'option_fields': option_fields})
 
-    def pre_redirect(self, request, *args, **kwargs):
-        self.confirm_form(request, self.object)
-
     def pre_post_redirect(self, request, *args, **kwargs):
-        messages.success(request)
+        # Reacts on the response of the user in a POST-request.
+        # TODO: call the methodes for all possible answers.
+        if self.get_answer() == 'yes':
+            self.case_yes()
+            messages.success(request, self.get_success_message())
+
+    def get_answer(self):
+        for option in self.get_answer_options():
+            if option[0] in self.request.POST:
+                return option[0]
+        return None
+
+    def case_yes(self):
+        # TODO: raise a warning
+        pass
+
+    def get_success_message(self):
+        return self.success_message
 
 
 class TemplateView(PermissionMixin, _TemplateView):
@@ -266,27 +281,19 @@ class CreateView(PermissionMixin, _CreateView):
         pass
 
 
-class DeleteView(RedirectView, SingleObjectMixin, QuestionMixin):
-    def get_question(self):
-        return _('Do you really want to delete %s?') % html_strong(self.object)
-
-    def get_success_message(self):
-        return  _('%s was successfully deleted.') % html_strong(self.object)
-
-    def pre_redirect(self, request, *args, **kwargs):
-        self.confirm_form()
-
-    def pre_post_redirect(self, request, *args, **kwargs):
-        if self.get_answer().lower() == 'yes':
-            self.object.delete()
-            messages.success(request, self.get_success_message())
-
+class DeleteView(SingleObjectMixin, QuestionMixin, RedirectView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         return super(DeleteView, self).get(request, *args, **kwargs)
 
-    def get_answer_url(self):
-        return self.object.get_absolute_url('delete')
+    def get_question(self):
+        return _('Do you really want to delete %s?') % html_strong(self.object)
+
+    def case_yes(self):
+        self.object.delete()
+
+    def get_success_message(self):
+        return _('%s was successfully deleted.') % html_strong(self.object)
 
 
 class DetailView(TemplateView, SingleObjectMixin):

@@ -15,6 +15,7 @@ from time import time
 
 from django.conf import settings
 from django.contrib import messages
+from django.core.cache import cache
 from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.db import transaction
@@ -73,6 +74,7 @@ class Projector(TemplateView, AjaxMixin):
             except AttributeError: #TODO: It has to be an Slide.DoesNotExist
                 data = None
             ajax = 'on'
+            active_sid = get_active_slide(True)
         else:
             data = get_slide_from_sid(sid)
             ajax = 'off'
@@ -88,7 +90,7 @@ class Projector(TemplateView, AjaxMixin):
         # Projector Overlays
         if self.kwargs['sid'] is None:
             active_defs = ProjectorOverlay.objects.filter(active=True) \
-                .filter(Q(sid=sid) | Q(sid=None)).values_list('def_name',
+                .filter(Q(sid=active_sid) | Q(sid=None)).values_list('def_name',
                 flat=True)
             for receiver, response in projector_overlays.send(sender=sid,
                                         register=False, call=active_defs):
@@ -106,10 +108,26 @@ class Projector(TemplateView, AjaxMixin):
         return context
 
     def get_ajax_context(self, **kwargs):
-        content = render_block_to_string(self.get_template_names()[0],
-            'content', self.data)
-        scrollcontent = render_block_to_string(self.get_template_names()[0],
-            'scrollcontent', self.data)
+        content = cache.get('projector_content')
+        if not content:
+            content = render_block_to_string(
+                self.get_template_names()[0],
+                'content', self.data)
+            cache.set('projector_content', content)
+
+        scrollcontent = cache.get('projector_scrollcontent')
+        if not scrollcontent:
+            scrollcontent = render_block_to_string(
+                self.get_template_names()[0],
+                'scrollcontent', self.data)
+            cache.set('projector_scrollcontent', scrollcontent)
+
+
+        # TODO: do not call the hole data-methode, if we only need some vars
+        data = cache.get('projector_data')
+        if not data:
+            data = self.data
+            cache.set('projector_data', data)
 
         context = super(Projector, self).get_ajax_context(**kwargs)
         content_hash = hash(content)
@@ -117,8 +135,8 @@ class Projector(TemplateView, AjaxMixin):
             'content': content,
             'scrollcontent': scrollcontent,
             'time': datetime.now().strftime('%H:%M'),
-            'overlays': self.data['overlays'],
-            'title': self.data['title'],
+            'overlays': data['overlays'],
+            'title': data['title'],
             'bigger': config['bigger'],
             'up': config['up'],
             'content_hash': content_hash,

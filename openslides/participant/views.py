@@ -66,8 +66,8 @@ class Overview(ListView):
         except KeyError:
             sortfilter = {}
 
-        for value in [u'gender', u'category', u'type', u'committee', u'status',
-                      u'sort', u'reverse']:
+        for value in ['gender', 'detail', 'type', 'committee', 'status',
+                      'sort', 'reverse']:
             if value in self.request.REQUEST:
                 if self.request.REQUEST[value] == '---':
                     try:
@@ -80,8 +80,8 @@ class Overview(ListView):
         query = User.objects
         if 'gender' in sortfilter:
             query = query.filter(gender__iexact=sortfilter['gender'][0])
-        if 'category' in sortfilter:
-            query = query.filter(category__iexact=sortfilter['category'][0])
+        if 'detail' in sortfilter:
+            query = query.filter(detail__iexact=sortfilter['detail'][0])
         if 'type' in sortfilter:
             query = query.filter(type__iexact=sortfilter['type'][0])
         if 'committee' in sortfilter:
@@ -92,7 +92,7 @@ class Overview(ListView):
             if sortfilter['sort'][0] in ['first_name', 'last_name', 'last_login']:
                 query = query.order_by(sortfilter['sort'][0])
             elif (sortfilter['sort'][0] in
-                    ['category', 'type', 'committee', 'comment']):
+                    ['detail', 'type', 'committee', 'comment']):
                 query = query.order_by(
                     '%s' % sortfilter['sort'][0])
         else:
@@ -118,8 +118,8 @@ class Overview(ListView):
             percent = 0
 
         # list of all existing categories
-        categories = [p['category'] for p in User.objects.values('category')
-            .exclude(category='').distinct()]
+        details = [p['detail'] for p in User.objects.values('detail')
+            .exclude(detail='').distinct()]
 
         # list of all existing committees
         committees = [p['committee'] for p in User.objects.values('committee')
@@ -127,7 +127,7 @@ class Overview(ListView):
         context.update({
             'allusers': all_users,
             'percent': round(percent, 1),
-            'categories': categories,
+            'details': details,
             'committees': committees,
             'cookie': ['participant_sortfilter', urlencode(decodedict(self.sortfilter),
                 doseq=True)],
@@ -223,7 +223,7 @@ class ParticipantsListPDF(PDFView):
                 counter,
                 Paragraph(user.last_name, stylesheet['Tablecell']),
                 Paragraph(user.first_name, stylesheet['Tablecell']),
-                Paragraph(user.category, stylesheet['Tablecell']),
+                Paragraph(user.detail, stylesheet['Tablecell']),
                 Paragraph(user.type, stylesheet['Tablecell']),
                 Paragraph(user.committee, stylesheet['Tablecell'])])
         t = LongTable(data, style=[
@@ -320,7 +320,7 @@ class UserImportView(FormView):
         return super(UserImportView, self).form_valid(form)
 
 
-class ResetPasswordView(RedirectView, SingleObjectMixin, QuestionMixin):
+class ResetPasswordView(SingleObjectMixin, QuestionMixin, RedirectView):
     """
     Set the Passwort for a user to his default password.
     """
@@ -336,17 +336,11 @@ class ResetPasswordView(RedirectView, SingleObjectMixin, QuestionMixin):
     def get_redirect_url(self, **kwargs):
         return reverse('user_edit', args=[self.object.id])
 
-    def pre_redirect(self, request, *args, **kwargs):
-        self.confirm_form()
+    def case_yes(self):
+        self.object.reset_password()
 
-    def pre_post_redirect(self, request, *args, **kwargs):
-        if self.get_answer().lower() == 'yes':
-            self.object.reset_password()
-            messages.success(request,
-                _('The Password for %s was successfully reset.') % html_strong(self.object))
-
-    def get_answer_url(self):
-        return reverse('user_reset_password', args=[self.object.id])
+    def get_success_message(self):
+        return _('The Password for %s was successfully reset.') % html_strong(self.object)
 
 
 class GroupOverviewView(ListView):

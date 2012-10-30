@@ -177,12 +177,12 @@ class ItemDelete(DeleteView):
         if self.get_answer() == 'all':
             self.object.delete(with_children=True)
             messages.success(request,
-                _("Item %s and his children were successfully deleted.") \
+                _("Item %s and his children were successfully deleted.")
                 % html_strong(self.object))
         elif self.get_answer() == 'yes':
             self.object.delete(with_children=False)
             messages.success(request,
-                _("Item %s was successfully deleted.") \
+                _("Item %s was successfully deleted.")
                 % html_strong(self.object))
 
 

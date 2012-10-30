@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    openslides.application.views
+    openslides.motion.views
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Views for the application app.
+    Views for the motion app.
 
     :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
@@ -41,7 +41,8 @@ from openslides.utils.pdf import stylesheet
 from openslides.utils.template import Tab
 from openslides.utils.utils import (template, permission_required,
     del_confirm_form, gen_confirm_form)
-from openslides.utils.views import PDFView, RedirectView, DeleteView, FormView
+from openslides.utils.views import (PDFView, RedirectView, DeleteView,
+    FormView, SingleObjectMixin, QuestionMixin)
 from openslides.utils.person import get_person
 
 from openslides.config.models import config
@@ -55,17 +56,17 @@ from openslides.participant.models import User
 
 from openslides.agenda.models import Item
 
-from openslides.application.models import Application, AVersion, ApplicationPoll
-from openslides.application.forms import (ApplicationForm,
-    ApplicationFormTrivialChanges, ApplicationManagerForm,
-    ApplicationManagerFormSupporter, ApplicationImportForm, ConfigForm)
+from openslides.motion.models import Motion, AVersion, MotionPoll
+from openslides.motion.forms import (MotionForm,
+    MotionFormTrivialChanges, MotionManagerForm,
+    MotionManagerFormSupporter, MotionImportForm, ConfigForm)
 
 
-@permission_required('application.can_see_application')
-@template('application/overview.html')
+@permission_required('motion.can_see_motion')
+@template('motion/overview.html')
 def overview(request):
     """
-    View all applications
+    View all motions
     """
     try:
         sortfilter = parse_qs(request.COOKIES['votecollector_sortfilter'])
@@ -84,7 +85,7 @@ def overview(request):
             else:
                 sortfilter[value] = request.REQUEST[value]
 
-    query = Application.objects.all()
+    query = Motion.objects.all()
     if 'number' in sortfilter:
         query = query.filter(number=None)
     if 'status' in sortfilter:
@@ -100,101 +101,101 @@ def overview(request):
             sort = sortfilter['sort']
         query = query.order_by(sort)
         if sort.startswith('aversion_'):
-            # limit result to last version of an application
-            query = query.filter(aversion__id__in=[x.last_version.id for x in Application.objects.all()])
+            # limit result to last version of an motion
+            query = query.filter(aversion__id__in=[x.last_version.id for x in Motion.objects.all()])
 
     if 'reverse' in sortfilter:
         query = query.reverse()
 
     # todo: rewrite this with a .filter()
     if 'needsup' in sortfilter:
-        applications = []
-        for application in query.all():
-            if not application.enough_supporters:
-                applications.append(application)
+        motions = []
+        for motion in query.all():
+            if not motion.enough_supporters:
+                motions.append(motion)
     else:
-        applications = query
+        motions = query
 
-    if type(applications) is not list:
-        applications = list(query.all())
+    if type(motions) is not list:
+        motions = list(query.all())
 
     # not the most efficient way to do this but 'get_allowed_actions'
     # is not callable from within djangos templates..
-    for (i, application) in enumerate(applications):
+    for (i, motion) in enumerate(motions):
         try:
-            applications[i] = {
-                'actions'     : application.get_allowed_actions(request.user),
-                'application' : application
+            motions[i] = {
+                'actions'     : motion.get_allowed_actions(request.user),
+                'motion' : motion
             }
         except:
             # todo: except what?
-            applications[i] = {
+            motions[i] = {
                 'actions'     : [],
-                'application' : application
+                'motion' : motion
             }
 
     return {
-        'applications': applications,
-        'min_supporters': int(config['application_min_supporters']),
+        'motions': motions,
+        'min_supporters': int(config['motion_min_supporters']),
     }
 
 
-@permission_required('application.can_see_application')
-@template('application/view.html')
-def view(request, application_id, newest=False):
+@permission_required('motion.can_see_motion')
+@template('motion/view.html')
+def view(request, motion_id, newest=False):
     """
-    View one application.
+    View one motion.
     """
-    application = Application.objects.get(pk=application_id)
+    motion = Motion.objects.get(pk=motion_id)
     if newest:
-        version = application.last_version
+        version = motion.last_version
     else:
-        version = application.public_version
-    revisions = application.versions
-    actions = application.get_allowed_actions(user=request.user)
+        version = motion.public_version
+    revisions = motion.versions
+    actions = motion.get_allowed_actions(user=request.user)
 
     return {
-        'application': application,
+        'motion': motion,
         'revisions': revisions,
         'actions': actions,
-        'min_supporters': int(config['application_min_supporters']),
+        'min_supporters': int(config['motion_min_supporters']),
         'version': version,
-        #'results': application.results
+        #'results': motion.results
     }
 
 
 @login_required
-@template('application/edit.html')
-def edit(request, application_id=None):
+@template('motion/edit.html')
+def edit(request, motion_id=None):
     """
-    View a form to edit or create a application.
+    View a form to edit or create a motion.
     """
-    if request.user.has_perm('application.can_manage_application'):
+    if request.user.has_perm('motion.can_manage_motion'):
         is_manager = True
     else:
         is_manager = False
 
     if not is_manager \
-    and not request.user.has_perm('application.can_create_application'):
+    and not request.user.has_perm('motion.can_create_motion'):
         messages.error(request, _("You have not the necessary rights to create or edit motions."))
-        return redirect(reverse('application_overview'))
-    if application_id is not None:
-        application = Application.objects.get(id=application_id)
-        if not 'edit' in application.get_allowed_actions(request.user):
+        return redirect(reverse('motion_overview'))
+    if motion_id is not None:
+        motion = Motion.objects.get(id=motion_id)
+        if not 'edit' in motion.get_allowed_actions(request.user):
             messages.error(request, _("You can not edit this motion."))
-            return redirect(reverse('application_view', args=[application.id]))
-        actions = application.get_allowed_actions(user=request.user)
+            return redirect(reverse('motion_view', args=[motion.id]))
+        actions = motion.get_allowed_actions(user=request.user)
     else:
-        application = None
+        motion = None
         actions = None
 
-    formclass = ApplicationFormTrivialChanges \
-        if config['application_allow_trivial_change'] and application_id \
-        else ApplicationForm
+    formclass = MotionFormTrivialChanges \
+        if config['motion_allow_trivial_change'] and motion_id \
+        else MotionForm
 
-    managerformclass = ApplicationManagerFormSupporter \
-                       if config['application_min_supporters'] \
-                       else ApplicationManagerForm
+    managerformclass = MotionManagerFormSupporter \
+                       if config['motion_min_supporters'] \
+                       else MotionManagerForm
 
     if request.method == 'POST':
         dataform = formclass(request.POST, prefix="data")
@@ -202,7 +203,7 @@ def edit(request, application_id=None):
 
         if is_manager:
             managerform = managerformclass(request.POST,
-                            instance=application,
+                            instance=motion,
                             prefix="manager")
             valid = valid and managerform.is_valid()
         else:
@@ -211,23 +212,23 @@ def edit(request, application_id=None):
         if valid:
             del_supporters = True
             if is_manager:
-                if application: # Edit application
-                    original_supporters = list(application.supporters)
+                if motion: # Edit motion
+                    original_supporters = list(motion.supporters)
                 else:
                     original_supporters = []
-                application = managerform.save(commit=False)
-            elif application_id is None:
-                application = Application(submitter=request.user)
-            application.title = dataform.cleaned_data['title']
-            application.text = dataform.cleaned_data['text']
-            application.reason = dataform.cleaned_data['reason']
+                motion = managerform.save(commit=False)
+            elif motion_id is None:
+                motion = Motion(submitter=request.user)
+            motion.title = dataform.cleaned_data['title']
+            motion.text = dataform.cleaned_data['text']
+            motion.reason = dataform.cleaned_data['reason']
 
             try:
-                trivial_change = config['application_allow_trivial_change'] \
+                trivial_change = config['motion_allow_trivial_change'] \
                     and dataform.cleaned_data['trivial_change']
             except KeyError:
                 trivial_change = False
-            application.save(request.user, trivial_change=trivial_change)
+            motion.save(request.user, trivial_change=trivial_change)
             if is_manager:
                 try:
                     new_supporters = set(managerform.cleaned_data['supporter'])
@@ -235,232 +236,263 @@ def edit(request, application_id=None):
                     # The managerform has no field for the supporters
                     pass
                 else:
-                    old_supporters = set(application.supporters)
+                    old_supporters = set(motion.supporters)
                     # add new supporters
                     for supporter in new_supporters.difference(old_supporters):
-                        application.support(supporter)
+                        motion.support(supporter)
                     # remove old supporters
                     for supporter in old_supporters.difference(new_supporters):
-                        application.unsupport(supporter)
+                        motion.unsupport(supporter)
 
-            if application_id is None:
+            if motion_id is None:
                 messages.success(request, _('New motion was successfully created.'))
             else:
                 messages.success(request, _('Motion was successfully modified.'))
 
             if not 'apply' in request.POST:
-                return redirect(reverse('application_view', args=[application.id]))
-            if application_id is None:
-                return redirect(reverse('application_edit', args=[application.id]))
+                return redirect(reverse('motion_view', args=[motion.id]))
+            if motion_id is None:
+                return redirect(reverse('motion_edit', args=[motion.id]))
         else:
             messages.error(request, _('Please check the form for errors.'))
     else:
-        if application_id is None:
-            initial = {'text': config['application_preamble']}
+        if motion_id is None:
+            initial = {'text': config['motion_preamble']}
         else:
-            if application.status == "pub" and application.supporters:
-                if request.user.has_perm('application.can_manage_application'):
+            if motion.status == "pub" and motion.supporters:
+                if request.user.has_perm('motion.can_manage_motion'):
                     messages.warning(request, _("Attention: Do you really want to edit this motion? The supporters will <b>not</b> be removed automatically because you can manage motions. Please check if the supports are valid after your changing!"))
                 else:
-                    messages.warning(request, _("Attention: Do you really want to edit this motion? All <b>%s</b> supporters will be removed! Try to convince the supporters again.") % application.count_supporters() )
-            initial = {'title': application.title,
-                       'text': application.text,
-                       'reason': application.reason}
+                    messages.warning(request, _("Attention: Do you really want to edit this motion? All <b>%s</b> supporters will be removed! Try to convince the supporters again.") % motion.count_supporters() )
+            initial = {'title': motion.title,
+                       'text': motion.text,
+                       'reason': motion.reason}
 
         dataform = formclass(initial=initial, prefix="data")
         if is_manager:
-            if application_id is None:
+            if motion_id is None:
                 initial = {'submitter': request.user.person_id}
             else:
-                initial = {'submitter': application.submitter.person_id,
-                    'supporter': [supporter.person_id for supporter in application.supporters]}
+                initial = {'submitter': motion.submitter.person_id,
+                    'supporter': [supporter.person_id for supporter in motion.supporters]}
             managerform = managerformclass(initial=initial,
-                instance=application, prefix="manager")
+                instance=motion, prefix="manager")
         else:
             managerform = None
     return {
         'form': dataform,
         'managerform': managerform,
-        'application': application,
+        'motion': motion,
         'actions': actions,
     }
 
 
-@permission_required('application.can_manage_application')
-@template('application/view.html')
-def set_number(request, application_id):
+@permission_required('motion.can_manage_motion')
+@template('motion/view.html')
+def set_number(request, motion_id):
     """
-    set a number for an application.
+    set a number for an motion.
     """
     try:
-        Application.objects.get(pk=application_id).set_number(user=request.user)
+        Motion.objects.get(pk=motion_id).set_number(user=request.user)
         messages.success(request, _("Motion number was successfully set."))
-    except Application.DoesNotExist:
+    except Motion.DoesNotExist:
         pass
     except NameError:
         pass
-    return redirect(reverse('application_view', args=[application_id]))
+    return redirect(reverse('motion_view', args=[motion_id]))
 
 
-@permission_required('application.can_manage_application')
-@template('application/view.html')
-def permit(request, application_id):
+@permission_required('motion.can_manage_motion')
+@template('motion/view.html')
+def permit(request, motion_id):
     """
-    permit an application.
+    permit an motion.
     """
     try:
-        Application.objects.get(pk=application_id).permit(user=request.user)
+        Motion.objects.get(pk=motion_id).permit(user=request.user)
         messages.success(request, _("Motion was successfully authorized."))
-    except Application.DoesNotExist:
+    except Motion.DoesNotExist:
         pass
     except NameError, e:
         messages.error(request, e)
-    return redirect(reverse('application_view', args=[application_id]))
+    return redirect(reverse('motion_view', args=[motion_id]))
 
-@permission_required('application.can_manage_application')
-@template('application/view.html')
-def notpermit(request, application_id):
+@permission_required('motion.can_manage_motion')
+@template('motion/view.html')
+def notpermit(request, motion_id):
     """
-    reject (not permit) an application.
+    reject (not permit) an motion.
     """
     try:
-        Application.objects.get(pk=application_id).notpermit(user=request.user)
+        Motion.objects.get(pk=motion_id).notpermit(user=request.user)
         messages.success(request, _("Motion was successfully rejected."))
-    except Application.DoesNotExist:
+    except Motion.DoesNotExist:
         pass
     except NameError, e:
         messages.error(request, e)
-    return redirect(reverse('application_view', args=[application_id]))
+    return redirect(reverse('motion_view', args=[motion_id]))
 
-@template('application/view.html')
-def set_status(request, application_id=None, status=None):
+@template('motion/view.html')
+def set_status(request, motion_id=None, status=None):
     """
-    set a status of an application.
+    set a status of an motion.
     """
     try:
         if status is not None:
-            application = Application.objects.get(pk=application_id)
-            application.set_status(user=request.user, status=status)
-            messages.success(request, _("Motion status was set to: <b>%s</b>.") % application.get_status_display())
-    except Application.DoesNotExist:
+            motion = Motion.objects.get(pk=motion_id)
+            motion.set_status(user=request.user, status=status)
+            messages.success(request, _("Motion status was set to: <b>%s</b>.") % motion.get_status_display())
+    except Motion.DoesNotExist:
         pass
     except NameError, e:
         messages.error(request, e)
-    return redirect(reverse('application_view', args=[application_id]))
+    return redirect(reverse('motion_view', args=[motion_id]))
 
 
-@permission_required('application.can_manage_application')
-@template('application/view.html')
-def reset(request, application_id):
+@permission_required('motion.can_manage_motion')
+@template('motion/view.html')
+def reset(request, motion_id):
     """
-    reset an application.
+    reset an motion.
     """
     try:
-        Application.objects.get(pk=application_id).reset(user=request.user)
+        Motion.objects.get(pk=motion_id).reset(user=request.user)
         messages.success(request, _("Motion status was reset.") )
-    except Application.DoesNotExist:
+    except Motion.DoesNotExist:
         pass
-    return redirect(reverse('application_view', args=[application_id]))
+    return redirect(reverse('motion_view', args=[motion_id]))
 
 
-@permission_required('application.can_support_application')
-@template('application/view.html')
-def support(request, application_id):
+class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
     """
-    support an application.
+    Classed based view to support or unsupport a motion. Use
+    support=True or support=False in urls.py
+    """
+    permission_required = 'motion.can_support_motion'
+    model = Motion
+    pk_url_kwarg = 'motion_id'
+    support = True
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super(SupportView, self).get(request, *args, **kwargs)
+
+    def check_allowed_actions(self, request):
+        """
+        Checks whether request.user can support or unsupport the motion.
+        Returns True or False.
+        """
+        allowed_actions = self.object.get_allowed_actions(request.user)
+        if self.support and not 'support' in allowed_actions:
+            messages.error(request, _('You can not support this motion.'))
+            return False
+        elif not self.support and not 'unsupport' in allowed_actions:
+            messages.error(request, _('You can not unsupport this motion.'))
+            return False
+        else:
+            return True
+
+    def pre_redirect(self, request, *args, **kwargs):
+        if self.check_allowed_actions(request):
+            super(SupportView, self).pre_redirect(request, *args, **kwargs)
+
+    def get_question(self):
+        if self.support:
+            return _('Do you really want to support this motion?')
+        else:
+            return _('Do you really want to unsupport this motion?')
+
+    def case_yes(self):
+        if self.check_allowed_actions(self.request):
+            if self.support:
+                self.object.support(person=self.request.user)
+            else:
+                self.object.unsupport(person=self.request.user)
+
+    def get_success_message(self):
+        if self.support:
+            return _("You have supported this motion successfully.")
+        else:
+            return _("You have unsupported this motion successfully.")
+
+    def get_redirect_url(self, **kwargs):
+        return reverse('motion_view', args=[kwargs[self.pk_url_kwarg]])
+
+
+@permission_required('motion.can_manage_motion')
+@template('motion/view.html')
+def gen_poll(request, motion_id):
+    """
+    gen a poll for this motion.
     """
     try:
-        Application.objects.get(pk=application_id).support(person=request.user)
-        messages.success(request, _("You have support the motion successfully.") )
-    except Application.DoesNotExist:
-        pass
-    return redirect(reverse('application_view', args=[application_id]))
-
-
-@permission_required('application.can_support_application')
-@template('application/view.html')
-def unsupport(request, application_id):
-    """
-    unsupport an application.
-    """
-    try:
-        Application.objects.get(pk=application_id).unsupport(person=request.user)
-        messages.success(request, _("You have unsupport the motion successfully.") )
-    except Application.DoesNotExist:
-        pass
-    return redirect(reverse('application_view', args=[application_id]))
-
-
-@permission_required('application.can_manage_application')
-@template('application/view.html')
-def gen_poll(request, application_id):
-    """
-    gen a poll for this application.
-    """
-    try:
-        poll = Application.objects.get(pk=application_id).gen_poll(user=request.user)
+        poll = Motion.objects.get(pk=motion_id).gen_poll(user=request.user)
         messages.success(request, _("New vote was successfully created.") )
-    except Application.DoesNotExist:
+    except Motion.DoesNotExist:
         pass # TODO: do not call poll after this excaption
-    return redirect(reverse('application_poll_view', args=[poll.id]))
+    return redirect(reverse('motion_poll_view', args=[poll.id]))
 
 
-@permission_required('application.can_manage_application')
+@permission_required('motion.can_manage_motion')
 def delete_poll(request, poll_id):
     """
-    delete a poll from this application
+    delete a poll from this motion
     """
-    poll = ApplicationPoll.objects.get(pk=poll_id)
-    application = poll.application
-    count = application.polls.filter(id__lte=poll_id).count()
+    poll = MotionPoll.objects.get(pk=poll_id)
+    motion = poll.motion
+    count = motion.polls.filter(id__lte=poll_id).count()
     if request.method == 'POST':
         poll.delete()
-        application.writelog(_("Poll deleted"), request.user)
+        motion.writelog(_("Poll deleted"), request.user)
         messages.success(request, _('Poll was successfully deleted.'))
     else:
-        del_confirm_form(request, poll, name=_("the %s. poll") % count, delete_link=reverse('application_poll_delete', args=[poll_id]))
-    return redirect(reverse('application_view', args=[application.id]))
+        del_confirm_form(request, poll, name=_("the %s. poll") % count, delete_link=reverse('motion_poll_delete', args=[poll_id]))
+    return redirect(reverse('motion_view', args=[motion.id]))
 
 
-class ApplicationDelete(DeleteView):
+class MotionDelete(DeleteView):
     """
-    Delete one or more Applications.
+    Delete one or more Motions.
     """
-    permission_required = 'application.can_manage_application'
-    model = Application
-    url = 'application_overview'
+    model = Motion
+    url = 'motion_overview'
+
+    def has_permission(self, request, *args, **kwargs):
+        self.kwargs = kwargs
+        return self.get_object().get_allowed_actions(request.user)
 
     def get_object(self):
-        self.applications = []
+        self.motions = []
 
-        if self.kwargs.get('application_id', None):
+        if self.kwargs.get('motion_id', None):
             try:
-                return Application.objects.get(id=int(self.kwargs['application_id']))
-            except Application.DoesNotExist:
+                return Motion.objects.get(id=int(self.kwargs['motion_id']))
+            except Motion.DoesNotExist:
                 return None
 
-        if self.kwargs.get('application_ids', []):
-            for appid in self.kwargs['application_ids']:
+        if self.kwargs.get('motion_ids', []):
+            for appid in self.kwargs['motion_ids']:
                 try:
-                    self.applications.append(Application.objects.get(id=int(appid)))
-                except Application.DoesNotExist:
+                    self.motions.append(Motion.objects.get(id=int(appid)))
+                except Motion.DoesNotExist:
                     pass
 
-            if self.applications:
-                return self.applications[0]
+            if self.motions:
+                return self.motions[0]
         return None
 
     def pre_post_redirect(self, request, *args, **kwargs):
         self.object = self.get_object()
 
-        if len(self.applications):
-            for application in self.applications:
-                if not 'delete' in application.get_allowed_actions(user=request.user):
-                    messages.error(request, _("You can not delete motion <b>%s</b>.") % application)
+        if len(self.motions):
+            for motion in self.motions:
+                if not 'delete' in motion.get_allowed_actions(user=request.user):
+                    messages.error(request, _("You can not delete motion <b>%s</b>.") % motion)
                     continue
 
-                title = application.title
-                application.delete(force=True)
+                title = motion.title
+                motion.delete(force=True)
                 messages.success(request, _("Motion <b>%s</b> was successfully deleted.") % title)
 
         elif self.object:
@@ -475,16 +507,16 @@ class ApplicationDelete(DeleteView):
 
 
 class ViewPoll(PollFormView):
-    permission_required = 'application.can_manage_application'
-    poll_class = ApplicationPoll
-    template_name = 'application/poll_view.html'
+    permission_required = 'motion.can_manage_motion'
+    poll_class = MotionPoll
+    template_name = 'motion/poll_view.html'
 
     def get_context_data(self, **kwargs):
         context = super(ViewPoll, self).get_context_data(**kwargs)
-        self.application = self.poll.get_application()
-        context['application'] = self.application
+        self.motion = self.poll.get_motion()
+        context['motion'] = self.motion
         context['ballot'] = self.poll.get_ballot()
-        context['actions'] = self.application.get_allowed_actions(user=self.request.user)
+        context['actions'] = self.motion.get_allowed_actions(user=self.request.user)
         return context
 
     def get_modelform_class(self):
@@ -494,49 +526,49 @@ class ViewPoll(PollFormView):
         class ViewPollFormClass(cls):
             def save(self, commit = True):
                 instance = super(ViewPollFormClass, self).save(commit)
-                application = instance.application
-                application.writelog(_("Poll was updated"), user)
+                motion = instance.motion
+                motion.writelog(_("Poll was updated"), user)
                 return instance
 
         return ViewPollFormClass
 
     def get_success_url(self):
         if not 'apply' in self.request.POST:
-            return reverse('application_view', args=[self.poll.application.id])
+            return reverse('motion_view', args=[self.poll.motion.id])
         return ''
 
 
-@permission_required('application.can_manage_application')
+@permission_required('motion.can_manage_motion')
 def permit_version(request, aversion_id):
     aversion = AVersion.objects.get(pk=aversion_id)
-    application = aversion.application
+    motion = aversion.motion
     if request.method == 'POST':
-        application.accept_version(aversion, user=request.user)
+        motion.accept_version(aversion, user=request.user)
         messages.success(request, _("Version <b>%s</b> accepted.") % (aversion.aid))
     else:
-        gen_confirm_form(request, _('Do you really want to authorize version <b>%s</b>?') % aversion.aid, reverse('application_version_permit', args=[aversion.id]))
-    return redirect(reverse('application_view', args=[application.id]))
+        gen_confirm_form(request, _('Do you really want to authorize version <b>%s</b>?') % aversion.aid, reverse('motion_version_permit', args=[aversion.id]))
+    return redirect(reverse('motion_view', args=[motion.id]))
 
 
-@permission_required('application.can_manage_application')
+@permission_required('motion.can_manage_motion')
 def reject_version(request, aversion_id):
     aversion = AVersion.objects.get(pk=aversion_id)
-    application = aversion.application
+    motion = aversion.motion
     if request.method == 'POST':
-        if application.reject_version(aversion, user=request.user):
+        if motion.reject_version(aversion, user=request.user):
             messages.success(request, _("Version <b>%s</b> rejected.") % (aversion.aid))
         else:
             messages.error(request, _("ERROR by rejecting the version.") )
     else:
-        gen_confirm_form(request, _('Do you really want to reject version <b>%s</b>?') % aversion.aid, reverse('application_version_reject', args=[aversion.id]))
-    return redirect(reverse('application_view', args=[application.id]))
+        gen_confirm_form(request, _('Do you really want to reject version <b>%s</b>?') % aversion.aid, reverse('motion_version_reject', args=[aversion.id]))
+    return redirect(reverse('motion_view', args=[motion.id]))
 
 
-@permission_required('application.can_manage_application')
-@template('application/import.html')
-def application_import(request):
+@permission_required('motion.can_manage_motion')
+@template('motion/import.html')
+def motion_import(request):
     if request.method == 'POST':
-        form = ApplicationImportForm(request.POST, request.FILES)
+        form = MotionImportForm(request.POST, request.FILES)
         if form.is_valid():
             import_permitted = form.cleaned_data['import_permitted']
             try:
@@ -545,8 +577,8 @@ def application_import(request):
                 request.FILES['csvfile'].seek(0)
 
                 users_generated = 0
-                applications_generated = 0
-                applications_modified = 0
+                motions_generated = 0
+                motions_modified = 0
                 with transaction.commit_on_success():
                     dialect = csv.Sniffer().sniff(request.FILES['csvfile'].readline())
                     dialect = csv_ext.patchup(dialect)
@@ -560,7 +592,7 @@ def application_import(request):
                         except ValueError:
                             messages.error(request, _('Ignoring malformed line %d in import file.') % (lno + 1))
                             continue
-                        form = ApplicationForm({'title': title, 'text': text, 'reason': reason})
+                        form = MotionForm({'title': title, 'text': text, 'reason': reason})
                         if not form.is_valid():
                             messages.error(request, _('Ignoring malformed line %d in import file.') % (lno + 1))
                             continue
@@ -594,37 +626,37 @@ def application_import(request):
                             profile.user.set_password(profile.firstpassword)
                             profile.save()
                             users_generated += 1
-                        # create / modify the application
-                        application = None
+                        # create / modify the motion
+                        motion = None
                         if number:
                             try:
-                                application = Application.objects.get(number=number)
-                                applications_modified += 1
-                            except Application.DoesNotExist:
-                                application = None
-                        if application is None:
-                            application = Application(submitter=user)
+                                motion = Motion.objects.get(number=number)
+                                motions_modified += 1
+                            except Motion.DoesNotExist:
+                                motion = None
+                        if motion is None:
+                            motion = Motion(submitter=user)
                             if number:
-                                application.number = number
-                            applications_generated += 1
+                                motion.number = number
+                            motions_generated += 1
 
-                        application.title = form.cleaned_data['title']
-                        application.text = form.cleaned_data['text']
-                        application.reason = form.cleaned_data['reason']
+                        motion.title = form.cleaned_data['title']
+                        motion.text = form.cleaned_data['text']
+                        motion.reason = form.cleaned_data['reason']
                         if import_permitted:
-                            application.status = 'per'
+                            motion.status = 'per'
 
-                        application.save(user, trivial_change=True)
+                        motion.save(user, trivial_change=True)
 
-                if applications_generated:
+                if motions_generated:
                     messages.success(request, ungettext('%d motion was successfully imported.',
-                                                '%d motions were successfully imported.', applications_generated) % applications_generated)
-                if applications_modified:
+                                                '%d motions were successfully imported.', motions_generated) % motions_generated)
+                if motions_modified:
                     messages.success(request, ungettext('%d motion was successfully modified.',
-                                                '%d motions were successfully modified.', applications_modified) % applications_modified)
+                                                '%d motions were successfully modified.', motions_modified) % motions_modified)
                 if users_generated:
                     messages.success(request, ungettext('%d new user was added.', '%d new users were added.', users_generated) % users_generated)
-                return redirect(reverse('application_overview'))
+                return redirect(reverse('motion_overview'))
 
             except csv.Error:
                 message.error(request, _('Import aborted because of severe errors in the input file.'))
@@ -635,7 +667,7 @@ def application_import(request):
     else:
         messages.warning(request, _("Attention: Existing motions will be modified if you import new motions with the same number."))
         messages.warning(request, _("Attention: Importing an motions without a number multiple times will create duplicates."))
-        form = ApplicationImportForm()
+        form = MotionImportForm()
     return {
         'form': form,
     }
@@ -645,65 +677,65 @@ class CreateAgendaItem(RedirectView):
     permission_required = 'agenda.can_manage_agenda'
 
     def pre_redirect(self, request, *args, **kwargs):
-        self.application = Application.objects.get(pk=kwargs['application_id'])
-        self.item = Item(related_sid=self.application.sid)
+        self.motion = Motion.objects.get(pk=kwargs['motion_id'])
+        self.item = Item(related_sid=self.motion.sid)
         self.item.save()
 
     def get_redirect_url(self, **kwargs):
         return reverse('item_overview')
 
 
-class ApplicationPDF(PDFView):
-    permission_required = 'application.can_see_application'
+class MotionPDF(PDFView):
+    permission_required = 'motion.can_see_motion'
     top_space = 0
 
     def get_filename(self):
-        application_id = self.kwargs['application_id']
-        if application_id is None:
-            filename = _("Applications")
+        motion_id = self.kwargs['motion_id']
+        if motion_id is None:
+            filename = _("Motions")
         else:
-            application = Application.objects.get(id=application_id)
-            if application.number:
-                number = application.number
+            motion = Motion.objects.get(id=motion_id)
+            if motion.number:
+                number = motion.number
             else:
                 number = ""
-            filename = u'%s%s' % (_("Application"), str(number))
+            filename = u'%s%s' % (_("Motion"), str(number))
         return filename
 
     def append_to_pdf(self, story):
-        application_id = self.kwargs['application_id']
-        if application_id is None:  #print all applications
-            title = config["application_pdf_title"]
+        motion_id = self.kwargs['motion_id']
+        if motion_id is None:  #print all motions
+            title = config["motion_pdf_title"]
             story.append(Paragraph(title, stylesheet['Heading1']))
-            preamble = config["application_pdf_preamble"]
+            preamble = config["motion_pdf_preamble"]
             if preamble:
                 story.append(Paragraph("%s" % preamble.replace('\r\n','<br/>'), stylesheet['Paragraph']))
             story.append(Spacer(0,0.75*cm))
-            applications = Application.objects.all()
-            if not applications: # No applications existing
+            motions = Motion.objects.all()
+            if not motions: # No motions existing
                 story.append(Paragraph(_("No motions available."), stylesheet['Heading3']))
-            else: # Print all Applications
-                # List of applications
-                for application in applications:
-                    if application.number:
-                        story.append(Paragraph(_("Motion No.")+" %s: %s" % (application.number, application.title), stylesheet['Heading3']))
+            else: # Print all Motions
+                # List of motions
+                for motion in motions:
+                    if motion.number:
+                        story.append(Paragraph(_("Motion No.")+" %s: %s" % (motion.number, motion.title), stylesheet['Heading3']))
                     else:
-                        story.append(Paragraph(_("Motion No.")+"&nbsp;&nbsp;&nbsp;: %s" % (application.title), stylesheet['Heading3']))
-                # Applications details (each application on single page)
-                for application in applications:
+                        story.append(Paragraph(_("Motion No.")+"&nbsp;&nbsp;&nbsp;: %s" % (motion.title), stylesheet['Heading3']))
+                # Motions details (each motion on single page)
+                for motion in motions:
                     story.append(PageBreak())
-                    story = self.get_application(application, story)
-        else:  # print selected application
-            application = Application.objects.get(id=application_id)
-            story = self.get_application(application, story)
+                    story = self.get_motion(motion, story)
+        else:  # print selected motion
+            motion = Motion.objects.get(id=motion_id)
+            story = self.get_motion(motion, story)
 
-    def get_application(self, application, story):
+    def get_motion(self, motion, story):
         # Preparing Table
         data = []
 
-        # application number
-        if application.number:
-            story.append(Paragraph(_("Motion No.")+" %s" % application.number, stylesheet['Heading1']))
+        # motion number
+        if motion.number:
+            story.append(Paragraph(_("Motion No.")+" %s" % motion.number, stylesheet['Heading1']))
         else:
             story.append(Paragraph(_("Motion No."), stylesheet['Heading1']))
 
@@ -713,10 +745,10 @@ class ApplicationPDF(PDFView):
         cell1a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Submitter"), stylesheet['Heading4']))
         cell1b = []
         cell1b.append(Spacer(0, 0.2 * cm))
-        cell1b.append(Paragraph("%s" % application.submitter, stylesheet['Normal']))
+        cell1b.append(Paragraph("%s" % motion.submitter, stylesheet['Normal']))
         data.append([cell1a, cell1b])
 
-        if application.status == "pub":
+        if motion.status == "pub":
             # Cell for the signature
             cell2a = []
             cell2b = []
@@ -727,14 +759,14 @@ class ApplicationPDF(PDFView):
             data.append([cell2a, cell2b])
 
         # supporters
-        if config['application_min_supporters']:
+        if config['motion_min_supporters']:
             cell3a = []
             cell3b = []
             cell3a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font><seqreset id='counter'>" % _("Supporters"), stylesheet['Heading4']))
-            for supporter in application.supporters:
+            for supporter in motion.supporters:
                 cell3b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % supporter, stylesheet['Signaturefield']))
-            if application.status == "pub":
-                for x in range(application.missing_supporters):
+            if motion.status == "pub":
+                for x in range(motion.missing_supporters):
                     cell3b.append(Paragraph("<seq id='counter'/>.&nbsp; __________________________________________",stylesheet['Signaturefield']))
             cell3b.append(Spacer(0, 0.2 * cm))
             data.append([cell3a, cell3b])
@@ -742,27 +774,27 @@ class ApplicationPDF(PDFView):
         # status
         cell4a = []
         cell4b = []
-        note = " ".join(application.notes)
+        note = " ".join(motion.notes)
         cell4a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Status"), stylesheet['Heading4']))
         if note != "":
-            if application.status == "pub":
+            if motion.status == "pub":
                 cell4b.append(Paragraph(note, stylesheet['Normal']))
             else:
-                cell4b.append(Paragraph("%s | %s" % (application.get_status_display(), note), stylesheet['Normal']))
+                cell4b.append(Paragraph("%s | %s" % (motion.get_status_display(), note), stylesheet['Normal']))
         else:
-            cell4b.append(Paragraph("%s" % application.get_status_display(), stylesheet['Normal']))
+            cell4b.append(Paragraph("%s" % motion.get_status_display(), stylesheet['Normal']))
         data.append([cell4a, cell4b])
 
         # Version number (aid)
-        if application.public_version.aid > 1:
+        if motion.public_version.aid > 1:
             cell5a = []
             cell5b = []
             cell5a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Version"), stylesheet['Heading4']))
-            cell5b.append(Paragraph("%s" % application.public_version.aid, stylesheet['Normal']))
+            cell5b.append(Paragraph("%s" % motion.public_version.aid, stylesheet['Normal']))
             data.append([cell5a, cell5b])
 
         # voting results
-        poll_results = application.get_poll_results()
+        poll_results = motion.get_poll_results()
         if poll_results:
             cell6a = []
             cell6a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Vote results"), stylesheet['Heading4']))
@@ -786,26 +818,26 @@ class ApplicationPDF(PDFView):
         story.append(Spacer(0, 1 * cm))
 
         # title
-        story.append(Paragraph(application.public_version.title, stylesheet['Heading3']))
+        story.append(Paragraph(motion.public_version.title, stylesheet['Heading3']))
         # text
-        story.append(Paragraph("%s" % application.public_version.text.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+        story.append(Paragraph("%s" % motion.public_version.text.replace('\r\n','<br/>'), stylesheet['Paragraph']))
         # reason
-        if application.public_version.reason:
+        if motion.public_version.reason:
             story.append(Paragraph(_("Reason")+":", stylesheet['Heading3']))
-            story.append(Paragraph("%s" % application.public_version.reason.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+            story.append(Paragraph("%s" % motion.public_version.reason.replace('\r\n','<br/>'), stylesheet['Paragraph']))
         return story
 
 
-class ApplicationPollPDF(PDFView):
-    permission_required = 'application.can_manage_application'
+class MotionPollPDF(PDFView):
+    permission_required = 'motion.can_manage_motion'
     top_space = 0
 
     def get(self, request, *args, **kwargs):
-        self.poll = ApplicationPoll.objects.get(id=self.kwargs['poll_id'])
-        return super(ApplicationPollPDF, self).get(request, *args, **kwargs)
+        self.poll = MotionPoll.objects.get(id=self.kwargs['poll_id'])
+        return super(MotionPollPDF, self).get(request, *args, **kwargs)
 
     def get_filename(self):
-        filename = u'%s%s_%s' % (_("Application"), str(self.poll.application.number), _("Poll"))
+        filename = u'%s%s_%s' % (_("Motion"), str(self.poll.motion.number), _("Poll"))
         return filename
 
     def get_template(self, buffer):
@@ -819,8 +851,8 @@ class ApplicationPollPDF(PDFView):
         circle = "<img src='%s' width='15' height='15'/>&nbsp;&nbsp;" % imgpath
         cell = []
         cell.append(Spacer(0,0.8*cm))
-        cell.append(Paragraph(_("Application No. %s") % self.poll.application.number, stylesheet['Ballot_title']))
-        cell.append(Paragraph(self.poll.application.title, stylesheet['Ballot_subtitle']))
+        cell.append(Paragraph(_("Motion No. %s") % self.poll.motion.number, stylesheet['Ballot_title']))
+        cell.append(Paragraph(self.poll.motion.title, stylesheet['Ballot_subtitle']))
         cell.append(Paragraph(_("%d. Vote") % self.poll.get_ballot(), stylesheet['Ballot_description']))
         cell.append(Spacer(0,0.5*cm))
         cell.append(Paragraph(circle + unicode(_("Yes")), stylesheet['Ballot_option']))
@@ -828,8 +860,8 @@ class ApplicationPollPDF(PDFView):
         cell.append(Paragraph(circle + unicode(_("Abstention")), stylesheet['Ballot_option']))
         data= []
         # get ballot papers config values
-        ballot_papers_selection = config["application_pdf_ballot_papers_selection"]
-        ballot_papers_number = config["application_pdf_ballot_papers_number"]
+        ballot_papers_selection = config["motion_pdf_ballot_papers_selection"]
+        ballot_papers_number = config["motion_pdf_ballot_papers_number"]
 
         # set number of ballot papers
         if ballot_papers_selection == "NUMBER_OF_DELEGATES":
@@ -857,37 +889,37 @@ class ApplicationPollPDF(PDFView):
 class Config(FormView):
     permission_required = 'config.can_manage_config'
     form_class = ConfigForm
-    template_name = 'application/config.html'
+    template_name = 'motion/config.html'
 
     def get_initial(self):
         return {
-            'application_min_supporters': config['application_min_supporters'],
-            'application_preamble': config['application_preamble'],
-            'application_pdf_ballot_papers_selection': config['application_pdf_ballot_papers_selection'],
-            'application_pdf_ballot_papers_number': config['application_pdf_ballot_papers_number'],
-            'application_pdf_title': config['application_pdf_title'],
-            'application_pdf_preamble': config['application_pdf_preamble'],
-            'application_allow_trivial_change': config['application_allow_trivial_change'],
+            'motion_min_supporters': config['motion_min_supporters'],
+            'motion_preamble': config['motion_preamble'],
+            'motion_pdf_ballot_papers_selection': config['motion_pdf_ballot_papers_selection'],
+            'motion_pdf_ballot_papers_number': config['motion_pdf_ballot_papers_number'],
+            'motion_pdf_title': config['motion_pdf_title'],
+            'motion_pdf_preamble': config['motion_pdf_preamble'],
+            'motion_allow_trivial_change': config['motion_allow_trivial_change'],
         }
 
     def form_valid(self, form):
-        config['application_min_supporters'] = form.cleaned_data['application_min_supporters']
-        config['application_preamble'] = form.cleaned_data['application_preamble']
-        config['application_pdf_ballot_papers_selection'] = form.cleaned_data['application_pdf_ballot_papers_selection']
-        config['application_pdf_ballot_papers_number'] = form.cleaned_data['application_pdf_ballot_papers_number']
-        config['application_pdf_title'] = form.cleaned_data['application_pdf_title']
-        config['application_pdf_preamble'] = form.cleaned_data['application_pdf_preamble']
-        config['application_allow_trivial_change'] = form.cleaned_data['application_allow_trivial_change']
+        config['motion_min_supporters'] = form.cleaned_data['motion_min_supporters']
+        config['motion_preamble'] = form.cleaned_data['motion_preamble']
+        config['motion_pdf_ballot_papers_selection'] = form.cleaned_data['motion_pdf_ballot_papers_selection']
+        config['motion_pdf_ballot_papers_number'] = form.cleaned_data['motion_pdf_ballot_papers_number']
+        config['motion_pdf_title'] = form.cleaned_data['motion_pdf_title']
+        config['motion_pdf_preamble'] = form.cleaned_data['motion_pdf_preamble']
+        config['motion_allow_trivial_change'] = form.cleaned_data['motion_allow_trivial_change']
         messages.success(self.request, _('Motion settings successfully saved.'))
         return super(Config, self).form_valid(form)
 
 
 def register_tab(request):
-    selected = True if request.path.startswith('/application/') else False
+    selected = True if request.path.startswith('/motion/') else False
     return Tab(
-        title=_('Applications'),
-        url=reverse('application_overview'),
-        permission=request.user.has_perm('application.can_see_application') or request.user.has_perm('application.can_support_application') or request.user.has_perm('application.can_support_application') or request.user.has_perm('application.can_manage_application'),
+        title=_('Motions'),
+        url=reverse('motion_overview'),
+        permission=request.user.has_perm('motion.can_see_motion') or request.user.has_perm('motion.can_support_motion') or request.user.has_perm('motion.can_support_motion') or request.user.has_perm('motion.can_manage_motion'),
         selected=selected,
     )
 
@@ -895,7 +927,7 @@ def register_tab(request):
 def get_widgets(request):
     return [
         Widget(
-            name='applications',
-            template='application/widget.html',
-            context={'applications': Application.objects.all()},
-            permission_required='application.can_manage_application')]
+            name='motions',
+            template='motion/widget.html',
+            context={'motions': Motion.objects.all()},
+            permission_required='motion.can_manage_motion')]
