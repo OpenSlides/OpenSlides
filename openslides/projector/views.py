@@ -390,17 +390,7 @@ def get_widgets(request):
     widgets = []
 
     # welcome widget
-    apps = []
-    for app in settings.INSTALLED_APPS:
-        try:
-            mod = import_module(app + '.views')
-            tab = mod.register_tab(request)
-        except (ImportError, AttributeError):
-            continue
-        if tab.permission:
-            apps.append(tab)
     context = {
-        'apps': apps,
         'welcometext': config['frontpage_welcometext']}
     widgets.append(Widget(
         name='welcome',
