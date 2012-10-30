@@ -145,7 +145,7 @@ class UsersAndGroupsToPersons(object):
         if config['participant_sort_users_by_first_name']:
             self.users = User.objects.all().order_by('first_name')
         else:
-            self.users = User.objects.all()
+            self.users = User.objects.all().order_by('last_name')
         self.groups = Group.objects.filter(group_as_person=True)
 
     def __iter__(self):

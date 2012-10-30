@@ -98,6 +98,8 @@ class Overview(ListView):
         else:
             if config['participant_sort_users_by_first_name']:
                 query = query.order_by('first_name')
+            else:
+                query = query.order_by('last_name')
 
         if 'reverse' in sortfilter:
             query = query.reverse()
@@ -215,7 +217,10 @@ class ParticipantsListPDF(PDFView):
     def append_to_pdf(self, story):
         data = [['#', _('Last Name'), _('First Name'), _('Group'), _('Type'),
                  _('Committee')]]
-        sort = 'last_name'
+        if config['participant_sort_users_by_first_name']:
+            sort = 'first_name'
+        else:
+            sort = 'last_name'
         counter = 0
         for user in User.objects.all().order_by(sort):
             counter += 1
@@ -257,7 +262,11 @@ class ParticipantsPasswordsPDF(PDFView):
         data = []
         participant_pdf_system_url = config["participant_pdf_system_url"]
         participant_pdf_welcometext = config["participant_pdf_welcometext"]
-        for user in User.objects.all().order_by('last_name'):
+        if config['participant_sort_users_by_first_name']:
+            sort = 'first_name'
+        else:
+            sort = 'last_name'
+        for user in User.objects.all().order_by(sort):
             cell = []
             cell.append(Spacer(0, 0.8 * cm))
             cell.append(Paragraph(_("Account for OpenSlides"),
