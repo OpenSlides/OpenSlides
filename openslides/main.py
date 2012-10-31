@@ -223,7 +223,7 @@ def create_or_reset_admin_user():
     except User.DoesNotExist:
         admin = User()
         admin.username = 'admin'
-        admin.last_name = 'Admin User'
+        admin.last_name = 'Administrator'
         print("Created default admin user")
 
     admin.is_superuser = True

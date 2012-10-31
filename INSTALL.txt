@@ -1,4 +1,4 @@
-Installation Instructions for OpenSlides 1.2
+Installation Instructions for OpenSlides 1.3
 ============================================
 
 Content
@@ -48,7 +48,7 @@ I. Installation on Windows (32/64bit)
         easy_install django django-mptt reportlab pil
 
         If you use a 64bit version of Python, you have to install reportlab
-        and pil not by using easy_install but manually.
+        and PIL manually - without using easy_install.
 
   2. Get OpenSlides:
 
@@ -56,13 +56,12 @@ I. Installation on Windows (32/64bit)
 
      OR
 
-     b) Clone development version from mercurial repository
-        http://hg.openslides.org. This requires Mercurial source control
-        management (hg), see http://mercurial.selenic.com.
-
+     b) Clone development version from OpenSlides' github repository
+        https://github.com/OpenSlides/OpenSlides.
+        This requires Git, see http://git-scm.com/.
         Open command line (cmd) and run:
 
-        hg clone http://hg.openslides.org OpenSlides
+        git clone git://github.com/OpenSlides/OpenSlides.git
 
   3. Start OpenSlides server and open URL in your default browser:
 

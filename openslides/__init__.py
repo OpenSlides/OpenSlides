@@ -5,7 +5,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-VERSION = (1, 3, 0, 'alpha', 1)
+VERSION = (1, 3, 0, 'beta', 1)
 
 
 def get_version(version=None):
@@ -16,7 +16,7 @@ def get_version(version=None):
     if version is None:
         version = VERSION
     assert len(version) == 5
-    assert version[3] in ('alpha', 'beta', 'rc', 'final')
+    assert version[3] in ('dev', 'alpha', 'beta', 'rc', 'final')
 
     # Now build the two parts of the version number:
     # main = X.Y[.Z]
@@ -27,16 +27,17 @@ def get_version(version=None):
     main = '.'.join(str(x) for x in version[:main_parts])
 
     if version[3] != 'final':
-        mapping = {'alpha': 'a', 'beta': 'b', 'rc': 'c'}
-        sub = mapping[version[3]] + str(version[4])
-        try:
-            git_head_path = '.git/' + open('.git/HEAD', 'r').read()[5:].rstrip()
-        except IOError:
-            git_commit_id = 'unknown'
+        if version[3] == 'dev':
+            try:
+                git_head_path = '.git/' + open('.git/HEAD', 'r').read()[5:].rstrip()
+            except IOError:
+                git_commit_id = 'unknown'
+            else:
+                import os
+                git_commit_id = open(os.path.abspath(git_head_path), 'r').read().rstrip()
+            sub = '-%s%s' % (version[3], git_commit_id)
         else:
-            import os
-            git_commit_id = open(os.path.abspath(git_head_path), 'r').read().rstrip()
-        sub = '%s commit %s' % (sub, git_commit_id)
+            sub = '-' + version[3] + str(version[4])
     else:
         sub = ''
 
