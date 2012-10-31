@@ -227,10 +227,12 @@ class Assignment(models.Model, SlideMixin):
         """
         return the slide dict
         """
+        polls = self.poll_set
         data = super(Assignment, self).slide()
         data['assignment'] = self
         data['title'] = self.name
-        data['polls'] = self.poll_set.filter(published=True)
+        data['some_polls_available'] = polls.exists()
+        data['polls'] = polls.filter(published=True)
         data['vote_results'] = self.vote_results(only_published=True)
         data['assignment_publish_winner_results_only'] = \
             config['assignment_publish_winner_results_only']

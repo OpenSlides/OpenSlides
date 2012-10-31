@@ -27,4 +27,51 @@
         <li><a href="{% url print_passwords %}"><img src="{% static 'images/icons/pdf.png' %}"> {% trans 'First time passwords as PDF' %}</a></li>
         {% endif %}
     </ul>
+
+    {# second submenu #}
+    {% if shown_user %}
+        <br>
+        <h3>{{ shown_user.clean_name }}</h3>
+        <ul>
+            {# view shown_user #}
+            <li class="{% if request.path == 'foo' %}selected{% endif %}">
+                <a href="{% model_url shown_user 'view' %}">{% trans 'View participant' %}</a>
+            </li>
+
+            {% if perms.participant.can_manage_participant %}
+
+                {# edit shown_user #}
+                <li class="{% if request.path ==  'foo' %}selected{% endif %}">
+                    <a href="{% model_url shown_user 'edit' %}"><img src="{% static 'images/icons/edit.png' %}"> {% trans 'Edit participant' %}</a>
+                </li>
+
+                {# delete shown_user #}
+                <li>
+                    <a href="{% model_url shown_user 'delete'  %}"><img src="{% static 'images/icons/delete.png' %}"> {% trans 'Delete participant' %}</a>
+                </li>
+            {% endif %}
+        </ul>
+    {% elif group %}
+        <br>
+        <h3>{{ group.name }}</h3>
+        <ul>
+            {# view group #}
+            <li class="{% if request.path == 'foo' %}selected{% endif %}">
+                <a href="{% model_url group 'view' %}">{% trans 'View group' %}</a>
+            </li>
+
+            {# edit group #}
+            <li class="{% if request.path ==  'foo' %}selected{% endif %}">
+                <a href="{% model_url group 'edit' %}"><img src="{% static 'images/icons/edit.png' %}"> {% trans 'Edit group' %}</a>
+            </li>
+
+            {# delete group #}
+            {% if group.name != 'Anonymous' %}
+                <li>
+                    <a href="{% model_url group 'delete'  %}"><img src="{% static 'images/icons/delete.png' %}"> {% trans 'Delete group' %}</a>
+                </li>
+            {% endif %}
+        </ul>
+    {% endif %}
+
 {% endblock %}

@@ -122,6 +122,8 @@
         </tr>
 
         </table>
+    {% elif some_polls_available %}
+        <i>{% trans "Vote results are not published yet." %}</i>
     {% elif assignment.candidates %}
         <i>{% trans "No ballots available." %}</i>
     {% endif %}

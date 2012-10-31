@@ -76,7 +76,7 @@
         </tr>
         {% for user in users %}
             <tr class="{% cycle '' 'odd' %}">
-                <td>{{ user.first_name }}</td>
+                <td><a href="{% model_url user 'view' %}">{{ user.first_name }}</a></td>
                 <td>{{ user.last_name }}</td>
                 <td>{{ user.detail }}</td>
                 <td>{{ user.get_type_display }}</td>
