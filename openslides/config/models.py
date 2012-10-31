@@ -81,13 +81,13 @@ def default_config(sender, key, **kwargs):
     return {
         'event_name': 'OpenSlides',
         'event_description':
-            _('Presentation system for agenda, motions and elections'),
+            _('Presentation and assembly system'),
         'event_date': '',
         'event_location': '',
         'event_organizer': '',
         'presentation': '',
-        'frontpage_title': _('Welcome'),
-        'frontpage_welcometext': _('Welcome to OpenSlides!'),
+        'frontpage_title': _('Welcome to OpenSlides'),
+        'frontpage_welcometext': _('[Place for your welcome text.]'),
         'show_help_text': True,
         'help_text': _("Get professional support for OpenSlides on %s.") %
             "<a href='http://openslides.org/' target='_blank'> \

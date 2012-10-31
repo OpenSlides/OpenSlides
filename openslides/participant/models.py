@@ -39,16 +39,16 @@ class User(DjangoUser, PersonMixin, Person):
     django_user = models.OneToOneField(DjangoUser, editable=False, parent_link=True)
     detail = models.CharField(
         max_length=100, blank=True, default='', verbose_name=_("Detail"),
-        help_text=_('Will be shown behind the name.'))
+        help_text=_('Will be shown after the name.'))
     gender = models.CharField(
         max_length=50, choices=GENDER_CHOICES, blank=True,
-        verbose_name=_("Gender"), help_text=_('Only for filter the userlist.'))
+        verbose_name=_("Gender"), help_text=_('Only for filtering the participant list.'))
     type = models.CharField(
         max_length=100, choices=TYPE_CHOICES, blank=True,
-        verbose_name=_("Typ"), help_text=_('Only for filter the userlist.'))
+        verbose_name=_("Typ"), help_text=_('Only for filtering the participant list.'))
     committee = models.CharField(
         max_length=100, blank=True, default='', verbose_name=_("Committee"),
-        help_text=_('Only for filter the userlist.'))
+        help_text=_('Only for filtering the participant list.'))
     comment = models.TextField(
         blank=True, default='', verbose_name=_('Comment'),
         help_text=_('Only for notes.'))
@@ -110,8 +110,8 @@ class Group(DjangoGroup, PersonMixin, Person):
     person_prefix = 'group'
 
     django_group = models.OneToOneField(DjangoGroup, editable=False, parent_link=True)
-    group_as_person = models.BooleanField(default=False)
-    description = models.TextField(blank=True)
+    group_as_person = models.BooleanField(default=False, verbose_name=_("Use this user group as participant"), help_text=_('For example as submitter of a motion.'))
+    description = models.TextField(blank=True, verbose_name=_("Description"))
 
     @models.permalink
     def get_absolute_url(self, link='edit'):
@@ -145,7 +145,7 @@ class UsersAndGroupsToPersons(object):
         if config['participant_sort_users_by_first_name']:
             self.users = User.objects.all().order_by('first_name')
         else:
-            self.users = User.objects.all()
+            self.users = User.objects.all().order_by('last_name')
         self.groups = Group.objects.filter(group_as_person=True)
 
     def __iter__(self):
