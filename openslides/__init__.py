@@ -31,11 +31,10 @@ def get_version(version=None):
         sub = mapping[version[3]] + str(version[4])
         try:
             git_head_path = '.git/' + open('.git/HEAD', 'r').read()[5:].rstrip()
-        except IOError:
-            git_commit_id = 'unknown'
-        else:
             import os
             git_commit_id = open(os.path.abspath(git_head_path), 'r').read().rstrip()
+        except IOError:
+            git_commit_id = 'unknown'
         sub = '%s commit %s' % (sub, git_commit_id)
     else:
         sub = ''
