@@ -49,6 +49,9 @@ class User(DjangoUser, PersonMixin, Person):
     committee = models.CharField(
         max_length=100, blank=True, default='', verbose_name=_("Committee"),
         help_text=_('Only for filtering the participant list.'))
+    about_me = models.TextField(
+        blank=True, default='', verbose_name=_('About me'),
+        help_text=_('Your profile text'))
     comment = models.TextField(
         blank=True, default='', verbose_name=_('Comment'),
         help_text=_('Only for notes.'))
