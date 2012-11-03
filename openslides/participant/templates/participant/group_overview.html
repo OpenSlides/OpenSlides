@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load staticfiles %}
+{% load tags %}
 
 {% block title %}{{ block.super }} – {% trans "User groups" %}{% endblock %}
 
@@ -14,7 +15,7 @@
         </tr>
     {% for group in groups %}
         <tr class="{% cycle '' 'odd' %}">
-            <td>{{ group.name }}</td>
+            <td><a href="{% model_url group 'view' %}">{{ group.name }}</a></td>
             <td><a href="{% url user_group_edit group.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit group' %}"></a>
             {% if group.name != 'Anonymous' %}
             <a href="{% url user_group_delete group.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete group' %}"></a>

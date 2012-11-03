@@ -31,7 +31,12 @@
         <tr class="{% cycle '' 'odd' %}
             {% if assignment.active %}activeline{% endif %}">
             <td><a href="{% url assignment_view assignment.id %}">{{ assignment }}</a></td>
-            <td>{{ assignment.candidates|length }} / {{ assignment.posts }}</td>
+            <td>
+                {{ assignment.posts }} {% trans "posts" %} / {{ assignment.elected|length }} {% trans "elected" %}
+                {% if assignment.status != 'fin' %}
+                    / {{ assignment.candidates|length }} {% trans "candidates" %}
+                {% endif %}
+            </td>
             <td>{{ assignment.get_status_display }}</td>
             <td>
                 <span style="width: 1px; white-space: nowrap;">

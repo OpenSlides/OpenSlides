@@ -1,0 +1,49 @@
+{% load i18n %}
+{% load tags %}
+
+<ul style="line-height: 180%">
+    {% trans "You submitted the following motions:" %}
+    {% for motion in submitted_motions %}
+        <li>
+            <a href="{% model_url motion 'view' %}">{{ motion.public_version.title }}</a>
+            ({% trans "motion" %}
+            {% if motion.number %}
+                {{ motion.number }})
+            {% else %}
+                <i>[{% trans "no number" %}]</i>)
+            {% endif %}
+        </li>
+    {% empty %}
+        <li>{% trans "Currently none" %}</li>
+    {% endfor %}
+</ul>
+
+{% if config_motion_min_supporters %}
+<hr />
+<ul>
+    {% trans "You support the following motions:" %}
+    {% for motion in supported_motions %}
+        <li>
+            <a href="{% model_url motion 'view' %}">{{ motion.public_version.title }}</a>
+            ({% trans "motion" %}
+            {% if motion.number %}
+                {{ motion.number }})
+            {% else %}
+                <i>[{% trans "no number" %}]</i>)
+            {% endif %}
+        </li>
+    {% empty %}
+        <li>{% trans "Currently none" %}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<hr />
+<ul style="line-height: 180%">
+    {% trans "You are candidate in the following assignments:" %}
+    {% for assignment in assignments %}
+        <li><a href="{% model_url assignment 'view' %}">{{ assignment }}</a></li>
+    {% empty %}
+        <li>{% trans "Currently none" %}</li>
+    {% endfor %}
+</ul>
