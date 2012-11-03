@@ -16,7 +16,7 @@
 {% for member in group.user_set.all %}
     <p>{{ member }}</p>
 {% empty %}
-    <p>{% trans "This group has not any members." %}</p>
+    <p>{% trans "No members available." %}</p>
 {% endfor %}
 
 {% endblock %}

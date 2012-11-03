@@ -28,14 +28,14 @@ class UserCreateForm(forms.ModelForm, CssClassMixin):
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'is_active', 'groups', 'detail',
-                  'gender', 'type', 'committee', 'comment', 'default_password')
+                  'gender', 'type', 'committee', 'about_me', 'comment', 'default_password')
 
 
 class UserUpdateForm(UserCreateForm):
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'is_active', 'groups',
-                  'detail', 'gender', 'type', 'committee', 'comment',
+                  'detail', 'gender', 'type', 'committee', 'about_me', 'comment',
                   'default_password')
 
 
@@ -94,7 +94,7 @@ class GroupForm(forms.ModelForm, CssClassMixin):
 class UsersettingsForm(forms.ModelForm, CssClassMixin):
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'email', 'gender')
+        fields = ('username', 'first_name', 'last_name', 'gender', 'email', 'committee', 'about_me' )
 
 
 class UserImportForm(forms.Form, CssClassMixin):
