@@ -45,7 +45,7 @@
     {% if shown_user.last_login > shown_user.date_joined %}
         <p>{{ shown_user.last_login }}</p>
     {% else %}
-        <p>{% trans "The participant was not logged in yet." %}</p>
+        <p>{% trans "The participant has not logged in yet." %}</p>
     {% endif %}
 {% endif %}
 

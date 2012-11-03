@@ -101,7 +101,7 @@
             {% endif %}
         </li>
     {% empty %}
-        <li>{% trans "There are no elected candidates available." %}</li>
+        <li>{% trans "No elected candidates available." %}</li>
     {% endfor %}
     </ul>
 
@@ -113,7 +113,7 @@
             {{ person }}<a href="{% url assignment_delother assignment.id person.person_id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Remove candidate' %}"></a>
         </li>
     {% empty %}
-        <li>{% trans "There are no blocked candidates available." %}</li>
+        <li>{% trans "No blocked candidates available." %}</li>
     {% endfor %}
     </ul>
 {% endif %}

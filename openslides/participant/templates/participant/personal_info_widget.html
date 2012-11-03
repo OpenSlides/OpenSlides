@@ -2,7 +2,7 @@
 {% load tags %}
 
 <ul style="line-height: 180%">
-    {% trans "You submitted the following motions:" %}
+    {% trans "I submitted the following motions:" %}
     {% for motion in submitted_motions %}
         <li>
             <a href="{% model_url motion 'view' %}">{{ motion.public_version.title }}</a>
@@ -14,14 +14,14 @@
             {% endif %}
         </li>
     {% empty %}
-        <li>{% trans "Currently none" %}</li>
+        <li>{% trans "None" %}</li>
     {% endfor %}
 </ul>
 
 {% if config_motion_min_supporters %}
 <hr />
 <ul>
-    {% trans "You support the following motions:" %}
+    {% trans "I support the following motions:" %}
     {% for motion in supported_motions %}
         <li>
             <a href="{% model_url motion 'view' %}">{{ motion.public_version.title }}</a>
@@ -33,17 +33,17 @@
             {% endif %}
         </li>
     {% empty %}
-        <li>{% trans "Currently none" %}</li>
+        <li>{% trans "None" %}</li>
     {% endfor %}
 </ul>
 {% endif %}
 
 <hr />
 <ul style="line-height: 180%">
-    {% trans "You are candidate in the following assignments:" %}
+    {% trans "I am candidate for the following elections:" %}
     {% for assignment in assignments %}
         <li><a href="{% model_url assignment 'view' %}">{{ assignment }}</a></li>
     {% empty %}
-        <li>{% trans "Currently none" %}</li>
+        <li>{% trans "None" %}</li>
     {% endfor %}
 </ul>

@@ -559,7 +559,7 @@ def get_personal_info_widget(request):
         assignmentcandidate__blocked=False),}
     return Widget(
         name='personal_info',
-        display_name=_('On You'),
+        display_name=_('My motions and elections'),
         template='participant/personal_info_widget.html',
         context=personal_info_context,
         permission_required=None,
