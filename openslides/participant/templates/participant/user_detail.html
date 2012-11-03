@@ -35,6 +35,11 @@
 <p>{{ shown_user.committee }}</p>
 {% endif %}
 
+{% if shown_user.about_me %}
+    <h2>{% trans "About me" %}</h2>
+    <p>{{ shown_user.about_me }}</p>
+{% endif %}
+
 {% if perms.participant.can_manage_participant %}
     {% if shown_user.comment %}
     <h2>{% trans "Comment" %}</h2>

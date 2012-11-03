@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-03 08:56+0100\n"
+"POT-Creation-Date: 2012-11-03 09:32+0100\n"
 "PO-Revision-Date: 2012-07-28 11:07+0200\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: support@openslides.de\n"
@@ -41,9 +41,9 @@ msgid "Text"
 msgstr "Text"
 
 #: agenda/models.py:44 agenda/templates/agenda/overview.html:65
-#: agenda/templates/agenda/view.html:13 participant/models.py:53
+#: agenda/templates/agenda/view.html:13 participant/models.py:56
 #: participant/templates/participant/overview.html:72
-#: participant/templates/participant/user_detail.html:40
+#: participant/templates/participant/user_detail.html:45
 msgid "Comment"
 msgstr "Kommentar"
 
@@ -392,7 +392,7 @@ msgstr "Abgeschlossen"
 msgid "Name"
 msgstr "Name"
 
-#: assignment/models.py:55 participant/models.py:117
+#: assignment/models.py:55 participant/models.py:120
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -1789,31 +1789,40 @@ msgstr "Typ"
 msgid "Committee"
 msgstr "Amt"
 
+#: participant/models.py:53
+#: participant/templates/participant/user_detail.html:39
+msgid "About me"
+msgstr "Über mich"
+
 #: participant/models.py:54
+msgid "Your profile text"
+msgstr "Ihr Profiltext"
+
+#: participant/models.py:57
 msgid "Only for notes."
 msgstr "Nur für Notizen."
 
-#: participant/models.py:57
+#: participant/models.py:60
 msgid "Default password"
 msgstr "Vorgegebenes Passwort"
 
-#: participant/models.py:105
+#: participant/models.py:108
 msgid "Can see participant"
 msgstr "Darf die Teilnehmer/inen sehen"
 
-#: participant/models.py:107
+#: participant/models.py:110
 msgid "Can manage participant"
 msgstr "Darf die Teilnehmer/inen verwalten"
 
-#: participant/models.py:116
+#: participant/models.py:119
 msgid "Use this user group as participant"
 msgstr "Verwende diese Benutzerrolle als Teilnehmer/in"
 
-#: participant/models.py:116
+#: participant/models.py:119
 msgid "For example as submitter of a motion."
 msgstr "Zum Beispiel als Antragsteller."
 
-#: participant/models.py:198
+#: participant/models.py:201
 msgid "Welcome to OpenSlides!"
 msgstr "Willkommen bei OpenSlides!"
 
@@ -2079,7 +2088,7 @@ msgid "of"
 msgstr "von"
 
 #: participant/templates/participant/overview.html:73
-#: participant/templates/participant/user_detail.html:44
+#: participant/templates/participant/user_detail.html:49
 msgid "Last Login"
 msgstr "Letzer Login"
 
@@ -2137,7 +2146,7 @@ msgstr "Ich bin Kandidat/in bei folgenden Wahlen:"
 msgid "The participant is not member of any group."
 msgstr "Teilnehmer/in ist kein Mitglieder einer Gruppe."
 
-#: participant/templates/participant/user_detail.html:48
+#: participant/templates/participant/user_detail.html:53
 msgid "The participant has not logged in yet."
 msgstr "Teilnehmer/in hat sich noch nicht angemeldet."
 
