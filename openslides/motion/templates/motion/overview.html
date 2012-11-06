@@ -29,7 +29,7 @@
         </form>
     </p>
     {{ motions|length }}
-    {% blocktrans count counter=motions|length %}motion{% plural %}motions{% endblocktrans %}
+    {% blocktrans count counter=motions|length context "number of motions"%}motion{% plural %}motions{% endblocktrans %}
     <table>
         <tr>
             <th><a href="?sort=number{% if 'number' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Number" %}</a></th>
