@@ -14,10 +14,37 @@ from django.test import TestCase
 from django.test.client import Client
 from django.contrib.auth.models import User
 from django.db.models.query import EmptyQuerySet
+from openslides.config.models import config
 
 from openslides.projector.api import get_active_slide
 
 from openslides.agenda.models import Item
+
+
+class ModelTest(TestCase):
+    def setUp(self):
+        config['agenda_numeral_system'] = 'r'
+        self.item1 = Item.objects.create(title='item1', additional_item = False)
+        self.item2 = Item.objects.create(title='item2', additional_item = True)
+        self.item3 = Item.objects.create(title='item1A', parent=self.item1)
+        self.item4 = Item.objects.create(title='item1Aa', parent=self.item3)
+
+    def testFFFF(self):
+        self.assertTrue(self.item1.additional_item == False)
+        self.assertTrue(self.item2.additional_item == True)
+
+    def testLetterForNumber(self):
+        self.assertTrue(self.item1._letter_for_number(0) == None)
+        self.assertTrue(self.item1._letter_for_number(1) == 'a')
+        self.assertTrue(self.item1._letter_for_number(26) == 'z')
+        self.assertTrue(self.item1._letter_for_number(27) == None)
+
+    def testFormatNumber(self):
+        self.assertTrue(self.item1._format_number(0) == None)
+        self.assertTrue(self.item1._format_number(1) == 'I')
+        self.assertTrue(self.item1._format_number(4999) == 'MMMMCMXCIX')
+        self.assertTrue(self.item1._format_number(5000) == None)
+
 
 class ItemTest(TestCase):
     def setUp(self):

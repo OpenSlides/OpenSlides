@@ -10,6 +10,9 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+import string
+import roman
+
 try:
     import json
 except ImportError:
@@ -25,10 +28,10 @@ from mptt.models import MPTTModel, TreeForeignKey
 from openslides.config.models import config
 
 from openslides.projector.projector import SlideMixin
-from openslides.projector.api import (register_slidemodel, get_slide_from_sid,
-    register_slidefunc, split_sid)
+from openslides.projector.api import (register_slidemodel, get_slide_from_sid,  register_slidefunc )
 
 from openslides.agenda.slides import agenda_show
+
 
 
 class Item(MPTTModel, SlideMixin):
@@ -37,6 +40,7 @@ class Item(MPTTModel, SlideMixin):
 
     MPTT-model. See http://django-mptt.github.com/django-mptt/
     """
+
     prefix = 'item'
 
     title = models.CharField(null=True, max_length=255, verbose_name=_("Title"))
@@ -44,9 +48,10 @@ class Item(MPTTModel, SlideMixin):
     comment = models.TextField(null=True, blank=True, verbose_name=_("Comment"))
     closed = models.BooleanField(default=False, verbose_name=_("Closed"))
     weight = models.IntegerField(default=0, verbose_name=_("Weight"))
-    parent = TreeForeignKey('self', null=True, blank=True,
-        related_name='children')
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
     related_sid = models.CharField(null=True, blank=True, max_length=63)
+    additional_item = models.BooleanField(default=False)
+
 
     def get_related_slide(self):
         """
@@ -87,7 +92,6 @@ class Item(MPTTModel, SlideMixin):
                 return self.title
 
         return self.get_related_slide().get_agenda_title()
-
 
     def get_title_supplement(self):
         """
@@ -146,15 +150,68 @@ class Item(MPTTModel, SlideMixin):
 
     @property
     def item_no(self):
-        if self.is_root_node():
-            return '%s' % self.tree_id
+        if self.is_additional_item:
+            return self._get_additional_item_no()
         else:
-            return '%s.%s' % (self.parent.item_no, self.sibling_count)
+            return self._get_regular_item_no()
+
+    def _get_regular_item_no(self):
+        if self.is_root_node():
+            return '%s' % self._format_number(self.tree_id)
+        else:
+            return '%s.%s' % (self.parent.item_no, self._prev_siblings_count() + 1)
+
+    def _get_additional_item_no(self):
+        prev_regular_sibling  = self._get_prev_regular_sibling()
+        if prev_regular_sibling:
+            return '%s%s' % (prev_regular_sibling.item_no,
+                             self._letter_for_number(self._prev_add_siblings_count(prev_regular_sibling) + 1))
+        else:
+            return '%s' % self._format_number(self.tree_id)
 
     @property
-    def sibling_count(self):
-        return self.get_siblings(True).filter(lft__lte=self.lft).count()
+    def is_additional_item(self):
+        return self.additional_item and self._has_prev_sibling
 
+    @property
+    def _has_prev_sibling(self):
+        return self._prev_siblings_count() > 0
+
+    def _prev_siblings_count(self):
+        return self._get_prev_siblings().count()
+
+    def _get_prev_siblings(self):
+        if self.is_root_node():
+            return self.get_siblings(False).filter(tree_id__lt=self.tree_id)
+        else:
+            return self.get_siblings(False).filter(right__lt=self.lft)
+
+    def _get_prev_regular_sibling(self):
+        for sibling  in self._get_prev_siblings():
+            if not sibling.is_additional_item:
+                return sibling
+        return None
+
+    def _prev_add_siblings_count(self, regular_sibling):
+        return self.get_siblings(True).filter(lft__lt=self.lft, lft__gt= regular_sibling.lft).count()
+
+    def _format_number(self, number):
+        if config["agenda_numeral_system"] == 'r':
+            return roman.toRoman(number) if 0 < number < 5000 else None
+        return number
+
+    def _letter_for_number(self, item_count):
+        return string.lowercase[item_count - 1] if 0 < item_count < 27 else None
+
+####################
+
+    def _prev_add_siblings_count(self, regular_sibling):
+        return self.get_siblings(True).filter(lft__lt=self.lft, lft__gt= regular_sibling.lft).count()
+
+    def save(self, *args, **kwargs):
+        if not self.is_additional_item:
+            self.additional_item = False
+        super(Item, self).save()
 
     def delete(self, with_children=False):
         """
@@ -187,6 +244,7 @@ class Item(MPTTModel, SlideMixin):
             return reverse('item_edit', args=[str(self.id)])
         if link == 'delete':
             return reverse('item_delete', args=[str(self.id)])
+
 
     def __unicode__(self):
         return self.get_title()

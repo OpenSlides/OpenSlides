@@ -23,6 +23,7 @@ I. Installation on Windows (32/64bit)
           + Python Imaging Library (PIL)
           + Django
           + django-mptt
+          + roman (http://pypi.python.org/pypi/roman)
 
 
      a) Download and run 32bit MSI installer from http://www.python.org/:
@@ -40,12 +41,12 @@ I. Installation on Windows (32/64bit)
 
         http://pypi.python.org/packages/2.7/s/setuptools/setuptools-0.6c11.win32-py2.7.exe
 
-     d) Install ReportLab Toolkit, Python Imaging Library (PIL), Django
-        and django-mptt:
+     d) Install ReportLab Toolkit, Python Imaging Library (PIL), Django,
+        django-mptt and roman:
 
         Open command line (cmd) and run:
 
-        easy_install django django-mptt reportlab pil
+        easy_install django django-mptt reportlab pil roman
 
         If you use a 64bit version of Python, you have to install reportlab
         and pil not by using easy_install but manually.

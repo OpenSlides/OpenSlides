@@ -66,6 +66,8 @@ class Overview(TemplateView):
                     parent = None
                 item.weight = form.cleaned_data['weight']
                 item.parent = parent
+                if not item.is_additional_item:
+                    item.additional_item = False
                 Model.save(item)
             else:
                 transaction.rollback()
@@ -245,11 +247,13 @@ class Config(FormView):
     def get_initial(self):
         return {
             'agenda_enable_auto_numbering': config['agenda_enable_auto_numbering'],
-            'agenda_number_prefix': config['agenda_number_prefix']
+            'agenda_number_prefix': config['agenda_number_prefix'],
+            'agenda_numeral_system': config['agenda_numeral_system']
         }
 
     def form_valid(self, form):
         config['agenda_enable_auto_numbering'] = form.cleaned_data['agenda_enable_auto_numbering']
         config['agenda_number_prefix'] = form.cleaned_data['agenda_number_prefix']
+        config['agenda_numeral_system'] = form.cleaned_data['agenda_numeral_system']
         messages.success(self.request, _('Agenda settings successfully saved.'))
         return super(Config, self).form_valid(form)

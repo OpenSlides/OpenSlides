@@ -21,6 +21,7 @@ from openslides.utils.forms import CssClassMixin
 from openslides.agenda.models import Item
 
 
+
 class ItemForm(forms.ModelForm, CssClassMixin):
     """
     Form to create of update an item.
@@ -56,7 +57,16 @@ class ItemOrderForm(forms.Form, CssClassMixin):
     )
 
 
+
 class ConfigForm(forms.Form, CssClassMixin):
     agenda_enable_auto_numbering = forms.BooleanField(label=_("Enable automatic numbering"), required=False)
     agenda_number_prefix = forms.CharField(label=_("Numbering prefix"), required=False)
-
+    agenda_numeral_system = forms.ChoiceField(
+        widget=forms.Select(),
+        required=False,
+        label=_("Numeral System for Top items"),
+        choices=(
+            ('a', _('Arabic')),
+            ('r', _('Roman')),
+        )
+    )
