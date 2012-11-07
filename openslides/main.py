@@ -28,7 +28,7 @@ from django.core.management import execute_from_command_line
 CONFIG_TEMPLATE = """#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from openslides.openslides_global_settings import *
+from openslides.global_settings import *
 
 # Use 'DEBUG = True' to get more details for server errors
 # (Default for relaeses: 'False')
@@ -86,7 +86,7 @@ def main(argv=None, opt_defaults=None):
     parser.add_option(
         "--reset-admin", action="store_true",
         help="Make sure the user 'admin' exists and uses 'admin' as password")
-    parser.add_option("-s", "--settings", help="Path to the setting.")
+    parser.add_option("-s", "--settings", help="Path to the openslides configuration.")
     parser.add_option(
         "--no-reload", action="store_true", help="Do not reload the development server")
 
@@ -100,15 +100,18 @@ def main(argv=None, opt_defaults=None):
         sys.exit(1)
 
     # Find the path to the settings
-    settings = opts.settings or \
-        os.path.join(os.path.expanduser('~'),'.openslides','openslides_personal_settings.py')
+    settings_path = opts.settings
+    if settings_path is None:
+        config_home = os.environ['XDG_CONFIG_HOME'] or \
+            os.path.join(os.path.expanduser('~'), '.config')
+        settings_path = os.path.join(config_home, 'openslides_config', 'settings.py')
 
     # Create settings if necessary
-    if not os.path.exists(settings):
-        create_settings(settings)
+    if not os.path.exists(settings_path):
+        create_settings(settings_path)
 
     # Set the django environment to the settings
-    setup_django_environment(settings)
+    setup_django_environment(settings_path)
 
     # Find url to openslides
     addr, port = detect_listen_opts(opts.address, opts.port)
@@ -135,24 +138,41 @@ def main(argv=None, opt_defaults=None):
     start_openslides(addr, port, start_browser_url=url, extra_args=extra_args)
 
 
-def create_settings(settings):
-    path_to_dir = os.path.dirname(settings)
+def create_settings(settings_path, database_path=None):
+    settings_module = os.path.dirname(settings_path)
+    settings_file = os.path.basename(settings_path)
 
-    setting_content = CONFIG_TEMPLATE % dict(
+    if database_path is None:
+        data_home = os.environ['XDG_DATA_HOME'] or \
+            os.path.join(os.path.expanduser('~'), '.local', 'share')
+        database_path = os.path.join(data_home, 'openslides_data', 'database.sqlite')
+
+    settings_content = CONFIG_TEMPLATE % dict(
         default_key=base64.b64encode(os.urandom(KEY_LENGTH)),
-        dbpath=_fs2unicode((os.path.join(path_to_dir, 'database.db'))))
+        dbpath=_fs2unicode(database_path))
 
-    if not os.path.exists(path_to_dir):
-        os.makedirs(path_to_dir)
+    if not os.path.exists(settings_module):
+        os.makedirs(settings_module)
 
-    with open(settings, 'w') as settings_file:
-        settings_file.write(setting_content)
+    if not os.path.exists(os.path.dirname(database_path)):
+        os.makedirs(os.path.dirname(database_path))
+
+    with open(settings_path, 'w') as file:
+        file.write(settings_content)
+
+    with open(os.path.join(settings_module, '__init__.py'), 'w') as file:
+        pass
 
 
-def setup_django_environment(settings):
-    sys.path.append(os.path.dirname(settings))
-    setting_module = os.path.basename(settings)[:-3]
-    os.environ[django.conf.ENVIRONMENT_VARIABLE] = setting_module
+def setup_django_environment(settings_path):
+    settings_file = os.path.basename(settings_path)
+    settings_module_name = "".join(settings_file.split('.')[:-1])
+    if '.' in settings_module_name:
+        print "'.' is not an allowed character in the settings-file"
+        sys.exit(1)
+    settings_module_dir, settings_module = os.path.split(os.path.dirname(settings_path))
+    sys.path.append(settings_module_dir)
+    os.environ[django.conf.ENVIRONMENT_VARIABLE] = '%s.%s' % (settings_module, settings_module_name)
 
 
 def detect_listen_opts(address, port):
@@ -186,6 +206,7 @@ def database_exists():
     from openslides.participant.models import User
 
     try:
+        # TODO: Use another model, the User could be deactivated
         User.objects.count()
     except DatabaseError:
         return False
