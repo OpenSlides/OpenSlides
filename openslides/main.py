@@ -102,8 +102,8 @@ def main(argv=None, opt_defaults=None):
     # Find the path to the settings
     settings_path = opts.settings
     if settings_path is None:
-        config_home = os.environ['XDG_CONFIG_HOME'] or \
-            os.path.join(os.path.expanduser('~'), '.config')
+        config_home = os.environ.get('XDG_CONFIG_HOME', \
+            os.path.join(os.path.expanduser('~'), '.config'))
         settings_path = os.path.join(config_home, 'openslides_config', 'settings.py')
 
     # Create settings if necessary
@@ -143,8 +143,8 @@ def create_settings(settings_path, database_path=None):
     settings_file = os.path.basename(settings_path)
 
     if database_path is None:
-        data_home = os.environ['XDG_DATA_HOME'] or \
-            os.path.join(os.path.expanduser('~'), '.local', 'share')
+        data_home = os.environ.get('XDG_DATA_HOME', \
+            os.path.join(os.path.expanduser('~'), '.local', 'share'))
         database_path = os.path.join(data_home, 'openslides_data', 'database.sqlite')
 
     settings_content = CONFIG_TEMPLATE % dict(
