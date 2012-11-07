@@ -23,7 +23,7 @@ from openslides.participant.models import User, Group
 class UserCreateForm(forms.ModelForm, CssClassMixin):
     groups = forms.ModelMultipleChoiceField(
         queryset=Group.objects.exclude(name__iexact='anonymous'),
-        label=_("User groups"), required=False)
+        label=_("Groups"), required=False)
 
     class Meta:
         model = User
