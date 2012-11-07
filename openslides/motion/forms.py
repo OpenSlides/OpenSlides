@@ -32,7 +32,7 @@ class MotionFormTrivialChanges(MotionForm):
 
 
 class MotionManagerForm(forms.ModelForm, CssClassMixin):
-    submitter = PersonFormField()
+    submitter = PersonFormField(label = _("Submitter"))
 
     class Meta:
         model = Motion
