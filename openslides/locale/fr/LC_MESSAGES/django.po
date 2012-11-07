@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-07 21:58+0100\n"
+"POT-Creation-Date: 2012-11-07 22:35+0100\n"
 "PO-Revision-Date: 2012-07-28 21:36+0200\n"
 "Last-Translator: Moira Brülisauer <moosline@gmail.com>\n"
 "Language-Team: Französisch <>\n"
@@ -27,8 +27,11 @@ msgstr "Allemand"
 msgid "English"
 msgstr "Anglais"
 
+#: global_settings.py:38
+msgid "French"
+msgstr ""
+
 #: agenda/forms.py:28
-#, fuzzy
 msgid "Parent item"
 msgstr "Elément parent"
 
@@ -424,6 +427,7 @@ msgid "The candidate list is already closed."
 msgstr "La liste des candidats est déjà fermée"
 
 #: assignment/models.py:94
+#, python-format
 msgid "%s does not want to be a candidate."
 msgstr "%s ne veut pas etre un candidat"
 
@@ -510,20 +514,23 @@ msgstr ""
 "nominer comme candidat"
 
 #: assignment/views.py:218
+#, python-format
 msgid "Candidate <b>%s</b> was withdrawn successfully."
 msgstr "Le candidat <b>%s</b> a été rejeté avec succès."
 
 #: assignment/views.py:220
+#, python-format
 msgid "<b>%s</b> was unblocked successfully."
 msgstr "Le candidat <b>%s</b> a été nominé avec succès."
 
 #: assignment/views.py:224
+#, python-format
 msgid "Do you really want to withdraw <b>%s</b> from the election?"
 msgstr "Voulez-vous vraiment exclure <b>%s</b> de cette élection?"
 
 #: assignment/views.py:226
-#, fuzzy, python-format
-msgid "Do you really want to unblock <b>%s</b> from the election?"
+#, python-format
+msgid "Do you really want to unblock <b>%s</b> for the election?"
 msgstr ""
 "Voulez-vous vraiment repermettre a participer <b>%s</b> à cette élection?"
 
@@ -652,6 +659,7 @@ msgstr[0] "%d candidat"
 msgstr[1] "%d candidats"
 
 #: assignment/views.py:545
+#, python-format
 msgid "%d available post"
 msgid_plural "%d available posts"
 msgstr[0] "%d postes disponibles"
@@ -1118,6 +1126,7 @@ msgid "Supporter: -%s"
 msgstr "Partisants: -%s"
 
 #: motion/models.py:295
+#, python-format
 msgid "Number set: %s"
 msgstr "Numéro inséré: %s"
 
@@ -1277,7 +1286,6 @@ msgstr ""
 "Vous supportez maintenant cette motion, vous avez vous ajouté avec succès."
 
 #: motion/views.py:417
-
 msgid "You have unsupported this motion successfully."
 msgstr "Vous avez retiré votre support pour cette motion avec succès. "
 
@@ -1432,6 +1440,7 @@ msgid "Poll"
 msgstr "Sondage"
 
 #: motion/views.py:851
+#, python-format
 msgid "Motion No. %s"
 msgstr "Motion No %s"
 
@@ -1624,7 +1633,7 @@ msgid "Not permit (reject)"
 msgstr "Non autorisé (rejeter)"
 
 #: motion/templates/motion/view.html:157
-msgid "Set Number"
+msgid "Set number"
 msgstr "Insérer un numéro"
 
 #: motion/templates/motion/view.html:164
@@ -1636,7 +1645,7 @@ msgid "Result after debate"
 msgstr "Résultat après la discussion"
 
 #: motion/templates/motion/view.html:189
-msgid "Withdrawed by Submitter"
+msgid "Withdrawed by submitter"
 msgstr "Retiré par le requérant"
 
 #: motion/templates/motion/view.html:194
@@ -1746,12 +1755,10 @@ msgstr ""
 "Imprimé dans le PDF avec la liste des premiers mots de passe seulement."
 
 #: participant/forms.py:118
-#, fuzzy
 msgid "Sort participants by first name"
 msgstr ""
 
 #: participant/forms.py:119
-#, fuzzy
 msgid "Disable for sorting by last name"
 msgstr ""
 
@@ -1834,7 +1841,6 @@ msgid "Can manage participant"
 msgstr "Peut gérer des participants"
 
 #: participant/models.py:119
-#, fuzzy
 msgid "Use this group as participant"
 msgstr ""
 
@@ -1911,6 +1917,7 @@ msgid "Do you really want to reset the password?"
 msgstr "Voulez-vous vraiment reinitialser le mot de passe?"
 
 #: participant/views.py:378
+#, python-format
 msgid "The Password for %s was successfully reset."
 msgstr "Le mot de passe de %s a été initialisé avec succès"
 
@@ -1921,6 +1928,7 @@ msgstr ""
 "succès"
 
 #: participant/views.py:467
+#, python-format
 msgid ""
 "Installation was successfully! Use %(user)s (password: %(password)s) for "
 "first login.<br><strong>Important:</strong> Please change the password after "
@@ -1942,7 +1950,6 @@ msgid "Password successfully changed."
 msgstr "Le mot de passe a été changé avec succès."
 
 #: participant/views.py:562
-#, fuzzy
 msgid "My motions and elections"
 msgstr ""
 
@@ -1985,9 +1992,8 @@ msgid "First time passwords as PDF"
 msgstr "La liste des premiers mots de passe en PDF"
 
 #: participant/templates/participant/base_participant.html:38
-#, fuzzy
 msgid "View participant"
-msgstr "Nouveau participant"
+msgstr "Afficher participant"
 
 #: participant/templates/participant/base_participant.html:45
 #: participant/templates/participant/edit.html:8
@@ -2002,9 +2008,8 @@ msgid "Delete participant"
 msgstr "Supprimer le participant"
 
 #: participant/templates/participant/base_participant.html:60
-#, fuzzy
 msgid "View group"
-msgstr "Modifier le groupe"
+msgstr "Afficher le groupe"
 
 #: participant/templates/participant/base_participant.html:65
 #: participant/templates/participant/group_edit.html:8
@@ -2135,7 +2140,6 @@ msgid "Personal Settings"
 msgstr "Paramètres personnels"
 
 #: participant/templates/participant/personal_info_widget.html:5
-#, fuzzy
 msgid "I submitted the following motions:"
 msgstr ""
 
@@ -2146,12 +2150,10 @@ msgid "None"
 msgstr ""
 
 #: participant/templates/participant/personal_info_widget.html:24
-#, fuzzy
 msgid "I support the following motions:"
 msgstr ""
 
 #: participant/templates/participant/personal_info_widget.html:43
-#, fuzzy
 msgid "I am candidate for the following elections:"
 msgstr ""
 

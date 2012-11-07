@@ -154,7 +154,7 @@
         <a href='{% url motion_notpermit motion.id %}'><span class="button"><span class="icon reject">{% trans 'Not permit (reject)' %}</span></span></a>
         {% endif %}
         {% if "setnumber" in actions %}
-        <a href='{% url motion_set_number motion.id %}'><span class="button"><span class="icon number">{% trans 'Set Number' %}</span></span></a>
+        <a href='{% url motion_set_number motion.id %}'><span class="button"><span class="icon number">{% trans 'Set number' %}</span></span></a>
         {% endif %}
         </p>
     {% endif %}
@@ -186,7 +186,7 @@
         <a href='{% url motion_set_status motion.id 'com' %}'><span class="button">{% trans 'Commited a bill' %}</span></a><br>
         {% endif %}
         {% if "wit" in actions %}
-        <a href='{% url motion_set_status motion.id 'wit' %}'><span class="button">{% trans 'Withdrawed by Submitter' %}</span></a>
+        <a href='{% url motion_set_status motion.id 'wit' %}'><span class="button">{% trans 'Withdrawed by submitter' %}</span></a>
         {% endif %}
     {% endif %}
     <p></p>

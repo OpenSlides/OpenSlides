@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-07 22:14+0100\n"
+"POT-Creation-Date: 2012-11-07 22:33+0100\n"
 "PO-Revision-Date: 2012-07-28 11:07+0200\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: support@openslides.de\n"
@@ -24,6 +24,10 @@ msgstr "Deutsch"
 #: global_settings.py:37
 msgid "English"
 msgstr "Englisch"
+
+#: global_settings.py:38
+msgid "French"
+msgstr ""
 
 #: agenda/forms.py:28
 msgid "Parent item"
@@ -523,7 +527,7 @@ msgstr "Soll <b>%s</b> wirklich von der Wahl zurückgezogen werden?"
 
 #: assignment/views.py:226
 #, python-format
-msgid "Do you really want to unblock <b>%s</b> from the election?"
+msgid "Do you really want to unblock <b>%s</b> for the election?"
 msgstr "Soll <b>%s</b> wirklich für die Wahl freigegeben werden?"
 
 #: assignment/views.py:241
@@ -1621,7 +1625,7 @@ msgid "Not permit (reject)"
 msgstr "Nicht zulassen (verwerfen)"
 
 #: motion/templates/motion/view.html:157
-msgid "Set Number"
+msgid "Set number"
 msgstr "Setze Nummer"
 
 #: motion/templates/motion/view.html:164
@@ -1633,7 +1637,7 @@ msgid "Result after debate"
 msgstr "Ergebnis nach der Debatte"
 
 #: motion/templates/motion/view.html:189
-msgid "Withdrawed by Submitter"
+msgid "Withdrawed by submitter"
 msgstr "Zurückgezogen durch Antragsteller/in"
 
 #: motion/templates/motion/view.html:194
