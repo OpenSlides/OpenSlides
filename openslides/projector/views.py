@@ -113,14 +113,14 @@ class Projector(TemplateView, AjaxMixin):
             content = render_block_to_string(
                 self.get_template_names()[0],
                 'content', self.data)
-            cache.set('projector_content', content)
+            cache.set('projector_content', content, 1)
 
         scrollcontent = cache.get('projector_scrollcontent')
         if not scrollcontent:
             scrollcontent = render_block_to_string(
                 self.get_template_names()[0],
                 'scrollcontent', self.data)
-            cache.set('projector_scrollcontent', scrollcontent)
+            cache.set('projector_scrollcontent', scrollcontent, 1)
 
 
         # TODO: do not call the hole data-methode, if we only need some vars
