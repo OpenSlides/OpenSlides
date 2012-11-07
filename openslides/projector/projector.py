@@ -139,6 +139,9 @@ class Widget(object):
     def __repr__(self):
         return unicode(self.display_name)
 
+    def __unicode__(self):
+        return unicode(self.display_name)
+
 
 @receiver(projector_overlays, dispatch_uid="projector_countdown")
 def countdown(sender, **kwargs):
