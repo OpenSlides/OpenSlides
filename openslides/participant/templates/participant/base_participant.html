@@ -16,8 +16,8 @@
         {% endif %}
         {% if perms.participant.can_manage_participant %}
         <li class="{% active request url_usernew %}"><a href="{%  url user_new %}">{% trans "New participant" %}</a></li>
-        <li class="{% if request.path == url_usergroups %}selected{% endif %}"><a href="{%  url user_group_overview %}">{% trans "All user groups" %}</a></li>
-        <li class="{% active request '/participant/group/new' %}"><a href="{%  url user_group_new %}">{% trans "New user group" %}</a></li>
+        <li class="{% if request.path == url_usergroups %}selected{% endif %}"><a href="{%  url user_group_overview %}">{% trans "All groups" %}</a></li>
+        <li class="{% active request '/participant/group/new' %}"><a href="{%  url user_group_new %}">{% trans "New group" %}</a></li>
         <li class="{% if request.path == url_userimport %}selected{% endif %}"><a href="{% url user_import %}"> {% trans 'Import participants' %}</a></li>
         {% endif %}
         {% if perms.participant.can_see_participant %}
