@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-07 00:09+0100\n"
+"POT-Creation-Date: 2012-11-07 22:14+0100\n"
 "PO-Revision-Date: 2012-07-28 11:07+0200\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: support@openslides.de\n"
@@ -17,11 +17,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: openslides_global_settings.py:36
+#: global_settings.py:36
 msgid "German"
 msgstr "Deutsch"
 
-#: openslides_global_settings.py:37
+#: global_settings.py:37
 msgid "English"
 msgstr "Englisch"
 
@@ -649,7 +649,7 @@ msgstr[0] "%d Kandidat/in"
 msgstr[1] "%d Kandidaten/innen"
 
 #: assignment/views.py:545
-#, fuzzy, python-format
+#, python-format
 msgid "%d available post"
 msgid_plural "%d available posts"
 msgstr[0] "%d verfügbare Posten"
@@ -922,7 +922,7 @@ msgid ""
 "Anonymous access enabled. Please modify the \"Anonymous\" group to fit your "
 "required permissions."
 msgstr ""
-"Anonymer Zugriff aktiviert. Bitte setzen Sie die Rechte der Benutzerrolle "
+"Anonymer Zugriff aktiviert. Bitte setzen Sie die Rechte der Gruppe "
 "\"Anonymous\" passend zum gewünschten Zugriffslevel."
 
 #: config/views.py:85
@@ -1066,7 +1066,7 @@ msgid "Version %d authorized"
 msgstr "Version %d zugelassen"
 
 #: motion/models.py:110
-#, fuzzy, python-format
+#, python-format
 msgctxt "Rejected means not authorized"
 msgid "Version %d rejected"
 msgstr "Version verworfen"
@@ -1705,11 +1705,12 @@ msgstr "Keine Abstimmungsergebnisse vorhanden."
 msgid "Participant"
 msgstr "Teilnehmer"
 
-#: participant/forms.py:26
+#: participant/forms.py:26 participant/views.py:590
 #: participant/templates/participant/group_overview.html:7
 #: participant/templates/participant/group_overview.html:10
-msgid "User groups"
-msgstr "Benutzerrollen"
+#: participant/templates/participant/user_detail.html:14
+msgid "Groups"
+msgstr "Gruppen"
 
 #: participant/forms.py:44
 msgid "Permissions"
@@ -1827,8 +1828,8 @@ msgid "Can manage participant"
 msgstr "Darf die Teilnehmer/inen verwalten"
 
 #: participant/models.py:119
-msgid "Use this user group as participant"
-msgstr "Verwende diese Benutzerrolle als Teilnehmer/in"
+msgid "Use this group as participant"
+msgstr "Verwende diese Gruppe als Teilnehmer/in"
 
 #: participant/models.py:119
 msgid "For example as submitter of a motion."
@@ -1855,6 +1856,7 @@ msgid "First Name"
 msgstr "Vorname"
 
 #: participant/views.py:244
+#: participant/templates/participant/group_overview.html:13
 msgid "Group"
 msgstr "Gruppe"
 
@@ -1939,11 +1941,6 @@ msgstr "Meine Anträge und Wahlen"
 msgid "Users"
 msgstr "Benutzer"
 
-#: participant/views.py:590
-#: participant/templates/participant/user_detail.html:14
-msgid "Groups"
-msgstr "Gruppen"
-
 #: participant/templates/participant/base_participant.html:15
 msgid "All participants"
 msgstr "Alle Teilnehmer/innen"
@@ -1955,14 +1952,14 @@ msgid "New participant"
 msgstr "Neue/r Teilnehmer/in"
 
 #: participant/templates/participant/base_participant.html:19
-msgid "All user groups"
-msgstr "Alle Benutzerrollen"
+msgid "All groups"
+msgstr "Alle Gruppen"
 
 #: participant/templates/participant/base_participant.html:20
 #: participant/templates/participant/group_edit.html:10
 #: participant/templates/participant/group_edit.html:18
-msgid "New user group"
-msgstr "Neue Benutzerrolle"
+msgid "New group"
+msgstr "Neue Gruppe"
 
 #: participant/templates/participant/base_participant.html:21
 #: participant/templates/participant/import.html:5
@@ -1996,17 +1993,19 @@ msgstr "Teilnehmer/in löschen"
 
 #: participant/templates/participant/base_participant.html:60
 msgid "View group"
-msgstr "Benutzerrolle anzeigen"
+msgstr "Gruppen anzeigen"
 
 #: participant/templates/participant/base_participant.html:65
+#: participant/templates/participant/group_edit.html:8
+#: participant/templates/participant/group_edit.html:16
 #: participant/templates/participant/group_overview.html:19
 msgid "Edit group"
-msgstr "Benutzerrolle bearbeiten"
+msgstr "Gruppe bearbeiten"
 
 #: participant/templates/participant/base_participant.html:71
 #: participant/templates/participant/group_overview.html:21
 msgid "Delete group"
-msgstr "Benutzerrolle löschen"
+msgstr "Gruppe löschen"
 
 #: participant/templates/participant/config.html:5
 #: participant/templates/participant/config.html:8
@@ -2025,19 +2024,7 @@ msgstr "Mitglieder"
 msgid "No members available."
 msgstr "Keine Mitglieder vorhanden."
 
-#: participant/templates/participant/group_edit.html:8
-#: participant/templates/participant/group_edit.html:16
-msgid "Edit user group"
-msgstr "Benutzerrolle bearbeiten"
-
-#: participant/templates/participant/group_overview.html:13
-msgid "User Group"
-msgstr "Benutzerrolle"
-
 #: participant/templates/participant/group_overview.html:27
-msgid "No user groups available."
-msgstr "Keine Benutzerrollen vorhanden."
-
 #: participant/templates/participant/group_widget.html:24
 msgid "No groups available."
 msgstr "Keine Gruppen vorhanden."
@@ -2156,7 +2143,7 @@ msgstr "Ich bin Kandidat/in bei folgenden Wahlen:"
 
 #: participant/templates/participant/user_detail.html:19
 msgid "The participant is not member of any group."
-msgstr "Teilnehmer/in ist kein Mitglieder einer Gruppe."
+msgstr "Teilnehmer/in ist kein Mitglied einer Gruppe."
 
 #: participant/templates/participant/user_detail.html:53
 msgid "The participant has not logged in yet."
@@ -2223,7 +2210,6 @@ msgid "Projector view"
 msgstr "Projektor-Ansicht"
 
 #: projector/templates/projector/control_countdown.html:6
-#, fuzzy
 msgctxt "seconds"
 msgid "s"
 msgstr "s"

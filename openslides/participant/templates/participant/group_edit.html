@@ -5,17 +5,17 @@
 {% block title %}
     {{ block.super }} –
     {% if group %}
-        {% trans "Edit user group" %}
+        {% trans "Edit group" %}
     {% else %}
-        {% trans "New user group" %}
+        {% trans "New group" %}
     {% endif %}
 {% endblock %}
 
 {% block content %}
     {% if group %}
-        <h1>{% trans "Edit user group" %}</h1>
+        <h1>{% trans "Edit group" %}</h1>
     {% else %}
-        <h1>{% trans "New user group" %}</h1>
+        <h1>{% trans "New group" %}</h1>
     {% endif %}
 
     <form action="" method="post">{% csrf_token %}
