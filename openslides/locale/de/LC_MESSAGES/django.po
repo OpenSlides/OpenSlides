@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-03 09:32+0100\n"
+"POT-Creation-Date: 2012-11-07 00:09+0100\n"
 "PO-Revision-Date: 2012-07-28 11:07+0200\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: support@openslides.de\n"
@@ -964,6 +964,13 @@ msgstr "Triviale Änderung"
 msgid "Trivial changes don't create a new version."
 msgstr "Triviale Änderungen erzeugen keine neue Version."
 
+#: motion/forms.py:35 motion/models.py:66 motion/views.py:742
+#: motion/templates/motion/overview.html:41
+#: motion/templates/motion/view.html:18
+#: motion/templates/projector/Motion.html:55
+msgid "Submitter"
+msgstr "Antragsteller/in"
+
 #: motion/forms.py:44 motion/views.py:762 motion/templates/motion/view.html:22
 msgid "Supporters"
 msgstr "Unterstützer/innen"
@@ -1053,17 +1060,16 @@ msgstr "Verworfen (nicht zulässig)"
 msgid "Needs Review"
 msgstr "Benötigt Review"
 
-#: motion/models.py:66 motion/views.py:742
-#: motion/templates/motion/overview.html:41
-#: motion/templates/motion/view.html:18
-#: motion/templates/projector/Motion.html:55
-msgid "Submitter"
-msgstr "Antragsteller/in"
-
 #: motion/models.py:103
 #, python-format
 msgid "Version %d authorized"
 msgstr "Version %d zugelassen"
+
+#: motion/models.py:110
+#, fuzzy, python-format
+msgctxt "Rejected means not authorized"
+msgid "Version %d rejected"
+msgstr "Version verworfen"
 
 #: motion/models.py:139
 msgid "Searching for supporters."
@@ -1154,8 +1160,7 @@ msgstr "von"
 msgid "no number"
 msgstr "ohne Nummer"
 
-#: motion/models.py:455 motion/templates/motion/overview.html:32
-#: motion/templates/motion/widget.html:23
+#: motion/models.py:455 motion/templates/motion/widget.html:23
 #: participant/templates/participant/personal_info_widget.html:9
 #: participant/templates/participant/personal_info_widget.html:28
 msgid "motion"
@@ -1530,6 +1535,13 @@ msgstr "Zugelassen"
 #: motion/templates/motion/overview.html:26
 msgid "Withdrawen (by submitter)"
 msgstr "Zurückgezogen (durch Antragsteller/in)"
+
+#: motion/templates/motion/overview.html:32
+msgctxt "number of motions"
+msgid "motion"
+msgid_plural "motions"
+msgstr[0] "Antrag"
+msgstr[1] "Anträge"
 
 #: motion/templates/motion/overview.html:35
 msgid "Number"
@@ -2211,6 +2223,8 @@ msgid "Projector view"
 msgstr "Projektor-Ansicht"
 
 #: projector/templates/projector/control_countdown.html:6
+#, fuzzy
+msgctxt "seconds"
 msgid "s"
 msgstr "s"
 
