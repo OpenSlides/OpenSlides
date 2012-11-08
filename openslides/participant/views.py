@@ -573,7 +573,7 @@ def get_user_widget(request):
     """
     return Widget(
         name='user',
-        display_name=_('Users'),
+        display_name=_('Participants'),
         template='participant/user_widget.html',
         context={'users': User.objects.all(),},
         permission_required='projector.can_manage_projector',
