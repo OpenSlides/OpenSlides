@@ -255,7 +255,7 @@ class ParticipantsListPDF(PDFView):
                 Paragraph(user.last_name, stylesheet['Tablecell']),
                 Paragraph(user.first_name, stylesheet['Tablecell']),
                 Paragraph(user.detail, stylesheet['Tablecell']),
-                Paragraph(_(user.type), stylesheet['Tablecell']),
+                Paragraph(user.type, stylesheet['Tablecell']),
                 Paragraph(user.committee, stylesheet['Tablecell'])])
         t = LongTable(data, style=[
             ('VALIGN', (0, 0), (-1, -1), 'TOP'),
