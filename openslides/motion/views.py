@@ -925,6 +925,7 @@ def get_widgets(request):
     return [
         Widget(
             name='motions',
+            display_name=_('Motions'),
             template='motion/widget.html',
             context={'motions': Motion.objects.all()},
             permission_required='motion.can_manage_motion')]
