@@ -127,12 +127,13 @@ class UserOverview(ListView):
         # list of all existing categories
         details = [p['detail'] for p in User.objects.values('detail')
             .exclude(detail='').distinct()]
-
         # list of all existing committees
         committees = [p['committee'] for p in User.objects.values('committee')
             .exclude(committee='').distinct()]
+        # context vars
         context.update({
             'allusers': all_users,
+            'request_user': self.request.user,
             'percent': round(percent, 1),
             'details': details,
             'committees': committees,
@@ -204,6 +205,13 @@ class UserDeleteView(DeleteView):
     model = User
     url = 'user_overview'
 
+    def pre_redirect(self, request, *args, **kwargs):
+        if self.get_object() == self.request.user:
+            messages.error(request, _("You can not delete yourself."))
+        elif self.get_object().is_superuser:
+            messages.error(request, _("You can not delete the administrator."))
+        else:
+            super(DeleteView, self).pre_redirect(request, *args, **kwargs)
 
 class SetUserStatusView(RedirectView, SingleObjectMixin):
     """
@@ -220,6 +228,12 @@ class SetUserStatusView(RedirectView, SingleObjectMixin):
         if action == 'activate':
             self.object.is_active = True
         elif action == 'deactivate':
+            if self.get_object().user == self.request.user:
+                messages.error(request, _("You can not deactivate yourself."))
+                return
+            elif self.get_object().is_superuser:
+                messages.error(request, _("You can not deactivate the administrator."))
+                return
             self.object.is_active = False
         elif action == 'toggle':
             self.object.is_active = not self.object.is_active
