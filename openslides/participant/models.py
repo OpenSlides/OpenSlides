@@ -22,8 +22,11 @@ from openslides.utils.person.signals import receive_persons
 from openslides.config.models import config
 from openslides.config.signals import default_config_value
 
+from openslides.projector.api import register_slidemodel
+from openslides.projector.projector import SlideMixin
 
-class User(DjangoUser, PersonMixin, Person):
+class User(DjangoUser, PersonMixin, Person, SlideMixin):
+    prefix = 'user' # This is for the slides
     person_prefix = 'user'
     GENDER_CHOICES = (
         ('male', _('Male')),
@@ -111,6 +114,16 @@ class User(DjangoUser, PersonMixin, Person):
         )
         ordering = ('last_name',)
 
+    def slide(self):
+        """
+        Returns a map with the data for the slides.
+        """
+        return {
+            'shown_user': self,
+            'title': self.clean_name,
+            'template': 'projector/UserSlide.html'}
+
+register_slidemodel(User)
 
 class Group(DjangoGroup, PersonMixin, Person):
     person_prefix = 'group'
