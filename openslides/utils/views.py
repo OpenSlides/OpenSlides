@@ -377,8 +377,6 @@ class FrontPage(TemplateView):
                 continue
             if tab.permission:
                 apps.append(tab)
-        if config['show_help_text']:
-            messages.info(self.request, config['help_text'])
         context.update({
             'apps': apps,
             'title': config['frontpage_title'],
