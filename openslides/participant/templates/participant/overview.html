@@ -93,6 +93,7 @@
                             <a href="{% url user_edit user.id %}">
                                 <img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit participant' %}">
                             </a>
+                            {% if user != request_user and not user.is_superuser %}
                             <a href="{% url user_delete user.id %}">
                                 <img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete participant' %}">
                             </a>
@@ -102,6 +103,7 @@
                             <a class="status_link activate" href="{% url user_status_activate user.id %}" title="{% trans 'Change status to active' %}"{% if user.is_active %} style="display:none"{% endif %}>
                                 <span></span>
                             </a>
+                            {% endif %}
                         </span>
                     </td>
                 {% endif %}

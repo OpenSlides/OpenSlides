@@ -21,6 +21,7 @@ from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.db.models import Q
 from django.dispatch import receiver
+from django.shortcuts import redirect
 from django.utils.datastructures import SortedDict
 from django.utils.importlib import import_module
 from django.utils.translation import ugettext_lazy as _
@@ -206,8 +207,7 @@ class SelectWidgetsView(TemplateView):
         else:
             transaction.commit()
             self.request.session['widgets'] = activated_widgets
-        return self.render_to_response(context)
-
+        return redirect(reverse('dashboard'))
 
 
 class ProjectorEdit(RedirectView):

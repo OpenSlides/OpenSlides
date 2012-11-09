@@ -4,12 +4,12 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block title %}{{ block.super}} – {% trans 'Projector' %} {% endblock %}
+{% block title %}{{ block.super}} – {% trans 'Dashboard' %} {% endblock %}
 
 {% block submenu %}
     {% url dashboard as url_dashboard %}
     {% url projector_select_widgets as url_select_widget %}
-    <h4 class="sectiontitle">{% trans "Projector" %}</h4>
+    <h4 class="sectiontitle">{% trans "Dashboard" %}</h4>
     <ul>
         <li{% if request.path == url_dashboard %} class="selected"{% endif %}>
           <a href="{% url dashboard %}">{% trans 'Overview' %}</a>
