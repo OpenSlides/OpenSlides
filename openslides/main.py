@@ -72,7 +72,7 @@ def _fs2unicode(s):
     return s.decode(_fs_encoding)
 
 
-def main(argv=None, opt_defaults=None):
+def main(argv=None, opt_defaults=None, database_path=None):
     if argv is None:
         argv = sys.argv[1:]
 
@@ -108,7 +108,7 @@ def main(argv=None, opt_defaults=None):
 
     # Create settings if necessary
     if not os.path.exists(settings_path):
-        create_settings(settings_path)
+        create_settings(settings_path, database_path)
 
     # Set the django environment to the settings
     setup_django_environment(settings_path)
@@ -289,6 +289,8 @@ def win32_portable_main(argv=None):
     if portable_dir_writeable:
         default_settings = os.path.join(portable_dir, "openslides",
             "openslides_personal_settings.py")
+        database_path = os.path.join(portable_dir, "openslides",
+            "database.sqlite")
     else:
         import ctypes
 
@@ -307,8 +309,11 @@ def win32_portable_main(argv=None):
             raise Exception("Could not deterime APPDATA path")
         default_settings = os.path.join(buf.value, "openslides",
             "openslides_personal_settings.py")
+        database_path = os.path.join(buf.value, "openslides",
+            "database.sqlite")
 
-    main(argv, opt_defaults={ "settings": default_settings })
+    main(argv, opt_defaults={ "settings": default_settings },
+        database_path=database_path)
 
 
 if __name__ == "__main__":
