@@ -104,7 +104,7 @@ def main(argv=None, opt_defaults=None):
     if settings_path is None:
         config_home = os.environ.get('XDG_CONFIG_HOME', \
             os.path.join(os.path.expanduser('~'), '.config'))
-        settings_path = os.path.join(config_home, 'openslides_config', 'settings.py')
+        settings_path = os.path.join(config_home, 'openslides', 'settings.py')
 
     # Create settings if necessary
     if not os.path.exists(settings_path):
@@ -140,12 +140,11 @@ def main(argv=None, opt_defaults=None):
 
 def create_settings(settings_path, database_path=None):
     settings_module = os.path.dirname(settings_path)
-    settings_file = os.path.basename(settings_path)
 
     if database_path is None:
         data_home = os.environ.get('XDG_DATA_HOME', \
             os.path.join(os.path.expanduser('~'), '.local', 'share'))
-        database_path = os.path.join(data_home, 'openslides_data', 'database.sqlite')
+        database_path = os.path.join(data_home, 'openslides', 'database.sqlite')
 
     settings_content = CONFIG_TEMPLATE % dict(
         default_key=base64.b64encode(os.urandom(KEY_LENGTH)),
@@ -160,9 +159,6 @@ def create_settings(settings_path, database_path=None):
     with open(settings_path, 'w') as file:
         file.write(settings_content)
 
-    with open(os.path.join(settings_module, '__init__.py'), 'w') as file:
-        pass
-
 
 def setup_django_environment(settings_path):
     settings_file = os.path.basename(settings_path)
@@ -170,9 +166,9 @@ def setup_django_environment(settings_path):
     if '.' in settings_module_name:
         print "'.' is not an allowed character in the settings-file"
         sys.exit(1)
-    settings_module_dir, settings_module = os.path.split(os.path.dirname(settings_path))
+    settings_module_dir = os.path.dirname(settings_path)
     sys.path.append(settings_module_dir)
-    os.environ[django.conf.ENVIRONMENT_VARIABLE] = '%s.%s' % (settings_module, settings_module_name)
+    os.environ[django.conf.ENVIRONMENT_VARIABLE] = '%s' % settings_module_name
 
 
 def detect_listen_opts(address, port):
