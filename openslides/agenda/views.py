@@ -226,6 +226,7 @@ def get_widgets(request):
     return [
         Widget(
             name='agenda',
+            display_name=_('Agenda'),
             template='agenda/widget.html',
             context={
                 'agenda': SLIDE['agenda'],

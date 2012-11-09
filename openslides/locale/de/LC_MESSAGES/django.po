@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-07 22:14+0100\n"
+"POT-Creation-Date: 2012-11-08 09:41+0100\n"
 "PO-Revision-Date: 2012-07-28 11:07+0200\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: support@openslides.de\n"
@@ -25,6 +25,10 @@ msgstr "Deutsch"
 msgid "English"
 msgstr "Englisch"
 
+#: global_settings.py:38
+msgid "French"
+msgstr ""
+
 #: agenda/forms.py:28
 msgid "Parent item"
 msgstr "Elternelement"
@@ -41,7 +45,7 @@ msgid "Text"
 msgstr "Text"
 
 #: agenda/models.py:44 agenda/templates/agenda/overview.html:65
-#: agenda/templates/agenda/view.html:13 participant/models.py:56
+#: agenda/templates/agenda/view.html:13 participant/models.py:59
 #: participant/templates/participant/overview.html:72
 #: participant/templates/participant/user_detail.html:45
 msgid "Comment"
@@ -65,7 +69,7 @@ msgid "Can manage agenda"
 msgstr "Darf die Tagesordung verwalten"
 
 #: agenda/models.py:189 agenda/slides.py:20 agenda/views.py:194
-#: agenda/views.py:195 agenda/views.py:214
+#: agenda/views.py:195 agenda/views.py:214 agenda/views.py:229
 #: agenda/templates/agenda/base_agenda.html:10
 #: agenda/templates/agenda/overview.html:8
 #: agenda/templates/agenda/overview.html:52
@@ -392,7 +396,7 @@ msgstr "Abgeschlossen"
 msgid "Name"
 msgstr "Name"
 
-#: assignment/models.py:55 participant/models.py:120
+#: assignment/models.py:55 participant/models.py:133
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -459,6 +463,7 @@ msgid "Ballot %d"
 msgstr "Wahlgang %d"
 
 #: assignment/models.py:331 assignment/views.py:340 assignment/views.py:664
+#: assignment/views.py:678
 #: assignment/templates/assignment/base_assignment.html:14
 #: assignment/templates/assignment/overview.html:6
 #: assignment/templates/assignment/overview.html:9
@@ -523,7 +528,7 @@ msgstr "Soll <b>%s</b> wirklich von der Wahl zurückgezogen werden?"
 
 #: assignment/views.py:226
 #, python-format
-msgid "Do you really want to unblock <b>%s</b> from the election?"
+msgid "Do you really want to unblock <b>%s</b> for the election?"
 msgstr "Soll <b>%s</b> wirklich für die Wahl freigegeben werden?"
 
 #: assignment/views.py:241
@@ -665,10 +670,6 @@ msgstr "Enthaltung"
 #: assignment/views.py:657
 msgid "Election settings successfully saved."
 msgstr "Wahl-Einstellungen wurden erfolgreich gespeichert."
-
-#: assignment/views.py:677
-msgid "Assignments"
-msgstr "Wahlen"
 
 #: assignment/templates/assignment/base_assignment.html:16
 msgid "All elections"
@@ -1191,7 +1192,7 @@ msgid "The assembly may decide,"
 msgstr "Die Versammlung möge beschließen,"
 
 #: motion/models.py:604 motion/views.py:692 motion/views.py:917
-#: motion/templates/motion/base_motion.html:9
+#: motion/views.py:928 motion/templates/motion/base_motion.html:9
 #: motion/templates/motion/overview.html:7
 #: motion/templates/motion/overview.html:10
 msgid "Motions"
@@ -1621,7 +1622,7 @@ msgid "Not permit (reject)"
 msgstr "Nicht zulassen (verwerfen)"
 
 #: motion/templates/motion/view.html:157
-msgid "Set Number"
+msgid "Set number"
 msgstr "Setze Nummer"
 
 #: motion/templates/motion/view.html:164
@@ -1633,7 +1634,7 @@ msgid "Result after debate"
 msgstr "Ergebnis nach der Debatte"
 
 #: motion/templates/motion/view.html:189
-msgid "Withdrawed by Submitter"
+msgid "Withdrawed by submitter"
 msgstr "Zurückgezogen durch Antragsteller/in"
 
 #: motion/templates/motion/view.html:194
@@ -1709,6 +1710,7 @@ msgstr "Teilnehmer"
 #: participant/templates/participant/group_overview.html:7
 #: participant/templates/participant/group_overview.html:10
 #: participant/templates/participant/user_detail.html:14
+#: participant/templates/projector/UserSlide.html:12
 msgid "Groups"
 msgstr "Gruppen"
 
@@ -1716,7 +1718,7 @@ msgstr "Gruppen"
 msgid "Permissions"
 msgstr "Rechte"
 
-#: participant/forms.py:47 participant/views.py:530
+#: participant/forms.py:47 participant/views.py:530 participant/views.py:576
 #: participant/templates/participant/base_participant.html:12
 #: participant/templates/participant/overview.html:7
 #: participant/templates/participant/overview.html:18
@@ -1749,93 +1751,95 @@ msgstr "Teilnehmer/innen nach Vornamen sortieren"
 msgid "Disable for sorting by last name"
 msgstr "Deaktivieren für Sortierung nach Nachnamen"
 
-#: participant/models.py:29 participant/templates/participant/overview.html:25
+#: participant/models.py:32 participant/templates/participant/overview.html:25
 msgid "Male"
 msgstr "Männlich"
 
-#: participant/models.py:30 participant/templates/participant/overview.html:26
+#: participant/models.py:33 participant/templates/participant/overview.html:26
 msgid "Female"
 msgstr "Weiblich"
 
-#: participant/models.py:33 participant/templates/participant/overview.html:38
+#: participant/models.py:36 participant/templates/participant/overview.html:38
 msgid "Delegate"
 msgstr "Delegierter"
 
-#: participant/models.py:34 participant/templates/participant/overview.html:39
+#: participant/models.py:37 participant/templates/participant/overview.html:39
 msgid "Observer"
 msgstr "Beobachter"
 
-#: participant/models.py:35 participant/templates/participant/overview.html:40
+#: participant/models.py:38 participant/templates/participant/overview.html:40
 msgid "Staff"
 msgstr "Mitarbeiter"
 
-#: participant/models.py:36 participant/templates/participant/overview.html:41
+#: participant/models.py:39 participant/templates/participant/overview.html:41
 msgid "Guest"
 msgstr "Gast"
 
-#: participant/models.py:41 participant/templates/participant/overview.html:30
+#: participant/models.py:44 participant/templates/participant/overview.html:30
 #: participant/templates/participant/overview.html:68
 msgid "Detail"
 msgstr "Detail"
 
-#: participant/models.py:42
+#: participant/models.py:45
 msgid "Will be shown after the name."
 msgstr "Wird nach dem Namen angezeigt."
 
-#: participant/models.py:45 participant/templates/participant/overview.html:24
+#: participant/models.py:48 participant/templates/participant/overview.html:24
 #: participant/templates/participant/user_detail.html:24
+#: participant/templates/projector/UserSlide.html:20
 msgid "Gender"
 msgstr "Geschlecht"
 
-#: participant/models.py:45 participant/models.py:48 participant/models.py:51
+#: participant/models.py:48 participant/models.py:51 participant/models.py:54
 msgid "Only for filtering the participant list."
 msgstr "Nur zum Filtern der Teilnehmerliste."
 
-#: participant/models.py:48
+#: participant/models.py:51
 msgid "Typ"
 msgstr "Typ"
 
-#: participant/models.py:50 participant/views.py:245
+#: participant/models.py:53 participant/views.py:245
 #: participant/templates/participant/overview.html:45
 #: participant/templates/participant/overview.html:70
 #: participant/templates/participant/user_detail.html:34
+#: participant/templates/projector/UserSlide.html:28
 msgid "Committee"
 msgstr "Amt"
 
-#: participant/models.py:53
+#: participant/models.py:56
 #: participant/templates/participant/user_detail.html:39
 msgid "About me"
 msgstr "Über mich"
 
-#: participant/models.py:54
+#: participant/models.py:57
 msgid "Your profile text"
 msgstr "Ihr Profiltext"
 
-#: participant/models.py:57
+#: participant/models.py:60
 msgid "Only for notes."
 msgstr "Nur für Notizen."
 
-#: participant/models.py:60
+#: participant/models.py:63
 msgid "Default password"
 msgstr "Vorgegebenes Passwort"
 
-#: participant/models.py:108
+#: participant/models.py:111
 msgid "Can see participant"
 msgstr "Darf die Teilnehmer/inen sehen"
 
-#: participant/models.py:110
+#: participant/models.py:113
 msgid "Can manage participant"
 msgstr "Darf die Teilnehmer/inen verwalten"
 
-#: participant/models.py:119
+#: participant/models.py:132
 msgid "Use this group as participant"
 msgstr "Verwende diese Gruppe als Teilnehmer/in"
 
-#: participant/models.py:119
+#: participant/models.py:132
 msgid "For example as submitter of a motion."
 msgstr "Zum Beispiel als Antragsteller."
 
-#: participant/models.py:201
+#: participant/models.py:214
 msgid "Welcome to OpenSlides!"
 msgstr "Willkommen bei OpenSlides!"
 
@@ -1863,6 +1867,7 @@ msgstr "Gruppe"
 #: participant/views.py:244 participant/templates/participant/overview.html:37
 #: participant/templates/participant/overview.html:69
 #: participant/templates/participant/user_detail.html:29
+#: participant/templates/projector/UserSlide.html:24
 msgid "Type"
 msgstr "Typ"
 
@@ -1936,10 +1941,6 @@ msgstr "Passwort wurde erfolgreich geändert."
 #: participant/views.py:562
 msgid "My motions and elections"
 msgstr "Meine Anträge und Wahlen"
-
-#: participant/views.py:576
-msgid "Users"
-msgstr "Benutzer"
 
 #: participant/templates/participant/base_participant.html:15
 msgid "All participants"
@@ -2142,6 +2143,7 @@ msgid "I am candidate for the following elections:"
 msgstr "Ich bin Kandidat/in bei folgenden Wahlen:"
 
 #: participant/templates/participant/user_detail.html:19
+#: participant/templates/projector/UserSlide.html:16
 msgid "The participant is not member of any group."
 msgstr "Teilnehmer/in ist kein Mitglied einer Gruppe."
 

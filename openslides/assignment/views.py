@@ -223,7 +223,7 @@ def delother(request, assignment_id, user_id):
         if not is_blocked:
             message = _("Do you really want to withdraw <b>%s</b> from the election?") % person
         else:
-            message = _("Do you really want to unblock <b>%s</b> from the election?") % person
+            message = _("Do you really want to unblock <b>%s</b> for the election?") % person
         gen_confirm_form(request, message, reverse('assignment_delother', args=[assignment_id, user_id]))
     return redirect(reverse('assignment_view', args=[assignment_id]))
 
@@ -674,7 +674,8 @@ def register_tab(request):
 def get_widgets(request):
     return [
         Widget(
-            name=_('Assignments'),
+            name='assignments',
+            display_name=_('Elections'),
             template='assignment/widget.html',
             context={'assignments': Assignment.objects.all()},
             permission_required='assignment.can_manage_assignment')]
