@@ -397,10 +397,10 @@ def get_widgets(request):
 
     # welcome widget
     context = {
-        'welcometext': config['frontpage_welcometext']}
+        'welcometext': config['welcome_text']}
     widgets.append(Widget(
         name='welcome',
-        display_name=config['frontpage_title'],
+        display_name=config['welcome_title'],
         template='projector/welcome_widget.html',
         context=context,
         permission_required='projector.can_see_dashboard',

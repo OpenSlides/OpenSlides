@@ -15,15 +15,14 @@ from django.conf.urls.defaults import patterns, url, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.shortcuts import redirect
 from django.utils.importlib import import_module
-
-from openslides.utils.views import FrontPage
+from django.views.generic import RedirectView
 
 
 handler500 = 'openslides.utils.views.server_error'
 
 urlpatterns = patterns('',
-    # frontpage
-    (r'^$', FrontPage.as_view()),
+    # Redirect to dashboard URL
+    (r'^$', RedirectView.as_view(url='/projector/dashboard/', permanent=False)),
 
     (r'^agenda/', include('openslides.agenda.urls')),
     (r'^motion/', include('openslides.motion.urls')),

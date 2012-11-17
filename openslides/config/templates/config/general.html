@@ -23,9 +23,9 @@
     </fieldset>
     <p></p>
     <fieldset>
-        <legend>{% trans "Frontpage" %}</legend>
+        <legend>{% trans "Welcome Widget" %}</legend>
         {% for field in form %}
-            {% if "id_frontpage" in field.label_tag %}
+            {% if "id_welcome" in field.label_tag %}
             <p>
             {{ field.errors }}
             {{ field.required }}
