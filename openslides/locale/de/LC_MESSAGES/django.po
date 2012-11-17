@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-08 09:41+0100\n"
+"POT-Creation-Date: 2012-11-17 22:21+0100\n"
 "PO-Revision-Date: 2012-07-28 11:07+0200\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: support@openslides.de\n"
@@ -27,7 +27,7 @@ msgstr "Englisch"
 
 #: global_settings.py:38
 msgid "French"
-msgstr ""
+msgstr "Französisch"
 
 #: agenda/forms.py:28
 msgid "Parent item"
@@ -484,7 +484,7 @@ msgid "Election was successfully modified."
 msgstr "Wahl wurde erfolgreich geändert."
 
 #: assignment/views.py:138 motion/views.py:257 motion/views.py:663
-#: participant/views.py:492 participant/views.py:515 utils/views.py:225
+#: participant/views.py:506 participant/views.py:529 utils/views.py:225
 #: utils/views.py:243 utils/views.py:267
 msgid "Please check the form for errors."
 msgstr "Bitte kontrollieren Sie das Formular nach Fehlern."
@@ -902,23 +902,18 @@ msgstr "Willkommen bei OpenSlides"
 msgid "[Place for your welcome text.]"
 msgstr "[Platz für Ihren Begrüßungstext.]"
 
-#: config/models.py:92
-#, python-format
-msgid "Get professional support for OpenSlides on %s."
-msgstr "Professionelle Unterstützung für OpenSlides gibt es unter %s."
-
-#: config/models.py:107
+#: config/models.py:103
 msgid "General"
 msgstr "Allgemein"
 
-#: config/models.py:131 config/templates/config/version.html:5
+#: config/models.py:127 config/templates/config/version.html:5
 #: config/templates/config/version.html:8
 #: config/templates/config/version.html:11 motion/views.py:789
 #: motion/templates/motion/view.html:214 motion/templates/motion/view.html:244
 msgid "Version"
 msgstr "Version"
 
-#: config/views.py:79
+#: config/views.py:78
 msgid ""
 "Anonymous access enabled. Please modify the \"Anonymous\" group to fit your "
 "required permissions."
@@ -926,11 +921,11 @@ msgstr ""
 "Anonymer Zugriff aktiviert. Bitte setzen Sie die Rechte der Gruppe "
 "\"Anonymous\" passend zum gewünschten Zugriffslevel."
 
-#: config/views.py:85
+#: config/views.py:84
 msgid "General settings successfully saved."
 msgstr "Allgemeine Einstellungen erfolgreich gespeichert."
 
-#: config/views.py:120 config/templates/config/base_config.html:7
+#: config/views.py:119 config/templates/config/base_config.html:7
 msgid "Configuration"
 msgstr "Konfiguration"
 
@@ -944,8 +939,8 @@ msgid "Event"
 msgstr "Veranstaltung"
 
 #: config/templates/config/general.html:26
-msgid "Frontpage"
-msgstr "Startseite"
+msgid "Welcome Widget"
+msgstr "Willkommens-Widget"
 
 #: config/templates/config/general.html:41
 msgid "System"
@@ -1706,7 +1701,7 @@ msgstr "Keine Abstimmungsergebnisse vorhanden."
 msgid "Participant"
 msgstr "Teilnehmer"
 
-#: participant/forms.py:26 participant/views.py:590
+#: participant/forms.py:26 participant/views.py:604
 #: participant/templates/participant/group_overview.html:7
 #: participant/templates/participant/group_overview.html:10
 #: participant/templates/participant/user_detail.html:14
@@ -1718,7 +1713,7 @@ msgstr "Gruppen"
 msgid "Permissions"
 msgstr "Rechte"
 
-#: participant/forms.py:47 participant/views.py:530 participant/views.py:576
+#: participant/forms.py:47 participant/views.py:544 participant/views.py:590
 #: participant/templates/participant/base_participant.html:12
 #: participant/templates/participant/overview.html:7
 #: participant/templates/participant/overview.html:18
@@ -1798,7 +1793,7 @@ msgstr "Nur zum Filtern der Teilnehmerliste."
 msgid "Typ"
 msgstr "Typ"
 
-#: participant/models.py:53 participant/views.py:245
+#: participant/models.py:53 participant/views.py:259
 #: participant/templates/participant/overview.html:45
 #: participant/templates/participant/overview.html:70
 #: participant/templates/participant/user_detail.html:34
@@ -1843,81 +1838,97 @@ msgstr "Zum Beispiel als Antragsteller."
 msgid "Welcome to OpenSlides!"
 msgstr "Willkommen bei OpenSlides!"
 
-#: participant/views.py:240
+#: participant/views.py:210
+msgid "You can not delete yourself."
+msgstr "Sie dürfen sich nicht selbst löschen."
+
+#: participant/views.py:212
+msgid "You can not delete the administrator."
+msgstr "Sie dürfen den Administrator nicht löschen."
+
+#: participant/views.py:232
+msgid "You can not deactivate yourself."
+msgstr "Sie dürfen sich nicht selbst deaktivieren."
+
+#: participant/views.py:235
+msgid "You can not deactivate the administrator."
+msgstr "Sie dürfen den Administrator nicht deaktivieren."
+
+#: participant/views.py:254
 msgid "Participant-list"
 msgstr "Teilnehmerliste"
 
-#: participant/views.py:241
+#: participant/views.py:255
 msgid "List of Participants"
 msgstr "Teilnehmerliste"
 
-#: participant/views.py:244 participant/templates/participant/overview.html:67
+#: participant/views.py:258 participant/templates/participant/overview.html:67
 msgid "Last Name"
 msgstr "Nachname"
 
-#: participant/views.py:244 participant/templates/participant/overview.html:66
+#: participant/views.py:258 participant/templates/participant/overview.html:66
 msgid "First Name"
 msgstr "Vorname"
 
-#: participant/views.py:244
+#: participant/views.py:258
 #: participant/templates/participant/group_overview.html:13
 msgid "Group"
 msgstr "Gruppe"
 
-#: participant/views.py:244 participant/templates/participant/overview.html:37
+#: participant/views.py:258 participant/templates/participant/overview.html:37
 #: participant/templates/participant/overview.html:69
 #: participant/templates/participant/user_detail.html:29
 #: participant/templates/projector/UserSlide.html:24
 msgid "Type"
 msgstr "Typ"
 
-#: participant/views.py:276
+#: participant/views.py:290
 msgid "Participant-passwords"
 msgstr "Teilnehmer-Passwoerter"
 
-#: participant/views.py:298
+#: participant/views.py:312
 msgid "Account for OpenSlides"
 msgstr "Zugang für OpenSlides"
 
-#: participant/views.py:300
+#: participant/views.py:314
 #, python-format
 msgid "for %s"
 msgstr "für %s"
 
-#: participant/views.py:303
+#: participant/views.py:317
 #, python-format
 msgid "User: %s"
 msgstr "Nutzername: %s"
 
-#: participant/views.py:307
+#: participant/views.py:321
 #, python-format
 msgid "Password: %s"
 msgstr "Passwort: %s"
 
-#: participant/views.py:312
+#: participant/views.py:326
 #, python-format
 msgid "URL: %s"
 msgstr "URL: %s"
 
-#: participant/views.py:354
+#: participant/views.py:368
 #, python-format
 msgid "%d new participants were successfully imported."
 msgstr "%d neue Teilnehmer/innen wurden erfolgreich importiert."
 
-#: participant/views.py:365
+#: participant/views.py:379
 msgid "Do you really want to reset the password?"
 msgstr "Soll das Passwort wirklich zurückgesetzt werden?"
 
-#: participant/views.py:378
+#: participant/views.py:392
 #, python-format
 msgid "The Password for %s was successfully reset."
 msgstr "Das Passwort für %s wurde erfolgreich zurückgesetzt."
 
-#: participant/views.py:457
+#: participant/views.py:471
 msgid "Participants settings successfully saved."
 msgstr "Teilnehmer/innen-Einstellungen wurden erfolgreich gespeichert."
 
-#: participant/views.py:467
+#: participant/views.py:481
 #, python-format
 msgid ""
 "Installation was successfully! Use %(user)s (password: %(password)s) for "
@@ -1930,15 +1941,15 @@ msgstr ""
 "Sie das Passwort nach der ersten Anmeldung! Anderenfalls erscheint diese "
 "Meldung weiterhin für alle und ist ein Sicherheitsrisiko."
 
-#: participant/views.py:490
+#: participant/views.py:504
 msgid "User settings successfully saved."
 msgstr "Nutzereinstellungen wurden erfolgreich gespeichert."
 
-#: participant/views.py:512
+#: participant/views.py:526
 msgid "Password successfully changed."
 msgstr "Passwort wurde erfolgreich geändert."
 
-#: participant/views.py:562
+#: participant/views.py:576
 msgid "My motions and elections"
 msgstr "Meine Anträge und Wahlen"
 
@@ -1988,7 +1999,7 @@ msgid "Edit participant"
 msgstr "Teilnehmer/in bearbeiten"
 
 #: participant/templates/participant/base_participant.html:50
-#: participant/templates/participant/overview.html:97
+#: participant/templates/participant/overview.html:98
 msgid "Delete participant"
 msgstr "Teilnehmer/in löschen"
 
@@ -2092,15 +2103,15 @@ msgstr "von"
 msgid "Last Login"
 msgstr "Letzer Login"
 
-#: participant/templates/participant/overview.html:99
+#: participant/templates/participant/overview.html:100
 msgid "Change status to inactive"
 msgstr "Status ändern auf inaktiv"
 
-#: participant/templates/participant/overview.html:102
+#: participant/templates/participant/overview.html:103
 msgid "Change status to active"
 msgstr "Status ändern auf aktiv"
 
-#: participant/templates/participant/overview.html:111
+#: participant/templates/participant/overview.html:113
 #: participant/templates/participant/user_widget.html:22
 msgid "No participants available."
 msgstr "Keine Teilnehmer/innen vorhanden."
@@ -2171,30 +2182,27 @@ msgstr "Darf den Projektor sehen"
 msgid "Can see the dashboard"
 msgstr "Darf das Dashboard sehen"
 
-#: projector/views.py:204
+#: projector/views.py:206
 msgid "Errors in the form"
 msgstr "Fehler im Formular"
 
-#: projector/views.py:383 projector/templates/projector/dashboard.html:17
+#: projector/views.py:384 projector/templates/projector/base_projector.html:7
+#: projector/templates/projector/base_projector.html:12
+#: projector/templates/projector/dashboard.html:17
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: projector/views.py:411
+#: projector/views.py:412
 msgid "Projector live view"
 msgstr "Projektor-Live-Ansicht"
 
-#: projector/views.py:437
+#: projector/views.py:439
 msgid "Overlays"
 msgstr "Einblendungen"
 
-#: projector/views.py:450
+#: projector/views.py:452
 msgid "Custom Slides"
 msgstr "Benutzerdefinierte Folien"
-
-#: projector/templates/projector/base_projector.html:7
-#: projector/templates/projector/base_projector.html:12
-msgid "Projector"
-msgstr "Projektor"
 
 #: projector/templates/projector/base_projector.html:15
 msgid "Overview"
@@ -2207,7 +2215,6 @@ msgid "Select widgets"
 msgstr "Widgets auswählen"
 
 #: projector/templates/projector/base_projector.html:22
-#: templates/front_page.html:25
 msgid "Projector view"
 msgstr "Projektor-Ansicht"
 
@@ -2245,27 +2252,23 @@ msgstr "Willkommensseite"
 msgid "New slide"
 msgstr "Neue Folie"
 
-#: projector/templates/projector/dashboard.html:21
-msgid "Adjust projector view"
-msgstr "Projektor-Ansicht anpassen"
-
-#: projector/templates/projector/dashboard.html:22
+#: projector/templates/projector/live_view_widget.html:10
 msgid "Zoom in"
 msgstr "Vergrößern"
 
-#: projector/templates/projector/dashboard.html:25
+#: projector/templates/projector/live_view_widget.html:13
 msgid "Zoom out"
 msgstr "Verkleinern"
 
-#: projector/templates/projector/dashboard.html:28
+#: projector/templates/projector/live_view_widget.html:18
 msgid "Scroll text up"
 msgstr "Text nach oben scrollen"
 
-#: projector/templates/projector/dashboard.html:31
+#: projector/templates/projector/live_view_widget.html:21
 msgid "Scroll text down"
 msgstr "Text nach unten scrollen"
 
-#: projector/templates/projector/dashboard.html:34
+#: projector/templates/projector/live_view_widget.html:26
 msgid "Reset projector view"
 msgstr "Projektor-Ansicht zurücksetzen"
 
@@ -2286,8 +2289,7 @@ msgstr "Seite nicht gefunden."
 msgid "Server Error"
 msgstr "Serverfehler"
 
-#: templates/base.html:21 templates/front_page.html:6
-#: templates/front_page.html.py:22
+#: templates/base.html:21
 msgid "Home"
 msgstr "Startseite"
 
@@ -2299,20 +2301,12 @@ msgstr "Abmelden"
 msgid "Welcome"
 msgstr "Willkommen"
 
-#: templates/front_page.html:12
-msgid "You have access to the following pages:"
-msgstr "Sie haben Zugriff auf folgende Seiten:"
-
-#: utils/pdf.py:225
-msgid "%Y-%m-%d %H:%Mh"
-msgstr "%d.%m.%Y %H:%Mh"
-
-#: utils/pdf.py:226
+#: utils/pdf.py:227
 #, python-format
-msgid "Printed: %s"
-msgstr "Gedruckt am: %s"
+msgid "As of: %s"
+msgstr "Stand: %s"
 
-#: utils/pdf.py:237 utils/pdf.py:246
+#: utils/pdf.py:238 utils/pdf.py:247
 #, python-format
 msgid "Page %s"
 msgstr "Seite %s"
