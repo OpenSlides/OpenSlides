@@ -45,6 +45,10 @@ LIBEXCLUDE = [
     r"^unittest/",
 ]
 
+OPENSLIDES_EXCLUDE = [
+    r"^openslides/settings.py"
+]
+
 
 SITE_PACKAGES = {
     "django": {
@@ -80,10 +84,7 @@ SITE_PACKAGES = {
     "pil": {
         # NOTE: PIL is a special case, see copy_pil
         "copy": [],
-    },
-    "openslides": {
-        "copy" : ["openslides"],
-    },
+    }
 }
 
 PY_DLLS = [
@@ -300,6 +301,9 @@ def main():
 
     collect_lib(libdir, odir)
     collect_site_packages(sitedir, os.path.join(odir, "site-packages"))
+
+    exclude = get_pkg_exclude("openslides", OPENSLIDES_EXCLUDE)
+    copy_dir_exclude(exclude, ".", "openslides", odir)
 
     if not compile_openslides_launcher():
         sys.stdout.write("Using prebuild openslides.exe\n")
