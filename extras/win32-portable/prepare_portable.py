@@ -18,8 +18,6 @@ import zipfile
 import distutils.ccompiler
 import distutils.sysconfig
 
-from contextlib import nested
-
 import pkg_resources
 
 sys.path.insert(0, os.getcwd())
@@ -43,10 +41,6 @@ LIBEXCLUDE = [
     r"^msilib/",
     r"^multiprocessing/",
     r"^unittest/",
-]
-
-OPENSLIDES_EXCLUDE = [
-    r"^openslides/settings.py"
 ]
 
 
@@ -298,12 +292,13 @@ def main():
             raise
 
     os.makedirs(odir)
+    out_site_packages = os.path.join(odir, "site-packages")
 
     collect_lib(libdir, odir)
-    collect_site_packages(sitedir, os.path.join(odir, "site-packages"))
+    collect_site_packages(sitedir, out_site_packages)
 
-    exclude = get_pkg_exclude("openslides", OPENSLIDES_EXCLUDE)
-    copy_dir_exclude(exclude, ".", "openslides", odir)
+    exclude = get_pkg_exclude("openslides")
+    copy_dir_exclude(exclude, ".", "openslides", out_site_packages)
 
     if not compile_openslides_launcher():
         sys.stdout.write("Using prebuild openslides.exe\n")
