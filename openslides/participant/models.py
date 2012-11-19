@@ -40,8 +40,8 @@ class User(DjangoUser, PersonMixin, Person, SlideMixin):
     )
 
     django_user = models.OneToOneField(DjangoUser, editable=False, parent_link=True)
-    detail = models.CharField(
-        max_length=100, blank=True, default='', verbose_name=_("Detail"),
+    structure_level = models.CharField(
+        max_length=100, blank=True, default='', verbose_name=_("Structure level"),
         help_text=_('Will be shown after the name.'))
     gender = models.CharField(
         max_length=50, choices=GENDER_CHOICES, blank=True,
@@ -67,10 +67,10 @@ class User(DjangoUser, PersonMixin, Person, SlideMixin):
         return self.get_full_name() or self.username
 
     def get_name_suffix(self):
-        return self.detail
+        return self.structure_level
 
     def set_name_suffix(self, value):
-        self.detail = value
+        self.structure_level = value
 
     name_suffix = property(get_name_suffix, set_name_suffix)
 
