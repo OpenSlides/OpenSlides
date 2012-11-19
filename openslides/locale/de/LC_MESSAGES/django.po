@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-17 22:21+0100\n"
+"POT-Creation-Date: 2012-11-19 22:57+0100\n"
 "PO-Revision-Date: 2012-07-28 11:07+0200\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: support@openslides.de\n"
@@ -185,7 +185,7 @@ msgstr "Abbrechen"
 #: agenda/templates/agenda/edit.html:27
 #: assignment/templates/assignment/edit.html:29
 #: assignment/templates/assignment/poll_view.html:69
-#: assignment/templates/assignment/view.html:83
+#: assignment/templates/assignment/view.html:92
 #: motion/templates/motion/edit.html:29
 #: motion/templates/motion/poll_view.html:55
 #: participant/templates/participant/edit.html:34
@@ -227,8 +227,8 @@ msgid "Do you want to save the changed order of agenda items?"
 msgstr "Möchten Sie die geänderte Reihenfolge der Einträge speichern?"
 
 #: agenda/templates/agenda/overview.html:46 assignment/models.py:302
-#: assignment/views.py:577 assignment/templates/assignment/view.html:184
-#: assignment/templates/assignment/view.html:188
+#: assignment/views.py:577 assignment/templates/assignment/view.html:168
+#: assignment/templates/assignment/view.html:172
 #: assignment/templates/projector/Assignment.html:78
 #: assignment/templates/projector/Assignment.html:82 motion/models.py:574
 #: motion/views.py:804 motion/views.py:855
@@ -239,7 +239,7 @@ msgid "Yes"
 msgstr "Ja"
 
 #: agenda/templates/agenda/overview.html:47 assignment/models.py:302
-#: assignment/views.py:578 assignment/templates/assignment/view.html:185
+#: assignment/views.py:578 assignment/templates/assignment/view.html:169
 #: assignment/templates/projector/Assignment.html:79 motion/models.py:574
 #: motion/views.py:804 motion/views.py:856
 #: motion/templates/motion/view.html:80
@@ -299,7 +299,7 @@ msgid "Preview"
 msgstr "Vorschau"
 
 #: agenda/templates/agenda/widget.html:23
-#: assignment/templates/assignment/view.html:148
+#: assignment/templates/assignment/view.html:132
 #: assignment/templates/assignment/widget.html:11
 #: motion/templates/motion/widget.html:11
 #: participant/templates/participant/group_widget.html:11
@@ -309,7 +309,7 @@ msgid "Delete"
 msgstr "Löschen"
 
 #: agenda/templates/agenda/widget.html:26
-#: assignment/templates/assignment/view.html:147
+#: assignment/templates/assignment/view.html:131
 #: assignment/templates/assignment/widget.html:14
 #: motion/templates/motion/widget.html:14
 #: participant/templates/participant/group_widget.html:14
@@ -553,7 +553,8 @@ msgid "not elected"
 msgstr "nicht gewählt"
 
 #: assignment/views.py:298 assignment/views.py:481
-#: assignment/templates/assignment/overview.html:35
+#: assignment/templates/assignment/overview.html:39
+#: assignment/templates/assignment/view.html:48
 msgid "elected"
 msgstr "gewählt"
 
@@ -565,7 +566,7 @@ msgstr "Abstimmung wurde erfolgreich gelöscht."
 msgid "Assignment"
 msgstr "Wahl"
 
-#: assignment/views.py:358 assignment/templates/assignment/overview.html:58
+#: assignment/views.py:358 assignment/templates/assignment/overview.html:59
 #: assignment/templates/assignment/widget.html:23
 msgid "No assignments available."
 msgstr "Keine Wahlen vorhanden."
@@ -578,8 +579,8 @@ msgstr "Wahlen: %s"
 #: assignment/views.py:389 assignment/views.py:422
 #: assignment/templates/assignment/overview.html:26
 #: assignment/templates/assignment/poll_view.html:18
-#: assignment/templates/assignment/view.html:36
-#: assignment/templates/assignment/view.html:136
+#: assignment/templates/assignment/view.html:37
+#: assignment/templates/assignment/view.html:120
 #: assignment/templates/projector/Assignment.html:38
 #: assignment/templates/projector/Assignment.html:56
 msgid "Candidates"
@@ -594,8 +595,7 @@ msgstr "Abstimmungsergebnis"
 #: assignment/templates/assignment/base_assignment.html:71
 #: assignment/templates/assignment/poll_view.html:5
 #: assignment/templates/assignment/poll_view.html:8
-#: assignment/templates/assignment/view.html:130
-#: assignment/templates/assignment/view.html:139
+#: assignment/templates/assignment/view.html:123
 #: assignment/templates/projector/Assignment.html:59
 msgid "ballot"
 msgstr "Wahlgang"
@@ -616,15 +616,15 @@ msgstr ""
 "E: %(ABSTAIN)s"
 
 #: assignment/views.py:454 assignment/templates/assignment/poll_view.html:35
-#: assignment/templates/assignment/view.html:203
+#: assignment/templates/assignment/view.html:187
 #: assignment/templates/projector/Assignment.html:97
 #: motion/templates/motion/poll_view.html:31
 msgid "Invalid votes"
 msgstr "Ungültige Stimmen"
 
 #: assignment/views.py:461 assignment/templates/assignment/poll_view.html:45
-#: assignment/templates/assignment/view.html:220
-#: assignment/templates/assignment/view.html:225
+#: assignment/templates/assignment/view.html:203
+#: assignment/templates/assignment/view.html:208
 #: assignment/templates/projector/Assignment.html:111
 #: assignment/templates/projector/Assignment.html:117 motion/views.py:804
 #: motion/templates/motion/poll_view.html:35
@@ -660,7 +660,7 @@ msgid_plural "%d available posts"
 msgstr[0] "%d verfügbare Posten"
 msgstr[1] "%d verfügbare Posten"
 
-#: assignment/views.py:578 assignment/templates/assignment/view.html:186
+#: assignment/views.py:578 assignment/templates/assignment/view.html:170
 #: assignment/templates/projector/Assignment.html:80 motion/views.py:804
 #: motion/views.py:857 motion/templates/motion/view.html:81
 #: motion/templates/projector/Motion.html:39
@@ -692,17 +692,17 @@ msgstr "Wahl anzeigen"
 #: assignment/templates/assignment/base_assignment.html:39
 #: assignment/templates/assignment/edit.html:8
 #: assignment/templates/assignment/edit.html:17
-#: assignment/templates/assignment/overview.html:49
+#: assignment/templates/assignment/overview.html:50
 msgid "Edit election"
 msgstr "Wahl bearbeiten"
 
 #: assignment/templates/assignment/base_assignment.html:44
-#: assignment/templates/assignment/overview.html:50
+#: assignment/templates/assignment/overview.html:51
 msgid "Delete election"
 msgstr "Wahl löschen"
 
 #: assignment/templates/assignment/base_assignment.html:50
-#: assignment/templates/assignment/overview.html:52
+#: assignment/templates/assignment/overview.html:53
 msgid "Election as PDF"
 msgstr "Wahl als PDF"
 
@@ -746,7 +746,7 @@ msgstr "Posten"
 msgid "candidates"
 msgstr "Kandidaten/innen"
 
-#: assignment/templates/assignment/overview.html:44
+#: assignment/templates/assignment/overview.html:45
 msgid "Activate election"
 msgstr "Wahl projizieren"
 
@@ -779,84 +779,74 @@ msgstr "Stimmzettel als PDF"
 msgid "Change status"
 msgstr "Status ändern"
 
-#: assignment/templates/assignment/view.html:43
-#: assignment/templates/assignment/view.html:99
-#: assignment/templates/assignment/view.html:113
+#: assignment/templates/assignment/view.html:44
+#: assignment/templates/assignment/view.html:106
 msgid "Remove candidate"
 msgstr "Kandidate/in entfernen"
 
-#: assignment/templates/assignment/view.html:48
+#: assignment/templates/assignment/view.html:51
+msgid "Mark candidate as not elected"
+msgstr "Kandidat/in als nicht gewählt markieren"
+
+#: assignment/templates/assignment/view.html:57
 #: assignment/templates/projector/Assignment.html:44
 msgid "No candidates available."
 msgstr "Keine Kandidaten/innen vorhanden."
 
-#: assignment/templates/assignment/view.html:60
+#: assignment/templates/assignment/view.html:69
 msgid "Withdraw self candidature"
 msgstr "Eigene Kandidatur zurückziehen"
 
-#: assignment/templates/assignment/view.html:66
+#: assignment/templates/assignment/view.html:75
 msgid "Self candidature"
 msgstr "Selbst kandidieren"
 
-#: assignment/templates/assignment/view.html:77
+#: assignment/templates/assignment/view.html:86
 msgid "Add new participant"
 msgstr "Neue/n Teilnehmer/in hinzufügen"
 
-#: assignment/templates/assignment/view.html:92
-msgid "Elected Candidates"
-msgstr "Gewählte Kandidaten/innen"
-
-#: assignment/templates/assignment/view.html:104
-msgid "No elected candidates available."
-msgstr "Keine gewählten Kandidaten/innen vorhanden."
-
-#: assignment/templates/assignment/view.html:109
+#: assignment/templates/assignment/view.html:102
 msgid "Blocked Candidates"
 msgstr "Blockierte Kandidaten/innen"
 
-#: assignment/templates/assignment/view.html:116
+#: assignment/templates/assignment/view.html:109
 msgid "No blocked candidates available."
 msgstr "Keine blockierten Kandidaten/innen vorhanden."
 
-#: assignment/templates/assignment/view.html:121
+#: assignment/templates/assignment/view.html:115
 #: assignment/templates/projector/Assignment.html:52
 msgid "Election results"
 msgstr "Wahlergebnisse"
 
-#: assignment/templates/assignment/view.html:144
+#: assignment/templates/assignment/view.html:128
 msgid "Publish/unpublish results"
 msgstr "Ergebnisse veröffentlichen/unveröffentlichen"
 
-#: assignment/templates/assignment/view.html:156
-#: assignment/templates/assignment/view.html:244
+#: assignment/templates/assignment/view.html:140
+#: assignment/templates/assignment/view.html:224
 msgid "New ballot"
 msgstr "Neuer Wahlgang"
 
-#: assignment/templates/assignment/view.html:171
+#: assignment/templates/assignment/view.html:155
 #: assignment/templates/projector/Assignment.html:69
 msgid "Candidate is elected"
 msgstr "Kandidat/in ist gewählt"
 
-#: assignment/templates/assignment/view.html:190
+#: assignment/templates/assignment/view.html:174
 #: assignment/templates/projector/Assignment.html:84
 msgid "was not a <br> candidate"
 msgstr "war kein Kandidat"
 
-#: assignment/templates/assignment/view.html:208
+#: assignment/templates/assignment/view.html:192
 #: assignment/templates/projector/Assignment.html:101 motion/views.py:804
 #: motion/templates/motion/view.html:82
 #: motion/templates/projector/Motion.html:40
 msgid "Invalid"
 msgstr "Ungültig"
 
-#: assignment/templates/assignment/view.html:239
-#: assignment/templates/projector/Assignment.html:128
-msgid "No ballots available."
-msgstr "Keine Wahlgänge vorhanden."
-
-#: assignment/templates/projector/Assignment.html:126
-msgid "Vote results are not published yet."
-msgstr "Wahlergebnisse sind noch nicht veröffentlicht."
+#: assignment/templates/assignment/view.html:220
+msgid "No results available."
+msgstr "Keine Ergebnisse vorhanden."
 
 #: config/forms.py:24
 msgid "Event name"
