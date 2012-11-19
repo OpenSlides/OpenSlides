@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-19 22:57+0100\n"
+"POT-Creation-Date: 2012-11-19 23:01+0100\n"
 "PO-Revision-Date: 2012-07-28 11:07+0200\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: support@openslides.de\n"
@@ -2290,6 +2290,14 @@ msgstr "Abmelden"
 #: templates/base.html:30
 msgid "Welcome"
 msgstr "Willkommen"
+
+#: templates/base.html:79
+msgid ""
+"Get <a href='http://openslides.org/support' target='_blank'>professional "
+"support</a> for OpenSlides."
+msgstr ""
+"Nutzen Sie unseren <a href='http://openslides.org/support' target='_blank'>professionellen "
+"Support</a> für OpenSlides."
 
 #: utils/pdf.py:227
 #, python-format
