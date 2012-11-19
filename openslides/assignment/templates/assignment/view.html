@@ -145,7 +145,7 @@
     </tr>
 
     {% for candidate, poll_list in vote_results.items %}
-    <tr class="{% cycle 'odd' '' %}">
+    <tr class="{% cycle 'odd' '' as rowcolors %}">
         <td class="candidate">
             {% if candidate in assignment.elected %}
                 {% if perms.assignment.can_manage_assignment %}
@@ -182,8 +182,7 @@
         {% endif %}
     </tr>
     {% endfor %}
-
-    <tr>
+    <tr class="{% cycle rowcolors %}">
         <td>{% trans 'Invalid votes' %}</td>
         {% for poll in polls %}
             {% if poll.published or perms.assignment.can_manage_assignment %}

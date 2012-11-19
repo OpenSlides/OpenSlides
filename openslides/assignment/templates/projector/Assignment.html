@@ -62,7 +62,7 @@
         </tr>
 
         {% for candidate, poll_list in vote_results.items %}
-            <tr class="{% cycle 'odd' '' %}">
+            <tr class="{% cycle 'odd' '' as rowcolors %}">
                 <td class="candidate{% if candidate in assignment.elected %} elected{% endif %}">
                     {% if candidate in assignment.elected %}
                         <a class="elected">
@@ -92,8 +92,7 @@
             {% endfor %}
             </tr>
         {% endfor %}
-
-        <tr>
+        <tr class="{% cycle rowcolors %}">
             <td>{% trans 'Invalid votes' %}</td>
             {% for poll in polls %}
                 <td style="white-space:nowrap;">
@@ -105,7 +104,6 @@
 
             {% endfor %}
         </tr>
-
         <tr class="total">
             <td>
                 <strong>{% trans 'Votes cast' %}</strong>
