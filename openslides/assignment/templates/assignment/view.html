@@ -33,14 +33,23 @@
     <h1>{{ assignment }}</h1>
     <p>{{ assignment.description|linebreaks }}</p>
 
+{% if assignment.status != "fin" %}
     <h3>{% trans "Candidates" %}</h3>
     <ol>
-    {% for person in assignment.candidates %}
+    {% for person in assignment.get_participants %}
         <li>
             {{ person }}
             {% if perms.assignment.can_manage_assignment %}
                 {% if assignment.status == "sea" or assignment.status == "vot" %}
                     <a href="{% url assignment_delother assignment.id person.person_id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Remove candidate' %}"></a>
+                {% endif %}
+            {% endif %}
+            {% if person in assignment.elected %}
+                | <b>{% trans "elected" %}</b>
+                {% if perms.assignment.can_manage_assignment %}
+                    {% if assignment.status == "sea" or assignment.status == "vot" %}
+                        <a href="{% url assignment_user_not_elected assignment.id person.person_id %}"><img src="{% static 'images/icons/dialog-cancel.png' %}" title="{% trans 'Mark candidate as not elected' %}"></a>
+                    {% endif %}
                 {% endif %}
             {% endif %}
         </li>
@@ -85,29 +94,11 @@
             </p>
         {% endif %}
     </form>
-
     {% endif %}
     {% endif %}
-
-{% if assignment.elected %}
-    <h3>{% trans "Elected Candidates" %}</h3>
-    <ul>
-    {% for person in assignment.elected %}
-        <li>
-            {{ person }}
-            {% if perms.assignment.can_manage_assignment %}
-                {% if assignment.status == "sea" or assignment.status == "vot" %}
-                    <a href="{% url assignment_user_not_elected assignment.id person.person_id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Remove candidate' %}"></a>
-                {% endif %}
-            {% endif %}
-        </li>
-    {% empty %}
-        <li>{% trans "No elected candidates available." %}</li>
-    {% endfor %}
-    </ul>
 {% endif %}
 
-{% if perms.assignment.can_manage_assignments and blocked_candidates %}
+{% if perms.assignment.can_manage_assignments and blocked_candidates and assignment.status != "fin" %}
     <h3>{% trans "Blocked Candidates" %}</h3>
     <ul>
     {% for person in blocked_candidates %}
@@ -123,18 +114,8 @@
 {% if assignment.status != "sea" %}
     <h3>{% trans "Election results" %}</h3>
 
-{% if polls.exists %}
+    {% if polls.exists %}
     <table id="election_table" style="width: auto;">
-
-    <tr>
-        <th></th>
-        {% with ballotnumber=polls.count %}
-        <th colspan="{{ ballotnumber|add:'1' }}" style="text-align: center;">
-            {% trans "ballot" %}
-        </th>
-        {% endwith %}
-    </tr>
-
     <tr>
         <th>{% trans "Candidates" %}</th>
         {% for poll in polls %}
@@ -235,7 +216,7 @@
         {% endif %}
     </tr>
     </table>
-{% else %}
+    {% else %}
     <i>{% trans "No results available." %}</i>
     {% if assignment.candidates and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
         <p><a href='{% url assignment_gen_poll assignment.id %}'>
@@ -244,7 +225,7 @@
         </span>
         </a></p>
     {% endif %}
-{% endif %}
+    {% endif %}
 {% endif %}
 </div>
 {% endblock %}
