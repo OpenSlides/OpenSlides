@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-19 23:20+0100\n"
+"POT-Creation-Date: 2012-11-20 12:34+0100\n"
 "PO-Revision-Date: 2012-07-28 11:07+0200\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: support@openslides.de\n"
@@ -553,7 +553,6 @@ msgid "not elected"
 msgstr "nicht gewählt"
 
 #: assignment/views.py:298 assignment/views.py:481
-#: assignment/templates/assignment/overview.html:39
 #: assignment/templates/assignment/view.html:48
 msgid "elected"
 msgstr "gewählt"
@@ -616,17 +615,17 @@ msgstr ""
 "E: %(ABSTAIN)s"
 
 #: assignment/views.py:454 assignment/templates/assignment/poll_view.html:35
-#: assignment/templates/assignment/view.html:187
-#: assignment/templates/projector/Assignment.html:97
+#: assignment/templates/assignment/view.html:186
+#: assignment/templates/projector/Assignment.html:96
 #: motion/templates/motion/poll_view.html:31
 msgid "Invalid votes"
 msgstr "Ungültige Stimmen"
 
 #: assignment/views.py:461 assignment/templates/assignment/poll_view.html:45
-#: assignment/templates/assignment/view.html:203
-#: assignment/templates/assignment/view.html:208
-#: assignment/templates/projector/Assignment.html:111
-#: assignment/templates/projector/Assignment.html:117 motion/views.py:804
+#: assignment/templates/assignment/view.html:202
+#: assignment/templates/assignment/view.html:207
+#: assignment/templates/projector/Assignment.html:109
+#: assignment/templates/projector/Assignment.html:115 motion/views.py:804
 #: motion/templates/motion/poll_view.html:35
 #: motion/templates/motion/view.html:84
 #: motion/templates/projector/Motion.html:42 poll/models.py:76
@@ -739,12 +738,19 @@ msgstr[0] "Wahl"
 msgstr[1] "Wahlen"
 
 #: assignment/templates/assignment/overview.html:35
-msgid "posts"
-msgstr "Posten"
+#, python-format
+msgid "posts: %(posts)s"
+msgstr "Posten: %(posts)s"
 
 #: assignment/templates/assignment/overview.html:37
-msgid "candidates"
-msgstr "Kandidaten/innen"
+#, python-format
+msgid "candidates: %(candidates)s"
+msgstr "Kandidaten/innen: %(candidates)s"
+
+#: assignment/templates/assignment/overview.html:39
+#, python-format
+msgid "elected: %(elected)s"
+msgstr "Gewählt: %(elected)s"
 
 #: assignment/templates/assignment/overview.html:45
 msgid "Activate election"
@@ -823,7 +829,7 @@ msgid "Publish/unpublish results"
 msgstr "Ergebnisse veröffentlichen/unveröffentlichen"
 
 #: assignment/templates/assignment/view.html:140
-#: assignment/templates/assignment/view.html:224
+#: assignment/templates/assignment/view.html:223
 msgid "New ballot"
 msgstr "Neuer Wahlgang"
 
@@ -837,14 +843,14 @@ msgstr "Kandidat/in ist gewählt"
 msgid "was not a <br> candidate"
 msgstr "war kein Kandidat"
 
-#: assignment/templates/assignment/view.html:192
-#: assignment/templates/projector/Assignment.html:101 motion/views.py:804
+#: assignment/templates/assignment/view.html:191
+#: assignment/templates/projector/Assignment.html:100 motion/views.py:804
 #: motion/templates/motion/view.html:82
 #: motion/templates/projector/Motion.html:40
 msgid "Invalid"
 msgstr "Ungültig"
 
-#: assignment/templates/assignment/view.html:220
+#: assignment/templates/assignment/view.html:219
 msgid "No results available."
 msgstr "Keine Ergebnisse vorhanden."
 
@@ -2348,3 +2354,9 @@ msgstr "undefinierter-dateiname"
 #: utils/jsonfield/fields.py:21
 msgid "Enter valid JSON"
 msgstr "Gebe valides JSON ein"
+
+#~ msgid "posts"
+#~ msgstr "Posten"
+
+#~ msgid "candidates"
+#~ msgstr "Kandidaten/innen"
