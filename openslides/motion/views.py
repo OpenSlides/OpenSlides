@@ -615,7 +615,7 @@ def motion_import(request):
                             user.last_name = last_name
                             user.first_name = first_name
                             user.username = gen_username(first_name, last_name)
-                            user.detail = ''
+                            user.structure_level = ''
                             user.committee = ''
                             user.gender = ''
                             user.type = ''
