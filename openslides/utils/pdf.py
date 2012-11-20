@@ -20,6 +20,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.rl_config import defaultPageSize
 
 from django.conf import settings
+from django.utils import formats
 # Import gettext for python 2.5 support
 from django.utils.translation import ugettext as _, gettext
 
@@ -222,8 +223,8 @@ def firstPage(canvas, doc):
 
     # time
     canvas.setFont('Ubuntu', 7)
-    time = datetime.now().strftime(gettext("%Y-%m-%d %H:%Mh"))
-    canvas.drawString(15 * cm, 28 * cm, _("Printed: %s") % time)
+    time = formats.date_format(datetime.now(), 'DATETIME_FORMAT')
+    canvas.drawString(15 * cm, 28 * cm, _("As of: %s") % time)
 
     # title
     if doc.title:

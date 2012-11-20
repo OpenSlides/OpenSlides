@@ -13,17 +13,17 @@
 from django.conf import settings
 from django.conf.urls.defaults import patterns, url, include
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.core.urlresolvers import reverse_lazy
 from django.shortcuts import redirect
 from django.utils.importlib import import_module
 
-from openslides.utils.views import FrontPage
-
+from openslides.utils.views import RedirectView
 
 handler500 = 'openslides.utils.views.server_error'
 
 urlpatterns = patterns('',
-    # frontpage
-    (r'^$', FrontPage.as_view()),
+    # Redirect to dashboard URL
+    url(r'^$', RedirectView.as_view(url=reverse_lazy('dashboard')), name='home',),
 
     (r'^agenda/', include('openslides.agenda.urls')),
     (r'^motion/', include('openslides.motion.urls')),

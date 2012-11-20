@@ -56,13 +56,13 @@ class GeneralConfigForm(forms.Form, CssClassMixin):
         required=False,
     )
 
-    frontpage_title = forms.CharField(
+    welcome_title = forms.CharField(
         widget=forms.TextInput(),
         label=_("Title"),
         required=False,
     )
 
-    frontpage_welcometext = forms.CharField(
+    welcome_text = forms.CharField(
         widget=forms.Textarea(),
         label=_("Welcome text"),
         required=False,

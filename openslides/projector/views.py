@@ -22,6 +22,7 @@ from django.db import transaction
 from django.db.models import Q
 from django.dispatch import receiver
 from django.shortcuts import redirect
+from django.template import RequestContext
 from django.utils.datastructures import SortedDict
 from django.utils.importlib import import_module
 from django.utils.translation import ugettext_lazy as _
@@ -396,10 +397,10 @@ def get_widgets(request):
 
     # welcome widget
     context = {
-        'welcometext': config['frontpage_welcometext']}
+        'welcometext': config['welcome_text']}
     widgets.append(Widget(
         name='welcome',
-        display_name=config['frontpage_title'],
+        display_name=config['welcome_title'],
         template='projector/welcome_widget.html',
         context=context,
         permission_required='projector.can_see_dashboard',
@@ -410,6 +411,7 @@ def get_widgets(request):
         name='live_view',
         display_name=_('Projector live view'),
         template='projector/live_view_widget.html',
+        context = RequestContext(request, {}),
         permission_required='projector.can_see_projector',
         default_column=2))
 
