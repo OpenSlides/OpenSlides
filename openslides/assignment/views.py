@@ -101,7 +101,7 @@ def view(request, assignment_id=None):
         vote_results = assignment.vote_results(only_published=False)
 
     blocked_candidates = [candidate.person for candidate in \
-        assignment.assignment_candidats.filter(blocked=True)]
+        assignment.assignment_candidates.filter(blocked=True)]
     return {
         'assignment': assignment,
         'blocked_candidates': blocked_candidates,
@@ -170,6 +170,8 @@ def set_status(request, assignment_id=None, status=None):
             messages.success(request, _('Election status was set to: <b>%s</b>.') % assignment.get_status_display())
     except Assignment.DoesNotExist:
         pass
+    except NameError, e:
+        messages.error(request, e)
     return redirect(reverse('assignment_view', args=[assignment_id]))
 
 

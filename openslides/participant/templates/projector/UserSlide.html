@@ -6,38 +6,16 @@
 {% block title %}{{ block.super }} - {{ title }}{% endblock %}
 
 {% block content %}
-
-    <div id='sidebar'>
-    <div class='box'>
-        <p><strong>{% trans "Groups" %}</strong><br />
+    <div class="item_fullscreen">{{ shown_user }}
+        <span>
+        {% if shown_user.committee %}
+            <p>{{ shown_user.committee }}</p>
+        {% endif %}
+        <p>
             {% if shown_user.groups.all %}
                 {{ shown_user.groups.all|join:", " }}
-            {% else %}
-                {% trans "The participant is not member of any group." %}
             {% endif %}
         </p>
-        {% if shown_user.get_gender_display %}
-            <p><strong>{% trans "Gender" %}</strong><br />{{ shown_user.get_gender_display }}</p>
-        {% endif %}
-
-        {% if shown_user.get_type_display %}
-            <p><strong>{% trans "Type" %}</strong><br />{{ shown_user.get_type_display }}</p>
-        {% endif %}
-
-        {% if shown_user.committee %}
-            <p><strong>{% trans "Committee" %}</strong><br />{{ shown_user.committee }}</p>
-        {% endif %}
+        </span>
     </div>
-    </div>
-
-    <h1>{{ shown_user }}</h1>
-    <p>{{ shown_user.email }}</p>
-
-{% endblock %}
-
-{% block scrollcontent %}
-    <p>
-        <div class="text">{{ shown_user.about_me|linebreaks }}</div>
-    </p>
-
 {% endblock %}

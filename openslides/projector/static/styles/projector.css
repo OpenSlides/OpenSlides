@@ -155,6 +155,10 @@ body{
     font-weight:bold;
     text-align: center;
 }
+.item_fullscreen span
+{
+    font-size: 50%; font-weight:normal;
+}
 
 /* items in a list*/
 .itemlist li
