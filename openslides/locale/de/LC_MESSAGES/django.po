@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-20 12:34+0100\n"
+"POT-Creation-Date: 2012-11-21 21:43+0100\n"
 "PO-Revision-Date: 2012-07-28 11:07+0200\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: support@openslides.de\n"
@@ -226,8 +226,8 @@ msgstr "Zusammenfassung für diesen Eintrag projizieren"
 msgid "Do you want to save the changed order of agenda items?"
 msgstr "Möchten Sie die geänderte Reihenfolge der Einträge speichern?"
 
-#: agenda/templates/agenda/overview.html:46 assignment/models.py:302
-#: assignment/views.py:577 assignment/templates/assignment/view.html:168
+#: agenda/templates/agenda/overview.html:46 assignment/models.py:301
+#: assignment/views.py:579 assignment/templates/assignment/view.html:168
 #: assignment/templates/assignment/view.html:172
 #: assignment/templates/projector/Assignment.html:78
 #: assignment/templates/projector/Assignment.html:82 motion/models.py:574
@@ -238,8 +238,8 @@ msgstr "Möchten Sie die geänderte Reihenfolge der Einträge speichern?"
 msgid "Yes"
 msgstr "Ja"
 
-#: agenda/templates/agenda/overview.html:47 assignment/models.py:302
-#: assignment/views.py:578 assignment/templates/assignment/view.html:169
+#: agenda/templates/agenda/overview.html:47 assignment/models.py:301
+#: assignment/views.py:580 assignment/templates/assignment/view.html:169
 #: assignment/templates/projector/Assignment.html:79 motion/models.py:574
 #: motion/views.py:804 motion/views.py:856
 #: motion/templates/motion/view.html:80
@@ -318,7 +318,7 @@ msgstr "Löschen"
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: assignment/forms.py:24 assignment/models.py:57 assignment/views.py:383
+#: assignment/forms.py:24 assignment/models.py:57 assignment/views.py:385
 #: assignment/templates/assignment/view.html:13
 #: assignment/templates/projector/Assignment.html:21
 msgid "Number of available posts"
@@ -396,7 +396,7 @@ msgstr "Abgeschlossen"
 msgid "Name"
 msgstr "Name"
 
-#: assignment/models.py:55 participant/models.py:133
+#: assignment/models.py:55 participant/models.py:134
 msgid "Description"
 msgstr "Beschreibung"
 
@@ -419,7 +419,7 @@ msgstr "Der Wahlstatus ist bereits %s."
 msgid "<b>%s</b> is already a candidate."
 msgstr "<b>%s</b> ist bereits ein/e Kandidat/in."
 
-#: assignment/models.py:87 assignment/views.py:200
+#: assignment/models.py:87 assignment/views.py:202
 msgid "The candidate list is already closed."
 msgstr "Die Kandidatenliste ist bereits geschlossen."
 
@@ -428,42 +428,42 @@ msgstr "Die Kandidatenliste ist bereits geschlossen."
 msgid "%s does not want to be a candidate."
 msgstr "%s möchte nicht kandidieren."
 
-#: assignment/models.py:109
+#: assignment/models.py:108
 #, python-format
 msgid "%s is no candidate"
 msgstr "%s ist kein/e Kandidat/in"
 
-#: assignment/models.py:255
+#: assignment/models.py:254
 msgid "Can see assignment"
 msgstr "Darf Wahlen sehen"
 
-#: assignment/models.py:257
+#: assignment/models.py:256
 msgid "Can nominate another person"
 msgstr "Darf andere Personen für Wahlen vorschlagen"
 
-#: assignment/models.py:258
+#: assignment/models.py:257
 msgid "Can nominate themselves"
 msgstr "Darf selbst für Wahlen kandidieren"
 
-#: assignment/models.py:259
+#: assignment/models.py:258
 msgid "Can manage assignment"
 msgstr "Darf Wahlen verwalten"
 
-#: assignment/models.py:303 motion/models.py:575
+#: assignment/models.py:302 motion/models.py:575
 msgid "Abstain"
 msgstr "Enthaltung"
 
-#: assignment/models.py:305 motion/templates/motion/poll_view.html:22
+#: assignment/models.py:304 motion/templates/motion/poll_view.html:22
 msgid "Votes"
 msgstr "Stimmen"
 
-#: assignment/models.py:322
+#: assignment/models.py:321
 #, python-format
 msgid "Ballot %d"
 msgstr "Wahlgang %d"
 
-#: assignment/models.py:331 assignment/views.py:340 assignment/views.py:664
-#: assignment/views.py:678
+#: assignment/models.py:330 assignment/views.py:342 assignment/views.py:666
+#: assignment/views.py:680
 #: assignment/templates/assignment/base_assignment.html:14
 #: assignment/templates/assignment/overview.html:6
 #: assignment/templates/assignment/overview.html:9
@@ -499,11 +499,11 @@ msgstr "Wahl <b>%s</b> wurde erfolgreich gelöscht."
 msgid "Election status was set to: <b>%s</b>."
 msgstr "Wahlstatus wurde gesetzt auf: <b>%s</b>."
 
-#: assignment/views.py:181
+#: assignment/views.py:183
 msgid "You have set your candidature successfully."
 msgstr "Sie haben Ihre Kandidatur erfolgreich gesetzt."
 
-#: assignment/views.py:197
+#: assignment/views.py:199
 msgid ""
 "You have withdrawn your candidature successfully. You can not be nominated "
 "by other participants anymore."
@@ -511,71 +511,71 @@ msgstr ""
 "Sie haben Ihre Kandidatur erfolgreich zurückgezogen. Sie können nun von "
 "anderen Teilnehmer/innen nicht mehr vorgeschlagen werden."
 
-#: assignment/views.py:218
+#: assignment/views.py:220
 #, python-format
 msgid "Candidate <b>%s</b> was withdrawn successfully."
 msgstr "Die Kandidatur von <b>%s</b> wurde erfolgreich zurückgezogen."
 
-#: assignment/views.py:220
+#: assignment/views.py:222
 #, python-format
 msgid "<b>%s</b> was unblocked successfully."
 msgstr "<b>%s</b> wurde erfolgreich freigegeben."
 
-#: assignment/views.py:224
+#: assignment/views.py:226
 #, python-format
 msgid "Do you really want to withdraw <b>%s</b> from the election?"
 msgstr "Soll <b>%s</b> wirklich von der Wahl zurückgezogen werden?"
 
-#: assignment/views.py:226
+#: assignment/views.py:228
 #, python-format
 msgid "Do you really want to unblock <b>%s</b> for the election?"
 msgstr "Soll <b>%s</b> wirklich für die Wahl freigegeben werden?"
 
-#: assignment/views.py:241
+#: assignment/views.py:243
 msgid "New ballot was successfully created."
 msgstr "Neuer Wahlgang erfolgreich angelegt."
 
-#: assignment/views.py:273
+#: assignment/views.py:275
 #, python-format
 msgid "Ballot ID %d does not exist."
 msgstr "Wahlgang-ID %d existiert nicht."
 
-#: assignment/views.py:280
+#: assignment/views.py:282
 msgid "Ballot successfully published."
 msgstr "Wahlgang wurde erfolgreich veröffentlicht."
 
-#: assignment/views.py:282
+#: assignment/views.py:284
 msgid "Ballot successfully unpublished."
 msgstr "Wahlgang wurde erfolgreich unveröffentlicht."
 
-#: assignment/views.py:295
+#: assignment/views.py:297
 msgid "not elected"
 msgstr "nicht gewählt"
 
-#: assignment/views.py:298 assignment/views.py:481
+#: assignment/views.py:300 assignment/views.py:483
 #: assignment/templates/assignment/view.html:48
 msgid "elected"
 msgstr "gewählt"
 
-#: assignment/views.py:326
+#: assignment/views.py:328
 msgid "Ballot was successfully deleted."
 msgstr "Abstimmung wurde erfolgreich gelöscht."
 
-#: assignment/views.py:337
+#: assignment/views.py:339
 msgid "Assignment"
 msgstr "Wahl"
 
-#: assignment/views.py:358 assignment/templates/assignment/overview.html:59
+#: assignment/views.py:360 assignment/templates/assignment/overview.html:59
 #: assignment/templates/assignment/widget.html:23
 msgid "No assignments available."
 msgstr "Keine Wahlen vorhanden."
 
-#: assignment/views.py:377
+#: assignment/views.py:379
 #, python-format
 msgid "Election: %s"
 msgstr "Wahlen: %s"
 
-#: assignment/views.py:389 assignment/views.py:422
+#: assignment/views.py:391 assignment/views.py:424
 #: assignment/templates/assignment/overview.html:26
 #: assignment/templates/assignment/poll_view.html:18
 #: assignment/templates/assignment/view.html:37
@@ -585,12 +585,12 @@ msgstr "Wahlen: %s"
 msgid "Candidates"
 msgstr "Kandidaten/innen"
 
-#: assignment/views.py:410 motion/views.py:797
+#: assignment/views.py:412 motion/views.py:797
 #: motion/templates/motion/view.html:44
 msgid "Vote results"
 msgstr "Abstimmungsergebnis"
 
-#: assignment/views.py:414
+#: assignment/views.py:416
 #: assignment/templates/assignment/base_assignment.html:71
 #: assignment/templates/assignment/poll_view.html:5
 #: assignment/templates/assignment/poll_view.html:8
@@ -599,11 +599,11 @@ msgstr "Abstimmungsergebnis"
 msgid "ballot"
 msgstr "Wahlgang"
 
-#: assignment/views.py:417
+#: assignment/views.py:419
 msgid "ballots"
 msgstr "Wahlgänge"
 
-#: assignment/views.py:443
+#: assignment/views.py:445
 #, python-format
 msgid ""
 "Y: %(YES)s\n"
@@ -614,14 +614,14 @@ msgstr ""
 "N: %(NO)s\n"
 "E: %(ABSTAIN)s"
 
-#: assignment/views.py:454 assignment/templates/assignment/poll_view.html:35
+#: assignment/views.py:456 assignment/templates/assignment/poll_view.html:35
 #: assignment/templates/assignment/view.html:186
 #: assignment/templates/projector/Assignment.html:96
 #: motion/templates/motion/poll_view.html:31
 msgid "Invalid votes"
 msgstr "Ungültige Stimmen"
 
-#: assignment/views.py:461 assignment/templates/assignment/poll_view.html:45
+#: assignment/views.py:463 assignment/templates/assignment/poll_view.html:45
 #: assignment/templates/assignment/view.html:202
 #: assignment/templates/assignment/view.html:207
 #: assignment/templates/projector/Assignment.html:109
@@ -632,7 +632,7 @@ msgstr "Ungültige Stimmen"
 msgid "Votes cast"
 msgstr "Abgegebene Stimmen"
 
-#: assignment/views.py:520 assignment/views.py:536
+#: assignment/views.py:522 assignment/views.py:538
 #: assignment/templates/assignment/overview.html:25
 #: assignment/templates/assignment/poll_view.html:5
 #: assignment/templates/assignment/view.html:6
@@ -640,33 +640,33 @@ msgstr "Abgegebene Stimmen"
 msgid "Election"
 msgstr "Wahl"
 
-#: assignment/views.py:542
+#: assignment/views.py:544
 #, python-format
 msgid "%d. ballot"
 msgstr "%d. Wahlgang"
 
-#: assignment/views.py:543
+#: assignment/views.py:545
 #, python-format
 msgid "%d candidate"
 msgid_plural "%d candidates"
 msgstr[0] "%d Kandidat/in"
 msgstr[1] "%d Kandidaten/innen"
 
-#: assignment/views.py:545
+#: assignment/views.py:547
 #, python-format
 msgid "%d available post"
 msgid_plural "%d available posts"
 msgstr[0] "%d verfügbare Posten"
 msgstr[1] "%d verfügbare Posten"
 
-#: assignment/views.py:578 assignment/templates/assignment/view.html:170
+#: assignment/views.py:580 assignment/templates/assignment/view.html:170
 #: assignment/templates/projector/Assignment.html:80 motion/views.py:804
 #: motion/views.py:857 motion/templates/motion/view.html:81
 #: motion/templates/projector/Motion.html:39
 msgid "Abstention"
 msgstr "Enthaltung"
 
-#: assignment/views.py:657
+#: assignment/views.py:659
 msgid "Election settings successfully saved."
 msgstr "Wahl-Einstellungen wurden erfolgreich gespeichert."
 
@@ -1701,7 +1701,6 @@ msgstr "Teilnehmer"
 #: participant/templates/participant/group_overview.html:7
 #: participant/templates/participant/group_overview.html:10
 #: participant/templates/participant/user_detail.html:14
-#: participant/templates/projector/UserSlide.html:12
 msgid "Groups"
 msgstr "Gruppen"
 
@@ -1777,7 +1776,6 @@ msgstr "Wird nach dem Namen angezeigt."
 
 #: participant/models.py:48 participant/templates/participant/overview.html:24
 #: participant/templates/participant/user_detail.html:24
-#: participant/templates/projector/UserSlide.html:20
 msgid "Gender"
 msgstr "Geschlecht"
 
@@ -1793,7 +1791,6 @@ msgstr "Typ"
 #: participant/templates/participant/overview.html:45
 #: participant/templates/participant/overview.html:70
 #: participant/templates/participant/user_detail.html:34
-#: participant/templates/projector/UserSlide.html:28
 msgid "Committee"
 msgstr "Amt"
 
@@ -1822,15 +1819,15 @@ msgstr "Darf die Teilnehmer/inen sehen"
 msgid "Can manage participant"
 msgstr "Darf die Teilnehmer/inen verwalten"
 
-#: participant/models.py:132
+#: participant/models.py:133
 msgid "Use this group as participant"
 msgstr "Verwende diese Gruppe als Teilnehmer/in"
 
-#: participant/models.py:132
+#: participant/models.py:133
 msgid "For example as submitter of a motion."
 msgstr "Zum Beispiel als Antragsteller."
 
-#: participant/models.py:214
+#: participant/models.py:225
 msgid "Welcome to OpenSlides!"
 msgstr "Willkommen bei OpenSlides!"
 
@@ -1874,7 +1871,6 @@ msgstr "Gruppe"
 #: participant/views.py:258 participant/templates/participant/overview.html:37
 #: participant/templates/participant/overview.html:69
 #: participant/templates/participant/user_detail.html:29
-#: participant/templates/projector/UserSlide.html:24
 msgid "Type"
 msgstr "Typ"
 
@@ -2150,13 +2146,16 @@ msgid "I am candidate for the following elections:"
 msgstr "Ich bin Kandidat/in bei folgenden Wahlen:"
 
 #: participant/templates/participant/user_detail.html:19
-#: participant/templates/projector/UserSlide.html:16
 msgid "The participant is not member of any group."
 msgstr "Teilnehmer/in ist kein Mitglied einer Gruppe."
 
 #: participant/templates/participant/user_detail.html:53
 msgid "The participant has not logged in yet."
 msgstr "Teilnehmer/in hat sich noch nicht angemeldet."
+
+#: participant/templates/projector/GroupSlide.html:11
+msgid "participants"
+msgstr "Teilnehmer/innen"
 
 #: poll/models.py:95
 msgid "Votes invalid"
