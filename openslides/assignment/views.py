@@ -678,4 +678,4 @@ def get_widgets(request):
             display_name=_('Elections'),
             template='assignment/widget.html',
             context={'assignments': Assignment.objects.all()},
-            permission_required='assignment.can_manage_assignment')]
+            permission_required='projector.can_manage_projector')]
