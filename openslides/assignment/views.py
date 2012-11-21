@@ -101,7 +101,7 @@ def view(request, assignment_id=None):
         vote_results = assignment.vote_results(only_published=False)
 
     blocked_candidates = [candidate.person for candidate in \
-        assignment.assignment_candidats.filter(blocked=True)]
+        assignment.assignment_candidates.filter(blocked=True)]
     return {
         'assignment': assignment,
         'blocked_candidates': blocked_candidates,
