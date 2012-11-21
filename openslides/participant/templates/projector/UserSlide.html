@@ -10,11 +10,11 @@
     <div id='sidebar'>
     <div class='box'>
         <p><strong>{% trans "Groups" %}</strong><br />
-            {% for group in shown_user.groups.all %}
-                {{ group }},
-            {% empty %}
+            {% if shown_user.groups.all %}
+                {{ shown_user.groups.all|join:", " }}
+            {% else %}
                 {% trans "The participant is not member of any group." %}
-            {% endfor %}
+            {% endif %}
         </p>
         {% if shown_user.get_gender_display %}
             <p><strong>{% trans "Gender" %}</strong><br />{{ shown_user.get_gender_display }}</p>
