@@ -170,6 +170,8 @@ def set_status(request, assignment_id=None, status=None):
             messages.success(request, _('Election status was set to: <b>%s</b>.') % assignment.get_status_display())
     except Assignment.DoesNotExist:
         pass
+    except NameError, e:
+        messages.error(request, e)
     return redirect(reverse('assignment_view', args=[assignment_id]))
 
 
