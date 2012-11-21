@@ -98,13 +98,12 @@ II. Installation on GNU/Linux and MacOSX
 
      OR
 
-     b) Clone development version from mercurial repository
-        http://hg.openslides.org. This requires Mercurial source control
-        management (hg):
+     b) Clone development version from OpenSlides' github repository
+        https://github.com/OpenSlides/OpenSlides.
+        This requires Git, see http://git-scm.com/.
+        Open command line (cmd) and run:
 
-        E.g. for Ubuntu run:
-        $ sudo apt-get install mercurial
-        $ hg clone http://hg.openslides.org OpenSlides
+        git clone git://github.com/OpenSlides/OpenSlides.git
 
   3. Setup your virtual environment with virtualenv:
 

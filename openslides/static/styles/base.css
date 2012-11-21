@@ -316,7 +316,7 @@ input[type="submit"], input[type="button"]  {
     padding:4px 10px !important;
     margin: 2px 0 2px 0;
 }
-#id_permissions {
+#id_permissions, #id_users {
     height: 310px;
 }
 .button {
