@@ -125,7 +125,8 @@ class User(DjangoUser, PersonMixin, Person, SlideMixin):
 
 register_slidemodel(User)
 
-class Group(DjangoGroup, PersonMixin, Person):
+class Group(DjangoGroup, PersonMixin, Person, SlideMixin):
+    prefix = 'group' # This is for the slides
     person_prefix = 'group'
 
     django_group = models.OneToOneField(DjangoGroup, editable=False, parent_link=True)
@@ -155,6 +156,16 @@ class Group(DjangoGroup, PersonMixin, Person):
     class Meta:
         ordering = ('name',)
 
+    def slide(self):
+        """
+        Returns a map with the data for the slides.
+        """
+        return {
+            'group': self,
+            'title': self.name,
+            'template': 'projector/GroupSlide.html'}
+
+register_slidemodel(Group)
 
 class UsersAndGroupsToPersons(object):
     """
