@@ -111,7 +111,7 @@
     </ul>
 {% endif %}
 
-{% if assignment.status != "sea" %}
+{% if assignment.status != "sea" or polls.exists %}
     <h3>{% trans "Election results" %}</h3>
 
     {% if polls.exists %}
