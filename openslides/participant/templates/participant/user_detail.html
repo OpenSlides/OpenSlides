@@ -13,11 +13,11 @@
 
 <h2>{% trans "Groups" %}</h2>
 <p>
-    {% for group in shown_user.groups.all %}
-        {{ group }},
-    {% empty %}
+    {% if shown_user.groups.all %}
+        {{ shown_user.groups.all|join:", " }}
+    {% else %}
         {% trans "The participant is not member of any group." %}
-    {% endfor %}
+    {% endif %}
 </p>
 
 {% if shown_user.get_gender_display %}
