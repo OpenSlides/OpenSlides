@@ -231,4 +231,4 @@ def get_widgets(request):
             context={
                 'agenda': SLIDE['agenda'],
                 'items': Item.objects.all()},
-            permission_required='agenda.can_manage_agenda')]
+            permission_required='projector.can_manage_projector')]

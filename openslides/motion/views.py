@@ -928,4 +928,4 @@ def get_widgets(request):
             display_name=_('Motions'),
             template='motion/widget.html',
             context={'motions': Motion.objects.all()},
-            permission_required='motion.can_manage_motion')]
+            permission_required='projector.can_manage_projector')]
