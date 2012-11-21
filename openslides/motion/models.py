@@ -28,6 +28,8 @@ from openslides.config.signals import default_config_value
 from openslides.poll.models import (BaseOption, BasePoll, CountVotesCast,
     CountInvalid, BaseVote)
 
+from openslides.participant.models import User, Group
+
 from openslides.projector.api import register_slidemodel
 from openslides.projector.models import SlideMixin
 
@@ -443,7 +445,10 @@ class Motion(models.Model, SlideMixin):
             self.log = ""
         self.log += u"%s | %s" % (datetime.now().strftime("%d.%m.%Y %H:%M:%S"), _propper_unicode(text))
         if user is not None:
-            self.log += u" (%s %s)" % (_("by"), _propper_unicode(user.username))
+            if isinstance(user, User):
+                self.log += u" (%s %s)" % (_("by"), _propper_unicode(user.username))
+            else:
+                self.log += u" (%s %s)" % (_("by"), _propper_unicode(str(user)))
         self.log += "\n"
         self.save()
 
