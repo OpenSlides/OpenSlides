@@ -293,7 +293,7 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
                 self.yesnoabstain = True
             else:
                 # candidates <= available posts -> yes/no/abstain
-                if self.assignment.assignment_candidats.filter(elected=False).count() <= (self.assignment.posts):
+                if len(self.assignment.candidates) <= (self.assignment.posts - len(self.assignment.elected)):
                     self.yesnoabstain = True
                 else:
                     self.yesnoabstain = False
