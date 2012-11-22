@@ -25,6 +25,16 @@ class UserCreateForm(forms.ModelForm, CssClassMixin):
         queryset=Group.objects.exclude(name__iexact='anonymous'),
         label=_("Groups"), required=False)
 
+    def __init__(self, *args, **kwargs):
+        if kwargs.get('instance', None) is None:
+            initial = kwargs.setdefault('initial', {})
+            registered, created = Group.objects.get_or_create(name__iexact='Registered')
+            if created:
+                registered.name = 'Registered'
+                registered.save()
+            initial['groups'] = [registered.pk]
+        super(UserCreateForm, self).__init__(*args, **kwargs)
+
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'is_active', 'groups', 'structure_level',
@@ -76,13 +86,13 @@ class GroupForm(forms.ModelForm, CssClassMixin):
         # Do not allow to change the name "anonymous" or give another group
         # this name
         data = self.cleaned_data['name']
-        if self.instance.name.lower() == 'anonymous':
+        if self.instance.name.lower() in ['anonymous', 'registered']:
             # Editing the anonymous-user
             if self.instance.name.lower() != data.lower():
                 raise forms.ValidationError(
-                    _('You can not edit the name for the anonymous user'))
+                    _('You can not edit the name for this group.'))
         else:
-            if data.lower() == 'anonymous':
+            if data.lower() in ['anonymous', 'registered']:
                 raise forms.ValidationError(
                     _('Group name "%s" is reserved for internal use.') % data)
         return data
