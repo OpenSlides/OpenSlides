@@ -161,6 +161,7 @@ class Assignment(models.Model, SlideMixin):
         participants = []
         for candidate in candidates.all():
             participants.append(candidate.person)
+        participants.sort(key=lambda person: person.sort_name)
         return participants
         #return candidates.values_list('person', flat=True)
 
@@ -178,7 +179,6 @@ class Assignment(models.Model, SlideMixin):
         poll.save()
         poll.set_options([{'candidate': person} for person in self.candidates])
         return poll
-
 
     def vote_results(self, only_published):
         """

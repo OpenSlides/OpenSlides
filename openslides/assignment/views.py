@@ -537,7 +537,7 @@ class AssignmentPollPDF(PDFView):
             stylesheet['Ballot_title']))
         cell.append(Paragraph(self.poll.assignment.polldescription,
             stylesheet['Ballot_subtitle']))
-        options = self.poll.get_options().order_by('candidate')
+        options = self.poll.get_options()
 
         ballot_string = _("%d. ballot") % self.poll.get_ballot()
         candidate_string = ungettext("%d candidate", "%d candidates",

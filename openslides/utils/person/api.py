@@ -30,6 +30,14 @@ class Person(object):
         return str(self.person_id)
 
     @property
+    def sort_name(self):
+        """
+        Return the part of the name, which is used for sorting.
+        For example the pre-name or the last-name
+        """
+        return self.__repr__()
+
+    @property
     def clean_name(self):
         """
         Return the name of this person without a suffix
