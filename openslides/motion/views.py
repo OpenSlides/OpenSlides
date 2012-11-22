@@ -580,6 +580,7 @@ def motion_import(request):
                 motions_generated = 0
                 motions_modified = 0
                 groups_assigned = 0
+                groups_generated = 0
                 with transaction.commit_on_success():
                     dialect = csv.Sniffer().sniff(request.FILES['csvfile'].readline())
                     dialect = csv_ext.patchup(dialect)
@@ -594,9 +595,7 @@ def motion_import(request):
                                 is_group = True
                             else:
                                 is_group = False
-                            print 'works for %d' % (lno + 1)
                         except ValueError:
-                            print 'doesn\'t work for %d' % (lno + 1)
                             messages.error(request, _('Ignoring malformed line %d in import file.') % (lno + 1))
                             continue
                         form = MotionForm({'title': title, 'text': text, 'reason': reason})
@@ -625,8 +624,14 @@ def motion_import(request):
 
                                 groups_assigned += 1
                             except Group.DoesNotExist:
-                                messages.error(request, _('Ignoring line %d because the assigned group does not exist.') % (lno + 1))
-                                continue
+                                group = Group()
+                                group.group_as_person = True
+                                group.description = _('Created by motion import.')
+                                group.name = last_name
+                                group.save()
+                                groups_generated += 1
+
+                                user = get_person(group.person_id)
                         else:
                             # fetch existing users or create new users as needed
                             try:
@@ -680,6 +685,10 @@ def motion_import(request):
                                                 '%d motions were successfully modified.', motions_modified) % motions_modified)
                 if users_generated:
                     messages.success(request, ungettext('%d new user was added.', '%d new users were added.', users_generated) % users_generated)
+
+                if groups_generated:
+                    messages.success(request, ungettext('%d new group was added.', '%d new groups were added.', groups_generated) % groups_generated)
+
                 if groups_assigned:
                     messages.success(request, ungettext('%d group assigned to motions.', '%d groups assigned to motions.', groups_assigned) % groups_assigned)
                 return redirect(reverse('motion_overview'))
