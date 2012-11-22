@@ -209,7 +209,7 @@ class UserDeleteView(DeleteView):
         if self.get_object() == self.request.user:
             messages.error(request, _("You can not delete yourself."))
         else:
-            super(DeleteView, self).pre_redirect(request, *args, **kwargs)
+            super(UserDeleteView, self).pre_redirect(request, *args, **kwargs)
 
 class SetUserStatusView(RedirectView, SingleObjectMixin):
     """
@@ -441,6 +441,12 @@ class GroupDeleteView(DeleteView):
     permission_required = 'participant.can_manage_participant'
     model = Group
     url = 'user_group_overview'
+
+    def pre_redirect(self, request, *args, **kwargs):
+        if self.get_object().name.lower() == 'anonymous':
+            messages.error(request, _("You can not delete this Group."))
+        else:
+            super(GroupDeleteView, self).pre_redirect(request, *args, **kwargs)
 
 
 class Config(FormView):
