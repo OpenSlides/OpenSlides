@@ -162,8 +162,8 @@ class Motion(models.Model, SlideMixin):
 
     @property
     def supporters(self):
-        for object in self.motionsupporter_set.all():
-            yield object.person
+        return sorted([object.person for object in self.motionsupporter_set.all()],
+                      key=lambda person: person.sort_name)
 
     def is_supporter(self, person):
         try:

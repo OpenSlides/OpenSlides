@@ -35,7 +35,7 @@ class Person(object):
         Return the part of the name, which is used for sorting.
         For example the pre-name or the last-name
         """
-        return self.__repr__()
+        return self.clean_name.lower()
 
     @property
     def clean_name(self):

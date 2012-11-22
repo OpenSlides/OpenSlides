@@ -22,7 +22,7 @@ class PersonChoices(object):
     def __iter__(self):
         if self.field.empty_label is not None:
             yield (u"", self.field.empty_label)
-        for person in Persons():
+        for person in sorted(Persons(), key=lambda person: person.sort_name):
             yield (person.person_id, person)
 
 

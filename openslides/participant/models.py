@@ -86,8 +86,8 @@ class User(DjangoUser, PersonMixin, Person, SlideMixin):
     @property
     def sort_name(self):
         if config['participant_sort_users_by_first_name']:
-            return self.first_name
-        return self.last_name
+            return self.first_name.lower()
+        return self.last_name.lower()
 
     @models.permalink
     def get_absolute_url(self, link='view'):
