@@ -6,20 +6,19 @@
 {% block title %}{{ block.super }} - {{ title }}{% endblock %}
 
 {% block content %}
-
-    <h1>{{ group }}</h1>
-    <p>{{ group.description }}</p>
-
-    <h2>{% trans "Members" %}</h2>
+    <div class="item_fullscreen">{{ group }}
+        <span>
+        <p><i>{{ group.user_set.all.count }} {% trans "participants" %}:</i></p>
+        <p>
+            {% if group.user_set.all %}
+                {{ group.user_set.all|join:", " }}
+            {% endif %}
+        </p>
+        </span>
+    </div>
     
 {% endblock %}
 
 {% block scrollcontent %}
-
-    {% for member in group.user_set.all %}
-        <p>{{ member }}</p>
-    {% empty %}
-        <p>{% trans "No members available." %}</p>
-    {% endfor %}
 
 {% endblock %}

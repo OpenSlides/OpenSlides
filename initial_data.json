@@ -3,7 +3,7 @@
       "pk": 1,
       "model": "auth.group",
       "fields": {
-         "name": "Beobachter",
+         "name": "Beobachter/in",
          "permissions": [
             [
                "can_see_agenda",
@@ -57,7 +57,7 @@
       "pk": 2,
       "model": "auth.group",
       "fields": {
-         "name": "Delegierter",
+         "name": "Delegierte/r",
          "permissions": [
             [
                "can_see_agenda",

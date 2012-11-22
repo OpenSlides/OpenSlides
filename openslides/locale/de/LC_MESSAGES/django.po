@@ -2189,6 +2189,10 @@ msgstr "Teilnehmer/in ist kein Mitglied einer Gruppe."
 msgid "The participant has not logged in yet."
 msgstr "Teilnehmer/in hat sich noch nicht angemeldet."
 
+#: participant/templates/projector/GroupSlide.html:11
+msgid "participants"
+msgstr "Teilnehmer/innen"
+
 #: poll/models.py:95
 msgid "Votes invalid"
 msgstr "Ungültige Stimmen"
