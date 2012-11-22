@@ -358,33 +358,6 @@ class PDFView(PermissionMixin, View):
         return self.render_to_response(self.get_filename())
 
 
-class FrontPage(TemplateView):
-    template_name = 'front_page.html'
-
-    def has_permission(self, request):
-        if request.user.is_authenticated() or config['system_enable_anonymous']:
-            return True
-        return False
-
-    def get_context_data(self, **kwargs):
-        context = super(FrontPage, self).get_context_data(**kwargs)
-        apps = []
-        for app in settings.INSTALLED_APPS:
-            try:
-                mod = import_module(app + '.views')
-                tab = mod.register_tab(self.request)
-            except (ImportError, AttributeError):
-                continue
-            if tab.permission:
-                apps.append(tab)
-        context.update({
-            'apps': apps,
-            'title': config['frontpage_title'],
-            'welcometext': config['frontpage_welcometext'],
-        })
-        return context
-
-
 def server_error(request, template_name='500.html'):
     """
     500 error handler.

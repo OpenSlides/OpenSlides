@@ -41,8 +41,8 @@ class GeneralConfig(FormView):
             'event_date': config['event_date'],
             'event_location': config['event_location'],
             'event_organizer': config['event_organizer'],
-            'frontpage_title': config['frontpage_title'],
-            'frontpage_welcometext': config['frontpage_welcometext'],
+            'welcome_title': config['welcome_title'],
+            'welcome_text': config['welcome_text'],
             'system_enable_anonymous': config['system_enable_anonymous'],
         }
 
@@ -54,10 +54,9 @@ class GeneralConfig(FormView):
         config['event_location'] = form.cleaned_data['event_location']
         config['event_organizer'] = form.cleaned_data['event_organizer']
 
-        # frontpage
-        config['frontpage_title'] = form.cleaned_data['frontpage_title']
-        config['frontpage_welcometext'] = \
-            form.cleaned_data['frontpage_welcometext']
+        # welcome widget
+        config['welcome_title'] = form.cleaned_data['welcome_title']
+        config['welcome_text'] = form.cleaned_data['welcome_text']
 
         # system
         if form.cleaned_data['system_enable_anonymous']:

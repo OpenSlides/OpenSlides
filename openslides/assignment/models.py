@@ -85,7 +85,7 @@ class Assignment(models.Model, SlideMixin):
             raise NameError(_('<b>%s</b> is already a candidate.') % candidate)
         if not person.has_perm("assignment.can_manage_assignment") and self.status != 'sea':
             raise NameError(_('The candidate list is already closed.'))
-        candidation = self.assignment_candidats.filter(person=candidate)
+        candidation = self.assignment_candidates.filter(person=candidate)
         if candidation and candidate != person and \
                 not person.has_perm("assignment.can_manage_assignment"):
             # if the candidation is blocked and anotherone tries to run the
@@ -103,9 +103,8 @@ class Assignment(models.Model, SlideMixin):
         stop running for a vote
         """
         try:
-            candidation = self.assignment_candidats.get(person=candidate)
+            candidation = self.assignment_candidates.get(person=candidate)
         except AssignmentCandidate.DoesNotExist:
-            # TODO: Use an OpenSlides Error
             raise Exception(_('%s is no candidate') % candidate)
 
         if not candidation.blocked:
@@ -123,7 +122,7 @@ class Assignment(models.Model, SlideMixin):
         return True, if person is a candidate.
         """
         try:
-            return self.assignment_candidats.filter(person=person) \
+            return self.assignment_candidates.filter(person=person) \
                    .exclude(blocked=True).exists()
         except AttributeError:
             return False
@@ -132,11 +131,11 @@ class Assignment(models.Model, SlideMixin):
         """
         return True, if the person is blockt for candidation.
         """
-        return self.assignment_candidats.filter(person=person) \
+        return self.assignment_candidates.filter(person=person) \
                    .filter(blocked=True).exists()
 
     @property
-    def assignment_candidats(self):
+    def assignment_candidates(self):
         return AssignmentCandidate.objects.filter(assignment=self)
 
     @property
@@ -148,7 +147,7 @@ class Assignment(models.Model, SlideMixin):
         return self.get_participants(only_elected=True)
 
     def get_participants(self, only_elected=False, only_candidate=False):
-        candidates = self.assignment_candidats.exclude(blocked=True)
+        candidates = self.assignment_candidates.exclude(blocked=True)
 
         assert not (only_elected and only_candidate)
 
@@ -167,7 +166,7 @@ class Assignment(models.Model, SlideMixin):
 
 
     def set_elected(self, person, value=True):
-        candidate = self.assignment_candidats.get(person=person)
+        candidate = self.assignment_candidates.get(person=person)
         candidate.elected = value
         candidate.save()
 
@@ -293,7 +292,7 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
                 self.yesnoabstain = True
             else:
                 # candidates <= available posts -> yes/no/abstain
-                if self.assignment.assignment_candidats.filter(elected=False).count() <= (self.assignment.posts):
+                if len(self.assignment.candidates) <= (self.assignment.posts - len(self.assignment.elected)):
                     self.yesnoabstain = True
                 else:
                     self.yesnoabstain = False

@@ -14,7 +14,7 @@
             {% endif %}
         </li>
     {% empty %}
-        <li>{% trans "None" %}</li>
+        <li><i>{% trans "None" %}</i></li>
     {% endfor %}
 </ul>
 
@@ -33,7 +33,7 @@
             {% endif %}
         </li>
     {% empty %}
-        <li>{% trans "None" %}</li>
+        <li><i>{% trans "None" %}</i></li>
     {% endfor %}
 </ul>
 {% endif %}
@@ -44,6 +44,6 @@
     {% for assignment in assignments %}
         <li><a href="{% model_url assignment 'view' %}">{{ assignment }}</a></li>
     {% empty %}
-        <li>{% trans "None" %}</li>
+        <li><i>{% trans "None" %}</i></li>
     {% endfor %}
 </ul>

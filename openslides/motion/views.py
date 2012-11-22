@@ -52,7 +52,7 @@ from openslides.projector.projector import Widget
 from openslides.poll.views import PollFormView
 
 from openslides.participant.api import gen_username, gen_password
-from openslides.participant.models import User
+from openslides.participant.models import User, Group
 
 from openslides.agenda.models import Item
 
@@ -579,6 +579,8 @@ def motion_import(request):
                 users_generated = 0
                 motions_generated = 0
                 motions_modified = 0
+                groups_assigned = 0
+                groups_generated = 0
                 with transaction.commit_on_success():
                     dialect = csv.Sniffer().sniff(request.FILES['csvfile'].readline())
                     dialect = csv_ext.patchup(dialect)
@@ -588,7 +590,11 @@ def motion_import(request):
                         if lno < 1:
                             continue
                         try:
-                            (number, title, text, reason, first_name, last_name) = line[:6]
+                            (number, title, text, reason, first_name, last_name, is_group) = line[:7]
+                            if is_group.strip().lower() in ['y', 'j', 't', 'yes', 'ja', 'true', '1', 1]:
+                                is_group = True
+                            else:
+                                is_group = False
                         except ValueError:
                             messages.error(request, _('Ignoring malformed line %d in import file.') % (lno + 1))
                             continue
@@ -605,24 +611,50 @@ def motion_import(request):
                             except ValueError:
                                 messages.error(request, _('Ignoring malformed line %d in import file.') % (lno + 1))
                                 continue
-                        # fetch existing users or create new users as needed
-                        try:
-                            user = User.objects.get(first_name=first_name, last_name=last_name)
-                        except User.DoesNotExist:
-                            user = None
-                        if user is None:
-                            user = User()
-                            user.last_name = last_name
-                            user.first_name = first_name
-                            user.username = gen_username(first_name, last_name)
-                            user.detail = ''
-                            user.committee = ''
-                            user.gender = ''
-                            user.type = ''
-                            user.default_password = gen_password()
-                            user.save()
-                            user.reset_password()
-                            users_generated += 1
+                        
+                        if is_group:
+                            # fetch existing groups or issue an error message
+                            try:
+                                user = Group.objects.get(name=last_name)
+                                if user.group_as_person == False:
+                                    messages.error(request, _('Ignoring line %d because the assigned group may not act as a person.') % (lno + 1))
+                                    continue
+                                else:
+                                    user = get_person(user.person_id)
+
+                                groups_assigned += 1
+                            except Group.DoesNotExist:
+                                group = Group()
+                                group.group_as_person = True
+                                group.description = _('Created by motion import.')
+                                group.name = last_name
+                                group.save()
+                                groups_generated += 1
+
+                                user = get_person(group.person_id)
+                        else:
+                            # fetch existing users or create new users as needed
+                            try:
+                                user = User.objects.get(first_name=first_name, last_name=last_name)
+                            except User.DoesNotExist:
+                                user = None
+                            if user is None:
+                                if not first_name or not last_name:
+                                    messages.error(request, _('Ignoring line %d because it contains an incomplete first / last name pair.') % (lno + 1))
+                                    continue
+
+                                user = User()
+                                user.last_name = last_name
+                                user.first_name = first_name
+                                user.username = gen_username(first_name, last_name)
+                                user.structure_level = ''
+                                user.committee = ''
+                                user.gender = ''
+                                user.type = ''
+                                user.default_password = gen_password()
+                                user.save()
+                                user.reset_password()
+                                users_generated += 1
                         # create / modify the motion
                         motion = None
                         if number:
@@ -653,6 +685,12 @@ def motion_import(request):
                                                 '%d motions were successfully modified.', motions_modified) % motions_modified)
                 if users_generated:
                     messages.success(request, ungettext('%d new user was added.', '%d new users were added.', users_generated) % users_generated)
+
+                if groups_generated:
+                    messages.success(request, ungettext('%d new group was added.', '%d new groups were added.', groups_generated) % groups_generated)
+
+                if groups_assigned:
+                    messages.success(request, ungettext('%d group assigned to motions.', '%d groups assigned to motions.', groups_assigned) % groups_assigned)
                 return redirect(reverse('motion_overview'))
 
             except csv.Error:
@@ -928,4 +966,4 @@ def get_widgets(request):
             display_name=_('Motions'),
             template='motion/widget.html',
             context={'motions': Motion.objects.all()},
-            permission_required='motion.can_manage_motion')]
+            permission_required='projector.can_manage_projector')]

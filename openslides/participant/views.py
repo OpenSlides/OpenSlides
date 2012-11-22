@@ -71,7 +71,7 @@ class UserOverview(ListView):
         except KeyError:
             sortfilter = {}
 
-        for value in ['gender', 'detail', 'type', 'committee', 'status',
+        for value in ['gender', 'structure_level', 'type', 'committee', 'status',
                       'sort', 'reverse']:
             if value in self.request.REQUEST:
                 if self.request.REQUEST[value] == '---':
@@ -85,8 +85,8 @@ class UserOverview(ListView):
         query = User.objects
         if 'gender' in sortfilter:
             query = query.filter(gender__iexact=sortfilter['gender'][0])
-        if 'detail' in sortfilter:
-            query = query.filter(detail__iexact=sortfilter['detail'][0])
+        if 'structure_level' in sortfilter:
+            query = query.filter(structure_level__iexact=sortfilter['structure_level'][0])
         if 'type' in sortfilter:
             query = query.filter(type__iexact=sortfilter['type'][0])
         if 'committee' in sortfilter:
@@ -97,7 +97,7 @@ class UserOverview(ListView):
             if sortfilter['sort'][0] in ['first_name', 'last_name', 'last_login']:
                 query = query.order_by(sortfilter['sort'][0])
             elif (sortfilter['sort'][0] in
-                    ['detail', 'type', 'committee', 'comment']):
+                    ['structure_level', 'type', 'committee', 'comment']):
                 query = query.order_by(
                     '%s' % sortfilter['sort'][0])
         else:
@@ -125,8 +125,8 @@ class UserOverview(ListView):
             percent = 0
 
         # list of all existing categories
-        details = [p['detail'] for p in User.objects.values('detail')
-            .exclude(detail='').distinct()]
+        structure_levels = [p['structure_level'] for p in User.objects.values('structure_level')
+            .exclude(structure_level='').distinct()]
         # list of all existing committees
         committees = [p['committee'] for p in User.objects.values('committee')
             .exclude(committee='').distinct()]
@@ -135,7 +135,7 @@ class UserOverview(ListView):
             'allusers': all_users,
             'request_user': self.request.user,
             'percent': round(percent, 1),
-            'details': details,
+            'structure_levels': structure_levels,
             'committees': committees,
             'cookie': ['participant_sortfilter', urlencode(decodedict(self.sortfilter),
                 doseq=True)],
@@ -208,8 +208,6 @@ class UserDeleteView(DeleteView):
     def pre_redirect(self, request, *args, **kwargs):
         if self.get_object() == self.request.user:
             messages.error(request, _("You can not delete yourself."))
-        elif self.get_object().is_superuser:
-            messages.error(request, _("You can not delete the administrator."))
         else:
             super(DeleteView, self).pre_redirect(request, *args, **kwargs)
 
@@ -268,8 +266,8 @@ class ParticipantsListPDF(PDFView):
                 counter,
                 Paragraph(user.last_name, stylesheet['Tablecell']),
                 Paragraph(user.first_name, stylesheet['Tablecell']),
-                Paragraph(user.detail, stylesheet['Tablecell']),
-                Paragraph(user.type, stylesheet['Tablecell']),
+                Paragraph(user.structure_level, stylesheet['Tablecell']),
+                Paragraph(user.get_type_display(), stylesheet['Tablecell']),
                 Paragraph(user.committee, stylesheet['Tablecell'])])
         t = LongTable(data, style=[
             ('VALIGN', (0, 0), (-1, -1), 'TOP'),

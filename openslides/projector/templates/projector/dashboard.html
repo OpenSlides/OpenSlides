@@ -15,27 +15,6 @@
 
 {% block content %}
     <h1>{% trans 'Dashboard' %}</h1>
-    {% if perms.projector.can_manage_projector %}
-        <div style="text-align: right; padding: 0 10px 5px 0; margin-top:-20px;">
-            <!-- control projector view -->
-            {% trans "Adjust projector view" %}:
-            <a class="projector_edit" href="{% url projector_bigger %}" title="{% trans 'Zoom in' %}">
-                <img src="{% static 'images/icons/zoom-in.png' %}" />
-            </a>
-            <a class="projector_edit" href="{% url projector_smaller %}" title="{% trans 'Zoom out' %}">
-                <img src="{% static 'images/icons/zoom-out.png' %}" />
-            </a>
-            <a class="projector_edit" href="{% url projector_up %}" title="{% trans 'Scroll text up' %}">
-                <img src="{% static 'images/icons/go-up.png' %}" />
-            </a>
-            <a class="projector_edit" href="{% url projector_down %}" title="{% trans 'Scroll text down' %}">
-                <img src="{% static 'images/icons/go-down.png' %}" />
-            </a>
-            <a class="projector_edit" href="{% url projector_clean %}" title="{% trans 'Reset projector view' %}">
-                <img src="{% static 'images/icons/view-reset.png' %}" />
-            </a>
-        </div>
-    {% endif %}
 
     <div class="column" id="col1">
         {% for name, widget in widgets.items %}

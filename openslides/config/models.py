@@ -86,8 +86,8 @@ def default_config(sender, key, **kwargs):
         'event_location': '',
         'event_organizer': '',
         'presentation': '',
-        'frontpage_title': _('Welcome to OpenSlides'),
-        'frontpage_welcometext': _('[Place for your welcome text.]'),
+        'welcome_title': _('Welcome to OpenSlides'),
+        'welcome_text': _('[Place for your welcome text.]'),
         'system_enable_anonymous': False,
     }.get(key)
 

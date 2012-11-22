@@ -6,17 +6,11 @@ How to create a new portable Windows distribution of OpenSlides:
 
       easy_install -Z django django-mptt reportlab pil
 
-2.) Install OpenSlides by running in the top directory:
-
-        python setup.py install
-
-    NOTE: This step must be repeated whenever you make changes to OpenSlides.
-
-3.) Run in the main directory of the OpenSlides checkout:
+2.) Run in the main directory of the OpenSlides checkout:
 
       python extras\win32-portable\prepare_portable.py
 
-4.) The portable OpenSlides distribution is now ready as a zip archive 
+3.) The portable OpenSlides distribution is now ready as a zip archive 
     in the 'dist' directory
 
 
