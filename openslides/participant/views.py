@@ -208,8 +208,6 @@ class UserDeleteView(DeleteView):
     def pre_redirect(self, request, *args, **kwargs):
         if self.get_object() == self.request.user:
             messages.error(request, _("You can not delete yourself."))
-        elif self.get_object().is_superuser:
-            messages.error(request, _("You can not delete the administrator."))
         else:
             super(DeleteView, self).pre_redirect(request, *args, **kwargs)
 
