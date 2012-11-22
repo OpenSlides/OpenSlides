@@ -28,10 +28,8 @@ class UserCreateForm(forms.ModelForm, CssClassMixin):
     def __init__(self, *args, **kwargs):
         if kwargs.get('instance', None) is None:
             initial = kwargs.setdefault('initial', {})
-            registered, created = Group.objects.get_or_create(name__iexact='Registered')
-            if created:
-                registered.name = 'Registered'
-                registered.save()
+            registered, created = Group.objects.get_or_create(
+                name__iexact='Registered', defaults={'name': 'Registered'})
             initial['groups'] = [registered.pk]
         super(UserCreateForm, self).__init__(*args, **kwargs)
 

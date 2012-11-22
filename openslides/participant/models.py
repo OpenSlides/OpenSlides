@@ -253,9 +253,7 @@ def djangogroup_post_save(sender, instance, signal, *args, **kwargs):
 def user_post_save(sender, instance, *args, **kwargs):
     if not kwargs['created']:
         return
-    registered, created = Group.objects.get_or_create(name__iexact='Registered')
-    if created:
-        registered.name = 'Registered'
-        registered.save()
+    registered, created = Group.objects.get_or_create(
+        name__iexact='Registered', defaults={'name': 'Registered'})
     instance.groups.add(registered)
     instance.save()
