@@ -234,7 +234,7 @@ def default_config(sender, key, **kwargs):
 
 
 @receiver(signals.post_save, sender=DjangoUser)
-def user_post_save(sender, instance, signal, *args, **kwargs):
+def djangouser_post_save(sender, instance, signal, *args, **kwargs):
     try:
         instance.user
     except User.DoesNotExist:
@@ -242,8 +242,18 @@ def user_post_save(sender, instance, signal, *args, **kwargs):
 
 
 @receiver(signals.post_save, sender=DjangoGroup)
-def group_post_save(sender, instance, signal, *args, **kwargs):
+def djangogroup_post_save(sender, instance, signal, *args, **kwargs):
     try:
         instance.group
     except Group.DoesNotExist:
         Group(django_group=instance).save_base(raw=True)
+
+
+@receiver(signals.post_save, sender=User)
+def user_post_save(sender, instance, *args, **kwargs):
+    from openslides.participant.api import get_or_create_registered_group
+    if not kwargs['created']:
+        return
+    registered = get_or_create_registered_group()
+    instance.groups.add(registered)
+    instance.save()
