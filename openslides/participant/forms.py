@@ -18,6 +18,7 @@ from openslides.utils.forms import (
     CssClassMixin, LocalizedModelMultipleChoiceField)
 
 from openslides.participant.models import User, Group
+from openslides.participant.api import get_or_create_registered_group
 
 
 class UserCreateForm(forms.ModelForm, CssClassMixin):
@@ -28,8 +29,7 @@ class UserCreateForm(forms.ModelForm, CssClassMixin):
     def __init__(self, *args, **kwargs):
         if kwargs.get('instance', None) is None:
             initial = kwargs.setdefault('initial', {})
-            registered, created = Group.objects.get_or_create(
-                name__iexact='Registered', defaults={'name': 'Registered'})
+            registered = get_or_create_registered_group()
             initial['groups'] = [registered.pk]
         super(UserCreateForm, self).__init__(*args, **kwargs)
 

@@ -251,9 +251,9 @@ def djangogroup_post_save(sender, instance, signal, *args, **kwargs):
 
 @receiver(signals.post_save, sender=User)
 def user_post_save(sender, instance, *args, **kwargs):
+    from openslides.participant.api import get_or_create_registered_group
     if not kwargs['created']:
         return
-    registered, created = Group.objects.get_or_create(
-        name__iexact='Registered', defaults={'name': 'Registered'})
+    registered = get_or_create_registered_group()
     instance.groups.add(registered)
     instance.save()
