@@ -17,12 +17,17 @@ from random import choice
 import string
 import csv
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Permission
 from django.db import transaction
 
 from openslides.utils import csv_ext
 
-from openslides.participant.models import User
+from openslides.participant.models import User, Group
+
+
+DEFAULT_PERMS = ['can_see_agenda', 'can_see_projector',
+                 'can_see_motion', 'can_see_assignment',
+                 'can_see_dashboard']
 
 
 def gen_password():
@@ -93,3 +98,23 @@ def import_users(csv_file):
     except UnicodeDecodeError:
         error_messages.appen(_('Import file has wrong character encoding, only UTF-8 is supported!'))
     return (count_success, error_messages)
+
+
+def get_or_create_registered_group():
+    registered, created = Group.objects.get_or_create(
+        name__iexact='Registered', defaults={'name': 'Registered'})
+    if created:
+        registered.permissions = Permission.objects.filter(
+                    codename__in=DEFAULT_PERMS)
+        registered.save()
+    return registered
+
+
+def get_or_create_anonymous_group():
+    anonymous, created = Group.objects.get_or_create(
+        name__iexact='Anonymous', defaults={'name': 'Anonymous'})
+    if created:
+        anonymous.permissions = Permission.objects.filter(
+                    codename__in=DEFAULT_PERMS)
+        anonymous.save()
+    return anonymous
