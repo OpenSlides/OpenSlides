@@ -67,12 +67,12 @@ def del_confirm_form(request, object, name=None, delete_link=None):
         % html_strong(name), delete_link)
 
 
-def render_response(req, *args, **kwargs):
-    kwargs['context_instance'] = RequestContext(req)
-    return render_to_response(*args, **kwargs)
-
-
 def template(template_name):
+    """
+    Decorator to set a template for a view.
+
+    Deprecated. Use class based views instead.
+    """
     def renderer(func):
         def wrapper(request, *args, **kwargs):
             output = func(request, *args, **kwargs)
@@ -95,6 +95,8 @@ def permission_required(perm, login_url=None):
     """
     Decorator for views that checks whether a user has a particular permission
     enabled, redirecting to the log-in page if necessary.
+
+    Deprecated.
     """
     def renderer(func):
         def wrapper(request, *args, **kw):
@@ -108,7 +110,9 @@ def permission_required(perm, login_url=None):
 
 
 def render_to_forbidden(request, error=
-    ugettext_lazy("Sorry, you have no rights to see this page.")):
+        ugettext_lazy("Sorry, you have no rights to see this page.")):
+    # TODO: Integrate this function into the PermissionMixin once the
+    # above function is deleted.
     return HttpResponseForbidden(render_to_string('403.html',
         {'error': error}, context_instance=RequestContext(request)))
 
@@ -127,7 +131,9 @@ def delete_default_permissions(**kwargs):
 def ajax_request(data):
     """
     generates a HTTPResponse-Object with json-Data for a
-    ajax response
+    ajax response.
+
+    Deprecated.
     """
     return HttpResponse(json.dumps(data))
 
