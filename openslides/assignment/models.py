@@ -16,16 +16,12 @@ from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
 from openslides.utils.person import PersonField
-
 from openslides.config.models import config
 from openslides.config.signals import default_config_value
-
 from openslides.projector.api import register_slidemodel
 from openslides.projector.projector import SlideMixin
-
-from openslides.poll.models import (BasePoll, CountInvalid, CountVotesCast,
-    BaseOption, PublishPollMixin, BaseVote)
-
+from openslides.poll.models import (
+    BasePoll, CountInvalid, CountVotesCast, BaseOption, PublishPollMixin, BaseVote)
 from openslides.agenda.models import Item
 
 
@@ -51,11 +47,10 @@ class Assignment(models.Model, SlideMixin):
     )
 
     name = models.CharField(max_length=100, verbose_name=_("Name"))
-    description = models.TextField(null=True, blank=True,
-        verbose_name=_("Description"))
-    posts = models.PositiveSmallIntegerField(
-        verbose_name=_("Number of available posts"))
-    polldescription = models.CharField(max_length=100, null=True, blank=True,
+    description = models.TextField(null=True, blank=True, verbose_name=_("Description"))
+    posts = models.PositiveSmallIntegerField(verbose_name=_("Number of available posts"))
+    polldescription = models.CharField(
+        max_length=100, null=True, blank=True,
         verbose_name=_("Comment on the ballot paper"))
     status = models.CharField(max_length=3, choices=STATUS, default='sea')
 
@@ -68,8 +63,8 @@ class Assignment(models.Model, SlideMixin):
         if error:
             raise NameError(_('%s is not a valid status.') % status)
         if self.status == status:
-            raise NameError(_('The assignment status is already %s.')
-                % self.status)
+            raise NameError(
+                _('The assignment status is already %s.') % self.status)
         self.status = status
         self.save()
 
@@ -116,14 +111,12 @@ class Assignment(models.Model, SlideMixin):
         else:
             candidation.delete()
 
-
     def is_candidate(self, person):
         """
         return True, if person is a candidate.
         """
         try:
-            return self.assignment_candidates.filter(person=person) \
-                   .exclude(blocked=True).exists()
+            return self.assignment_candidates.filter(person=person).exclude(blocked=True).exists()
         except AttributeError:
             return False
 
@@ -131,8 +124,7 @@ class Assignment(models.Model, SlideMixin):
         """
         return True, if the person is blockt for candidation.
         """
-        return self.assignment_candidates.filter(person=person) \
-                   .filter(blocked=True).exists()
+        return self.assignment_candidates.filter(person=person).filter(blocked=True).exists()
 
     @property
     def assignment_candidates(self):
@@ -163,7 +155,6 @@ class Assignment(models.Model, SlideMixin):
         participants.sort(key=lambda person: person.sort_name)
         return participants
         #return candidates.values_list('person', flat=True)
-
 
     def set_elected(self, person, value=True):
         candidate = self.assignment_candidates.get(person=person)
@@ -211,7 +202,6 @@ class Assignment(models.Model, SlideMixin):
                     votes = None
                 vote_results_dict[candidate].append(votes)
         return vote_results_dict
-
 
     def get_agenda_title(self):
         return self.name
@@ -298,8 +288,7 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
                     self.yesnoabstain = False
             self.save()
         if self.yesnoabstain:
-            return [ugettext_noop('Yes'), ugettext_noop('No'),
-                ugettext_noop('Abstain')]
+            return [ugettext_noop('Yes'), ugettext_noop('No'), ugettext_noop('Abstain')]
         else:
             return [ugettext_noop('Votes')]
 

@@ -15,8 +15,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from openslides.utils.forms import CssClassMixin
 
-from openslides.config.models import config
-
 
 class GeneralConfigForm(forms.Form, CssClassMixin):
     event_name = forms.CharField(

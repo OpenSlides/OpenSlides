@@ -14,11 +14,11 @@
 from __future__ import with_statement
 
 from random import choice
-import string
 import csv
 
 from django.contrib.auth.models import Permission
 from django.db import transaction
+from django.utils.translation import ugettext as _
 
 from openslides.utils import csv_ext
 
@@ -78,7 +78,7 @@ def import_users(csv_file):
                     try:
                         (first_name, last_name, gender, structure_level, type, committee, comment) = line[:7]
                     except ValueError:
-                        error_messages.append(_('Ignoring malformed line %d in import file.') % line_no + 1)
+                        error_messages.append(_('Ignoring malformed line %d in import file.') % (line_no + 1))
                         continue
                     user = User()
                     user.last_name = last_name
@@ -105,7 +105,7 @@ def get_or_create_registered_group():
         name__iexact='Registered', defaults={'name': 'Registered'})
     if created:
         registered.permissions = Permission.objects.filter(
-                    codename__in=DEFAULT_PERMS)
+            codename__in=DEFAULT_PERMS)
         registered.save()
     return registered
 
@@ -115,6 +115,6 @@ def get_or_create_anonymous_group():
         name__iexact='Anonymous', defaults={'name': 'Anonymous'})
     if created:
         anonymous.permissions = Permission.objects.filter(
-                    codename__in=DEFAULT_PERMS)
+            codename__in=DEFAULT_PERMS)
         anonymous.save()
     return anonymous
