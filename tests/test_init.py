@@ -12,8 +12,12 @@ from django.test import TestCase
 from openslides import get_version
 
 class InitTest(TestCase):
-    def testget_version(self):
+    def test_get_version(self):
         self.assertEqual(get_version((1, 3, 0, 'beta', 2)), '1.3-beta2')
         self.assertEqual(get_version((1, 0, 0, 'final', 0)), '1.0')
         self.assertEqual(get_version((2, 5, 3, 'alpha', 0)), '2.5.3-alpha0')
-        self.assertEqual(len(get_version((2, 5, 0, 'dev', 0))), 47)
+        git_version = get_version((2, 5, 0, 'dev', 0))
+        if 'unknown' in git_version:
+            self.assertEqual(len(git_version), 14)
+        else:
+            self.assertEqual(len(git_version), 47)
