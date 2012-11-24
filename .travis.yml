@@ -6,4 +6,4 @@ python:
 install:
   - pip install -r requirements.txt --use-mirrors
   - pip install coverage django-discover-runner
-script: coverage run ./manage.py test folivora && coverage report -m
+script: coverage run ./manage.py test tests && coverage report -m
