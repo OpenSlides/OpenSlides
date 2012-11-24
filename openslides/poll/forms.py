@@ -11,7 +11,6 @@
 """
 
 from django import forms
-from django.utils.translation import ugettext_lazy as _
 
 from openslides.utils.forms import CssClassMixin
 

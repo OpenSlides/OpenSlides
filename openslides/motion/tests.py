@@ -11,10 +11,10 @@
 """
 
 from django.test import TestCase
-from django.test.client import Client
 
 from openslides.participant.models import User
-from openslides.motion.models import Motion, AVersion
+from openslides.motion.models import Motion
+
 
 class MotionTest(TestCase):
     def setUp(self):
@@ -39,4 +39,3 @@ class MotionTest(TestCase):
 
         self.assertEqual(self.app1.versions.count(), 2)
         self.assertEqual(self.app1.last_version, self.app1.versions[1])
-

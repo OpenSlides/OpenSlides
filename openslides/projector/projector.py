@@ -19,8 +19,8 @@ from openslides.config.models import config
 
 from openslides.projector.signals import projector_overlays
 
-
 SLIDE = {}
+
 
 class SlideMixin(object):
     """
@@ -49,13 +49,14 @@ class SlideMixin(object):
         """
         Return True, if the the slide is the active slide.
         """
-        from api import get_active_slide
+        from openslides.projector.api import get_active_slide
         return get_active_slide(only_sid=True) == self.sid
 
     def set_active(self):
         """
         Appoint this item as the active slide.
         """
+        from openslides.projector.api import set_active_slide
         set_active_slide(self.sid)
 
     def save(self, *args, **kwargs):
@@ -112,7 +113,7 @@ class Widget(object):
     Class for a Widget for the Projector-Tab.
     """
     def __init__(self, name, html=None, template=None, context={},
-            permission_required=None, display_name=None, default_column=1):
+                 permission_required=None, display_name=None, default_column=1):
         self.name = name
         if display_name is None:
             self.display_name = name.capitalize()

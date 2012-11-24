@@ -11,7 +11,6 @@
 """
 
 from django.conf.urls.defaults import url, patterns
-from django.core.urlresolvers import reverse
 
 from openslides.participant.views import (
     UserOverview, UserCreateView, UserDetailView, UserUpdateView,
