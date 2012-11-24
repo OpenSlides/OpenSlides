@@ -73,12 +73,15 @@ _portable_db_path = object()
 
 
 _fs_encoding = sys.getfilesystemencoding() or sys.getdefaultencoding()
+
+
 def _fs2unicode(s):
     if isinstance(s, unicode):
         return s
     return s.decode(_fs_encoding)
 
-def process_options(argv = None):
+
+def process_options(argv=None):
     if argv is None:
         argv = sys.argv[1:]
 
@@ -104,9 +107,11 @@ def process_options(argv = None):
 
     return opts
 
+
 def main(argv=None):
     opts = process_options(argv)
     _main(opts)
+
 
 def win32_portable_main(argv=None):
     """special entry point for the win32 portable version"""
@@ -127,11 +132,12 @@ def win32_portable_main(argv=None):
             os.unlink(test_file)
 
         if portable_dir_writeable:
-            opts.settings = os.path.join(portable_dir,
-                "openslides", "settings.py")
+            opts.settings = os.path.join(
+                portable_dir, "openslides", "settings.py")
             database_path = _portable_db_path
 
     _main(opts, database_path=database_path)
+
 
 def _main(opts, database_path=None):
     # Find the path to the settings
@@ -305,23 +311,27 @@ def start_browser(url):
     t = threading.Thread(target=f)
     t.start()
 
+
 def get_user_config_path(*args):
     if sys.platform == "win32":
         return win32_get_app_data_path(*args)
 
-    config_home = os.environ.get('XDG_CONFIG_HOME', \
-        os.path.join(os.path.expanduser('~'), '.config'))
+    config_home = os.environ.get(
+        'XDG_CONFIG_HOME', os.path.join(os.path.expanduser('~'), '.config'))
 
     return os.path.join(_fs2unicode(config_home), *args)
+
 
 def get_user_data_path(*args):
     if sys.platform == "win32":
         return win32_get_app_data_path(*args)
 
-    data_home = os.environ.get('XDG_DATA_HOME', \
-        os.path.join(os.path.expanduser('~'), '.local', 'share'))
+    data_home = os.environ.get(
+        'XDG_DATA_HOME', os.path.join(
+            os.path.expanduser('~'), '.local', 'share'))
 
     return os.path.join(_fs2unicode(data_home), *args)
+
 
 def get_portable_path(*args):
     # NOTE: sys.executable will be the path to openslides.exe
@@ -330,20 +340,24 @@ def get_portable_path(*args):
 
     exename = os.path.basename(sys.executable).lower()
     if exename != "openslides.exe":
-        raise Exception("Cannot determine portable path when "
+        raise Exception(
+            "Cannot determine portable path when "
             "not running as portable")
 
     portable_dir = _fs2unicode(os.path.dirname(os.path.abspath(sys.executable)))
     return os.path.join(portable_dir, *args)
 
+
 def get_portable_db_path():
     return get_portable_path('openslides', 'database.sqlite')
+
 
 def win32_get_app_data_path(*args):
     shell32 = ctypes.WinDLL("shell32.dll")
     SHGetFolderPath = shell32.SHGetFolderPathW
-    SHGetFolderPath.argtypes = (ctypes.c_void_p, ctypes.c_int,
-        ctypes.c_void_p, ctypes.c_uint32, ctypes.c_wchar_p)
+    SHGetFolderPath.argtypes = (
+        ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p, ctypes.c_uint32,
+        ctypes.c_wchar_p)
     SHGetFolderPath.restype = ctypes.c_uint32
 
     CSIDL_LOCAL_APPDATA = 0x001c
