@@ -6,6 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.forms.fields import Field
 from django.forms.util import ValidationError as FormValidationError
 
+
 class JSONFormField(Field):
     def clean(self, value):
 
@@ -20,6 +21,7 @@ class JSONFormField(Field):
             except ValueError:
                 raise FormValidationError(_("Enter valid JSON"))
         return value
+
 
 class JSONField(models.TextField):
     """JSONField is a generic textfield that serializes/unserializes JSON objects"""

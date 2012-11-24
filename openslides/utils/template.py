@@ -10,8 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.http import HttpResponse
-from django.template import loader, Context, RequestContext, TextNode
+from django.template import loader, Context
 from django.template.loader_tags import BlockNode, ExtendsNode
 
 
@@ -53,22 +52,22 @@ def render_template_block_nodelist(nodelist, block, context):
         for key in ('nodelist', 'nodelist_true', 'nodelist_false'):
             if hasattr(node, key):
                 try:
-                    return render_template_block_nodelist(getattr(node, key),
-                        block, context)
+                    return render_template_block_nodelist(
+                        getattr(node, key), block, context)
                 except:
                     pass
     for node in nodelist:
         if isinstance(node, ExtendsNode):
             try:
-                return render_template_block(node.get_parent(context), block,
-                    context)
+                return render_template_block(
+                    node.get_parent(context), block, context)
             except BlockNotFound:
                 pass
     raise BlockNotFound
 
 
 def render_block_to_string(template_name, block, dictionary=None,
-    context_instance=None):
+                           context_instance=None):
     """
     Loads the given template_name and renders the given block with the given
     dictionary as context. Returns a string.

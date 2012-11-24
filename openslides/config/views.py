@@ -17,12 +17,12 @@ from django.utils.importlib import import_module
 from django.utils.translation import ugettext as _
 
 from openslides import get_version
-
 from openslides.utils.template import Tab
 from openslides.utils.views import FormView, TemplateView
+from .forms import GeneralConfigForm
+from .models import config
 
-from openslides.config.forms import GeneralConfigForm
-from openslides.config.models import config
+# TODO: Do not import the participant module in config
 from openslides.participant.api import get_or_create_anonymous_group
 
 
@@ -61,12 +61,12 @@ class GeneralConfig(FormView):
         # system
         if form.cleaned_data['system_enable_anonymous']:
             config['system_enable_anonymous'] = True
-            anonymous = get_or_create_anonymous_group()
+            get_or_create_anonymous_group()
         else:
             config['system_enable_anonymous'] = False
 
-        messages.success(self.request,
-            _('General settings successfully saved.'))
+        messages.success(
+            self.request, _('General settings successfully saved.'))
         return super(GeneralConfig, self).form_valid(form)
 
 

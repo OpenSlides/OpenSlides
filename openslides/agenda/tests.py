@@ -12,12 +12,12 @@
 
 from django.test import TestCase
 from django.test.client import Client
-from django.contrib.auth.models import User
 from django.db.models.query import EmptyQuerySet
 
 from openslides.projector.api import get_active_slide
+from openslides.participant.models import User
+from .models import Item
 
-from openslides.agenda.models import Item
 
 class ItemTest(TestCase):
     def setUp(self):
@@ -47,8 +47,9 @@ class ItemTest(TestCase):
         self.assertFalse(self.item4 in self.item1.get_children())
 
         l = Item.objects.all()
-        self.assertEqual(str(l),
-         "[<Item: item1>, <Item: item1A>, <Item: item1Aa>, <Item: item2>]")
+        self.assertEqual(
+            str(l),
+            "[<Item: item1>, <Item: item1A>, <Item: item1Aa>, <Item: item2>]")
 
     def testForms(self):
         for item in Item.objects.all():
@@ -71,8 +72,10 @@ class ViewTest(TestCase):
         self.item2 = Item.objects.create(title='item2')
         self.refreshItems()
 
-        self.admin = User.objects.create_user('testadmin', '', 'default')
-        self.anonym = User.objects.create_user('testanoym', '', 'default')
+        self.admin, created = User.objects.get_or_create(username='testadmin')
+        self.anonym, created = User.objects.get_or_create(username='testanonym')
+        self.admin.reset_password('default')
+        self.anonym.reset_password('default')
 
         self.admin.is_superuser = True
         self.admin.save()
@@ -131,7 +134,7 @@ class ViewTest(TestCase):
         response = c.get('/agenda/%d/edit/' % 1000)
         self.assertEqual(response.status_code, 404)
 
-        data = {'title': 'newitem1', 'text': 'item1-text', 'weight':'0'}
+        data = {'title': 'newitem1', 'text': 'item1-text', 'weight': '0'}
         response = c.post('/agenda/%d/edit/' % self.item1.id, data)
         self.assertEqual(response.status_code, 302)
         self.refreshItems()
@@ -143,4 +146,3 @@ class ViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.refreshItems()
         self.assertEqual(self.item1.title, 'newitem1')
-

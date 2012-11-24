@@ -25,8 +25,9 @@ from openslides.config.signals import default_config_value
 from openslides.projector.api import register_slidemodel
 from openslides.projector.projector import SlideMixin
 
+
 class User(DjangoUser, PersonMixin, Person, SlideMixin):
-    prefix = 'user' # This is for the slides
+    prefix = 'user'  # This is for the slides
     person_prefix = 'user'
     GENDER_CHOICES = (
         ('male', _('Male')),
@@ -131,8 +132,9 @@ class User(DjangoUser, PersonMixin, Person, SlideMixin):
 
 register_slidemodel(User)
 
+
 class Group(DjangoGroup, PersonMixin, Person, SlideMixin):
-    prefix = 'group' # This is for the slides
+    prefix = 'group'  # This is for the slides
     person_prefix = 'group'
 
     django_group = models.OneToOneField(DjangoGroup, editable=False, parent_link=True)
@@ -172,6 +174,7 @@ class Group(DjangoGroup, PersonMixin, Person, SlideMixin):
             'template': 'projector/GroupSlide.html'}
 
 register_slidemodel(Group)
+
 
 class UsersAndGroupsToPersons(object):
     """
@@ -216,8 +219,9 @@ def receive_persons(sender, **kwargs):
     """
     Answers to the Person-API
     """
-    return UsersAndGroupsToPersons(person_prefix_filter=kwargs['person_prefix_filter'],
-                                    id_filter=kwargs['id_filter'])
+    return UsersAndGroupsToPersons(
+        person_prefix_filter=kwargs['person_prefix_filter'],
+        id_filter=kwargs['id_filter'])
 
 
 @receiver(default_config_value, dispatch_uid="participant_default_config")

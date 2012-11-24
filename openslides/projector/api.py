@@ -12,12 +12,11 @@
 
 from django.conf import settings
 from django.core.cache import cache
-from django.template.loader import render_to_string
 from django.utils.datastructures import SortedDict
 from django.utils.importlib import import_module
 
 from openslides.config.models import config
-from openslides.projector.projector import SLIDE, Slide, Widget
+from openslides.projector.projector import SLIDE, Slide
 
 
 def split_sid(sid):
@@ -95,27 +94,18 @@ def clear_projector_cache():
     cache.delete('projector_data')
 
 
-def register_slidemodel(model, model_name=None, control_template=None,
-    weight=0):
+def register_slidemodel(model, model_name=None, control_template=None, weight=0):
     """
     Register a Model as a slide.
     """
+    # TODO: control_template should never be None
     if model_name is None:
         model_name = model.prefix
 
-    if control_template is None:
-        control_template = 'projector/default_control_slidemodel.html'
-
     category = model.__module__.split('.')[0]
-    SLIDE[model_name] = Slide(
-        model_slide=True,
-        model=model,
-        category=category,
-        key=model.prefix,
-        model_name=model_name,
-        control_template=control_template,
-        weight=weight,
-    )
+    SLIDE[model_name] = Slide(model_slide=True, model=model, category=category,
+                              key=model.prefix, model_name=model_name,
+                              control_template=control_template, weight=weight)
 
 
 def register_slidefunc(key, func, control_template=None, weight=0, name=''):
@@ -125,15 +115,9 @@ def register_slidefunc(key, func, control_template=None, weight=0, name=''):
     if control_template is None:
         control_template = 'projector/default_control_slidefunc.html'
     category = func.__module__.split('.')[0]
-    SLIDE[key] = Slide(
-        model_slide=False,
-        func=func,
-        category=category,
-        key=key,
-        control_template=control_template,
-        weight=weight,
-        name=name,
-    )
+    SLIDE[key] = Slide(model_slide=False, func=func, category=category,
+                       key=key, control_template=control_template, weight=weight,
+                       name=name,)
 
 
 def projector_message_set(message, sid=None):
@@ -147,7 +131,7 @@ def projector_message_set(message, sid=None):
         overlay = ProjectorOverlay.objects.get(def_name='Message')
     except ProjectorOverlay.DoesNotExist:
         overlay = ProjectorOverlay(def_name='Message', active=False)
-    overlay.sid=sid
+    overlay.sid = sid
     overlay.save()
 
 
@@ -166,7 +150,6 @@ def get_all_widgets(request, session=False):
             mod = import_module(app + '.views')
         except ImportError:
             continue
-        appname = mod.__name__.split('.')[0]
         try:
             modul_widgets = mod.get_widgets(request)
         except AttributeError:

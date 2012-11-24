@@ -65,13 +65,6 @@ INSTALLED_APPS += INSTALLED_PLUGINS
 KEY_LENGTH = 30
 
 
-_fs_encoding = sys.getfilesystemencoding() or sys.getdefaultencoding()
-def _fs2unicode(s):
-    if isinstance(s, unicode):
-        return s
-    return s.decode(_fs_encoding)
-
-
 def main(argv=None, opt_defaults=None, database_path=None):
     if argv is None:
         argv = sys.argv[1:]
@@ -102,7 +95,8 @@ def main(argv=None, opt_defaults=None, database_path=None):
     # Find the path to the settings
     settings_path = opts.settings
     if settings_path is None:
-        config_home = os.environ.get('XDG_CONFIG_HOME', \
+        config_home = os.environ.get(
+            'XDG_CONFIG_HOME',
             os.path.join(os.path.expanduser('~'), '.config'))
         settings_path = os.path.join(config_home, 'openslides', 'settings.py')
 
@@ -142,13 +136,14 @@ def create_settings(settings_path, database_path=None):
     settings_module = os.path.dirname(settings_path)
 
     if database_path is None:
-        data_home = os.environ.get('XDG_DATA_HOME', \
+        data_home = os.environ.get(
+            'XDG_DATA_HOME',
             os.path.join(os.path.expanduser('~'), '.local', 'share'))
         database_path = os.path.join(data_home, 'openslides', 'database.sqlite')
 
     settings_content = CONFIG_TEMPLATE % dict(
         default_key=base64.b64encode(os.urandom(KEY_LENGTH)),
-        dbpath=_fs2unicode(database_path))
+        dbpath=fs2unicode(database_path))
 
     if not os.path.exists(settings_module):
         os.makedirs(settings_module)
@@ -269,6 +264,14 @@ def start_browser(url):
     t = threading.Thread(target=f)
     t.start()
 
+
+def fs2unicode(s):
+    if isinstance(s, unicode):
+        return s
+    fs_encoding = sys.getfilesystemencoding() or sys.getdefaultencoding()
+    return s.decode(fs_encoding)
+
+
 def win32_portable_main(argv=None):
     """special entry point for the win32 portable version"""
     import tempfile
@@ -287,17 +290,18 @@ def win32_portable_main(argv=None):
         os.unlink(test_file)
 
     if portable_dir_writeable:
-        default_settings = os.path.join(portable_dir, "openslides",
-            "openslides_personal_settings.py")
-        database_path = os.path.join(portable_dir, "openslides",
-            "database.sqlite")
+        default_settings = os.path.join(
+            portable_dir, "openslides", "openslides_personal_settings.py")
+        database_path = os.path.join(
+            portable_dir, "openslides", "database.sqlite")
     else:
         import ctypes
 
         shell32 = ctypes.WinDLL("shell32.dll")
         SHGetFolderPath = shell32.SHGetFolderPathW
-        SHGetFolderPath.argtypes = (ctypes.c_void_p, ctypes.c_int,
-            ctypes.c_void_p, ctypes.c_uint32, ctypes.c_wchar_p)
+        SHGetFolderPath.argtypes = (
+            ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p, ctypes.c_uint32,
+            ctypes.c_wchar_p)
         SHGetFolderPath.restype = ctypes.c_uint32
 
         CSIDL_LOCAL_APPDATA = 0x001c
@@ -307,13 +311,13 @@ def win32_portable_main(argv=None):
         res = SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, 0, 0, buf)
         if res != 0:
             raise Exception("Could not deterime APPDATA path")
-        default_settings = os.path.join(buf.value, "openslides",
-            "openslides_personal_settings.py")
-        database_path = os.path.join(buf.value, "openslides",
-            "database.sqlite")
+        default_settings = os.path.join(
+            buf.value, "openslides", "openslides_personal_settings.py")
+        database_path = os.path.join(
+            buf.value, "openslides", "database.sqlite")
 
-    main(argv, opt_defaults={ "settings": default_settings },
-        database_path=database_path)
+    main(argv, opt_defaults={"settings": default_settings},
+         database_path=database_path)
 
 
 if __name__ == "__main__":
