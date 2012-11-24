@@ -87,6 +87,7 @@ PY_DLLS = [
     "_sqlite3.pyd",
     "_socket.pyd",
     "select.pyd",
+    "_ctypes.pyd",
 ]
 
 MSVCR_PUBLIC_KEY = "1fc8b3b9a1e18e3b"
