@@ -17,7 +17,7 @@ recursive-include openslides/assignment/static *
 recursive-include openslides/config/templates *
 recursive-include openslides/participant/templates *
 recursive-include openslides/participant/static *
-include openslides/participant/initial_data.json
+include openslides/participant/fixtures/groups_de.json
 recursive-include openslides/poll/templates *
 recursive-include openslides/projector/templates *
 recursive-include openslides/projector/static *

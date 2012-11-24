@@ -252,6 +252,7 @@ def run_syncdb():
     # now initialize the database
     argv = ["", "syncdb", "--noinput"]
     execute_from_command_line(argv)
+    execute_from_command_line(["", "loaddata", "groups_de"])
 
 
 def set_system_url(url):
