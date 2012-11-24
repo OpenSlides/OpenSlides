@@ -12,3 +12,8 @@ docs/_build/*
 build/*
 dist/*
 .DS_Store
+settings.py
+
+# Unit test / coverage reports
+.coverage
+htmlcov

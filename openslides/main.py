@@ -72,15 +72,6 @@ KEY_LENGTH = 30
 _portable_db_path = object()
 
 
-_fs_encoding = sys.getfilesystemencoding() or sys.getdefaultencoding()
-
-
-def _fs2unicode(s):
-    if isinstance(s, unicode):
-        return s
-    return s.decode(_fs_encoding)
-
-
 def process_options(argv=None):
     if argv is None:
         argv = sys.argv[1:]
@@ -95,9 +86,11 @@ def process_options(argv=None):
     parser.add_option(
         "--reset-admin", action="store_true",
         help="Make sure the user 'admin' exists and uses 'admin' as password")
-    parser.add_option("-s", "--settings", help="Path to the openslides configuration.")
     parser.add_option(
-        "--no-reload", action="store_true", help="Do not reload the development server")
+        "-s", "--settings", help="Path to the openslides configuration.")
+    parser.add_option(
+        "--no-reload", action="store_true",
+        help="Do not reload the development server")
 
     opts, args = parser.parse_args(argv)
     if args:
@@ -186,7 +179,7 @@ def create_settings(settings_path, database_path=None):
     else:
         if database_path is None:
             database_path = get_user_data_path('openslides', 'database.sqlite')
-        dbpath_value = repr(_fs2unicode(database_path))
+        dbpath_value = repr(fs2unicode(database_path))
 
     settings_content = CONFIG_TEMPLATE % dict(
         default_key=base64.b64encode(os.urandom(KEY_LENGTH)),
@@ -312,6 +305,13 @@ def start_browser(url):
     t.start()
 
 
+def fs2unicode(s):
+    if isinstance(s, unicode):
+        return s
+    fs_encoding = sys.getfilesystemencoding() or sys.getdefaultencoding()
+    return s.decode(fs_encoding)
+
+
 def get_user_config_path(*args):
     if sys.platform == "win32":
         return win32_get_app_data_path(*args)
@@ -319,7 +319,7 @@ def get_user_config_path(*args):
     config_home = os.environ.get(
         'XDG_CONFIG_HOME', os.path.join(os.path.expanduser('~'), '.config'))
 
-    return os.path.join(_fs2unicode(config_home), *args)
+    return os.path.join(fs2unicode(config_home), *args)
 
 
 def get_user_data_path(*args):
@@ -330,7 +330,7 @@ def get_user_data_path(*args):
         'XDG_DATA_HOME', os.path.join(
             os.path.expanduser('~'), '.local', 'share'))
 
-    return os.path.join(_fs2unicode(data_home), *args)
+    return os.path.join(fs2unicode(data_home), *args)
 
 
 def get_portable_path(*args):
@@ -344,7 +344,7 @@ def get_portable_path(*args):
             "Cannot determine portable path when "
             "not running as portable")
 
-    portable_dir = _fs2unicode(os.path.dirname(os.path.abspath(sys.executable)))
+    portable_dir = fs2unicode(os.path.dirname(os.path.abspath(sys.executable)))
     return os.path.join(portable_dir, *args)
 
 

@@ -47,7 +47,7 @@ class BaseVote(models.Model):
     Subclasses have to define a option-field, which are a subclass of
     BaseOption.
     """
-    weight = models.IntegerField(default=1, null=True) # Use MinMaxIntegerField
+    weight = models.IntegerField(default=1, null=True)  # Use MinMaxIntegerField
     value = models.CharField(max_length=255, null=True)
 
     def print_weight(self, raw=False):
@@ -73,7 +73,7 @@ class BaseVote(models.Model):
 
 class CountVotesCast(models.Model):
     votescast = MinMaxIntegerField(null=True, blank=True, min_value=-2,
-        verbose_name=_("Votes cast"))
+                                   verbose_name=_("Votes cast"))
 
     def append_pollform_fields(self, fields):
         fields.append('votescast')
@@ -92,7 +92,7 @@ class CountVotesCast(models.Model):
 
 class CountInvalid(models.Model):
     votesinvalid = MinMaxIntegerField(null=True, blank=True, min_value=-2,
-        verbose_name=_("Votes invalid"))
+                                      verbose_name=_("Votes invalid"))
 
     def append_pollform_fields(self, fields):
         fields.append('votesinvalid')
@@ -164,7 +164,6 @@ class BasePoll(models.Model):
         """
         return self.vote_values
 
-
     def get_vote_class(self):
         """
         Return the releatet vote class.
@@ -212,7 +211,7 @@ class BasePoll(models.Model):
         """
         from openslides.poll.forms import OptionForm
         return OptionForm(extra=self.get_form_values(kwargs['formid']),
-            **kwargs)
+                          **kwargs)
 
     def get_vote_forms(self, **kwargs):
         """

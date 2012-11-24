@@ -13,15 +13,12 @@
 import os
 import sys
 
-_fs_encoding = sys.getfilesystemencoding() or sys.getdefaultencoding()
-def _fs2unicode(s):
-    if isinstance(s, unicode):
-        return s
-    return s.decode(_fs_encoding)
+from openslides.main import fs2unicode
 
 SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 
-AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend',
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
     'openslides.utils.auth.AnonymousAuth',)
 
 LOGIN_URL = '/login/'
@@ -48,12 +45,12 @@ USE_I18N = True
 USE_L10N = True
 
 LOCALE_PATHS = (
-    _fs2unicode(os.path.join(SITE_ROOT, 'locale')),
+    fs2unicode(os.path.join(SITE_ROOT, 'locale')),
 )
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = _fs2unicode(os.path.join(SITE_ROOT, './static/'))
+MEDIA_ROOT = fs2unicode(os.path.join(SITE_ROOT, './static/'))
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -62,17 +59,17 @@ MEDIA_URL = ''
 
 # Absolute path to the directory that holds static media from ``collectstatic``
 # Example: "/home/media/static.lawrence.com/"
-STATIC_ROOT = _fs2unicode(os.path.join(SITE_ROOT, '../site-static'))
+STATIC_ROOT = fs2unicode(os.path.join(SITE_ROOT, '../site-static'))
 
 # URL that handles the media served from STATIC_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://static.lawrence.com", "http://example.com/static/"
-STATIC_URL  = '/static/'
+STATIC_URL = '/static/'
 
 # Additional directories containing static files (not application specific)
 # Examples: "/home/media/lawrence.com/extra-static/"
 STATICFILES_DIRS = (
-    _fs2unicode(os.path.join(SITE_ROOT, 'static')),
+    fs2unicode(os.path.join(SITE_ROOT, 'static')),
 )
 
 #XXX: Note this setting (as well as our workaround finder)
@@ -106,7 +103,7 @@ TEMPLATE_DIRS = (
     # "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    _fs2unicode(os.path.join(SITE_ROOT, 'templates')),
+    fs2unicode(os.path.join(SITE_ROOT, 'templates')),
 )
 
 INSTALLED_APPS = (
@@ -142,3 +139,6 @@ CACHES = {
         'LOCATION': 'openslidecache'
     }
 }
+
+TEST_RUNNER = 'discover_runner.DiscoverRunner'
+TEST_DISCOVER_TOP_LEVEL = os.path.dirname(os.path.dirname(__file__))

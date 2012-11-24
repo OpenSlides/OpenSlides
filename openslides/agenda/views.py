@@ -11,7 +11,6 @@
 """
 from reportlab.platypus import Paragraph
 
-from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.db import transaction
@@ -20,18 +19,15 @@ from django.utils.translation import ugettext as _, ugettext_lazy
 from django.views.generic.detail import SingleObjectMixin
 
 from openslides.utils.pdf import stylesheet
-from openslides.utils.views import (TemplateView, RedirectView, UpdateView,
-    CreateView, DeleteView, PDFView, DetailView)
+from openslides.utils.views import (
+    TemplateView, RedirectView, UpdateView, CreateView, DeleteView, PDFView,
+    DetailView)
 from openslides.utils.template import Tab
 from openslides.utils.utils import html_strong
-
-from openslides.config.models import config
-
 from openslides.projector.api import get_active_slide
 from openslides.projector.projector import Widget, SLIDE
-
-from openslides.agenda.models import Item
-from openslides.agenda.forms import ItemOrderForm, ItemForm
+from .models import Item
+from .forms import ItemOrderForm, ItemForm
 
 
 class Overview(TemplateView):
@@ -53,7 +49,8 @@ class Overview(TemplateView):
     def post(self, request, *args, **kwargs):
         context = self.get_context_data(**kwargs)
         if not request.user.has_perm('agenda.can_manage_agenda'):
-            messages.error(request,
+            messages.error(
+                request,
                 _('You are not authorized to manage the agenda.'))
             return self.render_to_response(context)
         transaction.commit()
@@ -69,8 +66,8 @@ class Overview(TemplateView):
                 Model.save(item)
             else:
                 transaction.rollback()
-                messages.error(request,
-                    _('Errors when reordering of the agenda'))
+                messages.error(
+                    request, _('Errors when reordering of the agenda'))
                 return self.render_to_response(context)
         Item.objects.rebuild()
         # TODO: assure, that it is a valid tree
@@ -130,8 +127,8 @@ class ItemUpdate(UpdateView):
     apply_url = 'item_edit'
 
     def get_success_url(self):
-        messages.success(self.request,
-            _("Item %s was successfully modified.") \
+        messages.success(
+            self.request, _("Item %s was successfully modified.")
             % html_strong(self.request.POST['title']))
         if 'apply' in self.request.POST:
             return ''
@@ -151,8 +148,8 @@ class ItemCreate(CreateView):
     apply_url = 'item_edit'
 
     def get_success_url(self):
-        messages.success(self.request,
-            _("Item %s was successfully created.") \
+        messages.success(
+            self.request, _("Item %s was successfully created.")
             % html_strong(self.request.POST['title']))
         if 'apply' in self.request.POST:
             return reverse(self.get_apply_url(), args=[self.object.id])
@@ -176,13 +173,13 @@ class ItemDelete(DeleteView):
     def pre_post_redirect(self, request, *args, **kwargs):
         if self.get_answer() == 'all':
             self.object.delete(with_children=True)
-            messages.success(request,
-                _("Item %s and his children were successfully deleted.")
+            messages.success(
+                request, _("Item %s and his children were successfully deleted.")
                 % html_strong(self.object))
         elif self.get_answer() == 'yes':
             self.object.delete(with_children=False)
-            messages.success(request,
-                _("Item %s was successfully deleted.")
+            messages.success(
+                request, _("Item %s was successfully deleted.")
                 % html_strong(self.object))
 
 
@@ -199,7 +196,8 @@ class AgendaPDF(PDFView):
             ancestors = item.get_ancestors()
             if ancestors:
                 space = "&nbsp;" * 6 * ancestors.count()
-                story.append(Paragraph("%s%s" % (space, item.get_title()),
+                story.append(Paragraph(
+                    "%s%s" % (space, item.get_title()),
                     stylesheet['Subitem']))
             else:
                 story.append(Paragraph(item.get_title(), stylesheet['Item']))
@@ -213,10 +211,9 @@ def register_tab(request):
     return Tab(
         title=_('Agenda'),
         url=reverse('item_overview'),
-        permission=request.user.has_perm('agenda.can_see_agenda')
-            or request.user.has_perm('agenda.can_manage_agenda'),
-        selected=selected,
-    )
+        permission=(request.user.has_perm('agenda.can_see_agenda') or
+                    request.user.has_perm('agenda.can_manage_agenda')),
+        selected=selected)
 
 
 def get_widgets(request):

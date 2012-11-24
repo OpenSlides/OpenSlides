@@ -35,7 +35,7 @@ class PollFormView(TemplateView):
             context['forms'] = self.poll.get_vote_forms()
             FormClass = self.get_modelform_class()
             context['pollform'] = FormClass(instance=self.poll,
-                prefix='pollform')
+                                            prefix='pollform')
         return context
 
     def get_success_url(self):
@@ -52,7 +52,7 @@ class PollFormView(TemplateView):
 
         FormClass = self.get_modelform_class()
         pollform = FormClass(data=self.request.POST, instance=self.poll,
-            prefix='pollform')
+                             prefix='pollform')
 
         error = False
         for form in option_forms:

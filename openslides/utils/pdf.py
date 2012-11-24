@@ -28,16 +28,16 @@ from openslides.config.models import config
 
 
 # register new truetype fonts
-pdfmetrics.registerFont(TTFont('Ubuntu', path_join(settings.SITE_ROOT,
-    'static/fonts/Ubuntu-R.ttf')))
-pdfmetrics.registerFont(TTFont('Ubuntu-Bold', path_join(settings.SITE_ROOT,
-    'static/fonts/Ubuntu-B.ttf')))
-pdfmetrics.registerFont(TTFont('Ubuntu-Italic', path_join(settings.SITE_ROOT,
-    'static/fonts/Ubuntu-RI.ttf')))
+pdfmetrics.registerFont(TTFont(
+    'Ubuntu', path_join(settings.SITE_ROOT, 'static/fonts/Ubuntu-R.ttf')))
+pdfmetrics.registerFont(TTFont(
+    'Ubuntu-Bold', path_join(settings.SITE_ROOT, 'static/fonts/Ubuntu-B.ttf')))
+pdfmetrics.registerFont(TTFont(
+    'Ubuntu-Italic', path_join(settings.SITE_ROOT, 'static/fonts/Ubuntu-RI.ttf')))
 
 
 # set style information
-PAGE_HEIGHT = defaultPageSize[1];
+PAGE_HEIGHT = defaultPageSize[1]
 PAGE_WIDTH = defaultPageSize[0]
 
 
@@ -105,17 +105,17 @@ stylesheet.add(ParagraphStyle(
     leftIndent=0,
     spaceAfter=15,
 ))
-stylesheet.add(ParagraphStyle(name = 'Subitem',
-                              parent = stylesheet['Normal'],
-                              fontSize = 10,
-                              leading = 10,
-                              leftIndent = 20,
-                              spaceAfter = 15)
-               )
-stylesheet.add(ParagraphStyle(name = 'Tablecell',
-                              parent = stylesheet['Normal'],
-                              fontSize = 9)
-               )
+stylesheet.add(ParagraphStyle(
+    name='Subitem',
+    parent=stylesheet['Normal'],
+    fontSize=10,
+    leading=10,
+    leftIndent=20,
+    spaceAfter=15))
+stylesheet.add(ParagraphStyle(
+    name='Tablecell',
+    parent=stylesheet['Normal'],
+    fontSize=9))
 stylesheet.add(ParagraphStyle(name = 'Signaturefield',
                               parent = stylesheet['Normal'],
                               spaceBefore = 15)

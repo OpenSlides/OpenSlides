@@ -66,12 +66,13 @@ class GroupForm(forms.ModelForm, CssClassMixin):
         instance = forms.ModelForm.save(self, False)
 
         old_save_m2m = self.save_m2m
-        def save_m2m():
-           old_save_m2m()
 
-           instance.user_set.clear()
-           for user in self.cleaned_data['users']:
-               instance.user_set.add(user)
+        def save_m2m():
+            old_save_m2m()
+
+            instance.user_set.clear()
+            for user in self.cleaned_data['users']:
+                instance.user_set.add(user)
         self.save_m2m = save_m2m
 
         if commit:
@@ -102,7 +103,7 @@ class GroupForm(forms.ModelForm, CssClassMixin):
 class UsersettingsForm(forms.ModelForm, CssClassMixin):
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'gender', 'email', 'committee', 'about_me' )
+        fields = ('username', 'first_name', 'last_name', 'gender', 'email', 'committee', 'about_me')
 
 
 class UserImportForm(forms.Form, CssClassMixin):

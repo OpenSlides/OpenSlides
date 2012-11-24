@@ -18,19 +18,17 @@ import os
 
 try:
     from urlparse import parse_qs
-except ImportError: # python <= 2.5
+except ImportError:  # python <= 2.5
     from cgi import parse_qs
 
 from reportlab.lib import colors
 from reportlab.lib.units import cm
-from reportlab.platypus import (SimpleDocTemplate, PageBreak, Paragraph, Spacer,
-    Table, TableStyle)
+from reportlab.platypus import (
+    SimpleDocTemplate, PageBreak, Paragraph, Spacer, Table, TableStyle)
 
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
-from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.shortcuts import redirect
@@ -39,26 +37,21 @@ from django.utils.translation import ugettext as _, ungettext
 from openslides.utils import csv_ext
 from openslides.utils.pdf import stylesheet
 from openslides.utils.template import Tab
-from openslides.utils.utils import (template, permission_required,
-    del_confirm_form, gen_confirm_form)
-from openslides.utils.views import (PDFView, RedirectView, DeleteView,
-    FormView, SingleObjectMixin, QuestionMixin)
+from openslides.utils.utils import (
+    template, permission_required, del_confirm_form, gen_confirm_form)
+from openslides.utils.views import (
+    PDFView, RedirectView, DeleteView, FormView, SingleObjectMixin,
+    QuestionMixin)
 from openslides.utils.person import get_person
-
 from openslides.config.models import config
-
 from openslides.projector.projector import Widget
-
 from openslides.poll.views import PollFormView
-
 from openslides.participant.api import gen_username, gen_password
 from openslides.participant.models import User, Group
-
 from openslides.agenda.models import Item
-
 from openslides.motion.models import Motion, AVersion, MotionPoll
-from openslides.motion.forms import (MotionForm,
-    MotionFormTrivialChanges, MotionManagerForm,
+from openslides.motion.forms import (
+    MotionForm, MotionFormTrivialChanges, MotionManagerForm,
     MotionManagerFormSupporter, MotionImportForm, ConfigForm)
 
 
@@ -124,14 +117,14 @@ def overview(request):
     for (i, motion) in enumerate(motions):
         try:
             motions[i] = {
-                'actions'     : motion.get_allowed_actions(request.user),
-                'motion' : motion
+                'actions': motion.get_allowed_actions(request.user),
+                'motion': motion
             }
         except:
             # todo: except what?
             motions[i] = {
-                'actions'     : [],
-                'motion' : motion
+                'actions': [],
+                'motion': motion
             }
 
     return {
@@ -210,12 +203,7 @@ def edit(request, motion_id=None):
             managerform = None
 
         if valid:
-            del_supporters = True
             if is_manager:
-                if motion: # Edit motion
-                    original_supporters = list(motion.supporters)
-                else:
-                    original_supporters = []
                 motion = managerform.save(commit=False)
             elif motion_id is None:
                 motion = Motion(submitter=request.user)
@@ -611,7 +599,7 @@ def motion_import(request):
                             except ValueError:
                                 messages.error(request, _('Ignoring malformed line %d in import file.') % (lno + 1))
                                 continue
-                        
+
                         if is_group:
                             # fetch existing groups or issue an error message
                             try:
@@ -694,7 +682,7 @@ def motion_import(request):
                 return redirect(reverse('motion_overview'))
 
             except csv.Error:
-                message.error(request, _('Import aborted because of severe errors in the input file.'))
+                messages.error(request, _('Import aborted because of severe errors in the input file.'))
             except UnicodeDecodeError:
                 messages.error(request, _('Import file has wrong character encoding, only UTF-8 is supported!'))
         else:

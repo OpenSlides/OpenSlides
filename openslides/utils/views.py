@@ -22,8 +22,7 @@ except ImportError:
     # Is this exception realy necessary?
     from StringIO import StringIO
 
-from reportlab.platypus import (SimpleDocTemplate, Paragraph, Frame, PageBreak,
-    Spacer, Table, LongTable, TableStyle, Image)
+from reportlab.platypus import SimpleDocTemplate, Spacer
 from reportlab.lib.units import cm
 
 from django.contrib import messages
@@ -34,9 +33,9 @@ from django.conf import settings
 from django.dispatch import receiver
 from django.http import HttpResponseServerError, HttpResponse, HttpResponseRedirect
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext as _, ugettext_noop, ugettext_lazy
+from django.utils.translation import ugettext as _, ugettext_lazy
 from django.utils.importlib import import_module
-from django.template import loader, RequestContext
+from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.views.generic import (
     TemplateView as _TemplateView,
@@ -50,8 +49,6 @@ from django.views.generic import (
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.list import TemplateResponseMixin
 
-from openslides.config.models import config
-
 from openslides.utils.utils import render_to_forbidden, html_strong
 from openslides.utils.signals import template_manipulation
 from openslides.utils.pdf import firstPage, laterPages
@@ -64,8 +61,8 @@ View = _View
 
 class SetCookieMixin(object):
     def render_to_response(self, context, **response_kwargs):
-        response = TemplateResponseMixin.render_to_response(self, context,
-            **response_kwargs)
+        response = TemplateResponseMixin.render_to_response(
+            self, context, **response_kwargs)
         if 'cookie' in context:
             response.set_cookie(context['cookie'][0], context['cookie'][1])
         return response
@@ -90,8 +87,8 @@ class PermissionMixin(object):
         if not self.has_permission(request, *args, **kwargs):
             if not request.user.is_authenticated():
                 path = request.get_full_path()
-                return HttpResponseRedirect("%s?next=%s" % (settings.LOGIN_URL,
-                    path))
+                return HttpResponseRedirect(
+                    "%s?next=%s" % (settings.LOGIN_URL, path))
             else:
                 return render_to_forbidden(request)
         return _View.dispatch(self, request, *args, **kwargs)
@@ -130,18 +127,18 @@ class QuestionMixin(object):
         option_fields = "\n".join([
             '<input type="submit" name="%s" value="%s">' % (option[0], unicode(option[1]))
             for option in self.get_answer_options()])
-        messages.warning(self.request,
+        messages.warning(
+            self.request,
             """
             %(message)s
             <form action="%(url)s" method="post">
                 <input type="hidden" value="%(csrf)s" name="csrfmiddlewaretoken">
                 %(option_fields)s
             </form>
-            """ % {
-                'message': self.get_question(),
-                'url': self.get_answer_url(),
-                'csrf': csrf(self.request)['csrf_token'],
-                'option_fields': option_fields})
+            """ % {'message': self.get_question(),
+                   'url': self.get_answer_url(),
+                   'csrf': csrf(self.request)['csrf_token'],
+                   'option_fields': option_fields})
 
     def pre_post_redirect(self, request, *args, **kwargs):
         # Reacts on the response of the user in a POST-request.
@@ -167,16 +164,16 @@ class QuestionMixin(object):
 class TemplateView(PermissionMixin, _TemplateView):
     def get_context_data(self, **kwargs):
         context = super(TemplateView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self.__class__, request=self.request,
-            context=context)
+        template_manipulation.send(
+            sender=self.__class__, request=self.request, context=context)
         return context
 
 
 class ListView(PermissionMixin, SetCookieMixin, _ListView):
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self.__class__, request=self.request,
-            context=context)
+        template_manipulation.send(
+            sender=self.__class__, request=self.request, context=context)
         return context
 
 
@@ -217,8 +214,8 @@ class FormView(PermissionMixin, _FormView):
 
     def get_context_data(self, **kwargs):
         context = super(FormView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self.__class__, request=self.request,
-            context=context)
+        template_manipulation.send(
+            sender=self.__class__, request=self.request, context=context)
         return context
 
     def form_invalid(self, form):
@@ -235,8 +232,8 @@ class UpdateView(PermissionMixin, _UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(UpdateView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self.__class__, request=self.request,
-            context=context)
+        template_manipulation.send(
+            sender=self.__class__, request=self.request, context=context)
         return context
 
     def form_invalid(self, form):
@@ -256,8 +253,8 @@ class CreateView(PermissionMixin, _CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(CreateView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self.__class__, request=self.request,
-            context=context)
+        template_manipulation.send(
+            sender=self.__class__, request=self.request, context=context)
         return context
 
     def get_apply_url(self):
@@ -299,7 +296,6 @@ class DeleteView(SingleObjectMixin, QuestionMixin, RedirectView):
 class DetailView(TemplateView, SingleObjectMixin):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        context = self.get_context_data(object=self.object)
         return super(DetailView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -329,8 +325,8 @@ class PDFView(PermissionMixin, View):
         return SimpleDocTemplate(buffer)
 
     def build_document(self, pdf_document, story):
-        pdf_document.build(story, onFirstPage=firstPage,
-            onLaterPages=laterPages)
+        pdf_document.build(
+            story, onFirstPage=firstPage, onLaterPages=laterPages)
 
     def render_to_response(self, filename):
         response = HttpResponse(mimetype='application/pdf')
@@ -340,7 +336,7 @@ class PDFView(PermissionMixin, View):
         buffer = StringIO()
         pdf_document = self.get_template(buffer)
         pdf_document.title = self.get_document_title()
-        story = [Spacer(1, self.get_top_space()*cm)]
+        story = [Spacer(1, self.get_top_space() * cm)]
 
         self.append_to_pdf(story)
 
@@ -350,9 +346,6 @@ class PDFView(PermissionMixin, View):
         buffer.close()
         response.write(pdf)
         return response
-
-    def get_filename(self):
-        return self.filename
 
     def get(self, request, *args, **kwargs):
         return self.render_to_response(self.get_filename())
@@ -364,9 +357,8 @@ def server_error(request, template_name='500.html'):
 
     Templates: `500.html`
     """
-    t = loader.get_template("500.html")
-    return HttpResponseServerError(render_to_string('500.html',
-        context_instance=RequestContext(request)))
+    return HttpResponseServerError(render_to_string(
+        template_name, context_instance=RequestContext(request)))
 
 
 @receiver(template_manipulation, dispatch_uid="send_register_tab")
