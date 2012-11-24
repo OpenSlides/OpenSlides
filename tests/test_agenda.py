@@ -17,6 +17,7 @@ from django.db.models.query import EmptyQuerySet
 from openslides.projector.api import get_active_slide
 from openslides.participant.models import User
 from openslides.agenda.models import Item
+from openslides.agenda.slides import agenda_show
 
 
 class ItemTest(TestCase):
@@ -65,6 +66,29 @@ class ItemTest(TestCase):
         self.item1.related_sid = 'foobar'
         self.assertFalse(self.item1.get_related_slide() is None)
 
+    def test_title_supplement(self):
+        self.assertEqual(self.item1.get_title_supplement(), '')
+
+    def test_delete_item(self):
+        new_item1 = Item.objects.create()
+        new_item2 = Item.objects.create(parent=new_item1)
+        new_item3 = Item.objects.create(parent=new_item2)
+        new_item1.delete()
+        self.assertTrue(new_item3 in Item.objects.all())
+        new_item2.delete(with_children=True)
+        self.assertFalse(new_item3 in Item.objects.all())
+
+    def test_absolute_url(self):
+        self.assertEqual(self.item1.get_absolute_url(), '/agenda/1/')
+        self.assertEqual(self.item1.get_absolute_url('edit'), '/agenda/1/edit/')
+        self.assertEqual(self.item1.get_absolute_url('delete'), '/agenda/1/del/')
+
+    def test_agenda_slide(self):
+        data = agenda_show()
+        self.assertEqual(list(data['items']), list(Item.objects.all().filter(parent=None)))
+        self.assertEqual(data['template'], 'projector/AgendaSummary.html')
+        self.assertEqual(data['title'], 'Agenda')
+
 
 class ViewTest(TestCase):
     def setUp(self):
@@ -93,6 +117,13 @@ class ViewTest(TestCase):
     @property
     def anonymClient(self):
         return Client()
+
+    def testOverview(self):
+        c = self.adminClient
+
+        response = c.get('/agenda/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['items']), len(Item.objects.all()))
 
     def testActivate(self):
         c = self.adminClient
@@ -124,6 +155,14 @@ class ViewTest(TestCase):
         response = c.get('/agenda/%d/open/' % 1000)
         self.refreshItems()
         self.assertEqual(response.status_code, 404)
+
+        # Test ajax
+        response = c.get('/agenda/%d/close/' % self.item1.id,
+                         HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        response = c.get('/agenda/%d/open/' % self.item1.id,
+                         HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
 
     def testEdit(self):
         c = self.adminClient
