@@ -12,9 +12,13 @@ from setuptools import find_packages
 from openslides import get_version
 
 
+with open('README.txt') as file:
+    long_description = file.read()
+
 setup(
     name='openslides',
     description='Presentation-System',
+    long_description=long_description,
     version=get_version(),
     url='http://openslides.org',
     author='OpenSlides-Team',
