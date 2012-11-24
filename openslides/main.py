@@ -13,13 +13,15 @@
 # for python 2.5 support
 from __future__ import with_statement
 
-import os
-import sys
-import optparse
-import socket
-import time
-import threading
 import base64
+import ctypes
+import optparse
+import os
+import socket
+import sys
+import tempfile
+import threading
+import time
 import webbrowser
 
 import django.conf
@@ -28,14 +30,15 @@ from django.core.management import execute_from_command_line
 CONFIG_TEMPLATE = """#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import openslides.main
 from openslides.global_settings import *
 
 # Use 'DEBUG = True' to get more details for server errors
-# (Default for relaeses: 'False')
+# (Default for releases: 'False')
 DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
-DBPATH = %(dbpath)r
+DBPATH = %(dbpath)s
 
 DATABASES = {
     'default': {
@@ -64,8 +67,12 @@ INSTALLED_APPS += INSTALLED_PLUGINS
 
 KEY_LENGTH = 30
 
+# sentinel used to signal that the database ought to be stored
+# relative to the portable's directory
+_portable_db_path = object()
 
-def main(argv=None, opt_defaults=None, database_path=None):
+
+def process_options(argv=None):
     if argv is None:
         argv = sys.argv[1:]
 
@@ -79,12 +86,11 @@ def main(argv=None, opt_defaults=None, database_path=None):
     parser.add_option(
         "--reset-admin", action="store_true",
         help="Make sure the user 'admin' exists and uses 'admin' as password")
-    parser.add_option("-s", "--settings", help="Path to the openslides configuration.")
     parser.add_option(
-        "--no-reload", action="store_true", help="Do not reload the development server")
-
-    if not opt_defaults is None:
-        parser.set_defaults(**opt_defaults)
+        "-s", "--settings", help="Path to the openslides configuration.")
+    parser.add_option(
+        "--no-reload", action="store_true",
+        help="Do not reload the development server")
 
     opts, args = parser.parse_args(argv)
     if args:
@@ -92,13 +98,45 @@ def main(argv=None, opt_defaults=None, database_path=None):
         parser.print_help()
         sys.exit(1)
 
+    return opts
+
+
+def main(argv=None):
+    opts = process_options(argv)
+    _main(opts)
+
+
+def win32_portable_main(argv=None):
+    """special entry point for the win32 portable version"""
+
+    opts = process_options(argv)
+
+    database_path = None
+
+    if opts.settings is None:
+        portable_dir = get_portable_path()
+        try:
+            fd, test_file = tempfile.mkstemp(dir=portable_dir)
+        except OSError:
+            portable_dir_writeable = False
+        else:
+            portable_dir_writeable = True
+            os.close(fd)
+            os.unlink(test_file)
+
+        if portable_dir_writeable:
+            opts.settings = os.path.join(
+                portable_dir, "openslides", "settings.py")
+            database_path = _portable_db_path
+
+    _main(opts, database_path=database_path)
+
+
+def _main(opts, database_path=None):
     # Find the path to the settings
     settings_path = opts.settings
     if settings_path is None:
-        config_home = os.environ.get(
-            'XDG_CONFIG_HOME',
-            os.path.join(os.path.expanduser('~'), '.config'))
-        settings_path = os.path.join(config_home, 'openslides', 'settings.py')
+        settings_path = get_user_config_path('openslides', 'settings.py')
 
     # Create settings if necessary
     if not os.path.exists(settings_path):
@@ -135,15 +173,17 @@ def main(argv=None, opt_defaults=None, database_path=None):
 def create_settings(settings_path, database_path=None):
     settings_module = os.path.dirname(settings_path)
 
-    if database_path is None:
-        data_home = os.environ.get(
-            'XDG_DATA_HOME',
-            os.path.join(os.path.expanduser('~'), '.local', 'share'))
-        database_path = os.path.join(data_home, 'openslides', 'database.sqlite')
+    if database_path is _portable_db_path:
+        database_path = get_portable_db_path()
+        dbpath_value = 'openslides.main.get_portable_db_path()'
+    else:
+        if database_path is None:
+            database_path = get_user_data_path('openslides', 'database.sqlite')
+        dbpath_value = repr(fs2unicode(database_path))
 
     settings_content = CONFIG_TEMPLATE % dict(
         default_key=base64.b64encode(os.urandom(KEY_LENGTH)),
-        dbpath=fs2unicode(database_path))
+        dbpath=dbpath_value)
 
     if not os.path.exists(settings_module):
         os.makedirs(settings_module)
@@ -272,52 +312,63 @@ def fs2unicode(s):
     return s.decode(fs_encoding)
 
 
-def win32_portable_main(argv=None):
-    """special entry point for the win32 portable version"""
-    import tempfile
+def get_user_config_path(*args):
+    if sys.platform == "win32":
+        return win32_get_app_data_path(*args)
 
+    config_home = os.environ.get(
+        'XDG_CONFIG_HOME', os.path.join(os.path.expanduser('~'), '.config'))
+
+    return os.path.join(fs2unicode(config_home), *args)
+
+
+def get_user_data_path(*args):
+    if sys.platform == "win32":
+        return win32_get_app_data_path(*args)
+
+    data_home = os.environ.get(
+        'XDG_DATA_HOME', os.path.join(
+            os.path.expanduser('~'), '.local', 'share'))
+
+    return os.path.join(fs2unicode(data_home), *args)
+
+
+def get_portable_path(*args):
     # NOTE: sys.executable will be the path to openslides.exe
     #       since it is essentially a small wrapper that embeds the
     #       python interpreter
-    portable_dir = os.path.dirname(os.path.abspath(sys.executable))
-    try:
-        fd, test_file = tempfile.mkstemp(dir=portable_dir)
-    except OSError:
-        portable_dir_writeable = False
-    else:
-        portable_dir_writeable = True
-        os.close(fd)
-        os.unlink(test_file)
 
-    if portable_dir_writeable:
-        default_settings = os.path.join(
-            portable_dir, "openslides", "openslides_personal_settings.py")
-        database_path = os.path.join(
-            portable_dir, "openslides", "database.sqlite")
-    else:
-        import ctypes
+    exename = os.path.basename(sys.executable).lower()
+    if exename != "openslides.exe":
+        raise Exception(
+            "Cannot determine portable path when "
+            "not running as portable")
 
-        shell32 = ctypes.WinDLL("shell32.dll")
-        SHGetFolderPath = shell32.SHGetFolderPathW
-        SHGetFolderPath.argtypes = (
-            ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p, ctypes.c_uint32,
-            ctypes.c_wchar_p)
-        SHGetFolderPath.restype = ctypes.c_uint32
+    portable_dir = fs2unicode(os.path.dirname(os.path.abspath(sys.executable)))
+    return os.path.join(portable_dir, *args)
 
-        CSIDL_LOCAL_APPDATA = 0x001c
-        MAX_PATH = 260
 
-        buf = ctypes.create_unicode_buffer(MAX_PATH)
-        res = SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, 0, 0, buf)
-        if res != 0:
-            raise Exception("Could not deterime APPDATA path")
-        default_settings = os.path.join(
-            buf.value, "openslides", "openslides_personal_settings.py")
-        database_path = os.path.join(
-            buf.value, "openslides", "database.sqlite")
+def get_portable_db_path():
+    return get_portable_path('openslides', 'database.sqlite')
 
-    main(argv, opt_defaults={"settings": default_settings},
-         database_path=database_path)
+
+def win32_get_app_data_path(*args):
+    shell32 = ctypes.WinDLL("shell32.dll")
+    SHGetFolderPath = shell32.SHGetFolderPathW
+    SHGetFolderPath.argtypes = (
+        ctypes.c_void_p, ctypes.c_int, ctypes.c_void_p, ctypes.c_uint32,
+        ctypes.c_wchar_p)
+    SHGetFolderPath.restype = ctypes.c_uint32
+
+    CSIDL_LOCAL_APPDATA = 0x001c
+    MAX_PATH = 260
+
+    buf = ctypes.create_unicode_buffer(MAX_PATH)
+    res = SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, 0, 0, buf)
+    if res != 0:
+        raise Exception("Could not deterime APPDATA path")
+
+    return os.path.join(buf.value, *args)
 
 
 if __name__ == "__main__":
