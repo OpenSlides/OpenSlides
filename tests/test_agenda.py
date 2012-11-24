@@ -16,7 +16,7 @@ from django.db.models.query import EmptyQuerySet
 
 from openslides.projector.api import get_active_slide
 from openslides.participant.models import User
-from .models import Item
+from openslides.agenda.models import Item
 
 
 class ItemTest(TestCase):

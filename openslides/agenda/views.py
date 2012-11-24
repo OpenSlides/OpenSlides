@@ -27,7 +27,7 @@ from openslides.utils.utils import html_strong
 from openslides.projector.api import get_active_slide
 from openslides.projector.projector import Widget, SLIDE
 from .models import Item
-from .agenda.forms import ItemOrderForm, ItemForm
+from .forms import ItemOrderForm, ItemForm
 
 
 class Overview(TemplateView):

@@ -12,3 +12,7 @@ docs/_build/*
 build/*
 dist/*
 .DS_Store
+
+# Unit test / coverage reports
+.coverage
+htmlcov
