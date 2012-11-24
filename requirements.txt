@@ -1,0 +1,4 @@
+Django==1.4
+django-mptt
+reportlab
+pil
