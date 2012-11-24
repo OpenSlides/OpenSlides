@@ -20,7 +20,7 @@ setup(
     author='OpenSlides-Team',
     author_email='support@openslides.org',
     license='GPL2+',
-    packages=find_packages(),
+    packages=find_packages(exclude=['tests']),
     include_package_data = True,
     classifiers = [
         # http://pypi.python.org/pypi?%3Aaction=list_classifiers

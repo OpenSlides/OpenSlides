@@ -13,6 +13,7 @@ build/*
 dist/*
 .DS_Store
 settings.py
+versiontools*
 
 # Unit test / coverage reports
 .coverage
