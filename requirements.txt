@@ -2,3 +2,4 @@ Django==1.4.2
 django-mptt
 reportlab
 pil
+simplejson
