@@ -9,4 +9,4 @@ install:
   - python extras/scripts/create_local_settings.py
 script:
   - coverage run ./manage.py test tests && coverage report -m
-  - pep8 --max-line-length=150 openslides | grep -v utils/pdf.py | grep -v urls.py | grep -v motion/
+  - pep8 --max-line-length=150 --exclude="urls.py,motion/,pdf.py" --statistics openslides
