@@ -138,7 +138,9 @@ class Group(DjangoGroup, PersonMixin, Person, SlideMixin):
     person_prefix = 'group'
 
     django_group = models.OneToOneField(DjangoGroup, editable=False, parent_link=True)
-    group_as_person = models.BooleanField(default=False, verbose_name=_("Use this group as participant"), help_text=_('For example as submitter of a motion.'))
+    group_as_person = models.BooleanField(
+        default=False, verbose_name=_("Use this group as participant"),
+        help_text=_('For example as submitter of a motion.'))
     description = models.TextField(blank=True, verbose_name=_("Description"))
 
     @models.permalink
