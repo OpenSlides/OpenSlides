@@ -49,6 +49,8 @@ class SlideMixin(object):
         """
         Return True, if the the slide is the active slide.
         """
+        if self.id is None:
+            return False
         from openslides.projector.api import get_active_slide
         return get_active_slide(only_sid=True) == self.sid
 
