@@ -19,6 +19,8 @@ from openslides.participant.models import User
 from openslides.agenda.models import Item
 from openslides.agenda.slides import agenda_show
 
+from .models import ReleatedItem
+
 
 class ItemTest(TestCase):
     def setUp(self):
@@ -26,6 +28,8 @@ class ItemTest(TestCase):
         self.item2 = Item.objects.create(title='item2')
         self.item3 = Item.objects.create(title='item1A', parent=self.item1)
         self.item4 = Item.objects.create(title='item1Aa', parent=self.item3)
+        self.releated = ReleatedItem.objects.create(name='foo')
+        self.item5 = Item.objects.create(title='item5', related_sid=self.releated.sid)
 
     def testClosed(self):
         self.assertFalse(self.item1.closed)
@@ -46,11 +50,6 @@ class ItemTest(TestCase):
         self.assertEqual(list(self.item2.get_children()), [])
         self.assertTrue(self.item3 in self.item1.get_children())
         self.assertFalse(self.item4 in self.item1.get_children())
-
-        l = Item.objects.all()
-        self.assertEqual(
-            str(l),
-            "[<Item: item1>, <Item: item1A>, <Item: item1Aa>, <Item: item2>]")
 
     def testForms(self):
         for item in Item.objects.all():
@@ -88,6 +87,13 @@ class ItemTest(TestCase):
         self.assertEqual(list(data['items']), list(Item.objects.all().filter(parent=None)))
         self.assertEqual(data['template'], 'projector/AgendaSummary.html')
         self.assertEqual(data['title'], 'Agenda')
+
+    def test_releated_item(self):
+        self.assertEqual(self.item5.get_title(), self.releated.name)
+        self.assertEqual(self.item5.get_title_supplement(), 'test item')
+        self.assertEqual(self.item5.get_related_type(), 'releateditem')
+        self.assertEqual(self.item5.print_related_type(), 'Releateditem')
+
 
 
 class ViewTest(TestCase):
