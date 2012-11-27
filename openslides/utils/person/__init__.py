@@ -21,7 +21,7 @@ __all__ = ['receive_persons', 'generate_person_id', 'get_person', 'Person',
            'PersonField', 'PersonMixin', 'EmptyPerson']
 
 
-class EmptyPerson(PersonMixin):
+class EmptyPerson(PersonMixin, Person):
     @property
     def person_id(self):
         return 'empty'
