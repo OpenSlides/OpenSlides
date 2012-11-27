@@ -2,7 +2,7 @@
 English README file for OpenSlides
 ==================================
 
-This is OpenSlides, version 1.3-beta2 (2012-11-09).
+This is OpenSlides, version 1.3-rc1 (2012-11-27).
 
 
 What is OpenSlides?
