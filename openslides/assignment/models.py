@@ -152,10 +152,7 @@ class Assignment(models.Model, SlideMixin):
         participants = []
         for candidate in candidates.all():
             participants.append(candidate.person)
-        try:
-            participants.sort(key=lambda person: person.sort_name)
-        except AttributeError:
-            pass
+        participants.sort(key=lambda person: person.sort_name)
         return participants
         #return candidates.values_list('person', flat=True)
 
