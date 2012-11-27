@@ -25,8 +25,9 @@ from openslides.config.signals import default_config_value
 from openslides.projector.api import register_slidemodel
 from openslides.projector.projector import SlideMixin
 
+
 class User(DjangoUser, PersonMixin, Person, SlideMixin):
-    prefix = 'user' # This is for the slides
+    prefix = 'user'  # This is for the slides
     person_prefix = 'user'
     GENDER_CHOICES = (
         ('male', _('Male')),
@@ -131,12 +132,15 @@ class User(DjangoUser, PersonMixin, Person, SlideMixin):
 
 register_slidemodel(User)
 
+
 class Group(DjangoGroup, PersonMixin, Person, SlideMixin):
-    prefix = 'group' # This is for the slides
+    prefix = 'group'  # This is for the slides
     person_prefix = 'group'
 
     django_group = models.OneToOneField(DjangoGroup, editable=False, parent_link=True)
-    group_as_person = models.BooleanField(default=False, verbose_name=_("Use this group as participant"), help_text=_('For example as submitter of a motion.'))
+    group_as_person = models.BooleanField(
+        default=False, verbose_name=_("Use this group as participant"),
+        help_text=_('For example as submitter of a motion.'))
     description = models.TextField(blank=True, verbose_name=_("Description"))
 
     @models.permalink
@@ -172,6 +176,7 @@ class Group(DjangoGroup, PersonMixin, Person, SlideMixin):
             'template': 'projector/GroupSlide.html'}
 
 register_slidemodel(Group)
+
 
 class UsersAndGroupsToPersons(object):
     """
@@ -216,8 +221,9 @@ def receive_persons(sender, **kwargs):
     """
     Answers to the Person-API
     """
-    return UsersAndGroupsToPersons(person_prefix_filter=kwargs['person_prefix_filter'],
-                                    id_filter=kwargs['id_filter'])
+    return UsersAndGroupsToPersons(
+        person_prefix_filter=kwargs['person_prefix_filter'],
+        id_filter=kwargs['id_filter'])
 
 
 @receiver(default_config_value, dispatch_uid="participant_default_config")
@@ -234,7 +240,7 @@ def default_config(sender, key, **kwargs):
 
 
 @receiver(signals.post_save, sender=DjangoUser)
-def user_post_save(sender, instance, signal, *args, **kwargs):
+def djangouser_post_save(sender, instance, signal, *args, **kwargs):
     try:
         instance.user
     except User.DoesNotExist:
@@ -242,8 +248,18 @@ def user_post_save(sender, instance, signal, *args, **kwargs):
 
 
 @receiver(signals.post_save, sender=DjangoGroup)
-def group_post_save(sender, instance, signal, *args, **kwargs):
+def djangogroup_post_save(sender, instance, signal, *args, **kwargs):
     try:
         instance.group
     except Group.DoesNotExist:
         Group(django_group=instance).save_base(raw=True)
+
+
+@receiver(signals.post_save, sender=User)
+def user_post_save(sender, instance, *args, **kwargs):
+    from openslides.participant.api import get_or_create_registered_group
+    if not kwargs['created']:
+        return
+    registered = get_or_create_registered_group()
+    instance.groups.add(registered)
+    instance.save()

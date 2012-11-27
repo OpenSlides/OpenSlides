@@ -10,12 +10,6 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-try:
-    import json
-except ImportError:
-    # for python 2.5 support
-    import simplejson as json
-
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _, ugettext_noop, ugettext
@@ -23,11 +17,9 @@ from django.utils.translation import ugettext_lazy as _, ugettext_noop, ugettext
 from mptt.models import MPTTModel, TreeForeignKey
 
 from openslides.config.models import config
-
 from openslides.projector.projector import SlideMixin
-from openslides.projector.api import (register_slidemodel, get_slide_from_sid,
-    register_slidefunc, split_sid)
-
+from openslides.projector.api import (
+    register_slidemodel, get_slide_from_sid, register_slidefunc)
 from openslides.agenda.slides import agenda_show
 
 
@@ -45,7 +37,7 @@ class Item(MPTTModel, SlideMixin):
     closed = models.BooleanField(default=False, verbose_name=_("Closed"))
     weight = models.IntegerField(default=0, verbose_name=_("Weight"))
     parent = TreeForeignKey('self', null=True, blank=True,
-        related_name='children')
+                            related_name='children')
     related_sid = models.CharField(null=True, blank=True, max_length=63)
 
     def get_related_slide(self):
@@ -83,7 +75,6 @@ class Item(MPTTModel, SlideMixin):
         if self.related_sid is None:
             return self.title
         return self.get_related_slide().get_agenda_title()
-
 
     def get_title_supplement(self):
         """

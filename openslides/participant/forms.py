@@ -18,12 +18,20 @@ from openslides.utils.forms import (
     CssClassMixin, LocalizedModelMultipleChoiceField)
 
 from openslides.participant.models import User, Group
+from openslides.participant.api import get_or_create_registered_group
 
 
 class UserCreateForm(forms.ModelForm, CssClassMixin):
     groups = forms.ModelMultipleChoiceField(
         queryset=Group.objects.exclude(name__iexact='anonymous'),
         label=_("Groups"), required=False)
+
+    def __init__(self, *args, **kwargs):
+        if kwargs.get('instance', None) is None:
+            initial = kwargs.setdefault('initial', {})
+            registered = get_or_create_registered_group()
+            initial['groups'] = [registered.pk]
+        super(UserCreateForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = User
@@ -58,12 +66,13 @@ class GroupForm(forms.ModelForm, CssClassMixin):
         instance = forms.ModelForm.save(self, False)
 
         old_save_m2m = self.save_m2m
-        def save_m2m():
-           old_save_m2m()
 
-           instance.user_set.clear()
-           for user in self.cleaned_data['users']:
-               instance.user_set.add(user)
+        def save_m2m():
+            old_save_m2m()
+
+            instance.user_set.clear()
+            for user in self.cleaned_data['users']:
+                instance.user_set.add(user)
         self.save_m2m = save_m2m
 
         if commit:
@@ -76,13 +85,13 @@ class GroupForm(forms.ModelForm, CssClassMixin):
         # Do not allow to change the name "anonymous" or give another group
         # this name
         data = self.cleaned_data['name']
-        if self.instance.name.lower() == 'anonymous':
+        if self.instance.name.lower() in ['anonymous', 'registered']:
             # Editing the anonymous-user
             if self.instance.name.lower() != data.lower():
                 raise forms.ValidationError(
-                    _('You can not edit the name for the anonymous user'))
+                    _('You can not edit the name for this group.'))
         else:
-            if data.lower() == 'anonymous':
+            if data.lower() in ['anonymous', 'registered']:
                 raise forms.ValidationError(
                     _('Group name "%s" is reserved for internal use.') % data)
         return data
@@ -94,7 +103,7 @@ class GroupForm(forms.ModelForm, CssClassMixin):
 class UsersettingsForm(forms.ModelForm, CssClassMixin):
     class Meta:
         model = User
-        fields = ('username', 'first_name', 'last_name', 'gender', 'email', 'committee', 'about_me' )
+        fields = ('username', 'first_name', 'last_name', 'gender', 'email', 'committee', 'about_me')
 
 
 class UserImportForm(forms.Form, CssClassMixin):

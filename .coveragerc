@@ -1,0 +1,4 @@
+[run]
+source=openslides
+[report]
+exclude_lines = def __(unicode|repr)__

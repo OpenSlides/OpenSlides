@@ -29,12 +29,11 @@ def get_version(version=None):
     if version[3] != 'final':
         if version[3] == 'dev':
             try:
+                import os
                 git_head_path = '.git/' + open('.git/HEAD', 'r').read()[5:].rstrip()
+                git_commit_id = open(os.path.abspath(git_head_path), 'r').read().rstrip()
             except IOError:
                 git_commit_id = 'unknown'
-            else:
-                import os
-                git_commit_id = open(os.path.abspath(git_head_path), 'r').read().rstrip()
             sub = '-%s%s' % (version[3], git_commit_id)
         else:
             sub = '-' + version[3] + str(version[4])
