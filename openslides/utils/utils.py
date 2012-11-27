@@ -142,12 +142,10 @@ def ajax_request(data):
 
 
 def _propper_unicode(text):
-    res = ''
     if not isinstance(text, unicode):
-        res = u"%s" % text.decode('UTF-8')
+        return u"%s" % text.decode('UTF-8')
     else:
-        res = text
-    return res
+        return text
 
 
 def decodedict(dict):
