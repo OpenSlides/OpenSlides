@@ -146,7 +146,7 @@ class Group(DjangoGroup, PersonMixin, Person, SlideMixin):
     @models.permalink
     def get_absolute_url(self, link='view'):
         """
-        Return the URL to this user.
+        Return the URL to this user group.
 
         link can be:
         * view
