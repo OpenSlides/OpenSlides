@@ -40,7 +40,7 @@ def get_git_commit_id():
     """
     try:
         git_head = open('.git/HEAD', 'r').read().rstrip()
-        if True: #starts with 'ref: '
+        if git_head[:5] == 'ref: ':
             git_commit_id = open('.git/%s' % git_head[5:], 'r').read().rstrip()
         else:
             git_commit_id = git_head
