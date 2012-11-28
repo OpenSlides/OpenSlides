@@ -24,8 +24,8 @@ class ItemForm(forms.ModelForm, CssClassMixin):
     """
     Form to create of update an item.
     """
-    parent = TreeNodeChoiceField(queryset=Item.objects.all(),
-        label=_("Parent item"), required=False)
+    parent = TreeNodeChoiceField(
+        queryset=Item.objects.all(), label=_("Parent item"), required=False)
 
     class Meta:
         model = Item

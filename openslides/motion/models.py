@@ -21,18 +21,13 @@ from django.utils.translation import ugettext_lazy as _, ugettext_noop, ugettext
 
 from openslides.utils.utils import _propper_unicode
 from openslides.utils.person import PersonField
-
 from openslides.config.models import config
 from openslides.config.signals import default_config_value
-
-from openslides.poll.models import (BaseOption, BasePoll, CountVotesCast,
-    CountInvalid, BaseVote)
-
-from openslides.participant.models import User, Group
-
+from openslides.poll.models import (
+    BaseOption, BasePoll, CountVotesCast, CountInvalid, BaseVote)
+from openslides.participant.models import User
 from openslides.projector.api import register_slidemodel
 from openslides.projector.models import SlideMixin
-
 from openslides.agenda.models import Item
 
 
@@ -53,7 +48,7 @@ class Motion(models.Model, SlideMixin):
         ('noc', _('Not Concerned')),
         ('com', _('Commited a bill')),
         ('nop', _('Rejected (not authorized)')),
-        ('rev', _('Needs Review')), # Where is this status used?
+        ('rev', _('Needs Review')),  # Where is this status used?
         #additional actions:
         # edit
         # delete
@@ -67,9 +62,9 @@ class Motion(models.Model, SlideMixin):
 
     submitter = PersonField(verbose_name=_("Submitter"))
     number = models.PositiveSmallIntegerField(blank=True, null=True,
-                                        unique=True)
+                                              unique=True)
     status = models.CharField(max_length=3, choices=STATUS, default='pub')
-    permitted = models.ForeignKey('AVersion', related_name='permitted', \
+    permitted = models.ForeignKey('AVersion', related_name='permitted',
                                   null=True, blank=True)
     log = models.TextField(blank=True, null=True)
 
@@ -94,7 +89,7 @@ class Motion(models.Model, SlideMixin):
         else:
             return self.last_version
 
-    def accept_version(self, version, user = None):
+    def accept_version(self, version, user=None):
         """
         accept a Version
         """
@@ -102,15 +97,15 @@ class Motion(models.Model, SlideMixin):
         self.save(nonewversion=True)
         version.rejected = False
         version.save()
-        self.writelog(_("Version %d authorized") % (version.aid, ),
-            user)
+        self.writelog(_("Version %d authorized") % version.aid, user)
 
-    def reject_version(self, version, user = None):
+    def reject_version(self, version, user=None):
         if version.id > self.permitted.id:
             version.rejected = True
             version.save()
-            self.writelog(pgettext("Rejected means not authorized", "Version %d rejected")
-                % (version.aid, ), user)
+            self.writelog(pgettext(
+                "Rejected means not authorized", "Version %d rejected")
+                % version.aid, user)
             return True
         return False
 
@@ -154,8 +149,8 @@ class Motion(models.Model, SlideMixin):
         is not the lastone and the lastone is not rejected.
         TODO: rename the property in unchecked__changes
         """
-        if (self.last_version != self.permitted
-        and not self.last_version.rejected):
+        if (self.last_version != self.permitted and
+                not self.last_version.rejected):
             return True
         else:
             return False
@@ -207,7 +202,8 @@ class Motion(models.Model, SlideMixin):
         last_version = self.last_version
         fields = ["text", "title", "reason"]
         if last_version is not None:
-            changed_fields = [f for f in fields
+            changed_fields = [
+                f for f in fields
                 if getattr(last_version, f) != getattr(self, f)]
             if not changed_fields:
                 return  # No changes
@@ -219,19 +215,22 @@ class Motion(models.Model, SlideMixin):
                 last_version.save()
 
                 meta = AVersion._meta
-                field_names = [unicode(meta.get_field(f).verbose_name)
+                field_names = [
+                    unicode(meta.get_field(f).verbose_name)
                     for f in changed_fields]
 
-                self.writelog(_("Trivial changes to version %(version)d; "
-                    "changed fields: %(changed_fields)s")
-                    % dict(version = last_version.aid,
-                        changed_fields = ", ".join(field_names)))
-                return # Done
+                self.writelog(
+                    _("Trivial changes to version %(version)d; "
+                      "changed fields: %(changed_fields)s")
+                    % dict(version=last_version.aid,
+                           changed_fields=", ".join(field_names)))
+                return  # Done
 
-            version = AVersion(title=getattr(self, 'title', ''),
-                       text=getattr(self, 'text', ''),
-                       reason=getattr(self, 'reason', ''),
-                       motion=self)
+            version = AVersion(
+                title=getattr(self, 'title', ''),
+                text=getattr(self, 'text', ''),
+                reason=getattr(self, 'reason', ''),
+                motion=self)
             version.save()
             self.writelog(_("Version %s created") % version.aid, user)
             is_manager = user.has_perm('motion.can_manage_motion')
@@ -239,9 +238,8 @@ class Motion(models.Model, SlideMixin):
             is_manager = False
 
         supporters = self.motionsupporter_set.all()
-        if (self.status == "pub"
-        and supporters
-        and not is_manager):
+        if (self.status == "pub" and
+                supporters and not is_manager):
             supporters.delete()
             self.writelog(_("Supporters removed"), user)
 
@@ -272,7 +270,7 @@ class Motion(models.Model, SlideMixin):
         remove a supporter from the list of supporters of the motion
         """
         try:
-            object = self.motionsupporter_set.get(person=person).delete()
+            self.motionsupporter_set.get(person=person).delete()
         except MotionSupporter.DoesNotExist:
             # TODO: Don't do nothing but raise a precise exception for the view
             pass
@@ -288,8 +286,7 @@ class Motion(models.Model, SlideMixin):
             raise NameError('This motion has already a number.')
         if number is None:
             try:
-                number = Motion.objects.aggregate(Max('number')) \
-                            ['number__max'] + 1
+                number = Motion.objects.aggregate(Max('number'))['number__max'] + 1
             except TypeError:
                 number = 1
         self.number = number
@@ -316,8 +313,6 @@ class Motion(models.Model, SlideMixin):
         """
         self.set_status(user, "nop")
         #TODO: reject last version
-        aversion = self.last_version
-        #self.permitted = aversion
         if self.number is None:
             self.set_number()
         self.save()
@@ -333,11 +328,11 @@ class Motion(models.Model, SlideMixin):
                 error = False
                 break
         if error:
-            #TODO: Use the Right Error
+            # TODO: Use the Right Error
             raise NameError(_('%s is not a valid status.') % status)
         if self.status == status:
-            #TODO: Use the Right Error
-            raise NameError(_('The motion status is already \'%s.\'') \
+            # TODO: Use the Right Error
+            raise NameError(_('The motion status is already \'%s.\'')
                             % self.status)
 
         actions = []
@@ -353,7 +348,7 @@ class Motion(models.Model, SlideMixin):
         oldstatus = self.get_status_display()
         self.status = status
         self.save()
-        self.writelog(_("Status modified")+": %s -> %s" \
+        self.writelog(_("Status modified") + ": %s -> %s"
                       % (oldstatus, self.get_status_display()), user)
 
     def get_allowed_actions(self, user):
@@ -432,9 +427,8 @@ class Motion(models.Model, SlideMixin):
         allready a number
         """
         if self.number and not force:
-            raise NameError('The motion has already a number. ' \
+            raise NameError('The motion has already a number. '
                             'You can not delete it.')
-
 
         for item in Item.objects.filter(related_sid=self.sid):
             item.delete()
@@ -501,11 +495,11 @@ class Motion(models.Model, SlideMixin):
         for poll in self.polls:
             for option in poll.get_options():
                 if option.get_votes().exists():
-                    results.append((option['Yes'], option['No'],
+                    results.append((
+                        option['Yes'], option['No'],
                         option['Abstain'], poll.print_votesinvalid(),
                         poll.print_votescast()))
         return results
-
 
     def slide(self):
         """
@@ -542,10 +536,10 @@ class Motion(models.Model, SlideMixin):
 
 
 class AVersion(models.Model):
-    title = models.CharField(max_length=100, verbose_name = _("Title"))
-    text = models.TextField(verbose_name = _("Text"))
-    reason = models.TextField(null=True, blank=True, verbose_name = _("Reason"))
-    rejected = models.BooleanField() # = Not Permitted
+    title = models.CharField(max_length=100, verbose_name=_("Title"))
+    text = models.TextField(verbose_name=_("Text"))
+    reason = models.TextField(null=True, blank=True, verbose_name=_("Reason"))
+    rejected = models.BooleanField()  # = Not Permitted
     time = models.DateTimeField(auto_now=True)
     motion = models.ForeignKey(Motion)
 
@@ -576,8 +570,8 @@ class MotionOption(BaseOption):
 
 class MotionPoll(BasePoll, CountInvalid, CountVotesCast):
     option_class = MotionOption
-    vote_values = [ugettext_noop('Yes'), ugettext_noop('No'),
-        ugettext_noop('Abstain')]
+    vote_values = [
+        ugettext_noop('Yes'), ugettext_noop('No'), ugettext_noop('Abstain')]
 
     motion = models.ForeignKey(Motion)
 

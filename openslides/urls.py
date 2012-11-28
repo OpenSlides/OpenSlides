@@ -12,8 +12,6 @@
 
 from django.conf import settings
 from django.conf.urls.defaults import patterns, url, include
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.shortcuts import redirect
 from django.utils.importlib import import_module
 
 from openslides.utils.views import RedirectView
@@ -34,7 +32,7 @@ urlpatterns = patterns('',
 )
 
 urlpatterns += patterns('django.contrib.staticfiles.views',
-    url(r'^static/(?P<path>.*)$', 'serve', {'insecure':True}),
+    url(r'^static/(?P<path>.*)$', 'serve', {'insecure': True}),
 )
 
 js_info_dict = {

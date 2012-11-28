@@ -61,8 +61,8 @@ class MultiplePersonFormField(PersonFormField):
     widget = forms.widgets.SelectMultiple
 
     def __init__(self, *args, **kwargs):
-        super(MultiplePersonFormField, self).__init__(empty_label=None,
-                                                    *args, **kwargs)
+        super(MultiplePersonFormField, self).__init__(
+            empty_label=None, *args, **kwargs)
 
     def to_python(self, value):
         if hasattr(value, '__iter__'):

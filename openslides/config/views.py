@@ -12,18 +12,18 @@
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.models import Group, Permission
 from django.core.urlresolvers import reverse
 from django.utils.importlib import import_module
 from django.utils.translation import ugettext as _
 
 from openslides import get_version, get_git_commit_id, RELEASE
-
 from openslides.utils.template import Tab
 from openslides.utils.views import FormView, TemplateView
+from .forms import GeneralConfigForm
+from .models import config
 
-from openslides.config.forms import GeneralConfigForm
-from openslides.config.models import config
+# TODO: Do not import the participant module in config
+from openslides.participant.api import get_or_create_anonymous_group
 
 
 class GeneralConfig(FormView):
@@ -61,27 +61,12 @@ class GeneralConfig(FormView):
         # system
         if form.cleaned_data['system_enable_anonymous']:
             config['system_enable_anonymous'] = True
-            # check for Anonymous group and (re)create it as needed
-            try:
-                anonymous = Group.objects.get(name='Anonymous')
-            except Group.DoesNotExist:
-                default_perms = ['can_see_agenda', 'can_see_projector',
-                    'can_see_motion', 'can_see_assignment',
-                    'can_see_dashboard']
-                anonymous = Group()
-                anonymous.name = 'Anonymous'
-                anonymous.save()
-                anonymous.permissions = Permission.objects.filter(
-                    codename__in=default_perms)
-                anonymous.save()
-                messages.success(self.request,
-                    _('Anonymous access enabled. Please modify the "Anonymous" ' \
-                    'group to fit your required permissions.'))
+            get_or_create_anonymous_group()
         else:
             config['system_enable_anonymous'] = False
 
-        messages.success(self.request,
-            _('General settings successfully saved.'))
+        messages.success(
+            self.request, _('General settings successfully saved.'))
         return super(GeneralConfig, self).form_valid(form)
 
 

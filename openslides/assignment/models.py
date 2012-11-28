@@ -16,16 +16,12 @@ from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
 
 from openslides.utils.person import PersonField
-
 from openslides.config.models import config
 from openslides.config.signals import default_config_value
-
 from openslides.projector.api import register_slidemodel
 from openslides.projector.projector import SlideMixin
-
-from openslides.poll.models import (BasePoll, CountInvalid, CountVotesCast,
-    BaseOption, PublishPollMixin, BaseVote)
-
+from openslides.poll.models import (
+    BasePoll, CountInvalid, CountVotesCast, BaseOption, PublishPollMixin, BaseVote)
 from openslides.agenda.models import Item
 
 
@@ -51,11 +47,10 @@ class Assignment(models.Model, SlideMixin):
     )
 
     name = models.CharField(max_length=100, verbose_name=_("Name"))
-    description = models.TextField(null=True, blank=True,
-        verbose_name=_("Description"))
-    posts = models.PositiveSmallIntegerField(
-        verbose_name=_("Number of available posts"))
-    polldescription = models.CharField(max_length=100, null=True, blank=True,
+    description = models.TextField(null=True, blank=True, verbose_name=_("Description"))
+    posts = models.PositiveSmallIntegerField(verbose_name=_("Number of available posts"))
+    polldescription = models.CharField(
+        max_length=100, null=True, blank=True,
         verbose_name=_("Comment on the ballot paper"))
     status = models.CharField(max_length=3, choices=STATUS, default='sea')
 
@@ -68,8 +63,8 @@ class Assignment(models.Model, SlideMixin):
         if error:
             raise NameError(_('%s is not a valid status.') % status)
         if self.status == status:
-            raise NameError(_('The assignment status is already %s.')
-                % self.status)
+            raise NameError(
+                _('The assignment status is already %s.') % self.status)
         self.status = status
         self.save()
 
@@ -85,16 +80,16 @@ class Assignment(models.Model, SlideMixin):
             raise NameError(_('<b>%s</b> is already a candidate.') % candidate)
         if not person.has_perm("assignment.can_manage_assignment") and self.status != 'sea':
             raise NameError(_('The candidate list is already closed.'))
-        candidation = self.assignment_candidates.filter(person=candidate)
-        if candidation and candidate != person and \
+        candidature = self.assignment_candidates.filter(person=candidate)
+        if candidature and candidate != person and \
                 not person.has_perm("assignment.can_manage_assignment"):
-            # if the candidation is blocked and anotherone tries to run the
+            # if the candidature is blocked and anotherone tries to run the
             # candidate
             raise NameError(
                 _('%s does not want to be a candidate.') % candidate)
-        elif candidation:
-            candidation[0].blocked = False
-            candidation[0].save()
+        elif candidature:
+            candidature[0].blocked = False
+            candidature[0].save()
         else:
             AssignmentCandidate(assignment=self, person=candidate).save()
 
@@ -103,36 +98,33 @@ class Assignment(models.Model, SlideMixin):
         stop running for a vote
         """
         try:
-            candidation = self.assignment_candidates.get(person=candidate)
+            candidature = self.assignment_candidates.get(person=candidate)
         except AssignmentCandidate.DoesNotExist:
             raise Exception(_('%s is no candidate') % candidate)
 
-        if not candidation.blocked:
+        if not candidature.blocked:
             if blocked:
-                candidation.blocked = True
-                candidation.save()
+                candidature.blocked = True
+                candidature.save()
             else:
-                candidation.delete()
+                candidature.delete()
         else:
-            candidation.delete()
-
+            candidature.delete()
 
     def is_candidate(self, person):
         """
         return True, if person is a candidate.
         """
         try:
-            return self.assignment_candidates.filter(person=person) \
-                   .exclude(blocked=True).exists()
+            return self.assignment_candidates.filter(person=person).exclude(blocked=True).exists()
         except AttributeError:
             return False
 
     def is_blocked(self, person):
         """
-        return True, if the person is blockt for candidation.
+        return True, if the person is blockt for candidature.
         """
-        return self.assignment_candidates.filter(person=person) \
-                   .filter(blocked=True).exists()
+        return self.assignment_candidates.filter(person=person).filter(blocked=True).exists()
 
     @property
     def assignment_candidates(self):
@@ -163,7 +155,6 @@ class Assignment(models.Model, SlideMixin):
         participants.sort(key=lambda person: person.sort_name)
         return participants
         #return candidates.values_list('person', flat=True)
-
 
     def set_elected(self, person, value=True):
         candidate = self.assignment_candidates.get(person=person)
@@ -211,7 +202,6 @@ class Assignment(models.Model, SlideMixin):
                     votes = None
                 vote_results_dict[candidate].append(votes)
         return vote_results_dict
-
 
     def get_agenda_title(self):
         return self.name
@@ -298,8 +288,7 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
                     self.yesnoabstain = False
             self.save()
         if self.yesnoabstain:
-            return [ugettext_noop('Yes'), ugettext_noop('No'),
-                ugettext_noop('Abstain')]
+            return [ugettext_noop('Yes'), ugettext_noop('No'), ugettext_noop('Abstain')]
         else:
             return [ugettext_noop('Votes')]
 

@@ -12,15 +12,19 @@ from setuptools import find_packages
 from openslides import get_version
 
 
+with open('README.txt') as file:
+    long_description = file.read()
+
 setup(
     name='openslides',
     description='Presentation-System',
+    long_description=long_description,
     version=get_version(),
     url='http://openslides.org',
     author='OpenSlides-Team',
     author_email='support@openslides.org',
     license='GPL2+',
-    packages=find_packages(),
+    packages=find_packages(exclude=['tests']),
     include_package_data = True,
     classifiers = [
         # http://pypi.python.org/pypi?%3Aaction=list_classifiers

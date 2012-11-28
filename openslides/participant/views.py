@@ -28,7 +28,6 @@ from reportlab.platypus import (
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
-from django.contrib.auth.models import User
 from django.contrib.auth.views import login as django_login
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
@@ -39,16 +38,12 @@ from openslides.utils.template import Tab
 from openslides.utils.utils import (
     template, decodedict, encodedict, delete_default_permissions, html_strong)
 from openslides.utils.views import (
-    FormView, PDFView, CreateView, UpdateView, DeleteView,
-    RedirectView, SingleObjectMixin, ListView, QuestionMixin)
-
+    FormView, PDFView, CreateView, UpdateView, DeleteView, PermissionMixin,
+    RedirectView, SingleObjectMixin, ListView, QuestionMixin, DetailView)
 from openslides.config.models import config
-
 from openslides.projector.projector import Widget
-
 from openslides.motion.models import Motion
 from openslides.assignment.models import Assignment
-
 from openslides.participant.api import gen_username, gen_password, import_users
 from openslides.participant.forms import (
     UserCreateForm, UserUpdateForm, UsersettingsForm,
@@ -125,11 +120,13 @@ class UserOverview(ListView):
             percent = 0
 
         # list of all existing categories
-        structure_levels = [p['structure_level'] for p in User.objects.values('structure_level')
-            .exclude(structure_level='').distinct()]
+        structure_levels = [
+            p['structure_level'] for p in
+            User.objects.values('structure_level').exclude(structure_level='').distinct()]
         # list of all existing committees
-        committees = [p['committee'] for p in User.objects.values('committee')
-            .exclude(committee='').distinct()]
+        committees = [
+            p['committee'] for p in
+            User.objects.values('committee').exclude(committee='').distinct()]
         # context vars
         context.update({
             'allusers': all_users,
@@ -137,13 +134,13 @@ class UserOverview(ListView):
             'percent': round(percent, 1),
             'structure_levels': structure_levels,
             'committees': committees,
-            'cookie': ['participant_sortfilter', urlencode(decodedict(self.sortfilter),
+            'cookie': [
+                'participant_sortfilter', urlencode(decodedict(self.sortfilter),
                 doseq=True)],
             'sortfilter': self.sortfilter})
         return context
 
 
-from openslides.utils.views import DetailView, PermissionMixin
 class UserDetailView(DetailView, PermissionMixin):
     """
     Classed based view to show a specific user in the interface.
@@ -177,8 +174,8 @@ class UserCreateView(CreateView):
     apply_url = 'user_edit'
 
     def manipulate_object(self, form):
-        self.object.username = gen_username(form.cleaned_data['first_name'],
-            form.cleaned_data['last_name'])
+        self.object.username = gen_username(
+            form.cleaned_data['first_name'], form.cleaned_data['last_name'])
         if not self.object.default_password:
             self.object.default_password = gen_password()
         self.object.set_password(self.object.default_password)
@@ -210,6 +207,7 @@ class UserDeleteView(DeleteView):
             messages.error(request, _("You can not delete yourself."))
         else:
             super(UserDeleteView, self).pre_redirect(request, *args, **kwargs)
+
 
 class SetUserStatusView(RedirectView, SingleObjectMixin):
     """
@@ -443,7 +441,7 @@ class GroupDeleteView(DeleteView):
     url = 'user_group_overview'
 
     def pre_redirect(self, request, *args, **kwargs):
-        if self.get_object().name.lower() == 'anonymous':
+        if self.get_object().name.lower() in ['anonymous', 'registered']:
             messages.error(request, _("You can not delete this Group."))
         else:
             super(GroupDeleteView, self).pre_redirect(request, *args, **kwargs)
@@ -547,8 +545,9 @@ def register_tab(request):
     return Tab(
         title=_('Participants'),
         url=reverse('user_overview'),
-        permission=request.user.has_perm('participant.can_see_participant') or
-            request.user.has_perm('participant.can_manage_participant'),
+        permission=(
+            request.user.has_perm('participant.can_see_participant') or
+            request.user.has_perm('participant.can_manage_participant')),
         selected=selected)
 
 
@@ -569,12 +568,12 @@ def get_personal_info_widget(request):
     and where you are supporter or candidate.
     """
     personal_info_context = {
-    'submitted_motions': Motion.objects.filter(submitter=request.user),
-    'config_motion_min_supporters': config['motion_min_supporters'],
-    'supported_motions': Motion.objects.filter(motionsupporter=request.user),
-    'assignments': Assignment.objects.filter(
-        assignmentcandidate__person=request.user,
-        assignmentcandidate__blocked=False),}
+        'submitted_motions': Motion.objects.filter(submitter=request.user),
+        'config_motion_min_supporters': config['motion_min_supporters'],
+        'supported_motions': Motion.objects.filter(motionsupporter=request.user),
+        'assignments': Assignment.objects.filter(
+            assignmentcandidate__person=request.user,
+            assignmentcandidate__blocked=False)}
     return Widget(
         name='personal_info',
         display_name=_('My motions and elections'),
@@ -593,7 +592,7 @@ def get_user_widget(request):
         name='user',
         display_name=_('Participants'),
         template='participant/user_widget.html',
-        context={'users': User.objects.all(),},
+        context={'users': User.objects.all()},
         permission_required='projector.can_manage_projector',
         default_column=1)
 
@@ -607,6 +606,6 @@ def get_group_widget(request):
         name='group',
         display_name=_('Groups'),
         template='participant/group_widget.html',
-        context={'groups': Group.objects.all(),},
+        context={'groups': Group.objects.all()},
         permission_required='projector.can_manage_projector',
         default_column=1)

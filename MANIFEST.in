@@ -1,6 +1,5 @@
 include AUTHORS
 include CHANGELOG
-include initial_data.json
 include INSTALL.txt
 include LICENSE
 include manage.py
@@ -12,16 +11,14 @@ recursive-include openslides/templates *
 
 recursive-include openslides/agenda/templates *
 recursive-include openslides/agenda/static *
-recursive-include openslides/application/templates *
-recursive-include openslides/application/static *
+recursive-include openslides/motion/templates *
 recursive-include openslides/assignment/templates *
 recursive-include openslides/assignment/static *
 recursive-include openslides/config/templates *
-recursive-include openslides/config/static *
 recursive-include openslides/participant/templates *
 recursive-include openslides/participant/static *
+include openslides/participant/fixtures/groups_de.json
 recursive-include openslides/poll/templates *
-recursive-include openslides/poll/static *
 recursive-include openslides/projector/templates *
 recursive-include openslides/projector/static *
 

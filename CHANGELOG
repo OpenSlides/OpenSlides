@@ -2,6 +2,80 @@ CHANGELOG of OpenSlides
 http://openslides.org
 
 
+Version 1.3 (unreleased)
+========================
+[http://dev.openslides.org/milestone/1.3]
+
+Projector:
+- New public dashboard which allows access for all users per default. (#361)
+  (changed from the old, limited projector control page)
+- New dashboard widgets:
+  * welcome widget (shows static welcome title and text)
+  * participant widget
+  * group widget
+  * personal widget (shows my motions and my elections)
+- Hide scrollbar in projector view.
+- Added cache for AJAX version of the projector view.
+- Moved projector control icons into projector live widget. (#403)
+- New weight field for custom slides (to order custom slides in widget).
+- Fixed drag'n'drop behaviour of widgets into empty dashboard column.
+- Fixed permissions for agenda, motion and assignment widgets (set to projector.can_manage_projector).
+Agenda:
+- Fixed slide error if agenda item deleted. (#330)
+Motions:
+- Translation: Changed 'application' to 'motion'.
+- Fixed: Manager could not edit supporters. (#336)
+- Fixed attribute error for anonymous users in motion view. (#329)
+- Set default sorting of motions by number (in widget).
+- CSV import allows to import group as submitter. (#419)
+- Updated motion code for new user API.
+- Rewrote motion views as class based views.
+Elections:
+- User can block himself/herself from candidate list after delete his/her candidature.
+- Show blocked candidates in separate list.
+- Mark elected candidates in candidate list. (#374)
+- Show linebreaks in description. (#392)
+- Set default sorting of elections by name (in widget).
+- Fixed redirect from a poll which does not exists anymore.
+- Changed default permissions of anonymous user to see elections. (#334)
+- Updated assignment code for new user API.
+Participants:
+- New user and group API.
+- New group option to handle a group as participant (and thus e.g. as submitter of motion).
+- CSV import does not delete existing users anymore and append users as new users.
+- New user field 'about me'. (#390)
+- New config option for sorting users by first or last name (in participant lists, elections and motions). (#303)
+- Allowed whitespaces in username, default: <firstname lastname>. (#326)
+- New user and group slides. (#176)
+- Don't allow to deactivate the administrator or themself.
+- Don't allow to delete themself.
+- Renamed participant field 'groups' to 'structure level' (German: Gliederungsebene).
+- Rewrote participant views as class based views.
+- Made OpenSlides user a child model of Django user model.
+- Appended tests.
+- Fixed error to allow admins to delete anonymous group
+
+Other:
+- Added French translation (Thanks to Moira).
+- Updated setup.py to make an openslides python package.
+- Removed frontpage (welcome widget contains it's content) and redirect '/' to dashboard url.
+
+- Added LOCALE_PATHS to openslides_settings to avoid deprication in Django 1.5.
+- Redesigned the DeleteView (append QuestionMixin to send question via the django message API).
+- Fixed encoding error in settings.py. (#349)
+- Renamed openslides_settings.py to openslides_global_settings.py.
+- New default path to database file (XDG_DATA_HOME, e.g. ~/.local/share/openslides/).
+- New default path to settings file (XDG_CONFIG_HOME, e.g. ~/.config/openslides/).
+- Added special handling to determine location of database and settings file in portable version.
+- Don't use similar characters in generated passwords (no 'Il10oO').
+- Localised the datetime in PDF header. (#296)
+- Used specific session cookie name. (#332)
+- Moved code repository from hg to git (incl. some required updates, e.g. version string function).
+- Updated German translations.
+- Several code optimizations.
+- Several minor and medium issues and errors were fixed.
+
+
 Version 1.2 (2012-07-25)
 ========================
 [http://dev.openslides.org/milestone/1.2]

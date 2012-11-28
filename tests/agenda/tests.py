@@ -12,12 +12,15 @@
 
 from django.test import TestCase
 from django.test.client import Client
-from django.contrib.auth.models import User
 from django.db.models.query import EmptyQuerySet
 
 from openslides.projector.api import get_active_slide
-
+from openslides.participant.models import User
 from openslides.agenda.models import Item
+from openslides.agenda.slides import agenda_show
+
+from .models import ReleatedItem
+
 
 class ItemTest(TestCase):
     def setUp(self):
@@ -25,6 +28,8 @@ class ItemTest(TestCase):
         self.item2 = Item.objects.create(title='item2')
         self.item3 = Item.objects.create(title='item1A', parent=self.item1)
         self.item4 = Item.objects.create(title='item1Aa', parent=self.item3)
+        self.releated = ReleatedItem.objects.create(name='foo')
+        self.item5 = Item.objects.create(title='item5', related_sid=self.releated.sid)
 
     def testClosed(self):
         self.assertFalse(self.item1.closed)
@@ -46,10 +51,6 @@ class ItemTest(TestCase):
         self.assertTrue(self.item3 in self.item1.get_children())
         self.assertFalse(self.item4 in self.item1.get_children())
 
-        l = Item.objects.all()
-        self.assertEqual(str(l),
-         "[<Item: item1>, <Item: item1A>, <Item: item1Aa>, <Item: item2>]")
-
     def testForms(self):
         for item in Item.objects.all():
             initial = item.weight_form.initial
@@ -64,6 +65,36 @@ class ItemTest(TestCase):
         self.item1.related_sid = 'foobar'
         self.assertFalse(self.item1.get_related_slide() is None)
 
+    def test_title_supplement(self):
+        self.assertEqual(self.item1.get_title_supplement(), '')
+
+    def test_delete_item(self):
+        new_item1 = Item.objects.create()
+        new_item2 = Item.objects.create(parent=new_item1)
+        new_item3 = Item.objects.create(parent=new_item2)
+        new_item1.delete()
+        self.assertTrue(new_item3 in Item.objects.all())
+        new_item2.delete(with_children=True)
+        self.assertFalse(new_item3 in Item.objects.all())
+
+    def test_absolute_url(self):
+        self.assertEqual(self.item1.get_absolute_url(), '/agenda/1/')
+        self.assertEqual(self.item1.get_absolute_url('edit'), '/agenda/1/edit/')
+        self.assertEqual(self.item1.get_absolute_url('delete'), '/agenda/1/del/')
+
+    def test_agenda_slide(self):
+        data = agenda_show()
+        self.assertEqual(list(data['items']), list(Item.objects.all().filter(parent=None)))
+        self.assertEqual(data['template'], 'projector/AgendaSummary.html')
+        self.assertEqual(data['title'], 'Agenda')
+
+    def test_releated_item(self):
+        self.assertEqual(self.item5.get_title(), self.releated.name)
+        self.assertEqual(self.item5.get_title_supplement(), 'test item')
+        self.assertEqual(self.item5.get_related_type(), 'releateditem')
+        self.assertEqual(self.item5.print_related_type(), 'Releateditem')
+
+
 
 class ViewTest(TestCase):
     def setUp(self):
@@ -71,8 +102,10 @@ class ViewTest(TestCase):
         self.item2 = Item.objects.create(title='item2')
         self.refreshItems()
 
-        self.admin = User.objects.create_user('testadmin', '', 'default')
-        self.anonym = User.objects.create_user('testanoym', '', 'default')
+        self.admin, created = User.objects.get_or_create(username='testadmin')
+        self.anonym, created = User.objects.get_or_create(username='testanonym')
+        self.admin.reset_password('default')
+        self.anonym.reset_password('default')
 
         self.admin.is_superuser = True
         self.admin.save()
@@ -90,6 +123,13 @@ class ViewTest(TestCase):
     @property
     def anonymClient(self):
         return Client()
+
+    def testOverview(self):
+        c = self.adminClient
+
+        response = c.get('/agenda/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['items']), len(Item.objects.all()))
 
     def testActivate(self):
         c = self.adminClient
@@ -122,6 +162,14 @@ class ViewTest(TestCase):
         self.refreshItems()
         self.assertEqual(response.status_code, 404)
 
+        # Test ajax
+        response = c.get('/agenda/%d/close/' % self.item1.id,
+                         HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        response = c.get('/agenda/%d/open/' % self.item1.id,
+                         HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+
     def testEdit(self):
         c = self.adminClient
 
@@ -131,7 +179,7 @@ class ViewTest(TestCase):
         response = c.get('/agenda/%d/edit/' % 1000)
         self.assertEqual(response.status_code, 404)
 
-        data = {'title': 'newitem1', 'text': 'item1-text', 'weight':'0'}
+        data = {'title': 'newitem1', 'text': 'item1-text', 'weight': '0'}
         response = c.post('/agenda/%d/edit/' % self.item1.id, data)
         self.assertEqual(response.status_code, 302)
         self.refreshItems()
@@ -143,4 +191,3 @@ class ViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.refreshItems()
         self.assertEqual(self.item1.title, 'newitem1')
-

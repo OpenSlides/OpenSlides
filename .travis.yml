@@ -1,0 +1,12 @@
+language: python
+python:
+  - "2.5"
+  - "2.6"
+  - "2.7"
+install:
+  - pip install -r requirements.txt --use-mirrors
+  - pip install coverage django-discover-runner pep8
+  - python extras/scripts/create_local_settings.py
+script:
+  - coverage run ./manage.py test tests && coverage report -m
+  - pep8 --max-line-length=150 --exclude="urls.py,motion/" --statistics openslides

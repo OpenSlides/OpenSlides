@@ -87,6 +87,7 @@ PY_DLLS = [
     "_sqlite3.pyd",
     "_socket.pyd",
     "select.pyd",
+    "_ctypes.pyd",
 ]
 
 MSVCR_PUBLIC_KEY = "1fc8b3b9a1e18e3b"
@@ -306,8 +307,8 @@ def main():
     shutil.copyfile("extras/win32-portable/openslides.exe",
         os.path.join(odir, "openslides.exe"))
 
-    shutil.copyfile("initial_data.json",
-        os.path.join(odir, "initial_data.json"))
+    shutil.copyfile("openslides/participant/fixtures/groups_de.json",
+        os.path.join(odir, "groups_de.json"))
 
     copy_dlls(odir)
     copy_msvcr(odir)
