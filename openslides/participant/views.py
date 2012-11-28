@@ -441,7 +441,7 @@ class GroupDeleteView(DeleteView):
     url = 'user_group_overview'
 
     def pre_redirect(self, request, *args, **kwargs):
-        if self.get_object().name.lower() == 'anonymous':
+        if self.get_object().name.lower() in ['anonymous', 'registered']:
             messages.error(request, _("You can not delete this Group."))
         else:
             super(GroupDeleteView, self).pre_redirect(request, *args, **kwargs)
