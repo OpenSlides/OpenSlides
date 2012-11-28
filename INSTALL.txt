@@ -3,36 +3,47 @@ Installation Instructions for OpenSlides 1.3
 
 Content
 -------
-I.  Installation on GNU/Linux and MacOSX
-II. Installation on Windows (32/64bit)
+
+I.  Installation on GNU/Linux and MacOSX using the Python Package Index (PyPI)
+II. Installation on GNU/Linux and MacOSX using the sources
+III. Installation on Windows (32/64bit)
 
 If you need help ask on OpenSlides users mailing list.
 See http://openslides.org for more information.
 
 
-I. Installation on GNU/Linux and MacOSX
-----------------------------------------
+I. Installation on GNU/Linux and MacOSX using the Python Package Index (PyPI)
+-----------------------------------------------------------------------------
 
-Make sure that you have installed Python (>= 2.5) on your system.
+  1. Check requirements:
 
-You can setup a virtualenv environment to install OpenSlides as non-root user.
-Run before you start install OpenSlides:
+        Make sure that you have installed Python (>= 2.5) on your system.
 
-      $ virtualenv .venv
-      $ source .venv/bin/activate
+  2. Set up virtual environment with virtualenv (optional):
 
+        You can setup a virtual environment to install OpenSlides as
+        non-root user.
 
-  1. Install OpenSlides:
-  
+        E. g. for ubuntu run:
+        $ sudo apt-get install python-virtualenv
+
+        To setup and activate the virtual environment, create your
+        OpenSlides directory, change to it and run:
+
+        $ virtualenv .venv
+        $ source .venv/bin/activate
+
+  3. Install OpenSlides:
+
         $ pip install openslides
-  
-        OpenSlides will installed the following required python packages:
+
+        OpenSlides will install the following required python packages:
           + Django
           + django-mptt
           + ReportLab Toolkit
           + Python Imaging Library (PIL)
 
-  2. Start OpenSlides server and open URL in your default browser:
+  4. Start OpenSlides server and open URL in your default browser:
 
         $ openslides
 
@@ -46,8 +57,80 @@ Run before you start install OpenSlides:
         Use 'openslides --help' to show all start options.
 
 
-II. Installation on Windows (32/64bit)
---------------------------------------
+II. Installation on GNU/Linux and MacOSX using the sources
+----------------------------------------------------------
+
+  1. Install requirements:
+
+        OpenSlides requires following programs, which should be
+        installed first:
+          + Python Programming Language 2 (>= 2.5)
+          + virtualenv (>= 1.4.1)
+          + ReportLab Toolkit
+          + Python Imaging Library (PIL)
+
+        E. g. for ubuntu run:
+        $ sudo apt-get install python python-virtualenv python-reportlab python-imaging
+
+  2. Get OpenSlides:
+
+     a) Download latest OpenSlides release from http://openslides.org.
+
+     OR
+
+     b) Clone development version from OpenSlides' github repository
+        https://github.com/OpenSlides/OpenSlides. This requires Git,
+        see http://git-scm.com/.
+
+        E. g. for ubuntu run:
+        $ sudo apt-get install git
+        $ git clone git://github.com/OpenSlides/OpenSlides.git OpenSlides
+
+  3. Setup your virtual environment with virtualenv:
+
+        Go to the (extracted/cloned) root directory of OpenSlides
+        and create virtualenv environment:
+
+        $ virtualenv .venv
+
+        For virtualenv >= 1.7 use instead:
+        $ virtualenv --system-site-packages .venv
+
+  4. Activate the virtual environment:
+
+        $ source .venv/bin/activate
+
+  5. Install the required python-packages:
+
+        $ pip install django django-mptt
+
+        If you use python < 2.6 you also have to install simplejson:
+        $ pip install simplejson
+
+        If requirements reportlab or PIL still missing (see 1.):
+        $ pip install reportlab pil
+
+  6. Start OpenSlides server and open URL in your default browser:
+
+        $ python start.py
+
+        If you run this script the first time a new database and the
+        admin account are created. Please change the password after
+        first login!
+
+        Username: admin
+        Password: admin
+
+        Use 'python start.py --help' to show all start options.
+
+  7. Restart OpenSlides:
+
+        To restart OpenSlides after closing the terminal activate the
+        virtual environment (see 4.) before starting the server (see 6.).
+
+
+III. Installation on Windows (32/64bit)
+---------------------------------------
 
 NOTE: There is a portable version of OpenSlides for Windows which does not 
 required any install steps! If there is a reason that you can not use the 
@@ -64,7 +147,6 @@ portable version you should run the following install steps.
           + Python Imaging Library (PIL)
           + Django
           + django-mptt
-
 
      a) Download and run 32bit MSI installer from http://www.python.org/:
 
@@ -98,8 +180,9 @@ portable version you should run the following install steps.
      OR
 
      b) Clone development version from OpenSlides' github repository
-        https://github.com/OpenSlides/OpenSlides.
-        This requires Git, see http://git-scm.com/.
+        https://github.com/OpenSlides/OpenSlides. This requires Git,
+        see http://git-scm.com/.
+
         Open command line (cmd) and run:
 
         git clone git://github.com/OpenSlides/OpenSlides.git
@@ -116,4 +199,3 @@ portable version you should run the following install steps.
         Password: admin
 
         Use 'python start.py --help' to show all start options.
-
