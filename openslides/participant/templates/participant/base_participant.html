@@ -66,7 +66,7 @@
             </li>
 
             {# delete group #}
-            {% if group.name != 'Anonymous' %}
+            {% if group.name|lower != 'anonymous' and group.name|lower != 'registered' %}
                 <li>
                     <a href="{% model_url group 'delete'  %}"><img src="{% static 'images/icons/delete.png' %}"> {% trans 'Delete group' %}</a>
                 </li>
