@@ -27,6 +27,8 @@ import webbrowser
 import django.conf
 from django.core.management import execute_from_command_line
 
+from openslides import get_version
+
 CONFIG_TEMPLATE = """#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -78,21 +80,27 @@ def process_options(argv=None):
 
     parser = optparse.OptionParser(
         description="Run openslides using django's builtin webserver")
-    parser.add_option("-a", "--address", help="IP Address to listen on")
-    parser.add_option("-p", "--port", type="int", help="Port to listen on")
+    parser.add_option("-a", "--address", help="IP Address to listen on.")
+    parser.add_option("-p", "--port", type="int", help="Port to listen on.")
     parser.add_option(
         "--syncdb", action="store_true",
-        help="Update/create database before starting the server")
+        help="Update/create database before starting the server.")
     parser.add_option(
         "--reset-admin", action="store_true",
-        help="Make sure the user 'admin' exists and uses 'admin' as password")
+        help="Make sure the user 'admin' exists and uses 'admin' as password.")
     parser.add_option(
         "-s", "--settings", help="Path to the openslides configuration.")
     parser.add_option(
         "--no-reload", action="store_true",
-        help="Do not reload the development server")
+        help="Do not reload the development server.")
+    parser.add_option(
+        "--version", action="store_true",
+        help="Show version and exit.")
 
     opts, args = parser.parse_args(argv)
+    if opts.version:
+        print get_version()
+        exit(0)
     if args:
         sys.stderr.write("This command does not take arguments!\n\n")
         parser.print_help()
