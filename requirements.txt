@@ -3,3 +3,6 @@ django-mptt
 reportlab
 PIL
 simplejson
+coverage
+django-discover-runner
+pep8
