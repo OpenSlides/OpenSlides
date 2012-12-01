@@ -6,7 +6,7 @@ Content
 
 I.  Installation on GNU/Linux and MacOSX using the Python Package Index (PyPI)
 II. Installation on GNU/Linux and MacOSX using the sources
-III. Installation on Windows (32/64bit)
+III. Installation on Windows (32bit) using the Python Package Index (PyPI)
 
 If you need help ask on OpenSlides users mailing list.
 See http://openslides.org for more information.
@@ -17,14 +17,15 @@ I. Installation on GNU/Linux and MacOSX using the Python Package Index (PyPI)
 
   1. Check requirements:
 
-        Make sure that you have installed Python (>= 2.5) on your system.
+        Make sure that you have installed Python Programming Language 2
+        (>= 2.5) on your system.
 
-  2. Set up virtual environment with virtualenv (optional):
+  2. Setup a virtual environment with virtualenv (optional):
 
         You can setup a virtual environment to install OpenSlides as
         non-root user.
 
-        E. g. for ubuntu run:
+        E. g. for Ubuntu run:
         $ sudo apt-get install python-virtualenv
 
         To setup and activate the virtual environment, create your
@@ -69,7 +70,7 @@ II. Installation on GNU/Linux and MacOSX using the sources
           + ReportLab Toolkit
           + Python Imaging Library (PIL)
 
-        E. g. for ubuntu run:
+        E. g. for Ubuntu run:
         $ sudo apt-get install python python-virtualenv python-reportlab python-imaging
 
   2. Get OpenSlides:
@@ -82,11 +83,11 @@ II. Installation on GNU/Linux and MacOSX using the sources
         https://github.com/OpenSlides/OpenSlides. This requires Git,
         see http://git-scm.com/.
 
-        E. g. for ubuntu run:
+        E. g. for Ubuntu run:
         $ sudo apt-get install git
         $ git clone git://github.com/OpenSlides/OpenSlides.git OpenSlides
 
-  3. Setup your virtual environment with virtualenv:
+  3. Setup a virtual environment with virtualenv:
 
         Go to the (extracted/cloned) root directory of OpenSlides
         and create virtualenv environment:
@@ -130,18 +131,17 @@ II. Installation on GNU/Linux and MacOSX using the sources
 
 
 III. Installation on Windows (32bit) using the Python Package Index (PyPI)
------------------------------------------------------------------------------
+--------------------------------------------------------------------------
 
 NOTE: There is a portable version of OpenSlides for Windows which does not
 required any install steps! If there is a reason that you can not use the
 portable version you should run the following install steps.
 
-
   1. Install requirements:
 
         The OpenSlides install requires following programs, which should be
         installed first:
-          + Python Programming Language 2 (>= 2.5),
+          + Python Programming Language 2 (>= 2.5)
           + Setuptools
 
      a) Download and run 32bit MSI installer from http://www.python.org/:
@@ -158,7 +158,6 @@ portable version you should run the following install steps.
         http://pypi.python.org/pypi/setuptools:
 
         http://pypi.python.org/packages/2.7/s/setuptools/setuptools-0.6c11.win32-py2.7.exe
-
 
   2. Install OpenSlides:
 
