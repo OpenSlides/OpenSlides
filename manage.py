@@ -8,9 +8,10 @@
 """
 
 import os, sys
+from django.core.management import execute_from_command_line
+from openslides.main import get_user_config_path, setup_django_environment
 
 if __name__ == "__main__":
-    sys.path.append(os.path.join(os.path.expanduser('~'), '.config', 'openslides'))
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
-    from django.core.management import execute_from_command_line
+    setup_django_environment(
+        get_user_config_path('openslides', 'settings.py'))
     execute_from_command_line(sys.argv)
