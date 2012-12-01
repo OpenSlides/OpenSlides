@@ -9,13 +9,15 @@ VERSION = (1, 3, 0, 'final', 0) # During development it is the next release
 RELEASE = False
 
 
-def get_version(version=None):
+def get_version(version=None, release=None):
     """
     Derives a PEP386-compliant version number from VERSION. Adds id of
     the current git commit.
     """
     if version is None:
         version = VERSION
+    if release is None:
+        release = RELEASE
     assert len(version) == 5
     assert version[3] in ('alpha', 'beta', 'rc', 'final')
     # Now build the two parts of the version number:
@@ -29,7 +31,7 @@ def get_version(version=None):
         sub = mapping[version[3]] + str(version[4])
     else:
         sub = ''
-    if not RELEASE:
+    if not release:
         sub += '-dev'
     return main + sub
 
