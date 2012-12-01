@@ -16,7 +16,7 @@ from django.core.urlresolvers import reverse
 from django.utils.importlib import import_module
 from django.utils.translation import ugettext as _
 
-from openslides import get_version
+from openslides import get_version, get_git_commit_id, RELEASE
 from openslides.utils.template import Tab
 from openslides.utils.views import FormView, TemplateView
 from .forms import GeneralConfigForm
@@ -79,7 +79,14 @@ class VersionConfig(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(VersionConfig, self).get_context_data(**kwargs)
-        context['versions'] = [('OpenSlides', get_version())]
+
+        # OpenSlides version. During development the git commit id is added.
+        openslides_version_string = get_version()
+        if not RELEASE:
+            openslides_version_string += ' Commit: %s' % get_git_commit_id()
+        context['versions'] = [('OpenSlides', openslides_version_string)]
+
+        # Version of plugins.
         for plugin in settings.INSTALLED_PLUGINS:
             try:
                 mod = import_module(plugin)
@@ -90,7 +97,6 @@ class VersionConfig(TemplateView):
                 plugin_name = mod.NAME
             except AttributeError:
                 plugin_name = mod.__name__.split('.')[0]
-
             context['versions'].append((plugin_name, plugin_version))
         return context
 

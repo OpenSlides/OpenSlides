@@ -29,12 +29,6 @@ from django.utils.translation import ugettext as _, ugettext_lazy
 
 from openslides.utils.signals import template_manipulation
 
-from openslides import get_version
-
-
-def revision(request):
-    return {'openslides_version': get_version()}
-
 
 def gen_confirm_form(request, message, url):
     """
