@@ -3,7 +3,7 @@
 
 <ul style="line-height: 180%">
 {% for group in groups %}
-    {% if group.name != 'Anonymous' %}
+    {% if group.name != 'Anonymous' and group.name != 'Registered' %}
     <li class="{% if group.active %}activeline{% endif %}">
         <a href="{% url projector_activate_slide group.sid %}" class="activate_link {% if group.active %}active{% endif %}">
             <div></div>

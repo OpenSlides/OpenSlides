@@ -7,8 +7,13 @@
 {% block content %}
     {% if slide.text %}
         <h1>{{ slide.title }}</h1>
-        {{ slide.text|safe|linebreaks }}
     {% else %}
         <div class="item_fullscreen">{{ slide.title }}</div>
+    {% endif %}
+{% endblock %}
+
+{% block scrollcontent %}
+    {% if slide.text %}
+        <span>{{ slide.text|safe|linebreaks }}</span>
     {% endif %}
 {% endblock %}
