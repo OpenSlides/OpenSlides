@@ -32,7 +32,7 @@
             {% if assignment.active %}activeline{% endif %}">
             <td><a href="{% url assignment_view assignment.id %}">{{ assignment }}</a></td>
             <td>
-                {% blocktrans with posts=assignment.posts %}posts: {{ posts }}{% endblocktrans %}
+                {% blocktrans with posts=assignment.posts context "Number of searched candidates for an election"%}posts: {{ posts }}{% endblocktrans %}
                 {% if assignment.status != 'fin' %}
                     | {% blocktrans with candidates=assignment.get_participants|length %}candidates: {{ candidates }}{% endblocktrans %}
                 {% endif %}
