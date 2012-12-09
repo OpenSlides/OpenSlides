@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-09 10:42+0100\n"
+"POT-Creation-Date: 2012-12-09 11:47+0100\n"
 "PO-Revision-Date: 2012-07-28 21:36+0200\n"
 "Last-Translator: Moira Brülisauer <moosline@gmail.com>\n"
 "Language-Team: Französisch <>\n"
@@ -747,7 +747,7 @@ msgstr[1] "élections"
 
 #: assignment/templates/assignment/overview.html:35
 #, python-format
-msgctxt "number of searched candidates for an election"
+msgctxt "Number of searched candidates for an election"
 msgid "posts: %(posts)s"
 msgstr ""
 
