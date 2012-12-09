@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-27 21:23+0100\n"
+"POT-Creation-Date: 2012-12-09 11:47+0100\n"
 "PO-Revision-Date: 2012-07-28 11:07+0200\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: support@openslides.de\n"
@@ -226,24 +226,24 @@ msgstr "Zusammenfassung für diesen Eintrag projizieren"
 msgid "Do you want to save the changed order of agenda items?"
 msgstr "Möchten Sie die geänderte Reihenfolge der Einträge speichern?"
 
-#: agenda/templates/agenda/overview.html:46 assignment/models.py:294
+#: agenda/templates/agenda/overview.html:46 assignment/models.py:291
 #: assignment/views.py:587 assignment/templates/assignment/view.html:168
 #: assignment/templates/assignment/view.html:172
 #: assignment/templates/projector/Assignment.html:78
 #: assignment/templates/projector/Assignment.html:82 motion/models.py:574
 #: motion/views.py:830 motion/views.py:881
 #: motion/templates/motion/view.html:79
-#: motion/templates/projector/Motion.html:37 utils/utils.py:55
+#: motion/templates/projector/Motion.html:37 utils/utils.py:49
 #: utils/views.py:108
 msgid "Yes"
 msgstr "Ja"
 
-#: agenda/templates/agenda/overview.html:47 assignment/models.py:294
+#: agenda/templates/agenda/overview.html:47 assignment/models.py:291
 #: assignment/views.py:588 assignment/templates/assignment/view.html:169
 #: assignment/templates/projector/Assignment.html:79 motion/models.py:574
 #: motion/views.py:830 motion/views.py:882
 #: motion/templates/motion/view.html:80
-#: motion/templates/projector/Motion.html:38 utils/utils.py:55
+#: motion/templates/projector/Motion.html:38 utils/utils.py:49
 #: utils/views.py:108
 msgid "No"
 msgstr "Nein"
@@ -433,36 +433,36 @@ msgstr "%s möchte nicht kandidieren."
 msgid "%s is no candidate"
 msgstr "%s ist kein/e Kandidat/in"
 
-#: assignment/models.py:247
+#: assignment/models.py:244
 msgid "Can see assignment"
 msgstr "Darf Wahlen sehen"
 
-#: assignment/models.py:249
+#: assignment/models.py:246
 msgid "Can nominate another person"
 msgstr "Darf andere Personen für Wahlen vorschlagen"
 
-#: assignment/models.py:250
+#: assignment/models.py:247
 msgid "Can nominate themselves"
 msgstr "Darf selbst für Wahlen kandidieren"
 
-#: assignment/models.py:251
+#: assignment/models.py:248
 msgid "Can manage assignment"
 msgstr "Darf Wahlen verwalten"
 
-#: assignment/models.py:294 motion/models.py:574
+#: assignment/models.py:291 motion/models.py:574
 msgid "Abstain"
 msgstr "Enthaltung"
 
-#: assignment/models.py:296 motion/templates/motion/poll_view.html:22
+#: assignment/models.py:293 motion/templates/motion/poll_view.html:22
 msgid "Votes"
 msgstr "Stimmen"
 
-#: assignment/models.py:313
+#: assignment/models.py:310
 #, python-format
 msgid "Ballot %d"
 msgstr "Wahlgang %d"
 
-#: assignment/models.py:322 assignment/views.py:336 assignment/views.py:675
+#: assignment/models.py:319 assignment/views.py:336 assignment/views.py:675
 #: assignment/views.py:690
 #: assignment/templates/assignment/base_assignment.html:14
 #: assignment/templates/assignment/overview.html:6
@@ -738,7 +738,8 @@ msgstr[0] "Wahl"
 msgstr[1] "Wahlen"
 
 #: assignment/templates/assignment/overview.html:35
-#, python-format
+#, fuzzy, python-format
+msgctxt "Number of searched candidates for an election"
 msgid "posts: %(posts)s"
 msgstr "Posten: %(posts)s"
 
@@ -913,7 +914,7 @@ msgstr "Version"
 msgid "General settings successfully saved."
 msgstr "Allgemeine Einstellungen erfolgreich gespeichert."
 
-#: config/views.py:104 config/templates/config/base_config.html:7
+#: config/views.py:110 config/templates/config/base_config.html:7
 msgid "Configuration"
 msgstr "Konfiguration"
 
@@ -2072,8 +2073,7 @@ msgstr "Wählen Sie eine CSV-Datei zum Importieren von Teilnehmer/innen aus!"
 #: participant/templates/participant/import.html:12
 msgid ""
 "first_name, last_name, gender, structure level, type, committee, comment"
-msgstr ""
-"Vorname, Nachname, Geschlecht, Gliederungsebene, Typ, Amt, Kommentar"
+msgstr "Vorname, Nachname, Geschlecht, Gliederungsebene, Typ, Amt, Kommentar"
 
 #: participant/templates/participant/login.html:8
 #: participant/templates/participant/login.html:16
@@ -2344,12 +2344,12 @@ msgstr "Stand: %s"
 msgid "Page %s"
 msgstr "Seite %s"
 
-#: utils/utils.py:69 utils/views.py:287
+#: utils/utils.py:63 utils/views.py:287
 #, python-format
 msgid "Do you really want to delete %s?"
 msgstr "Soll %s wirklich gelöscht werden?"
 
-#: utils/utils.py:116
+#: utils/utils.py:110
 msgid "Sorry, you have no rights to see this page."
 msgstr "Bedaure, Sie haben keine Berechtigung diese Seite zu sehen."
 
@@ -2383,4 +2383,3 @@ msgstr "undefinierter-dateiname"
 #: utils/jsonfield/fields.py:22
 msgid "Enter valid JSON"
 msgstr "Gebe valides JSON ein"
-

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-07 10:20+0100\n"
+"POT-Creation-Date: 2012-12-09 11:12+0100\n"
 "PO-Revision-Date: 2012-07-28 11:07+0200\n"
 "Last-Translator: Oskar Hahn <mail@oshahn.de>\n"
 "Language: de\n"
@@ -19,5 +19,5 @@ msgstr ""
 
 #: agenda/static/javascript/agenda.js:27
 #, c-format
-msgid ", of which %s hidden."
+msgid ", of which %s are hidden."
 msgstr ""
