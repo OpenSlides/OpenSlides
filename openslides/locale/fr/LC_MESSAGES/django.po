@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-01 18:09+0100\n"
+"POT-Creation-Date: 2012-12-09 10:42+0100\n"
 "PO-Revision-Date: 2012-07-28 21:36+0200\n"
 "Last-Translator: Moira Brülisauer <moosline@gmail.com>\n"
 "Language-Team: Französisch <>\n"
@@ -533,7 +533,8 @@ msgstr "Voulez-vous vraiment exclure <b>%s</b> de cette élection?"
 #, python-format
 msgid "Do you really want to unblock <b>%s</b> for the election?"
 msgstr ""
-"Voulez-vous vraiment permettre <b>%s</b> de participer à nouveau à cette élection?"
+"Voulez-vous vraiment permettre <b>%s</b> de participer à nouveau à cette "
+"élection?"
 
 #: assignment/views.py:236
 msgid "New ballot was successfully created."
@@ -746,6 +747,7 @@ msgstr[1] "élections"
 
 #: assignment/templates/assignment/overview.html:35
 #, python-format
+msgctxt "number of searched candidates for an election"
 msgid "posts: %(posts)s"
 msgstr ""
 
@@ -1340,7 +1342,9 @@ msgstr "La ligne %d mal formée dans le fichier d'entrée a été ignorée"
 #: motion/views.py:608
 #, python-format
 msgid "Ignoring line %d because the assigned group may not act as a person."
-msgstr "La ligne %d a été ignorée car le group assigné ne peut agir en tant que personne."
+msgstr ""
+"La ligne %d a été ignorée car le group assigné ne peut agir en tant que "
+"personne."
 
 #: motion/views.py:617
 #, fuzzy
@@ -1759,7 +1763,6 @@ msgid "Participants"
 msgstr "Participants"
 
 #: participant/forms.py:92
-#, fuzzy
 msgid "You can not edit the name for this group."
 msgstr "Vous ne pouvez pas modifier le nom de ce groupe."
 
@@ -2204,7 +2207,6 @@ msgid "The participant has not logged in yet."
 msgstr "Le participant ne s'est pas encore authentifié."
 
 #: participant/templates/projector/GroupSlide.html:11
-#, fuzzy
 msgid "participants"
 msgstr "participants"
 
@@ -2351,8 +2353,9 @@ msgstr "Bienvenue"
 msgid ""
 "Get <a href='http://openslides.org/support' target='_blank'>professional "
 "support</a> for OpenSlides."
-msgstr "Obtenir un <a href='http://openslides.org/support' target='_blank'> support"
-" professionel</a> pour OpenSlides."
+msgstr ""
+"Obtenir un <a href='http://openslides.org/support' target='_blank'> support "
+"professionel</a> pour OpenSlides."
 
 #: utils/pdf.py:227
 #, python-format
@@ -2403,52 +2406,3 @@ msgstr "nom de fichier indéterminé"
 #: utils/jsonfield/fields.py:22
 msgid "Enter valid JSON"
 msgstr "Entrez un JSON valide"
-
-#~ msgid "Assignments"
-#~ msgstr "Assignements"
-
-#~ msgid "posts"
-#~ msgstr "postes"
-
-#~ msgid "candidates"
-#~ msgstr "Candidats"
-
-#~ msgid "Elected Candidates"
-#~ msgstr "Candidats bloqué"
-
-#~ msgid "No elected candidates available."
-#~ msgstr "Aucun candidat n'est disponible"
-
-#~ msgid "No ballots available."
-#~ msgstr "Aucun vote disponible."
-
-#~ msgid "Get professional support for OpenSlides on %s."
-#~ msgstr "Obtenez de l'aide professionnelle pour OpenSlides sur %s."
-
-#~ msgid ""
-#~ "Anonymous access enabled. Please modify the \"Anonymous\" group to fit "
-#~ "your required permissions."
-#~ msgstr ""
-#~ "L'accès anonyme a été activé. S'il vous plait, modifiez le groupe "
-#~ "\"Anonymous\" pour lui donner les droits nécéssaires"
-
-#~ msgid "Frontpage"
-#~ msgstr "Page d'accueil"
-
-#~ msgid "Users"
-#~ msgstr "Utilisateurs"
-
-#~ msgid "Projector"
-#~ msgstr "Projecteur"
-
-#~ msgid "Adjust projector view"
-#~ msgstr "Régler la vue projecteur"
-
-#~ msgid "You have access to the following pages:"
-#~ msgstr "Vous avez accès aux pages suivantes:"
-
-#~ msgid "%Y-%m-%d %H:%Mh"
-#~ msgstr "%d-%m-%Y %H:%Mh"
-
-#~ msgid "Printed: %s"
-#~ msgstr "Imprimé: %s"
