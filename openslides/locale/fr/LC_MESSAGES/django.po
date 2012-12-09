@@ -1,23 +1,24 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
+# Translators:
 # Moira Brülisauer <moosline@gmail.com>, 2012.
-#
+#   <moosline@savvy.ch>, 2012.
 msgid ""
 msgstr ""
-"Project-Id-Version: OpenSlides 1.2\n"
+"Project-Id-Version: OpenSlides\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-12-09 11:47+0100\n"
-"PO-Revision-Date: 2012-07-28 21:36+0200\n"
-"Last-Translator: Moira Brülisauer <moosline@gmail.com>\n"
-"Language-Team: Französisch <>\n"
-"Language: \n"
+"POT-Creation-Date: 2012-12-09 14:17+0100\n"
+"PO-Revision-Date: 2012-12-09 12:20+0000\n"
+"Last-Translator: moosline <moosline@savvy.ch>\n"
+"Language-Team: French (http://www.transifex.com/projects/p/openslides/"
+"language/fr/)\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
 #: global_settings.py:33
 msgid "German"
@@ -619,7 +620,6 @@ msgstr ""
 "N: %(NO)s\n"
 "A: %(ABSTAIN)s"
 
-# assignment/templates/assignment/poll_view.html:35
 #: assignment/views.py:456 assignment/templates/assignment/poll_view.html:35
 #: assignment/templates/assignment/view.html:186
 #: assignment/templates/projector/Assignment.html:96
@@ -627,7 +627,6 @@ msgstr ""
 msgid "Invalid votes"
 msgstr "Votes invalides"
 
-# assignment/templates/assignment/poll_view.html:45
 #: assignment/views.py:463 assignment/templates/assignment/poll_view.html:45
 #: assignment/templates/assignment/view.html:202
 #: assignment/templates/assignment/view.html:207
@@ -666,7 +665,6 @@ msgid_plural "%d available posts"
 msgstr[0] "%d poste disponible"
 msgstr[1] "%d postes disponibles"
 
-# assignment/templates/assignment/view.html:160
 #: assignment/views.py:588 assignment/templates/assignment/view.html:170
 #: assignment/templates/projector/Assignment.html:80 motion/views.py:830
 #: motion/views.py:883 motion/templates/motion/view.html:81
@@ -749,17 +747,17 @@ msgstr[1] "élections"
 #, python-format
 msgctxt "Number of searched candidates for an election"
 msgid "posts: %(posts)s"
-msgstr ""
+msgstr "postes: %(posts)s"
 
 #: assignment/templates/assignment/overview.html:37
-#, fuzzy, python-format
+#, python-format
 msgid "candidates: %(candidates)s"
-msgstr "Aucun candidat n'est disponible"
+msgstr "candidats: %(candidates)s"
 
 #: assignment/templates/assignment/overview.html:39
-#, fuzzy, python-format
+#, python-format
 msgid "elected: %(elected)s"
-msgstr "Supprimer l'élection"
+msgstr "élus: %(elected)s"
 
 #: assignment/templates/assignment/overview.html:45
 msgid "Activate election"
@@ -800,9 +798,8 @@ msgid "Remove candidate"
 msgstr "Enlever le candidat"
 
 #: assignment/templates/assignment/view.html:51
-#, fuzzy
 msgid "Mark candidate as not elected"
-msgstr "Le candidat est élu"
+msgstr "Marquer le candidat comme pas elu."
 
 #: assignment/templates/assignment/view.html:57
 #: assignment/templates/projector/Assignment.html:44
@@ -861,9 +858,8 @@ msgid "Invalid"
 msgstr "Invalide"
 
 #: assignment/templates/assignment/view.html:219
-#, fuzzy
 msgid "No results available."
-msgstr "Aucun résultat de sondage disponible"
+msgstr "Aucun resultat n'est disponible"
 
 #: config/forms.py:22
 msgid "Event name"
@@ -938,9 +934,8 @@ msgid "Event"
 msgstr "Evénement"
 
 #: config/templates/config/general.html:26
-#, fuzzy
 msgid "Welcome Widget"
-msgstr "Texte de bienvenue"
+msgstr "Widget de bienvenue"
 
 #: config/templates/config/general.html:41
 msgid "System"
@@ -1347,9 +1342,8 @@ msgstr ""
 "personne."
 
 #: motion/views.py:617
-#, fuzzy
 msgid "Created by motion import."
-msgstr "Peut créer des motions"
+msgstr "Motion a été créé par l'import"
 
 #: motion/views.py:631
 #, python-format
@@ -1379,11 +1373,11 @@ msgstr[0] "%d nouvel utilisateur a été créé."
 msgstr[1] "%d nouveaux utilisateurs ont été créés."
 
 #: motion/views.py:678
-#, fuzzy, python-format
+#, python-format
 msgid "%d new group was added."
 msgid_plural "%d new groups were added."
-msgstr[0] "%d nouvel utilisateur a été créé."
-msgstr[1] "%d nouveaux utilisateurs ont été créés."
+msgstr[0] "%d le nouveau groupe a été ajouter"
+msgstr[1] "%d nouveaux groupes ont été ajouter"
 
 #: motion/views.py:681
 #, python-format
@@ -1530,14 +1524,12 @@ msgid "number, title, text, reason, first_name, last_name, is_group"
 msgstr "numéro, titre, texte, motivation, prénom, nom, groupe"
 
 #: motion/templates/motion/import.html:14
-#, fuzzy
 msgid ""
 "<code>number</code>, <code>reason</code> and <code>is_group</code> are "
 "optional and may be empty"
 msgstr ""
-"Les valeurs obligatoires, séparées par des virgules: <code>{nombre, titre, "
-"texte, motivation, prénom, nom}</code> (<code>nombre</code> et "
-"<code>motivation</code> sont facultatives et peuvent être laissées vides.)"
+"<code>numero</code>, <code>motivation</code> et <code>est_groupe</code> sont "
+"optional et peuvent être laisser vide"
 
 #: motion/templates/motion/import.html:16
 #: participant/templates/participant/import.html:14
@@ -1879,18 +1871,16 @@ msgid "Welcome to OpenSlides!"
 msgstr "Bienvenue sur OpenSlides!"
 
 #: participant/views.py:207
-#, fuzzy
 msgid "You can not delete yourself."
-msgstr "Vous ne pouvez pas supprimer la motion <b>%s</b>."
+msgstr "Vous ne pouvez pas vous suprimer vous même."
 
 #: participant/views.py:228
 msgid "You can not deactivate yourself."
 msgstr "Vous ne pouvez pas vous désactiver vous-même"
 
 #: participant/views.py:231
-#, fuzzy
 msgid "You can not deactivate the administrator."
-msgstr "Vous ne pouvez pas modifier cette motion."
+msgstr "Vous ne pouvez pas désactiver l'administrateur."
 
 #: participant/views.py:250
 msgid "Participant-list"
@@ -1962,9 +1952,8 @@ msgid "The Password for %s was successfully reset."
 msgstr "Le mot de passe de %s a été initialisé avec succès"
 
 #: participant/views.py:445
-#, fuzzy
 msgid "You can not delete this Group."
-msgstr "Vous ne pouvez pas modifier cette motion."
+msgstr "Vous ne pouvez pas suprimer se groupe."
 
 #: participant/views.py:473
 msgid "Participants settings successfully saved."
@@ -2091,12 +2080,9 @@ msgid "Select a CSV file to import participants!"
 msgstr "Selectionnez un fichier CSV pour importer des participants"
 
 #: participant/templates/participant/import.html:12
-#, fuzzy
 msgid ""
 "first_name, last_name, gender, structure level, type, committee, comment"
-msgstr ""
-"Valeurs obligatoires,  séparées par des virgules: <code>{prénom, nom, sexe, "
-"groupe, type, comité, commentaire}</code>"
+msgstr "prénom, nom, sexe, position, type, comité, commentaire"
 
 #: participant/templates/participant/login.html:8
 #: participant/templates/participant/login.html:16
@@ -2200,7 +2186,7 @@ msgstr "Je suis candidat aux élections suivantes"
 
 #: participant/templates/participant/user_detail.html:19
 msgid "The participant is not member of any group."
-msgstr ""
+msgstr "Le participant n'est membre d'aucun groupe"
 
 #: participant/templates/participant/user_detail.html:53
 msgid "The participant has not logged in yet."
