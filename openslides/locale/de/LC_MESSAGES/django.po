@@ -1524,7 +1524,7 @@ msgid ""
 "optional and may be empty"
 msgstr ""
 "<code>Nummer</code>, <code>Begründung</code> und <code>Gruppenantrag</code> "
-"sind optional und können auch leer sein."
+"sind optional und können auch leer sein"
 
 #: motion/templates/motion/import.html:16
 #: participant/templates/participant/import.html:14
