@@ -738,7 +738,7 @@ msgstr[0] "Wahl"
 msgstr[1] "Wahlen"
 
 #: assignment/templates/assignment/overview.html:35
-#, fuzzy, python-format
+#, python-format
 msgctxt "Number of searched candidates for an election"
 msgid "posts: %(posts)s"
 msgstr "Posten: %(posts)s"
