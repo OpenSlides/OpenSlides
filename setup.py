@@ -20,7 +20,7 @@ with open('README.txt') as file:
 
 setup(
     name='openslides',
-    description='Presentation-System',
+    description='Presentation and assembly system',
     long_description=long_description,
     version=get_version(),
     url='http://openslides.org',
