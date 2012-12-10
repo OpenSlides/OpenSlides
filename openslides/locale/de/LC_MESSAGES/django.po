@@ -738,7 +738,7 @@ msgstr[0] "Wahl"
 msgstr[1] "Wahlen"
 
 #: assignment/templates/assignment/overview.html:35
-#, fuzzy, python-format
+#, python-format
 msgctxt "Number of searched candidates for an election"
 msgid "posts: %(posts)s"
 msgstr "Posten: %(posts)s"
@@ -1524,7 +1524,7 @@ msgid ""
 "optional and may be empty"
 msgstr ""
 "<code>Nummer</code>, <code>Begründung</code> und <code>Gruppenantrag</code> "
-"sind optional und können auch leer sein."
+"sind optional und können auch leer sein"
 
 #: motion/templates/motion/import.html:16
 #: participant/templates/participant/import.html:14

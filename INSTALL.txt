@@ -87,21 +87,21 @@ II. Installation on GNU/Linux and MacOSX using the sources
         $ sudo apt-get install git
         $ git clone git://github.com/OpenSlides/OpenSlides.git OpenSlides
 
-  3. Setup a virtual environment with virtualenv:
+  3. Setup a virtual environment with virtualenv (optional):
 
-        Go to the (extracted/cloned) root directory of OpenSlides
-        and create virtualenv environment:
+        You can setup a virtual environment to install OpenSlides as
+        non-root user.
+
+        E. g. for Ubuntu run:
+        $ sudo apt-get install python-virtualenv
+
+        To setup and activate the virtual environment go to the
+        (extracted/cloned) root directory of OpenSlides and run:
 
         $ virtualenv .venv
-
-        For virtualenv >= 1.7 use instead:
-        $ virtualenv --system-site-packages .venv
-
-  4. Activate the virtual environment:
-
         $ source .venv/bin/activate
 
-  5. Install the required python-packages:
+  4. Install the required python-packages:
 
         $ pip install django django-mptt
 
@@ -111,7 +111,7 @@ II. Installation on GNU/Linux and MacOSX using the sources
         If requirements reportlab or PIL still missing (see 1.):
         $ pip install reportlab pil
 
-  6. Start OpenSlides server and open URL in your default browser:
+  5. Start OpenSlides server and open URL in your default browser:
 
         $ python start.py
 
@@ -124,7 +124,7 @@ II. Installation on GNU/Linux and MacOSX using the sources
 
         Use 'python start.py --help' to show all start options.
 
-  7. Restart OpenSlides:
+  6. Restart OpenSlides:
 
         To restart OpenSlides after closing the terminal activate the
         virtual environment (see 4.) before starting the server (see 6.).

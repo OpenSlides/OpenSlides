@@ -394,6 +394,9 @@ input[type="submit"], input[type="button"]  {
 .button .adduser{
     background:url(../images/icons/add-user.png) no-repeat 0px 0px;
 }
+.button .remove{
+    background:url(../images/icons/remove.png) no-repeat 0px 0px;
+}
 .button .removeuser{
     background:url(../images/icons/remove-user.png) no-repeat 0px 0px;
 }
