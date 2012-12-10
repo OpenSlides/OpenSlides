@@ -2,13 +2,13 @@
 English README file for OpenSlides
 ==================================
 
-This is OpenSlides, version 1.3-rc1 (2012-11-27).
+This is OpenSlides, version 1.3 (2012-12-10).
 
 
 What is OpenSlides?
 ===================
-OpenSlides is a free, web-based presentation system for displaying and
-controlling of agenda, applications and elections of an assembly.
+OpenSlides is a free web-based presentation and assembly system for
+displaying and controlling of agenda, motions and elections of an assembly.
 
 See http://openslides.org for more information.
 
@@ -24,8 +24,9 @@ list or read the OpenSlides manual. See http://openslides.org.
 The start script of OpenSlides
 ==============================
 Simply running
-  openslides.exe (on Windows) or
-  python start.py (on Linux/MacOS)
+  openslides.exe (on Windows)
+or
+  openslides (on Linux/MacOS)
 
 will start OpenSlides using djangos development server. It will also
 try to open OpenSlides in your default webbrowser.
@@ -69,16 +70,14 @@ The following command line options are available:
 --no-reload
     Does not reload the development server
 
+--version
+    Show version and exit.
 
 Example 1: Openslides should only be accessible on this computer:
-  openslides.exe -a 127.0.0.1
-  or
-  python start.py -a 127.0.0.1
+  openslides -a 127.0.0.1
 
 Example 2: Like above, but also specify the port as 8080
-  openslides.exe -a 127.0.0.01 -p 8080
-  or
-  python start.py -a 127.0.0.1 -p 8080
+  openslides -a 127.0.0.01 -p 8080
 
 
 Supported operating systems and browsers
