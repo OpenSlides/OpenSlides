@@ -127,7 +127,7 @@ II. Installation on GNU/Linux and MacOSX using the sources
   6. Restart OpenSlides:
 
         To restart OpenSlides after closing the terminal activate the
-        virtual environment (see 4.) before starting the server (see 6.).
+        virtual environment (see 3.) before starting the server (see 5.).
 
 
 III. Installation on Windows (32bit) using the Python Package Index (PyPI)
