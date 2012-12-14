@@ -5,7 +5,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-VERSION = (1, 3, 1, 'alpha', 0)  # During development it is the next release
+VERSION = (1, 4, 0, 'alpha', 0)  # During development it is the next release
 RELEASE = False
 
 
