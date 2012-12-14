@@ -10,11 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-try:
-    import json
-except ImportError:
-    # for python 2.5 support
-    import simplejson as json
+import json
 
 try:
     from cStringIO import StringIO

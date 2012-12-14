@@ -11,11 +11,7 @@
 """
 
 import sys
-
-try:
-    import json
-except ImportError:  # For python 2.5 support
-    import simplejson as json
+import json
 
 from django.contrib import messages
 from django.contrib.auth.models import Permission

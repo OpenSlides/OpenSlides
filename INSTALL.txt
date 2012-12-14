@@ -18,7 +18,7 @@ I. Installation on GNU/Linux and MacOSX using the Python Package Index (PyPI)
   1. Check requirements:
 
         Make sure that you have installed Python Programming Language 2
-        (>= 2.5) on your system.
+        (>= 2.6) on your system.
 
   2. Setup a virtual environment with virtualenv (optional):
 
@@ -65,7 +65,7 @@ II. Installation on GNU/Linux and MacOSX using the sources
 
         OpenSlides requires following programs, which should be
         installed first:
-          + Python Programming Language 2 (>= 2.5)
+          + Python Programming Language 2 (>= 2.6)
           + virtualenv (>= 1.4.1)
           + ReportLab Toolkit
           + Python Imaging Library (PIL)
@@ -141,7 +141,7 @@ portable version you should run the following install steps.
 
         The OpenSlides install requires following programs, which should be
         installed first:
-          + Python Programming Language 2 (>= 2.5)
+          + Python Programming Language 2 (>= 2.6)
           + Setuptools
 
      a) Download and run 32bit MSI installer from http://www.python.org/:
