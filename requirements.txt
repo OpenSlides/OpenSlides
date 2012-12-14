@@ -1,8 +1,7 @@
-Django==1.4.2
-django-mptt
-reportlab
-PIL
-simplejson
-coverage
-django-discover-runner
-pep8
+Django==1.5b2
+django-mptt==0.5.5
+reportlab==2.6
+PIL==1.1.7
+coverage==3.6b1
+django-discover-runner==0.2.2
+pep8==1.3.3
