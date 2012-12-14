@@ -23,7 +23,7 @@
         {{ form.as_p }}
         {% if edit_user %}
             <p>
-                <a href="{% url user_reset_password edit_user.id %}">{% trans 'Reset to First Password' %}</a>
+                <a href="{% url 'user_reset_password' edit_user.id %}">{% trans 'Reset to First Password' %}</a>
             </p>
         {% endif %}
         <p>
@@ -33,8 +33,8 @@
             <button class="button" type="submit" name="apply">
                 <span class="icon apply">{% trans 'Apply' %}</span>
             </button>
-            <a href='{% url user_overview %}'>
-                <button class="button" type="button" onclick="window.location='{% url user_overview %}'">
+            <a href='{% url "user_overview" %}'>
+                <button class="button" type="button" onclick="window.location='{% url 'user_overview' %}'">
                     <span class="icon cancel">{% trans 'Cancel' %}</span>
                 </button>
             </a>

@@ -4,10 +4,10 @@
 
 <ul style="line-height: 180%">
     <li class="{% if agenda.active %}activeline{% endif %}">
-        <a href="{% url projector_activate_slide agenda.key %}" class="activate_link {% if agenda.active %}active{% endif %}">
+        <a href="{% url 'projector_activate_slide' agenda.key %}" class="activate_link {% if agenda.active %}active{% endif %}">
             <div></div>
         </a>
-        <a href="{% url projctor_preview_slide agenda.key %}" title="{% trans 'Preview' %}" class="icon preview right">
+        <a href="{% url 'projctor_preview_slide' agenda.key %}" title="{% trans 'Preview' %}" class="icon preview right">
             <span></span>
         </a>
         {{ agenda.name }}
@@ -17,7 +17,7 @@
 <ul style="line-height: 180%">
 {% for item in items %}
     <li class="{% if item.active %}activeline{% endif %}">
-        <a href="{% url projector_activate_slide item.sid %}" class="activate_link {% if item.active %}active{% endif %}">
+        <a href="{% url 'projector_activate_slide' item.sid %}" class="activate_link {% if item.active %}active{% endif %}">
             <div></div>
         </a>
         <a href="{% model_url item 'delete' %}" title="{% trans 'Delete' %}" class="icon delete right">
@@ -26,11 +26,11 @@
         <a href="{% model_url item 'edit' %}" title="{% trans 'Edit' %}" class="icon edit right">
             <span></span>
         </a>
-        <a href="{% url projctor_preview_slide item.sid %}" title="{% trans 'Preview' %}" class="icon preview right">
+        <a href="{% url 'projctor_preview_slide' item.sid %}" title="{% trans 'Preview' %}" class="icon preview right">
             <span></span>
         </a>
         {% if not item.is_leaf_node %}
-        <a class="activate_link right" href="{% url projector_activate_slide item.sid 'summary' %}">
+        <a class="activate_link right" href="{% url 'projector_activate_slide' item.sid 'summary' %}">
             <img src="{% static 'images/icons/summary.png' %}"
                 title="{% trans 'Activate summary for this item' %}"
                 style="padding-right: 2px;">

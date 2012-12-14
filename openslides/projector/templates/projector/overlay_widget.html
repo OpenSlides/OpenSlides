@@ -4,10 +4,10 @@
 <ul>
     {% for overlay in overlays %}
         <li>
-            <a id="{{ overlay.def_name }}_inactive" href="{% url projector_overlay_activate overlay.def_name %}" class="overlay"{% if overlay.active %} style="display:none"{% endif %}>
+            <a id="{{ overlay.def_name }}_inactive" href="{% url 'projector_overlay_activate' overlay.def_name %}" class="overlay"{% if overlay.active %} style="display:none"{% endif %}>
                 <div></div>
             </a>
-            <a id="{{ overlay.def_name }}_active" href="{% url projector_overlay_deactivate overlay.def_name %}" class="overlay active"{% if not overlay.active %} style="display:none"{% endif %}>
+            <a id="{{ overlay.def_name }}_active" href="{% url 'projector_overlay_deactivate' overlay.def_name %}" class="overlay active"{% if not overlay.active %} style="display:none"{% endif %}>
                 <div></div>
             </a>
 

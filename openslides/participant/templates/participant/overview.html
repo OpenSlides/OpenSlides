@@ -90,19 +90,19 @@
                     </td>
                     <td>
                         <span style="width: 1px; white-space: nowrap;">
-                            <a href="{% url user_edit user.id %}">
+                            <a href="{% url 'user_edit' user.id %}">
                                 <img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit participant' %}">
                             </a>
                             {% if user != request_user %}
-                            <a href="{% url user_delete user.id %}">
+                            <a href="{% url 'user_delete' user.id %}">
                                 <img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete participant' %}">
                             </a>
                             {% endif %}
                             {% if user != request_user and not user.is_superuser %}
-                            <a class="status_link deactivate" href="{% url user_status_deactivate user.id %}" title="{% trans 'Change status to inactive' %}"{% if not user.is_active %} style="display:none"{% endif %}>
+                            <a class="status_link deactivate" href="{% url 'user_status_deactivate' user.id %}" title="{% trans 'Change status to inactive' %}"{% if not user.is_active %} style="display:none"{% endif %}>
                                 <span></span>
                             </a>
-                            <a class="status_link activate" href="{% url user_status_activate user.id %}" title="{% trans 'Change status to active' %}"{% if user.is_active %} style="display:none"{% endif %}>
+                            <a class="status_link activate" href="{% url 'user_status_activate' user.id %}" title="{% trans 'Change status to active' %}"{% if user.is_active %} style="display:none"{% endif %}>
                                 <span></span>
                             </a>
                             {% endif %}
