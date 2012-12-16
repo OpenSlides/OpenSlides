@@ -10,10 +10,10 @@
     <ul>
         <li class="{% if request.path == url_motionoverview %}selected{% endif %}"><a href="{% url 'motion_overview' %}">{% trans "All motions" %}</a></li>
         {% if perms.motion.can_create_motion or perms.motion.can_manage_motion %}
-            <li class="{% active request '/motion/new' %}"><a href="{%  url motion_new %}">{% trans "New motion" %}</a></li>
+            <li class="{% active request '/motion/new' %}"><a href="{% url 'motion_new' %}">{% trans "New motion" %}</a></li>
         {% endif %}
         {% if perms.motion.can_manage_motion %}
-            <li class="{% active request '/motion/import' %}"><a href="{%  url motion_import %}">{% trans 'Import motions' %}</a></li>
+            <li class="{% active request '/motion/import' %}"><a href="{% url 'motion_import' %}">{% trans 'Import motions' %}</a></li>
         {% endif %}
         <li><a href="{% url 'print_motions' %}"><img src="{% static 'images/icons/pdf.png' %}"> {% trans 'All motions as PDF' %}</a></li>
     </ul>
