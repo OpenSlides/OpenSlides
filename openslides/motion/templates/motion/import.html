@@ -25,8 +25,8 @@
         <button class="button" type="submit">
             <span class="icon import">{% trans 'Import' %}</span>
         </button>
-        <a href="{% url motion_overview%}">
-        <button class="button" type="button"  onclick="window.location='{% url motion_overview %}'">
+        <a href="{% url 'motion_overview' %}">
+        <button class="button" type="button"  onclick="window.location='{% url 'motion_overview' %}'">
             <span class="icon cancel">{% trans 'Cancel' %}</span>
         </button>
         </a>

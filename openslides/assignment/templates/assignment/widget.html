@@ -5,7 +5,7 @@
 <ul style="line-height: 180%">
 {% for assignment in assignments %}
     <li class="{% if assignment.active %}activeline{% endif %}">
-        <a href="{% url projector_activate_slide assignment.sid %}" class="activate_link {% if assignment.active %}active{% endif %}">
+        <a href="{% url 'projector_activate_slide' assignment.sid %}" class="activate_link {% if assignment.active %}active{% endif %}">
             <div></div>
         </a>
         <a href="{% model_url assignment 'delete' %}" title="{% trans 'Delete' %}" class="icon delete right">
@@ -14,7 +14,7 @@
         <a href="{% model_url assignment 'edit' %}" title="{% trans 'Edit' %}" class="icon edit right">
             <span></span>
         </a>
-        <a href="{% url projctor_preview_slide assignment.sid %}" title="{% trans 'Preview' %}" class="icon preview right">
+        <a href="{% url 'projctor_preview_slide' assignment.sid %}" title="{% trans 'Preview' %}" class="icon preview right">
             <span></span>
         </a>
         <a href="{% model_url assignment 'view' %}">{{ assignment }}</a>

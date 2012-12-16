@@ -10,9 +10,6 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-# for python 2.5 support
-from __future__ import with_statement
-
 import base64
 import ctypes
 import optparse

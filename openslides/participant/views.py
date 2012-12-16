@@ -10,15 +10,8 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-# for python 2.5 support
-from __future__ import with_statement
-
 from urllib import urlencode
-
-try:
-    from urlparse import parse_qs
-except ImportError:  # python <= 2.5 grab it from cgi
-    from cgi import parse_qs
+from urlparse import parse_qs
 
 from reportlab.lib import colors
 from reportlab.lib.units import cm
@@ -31,7 +24,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import login as django_login
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
-from django.utils.translation import ugettext as _, ugettext_lazy
+from django.utils.translation import ugettext as _, ugettext_lazy, activate
 
 from openslides.utils.pdf import stylesheet
 from openslides.utils.template import Tab
@@ -503,11 +496,15 @@ def user_settings(request):
         form_user = UsersettingsForm(request.POST, instance=request.user)
         if form_user.is_valid():
             form_user.save()
+            language = request.LANGUAGE_CODE = \
+                request.session['django_language'] = form_user.cleaned_data['language']
+            activate(language)
             messages.success(request, _('User settings successfully saved.'))
         else:
             messages.error(request, _('Please check the form for errors.'))
     else:
-        form_user = UsersettingsForm(instance=request.user)
+        language = request.session.get('django_language', request.LANGUAGE_CODE)
+        form_user = UsersettingsForm(instance=request.user, initial={'language': language})
 
     return {
         'form_user': form_user,
