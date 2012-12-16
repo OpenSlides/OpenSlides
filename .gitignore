@@ -1,18 +1,16 @@
 .venv/*
-openslides/.venv/
 *.pyc
 *.swp
-openslides/settings.py
-database.db
 *~
-extras/website/*
-extras/website-old/*
+settings.py
+database.sqlite
+
+# Package building
 docs/_build/*
 *.egg-info
 build/*
 dist/*
 .DS_Store
-settings.py
 versiontools*
 
 # Unit test / coverage reports
