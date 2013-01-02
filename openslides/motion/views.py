@@ -941,6 +941,7 @@ def register_tab(request):
     selected = True if request.path.startswith('/motion/') else False
     return Tab(
         title=_('Motions'),
+        app='motion',
         url=reverse('motion_overview'),
         permission=request.user.has_perm('motion.can_see_motion') or request.user.has_perm('motion.can_support_motion') or request.user.has_perm('motion.can_support_motion') or request.user.has_perm('motion.can_manage_motion'),
         selected=selected,
