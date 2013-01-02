@@ -19,9 +19,6 @@ from openslides.config.signals import default_config_value
 from openslides.projector.api import register_slidemodel
 from openslides.projector.projector import SlideMixin
 
-from openslides.config.models import config
-
-
 
 class ProjectorSlide(models.Model, SlideMixin):
     """
@@ -31,6 +28,7 @@ class ProjectorSlide(models.Model, SlideMixin):
 
     title = models.CharField(max_length=256, verbose_name=_("Title"))
     text = models.TextField(null=True, blank=True, verbose_name=_("Text"))
+    weight = models.IntegerField(default=0, verbose_name=_("Weight"))
 
     def slide(self):
         return {
@@ -55,8 +53,7 @@ class ProjectorSlide(models.Model, SlideMixin):
         )
 
 
-register_slidemodel(ProjectorSlide,
-    control_template='projector/control_customslide.html')
+register_slidemodel(ProjectorSlide, control_template='projector/control_customslide.html')
 
 
 class ProjectorOverlay(models.Model):

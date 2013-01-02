@@ -11,23 +11,29 @@
 """
 
 from django.conf.urls.defaults import url, patterns
-from django.core.urlresolvers import reverse
 
 from openslides.participant.views import (
-    ParticipantsListPDF, ParticipantsPasswordsPDF, Overview, UserCreateView,
-    UserUpdateView, UserDeleteView, SetUserStatusView, UserImportView,
-    ResetPasswordView, GroupOverviewView, GroupCreateView, GroupUpdateView,
-    GroupDeleteView)
+    UserOverview, UserCreateView, UserDetailView, UserUpdateView,
+    UserDeleteView, ResetPasswordView, SetUserStatusView, UserImportView,
+    GroupOverview, GroupCreateView, GroupDetailView, GroupUpdateView, GroupDeleteView,
+    ParticipantsListPDF, ParticipantsPasswordsPDF)
 
-urlpatterns = patterns('openslides.participant.views',
+urlpatterns = patterns('',
+
+    # User
     url(r'^$',
-        Overview.as_view(),
+        UserOverview.as_view(),
         name='user_overview',
     ),
 
     url(r'^new/$',
         UserCreateView.as_view(),
         name='user_new',
+    ),
+
+    url(r'^(?P<pk>\d+)/$',
+        UserDetailView.as_view(),
+        name='user_view',
     ),
 
     url(r'^(?P<pk>\d+)/edit/$',
@@ -45,12 +51,6 @@ urlpatterns = patterns('openslides.participant.views',
         name='user_reset_password',
     ),
 
-    url(r'^(?P<pk>\d+)/status/toggle/$',
-        SetUserStatusView.as_view(),
-        {'action': 'toggle'},
-        name='user_status_toggle',
-    ),
-
     url(r'^(?P<pk>\d+)/status/activate/$',
         SetUserStatusView.as_view(),
         {'action': 'activate'},
@@ -63,19 +63,31 @@ urlpatterns = patterns('openslides.participant.views',
         name='user_status_deactivate',
     ),
 
+    url(r'^(?P<pk>\d+)/status/toggle/$',
+        SetUserStatusView.as_view(),
+        {'action': 'toggle'},
+        name='user_status_toggle',
+    ),
+
     url(r'^import/$',
         UserImportView.as_view(),
         name='user_import',
     ),
 
+    # Group
     url(r'^group/$',
-        GroupOverviewView.as_view(),
+        GroupOverview.as_view(),
         name='user_group_overview',
     ),
 
     url(r'^group/new/$',
         GroupCreateView.as_view(),
         name='user_group_new',
+    ),
+
+    url(r'^group/(?P<pk>\d+)/$',
+        GroupDetailView.as_view(),
+        name='user_group_view',
     ),
 
     url(r'^group/(?P<pk>\d+)/edit/$',
@@ -88,6 +100,7 @@ urlpatterns = patterns('openslides.participant.views',
         name='user_group_delete',
     ),
 
+    # PDF
     url(r'^print/$',
         ParticipantsListPDF.as_view(),
         name='user_print',

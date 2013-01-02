@@ -5,79 +5,47 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-VERSION = (1, 2, 0, 'final', 1)
+VERSION = (1, 4, 0, 'alpha', 0)  # During development it is the next release
+RELEASE = False
 
-def get_version(version=None):
-    """Derives a PEP386-compliant version number from VERSION."""
-    # TODO: Get the Version Hash from GIT.
+
+def get_version(version=None, release=None):
+    """
+    Derives a PEP386-compliant version number from VERSION. Adds id of
+    the current git commit.
+    """
     if version is None:
         version = VERSION
+    if release is None:
+        release = RELEASE
     assert len(version) == 5
     assert version[3] in ('alpha', 'beta', 'rc', 'final')
-
     # Now build the two parts of the version number:
     # main = X.Y[.Z]
-    # sub = .devN - for pre-alpha releases
-    #     | {a|b|c}N - for alpha, beta and rc releases
-
-    parts = 2 if version[2] == 0 else 3
-    main = '.'.join(str(x) for x in version[:parts])
-
-    sub = ''
-    if version[3] == 'alpha' and version[4] == 0:
-        mercurial_version = hg_version()
-        if mercurial_version != 'unknown':
-            sub = '.dev%s' % mercurial_version
-        else:
-            sub = '.dev'
-
-    elif version[3] != 'final':
-        sub = "-" + version[3] + str(version[4])
-
+    # sub = {a|b|c}N for alpha, beta and rc releases
+    # Add '-dev', if it is not a release commit
+    main_parts = 2 if version[2] == 0 else 3
+    main = '.'.join(str(x) for x in version[:main_parts])
+    if version[3] != 'final':
+        mapping = {'alpha': 'a', 'beta': 'b', 'rc': 'c'}
+        sub = mapping[version[3]] + str(version[4])
+    else:
+        sub = ''
+    if not release:
+        sub += '-dev'
     return main + sub
 
 
-def hg_version():
-    import socket
-    import os
-    import sys
-    from os.path import realpath, join, dirname
+def get_git_commit_id():
+    """
+    Catches the commit id of the git head.
+    """
     try:
-        from mercurial import ui as hgui
-        from mercurial.localrepo import localrepository
-        from mercurial.node import short as shorthex
-        from mercurial.error import RepoError
-        nomercurial = False
-    except ImportError:
-        return 'unknown'
-
-    os.environ['HGRCPATH'] = ''
-    conts = realpath(join(dirname(__file__)))
-    try:
-        ui = hgui.ui()
-        repository = localrepository(ui, join(conts, '..'))
-        ctx = repository['.']
-        if ctx.tags() and ctx.tags() != ['tip']:
-            version = ' '.join(ctx.tags())
+        git_head = open('.git/HEAD', 'r').read().rstrip()
+        if git_head[:5] == 'ref: ':
+            git_commit_id = open('.git/%s' % git_head[5:], 'r').read().rstrip()
         else:
-            version = '%(num)s:%(id)s' % {
-                'num': ctx.rev(), 'id': shorthex(ctx.node())
-            }
-    except TypeError:
-        version = 'unknown'
-    except RepoError:
-        return 0
-
-    # This value defines the timeout for sockets in seconds.  Per default python
-    # sockets do never timeout and as such we have blocking workers.
-    # Socket timeouts are set globally within the whole application.
-    # The value *must* be a floating point value.
-    socket.setdefaulttimeout(10.0)
-
-    return version
-
-
-## import os, site
-##
-## SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
-## site.addsitedir(SITE_ROOT)
+            git_commit_id = git_head
+    except IOError:
+        git_commit_id = 'unknown'
+    return str(git_commit_id)

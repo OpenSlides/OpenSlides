@@ -10,12 +10,13 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+import sys
+
 try:
     import json
-except ImportError: # For python 2.5 support
+except ImportError:  # For python 2.5 support
     import simplejson as json
 
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import Permission
 from django.core.context_processors import csrf
@@ -28,12 +29,6 @@ from django.utils.translation import ugettext as _, ugettext_lazy
 
 from openslides.utils.signals import template_manipulation
 
-from openslides import get_version
-
-
-def revision(request):
-    return {'openslides_version': get_version()}
-
 
 def gen_confirm_form(request, message, url):
     """
@@ -41,16 +36,17 @@ def gen_confirm_form(request, message, url):
 
     Deprecated. Use Class base Views instead.
     """
-    messages.warning(request,
-    """
-    %s
-    <form action="%s" method="post">
-        <input type="hidden" value="%s" name="csrfmiddlewaretoken">
-        <button type="submit" class="btn">%s</button>
-        <button class="btn">%s</button>
-    </form>
-    """
-    % (message, url, csrf(request)['csrf_token'], _("Yes"), _("No")))
+    messages.warning(
+        request,
+        """
+        %s
+        <form action="%s" method="post">
+            <input type="hidden" value="%s" name="csrfmiddlewaretoken">
+            <button type="submit" class="btn">%s</button>
+            <button class="btn">%s</button>
+        </form>
+        """
+        % (message, url, csrf(request)['csrf_token'], _("Yes"), _("No")))
 
 
 def del_confirm_form(request, object, name=None, delete_link=None):
@@ -63,27 +59,28 @@ def del_confirm_form(request, object, name=None, delete_link=None):
         name = object
     if delete_link is None:
         delete_link = object.get_absolute_url('delete')
-    gen_confirm_form(request, _('Do you really want to delete %s?')
+    gen_confirm_form(
+        request, _('Do you really want to delete %s?')
         % html_strong(name), delete_link)
 
 
-def render_response(req, *args, **kwargs):
-    kwargs['context_instance'] = RequestContext(req)
-    return render_to_response(*args, **kwargs)
-
-
 def template(template_name):
+    """
+    Decorator to set a template for a view.
+
+    Deprecated. Use class based views instead.
+    """
     def renderer(func):
         def wrapper(request, *args, **kwargs):
             output = func(request, *args, **kwargs)
             if not isinstance(output, dict):
                 return output
             context = {}
-            template_manipulation.send(sender='utils_template', request=request,
-                context=context)
+            template_manipulation.send(
+                sender='utils_template', request=request, context=context)
             output.update(context)
-            response = render_to_response(template_name, output,
-                context_instance=RequestContext(request))
+            response = render_to_response(
+                template_name, output, context_instance=RequestContext(request))
             if 'cookie' in output:
                 response.set_cookie(output['cookie'][0], output['cookie'][1])
             return response
@@ -95,22 +92,26 @@ def permission_required(perm, login_url=None):
     """
     Decorator for views that checks whether a user has a particular permission
     enabled, redirecting to the log-in page if necessary.
+
+    Deprecated.
     """
     def renderer(func):
         def wrapper(request, *args, **kw):
             if request.user.has_perm(perm):
                 return func(request, *args, **kw)
             if request.user.is_authenticated():
-                return render_to_forbitten(request)
+                return render_to_forbidden(request)
             return redirect(reverse('user_login'))
         return wrapper
     return renderer
 
 
-def render_to_forbitten(request, error=
-    ugettext_lazy("Sorry, you have no rights to see this page.")):
-    return HttpResponseForbidden(render_to_string('403.html',
-        {'error': error}, context_instance=RequestContext(request)))
+def render_to_forbidden(request,
+                        error=ugettext_lazy("Sorry, you have no rights to see this page.")):
+    # TODO: Integrate this function into the PermissionMixin once the
+    # above function is deleted.
+    return HttpResponseForbidden(render_to_string(
+        '403.html', {'error': error}, context_instance=RequestContext(request)))
 
 
 def delete_default_permissions(**kwargs):
@@ -118,27 +119,27 @@ def delete_default_permissions(**kwargs):
     Deletes the permissions, django creates by default for the admin.
     """
     for p in Permission.objects.all():
-        if p.codename.startswith('add') \
-        or p.codename.startswith('delete') \
-        or p.codename.startswith('change'):
+        if (p.codename.startswith('add') or
+                p.codename.startswith('delete') or
+                p.codename.startswith('change')):
             p.delete()
 
 
 def ajax_request(data):
     """
     generates a HTTPResponse-Object with json-Data for a
-    ajax response
+    ajax response.
+
+    Deprecated.
     """
     return HttpResponse(json.dumps(data))
 
 
 def _propper_unicode(text):
-    res = ''
     if not isinstance(text, unicode):
-        res = u"%s" % text.decode('UTF-8')
+        return u"%s" % text.decode('UTF-8')
     else:
-        res = text
-    return res
+        return text
 
 
 def decodedict(dict):

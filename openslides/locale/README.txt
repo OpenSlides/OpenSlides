@@ -6,8 +6,10 @@ Instruction to update translation for OpenSlides:
 
 2. Update the German po file (locale/de/LC_MESSAGES/django.po):
    $ django-admin.py makemessages -l de
+   $ django-admin.py makemessages -l de -d djangojs
 
 3. Edit the German po file: locale/de/LC_MESSAGES/django.po
+   Don't forget the js-file: locale/de/LC_MESSAGES/djangojs.po
    (Search for "fuzzy" and empty msgstr entries.)
 
 4. Update the German mo file (locale/de/LC_MESSAGES/django.mo):

@@ -14,7 +14,8 @@
 
     <p>{% trans 'Select a CSV file to import participants!' %}</p>
 
-    <p>{% trans 'Required comma separated values: <code>{first_name, last_name, gender, group, type, committee, comment}</code>' %}
+    <p>{% trans 'Required comma separated values' %}:
+    <code>({% trans 'first_name, last_name, gender, structure level, type, committee, comment' %})</code>
     <br>
     {% trans 'Required CSV file encoding: UTF-8 (Unicode).' %}
     </p>

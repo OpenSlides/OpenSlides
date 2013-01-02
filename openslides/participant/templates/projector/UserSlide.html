@@ -1,0 +1,21 @@
+{% extends "base-projector.html" %}
+
+{% load i18n %}
+{% load tags %}
+
+{% block title %}{{ block.super }} - {{ title }}{% endblock %}
+
+{% block content %}
+    <div class="item_fullscreen">{{ shown_user }}
+        <span>
+        {% if shown_user.committee %}
+            <p>{{ shown_user.committee }}</p>
+        {% endif %}
+        <p>
+            {% if shown_user.groups.all %}
+                {{ shown_user.groups.all|join:", " }}
+            {% endif %}
+        </p>
+        </span>
+    </div>
+{% endblock %}

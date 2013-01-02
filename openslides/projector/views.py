@@ -13,31 +13,28 @@
 from datetime import datetime
 from time import time
 
-from django.conf import settings
 from django.contrib import messages
+from django.core.cache import cache
 from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.db.models import Q
-from django.dispatch import receiver
-from django.utils.datastructures import SortedDict
-from django.utils.importlib import import_module
+from django.shortcuts import redirect
+from django.template import RequestContext
 from django.utils.translation import ugettext_lazy as _
 
 from openslides.utils.template import render_block_to_string, Tab
-from openslides.utils.utils import html_strong
-from openslides.utils.views import (TemplateView, RedirectView, CreateView,
-    UpdateView, DeleteView, AjaxMixin)
-
+from openslides.utils.views import (
+    TemplateView, RedirectView, CreateView, UpdateView, DeleteView, AjaxMixin)
 from openslides.config.models import config
-
-from openslides.projector.api import (get_active_slide, set_active_slide,
-    projector_message_set, projector_message_delete, get_slide_from_sid,
-    get_all_widgets)
-from openslides.projector.forms import SelectWidgetsForm
-from openslides.projector.models import ProjectorOverlay, ProjectorSlide
-from openslides.projector.projector import SLIDE, Widget
-from openslides.projector.signals import projector_overlays
+from .api import (
+    get_active_slide, set_active_slide, projector_message_set,
+    projector_message_delete, get_slide_from_sid, get_all_widgets,
+    clear_projector_cache)
+from .forms import SelectWidgetsForm
+from .models import ProjectorOverlay, ProjectorSlide
+from .projector import Widget
+from .signals import projector_overlays
 
 
 class DashboardView(TemplateView, AjaxMixin):
@@ -70,9 +67,10 @@ class Projector(TemplateView, AjaxMixin):
         if sid is None:
             try:
                 data = get_active_slide()
-            except AttributeError: #TODO: It has to be an Slide.DoesNotExist
+            except AttributeError:  # TODO: It has to be an Slide.DoesNotExist
                 data = None
             ajax = 'on'
+            active_sid = get_active_slide(True)
         else:
             data = get_slide_from_sid(sid)
             ajax = 'off'
@@ -88,10 +86,10 @@ class Projector(TemplateView, AjaxMixin):
         # Projector Overlays
         if self.kwargs['sid'] is None:
             active_defs = ProjectorOverlay.objects.filter(active=True) \
-                .filter(Q(sid=sid) | Q(sid=None)).values_list('def_name',
-                flat=True)
-            for receiver, response in projector_overlays.send(sender=sid,
-                                        register=False, call=active_defs):
+                .filter(Q(sid=active_sid) | Q(sid=None)).values_list(
+                    'def_name', flat=True)
+            for receiver, response in projector_overlays.send(
+                    sender=sid, register=False, call=active_defs):
                 if response is not None:
                     data['overlays'].append(response)
         self._data = data
@@ -106,19 +104,36 @@ class Projector(TemplateView, AjaxMixin):
         return context
 
     def get_ajax_context(self, **kwargs):
-        content = render_block_to_string(self.get_template_names()[0],
-            'content', self.data)
-        scrollcontent = render_block_to_string(self.get_template_names()[0],
-            'scrollcontent', self.data)
+        content = cache.get('projector_content')
+        if not content:
+            content = render_block_to_string(
+                self.get_template_names()[0],
+                'content', self.data)
+            cache.set('projector_content', content, 1)
 
+        scrollcontent = cache.get('projector_scrollcontent')
+        if not scrollcontent:
+            scrollcontent = render_block_to_string(
+                self.get_template_names()[0],
+                'scrollcontent', self.data)
+            cache.set('projector_scrollcontent', scrollcontent, 1)
+
+        # TODO: do not call the hole data-methode, if we only need some vars
+        data = cache.get('projector_data')
+        if not data:
+            data = self.data
+            cache.set('projector_data', data)
+        # clear cache if countdown is enabled
+        if config['countdown_state'] == 'active':
+            clear_projector_cache()
         context = super(Projector, self).get_ajax_context(**kwargs)
         content_hash = hash(content)
         context.update({
             'content': content,
             'scrollcontent': scrollcontent,
             'time': datetime.now().strftime('%H:%M'),
-            'overlays': self.data['overlays'],
-            'title': self.data['title'],
+            'overlays': data['overlays'],
+            'title': data['title'],
             'bigger': config['bigger'],
             'up': config['up'],
             'content_hash': content_hash,
@@ -186,8 +201,7 @@ class SelectWidgetsView(TemplateView):
         else:
             transaction.commit()
             self.request.session['widgets'] = activated_widgets
-        return self.render_to_response(context)
-
+        return redirect(reverse('dashboard'))
 
 
 class ProjectorEdit(RedirectView):
@@ -259,6 +273,7 @@ class CountdownEdit(RedirectView):
                 pass
 
     def get_ajax_context(self, **kwargs):
+        clear_projector_cache()
         return {
             'state': config['countdown_state'],
             'countdown_time': config['countdown_time'],
@@ -279,12 +294,11 @@ class OverlayMessageView(RedirectView):
         elif 'message-clean' in request.POST:
             projector_message_delete()
 
-
     def get_ajax_context(self, **kwargs):
+        clear_projector_cache()
         return {
             'overlay_message': config['projector_message'],
         }
-
 
 
 class ActivateOverlay(RedirectView):
@@ -312,6 +326,7 @@ class ActivateOverlay(RedirectView):
         self.overlay.save()
 
     def get_ajax_context(self, **kwargs):
+        clear_projector_cache()
         return {
             'active': self.overlay.active,
             'def_name': self.overlay.def_name,
@@ -355,13 +370,12 @@ def register_tab(request):
     """
     Register the projector tab.
     """
-    selected = True if request.path.startswith('/projector/') else False
+    selected = request.path.startswith('/projector/')
     return Tab(
         title=_('Dashboard'),
         app='dashboard',
         url=reverse('dashboard'),
-        permission=request.user.has_perm('projector.can_manage_projector') or
-            request.user.has_perm('projector.can_see_dashboard'),
+        permission=request.user.has_perm('projector.can_see_dashboard'),
         selected=selected,
     )
 
@@ -372,11 +386,23 @@ def get_widgets(request):
     """
     widgets = []
 
+    # welcome widget
+    context = {
+        'welcometext': config['welcome_text']}
+    widgets.append(Widget(
+        name='welcome',
+        display_name=config['welcome_title'],
+        template='projector/welcome_widget.html',
+        context=context,
+        permission_required='projector.can_see_dashboard',
+        default_column=1))
+
     # Projector live view widget
     widgets.append(Widget(
         name='live_view',
         display_name=_('Projector live view'),
         template='projector/live_view_widget.html',
+        context=RequestContext(request, {}),
         permission_required='projector.can_see_projector',
         default_column=2))
 
@@ -389,15 +415,14 @@ def get_widgets(request):
                 projector_overlay = ProjectorOverlay.objects.get(
                     def_name=name)
             except ProjectorOverlay.DoesNotExist:
-                projector_overlay = ProjectorOverlay(def_name=name,
-                    active=False)
+                projector_overlay = ProjectorOverlay(def_name=name, active=False)
                 projector_overlay.save()
             overlays.append(projector_overlay)
 
     context = {
-            'overlays':overlays,
-            'countdown_time': config['countdown_time'],
-            'countdown_state' : config['countdown_state']}
+        'overlays': overlays,
+        'countdown_time': config['countdown_time'],
+        'countdown_state': config['countdown_state']}
     context.update(csrf(request))
     widgets.append(Widget(
         name='overlays',
@@ -407,10 +432,9 @@ def get_widgets(request):
         default_column=2,
         context=context))
 
-
     # Custom slide widget
     context = {
-        'slides': ProjectorSlide.objects.all(),
+        'slides': ProjectorSlide.objects.all().order_by('weight'),
         'welcomepage_is_active': not bool(config["presentation"])}
     widgets.append(Widget(
         name='custom_slide',

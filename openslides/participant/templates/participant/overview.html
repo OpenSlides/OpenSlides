@@ -60,11 +60,11 @@
             <option value="female"{% if 'female' in sortfilter.gender %} selected{% endif %}>{% trans "Female" %}</option>
             <option value=""{% if '' in sortfilter.gender %} selected{% endif %}>{% trans "Not specified" %}</option>
         </select>
-        <select class="span2" name="category" onchange="document.forms['filter'].submit()">
-            <option value="---">-- {% trans "Category" %} --</option>
-            {% for category in categories %}
-                <option value="{{ category }}"{% if category in sortfilter.category %} selected{% endif %}>
-                {{ category }}</option>
+        <select class="span2" name="structure_level" onchange="document.forms['filter'].submit()">
+            <option value="---">-- {% trans "Structure level" %} --</option>
+            {% for level in structure_levels %}
+                <option value="{{ level }}"{% if level in sortfilter.structure_level %} selected{% endif %}>
+                {{ level }}</option>
             {% endfor %}
         </select>
         <select class="span2" name="type" onchange="document.forms['filter'].submit()">
@@ -101,7 +101,7 @@
         <tr>
             <th><a href="?sort=first_name&reverse={% if 'first_name' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "First Name" %}</a></th>
             <th><a href="?sort=last_name&reverse={% if 'last_name' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Last Name" %}</a></th>
-            <th class="optional"><a href="?sort=group&reverse={% if 'category' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Category" %}</a></th>
+            <th class="optional"><a href="?sort=structure_level&reverse={% if 'structure_level' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Structure level" %}</a></th>
             <th class="optional"><a href="?sort=type&reverse={% if 'type' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Type" %}</a></th>
             <th class="optional"><a href="?sort=committee&reverse={% if 'committee' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Committee" %}</a></th>
             {% if perms.participant.can_manage_participant %}
@@ -111,10 +111,10 @@
             {% endif %}
         </tr>
         {% for user in users %}
-            <tr class="{% cycle '' 'odd' %}">
+            <tr>
                 <td>{{ user.first_name }}</td>
                 <td>{{ user.last_name }}</td>
-                <td class="optional">{{ user.category }}</td>
+                <td class="optional">{{ user.structure_level }}</td>
                 <td class="optional">{{ user.get_type_display }}</td>
                 <td class="optional">{{ user.committee }}</td>
                 {% if perms.participant.can_manage_participant %}
@@ -129,15 +129,19 @@
                             <a href="{% url user_edit user.id %}">
                                 <img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit participant' %}">
                             </a>
+                            {% if user != request_user %}
                             <a href="{% url user_delete user.id %}">
                                 <img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete participant' %}">
                             </a>
+                            {% endif %}
+                            {% if user != request_user and not user.is_superuser %}
                             <a class="status_link deactivate" href="{% url user_status_deactivate user.id %}" title="{% trans 'Change status to inactive' %}"{% if not user.is_active %} style="display:none"{% endif %}>
                                 <span></span>
                             </a>
                             <a class="status_link activate" href="{% url user_status_activate user.id %}" title="{% trans 'Change status to active' %}"{% if user.is_active %} style="display:none"{% endif %}>
                                 <span></span>
                             </a>
+                            {% endif %}
                         </span>
                     </td>
                 {% endif %}

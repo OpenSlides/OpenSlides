@@ -12,18 +12,18 @@
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.models import Group, Permission
 from django.core.urlresolvers import reverse
 from django.utils.importlib import import_module
 from django.utils.translation import ugettext as _
 
-from openslides import get_version
-
+from openslides import get_version, get_git_commit_id, RELEASE
 from openslides.utils.template import Tab
 from openslides.utils.views import FormView, TemplateView
+from .forms import GeneralConfigForm
+from .models import config
 
-from openslides.config.forms import GeneralConfigForm
-from openslides.config.models import config
+# TODO: Do not import the participant module in config
+from openslides.participant.api import get_or_create_anonymous_group
 
 
 class GeneralConfig(FormView):
@@ -41,8 +41,8 @@ class GeneralConfig(FormView):
             'event_date': config['event_date'],
             'event_location': config['event_location'],
             'event_organizer': config['event_organizer'],
-            'frontpage_title': config['frontpage_title'],
-            'frontpage_welcometext': config['frontpage_welcometext'],
+            'welcome_title': config['welcome_title'],
+            'welcome_text': config['welcome_text'],
             'system_enable_anonymous': config['system_enable_anonymous'],
         }
 
@@ -54,34 +54,19 @@ class GeneralConfig(FormView):
         config['event_location'] = form.cleaned_data['event_location']
         config['event_organizer'] = form.cleaned_data['event_organizer']
 
-        # frontpage
-        config['frontpage_title'] = form.cleaned_data['frontpage_title']
-        config['frontpage_welcometext'] = \
-            form.cleaned_data['frontpage_welcometext']
+        # welcome widget
+        config['welcome_title'] = form.cleaned_data['welcome_title']
+        config['welcome_text'] = form.cleaned_data['welcome_text']
 
         # system
         if form.cleaned_data['system_enable_anonymous']:
             config['system_enable_anonymous'] = True
-            # check for Anonymous group and (re)create it as needed
-            try:
-                anonymous = Group.objects.get(name='Anonymous')
-            except Group.DoesNotExist:
-                default_perms = [u'can_see_agenda', u'can_see_projector',
-                    u'can_see_application', u'can_see_assignment']
-                anonymous = Group()
-                anonymous.name = 'Anonymous'
-                anonymous.save()
-                anonymous.permissions = Permission.objects.filter(
-                    codename__in=default_perms)
-                anonymous.save()
-                messages.success(self.request,
-                    _('Anonymous access enabled. Please modify the "Anonymous" ' \
-                    'group to fit your required permissions.'))
+            get_or_create_anonymous_group()
         else:
             config['system_enable_anonymous'] = False
 
-        messages.success(self.request,
-            _('General settings successfully saved.'))
+        messages.success(
+            self.request, _('General settings successfully saved.'))
         return super(GeneralConfig, self).form_valid(form)
 
 
@@ -94,7 +79,14 @@ class VersionConfig(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(VersionConfig, self).get_context_data(**kwargs)
-        context['versions'] = [('OpenSlides', get_version())]
+
+        # OpenSlides version. During development the git commit id is added.
+        openslides_version_string = get_version()
+        if not RELEASE:
+            openslides_version_string += ' Commit: %s' % get_git_commit_id()
+        context['versions'] = [('OpenSlides', openslides_version_string)]
+
+        # Version of plugins.
         for plugin in settings.INSTALLED_PLUGINS:
             try:
                 mod = import_module(plugin)
@@ -105,7 +97,6 @@ class VersionConfig(TemplateView):
                 plugin_name = mod.NAME
             except AttributeError:
                 plugin_name = mod.__name__.split('.')[0]
-
             context['versions'].append((plugin_name, plugin_version))
         return context
 

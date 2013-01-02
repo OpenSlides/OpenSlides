@@ -1,0 +1,81 @@
+{% extends "base-projector.html" %}
+
+{% load tags %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}{{ block.super }} - {% trans "Motion" %} {{ motion.number }}{% endblock %}
+{% block content %}
+    <div id="sidebar">
+    <div class="box">
+        <p><b>{% trans "Status" %}:</b><br>
+        {% if motion.status != "pub" %}
+            {% if motion.status == "acc" %}
+            <img src="{% static 'images/icons/voting-yes.png' %}">
+            {% endif %}
+            {% if motion.status == "rej" %}
+            <img src="{% static 'images/icons/voting-no.png' %}">
+            {% endif %}
+            {% trans motion.get_status_display %}
+        {% else %}
+            {% for note in motion.notes %}
+            {{ note }}
+            {% endfor %}
+        {% endif %}
+        </p>
+
+        {% with motion.polls as polls %}
+        {% if polls.exists and polls.0.has_votes %}
+        <p><b>{% trans "Poll result" %}:</b>
+        {% for poll in polls %}
+            {% if poll.has_votes %}
+                {% if polls|length > 1 %}
+                    <p>{{forloop.counter}}. {% trans "Vote" %}:</p>
+                {% endif %}
+                {% with poll.get_options.0 as option %}
+                <div class="results">
+                    <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.Yes }} <br>
+                    <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.No }} <br>
+                    <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}">  {{ option.Abstain }}<br>
+                    <img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}<br>
+                    <hr>
+                    <img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
+                </div>
+                {% endwith %}
+            {% else %}
+                {% if poll|length  == 1 %}
+                <i>{% trans "No poll results available." %}</i>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+        </p>
+        {% endif %}
+        {% endwith %}
+
+        <p><b>{% trans "Submitter" %}:</b><br>
+        {{ motion.submitter }}
+        </p>
+    </div>
+    </div>
+
+    <h1>
+    {% if motion.number != None %}
+        {% trans "Motion No." %} {{ motion.number }}
+    {% else %}
+        {% trans "Motion" %} <i>[{% trans "no number" %}]</i>
+    {% endif %}
+    </h1>
+    <b>{{ motion.public_version.title }}</b>
+    <hr>
+{% endblock %}
+
+{% block scrollcontent %}
+    <p>
+    <div class="text">{{ motion.public_version.text|linebreaks }}</div>
+    {% if motion.public_version.reason %}
+        <br>
+        <div class="reason"><p><b>{% trans "Reason" %}:</b></p>
+        {{ motion.public_version.reason|linebreaks }}</div>
+    {% endif %}
+    </p>
+{% endblock %}

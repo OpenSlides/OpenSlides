@@ -1,0 +1,22 @@
+{% extends "base-projector.html" %}
+
+{% load i18n %}
+{% load tags %}
+
+{% block title %}{{ block.super }} - {{ title }}{% endblock %}
+
+{% block content %}
+    <div class="item_fullscreen">{{ group }}
+        <span>
+        <p><i>{{ group.user_set.all.count }} {% trans "participants" %}</i></p>
+        {% comment %}
+            TODO: print fullname (not username) of all group users [see #420]
+            <p>
+                {% if group.user_set.all %}
+                    {{ group.user_set.all|join:", " }}
+                {% endif %}
+            </p>
+        {% endcomment %}
+        </span>
+    </div>
+{% endblock %}

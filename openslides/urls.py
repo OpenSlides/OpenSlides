@@ -12,21 +12,18 @@
 
 from django.conf import settings
 from django.conf.urls.defaults import patterns, url, include
-from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.shortcuts import redirect
 from django.utils.importlib import import_module
 
-from openslides.utils.views import FrontPage
-
+from openslides.utils.views import RedirectView
 
 handler500 = 'openslides.utils.views.server_error'
 
 urlpatterns = patterns('',
-    # frontpage
-    (r'^$', FrontPage.as_view()),
+    # Redirect to dashboard URL
+    url(r'^$', RedirectView.as_view(url='dashboard'), name='home',),
 
     (r'^agenda/', include('openslides.agenda.urls')),
-    (r'^application/', include('openslides.application.urls')),
+    (r'^motion/', include('openslides.motion.urls')),
     (r'^assignment/', include('openslides.assignment.urls')),
     (r'^participant/', include('openslides.participant.urls')),
     (r'^config/', include('openslides.config.urls')),
@@ -35,7 +32,7 @@ urlpatterns = patterns('',
 )
 
 urlpatterns += patterns('django.contrib.staticfiles.views',
-    url(r'^static/(?P<path>.*)$', 'serve', {'insecure':True}),
+    url(r'^static/(?P<path>.*)$', 'serve', {'insecure': True}),
 )
 
 js_info_dict = {

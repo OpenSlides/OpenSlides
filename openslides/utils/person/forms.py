@@ -22,7 +22,7 @@ class PersonChoices(object):
     def __iter__(self):
         if self.field.empty_label is not None:
             yield (u"", self.field.empty_label)
-        for person in Persons():
+        for person in sorted(Persons(), key=lambda person: person.sort_name):
             yield (person.person_id, person)
 
 
@@ -61,8 +61,8 @@ class MultiplePersonFormField(PersonFormField):
     widget = forms.widgets.SelectMultiple
 
     def __init__(self, *args, **kwargs):
-        super(MultiplePersonFormField, self).__init__(empty_label=None,
-                                                    *args, **kwargs)
+        super(MultiplePersonFormField, self).__init__(
+            empty_label=None, *args, **kwargs)
 
     def to_python(self, value):
         if hasattr(value, '__iter__'):

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}{{ block.super }} – {% trans "Import motions" %} {% endblock %}
+
+{% block content %}
+    <h1>{% trans "Import motions" %}
+        <small class="pull-right">
+        <a href="{% url application_overview %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        </small>
+    </h1>
+
+    <p>{% trans 'Select a CSV file to import motions!' %}</p>
+    <p>{% trans 'Required comma separated values' %}:
+    <code>({% trans 'number, title, text, reason, first_name, last_name, is_group' %})</code>
+    <br>
+    {% trans '<code>number</code>, <code>reason</code> and <code>is_group</code> are optional and may be empty' %}.
+    <br>
+    {% trans 'Required CSV file encoding: UTF-8 (Unicode).' %}
+    </p>
+
+    <p><a href="http://dev.openslides.org/wiki/CSVImport" target="_blank">{% trans 'A CSV example file is available in OpenSlides Wiki.' %}</a>
+    </p>
+
+    <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
+        {% for field in form %}
+        <div class="control-group{% if field.errors %} error{% endif%}">
+            <label for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}:</label>
+            {{ field }}
+            {% if field.errors %}
+            <span class="help-inline">{{ field.errors }}</span>
+            {% endif %}
+            {% if field.help_text %}
+            <span class="help-inline">{{ field.help_text }})</span>
+            {% endif %}
+        </div>
+        {% endfor %}
+        <div class="control-group">
+        <button class="btn btn-primary" type="submit">
+            {% trans 'Import' %}
+        </button>
+        <a href='{% url motionn_overview %}' class="btn">
+            {% trans 'Cancel' %}
+        </a>
+        </div>
+        <small>* {% trans "required" %}</small>
+    </form>
+{% endblock %}

@@ -42,7 +42,13 @@
         <tr class="{% cycle '' 'odd' %}
             {% if assignment.active %}activeline{% endif %}">
             <td><a href="{% url assignment_view assignment.id %}">{{ assignment }}</a></td>
-            <td>{{ assignment.candidates|length }} / {{ assignment.posts }}</td>
+            <td>
+                {% blocktrans with posts=assignment.posts context "Number of searched candidates for an election"%}posts: {{ posts }}{% endblocktrans %}
+                {% if assignment.status != 'fin' %}
+                    | {% blocktrans with candidates=assignment.get_participants|length %}candidates: {{ candidates }}{% endblocktrans %}
+                {% endif %}
+                | {% blocktrans with elected=assignment.elected|length %}elected: {{ elected }}{% endblocktrans %}
+            </td>
             <td class="optional">{{ assignment.get_status_display }}</td>
             <td>
                 <span style="width: 1px; white-space: nowrap;">

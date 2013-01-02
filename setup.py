@@ -7,20 +7,27 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+# for python 2.5 support
+from __future__ import with_statement
+
 from setuptools import setup
 from setuptools import find_packages
 from openslides import get_version
 
 
+with open('README.txt') as file:
+    long_description = file.read()
+
 setup(
     name='openslides',
-    description='Presentation-System',
+    description='Presentation and assembly system',
+    long_description=long_description,
     version=get_version(),
     url='http://openslides.org',
     author='OpenSlides-Team',
     author_email='support@openslides.org',
     license='GPL2+',
-    packages=find_packages(),
+    packages=find_packages(exclude=['tests']),
     include_package_data = True,
     classifiers = [
         # http://pypi.python.org/pypi?%3Aaction=list_classifiers

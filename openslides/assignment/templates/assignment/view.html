@@ -35,14 +35,23 @@
     {% endif %}
     <br>
     <!-- Candidates -->
+{% if assignment.status != "fin" %}
     <h4>{% trans "Candidates" %}</h4>
     <ol>
-    {% for person in assignment.candidates %}
+    {% for person in assignment.get_participants %}
         <li>
             {{ person }}
             {% if perms.assignment.can_manage_assignment %}
                 {% if assignment.status == "sea" or assignment.status == "vot" %}
                     <a href="{% url assignment_delother assignment.id person.person_id %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Remove candidate' %}"><i class="icon-remove"></i></a>
+                {% endif %}
+            {% endif %}
+            {% if person in assignment.elected %}
+                | <b>{% trans "elected" %}</b>
+                {% if perms.assignment.can_manage_assignment %}
+                    {% if assignment.status == "sea" or assignment.status == "vot" %}
+                        <a href="{% url assignment_user_not_elected assignment.id person.person_id %}"><img src="{% static 'images/icons/dialog-cancel.png' %}" title="{% trans 'Mark candidate as not elected' %}"></a>
+                    {% endif %}
                 {% endif %}
             {% endif %}
         </li>
@@ -84,7 +93,24 @@
     </form>
     {% endif %}
     {% endif %}
-    <!-- Results -->
+{% endif %}
+
+{% if perms.assignment.can_manage_assignments and blocked_candidates and assignment.status != "fin" %}
+    <h3>{% trans "Blocked Candidates" %}</h3>
+    <ul>
+    {% for person in blocked_candidates %}
+        <li>
+            {{ person }}<a href="{% url assignment_delother assignment.id person.person_id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Remove candidate' %}"></a>
+        </li>
+    {% empty %}
+        <li>{% trans "No blocked candidates available." %}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+
+<!-- Results -->
+{% if assignment.status != "sea" or polls.exists %}
     <h4>{% trans "Election results" %}</h4>
     {% if polls.exists %}
         <table class="table table-striped table-bordered">
@@ -174,8 +200,7 @@
             {% if assignment.candidates and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
                 <td></td>
             {% endif %}
-        </tr>
-        
+        </tr>        
         <tr class="info total">
             <td><strong>{% trans 'Votes cast' %}</strong></td>
             {% for poll in polls %}

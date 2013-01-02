@@ -5,18 +5,18 @@
 {% block title %}
     {{ block.super }} –
     {% if group %}
-        {% trans "Edit user group" %}
+        {% trans "Edit group" %}
     {% else %}
-        {% trans "New user group" %}
+        {% trans "New group" %}
     {% endif %}
 {% endblock %}
 
 {% block content %}
     <h1>
     {% if group %}
-        {% trans "Edit user group" %}
+        {% trans "Edit group" %}
     {% else %}
-        {% trans "New user group" %}
+        {% trans "New group" %}
     {% endif %}
         <small class="pull-right">
         <a href="{% url user_group_overview %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>

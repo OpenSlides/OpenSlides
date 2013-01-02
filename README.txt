@@ -1,16 +1,16 @@
-            ==================================
-            English README file for OpenSlides
-            ==================================
+==================================
+English README file for OpenSlides
+==================================
 
-This is OpenSlides, version 1.2 (2012-07-25).
+This is OpenSlides, version 1.3.1 (unreleased).
 
 
 What is OpenSlides?
 ===================
-OpenSlides is a free, web-based presentation system for displaying and
-controlling of agenda, applications and elections of an assembly.
+OpenSlides is a free web-based presentation and assembly system for
+displaying and controlling of agenda, motions and elections of an assembly.
 
-See http://www.openslides.org for more information.
+See http://openslides.org for more information.
 
 
 Getting started
@@ -18,14 +18,16 @@ Getting started
 Install and start OpenSlides as described in the INSTALL.txt.
 
 If you need help please contact the OpenSlides team on public mailing
-list or read the OpenSlides manual. See http://www.openslides.org.
+list or read the OpenSlides manual. See http://openslides.org.
 
 
 The start script of OpenSlides
 ==============================
-Simply running 
-  openslides.exe (on Windows) or 
-  python start.py (on Linux/MacOS) 
+Simply running
+  openslides.exe (on Windows)
+or
+  openslides (on Linux/MacOS)
+
 will start OpenSlides using djangos development server. It will also
 try to open OpenSlides in your default webbrowser.
 
@@ -47,27 +49,35 @@ Command line options
 --------------------
 The following command line options are available:
 
+-h, --help
+    Shows all options
+
 -a, --address=ADDRESS
     Changes the address on which the server will listen for connections
 
--p, --port
+-p PORT, --port=PORT
     Changes the port on which the server will listen for connections
 
 --syncdb
-    Create/ update the database
+    Creates/updates database before starting the server
 
 --reset-admin
-    This will reset the password of the user
+    Resets the password to 'admin' for user 'admin'
+
+-s SETTINGS, --settings=SETTINGS
+    Sets the path to the settings file.
+
+--no-reload
+    Does not reload the development server
+
+--version
+    Show version and exit.
 
 Example 1: Openslides should only be accessible on this computer:
-  openslides.exe -a 127.0.0.1
-  or
-  python start.py -a 127.0.0.1
+  openslides -a 127.0.0.1
 
 Example 2: Like above, but also specify the port as 8080
-  openslides.exe -a 127.0.0.01 -p 8080
-  or
-  python start.py -a 127.0.0.1 -p 8080
+  openslides -a 127.0.0.01 -p 8080
 
 
 Supported operating systems and browsers
@@ -82,4 +92,3 @@ Browsers:
   IE 7+
   Chrome
   Safari
-

@@ -1,0 +1,49 @@
+{% load i18n %}
+{% load tags %}
+
+<ul style="line-height: 180%">
+    {% trans "I submitted the following motions:" %}
+    {% for motion in submitted_motions %}
+        <li>
+            <a href="{% model_url motion 'view' %}">{{ motion.public_version.title }}</a>
+            ({% trans "motion" %}
+            {% if motion.number %}
+                {{ motion.number }})
+            {% else %}
+                <i>[{% trans "no number" %}]</i>)
+            {% endif %}
+        </li>
+    {% empty %}
+        <li><i>{% trans "None" %}</i></li>
+    {% endfor %}
+</ul>
+
+{% if config_motion_min_supporters %}
+<hr />
+<ul style="line-height: 180%">
+    {% trans "I support the following motions:" %}
+    {% for motion in supported_motions %}
+        <li>
+            <a href="{% model_url motion 'view' %}">{{ motion.public_version.title }}</a>
+            ({% trans "motion" %}
+            {% if motion.number %}
+                {{ motion.number }})
+            {% else %}
+                <i>[{% trans "no number" %}]</i>)
+            {% endif %}
+        </li>
+    {% empty %}
+        <li><i>{% trans "None" %}</i></li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<hr />
+<ul style="line-height: 180%">
+    {% trans "I am candidate for the following elections:" %}
+    {% for assignment in assignments %}
+        <li><a href="{% model_url assignment 'view' %}">{{ assignment }}</a></li>
+    {% empty %}
+        <li><i>{% trans "None" %}</i></li>
+    {% endfor %}
+</ul>

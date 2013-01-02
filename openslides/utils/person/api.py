@@ -13,6 +13,45 @@
 from openslides.utils.person.signals import receive_persons
 
 
+class Person(object):
+    """
+    Meta-class for all person objects
+    """
+    def person_id(self):
+        """
+        Return an id for representation of ths person. Has to be unique.
+        """
+        raise NotImplementedError('Any person object needs a person_id')
+
+    def __repr__(self):
+        """
+        Return a string for this person.
+        """
+        return str(self.person_id)
+
+    @property
+    def sort_name(self):
+        """
+        Return the part of the name, which is used for sorting.
+        For example the pre-name or the last-name
+        """
+        return self.clean_name.lower()
+
+    @property
+    def clean_name(self):
+        """
+        Return the name of this person without a suffix
+        """
+        return unicode(self)
+
+    @property
+    def name_suffix(self):
+        """
+        Return a suffix for the person-name.
+        """
+        return ''
+
+
 class Persons(object):
     """
     A Storage for a multiplicity of different Person-Objects.
@@ -25,13 +64,17 @@ class Persons(object):
         try:
             return iter(self._cache)
         except AttributeError:
-            return iter(self.iter_persons())
+            return self.iter_persons()
 
     def __len__(self):
         return len(list(self.__iter__()))
 
     def __getitem__(self, key):
-        return list(self)[key]
+        try:
+            return list(self)[key]
+        except IndexError:
+            from openslides.utils.person import EmptyPerson
+            return EmptyPerson()
 
     def iter_persons(self):
         self._cache = list()
@@ -61,6 +104,6 @@ def get_person(person_id):
     try:
         person_prefix, id = split_person_id(person_id)
     except TypeError:
-        from openslides.utils.person import EmtyPerson
-        return EmtyPerson()
+        from openslides.utils.person import EmptyPerson
+        return EmptyPerson()
     return Persons(person_prefix_filter=person_prefix, id_filter=id)[0]

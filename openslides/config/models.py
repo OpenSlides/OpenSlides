@@ -51,7 +51,7 @@ class Config(object):
             pass
 
         for receiver, value in default_config_value.send(sender='config',
-                                key=key):
+                                                         key=key):
             if value is not None:
                 return value
         if settings.DEBUG:
@@ -69,7 +69,6 @@ class Config(object):
     def __contains__(self, item):
         return ConfigStore.objects.filter(key=item).exists()
 
-
 config = Config()
 
 
@@ -81,17 +80,13 @@ def default_config(sender, key, **kwargs):
     return {
         'event_name': 'OpenSlides',
         'event_description':
-            _('Presentation system for agenda, motions and elections'),
+        _('Presentation and assembly system'),
         'event_date': '',
         'event_location': '',
         'event_organizer': '',
         'presentation': '',
-        'frontpage_title': _('Welcome'),
-        'frontpage_welcometext': _('Welcome to OpenSlides!'),
-        'show_help_text': True,
-        'help_text': _("Get professional support for OpenSlides on %s.") %
-            "<a href='http://openslides.org/' target='_blank'> \
-            www.openslides.org</a>",
+        'welcome_title': _('Welcome to OpenSlides'),
+        'welcome_text': _('[Place for your welcome text.]'),
         'system_enable_anonymous': False,
     }.get(key)
 
@@ -127,11 +122,9 @@ def set_submenu(sender, request, context, **kwargs):
             (reverse('config_%s' % appname), _(title), selected)
         )
 
-    menu_links.append (
-        (reverse('config_version'), _('Version'),
-            request.path == reverse('config_version'))
-    )
+    menu_links.append((
+        reverse('config_version'), _('Version'),
+        request.path == reverse('config_version')))
 
     context.update({
-        'menu_links': menu_links,
-    })
+        'menu_links': menu_links})

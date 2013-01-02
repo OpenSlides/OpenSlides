@@ -1,0 +1,233 @@
+[
+   {
+      "pk": 1,
+      "model": "auth.group",
+      "fields": {
+         "name": "Beobachter/in",
+         "permissions": [
+            [
+               "can_see_agenda",
+               "agenda",
+               "item"
+            ],
+            [
+               "can_create_motion",
+               "motion",
+               "motion"
+            ],
+            [
+               "can_see_motion",
+               "motion",
+               "motion"
+            ],
+            [
+               "can_nominate_other",
+               "assignment",
+               "assignment"
+            ],
+            [
+               "can_nominate_self",
+               "assignment",
+               "assignment"
+            ],
+            [
+               "can_see_assignment",
+               "assignment",
+               "assignment"
+            ],
+            [
+               "can_see_participant",
+               "participant",
+               "user"
+            ],
+            [
+               "can_see_projector",
+               "projector",
+               "projectorslide"
+            ],
+            [
+               "can_see_dashboard",
+               "projector",
+               "projectorslide"
+            ]
+         ]
+      }
+   },
+   {
+      "pk": 2,
+      "model": "auth.group",
+      "fields": {
+         "name": "Delegierte/r",
+         "permissions": [
+            [
+               "can_see_agenda",
+               "agenda",
+               "item"
+            ],
+            [
+               "can_create_motion",
+               "motion",
+               "motion"
+            ],
+            [
+               "can_see_motion",
+               "motion",
+               "motion"
+            ],
+            [
+               "can_support_motion",
+               "motion",
+               "motion"
+            ],
+            [
+               "can_nominate_other",
+               "assignment",
+               "assignment"
+            ],
+            [
+               "can_nominate_self",
+               "assignment",
+               "assignment"
+            ],
+            [
+               "can_see_assignment",
+               "assignment",
+               "assignment"
+            ],
+            [
+               "can_see_participant",
+               "participant",
+               "user"
+            ],
+            [
+               "can_see_projector",
+               "projector",
+               "projectorslide"
+            ],
+            [
+               "can_see_dashboard",
+               "projector",
+               "projectorslide"
+            ]
+         ]
+      }
+   },
+   {
+      "pk": 3,
+      "model": "auth.group",
+      "fields": {
+         "name": "Versammlungsleitung",
+         "permissions": [
+            [
+               "can_manage_agenda",
+               "agenda",
+               "item"
+            ],
+            [
+               "can_see_agenda",
+               "agenda",
+               "item"
+            ],
+            [
+               "can_create_motion",
+               "motion",
+               "motion"
+            ],
+            [
+               "can_manage_motion",
+               "motion",
+               "motion"
+            ],
+            [
+               "can_see_motion",
+               "motion",
+               "motion"
+            ],
+            [
+               "can_manage_assignment",
+               "assignment",
+               "assignment"
+            ],
+            [
+               "can_nominate_other",
+               "assignment",
+               "assignment"
+            ],
+            [
+               "can_nominate_self",
+               "assignment",
+               "assignment"
+            ],
+            [
+               "can_see_assignment",
+               "assignment",
+               "assignment"
+            ],
+            [
+               "can_manage_config",
+               "config",
+               "configstore"
+            ],
+            [
+               "can_manage_participant",
+               "participant",
+               "user"
+            ],
+            [
+               "can_see_participant",
+               "participant",
+               "user"
+            ],
+            [
+               "can_manage_projector",
+               "projector",
+               "projectorslide"
+            ],
+            [
+               "can_see_projector",
+               "projector",
+               "projectorslide"
+            ],
+            [
+               "can_see_dashboard",
+               "projector",
+               "projectorslide"
+            ]
+         ]
+      }
+   },
+   {
+      "pk": 4,
+      "model": "auth.group",
+      "fields": {
+         "name": "Teilnehmerverwaltung",
+         "permissions": [
+            [
+               "can_see_agenda",
+               "agenda",
+               "item"
+            ],
+            [
+               "can_manage_participant",
+               "participant",
+               "user"
+            ],
+            [
+               "can_see_participant",
+               "participant",
+               "user"
+            ],
+            [
+               "can_see_projector",
+               "projector",
+               "projectorslide"
+            ],
+            [
+               "can_see_dashboard",
+               "projector",
+               "projectorslide"
+            ]
+         ]
+      }
+   }
+]

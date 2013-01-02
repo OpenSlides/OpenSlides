@@ -22,8 +22,7 @@ except ImportError:
     # Is this exception realy necessary?
     from StringIO import StringIO
 
-from reportlab.platypus import (SimpleDocTemplate, Paragraph, Frame, PageBreak,
-    Spacer, Table, LongTable, TableStyle, Image)
+from reportlab.platypus import SimpleDocTemplate, Spacer
 from reportlab.lib.units import cm
 
 from django.contrib import messages
@@ -34,9 +33,9 @@ from django.conf import settings
 from django.dispatch import receiver
 from django.http import HttpResponseServerError, HttpResponse, HttpResponseRedirect
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext as _, ugettext_noop, ugettext_lazy
+from django.utils.translation import ugettext as _, ugettext_lazy
 from django.utils.importlib import import_module
-from django.template import loader, RequestContext
+from django.template import RequestContext
 from django.template.loader import render_to_string
 from django.views.generic import (
     TemplateView as _TemplateView,
@@ -50,9 +49,7 @@ from django.views.generic import (
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.list import TemplateResponseMixin
 
-from openslides.config.models import config
-
-from openslides.utils.utils import render_to_forbitten, html_strong
+from openslides.utils.utils import render_to_forbidden, html_strong
 from openslides.utils.signals import template_manipulation
 from openslides.utils.pdf import firstPage, laterPages
 
@@ -64,8 +61,8 @@ View = _View
 
 class SetCookieMixin(object):
     def render_to_response(self, context, **response_kwargs):
-        response = TemplateResponseMixin.render_to_response(self, context,
-            **response_kwargs)
+        response = TemplateResponseMixin.render_to_response(
+            self, context, **response_kwargs)
         if 'cookie' in context:
             response.set_cookie(context['cookie'][0], context['cookie'][1])
         return response
@@ -80,20 +77,20 @@ class LoginMixin(object):
 class PermissionMixin(object):
     permission_required = NO_PERMISSION_REQUIRED
 
-    def has_permission(self, request):
+    def has_permission(self, request, *args, **kwargs):
         if self.permission_required == NO_PERMISSION_REQUIRED:
             return True
         else:
             return request.user.has_perm(self.permission_required)
 
     def dispatch(self, request, *args, **kwargs):
-        if not self.has_permission(request):
+        if not self.has_permission(request, *args, **kwargs):
             if not request.user.is_authenticated():
                 path = request.get_full_path()
-                return HttpResponseRedirect("%s?next=%s" % (settings.LOGIN_URL,
-                    path))
+                return HttpResponseRedirect(
+                    "%s?next=%s" % (settings.LOGIN_URL, path))
             else:
-                return render_to_forbitten(request)
+                return render_to_forbidden(request)
         return _View.dispatch(self, request, *args, **kwargs)
 
 
@@ -110,11 +107,45 @@ class QuestionMixin(object):
     success_message = ugettext_lazy('Thank you for your answer')
     answer_options = [('yes', ugettext_lazy("Yes")), ('no', ugettext_lazy("No"))]
 
-    def get_answer_options(self):
-        return self.answer_options
+    def pre_redirect(self, request, *args, **kwargs):
+        # Prints the question in a GET request
+        self.confirm_form()
 
     def get_question(self):
         return unicode(self.question)
+
+    def get_answer_options(self):
+        return self.answer_options
+
+    def get_answer_url(self):
+        try:
+            return self.answer_url
+        except AttributeError:
+            return self.request.path
+
+    def confirm_form(self):
+        option_fields = "\n".join([
+            '<button type="submit" class="btn" name="%s">%s</button>' % (option[0], unicode(option[1]))
+            for option in self.get_answer_options()])
+        messages.warning(
+            self.request,
+            """
+            %(message)s
+            <form action="%(url)s" method="post">
+                <input type="hidden" value="%(csrf)s" name="csrfmiddlewaretoken">
+                %(option_fields)s
+            </form>
+            """ % {'message': self.get_question(),
+                   'url': self.get_answer_url(),
+                   'csrf': csrf(self.request)['csrf_token'],
+                   'option_fields': option_fields})
+
+    def pre_post_redirect(self, request, *args, **kwargs):
+        # Reacts on the response of the user in a POST-request.
+        # TODO: call the methodes for all possible answers.
+        if self.get_answer() == 'yes':
+            self.case_yes()
+            messages.success(request, self.get_success_message())
 
     def get_answer(self):
         for option in self.get_answer_options():
@@ -122,46 +153,27 @@ class QuestionMixin(object):
                 return option[0]
         return None
 
-    def get_answer_url(self):
-        return self.answer_url
+    def case_yes(self):
+        # TODO: raise a warning
+        pass
 
-    def confirm_form(self):
-        option_fields = "\n".join([
-            '<button type="submit" class="btn" name="%s">%s</button>' % (option[0], unicode(option[1]))
-            for option in self.get_answer_options()])
-        messages.warning(self.request,
-            """
-            %(message)s
-            <form action="%(url)s" method="post">
-                <input type="hidden" value="%(csrf)s" name="csrfmiddlewaretoken">
-                %(option_fields)s
-            </form>
-            """ % {
-                'message': self.get_question(),
-                'url': self.get_answer_url(),
-                'csrf': csrf(self.request)['csrf_token'],
-                'option_fields': option_fields})
-
-    def pre_redirect(self, request, *args, **kwargs):
-        self.confirm_form(request, self.object)
-
-    def pre_post_redirect(self, request, *args, **kwargs):
-        messages.success(request)
+    def get_success_message(self):
+        return self.success_message
 
 
 class TemplateView(PermissionMixin, _TemplateView):
     def get_context_data(self, **kwargs):
         context = super(TemplateView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self.__class__, request=self.request,
-            context=context)
+        template_manipulation.send(
+            sender=self.__class__, request=self.request, context=context)
         return context
 
 
 class ListView(PermissionMixin, SetCookieMixin, _ListView):
     def get_context_data(self, **kwargs):
         context = super(ListView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self.__class__, request=self.request,
-            context=context)
+        template_manipulation.send(
+            sender=self.__class__, request=self.request, context=context)
         return context
 
 
@@ -202,8 +214,8 @@ class FormView(PermissionMixin, _FormView):
 
     def get_context_data(self, **kwargs):
         context = super(FormView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self.__class__, request=self.request,
-            context=context)
+        template_manipulation.send(
+            sender=self.__class__, request=self.request, context=context)
         return context
 
     def form_invalid(self, form):
@@ -220,8 +232,8 @@ class UpdateView(PermissionMixin, _UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(UpdateView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self.__class__, request=self.request,
-            context=context)
+        template_manipulation.send(
+            sender=self.__class__, request=self.request, context=context)
         return context
 
     def form_invalid(self, form):
@@ -241,8 +253,8 @@ class CreateView(PermissionMixin, _CreateView):
 
     def get_context_data(self, **kwargs):
         context = super(CreateView, self).get_context_data(**kwargs)
-        template_manipulation.send(sender=self.__class__, request=self.request,
-            context=context)
+        template_manipulation.send(
+            sender=self.__class__, request=self.request, context=context)
         return context
 
     def get_apply_url(self):
@@ -266,33 +278,24 @@ class CreateView(PermissionMixin, _CreateView):
         pass
 
 
-class DeleteView(RedirectView, SingleObjectMixin, QuestionMixin):
-    def get_question(self):
-        return _('Do you really want to delete %s?') % html_strong(self.object)
-
-    def get_success_message(self):
-        return  _('%s was successfully deleted.') % html_strong(self.object)
-
-    def pre_redirect(self, request, *args, **kwargs):
-        self.confirm_form()
-
-    def pre_post_redirect(self, request, *args, **kwargs):
-        if self.get_answer().lower() == 'yes':
-            self.object.delete()
-            messages.success(request, self.get_success_message())
-
+class DeleteView(SingleObjectMixin, QuestionMixin, RedirectView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         return super(DeleteView, self).get(request, *args, **kwargs)
 
-    def get_answer_url(self):
-        return self.object.get_absolute_url('delete')
+    def get_question(self):
+        return _('Do you really want to delete %s?') % html_strong(self.object)
+
+    def case_yes(self):
+        self.object.delete()
+
+    def get_success_message(self):
+        return _('%s was successfully deleted.') % html_strong(self.object)
 
 
 class DetailView(TemplateView, SingleObjectMixin):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        context = self.get_context_data(object=self.object)
         return super(DetailView, self).get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -322,8 +325,8 @@ class PDFView(PermissionMixin, View):
         return SimpleDocTemplate(buffer)
 
     def build_document(self, pdf_document, story):
-        pdf_document.build(story, onFirstPage=firstPage,
-            onLaterPages=laterPages)
+        pdf_document.build(
+            story, onFirstPage=firstPage, onLaterPages=laterPages)
 
     def render_to_response(self, filename):
         response = HttpResponse(mimetype='application/pdf')
@@ -333,7 +336,7 @@ class PDFView(PermissionMixin, View):
         buffer = StringIO()
         pdf_document = self.get_template(buffer)
         pdf_document.title = self.get_document_title()
-        story = [Spacer(1, self.get_top_space()*cm)]
+        story = [Spacer(1, self.get_top_space() * cm)]
 
         self.append_to_pdf(story)
 
@@ -344,40 +347,8 @@ class PDFView(PermissionMixin, View):
         response.write(pdf)
         return response
 
-    def get_filename(self):
-        return self.filename
-
     def get(self, request, *args, **kwargs):
         return self.render_to_response(self.get_filename())
-
-
-class FrontPage(TemplateView):
-    template_name = 'front_page.html'
-
-    def has_permission(self, request):
-        if request.user.is_authenticated() or config['system_enable_anonymous']:
-            return True
-        return False
-
-    def get_context_data(self, **kwargs):
-        context = super(FrontPage, self).get_context_data(**kwargs)
-        apps = []
-        for app in settings.INSTALLED_APPS:
-            try:
-                mod = import_module(app + '.views')
-                tab = mod.register_tab(self.request)
-            except (ImportError, AttributeError):
-                continue
-            if tab.permission:
-                apps.append(tab)
-        if config['show_help_text']:
-            messages.info(self.request, config['help_text'])
-        context.update({
-            'apps': apps,
-            'title': config['frontpage_title'],
-            'welcometext': config['frontpage_welcometext'],
-        })
-        return context
 
 
 def server_error(request, template_name='500.html'):
@@ -386,9 +357,8 @@ def server_error(request, template_name='500.html'):
 
     Templates: `500.html`
     """
-    t = loader.get_template("500.html")
-    return HttpResponseServerError(render_to_string('500.html',
-        context_instance=RequestContext(request)))
+    return HttpResponseServerError(render_to_string(
+        template_name, context_instance=RequestContext(request)))
 
 
 @receiver(template_manipulation, dispatch_uid="send_register_tab")

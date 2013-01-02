@@ -1,0 +1,22 @@
+{% extends "participant/base_participant.html" %}
+
+{% load i18n %}
+{% load tags %}
+
+{% block title %}{{ block.super }} – {{ group }}{% endblock %}
+
+{% block content %}
+
+<h1>{{ group }}</h1>
+
+<p>{{ group.description }}</p>
+
+<h2>{% trans "Members" %}</h2>
+
+{% for member in group.user_set.all %}
+    <p>{{ member }}</p>
+{% empty %}
+    <p>{% trans "No members available." %}</p>
+{% endfor %}
+
+{% endblock %}

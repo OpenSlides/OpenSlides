@@ -18,8 +18,6 @@ import zipfile
 import distutils.ccompiler
 import distutils.sysconfig
 
-from contextlib import nested
-
 import pkg_resources
 
 sys.path.insert(0, os.getcwd())
@@ -80,10 +78,7 @@ SITE_PACKAGES = {
     "pil": {
         # NOTE: PIL is a special case, see copy_pil
         "copy": [],
-    },
-    "openslides": {
-        "copy" : ["openslides"],
-    },
+    }
 }
 
 PY_DLLS = [
@@ -92,6 +87,7 @@ PY_DLLS = [
     "_sqlite3.pyd",
     "_socket.pyd",
     "select.pyd",
+    "_ctypes.pyd",
 ]
 
 MSVCR_PUBLIC_KEY = "1fc8b3b9a1e18e3b"
@@ -297,9 +293,13 @@ def main():
             raise
 
     os.makedirs(odir)
+    out_site_packages = os.path.join(odir, "site-packages")
 
     collect_lib(libdir, odir)
-    collect_site_packages(sitedir, os.path.join(odir, "site-packages"))
+    collect_site_packages(sitedir, out_site_packages)
+
+    exclude = get_pkg_exclude("openslides")
+    copy_dir_exclude(exclude, ".", "openslides", out_site_packages)
 
     if not compile_openslides_launcher():
         sys.stdout.write("Using prebuild openslides.exe\n")
@@ -307,8 +307,8 @@ def main():
     shutil.copyfile("extras/win32-portable/openslides.exe",
         os.path.join(odir, "openslides.exe"))
 
-    shutil.copyfile("initial_data.json",
-        os.path.join(odir, "initial_data.json"))
+    shutil.copyfile("openslides/participant/fixtures/groups_de.json",
+        os.path.join(odir, "groups_de.json"))
 
     copy_dlls(odir)
     copy_msvcr(odir)

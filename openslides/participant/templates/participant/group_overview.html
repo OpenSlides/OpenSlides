@@ -2,34 +2,35 @@
 
 {% load i18n %}
 {% load staticfiles %}
+{% load tags %}
 
-{% block title %}{{ block.super }} – {% trans "User groups" %}{% endblock %}
+{% block title %}{{ block.super }} – {% trans "Groups" %}{% endblock %}
 
 {% block content %}
-    <h1>{% trans "User groups" %}
+    <h1>{% trans "Groups" %}
         <small class="pull-right">
-        <a href="{% url user_group_new %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New user group' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
+        <a href="{% url user_group_new %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New group' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
         <a href="{% url user_overview %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Participants" %}</a>
         </small>
     </h1>
 
     <table class="table table-striped table-bordered">
         <tr>
-            <th>{% trans "User Group" %}</th>
+            <th>{% trans "Group" %}</th>
             <th>{% trans "Actions" %}</th>
         </tr>
     {% for group in groups %}
         <tr class="{% cycle '' 'odd' %}">
-            <td>{{ group.name }}</td>
+            <td><a href="{% model_url group 'view' %}">{{ group.name }}</a></td>
             <td><a href="{% url user_group_edit group.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit group' %}"></a>
-            {% if group.name != 'Anonymous' %}
+            {% if group.name|lower != 'anonymous' and group.name|lower != 'registered' %}
             <a href="{% url user_group_delete group.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete group' %}"></a>
             {% endif %}
             </td>
         </tr>
     {% empty %}
         <tr>
-        <td colspan="5"><i>{% trans "No user groups available." %}</i></td>
+        <td colspan="5"><i>{% trans "No groups available." %}</i></td>
         </tr>
     {% endfor %}
     </table>
