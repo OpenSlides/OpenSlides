@@ -44,7 +44,7 @@
        <div id="changed-order-message" style="display:none" class="notification warning">
            <em>{% trans "Do you want to save the changed order of agenda items?" %}<br>
                <input type="submit" value="{% trans 'Yes' %}">
-               <input type="button" onclick="window.location.href='{% url item_overview %}';" value="{% trans 'No' %}">
+               <input type="button" onclick="window.location.href='{% url 'item_overview' %}';" value="{% trans 'No' %}">
            </em>
        </div>
        {% endif %}
@@ -83,7 +83,7 @@
                 <td>
                 {% if perms.projector.can_manage_projector %}
                     <span>
-                        <a class="activate_link{% if active_sid == 'agenda' %} active{% endif %}" href="{% url projector_activate_slide 'agenda' %}" title="{% trans 'Activate item' %}">
+                        <a class="activate_link{% if active_sid == 'agenda' %} active{% endif %}" href="{% url 'projector_activate_slide' 'agenda' %}" title="{% trans 'Activate item' %}">
                             <span></span>
                         </a>
                     </span>

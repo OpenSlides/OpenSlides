@@ -16,9 +16,9 @@
     {% for group in groups %}
         <tr class="{% cycle '' 'odd' %}">
             <td><a href="{% model_url group 'view' %}">{{ group.name }}</a></td>
-            <td><a href="{% url user_group_edit group.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit group' %}"></a>
+            <td><a href="{% url 'user_group_edit' group.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit group' %}"></a>
             {% if group.name|lower != 'anonymous' and group.name|lower != 'registered' %}
-            <a href="{% url user_group_delete group.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete group' %}"></a>
+            <a href="{% url 'user_group_delete' group.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete group' %}"></a>
             {% endif %}
             </td>
         </tr>

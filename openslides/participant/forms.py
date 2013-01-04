@@ -13,6 +13,7 @@
 from django import forms
 from django.contrib.auth.models import Permission
 from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
 
 from openslides.utils.forms import (
     CssClassMixin, LocalizedModelMultipleChoiceField)
@@ -101,6 +102,8 @@ class GroupForm(forms.ModelForm, CssClassMixin):
 
 
 class UsersettingsForm(forms.ModelForm, CssClassMixin):
+    language = forms.ChoiceField(choices=settings.LANGUAGES)
+
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'gender', 'email', 'committee', 'about_me')

@@ -30,7 +30,7 @@
     {% for assignment in assignments %}
         <tr class="{% cycle '' 'odd' %}
             {% if assignment.active %}activeline{% endif %}">
-            <td><a href="{% url assignment_view assignment.id %}">{{ assignment }}</a></td>
+            <td><a href="{% url 'assignment_view' assignment.id %}">{{ assignment }}</a></td>
             <td>
                 {% blocktrans with posts=assignment.posts context "Number of searched candidates for an election"%}posts: {{ posts }}{% endblocktrans %}
                 {% if assignment.status != 'fin' %}
@@ -42,15 +42,15 @@
             <td>
                 <span style="width: 1px; white-space: nowrap;">
                 {% if perms.projector.can_manage_projector %}
-                    <a class="activate_link {% if assignment.active %}active{% endif %}" href="{% url projector_activate_slide assignment.sid %}" title="{% trans 'Activate election' %}">
+                    <a class="activate_link {% if assignment.active %}active{% endif %}" href="{% url 'projector_activate_slide' assignment.sid %}" title="{% trans 'Activate election' %}">
                         <span></span>
                     </a>
                 {% endif %}
                 {% if perms.assignment.can_manage_assignment %}
-                    <a href="{% url assignment_edit assignment.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit election' %}"></a>
-                    <a href="{% url assignment_delete assignment.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete election' %}"></a>
+                    <a href="{% url 'assignment_edit' assignment.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit election' %}"></a>
+                    <a href="{% url 'assignment_delete' assignment.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete election' %}"></a>
                 {% endif %}
-                <a href="{% url print_assignment assignment.id %}" title="{% trans 'Election as PDF' %}"><img src="{% static 'images/icons/pdf.png' %}"></a>
+                <a href="{% url 'print_assignment' assignment.id %}" title="{% trans 'Election as PDF' %}"><img src="{% static 'images/icons/pdf.png' %}"></a>
                 </span>
             </td>
         </tr>

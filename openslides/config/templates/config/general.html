@@ -55,8 +55,8 @@
     <button class="button" type="submit">
         <span class="icon ok">{% trans 'Save' %}</span>
     </button>
-    <a href='{% url config_general %}'>
-    <button class="button" type="button" onclick="window.location='{% url config_general %}'">
+    <a href="{% url 'config_general' %}">
+    <button class="button" type="button" onclick="window.location='{% url 'config_general' %}'">
         <span class="icon cancel">{% trans 'Cancel' %}</span>
     </button>
     </a>

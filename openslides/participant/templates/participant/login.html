@@ -5,7 +5,7 @@
 
 {% block mainmenu %}
     <ul>
-        <li class="selected"><a href="{% url user_login %}" title="">{% trans "Login" %}</a></li>
+        <li class="selected"><a href="{% url 'user_login' %}" title="">{% trans "Login" %}</a></li>
     </ul>
 {% endblock %}
 
@@ -41,7 +41,7 @@
             $(this).hide("fast");
         });
     </script>
-    <form method="post" action="{% url user_login %}{% if next %}?next={{ next }}{% endif %}">
+    <form method="post" action="{% url 'user_login' %}{% if next %}?next={{ next }}{% endif %}">
         {% csrf_token %}
         <table>
         <tr>
@@ -68,7 +68,7 @@
     {% if os_enable_anonymous_login %}
         <script>
             $("#anonymous_login").live('click', function () {
-                window.location.href = '{% url item_overview %}';
+                window.location.href = "{% url 'item_overview' %}";
                 return false;
             });
         </script>
