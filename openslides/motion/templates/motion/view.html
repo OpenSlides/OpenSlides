@@ -180,13 +180,13 @@
         <a href="{% url 'motion_set_status' motion.id 'adj' %}"><span class="button">{% trans 'Adjourned' %}</span></a><br>
         {% endif %}
         {% if "noc" in actions %}
-        <a href="{% url 'motion_set_status' motion.id 'noc' %}'><span class="button">{% trans 'Not Concerned' %}</span></a><br>
+        <a href="{% url 'motion_set_status' motion.id 'noc' %}"><span class="button">{% trans 'Not Concerned' %}</span></a><br>
         {% endif %}
         {% if "com" in actions %}
-        <a href="{% url 'motion_set_status' motion.id 'com' %}'><span class="button">{% trans 'Commited a bill' %}</span></a><br>
+        <a href="{% url 'motion_set_status' motion.id 'com' %}"><span class="button">{% trans 'Commited a bill' %}</span></a><br>
         {% endif %}
         {% if "wit" in actions %}
-        <a href="{% url 'motion_set_status' motion.id 'wit' %}'><span class="button">{% trans 'Withdrawed by submitter' %}</span></a>
+        <a href="{% url 'motion_set_status' motion.id 'wit' %}"><span class="button">{% trans 'Withdrawed by submitter' %}</span></a>
         {% endif %}
     {% endif %}
     <p></p>
