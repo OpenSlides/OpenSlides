@@ -256,7 +256,7 @@ class CreateView(PermissionMixin, _CreateView):
         return context
 
     def get_apply_url(self):
-        if self apply_url:
+        if self.apply_url:
             return self.apply_url
         else:
             raise ImproperlyConfigured(
