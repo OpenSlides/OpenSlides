@@ -241,6 +241,8 @@ class UpdateView(PermissionMixin, _UpdateView):
 
 
 class CreateView(PermissionMixin, _CreateView):
+    apply_url = None
+
     def get_success_url(self):
         messages.success(self.request, self.get_success_message())
         if 'apply' in self.request.POST:
@@ -254,7 +256,11 @@ class CreateView(PermissionMixin, _CreateView):
         return context
 
     def get_apply_url(self):
-        return self.apply_url
+        if self.apply_url:
+            return self.apply_url
+        else:
+            raise ImproperlyConfigured(
+                "No URL to redirect to. Provide a apply_url.")
 
     def form_invalid(self, form):
         messages.error(self.request, _('Please check the form for errors.'))

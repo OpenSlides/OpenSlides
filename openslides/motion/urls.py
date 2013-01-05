@@ -10,7 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.conf.urls.defaults import url, patterns
+from django.conf.urls import url, patterns
 
 from openslides.motion.views import (MotionDelete, ViewPoll,
     MotionPDF, MotionPollPDF, CreateAgendaItem, SupportView)
