@@ -1,4 +1,4 @@
-Django==1.5
+Django==1.5c1
 django-mptt==0.5.5
 reportlab==2.6
 PIL==1.1.7
