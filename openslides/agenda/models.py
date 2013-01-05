@@ -31,6 +31,11 @@ class Item(MPTTModel, SlideMixin):
     """
     prefix = 'item'
 
+    ITEM_TYPE = (
+        ('agd', _('Agenda item')),
+        ('org', _('Organizational item')),
+    )
+
     title = models.CharField(null=True, max_length=255, verbose_name=_("Title"))
     text = models.TextField(null=True, blank=True, verbose_name=_("Text"))
     comment = models.TextField(null=True, blank=True, verbose_name=_("Comment"))
@@ -38,6 +43,9 @@ class Item(MPTTModel, SlideMixin):
     weight = models.IntegerField(default=0, verbose_name=_("Weight"))
     parent = TreeForeignKey('self', null=True, blank=True,
                             related_name='children')
+    type = models.CharField(max_length=3, choices=ITEM_TYPE,
+                            default='agd', verbose_name=_("Type"))
+
     related_sid = models.CharField(null=True, blank=True, max_length=63)
 
     def get_related_slide(self):
@@ -170,6 +178,7 @@ class Item(MPTTModel, SlideMixin):
         permissions = (
             ('can_see_agenda', ugettext_noop("Can see agenda")),
             ('can_manage_agenda', ugettext_noop("Can manage agenda")),
+            ('can_see_orga_items', ugettext_noop("Can see orga items")),
         )
 
     class MPTTMeta:

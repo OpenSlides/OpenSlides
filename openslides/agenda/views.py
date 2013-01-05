@@ -39,8 +39,14 @@ class Overview(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(Overview, self).get_context_data(**kwargs)
+
+        if self.request.user.has_perm('agenda.can_see_orga_items'):
+            items = Item.objects.all()
+        else:
+            items = Item.objects.filter(type__exact = 'agd')
+
         context.update({
-            'items': Item.objects.all(),
+            'items': items,
             'active_sid': get_active_slide(only_sid=True),
         })
         return context
@@ -192,7 +198,7 @@ class AgendaPDF(PDFView):
     document_title = ugettext_lazy('Agenda')
 
     def append_to_pdf(self, story):
-        for item in Item.objects.all():
+        for item in Item.objects.filter(type__exact = 'agd'):
             ancestors = item.get_ancestors()
             if ancestors:
                 space = "&nbsp;" * 6 * ancestors.count()
