@@ -260,7 +260,7 @@ class CreateView(PermissionMixin, _CreateView):
             return self.apply_url
         else:
             raise ImproperlyConfigured(
-                "No URL to redirect to. Provide a apply_url.")
+                'No URL to redirect to. Please provide an apply_url.')
 
     def form_invalid(self, form):
         messages.error(self.request, _('Please check the form for errors.'))
