@@ -15,7 +15,7 @@
     </small>
     <small class="pull-right">
     <div class="btn-toolbar">
-        <a href="{% url motion_view motion.id %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to motion" %}</a>
+        <a href="{% url 'motion_view' motion.id %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to motion" %}</a>
         <div class="btn-group">
             <a data-toggle="dropdown" href="#" class="btn btn-mini dropdown-toggle">
                 {% trans 'More actions' %}
@@ -24,12 +24,12 @@
             <ul class="dropdown-menu pull-right">
                 <!-- delete -->
                 {% if "delete" in actions %}
-                    <li><a href="{% url motion_poll_delete poll.id %}"><i class="icon-remove"></i> {% trans 'Delete Vote' %}</a></li>
+                    <li><a href="{% url 'motion_poll_delete' poll.id %}"><i class="icon-remove"></i> {% trans 'Delete Vote' %}</a></li>
                 {% endif %}
                 <!-- activate projector -->
                 {% if perms.projector.can_manage_projector %}
                     <li>
-                        <a class="activate_link {% if item.active %}active{% endif %}" href="{% url projector_activate_slide motion.sid  %}"><i class="icon-facetime-video"></i> {% trans 'Show motion' %}</a>
+                        <a class="activate_link {% if item.active %}active{% endif %}" href="{% url 'projector_activate_slide' motion.sid  %}"><i class="icon-facetime-video"></i> {% trans 'Show motion' %}</a>
                     </li>
                 {% endif %}
             </ul>
@@ -66,7 +66,7 @@
         {{ post_form }}
         <!-- ballot paper button -->
         <p>
-        <a href='{% url print_motion_poll poll.id %}' class="btn">
+        <a href="{% url 'print_motion_poll' poll.id %}" class="btn">
             <i class="icon-print"></i> {% trans 'Ballot paper as PDF' %}
         </a>
         </p>
@@ -78,7 +78,7 @@
             <button type="submit" name="apply" class="btn">
                 {% trans 'Apply' %}
             </button>
-            <a href='{% url motion_view motion.id %}' class="btn">
+            <a href="{% url 'motion_view' motion.id %}" class="btn">
                 {% trans 'Cancel' %}
             </a>
         </div>

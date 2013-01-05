@@ -7,7 +7,7 @@
 {% block content %}
     <h1>{% trans "Import motions" %}
         <small class="pull-right">
-        <a href="{% url motion_overview %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        <a href="{% url 'motion_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
         </small>
     </h1>
 
@@ -40,7 +40,7 @@
         <button class="btn btn-primary" type="submit">
             {% trans 'Import' %}
         </button>
-        <a href='{% url motion_overview %}' class="btn">
+        <a href="{% url 'motion_overview' %}" class="btn">
             {% trans 'Cancel' %}
         </a>
         </div>

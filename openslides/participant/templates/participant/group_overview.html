@@ -9,8 +9,8 @@
 {% block content %}
     <h1>{% trans "Groups" %}
         <small class="pull-right">
-        <a href="{% url user_group_new %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New group' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
-        <a href="{% url user_overview %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Participants" %}</a>
+        <a href="{% url 'user_group_new' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New group' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
+        <a href="{% url 'user_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Participants" %}</a>
         </small>
     </h1>
 
@@ -22,9 +22,9 @@
     {% for group in groups %}
         <tr class="{% cycle '' 'odd' %}">
             <td><a href="{% model_url group 'view' %}">{{ group.name }}</a></td>
-            <td><a href="{% url user_group_edit group.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit group' %}"></a>
+            <td><a href="{% url 'user_group_edit' group.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit group' %}"></a>
             {% if group.name|lower != 'anonymous' and group.name|lower != 'registered' %}
-            <a href="{% url user_group_delete group.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete group' %}"></a>
+            <a href="{% url 'user_group_delete' group.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete group' %}"></a>
             {% endif %}
             </td>
         </tr>

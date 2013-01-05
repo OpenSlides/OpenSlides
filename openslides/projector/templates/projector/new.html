@@ -8,7 +8,7 @@
 {% block content %}
     <h1>{% trans 'Custom slide' %}
         <small class="pull-right">
-            <a href="{% url dashboard %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+            <a href="{% url 'dashboard' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
         </small>
     </h1>
     <form action="" method="post">{% csrf_token %}

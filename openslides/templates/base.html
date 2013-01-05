@@ -16,6 +16,7 @@
     <link href="{% static 'styles/bootstrap-responsive.css' %}" type="text/css" rel="stylesheet">
     <link href="{% static 'styles/base.css' %}" type="text/css" rel="stylesheet">
     <link href="{% static 'img/favicon.png' %}" type="image/png" rel="shortcut icon" />
+
     {% block header %}
     {% endblock %}
 </head>
@@ -34,14 +35,14 @@
                               <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
-                            {% url user_settings as url_usersettings %}
-                            <li><a href="{% url user_settings %}"><i class="icon-cog"></i> {% trans "Profile" %}</a></li>
-                            <li><a href="{% url password_change %}"><i class="icon-lock"></i> {% trans "Change password" %}</a></li>
+                            {% url 'user_settings' as url_usersettings %}
+                            <li><a href="{% url 'user_settings' %}"><i class="icon-cog"></i> {% trans "Profile" %}</a></li>
+                            <li><a href="{% url 'password_change' %}"><i class="icon-lock"></i> {% trans "Change password" %}</a></li>
                             <li class="divider"></li>
-                            <li><a href="{% url user_logout %}"><i class="icon-off"></i> {% trans "Logout" %}</a></li>
+                            <li><a href="{% url 'user_logout' %}"><i class="icon-off"></i> {% trans "Logout" %}</a></li>
                         </ul>
                         {% else %}
-                            <a href="{% url user_login %}" class="btn">{% trans "Login" %}</a>
+                            <a href="{% url 'user_login' %}" class="btn">{% trans "Login" %}</a>
                         {% endif %}
                     </div>
                 </div> <!--/#header-->
@@ -109,7 +110,7 @@
     <script src="{% static 'javascript/jquery.js' %}" type="text/javascript"></script>
     <script src="{% static 'javascript/utils.js' %}" type="text/javascript"></script>
     <script src="{% static 'javascript/bootstrap.min.js' %}" type="text/javascript"></script>
-    <script type="text/javascript" src="{% url django.views.i18n.javascript_catalog %}"></script>
+    <script type="text/javascript" src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
     {% block javascript %}
     {% endblock %}
 </body>

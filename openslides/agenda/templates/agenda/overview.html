@@ -48,7 +48,7 @@
            <p>{% trans "Do you want to save the changed order of agenda items?" %}</p>
            <p>
                <button class="btn" type="submit">{% trans 'Yes' %}</button>
-               <a href="{% url item_overview %}" class="btn">{% trans 'No' %}</a>
+               <a href="{% url 'item_overview' %}" class="btn">{% trans 'No' %}</a>
             </p>
        </div>
        {% endif %}
@@ -56,9 +56,9 @@
         <h1>{% trans "Agenda" %} 
             <small class="pull-right">
             {% if perms.agenda.can_manage_agenda %}
-            <a href="{% url item_new %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New item' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
+            <a href="{% url 'item_new' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New item' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
             {% endif %}
-            <a href="{% url print_agenda %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print agenda as PDF' %}"><i class="icon-print"></i> PDF</a>
+            <a href="{% url 'print_agenda' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print agenda as PDF' %}"><i class="icon-print"></i> PDF</a>
             </small>
         </h1>
 
@@ -95,7 +95,7 @@
                 <td>
                 {% if perms.projector.can_manage_projector %}
                     <span>
-                        <a class="activate_link{% if active_sid == 'agenda' %} active{% endif %}" href="{% url projector_activate_slide 'agenda' %}" title="{% trans 'Activate item' %}">
+                        <a class="activate_link{% if active_sid == 'agenda' %} active{% endif %}" href="{% url 'projector_activate_slide' 'agenda' %}" title="{% trans 'Activate item' %}">
                             <span></span>
                         </a>
                     </span>

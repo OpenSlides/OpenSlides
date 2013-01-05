@@ -22,7 +22,13 @@
             <em>{{ first_time_message|safe }}</em>
         </div>
     {% endif %}
-    <form method="post" action="{% url user_login %}{% if next %}?next={{ next }}{% endif %}" class="well">
+
+    <script>
+        $("div.notification").click(function () {
+            $(this).hide("fast");
+        });
+    </script>
+    <form method="post" action="{% url 'user_login' %}{% if next %}?next={{ next }}{% endif %}" class="well">
         {% csrf_token %}
         <div class="input-prepend">
             <span class="add-on"><i class="icon-user"></i></span>
@@ -48,7 +54,7 @@
     {% if os_enable_anonymous_login %}
         <script>
             $("#anonymous_login").live('click', function () {
-                window.location.href = '{% url item_overview %}';
+                window.location.href = "{% url 'item_overview' %}";
                 return false;
             });
         </script>

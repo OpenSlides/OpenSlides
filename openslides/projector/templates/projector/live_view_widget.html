@@ -6,23 +6,23 @@
 {% if perms.projector.can_manage_projector %}
     <div style="float: right;">
         <p>
-        <a class="projector_edit" href="{% url projector_bigger %}" title="{% trans 'Zoom in' %}">
+        <a class="projector_edit" href="{% url 'projector_bigger' %}" title="{% trans 'Zoom in' %}">
             <img src="{% static 'images/icons/zoom-in.png' %}" />
         </a><br>
-        <a class="projector_edit" href="{% url projector_smaller %}" title="{% trans 'Zoom out' %}">
+        <a class="projector_edit" href="{% url 'projector_smaller' %}" title="{% trans 'Zoom out' %}">
             <img src="{% static 'images/icons/zoom-out.png' %}" />
         </a>
         </p>
         <p>
-        <a class="projector_edit" href="{% url projector_up %}" title="{% trans 'Scroll text up' %}">
+        <a class="projector_edit" href="{% url 'projector_up' %}" title="{% trans 'Scroll text up' %}">
             <img src="{% static 'images/icons/go-up.png' %}" />
         </a><br>
-        <a class="projector_edit" href="{% url projector_down %}" title="{% trans 'Scroll text down' %}">
+        <a class="projector_edit" href="{% url 'projector_down' %}" title="{% trans 'Scroll text down' %}">
             <img src="{% static 'images/icons/go-down.png' %}" />
         </a>
         </p>
         <p>
-        <a class="projector_edit" href="{% url projector_clean %}" title="{% trans 'Reset projector view' %}">
+        <a class="projector_edit" href="{% url 'projector_clean' %}" title="{% trans 'Reset projector view' %}">
             <img src="{% static 'images/icons/view-reset.png' %}" />
         </a>
         </p>
@@ -30,9 +30,9 @@
 {% endif %}
 
 <!-- projector live view -->
-<a href="{% url projector_show %}" target="_blank">
+<a href="{% url 'projector_show' %}" target="_blank">
     <div id="iframewrapper">
-        <iframe id="iframe" src="{% url projector_show %}" frameborder="0"></iframe>
+        <iframe id="iframe" src="{% url 'projector_show' %}" frameborder="0"></iframe>
         <div id="iframeoverlay"></div>
     </div>
 </a>

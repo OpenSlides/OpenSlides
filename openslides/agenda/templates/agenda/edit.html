@@ -19,7 +19,7 @@
             {% trans "New item" %}
         {% endif %}
         <small class="pull-right">
-        <a href="{% url item_overview %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        <a href="{% url 'item_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
         </small>
     </h1>
     <form action="" method="post">{% csrf_token %}
@@ -42,8 +42,8 @@
             <button class="btn" type="submit" name="apply">
                 {% trans 'Apply' %}
             </button>
-            <a href='{% url item_overview %}'>
-            <button class="btn" type="button" onclick="window.location='{% url item_overview %}'">
+            <a href='{% url 'item_overview' %}'>
+            <button class="btn" type="button" onclick="window.location='{% url 'item_overview' %}'">
                 {% trans 'Cancel' %}</span>
             </button>
             </a>

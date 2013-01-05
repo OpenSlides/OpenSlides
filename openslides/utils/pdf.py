@@ -21,8 +21,7 @@ from reportlab.rl_config import defaultPageSize
 
 from django.conf import settings
 from django.utils import formats
-# Import gettext for python 2.5 support
-from django.utils.translation import ugettext as _, gettext
+from django.utils.translation import ugettext as _
 
 from openslides.config.models import config
 

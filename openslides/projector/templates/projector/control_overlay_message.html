@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load tags %}
 
-<form id="overlay_message" action="{% url projector_overlay_message %}" method="post" style="display:inline-block;">{% csrf_token %}
+<form id="overlay_message" action="{% url 'projector_overlay_message' %}" method="post" style="display:inline-block;">{% csrf_token %}
     <div class="input-append">
         <input id="overlay_message_text" name='message_text' type='text' value="{% get_config 'projector_message' %}">
         <button type="submit" class="btn btn-primary" name="message" rel="tooltip" data-original-title="{% trans 'Apply' %}">
@@ -13,4 +13,3 @@
         </button>
     </div>
 </form>
-

@@ -10,16 +10,10 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-# for python 2.5 support
-from __future__ import with_statement
-
 import csv
 import os
 
-try:
-    from urlparse import parse_qs
-except ImportError:  # python <= 2.5
-    from cgi import parse_qs
+from urlparse import parse_qs
 
 from reportlab.lib import colors
 from reportlab.lib.units import cm

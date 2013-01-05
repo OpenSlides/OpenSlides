@@ -19,7 +19,7 @@
         {% trans "New motion" %}
     {% endif %}
     <small class="pull-right">
-    <a href="{% url motion_overview %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+    <a href="{% url 'motion_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
     </small>
     </h1>
     <form action="" method="post">{% csrf_token %}
@@ -43,9 +43,9 @@
         <button class="btn" type="submit" name="apply">
             {% trans 'Apply' %}
         </button>
-        <a href='{% url motion_overview %}'>
-        <button class="btn" type="button" onclick="window.location='{% url motion_overview %}'">
+        <a href="{% url 'motion_overview' %}" class="btn">
             {% trans 'Cancel' %}
+        </a>
         </button>
         </a>
         </div>

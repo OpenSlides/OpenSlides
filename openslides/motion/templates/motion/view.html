@@ -26,8 +26,8 @@
     </small>
     <small class="pull-right">
     <div class="btn-toolbar">
-        <a href="{% url motion_overview %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
-        <a href="{% url print_motion motion.id  %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print this motion as PDF' %}"><i class="icon-print"></i> PDF</a>
+        <a href="{% url 'motion_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        <a href="{% url 'print_motion' motion.id  %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print this motion as PDF' %}"><i class="icon-print"></i> PDF</a>
         <div class="btn-group">
             <a data-toggle="dropdown" href="#" class="btn btn-mini dropdown-toggle">
                 {% trans 'More actions' %}
@@ -36,28 +36,28 @@
             <ul class="dropdown-menu pull-right">
                 <!-- edit -->
                 {% if "edit" in actions %}
-                     <li><a href="{% url motion_edit motion.id  %}"><i class="icon-edit"></i> {% trans 'Edit motion' %}</a></li>
+                     <li><a href="{% url 'motion_edit' motion.id  %}"><i class="icon-edit"></i> {% trans 'Edit motion' %}</a></li>
                 {% endif %}
                 <!-- delete -->
                 {% if "delete" in actions %}
-                    <li><a href="{% url motion_delete motion.id  %}"><i class="icon-remove"></i> {% trans 'Delete motion' %}</a></li>
+                    <li><a href="{% url 'motion_delete' motion.id  %}"><i class="icon-remove"></i> {% trans 'Delete motion' %}</a></li>
                 {% endif %}
                 <!-- activate projector -->
                 {% if perms.projector.can_manage_projector %}
                     <li>
-                        <a class="activate_link {% if item.active %}active{% endif %}" href="{% url projector_activate_slide motion.sid  %}"><i class="icon-facetime-video"></i> {% trans 'Show motion' %}</a>
+                        <a class="activate_link {% if item.active %}active{% endif %}" href="{% url 'projector_activate_slide' motion.sid  %}"><i class="icon-facetime-video"></i> {% trans 'Show motion' %}</a>
                     </li>
                 {% endif %}
                 <!-- edit poll -->
                 {% if perms.motion.can_manage_motion %}
                     {% for poll in motion.polls %}
-                        <li><a href="{% url motion_poll_view poll.id %}"><i class="icon-edit"></i> {{ forloop.counter }}. {% trans "Vote" %}</a></li>
+                        <li><a href="{% url 'motion_poll_view' poll.id %}"><i class="icon-edit"></i> {{ forloop.counter }}. {% trans "Vote" %}</a></li>
                     {% endfor %}
                 {% endif %}
                 <!-- create agenda item -->
                 {% if perms.agenda.can_manage_agenda %}
                 <li>
-                    <a href="{% url motion_create_agenda motion.id  %}"><i class="icon-plus"></i> {% trans 'New agenda item' %}</a>
+                    <a href="{% url 'motion_create_agenda' motion.id  %}"><i class="icon-plus"></i> {% trans 'New agenda item' %}</a>
                 </li>
                 {% endif %}
             </ul>
@@ -71,9 +71,9 @@
     {% if motion.public_version != motion.last_version %}
         &#8901;
         {% if version == motion.public_version %}
-            {% trans "This is not the newest version." %} <a href="{% url motion_view_newest motion.id %}">{% trans "Go to version" %} {{ motion.last_version.aid }}.</a>
+            {% trans "This is not the newest version." %} <a href="{% url 'motion_view_newest' motion.id %}">{% trans "Go to version" %} {{ motion.last_version.aid }}.</a>
         {% else %}
-            {% trans "This is not the authorized version." %} <a href="{% url motion_view motion.id %}">{% trans "Go to version" %} {{ motion.public_version.aid }}.</a>
+            {% trans "This is not the authorized version." %} <a href="{% url 'motion_view' motion.id %}">{% trans "Go to version" %} {{ motion.public_version.aid }}.</a>
         {% endif %}
     {% endif %}
 
@@ -109,10 +109,10 @@
                  <img title="{% trans 'Version authorized' %}" src="{% static 'images/icons/accept.png' %}">
             {% else %}
                  {% if perms.motion.can_manage_motion %}
-                     <a href="{% url motion_version_permit revision.id %}"><img title="{% trans 'Permit Version' %}" src="{% static 'images/icons/accept-grey.png' %}"></a>
+                     <a href="{% url 'motion_version_permit' revision.id %}"><img title="{% trans 'Permit Version' %}" src="{% static 'images/icons/accept-grey.png' %}"></a>
                  {% endif %}
                  {% if not revision.rejected and revision.id > motion.permitted.id and perms.motion.can_manage_motion %}
-                     <a href="{% url motion_version_reject revision.id %}"><img title="{% trans 'Reject Version' %}" src="{% static 'images/icons/reject-grey.png' %}"></a>
+                     <a href="{% url 'motion_version_reject' revision.id %}"><img title="{% trans 'Reject Version' %}" src="{% static 'images/icons/reject-grey.png' %}"></a>
                  {% endif %}
             {% endif %}
             {% if revision.rejected %}
@@ -190,7 +190,7 @@
             {% if not polls.exists %}
                 {% if perms.motion.can_manage_motion %}
                     {% if "genpoll" in actions %}
-                    <a href='{% url motion_gen_poll motion.id %}' class="btn btn-mini">
+                    <a href="{% url 'motion_gen_poll' motion.id %}" class="btn btn-mini">
                         <i class="icon-signal"></i> {% trans 'New vote' %}
                     </a>
                     {% else %}
@@ -205,8 +205,8 @@
             {% if perms.motion.can_manage_motion or poll.has_votes %}
                 <li>{% trans "Vote" %}
                     {% if perms.motion.can_manage_motion %}
-                        <a class="btn btn-mini" href="{% url motion_poll_view poll.id %}" title="{% trans 'Edit Vote' %}"><i class="icon-edit"></i></a>
-                        <a class="btn btn-mini" href="{% url motion_poll_delete poll.id %}" title="{% trans 'Delete Vote' %}"><i class="icon-remove"></i></a>
+                        <a class="btn btn-mini" href="{% url 'motion_poll_view' poll.id %}" title="{% trans 'Edit Vote' %}"><i class="icon-edit"></i></a>
+                        <a class="btn btn-mini" href="{% url 'motion_poll_delete' poll.id %}" title="{% trans 'Delete Vote' %}"><i class="icon-remove"></i></a>
                     {% endif %}
                     <br>
                     {% if poll.has_votes %}
@@ -222,7 +222,7 @@
                         {% if perms.motion.can_manage_motion %}
                             {% if forloop.last %}
                             {% if "genpoll" in actions %}
-                            <a href='{% url motion_gen_poll motion.id %}' class="btn btn-mini">
+                            <a href="{% url 'motion_gen_poll' motion.id %}" class="btn btn-mini">
                                 <i class="icon-signal"></i> {% trans 'New vote' %}
                             </a>
                             {% endif %}
@@ -244,7 +244,7 @@
         <!-- Widthdraw button -->
         {% if "wit" in actions and user == motion.submitter.user %}
             <br><br>
-            <a href='{% url motion_set_status motion.id 'wit' %}' class="btn">
+            <a href="{% url 'motion_set_status' motion.id 'wit' %}" class="btn">
                 <span class="icon revert">{% trans 'Withdraw motion' %}</span>
             </a>
         {% endif %}
@@ -252,13 +252,13 @@
         {% if perms.motion.can_support_motion and min_supporters > 0 %}
             {% if "unsupport" in actions %}
                 <br><br>
-                <a href='{% url motion_unsupport motion.id %}' class="btn">
+                <a href="{% url 'motion_unsupport' motion.id %}" class="btn">
                     {% trans 'Unsupport motion' %}
                 </a>
             {% endif %}
             {% if "support" in actions %}
                 <br><br>
-                <a href='{% url motion_support motion.id %}'>
+                <a href="{% url 'motion_support' motion.id %}">
                     {% trans 'Support' %}
                 </a>
             {% endif %}
@@ -279,16 +279,16 @@
         <h5>{% trans "Formal validation" %}:</h5>
         <div class="btn-group btn-group-vertical">
             {% if "pub" in actions %}
-                <a href='{% url motion_set_status motion.id 'pub' %}' class="btn">{% trans 'Publish' %}</a>
+                <a href="{% url 'motion_set_status' motion.id 'pub' %}" class="btn">{% trans 'Publish' %}</a>
             {% endif %}
             {% if "per" in actions %}
-                <a href='{% url motion_permit motion.id %}' class="btn btn-info">{% trans 'Permit' %}</a>
+                <a href="{% url 'motion_permit' motion.id %}" class="btn btn-info">{% trans 'Permit' %}</a>
             {% endif %}
             {% if "nop" in actions %}
-                <a href='{% url motion_notpermit motion.id %}' class="btn">{% trans 'Not permit' %}</a>
+                <a href="{% url 'motion_notpermit' motion.id %}" class="btn">{% trans 'Not permit' %}</a>
             {% endif %}
             {% if "setnumber" in actions %}
-                <a href='{% url motion_set_number motion.id %}' class="btn">{% trans 'Set number' %}</a>
+                <a href="{% url 'motion_set_number' motion.id %}" class="btn">{% trans 'Set number' %}</a>
             {% endif %}
         </div>
     {% endif %}
@@ -297,12 +297,12 @@
         <h5>{% trans "Result after vote" %}:</h5>
         <div class="btn-group btn-group-vertical">
             {% if "acc" in actions %}
-            <a href='{% url motion_set_status motion.id 'acc' %}' class="btn btn-success">
+            <a href="{% url 'motion_set_status' motion.id 'acc' %}" class="btn btn-success">
                 <i class="icon-ok icon-white"></i> {% trans 'Accepted' %}
             </a>
             {% endif %}
             {% if "rej" in actions %}
-            <a href='{% url motion_set_status motion.id 'rej' %}' class="btn btn-danger">
+            <a href="{% url 'motion_set_status' motion.id 'rej' %}" class="btn btn-danger">
                 <i class="icon-ban-circle icon-white"></i> {% trans 'Rejected' %}
             </a>
             {% endif %}
@@ -318,16 +318,16 @@
             </a>
             <ul class="dropdown-menu pull-right">
                 {% if "adj" in actions %}
-                    <li><a href='{% url motion_set_status motion.id 'adj' %}'>{% trans 'Adjourned' %}</a></li>
+                    <li><a href="{% url 'motion_set_status' motion.id 'adj' %}">{% trans 'Adjourned' %}</a></li>
                 {% endif %}
                 {% if "noc" in actions %}
-                    <li><a href='{% url motion_set_status motion.id 'noc' %}'>{% trans 'Not Concerned' %}</a></li>
+                    <li><a href="{% url 'motion_set_status' motion.id 'noc' %}">{% trans 'Not Concerned' %}</a></li>
                 {% endif %}
                 {% if "com" in actions %}
-                    <li><a href='{% url motion_set_status motion.id 'com' %}'>{% trans 'Commited a bill' %}</a></li>
+                    <li><a href="{% url 'motion_set_status' motion.id 'com' %}">{% trans 'Commited a bill' %}</a></li>
                 {% endif %}
                 {% if "wit" in actions %}
-                    <li><a href='{% url motion_set_status motion.id 'wit' %}'>{% trans 'Withdrawed by Submitter' %}</a></li>
+                    <li><a href="{% url 'motion_set_status' motion.id 'wit' %}">{% trans 'Withdrawed by Submitter' %}</a></li>
                 {% endif %}
             </ul>
         </div>
@@ -335,7 +335,7 @@
     <p></p>
     <hr>
     <h5>{% trans "For Administration only:" %}</h5>
-    <a href='{% url motion_reset motion.id %}' class="btn btn-danger">
+    <a href="{% url 'motion_reset' motion.id %}" class="btn btn-danger">
         {% trans 'Reset' %}
     </a>
     </div> <!--/well-->

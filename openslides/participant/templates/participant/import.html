@@ -8,7 +8,7 @@
     <h1>
         {% trans 'Import participants' %}
         <small class="pull-right">
-        <a href="{% url user_overview %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        <a href="{% url 'user_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
         </small>
     </h1>
 
@@ -29,7 +29,7 @@
         <button class="btn btn-primary" type="submit">
             <span class="icon import">{% trans 'Import' %}</span>
         </button>
-        <a href="{% url user_overview%}" class="btn">
+        <a href="{% url 'user_overview' %}" class="btn">
             {% trans 'Cancel' %}
         </a>
         </p>

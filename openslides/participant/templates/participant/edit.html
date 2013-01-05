@@ -19,7 +19,7 @@
             {% trans "New participant" %}
         {% endif %}
         <small class="pull-right">
-        <a href="{% url user_overview %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        <a href="{% url 'user_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
         </small>
     </h1>
 
@@ -27,12 +27,12 @@
         {% include "form.html" %}
         {% if edit_user %}
             <p>
-                <a href="{% url user_reset_password edit_user.id %}">{% trans 'Reset to First Password' %}</a>
+                <a href="{% url 'user_reset_password' edit_user.id %}">{% trans 'Reset to First Password' %}</a>
             </p>
         {% endif %}
         <p>
         {% include "formbuttons_saveapply.html" %}
-        <a href='{% url user_overview %}' class="btn">
+        <a href="{% url 'user_overview' %}" class="btn">
             {% trans 'Cancel' %}
         </a>
         </p>

@@ -19,9 +19,9 @@
         <small class="pull-right">
         <div class="btn-toolbar">
             {% if perms.participant.can_manage_participant %}
-                <a href="{% url user_new %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New participant' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
-                <a href="{% url user_group_overview %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'All user groups' %}"><i class="icon-user"></i> {% trans "User groups" %}</a>
-                <a href="{% url user_import %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import participants' %}"><i class="icon-share-alt"></i> {% trans 'Import' %}</a>
+                <a href="{% url 'user_new' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New participant' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
+                <a href="{% url 'user_group_overview' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'All user groups' %}"><i class="icon-user"></i> {% trans "User groups" %}</a>
+                <a href="{% url 'user_import' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import participants' %}"><i class="icon-share-alt"></i> {% trans 'Import' %}</a>
             {% endif %}
             {% if perms.participant.can_see_participant and perms.participant.can_manage_participant %}
                 <div class="btn-group pull-right">
@@ -31,20 +31,20 @@
                           <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
-                        {% url user_settings as url_usersettings %}
-                        <li><a href="{% url user_print %}"><i class="icon-list"></i> {% trans 'List of participants' %}</a></li>
-                        <li><a href="{% url print_passwords %}"><i class="icon-th-large"></i> {% trans 'First time passwords' %}</a></li>
+                        {% url 'user_settings' as url_usersettings %}
+                        <li><a href="{% url 'user_print' %}"><i class="icon-list"></i> {% trans 'List of participants' %}</a></li>
+                        <li><a href="{% url 'print_passwords' %}"><i class="icon-th-large"></i> {% trans 'First time passwords' %}</a></li>
                     </ul>
                     {% else %}
-                        <a href="{% url user_login %}" class="btn">{% trans "Login" %}</a>
+                        <a href="{% url 'user_login' %}" class="btn">{% trans "Login" %}</a>
                     {% endif %}
                 </div>
             {% else %}
                 {% if perms.participant.can_see_participant %}
-                    <a href="{% url user_print %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print list of participants as PDF' %}"><i class="icon-print"></i> PDF</a>
+                    <a href="{% url 'user_print' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print list of participants as PDF' %}"><i class="icon-print"></i> PDF</a>
                 {% endif %}
                 {% if perms.participant.can_manage_participant %}
-                    <a href="{% url print_passwords %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print first time passwords as PDF' %}"><i class="icon-print"></i> PDF</a>
+                    <a href="{% url 'print_passwords' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print first time passwords as PDF' %}"><i class="icon-print"></i> PDF</a>
                 {% endif %}
             {% endif %}
         </div>
@@ -126,19 +126,19 @@
                     </td>
                     <td>
                         <span style="width: 1px; white-space: nowrap;">
-                            <a href="{% url user_edit user.id %}">
+                            <a href="{% url 'user_edit' user.id %}">
                                 <img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit participant' %}">
                             </a>
                             {% if user != request_user %}
-                            <a href="{% url user_delete user.id %}">
+                            <a href="{% url 'user_delete' user.id %}">
                                 <img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete participant' %}">
                             </a>
                             {% endif %}
                             {% if user != request_user and not user.is_superuser %}
-                            <a class="status_link deactivate" href="{% url user_status_deactivate user.id %}" title="{% trans 'Change status to inactive' %}"{% if not user.is_active %} style="display:none"{% endif %}>
+                            <a class="status_link deactivate" href="{% url 'user_status_deactivate' user.id %}" title="{% trans 'Change status to inactive' %}"{% if not user.is_active %} style="display:none"{% endif %}>
                                 <span></span>
                             </a>
-                            <a class="status_link activate" href="{% url user_status_activate user.id %}" title="{% trans 'Change status to active' %}"{% if user.is_active %} style="display:none"{% endif %}>
+                            <a class="status_link activate" href="{% url 'user_status_activate' user.id %}" title="{% trans 'Change status to active' %}"{% if user.is_active %} style="display:none"{% endif %}>
                                 <span></span>
                             </a>
                             {% endif %}
