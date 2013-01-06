@@ -11,50 +11,39 @@
 """
 
 from django import forms
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 from openslides.utils.forms import CssClassMixin
 from openslides.utils.person import PersonFormField, MultiplePersonFormField
-from openslides.motion.models import Motion
+from .models import Motion
 
 
-class MotionForm(forms.Form, CssClassMixin):
+class BaseMotionForm(forms.ModelForm, CssClassMixin):
+    class Meta:
+        model = Motion
+        fields = ()
+
+    def __init__(self, *args, **kwargs):
+        motion = kwargs.get('instance', None)
+        if motion is not None:
+            initial = kwargs.setdefault('initial', {})
+            initial['title'] = motion.title
+            initial['text'] = motion.text
+            initial['reason'] = motion.reason
+        super(BaseMotionForm, self).__init__(*args, **kwargs)
+
     title = forms.CharField(widget=forms.TextInput(), label=_("Title"))
     text = forms.CharField(widget=forms.Textarea(), label=_("Text"))
     reason = forms.CharField(
         widget=forms.Textarea(), required=False, label=_("Reason"))
 
 
-class MotionFormTrivialChanges(MotionForm):
-    trivial_change = forms.BooleanField(
-        required=False, label=_("Trivial change"),
-        help_text=_("Trivial changes don't create a new version."))
+class MotionCreateForm(BaseMotionForm):
+    pass
 
 
-class MotionManagerForm(forms.ModelForm, CssClassMixin):
-    submitter = PersonFormField(label=_("Submitter"))
-
-    class Meta:
-        model = Motion
-        exclude = ('number', 'status', 'permitted', 'log', 'supporter')
-
-
-class MotionManagerFormSupporter(MotionManagerForm):
-    # TODO: Do not show the submitter in the user-list
-    supporter = MultiplePersonFormField(required=False, label=_("Supporters"))
-
-
-class MotionImportForm(forms.Form, CssClassMixin):
-    csvfile = forms.FileField(
-        widget=forms.FileInput(attrs={'size': '50'}),
-        label=_("CSV File"),
-    )
-    import_permitted = forms.BooleanField(
-        required=False,
-        label=_("Import motions with status \"authorized\""),
-        help_text=_('Set the initial status for each motion to '
-                    '"authorized"'),
-    )
+class MotionUpdateForm(BaseMotionForm):
+    pass
 
 
 class ConfigForm(forms.Form, CssClassMixin):

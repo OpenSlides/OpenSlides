@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% load tags %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}{{ block.super }} – {% trans "Motion" %} "{{ version.title }}"{% endblock %}
+
+{% block content %}
+<p>Titel: {{ object.title }} </p>
+<p>Text: {{ object.text }}</p>
+{% endblock %}

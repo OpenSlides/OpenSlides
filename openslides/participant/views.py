@@ -554,30 +554,30 @@ def get_widgets(request):
     group_widget and a personal_info_widget.
     """
     return [
-        get_personal_info_widget(request),
+        #get_personal_info_widget(request),
         get_user_widget(request),
         get_group_widget(request)]
 
 
-def get_personal_info_widget(request):
-    """
-    Provides a widget for personal info. It shows your submitted motions
-    and where you are supporter or candidate.
-    """
-    personal_info_context = {
-        'submitted_motions': Motion.objects.filter(submitter=request.user),
-        'config_motion_min_supporters': config['motion_min_supporters'],
-        'supported_motions': Motion.objects.filter(motionsupporter=request.user),
-        'assignments': Assignment.objects.filter(
-            assignmentcandidate__person=request.user,
-            assignmentcandidate__blocked=False)}
-    return Widget(
-        name='personal_info',
-        display_name=_('My motions and elections'),
-        template='participant/personal_info_widget.html',
-        context=personal_info_context,
-        permission_required=None,
-        default_column=1)
+## def get_personal_info_widget(request):
+    ## """
+    ## Provides a widget for personal info. It shows your submitted motions
+    ## and where you are supporter or candidate.
+    ## """
+    ## personal_info_context = {
+        ## 'submitted_motions': Motion.objects.filter(submitter=request.user),
+        ## 'config_motion_min_supporters': config['motion_min_supporters'],
+        ## 'supported_motions': Motion.objects.filter(motionsupporter=request.user),
+        ## 'assignments': Assignment.objects.filter(
+            ## assignmentcandidate__person=request.user,
+            ## assignmentcandidate__blocked=False)}
+    ## return Widget(
+        ## name='personal_info',
+        ## display_name=_('My motions and elections'),
+        ## template='participant/personal_info_widget.html',
+        ## context=personal_info_context,
+        ## permission_required=None,
+        ## default_column=1)
 
 
 def get_user_widget(request):
