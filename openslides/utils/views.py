@@ -41,6 +41,7 @@ from django.views.generic import (
     View as _View,
     FormView as _FormView,
     ListView as _ListView,
+    DetailView as _DetailView,
 )
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.list import TemplateResponseMixin
@@ -96,6 +97,14 @@ class AjaxMixin(object):
 
     def ajax_get(self, request, *args, **kwargs):
         return HttpResponse(json.dumps(self.get_ajax_context(**kwargs)))
+
+
+class ExtraContextMixin(object):
+    def get_context_data(self, **kwargs):
+        context = super(ExtraContextMixin, self).get_context_data(**kwargs)
+        template_manipulation.send(
+            sender=self.__class__, request=self.request, context=context)
+        return context
 
 
 class QuestionMixin(object):
@@ -157,21 +166,12 @@ class QuestionMixin(object):
         return self.success_message
 
 
-class TemplateView(PermissionMixin, _TemplateView):
-    def get_context_data(self, **kwargs):
-        context = super(TemplateView, self).get_context_data(**kwargs)
-        template_manipulation.send(
-            sender=self.__class__, request=self.request, context=context)
-        return context
+class TemplateView(PermissionMixin, ExtraContextMixin, _TemplateView):
+    pass
 
 
-class ListView(PermissionMixin, SetCookieMixin, _ListView):
-    def get_context_data(self, **kwargs):
-        context = super(ListView, self).get_context_data(**kwargs)
-        template_manipulation.send(
-            sender=self.__class__, request=self.request, context=context)
-        return context
-
+class ListView(PermissionMixin, SetCookieMixin, ExtraContextMixin, _ListView):
+    pass
 
 class AjaxView(PermissionMixin, AjaxMixin, View):
     def get(self, request, *args, **kwargs):
@@ -202,35 +202,23 @@ class RedirectView(PermissionMixin, AjaxMixin, _RedirectView):
         return reverse(super(RedirectView, self).get_redirect_url(**kwargs))
 
 
-class FormView(PermissionMixin, _FormView):
+class FormView(PermissionMixin, ExtraContextMixin, _FormView):
     def get_success_url(self):
         if not self.success_url:
             return ''
         return reverse(super(FormView, self).get_success_url())
-
-    def get_context_data(self, **kwargs):
-        context = super(FormView, self).get_context_data(**kwargs)
-        template_manipulation.send(
-            sender=self.__class__, request=self.request, context=context)
-        return context
 
     def form_invalid(self, form):
         messages.error(self.request, _('Please check the form for errors.'))
         return super(FormView, self).form_invalid(form)
 
 
-class UpdateView(PermissionMixin, _UpdateView):
+class UpdateView(PermissionMixin, ExtraContextMixin, _UpdateView):
     def get_success_url(self):
         messages.success(self.request, self.get_success_message())
         if 'apply' in self.request.POST:
             return ''
         return reverse(super(UpdateView, self).get_success_url())
-
-    def get_context_data(self, **kwargs):
-        context = super(UpdateView, self).get_context_data(**kwargs)
-        template_manipulation.send(
-            sender=self.__class__, request=self.request, context=context)
-        return context
 
     def form_invalid(self, form):
         messages.error(self.request, _('Please check the form for errors.'))
@@ -240,7 +228,7 @@ class UpdateView(PermissionMixin, _UpdateView):
         return _('%s was successfully modified.') % html_strong(self.object)
 
 
-class CreateView(PermissionMixin, _CreateView):
+class CreateView(PermissionMixin, ExtraContextMixin, _CreateView):
     apply_url = None
 
     def get_success_url(self):
@@ -249,18 +237,12 @@ class CreateView(PermissionMixin, _CreateView):
             return reverse(self.get_apply_url(), args=[self.object.id])
         return reverse(super(CreateView, self).get_success_url())
 
-    def get_context_data(self, **kwargs):
-        context = super(CreateView, self).get_context_data(**kwargs)
-        template_manipulation.send(
-            sender=self.__class__, request=self.request, context=context)
-        return context
-
     def get_apply_url(self):
         if self.apply_url:
             return self.apply_url
         else:
             raise ImproperlyConfigured(
-                'No URL to redirect to. Please provide an apply_url.')
+                "No URL to redirect to. Provide a apply_url.")
 
     def form_invalid(self, form):
         messages.error(self.request, _('Please check the form for errors.'))
@@ -295,15 +277,10 @@ class DeleteView(SingleObjectMixin, QuestionMixin, RedirectView):
         return _('%s was successfully deleted.') % html_strong(self.object)
 
 
-class DetailView(TemplateView, SingleObjectMixin):
+class DetailView(PermissionMixin, ExtraContextMixin, _DetailView):
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         return super(DetailView, self).get(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super(DetailView, self).get_context_data(**kwargs)
-        context.update(SingleObjectMixin.get_context_data(self, **kwargs))
-        return context
 
 
 class PDFView(PermissionMixin, View):
