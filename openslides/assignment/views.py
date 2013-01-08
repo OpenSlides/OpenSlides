@@ -318,7 +318,7 @@ class AssignmentPollDelete(DeleteView):
         return reverse('assignment_view', args=[self.assignment.id])
 
     def get_success_message(self):
-        return  _('Ballot was successfully deleted.') % self.object
+        return _('Ballot was successfully deleted.') % self.object
 
 
 class AssignmentPDF(PDFView):
