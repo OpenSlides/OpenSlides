@@ -478,7 +478,7 @@ def login(request):
     extra_content = {}
     try:
         admin = User.objects.get(pk=1)
-        if  admin.check_password(admin.default_password):
+        if admin.check_password(admin.default_password):
             extra_content['first_time_message'] = _(
                 "Installation was successfully! Use %(user)s "
                 "(password: %(password)s) for first login.<br>"

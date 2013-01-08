@@ -104,25 +104,26 @@ class Projector(TemplateView, AjaxMixin):
         return context
 
     def get_ajax_context(self, **kwargs):
-        content = cache.get('projector_content')
+        language = self.request.LANGUAGE_CODE
+        content = cache.get('projector_content_' + language)
         if not content:
             content = render_block_to_string(
                 self.get_template_names()[0],
                 'content', self.data)
-            cache.set('projector_content', content, 1)
+            cache.set('projector_content_' + language, content, 1)
 
         scrollcontent = cache.get('projector_scrollcontent')
         if not scrollcontent:
             scrollcontent = render_block_to_string(
                 self.get_template_names()[0],
                 'scrollcontent', self.data)
-            cache.set('projector_scrollcontent', scrollcontent, 1)
+            cache.set('projector_scrollcontent_' + language, scrollcontent, 1)
 
         # TODO: do not call the hole data-methode, if we only need some vars
-        data = cache.get('projector_data')
+        data = cache.get('projector_data_' + language)
         if not data:
             data = self.data
-            cache.set('projector_data', data)
+            cache.set('projector_data_' + language, data)
         # clear cache if countdown is enabled
         if config['countdown_state'] == 'active':
             clear_projector_cache()
