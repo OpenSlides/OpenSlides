@@ -37,19 +37,23 @@ function hideClosedSlides(hide) {
 $(function() {
     $('.close_link a').click(function(event) {
         event.preventDefault();
-        slide = $(this);
+        var link = $(this);
         $.ajax({
             type: 'GET',
-            url: slide.attr('href'),
+            url: $(this).attr('href'),
             dataType: 'json',
             success: function(data) {
                 if (data.closed) {
                     newclass = 'closed';
+                    link.parent().parent().parent().addClass('itemdoneline');
                 } else {
                     newclass = 'open';
+                    link.parent().parent().parent().removeClass('itemdoneline');
                 }
-                slide.parent().removeClass('closed open').addClass(newclass);
-                slide.attr('href', data.link);
+                link.parent().removeClass('closed open').addClass(newclass);
+
+
+                link.attr('href', data.link);
             }
         });
     });

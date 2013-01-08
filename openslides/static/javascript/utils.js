@@ -23,14 +23,16 @@ $(function () {
         var link = $(this);
         $.ajax({
             type: 'GET',
-            url: $(this).attr('href'),
+            url: link.attr('href'),
             dataType: 'json',
             data: '',
             success: function(data) {
-                $('.activate_link').removeClass('active');
+                $('.activate_link').removeClass('btn-primary');
+                $('.icon').removeClass('icon-white');
                 $('tr').removeClass('activeline');
                 link.parent().parent().parent().addClass('activeline');
-                link.addClass('active');
+                link.addClass('btn-primary');
+                link.find('.icon').addClass('icon-white');
             }
         });
     });

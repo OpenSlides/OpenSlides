@@ -42,10 +42,8 @@
             <button class="btn" type="submit" name="apply">
                 {% trans 'Apply' %}
             </button>
-            <a href='{% url 'item_overview' %}'>
-            <button class="btn" type="button" onclick="window.location='{% url 'item_overview' %}'">
-                {% trans 'Cancel' %}</span>
-            </button>
+            <a href="{% url 'item_overview' %}" class="btn">
+                {% trans 'Cancel' %}
             </a>
         </div>
         <small>* {% trans "required" %}</small>

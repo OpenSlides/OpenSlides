@@ -18,3 +18,8 @@
 .close_link.closed span {
     background-image: url(../images/icons/close.png);
 }
+
+tr.topline td {
+    border-bottom: 1px solid #333333;
+    background-color: #CDCDCD;
+}

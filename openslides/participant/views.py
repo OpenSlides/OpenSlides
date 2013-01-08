@@ -507,7 +507,7 @@ def user_settings(request):
         form_user = UsersettingsForm(instance=request.user, initial={'language': language})
 
     return {
-        'form': form,
+        'form': form_user,
         'edituser': request.user,
     }
 

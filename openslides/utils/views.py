@@ -121,7 +121,7 @@ class QuestionMixin(object):
 
     def confirm_form(self):
         option_fields = "\n".join([
-            '<button type="submit" class="btn" name="%s">%s</button>' % (option[0], unicode(option[1]))
+            '<button type="submit" class="btn btn-mini" name="%s">%s</button>' % (option[0], unicode(option[1]))
             for option in self.get_answer_options()])
         messages.warning(
             self.request,
