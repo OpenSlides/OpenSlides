@@ -89,9 +89,10 @@ def set_active_slide(sid, argument=None):
 
 
 def clear_projector_cache():
-    cache.delete('projector_content')
-    cache.delete('projector_scrollcontent')
-    cache.delete('projector_data')
+    for language, __ in settings.LANGUAGES:
+        cache.delete('projector_content_' + language)
+        cache.delete('projector_scrollcontent_' + language)
+        cache.delete('projector_data_' + language)
 
 
 def register_slidemodel(model, model_name=None, control_template=None, weight=0):
