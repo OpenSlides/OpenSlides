@@ -5,8 +5,8 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-VERSION = (1, 3, 1, 'alpha', 1)  # During development it is the next release
-RELEASE = False
+VERSION = (1, 3, 1, 'final', 1)  # During development it is the next release
+RELEASE = True
 
 
 def get_version(version=None, release=None):
