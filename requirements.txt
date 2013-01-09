@@ -1,4 +1,4 @@
-Django==1.4.2
+Django==1.4.3
 django-mptt
 reportlab
 PIL
