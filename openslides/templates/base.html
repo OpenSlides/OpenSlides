@@ -12,8 +12,8 @@
     <title>{% block title %}{% get_config 'event_name' %}{% endblock %}</title>
 
     <!-- styles -->
-    <link href="{% static 'styles/bootstrap.css' %}" type="text/css" rel="stylesheet">
-    <link href="{% static 'styles/bootstrap-responsive.css' %}" type="text/css" rel="stylesheet">
+    <link href="{% static 'styles/bootstrap.min.css' %}" type="text/css" rel="stylesheet">
+    <link href="{% static 'styles/bootstrap-responsive.min.css' %}" type="text/css" rel="stylesheet">
     <link href="{% static 'styles/base.css' %}" type="text/css" rel="stylesheet">
     <link href="{% static 'img/favicon.png' %}" type="image/png" rel="shortcut icon" />
 
@@ -107,7 +107,7 @@
 {% endblock %}<!--/body-->
 
 <!-- JavaScript (Placed at the end of the document so the pages load faster) -->
-    <script src="{% static 'javascript/jquery.js' %}" type="text/javascript"></script>
+    <script src="{% static 'javascript/jquery.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'javascript/utils.js' %}" type="text/javascript"></script>
     <script src="{% static 'javascript/bootstrap.min.js' %}" type="text/javascript"></script>
     <script type="text/javascript" src="{% url 'django.views.i18n.javascript_catalog' %}"></script>

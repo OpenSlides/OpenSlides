@@ -16,6 +16,7 @@
 {% block content %}
 <h1>
     {{ version.title }}
+    <br>
     <small>
     {% if motion.number != None %}
         {% trans "Motion" %} {{ motion.number }},
@@ -67,7 +68,7 @@
 </h1>
 
 <div class="row-fluid">
-<div class="span9">
+<div class="span8">
     {% if motion.public_version != motion.last_version %}
         &#8901;
         {% if version == motion.public_version %}
@@ -156,7 +157,7 @@
 </div> <!--/span-->
 
 
-<div class="span3">
+<div class="span4">
     <div class="well">
         <!-- Submitter -->
         <h5>{% trans "Submitter" %}:</h5>
