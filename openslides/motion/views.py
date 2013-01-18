@@ -864,7 +864,7 @@ class MotionPollPDF(PDFView):
         pdf_document.build(story)
 
     def append_to_pdf(self, story):
-        imgpath = os.path.join(settings.SITE_ROOT, 'static/images/circle.png')
+        imgpath = os.path.join(settings.SITE_ROOT, 'static/img/circle.png')
         circle = "<img src='%s' width='15' height='15'/>&nbsp;&nbsp;" % imgpath
         cell = []
         cell.append(Spacer(0,0.8*cm))

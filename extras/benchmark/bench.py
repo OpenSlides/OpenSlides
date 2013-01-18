@@ -32,11 +32,7 @@ URL_SETS = {
         "/static/styles/base.css",
         "/static/javascript/utils.js",
         "/static/javascript/jquery.min.js",
-        "/static/images/bg-submenu.gif",
-        "/static/images/bg-header.gif",
-        "/static/images/logo.png",
-        "/static/images/icons/dialog-information.png",
-        "/static/images/icons/cross.png",
+        "/static/img/logo.png",
     ],
     "agenda": [
         "/agenda/",
@@ -46,11 +42,6 @@ URL_SETS = {
         "/static/styles/agenda.css",
         "/static/javascript/jquery.min.js",
         "/jsi18n/",
-        "/static/images/bg-header.gif",
-        "/static/images/bg-submenu.gif",
-        "/static/images/logo.png",
-        "/static/images/icons/application-pdf.png",
-        "/static/images/icons/cross.png",
     ],
     "application": [
         "/application/",
@@ -58,11 +49,6 @@ URL_SETS = {
         "/static/javascript/utils.js",
         "/static/javascript/jquery.min.js",
         "/jsi18n/",
-        "/static/images/bg-header.gif",
-        "/static/images/bg-submenu.gif",
-        "/static/images/icons/cross.png",
-        "/static/images/logo.png",
-        "/static/images/icons/application-pdf.png",
     ]
 }
 
