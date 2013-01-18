@@ -4,8 +4,8 @@
 
 <ul style="line-height: 180%">
     <li class="{% if agenda.active %}activeline{% endif %}">
-        <a href="{% url 'projector_activate_slide' agenda.key  %}" class="activate_link btn {% if agenda.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show agenda' %}">
-            <i class="icon icon-facetime-video {% if item.active %}icon-white{% endif %}"></i>
+        <a href="{% url 'projector_activate_slide' agenda.key  %}" class="activate_projector btn {% if agenda.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show agenda' %}">
+            <i class="icon icon-facetime-video {% if agenda.active %}icon-white{% endif %}"></i>
         </a>&nbsp;
         <a href="{% url 'projctor_preview_slide' agenda.key %}" title="{% trans 'Preview' %}" class="icon preview right">
             <span></span>
@@ -17,7 +17,7 @@
 <ul style="line-height: 180%">
 {% for item in items %}
     <li class="{% if item.active %}activeline{% endif %}">
-        <a href="{% url 'projector_activate_slide' item.sid  %}" class="activate_link btn {% if item.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show item' %}">
+        <a href="{% url 'projector_activate_slide' item.sid  %}" class="activate_projector btn {% if item.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show item' %}">
             <i class="icon icon-facetime-video {% if item.active %}icon-white{% endif %}"></i>
         </a>&nbsp;
         <a href="{% model_url item 'delete' %}" title="{% trans 'Delete' %}" class="icon delete right">
@@ -30,7 +30,7 @@
             <span></span>
         </a>
         {% if not item.is_leaf_node %}
-        <a class="activate_link right" href="{% url 'projector_activate_slide' item.sid 'summary' %}">
+        <a class="activate_projector right" href="{% url 'projector_activate_slide' item.sid 'summary' %}">
             <img src="{% static 'images/icons/summary.png' %}"
                 title="{% trans 'Activate summary for this item' %}"
                 style="padding-right: 2px;">

@@ -79,11 +79,11 @@ a:hover {
 
 
 /** Utils **/
-tr.activeline td, li.activeline {
-    background-color: #bed4de !important;
-}
 tr.itemdoneline td, li.itemdoneline {
     background-color: #EAEAEA !important;
+}
+tr.activeline td, li.activeline {
+    background-color: #bed4de !important;
 }
 .nopadding {
     padding: 0;

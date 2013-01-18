@@ -51,7 +51,7 @@ $(function() {
     }
 
     // activate an element to show it on projector
-    $('.activate_link').click(function(event) {
+    $('.activate_projector').click(function(event) {
         event.preventDefault();
         var link = $(this);
         $.ajax({
@@ -59,10 +59,12 @@ $(function() {
             url: $(this).attr('href'),
             dataType: 'json',
             success: function(data) {
-                $('.activate_link').removeClass('active');
+                $('.activate_projector').removeClass('btn-primary');
+                $('.activate_projector .icon').removeClass('icon-white');
                 $('li').removeClass('activeline');
-                $('div').removeClass('activeline');
-                link.addClass('active');
+                //$('div').removeClass('activeline');
+                link.addClass('btn-primary');
+                link.find('.icon').addClass('icon-white');
                 link.parent().addClass('activeline');
             },
             error: function () {
