@@ -21,6 +21,13 @@ import threading
 import time
 import webbrowser
 
+from tornado.options import options, define, parse_command_line
+import tornado.httpserver
+import tornado.ioloop
+import tornado.web
+import tornado.wsgi
+
+import django.core.handlers.wsgi
 import django.conf
 from django.core.management import execute_from_command_line
 
@@ -291,13 +298,25 @@ def create_or_reset_admin_user():
 
 
 def start_openslides(addr, port, start_browser_url=None, extra_args=[]):
-    argv = ["", "runserver", '--noreload'] + extra_args
 
-    argv.append("%s:%d" % (addr, port))
+    # Set the options
+    define('port', type=int, default=port)
+    define('address', default=addr)
 
+    # Open the browser
     if start_browser_url:
         start_browser(start_browser_url)
-    execute_from_command_line(argv)
+
+    # Start the server
+    app = tornado.wsgi.WSGIContainer(django.core.handlers.wsgi.WSGIHandler())
+    tornado_app = tornado.web.Application(
+        [
+            ('.*', tornado.web.FallbackHandler, dict(fallback=app)),
+        ])
+    server = tornado.httpserver.HTTPServer(tornado_app)
+    server.listen(port=options.port,
+                  address=options.address)
+    tornado.ioloop.IOLoop.instance().start()
 
 
 def start_browser(url):
