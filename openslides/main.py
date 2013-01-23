@@ -108,7 +108,7 @@ def process_options(argv=None, check_args=True):
 
     # Don't check for further args if we come from our custom management
     # command, that always sets them
-    if args and not check_args:
+    if args and check_args:
 
         sys.stderr.write("This command does not take arguments!\n\n")
         parser.print_help()
