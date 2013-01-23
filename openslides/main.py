@@ -83,7 +83,7 @@ def process_options(argv=None):
         argv = sys.argv[1:]
 
     parser = optparse.OptionParser(
-        description="Run openslides using django's builtin webserver")
+        description="Run openslides using the tornado webserver")
     parser.add_option("-a", "--address", help="IP Address to listen on.")
     parser.add_option("-p", "--port", type="int", help="Port to listen on.")
     parser.add_option(
