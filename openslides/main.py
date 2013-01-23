@@ -78,7 +78,7 @@ KEY_LENGTH = 30
 _portable_db_path = object()
 
 
-def process_options(argv=None):
+def process_options(argv=None, check_args=True):
     if argv is None:
         argv = sys.argv[1:]
 
@@ -105,7 +105,11 @@ def process_options(argv=None):
     if opts.version:
         print get_version()
         exit(0)
-    if args:
+
+    # Don't check for further args if we come from our custom management
+    # command, that always sets them
+    if args and not check_args:
+
         sys.stderr.write("This command does not take arguments!\n\n")
         parser.print_help()
         sys.exit(1)
@@ -113,8 +117,8 @@ def process_options(argv=None):
     return opts
 
 
-def main(argv=None):
-    opts = process_options(argv)
+def main(argv=None, check_args=True):
+    opts = process_options(argv, check_args)
     _main(opts)
 
 
