@@ -32,10 +32,6 @@ from .models import Motion, MotionSubmitter
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
                     MotionTrivialChangesMixin)
 
-
-from django.views.generic.edit import ModelFormMixin
-
-
 class MotionListView(ListView):
     """
     List all motion.

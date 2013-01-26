@@ -49,8 +49,6 @@ class MotionSupporterMixin(forms.ModelForm):
     supporter = MultiplePersonFormField(required=False, label=_("Supporters"))
 
 
-
-
 class MotionTrivialChangesMixin(object):
     trivial_change = forms.BooleanField(
         required=False, label=_("Trivial change"),

@@ -87,11 +87,13 @@ class Motion(SlideMixin, models.Model):
         Saves the motion. Create or update a motion_version object
         """
         super(Motion, self).save(*args, **kwargs)
-        new_data = False
-        for attr in ['_title', '_text', '_reason']:
-            if hasattr(self, attr):
+        for attr in ['title', 'text', 'reason']:
+            if getattr(self, attr) != getattr(self.last_version, attr):
                 new_data = True
                 break
+        else:
+            new_data = False
+
         need_new_version = True  # TODO: Do we need a new version (look in config)
         if hasattr(self, '_version') or (new_data and need_new_version):
             version = self.new_version
