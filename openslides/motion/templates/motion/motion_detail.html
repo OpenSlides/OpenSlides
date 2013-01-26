@@ -4,9 +4,21 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block title %}{{ block.super }} – {% trans "Motion" %} "{{ version.title }}"{% endblock %}
+{% block title %}{{ block.super }} – {% trans "Motion" %} "{{ motion.title }}"{% endblock %}
 
 {% block content %}
-<p>Titel: {{ object.title }} </p>
-<p>Text: {{ object.text }}</p>
+<p>Titel: {{ motion.title }} </p>
+<p>Text: {{ motion.text }}</p>
+<p>Reason: {{ motion.reason }}</p>
+<p>Submitter: {% for submitter in motion.submitter.all %}{{ submitter.person }} {% endfor %}</p>
+
+<ol>
+{% for motion_version in motion.versions.all %}
+    {% if motion_version.id == motion.version.id %}
+        <li><strong><a href="{% model_url motion_version %}">{{ motion_version }}</a></strong></li>
+    {% else %}
+        <li><a href="{% model_url motion_version %}">{{ motion_version }}</a></li>
+    {% endif %}
+{% endfor %}
+</ol>
 {% endblock %}

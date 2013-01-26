@@ -31,49 +31,21 @@ from openslides.projector.models import SlideMixin
 from openslides.agenda.models import Item
 
 
-RELATION = (
-    (1, _('Submitter')),
-    (2, _('Supporter')))
-
-
-class RelatedPersonsManager(models.Manager):
-    """
-    Manager for MotionRelatedPersons.
-
-    Returns a custom manager with gives a specific queryset for one type of
-    persons.
-    """
-    def __init__(self, relation, *args, **kwargs):
-        super(RelatedPersonsManager, self).__init__(*args, **kwargs)
-        for key, value in RELATION:
-            if key == relation:
-                self.relation = key
-                break
-        else:
-            raise ValueError('Unknown relation with id %d' % relation)
-
-    def get_query_set(self):
-        return (super(RelatedPersonsManager, self).get_query_set()
-                .filter(relation=self.relation))
-
-
-class MotionRelatedPersons(models.Model):
-    """
-    Saves the all persons related to a motion.
-
-    relation = 1: submitter
-    relation = 2: supporter
-
-    The custom manager submitter and supporter return a queryset with the
-    specific persons.
-    """
-    submitter = RelatedPersonsManager(relation=1)
-    supporter = RelatedPersonsManager(relation=2)
-    objects = models.Manager()
-
+# TODO: Save submitter and supporter in the same table
+class MotionSubmitter(models.Model):
     person = PersonField()
-    relation = models.IntegerField(default=1, choices=RELATION)
-    motion = models.ForeignKey('Motion', related_name="persons")
+    motion = models.ForeignKey('Motion', related_name="submitter")
+
+    def __unicode__(self):
+        return unicode(self.person)
+
+
+class MotionSupporter(models.Model):
+    person = PersonField()
+    motion = models.ForeignKey('Motion', related_name="supporter")
+
+    def __unicode__(self):
+        return unicode(self.person)
 
 
 class Motion(SlideMixin, models.Model):
@@ -199,20 +171,6 @@ class Motion(SlideMixin, models.Model):
     reason = property(get_reason, set_reason)
 
     @property
-    def submitter(self):
-        """
-        Return a queryset with all submitter of this motion.
-        """
-        return MotionRelatedPersons.submitter.filter(motion=self)
-
-    @property
-    def supporter(self):
-        """
-        Returns a queryset with all supporter of this motion.
-        """
-        return MotionRelatedPersons.supporter.filter(motion=self)
-
-    @property
     def new_version(self):
         """
         On the first call, it creates a new version. On any later call, it
@@ -292,9 +250,15 @@ class MotionVersion(models.Model):
     note = models.TextField(null=True, blank=True)
 
     def __unicode__(self):
-        return "%s Version %s" % (self.motion, self.get_version_number())
+        return "%s Version %s" % (self.motion, self.version_number)
 
-    def get_version_number(self):
+    def get_absolute_url(self, link='detail'):
+        if link == 'view' or link == 'detail':
+            return reverse('motion_version_detail', args=[str(self.motion.id),
+                                                          str(self.version_number)])
+
+    @property
+    def version_number(self):
         if self.pk is None:
             return 'new'
         return (MotionVersion.objects.filter(motion=self.motion)

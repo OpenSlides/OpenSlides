@@ -19,6 +19,9 @@ from .models import Motion
 
 
 class BaseMotionForm(forms.ModelForm, CssClassMixin):
+    """
+    Form to automaticly save the version data for a motion.
+    """
     class Meta:
         model = Motion
         fields = ()
@@ -38,12 +41,20 @@ class BaseMotionForm(forms.ModelForm, CssClassMixin):
         widget=forms.Textarea(), required=False, label=_("Reason"))
 
 
-class MotionCreateForm(BaseMotionForm):
-    pass
+class MotionSubmitterMixin(forms.ModelForm):
+    submitter = MultiplePersonFormField(label=_("Submitter"))
 
 
-class MotionUpdateForm(BaseMotionForm):
-    pass
+class MotionSupporterMixin(forms.ModelForm):
+    supporter = MultiplePersonFormField(required=False, label=_("Supporters"))
+
+
+
+
+class MotionTrivialChangesMixin(object):
+    trivial_change = forms.BooleanField(
+        required=False, label=_("Trivial change"),
+        help_text=_("Trivial changes don't create a new version."))
 
 
 class ConfigForm(forms.Form, CssClassMixin):

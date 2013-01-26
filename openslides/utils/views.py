@@ -113,7 +113,7 @@ class SuccessUrlMixin(object):
         if 'apply' in self.request.POST:
             return reverse(self.get_apply_url(), args=[self.object.id])
         if self.success_url:
-            url = reverse(success_url)
+            url = reverse(self.success_url)
         else:
             try:
                 url = self.object.get_absolute_url()
@@ -230,11 +230,14 @@ class ModelFormMixin(object):
         self.object = form.save(commit=False)
         self.manipulate_object(form)
         self.object.save()
-        form.save_m2m()
+        self.post_save(form)
         return HttpResponseRedirect(self.get_success_url())
 
     def manipulate_object(self, form):
         pass
+
+    def post_save(self, form):
+        form.save_m2m()
 
 
 class UpdateView(PermissionMixin, SuccessUrlMixin, ExtraContextMixin,

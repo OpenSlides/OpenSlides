@@ -8,9 +8,9 @@
 
 {% block content %}
     <h1>{% trans "Motions" %}</h1>
-    <ul>
+    <ol>
     {% for motion in motion_list %}
-        <li>{{ motion }}</li>
+        <li><a href="{% model_url motion %}">{{ motion }}</a></li>
     {% endfor %}
-    </ul>
+    </ol>
 {% endblock %}
