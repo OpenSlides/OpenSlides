@@ -240,6 +240,33 @@ class Motion(SlideMixin, models.Model):
         except IndexError:
             return self.new_version
 
+    def is_supporter(self, person):
+        try:
+            return self.supporter.filter(person=person).exists()
+        except AttributeError:
+            return False
+
+    def support(self, person):
+        """
+        Add a Supporter to the list of supporters of the motion.
+        """
+        if not self.is_supporter(person):
+            MotionSupporter(motion=self, person=person).save()
+            #self.writelog(_("Supporter: +%s") % (person))
+        # TODO: Raise a precise exception for the view in else-clause
+
+    def unsupport(self, person):
+        """
+        remove a supporter from the list of supporters of the motion
+        """
+        try:
+            self.supporter.filter(person=person).delete()
+        except MotionSupporter.DoesNotExist:
+            # TODO: Don't do nothing but raise a precise exception for the view
+            pass
+        #else:
+            #self.writelog(_("Supporter: -%s") % (person))
+
 
 class MotionVersion(models.Model):
     title = models.CharField(max_length=255, verbose_name=ugettext_lazy("Title"))

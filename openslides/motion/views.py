@@ -22,7 +22,7 @@ from django.http import Http404
 from openslides.utils.pdf import stylesheet
 from openslides.utils.views import (
     TemplateView, RedirectView, UpdateView, CreateView, DeleteView, PDFView,
-    DetailView, ListView, FormView)
+    DetailView, ListView, FormView, QuestionMixin)
 from openslides.utils.template import Tab
 from openslides.utils.utils import html_strong
 from openslides.projector.api import get_active_slide
@@ -119,6 +119,65 @@ class MotionUpdateView(MotionMixin, UpdateView):
     model = Motion
 
 motion_edit = MotionUpdateView.as_view()
+
+
+class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
+    """
+    Classed based view to support or unsupport a motion. Use
+    support=True or support=False in urls.py
+    """
+    permission_required = 'motion.can_support_motion'
+    model = Motion
+    support = True
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super(SupportView, self).get(request, *args, **kwargs)
+
+    def check_allowed_actions(self, request):
+        """
+        Checks whether request.user can support or unsupport the motion.
+        Returns True or False.
+        """
+        return True #TODO
+        allowed_actions = self.object.get_allowed_actions(request.user)
+        if self.support and not 'support' in allowed_actions:
+            messages.error(request, _('You can not support this motion.'))
+            return False
+        elif not self.support and not 'unsupport' in allowed_actions:
+            messages.error(request, _('You can not unsupport this motion.'))
+            return False
+        else:
+            return True
+
+    def pre_redirect(self, request, *args, **kwargs):
+        if self.check_allowed_actions(request):
+            super(SupportView, self).pre_redirect(request, *args, **kwargs)
+
+    def get_question(self):
+        if self.support:
+            return _('Do you really want to support this motion?')
+        else:
+            return _('Do you really want to unsupport this motion?')
+
+    def case_yes(self):
+        if self.check_allowed_actions(self.request):
+            if self.support:
+                self.object.support(person=self.request.user)
+            else:
+                self.object.unsupport(person=self.request.user)
+
+    def get_success_message(self):
+        if self.support:
+            return _("You have supported this motion successfully.")
+        else:
+            return _("You have unsupported this motion successfully.")
+
+    def get_redirect_url(self, **kwargs):
+        return self.object.get_absolute_url()
+
+motion_support = SupportView.as_view(support=True)
+motion_unsupport = SupportView.as_view(support=False)
 
 
 class Config(FormView):

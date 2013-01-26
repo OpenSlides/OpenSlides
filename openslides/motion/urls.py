@@ -37,4 +37,14 @@ urlpatterns = patterns('openslides.motion.views',
         'motion_detail',
         name='motion_version_detail',
     ),
+
+    url(r'^(?P<pk>\d+)/support/$',
+        'motion_support',
+        name='motion_support',
+    ),
+
+    url(r'^(?P<pk>\d+)/unsupport/$',
+        'motion_unsupport',
+        name='motion_unsupport',
+    ),
 )
