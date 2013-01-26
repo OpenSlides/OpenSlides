@@ -27,12 +27,12 @@ class BaseMotionForm(forms.ModelForm, CssClassMixin):
         fields = ()
 
     def __init__(self, *args, **kwargs):
-        motion = kwargs.get('instance', None)
-        if motion is not None:
-            initial = kwargs.setdefault('initial', {})
-            initial['title'] = motion.title
-            initial['text'] = motion.text
-            initial['reason'] = motion.reason
+        self.motion = kwargs.get('instance', None)
+        self.initial = kwargs.setdefault('initial', {})
+        if self.motion is not None:
+            self.initial['title'] = self.motion.title
+            self.initial['text'] = self.motion.text
+            self.initial['reason'] = self.motion.reason
         super(BaseMotionForm, self).__init__(*args, **kwargs)
 
     title = forms.CharField(widget=forms.TextInput(), label=_("Title"))
@@ -43,6 +43,13 @@ class BaseMotionForm(forms.ModelForm, CssClassMixin):
 
 class MotionSubmitterMixin(forms.ModelForm):
     submitter = MultiplePersonFormField(label=_("Submitter"))
+
+    def __init__(self, *args, **kwargs):
+        if self.motion is not None:
+            submitter = [submitter.person.person_id for submitter in self.motion.submitter.all()]
+            print submitter
+            self.initial['submitter'] = submitter
+        super(MotionSubmitterMixin, self).__init__(*args, **kwargs)
 
 
 class MotionSupporterMixin(forms.ModelForm):
