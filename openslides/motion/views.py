@@ -107,7 +107,6 @@ class MotionUpdateView(MotionMixin, UpdateView):
     """
     # TODO: set permissions
     model = Motion
-    apply_url = ''
 
 motion_edit = MotionUpdateView.as_view()
 

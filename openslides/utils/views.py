@@ -24,6 +24,7 @@ from reportlab.lib.units import cm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
+from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.dispatch import receiver
@@ -107,13 +108,32 @@ class ExtraContextMixin(object):
         return context
 
 
-class SuccessUrlMixin(object):
+class UrlMixin(object):
+    apply_url_name = None
+    success_url_name = None
+    success_url = None
+    apply_url = None
+
+    def get_apply_url(self):
+        if self.apply_url_name:
+            return reverse(self.apply_url_name)
+        elif self.apply_url:
+            return self.apply_url
+        else:
+            try:
+                return self.object.get_absolute_url('edit')
+            except AttributeError:
+                raise ImproperlyConfigured(
+                    "No URL to redirect to. Provide an apply_url_name.")
+
     def get_success_url(self):
         messages.success(self.request, self.get_success_message())
         if 'apply' in self.request.POST:
-            return reverse(self.get_apply_url(), args=[self.object.id])
-        if self.success_url:
-            url = reverse(self.success_url)
+            return self.get_apply_url()
+        if self.success_url_name:
+            return reverse(self.success_url)
+        elif self.success_url:
+            return self.success_url
         else:
             try:
                 url = self.object.get_absolute_url()
@@ -219,7 +239,7 @@ class RedirectView(PermissionMixin, AjaxMixin, _RedirectView):
         return reverse(super(RedirectView, self).get_redirect_url(**kwargs))
 
 
-class FormView(PermissionMixin, ExtraContextMixin, SuccessUrlMixin, _FormView):
+class FormView(PermissionMixin, ExtraContextMixin, UrlMixin, _FormView):
     def form_invalid(self, form):
         messages.error(self.request, _('Please check the form for errors.'))
         return super(FormView, self).form_invalid(form)
@@ -240,7 +260,7 @@ class ModelFormMixin(object):
         form.save_m2m()
 
 
-class UpdateView(PermissionMixin, SuccessUrlMixin, ExtraContextMixin,
+class UpdateView(PermissionMixin, UrlMixin, ExtraContextMixin,
         ModelFormMixin, _UpdateView):
     def form_invalid(self, form):
         messages.error(self.request, _('Please check the form for errors.'))
@@ -250,18 +270,8 @@ class UpdateView(PermissionMixin, SuccessUrlMixin, ExtraContextMixin,
         return _('%s was successfully modified.') % html_strong(self.object)
 
 
-class CreateView(PermissionMixin, SuccessUrlMixin, ExtraContextMixin,
+class CreateView(PermissionMixin, UrlMixin, ExtraContextMixin,
         ModelFormMixin, _CreateView):
-    apply_url = None
-    success_url = None
-
-    def get_apply_url(self):
-        if self.apply_url:
-            return self.apply_url
-        else:
-            raise ImproperlyConfigured(
-                "No URL to redirect to. Provide a apply_url.")
-
     def form_invalid(self, form):
         messages.error(self.request, _('Please check the form for errors.'))
         return super(CreateView, self).form_invalid(form)
