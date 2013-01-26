@@ -34,6 +34,9 @@ from django.views.generic.edit import ModelFormMixin
 
 
 class MotionListView(ListView):
+    """
+    List all motion.
+    """
     permission_required = 'motion.can_see_motion'
     model = Motion
 
@@ -41,6 +44,9 @@ motion_list = MotionListView.as_view()
 
 
 class MotionDetailView(DetailView):
+    """
+    Show the details of one motion.
+    """
     permission_required = 'motion.can_see_motion'
     model = Motion
     template_name = 'motion/motion_detail.html'
@@ -49,19 +55,25 @@ class MotionDetailView(DetailView):
         object = super(MotionDetailView, self).get_object()
         version_id = self.kwargs.get('version_id', None)
         if version_id is not None:
-            object.default_version = int(version_id) -1
+            object.version = int(version_id) -1
         return object
 
 motion_detail = MotionDetailView.as_view()
 
 
 class MotionMixin(object):
+    """
+    Mixin to add save the version-data to the motion-object
+    """
     def manipulate_object(self, form):
         for attr in ['title', 'text', 'reason']:
             setattr(self.object, attr, form.cleaned_data[attr])
 
 
 class MotionCreateView(MotionMixin, CreateView):
+    """
+    Create a motion.
+    """
     permission_required = 'motion.can_create_motion'
     model = Motion
     form_class = MotionCreateForm
@@ -70,6 +82,9 @@ motion_create = MotionCreateView.as_view()
 
 
 class MotionUpdateView(MotionMixin, UpdateView):
+    """
+    Update a motion.
+    """
     model = Motion
     form_class = MotionUpdateForm
 

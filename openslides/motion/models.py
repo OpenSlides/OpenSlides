@@ -37,6 +37,12 @@ RELATION = (
 
 
 class RelatedPersonsManager(models.Manager):
+    """
+    Manager for MotionRelatedPersons.
+
+    Returns a custom manager with gives a specific queryset for one type of
+    persons.
+    """
     def __init__(self, relation, *args, **kwargs):
         super(RelatedPersonsManager, self).__init__(*args, **kwargs)
         for key, value in RELATION:
@@ -52,6 +58,15 @@ class RelatedPersonsManager(models.Manager):
 
 
 class MotionRelatedPersons(models.Model):
+    """
+    Saves the all persons related to a motion.
+
+    relation = 1: submitter
+    relation = 2: supporter
+
+    The custom manager submitter and supporter return a queryset with the
+    specific persons.
+    """
     submitter = RelatedPersonsManager(relation=1)
     supporter = RelatedPersonsManager(relation=2)
     objects = models.Manager()
@@ -62,6 +77,9 @@ class MotionRelatedPersons(models.Model):
 
 
 class Motion(SlideMixin, models.Model):
+    """
+    The Motion-Model.
+    """
     prefix = "motion"  # Rename this in the slide-system
 
     # TODO: Use this attribute for the default_version, if the permission system
@@ -93,13 +111,16 @@ class Motion(SlideMixin, models.Model):
 
     # TODO: Use transaction
     def save(self, *args, **kwargs):
+        """
+        Saves the motion. Create or update a motion_version object
+        """
         super(Motion, self).save(*args, **kwargs)
         new_data = False
         for attr in ['_title', '_text', '_reason']:
             if hasattr(self, attr):
                 new_data = True
                 break
-        need_new_version = True #  TODO: Do we need a new version (look in config)
+        need_new_version = True  # TODO: Do we need a new version (look in config)
         if hasattr(self, '_version') or (new_data and need_new_version):
             version = self.new_version
             del self._new_version
@@ -127,70 +148,114 @@ class Motion(SlideMixin, models.Model):
             return reverse('motion_delete', args=[str(self.id)])
 
     def get_title(self):
+        """
+        Get the title of the motion. The titel is taken from motion.version
+        """
         try:
             return self._title
         except AttributeError:
-            return self.default_version.title
+            return self.version.title
 
     def set_title(self, title):
+        """
+        Set the titel of the motion. The titel will me saved in motion.save()
+        """
         self._title = title
 
     title = property(get_title, set_title)
 
     def get_text(self):
+        """
+        Get the text of the motion. Simular to get_title()
+        """
         try:
             return self._text
         except AttributeError:
-            return self.default_version.text
+            return self.version.text
 
     def set_text(self, text):
+        """
+        Set the text of the motion. Simular to set_title()
+        """
         self._text = text
 
     text = property(get_text, set_text)
 
     def get_reason(self):
+        """
+        Get the reason of the motion. Simular to get_title()
+        """
         try:
             return self._reason
         except AttributeError:
-            return self.default_version.reason
+            return self.version.reason
 
     def set_reason(self, reason):
+        """
+        Set the reason of the motion. Simular to set_title()
+        """
         self._reason = reason
 
     reason = property(get_reason, set_reason)
 
     @property
+    def submitter(self):
+        """
+        Return a queryset with all submitter of this motion.
+        """
+        return MotionRelatedPersons.submitter.filter(motion=self)
+
+    @property
+    def supporter(self):
+        """
+        Returns a queryset with all supporter of this motion.
+        """
+        return MotionRelatedPersons.supporter.filter(motion=self)
+
+    @property
     def new_version(self):
+        """
+        On the first call, it creates a new version. On any later call, it
+        use the existing new version.
+
+        The new_version object will be deleted when it is saved into the db
+        """
         try:
             return self._new_version
         except AttributeError:
             self._new_version = MotionVersion(motion=self)
             return self._new_version
 
-    @property
-    def submitter(self):
-        return MotionRelatedPersons.submitter.filter(motion=self)
-
-    @property
-    def supporter(self):
-        return MotionRelatedPersons.supporter.filter(motion=self)
-
     def get_version(self, version_id):
+        """
+        Return a specific version from version_id
+        """
         # TODO: Check case, if version_id is not one of this motion
         return self.versions.get(pk=version_id)
 
 
-    def get_default_version(self):
+    def get_version(self):
+        """
+        Get the "active" version object. This version will be used to get the
+        data for this motion.
+        """
         try:
-            return self._default_version
+            return self._version
         except AttributeError:
             # TODO: choose right version via config
             return self.last_version
 
-    def set_default_version(self, version):
+    def set_version(self, version):
+        """
+        Set the "active" version object.
+
+        If version is None, the last_version will be used.
+        If version is a version object, this object will be used.
+        If version is Int, the N version of this motion will be used.
+        """
         if version is None:
             try:
-                del self._default_version
+                del self._version
             except AttributeError:
                 pass
         else:
@@ -199,12 +264,16 @@ class Motion(SlideMixin, models.Model):
             elif type(version) is not MotionVersion:
                 raise ValueError('The argument \'version\' has to be int or '
                                  'MotionVersion, not %s' % type(version))
-            self._default_version = version
+            # TODO: Test, that the version is one of this motion
+            self._version = version
 
-    default_version = property(get_default_version, set_default_version)
+    version = property(get_version, set_version)
 
     @property
     def last_version(self):
+        """
+        Get the newest version of the motion
+        """
         # TODO: Fix the case, that the motion has no Version
         try:
             return self.versions.order_by('id').reverse()[0]
