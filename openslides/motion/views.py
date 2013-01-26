@@ -30,7 +30,7 @@ from openslides.projector.projector import Widget, SLIDE
 from openslides.config.models import config
 from .models import Motion, MotionSubmitter, MotionSupporter
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
-                    MotionTrivialChangesMixin, ConfigForm)
+                    MotionCreateNewVersionMixin, ConfigForm)
 
 class MotionListView(ListView):
     """
@@ -72,6 +72,12 @@ class MotionMixin(object):
         for attr in ['title', 'text', 'reason']:
             setattr(self.object, attr, form.cleaned_data[attr])
 
+        try:
+            if form.cleaned_data['new_version']:
+                self.object.new_version
+        except KeyError:
+            pass
+
     def post_save(self, form):
         super(MotionMixin, self).post_save(form)
         # TODO: only delete and save neccessary submitters and supporter
@@ -90,8 +96,8 @@ class MotionMixin(object):
             form_classes.append(MotionSubmitterMixin)
             if config['motion_min_supporters'] > 0:
                 form_classes.append(MotionSupporterMixin)
-        if config['motion_allow_trivial_change']:
-            form_classes.append(MotionTrivialChangesMixin)
+        if config['motion_create_new_version'] == 'ASK_USER':
+            form_classes.append(MotionCreateNewVersionMixin)
         return type('MotionForm', tuple(form_classes), {})
 
 
@@ -129,7 +135,7 @@ class Config(FormView):
             'motion_pdf_ballot_papers_number': config['motion_pdf_ballot_papers_number'],
             'motion_pdf_title': config['motion_pdf_title'],
             'motion_pdf_preamble': config['motion_pdf_preamble'],
-            'motion_allow_trivial_change': config['motion_allow_trivial_change'],
+            'motion_create_new_version': config['motion_create_new_version'],
         }
 
     def form_valid(self, form):
@@ -139,7 +145,7 @@ class Config(FormView):
         config['motion_pdf_ballot_papers_number'] = form.cleaned_data['motion_pdf_ballot_papers_number']
         config['motion_pdf_title'] = form.cleaned_data['motion_pdf_title']
         config['motion_pdf_preamble'] = form.cleaned_data['motion_pdf_preamble']
-        config['motion_allow_trivial_change'] = form.cleaned_data['motion_allow_trivial_change']
+        config['motion_create_new_version'] = form.cleaned_data['motion_create_new_version']
         messages.success(self.request, _('Motion settings successfully saved.'))
         return super(Config, self).form_valid(form)
 

@@ -94,8 +94,8 @@ class Motion(SlideMixin, models.Model):
         else:
             new_data = False
 
-        need_new_version = True  # TODO: Do we need a new version (look in config)
-        if hasattr(self, '_version') or (new_data and need_new_version):
+        need_new_version = config['motion_create_new_version'] == 'ALLWASY_CREATE_NEW_VERSION'
+        if hasattr(self, '_new_version') or (new_data and need_new_version):
             version = self.new_version
             del self._new_version
             version.motion = self  # Test if this line is realy neccessary.

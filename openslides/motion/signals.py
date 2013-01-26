@@ -24,5 +24,5 @@ def default_config(sender, key, **kwargs):
         'motion_pdf_ballot_papers_number': '8',
         'motion_pdf_title': _('Motions'),
         'motion_pdf_preamble': '',
-        'motion_allow_trivial_change': False,
+        'motion_create_new_version': 'ALLWASY_CREATE_NEW_VERSION',
     }.get(key)

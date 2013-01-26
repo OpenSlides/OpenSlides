@@ -61,9 +61,9 @@ class MotionSupporterMixin(forms.ModelForm):
         super(MotionSupporterMixin, self).__init__(*args, **kwargs)
 
 
-class MotionTrivialChangesMixin(forms.ModelForm):
-    trivial_change = forms.BooleanField(
-        required=False, label=_("Trivial change"),
+class MotionCreateNewVersionMixin(forms.ModelForm):
+    new_version = forms.BooleanField(
+        required=False, label=_("Create new version"), initial=True,
         help_text=_("Trivial changes don't create a new version."))
 
 
@@ -108,9 +108,12 @@ class ConfigForm(forms.Form, CssClassMixin):
         label=_("Preamble text for PDF document (all motions)")
     )
 
-    motion_allow_trivial_change = forms.BooleanField(
-        label=_("Allow trivial changes"),
-        help_text=_('Warning: Trivial changes undermine the motions '
-                    'autorisation system.'),
+    motion_create_new_version = forms.ChoiceField(
+        widget=forms.Select(),
+        label=_("Create new versions"),
         required=False,
+        choices=(
+            ('ALLWASY_CREATE_NEW_VERSION', _('create allways a new versions')),
+            ('NEVER_CREATE_NEW_VERSION', _('create never a new version')),
+            ('ASK_USER', _('Let the user choose if he wants to create a new version')))
     )
