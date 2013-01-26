@@ -22,7 +22,7 @@ from django.http import Http404
 from openslides.utils.pdf import stylesheet
 from openslides.utils.views import (
     TemplateView, RedirectView, UpdateView, CreateView, DeleteView, PDFView,
-    DetailView, ListView)
+    DetailView, ListView, FormView)
 from openslides.utils.template import Tab
 from openslides.utils.utils import html_strong
 from openslides.projector.api import get_active_slide
@@ -30,7 +30,7 @@ from openslides.projector.projector import Widget, SLIDE
 from openslides.config.models import config
 from .models import Motion, MotionSubmitter
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
-                    MotionTrivialChangesMixin)
+                    MotionTrivialChangesMixin, ConfigForm)
 
 class MotionListView(ListView):
     """
@@ -109,6 +109,35 @@ class MotionUpdateView(MotionMixin, UpdateView):
     model = Motion
 
 motion_edit = MotionUpdateView.as_view()
+
+
+class Config(FormView):
+    permission_required = 'config.can_manage_config'
+    form_class = ConfigForm
+    template_name = 'motion/config.html'
+    success_url_name = 'config_motion'
+
+    def get_initial(self):
+        return {
+            'motion_min_supporters': config['motion_min_supporters'],
+            'motion_preamble': config['motion_preamble'],
+            'motion_pdf_ballot_papers_selection': config['motion_pdf_ballot_papers_selection'],
+            'motion_pdf_ballot_papers_number': config['motion_pdf_ballot_papers_number'],
+            'motion_pdf_title': config['motion_pdf_title'],
+            'motion_pdf_preamble': config['motion_pdf_preamble'],
+            'motion_allow_trivial_change': config['motion_allow_trivial_change'],
+        }
+
+    def form_valid(self, form):
+        config['motion_min_supporters'] = form.cleaned_data['motion_min_supporters']
+        config['motion_preamble'] = form.cleaned_data['motion_preamble']
+        config['motion_pdf_ballot_papers_selection'] = form.cleaned_data['motion_pdf_ballot_papers_selection']
+        config['motion_pdf_ballot_papers_number'] = form.cleaned_data['motion_pdf_ballot_papers_number']
+        config['motion_pdf_title'] = form.cleaned_data['motion_pdf_title']
+        config['motion_pdf_preamble'] = form.cleaned_data['motion_pdf_preamble']
+        config['motion_allow_trivial_change'] = form.cleaned_data['motion_allow_trivial_change']
+        messages.success(self.request, _('Motion settings successfully saved.'))
+        return super(Config, self).form_valid(form)
 
 
 def register_tab(request):

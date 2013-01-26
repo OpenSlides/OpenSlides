@@ -127,11 +127,11 @@ class UrlMixin(object):
                     "No URL to redirect to. Provide an apply_url_name.")
 
     def get_success_url(self):
-        messages.success(self.request, self.get_success_message())
         if 'apply' in self.request.POST:
             return self.get_apply_url()
+
         if self.success_url_name:
-            return reverse(self.success_url)
+            return reverse(self.success_url_name)
         elif self.success_url:
             return self.success_url
         else:

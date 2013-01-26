@@ -17,7 +17,7 @@ from django.db import models
 from django.db.models import Max
 from django.dispatch import receiver
 from django.utils.translation import pgettext
-from django.utils.translation import ugettext_lazy as _, ugettext_noop, ugettext
+from django.utils.translation import ugettext_lazy, ugettext_noop, ugettext as _
 
 from openslides.utils.utils import _propper_unicode
 from openslides.utils.person import PersonField
@@ -242,13 +242,13 @@ class Motion(SlideMixin, models.Model):
 
 
 class MotionVersion(models.Model):
-    title = models.CharField(max_length=255, verbose_name=_("Title"))
+    title = models.CharField(max_length=255, verbose_name=ugettext_lazy("Title"))
     text = models.TextField(verbose_name=_("Text"))
-    reason = models.TextField(null=True, blank=True, verbose_name=_("Reason"))
+    reason = models.TextField(null=True, blank=True, verbose_name=ugettext_lazy("Reason"))
     rejected = models.BooleanField(default=False)
     creation_time = models.DateTimeField(auto_now=True)
     motion = models.ForeignKey(Motion, related_name='versions')
-    identifier = models.CharField(max_length=255, verbose_name=_("Version identifier"))
+    identifier = models.CharField(max_length=255, verbose_name=ugettext_lazy("Version identifier"))
     note = models.TextField(null=True, blank=True)
 
     def __unicode__(self):
@@ -268,8 +268,8 @@ class MotionVersion(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=255, verbose_name=_("Category name"))
-    prefix = models.CharField(max_length=32, verbose_name=_("Category prefix"))
+    name = models.CharField(max_length=255, verbose_name=ugettext_lazy("Category name"))
+    prefix = models.CharField(max_length=32, verbose_name=ugettext_lazy("Category prefix"))
 
     def __unicode__(self):
         return self.name
