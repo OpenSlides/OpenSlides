@@ -28,7 +28,7 @@ from openslides.utils.utils import html_strong
 from openslides.projector.api import get_active_slide
 from openslides.projector.projector import Widget, SLIDE
 from openslides.config.models import config
-from .models import Motion, MotionSubmitter
+from .models import Motion, MotionSubmitter, MotionSupporter
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
                     MotionTrivialChangesMixin, ConfigForm)
 
@@ -74,20 +74,24 @@ class MotionMixin(object):
 
     def post_save(self, form):
         super(MotionMixin, self).post_save(form)
-        # TODO: only delete and save neccessary submitters
+        # TODO: only delete and save neccessary submitters and supporter
         self.object.submitter.all().delete()
+        self.object.supporter.all().delete()
         MotionSubmitter.objects.bulk_create(
             [MotionSubmitter(motion=self.object, person=person)
              for person in form.cleaned_data['submitter']])
+        MotionSupporter.objects.bulk_create(
+            [MotionSupporter(motion=self.object, person=person)
+             for person in form.cleaned_data['supporter']])
 
     def get_form_class(self):
         form_classes = [BaseMotionForm]
-        if config['motion_allow_trivial_change']:
-            form_classes.append(MotionTrivialChangesMixin)
         if self.request.user.has_perm('motion.can_manage_motion'):
             form_classes.append(MotionSubmitterMixin)
             if config['motion_min_supporters'] > 0:
                 form_classes.append(MotionSupporterMixin)
+        if config['motion_allow_trivial_change']:
+            form_classes.append(MotionTrivialChangesMixin)
         return type('MotionForm', tuple(form_classes), {})
 
 

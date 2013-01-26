@@ -11,6 +11,7 @@
 <p>Text: {{ motion.text }}</p>
 <p>Reason: {{ motion.reason }}</p>
 <p>Submitter: {% for submitter in motion.submitter.all %}{{ submitter.person }} {% endfor %}</p>
+<p>Supporter: {% for supporter in motion.supporter.all %}{{ supporter.person }} {% endfor %}</p>
 
 <ol>
 {% for motion_version in motion.versions.all %}

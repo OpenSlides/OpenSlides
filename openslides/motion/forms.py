@@ -47,7 +47,6 @@ class MotionSubmitterMixin(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         if self.motion is not None:
             submitter = [submitter.person.person_id for submitter in self.motion.submitter.all()]
-            print submitter
             self.initial['submitter'] = submitter
         super(MotionSubmitterMixin, self).__init__(*args, **kwargs)
 
@@ -55,8 +54,14 @@ class MotionSubmitterMixin(forms.ModelForm):
 class MotionSupporterMixin(forms.ModelForm):
     supporter = MultiplePersonFormField(required=False, label=_("Supporters"))
 
+    def __init__(self, *args, **kwargs):
+        if self.motion is not None:
+            supporter = [supporter.person.person_id for supporter in self.motion.supporter.all()]
+            self.initial['supporter'] = supporter
+        super(MotionSupporterMixin, self).__init__(*args, **kwargs)
 
-class MotionTrivialChangesMixin(object):
+
+class MotionTrivialChangesMixin(forms.ModelForm):
     trivial_change = forms.BooleanField(
         required=False, label=_("Trivial change"),
         help_text=_("Trivial changes don't create a new version."))
