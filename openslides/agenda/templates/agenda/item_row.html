@@ -27,6 +27,10 @@
     <td>
         {{ item.comment|first_line }}
     </td>
+    <td>
+    {{ item.duration|time:"H:i" }}
+    </td>
+
     {% endif %}
     {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
     <td>

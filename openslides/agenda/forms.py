@@ -27,6 +27,8 @@ class ItemForm(forms.ModelForm, CssClassMixin):
     parent = TreeNodeChoiceField(
         queryset=Item.objects.all(), label=_("Parent item"), required=False)
 
+    duration = forms.TimeField(widget=forms.TimeInput(format='%H:%M') , input_formats=('%H:%M', '%H %M', '%M'), required=False)
+
     class Meta:
         model = Item
         exclude = ('closed', 'weight', 'related_sid')

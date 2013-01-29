@@ -64,6 +64,9 @@
                 {% if perms.agenda.can_manage_agenda %}
                     <th width="200">{% trans "Comment" %}</th>
                 {% endif %}
+                {% if perms.agenda.can_manage_agenda %}
+                    <th width="50">{% trans "Duration" %}</th>
+                {% endif %}
                 {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
                     <th width="50">{% trans "Actions" %}</th>
                 {% endif %}
@@ -78,6 +81,7 @@
                 </td>
                 {% if perms.agenda.can_manage_agenda %}
                 <td></td>
+                <td>{{ duration|time:"H:i" }}</td>
                 {% endif %}
                 {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
                 <td>
@@ -99,7 +103,7 @@
             {% endfor %}
         {% else %}
             <tr>
-                <td colspan="4"><i>{% trans "No items available." %}</i></td>
+                <td colspan="5"><i>{% trans "No items available." %}</i></td>
             </tr>
         {% endif %}
         </table>

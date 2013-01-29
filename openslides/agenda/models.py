@@ -46,6 +46,8 @@ class Item(MPTTModel, SlideMixin):
     type = models.CharField(max_length=3, choices=ITEM_TYPE,
                             default='agd', verbose_name=_("Type"))
 
+    duration = models.TimeField(blank=True, null=True, verbose_name=_('Duration'));
+
     related_sid = models.CharField(null=True, blank=True, max_length=63)
 
     def get_related_slide(self):
@@ -174,6 +176,7 @@ class Item(MPTTModel, SlideMixin):
     def __unicode__(self):
         return self.get_title()
 
+
     class Meta:
         permissions = (
             ('can_see_agenda', ugettext_noop("Can see agenda")),
@@ -183,6 +186,8 @@ class Item(MPTTModel, SlideMixin):
 
     class MPTTMeta:
         order_insertion_by = ['weight']
+
+
 
 
 register_slidemodel(Item, control_template='agenda/control_item.html')

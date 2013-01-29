@@ -28,6 +28,7 @@ from openslides.projector.api import get_active_slide
 from openslides.projector.projector import Widget, SLIDE
 from .models import Item
 from .forms import ItemOrderForm, ItemForm
+from datetime import datetime, timedelta
 
 
 class Overview(TemplateView):
@@ -37,6 +38,8 @@ class Overview(TemplateView):
     permission_required = 'agenda.can_see_agenda'
     template_name = 'agenda/overview.html'
 
+
+
     def get_context_data(self, **kwargs):
         context = super(Overview, self).get_context_data(**kwargs)
 
@@ -45,9 +48,15 @@ class Overview(TemplateView):
         else:
             items = Item.objects.filter(type__exact = 'agd')
 
+        duration = timedelta()
+        for agenda_item in Item.objects.filter(closed=False):
+            if agenda_item.duration is not None:
+                duration += timedelta(hours=agenda_item.duration.hour, minutes=agenda_item.duration.minute)
+
         context.update({
             'items': items,
             'active_sid': get_active_slide(only_sid=True),
+            'duration': datetime.strptime(str(duration), '%H:%M:%S'),
         })
         return context
 
@@ -99,6 +108,7 @@ class SetClosed(RedirectView, SingleObjectMixin):
     allow_ajax = True
     url = 'item_overview'
     model = Item
+
 
     def get_ajax_context(self, **kwargs):
         context = super(SetClosed, self).get_ajax_context(**kwargs)
