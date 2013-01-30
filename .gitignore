@@ -2,6 +2,7 @@
 *.pyc
 *.swp
 *~
+.idea/*
 settings.py
 database.sqlite
 
