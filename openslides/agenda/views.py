@@ -18,10 +18,12 @@ from django.db.models import Model
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.views.generic.detail import SingleObjectMixin
 
+from openslides.config.models import config
+from openslides.agenda.forms import ConfigForm
 from openslides.utils.pdf import stylesheet
 from openslides.utils.views import (
     TemplateView, RedirectView, UpdateView, CreateView, DeleteView, PDFView,
-    DetailView)
+    DetailView, FormView)
 from openslides.utils.template import Tab
 from openslides.utils.utils import html_strong
 from openslides.projector.api import get_active_slide
@@ -53,10 +55,20 @@ class Overview(TemplateView):
             if agenda_item.duration is not None:
                 duration += timedelta(hours=agenda_item.duration.hour, minutes=agenda_item.duration.minute)
 
+        start =  config['agenda_start_event_time']
+        if start is None:
+            start = u'0:00:00'
+
+        start = datetime.strptime(start, '%H:%M:%S')
+        end =  start + duration
+        duration = datetime.strptime(str(duration), '%H:%M:%S')
+
         context.update({
             'items': items,
             'active_sid': get_active_slide(only_sid=True),
-            'duration': datetime.strptime(str(duration), '%H:%M:%S'),
+            'duration': duration,
+            'start': start,
+            'end': end,
         })
         return context
 
@@ -218,6 +230,23 @@ class AgendaPDF(PDFView):
             else:
                 story.append(Paragraph(item.get_title(), stylesheet['Item']))
 
+class Config(FormView):
+    """
+    Config page for the agenda app.
+    """
+    permission_required = 'config.can_manage_config'
+    form_class = ConfigForm
+    template_name = 'agenda/config.html'
+
+    def get_initial(self):
+        return {
+            'agenda_start_event_time': config['agenda_start_event_time'],
+        }
+
+    def form_valid(self, form):
+        config['agenda_start_event_time'] = form.cleaned_data['agenda_start_event_time']
+        messages.success(self.request, _('Agenda settings successfully saved.'))
+        return super(Config, self).form_valid(form)
 
 def register_tab(request):
     """

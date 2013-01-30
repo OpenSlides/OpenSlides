@@ -22,3 +22,9 @@
 table#menu-overview {
     white-space: nowrap;
 }
+
+table#agendatime {
+    float: right;
+    width: 15%;
+    margin-bottom: 1em;
+}

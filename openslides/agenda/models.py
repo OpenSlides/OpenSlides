@@ -46,7 +46,7 @@ class Item(MPTTModel, SlideMixin):
     type = models.CharField(max_length=3, choices=ITEM_TYPE,
                             default='agd', verbose_name=_("Type"))
 
-    duration = models.TimeField(blank=True, null=True, verbose_name=_('Duration'));
+    duration = models.TimeField(blank=True, null=True, verbose_name=_("Duration (hh:mm)"));
 
     related_sid = models.CharField(null=True, blank=True, max_length=63)
 

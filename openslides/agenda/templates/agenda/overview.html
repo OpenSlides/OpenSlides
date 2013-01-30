@@ -50,7 +50,16 @@
        {% endif %}
 
         <h1>{% trans "Agenda" %}</h1>
-
+       <table id="agendatime">
+           <tr>
+               <td>{% trans "Start of event" %}</td>
+               <td>{{ start|time:"H:i" }}</td>
+           </tr>
+           <tr>
+               <td>{% trans "Estimated end" %}</td>
+               <td>{{ end|time:"H:i" }}</td>
+           </tr>
+       </table>
         <p>
         {% trans "Filter" %}:
         <input type="checkbox" id="hide_closed_items"> {% trans "Hide closed items" %}

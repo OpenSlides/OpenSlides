@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-28 23:58+0100\n"
+"POT-Creation-Date: 2013-01-30 17:20+0100\n"
 "PO-Revision-Date: 2012-07-28 11:07+0200\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: support@openslides.de\n"
@@ -33,6 +33,10 @@ msgstr "Französisch"
 msgid "Parent item"
 msgstr "Elternelement"
 
+#: agenda/forms.py:64
+msgid "Begin of event (hh:mm)"
+msgstr "Beginn der Veranstaltung (ss:mm)"
+
 #: agenda/models.py:35
 msgid "Agenda item"
 msgstr "Tagesordnungseintrag"
@@ -52,7 +56,7 @@ msgstr "Titel"
 msgid "Text"
 msgstr "Text"
 
-#: agenda/models.py:41 agenda/templates/agenda/overview.html:65
+#: agenda/models.py:41 agenda/templates/agenda/overview.html:74
 #: agenda/templates/agenda/view.html:13 participant/models.py:60
 #: participant/templates/participant/overview.html:72
 #: participant/templates/participant/user_detail.html:45
@@ -63,7 +67,7 @@ msgstr "Kommentar"
 msgid "Closed"
 msgstr "Abgeschlossen"
 
-#: agenda/models.py:43 agenda/templates/agenda/overview.html:74
+#: agenda/models.py:43 agenda/templates/agenda/overview.html:83
 #: projector/models.py:31
 msgid "Weight"
 msgstr "Gewichtung"
@@ -75,9 +79,9 @@ msgstr "Gewichtung"
 msgid "Type"
 msgstr "Typ"
 
-#: agenda/models.py:49 agenda/templates/agenda/overview.html:68
-msgid "Duration"
-msgstr "Dauer"
+#: agenda/models.py:49
+msgid "Duration (hh:mm)"
+msgstr "Dauer (ss:mm)"
 
 #: agenda/models.py:182
 msgid "Can see agenda"
@@ -91,48 +95,52 @@ msgstr "Darf die Tagesordung verwalten"
 msgid "Can see orga items"
 msgstr "Darf Organisationspunkte sehen"
 
-#: agenda/models.py:194 agenda/slides.py:20 agenda/views.py:207
-#: agenda/views.py:208 agenda/views.py:228 agenda/views.py:242
+#: agenda/models.py:194 agenda/slides.py:20 agenda/views.py:219
+#: agenda/views.py:220 agenda/views.py:257 agenda/views.py:271
 #: agenda/templates/agenda/base_agenda.html:10
 #: agenda/templates/agenda/overview.html:8
 #: agenda/templates/agenda/overview.html:52
-#: agenda/templates/agenda/overview.html:80
+#: agenda/templates/agenda/overview.html:89
 #: agenda/templates/projector/AgendaSummary.html:6
 #: agenda/templates/projector/AgendaSummary.html:10
 msgid "Agenda"
 msgstr "Tagesordnung"
 
-#: agenda/views.py:69
+#: agenda/views.py:81
 msgid "You are not authorized to manage the agenda."
 msgstr "Sie sind nicht berechtigt die Tagesordnung zu ändern."
 
-#: agenda/views.py:85
+#: agenda/views.py:97
 msgid "Errors when reordering of the agenda"
 msgstr "Fehler beim Neusortieren der Tagesordnung"
 
-#: agenda/views.py:147
+#: agenda/views.py:159
 #, python-format
 msgid "Item %s was successfully modified."
 msgstr "Eintrag %s wurde erfolgreich bearbeitet."
 
-#: agenda/views.py:168
+#: agenda/views.py:180
 #, python-format
 msgid "Item %s was successfully created."
 msgstr "Eintrag %s wurde erfolgreich angelegt."
 
-#: agenda/views.py:185
+#: agenda/views.py:197
 msgid "Yes, with all child items."
 msgstr "Ja, mit allen Kindelementen."
 
-#: agenda/views.py:193
+#: agenda/views.py:205
 #, python-format
 msgid "Item %s and his children were successfully deleted."
 msgstr "Eintrag %s und seine Kindelemente wurde erfolgreich gelöscht."
 
-#: agenda/views.py:198
+#: agenda/views.py:210
 #, python-format
 msgid "Item %s was successfully deleted."
 msgstr "Eintrag %s wurde erfolgreich gelöscht."
+
+#: agenda/views.py:248
+msgid "Agenda settings successfully saved."
+msgstr "Tagesordnung Einstellungen erfolgreich gespeichert."
 
 #: agenda/templates/agenda/base_agenda.html:12
 msgid "All items"
@@ -236,7 +244,7 @@ msgid "Item closed"
 msgstr "Eintrag erledigt"
 
 #: agenda/templates/agenda/item_row.html:39
-#: agenda/templates/agenda/overview.html:90
+#: agenda/templates/agenda/overview.html:99
 msgid "Activate item"
 msgstr "Eintrag projizieren"
 
@@ -272,31 +280,43 @@ msgid "No"
 msgstr "Nein"
 
 #: agenda/templates/agenda/overview.html:55
+msgid "Start of event"
+msgstr "Beginn der Veranstaltung"
+
+#: agenda/templates/agenda/overview.html:59
+msgid "Estimated end"
+msgstr "Voraussichtliches Ende"
+
+#: agenda/templates/agenda/overview.html:64
 #: assignment/templates/assignment/overview.html:12
 #: motion/templates/motion/overview.html:12
 #: participant/templates/participant/overview.html:22
 msgid "Filter"
 msgstr "Filter"
 
-#: agenda/templates/agenda/overview.html:56
+#: agenda/templates/agenda/overview.html:65
 msgid "Hide closed items"
 msgstr "Verstecke abgeschlossene Einträge"
 
-#: agenda/templates/agenda/overview.html:59
+#: agenda/templates/agenda/overview.html:68
 msgid "item"
 msgid_plural "items"
 msgstr[0] "Eintrag"
 msgstr[1] "Einträge"
 
-#: agenda/templates/agenda/overview.html:62
+#: agenda/templates/agenda/overview.html:71
 msgid "Done"
 msgstr "Erledigt"
 
-#: agenda/templates/agenda/overview.html:63
+#: agenda/templates/agenda/overview.html:72
 msgid "Item"
 msgstr "Eintrag"
 
-#: agenda/templates/agenda/overview.html:71
+#: agenda/templates/agenda/overview.html:77
+msgid "Duration"
+msgstr "Dauer"
+
+#: agenda/templates/agenda/overview.html:80
 #: assignment/templates/assignment/overview.html:28
 #: motion/templates/motion/overview.html:43
 #: participant/templates/participant/group_overview.html:14
@@ -304,7 +324,7 @@ msgstr "Eintrag"
 msgid "Actions"
 msgstr "Aktionen"
 
-#: agenda/templates/agenda/overview.html:106
+#: agenda/templates/agenda/overview.html:115
 #: agenda/templates/agenda/widget.html:46
 #: projector/templates/projector/custom_slide_widget.html:36
 msgid "No items available."

@@ -27,7 +27,12 @@ class ItemForm(forms.ModelForm, CssClassMixin):
     parent = TreeNodeChoiceField(
         queryset=Item.objects.all(), label=_("Parent item"), required=False)
 
-    duration = forms.TimeField(widget=forms.TimeInput(format='%H:%M') , input_formats=('%H:%M', '%H %M', '%M'), required=False)
+    duration = forms.TimeField(
+        widget=forms.TimeInput(format='%H:%M') ,
+        input_formats=('%H:%M', '%H %M'),
+        required=False,
+        label=_("Duration (hh:mm)")
+    )
 
     class Meta:
         model = Item
@@ -54,4 +59,12 @@ class ItemOrderForm(forms.Form, CssClassMixin):
     )
     parent = forms.IntegerField(
         widget=forms.HiddenInput(attrs={'class': 'menu-plid'}),
+    )
+
+class ConfigForm(forms.Form, CssClassMixin):
+    agenda_start_event_time = forms.TimeField(
+        widget=forms.TimeInput(format='%H:%M') ,
+        input_formats=('%H:%M', '%H:%M:%S'),
+        required=False,
+        label=_("Begin of event (hh:mm)"),
     )
