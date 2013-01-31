@@ -50,9 +50,11 @@ class Overview(TemplateView):
             items = Item.objects.filter(type__exact = 'agd')
 
         duration = timedelta()
-        for agenda_item in Item.objects.filter(closed=False):
-            if agenda_item.duration is not None:
-                duration += timedelta(hours=agenda_item.duration.hour, minutes=agenda_item.duration.minute)
+
+        for item in items:
+            if not item.closed and item.duration is not None:
+                duration += timedelta(hours=item.duration.hour,
+                                      minutes=item.duration.minute)
 
         start =  config['agenda_start_event_time']
         if start is None:
