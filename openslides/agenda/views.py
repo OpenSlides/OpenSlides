@@ -41,7 +41,6 @@ class Overview(TemplateView):
     template_name = 'agenda/overview.html'
 
 
-
     def get_context_data(self, **kwargs):
         context = super(Overview, self).get_context_data(**kwargs)
 
@@ -120,7 +119,6 @@ class SetClosed(RedirectView, SingleObjectMixin):
     allow_ajax = True
     url = 'item_overview'
     model = Item
-
 
     def get_ajax_context(self, **kwargs):
         context = super(SetClosed, self).get_ajax_context(**kwargs)

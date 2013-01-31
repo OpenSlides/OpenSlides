@@ -188,7 +188,5 @@ class Item(MPTTModel, SlideMixin):
         order_insertion_by = ['weight']
 
 
-
-
 register_slidemodel(Item, control_template='agenda/control_item.html')
 register_slidefunc('agenda', agenda_show, weight=-1, name=_('Agenda'))
