@@ -49,17 +49,20 @@
        </div>
        {% endif %}
 
-        <h1>{% trans "Agenda" %}</h1>
-       <table id="agendatime">
+        <h1>{% trans "Agenda" %}
+        {% if perms.agenda.can_see_orga_items %}
+        <table id="agendatime">
            <tr>
-               <td>{% trans "Start of event" %}</td>
+               <td>{% trans "Start of event" %}:</td>
                <td>{{ start|time:"H:i" }}</td>
            </tr>
            <tr>
-               <td>{% trans "Estimated end" %}</td>
+               <td>{% trans "Estimated end" %}:</td>
                <td>{{ end|time:"H:i" }}</td>
            </tr>
-       </table>
+        </table>
+        {% endif %}
+        </h1>
         <p>
         {% trans "Filter" %}:
         <input type="checkbox" id="hide_closed_items"> {% trans "Hide closed items" %}
@@ -73,7 +76,7 @@
                 {% if perms.agenda.can_manage_agenda %}
                     <th width="200">{% trans "Comment" %}</th>
                 {% endif %}
-                {% if perms.agenda.can_manage_agenda %}
+                {% if perms.agenda.can_see_orga_items %}
                     <th width="50">{% trans "Duration" %}</th>
                 {% endif %}
                 {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
@@ -90,7 +93,9 @@
                 </td>
                 {% if perms.agenda.can_manage_agenda %}
                 <td></td>
-                <td>{{ duration|time:"H:i" }}</td>
+                {% endif %}
+                {% if perms.agenda.can_see_orga_items %}
+                <td>{{duration|time:"H:i"}}h</td>
                 {% endif %}
                 {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
                 <td>
