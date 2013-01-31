@@ -41,7 +41,7 @@
         {% for name, widget in widgets.items %}
             {% if widget.default_column == 2 %}
                 <div class="widget" id="widget_{{ widget.get_name }}">
-                    <div class="widget-header"><i class="icon-star"></i>
+                    <div class="widget-header"><i class="{% if widget %}icon-{{widget.name}}{% else %}icon-star{% endif %}"></i>
                         <h3>{% trans widget.get_title %}<h3>
                     </div>
                     <div class="widget-content">

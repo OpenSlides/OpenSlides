@@ -2,21 +2,10 @@
 
 {% load i18n %}
 
-{% block title %}{{ block.super }} – {% trans "Personal Settings" %}{% endblock %}
+{% block title %}{{ block.super }} – {% trans "Edit profile" %}{% endblock %}
 
-<<<<<<< .merge_file_gQQrGK
-=======
-{% block submenu %}
-    <h4 class="sectiontitle">{% trans "User Settings" %}</h4>
-    <ul>
-        <li class="selected"><a href="{% url 'user_settings' %}">{% trans "Personal Settings" %}</a></li>
-        <li><a href="{% url 'password_change' %}">{% trans "Password Settings" %}</a></li>
-    </ul>
-{% endblock %}
-
->>>>>>> .merge_file_n8pEk9
 {% block content %}
-    <h1>{% trans "Personal Settings" %}</h1>
+    <h1>{% trans "Edit profile" %}</h1>
 
     <form action="" method="post">{% csrf_token %}
         {% include "form.html" %}

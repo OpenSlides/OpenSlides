@@ -32,6 +32,9 @@ body {
     font-size: 20px;
     color: #999999;
 }
+footer {
+    margin-bottom: 20px;
+}
 
 /* Headings and Links */
 h1 {
@@ -79,7 +82,7 @@ a:hover {
 
 
 /** Utils **/
-tr.itemdoneline td, li.itemdoneline {
+tr.offline td, li.offline {
     background-color: #EAEAEA !important;
 }
 tr.activeline td, li.activeline {
@@ -96,6 +99,12 @@ tr.total td {
 }
 .nobr {
     white-space: nowrap;
+}
+.right {
+    float: right;
+}
+.indentation {
+    margin-left: 12px;
 }
 /* show optional column */
 .optional {
@@ -121,6 +130,9 @@ textarea {
 }
 form .required label:after {
     content: " *";
+}
+legend + .control-group {
+    margin-top: 0px !important;
 }
 
 
@@ -213,7 +225,13 @@ form .required label:after {
     background-position: 0 -24px;
 }
 .icon-agenda {
-    background-position: -264px 0;
+/*    background-position: -264px 0;*/
+    background-position: 0;
+    background-image: url("../img/glyphicons_045_calendar.png");
+}
+.leftmenu ul li.active a span.ico i.icon-agenda {
+    background-position: 0;
+    background-image: url("../img/glyphicons_045_calendar_white.png");
 }
 .icon-motion, .icon-motions {
     background-position: -24px -24px;
@@ -227,17 +245,51 @@ form .required label:after {
 .icon-config {
     background-position: -360px -144px;
 }
+.icon-welcome {
+    background-position: 0 -24px;
+}
+.icon-live_view {
+    background-position: -432px -48px;
+}
+.icon-overlays {
+    background-position: -120px 0px;
+}
+.icon-custom_slide {
+    background-position: -120px 0px;
+}
+
+
 
 /** More glyphicons free icons **/
-.custom-icons {
+.icon-on, .icon-checked-new {
+    background-image: url("../img/glyphicons_152_check.png");
     background-position: 0;
 }
-.icon-check_new, .close_link.closed i {
-    background-image: url("../img/glyphicons_152_check.png");
-}
-.icon-uncheck_new, .close_link.open i {
+.status_link .icon-off, .icon-unchecked-new {
     background-image: url("../img/glyphicons_153_unchecked.png");
+    background-position: 0;
 }
+.icon-summary {
+    background-image: url("../img/glyphicons_154_more_windows.png");
+    background-position: 0;
+}
+.icon-summary.icon-white {
+    background-image: url("../img/glyphicons_154_more_windows_white.png");
+    background-position: 0;
+}
+.icon-login {
+    background-image: url("../img/glyphicons_044_keys.png");
+    background-position: 0;
+}
+.icon-group {
+    background-image: url("../img/glyphicons_043_group.png");
+    background-position: 0;
+}
+.icon-import {
+    background-image: url("../img/glyphicons_358_file_import.png");
+    background-position: 0;
+}
+
 
 /** Responsive **/
 @media (max-width: 767px) {

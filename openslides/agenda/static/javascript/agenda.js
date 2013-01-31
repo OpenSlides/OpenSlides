@@ -20,7 +20,7 @@ function hideClosedSlides(hide) {
     if (hide) {
         $('#hidelink').attr('title', 'show');
         $('#hidelink').removeClass('hide').addClass('show');
-        $('.close_link.closed').parent().parent().each(function() {
+        $('.close_link .icon-checked-new').parent().parent().parent().each(function() {
             hideLine($(this));
         });
         hidden = $('#menu-overview tr:hidden').size();
@@ -35,7 +35,8 @@ function hideClosedSlides(hide) {
 }
 
 $(function() {
-    $('.close_link a').click(function(event) {
+    // change participant status (on/off)
+    $('.close_link').click(function(event) {
         event.preventDefault();
         var link = $(this);
         $.ajax({
@@ -44,15 +45,15 @@ $(function() {
             dataType: 'json',
             success: function(data) {
                 if (data.closed) {
-                    newclass = 'closed';
-                    link.parent().parent().parent().addClass('itemdoneline');
+                    newclass = 'icon-checked-new';
+                    link.parent().parent().addClass('offline');
+                    link.addClass('btn-success');
                 } else {
-                    newclass = 'open';
-                    link.parent().parent().parent().removeClass('itemdoneline');
+                    newclass = 'icon-unchecked-new';
+                    link.parent().parent().removeClass('offline');
+                    link.removeClass('btn-success');
                 }
-                link.parent().removeClass('closed open').addClass(newclass);
-
-
+                link.children('i').removeClass('icon-checked-new icon-unchecked-new').addClass(newclass);
                 link.attr('href', data.link);
             }
         });

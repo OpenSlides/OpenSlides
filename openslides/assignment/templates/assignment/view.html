@@ -14,15 +14,18 @@
 {% endblock %}
 
 {% block content %}
-    <h1>{{ assignment }}
-        <small class="pull-right">
-        <a href="{% url 'assignment_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
-        {% if perms.projector.can_manage_projector %}
-            <a href="{% url 'projector_activate_slide' assignment.sid  %}" class="btn btn-primary btn-mini" title="{% trans 'Show election' %}"><i class="icon-facetime-video icon-white"></i></a>
-        {% endif %}
-        </small>
-    </h1>
-
+<h1>
+    {{ assignment }}
+    <small class="pull-right">
+    <a href="{% url 'assignment_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+    <!-- activate projector -->
+    {% if perms.projector.can_manage_projector %}
+        <a href="{% url 'projector_activate_slide' assignment.sid  %}" class="activate_link btn {% if assignment.active %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show motion' %}">
+            <i class="icon-facetime-video {% if assignment.active %}icon-white{% endif %}"></i>
+        </a>
+    {% endif %}
+    </small>
+</h1>
 
 <div class="row-fluid">
 <div class="span9">

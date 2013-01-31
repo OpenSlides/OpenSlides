@@ -3,6 +3,9 @@
 {% load i18n %}
 {% load staticfiles %}
 
+{% block loginbutton %}
+{% endblock %}
+
 {% block body %}
 <div id="login-page" class="container">
     <h2><img src="/static/img/logo-login.png"></h2>
@@ -44,22 +47,11 @@
             {% trans 'Login' %}
         </button>
         {% if os_enable_anonymous_login %}
-        <button id="anonymous_login" class="btn">
-            {% trans 'Continue as guest' %}
-        </button>
+            <a id="anonymous_login" class="btn" href="{% url 'dashboard' %}">
+                {% trans 'Continue as guest' %}
+            </a>
         {% endif %}
         <input type="hidden" name="next" value="{{ next }}" />
         </p>
     </form>
-{% endblock %}
-{% block javascript %}
-    {% if os_enable_anonymous_login %}
-        <script>
-            $("#anonymous_login").live('click', function () {
-                window.location.href = "{% url 'item_overview' %}";
-                return false;
-            });
-        </script>
-    {% endif %}
-</div>
 {% endblock %}

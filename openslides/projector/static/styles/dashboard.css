@@ -79,6 +79,10 @@
 #countdown_time {
     width: 40px;
 }
+#overlay_message_text {
+    width: 90%;
+    height: 12px;
+}
 
 /* iframe */
 #iframe {
@@ -88,7 +92,6 @@
     -moz-transform: scale(0.25);
     -webkit-transform: scale(0.25);
     -o-transform: scale(0.25);
-
     width: 1024px;
     height: 768px;
 }
@@ -142,6 +145,3 @@ a.overlay div {
 a.overlay.active div {
     background-image: url(../images/icons/accept.png);
 }
-
-
-

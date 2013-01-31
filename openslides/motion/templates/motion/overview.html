@@ -14,7 +14,7 @@
             <a href="{% url 'motion_new' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New motion' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
         {% endif %}
         {% if perms.motion.can_manage_motion %}
-            <a href="{% url 'motion_import' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import motions' %}"><i class="icon-share-alt"></i> {% trans 'Import' %}</a>
+            <a href="{% url 'motion_import' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import motions' %}"><i class="icon-import"></i> {% trans 'Import' %}</a>
         {% endif %}
         <a href="{% url 'print_motions' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print all motions as PDF' %}"><i class="icon-print"></i> PDF</a>
         </small>
@@ -61,8 +61,7 @@
         </tr>
     {% for app_info in motions %}
     {% with motion=app_info.motion useractions=app_info.actions %}
-        <tr class="{% cycle '' 'odd' %}
-            {% if motion.active %}activeline{% endif %}">
+        <tr class="{% if motion.active %}activeline{% endif %}">
             <td>{% if motion.number %}{{ motion.number }}{% else %}-{% endif %}</td>
             <td><a href="{% url 'motion_view' motion.id %}">{{ motion.public_version.title }}</a></td>
         {% if min_supporters > 0 %}
@@ -81,17 +80,23 @@
             <td>
                 <span style="width: 1px; white-space: nowrap;">
                 {% if perms.projector.can_manage_projector %}
-                    <a class="activate_link {% if motion.active %}active{% endif %}" href="{% url 'projector_activate_slide' motion.sid %}" title="{% trans 'Activate motion' %}">
-                        <span></span>
+                    <a href="{% url 'projector_activate_slide' motion.sid  %}" class="activate_link btn {% if motion.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+                        <i class="icon-facetime-video {% if motion.active %}icon-white{% endif %}"></i>
                     </a>
                 {% endif %}
                 {% if perms.motion.can_manage_motion %}
-                    <a href="{% url 'motion_edit' motion.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit motion' %}"></a>
+                    <a href="{% url 'motion_edit' motion.id %}" title="{% trans 'Edit' %}" class="btn btn-mini">
+                        <i class="icon-pencil"></i>
+                    </a>
                     {% if "delete" in useractions %}
-                    <a href="{% url 'motion_delete' motion.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete motion' %}"></a>
+                    <a href="{% url 'motion_delete' motion.id %}" title="{% trans 'Delete' %}" class="btn btn-mini">
+                        <i class="icon-remove"></i>
+                    </a>
                     {% endif %}
                 {% endif %}
-                <a href="{% url 'print_motion' motion.id  %}" title="{% trans 'Motion as PDF' %}"><img src="{% static 'images/icons/pdf.png' %}"></a>
+                <a href="{% url 'print_motion' motion.id  %}" class="btn btn-mini" title="{% trans 'Print motion as PDF' %}">
+                    <i class="icon-print"></i>
+                </a>
                 </span>
             </td>
         </tr>

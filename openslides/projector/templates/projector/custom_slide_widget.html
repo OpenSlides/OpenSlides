@@ -4,35 +4,30 @@
 
 <ul style="line-height: 180%">
     <li class="{% if welcomepage_is_active %}activeline{% endif %}">
-        <a href="{% url 'projector_activate_welcomepage' %}" class="activate_link {% if welcomepage_is_active %}active{% endif %}">
-            <div></div>
-        </a>
-        <a href="{% url 'projctor_preview_welcomepage' %}" title="{% trans 'Preview' %}" class="icon preview right">
-            <span></span>
+        <a href="{% url 'projector_activate_welcomepage' %}" class="activate_link btn {% if welcomepage_is_active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+            <i class="icon-facetime-video {% if welcomepage_is_active %}icon-white{% endif %}"></i>
+        </a>&nbsp;
+        <a href="{% url 'projctor_preview_welcomepage' %}" title="{% trans 'Preview' %}" class="btn btn-mini right">
+            <i class="icon-search"></i>
         </a>
         {% trans 'Welcome Page' %}
     </li>
 </ul>
 <hr>
-<div class="pull-right">
-<a href="{% url 'customslide_new' %}" class="btn btn-mini">
-    <i class="icon-plus"></i>{% trans 'New' %}
-</a>
-</div>
 <ul style="line-height: 180%">
 {% for slide in slides %}
     <li class="{% if slide.active %}activeline{% endif %}">
-        <a href="{% url 'projector_activate_slide' slide.sid %}" class="activate_link {% if slide.active %}active{% endif %}">
-            <div></div>
-        </a>
+        <a href="{% url 'projector_activate_slide' slide.sid  %}" class="activate_link btn {% if slide.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+            <i class="icon-facetime-video {% if slide.active %}icon-white{% endif %}"></i>
+        </a>&nbsp;
         <a href="{% url 'customslide_edit' slide.id %}">{{ slide }}</a>
-        <a href="{% url 'customslide_edit' slide.id %}" title="{% trans 'Edit' %}" class="btn btn-mini">
-            <i class="icon-pencil"></i>
-        </a>
-        <a href="{% url 'customslide_delete' slide.id %}" title="{% trans 'Delete' %}" class="btn btn-mini">
+        <a href="{% url 'customslide_delete' slide.id %}" title="{% trans 'Delete' %}" class="btn btn-mini right">
             <i class="icon-remove"></i>
         </a>
-        <a href="{% url 'projctor_preview_slide' slide.sid %}" title="{% trans 'Preview' %}" class="btn btn-mini">
+        <a href="{% url 'customslide_edit' slide.id %}" title="{% trans 'Edit' %}" class="btn btn-mini right">
+            <i class="icon-pencil"></i>
+        </a>
+        <a href="{% url 'projctor_preview_slide' slide.sid %}" title="{% trans 'Preview' %}" class="btn btn-mini right">
             <i class="icon-search"></i>
         </a>
     </li>
@@ -40,3 +35,8 @@
     <li>{% trans 'No items available.' %}</li>
 {% endfor %}
 </ul>
+<p style="line-height: 280%">
+<a href="{% url 'customslide_new' %}" class="btn btn-mini right">
+    <i class="icon-plus"></i>{% trans 'New' %}
+</a>
+</p>

@@ -23,29 +23,13 @@
         </small>
     </h1>
     <form action="" method="post">{% csrf_token %}
-        {% for field in form %}
-        <div class="control-group{% if field.errors %} error{% endif%}">
-            <label for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}:</label>
-            {{ field }}
-            {% if field.errors %}
-            <span class="help-inline">{{ field.errors }}</span>
-            {% endif %}
-            {% if field.help_text %}
-            <span class="help-inline">{{ field.help_text }})</span>
-            {% endif %}
-        </div>
-        {% endfor %}
-        <div class="control-group">
-            <button class="btn btn-primary" type="submit">
-                {% trans 'Save' %}
-            </button>
-            <button class="btn" type="submit" name="apply">
-                {% trans 'Apply' %}
-            </button>
-            <a href="{% url 'item_overview' %}" class="btn">
-                {% trans 'Cancel' %}
-            </a>
-        </div>
+        {% include "form.html" %}
+        <p>
+        {% include "formbuttons_saveapply.html" %}
+        <a href='{% url 'item_overview' %}' class="btn">
+            {% trans 'Cancel' %}
+        </a>
+        </p>
         <small>* {% trans "required" %}</small>
     </form>
 {% endblock %}

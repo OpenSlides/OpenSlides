@@ -13,17 +13,18 @@
 
 {% block content %}
     <h1>
-    {% if motion %}
-        {% trans "Edit motion" %}
-    {% else %}
-        {% trans "New motion" %}
-    {% endif %}
-    <small class="pull-right">
-    <a href="{% url 'motion_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
-    </small>
+        {% if motion %}
+            {% trans "Edit motion" %}
+        {% else %}
+            {% trans "New motion" %}
+        {% endif %}
+        <small class="pull-right">
+        <a href="{% url 'motion_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        </small>
     </h1>
     <form action="" method="post">{% csrf_token %}
-        {% for field in form %}
+        {% include "form.html" %}
+        {% for field in managerform %}
         <div class="control-group{% if field.errors %} error{% endif%}">
             <label for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}:</label>
             {{ field }}
@@ -35,20 +36,12 @@
             {% endif %}
         </div>
         {% endfor %}
-        {{ managerform.as_p }}
-        <div class="control-group">
-        <button class="btn btn-primary" type="submit">
-            {% trans 'Save' %}
-        </button>
-        <button class="btn" type="submit" name="apply">
-            {% trans 'Apply' %}
-        </button>
-        <a href="{% url 'motion_overview' %}" class="btn">
+        <p>
+        {% include "formbuttons_saveapply.html" %}
+        <a href='{% url 'motion_overview' %}' class="btn">
             {% trans 'Cancel' %}
         </a>
-        </button>
-        </a>
-        </div>
+        </p>
         <small>* {% trans "required" %}</small>
     </form>
 {% endblock %}

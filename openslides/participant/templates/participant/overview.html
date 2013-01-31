@@ -9,25 +9,29 @@
 {% block header %}
     {% if perms.participant.can_manage_participant %}
         <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/participant.css' %}" />
-        <script type="text/javascript" src="{% static 'javascript/participant.js' %}"></script>
     {% endif %}
 {% endblock %}
 
-
+{% block javascript %}
+    {% if perms.participant.can_manage_participant %}
+        <script type="text/javascript" src="{% static 'javascript/participant.js' %}"></script>
+    {% endif %}
+{% endblock %}
+    
 {% block content %}
     <h1>{% trans "Participants" %}
         <small class="pull-right">
         <div class="btn-toolbar">
             {% if perms.participant.can_manage_participant %}
                 <a href="{% url 'user_new' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New participant' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
-                <a href="{% url 'user_group_overview' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'All user groups' %}"><i class="icon-user"></i> {% trans "User groups" %}</a>
-                <a href="{% url 'user_import' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import participants' %}"><i class="icon-share-alt"></i> {% trans 'Import' %}</a>
+                <a href="{% url 'user_group_overview' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'All user groups' %}"><i class="icon-group"></i> {% trans "User groups" %}</a>
+                <a href="{% url 'user_import' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import participants' %}"><i class="icon-import"></i> {% trans 'Import' %}</a>
             {% endif %}
             {% if perms.participant.can_see_participant and perms.participant.can_manage_participant %}
                 <div class="btn-group pull-right">
                     {% if user.is_authenticated %}
                     <a href="#" data-toggle="dropdown" class="btn btn-mini dropdown-toggle">
-                          <i class="icon-print"></i> Print as PDF
+                          <i class="icon-print"></i> PDF
                           <span class="caret"></span>
                     </a>
                     <ul class="dropdown-menu">
@@ -111,7 +115,7 @@
             {% endif %}
         </tr>
         {% for user in users %}
-            <tr>
+            <tr class="{% if user.active %}activeline{% endif %}">
                 <td>{{ user.first_name }}</td>
                 <td>{{ user.last_name }}</td>
                 <td class="optional">{{ user.structure_level }}</td>
@@ -126,20 +130,24 @@
                     </td>
                     <td>
                         <span style="width: 1px; white-space: nowrap;">
-                            <a href="{% url 'user_edit' user.id %}">
-                                <img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit participant' %}">
+                            {% if perms.projector.can_manage_projector %}
+                               <a href="{% url 'projector_activate_slide' user.sid  %}" class="activate_link btn {% if user.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+                                   <i class="icon-facetime-video {% if user.active %}icon-white{% endif %}"></i>
+                               </a>
+                            {% endif %}
+                            <a href="{% url 'user_edit' user.id %}" title="{% trans 'Edit' %}" class="btn btn-mini">
+                                <i class="icon-pencil"></i>
                             </a>
                             {% if user != request_user %}
-                            <a href="{% url 'user_delete' user.id %}">
-                                <img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete participant' %}">
+                            <a href="{% url 'user_delete' user.id %}" title="{% trans 'Delete' %}" class="btn btn-mini">
+                                <i class="icon-remove"></i>
                             </a>
                             {% endif %}
                             {% if user != request_user and not user.is_superuser %}
-                            <a class="status_link deactivate" href="{% url 'user_status_deactivate' user.id %}" title="{% trans 'Change status to inactive' %}"{% if not user.is_active %} style="display:none"{% endif %}>
-                                <span></span>
-                            </a>
-                            <a class="status_link activate" href="{% url 'user_status_activate' user.id %}" title="{% trans 'Change status to active' %}"{% if user.is_active %} style="display:none"{% endif %}>
-                                <span></span>
+                            <a href="{% url 'user_status_toggle' user.id %}"
+                              class="status_link btn btn-mini {% if user.is_active %}btn-success{% endif %}"
+                              title="{% trans 'Change status (active/inactive)' %}">
+                                <i class="{% if user.is_active %}icon-on{% else %}icon-off{% endif %}"></i>
                             </a>
                             {% endif %}
                         </span>

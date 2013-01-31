@@ -96,7 +96,7 @@
                 {% if perms.projector.can_manage_projector %}
                     <span>
                     <a href="{% url 'projector_activate_slide' 'agenda' %}" class="activate_link btn {% if active_sid == 'agenda' %}btn-primary{% endif %} btn-mini" title="{% trans 'Activate agenda' %}">
-                        <i class="icon icon-facetime-video {% if active_sid == 'agenda' %}icon-white{% endif %}"></i>
+                        <i class="icon-facetime-video {% if active_sid == 'agenda' %}icon-white{% endif %}"></i>
                     </a>
                     <span>
                 {% endif %}
@@ -105,7 +105,7 @@
             </tr>
         {% if items %}
             {% for item in items %}
-            <tr class="draggable{% if item.active %} activeline{% endif %}{% if item.closed %} itemdoneline{% endif %}">
+            <tr class="draggable{% if item.active %} activeline{% endif %}{% if item.closed %} offline{% endif %}">
                 {% include "agenda/item_row.html" %}
             </tr>
             {% endfor %}

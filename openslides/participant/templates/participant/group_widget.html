@@ -5,17 +5,14 @@
 {% for group in groups %}
     {% if group.name != 'Anonymous' and group.name != 'Registered' %}
     <li class="{% if group.active %}activeline{% endif %}">
-        <a href="{% url 'projector_activate_slide' group.sid %}" class="activate_link {% if group.active %}active{% endif %}">
-            <div></div>
+        <a href="{% url 'projector_activate_slide' group.sid  %}" class="activate_link btn {% if group.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+            <i class="icon-facetime-video {% if group.active %}icon-white{% endif %}"></i>
+        </a>&nbsp;
+        <a href="{% model_url group 'edit' %}" title="{% trans 'Edit' %}" class="btn btn-mini right">
+            <i class="icon-pencil"></i>
         </a>
-        <a href="{% model_url group 'delete' %}" title="{% trans 'Delete' %}" class="icon delete right">
-            <span></span>
-        </a>
-        <a href="{% model_url group 'edit' %}" title="{% trans 'Edit' %}" class="icon edit right">
-            <span></span>
-        </a>
-        <a href="{% url 'projctor_preview_slide' group.sid %}" title="{% trans 'Preview' %}" class="icon preview right">
-            <span></span>
+        <a href="{% url 'projctor_preview_slide' group.sid %}" title="{% trans 'Preview' %}" class="btn btn-mini right">
+            <i class="icon-search"></i>
         </a>
         <a href="{% model_url group 'view' %}">{{ group }}</a>
     </li>

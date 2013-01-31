@@ -3,16 +3,14 @@
 {% load tags %}
 
     <td>
-        <span class="close_link {% if item.closed %}closed{% else %}open{% endif %}">
         {% if perms.agenda.can_manage_agenda %}
-            <a href="{% if item.closed %}{% url 'item_open' item.id %}{% else %}{% url 'item_close' item.id %}{% endif %}" 
-                class="btn btn-mini" title="{% trans 'Reopen item' %}">
-                <i class="icon- custom-icons"></i>
+            <a href="{% if item.closed %}{% url 'item_open' item.id %}{% else %}{% url 'item_close' item.id %}{% endif %}"
+                class="close_link btn btn-mini {% if item.closed %}btn-success{% endif %}" title="{% trans 'Change status (open/closed)' %}">
+                <i class="{% if item.closed %}icon-checked-new{% else %}icon-unchecked-new{% endif %}"></i>
             </a>
         {% else %}
-            <i class="icon- custom-icons"></i>
+            <i class="icon-"></i>
         {% endif %}
-        </span>
     </td>
     <td>
         {% for p in item.get_ancestors %}
@@ -33,8 +31,8 @@
     <td>
         <span style="width: 1px; white-space: nowrap;">
         {% if perms.projector.can_manage_projector %}
-            <a href="{% url 'projector_activate_slide' item.sid  %}" class="activate_link btn {% if item.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Activate item' %}">
-                <i class="icon icon-facetime-video {% if item.active %}icon-white{% endif %}"></i>
+            <a href="{% url 'projector_activate_slide' item.sid  %}" class="activate_link btn {% if item.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+                <i class="icon-facetime-video {% if item.active %}icon-white{% endif %}"></i>
             </a>
         {% endif %}
         {% if perms.agenda.can_manage_agenda %}
@@ -46,7 +44,7 @@
             </a>
             {% if not item.is_leaf_node %}
                 <a href="{% url 'projector_activate_slide' item.sid 'summary' %}" class="activate_link btn btn-mini" title="{% trans 'Activate summary for this item' %}">
-                    <img src="{% static 'images/icons/summary.png' %}">
+                    <i class="icon-summary"></i>
                 </a>
             {% endif %}
         {% endif %}

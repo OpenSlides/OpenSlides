@@ -28,11 +28,19 @@ $(function () {
             data: '',
             success: function(data) {
                 $('.activate_link').removeClass('btn-primary');
-                $('.icon').removeClass('icon-white');
-                $('tr').removeClass('activeline');
-                link.parent().parent().parent().addClass('activeline');
+                $('.activate_link i').removeClass('icon-white');
+                // is table line
+                if ( link.parent().parent().parent().is("tr") ) {
+                    $('tr').removeClass('activeline');
+                    link.parent().parent().parent().addClass('activeline');
+                }
+                // is widget list item
+                if ( link.parent().is("li") ) {
+                    $('li').removeClass('activeline');
+                    link.parent().addClass('activeline');
+                }
                 link.addClass('btn-primary');
-                link.find('.icon').addClass('icon-white');
+                link.children('i').addClass('icon-white');
             }
         });
     });

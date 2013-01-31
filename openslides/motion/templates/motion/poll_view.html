@@ -10,12 +10,19 @@
 {% block content %}
 <h1>
     {{ motion.public_version.title }}
+    <br>
     <small>
     {% trans "Motion" %} {{ motion.number }}, {{ ballot }}. {% trans "Vote" %}
     </small>
     <small class="pull-right">
     <div class="btn-toolbar">
         <a href="{% url 'motion_view' motion.id %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to motion" %}</a>
+        <!-- activate projector -->
+        {% if perms.projector.can_manage_projector %}
+            <a href="{% url 'projector_activate_slide' motion.sid  %}" class="activate_link btn {% if motion.active %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show motion' %}">
+                <i class="icon-facetime-video {% if motion.active %}icon-white{% endif %}"></i>
+            </a>
+        {% endif %}
         <div class="btn-group">
             <a data-toggle="dropdown" href="#" class="btn btn-mini dropdown-toggle">
                 {% trans 'More actions' %}
@@ -25,12 +32,6 @@
                 <!-- delete -->
                 {% if "delete" in actions %}
                     <li><a href="{% url 'motion_poll_delete' poll.id %}"><i class="icon-remove"></i> {% trans 'Delete Vote' %}</a></li>
-                {% endif %}
-                <!-- activate projector -->
-                {% if perms.projector.can_manage_projector %}
-                    <li>
-                        <a class="activate_link {% if item.active %}active{% endif %}" href="{% url 'projector_activate_slide' motion.sid  %}"><i class="icon-facetime-video"></i> {% trans 'Show motion' %}</a>
-                    </li>
                 {% endif %}
             </ul>
         </div>
@@ -54,11 +55,11 @@
                     <td>{{ value.errors }}{{ value }}</td>
                 </tr>
             {% endfor %}
-            <tr class="total">
+            <tr>
                 <td>{% trans "Invalid votes" %}</td>
                 <td>{{ pollform.votesinvalid.errors }}{{ pollform.votesinvalid }}</td>
             </tr>
-            <tr class="total">
+            <tr class="total warning">
                 <td>{% trans "Votes cast" %}</td>
                 <td>{{ pollform.votescast.errors }}{{ pollform.votescast }}</td>
             </tr>
