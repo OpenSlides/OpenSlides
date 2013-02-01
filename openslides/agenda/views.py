@@ -47,7 +47,7 @@ class Overview(TemplateView):
         if self.request.user.has_perm('agenda.can_see_orga_items'):
             items = Item.objects.all()
         else:
-            items = Item.objects.filter(type__exact = 'agd')
+            items = Item.objects.filter(type__exact=Item.AGENDA_ITEM)
 
         duration = timedelta()
 
@@ -220,7 +220,7 @@ class AgendaPDF(PDFView):
     document_title = ugettext_lazy('Agenda')
 
     def append_to_pdf(self, story):
-        for item in Item.objects.filter(type__exact = 'agd'):
+        for item in Item.objects.filter(type__exact=Item.AGENDA_ITEM):
             ancestors = item.get_ancestors()
             if ancestors:
                 space = "&nbsp;" * 6 * ancestors.count()

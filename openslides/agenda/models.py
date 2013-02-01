@@ -31,10 +31,13 @@ class Item(MPTTModel, SlideMixin):
     """
     prefix = 'item'
 
+    AGENDA_ITEM = 1
+    ORGANIZATIONAL_ITEM = 2
+
     ITEM_TYPE = (
-        ('agd', _('Agenda item')),
-        ('org', _('Organizational item')),
-    )
+        (AGENDA_ITEM, _('Agenda item')),
+        (ORGANIZATIONAL_ITEM, _('Organizational item')),
+        )
 
     title = models.CharField(null=True, max_length=255, verbose_name=_("Title"))
     text = models.TextField(null=True, blank=True, verbose_name=_("Text"))
@@ -43,8 +46,8 @@ class Item(MPTTModel, SlideMixin):
     weight = models.IntegerField(default=0, verbose_name=_("Weight"))
     parent = TreeForeignKey('self', null=True, blank=True,
                             related_name='children')
-    type = models.CharField(max_length=3, choices=ITEM_TYPE,
-                            default='agd', verbose_name=_("Type"))
+    type = models.IntegerField(max_length=1, choices=ITEM_TYPE,
+                               default=AGENDA_ITEM, verbose_name=_("Type"))
 
     duration = models.TimeField(blank=True, null=True, verbose_name=_("Duration (hh:mm)"));
 
