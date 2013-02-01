@@ -43,10 +43,10 @@
             <li>
                 {% if perms.motion.can_manage_motion %}
                     <strong>{{ forloop.counter }}. {% trans "Vote" %} </strong>
-                    <a class="icon edit" href="{% model_url poll %}" title="{% trans 'Edit Vote' %}">
+                    <a class="icon edit" href="{% model_url poll 'edit' %}" title="{% trans 'Edit Vote' %}">
                             <span></span>
                     </a>
-                    <a class="icon delete" href="{% model_url poll %}" title="{% trans 'Delete Vote' %}">
+                    <a class="icon delete" href="{% model_url poll 'delete' %}" title="{% trans 'Delete Vote' %}">
                         <span></span>
                     </a>
                 {% elif poll.has_votes %}

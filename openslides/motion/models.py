@@ -336,9 +336,16 @@ class MotionPoll(CountInvalid, CountVotesCast, BasePoll):
     class Meta:
         unique_together = ("motion", "poll_number")
 
+    def __unicode__(self):
+        return _('Ballot %d') % self.poll_number
+
     def get_absolute_url(self, link='edit'):
-        return reverse('motion_poll_edit', args=[str(self.motion.pk),
-                                                 str(self.poll_number)])
+        if link == 'edit':
+            return reverse('motion_poll_edit', args=[str(self.motion.pk),
+                                                     str(self.poll_number)])
+        if link == 'delete':
+            return reverse('motion_poll_delete', args=[str(self.motion.pk),
+                                                       str(self.poll_number)])
 
     def get_motion(self):
         return self.motion

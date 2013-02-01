@@ -201,10 +201,8 @@ class PollCreateView(SingleObjectMixin, RedirectView):
 poll_create = PollCreateView.as_view()
 
 
-class PollUpdateView(PollFormView):
+class PollMixin(object):
     permission_required = 'motion.can_manage_motion'
-    poll_class = MotionPoll
-    template_name = 'motion/poll_form.html'
     success_url_name = 'motion_detail'
 
     def get_object(self):
@@ -212,16 +210,27 @@ class PollUpdateView(PollFormView):
             motion=self.kwargs['pk'],
             poll_number=self.kwargs['poll_number']).get()
 
+    def get_url_name_args(self):
+        return [self.object.motion.pk]
+
+
+class PollUpdateView(PollMixin, PollFormView):
+    poll_class = MotionPoll
+    template_name = 'motion/poll_form.html'
+
     def get_context_data(self, **kwargs):
         context = super(PollUpdateView, self).get_context_data(**kwargs)
         context.update({
             'motion': self.poll.motion})
         return context
 
-    def get_url_name_args(self):
-        return [self.poll.motion.pk]
-
 poll_edit = PollUpdateView.as_view()
+
+
+class PollDeleteView(PollMixin, DeleteView):
+    model = MotionPoll
+
+poll_delete = PollDeleteView.as_view()
 
 
 class Config(FormView):
