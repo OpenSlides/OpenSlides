@@ -16,10 +16,10 @@
             {% if motion.status == "rej" %}
             <img src="{% static 'images/icons/voting-no.png' %}">
             {% endif %}
-            {% trans motion.get_status_display %}
+            {% trans motion.status %}
         {% else %}
             {% for note in motion.notes %}
-            {{ note }}
+                {{ note }}
             {% endfor %}
         {% endif %}
         </p>
@@ -53,7 +53,7 @@
         {% endwith %}
 
         <p><b>{% trans "Submitter" %}:</b><br>
-        {{ motion.submitter }}
+        {{ motion.submitter.person }}
         </p>
     </div>
     </div>
@@ -65,7 +65,7 @@
         {% trans "Motion" %} <i>[{% trans "no number" %}]</i>
     {% endif %}
     </h1>
-    <b>{{ motion.public_version.title }}</b>
+    <b>{{ motion.title }}</b>
     <hr>
 {% endblock %}
 

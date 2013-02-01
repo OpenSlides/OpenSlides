@@ -304,6 +304,16 @@ class Motion(SlideMixin, models.Model):
         """
         self.state_id = get_state('default').id
 
+    def slide(self):
+        """
+        return the slide dict
+        """
+        data = super(Motion, self).slide()
+        data['motion'] = self
+        data['title'] = self.title
+        data['template'] = 'projector/Motion.html'
+        return data
+
 
 class MotionVersion(models.Model):
     title = models.CharField(max_length=255, verbose_name=ugettext_lazy("Title"))

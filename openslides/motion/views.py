@@ -34,6 +34,7 @@ from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
                     MotionCreateNewVersionMixin, ConfigForm)
 from .workflow import WorkflowError
 
+
 class MotionListView(ListView):
     """
     List all motion.
