@@ -248,6 +248,7 @@ class Config(FormView):
             'motion_pdf_title': config['motion_pdf_title'],
             'motion_pdf_preamble': config['motion_pdf_preamble'],
             'motion_create_new_version': config['motion_create_new_version'],
+            'motion_workflow': config['motion_workflow'],
         }
 
     def form_valid(self, form):
@@ -258,6 +259,7 @@ class Config(FormView):
         config['motion_pdf_title'] = form.cleaned_data['motion_pdf_title']
         config['motion_pdf_preamble'] = form.cleaned_data['motion_pdf_preamble']
         config['motion_create_new_version'] = form.cleaned_data['motion_create_new_version']
+        config['motion_workflow'] = form.cleaned_data['motion_workflow']
         messages.success(self.request, _('Motion settings successfully saved.'))
         return super(Config, self).form_valid(form)
 

@@ -25,4 +25,4 @@ def default_config(sender, key, **kwargs):
         'motion_pdf_title': _('Motions'),
         'motion_pdf_preamble': '',
         'motion_create_new_version': 'ALLWASY_CREATE_NEW_VERSION',
-    }.get(key)
+        'motion_workflow': 'default'}.get(key)

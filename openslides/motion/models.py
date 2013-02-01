@@ -30,6 +30,8 @@ from openslides.projector.api import register_slidemodel
 from openslides.projector.models import SlideMixin
 from openslides.agenda.models import Item
 
+from .workflow import motion_workflow_choices, get_state, State
+
 
 # TODO: Save submitter and supporter in the same table
 class MotionSubmitter(models.Model):
@@ -58,8 +60,7 @@ class Motion(SlideMixin, models.Model):
     #       is deactivated. Maybe it has to be renamed.
     permitted_version = models.ForeignKey(
         'MotionVersion', null=True, blank=True, related_name="permitted")
-    # TODO: Define status
-    status = models.CharField(max_length=3)
+    state_id = models.CharField(max_length=3)
     # Log (Translatable)
     identifier = models.CharField(max_length=255, null=True, blank=True,
                                   unique=True)
@@ -86,6 +87,9 @@ class Motion(SlideMixin, models.Model):
         """
         Saves the motion. Create or update a motion_version object
         """
+        if not self.state_id:
+            self.state = 'default'
+
         super(Motion, self).save(*args, **kwargs)
         for attr in ['title', 'text', 'reason']:
             if getattr(self, attr) != getattr(self.last_version, attr):
@@ -268,11 +272,32 @@ class Motion(SlideMixin, models.Model):
             #self.writelog(_("Supporter: -%s") % (person))
 
     def create_poll(self):
+        """
+        Create a new poll for this motion
+        """
         # TODO: auto increment the poll_number in the Database
         poll_number = self.polls.aggregate(Max('poll_number'))['poll_number__max'] or 0
         poll = MotionPoll.objects.create(motion=self, poll_number=poll_number + 1)
         poll.set_options()
         return poll
+
+    def get_state(self):
+        """
+        Get the state of this motion. Return a State object.
+        """
+        return get_state(self.state_id)
+
+    def set_state(self, state):
+        """
+        Set the state of this motion.
+
+        state has to be a valid state id or State object.
+        """
+        if type(state) is not State:
+            state = get_state(state)
+        self.state_id = state.id
+
+    state = property(get_state, set_state)
 
 
 class MotionVersion(models.Model):
