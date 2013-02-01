@@ -18,6 +18,9 @@ class State(object):
     def __unicode__(self):
         return self.name
 
+class WorkflowError(Exception):
+    pass
+
 
 def motion_workflow_choices():
     for workflow in settings.MOTION_WORKFLOW:

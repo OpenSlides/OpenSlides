@@ -30,7 +30,7 @@ from openslides.projector.api import register_slidemodel
 from openslides.projector.models import SlideMixin
 from openslides.agenda.models import Item
 
-from .workflow import motion_workflow_choices, get_state, State
+from .workflow import motion_workflow_choices, get_state, State, WorkflowError
 
 
 # TODO: Save submitter and supporter in the same table
@@ -254,32 +254,41 @@ class Motion(SlideMixin, models.Model):
         """
         Add a Supporter to the list of supporters of the motion.
         """
-        if not self.is_supporter(person):
-            MotionSupporter(motion=self, person=person).save()
-            #self.writelog(_("Supporter: +%s") % (person))
-        # TODO: Raise a precise exception for the view in else-clause
+        if self.state.support:
+            if not self.is_supporter(person):
+                MotionSupporter(motion=self, person=person).save()
+                #self.writelog(_("Supporter: +%s") % (person))
+            # TODO: Raise a precise exception for the view in else-clause
+        else:
+            raise WorkflowError("You can not support a motion in state %s" % self.state.name)
 
     def unsupport(self, person):
         """
-        remove a supporter from the list of supporters of the motion
+        Remove a supporter from the list of supporters of the motion
         """
-        try:
-            self.supporter.filter(person=person).delete()
-        except MotionSupporter.DoesNotExist:
-            # TODO: Don't do nothing but raise a precise exception for the view
-            pass
-        #else:
-            #self.writelog(_("Supporter: -%s") % (person))
+        if self.state.support:
+            try:
+                self.supporter.filter(person=person).delete()
+            except MotionSupporter.DoesNotExist:
+                # TODO: Don't do nothing but raise a precise exception for the view
+                pass
+            #else:
+                #self.writelog(_("Supporter: -%s") % (person))
+        else:
+            raise WorkflowError("You can not unsupport a motion in state %s" % self.state.name)
 
     def create_poll(self):
         """
         Create a new poll for this motion
         """
         # TODO: auto increment the poll_number in the Database
-        poll_number = self.polls.aggregate(Max('poll_number'))['poll_number__max'] or 0
-        poll = MotionPoll.objects.create(motion=self, poll_number=poll_number + 1)
-        poll.set_options()
-        return poll
+        if self.state.poll:
+            poll_number = self.polls.aggregate(Max('poll_number'))['poll_number__max'] or 0
+            poll = MotionPoll.objects.create(motion=self, poll_number=poll_number + 1)
+            poll.set_options()
+            return poll
+        else:
+            raise WorkflowError("You can not create a poll in state %s" % self.state.name)
 
     def get_state(self):
         """
