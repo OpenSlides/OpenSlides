@@ -83,7 +83,7 @@ class ModelTest(TestCase):
 
         self.assertEqual(self.motion.get_absolute_url('detail'), '/motion/%d/' % motion_id)
         self.assertEqual(self.motion.get_absolute_url('edit'), '/motion/%d/edit/' % motion_id)
-        #self.assertEqual(self.motion.get_absolute_url('delete'), '/motion/%d/del/' % motion_id)
+        self.assertEqual(self.motion.get_absolute_url('delete'), '/motion/%d/del/' % motion_id)
 
     def test_supporter(self):
         self.assertFalse(self.motion.is_supporter(self.test_user))

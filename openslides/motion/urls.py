@@ -77,4 +77,9 @@ urlpatterns = patterns('openslides.motion.views',
         'reset_state',
         name='motion_reset_state',
     ),
+
+    url(r'^(?P<pk>\d+)/agenda/$',
+        'create_agenda_item',
+        name='motion_create_agenda',
+    ),
 )

@@ -314,6 +314,13 @@ class Motion(SlideMixin, models.Model):
         data['template'] = 'projector/Motion.html'
         return data
 
+    def get_agenda_title(self):
+        return self.last_version.title
+
+    ## def get_agenda_title_supplement(self):
+        ## number = self.number or '<i>[%s]</i>' % ugettext('no number')
+        ## return '(%s %s)' % (ugettext('motion'), number)
+
 
 class MotionVersion(models.Model):
     title = models.CharField(max_length=255, verbose_name=ugettext_lazy("Title"))

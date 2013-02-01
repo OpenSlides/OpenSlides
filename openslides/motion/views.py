@@ -29,6 +29,7 @@ from openslides.poll.views import PollFormView
 from openslides.projector.api import get_active_slide
 from openslides.projector.projector import Widget, SLIDE
 from openslides.config.models import config
+from openslides.agenda.models import Item
 from .models import Motion, MotionSubmitter, MotionSupporter, MotionPoll
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
                     MotionCreateNewVersionMixin, ConfigForm)
@@ -272,6 +273,21 @@ class MotionSetStateView(SingleObjectMixin, RedirectView):
 
 set_state = MotionSetStateView.as_view()
 reset_state = MotionSetStateView.as_view(reset=True)
+
+
+class CreateAgendaItemView(SingleObjectMixin, RedirectView):
+    permission_required = 'agenda.can_manage_agenda'
+    url_name = 'item_overview'
+    model = Motion
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super(CreateAgendaItemView, self).get(request, *args, **kwargs)
+
+    def pre_redirect(self, request, *args, **kwargs):
+        self.item = Item.objects.create(related_sid=self.object.sid)
+
+create_agenda_item = CreateAgendaItemView.as_view()
 
 
 class Config(FormView):
