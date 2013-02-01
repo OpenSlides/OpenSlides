@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-01-31 20:14+0100\n"
+"POT-Creation-Date: 2013-01-30 21:40+0100\n"
 "PO-Revision-Date: 2012-07-28 11:07+0200\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: support@openslides.de\n"
@@ -35,11 +35,11 @@ msgstr "Elternelement"
 
 #: agenda/forms.py:34 agenda/models.py:49
 msgid "Duration (hh:mm)"
-msgstr "Dauer (ss:mm)"
+msgstr "Dauer (hh:mm)"
 
 #: agenda/forms.py:69
 msgid "Begin of event (hh:mm)"
-msgstr "Beginn der Veranstaltung (ss:mm)"
+msgstr "Beginn der Veranstaltung (hh:mm)"
 
 #: agenda/models.py:35
 msgid "Agenda item"
@@ -93,7 +93,7 @@ msgstr "Darf die Tagesordung verwalten"
 
 #: agenda/models.py:184
 msgid "Can see orga items and time scheduling of agenda"
-msgstr "Darf Organisationspunkte und Zeitmanagement der Tagesordnung sehen "
+msgstr "Darf Organisationspunkte und Tagesordnung-Zeitplan sehen"
 
 #: agenda/models.py:192 agenda/slides.py:20 agenda/views.py:219
 #: agenda/views.py:220 agenda/views.py:257 agenda/views.py:271
@@ -2420,15 +2420,3 @@ msgstr "undefinierter-dateiname"
 #: utils/jsonfield/fields.py:22
 msgid "Enter valid JSON"
 msgstr "Gebe valides JSON ein"
-
-#~ msgid "Can see orga items"
-#~ msgstr "Darf Organisationspunkte sehen"
-
-#~ msgid "Visible to all"
-#~ msgstr "Für alle sichtbar"
-
-#~ msgid "Moderators only"
-#~ msgstr "Nur für Moderatoren"
-
-#~ msgid "Visibility"
-#~ msgstr "Sichtbarkeit"

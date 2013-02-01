@@ -63,8 +63,8 @@ class ItemOrderForm(forms.Form, CssClassMixin):
 
 class ConfigForm(forms.Form, CssClassMixin):
     agenda_start_event_time = forms.TimeField(
-        widget=forms.TimeInput(format='%H:%M') ,
-        input_formats=('%H:%M', '%H:%M:%S'),
+        widget=forms.TimeInput(format='%H:%M'),
+        input_formats=['%H:%M'],
         required=False,
         label=_("Begin of event (hh:mm)"),
     )
