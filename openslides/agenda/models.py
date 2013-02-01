@@ -181,7 +181,7 @@ class Item(MPTTModel, SlideMixin):
         permissions = (
             ('can_see_agenda', ugettext_noop("Can see agenda")),
             ('can_manage_agenda', ugettext_noop("Can manage agenda")),
-            ('can_see_orga_items', ugettext_noop("Can see orga items")),
+            ('can_see_orga_items', ugettext_noop("Can see orga items and time scheduling of agenda")),
         )
 
     class MPTTMeta:

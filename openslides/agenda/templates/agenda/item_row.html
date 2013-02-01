@@ -20,17 +20,20 @@
         {% if perms.agenda.can_manage_agenda %}
             <div class="dragcell"></div>
         {% endif %}
-        <a href="{% model_url item 'view' %}">{{ item }}</a>
+        <a href="{% model_url item 'view' %}">{% if item.type == "org" %}<i>[{% endif %}{{ item }}{% if item.type == "org" %}]</i>{% endif %}</a>
         {{ item.get_title_supplement|safe }}
     </td>
     {% if perms.agenda.can_manage_agenda %}
     <td>
         {{ item.comment|first_line }}
     </td>
+    {% endif %}
+    {% if perms.agenda.can_see_orga_items %}
     <td>
-    {{ item.duration|time:"H:i" }}
+        {% if item.duration %}
+            {{ item.duration|time:"H:i" }}h
+        {% endif %}
     </td>
-
     {% endif %}
     {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
     <td>

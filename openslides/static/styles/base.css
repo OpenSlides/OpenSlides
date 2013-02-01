@@ -318,6 +318,7 @@ input[type="submit"], input[type="button"]  {
 }
 #id_permissions, #id_users {
     height: 310px;
+    width: 412px;
 }
 .button {
     border: 1px solid #D3D3D3;

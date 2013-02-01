@@ -25,6 +25,9 @@ table#menu-overview {
 
 table#agendatime {
     float: right;
-    width: 15%;
+    width: 25%;
     margin-bottom: 1em;
+}
+table#agendatime td {
+    padding: 5px;
 }
