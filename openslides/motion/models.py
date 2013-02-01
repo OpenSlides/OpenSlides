@@ -113,7 +113,9 @@ class Motion(SlideMixin, models.Model):
             _attr = '_%s' % attr
             try:
                 setattr(version, attr, getattr(self, _attr))
+                delattr(self, _attr)
             except AttributeError:
+                # If the _attr was not set, use the value from last_version
                 setattr(version, attr, getattr(self.last_version, attr))
         version.save()
 
@@ -190,14 +192,6 @@ class Motion(SlideMixin, models.Model):
             self._new_version = MotionVersion(motion=self)
             return self._new_version
 
-    def get_version(self, version_id):
-        """
-        Return a specific version from version_id
-        """
-        # TODO: Check case, if version_id is not one of this motion
-        return self.versions.get(pk=version_id)
-
-
     def get_version(self):
         """
         Get the "active" version object. This version will be used to get the
@@ -206,7 +200,6 @@ class Motion(SlideMixin, models.Model):
         try:
             return self._version
         except AttributeError:
-            # TODO: choose right version via config
             return self.last_version
 
     def set_version(self, version):
@@ -245,10 +238,7 @@ class Motion(SlideMixin, models.Model):
             return self.new_version
 
     def is_supporter(self, person):
-        try:
-            return self.supporter.filter(person=person).exists()
-        except AttributeError:
-            return False
+        return self.supporter.filter(person=person).exists()
 
     def support(self, person):
         """
@@ -267,13 +257,7 @@ class Motion(SlideMixin, models.Model):
         Remove a supporter from the list of supporters of the motion
         """
         if self.state.support:
-            try:
-                self.supporter.filter(person=person).delete()
-            except MotionSupporter.DoesNotExist:
-                # TODO: Don't do nothing but raise a precise exception for the view
-                pass
-            #else:
-                #self.writelog(_("Supporter: -%s") % (person))
+            self.supporter.filter(person=person).delete()
         else:
             raise WorkflowError("You can not unsupport a motion in state %s" % self.state.name)
 
