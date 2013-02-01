@@ -30,7 +30,10 @@ def motion_workflow_choices():
 def get_state(state='default'):
     global _workflow
     if _workflow is not None:
-        return _workflow[state]
+        try:
+            return _workflow[state]
+        except KeyError:
+            raise WorkflowError('Unknown state: %s' % state)
     _workflow = {}
     for workflow in settings.MOTION_WORKFLOW:
         if workflow[0] == config['motion_workflow']:

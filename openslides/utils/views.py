@@ -240,9 +240,12 @@ class RedirectView(PermissionMixin, AjaxMixin, _RedirectView):
 
     def get_redirect_url(self, **kwargs):
         if self.url_name is not None:
-            return reverse(self.url_name)
+            return reverse(self.url_name, args=self.get_url_name_args())
         else:
             return super(RedirectView, self).get_redirect_url(**kwargs)
+
+    def get_url_name_args(self):
+        return []
 
 
 class FormView(PermissionMixin, ExtraContextMixin, UrlMixin, _FormView):

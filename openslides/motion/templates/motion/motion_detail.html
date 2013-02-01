@@ -13,7 +13,16 @@
 <p>Submitter: {% for submitter in motion.submitter.all %}{{ submitter.person }} {% endfor %}</p>
 <p>Supporter: {% for supporter in motion.supporter.all %}{{ supporter.person }} {% endfor %}</p>
 <p>State: {{ motion.state }}</p>
+<h4>possible stats:</h4>
+<ul>
+{% for state in motion.state.next_states %}
+    <li><a href="{% url 'motion_set_state' motion.pk state.id %}">{{ state }}</a></li>
+{% endfor %}
+    <li><a href="{% url 'motion_reset_state' motion.pk %}">Reset State</a></li>
+</ul>
 
+
+<h4>Versions</h4>
 <ol>
 {% for motion_version in motion.versions.all %}
     {% if motion_version.id == motion.version.id %}

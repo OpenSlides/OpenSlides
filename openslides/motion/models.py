@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
     openslides.motion.models
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~
 
     Models for the motion app.
 
@@ -88,7 +88,7 @@ class Motion(SlideMixin, models.Model):
         Saves the motion. Create or update a motion_version object
         """
         if not self.state_id:
-            self.state = 'default'
+            self.reset_state()
 
         super(Motion, self).save(*args, **kwargs)
         for attr in ['title', 'text', 'reason']:
@@ -296,17 +296,26 @@ class Motion(SlideMixin, models.Model):
         """
         return get_state(self.state_id)
 
-    def set_state(self, state):
+    def set_state(self, next_state):
         """
         Set the state of this motion.
 
-        state has to be a valid state id or State object.
+        next_state has to be a valid state id or State object.
         """
-        if type(state) is not State:
-            state = get_state(state)
-        self.state_id = state.id
+        if type(next_state) is not State:
+            next_state = get_state(next_state)
+        if next_state in self.state.next_states:
+            self.state_id = next_state.id
+        else:
+            raise WorkflowError('%s is not a valid next_state' % next_state)
 
     state = property(get_state, set_state)
+
+    def reset_state(self):
+        """
+        Set the state to the default state.
+        """
+        self.state_id = get_state('default').id
 
 
 class MotionVersion(models.Model):

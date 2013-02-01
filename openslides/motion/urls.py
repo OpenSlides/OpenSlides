@@ -62,4 +62,14 @@ urlpatterns = patterns('openslides.motion.views',
         'poll_delete',
         name='motion_poll_delete',
     ),
+
+    url(r'^(?P<pk>\d+)/set_state/(?P<state>[a-z]{3})/$',
+        'set_state',
+        name='motion_set_state',
+    ),
+
+    url(r'^(?P<pk>\d+)/reset_state/$',
+        'reset_state',
+        name='motion_reset_state',
+    ),
 )

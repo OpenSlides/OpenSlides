@@ -32,6 +32,7 @@ from openslides.config.models import config
 from .models import Motion, MotionSubmitter, MotionSupporter, MotionPoll
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
                     MotionCreateNewVersionMixin, ConfigForm)
+from .workflow import WorkflowError
 
 class MotionListView(ListView):
     """
@@ -231,6 +232,34 @@ class PollDeleteView(PollMixin, DeleteView):
     model = MotionPoll
 
 poll_delete = PollDeleteView.as_view()
+
+
+class MotionSetStateView(SingleObjectMixin, RedirectView):
+    permission_required = 'motion.can_manage_motion'
+    url_name = 'motion_detail'
+    model = Motion
+    reset = False
+
+    def pre_redirect(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        try:
+            if self.reset:
+                self.object.reset_state()
+            else:
+                self.object.state = kwargs['state']
+        except WorkflowError:
+            messages.error(request, _('Can not set the state to: %s.')
+                                      % html_strong(kwargs['state']))
+        else:
+            self.object.save()
+            messages.success(request, _('Motion status was set to: %s.'
+                                        % html_strong(self.object.state)))
+
+    def get_url_name_args(self):
+        return [self.object.pk]
+
+set_state = MotionSetStateView.as_view()
+reset_state = MotionSetStateView.as_view(reset=True)
 
 
 class Config(FormView):
