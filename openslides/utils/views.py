@@ -116,7 +116,7 @@ class UrlMixin(object):
 
     def get_apply_url(self):
         if self.apply_url_name:
-            return reverse(self.apply_url_name)
+            return reverse(self.apply_url_name, args=self.get_url_name_args())
         elif self.apply_url:
             return self.apply_url
         else:
@@ -131,17 +131,19 @@ class UrlMixin(object):
             return self.get_apply_url()
 
         if self.success_url_name:
-            return reverse(self.success_url_name)
+            return reverse(self.success_url_name, args=self.get_url_name_args())
         elif self.success_url:
             return self.success_url
         else:
             try:
-                url = self.object.get_absolute_url()
+                return self.object.get_absolute_url()
             except AttributeError:
                 raise ImproperlyConfigured(
                     "No URL to redirect to.  Either provide a url or define"
                     " a get_absolute_url method on the Model.")
-        return url
+
+    def get_url_name_args(self):
+        return []
 
 
 class QuestionMixin(object):
@@ -218,6 +220,7 @@ class AjaxView(PermissionMixin, AjaxMixin, View):
 class RedirectView(PermissionMixin, AjaxMixin, _RedirectView):
     permanent = False
     allow_ajax = False
+    url_name = None
 
     def pre_redirect(self, request, *args, **kwargs):
         pass
@@ -236,7 +239,10 @@ class RedirectView(PermissionMixin, AjaxMixin, _RedirectView):
         return super(RedirectView, self).get(request, *args, **kwargs)
 
     def get_redirect_url(self, **kwargs):
-        return reverse(super(RedirectView, self).get_redirect_url(**kwargs))
+        if self.url_name is not None:
+            return reverse(self.url_name)
+        else:
+            return super(RedirectView, self).get_redirect_url(**kwargs)
 
 
 class FormView(PermissionMixin, ExtraContextMixin, UrlMixin, _FormView):
