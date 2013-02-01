@@ -267,6 +267,13 @@ class Motion(SlideMixin, models.Model):
         #else:
             #self.writelog(_("Supporter: -%s") % (person))
 
+    def create_poll(self):
+        # TODO: auto increment the poll_number in the Database
+        poll_number = self.polls.aggregate(Max('poll_number'))['poll_number__max'] or 0
+        poll = MotionPoll.objects.create(motion=self, poll_number=poll_number + 1)
+        poll.set_options()
+        return poll
+
 
 class MotionVersion(models.Model):
     title = models.CharField(max_length=255, verbose_name=ugettext_lazy("Title"))
@@ -307,3 +314,42 @@ class Comment(models.Model):
     text = models.TextField()
     author = PersonField()
     creation_time = models.DateTimeField(auto_now=True)
+
+
+class MotionVote(BaseVote):
+    option = models.ForeignKey('MotionOption')
+
+
+class MotionOption(BaseOption):
+    poll = models.ForeignKey('MotionPoll')
+    vote_class = MotionVote
+
+
+class MotionPoll(CountInvalid, CountVotesCast, BasePoll):
+    option_class = MotionOption
+    vote_values = [
+        ugettext_noop('Yes'), ugettext_noop('No'), ugettext_noop('Abstain')]
+
+    motion = models.ForeignKey(Motion, related_name='polls')
+    poll_number = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        unique_together = ("motion", "poll_number")
+
+    def get_absolute_url(self, link='edit'):
+        return reverse('motion_poll_edit', args=[str(self.motion.pk),
+                                                 str(self.poll_number)])
+
+    def get_motion(self):
+        return self.motion
+
+    def set_options(self):
+        #TODO: maybe it is possible with .create() to call this without poll=self
+        self.get_option_class()(poll=self).save()
+
+    def append_pollform_fields(self, fields):
+        CountInvalid.append_pollform_fields(self, fields)
+        CountVotesCast.append_pollform_fields(self, fields)
+
+    def get_ballot(self):
+        return self.motion.motionpoll_set.filter(id__lte=self.id).count()

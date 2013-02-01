@@ -22,4 +22,64 @@
     {% endif %}
 {% endfor %}
 </ol>
+
+
+<h4>{% trans "Vote results" %}:</h4>
+        {% with motion.polls.all as polls %}
+        {% if not polls.exists %}
+            {% if perms.motion.can_manage_motion %}
+                <a href="{% url 'motion_poll_create' motion.id %}">
+                    <span class="button">
+                        <span class="icon statistics">{% trans 'New vote' %}</span>
+                    </span>
+                </a>
+            {% else %}
+            -
+            {% endif %}
+        {% endif %}
+        <ul class="results">
+        {% for poll in polls %}
+        {% if perms.motion.can_manage_motion or poll.has_votes %}
+            <li>
+                {% if perms.motion.can_manage_motion %}
+                    <strong>{{ forloop.counter }}. {% trans "Vote" %} </strong>
+                    <a class="icon edit" href="{% model_url poll %}" title="{% trans 'Edit Vote' %}">
+                            <span></span>
+                    </a>
+                    <a class="icon delete" href="{% model_url poll %}" title="{% trans 'Delete Vote' %}">
+                        <span></span>
+                    </a>
+                {% elif poll.has_votes %}
+                    <strong>{{ forloop.counter }}. {% trans "Vote" %}:</strong>
+                {% endif %}
+                <br>
+                {% if poll.has_votes %}
+                    {% with poll.get_options.0 as option %}
+                        <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.Yes }}<br>
+                        <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.No }}<br>
+                        <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ option.Abstain }}<br>
+                        <img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}<br>
+                        <div style="border-top: 1px solid; padding-top: 5px; margin: 5px 0; width: 10em;">
+                            <img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
+                        </div>
+                    {% endwith %}
+                    {% if perms.motion.can_manage_motion %}
+                        {% if forloop.last %}
+                        <a href="{% url 'motion_poll_create' motion.pk %}">
+                            <span class="button"><span class="icon statistics">{% trans 'New vote' %}</span></span>
+                        </a>
+                        {% endif %}
+                    {% endif %}
+                {% else %}
+                    {% if perms.motion.can_manage_motion %}
+                        <a href="{% model_url poll %}">
+                            <span class="button"><span class="icon statistics">{% trans 'Enter result' %}</span></span>
+                        </a>
+                     {% endif %}
+                {% endif %}
+            </li>
+        {% endif %}
+        {% endfor %}
+        </ul>
+        {% endwith %}
 {% endblock %}

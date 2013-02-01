@@ -22,13 +22,14 @@ from django.http import Http404
 from openslides.utils.pdf import stylesheet
 from openslides.utils.views import (
     TemplateView, RedirectView, UpdateView, CreateView, DeleteView, PDFView,
-    DetailView, ListView, FormView, QuestionMixin)
+    DetailView, ListView, FormView, QuestionMixin, SingleObjectMixin)
 from openslides.utils.template import Tab
 from openslides.utils.utils import html_strong
+from openslides.poll.views import PollFormView
 from openslides.projector.api import get_active_slide
 from openslides.projector.projector import Widget, SLIDE
 from openslides.config.models import config
-from .models import Motion, MotionSubmitter, MotionSupporter
+from .models import Motion, MotionSubmitter, MotionSupporter, MotionPoll
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
                     MotionCreateNewVersionMixin, ConfigForm)
 
@@ -81,14 +82,16 @@ class MotionMixin(object):
     def post_save(self, form):
         super(MotionMixin, self).post_save(form)
         # TODO: only delete and save neccessary submitters and supporter
-        self.object.submitter.all().delete()
-        self.object.supporter.all().delete()
-        MotionSubmitter.objects.bulk_create(
-            [MotionSubmitter(motion=self.object, person=person)
-             for person in form.cleaned_data['submitter']])
-        MotionSupporter.objects.bulk_create(
-            [MotionSupporter(motion=self.object, person=person)
-             for person in form.cleaned_data['supporter']])
+        if 'submitter' in form.cleaned_data:
+            self.object.submitter.all().delete()
+            MotionSubmitter.objects.bulk_create(
+                [MotionSubmitter(motion=self.object, person=person)
+                 for person in form.cleaned_data['submitter']])
+        if 'supporter' in form.cleaned_data:
+            self.object.supporter.all().delete()
+            MotionSupporter.objects.bulk_create(
+                [MotionSupporter(motion=self.object, person=person)
+                 for person in form.cleaned_data['supporter']])
 
     def get_form_class(self):
         form_classes = [BaseMotionForm]
@@ -178,6 +181,47 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
 
 motion_support = SupportView.as_view(support=True)
 motion_unsupport = SupportView.as_view(support=False)
+
+
+class PollCreateView(SingleObjectMixin, RedirectView):
+    permission_required = 'motion.can_manage_motion'
+    model = Motion
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super(PollCreateView, self).get(request, *args, **kwargs)
+
+    def pre_redirect(self, request, *args, **kwargs):
+        self.poll = self.object.create_poll()
+        messages.success(request, _("New vote was successfully created."))
+
+    def get_redirect_url(self, **kwargs):
+        return reverse('motion_poll_edit', args=[self.object.pk, self.poll.poll_number])
+
+poll_create = PollCreateView.as_view()
+
+
+class PollUpdateView(PollFormView):
+    permission_required = 'motion.can_manage_motion'
+    poll_class = MotionPoll
+    template_name = 'motion/poll_form.html'
+    success_url_name = 'motion_detail'
+
+    def get_object(self):
+        return MotionPoll.objects.filter(
+            motion=self.kwargs['pk'],
+            poll_number=self.kwargs['poll_number']).get()
+
+    def get_context_data(self, **kwargs):
+        context = super(PollUpdateView, self).get_context_data(**kwargs)
+        context.update({
+            'motion': self.poll.motion})
+        return context
+
+    def get_url_name_args(self):
+        return [self.poll.motion.pk]
+
+poll_edit = PollUpdateView.as_view()
 
 
 class Config(FormView):
