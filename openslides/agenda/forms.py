@@ -61,7 +61,7 @@ class ItemOrderForm(forms.Form, CssClassMixin):
         widget=forms.HiddenInput(attrs={'class': 'menu-plid'}),
     )
 
-class ConfigForm(forms.Form, CssClassMixin):
+class ConfigForm(CssClassMixin, forms.Form):
     agenda_start_event_time = forms.TimeField(
         widget=forms.TimeInput(format='%H:%M'),
         input_formats=['%H:%M'],
