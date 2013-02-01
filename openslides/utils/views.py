@@ -287,9 +287,24 @@ class CreateView(PermissionMixin, UrlMixin, ExtraContextMixin,
 
 
 class DeleteView(SingleObjectMixin, QuestionMixin, RedirectView):
+    question_url_name = None
+    success_url_name = None
+
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         return super(DeleteView, self).get(request, *args, **kwargs)
+
+    def get_redirect_url(self, **kwargs):
+        if self.request.method == 'GET':
+            if self.question_url_name is not None:
+                return reverse(self.question_url_name, args=self.get_url_name_args())
+            else:
+                return self.object.get_absolute_url()
+        else:
+            return reverse(self.success_url_name, args=self.get_url_name_args())
+
+    def get_url_name_args(self):
+        return [self.poll.motion.pk]
 
     def get_question(self):
         return _('Do you really want to delete %s?') % html_strong(self.object)
