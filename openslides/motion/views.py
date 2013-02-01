@@ -125,6 +125,17 @@ class MotionUpdateView(MotionMixin, UpdateView):
 motion_edit = MotionUpdateView.as_view()
 
 
+class MotionDeleteView(DeleteView):
+    """
+    Delete one Motion.
+    """
+    model = Motion
+    success_url_name = 'motion_list'
+    # TODO: Check permissions
+
+motion_delete = MotionDeleteView.as_view()
+
+
 class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
     """
     Classed based view to support or unsupport a motion. Use
@@ -304,3 +315,11 @@ def register_tab(request):
         permission=request.user.has_perm('motion.can_see_motion'),
         selected=selected,
     )
+
+def get_widgets(request):
+    return [Widget(
+        name='motions',
+        display_name=_('Motions'),
+        template='motion/widget.html',
+        context={'motions': Motion.objects.all()},
+        permission_required='projector.can_manage_projector')]

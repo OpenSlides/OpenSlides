@@ -54,7 +54,7 @@ class Motion(SlideMixin, models.Model):
     """
     The Motion-Model.
     """
-    prefix = "motion"  # Rename this in the slide-system
+    prefix = "motion"
 
     # TODO: Use this attribute for the default_version, if the permission system
     #       is deactivated. Maybe it has to be renamed.
@@ -278,7 +278,10 @@ class Motion(SlideMixin, models.Model):
         """
         Get the state of this motion. Return a State object.
         """
-        return get_state(self.state_id)
+        try:
+            return get_state(self.state_id)
+        except WorkflowError:
+            return None
 
     def set_state(self, next_state):
         """

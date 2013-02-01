@@ -33,6 +33,11 @@ urlpatterns = patterns('openslides.motion.views',
         name='motion_edit',
     ),
 
+    url(r'^(?P<pk>\d+)/del/$',
+        'motion_delete',
+        name='motion_delete',
+    ),
+
     url(r'^(?P<pk>\d+)/version/(?P<version_id>[1-9]\d*)/$',
         'motion_detail',
         name='motion_version_detail',
