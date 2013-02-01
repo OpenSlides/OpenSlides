@@ -162,7 +162,7 @@ class ItemDelete(DeleteView):
     """
     permission_required = 'agenda.can_manage_agenda'
     model = Item
-    url = 'item_overview'
+    success_url_name = 'item_overview'
 
     def get_answer_options(self):
         if self.object.children.exists():

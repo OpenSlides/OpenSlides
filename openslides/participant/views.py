@@ -163,8 +163,6 @@ class UserCreateView(CreateView):
     model = User
     context_object_name = 'edit_user'
     form_class = UserCreateForm
-    success_url = 'user_overview'
-    apply_url = 'user_edit'
 
     def manipulate_object(self, form):
         self.object.username = gen_username(
@@ -183,8 +181,6 @@ class UserUpdateView(UpdateView):
     model = User
     context_object_name = 'edit_user'
     form_class = UserUpdateForm
-    success_url = 'user_overview'
-    apply_url = 'participant_edit'
 
 
 class UserDeleteView(DeleteView):
@@ -193,7 +189,7 @@ class UserDeleteView(DeleteView):
     """
     permission_required = 'participant.can_manage_participant'
     model = User
-    url = 'user_overview'
+    success_url_name = 'user_overview'
 
     def pre_redirect(self, request, *args, **kwargs):
         if self.get_object() == self.request.user:
@@ -208,7 +204,7 @@ class SetUserStatusView(RedirectView, SingleObjectMixin):
     """
     permission_required = 'participant.can_manage_participant'
     allow_ajax = True
-    url = 'user_overview'
+    url_name = 'user_overview'
     model = User
 
     def pre_redirect(self, request, *args, **kwargs):
@@ -400,8 +396,6 @@ class GroupCreateView(CreateView):
     context_object_name = 'group'
     model = Group
     form_class = GroupForm
-    success_url = 'user_group_overview'
-    apply_url = 'user_group_edit'
 
     def get(self, request, *args, **kwargs):
         delete_default_permissions()
@@ -417,8 +411,6 @@ class GroupUpdateView(UpdateView):
     model = Group
     context_object_name = 'group'
     form_class = GroupForm
-    success_url = 'user_group_overview'
-    apply_url = 'user_group_edit'
 
     def get(self, request, *args, **kwargs):
         delete_default_permissions()
@@ -431,7 +423,7 @@ class GroupDeleteView(DeleteView):
     """
     permission_required = 'participant.can_manage_participant'
     model = Group
-    url = 'user_group_overview'
+    success_url_name = 'user_group_overview'
 
     def pre_redirect(self, request, *args, **kwargs):
         if self.get_object().name.lower() in ['anonymous', 'registered']:

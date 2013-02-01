@@ -307,7 +307,7 @@ class DeleteView(SingleObjectMixin, QuestionMixin, RedirectView):
             return reverse(self.success_url_name, args=self.get_url_name_args())
 
     def get_url_name_args(self):
-        return [self.poll.motion.pk]
+        return []
 
     def get_question(self):
         return _('Do you really want to delete %s?') % html_strong(self.object)
