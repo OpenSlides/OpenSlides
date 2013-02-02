@@ -212,6 +212,7 @@ class TemplateView(PermissionMixin, ExtraContextMixin, _TemplateView):
 class ListView(PermissionMixin, SetCookieMixin, ExtraContextMixin, _ListView):
     pass
 
+
 class AjaxView(PermissionMixin, AjaxMixin, View):
     def get(self, request, *args, **kwargs):
         return self.ajax_get(request, *args, **kwargs)
@@ -270,7 +271,7 @@ class ModelFormMixin(object):
 
 
 class UpdateView(PermissionMixin, UrlMixin, ExtraContextMixin,
-        ModelFormMixin, _UpdateView):
+                 ModelFormMixin, _UpdateView):
     def form_invalid(self, form):
         messages.error(self.request, _('Please check the form for errors.'))
         return super(UpdateView, self).form_invalid(form)
@@ -280,7 +281,7 @@ class UpdateView(PermissionMixin, UrlMixin, ExtraContextMixin,
 
 
 class CreateView(PermissionMixin, UrlMixin, ExtraContextMixin,
-        ModelFormMixin, _CreateView):
+                 ModelFormMixin, _CreateView):
     def form_invalid(self, form):
         messages.error(self.request, _('Please check the form for errors.'))
         return super(CreateView, self).form_invalid(form)

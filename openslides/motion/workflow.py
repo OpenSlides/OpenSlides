@@ -7,18 +7,20 @@ ugettext = lambda s: s
 
 _workflow = None
 
+
 class State(object):
     def __init__(self, id, name, next_states=[], create_poll=False, support=False,
-            edit_as_submitter=False):
+                 edit_as_submitter=False):
         self.id = id
         self.name = name
         self.next_states = next_states
         self.create_poll = create_poll
         self.support = support
-        self.edit_as_submitter=edit_as_submitter
+        self.edit_as_submitter = edit_as_submitter
 
     def __unicode__(self):
         return self.name
+
 
 class WorkflowError(Exception):
     pass
@@ -73,15 +75,13 @@ def populate_workflow(state, workflow):
 
 DUMMY_STATE = State('dummy', ugettext('Unknwon state'))
 
-default_workflow = State('pub', ugettext('Published'), support=True,
-                         edit_as_submitter=True, next_states=[
-        State('per', ugettext('Permitted'), create_poll=True,
-              edit_as_submitter=True, next_states=[
-            State('acc', ugettext('Accepted')),
-            State('rej', ugettext('Rejected')),
-            State('wit', ugettext('Withdrawed')),
-            State('adj', ugettext('Adjourned')),
-            State('noc', ugettext('Not Concerned')),
-            State('com', ugettext('Commited a bill')),
-            State('rev', ugettext('Needs Review'))]),
-        State('nop', ugettext('Rejected (not authorized)'))])
+default_workflow = State('pub', ugettext('Published'), support=True, edit_as_submitter=True, next_states=[
+    State('per', ugettext('Permitted'), create_poll=True, edit_as_submitter=True, next_states=[
+        State('acc', ugettext('Accepted')),
+        State('rej', ugettext('Rejected')),
+        State('wit', ugettext('Withdrawed')),
+        State('adj', ugettext('Adjourned')),
+        State('noc', ugettext('Not Concerned')),
+        State('com', ugettext('Commited a bill')),
+        State('rev', ugettext('Needs Review'))]),
+    State('nop', ugettext('Rejected (not authorized)'))])

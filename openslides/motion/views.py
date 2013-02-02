@@ -59,7 +59,7 @@ class MotionDetailView(DetailView):
         version_id = self.kwargs.get('version_id', None)
         if version_id is not None:
             try:
-                object.version = int(version_id) -1
+                object.version = int(version_id) - 1
             except IndexError:
                 raise Http404
         return object
@@ -161,7 +161,7 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
         Checks whether request.user can support or unsupport the motion.
         Returns True or False.
         """
-        return True #TODO
+        return True  # TODO
         allowed_actions = self.object.get_allowed_actions(request.user)
         if self.support and not 'support' in allowed_actions:
             messages.error(request, _('You can not support this motion.'))
@@ -267,7 +267,7 @@ class MotionSetStateView(SingleObjectMixin, RedirectView):
                 self.object.state = kwargs['state']
         except WorkflowError:
             messages.error(request, _('Can not set the state to: %s.')
-                                      % html_strong(kwargs['state']))
+                           % html_strong(kwargs['state']))
         else:
             self.object.save()
             messages.success(request, _('Motion status was set to: %s.'
@@ -337,6 +337,7 @@ def register_tab(request):
         permission=request.user.has_perm('motion.can_see_motion'),
         selected=selected,
     )
+
 
 def get_widgets(request):
     return [Widget(

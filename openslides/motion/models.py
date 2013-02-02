@@ -340,21 +340,21 @@ class Motion(SlideMixin, models.Model):
         * reset_state
         """
         actions = {
-            'edit': (self.is_submitter(person) and
-                     self.state.edit_as_submitter) or
-                    person.has_perm('motion.can_manage_motion'),
+            'edit': ((self.is_submitter(person) and
+                      self.state.edit_as_submitter) or
+                     person.has_perm('motion.can_manage_motion')),
 
-            'create_poll': person.has_perm('motion.can_manage_motion') and
-                           self.state.create_poll,
+            'create_poll': (person.has_perm('motion.can_manage_motion') and
+                            self.state.create_poll),
 
-            'support': self.state.support and
-                       config['motion_min_supporters'] > 0 and
-                       not self.is_submitter(person),
+            'support': (self.state.support and
+                        config['motion_min_supporters'] > 0 and
+                        not self.is_submitter(person)),
 
             'change_state': person.has_perm('motion.can_manage_motion'),
 
         }
-        actions['delete'] = actions['edit']  #TODO: Only if the motion has no number
+        actions['delete'] = actions['edit']  # TODO: Only if the motion has no number
         actions['unsupport'] = actions['support']
         actions['reset_state'] = 'change_state'
         return actions
