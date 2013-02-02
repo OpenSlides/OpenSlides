@@ -126,8 +126,10 @@ class MotionUpdateView(MotionMixin, UpdateView):
     """
     Update a motion.
     """
-    # TODO: set permissions
     model = Motion
+
+    def has_permission(self, request, *args, **kwargs):
+        return self.get_object().get_allowed_actions(request.user)['edit']
 
 motion_edit = MotionUpdateView.as_view()
 
@@ -138,7 +140,9 @@ class MotionDeleteView(DeleteView):
     """
     model = Motion
     success_url_name = 'motion_list'
-    # TODO: Check permissions
+
+    def has_permission(self, request, *args, **kwargs):
+        return self.get_object().get_allowed_actions(request.user)['delete']
 
 motion_delete = MotionDeleteView.as_view()
 
@@ -156,24 +160,23 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
         self.object = self.get_object()
         return super(SupportView, self).get(request, *args, **kwargs)
 
-    def check_allowed_actions(self, request):
+    def check_permission(self, request):
         """
         Checks whether request.user can support or unsupport the motion.
         Returns True or False.
         """
-        return True  # TODO
         allowed_actions = self.object.get_allowed_actions(request.user)
-        if self.support and not 'support' in allowed_actions:
+        if self.support and not allowed_actions['support']:
             messages.error(request, _('You can not support this motion.'))
             return False
-        elif not self.support and not 'unsupport' in allowed_actions:
+        elif not self.support and not allowed_actions['unsupport']:
             messages.error(request, _('You can not unsupport this motion.'))
             return False
         else:
             return True
 
     def pre_redirect(self, request, *args, **kwargs):
-        if self.check_allowed_actions(request):
+        if self.check_permission(request):
             super(SupportView, self).pre_redirect(request, *args, **kwargs)
 
     def get_question(self):
@@ -183,7 +186,7 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
             return _('Do you really want to unsupport this motion?')
 
     def case_yes(self):
-        if self.check_allowed_actions(self.request):
+        if self.check_permission(self.request):
             if self.support:
                 self.object.support(person=self.request.user)
             else:

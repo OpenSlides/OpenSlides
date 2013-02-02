@@ -11,13 +11,7 @@
 """
 
 import json
-
-try:
-    from cStringIO import StringIO
-except ImportError:
-    # Is this exception realy necessary?
-    from StringIO import StringIO
-
+from cStringIO import StringIO
 from reportlab.platypus import SimpleDocTemplate, Spacer
 from reportlab.lib.units import cm
 
