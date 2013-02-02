@@ -64,6 +64,11 @@ class MotionDetailView(DetailView):
                 raise Http404
         return object
 
+    def get_context_data(self, **kwargs):
+        context = super(MotionDetailView, self).get_context_data(**kwargs)
+        context['allowed_actions'] = self.object.get_allowed_actions(self.request.user)
+        return context
+
 motion_detail = MotionDetailView.as_view()
 
 

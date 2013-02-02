@@ -15,6 +15,7 @@ from django.utils.translation import ugettext as _
 
 from openslides.config.signals import default_config_value
 
+
 @receiver(default_config_value, dispatch_uid="motion_default_config")
 def default_config(sender, key, **kwargs):
     return {

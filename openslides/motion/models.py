@@ -30,7 +30,8 @@ from openslides.projector.api import register_slidemodel
 from openslides.projector.models import SlideMixin
 from openslides.agenda.models import Item
 
-from .workflow import motion_workflow_choices, get_state, State, WorkflowError
+from .workflow import (motion_workflow_choices, get_state, State, WorkflowError,
+                       DUMMY_STATE)
 
 
 # TODO: Save submitter and supporter in the same table
@@ -237,6 +238,9 @@ class Motion(SlideMixin, models.Model):
         except IndexError:
             return self.new_version
 
+    def is_submitter(self, person):
+        self.submitter.filter(person=person).exists()
+
     def is_supporter(self, person):
         return self.supporter.filter(person=person).exists()
 
@@ -266,7 +270,7 @@ class Motion(SlideMixin, models.Model):
         Create a new poll for this motion
         """
         # TODO: auto increment the poll_number in the Database
-        if self.state.poll:
+        if self.state.create_poll:
             poll_number = self.polls.aggregate(Max('poll_number'))['poll_number__max'] or 0
             poll = MotionPoll.objects.create(motion=self, poll_number=poll_number + 1)
             poll.set_options()
@@ -281,7 +285,7 @@ class Motion(SlideMixin, models.Model):
         try:
             return get_state(self.state_id)
         except WorkflowError:
-            return None
+            return DUMMY_STATE
 
     def set_state(self, next_state):
         """
@@ -320,6 +324,40 @@ class Motion(SlideMixin, models.Model):
     ## def get_agenda_title_supplement(self):
         ## number = self.number or '<i>[%s]</i>' % ugettext('no number')
         ## return '(%s %s)' % (ugettext('motion'), number)
+
+    def get_allowed_actions(self, person):
+        """
+        Gets a dictonary with all allowed actions for a specific person.
+
+        The dictonary contains the following actions.
+
+        * edit
+        * delete
+        * create_poll
+        * support
+        * unsupport
+        * change_state
+        * reset_state
+        """
+        actions = {
+            'edit': (self.is_submitter(person) and
+                     self.state.edit_as_submitter) or
+                    person.has_perm('motion.can_manage_motion'),
+
+            'create_poll': person.has_perm('motion.can_manage_motion') and
+                           self.state.create_poll,
+
+            'support': self.state.support and
+                       config['motion_min_supporters'] > 0 and
+                       not self.is_submitter(person),
+
+            'change_state': person.has_perm('motion.can_manage_motion'),
+
+        }
+        actions['delete'] = actions['edit']  #TODO: Only if the motion has no number
+        actions['unsupport'] = actions['support']
+        actions['reset_state'] = 'change_state'
+        return actions
 
 
 class MotionVersion(models.Model):
