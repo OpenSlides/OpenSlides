@@ -251,8 +251,7 @@ class Motion(SlideMixin, models.Model):
         if self.state.support:
             if not self.is_supporter(person):
                 MotionSupporter(motion=self, person=person).save()
-                #self.writelog(_("Supporter: +%s") % (person))
-            # TODO: Raise a precise exception for the view in else-clause
+                self.write_log(ugettext_noop("Supporter: +%s") % person)
         else:
             raise WorkflowError("You can not support a motion in state %s" % self.state.name)
 
@@ -262,6 +261,7 @@ class Motion(SlideMixin, models.Model):
         """
         if self.state.support:
             self.supporter.filter(person=person).delete()
+            self.write_log(ugettext_noop("Supporter: -%s") % person)
         else:
             raise WorkflowError("You can not unsupport a motion in state %s" % self.state.name)
 
@@ -269,8 +269,8 @@ class Motion(SlideMixin, models.Model):
         """
         Create a new poll for this motion
         """
-        # TODO: auto increment the poll_number in the Database
         if self.state.create_poll:
+            # TODO: auto increment the poll_number in the Database
             poll_number = self.polls.aggregate(Max('poll_number'))['poll_number__max'] or 0
             poll = MotionPoll.objects.create(motion=self, poll_number=poll_number + 1)
             poll.set_options()
@@ -293,7 +293,7 @@ class Motion(SlideMixin, models.Model):
 
         next_state has to be a valid state id or State object.
         """
-        if type(next_state) is not State:
+        if not isinstance(next_state, State):
             next_state = get_state(next_state)
         if next_state in self.state.next_states:
             self.state_id = next_state.id
@@ -359,6 +359,9 @@ class Motion(SlideMixin, models.Model):
         actions['reset_state'] = 'change_state'
         return actions
 
+    def write_log(self, message, person=None):
+        MotionLog.objects.create(motion=self, message=message, person=person)
+
 
 class MotionVersion(models.Model):
     title = models.CharField(max_length=255, verbose_name=ugettext_lazy("Title"))
@@ -399,6 +402,23 @@ class Comment(models.Model):
     text = models.TextField()
     author = PersonField()
     creation_time = models.DateTimeField(auto_now=True)
+
+
+class MotionLog(models.Model):
+    motion = models.ForeignKey(Motion, related_name='log_messages')
+    message = models.CharField(max_length=255)
+    person = PersonField(null=True)
+    time = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-time']
+
+    def __unicode__(self):
+        # TODO: write time in the local time format.
+        if self.person is None:
+            return "%s %s" % (self.time, _(self.message))
+        else:
+            return "%s %s by %s" % (self.time, _(self.message), self.person)
 
 
 class MotionVote(BaseVote):

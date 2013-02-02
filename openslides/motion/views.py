@@ -15,7 +15,7 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Model
-from django.utils.translation import ugettext as _, ugettext_lazy
+from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
 from django.views.generic.detail import SingleObjectMixin
 from django.http import Http404
 
@@ -119,6 +119,11 @@ class MotionCreateView(MotionMixin, CreateView):
     permission_required = 'motion.can_create_motion'
     model = Motion
 
+    def form_valid(self, form):
+        value = super(MotionCreateView, self).form_valid(form)
+        self.object.write_log(ugettext_noop('Motion created'), self.request.user)
+        return value
+
 motion_create = MotionCreateView.as_view()
 
 
@@ -130,6 +135,11 @@ class MotionUpdateView(MotionMixin, UpdateView):
 
     def has_permission(self, request, *args, **kwargs):
         return self.get_object().get_allowed_actions(request.user)['edit']
+
+    def form_valid(self, form):
+        value = super(MotionUpdateView, self).form_valid(form)
+        self.object.write_log(ugettext_noop('Motion updated'), self.request.user)
+        return value
 
 motion_edit = MotionUpdateView.as_view()
 
@@ -268,9 +278,8 @@ class MotionSetStateView(SingleObjectMixin, RedirectView):
                 self.object.reset_state()
             else:
                 self.object.state = kwargs['state']
-        except WorkflowError:
-            messages.error(request, _('Can not set the state to: %s.')
-                           % html_strong(kwargs['state']))
+        except WorkflowError, e:
+            messages.error(request, e)
         else:
             self.object.save()
             messages.success(request, _('Motion status was set to: %s.'

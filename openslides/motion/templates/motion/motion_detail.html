@@ -79,4 +79,13 @@
             </a>
         {% endif %}
     {% endwith %}
+
+
+<h4>log</h4>
+<ul>
+    {% for message in motion.log_messages.all %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+
 {% endblock %}
