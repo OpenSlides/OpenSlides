@@ -144,6 +144,17 @@ class QuestionMixin(object):
     question = ugettext_lazy('Are you sure?')
     success_message = ugettext_lazy('Thank you for your answer')
     answer_options = [('yes', ugettext_lazy("Yes")), ('no', ugettext_lazy("No"))]
+    question_url_name = None
+    success_url_name = None
+
+    def get_redirect_url(self, **kwargs):
+        if self.request.method == 'GET':
+            return reverse(self.question_url_name, args=self.get_url_name_args())
+        else:
+            return reverse(self.success_url_name, args=self.get_url_name_args())
+
+    def get_url_name_args(self):
+        return []
 
     def pre_redirect(self, request, *args, **kwargs):
         # Prints the question in a GET request
@@ -293,16 +304,10 @@ class DeleteView(SingleObjectMixin, QuestionMixin, RedirectView):
         return super(DeleteView, self).get(request, *args, **kwargs)
 
     def get_redirect_url(self, **kwargs):
-        if self.request.method == 'GET':
-            if self.question_url_name is not None:
-                return reverse(self.question_url_name, args=self.get_url_name_args())
-            else:
-                return self.object.get_absolute_url()
+        if self.request.method == 'GET' and self.question_url_name is None:
+            return self.object.get_absolute_url()
         else:
-            return reverse(self.success_url_name, args=self.get_url_name_args())
-
-    def get_url_name_args(self):
-        return []
+            return super(DeleteView, self).get_redirect_url(**kwargs)
 
     def get_question(self):
         return _('Do you really want to delete %s?') % html_strong(self.object)
