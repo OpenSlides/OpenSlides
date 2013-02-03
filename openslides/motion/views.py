@@ -30,10 +30,12 @@ from openslides.projector.api import get_active_slide
 from openslides.projector.projector import Widget, SLIDE
 from openslides.config.models import config
 from openslides.agenda.models import Item
+
 from .models import Motion, MotionSubmitter, MotionSupporter, MotionPoll, MotionVersion
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
                     MotionCreateNewVersionMixin, ConfigForm)
 from .workflow import WorkflowError
+from .pdf import motions_to_pdf, motion_to_pdf
 
 
 class MotionListView(ListView):
@@ -274,7 +276,7 @@ class PollCreateView(SingleObjectMixin, RedirectView):
 
     def pre_redirect(self, request, *args, **kwargs):
         self.poll = self.object.create_poll()
-        self.object.write_log(ugettext_noop("Poll created"), user)
+        self.object.write_log(ugettext_noop("Poll created"), request.user)
         messages.success(request, _("New vote was successfully created."))
 
     def get_redirect_url(self, **kwargs):
@@ -368,6 +370,33 @@ class CreateAgendaItemView(SingleObjectMixin, RedirectView):
         self.object.write_log(ugettext_noop('Created Agenda Item'), self.request.user)
 
 create_agenda_item = CreateAgendaItemView.as_view()
+
+
+class MotionPDFView(SingleObjectMixin, PDFView):
+    permission_required = 'motion.can_manage_motion'
+    model = Motion
+    top_space = 0
+    print_all_motions = False
+
+    def get(self, request, *args, **kwargs):
+        if not self.print_all_motions:
+            self.object = self.get_object()
+        return super(MotionPDFView, self).get(request, *args, **kwargs)
+
+    def get_filename(self):
+        if self.print_all_motions:
+            return _("Motions")
+        else:
+            return _("Motion: %s") % unicode(self.object)
+
+    def append_to_pdf(self, pdf):
+        if self.print_all_motions:
+            motions_to_pdf(pdf)
+        else:
+            motion_to_pdf(pdf, self.object)
+
+motion_list_pdf = MotionPDFView.as_view(print_all_motions=True)
+motion_detail_pdf = MotionPDFView.as_view(print_all_motions=False)
 
 
 class Config(FormView):

@@ -92,4 +92,14 @@ urlpatterns = patterns('openslides.motion.views',
         'create_agenda_item',
         name='motion_create_agenda',
     ),
+
+    url(r'^pdf/$',
+        'motion_list_pdf',
+        name='motion_list_pdf',
+    ),
+
+    url(r'^(?P<pk>\d+)/pdf/$',
+        'motion_detail_pdf',
+        name='motion_detail_pdf',
+    ),
 )
