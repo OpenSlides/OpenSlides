@@ -341,6 +341,7 @@ class CustomSlideCreateView(CreateView):
     template_name = 'projector/new.html'
     model = ProjectorSlide
     context_object_name = 'customslide'
+    success_url_name = 'dashboard'
 
 
 class CustomSlideUpdateView(UpdateView):
@@ -351,6 +352,7 @@ class CustomSlideUpdateView(UpdateView):
     template_name = 'projector/new.html'
     model = ProjectorSlide
     context_object_name = 'customslide'
+    success_url_name = 'dashboard'
 
 
 class CustomSlideDeleteView(DeleteView):
@@ -359,7 +361,7 @@ class CustomSlideDeleteView(DeleteView):
     """
     permission_required = 'projector.can_manage_projector'
     model = ProjectorSlide
-    url_name = 'dashboard'
+    success_url_name = 'dashboard'
 
 
 def register_tab(request):

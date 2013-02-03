@@ -33,6 +33,7 @@ class GeneralConfig(FormView):
     permission_required = 'config.can_manage_config'
     form_class = GeneralConfigForm
     template_name = 'config/general.html'
+    success_url_name = 'config_general'
 
     def get_initial(self):
         return {

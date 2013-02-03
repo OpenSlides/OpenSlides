@@ -635,6 +635,7 @@ class Config(FormView):
     permission_required = 'config.can_manage_config'
     form_class = ConfigForm
     template_name = 'assignment/config.html'
+    success_url_name = 'config_assignment'
 
     def get_initial(self):
         return {
@@ -685,10 +686,9 @@ def register_tab(request):
 
 
 def get_widgets(request):
-    return [
-        Widget(
-            name='assignments',
-            display_name=_('Elections'),
-            template='assignment/widget.html',
-            context={'assignments': Assignment.objects.all()},
-            permission_required='projector.can_manage_projector')]
+    return [Widget(
+        name='assignments',
+        display_name=_('Elections'),
+        template='assignment/widget.html',
+        context={'assignments': Assignment.objects.all()},
+        permission_required='projector.can_manage_projector')]

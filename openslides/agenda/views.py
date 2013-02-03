@@ -91,7 +91,7 @@ class SetClosed(RedirectView, SingleObjectMixin):
     """
     permission_required = 'agenda.can_manage_agenda'
     allow_ajax = True
-    url = 'item_overview'
+    url_name = 'item_overview'
     model = Item
 
     def get_ajax_context(self, **kwargs):
@@ -123,16 +123,7 @@ class ItemUpdate(UpdateView):
     model = Item
     context_object_name = 'item'
     form_class = ItemForm
-    success_url = 'item_overview'
-    apply_url = 'item_edit'
-
-    def get_success_url(self):
-        messages.success(
-            self.request, _("Item %s was successfully modified.")
-            % html_strong(self.request.POST['title']))
-        if 'apply' in self.request.POST:
-            return ''
-        return reverse(super(UpdateView, self).get_success_url())
+    success_url_name = 'item_overview'
 
 
 class ItemCreate(CreateView):
@@ -144,16 +135,7 @@ class ItemCreate(CreateView):
     model = Item
     context_object_name = 'item'
     form_class = ItemForm
-    success_url = 'item_overview'
-    apply_url = 'item_edit'
-
-    def get_success_url(self):
-        messages.success(
-            self.request, _("Item %s was successfully created.")
-            % html_strong(self.request.POST['title']))
-        if 'apply' in self.request.POST:
-            return reverse(self.get_apply_url(), args=[self.object.id])
-        return reverse(super(CreateView, self).get_success_url())
+    success_url_name = 'item_overview'
 
 
 class ItemDelete(DeleteView):
@@ -162,6 +144,7 @@ class ItemDelete(DeleteView):
     """
     permission_required = 'agenda.can_manage_agenda'
     model = Item
+    question_url_name = 'item_overview'
     success_url_name = 'item_overview'
 
     def get_answer_options(self):
@@ -221,12 +204,11 @@ def get_widgets(request):
     """
     return the agenda widget for the projector-tab.
     """
-    return [
-        Widget(
-            name='agenda',
-            display_name=_('Agenda'),
-            template='agenda/widget.html',
-            context={
-                'agenda': SLIDE['agenda'],
-                'items': Item.objects.all()},
-            permission_required='projector.can_manage_projector')]
+    return [Widget(
+        name='agenda',
+        display_name=_('Agenda'),
+        template='agenda/widget.html',
+        context={
+            'agenda': SLIDE['agenda'],
+            'items': Item.objects.all()},
+        permission_required='projector.can_manage_projector')]

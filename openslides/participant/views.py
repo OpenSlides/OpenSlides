@@ -163,6 +163,7 @@ class UserCreateView(CreateView):
     model = User
     context_object_name = 'edit_user'
     form_class = UserCreateForm
+    success_url_name = 'user_overview'
 
     def manipulate_object(self, form):
         self.object.username = gen_username(
@@ -181,6 +182,7 @@ class UserUpdateView(UpdateView):
     model = User
     context_object_name = 'edit_user'
     form_class = UserUpdateForm
+    success_url_name = 'user_overview'
 
 
 class UserDeleteView(DeleteView):
@@ -396,6 +398,7 @@ class GroupCreateView(CreateView):
     context_object_name = 'group'
     model = Group
     form_class = GroupForm
+    success_url_name = 'user_group_overview'
 
     def get(self, request, *args, **kwargs):
         delete_default_permissions()
@@ -411,6 +414,7 @@ class GroupUpdateView(UpdateView):
     model = Group
     context_object_name = 'group'
     form_class = GroupForm
+    success_url_name = 'user_group_overview'
 
     def get(self, request, *args, **kwargs):
         delete_default_permissions()
@@ -439,6 +443,7 @@ class Config(FormView):
     permission_required = 'config.can_manage_config'
     form_class = ConfigForm
     template_name = 'participant/config.html'
+    success_url_name = 'config_participant'
 
     def get_initial(self):
         return {
