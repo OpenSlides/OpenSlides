@@ -197,10 +197,13 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
 
     def case_yes(self):
         if self.check_permission(self.request):
+            user = self.request.user
             if self.support:
-                self.object.support(person=self.request.user)
+                self.object.support(person=user)
+                self.object.write_log(ugettext_noop("Supporter: +%s") % user, user)
             else:
-                self.object.unsupport(person=self.request.user)
+                self.object.unsupport(person=user)
+                self.object.write_log(ugettext_noop("Supporter: -%s") % user, user)
 
     def get_success_message(self):
         if self.support:
@@ -225,6 +228,7 @@ class PollCreateView(SingleObjectMixin, RedirectView):
 
     def pre_redirect(self, request, *args, **kwargs):
         self.poll = self.object.create_poll()
+        self.object.write_log(ugettext_noop("Poll created"), user)
         messages.success(request, _("New vote was successfully created."))
 
     def get_redirect_url(self, **kwargs):
@@ -256,11 +260,20 @@ class PollUpdateView(PollMixin, PollFormView):
             'motion': self.poll.motion})
         return context
 
+    def form_valid(self, form):
+        value = super(PollUpdateView, self).form_valid(form)
+        self.object.write_log(ugettext_noop('Poll updated'), self.request.user)
+        return value
+
 poll_edit = PollUpdateView.as_view()
 
 
 class PollDeleteView(PollMixin, DeleteView):
     model = MotionPoll
+
+    def case_yes(self):
+        super(PollDeleteView, self).case_yes()
+        self.object.write_log(ugettext_noop('Poll deleted'), self.request.user)
 
 poll_delete = PollDeleteView.as_view()
 
@@ -282,6 +295,9 @@ class MotionSetStateView(SingleObjectMixin, RedirectView):
             messages.error(request, e)
         else:
             self.object.save()
+            # TODO: the state is not translated
+            self.object.write_log(ugettext_noop('Changed state to %s') %
+                                  self.object.state.name, self.request.user)
             messages.success(request, _('Motion status was set to: %s.'
                                         % html_strong(self.object.state)))
 
@@ -303,6 +319,7 @@ class CreateAgendaItemView(SingleObjectMixin, RedirectView):
 
     def pre_redirect(self, request, *args, **kwargs):
         self.item = Item.objects.create(related_sid=self.object.sid)
+        self.object.write_log(ugettext_noop('Created Agenda Item'), self.request.user)
 
 create_agenda_item = CreateAgendaItemView.as_view()
 

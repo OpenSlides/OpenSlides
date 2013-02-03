@@ -251,7 +251,6 @@ class Motion(SlideMixin, models.Model):
         if self.state.support:
             if not self.is_supporter(person):
                 MotionSupporter(motion=self, person=person).save()
-                self.write_log(ugettext_noop("Supporter: +%s") % person)
         else:
             raise WorkflowError("You can not support a motion in state %s" % self.state.name)
 
@@ -261,7 +260,6 @@ class Motion(SlideMixin, models.Model):
         """
         if self.state.support:
             self.supporter.filter(person=person).delete()
-            self.write_log(ugettext_noop("Supporter: -%s") % person)
         else:
             raise WorkflowError("You can not unsupport a motion in state %s" % self.state.name)
 
