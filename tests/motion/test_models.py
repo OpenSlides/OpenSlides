@@ -65,7 +65,7 @@ class ModelTest(TestCase):
             self._title
         self.assertEqual(motion.title, 'v3')
 
-        motion.version = 0
+        motion.version = 1
         self.assertEqual(motion.title, 'v1')
 
         motion.version = v2_version

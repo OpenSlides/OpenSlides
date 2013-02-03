@@ -90,7 +90,11 @@ class Motion(SlideMixin, models.Model):
             self.reset_state()
 
         super(Motion, self).save(*args, **kwargs)
+        # Find out if the version data has changed
         for attr in ['title', 'text', 'reason']:
+            if not self.versions.exists():
+                new_data = True
+                break
             if getattr(self, attr) != getattr(self.last_version, attr):
                 new_data = True
                 break
@@ -103,27 +107,31 @@ class Motion(SlideMixin, models.Model):
             del self._new_version
             version.motion = self  # Test if this line is realy neccessary.
         elif new_data and not need_new_version:
-            # TODO: choose an explicit version
             version = self.last_version
         else:
             # We do not need to save the motion version
             return
 
+        # Save title, text and reason in the version object
         for attr in ['title', 'text', 'reason']:
             _attr = '_%s' % attr
             try:
                 setattr(version, attr, getattr(self, _attr))
                 delattr(self, _attr)
             except AttributeError:
-                # If the _attr was not set, use the value from last_version
-                setattr(version, attr, getattr(self.last_version, attr))
+                if self.versions.exists():
+                    # If the _attr was not set, use the value from last_version
+                    setattr(version, attr, getattr(self.last_version, attr))
 
+        # Set version_number of the new Version (if neccessary) and save it into the DB
         if version.id is None:
             # TODO: auto increment the version_number in the Database
             version_number = self.versions.aggregate(Max('version_number'))['version_number__max'] or 0
             version.version_number = version_number + 1
         version.save()
 
+        # Set the active Version of this motion. This has to be done after the
+        # version is saved to the db
         if not self.state.version_permission or self.active_version is None:
             self.active_version = version
             self.save()
