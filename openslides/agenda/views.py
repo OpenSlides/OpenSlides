@@ -210,6 +210,7 @@ def register_tab(request):
     selected = request.path.startswith('/agenda/')
     return Tab(
         title=_('Agenda'),
+        app='agenda',
         url=reverse('item_overview'),
         permission=(request.user.has_perm('agenda.can_see_agenda') or
                     request.user.has_perm('agenda.can_manage_agenda')),

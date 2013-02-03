@@ -5,26 +5,17 @@
  * :license: GNU GPL, see LICENSE for more details.
  */
 
-// function that writes the portlet list order to a cookie
+// function that writes the widget list order to a cookie
 function saveOrder() {
     $(".column").each(function(index, value){
         var colid = value.id;
         var cookieName = "cookie-" + colid;
         // Get the order for this column.
         var order = $('#' + colid).sortable("toArray");
-        // For each portlet in the column
-        for ( var i = 0, n = order.length; i < n; i++ ) {
-            // Determine if it is 'opened' or 'closed'
-            var v = $('#' + order[i] ).find('.portlet-content').is(':visible');
-            // Modify the array we're saving to indicate what's open and
-            //  what's not.
-            order[i] = order[i] + ":" + v;
-        }
         $.cookie(cookieName, order, { path: "/", expiry: new Date(2012, 1, 1)});
     });
 }
-
-// function that restores the portlet list order from a cookie
+// function that restores the widget list order from a cookie
 function restoreOrder() {
     $(".column").each(function(index, value) {
         var colid = value.id;
@@ -33,20 +24,10 @@ function restoreOrder() {
         if ( cookie == null ) { return; }
         var IDs = cookie.split(",");
         for (var i = 0, n = IDs.length; i < n; i++ ) {
-            var toks = IDs[i].split(":");
-            if ( toks.length != 2 ) {
-                continue;
-            }
-            var portletID = toks[0];
-            var visible = toks[1]
-            var portlet = $(".column")
-                .find('#' + portletID)
+            var widgetID = IDs[i];
+            var widget = $(".column")
+                .find('#' + widgetID)
                 .appendTo($('#' + colid));
-            if (visible === 'false') {
-                portlet.find(".ui-icon").toggleClass("ui-icon-minus");
-                portlet.find(".ui-icon").toggleClass("ui-icon-plus");
-                portlet.find(".portlet-content").hide();
-            }
         }
     });
 }
@@ -57,23 +38,7 @@ $(function() {
         stop: function() { saveOrder(); }
     });
 
-    $(".portlet")
-         .addClass("ui-widget ui-widget-content")
-         .addClass("ui-helper-clearfix ui-corner-all")
-         .find(".portlet-header")
-         .addClass("ui-widget-header ui-corner-all")
-         .prepend('<span class="ui-icon ui-icon-minus"></span>')
-         .end()
-         .find(".portlet-content");
-
     restoreOrder();
-
-    $(".portlet-header .ui-icon").click(function() {
-        $(this).toggleClass("ui-icon-minus");
-        $(this).toggleClass("ui-icon-plus");
-        $(this).parents(".portlet:first").find(".portlet-content").toggle();
-        saveOrder(); // This is important
-    });
 
     if ($.browser.msie) {
         if ($.browser.version >= 8.0 && $.browser.version < 9.0)
@@ -84,27 +49,6 @@ $(function() {
         }
         $( "#iframe" ).css('zoom', '0.25');
     }
-
-    // activate an element to show it on projector
-    $('.activate_link').click(function(event) {
-        event.preventDefault();
-        var link = $(this);
-        $.ajax({
-            type: 'GET',
-            url: $(this).attr('href'),
-            dataType: 'json',
-            success: function(data) {
-                $('.activate_link').removeClass('active');
-                $('li').removeClass('activeline');
-                $('div').removeClass('activeline');
-                link.addClass('active');
-                link.parent().addClass('activeline');
-            },
-            error: function () {
-                alert("Ajax Error");
-            }
-        });
-    });
 
     $('a.overlay').click(function(event) {
         event.preventDefault();

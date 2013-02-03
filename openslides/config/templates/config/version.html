@@ -5,7 +5,9 @@
 {% block title %}{{ block.super }} – {% trans "Version" %}{% endblock %}
 
 {% block content %}
-    <h1>{% trans "Version" %}</h1>
+    <h1>{% trans "Version" %}
+        {% block config_submenu %}{{ block.super }}{% endblock %}
+    </h1>
 
     {% for version in versions %}
         <p>{{ version.0 }} {% trans "Version" %}: {{ version.1 }}</p>

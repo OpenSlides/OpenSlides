@@ -437,6 +437,7 @@ def register_tab(request):
     selected = request.path.startswith('/motion/')
     return Tab(
         title=_('Motions'),
+        app='motion',
         url=reverse('motion_list'),
         permission=request.user.has_perm('motion.can_see_motion'),
         selected=selected,

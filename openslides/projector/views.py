@@ -369,6 +369,7 @@ def register_tab(request):
     selected = request.path.startswith('/projector/')
     return Tab(
         title=_('Dashboard'),
+        app='dashboard',
         url=reverse('dashboard'),
         permission=request.user.has_perm('projector.can_see_dashboard'),
         selected=selected,

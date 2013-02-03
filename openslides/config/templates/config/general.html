@@ -5,19 +5,26 @@
 {% block title %}{{ block.super }} – {% trans "General settings" %}{% endblock %}
 
 {% block content %}
-    <h1>{% trans "General settings" %}</h1>
+    <h1>
+        {% trans "Configuration" %}
+        <small>{% trans "General" %}</small>
+        {% block config_submenu %}{{ block.super }}{% endblock %}
+    </h1>
     <form action="" method="post">{% csrf_token %}
     <fieldset>
         <legend>{% trans "Event" %}</legend>
         {% for field in form %}
             {% if "id_event" in field.label_tag %}
-            <p>
-            {{ field.errors }}
-            {{ field.required }}
-            {{ field.label_tag }}
-            {{ field }}
-            {{ field.help_text }}
-            </p>
+            <div class="control-group{% if field.errors %} error{% endif%}">
+                <label for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}:</label>
+                {{ field }}
+                {% if field.errors %}
+                    <span class="help-inline">{{ field.errors }}</span>
+                {% endif %}
+                {% if field.help_text %}
+                    <span class="help-inline">{{ field.help_text }}</span>
+                {% endif %}
+            </div>
             {% endif %}
         {% endfor %}
     </fieldset>
@@ -26,13 +33,16 @@
         <legend>{% trans "Welcome Widget" %}</legend>
         {% for field in form %}
             {% if "id_welcome" in field.label_tag %}
-            <p>
-            {{ field.errors }}
-            {{ field.required }}
-            {{ field.label_tag }}
-            {{ field }}
-            {{ field.help_text }}
-            </p>
+            <div class="control-group{% if field.errors %} error{% endif%}">
+                <label for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}:</label>
+                {{ field }}
+                {% if field.errors %}
+                    <span class="help-inline">{{ field.errors }}</span>
+                {% endif %}
+                {% if field.help_text %}
+                    <span class="help-inline">{{ field.help_text }}</span>
+                {% endif %}
+            </div>
             {% endif %}
         {% endfor %}
     </fieldset>
@@ -41,25 +51,25 @@
         <legend>{% trans "System" %}</legend>
         {% for field in form %}
             {% if "id_system" in field.label_tag %}
-            <p>
-            {{ field.errors }}
-            {{ field.required }}
-            {{ field.label_tag }}
-            {{ field }}
-            {{ field.help_text }}
-            </p>
+            <div class="control-group{% if field.errors %} error{% endif%}">
+                <label for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}:</label>
+                {{ field }}
+                {% if field.errors %}
+                    <span class="help-inline">{{ field.errors }}</span>
+                {% endif %}
+                {% if field.help_text %}
+                    <span class="help-inline">{{ field.help_text }}</span>
+                {% endif %}
+            </div>
             {% endif %}
         {% endfor %}
     </fieldset>
     <p>
-    <button class="button" type="submit">
-        <span class="icon ok">{% trans 'Save' %}</span>
-    </button>
-    <a href="{% url 'config_general' %}">
-    <button class="button" type="button" onclick="window.location='{% url 'config_general' %}'">
-        <span class="icon cancel">{% trans 'Cancel' %}</span>
-    </button>
+    {% include "formbuttons_save.html" %}
+    <a href='{% url 'config_general' %}' class="btn">
+        {% trans 'Cancel' %}
     </a>
     </p>
+    <small>* {% trans "required" %}</small>
     </form>
 {% endblock %}

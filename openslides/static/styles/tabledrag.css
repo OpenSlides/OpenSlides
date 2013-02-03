@@ -9,8 +9,6 @@ body.drag {
 .draggable a.tabledrag-handle {
   cursor: move;
   float: left; /* LTR */
-  height: 1.7em;
-  margin: -0.4em 0 -0.4em -0.5em; /* LTR */
   padding-right: 0.5em ; /* LTR */
   text-decoration: none;
 }
@@ -21,7 +19,7 @@ a.tabledrag-handle:hover {
   text-decoration: none;
 }
 a.tabledrag-handle .handle {
-  background: url("../images/draggable.png") no-repeat scroll 0 0 transparent;
+  background: url("../img/draggable.png") no-repeat scroll 0 0 transparent;
   height: 13px;
   margin-top: 4px;
   width: 13px;
@@ -37,13 +35,13 @@ div.indentation {
   width: 10px;
 }
 div.tree-child {
-  background: url(../images/tree.png) no-repeat 11px center; /* LTR */
+  background: url(../img/tree.png) no-repeat 11px center; /* LTR */
 }
 div.tree-child-last {
-  background: url(../images/tree-bottom.png) no-repeat 11px center; /* LTR */
+  background: url(../img/tree-bottom.png) no-repeat 11px center; /* LTR */
 }
 div.tree-child-horizontal {
-  background: url(../images/tree.png) no-repeat -11px center;
+  background: url(../img/tree.png) no-repeat -11px center;
 }
 .tabledrag-toggle-weight-wrapper {
   text-align: right; /* LTR */
