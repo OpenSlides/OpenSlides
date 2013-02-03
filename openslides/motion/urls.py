@@ -38,9 +38,19 @@ urlpatterns = patterns('openslides.motion.views',
         name='motion_delete',
     ),
 
-    url(r'^(?P<pk>\d+)/version/(?P<version_id>[1-9]\d*)/$',
+    url(r'^(?P<pk>\d+)/version/(?P<version_number>\d+)/$',
         'motion_detail',
         name='motion_version_detail',
+    ),
+
+    url(r'^(?P<pk>\d+)/version/(?P<version_number>\d+)/permit/$',
+        'version_permit',
+        name='motion_version_permit',
+    ),
+
+    url(r'^(?P<pk>\d+)/version/(?P<version_number>\d+)/reject/$',
+        'version_reject',
+        name='motion_version_reject',
     ),
 
     url(r'^(?P<pk>\d+)/support/$',

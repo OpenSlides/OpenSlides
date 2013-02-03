@@ -57,10 +57,8 @@ class Motion(SlideMixin, models.Model):
     """
     prefix = "motion"
 
-    # TODO: Use this attribute for the default_version, if the permission system
-    #       is deactivated. Maybe it has to be renamed.
-    permitted_version = models.ForeignKey(
-        'MotionVersion', null=True, blank=True, related_name="permitted")
+    active_version = models.ForeignKey(
+        'MotionVersion', null=True, related_name="active_version")
     state_id = models.CharField(max_length=3)
     # Log (Translatable)
     identifier = models.CharField(max_length=255, null=True, blank=True,
@@ -110,6 +108,7 @@ class Motion(SlideMixin, models.Model):
         else:
             # We do not need to save the motion version
             return
+
         for attr in ['title', 'text', 'reason']:
             _attr = '_%s' % attr
             try:
@@ -118,7 +117,16 @@ class Motion(SlideMixin, models.Model):
             except AttributeError:
                 # If the _attr was not set, use the value from last_version
                 setattr(version, attr, getattr(self.last_version, attr))
+
+        if version.id is None:
+            # TODO: auto increment the version_number in the Database
+            version_number = self.versions.aggregate(Max('version_number'))['version_number__max'] or 0
+            version.version_number = version_number + 1
         version.save()
+
+        if not self.state.version_permission or self.active_version is None:
+            self.active_version = version
+            self.save()
 
     def get_absolute_url(self, link='detail'):
         if link == 'view' or link == 'detail':
@@ -218,7 +226,7 @@ class Motion(SlideMixin, models.Model):
                 pass
         else:
             if type(version) is int:
-                version = self.versions.all()[version]
+                version = self.versions.get(version_number=version)
             elif type(version) is not MotionVersion:
                 raise ValueError('The argument \'version\' has to be int or '
                                  'MotionVersion, not %s' % type(version))
@@ -234,7 +242,7 @@ class Motion(SlideMixin, models.Model):
         """
         # TODO: Fix the case, that the motion has no Version
         try:
-            return self.versions.order_by('id').reverse()[0]
+            return self.versions.order_by('-version_number')[0]
         except IndexError:
             return self.new_version
 
@@ -360,8 +368,38 @@ class Motion(SlideMixin, models.Model):
     def write_log(self, message, person=None):
         MotionLog.objects.create(motion=self, message=message, person=person)
 
+    def activate_version(self, version):
+        """
+        Activate a version of this motion.
+
+        'version' can be a version object, or the version_number of a version.
+        """
+        if type(version) is int:
+            version = self.versions.get(version_number=version)
+        self.active_version = version
+
+        if version.rejected:
+            version.rejected = False
+            version.save()
+
+    def reject_version(self, version):
+        """
+        Reject a version of this motion.
+
+        'version' can be a version object, or the version_number of a version.
+        """
+        if type(version) is int:
+            version = self.versions.get(version_number=version)
+
+        if version.active:
+            raise MotionError('The active version can not be rejected')
+
+        version.rejected = True
+        version.save()
+
 
 class MotionVersion(models.Model):
+    version_number = models.PositiveIntegerField(default=1)
     title = models.CharField(max_length=255, verbose_name=ugettext_lazy("Title"))
     text = models.TextField(verbose_name=_("Text"))
     reason = models.TextField(null=True, blank=True, verbose_name=ugettext_lazy("Reason"))
@@ -371,8 +409,12 @@ class MotionVersion(models.Model):
     identifier = models.CharField(max_length=255, verbose_name=ugettext_lazy("Version identifier"))
     note = models.TextField(null=True, blank=True)
 
+    class Meta:
+        unique_together = ("motion", "version_number")
+
     def __unicode__(self):
-        return "%s Version %s" % (self.motion, self.version_number)
+        counter = self.version_number or _('new')
+        return "%s Version %s" % (self.motion, counter)
 
     def get_absolute_url(self, link='detail'):
         if link == 'view' or link == 'detail':
@@ -380,11 +422,8 @@ class MotionVersion(models.Model):
                                                           str(self.version_number)])
 
     @property
-    def version_number(self):
-        if self.pk is None:
-            return 'new'
-        return (MotionVersion.objects.filter(motion=self.motion)
-                                     .filter(id__lte=self.pk).count())
+    def active(self):
+        return self.active_version.exists()
 
 
 class Category(models.Model):
@@ -417,6 +456,9 @@ class MotionLog(models.Model):
             return "%s %s" % (self.time, _(self.message))
         else:
             return "%s %s by %s" % (self.time, _(self.message), self.person)
+
+class MotionError(Exception):
+    pass
 
 
 class MotionVote(BaseVote):

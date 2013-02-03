@@ -10,13 +10,14 @@ _workflow = None
 
 class State(object):
     def __init__(self, id, name, next_states=[], create_poll=False, support=False,
-                 edit_as_submitter=False):
+                 edit_as_submitter=False, version_permission=True):
         self.id = id
         self.name = name
         self.next_states = next_states
         self.create_poll = create_poll
         self.support = support
         self.edit_as_submitter = edit_as_submitter
+        self.version_permission = version_permission
 
     def __unicode__(self):
         return self.name
@@ -75,7 +76,10 @@ def populate_workflow(state, workflow):
 
 DUMMY_STATE = State('dummy', ugettext('Unknwon state'))
 
-default_workflow = State('pub', ugettext('Published'), support=True, edit_as_submitter=True, next_states=[
+default_workflow = State('pub', ugettext('Published'), support=True,
+                         edit_as_submitter=True, version_permission=False)
+
+default_workflow.next_states=[
     State('per', ugettext('Permitted'), create_poll=True, edit_as_submitter=True, next_states=[
         State('acc', ugettext('Accepted')),
         State('rej', ugettext('Rejected')),
@@ -84,4 +88,4 @@ default_workflow = State('pub', ugettext('Published'), support=True, edit_as_sub
         State('noc', ugettext('Not Concerned')),
         State('com', ugettext('Commited a bill')),
         State('rev', ugettext('Needs Review'))]),
-    State('nop', ugettext('Rejected (not authorized)'))])
+    State('nop', ugettext('Rejected (not authorized)'))]

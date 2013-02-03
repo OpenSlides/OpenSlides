@@ -30,7 +30,7 @@ from openslides.projector.api import get_active_slide
 from openslides.projector.projector import Widget, SLIDE
 from openslides.config.models import config
 from openslides.agenda.models import Item
-from .models import Motion, MotionSubmitter, MotionSupporter, MotionPoll
+from .models import Motion, MotionSubmitter, MotionSupporter, MotionPoll, MotionVersion
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
                     MotionCreateNewVersionMixin, ConfigForm)
 from .workflow import WorkflowError
@@ -46,23 +46,25 @@ class MotionListView(ListView):
 motion_list = MotionListView.as_view()
 
 
-class MotionDetailView(DetailView):
+class GetVersionMixin(object):
+    def get_object(self):
+        object = super(GetVersionMixin, self).get_object()
+        version_number = self.kwargs.get('version_number', None)
+        if version_number is not None:
+            try:
+                object.version = int(version_number)
+            except MotionVersion.DoesNotExist:
+                raise Http404('Version %s not found' % version_number)
+        return object
+
+
+class MotionDetailView(GetVersionMixin, DetailView):
     """
     Show the details of one motion.
     """
     permission_required = 'motion.can_see_motion'
     model = Motion
     template_name = 'motion/motion_detail.html'
-
-    def get_object(self):
-        object = super(MotionDetailView, self).get_object()
-        version_id = self.kwargs.get('version_id', None)
-        if version_id is not None:
-            try:
-                object.version = int(version_id) - 1
-            except IndexError:
-                raise Http404
-        return object
 
     def get_context_data(self, **kwargs):
         context = super(MotionDetailView, self).get_context_data(**kwargs)
@@ -155,6 +157,50 @@ class MotionDeleteView(DeleteView):
         return self.get_object().get_allowed_actions(request.user)['delete']
 
 motion_delete = MotionDeleteView.as_view()
+
+
+class VersionPermitView(GetVersionMixin, SingleObjectMixin, QuestionMixin, RedirectView):
+    model = Motion
+    question_url_name = 'motion_version_detail'
+    success_url_name = 'motion_version_detail'
+
+    def get(self, *args, **kwargs):
+        self.object = self.get_object()
+        return super(VersionPermitView, self).get(*args, **kwargs)
+
+    def get_url_name_args(self):
+        return [self.object.pk, self.object.version.version_number]
+
+    def get_question(self):
+        return _('Are you sure you want permit Version %s?') % self.object.version.version_number
+
+    def case_yes(self):
+        self.object.activate_version(self.object.version)
+        self.object.save()
+
+version_permit = VersionPermitView.as_view()
+
+
+class VersionRejectView(GetVersionMixin, SingleObjectMixin, QuestionMixin, RedirectView):
+    model = Motion
+    question_url_name = 'motion_version_detail'
+    success_url_name = 'motion_version_detail'
+
+    def get(self, *args, **kwargs):
+        self.object = self.get_object()
+        return super(VersionRejectView, self).get(*args, **kwargs)
+
+    def get_url_name_args(self):
+        return [self.object.pk, self.object.version.version_number]
+
+    def get_question(self):
+        return _('Are you sure you want reject Version %s?') % self.object.version.version_number
+
+    def case_yes(self):
+        self.object.reject_version(self.object.version)
+        self.object.save()
+
+version_reject = VersionRejectView.as_view()
 
 
 class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):

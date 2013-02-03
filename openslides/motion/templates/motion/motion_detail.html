@@ -12,6 +12,7 @@
 <p>Reason: {{ motion.reason }}</p>
 <p>Submitter: {% for submitter in motion.submitter.all %}{{ submitter.person }} {% endfor %}</p>
 <p>Supporter: {% for supporter in motion.supporter.all %}{{ supporter.person }} {% endfor %}</p>
+<p>Active Version: {{ motion.active_version }}</p>
 <p>State: {{ motion.state }}</p>
 <h4>possible stats:</h4>
 <ul>
@@ -25,11 +26,19 @@
 <h4>Versions</h4>
 <ol>
 {% for motion_version in motion.versions.all %}
+    <li>
     {% if motion_version.id == motion.version.id %}
-        <li><strong><a href="{% model_url motion_version %}">{{ motion_version }}</a></strong></li>
+        <strong><a href="{% model_url motion_version %}">{{ motion_version }}</a></strong>
     {% else %}
-        <li><a href="{% model_url motion_version %}">{{ motion_version }}</a></li>
+        <a href="{% model_url motion_version %}">{{ motion_version }}</a>
     {% endif %}
+    {% if motion_version.active %}
+        (active)
+    {% endif %}
+    {% if motion_version.rejected %}
+        (rejected)
+    {% endif %}
+    </li>
 {% endfor %}
 </ol>
 
