@@ -17,6 +17,7 @@ def motions_to_pdf(pdf):
         pdf.append(PageBreak())
         motion_to_pdf(pdf, motion)
 
+
 def motion_to_pdf(pdf, motion):
     pdf.append(Paragraph(_("Motion: %s") % motion.title, stylesheet['Heading1']))
 
@@ -25,7 +26,8 @@ def motion_to_pdf(pdf, motion):
     # submitter
     cell1a = []
     cell1a.append(Spacer(0, 0.2 * cm))
-    cell1a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Submitter"), stylesheet['Heading4']))
+    cell1a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Submitter"),
+                            stylesheet['Heading4']))
     cell1b = []
     cell1b.append(Spacer(0, 0.2 * cm))
     cell1b.append(Paragraph(unicode(motion.submitter), stylesheet['Normal']))
@@ -36,7 +38,8 @@ def motion_to_pdf(pdf, motion):
         # Cell for the signature
         cell2a = []
         cell2b = []
-        cell2a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Signature"), stylesheet['Heading4']))
+        cell2a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" %
+                                _("Signature"), stylesheet['Heading4']))
         cell2b.append(Paragraph(42 * "_", stylesheet['Signaturefield']))
         cell2b.append(Spacer(0, 0.1 * cm))
         cell2b.append(Spacer(0, 0.2 * cm))
@@ -46,13 +49,16 @@ def motion_to_pdf(pdf, motion):
     if config['motion_min_supporters']:
         cell3a = []
         cell3b = []
-        cell3a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font><seqreset id='counter'>" % _("Supporters"), stylesheet['Heading4']))
+        cell3a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font><seqreset id='counter'>"
+                                % _("Supporters"), stylesheet['Heading4']))
         supporters = motion.supporter.all()
         for supporter in supporters:
-            cell3b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % unicode(supporter), stylesheet['Signaturefield']))
+            cell3b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % unicode(supporter),
+                                    stylesheet['Signaturefield']))
         if motion.state.support:
             for count in range(config['motion_min_supporters'] - supporters.count()):
-                cell3b.append(Paragraph("<seq id='counter'/>.&nbsp;" + 42 * "_",stylesheet['Signaturefield']))
+                cell3b.append(Paragraph("<seq id='counter'/>.&nbsp;" + 42 * "_",
+                                        stylesheet['Signaturefield']))
         cell3b.append(Spacer(0, 0.2 * cm))
         motion_data.append([cell3a, cell3b])
 
@@ -73,7 +79,8 @@ def motion_to_pdf(pdf, motion):
     # Motion state
     cell4a = []
     cell4b = []
-    cell4a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("State"), stylesheet['Heading4']))
+    cell4a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("State"),
+                            stylesheet['Heading4']))
     cell4b.append(Paragraph(motion.state.name, stylesheet['Normal']))
     motion_data.append([cell4a, cell4b])
 
@@ -81,7 +88,8 @@ def motion_to_pdf(pdf, motion):
     if motion.versions.count() > 1:
         cell5a = []
         cell5b = []
-        cell5a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Version"), stylesheet['Heading4']))
+        cell5a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Version"),
+                                stylesheet['Heading4']))
         cell5b.append(Paragraph("%s" % motion.version.version_number, stylesheet['Normal']))
         motion_data.append([cell5a, cell5b])
 
@@ -95,7 +103,8 @@ def motion_to_pdf(pdf, motion):
     if polls:
         cell6a = []
         cell6b = []
-        cell6a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Vote results"), stylesheet['Heading4']))
+        cell6a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" %
+                                _("Vote results"), stylesheet['Heading4']))
         ballotcounter = 0
         for poll in polls:
             ballotcounter += 1
@@ -105,7 +114,8 @@ def motion_to_pdf(pdf, motion):
                 poll.print_voteinvalid(), poll.print_votecast())
 
             if len(polls) > 1:
-                cell6b.append(Paragraph("%s. %s" % (ballotcounter, _("Vote")), stylesheet['Bold']))
+                cell6b.append(Paragraph("%s. %s" % (ballotcounter, _("Vote")),
+                                        stylesheet['Bold']))
             cell6b.append(Paragraph(
                 "%s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s" %
                 (_("Yes"), yes, _("No"), no, _("Abstention"), abstain, _("Invalid"),
@@ -118,15 +128,15 @@ def motion_to_pdf(pdf, motion):
     table._argW[0] = 4.5 * cm
     table._argW[1] = 11 * cm
     table.setStyle(TableStyle([('BOX', (0, 0), (-1, -1), 1, colors.black),
-                               ('VALIGN', (0,0), (-1,-1), 'TOP')]))
+                               ('VALIGN', (0, 0), (-1, -1), 'TOP')]))
     pdf.append(table)
     pdf.append(Spacer(0, 1 * cm))
 
     pdf.append(Paragraph(motion.title, stylesheet['Heading3']))
-    pdf.append(Paragraph(motion.text.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+    pdf.append(Paragraph(motion.text.replace('\r\n', '<br/>'), stylesheet['Paragraph']))
     if motion.reason:
         pdf.append(Paragraph(_("Reason:"), stylesheet['Heading3']))
-        pdf.append(Paragraph(motion.reason.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+        pdf.append(Paragraph(motion.reason.replace('\r\n',  '<br/>'), stylesheet['Paragraph']))
     return pdf
 
 
@@ -135,7 +145,7 @@ def all_motion_cover(pdf, motions):
 
     preamble = config["motion_pdf_preamble"]
     if preamble:
-        pdf.append(Paragraph("%s" % preamble.replace('\r\n','<br/>'), stylesheet['Paragraph']))
+        pdf.append(Paragraph("%s" % preamble.replace('\r\n', '<br/>'), stylesheet['Paragraph']))
 
     pdf.append(Spacer(0, 0.75 * cm))
 
