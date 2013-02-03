@@ -465,6 +465,7 @@ class MotionLog(models.Model):
         else:
             return "%s %s by %s" % (self.time, _(self.message), self.person)
 
+
 class MotionError(Exception):
     pass
 

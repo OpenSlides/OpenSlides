@@ -79,7 +79,7 @@ DUMMY_STATE = State('dummy', ugettext('Unknwon state'))
 default_workflow = State('pub', ugettext('Published'), support=True,
                          edit_as_submitter=True, version_permission=False)
 
-default_workflow.next_states=[
+default_workflow.next_states = [
     State('per', ugettext('Permitted'), create_poll=True, edit_as_submitter=True, next_states=[
         State('acc', ugettext('Accepted')),
         State('rej', ugettext('Rejected')),
