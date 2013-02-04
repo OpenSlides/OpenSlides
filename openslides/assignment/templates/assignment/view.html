@@ -24,6 +24,30 @@
             <i class="icon-facetime-video {% if assignment.active %}icon-white{% endif %}"></i>
         </a>
     {% endif %}
+    <div class="btn-group">
+        <a data-toggle="dropdown" href="#" class="btn btn-mini dropdown-toggle">
+            {% trans 'More actions' %}
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu pull-right">
+            <!-- edit -->
+            <li><a href="{% url 'assignment_edit' assignment.id  %}"><i class="icon-edit"></i> {% trans 'Edit election' %}</a></li>
+            <!-- delete -->
+            <li><a href="{% url 'assignment_delete' assignment.id  %}"><i class="icon-remove"></i> {% trans 'Delete election' %}</a></li>
+            <!-- edit poll -->
+            {% if perms.assignment.can_manage_assignment %}
+                {% for poll in motion.polls %}
+                    <li><a href="{% url 'assignment_poll_view' poll.id %}"><i class="icon-edit"></i> {{ forloop.counter }}. {% trans "Ballot" %}</a></li>
+                {% endfor %}
+            {% endif %}
+            <!-- create agenda item -->
+            {% if perms.agenda.can_manage_agenda %}
+            <li>
+                <a href="{% url 'assignment_create_agenda' assignment.id  %}"><i class="icon-plus"></i> {% trans 'New agenda item' %}</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
     </small>
 </h1>
 
