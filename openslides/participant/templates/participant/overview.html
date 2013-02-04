@@ -116,8 +116,8 @@
         </tr>
         {% for user in users %}
             <tr class="{% if user.active %}activeline{% endif %}">
-                <td>{{ user.first_name }}</td>
-                <td>{{ user.last_name }}</td>
+                <td><a href="{% url 'user_view' user.id %}">{{ user.first_name }}</a></td>
+                <td><a href="{% url 'user_view' user.id %}">{{ user.last_name }}</a></td>
                 <td class="optional">{{ user.structure_level }}</td>
                 <td class="optional">{{ user.get_type_display }}</td>
                 <td class="optional">{{ user.committee }}</td>
