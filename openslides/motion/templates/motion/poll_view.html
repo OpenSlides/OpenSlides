@@ -39,49 +39,50 @@
     </small>
 </h1>
 
-<i class="helptext">{% trans "Special values" %}: -1 = {% trans 'majority' %}; -2 = {% trans 'undocumented' %}</i>
-
-    <form action="" method="post" class="small-form">{% csrf_token %}
-        {{ pre_form }}
-        <span id="poll_id" style="display:none">{{ poll.id }}</span>
-        <table class="table table-striped table-bordered" style="width: auto;">
+<p>
+{% trans "Special values" %}: <span class="badge badge-success">-1</span> = {% trans 'majority' %} | <span class="badge">-2</span> = {% trans 'undocumented' %}
+</p>
+<form action="" method="post" class="small-form">{% csrf_token %}
+    {{ pre_form }}
+    <span id="poll_id" style="display:none">{{ poll.id }}</span>
+    <table class="table table-striped table-bordered" style="width: auto;">
+        <tr>
+            <th>{% trans "Option" %}</th>
+            <th>{% trans "Votes" %}</th>
+        </tr>
+        {% for value in forms.0 %}
             <tr>
-                <th>{% trans "Option" %}</th>
-                <th>{% trans "Votes" %}</th>
+                <td>{{ value.label }}</td>
+                <td>{{ value.errors }}{{ value }}</td>
             </tr>
-            {% for value in forms.0 %}
-                <tr>
-                    <td>{{ value.label }}</td>
-                    <td>{{ value.errors }}{{ value }}</td>
-                </tr>
-            {% endfor %}
-            <tr>
-                <td>{% trans "Invalid votes" %}</td>
-                <td>{{ pollform.votesinvalid.errors }}{{ pollform.votesinvalid }}</td>
-            </tr>
-            <tr class="total warning">
-                <td>{% trans "Votes cast" %}</td>
-                <td>{{ pollform.votescast.errors }}{{ pollform.votescast }}</td>
-            </tr>
-        </table>
-        {{ post_form }}
-        <!-- ballot paper button -->
-        <p>
-        <a href="{% url 'print_motion_poll' poll.id %}" class="btn">
-            <i class="icon-print"></i> {% trans 'Ballot paper as PDF' %}
+        {% endfor %}
+        <tr>
+            <td>{% trans "Invalid votes" %}</td>
+            <td>{{ pollform.votesinvalid.errors }}{{ pollform.votesinvalid }}</td>
+        </tr>
+        <tr class="total warning">
+            <td>{% trans "Votes cast" %}</td>
+            <td>{{ pollform.votescast.errors }}{{ pollform.votescast }}</td>
+        </tr>
+    </table>
+    {{ post_form }}
+    <!-- ballot paper button -->
+    <p>
+    <a href="{% url 'print_motion_poll' poll.id %}" class="btn">
+        <i class="icon-print"></i> {% trans 'Ballot paper as PDF' %}
+    </a>
+    </p>
+    <!-- Control buttons -->
+    <div class="control-group">
+        <button type="submit" class="btn btn-primary">
+            {% trans 'Save' %}
+        </button>
+        <button type="submit" name="apply" class="btn">
+            {% trans 'Apply' %}
+        </button>
+        <a href="{% url 'motion_view' motion.id %}" class="btn">
+            {% trans 'Cancel' %}
         </a>
-        </p>
-        <!-- Control buttons -->
-        <div class="control-group">
-            <button type="submit" class="btn btn-primary">
-                {% trans 'Save' %}
-            </button>
-            <button type="submit" name="apply" class="btn">
-                {% trans 'Apply' %}
-            </button>
-            <a href="{% url 'motion_view' motion.id %}" class="btn">
-                {% trans 'Cancel' %}
-            </a>
-        </div>
-    </form>
+    </div>
+</form>
 {% endblock %}

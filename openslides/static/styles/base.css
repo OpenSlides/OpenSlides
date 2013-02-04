@@ -116,6 +116,9 @@ tr.total td {
 input, textarea {
     width: 320px;
 }
+.small-form input {
+    width: 33px;
+}
 textarea {
     height: 100px;
 }

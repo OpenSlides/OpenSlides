@@ -98,7 +98,7 @@
 {% endif %}
 
 {% if perms.assignment.can_manage_assignments and blocked_candidates and assignment.status != "fin" %}
-    <h3>{% trans "Blocked Candidates" %}</h3>
+    <h4>{% trans "Blocked Candidates" %}</h4>
     <ul>
     {% for person in blocked_candidates %}
         <li>
