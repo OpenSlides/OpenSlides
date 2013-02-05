@@ -105,7 +105,7 @@
             {% if perms.participant.can_manage_participant %}
                 <th class="optional"><a href="?sort=comment&reverse={% if 'comment' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Comment" %}</a></th>
                 <th class="optional"><a href="?sort=last_login&reverse={% if 'last_login' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Last Login" %}</a></th>
-                <th style="width: 1px;">{% trans "Actions" %}</th>
+                <th class="mini_width">{% trans "Actions" %}</th>
             {% endif %}
         </tr>
         {% for user in users %}

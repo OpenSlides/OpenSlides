@@ -35,7 +35,7 @@
             <th><a href="?sort=name{% if 'name' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Election" %}</a></th>
             <th>{% trans "Candidates" %}</th>
             <th class="optional"><a href="?sort=status{% if 'status' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Status" %}</a></th>
-            <th style="width: 1px;">{% trans "Actions" %}</th>
+            <th class="mini_width">{% trans "Actions" %}</th>
         </tr>
     {% for assignment in assignments %}
         <tr {% if assignment.active %}activeline{% endif %}">

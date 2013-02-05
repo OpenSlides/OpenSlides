@@ -106,6 +106,9 @@ tr.total td {
 .indentation {
     margin-left: 12px;
 }
+.mini_width {
+    width: 1px;
+}
 /* show optional column */
 .optional {
     display: auto;
