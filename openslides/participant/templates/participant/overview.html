@@ -6,12 +6,6 @@
 
 {% block title %}{{ block.super }} – {% trans "Participants" %}{% endblock %}
 
-{% block header %}
-    {% if perms.participant.can_manage_participant %}
-        <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/participant.css' %}" />
-    {% endif %}
-{% endblock %}
-
 {% block javascript %}
     {% if perms.participant.can_manage_participant %}
         <script type="text/javascript" src="{% static 'javascript/participant.js' %}"></script>
