@@ -14,7 +14,7 @@
 from django.conf import settings
 from django.core import exceptions
 from django.utils.importlib import import_module
-from django.utils.translation import ugettext_noop,
+from django.utils.translation import ugettext_noop
 
 from openslides.config.models import config
 
