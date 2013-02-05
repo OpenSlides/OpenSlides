@@ -18,7 +18,7 @@
         <div class="btn-toolbar">
             {% if perms.participant.can_manage_participant %}
                 <a href="{% url 'user_new' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New participant' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
-                <a href="{% url 'user_group_overview' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'All user groups' %}"><i class="icon-group"></i> {% trans "User groups" %}</a>
+                <a href="{% url 'user_group_overview' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'All groups' %}"><i class="icon-group"></i> {% trans "Groups" %}</a>
                 <a href="{% url 'user_import' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import participants' %}"><i class="icon-import"></i> {% trans 'Import' %}</a>
             {% endif %}
             {% if perms.participant.can_see_participant and perms.participant.can_manage_participant %}

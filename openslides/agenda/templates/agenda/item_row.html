@@ -44,7 +44,7 @@
                 <i class="icon-remove"></i>
             </a>
             {% if not item.is_leaf_node %}
-                <a href="{% url 'projector_activate_slide' item.sid 'summary' %}" class="activate_link btn btn-mini" title="{% trans 'Activate summary for this item' %}">
+                <a href="{% url 'projector_activate_slide' item.sid 'summary' %}" class="activate_link btn btn-mini" title="{% trans 'Show summary for this item' %}">
                     <i class="icon-summary"></i>
                 </a>
             {% endif %}

@@ -23,7 +23,7 @@
             {% endif %}
         </div>
             {% if perms.projector.can_manage_projector %}
-                <a href="{% url 'projector_activate_slide' item.sid  %}" class="activate_link btn btn-mini {% if item.active %}btn-primary{% endif %}"  rel="tooltip" data-original-title="{% trans 'Show item' %}">
+                <a href="{% url 'projector_activate_slide' item.sid  %}" class="activate_link btn btn-mini {% if item.active %}btn-primary{% endif %}"  rel="tooltip" data-original-title="{% trans 'Show' %}">
                     <i class="icon icon-facetime-video {% if item.active %}icon-white{% endif %}"></i>
                 </a>
             {% endif %}
