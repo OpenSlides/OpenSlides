@@ -264,7 +264,7 @@ legend + .control-group {
 
 
 /** More glyphicons free icons **/
-.icon-on, .icon-checked-new {
+.status_link .icon-on, .icon-checked-new {
     background-image: url("../img/glyphicons_152_check.png");
     background-position: 0;
 }
@@ -292,7 +292,10 @@ legend + .control-group {
     background-image: url("../img/glyphicons_358_file_import.png");
     background-position: 0;
 }
-
+.icon-delete {
+    background-image: url("../img/glyphicons_256_delete.png");
+    background-position: 0;
+}
 
 /** Responsive **/
 @media (max-width: 767px) {
