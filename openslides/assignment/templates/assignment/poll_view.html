@@ -14,7 +14,7 @@
     <a href="{% url 'assignment_view' assignment.id %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to election" %}</a>
     <!-- activate projector -->
     {% if perms.projector.can_manage_projector %}
-        <a href="{% url 'projector_activate_slide' assignment.sid  %}" class="activate_link btn {% if assignment.active %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show motion' %}">
+        <a href="{% url 'projector_activate_slide' assignment.sid  %}" class="activate_link btn {% if assignment.active %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show election' %}">
             <i class="icon-facetime-video {% if assignment.active %}icon-white{% endif %}"></i>
         </a>
     {% endif %}

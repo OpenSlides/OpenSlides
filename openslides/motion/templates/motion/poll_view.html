@@ -23,18 +23,6 @@
                 <i class="icon-facetime-video {% if motion.active %}icon-white{% endif %}"></i>
             </a>
         {% endif %}
-        <div class="btn-group">
-            <a data-toggle="dropdown" href="#" class="btn btn-mini dropdown-toggle">
-                {% trans 'More actions' %}
-                <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu pull-right">
-                <!-- delete -->
-                {% if "delete" in actions %}
-                    <li><a href="{% url 'motion_poll_delete' poll.id %}"><i class="icon-remove"></i> {% trans 'Delete Vote' %}</a></li>
-                {% endif %}
-            </ul>
-        </div>
     </div>
     </small>
 </h1>

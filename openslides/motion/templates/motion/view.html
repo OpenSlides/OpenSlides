@@ -49,12 +49,6 @@
                 {% if "delete" in actions %}
                     <li><a href="{% url 'motion_delete' motion.id  %}"><i class="icon-remove"></i> {% trans 'Delete motion' %}</a></li>
                 {% endif %}
-                <!-- edit poll -->
-                {% if perms.motion.can_manage_motion %}
-                    {% for poll in motion.polls %}
-                        <li><a href="{% url 'motion_poll_view' poll.id %}"><i class="icon-edit"></i> {{ forloop.counter }}. {% trans "Vote" %}</a></li>
-                    {% endfor %}
-                {% endif %}
                 <!-- create agenda item -->
                 {% if perms.agenda.can_manage_agenda %}
                 <li>

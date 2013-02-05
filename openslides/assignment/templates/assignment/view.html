@@ -20,7 +20,7 @@
     <a href="{% url 'assignment_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
     <!-- activate projector -->
     {% if perms.projector.can_manage_projector %}
-        <a href="{% url 'projector_activate_slide' assignment.sid  %}" class="activate_link btn {% if assignment.active %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show motion' %}">
+        <a href="{% url 'projector_activate_slide' assignment.sid  %}" class="activate_link btn {% if assignment.active %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show election' %}">
             <i class="icon-facetime-video {% if assignment.active %}icon-white{% endif %}"></i>
         </a>
     {% endif %}
@@ -31,7 +31,7 @@
         </a>
         <ul class="dropdown-menu pull-right">
             <!-- edit -->
-            <li><a href="{% url 'assignment_edit' assignment.id  %}"><i class="icon-edit"></i> {% trans 'Edit election' %}</a></li>
+            <li><a href="{% url 'assignment_edit' assignment.id  %}"><i class="icon-pencil"></i> {% trans 'Edit election' %}</a></li>
             <!-- delete -->
             <li><a href="{% url 'assignment_delete' assignment.id  %}"><i class="icon-remove"></i> {% trans 'Delete election' %}</a></li>
             <!-- edit poll -->

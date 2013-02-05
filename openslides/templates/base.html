@@ -79,16 +79,16 @@
   <div class="row-fluid">
     <div class="span12">
       <div id="notifications">
-           <div id="dummy-notification" class="notification" style="display:none">
-               <button type="button" class="close" data-dismiss="alert">×</button>
-           </div>
-           {% for message in messages %}
-           <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-               <button type="button" class="close" data-dismiss="alert">×</button>
-               {{ message|safe }}
-           </div>
-           {% endfor %}
-       </div>
+          <div id="dummy-notification" class="notification" style="display:none">
+              <button type="button" class="close" data-dismiss="alert">×</button>
+          </div>
+          {% for message in messages %}
+          <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+              <button type="button" class="close" data-dismiss="alert">×</button>
+              {{ message|safe }}
+          </div>
+          {% endfor %}
+      </div>
        
       {% block content %}
       {% endblock %}
@@ -97,22 +97,20 @@
   <hr>
   <footer>
       <small>
-      &copy; Copyright 2011-2012 | Powered by <a href="http://openslides.org" target="_blank">OpenSlides</a> | {% trans "Get <a href='http://openslides.org/support' target='_blank'>professional support</a> for OpenSlides." %}
+      &copy; Copyright 2011-2013 | Powered by <a href="http://openslides.org" target="_blank">OpenSlides</a> | {% trans "Get <a href='http://openslides.org/support' target='_blank'>professional support</a> for OpenSlides." %}
       </small>
   </footer>
   </div><!--/content-->
-  
 </div><!--/row-->
 </div><!--/container-fluid-->
-
 
 {% endblock %}<!--/body-->
 
 <!-- JavaScript (Placed at the end of the document so the pages load faster) -->
     <script src="{% static 'javascript/jquery.min.js' %}" type="text/javascript"></script>
-    <script src="{% static 'javascript/utils.js' %}" type="text/javascript"></script>
     <script src="{% static 'javascript/bootstrap.min.js' %}" type="text/javascript"></script>
-    <script type="text/javascript" src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
+    <script src="{% static 'javascript/utils.js' %}" type="text/javascript"></script>
+    <script src="{% url 'django.views.i18n.javascript_catalog' %}" type="text/javascript"></script>
     {% block javascript %}
     {% endblock %}
 </body>
