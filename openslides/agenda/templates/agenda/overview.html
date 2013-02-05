@@ -17,7 +17,6 @@
     <script type="text/javascript" src="{% static 'javascript/jquery.cookie.js' %}"></script>
     {% if perms.agenda.can_manage_agenda %}
         <script type="text/javascript" src="{% static 'javascript/jquery.once.js' %}"></script>
-
         <script type="text/javascript" src="{% static 'javascript/jquery.tmpl.js' %}"></script>
         <script type="text/javascript" src="{% static 'javascript/tabledrag.js' %}"></script>
         <script type="text/javascript">
@@ -79,9 +78,9 @@
                 {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
                     <th class="mini_width">{% trans "Actions" %}</th>
                 {% endif %}
-                {% if perms.agenda.can_manage_agenda %}
-                    <th class="tabledrag-hide" style="display: none;">{% trans "Weight" %}</th>
-                {% endif %}
+                <th class="tabledrag-hide" style="display: none;">
+                    {% trans "Weight" %}
+                </th>
             </tr>
             <tr class="topline{% if active_sid == 'agenda' %} activeline{% endif %}">
                 <td></td>

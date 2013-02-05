@@ -8,7 +8,9 @@
                 <i class="{% if item.closed %}icon-checked-new{% else %}icon-unchecked-new{% endif %}"></i>
             </a>
         {% else %}
-            <i class="icon-"></i>
+            <span class="close_link">
+                <i class="{% if item.closed %}icon-checked-new{% else %}icon-unchecked-new{% endif %}"></i>
+            </span>
         {% endif %}
     </td>
     <td>
@@ -50,7 +52,6 @@
         </span>
     </td>
     {% endif %}
-    {% if perms.agenda.can_manage_agenda %}
     <td class="tabledrag-hide" style="display: none;">
         {% with form=item.weight_form %}
             {{ form.weight }}
@@ -58,4 +59,5 @@
             {{ form.parent }}
         {% endwith %}
     </td>
-    {% endif %}
+ 
+
