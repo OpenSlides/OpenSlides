@@ -49,20 +49,28 @@ class Overview(TemplateView):
         else:
             items = Item.objects.filter(type__exact=Item.AGENDA_ITEM)
 
+        start =  config['agenda_start_event_date_time']
+        if start is None or len(start) == 0:
+            start = None
+        else:
+            start = datetime.strptime(start, '%d.%m.%Y %H:%M')
+
         duration = timedelta()
 
         for item in items:
-            if not item.closed and item.duration is not None:
-                duration += timedelta(hours=item.duration.hour,
-                                      minutes=item.duration.minute)
+            if not item.closed and len(item.duration) > 0:
+                duration_list = item.duration.split(':')
+                duration += timedelta(hours=int(duration_list[0]),
+                                      minutes=int(duration_list[1]))
+                if not start is None:
+                    item.tooltip = start + duration
 
-        start =  config['agenda_start_event_time']
         if start is None:
-            start = u'0:00:00'
+            end = None
+        else:
+            end =  start + duration
 
-        start = datetime.strptime(start, '%H:%M:%S')
-        end =  start + duration
-        duration = datetime.strptime(str(duration), '%H:%M:%S')
+        duration = u'%d:%02d' % ((duration.days * 24 + duration.seconds / 3600), (duration.seconds / 60 % 60))
 
         context.update({
             'items': items,
@@ -240,11 +248,11 @@ class Config(FormView):
 
     def get_initial(self):
         return {
-            'agenda_start_event_time': config['agenda_start_event_time'],
+            'agenda_start_event_date_time': config['agenda_start_event_date_time'],
         }
 
     def form_valid(self, form):
-        config['agenda_start_event_time'] = form.cleaned_data['agenda_start_event_time']
+        config['agenda_start_event_date_time'] = form.cleaned_data['agenda_start_event_date_time']
         messages.success(self.request, _('Agenda settings successfully saved.'))
         return super(Config, self).form_valid(form)
 

@@ -51,16 +51,18 @@
 
         <h1>{% trans "Agenda" %}
         {% if perms.agenda.can_see_orga_items %}
+        {% if start and end %}
         <table id="agendatime">
            <tr>
                <td>{% trans "Start of event" %}:</td>
-               <td>{{ start|time:"H:i" }}</td>
+               <td>{{ start|date:"D d M Y H.i" }}h</td>
            </tr>
            <tr>
                <td>{% trans "Estimated end" %}:</td>
-               <td>{{ end|time:"H:i" }}</td>
+               <td>{{ end|date:"D d M Y H.i" }}h</td>
            </tr>
         </table>
+        {% endif %}
         {% endif %}
         </h1>
         <p>
@@ -95,7 +97,7 @@
                 <td></td>
                 {% endif %}
                 {% if perms.agenda.can_see_orga_items %}
-                <td>{{duration|time:"H:i"}}h</td>
+                <td>{{duration}}h</td>
                 {% endif %}
                 {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
                 <td>

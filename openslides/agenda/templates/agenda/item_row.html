@@ -29,9 +29,9 @@
     </td>
     {% endif %}
     {% if perms.agenda.can_see_orga_items %}
-    <td>
+    <td {% if item.tooltip %}title="{% trans 'End' %}: {{ item.tooltip|date:"D d M Y H.i" }}"{% endif %}>
         {% if item.duration %}
-            {{ item.duration|time:"H:i" }}h
+            {{ item.duration }}h
         {% endif %}
     </td>
     {% endif %}

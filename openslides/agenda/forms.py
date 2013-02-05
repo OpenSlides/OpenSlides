@@ -12,13 +12,14 @@
 
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-
+from django.contrib.admin.widgets import AdminTimeWidget
 from mptt.forms import TreeNodeChoiceField
 
 from openslides.utils.forms import CssClassMixin
 
 from openslides.agenda.models import Item
 
+import re
 
 class ItemForm(forms.ModelForm, CssClassMixin):
     """
@@ -27,9 +28,10 @@ class ItemForm(forms.ModelForm, CssClassMixin):
     parent = TreeNodeChoiceField(
         queryset=Item.objects.all(), label=_("Parent item"), required=False)
 
-    duration = forms.TimeField(
-        widget=forms.TimeInput(format='%H:%M') ,
-        input_formats=('%H:%M', '%H %M'),
+    duration = forms.RegexField(
+        regex=re.compile('[0-99]:[0-5][0-9]'),
+        error_message=_("Invalid format. Hours from 0 to 99 and minutes from 00 to 59"),
+        max_length=5,
         required=False,
         label=_("Duration (hh:mm)")
     )
@@ -62,9 +64,8 @@ class ItemOrderForm(forms.Form, CssClassMixin):
     )
 
 class ConfigForm(CssClassMixin, forms.Form):
-    agenda_start_event_time = forms.TimeField(
-        widget=forms.TimeInput(format='%H:%M'),
-        input_formats=['%H:%M'],
+    agenda_start_event_date_time = forms.CharField(
+        widget=forms.DateTimeInput(format='%d.%m.%Y %H:%M'),
         required=False,
-        label=_("Begin of event (hh:mm)"),
+        label=_("Begin of event")
     )
