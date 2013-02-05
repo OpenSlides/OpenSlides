@@ -304,6 +304,12 @@ legend + .control-group {
     background-image: url("../img/glyphicons_256_delete.png");
     background-position: 0;
 }
+.icon-add-user {
+    background-image: url("../img/glyphicons_006_user_add.png");
+    background-position: 0;
+}
+
+
 
 /** Responsive **/
 @media (max-width: 767px) {

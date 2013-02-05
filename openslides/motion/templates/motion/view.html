@@ -43,7 +43,7 @@
             <ul class="dropdown-menu pull-right">
                 <!-- edit -->
                 {% if "edit" in actions %}
-                     <li><a href="{% url 'motion_edit' motion.id  %}"><i class="icon-edit"></i> {% trans 'Edit motion' %}</a></li>
+                     <li><a href="{% url 'motion_edit' motion.id  %}"><i class="icon-pencil"></i> {% trans 'Edit motion' %}</a></li>
                 {% endif %}
                 <!-- delete -->
                 {% if "delete" in actions %}
@@ -70,11 +70,11 @@
 <div class="row-fluid">
 <div class="span8">
     {% if motion.public_version != motion.last_version %}
-        &#8901;
+        <span class="label label-warning"><i class="icon-warning-sign icon-white"></i>
         {% if version == motion.public_version %}
-            {% trans "This is not the newest version." %} <a href="{% url 'motion_view_newest' motion.id %}">{% trans "Go to version" %} {{ motion.last_version.aid }}.</a>
+            {% trans "This is not the newest version." %}</span> <a href="{% url 'motion_view_newest' motion.id %}">{% trans "Go to version" %} {{ motion.last_version.aid }}.</a>
         {% else %}
-            {% trans "This is not the authorized version." %} <a href="{% url 'motion_view' motion.id %}">{% trans "Go to version" %} {{ motion.public_version.aid }}.</a>
+            {% trans "This is not the authorized version." %}</span> <a href="{% url 'motion_view' motion.id %}">{% trans "Go to version" %} {{ motion.public_version.aid }}.</a>
         {% endif %}
     {% endif %}
 
@@ -107,17 +107,17 @@
             <td style="white-space:nowrap;">
             {% if motion.status != "pub" %}
             {% if revision == motion.permitted %}
-                 <img title="{% trans 'Version authorized' %}" src="{% static 'images/icons/accept.png' %}">
+                 <span class="badge badge-success" title="{% trans 'This version is authorized' %}"><i class="icon-ok icon-white"></i></span>
             {% else %}
                  {% if perms.motion.can_manage_motion %}
-                     <a href="{% url 'motion_version_permit' revision.id %}"><img title="{% trans 'Permit Version' %}" src="{% static 'images/icons/accept-grey.png' %}"></a>
+                     <a class="btn btn-mini" href="{% url 'motion_version_permit' revision.id %}" title="{% trans 'Permit this version' %}"><i class="icon-ok"></i></a>
                  {% endif %}
                  {% if not revision.rejected and revision.id > motion.permitted.id and perms.motion.can_manage_motion %}
-                     <a href="{% url 'motion_version_reject' revision.id %}"><img title="{% trans 'Reject Version' %}" src="{% static 'images/icons/reject-grey.png' %}"></a>
+                     <a class="btn btn-mini" href="{% url 'motion_version_reject' revision.id %}" title="{% trans 'Reject this version' %}"><i class="icon-ban-circle"></i></a>
                  {% endif %}
             {% endif %}
             {% if revision.rejected %}
-                <img title="{% trans 'Version rejected' %}" src="{% static 'images/icons/reject.png' %}">
+                <span class="badge badge-important" title="{% trans 'This version is rejected' %}"><i class="icon-ban-circle icon-white"></i></span>
             {% endif %}
             {% endif %}
             </td>
@@ -216,12 +216,12 @@
                     <br>
                     {% if poll.has_votes %}
                         {% with poll.get_options.0 as option %}
-                            <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.Yes }}<br>
-                            <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.No }}<br>
-                            <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ option.Abstain }}<br>
-                            <img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}<br>
+                            <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.Yes }}<br>
+                            <img src="{% static 'img/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.No }}<br>
+                            <img src="{% static 'img/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ option.Abstain }}<br>
+                            <img src="{% static 'img/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}<br>
                             <div style="border-top: 1px solid; padding-top: 5px; margin: 5px 0; width: 10em;">
-                                <img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
+                                <img src="{% static 'img/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
                             </div>
                         {% endwith %}
                         {% if perms.motion.can_manage_motion %}
