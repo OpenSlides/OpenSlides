@@ -1,3 +1,12 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""
+    openslides.motion.pdf
+    ~~~~~~~~~~~~~~~~~~~~~
+
+    Functions to generate the PDFs for the motion app.
+"""
+
 from reportlab.lib import colors
 from reportlab.lib.units import cm
 from reportlab.platypus import (
@@ -11,6 +20,8 @@ from .models import Motion
 
 
 def motions_to_pdf(pdf):
+    """Create a PDF with all motions."""
+
     motions = Motion.objects.all()
     all_motion_cover(pdf, motions)
     for motion in motions:
@@ -19,6 +30,8 @@ def motions_to_pdf(pdf):
 
 
 def motion_to_pdf(pdf, motion):
+    """Create a PDF for one motion."""
+
     pdf.append(Paragraph(_("Motion: %s") % motion.title, stylesheet['Heading1']))
 
     motion_data = []
@@ -141,6 +154,7 @@ def motion_to_pdf(pdf, motion):
 
 
 def all_motion_cover(pdf, motions):
+    """Create a coverpage for all motions."""
     pdf.append(Paragraph(config["motion_pdf_title"], stylesheet['Heading1']))
 
     preamble = config["motion_pdf_preamble"]

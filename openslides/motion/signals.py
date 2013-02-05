@@ -6,7 +6,7 @@
 
     Signals for the motion app.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: (c) 2011-2013 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -18,6 +18,7 @@ from openslides.config.signals import default_config_value
 
 @receiver(default_config_value, dispatch_uid="motion_default_config")
 def default_config(sender, key, **kwargs):
+    """Return the default config values for the motion app."""
     return {
         'motion_min_supporters': 0,
         'motion_preamble': _('The assembly may decide,'),

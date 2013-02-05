@@ -6,7 +6,10 @@
 
     Models for the motion app.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    To use a motion object, you only have to import the Motion class. Any
+    functionality can be reached from a motion object.
+
+    :copyright: (c) 2011-2013 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -34,39 +37,38 @@ from .workflow import (motion_workflow_choices, get_state, State, WorkflowError,
                        DUMMY_STATE)
 
 
-# TODO: Save submitter and supporter in the same table
-class MotionSubmitter(models.Model):
-    person = PersonField()
-    motion = models.ForeignKey('Motion', related_name="submitter")
-
-    def __unicode__(self):
-        return unicode(self.person)
-
-
-class MotionSupporter(models.Model):
-    person = PersonField()
-    motion = models.ForeignKey('Motion', related_name="supporter")
-
-    def __unicode__(self):
-        return unicode(self.person)
-
-
 class Motion(SlideMixin, models.Model):
-    """
-    The Motion-Model.
-    """
-    prefix = "motion"
+    """The Motion Class.
 
-    active_version = models.ForeignKey(
-        'MotionVersion', null=True, related_name="active_version")
+    This class is the main entry point to all other classes related to a motion.
+    """
+
+    prefix = "motion"
+    """Prefix for the slide system."""
+
+    active_version = models.ForeignKey('MotionVersion', null=True,
+                                       related_name="active_version")
+    """Points to a specific version.
+
+    Used be the permitted-version-system to deside witch version is the active
+    Version. Could also be used to only choose a specific version as a default
+    version. Like the Sighted versions on Wikipedia.
+    """
+
     state_id = models.CharField(max_length=3)
-    # Log (Translatable)
+    """The id of a state object.
+
+    This Attribute is used be motion.state to identify the current state of the
+    motion.
+    """
+
     identifier = models.CharField(max_length=255, null=True, blank=True,
                                   unique=True)
-    category = models.ForeignKey('Category', null=True, blank=True)
-    # TODO proposal
-    # Maybe rename to master_copy
-    master = models.ForeignKey('self', null=True, blank=True)
+    """A string as human readable identifier for the motion."""
+
+    # category = models.ForeignKey('Category', null=True, blank=True)
+    # TODO: proposal
+    #master = models.ForeignKey('self', null=True, blank=True)
 
     class Meta:
         permissions = (
@@ -79,17 +81,35 @@ class Motion(SlideMixin, models.Model):
         # ordering = ('number',)
 
     def __unicode__(self):
+        """Return a human readable name of this motion."""
         return self.get_title()
 
     # TODO: Use transaction
     def save(self, *args, **kwargs):
-        """
-        Saves the motion. Create or update a motion_version object
+        """Save the motion.
+
+        1. Set the state of a new motion to the default motion.
+        2. Save the motion object.
+        3. Save the version Data.
+        4. Set the active version for the motion.
+
+        A new version will be saved if motion.new_version was called
+        between the creation of this object and the last call of motion.save()
+
+            or
+
+        If the motion has new version data (title, text, reason)
+
+            and
+
+        the config 'motion_create_new_version' is set to
+        'ALLWASY_CREATE_NEW_VERSION'.
         """
         if not self.state_id:
             self.reset_state()
 
         super(Motion, self).save(*args, **kwargs)
+
         # Find out if the version data has changed
         for attr in ['title', 'text', 'reason']:
             if not self.versions.exists():
@@ -109,7 +129,7 @@ class Motion(SlideMixin, models.Model):
         elif new_data and not need_new_version:
             version = self.last_version
         else:
-            # We do not need to save the motion version
+            # We do not need to save the motion version.
             return
 
         # Save title, text and reason in the version object
@@ -137,6 +157,10 @@ class Motion(SlideMixin, models.Model):
             self.save()
 
     def get_absolute_url(self, link='detail'):
+        """Return an URL for this version.
+
+        The keywordargument 'link' can be 'detail', 'view', 'edit' or 'delete'.
+        """
         if link == 'view' or link == 'detail':
             return reverse('motion_detail', args=[str(self.id)])
         if link == 'edit':
@@ -145,8 +169,9 @@ class Motion(SlideMixin, models.Model):
             return reverse('motion_delete', args=[str(self.id)])
 
     def get_title(self):
-        """
-        Get the title of the motion. The titel is taken from motion.version
+        """Get the title of the motion.
+
+        The titel is taken from motion.version.
         """
         try:
             return self._title
@@ -154,16 +179,23 @@ class Motion(SlideMixin, models.Model):
             return self.version.title
 
     def set_title(self, title):
-        """
-        Set the titel of the motion. The titel will me saved in motion.save()
+        """Set the titel of the motion.
+
+        The titel will me saved into the version object, wenn motion.save() is
+        called.
         """
         self._title = title
 
     title = property(get_title, set_title)
+    """The title of the motion.
+
+    Is saved in a MotionVersion object.
+    """
 
     def get_text(self):
-        """
-        Get the text of the motion. Simular to get_title()
+        """Get the text of the motion.
+
+        Simular to get_title().
         """
         try:
             return self._text
@@ -171,16 +203,22 @@ class Motion(SlideMixin, models.Model):
             return self.version.text
 
     def set_text(self, text):
-        """
-        Set the text of the motion. Simular to set_title()
+        """ Set the text of the motion.
+
+        Simular to set_title().
         """
         self._text = text
 
     text = property(get_text, set_text)
+    """The text of a motin.
+
+    Is saved in a MotionVersion object.
+    """
 
     def get_reason(self):
-        """
-        Get the reason of the motion. Simular to get_title()
+        """Get the reason of the motion.
+
+        Simular to get_title().
         """
         try:
             return self._reason
@@ -188,20 +226,26 @@ class Motion(SlideMixin, models.Model):
             return self.version.reason
 
     def set_reason(self, reason):
-        """
-        Set the reason of the motion. Simular to set_title()
+        """Set the reason of the motion.
+
+        Simular to set_title().
         """
         self._reason = reason
 
     reason = property(get_reason, set_reason)
+    """The reason for the motion.
+
+    Is saved in a MotionVersion object.
+    """
 
     @property
     def new_version(self):
-        """
+        """Return a Version object, not saved in the database.
+
         On the first call, it creates a new version. On any later call, it
         use the existing new version.
 
-        The new_version object will be deleted when it is saved into the db
+        The new_version object will be deleted when it is saved into the db.
         """
         try:
             return self._new_version
@@ -210,9 +254,9 @@ class Motion(SlideMixin, models.Model):
             return self._new_version
 
     def get_version(self):
-        """
-        Get the "active" version object. This version will be used to get the
-        data for this motion.
+        """Get the 'active' version object.
+
+        This version will be used to get the data for this motion.
         """
         try:
             return self._version
@@ -220,12 +264,12 @@ class Motion(SlideMixin, models.Model):
             return self.last_version
 
     def set_version(self, version):
-        """
-        Set the "active" version object.
+        """Set the 'active' version object.
 
-        If version is None, the last_version will be used.
-        If version is a version object, this object will be used.
-        If version is Int, the N version of this motion will be used.
+        The keyargument 'version' can be a MotionVersion object or the
+        version_number of a VersionObject or None.
+
+        If the argument is None, the newest version will be used.
         """
         if version is None:
             try:
@@ -242,12 +286,11 @@ class Motion(SlideMixin, models.Model):
             self._version = version
 
     version = property(get_version, set_version)
+    """The active version of this motion."""
 
     @property
     def last_version(self):
-        """
-        Get the newest version of the motion
-        """
+        """Return the newest version of the motion."""
         # TODO: Fix the case, that the motion has no Version
         try:
             return self.versions.order_by('-version_number')[0]
@@ -255,15 +298,15 @@ class Motion(SlideMixin, models.Model):
             return self.new_version
 
     def is_submitter(self, person):
+        """Return True, if person is a submitter of this motion. Else: False."""
         self.submitter.filter(person=person).exists()
 
     def is_supporter(self, person):
+        """Return True, if person is a supporter of this motion. Else: False."""
         return self.supporter.filter(person=person).exists()
 
     def support(self, person):
-        """
-        Add a Supporter to the list of supporters of the motion.
-        """
+        """Add 'person' as a supporter of this motion."""
         if self.state.support:
             if not self.is_supporter(person):
                 MotionSupporter(motion=self, person=person).save()
@@ -271,17 +314,16 @@ class Motion(SlideMixin, models.Model):
             raise WorkflowError("You can not support a motion in state %s" % self.state.name)
 
     def unsupport(self, person):
-        """
-        Remove a supporter from the list of supporters of the motion
-        """
+        """Remove 'person' as supporter from this motion."""
         if self.state.support:
             self.supporter.filter(person=person).delete()
         else:
             raise WorkflowError("You can not unsupport a motion in state %s" % self.state.name)
 
     def create_poll(self):
-        """
-        Create a new poll for this motion
+        """Create a new poll for this motion.
+
+        Return the new poll object.
         """
         if self.state.create_poll:
             # TODO: auto increment the poll_number in the Database
@@ -293,8 +335,9 @@ class Motion(SlideMixin, models.Model):
             raise WorkflowError("You can not create a poll in state %s" % self.state.name)
 
     def get_state(self):
-        """
-        Get the state of this motion. Return a State object.
+        """Return the state of the motion.
+
+        State is a State object. See openslides.motion.workflow for more informations.
         """
         try:
             return get_state(self.state_id)
@@ -302,10 +345,10 @@ class Motion(SlideMixin, models.Model):
             return DUMMY_STATE
 
     def set_state(self, next_state):
-        """
-        Set the state of this motion.
+        """Set the state of this motion.
 
-        next_state has to be a valid state id or State object.
+        The keyargument 'next_state' has to be a State object or an id of a
+        State object.
         """
         if not isinstance(next_state, State):
             next_state = get_state(next_state)
@@ -315,17 +358,14 @@ class Motion(SlideMixin, models.Model):
             raise WorkflowError('%s is not a valid next_state' % next_state)
 
     state = property(get_state, set_state)
+    """The state of the motion as Ste object."""
 
     def reset_state(self):
-        """
-        Set the state to the default state.
-        """
+        """Set the state to the default state."""
         self.state_id = get_state('default').id
 
     def slide(self):
-        """
-        return the slide dict
-        """
+        """Return the slide dict."""
         data = super(Motion, self).slide()
         data['motion'] = self
         data['title'] = self.title
@@ -333,6 +373,7 @@ class Motion(SlideMixin, models.Model):
         return data
 
     def get_agenda_title(self):
+        """Return a title for the Agenda."""
         return self.last_version.title
 
     ## def get_agenda_title_supplement(self):
@@ -340,8 +381,7 @@ class Motion(SlideMixin, models.Model):
         ## return '(%s %s)' % (ugettext('motion'), number)
 
     def get_allowed_actions(self, person):
-        """
-        Gets a dictonary with all allowed actions for a specific person.
+        """Return a dictonary with all allowed actions for a specific person.
 
         The dictonary contains the following actions.
 
@@ -374,11 +414,16 @@ class Motion(SlideMixin, models.Model):
         return actions
 
     def write_log(self, message, person=None):
+        """Write a log message.
+
+        Message should be in english and translatable.
+
+        e.G: motion.write_log(ugettext_noob('Message Text'))
+        """
         MotionLog.objects.create(motion=self, message=message, person=person)
 
     def activate_version(self, version):
-        """
-        Activate a version of this motion.
+        """Set the active state of a version to True.
 
         'version' can be a version object, or the version_number of a version.
         """
@@ -391,8 +436,7 @@ class Motion(SlideMixin, models.Model):
             version.save()
 
     def reject_version(self, version):
-        """
-        Reject a version of this motion.
+        """Reject a version of this motion.
 
         'version' can be a version object, or the version_number of a version.
         """
@@ -407,58 +451,126 @@ class Motion(SlideMixin, models.Model):
 
 
 class MotionVersion(models.Model):
-    version_number = models.PositiveIntegerField(default=1)
-    title = models.CharField(max_length=255, verbose_name=ugettext_lazy("Title"))
-    text = models.TextField(verbose_name=_("Text"))
-    reason = models.TextField(null=True, blank=True, verbose_name=ugettext_lazy("Reason"))
-    rejected = models.BooleanField(default=False)
-    creation_time = models.DateTimeField(auto_now=True)
+    """
+    A MotionVersion object saves some date of the motion."""
+
     motion = models.ForeignKey(Motion, related_name='versions')
-    identifier = models.CharField(max_length=255, verbose_name=ugettext_lazy("Version identifier"))
-    note = models.TextField(null=True, blank=True)
+    """The Motion, to witch the version belongs."""
+
+    version_number = models.PositiveIntegerField(default=1)
+    """An id for this version in realation to a motion.
+
+    Is unique for each motion.
+    """
+
+    title = models.CharField(max_length=255, verbose_name=ugettext_lazy("Title"))
+    """The Title of a motion."""
+
+    text = models.TextField(verbose_name=_("Text"))
+    """The text of a motion."""
+
+    reason = models.TextField(null=True, blank=True, verbose_name=ugettext_lazy("Reason"))
+    """The reason for a motion."""
+
+    rejected = models.BooleanField(default=False)
+    """Saves, if the version is rejected."""
+
+    creation_time = models.DateTimeField(auto_now=True)
+    """Time, when the version was saved."""
+
+    #identifier = models.CharField(max_length=255, verbose_name=ugettext_lazy("Version identifier"))
+    #note = models.TextField(null=True, blank=True)
 
     class Meta:
         unique_together = ("motion", "version_number")
 
     def __unicode__(self):
+        """Return a string, representing this object."""
         counter = self.version_number or _('new')
         return "%s Version %s" % (self.motion, counter)
 
     def get_absolute_url(self, link='detail'):
+        """Return the URL of this Version.
+
+        The keyargument link can be 'view' or 'detail'.
+        """
         if link == 'view' or link == 'detail':
             return reverse('motion_version_detail', args=[str(self.motion.id),
                                                           str(self.version_number)])
 
     @property
     def active(self):
+        """Return True, if the version is the active version of a motion. Else: False."""
         return self.active_version.exists()
 
 
-class Category(models.Model):
-    name = models.CharField(max_length=255, verbose_name=ugettext_lazy("Category name"))
-    prefix = models.CharField(max_length=32, verbose_name=ugettext_lazy("Category prefix"))
+class MotionSubmitter(models.Model):
+    """Save the submitter of a Motion."""
+
+    motion = models.ForeignKey('Motion', related_name="submitter")
+    """The motion to witch the object belongs."""
+
+    person = PersonField()
+    """The person, who is the submitter."""
 
     def __unicode__(self):
-        return self.name
+        """Return the name of the submitter as string."""
+        return unicode(self.person)
 
 
-class Comment(models.Model):
-    motion_version = models.ForeignKey(MotionVersion)
-    text = models.TextField()
-    author = PersonField()
-    creation_time = models.DateTimeField(auto_now=True)
+class MotionSupporter(models.Model):
+    """Save the submitter of a Motion."""
+
+    motion = models.ForeignKey('Motion', related_name="supporter")
+    """The motion to witch the object belongs."""
+
+    person = PersonField()
+    """The person, who is the supporter."""
+
+
+    def __unicode__(self):
+        """Return the name of the supporter as string."""
+        return unicode(self.person)
+
+
+## class Category(models.Model):
+    ## name = models.CharField(max_length=255, verbose_name=ugettext_lazy("Category name"))
+    ## prefix = models.CharField(max_length=32, verbose_name=ugettext_lazy("Category prefix"))
+
+    ## def __unicode__(self):
+        ## return self.name
+
+
+## class Comment(models.Model):
+    ## motion_version = models.ForeignKey(MotionVersion)
+    ## text = models.TextField()
+    ## author = PersonField()
+    ## creation_time = models.DateTimeField(auto_now=True)
 
 
 class MotionLog(models.Model):
+    """Save a logmessage for a motion."""
+
     motion = models.ForeignKey(Motion, related_name='log_messages')
+    """The motion to witch the object belongs."""
+
     message = models.CharField(max_length=255)
+    """The log message.
+
+    Should be in english.
+    """
+
     person = PersonField(null=True)
+    """A person object, who created the log message. Optional."""
+
     time = models.DateTimeField(auto_now=True)
+    """The Time, when the loged action was performed."""
 
     class Meta:
         ordering = ['-time']
 
     def __unicode__(self):
+        """Return a string, representing the log message."""
         # TODO: write time in the local time format.
         if self.person is None:
             return "%s %s" % (self.time, _(self.message))
@@ -467,33 +579,63 @@ class MotionLog(models.Model):
 
 
 class MotionError(Exception):
+    """Exception raised when errors in the motion accure."""
     pass
 
 
 class MotionVote(BaseVote):
+    """Saves the votes for a MotionPoll.
+
+    There should allways be three MotionVote objects for each poll,
+    one for 'yes', 'no', and 'abstain'."""
+
     option = models.ForeignKey('MotionOption')
+    """The option object, to witch the vote belongs."""
 
 
 class MotionOption(BaseOption):
+    """Links between the MotionPollClass and the MotionVoteClass.
+
+    There should be one MotionOption object for each poll."""
+
     poll = models.ForeignKey('MotionPoll')
+    """The poll object, to witch the object belongs."""
+
     vote_class = MotionVote
+    """The VoteClass, to witch this Class links."""
 
 
 class MotionPoll(CountInvalid, CountVotesCast, BasePoll):
-    option_class = MotionOption
-    vote_values = [
-        ugettext_noop('Yes'), ugettext_noop('No'), ugettext_noop('Abstain')]
+    """The Class to saves the poll results for a motion poll."""
 
     motion = models.ForeignKey(Motion, related_name='polls')
+    """The motion to witch the object belongs."""
+
+    option_class = MotionOption
+    """The option class, witch links between this object the the votes."""
+
+    vote_values = [
+        ugettext_noop('Yes'), ugettext_noop('No'), ugettext_noop('Abstain')]
+    """The possible anwers for the poll. 'Yes, 'No' and 'Abstain'."""
+
     poll_number = models.PositiveIntegerField(default=1)
+    """An id for this poll in realation to a motion.
+
+    Is unique for each motion.
+    """
 
     class Meta:
         unique_together = ("motion", "poll_number")
 
     def __unicode__(self):
+        """Return a string, representing the poll."""
         return _('Ballot %d') % self.poll_number
 
     def get_absolute_url(self, link='edit'):
+        """Return an URL for the poll.
+
+        The keyargument 'link' can be 'edit' or 'delete'.
+        """
         if link == 'edit':
             return reverse('motion_poll_edit', args=[str(self.motion.pk),
                                                      str(self.poll_number)])
@@ -501,16 +643,13 @@ class MotionPoll(CountInvalid, CountVotesCast, BasePoll):
             return reverse('motion_poll_delete', args=[str(self.motion.pk),
                                                        str(self.poll_number)])
 
-    def get_motion(self):
-        return self.motion
-
     def set_options(self):
+        """Create the option class for this poll."""
         #TODO: maybe it is possible with .create() to call this without poll=self
+        #      or call this in save()
         self.get_option_class()(poll=self).save()
 
     def append_pollform_fields(self, fields):
+        """Apend the fields for invalid and votecast to the ModelForm."""
         CountInvalid.append_pollform_fields(self, fields)
         CountVotesCast.append_pollform_fields(self, fields)
-
-    def get_ballot(self):
-        return self.motion.motionpoll_set.filter(id__lte=self.id).count()
