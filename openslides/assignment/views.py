@@ -145,8 +145,9 @@ def edit(request, assignment_id=None):
 def delete(request, assignment_id):
     assignment = Assignment.objects.get(pk=assignment_id)
     if request.method == 'POST':
-        assignment.delete()
-        messages.success(request, _('Election <b>%s</b> was successfully deleted.') % assignment)
+        if 'submit' in request.POST:
+            assignment.delete()
+            messages.success(request, _('Election <b>%s</b> was successfully deleted.') % assignment)
     else:
         del_confirm_form(request, assignment)
     return redirect(reverse('assignment_overview'))
@@ -204,16 +205,17 @@ def delother(request, assignment_id, user_id):
     is_blocked = assignment.is_blocked(person)
 
     if request.method == 'POST':
-        try:
-            assignment.delrun(person, blocked=False)
-        except Exception, e:
-            messages.error(request, e)
-        else:
-            if not is_blocked:
-                message = _("Candidate <b>%s</b> was withdrawn successfully.") % person
+        if 'submit' in request.POST:
+            try:
+                assignment.delrun(person, blocked=False)
+            except Exception, e:
+                messages.error(request, e)
             else:
-                message = _("<b>%s</b> was unblocked successfully.") % person
-            messages.success(request, message)
+                if not is_blocked:
+                    message = _("Candidate <b>%s</b> was withdrawn successfully.") % person
+                else:
+                    message = _("<b>%s</b> was unblocked successfully.") % person
+                messages.success(request, message)
     else:
         if not is_blocked:
             message = _("Do you really want to withdraw <b>%s</b> from the election?") % person
