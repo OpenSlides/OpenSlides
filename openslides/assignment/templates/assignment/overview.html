@@ -38,8 +38,7 @@
             <th style="width: 1px;">{% trans "Actions" %}</th>
         </tr>
     {% for assignment in assignments %}
-        <tr class="{% cycle '' 'odd' %}
-            {% if assignment.active %}activeline{% endif %}">
+        <tr {% if assignment.active %}activeline{% endif %}">
             <td><a href="{% url 'assignment_view' assignment.id %}">{{ assignment }}</a></td>
             <td>
                 {% blocktrans with posts=assignment.posts context "Number of searched candidates for an election"%}posts: {{ posts }}{% endblocktrans %}
