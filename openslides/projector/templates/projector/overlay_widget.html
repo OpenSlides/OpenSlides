@@ -6,15 +6,15 @@
         <li>
             <a id="{{ overlay.def_name }}_active"
                 href="{% url 'projector_overlay_deactivate' overlay.def_name %}"
-                class="overlay_activate_link btn btn-mini btn-success"
+                class="overlay_activate_link btn btn-mini btn-primary"
                 style="{% if not overlay.active %}display:none;{% endif %}">
-                <i class="active icon-checked-new"></i>
+                <i class="icon-checked-new_white"></i>
             </a>
             <a id="{{ overlay.def_name }}_inactive"
                 href="{% url 'projector_overlay_activate' overlay.def_name %}"
                 class="overlay_activate_link btn btn-mini"
                 style="{% if overlay.active %}display:none;{% endif %}">
-                <i class="inactive icon-unchecked-new"></i>
+                <i class="icon-unchecked-new"></i>
             </a>
 
             {# TODO: Call the html via overlay.html #}

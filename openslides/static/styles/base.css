@@ -233,14 +233,17 @@ legend + .control-group {
     background-image: url("../img/glyphicons_045_calendar.png");
 }
 .leftmenu ul li.active a span.ico i.icon-agenda {
-    background-position: 0;
     background-image: url("../img/glyphicons_045_calendar_white.png");
 }
 .icon-motion, .icon-motions {
     background-position: -24px -24px;
 }
 .icon-assignment, .icon-assignments {
-    background-position: -144px -72px;
+    background-image: url("../img/glyphicons_041_charts.png");
+    background-position: 0;
+}
+.leftmenu ul li.active a span.ico i.icon-assignment {
+    background-image: url("../img/glyphicons_041_charts_white.png");
 }
 .icon-participant, .icon-participants {
     background-position: -168px 0;
@@ -260,12 +263,17 @@ legend + .control-group {
 .icon-custom_slide {
     background-position: -120px 0px;
 }
-
-
+.icon-personal_info {
+    background-position: -312px -24px;
+}
 
 /** More glyphicons free icons **/
 .status_link .icon-on, .icon-checked-new {
     background-image: url("../img/glyphicons_152_check.png");
+    background-position: 0;
+}
+.icon-checked-new_white {
+    background-image: url("../img/glyphicons_152_check_white.png");
     background-position: 0;
 }
 .status_link .icon-off, .icon-unchecked-new {
