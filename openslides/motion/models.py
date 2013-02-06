@@ -24,6 +24,7 @@ from django.utils.translation import ugettext_lazy, ugettext_noop, ugettext as _
 
 from openslides.utils.utils import _propper_unicode
 from openslides.utils.person import PersonField
+from openslides.utils.exceptions import OpenSlidesError
 from openslides.config.models import config
 from openslides.config.signals import default_config_value
 from openslides.poll.models import (
@@ -33,8 +34,10 @@ from openslides.projector.api import register_slidemodel
 from openslides.projector.models import SlideMixin
 from openslides.agenda.models import Item
 
-from .workflow import (motion_workflow_choices, get_state, State, WorkflowError,
-                       DUMMY_STATE)
+
+class MotionError(OpenSlidesError):
+    """Exception raised when errors in the motion accure."""
+    pass
 
 
 class Motion(SlideMixin, models.Model):
@@ -43,7 +46,7 @@ class Motion(SlideMixin, models.Model):
     This class is the main entry point to all other classes related to a motion.
     """
 
-    prefix = "motion"
+    prefix = 'motion'
     """Prefix for the slide system."""
 
     active_version = models.ForeignKey('MotionVersion', null=True,
@@ -55,11 +58,10 @@ class Motion(SlideMixin, models.Model):
     version. Like the Sighted versions on Wikipedia.
     """
 
-    state_id = models.CharField(max_length=3)
-    """The id of a state object.
+    state = models.ForeignKey('State', null=True)  # TODO: Check whether null=True is necessary.
+    """The related state object.
 
-    This Attribute is used be motion.state to identify the current state of the
-    motion.
+    This attribute is to get the current state of the motion.
     """
 
     identifier = models.CharField(max_length=255, null=True, blank=True,
@@ -88,9 +90,9 @@ class Motion(SlideMixin, models.Model):
     def save(self, *args, **kwargs):
         """Save the motion.
 
-        1. Set the state of a new motion to the default motion.
+        1. Set the state of a new motion to the default state.
         2. Save the motion object.
-        3. Save the version Data.
+        3. Save the version data.
         4. Set the active version for the motion.
 
         A new version will be saved if motion.new_version was called
@@ -105,7 +107,7 @@ class Motion(SlideMixin, models.Model):
         the config 'motion_create_new_version' is set to
         'ALLWASY_CREATE_NEW_VERSION'.
         """
-        if not self.state_id:
+        if not self.state:
             self.reset_state()
 
         super(Motion, self).save(*args, **kwargs)
@@ -121,11 +123,12 @@ class Motion(SlideMixin, models.Model):
         else:
             new_data = False
 
-        need_new_version = config['motion_create_new_version'] == 'ALLWASY_CREATE_NEW_VERSION'
+        # TODO: Check everything here. The decision whether to create a new version has to be done in the view. Update docstings too.
+        need_new_version = self.state.automatic_versioning
         if hasattr(self, '_new_version') or (new_data and need_new_version):
             version = self.new_version
             del self._new_version
-            version.motion = self  # Test if this line is realy neccessary.
+            version.motion = self  # TODO: Test if this line is really neccessary.
         elif new_data and not need_new_version:
             version = self.last_version
         else:
@@ -150,16 +153,16 @@ class Motion(SlideMixin, models.Model):
             version.version_number = version_number + 1
         version.save()
 
-        # Set the active Version of this motion. This has to be done after the
-        # version is saved to the db
-        if not self.state.version_permission or self.active_version is None:
+        # Set the active version of this motion. This has to be done after the
+        # version is saved to the database
+        if not self.state.dont_set_new_version_active or self.active_version is None:
             self.active_version = version
             self.save()
 
     def get_absolute_url(self, link='detail'):
         """Return an URL for this version.
 
-        The keywordargument 'link' can be 'detail', 'view', 'edit' or 'delete'.
+        The keyword argument 'link' can be 'detail', 'view', 'edit' or 'delete'.
         """
         if link == 'view' or link == 'detail':
             return reverse('motion_detail', args=[str(self.id)])
@@ -240,7 +243,7 @@ class Motion(SlideMixin, models.Model):
 
     @property
     def new_version(self):
-        """Return a Version object, not saved in the database.
+        """Return a version object, not saved in the database.
 
         On the first call, it creates a new version. On any later call, it
         use the existing new version.
@@ -266,8 +269,8 @@ class Motion(SlideMixin, models.Model):
     def set_version(self, version):
         """Set the 'active' version object.
 
-        The keyargument 'version' can be a MotionVersion object or the
-        version_number of a VersionObject or None.
+        The keyword argument 'version' can be a MotionVersion object or the
+        version_number of a version object or None.
 
         If the argument is None, the newest version will be used.
         """
@@ -291,7 +294,7 @@ class Motion(SlideMixin, models.Model):
     @property
     def last_version(self):
         """Return the newest version of the motion."""
-        # TODO: Fix the case, that the motion has no Version
+        # TODO: Fix the case, that the motion has no version
         try:
             return self.versions.order_by('-version_number')[0]
         except IndexError:
@@ -307,7 +310,7 @@ class Motion(SlideMixin, models.Model):
 
     def support(self, person):
         """Add 'person' as a supporter of this motion."""
-        if self.state.support:
+        if self.state.allow_support:
             if not self.is_supporter(person):
                 MotionSupporter(motion=self, person=person).save()
         else:
@@ -315,7 +318,7 @@ class Motion(SlideMixin, models.Model):
 
     def unsupport(self, person):
         """Remove 'person' as supporter from this motion."""
-        if self.state.support:
+        if self.state.allow_support:
             self.supporter.filter(person=person).delete()
         else:
             raise WorkflowError("You can not unsupport a motion in state %s" % self.state.name)
@@ -325,8 +328,8 @@ class Motion(SlideMixin, models.Model):
 
         Return the new poll object.
         """
-        if self.state.create_poll:
-            # TODO: auto increment the poll_number in the Database
+        if self.state.allow_create_poll:
+            # TODO: auto increment the poll_number in the database
             poll_number = self.polls.aggregate(Max('poll_number'))['poll_number__max'] or 0
             poll = MotionPoll.objects.create(motion=self, poll_number=poll_number + 1)
             poll.set_options()
@@ -334,35 +337,12 @@ class Motion(SlideMixin, models.Model):
         else:
             raise WorkflowError("You can not create a poll in state %s" % self.state.name)
 
-    def get_state(self):
-        """Return the state of the motion.
-
-        State is a State object. See openslides.motion.workflow for more informations.
-        """
-        try:
-            return get_state(self.state_id)
-        except WorkflowError:
-            return DUMMY_STATE
-
-    def set_state(self, next_state):
-        """Set the state of this motion.
-
-        The keyargument 'next_state' has to be a State object or an id of a
-        State object.
-        """
-        if not isinstance(next_state, State):
-            next_state = get_state(next_state)
-        if next_state in self.state.next_states:
-            self.state_id = next_state.id
-        else:
-            raise WorkflowError('%s is not a valid next_state' % next_state)
-
-    state = property(get_state, set_state)
-    """The state of the motion as Ste object."""
-
     def reset_state(self):
-        """Set the state to the default state."""
-        self.state_id = get_state('default').id
+        """Set the state to the default state. If the motion is new, it chooses the default workflow from config."""
+        if self.state:
+            self.state = self.state.get_workflow().first_state
+        else:
+            self.state = Workflow.objects.get(pk=config['motion_workflow']).first_state
 
     def slide(self):
         """Return the slide dict."""
@@ -395,13 +375,13 @@ class Motion(SlideMixin, models.Model):
         """
         actions = {
             'edit': ((self.is_submitter(person) and
-                      self.state.edit_as_submitter) or
+                      self.state.allow_submitter_edit) or
                      person.has_perm('motion.can_manage_motion')),
 
             'create_poll': (person.has_perm('motion.can_manage_motion') and
-                            self.state.create_poll),
+                            self.state.allow_create_poll),
 
-            'support': (self.state.support and
+            'support': (self.state.allow_support and
                         config['motion_min_supporters'] > 0 and
                         not self.is_submitter(person)),
 
@@ -410,7 +390,7 @@ class Motion(SlideMixin, models.Model):
         }
         actions['delete'] = actions['edit']  # TODO: Only if the motion has no number
         actions['unsupport'] = actions['support']
-        actions['reset_state'] = 'change_state'
+        actions['reset_state'] = actions['change_state']
         return actions
 
     def write_log(self, message, person=None):
@@ -455,7 +435,7 @@ class MotionVersion(models.Model):
     A MotionVersion object saves some date of the motion."""
 
     motion = models.ForeignKey(Motion, related_name='versions')
-    """The Motion, to witch the version belongs."""
+    """The motion to which the version belongs."""
 
     version_number = models.PositiveIntegerField(default=1)
     """An id for this version in realation to a motion.
@@ -464,7 +444,7 @@ class MotionVersion(models.Model):
     """
 
     title = models.CharField(max_length=255, verbose_name=ugettext_lazy("Title"))
-    """The Title of a motion."""
+    """The title of a motion."""
 
     text = models.TextField(verbose_name=_("Text"))
     """The text of a motion."""
@@ -473,10 +453,10 @@ class MotionVersion(models.Model):
     """The reason for a motion."""
 
     rejected = models.BooleanField(default=False)
-    """Saves, if the version is rejected."""
+    """Saves if the version is rejected."""
 
     creation_time = models.DateTimeField(auto_now=True)
-    """Time, when the version was saved."""
+    """Time when the version was saved."""
 
     #identifier = models.CharField(max_length=255, verbose_name=ugettext_lazy("Version identifier"))
     #note = models.TextField(null=True, blank=True)
@@ -487,7 +467,7 @@ class MotionVersion(models.Model):
     def __unicode__(self):
         """Return a string, representing this object."""
         counter = self.version_number or _('new')
-        return "%s Version %s" % (self.motion, counter)
+        return "%s Version %s" % (self.motion, counter)  # TODO: Should this really be self.motion or the title of the specific version?
 
     def get_absolute_url(self, link='detail'):
         """Return the URL of this Version.
@@ -577,11 +557,6 @@ class MotionLog(models.Model):
             return "%s %s by %s" % (self.time, _(self.message), self.person)
 
 
-class MotionError(Exception):
-    """Exception raised when errors in the motion accure."""
-    pass
-
-
 class MotionVote(BaseVote):
     """Saves the votes for a MotionPoll.
 
@@ -652,3 +627,89 @@ class MotionPoll(CountInvalid, CountVotesCast, BasePoll):
         """Apend the fields for invalid and votecast to the ModelForm."""
         CountInvalid.append_pollform_fields(self, fields)
         CountVotesCast.append_pollform_fields(self, fields)
+
+
+class WorkflowError(OpenSlidesError):
+    """Exception raised when errors in a workflow or state accure."""
+    pass
+
+
+class State(models.Model):
+    """Defines a state for a motion.
+
+    A collection of some states linked together via 'next_states' belongs to a workflow.
+    In every state you can configure some hndling of a motion. See the following fields for more information.
+    """
+
+    name = models.CharField(max_length=255)
+    """A string representing the state."""
+
+    action_word = models.CharField(max_length=255)
+    """An alternative string to be used for a button to switch to this state."""
+
+    next_states = models.ManyToManyField('self', symmetrical=False)
+    """A many-to-many relation to all states, that can be choosen from this state."""
+
+    icon = models.CharField(max_length=255)
+    """A string represention the url to the icon-image."""
+
+    allow_support = models.BooleanField(default=False)
+    """If true, persons can support the motion in this state."""
+
+    allow_create_poll = models.BooleanField(default=False)
+    """If true, polls can be created in this state."""
+
+    allow_submitter_edit = models.BooleanField(default=False)
+    """If true, the submitter can edit the motion in this state."""
+
+    automatic_versioning = models.BooleanField(default=False)
+    """If true, editing the motion will create a new version by default."""
+
+    dont_set_new_version_active = models.BooleanField(default=False)
+    """If true, new versions are not automaticly set active."""
+
+    def __unicode__(self):
+        """Returns the name of the state."""
+        return self.name
+
+    def get_action_word(self):
+        """Returns the alternative name of the state if it exists."""
+        return self.action_word or self.name
+
+    def get_workflow(self):
+        """Returns the workflow instance the state belongs to."""
+        for workflow in Workflow.objects.all():
+            if self in workflow.get_all_states():
+                return workflow
+
+
+class Workflow(models.Model):
+    """Defines a workflow for a motion.
+
+    All states of a workflow are linked together with their 'next_state' attributes.
+    """
+
+    name = models.CharField(max_length=255)
+    """A string representing the workflow."""
+
+    first_state = models.OneToOneField(State)
+    """A one-to-one relation to a state, the starting point for the workflow."""
+
+    # TODO: Decide whether all states of a workflow should also be saved in the database or not.
+
+    def __unicode__(self):
+        """Returns the name of the workflow."""
+        return self.name
+
+    def get_all_states(self):
+        """Returns a list with all states which belong to a workflow."""
+        all_states = []
+
+        def _populate_states(parent_state):
+            all_states.append(parent_state)
+            for state in parent_state.next_states.all():
+                if state not in all_states:
+                    _populate_states(state)
+
+        _populate_states(self.first_state)
+        return all_states
