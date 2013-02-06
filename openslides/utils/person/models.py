@@ -11,16 +11,16 @@
 """
 from django.db import models
 
-from openslides.utils.person.forms import PersonFormField
-from openslides.utils.person.api import get_person, generate_person_id
+from .forms import PersonFormField
+from .api import get_person, generate_person_id, Person
 
 
 class PersonField(models.fields.Field):
     __metaclass__ = models.SubfieldBase
 
     def __init__(self, *args, **kwargs):
-        super(PersonField, self).__init__(max_length=255, *args, **kwargs)
-        # TODO: Validate the uid
+        kwargs['max_length'] = 255
+        super(PersonField, self).__init__(*args, **kwargs)
 
     def get_internal_type(self):
         return "CharField"
@@ -29,21 +29,21 @@ class PersonField(models.fields.Field):
         """
         Convert string value to a User Object.
         """
-        if hasattr(value, 'person_id'):
-            person = value
+        if isinstance(value, Person):
+            return value
+        elif value is None:
+            return None
         else:
-            person = get_person(value)
-
-        person.prepare_database_save = (
-            lambda unused: PersonField().get_prep_value(person))
-        return person
+            return get_person(value)
 
     def get_prep_value(self, value):
-        return value.person_id
-
-    def value_to_string(self, obj):
-        value = self._get_val_from_obj(obj)
-        return self.get_prep_value(value)
+        """
+        Convert a person object to a string, to store it in the database.
+        """
+        if value is None:
+            return None
+        else:
+            return value.person_id
 
     def formfield(self, **kwargs):
         defaults = {'form_class': PersonFormField}

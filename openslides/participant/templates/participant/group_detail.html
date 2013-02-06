@@ -1,4 +1,4 @@
-{% extends "participant/base_participant.html" %}
+{% extends "base.html" %}
 
 {% load i18n %}
 {% load tags %}
@@ -7,16 +7,22 @@
 
 {% block content %}
 
-<h1>{{ group }}</h1>
+<h1>{{ group }}
+    <small class="pull-right">
+        <a href="{% url 'user_group_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+    </small>
+</h1>
 
 <p>{{ group.description }}</p>
 
-<h2>{% trans "Members" %}</h2>
+<h4>{% trans "Members" %}</h4>
 
+<ol>
 {% for member in group.user_set.all %}
-    <p>{{ member }}</p>
+    <li>{{ member }}</li>
 {% empty %}
     <p>{% trans "No members available." %}</p>
 {% endfor %}
+</ol>
 
 {% endblock %}

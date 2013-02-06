@@ -1,15 +1,13 @@
-{% load staticfiles %}
 {% load i18n %}
 {% load tags %}
 
-
 <ul style="line-height: 180%">
     <li class="{% if welcomepage_is_active %}activeline{% endif %}">
-        <a href="{% url 'projector_activate_welcomepage' %}" class="activate_link {% if welcomepage_is_active %}active{% endif %}">
-            <div></div>
-        </a>
-        <a href="{% url 'projctor_preview_welcomepage' %}" title="{% trans 'Preview' %}" class="icon preview right">
-            <span></span>
+        <a href="{% url 'projector_activate_welcomepage' %}" class="activate_link btn {% if welcomepage_is_active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+            <i class="icon-facetime-video {% if welcomepage_is_active %}icon-white{% endif %}"></i>
+        </a>&nbsp;
+        <a href="{% url 'projctor_preview_welcomepage' %}" title="{% trans 'Preview' %}" class="btn btn-mini right">
+            <i class="icon-search"></i>
         </a>
         {% trans 'Welcome Page' %}
     </li>
@@ -18,28 +16,26 @@
 <ul style="line-height: 180%">
 {% for slide in slides %}
     <li class="{% if slide.active %}activeline{% endif %}">
-        <a href="{% url 'projector_activate_slide' slide.sid %}" class="activate_link {% if slide.active %}active{% endif %}">
-            <div></div>
-        </a>
-        <a href="{% url 'customslide_delete' slide.id %}" title="{% trans 'Delete' %}" class="icon delete right">
-            <span></span>
-        </a>
-        <a href="{% url 'customslide_edit' slide.id %}" title="{% trans 'Edit' %}" class="icon edit right">
-            <span></span>
-        </a>
-        <a href="{% url 'projctor_preview_slide' slide.sid %}" title="{% trans 'Preview' %}" class="icon preview right">
-            <span></span>
-        </a>
+        <a href="{% url 'projector_activate_slide' slide.sid  %}" class="activate_link btn {% if slide.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+            <i class="icon-facetime-video {% if slide.active %}icon-white{% endif %}"></i>
+        </a>&nbsp;
         <a href="{% url 'customslide_edit' slide.id %}">{{ slide }}</a>
+        <a href="{% url 'customslide_delete' slide.id %}" title="{% trans 'Delete' %}" class="btn btn-mini right">
+            <i class="icon-remove"></i>
+        </a>
+        <a href="{% url 'customslide_edit' slide.id %}" title="{% trans 'Edit' %}" class="btn btn-mini right">
+            <i class="icon-pencil"></i>
+        </a>
+        <a href="{% url 'projctor_preview_slide' slide.sid %}" title="{% trans 'Preview' %}" class="btn btn-mini right">
+            <i class="icon-search"></i>
+        </a>
     </li>
 {% empty %}
     <li>{% trans 'No items available.' %}</li>
 {% endfor %}
 </ul>
-<a href='{% url "customslide_new" %}'>
-    <button class="button" type="button" onclick="window.location='{% url 'customslide_new' %}'">
-        <span class="icon add">{% trans 'New slide' %}</span>
-    </button>
+<p style="line-height: 280%">
+<a href="{% url 'customslide_new' %}" class="btn btn-mini right">
+    <i class="icon-plus"></i>{% trans 'New' %}
 </a>
-
-
+</p>
