@@ -1,5 +1,4 @@
 {% load i18n %}
-{% load staticfiles %}
 {% load tags %}
 
     <td>
@@ -9,7 +8,9 @@
                 <i class="{% if item.closed %}icon-checked-new{% else %}icon-unchecked-new{% endif %}"></i>
             </a>
         {% else %}
-            <i class="icon-"></i>
+            <span class="close_link">
+                <i class="{% if item.closed %}icon-checked-new{% else %}icon-unchecked-new{% endif %}"></i>
+            </span>
         {% endif %}
     </td>
     <td>
@@ -43,7 +44,7 @@
                 <i class="icon-remove"></i>
             </a>
             {% if not item.is_leaf_node %}
-                <a href="{% url 'projector_activate_slide' item.sid 'summary' %}" class="activate_link btn btn-mini" title="{% trans 'Activate summary for this item' %}">
+                <a href="{% url 'projector_activate_slide' item.sid 'summary' %}" class="activate_link btn btn-mini" title="{% trans 'Show summary for this item' %}">
                     <i class="icon-summary"></i>
                 </a>
             {% endif %}
@@ -51,7 +52,6 @@
         </span>
     </td>
     {% endif %}
-    {% if perms.agenda.can_manage_agenda %}
     <td class="tabledrag-hide" style="display: none;">
         {% with form=item.weight_form %}
             {{ form.weight }}
@@ -59,4 +59,5 @@
             {{ form.parent }}
         {% endwith %}
     </td>
-    {% endif %}
+ 
+

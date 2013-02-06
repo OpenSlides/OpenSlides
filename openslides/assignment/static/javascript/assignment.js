@@ -24,9 +24,6 @@ $(function() {
                     line.parent().parent().children('td').addClass('elected')
                 }
                 line.attr('href', data.link);
-            },
-            error: function () {
-                alert("Ajax Error");
             }
         });
     });
@@ -48,22 +45,24 @@ $(function() {
             }
         });
     });
+    // change publish status of ballot
     $('.publish_link').click(function(event) {
         event.preventDefault();
-        link = $(this);
+        var link = $(this);
         $.ajax({
             type: 'GET',
-            url: link.attr('href'),
+            url: $(this).attr('href'),
             dataType: 'json',
             success: function(data) {
                 if (data.published) {
-                    link.addClass('published');
-                    //link.attr('title', gettext('Unpublish ballot'))
+                    newclass = 'icon-checked-new_white';
+                    link.addClass('btn-primary');
                 } else {
-                    link.removeClass('published');
-                    //link.attr('title', 'Publish ballot')
+                    newclass = 'icon-unchecked-new';
+                    link.removeClass('btn-primary');
                 }
+                link.children('i').removeClass('icon-checked-new_white icon-unchecked-new').addClass(newclass);
+                link.attr('href', data.link);
             }
         });
-    });
-});
+    });});

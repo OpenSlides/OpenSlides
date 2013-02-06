@@ -5,20 +5,6 @@
  * :license: GNU GPL, see LICENSE for more details.
  */
 
-/* agenda item open/closed */
-.close_link span {
-    background-image: url(../images/icons/close-grey.png);
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 16px;
-    height: 16px;
-    display: inline-block;
-}
-
-.close_link.closed span {
-    background-image: url(../images/icons/close.png);
-}
-
 tr.topline td {
     border-bottom: 1px solid #333333;
     background-color: #CDCDCD;

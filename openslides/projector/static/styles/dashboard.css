@@ -54,8 +54,11 @@
     -moz-border-radius: 0 0 5px 5px;
     -webkit-border-radius: 0 0 5px 5px;
 }
-.widget-content li{
+.widget-content li {
     padding: 4px 0;
+}
+.widget-content .overlay_list li {
+    padding-bottom: 10px;
 }
 .widget-content ul {
     list-style: none inside none;
@@ -74,14 +77,12 @@
     visibility: hidden;
 }
 
-/*.projector_countdown_spinval {*/
+.overlay_list .form-inline {
+    margin: 5px 0 0 31px;
+}
 
 #countdown_time {
     width: 40px;
-}
-#overlay_message_text {
-    width: 90%;
-    height: 12px;
 }
 
 /* iframe */
@@ -95,7 +96,6 @@
     width: 1024px;
     height: 768px;
 }
-
 #iframewrapper {
     width: 256px;/*100%;*/
     height: 192px;/*230px;*/
@@ -103,7 +103,6 @@
     overflow: hidden;
     border: 1px solid #D5D5D5;
 }
-
 #iframeoverlay {
     width: 256px;
     height: 192px;
@@ -112,36 +111,4 @@
     left: 0px;
     display: block;
     z-index: 1;
-}
-
-/* activate link */
-a.activate_link div {
-    background-image: url(../images/icons/accept-grey.png);
-    background-repeat: no-repeat;
-    float: left;
-    width: 16px;
-    height: 16px;
-    padding-right: 12px;
-    position: relative;
-    top: 4px;
-    left: 4px;
-}
-a.activate_link.active div {
-    background-image: url(../images/icons/accept.png);
-}
-
-a.overlay div {
-    background-image: url(../images/icons/accept-grey.png);
-    background-repeat: no-repeat;
-    float: left;
-    width: 16px;
-    height: 16px;
-    padding-right: 16px;
-    position: relative;
-    top: 4px;
-    left: 4px;
-}
-
-a.overlay.active div {
-    background-image: url(../images/icons/accept.png);
 }

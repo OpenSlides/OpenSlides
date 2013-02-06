@@ -1,10 +1,9 @@
-{% load staticfiles %}
 {% load i18n %}
 {% load tags %}
 
 <ul style="line-height: 180%">
     <li class="{% if agenda.active %}activeline{% endif %}">
-        <a href="{% url 'projector_activate_slide' agenda.key  %}" class="activate_link btn {% if agenda.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show agenda' %}">
+        <a href="{% url 'projector_activate_slide' agenda.key  %}" class="activate_link btn {% if agenda.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
             <i class="icon-facetime-video {% if agenda.active %}icon-white{% endif %}"></i>
         </a>&nbsp;
         <a href="{% url 'projctor_preview_slide' agenda.key %}" title="{% trans 'Preview' %}" class="icon preview right">
@@ -27,7 +26,7 @@
             <i class="icon-search"></i>
         </a>
         {% if not item.is_leaf_node %}
-        <a class="activate_link btn btn-mini {% if item.active %}btn-primary{% endif %} right" href="{% url 'projector_activate_slide' item.sid 'summary' %}" title="{% trans 'Activate summary for this item' %}">
+        <a class="activate_link btn btn-mini {% if item.active %}btn-primary{% endif %} right" href="{% url 'projector_activate_slide' item.sid 'summary' %}" title="{% trans 'Show summary for this item' %}">
             <i class="icon-summary {% if item.active %}icon-white{% endif %}"></i>
         </a>
         {% endif %}

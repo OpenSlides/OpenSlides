@@ -1,24 +1,29 @@
 {% load i18n %}
 {% load tags %}
 
-<ul>
+<ul class="overlay_list">
     {% for overlay in overlays %}
         <li>
-            <a id="{{ overlay.def_name }}"
-              href="{% if overlay.active %}{% url 'projector_overlay_deactivate' overlay.def_name %}{% else %}{% url 'projector_overlay_activate' overlay.def_name %}{% endif %}"
-              class="overlay btn btn-mini">
-                <i class="{% if overlay.active %}icon-checked-new{% else %}icon-unchecked-new{% endif %}"></i>
+            <a id="{{ overlay.def_name }}_active"
+                href="{% url 'projector_overlay_deactivate' overlay.def_name %}"
+                class="overlay_activate_link btn btn-mini btn-primary"
+                style="{% if not overlay.active %}display:none;{% endif %}">
+                <i class="icon-checked-new_white"></i>
             </a>
-
+            <a id="{{ overlay.def_name }}_inactive"
+                href="{% url 'projector_overlay_activate' overlay.def_name %}"
+                class="overlay_activate_link btn btn-mini"
+                style="{% if overlay.active %}display:none;{% endif %}">
+                <i class="icon-unchecked-new"></i>
+            </a>
 
             {# TODO: Call the html via overlay.html #}
             {% if overlay.def_name == "Countdown" %}
-                <p>{{ overlay }}:<br>
+                {% trans "Countdown for speaking time" %}:<br>
                 {% include 'projector/control_countdown.html' %}
-                </p>
             {% endif %}
             {% if overlay.def_name == "Message" %}
-                {{ overlay }}:<br>
+                {% trans "Message" %}:<br>
                 {% include 'projector/control_overlay_message.html' %}
             {% endif %}
         </li>

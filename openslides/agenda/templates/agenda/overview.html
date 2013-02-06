@@ -17,7 +17,6 @@
     <script type="text/javascript" src="{% static 'javascript/jquery.cookie.js' %}"></script>
     {% if perms.agenda.can_manage_agenda %}
         <script type="text/javascript" src="{% static 'javascript/jquery.once.js' %}"></script>
-
         <script type="text/javascript" src="{% static 'javascript/jquery.tmpl.js' %}"></script>
         <script type="text/javascript" src="{% static 'javascript/tabledrag.js' %}"></script>
         <script type="text/javascript">
@@ -71,17 +70,17 @@
         </i></small>
         <table id="menu-overview" class="table table-striped table-bordered">
             <tr>
-                <th width="10px"></th>
+                <th class="mini_width"></th>
                 <th>{% trans "Item" %}</th>
                 {% if perms.agenda.can_manage_agenda %}
                     <th width="200" class="optional">{% trans "Comment" %}</th>
                 {% endif %}
                 {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
-                    <th width="50">{% trans "Actions" %}</th>
+                    <th class="mini_width">{% trans "Actions" %}</th>
                 {% endif %}
-                {% if perms.agenda.can_manage_agenda %}
-                    <th class="tabledrag-hide" style="display: none;">{% trans "Weight" %}</th>
-                {% endif %}
+                <th class="tabledrag-hide" style="display: none;">
+                    {% trans "Weight" %}
+                </th>
             </tr>
             <tr class="topline{% if active_sid == 'agenda' %} activeline{% endif %}">
                 <td></td>
@@ -95,7 +94,7 @@
                 <td>
                 {% if perms.projector.can_manage_projector %}
                     <span>
-                    <a href="{% url 'projector_activate_slide' 'agenda' %}" class="activate_link btn {% if active_sid == 'agenda' %}btn-primary{% endif %} btn-mini" title="{% trans 'Activate agenda' %}">
+                    <a href="{% url 'projector_activate_slide' 'agenda' %}" class="activate_link btn {% if active_sid == 'agenda' %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
                         <i class="icon-facetime-video {% if active_sid == 'agenda' %}icon-white{% endif %}"></i>
                     </a>
                     <span>

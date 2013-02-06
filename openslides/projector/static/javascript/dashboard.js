@@ -15,11 +15,12 @@ function saveOrder() {
         $.cookie(cookieName, order, { path: "/", expiry: new Date(2012, 1, 1)});
     });
 }
+
 // function that restores the widget list order from a cookie
 function restoreOrder() {
     $(".column").each(function(index, value) {
         var colid = value.id;
-        var cookieName = "cookie-" + colid
+        var cookieName = "cookie-" + colid;
         var cookie = $.cookie(cookieName);
         if ( cookie == null ) { return; }
         var IDs = cookie.split(",");
@@ -38,38 +39,7 @@ $(function() {
         stop: function() { saveOrder(); }
     });
 
-    restoreOrder();
-
-    if ($.browser.msie) {
-        if ($.browser.version >= 8.0 && $.browser.version < 9.0)
-        {
-            /* scaling bug in IE8.. iframe has to be 4 times bigger */
-            $( "#iframe" ).css('width', 1024 * 4);
-            $( "#iframe" ).css('height', 768 * 4);
-        }
-        $( "#iframe" ).css('zoom', '0.25');
-    }
-
-    $('a.overlay').click(function(event) {
-        event.preventDefault();
-        var link = $(this);
-        $.ajax({
-            type: 'GET',
-            url: $(this).attr('href'),
-            dataType: 'json',
-            success: function(data) {
-                if (data['active']) {
-                    $('#' + data['def_name'] + '_active').show();
-                    $('#' + data['def_name'] + '_inactive').hide();
-                } else {
-                    $('#' + data['def_name'] + '_active').hide();
-                    $('#' + data['def_name'] + '_inactive').show();
-                }
-            },
-        });
-    });
-
-    // control the projector
+    // control the projector view
     $('.projector_edit').click(function(event) {
         event.preventDefault();
         var link = $(this);
@@ -87,7 +57,6 @@ $(function() {
         event.preventDefault();
         var link = $(this);
         var requestData = {};
-
         if (link.attr('id') == "countdown_set") {
             requestData = { "countdown_time" : $( "#countdown_time" ).val() };
         }
@@ -109,7 +78,8 @@ $(function() {
         });
     });
 
-    $('.countdown_visible_link').click(function(event) {
+    // activate/deactivate overlay
+    $('.overlay_activate_link').click(function(event) {
         event.preventDefault();
         var link = $(this);
         $.ajax({
@@ -117,13 +87,13 @@ $(function() {
             url: link.attr('href'),
             dataType: 'json',
             success: function(data) {
-                if (data.countdown_visible == "True") {
-                    newclass = 'open';
+                if (data['active']) {
+                    $('#' + data['def_name'] + '_active').show();
+                    $('#' + data['def_name'] + '_inactive').hide();
                 } else {
-                    newclass = 'closed';
+                    $('#' + data['def_name'] + '_active').hide();
+                    $('#' + data['def_name'] + '_inactive').show();
                 }
-                link.removeClass('closed open').addClass(newclass);
-                link.attr('href', data.link);
             }
         });
     });
@@ -134,4 +104,21 @@ $(function() {
             $('#overlay_message_text').val(data['overlay_message']);
         }
     });
+
+/* comment out this function because '$.browser' has been removed from jquery 1.9, see:
+   http://blog.jquery.com/2013/01/15/jquery-1-9-final-jquery-2-0-beta-migrate-final-released/
+   TODO: use jquery migrate to have $.browser support for IE8;
+
+    if ($.browser.msie) {
+        if ($.browser.version >= 8.0 && $.browser.version < 9.0)
+        {
+            // scaling bug in IE8.. iframe has to be 4 times bigger
+            $( "#iframe" ).css('width', 1024 * 4);
+            $( "#iframe" ).css('height', 768 * 4);
+        }
+        $( "#iframe" ).css('zoom', '0.25');
+    }
+*/
+
+    restoreOrder();
 });

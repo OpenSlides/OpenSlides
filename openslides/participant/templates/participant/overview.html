@@ -6,12 +6,6 @@
 
 {% block title %}{{ block.super }} – {% trans "Participants" %}{% endblock %}
 
-{% block header %}
-    {% if perms.participant.can_manage_participant %}
-        <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/participant.css' %}" />
-    {% endif %}
-{% endblock %}
-
 {% block javascript %}
     {% if perms.participant.can_manage_participant %}
         <script type="text/javascript" src="{% static 'javascript/participant.js' %}"></script>
@@ -24,7 +18,7 @@
         <div class="btn-toolbar">
             {% if perms.participant.can_manage_participant %}
                 <a href="{% url 'user_new' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New participant' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
-                <a href="{% url 'user_group_overview' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'All user groups' %}"><i class="icon-group"></i> {% trans "User groups" %}</a>
+                <a href="{% url 'user_group_overview' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'All groups' %}"><i class="icon-group"></i> {% trans "Groups" %}</a>
                 <a href="{% url 'user_import' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import participants' %}"><i class="icon-import"></i> {% trans 'Import' %}</a>
             {% endif %}
             {% if perms.participant.can_see_participant and perms.participant.can_manage_participant %}
@@ -111,13 +105,13 @@
             {% if perms.participant.can_manage_participant %}
                 <th class="optional"><a href="?sort=comment&reverse={% if 'comment' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Comment" %}</a></th>
                 <th class="optional"><a href="?sort=last_login&reverse={% if 'last_login' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Last Login" %}</a></th>
-                <th style="width: 1px;">{% trans "Actions" %}</th>
+                <th class="mini_width">{% trans "Actions" %}</th>
             {% endif %}
         </tr>
         {% for user in users %}
             <tr class="{% if user.active %}activeline{% endif %}">
-                <td>{{ user.first_name }}</td>
-                <td>{{ user.last_name }}</td>
+                <td><a href="{% url 'user_view' user.id %}">{{ user.first_name }}</a></td>
+                <td><a href="{% url 'user_view' user.id %}">{{ user.last_name }}</a></td>
                 <td class="optional">{{ user.structure_level }}</td>
                 <td class="optional">{{ user.get_type_display }}</td>
                 <td class="optional">{{ user.committee }}</td>

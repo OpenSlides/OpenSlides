@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 
 {% load i18n %}
-{% load staticfiles %}
 
 {% block title %}{{ block.super }} – {% trans "Elections" %}{% endblock %}
 
@@ -36,11 +35,10 @@
             <th><a href="?sort=name{% if 'name' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Election" %}</a></th>
             <th>{% trans "Candidates" %}</th>
             <th class="optional"><a href="?sort=status{% if 'status' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Status" %}</a></th>
-            <th style="width: 1px;">{% trans "Actions" %}</th>
+            <th class="mini_width">{% trans "Actions" %}</th>
         </tr>
     {% for assignment in assignments %}
-        <tr class="{% cycle '' 'odd' %}
-            {% if assignment.active %}activeline{% endif %}">
+        <tr {% if assignment.active %}activeline{% endif %}">
             <td><a href="{% url 'assignment_view' assignment.id %}">{{ assignment }}</a></td>
             <td>
                 {% blocktrans with posts=assignment.posts context "Number of searched candidates for an election"%}posts: {{ posts }}{% endblocktrans %}
