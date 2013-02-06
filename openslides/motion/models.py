@@ -527,7 +527,6 @@ class MotionSupporter(models.Model):
     person = PersonField()
     """The person, who is the supporter."""
 
-
     def __unicode__(self):
         """Return the name of the supporter as string."""
         return unicode(self.person)
