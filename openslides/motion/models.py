@@ -121,7 +121,7 @@ class Motion(SlideMixin, models.Model):
         else:
             new_data = False
 
-        need_new_version = config['motion_create_new_version'] == 'ALLWASY_CREATE_NEW_VERSION'
+        need_new_version = config['motion_create_new_version'] == 'ALLWASY_CREATE_NEW_VERSION'  # TODO: Tippfehler
         if hasattr(self, '_new_version') or (new_data and need_new_version):
             version = self.new_version
             del self._new_version
@@ -374,7 +374,7 @@ class Motion(SlideMixin, models.Model):
 
     def get_agenda_title(self):
         """Return a title for the Agenda."""
-        return self.last_version.title
+        return self.last_version.title # TODO: nutze active_version
 
     ## def get_agenda_title_supplement(self):
         ## number = self.number or '<i>[%s]</i>' % ugettext('no number')
@@ -410,7 +410,7 @@ class Motion(SlideMixin, models.Model):
         }
         actions['delete'] = actions['edit']  # TODO: Only if the motion has no number
         actions['unsupport'] = actions['support']
-        actions['reset_state'] = 'change_state'
+        actions['reset_state'] = actions['change_state']
         return actions
 
     def write_log(self, message, person=None):
@@ -553,7 +553,7 @@ class MotionLog(models.Model):
     motion = models.ForeignKey(Motion, related_name='log_messages')
     """The motion to witch the object belongs."""
 
-    message = models.CharField(max_length=255)
+    message = models.CharField(max_length=255)  # TODO: arguments in message, not translatable
     """The log message.
 
     Should be in english.

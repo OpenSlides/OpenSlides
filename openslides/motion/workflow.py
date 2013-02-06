@@ -45,7 +45,7 @@ class State(object):
         self.create_poll = create_poll
         self.support = support
         self.edit_as_submitter = edit_as_submitter
-        self.version_permission = version_permission
+        self.version_permission = version_permission  # Rename to auto_activate_version
 
     def __unicode__(self):
         """Return the name of the state."""
