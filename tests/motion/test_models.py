@@ -13,7 +13,7 @@ from django.test import TestCase
 from openslides.participant.models import User
 from openslides.config.models import config
 from openslides.motion.models import Motion
-from openslides.motion.workflow import WorkflowError
+from openslides.motion.workflow import Workflow, State, WorkflowError
 
 
 class ModelTest(TestCase):
@@ -94,24 +94,23 @@ class ModelTest(TestCase):
         self.motion.unsupport(self.test_user)
 
     def test_poll(self):
-        self.motion.state = 'per'
+        self.motion.state = State.objects.get(pk=1)
         poll = self.motion.create_poll()
         self.assertEqual(poll.poll_number, 1)
 
     def test_state(self):
         self.motion.reset_state()
-        self.assertEqual(self.motion.state.id, 'pub')
+        self.assertEqual(self.motion.state.name, 'submitted')
 
+        self.motion.state = State.objects.get(pk=5)
+        self.assertEqual(self.motion.state.name, 'published')
         with self.assertRaises(WorkflowError):
             self.motion.create_poll()
 
-        self.motion.set_state('per')
-        self.assertEqual(self.motion.state.id, 'per')
+        self.motion.state = State.objects.get(pk=6)
+        self.assertEqual(self.motion.state.name, 'permitted')
+        self.assertEqual(self.motion.state.get_action_word(), 'permit')
         with self.assertRaises(WorkflowError):
             self.motion.support(self.test_user)
         with self.assertRaises(WorkflowError):
             self.motion.unsupport(self.test_user)
-
-        with self.assertRaises(WorkflowError):
-            self.motion.set_state('per')
-
