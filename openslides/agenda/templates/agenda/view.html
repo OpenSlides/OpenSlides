@@ -1,11 +1,35 @@
-{% extends "agenda/base_agenda.html" %}
+{% extends "base.html" %}
 
 {% load i18n %}
 
 {% block title %}{{ block.super }} – {{ item.title }}{% endblock %}
 
 {% block content %}
-    <h1>{{ item }}</h1>
+<h1>
+    {{ item }}
+    <small class="pull-right">
+    <div class="btn-toolbar">
+        <a href="{% url 'item_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        <div class="btn-group">
+            <a data-toggle="dropdown" href="#" class="btn btn-mini dropdown-toggle">
+                {% trans 'More actions' %}
+                <span class="caret"></span>
+            </a>
+            {% if perms.agenda.can_manage_agenda %}
+            <ul class="dropdown-menu pull-right">
+                <li><a href="{% url 'item_edit' item.id %}"><i class="icon-edit"></i> {% trans 'Edit item' %}</a></li>
+                <li><a href="{% url 'item_delete' item.id %}"><i class="icon-remove"></i> {% trans 'Delete item' %}</a></li>
+            </ul>
+            {% endif %}
+        </div>
+            {% if perms.projector.can_manage_projector %}
+                <a href="{% url 'projector_activate_slide' item.sid  %}" class="activate_link btn btn-mini {% if item.active %}btn-primary{% endif %}"  rel="tooltip" data-original-title="{% trans 'Show' %}">
+                    <i class="icon icon-facetime-video {% if item.active %}icon-white{% endif %}"></i>
+                </a>
+            {% endif %}
+    </div>
+    </small>
+</h1>
     <p>{{ item.text|safe|linebreaks }}</p>
 
     {% if perms.agenda.can_manage_agenda %}

@@ -4,17 +4,14 @@
 <ul style="line-height: 180%">
 {% for user in users %}
     <li class="{% if user.active %}activeline{% endif %}">
-        <a href="{% url 'projector_activate_slide' user.sid %}" class="activate_link {% if user.active %}active{% endif %}">
-            <div></div>
+        <a href="{% url 'projector_activate_slide' user.sid  %}" class="activate_link btn {% if user.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+            <i class="icon-facetime-video {% if user.active %}icon-white{% endif %}"></i>
+        </a>&nbsp;
+        <a href="{% model_url user 'edit' %}" title="{% trans 'Edit' %}" class="btn btn-mini right">
+            <i class="icon-pencil"></i>
         </a>
-        <a href="{% model_url user 'delete' %}" title="{% trans 'Delete' %}" class="icon delete right">
-            <span></span>
-        </a>
-        <a href="{% model_url user 'edit' %}" title="{% trans 'Edit' %}" class="icon edit right">
-            <span></span>
-        </a>
-        <a href="{% url 'projctor_preview_slide' user.sid %}" title="{% trans 'Preview' %}" class="icon preview right">
-            <span></span>
+        <a href="{% url 'projctor_preview_slide' user.sid %}" title="{% trans 'Preview' %}" class="btn btn-mini right">
+            <i class="icon-search"></i>
         </a>
         <a href="{% model_url user 'view' %}">{{ user }}</a>
     </li>

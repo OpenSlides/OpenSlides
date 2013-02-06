@@ -1,25 +1,17 @@
-{% extends "participant/base_participant.html" %}
+{% extends "base.html" %}
 
 {% load i18n %}
 {% load staticfiles %}
 
-{% block mainmenu %}
-    <ul>
-        <li class="selected"><a href="{% url 'user_login' %}" title="">{% trans "Login" %}</a></li>
-    </ul>
+{% block loginbutton %}
 {% endblock %}
 
-{% block submenu %}
-{% endblock %}
-
-{% block content %}
-    <h1>{% trans "Login" %}</h1>
+{% block body %}
+<div id="login-page" class="container">
+    <h2><img src="{% static '/static/img/logo-login.png' %}"></h2>
 
     {% if form.errors %}
-        <div class="notification error">
-            <a class="close" href="#">
-            <img alt="close" title="{% trans 'Close this notification' %}" src="{% static 'images/icons/cross.png' %}">
-            </a>
+        <div class="alert alert-error">
             {% for msg in form.non_field_errors %}
                 <em>{{ msg }}</em>
                 {% if not forloop.last %}<br />{% endif %}
@@ -29,48 +21,37 @@
         </div>
     {% endif %}
     {% if first_time_message %}
-        <div class="notification info">
-            <a class="close" href="#">
-            <img alt="close" title="{% trans 'Close this notification' %}" src="{% static 'images/icons/cross.png' %}">
-            </a>
+        <div class="alert alert-info">
             <em>{{ first_time_message|safe }}</em>
         </div>
     {% endif %}
+
     <script>
         $("div.notification").click(function () {
             $(this).hide("fast");
         });
     </script>
-    <form method="post" action="{% url 'user_login' %}{% if next %}?next={{ next }}{% endif %}">
+    <form method="post" action="{% url 'user_login' %}{% if next %}?next={{ next }}{% endif %}" class="well">
         {% csrf_token %}
-        <table>
-        <tr>
-            <td>{{ form.username.label_tag }}</td>
-            <td>{{ form.username }}</td>
-        </tr>
-        <tr>
-            <td>{{ form.password.label_tag }}</td>
-            <td>{{ form.password }}</td>
-        </tr>
-        </table>
+        <div class="input-prepend">
+            <span class="add-on"><i class="icon-user"></i></span>
+            <input type="text" maxlength="30" name="username" id="id_username" placeholder="{% trans 'Username' %}">
+        </div>
+        <div class="input-prepend">
+            <span class="add-on"><i class="icon-lock"></i></span>
+            <input type="password" maxlength="30" name="password" id="id_password" placeholder="{% trans 'Password' %}">
+        </div>
+        
         <p>
-        <button class="button" type="submit">
-            <span class="icon ok">{% trans 'Login' %}</span>
+        <button type="submit" class="btn btn-primary">
+            {% trans 'Login' %}
         </button>
         {% if os_enable_anonymous_login %}
-        <button class="button" id="anonymous_login">
-            <span class="icon guest">{% trans 'Continue as guest' %}</span>
-        </button>
+            <a id="anonymous_login" class="btn" href="{% url 'dashboard' %}">
+                {% trans 'Continue as guest' %}
+            </a>
         {% endif %}
         <input type="hidden" name="next" value="{{ next }}" />
         </p>
     </form>
-    {% if os_enable_anonymous_login %}
-        <script>
-            $("#anonymous_login").live('click', function () {
-                window.location.href = "{% url 'item_overview' %}";
-                return false;
-            });
-        </script>
-    {% endif %}
 {% endblock %}

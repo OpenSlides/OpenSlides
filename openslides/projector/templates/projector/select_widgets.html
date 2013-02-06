@@ -1,25 +1,31 @@
-{% extends "projector/base_projector.html" %}
+{% extends "base.html" %}
 
 {% load i18n %}
 
 {% block title %}{{ block.super }} – {% trans 'Select widgets' %}{% endblock %}
 
 {% block content %}
-    <h1>{% trans 'Select widgets' %}</h1>
+    <h1>{% trans 'Select widgets' %}
+        <small class="pull-right">
+            <a href="{% url 'dashboard' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        </small>
+    </h1>
 
     <form action="" method="post">{% csrf_token %}
-        <ul>
+        <ul class="unstyled">
             {% for widget_name, widget in widgets.items %}
                 <li>
-                    {{ widget.form.widget }} {{ widget }}
+                    <label class="checkbox">
+                        {{ widget.form.widget }} {{ widget }}
+                    </label>
                 </li>
             {% empty %}
                 <li>{% trans 'No widgets available' %}</li>
             {% endfor %}
         </ul>
         <p>
-            <button class="button" type="submit">
-                <span class="icon ok">{% trans 'Save' %}</span>
+            <button class="btn btn-primary" type="submit">
+                {% trans 'Save' %}
             </button>
         </p>
     </form>

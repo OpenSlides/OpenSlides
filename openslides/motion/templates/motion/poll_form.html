@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% load i18n %}
+{% load staticfiles %}
+{% load tags %}
+
+{% block content %}
+    <h1>{{ motion }}</h1>
+    <i class="helptext">{% trans "Special values" %}: -1 = {% trans 'majority' %}; -2 = {% trans 'undocumented' %}</i>
+    <form action="" method="post" class="small-form">{% csrf_token %}
+        {{ pre_form }}
+        <span id="poll_id" style="display:none">{{ object.pk }}</span>
+        <table class="table" style="width: auto;">
+            <tr>
+                <th>{% trans "Option" %}</th>
+                <th>{% trans "Votes" %}</th>
+            </tr>
+            {% for value in forms.0 %}
+                <tr>
+                    <td>{{ value.label }}</td>
+                    <td>{{ value.errors }}{{ value }}</td>
+                </tr>
+            {% endfor %}
+            <tr class="total">
+                <td>{% trans "Invalid votes" %}</td>
+                <td>{{ pollform.votesinvalid.errors }}{{ pollform.votesinvalid }}</td>
+            </tr>
+            <tr class="total">
+                <td>{% trans "Votes cast" %}</td>
+                <td>{{ pollform.votescast.errors }}{{ pollform.votescast }}</td>
+            </tr>
+        </table>
+
+        {{ post_form }}
+
+        <p>
+            <button class="button" type="submit">
+                <span class="icon ok">{% trans 'Save' %}</span>
+            </button>
+            <button class="button" type="submit" name="apply">
+                <span class="icon apply">{% trans 'Apply' %}</span>
+            </button>
+            <a href="{% model_url motion %}">
+                <span class="icon cancel">{% trans 'Cancel' %}</span>
+            </a>
+        </p>
+    </form>
+{% endblock %}

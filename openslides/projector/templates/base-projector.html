@@ -8,7 +8,7 @@
     <head>
         <link type="text/css" rel="stylesheet" href="{% static 'styles/projector.css' %}">
         <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="image/png" />
-        <script type="text/javascript" src="{% static 'javascript/jquery.js' %}"></script>
+        <script type="text/javascript" src="{% static 'javascript/jquery.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'javascript/projector.js' %}"></script>
         <title>{% block title %} {% get_config 'event_name' %} {% endblock %}</title>
         {% block header %}
@@ -21,7 +21,7 @@
         <div id="ajaxswitcher"></div>
 
         <div id="header">
-            <div id="logo"><img src="{% static 'images/logo-projector.png' %}"></div>
+            <div id="logo"><img src="{% static 'img/logo-projector.png' %}"></div>
             <div class="event_name">{% get_config 'event_name' %}</div>
             <div class="event_description">{% get_config 'event_description' %}</div>
         </div>

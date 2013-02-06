@@ -1,13 +1,15 @@
 {% extends "base.html" %}
 
-{% load tags %}
 {% load i18n %}
 
-{% block submenu %}
-    <h4 class="sectiontitle">{% trans "Configuration" %}</h4>
-    <ul>
-        {% for menu_link in menu_links %}
-            <li{% if menu_link.2 %} class="selected"{% endif %}><a href="{{ menu_link.0 }}">{{ menu_link.1 }}</a></li>
-        {% endfor %}
-    </ul>
+{% block config_submenu %}
+    <small class="pull-right">
+        <div class="btn-toolbar">
+            <div class="btn-group">
+            {% for menu_link in menu_links %}
+                <a href="{{ menu_link.0 }}" class="btn btn-mini {% if menu_link.2 %}active{% endif %}">{{ menu_link.1 }}</a>
+            {% endfor %}
+            </div>
+        </div>
+    </small>
 {% endblock %}

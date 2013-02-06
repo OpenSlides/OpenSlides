@@ -20,7 +20,7 @@ function hideClosedSlides(hide) {
     if (hide) {
         $('#hidelink').attr('title', 'show');
         $('#hidelink').removeClass('hide').addClass('show');
-        $('.close_link.closed').parent().parent().each(function() {
+        $('.close_link .icon-checked-new').parent().parent().parent().each(function() {
             hideLine($(this));
         });
         hidden = $('#menu-overview tr:hidden').size();
@@ -35,21 +35,26 @@ function hideClosedSlides(hide) {
 }
 
 $(function() {
-    $('.close_link a').click(function(event) {
+    // change participant status (on/off)
+    $('.close_link').click(function(event) {
         event.preventDefault();
-        slide = $(this);
+        var link = $(this);
         $.ajax({
             type: 'GET',
-            url: slide.attr('href'),
+            url: $(this).attr('href'),
             dataType: 'json',
             success: function(data) {
                 if (data.closed) {
-                    newclass = 'closed';
+                    newclass = 'icon-checked-new';
+                    link.parent().parent().addClass('offline');
+                    link.addClass('btn-success');
                 } else {
-                    newclass = 'open';
+                    newclass = 'icon-unchecked-new';
+                    link.parent().parent().removeClass('offline');
+                    link.removeClass('btn-success');
                 }
-                slide.parent().removeClass('closed open').addClass(newclass);
-                slide.attr('href', data.link);
+                link.children('i').removeClass('icon-checked-new icon-unchecked-new').addClass(newclass);
+                link.attr('href', data.link);
             }
         });
     });

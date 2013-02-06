@@ -1,36 +1,34 @@
 {% load i18n %}
 {% load tags %}
-{% load staticfiles %}
-
 
 <!-- projector control buttons -->
 {% if perms.projector.can_manage_projector %}
     <div style="float: right;">
         <p>
-        <a class="projector_edit" href="{% url 'projector_bigger' %}" title="{% trans 'Zoom in' %}">
-            <img src="{% static 'images/icons/zoom-in.png' %}" />
+        <a class="projector_edit btn btn-mini" href="{% url 'projector_bigger' %}" title="{% trans 'Zoom in' %}">
+            <i class="icon-zoom-in"></i>
         </a><br>
-        <a class="projector_edit" href="{% url 'projector_smaller' %}" title="{% trans 'Zoom out' %}">
-            <img src="{% static 'images/icons/zoom-out.png' %}" />
+        <a class="projector_edit btn btn-mini" href="{% url 'projector_smaller' %}" title="{% trans 'Zoom out' %}">
+            <i class="icon-zoom-out"></i>
         </a>
         </p>
         <p>
-        <a class="projector_edit" href="{% url 'projector_up' %}" title="{% trans 'Scroll text up' %}">
-            <img src="{% static 'images/icons/go-up.png' %}" />
+        <a class="projector_edit btn btn-mini" href="{% url 'projector_up' %}" title="{% trans 'Scroll text up' %}">
+            <i class="icon-arrow-up"></i>
         </a><br>
-        <a class="projector_edit" href="{% url 'projector_down' %}" title="{% trans 'Scroll text down' %}">
-            <img src="{% static 'images/icons/go-down.png' %}" />
+        <a class="projector_edit btn btn-mini" href="{% url 'projector_down' %}" title="{% trans 'Scroll text down' %}">
+            <i class="icon-arrow-down"></i>
         </a>
         </p>
         <p>
-        <a class="projector_edit" href="{% url 'projector_clean' %}" title="{% trans 'Reset projector view' %}">
-            <img src="{% static 'images/icons/view-reset.png' %}" />
+        <a class="projector_edit btn btn-mini" href="{% url 'projector_clean' %}" title="{% trans 'Reset projector view' %}">
+            <i class="icon-resize-small"></i>
         </a>
         </p>
     </div>
 {% endif %}
 
-<!-- projector view -->
+<!-- projector live view -->
 <a href="{% url 'projector_show' %}" target="_blank">
     <div id="iframewrapper">
         <iframe id="iframe" src="{% url 'projector_show' %}" frameborder="0"></iframe>

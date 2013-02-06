@@ -7,86 +7,111 @@
     "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% get_config 'event_name' %}{% endblock %}</title>
-    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/base.css' %}" />
-    <link rel="shortcut icon" href="{% static 'images/favicon.png' %}" type="image/png" />
-    <script type="text/javascript" src="{% static 'javascript/jquery.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascript/utils.js' %}"></script>
-    <script type="text/javascript" src="{% url 'django.views.i18n.javascript_catalog' %}"></script>
+
+    <!-- styles -->
+    <link href="{% static 'styles/bootstrap.min.css' %}" type="text/css" rel="stylesheet">
+    <link href="{% static 'styles/bootstrap-responsive.min.css' %}" type="text/css" rel="stylesheet">
+    <link href="{% static 'styles/base.css' %}" type="text/css" rel="stylesheet">
+    <link href="{% static 'img/favicon.png' %}" type="image/png" rel="shortcut icon" />
+
     {% block header %}
     {% endblock %}
 </head>
 <body>
-    <div id="header">
-        <a href="/" title="{% trans 'Home' %}"><div id="logo"><img src="{% static 'images/logo.png' %}"></div></a>
-        <div id="header_title">{% get_config 'event_name' %}</div>
-        <div id="header_subtitle">{% get_config 'event_description' %}</div>
-        <div id="header_userprofile">
-            <ul>
-            {% if user.is_authenticated %}
-                <li>|<a href="{% url 'user_logout' %}">{% trans "Logout" %}</a></li>
-                {% url 'user_settings' as url_usersettings %}
-                <li>|<a href="{% url 'user_settings' %}">{% if request.path == url_usersettings %}<strong>{% endif %}{% trans "User Settings" %}{% if request.path == url_usersettings %}</strong>{% endif %}</a></li>
-                <li>{% trans "Welcome" %}, <strong>{{ user.username }}</strong></li>
-            {% else %}
-                <li><a href="{% url 'user_login' %}">{% trans "Login" %}</a></li>
+    <!-- Navbar -->
+    <div class="container-fluid nopadding">
+        <div class="row-fluid">
+            <div class="span12">
+                <div id="header">
+                    <a href="/" class="logo" title="{% trans 'Home' %}"><img src="{% static 'img/logo.png' %}"></a>
+                    <!--<a class="title" href="#">{% get_config 'event_name' %}</a>-->
+                    {% block loginbutton %}
+                    <div class="btn-group pull-right">
+                        {% if user.is_authenticated %}
+                        <a href="#" data-toggle="dropdown" class="btn btn-small dropdown-toggle">
+                              <i class="icon-user"></i> {{ user.username }}
+                              <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% url 'user_settings' as url_usersettings %}
+                            <li><a href="{% url 'user_settings' %}"><i class="icon-cog"></i> {% trans "Edit profile" %}</a></li>
+                            <li><a href="{% url 'password_change' %}"><i class="icon-lock"></i> {% trans "Change password" %}</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{% url 'user_logout' %}"><i class="icon-off"></i> {% trans "Logout" %}</a></li>
+                        </ul>
+                        {% else %}
+                            <a href="{% url 'user_login' %}" class="btn"><i class="icon-login"></i> {% trans "Login" %}</a>
+                        {% endif %}
+                    </div>
+                    {% endblock %}
+                </div> <!--/#header-->
+            </div> <!--/.span12-->
+        </div>
+    </div> <!--/.container-fluid-->
+
+
+{% block body %}
+<!-- Container -->
+<div class="container-fluid" id="container">
+<div class="row-fluid">
+
+  <!-- Sidebar navigation-->
+  <div class="span2 leftmenu lefticon">
+      <ul>
+        {% for tab in tabs %}
+            {% if tab.permission %}
+            <li{% if tab.selected %} class="active"{% endif %}>
+                <a href="{{ tab.url }}">
+                <span class="ico"><i class="icon-{{tab.app}}"></i></span>
+                <span class="text">{{ tab.title }}</span>
+                </a>
+            </li>
             {% endif %}
-            </ul>
-        </div>
+        {% endfor %}
+      </ul>
+  </div>
 
-        <div id="mainmenu">
-           {% block mainmenu %}
-            <ul>
-                {% for tab in tabs %}
-                    {% if tab.permission %}
-                    <li{% if tab.selected%} class="selected"{% endif %}>
-                        <a href="{{ tab.url }}">{{ tab.title }}</a>
-                    </li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-            {% endblock %}
-        </div>
+  <!-- Content -->
+  <div id="content" class="span10">
+  <div class="row-fluid">
+    <div class="span12">
+      <div id="notifications">
+          <div id="dummy-notification" class="notification" style="display:none">
+              <button type="button" class="close" data-dismiss="alert">×</button>
+          </div>
+          {% for message in messages %}
+          <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+              <button type="button" class="close" data-dismiss="alert">×</button>
+              {{ message|safe }}
+          </div>
+          {% endfor %}
+      </div>
+       
+      {% block content %}
+      {% endblock %}
     </div>
+  </div>
+  <hr>
+  <footer>
+      <small>
+      &copy; Copyright 2011-2013 | Powered by <a href="http://openslides.org" target="_blank">OpenSlides</a> | {% trans "Get <a href='http://openslides.org/support' target='_blank'>professional support</a> for OpenSlides." %}
+      </small>
+  </footer>
+  </div><!--/content-->
+</div><!--/row-->
+</div><!--/container-fluid-->
 
-    <div id="wrapper">
-        <div id="content">
-            <div id="notifications">
-                <div id="dummy-notification" class="notification" style="display:none">
-                    <a class="close" href="#">
-                    <img alt="close" title="{% trans 'Close this notification' %}" src="{% static 'images/icons/cross.png' %}">
-                    </a>
-                    <em></em>
-                </div>
-                {% for message in messages %}
-                <div class="notification {% if message.tags %}{{ message.tags }}{% endif %}">
-                    <a class="close" href="#">
-                    <img alt="close" title="{% trans 'Close this notification' %}" src="{% static 'images/icons/cross.png' %}">
-                    </a>
-                    <em>{{ message|safe }}</em>
-                </div>
-                {% endfor %}
-                <script>
-                    $("div.notification").click(function () {
-                        $(this).slideUp("fast");
-                    });
-                </script>
-            </div>
-            {% block content %}
-            {% endblock %}
-            <div id="footer">
-                <small>
-                &copy; Copyright 2011-2012 | Powered by <a href="http://openslides.org" target="_blank">OpenSlides</a> | {% trans "Get <a href='http://openslides.org/support' target='_blank'>professional support</a> for OpenSlides." %}
-                </small>
-            </div>
-        </div>
-    </div> <!-- end wrapper -->
+{% endblock %}<!--/body-->
 
-    <div id="submenu">
-        <div class="section">
-            {% block submenu %}
-            {% endblock %}
-        </div>
-    </div>
+<!-- JavaScript (Placed at the end of the document so the pages load faster) -->
+    <script src="{% static 'javascript/jquery.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'javascript/bootstrap.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'javascript/utils.js' %}" type="text/javascript"></script>
+    <script src="{% url 'django.views.i18n.javascript_catalog' %}" type="text/javascript"></script>
+    {% block javascript %}
+    {% endblock %}
 </body>
 </html>

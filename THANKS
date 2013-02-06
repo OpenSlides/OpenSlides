@@ -12,14 +12,14 @@ OpenSlides uses parts of the following projects:
 * jQuery UI
   <http://jqueryui.com/>
 
+* Twitter Bootstrap
+  <http://twitter.github.com/bootstrap/> 
+
 * ReportLab
   <http://www.reportlab.com/software/opensource/rl-toolkit/>
 
 * Drupal (tabledrag function)
   <http://www.drupal.org/>
-
-* Oxygen-Icons
-  <http://www.oxygen-icons.org/>
 
 * Ubuntu TrueType Font
   <http://font.ubuntu.com/>

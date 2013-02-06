@@ -151,7 +151,7 @@ class ActivateView(RedirectView):
     Activate a Slide.
     """
     permission_required = 'projector.can_manage_projector'
-    url = 'dashboard'
+    url_name = 'dashboard'
     allow_ajax = True
 
     def pre_redirect(self, request, *args, **kwargs):
@@ -209,7 +209,7 @@ class ProjectorEdit(RedirectView):
     Scale or scroll the projector.
     """
     permission_required = 'projector.can_manage_projector'
-    url = 'dashboard'
+    url_name = 'dashboard'
     allow_ajax = True
 
     def pre_redirect(self, request, *args, **kwargs):
@@ -233,7 +233,7 @@ class CountdownEdit(RedirectView):
     Start, stop or reset the countdown.
     """
     permission_required = 'projector.can_manage_projector'
-    url = 'dashboard'
+    url_name = 'dashboard'
     allow_ajax = True
 
     def pre_redirect(self, request, *args, **kwargs):
@@ -284,7 +284,7 @@ class OverlayMessageView(RedirectView):
     """
     Sets or clears the overlay message
     """
-    url = 'dashboard'
+    url_name = 'dashboard'
     allow_ajax = True
     permission_required = 'projector.can_manage_projector'
 
@@ -305,7 +305,7 @@ class ActivateOverlay(RedirectView):
     """
     Activate or deactivate an overlay.
     """
-    url = 'dashboard'
+    url_name = 'dashboard'
     allow_ajax = True
     permission_required = 'projector.can_manage_projector'
 
@@ -341,8 +341,7 @@ class CustomSlideCreateView(CreateView):
     template_name = 'projector/new.html'
     model = ProjectorSlide
     context_object_name = 'customslide'
-    success_url = 'dashboard'
-    apply_url = 'customslide_edit'
+    success_url_name = 'dashboard'
 
 
 class CustomSlideUpdateView(UpdateView):
@@ -353,8 +352,7 @@ class CustomSlideUpdateView(UpdateView):
     template_name = 'projector/new.html'
     model = ProjectorSlide
     context_object_name = 'customslide'
-    success_url = 'dashboard'
-    apply_url = 'customslide_edit'
+    success_url_name = 'dashboard'
 
 
 class CustomSlideDeleteView(DeleteView):
@@ -363,7 +361,7 @@ class CustomSlideDeleteView(DeleteView):
     """
     permission_required = 'projector.can_manage_projector'
     model = ProjectorSlide
-    url = 'dashboard'
+    success_url_name = 'dashboard'
 
 
 def register_tab(request):
@@ -373,6 +371,7 @@ def register_tab(request):
     selected = request.path.startswith('/projector/')
     return Tab(
         title=_('Dashboard'),
+        app='dashboard',
         url=reverse('dashboard'),
         permission=request.user.has_perm('projector.can_see_dashboard'),
         selected=selected,
