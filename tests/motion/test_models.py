@@ -22,7 +22,6 @@ class ModelTest(TestCase):
         self.test_user = User.objects.create(username='blub')
 
     def test_create_new_version(self):
-        config['motion_create_new_version'] = 'ALLWASY_CREATE_NEW_VERSION'
         motion = Motion.objects.create(title='m1')
         self.assertEqual(motion.versions.count(), 1)
 
@@ -32,13 +31,16 @@ class ModelTest(TestCase):
 
         motion.title = 'new title'
         motion.save()
-        self.assertEqual(motion.versions.count(), 3)
+        self.assertEqual(motion.versions.count(), 2)
 
+        motion.save()
+        self.assertEqual(motion.versions.count(), 2)
+
+        motion.state = State.objects.create(name='automatic_versioning', automatic_versioning=True)
+        motion.text = 'new text'
         motion.save()
         self.assertEqual(motion.versions.count(), 3)
 
-        config['motion_create_new_version'] = 'NEVER_CREATE_NEW_VERSION'
-        motion.text = 'new text'
         motion.save()
         self.assertEqual(motion.versions.count(), 3)
 
@@ -56,6 +58,7 @@ class ModelTest(TestCase):
 
     def test_version(self):
         motion = Motion.objects.create(title='v1')
+        motion.state = State.objects.create(name='automatic_versioning', automatic_versioning=True)
         motion.title = 'v2'
         motion.save()
         v2_version = motion.version
