@@ -55,11 +55,11 @@
         <table id="agendatime">
            <tr>
                <td>{% trans "Start of event" %}:</td>
-               <td>{{ start|date:"D d M Y H.i" }}h</td>
+               <td>{{ start|date:"DATETIME_FORMAT" }}</td>
            </tr>
            <tr>
                <td>{% trans "Estimated end" %}:</td>
-               <td>{{ end|date:"D d M Y H.i" }}h</td>
+               <td>{{ end|date:"DATETIME_FORMAT" }}</td>
            </tr>
         </table>
         {% endif %}

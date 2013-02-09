@@ -29,7 +29,7 @@
     </td>
     {% endif %}
     {% if perms.agenda.can_see_orga_items %}
-    <td {% if item.tooltip %}title="{% trans 'End' %}: {{ item.tooltip|date:"D d M Y H.i" }}"{% endif %}>
+    <td {% if item.tooltip %}title="{% trans 'End' %}: {{ item.tooltip|date:"DATETIME_FORMAT" }}"{% endif %}>
         {% if item.duration %}
             {{ item.duration }}h
         {% endif %}
