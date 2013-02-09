@@ -250,7 +250,7 @@ def setup_django_environment(settings_path):
     os.environ[ENVIRONMENT_VARIABLE] = '%s' % settings_module_name
 
 
-def detect_listen_opts(address, port):
+def detect_listen_opts(address=None, port=None):
     if address is None:
         try:
             address = socket.gethostbyname(socket.gethostname())
@@ -370,13 +370,17 @@ def get_user_data_path(*args):
     return os.path.join(fs2unicode(data_home), *args)
 
 
+def is_portable():
+    exename = os.path.basename(sys.executable).lower()
+    return exename == "openslides.exe"
+
+
 def get_portable_path(*args):
     # NOTE: sys.executable will be the path to openslides.exe
     #       since it is essentially a small wrapper that embeds the
     #       python interpreter
 
-    exename = os.path.basename(sys.executable).lower()
-    if exename != "openslides.exe":
+    if not is_portable():
         raise Exception(
             "Cannot determine portable path when "
             "not running as portable")
@@ -413,4 +417,7 @@ def win32_get_app_data_path(*args):
 
 
 if __name__ == "__main__":
-    main()
+    if is_portable():
+        win32_portable_main()
+    else:
+        main()
