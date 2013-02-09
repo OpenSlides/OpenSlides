@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    openslides.motion.signales
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    openslides.motion.signals
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Signals for the motion app.
 
@@ -26,5 +26,5 @@ def default_config(sender, key, **kwargs):
         'motion_pdf_ballot_papers_number': '8',
         'motion_pdf_title': _('Motions'),
         'motion_pdf_preamble': '',
-        'motion_create_new_version': 'ALLWASY_CREATE_NEW_VERSION',
-        'motion_workflow': 'default'}.get(key)
+        'motion_allow_trivial_changes': False,
+        'motion_workflow': 1}.get(key)

@@ -13,7 +13,7 @@ from django.test import TestCase
 from openslides.participant.models import User
 from openslides.config.models import config
 from openslides.motion.models import Motion
-from openslides.motion.workflow import WorkflowError
+from openslides.motion.workflow import Workflow, State, WorkflowError
 
 
 class ModelTest(TestCase):
@@ -22,7 +22,6 @@ class ModelTest(TestCase):
         self.test_user = User.objects.create(username='blub')
 
     def test_create_new_version(self):
-        config['motion_create_new_version'] = 'ALLWASY_CREATE_NEW_VERSION'
         motion = Motion.objects.create(title='m1')
         self.assertEqual(motion.versions.count(), 1)
 
@@ -32,13 +31,16 @@ class ModelTest(TestCase):
 
         motion.title = 'new title'
         motion.save()
-        self.assertEqual(motion.versions.count(), 3)
+        self.assertEqual(motion.versions.count(), 2)
 
+        motion.save()
+        self.assertEqual(motion.versions.count(), 2)
+
+        motion.state = State.objects.create(name='automatic_versioning', automatic_versioning=True)
+        motion.text = 'new text'
         motion.save()
         self.assertEqual(motion.versions.count(), 3)
 
-        config['motion_create_new_version'] = 'NEVER_CREATE_NEW_VERSION'
-        motion.text = 'new text'
         motion.save()
         self.assertEqual(motion.versions.count(), 3)
 
@@ -56,6 +58,7 @@ class ModelTest(TestCase):
 
     def test_version(self):
         motion = Motion.objects.create(title='v1')
+        motion.state = State.objects.create(name='automatic_versioning', automatic_versioning=True)
         motion.title = 'v2'
         motion.save()
         v2_version = motion.version
@@ -94,24 +97,23 @@ class ModelTest(TestCase):
         self.motion.unsupport(self.test_user)
 
     def test_poll(self):
-        self.motion.state = 'per'
+        self.motion.state = State.objects.get(pk=1)
         poll = self.motion.create_poll()
         self.assertEqual(poll.poll_number, 1)
 
     def test_state(self):
         self.motion.reset_state()
-        self.assertEqual(self.motion.state.id, 'pub')
+        self.assertEqual(self.motion.state.name, 'submitted')
 
+        self.motion.state = State.objects.get(pk=5)
+        self.assertEqual(self.motion.state.name, 'published')
         with self.assertRaises(WorkflowError):
             self.motion.create_poll()
 
-        self.motion.set_state('per')
-        self.assertEqual(self.motion.state.id, 'per')
+        self.motion.state = State.objects.get(pk=6)
+        self.assertEqual(self.motion.state.name, 'permitted')
+        self.assertEqual(self.motion.state.get_action_word(), 'permit')
         with self.assertRaises(WorkflowError):
             self.motion.support(self.test_user)
         with self.assertRaises(WorkflowError):
             self.motion.unsupport(self.test_user)
-
-        with self.assertRaises(WorkflowError):
-            self.motion.set_state('per')
-
