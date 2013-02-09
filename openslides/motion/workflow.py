@@ -123,7 +123,8 @@ def init_builtin_workflows():
     state_2_7 = State(name=ugettext_noop('not concerned'), automatic_versioning=True)
     state_2_8 = State(name=ugettext_noop('commited a bill'), action_word=ugettext_noop('commit a bill'), automatic_versioning=True)
     state_2_9 = State(name=ugettext_noop('needs review'), automatic_versioning=True)
-    state_2_10 = State(name=ugettext_noop('rejected (not authorized)'), action_word=ugettext_noop('reject (not authorized)'), automatic_versioning=True)
+    state_2_10 = State(name=ugettext_noop('rejected (not authorized)'),
+                       action_word=ugettext_noop('reject (not authorized)'), automatic_versioning=True)
     state_2_1.save()
     state_2_2.save()
     state_2_3.save()

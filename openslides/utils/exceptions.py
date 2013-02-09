@@ -10,5 +10,6 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+
 class OpenSlidesError(Exception):
     pass
