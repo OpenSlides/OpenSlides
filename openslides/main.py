@@ -102,6 +102,9 @@ def process_options(argv=None, manage_runserver=False):
         action="store_false", dest="start_browser", default=True,
         help="Do not automatically start web browser.")
     parser.add_option(
+        "--no-run", action="store_true",
+        help="Do not start the development server.")
+    parser.add_option(
         "--version", action="store_true",
         help="Show version and exit.")
 
@@ -186,6 +189,9 @@ def _main(opts, database_path=None):
     # Reset Admin
     elif opts.reset_admin:
         create_or_reset_admin_user()
+
+    if opts.no_run:
+        return
 
     # Start OpenSlides
     reload = True
