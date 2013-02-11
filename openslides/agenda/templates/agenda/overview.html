@@ -53,9 +53,17 @@
        {% endif %}
 
         <h1>{% trans "Agenda" %}
+            <small class="pull-right">
+            {% if perms.agenda.can_manage_agenda %}
+            <a href="{% url 'item_new' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New item' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
+            {% endif %}
+            <a href="{% url 'print_agenda' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print agenda as PDF' %}"><i class="icon-print"></i> PDF</a>
+            </small>
+        </h1>
+        
         {% if perms.agenda.can_see_orga_items %}
         {% if start and end %}
-        <table id="agendatime">
+        <table id="agendatime" class="table table-bordered">
            <tr>
                <td>{% trans "Start of event" %}:</td>
                <td>{{ start|date:"DATETIME_FORMAT" }}</td>
@@ -67,14 +75,6 @@
         </table>
         {% endif %}
         {% endif %}
-	    <small class="pull-right">
-            {% if perms.agenda.can_manage_agenda %}
-            <a href="{% url 'item_new' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New item' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
-            {% endif %}
-            <a href="{% url 'print_agenda' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print agenda as PDF' %}"><i class="icon-print"></i> PDF</a>
-            </small>
-        </h1>
-
         <label class="checkbox">
             <input type="checkbox" id="hide_closed_items"> {% trans "Hide closed items" %}
         </label>

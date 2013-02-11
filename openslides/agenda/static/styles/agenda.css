@@ -15,9 +15,10 @@ table#agendatime {
     float: right;
     width: auto;
     margin-bottom: 1em;
+    font-size: 12px;
 }
 
 table#agendatime td {
-    padding: 5px;
+    padding: 3px;
     white-space: nowrap;
 }

@@ -311,7 +311,10 @@ legend + .control-group {
     background-image: url("../img/glyphicons_006_user_add.png");
     background-position: 0;
 }
-
+.icon-clock {
+    background-image: url("../img/glyphicons_054_clock.png");
+    background-position: 0;
+}
 
 
 /** Responsive **/
