@@ -678,6 +678,7 @@ class State(models.Model):
 
     def get_workflow(self):
         """Returns the workflow instance the state belongs to."""
+        # TODO: Enhence performance, see https://docs.djangoproject.com/en/dev/ref/models/querysets/#prefetch-related
         for workflow in Workflow.objects.all():
             if self in workflow.get_all_states():
                 return workflow
@@ -703,6 +704,7 @@ class Workflow(models.Model):
 
     def get_all_states(self):
         """Returns a list with all states which belong to a workflow."""
+        # TODO: Enhence performance, see https://docs.djangoproject.com/en/dev/ref/models/querysets/#prefetch-related
         all_states = []
 
         def _populate_states(parent_state):
