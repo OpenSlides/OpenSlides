@@ -1,4 +1,4 @@
-{% extends "participant/base_participant.html" %}
+{% extends "base.html" %}
 
 {% load i18n %}
 {% load tags %}
@@ -7,11 +7,15 @@
 
 {% block content %}
 
-<h1>{{ shown_user }}</h1>
+<h1>{{ shown_user }}
+    <small class="pull-right">
+        <a href="{% url 'user_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+    </small>
+</h1>
 
 <p>{{ shown_user.email }}</p>
 
-<h2>{% trans "Groups" %}</h2>
+<h4>{% trans "Groups" %}</h4>
 <p>
     {% if shown_user.groups.all %}
         {{ shown_user.groups.all|join:", " }}
@@ -21,32 +25,32 @@
 </p>
 
 {% if shown_user.get_gender_display %}
-    <h2>{% trans "Gender" %}</h2>
+    <h4>{% trans "Gender" %}</h4>
     <p>{{ shown_user.get_gender_display }}</p>
 {% endif %}
 
 {% if shown_user.get_type_display %}
-<h2>{% trans "Type" %}</h2>
+<h4>{% trans "Type" %}</h4>
 <p>{{ shown_user.get_type_display }}</p>
 {% endif %}
 
 {% if shown_user.committee %}
-<h2>{% trans "Committee" %}</h2>
+<h4>{% trans "Committee" %}</h4>
 <p>{{ shown_user.committee }}</p>
 {% endif %}
 
 {% if shown_user.about_me %}
-    <h2>{% trans "About me" %}</h2>
+    <h4>{% trans "About me" %}</h4>
     <p>{{ shown_user.about_me }}</p>
 {% endif %}
 
 {% if perms.participant.can_manage_participant %}
     {% if shown_user.comment %}
-    <h2>{% trans "Comment" %}</h2>
+    <h4>{% trans "Comment" %}</h4>
     <p>{{ shown_user.comment }}</p>
     {% endif %}
 
-    <h2>{% trans "Last Login" %}</h2>
+    <h4>{% trans "Last Login" %}</h4>
     {% if shown_user.last_login > shown_user.date_joined %}
         <p>{{ shown_user.last_login }}</p>
     {% else %}

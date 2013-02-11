@@ -1,4 +1,4 @@
-{% extends "participant/base_participant.html" %}
+{% extends "base.html" %}
 
 {% load i18n %}
 {% load staticfiles %}
@@ -6,104 +6,142 @@
 
 {% block title %}{{ block.super }} – {% trans "Participants" %}{% endblock %}
 
-{% block header %}
-    {% if perms.agenda.can_manage_agenda %}
-        <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/participant.css' %}" />
+{% block javascript %}
+    {% if perms.participant.can_manage_participant %}
         <script type="text/javascript" src="{% static 'javascript/participant.js' %}"></script>
     {% endif %}
 {% endblock %}
-
-
+    
 {% block content %}
-    <h1>{% trans "Participants" %}</h1>
+    <h1>{% trans "Participants" %}
+        <small class="pull-right">
+        <div class="btn-toolbar">
+            {% if perms.participant.can_manage_participant %}
+                <a href="{% url 'user_new' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New participant' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
+                <a href="{% url 'user_group_overview' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'All groups' %}"><i class="icon-group"></i> {% trans "Groups" %}</a>
+                <a href="{% url 'user_import' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import participants' %}"><i class="icon-import"></i> {% trans 'Import' %}</a>
+            {% endif %}
+            {% if perms.participant.can_see_participant and perms.participant.can_manage_participant %}
+                <div class="btn-group pull-right">
+                    {% if user.is_authenticated %}
+                    <a href="#" data-toggle="dropdown" class="btn btn-mini dropdown-toggle">
+                          <i class="icon-print"></i> PDF
+                          <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% url 'user_settings' as url_usersettings %}
+                        <li><a href="{% url 'user_print' %}"><i class="icon-list"></i> {% trans 'List of participants' %}</a></li>
+                        <li><a href="{% url 'print_passwords' %}"><i class="icon-th-large"></i> {% trans 'First time passwords' %}</a></li>
+                    </ul>
+                    {% else %}
+                        <a href="{% url 'user_login' %}" class="btn">{% trans "Login" %}</a>
+                    {% endif %}
+                </div>
+            {% else %}
+                {% if perms.participant.can_see_participant %}
+                    <a href="{% url 'user_print' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print list of participants as PDF' %}"><i class="icon-print"></i> PDF</a>
+                {% endif %}
+                {% if perms.participant.can_manage_participant %}
+                    <a href="{% url 'print_passwords' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print first time passwords as PDF' %}"><i class="icon-print"></i> PDF</a>
+                {% endif %}
+            {% endif %}
+        </div>
+        </small>
+    </h1>
 
-    <p>
-        <form action="" name="filter" method="get">
-            {% trans "Filter" %}:
-            <select class="default-input" name="gender" onchange="document.forms['filter'].submit()">
-                <option value="---">-- {% trans "Gender" %} --</option>
-                <option value="male"{% if 'male' in sortfilter.gender %} selected{% endif %}>{% trans "Male" %}</option>
-                <option value="female"{% if 'female' in sortfilter.gender %} selected{% endif %}>{% trans "Female" %}</option>
-                <option value=""{% if '' in sortfilter.gender %} selected{% endif %}>{% trans "Not specified" %}</option>
-            </select>
-            <select class="default-input" name="structure_level" onchange="document.forms['filter'].submit()">
-                <option value="---">-- {% trans "Structure level" %} --</option>
-                {% for level in structure_levels %}
-                    <option value="{{ level }}"{% if level in sortfilter.structure_level %} selected{% endif %}>
-                    {{ level }}</option>
-                {% endfor %}
-            </select>
-            <select class="default-input" name="type" onchange="document.forms['filter'].submit()">
-                <option value="---">-- {% trans "Type" %} --</option>
-                <option value="delegate"{% if 'delegate' in sortfilter.type %} selected{% endif %}>{% trans "Delegate" %}</option>
-                <option value="observer"{% if 'observer' in sortfilter.type %} selected{% endif %}>{% trans "Observer" %}</option>
-                <option value="staff"{% if 'staff' in sortfilter.type %} selected{% endif %}>{% trans "Staff" %}</option>
-                <option value="guest"{% if 'guest' in sortfilter.type %} selected{% endif %}>{% trans "Guest" %}</option>
-                <option value=""{% if '' in sortfilter.type %} selected{% endif %}>{% trans "Not specified" %}</option>
-            </select>
-            <select class="default-input" name="committee" onchange="document.forms['filter'].submit()">
-                <option value="---">-- {% trans "Committee" %} --</option>
-                {% for committee in committees %}
-                    <option value="{{ committee }}"{% if committee in sortfilter.committee %} selected{% endif %}>
-                    {{ committee }}</option>
-                {% endfor %}
-            </select>
-            <select class="default-input" name="status" onchange="document.forms['filter'].submit()">
-                <option value="---">-- {% trans "Status" %} --</option>
-                <option value="1"{% if '1' in sortfilter.status %} selected{% endif %}>{% trans "Active" %}</option>
-                <option value="0"{% if '0' in sortfilter.status %} selected{% endif %}>{% trans "Inactive" %}</option>
-            </select>
-        </form>
-    </p>
+    <form action="" name="filter" method="get">
+        {% trans "Filter" %}:
+        <div class="control-group">
+        <select class="span2" name="gender" onchange="document.forms['filter'].submit()">
+            <option value="---">-- {% trans "Gender" %} --</option>
+            <option value="male"{% if 'male' in sortfilter.gender %} selected{% endif %}>{% trans "Male" %}</option>
+            <option value="female"{% if 'female' in sortfilter.gender %} selected{% endif %}>{% trans "Female" %}</option>
+            <option value=""{% if '' in sortfilter.gender %} selected{% endif %}>{% trans "Not specified" %}</option>
+        </select>
+        <select class="span2" name="structure_level" onchange="document.forms['filter'].submit()">
+            <option value="---">-- {% trans "Structure level" %} --</option>
+            {% for level in structure_levels %}
+                <option value="{{ level }}"{% if level in sortfilter.structure_level %} selected{% endif %}>
+                {{ level }}</option>
+            {% endfor %}
+        </select>
+        <select class="span2" name="type" onchange="document.forms['filter'].submit()">
+            <option value="---">-- {% trans "Type" %} --</option>
+            <option value="delegate"{% if 'delegate' in sortfilter.type %} selected{% endif %}>{% trans "Delegate" %}</option>
+            <option value="observer"{% if 'observer' in sortfilter.type %} selected{% endif %}>{% trans "Observer" %}</option>
+            <option value="staff"{% if 'staff' in sortfilter.type %} selected{% endif %}>{% trans "Staff" %}</option>
+            <option value="guest"{% if 'guest' in sortfilter.type %} selected{% endif %}>{% trans "Guest" %}</option>
+            <option value=""{% if '' in sortfilter.type %} selected{% endif %}>{% trans "Not specified" %}</option>
+        </select>
+        <select class="span2" name="committee" onchange="document.forms['filter'].submit()">
+            <option value="---">-- {% trans "Committee" %} --</option>
+            {% for committee in committees %}
+                <option value="{{ committee }}"{% if committee in sortfilter.committee %} selected{% endif %}>
+                {{ committee }}</option>
+            {% endfor %}
+        </select>
+        <select class="span2" name="status" onchange="document.forms['filter'].submit()">
+            <option value="---">-- {% trans "Status" %} --</option>
+            <option value="1"{% if '1' in sortfilter.status %} selected{% endif %}>{% trans "Active" %}</option>
+            <option value="0"{% if '0' in sortfilter.status %} selected{% endif %}>{% trans "Inactive" %}</option>
+        </select>
+        </div>
+    </form>
+    <small><i>
     {% if users.count == allusers %}
         {{ users.count }}
         {% blocktrans count counter=users.count %}participant{% plural %}participants{% endblocktrans %}
     {% else %}
         {{ users.count }} {% trans "of" %} {{ allusers }} {% trans "Participants" %} (= {{ percent }} %)
     {% endif %}
-    <table>
+    </i></small>
+    <table class="table table-striped table-bordered">
         <tr>
             <th><a href="?sort=first_name&reverse={% if 'first_name' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "First Name" %}</a></th>
             <th><a href="?sort=last_name&reverse={% if 'last_name' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Last Name" %}</a></th>
-            <th><a href="?sort=structure_level&reverse={% if 'structure_level' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Structure level" %}</a></th>
-            <th><a href="?sort=type&reverse={% if 'type' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Type" %}</a></th>
-            <th><a href="?sort=committee&reverse={% if 'committee' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Committee" %}</a></th>
+            <th class="optional"><a href="?sort=structure_level&reverse={% if 'structure_level' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Structure level" %}</a></th>
+            <th class="optional"><a href="?sort=type&reverse={% if 'type' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Type" %}</a></th>
+            <th class="optional"><a href="?sort=committee&reverse={% if 'committee' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Committee" %}</a></th>
             {% if perms.participant.can_manage_participant %}
-                <th><a href="?sort=comment&reverse={% if 'comment' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Comment" %}</a></th>
-                <th><a href="?sort=last_login&reverse={% if 'last_login' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Last Login" %}</a></th>
-                <th>{% trans "Actions" %}</th>
+                <th class="optional"><a href="?sort=comment&reverse={% if 'comment' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Comment" %}</a></th>
+                <th class="optional"><a href="?sort=last_login&reverse={% if 'last_login' in sortfilter.sort and 'reverse' not in sortfilter %}1{% else %}---{%endif%}">{% trans "Last Login" %}</a></th>
+                <th class="mini_width">{% trans "Actions" %}</th>
             {% endif %}
         </tr>
         {% for user in users %}
-            <tr class="{% cycle '' 'odd' %}">
-                <td><a href="{% model_url user 'view' %}">{{ user.first_name }}</a></td>
-                <td><a href="{% model_url user 'view' %}">{{ user.last_name }}</a></td>
-                <td>{{ user.structure_level }}</td>
-                <td>{{ user.get_type_display }}</td>
-                <td>{{ user.committee }}</td>
+            <tr class="{% if user.active %}activeline{% endif %}">
+                <td><a href="{% url 'user_view' user.id %}">{{ user.first_name }}</a></td>
+                <td><a href="{% url 'user_view' user.id %}">{{ user.last_name }}</a></td>
+                <td class="optional">{{ user.structure_level }}</td>
+                <td class="optional">{{ user.get_type_display }}</td>
+                <td class="optional">{{ user.committee }}</td>
                 {% if perms.participant.can_manage_participant %}
-                    <td>{{ user.comment|first_line }}</td>
-                    <td>
+                    <td class="optional">{{ user.comment|first_line }}</td>
+                    <td class="optional">
                         {% if user.last_login > user.date_joined %}
                             {{ user.last_login }}
                         {% endif %}
                     </td>
                     <td>
                         <span style="width: 1px; white-space: nowrap;">
-                            <a href="{% url 'user_edit' user.id %}">
-                                <img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit participant' %}">
+                            {% if perms.projector.can_manage_projector %}
+                               <a href="{% url 'projector_activate_slide' user.sid  %}" class="activate_link btn {% if user.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+                                   <i class="icon-facetime-video {% if user.active %}icon-white{% endif %}"></i>
+                               </a>
+                            {% endif %}
+                            <a href="{% url 'user_edit' user.id %}" title="{% trans 'Edit' %}" class="btn btn-mini">
+                                <i class="icon-pencil"></i>
                             </a>
                             {% if user != request_user %}
-                            <a href="{% url 'user_delete' user.id %}">
-                                <img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete participant' %}">
+                            <a href="{% url 'user_delete' user.id %}" title="{% trans 'Delete' %}" class="btn btn-mini">
+                                <i class="icon-remove"></i>
                             </a>
                             {% endif %}
                             {% if user != request_user and not user.is_superuser %}
-                            <a class="status_link deactivate" href="{% url 'user_status_deactivate' user.id %}" title="{% trans 'Change status to inactive' %}"{% if not user.is_active %} style="display:none"{% endif %}>
-                                <span></span>
-                            </a>
-                            <a class="status_link activate" href="{% url 'user_status_activate' user.id %}" title="{% trans 'Change status to active' %}"{% if user.is_active %} style="display:none"{% endif %}>
-                                <span></span>
+                            <a href="{% url 'user_status_toggle' user.id %}"
+                              class="status_link btn btn-mini {% if user.is_active %}btn-success{% endif %}"
+                              title="{% trans 'Change status (active/inactive)' %}">
+                                <i class="{% if user.is_active %}icon-on{% else %}icon-off{% endif %}"></i>
                             </a>
                             {% endif %}
                         </span>

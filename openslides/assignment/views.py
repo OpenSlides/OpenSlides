@@ -145,8 +145,9 @@ def edit(request, assignment_id=None):
 def delete(request, assignment_id):
     assignment = Assignment.objects.get(pk=assignment_id)
     if request.method == 'POST':
-        assignment.delete()
-        messages.success(request, _('Election <b>%s</b> was successfully deleted.') % assignment)
+        if 'submit' in request.POST:
+            assignment.delete()
+            messages.success(request, _('Election <b>%s</b> was successfully deleted.') % assignment)
     else:
         del_confirm_form(request, assignment)
     return redirect(reverse('assignment_overview'))
@@ -204,16 +205,17 @@ def delother(request, assignment_id, user_id):
     is_blocked = assignment.is_blocked(person)
 
     if request.method == 'POST':
-        try:
-            assignment.delrun(person, blocked=False)
-        except Exception, e:
-            messages.error(request, e)
-        else:
-            if not is_blocked:
-                message = _("Candidate <b>%s</b> was withdrawn successfully.") % person
+        if 'submit' in request.POST:
+            try:
+                assignment.delrun(person, blocked=False)
+            except Exception, e:
+                messages.error(request, e)
             else:
-                message = _("<b>%s</b> was unblocked successfully.") % person
-            messages.success(request, message)
+                if not is_blocked:
+                    message = _("Candidate <b>%s</b> was withdrawn successfully.") % person
+                else:
+                    message = _("<b>%s</b> was unblocked successfully.") % person
+                messages.success(request, message)
     else:
         if not is_blocked:
             message = _("Do you really want to withdraw <b>%s</b> from the election?") % person
@@ -318,7 +320,7 @@ class AssignmentPollDelete(DeleteView):
         return reverse('assignment_view', args=[self.assignment.id])
 
     def get_success_message(self):
-        return  _('Ballot was successfully deleted.') % self.object
+        return _('Ballot was successfully deleted.') % self.object
 
 
 class AssignmentPDF(PDFView):
@@ -533,7 +535,7 @@ class AssignmentPollPDF(PDFView):
         pdf_document.build(story)
 
     def append_to_pdf(self, story):
-        imgpath = os.path.join(settings.SITE_ROOT, 'static/images/circle.png')
+        imgpath = os.path.join(settings.SITE_ROOT, 'static/img/circle.png')
         circle = "<img src='%s' width='15' height='15'/>&nbsp;&nbsp;" % imgpath
         cell = []
         cell.append(Spacer(0, 0.8 * cm))
@@ -635,6 +637,7 @@ class Config(FormView):
     permission_required = 'config.can_manage_config'
     form_class = ConfigForm
     template_name = 'assignment/config.html'
+    success_url_name = 'config_assignment'
 
     def get_initial(self):
         return {
@@ -673,6 +676,7 @@ def register_tab(request):
     selected = request.path.startswith('/assignment/')
     return Tab(
         title=_('Elections'),
+        app='assignment',
         url=reverse('assignment_overview'),
         permission=(
             request.user.has_perm('assignment.can_see_assignment') or
@@ -684,10 +688,9 @@ def register_tab(request):
 
 
 def get_widgets(request):
-    return [
-        Widget(
-            name='assignments',
-            display_name=_('Elections'),
-            template='assignment/widget.html',
-            context={'assignments': Assignment.objects.all()},
-            permission_required='projector.can_manage_projector')]
+    return [Widget(
+        name='assignments',
+        display_name=_('Elections'),
+        template='assignment/widget.html',
+        context={'assignments': Assignment.objects.all()},
+        permission_required='projector.can_manage_projector')]

@@ -65,8 +65,9 @@
 
 
 {% block content %}
-    <h1>{% trans "Agenda settings" %}</h1>
-
+    <h1>{% trans "Configuration" %}: {% trans "Agenda" %}
+        {% block config_submenu %}{{ block.super }}{% endblock %}
+    </h1>
     <form action="" method="post">{% csrf_token %}
     {{ form.as_p }}
     <p>

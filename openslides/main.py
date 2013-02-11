@@ -91,6 +91,10 @@ def process_options(argv=None):
         "--no-reload", action="store_true",
         help="Do not reload the development server.")
     parser.add_option(
+        "--no-browser",
+        action="store_false", dest="start_browser", default=True,
+        help="Do not automatically start web browser.")
+    parser.add_option(
         "--version", action="store_true",
         help="Show version and exit.")
 
@@ -172,7 +176,11 @@ def _main(opts, database_path=None):
         extra_args = ['--noreload']
     else:
         extra_args = []
-    start_openslides(addr, port, start_browser_url=url, extra_args=extra_args)
+
+    if opts.start_browser:
+        start_browser(url)
+
+    start_openslides(addr, port, extra_args=extra_args)
 
 
 def create_settings(settings_path, database_path=None):

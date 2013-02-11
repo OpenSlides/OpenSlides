@@ -10,7 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from openslides.utils.person.signals import receive_persons
+from .signals import receive_persons
 
 
 class Person(object):

@@ -1,4 +1,4 @@
-{% extends "assignment/base_assignment.html" %}
+{% extends "base.html" %}
 
 {% load i18n %}
 
@@ -11,27 +11,24 @@
     {% endif %}
 {% endblock %}
 
-
 {% block content %}
-    {% if assignment %}
-        <h1>{% trans "Edit election" %}</h1>
-    {% else %}
-        <h1>{% trans "New election" %}</h1>
-    {% endif %}
+    <h1>
+        {% if assignment %}
+            {% trans "Edit election" %}
+        {% else %}
+            {% trans "New election" %}
+        {% endif %}
+        <small class="pull-right">
+        <a href="{% url 'assignment_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        </small>
+    </h1>
 
     <form action="" method="post">{% csrf_token %}
-        {{ form.as_p }}
+        {% include "form.html" %}
         <p>
-        <button class="button" type="submit">
-            <span class="icon ok">{% trans 'Save' %}</span>
-        </button>
-        <button class="button" type="submit" name="apply">
-            <span class="icon apply">{% trans 'Apply' %}</span>
-        </button>
-        <a href="{% url 'assignment_overview' %}">
-        <button class="button" type="button" onclick="window.location='{% url 'assignment_overview' %}'">
-            <span class="icon cancel">{% trans 'Cancel' %}</span>
-        </button>
+        {% include "formbuttons_saveapply.html" %}
+        <a href='{% url 'assignment_overview' %}' class="btn">
+            {% trans 'Cancel' %}
         </a>
         </p>
         <small>* {% trans "required" %}</small>

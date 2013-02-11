@@ -1,21 +1,17 @@
-{% load staticfiles %}
 {% load i18n %}
 {% load tags %}
 
 <ul style="line-height: 180%">
 {% for motion in motions %}
     <li class="{% if motion.active %}activeline{% endif %}">
-        <a href="{% url 'projector_activate_slide' motion.sid %}" class="activate_link {% if motion.active %}active{% endif %}">
-            <div></div>
+        <a href="{% url 'projector_activate_slide' motion.sid  %}" class="activate_link btn {% if motion.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+            <i class="icon-facetime-video {% if motion.active %}icon-white{% endif %}"></i>
+        </a>&nbsp;
+        <a href="{% model_url motion 'edit' %}" title="{% trans 'Edit' %}" class="btn btn-mini right">
+            <i class="icon-pencil"></i>
         </a>
-        <a href="{% model_url motion 'delete' %}" title="{% trans 'Delete' %}" class="icon delete right">
-            <span></span>
-        </a>
-        <a href="{% model_url motion 'edit' %}" title="{% trans 'Edit' %}" class="icon edit right">
-            <span></span>
-        </a>
-        <a href="{% url 'projctor_preview_slide' motion.sid %}" title="{% trans 'Preview' %}" class="icon preview right">
-            <span></span>
+        <a href="{% url 'projctor_preview_slide' motion.sid %}" title="{% trans 'Preview' %}" class="btn btn-mini right">
+            <i class="icon-search"></i>
         </a>
         <a href="{% model_url motion 'view' %}">
             {{ motion.public_version.title }}

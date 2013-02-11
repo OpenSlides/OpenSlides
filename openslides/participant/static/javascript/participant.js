@@ -6,22 +6,24 @@
  */
 
 $(function() {
+    // change participant status (on/off)
     $('.status_link').click(function(event) {
         event.preventDefault();
-        link = $(this);
-        group = $(this).parent();
+        var link = $(this);
         $.ajax({
             type: 'GET',
-            url: link.attr('href'),
+            url: $(this).attr('href'),
             dataType: 'json',
             success: function(data) {
                 if (data.active) {
-                    group.children('.status_link.deactivate').show();
-                    group.children('.status_link.activate').hide();
+                    newclass = 'icon-on';
+                    link.addClass('btn-success');
                 } else {
-                    group.children('.status_link.deactivate').hide();
-                    group.children('.status_link.activate').show();
+                    newclass = 'icon-off';
+                    link.removeClass('btn-success');
                 }
+                link.children('i').removeClass('icon-off icon-on').addClass(newclass);
+                link.attr('href', data.link);
             }
         });
     });

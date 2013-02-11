@@ -15,9 +15,10 @@ from django.template.loader_tags import BlockNode, ExtendsNode
 
 
 class Tab(object):
-    def __init__(self, title='', url='', permission='', selected=False):
+    def __init__(self, title='', app='', url='', permission=True, selected=False):
         self.selected = False
         self.title = title
+        self.app = app
         self.permission = permission
         self.selected = selected
         self.url = url

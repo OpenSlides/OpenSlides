@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% load tags %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}{{ block.super }} – {% trans "Motions" %}{% endblock %}
+
+{% block content %}
+    <h1>{% trans "Motions" %}</h1>
+    <ol>
+    {% for motion in motion_list %}
+        <li><a href="{% model_url motion %}">{{ motion }}</a></li>
+    {% endfor %}
+    </ol>
+{% endblock %}

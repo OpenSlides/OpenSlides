@@ -38,7 +38,9 @@ class ProjectorSlide(models.Model, SlideMixin):
         }
 
     @models.permalink
-    def get_absolute_url(self, link='delete'):
+    def get_absolute_url(self, link='edit'):
+        if link == 'edit':
+            return ('customslide_edit', [str(self.id)])
         if link == 'delete':
             return ('customslide_delete', [str(self.id)])
 

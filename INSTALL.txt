@@ -18,7 +18,11 @@ I. Installation on GNU/Linux and MacOSX using the Python Package Index (PyPI)
   1. Check requirements:
 
         Make sure that you have installed Python Programming Language 2
-        (>= 2.6) on your system.
+        (>= 2.6) on your system. You will also need the Python
+        development headers.
+
+        E. g. for Ubuntu run:
+        $ sudo apt-get install python-dev
 
   2. Setup a virtual environment with virtualenv (optional):
 

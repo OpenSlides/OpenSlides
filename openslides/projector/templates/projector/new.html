@@ -1,4 +1,4 @@
-{% extends "projector/base_projector.html" %}
+{% extends "base.html" %}
 
 {% load tags %}
 {% load i18n %}
@@ -6,19 +6,16 @@
 {% block title %}{{ block.super }} – {% trans "Custom slide" %}{% endblock %}
 
 {% block content %}
-    <h1>{% trans 'Custom slide' %}</h1>
+    <h1>{% trans 'Custom slide' %}
+        <small class="pull-right">
+            <a href="{% url 'dashboard' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        </small>
+    </h1>
     <form action="" method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <button class="button" type="submit">
-            <span class="icon ok">{% trans 'Save' %}</span>
-        </button>
-        <button class="button" type="submit" name="apply">
-            <span class="icon apply">{% trans 'Apply' %}</span>
-        </button>
-        <a href='{% url "dashboard" %}'>
-        <button class="button" type="button" onclick="window.location='{% url 'dashboard' %}'">
-            <span class="icon cancel">{% trans 'Cancel' %}</span>
-        </button>
-        </a>
+        {% include "form.html" %}
+        <p>
+        {% include "formbuttons_saveapply.html" %}
+        </p>
+        <small>* {% trans "required" %}</small>
     </form>
 {% endblock %}

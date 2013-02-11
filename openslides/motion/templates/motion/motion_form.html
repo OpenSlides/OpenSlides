@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% load tags %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}{{ block.super }} – {% trans "Motion Form" %}{% endblock %}
+
+{% block content %}
+    <h1>{% trans "Motions Forms" %}</h1>
+    <form action="" method="post">{% csrf_token %}
+        {{ form.as_p }}
+        <button class="button" type="submit">
+            <span class="icon ok">{% trans 'Save' %}</span>
+        </button>
+        <button class="button" type="submit" name="apply">
+            <span class="icon apply">{% trans 'Apply' %}</span>
+        </button>
+        <a href="{% url 'motion_list' %}">
+            <button class="button" type="button" onclick="window.location='{% url 'motion_list' %}'">
+                <span class="icon cancel">{% trans 'Cancel' %}</span>
+            </button>
+        </a>
+        <small>* {% trans "required" %}</small>
+    </form>
+{% endblock %}

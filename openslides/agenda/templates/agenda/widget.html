@@ -1,12 +1,11 @@
-{% load staticfiles %}
 {% load i18n %}
 {% load tags %}
 
 <ul style="line-height: 180%">
     <li class="{% if agenda.active %}activeline{% endif %}">
-        <a href="{% url 'projector_activate_slide' agenda.key %}" class="activate_link {% if agenda.active %}active{% endif %}">
-            <div></div>
-        </a>
+        <a href="{% url 'projector_activate_slide' agenda.key  %}" class="activate_link btn {% if agenda.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+            <i class="icon-facetime-video {% if agenda.active %}icon-white{% endif %}"></i>
+        </a>&nbsp;
         <a href="{% url 'projctor_preview_slide' agenda.key %}" title="{% trans 'Preview' %}" class="icon preview right">
             <span></span>
         </a>
@@ -17,27 +16,22 @@
 <ul style="line-height: 180%">
 {% for item in items %}
     <li class="{% if item.active %}activeline{% endif %}">
-        <a href="{% url 'projector_activate_slide' item.sid %}" class="activate_link {% if item.active %}active{% endif %}">
-            <div></div>
+        <a href="{% url 'projector_activate_slide' item.sid  %}" class="activate_link btn {% if item.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+            <i class="icon-facetime-video {% if item.active %}icon-white{% endif %}"></i>
+        </a>&nbsp;
+        <a href="{% model_url item 'edit' %}" title="{% trans 'Edit' %}" class="btn btn-mini right">
+            <i class="icon-pencil"></i>
         </a>
-        <a href="{% model_url item 'delete' %}" title="{% trans 'Delete' %}" class="icon delete right">
-            <span></span>
-        </a>
-        <a href="{% model_url item 'edit' %}" title="{% trans 'Edit' %}" class="icon edit right">
-            <span></span>
-        </a>
-        <a href="{% url 'projctor_preview_slide' item.sid %}" title="{% trans 'Preview' %}" class="icon preview right">
-            <span></span>
+        <a href="{% url 'projctor_preview_slide' item.sid %}" title="{% trans 'Preview' %}" class="btn btn-mini right">
+            <i class="icon-search"></i>
         </a>
         {% if not item.is_leaf_node %}
-        <a class="activate_link right" href="{% url 'projector_activate_slide' item.sid 'summary' %}">
-            <img src="{% static 'images/icons/summary.png' %}"
-                title="{% trans 'Activate summary for this item' %}"
-                style="padding-right: 2px;">
+        <a class="activate_link btn btn-mini {% if item.active %}btn-primary{% endif %} right" href="{% url 'projector_activate_slide' item.sid 'summary' %}" title="{% trans 'Show summary for this item' %}">
+            <i class="icon-summary {% if item.active %}icon-white{% endif %}"></i>
         </a>
         {% endif %}
         {% for p in item.get_ancestors %}
-            <span class="indentation">&nbsp;</span>
+            <span class="indentation"></span>
         {% endfor %}
         <a href="{% model_url item 'view' %}">{% if item.type == item.ORGANIZATIONAL_ITEM %}<i>[{% endif %}{{ item }}{% if item.type == item.ORGANIZATIONAL_ITEM %}]</i>{% endif %}</a>
         {{ item.get_title_supplement|safe }}

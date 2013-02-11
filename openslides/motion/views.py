@@ -2,911 +2,479 @@
 # -*- coding: utf-8 -*-
 """
     openslides.motion.views
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~
 
     Views for the motion app.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    Will automaticly imported from openslides.motion.urls.py
+
+    :copyright: (c) 2011-2013 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
-import csv
-import os
-
-from urlparse import parse_qs
-
-from reportlab.lib import colors
-from reportlab.lib.units import cm
-from reportlab.platypus import (
-    SimpleDocTemplate, PageBreak, Paragraph, Spacer, Table, TableStyle)
-
-from django.conf import settings
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.contrib import messages
 from django.db import transaction
-from django.shortcuts import redirect
-from django.utils.translation import ugettext as _, ungettext
+from django.db.models import Model
+from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
+from django.views.generic.detail import SingleObjectMixin
+from django.http import Http404
 
-from openslides.utils import csv_ext
 from openslides.utils.pdf import stylesheet
-from openslides.utils.template import Tab
-from openslides.utils.utils import (
-    template, permission_required, del_confirm_form, gen_confirm_form)
 from openslides.utils.views import (
-    PDFView, RedirectView, DeleteView, FormView, SingleObjectMixin,
-    QuestionMixin)
-from openslides.utils.person import get_person
-from openslides.config.models import config
-from openslides.projector.projector import Widget
+    TemplateView, RedirectView, UpdateView, CreateView, DeleteView, PDFView,
+    DetailView, ListView, FormView, QuestionMixin, SingleObjectMixin)
+from openslides.utils.template import Tab
+from openslides.utils.utils import html_strong
 from openslides.poll.views import PollFormView
-from openslides.participant.api import gen_username, gen_password
-from openslides.participant.models import User, Group
+from openslides.projector.api import get_active_slide
+from openslides.projector.projector import Widget, SLIDE
+from openslides.config.models import config
 from openslides.agenda.models import Item
-from openslides.motion.models import Motion, AVersion, MotionPoll
-from openslides.motion.forms import (
-    MotionForm, MotionFormTrivialChanges, MotionManagerForm,
-    MotionManagerFormSupporter, MotionImportForm, ConfigForm)
+
+from .models import Motion, MotionSubmitter, MotionSupporter, MotionPoll, MotionVersion
+from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
+                    MotionCreateNewVersionMixin, ConfigForm)
+from .workflow import WorkflowError
+from .pdf import motions_to_pdf, motion_to_pdf
 
 
-@permission_required('motion.can_see_motion')
-@template('motion/overview.html')
-def overview(request):
-    """
-    View all motions
-    """
-    try:
-        sortfilter = parse_qs(request.COOKIES['votecollector_sortfilter'])
-        for value in sortfilter:
-            sortfilter[value] = sortfilter[value][0]
-    except KeyError:
-        sortfilter = {}
+class MotionListView(ListView):
+    """View, to list all motions."""
+    permission_required = 'motion.can_see_motion'
+    model = Motion
 
-    for value in [u'sort', u'reverse', u'number', u'status', u'needsup', u'statusvalue']:
-        if value in request.REQUEST:
-            if request.REQUEST[value] == '0':
-                try:
-                    del sortfilter[value]
-                except KeyError:
-                    pass
-            else:
-                sortfilter[value] = request.REQUEST[value]
-
-    query = Motion.objects.all()
-    if 'number' in sortfilter:
-        query = query.filter(number=None)
-    if 'status' in sortfilter:
-        if 'statusvalue' in sortfilter and 'on' in sortfilter['status']:
-            query = query.filter(status__iexact=sortfilter['statusvalue'])
-
-    if 'sort' in sortfilter:
-        if sortfilter['sort'] == 'title':
-            sort = 'aversion__title'
-        elif sortfilter['sort'] == 'time':
-            sort = 'aversion__time'
-        else:
-            sort = sortfilter['sort']
-        query = query.order_by(sort)
-        if sort.startswith('aversion_'):
-            # limit result to last version of an motion
-            query = query.filter(aversion__id__in=[x.last_version.id for x in Motion.objects.all()])
-
-    if 'reverse' in sortfilter:
-        query = query.reverse()
-
-    # todo: rewrite this with a .filter()
-    if 'needsup' in sortfilter:
-        motions = []
-        for motion in query.all():
-            if not motion.enough_supporters:
-                motions.append(motion)
-    else:
-        motions = query
-
-    if type(motions) is not list:
-        motions = list(query.all())
-
-    # not the most efficient way to do this but 'get_allowed_actions'
-    # is not callable from within djangos templates..
-    for (i, motion) in enumerate(motions):
-        try:
-            motions[i] = {
-                'actions': motion.get_allowed_actions(request.user),
-                'motion': motion
-            }
-        except:
-            # todo: except what?
-            motions[i] = {
-                'actions': [],
-                'motion': motion
-            }
-
-    return {
-        'motions': motions,
-        'min_supporters': int(config['motion_min_supporters']),
-    }
+motion_list = MotionListView.as_view()
 
 
-@permission_required('motion.can_see_motion')
-@template('motion/view.html')
-def view(request, motion_id, newest=False):
-    """
-    View one motion.
-    """
-    motion = Motion.objects.get(pk=motion_id)
-    if newest:
-        version = motion.last_version
-    else:
-        version = motion.public_version
-    revisions = motion.versions
-    actions = motion.get_allowed_actions(user=request.user)
+class GetVersionMixin(object):
+    """Mixin to set a specific version to a motion."""
 
-    return {
-        'motion': motion,
-        'revisions': revisions,
-        'actions': actions,
-        'min_supporters': int(config['motion_min_supporters']),
-        'version': version,
-        #'results': motion.results
-    }
-
-
-@login_required
-@template('motion/edit.html')
-def edit(request, motion_id=None):
-    """
-    View a form to edit or create a motion.
-    """
-    if request.user.has_perm('motion.can_manage_motion'):
-        is_manager = True
-    else:
-        is_manager = False
-
-    if not is_manager \
-    and not request.user.has_perm('motion.can_create_motion'):
-        messages.error(request, _("You have not the necessary rights to create or edit motions."))
-        return redirect(reverse('motion_overview'))
-    if motion_id is not None:
-        motion = Motion.objects.get(id=motion_id)
-        if not 'edit' in motion.get_allowed_actions(request.user):
-            messages.error(request, _("You can not edit this motion."))
-            return redirect(reverse('motion_view', args=[motion.id]))
-        actions = motion.get_allowed_actions(user=request.user)
-    else:
-        motion = None
-        actions = None
-
-    formclass = MotionFormTrivialChanges \
-        if config['motion_allow_trivial_change'] and motion_id \
-        else MotionForm
-
-    managerformclass = MotionManagerFormSupporter \
-                       if config['motion_min_supporters'] \
-                       else MotionManagerForm
-
-    if request.method == 'POST':
-        dataform = formclass(request.POST, prefix="data")
-        valid = dataform.is_valid()
-
-        if is_manager:
-            managerform = managerformclass(request.POST,
-                            instance=motion,
-                            prefix="manager")
-            valid = valid and managerform.is_valid()
-        else:
-            managerform = None
-
-        if valid:
-            if is_manager:
-                motion = managerform.save(commit=False)
-            elif motion_id is None:
-                motion = Motion(submitter=request.user)
-            motion.title = dataform.cleaned_data['title']
-            motion.text = dataform.cleaned_data['text']
-            motion.reason = dataform.cleaned_data['reason']
-
+    def get_object(self):
+        """Return a Motion object. The id is taken from the url and the version
+        is set to the version with the 'version_number' from the URL."""
+        object = super(GetVersionMixin, self).get_object()
+        version_number = self.kwargs.get('version_number', None)
+        if version_number is not None:
             try:
-                trivial_change = config['motion_allow_trivial_change'] \
-                    and dataform.cleaned_data['trivial_change']
-            except KeyError:
-                trivial_change = False
-            motion.save(request.user, trivial_change=trivial_change)
-            if is_manager:
-                try:
-                    new_supporters = set(managerform.cleaned_data['supporter'])
-                except KeyError:
-                    # The managerform has no field for the supporters
-                    pass
-                else:
-                    old_supporters = set(motion.supporters)
-                    # add new supporters
-                    for supporter in new_supporters.difference(old_supporters):
-                        motion.support(supporter)
-                    # remove old supporters
-                    for supporter in old_supporters.difference(new_supporters):
-                        motion.unsupport(supporter)
-
-            if motion_id is None:
-                messages.success(request, _('New motion was successfully created.'))
-            else:
-                messages.success(request, _('Motion was successfully modified.'))
-
-            if not 'apply' in request.POST:
-                return redirect(reverse('motion_view', args=[motion.id]))
-            if motion_id is None:
-                return redirect(reverse('motion_edit', args=[motion.id]))
-        else:
-            messages.error(request, _('Please check the form for errors.'))
-    else:
-        if motion_id is None:
-            initial = {'text': config['motion_preamble']}
-        else:
-            if motion.status == "pub" and motion.supporters:
-                if request.user.has_perm('motion.can_manage_motion'):
-                    messages.warning(request, _("Attention: Do you really want to edit this motion? The supporters will <b>not</b> be removed automatically because you can manage motions. Please check if the supports are valid after your changing!"))
-                else:
-                    messages.warning(request, _("Attention: Do you really want to edit this motion? All <b>%s</b> supporters will be removed! Try to convince the supporters again.") % motion.count_supporters() )
-            initial = {'title': motion.title,
-                       'text': motion.text,
-                       'reason': motion.reason}
-
-        dataform = formclass(initial=initial, prefix="data")
-        if is_manager:
-            if motion_id is None:
-                initial = {'submitter': request.user.person_id}
-            else:
-                initial = {'submitter': motion.submitter.person_id,
-                    'supporter': [supporter.person_id for supporter in motion.supporters]}
-            managerform = managerformclass(initial=initial,
-                instance=motion, prefix="manager")
-        else:
-            managerform = None
-    return {
-        'form': dataform,
-        'managerform': managerform,
-        'motion': motion,
-        'actions': actions,
-    }
+                object.version = int(version_number)
+            except MotionVersion.DoesNotExist:
+                raise Http404('Version %s not found' % version_number)
+        return object
 
 
-@permission_required('motion.can_manage_motion')
-@template('motion/view.html')
-def set_number(request, motion_id):
-    """
-    set a number for an motion.
-    """
-    try:
-        Motion.objects.get(pk=motion_id).set_number(user=request.user)
-        messages.success(request, _("Motion number was successfully set."))
-    except Motion.DoesNotExist:
-        pass
-    except NameError:
-        pass
-    return redirect(reverse('motion_view', args=[motion_id]))
+class MotionDetailView(GetVersionMixin, DetailView):
+    """Show one motion."""
+    permission_required = 'motion.can_see_motion'
+    model = Motion
+
+    def get_context_data(self, **kwargs):
+        """Return the template context.
+
+        Append the allowed actions for the motion to the context.
+        """
+        context = super(MotionDetailView, self).get_context_data(**kwargs)
+        context['allowed_actions'] = self.object.get_allowed_actions(self.request.user)
+        return context
+
+motion_detail = MotionDetailView.as_view()
 
 
-@permission_required('motion.can_manage_motion')
-@template('motion/view.html')
-def permit(request, motion_id):
-    """
-    permit an motion.
-    """
-    try:
-        Motion.objects.get(pk=motion_id).permit(user=request.user)
-        messages.success(request, _("Motion was successfully authorized."))
-    except Motion.DoesNotExist:
-        pass
-    except NameError, e:
-        messages.error(request, e)
-    return redirect(reverse('motion_view', args=[motion_id]))
+class MotionMixin(object):
+    """Mixin for MotionViewsClasses, to save the version data."""
 
-@permission_required('motion.can_manage_motion')
-@template('motion/view.html')
-def notpermit(request, motion_id):
-    """
-    reject (not permit) an motion.
-    """
-    try:
-        Motion.objects.get(pk=motion_id).notpermit(user=request.user)
-        messages.success(request, _("Motion was successfully rejected."))
-    except Motion.DoesNotExist:
-        pass
-    except NameError, e:
-        messages.error(request, e)
-    return redirect(reverse('motion_view', args=[motion_id]))
+    def manipulate_object(self, form):
+        """Save the version data into the motion object before it is saved in
+        the Database."""
 
-@template('motion/view.html')
-def set_status(request, motion_id=None, status=None):
-    """
-    set a status of an motion.
-    """
-    try:
-        if status is not None:
-            motion = Motion.objects.get(pk=motion_id)
-            motion.set_status(user=request.user, status=status)
-            messages.success(request, _("Motion status was set to: <b>%s</b>.") % motion.get_status_display())
-    except Motion.DoesNotExist:
-        pass
-    except NameError, e:
-        messages.error(request, e)
-    return redirect(reverse('motion_view', args=[motion_id]))
+        super(MotionMixin, self).manipulate_object(form)
+        for attr in ['title', 'text', 'reason']:
+            setattr(self.object, attr, form.cleaned_data[attr])
+
+        try:
+            if form.cleaned_data['new_version']:
+                self.object.new_version
+        except KeyError:
+            pass
+
+    def post_save(self, form):
+        """Save the submitter an the supporter so the motion."""
+        super(MotionMixin, self).post_save(form)
+        # TODO: only delete and save neccessary submitters and supporter
+        if 'submitter' in form.cleaned_data:
+            self.object.submitter.all().delete()
+            MotionSubmitter.objects.bulk_create(
+                [MotionSubmitter(motion=self.object, person=person)
+                 for person in form.cleaned_data['submitter']])
+        if 'supporter' in form.cleaned_data:
+            self.object.supporter.all().delete()
+            MotionSupporter.objects.bulk_create(
+                [MotionSupporter(motion=self.object, person=person)
+                 for person in form.cleaned_data['supporter']])
+
+    def get_form_class(self):
+        """Return the FormClass to Create or Update the Motion.
+
+        forms.BaseMotionForm is the base for the Class, and some FormMixins
+        will be mixed in dependence of some config values. See motion.forms
+        for more information on the mixins.
+        """
+
+        form_classes = [BaseMotionForm]
+        if self.request.user.has_perm('motion.can_manage_motion'):
+            form_classes.append(MotionSubmitterMixin)
+            if config['motion_min_supporters'] > 0:
+                form_classes.append(MotionSupporterMixin)
+        if config['motion_create_new_version'] == 'ASK_USER':
+            form_classes.append(MotionCreateNewVersionMixin)
+        return type('MotionForm', tuple(form_classes), {})
 
 
-@permission_required('motion.can_manage_motion')
-@template('motion/view.html')
-def reset(request, motion_id):
-    """
-    reset an motion.
-    """
-    try:
-        Motion.objects.get(pk=motion_id).reset(user=request.user)
-        messages.success(request, _("Motion status was reset.") )
-    except Motion.DoesNotExist:
-        pass
-    return redirect(reverse('motion_view', args=[motion_id]))
+class MotionCreateView(MotionMixin, CreateView):
+    """View to create a motion."""
+    permission_required = 'motion.can_create_motion'
+    model = Motion
+
+    def form_valid(self, form):
+        """Write a log message, if the form is valid."""
+        value = super(MotionCreateView, self).form_valid(form)
+        self.object.write_log(ugettext_noop('Motion created'), self.request.user)
+        return value
+
+motion_create = MotionCreateView.as_view()
+
+
+class MotionUpdateView(MotionMixin, UpdateView):
+    """View to update a motion."""
+    model = Motion
+
+    def has_permission(self, request, *args, **kwargs):
+        """Check, if the request.user has the permission to edit the motion."""
+        return self.get_object().get_allowed_actions(request.user)['edit']
+
+    def form_valid(self, form):
+        """Write a log message, if the form is valid."""
+        value = super(MotionUpdateView, self).form_valid(form)
+        self.object.write_log(ugettext_noop('Motion updated'), self.request.user)
+        return value
+
+motion_edit = MotionUpdateView.as_view()
+
+
+class MotionDeleteView(DeleteView):
+    """View to delete a motion."""
+    model = Motion
+    success_url_name = 'motion_list'
+
+    def has_permission(self, request, *args, **kwargs):
+        """Check if the request.user has the permission to delete the motion."""
+        return self.get_object().get_allowed_actions(request.user)['delete']
+
+motion_delete = MotionDeleteView.as_view()
+
+
+class VersionPermitView(GetVersionMixin, SingleObjectMixin, QuestionMixin, RedirectView):
+    """View to permit a version of a motion."""
+
+    model = Motion
+    question_url_name = 'motion_version_detail'
+    success_url_name = 'motion_version_detail'
+
+    def get(self, *args, **kwargs):
+        """Set self.object to a motion."""
+        self.object = self.get_object()
+        return super(VersionPermitView, self).get(*args, **kwargs)
+
+    def get_url_name_args(self):
+        """Return a list with arguments to create the success- and question_url."""
+        return [self.object.pk, self.object.version.version_number]
+
+    def get_question(self):
+        """Return a string, shown to the user as question to permit the version."""
+        return _('Are you sure you want permit Version %s?') % self.object.version.version_number
+
+    def case_yes(self):
+        """Activate the version, if the user chooses 'yes'."""
+        self.object.activate_version(self.object.version)
+        self.object.save()
+
+version_permit = VersionPermitView.as_view()
+
+
+class VersionRejectView(GetVersionMixin, SingleObjectMixin, QuestionMixin, RedirectView):
+    """View to reject a version."""
+    model = Motion
+    question_url_name = 'motion_version_detail'
+    success_url_name = 'motion_version_detail'
+
+    def get(self, *args, **kwargs):
+        """Set self.object to a motion."""
+        self.object = self.get_object()
+        return super(VersionRejectView, self).get(*args, **kwargs)
+
+    def get_url_name_args(self):
+        """Return a list with arguments to create the success- and question_url."""
+        return [self.object.pk, self.object.version.version_number]
+
+    def get_question(self):
+        return _('Are you sure you want reject Version %s?') % self.object.version.version_number
+
+    def case_yes(self):
+        """Reject the version, if the user chooses 'yes'."""
+        self.object.reject_version(self.object.version)
+        self.object.save()
+
+version_reject = VersionRejectView.as_view()
 
 
 class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
+    """View to support or unsupport a motion.
+
+    If self.support is True, the view will append a request.user to the supporter list.
+
+    If self.support is False, the view will remove a request.user from the supporter list.
     """
-    Classed based view to support or unsupport a motion. Use
-    support=True or support=False in urls.py
-    """
+
     permission_required = 'motion.can_support_motion'
     model = Motion
-    pk_url_kwarg = 'motion_id'
     support = True
 
     def get(self, request, *args, **kwargs):
+        """Set self.object to a motion."""
         self.object = self.get_object()
         return super(SupportView, self).get(request, *args, **kwargs)
 
-    def check_allowed_actions(self, request):
-        """
-        Checks whether request.user can support or unsupport the motion.
-        Returns True or False.
-        """
+    def check_permission(self, request):
+        """Return True if the user can support or unsupport the motion. Else: False."""
+
         allowed_actions = self.object.get_allowed_actions(request.user)
-        if self.support and not 'support' in allowed_actions:
+        if self.support and not allowed_actions['support']:
             messages.error(request, _('You can not support this motion.'))
             return False
-        elif not self.support and not 'unsupport' in allowed_actions:
+        elif not self.support and not allowed_actions['unsupport']:
             messages.error(request, _('You can not unsupport this motion.'))
             return False
         else:
             return True
 
-    def pre_redirect(self, request, *args, **kwargs):
-        if self.check_allowed_actions(request):
-            super(SupportView, self).pre_redirect(request, *args, **kwargs)
-
     def get_question(self):
+        """Return the question string."""
         if self.support:
             return _('Do you really want to support this motion?')
         else:
             return _('Do you really want to unsupport this motion?')
 
     def case_yes(self):
-        if self.check_allowed_actions(self.request):
+        """Append or remove the request.user from the motion.
+
+        First the methode checks the permissions, and writes a log message after
+        appending or removing the user.
+        """
+        if self.check_permission(self.request):
+            user = self.request.user
             if self.support:
-                self.object.support(person=self.request.user)
+                self.object.support(person=user)
+                self.object.write_log(ugettext_noop("Supporter: +%s") % user, user)
             else:
-                self.object.unsupport(person=self.request.user)
+                self.object.unsupport(person=user)
+                self.object.write_log(ugettext_noop("Supporter: -%s") % user, user)
 
     def get_success_message(self):
+        """Return the success message."""
         if self.support:
             return _("You have supported this motion successfully.")
         else:
             return _("You have unsupported this motion successfully.")
 
     def get_redirect_url(self, **kwargs):
-        return reverse('motion_view', args=[kwargs[self.pk_url_kwarg]])
+        """Return the url, the view should redirect to."""
+        return self.object.get_absolute_url()
+
+motion_support = SupportView.as_view(support=True)
+motion_unsupport = SupportView.as_view(support=False)
 
 
-@permission_required('motion.can_manage_motion')
-@template('motion/view.html')
-def gen_poll(request, motion_id):
-    """
-    gen a poll for this motion.
-    """
-    try:
-        poll = Motion.objects.get(pk=motion_id).gen_poll(user=request.user)
-        messages.success(request, _("New vote was successfully created.") )
-    except Motion.DoesNotExist:
-        pass # TODO: do not call poll after this excaption
-    return redirect(reverse('motion_poll_view', args=[poll.id]))
-
-
-@permission_required('motion.can_manage_motion')
-def delete_poll(request, poll_id):
-    """
-    delete a poll from this motion
-    """
-    poll = MotionPoll.objects.get(pk=poll_id)
-    motion = poll.motion
-    count = motion.polls.filter(id__lte=poll_id).count()
-    if request.method == 'POST':
-        poll.delete()
-        motion.writelog(_("Poll deleted"), request.user)
-        messages.success(request, _('Poll was successfully deleted.'))
-    else:
-        del_confirm_form(request, poll, name=_("the %s. poll") % count, delete_link=reverse('motion_poll_delete', args=[poll_id]))
-    return redirect(reverse('motion_view', args=[motion.id]))
-
-
-class MotionDelete(DeleteView):
-    """
-    Delete one or more Motions.
-    """
+class PollCreateView(SingleObjectMixin, RedirectView):
+    """View to create a poll for a motion."""
+    permission_required = 'motion.can_manage_motion'
     model = Motion
-    url = 'motion_overview'
-
-    def has_permission(self, request, *args, **kwargs):
-        self.kwargs = kwargs
-        return self.get_object().get_allowed_actions(request.user)
-
-    def get_object(self):
-        self.motions = []
-
-        if self.kwargs.get('motion_id', None):
-            try:
-                return Motion.objects.get(id=int(self.kwargs['motion_id']))
-            except Motion.DoesNotExist:
-                return None
-
-        if self.kwargs.get('motion_ids', []):
-            for appid in self.kwargs['motion_ids']:
-                try:
-                    self.motions.append(Motion.objects.get(id=int(appid)))
-                except Motion.DoesNotExist:
-                    pass
-
-            if self.motions:
-                return self.motions[0]
-        return None
-
-    def pre_post_redirect(self, request, *args, **kwargs):
-        self.object = self.get_object()
-
-        if len(self.motions):
-            for motion in self.motions:
-                if not 'delete' in motion.get_allowed_actions(user=request.user):
-                    messages.error(request, _("You can not delete motion <b>%s</b>.") % motion)
-                    continue
-
-                title = motion.title
-                motion.delete(force=True)
-                messages.success(request, _("Motion <b>%s</b> was successfully deleted.") % title)
-
-        elif self.object:
-            if not 'delete' in self.object.get_allowed_actions(user=request.user):
-                messages.error(request, _("You can not delete motion <b>%s</b>.") % self.object)
-            elif self.get_answer() == 'yes':
-                title = self.object.title
-                self.object.delete(force=True)
-                messages.success(request, _("Motion <b>%s</b> was successfully deleted.") % title)
-        else:
-            messages.error(request, _("Invalid request"))
-
-
-class ViewPoll(PollFormView):
-    permission_required = 'motion.can_manage_motion'
-    poll_class = MotionPoll
-    template_name = 'motion/poll_view.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(ViewPoll, self).get_context_data(**kwargs)
-        self.motion = self.poll.get_motion()
-        context['motion'] = self.motion
-        context['ballot'] = self.poll.get_ballot()
-        context['actions'] = self.motion.get_allowed_actions(user=self.request.user)
-        return context
-
-    def get_modelform_class(self):
-        cls = super(ViewPoll, self).get_modelform_class()
-        user = self.request.user
-
-        class ViewPollFormClass(cls):
-            def save(self, commit = True):
-                instance = super(ViewPollFormClass, self).save(commit)
-                motion = instance.motion
-                motion.writelog(_("Poll was updated"), user)
-                return instance
-
-        return ViewPollFormClass
-
-    def get_success_url(self):
-        if not 'apply' in self.request.POST:
-            return reverse('motion_view', args=[self.poll.motion.id])
-        return ''
-
-
-@permission_required('motion.can_manage_motion')
-def permit_version(request, aversion_id):
-    aversion = AVersion.objects.get(pk=aversion_id)
-    motion = aversion.motion
-    if request.method == 'POST':
-        motion.accept_version(aversion, user=request.user)
-        messages.success(request, _("Version <b>%s</b> accepted.") % (aversion.aid))
-    else:
-        gen_confirm_form(request, _('Do you really want to authorize version <b>%s</b>?') % aversion.aid, reverse('motion_version_permit', args=[aversion.id]))
-    return redirect(reverse('motion_view', args=[motion.id]))
-
-
-@permission_required('motion.can_manage_motion')
-def reject_version(request, aversion_id):
-    aversion = AVersion.objects.get(pk=aversion_id)
-    motion = aversion.motion
-    if request.method == 'POST':
-        if motion.reject_version(aversion, user=request.user):
-            messages.success(request, _("Version <b>%s</b> rejected.") % (aversion.aid))
-        else:
-            messages.error(request, _("ERROR by rejecting the version.") )
-    else:
-        gen_confirm_form(request, _('Do you really want to reject version <b>%s</b>?') % aversion.aid, reverse('motion_version_reject', args=[aversion.id]))
-    return redirect(reverse('motion_view', args=[motion.id]))
-
-
-@permission_required('motion.can_manage_motion')
-@template('motion/import.html')
-def motion_import(request):
-    if request.method == 'POST':
-        form = MotionImportForm(request.POST, request.FILES)
-        if form.is_valid():
-            import_permitted = form.cleaned_data['import_permitted']
-            try:
-                # check for valid encoding (will raise UnicodeDecodeError if not)
-                request.FILES['csvfile'].read().decode('utf-8')
-                request.FILES['csvfile'].seek(0)
-
-                users_generated = 0
-                motions_generated = 0
-                motions_modified = 0
-                groups_assigned = 0
-                groups_generated = 0
-                with transaction.commit_on_success():
-                    dialect = csv.Sniffer().sniff(request.FILES['csvfile'].readline())
-                    dialect = csv_ext.patchup(dialect)
-                    request.FILES['csvfile'].seek(0)
-                    for (lno, line) in enumerate(csv.reader(request.FILES['csvfile'], dialect=dialect)):
-                        # basic input verification
-                        if lno < 1:
-                            continue
-                        try:
-                            (number, title, text, reason, first_name, last_name, is_group) = line[:7]
-                            if is_group.strip().lower() in ['y', 'j', 't', 'yes', 'ja', 'true', '1', 1]:
-                                is_group = True
-                            else:
-                                is_group = False
-                        except ValueError:
-                            messages.error(request, _('Ignoring malformed line %d in import file.') % (lno + 1))
-                            continue
-                        form = MotionForm({'title': title, 'text': text, 'reason': reason})
-                        if not form.is_valid():
-                            messages.error(request, _('Ignoring malformed line %d in import file.') % (lno + 1))
-                            continue
-                        if number:
-                            try:
-                                number = abs(long(number))
-                                if number < 1:
-                                    messages.error(request, _('Ignoring malformed line %d in import file.') % (lno + 1))
-                                    continue
-                            except ValueError:
-                                messages.error(request, _('Ignoring malformed line %d in import file.') % (lno + 1))
-                                continue
-
-                        if is_group:
-                            # fetch existing groups or issue an error message
-                            try:
-                                user = Group.objects.get(name=last_name)
-                                if user.group_as_person == False:
-                                    messages.error(request, _('Ignoring line %d because the assigned group may not act as a person.') % (lno + 1))
-                                    continue
-                                else:
-                                    user = get_person(user.person_id)
-
-                                groups_assigned += 1
-                            except Group.DoesNotExist:
-                                group = Group()
-                                group.group_as_person = True
-                                group.description = _('Created by motion import.')
-                                group.name = last_name
-                                group.save()
-                                groups_generated += 1
-
-                                user = get_person(group.person_id)
-                        else:
-                            # fetch existing users or create new users as needed
-                            try:
-                                user = User.objects.get(first_name=first_name, last_name=last_name)
-                            except User.DoesNotExist:
-                                user = None
-                            if user is None:
-                                if not first_name or not last_name:
-                                    messages.error(request, _('Ignoring line %d because it contains an incomplete first / last name pair.') % (lno + 1))
-                                    continue
-
-                                user = User()
-                                user.last_name = last_name
-                                user.first_name = first_name
-                                user.username = gen_username(first_name, last_name)
-                                user.structure_level = ''
-                                user.committee = ''
-                                user.gender = ''
-                                user.type = ''
-                                user.default_password = gen_password()
-                                user.save()
-                                user.reset_password()
-                                users_generated += 1
-                        # create / modify the motion
-                        motion = None
-                        if number:
-                            try:
-                                motion = Motion.objects.get(number=number)
-                                motions_modified += 1
-                            except Motion.DoesNotExist:
-                                motion = None
-                        if motion is None:
-                            motion = Motion(submitter=user)
-                            if number:
-                                motion.number = number
-                            motions_generated += 1
-
-                        motion.title = form.cleaned_data['title']
-                        motion.text = form.cleaned_data['text']
-                        motion.reason = form.cleaned_data['reason']
-                        if import_permitted:
-                            motion.status = 'per'
-
-                        motion.save(user, trivial_change=True)
-
-                if motions_generated:
-                    messages.success(request, ungettext('%d motion was successfully imported.',
-                                                '%d motions were successfully imported.', motions_generated) % motions_generated)
-                if motions_modified:
-                    messages.success(request, ungettext('%d motion was successfully modified.',
-                                                '%d motions were successfully modified.', motions_modified) % motions_modified)
-                if users_generated:
-                    messages.success(request, ungettext('%d new user was added.', '%d new users were added.', users_generated) % users_generated)
-
-                if groups_generated:
-                    messages.success(request, ungettext('%d new group was added.', '%d new groups were added.', groups_generated) % groups_generated)
-
-                if groups_assigned:
-                    messages.success(request, ungettext('%d group assigned to motions.', '%d groups assigned to motions.', groups_assigned) % groups_assigned)
-                return redirect(reverse('motion_overview'))
-
-            except csv.Error:
-                messages.error(request, _('Import aborted because of severe errors in the input file.'))
-            except UnicodeDecodeError:
-                messages.error(request, _('Import file has wrong character encoding, only UTF-8 is supported!'))
-        else:
-            messages.error(request, _('Please check the form for errors.'))
-    else:
-        messages.warning(request, _("Attention: Existing motions will be modified if you import new motions with the same number."))
-        messages.warning(request, _("Attention: Importing an motions without a number multiple times will create duplicates."))
-        form = MotionImportForm()
-    return {
-        'form': form,
-    }
-
-
-class CreateAgendaItem(RedirectView):
-    permission_required = 'agenda.can_manage_agenda'
-
-    def pre_redirect(self, request, *args, **kwargs):
-        self.motion = Motion.objects.get(pk=kwargs['motion_id'])
-        self.item = Item(related_sid=self.motion.sid)
-        self.item.save()
-
-    def get_redirect_url(self, **kwargs):
-        return reverse('item_overview')
-
-
-class MotionPDF(PDFView):
-    permission_required = 'motion.can_see_motion'
-    top_space = 0
-
-    def get_filename(self):
-        motion_id = self.kwargs['motion_id']
-        if motion_id is None:
-            filename = _("Motions")
-        else:
-            motion = Motion.objects.get(id=motion_id)
-            if motion.number:
-                number = motion.number
-            else:
-                number = ""
-            filename = u'%s%s' % (_("Motion"), str(number))
-        return filename
-
-    def append_to_pdf(self, story):
-        motion_id = self.kwargs['motion_id']
-        if motion_id is None:  #print all motions
-            title = config["motion_pdf_title"]
-            story.append(Paragraph(title, stylesheet['Heading1']))
-            preamble = config["motion_pdf_preamble"]
-            if preamble:
-                story.append(Paragraph("%s" % preamble.replace('\r\n','<br/>'), stylesheet['Paragraph']))
-            story.append(Spacer(0,0.75*cm))
-            motions = Motion.objects.all()
-            if not motions: # No motions existing
-                story.append(Paragraph(_("No motions available."), stylesheet['Heading3']))
-            else: # Print all Motions
-                # List of motions
-                for motion in motions:
-                    if motion.number:
-                        story.append(Paragraph(_("Motion No.")+" %s: %s" % (motion.number, motion.title), stylesheet['Heading3']))
-                    else:
-                        story.append(Paragraph(_("Motion No.")+"&nbsp;&nbsp;&nbsp;: %s" % (motion.title), stylesheet['Heading3']))
-                # Motions details (each motion on single page)
-                for motion in motions:
-                    story.append(PageBreak())
-                    story = self.get_motion(motion, story)
-        else:  # print selected motion
-            motion = Motion.objects.get(id=motion_id)
-            story = self.get_motion(motion, story)
-
-    def get_motion(self, motion, story):
-        # Preparing Table
-        data = []
-
-        # motion number
-        if motion.number:
-            story.append(Paragraph(_("Motion No.")+" %s" % motion.number, stylesheet['Heading1']))
-        else:
-            story.append(Paragraph(_("Motion No."), stylesheet['Heading1']))
-
-        # submitter
-        cell1a = []
-        cell1a.append(Spacer(0, 0.2 * cm))
-        cell1a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Submitter"), stylesheet['Heading4']))
-        cell1b = []
-        cell1b.append(Spacer(0, 0.2 * cm))
-        cell1b.append(Paragraph("%s" % motion.submitter, stylesheet['Normal']))
-        data.append([cell1a, cell1b])
-
-        if motion.status == "pub":
-            # Cell for the signature
-            cell2a = []
-            cell2b = []
-            cell2a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Signature"), stylesheet['Heading4']))
-            cell2b.append(Paragraph("__________________________________________", stylesheet['Signaturefield']))
-            cell2b.append(Spacer(0, 0.1 * cm))
-            cell2b.append(Spacer(0,0.2*cm))
-            data.append([cell2a, cell2b])
-
-        # supporters
-        if config['motion_min_supporters']:
-            cell3a = []
-            cell3b = []
-            cell3a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font><seqreset id='counter'>" % _("Supporters"), stylesheet['Heading4']))
-            for supporter in motion.supporters:
-                cell3b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % supporter, stylesheet['Signaturefield']))
-            if motion.status == "pub":
-                for x in range(motion.missing_supporters):
-                    cell3b.append(Paragraph("<seq id='counter'/>.&nbsp; __________________________________________",stylesheet['Signaturefield']))
-            cell3b.append(Spacer(0, 0.2 * cm))
-            data.append([cell3a, cell3b])
-
-        # status
-        cell4a = []
-        cell4b = []
-        note = " ".join(motion.notes)
-        cell4a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Status"), stylesheet['Heading4']))
-        if note != "":
-            if motion.status == "pub":
-                cell4b.append(Paragraph(note, stylesheet['Normal']))
-            else:
-                cell4b.append(Paragraph("%s | %s" % (motion.get_status_display(), note), stylesheet['Normal']))
-        else:
-            cell4b.append(Paragraph("%s" % motion.get_status_display(), stylesheet['Normal']))
-        data.append([cell4a, cell4b])
-
-        # Version number (aid)
-        if motion.public_version.aid > 1:
-            cell5a = []
-            cell5b = []
-            cell5a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Version"), stylesheet['Heading4']))
-            cell5b.append(Paragraph("%s" % motion.public_version.aid, stylesheet['Normal']))
-            data.append([cell5a, cell5b])
-
-        # voting results
-        poll_results = motion.get_poll_results()
-        if poll_results:
-            cell6a = []
-            cell6a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Vote results"), stylesheet['Heading4']))
-            cell6b = []
-            ballotcounter = 0
-            for result in poll_results:
-                ballotcounter += 1
-                if len(poll_results) > 1:
-                    cell6b.append(Paragraph("%s. %s" % (ballotcounter, _("Vote")), stylesheet['Bold']))
-                cell6b.append(Paragraph("%s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s <br/> %s: %s" % (_("Yes"), result[0], _("No"), result[1], _("Abstention"), result[2], _("Invalid"), result[3], _("Votes cast"), result[4]), stylesheet['Normal']))
-                cell6b.append(Spacer(0, 0.2*cm))
-            data.append([cell6a, cell6b])
-
-        # Creating Table
-        t = Table(data)
-        t._argW[0] = 4.5 * cm
-        t._argW[1] = 11 * cm
-        t.setStyle(TableStyle([('BOX', (0, 0), (-1, -1), 1, colors.black),
-                               ('VALIGN', (0,0), (-1,-1), 'TOP')]))
-        story.append(t)
-        story.append(Spacer(0, 1 * cm))
-
-        # title
-        story.append(Paragraph(motion.public_version.title, stylesheet['Heading3']))
-        # text
-        story.append(Paragraph("%s" % motion.public_version.text.replace('\r\n','<br/>'), stylesheet['Paragraph']))
-        # reason
-        if motion.public_version.reason:
-            story.append(Paragraph(_("Reason")+":", stylesheet['Heading3']))
-            story.append(Paragraph("%s" % motion.public_version.reason.replace('\r\n','<br/>'), stylesheet['Paragraph']))
-        return story
-
-
-class MotionPollPDF(PDFView):
-    permission_required = 'motion.can_manage_motion'
-    top_space = 0
 
     def get(self, request, *args, **kwargs):
-        self.poll = MotionPoll.objects.get(id=self.kwargs['poll_id'])
-        return super(MotionPollPDF, self).get(request, *args, **kwargs)
+        """Set self.object to a motion."""
+        self.object = self.get_object()
+        return super(PollCreateView, self).get(request, *args, **kwargs)
+
+    def pre_redirect(self, request, *args, **kwargs):
+        """Create the poll for the motion."""
+        self.poll = self.object.create_poll()
+        self.object.write_log(ugettext_noop("Poll created"), request.user)
+        messages.success(request, _("New vote was successfully created."))
+
+    def get_redirect_url(self, **kwargs):
+        """Return the URL to the EditView of the poll."""
+        return reverse('motion_poll_edit', args=[self.object.pk, self.poll.poll_number])
+
+poll_create = PollCreateView.as_view()
+
+
+class PollMixin(object):
+    """Mixin for the PollUpdateView and the PollDeleteView."""
+    permission_required = 'motion.can_manage_motion'
+    success_url_name = 'motion_detail'
+
+    def get_object(self):
+        """Return a MotionPoll object.
+
+        Use the motion id and the poll_number from the url kwargs to get the
+        object.
+        """
+        return MotionPoll.objects.filter(
+            motion=self.kwargs['pk'],
+            poll_number=self.kwargs['poll_number']).get()
+
+    def get_url_name_args(self):
+        """Return the arguments to create the url to the success_url"""
+        return [self.object.motion.pk]
+
+
+class PollUpdateView(PollMixin, PollFormView):
+    """View to update a MotionPoll."""
+
+    poll_class = MotionPoll
+    """Poll Class to use for this view."""
+
+    template_name = 'motion/poll_form.html'
+
+    def get_context_data(self, **kwargs):
+        """Return the template context.
+
+        Append the motion object to the context.
+        """
+        context = super(PollUpdateView, self).get_context_data(**kwargs)
+        context.update({
+            'motion': self.poll.motion})
+        return context
+
+    def form_valid(self, form):
+        """Write a log message, if the form is valid."""
+        value = super(PollUpdateView, self).form_valid(form)
+        self.object.write_log(ugettext_noop('Poll updated'), self.request.user)
+        return value
+
+poll_edit = PollUpdateView.as_view()
+
+
+class PollDeleteView(PollMixin, DeleteView):
+    """View to delete a MotionPoll."""
+    model = MotionPoll
+
+    def case_yes(self):
+        """Write a log message, if the form is valid."""
+        super(PollDeleteView, self).case_yes()
+        self.object.write_log(ugettext_noop('Poll deleted'), self.request.user)
+
+poll_delete = PollDeleteView.as_view()
+
+
+class MotionSetStateView(SingleObjectMixin, RedirectView):
+    """View to set the state of a motion.
+
+    If self.reset is False, the new state is taken from url.
+
+    If self.reset is True, the default state is taken.
+    """
+    permission_required = 'motion.can_manage_motion'
+    url_name = 'motion_detail'
+    model = Motion
+    reset = False
+
+    def pre_redirect(self, request, *args, **kwargs):
+        """Save the new state and write a log message."""
+        self.object = self.get_object()
+        try:
+            if self.reset:
+                self.object.reset_state()
+            else:
+                self.object.state = kwargs['state']
+        except WorkflowError, e:
+            messages.error(request, e)
+        else:
+            self.object.save()
+            # TODO: the state is not translated
+            self.object.write_log(ugettext_noop('Changed state to %s') %
+                                  self.object.state.name, self.request.user)
+            messages.success(request, _('Motion status was set to: %s.'
+                                        % html_strong(self.object.state)))
+
+    def get_url_name_args(self):
+        """Return the arguments to generate the redirect_url."""
+        return [self.object.pk]
+
+set_state = MotionSetStateView.as_view()
+reset_state = MotionSetStateView.as_view(reset=True)
+
+
+class CreateAgendaItemView(SingleObjectMixin, RedirectView):
+    """View to create and agenda item for a motion."""
+    permission_required = 'agenda.can_manage_agenda'
+    url_name = 'item_overview'
+    model = Motion
+
+    def get(self, request, *args, **kwargs):
+        """Set self.object to a motion."""
+        self.object = self.get_object()
+        return super(CreateAgendaItemView, self).get(request, *args, **kwargs)
+
+    def pre_redirect(self, request, *args, **kwargs):
+        """Create the agenda item."""
+        self.item = Item.objects.create(related_sid=self.object.sid)
+        self.object.write_log(ugettext_noop('Created Agenda Item'), self.request.user)
+
+create_agenda_item = CreateAgendaItemView.as_view()
+
+
+class MotionPDFView(SingleObjectMixin, PDFView):
+    """Create the PDF for one, or all motions.
+
+    If self.print_all_motions is True, the view returns a PDF with all motions.
+
+    If self.print_all_motions is False, the view returns a PDF with only one
+    motion."""
+    permission_required = 'motion.can_manage_motion'
+    model = Motion
+    top_space = 0
+    print_all_motions = False
+
+    def get(self, request, *args, **kwargs):
+        """Set self.object to a motion."""
+        if not self.print_all_motions:
+            self.object = self.get_object()
+        return super(MotionPDFView, self).get(request, *args, **kwargs)
 
     def get_filename(self):
-        filename = u'%s%s_%s' % (_("Motion"), str(self.poll.motion.number), _("Poll"))
-        return filename
+        """Return the filename for the PDF."""
+        if self.print_all_motions:
+            return _("Motions")
+        else:
+            return _("Motion: %s") % unicode(self.object)
 
-    def get_template(self, buffer):
-        return SimpleDocTemplate(buffer, topMargin=-6, bottomMargin=-6, leftMargin=0, rightMargin=0, showBoundary=False)
+    def append_to_pdf(self, pdf):
+        """Append PDF objects."""
+        if self.print_all_motions:
+            motions_to_pdf(pdf)
+        else:
+            motion_to_pdf(pdf, self.object)
 
-    def build_document(self, pdf_document, story):
-        pdf_document.build(story)
-
-    def append_to_pdf(self, story):
-        imgpath = os.path.join(settings.SITE_ROOT, 'static/images/circle.png')
-        circle = "<img src='%s' width='15' height='15'/>&nbsp;&nbsp;" % imgpath
-        cell = []
-        cell.append(Spacer(0,0.8*cm))
-        cell.append(Paragraph(_("Motion No. %s") % self.poll.motion.number, stylesheet['Ballot_title']))
-        cell.append(Paragraph(self.poll.motion.title, stylesheet['Ballot_subtitle']))
-        cell.append(Paragraph(_("%d. Vote") % self.poll.get_ballot(), stylesheet['Ballot_description']))
-        cell.append(Spacer(0,0.5*cm))
-        cell.append(Paragraph(circle + unicode(_("Yes")), stylesheet['Ballot_option']))
-        cell.append(Paragraph(circle + unicode(_("No")), stylesheet['Ballot_option']))
-        cell.append(Paragraph(circle + unicode(_("Abstention")), stylesheet['Ballot_option']))
-        data= []
-        # get ballot papers config values
-        ballot_papers_selection = config["motion_pdf_ballot_papers_selection"]
-        ballot_papers_number = config["motion_pdf_ballot_papers_number"]
-
-        # set number of ballot papers
-        if ballot_papers_selection == "NUMBER_OF_DELEGATES":
-            number = User.objects.filter(type__iexact="delegate").count()
-        elif ballot_papers_selection == "NUMBER_OF_ALL_PARTICIPANTS":
-            number = int(User.objects.count())
-        else: # ballot_papers_selection == "CUSTOM_NUMBER"
-            number = int(ballot_papers_number)
-        number = max(1, number)
-
-        # print ballot papers
-        if number > 0:
-            for user in xrange(number / 2):
-                data.append([cell, cell])
-            rest = number % 2
-            if rest:
-                data.append([cell, ''])
-            t=Table(data, 10.5 * cm, 7.42 * cm)
-            t.setStyle(TableStyle([('GRID', (0, 0), (-1, -1), 0.25, colors.grey),
-                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ]))
-            story.append(t)
+motion_list_pdf = MotionPDFView.as_view(print_all_motions=True)
+motion_detail_pdf = MotionPDFView.as_view(print_all_motions=False)
 
 
 class Config(FormView):
+    """The View for the config tab."""
     permission_required = 'config.can_manage_config'
     form_class = ConfigForm
     template_name = 'motion/config.html'
+    success_url_name = 'config_motion'
 
     def get_initial(self):
         return {
@@ -916,7 +484,8 @@ class Config(FormView):
             'motion_pdf_ballot_papers_number': config['motion_pdf_ballot_papers_number'],
             'motion_pdf_title': config['motion_pdf_title'],
             'motion_pdf_preamble': config['motion_pdf_preamble'],
-            'motion_allow_trivial_change': config['motion_allow_trivial_change'],
+            'motion_create_new_version': config['motion_create_new_version'],
+            'motion_workflow': config['motion_workflow'],
         }
 
     def form_valid(self, form):
@@ -926,26 +495,33 @@ class Config(FormView):
         config['motion_pdf_ballot_papers_number'] = form.cleaned_data['motion_pdf_ballot_papers_number']
         config['motion_pdf_title'] = form.cleaned_data['motion_pdf_title']
         config['motion_pdf_preamble'] = form.cleaned_data['motion_pdf_preamble']
-        config['motion_allow_trivial_change'] = form.cleaned_data['motion_allow_trivial_change']
+        config['motion_create_new_version'] = form.cleaned_data['motion_create_new_version']
+        config['motion_workflow'] = form.cleaned_data['motion_workflow']
         messages.success(self.request, _('Motion settings successfully saved.'))
         return super(Config, self).form_valid(form)
 
 
 def register_tab(request):
-    selected = True if request.path.startswith('/motion/') else False
+    """Return the motion tab."""
+    # TODO: Find a bether way to set the selected var.
+    selected = request.path.startswith('/motion/')
     return Tab(
         title=_('Motions'),
-        url=reverse('motion_overview'),
-        permission=request.user.has_perm('motion.can_see_motion') or request.user.has_perm('motion.can_support_motion') or request.user.has_perm('motion.can_support_motion') or request.user.has_perm('motion.can_manage_motion'),
+        app='motion',
+        url=reverse('motion_list'),
+        permission=request.user.has_perm('motion.can_see_motion'),
         selected=selected,
     )
 
 
 def get_widgets(request):
-    return [
-        Widget(
-            name='motions',
-            display_name=_('Motions'),
-            template='motion/widget.html',
-            context={'motions': Motion.objects.all()},
-            permission_required='projector.can_manage_projector')]
+    """Return the motion widgets for the dashboard.
+
+    There is only one widget. It shows all motions.
+    """
+    return [Widget(
+        name='motions',
+        display_name=_('Motions'),
+        template='motion/widget.html',
+        context={'motions': Motion.objects.all()},
+        permission_required='projector.can_manage_projector')]
