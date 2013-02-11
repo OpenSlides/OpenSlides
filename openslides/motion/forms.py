@@ -15,28 +15,27 @@ from django.utils.translation import ugettext as _
 
 from openslides.utils.forms import CssClassMixin
 from openslides.utils.person import PersonFormField, MultiplePersonFormField
-from .models import Motion
-from .workflow import motion_workflow_choices
+from .models import Motion, Workflow
 
 
 class BaseMotionForm(forms.ModelForm, CssClassMixin):
     """Base FormClass for a Motion.
 
-    For it's own, it append the version data es fields.
+    For it's own, it append the version data to the fields.
 
-    The Class can be mixed with the following Mixins to add fields for the
+    The class can be mixed with the following mixins to add fields for the
     submitter, supporters etc.
     """
 
     title = forms.CharField(widget=forms.TextInput(), label=_("Title"))
-    """Title of the Motion. Will be saved in a MotionVersion object."""
+    """Title of the motion. Will be saved in a MotionVersion object."""
 
     text = forms.CharField(widget=forms.Textarea(), label=_("Text"))
-    """Text of the Motion. Will be saved in a MotionVersion object."""
+    """Text of the motion. Will be saved in a MotionVersion object."""
 
     reason = forms.CharField(
         widget=forms.Textarea(), required=False, label=_("Reason"))
-    """Reason of the Motion. will be saved in a MotionVersion object."""
+    """Reason of the motion. will be saved in a MotionVersion object."""
 
     class Meta:
         model = Motion
@@ -57,7 +56,7 @@ class MotionSubmitterMixin(forms.ModelForm):
     """Mixin to append the submitter field to a MotionForm."""
 
     submitter = MultiplePersonFormField(label=_("Submitter"))
-    """Submitter of the Motion. Can be one or more persons."""
+    """Submitter of the motion. Can be one or more persons."""
 
     def __init__(self, *args, **kwargs):
         """Fill in the submitter of the motion as default value."""
@@ -71,7 +70,7 @@ class MotionSupporterMixin(forms.ModelForm):
     """Mixin to append the supporter field to a Motionform."""
 
     supporter = MultiplePersonFormField(required=False, label=_("Supporters"))
-    """Supporter of the Motion. Can be one or more persons."""
+    """Supporter of the motion. Can be one or more persons."""
 
     def __init__(self, *args, **kwargs):
         """Fill in the supporter of the motions as default value."""
@@ -81,12 +80,12 @@ class MotionSupporterMixin(forms.ModelForm):
         super(MotionSupporterMixin, self).__init__(*args, **kwargs)
 
 
-class MotionCreateNewVersionMixin(forms.ModelForm):
-    """Mixin to add the option to the form, to choose, to create a new version."""
+class MotionDisableVersioningMixin(forms.ModelForm):
+    """Mixin to add the option to the form to choose to disable versioning."""
 
-    new_version = forms.BooleanField(
-        required=False, label=_("Create new version"), initial=True,
-        help_text=_("Trivial changes don't create a new version."))
+    disable_versioning = forms.BooleanField(
+        required=False, label=_("Don't create a new version"),
+        help_text=_("Don't create a new version. Useful e. g. for trivial changes."))
     """BooleanField to decide, if a new version will be created, or the
     last_version will be used."""
 
@@ -131,18 +130,13 @@ class ConfigForm(CssClassMixin, forms.Form):
         label=_("Preamble text for PDF document (all motions)")
     )
 
-    motion_create_new_version = forms.ChoiceField(
-        widget=forms.Select(),
-        label=_("Create new versions"),
+    motion_allow_disable_versioning = forms.BooleanField(
+        label=_("Allow to disable versioning"),
         required=False,
-        choices=(
-            ('ALLWASY_CREATE_NEW_VERSION', _('create allways a new versions')),
-            ('NEVER_CREATE_NEW_VERSION', _('create never a new version')),
-            ('ASK_USER', _('Let the user choose if he wants to create a new version')))
     )
 
     motion_workflow = forms.ChoiceField(
         widget=forms.Select(),
-        label=_("Workflow for the motions"),
+        label=_("Workflow of new motions"),
         required=True,
-        choices=motion_workflow_choices())
+        choices=[(workflow.pk, workflow.name) for workflow in Workflow.objects.all()])

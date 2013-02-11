@@ -6,7 +6,7 @@
 
     Views for the motion app.
 
-    Will automaticly imported from openslides.motion.urls.py
+    The views are automaticly imported from openslides.motion.urls.
 
     :copyright: (c) 2011-2013 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
@@ -32,10 +32,9 @@ from openslides.projector.projector import Widget, SLIDE
 from openslides.config.models import config
 from openslides.agenda.models import Item
 
-from .models import Motion, MotionSubmitter, MotionSupporter, MotionPoll, MotionVersion
+from .models import Motion, MotionSubmitter, MotionSupporter, MotionPoll, MotionVersion, State, WorkflowError
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
-                    MotionCreateNewVersionMixin, ConfigForm)
-from .workflow import WorkflowError
+                    MotionDisableVersioningMixin, ConfigForm)
 from .pdf import motions_to_pdf, motion_to_pdf
 
 
@@ -81,7 +80,7 @@ motion_detail = MotionDetailView.as_view()
 
 
 class MotionMixin(object):
-    """Mixin for MotionViewsClasses, to save the version data."""
+    """Mixin for MotionViewsClasses to save the version data."""
 
     def manipulate_object(self, form):
         """Save the version data into the motion object before it is saved in
@@ -125,8 +124,9 @@ class MotionMixin(object):
             form_classes.append(MotionSubmitterMixin)
             if config['motion_min_supporters'] > 0:
                 form_classes.append(MotionSupporterMixin)
-        if config['motion_create_new_version'] == 'ASK_USER':
-            form_classes.append(MotionCreateNewVersionMixin)
+        if self.object:
+            if config['motion_allow_disable_versioning'] and self.object.state.automatic_versioning:
+                form_classes.append(MotionDisableVersioningMixin)
         return type('MotionForm', tuple(form_classes), {})
 
 
@@ -267,7 +267,7 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
     def case_yes(self):
         """Append or remove the request.user from the motion.
 
-        First the methode checks the permissions, and writes a log message after
+        First the method checks the permissions, and writes a log message after
         appending or removing the user.
         """
         if self.check_permission(self.request):
@@ -395,8 +395,8 @@ class MotionSetStateView(SingleObjectMixin, RedirectView):
             if self.reset:
                 self.object.reset_state()
             else:
-                self.object.state = kwargs['state']
-        except WorkflowError, e:
+                self.object.state = State.objects.get(pk=kwargs['state'])
+        except WorkflowError, e:  # TODO: Is a WorkflowError still possible here?
             messages.error(request, e)
         else:
             self.object.save()
@@ -484,7 +484,7 @@ class Config(FormView):
             'motion_pdf_ballot_papers_number': config['motion_pdf_ballot_papers_number'],
             'motion_pdf_title': config['motion_pdf_title'],
             'motion_pdf_preamble': config['motion_pdf_preamble'],
-            'motion_create_new_version': config['motion_create_new_version'],
+            'motion_allow_disable_versioning': config['motion_allow_disable_versioning'],
             'motion_workflow': config['motion_workflow'],
         }
 
@@ -495,7 +495,7 @@ class Config(FormView):
         config['motion_pdf_ballot_papers_number'] = form.cleaned_data['motion_pdf_ballot_papers_number']
         config['motion_pdf_title'] = form.cleaned_data['motion_pdf_title']
         config['motion_pdf_preamble'] = form.cleaned_data['motion_pdf_preamble']
-        config['motion_create_new_version'] = form.cleaned_data['motion_create_new_version']
+        config['motion_allow_disable_versioning'] = form.cleaned_data['motion_allow_disable_versioning']
         config['motion_workflow'] = form.cleaned_data['motion_workflow']
         messages.success(self.request, _('Motion settings successfully saved.'))
         return super(Config, self).form_valid(form)
