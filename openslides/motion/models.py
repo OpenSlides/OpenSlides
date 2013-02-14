@@ -24,7 +24,6 @@ from django.utils.translation import ugettext_lazy, ugettext_noop, ugettext as _
 
 from openslides.utils.utils import _propper_unicode
 from openslides.utils.person import PersonField
-from openslides.utils.exceptions import OpenSlidesError
 from openslides.config.models import config
 from openslides.config.signals import default_config_value
 from openslides.poll.models import (
@@ -34,11 +33,7 @@ from openslides.projector.api import register_slidemodel
 from openslides.projector.models import SlideMixin
 from openslides.agenda.models import Item
 
-
-class MotionError(OpenSlidesError):
-    """Exception raised when errors in the motion accure."""
-    pass
-
+from .exceptions import MotionError, WorkflowError
 
 class Motion(SlideMixin, models.Model):
     """The Motion Class.
@@ -627,11 +622,6 @@ class MotionPoll(CountInvalid, CountVotesCast, BasePoll):
         """Apend the fields for invalid and votecast to the ModelForm."""
         CountInvalid.append_pollform_fields(self, fields)
         CountVotesCast.append_pollform_fields(self, fields)
-
-
-class WorkflowError(OpenSlidesError):
-    """Exception raised when errors in a workflow or state accure."""
-    pass
 
 
 class State(models.Model):
