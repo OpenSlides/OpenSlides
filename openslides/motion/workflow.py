@@ -2,7 +2,10 @@
 # -*- coding: utf-8 -*-
 """
     openslides.motion.workflow
-    ~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    This file is only for development. It will be moved out of
+    the openslides module before the next release.
 
     :copyright: (c) 2011-2013 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
@@ -13,9 +16,10 @@ from django.utils.translation import ugettext_noop
 from .models import Workflow, State
 
 
-def init_builtin_workflows():
+def _init_builtin_workflows():
     """
-    Saves a simple and a complex workflow into the database. This function is only called manually.
+    Saves a simple and a complex workflow into the database.
+    This function is only called manually and lives here only for development.
     """
     workflow_1 = Workflow(name=ugettext_noop('Simple Workflow'), id=1)
     state_1_1 = State.objects.create(name=ugettext_noop('submitted'), workflow=workflow_1,
