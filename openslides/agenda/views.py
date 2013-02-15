@@ -228,6 +228,7 @@ class Config(FormView):
     permission_required = 'config.can_manage_config'
     form_class = ConfigForm
     template_name = 'agenda/config.html'
+    success_url_name = 'config_agenda'
 
     def get_initial(self):
         return {
