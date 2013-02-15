@@ -6,14 +6,14 @@
 {% load staticfiles %}
 
 {% block header %}
-    <link rel="stylesheet" media="all" type="text/css" href="http://code.jquery.com/ui/1.10.0/themes/smoothness/jquery-ui.css" />
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/jquery-ui/jquery-ui.custom.min.css' %}" />
     <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/timepicker.css' %}" />
 {% endblock %}
 
 {% block javascript %}
-    <script type="text/javascript" src="{% static 'javascript/ui/jquery-ui-1.10.0.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascript/ui/jquery-ui-timepicker-addon.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascript/ui/jquery-ui-sliderAccess.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascript/jquery-ui.custom.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascript/jquery-ui-timepicker-addon.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascript/jquery-ui-sliderAccess.js' %}"></script>
     <script type="text/javascript">
         $(function() {
             $.datepicker.regional['{{ LANGUAGE_CODE }}'] = {
