@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% load tags %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}{{ block.super }} – {% trans "Motion" %} "{{ motion.title }}"{% endblock %}
+
+{% block content %}
+<p>Titel: {{ motion.title }} </p>
+<p>Text: {{ motion.text }}</p>
+<p>Reason: {{ motion.reason }}</p>
+<p>Submitter: {% for submitter in motion.submitter.all %}{{ submitter.person }} {% endfor %}</p>
+<p>Supporter: {% for supporter in motion.supporter.all %}{{ supporter.person }} {% endfor %}</p>
+<p>Active Version: {{ motion.active_version }}</p>
+<p>State: {{ motion.state }}</p>
+<h4>possible stats:</h4>
+<ul>
+{% for state in motion.state.next_states %}
+    <li><a href="{% url 'motion_set_state' motion.pk state.id %}">{{ state }}</a></li>
+{% endfor %}
+    <li><a href="{% url 'motion_reset_state' motion.pk %}">Reset State</a></li>
+</ul>
+
+
+<h4>Versions</h4>
+<ol>
+{% for motion_version in motion.versions.all %}
+    <li>
+    {% if motion_version.id == motion.version.id %}
+        <strong><a href="{% model_url motion_version %}">{{ motion_version }}</a></strong>
+    {% else %}
+        <a href="{% model_url motion_version %}">{{ motion_version }}</a>
+    {% endif %}
+    {% if motion_version.active %}
+        (active)
+    {% endif %}
+    {% if motion_version.rejected %}
+        (rejected)
+    {% endif %}
+    </li>
+{% endfor %}
+</ol>
+
+
+<h4>{% trans "Vote results" %}:</h4>
+    {% with motion.polls.all as polls %}
+        <ul class="results">
+        {% for poll in polls %}
+            {% if perms.motion.can_manage_motion or poll.has_votes %}
+            <li>
+                {% if perms.motion.can_manage_motion %}
+                    <strong>{{ forloop.counter }}. {% trans "Vote" %} </strong>
+                    <a class="icon edit" href="{% model_url poll 'edit' %}" title="{% trans 'Edit Vote' %}">
+                        <span></span>
+                    </a>
+                    <a class="icon delete" href="{% model_url poll 'delete' %}" title="{% trans 'Delete Vote' %}">
+                        <span></span>
+                    </a>
+                {% elif poll.has_votes %}
+                    <strong>{{ forloop.counter }}. {% trans "Vote" %}:</strong>
+                {% endif %}
+                <br>
+                {% if poll.has_votes %}
+                    {% with poll.get_options.0 as option %}
+                        <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.Yes }}<br>
+                        <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.No }}<br>
+                        <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ option.Abstain }}<br>
+                        <img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}<br>
+                        <div style="border-top: 1px solid; padding-top: 5px; margin: 5px 0; width: 10em;">
+                            <img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
+                        </div>
+                    {% endwith %}
+                {% else %}
+                    {% if perms.motion.can_manage_motion %}
+                        <a href="{% model_url poll %}">
+                            <span class="button"><span class="icon statistics">{% trans 'Enter result' %}</span></span>
+                        </a>
+                     {% endif %}
+                {% endif %}
+            </li>
+            {% endif %}
+        {% endfor %}
+        </ul>
+        {% if allowed_actions.create_poll %}
+            <a href="{% url 'motion_poll_create' motion.pk %}">
+                <span class="button"><span class="icon statistics">{% trans 'New vote' %}</span></span>
+            </a>
+        {% endif %}
+    {% endwith %}
+
+
+<h4>log</h4>
+<ul>
+    {% for message in motion.log_messages.all %}
+    <li>{{ message }}</li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

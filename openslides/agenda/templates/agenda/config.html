@@ -6,11 +6,14 @@
 {% load staticfiles %}
 
 {% block header %}
-    <link rel="stylesheet" media="all" type="text/css" href="http://code.jquery.com/ui/1.10.0/themes/smoothness/jquery-ui.css" />
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/jquery-ui/jquery-ui.custom.min.css' %}" />
     <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/timepicker.css' %}" />
-    <script type="text/javascript" src="{% static 'javascript/ui/jquery-ui-1.10.0.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascript/ui/jquery-ui-timepicker-addon.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascript/ui/jquery-ui-sliderAccess.js' %}"></script>
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript" src="{% static 'javascript/jquery-ui.custom.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascript/jquery-ui-timepicker-addon.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascript/jquery-ui-sliderAccess.js' %}"></script>
     <script type="text/javascript">
         $(function() {
             $.datepicker.regional['{{ LANGUAGE_CODE }}'] = {
@@ -63,21 +66,20 @@
 {% block title %}{{ block.super }} – {% trans "Agenda settings" %}{% endblock %}
 
 
-
 {% block content %}
-    <h1>{% trans "Agenda settings" %}</h1>
-
+    <h1>
+        {% trans "Configuration" %}
+        <small>{% trans "Agenda" %}</small>
+        {% block config_submenu %}{{ block.super }}{% endblock %}
+    </h1>
     <form action="" method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <p>
-    <button class="button" type="submit">
-        <span class="icon ok">{% trans 'Save' %}</span>
-    </button>
-    <a href="{% url 'config_agenda' %}">
-    <button class="button" type="button" onclick="window.location='{% url 'config_agenda' %}'">
-        <span class="icon cancel">{% trans 'Cancel' %}</span>
-    </button>
-    </a>
-    </p>
+        {% include "form.html" %}
+        <p>
+        {% include "formbuttons_save.html" %}
+        <a href="{% url 'config_agenda' %}" class="btn">
+            {% trans 'Cancel' %}
+        </a>
+        </p>
+        <small>* {% trans "required" %}</small>
     </form>
 {% endblock %}

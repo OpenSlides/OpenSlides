@@ -1,35 +1,44 @@
-{% extends "assignment/base_assignment.html" %}
+{% extends "base.html" %}
 
 {% load i18n %}
-{% load staticfiles %}
 
 {% block title %}{{ block.super }} – {% trans "Elections" %}{% endblock %}
 
-{% block content %}
-    <h1>{% trans "Elections" %}</h1>
 
-    <p><form action="{{request.url}}" name="filter" method="get">
+{% block content %}
+    <h1>{% trans "Elections" %}
+        <small class="pull-right">
+        {% if perms.assignment.can_manage_assignment %}
+            <a href="{% url 'assignment_new' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New election' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
+        {% endif %}
+        {% if perms.assignment.can_see_assignment %}
+            <a href="{% url 'print_assignment' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print all elections as PDF' %}"><i class="icon-print"></i> PDF</a>
+        {% endif %}
+        </small>
+    </h1>
+
+    <form action="{{request.url}}" name="filter" method="get">
         {% trans "Filter" %}:
-        <select class="default-input" name="status" onchange="document.forms['filter'].submit()">
+        <select class="span3" name="status" onchange="document.forms['filter'].submit()">
             <option value="---">-- {% trans "Status" %}--</option>
             <option value="sea" {% if 'sea' in request.GET.status %}selected{% endif %}>{% trans "Searching for candidates" %}</option>
             <option value="vot" {% if 'vot' in request.GET.status %}selected{% endif %}>{% trans "Voting" %}</option>
             <option value="fin" {% if 'fin' in request.GET.status %}selected{% endif %}>{% trans "Finished" %}</option>
         </select>
-        </form>
-    </p>
-   {{ assignments|length }}
-   {% blocktrans count counter=assignments|length %}election{% plural %}elections{% endblocktrans %}
-    <table>
+    </form>
+
+    <small><i>{{ assignments|length }}
+    {% blocktrans count counter=assignments|length %}election{% plural %}elections{% endblocktrans %}
+    </i></small>
+    <table class="table table-striped table-bordered">
         <tr>
             <th><a href="?sort=name{% if 'name' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Election" %}</a></th>
             <th>{% trans "Candidates" %}</th>
-            <th><a href="?sort=status{% if 'status' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Status" %}</a></th>
-            <th style="width: 1px;">{% trans "Actions" %}</th>
+            <th class="optional"><a href="?sort=status{% if 'status' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Status" %}</a></th>
+            <th class="mini_width">{% trans "Actions" %}</th>
         </tr>
     {% for assignment in assignments %}
-        <tr class="{% cycle '' 'odd' %}
-            {% if assignment.active %}activeline{% endif %}">
+        <tr {% if assignment.active %}activeline{% endif %}">
             <td><a href="{% url 'assignment_view' assignment.id %}">{{ assignment }}</a></td>
             <td>
                 {% blocktrans with posts=assignment.posts context "Number of searched candidates for an election"%}posts: {{ posts }}{% endblocktrans %}
@@ -38,19 +47,25 @@
                 {% endif %}
                 | {% blocktrans with elected=assignment.elected|length %}elected: {{ elected }}{% endblocktrans %}
             </td>
-            <td>{{ assignment.get_status_display }}</td>
+            <td class="optional">{{ assignment.get_status_display }}</td>
             <td>
                 <span style="width: 1px; white-space: nowrap;">
                 {% if perms.projector.can_manage_projector %}
-                    <a class="activate_link {% if assignment.active %}active{% endif %}" href="{% url 'projector_activate_slide' assignment.sid %}" title="{% trans 'Activate election' %}">
-                        <span></span>
+                    <a href="{% url 'projector_activate_slide' assignment.sid  %}" class="activate_link btn {% if assignment.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+                        <i class="icon-facetime-video {% if assignment.active %}icon-white{% endif %}"></i>
                     </a>
                 {% endif %}
                 {% if perms.assignment.can_manage_assignment %}
-                    <a href="{% url 'assignment_edit' assignment.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit election' %}"></a>
-                    <a href="{% url 'assignment_delete' assignment.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete election' %}"></a>
+                    <a href="{% url 'assignment_edit' assignment.id %}" title="{% trans 'Edit' %}" class="btn btn-mini">
+                        <i class="icon-pencil"></i>
+                    </a>
+                    <a href="{% url 'assignment_delete' assignment.id %}" title="{% trans 'Delete' %}" class="btn btn-mini">
+                        <i class="icon-remove"></i>
+                    </a>
                 {% endif %}
-                <a href="{% url 'print_assignment' assignment.id %}" title="{% trans 'Election as PDF' %}"><img src="{% static 'images/icons/pdf.png' %}"></a>
+                <a href="{% url 'print_assignment' assignment.id  %}" class="btn btn-mini" title="{% trans 'Print election as PDF' %}">
+                    <i class="icon-print"></i>
+                </a>
                 </span>
             </td>
         </tr>

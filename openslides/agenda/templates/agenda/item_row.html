@@ -1,17 +1,17 @@
 {% load i18n %}
-{% load staticfiles %}
 {% load tags %}
 
     <td>
-        <span class="close_link{% if item.closed %} closed{% endif %}">
-            {% if perms.agenda.can_manage_agenda %}
-               <a href="{% if item.closed %}{% url 'item_open' item.id %}{% else %}{% url 'item_close' item.id %}{% endif %}" title="{% trans 'Mark item as done' %}">
-                    <span></span>
-                </a>
-            {% elif item.closed %}
-                <img src="{% static 'images/icons/close.png' %}" title="{% trans 'Item closed' %}">
-            {% endif %}
-        </span>
+        {% if perms.agenda.can_manage_agenda %}
+            <a href="{% if item.closed %}{% url 'item_open' item.id %}{% else %}{% url 'item_close' item.id %}{% endif %}"
+                class="close_link btn btn-mini {% if item.closed %}btn-success{% endif %}" title="{% trans 'Change status (open/closed)' %}">
+                <i class="{% if item.closed %}icon-checked-new{% else %}icon-unchecked-new{% endif %}"></i>
+            </a>
+        {% else %}
+            <span class="close_link">
+                <i class="{% if item.closed %}icon-checked-new{% else %}icon-unchecked-new{% endif %}"></i>
+            </span>
+        {% endif %}
     </td>
     <td>
         {% for p in item.get_ancestors %}
@@ -24,14 +24,14 @@
         {{ item.get_title_supplement|safe }}
     </td>
     {% if perms.agenda.can_manage_agenda %}
-    <td>
-    {{ item.comment|first_line }}
+    <td class="optional">
+        {{ item.comment|first_line }}
     </td>
     {% endif %}
     {% if perms.agenda.can_see_orga_items %}
-    <td {% if item.tooltip %}title="{% trans 'End' %}: {{ item.tooltip|date:"D d M Y H.i" }}"{% endif %}>
+    <td>
         {% if item.duration %}
-            {{ item.duration }}h
+            {{ item.duration }}h <a {% if item.tooltip %}rel="tooltip" data-original-title="{% trans 'End' %}: {{ item.tooltip|date:"DATETIME_FORMAT" }}"{% endif %}><i class="icon-clock"></i></a>
         {% endif %}
     </td>
     {% endif %}
@@ -39,28 +39,32 @@
     <td>
         <span style="width: 1px; white-space: nowrap;">
         {% if perms.projector.can_manage_projector %}
-            <a class="activate_link {% if item.active %}active{% endif %}" href="{% url 'projector_activate_slide' item.sid %}" title="{% trans 'Activate item' %}">
-                <span></span>
+            <a href="{% url 'projector_activate_slide' item.sid  %}" class="activate_link btn {% if item.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+                <i class="icon-facetime-video {% if item.active %}icon-white{% endif %}"></i>
             </a>
         {% endif %}
         {% if perms.agenda.can_manage_agenda %}
-            <a href="{% model_url item 'edit' %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit item' %}"></a>
-            <a href="{% model_url item 'delete' %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete item' %}"></a>
+            <a href="{% model_url item 'edit' %}" title="{% trans 'Edit' %}" class="btn btn-mini">
+                <i class="icon-pencil"></i>
+            </a>
+            <a href="{% model_url item 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
+                <i class="icon-remove"></i>
+            </a>
             {% if not item.is_leaf_node %}
-                <a class="activate_link" href="{% url 'projector_activate_slide' item.sid 'summary' %}">
-                    <img src="{% static 'images/icons/summary.png' %}" title="{% trans 'Activate summary for this item' %}">
+                <a href="{% url 'projector_activate_slide' item.sid 'summary' %}" class="activate_link btn btn-mini" title="{% trans 'Show summary for this item' %}">
+                    <i class="icon-summary"></i>
                 </a>
             {% endif %}
         {% endif %}
         </span>
     </td>
     {% endif %}
-    {% if perms.agenda.can_manage_agenda %}
-    <td class="tabledrag-hide">
+    <td class="tabledrag-hide" style="display: none;">
         {% with form=item.weight_form %}
             {{ form.weight }}
             {{ form.self }}
             {{ form.parent }}
         {% endwith %}
     </td>
-    {% endif %}
+ 
+

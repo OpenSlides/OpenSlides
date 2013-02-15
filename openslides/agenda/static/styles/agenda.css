@@ -5,30 +5,20 @@
  * :license: GNU GPL, see LICENSE for more details.
  */
 
-/* agenda item open/closed */
-.close_link span {
-    background-image: url(../images/icons/close-grey.png);
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 16px;
-    height: 16px;
-    display: inline-block;
+tr.topline td {
+    border-bottom: 1px solid #333333;
+    background-color: #CDCDCD;
 }
 
-.close_link.closed span {
-    background-image: url(../images/icons/close.png);
-}
-
-table#menu-overview {
-    white-space: nowrap;
-}
 
 table#agendatime {
     float: right;
-    width: 25%;
+    width: auto;
     margin-bottom: 1em;
+    font-size: 12px;
 }
 
 table#agendatime td {
-    padding: 5px;
+    padding: 3px;
+    white-space: nowrap;
 }

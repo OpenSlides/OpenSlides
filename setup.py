@@ -7,9 +7,6 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-# for python 2.5 support
-from __future__ import with_statement
-
 from setuptools import setup
 from setuptools import find_packages
 from openslides import get_version
@@ -43,7 +40,7 @@ setup(
         'versiontools >= 1.6',
     ],
     install_requires=[
-        'django >= 1.4',
+        'django >= 1.5',
         'django-mptt',
         'reportlab',
         'pil',

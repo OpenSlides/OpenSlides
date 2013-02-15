@@ -3,9 +3,9 @@ python:
   - "2.6"
   - "2.7"
 install:
-  - easy_install https://www.djangoproject.com/download/1.5b2/tarball/
+  - easy_install https://www.djangoproject.com/download/1.5c1/tarball/
   - pip install -r requirements.txt --use-mirrors
   - python extras/scripts/create_local_settings.py
 script:
   - coverage run ./manage.py test tests && coverage report -m
-  - pep8 --max-line-length=150 --exclude="urls.py,motion/" --statistics openslides
+  - pep8 --max-line-length=150 --exclude="urls.py," --statistics openslides

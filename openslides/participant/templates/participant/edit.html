@@ -1,4 +1,4 @@
-{% extends "participant/base_participant.html" %}
+{% extends "base.html" %}
 
 {% load i18n %}
 
@@ -11,33 +11,30 @@
     {% endif %}
 {% endblock %}
 
-
 {% block content %}
-    {% if edit_user %}
-        <h1>{% trans "Edit participant" %}</h1>
-    {% else %}
-        <h1>{% trans "New participant" %}</h1>
-    {% endif %}
+    <h1>
+        {% if edit_user %}
+            {% trans "Edit participant" %}
+        {% else %}
+            {% trans "New participant" %}
+        {% endif %}
+        <small class="pull-right">
+        <a href="{% url 'user_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        </small>
+    </h1>
 
     <form action="" method="post">{% csrf_token %}
-        {{ form.as_p }}
+        {% include "form.html" %}
         {% if edit_user %}
-            <p>
-                <a href="{% url 'user_reset_password' edit_user.id %}">{% trans 'Reset to First Password' %}</a>
+            <p style="margin: -15px 0 25px 0;">
+                <a class="btn btn-mini" href="{% url 'user_reset_password' edit_user.id %}"><i class="icon-exclamation-sign"></i> {% trans 'Reset to First Password' %}</a>
             </p>
         {% endif %}
         <p>
-            <button class="button" type="submit">
-                <span class="icon ok">{% trans 'Save' %}</span>
-            </button>
-            <button class="button" type="submit" name="apply">
-                <span class="icon apply">{% trans 'Apply' %}</span>
-            </button>
-            <a href='{% url "user_overview" %}'>
-                <button class="button" type="button" onclick="window.location='{% url 'user_overview' %}'">
-                    <span class="icon cancel">{% trans 'Cancel' %}</span>
-                </button>
-            </a>
+        {% include "formbuttons_saveapply.html" %}
+        <a href="{% url 'user_overview' %}" class="btn">
+            {% trans 'Cancel' %}
+        </a>
         </p>
         <small>* {% trans "required" %}</small>
     </form>

@@ -1,30 +1,45 @@
-{% extends "participant/base_participant.html" %}
+{% extends "base.html" %}
 
 {% load i18n %}
-{% load staticfiles %}
 {% load tags %}
 
 {% block title %}{{ block.super }} – {% trans "Groups" %}{% endblock %}
 
 {% block content %}
-    <h1>{% trans "Groups" %}</h1>
-    <table>
+    <h1>{% trans "Groups" %}
+        <small class="pull-right">
+        <a href="{% url 'user_group_new' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New group' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
+        <a href="{% url 'user_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to participants overview" %}</a>
+        </small>
+    </h1>
+
+    <table class="table table-striped table-bordered">
         <tr>
             <th>{% trans "Group" %}</th>
-            <th>{% trans "Actions" %}</th>
+            <th style="width: 1px;">{% trans "Actions" %}</th>
         </tr>
     {% for group in groups %}
-        <tr class="{% cycle '' 'odd' %}">
-            <td><a href="{% model_url group 'view' %}">{{ group.name }}</a></td>
-            <td><a href="{% url 'user_group_edit' group.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit group' %}"></a>
-            {% if group.name|lower != 'anonymous' and group.name|lower != 'registered' %}
-            <a href="{% url 'user_group_delete' group.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete group' %}"></a>
-            {% endif %}
+        <tr class="{% if group.active %}activeline{% endif %}">
+            <td>
+                <a href="{% model_url group 'view' %}">{{ group.name }}</a>
             </td>
-        </tr>
-    {% empty %}
-        <tr>
-        <td colspan="5"><i>{% trans "No groups available." %}</i></td>
+            <td>
+                <span style="width: 1px; white-space: nowrap;">
+                    {% if perms.projector.can_manage_projector %}
+                       <a href="{% url 'projector_activate_slide' group.sid  %}" class="activate_link btn {% if group.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+                           <i class="icon-facetime-video {% if group.active %}icon-white{% endif %}"></i>
+                       </a>
+                    {% endif %}
+                    <a href="{% url 'user_group_edit' group.id %}" title="{% trans 'Edit' %}" class="btn btn-mini">
+                        <i class="icon-pencil"></i>
+                    </a>
+                    {% if group.name|lower != 'anonymous' and group.name|lower != 'registered' %}
+                    <a href="{% url 'user_group_delete' group.id %}" title="{% trans 'Delete' %}" class="btn btn-mini">
+                        <i class="icon-remove"></i>
+                    </a>
+                    {% endif %}
+                </span>
+            </td>
         </tr>
     {% endfor %}
     </table>

@@ -163,8 +163,7 @@ class UserCreateView(CreateView):
     model = User
     context_object_name = 'edit_user'
     form_class = UserCreateForm
-    success_url = 'user_overview'
-    apply_url = 'user_edit'
+    success_url_name = 'user_overview'
 
     def manipulate_object(self, form):
         self.object.username = gen_username(
@@ -183,8 +182,7 @@ class UserUpdateView(UpdateView):
     model = User
     context_object_name = 'edit_user'
     form_class = UserUpdateForm
-    success_url = 'user_overview'
-    apply_url = 'participant_edit'
+    success_url_name = 'user_overview'
 
 
 class UserDeleteView(DeleteView):
@@ -193,7 +191,7 @@ class UserDeleteView(DeleteView):
     """
     permission_required = 'participant.can_manage_participant'
     model = User
-    url = 'user_overview'
+    success_url_name = 'user_overview'
 
     def pre_redirect(self, request, *args, **kwargs):
         if self.get_object() == self.request.user:
@@ -208,7 +206,7 @@ class SetUserStatusView(RedirectView, SingleObjectMixin):
     """
     permission_required = 'participant.can_manage_participant'
     allow_ajax = True
-    url = 'user_overview'
+    url_name = 'user_overview'
     model = User
 
     def pre_redirect(self, request, *args, **kwargs):
@@ -400,8 +398,7 @@ class GroupCreateView(CreateView):
     context_object_name = 'group'
     model = Group
     form_class = GroupForm
-    success_url = 'user_group_overview'
-    apply_url = 'user_group_edit'
+    success_url_name = 'user_group_overview'
 
     def get(self, request, *args, **kwargs):
         delete_default_permissions()
@@ -417,8 +414,7 @@ class GroupUpdateView(UpdateView):
     model = Group
     context_object_name = 'group'
     form_class = GroupForm
-    success_url = 'user_group_overview'
-    apply_url = 'user_group_edit'
+    success_url_name = 'user_group_overview'
 
     def get(self, request, *args, **kwargs):
         delete_default_permissions()
@@ -431,7 +427,7 @@ class GroupDeleteView(DeleteView):
     """
     permission_required = 'participant.can_manage_participant'
     model = Group
-    url = 'user_group_overview'
+    success_url_name = 'user_group_overview'
 
     def pre_redirect(self, request, *args, **kwargs):
         if self.get_object().name.lower() in ['anonymous', 'registered']:
@@ -447,6 +443,7 @@ class Config(FormView):
     permission_required = 'config.can_manage_config'
     form_class = ConfigForm
     template_name = 'participant/config.html'
+    success_url_name = 'config_participant'
 
     def get_initial(self):
         return {
@@ -471,7 +468,7 @@ def login(request):
     extra_content = {}
     try:
         admin = User.objects.get(pk=1)
-        if  admin.check_password(admin.default_password):
+        if admin.check_password(admin.default_password):
             extra_content['first_time_message'] = _(
                 "Installation was successfully! Use %(user)s "
                 "(password: %(password)s) for first login.<br>"
@@ -507,7 +504,7 @@ def user_settings(request):
         form_user = UsersettingsForm(instance=request.user, initial={'language': language})
 
     return {
-        'form_user': form_user,
+        'form': form_user,
         'edituser': request.user,
     }
 
@@ -523,7 +520,7 @@ def user_settings_password(request):
         if form.is_valid():
             form.save()
             messages.success(request, _('Password successfully changed.'))
-            return redirect(reverse('user_settings'))
+            return redirect(reverse('dashboard'))
         else:
             messages.error(request, _('Please check the form for errors.'))
     else:
@@ -541,6 +538,7 @@ def register_tab(request):
     selected = request.path.startswith('/participant/')
     return Tab(
         title=_('Participants'),
+        app='participant',
         url=reverse('user_overview'),
         permission=(
             request.user.has_perm('participant.can_see_participant') or
@@ -554,30 +552,30 @@ def get_widgets(request):
     group_widget and a personal_info_widget.
     """
     return [
-        get_personal_info_widget(request),
+        #get_personal_info_widget(request),
         get_user_widget(request),
         get_group_widget(request)]
 
 
-def get_personal_info_widget(request):
-    """
-    Provides a widget for personal info. It shows your submitted motions
-    and where you are supporter or candidate.
-    """
-    personal_info_context = {
-        'submitted_motions': Motion.objects.filter(submitter=request.user),
-        'config_motion_min_supporters': config['motion_min_supporters'],
-        'supported_motions': Motion.objects.filter(motionsupporter=request.user),
-        'assignments': Assignment.objects.filter(
-            assignmentcandidate__person=request.user,
-            assignmentcandidate__blocked=False)}
-    return Widget(
-        name='personal_info',
-        display_name=_('My motions and elections'),
-        template='participant/personal_info_widget.html',
-        context=personal_info_context,
-        permission_required=None,
-        default_column=1)
+## def get_personal_info_widget(request):
+    ## """
+    ## Provides a widget for personal info. It shows your submitted motions
+    ## and where you are supporter or candidate.
+    ## """
+    ## personal_info_context = {
+        ## 'submitted_motions': Motion.objects.filter(submitter=request.user),
+        ## 'config_motion_min_supporters': config['motion_min_supporters'],
+        ## 'supported_motions': Motion.objects.filter(motionsupporter=request.user),
+        ## 'assignments': Assignment.objects.filter(
+            ## assignmentcandidate__person=request.user,
+            ## assignmentcandidate__blocked=False)}
+    ## return Widget(
+        ## name='personal_info',
+        ## display_name=_('My motions and elections'),
+        ## template='participant/personal_info_widget.html',
+        ## context=personal_info_context,
+        ## permission_required=None,
+        ## default_column=1)
 
 
 def get_user_widget(request):

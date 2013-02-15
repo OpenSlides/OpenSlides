@@ -11,15 +11,15 @@
         <p><b>{% trans "Status" %}:</b><br>
         {% if motion.status != "pub" %}
             {% if motion.status == "acc" %}
-            <img src="{% static 'images/icons/voting-yes.png' %}">
+            <img src="{% static 'img/voting-yes.png' %}">
             {% endif %}
             {% if motion.status == "rej" %}
-            <img src="{% static 'images/icons/voting-no.png' %}">
+            <img src="{% static 'img/voting-no.png' %}">
             {% endif %}
-            {% trans motion.get_status_display %}
+            {% trans motion.status %}
         {% else %}
             {% for note in motion.notes %}
-            {{ note }}
+                {{ note }}
             {% endfor %}
         {% endif %}
         </p>
@@ -34,12 +34,12 @@
                 {% endif %}
                 {% with poll.get_options.0 as option %}
                 <div class="results">
-                    <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.Yes }} <br>
-                    <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.No }} <br>
-                    <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}">  {{ option.Abstain }}<br>
-                    <img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}<br>
+                    <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.Yes }} <br>
+                    <img src="{% static 'img/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.No }} <br>
+                    <img src="{% static 'img/voting-abstention.png' %}" title="{% trans 'Abstention' %}">  {{ option.Abstain }}<br>
+                    <img src="{% static 'img/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}<br>
                     <hr>
-                    <img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
+                    <img src="{% static 'img/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
                 </div>
                 {% endwith %}
             {% else %}
@@ -53,7 +53,7 @@
         {% endwith %}
 
         <p><b>{% trans "Submitter" %}:</b><br>
-        {{ motion.submitter }}
+        {{ motion.submitter.person }}
         </p>
     </div>
     </div>
@@ -65,7 +65,7 @@
         {% trans "Motion" %} <i>[{% trans "no number" %}]</i>
     {% endif %}
     </h1>
-    <b>{{ motion.public_version.title }}</b>
+    <b>{{ motion.title }}</b>
     <hr>
 {% endblock %}
 

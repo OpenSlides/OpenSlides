@@ -5,18 +5,19 @@
 {% block title %}{{ block.super }} – {% trans "Motion settings" %}{% endblock %}
 
 {% block content %}
-    <h1>{% trans "Motion settings" %}</h1>
+    <h1>
+        {% trans "Configuration" %}
+        <small>{% trans "Motions" %}</small>
+        {% block config_submenu %}{{ block.super }}{% endblock %}
+    </h1>
     <form action="" method="post">{% csrf_token %}
-    {{ form.as_p }}
-    <p>
-    <button class="button" type="submit">
-        <span class="icon ok">{% trans 'Save' %}</span>
-    </button>
-    <a href="{% url 'config_motion' %}">
-    <button class="button" type="button" onclick="window.location='{% url 'config_motion' %}'">
-        <span class="icon cancel">{% trans 'Cancel' %}</span>
-    </button>
-    </a>
-    </p>
+        {% include "form.html" %}
+        <p>
+        {% include "formbuttons_save.html" %}
+        <a href="{% url 'config_motion' %}" class="btn">
+            {% trans 'Cancel' %}
+        </a>
+        </p>
+        <small>* {% trans "required" %}</small>
     </form>
 {% endblock %}

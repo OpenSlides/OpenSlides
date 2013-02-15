@@ -66,7 +66,7 @@
                 <td class="candidate{% if candidate in assignment.elected %} elected{% endif %}">
                     {% if candidate in assignment.elected %}
                         <a class="elected">
-                            <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Candidate is elected' %}">
+                            <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Candidate is elected' %}">
                         </a>
                     {% endif %}
                     {{ candidate }}
@@ -75,11 +75,11 @@
                 <td style="white-space:nowrap;"{% if candidate in assignment.elected %} class="elected"{% endif %}>
                     {% if not assignment_publish_winner_results_only or candidate in assignment.elected %}
                         {% if 'Yes' in vote and 'No' in vote and 'Abstain' in vote %}
-                            <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Yes }}<br>
-                            <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ vote.No }}<br>
-                            <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ vote.Abstain }}<br>
+                            <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Yes }}<br>
+                            <img src="{% static 'img/voting-no.png' %}" title="{% trans 'No' %}"> {{ vote.No }}<br>
+                            <img src="{% static 'img/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ vote.Abstain }}<br>
                         {% elif 'Votes' in vote %}
-                            <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Votes }}
+                            <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Votes }}
                         {% elif vote == None %}
                             {% trans 'was not a <br> candidate'%}
                         {% else %}
@@ -97,7 +97,7 @@
             {% for poll in polls %}
                 <td style="white-space:nowrap;">
                     {% if  poll.has_votes %}
-                        <img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}">
+                        <img src="{% static 'img/voting-invalid.png' %}" title="{% trans 'Invalid' %}">
                         {{ poll.print_votesinvalid }}
                     {% endif %}
                 </td>
@@ -112,7 +112,7 @@
 
                 <td style="white-space:nowrap;">
                     {% if poll.has_votes %}
-                        <img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}">
+                        <img src="{% static 'img/voting-total.png' %}" title="{% trans 'Votes cast' %}">
                         <strong>{{ poll.print_votescast }}</strong>
                     {% endif %}
                 </td>
