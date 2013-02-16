@@ -9,6 +9,7 @@
     :copyright: 2011, 2012 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
+
 from reportlab.platypus import Paragraph
 
 from django.core.urlresolvers import reverse
@@ -40,7 +41,6 @@ class Overview(TemplateView):
     permission_required = 'agenda.can_see_agenda'
     template_name = 'agenda/overview.html'
 
-
     def get_context_data(self, **kwargs):
         context = super(Overview, self).get_context_data(**kwargs)
 
@@ -49,7 +49,7 @@ class Overview(TemplateView):
         else:
             items = Item.objects.filter(type__exact=Item.AGENDA_ITEM)
 
-        start =  config['agenda_start_event_date_time']
+        start = config['agenda_start_event_date_time']
         if start is None or len(start) == 0:
             start = None
         else:
@@ -68,7 +68,7 @@ class Overview(TemplateView):
         if start is None:
             end = None
         else:
-            end =  start + duration
+            end = start + duration
 
         duration = u'%d:%02d' % ((duration.days * 24 + duration.seconds / 3600), (duration.seconds / 60 % 60))
 
@@ -193,12 +193,14 @@ class ItemDelete(DeleteView):
         if self.get_answer() == 'all':
             self.object.delete(with_children=True)
             messages.success(
-                request, _("Item %s and his children were successfully deleted.")
+                request,
+                _("Item %s and his children were successfully deleted.")
                 % html_strong(self.object))
         elif self.get_answer() == 'yes':
             self.object.delete(with_children=False)
             messages.success(
-                request, _("Item %s was successfully deleted.")
+                request,
+                _("Item %s was successfully deleted.")
                 % html_strong(self.object))
 
 
@@ -221,6 +223,7 @@ class AgendaPDF(PDFView):
             else:
                 story.append(Paragraph(item.get_title(), stylesheet['Item']))
 
+
 class Config(FormView):
     """
     Config page for the agenda app.
@@ -239,6 +242,7 @@ class Config(FormView):
         config['agenda_start_event_date_time'] = form.cleaned_data['agenda_start_event_date_time']
         messages.success(self.request, _('Agenda settings successfully saved.'))
         return super(Config, self).form_valid(form)
+
 
 def register_tab(request):
     """

@@ -37,7 +37,7 @@ class Item(MPTTModel, SlideMixin):
     ITEM_TYPE = (
         (AGENDA_ITEM, _('Agenda item')),
         (ORGANIZATIONAL_ITEM, _('Organizational item')),
-        )
+    )
 
     title = models.CharField(null=True, max_length=255, verbose_name=_("Title"))
     text = models.TextField(null=True, blank=True, verbose_name=_("Text"))
@@ -46,11 +46,8 @@ class Item(MPTTModel, SlideMixin):
     weight = models.IntegerField(default=0, verbose_name=_("Weight"))
     parent = TreeForeignKey('self', null=True, blank=True,
                             related_name='children')
-    type = models.IntegerField(max_length=1, choices=ITEM_TYPE,
-                               default=AGENDA_ITEM, verbose_name=_("Type"))
-
+    type = models.IntegerField(max_length=1, choices=ITEM_TYPE, default=AGENDA_ITEM, verbose_name=_("Type"))
     duration = models.CharField(null=True, blank=True, max_length=5, verbose_name=_("Duration (hh:mm)"))
-
     related_sid = models.CharField(null=True, blank=True, max_length=63)
 
     def get_related_slide(self):
@@ -178,7 +175,6 @@ class Item(MPTTModel, SlideMixin):
 
     def __unicode__(self):
         return self.get_title()
-
 
     class Meta:
         permissions = (

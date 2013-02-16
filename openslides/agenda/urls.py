@@ -11,49 +11,43 @@
 """
 
 from django.conf.urls import url, patterns
-from openslides.agenda.views import (Overview, View, SetClosed, ItemUpdate,
+from openslides.agenda.views import (
+    Overview, View, SetClosed, ItemUpdate,
     ItemCreate, ItemDelete, AgendaPDF)
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^$',
         Overview.as_view(),
-        name='item_overview',
-    ),
+        name='item_overview', ),
 
     url(r'^(?P<pk>\d+)/$',
         View.as_view(),
-        name='item_view',
-    ),
+        name='item_view', ),
 
     url(r'^(?P<pk>\d+)/close/$',
         SetClosed.as_view(),
         {'closed': True},
-        name='item_close',
-    ),
+        name='item_close', ),
 
     url(r'^(?P<pk>\d+)/open/$',
         SetClosed.as_view(),
         {'closed': False},
-        name='item_open',
-    ),
+        name='item_open', ),
 
     url(r'^(?P<pk>\d+)/edit/$',
         ItemUpdate.as_view(),
-        name='item_edit',
-    ),
+        name='item_edit', ),
 
     url(r'^new/$',
         ItemCreate.as_view(),
-        name='item_new',
-    ),
+        name='item_new', ),
 
     url(r'^(?P<pk>\d+)/del/$',
         ItemDelete.as_view(),
-        name='item_delete',
-    ),
+        name='item_delete', ),
 
     url(r'^print/$',
         AgendaPDF.as_view(),
-        name='print_agenda',
-    ),
+        name='print_agenda', ),
 )

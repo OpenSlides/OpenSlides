@@ -10,16 +10,15 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+import re
+
 from django import forms
 from django.utils.translation import ugettext_lazy as _
-from django.contrib.admin.widgets import AdminTimeWidget
 from mptt.forms import TreeNodeChoiceField
 
 from openslides.utils.forms import CssClassMixin
-
 from openslides.agenda.models import Item
 
-import re
 
 class ItemForm(forms.ModelForm, CssClassMixin):
     """
@@ -62,6 +61,7 @@ class ItemOrderForm(forms.Form, CssClassMixin):
     parent = forms.IntegerField(
         widget=forms.HiddenInput(attrs={'class': 'menu-plid'}),
     )
+
 
 class ConfigForm(CssClassMixin, forms.Form):
     agenda_start_event_date_time = forms.CharField(
