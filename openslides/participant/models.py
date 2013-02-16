@@ -26,7 +26,7 @@ from openslides.projector.api import register_slidemodel
 from openslides.projector.projector import SlideMixin
 
 
-class User(DjangoUser, PersonMixin, Person, SlideMixin):
+class User(PersonMixin, DjangoUser, Person, SlideMixin):
     prefix = 'user'  # This is for the slides
     person_prefix = 'user'
     GENDER_CHOICES = (
