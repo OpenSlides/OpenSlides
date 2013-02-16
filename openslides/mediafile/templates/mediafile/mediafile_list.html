@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% load i18n %}
+{% load tags %}
+
+{% block title %}{{ block.super }} – {% trans 'Media' %}{% endblock %}
+
+{% block content %}
+    <h1>{% trans 'Media' %}
+        <small class="pull-right">
+        {% if perms.mediafile.can_upload %}
+            <a href="{% url 'mediafile_create' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New media' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
+        {% endif %}
+        </small>
+    </h1>
+    <table class="table table-striped table-bordered">
+        <tr>
+            <th>{% trans 'Title' %}</th>
+            <th>{% trans 'Type' %}</th>
+            <th>{% trans 'Size' %}</th>
+            <th>{% trans 'Upload time' %}</th>
+            <th>{% trans 'Uploader' %}</th>
+            {% if perms.mediafile.can_manage %}
+                <th class="mini_width">{% trans "Actions" %}</th>
+            {% endif %}
+        </tr>
+        {% for mediafile in mediafile_list %}
+        <tr>
+            <td><a href="{{ mediafile.mediafile.url }}">{{ mediafile }}</a></td>
+            <td>{{ mediafile.filetype }}</td>
+            <td>{{ mediafile.get_filesize }}</td>
+            <td>{{ mediafile.timestamp }}</td>
+            <td>&nbsp;</td>
+            {% if perms.mediafile.can_manage %}
+            <td>
+                <span style="width: 1px; white-space: nowrap;">
+                    <a href="{% model_url mediafile 'update' %}" title="{% trans 'Edit' %}" class="btn btn-mini"><i class="icon-pencil"></i></a>
+                    <a href="{% model_url mediafile 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini"><i class="icon-remove"></i></a>
+                </span>
+            </td>
+            {% endif %}
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6"><i>{% trans 'No media available.' %}</i></td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

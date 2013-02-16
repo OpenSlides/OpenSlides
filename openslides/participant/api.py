@@ -6,7 +6,7 @@
 
     Useful functions for the participant app.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -22,9 +22,8 @@ from openslides.utils import csv_ext
 from openslides.participant.models import User, Group
 
 
-DEFAULT_PERMS = ['can_see_agenda', 'can_see_projector',
-                 'can_see_motion', 'can_see_assignment',
-                 'can_see_dashboard']
+DEFAULT_PERMS = ['can_see_agenda', 'can_see_projector', 'can_see_motion',
+                 'can_see_assignment', 'can_see_filelist', 'can_see_dashboard']
 
 
 def gen_password():

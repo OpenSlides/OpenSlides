@@ -6,7 +6,7 @@
 
     Global URL list for OpenSlides.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -26,6 +26,7 @@ urlpatterns = patterns('',
     (r'^motion/', include('openslides.motion.urls')),
     (r'^assignment/', include('openslides.assignment.urls')),
     (r'^participant/', include('openslides.participant.urls')),
+    (r'^mediafile/', include('openslides.mediafile.urls')),
     (r'^config/', include('openslides.config.urls')),
     (r'^projector/', include('openslides.projector.urls')),
     (r'^i18n/', include('django.conf.urls.i18n')),
@@ -33,6 +34,12 @@ urlpatterns = patterns('',
 
 urlpatterns += patterns('django.contrib.staticfiles.views',
     url(r'^static/(?P<path>.*)$', 'serve', {'insecure': True}),
+    #url(r'^media/(?P<path>.*)$', 'serve', {'insecure': True, 'document_root': settings.MEDIA_ROOT}),
+)
+
+# It's maybe a hack here. C. f. oskar's django-bug-report https://code.djangoproject.com/ticket/19572
+urlpatterns += patterns('django.views.static',
+    url(r'^media/(?P<path>.*)$', 'serve', {'document_root': settings.MEDIA_ROOT}),
 )
 
 js_info_dict = {
