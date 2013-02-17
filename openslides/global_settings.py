@@ -28,10 +28,6 @@ SESSION_COOKIE_NAME = 'OpenSlidesSessionID'
 
 ugettext = lambda s: s
 
-MOTION_WORKFLOW = (
-    ('default', ugettext('default'), 'openslides.motion.workflow.default_workflow'),
-)
-
 LANGUAGES = (
     ('de', ugettext('German')),
     ('en', ugettext('English')),

@@ -1,144 +1,55 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    openslides.utils.workflow
-    ~~~~~~~~~~~~~~~~~~~~~~~~~
+    openslides.motion.workflow
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Defines the States for motions. All States are linked together with there
-    'next_state' attributes. Together there are a workflow.
+    This file is only for development. It will be moved out of
+    the openslides module before the next release.
 
     :copyright: (c) 2011-2013 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.conf import settings
-from django.core import exceptions
-from django.utils.importlib import import_module
 from django.utils.translation import ugettext_noop
 
-from openslides.config.models import config
-
-_workflow = None
+from .models import Workflow, State
 
 
-class State(object):
-    """Define a state for a motion."""
-    def __init__(self, id, name, next_states=[], create_poll=False, support=False,
-                 edit_as_submitter=False, version_permission=True):
-        """Set attributes for the state.
-
-        The Arguments are:
-        - 'id' a unique id for the state.
-        - 'name' a string representing the state.
-        - 'next_states' a list with all states, that can be choosen from this state.
-
-        All the other arguments are boolean values. If True, the specific action for
-        motions in this state.
-        - 'create_poll': polls can be created in this state.
-        - 'support': persons can support the motion in this state.
-        - 'edit_as_submitter':  the submitter can edit the motion in this state.
-        - 'version_permission': new versions are not permitted.
-        """
-        self.id = id
-        self.name = name
-        self.next_states = next_states
-        self.create_poll = create_poll
-        self.support = support
-        self.edit_as_submitter = edit_as_submitter
-        self.version_permission = version_permission
-
-    def __unicode__(self):
-        """Return the name of the state."""
-        return self.name
-
-
-class WorkflowError(Exception):
-    """Exception raised when errors in a state accure."""
-    pass
-
-
-def motion_workflow_choices():
-    """Return all possible workflows.
-
-    The possible workflows can be set in the settings with the setting
-    'MOTION_WORKFLOW'.
+def _init_builtin_workflows():
     """
-    for workflow in settings.MOTION_WORKFLOW:
-        yield workflow[0], workflow[1]
-
-
-def get_state(state='default'):
-    """Return a state object.
-
-    The argument 'state' has to be a state_id.
-
-    If the argument 'state' is 'default', the default state is returned.
-
-    The default state is the state object choosen in the config tab.
+    Saves a simple and a complex workflow into the database.
+    This function is only called manually and lives here only for development.
     """
-    global _workflow
-    if _workflow is not None:
-        try:
-            return _workflow[state]
-        except KeyError:
-            raise WorkflowError('Unknown state: %s' % state)
-    _workflow = {}
-    for workflow in settings.MOTION_WORKFLOW:
-        if workflow[0] == config['motion_workflow']:
-            try:
-                wf_module, wf_default_state_name = workflow[2].rsplit('.', 1)
-            except ValueError:
-                raise exceptions.ImproperlyConfigured(
-                    '%s isn\'t a workflow module' % workflow[2])
-            try:
-                mod = import_module(wf_module)
-            except ImportError as e:
-                raise exceptions.ImproperlyConfigured(
-                    'Error importing workflow %s: "%s"' % (wf_module, e))
-            try:
-                default_state = getattr(mod, wf_default_state_name)
-            except AttributeError:
-                raise exceptions.ImproperlyConfigured(
-                    'Workflow module "%s" does not define a "%s" State'
-                    % (wf_module, wf_default_state_name))
-            _workflow['default'] = default_state
-            break
-    else:
-        raise ImproperlyConfigured('Unknown workflow %s' % conf['motion_workflow'])
+    workflow_1 = Workflow(name=ugettext_noop('Simple Workflow'), id=1)
+    state_1_1 = State.objects.create(name=ugettext_noop('submitted'), workflow=workflow_1,
+                                     allow_create_poll=True, allow_support=True, allow_submitter_edit=True)
+    state_1_2 = State.objects.create(name=ugettext_noop('accepted'), workflow=workflow_1, action_word=ugettext_noop('accept'))
+    state_1_3 = State.objects.create(name=ugettext_noop('rejected'), workflow=workflow_1, action_word=ugettext_noop('reject'))
+    state_1_4 = State.objects.create(name=ugettext_noop('not decided'), workflow=workflow_1, action_word=ugettext_noop('do not decide'))
+    state_1_1.next_states.add(state_1_2, state_1_3, state_1_4)
+    state_1_1.save()  # Is this neccessary?
+    workflow_1.first_state = state_1_1
+    workflow_1.save()
 
-    populate_workflow(default_state, _workflow)
-    return get_state(state)
-
-
-def populate_workflow(state, workflow):
-    """Append all 'next_states' from state to the workflow.
-
-    The argument state has to be a state object.
-
-    The argument workflow has to be a dictonary.
-
-    Calls this function recrusiv with all next_states from the next_states states.
-    """
-    workflow[state.id] = state
-    for s in state.next_states:
-        if s.id not in workflow:
-            populate_workflow(s, workflow)
-
-
-DUMMY_STATE = State('dummy', ugettext_noop('Unknwon state'))
-"""A dummy state object. Returned, if the state_id is not known."""
-
-default_workflow = State('pub', ugettext_noop('Published'), support=True,
-                         edit_as_submitter=True, version_permission=False)
-"""Default Workflow for OpenSlides."""
-
-default_workflow.next_states = [
-    State('per', ugettext_noop('Permitted'), create_poll=True, edit_as_submitter=True, next_states=[
-        State('acc', ugettext_noop('Accepted')),
-        State('rej', ugettext_noop('Rejected')),
-        State('wit', ugettext_noop('Withdrawed')),
-        State('adj', ugettext_noop('Adjourned')),
-        State('noc', ugettext_noop('Not Concerned')),
-        State('com', ugettext_noop('Commited a bill')),
-        State('rev', ugettext_noop('Needs Review'))]),
-    State('nop', ugettext_noop('Rejected (not authorized)'))]
+    workflow_2 = Workflow(name=ugettext_noop('Complex Workflow'), id=2)
+    state_2_1 = State.objects.create(name=ugettext_noop('published'), workflow=workflow_2, allow_support=True, allow_submitter_edit=True)
+    state_2_2 = State.objects.create(name=ugettext_noop('permitted'), workflow=workflow_2, action_word=ugettext_noop('permit'),
+                                     allow_create_poll=True, allow_submitter_edit=True, versioning=True, dont_set_new_version_active=True)
+    state_2_3 = State.objects.create(name=ugettext_noop('accepted'), workflow=workflow_2, action_word=ugettext_noop('accept'), versioning=True)
+    state_2_4 = State.objects.create(name=ugettext_noop('rejected'), workflow=workflow_2, action_word=ugettext_noop('reject'), versioning=True)
+    state_2_5 = State.objects.create(name=ugettext_noop('withdrawed'), workflow=workflow_2,
+                                     action_word=ugettext_noop('withdraw'), versioning=True)
+    state_2_6 = State.objects.create(name=ugettext_noop('adjourned'), workflow=workflow_2, action_word=ugettext_noop('adjourn'), versioning=True)
+    state_2_7 = State.objects.create(name=ugettext_noop('not concerned'), workflow=workflow_2, versioning=True)
+    state_2_8 = State.objects.create(name=ugettext_noop('commited a bill'), workflow=workflow_2,
+                                     action_word=ugettext_noop('commit a bill'), versioning=True)
+    state_2_9 = State.objects.create(name=ugettext_noop('needs review'), workflow=workflow_2, versioning=True)
+    state_2_10 = State.objects.create(name=ugettext_noop('rejected (not authorized)'), workflow=workflow_2,
+                                      action_word=ugettext_noop('reject (not authorized)'), versioning=True)
+    state_2_1.next_states.add(state_2_2, state_2_5, state_2_10)
+    state_2_2.next_states.add(state_2_3, state_2_4, state_2_5, state_2_6, state_2_7, state_2_8, state_2_9)
+    state_2_1.save()  # Is this neccessary?
+    state_2_2.save()  # Is this neccessary?
+    workflow_2.first_state = state_2_1
+    workflow_2.save()
