@@ -12,7 +12,8 @@ from django.test import TestCase
 
 from openslides.participant.models import User
 from openslides.config.models import config
-from openslides.motion.models import Motion, Workflow, State, WorkflowError
+from openslides.motion.models import Motion, Workflow, State
+from openslides.motion.exceptions import WorkflowError
 
 
 class ModelTest(TestCase):

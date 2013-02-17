@@ -35,6 +35,7 @@ from openslides.agenda.models import Item
 
 from .exceptions import MotionError, WorkflowError
 
+
 class Motion(SlideMixin, models.Model):
     """The Motion Class.
 
