@@ -179,7 +179,8 @@ class ViewTest(TestCase):
         response = c.get('/agenda/%d/edit/' % 1000)
         self.assertEqual(response.status_code, 404)
 
-        data = {'title': 'newitem1', 'text': 'item1-text', 'weight': '0'}
+        data = {'title': 'newitem1', 'text': 'item1-text', 'weight': '0',
+                'type': 1}
         response = c.post('/agenda/%d/edit/' % self.item1.id, data)
         self.assertEqual(response.status_code, 302)
         self.refreshItems()

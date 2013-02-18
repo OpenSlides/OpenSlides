@@ -9,3 +9,15 @@ tr.topline td {
     border-bottom: 1px solid #333333;
     background-color: #CDCDCD;
 }
+
+table#agendatime {
+    float: right;
+    width: auto;
+    margin-bottom: 1em;
+    font-size: 12px;
+}
+
+table#agendatime td {
+    padding: 3px;
+    white-space: nowrap;
+}
