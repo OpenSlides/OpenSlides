@@ -16,8 +16,8 @@
 <p>State: {{ motion.state }}</p>
 <h4>possible stats:</h4>
 <ul>
-{% for state in motion.state.next_states %}
-    <li><a href="{% url 'motion_set_state' motion.pk state.id %}">{{ state }}</a></li>
+{% for state in motion.state.next_states.all %}
+    <li><a href="{% url 'motion_set_state' motion.pk state.pk %}">{{ state }}</a></li>
 {% endfor %}
     <li><a href="{% url 'motion_reset_state' motion.pk %}">Reset State</a></li>
 </ul>
