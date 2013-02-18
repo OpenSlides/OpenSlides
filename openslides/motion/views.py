@@ -221,7 +221,7 @@ class VersionRejectView(GetVersionMixin, SingleObjectMixin, QuestionMixin, Redir
 
     def case_yes(self):
         """Reject the version, if the user chooses 'yes'."""
-        self.object.reject_version(self.object.version) # TODO: Write log message
+        self.object.reject_version(self.object.version)  # TODO: Write log message
         self.object.save()
 
 version_reject = VersionRejectView.as_view()
