@@ -326,7 +326,6 @@ class StaticFileHandler(tornado.web.StaticFileHandler):
         return super(StaticFileHandler, self).get(absolute_path, include_body)
 
 
-
 def start_openslides(addr, port, start_browser_url=None, extra_args=[]):
     from django.conf import settings
     # Set the options
