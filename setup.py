@@ -44,6 +44,7 @@ setup(
         'django-mptt',
         'reportlab',
         'pil',
+        'tornado',
     ],
     entry_points={
         'console_scripts': [
