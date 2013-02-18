@@ -20,7 +20,7 @@ from openslides.config.models import config
 from openslides.projector.projector import SlideMixin
 from openslides.projector.api import (
     register_slidemodel, get_slide_from_sid, register_slidefunc)
-from openslides.agenda.slides import agenda_show
+from .slides import agenda_show
 
 
 class Item(MPTTModel, SlideMixin):
@@ -36,8 +36,7 @@ class Item(MPTTModel, SlideMixin):
 
     ITEM_TYPE = (
         (AGENDA_ITEM, _('Agenda item')),
-        (ORGANIZATIONAL_ITEM, _('Organizational item')),
-    )
+        (ORGANIZATIONAL_ITEM, _('Organizational item')))
 
     title = models.CharField(null=True, max_length=255, verbose_name=_("Title"))
     text = models.TextField(null=True, blank=True, verbose_name=_("Text"))

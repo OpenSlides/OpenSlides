@@ -11,6 +11,7 @@
 """
 
 from reportlab.platypus import Paragraph
+from datetime import datetime, timedelta
 
 from django.core.urlresolvers import reverse
 from django.contrib import messages
@@ -31,7 +32,6 @@ from openslides.projector.api import get_active_slide
 from openslides.projector.projector import Widget, SLIDE
 from .models import Item
 from .forms import ItemOrderForm, ItemForm
-from datetime import datetime, timedelta
 
 
 class Overview(TemplateView):
@@ -71,15 +71,16 @@ class Overview(TemplateView):
         else:
             end = start + duration
 
-        duration = u'%d:%02d' % ((duration.days * 24 + duration.seconds / 3600), (duration.seconds / 60 % 60))
+        duration = u'%d:%02d' % (
+            (duration.days * 24 + duration.seconds / 3600.0),
+            (duration.seconds / 60.0 % 60))
 
         context.update({
             'items': items,
             'active_sid': get_active_slide(only_sid=True),
             'duration': duration,
             'start': start,
-            'end': end,
-        })
+            'end': end})
         return context
 
     @transaction.commit_manually
@@ -140,8 +141,7 @@ class SetClosed(RedirectView, SingleObjectMixin):
             link = reverse('item_close', args=[self.object.id])
         context.update({
             'closed': kwargs['closed'],
-            'link': link,
-        })
+            'link': link})
         return context
 
     def pre_redirect(self, request, *args, **kwargs):
