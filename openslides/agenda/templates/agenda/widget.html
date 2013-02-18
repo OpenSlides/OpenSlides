@@ -33,7 +33,7 @@
         {% for p in item.get_ancestors %}
             <span class="indentation"></span>
         {% endfor %}
-        <a href="{% model_url item 'view' %}">{{ item }}</a>
+        <a href="{% model_url item 'view' %}">{% if item.type == item.ORGANIZATIONAL_ITEM %}<i>[{% endif %}{{ item }}{% if item.type == item.ORGANIZATIONAL_ITEM %}]</i>{% endif %}</a>
         {{ item.get_title_supplement|safe }}
     </li>
 {% empty %}
