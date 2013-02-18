@@ -20,6 +20,8 @@ import tempfile
 import threading
 import time
 import webbrowser
+import posixpath
+from urllib import unquote
 
 from tornado.options import options, define, parse_command_line
 import tornado.httpserver
@@ -309,8 +311,24 @@ def create_or_reset_admin_user():
     admin.save()
 
 
-def start_openslides(addr, port, start_browser_url=None, extra_args=[]):
+class StaticFileHandler(tornado.web.StaticFileHandler):
+    """Handels static data by using the django finders."""
 
+    def initialize(self):
+        """Overwrite some attributes."""
+        self.root = ''
+        self.default_filename = None
+
+    def get(self, path, include_body=True):
+        from django.contrib.staticfiles import finders
+        normalized_path = posixpath.normpath(unquote(path)).lstrip('/')
+        absolute_path = finders.find(normalized_path)
+        return super(StaticFileHandler, self).get(absolute_path, include_body)
+
+
+
+def start_openslides(addr, port, start_browser_url=None, extra_args=[]):
+    from django.conf import settings
     # Set the options
     define('port', type=int, default=port)
     define('address', default=addr)
@@ -321,10 +339,10 @@ def start_openslides(addr, port, start_browser_url=None, extra_args=[]):
 
     # Start the server
     app = tornado.wsgi.WSGIContainer(django.core.handlers.wsgi.WSGIHandler())
-    tornado_app = tornado.web.Application(
-        [
-            ('.*', tornado.web.FallbackHandler, dict(fallback=app)),
-        ])
+    tornado_app = tornado.web.Application([
+        (r"%s(.*)" % settings.STATIC_URL, StaticFileHandler),
+        ('.*', tornado.web.FallbackHandler, dict(fallback=app))])
+
     server = tornado.httpserver.HTTPServer(tornado_app)
     server.listen(port=options.port,
                   address=options.address)
