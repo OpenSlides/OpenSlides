@@ -1,96 +1,121 @@
-{% extends "assignment/base_assignment.html" %}
+{% extends "base.html" %}
 
 {% load i18n %}
 {% load staticfiles %}
 
 {% block title %}{{ block.super }} – {% trans "Election" %} "{{ assignment }}"{% endblock %}
 
+{% block header %}
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/assignment.css' %}" />
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript" src="{% static 'javascript/assignment.js' %}"></script>
+{% endblock %}
+
 {% block content %}
-<div id="sidebar">
-    <div class="box">
-        <h4>{% trans "Status" %}:</h4>
-        {% trans assignment.get_status_display %}
-        <h4>{% trans "Number of available posts" %}:</h4>
-        {{ assignment.posts }}
-    </div>
-
-    <br><br>
-
-    {% if perms.assignment.can_manage_assignment %}
-        <div class="box">
-        <h4>{% trans "Change status" %}:</h4>
-        <input type="radio" name="status" onclick="window.location.href='{% url 'assignment_set_status' assignment.id 'sea' %}';"
-            {% if 'sea' in assignment.status %}checked{% endif %}>{% trans 'Searching for candidates' %}<br>
-        <input type="radio" name="status" onclick="window.location.href='{% url 'assignment_set_status' assignment.id 'vot' %}';"
-            {% if 'vot' in assignment.status %}checked{% endif %}>{% trans 'Voting' %}<br>
-        <input type="radio" name="status" onclick="window.location.href='{% url 'assignment_set_status' assignment.id 'fin' %}';"
-            {% if 'fin' in assignment.status %}checked{% endif %}>{% trans 'Finished' %}
-        </div>
+<h1>
+    {{ assignment }}
+    <small class="pull-right">
+    <a href="{% url 'assignment_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+    <!-- activate projector -->
+    {% if perms.projector.can_manage_projector %}
+        <a href="{% url 'projector_activate_slide' assignment.sid  %}" class="activate_link btn {% if assignment.active %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show election' %}">
+            <i class="icon-facetime-video {% if assignment.active %}icon-white{% endif %}"></i>
+        </a>
     {% endif %}
-</div>
+    <div class="btn-group">
+        <a data-toggle="dropdown" href="#" class="btn btn-mini dropdown-toggle">
+            {% trans 'More actions' %}
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu pull-right">
+            <!-- edit -->
+            <li><a href="{% url 'assignment_edit' assignment.id  %}"><i class="icon-pencil"></i> {% trans 'Edit election' %}</a></li>
+            <!-- delete -->
+            <li><a href="{% url 'assignment_delete' assignment.id  %}"><i class="icon-remove"></i> {% trans 'Delete election' %}</a></li>
+            <!-- edit poll -->
+            {% if perms.assignment.can_manage_assignment %}
+                {% for poll in motion.polls %}
+                    <li><a href="{% url 'assignment_poll_view' poll.id %}"><i class="icon-edit"></i> {{ forloop.counter }}. {% trans "Ballot" %}</a></li>
+                {% endfor %}
+            {% endif %}
+            <!-- create agenda item -->
+            {% if perms.agenda.can_manage_agenda %}
+            <li>
+                <a href="{% url 'assignment_create_agenda' assignment.id  %}"><i class="icon-plus"></i> {% trans 'New agenda item' %}</a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+    </small>
+</h1>
 
-<div style="margin-right: 250px; min-width: 400px;">
-    <h1>{{ assignment }}</h1>
-    <p>{{ assignment.description|linebreaks }}</p>
-
+<div class="row-fluid">
+<div class="span9">
+    <!-- Description -->
+    <h4>{% trans "Description" %}</h4>
+    {% if assignment.description  %}
+        {{ assignment.description|linebreaks }}
+    {% else %}
+        –
+    {% endif %}
+    <br>
+    <!-- Candidates -->
 {% if assignment.status != "fin" %}
-    <h3>{% trans "Candidates" %}</h3>
+    <h4>{% trans "Candidates" %}</h4>
     <ol>
     {% for person in assignment.get_participants %}
         <li>
             {{ person }}
             {% if perms.assignment.can_manage_assignment %}
                 {% if assignment.status == "sea" or assignment.status == "vot" %}
-                    <a href="{% url 'assignment_delother' assignment.id person.person_id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Remove candidate' %}"></a>
+                    <a href="{% url 'assignment_delother' assignment.id person.person_id %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Remove candidate' %}"><i class="icon-remove"></i></a>
                 {% endif %}
             {% endif %}
             {% if person in assignment.elected %}
                 | <b>{% trans "elected" %}</b>
                 {% if perms.assignment.can_manage_assignment %}
                     {% if assignment.status == "sea" or assignment.status == "vot" %}
-                        <a href="{% url 'assignment_user_not_elected' assignment.id person.person_id %}"><img src="{% static 'images/icons/dialog-cancel.png' %}" title="{% trans 'Mark candidate as not elected' %}"></a>
+                        <a class="btn btn-mini" href="{% url 'assignment_user_not_elected' assignment.id person.person_id %}" rel="tooltip" data-original-title="{% trans 'Mark candidate as not elected' %}">
+                            <i class="icon-ban-circle"></i>
+                        </a>
                     {% endif %}
                 {% endif %}
             {% endif %}
         </li>
     {% empty %}
-        <li style="list-style: none outside none;"><i>{% trans "No candidates available." %}</i></li>
+        <li style="list-style: none outside none; margin-left: -25px;"><i>{% trans "No candidates available." %}</i></li>
     {% endfor %}
     </ol>
-
     {% if assignment.status == "sea" or perms.assignment.can_manage_assignment and assignment.status == "vot" %}
     {% if  perms.assignment.can_nominate_self or perms.assignment.can_nominate_other %}
     <form action="" method="post">{% csrf_token %}
         {% if perms.assignment.can_nominate_self %}
             <p>
             {% if user_is_candidate %}
-                <a href="{% url 'assignment_delrun' assignment.id %}">
-                    <span class="button">
-                        <span class="icon removeuser">{% trans 'Withdraw self candidature' %}</span>
-                    </span>
+                <a href='{% url 'assignment_delrun' assignment.id %}' class="btn btn-mini">
+                    <i class="icon-remove"></i> {% trans 'Withdraw self candidature' %}
                 </a>
             {% else %}
-                <a href="{% url 'assignment_run' assignment.id %}">
-                    <span class="button">
-                        <span class="icon adduser">{% trans 'Self candidature' %}</span>
-                    </span>
+                <a href='{% url 'assignment_run' assignment.id %}' class="btn btn-mini">
+                    <i class="icon-plus"></i> {% trans 'Self candidature' %}
                 </a>
             {% endif %}
             </p>
         {% endif %}
         {% if perms.assignment.can_nominate_other %}
             {% for field in form %}
-            <label>{{ field.label }}:</label>
-            <nobr>{{ field }}
-            {% if perms.participant.can_see_participant and perms.participant.can_manage_participant %}
-            <a href="{% url 'user_new' %}" target="_blank"><img src="{% static 'images/icons/add-user.png' %}" title="{% trans 'Add new participant' %}"></a>
-            {% endif %}
-            </nobr>
+                <label>{{ field.label }}:</label>
+                <div class="input-append">
+                    {{ field }}
+                    <button class="btn btn-primary" type="submit" title="{% trans 'Apply' %}"><i class="icon-ok icon-white"></i></button>
+                    {% if perms.participant.can_see_participant and perms.participant.can_manage_participant %}
+                        <a href="{% url 'user_new' %}" target="_blank" class="btn"  title="{% trans 'Add new participant' %}"><i class="icon-add-user"></i></a>
+                    {% endif %}
+                </div>
             {% endfor %}
             <p>
-            <button class="button" type="submit">
-                <span class="icon ok">{% trans 'Apply' %}</span>
-            </button>
             </p>
         {% endif %}
     </form>
@@ -99,11 +124,14 @@
 {% endif %}
 
 {% if perms.assignment.can_manage_assignments and blocked_candidates and assignment.status != "fin" %}
-    <h3>{% trans "Blocked Candidates" %}</h3>
+    <h4>{% trans "Blocked Candidates" %}</h4>
     <ul>
     {% for person in blocked_candidates %}
         <li>
-            {{ person }}<a href="{% url 'assignment_delother' assignment.id person.person_id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Remove candidate' %}"></a>
+            {{ person }}
+            <a class="btn btn-mini" href="{% url 'assignment_delother' assignment.id person.person_id %}" title="{% trans 'Remove candidate' %}">
+                <i class="icon-ban-circle"></i>
+            </a>
         </li>
     {% empty %}
         <li>{% trans "No blocked candidates available." %}</li>
@@ -111,120 +139,160 @@
     </ul>
 {% endif %}
 
+
+<!-- Results -->
 {% if assignment.status != "sea" or polls.exists %}
-    <h3>{% trans "Election results" %}</h3>
-
+    <h4>{% trans "Election results" %}</h4>
     {% if polls.exists %}
-    <table id="election_table" style="width: auto;">
-    <tr>
-        <th>{% trans "Candidates" %}</th>
-        {% for poll in polls %}
-            <th style="vertical-align: top; white-space:nowrap;">
-                {{ poll.get_ballot }}. {% trans 'ballot' %}
-                {% if perms.assignment.can_manage_assignment %}
-                    <br>
-                    <a class="publish_link {% if poll.published %}published{% endif %}"
-                    href="{% url 'assignment_poll_publish_status' poll.id %}"
-                    title="{% trans 'Publish/unpublish results' %}">
-                    <span></span>
-                    </a>
-                    <a href="{% url 'assignment_poll_view' poll.id %}"><img src="{% static 'images/icons/edit.png' %}" title="{% trans 'Edit' %}"></a>
-                    <a href="{% url 'assignment_poll_delete' poll.id %}"><img src="{% static 'images/icons/delete.png' %}" title="{% trans 'Delete' %}"></a>
-                {% endif %}
+        <table class="table table-striped table-bordered">
+        <tr>
+            <th></th>
+            {% with ballotnumber=polls.count %}
+            <th colspan="{{ ballotnumber|add:'1' }}" style="text-align: center;">
+                {% trans "ballot" %}
             </th>
-        {% endfor %}
-        {% if assignment.candidates and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
-            <th>
-                <a href="{% url 'assignment_gen_poll' assignment.id %}">
-                    <span class="button">
-                       <span class="icon statistics">{% trans 'New ballot' %}</span>
-                    </span>
-                </a>
-            </th>
-        {% endif %}
-    </tr>
-
-    {% for candidate, poll_list in vote_results.items %}
-    <tr class="{% cycle 'odd' '' as rowcolors %}">
-        <td class="candidate">
-            {% if candidate in assignment.elected %}
-                {% if perms.assignment.can_manage_assignment %}
-                    <a class="election_link elected" href="{% url 'assignment_user_not_elected' assignment.id candidate.person_id %}"></a>
-                {% else %}
-                    <a class="elected">
-                        <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Candidate is elected' %}">
+            {% endwith %}
+        </tr>
+        <tr>
+            <th>{% trans "Candidates" %}</th>
+            {% for poll in polls %}
+                <th style="white-space:nowrap;" class="span1">
+                    {{ poll.get_ballot }}. {% trans 'ballot' %}
+                    {% if perms.assignment.can_manage_assignment %}
+                        <br>
+                        <a class="publish_link btn btn-mini {% if poll.published %}btn-primary{% endif %}"
+                        href="{% url 'assignment_poll_publish_status' poll.id %}"
+                        rel="tooltip" data-original-title="{% trans 'Publish/unpublish results' %}">
+                        {% if poll.published %}
+                            <i class="icon-checked-new_white"></i>
+                            {% else %}
+                            <i class="icon-unchecked-new"></i>
+                            {% endif %}
+                        </a>
+                        <a href="{% url 'assignment_poll_view' poll.id %}" class="btn btn-mini" title="{% trans 'Edit' %}"><i class="icon-pencil"></i></a>
+                        <a href="{% url 'assignment_poll_delete' poll.id %}" class="btn btn-mini" title="{% trans 'Delete' %}"><i class="icon-remove"></i></a>
+                    {% endif %}
+                </th>
+            {% endfor %}
+            {% if assignment.candidates and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
+                <th class="span1 nobr">
+                    <a href="{% url 'assignment_gen_poll' assignment.id %}" class="btn btn-mini">
+                       <i class="icon-plus"></i> {% trans 'New ballot' %}
                     </a>
-                {% endif %}
-            {% else %}
-                {% if perms.assignment.can_manage_assignment %}
-                    <a class="election_link" href="{% url 'assignment_user_elected' assignment.id candidate.person_id %}"></a>
-                {% endif %}
+                </th>
             {% endif %}
-            {{ candidate }}
-        </td>
-        {% for vote in poll_list %}
-            <td style="white-space:nowrap;">
-                {% if 'Yes' in vote and 'No' in vote and 'Abstain' in vote %}
-                    <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Yes }}<br>
-                    <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ vote.No }}<br>
-                    <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ vote.Abstain }}<br>
-                {% elif 'Votes' in vote %}
-                    <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Votes }}
-                {% elif vote == None %}
-                    {% trans 'was not a <br> candidate'%}
+        </tr>
+        {% for candidate, poll_list in vote_results.items %}
+        <tr>
+            <td>
+                {% if candidate in assignment.elected %}
+                    {% if perms.assignment.can_manage_assignment %}
+                        <a class="election_link elected" href="{% url 'assignment_user_not_elected' assignment.id candidate.person_id %}"></a>
+                    {% else %}
+                        <a class="elected">
+                            <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Candidate is elected' %}">
+                        </a>
+                    {% endif %}
                 {% else %}
-                    &nbsp;
+                    {% if perms.assignment.can_manage_assignment %}
+                        <a class="election_link" href="{% url 'assignment_user_elected' assignment.id candidate.person_id %}"></a>
+                    {% endif %}
                 {% endif %}
+                {{ candidate }}
             </td>
-        {% endfor %}
-        {% if assignment.candidates and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
-            <td></td>
-        {% endif %}
-    </tr>
-    {% endfor %}
-    <tr class="{% cycle rowcolors %}">
-        <td>{% trans 'Invalid votes' %}</td>
-        {% for poll in polls %}
-            {% if poll.published or perms.assignment.can_manage_assignment %}
+            {% for vote in poll_list %}
                 <td style="white-space:nowrap;">
-                    {% if poll.has_votes %}
-                        <img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}">
-                        {{ poll.print_votesinvalid }}
+                    {% if 'Yes' in vote and 'No' in vote and 'Abstain' in vote %}
+                        <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Yes }}<br>
+                        <img src="{% static 'img/voting-no.png' %}" title="{% trans 'No' %}"> {{ vote.No }}<br>
+                        <img src="{% static 'img/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ vote.Abstain }}<br>
+                    {% elif 'Votes' in vote %}
+                        <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Votes }}
+                    {% elif vote == None %}
+                        {% trans 'was not a <br> candidate'%}
+                    {% else %}
+                        &nbsp;
                     {% endif %}
                 </td>
+            {% endfor %}
+            {% if assignment.candidates and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
+                <td></td>
             {% endif %}
+        </tr>
         {% endfor %}
-        {% if assignment.candidates and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
-            <td></td>
-        {% endif %}
-    </tr>
-    <tr class="total">
-        <td><strong>{% trans 'Votes cast' %}</strong></td>
-        {% for poll in polls %}
-            {% if poll.published or perms.assignment.can_manage_assignment %}
-                <td style="white-space:nowrap;">
-                    {% if poll.has_votes %}
-                        <img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}">
-                        <strong>{{ poll.print_votescast }}</strong>
-                    {% endif %}
-                </td>
+        <tr>
+            <td>{% trans 'Invalid votes' %}</td>
+            {% for poll in polls %}
+                {% if poll.published or perms.assignment.can_manage_assignment %}
+                    <td style="white-space:nowrap;">
+                        {% if poll.has_votes %}
+                            <img src="{% static 'img/voting-invalid.png' %}" title="{% trans 'Invalid' %}">
+                            {{ poll.print_votesinvalid }}
+                        {% endif %}
+                    </td>
+                {% endif %}
+            {% endfor %}
+            {% if assignment.candidates and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
+                <td></td>
             {% endif %}
-        {% endfor %}
-        {% if assignment.candidates and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
-            <td></td>
-        {% endif %}
-    </tr>
-    </table>
+        </tr>        
+        <tr class="info total">
+            <td><strong>{% trans 'Votes cast' %}</strong></td>
+            {% for poll in polls %}
+                {% if poll.published or perms.assignment.can_manage_assignment %}
+                    <td style="white-space:nowrap;">
+                        {% if poll.has_votes %}
+                            <img src="{% static 'img/voting-total.png' %}" title="{% trans 'Votes cast' %}">
+                            <strong>{{ poll.print_votescast }}</strong>
+                        {% endif %}
+                    </td>
+                {% endif %}
+            {% endfor %}
+            {% if assignment.candidates and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
+                <td></td>
+            {% endif %}
+        </tr>
+        </table>
     {% else %}
-    <i>{% trans "No results available." %}</i>
-    {% if assignment.candidates and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
-        <p><a href="{% url 'assignment_gen_poll' assignment.id %}">
-        <span class="button">
-           <span class="icon statistics">{% trans 'New ballot' %}</span>
-        </span>
-        </a></p>
-    {% endif %}
+        <i>{% trans "No ballots available." %}</i>
+        {% if assignment.candidates and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
+            <p>
+            <a href='{% url 'assignment_gen_poll' assignment.id %}' class="btn">
+               <i class="icon-plus"></i> {% trans 'New ballot' %}
+            </a>
+            </p>
+        {% endif %}
     {% endif %}
 {% endif %}
-</div>
+</div> <!--/span-->
+
+<div class="span3">
+    <div class="well">
+        <!-- Text -->
+        <h5>{% trans "Status" %}:</h5>
+        {% trans assignment.get_status_display %}
+        <!-- Posts -->
+        <h5>{% trans "Number of available posts" %}:</h5>
+        {{ assignment.posts }}
+    </div> <!--/well-->
+
+    {% if perms.assignment.can_manage_assignment %}
+    <div class="well">
+        <h4>{% trans "Change status" %}:</h4>
+        <label class="radio">
+            <input type="radio" name="status" onclick="window.location.href='{% url 'assignment_set_status' assignment.id 'sea' %}';"
+                {% if 'sea' in assignment.status %}checked{% endif %}>{% trans 'Searching for candidates' %}
+        </label>
+        <label class="radio">
+            <input type="radio" name="status" onclick="window.location.href='{% url 'assignment_set_status' assignment.id 'vot' %}';"
+                {% if 'vot' in assignment.status %}checked{% endif %}>{% trans 'Voting' %}<br>
+        </label>
+        <label class="radio">
+            <input type="radio" name="status" onclick="window.location.href='{% url 'assignment_set_status' assignment.id 'fin' %}';"
+                {% if 'fin' in assignment.status %}checked{% endif %}>{% trans 'Finished' %}
+        </label>
+    </div> <!--/well-->
+    {% endif %}
+</div> <!--/span-->
+</div> <!--/row-->
 {% endblock %}

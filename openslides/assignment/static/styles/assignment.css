@@ -10,7 +10,7 @@ td.elected {
 }
 
 td.elected a.election_link {
-    background-image: url(../images/icons/voting-yes.png);
+    background-image: url(../img/voting-yes.png);
     background-repeat: no-repeat;
     background-position: center;
     width: 16px;
@@ -21,7 +21,7 @@ td.elected a.election_link {
 }
 
 td a.election_link {
-    background-image: url(../images/icons/voting-yes-grey.png);
+    background-image: url(../img/voting-yes-grey.png);
     background-repeat: no-repeat;
     background-position: center;
     width: 16px;
@@ -29,16 +29,4 @@ td a.election_link {
     display: block;
     margin-right: 5px;
     float: left;
-}
-
-a.publish_link span {
-    background-image: url(../images/icons/off.png);
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 16px;
-    height: 16px;
-    display: inline-block;
-}
-a.publish_link.published span {
-    background-image: url(../images/icons/on.png);
 }

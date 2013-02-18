@@ -20,7 +20,7 @@ handler500 = 'openslides.utils.views.server_error'
 
 urlpatterns = patterns('',
     # Redirect to dashboard URL
-    url(r'^$', RedirectView.as_view(url='dashboard'), name='home',),
+    url(r'^$', RedirectView.as_view(url='projector/dashboard'), name='home',),
 
     (r'^agenda/', include('openslides.agenda.urls')),
     (r'^motion/', include('openslides.motion.urls')),

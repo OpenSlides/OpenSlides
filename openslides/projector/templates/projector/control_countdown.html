@@ -1,19 +1,21 @@
-{% load staticfiles %}
 {% load i18n %}
 {% load tags %}
 
-<span class="projector_countdown_spinbox">
-    <input class="projector_countdown_spinval" id="countdown_time" name="countdown_time" type="number" min="0" value="{{ countdown_time }}"> {% trans "s" context "seconds" %}
-    <a id="countdown_set" class="countdown_control" href="{% url 'countdown_set_default' %}" title="{% trans 'Save as default' %}">
-        <img src="{% static 'images/icons/document-save.png' %}" alt="{% url 'countdown_set_default' %}">
+<div class="form-inline">
+    <div class="input-append">
+        <input class="projector_countdown_spinval" id="countdown_time" name="countdown_time" type="number" min="0" value="{{ countdown_time }}">
+        <span class="add-on">{% trans "s" context "seconds" %}</span>
+    </div>
+    <a id="countdown_set" class="countdown_control btn btn-mini" href="{% url 'countdown_set_default' %}" title="{% trans 'Save time as default' %}">
+        <i class="icon-refresh"></i>
     </a>
-    <a id="countdown_reset" class="countdown_control" href="{% url 'countdown_reset' %}" title="{% trans 'Reset countdown' %}">
-        <img src="{% static 'images/icons/skip-backward.png' %}" alt="{% trans 'Reset countdown' %}">
+    <a id="countdown_reset" class="countdown_control btn" href="{% url 'countdown_reset' %}" title="{% trans 'Reset countdown' %}">
+        <i class="icon-fast-backward"></i>
     </a>
-    <a id="countdown_play" class="countdown_control" href="{% url 'countdown_start' %}" title="{% trans 'Start countdown' %}"{% if countdown_state == 'active' %} style="display:none"{% endif %}>
-        <img src="{% static 'images/icons/play.png' %}" alt="{% url 'countdown_start' %}">
+    <a id="countdown_play" class="countdown_control btn" href="{% url 'countdown_start' %}" title="{% trans 'Start countdown' %}"{% if countdown_state == 'active' %} style="display:none"{% endif %}>
+        <i class="icon-play"></i>
     </a>
-    <a id="countdown_stop" class="countdown_control" href="{% url 'countdown_stop' %}" title="{% trans 'Stop countdown' %}"{% if countdown_state == 'inactive' or countdown_state == 'paused' or countdown_state == 'expired' %} style="display:none"{% endif %}>
-        <img src="{% static 'images/icons/pause.png' %}" alt="{% url 'countdown_stop' %}">
+    <a id="countdown_stop" class="countdown_control btn" href="{% url 'countdown_stop' %}" title="{% trans 'Stop countdown' %}"{% if countdown_state == 'inactive' or countdown_state == 'paused' or countdown_state == 'expired' %} style="display:none"{% endif %}>
+        <i class="icon-pause"></i>
     </a>
-</span>
+</div>

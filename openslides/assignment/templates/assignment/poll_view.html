@@ -1,19 +1,35 @@
-{% extends 'assignment/base_assignment.html' %}
+{% extends 'base.html' %}
 
 {% load i18n %}
 
 {% block title %}{{ block.super }} – {% trans "Election" %} "{{ assignment }}" – {{ ballotnumber }}. {% trans "ballot" %}{% endblock %}
 
 {% block content %}
-    <h1>{{ assignment }} – {{ ballotnumber }}. {% trans "ballot" %}</h1>
-    {% if assignment.polldescription %}
-        <p><b>{% trans "Short description (for ballot paper)" %}:</b> {{ assignment.polldescription }}</p>
+<h1>
+    {{ assignment }}
+    <small>
+    {{ ballotnumber }}. {% trans "ballot" %}
+    </small>
+    <small class="pull-right">
+    <a href="{% url 'assignment_view' assignment.id %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to election" %}</a>
+    <!-- activate projector -->
+    {% if perms.projector.can_manage_projector %}
+        <a href="{% url 'projector_activate_slide' assignment.sid  %}" class="activate_link btn {% if assignment.active %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show election' %}">
+            <i class="icon-facetime-video {% if assignment.active %}icon-white{% endif %}"></i>
+        </a>
     {% endif %}
-    <i class="helptext">{% trans "Special values" %}: -1 = {% trans 'majority' %}; -2 = {% trans 'undocumented' %}</i>
+    </small>
+</h1>
 
-    <form action="" method="post" class="small-form">{% csrf_token %}
+{% if assignment.polldescription %}
+    <p><b>{% trans "Short description (for ballot paper)" %}:</b> {{ assignment.polldescription }}</p>
+{% endif %}
 
-    <table style="width:auto">
+<p>
+{% trans "Special values" %}: <span class="badge badge-success">-1</span> = {% trans 'majority' %} | <span class="badge">-2</span> = {% trans 'undocumented' %}
+</p>
+<form action="" method="post" class="small-form">{% csrf_token %}
+    <table class="table table-striped table-bordered" style="width: auto;">
         <tr>
             <th>{% trans "Candidates" %}</th>
             {% for value in poll.get_vote_values %}
@@ -31,7 +47,7 @@
                 {% endfor %}
             </tr>
         {% endfor %}
-        <tr class="total">
+        <tr>
             <td>{% trans "Invalid votes" %}</td>
             {% for value in poll.get_vote_values %}
                 {% if forloop.first %}
@@ -41,7 +57,7 @@
                 {% endif %}
             {% endfor %}
         </tr>
-        <tr class="total">
+        <tr class="total warning">
             <td>{% trans "Votes cast" %}</td>
             {% for value in poll.get_vote_values %}
                 {% if forloop.first %}
@@ -54,26 +70,21 @@
     </table>
 
     <p>
-    <a href="{% url 'print_assignment_poll' poll.id %}">
-    <button class="button" type="button" onclick="window.location='{% url 'print_assignment_poll' poll.id %}'">
-        <span class="icon pdf">{% trans 'Ballot paper as PDF' %}</span>
-    </button>
+    <a href="{% url 'print_assignment_poll' poll.id %}" class="btn">
+        <i class="icon-print"></i> {% trans 'Ballot paper as PDF' %}
     </a>
     </p>
-
-    <p>
-    <button class="button" type="submit">
-        <span class="icon ok">{% trans 'Save' %}</span>
-    </button>
-    <button class="button" type="submit" name="apply">
-        <span class="icon apply">{% trans 'Apply' %}</span>
-    </button>
-    <a href="{% url 'assignment_view' poll.assignment.id %}">
-    <button class="button" type="button" onclick="window.location='{% url 'assignment_view' poll.assignment.id %}'">
-        <span class="icon cancel">{% trans 'Cancel' %}</span>
-    </button>
-    </a>
-    </p>
-
-    </form>
+    <!-- Control buttons -->
+    <div class="control-group">
+        <button type="submit" class="btn btn-primary">
+            {% trans 'Save' %}
+        </button>
+        <button type="submit" name="apply" class="btn">
+            {% trans 'Apply' %}
+        </button>
+        <a href="{% url 'assignment_view' poll.assignment.id %}" class="btn">
+            {% trans 'Cancel' %}
+        </a>
+    </div>
+</form>
 {% endblock %}

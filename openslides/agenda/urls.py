@@ -11,10 +11,12 @@
 """
 
 from django.conf.urls import url, patterns
-from openslides.agenda.views import (Overview, View, SetClosed, ItemUpdate,
+from openslides.agenda.views import (
+    Overview, View, SetClosed, ItemUpdate,
     ItemCreate, ItemDelete, AgendaPDF)
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^$',
         Overview.as_view(),
         name='item_overview',

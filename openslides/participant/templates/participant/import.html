@@ -1,11 +1,17 @@
-{% extends "participant/base_participant.html" %}
+{% extends "base.html" %}
 
 {% load i18n %}
 
 {% block title %}{{ block.super }} – {% trans "Import participants" %} {% endblock %}
 
 {% block content %}
-    <h1>{% trans 'Import participants' %}</h1>
+    <h1>
+        {% trans 'Import participants' %}
+        <small class="pull-right">
+        <a href="{% url 'user_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        </small>
+    </h1>
+
     <p>{% trans 'Select a CSV file to import participants!' %}</p>
 
     <p>{% trans 'Required comma separated values' %}:
@@ -18,15 +24,13 @@
     </p>
 
     <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
-        {{ form.as_p }}
+        {% include "form.html" %}
         <p>
-        <button class="button" type="submit">
+        <button class="btn btn-primary" type="submit">
             <span class="icon import">{% trans 'Import' %}</span>
         </button>
-        <a href="{% url 'user_overview' %}">
-        <button class="button" type="button"  onclick="window.location='{% url 'user_overview' %}'">
-            <span class="icon cancel">{% trans 'Cancel' %}</span>
-        </button>
+        <a href="{% url 'user_overview' %}" class="btn">
+            {% trans 'Cancel' %}
         </a>
         </p>
         <small>* {% trans "required" %}</small>

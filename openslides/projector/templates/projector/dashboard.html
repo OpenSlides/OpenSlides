@@ -1,27 +1,35 @@
-{% extends "projector/base_projector.html" %}
+{% extends "base.html" %}
 
 {% load tags %}
 {% load i18n %}
 {% load staticfiles %}
 
 {% block header %}
-    <link type="text/css" href="{% static 'styles/humanity/jquery-ui-1.8.18.custom.css' %}" rel="stylesheet" />
     <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/dashboard.css' %}" />
-    <script type="text/javascript" src="{% static 'javascript/jquery-ui-1.8.18.custom.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascript/dashboard.js' %}"></script>
+{% endblock %}
+{% block javascript %}
+    <script type="text/javascript" src="{% static 'javascript/jquery-ui.custom.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascript/jquery.cookie.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascript/jquery.form.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascript/dashboard.js' %}"></script>
 {% endblock %}
 
 {% block content %}
-    <h1>{% trans 'Dashboard' %}</h1>
+    <h1>{% trans 'Dashboard' %}
+        <small class="pull-right">
+            <a href="{% url 'projector_select_widgets' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Manage widgets' %}"><i class="icon-th-large"></i> {% trans 'Widgets' %}</a>
+        </small>
+    </h1>
 
     <div class="column" id="col1">
         {% for name, widget in widgets.items %}
             {% if widget.default_column == 1 %}
-                <div class="portlet" id="portlet_{{ widget.get_name }}">
-                    <div class="portlet-header">{% trans widget.get_title %}</div>
-                    <div class="portlet-content">
+                <div class="widget" id="widget_{{ widget.get_name }}">
+                    <div class="widget-header">
+                        <i class="{% if widget %}icon-{{widget.name}}{% else %}icon-star{% endif %}"></i>
+                        <h3>{% trans widget.get_title %}</h3>
+                    </div>
+                    <div class="widget-content">
                         {{ widget.html }}
                     </div>
                 </div>
@@ -32,9 +40,11 @@
     <div class="column" id="col2">
         {% for name, widget in widgets.items %}
             {% if widget.default_column == 2 %}
-                <div class="portlet" id="portlet_{{ widget.get_name }}">
-                    <div class="portlet-header">{% trans widget.get_title %}</div>
-                    <div class="portlet-content">
+                <div class="widget" id="widget_{{ widget.get_name }}">
+                    <div class="widget-header"><i class="{% if widget %}icon-{{widget.name}}{% else %}icon-star{% endif %}"></i>
+                        <h3>{% trans widget.get_title %}<h3>
+                    </div>
+                    <div class="widget-content">
                         {{ widget.html }}
                     </div>
                 </div>

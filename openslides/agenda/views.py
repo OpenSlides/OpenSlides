@@ -9,7 +9,9 @@
     :copyright: 2011, 2012 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
+
 from reportlab.platypus import Paragraph
+from datetime import datetime, timedelta
 
 from django.core.urlresolvers import reverse
 from django.contrib import messages
@@ -18,10 +20,12 @@ from django.db.models import Model
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.views.generic.detail import SingleObjectMixin
 
+from openslides.config.models import config
+from openslides.agenda.forms import ConfigForm
 from openslides.utils.pdf import stylesheet
 from openslides.utils.views import (
     TemplateView, RedirectView, UpdateView, CreateView, DeleteView, PDFView,
-    DetailView)
+    DetailView, FormView)
 from openslides.utils.template import Tab
 from openslides.utils.utils import html_strong
 from openslides.projector.api import get_active_slide
@@ -39,10 +43,44 @@ class Overview(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(Overview, self).get_context_data(**kwargs)
+
+        if self.request.user.has_perm('agenda.can_see_orga_items'):
+            items = Item.objects.all()
+        else:
+            items = Item.objects.filter(type__exact=Item.AGENDA_ITEM)
+
+        start = config['agenda_start_event_date_time']
+        if start is None or len(start) == 0:
+            start = None
+        else:
+            start = datetime.strptime(start, '%d.%m.%Y %H:%M')
+
+        duration = timedelta()
+
+        for item in items:
+            if not item.closed and (item.duration is not None
+                                    and len(item.duration) > 0):
+                duration_list = item.duration.split(':')
+                duration += timedelta(hours=int(duration_list[0]),
+                                      minutes=int(duration_list[1]))
+                if not start is None:
+                    item.tooltip = start + duration
+
+        if start is None:
+            end = None
+        else:
+            end = start + duration
+
+        duration = u'%d:%02d' % (
+            (duration.days * 24 + duration.seconds / 3600.0),
+            (duration.seconds / 60.0 % 60))
+
         context.update({
-            'items': Item.objects.all(),
+            'items': items,
             'active_sid': get_active_slide(only_sid=True),
-        })
+            'duration': duration,
+            'start': start,
+            'end': end})
         return context
 
     @transaction.commit_manually
@@ -91,7 +129,7 @@ class SetClosed(RedirectView, SingleObjectMixin):
     """
     permission_required = 'agenda.can_manage_agenda'
     allow_ajax = True
-    url = 'item_overview'
+    url_name = 'item_overview'
     model = Item
 
     def get_ajax_context(self, **kwargs):
@@ -103,8 +141,7 @@ class SetClosed(RedirectView, SingleObjectMixin):
             link = reverse('item_close', args=[self.object.id])
         context.update({
             'closed': kwargs['closed'],
-            'link': link,
-        })
+            'link': link})
         return context
 
     def pre_redirect(self, request, *args, **kwargs):
@@ -123,16 +160,7 @@ class ItemUpdate(UpdateView):
     model = Item
     context_object_name = 'item'
     form_class = ItemForm
-    success_url = 'item_overview'
-    apply_url = 'item_edit'
-
-    def get_success_url(self):
-        messages.success(
-            self.request, _("Item %s was successfully modified.")
-            % html_strong(self.request.POST['title']))
-        if 'apply' in self.request.POST:
-            return ''
-        return reverse(super(UpdateView, self).get_success_url())
+    success_url_name = 'item_overview'
 
 
 class ItemCreate(CreateView):
@@ -144,16 +172,7 @@ class ItemCreate(CreateView):
     model = Item
     context_object_name = 'item'
     form_class = ItemForm
-    success_url = 'item_overview'
-    apply_url = 'item_edit'
-
-    def get_success_url(self):
-        messages.success(
-            self.request, _("Item %s was successfully created.")
-            % html_strong(self.request.POST['title']))
-        if 'apply' in self.request.POST:
-            return reverse(self.get_apply_url(), args=[self.object.id])
-        return reverse(super(CreateView, self).get_success_url())
+    success_url_name = 'item_overview'
 
 
 class ItemDelete(DeleteView):
@@ -162,7 +181,8 @@ class ItemDelete(DeleteView):
     """
     permission_required = 'agenda.can_manage_agenda'
     model = Item
-    url = 'item_overview'
+    question_url_name = 'item_overview'
+    success_url_name = 'item_overview'
 
     def get_answer_options(self):
         if self.object.children.exists():
@@ -174,12 +194,14 @@ class ItemDelete(DeleteView):
         if self.get_answer() == 'all':
             self.object.delete(with_children=True)
             messages.success(
-                request, _("Item %s and his children were successfully deleted.")
+                request,
+                _("Item %s and his children were successfully deleted.")
                 % html_strong(self.object))
         elif self.get_answer() == 'yes':
             self.object.delete(with_children=False)
             messages.success(
-                request, _("Item %s was successfully deleted.")
+                request,
+                _("Item %s was successfully deleted.")
                 % html_strong(self.object))
 
 
@@ -192,7 +214,7 @@ class AgendaPDF(PDFView):
     document_title = ugettext_lazy('Agenda')
 
     def append_to_pdf(self, story):
-        for item in Item.objects.all():
+        for item in Item.objects.filter(type__exact=Item.AGENDA_ITEM):
             ancestors = item.get_ancestors()
             if ancestors:
                 space = "&nbsp;" * 6 * ancestors.count()
@@ -203,6 +225,26 @@ class AgendaPDF(PDFView):
                 story.append(Paragraph(item.get_title(), stylesheet['Item']))
 
 
+class Config(FormView):
+    """
+    Config page for the agenda app.
+    """
+    permission_required = 'config.can_manage_config'
+    form_class = ConfigForm
+    template_name = 'agenda/config.html'
+    success_url_name = 'config_agenda'
+
+    def get_initial(self):
+        return {
+            'agenda_start_event_date_time': config['agenda_start_event_date_time'],
+        }
+
+    def form_valid(self, form):
+        config['agenda_start_event_date_time'] = form.cleaned_data['agenda_start_event_date_time']
+        messages.success(self.request, _('Agenda settings successfully saved.'))
+        return super(Config, self).form_valid(form)
+
+
 def register_tab(request):
     """
     register the agenda tab.
@@ -210,6 +252,7 @@ def register_tab(request):
     selected = request.path.startswith('/agenda/')
     return Tab(
         title=_('Agenda'),
+        app='agenda',
         url=reverse('item_overview'),
         permission=(request.user.has_perm('agenda.can_see_agenda') or
                     request.user.has_perm('agenda.can_manage_agenda')),
@@ -220,12 +263,11 @@ def get_widgets(request):
     """
     return the agenda widget for the projector-tab.
     """
-    return [
-        Widget(
-            name='agenda',
-            display_name=_('Agenda'),
-            template='agenda/widget.html',
-            context={
-                'agenda': SLIDE['agenda'],
-                'items': Item.objects.all()},
-            permission_required='projector.can_manage_projector')]
+    return [Widget(
+        name='agenda',
+        display_name=_('Agenda'),
+        template='agenda/widget.html',
+        context={
+            'agenda': SLIDE['agenda'],
+            'items': Item.objects.all()},
+        permission_required='projector.can_manage_projector')]
