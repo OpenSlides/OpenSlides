@@ -4,7 +4,7 @@
     openslides.motion.slides
     ~~~~~~~~~~~~~~~~~~~~~~~~
 
-    Defines the Slides for the motion app.
+    Defines the slides for the motion app.
 
     :copyright: (c) 2011-2013 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
