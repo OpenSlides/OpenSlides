@@ -350,7 +350,7 @@ class Motion(SlideMixin, models.Model):
 
     def get_agenda_title(self):
         """Return a title for the Agenda."""
-        return self.last_version.title
+        return self.last_version.title  # TODO: nutze active_version
 
     ## def get_agenda_title_supplement(self):
         ## number = self.number or '<i>[%s]</i>' % ugettext('no number')
@@ -529,7 +529,7 @@ class MotionLog(models.Model):
     motion = models.ForeignKey(Motion, related_name='log_messages')
     """The motion to witch the object belongs."""
 
-    message = models.CharField(max_length=255)
+    message = models.CharField(max_length=255)  # TODO: arguments in message, not translatable
     """The log message.
 
     Should be in english.
