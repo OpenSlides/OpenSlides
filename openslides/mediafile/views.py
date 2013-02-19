@@ -74,6 +74,8 @@ def register_tab(request):
     selected = request.path.startswith('/mediafile/')
     return Tab(
         title=_('Media'),
+        app='mediafile',  # Rename this to icon='mediafile'
+        stylefile='styles/mediafile.css',
         url=reverse('mediafile_list'),
         permission=(request.user.has_perm('mediafile.can_see') or
                     request.user.has_perm('mediafile.can_upload') or

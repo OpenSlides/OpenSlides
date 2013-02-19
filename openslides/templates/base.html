@@ -12,13 +12,14 @@
     <title>{% block title %}{% get_config 'event_name' %}{% endblock %}</title>
 
     <!-- styles -->
-    <link href="{% static 'styles/bootstrap.min.css' %}" type="text/css" rel="stylesheet">
-    <link href="{% static 'styles/bootstrap-responsive.min.css' %}" type="text/css" rel="stylesheet">
-    <link href="{% static 'styles/base.css' %}" type="text/css" rel="stylesheet">
+    <link href="{% static 'styles/bootstrap.min.css' %}" type="text/css" rel="stylesheet" />
+    <link href="{% static 'styles/bootstrap-responsive.min.css' %}" type="text/css" rel="stylesheet" />
+    <link href="{% static 'styles/base.css' %}" type="text/css" rel="stylesheet" />
     <link href="{% static 'img/favicon.png' %}" type="image/png" rel="shortcut icon" />
-
-    {% block header %}
-    {% endblock %}
+    {% for stylefile in extra_stylefiles %}
+        <link href="{% static stylefile %}" type="text/css" rel="stylesheet" />
+    {% endfor %}
+    {% block header %}{% endblock %}
 </head>
 <body>
     <!-- Navbar -->
@@ -26,7 +27,7 @@
         <div class="row-fluid">
             <div class="span12">
                 <div id="header">
-                    <a href="/" class="logo" title="{% trans 'Home' %}"><img src="{% static 'img/logo.png' %}"></a>
+                    <a href="/" class="logo" title="{% trans 'Home' %}"><img src="{% static 'img/logo.png' %}" /></a>
                     <!--<a class="title" href="#">{% get_config 'event_name' %}</a>-->
                     {% block loginbutton %}
                     <div class="btn-group pull-right">
@@ -65,7 +66,7 @@
             {% if tab.permission %}
             <li{% if tab.selected %} class="active"{% endif %}>
                 <a href="{{ tab.url }}">
-                <span class="ico"><i class="icon-{{tab.app}}"></i></span>
+                <span class="ico"><i class="icon-{{ tab.app }}"></i></span>
                 <span class="text">{{ tab.title }}</span>
                 </a>
             </li>
@@ -94,7 +95,7 @@
       {% endblock %}
     </div>
   </div>
-  <hr>
+  <hr />
   <footer>
       <small>
       &copy; Copyright 2011-2013 | Powered by <a href="http://openslides.org" target="_blank">OpenSlides</a> | {% trans "Get <a href='http://openslides.org/support' target='_blank'>professional support</a> for OpenSlides." %}
@@ -111,7 +112,6 @@
     <script src="{% static 'javascript/bootstrap.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'javascript/utils.js' %}" type="text/javascript"></script>
     <script src="{% url 'django.views.i18n.javascript_catalog' %}" type="text/javascript"></script>
-    {% block javascript %}
-    {% endblock %}
+    {% block javascript %}{% endblock %}
 </body>
 </html>

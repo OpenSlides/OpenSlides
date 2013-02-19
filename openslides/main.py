@@ -347,7 +347,8 @@ def start_openslides(addr, port, start_browser_url=None, extra_args=[]):
     # Start the server
     app = tornado.wsgi.WSGIContainer(django.core.handlers.wsgi.WSGIHandler())
     tornado_app = tornado.web.Application([
-        (r"%s(.*)" % settings.STATIC_URL, StaticFileHandler),
+        (r'%s(.*)' % settings.STATIC_URL, StaticFileHandler),
+        (r'%s(.*)' % settings.MEDIA_URL, tornado.web.StaticFileHandler, {'path': settings.MEDIA_ROOT}),
         ('.*', tornado.web.FallbackHandler, dict(fallback=app))])
 
     server = tornado.httpserver.HTTPServer(tornado_app)

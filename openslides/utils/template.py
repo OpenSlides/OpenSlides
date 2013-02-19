@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    openslides.template
-    ~~~~~~~~~~~~~~~~~~~
+    openslides.utils.template
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Useful template functions for OpenSlides.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -15,13 +15,13 @@ from django.template.loader_tags import BlockNode, ExtendsNode
 
 
 class Tab(object):
-    def __init__(self, title='', app='', url='', permission=True, selected=False):
-        self.selected = False
+    def __init__(self, title='', app='', stylefile='', url='', permission=True, selected=False):
         self.title = title
         self.app = app
+        self.stylefile = stylefile
+        self.url = url
         self.permission = permission
         self.selected = selected
-        self.url = url
 
 
 ## All following function are only needed to render a block from a template
