@@ -52,7 +52,7 @@
        </div>
        {% endif %}
 
-        <h1>{% trans "Agenda" %} 
+        <h1>{% trans "Agenda" %}
             <small class="pull-right">
             {% if perms.agenda.can_manage_agenda %}
             <a href="{% url 'item_new' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New item' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
@@ -60,7 +60,21 @@
             <a href="{% url 'print_agenda' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print agenda as PDF' %}"><i class="icon-print"></i> PDF</a>
             </small>
         </h1>
-
+        
+        {% if perms.agenda.can_see_orga_items %}
+        {% if start and end %}
+        <table id="agendatime" class="table table-bordered">
+           <tr>
+               <td>{% trans "Start of event" %}:</td>
+               <td>{{ start|date:"DATETIME_FORMAT" }}</td>
+           </tr>
+           <tr>
+               <td>{% trans "Estimated end" %}:</td>
+               <td>{{ end|date:"DATETIME_FORMAT" }}</td>
+           </tr>
+        </table>
+        {% endif %}
+        {% endif %}
         <label class="checkbox">
             <input type="checkbox" id="hide_closed_items"> {% trans "Hide closed items" %}
         </label>
@@ -74,6 +88,9 @@
                 <th>{% trans "Item" %}</th>
                 {% if perms.agenda.can_manage_agenda %}
                     <th width="200" class="optional">{% trans "Comment" %}</th>
+                {% endif %}
+                {% if perms.agenda.can_see_orga_items %}
+                    <th width="50">{% trans "Duration" %}</th>
                 {% endif %}
                 {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
                     <th class="mini_width">{% trans "Actions" %}</th>
@@ -89,6 +106,9 @@
                 </td>
                 {% if perms.agenda.can_manage_agenda %}
                 <td class="optional"></td>
+                {% endif %}
+                {% if perms.agenda.can_see_orga_items %}
+                <td>{{ duration }}h</td>
                 {% endif %}
                 {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
                 <td>
@@ -110,7 +130,7 @@
             {% endfor %}
         {% else %}
             <tr>
-                <td colspan="4"><i>{% trans "No items available." %}</i></td>
+                <td colspan="5"><i>{% trans "No items available." %}</i></td>
             </tr>
         {% endif %}
         </table>

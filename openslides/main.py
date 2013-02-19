@@ -20,7 +20,16 @@ import tempfile
 import threading
 import time
 import webbrowser
+import posixpath
+from urllib import unquote
 
+from tornado.options import options, define, parse_command_line
+import tornado.httpserver
+import tornado.ioloop
+import tornado.web
+import tornado.wsgi
+
+import django.core.handlers.wsgi
 import django.conf
 from django.core.management import execute_from_command_line
 
@@ -76,12 +85,12 @@ KEY_LENGTH = 30
 _portable_db_path = object()
 
 
-def process_options(argv=None):
+def process_options(argv=None, check_args=True):
     if argv is None:
         argv = sys.argv[1:]
 
     parser = optparse.OptionParser(
-        description="Run openslides using django's builtin webserver")
+        description="Run openslides using the tornado webserver")
     parser.add_option("-a", "--address", help="IP Address to listen on.")
     parser.add_option("-p", "--port", type="int", help="Port to listen on.")
     parser.add_option(
@@ -107,7 +116,11 @@ def process_options(argv=None):
     if opts.version:
         print get_version()
         exit(0)
-    if args:
+
+    # Don't check for further args if we come from our custom management
+    # command, that always sets them
+    if args and check_args:
+
         sys.stderr.write("This command does not take arguments!\n\n")
         parser.print_help()
         sys.exit(1)
@@ -115,8 +128,8 @@ def process_options(argv=None):
     return opts
 
 
-def main(argv=None):
-    opts = process_options(argv)
+def main(argv=None, check_args=True):
+    opts = process_options(argv, check_args)
     _main(opts)
 
 
@@ -306,14 +319,41 @@ def create_or_reset_admin_user():
     admin.save()
 
 
+class StaticFileHandler(tornado.web.StaticFileHandler):
+    """Handels static data by using the django finders."""
+
+    def initialize(self):
+        """Overwrite some attributes."""
+        self.root = ''
+        self.default_filename = None
+
+    def get(self, path, include_body=True):
+        from django.contrib.staticfiles import finders
+        normalized_path = posixpath.normpath(unquote(path)).lstrip('/')
+        absolute_path = finders.find(normalized_path)
+        return super(StaticFileHandler, self).get(absolute_path, include_body)
+
+
 def start_openslides(addr, port, start_browser_url=None, extra_args=[]):
-    argv = ["", "runserver", '--noreload'] + extra_args
+    from django.conf import settings
+    # Set the options
+    define('port', type=int, default=port)
+    define('address', default=addr)
 
-    argv.append("%s:%d" % (addr, port))
-
+    # Open the browser
     if start_browser_url:
         start_browser(start_browser_url)
-    execute_from_command_line(argv)
+
+    # Start the server
+    app = tornado.wsgi.WSGIContainer(django.core.handlers.wsgi.WSGIHandler())
+    tornado_app = tornado.web.Application([
+        (r"%s(.*)" % settings.STATIC_URL, StaticFileHandler),
+        ('.*', tornado.web.FallbackHandler, dict(fallback=app))])
+
+    server = tornado.httpserver.HTTPServer(tornado_app)
+    server.listen(port=options.port,
+                  address=options.address)
+    tornado.ioloop.IOLoop.instance().start()
 
 
 def start_browser(url):

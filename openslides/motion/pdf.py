@@ -5,6 +5,9 @@
     ~~~~~~~~~~~~~~~~~~~~~
 
     Functions to generate the PDFs for the motion app.
+
+    :copyright: (c) 2011-2013 by the OpenSlides team, see AUTHORS.
+    :license: GNU GPL, see LICENSE for more details.
 """
 
 from reportlab.lib import colors
