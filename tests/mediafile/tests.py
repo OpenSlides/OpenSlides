@@ -30,7 +30,8 @@ class MediafileTest(TestCase):
     """
     def setUp(self):
         # Setup a mediafile object
-        mediafile_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=settings.MEDIA_ROOT)[1]
+        self.tmp_dir = settings.MEDIA_ROOT  # TODO: Find a way not to have to create the path manually.
+        mediafile_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=self.tmp_dir)[1]
         self.object = Mediafile.objects.create(title='Title File 1', mediafile=mediafile_path)
 
         # Setup the three permissions
@@ -145,7 +146,7 @@ class MediafileTest(TestCase):
 
     def test_edit_mediafile_post_request(self):
         # Test only one user
-        mediafile_2_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=settings.MEDIA_ROOT)[1]
+        mediafile_2_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=self.tmp_dir)[1]
         object_2 = Mediafile.objects.create(title='Title File 2', mediafile=mediafile_2_path)
 
         client_1 = self.login_clients()['client_manager']
@@ -173,14 +174,14 @@ class MediafileTest(TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_delete_mediafile_post_request(self):
-        mediafile_3_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=settings.MEDIA_ROOT)[1]
+        mediafile_3_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=self.tmp_dir)[1]
         object_3 = Mediafile.objects.create(title='Title File 3', mediafile=mediafile_3_path)
         client_1 = self.login_clients()['client_manager']
         response_1 = client_1.post('/mediafile/2/del/', {'yes': 'foo'})
         self.assertEqual(response_1.status_code, 302)
 
     def test_filesize(self):
-        mediafile_4_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=settings.MEDIA_ROOT)[1]
+        mediafile_4_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=self.tmp_dir)[1]
         object_4 = Mediafile.objects.create(title='Title File 4', mediafile=mediafile_4_path)
         self.assertEqual(object_4.get_filesize(), '< 1 kB')
         with open(object_4.mediafile.path, 'wb') as bigfile:

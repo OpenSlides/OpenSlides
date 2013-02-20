@@ -30,7 +30,7 @@
             <td>{{ mediafile.filetype }}</td>
             <td>{{ mediafile.get_filesize }}</td>
             <td>{{ mediafile.timestamp }}</td>
-            <td>&nbsp;</td>
+            <td>{{ mediafile.uploader }}</td>
             {% if perms.mediafile.can_manage %}
             <td>
                 <span style="width: 1px; white-space: nowrap;">
