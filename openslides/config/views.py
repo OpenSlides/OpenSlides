@@ -23,7 +23,7 @@ from .forms import GeneralConfigForm
 from .models import config
 
 # TODO: Do not import the participant module in config
-from openslides.participant.api import get_or_create_anonymous_group
+from openslides.participant.api import get_or_create_special_group
 
 
 class GeneralConfig(FormView):
@@ -62,7 +62,7 @@ class GeneralConfig(FormView):
         # system
         if form.cleaned_data['system_enable_anonymous']:
             config['system_enable_anonymous'] = True
-            get_or_create_anonymous_group()
+            get_or_create_special_group(name='Anonymous')
         else:
             config['system_enable_anonymous'] = False
 

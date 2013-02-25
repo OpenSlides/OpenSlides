@@ -13,6 +13,7 @@
 from random import choice
 import csv
 
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Permission
 from django.db import transaction
 from django.utils.translation import ugettext as _
@@ -22,8 +23,13 @@ from openslides.utils import csv_ext
 from openslides.participant.models import User, Group
 
 
-DEFAULT_PERMS = ['can_see_agenda', 'can_see_projector', 'can_see_motion',
-                 'can_see_assignment', 'can_see_filelist', 'can_see_dashboard']
+DEFAULT_PERMISSIONS = (
+    'agenda.can_see_agenda',
+    'projector.can_see_projector',
+    'projector.can_see_dashboard',
+    'motion.can_see_motion',
+    'assignment.can_see_assignment',
+    'mediafile.can_see')
 
 
 def gen_password():
@@ -96,21 +102,26 @@ def import_users(csv_file):
     return (count_success, error_messages)
 
 
-def get_or_create_registered_group():
-    registered, created = Group.objects.get_or_create(
-        name__iexact='Registered', defaults={'name': 'Registered'})
+def get_or_create_special_group(name):
+    """
+    Returns a special group with the given name. If the group does not
+    exist, it is created using the DEFAULT_PERMISSIONS.
+    """
+    special_group, created = Group.objects.get_or_create(
+        name__iexact=name, defaults={'name': name})
     if created:
-        registered.permissions = Permission.objects.filter(
-            codename__in=DEFAULT_PERMS)
-        registered.save()
-    return registered
+        for permission in get_default_permissions():
+            special_group.permissions.add(permission)
+    return special_group
 
 
-def get_or_create_anonymous_group():
-    anonymous, created = Group.objects.get_or_create(
-        name__iexact='Anonymous', defaults={'name': 'Anonymous'})
-    if created:
-        anonymous.permissions = Permission.objects.filter(
-            codename__in=DEFAULT_PERMS)
-        anonymous.save()
-    return anonymous
+def get_default_permissions():
+    """
+    Generator to return all default permissions as django's auth objects.
+    """
+    permission_dict = {}
+    for permission in Permission.objects.select_related():
+        permission_dict['%s.%s' % (permission.content_type.app_label, permission.codename)] = permission
+    for key in permission_dict:
+        if key in DEFAULT_PERMISSIONS:
+            yield permission_dict[key]
