@@ -1,8 +1,12 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    Start script for OpenSlides.
+    openslides.utils.management.commands.runserver
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    Overrides the Django runserver command to start the tornado webserver.
+
+    :copyright: (c) 2011-2013 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 
 """
