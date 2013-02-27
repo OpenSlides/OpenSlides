@@ -3,6 +3,6 @@ django-mptt==0.5.5
 reportlab==2.6
 PIL==1.1.7
 coverage==3.6
-django-discover-runner==0.2.2
-pep8==1.4
+django-discover-runner==0.3
+pep8==1.4.4
 tornado==2.4.1
