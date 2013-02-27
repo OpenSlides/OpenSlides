@@ -20,20 +20,12 @@ import tempfile
 import threading
 import time
 import webbrowser
-import posixpath
-from urllib import unquote
 
-from tornado.options import options, define, parse_command_line
-import tornado.httpserver
-import tornado.ioloop
-import tornado.web
-import tornado.wsgi
-
-import django.core.handlers.wsgi
-import django.conf
+from django.conf import ENVIRONMENT_VARIABLE
 from django.core.management import execute_from_command_line
 
 from openslides import get_version
+from openslides.utils.tornado_webserver import run_tornado
 
 CONFIG_TEMPLATE = """#!/usr/bin/env python
 # -*- coding: utf-8 -*-
@@ -229,7 +221,7 @@ def setup_django_environment(settings_path):
         sys.exit(1)
     settings_module_dir = os.path.dirname(settings_path)
     sys.path.append(settings_module_dir)
-    os.environ[django.conf.ENVIRONMENT_VARIABLE] = '%s' % settings_module_name
+    os.environ[ENVIRONMENT_VARIABLE] = '%s' % settings_module_name
 
 
 def detect_listen_opts(address, port):
@@ -311,41 +303,13 @@ def create_or_reset_admin_user():
     admin.save()
 
 
-class StaticFileHandler(tornado.web.StaticFileHandler):
-    """Handels static data by using the django finders."""
-
-    def initialize(self):
-        """Overwrite some attributes."""
-        self.root = ''
-        self.default_filename = None
-
-    def get(self, path, include_body=True):
-        from django.contrib.staticfiles import finders
-        normalized_path = posixpath.normpath(unquote(path)).lstrip('/')
-        absolute_path = finders.find(normalized_path)
-        return super(StaticFileHandler, self).get(absolute_path, include_body)
-
-
 def start_openslides(addr, port, start_browser_url=None, extra_args=[]):
-    from django.conf import settings
-    # Set the options
-    define('port', type=int, default=port)
-    define('address', default=addr)
-
     # Open the browser
     if start_browser_url:
         start_browser(start_browser_url)
 
     # Start the server
-    app = tornado.wsgi.WSGIContainer(django.core.handlers.wsgi.WSGIHandler())
-    tornado_app = tornado.web.Application([
-        (r"%s(.*)" % settings.STATIC_URL, StaticFileHandler),
-        ('.*', tornado.web.FallbackHandler, dict(fallback=app))])
-
-    server = tornado.httpserver.HTTPServer(tornado_app)
-    server.listen(port=options.port,
-                  address=options.address)
-    tornado.ioloop.IOLoop.instance().start()
+    run_tornado(addr, port)
 
 
 def start_browser(url):
