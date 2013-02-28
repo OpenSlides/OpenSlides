@@ -43,7 +43,7 @@ setup(
         'django >= 1.5',
         'django-mptt',
         'reportlab',
-        'pil',
+        'pillow',
         'tornado',
     ],
     entry_points={
