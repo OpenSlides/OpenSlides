@@ -11,26 +11,110 @@
 """
 
 from django.dispatch import receiver
-from django.utils.translation import ugettext as _, ugettext_noop
+from django import forms
+from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
 
-from openslides.config.signals import default_config_value
+from openslides.config.signals import config_signal
+from openslides.config.api import ConfigVariable, ConfigPage
 from openslides.core.signals import post_database_setup
 
 from .models import Workflow, State
 
 
-@receiver(default_config_value, dispatch_uid="motion_default_config")
-def default_config(sender, key, **kwargs):
-    """Return the default config values for the motion app."""
-    return {
-        'motion_min_supporters': 0,
-        'motion_preamble': _('The assembly may decide,'),
-        'motion_pdf_ballot_papers_selection': 'CUSTOM_NUMBER',
-        'motion_pdf_ballot_papers_number': '8',
-        'motion_pdf_title': _('Motions'),
-        'motion_pdf_preamble': '',
-        'motion_allow_disable_versioning': False,
-        'motion_workflow': 1}.get(key)
+@receiver(config_signal, dispatch_uid='setup_motion_config_page')
+def setup_motion_config_page(sender, **kwargs):
+    """
+    Motion config variables.
+    """
+    motion_min_supporters = ConfigVariable(
+        name='motion_min_supporters',
+        default_value=0,
+        form_field=forms.IntegerField(
+            widget=forms.TextInput(attrs={'class': 'small-input'}),
+            label=_('Number of (minimum) required supporters for a motion'),
+            initial=4,
+            min_value=0,
+            max_value=8,
+            help_text=_('Choose 0 to disable the supporting system')))
+    motion_preamble = ConfigVariable(
+        name='motion_preamble',
+        default_value=_('The assembly may decide,'),
+        form_field=forms.CharField(
+            widget=forms.TextInput(),
+            required=False,
+            label=_('Motion preamble')))
+    motion_pdf_ballot_papers_selection = ConfigVariable(
+        name='motion_pdf_ballot_papers_selection',
+        default_value='CUSTOM_NUMBER',
+        form_field=forms.ChoiceField(
+            widget=forms.Select(),
+            required=False,
+            label=_('Number of ballot papers (selection)'),
+            choices=[
+                ('NUMBER_OF_DELEGATES', _('Number of all delegates')),
+                ('NUMBER_OF_ALL_PARTICIPANTS', _('Number of all participants')),
+                ('CUSTOM_NUMBER', _("Use the following custom number"))]))
+    motion_pdf_ballot_papers_number = ConfigVariable(
+        name='motion_pdf_ballot_papers_number',
+        default_value=8,
+        form_field=forms.IntegerField(
+            widget=forms.TextInput(attrs={'class': 'small-input'}),
+            required=False,
+            min_value=1,
+            label=_('Custom number of ballot papers')))
+    motion_pdf_title = ConfigVariable(
+        name='motion_pdf_title',
+        default_value=_('Motions'),
+        form_field=forms.CharField(
+            widget=forms.TextInput(),
+            required=False,
+            label=_('Title for PDF document (all motions)')))
+    motion_pdf_preamble = ConfigVariable(
+        name='motion_pdf_preamble',
+        default_value='',
+        form_field=forms.CharField(
+            widget=forms.Textarea(),
+            required=False,
+            label=_('Preamble text for PDF document (all motions)')))
+    motion_allow_disable_versioning = ConfigVariable(
+        name='motion_allow_disable_versioning',
+        default_value=False,
+        form_field=forms.BooleanField(
+            label=_('Allow to disable versioning'),
+            required=False))
+    motion_workflow = ConfigVariable(
+        name='motion_workflow',
+        default_value=1,
+        form_field=forms.ChoiceField(
+            widget=forms.Select(),
+            label=_('Workflow of new motions'),
+            required=True,
+            choices=[(workflow.pk, workflow.name) for workflow in Workflow.objects.all()]))
+    motion_identifier = ConfigVariable(
+        name='motion_identifier',
+        default_value='manually',
+        form_field=forms.ChoiceField(
+            widget=forms.Select(),
+            required=False,
+            label=_('Identifier'),
+            choices=[
+                ('manually', _('Set it manually')),
+                ('per_category', _('Numbered per category')),
+                ('serially_numbered', _('Serially numbered'))]))
+
+    return ConfigPage(title=ugettext_noop('Motion'),
+                      url='motion',
+                      required_permission='config.can_manage',
+                      weight=30,
+                      variables=(motion_min_supporters,
+                                 motion_preamble,
+                                 motion_pdf_ballot_papers_selection,
+                                 motion_pdf_ballot_papers_number,
+                                 motion_pdf_title,
+                                 motion_pdf_preamble,
+                                 motion_allow_disable_versioning,
+                                 motion_workflow,
+                                 motion_identifier))
 
 
 @receiver(post_database_setup, dispatch_uid='motion_create_builtin_workflows')

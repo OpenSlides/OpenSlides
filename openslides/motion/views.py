@@ -29,19 +29,15 @@ from openslides.utils.utils import html_strong, htmldiff
 from openslides.poll.views import PollFormView
 from openslides.projector.api import get_active_slide
 from openslides.projector.projector import Widget, SLIDE
-from openslides.config.models import config
+from openslides.config.api import config
 from openslides.agenda.models import Item
 
 from .models import (Motion, MotionSubmitter, MotionSupporter, MotionPoll,
                      MotionVersion, State, WorkflowError, Category)
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
-                    MotionDisableVersioningMixin, ConfigForm, MotionCategoryMixin,
+                    MotionDisableVersioningMixin, MotionCategoryMixin,
                     MotionIdentifierMixin)
 from .pdf import motions_to_pdf, motion_to_pdf
-
-
-# TODO: into the config-tab
-config['motion_identifier'] = ('manually', 'per_category', 'serially_numbered')[2]
 
 
 class MotionListView(ListView):
@@ -590,49 +586,15 @@ class CategoryDeleteView(DeleteView):
 category_delete = CategoryDeleteView.as_view()
 
 
-class Config(FormView):
-    """The View for the config tab."""
-    permission_required = 'config.can_manage_config'
-    form_class = ConfigForm
-    template_name = 'motion/config.html'
-    success_url_name = 'config_motion'
-
-    def get_initial(self):
-        return {
-            'motion_min_supporters': config['motion_min_supporters'],
-            'motion_preamble': config['motion_preamble'],
-            'motion_pdf_ballot_papers_selection': config['motion_pdf_ballot_papers_selection'],
-            'motion_pdf_ballot_papers_number': config['motion_pdf_ballot_papers_number'],
-            'motion_pdf_title': config['motion_pdf_title'],
-            'motion_pdf_preamble': config['motion_pdf_preamble'],
-            'motion_allow_disable_versioning': config['motion_allow_disable_versioning'],
-            'motion_workflow': config['motion_workflow'],
-        }
-
-    def form_valid(self, form):
-        config['motion_min_supporters'] = form.cleaned_data['motion_min_supporters']
-        config['motion_preamble'] = form.cleaned_data['motion_preamble']
-        config['motion_pdf_ballot_papers_selection'] = form.cleaned_data['motion_pdf_ballot_papers_selection']
-        config['motion_pdf_ballot_papers_number'] = form.cleaned_data['motion_pdf_ballot_papers_number']
-        config['motion_pdf_title'] = form.cleaned_data['motion_pdf_title']
-        config['motion_pdf_preamble'] = form.cleaned_data['motion_pdf_preamble']
-        config['motion_allow_disable_versioning'] = form.cleaned_data['motion_allow_disable_versioning']
-        config['motion_workflow'] = form.cleaned_data['motion_workflow']
-        messages.success(self.request, _('Motion settings successfully saved.'))
-        return super(Config, self).form_valid(form)
-
-
 def register_tab(request):
     """Return the motion tab."""
-    # TODO: Find a bether way to set the selected var.
-    selected = request.path.startswith('/motion/')
+    # TODO: Find a better way to set the selected var.
     return Tab(
         title=_('Motions'),
         app='motion',
         url=reverse('motion_list'),
         permission=request.user.has_perm('motion.can_see_motion'),
-        selected=selected,
-    )
+        selected=request.path.startswith('/motion/'))
 
 
 def get_widgets(request):

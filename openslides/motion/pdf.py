@@ -6,7 +6,7 @@
 
     Functions to generate the PDFs for the motion app.
 
-    :copyright: (c) 2011-2013 by the OpenSlides team, see AUTHORS.
+    :copyright: (c) 2011–2013 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -16,9 +16,8 @@ from reportlab.platypus import (
     SimpleDocTemplate, PageBreak, Paragraph, Spacer, Table, TableStyle)
 from django.utils.translation import ugettext as _
 
-from openslides.config.models import config
+from openslides.config.api import config
 from openslides.utils.pdf import stylesheet
-
 from .models import Motion
 
 

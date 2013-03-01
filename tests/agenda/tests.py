@@ -191,3 +191,18 @@ class ViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.refreshItems()
         self.assertEqual(self.item1.title, 'newitem1')
+
+
+class ConfigTest(TestCase):
+    def setUp(self):
+        self.admin = User.objects.create(username='config_test_admin')
+        self.admin.reset_password('default')
+        self.admin.is_superuser = True
+        self.admin.save()
+        self.client = Client()
+        self.client.login(username='config_test_admin', password='default')
+
+    def test_config_page_css_javascript(self):
+        response = self.client.get('/config/agenda/')
+        self.assertContains(response, 'timepicker.css', status_code=200)
+        self.assertContains(response, 'jquery-ui-timepicker-addon.min.js', status_code=200)

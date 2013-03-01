@@ -6,7 +6,7 @@
 
     Models for the participant app.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -14,14 +14,11 @@ from django.contrib.auth.models import User as DjangoUser, Group as DjangoGroup
 from django.db import models
 from django.db.models import signals
 from django.dispatch import receiver
-from django.utils.translation import ugettext_lazy as _, ugettext_noop
+from django.utils.translation import ugettext_lazy as _, ugettext_noop  # TODO: Change this in the code
 
 from openslides.utils.person import PersonMixin, Person
 from openslides.utils.person.signals import receive_persons
-
-from openslides.config.models import config
-from openslides.config.signals import default_config_value
-
+from openslides.config.api import config
 from openslides.projector.api import register_slidemodel
 from openslides.projector.projector import SlideMixin
 
@@ -224,19 +221,6 @@ def receive_persons(sender, **kwargs):
     return UsersAndGroupsToPersons(
         person_prefix_filter=kwargs['person_prefix_filter'],
         id_filter=kwargs['id_filter'])
-
-
-@receiver(default_config_value, dispatch_uid="participant_default_config")
-def default_config(sender, key, **kwargs):
-    """
-    Default values for the participant app.
-    """
-    # TODO: Rename config-vars
-    return {
-        'participant_pdf_system_url': 'http://example.com:8000',
-        'participant_pdf_welcometext': _('Welcome to OpenSlides!'),
-        'participant_sort_users_by_first_name': False,
-    }.get(key)
 
 
 @receiver(signals.post_save, sender=DjangoUser)

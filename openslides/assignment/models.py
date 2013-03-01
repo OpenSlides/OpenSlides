@@ -6,18 +6,16 @@
 
     Models for the assignment app.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.dispatch import receiver
-from django.utils.translation import ugettext_lazy as _, ugettext_noop
+from django.utils.translation import ugettext_lazy as _, ugettext_noop  # TODO Change this in the code
 
 from openslides.utils.person import PersonField
-from openslides.config.models import config
-from openslides.config.signals import default_config_value
+from openslides.config.api import config
 from openslides.projector.api import register_slidemodel
 from openslides.projector.projector import SlideMixin
 from openslides.poll.models import (
@@ -308,15 +306,3 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
 
     def __unicode__(self):
         return _("Ballot %d") % self.get_ballot()
-
-
-@receiver(default_config_value, dispatch_uid="assignment_default_config")
-def default_config(sender, key, **kwargs):
-    return {
-        'assignment_publish_winner_results_only': False,
-        'assignment_pdf_ballot_papers_selection': 'CUSTOM_NUMBER',
-        'assignment_pdf_ballot_papers_number': '8',
-        'assignment_pdf_title': _('Elections'),
-        'assignment_pdf_preamble': '',
-        'assignment_poll_vote_values': 'auto',
-    }.get(key)

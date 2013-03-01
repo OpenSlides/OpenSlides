@@ -15,7 +15,7 @@ from django.core.cache import cache
 from django.utils.datastructures import SortedDict
 from django.utils.importlib import import_module
 
-from openslides.config.models import config
+from openslides.config.api import config
 from openslides.projector.projector import SLIDE, Slide
 
 

@@ -6,15 +6,13 @@
 
     Models for the projector app.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
 from django.db import models
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _, ugettext_noop
-
-from openslides.config.signals import default_config_value
 
 from openslides.projector.api import register_slidemodel
 from openslides.projector.projector import SlideMixin
@@ -70,16 +68,3 @@ class ProjectorOverlay(models.Model):
         if self.sid:
             return "%s on %s" % (self.def_name, self.sid)
         return self.def_name
-
-
-@receiver(default_config_value, dispatch_uid="projector_default_config")
-def default_config(sender, key, **kwargs):
-    return {
-        'projector_message': '',
-        'countdown_time': 60,
-        'countdown_start_stamp': 0,
-        'countdown_pause_stamp': 0,
-        'countdown_state': 'inactive',
-        'bigger': 100,
-        'up': 0,
-    }.get(key)

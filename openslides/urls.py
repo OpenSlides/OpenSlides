@@ -14,15 +14,10 @@ from django.conf import settings
 from django.conf.urls import patterns, url, include
 from django.utils.importlib import import_module
 
-from openslides.utils.views import RedirectView
-
 
 handler500 = 'openslides.utils.views.server_error'
 
 urlpatterns = patterns('',
-    # Redirect to dashboard URL
-    url(r'^$', RedirectView.as_view(url='projector/dashboard'), name='home',),
-
     (r'^agenda/', include('openslides.agenda.urls')),
     (r'^motion/', include('openslides.motion.urls')),
     (r'^assignment/', include('openslides.assignment.urls')),
@@ -68,4 +63,8 @@ urlpatterns += patterns('',
         'openslides.participant.views.user_settings_password',
         name='password_change',
     ),
+)
+
+urlpatterns += patterns('',
+    (r'^', include('openslides.core.urls')),
 )
