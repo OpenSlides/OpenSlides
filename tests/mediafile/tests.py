@@ -30,7 +30,8 @@ class MediafileTest(TestCase):
     """
     def setUp(self):
         # Setup a mediafile object
-        self.tmp_dir = settings.MEDIA_ROOT  # TODO: Find a way not to have to create the path manually.
+        self.tmp_dir = os.path.realpath(os.path.dirname(__file__))
+        settings.MEDIA_ROOT = self.tmp_dir
         mediafile_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=self.tmp_dir)[1]
         self.object = Mediafile.objects.create(title='Title File 1', mediafile=mediafile_path)
 
@@ -102,8 +103,8 @@ class MediafileTest(TestCase):
         client_1 = self.login_clients()['client_manager']
         new_file_1 = SimpleUploadedFile(name='new_test_file.txt', content='test content hello manager')
         response_1 = client_1.post('/mediafile/new/',
-                               {'title': 'new_test_file_title_1',
-                                'mediafile': new_file_1})
+                                   {'title': 'new_test_file_title_1',
+                                    'mediafile': new_file_1})
         self.assertEqual(response_1.status_code, 302)
         object_1 = Mediafile.objects.latest('timestamp')
         self.assertEqual(object_1.mediafile.url, '/media/file/new_test_file.txt')
@@ -115,8 +116,8 @@ class MediafileTest(TestCase):
         client_2 = self.login_clients()['client_vip_user']
         new_file_2 = SimpleUploadedFile(name='new_test_file.txt', content='test content hello vip_user')
         response_2 = client_2.post('/mediafile/new/',
-                               {'title': 'new_test_file_title_2',
-                                'mediafile': new_file_2})
+                                   {'title': 'new_test_file_title_2',
+                                    'mediafile': new_file_2})
         self.assertEqual(response_2.status_code, 302)
         object_2 = Mediafile.objects.latest('timestamp')
         self.assertEqual(object_2.mediafile.url, '/media/file/new_test_file.txt')
@@ -128,8 +129,8 @@ class MediafileTest(TestCase):
         client_3 = self.login_clients()['client_normal_user']
         new_file_3 = SimpleUploadedFile(name='new_test_file.txt', content='test content hello vip_user')
         response_3 = client_3.post('/mediafile/new/',
-                               {'title': 'new_test_file_title_2',
-                                'mediafile': new_file_3})
+                                   {'title': 'new_test_file_title_2',
+                                    'mediafile': new_file_3})
         self.assertEqual(response_3.status_code, 403)
 
     def test_edit_mediafile_get_request(self):
@@ -152,8 +153,8 @@ class MediafileTest(TestCase):
         client_1 = self.login_clients()['client_manager']
         new_file_1 = SimpleUploadedFile(name='new_test_file.txt', content='test content hello manager')
         response_1 = client_1.post('/mediafile/2/edit/',
-                               {'title': 'new_test_file_title_1',
-                                'mediafile': new_file_1})
+                                   {'title': 'new_test_file_title_1',
+                                    'mediafile': new_file_1})
         self.assertEqual(response_1.status_code, 302)
         object_2 = Mediafile.objects.get(pk=2)
         self.assertEqual(object_2.mediafile.url, '/media/file/new_test_file.txt')
