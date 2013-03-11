@@ -30,8 +30,7 @@
                 <a href="{% model_url category 'update' %}" title="{% trans 'Edit' %}" class="btn btn-mini">
                     <i class="icon-pencil"></i>
                 </a>
-                {# TODO: motion_category_delete #}
-                <a href="{% url 'motion_delete' category.id %}" title="{% trans 'Delete' %}" class="btn btn-mini">
+                <a href="{% model_url category 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
                     <i class="icon-remove"></i>
                 </a>
                 </span>
