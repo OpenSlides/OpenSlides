@@ -58,10 +58,10 @@
 <div class="span8">
     {% if motion.active_version.id != motion.version.id %}
         <span class="label label-warning"><i class="icon-warning-sign icon-white"></i>
-        {% if motion.version == motion.public_version %}
-            {% trans "This is not the newest version." %}</span> <a href="{% url 'motion_version_detail' motion.id motion.last_version.id %}">{% trans "Go to version" %} {{ motion.last_version.version_number }}.</a>
+        {% if motion.version.version_number < motion.last_version.version_number %}
+            {% trans "This is not the newest version." %}</span> <a href="{% model_url motion.last_version %}">{% trans "Go to version" %} {{ motion.last_version.version_number }}.</a>
         {% else %}
-            {% trans "This is not the authorized version." %}</span> <a href="{% url 'motion_view' motion.id %}">{% trans "Go to version" %} {{ motion.public_version.aid }}.</a>
+            {% trans "This is not the authorized version." %}</span> <a href="{% model_url motion.active_version %}">{% trans "Go to version" %} {{ motion.active_version.version_number }}.</a>
         {% endif %}
     {% endif %}
 
@@ -99,10 +99,10 @@
                  <span class="badge badge-success" title="{% trans 'This version is authorized' %}"><i class="icon-ok icon-white"></i></span>
             {% else %}
                  {% if perms.motion.can_manage_motion %}
-                     <a class="btn btn-mini" href="{% url 'motion_version_permit' motion.id version.id %}" title="{% trans 'Permit this version' %}"><i class="icon-ok"></i></a>
+                     <a class="btn btn-mini" href="{% url 'motion_version_permit' motion.id version.version_number %}" title="{% trans 'Permit this version' %}"><i class="icon-ok"></i></a>
                  {% endif %}
                  {% if not version.rejected and version.id > motion.active_version.id and perms.motion.can_manage_motion %}
-                     <a class="btn btn-mini" href="{% url 'motion_version_reject' version.id %}" title="{% trans 'Reject this version' %}"><i class="icon-ban-circle"></i></a>
+                     <a class="btn btn-mini" href="{% url 'motion_version_reject' motion.id version.version_number %}" title="{% trans 'Reject this version' %}"><i class="icon-ban-circle"></i></a>
                  {% endif %}
             {% endif %}
             {% if version.rejected %}
@@ -247,6 +247,10 @@
         {% endif %}
         {% endwith %}
 
+        <!-- Category -->
+        <h5>{% trans "Category" %}:</h5>
+        {{ motion.category }}
+
         <!-- Creation Time -->
         <h5>{% trans "Creation Time" %}:</h5>
         {# TODO: use creation time of _first_ version #}
@@ -287,7 +291,7 @@
     <!-- Manage motion box -->
     <div class="well">
     <h4>{% trans "Manage motion" %}</h4>
-        <div class="btn-group">
+        <div class="btn-group btn-group-vertical">
         {% for state in motion.state.next_states.all %}
             <a href="{% url 'motion_set_state' motion.pk state.pk %}" class="btn btn-small">{{ state }}</a>
         {% endfor %}
