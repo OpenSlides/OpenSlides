@@ -394,7 +394,6 @@ class Motion(SlideMixin, models.Model):
                         not self.is_supporter(person)),
 
             'unsupport': (self.state.allow_support and
-                        config['motion_min_supporters'] > 0 and
                         not self.is_submitter(person) and
                         self.is_supporter(person)),
 

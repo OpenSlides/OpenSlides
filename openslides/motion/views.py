@@ -75,7 +75,6 @@ class MotionDetailView(GetVersionMixin, DetailView):
         context = super(MotionDetailView, self).get_context_data(**kwargs)
         context['allowed_actions'] = self.object.get_allowed_actions(self.request.user)
         context['min_supporters'] = int(config['motion_min_supporters'])
-        context['user'] = self.request.user
         return context
 
 motion_detail = MotionDetailView.as_view()

@@ -253,7 +253,7 @@
         {{ motion.version.creation_time }}
 
         <!-- Widthdraw button -->
-        {% if allowed_actions.wit and user in motion.submitters %}
+        {% if  allowed_actions.wit and user in motion.submitters %}
             <br><br>
             <a href="{% url 'motion_set_state' motion.id 'wit' %}" class="btn">
                 <span class="icon revert">{% trans 'Withdraw motion' %}</span>
