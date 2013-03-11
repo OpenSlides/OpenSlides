@@ -535,6 +535,8 @@ class Category(models.Model):
     def get_absolute_url(self, link='update'):
         if link == 'update' or link == 'edit':
             return reverse('motion_category_update', args=[str(self.id)])
+        if link == 'delete':
+            return reverse('motion_category_delete', args=[str(self.id)])
 
     class Meta:
         ordering = ['prefix']

@@ -492,6 +492,14 @@ class CategoryUpdateView(UpdateView):
 category_update = CategoryUpdateView.as_view()
 
 
+class CategoryDeleteView(DeleteView):
+    permission_required = 'motion.can_manage_motion'
+    model = Category
+    success_url_name = 'motion_category_list'
+
+category_delete = CategoryDeleteView.as_view()
+
+
 class Config(FormView):
     """The View for the config tab."""
     permission_required = 'config.can_manage_config'
