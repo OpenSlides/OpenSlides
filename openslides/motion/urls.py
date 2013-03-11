@@ -119,4 +119,9 @@ urlpatterns = patterns('openslides.motion.views',
         'category_update',
         name='motion_category_update',
     ),
+
+    url(r'^category/(?P<pk>\d+)/del/$',
+        'category_delete',
+        name='motion_category_delete',
+    ),
 )
