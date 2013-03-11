@@ -279,6 +279,7 @@ class UserImportView(FormView):
     permission_required = 'participant.can_manage_participant'
     template_name = 'participant/import.html'
     form_class = UserImportForm
+    success_url_name = 'user_import'
 
     def form_valid(self, form):
         # check for valid encoding (will raise UnicodeDecodeError if not)
