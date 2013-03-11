@@ -74,6 +74,7 @@ class MotionDetailView(GetVersionMixin, DetailView):
         """
         context = super(MotionDetailView, self).get_context_data(**kwargs)
         context['allowed_actions'] = self.object.get_allowed_actions(self.request.user)
+        context['min_supporters'] = int(config['motion_min_supporters'])
         return context
 
 motion_detail = MotionDetailView.as_view()
@@ -246,7 +247,6 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
 
     def check_permission(self, request):
         """Return True if the user can support or unsupport the motion. Else: False."""
-
         allowed_actions = self.object.get_allowed_actions(request.user)
         if self.support and not allowed_actions['support']:
             messages.error(request, _('You can not support this motion.'))
@@ -372,6 +372,10 @@ class PollDeleteView(PollMixin, DeleteView):
         """Write a log message, if the form is valid."""
         super(PollDeleteView, self).case_yes()
         self.object.write_log(ugettext_noop('Poll deleted'), self.request.user)
+
+    def get_redirect_url(self, **kwargs):
+        """Return the URL to the DetailView of the motion."""
+        return reverse('motion_detail', args=[self.object.motion.pk])
 
 poll_delete = PollDeleteView.as_view()
 

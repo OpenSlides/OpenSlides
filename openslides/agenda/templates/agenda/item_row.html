@@ -31,7 +31,7 @@
     {% if perms.agenda.can_see_orga_items %}
     <td>
         {% if item.duration %}
-            {{ item.duration }}h <a {% if item.tooltip %}rel="tooltip" data-original-title="{% trans 'End' %}: {{ item.tooltip|date:"DATETIME_FORMAT" }}"{% endif %}><i class="icon-clock"></i></a>
+            {{ item.duration }}h {% if start and end %}<a {% if item.tooltip %}rel="tooltip" data-original-title="{% trans 'End' %}: {{ item.tooltip|date:"DATETIME_FORMAT" }}"{% endif %}><i class="icon-clock"></i></a>{% endif %}
         {% endif %}
     </td>
     {% endif %}
