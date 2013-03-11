@@ -14,11 +14,12 @@ from django import forms
 from django.utils.translation import ugettext as _
 
 from openslides.utils.forms import CssClassMixin
+from openslides.utils.forms import CleanHtmlFormMixin
 from openslides.utils.person import PersonFormField, MultiplePersonFormField
 from .models import Motion, Category
 
 
-class BaseMotionForm(forms.ModelForm, CssClassMixin):
+class BaseMotionForm(CleanHtmlFormMixin, forms.ModelForm, CssClassMixin):
     """Base FormClass for a Motion.
 
     For it's own, it append the version data to the fields.
@@ -50,6 +51,12 @@ class BaseMotionForm(forms.ModelForm, CssClassMixin):
             self.initial['text'] = self.motion.text
             self.initial['reason'] = self.motion.reason
         super(BaseMotionForm, self).__init__(*args, **kwargs)
+
+    def get_clean_html_fields(self):
+        '''
+        The fields 'text' and 'reason' contain HTML, clean them
+        '''
+        return ('text', 'reason',)
 
 
 class MotionSubmitterMixin(forms.ModelForm):
