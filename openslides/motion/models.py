@@ -394,8 +394,8 @@ class Motion(SlideMixin, models.Model):
                         not self.is_supporter(person)),
 
             'unsupport': (self.state.allow_support and
-                        not self.is_submitter(person) and
-                        self.is_supporter(person)),
+                          not self.is_submitter(person) and
+                          self.is_supporter(person)),
 
             'change_state': person.has_perm('motion.can_manage_motion'),
 
