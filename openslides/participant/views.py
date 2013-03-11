@@ -53,84 +53,20 @@ class UserOverview(ListView):
     context_object_name = 'users'
 
     def get_queryset(self):
-        try:
-            sortfilter = encodedict(parse_qs(
-                self.request.COOKIES['participant_sortfilter']))
-        except KeyError:
-            sortfilter = {}
-
-        for value in ['gender', 'structure_level', 'type', 'committee', 'status',
-                      'sort', 'reverse']:
-            if value in self.request.REQUEST:
-                if self.request.REQUEST[value] == '---':
-                    try:
-                        del sortfilter[value]
-                    except KeyError:
-                        pass
-                else:
-                    sortfilter[value] = [self.request.REQUEST[value]]
-
         query = User.objects
-        if 'gender' in sortfilter:
-            query = query.filter(gender__iexact=sortfilter['gender'][0])
-        if 'structure_level' in sortfilter:
-            query = query.filter(structure_level__iexact=sortfilter['structure_level'][0])
-        if 'type' in sortfilter:
-            query = query.filter(type__iexact=sortfilter['type'][0])
-        if 'committee' in sortfilter:
-            query = query.filter(committee__iexact=sortfilter['committee'][0])
-        if 'status' in sortfilter:
-            query = query.filter(is_active=sortfilter['status'][0])
-        if 'sort' in sortfilter:
-            if sortfilter['sort'][0] in ['first_name', 'last_name', 'last_login']:
-                query = query.order_by(sortfilter['sort'][0])
-            elif (sortfilter['sort'][0] in
-                    ['structure_level', 'type', 'committee', 'comment']):
-                query = query.order_by(
-                    '%s' % sortfilter['sort'][0])
+        if config['participant_sort_users_by_first_name']:
+            query = query.order_by('first_name')
         else:
-            if config['participant_sort_users_by_first_name']:
-                query = query.order_by('first_name')
-            else:
-                query = query.order_by('last_name')
-
-        if 'reverse' in sortfilter:
-            query = query.reverse()
-
-        self.sortfilter = sortfilter
-
+            query = query.order_by('last_name')
         return query.all()
 
     def get_context_data(self, **kwargs):
         context = super(UserOverview, self).get_context_data(**kwargs)
-
         all_users = User.objects.count()
-
-        # quotient of selected users and all users
-        if all_users > 0:
-            percent = self.object_list.count() * 100 / float(all_users)
-        else:
-            percent = 0
-
-        # list of all existing categories
-        structure_levels = [
-            p['structure_level'] for p in
-            User.objects.values('structure_level').exclude(structure_level='').distinct()]
-        # list of all existing committees
-        committees = [
-            p['committee'] for p in
-            User.objects.values('committee').exclude(committee='').distinct()]
         # context vars
         context.update({
             'allusers': all_users,
-            'request_user': self.request.user,
-            'percent': round(percent, 1),
-            'structure_levels': structure_levels,
-            'committees': committees,
-            'cookie': [
-                'participant_sortfilter', urlencode(decodedict(self.sortfilter),
-                doseq=True)],
-            'sortfilter': self.sortfilter})
+            'request_user': self.request.user})
         return context
 
 
