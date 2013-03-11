@@ -35,7 +35,7 @@ from openslides.agenda.models import Item
 from .models import (Motion, MotionSubmitter, MotionSupporter, MotionPoll,
                      MotionVersion, State, WorkflowError, Category)
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
-                    MotionDisableVersioningMixin, ConfigForm)
+                    MotionDisableVersioningMixin, ConfigForm, MotionCategoryMixin)
 from .pdf import motions_to_pdf, motion_to_pdf
 
 
@@ -124,6 +124,7 @@ class MotionMixin(object):
         form_classes = [BaseMotionForm]
         if self.request.user.has_perm('motion.can_manage_motion'):
             form_classes.append(MotionSubmitterMixin)
+            form_classes.append(MotionCategoryMixin)
             if config['motion_min_supporters'] > 0:
                 form_classes.append(MotionSupporterMixin)
         if self.object:
