@@ -4,26 +4,141 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block title %}{{ block.super }} – {% trans "Motion" %} "{{ motion.title }}"{% endblock %}
+{% block title %}{{ block.super }} – {% trans "Motion" %} {{ motion.number }}{% endblock %}
 
 {% block content %}
-<p>Titel: {{ motion.title }} </p>
-<p>Text: {{ motion.text }}</p>
-<p>Reason: {{ motion.reason }}</p>
-<p>Submitter: {% for submitter in motion.submitter.all %}{{ submitter.person }} {% endfor %}</p>
-<p>Supporter: {% for supporter in motion.supporter.all %}{{ supporter.person }} {% endfor %}</p>
-<p>Active Version: {{ motion.active_version }}</p>
-<p>State: {{ motion.state }}</p>
-<h4>possible stats:</h4>
-<ul>
-{% for state in motion.state.next_states.all %}
-    <li><a href="{% url 'motion_set_state' motion.pk state.pk %}">{{ state }}</a></li>
-{% endfor %}
-    <li><a href="{% url 'motion_reset_state' motion.pk %}">Reset State</a></li>
-</ul>
+<h1>
+    {{ motion.title }}
+    <br>
+    <small>
+    {% if motion.number != None %}
+        {% trans "Motion" %} {{ motion.number }},
+    {% else %}
+        <i>[{% trans "no number" %}]</i>,
+    {% endif %}
+    {% trans "Version" %} {{ motion.version.version_number }}
+    </small>
+    <small class="pull-right">
+    <div class="btn-toolbar">
+        <a href="{% url 'motion_list' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        <a href="{% url 'motion_detail_pdf' motion.id  %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print this motion as PDF' %}"><i class="icon-print"></i> PDF</a>
+        <!-- activate projector -->
+        {% if perms.projector.can_manage_projector %}
+            <a href="{% url 'projector_activate_slide' motion.sid  %}" class="activate_link btn {% if motion.active %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show motion' %}">
+                <i class="icon-facetime-video {% if motion.active %}icon-white{% endif %}"></i>
+            </a>
+        {% endif %}
+        <div class="btn-group">
+            <a data-toggle="dropdown" href="#" class="btn btn-mini dropdown-toggle">
+                {% trans 'More actions' %}
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu pull-right">
+                <!-- edit -->
+                {% if allowed_actions.edit %}
+                     <li><a href="{% model_url motion 'edit' %}"><i class="icon-pencil"></i> {% trans 'Edit motion' %}</a></li>
+                {% endif %}
+                <!-- delete -->
+                {% if allowed_actions.delete %}
+                    <li><a href="{% model_url motion 'delete' %}"><i class="icon-remove"></i> {% trans 'Delete motion' %}</a></li>
+                {% endif %}
+                <!-- create agenda item -->
+                {% if perms.agenda.can_manage_agenda %}
+                <li>
+                    <a href="{% url 'motion_create_agenda' motion.id  %}"><i class="icon-plus"></i> {% trans 'New agenda item' %}</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+    </small>
+</h1>
 
+<div class="row-fluid">
+<div class="span8">
+    {% if motion.active_version.id != motion.version.id %}
+        <span class="label label-warning"><i class="icon-warning-sign icon-white"></i>
+        {% if motion.version == motion.public_version %}
+            {% trans "This is not the newest version." %}</span> <a href="{% url 'motion_version_detail' motion.id motion.last_version.id %}">{% trans "Go to version" %} {{ motion.last_version.version_number }}.</a>
+        {% else %}
+            {% trans "This is not the authorized version." %}</span> <a href="{% url 'motion_view' motion.id %}">{% trans "Go to version" %} {{ motion.public_version.aid }}.</a>
+        {% endif %}
+    {% endif %}
 
-<h4>Versions</h4>
+    <!-- Text -->
+    <h4>{% trans "Motion text" %}:</h4>
+    {{ motion.version.text|linebreaks }}
+    <br>
+
+    <!-- Reason -->
+    <h4>{% trans "Reason" %}:</h4>
+    {% if motion.version.reason %}
+        {{ motion.version.reason|linebreaks }}
+    {% else %}
+        –
+    {% endif %}
+    <br>
+
+    <!-- Version history -->
+    {% for version in motion.versions.all %}
+    {% if forloop.first %}
+        <h4>{% trans "Version history" %}:</h4>
+        <table class="table table-striped table-bordered">
+        <tr>
+            <th></th>
+            <th>{% trans "Version" %}</th>
+            <th>{% trans "Time" %}</th>
+            <th>{% trans "Title" %}</th>
+            <th>{% trans "Text" %}</th>
+            <th>{% trans "Reason" %}</th>
+        </tr>
+    {% endif %}
+        <tr>
+            <td class="nobr">
+            {% if version == motion.active_version %}
+                 <span class="badge badge-success" title="{% trans 'This version is authorized' %}"><i class="icon-ok icon-white"></i></span>
+            {% else %}
+                 {% if perms.motion.can_manage_motion %}
+                     <a class="btn btn-mini" href="{% url 'motion_version_permit' motion.id version.id %}" title="{% trans 'Permit this version' %}"><i class="icon-ok"></i></a>
+                 {% endif %}
+                 {% if not version.rejected and version.id > motion.active_version.id and perms.motion.can_manage_motion %}
+                     <a class="btn btn-mini" href="{% url 'motion_version_reject' version.id %}" title="{% trans 'Reject this version' %}"><i class="icon-ban-circle"></i></a>
+                 {% endif %}
+            {% endif %}
+            {% if version.rejected %}
+                <span class="badge badge-important" title="{% trans 'This version is rejected' %}"><i class="icon-ban-circle icon-white"></i></span>
+            {% endif %}
+            </td>
+            <td><a href="{% model_url version %}">{{ version.version_number }}</a></td>
+            <td><i>{{ version.creation_time }}</i></td>
+            <td>
+                {% ifchanged %}
+                <b>{{ version.title }}</b>
+                {% else %}
+                <i>[{% trans "unchanged" %}]</i>
+                {% endifchanged %}
+            </td>
+            <td>
+                {% ifchanged %}
+                {{ version.text|linebreaks }}
+                {% else %}
+                <i>[{% trans "unchanged" %}]</i>
+                {% endifchanged %}
+            </td>
+            <td>
+                {% ifchanged %}
+                {{ version.reason|linebreaks }}
+                {% else %}
+                <i>[{% trans "unchanged" %}]</i>
+                {% endifchanged %}
+            </td>
+        </tr>
+        {% if forloop.last %}
+        </table>
+        {% endif %}
+    {% endfor %}
+
+<!-- TODO: For testing -->
 <ol>
 {% for motion_version in motion.versions.all %}
     <li>
@@ -41,60 +156,152 @@
     </li>
 {% endfor %}
 </ol>
+<!-- End TODO -->
 
 
-<h4>{% trans "Vote results" %}:</h4>
-    {% with motion.polls.all as polls %}
-        <ul class="results">
+    <!-- Log -->
+    {% if perms.motion.can_manage_motion %}
+        <button type="button" class="btn" data-toggle="collapse" data-target="#log">
+            {% trans "Show log" %}
+        </button>
+        <div id="log" class="collapse out">
+            <ul class="unstyled">
+                {% for message in motion.log_messages.all %}
+                <li><small>{{ message }}</small></li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+</div> <!--/span-->
+
+<!-- Box with meta information -->
+<div class="span4">
+    <div class="well">
+        <!-- Submitter -->
+        <h5>{% trans "Submitter" %}:</h5>
+        {% for submitter in motion.submitter.all %}
+            {{ submitter.person }}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+
+        <!-- Supporters -->
+        {% if min_supporters > 0 %}
+            <h5>{% trans "Supporters" %}: *</h5>
+            {% if not motion.supporters %}
+                -
+            {% else %}
+                <ol>
+                {% for supporter in motion.supporter.all %}
+                    <li>{{ supporter }}</li>
+                {% endfor %}
+                </ol>
+            {% endif %}
+        {% endif %}
+
+        <!-- Status -->
+        <h5>{% trans "Status" %}:</h5>
+        {% if motion.state_id != "pub" %}
+            {# TODO: trans motion.state #}
+            <span class="label label-info">{{ motion.state }}</span>
+            <br>
+        {% endif %}
+        {% for note in motion.notes %}
+            {{ note }}
+            {% if not forloop.last %}<br>{% endif %}
+        {% endfor %}
+
+        <!-- Vote results -->
+        <h5>{% trans "Vote results" %}:</h5>
+        {% with motion.polls.all as polls %}
+        <ol>
         {% for poll in polls %}
             {% if perms.motion.can_manage_motion or poll.has_votes %}
-            <li>
-                {% if perms.motion.can_manage_motion %}
-                    <strong>{{ forloop.counter }}. {% trans "Vote" %} </strong>
-                    <a class="icon edit" href="{% model_url poll 'edit' %}" title="{% trans 'Edit Vote' %}">
-                        <span></span>
-                    </a>
-                    <a class="icon delete" href="{% model_url poll 'delete' %}" title="{% trans 'Delete Vote' %}">
-                        <span></span>
-                    </a>
-                {% elif poll.has_votes %}
-                    <strong>{{ forloop.counter }}. {% trans "Vote" %}:</strong>
-                {% endif %}
-                <br>
-                {% if poll.has_votes %}
-                    {% with poll.get_options.0 as option %}
-                        <img src="{% static 'images/icons/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.Yes }}<br>
-                        <img src="{% static 'images/icons/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.No }}<br>
-                        <img src="{% static 'images/icons/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ option.Abstain }}<br>
-                        <img src="{% static 'images/icons/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}<br>
-                        <div style="border-top: 1px solid; padding-top: 5px; margin: 5px 0; width: 10em;">
-                            <img src="{% static 'images/icons/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
-                        </div>
-                    {% endwith %}
-                {% else %}
+                <li>{% trans "Vote" %}
                     {% if perms.motion.can_manage_motion %}
-                        <a href="{% model_url poll %}">
-                            <span class="button"><span class="icon statistics">{% trans 'Enter result' %}</span></span>
-                        </a>
-                     {% endif %}
-                {% endif %}
-            </li>
+                        <a class="btn btn-mini" href="{% url 'motion_poll_edit' motion.id poll.id %}" title="{% trans 'Edit Vote' %}"><i class="icon-edit"></i></a>
+                        <a class="btn btn-mini" href="{% url 'motion_poll_delete' motion.id poll.id %}" title="{% trans 'Delete Vote' %}"><i class="icon-remove"></i></a>
+                    {% endif %}
+                    <br>
+                    {% if poll.has_votes %}
+                        {% with poll.get_options.0 as option %}
+                            <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.Yes }}<br>
+                            <img src="{% static 'img/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.No }}<br>
+                            <img src="{% static 'img/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ option.Abstain }}<br>
+                            <img src="{% static 'img/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}<br>
+                            <div style="border-top: 1px solid; padding-top: 5px; margin: 5px 0; width: 10em;">
+                                <img src="{% static 'img/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
+                            </div>
+                        {% endwith %}
+                    {% else %}
+                        {% if perms.motion.can_manage_motion %}
+                            <span class="label label-info">{% trans 'No results' %}</span>
+                         {% endif %}
+                    {% endif %}
+                </li>
             {% endif %}
         {% endfor %}
-        </ul>
+        </ol>
         {% if allowed_actions.create_poll %}
-            <a href="{% url 'motion_poll_create' motion.pk %}">
-                <span class="button"><span class="icon statistics">{% trans 'New vote' %}</span></span>
+        <a href="{% url 'motion_poll_create' motion.id %}" class="btn btn-mini">
+            <i class="icon-assignment"></i> {% trans 'New vote' %}
+        </a>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Creation Time -->
+        <h5>{% trans "Creation Time" %}:</h5>
+        {# TODO: use creation time of _first_ version #}
+        {{ motion.version.creation_time }}
+
+        <!-- Widthdraw button -->
+        {% if  allowed_actions.wit and user in motion.submitters %}
+            <br><br>
+            <a href="{% url 'motion_set_state' motion.id 'wit' %}" class="btn">
+                <span class="icon revert">{% trans 'Withdraw motion' %}</span>
             </a>
         {% endif %}
-    {% endwith %}
 
+        <!-- Support/Unsupport button -->
+        {% if perms.motion.can_support_motion and min_supporters > 0 %}
+            {% if allowed_actions.unsupport %}
+                <br><br>
+                <a href="{% url 'motion_unsupport' motion.id %}" class="btn">
+                    {% trans 'Unsupport' %}
+                </a>
+            {% endif %}
+            {% if allowed_actions.support %}
+                <br><br>
+                <a href="{% url 'motion_support' motion.id %}" class="btn">
+                    {% trans 'Support' %}
+                </a>
+            {% endif %}
+        {% endif %}
 
-<h4>log</h4>
-<ul>
-    {% for message in motion.log_messages.all %}
-    <li>{{ message }}</li>
-    {% endfor %}
-</ul>
+        <!-- Footnote: requried supporters -->
+        {% if min_supporters > 0 %}
+            <br><br>
+            <small>* {% trans "minimum required supporters" %}: {{ min_supporters }}</small>
+        {% endif %}
+    </div> <!--/well-->
+
+    {% if perms.motion.can_manage_motion %}
+    <!-- Manage motion box -->
+    <div class="well">
+    <h4>{% trans "Manage motion" %}</h4>
+        <div class="btn-group">
+        {% for state in motion.state.next_states.all %}
+            <a href="{% url 'motion_set_state' motion.pk state.pk %}" class="btn btn-small">{{ state }}</a>
+        {% endfor %}
+        </div>
+    <p></p>
+    <hr>
+    <h5>{% trans "For administration only:" %}</h5>
+    <a href="{% url 'motion_reset_state' motion.id %}" class="btn btn-danger">
+        <i class="icon-exclamation-sign icon-white"></i> {% trans 'Reset state' %}
+    </a>
+    </div> <!--/well-->
+    {% endif %}
+  </div> <!--/span-->
+</div> <!--/row-->
+
 
 {% endblock %}
