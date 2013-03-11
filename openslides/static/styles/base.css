@@ -80,6 +80,10 @@ a:hover {
     padding: 8px 5px 4px 5px;
 }
 
+/* Log */
+#log {
+    padding-left: 14px;
+}
 
 /** Utils **/
 tr.offline td, li.offline {
