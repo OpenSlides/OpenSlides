@@ -19,6 +19,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Max
 from django.dispatch import receiver
+from django.utils import formats
 from django.utils.translation import pgettext
 from django.utils.translation import ugettext_lazy, ugettext_noop, ugettext as _
 
@@ -101,7 +102,7 @@ class Motion(SlideMixin, models.Model):
             and
 
         the config 'motion_create_new_version' is set to
-        'ALLWASY_CREATE_NEW_VERSION'.
+        'ALWAYS_CREATE_NEW_VERSION'.
         """
         if not self.state:
             self.reset_state()
@@ -296,9 +297,19 @@ class Motion(SlideMixin, models.Model):
         except IndexError:
             return self.new_version
 
+    @property
+    def submitters(self):
+        return sorted([object.person for object in self.submitter.all()],
+                      key=lambda person: person.sort_name)
+
     def is_submitter(self, person):
         """Return True, if person is a submitter of this motion. Else: False."""
         self.submitter.filter(person=person).exists()
+
+    @property
+    def supporters(self):
+        return sorted([object.person for object in self.supporter.all()],
+                      key=lambda person: person.sort_name)
 
     def is_supporter(self, person):
         """Return True, if person is a supporter of this motion. Else: False."""
@@ -379,13 +390,17 @@ class Motion(SlideMixin, models.Model):
 
             'support': (self.state.allow_support and
                         config['motion_min_supporters'] > 0 and
-                        not self.is_submitter(person)),
+                        not self.is_submitter(person) and
+                        not self.is_supporter(person)),
+
+            'unsupport': (self.state.allow_support and
+                        not self.is_submitter(person) and
+                        self.is_supporter(person)),
 
             'change_state': person.has_perm('motion.can_manage_motion'),
 
         }
         actions['delete'] = actions['edit']  # TODO: Only if the motion has no number
-        actions['unsupport'] = actions['support']
         actions['reset_state'] = actions['change_state']
         return actions
 
@@ -394,7 +409,7 @@ class Motion(SlideMixin, models.Model):
 
         Message should be in english and translatable.
 
-        e.G: motion.write_log(ugettext_noob('Message Text'))
+        e.g.: motion.write_log(ugettext_noob('Message Text'))
         """
         MotionLog.objects.create(motion=self, message=message, person=person)
 
@@ -546,11 +561,11 @@ class MotionLog(models.Model):
 
     def __unicode__(self):
         """Return a string, representing the log message."""
-        # TODO: write time in the local time format.
+        time = formats.date_format(self.time, 'DATETIME_FORMAT')
         if self.person is None:
-            return "%s %s" % (self.time, _(self.message))
+            return "%s %s" % (time, _(self.message))
         else:
-            return "%s %s by %s" % (self.time, _(self.message), self.person)
+            return "%s %s by %s" % (time, _(self.message), self.person)
 
 
 class MotionVote(BaseVote):

@@ -74,6 +74,7 @@ class MotionDetailView(GetVersionMixin, DetailView):
         """
         context = super(MotionDetailView, self).get_context_data(**kwargs)
         context['allowed_actions'] = self.object.get_allowed_actions(self.request.user)
+        context['min_supporters'] = int(config['motion_min_supporters'])
         return context
 
 motion_detail = MotionDetailView.as_view()
@@ -227,7 +228,7 @@ class VersionRejectView(GetVersionMixin, SingleObjectMixin, QuestionMixin, Redir
 version_reject = VersionRejectView.as_view()
 
 
-class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
+class SupportView(SingleObjectMixin, RedirectView):
     """View to support or unsupport a motion.
 
     If self.support is True, the view will append a request.user to the supporter list.
@@ -246,7 +247,6 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
 
     def check_permission(self, request):
         """Return True if the user can support or unsupport the motion. Else: False."""
-
         allowed_actions = self.object.get_allowed_actions(request.user)
         if self.support and not allowed_actions['support']:
             messages.error(request, _('You can not support this motion.'))
@@ -257,15 +257,8 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
         else:
             return True
 
-    def get_question(self):
-        """Return the question string."""
-        if self.support:
-            return _('Do you really want to support this motion?')
-        else:
-            return _('Do you really want to unsupport this motion?')
-
-    def case_yes(self):
-        """Append or remove the request.user from the motion.
+    def pre_redirect(self, request, *args, **kwargs):
+        """Append or remove the request.user from the motion and return success message.
 
         First the method checks the permissions, and writes a log message after
         appending or removing the user.
@@ -278,6 +271,7 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
             else:
                 self.object.unsupport(person=user)
                 self.object.write_log(ugettext_noop("Supporter: -%s") % user, user)
+            messages.success(request, self.get_success_message())
 
     def get_success_message(self):
         """Return the success message."""
@@ -372,6 +366,10 @@ class PollDeleteView(PollMixin, DeleteView):
         """Write a log message, if the form is valid."""
         super(PollDeleteView, self).case_yes()
         self.object.write_log(ugettext_noop('Poll deleted'), self.request.user)
+
+    def get_redirect_url(self, **kwargs):
+        """Return the URL to the DetailView of the motion."""
+        return reverse('motion_detail', args=[self.object.motion.pk])
 
 poll_delete = PollDeleteView.as_view()
 
