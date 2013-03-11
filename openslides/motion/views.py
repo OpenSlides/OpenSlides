@@ -32,9 +32,10 @@ from openslides.projector.projector import Widget, SLIDE
 from openslides.config.models import config
 from openslides.agenda.models import Item
 
-from .models import Motion, MotionSubmitter, MotionSupporter, MotionPoll, MotionVersion, State, WorkflowError
+from .models import (Motion, MotionSubmitter, MotionSupporter, MotionPoll,
+                     MotionVersion, State, WorkflowError, Category)
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
-                    MotionDisableVersioningMixin, ConfigForm)
+                    MotionDisableVersioningMixin, ConfigForm, MotionCategoryMixin)
 from .pdf import motions_to_pdf, motion_to_pdf
 
 
@@ -123,6 +124,7 @@ class MotionMixin(object):
         form_classes = [BaseMotionForm]
         if self.request.user.has_perm('motion.can_manage_motion'):
             form_classes.append(MotionSubmitterMixin)
+            form_classes.append(MotionCategoryMixin)
             if config['motion_min_supporters'] > 0:
                 form_classes.append(MotionSupporterMixin)
         if self.object:
@@ -465,6 +467,27 @@ class MotionPDFView(SingleObjectMixin, PDFView):
 
 motion_list_pdf = MotionPDFView.as_view(print_all_motions=True)
 motion_detail_pdf = MotionPDFView.as_view(print_all_motions=False)
+
+
+class CategoryListView(ListView):
+    permission_required = 'motion.can_manage_motion'
+    model = Category
+
+category_list = CategoryListView.as_view()
+
+
+class CategoryCreateView(CreateView):
+    permission_required = 'motion.can_manage_motion'
+    model = Category
+
+category_create = CategoryCreateView.as_view()
+
+
+class CategoryUpdateView(UpdateView):
+    permission_required = 'motion.can_manage_motion'
+    model = Category
+
+category_update = CategoryUpdateView.as_view()
 
 
 class Config(FormView):

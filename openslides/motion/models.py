@@ -65,7 +65,9 @@ class Motion(SlideMixin, models.Model):
                                   unique=True)
     """A string as human readable identifier for the motion."""
 
-    # category = models.ForeignKey('Category', null=True, blank=True)
+    category = models.ForeignKey('Category', null=True, blank=True)
+    """ForeignKey to one category of motions."""
+
     # TODO: proposal
     #master = models.ForeignKey('self', null=True, blank=True)
 
@@ -523,12 +525,16 @@ class MotionSupporter(models.Model):
         return unicode(self.person)
 
 
-## class Category(models.Model):
-    ## name = models.CharField(max_length=255, verbose_name=ugettext_lazy("Category name"))
-    ## prefix = models.CharField(max_length=32, verbose_name=ugettext_lazy("Category prefix"))
+class Category(models.Model):
+    name = models.CharField(max_length=255, verbose_name=ugettext_lazy("Category name"))
+    prefix = models.CharField(max_length=32, verbose_name=ugettext_lazy("Category prefix"))
 
-    ## def __unicode__(self):
-        ## return self.name
+    def __unicode__(self):
+        return self.name
+
+    def get_absolute_url(self, link='update'):
+        if link == 'update' or link == 'edit':
+            return reverse('motion_category_update', args=[str(self.id)])
 
 
 ## class Comment(models.Model):

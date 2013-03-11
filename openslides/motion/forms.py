@@ -15,7 +15,7 @@ from django.utils.translation import ugettext as _
 
 from openslides.utils.forms import CssClassMixin
 from openslides.utils.person import PersonFormField, MultiplePersonFormField
-from .models import Motion, Workflow
+from .models import Motion, Workflow, Category
 
 
 class BaseMotionForm(forms.ModelForm, CssClassMixin):
@@ -88,6 +88,12 @@ class MotionDisableVersioningMixin(forms.ModelForm):
         help_text=_("Don't create a new version. Useful e. g. for trivial changes."))
     """BooleanField to decide, if a new version will be created, or the
     last_version will be used."""
+
+
+class MotionCategoryMixin(forms.ModelForm):
+    """Mixin to let the user choose the category for the motion."""
+
+    category = forms.ModelChoiceField(queryset=Category.objects.all(), required=False)
 
 
 class ConfigForm(CssClassMixin, forms.Form):
