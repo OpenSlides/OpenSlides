@@ -527,7 +527,7 @@ class MotionSupporter(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=255, verbose_name=ugettext_lazy("Category name"))
-    prefix = models.CharField(max_length=32, verbose_name=ugettext_lazy("Category prefix"))
+    prefix = models.CharField(max_length=32, verbose_name=ugettext_lazy("Prefix"))
 
     def __unicode__(self):
         return self.name
@@ -536,6 +536,8 @@ class Category(models.Model):
         if link == 'update' or link == 'edit':
             return reverse('motion_category_update', args=[str(self.id)])
 
+    class Meta:
+        ordering = ['prefix']
 
 ## class Comment(models.Model):
     ## motion_version = models.ForeignKey(MotionVersion)

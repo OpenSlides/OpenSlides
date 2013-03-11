@@ -6,9 +6,37 @@
 {% block title %}{{ block.super }} – {% trans "Motions" %}{% endblock %}
 
 {% block content %}
-    <h1>{% trans "Categories" %}</h1>
+    <h1>
+        {% trans "Categories" %}
+        <small class="pull-right">
+        {% if perms.motion.can_manage_motion %}
+            <a href="{% url 'motion_category_create' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New motion' %}"><i class="icon-plus icon-white"></i> {% trans 'New' %}</a>
+        {% endif %}
+        <a href="{% url 'motion_list' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        </small>
+    </h1>
+
+   <table class="table table-striped table-bordered">
+        <tr>
+            <th class="mini_width">{% trans "Prefix" %}</th>
+            <th>{% trans "Category name" %}</th>
+            <th class="mini_width">{% trans "Actions" %}</th>
+        </tr>
     {% for category in category_list %}
-        <p><a href="{% model_url category 'update' %}">{{ category }}</a></p>
+        <tr>
+            <td>{{ category.prefix }}</td>
+            <td><a href="{% model_url category 'update' %}">{{ category }}</a></td>
+            <td><span style="width: 1px; white-space: nowrap;">
+                <a href="{% model_url category 'update' %}" title="{% trans 'Edit' %}" class="btn btn-mini">
+                    <i class="icon-pencil"></i>
+                </a>
+                {# TODO: motion_category_delete #}
+                <a href="{% url 'motion_delete' category.id %}" title="{% trans 'Delete' %}" class="btn btn-mini">
+                    <i class="icon-remove"></i>
+                </a>
+                </span>
+            </td>
+        </tr>
     {% empty %}
         <p>No Categories</p>
     {% endfor %}
