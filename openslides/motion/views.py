@@ -32,7 +32,8 @@ from openslides.projector.projector import Widget, SLIDE
 from openslides.config.models import config
 from openslides.agenda.models import Item
 
-from .models import Motion, MotionSubmitter, MotionSupporter, MotionPoll, MotionVersion, State, WorkflowError
+from .models import (Motion, MotionSubmitter, MotionSupporter, MotionPoll,
+                     MotionVersion, State, WorkflowError, Category)
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
                     MotionDisableVersioningMixin, ConfigForm)
 from .pdf import motions_to_pdf, motion_to_pdf
@@ -471,6 +472,27 @@ class MotionPDFView(SingleObjectMixin, PDFView):
 
 motion_list_pdf = MotionPDFView.as_view(print_all_motions=True)
 motion_detail_pdf = MotionPDFView.as_view(print_all_motions=False)
+
+
+class CategoryListView(ListView):
+    permission_required = 'motion.can_manage_motion'
+    model = Category
+
+category_list = CategoryListView.as_view()
+
+
+class CategoryCreateView(CreateView):
+    permission_required = 'motion.can_manage_motion'
+    model = Category
+
+category_create = CategoryCreateView.as_view()
+
+
+class CategoryUpdateView(UpdateView):
+    permission_required = 'motion.can_manage_motion'
+    model = Category
+
+category_update = CategoryUpdateView.as_view()
 
 
 class Config(FormView):
