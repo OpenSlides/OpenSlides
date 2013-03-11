@@ -27,6 +27,7 @@ from django.core.management import execute_from_command_line
 from openslides import get_version
 from openslides.utils.tornado_webserver import run_tornado
 
+
 CONFIG_TEMPLATE = """#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
