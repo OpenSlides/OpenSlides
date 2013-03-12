@@ -37,10 +37,6 @@ from openslides.agenda.models import Item
 from .exceptions import MotionError, WorkflowError
 
 
-# TODO: into the config-tab
-config['motion_identifier'] = ('manually', 'per_category', 'serially_numbered')[2]
-
-
 class Motion(SlideMixin, models.Model):
     """The Motion Class.
 
