@@ -61,7 +61,8 @@ def create_builtin_workflows(sender, **kwargs):
     state_2_1 = State.objects.create(name=ugettext_noop('published'),
                                      workflow=workflow_2,
                                      allow_support=True,
-                                     allow_submitter_edit=True)
+                                     allow_submitter_edit=True,
+                                     dont_set_identifier=True)
     state_2_2 = State.objects.create(name=ugettext_noop('permitted'),
                                      workflow=workflow_2,
                                      action_word=ugettext_noop('Permit'),

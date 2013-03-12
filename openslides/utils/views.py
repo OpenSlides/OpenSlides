@@ -304,7 +304,8 @@ class DeleteView(SingleObjectMixin, QuestionMixin, RedirectView):
         return super(DeleteView, self).get(request, *args, **kwargs)
 
     def get_redirect_url(self, **kwargs):
-        if self.request.method == 'GET' and self.question_url_name is None:
+        if self.question_url_name is None and (self.request.method == 'GET' or
+                                               self.get_answer() == 'no'):
             return self.object.get_absolute_url()
         else:
             return super(DeleteView, self).get_redirect_url(**kwargs)

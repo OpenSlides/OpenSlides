@@ -16,7 +16,7 @@
 from datetime import datetime
 
 from django.core.urlresolvers import reverse
-from django.db import models
+from django.db import models, IntegrityError
 from django.db.models import Max
 from django.dispatch import receiver
 from django.utils import formats
@@ -35,6 +35,10 @@ from openslides.projector.models import SlideMixin
 from openslides.agenda.models import Item
 
 from .exceptions import MotionError, WorkflowError
+
+
+# TODO: into the config-tab
+config['motion_identifier'] = ('manually', 'per_category', 'serially_numbered')[2]
 
 
 class Motion(SlideMixin, models.Model):
@@ -65,7 +69,15 @@ class Motion(SlideMixin, models.Model):
                                   unique=True)
     """A string as human readable identifier for the motion."""
 
-    # category = models.ForeignKey('Category', null=True, blank=True)
+    identifier_number = models.IntegerField(null=True)
+    """Counts the number of the motion in one category.
+
+    Needed to find the next free motion-identifier.
+    """
+
+    category = models.ForeignKey('Category', null=True, blank=True)
+    """ForeignKey to one category of motions."""
+
     # TODO: proposal
     #master = models.ForeignKey('self', null=True, blank=True)
 
@@ -167,6 +179,33 @@ class Motion(SlideMixin, models.Model):
             return reverse('motion_edit', args=[str(self.id)])
         if link == 'delete':
             return reverse('motion_delete', args=[str(self.id)])
+
+    def set_identifier(self):
+        if config['motion_identifier'] == 'manually':
+            # Do not set an identifier.
+            return
+        elif config['motion_identifier'] == 'per_category':
+            motions = Motion.objects.filter(category=self.category)
+        else:
+            motions = Motion.objects.all()
+
+        number = motions.aggregate(Max('identifier_number'))['identifier_number__max'] or 0
+        if self.category is None or not self.category.prefix:
+            prefix = ''
+        else:
+            prefix = self.category.prefix + ' '
+
+        while True:
+            number += 1
+            self.identifier = '%s%d' % (prefix, number)
+            try:
+                self.save()
+            except IntegrityError:
+                continue
+            else:
+                self.number = number
+                self.save()
+                break
 
     def get_title(self):
         """Get the title of the motion.
@@ -343,6 +382,18 @@ class Motion(SlideMixin, models.Model):
             return poll
         else:
             raise WorkflowError('You can not create a poll in state %s.' % self.state.name)
+
+    def set_state(self, state):
+        """Set the state of the motion.
+
+        State can be the id of a state object or a state object.
+        """
+        if type(state) is int:
+            state = State.objects.get(pk=state)
+
+        if not state.dont_set_identifier:
+            self.set_identifier()
+        self.state = state
 
     def reset_state(self):
         """Set the state to the default state. If the motion is new, it chooses the default workflow from config."""
@@ -524,12 +575,24 @@ class MotionSupporter(models.Model):
         return unicode(self.person)
 
 
-## class Category(models.Model):
-    ## name = models.CharField(max_length=255, verbose_name=ugettext_lazy("Category name"))
-    ## prefix = models.CharField(max_length=32, verbose_name=ugettext_lazy("Category prefix"))
+class Category(models.Model):
+    name = models.CharField(max_length=255, verbose_name=ugettext_lazy("Category name"))
+    """Name of the category."""
 
-    ## def __unicode__(self):
-        ## return self.name
+    prefix = models.CharField(blank=True, max_length=32, verbose_name=ugettext_lazy("Category prefix"))
+    """Prefix of the category.
+
+    Used to build the identifier of a motion.
+    """
+
+    def __unicode__(self):
+        return self.name
+
+    def get_absolute_url(self, link='update'):
+        if link == 'update' or link == 'edit':
+            return reverse('motion_category_update', args=[str(self.id)])
+        if link == 'delete':
+            return reverse('motion_category_delete', args=[str(self.id)])
 
 
 ## class Comment(models.Model):
@@ -684,6 +747,12 @@ class State(models.Model):
 
     dont_set_new_version_active = models.BooleanField(default=False)
     """If true, new versions are not automaticly set active."""
+
+    dont_set_identifier = models.BooleanField(default=False)
+    """Decides if the motion gets an identifier.
+
+    If true, the motion does not get an identifier if the state change to
+    this one, else it does."""
 
     def __unicode__(self):
         """Returns the name of the state."""
