@@ -19,8 +19,9 @@ urlpatterns = patterns('openslides.motion.views',
         name='motion_list',
     ),
 
-    url(r'^create/$',
+    url(r'^new/$',
         'motion_create',
+        # TODO: rename to motion_create
         name='motion_new',
     ),
 
@@ -37,6 +38,11 @@ urlpatterns = patterns('openslides.motion.views',
     url(r'^(?P<pk>\d+)/del/$',
         'motion_delete',
         name='motion_delete',
+    ),
+
+    url(r'^(?P<pk>\d+)/set_identifier/',
+        'set_identifier',
+        name='motion_set_identifier',
     ),
 
     url(r'^(?P<pk>\d+)/version/(?P<version_number>\d+)/$',
@@ -102,5 +108,25 @@ urlpatterns = patterns('openslides.motion.views',
     url(r'^(?P<pk>\d+)/pdf/$',
         'motion_detail_pdf',
         name='motion_detail_pdf',
+    ),
+
+    url(r'^category/$',
+        'category_list',
+        name='motion_category_list',
+    ),
+
+    url(r'^category/new/$',
+        'category_create',
+        name='motion_category_create',
+    ),
+
+    url(r'^category/(?P<pk>\d+)/edit/$',
+        'category_update',
+        name='motion_category_update',
+    ),
+
+    url(r'^category/(?P<pk>\d+)/del/$',
+        'category_delete',
+        name='motion_category_delete',
     ),
 )
