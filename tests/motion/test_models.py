@@ -8,9 +8,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.test import TestCase
-
-from openslides.core.signals import post_database_setup
+from openslides.utils.test import TestCase
 from openslides.participant.models import User
 from openslides.config.models import config
 from openslides.motion.models import Motion, Workflow, State
@@ -19,7 +17,6 @@ from openslides.motion.exceptions import WorkflowError
 
 class ModelTest(TestCase):
     def setUp(self):
-        post_database_setup.send(sender=self)
         self.motion = Motion.objects.create(title='v1')
         self.test_user = User.objects.create(username='blub')
         self.workflow = Workflow.objects.get(pk=1)
