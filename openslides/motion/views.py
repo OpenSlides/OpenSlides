@@ -131,15 +131,19 @@ class MotionMixin(object):
         will be mixed in dependence of some config values. See motion.forms
         for more information on the mixins.
         """
+        form_classes = []
 
-        form_classes = [BaseMotionForm]
+        if (self.request.user.has_perm('motion.can_manage_motion') and
+                config['motion_identifier'] == 'manually'):
+            form_classes.append(MotionIdentifierMixin)
+
+        form_classes.append(BaseMotionForm)
+
         if self.request.user.has_perm('motion.can_manage_motion'):
             form_classes.append(MotionSubmitterMixin)
             form_classes.append(MotionCategoryMixin)
             if config['motion_min_supporters'] > 0:
                 form_classes.append(MotionSupporterMixin)
-            if config['motion_identifier'] == 'manually':
-                form_classes.append(MotionIdentifierMixin)
         if self.object:
             if config['motion_allow_disable_versioning'] and self.object.state.versioning:
                 form_classes.append(MotionDisableVersioningMixin)

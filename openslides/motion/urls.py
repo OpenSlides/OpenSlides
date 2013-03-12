@@ -40,7 +40,7 @@ urlpatterns = patterns('openslides.motion.views',
         name='motion_delete',
     ),
 
-    url(r'^(?P<pk>\d+)/set_identifier',
+    url(r'^(?P<pk>\d+)/set_identifier/',
         'set_identifier',
         name='motion_set_identifier',
     ),

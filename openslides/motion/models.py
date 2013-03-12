@@ -38,7 +38,7 @@ from .exceptions import MotionError, WorkflowError
 
 
 # TODO: into the config-tab
-config['motion_identifier'] = ('manually', 'per_category', 'serially_numbered')[0]
+config['motion_identifier'] = ('manually', 'per_category', 'serially_numbered')[2]
 
 
 class Motion(SlideMixin, models.Model):
@@ -190,7 +190,7 @@ class Motion(SlideMixin, models.Model):
             motions = Motion.objects.all()
 
         number = motions.aggregate(Max('identifier_number'))['identifier_number__max'] or 0
-        if self.category is None:
+        if self.category is None or not self.category.prefix:
             prefix = ''
         else:
             prefix = self.category.prefix + ' '
@@ -577,7 +577,13 @@ class MotionSupporter(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=255, verbose_name=ugettext_lazy("Category name"))
-    prefix = models.CharField(max_length=32, verbose_name=ugettext_lazy("Category prefix"))
+    """Name of the category."""
+
+    prefix = models.CharField(blank=True, max_length=32, verbose_name=ugettext_lazy("Category prefix"))
+    """Prefix of the category.
+
+    Used to build the identifier of a motion.
+    """
 
     def __unicode__(self):
         return self.name
