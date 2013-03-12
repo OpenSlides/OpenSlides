@@ -13,13 +13,13 @@
 import os
 import tempfile
 
-from django.test import TestCase
 from django.test.client import Client
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Permission
 
+from openslides.utils.test import TestCase
 from openslides.mediafile.models import Mediafile
 from openslides.participant.models import User
 
@@ -32,8 +32,9 @@ class MediafileTest(TestCase):
         # Setup a mediafile object
         self.tmp_dir = os.path.realpath(os.path.dirname(__file__))
         settings.MEDIA_ROOT = self.tmp_dir
-        mediafile_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=self.tmp_dir)[1]
-        self.object = Mediafile.objects.create(title='Title File 1', mediafile=mediafile_path)
+        tmpfile_no, mediafile_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=self.tmp_dir)
+        self.object = Mediafile.objects.create(title='Title File 1', mediafile=mediafile_path, uploader='user:1')
+        os.close(tmpfile_no)
 
         # Setup the three permissions
         ct = ContentType.objects.get(app_label='mediafile', model='mediafile')
@@ -104,7 +105,8 @@ class MediafileTest(TestCase):
         new_file_1 = SimpleUploadedFile(name='new_test_file.txt', content='test content hello manager')
         response_1 = client_1.post('/mediafile/new/',
                                    {'title': 'new_test_file_title_1',
-                                    'mediafile': new_file_1})
+                                    'mediafile': new_file_1,
+                                    'uploader': self.manager.person_id})
         self.assertEqual(response_1.status_code, 302)
         object_1 = Mediafile.objects.latest('timestamp')
         self.assertEqual(object_1.mediafile.url, '/media/file/new_test_file.txt')
@@ -147,14 +149,15 @@ class MediafileTest(TestCase):
 
     def test_edit_mediafile_post_request(self):
         # Test only one user
-        mediafile_2_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=self.tmp_dir)[1]
+        tmpfile_no, mediafile_2_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=self.tmp_dir)
+        os.close(tmpfile_no)
         object_2 = Mediafile.objects.create(title='Title File 2', mediafile=mediafile_2_path)
-
         client_1 = self.login_clients()['client_manager']
         new_file_1 = SimpleUploadedFile(name='new_test_file.txt', content='test content hello manager')
         response_1 = client_1.post('/mediafile/2/edit/',
                                    {'title': 'new_test_file_title_1',
-                                    'mediafile': new_file_1})
+                                    'mediafile': new_file_1,
+                                    'uploader': self.manager.person_id})
         self.assertEqual(response_1.status_code, 302)
         object_2 = Mediafile.objects.get(pk=2)
         self.assertEqual(object_2.mediafile.url, '/media/file/new_test_file.txt')
@@ -175,14 +178,16 @@ class MediafileTest(TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_delete_mediafile_post_request(self):
-        mediafile_3_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=self.tmp_dir)[1]
+        tmpfile_no, mediafile_3_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=self.tmp_dir)
+        os.close(tmpfile_no)
         object_3 = Mediafile.objects.create(title='Title File 3', mediafile=mediafile_3_path)
         client_1 = self.login_clients()['client_manager']
         response_1 = client_1.post('/mediafile/2/del/', {'yes': 'foo'})
         self.assertEqual(response_1.status_code, 302)
 
     def test_filesize(self):
-        mediafile_4_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=self.tmp_dir)[1]
+        tmpfile_no, mediafile_4_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=self.tmp_dir)
+        os.close(tmpfile_no)
         object_4 = Mediafile.objects.create(title='Title File 4', mediafile=mediafile_4_path)
         self.assertEqual(object_4.get_filesize(), '< 1 kB')
         with open(object_4.mediafile.path, 'wb') as bigfile:
