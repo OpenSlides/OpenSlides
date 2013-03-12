@@ -11,8 +11,8 @@
     {{ motion.title }}
     <br>
     <small>
-    {% if motion.number != None %}
-        {% trans "Motion" %} {{ motion.number }},
+    {% if motion.identifier != None %}
+        {% trans "Motion" %} {{ motion.identifier }},
     {% else %}
         <i>[{% trans "no number" %}]</i>,
     {% endif %}

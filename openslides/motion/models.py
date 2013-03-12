@@ -16,7 +16,7 @@
 from datetime import datetime
 
 from django.core.urlresolvers import reverse
-from django.db import models
+from django.db import models, IntegrityError
 from django.db.models import Max
 from django.dispatch import receiver
 from django.utils import formats
@@ -64,6 +64,12 @@ class Motion(SlideMixin, models.Model):
     identifier = models.CharField(max_length=255, null=True, blank=True,
                                   unique=True)
     """A string as human readable identifier for the motion."""
+
+    identifier_number = models.IntegerField(null=True)
+    """Counts the number of the motion in one category.
+
+    Needed to find the next free motion-identifier.
+    """
 
     category = models.ForeignKey('Category', null=True, blank=True)
     """ForeignKey to one category of motions."""
@@ -169,6 +175,29 @@ class Motion(SlideMixin, models.Model):
             return reverse('motion_edit', args=[str(self.id)])
         if link == 'delete':
             return reverse('motion_delete', args=[str(self.id)])
+
+    def set_identifier(self):
+        # TODO: into the config-tab
+        config['motion_identifier'] = ('manuell', 'category', 'all')[0]
+
+        number = Motion.objects.all().aggregate(Max('identifier_number'))['identifier_number__max'] or 0
+        if self.category is not None:
+            prefix = self.category.prefix + ' '
+        else:
+            prefix = ''
+
+        while True:
+            number += 1
+            self.identifier = '%s%d' % (prefix, number)
+            try:
+                self.save()
+            except IntegrityError:
+                continue
+            else:
+                self.number = number
+                self.save()
+                break
+
 
     def get_title(self):
         """Get the title of the motion.
@@ -345,6 +374,18 @@ class Motion(SlideMixin, models.Model):
             return poll
         else:
             raise WorkflowError('You can not create a poll in state %s.' % self.state.name)
+
+    def set_state(self, state):
+        """Set the state of the motion.
+
+        State can be the id of a state object or a state object.
+        """
+        if type(state) is int:
+            state = State.objects.get(pk=state)
+
+        if state.set_identifier:
+            self.set_identifier()
+        self.state = state
 
     def reset_state(self):
         """Set the state to the default state. If the motion is new, it chooses the default workflow from config."""
@@ -691,6 +732,9 @@ class State(models.Model):
 
     dont_set_new_version_active = models.BooleanField(default=False)
     """If true, new versions are not automaticly set active."""
+
+    set_identifier = models.BooleanField(default=False)
+    """If true, the motion get a identifier if the state change to this one."""
 
     def __unicode__(self):
         """Returns the name of the state."""

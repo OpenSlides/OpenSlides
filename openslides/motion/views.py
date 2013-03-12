@@ -230,6 +230,30 @@ class VersionRejectView(GetVersionMixin, SingleObjectMixin, QuestionMixin, Redir
 version_reject = VersionRejectView.as_view()
 
 
+class SetIdentifierView(SingleObjectMixin, RedirectView):
+    """Set the identifier of the motion.
+
+    See motion.set_identifier for more informations
+    """
+    permission_required = 'motion.can_manage_motion'
+    model = Motion
+    url_name = 'motion_detail'
+
+    def get(self, request, *args, **kwargs):
+        """Set self.object to a motion."""
+        self.object = self.get_object()
+        return super(SetIdentifierView, self).get(request, *args, **kwargs)
+
+    def pre_redirect(self, request, *args, **kwargs):
+        """Set the identifier."""
+        self.object.set_identifier()
+
+    def get_url_name_args(self):
+        return [self.object.id]
+
+set_identifier = SetIdentifierView.as_view()
+
+
 class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
     """View to support or unsupport a motion.
 
@@ -401,7 +425,7 @@ class MotionSetStateView(SingleObjectMixin, RedirectView):
             if self.reset:
                 self.object.reset_state()
             else:
-                self.object.state = State.objects.get(pk=kwargs['state'])
+                self.object.set_state(int(kwargs['state']))
         except WorkflowError, e:  # TODO: Is a WorkflowError still possible here?
             messages.error(request, e)
         else:
