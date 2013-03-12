@@ -392,7 +392,8 @@ class Motion(SlideMixin, models.Model):
         if self.state:
             self.state = self.state.workflow.first_state
         else:
-            self.state = Workflow.objects.get(pk=config['motion_workflow']).first_state
+            self.state = (Workflow.objects.get(pk=config['motion_workflow']).first_state or
+                          Workflow.objects.get(pk=config['motion_workflow']).state_set.all()[0])
 
     def slide(self):
         """Return the slide dict."""
@@ -768,7 +769,7 @@ class Workflow(models.Model):
     name = models.CharField(max_length=255)
     """A string representing the workflow."""
 
-    first_state = models.OneToOneField(State, related_name='+')
+    first_state = models.OneToOneField(State, related_name='+', null=True)
     """A one-to-one relation to a state, the starting point for the workflow."""
 
     def __unicode__(self):
@@ -785,5 +786,5 @@ class Workflow(models.Model):
 
     def check_first_state(self):
         """Checks whether the first_state itself belongs to the workflow."""
-        if not self.first_state.workflow == self:
+        if self.first_state and not self.first_state.workflow == self:
             raise WorkflowError('%s can not be first state of %s because it does not belong to it.' % (self.first_state, self))
