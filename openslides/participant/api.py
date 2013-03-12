@@ -102,26 +102,8 @@ def import_users(csv_file):
     return (count_success, error_messages)
 
 
-def get_or_create_special_group(name):
+def get_registered_group():
     """
-    Returns a special group with the given name. If the group does not
-    exist, it is created using the DEFAULT_PERMISSIONS.
+    Returns the Group 'Registered'. Upper and lower case is possible.
     """
-    special_group, created = Group.objects.get_or_create(
-        name__iexact=name, defaults={'name': name})
-    if created:
-        for permission in get_default_permissions():
-            special_group.permissions.add(permission)
-    return special_group
-
-
-def get_default_permissions():
-    """
-    Generator to return all default permissions as django's auth objects.
-    """
-    permission_dict = {}
-    for permission in Permission.objects.select_related():
-        permission_dict['%s.%s' % (permission.content_type.app_label, permission.codename)] = permission
-    for key in permission_dict:
-        if key in DEFAULT_PERMISSIONS:
-            yield permission_dict[key]
+    return Group.objects.get(name__iexact='Registered')

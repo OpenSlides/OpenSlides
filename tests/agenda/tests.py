@@ -10,10 +10,10 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.test import TestCase
 from django.test.client import Client
 from django.db.models.query import EmptyQuerySet
 
+from openslides.utils.test import TestCase
 from openslides.projector.api import get_active_slide
 from openslides.participant.models import User
 from openslides.agenda.models import Item
@@ -93,7 +93,6 @@ class ItemTest(TestCase):
         self.assertEqual(self.item5.get_title_supplement(), 'test item')
         self.assertEqual(self.item5.get_related_type(), 'releateditem')
         self.assertEqual(self.item5.print_related_type(), 'Releateditem')
-
 
 
 class ViewTest(TestCase):

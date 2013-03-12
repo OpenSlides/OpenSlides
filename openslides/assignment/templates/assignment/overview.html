@@ -9,7 +9,7 @@
     <h1>{% trans "Elections" %}
         <small class="pull-right">
         {% if perms.assignment.can_manage_assignment %}
-            <a href="{% url 'assignment_new' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New election' %}"><i class="icon-plus"></i> {% trans "New" %}</a>
+            <a href="{% url 'assignment_new' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New election' %}"><i class="icon-plus icon-white"></i> {% trans "New" %}</a>
         {% endif %}
         {% if perms.assignment.can_see_assignment %}
             <a href="{% url 'print_assignment' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print all elections as PDF' %}"><i class="icon-print"></i> PDF</a>

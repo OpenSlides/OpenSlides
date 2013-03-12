@@ -50,7 +50,7 @@ def motion_to_pdf(pdf, motion):
     motion_data.append([cell1a, cell1b])
 
     # TODO: choose this in workflow
-    if motion.state.edit_as_submitter:
+    if motion.state.allow_submitter_edit:
         # Cell for the signature
         cell2a = []
         cell2b = []
@@ -71,7 +71,7 @@ def motion_to_pdf(pdf, motion):
         for supporter in supporters:
             cell3b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % unicode(supporter),
                                     stylesheet['Signaturefield']))
-        if motion.state.support:
+        if motion.state.allow_support:
             for count in range(config['motion_min_supporters'] - supporters.count()):
                 cell3b.append(Paragraph("<seq id='counter'/>.&nbsp;" + 42 * "_",
                                         stylesheet['Signaturefield']))
