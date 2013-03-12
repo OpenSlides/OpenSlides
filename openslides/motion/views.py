@@ -40,6 +40,10 @@ from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
 from .pdf import motions_to_pdf, motion_to_pdf
 
 
+# TODO: into the config-tab
+config['motion_identifier'] = ('manually', 'per_category', 'serially_numbered')[2]
+
+
 class MotionListView(ListView):
     """View, to list all motions."""
     permission_required = 'motion.can_see_motion'
