@@ -95,7 +95,6 @@ class ItemTest(TestCase):
         self.assertEqual(self.item5.print_related_type(), 'Releateditem')
 
 
-
 class ViewTest(TestCase):
     def setUp(self):
         self.item1 = Item.objects.create(title='item1')

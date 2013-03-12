@@ -75,7 +75,7 @@ class ModelTest(TestCase):
         self.assertEqual(motion.title, 'v2')
 
         motion.version = None
-        motion.version = None # Test to set a version to None, which is already None
+        motion.version = None  # Test to set a version to None, which is already None
         self.assertEqual(motion.title, 'v3')
 
         with self.assertRaises(ValueError):
