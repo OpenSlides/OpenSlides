@@ -383,7 +383,7 @@ class Motion(SlideMixin, models.Model):
         if type(state) is int:
             state = State.objects.get(pk=state)
 
-        if state.set_identifier:
+        if not state.dont_set_identifier:
             self.set_identifier()
         self.state = state
 
@@ -734,8 +734,11 @@ class State(models.Model):
     dont_set_new_version_active = models.BooleanField(default=False)
     """If true, new versions are not automaticly set active."""
 
-    set_identifier = models.BooleanField(default=False)
-    """If true, the motion get a identifier if the state change to this one."""
+    dont_set_identifier = models.BooleanField(default=False)
+    """Decides if the motion gets an identifier.
+
+    If true, the motion does not get an identifier if the state change to
+    this one, else it does."""
 
     def __unicode__(self):
         """Returns the name of the state."""
