@@ -7,9 +7,9 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.test import TestCase
-
 from openslides import get_version, get_git_commit_id
+from openslides.utils.test import TestCase
+
 
 class InitTest(TestCase):
     def test_get_version(self):

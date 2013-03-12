@@ -27,6 +27,7 @@ from django.core.management import execute_from_command_line
 from openslides import get_version
 from openslides.utils.tornado_webserver import run_tornado
 
+
 CONFIG_TEMPLATE = """#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
@@ -270,7 +271,6 @@ def run_syncdb():
     # now initialize the database
     argv = ["", "syncdb", "--noinput"]
     execute_from_command_line(argv)
-    execute_from_command_line(["", "loaddata", "groups_de"])
 
 
 def set_system_url(url):
