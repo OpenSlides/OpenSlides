@@ -8,8 +8,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.test import TestCase
-
+from openslides.utils.test import TestCase
 from openslides.participant.models import User
 from openslides.config.models import config
 from openslides.motion.models import Motion, Workflow, State
@@ -76,7 +75,7 @@ class ModelTest(TestCase):
         self.assertEqual(motion.title, 'v2')
 
         motion.version = None
-        motion.version = None # Test to set a version to None, which is already None
+        motion.version = None  # Test to set a version to None, which is already None
         self.assertEqual(motion.title, 'v3')
 
         with self.assertRaises(ValueError):
@@ -113,18 +112,18 @@ class ModelTest(TestCase):
 
         self.motion.state = State.objects.get(pk=6)
         self.assertEqual(self.motion.state.name, 'permitted')
-        self.assertEqual(self.motion.state.get_action_word(), 'permit')
+        self.assertEqual(self.motion.state.get_action_word(), 'Permit')
         with self.assertRaises(WorkflowError):
             self.motion.support(self.test_user)
         with self.assertRaises(WorkflowError):
             self.motion.unsupport(self.test_user)
 
     def test_new_states_or_workflows(self):
-        workflow_1 = Workflow(name='W1', id=1000)
+        workflow_1 = Workflow.objects.create(name='W1')
         state_1 = State.objects.create(name='S1', workflow=workflow_1)
         workflow_1.first_state = state_1
         workflow_1.save()
-        workflow_2 = Workflow(name='W2', id=2000)
+        workflow_2 = Workflow.objects.create(name='W2')
         state_2 = State.objects.create(name='S2', workflow=workflow_2)
         workflow_2.first_state = state_2
         workflow_2.save()
