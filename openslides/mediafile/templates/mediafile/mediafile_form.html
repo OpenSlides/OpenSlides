@@ -25,7 +25,11 @@
     <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
         {% include "form.html" %}
         <p>
-        {% include "formbuttons_saveapply.html" %}
+            {% if perms.mediafile.can_manage %}
+                {% include "formbuttons_saveapply.html" %}
+            {% else %}
+                {% include "formbuttons_save.html" %}
+            {% endif %}
         <a href="{% url 'mediafile_list' %}" class="btn">{% trans 'Cancel' %}</a>
         </p>
         <small>* {% trans "required" %}</small>

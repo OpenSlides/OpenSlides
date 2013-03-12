@@ -21,7 +21,7 @@ from django.core.handlers.wsgi import WSGIHandler as Django_WSGIHandler
 from django.conf import settings
 
 
-class StaticFileHandler(StaticFileHandler):
+class DjangoStaticFileHandler(StaticFileHandler):
     """Handels static data by using the django finders."""
 
     def initialize(self):
@@ -33,14 +33,15 @@ class StaticFileHandler(StaticFileHandler):
         from django.contrib.staticfiles import finders
         normalized_path = posixpath.normpath(unquote(path)).lstrip('/')
         absolute_path = finders.find(normalized_path)
-        return super(StaticFileHandler, self).get(absolute_path, include_body)
+        return super(DjangoStaticFileHandler, self).get(absolute_path, include_body)
 
 
 def run_tornado(addr, port):
     parse_command_line()
     app = WSGIContainer(Django_WSGIHandler())
     tornado_app = Application([
-        (r"%s(.*)" % settings.STATIC_URL, StaticFileHandler),
+        (r"%s(.*)" % settings.STATIC_URL, DjangoStaticFileHandler),
+        (r'%s(.*)' % settings.MEDIA_URL, StaticFileHandler, {'path': settings.MEDIA_ROOT}),
         ('.*', FallbackHandler, dict(fallback=app))])
 
     server = HTTPServer(tornado_app)

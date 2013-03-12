@@ -17,7 +17,7 @@ from openslides.utils.template import Tab
 from openslides.utils.views import ListView, CreateView, UpdateView, DeleteView
 
 from .models import Mediafile
-from .forms import MediafileUpdateForm
+from .forms import MediafileNormalCreateForm, MediafileUpdateForm
 
 
 class MediafileListView(ListView):
@@ -39,6 +39,20 @@ class MediafileCreateView(CreateView):
     model = Mediafile
     permission_required = 'mediafile.can_upload'
     success_url_name = 'mediafile_list'
+
+    def get_form(self, form_class):
+        form_kwargs = self.get_form_kwargs()
+        if self.request.method == 'GET':
+            form_kwargs['initial'].update({'uploader': self.request.user})
+        if not self.request.user.has_perm('mediafile.can_manage'):
+            return MediafileNormalCreateForm(**form_kwargs)
+        else:
+            return form_class(**form_kwargs)
+
+    def manipulate_object(self, *args, **kwargs):
+        if not self.request.user.has_perm('mediafile.can_manage'):
+            self.object.uploader = self.request.user
+        return super(MediafileCreateView, self).manipulate_object(*args, **kwargs)
 
 
 class MediafileUpdateView(UpdateView):

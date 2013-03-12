@@ -16,6 +16,15 @@ from openslides.utils.forms import CssClassMixin
 from openslides.mediafile.models import Mediafile
 
 
+class MediafileNormalCreateForm(CssClassMixin, ModelForm):
+    """
+    Form to create a media file as normal user.
+    """
+    class Meta:
+        model = Mediafile
+        exclude = ('uploader',)
+
+
 class MediafileUpdateForm(CssClassMixin, ModelForm):
     """
     Form to edit mediafile entries.
