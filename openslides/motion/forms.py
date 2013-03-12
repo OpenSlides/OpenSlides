@@ -96,6 +96,12 @@ class MotionCategoryMixin(forms.ModelForm):
     category = forms.ModelChoiceField(queryset=Category.objects.all(), required=False)
 
 
+class MotionIdentifierMixin(forms.ModelForm):
+    """Mixin to let the user choose the identifier for the motion."""
+
+    identifier = forms.CharField(required=False)
+
+
 class ConfigForm(CssClassMixin, forms.Form):
     """Form for the configuration tab of OpenSlides."""
     motion_min_supporters = forms.IntegerField(

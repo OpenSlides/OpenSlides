@@ -37,6 +37,10 @@ from openslides.agenda.models import Item
 from .exceptions import MotionError, WorkflowError
 
 
+# TODO: into the config-tab
+config['motion_identifier'] = ('manually', 'per_category', 'serially_numbered')[0]
+
+
 class Motion(SlideMixin, models.Model):
     """The Motion Class.
 
@@ -177,14 +181,19 @@ class Motion(SlideMixin, models.Model):
             return reverse('motion_delete', args=[str(self.id)])
 
     def set_identifier(self):
-        # TODO: into the config-tab
-        config['motion_identifier'] = ('manuell', 'category', 'all')[0]
-
-        number = Motion.objects.all().aggregate(Max('identifier_number'))['identifier_number__max'] or 0
-        if self.category is not None:
-            prefix = self.category.prefix + ' '
+        if config['motion_identifier'] == 'manually':
+            # Do not set an identifier.
+            return
+        elif config['motion_identifier'] == 'per_category':
+            motions = Motion.objects.filter(category=self.category)
         else:
+            motions = Motion.objects.all()
+
+        number = motions.aggregate(Max('identifier_number'))['identifier_number__max'] or 0
+        if self.category is None:
             prefix = ''
+        else:
+            prefix = self.category.prefix + ' '
 
         while True:
             number += 1
@@ -197,7 +206,6 @@ class Motion(SlideMixin, models.Model):
                 self.number = number
                 self.save()
                 break
-
 
     def get_title(self):
         """Get the title of the motion.

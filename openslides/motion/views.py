@@ -35,7 +35,8 @@ from openslides.agenda.models import Item
 from .models import (Motion, MotionSubmitter, MotionSupporter, MotionPoll,
                      MotionVersion, State, WorkflowError, Category)
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
-                    MotionDisableVersioningMixin, ConfigForm, MotionCategoryMixin)
+                    MotionDisableVersioningMixin, ConfigForm, MotionCategoryMixin,
+                    MotionIdentifierMixin)
 from .pdf import motions_to_pdf, motion_to_pdf
 
 
@@ -98,6 +99,16 @@ class MotionMixin(object):
         except KeyError:
             pass
 
+        try:
+            self.object.category = form.cleaned_data['category']
+        except KeyError:
+            pass
+
+        try:
+            self.object.identifier = form.cleaned_data['identifier']
+        except KeyError:
+            pass
+
     def post_save(self, form):
         """Save the submitter an the supporter so the motion."""
         super(MotionMixin, self).post_save(form)
@@ -127,6 +138,8 @@ class MotionMixin(object):
             form_classes.append(MotionCategoryMixin)
             if config['motion_min_supporters'] > 0:
                 form_classes.append(MotionSupporterMixin)
+            if config['motion_identifier'] == 'manually':
+                form_classes.append(MotionIdentifierMixin)
         if self.object:
             if config['motion_allow_disable_versioning'] and self.object.state.versioning:
                 form_classes.append(MotionDisableVersioningMixin)
