@@ -16,6 +16,7 @@
     {% else %}
         <i>[{% trans "no number" %}]</i>,
     {% endif %}
+    {# TODO: show only for complex workflow #}
     {% trans "Version" %} {{ motion.version.version_number }}
     </small>
     <small class="pull-right">
@@ -56,11 +57,20 @@
 
 <div class="row-fluid">
 <div class="span8">
-    <span class="label label-warning"><i class="icon-warning-sign icon-white"></i>
+    {# TODO: show only for complex workflow #}
     {% if motion.version.version_number < motion.last_version.version_number %}
-        {% trans "This is not the newest version." %}</span> <a href="{% model_url motion.last_version %}">{% trans "Go to version" %} {{ motion.last_version.version_number }}.</a>
-    {% else %}
-        {% trans "This is not the authorized version." %}</span> <a href="{% model_url motion.active_version %}">{% trans "Go to version" %} {{ motion.active_version.version_number }}.</a>
+        <span class="label label-warning">
+            <i class="icon-warning-sign icon-white"></i> {% trans "This is not the newest version." %}
+        </span>
+        <a href="{% model_url motion.last_version %}" class="btn btn-small">{% trans "Go to last version" %}
+        (#{{ motion.last_version.version_number }})</a>
+    {% endif %}
+    {% if motion.version.version_number > motion.active_version.version_number %}
+        <span class="label label-warning">
+            <i class="icon-warning-sign icon-white"></i> {% trans "This version is not yet authorized." %}
+        </span>
+        <a href="{% model_url motion.active_version %}" class="btn btn-small">{% trans "Go to last authorized version" %}
+        (#{{ motion.active_version.version_number }})</a>
     {% endif %}
 
     <!-- Text -->
