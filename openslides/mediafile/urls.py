@@ -4,7 +4,7 @@
     openslides.mediafile.urls
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    URL list for the mediafile app.
+    URL patterns for the mediafile app.
 
     :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.

@@ -34,7 +34,8 @@ class MediafileListView(ListView):
 
 class MediafileCreateView(CreateView):
     """
-    View to upload a new file.
+    View to upload a new file. A manager can also set the uploader, else
+    the request user is set as uploader.
     """
     model = Mediafile
     permission_required = 'mediafile.can_upload'
@@ -43,10 +44,12 @@ class MediafileCreateView(CreateView):
     def get_form(self, form_class):
         form_kwargs = self.get_form_kwargs()
         if self.request.method == 'GET':
-            form_kwargs['initial'].update({'uploader': self.request.user})
+            form_kwargs['initial'].update({'uploader': self.request.user})  # TODO: Check this.
         if not self.request.user.has_perm('mediafile.can_manage'):
+            # Return our own ModelForm
             return MediafileNormalCreateForm(**form_kwargs)
         else:
+            # Return a ModelForm created by Django.
             return form_class(**form_kwargs)
 
     def manipulate_object(self, *args, **kwargs):
@@ -73,12 +76,12 @@ class MediafileDeleteView(DeleteView):
     permission_required = 'mediafile.can_manage'
     success_url_name = 'mediafile_list'
 
-    def case_yes(self):
+    def case_yes(self, *args, **kwargs):
         """
         Deletes the file in the filesystem, if user clicks "Yes".
         """
         self.object.mediafile.delete()
-        super(MediafileDeleteView, self).case_yes()
+        return super(MediafileDeleteView, self).case_yes(*args, **kwargs)
 
 
 def register_tab(request):
@@ -88,10 +91,10 @@ def register_tab(request):
     selected = request.path.startswith('/mediafile/')
     return Tab(
         title=_('Media'),
-        app='mediafile',  # Rename this to icon='mediafile'
+        app='mediafile',  # TODO: Rename this to icon='mediafile' later
         stylefile='styles/mediafile.css',
         url=reverse('mediafile_list'),
         permission=(request.user.has_perm('mediafile.can_see') or
                     request.user.has_perm('mediafile.can_upload') or
                     request.user.has_perm('mediafile.can_manage')),
-        selected=selected,)
+        selected=selected)

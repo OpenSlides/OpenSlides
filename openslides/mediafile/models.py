@@ -30,7 +30,7 @@ class Mediafile(models.Model):
     """A string representing the title of the file."""
 
     uploader = PersonField()
-    """A person - the uploader."""
+    """A person – the uploader of a file."""
 
     timestamp = models.DateTimeField(auto_now_add=True)
     """A DateTimeField to save the upload date and time."""
@@ -54,7 +54,7 @@ class Mediafile(models.Model):
         """
         return self.title
 
-    def save(self, **kwargs):
+    def save(self, *args, **kwargs):
         """
         Method to read filetype and then save to the database.
         """
@@ -62,12 +62,12 @@ class Mediafile(models.Model):
             self.filetype = mimetypes.guess_type(self.mediafile.path)[0] or ugettext_noop('unknown')
         else:
             self.filetype = ugettext_noop('unknown')
-        super(Mediafile, self).save(**kwargs)
+        return super(Mediafile, self).save(*args, **kwargs)
 
     @models.permalink
     def get_absolute_url(self, link='update'):
         """
-        Returns the URL to a mediafile. The link can be 'edit' or 'delete'.
+        Returns the URL to a mediafile. The link can be 'update' or 'delete'.
         """
         if link == 'update' or link == 'edit':  # 'edit' ist only used until utils/views.py is fixed
             return ('mediafile_update', [str(self.id)])

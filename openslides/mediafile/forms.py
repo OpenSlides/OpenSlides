@@ -32,7 +32,7 @@ class MediafileUpdateForm(CssClassMixin, ModelForm):
     class Meta:
         model = Mediafile
 
-    def save(self, **kwargs):
+    def save(self, *args, **kwargs):
         """
         Method to save the form.
         Here the overwrite is to delete old files.
@@ -41,4 +41,4 @@ class MediafileUpdateForm(CssClassMixin, ModelForm):
             old_file = Mediafile.objects.get(pk=self.instance.pk).mediafile
             if not old_file == self.instance.mediafile:
                 old_file.delete()
-        return super(MediafileUpdateForm, self).save(**kwargs)
+        return super(MediafileUpdateForm, self).save(*args, **kwargs)

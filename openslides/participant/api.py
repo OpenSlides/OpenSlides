@@ -23,15 +23,6 @@ from openslides.utils import csv_ext
 from openslides.participant.models import User, Group
 
 
-DEFAULT_PERMISSIONS = (
-    'agenda.can_see_agenda',
-    'projector.can_see_projector',
-    'projector.can_see_dashboard',
-    'motion.can_see_motion',
-    'assignment.can_see_assignment',
-    'mediafile.can_see')
-
-
 def gen_password():
     """
     generates a random passwort.

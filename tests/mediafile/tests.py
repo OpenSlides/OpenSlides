@@ -184,6 +184,7 @@ class MediafileTest(TestCase):
         client_1 = self.login_clients()['client_manager']
         response_1 = client_1.post('/mediafile/2/del/', {'yes': 'foo'})
         self.assertEqual(response_1.status_code, 302)
+        self.assertFalse(os.path.exists(object_3.mediafile.path))
 
     def test_filesize(self):
         tmpfile_no, mediafile_4_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=self.tmp_dir)
