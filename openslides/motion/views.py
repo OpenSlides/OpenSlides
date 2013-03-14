@@ -262,8 +262,8 @@ class VersionDiffView(DetailView):
         try:
             rev1 = int(self.request.GET['rev1'])
             rev2 = int(self.request.GET['rev2'])
-            version_rev1 = self.object.version.motion.versions.get(version_number=self.request.GET['rev1'])
-            version_rev2 = self.object.version.motion.versions.get(version_number=self.request.GET['rev2'])
+            version_rev1 = self.object.versions.get(version_number=self.request.GET['rev1'])
+            version_rev2 = self.object.versions.get(version_number=self.request.GET['rev2'])
             diff_text = htmldiff(version_rev1.text, version_rev2.text)
             diff_reason = htmldiff(version_rev1.reason, version_rev2.reason)
         except (KeyError, ValueError, MotionVersion.DoesNotExist):
@@ -337,6 +337,7 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
         else:
             return True
 
+    def get_question(self):
     def pre_redirect(self, request, *args, **kwargs):
         """Append or remove the request.user from the motion and return success message.
 
