@@ -12,6 +12,7 @@ from django.core.management import execute_from_command_line
 from openslides.main import get_user_config_path, setup_django_environment
 
 if __name__ == "__main__":
-    setup_django_environment(
-        get_user_config_path('openslides', 'settings.py'))
+    if 'DJANGO_SETTINGS_MODULE' not in os.environ:
+        setup_django_environment(
+            get_user_config_path('openslides', 'settings.py'))
     execute_from_command_line(sys.argv)
