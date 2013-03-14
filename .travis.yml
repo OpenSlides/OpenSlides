@@ -9,3 +9,4 @@ script:
   - export DJANGO_SETTINGS_MODULE=tests.settings
   - coverage run ./manage.py test tests && coverage report -m
   - pep8 --max-line-length=150 --exclude="urls.py," --statistics openslides
+  - pep8 --max-line-length=150 --statistics tests

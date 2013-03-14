@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% load tags %}
+{% load i18n %}
+
+{% block title %}
+    {{ block.super }} –
+    {% if motion %}
+        {% trans "Edit category" %}
+    {% else %}
+        {% trans "New category" %}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <h1>
+        {% if motion %}
+            {% trans "Edit category" %}
+        {% else %}
+            {% trans "New category" %}
+        {% endif %}
+    </h1>
+    <form action="" method="post">{% csrf_token %}
+        {% include "form.html" %}
+        <p>
+            {% include "formbuttons_saveapply.html" %}
+            <a href='{% url 'motion_list' %}' class="btn">
+                {% trans 'Cancel' %}
+            </a>
+        </p>
+        <small>* {% trans "required" %}</small>
+    </form>
+{% endblock %}

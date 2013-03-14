@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% load tags %}
+{% load i18n %}
+
+{% block title %}{{ block.super }} – {% trans "Motions" %}{% endblock %}
+
+{% block content %}
+    <h1>{% trans "Categories" %}</h1>
+    {% for category in category_list %}
+        <p><a href="{% model_url category 'update' %}">{{ category }}</a></p>
+    {% empty %}
+        <p>No Categories</p>
+    {% endfor %}
+    </table>
+{% endblock %}

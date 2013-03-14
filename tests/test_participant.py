@@ -10,8 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.test import TestCase
-
+from openslides.utils.test import TestCase
 from openslides.utils.person import get_person, Persons
 from openslides.participant.api import gen_username, gen_password
 from openslides.participant.models import User, Group

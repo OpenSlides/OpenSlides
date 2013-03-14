@@ -32,10 +32,16 @@ from openslides.projector.projector import Widget, SLIDE
 from openslides.config.models import config
 from openslides.agenda.models import Item
 
-from .models import Motion, MotionSubmitter, MotionSupporter, MotionPoll, MotionVersion, State, WorkflowError
+from .models import (Motion, MotionSubmitter, MotionSupporter, MotionPoll,
+                     MotionVersion, State, WorkflowError, Category)
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
-                    MotionDisableVersioningMixin, ConfigForm)
+                    MotionDisableVersioningMixin, ConfigForm, MotionCategoryMixin,
+                    MotionIdentifierMixin)
 from .pdf import motions_to_pdf, motion_to_pdf
+
+
+# TODO: into the config-tab
+config['motion_identifier'] = ('manually', 'per_category', 'serially_numbered')[2]
 
 
 class MotionListView(ListView):
@@ -97,6 +103,16 @@ class MotionMixin(object):
         except KeyError:
             pass
 
+        try:
+            self.object.category = form.cleaned_data['category']
+        except KeyError:
+            pass
+
+        try:
+            self.object.identifier = form.cleaned_data['identifier']
+        except KeyError:
+            pass
+
     def post_save(self, form):
         """Save the submitter an the supporter so the motion."""
         super(MotionMixin, self).post_save(form)
@@ -119,10 +135,17 @@ class MotionMixin(object):
         will be mixed in dependence of some config values. See motion.forms
         for more information on the mixins.
         """
+        form_classes = []
 
-        form_classes = [BaseMotionForm]
+        if (self.request.user.has_perm('motion.can_manage_motion') and
+                config['motion_identifier'] == 'manually'):
+            form_classes.append(MotionIdentifierMixin)
+
+        form_classes.append(BaseMotionForm)
+
         if self.request.user.has_perm('motion.can_manage_motion'):
             form_classes.append(MotionSubmitterMixin)
+            form_classes.append(MotionCategoryMixin)
             if config['motion_min_supporters'] > 0:
                 form_classes.append(MotionSupporterMixin)
         if self.object:
@@ -226,6 +249,30 @@ class VersionRejectView(GetVersionMixin, SingleObjectMixin, QuestionMixin, Redir
         self.object.save()
 
 version_reject = VersionRejectView.as_view()
+
+
+class SetIdentifierView(SingleObjectMixin, RedirectView):
+    """Set the identifier of the motion.
+
+    See motion.set_identifier for more informations
+    """
+    permission_required = 'motion.can_manage_motion'
+    model = Motion
+    url_name = 'motion_detail'
+
+    def get(self, request, *args, **kwargs):
+        """Set self.object to a motion."""
+        self.object = self.get_object()
+        return super(SetIdentifierView, self).get(request, *args, **kwargs)
+
+    def pre_redirect(self, request, *args, **kwargs):
+        """Set the identifier."""
+        self.object.set_identifier()
+
+    def get_url_name_args(self):
+        return [self.object.id]
+
+set_identifier = SetIdentifierView.as_view()
 
 
 class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
@@ -399,7 +446,7 @@ class MotionSetStateView(SingleObjectMixin, RedirectView):
             if self.reset:
                 self.object.reset_state()
             else:
-                self.object.state = State.objects.get(pk=kwargs['state'])
+                self.object.set_state(int(kwargs['state']))
         except WorkflowError, e:  # TODO: Is a WorkflowError still possible here?
             messages.error(request, e)
         else:
@@ -471,6 +518,35 @@ class MotionPDFView(SingleObjectMixin, PDFView):
 
 motion_list_pdf = MotionPDFView.as_view(print_all_motions=True)
 motion_detail_pdf = MotionPDFView.as_view(print_all_motions=False)
+
+
+class CategoryListView(ListView):
+    permission_required = 'motion.can_manage_motion'
+    model = Category
+
+category_list = CategoryListView.as_view()
+
+
+class CategoryCreateView(CreateView):
+    permission_required = 'motion.can_manage_motion'
+    model = Category
+
+category_create = CategoryCreateView.as_view()
+
+
+class CategoryUpdateView(UpdateView):
+    permission_required = 'motion.can_manage_motion'
+    model = Category
+
+category_update = CategoryUpdateView.as_view()
+
+
+class CategoryDeleteView(DeleteView):
+    permission_required = 'motion.can_manage_motion'
+    model = Category
+    success_url_name = 'motion_category_list'
+
+category_delete = CategoryDeleteView.as_view()
 
 
 class Config(FormView):
