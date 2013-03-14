@@ -37,7 +37,9 @@
             </td>
         </tr>
     {% empty %}
-        <p>No Categories</p>
+        <tr>
+        <td colspan="3"><i>{% trans "No categories available." %}</i></td>
+        </tr>
     {% endfor %}
     </table>
 {% endblock %}
