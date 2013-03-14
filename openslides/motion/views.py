@@ -25,7 +25,7 @@ from openslides.utils.views import (
     TemplateView, RedirectView, UpdateView, CreateView, DeleteView, PDFView,
     DetailView, ListView, FormView, QuestionMixin, SingleObjectMixin)
 from openslides.utils.template import Tab
-from openslides.utils.utils import html_strong
+from openslides.utils.utils import html_strong, htmldiff
 from openslides.poll.views import PollFormView
 from openslides.projector.api import get_active_slide
 from openslides.projector.projector import Widget, SLIDE
@@ -264,8 +264,8 @@ class VersionDiffView(GetVersionMixin, DetailView):
             rev2 = int(self.request.GET['rev2'])
             version_rev1 = self.object.version.motion.versions.get(version_number=self.request.GET['rev1'])
             version_rev2 = self.object.version.motion.versions.get(version_number=self.request.GET['rev2'])
-            diff_text = self.object.version.make_htmldiff(version_rev1.text, version_rev2.text)
-            diff_reason = self.object.version.make_htmldiff(version_rev1.reason, version_rev2.reason)
+            diff_text = htmldiff(version_rev1.text, version_rev2.text)
+            diff_reason = htmldiff(version_rev1.reason, version_rev2.reason)
         except (KeyError, ValueError, MotionVersion.DoesNotExist):
             messages.error(self.request, _('At least one version number was not valid.'))
             version_rev1 = None
@@ -274,10 +274,10 @@ class VersionDiffView(GetVersionMixin, DetailView):
             diff_reason = None
         context = super(VersionDiffView, self).get_context_data(**kwargs)
         context.update({
-          'version_rev1': version_rev1,
-          'version_rev2': version_rev2,
-          'diff_text': diff_text,
-          'diff_reason': diff_reason,
+            'version_rev1': version_rev1,
+            'version_rev2': version_rev2,
+            'diff_text': diff_text,
+            'diff_reason': diff_reason,
         })
         return context
 

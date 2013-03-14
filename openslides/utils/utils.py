@@ -154,3 +154,10 @@ def encodedict(dict):
 
 def html_strong(string):
     return u"<strong>%s</strong>" % string
+
+
+def htmldiff(self, rev1, rev2):
+    """Return string of html diff between two strings (rev1 and rev2)"""
+
+    diff = difflib.HtmlDiff(wrapcolumn=60)
+    return diff.make_table(rev1.splitlines(), rev2.splitlines())
