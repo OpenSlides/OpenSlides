@@ -97,21 +97,8 @@ def import_users(csv_file):
     return (count_success, error_messages)
 
 
-def get_or_create_registered_group():
-    registered, created = Group.objects.get_or_create(
-        name__iexact='Registered', defaults={'name': 'Registered'})
-    if created:
-        registered.permissions = Permission.objects.filter(
-            codename__in=DEFAULT_PERMS)
-        registered.save()
-    return registered
-
-
-def get_or_create_anonymous_group():
-    anonymous, created = Group.objects.get_or_create(
-        name__iexact='Anonymous', defaults={'name': 'Anonymous'})
-    if created:
-        anonymous.permissions = Permission.objects.filter(
-            codename__in=DEFAULT_PERMS)
-        anonymous.save()
-    return anonymous
+def get_registered_group():
+    """
+    Returns the Group 'Registered'. Upper and lower case is possible.
+    """
+    return Group.objects.get(name__iexact='Registered')

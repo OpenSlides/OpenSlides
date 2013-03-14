@@ -18,7 +18,7 @@ from datetime import datetime
 import difflib
 
 from django.core.urlresolvers import reverse
-from django.db import models
+from django.db import models, IntegrityError
 from django.db.models import Max
 from django.dispatch import receiver
 from django.utils import formats
@@ -66,6 +66,12 @@ class Motion(SlideMixin, models.Model):
     identifier = models.CharField(max_length=255, null=True, blank=True,
                                   unique=True)
     """A string as human readable identifier for the motion."""
+
+    identifier_number = models.IntegerField(null=True)
+    """Counts the number of the motion in one category.
+
+    Needed to find the next free motion-identifier.
+    """
 
     category = models.ForeignKey('Category', null=True, blank=True)
     """ForeignKey to one category of motions."""
@@ -171,6 +177,33 @@ class Motion(SlideMixin, models.Model):
             return reverse('motion_edit', args=[str(self.id)])
         if link == 'delete':
             return reverse('motion_delete', args=[str(self.id)])
+
+    def set_identifier(self):
+        if config['motion_identifier'] == 'manually':
+            # Do not set an identifier.
+            return
+        elif config['motion_identifier'] == 'per_category':
+            motions = Motion.objects.filter(category=self.category)
+        else:
+            motions = Motion.objects.all()
+
+        number = motions.aggregate(Max('identifier_number'))['identifier_number__max'] or 0
+        if self.category is None or not self.category.prefix:
+            prefix = ''
+        else:
+            prefix = self.category.prefix + ' '
+
+        while True:
+            number += 1
+            self.identifier = '%s%d' % (prefix, number)
+            try:
+                self.save()
+            except IntegrityError:
+                continue
+            else:
+                self.number = number
+                self.save()
+                break
 
     def get_title(self):
         """Get the title of the motion.
@@ -348,12 +381,25 @@ class Motion(SlideMixin, models.Model):
         else:
             raise WorkflowError('You can not create a poll in state %s.' % self.state.name)
 
+    def set_state(self, state):
+        """Set the state of the motion.
+
+        State can be the id of a state object or a state object.
+        """
+        if type(state) is int:
+            state = State.objects.get(pk=state)
+
+        if not state.dont_set_identifier:
+            self.set_identifier()
+        self.state = state
+
     def reset_state(self):
         """Set the state to the default state. If the motion is new, it chooses the default workflow from config."""
         if self.state:
             self.state = self.state.workflow.first_state
         else:
-            self.state = Workflow.objects.get(pk=config['motion_workflow']).first_state
+            self.state = (Workflow.objects.get(pk=config['motion_workflow']).first_state or
+                          Workflow.objects.get(pk=config['motion_workflow']).state_set.all()[0])
 
     def slide(self):
         """Return the slide dict."""
@@ -535,7 +581,13 @@ class MotionSupporter(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=255, verbose_name=ugettext_lazy("Category name"))
-    prefix = models.CharField(max_length=32, verbose_name=ugettext_lazy("Prefix"))
+    """Name of the category."""
+
+    prefix = models.CharField(blank=True, max_length=32, verbose_name=ugettext_lazy("Prefix"))
+    """Prefix of the category.
+
+    Used to build the identifier of a motion.
+    """
 
     def __unicode__(self):
         return self.name
@@ -702,6 +754,12 @@ class State(models.Model):
     dont_set_new_version_active = models.BooleanField(default=False)
     """If true, new versions are not automaticly set active."""
 
+    dont_set_identifier = models.BooleanField(default=False)
+    """Decides if the motion gets an identifier.
+
+    If true, the motion does not get an identifier if the state change to
+    this one, else it does."""
+
     def __unicode__(self):
         """Returns the name of the state."""
         return self.name
@@ -734,7 +792,7 @@ class Workflow(models.Model):
     name = models.CharField(max_length=255)
     """A string representing the workflow."""
 
-    first_state = models.OneToOneField(State, related_name='+')
+    first_state = models.OneToOneField(State, related_name='+', null=True)
     """A one-to-one relation to a state, the starting point for the workflow."""
 
     def __unicode__(self):
@@ -751,5 +809,5 @@ class Workflow(models.Model):
 
     def check_first_state(self):
         """Checks whether the first_state itself belongs to the workflow."""
-        if not self.first_state.workflow == self:
+        if self.first_state and not self.first_state.workflow == self:
             raise WorkflowError('%s can not be first state of %s because it does not belong to it.' % (self.first_state, self))

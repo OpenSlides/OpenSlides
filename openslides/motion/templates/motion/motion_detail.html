@@ -8,11 +8,11 @@
 
 {% block content %}
 <h1>
-    {{ motion.title }}
+    {{ motion.title }} {{ motion.category }}
     <br>
     <small>
-    {% if motion.number != None %}
-        {% trans "Motion" %} {{ motion.number }},
+    {% if motion.identifier != None %}
+        {% trans "Motion" %} {{ motion.identifier }},
     {% else %}
         <i>[{% trans "no number" %}]</i>,
     {% endif %}
@@ -56,14 +56,12 @@
 
 <div class="row-fluid">
 <div class="span8">
-
-        <span class="label label-warning"><i class="icon-warning-sign icon-white"></i>
-        {% if motion.version.version_number < motion.last_version.version_number %}
-            {% trans "This is not the newest version." %}</span> <a href="{% model_url motion.last_version %}">{% trans "Go to version" %} {{ motion.last_version.version_number }}.</a>
-        {% else %}
-            {% trans "This is not the authorized version." %}</span> <a href="{% model_url motion.active_version %}">{% trans "Go to version" %} {{ motion.active_version.version_number }}.</a>
-        {% endif %}
-
+    <span class="label label-warning"><i class="icon-warning-sign icon-white"></i>
+    {% if motion.version.version_number < motion.last_version.version_number %}
+        {% trans "This is not the newest version." %}</span> <a href="{% model_url motion.last_version %}">{% trans "Go to version" %} {{ motion.last_version.version_number }}.</a>
+    {% else %}
+        {% trans "This is not the authorized version." %}</span> <a href="{% model_url motion.active_version %}">{% trans "Go to version" %} {{ motion.active_version.version_number }}.</a>
+    {% endif %}
 
     <!-- Text -->
     <h4>{% trans "Motion text" %}:</h4>
@@ -282,6 +280,5 @@
     {% endif %}
   </div> <!--/span-->
 </div> <!--/row-->
-
 
 {% endblock %}
