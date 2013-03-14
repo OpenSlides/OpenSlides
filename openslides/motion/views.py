@@ -230,6 +230,38 @@ class VersionRejectView(GetVersionMixin, SingleObjectMixin, QuestionMixin, Redir
 version_reject = VersionRejectView.as_view()
 
 
+class VersionDiffView(GetVersionMixin, DetailView):
+    """Show diff between two versions of a motion."""
+    permission_required = 'motion.can_see_motion'
+    model = Motion
+    template_name = 'motion/motion_diff.html'
+
+    def get_context_data(self, **kwargs):
+        """Return the template context with versions and html diff strings."""
+        try:
+            rev1 = int(self.request.GET['rev1'])
+            rev2 = int(self.request.GET['rev2'])
+            version_rev1 = self.object.version.motion.versions.get(version_number=self.request.GET['rev1'])
+            version_rev2 = self.object.version.motion.versions.get(version_number=self.request.GET['rev2'])
+            diff_text = self.object.version.make_htmldiff(version_rev1.text, version_rev2.text)
+            diff_reason = self.object.version.make_htmldiff(version_rev1.reason, version_rev2.reason)
+        except (KeyError, ValueError, MotionVersion.DoesNotExist):
+            messages.error(self.request, _('At least one version number was not valid.'))
+            version_rev1 = None
+            version_rev2 = None
+            diff_text = None
+            diff_reason = None
+        context = super(VersionDiffView, self).get_context_data(**kwargs)
+        context.update({
+          'version_rev1': version_rev1,
+          'version_rev2': version_rev2,
+          'diff_text': diff_text,
+          'diff_reason': diff_reason,
+        })
+        return context
+
+version_diff = VersionDiffView.as_view()
+
 class SupportView(SingleObjectMixin, RedirectView):
     """View to support or unsupport a motion.
 

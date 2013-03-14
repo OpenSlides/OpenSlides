@@ -15,6 +15,8 @@
 
 from datetime import datetime
 
+import difflib
+
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Max
@@ -495,6 +497,12 @@ class MotionVersion(models.Model):
     def active(self):
         """Return True, if the version is the active version of a motion. Else: False."""
         return self.active_version.exists()
+
+    def make_htmldiff(self, rev1, rev2):
+        """Return string of html diff between two strings (rev1 and rev2)"""
+
+        diff = difflib.HtmlDiff(wrapcolumn=60)
+        return diff.make_table(rev1.splitlines(), rev2.splitlines())
 
 
 class MotionSubmitter(models.Model):
