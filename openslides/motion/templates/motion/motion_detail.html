@@ -4,14 +4,14 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block title %}{{ block.super }} – {% trans "Motion" %} {{ motion.number }}{% endblock %}
+{% block title %}{{ block.super }} – {% trans "Motion" %} {{ motion.identifier }}{% endblock %}
 
 {% block content %}
 <h1>
     {{ motion.title }} {{ motion.category }}
     <br>
     <small>
-    {% if motion.identifier != None %}
+    {% if motion.identifier %}
         {% trans "Motion" %} {{ motion.identifier }},
     {% else %}
         <i>[{% trans "no number" %}]</i>,
