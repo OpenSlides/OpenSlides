@@ -52,9 +52,9 @@ class Motion(SlideMixin, models.Model):
                                        related_name="active_version")
     """Points to a specific version.
 
-    Used be the permitted-version-system to deside witch version is the active
-    Version. Could also be used to only choose a specific version as a default
-    version. Like the Sighted versions on Wikipedia.
+    Used be the permitted-version-system to deside which version is the active
+    version. Could also be used to only choose a specific version as a default
+    version. Like the sighted versions on Wikipedia.
     """
 
     state = models.ForeignKey('State', null=True)  # TODO: Check whether null=True is necessary.
