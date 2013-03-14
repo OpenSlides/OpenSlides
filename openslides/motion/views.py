@@ -338,8 +338,14 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
             return True
 
     def get_question(self):
-    def pre_redirect(self, request, *args, **kwargs):
-        """Append or remove the request.user from the motion and return success message.
+         """Return the question string."""
+         if self.support:
+             return _('Do you really want to support this motion?')
+         else:
+             return _('Do you really want to unsupport this motion?')
+
+    def case_yes(self):
+        """Append or remove the request.user from the motion.
 
         First the method checks the permissions, and writes a log message after
         appending or removing the user.
@@ -352,7 +358,6 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
             else:
                 self.object.unsupport(person=user)
                 self.object.write_log(ugettext_noop("Supporter: -%s") % user, user)
-            messages.success(request, self.get_success_message())
 
     def get_success_message(self):
         """Return the success message."""
