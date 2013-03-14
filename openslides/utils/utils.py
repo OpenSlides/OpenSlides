@@ -10,8 +10,9 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-import sys
+import difflib
 import json
+import sys
 
 from django.contrib import messages
 from django.contrib.auth.models import Permission
@@ -156,7 +157,7 @@ def html_strong(string):
     return u"<strong>%s</strong>" % string
 
 
-def htmldiff(self, rev1, rev2):
+def htmldiff(rev1, rev2):
     """Return string of html diff between two strings (rev1 and rev2)"""
 
     diff = difflib.HtmlDiff(wrapcolumn=60)

@@ -15,8 +15,6 @@
 
 from datetime import datetime
 
-import difflib
-
 from django.core.urlresolvers import reverse
 from django.db import models, IntegrityError
 from django.db.models import Max

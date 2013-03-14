@@ -251,7 +251,7 @@ class VersionRejectView(GetVersionMixin, SingleObjectMixin, QuestionMixin, Redir
 version_reject = VersionRejectView.as_view()
 
 
-class VersionDiffView(GetVersionMixin, DetailView):
+class VersionDiffView(DetailView):
     """Show diff between two versions of a motion."""
     permission_required = 'motion.can_see_motion'
     model = Motion
