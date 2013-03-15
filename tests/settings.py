@@ -1,0 +1,36 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import openslides.main
+from openslides.global_settings import *
+
+# Use 'DEBUG = True' to get more details for server errors
+# (Default for releases: 'False')
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
+
+DBPATH = u'database.sqlite'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': DBPATH,
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
+    }
+}
+
+# Set timezone
+TIME_ZONE = 'Europe/Berlin'
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = 'secred'
+
+# Add OpenSlides plugins to this list (see example entry in comment)
+INSTALLED_PLUGINS = (
+    'tests.person_api',
+)
+
+INSTALLED_APPS += INSTALLED_PLUGINS

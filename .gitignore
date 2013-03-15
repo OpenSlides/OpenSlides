@@ -4,6 +4,7 @@
 *~
 settings.py
 database.sqlite
+!tests/settings.py
 
 # Package building
 docs/_build/*

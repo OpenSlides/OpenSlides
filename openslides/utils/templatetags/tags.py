@@ -17,11 +17,6 @@ register = template.Library()
 
 
 @register.simple_tag
-def get_min_supporters():
-    return config['motion_min_supporters']
-
-
-@register.simple_tag
 def get_config(key):
     return config[key]
 

@@ -23,7 +23,6 @@ from django.utils import formats
 from django.utils.translation import pgettext
 from django.utils.translation import ugettext_lazy, ugettext_noop, ugettext as _
 
-from openslides.utils.utils import _propper_unicode
 from openslides.utils.person import PersonField
 from openslides.config.models import config
 from openslides.config.signals import default_config_value
@@ -339,12 +338,15 @@ class Motion(SlideMixin, models.Model):
 
     def is_submitter(self, person):
         """Return True, if person is a submitter of this motion. Else: False."""
-        self.submitter.filter(person=person).exists()
+        return self.submitter.filter(person=person).exists()
 
     @property
     def supporters(self):
         return sorted([object.person for object in self.supporter.all()],
                       key=lambda person: person.sort_name)
+
+    def add_submitter(self, person):
+        MotionSubmitter.objects.create(motion=self, person=person)
 
     def is_supporter(self, person):
         """Return True, if person is a supporter of this motion. Else: False."""
