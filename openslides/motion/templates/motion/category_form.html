@@ -5,7 +5,7 @@
 
 {% block title %}
     {{ block.super }} –
-    {% if motion %}
+    {% if category %}
         {% trans "Edit category" %}
     {% else %}
         {% trans "New category" %}
@@ -14,7 +14,7 @@
 
 {% block content %}
     <h1>
-        {% if motion %}
+        {% if category %}
             {% trans "Edit category" %}
         {% else %}
             {% trans "New category" %}
@@ -24,7 +24,7 @@
         {% include "form.html" %}
         <p>
             {% include "formbuttons_saveapply.html" %}
-            <a href='{% url 'motion_list' %}' class="btn">
+            <a href='{% url 'motion_category_list' %}' class="btn">
                 {% trans 'Cancel' %}
             </a>
         </p>
