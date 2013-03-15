@@ -60,6 +60,11 @@ urlpatterns = patterns('openslides.motion.views',
         name='motion_version_reject',
     ),
 
+    url(r'^(?P<pk>\d+)/diff/$',
+        'version_diff',
+        name='motion_version_diff',
+    ),
+
     url(r'^(?P<pk>\d+)/support/$',
         'motion_support',
         name='motion_support',
