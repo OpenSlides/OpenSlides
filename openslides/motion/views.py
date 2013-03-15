@@ -338,11 +338,11 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
             return True
 
     def get_question(self):
-         """Return the question string."""
-         if self.support:
-             return _('Do you really want to support this motion?')
-         else:
-             return _('Do you really want to unsupport this motion?')
+        """Return the question string."""
+        if self.support:
+            return _('Do you really want to support this motion?')
+        else:
+            return _('Do you really want to unsupport this motion?')
 
     def case_yes(self):
         """Append or remove the request.user from the motion.

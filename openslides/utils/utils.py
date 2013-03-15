@@ -157,8 +157,8 @@ def html_strong(string):
     return u"<strong>%s</strong>" % string
 
 
-def htmldiff(rev1, rev2):
-    """Return string of html diff between two strings (rev1 and rev2)"""
+def htmldiff(text1, text2):
+    """Return string of html diff between two strings (text1 and text2)"""
 
     diff = difflib.HtmlDiff(wrapcolumn=60)
-    return diff.make_table(rev1.splitlines(), rev2.splitlines())
+    return diff.make_table(text1.splitlines(), text2.splitlines())
