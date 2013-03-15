@@ -23,7 +23,6 @@ from django.utils import formats
 from django.utils.translation import pgettext
 from django.utils.translation import ugettext_lazy, ugettext_noop, ugettext as _
 
-from openslides.utils.utils import _propper_unicode
 from openslides.utils.person import PersonField
 from openslides.config.models import config
 from openslides.config.signals import default_config_value
