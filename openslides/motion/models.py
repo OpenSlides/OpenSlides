@@ -50,9 +50,9 @@ class Motion(SlideMixin, models.Model):
                                        related_name="active_version")
     """Points to a specific version.
 
-    Used be the permitted-version-system to deside witch version is the active
-    Version. Could also be used to only choose a specific version as a default
-    version. Like the Sighted versions on Wikipedia.
+    Used be the permitted-version-system to deside which version is the active
+    version. Could also be used to only choose a specific version as a default
+    version. Like the sighted versions on Wikipedia.
     """
 
     state = models.ForeignKey('State', null=True)  # TODO: Check whether null=True is necessary.
@@ -575,7 +575,7 @@ class Category(models.Model):
     name = models.CharField(max_length=255, verbose_name=ugettext_lazy("Category name"))
     """Name of the category."""
 
-    prefix = models.CharField(blank=True, max_length=32, verbose_name=ugettext_lazy("Category prefix"))
+    prefix = models.CharField(blank=True, max_length=32, verbose_name=ugettext_lazy("Prefix"))
     """Prefix of the category.
 
     Used to build the identifier of a motion.
@@ -590,6 +590,8 @@ class Category(models.Model):
         if link == 'delete':
             return reverse('motion_category_delete', args=[str(self.id)])
 
+    class Meta:
+        ordering = ['prefix']
 
 ## class Comment(models.Model):
     ## motion_version = models.ForeignKey(MotionVersion)

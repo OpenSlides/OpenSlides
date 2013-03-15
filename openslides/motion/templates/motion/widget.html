@@ -17,8 +17,8 @@
             {{ motion.public_version.title }}
         </a>
         ({% trans "motion" %}
-        {% if motion.number %}
-            {{ motion.number }})
+        {% if motion.identifier %}
+            {{ motion.identifier }})
         {% else %}
             <i>[{% trans "no number" %}]</i>)
         {% endif %}

@@ -10,8 +10,9 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-import sys
+import difflib
 import json
+import sys
 
 from django.contrib import messages
 from django.contrib.auth.models import Permission
@@ -154,3 +155,10 @@ def encodedict(dict):
 
 def html_strong(string):
     return u"<strong>%s</strong>" % string
+
+
+def htmldiff(text1, text2):
+    """Return string of html diff between two strings (text1 and text2)"""
+
+    diff = difflib.HtmlDiff(wrapcolumn=60)
+    return diff.make_table(text1.splitlines(), text2.splitlines())

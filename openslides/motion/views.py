@@ -25,7 +25,7 @@ from openslides.utils.views import (
     TemplateView, RedirectView, UpdateView, CreateView, DeleteView, PDFView,
     DetailView, ListView, FormView, QuestionMixin, SingleObjectMixin)
 from openslides.utils.template import Tab
-from openslides.utils.utils import html_strong
+from openslides.utils.utils import html_strong, htmldiff
 from openslides.poll.views import PollFormView
 from openslides.projector.api import get_active_slide
 from openslides.projector.projector import Widget, SLIDE
@@ -249,6 +249,39 @@ class VersionRejectView(GetVersionMixin, SingleObjectMixin, QuestionMixin, Redir
         self.object.save()
 
 version_reject = VersionRejectView.as_view()
+
+
+class VersionDiffView(DetailView):
+    """Show diff between two versions of a motion."""
+    permission_required = 'motion.can_see_motion'
+    model = Motion
+    template_name = 'motion/motion_diff.html'
+
+    def get_context_data(self, **kwargs):
+        """Return the template context with versions and html diff strings."""
+        try:
+            rev1 = int(self.request.GET['rev1'])
+            rev2 = int(self.request.GET['rev2'])
+            version_rev1 = self.object.versions.get(version_number=self.request.GET['rev1'])
+            version_rev2 = self.object.versions.get(version_number=self.request.GET['rev2'])
+            diff_text = htmldiff(version_rev1.text, version_rev2.text)
+            diff_reason = htmldiff(version_rev1.reason, version_rev2.reason)
+        except (KeyError, ValueError, MotionVersion.DoesNotExist):
+            messages.error(self.request, _('At least one version number was not valid.'))
+            version_rev1 = None
+            version_rev2 = None
+            diff_text = None
+            diff_reason = None
+        context = super(VersionDiffView, self).get_context_data(**kwargs)
+        context.update({
+            'version_rev1': version_rev1,
+            'version_rev2': version_rev2,
+            'diff_text': diff_text,
+            'diff_reason': diff_reason,
+        })
+        return context
+
+version_diff = VersionDiffView.as_view()
 
 
 class SetIdentifierView(SingleObjectMixin, RedirectView):
@@ -530,6 +563,7 @@ category_list = CategoryListView.as_view()
 class CategoryCreateView(CreateView):
     permission_required = 'motion.can_manage_motion'
     model = Category
+    success_url_name = 'motion_category_list'
 
 category_create = CategoryCreateView.as_view()
 
@@ -537,6 +571,7 @@ category_create = CategoryCreateView.as_view()
 class CategoryUpdateView(UpdateView):
     permission_required = 'motion.can_manage_motion'
     model = Category
+    success_url_name = 'motion_category_list'
 
 category_update = CategoryUpdateView.as_view()
 
@@ -544,6 +579,7 @@ category_update = CategoryUpdateView.as_view()
 class CategoryDeleteView(DeleteView):
     permission_required = 'motion.can_manage_motion'
     model = Category
+    question_url_name = 'motion_category_list'
     success_url_name = 'motion_category_list'
 
 category_delete = CategoryDeleteView.as_view()
