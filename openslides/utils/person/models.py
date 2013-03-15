@@ -12,7 +12,7 @@
 from django.db import models
 
 from .forms import PersonFormField
-from .api import get_person, generate_person_id, Person
+from .api import get_person, generate_person_id
 
 
 class PersonField(models.fields.Field):
@@ -29,7 +29,7 @@ class PersonField(models.fields.Field):
         """
         Convert string value to a User Object.
         """
-        if isinstance(value, Person):
+        if isinstance(value, PersonMixin):
             return value
         elif value is None:
             return None
@@ -60,5 +60,11 @@ class PersonMixin(object):
             raise AttributeError("%s has to have a attribute 'person_prefix'"
                                  % self)
 
-    def __repr__(self):
-        return 'Person: %s' % self.person_id
+    def __unicode__(self):
+        return 'MyPerson: %s' % self.person_id
+
+    def prepare_database_save(self, field):
+        if type(field) is PersonField:
+            return self.person_id
+        else:
+            return super(PersonMixin, self).prepare_database_save(field)
