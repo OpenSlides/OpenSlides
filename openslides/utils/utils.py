@@ -132,27 +132,6 @@ def ajax_request(data):
     return HttpResponse(json.dumps(data))
 
 
-def _propper_unicode(text):
-    if not isinstance(text, unicode):
-        return u"%s" % text.decode('UTF-8')
-    else:
-        return text
-
-
-def decodedict(dict):
-    newdict = {}
-    for key in dict:
-        newdict[key] = [dict[key][0].encode('utf-8')]
-    return newdict
-
-
-def encodedict(dict):
-    newdict = {}
-    for key in dict:
-        newdict[key] = [unicode(dict[key][0].decode('utf-8'))]
-    return newdict
-
-
 def html_strong(string):
     return u"<strong>%s</strong>" % string
 

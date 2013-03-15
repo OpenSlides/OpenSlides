@@ -165,6 +165,11 @@ class MotionCreateView(MotionMixin, CreateView):
         self.object.write_log(ugettext_noop('Motion created'), self.request.user)
         return value
 
+    def post_save(self, form):
+        super(MotionCreateView, self).post_save(form)
+        if not 'submitter' in form.cleaned_data:
+            self.object.add_submitter(self.request.user)
+
 motion_create = MotionCreateView.as_view()
 
 

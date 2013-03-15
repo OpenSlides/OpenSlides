@@ -29,7 +29,7 @@ from django.utils.translation import ugettext as _, ugettext_lazy, activate
 from openslides.utils.pdf import stylesheet
 from openslides.utils.template import Tab
 from openslides.utils.utils import (
-    template, decodedict, encodedict, delete_default_permissions, html_strong)
+    template, delete_default_permissions, html_strong)
 from openslides.utils.views import (
     FormView, PDFView, CreateView, UpdateView, DeleteView, PermissionMixin,
     RedirectView, SingleObjectMixin, ListView, QuestionMixin, DetailView)
