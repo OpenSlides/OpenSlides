@@ -1,0 +1,68 @@
+table.agenda_list {
+	table-layout: fixed;
+}
+.agenda_list, .agenda_list ol {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+.agenda_list {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	width: 100%;
+}
+.agenda_list li {
+	margin: 0;
+	padding: 0;
+}
+.agenda_list .openclose { width: 40px; text-align: center; }
+.agenda_list .duration { width: 75px; }
+.agenda_list .manage { width: 150px; }
+.agenda_list .ui-sortable-placeholder {
+	background-color: #eee;
+}
+.agenda_list .ui-sortable-helper {
+	background-color: white;
+	opacity: 0;
+}
+.agenda_list .ui-sortable-helper .openclose, .agenda_list .ui-sortable-helper .manage, .agenda_list .ui-sortable-helper .manage {
+	visibility: hidden;
+}
+.agenda_list .indentation {
+	margin: 0;
+	display: inline-block;
+	width: 0px;
+	height: 10px;
+}
+.agenda_list ol .indentation { width: 12px; }
+.agenda_list ol ol .indentation { width: 24px; }
+.agenda_list ol ol ol .indentation { width: 36px; }
+.agenda_list ol ol ol ol .indentation { width: 48px; }
+.agenda_list ol ol ol ol ol .indentation { width: 60px; }
+.agenda_list ol ol ol ol ol ol.indentation { width: 72px; }
+.agenda_list ol ol ol ol ol ol ol .indentation { width: 84px; }
+.agenda_list ol ol ol ol ol ol ol ol .indentation { width: 96px; }
+.agenda_list ol ol ol ol ol ol ol ol ol .indentation { width: 108px; }
+
+.agenda_list .draggable > div {
+	display: table;
+	width: 100%;
+	table-layout: fixed;
+}
+.agenda_list .draggable > div > div {
+	display: table-cell;
+	padding: 8px;
+	border-bottom: solid 1px lightgray;
+}
+
+
+
+a.drag-handle .handle {
+	background: url("../img/draggable.png") no-repeat scroll 0 0 transparent;
+	height: 13px;
+	margin-top: 4px;
+	width: 13px;
+	display: inline-block;
+}

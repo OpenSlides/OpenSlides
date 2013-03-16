@@ -44,10 +44,13 @@ class Overview(TemplateView):
     def get_context_data(self, **kwargs):
         context = super(Overview, self).get_context_data(**kwargs)
 
-        if self.request.user.has_perm('agenda.can_see_orga_items'):
-            items = Item.objects.all()
-        else:
-            items = Item.objects.filter(type__exact=Item.AGENDA_ITEM)
+#        if self.request.user.has_perm('agenda.can_see_orga_items'):
+#            items = Item.objects.all()
+#        else:
+#            items = Item.objects.filter(type__exact=Item.AGENDA_ITEM)
+# @TODO Implement this filter
+
+        items = Item.objects.root_nodes();
 
         start = config['agenda_start_event_date_time']
         if start is None or len(start) == 0:
