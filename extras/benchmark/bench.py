@@ -37,7 +37,6 @@ URL_SETS = {
     "agenda": [
         "/agenda/",
         "/static/styles/base.css",
-        "/static/styles/tabledrag.css",
         "/static/javascript/utils.js",
         "/static/styles/agenda.css",
         "/static/javascript/jquery.min.js",
