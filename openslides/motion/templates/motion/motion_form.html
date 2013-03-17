@@ -3,6 +3,66 @@
 {% load tags %}
 {% load i18n %}
 
+{% load staticfiles %}
+
+{% block header %}
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/ckeditor.css' %}" />
+{% endblock %}
+
+{% block javascript %}
+	<script type="text/javascript" src="{% static 'javascript/ckeditor/ckeditor.js' %}"></script>
+	    <script type="text/javascript">
+		$(function() {
+			var ck_options = {
+				
+				// Using a custom CSS file allows us to specifically style elements entered
+				// using the editor. Using the CSS prefix class .ckeditor_html prevents these
+				// styles from meddling with the main layout
+				
+				contentsCss: "{% static 'styles/ckeditor.css' %}",
+				bodyClass: "ckeditor_html",
+				
+				allowedContent:
+					'h1 h2 h3 pre blockquote strong em u strike;' +
+					
+					// A workaround for the problem described in http://dev.ckeditor.com/ticket/10192
+					// Hopefully, the problem will be solved in the final version of CKEditor 4.1
+					// If so, then {margin-left} can be removed
+					'p{margin-left};' +
+					
+					'a[!href];' +
+					'table tr th td caption;' +
+					'ol ul li;' +
+					'span{!font-family};' +
+					'span{!color};',
+				removePlugins: "save, print, preview, pagebreak, templates, showblocks, magicline",
+				
+				// Not part of the standard package of CKEditor
+				// http://ckeditor.com/addon/insertpre
+				extraPlugins: "insertpre",
+				
+				toolbar_Full: [
+					{ name: 'document',    items : [ 'Source','-','Save','DocProps','Preview','Print','-','Templates' ] },
+					{ name: 'clipboard',   items : [ 'Cut','Copy','Paste','PasteText','PasteFromWord','-','Undo','Redo' ] },
+					{ name: 'editing',     items : [ 'Find','Replace','-','SelectAll','-','SpellChecker', 'Scayt' ] },
+					{ name: 'forms',       items : [ 'Form', 'Checkbox', 'Radio', 'TextField', 'Textarea', 'Select', 'Button', 'ImageButton', 'HiddenField' ] },
+					{ name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
+					{ name: 'paragraph',   items : [ 'NumberedList','BulletedList','-','Outdent','Indent','-','Blockquote','Pre','InsertPre','CreateDiv','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
+					{ name: 'links',       items : [ 'Link','Unlink','Anchor' ] },
+					{ name: 'insert',      items : [ 'Image','Flash','Table','HorizontalRule','Smiley','SpecialChar','PageBreak' ] },
+					{ name: 'styles',      items : [ 'Format','Font','FontSize' ] },
+					{ name: 'colors',      items : [ 'TextColor','BGColor' ] },
+					{ name: 'tools',       items : [ 'Maximize', 'ShowBlocks','-','About' ] }
+				],
+				toolbar: 'Full'
+			};
+			CKEDITOR.replace('id_text', ck_options);
+			CKEDITOR.replace('id_reason', ck_options);
+		});
+    </script>
+
+{% endblock %}
+
 {% block title %}
     {{ block.super }} –
     {% if motion %}
