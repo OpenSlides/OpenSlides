@@ -12,8 +12,8 @@
 
 {% block javascript %}
     <script type="text/javascript" src="{% static 'javascript/jquery-ui.custom.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascript/jquery-ui-timepicker-addon.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascript/jquery-ui-sliderAccess.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascript/jquery-ui-timepicker-addon.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascript/jquery-ui-sliderAccess.min.js' %}"></script>
     <script type="text/javascript">
         $(function() {
             $.datepicker.regional['{{ LANGUAGE_CODE }}'] = {
