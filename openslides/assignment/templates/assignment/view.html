@@ -115,8 +115,6 @@
                     {% endif %}
                 </div>
             {% endfor %}
-            <p>
-            </p>
         {% endif %}
     </form>
     {% endif %}
@@ -235,7 +233,7 @@
             {% if assignment.candidates and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
                 <td></td>
             {% endif %}
-        </tr>        
+        </tr>
         <tr class="info total">
             <td><strong>{% trans 'Votes cast' %}</strong></td>
             {% for poll in polls %}

@@ -1,0 +1,21 @@
+{% extends "base-projector.html" %}
+
+{% load i18n %}
+
+{% block title %}{{ block.super }} - {{ item }}{% endblock %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+{% endblock %}
+
+{% block scrollcontent %}
+    {% if speakers %}
+    <ol>
+        {% for speaker in speakers %}
+            <li>{{ speaker }}</li>
+        {% endfor %}
+    </ol>
+    {% else %}
+        {% trans 'The list of speakers is empty' %}
+    {% endif %}
+{% endblock %}

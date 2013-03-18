@@ -9,6 +9,7 @@
     :copyright: 2011, 2012 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
+# TODO: Rename all views and template names
 
 from reportlab.platypus import Paragraph
 from datetime import datetime, timedelta
@@ -22,15 +23,16 @@ from django.views.generic.detail import SingleObjectMixin
 
 from openslides.config.api import config
 from openslides.utils.pdf import stylesheet
+from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.views import (
     TemplateView, RedirectView, UpdateView, CreateView, DeleteView, PDFView,
-    DetailView, FormView)
+    DetailView, FormView, SingleObjectMixin)
 from openslides.utils.template import Tab
 from openslides.utils.utils import html_strong
 from openslides.projector.api import get_active_slide
 from openslides.projector.projector import Widget, SLIDE
-from .models import Item
-from .forms import ItemOrderForm, ItemForm
+from .models import Item, Speaker
+from .forms import ItemOrderForm, ItemForm, AppendSpeakerForm
 
 
 class Overview(TemplateView):
@@ -112,14 +114,43 @@ class Overview(TemplateView):
         return self.render_to_response(context)
 
 
-class View(DetailView):
+class AgendaItemView(SingleObjectMixin, FormView):
     """
     Show an agenda item.
     """
+    # TODO: use 'SingleObjectTemplateResponseMixin' to choose the right template name
     permission_required = 'agenda.can_see_agenda'
     template_name = 'agenda/view.html'
     model = Item
     context_object_name = 'item'
+    form_class = AppendSpeakerForm
+
+    def get_context_data(self, **kwargs):
+        self.object = self.get_object()
+        speakers = Speaker.objects.filter(time=None, item=self.object.pk).order_by('weight')
+        old_speakers = list(Speaker.objects.exclude(time=None).order_by('time'))
+        try:
+            last_speaker = old_speakers[-1]
+        except IndexError:
+            last_speaker = None
+        kwargs.update({
+            'object': self.object,
+            'speakers': speakers,
+            'old_speakers': old_speakers,
+            'last_speaker': last_speaker,
+            'is_speaker': Speaker.objects.filter(
+                time=None, person=self.request.user, item=self.object).exists(),
+        })
+        return super(AgendaItemView, self).get_context_data(**kwargs)
+
+    def form_valid(self, form):
+        Speaker.objects.add(person=form.cleaned_data['speaker'], item=self.get_object())
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def get_form_kwargs(self):
+        kwargs = super(AgendaItemView, self).get_form_kwargs()
+        kwargs['item'] = self.get_object()
+        return kwargs
 
 
 class SetClosed(RedirectView, SingleObjectMixin):
@@ -148,6 +179,9 @@ class SetClosed(RedirectView, SingleObjectMixin):
         closed = kwargs['closed']
         self.object.set_closed(closed)
         return super(SetClosed, self).pre_redirect(request, *args, **kwargs)
+
+    def get_url_name_args(self):
+        return []
 
 
 class ItemUpdate(UpdateView):
@@ -222,6 +256,159 @@ class AgendaPDF(PDFView):
                     stylesheet['Subitem']))
             else:
                 story.append(Paragraph(item.get_title(), stylesheet['Item']))
+
+
+class SpeakerAppendView(SingleObjectMixin, RedirectView):
+    """
+    Set the request.user to the speaker list.
+    """
+
+    permission_required = 'agenda.can_be_speaker'
+    url_name = 'item_view'
+    model = Item
+
+    def pre_redirect(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        if self.object.speaker_list_closed:
+            messages.error(request, _('List of speakers is closed.'))
+        else:
+            try:
+                Speaker.objects.add(item=self.object, person=request.user)
+            except OpenSlidesError, e:
+                messages.error(request, e)
+
+
+class SpeakerDeleteView(DeleteView):
+    """
+    Delete the request.user or a specific user from the speaker list.
+    """
+
+    success_url_name = 'item_view'
+    question_url_name = 'item_view'
+
+    def has_permission(self, request, *args, **kwargs):
+        """
+        Check the permission to delete a speaker.
+        """
+        if 'speaker' in kwargs:
+            return request.user.has_perm('agenda.can_manage_agenda')
+        else:
+            # Any person how is on the list of speakers can delete him self from the list
+            return True
+
+    def get(self, *args, **kwargs):
+        try:
+            return super(SpeakerDeleteView, self).get(*args, **kwargs)
+        except Speaker.DoesNotExist:
+            messages.error(self.request, _('You are not on the list of speakers.'))
+            return super(RedirectView, self).get(*args, **kwargs)
+
+    def get_object(self):
+        """
+        Returns the speaker object.
+
+        If 'speaker' is in kwargs, this speaker object is returnd. Else, a speaker
+        object with the request.user as speaker.
+        """
+        try:
+            return Speaker.objects.get(pk=self.kwargs['speaker'])
+        except KeyError:
+            return Speaker.objects.filter(
+                item=self.kwargs['pk'], person=self.request.user).exclude(weight=None).get()
+
+    def get_url_name_args(self):
+        return [self.kwargs['pk']]
+
+    def get_question(self):
+        if 'speaker' in self.kwargs:
+            return super(SpeakerDeleteView, self).get_question()
+        else:
+            return _('Do you really want to remove yourself from the list of speakers?')
+
+
+class SpeakerSpeakView(SingleObjectMixin, RedirectView):
+    """
+    Mark a speaker, that he can speak.
+    """
+    permission_required = 'agenda.can_manage_agenda'
+    url_name = 'item_view'
+    model = Item
+
+    def pre_redirect(self, *args, **kwargs):
+        self.object = self.get_object()
+        try:
+            speaker = Speaker.objects.filter(
+                person=kwargs['person_id'],
+                item=self.object.pk).exclude(
+                    weight=None).get()
+        except Speaker.DoesNotExist:
+            messages.error(self.request, _('Person %s is not on the list of item %s.'
+                                           % (kwargs['person_id'], self.object)))
+        else:
+            speaker.speak()
+
+    def get_url_name_args(self):
+        return [self.object.pk]
+
+
+class SpeakerListOpenView(SingleObjectMixin, RedirectView):
+    """
+    View to open and close a list of speakers.
+    """
+    permission_required = 'agenda.can_manage_agenda'
+    model = Item
+    open_list = False
+    url_name = 'item_view'
+
+    def pre_redirect(self, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.speaker_list_closed = not self.open_list
+        self.object.save()
+
+    def get_url_name_args(self):
+        return [self.object.pk]
+
+
+class SpeakerChangeOrderView(SingleObjectMixin, RedirectView):
+    """
+    Change the order of the speakers.
+
+    Has to be called as post-request with the new order of the speaker ids.
+    """
+    permission_required = 'agenda.can_manage_agenda'
+    model = Item
+    url_name = 'item_view'
+
+    def pre_redirect(self, args, **kwargs):
+        self.object = self.get_object()
+
+    @transaction.commit_manually
+    def pre_post_redirect(self, request, *args, **kwargs):
+        """
+        Reorder the list of speaker.
+
+        Take the string 'sort_order' from the post-data, and use this order.
+        """
+        self.object = self.get_object()
+        transaction.commit()
+        for (counter, speaker) in enumerate(self.request.POST['sort_order'].split(',')):
+            try:
+                speaker_pk = int(speaker.split('_')[1])
+            except IndexError:
+                transaction.rollback()
+                break
+            try:
+                speaker = Speaker.objects.filter(item=self.object).get(pk=speaker_pk)
+            except:
+                transaction.rollback()
+                break
+            speaker.weight = counter + 1
+            speaker.save()
+        else:
+            transaction.commit()
+
+    def get_url_name_args(self):
+        return [self.object.pk]
 
 
 def register_tab(request):

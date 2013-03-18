@@ -149,15 +149,26 @@ class QuestionMixin(object):
 
     def get_redirect_url(self, **kwargs):
         if self.request.method == 'GET':
-            return reverse(self.question_url_name, args=self.get_url_name_args())
+            return reverse(self.question_url_name, args=self.get_question_url_name_args())
         else:
-            return reverse(self.success_url_name, args=self.get_url_name_args())
+            return reverse(self.success_url_name, args=self.get_success_url_name_args())
+
+    def get_question_url_name_args(self):
+        return self.get_url_name_args()
+
+    def get_success_url_name_args(self):
+        return self.get_url_name_args()
 
     def get_url_name_args(self):
-        return []
+        try:
+            return [self.object.pk]
+        except AttributeError:
+            return []
 
     def pre_redirect(self, request, *args, **kwargs):
-        # Prints the question in a GET request
+        """
+        Prints the question in a GET request.
+        """
         self.confirm_form()
 
     def get_question(self):
@@ -251,7 +262,10 @@ class RedirectView(PermissionMixin, AjaxMixin, _RedirectView):
             return super(RedirectView, self).get_redirect_url(**kwargs)
 
     def get_url_name_args(self):
-        return []
+        try:
+            return [self.object.pk]
+        except AttributeError:
+            return []
 
 
 class FormView(PermissionMixin, ExtraContextMixin, UrlMixin, _FormView):
@@ -318,6 +332,9 @@ class DeleteView(SingleObjectMixin, QuestionMixin, RedirectView):
 
     def get_success_message(self):
         return _('%s was successfully deleted.') % html_strong(self.object)
+
+    def get_url_name_args(self):
+        return []
 
 
 class DetailView(PermissionMixin, ExtraContextMixin, _DetailView):
