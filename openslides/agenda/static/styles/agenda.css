@@ -25,3 +25,13 @@ table#agendatime td {
 #list_of_speakers li {
     line-height: 30px;
 }
+
+#list_of_speakers {
+    list-style-type: none;
+}
+
+#list_of_speakers span.ui-icon {
+    position: absolute;
+    margin-left: -15px;
+    margin-top: 6px;
+}

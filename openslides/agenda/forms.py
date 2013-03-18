@@ -61,6 +61,9 @@ class ItemOrderForm(CssClassMixin, forms.Form):
 
 
 class AppendSpeakerForm(CssClassMixin, forms.Form):
+    """
+    Form to set an user to a list of speakers.
+    """
     speaker = PersonFormField(
         widget=forms.Select(attrs={'class': 'medium-input'}),
         label=ugettext_lazy("Add participant"))
@@ -70,6 +73,9 @@ class AppendSpeakerForm(CssClassMixin, forms.Form):
         return super(AppendSpeakerForm, self).__init__(*args, **kwargs)
 
     def clean_speaker(self):
+        """
+        Checks, that the user is not already on the list.
+        """
         speaker = self.cleaned_data['speaker']
         if Speaker.objects.filter(person=speaker, item=self.item, time=None).exists():
             raise forms.ValidationError(ugettext_lazy(

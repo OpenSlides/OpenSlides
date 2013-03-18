@@ -4,6 +4,16 @@
 
 {% block title %}{{ block.super }} - {{ item }}{% endblock %}
 
+{% block header %}
+<style type="text/css">
+#list_of_speakers li
+{
+    font-size: 130%;
+    line-height: 160%;
+}
+</style>
+{% endblock %}
+
 {% block content %}
     <h1>{{ title }}</h1>
 {% endblock %}

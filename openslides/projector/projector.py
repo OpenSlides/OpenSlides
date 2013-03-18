@@ -169,4 +169,4 @@ class Overlay(object):
         return self.name in config['projector_active_overlays']
 
     def show_on_projector(self):
-        return self.is_active and self.get_projector_html() is not None
+        return self.is_active() and self.get_projector_html() is not None

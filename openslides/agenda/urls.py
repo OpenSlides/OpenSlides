@@ -14,7 +14,7 @@ from django.conf.urls import url, patterns
 from openslides.agenda.views import (
     Overview, AgendaItemView, SetClosed, ItemUpdate, SpeakerSpeakView,
     ItemCreate, ItemDelete, AgendaPDF, SpeakerAppendView, SpeakerDeleteView,
-    SpeakerListOpenView, SpeakerChangeOrderView)
+    SpeakerListCloseView, SpeakerChangeOrderView, CurrentListOfSpeakersView)
 
 urlpatterns = patterns(
     '',
@@ -66,14 +66,14 @@ urlpatterns = patterns(
         name='agenda_speaker_append',
     ),
 
-    url(r'^(?P<pk>\d+)/speaker/open/$',
-        SpeakerListOpenView.as_view(open_list=True),
-        name='agenda_speaker_open',
+    url(r'^(?P<pk>\d+)/speaker/close/$',
+        SpeakerListCloseView.as_view(),
+        name='agenda_speaker_close',
     ),
 
-    url(r'^(?P<pk>\d+)/speaker/close/$',
-        SpeakerListOpenView.as_view(),
-        name='agenda_speaker_close',
+    url(r'^(?P<pk>\d+)/speaker/reopen/$',
+        SpeakerListCloseView.as_view(reopen=True),
+        name='agenda_speaker_reopen',
     ),
 
     url(r'^(?P<pk>\d+)/speaker/del/$',
@@ -91,8 +91,13 @@ urlpatterns = patterns(
         name='agenda_speaker_speak',
     ),
 
-    url(r'^(?P<pk>\d+)/speaker/change_order$',
+    url(r'^(?P<pk>\d+)/speaker/change_order/$',
         SpeakerChangeOrderView.as_view(),
         name='agenda_speaker_change_order',
+    ),
+
+    url(r'^list_of_speakers/$',
+        CurrentListOfSpeakersView.as_view(),
+        name='agenda_current_list_of_speakers',
     ),
 )

@@ -29,7 +29,7 @@ from openslides.utils.views import (
     DetailView, FormView, SingleObjectMixin)
 from openslides.utils.template import Tab
 from openslides.utils.utils import html_strong
-from openslides.projector.api import get_active_slide
+from openslides.projector.api import get_active_slide, get_slide_from_sid
 from openslides.projector.projector import Widget, SLIDE
 from .models import Item, Speaker
 from .forms import ItemOrderForm, ItemForm, AppendSpeakerForm
@@ -128,7 +128,8 @@ class AgendaItemView(SingleObjectMixin, FormView):
     def get_context_data(self, **kwargs):
         self.object = self.get_object()
         speakers = Speaker.objects.filter(time=None, item=self.object.pk).order_by('weight')
-        old_speakers = list(Speaker.objects.exclude(time=None).order_by('time'))
+        old_speakers = list(Speaker.objects.filter(item=self.object.pk)
+                                   .exclude(time=None).order_by('time'))
         kwargs.update({
             'object': self.object,
             'speakers': speakers,
@@ -258,7 +259,6 @@ class SpeakerAppendView(SingleObjectMixin, RedirectView):
     """
     Set the request.user to the speaker list.
     """
-
     permission_required = 'agenda.can_be_speaker'
     url_name = 'item_view'
     model = Item
@@ -278,7 +278,6 @@ class SpeakerDeleteView(DeleteView):
     """
     Delete the request.user or a specific user from the speaker list.
     """
-
     success_url_name = 'item_view'
     question_url_name = 'item_view'
 
@@ -324,7 +323,7 @@ class SpeakerDeleteView(DeleteView):
 
 class SpeakerSpeakView(SingleObjectMixin, RedirectView):
     """
-    Mark a speaker, that he can speak.
+    Mark the speaking person.
     """
     permission_required = 'agenda.can_manage_agenda'
     url_name = 'item_view'
@@ -347,18 +346,18 @@ class SpeakerSpeakView(SingleObjectMixin, RedirectView):
         return [self.object.pk]
 
 
-class SpeakerListOpenView(SingleObjectMixin, RedirectView):
+class SpeakerListCloseView(SingleObjectMixin, RedirectView):
     """
-    View to open and close a list of speakers.
+    View to close and reopen a list of speakers.
     """
     permission_required = 'agenda.can_manage_agenda'
     model = Item
-    open_list = False
+    reopen = False
     url_name = 'item_view'
 
     def pre_redirect(self, *args, **kwargs):
         self.object = self.get_object()
-        self.object.speaker_list_closed = not self.open_list
+        self.object.speaker_list_closed = not self.reopen
         self.object.save()
 
     def get_url_name_args(self):
@@ -402,9 +401,61 @@ class SpeakerChangeOrderView(SingleObjectMixin, RedirectView):
             speaker.save()
         else:
             transaction.commit()
+            return None
+        messages.error(request, _('Could not change order. Invalid data.'))
 
     def get_url_name_args(self):
         return [self.object.pk]
+
+
+class CurrentListOfSpeakersView(RedirectView):
+    """
+    Redirect to the current list of speakers and set the request.user on it.
+    """
+    def get_item(self):
+        """
+        Returns the current Item, or None, if the current Slide is not an Agenda Item.
+        """
+        slide = get_slide_from_sid(get_active_slide(only_sid=True), element=True)
+        if not isinstance(slide, Item):
+            return None
+        else:
+            return slide
+
+    def get_redirect_url(self):
+        """
+        Returns the URL to the item_view if:
+
+        * the current slide is an item and
+        * the user has the permission to see the item
+
+        in other case, it returns the URL to the dashboard.
+
+        This method also add the request.user to the list of speakers, if he
+        has the right permissions.
+        """
+        item = self.get_item()
+        request = self.request
+        if item is None:
+            messages.error(request, _(
+                'There is no list of speakers for the current slide. '
+                'Please choose your agenda item manually from the agenda.'))
+            return reverse('dashboard')
+
+        if self.request.user.has_perm('agenda.can_be_speaker'):
+            try:
+                Speaker.objects.add(self.request.user, item)
+            except OpenSlidesError:
+                messages.error(request, _('You are already on the list of speakers.'))
+            else:
+                messages.success(request, _('You are now on the list of speakers.'))
+        else:
+            messages.error(request, _('You can not put yourself on the list of speakers.'))
+
+        if not self.request.user.has_perm('agenda.can_see_agenda'):
+            return reverse('dashboard')
+        else:
+            return reverse('item_view', args=[item.pk])
 
 
 def register_tab(request):
@@ -425,11 +476,19 @@ def get_widgets(request):
     """
     Returns the agenda widget for the projector tab.
     """
-    return [Widget(
-        name='agenda',
-        display_name=_('Agenda'),
-        template='agenda/widget.html',
-        context={
-            'agenda': SLIDE['agenda'],
-            'items': Item.objects.all()},
-        permission_required='projector.can_manage_projector')]
+    return [
+        Widget(
+            name='agenda',
+            display_name=_('Agenda'),
+            template='agenda/widget.html',
+            context={
+                'agenda': SLIDE['agenda'],
+                'items': Item.objects.all()},
+            permission_required='projector.can_manage_projector'),
+
+        Widget(
+            name='append_to_list_of_speakers',
+            display_name=_('To the current list of speakers'),
+            template='agenda/speaker_widget.html',
+            context={},
+            permission_required='agenda.can_be_speaker')]

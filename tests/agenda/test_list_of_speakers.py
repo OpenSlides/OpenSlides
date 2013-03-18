@@ -106,7 +106,7 @@ class TestSpeakerAppendView(SpeakerViewTestCase):
         # Try to set speaker 1 to item 1 again
         response = self.check_url('/agenda/1/speaker/', self.speaker1_client, 302)
         self.assertEqual(Speaker.objects.filter(item=self.item1).count(), 1)
-        self.assertMessage(response, 'speaker1 is allready on the list of speakers from item 1')
+        self.assertMessage(response, 'speaker1 is already on the list of speakers of item 1.')
 
     def test_closed_list(self):
         self.item1.speaker_list_closed = True
@@ -127,7 +127,7 @@ class TestAgendaItemView(SpeakerViewTestCase):
         # Try it again
         response = self.admin_client.post(
             '/agenda/1/', {'speaker': self.speaker1.person_id})
-        self.assertFormError(response, 'form', 'speaker', 'speaker1 is allready on the list of speakers.')
+        self.assertFormError(response, 'form', 'speaker', 'speaker1 is already on the list of speakers.')
 
 
 class TestSpeakerDeleteView(SpeakerViewTestCase):
@@ -170,6 +170,6 @@ class SpeakerListOpenView(SpeakerViewTestCase):
         item = Item.objects.get(pk=self.item1.pk)
         self.assertTrue(item.speaker_list_closed)
 
-        response = self.check_url('/agenda/1/speaker/open/', self.admin_client, 302)
+        response = self.check_url('/agenda/1/speaker/reopen/', self.admin_client, 302)
         item = Item.objects.get(pk=self.item1.pk)
         self.assertFalse(item.speaker_list_closed)

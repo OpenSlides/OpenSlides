@@ -8,6 +8,8 @@
 
 {% block header %}
     <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/agenda.css' %}" />
+    {% comment %} TODO: include stylesheet in our repo{% endcomment %}
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
 {% endblock %}
 
 {% block javascript %}
@@ -59,7 +61,7 @@
 <p>
 {% if perms.agenda.can_manage_agenda %}
     {% if item.speaker_list_closed %}
-        <a href="{% url 'agenda_speaker_open' item.pk %}" class="btn btn-mini btn-danger">{% trans 'Open list' %}</a>
+        <a href="{% url 'agenda_speaker_reopen' item.pk %}" class="btn btn-mini btn-danger">{% trans 'Open list' %}</a>
     {% else %}
         <a href="{% url 'agenda_speaker_close' item.pk %}" class="btn btn-mini btn-danger">{% trans 'Close list' %}</a>
     {% endif %}
@@ -130,9 +132,11 @@
 
 <div class="well">
     <b>{% trans "Next speakers:" %}</b>
-    <ol {% if perms.agenda.can_manage_agenda %}id="list_of_speakers"{% endif %}>
+    <ul {% if perms.agenda.can_manage_agenda %}id="list_of_speakers"{% endif %}>
         {% for speaker in speakers %}
             <li id="speaker_{{ speaker.pk }}">
+                <span {% if perms.agenda.can_manage_agenda %}class="ui-icon ui-icon-arrowthick-2-n-s"{% endif %}></span>
+                <span>{{ forloop.counter }}.</span>
                 <a href="{% model_url speaker %}">{{ speaker }}</a>
                 {% if perms.agenda.can_manage_agenda %}
                     <a href="{% url 'agenda_speaker_speak' item.pk speaker.person.person_id %}" class="btn btn-mini"><i class="icon-bell"></i> Finished speech</a>
@@ -144,7 +148,7 @@
         {% empty %}
             <i>{% trans "The list of speakers is empty." %}</i>
         {% endfor %}
-    </ol>
+    </ul>
 
     <p>
     {% if is_speaker %}
