@@ -82,22 +82,25 @@ class MediafileTest(TestCase):
         for client in self.login_clients().itervalues():
             response = client.get('/mediafile/')
             self.assertEqual(response.status_code, 200)
+            self.assertTemplateUsed(response, 'mediafile/mediafile_list.html')
         bad_client = Client()
         response = bad_client.get('/mediafile/')
-        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, expected_url='/login/?next=/mediafile/', status_code=302, target_status_code=200)
 
     def test_upload_mediafile_get_request(self):
         clients = self.login_clients()
         response = clients['client_manager'].get('/mediafile/new/')
         self.assertContains(response, '---------', status_code=200)
         self.assertContains(response, '<option value="user:1" selected="selected">mediafile_test_manager</option>', status_code=200)
+        self.assertTemplateUsed(response, 'mediafile/mediafile_form.html')
         response = clients['client_vip_user'].get('/mediafile/new/')
-        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, '<select id="id_uploader" name="uploader">', status_code=200)
+        self.assertTemplateUsed(response, 'mediafile/mediafile_form.html')
         response = clients['client_normal_user'].get('/mediafile/new/')
         self.assertEqual(response.status_code, 403)
         bad_client = Client()
         response = bad_client.get('/mediafile/new/')
-        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, expected_url='/login/?next=/mediafile/new/', status_code=302, target_status_code=200)
 
     def test_upload_mediafile_post_request(self):
         # Test first user
@@ -106,10 +109,11 @@ class MediafileTest(TestCase):
         response_1 = client_1.post('/mediafile/new/',
                                    {'title': 'new_test_file_title_1',
                                     'mediafile': new_file_1,
-                                    'uploader': self.manager.person_id})
-        self.assertEqual(response_1.status_code, 302)
+                                    'uploader': self.normal_user.person_id})
+        self.assertRedirects(response_1, expected_url='/mediafile/', status_code=302, target_status_code=200)
         object_1 = Mediafile.objects.latest('timestamp')
         self.assertEqual(object_1.mediafile.url, '/media/file/new_test_file.txt')
+        self.assertEqual(object_1.uploader, self.normal_user)
         path_1 = object_1.mediafile.path
         object_1.mediafile.delete()
         self.assertFalse(os.path.exists(path_1))
@@ -121,8 +125,11 @@ class MediafileTest(TestCase):
                                    {'title': 'new_test_file_title_2',
                                     'mediafile': new_file_2})
         self.assertEqual(response_2.status_code, 302)
+        # TODO: Check, why this does not work.
+        # self.assertRedirects(response_2, expected_url='/mediafile/', status_code=302, target_status_code=200)
         object_2 = Mediafile.objects.latest('timestamp')
         self.assertEqual(object_2.mediafile.url, '/media/file/new_test_file.txt')
+        self.assertEqual(object_2.uploader, self.vip_user)
         path_2 = object_2.mediafile.path
         object_2.mediafile.delete()
         self.assertFalse(os.path.exists(path_2))
@@ -140,13 +147,14 @@ class MediafileTest(TestCase):
         response = clients['client_manager'].get('/mediafile/1/edit/')
         self.assertContains(response, '---------', status_code=200)
         self.assertContains(response, '<option value="user:2" selected="selected">mediafile_test_vip_user</option>', status_code=200)
+        self.assertTemplateUsed(response, 'mediafile/mediafile_form.html')
         response = clients['client_vip_user'].get('/mediafile/1/edit/')
         self.assertEqual(response.status_code, 403)
         response = clients['client_normal_user'].get('/mediafile/1/edit/')
         self.assertEqual(response.status_code, 403)
         bad_client = Client()
         response = bad_client.get('/mediafile/1/edit/')
-        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, expected_url='/login/?next=/mediafile/1/edit/', status_code=302, target_status_code=200)
 
     def test_edit_mediafile_post_request(self):
         # Test only one user
@@ -170,14 +178,14 @@ class MediafileTest(TestCase):
     def test_delete_mediafile_get_request(self):
         clients = self.login_clients()
         response = clients['client_manager'].get('/mediafile/1/del/')
-        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, expected_url='/mediafile/1/edit/', status_code=302, target_status_code=200)
         response = clients['client_vip_user'].get('/mediafile/1/del/')
         self.assertEqual(response.status_code, 403)
         response = clients['client_normal_user'].get('/mediafile/1/del/')
         self.assertEqual(response.status_code, 403)
         bad_client = Client()
         response = bad_client.get('/mediafile/2/del/')
-        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, expected_url='/login/?next=/mediafile/2/del/', status_code=302, target_status_code=200)
 
     def test_delete_mediafile_post_request(self):
         tmpfile_no, mediafile_3_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=self.tmp_dir)
@@ -185,7 +193,7 @@ class MediafileTest(TestCase):
         object_3 = Mediafile.objects.create(title='Title File 3', mediafile=mediafile_3_path)
         client_1 = self.login_clients()['client_manager']
         response_1 = client_1.post('/mediafile/2/del/', {'yes': 'foo'})
-        self.assertEqual(response_1.status_code, 302)
+        self.assertRedirects(response_1, expected_url='/mediafile/', status_code=302, target_status_code=200)
         self.assertFalse(os.path.exists(object_3.mediafile.path))
 
     def test_filesize(self):

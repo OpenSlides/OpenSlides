@@ -43,7 +43,7 @@ class MediafileCreateView(CreateView):
     def get_form(self, form_class):
         form_kwargs = self.get_form_kwargs()
         if self.request.method == 'GET':
-            form_kwargs['initial'].update({'uploader': self.request.user.person_id})  # TODO: Check this.
+            form_kwargs['initial'].update({'uploader': self.request.user.person_id})
         if not self.request.user.has_perm('mediafile.can_manage'):
             # Return our own ModelForm
             return MediafileNormalUserCreateForm(**form_kwargs)
@@ -52,6 +52,13 @@ class MediafileCreateView(CreateView):
             return form_class(**form_kwargs)
 
     def manipulate_object(self, *args, **kwargs):
+        """Method to handle the uploader
+
+        If a user has manager permissions, he has to set the uploader
+        in the given form field. Then this method only calls super.
+        Else it sets the requesting user as uploader.
+
+        """
         if not self.request.user.has_perm('mediafile.can_manage'):
             self.object.uploader = self.request.user
         return super(MediafileCreateView, self).manipulate_object(*args, **kwargs)
