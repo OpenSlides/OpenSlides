@@ -21,7 +21,9 @@ from .forms import MediafileNormalUserCreateForm, MediafileUpdateForm
 
 
 class MediafileListView(ListView):
-    """View to see a table of all uploaded files."""
+    """
+    View to see a table of all uploaded files.
+    """
     model = Mediafile
 
     def has_permission(self, request, *args, **kwargs):
@@ -31,10 +33,9 @@ class MediafileListView(ListView):
 
 
 class MediafileCreateView(CreateView):
-    """View to upload a new file
-
-    A manager can also set the uploader, else the request user is set as uploader.
-
+    """
+    View to upload a new file. A manager can also set the uploader, else
+    the request user is set as uploader.
     """
     model = Mediafile
     permission_required = 'mediafile.can_upload'
@@ -45,19 +46,17 @@ class MediafileCreateView(CreateView):
         if self.request.method == 'GET':
             form_kwargs['initial'].update({'uploader': self.request.user.person_id})
         if not self.request.user.has_perm('mediafile.can_manage'):
-            # Return our own ModelForm
+            # Returns our own ModelForm from .forms
             return MediafileNormalUserCreateForm(**form_kwargs)
         else:
-            # Return a ModelForm created by Django.
+            # Returns a ModelForm created by Django.
             return form_class(**form_kwargs)
 
     def manipulate_object(self, *args, **kwargs):
-        """Method to handle the uploader
-
-        If a user has manager permissions, he has to set the uploader
-        in the given form field. Then this method only calls super.
-        Else it sets the requesting user as uploader.
-
+        """
+        Method to handle the uploader. If a user has manager permissions,
+        he has to set the uploader in the given form field. Then this
+        method only calls super. Else it sets the requesting user as uploader.
         """
         if not self.request.user.has_perm('mediafile.can_manage'):
             self.object.uploader = self.request.user
@@ -65,7 +64,9 @@ class MediafileCreateView(CreateView):
 
 
 class MediafileUpdateView(UpdateView):
-    """View to edit the entry of an uploaded file."""
+    """
+    View to edit the entry of an uploaded file.
+    """
     model = Mediafile
     permission_required = 'mediafile.can_manage'
     form_class = MediafileUpdateForm
@@ -78,7 +79,9 @@ class MediafileUpdateView(UpdateView):
 
 
 class MediafileDeleteView(DeleteView):
-    """View to delete the entry of an uploaded file and the file itself."""
+    """
+    View to delete the entry of an uploaded file and the file itself.
+    """
     model = Mediafile
     permission_required = 'mediafile.can_manage'
     success_url_name = 'mediafile_list'
@@ -90,7 +93,9 @@ class MediafileDeleteView(DeleteView):
 
 
 def register_tab(request):
-    """Inserts a new Tab to the views for files."""
+    """
+    Inserts a new Tab to the views for files.
+    """
     selected = request.path.startswith('/mediafile/')
     return Tab(
         title=_('Media'),

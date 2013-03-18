@@ -19,18 +19,16 @@ from openslides.utils.person.models import PersonField
 
 
 class Mediafile(models.Model):
-    """The Mediafile class
-
-    Class for uploaded files which can be delivered under a certain url.
-
     """
-    mediafile = models.FileField(upload_to='file')
-    """A FileField
+    Class for uploaded files which can be delivered under a certain url.
+    """
 
+    mediafile = models.FileField(upload_to='file')
+    """
     See https://docs.djangoproject.com/en/dev/ref/models/fields/#filefield
     for more information.
-
     """
+
     title = models.CharField(max_length=255, unique=True)
     """A string representing the title of the file."""
 
@@ -44,7 +42,9 @@ class Mediafile(models.Model):
     """A string used to show the type of the file."""
 
     class Meta:
-        """Meta class for the mediafile model."""
+        """
+        Meta class for the mediafile model.
+        """
         ordering = ['title']
         permissions = (
             ('can_see', ugettext_noop('Can see the list of files')),
@@ -52,11 +52,15 @@ class Mediafile(models.Model):
             ('can_manage', ugettext_noop('Can manage files')),)
 
     def __unicode__(self):
-        """Method for representation."""
+        """
+        Method for representation.
+        """
         return self.title
 
     def save(self, *args, **kwargs):
-        """Method to read filetype and then save to the database."""
+        """
+        Method to read filetype and then save to the database.
+        """
         if self.mediafile:
             self.filetype = mimetypes.guess_type(self.mediafile.path)[0] or ugettext_noop('unknown')
         else:
@@ -65,14 +69,19 @@ class Mediafile(models.Model):
 
     @models.permalink
     def get_absolute_url(self, link='update'):
-        """Returns the URL to a mediafile. The link can be 'update' or 'delete'."""
+        """
+        Returns the URL to a mediafile. The link can be 'update' or 'delete'.
+        """
         if link == 'update' or link == 'edit':  # 'edit' ist only used until utils/views.py is fixed
             return ('mediafile_update', [str(self.id)])
         if link == 'delete':
             return ('mediafile_delete', [str(self.id)])
 
     def get_filesize(self):
-        """Transforms Bytes to Kilobytes or Megabytes. Returns the size as string."""
+        """
+        Transforms Bytes to Kilobytes or Megabytes. Returns the size as string.
+        """
+        # TODO: Read http://stackoverflow.com/a/1094933 and think about it.
         size = self.mediafile.size
         if size < 1024:
             return '< 1 kB'
@@ -82,4 +91,3 @@ class Mediafile(models.Model):
         else:
             kB = size / 1024
             return '%d kB' % kB
-        # TODO: Read http://stackoverflow.com/a/1094933 and think about it.

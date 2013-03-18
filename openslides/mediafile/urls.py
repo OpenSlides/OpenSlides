@@ -14,7 +14,7 @@ from django.conf.urls import url, patterns
 
 from .models import Mediafile
 from .views import (MediafileListView, MediafileCreateView,
-                   MediafileUpdateView, MediafileDeleteView)
+                    MediafileUpdateView, MediafileDeleteView)
 
 
 urlpatterns = patterns('',
