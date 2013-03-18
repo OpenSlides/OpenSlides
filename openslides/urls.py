@@ -6,7 +6,7 @@
 
     Global URL list for OpenSlides.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -15,6 +15,7 @@ from django.conf.urls import patterns, url, include
 from django.utils.importlib import import_module
 
 from openslides.utils.views import RedirectView
+
 
 handler500 = 'openslides.utils.views.server_error'
 
@@ -26,18 +27,25 @@ urlpatterns = patterns('',
     (r'^motion/', include('openslides.motion.urls')),
     (r'^assignment/', include('openslides.assignment.urls')),
     (r'^participant/', include('openslides.participant.urls')),
+    (r'^mediafile/', include('openslides.mediafile.urls')),
     (r'^config/', include('openslides.config.urls')),
     (r'^projector/', include('openslides.projector.urls')),
     (r'^i18n/', include('django.conf.urls.i18n')),
 )
 
+# Used to serve static files with django's development server when DEBUG==True
 urlpatterns += patterns('django.contrib.staticfiles.views',
     url(r'^static/(?P<path>.*)$', 'serve', {'insecure': True}),
+    #url(r'^media/(?P<path>.*)$', 'serve', {'insecure': True, 'document_root': settings.MEDIA_ROOT}),
 )
 
-js_info_dict = {
-    'packages': [],
-}
+# Used to server media files with django's development server
+# It's maybe a hack here. C. f. oskar's django-bug-report https://code.djangoproject.com/ticket/19572
+urlpatterns += patterns('django.views.static',
+    url(r'^media/(?P<path>.*)$', 'serve', {'document_root': settings.MEDIA_ROOT}),
+)
+
+js_info_dict = {'packages': [],}
 
 for plugin in settings.INSTALLED_PLUGINS:
     try:
@@ -49,7 +57,6 @@ for plugin in settings.INSTALLED_PLUGINS:
     urlpatterns += patterns('', (r'^%s/' % plugin_name, include('%s.urls'
         % plugin_name)))
     js_info_dict['packages'].append(plugin_name)
-
 
 urlpatterns += patterns('',
     (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
