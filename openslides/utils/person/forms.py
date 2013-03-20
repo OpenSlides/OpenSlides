@@ -21,7 +21,7 @@ class PersonChoices(object):
 
     def __iter__(self):
         if self.field.empty_label is not None:
-            yield (u"", self.field.empty_label)
+            yield (u'', self.field.empty_label)
         for person in sorted(Persons(), key=lambda person: person.sort_name):
             yield (person.person_id, person)
 
@@ -51,6 +51,8 @@ class PersonFormField(forms.fields.ChoiceField):
     choices = property(_get_choices, forms.fields.ChoiceField._set_choices)
 
     def to_python(self, value):
+        if value == u'':
+            return u''
         return get_person(value)
 
     def valid_value(self, value):
