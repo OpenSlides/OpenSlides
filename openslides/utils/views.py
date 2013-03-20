@@ -385,14 +385,24 @@ def server_error(request, template_name='500.html'):
 
 @receiver(template_manipulation, dispatch_uid="send_register_tab")
 def send_register_tab(sender, request, context, **kwargs):
+    """
+    Receiver to the template_manipulation signal. Collects from the file
+    views.py in all apps the tabs setup by the function register_tab.
+    Inserts the tab objects and also the extra_stylefiles to the context.
+    """
     tabs = []
+    extra_stylefiles = []
     for app in settings.INSTALLED_APPS:
         try:
             mod = import_module(app + '.views')
-            tabs.append(mod.register_tab(request))
+            tab = mod.register_tab(request)
+            tabs.append(tab)
+            if tab.stylefile:
+                extra_stylefiles.append(tab.stylefile)
         except (ImportError, AttributeError):
             continue
 
     context.update({
         'tabs': tabs,
+        'extra_stylefiles': extra_stylefiles,
     })

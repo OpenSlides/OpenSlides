@@ -42,19 +42,23 @@ def create_builtin_groups(sender, **kwargs):
     ct_participant = ContentType.objects.get(app_label='participant', model='user')
     perm_6 = Permission.objects.get(content_type=ct_participant, codename='can_see_participant')
 
+    ct_mediafile = ContentType.objects.get(app_label='mediafile', model='mediafile')
+    perm_6a = Permission.objects.get(content_type=ct_mediafile, codename='can_see')
+
     group_anonymous = Group.objects.create(name=ugettext_noop('Anonymous'))
-    group_anonymous.permissions.add(perm_1, perm_2, perm_3, perm_4, perm_5, perm_6)
+    group_anonymous.permissions.add(perm_1, perm_2, perm_3, perm_4, perm_5, perm_6, perm_6a)
     group_registered = Group.objects.create(name=ugettext_noop('Registered'))
-    group_registered.permissions.add(perm_1, perm_2, perm_3, perm_4, perm_5, perm_6)
+    group_registered.permissions.add(perm_1, perm_2, perm_3, perm_4, perm_5, perm_6, perm_6a)
 
     # Delegates
     perm_7 = Permission.objects.get(content_type=ct_motion, codename='can_create_motion')
     perm_8 = Permission.objects.get(content_type=ct_motion, codename='can_support_motion')
     perm_9 = Permission.objects.get(content_type=ct_assignment, codename='can_nominate_other')
     perm_10 = Permission.objects.get(content_type=ct_assignment, codename='can_nominate_self')
+    perm_10a = Permission.objects.get(content_type=ct_mediafile, codename='can_upload')
 
     group_delegates = Group.objects.create(name=ugettext_noop('Delegates'))
-    group_delegates.permissions.add(perm_7, perm_8, perm_9, perm_10)
+    group_delegates.permissions.add(perm_7, perm_8, perm_9, perm_10, perm_10a)
 
     # Staff
     perm_11 = Permission.objects.get(content_type=ct_agenda, codename='can_manage_agenda')
@@ -62,9 +66,10 @@ def create_builtin_groups(sender, **kwargs):
     perm_13 = Permission.objects.get(content_type=ct_assignment, codename='can_manage_assignment')
     perm_14 = Permission.objects.get(content_type=ct_participant, codename='can_manage_participant')
     perm_15 = Permission.objects.get(content_type=ct_projector, codename='can_manage_projector')
+    perm_15a = Permission.objects.get(content_type=ct_mediafile, codename='can_manage')
 
     ct_config = ContentType.objects.get(app_label='config', model='configstore')
     perm_16 = Permission.objects.get(content_type=ct_config, codename='can_manage_config')
 
     group_staff = Group.objects.create(name=ugettext_noop('Staff'))
-    group_staff.permissions.add(perm_7, perm_9, perm_10, perm_11, perm_12, perm_13, perm_14, perm_15, perm_16)
+    group_staff.permissions.add(perm_7, perm_9, perm_10, perm_11, perm_12, perm_13, perm_14, perm_15, perm_15a, perm_16)
