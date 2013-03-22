@@ -10,13 +10,21 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+try:
+    import qrcode
+except ImportError:
+    draw_qrcode = False
+else:
+    draw_qrcode = True
+
+from cStringIO import StringIO
 from urllib import urlencode
 from urlparse import parse_qs
 
 from reportlab.lib import colors
 from reportlab.lib.units import cm
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, LongTable, Spacer, Table, TableStyle)
+    SimpleDocTemplate, Paragraph, LongTable, Spacer, Table, TableStyle, Image)
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -229,13 +237,21 @@ class ParticipantsPasswordsPDF(PDFView):
             sort = 'first_name'
         else:
             sort = 'last_name'
+        # create qrcode image object from system url
+        if draw_qrcode:
+            qrcode_img = qrcode.make(participant_pdf_system_url)
+            img_stream = StringIO()
+            qrcode_img.save(img_stream, 'PNG')
+            img_stream.seek(0)
+            size = 2*cm
+            I = Image(img_stream, width=size, height=size)
         for user in User.objects.all().order_by(sort):
             cell = []
             cell.append(Spacer(0, 0.8 * cm))
             cell.append(Paragraph(_("Account for OpenSlides"),
-                        stylesheet['Ballot_title']))
+                        stylesheet['Password_title']))
             cell.append(Paragraph(_("for %s") % (user),
-                        stylesheet['Ballot_subtitle']))
+                        stylesheet['Password_subtitle']))
             cell.append(Spacer(0, 0.5 * cm))
             cell.append(Paragraph(_("User: %s") % (user.username),
                         stylesheet['Monotype']))
@@ -243,12 +259,10 @@ class ParticipantsPasswordsPDF(PDFView):
                 Paragraph(
                     _("Password: %s")
                     % (user.default_password), stylesheet['Monotype']))
-            cell.append(Spacer(0, 0.5 * cm))
             cell.append(
-                Paragraph(
-                    _("URL: %s") % (participant_pdf_system_url),
-                    stylesheet['Ballot_option']))
-            cell.append(Spacer(0, 0.5 * cm))
+                Paragraph(participant_pdf_system_url, stylesheet['Monotype']))
+            if draw_qrcode:
+                cell.append(I)
             cell2 = []
             cell2.append(Spacer(0, 0.8 * cm))
             if participant_pdf_welcometext is not None:
@@ -264,6 +278,7 @@ class ParticipantsPasswordsPDF(PDFView):
         # build table
         t = Table(data, 10.5 * cm, 7.42 * cm)
         t.setStyle(TableStyle([
+            ('LEFTPADDING', (0, 0), (0, -1), 30),
             ('LINEBELOW', (0, 0), (-1, 0), 0.25, colors.grey),
             ('LINEBELOW', (0, 1), (-1, 1), 0.25, colors.grey),
             ('LINEBELOW', (0, 1), (-1, -1), 0.25, colors.grey),
