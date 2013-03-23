@@ -147,13 +147,6 @@ stylesheet.add(ParagraphStyle(name='Ballot_option',
                               leading=24,
                               leftIndent=30),
                )
-stylesheet.add(ParagraphStyle(name='Monotype',
-                              parent=stylesheet['Normal'],
-                              fontName='Courier',
-                              fontSize=12,
-                              leading=24,
-                              leftIndent=30),
-               )
 stylesheet.add(ParagraphStyle(name='Ballot_option_name',
                               parent=stylesheet['Normal'],
                               fontSize=12,
@@ -178,6 +171,22 @@ stylesheet.add(ParagraphStyle(name='Ballot_option_group_right',
                               fontSize=8,
                               leading=16,
                               leftIndent=49),
+               )
+# Password paper stylesheets
+stylesheet.add(ParagraphStyle(name='Password_title',
+                              parent=stylesheet['Ballot_title'],
+                              leftIndent=0),
+               )
+stylesheet.add(ParagraphStyle(name='Password_subtitle',
+                              parent=stylesheet['Ballot_subtitle'],
+                              leftIndent=0),
+               )
+stylesheet.add(ParagraphStyle(name='Monotype',
+                              parent=stylesheet['Normal'],
+                              fontName='Courier',
+                              fontSize=12,
+                              leading=24,
+                              leftIndent=0),
                )
 stylesheet.add(ParagraphStyle(name='Badge_title',
                               parent=stylesheet['Bold'],
