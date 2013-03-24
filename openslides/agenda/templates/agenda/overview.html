@@ -107,11 +107,16 @@
         </table>
         {% if items %}
 		<ol class="agenda_list">
-            {% for item in items %}
+            {% recursetree items %}
             <li class="draggable{% if item.active %} activeline{% endif %}{% if item.closed %} offline{% endif %}">
                 {% include "agenda/item_row.html" %}
+                {% if not node.is_leaf_node %}
+				<ol>
+					{{ children }}
+				</ol>
+				{% endif %}
             </li>
-            {% endfor %}
+            {% endrecursetree %}
         </ol>
         {% else %}
         <div class="overview_no_items">{% trans "No items available." %}</div>
