@@ -2,22 +2,64 @@
 # -*- coding: utf-8 -*-
 """
     openslides.participant.signals
-    ~~~~~~~~~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Signals for the participant app.
 
-    :copyright: (c) 2011-2013 by the OpenSlides team, see AUTHORS.
+    :copyright: (c) 2011–2013 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
 from django.dispatch import receiver
-from django.utils.translation import ugettext_noop
+from django import forms
+from django.utils.translation import ugettext_noop, ugettext_lazy, ugettext as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Permission
 
 from openslides.core.signals import post_database_setup
+from openslides.config.signals import config_signal
+from openslides.config.api import ConfigVariable, ConfigPage
 
 from .models import Group
+
+
+@receiver(config_signal, dispatch_uid='setup_participant_config_page')
+def setup_participant_config_page(sender, **kwargs):
+    """
+    Participant config variables.
+    """
+    # TODO: Rename config-vars
+    participant_pdf_system_url = ConfigVariable(
+        name='participant_pdf_system_url',
+        default_value='http://example.com:8000',
+        form_field=forms.CharField(
+            widget=forms.TextInput(),
+            required=False,
+            label=_('System URL'),
+            help_text=_('Printed in PDF of first time passwords only.')))
+    participant_pdf_welcometext = ConfigVariable(
+        name='participant_pdf_welcometext',
+        default_value=_('Welcome to OpenSlides!'),
+        form_field=forms.CharField(
+            widget=forms.Textarea(),
+            required=False,
+            label=_('Welcome text'),
+            help_text=_('Printed in PDF of first time passwords only.')))
+    participant_sort_users_by_first_name = ConfigVariable(
+        name='participant_sort_users_by_first_name',
+        default_value=False,
+        form_field=forms.BooleanField(
+            required=False,
+            label=_('Sort participants by first name'),
+            help_text=_('Disable for sorting by last name')))
+
+    return ConfigPage(title=ugettext_noop('Participant'),
+                      url='participant',
+                      required_permission='config.can_manage',
+                      weight=50,
+                      variables=(participant_pdf_system_url,
+                                 participant_pdf_welcometext,
+                                 participant_sort_users_by_first_name))
 
 
 @receiver(post_database_setup, dispatch_uid='participant_create_builtin_groups')
@@ -69,7 +111,7 @@ def create_builtin_groups(sender, **kwargs):
     perm_15a = Permission.objects.get(content_type=ct_mediafile, codename='can_manage')
 
     ct_config = ContentType.objects.get(app_label='config', model='configstore')
-    perm_16 = Permission.objects.get(content_type=ct_config, codename='can_manage_config')
+    perm_16 = Permission.objects.get(content_type=ct_config, codename='can_manage')
 
     group_staff = Group.objects.create(name=ugettext_noop('Staff'))
     group_staff.permissions.add(perm_7, perm_9, perm_10, perm_11, perm_12, perm_13, perm_14, perm_15, perm_15a, perm_16)

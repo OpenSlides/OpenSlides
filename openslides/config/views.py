@@ -6,107 +6,126 @@
 
     Views for the config app.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.conf import settings
-from django.contrib import messages
+from django import forms
 from django.core.urlresolvers import reverse
-from django.utils.importlib import import_module
+from django.contrib import messages
 from django.utils.translation import ugettext as _
 
-from openslides import get_version, get_git_commit_id, RELEASE
+from openslides.utils.views import FormView
 from openslides.utils.template import Tab
-from openslides.utils.views import FormView, TemplateView
-from .forms import GeneralConfigForm
-from .models import config
+from .api import config
+from .signals import config_signal
 
 
-class GeneralConfig(FormView):
+class ConfigView(FormView):
     """
-    Gereral config values.
+    The view for a config page.
     """
-    permission_required = 'config.can_manage_config'
-    form_class = GeneralConfigForm
-    template_name = 'config/general.html'
-    success_url_name = 'config_general'
+    template_name = 'config/config_form.html'
+    config_page = None
+    form_class = forms.Form
+
+    def has_permission(self, *args, **kwargs):
+        """
+        Ensures that only users with tab's permission can see this view.
+        """
+        self.permission_required = self.config_page.required_permission
+        return super(ConfigView, self).has_permission(*args, **kwargs)
+
+    def get_form(self, *args):
+        """
+        Gets the form for the view. Includes all form fields given by the
+        tab's config objects.
+        """
+        form = super(ConfigView, self).get_form(*args)
+        for name, field in self.generate_form_fields_from_config_page():
+            form.fields[name] = field
+        return form
+
+    def generate_form_fields_from_config_page(self):
+        """
+        Generates the fields for the get_form function.
+        """
+        for variable in self.config_page.variables:
+            if variable.form_field is not None:
+                yield (variable.name, variable.form_field)
 
     def get_initial(self):
-        return {
-            'event_name': config['event_name'],
-            'event_description': config['event_description'],
-            'event_date': config['event_date'],
-            'event_location': config['event_location'],
-            'event_organizer': config['event_organizer'],
-            'welcome_title': config['welcome_title'],
-            'welcome_text': config['welcome_text'],
-            'system_enable_anonymous': config['system_enable_anonymous'],
-        }
-
-    def form_valid(self, form):
-        # event
-        config['event_name'] = form.cleaned_data['event_name']
-        config['event_description'] = form.cleaned_data['event_description']
-        config['event_date'] = form.cleaned_data['event_date']
-        config['event_location'] = form.cleaned_data['event_location']
-        config['event_organizer'] = form.cleaned_data['event_organizer']
-
-        # welcome widget
-        config['welcome_title'] = form.cleaned_data['welcome_title']
-        config['welcome_text'] = form.cleaned_data['welcome_text']
-
-        # system
-        if form.cleaned_data['system_enable_anonymous']:
-            config['system_enable_anonymous'] = True
-        else:
-            config['system_enable_anonymous'] = False
-
-        messages.success(
-            self.request, _('General settings successfully saved.'))
-        return super(GeneralConfig, self).form_valid(form)
-
-
-class VersionConfig(TemplateView):
-    """
-    Show version infos.
-    """
-    permission_required = 'config.can_manage_config'
-    template_name = 'config/version.html'
+        """
+        Returns a dictonary with the actual values of the config variables
+        as intial value for the form.
+        """
+        initial = super(ConfigView, self).get_initial()
+        for variable in self.config_page.variables:
+            initial.update({variable.name: config[variable.name]})
+        return initial
 
     def get_context_data(self, **kwargs):
-        context = super(VersionConfig, self).get_context_data(**kwargs)
+        """
+        Adds to the context the active config tab, a list of dictionaries
+        containing all config tabs each with a flag which is true if the
+        tab is the active one and adds a flag whether the config page has
+        groups. Adds also extra_stylefiles and extra_javascript.
+        """
+        context = super(ConfigView, self).get_context_data(**kwargs)
 
-        # OpenSlides version. During development the git commit id is added.
-        openslides_version_string = get_version()
-        if not RELEASE:
-            openslides_version_string += ' Commit: %s' % get_git_commit_id()
-        context['versions'] = [('OpenSlides', openslides_version_string)]
+        context['active_config_page'] = self.config_page
 
-        # Version of plugins.
-        for plugin in settings.INSTALLED_PLUGINS:
-            try:
-                mod = import_module(plugin)
-                plugin_version = get_version(mod.VERSION)
-            except (ImportError, AttributeError, AssertionError):
-                continue
-            try:
-                plugin_name = mod.NAME
-            except AttributeError:
-                plugin_name = mod.__name__.split('.')[0]
-            context['versions'].append((plugin_name, plugin_version))
+        config_pages_list = []
+        for receiver, config_page in config_signal.send(sender=self):
+            if config_page.is_shown():
+                config_pages_list.append({
+                    'config_page': config_page,
+                    'active': self.request.path == reverse('config_%s' % config_page.url)})
+        context['config_pages_list'] = sorted(config_pages_list, key=lambda config_page_dict: config_page_dict['config_page'].weight)
+
+        if hasattr(self.config_page, 'groups'):
+            context['groups'] = self.config_page.groups
+        else:
+            context['groups'] = None
+
+        if 'extra_stylefiles' in self.config_page.extra_context:
+            if 'extra_stylefiles' in context:
+                context['extra_stylefiles'].extend(self.config_page.extra_context['extra_stylefiles'])
+            else:
+                context['extra_stylefiles'] = self.config_page.extra_context['extra_stylefiles']
+
+        if 'extra_javascript' in self.config_page.extra_context:
+            if 'extra_javascript' in context:
+                context['extra_javascript'].extend(self.config_page.extra_context['extra_javascript'])
+            else:
+                context['extra_javascript'] = self.config_page.extra_context['extra_javascript']
+
         return context
+
+    def get_success_url(self):
+        """
+        Returns the success url when changes are saved. Here it is the same
+        url as the tab.
+        """
+        return reverse('config_%s' % self.config_page.url)
+
+    def form_valid(self, form):
+        """
+        Saves all data of a valid form.
+        """
+        for key in form.cleaned_data:
+            config[key] = form.cleaned_data[key]
+        messages.success(self.request, _('%s settings successfully saved.' % self.config_page.title))
+        return super(ConfigView, self).form_valid(form)
 
 
 def register_tab(request):
     """
-    Register the config tab.
+    Registers the tab for this app in the main menu.
     """
-    selected = request.path.startswith('/config/')
     return Tab(
         title=_('Configuration'),
         app='config',
-        url=reverse('config_general'),
-        permission=request.user.has_perm('config.can_manage_config'),
-        selected=selected,
-    )
+        url=reverse('config_first_config_page'),
+        permission=request.user.has_perm('config.can_manage'),
+        selected=request.path.startswith('/config/'))

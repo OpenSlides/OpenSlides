@@ -20,8 +20,7 @@ from django.db.models import Model
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.views.generic.detail import SingleObjectMixin
 
-from openslides.config.models import config
-from openslides.agenda.forms import ConfigForm
+from openslides.config.api import config
 from openslides.utils.pdf import stylesheet
 from openslides.utils.views import (
     TemplateView, RedirectView, UpdateView, CreateView, DeleteView, PDFView,
@@ -225,29 +224,9 @@ class AgendaPDF(PDFView):
                 story.append(Paragraph(item.get_title(), stylesheet['Item']))
 
 
-class Config(FormView):
-    """
-    Config page for the agenda app.
-    """
-    permission_required = 'config.can_manage_config'
-    form_class = ConfigForm
-    template_name = 'agenda/config.html'
-    success_url_name = 'config_agenda'
-
-    def get_initial(self):
-        return {
-            'agenda_start_event_date_time': config['agenda_start_event_date_time'],
-        }
-
-    def form_valid(self, form):
-        config['agenda_start_event_date_time'] = form.cleaned_data['agenda_start_event_date_time']
-        messages.success(self.request, _('Agenda settings successfully saved.'))
-        return super(Config, self).form_valid(form)
-
-
 def register_tab(request):
     """
-    register the agenda tab.
+    Registers the agenda tab.
     """
     selected = request.path.startswith('/agenda/')
     return Tab(
@@ -261,7 +240,7 @@ def register_tab(request):
 
 def get_widgets(request):
     """
-    return the agenda widget for the projector-tab.
+    Returns the agenda widget for the projector tab.
     """
     return [Widget(
         name='agenda',

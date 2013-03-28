@@ -9,7 +9,7 @@
     To use a motion object, you only have to import the Motion class. Any
     functionality can be reached from a motion object.
 
-    :copyright: (c) 2011-2013 by the OpenSlides team, see AUTHORS.
+    :copyright: (c) 2011–2013 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -24,8 +24,7 @@ from django.utils.translation import pgettext
 from django.utils.translation import ugettext_lazy, ugettext_noop, ugettext as _
 
 from openslides.utils.person import PersonField
-from openslides.config.models import config
-from openslides.config.signals import default_config_value
+from openslides.config.api import config
 from openslides.poll.models import (
     BaseOption, BasePoll, CountVotesCast, CountInvalid, BaseVote)
 from openslides.participant.models import User

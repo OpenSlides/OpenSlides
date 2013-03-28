@@ -284,12 +284,10 @@ def run_syncdb():
 def set_system_url(url):
     # can't be imported in global scope as it already requires
     # the settings module during import
-    from openslides.config.models import config
+    from openslides.config.api import config
 
-    key = "participant_pdf_system_url"
-    if key in config:
-        return
-    config[key] = url
+    if config['participant_pdf_system_url'] == 'http://example.com:8000':
+        config['participant_pdf_system_url'] = url
 
 
 def create_or_reset_admin_user():

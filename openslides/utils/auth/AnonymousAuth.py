@@ -11,7 +11,7 @@
 """
 
 from django.contrib.auth.models import Permission
-from openslides.config.models import config
+from openslides.config.api import config
 
 
 class AnonymousAuth(object):

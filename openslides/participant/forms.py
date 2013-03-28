@@ -6,13 +6,13 @@
 
     Forms for the participant app.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
 from django import forms
 from django.contrib.auth.models import Permission
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _  # TODO: Change this in the code
 from django.conf import settings
 
 from openslides.utils.forms import (
@@ -112,20 +112,3 @@ class UsersettingsForm(forms.ModelForm, CssClassMixin):
 class UserImportForm(forms.Form, CssClassMixin):
     csvfile = forms.FileField(widget=forms.FileInput(attrs={'size': '50'}),
                               label=_("CSV File"))
-
-
-class ConfigForm(forms.Form, CssClassMixin):
-    participant_pdf_system_url = forms.CharField(
-        widget=forms.TextInput(),
-        required=False,
-        label=_("System URL"),
-        help_text=_("Printed in PDF of first time passwords only."))
-    participant_pdf_welcometext = forms.CharField(
-        widget=forms.Textarea(),
-        required=False,
-        label=_("Welcome text"),
-        help_text=_("Printed in PDF of first time passwords only."))
-    participant_sort_users_by_first_name = forms.BooleanField(
-        required=False,
-        label=_("Sort participants by first name"),
-        help_text=_("Disable for sorting by last name"))

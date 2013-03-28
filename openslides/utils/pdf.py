@@ -23,7 +23,7 @@ from django.conf import settings
 from django.utils import formats
 from django.utils.translation import ugettext as _
 
-from openslides.config.models import config
+from openslides.config.api import config
 
 
 # register new truetype fonts
