@@ -15,9 +15,9 @@ from time import time
 from django.dispatch import receiver
 from django.template.loader import render_to_string
 
-from openslides.config.models import config
-
+from openslides.config.api import config
 from openslides.projector.signals import projector_overlays
+
 
 SLIDE = {}
 

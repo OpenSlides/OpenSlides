@@ -6,7 +6,7 @@
 
     Exceptions for the motion app.
 
-    :copyright: (c) 2011-2013 by the OpenSlides team, see AUTHORS.
+    :copyright: (c) 2011–2013 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 

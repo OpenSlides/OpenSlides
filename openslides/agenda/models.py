@@ -16,7 +16,7 @@ from django.utils.translation import ugettext_lazy as _, ugettext_noop, ugettext
 
 from mptt.models import MPTTModel, TreeForeignKey
 
-from openslides.config.models import config
+from openslides.config.api import config
 from openslides.projector.projector import SlideMixin
 from openslides.projector.api import (
     register_slidemodel, get_slide_from_sid, register_slidefunc)

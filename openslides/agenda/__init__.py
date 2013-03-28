@@ -10,4 +10,4 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-import openslides.agenda.signals
+from . import signals

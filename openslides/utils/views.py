@@ -391,7 +391,10 @@ def send_register_tab(sender, request, context, **kwargs):
     Inserts the tab objects and also the extra_stylefiles to the context.
     """
     tabs = []
-    extra_stylefiles = []
+    if 'extra_stylefiles' in context:
+        extra_stylefiles = context['extra_stylefiles']
+    else:
+        extra_stylefiles = []
     for app in settings.INSTALLED_APPS:
         try:
             mod = import_module(app + '.views')
@@ -401,8 +404,6 @@ def send_register_tab(sender, request, context, **kwargs):
                 extra_stylefiles.append(tab.stylefile)
         except (ImportError, AttributeError):
             continue
-
     context.update({
         'tabs': tabs,
-        'extra_stylefiles': extra_stylefiles,
-    })
+        'extra_stylefiles': extra_stylefiles})

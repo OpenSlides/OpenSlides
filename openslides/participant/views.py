@@ -6,7 +6,7 @@
 
     Views for the participant app.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -41,14 +41,14 @@ from openslides.utils.utils import (
 from openslides.utils.views import (
     FormView, PDFView, CreateView, UpdateView, DeleteView, PermissionMixin,
     RedirectView, SingleObjectMixin, ListView, QuestionMixin, DetailView)
-from openslides.config.models import config
+from openslides.config.api import config
 from openslides.projector.projector import Widget
 from openslides.motion.models import Motion
 from openslides.assignment.models import Assignment
 from openslides.participant.api import gen_username, gen_password, import_users
 from openslides.participant.forms import (
     UserCreateForm, UserUpdateForm, UsersettingsForm,
-    UserImportForm, GroupForm, ConfigForm)
+    UserImportForm, GroupForm)
 from openslides.participant.models import User, Group
 
 
@@ -388,34 +388,6 @@ class GroupDeleteView(DeleteView):
             super(GroupDeleteView, self).pre_redirect(request, *args, **kwargs)
 
 
-class Config(FormView):
-    """
-    Config page for the participant app.
-    """
-    permission_required = 'config.can_manage_config'
-    form_class = ConfigForm
-    template_name = 'participant/config.html'
-    success_url_name = 'config_participant'
-
-    def get_initial(self):
-        return {
-            'participant_pdf_system_url': config['participant_pdf_system_url'],
-            'participant_pdf_welcometext': config['participant_pdf_welcometext'],
-            'participant_sort_users_by_first_name': config['participant_sort_users_by_first_name']}
-
-    def form_valid(self, form):
-        config['participant_pdf_system_url'] = (
-            form.cleaned_data['participant_pdf_system_url'])
-        config['participant_pdf_welcometext'] = (
-            form.cleaned_data['participant_pdf_welcometext'])
-        config['participant_sort_users_by_first_name'] = (
-            form.cleaned_data['participant_sort_users_by_first_name'])
-        messages.success(
-            self.request,
-            _('Participants settings successfully saved.'))
-        return super(Config, self).form_valid(form)
-
-
 def login(request):
     extra_content = {}
     try:
@@ -485,7 +457,7 @@ def user_settings_password(request):
 
 def register_tab(request):
     """
-    Register the participant tab.
+    Registers the participant tab.
     """
     selected = request.path.startswith('/participant/')
     return Tab(

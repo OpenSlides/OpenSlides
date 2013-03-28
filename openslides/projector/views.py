@@ -26,7 +26,7 @@ from django.utils.translation import ugettext_lazy as _
 from openslides.utils.template import render_block_to_string, Tab
 from openslides.utils.views import (
     TemplateView, RedirectView, CreateView, UpdateView, DeleteView, AjaxMixin)
-from openslides.config.models import config
+from openslides.config.api import config
 from .api import (
     get_active_slide, set_active_slide, projector_message_set,
     projector_message_delete, get_slide_from_sid, get_all_widgets,
@@ -224,8 +224,8 @@ class ProjectorEdit(RedirectView):
             if config['up'] < 0:
                 config['up'] = int(config['up']) + 10
         elif direction == 'clean':
-            config['up'] = 0
-            config['bigger'] = 100
+            config['up'] = 0  # TODO: Use default value from the signal instead of fix value here
+            config['bigger'] = 100  # TODO: Use default value from the signal instead of fix value here
 
 
 class CountdownEdit(RedirectView):

@@ -89,6 +89,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'openslides.participant.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'openslides.config.middleware.ConfigCacheMiddleware',
 )
 
 ROOT_URLCONF = 'openslides.urls'
@@ -110,6 +111,7 @@ INSTALLED_APPS = (
     'mptt',
     'openslides.utils',
     'openslides.poll',
+    'openslides.core',
     'openslides.projector',
     'openslides.agenda',
     'openslides.motion',

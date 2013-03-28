@@ -10,7 +10,7 @@
 
 from openslides.utils.test import TestCase
 from openslides.participant.models import User
-from openslides.config.models import config
+from openslides.config.api import config
 from openslides.motion.models import Motion, Workflow, State
 from openslides.motion.exceptions import WorkflowError
 

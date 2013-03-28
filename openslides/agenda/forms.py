@@ -13,7 +13,7 @@
 import re
 
 from django import forms
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy
 from mptt.forms import TreeNodeChoiceField
 
 from openslides.utils.forms import CssClassMixin
@@ -25,14 +25,14 @@ class ItemForm(forms.ModelForm, CssClassMixin):
     Form to create of update an item.
     """
     parent = TreeNodeChoiceField(
-        queryset=Item.objects.all(), label=_("Parent item"), required=False)
+        queryset=Item.objects.all(), label=ugettext_lazy("Parent item"), required=False)
 
     duration = forms.RegexField(
         regex=re.compile('[0-99]:[0-5][0-9]'),
-        error_message=_("Invalid format. Hours from 0 to 99 and minutes from 00 to 59"),
+        error_message=ugettext_lazy("Invalid format. Hours from 0 to 99 and minutes from 00 to 59"),
         max_length=5,
         required=False,
-        label=_("Duration (hh:mm)"))
+        label=ugettext_lazy("Duration (hh:mm)"))
 
     class Meta:
         model = Item
@@ -46,7 +46,7 @@ def gen_weight_choices():
     return zip(*(range(-50, 51), range(-50, 51)))
 
 
-class ItemOrderForm(forms.Form, CssClassMixin):
+class ItemOrderForm(CssClassMixin, forms.Form):
     """
     Form to change the order of the items.
     """
@@ -57,10 +57,3 @@ class ItemOrderForm(forms.Form, CssClassMixin):
         widget=forms.HiddenInput(attrs={'class': 'menu-mlid'}))
     parent = forms.IntegerField(
         widget=forms.HiddenInput(attrs={'class': 'menu-plid'}))
-
-
-class ConfigForm(CssClassMixin, forms.Form):
-    agenda_start_event_date_time = forms.CharField(
-        widget=forms.DateTimeInput(format='%d.%m.%Y %H:%M'),
-        required=False,
-        label=_("Begin of event"))

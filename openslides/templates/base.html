@@ -98,7 +98,7 @@
   <hr />
   <footer>
       <small>
-      &copy; Copyright 2011-2013 | Powered by <a href="http://openslides.org" target="_blank">OpenSlides</a>
+      &copy; Copyright 2011–2013 | Powered by <a href="http://openslides.org" target="_blank">OpenSlides</a>
       </small>
   </footer>
   </div><!--/content-->
@@ -112,6 +112,9 @@
     <script src="{% static 'javascript/bootstrap.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'javascript/utils.js' %}" type="text/javascript"></script>
     <script src="{% url 'django.views.i18n.javascript_catalog' %}" type="text/javascript"></script>
+    {% for javascript in extra_javascript %}
+        <script src="{% static javascript %}" type="text/javascript"></script>
+    {% endfor %}
     {% block javascript %}{% endblock %}
 </body>
 </html>
