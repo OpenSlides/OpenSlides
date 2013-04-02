@@ -67,6 +67,10 @@ def create_builtin_groups(sender, **kwargs):
     """
     Creates the builtin groups: Anonymous, Registered, Delegates and Staff.
     """
+    # Check whether the group pks 1 to 4 are free
+    for pk in range(1, 5):
+        assert not Group.objects.filter(pk=pk).exists(), 'There should not be any group with pk 1, 2, 3 or 4.'
+
     # Anonymous and Registered
     ct_projector = ContentType.objects.get(app_label='projector', model='projectorslide')
     perm_1 = Permission.objects.get(content_type=ct_projector, codename='can_see_projector')
@@ -74,6 +78,7 @@ def create_builtin_groups(sender, **kwargs):
 
     ct_agenda = ContentType.objects.get(app_label='agenda', model='item')
     perm_3 = Permission.objects.get(content_type=ct_agenda, codename='can_see_agenda')
+    perm_3a = Permission.objects.get(content_type=ct_agenda, codename='can_see_orga_items')
 
     ct_motion = ContentType.objects.get(app_label='motion', model='motion')
     perm_4 = Permission.objects.get(content_type=ct_motion, codename='can_see_motion')
@@ -87,10 +92,10 @@ def create_builtin_groups(sender, **kwargs):
     ct_mediafile = ContentType.objects.get(app_label='mediafile', model='mediafile')
     perm_6a = Permission.objects.get(content_type=ct_mediafile, codename='can_see')
 
-    group_anonymous = Group.objects.create(name=ugettext_noop('Anonymous'))
-    group_anonymous.permissions.add(perm_1, perm_2, perm_3, perm_4, perm_5, perm_6, perm_6a)
-    group_registered = Group.objects.create(name=ugettext_noop('Registered'))
-    group_registered.permissions.add(perm_1, perm_2, perm_3, perm_4, perm_5, perm_6, perm_6a)
+    group_anonymous = Group.objects.create(name=ugettext_noop('Anonymous'), pk=1)
+    group_anonymous.permissions.add(perm_1, perm_2, perm_3, perm_3a, perm_4, perm_5, perm_6, perm_6a)
+    group_registered = Group.objects.create(name=ugettext_noop('Registered'), pk=2)
+    group_registered.permissions.add(perm_1, perm_2, perm_3, perm_3a, perm_4, perm_5, perm_6, perm_6a)
 
     # Delegates
     perm_7 = Permission.objects.get(content_type=ct_motion, codename='can_create_motion')
@@ -99,7 +104,7 @@ def create_builtin_groups(sender, **kwargs):
     perm_10 = Permission.objects.get(content_type=ct_assignment, codename='can_nominate_self')
     perm_10a = Permission.objects.get(content_type=ct_mediafile, codename='can_upload')
 
-    group_delegates = Group.objects.create(name=ugettext_noop('Delegates'))
+    group_delegates = Group.objects.create(name=ugettext_noop('Delegates'), pk=3)
     group_delegates.permissions.add(perm_7, perm_8, perm_9, perm_10, perm_10a)
 
     # Staff
@@ -113,5 +118,5 @@ def create_builtin_groups(sender, **kwargs):
     ct_config = ContentType.objects.get(app_label='config', model='configstore')
     perm_16 = Permission.objects.get(content_type=ct_config, codename='can_manage')
 
-    group_staff = Group.objects.create(name=ugettext_noop('Staff'))
-    group_staff.permissions.add(perm_7, perm_9, perm_10, perm_11, perm_12, perm_13, perm_14, perm_15, perm_15a, perm_16)
+    group_staff = Group.objects.create(name=ugettext_noop('Staff'), pk=4)
+    group_staff.permissions.add(perm_7, perm_9, perm_10, perm_10a, perm_11, perm_12, perm_13, perm_14, perm_15, perm_15a, perm_16)
