@@ -112,6 +112,7 @@ INSTALLED_APPS = (
     'openslides.utils',
     'openslides.poll',
     'openslides.core',
+    'openslides.account',
     'openslides.projector',
     'openslides.agenda',
     'openslides.motion',
