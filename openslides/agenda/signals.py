@@ -38,7 +38,8 @@ def setup_agenda_config_page(sender, **kwargs):
     extra_stylefiles = ['styles/timepicker.css', 'styles/jquery-ui/jquery-ui.custom.min.css']
     extra_javascript = ['javascript/jquery-ui.custom.min.js',
                         'javascript/jquery-ui-timepicker-addon.min.js',
-                        'javascript/jquery-ui-sliderAccess.min.js']
+                        'javascript/jquery-ui-sliderAccess.min.js',
+                        'javascript/agenda-config-datepicker.js']
 
     return ConfigPage(title=ugettext_noop('Agenda'),
                       url='agenda',
