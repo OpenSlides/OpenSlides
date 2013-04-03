@@ -183,15 +183,15 @@ def _main(opts, database_path=None):
         create_or_reset_admin_user()
 
     # Start OpenSlides
+    reload = True
     if opts.no_reload:
-        extra_args = ['--noreload']
-    else:
-        extra_args = []
+        reload = False
 
     if opts.start_browser:
         start_browser(url)
 
-    start_openslides(addr, port, extra_args=extra_args)
+    # Start the server
+    run_tornado(addr, port, reload)
 
 
 def create_settings(settings_path, database_path=None):
@@ -307,15 +307,6 @@ def create_or_reset_admin_user():
     admin.default_password = 'admin'
     admin.set_password(admin.default_password)
     admin.save()
-
-
-def start_openslides(addr, port, start_browser_url=None, extra_args=[]):
-    # Open the browser
-    if start_browser_url:
-        start_browser(start_browser_url)
-
-    # Start the server
-    run_tornado(addr, port)
 
 
 def start_browser(url):
