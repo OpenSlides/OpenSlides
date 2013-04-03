@@ -2,59 +2,7 @@
 
 {% load i18n %}
 
-{% get_current_language as LANGUAGE_CODE %}
 {% load staticfiles %}
-
-{% block javascript %}
-    {{ block.super }}
-    <script type="text/javascript">
-        $(function() {
-            $.datepicker.regional['{{ LANGUAGE_CODE }}'] = {
-                prevText: 'previous month',
-                nextText: 'next month',
-                monthNames: [
-                    '{% trans 'January' %}', '{% trans 'February' %}', '{% trans 'March' %}',
-                    '{% trans 'April' %}',   '{% trans 'May' %}',      '{% trans 'June' %}',
-                    '{% trans 'July' %}',    '{% trans 'August' %}',   '{% trans 'September' %}',
-                    '{% trans 'October' %}', '{% trans 'November' %}', '{% trans 'December' %}'
-                ],
-                monthNamesShort: [
-                    '{% trans 'Jan' %}', '{% trans 'Feb' %}', '{% trans 'Mar' %}',
-                    '{% trans 'Apr' %}', '{% trans 'May' %}', '{% trans 'Jun' %}',
-                    '{% trans 'Jul' %}', '{% trans 'Aug' %}', '{% trans 'Sep' %}',
-                    '{% trans 'Oct' %}', '{% trans 'Nov' %}', '{% trans 'Dec' %}'
-                ],
-                dayNames: [
-                    '{% trans 'Sunday' %}', '{% trans 'Monday' %}', '{% trans 'Tuesdey' %}', '{% trans 'Wednesday' %}',
-                    '{% trans 'Thursday' %}', '{% trans 'Friday' %}', '{% trans 'Saturday' %}'
-                ],
-                dayNamesMin: [
-                    '{% trans 'Su' %}', '{% trans 'Mo' %}', '{% trans 'Tu' %}', '{% trans 'We' %}',
-                    '{% trans 'Th' %}', '{% trans 'Fr' %}', '{% trans 'Sa' %}'
-                ],
-                dayNamesShort: [
-                    '{% trans 'Su' %}', '{% trans 'Mo' %}', '{% trans 'Tu' %}', '{% trans 'We' %}',
-                    '{% trans 'Th' %}', '{% trans 'Fr' %}', '{% trans 'Sa' %}'
-                ],
-                dateFormat: 'dd.mm.yy', firstDay: 1, isRTL: false
-            };
-
-            $.datepicker.setDefaults($.datepicker.regional['{{ LANGUAGE_CODE }}']);
-
-            $("#id_agenda_start_event_date_time").datetimepicker (
-                    {
-                        hour: 12,
-                        timeFormat: "HH:mm",
-                        timeText: '{% trans 'Time' %}',
-                        hourText: '{% trans 'Hour' %}',
-                        minuteText: '{% trans 'Minute' %}',
-                        currentText: '{% trans 'current time' %}',
-                        closeText: '{% trans 'close' %}'
-                    }
-            );
-        });
-    </script>
-{% endblock %}
 
 {% block content %}
 <h1>
