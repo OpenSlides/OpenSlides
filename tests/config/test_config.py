@@ -56,6 +56,14 @@ class HandleConfigTest(TestCase):
         config['string_var'] = 'other_special_unique_string dauTex9eAiy7jeen'
         self.assertEqual(config['string_var'], 'other_special_unique_string dauTex9eAiy7jeen')
 
+    def test_missing_cache_(self):
+        del config._cache
+        self.assertEqual(config['string_var'], 'default_string_rien4ooCZieng6ah')
+
+    def test_config_contains(self):
+        self.assertTrue('string_var' in config)
+        self.assertFalse('unknown_config_var' in config)
+
 
 class ConfigFormTest(TestCase):
 
@@ -155,6 +163,16 @@ class ConfigFormTest(TestCase):
         response = self.client_manager.get('/config/testgroupedpage1/')
         self.assertNotContains(response=response, text='Ho5iengaoon5Hoht', status_code=200)
 
+    def test_extra_stylefiles(self):
+        response = self.client_manager.get('/config/testgroupedpage1/')
+        text = '<link href="/static/styles/test-config-sjNN56dFGDrg2.css" type="text/css" rel="stylesheet" />'
+        self.assertContains(response=response, text=text, status_code=200)
+
+    def test_extra_javascript(self):
+        response = self.client_manager.get('/config/testgroupedpage1/')
+        text = '<script src="/static/javascript/test-config-djg4dFGVslk4209f.js" type="text/javascript"></script>'
+        self.assertContains(response=response, text=text, status_code=200)
+
 
 class ConfigWeightTest(TestCase):
 
@@ -222,7 +240,9 @@ def set_grouped_config_page(sender, **kwargs):
                              url='testgroupedpage1',
                              required_permission='config.can_manage',
                              weight=10000,
-                             groups=(group_1, group_2))
+                             groups=(group_1, group_2),
+                             extra_context={'extra_stylefiles': ['styles/test-config-sjNN56dFGDrg2.css'],
+                                            'extra_javascript': ['javascript/test-config-djg4dFGVslk4209f.js']})
 
 
 @receiver(config_signal, dispatch_uid='set_simple_config_page_for_testing')
