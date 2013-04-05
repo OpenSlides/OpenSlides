@@ -22,6 +22,11 @@ def get_config(key):
     return config[key]
 
 
+@register.filter
+def get_config(key):
+    return config[key]
+
+
 @register.simple_tag
 def active(request, pattern):
     if request.path.startswith(pattern):
