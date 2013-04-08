@@ -41,6 +41,9 @@ class User(PersonMixin, Person, SlideMixin, DjangoUser):
     structure_level = models.CharField(
         max_length=100, blank=True, default='', verbose_name=_("Structure level"),
         help_text=_('Will be shown after the name.'))
+    title = models.CharField(
+        max_length=50, blank=True, default='', verbose_name=_("Titel"),
+        help_text=_('Will be shown before the name.'))
     gender = models.CharField(
         max_length=50, choices=GENDER_CHOICES, blank=True,
         verbose_name=_("Gender"), help_text=_('Only for filtering the participant list.'))
@@ -62,7 +65,11 @@ class User(PersonMixin, Person, SlideMixin, DjangoUser):
 
     @property
     def clean_name(self):
-        return self.get_full_name() or self.username
+        if self.title:
+            name = "%s %s" % (self.title, self.get_full_name())
+        else:
+            name = self.get_full_name()
+        return name or self.username
 
     def get_name_suffix(self):
         return self.structure_level

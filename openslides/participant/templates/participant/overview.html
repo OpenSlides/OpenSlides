@@ -59,6 +59,7 @@
     <thead>
         <tr>
             <th>{% trans "Present" %}</th>
+            <th>{% trans "Title" %}</th>
             <th>{% trans "First Name" %}</th>
             <th>{% trans "Last Name" %}</th>
             <th class="optional">{% trans "Structure level" %}</th>
@@ -88,6 +89,7 @@
                             title="{% if user.is_active %}{% trans 'present' %}{% else %}{% trans 'absent' %}{% endif %}"></i>
                     {% endif %}
                 </td>
+                <td>{{ user.title }}</td>
                 <td><a href="{% url 'user_view' user.id %}">{{ user.first_name }}</a></td>
                 <td><a href="{% url 'user_view' user.id %}">{{ user.last_name }}</a></td>
                 <td class="optional">{{ user.structure_level }}</td>

@@ -184,7 +184,7 @@ class ParticipantsListPDF(PDFView):
     document_title = ugettext_lazy('List of Participants')
 
     def append_to_pdf(self, story):
-        data = [['#', _('Last Name'), _('First Name'), _('Group'), _('Type'),
+        data = [['#', _('Title'), _('Last Name'), _('First Name'), _('Group'), _('Type'),
                  _('Committee')]]
         if config['participant_sort_users_by_first_name']:
             sort = 'first_name'
@@ -195,6 +195,7 @@ class ParticipantsListPDF(PDFView):
             counter += 1
             data.append([
                 counter,
+                Paragraph(user.title, stylesheet['Tablecell']),
                 Paragraph(user.last_name, stylesheet['Tablecell']),
                 Paragraph(user.first_name, stylesheet['Tablecell']),
                 Paragraph(user.structure_level, stylesheet['Tablecell']),
