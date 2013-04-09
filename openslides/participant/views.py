@@ -86,16 +86,6 @@ class UserDetailView(DetailView, PermissionMixin):
     context_object_name = 'shown_user'
 
 
-class GroupDetailView(DetailView, PermissionMixin):
-    """
-    Classed based view to show a specific group in the interface.
-    """
-    permission_required = 'participant.can_manage_participant'
-    model = Group
-    template_name = 'participant/group_detail.html'
-    context_object_name = 'group'
-
-
 class UserCreateView(CreateView):
     """
     Create a new participant.
@@ -342,6 +332,16 @@ class GroupOverview(ListView):
     template_name = 'participant/group_overview.html'
     context_object_name = 'groups'
     model = Group
+
+
+class GroupDetailView(DetailView, PermissionMixin):
+    """
+    Classed based view to show a specific group in the interface.
+    """
+    permission_required = 'participant.can_manage_participant'
+    model = Group
+    template_name = 'participant/group_detail.html'
+    context_object_name = 'group'
 
 
 class GroupCreateView(CreateView):
