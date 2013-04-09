@@ -4,7 +4,7 @@
     Tests for openslides.motion.models
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -136,3 +136,8 @@ class ModelTest(TestCase):
         with self.assertRaises(WorkflowError):
             state_1.next_states.add(state_2)
             state_1.save()
+
+
+class ConfigTest(TestCase):
+    def test_stop_submitting(self):
+        self.assertFalse(config['motion_stop_submitting'])

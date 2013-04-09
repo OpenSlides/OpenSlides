@@ -4,12 +4,13 @@
     Tests for openslides.motion.models
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
 from django.test.client import Client
 
+from openslides.config.api import config
 from openslides.utils.test import TestCase
 from openslides.participant.models import User, Group
 from openslides.motion.models import Motion
@@ -21,6 +22,14 @@ class MotionViewTestCase(TestCase):
         self.admin = User.objects.create_superuser('admin', 'admin@admin.admin', 'admin')
         self.admin_client = Client()
         self.admin_client.login(username='admin', password='admin')
+
+        # Staff
+        self.staff = User.objects.create_user('staff', 'staff@user.user', 'staff')
+        staff_group = Group.objects.get(name='Staff')
+        self.staff.groups.add(staff_group)
+        self.staff.save()
+        self.staff_client = Client()
+        self.staff_client.login(username='staff', password='staff')
 
         # Delegate
         self.delegate = User.objects.create_user('delegate', 'delegate@user.user', 'delegate')
@@ -89,6 +98,26 @@ class TestMotionCreateView(MotionViewTestCase):
                                                           'submitter': self.admin})
         self.assertEqual(response.status_code, 403)
         self.assertFalse(Motion.objects.filter(versions__title='registered motion').exists())
+
+    def test_delegate_after_stop_submitting_new_motions(self):
+        config['motion_stop_submitting'] = True
+        response = self.delegate_client.get(self.url)
+        self.assertEqual(response.status_code, 403)
+
+    def test_delegate_after_stop_submitting_new_motions_overview(self):
+        config['motion_stop_submitting'] = True
+        response = self.delegate_client.get('/motion/')
+        self.assertNotContains(response, 'href="/motion/new/"', status_code=200)
+
+    def test_staff_after_stop_submitting_new_motions(self):
+        config['motion_stop_submitting'] = True
+        response = self.staff_client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_staff_after_stop_submitting_new_motions_overview(self):
+        config['motion_stop_submitting'] = True
+        response = self.staff_client.get('/motion/')
+        self.assertContains(response, 'href="/motion/new/"', status_code=200)
 
 
 class TestMotionUpdateView(MotionViewTestCase):

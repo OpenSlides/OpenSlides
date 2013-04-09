@@ -26,6 +26,12 @@ def setup_motion_config_page(sender, **kwargs):
     """
     Motion config variables.
     """
+    motion_stop_submitting = ConfigVariable(
+        name='motion_stop_submitting',
+        default_value=False,
+        form_field=forms.BooleanField(
+            label=_('Stop submitting new motions by non-staff users'),
+            required=False))
     motion_min_supporters = ConfigVariable(
         name='motion_min_supporters',
         default_value=0,
@@ -106,7 +112,8 @@ def setup_motion_config_page(sender, **kwargs):
                       url='motion',
                       required_permission='config.can_manage',
                       weight=30,
-                      variables=(motion_min_supporters,
+                      variables=(motion_stop_submitting,
+                                 motion_min_supporters,
                                  motion_preamble,
                                  motion_pdf_ballot_papers_selection,
                                  motion_pdf_ballot_papers_number,

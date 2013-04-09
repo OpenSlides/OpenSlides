@@ -152,8 +152,19 @@ class MotionMixin(object):
 
 class MotionCreateView(MotionMixin, CreateView):
     """View to create a motion."""
-    permission_required = 'motion.can_create_motion'
     model = Motion
+
+    def has_permission(self, request, *args, **kwargs):
+        """
+        Checks whether the requesting user can submit a new motion. He needs
+        at least the permission 'motion.can_create_motion'. If the submitting
+        of new motions by non-staff users is stopped via config variable
+        'motion_stop_submitting', the requesting user needs also to have
+        'motion.can_manage_motion'.
+        """
+        if request.user.has_perm('motion.can_create_motion'):
+            return not config['motion_stop_submitting'] or request.user.has_perm('motion.can_manage_motion')
+        return False
 
     def form_valid(self, form):
         """Write a log message, if the form is valid."""
