@@ -13,15 +13,21 @@
     </h1>
 
     <p>{% trans 'Select a CSV file to import participants!' %}</p>
-
-    <p>{% trans 'Required comma separated values' %}:
-    <code>({% trans 'first_name, last_name, gender, structure level, type, committee, comment' %})</code>
-    <br>
-    {% trans 'Required CSV file encoding: UTF-8 (Unicode).' %}
-    </p>
-
-    <p><a href="https://github.com/OpenSlides/OpenSlides/wiki/CSV-Import" target="_blank">{% trans 'A CSV example file is available in OpenSlides Wiki.' %}</a>
-    </p>
+    
+    <p>{% trans 'Please note' %}:</p>
+    <ul>
+        <li>
+            {% trans 'Required comma separated values' %}:<br>
+            <code>({% trans 'title, first name, last name, gender, email, group id, structure level, committee, about me, comment, is active' %})</code>
+        </li>
+        <li>
+            {% trans 'Default groups' %}:
+            {% trans 'Anonymous' %} (<code>1</code>), {% trans 'Registered' %} (<code>2</code>),
+            {% trans 'Delegate' %} (<code>3</code>), {% trans 'Staff' %} (<code>4</code>)
+        </li>
+        <li>{% trans 'Required CSV file encoding: UTF-8 (Unicode).' %}</li>
+        <li><a href="https://github.com/OpenSlides/OpenSlides/wiki/CSV-Import" target="_blank">{% trans 'Use the CSV example file from OpenSlides Wiki.' %}</a></li>
+    </ul>
 
     <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
         {% include "form.html" %}

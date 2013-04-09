@@ -59,10 +59,11 @@
     <thead>
         <tr>
             <th>{% trans "Present" %}</th>
+            <th class="optional">{% trans "Title" %}</th>
             <th>{% trans "First Name" %}</th>
             <th>{% trans "Last Name" %}</th>
             <th class="optional">{% trans "Structure level" %}</th>
-            <th class="optional">{% trans "Type" %}</th>
+            <th class="optional">{% trans "Group" %}</th>
             <th class="optional">{% trans "Committee" %}</th>
             {% if perms.participant.can_manage_participant %}
                 <th class="optional">{% trans "Comment" %}</th>
@@ -88,10 +89,18 @@
                             title="{% if user.is_active %}{% trans 'present' %}{% else %}{% trans 'absent' %}{% endif %}"></i>
                     {% endif %}
                 </td>
+                <td class="optional">{{ user.title }}</td>
                 <td><a href="{% url 'user_view' user.id %}">{{ user.first_name }}</a></td>
                 <td><a href="{% url 'user_view' user.id %}">{{ user.last_name }}</a></td>
                 <td class="optional">{{ user.structure_level }}</td>
-                <td class="optional">{{ user.get_type_display }}</td>
+                <td class="optional">
+                    {% for group in user.groups.all %}
+                        {% if group.name != 'Registered' %}
+                            {{ group}}
+                            {% if not forloop.last %}<br>{% endif %}
+                        {% endif %}
+                    {% endfor %}
+                </td>
                 <td class="optional">{{ user.committee }}</td>
                 {% if perms.participant.can_manage_participant %}
                     <td class="optional">{{ user.comment|first_line }}</td>
