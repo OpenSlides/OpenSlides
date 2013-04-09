@@ -156,7 +156,14 @@ form .required label:after {
 legend + .control-group {
     margin-top: 0px !important;
 }
-
+#id_permissions {
+    height: 310px;
+    width: auto;
+}
+#id_submitter, #id_supporter, #id_users {
+    height: 110px;
+    width: auto;
+}
 
 /** Left sitebar navigation **/
 .leftmenu ul {
