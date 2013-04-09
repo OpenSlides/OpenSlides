@@ -4,23 +4,27 @@ include INSTALL.txt
 include LICENSE
 include manage.py
 include README.txt
+include requirements.txt
 include THANKS
 
+recursive-include openslides/account/templates *
+recursive-include openslides/agenda/static *
+recursive-include openslides/agenda/templates *
+recursive-include openslides/assignment/static *
+recursive-include openslides/assignment/templates *
+recursive-include openslides/config/templates *
+recursive-include openslides/core/templates *
+recursive-include openslides/locale *.mo *.po
+recursive-include openslides/mediafile/static *
+recursive-include openslides/mediafile/templates *
+recursive-include openslides/motion/static *
+recursive-include openslides/motion/templates *
+recursive-include openslides/participant/static *
+recursive-include openslides/participant/templates *
+recursive-include openslides/poll/templates *
+recursive-include openslides/projector/static *
+recursive-include openslides/projector/templates *
 recursive-include openslides/static *
 recursive-include openslides/templates *
 
-recursive-include openslides/agenda/templates *
-recursive-include openslides/agenda/static *
-recursive-include openslides/motion/templates *
-recursive-include openslides/assignment/templates *
-recursive-include openslides/assignment/static *
-recursive-include openslides/config/templates *
-recursive-include openslides/participant/templates *
-recursive-include openslides/participant/static *
-include openslides/participant/fixtures/groups_de.json
-recursive-include openslides/poll/templates *
-recursive-include openslides/projector/templates *
-recursive-include openslides/projector/static *
-
-recursive-include openslides/locale *.mo *.po
 recursive-include openslides *.html
