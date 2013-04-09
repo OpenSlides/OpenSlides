@@ -117,7 +117,19 @@ tr.total td {
 .optional {
     display: auto;
 }
-
+fieldset {
+    margin-bottom: 10px;
+}
+fieldset legend {
+    margin-bottom: 5px;
+}
+fieldset label {
+    font-weight: bold;
+    margin: 10px 0 0 0;
+}
+fieldset label:after {
+    content: ":";
+}
 
 /** Forms **/
 input, textarea {

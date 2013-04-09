@@ -184,8 +184,8 @@ class ParticipantsListPDF(PDFView):
     document_title = ugettext_lazy('List of Participants')
 
     def append_to_pdf(self, story):
-        data = [['#', _('Title'), _('Last Name'), _('First Name'), _('Group'), _('Type'),
-                 _('Committee')]]
+        data = [['#', _('Title'), _('Last Name'), _('First Name'),
+                 _('Structure level'), _('Group'), _('Committee')]]
         if config['participant_sort_users_by_first_name']:
             sort = 'first_name'
         else:
@@ -193,13 +193,17 @@ class ParticipantsListPDF(PDFView):
         counter = 0
         for user in User.objects.all().order_by(sort):
             counter += 1
+            groups = ''
+            for group in user.groups.all():
+                if unicode(group) != "Registered":
+                    groups += "%s<br/>" % unicode(group)
             data.append([
                 counter,
                 Paragraph(user.title, stylesheet['Tablecell']),
                 Paragraph(user.last_name, stylesheet['Tablecell']),
                 Paragraph(user.first_name, stylesheet['Tablecell']),
                 Paragraph(user.structure_level, stylesheet['Tablecell']),
-                Paragraph(user.get_type_display(), stylesheet['Tablecell']),
+                Paragraph(groups, stylesheet['Tablecell']),
                 Paragraph(user.committee, stylesheet['Tablecell'])])
         t = LongTable(data, style=[
             ('VALIGN', (0, 0), (-1, -1), 'TOP'),
@@ -293,7 +297,7 @@ class UserImportView(FormView):
     permission_required = 'participant.can_manage_participant'
     template_name = 'participant/import.html'
     form_class = UserImportForm
-    success_url_name = 'user_import'
+    success_url_name = 'user_overview'
 
     def form_valid(self, form):
         # check for valid encoding (will raise UnicodeDecodeError if not)

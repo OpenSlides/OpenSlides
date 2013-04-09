@@ -30,16 +30,10 @@ class User(PersonMixin, Person, SlideMixin, DjangoUser):
         ('male', _('Male')),
         ('female', _('Female')),
     )
-    TYPE_CHOICES = (
-        ('delegate', _('Delegate')),
-        ('observer', _('Observer')),
-        ('staff', _('Staff')),
-        ('guest', _('Guest')),
-    )
 
     django_user = models.OneToOneField(DjangoUser, editable=False, parent_link=True)
     structure_level = models.CharField(
-        max_length=100, blank=True, default='', verbose_name=_("Structure level"),
+        max_length=255, blank=True, default='', verbose_name=_("Structure level"),
         help_text=_('Will be shown after the name.'))
     title = models.CharField(
         max_length=50, blank=True, default='', verbose_name=_("Titel"),
@@ -47,11 +41,8 @@ class User(PersonMixin, Person, SlideMixin, DjangoUser):
     gender = models.CharField(
         max_length=50, choices=GENDER_CHOICES, blank=True,
         verbose_name=_("Gender"), help_text=_('Only for filtering the participant list.'))
-    type = models.CharField(
-        max_length=100, choices=TYPE_CHOICES, blank=True,
-        verbose_name=_("Typ"), help_text=_('Only for filtering the participant list.'))
     committee = models.CharField(
-        max_length=100, blank=True, default='', verbose_name=_("Committee"),
+        max_length=255, blank=True, default='', verbose_name=_("Committee"),
         help_text=_('Only for filtering the participant list.'))
     about_me = models.TextField(
         blank=True, default='', verbose_name=_('About me'),
