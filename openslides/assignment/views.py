@@ -564,9 +564,9 @@ class AssignmentPollPDF(PDFView):
 
         # set number of ballot papers
         if ballot_papers_selection == "NUMBER_OF_DELEGATES":
-            number = User.objects.filter(type__iexact="delegate").count()
+            number = User.objects.filter(groups__pk = 3).count()
         elif ballot_papers_selection == "NUMBER_OF_ALL_PARTICIPANTS":
-            number = int(User.objects.count())
+            number = int(User.objects.exclude(is_superuser = 1).count())
         else:  # ballot_papers_selection == "CUSTOM_NUMBER"
             number = int(ballot_papers_number)
         number = max(1, number)

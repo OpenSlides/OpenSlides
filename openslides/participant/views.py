@@ -59,7 +59,7 @@ class UserOverview(ListView):
     context_object_name = 'users'
 
     def get_queryset(self):
-        query = User.objects
+        query = User.objects.exclude(is_superuser = 1)
         if config['participant_sort_users_by_first_name']:
             query = query.order_by('first_name')
         else:
@@ -68,10 +68,8 @@ class UserOverview(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(UserOverview, self).get_context_data(**kwargs)
-        all_users = User.objects.count()
         # context vars
         context.update({
-            'allusers': all_users,
             'request_user': self.request.user})
         return context
 
@@ -181,7 +179,7 @@ class ParticipantsListPDF(PDFView):
         else:
             sort = 'last_name'
         counter = 0
-        for user in User.objects.all().order_by(sort):
+        for user in User.objects.exclude(is_superuser = 1).order_by(sort):
             counter += 1
             groups = ''
             for group in user.groups.all():
@@ -238,7 +236,7 @@ class ParticipantsPasswordsPDF(PDFView):
             img_stream.seek(0)
             size = 2*cm
             I = Image(img_stream, width=size, height=size)
-        for user in User.objects.all().order_by(sort):
+        for user in User.objects.exclude(is_superuser = 1).order_by(sort):
             cell = []
             cell.append(Spacer(0, 0.8 * cm))
             cell.append(Paragraph(_("Account for OpenSlides"),
@@ -490,7 +488,7 @@ def get_user_widget(request):
         name='user',
         display_name=_('Participants'),
         template='participant/user_widget.html',
-        context={'users': User.objects.all()},
+        context={'users': User.objects.exclude(is_superuser = 1)},
         permission_required='projector.can_manage_projector',
         default_column=1)
 
