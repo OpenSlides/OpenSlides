@@ -14,14 +14,14 @@ Die einzelen Tutorials:
 .. toctree::
  :maxdepth: 1
 
- tutorial_de_1
+ Tutorial_1
 
- tutorial_de_2
+ Tutorial_2
  
- tutorial_de_3
+ Tutorial_3
 
- tutorial_de_4
+ Tutorial_4
 
- tutorial_de_5
+ Tutorial_5
 
- tutorial_de_6 
+ Tutorial_6 

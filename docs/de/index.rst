@@ -11,16 +11,16 @@ Inhalt:
 .. toctree::
  :maxdepth: 2
 
- chapter1
+ Einfuehrung
 
- chapter2
+ ErsteSchritte
 
- tutorial_de
+ Tutorial
 
- chapter5
+ EinzelneFunktionen
 
- chapter6
+ Anpassungen
 
- chapter7
+ Sonstiges
 
- impressum
+ Impressum
