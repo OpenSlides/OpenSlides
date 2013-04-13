@@ -343,6 +343,16 @@ class GroupDetailView(DetailView, PermissionMixin):
     template_name = 'participant/group_detail.html'
     context_object_name = 'group'
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(GroupDetailView, self).get_context_data(*args, **kwargs)
+        query = User.objects
+        if config['participant_sort_users_by_first_name']:
+            query = query.order_by('first_name')
+        else:
+            query = query.order_by('last_name')
+        context['group_members'] = query.filter(django_user__groups__in=[context['group']])
+        return context
+
 
 class GroupCreateView(CreateView):
     """
