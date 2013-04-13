@@ -10,7 +10,7 @@
 
 {% block scrollcontent %}
     {% if speakers %}
-    <ol>
+    <ol id="list_of_speakers">
         {% for speaker in speakers %}
             <li>{{ speaker }}</li>
         {% endfor %}

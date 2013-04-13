@@ -129,17 +129,13 @@ class AgendaItemView(SingleObjectMixin, FormView):
         self.object = self.get_object()
         speakers = Speaker.objects.filter(time=None, item=self.object.pk).order_by('weight')
         old_speakers = list(Speaker.objects.exclude(time=None).order_by('time'))
-        try:
-            last_speaker = old_speakers[-1]
-        except IndexError:
-            last_speaker = None
         kwargs.update({
             'object': self.object,
             'speakers': speakers,
             'old_speakers': old_speakers,
-            'last_speaker': last_speaker,
             'is_speaker': Speaker.objects.filter(
                 time=None, person=self.request.user, item=self.object).exists(),
+            'show_list': config['presentation_argument'] == 'show_list_of_speakers',
         })
         return super(AgendaItemView, self).get_context_data(**kwargs)
 

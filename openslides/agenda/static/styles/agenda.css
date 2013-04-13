@@ -21,3 +21,7 @@ table#agendatime td {
     padding: 3px;
     white-space: nowrap;
 }
+
+#list_of_speakers li {
+    line-height: 30px;
+}

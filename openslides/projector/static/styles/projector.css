@@ -146,7 +146,12 @@ body{
     color: #9FA9B7;
     list-style-type: none;
 }
-
+/* list of speakers */
+#list_of_speakers li
+{
+    font-size: 130%;
+    line-height: 160%;
+}
 
 /* Table */
 table {

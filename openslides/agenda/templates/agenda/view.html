@@ -6,6 +6,10 @@
 
 {% block title %}{{ block.super }} – {{ item.title }}{% endblock %}
 
+{% block header %}
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/agenda.css' %}" />
+{% endblock %}
+
 {% block javascript %}
     {{ block.super }}
     {% comment %} TODO: import the sortable-plugin in our custom jquery-file {% endcomment %}
@@ -19,23 +23,25 @@
     <small class="pull-right">
     <div class="btn-toolbar">
         <a href="{% url 'item_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        {% if perms.agenda.can_manage_agenda %}
         <div class="btn-group">
             <a data-toggle="dropdown" href="#" class="btn btn-mini dropdown-toggle">
                 {% trans 'More actions' %}
                 <span class="caret"></span>
             </a>
-            {% if perms.agenda.can_manage_agenda %}
             <ul class="dropdown-menu pull-right">
                 <li><a href="{% url 'item_edit' item.id %}"><i class="icon-edit"></i> {% trans 'Edit item' %}</a></li>
                 <li><a href="{% url 'item_delete' item.id %}"><i class="icon-remove"></i> {% trans 'Delete item' %}</a></li>
             </ul>
-            {% endif %}
+        {% endif %}
         </div>
-            {% if perms.projector.can_manage_projector %}
-                <a href="{% url 'projector_activate_slide' item.sid  %}" class="activate_link btn btn-mini {% if item.active %}btn-primary{% endif %}"  rel="tooltip" data-original-title="{% trans 'Show' %}">
-                    <i class="icon icon-facetime-video {% if item.active %}icon-white{% endif %}"></i>
-                </a>
-            {% endif %}
+        {% if perms.projector.can_manage_projector %}
+            <a href="{% url 'projector_activate_slide' item.sid  %}"
+                class="activate_link btn btn-mini {% if item.active and not show_list %}btn-primary{% endif %}"
+                rel="tooltip" data-original-title="{% trans 'Show' %}">
+                <i class="icon icon-facetime-video {% if item.active and not show_list %}icon-white{% endif %}"></i>
+            </a>
+        {% endif %}
     </div>
     </small>
 </h1>
@@ -43,90 +49,128 @@
 
 {% if perms.agenda.can_manage_agenda %}
     {% if item.comment %}
-        <h2>{% trans "Comment" %}</h2>
+        <h3>{% trans "Comment" %}</h3>
         <p>{{ item.comment|linebreaks }}</p>
     {% endif %}
 {% endif %}
 
 {# List of Speakers #}
-<h2>{% trans "Speaker List" %}{% if item.speaker_list_closed %}({% trans 'Closed' %}){% endif %}</h2>
-
-{% if item.speaker_list_closed %}
-    <a href="{% url 'agenda_speaker_open' item.pk %}">{% trans 'Open list of speakers' %}</a>
-{% else %}
-    <a href="{% url 'agenda_speaker_close' item.pk %}">{% trans 'Close list of speakers' %}</a>
+<h3>{% trans "List of speakers" %} {% if item.speaker_list_closed %}<span class="label label-important">{% trans 'closed' %}</span>{% endif %}</h3>
+<p>
+{% if perms.agenda.can_manage_agenda %}
+    {% if item.speaker_list_closed %}
+        <a href="{% url 'agenda_speaker_open' item.pk %}" class="btn btn-mini btn-danger">{% trans 'Open list' %}</a>
+    {% else %}
+        <a href="{% url 'agenda_speaker_close' item.pk %}" class="btn btn-mini btn-danger">{% trans 'Close list' %}</a>
+    {% endif %}
 {% endif %}
+{% if perms.projector.can_manage_projector %}
+    <a href="{% url 'projector_activate_slide' item.sid 'show_list_of_speakers' %}"
+        class="activate_link btn btn-mini {% if item.active and show_list %}btn-primary{% endif %}"
+        rel="tooltip" data-original-title="{% trans 'Show list of speakers' %}">
+        <i class="icon icon-facetime-video {% if item.active and show_list %}icon-white{% endif %}"></i>
+        {% trans 'Show list' %}
+    </a>
 
-<p><a href="{% url 'projector_activate_slide' item.sid 'show_list_of_speakers' %}">Show list of speakers</a></p>
+{% endif %}
+</p>
 
 {% if old_speakers %}
-<div id="show_old_speakers" style="display:none" class="toggle_old_speakers">
-    <a href="#">{% trans "Show old speakers" %}</a>
-    {% if last_speaker %}
-        <p>{% trans "Last speaker:" %} <a href="{% model_url last_speaker %}">{{ last_speaker }}</a></p>
-    {% endif %}
-</div>
-
-<div id="old_speakers" class="toggle_old_speakers">
-    <a href="#">{% trans "Hide old speakers" %}</a>
-    <ol>
+<div class="well">
+    <b>{% trans "Last speakers:" %}</b>
+    <div class="btn-group" data-toggle="buttons-checkbox">
+        <button type="button" class="btn btn-mini" data-toggle="collapse" data-target="#all_speakers">
+            {% trans "Show all speakers" %}
+        </button>
+    </div>
+    <br>
+    <div id="all_speakers" class="collapse out">
         {% for speaker in old_speakers %}
-            <li>
-                {{ speaker.time }}
-                <a href="{% model_url speaker %}">{{ speaker }}</a>
-                <a href="{% model_url speaker 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
+            {% if not forloop.last %}
+                <small>{{forloop.counter}}.
+                    [{{ speaker.time }}h]
+                    <a href="{% model_url speaker %}">{{ speaker }}</a>
+                    {% if perms.agenda.can_manage_agenda %}
+                        <a href="{% model_url speaker 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
+                            <i class="icon-remove"></i>
+                        </a>
+                    {% endif %}
+                </small><br>
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% if old_speakers %}
+        {% with last=old_speakers|last %}
+        <small>{{ old_speakers|length }}.
+            [{{ last.time }}h]
+            <a href="{% model_url last %}">{{ last }}</a>
+            {% if perms.agenda.can_manage_agenda %}
+                <a href="{% model_url last 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
                     <i class="icon-remove"></i>
                 </a>
-            </li>
-        {% endfor %}
-    </ol>
+            {% endif %}
+        </small>
+        {% endwith %}
+    {% endif %}
 </div>
 {% endif %}
 
 {% if perms.agenda.can_manage_agenda %}
     <form id="speaker_list_changed_form" action="{% url 'agenda_speaker_change_order' item.pk %}" method="post" style="display:none" class="alert alert-warning">{% csrf_token %}
-       <button type="button" class="close" data-dismiss="alert">×</button>
-       <p>{% trans "Do you want to save the changed order of speakers?" %}</p>
-       <input id="sort_order" name="sort_order" type="hidden"></hidden>
-       <p>
-           <button class="btn" type="submit">{% trans 'Yes' %}</button>
-           <a href="{% url 'item_view' item.pk %}" class="btn">{% trans 'No' %}</a>
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <p>{% trans "Do you want to save the changed order of speakers?" %}</p>
+        <input id="sort_order" name="sort_order" type="hidden"></hidden>
+        <p>
+            <button class="btn" type="submit">{% trans 'Yes' %}</button>
+            <a href="{% url 'item_view' item.pk %}" class="btn">{% trans 'No' %}</a>
         </p>
     </form>
 {% endif %}
 
-{% if speakers %}
+
+<div class="well">
+    <b>{% trans "Next speakers:" %}</b>
     <ol {% if perms.agenda.can_manage_agenda %}id="list_of_speakers"{% endif %}>
         {% for speaker in speakers %}
             <li id="speaker_{{ speaker.pk }}">
                 <a href="{% model_url speaker %}">{{ speaker }}</a>
-                <a href="{% url 'agenda_speaker_speak' item.pk speaker.person.person_id %}">speak</a>
-                <a href="{% model_url speaker 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
-                    <i class="icon-remove"></i>
-                </a>
+                {% if perms.agenda.can_manage_agenda %}
+                    <a href="{% url 'agenda_speaker_speak' item.pk speaker.person.person_id %}" class="btn btn-mini"><i class="icon-bell"></i> Finished speech</a>
+                    <a href="{% model_url speaker 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
+                        <i class="icon-remove"></i>
+                    </a>
+                {% endif %}
             </li>
+        {% empty %}
+            <i>{% trans "The list of speakers is empty." %}</i>
         {% endfor %}
     </ol>
-{% else %}
-    <p>{% trans 'The list of speakers is empty' %}</p>
-{% endif %}
 
+    <p>
+    {% if is_speaker %}
+        <a href="{% url 'agenda_speaker_delete' object.id %}" class="btn">{% trans "Remove me from the list" %}</a>
+    {% elif not object.speaker_list_closed %}
+        <a href="{% url 'agenda_speaker_append' object.id %}" class="btn">{% trans "Put me on the list" %}</a>
+    {% endif %}
+    </p>
 
+    {% if perms.can_manage_agenda %}
+        <form action="" method="post">{% csrf_token %}
+            {% for field in form %}
+                <label>{{ field.label }}:</label>
+                <div class="control-group input-append {% if field.errors %}error{% endif %}">
+                    {{ field }}
+                    <button class="btn btn-primary" type="submit" title="{% trans 'Apply' %}"><i class="icon-ok icon-white"></i></button>
+                {% if perms.participant.can_see_participant and perms.participant.can_manage_participant %}
+                    <a href="{% url 'user_new' %}" class="btn"  title="{% trans 'Add new participant' %}"><i class="icon-add-user"></i></a>
+                {% endif %}
+                {% if field.errors %}
+                    <span class="help-inline">{{ field.errors }}</span>
+                {% endif %}
+                </div>
+            {% endfor %}
+        </form>
+    {% endif %}
 
-{% if is_speaker %}
-    <a href="{% url 'agenda_speaker_delete' object.id %}">{% trans "Remove me vom speakers list." %}</a>
-{% elif not object.speaker_list_closed %}
-    <a href="{% url 'agenda_speaker_append' object.id %}">{% trans "Put me on speakers list." %}</a>
-{% endif %}
-
-{% if perms.can_manage_agenda %}
-    <form action="" method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <button class="btn btn-primary" type="submit" title="{% trans 'Apply' %}"><i class="icon-ok icon-white"></i></button>
-        {% if perms.participant.can_see_participant and perms.participant.can_manage_participant %}
-            <a href="{% url 'user_new' %}" class="btn"  title="{% trans 'Add new participant' %}"><i class="icon-add-user"></i></a>
-        {% endif %}
-    </form>
-{% endif %}
-
+</div>
 {% endblock %}

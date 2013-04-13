@@ -34,15 +34,6 @@ function hideClosedSlides(hide) {
     return false;
 }
 
-function toggleOldSpeakers() {
-    $('#show_old_speakers').toggle();
-    $('#old_speakers').toggle();
-}
-
-$('.toggle_old_speakers > a').click(function() {
-    toggleOldSpeakers();
-});
-
 $('#speaker_list_changed_form').submit(function() {
     $('#sort_order').val($('#list_of_speakers').sortable("toArray"));
 });
@@ -94,9 +85,6 @@ $(function() {
         //# hideClosedSlides(true);
         //# $('#hide_closed_items').attr('checked', true);
     //# }
-
-    // List of Speakers
-    toggleOldSpeakers();
 
     $('#list_of_speakers').sortable({axis: "y", containment: "parent", update: function(event, ui) {
         $('#speaker_list_changed_form').show();
