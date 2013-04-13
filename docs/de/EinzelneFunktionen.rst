@@ -6,20 +6,20 @@ Im Folgenden werden die einzelnen Funktionen von OpenSlides erläutert. Die Funk
 .. toctree::
  :maxdepth: 2
 
- chapter5_1
+ An_Abmelden
 
- chapter5_2
+ Konfiguration
 
- chapter5_3
+ Projektorsteuerung
 
- chapter5_4
+ Benutzerdefinierte_Folien
 
- chapter5_5
+ Countdown_Messages
 
- chapter5_6
+ Tagesordnung
 
- chapter5_7
+ Teilnehmer
 
- chapter5_8
+ Antraege
 
- chapter5_9 
+ Wahlen 

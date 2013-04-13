@@ -8,10 +8,10 @@ Dieses Tutorial ist noch nicht fertiggestellt. Wenn Sie Interesse haben, uns zu 
 .. toctree::
  :maxdepth: 2
 
- chapter7_1
+ Netzwerktechnik_fuer_Dummies
 
- chapter7_2
+ Datenschutz
 
- chapter7_3
+ Aussehen_aendern
 
- chapter7_4
+ Weblinks

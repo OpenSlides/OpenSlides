@@ -8,10 +8,10 @@ Dieses Tutorial ist noch nicht fertiggestellt. Wenn Sie Interesse haben, uns zu 
 .. toctree::
  :maxdepth: 2
 
- chapter6_1
+ Eigenes_Logo
 
- chapter6_2
+ Eigene_Datenbank
 
- chapter6_3
+ Eigener_Webserver
 
- chapter6_4
+ Template
