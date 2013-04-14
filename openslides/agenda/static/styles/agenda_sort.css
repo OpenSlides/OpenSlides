@@ -36,15 +36,15 @@ table.agenda_list {
 	width: 0px;
 	height: 10px;
 }
-.agenda_list ol .indentation { width: 12px; }
-.agenda_list ol ol .indentation { width: 24px; }
-.agenda_list ol ol ol .indentation { width: 36px; }
-.agenda_list ol ol ol ol .indentation { width: 48px; }
-.agenda_list ol ol ol ol ol .indentation { width: 60px; }
-.agenda_list ol ol ol ol ol ol.indentation { width: 72px; }
-.agenda_list ol ol ol ol ol ol ol .indentation { width: 84px; }
-.agenda_list ol ol ol ol ol ol ol ol .indentation { width: 96px; }
-.agenda_list ol ol ol ol ol ol ol ol ol .indentation { width: 108px; }
+.agenda_list ol .indentation { width: 18px; }
+.agenda_list ol ol .indentation { width: 36px; }
+.agenda_list ol ol ol .indentation { width: 54px; }
+.agenda_list ol ol ol ol .indentation { width: 72px; }
+.agenda_list ol ol ol ol ol .indentation { width: 90px; }
+.agenda_list ol ol ol ol ol ol.indentation { width: 108px; }
+.agenda_list ol ol ol ol ol ol ol .indentation { width: 126px; }
+.agenda_list ol ol ol ol ol ol ol ol .indentation { width: 144px; }
+.agenda_list ol ol ol ol ol ol ol ol ol .indentation { width: 162px; }
 
 .agenda_list .draggable > div {
 	display: table;
