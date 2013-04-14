@@ -116,6 +116,11 @@ class UserUpdateView(UpdateView):
     form_class = UserUpdateForm
     success_url_name = 'user_overview'
 
+    def get_form_kwargs(self, *args, **kwargs):
+        form_kwargs = super(UserUpdateView, self).get_form_kwargs(*args, **kwargs)
+        form_kwargs.update({'request': self.request})
+        return form_kwargs
+
 
 class UserDeleteView(DeleteView):
     """
