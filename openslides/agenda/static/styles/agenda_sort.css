@@ -17,7 +17,7 @@ table.agenda_list {
 	margin: 0;
 	padding: 0;
 }
-.agenda_list .openclose { width: 40px; text-align: center; }
+.agenda_list .openclose { width: 40px; }
 .agenda_list .duration { width: 75px; }
 .agenda_list .manage { width: 150px; }
 .agenda_list .ui-sortable-placeholder {
@@ -36,27 +36,51 @@ table.agenda_list {
 	width: 0px;
 	height: 10px;
 }
-.agenda_list ol .indentation { width: 18px; }
-.agenda_list ol ol .indentation { width: 36px; }
-.agenda_list ol ol ol .indentation { width: 54px; }
-.agenda_list ol ol ol ol .indentation { width: 72px; }
-.agenda_list ol ol ol ol ol .indentation { width: 90px; }
-.agenda_list ol ol ol ol ol ol.indentation { width: 108px; }
-.agenda_list ol ol ol ol ol ol ol .indentation { width: 126px; }
-.agenda_list ol ol ol ol ol ol ol ol .indentation { width: 144px; }
-.agenda_list ol ol ol ol ol ol ol ol ol .indentation { width: 162px; }
 
 .agenda_list .draggable > div {
 	display: table;
 	width: 100%;
 	table-layout: fixed;
+	position: relative;
 }
 .agenda_list .draggable > div > div {
 	display: table-cell;
-	padding: 8px;
-	border-bottom: solid 1px lightgray;
+	padding: 10px;
+	/*border-bottom: solid 1px lightgray; */
 }
 
+.agenda_list li { position: relative; }
+.agenda_list div.line {
+	display: block;
+	height: 1px;
+	background-color: lightgray;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	line-height: 1px;
+	margin: 0;
+	padding: 0;
+	width: auto;
+}
+.agenda_list > li:first-child .line { display: none; }
+.agenda_list ol div.line { left: -20px; }
+.agenda_list ol ol div.line { left: -40px; }
+.agenda_list ol ol ol div.line { left: -60px; }
+.agenda_list ol ol ol ol div.line { left: -80px; }
+.agenda_list ol ol ol ol ol div.line { left: -100px; }
+.agenda_list ol ol ol ol ol ol div.line { left: -120px; }
+.agenda_list ol ol ol ol ol ol ol div.line { left: -140px; }
+
+
+.agenda_list ol { margin-left: 20px; }
+
+.agenda_list ol .openclose a { margin-left: -20px; }
+.agenda_list ol ol .openclose a { margin-left: -40px; }
+.agenda_list ol ol ol .openclose a { margin-left: -60px; }
+.agenda_list ol ol ol ol .openclose a { margin-left: -80px; }
+.agenda_list ol ol ol ol ol .openclose a { margin-left: -100px; }
+.agenda_list ol ol ol ol ol ol .openclose a { margin-left: -120px; }
 
 
 a.drag-handle .handle {
