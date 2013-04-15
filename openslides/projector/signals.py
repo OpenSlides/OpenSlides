@@ -84,7 +84,7 @@ def setup_projector_config_variables(sender, **kwargs):
 @receiver(projector_overlays, dispatch_uid="projector_countdown")
 def countdown(sender, **kwargs):
     """
-    Reveiver for the countdown.
+    Receiver for the countdown.
     """
     name = 'projector_countdown'
     request = kwargs.get('request', None)

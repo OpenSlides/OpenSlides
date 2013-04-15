@@ -12,8 +12,9 @@
 
 from django.conf.urls import url, patterns
 from openslides.agenda.views import (
-    Overview, View, SetClosed, ItemUpdate,
-    ItemCreate, ItemDelete, AgendaPDF)
+    Overview, AgendaItemView, SetClosed, ItemUpdate, SpeakerSpeakView,
+    ItemCreate, ItemDelete, AgendaPDF, SpeakerAppendView, SpeakerDeleteView,
+    SpeakerListCloseView, SpeakerChangeOrderView, CurrentListOfSpeakersView)
 
 urlpatterns = patterns(
     '',
@@ -23,7 +24,7 @@ urlpatterns = patterns(
     ),
 
     url(r'^(?P<pk>\d+)/$',
-        View.as_view(),
+        AgendaItemView.as_view(),
         name='item_view',
     ),
 
@@ -57,5 +58,46 @@ urlpatterns = patterns(
     url(r'^print/$',
         AgendaPDF.as_view(),
         name='print_agenda',
+    ),
+
+    # Speaker List
+    url(r'^(?P<pk>\d+)/speaker/$',
+        SpeakerAppendView.as_view(),
+        name='agenda_speaker_append',
+    ),
+
+    url(r'^(?P<pk>\d+)/speaker/close/$',
+        SpeakerListCloseView.as_view(),
+        name='agenda_speaker_close',
+    ),
+
+    url(r'^(?P<pk>\d+)/speaker/reopen/$',
+        SpeakerListCloseView.as_view(reopen=True),
+        name='agenda_speaker_reopen',
+    ),
+
+    url(r'^(?P<pk>\d+)/speaker/del/$',
+        SpeakerDeleteView.as_view(),
+        name='agenda_speaker_delete',
+    ),
+
+    url(r'^(?P<pk>\d+)/speaker/(?P<speaker>\d+)/del/$',
+        SpeakerDeleteView.as_view(),
+        name='agenda_speaker_delete',
+    ),
+
+    url(r'^(?P<pk>\d+)/speaker/(?P<person_id>[^/]+)/speak/$',
+        SpeakerSpeakView.as_view(),
+        name='agenda_speaker_speak',
+    ),
+
+    url(r'^(?P<pk>\d+)/speaker/change_order/$',
+        SpeakerChangeOrderView.as_view(),
+        name='agenda_speaker_change_order',
+    ),
+
+    url(r'^list_of_speakers/$',
+        CurrentListOfSpeakersView.as_view(),
+        name='agenda_current_list_of_speakers',
     ),
 )
