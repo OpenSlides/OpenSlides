@@ -71,7 +71,7 @@ stylesheet.add(ParagraphStyle(
     bulletIndent=10,
     bulletFontSize=10,
     bulletColor=colors.black,
-    leftIndent = 30
+    leftIndent=30
 ))
 stylesheet.add(ParagraphStyle(
     name='InnerMonotypeParagraph',

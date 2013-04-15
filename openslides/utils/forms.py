@@ -83,7 +83,7 @@ class CleanHtmlFormMixin(FormMixin):
 
     def clean(self):
         cleaned_data = super(CleanHtmlFormMixin, self).clean()
-        for field in self.get_clean_html_fields():            
+        for field in self.get_clean_html_fields():
             cleaned_data[field] = bleach.clean(cleaned_data[field],
                                                tags=HTML_TAG_WHITELIST,
                                                attributes=HTML_ATTRIBUTES_WHITELIST,

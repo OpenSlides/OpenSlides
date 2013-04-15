@@ -163,7 +163,7 @@ def motion_to_pdf(pdf, motion):
         if element.parent.name == "ul":
             if element.ul:
                 # for nested ul lists use simple spaces (pragmatic solution)
-                element.li.insert(0,'&nbsp;&nbsp;&nbsp;&nbsp;')
+                element.li.insert(0, '&nbsp;&nbsp;&nbsp;&nbsp;')
                 element.insert_before(element.find_all('li'))
                 element.clear()
             else:
@@ -178,7 +178,7 @@ def motion_to_pdf(pdf, motion):
                 id = random.randrange(0, 101)
             if element.ol:
                 # nested ol list
-                element.li.insert(0,'&nbsp;&nbsp;&nbsp;&nbsp;')
+                element.li.insert(0, '&nbsp;&nbsp;&nbsp;&nbsp;')
                 element.insert_before(element.find_all('li'))
                 element.clear()
             else:
