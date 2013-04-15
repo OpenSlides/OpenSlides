@@ -169,37 +169,34 @@ def convert_html_to_reportlab(pdf, text):
     soup = BeautifulSoup(text)
     # read all list elements...
     for element in soup.find_all('li'):
-        try:
-            # ... and replace ul list elements with <para><bullet>&bull;</bullet>...<para>
-            if element.parent.name == "ul":
-                if element.ul:
-                    # for nested ul lists use simple spaces (pragmatic solution)
-                    element.li.insert(0,'&nbsp;&nbsp;&nbsp;&nbsp;')
-                    element.insert_before(element.find_all('li'))
-                    element.clear()
-                else:
-                    element.name = "para"
-                    bullet_tag = soup.new_tag("bullet")
-                    bullet_tag.string = "&bull;"
-                    element.insert(0, bullet_tag)
-            # ... and replace ol list elements with <para><bullet><seq id="%id"></seq>.</bullet>...</para>
-            if element.parent.name == "ol":
-                # set list id if element is the first of numbered list
-                if not element.find_previous_sibling():
-                    id = random.randrange(0, 101)
-                if element.ol:
-                    # nested ol list
-                    element.li.insert(0,'&nbsp;&nbsp;&nbsp;&nbsp;')
-                    element.insert_before(element.find_all('li'))
-                    element.clear()
-                else:
-                    element.name = "para"
-                    element.insert(0, soup.new_tag("bullet"))
-                    element.bullet.insert(0, soup.new_tag("seq"))
-                    element.bullet.seq['id'] = id
-                    element.bullet.insert(1, ".")
-        except AttributeError:
-            pass
+        # ... and replace ul list elements with <para><bullet>&bull;</bullet>...<para>
+        if element.parent.name == "ul":
+            if element.ul:
+                # for nested ul lists use simple spaces (pragmatic solution)
+                element.li.insert(0, '&nbsp;&nbsp;&nbsp;&nbsp;')
+                element.insert_before(element.find_all('li'))
+                element.clear()
+            else:
+                element.name = "para"
+                bullet_tag = soup.new_tag("bullet")
+                bullet_tag.string = "&bull;"
+                element.insert(0, bullet_tag)
+        # ... and replace ol list elements with <para><bullet><seq id="%id"></seq>.</bullet>...</para>
+        if element.parent.name == "ol":
+            # set list id if element is the first of numbered list
+            if not element.find_previous_sibling():
+                id = random.randrange(0, 101)
+            if element.ol:
+                # nested ol list
+                element.li.insert(0, '&nbsp;&nbsp;&nbsp;&nbsp;')
+                element.insert_before(element.find_all('li'))
+                element.clear()
+            else:
+                element.name = "para"
+                element.insert(0, soup.new_tag("bullet"))
+                element.bullet.insert(0, soup.new_tag("seq"))
+                element.bullet.seq['id'] = id
+                element.bullet.insert(1, ".")
     # remove tags which are not supported by reportlab (replace tags with their children tags)
     for tag in soup.find_all('ul'):
         tag.unwrap()
