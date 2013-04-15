@@ -77,8 +77,10 @@ def create_builtin_groups(sender, **kwargs):
     perm_2 = Permission.objects.get(content_type=ct_projector, codename='can_see_dashboard')
 
     ct_agenda = ContentType.objects.get(app_label='agenda', model='item')
+    ct_speaker = ContentType.objects.get(app_label='agenda', model='speaker')
     perm_3 = Permission.objects.get(content_type=ct_agenda, codename='can_see_agenda')
     perm_3a = Permission.objects.get(content_type=ct_agenda, codename='can_see_orga_items')
+    can_speak = Permission.objects.get(content_type=ct_speaker, codename='can_be_speaker')
 
     ct_motion = ContentType.objects.get(app_label='motion', model='motion')
     perm_4 = Permission.objects.get(content_type=ct_motion, codename='can_see_motion')
@@ -95,7 +97,7 @@ def create_builtin_groups(sender, **kwargs):
     group_anonymous = Group.objects.create(name=ugettext_noop('Anonymous'), pk=1)
     group_anonymous.permissions.add(perm_1, perm_2, perm_3, perm_3a, perm_4, perm_5, perm_6, perm_6a)
     group_registered = Group.objects.create(name=ugettext_noop('Registered'), pk=2)
-    group_registered.permissions.add(perm_1, perm_2, perm_3, perm_3a, perm_4, perm_5, perm_6, perm_6a)
+    group_registered.permissions.add(perm_1, perm_2, perm_3, perm_3a, perm_4, perm_5, perm_6, perm_6a, can_speak)
 
     # Delegates
     perm_7 = Permission.objects.get(content_type=ct_motion, codename='can_create_motion')

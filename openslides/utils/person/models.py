@@ -42,6 +42,8 @@ class PersonField(models.fields.Field):
         """
         if value is None:
             return None
+        elif isinstance(value, basestring):
+            return value
         else:
             return value.person_id
 

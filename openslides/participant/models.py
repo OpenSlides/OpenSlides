@@ -86,16 +86,16 @@ class User(PersonMixin, Person, SlideMixin, DjangoUser):
         return self.last_name.lower()
 
     @models.permalink
-    def get_absolute_url(self, link='view'):
+    def get_absolute_url(self, link='detail'):
         """
         Return the URL to this user.
 
         link can be:
-        * view
+        * detail
         * edit
         * delete
         """
-        if link == 'view':
+        if link == 'detail' or link == 'view':
             return ('user_view', [str(self.id)])
         if link == 'edit':
             return ('user_edit', [str(self.id)])
