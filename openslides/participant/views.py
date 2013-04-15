@@ -241,7 +241,7 @@ class ParticipantsPasswordsPDF(PDFView):
             img_stream = StringIO()
             qrcode_img.save(img_stream, 'PNG')
             img_stream.seek(0)
-            size = 2*cm
+            size = 2 * cm
             I = Image(img_stream, width=size, height=size)
         for user in User.objects.all().order_by(sort):
             cell = []
