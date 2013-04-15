@@ -88,11 +88,11 @@ $(function() {
             dataType: 'json',
             success: function(data) {
                 if (data['active']) {
-                    $('#' + data['def_name'] + '_active').show();
-                    $('#' + data['def_name'] + '_inactive').hide();
+                    $('#' + data['name'] + '_active').show();
+                    $('#' + data['name'] + '_inactive').hide();
                 } else {
-                    $('#' + data['def_name'] + '_active').hide();
-                    $('#' + data['def_name'] + '_inactive').show();
+                    $('#' + data['name'] + '_active').hide();
+                    $('#' + data['name'] + '_inactive').show();
                 }
             }
         });

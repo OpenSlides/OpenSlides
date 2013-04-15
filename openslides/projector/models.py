@@ -54,17 +54,3 @@ class ProjectorSlide(models.Model, SlideMixin):
 
 
 register_slidemodel(ProjectorSlide, control_template='projector/control_customslide.html')
-
-
-class ProjectorOverlay(models.Model):
-    """
-    Save information for a overlay.
-    """
-    active = models.BooleanField(verbose_name=_('Active'))
-    def_name = models.CharField(max_length=64)
-    sid = models.CharField(max_length=64, null=True, blank=True)
-
-    def __unicode__(self):
-        if self.sid:
-            return "%s on %s" % (self.def_name, self.sid)
-        return self.def_name

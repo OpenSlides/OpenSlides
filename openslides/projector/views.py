@@ -28,11 +28,10 @@ from openslides.utils.views import (
     TemplateView, RedirectView, CreateView, UpdateView, DeleteView, AjaxMixin)
 from openslides.config.api import config
 from .api import (
-    get_active_slide, set_active_slide, projector_message_set,
-    projector_message_delete, get_slide_from_sid, get_all_widgets,
+    get_active_slide, set_active_slide, get_slide_from_sid, get_all_widgets,
     clear_projector_cache)
 from .forms import SelectWidgetsForm
-from .models import ProjectorOverlay, ProjectorSlide
+from .models import ProjectorSlide
 from .projector import Widget
 from .signals import projector_overlays
 
@@ -80,18 +79,17 @@ class Projector(TemplateView, AjaxMixin):
                 'title': config['event_name'],
                 'template': 'projector/default.html',
             }
-        data['overlays'] = []
         data['ajax'] = ajax
 
-        # Projector Overlays
+        # Projector overlays
+        data['overlays'] = []
+        # Do not show overlays on slide preview
         if self.kwargs['sid'] is None:
-            active_defs = ProjectorOverlay.objects.filter(active=True) \
-                .filter(Q(sid=active_sid) | Q(sid=None)).values_list(
-                    'def_name', flat=True)
-            for receiver, response in projector_overlays.send(
-                    sender=sid, register=False, call=active_defs):
-                if response is not None:
-                    data['overlays'].append(response)
+            for receiver, overlay in projector_overlays.send(sender=self):
+                if overlay.is_active():
+                    data['overlays'].append({'name': overlay.name,
+                                             'html': overlay.get_projector_html()})
+
         self._data = data
         return data
 
@@ -290,9 +288,9 @@ class OverlayMessageView(RedirectView):
 
     def pre_post_redirect(self, request, *args, **kwargs):
         if 'message' in request.POST:
-            projector_message_set(request.POST['message_text'])
+            config['projector_message'] = request.POST['message_text']
         elif 'message-clean' in request.POST:
-            projector_message_delete()
+            config['projector_message'] = ''
 
     def get_ajax_context(self, **kwargs):
         clear_projector_cache()
@@ -309,28 +307,23 @@ class ActivateOverlay(RedirectView):
     allow_ajax = True
     permission_required = 'projector.can_manage_projector'
 
-    @property
-    def overlay(self):
-        try:
-            return self._overlay
-        except AttributeError:
-            self._overlay = ProjectorOverlay.objects.get(
-                def_name=self.kwargs['name'])
-            return self._overlay
-
     def pre_redirect(self, request, *args, **kwargs):
+        self.name = kwargs['name']
+        active_overlays = config['projector_active_overlays']
         if kwargs['activate']:
-            self.overlay.active = True
-        else:
-            self.overlay.active = False
-        self.overlay.save()
+            if self.name not in active_overlays:
+                active_overlays.append(self.name)
+                config['projector_active_overlays'] = active_overlays
+            self.active = True
+        elif not kwargs['activate']:
+            if self.name in active_overlays:
+                active_overlays.remove(self.name)
+                config['projector_active_overlays'] = active_overlays
+            self.active = False
 
     def get_ajax_context(self, **kwargs):
         clear_projector_cache()
-        return {
-            'active': self.overlay.active,
-            'def_name': self.overlay.def_name,
-        }
+        return {'active': self.active, 'name': self.name}
 
 
 class CustomSlideCreateView(CreateView):
@@ -406,21 +399,10 @@ def get_widgets(request):
 
     # Overlay Widget
     overlays = []
-    for receiver, name in projector_overlays.send(sender='registerer',
-                                                  register=True):
-        if name is not None:
-            try:
-                projector_overlay = ProjectorOverlay.objects.get(
-                    def_name=name)
-            except ProjectorOverlay.DoesNotExist:
-                projector_overlay = ProjectorOverlay(def_name=name, active=False)
-                projector_overlay.save()
-            overlays.append(projector_overlay)
+    for receiver, overlay in projector_overlays.send(sender='overlay_widget', request=request):
+        overlays.append(overlay)
 
-    context = {
-        'overlays': overlays,
-        'countdown_time': config['countdown_time'],
-        'countdown_state': config['countdown_state']}
+    context = {'overlays': overlays}
     context.update(csrf(request))
     widgets.append(Widget(
         name='overlays',

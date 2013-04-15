@@ -16,7 +16,6 @@ from django.dispatch import receiver
 from django.template.loader import render_to_string
 
 from openslides.config.api import config
-from openslides.projector.signals import projector_overlays
 
 
 SLIDE = {}
@@ -146,35 +145,26 @@ class Widget(object):
         return unicode(self.display_name)
 
 
-@receiver(projector_overlays, dispatch_uid="projector_countdown")
-def countdown(sender, **kwargs):
-    name = 'Countdown'
-    if kwargs['register']:
-        return name
-    if name in kwargs['call']:
-        if config['countdown_state'] == 'active':
-            seconds = max(0, int(config['countdown_start_stamp'] + config['countdown_time'] - time()))
-        elif config['countdown_state'] == 'paused':
-            seconds = max(0, int(config['countdown_start_stamp'] + config['countdown_time'] - config['countdown_pause_stamp']))
-        elif config['countdown_state'] == 'inactive':
-            seconds = max(0, int(config['countdown_time']))
-        else:
-            seconds = 0
+class Overlay(object):
+    """
+    Represents an overlay which can be seen on the projector.
+    """
 
-        if seconds == 0:
-            config['countdown_state'] = 'expired'
+    def __init__(self, name, get_widget_html, get_projector_html):
+        self.name = name
+        self.widget_html_callback = get_widget_html
+        self.projector_html_callback = get_projector_html
 
-        return (name, '%02d:%02d' % (seconds / 60, seconds % 60))
-    return None
+    def get_widget_html(self):
+        return self.widget_html_callback()
 
+    def get_projector_html(self):
+        try:
+            return self._projector_html
+        except AttributeError:
+            self._projector_html = self.projector_html_callback()
+            return self.get_projector_html()
 
-@receiver(projector_overlays, dispatch_uid="projector_message")
-def projector_message(sender, **kwargs):
-    name = 'Message'
-    if kwargs['register']:
-        return name
-    if name in kwargs['call']:
-        message = config['projector_message']
-        if message != '':
-            return (name, message)
-    return None
+    def is_active(self):
+        return (self.name in config['projector_active_overlays'] and
+                self.get_projector_html() is not None)
