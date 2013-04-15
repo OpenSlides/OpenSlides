@@ -6,6 +6,7 @@ reportlab==2.7
 tornado==3.0.1
 
 # required for travis
+Fabric==1.6.0
 coverage==3.6
 django-discover-runner==0.3
 pep8==1.4.5
