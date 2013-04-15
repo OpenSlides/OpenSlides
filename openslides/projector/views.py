@@ -86,7 +86,7 @@ class Projector(TemplateView, AjaxMixin):
         # Do not show overlays on slide preview
         if self.kwargs['sid'] is None:
             for receiver, overlay in projector_overlays.send(sender=self):
-                if overlay.is_active():
+                if overlay.show_on_projector():
                     data['overlays'].append({'name': overlay.name,
                                              'html': overlay.get_projector_html()})
 
