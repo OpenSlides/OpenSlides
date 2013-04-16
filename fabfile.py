@@ -16,18 +16,28 @@ from fabric.contrib import django
 
 def test(module='tests'):
     """
-    Runs all unit tests for OpenSlides using coverage. The settings file
-    in the tests directory is used, therefor the environment
-    variable DJANGO_SETTINGS_MODULE is set to 'tests.settings'.
+    Runs all unit tests for OpenSlides using coverage.
+
+    The settings file in the tests directory is used, therefor the
+    environment variable DJANGO_SETTINGS_MODULE is set to 'tests.settings'.
     """
     django.settings_module('tests.settings')
     local('coverage run ./manage.py test %s' % module)
 
 
+def coverage_report_plain():
+    """
+    Runs all tests and prints the coverage report.
+    """
+    test()
+    local('coverage report -m')
+
+
 def coverage():
     """
-    Runs all tests and builds the coverage html files. The index of these
-    files is opened in the end.
+    Runs all tests and builds the coverage html files.
+
+    The index of these files is opened in the webbrowser in the end.
     """
     test()
     local('coverage html')
@@ -44,15 +54,17 @@ def pep8():
 
 def prepare_commit():
     """
-    Does everything before a commit should be done. At the moment it
-    does the same as travis_ci()
+    Does everything before a commit should be done.
+
+    At the moment it is running the tests and check for PEP 8 errors.
     """
-    travis_ci()
+    test()
+    pep8()
 
 
 def travis_ci():
     """
     Command that is run by Travis CI.
     """
-    test()
+    coverage_report_plain()
     pep8()
