@@ -45,7 +45,6 @@ PAGE_WIDTH = defaultPageSize[0]
 stylesheet = StyleSheet1()
 stylesheet.add(ParagraphStyle(
     name='Normal',
-    #fontName='Ubuntu',
     fontSize=10,
     leading=12,
 ))
