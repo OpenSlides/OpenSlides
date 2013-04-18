@@ -10,6 +10,9 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+import random
+from bs4 import BeautifulSoup
+
 from reportlab.lib import colors
 from reportlab.lib.units import cm
 from reportlab.platypus import (
@@ -147,12 +150,84 @@ def motion_to_pdf(pdf, motion):
     pdf.append(table)
     pdf.append(Spacer(0, 1 * cm))
 
+    # motion title
     pdf.append(Paragraph(motion.title, stylesheet['Heading3']))
-    pdf.append(Paragraph(motion.text.replace('\r\n', '<br/>'), stylesheet['Paragraph']))
+
+    # motion text
+    convert_html_to_reportlab(pdf, motion.text)
+    pdf.append(Spacer(0, 1 * cm))
+
+    # motion reason
     if motion.reason:
         pdf.append(Paragraph(_("Reason:"), stylesheet['Heading3']))
-        pdf.append(Paragraph(motion.reason.replace('\r\n',  '<br/>'), stylesheet['Paragraph']))
+        convert_html_to_reportlab(pdf, motion.reason)
     return pdf
+
+
+def convert_html_to_reportlab(pdf, text):
+    # parsing and replacing not supported html tags for reportlab...
+    soup = BeautifulSoup(text)
+    # read all list elements...
+    for element in soup.find_all('li'):
+        # ... and replace ul list elements with <para><bullet>&bull;</bullet>...<para>
+        if element.parent.name == "ul":
+            if element.ul:
+                # for nested ul lists use simple spaces (pragmatic solution)
+                element.li.insert(0, '&nbsp;&nbsp;&nbsp;&nbsp;')
+                element.insert_before(element.find_all('li'))
+                element.clear()
+            else:
+                element.name = "para"
+                bullet_tag = soup.new_tag("bullet")
+                bullet_tag.string = "&bull;"
+                element.insert(0, bullet_tag)
+        # ... and replace ol list elements with <para><bullet><seq id="%id"></seq>.</bullet>...</para>
+        if element.parent.name == "ol":
+            # set list id if element is the first of numbered list
+            if not element.find_previous_sibling():
+                id = random.randrange(0, 101)
+            if element.ol:
+                # nested ol list
+                element.li.insert(0, '&nbsp;&nbsp;&nbsp;&nbsp;')
+                element.insert_before(element.find_all('li'))
+                element.clear()
+            else:
+                element.name = "para"
+                element.insert(0, soup.new_tag("bullet"))
+                element.bullet.insert(0, soup.new_tag("seq"))
+                element.bullet.seq['id'] = id
+                element.bullet.insert(1, ".")
+    # remove tags which are not supported by reportlab (replace tags with their children tags)
+    for tag in soup.find_all('ul'):
+        tag.unwrap()
+    for tag in soup.find_all('ol'):
+        tag.unwrap()
+    for tag in soup.find_all('li'):
+        tag.unwrap()
+    # print paragraphs with numbers
+    text = soup.body.contents
+    paragraph_number = 1
+    for paragraph in text:
+        paragraph = str(paragraph)
+        # ignore empty paragraphs (created by newlines/tabs of ckeditor)
+        if paragraph == '\n' or paragraph == '\n\n' or paragraph == '\n\t':
+            continue
+        if "<pre>" in paragraph:
+            pdf.append(Paragraph(paragraph.replace('\n', '<br/>'), stylesheet['InnerMonotypeParagraph'], str(paragraph_number)))
+            paragraph_number += 1
+        elif "<para>" in paragraph:
+            pdf.append(Paragraph(paragraph, stylesheet['InnerListParagraph']))
+        elif "<seqreset" in paragraph:
+            pass
+        elif "<h1>" in paragraph:
+            pdf.append(Paragraph(paragraph, stylesheet['InnerH1Paragraph']))
+        elif "<h2>" in paragraph:
+            pdf.append(Paragraph(paragraph, stylesheet['InnerH2Paragraph']))
+        elif "<h3>" in paragraph:
+            pdf.append(Paragraph(paragraph, stylesheet['InnerH3Paragraph']))
+        else:
+            pdf.append(Paragraph(str(paragraph), stylesheet['InnerParagraph'], str(paragraph_number)))
+            paragraph_number += 1
 
 
 def all_motion_cover(pdf, motions):
