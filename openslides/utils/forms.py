@@ -21,7 +21,9 @@ from django.utils.translation import ugettext_lazy as _
 # editor. Everything not in these whitelists is stripped.
 HTML_TAG_WHITELIST = ('a',
                       'i',
+                      'em',
                       'b',
+                      'strong',
                       'ul',
                       'ol',
                       'li',

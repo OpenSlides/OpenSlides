@@ -44,10 +44,6 @@ $(function() {
                 toolbar: 'Full'
         };
 
-        // Override the tags 'strong' and 'em' so that reportlab can read it
-        CKEDITOR.config.coreStyles_bold = { element : 'b', overrides : 'strong' };
-        CKEDITOR.config.coreStyles_italic = { element : 'i', overrides : 'em' };
-
         CKEDITOR.replace('id_text', ck_options);
         CKEDITOR.replace('id_reason', ck_options);
 });
