@@ -154,7 +154,17 @@ def motion_to_pdf(pdf, motion):
     pdf.append(Paragraph(motion.title, stylesheet['Heading3']))
 
     # motion text
-    text = motion.text
+    convert_html_to_reportlab(pdf, motion.text)
+    pdf.append(Spacer(0, 1 * cm))
+
+    # motion reason
+    if motion.reason:
+        pdf.append(Paragraph(_("Reason:"), stylesheet['Heading3']))
+        convert_html_to_reportlab(pdf, motion.reason)
+    return pdf
+
+
+def convert_html_to_reportlab(pdf, text):
     # parsing and replacing not supported html tags for reportlab...
     soup = BeautifulSoup(text)
     # read all list elements...
@@ -218,13 +228,6 @@ def motion_to_pdf(pdf, motion):
         else:
             pdf.append(Paragraph(str(paragraph), stylesheet['InnerParagraph'], str(paragraph_number)))
             paragraph_number += 1
-    pdf.append(Spacer(0, 1 * cm))
-
-    # motion reason
-    if motion.reason:
-        pdf.append(Paragraph(_("Reason:"), stylesheet['Heading3']))
-        pdf.append(Paragraph(motion.reason.replace('\r\n', '<br/>'), stylesheet['Paragraph']))
-    return pdf
 
 
 def all_motion_cover(pdf, motions):
