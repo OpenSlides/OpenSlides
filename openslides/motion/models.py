@@ -36,17 +36,21 @@ from .exceptions import MotionError, WorkflowError
 
 
 class Motion(SlideMixin, models.Model):
-    """The Motion Class.
+    """
+    The Motion Class.
 
     This class is the main entry point to all other classes related to a motion.
     """
 
     prefix = 'motion'
-    """Prefix for the slide system."""
+    """
+    Prefix for the slide system.
+    """
 
     active_version = models.ForeignKey('MotionVersion', null=True,
                                        related_name="active_version")
-    """Points to a specific version.
+    """
+    Points to a specific version.
 
     Used be the permitted-version-system to deside which version is the active
     version. Could also be used to only choose a specific version as a default
@@ -54,23 +58,29 @@ class Motion(SlideMixin, models.Model):
     """
 
     state = models.ForeignKey('State', null=True)  # TODO: Check whether null=True is necessary.
-    """The related state object.
+    """
+    The related state object.
 
     This attribute is to get the current state of the motion.
     """
 
     identifier = models.CharField(max_length=255, null=True, blank=True,
                                   unique=True)
-    """A string as human readable identifier for the motion."""
+    """
+    A string as human readable identifier for the motion.
+    """
 
     identifier_number = models.IntegerField(null=True)
-    """Counts the number of the motion in one category.
+    """
+    Counts the number of the motion in one category.
 
     Needed to find the next free motion-identifier.
     """
 
     category = models.ForeignKey('Category', null=True, blank=True)
-    """ForeignKey to one category of motions."""
+    """
+    ForeignKey to one category of motions.
+    """
 
     # TODO: proposal
     #master = models.ForeignKey('self', null=True, blank=True)
@@ -86,12 +96,15 @@ class Motion(SlideMixin, models.Model):
         # ordering = ('number',)
 
     def __unicode__(self):
-        """Return a human readable name of this motion."""
+        """
+        Return a human readable name of this motion.
+        """
         return self.get_title()
 
     # TODO: Use transaction
     def save(self, *args, **kwargs):
-        """Save the motion.
+        """
+        Save the motion.
 
         1. Set the state of a new motion to the default state.
         2. Save the motion object.
@@ -112,6 +125,9 @@ class Motion(SlideMixin, models.Model):
         """
         if not self.state:
             self.reset_state()
+
+        if not self.identifier and self.identifier is not None:
+            self.identifier = None
 
         super(Motion, self).save(*args, **kwargs)
 
@@ -163,7 +179,8 @@ class Motion(SlideMixin, models.Model):
             self.save()
 
     def get_absolute_url(self, link='detail'):
-        """Return an URL for this version.
+        """
+        Return an URL for this version.
 
         The keyword argument 'link' can be 'detail', 'view', 'edit' or 'delete'.
         """
@@ -202,7 +219,8 @@ class Motion(SlideMixin, models.Model):
                 break
 
     def get_title(self):
-        """Get the title of the motion.
+        """
+        Get the title of the motion.
 
         The titel is taken from motion.version.
         """
@@ -212,7 +230,8 @@ class Motion(SlideMixin, models.Model):
             return self.version.title
 
     def set_title(self, title):
-        """Set the titel of the motion.
+        """
+        Set the titel of the motion.
 
         The titel will me saved into the version object, wenn motion.save() is
         called.
@@ -220,13 +239,15 @@ class Motion(SlideMixin, models.Model):
         self._title = title
 
     title = property(get_title, set_title)
-    """The title of the motion.
+    """
+    The title of the motion.
 
     Is saved in a MotionVersion object.
     """
 
     def get_text(self):
-        """Get the text of the motion.
+        """
+        Get the text of the motion.
 
         Simular to get_title().
         """
@@ -236,20 +257,23 @@ class Motion(SlideMixin, models.Model):
             return self.version.text
 
     def set_text(self, text):
-        """ Set the text of the motion.
+        """
+        Set the text of the motion.
 
         Simular to set_title().
         """
         self._text = text
 
     text = property(get_text, set_text)
-    """The text of a motin.
+    """
+    The text of a motin.
 
     Is saved in a MotionVersion object.
     """
 
     def get_reason(self):
-        """Get the reason of the motion.
+        """
+        Get the reason of the motion.
 
         Simular to get_title().
         """
@@ -259,21 +283,24 @@ class Motion(SlideMixin, models.Model):
             return self.version.reason
 
     def set_reason(self, reason):
-        """Set the reason of the motion.
+        """
+        Set the reason of the motion.
 
         Simular to set_title().
         """
         self._reason = reason
 
     reason = property(get_reason, set_reason)
-    """The reason for the motion.
+    """
+    The reason for the motion.
 
     Is saved in a MotionVersion object.
     """
 
     @property
     def new_version(self):
-        """Return a version object, not saved in the database.
+        """
+        Return a version object, not saved in the database.
 
         On the first call, it creates a new version. On any later call, it
         use the existing new version.
@@ -287,7 +314,8 @@ class Motion(SlideMixin, models.Model):
             return self._new_version
 
     def get_version(self):
-        """Get the 'active' version object.
+        """
+        Get the 'active' version object.
 
         This version will be used to get the data for this motion.
         """
@@ -297,7 +325,8 @@ class Motion(SlideMixin, models.Model):
             return self.last_version
 
     def set_version(self, version):
-        """Set the 'active' version object.
+        """
+        Set the 'active' version object.
 
         The keyword argument 'version' can be a MotionVersion object or the
         version_number of a version object or None.
@@ -319,11 +348,15 @@ class Motion(SlideMixin, models.Model):
             self._version = version
 
     version = property(get_version, set_version)
-    """The active version of this motion."""
+    """
+    The active version of this motion.
+    """
 
     @property
     def last_version(self):
-        """Return the newest version of the motion."""
+        """
+        Return the newest version of the motion.
+        """
         # TODO: Fix the case, that the motion has no version
         try:
             return self.versions.order_by('-version_number')[0]
@@ -348,11 +381,15 @@ class Motion(SlideMixin, models.Model):
         MotionSubmitter.objects.create(motion=self, person=person)
 
     def is_supporter(self, person):
-        """Return True, if person is a supporter of this motion. Else: False."""
+        """
+        Return True, if person is a supporter of this motion. Else: False.
+        """
         return self.supporter.filter(person=person).exists()
 
     def support(self, person):
-        """Add 'person' as a supporter of this motion."""
+        """
+        Add 'person' as a supporter of this motion.
+        """
         if self.state.allow_support:
             if not self.is_supporter(person):
                 MotionSupporter(motion=self, person=person).save()
@@ -360,14 +397,17 @@ class Motion(SlideMixin, models.Model):
             raise WorkflowError('You can not support a motion in state %s.' % self.state.name)
 
     def unsupport(self, person):
-        """Remove 'person' as supporter from this motion."""
+        """
+        Remove 'person' as supporter from this motion.
+        """
         if self.state.allow_support:
             self.supporter.filter(person=person).delete()
         else:
             raise WorkflowError('You can not unsupport a motion in state %s.' % self.state.name)
 
     def create_poll(self):
-        """Create a new poll for this motion.
+        """
+        Create a new poll for this motion.
 
         Return the new poll object.
         """
@@ -381,7 +421,8 @@ class Motion(SlideMixin, models.Model):
             raise WorkflowError('You can not create a poll in state %s.' % self.state.name)
 
     def set_state(self, state):
-        """Set the state of the motion.
+        """
+        Set the state of the motion.
 
         State can be the id of a state object or a state object.
         """
@@ -393,7 +434,11 @@ class Motion(SlideMixin, models.Model):
         self.state = state
 
     def reset_state(self):
-        """Set the state to the default state. If the motion is new, it chooses the default workflow from config."""
+        """
+        Set the state to the default state.
+
+        If the motion is new, it chooses the default workflow from config.
+        """
         if self.state:
             self.state = self.state.workflow.first_state
         else:
@@ -401,7 +446,9 @@ class Motion(SlideMixin, models.Model):
                           Workflow.objects.get(pk=config['motion_workflow']).state_set.all()[0])
 
     def slide(self):
-        """Return the slide dict."""
+        """
+        Return the slide dict.
+        """
         data = super(Motion, self).slide()
         data['motion'] = self
         data['title'] = self.title
@@ -409,7 +456,9 @@ class Motion(SlideMixin, models.Model):
         return data
 
     def get_agenda_title(self):
-        """Return a title for the Agenda."""
+        """
+        Return a title for the Agenda.
+        """
         return self.last_version.title  # TODO: nutze active_version
 
     ## def get_agenda_title_supplement(self):
@@ -417,7 +466,8 @@ class Motion(SlideMixin, models.Model):
         ## return '(%s %s)' % (ugettext('motion'), number)
 
     def get_allowed_actions(self, person):
-        """Return a dictonary with all allowed actions for a specific person.
+        """
+        Return a dictonary with all allowed actions for a specific person.
 
         The dictonary contains the following actions.
 
@@ -463,7 +513,8 @@ class Motion(SlideMixin, models.Model):
         MotionLog.objects.create(motion=self, message=message, person=person)
 
     def activate_version(self, version):
-        """Set the active state of a version to True.
+        """
+        Set the active state of a version to True.
 
         'version' can be a version object, or the version_number of a version.
         """
@@ -476,7 +527,8 @@ class Motion(SlideMixin, models.Model):
             version.save()
 
     def reject_version(self, version):
-        """Reject a version of this motion.
+        """
+        Reject a version of this motion.
 
         'version' can be a version object, or the version_number of a version.
         """
@@ -492,7 +544,8 @@ class Motion(SlideMixin, models.Model):
 
 class MotionVersion(models.Model):
     """
-    A MotionVersion object saves some date of the motion."""
+    A MotionVersion object saves some date of the motion.
+    """
 
     motion = models.ForeignKey(Motion, related_name='versions')
     """The motion to which the version belongs."""

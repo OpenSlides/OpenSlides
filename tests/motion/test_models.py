@@ -137,6 +137,10 @@ class ModelTest(TestCase):
             state_1.next_states.add(state_2)
             state_1.save()
 
+    def test_two_empty_identifiers(self):
+        motion1 = Motion.objects.create(title='foo', text='bar', identifier='')
+        motion2 = Motion.objects.create(title='foo2', text='bar2', identifier='')
+
 
 class ConfigTest(TestCase):
     def test_stop_submitting(self):
