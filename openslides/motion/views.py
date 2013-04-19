@@ -83,21 +83,22 @@ motion_detail = MotionDetailView.as_view()
 
 
 class MotionMixin(object):
-    """Mixin for MotionViewsClasses to save the version data."""
+    """
+    Mixin for MotionViewsClasses to save the version data.
+    """
 
     def manipulate_object(self, form):
-        """Save the version data into the motion object before it is saved in
-        the Database."""
-
+        """
+        Save the version data into the motion object before it is saved in
+        the Database.
+        """
         super(MotionMixin, self).manipulate_object(form)
         for attr in ['title', 'text', 'reason']:
             setattr(self.object, attr, form.cleaned_data[attr])
 
-        try:
-            if form.cleaned_data['new_version']:
+        if type(self) != MotionCreateView:
+            if self.object.state.versioning and form.cleaned_data.get('new_version', True):
                 self.object.new_version
-        except KeyError:
-            pass
 
         try:
             self.object.category = form.cleaned_data['category']
@@ -210,29 +211,40 @@ motion_delete = MotionDeleteView.as_view()
 
 
 class VersionPermitView(GetVersionMixin, SingleObjectMixin, QuestionMixin, RedirectView):
-    """View to permit a version of a motion."""
+    """
+    View to permit a version of a motion.
+    """
 
     model = Motion
     question_url_name = 'motion_version_detail'
     success_url_name = 'motion_version_detail'
+    success_message = ugettext_lazy('Version successfully permitted.')
 
     def get(self, *args, **kwargs):
-        """Set self.object to a motion."""
+        """
+        Set self.object to a motion.
+        """
         self.object = self.get_object()
         return super(VersionPermitView, self).get(*args, **kwargs)
 
     def get_url_name_args(self):
-        """Return a list with arguments to create the success- and question_url."""
+        """
+        Return a list with arguments to create the success- and question_url.
+        """
         return [self.object.pk, self.object.version.version_number]
 
     def get_question(self):
-        """Return a string, shown to the user as question to permit the version."""
+        """
+        Return a string, shown to the user as question to permit the version.
+        """
         return _('Are you sure you want permit Version %s?') % self.object.version.version_number
 
     def case_yes(self):
-        """Activate the version, if the user chooses 'yes'."""
-        self.object.activate_version(self.object.version)  # TODO: Write log message
-        self.object.save()
+        """
+        Activate the version, if the user chooses 'yes'.
+        """
+        self.object.set_active_version(self.object.version)  # TODO: Write log message
+        self.object.save(no_new_version=True)
 
 version_permit = VersionPermitView.as_view()
 
