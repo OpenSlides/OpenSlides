@@ -63,7 +63,7 @@
         </tr>
     {% for motion in motion_list %}
         <tr class="{% if motion.active %}activeline{% endif %}">
-            <td>{{ motion.identifier }}</td>
+            <td>{{ motion.identifier|default:'' }}</td>
             <td><a href="{% model_url motion %}">{{ motion.title }}</a></td>
         {% if min_supporters > 0 %}
             <td class="optional">{# motion.count_supporters #}</td>
