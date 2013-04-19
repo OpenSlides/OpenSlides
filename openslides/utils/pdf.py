@@ -13,6 +13,7 @@
 from datetime import datetime
 from os.path import join as path_join
 
+from reportlab.lib import colors
 from reportlab.lib.styles import StyleSheet1, ParagraphStyle
 from reportlab.lib.units import cm
 from reportlab.pdfbase import pdfmetrics
@@ -44,7 +45,6 @@ PAGE_WIDTH = defaultPageSize[0]
 stylesheet = StyleSheet1()
 stylesheet.add(ParagraphStyle(
     name='Normal',
-    fontName='Ubuntu',
     fontSize=10,
     leading=12,
 ))
@@ -53,6 +53,51 @@ stylesheet.add(ParagraphStyle(
     parent=stylesheet['Normal'],
     leading=14,
     spaceAfter=15
+))
+stylesheet.add(ParagraphStyle(
+    name='InnerParagraph',
+    parent=stylesheet['Normal'],
+    leading=14,
+    spaceBefore=5,
+    spaceAfter=5,
+    bulletIndent=-15,
+    bulletFontSize=8,
+    bulletColor=colors.grey
+))
+stylesheet.add(ParagraphStyle(
+    name='InnerListParagraph',
+    parent=stylesheet['InnerParagraph'],
+    bulletIndent=10,
+    bulletFontSize=10,
+    bulletColor=colors.black,
+    leftIndent=30
+))
+stylesheet.add(ParagraphStyle(
+    name='InnerMonotypeParagraph',
+    parent=stylesheet['InnerParagraph'],
+    fontName='Courier',
+))
+stylesheet.add(ParagraphStyle(
+    name='InnerH1Paragraph',
+    parent=stylesheet['InnerParagraph'],
+    fontName='Ubuntu-Bold',
+    fontSize=16,
+    spaceBefore=20,
+    spaceAfter=10,
+))
+stylesheet.add(ParagraphStyle(
+    name='InnerH2Paragraph',
+    parent=stylesheet['InnerH1Paragraph'],
+    fontSize=12,
+    spaceBefore=20,
+    spaceAfter=10,
+))
+stylesheet.add(ParagraphStyle(
+    name='InnerH3Paragraph',
+    parent=stylesheet['InnerH2Paragraph'],
+    fontSize=10,
+    spaceBefore=15,
+    spaceAfter=5,
 ))
 stylesheet.add(ParagraphStyle(
     name='Small',

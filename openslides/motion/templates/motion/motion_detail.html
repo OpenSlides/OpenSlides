@@ -75,13 +75,13 @@
 
     <!-- Text -->
     <h4>{% trans "Motion text" %}:</h4>
-    {{ motion.version.text|linebreaks }}
+    {{ motion.version.text|safe }}
     <br>
 
     <!-- Reason -->
     <h4>{% trans "Reason" %}:</h4>
     {% if motion.version.reason %}
-        {{ motion.version.reason|linebreaks }}
+        {{ motion.version.reason|safe }}
     {% else %}
         –
     {% endif %}
