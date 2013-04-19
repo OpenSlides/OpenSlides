@@ -102,7 +102,7 @@ class Motion(SlideMixin, models.Model):
         return self.get_title()
 
     # TODO: Use transaction
-    def save(self, *args, **kwargs):
+    def save(self, no_new_version=False, *args, **kwargs):
         """
         Save the motion.
 
@@ -122,6 +122,8 @@ class Motion(SlideMixin, models.Model):
 
         the config 'motion_create_new_version' is set to
         'ALWAYS_CREATE_NEW_VERSION'.
+
+        If no_new_version is True, a new version will never be used.
         """
         if not self.state:
             self.reset_state()
@@ -130,6 +132,9 @@ class Motion(SlideMixin, models.Model):
             self.identifier = None
 
         super(Motion, self).save(*args, **kwargs)
+
+        if no_new_version:
+            return
 
         # Find out if the version data has changed
         for attr in ['title', 'text', 'reason']:
@@ -142,7 +147,8 @@ class Motion(SlideMixin, models.Model):
         else:
             new_data = False
 
-        # TODO: Check everything here. The decision whether to create a new version has to be done in the view. Update docstings too.
+        # TODO: Check everything here. The decision whether to create a new
+        #       version has to be done in the view. Update docstings too.
         need_new_version = self.state.versioning
         if hasattr(self, '_new_version') or (new_data and need_new_version):
             version = self.new_version
@@ -512,9 +518,9 @@ class Motion(SlideMixin, models.Model):
         """
         MotionLog.objects.create(motion=self, message=message, person=person)
 
-    def activate_version(self, version):
+    def set_active_version(self, version):
         """
-        Set the active state of a version to True.
+        Set the active state of a version to 'version'.
 
         'version' can be a version object, or the version_number of a version.
         """
