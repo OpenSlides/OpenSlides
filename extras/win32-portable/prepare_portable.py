@@ -90,6 +90,15 @@ SITE_PACKAGES = {
     },
     "qrcode": {
         "copy": ["qrcode"],
+    },
+    "beautifulsoup4": {
+        "copy": ["bs4"],
+    },
+    "bleach": {
+        "copy": ["bleach"],
+    },
+    "html5lib": {
+        "copy": ["html5lib"],
     }
 }
 

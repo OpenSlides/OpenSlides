@@ -10,8 +10,37 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+import bleach
+
 from django import forms
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy
+
+
+# Allowed tags, attributes and styles allowed in textareas edited with a JS
+# editor. Everything not in these whitelists is stripped.
+HTML_TAG_WHITELIST = ('a',
+                      'i',
+                      'em',
+                      'b',
+                      'strong',
+                      'ul',
+                      'ol',
+                      'li',
+                      'p',
+                      'br',
+                      'span',
+                      'strike',
+                      'u',
+                      'pre',
+                      'h1',
+                      'h2',
+                      'h3',)
+
+HTML_ATTRIBUTES_WHITELIST = {
+    'a': ['href'],
+}
+
+HTML_STYLES_WHITELIST = ()
 
 
 class CssClassMixin(object):
@@ -31,7 +60,34 @@ class LocalizedModelMultipleChoiceField(forms.ModelMultipleChoiceField):
         c = []
         for (id, text) in super(LocalizedModelMultipleChoiceField, self)._get_choices():
             text = text.split(' | ')[-1]
-            c.append((id, _(text)))
+            c.append((id, ugettext_lazy(text)))
         return c
 
     choices = property(_localized_get_choices, forms.ChoiceField._set_choices)
+
+
+class CleanHtmlFormMixin(object):
+    """
+    A form mixin that pre-processes the form, cleaning up the HTML code found
+    in the fields in clean_html. All HTML tags, attributes and styles not in the
+    whitelists are stripped from the output, leaving only the text content:
+
+    <table><tr><td>foo</td></tr></table> simply becomes 'foo'
+    """
+    clean_html_fields = ()
+
+    def get_clean_html_fields(self):
+        """
+        The list of elements to strip of potential malicious HTML.
+        """
+        return self.clean_html_fields
+
+    def clean(self):
+        cleaned_data = super(CleanHtmlFormMixin, self).clean()
+        for field in self.get_clean_html_fields():
+            cleaned_data[field] = bleach.clean(cleaned_data[field],
+                                               tags=HTML_TAG_WHITELIST,
+                                               attributes=HTML_ATTRIBUTES_WHITELIST,
+                                               styles=HTML_STYLES_WHITELIST,
+                                               strip=True)
+        return cleaned_data

@@ -14,28 +14,37 @@ from django import forms
 from django.utils.translation import ugettext as _
 
 from openslides.utils.forms import CssClassMixin
+from openslides.utils.forms import CleanHtmlFormMixin
 from openslides.utils.person import PersonFormField, MultiplePersonFormField
 from .models import Motion, Category
 
 
-class BaseMotionForm(forms.ModelForm, CssClassMixin):
-    """Base FormClass for a Motion.
+class BaseMotionForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
+    """
+    Base FormClass for a Motion.
 
     For it's own, it append the version data to the fields.
 
     The class can be mixed with the following mixins to add fields for the
     submitter, supporters etc.
     """
+    clean_html_fields = ('text', 'reason')
 
     title = forms.CharField(widget=forms.TextInput(), label=_("Title"))
-    """Title of the motion. Will be saved in a MotionVersion object."""
+    """
+    Title of the motion. Will be saved in a MotionVersion object.
+    """
 
     text = forms.CharField(widget=forms.Textarea(), label=_("Text"))
-    """Text of the motion. Will be saved in a MotionVersion object."""
+    """
+    Text of the motion. Will be saved in a MotionVersion object.
+    """
 
     reason = forms.CharField(
         widget=forms.Textarea(), required=False, label=_("Reason"))
-    """Reason of the motion. will be saved in a MotionVersion object."""
+    """
+    Reason of the motion. will be saved in a MotionVersion object.
+    """
 
     class Meta:
         model = Motion

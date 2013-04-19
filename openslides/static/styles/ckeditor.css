@@ -1,0 +1,106 @@
+/*
+Copyright (c) 2003-2013, CKSource - Frederico Knabben. All rights reserved.
+For licensing, see LICENSE.html or http://ckeditor.com/license
+*/
+
+body.ckeditor_html 
+{
+	/* Font */
+	font-family: sans-serif, Arial, Verdana, "Trebuchet MS";
+	font-size: 12px;
+
+	/* Text color */
+	color: #333;
+
+	/* Remove the background color to make it transparent */
+	background-color: #fff;
+
+	margin: 20px;
+}
+
+.ckeditor_html.cke_editable
+{
+	font-size: 13px;
+	line-height: 1.6em;
+}
+
+.ckeditor_html blockquote
+{
+	font-style: italic;
+	font-family: Georgia, Times, "Times New Roman", serif;
+	padding: 2px 0;
+	border-style: solid;
+	border-color: #ccc;
+	border-width: 0;
+}
+
+.ckeditor_html .cke_contents_ltr blockquote
+{
+	padding-left: 20px;
+	padding-right: 8px;
+	border-left-width: 5px;
+}
+
+.ckeditor_html .cke_contents_rtl blockquote
+{
+	padding-left: 8px;
+	padding-right: 20px;
+	border-right-width: 5px;
+}
+
+.ckeditor_html a
+{
+	color: #0782C1;
+}
+
+.ckeditor_html ol,.ckeditor_html ul,.ckeditor_html dl
+{
+	/* IE7: reset rtl list margin. (#7334) */
+	*margin-right: 0px;
+	/* preserved spaces for list items with text direction other than the list. (#6249,#8049)*/
+	padding: 0 40px;
+}
+
+.ckeditor_html h1,.ckeditor_html h2,.ckeditor_html h3,.ckeditor_html h4,.ckeditor_html h5,.ckeditor_html h6
+{
+	font-weight: normal;
+	line-height: 1.2em;
+}
+
+.ckeditor_html hr
+{
+	border: 0px;
+	border-top: 1px solid #ccc;
+}
+
+.ckeditor_html img.right {
+    border: 1px solid #ccc;
+    float: right;
+    margin-left: 15px;
+    padding: 5px;
+}
+
+.ckeditor_html img.left {
+    border: 1px solid #ccc;
+    float: left;
+    margin-right: 15px;
+    padding: 5px;
+}
+
+.ckeditor_html img:hover {
+	opacity: .9;
+	filter: alpha(opacity = 90);
+}
+
+.ckeditor_html pre
+{
+	white-space: pre-wrap; /* CSS 2.1 */
+	word-wrap: break-word; /* IE7 */
+	border: dotted 1px gray; padding: 10px;
+}
+
+.ckeditor_html .marker {
+    background-color: Yellow;
+}
+
+.cke_dialog_contents textarea.blocksize { font-family: Courier; font-size: 14px; }
