@@ -62,9 +62,12 @@ class UserUpdateForm(UserCreateForm):
         Raises a validation error, if a non-superuser user edits himself
         and removes the last group containing the permission to manage participants.
         """
+        # TODO: Check this in clean_groups
         if self.request.user == self.instance and not self.instance.is_superuser:
-            protected_perm = Permission.objects.get(content_type=ContentType.objects.get(app_label='participant', model='user'),
-                                                    codename='can_manage_participant')
+            protected_perm = Permission.objects.get(
+                content_type=ContentType.objects.get(app_label='participant',
+                                                     model='user'),
+                codename='can_manage_participant')
             if not self.cleaned_data['groups'].filter(permissions__in=[protected_perm]).exists():
                 error_msg = _('You can not remove the last group containing the permission to manage participants.')
                 messages.error(self.request, error_msg)
