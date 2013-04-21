@@ -3,7 +3,7 @@
 {% load i18n %}
 
 {% block title %}
-    {{ block.super }} - {% trans "Motion" %} {{ motion.identifier }}, {{ ballot }}. {% trans "Vote" %}
+    {{ block.super }} - {% trans "Motion" %} {{ motion.identifier }}, {{ poll }}. {% trans "Vote" %}
 {% endblock %}
 
 {% block content %}
@@ -11,7 +11,7 @@
     {{ motion }}
     <br>
     <small>
-    {% trans "Motion" %} {{ motion.identifier }}, {{ ballot }}. {% trans "Vote" %}
+    {% trans "Motion" %} {{ motion.identifier }}, {{ poll }}. {% trans "Vote" %}
     </small>
     <small class="pull-right">
     <div class="btn-toolbar">
@@ -57,8 +57,7 @@
 
 <!-- ballot paper button -->
 <p>
-{# TODO: create ballot paper instead of motion_detail_pdf ! #}
-<a href="{% url 'motion_detail_pdf' motion.id %}" class="btn">
+<a href="{% url 'motion_poll_pdf' motion.id poll.poll_number %}" class="btn">
     <i class="icon-print"></i> {% trans 'Ballot paper as PDF' %}
 </a>
 </p>

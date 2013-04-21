@@ -37,7 +37,7 @@ from .models import (Motion, MotionSubmitter, MotionSupporter, MotionPoll,
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
                     MotionDisableVersioningMixin, MotionCategoryMixin,
                     MotionIdentifierMixin)
-from .pdf import motions_to_pdf, motion_to_pdf
+from .pdf import motions_to_pdf, motion_to_pdf, motion_poll_to_pdf
 
 
 class MotionListView(ListView):
@@ -422,12 +422,16 @@ poll_create = PollCreateView.as_view()
 
 
 class PollMixin(object):
-    """Mixin for the PollUpdateView and the PollDeleteView."""
+    """
+    Mixin for the PollUpdateView and the PollDeleteView.
+    """
+
     permission_required = 'motion.can_manage_motion'
     success_url_name = 'motion_detail'
 
     def get_object(self):
-        """Return a MotionPoll object.
+        """
+        Return a MotionPoll object.
 
         Use the motion id and the poll_number from the url kwargs to get the
         object.
@@ -437,30 +441,40 @@ class PollMixin(object):
             poll_number=self.kwargs['poll_number']).get()
 
     def get_url_name_args(self):
-        """Return the arguments to create the url to the success_url"""
+        """
+        Return the arguments to create the url to the success_url.
+        """
         return [self.object.motion.pk]
 
 
 class PollUpdateView(PollMixin, PollFormView):
-    """View to update a MotionPoll."""
+    """
+    View to update a MotionPoll.
+    """
 
     poll_class = MotionPoll
-    """Poll Class to use for this view."""
+    """
+    Poll Class to use for this view.
+    """
 
     template_name = 'motion/poll_form.html'
 
     def get_context_data(self, **kwargs):
-        """Return the template context.
+        """
+        Return the template context.
 
         Append the motion object to the context.
         """
         context = super(PollUpdateView, self).get_context_data(**kwargs)
         context.update({
-            'motion': self.poll.motion})
+            'motion': self.poll.motion,
+            'poll': self.poll})
         return context
 
     def form_valid(self, form):
-        """Write a log message, if the form is valid."""
+        """
+        Write a log message, if the form is valid.
+        """
         value = super(PollUpdateView, self).form_valid(form)
         self.object.write_log(ugettext_noop('Poll updated'), self.request.user)
         return value
@@ -469,19 +483,52 @@ poll_edit = PollUpdateView.as_view()
 
 
 class PollDeleteView(PollMixin, DeleteView):
-    """View to delete a MotionPoll."""
+    """
+    View to delete a MotionPoll.
+    """
+
     model = MotionPoll
 
     def case_yes(self):
-        """Write a log message, if the form is valid."""
+        """
+        Write a log message, if the form is valid.
+        """
         super(PollDeleteView, self).case_yes()
         self.object.write_log(ugettext_noop('Poll deleted'), self.request.user)
 
     def get_redirect_url(self, **kwargs):
-        """Return the URL to the DetailView of the motion."""
+        """
+        Return the URL to the DetailView of the motion.
+        """
         return reverse('motion_detail', args=[self.object.motion.pk])
 
 poll_delete = PollDeleteView.as_view()
+
+
+class PollPDFView(PollMixin, PDFView):
+    """
+    Generates a ballotpaper.
+    """
+
+    permission_required = 'motion.can_manage_motion'
+
+    def get(self, *args, **kwargs):
+        self.object = self.get_object()
+        return super(PollPDFView, self).get(*args, **kwargs)
+
+    def get_filename(self):
+        """
+        Return the filename for the PDF.
+        """
+        return u'%s%s_%s' % (_("Motion"), str(self.object.poll_number), _("Poll"))
+
+    def append_to_pdf(self, pdf):
+        """
+        Append PDF objects.
+        """
+        motion_poll_to_pdf(pdf, self.object)
+
+poll_pdf = PollPDFView.as_view()
 
 
 class MotionSetStateView(SingleObjectMixin, RedirectView):

@@ -11,6 +11,7 @@
 """
 
 import random
+import os
 from bs4 import BeautifulSoup
 
 from reportlab.lib import colors
@@ -18,15 +19,21 @@ from reportlab.lib.units import cm
 from reportlab.platypus import (
     SimpleDocTemplate, PageBreak, Paragraph, Spacer, Table, TableStyle)
 from django.utils.translation import ugettext as _
+from django.conf import settings
 
 from openslides.config.api import config
 from openslides.utils.pdf import stylesheet
 from .models import Motion
 
+# Needed to count the delegates
+# TODO: find another way to do this.
+from openslides.participant.models import User
+
 
 def motions_to_pdf(pdf):
-    """Create a PDF with all motions."""
-
+    """
+    Create a PDF with all motions.
+    """
     motions = Motion.objects.all()
     all_motion_cover(pdf, motions)
     for motion in motions:
@@ -35,8 +42,9 @@ def motions_to_pdf(pdf):
 
 
 def motion_to_pdf(pdf, motion):
-    """Create a PDF for one motion."""
-
+    """
+    Create a PDF for one motion.
+    """
     pdf.append(Paragraph(_("Motion: %s") % motion.title, stylesheet['Heading1']))
 
     motion_data = []
@@ -231,7 +239,9 @@ def convert_html_to_reportlab(pdf, text):
 
 
 def all_motion_cover(pdf, motions):
-    """Create a coverpage for all motions."""
+    """
+    Create a coverpage for all motions.
+    """
     pdf.append(Paragraph(config["motion_pdf_title"], stylesheet['Heading1']))
 
     preamble = config["motion_pdf_preamble"]
@@ -245,3 +255,46 @@ def all_motion_cover(pdf, motions):
     else:
         for motion in motions:
             pdf.append(Paragraph(motion.title, stylesheet['Heading3']))
+
+
+def motion_poll_to_pdf(pdf, poll):
+    imgpath = os.path.join(settings.SITE_ROOT, 'static/img/circle.png')
+    circle = "<img src='%s' width='15' height='15'/>&nbsp;&nbsp;" % imgpath
+    cell = []
+    cell.append(Spacer(0, 0.8 * cm))
+    cell.append(Paragraph(_("Motion No. %s") % poll.motion.identifier, stylesheet['Ballot_title']))
+    cell.append(Paragraph(poll.motion.title, stylesheet['Ballot_subtitle']))
+    cell.append(Paragraph(_("%d. Vote") % poll.poll_number, stylesheet['Ballot_description']))
+    cell.append(Spacer(0, 0.5 * cm))
+    cell.append(Paragraph(circle + unicode(_("Yes")), stylesheet['Ballot_option']))
+    cell.append(Paragraph(circle + unicode(_("No")), stylesheet['Ballot_option']))
+    cell.append(Paragraph(circle + unicode(_("Abstention")), stylesheet['Ballot_option']))
+    data = []
+    # get ballot papers config values
+    ballot_papers_selection = config["motion_pdf_ballot_papers_selection"]
+    ballot_papers_number = config["motion_pdf_ballot_papers_number"]
+
+    # set number of ballot papers
+    if ballot_papers_selection == "NUMBER_OF_DELEGATES":
+        # TODO: get this number from persons
+        number = User.objects.filter(type__iexact="delegate").count()
+    elif ballot_papers_selection == "NUMBER_OF_ALL_PARTICIPANTS":
+        # TODO: get the number from the persons
+        number = int(User.objects.count())
+    else:  # ballot_papers_selection == "CUSTOM_NUMBER"
+        number = int(ballot_papers_number)
+    number = max(1, number)
+
+    # print ballot papers
+    if number > 0:
+        # TODO: try [cell, cell] * (number / 2)
+        for user in xrange(number / 2):
+            data.append([cell, cell])
+        rest = number % 2
+        if rest:
+            data.append([cell, ''])
+        t = Table(data, 10.5 * cm, 7.42 * cm)
+        t.setStyle(TableStyle(
+            [('GRID', (0, 0), (-1, -1), 0.25, colors.grey),
+             ('VALIGN', (0, 0), (-1, -1), 'TOP')]))
+        pdf.append(t)
