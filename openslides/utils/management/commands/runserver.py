@@ -17,11 +17,11 @@ from openslides.main import main
 
 
 class Command(BaseCommand):
-    '''
+    """
     Start the application using the tornado webserver
-    '''
+    """
 
     help = 'Start the application using the tornado webserver'
 
     def handle(self, *args, **options):
-        main(check_args=False)
+        main(manage_runserver=True)
