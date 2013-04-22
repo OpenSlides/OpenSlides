@@ -8,8 +8,8 @@
 {% block title %}{{ block.super }} – {% trans "Agenda" %}{% endblock %}
 
 {% block header %}
-    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/tabledrag.css' %}" />
     <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/agenda.css' %}" />
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/agenda_sort.css' %}" />
 {% endblock %}
 
 {% block javascript %}
@@ -17,26 +17,11 @@
     <script type="text/javascript" src="{% static 'javascript/jquery.cookie.js' %}"></script>
     {% if perms.agenda.can_manage_agenda %}
         <script type="text/javascript" src="{% static 'javascript/jquery.once.js' %}"></script>
+        <script type="text/javascript" src="{% static 'javascript/jquery-ui.custom.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'javascript/jquery.tmpl.js' %}"></script>
-        <script type="text/javascript" src="{% static 'javascript/tabledrag.js' %}"></script>
-        <script type="text/javascript">
-        <!--//--><![CDATA[//><!--
-        //This is Drupal Code
-        jQuery.extend(
-          Drupal.settings,
-        {
-        "tableDrag":
-          { "menu-overview":
-            { "menu-plid":
-              [ { "target": "menu-plid", "source": "menu-mlid", "relationship": "parent", "action": "match", "hidden": true, "limit": 8 } ],
-              "menu-weight":
-              [ { "target": "menu-weight", "source": "menu-weight", "relationship": "sibling", "action": "order", "hidden": true, "limit": 0 } ]
-            }
-          }
-        });
-        //--><!]]>
-        </script>
+        <script type="text/javascript" src="{% static 'javascript/jquery.mjs.nestedSortable.js' %}"></script>
     {% endif %}
+    <script type="text/javascript" src="{% static 'javascript/agenda_sort.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -84,55 +69,57 @@
         </i></small>
         <table id="menu-overview" class="table table-striped table-bordered">
             <tr>
-                <th class="mini_width"></th>
-                <th>{% trans "Item" %}</th>
+                <th class="openclose"></th>
+                <th class="title">{% trans "Item" %}</th>
                 {% if perms.agenda.can_manage_agenda %}
-                    <th width="200" class="optional">{% trans "Comment" %}</th>
+                    <th class="optional">{% trans "Comment" %}</th>
                 {% endif %}
                 {% if perms.agenda.can_see_orga_items %}
-                    <th width="50">{% trans "Duration" %}</th>
+                    <th class="duration">{% trans "Duration" %}</th>
                 {% endif %}
                 {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
-                    <th class="mini_width">{% trans "Actions" %}</th>
+                    <th class="manage">{% trans "Actions" %}</th>
                 {% endif %}
-                <th class="tabledrag-hide" style="display: none;">
-                    {% trans "Weight" %}
-                </th>
             </tr>
             <tr class="topline{% if active_sid == 'agenda' %} activeline{% endif %}">
-                <td></td>
-                <td>
+                <td class="openclose"></td>
+                <td class="title">
                     {% trans "Agenda" %}
                 </td>
                 {% if perms.agenda.can_manage_agenda %}
                 <td class="optional"></td>
                 {% endif %}
                 {% if perms.agenda.can_see_orga_items %}
-                <td>{{ duration }}h</td>
+                <td class="duration">{{ duration }}h</td>
                 {% endif %}
                 {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
-                <td>
+                <td class="manage">
                 {% if perms.projector.can_manage_projector %}
                     <span>
                     <a href="{% url 'projector_activate_slide' 'agenda' %}" class="activate_link btn {% if active_sid == 'agenda' %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
                         <i class="icon-facetime-video {% if active_sid == 'agenda' %}icon-white{% endif %}"></i>
                     </a>
-                    <span>
+                    </span>
                 {% endif %}
                 </td>
                 {% endif %}
             </tr>
-        {% if items %}
-            {% for item in items %}
-            <tr class="draggable{% if item.active %} activeline{% endif %}{% if item.closed %} offline{% endif %}">
-                {% include "agenda/item_row.html" %}
-            </tr>
-            {% endfor %}
-        {% else %}
-            <tr>
-                <td colspan="5"><i>{% trans "No items available." %}</i></td>
-            </tr>
-        {% endif %}
         </table>
+        {% if items %}
+        <ol class="agenda_list {% if perms.agenda.can_manage_agenda %}sortable{% endif %}">
+            {% recursetree items %}
+            <li class="draggable{% if item.active %} activeline{% endif %}{% if item.closed %} offline{% endif %}">
+                {% include "agenda/item_row.html" %}
+                {% if not node.is_leaf_node %}
+                <ol>
+                    {{ children }}
+                </ol>
+                {% endif %}
+            </li>
+            {% endrecursetree %}
+        </ol>
+        {% else %}
+        <div class="overview_no_items">{% trans "No items available." %}</div>
+        {% endif %}
     </form>
 {% endblock %}
