@@ -20,22 +20,20 @@ $(function() {
 		});
 	};
 	
-	$('.a.drag-handle').click(function (ev) {
-		ev.preventDefault();
-	});
-	
 	$('ol.agenda_list').nestedSortable({
-		handle: 'div',
-		items: 'li',
-		tolerance: 'intersect',
-		toleranceElement: '> div',
-		placeholder: 'ui-sortable-placeholder',
 		forcePlaceholderSize: true,
-		start: function (event, ui) {
-			ui.placeholder.html(ui.item.clone());
-		},
-		helper: false,
-		axis: "y",
+		handle: 'div',
+		helper:	'clone',
+		items: 'li',
+		opacity: .6,
+		placeholder: 'placeholder',
+		revert: 250,
+		tabSize: 25,
+		tolerance: 'pointer',
+		toleranceElement: '> div',
+		isTree: true,
+		expandOnHover: 700,
+		startCollapsed: true,
 		update: function (event, ui) {
 			var $this = $(this);
 			rebuildNesting($this, 0, 0);

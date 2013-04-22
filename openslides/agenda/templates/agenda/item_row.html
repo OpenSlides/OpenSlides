@@ -14,25 +14,6 @@
             </span>
         {% endif %}
     </div>
-    <div class="title">
-        {% with form=node.weight_form %}
-            {{ form.weight }}
-            {{ form.self }}
-            {{ form.parent }}
-        {% endwith %}
-
-        <div class="indentation">&nbsp;</div>
-        {% if perms.agenda.can_manage_agenda %}
-			<a href="#" class="drag-handle" title="Drag to re-order" style=""><div class="handle">&nbsp;</div></a>
-        {% endif %}
-        <a href="{% model_url node 'view' %}">{% if node.type == node.ORGANIZATIONAL_ITEM %}<i>[{% endif %}{{ node }}{% if node.type == node.ORGANIZATIONAL_ITEM %}]</i>{% endif %}</a>
-        {{ node.get_title_supplement|safe }}
-    </div>
-    {% if perms.agenda.can_manage_agenda %}
-    <div class="optional">
-        {{ node.comment|first_line }}
-    </div>
-    {% endif %}
     {% if perms.agenda.can_see_orga_items %}
     <div class="duration">
         {% if node.duration %}
@@ -63,7 +44,20 @@
         {% endif %}
         </span>
     </div>
+    {% endif %}    
+    <div class="title">
+        {% with form=node.weight_form %}
+            {{ form.weight }}
+            {{ form.self }}
+            {{ form.parent }}
+        {% endwith %}
+        <a href="{% model_url node 'view' %}">{% if node.type == node.ORGANIZATIONAL_ITEM %}<i>[{% endif %}{{ node }}{% if node.type == node.ORGANIZATIONAL_ITEM %}]</i>{% endif %}</a>
+        {{ node.get_title_supplement|safe }}
+    </div>
+    {% if perms.agenda.can_manage_agenda %}
+    <div class="optional">
+        {{ node.comment|first_line }}
+    </div>
     {% endif %}
  </div>
  
-<div class="line"></div>

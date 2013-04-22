@@ -1,92 +1,93 @@
-table.agenda_list {
-	table-layout: fixed;
-}
-.agenda_list, .agenda_list ol {
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-}
-.agenda_list {
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
-	width: 100%;
-}
-.agenda_list li {
-	margin: 0;
-	padding: 0;
-}
-.agenda_list .openclose { width: 40px; }
-.agenda_list .duration { width: 75px; }
-.agenda_list .manage { width: 150px; }
-.agenda_list .ui-sortable-placeholder {
-	background-color: #eee;
-}
-.agenda_list .ui-sortable-helper {
-	background-color: white;
-	opacity: 0;
-}
-.agenda_list .ui-sortable-helper .openclose, .agenda_list .ui-sortable-helper .manage, .agenda_list .ui-sortable-helper .manage {
-	visibility: hidden;
-}
-.agenda_list .indentation {
-	margin: 0;
-	display: inline-block;
-	width: 0px;
-	height: 10px;
-}
+ol {
+			margin: 0;
+			padding: 0;
+			padding-left: 30px;
+		}
 
-.agenda_list .draggable > div {
-	display: table;
-	width: 100%;
-	table-layout: fixed;
-	position: relative;
-}
-.agenda_list .draggable > div > div {
-	display: table-cell;
-	padding: 10px;
-	/*border-bottom: solid 1px lightgray; */
-}
+		ol.agenda_list, ol.agenda_list ol {
+			margin: 0 0 0 25px;
+			padding: 0;
+			list-style-type: none;
+		}
 
-.agenda_list li { position: relative; }
-.agenda_list div.line {
-	display: block;
-	height: 1px;
-	background-color: lightgray;
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	line-height: 1px;
-	margin: 0;
-	padding: 0;
-	width: auto;
-}
-.agenda_list > li:first-child .line { display: none; }
-.agenda_list ol div.line { left: -20px; }
-.agenda_list ol ol div.line { left: -40px; }
-.agenda_list ol ol ol div.line { left: -60px; }
-.agenda_list ol ol ol ol div.line { left: -80px; }
-.agenda_list ol ol ol ol ol div.line { left: -100px; }
-.agenda_list ol ol ol ol ol ol div.line { left: -120px; }
-.agenda_list ol ol ol ol ol ol ol div.line { left: -140px; }
+		ol.agenda_list {
+			margin: 0;
+		}
 
+		.agenda_list li {
+			margin: 5px 0 0 0;
+			padding: 0;
+		}
 
-.agenda_list ol { margin-left: 20px; }
+		.agenda_list li > div  {
+			border: 1px solid #d4d4d4;
+			-webkit-border-radius: 3px;
+			-moz-border-radius: 3px;
+			border-radius: 3px;
+			border-color: #D4D4D4 #D4D4D4 #BCBCBC;
+			padding: 6px;
+			margin: 0;
+			cursor: move;
+			background: #f6f6f6;
+			background: -moz-linear-gradient(top,  #ffffff 0%, #f6f6f6 47%, #ededed 100%);
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(47%,#f6f6f6), color-stop(100%,#ededed));
+			background: -webkit-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%);
+			background: -o-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%);
+			background: -ms-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#ededed 100%);
+			background: linear-gradient(to bottom,  #ffffff 0%,#f6f6f6 47%,#ededed 100%);
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 );
+			overflow: auto;
+		}
 
-.agenda_list ol .openclose a { margin-left: -20px; }
-.agenda_list ol ol .openclose a { margin-left: -40px; }
-.agenda_list ol ol ol .openclose a { margin-left: -60px; }
-.agenda_list ol ol ol ol .openclose a { margin-left: -80px; }
-.agenda_list ol ol ol ol ol .openclose a { margin-left: -100px; }
-.agenda_list ol ol ol ol ol ol .openclose a { margin-left: -120px; }
+		.agenda_list li.mjs-nestedSortable-branch > div {
+			background: -moz-linear-gradient(top,  #ffffff 0%, #f6f6f6 47%, #f0ece9 100%);
+			background: -webkit-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#f0ece9 100%);
 
+		}
 
-a.drag-handle .handle {
-	background: url("../img/draggable.png") no-repeat scroll 0 0 transparent;
-	height: 13px;
-	margin-top: 4px;
-	width: 13px;
-	display: inline-block;
-}
+		.agenda_list li.mjs-nestedSortable-leaf > div {
+			background: -moz-linear-gradient(top,  #ffffff 0%, #f6f6f6 47%, #bcccbc 100%);
+			background: -webkit-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#bcccbc 100%);
+
+		}
+
+		li.mjs-nestedSortable-collapsed.mjs-nestedSortable-hovering div {
+			border-color: #999;
+			background: #fafafa;
+		}
+
+		.disclose {
+			cursor: pointer;
+			width: 10px;
+			display: none;
+		}
+
+		.agenda_list li.mjs-nestedSortable-collapsed > ol {
+			display: none;
+		}
+
+		.agenda_list li.mjs-nestedSortable-branch > div > .disclose {
+			display: inline-block;
+		}
+
+		.agenda_list li.mjs-nestedSortable-collapsed > div > .disclose > span:before {
+			content: '+ ';
+		}
+
+		.agenda_list li.mjs-nestedSortable-expanded > div > .disclose > span:before {
+			content: '- ';
+		}
+		
+		.placeholder {
+			outline: 1px dashed #4183C4;
+			/*-webkit-border-radius: 3px;
+			-moz-border-radius: 3px;
+			border-radius: 3px;
+			margin: -1px;*/
+		}
+		
+.agenda_list .openclose { width: 40px; float: left; }
+.agenda_list .duration { width: 75px; float: left; }
+.agenda_list .manage { width: 150px; float: right; }
+.agenda_list .title { float: left; }
+.agenda_list .optional { float: left; }
