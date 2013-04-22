@@ -180,7 +180,7 @@ class Motion(SlideMixin, models.Model):
 
         # Set the active version of this motion. This has to be done after the
         # version is saved to the database
-        if not self.state.dont_set_new_version_active or self.active_version is None:
+        if self.active_version is None or not self.state.leave_old_version_active:
             self.active_version = version
             self.save()
 
@@ -803,7 +803,7 @@ class State(models.Model):
     MotionDisableVersioningMixin.
     """
 
-    dont_set_new_version_active = models.BooleanField(default=False)
+    leave_old_version_active = models.BooleanField(default=False)
     """If true, new versions are not automaticly set active."""
 
     dont_set_identifier = models.BooleanField(default=False)

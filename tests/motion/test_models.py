@@ -147,7 +147,7 @@ class ModelTest(TestCase):
         motion.text = 'bar'
         first_version = motion.version
         my_state = State.objects.create(name='automatic_versioning', workflow=self.workflow,
-                                        versioning=True, dont_set_new_version_active=True)
+                                        versioning=True, leave_old_version_active=True)
         motion.state = my_state
         motion.save()
 
