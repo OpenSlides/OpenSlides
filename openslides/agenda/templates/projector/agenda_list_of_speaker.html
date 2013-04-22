@@ -4,28 +4,27 @@
 
 {% block title %}{{ block.super }} - {{ item }}{% endblock %}
 
-{% block header %}
-<style type="text/css">
-#list_of_speakers li
-{
-    font-size: 130%;
-    line-height: 160%;
-}
-</style>
-{% endblock %}
-
 {% block content %}
     <h1>{{ title }}</h1>
+    <h2 style="margin-top: -15px;">{% trans 'List of speakers' %}</h2>
 {% endblock %}
 
 {% block scrollcontent %}
+    {% if old_speakers|length > 0 %}
+        <ul class="list_of_speakers last_speakers">
+            {% for speaker in old_speakers %}
+                <li>{{ speaker }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
     {% if speakers %}
-    <ol id="list_of_speakers">
+    <ol class="list_of_speakers">
         {% for speaker in speakers %}
             <li>{{ speaker }}</li>
         {% endfor %}
     </ol>
     {% else %}
-        {% trans 'The list of speakers is empty' %}
+        <p><i>{% trans 'The list of speakers is empty.' %}</i></p>
     {% endif %}
 {% endblock %}

@@ -29,8 +29,10 @@ body {
     padding-left: 3px;
 }
 #header .title {
-    font-size: 20px;
+    font-size: 16px;
     color: #999999;
+    position: absolute;
+    margin: 8px 0 0 50px;
 }
 footer {
     margin-bottom: 20px;
@@ -117,17 +119,17 @@ tr.total td {
 .optional {
     display: auto;
 }
-fieldset {
+.user_details fieldset {
     margin-bottom: 10px;
 }
-fieldset legend {
+.user_details legend {
     margin-bottom: 5px;
 }
-fieldset label {
+.user_details label {
     font-weight: bold;
     margin: 10px 0 0 0;
 }
-fieldset label:after {
+.user_details label:after {
     content: ":";
 }
 
@@ -164,17 +166,27 @@ legend + .control-group {
     height: 110px;
     width: auto;
 }
+#dataTableParticipants_filter input {
+    width: auto;
+}
+#dataTableParticipants {
+    clear: none;
+}
+#dataTableParticipants_wrapper .row-fluid:after {
+    clear: none;
+}
+
 
 /** Left sitebar navigation **/
 .leftmenu ul {
     margin: 0;
-    list-style: none; 
+    list-style: none;
 }
 .leftmenu ul ul {
     display: none;
     margin-left: 35px;
     margin-top: -1px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.1);  
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
 }
 .leftmenu ul li {
     display: block;
@@ -188,12 +200,11 @@ legend + .control-group {
     display: block;
     font-weight: bold;
     background-color: #ffffff;
-    padding: 0;    
+    padding: 0;
 }
 .leftmenu ul li:first-child a {
     border-top: 1px solid #DDDDDD;
 }
-
 .leftmenu ul li a span.ico {
     display: inline-block;
     background: #f9f9f9;
@@ -230,7 +241,6 @@ legend + .control-group {
     margin-top: 5px;
     height: 20px;
 }
-
 .leftmenu.lefticon > ul {
     width: 37px !important;
 }
@@ -254,7 +264,6 @@ legend + .control-group {
     background-position: 0 -24px;
 }
 .icon-agenda {
-/*    background-position: -264px 0;*/
     background-position: 0;
     background-image: url("../img/glyphicons_045_calendar.png");
 }
@@ -291,6 +300,9 @@ legend + .control-group {
 }
 .icon-personal_info {
     background-position: -312px -24px;
+}
+.icon-append_to_list_of_speakers {
+    background-position: -48px -144px;
 }
 
 /** More glyphicons free icons **/
@@ -347,9 +359,11 @@ legend + .control-group {
     }
     .row-fluid .leftmenu {
         float: left;
+        width: auto;
     }
     #content {
         margin: 0 5px 0 45px;
+        width: auto;
     }
     /* hide optional column */ 
     .optional {

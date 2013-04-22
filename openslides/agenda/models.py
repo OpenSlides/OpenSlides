@@ -14,7 +14,7 @@ from datetime import datetime
 
 from django.db import models
 from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy as _, ugettext_noop, ugettext
+from django.utils.translation import ugettext_lazy, ugettext_noop, ugettext as _
 
 from mptt.models import MPTTModel, TreeForeignKey
 
@@ -38,30 +38,30 @@ class Item(MPTTModel, SlideMixin):
     ORGANIZATIONAL_ITEM = 2
 
     ITEM_TYPE = (
-        (AGENDA_ITEM, _('Agenda item')),
-        (ORGANIZATIONAL_ITEM, _('Organizational item')))
+        (AGENDA_ITEM, ugettext_lazy('Agenda item')),
+        (ORGANIZATIONAL_ITEM, ugettext_lazy('Organizational item')))
 
-    title = models.CharField(null=True, max_length=255, verbose_name=_("Title"))
+    title = models.CharField(null=True, max_length=255, verbose_name=ugettext_lazy("Title"))
     """
     Title of the agenda item.
     """
 
-    text = models.TextField(null=True, blank=True, verbose_name=_("Text"))
+    text = models.TextField(null=True, blank=True, verbose_name=ugettext_lazy("Text"))
     """
     The optional text of the agenda item.
     """
 
-    comment = models.TextField(null=True, blank=True, verbose_name=_("Comment"))
+    comment = models.TextField(null=True, blank=True, verbose_name=ugettext_lazy("Comment"))
     """
     Optional comment to the agenda item. Will not be shoun to normal users.
     """
 
-    closed = models.BooleanField(default=False, verbose_name=_("Closed"))
+    closed = models.BooleanField(default=False, verbose_name=ugettext_lazy("Closed"))
     """
     Flag, if the item is finished.
     """
 
-    weight = models.IntegerField(default=0, verbose_name=_("Weight"))
+    weight = models.IntegerField(default=0, verbose_name=ugettext_lazy("Weight"))
     """
     Weight to sort the item in the agenda.
     """
@@ -73,7 +73,7 @@ class Item(MPTTModel, SlideMixin):
     """
 
     type = models.IntegerField(max_length=1, choices=ITEM_TYPE,
-                               default=AGENDA_ITEM, verbose_name=_("Type"))
+                               default=AGENDA_ITEM, verbose_name=ugettext_lazy("Type"))
     """
     Type of the agenda item.
 
@@ -81,7 +81,7 @@ class Item(MPTTModel, SlideMixin):
     """
 
     duration = models.CharField(null=True, blank=True, max_length=5,
-                                verbose_name=_("Duration (hh:mm)"))
+                                verbose_name=ugettext_lazy("Duration (hh:mm)"))
     """
     The intended duration for the topic.
     """
@@ -94,7 +94,7 @@ class Item(MPTTModel, SlideMixin):
     """
 
     speaker_list_closed = models.BooleanField(
-        default=False, verbose_name=_("List of speakers is closed"))
+        default=False, verbose_name=ugettext_lazy("List of speakers is closed"))
     """
     True, if the list of speakers is closed.
     """
@@ -125,7 +125,7 @@ class Item(MPTTModel, SlideMixin):
         For use in Template
         ??Why does {% trans item.print_related_type|capfirst %} not work??
         """
-        return ugettext(self.get_related_type().capitalize())
+        return _(self.get_related_type().capitalize())
 
     def get_title(self):
         """
@@ -158,9 +158,12 @@ class Item(MPTTModel, SlideMixin):
             }
         elif config['presentation_argument'] == 'show_list_of_speakers':
             speakers = Speaker.objects.filter(time=None, item=self.pk).order_by('weight')
-            data = {'title': _('List of speakers for %s') % self.get_title(),
+            old_speakers = Speaker.objects.filter(item=self.pk).exclude(time=None).order_by('time')
+            slice_items = max(0, old_speakers.count()-2)
+            data = {'title': self.get_title(),
                     'template': 'projector/agenda_list_of_speaker.html',
-                    'speakers': speakers}
+                    'speakers': speakers,
+                    'old_speakers': old_speakers[slice_items:]}
         elif self.related_sid:
             data = self.get_related_slide().slide()
         else:
@@ -244,7 +247,7 @@ class Item(MPTTModel, SlideMixin):
 class SpeakerManager(models.Manager):
     def add(self, person, item):
         if self.filter(person=person, item=item, time=None).exists():
-            raise OpenSlidesError(_('%s is already on the list of speakers of item %d.') % (person, item.id))
+            raise OpenSlidesError(_('%(person)s is already on the list of speakers of item %(id)s.') % {'person': person, 'id': item.id})
         weight = (self.filter(item=item).aggregate(
             models.Max('weight'))['weight__max'] or 0)
         return self.create(item=item, person=person, weight=weight + 1)
@@ -279,7 +282,7 @@ class Speaker(models.Model):
 
     class Meta:
         permissions = (
-            ('can_be_speaker', ugettext_noop('Can be speaker')),
+            ('can_be_speaker', ugettext_noop('Can put oneself on the list of speakers')),
         )
 
     def __unicode__(self):

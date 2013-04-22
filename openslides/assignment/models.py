@@ -12,7 +12,7 @@
 
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.utils.translation import ugettext_lazy as _, ugettext_noop  # TODO Change this in the code
+from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
 
 from openslides.utils.person import PersonField
 from openslides.config.api import config
@@ -39,17 +39,17 @@ class AssignmentCandidate(models.Model):
 class Assignment(models.Model, SlideMixin):
     prefix = 'assignment'
     STATUS = (
-        ('sea', _('Searching for candidates')),
-        ('vot', _('Voting')),
-        ('fin', _('Finished')),
+        ('sea', ugettext_lazy('Searching for candidates')),
+        ('vot', ugettext_lazy('Voting')),
+        ('fin', ugettext_lazy('Finished')),
     )
 
-    name = models.CharField(max_length=100, verbose_name=_("Name"))
-    description = models.TextField(null=True, blank=True, verbose_name=_("Description"))
-    posts = models.PositiveSmallIntegerField(verbose_name=_("Number of available posts"))
+    name = models.CharField(max_length=100, verbose_name=ugettext_lazy("Name"))
+    description = models.TextField(null=True, blank=True, verbose_name=ugettext_lazy("Description"))
+    posts = models.PositiveSmallIntegerField(verbose_name=ugettext_lazy("Number of available posts"))
     polldescription = models.CharField(
         max_length=100, null=True, blank=True,
-        verbose_name=_("Comment on the ballot paper"))
+        verbose_name=ugettext_lazy("Comment on the ballot paper"))
     status = models.CharField(max_length=3, choices=STATUS, default='sea')
 
     def set_status(self, status):
@@ -240,9 +240,8 @@ class Assignment(models.Model, SlideMixin):
     class Meta:
         permissions = (
             ('can_see_assignment', ugettext_noop("Can see assignment")),
-            ('can_nominate_other',
-                ugettext_noop("Can nominate another person")),
-            ('can_nominate_self', ugettext_noop("Can nominate themselves")),
+            ('can_nominate_other', ugettext_noop("Can nominate another person")),
+            ('can_nominate_self', ugettext_noop("Can nominate oneself")),
             ('can_manage_assignment', ugettext_noop("Can manage assignment")),
         )
         ordering = ('name',)

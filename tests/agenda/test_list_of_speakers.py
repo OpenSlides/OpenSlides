@@ -114,7 +114,7 @@ class TestSpeakerAppendView(SpeakerViewTestCase):
 
         response = self.check_url('/agenda/1/speaker/', self.speaker1_client, 302)
         self.assertEqual(Speaker.objects.filter(item=self.item1).count(), 0)
-        self.assertMessage(response, 'List of speakers is closed.')
+        self.assertMessage(response, 'The list of speakers is closed.')
 
 
 class TestAgendaItemView(SpeakerViewTestCase):
@@ -155,7 +155,7 @@ class TestSpeakerSpeakView(SpeakerViewTestCase):
     def test_get(self):
         url = '/agenda/1/speaker/%s/speak/' % self.speaker1.person_id
         response = self.check_url(url, self.admin_client, 302)
-        self.assertMessage(response, 'Person user:2 is not on the list of item item1.')
+        self.assertMessage(response, 'user:2 is not on the list of item1.')
 
         speaker = Speaker.objects.add(self.speaker1, self.item1)
         response = self.check_url(url, self.admin_client, 302)

@@ -10,7 +10,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% get_config 'event_name' %}{% endblock %}</title>
-
     <!-- styles -->
     <link href="{% static 'styles/bootstrap.min.css' %}" type="text/css" rel="stylesheet" />
     <link href="{% static 'styles/bootstrap-responsive.min.css' %}" type="text/css" rel="stylesheet" />
@@ -28,7 +27,7 @@
             <div class="span12">
                 <div id="header">
                     <a href="/" class="logo" title="{% trans 'Home' %}"><img src="{% static 'img/logo.png' %}" /></a>
-                    <!--<a class="title" href="#">{% get_config 'event_name' %}</a>-->
+                    <span class="title optional">{% get_config 'event_name' %} - {% get_config 'event_description' %}</span>
                     {% block loginbutton %}
                     <div class="btn-group pull-right">
                         {% if user.is_authenticated %}
@@ -65,7 +64,7 @@
         {% for tab in tabs %}
             {% if tab.permission %}
             <li{% if tab.selected %} class="active"{% endif %}>
-                <a href="{{ tab.url }}">
+                <a href="{{ tab.url }}" class="tooltip-right">
                 <span class="ico"><i class="icon-{{ tab.app }}"></i></span>
                 <span class="text">{{ tab.title }}</span>
                 </a>

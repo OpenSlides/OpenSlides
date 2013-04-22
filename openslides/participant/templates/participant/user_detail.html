@@ -14,43 +14,44 @@
 </h1>
 
 
+<div class="user_details">
+    <fieldset>
+        <legend>{% trans "Personal data" %}</legend>
+        <label>{% trans "Gender" %}</label>
+        {{ shown_user.get_gender_display }}
+        <label>{% trans "Email" %}</label>
+        {{ shown_user.email }}
+        <label>{% trans "About me" %}</label>
+        {{ shown_user.about_me|linebreaks }}
+    </fieldset>
 
-<fieldset>
-    <legend>{% trans "Personal data" %}</legend>
-    <label>{% trans "Gender" %}</label>
-    {{ shown_user.get_gender_display }}
-    <label>{% trans "Email" %}</label>
-    {{ shown_user.email }}
-    <label>{% trans "About me" %}</label>
-    {{ shown_user.about_me|linebreaks }}
-</fieldset>
+    <fieldset>
+        <legend>{% trans "Event data" %}</legend>
+        <label>{% trans "Structure level" %}</label>
+        {{ shown_user.structure_level }}
+        <label>{% trans "Committee" %}</label>
+        {{ shown_user.committee }}
+        <label>{% trans "Groups" %}</label>
+        {% if shown_user.groups.all %}
+            {{ shown_user.groups.all|join:", " }}
+        {% else %}
+            {% trans "The participant is not member of any group." %}
+        {% endif %}
+    </fieldset>
 
-<fieldset>
-    <legend>{% trans "Event data" %}</legend>
-    <label>{% trans "Structure level" %}</label>
-    {{ shown_user.structure_level }}
-    <label>{% trans "Committee" %}</label>
-    {{ shown_user.committee }}
-    <label>{% trans "Groups" %}</label>
-    {% if shown_user.groups.all %}
-        {{ shown_user.groups.all|join:", " }}
-    {% else %}
-        {% trans "The participant is not member of any group." %}
+    {% if perms.participant.can_manage_participant %}
+    <fieldset>
+        <legend>{% trans "Administrative data" %}</legend>
+        <label>{% trans "Username" %}</label>
+        {{ shown_user.username }}
+        <label>{% trans "Comment" %}</label>
+        {{ shown_user.comment|linebreaks }}
+        <label>{% trans "Last Login" %}</label>
+        {% if shown_user.last_login > shown_user.date_joined %}
+            {{ shown_user.last_login }}
+        {% else %}
+            {% trans "The participant has not logged in yet." %}
+        {% endif %}
     {% endif %}
-</fieldset>
-
-{% if perms.participant.can_manage_participant %}
-<fieldset>
-    <legend>{% trans "Administrative data" %}</legend>
-    <label>{% trans "User name" %}</label>
-    {{ shown_user.username }}
-    <label>{% trans "Comment" %}</label>
-    {{ shown_user.comment|linebreaks }}
-    <label>{% trans "Last Login" %}</label>
-    {% if shown_user.last_login > shown_user.date_joined %}
-        {{ shown_user.last_login }}
-    {% else %}
-        {% trans "The participant has not logged in yet." %}
-    {% endif %}
-{% endif %}
+</div>
 {% endblock %}

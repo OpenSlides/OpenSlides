@@ -21,7 +21,7 @@ from django.db.models import Max
 from django.dispatch import receiver
 from django.utils import formats
 from django.utils.translation import pgettext
-from django.utils.translation import ugettext_lazy, ugettext_noop, ugettext as _
+from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
 
 from openslides.utils.person import PersonField
 from openslides.config.api import config
@@ -565,7 +565,7 @@ class MotionVersion(models.Model):
     title = models.CharField(max_length=255, verbose_name=ugettext_lazy("Title"))
     """The title of a motion."""
 
-    text = models.TextField(verbose_name=_("Text"))
+    text = models.TextField(verbose_name=ugettext_lazy("Text"))
     """The text of a motion."""
 
     reason = models.TextField(null=True, blank=True, verbose_name=ugettext_lazy("Reason"))
@@ -585,7 +585,7 @@ class MotionVersion(models.Model):
 
     def __unicode__(self):
         """Return a string, representing this object."""
-        counter = self.version_number or _('new')
+        counter = self.version_number or ugettext_lazy('new')
         return "%s Version %s" % (self.motion, counter)  # TODO: Should this really be self.motion or the title of the specific version?
 
     def get_absolute_url(self, link='detail'):

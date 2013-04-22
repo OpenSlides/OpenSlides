@@ -167,7 +167,7 @@ def motion_to_pdf(pdf, motion):
 
     # motion reason
     if motion.reason:
-        pdf.append(Paragraph(_("Reason:"), stylesheet['Heading3']))
+        pdf.append(Paragraph(_("Reason")+":", stylesheet['Heading3']))
         convert_html_to_reportlab(pdf, motion.reason)
     return pdf
 

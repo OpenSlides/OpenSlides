@@ -15,6 +15,7 @@ from django.utils.importlib import import_module
 
 from openslides import get_version, get_git_commit_id, RELEASE
 from openslides.utils.views import TemplateView
+from .signals import config_signal
 
 
 class VersionView(TemplateView):
@@ -34,6 +35,13 @@ class VersionView(TemplateView):
         if not RELEASE:
             openslides_version_string += ' Commit: %s' % get_git_commit_id()
         context['versions'] = [('OpenSlides', openslides_version_string)]
+
+        # collect other config pages
+        config_pages_list = []
+        for receiver, config_page in config_signal.send(sender=self):
+            if config_page.is_shown():
+                config_pages_list.append({'config_page': config_page})
+        context['config_pages_list'] = sorted(config_pages_list, key=lambda config_page_dict: config_page_dict['config_page'].weight)
 
         # Versions of plugins.
         for plugin in settings.INSTALLED_PLUGINS:

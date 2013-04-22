@@ -45,7 +45,6 @@ def get_personal_info_widget(request):
             'submitted_motions': Motion.objects.filter(submitter=request.user),
             'config_motion_min_supporters': config['motion_min_supporters'],
             'supported_motions': Motion.objects.filter(supporter=request.user)})
-
     try:
         from openslides.assignment.models import Assignment
     except ImportError:

@@ -12,7 +12,7 @@
 
 from django.dispatch import receiver
 from django import forms
-from django.utils.translation import ugettext_noop, ugettext_lazy, ugettext as _
+from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Permission
 
@@ -35,23 +35,23 @@ def setup_participant_config_page(sender, **kwargs):
         form_field=forms.CharField(
             widget=forms.TextInput(),
             required=False,
-            label=_('System URL'),
-            help_text=_('Printed in PDF of first time passwords only.')))
+            label=ugettext_lazy('System URL'),
+            help_text=ugettext_lazy('Printed in PDF of first time passwords only.')))
     participant_pdf_welcometext = ConfigVariable(
         name='participant_pdf_welcometext',
         default_value=_('Welcome to OpenSlides!'),
         form_field=forms.CharField(
             widget=forms.Textarea(),
             required=False,
-            label=_('Welcome text'),
-            help_text=_('Printed in PDF of first time passwords only.')))
+            label=ugettext_lazy('Welcome text'),
+            help_text=ugettext_lazy('Printed in PDF of first time passwords only.')))
     participant_sort_users_by_first_name = ConfigVariable(
         name='participant_sort_users_by_first_name',
         default_value=False,
         form_field=forms.BooleanField(
             required=False,
-            label=_('Sort participants by first name'),
-            help_text=_('Disable for sorting by last name')))
+            label=ugettext_lazy('Sort participants by first name'),
+            help_text=ugettext_lazy('Disable for sorting by last name')))
 
     return ConfigPage(title=ugettext_noop('Participant'),
                       url='participant',

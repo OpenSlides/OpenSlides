@@ -266,7 +266,7 @@ class SpeakerAppendView(SingleObjectMixin, RedirectView):
     def pre_redirect(self, request, *args, **kwargs):
         self.object = self.get_object()
         if self.object.speaker_list_closed:
-            messages.error(request, _('List of speakers is closed.'))
+            messages.error(request, _('The list of speakers is closed.'))
         else:
             try:
                 Speaker.objects.add(item=self.object, person=request.user)
@@ -337,8 +337,10 @@ class SpeakerSpeakView(SingleObjectMixin, RedirectView):
                 item=self.object.pk).exclude(
                     weight=None).get()
         except Speaker.DoesNotExist:
-            messages.error(self.request, _('Person %s is not on the list of item %s.'
-                                           % (kwargs['person_id'], self.object)))
+            messages.error(
+                self.request,
+                _('%(person)s is not on the list of %(item)s.')
+                % {'person': kwargs['person_id'], 'item': self.object})
         else:
             speaker.speak()
 
@@ -439,7 +441,7 @@ class CurrentListOfSpeakersView(RedirectView):
         if item is None:
             messages.error(request, _(
                 'There is no list of speakers for the current slide. '
-                'Please choose your agenda item manually from the agenda.'))
+                'Please choose the agenda item manually from the agenda.'))
             return reverse('dashboard')
 
         if self.request.user.has_perm('agenda.can_be_speaker'):
@@ -483,7 +485,9 @@ def get_widgets(request):
             template='agenda/widget.html',
             context={
                 'agenda': SLIDE['agenda'],
-                'items': Item.objects.all()},
+                'items': Item.objects.all(),
+                'summary': config['presentation_argument'] == 'summary',
+                'speakers': config['presentation_argument'] == 'show_list_of_speakers'},
             permission_required='projector.can_manage_projector'),
 
         Widget(

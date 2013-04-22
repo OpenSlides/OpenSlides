@@ -1,13 +1,13 @@
 # German translations for OpenSlides package.
 # Copyright (C) 2011-2013 by OpenSlides team, see AUTHORS.
 # This file is distributed under the same license as the OpenSlides package.
-# Oskar Hahn <mail@oshahn.de>, 2012.
+# Emanuel Schütze <emanuel@intevation.de>, 2013.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-11 22:34+0100\n"
+"POT-Creation-Date: 2013-04-23 21:38+0200\n"
 "PO-Revision-Date: 2012-07-28 11:07+0200\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: support@openslides.de\n"
@@ -17,21 +17,54 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: global_settings.py:32
-msgid "default"
-msgstr ""
-
-#: global_settings.py:36
+#: global_settings.py:33
 msgid "German"
 msgstr "Deutsch"
 
-#: global_settings.py:37
+#: global_settings.py:34
 msgid "English"
 msgstr "Englisch"
 
-#: global_settings.py:38
+#: global_settings.py:35
 msgid "French"
 msgstr "Französisch"
+
+#: account/views.py:60
+msgid "My motions and elections"
+msgstr "Meine Anträge und Wahlen"
+
+#: account/templates/account/personal_info_widget.html:5
+msgid "I submitted the following motions:"
+msgstr "Ich habe folgende Anträge gestellt:"
+
+#: account/templates/account/personal_info_widget.html:9
+#: account/templates/account/personal_info_widget.html:28
+#: motion/templates/motion/widget.html:19
+msgid "motion"
+msgstr "Antrag"
+
+#: account/templates/account/personal_info_widget.html:13
+#: account/templates/account/personal_info_widget.html:32
+#: motion/templates/motion/motion_detail.html:17
+#: motion/templates/motion/motion_diff.html:22
+#: motion/templates/motion/widget.html:23
+#: motion/templates/projector/Motion.html:65
+msgid "no number"
+msgstr "ohne Nummer"
+
+#: account/templates/account/personal_info_widget.html:17
+#: account/templates/account/personal_info_widget.html:36
+#: account/templates/account/personal_info_widget.html:47
+msgid "None"
+msgstr "Keine"
+
+#: account/templates/account/personal_info_widget.html:24
+msgid "I support the following motions:"
+msgstr "Ich unterstütze folgende Anträge:"
+
+#: account/templates/account/personal_info_widget.html:43
+msgid "I am candidate for the following elections:"
+msgstr "Ich bin Kandidat/in bei folgenden Wahlen:"
 
 #: agenda/forms.py:29
 msgid "Parent item"
@@ -41,71 +74,102 @@ msgstr "Elternelement"
 msgid "Invalid format. Hours from 0 to 99 and minutes from 00 to 59"
 msgstr "Ungültiges Format. Stunden von 0 bis 99 und Minuten von 00 bis 59"
 
-#: agenda/forms.py:36 agenda/models.py:52
+#: agenda/forms.py:36 agenda/models.py:84
 msgid "Duration (hh:mm)"
 msgstr "Dauer (hh:mm)"
 
-#: agenda/forms.py:70
-msgid "Begin of event"
-msgstr "Beginn der Veranstaltung"
+#: agenda/forms.py:69
+msgid "Add participant"
+msgstr "Neue/n Teilnehmer/in hinzufügen"
 
-#: agenda/models.py:38
+#: agenda/forms.py:82
+#, python-format
+msgid "%s is already on the list of speakers."
+msgstr "%s ist bereits auf der Rednerliste"
+
+#: agenda/models.py:41
 msgid "Agenda item"
 msgstr "Tagesordnungseintrag"
 
-#: agenda/models.py:39
+#: agenda/models.py:42
 msgid "Organizational item"
 msgstr "Organisatorischer Eintrag"
 
-#: agenda/models.py:42 config/forms.py:59 motion/forms.py:31
-#: motion/models.py:466 projector/models.py:29
+#: agenda/models.py:44 core/signals.py:76 mediafile/models.py:32
+#: mediafile/templates/mediafile/mediafile_list.html:18 motion/forms.py:33
+#: motion/models.py:565 participant/models.py:39 participant/views.py:182
+#: participant/templates/participant/overview.html:62 projector/models.py:27
 msgid "Title"
 msgstr "Titel"
 
-#: agenda/models.py:43 motion/forms.py:34 motion/models.py:469
-#: projector/models.py:30
+#: agenda/models.py:49 motion/forms.py:38 motion/models.py:568
+#: projector/models.py:28
 msgid "Text"
 msgstr "Text"
 
-#: agenda/models.py:44 agenda/templates/agenda/overview.html:90
-#: agenda/templates/agenda/view.html:37 participant/models.py:60
-#: participant/templates/participant/overview.html:106
-#: participant/templates/participant/user_detail.html:49
+#: agenda/models.py:54 agenda/templates/agenda/overview.html:90
+#: agenda/templates/agenda/view.html:56 participant/models.py:51
+#: participant/templates/participant/overview.html:69
+#: participant/templates/participant/user_detail.html:47
 msgid "Comment"
 msgstr "Kommentar"
 
-#: agenda/models.py:45
+#: agenda/models.py:59
 msgid "Closed"
 msgstr "Abgeschlossen"
 
-#: agenda/models.py:46 agenda/templates/agenda/overview.html:99
-#: projector/models.py:31
+#: agenda/models.py:64 agenda/templates/agenda/overview.html:99
+#: projector/models.py:29
 msgid "Weight"
 msgstr "Gewichtung"
 
-#: agenda/models.py:50 participant/views.py:245
-#: participant/templates/participant/overview.html:69
-#: participant/templates/participant/overview.html:103
-#: participant/templates/participant/user_detail.html:33
+#: agenda/models.py:76 mediafile/templates/mediafile/mediafile_list.html:19
 msgid "Type"
 msgstr "Typ"
 
-#: agenda/models.py:185
+#: agenda/models.py:97
+msgid "List of speakers is closed"
+msgstr "Rednerliste ist geschlossen"
+
+#: agenda/models.py:162
+#: agenda/templates/agenda/overlay_speaker_projector.html:20
+#: agenda/templates/agenda/overlay_speaker_widget.html:5
+#: agenda/templates/agenda/view.html:62
+msgid "List of speakers"
+msgstr "Rednerliste"
+
+#: agenda/models.py:236
 msgid "Can see agenda"
 msgstr "Darf die Tagesordnung sehen"
 
-#: agenda/models.py:186
+#: agenda/models.py:237
 msgid "Can manage agenda"
 msgstr "Darf die Tagesordung verwalten"
 
-#: agenda/models.py:187
+#: agenda/models.py:238
 msgid "Can see orga items and time scheduling of agenda"
 msgstr "Darf Organisationspunkte und Tagesordnung-Zeitplan sehen"
 
-#: agenda/models.py:195 agenda/slides.py:20 agenda/views.py:210
-#: agenda/views.py:211 agenda/views.py:248 agenda/views.py:262
-#: agenda/templates/agenda/config.html:68
-#: agenda/templates/agenda/overview.html:8
+#: agenda/models.py:248
+#, python-format
+msgid "%(person)s is already on the list of speakers of item %(id)s."
+msgstr "%(person)s ist bereits auf der Rednerliste von Eintrag %(id)s."
+
+#: agenda/models.py:283
+msgid "Can put oneself on the list of speakers"
+msgstr "Darf sich selbst auf die Rednerliste setzen"
+
+#: agenda/signals.py:43
+msgid "Begin of event"
+msgstr "Beginn der Veranstaltung"
+
+#: agenda/signals.py:44
+msgid "Input format: DD.MM.YYYY HH:MM"
+msgstr "Eingabeformat: TT.MM.JJJJ HH:MM"
+
+#: agenda/signals.py:52 agenda/slides.py:23 agenda/slides.py:29
+#: agenda/views.py:243 agenda/views.py:244 agenda/views.py:469
+#: agenda/views.py:484 agenda/templates/agenda/overview.html:8
 #: agenda/templates/agenda/overview.html:55
 #: agenda/templates/agenda/overview.html:105
 #: agenda/templates/projector/AgendaSummary.html:6
@@ -113,257 +177,90 @@ msgstr "Darf Organisationspunkte und Tagesordnung-Zeitplan sehen"
 msgid "Agenda"
 msgstr "Tagesordnung"
 
-#: agenda/views.py:90
+#: agenda/views.py:93
 msgid "You are not authorized to manage the agenda."
 msgstr "Sie sind nicht berechtigt die Tagesordnung zu ändern."
 
-#: agenda/views.py:106
+#: agenda/views.py:109
 msgid "Errors when reordering of the agenda"
 msgstr "Fehler beim Neusortieren der Tagesordnung"
 
-#: agenda/views.py:188
+#: agenda/views.py:219
 msgid "Yes, with all child items."
 msgstr "Ja, mit allen Kindelementen."
 
-#: agenda/views.py:196
+#: agenda/views.py:228
 #, python-format
 msgid "Item %s and his children were successfully deleted."
 msgstr "Eintrag %s und seine Kindelemente wurde erfolgreich gelöscht."
 
-#: agenda/views.py:201
+#: agenda/views.py:234
 #, python-format
 msgid "Item %s was successfully deleted."
 msgstr "Eintrag %s wurde erfolgreich gelöscht."
 
-#: agenda/views.py:239
-msgid "Agenda settings successfully saved."
-msgstr "Tagesordnung Einstellungen erfolgreich gespeichert."
+#: agenda/views.py:269
+msgid "The list of speakers is closed."
+msgstr "Die Rednerliste ist geschlossen."
 
-#: agenda/templates/agenda/config.html:20
-msgid "January"
-msgstr "Januar"
+#: agenda/views.py:298
+msgid "You are not on the list of speakers."
+msgstr "Sie stehen nicht auf der Rednerliste."
 
-#: agenda/templates/agenda/config.html:20
-msgid "February"
-msgstr "Februar"
+#: agenda/views.py:321
+msgid "Do you really want to remove yourself from the list of speakers?"
+msgstr "Wollen Sie sich wirklich von der Rednerliste entfernen?"
 
-#: agenda/templates/agenda/config.html:20
-msgid "March"
-msgstr "März"
+#: agenda/views.py:342
+#, python-format
+msgid "%(person)s is not on the list of %(item)s."
+msgstr "%(person)s ist nicht auf der Rednerliste von %(item)s."
 
-#: agenda/templates/agenda/config.html:21
-msgid "April"
-msgstr "April"
+#: agenda/views.py:407
+msgid "Could not change order. Invalid data."
+msgstr "Die Reihenfolge kann nicht verändert werden. Ungültige Daten."
 
-#: agenda/templates/agenda/config.html:21
-#: agenda/templates/agenda/config.html:27
-msgid "May"
-msgstr "Mai"
+#: agenda/views.py:443
+msgid ""
+"There is no list of speakers for the current slide. Please choose the agenda "
+"item manually from the agenda."
+msgstr ""
+"Es existiert keine Rednerliste für die aktuelle Folie. Bitte wähle den "
+"Tagesordnungseintrag manuell von der Tagesordnung."
 
-#: agenda/templates/agenda/config.html:21
-msgid "June"
-msgstr "Juni"
+#: agenda/views.py:451
+msgid "You are already on the list of speakers."
+msgstr "Sie stehen bereits auf der Rednerliste."
 
-#: agenda/templates/agenda/config.html:22
-msgid "July"
-msgstr "Juli"
+#: agenda/views.py:453
+msgid "You are now on the list of speakers."
+msgstr "Sie stehen jetzt auf der Rednerliste."
 
-#: agenda/templates/agenda/config.html:22
-msgid "August"
-msgstr "August"
+#: agenda/views.py:455
+msgid "You can not put yourself on the list of speakers."
+msgstr "Sie können sich nicht selbst auf die Rednerliste setzen."
 
-#: agenda/templates/agenda/config.html:22
-msgid "September"
-msgstr "September"
-
-#: agenda/templates/agenda/config.html:23
-msgid "October"
-msgstr "Oktober"
-
-#: agenda/templates/agenda/config.html:23
-msgid "November"
-msgstr "November"
-
-#: agenda/templates/agenda/config.html:23
-msgid "December"
-msgstr "Dezember"
-
-#: agenda/templates/agenda/config.html:26
-msgid "Jan"
-msgstr "Jan"
-
-#: agenda/templates/agenda/config.html:26
-msgid "Feb"
-msgstr "Feb"
-
-#: agenda/templates/agenda/config.html:26
-msgid "Mar"
-msgstr "Mär"
-
-#: agenda/templates/agenda/config.html:27
-msgid "Apr"
-msgstr "Apr"
-
-#: agenda/templates/agenda/config.html:27
-msgid "Jun"
-msgstr "Jun"
-
-#: agenda/templates/agenda/config.html:28
-msgid "Jul"
-msgstr "Jul"
-
-#: agenda/templates/agenda/config.html:28
-msgid "Aug"
-msgstr "Aug"
-
-#: agenda/templates/agenda/config.html:28
-msgid "Sep"
-msgstr "Sep"
-
-#: agenda/templates/agenda/config.html:29
-msgid "Oct"
-msgstr "Okt"
-
-#: agenda/templates/agenda/config.html:29
-msgid "Nov"
-msgstr "Nov"
-
-#: agenda/templates/agenda/config.html:29
-msgid "Dec"
-msgstr "Dez"
-
-#: agenda/templates/agenda/config.html:32
-msgid "Sunday"
-msgstr "Sonntag"
-
-#: agenda/templates/agenda/config.html:32
-msgid "Monday"
-msgstr "Montag"
-
-#: agenda/templates/agenda/config.html:32
-msgid "Tuesdey"
-msgstr "Dienstag"
-
-#: agenda/templates/agenda/config.html:32
-msgid "Wednesday"
-msgstr "Mittwoch"
-
-#: agenda/templates/agenda/config.html:33
-msgid "Thursday"
-msgstr "Donnerstag"
-
-#: agenda/templates/agenda/config.html:33
-msgid "Friday"
-msgstr "Freitag"
-
-#: agenda/templates/agenda/config.html:33
-msgid "Saturday"
-msgstr "Samstag"
-
-#: agenda/templates/agenda/config.html:36
-#: agenda/templates/agenda/config.html:40
-msgid "Su"
-msgstr "So"
-
-#: agenda/templates/agenda/config.html:36
-#: agenda/templates/agenda/config.html:40
-msgid "Mo"
-msgstr "Mo"
-
-#: agenda/templates/agenda/config.html:36
-#: agenda/templates/agenda/config.html:40
-msgid "Tu"
-msgstr "Di"
-
-#: agenda/templates/agenda/config.html:36
-#: agenda/templates/agenda/config.html:40
-msgid "We"
-msgstr "Mi"
-
-#: agenda/templates/agenda/config.html:37
-#: agenda/templates/agenda/config.html:41
-msgid "Th"
-msgstr "Do"
-
-#: agenda/templates/agenda/config.html:37
-#: agenda/templates/agenda/config.html:41
-msgid "Fr"
-msgstr "Fr"
-
-#: agenda/templates/agenda/config.html:37
-#: agenda/templates/agenda/config.html:41
-msgid "Sa"
-msgstr "Sa"
-
-#: agenda/templates/agenda/config.html:52
-msgid "Time"
-msgstr "Zeit"
-
-#: agenda/templates/agenda/config.html:53
-msgid "Hour"
-msgstr "Stunde"
-
-#: agenda/templates/agenda/config.html:54
-msgid "Minute"
-msgstr "Minute"
-
-#: agenda/templates/agenda/config.html:55
-msgid "current time"
-msgstr "aktuelle Zeit"
-
-#: agenda/templates/agenda/config.html:56
-msgid "close"
-msgstr "Schließen"
-
-#: agenda/templates/agenda/config.html:63
-msgid "Agenda settings"
-msgstr "Tagesordnungs-Einstellungen"
-
-#: agenda/templates/agenda/config.html:68
-#: assignment/templates/assignment/config.html:9 config/views.py:111
-#: config/templates/config/general.html:9
-#: motion/templates/motion/config.html:9
-#: participant/templates/participant/config.html:9
-msgid "Configuration"
-msgstr "Konfiguration"
-
-#: agenda/templates/agenda/config.html:75
-#: assignment/templates/assignment/poll_view.html:80
-#: motion/templates/motion/motion_form.html:14
-#: motion/templates/motion/poll_form.html:38
-#: projector/templates/projector/select_widgets.html:28
-#: templates/formbuttons_save.html:4 templates/formbuttons_saveapply.html:4
-msgid "Save"
-msgstr "Speichern"
-
-#: agenda/templates/agenda/config.html:79 agenda/templates/agenda/edit.html:30
-#: assignment/templates/assignment/config.html:18
-#: assignment/templates/assignment/edit.html:31
-#: assignment/templates/assignment/poll_view.html:86
-#: config/templates/config/general.html:70
-#: motion/templates/motion/config.html:18
-#: motion/templates/motion/motion_form.html:21
-#: motion/templates/motion/poll_form.html:44
-#: participant/templates/participant/config.html:18
-#: participant/templates/participant/edit.html:36
-#: participant/templates/participant/group_edit.html:31
-#: participant/templates/participant/import.html:33
-msgid "Cancel"
-msgstr "Abbrechen"
+#: agenda/views.py:495
+msgid "To the current list of speakers"
+msgstr "Zur aktuellen Rednerliste"
 
 #: agenda/templates/agenda/edit.html:8 agenda/templates/agenda/edit.html:17
-#: agenda/templates/agenda/view.html:20
+#: agenda/templates/agenda/view.html:37
 msgid "Edit item"
 msgstr "Eintrag bearbeiten"
 
 #: agenda/templates/agenda/edit.html:10 agenda/templates/agenda/edit.html:19
-#: agenda/templates/agenda/overview.html:72
+#: agenda/templates/agenda/overview.html:58
 msgid "New item"
 msgstr "Neuer Eintrag"
 
-#: agenda/templates/agenda/edit.html:22 agenda/templates/agenda/view.html:12
+#: agenda/templates/agenda/edit.html:22 agenda/templates/agenda/view.html:29
 #: assignment/templates/assignment/edit.html:22
 #: assignment/templates/assignment/view.html:20
+#: mediafile/templates/mediafile/mediafile_form.html:22
+#: motion/templates/motion/category_list.html:15
+#: motion/templates/motion/motion_detail.html:24
+#: motion/templates/motion/motion_form.html:37
 #: participant/templates/participant/edit.html:22
 #: participant/templates/participant/group_detail.html:12
 #: participant/templates/participant/group_edit.html:22
@@ -374,16 +271,29 @@ msgstr "Neuer Eintrag"
 msgid "Back to overview"
 msgstr "Zurück zur Übersicht"
 
+#: agenda/templates/agenda/edit.html:30
+#: assignment/templates/assignment/edit.html:31
+#: assignment/templates/assignment/poll_view.html:86
+#: config/templates/config/config_form.html:45
+#: mediafile/templates/mediafile/mediafile_form.html:33
+#: motion/templates/motion/category_form.html:28
+#: motion/templates/motion/motion_form.html:46
+#: motion/templates/motion/poll_form.html:73
+#: participant/templates/participant/edit.html:36
+#: participant/templates/participant/group_edit.html:31
+#: participant/templates/participant/import.html:39
+msgid "Cancel"
+msgstr "Abbrechen"
+
 #: agenda/templates/agenda/edit.html:33
-#: assignment/templates/assignment/config.html:21
 #: assignment/templates/assignment/edit.html:34
-#: config/templates/config/general.html:73
-#: motion/templates/motion/config.html:21
-#: motion/templates/motion/motion_form.html:24
-#: participant/templates/participant/config.html:21
+#: config/templates/config/config_form.html:47
+#: mediafile/templates/mediafile/mediafile_form.html:35
+#: motion/templates/motion/category_form.html:31
+#: motion/templates/motion/motion_form.html:49
 #: participant/templates/participant/edit.html:39
 #: participant/templates/participant/group_edit.html:34
-#: participant/templates/participant/import.html:36
+#: participant/templates/participant/import.html:42
 #: projector/templates/projector/new.html:19
 msgid "required"
 msgstr "erforderlich"
@@ -392,20 +302,22 @@ msgstr "erforderlich"
 msgid "Change status (open/closed)"
 msgstr "Status ändern (offen/abgeschlossen)"
 
-#: agenda/templates/agenda/item_row.html:32
+#: agenda/templates/agenda/item_row.html:34
 msgid "End"
 msgstr "Ende"
 
 #: agenda/templates/agenda/item_row.html:42
 #: agenda/templates/agenda/overview.html:117
-#: agenda/templates/agenda/view.html:26 agenda/templates/agenda/widget.html:6
-#: agenda/templates/agenda/widget.html:19
+#: agenda/templates/agenda/view.html:45 agenda/templates/agenda/widget.html:8
+#: agenda/templates/agenda/widget.html:23
 #: assignment/templates/assignment/overview.html:54
 #: assignment/templates/assignment/widget.html:7
+#: motion/templates/motion/motion_detail.html:129
+#: motion/templates/motion/motion_list.html:82
 #: motion/templates/motion/widget.html:7
 #: participant/templates/participant/group_overview.html:29
 #: participant/templates/participant/group_widget.html:8
-#: participant/templates/participant/overview.html:128
+#: participant/templates/participant/overview.html:115
 #: participant/templates/participant/user_widget.html:7
 #: projector/templates/projector/custom_slide_widget.html:6
 #: projector/templates/projector/custom_slide_widget.html:19
@@ -413,76 +325,98 @@ msgid "Show"
 msgstr "Anzeigen"
 
 #: agenda/templates/agenda/item_row.html:47
-#: agenda/templates/agenda/widget.html:22
+#: agenda/templates/agenda/widget.html:26
 #: assignment/templates/assignment/overview.html:59
-#: assignment/templates/assignment/view.html:172
+#: assignment/templates/assignment/view.html:170
 #: assignment/templates/assignment/widget.html:10
+#: mediafile/templates/mediafile/mediafile_list.html:37
+#: motion/templates/motion/category_list.html:30
+#: motion/templates/motion/motion_list.html:87
 #: motion/templates/motion/widget.html:10
 #: participant/templates/participant/group_overview.html:33
 #: participant/templates/participant/group_widget.html:11
-#: participant/templates/participant/overview.html:132
+#: participant/templates/participant/overview.html:119
 #: participant/templates/participant/user_widget.html:10
 #: projector/templates/projector/custom_slide_widget.html:26
 msgid "Edit"
 msgstr "Bearbeiten"
 
 #: agenda/templates/agenda/item_row.html:50
+#: agenda/templates/agenda/view.html:100 agenda/templates/agenda/view.html:114
+#: agenda/templates/agenda/view.html:147
 #: assignment/templates/assignment/overview.html:62
-#: assignment/templates/assignment/view.html:173
+#: assignment/templates/assignment/view.html:171
+#: mediafile/templates/mediafile/mediafile_list.html:38
+#: motion/templates/motion/category_list.html:33
+#: motion/templates/motion/motion_detail.html:133
+#: motion/templates/motion/motion_list.html:91
 #: participant/templates/participant/group_overview.html:37
-#: participant/templates/participant/overview.html:136
+#: participant/templates/participant/overview.html:123
 #: projector/templates/projector/custom_slide_widget.html:23
 msgid "Delete"
 msgstr "Löschen"
 
 #: agenda/templates/agenda/item_row.html:54
-#: agenda/templates/agenda/widget.html:29
+#: agenda/templates/agenda/widget.html:40
 msgid "Show summary for this item"
 msgstr "Zusammenfassung für diesen Eintrag anzeigen"
+
+#: agenda/templates/agenda/overlay_speaker_projector.html:27
+#: agenda/templates/agenda/view.html:153
+#: agenda/templates/projector/agenda_list_of_speaker.html:32
+msgid "The list of speakers is empty."
+msgstr "Die Rednerliste ist leer."
 
 #: agenda/templates/agenda/overview.html:47
 msgid "Do you want to save the changed order of agenda items?"
 msgstr "Möchten Sie die geänderte Reihenfolge der Einträge speichern?"
 
-#: agenda/templates/agenda/overview.html:49 assignment/models.py:291
-#: assignment/views.py:589 assignment/templates/assignment/view.html:206
-#: assignment/templates/assignment/view.html:210
+#: agenda/templates/agenda/overview.html:49
+#: agenda/templates/agenda/view.html:130 assignment/models.py:288
+#: assignment/views.py:593 assignment/templates/assignment/view.html:204
+#: assignment/templates/assignment/view.html:208
 #: assignment/templates/projector/Assignment.html:78
-#: assignment/templates/projector/Assignment.html:82 motion/models.py:617
-#: motion/pdf.py:134 motion/templates/motion/motion_detail.html:66
-#: motion/templates/projector/Motion.html:37 utils/utils.py:45
+#: assignment/templates/projector/Assignment.html:82 motion/models.py:725
+#: motion/pdf.py:147 motion/pdf.py:269
+#: motion/templates/motion/motion_detail.html:210
+#: motion/templates/projector/Motion.html:37 utils/utils.py:46
 #: utils/views.py:146
 msgid "Yes"
 msgstr "Ja"
 
-#: agenda/templates/agenda/overview.html:50 assignment/models.py:291
-#: assignment/views.py:590 assignment/templates/assignment/view.html:207
-#: assignment/templates/projector/Assignment.html:79 motion/models.py:617
-#: motion/pdf.py:134 motion/templates/motion/motion_detail.html:67
-#: motion/templates/projector/Motion.html:38 utils/utils.py:45
+#: agenda/templates/agenda/overview.html:50
+#: agenda/templates/agenda/view.html:131 assignment/models.py:288
+#: assignment/views.py:594 assignment/templates/assignment/view.html:205
+#: assignment/templates/projector/Assignment.html:79 motion/models.py:725
+#: motion/pdf.py:147 motion/pdf.py:270
+#: motion/templates/motion/motion_detail.html:211
+#: motion/templates/projector/Motion.html:38 utils/utils.py:46
 #: utils/views.py:146
 msgid "No"
 msgstr "Nein"
 
-#: agenda/templates/agenda/overview.html:60
-msgid "Start of event"
-msgstr "Beginn der Veranstaltung"
-
-#: agenda/templates/agenda/overview.html:64
-msgid "Estimated end"
-msgstr "Voraussichtliches Ende"
-
-#: agenda/templates/agenda/overview.html:72
+#: agenda/templates/agenda/overview.html:58
 #: assignment/templates/assignment/overview.html:12
+#: mediafile/templates/mediafile/mediafile_list.html:12
+#: motion/templates/motion/category_list.html:13
+#: motion/templates/motion/motion_list.html:14
 #: participant/templates/participant/group_overview.html:11
-#: participant/templates/participant/overview.html:20
+#: participant/templates/participant/overview.html:26
 #: projector/templates/projector/custom_slide_widget.html:39
 msgid "New"
 msgstr "Neu"
 
-#: agenda/templates/agenda/overview.html:74
+#: agenda/templates/agenda/overview.html:60
 msgid "Print agenda as PDF"
 msgstr "Tagesordnung als PDF drucken"
+
+#: agenda/templates/agenda/overview.html:68
+msgid "Start of event"
+msgstr "Beginn der Veranstaltung"
+
+#: agenda/templates/agenda/overview.html:72
+msgid "Estimated end"
+msgstr "Voraussichtliches Ende"
 
 #: agenda/templates/agenda/overview.html:79
 msgid "Hide closed items"
@@ -499,34 +433,104 @@ msgid "Item"
 msgstr "Eintrag"
 
 #: agenda/templates/agenda/overview.html:93
-#, fuzzy
 msgid "Duration"
-msgstr "Dauer (hh:mm)"
+msgstr "Dauer"
 
 #: agenda/templates/agenda/overview.html:96
 #: assignment/templates/assignment/overview.html:38
+#: mediafile/templates/mediafile/mediafile_list.html:24
+#: motion/templates/motion/category_list.html:23
+#: motion/templates/motion/motion_detail.html:103
+#: motion/templates/motion/motion_list.html:62
 #: participant/templates/participant/group_overview.html:19
-#: participant/templates/participant/overview.html:108
+#: participant/templates/participant/overview.html:71
 msgid "Actions"
 msgstr "Aktionen"
 
 #: agenda/templates/agenda/overview.html:133
-#: agenda/templates/agenda/widget.html:40
+#: agenda/templates/agenda/widget.html:51
 #: projector/templates/projector/custom_slide_widget.html:34
 msgid "No items available."
 msgstr "Keine Einträge vorhanden."
 
-#: agenda/templates/agenda/view.html:15
+#: agenda/templates/agenda/speaker_widget.html:5
+msgid "Put me on the current list of speakers"
+msgstr "Auf die aktuelle Rednerliste setzen"
+
+#: agenda/templates/agenda/view.html:33
 #: assignment/templates/assignment/view.html:29
+#: motion/templates/motion/motion_detail.html:34
 msgid "More actions"
 msgstr "Mehr Aktionen"
 
-#: agenda/templates/agenda/view.html:21
+#: agenda/templates/agenda/view.html:38
 msgid "Delete item"
 msgstr "Eintrag löschen"
 
-#: agenda/templates/agenda/widget.html:9
-#: agenda/templates/agenda/widget.html:25
+#: agenda/templates/agenda/view.html:62
+msgid "closed"
+msgstr "geschlossen"
+
+#: agenda/templates/agenda/view.html:66
+msgid "Open list"
+msgstr "Liste öffnen"
+
+#: agenda/templates/agenda/view.html:68
+msgid "Close list"
+msgstr "Liste schließen"
+
+#: agenda/templates/agenda/view.html:74 agenda/templates/agenda/widget.html:34
+msgid "Show list of speakers"
+msgstr "Rednerliste projizieren"
+
+#: agenda/templates/agenda/view.html:76
+msgid "Show list"
+msgstr "Liste projizieren"
+
+#: agenda/templates/agenda/view.html:84
+msgid "Last speakers"
+msgstr "Letzte Redner"
+
+#: agenda/templates/agenda/view.html:88
+msgid "Show all speakers"
+msgstr "Alle Redner anzeigen"
+
+#: agenda/templates/agenda/view.html:127
+msgid "Do you want to save the changed order of speakers?"
+msgstr "Möchten Sie die geänderte Reihenfolge der Einträge speichern?"
+
+#: agenda/templates/agenda/view.html:138
+msgid "Next speakers:"
+msgstr "Nächste Redner"
+
+#: agenda/templates/agenda/view.html:146
+msgid "Next speaker"
+msgstr "Nächster Redner"
+
+#: agenda/templates/agenda/view.html:160
+msgid "Remove me from the list"
+msgstr "Entferne mich von der Liste"
+
+#: agenda/templates/agenda/view.html:162
+msgid "Put me on the list"
+msgstr "Setze mich auf die Liste"
+
+#: agenda/templates/agenda/view.html:173
+#: assignment/templates/assignment/poll_view.html:83
+#: assignment/templates/assignment/view.html:112
+#: motion/templates/motion/poll_form.html:70
+#: projector/templates/projector/overlay_message_widget.html:9
+#: templates/formbuttons_saveapply.html:7
+msgid "Apply"
+msgstr "Übernehmen"
+
+#: agenda/templates/agenda/view.html:175
+#: assignment/templates/assignment/view.html:114
+msgid "Add new participant"
+msgstr "Neue/n Teilnehmer/in hinzufügen"
+
+#: agenda/templates/agenda/widget.html:11
+#: agenda/templates/agenda/widget.html:29
 #: assignment/templates/assignment/widget.html:13
 #: motion/templates/motion/widget.html:13
 #: participant/templates/participant/group_widget.html:14
@@ -536,8 +540,8 @@ msgstr "Eintrag löschen"
 msgid "Preview"
 msgstr "Vorschau"
 
-#: assignment/forms.py:24 assignment/models.py:51 assignment/views.py:383
-#: assignment/templates/assignment/view.html:275
+#: assignment/forms.py:24 assignment/models.py:49 assignment/views.py:382
+#: assignment/templates/assignment/view.html:273
 #: assignment/templates/projector/Assignment.html:21
 msgid "Number of available posts"
 msgstr "Anzahl der zur Wahl stehenden Posten"
@@ -546,181 +550,181 @@ msgstr "Anzahl der zur Wahl stehenden Posten"
 msgid "Nominate a participant"
 msgstr "Teilnehmer/in vorschlagen"
 
-#: assignment/forms.py:41
-msgid "Only publish voting results for selected winners (Projector view only)"
-msgstr ""
-"Wahlergebnisse der nicht gewählten Kandidaten auf dem Projektor verbergen"
-
-#: assignment/forms.py:46 motion/forms.py:110
-msgid "Number of ballot papers (selection)"
-msgstr "Anzahl der Stimmzettel (Vorauswahl)"
-
-#: assignment/forms.py:48 motion/forms.py:112
-msgid "Number of all delegates"
-msgstr "Anzahl aller Delegierten"
-
-#: assignment/forms.py:49 motion/forms.py:113
-msgid "Number of all participants"
-msgstr "Anzahl aller Teilnehmer/innen"
-
-#: assignment/forms.py:50 motion/forms.py:114
-msgid "Use the following custom number"
-msgstr "Verwende die folgende benutzerdefinierte Anzahl"
-
-#: assignment/forms.py:55 motion/forms.py:121
-msgid "Custom number of ballot papers"
-msgstr "Benutzerdefinierte Anzahl von Stimmzetteln"
-
-#: assignment/forms.py:59
-msgid "Title for PDF document (all elections)"
-msgstr "Titel für PDF-Dokument (alle Wahlen)"
-
-#: assignment/forms.py:63
-msgid "Preamble text for PDF document (all elections)"
-msgstr "Einleitungstext für PDF-Dokument (alle Wahlen) "
-
-#: assignment/forms.py:67
-msgid "Election method"
-msgstr "Wahlmethode"
-
-#: assignment/forms.py:69
-msgid "Automatic assign of method."
-msgstr "Automatische Zuordnung der Methode."
-
-#: assignment/forms.py:70
-msgid "Always one option per candidate."
-msgstr "Eine Stimme pro Kandidat/in."
-
-#: assignment/forms.py:71
-msgid "Always Yes-No-Abstain per candidate."
-msgstr "Ja, Nein, Enthaltung pro Kandidat/in."
-
-#: assignment/models.py:44 assignment/templates/assignment/overview.html:24
-#: assignment/templates/assignment/view.html:284
+#: assignment/models.py:42 assignment/templates/assignment/overview.html:24
+#: assignment/templates/assignment/view.html:282
 msgid "Searching for candidates"
 msgstr "Auf Kandidatensuche"
 
-#: assignment/models.py:45 assignment/templates/assignment/overview.html:25
-#: assignment/templates/assignment/view.html:288
+#: assignment/models.py:43 assignment/templates/assignment/overview.html:25
+#: assignment/templates/assignment/view.html:286
 msgid "Voting"
 msgstr "Im Wahlvorgang"
 
-#: assignment/models.py:46 assignment/templates/assignment/overview.html:26
-#: assignment/templates/assignment/view.html:292
+#: assignment/models.py:44 assignment/templates/assignment/overview.html:26
+#: assignment/templates/assignment/view.html:290
 msgid "Finished"
 msgstr "Abgeschlossen"
 
-#: assignment/models.py:49
+#: assignment/models.py:47
 msgid "Name"
 msgstr "Name"
 
-#: assignment/models.py:50 assignment/templates/assignment/view.html:57
-#: participant/models.py:144
+#: assignment/models.py:48 assignment/templates/assignment/view.html:57
+#: participant/models.py:139
 msgid "Description"
 msgstr "Beschreibung"
 
-#: assignment/models.py:54
+#: assignment/models.py:52
 msgid "Comment on the ballot paper"
 msgstr "Kommentar für den Stimmzettel"
 
-#: assignment/models.py:64
+#: assignment/models.py:62
 #, python-format
 msgid "%s is not a valid status."
 msgstr "%s ist kein gültiger Status."
 
-#: assignment/models.py:67
+#: assignment/models.py:65
 #, python-format
 msgid "The assignment status is already %s."
 msgstr "Der Wahlstatus ist bereits %s."
 
-#: assignment/models.py:80
+#: assignment/models.py:78
 #, python-format
 msgid "<b>%s</b> is already a candidate."
 msgstr "<b>%s</b> ist bereits ein/e Kandidat/in."
 
-#: assignment/models.py:82 assignment/views.py:196
+#: assignment/models.py:80 assignment/views.py:195
 msgid "The candidate list is already closed."
 msgstr "Die Kandidatenliste ist bereits geschlossen."
 
-#: assignment/models.py:89
+#: assignment/models.py:87
 #, python-format
 msgid "%s does not want to be a candidate."
 msgstr "%s möchte nicht kandidieren."
 
-#: assignment/models.py:103
+#: assignment/models.py:101
 #, python-format
 msgid "%s is no candidate"
 msgstr "%s ist kein/e Kandidat/in"
 
-#: assignment/models.py:244
+#: assignment/models.py:242
 msgid "Can see assignment"
 msgstr "Darf Wahlen sehen"
 
-#: assignment/models.py:246
+#: assignment/models.py:243
 msgid "Can nominate another person"
 msgstr "Darf andere Personen für Wahlen vorschlagen"
 
-#: assignment/models.py:247
-msgid "Can nominate themselves"
+#: assignment/models.py:244
+msgid "Can nominate oneself"
 msgstr "Darf selbst für Wahlen kandidieren"
 
-#: assignment/models.py:248
+#: assignment/models.py:245
 msgid "Can manage assignment"
 msgstr "Darf Wahlen verwalten"
 
-#: assignment/models.py:291 motion/models.py:617
+#: assignment/models.py:288 motion/models.py:725
 msgid "Abstain"
 msgstr "Enthaltung"
 
-#: assignment/models.py:293 motion/templates/motion/poll_form.html:16
+#: assignment/models.py:290 motion/templates/motion/poll_form.html:38
 msgid "Votes"
 msgstr "Stimmen"
 
-#: assignment/models.py:310 motion/models.py:631
+#: assignment/models.py:307 motion/models.py:739
 #, python-format
 msgid "Ballot %d"
 msgstr "Wahlgang %d"
 
-#: assignment/models.py:319 assignment/views.py:338 assignment/views.py:678
-#: assignment/views.py:693 assignment/templates/assignment/config.html:10
+#: assignment/signals.py:31
+msgid "Only publish voting results for selected winners (Projector view only)"
+msgstr ""
+"Wahlergebnisse der nicht gewählten Kandidaten auf dem Projektor verbergen"
+
+#: assignment/signals.py:39 motion/signals.py:58
+msgid "Number of ballot papers (selection)"
+msgstr "Anzahl der Stimmzettel (Vorauswahl)"
+
+#: assignment/signals.py:41 motion/signals.py:60
+msgid "Number of all delegates"
+msgstr "Anzahl aller Delegierten"
+
+#: assignment/signals.py:42 motion/signals.py:61
+msgid "Number of all participants"
+msgstr "Anzahl aller Teilnehmer/innen"
+
+#: assignment/signals.py:43 motion/signals.py:62
+msgid "Use the following custom number"
+msgstr "Verwende die folgende benutzerdefinierte Anzahl"
+
+#: assignment/signals.py:51 motion/signals.py:70
+msgid "Custom number of ballot papers"
+msgstr "Benutzerdefinierte Anzahl von Stimmzetteln"
+
+#: assignment/signals.py:54 assignment/signals.py:78 assignment/views.py:337
+#: assignment/views.py:643 assignment/views.py:658
 #: assignment/templates/assignment/overview.html:5
 #: assignment/templates/assignment/overview.html:9
 msgid "Elections"
 msgstr "Wahlen"
 
-#: assignment/views.py:80
+#: assignment/signals.py:58
+msgid "Title for PDF document (all elections)"
+msgstr "Titel für PDF-Dokument (alle Wahlen)"
+
+#: assignment/signals.py:65
+msgid "Preamble text for PDF document (all elections)"
+msgstr "Einleitungstext für PDF-Dokument (alle Wahlen) "
+
+#: assignment/signals.py:72
+msgid "Election method"
+msgstr "Wahlmethode"
+
+#: assignment/signals.py:74
+msgid "Automatic assign of method"
+msgstr "Automatische Zuordnung der Methode"
+
+#: assignment/signals.py:75
+msgid "Always one option per candidate"
+msgstr "Eine Stimme pro Kandidat/in"
+
+#: assignment/signals.py:76
+msgid "Always Yes-No-Abstain per candidate"
+msgstr "Ja, Nein, Enthaltung pro Kandidat/in"
+
+#: assignment/views.py:79
 #, python-format
 msgid "Candidate <b>%s</b> was nominated successfully."
 msgstr "Kandidat/in <b>%s</b> wurde erfolgreich vorgeschlagen."
 
-#: assignment/views.py:122
+#: assignment/views.py:121
 msgid "New election was successfully created."
 msgstr "Neue Wahl wurde erfolgreich angelegt."
 
-#: assignment/views.py:124
+#: assignment/views.py:123
 msgid "Election was successfully modified."
 msgstr "Wahl wurde erfolgreich geändert."
 
-#: assignment/views.py:130 participant/views.py:501 participant/views.py:525
-#: utils/views.py:259 utils/views.py:281 utils/views.py:291
+#: assignment/views.py:129 participant/views.py:443 participant/views.py:467
+#: utils/views.py:273 utils/views.py:295 utils/views.py:305
 msgid "Please check the form for errors."
 msgstr "Bitte kontrollieren Sie das Formular nach Fehlern."
 
-#: assignment/views.py:150
+#: assignment/views.py:149
 #, python-format
 msgid "Election <b>%s</b> was successfully deleted."
 msgstr "Wahl <b>%s</b> wurde erfolgreich gelöscht."
 
-#: assignment/views.py:163
+#: assignment/views.py:162
 #, python-format
 msgid "Election status was set to: <b>%s</b>."
 msgstr "Wahlstatus wurde gesetzt auf: <b>%s</b>."
 
-#: assignment/views.py:176
+#: assignment/views.py:175
 msgid "You have set your candidature successfully."
 msgstr "Sie haben Ihre Kandidatur erfolgreich gesetzt."
 
-#: assignment/views.py:193
+#: assignment/views.py:192
 msgid ""
 "You have withdrawn your candidature successfully. You can not be nominated "
 "by other participants anymore."
@@ -728,98 +732,98 @@ msgstr ""
 "Sie haben Ihre Kandidatur erfolgreich zurückgezogen. Sie können nun von "
 "anderen Teilnehmer/innen nicht mehr vorgeschlagen werden."
 
-#: assignment/views.py:215
+#: assignment/views.py:214
 #, python-format
 msgid "Candidate <b>%s</b> was withdrawn successfully."
 msgstr "Die Kandidatur von <b>%s</b> wurde erfolgreich zurückgezogen."
 
-#: assignment/views.py:217
+#: assignment/views.py:216
 #, python-format
 msgid "<b>%s</b> was unblocked successfully."
 msgstr "<b>%s</b> wurde erfolgreich freigegeben."
 
-#: assignment/views.py:221
+#: assignment/views.py:220
 #, python-format
 msgid "Do you really want to withdraw <b>%s</b> from the election?"
 msgstr "Soll <b>%s</b> wirklich von der Wahl zurückgezogen werden?"
 
-#: assignment/views.py:223
+#: assignment/views.py:222
 #, python-format
 msgid "Do you really want to unblock <b>%s</b> for the election?"
 msgstr "Soll <b>%s</b> wirklich für die Wahl freigegeben werden?"
 
-#: assignment/views.py:238
+#: assignment/views.py:237
 msgid "New ballot was successfully created."
 msgstr "Neuer Wahlgang erfolgreich angelegt."
 
-#: assignment/views.py:270
+#: assignment/views.py:269
 #, python-format
 msgid "Ballot ID %d does not exist."
 msgstr "Wahlgang-ID %d existiert nicht."
 
-#: assignment/views.py:277
+#: assignment/views.py:276
 msgid "Ballot successfully published."
 msgstr "Wahlgang wurde erfolgreich veröffentlicht."
 
-#: assignment/views.py:279
+#: assignment/views.py:278
 msgid "Ballot successfully unpublished."
 msgstr "Wahlgang wurde erfolgreich unveröffentlicht."
 
-#: assignment/views.py:292
+#: assignment/views.py:291
 msgid "not elected"
 msgstr "nicht gewählt"
 
-#: assignment/views.py:295 assignment/views.py:484
+#: assignment/views.py:294 assignment/views.py:483
 #: assignment/templates/assignment/view.html:77
 msgid "elected"
 msgstr "gewählt"
 
-#: assignment/views.py:323
+#: assignment/views.py:322
 msgid "Ballot was successfully deleted."
 msgstr "Abstimmung wurde erfolgreich gelöscht."
 
-#: assignment/views.py:335
+#: assignment/views.py:334
 msgid "Assignment"
 msgstr "Wahl"
 
-#: assignment/views.py:358 assignment/templates/assignment/overview.html:74
+#: assignment/views.py:357 assignment/templates/assignment/overview.html:74
 #: assignment/templates/assignment/widget.html:19
 msgid "No assignments available."
 msgstr "Keine Wahlen vorhanden."
 
-#: assignment/views.py:377
+#: assignment/views.py:376
 #, python-format
 msgid "Election: %s"
 msgstr "Wahlen: %s"
 
-#: assignment/views.py:390 assignment/views.py:426
+#: assignment/views.py:389 assignment/views.py:425
 #: assignment/templates/assignment/overview.html:36
 #: assignment/templates/assignment/poll_view.html:34
 #: assignment/templates/assignment/view.html:66
-#: assignment/templates/assignment/view.html:157
+#: assignment/templates/assignment/view.html:155
 #: assignment/templates/projector/Assignment.html:38
 #: assignment/templates/projector/Assignment.html:56
 msgid "Candidates"
 msgstr "Kandidaten/innen"
 
-#: assignment/views.py:415 motion/pdf.py:120
-#: motion/templates/motion/motion_detail.html:46
+#: assignment/views.py:414 motion/pdf.py:133
+#: motion/templates/motion/motion_detail.html:197
 msgid "Vote results"
 msgstr "Abstimmungsergebnis"
 
-#: assignment/views.py:419 assignment/templates/assignment/poll_view.html:5
+#: assignment/views.py:418 assignment/templates/assignment/poll_view.html:5
 #: assignment/templates/assignment/poll_view.html:11
-#: assignment/templates/assignment/view.html:152
-#: assignment/templates/assignment/view.html:160
+#: assignment/templates/assignment/view.html:150
+#: assignment/templates/assignment/view.html:158
 #: assignment/templates/projector/Assignment.html:59
 msgid "ballot"
 msgstr "Wahlgang"
 
-#: assignment/views.py:422
+#: assignment/views.py:421
 msgid "ballots"
 msgstr "Wahlgänge"
 
-#: assignment/views.py:447
+#: assignment/views.py:446
 #, python-format
 msgid ""
 "Y: %(YES)s\n"
@@ -830,25 +834,25 @@ msgstr ""
 "N: %(NO)s\n"
 "E: %(ABSTAIN)s"
 
-#: assignment/views.py:458 assignment/templates/assignment/poll_view.html:51
-#: assignment/templates/assignment/view.html:224
+#: assignment/views.py:457 assignment/templates/assignment/poll_view.html:51
+#: assignment/templates/assignment/view.html:222
 #: assignment/templates/projector/Assignment.html:96
-#: motion/templates/motion/poll_form.html:25
+#: motion/templates/motion/poll_form.html:47
 msgid "Invalid votes"
 msgstr "Ungültige Stimmen"
 
-#: assignment/views.py:465 assignment/templates/assignment/poll_view.html:61
-#: assignment/templates/assignment/view.html:240
-#: assignment/templates/assignment/view.html:245
+#: assignment/views.py:464 assignment/templates/assignment/poll_view.html:61
+#: assignment/templates/assignment/view.html:238
+#: assignment/templates/assignment/view.html:243
 #: assignment/templates/projector/Assignment.html:109
-#: assignment/templates/projector/Assignment.html:115 motion/pdf.py:135
-#: motion/templates/motion/motion_detail.html:71
-#: motion/templates/motion/poll_form.html:29
+#: assignment/templates/projector/Assignment.html:115 motion/pdf.py:148
+#: motion/templates/motion/motion_detail.html:215
+#: motion/templates/motion/poll_form.html:51
 #: motion/templates/projector/Motion.html:42 poll/models.py:76
 msgid "Votes cast"
 msgstr "Abgegebene Stimmen"
 
-#: assignment/views.py:525 assignment/views.py:543
+#: assignment/views.py:524 assignment/views.py:542
 #: assignment/templates/assignment/overview.html:35
 #: assignment/templates/assignment/poll_view.html:5
 #: assignment/templates/assignment/view.html:6
@@ -856,39 +860,31 @@ msgstr "Abgegebene Stimmen"
 msgid "Election"
 msgstr "Wahl"
 
-#: assignment/views.py:550
+#: assignment/views.py:549
 #, python-format
 msgid "%d. ballot"
 msgstr "%d. Wahlgang"
 
-#: assignment/views.py:552
+#: assignment/views.py:551
 #, python-format
 msgid "%d candidate"
 msgid_plural "%d candidates"
 msgstr[0] "%d Kandidat/in"
 msgstr[1] "%d Kandidaten/innen"
 
-#: assignment/views.py:554
+#: assignment/views.py:553
 #, python-format
 msgid "%d available post"
 msgid_plural "%d available posts"
 msgstr[0] "%d verfügbare Posten"
 msgstr[1] "%d verfügbare Posten"
 
-#: assignment/views.py:590 assignment/templates/assignment/view.html:208
-#: assignment/templates/projector/Assignment.html:80 motion/pdf.py:134
-#: motion/templates/motion/motion_detail.html:68
+#: assignment/views.py:594 assignment/templates/assignment/view.html:206
+#: assignment/templates/projector/Assignment.html:80 motion/pdf.py:147
+#: motion/pdf.py:271 motion/templates/motion/motion_detail.html:212
 #: motion/templates/projector/Motion.html:39
 msgid "Abstention"
 msgstr "Enthaltung"
-
-#: assignment/views.py:671
-msgid "Election settings successfully saved."
-msgstr "Wahl-Einstellungen wurden erfolgreich gespeichert."
-
-#: assignment/templates/assignment/config.html:5
-msgid "Election settings"
-msgstr "Wahl-Einstellungen"
 
 #: assignment/templates/assignment/edit.html:8
 #: assignment/templates/assignment/edit.html:17
@@ -907,16 +903,17 @@ msgid "Print all elections as PDF"
 msgstr "Alle Wahlen als PDF drucken"
 
 #: assignment/templates/assignment/overview.html:21
-#: participant/templates/participant/overview.html:53
 msgid "Filter"
 msgstr "Filter"
 
 #: assignment/templates/assignment/overview.html:23
 #: assignment/templates/assignment/overview.html:37
-#: assignment/templates/assignment/view.html:272
+#: assignment/templates/assignment/view.html:270
 #: assignment/templates/projector/Assignment.html:18
+#: motion/templates/motion/motion_detail.html:185
+#: motion/templates/motion/motion_list.html:38
+#: motion/templates/motion/motion_list.html:59
 #: motion/templates/projector/Motion.html:11
-#: participant/templates/participant/overview.html:84
 msgid "Status"
 msgstr "Status"
 
@@ -960,33 +957,32 @@ msgid "Short description (for ballot paper)"
 msgstr "Kurzbeschreibung (für Stimmzettel)"
 
 #: assignment/templates/assignment/poll_view.html:29
-#: motion/templates/motion/poll_form.html:9
+#: motion/templates/motion/poll_form.html:30
 msgid "Special values"
 msgstr "Spezielle Werte"
 
 #: assignment/templates/assignment/poll_view.html:29
-#: motion/templates/motion/poll_form.html:9 poll/models.py:234
+#: motion/templates/motion/poll_form.html:30 poll/models.py:234
 msgid "majority"
 msgstr "Mehrheit"
 
 #: assignment/templates/assignment/poll_view.html:29
-#: motion/templates/motion/poll_form.html:9 poll/models.py:236
+#: motion/templates/motion/poll_form.html:30 poll/models.py:236
 #: poll/models.py:238
 msgid "undocumented"
 msgstr "nicht erfasst"
 
 #: assignment/templates/assignment/poll_view.html:74
+#: motion/templates/motion/poll_form.html:61
 msgid "Ballot paper as PDF"
 msgstr "Stimmzettel als PDF"
 
-#: assignment/templates/assignment/poll_view.html:83
-#: assignment/templates/assignment/view.html:112
-#: motion/templates/motion/motion_form.html:17
-#: motion/templates/motion/poll_form.html:41
-#: projector/templates/projector/control_overlay_message.html:7
-#: templates/formbuttons_saveapply.html:7
-msgid "Apply"
-msgstr "Übernehmen"
+#: assignment/templates/assignment/poll_view.html:80
+#: motion/templates/motion/poll_form.html:67
+#: projector/templates/projector/select_widgets.html:28
+#: templates/formbuttons_save.html:4 templates/formbuttons_saveapply.html:4
+msgid "Save"
+msgstr "Speichern"
 
 #: assignment/templates/assignment/view.html:36
 msgid "Delete election"
@@ -997,11 +993,12 @@ msgid "Ballot"
 msgstr "Wahlgang"
 
 #: assignment/templates/assignment/view.html:46
+#: motion/templates/motion/motion_detail.html:49
 msgid "New agenda item"
 msgstr "Neuer Tagesordnungseintrag"
 
 #: assignment/templates/assignment/view.html:73
-#: assignment/templates/assignment/view.html:132
+#: assignment/templates/assignment/view.html:130
 msgid "Remove candidate"
 msgstr "Kandidate/in entfernen"
 
@@ -1022,445 +1019,761 @@ msgstr "Eigene Kandidatur zurückziehen"
 msgid "Self candidature"
 msgstr "Selbst kandidieren"
 
-#: assignment/templates/assignment/view.html:114
-msgid "Add new participant"
-msgstr "Neue/n Teilnehmer/in hinzufügen"
-
-#: assignment/templates/assignment/view.html:127
+#: assignment/templates/assignment/view.html:125
 msgid "Blocked Candidates"
 msgstr "Blockierte Kandidaten/innen"
 
-#: assignment/templates/assignment/view.html:137
+#: assignment/templates/assignment/view.html:135
 msgid "No blocked candidates available."
 msgstr "Keine blockierten Kandidaten/innen vorhanden."
 
-#: assignment/templates/assignment/view.html:145
+#: assignment/templates/assignment/view.html:143
 #: assignment/templates/projector/Assignment.html:52
 msgid "Election results"
 msgstr "Wahlergebnisse"
 
-#: assignment/templates/assignment/view.html:165
+#: assignment/templates/assignment/view.html:163
 msgid "Publish/unpublish results"
 msgstr "Ergebnisse veröffentlichen/unveröffentlichen"
 
-#: assignment/templates/assignment/view.html:180
-#: assignment/templates/assignment/view.html:261
+#: assignment/templates/assignment/view.html:178
+#: assignment/templates/assignment/view.html:259
 msgid "New ballot"
 msgstr "Neuer Wahlgang"
 
-#: assignment/templates/assignment/view.html:193
+#: assignment/templates/assignment/view.html:191
 #: assignment/templates/projector/Assignment.html:69
 msgid "Candidate is elected"
 msgstr "Kandidat/in ist gewählt"
 
-#: assignment/templates/assignment/view.html:212
+#: assignment/templates/assignment/view.html:210
 #: assignment/templates/projector/Assignment.html:84
 msgid "was not a <br> candidate"
 msgstr "war kein Kandidat"
 
-#: assignment/templates/assignment/view.html:229
-#: assignment/templates/projector/Assignment.html:100 motion/pdf.py:134
-#: motion/templates/motion/motion_detail.html:69
+#: assignment/templates/assignment/view.html:227
+#: assignment/templates/projector/Assignment.html:100 motion/pdf.py:147
+#: motion/templates/motion/motion_detail.html:213
 #: motion/templates/projector/Motion.html:40
 msgid "Invalid"
 msgstr "Ungültig"
 
-#: assignment/templates/assignment/view.html:257
+#: assignment/templates/assignment/view.html:255
 msgid "No ballots available."
 msgstr "Keine Wahlgänge vorhanden."
 
-#: assignment/templates/assignment/view.html:281
+#: assignment/templates/assignment/view.html:279
 msgid "Change status"
 msgstr "Status ändern"
 
-#: config/forms.py:22
-msgid "Event name"
-msgstr "Veranstaltungsname"
-
-#: config/forms.py:28
-msgid "Short description of event"
-msgstr "Kurzbeschreibung der Veranstaltung"
-
-#: config/forms.py:36
-msgid "Event date"
-msgstr "Veranstaltungszeitraum"
-
-#: config/forms.py:42
-msgid "Event location"
-msgstr "Veranstaltungsort"
-
-#: config/forms.py:48
-msgid "Event organizer"
-msgstr "Veranstalter"
-
-#: config/forms.py:53
-msgid "Allow access for anonymous guest users"
-msgstr "Erlaube Zugriff für anonyme Gast-Nutzer"
-
-#: config/forms.py:65 participant/forms.py:126
-msgid "Welcome text"
-msgstr "Willkommenstext"
-
-#: config/models.py:39
+#: config/models.py:31
 msgid "Can manage configuration"
 msgstr "Darf die Konfiguration verwalten"
 
-#: config/models.py:83
-msgid "Presentation and assembly system"
-msgstr "Präsentations- und Versammlungssystem"
+#: config/views.py:118
+#, python-format
+msgid "%s settings successfully saved."
+msgstr "Konfiguration '%s' erfolgreich gespeichert."
 
-#: config/models.py:88
-msgid "Welcome to OpenSlides"
-msgstr "Willkommen bei OpenSlides"
+#: config/views.py:127 config/templates/config/config_form.html:8
+msgid "Configuration"
+msgstr "Konfiguration"
 
-#: config/models.py:89
-msgid "[Place for your welcome text.]"
-msgstr "[Platz für Ihren Begrüßungstext.]"
-
-#: config/models.py:102 config/templates/config/general.html:10
-msgid "General"
-msgstr "Allgemein"
-
-#: config/models.py:126 config/templates/config/version.html:5
-#: config/templates/config/version.html:8
-#: config/templates/config/version.html:13 motion/pdf.py:104
+#: config/templates/config/config_form.html:16
+#: core/templates/core/version.html:5 core/templates/core/version.html.py:9
+#: core/templates/core/version.html:17 core/templates/core/version.html:23
+#: motion/pdf.py:117 motion/templates/motion/motion_detail.html:20
+#: motion/templates/motion/motion_diff.html:36
+#: motion/templates/motion/motion_diff.html:40
 msgid "Version"
 msgstr "Version"
 
-#: config/views.py:70
-msgid "General settings successfully saved."
-msgstr "Allgemeine Einstellungen erfolgreich gespeichert."
+#: core/signals.py:35
+msgid "Event name"
+msgstr "Veranstaltungsname"
 
-#: config/templates/config/general.html:5
-msgid "General settings"
-msgstr "Allgemeine Einstellungen"
+#: core/signals.py:40
+msgid "Presentation and assembly system"
+msgstr "Präsentations- und Versammlungssystem"
 
-#: config/templates/config/general.html:15
+#: core/signals.py:43
+msgid "Short description of event"
+msgstr "Kurzbeschreibung der Veranstaltung"
+
+#: core/signals.py:52
+msgid "Event date"
+msgstr "Veranstaltungszeitraum"
+
+#: core/signals.py:60
+msgid "Event location"
+msgstr "Veranstaltungsort"
+
+#: core/signals.py:68
+msgid "Event organizer"
+msgstr "Veranstalter"
+
+#: core/signals.py:73
+msgid "Welcome to OpenSlides"
+msgstr "Willkommen bei OpenSlides"
+
+#: core/signals.py:81
+msgid "[Place for your welcome text.]"
+msgstr "[Platz für Ihren Begrüßungstext.]"
+
+#: core/signals.py:84 participant/signals.py:46
+msgid "Welcome text"
+msgstr "Willkommenstext"
+
+#: core/signals.py:91
+msgid "Allow access for anonymous guest users"
+msgstr "Erlaube Zugriff für anonyme Gast-Nutzer"
+
+#: core/signals.py:95
 msgid "Event"
 msgstr "Veranstaltung"
 
-#: config/templates/config/general.html:33
+#: core/signals.py:99
 msgid "Welcome Widget"
 msgstr "Willkommens-Widget"
 
-#: config/templates/config/general.html:51
+#: core/signals.py:103
 msgid "System"
 msgstr "System"
 
-#: motion/forms.py:38 motion/models.py:472
+#: core/signals.py:107
+msgid "General"
+msgstr "Allgemein"
+
+#: mediafile/models.py:26
+msgid "File"
+msgstr "Datei"
+
+#: mediafile/models.py:35 mediafile/templates/mediafile/mediafile_list.html:22
+msgid "Uploaded by"
+msgstr "Hochgeladen durch"
+
+#: mediafile/models.py:50
+msgid "Can see the list of files"
+msgstr "Darf Dateilisten sehen"
+
+#: mediafile/models.py:51
+msgid "Can upload files"
+msgstr "Darf Dateien hochladen"
+
+#: mediafile/models.py:52
+msgid "Can manage files"
+msgstr "Darf Dateien verwalten"
+
+#: mediafile/models.py:65 mediafile/models.py:67
+msgid "unknown"
+msgstr "unbekannt"
+
+#: mediafile/views.py:101 mediafile/templates/mediafile/mediafile_list.html:6
+#: mediafile/templates/mediafile/mediafile_list.html:9
+msgid "Media"
+msgstr "Medien"
+
+#: mediafile/templates/mediafile/mediafile_form.html:8
+#: mediafile/templates/mediafile/mediafile_form.html:17
+msgid "Edit media"
+msgstr "Mediendatei bearbeiten"
+
+#: mediafile/templates/mediafile/mediafile_form.html:10
+#: mediafile/templates/mediafile/mediafile_form.html:19
+#: mediafile/templates/mediafile/mediafile_list.html:12
+msgid "New media"
+msgstr "Neue Mediendatei"
+
+#: mediafile/templates/mediafile/mediafile_list.html:20
+msgid "Size"
+msgstr "Größe"
+
+#: mediafile/templates/mediafile/mediafile_list.html:21
+msgid "Upload time"
+msgstr "Hochladezeitpunkt"
+
+#: mediafile/templates/mediafile/mediafile_list.html:45
+msgid "No media available."
+msgstr "Keine Mediendatei vorhanden."
+
+#: motion/forms.py:44 motion/models.py:571 motion/pdf.py:170
+#: motion/templates/motion/motion_detail.html:82
+#: motion/templates/motion/motion_diff.html:55
 #: motion/templates/projector/Motion.html:77
 msgid "Reason"
 msgstr "Begründung"
 
-#: motion/forms.py:59 motion/pdf.py:42
+#: motion/forms.py:67 motion/pdf.py:55
+#: motion/templates/motion/motion_detail.html:165
+#: motion/templates/motion/motion_list.html:60
 #: motion/templates/projector/Motion.html:55
 msgid "Submitter"
 msgstr "Antragsteller/in"
 
-#: motion/forms.py:73 motion/pdf.py:66
+#: motion/forms.py:81 motion/pdf.py:79
+#: motion/templates/motion/motion_detail.html:172
 msgid "Supporters"
 msgstr "Unterstützer/innen"
 
-#: motion/forms.py:88
-msgid "Create new version"
-msgstr ""
+#: motion/forms.py:96
+msgid "Don't create a new version"
+msgstr "Keine neue Version erzeugen"
 
-#: motion/forms.py:89
-msgid "Trivial changes don't create a new version."
-msgstr "Triviale Änderungen erzeugen keine neue Version."
+#: motion/forms.py:97
+msgid "Don't create a new version. Useful e.g. for trivial changes."
+msgstr "Keine neue Version erzeugen. Nützlich z.B. für triviale Änderungen."
 
-#: motion/forms.py:98
-msgid "Number of (minimum) required supporters for a motion"
-msgstr "Mindestanzahl erforderlicher Unterstützer/innen für einen Antrag"
+#: motion/forms.py:105 motion/templates/motion/motion_detail.html:235
+msgid "Category"
+msgstr "Sachgebiet"
 
-#: motion/forms.py:100
-msgid "Choose 0 to disable the supporting system"
-msgstr "Zum Deaktivieren des Unterstützersystems '0' eingeben"
+#: motion/forms.py:111 motion/signals.py:105
+msgid "Identifier"
+msgstr "Bezeichner"
 
-#: motion/forms.py:105
-msgid "Motion preamble"
-msgstr "Antragseinleitung"
-
-#: motion/forms.py:126
-msgid "Title for PDF document (all motions)"
-msgstr "Titel für PDF-Dokument (alle Anträge)"
-
-#: motion/forms.py:131
-msgid "Preamble text for PDF document (all motions)"
-msgstr "Einleitungstext für PDF-Dokument (alle Wahlen) "
-
-#: motion/forms.py:136
-msgid "Create new versions"
-msgstr ""
-
-#: motion/forms.py:139
-msgid "create allways a new versions"
-msgstr ""
-
-#: motion/forms.py:140
-#, fuzzy
-msgid "create never a new version"
-msgstr "Triviale Änderungen erzeugen keine neue Version."
-
-#: motion/forms.py:141
-#, fuzzy
-msgid "Let the user choose if he wants to create a new version"
-msgstr "Triviale Änderungen erzeugen keine neue Version."
-
-#: motion/forms.py:146
-msgid "Workflow for the motions"
-msgstr ""
-
-#: motion/models.py:75
+#: motion/models.py:90
 msgid "Can see motions"
 msgstr "Darf Anträge sehen"
 
-#: motion/models.py:76
+#: motion/models.py:91
 msgid "Can create motions"
 msgstr "Darf Anträge erstellen"
 
-#: motion/models.py:77
+#: motion/models.py:92
 msgid "Can support motions"
 msgstr "Darf Anträge unterstützen"
 
-#: motion/models.py:78
+#: motion/models.py:93
 msgid "Can manage motions"
 msgstr "Darf Anträge verwalten"
 
-#: motion/models.py:489
-#, fuzzy
+#: motion/models.py:588
 msgid "new"
 msgstr "Neu"
 
-#: motion/pdf.py:35 motion/views.py:459
-#, fuzzy, python-format
-msgid "Motion: %s"
-msgstr "Anträge"
+#: motion/models.py:635 motion/templates/motion/category_list.html:22
+msgid "Category name"
+msgstr "Sachgebiet"
 
-#: motion/pdf.py:55
+#: motion/models.py:638 motion/templates/motion/category_list.html:21
+msgid "Prefix"
+msgstr "Präfix"
+
+#: motion/pdf.py:48 motion/views.py:614
+#, python-format
+msgid "Motion: %s"
+msgstr "Antrag: %s"
+
+#: motion/pdf.py:68
 msgid "Signature"
 msgstr "Unterschrift"
 
-#: motion/pdf.py:95
-#, fuzzy
+#: motion/pdf.py:108
 msgid "State"
 msgstr "Status"
 
-#: motion/pdf.py:130 motion/templates/motion/motion_detail.html:53
-#: motion/templates/motion/motion_detail.html:61
+#: motion/pdf.py:143 motion/templates/motion/motion_detail.html:202
+#: motion/templates/motion/poll_form.html:6
+#: motion/templates/motion/poll_form.html:14
 #: motion/templates/projector/Motion.html:33
 msgid "Vote"
 msgstr "Abstimmung"
 
-#: motion/pdf.py:151
-#, fuzzy
-msgid "Reason:"
-msgstr "Begründung"
-
-#: motion/pdf.py:167
+#: motion/pdf.py:254 motion/templates/motion/motion_list.html:104
 msgid "No motions available."
 msgstr "Keine Anträge vorhanden."
 
-#: motion/signals.py:24
+#: motion/pdf.py:265
+#, python-format
+msgid "Motion No. %s"
+msgstr "Antrag Nr. %s"
+
+#: motion/pdf.py:267
+#, python-format
+msgid "%d. Vote"
+msgstr "%d. Abstimmung"
+
+#: motion/signals.py:33
+msgid "Stop submitting new motions by non-staff users"
+msgstr ""
+"Einreichen von neuen Anträgen stoppen für Nutzer ohne Verwaltungsrechte"
+
+#: motion/signals.py:40
+msgid "Number of (minimum) required supporters for a motion"
+msgstr "Mindestanzahl erforderlicher Unterstützer/innen für einen Antrag"
+
+#: motion/signals.py:44
+msgid "Choose 0 to disable the supporting system"
+msgstr "Zum Deaktivieren des Unterstützersystems '0' eingeben"
+
+#: motion/signals.py:47
 msgid "The assembly may decide,"
 msgstr "Die Versammlung möge beschließen,"
 
-#: motion/signals.py:27 motion/views.py:457 motion/views.py:509
-#: motion/views.py:524 motion/templates/motion/config.html:10
-#: motion/templates/motion/motion_list.html:7
+#: motion/signals.py:51
+msgid "Motion preamble"
+msgstr "Antragseinleitung"
+
+#: motion/signals.py:73 motion/views.py:612 motion/views.py:663
+#: motion/views.py:677 motion/templates/motion/category_list.html:6
+#: motion/templates/motion/motion_list.html:6
 #: motion/templates/motion/motion_list.html:10
 msgid "Motions"
 msgstr "Anträge"
 
-#: motion/views.py:141
-#, fuzzy
-msgid "Motion created"
-msgstr "Antragseinleitung"
+#: motion/signals.py:77
+msgid "Title for PDF document (all motions)"
+msgstr "Titel für PDF-Dokument (alle Anträge)"
 
-#: motion/views.py:158
-#, fuzzy
-msgid "Motion updated"
-msgstr "Antragstext"
+#: motion/signals.py:84
+msgid "Preamble text for PDF document (all motions)"
+msgstr "Einleitungstext für PDF-Dokument (alle Wahlen) "
 
-#: motion/views.py:194
-#, fuzzy, python-format
-msgid "Are you sure you want permit Version %s?"
-msgstr "Soll Version <b>%s</b> wirklich zurückgewiesen werden?"
+#: motion/signals.py:89
+msgid "Allow to disable versioning"
+msgstr "Erlaubt Versionierung zu deaktiveren"
 
-#: motion/views.py:220
-#, fuzzy, python-format
-msgid "Are you sure you want reject Version %s?"
-msgstr "Soll Version <b>%s</b> wirklich zurückgewiesen werden?"
+#: motion/signals.py:96
+msgid "Workflow of new motions"
+msgstr "Arbeitsablauf von neuen Anträgen"
 
-#: motion/views.py:252
-msgid "You can not support this motion."
-msgstr "Sie dürfen diesen Antrag nicht unterstützen."
+#: motion/signals.py:107
+msgid "Set it manually"
+msgstr "manuell setzen"
 
-#: motion/views.py:255
-msgid "You can not unsupport this motion."
-msgstr "Sie dürfen Ihre Unterstützung für diesen Antrag nicht entziehen."
+#: motion/signals.py:108
+msgid "Numbered per category"
+msgstr "pro Sachgebiet nummerieren"
 
-#: motion/views.py:263
-msgid "Do you really want to support this motion?"
-msgstr "Wollen Sie wirklich diesen Antrag unterstützen?"
+#: motion/signals.py:109
+msgid "Serially numbered"
+msgstr "fortlaufend nummerieren"
 
-#: motion/views.py:265
-msgid "Do you really want to unsupport this motion?"
-msgstr "Wollen Sie wirklich Ihre Unterstützung für diesen Antrag entziehen?"
-
-#: motion/views.py:277
-#, python-format
-msgid "Supporter: +%s"
-msgstr "Unterstützer/in: +%s"
-
-#: motion/views.py:280
-#, python-format
-msgid "Supporter: -%s"
-msgstr "Unterstützer/in: -%s"
-
-#: motion/views.py:285
-msgid "You have supported this motion successfully."
-msgstr "Sie haben den Antrag erfolgreich unterstützt."
-
-#: motion/views.py:287
-msgid "You have unsupported this motion successfully."
-msgstr "Sie haben dem Antrag erfolgreich Ihre Unterstützung entzogen."
-
-#: motion/views.py:310
-msgid "Poll created"
-msgstr "Abstimmung erstellt"
-
-#: motion/views.py:311
-msgid "New vote was successfully created."
-msgstr "Neue Abstimmung erfolgreich angelegt."
-
-#: motion/views.py:361
-#, fuzzy
-msgid "Poll updated"
-msgstr "Abstimmung wurde aktualisiert"
-
-#: motion/views.py:374
-msgid "Poll deleted"
-msgstr "Abstimmung gelöscht"
-
-#: motion/views.py:404
-#, fuzzy, python-format
-msgid "Changed state to %s"
-msgstr "Status ändern"
-
-#: motion/views.py:406
-#, fuzzy, python-format
-msgid "Motion status was set to: %s."
-msgstr "Antragsstatus wurde gesetzt auf: <b>%s</b>."
-
-#: motion/views.py:431
-#, fuzzy
-msgid "Created Agenda Item"
-msgstr "Tagesordnungseintrag"
-
-#: motion/views.py:500
-msgid "Motion settings successfully saved."
-msgstr "Antrags-Einstellungen wurden erfolgreich gespeichert."
-
-#: motion/workflow.py:128
-msgid "Unknwon state"
-msgstr ""
-
-#: motion/workflow.py:131
-msgid "Published"
-msgstr "Veröffentlicht"
-
-#: motion/workflow.py:136
-msgid "Permitted"
-msgstr "Zugelassen"
-
-#: motion/workflow.py:137
-msgid "Accepted"
-msgstr "Angenommen"
-
-#: motion/workflow.py:138
-msgid "Rejected"
-msgstr "Abgelehnt"
-
-#: motion/workflow.py:139
-msgid "Withdrawed"
-msgstr "Zurückgezogen"
-
-#: motion/workflow.py:140
-msgid "Adjourned"
-msgstr "Vertagt"
-
-# please check!
-#: motion/workflow.py:141
-msgid "Not Concerned"
-msgstr "Nicht befasst"
-
-# please check!
-#: motion/workflow.py:142
-msgid "Commited a bill"
-msgstr "Verwiesen (in Ausschuss)"
-
-#: motion/workflow.py:143
-msgid "Needs Review"
-msgstr "Benötigt Review"
-
-#: motion/workflow.py:144
-msgid "Rejected (not authorized)"
-msgstr "Verworfen (nicht zulässig)"
-
-#: motion/templates/motion/config.html:5
-msgid "Motion settings"
-msgstr "Antrags Einstellungen"
-
+#: motion/signals.py:111 motion/views.py:523
 #: motion/templates/motion/motion_detail.html:7
+#: motion/templates/motion/motion_detail.html:15
+#: motion/templates/motion/motion_diff.html:7
+#: motion/templates/motion/motion_diff.html:20
+#: motion/templates/motion/poll_form.html:6
+#: motion/templates/motion/poll_form.html:14
 #: motion/templates/projector/Motion.html:7
 #: motion/templates/projector/Motion.html:65
 msgid "Motion"
 msgstr "Antrag"
 
-#: motion/templates/motion/motion_detail.html:54
+#: motion/signals.py:132
+msgid "Simple Workflow"
+msgstr "Einfacher Arbeitsablauf"
+
+#: motion/signals.py:133
+msgid "submitted"
+msgstr "eingereicht"
+
+#: motion/signals.py:138 motion/signals.py:164
+msgid "accepted"
+msgstr "angenommen"
+
+#: motion/signals.py:140 motion/signals.py:166
+msgid "Accept"
+msgstr "annehmen"
+
+#: motion/signals.py:141 motion/signals.py:168
+msgid "rejected"
+msgstr "abgelehnt"
+
+#: motion/signals.py:143 motion/signals.py:170
+msgid "Reject"
+msgstr "ablehnen"
+
+#: motion/signals.py:144
+msgid "not decided"
+msgstr "nicht beschlossen"
+
+#: motion/signals.py:146
+msgid "Do not decide"
+msgstr "nicht beschließen"
+
+#: motion/signals.py:151
+msgid "Complex Workflow"
+msgstr "Komplexer Arbeitsablauf"
+
+#: motion/signals.py:152
+msgid "published"
+msgstr "veröffentlicht"
+
+#: motion/signals.py:157
+msgid "permitted"
+msgstr "zugelassen"
+
+#: motion/signals.py:159
+msgid "Permit"
+msgstr "zulassen"
+
+#: motion/signals.py:172
+msgid "withdrawed"
+msgstr "zurückgezogen"
+
+#: motion/signals.py:174
+msgid "Withdraw"
+msgstr "zurückziehen"
+
+#: motion/signals.py:176
+msgid "adjourned"
+msgstr "vertagt"
+
+#: motion/signals.py:178
+msgid "Adjourn"
+msgstr "vertagen"
+
+# please check!
+#: motion/signals.py:180
+msgid "not concerned"
+msgstr "nicht befasst"
+
+# please check!
+#: motion/signals.py:182
+msgid "Do not concern"
+msgstr "nicht befassen"
+
+# please check!
+#: motion/signals.py:184
+msgid "commited a bill"
+msgstr "in Ausschuss verwiesen"
+
+# please check!
+#: motion/signals.py:186
+msgid "Commit a bill"
+msgstr "in Ausschuss verweisen"
+
+#: motion/signals.py:188
+msgid "needs review"
+msgstr "Benötigt Review"
+
+#: motion/signals.py:191
+msgid "rejected (not authorized)"
+msgstr "Verworfen (nicht zulässig)"
+
+#: motion/signals.py:193
+msgid "reject (not authorized)"
+msgstr "Verwerfen (nicht zulässig)"
+
+#: motion/views.py:173
+msgid "Motion created"
+msgstr "Antrag erstellt"
+
+#: motion/views.py:195
+msgid "Motion updated"
+msgstr "Antrag aktualisiert"
+
+#: motion/views.py:221
+msgid "Version successfully permitted."
+msgstr "Version erfolgreich zugelassen."
+
+#: motion/views.py:240
+#, python-format
+msgid "Are you sure you want permit Version %s?"
+msgstr "Soll Version <b>%s</b> wirklich zugelassen werden?"
+
+#: motion/views.py:268
+#, python-format
+msgid "Are you sure you want reject Version %s?"
+msgstr "Soll Version <b>%s</b> wirklich zurückgewiesen werden?"
+
+#: motion/views.py:294
+msgid "At least one version number is not valid."
+msgstr "Mindestens eine Versionsnummer ist ungültig"
+
+#: motion/views.py:356
+msgid "You can not support this motion."
+msgstr "Sie dürfen diesen Antrag nicht unterstützen."
+
+#: motion/views.py:359
+msgid "You can not unsupport this motion."
+msgstr "Sie dürfen Ihre Unterstützung für diesen Antrag nicht entziehen."
+
+#: motion/views.py:367
+msgid "Do you really want to support this motion?"
+msgstr "Wollen Sie wirklich diesen Antrag unterstützen?"
+
+#: motion/views.py:369
+msgid "Do you really want to unsupport this motion?"
+msgstr "Wollen Sie wirklich Ihre Unterstützung für diesen Antrag entziehen?"
+
+#: motion/views.py:381
+#, python-format
+msgid "Supporter: +%s"
+msgstr "Unterstützer/in: +%s"
+
+#: motion/views.py:384
+#, python-format
+msgid "Supporter: -%s"
+msgstr "Unterstützer/in: -%s"
+
+#: motion/views.py:389
+msgid "You have supported this motion successfully."
+msgstr "Sie haben den Antrag erfolgreich unterstützt."
+
+#: motion/views.py:391
+msgid "You have unsupported this motion successfully."
+msgstr "Sie haben dem Antrag erfolgreich Ihre Unterstützung entzogen."
+
+#: motion/views.py:414
+msgid "Poll created"
+msgstr "Abstimmung erstellt"
+
+#: motion/views.py:415
+msgid "New vote was successfully created."
+msgstr "Neue Abstimmung erfolgreich angelegt."
+
+#: motion/views.py:479
+msgid "Poll updated"
+msgstr "Abstimmung wurde aktualisiert"
+
+#: motion/views.py:497
+msgid "Poll deleted"
+msgstr "Abstimmung gelöscht"
+
+#: motion/views.py:523
+msgid "Poll"
+msgstr ""
+
+#: motion/views.py:559
+#, python-format
+msgid "State changed to %s"
+msgstr "Status geändert zu %s"
+
+#: motion/views.py:561
+#, python-format
+msgid "Motion status was set to: %s."
+msgstr "Antragsstatus wurde gesetzt auf: %s."
+
+#: motion/views.py:586
+msgid "Agenda item created"
+msgstr "Tagesordnungseintrag angelegt"
+
+#: motion/templates/motion/category_form.html:9
+#: motion/templates/motion/category_form.html:18
+msgid "Edit category"
+msgstr "Sachgebiet bearbeiten"
+
+#: motion/templates/motion/category_form.html:11
+#: motion/templates/motion/category_form.html:20
+#: motion/templates/motion/category_list.html:13
+msgid "New category"
+msgstr "Neues Sachgebiet"
+
+#: motion/templates/motion/category_list.html:10
+#: motion/templates/motion/motion_list.html:18
+msgid "Categories"
+msgstr "Sachgebiete"
+
+#: motion/templates/motion/category_list.html:41
+msgid "No categories available."
+msgstr "Keine Sachgebieter vorhanden."
+
+#: motion/templates/motion/motion_detail.html:25
+msgid "Print this motion as PDF"
+msgstr "Diesen Antrag als PDF drucken"
+
+#: motion/templates/motion/motion_detail.html:28
+#: motion/templates/motion/poll_form.html:21
+msgid "Show motion"
+msgstr "Antrag anzeigen"
+
+#: motion/templates/motion/motion_detail.html:40
+#: motion/templates/motion/motion_form.html:20
+#: motion/templates/motion/motion_form.html:29
+msgid "Edit motion"
+msgstr "Antrag bearbeiten"
+
+#: motion/templates/motion/motion_detail.html:44
+msgid "Delete motion"
+msgstr "Antrag löschen"
+
+#: motion/templates/motion/motion_detail.html:63
+msgid "This is not the newest version."
+msgstr "Dies ist nicht die neuste Version."
+
+#: motion/templates/motion/motion_detail.html:65
+msgid "Go to last version"
+msgstr "Zu letzten Version"
+
+#: motion/templates/motion/motion_detail.html:70
+msgid "This version is not yet authorized."
+msgstr "Diese Version wurde noch nicht zugelassen."
+
+#: motion/templates/motion/motion_detail.html:72
+msgid "Go to last authorized version"
+msgstr "Zur letzten zugelassenen Version"
+
+#: motion/templates/motion/motion_detail.html:77
+msgid "Motion text"
+msgstr "Antragstext"
+
+#: motion/templates/motion/motion_detail.html:95
+msgid "Version history"
+msgstr "Versionshistorie"
+
+#: motion/templates/motion/motion_detail.html:101
+msgid "Time"
+msgstr "Zeit"
+
+#: motion/templates/motion/motion_detail.html:102
+msgid "Difference"
+msgstr "Unterschied"
+
+#: motion/templates/motion/motion_detail.html:109
+msgid "This version is authorized"
+msgstr "Diese Version wurde zugelassen"
+
+#: motion/templates/motion/motion_detail.html:112
+msgid "Permit this version"
+msgstr "Diese Version zulassen"
+
+#: motion/templates/motion/motion_detail.html:115
+msgid "Reject this version"
+msgstr "Diese Version verwerfen"
+
+#: motion/templates/motion/motion_detail.html:119
+msgid "This version is rejected"
+msgstr "Diese Version wurde verworfen"
+
+#: motion/templates/motion/motion_detail.html:149
+msgid "Show log"
+msgstr "Log anzeigen"
+
+#: motion/templates/motion/motion_detail.html:204
 msgid "Edit Vote"
 msgstr "Abstimmung bearbeiten"
 
-#: motion/templates/motion/motion_detail.html:57
+#: motion/templates/motion/motion_detail.html:205
 msgid "Delete Vote"
 msgstr "Abstimmung löschen"
 
-#: motion/templates/motion/motion_detail.html:77
-#, fuzzy
-msgid "Enter result"
-msgstr "Abstimmungsergebnis"
+#: motion/templates/motion/motion_detail.html:220
+msgid "No results"
+msgstr "Keine Ergebnisse"
 
-#: motion/templates/motion/motion_detail.html:87
+#: motion/templates/motion/motion_detail.html:229
 msgid "New vote"
 msgstr "Neue Abstimmung"
 
-#: motion/templates/motion/motion_form.html:7
-#, fuzzy
-msgid "Motion Form"
-msgstr "Antrag Nr."
+#: motion/templates/motion/motion_detail.html:239
+#: motion/templates/motion/motion_list.html:61
+msgid "Creation Time"
+msgstr "Erstellungszeit"
 
-#: motion/templates/motion/motion_form.html:10
-#, fuzzy
-msgid "Motions Forms"
-msgstr "Anträge"
+#: motion/templates/motion/motion_detail.html:247
+msgid "Withdraw motion"
+msgstr "Antrag zurückziehen"
 
-#: motion/templates/motion/poll_form.html:15
+#: motion/templates/motion/motion_detail.html:256
+msgid "Unsupport"
+msgstr "Nicht unterstützen"
+
+#: motion/templates/motion/motion_detail.html:262
+msgid "Support"
+msgstr "Unterstützen"
+
+#: motion/templates/motion/motion_detail.html:270
+msgid "minimum required supporters"
+msgstr "minimal erforderliche Unterstützer/innen"
+
+#: motion/templates/motion/motion_detail.html:277
+msgid "Manage motion"
+msgstr "Antrag verwalten"
+
+#: motion/templates/motion/motion_detail.html:285
+msgid "For administration only:"
+msgstr "Nur zur Administration:"
+
+#: motion/templates/motion/motion_detail.html:287
+msgid "Reset state"
+msgstr "Status zurücksetzen"
+
+#: motion/templates/motion/motion_diff.html:24
+msgid "Diff view"
+msgstr "Änderungsanzeige"
+
+#: motion/templates/motion/motion_diff.html:28
+#: motion/templates/motion/motion_form.html:35
+#: motion/templates/motion/poll_form.html:18
+msgid "Back to motion"
+msgstr "Zurück zum Antrag"
+
+#: motion/templates/motion/motion_diff.html:37
+#: motion/templates/motion/motion_diff.html:41
+msgid "created"
+msgstr "erstellt"
+
+#: motion/templates/motion/motion_form.html:22
+#: motion/templates/motion/motion_form.html:31
+#: motion/templates/motion/motion_list.html:14
+msgid "New motion"
+msgstr "Neuer Antrag"
+
+#: motion/templates/motion/motion_list.html:21
+msgid "Print all motions as PDF"
+msgstr "Alle Anträge als PDF drucken"
+
+#: motion/templates/motion/motion_list.html:29
+msgid "Need supporters"
+msgstr "Benötigt Unterstützer/innen"
+
+#: motion/templates/motion/motion_list.html:34
+msgid "Without number"
+msgstr "Ohne Nummer"
+
+#: motion/templates/motion/motion_list.html:41
+msgid "Not yet authorized"
+msgstr "Noch nicht zugelassen"
+
+#: motion/templates/motion/motion_list.html:42
+msgid "Authorized"
+msgstr "Zugelassen"
+
+#: motion/templates/motion/motion_list.html:43
+msgid "Accepted"
+msgstr "Angenommen"
+
+#: motion/templates/motion/motion_list.html:44
+msgid "Rejected"
+msgstr "Abgelehnt"
+
+#: motion/templates/motion/motion_list.html:45
+msgid "Withdrawen (by submitter)"
+msgstr "Zurückgezogen (durch Antragsteller/in)"
+
+#: motion/templates/motion/motion_list.html:46
+msgid "Needs Review"
+msgstr "Benötigt Review"
+
+#: motion/templates/motion/motion_list.html:50
+msgctxt "number of motions"
+msgid "motion"
+msgid_plural "motions"
+msgstr[0] "Antrag"
+msgstr[1] "Anträge"
+
+#: motion/templates/motion/motion_list.html:54
+msgid "#"
+msgstr "#"
+
+#: motion/templates/motion/motion_list.html:55
+msgid "Motion title"
+msgstr "Antragstitel"
+
+#: motion/templates/motion/motion_list.html:57
+msgid "Number of supporters"
+msgstr "Anzahl der Unterstützer/innen"
+
+#: motion/templates/motion/motion_list.html:96
+msgid "Print motion as PDF"
+msgstr "Antrag als PDF drucken"
+
+#: motion/templates/motion/poll_form.html:37
 msgid "Option"
 msgstr "Wahlmöglichkeit"
-
-#: motion/templates/motion/widget.html:19
-#: participant/templates/participant/personal_info_widget.html:9
-#: participant/templates/participant/personal_info_widget.html:28
-msgid "motion"
-msgstr "Antrag"
-
-#: motion/templates/motion/widget.html:23
-#: motion/templates/projector/Motion.html:65
-#: participant/templates/participant/personal_info_widget.html:13
-#: participant/templates/participant/personal_info_widget.html:32
-msgid "no number"
-msgstr "ohne Nummer"
 
 #: motion/templates/motion/widget.html:27
 msgid "No motion available."
@@ -1478,250 +1791,256 @@ msgstr "Keine Abstimmungsergebnisse vorhanden."
 msgid "Motion No."
 msgstr "Antrag Nr."
 
-#: participant/__init__.py:3
+#: participant/__init__.py:18 participant/signals.py:56
 msgid "Participant"
 msgstr "Teilnehmer"
 
-#: participant/api.py:78
+#: participant/api.py:73
 #, python-format
 msgid "Ignoring malformed line %d in import file."
 msgstr "Fehlerhafte Zeile %d der Quelldatei wurde ignoriert."
 
-#: participant/api.py:94
+#: participant/api.py:97
+#, python-format
+msgid "Ignoring malformed group id in line %d."
+msgstr "Fehlerhafte Gruppen-ID in Zeile %d wurde ignoriert."
+
+#: participant/api.py:100
+#, python-format
+msgid "Group id %(id)s does not exists (line %(line)d)."
+msgstr "Gruppen-ID %(id)s existiert nicht (Zeile %(line)d)."
+
+#: participant/api.py:105
 msgid "Import aborted because of severe errors in the input file."
 msgstr "Import auf Grund von schweren Fehlern in der Quelldatei abgebrochen."
 
-#: participant/api.py:96
+#: participant/api.py:107
 msgid "Import file has wrong character encoding, only UTF-8 is supported!"
 msgstr ""
 "Die Quelldatei benutzt eine ungültige Zeichenkodierung, es wird nur UTF-8 "
 "wird unterstützt!"
 
-#: participant/forms.py:28 participant/views.py:602
+#: participant/forms.py:28 participant/views.py:520
 #: participant/templates/participant/group_overview.html:6
 #: participant/templates/participant/group_overview.html:9
-#: participant/templates/participant/overview.html:21
-#: participant/templates/participant/user_detail.html:18
+#: participant/templates/participant/overview.html:27
+#: participant/templates/participant/user_detail.html:34
 msgid "Groups"
 msgstr "Gruppen"
 
-#: participant/forms.py:53
+#: participant/forms.py:72
+msgid ""
+"You can not remove the last group containing the permission to manage "
+"participants."
+msgstr ""
+"Sie können nicht die letzte Gruppe löschen, die das Recht zur Verwaltung von "
+"Teilnehmern enthält."
+
+#: participant/forms.py:80
 msgid "Permissions"
 msgstr "Rechte"
 
-#: participant/forms.py:56 participant/views.py:540 participant/views.py:588
-#: participant/templates/participant/config.html:10
+#: participant/forms.py:83 participant/views.py:482 participant/views.py:506
 #: participant/templates/participant/overview.html:7
-#: participant/templates/participant/overview.html:16
-#: participant/templates/participant/overview.html:95
+#: participant/templates/participant/overview.html:22
 msgid "Participants"
 msgstr "Teilnehmer/innen"
 
-#: participant/forms.py:93
+#: participant/forms.py:120
 msgid "You can not edit the name for this group."
 msgstr "Sie dürfen den Namen dieser Gruppe nicht bearbeiten."
 
-#: participant/forms.py:97
+#: participant/forms.py:124
 #, python-format
 msgid "Group name \"%s\" is reserved for internal use."
 msgstr "Der Gruppenname \"%s\" ist für interne Verwendung reserviert."
 
-#: participant/forms.py:114
+#: participant/forms.py:142
 msgid "CSV File"
 msgstr "CSV-Datei"
 
-#: participant/forms.py:121
-msgid "System URL"
-msgstr "System URL"
-
-#: participant/forms.py:122 participant/forms.py:127
-msgid "Printed in PDF of first time passwords only."
-msgstr "Erscheint nur im PDF der Erst-Passwörter"
-
-#: participant/forms.py:130
-msgid "Sort participants by first name"
-msgstr "Teilnehmer/innen nach Vornamen sortieren"
-
-#: participant/forms.py:131
-msgid "Disable for sorting by last name"
-msgstr "Deaktivieren für Sortierung nach Nachnamen"
-
-#: participant/models.py:33 participant/templates/participant/overview.html:57
+#: participant/models.py:30
 msgid "Male"
 msgstr "Männlich"
 
-#: participant/models.py:34 participant/templates/participant/overview.html:58
+#: participant/models.py:31
 msgid "Female"
 msgstr "Weiblich"
 
-#: participant/models.py:37 participant/templates/participant/overview.html:70
-msgid "Delegate"
-msgstr "Delegierter"
-
-#: participant/models.py:38 participant/templates/participant/overview.html:71
-msgid "Observer"
-msgstr "Beobachter"
-
-#: participant/models.py:39 participant/templates/participant/overview.html:72
-msgid "Staff"
-msgstr "Mitarbeiter"
-
-#: participant/models.py:40 participant/templates/participant/overview.html:73
-msgid "Guest"
-msgstr "Gast"
-
-#: participant/models.py:45 participant/templates/participant/overview.html:62
-#: participant/templates/participant/overview.html:102
+#: participant/models.py:36 participant/views.py:183
+#: participant/templates/participant/overview.html:65
+#: participant/templates/participant/user_detail.html:30
 msgid "Structure level"
 msgstr "Gliederungsebene"
 
-#: participant/models.py:46
+#: participant/models.py:37
 msgid "Will be shown after the name."
 msgstr "Wird nach dem Namen angezeigt."
 
-#: participant/models.py:49 participant/templates/participant/overview.html:56
-#: participant/templates/participant/user_detail.html:28
+#: participant/models.py:40
+msgid "Will be shown before the name."
+msgstr "Wird vor dem Namen angezeigt."
+
+#: participant/models.py:43
+#: participant/templates/participant/user_detail.html:20
 msgid "Gender"
 msgstr "Geschlecht"
 
-#: participant/models.py:49 participant/models.py:52 participant/models.py:55
+#: participant/models.py:43 participant/models.py:46
 msgid "Only for filtering the participant list."
 msgstr "Nur zum Filtern der Teilnehmerliste."
 
-#: participant/models.py:52
-msgid "Typ"
-msgstr "Typ"
-
-#: participant/models.py:54 participant/views.py:246
-#: participant/templates/participant/overview.html:77
-#: participant/templates/participant/overview.html:104
-#: participant/templates/participant/user_detail.html:38
+#: participant/models.py:45 participant/views.py:183
+#: participant/templates/participant/overview.html:67
+#: participant/templates/participant/user_detail.html:32
 msgid "Committee"
 msgstr "Amt"
 
-#: participant/models.py:57
-#: participant/templates/participant/user_detail.html:43
+#: participant/models.py:48
+#: participant/templates/participant/user_detail.html:24
 msgid "About me"
 msgstr "Über mich"
 
-#: participant/models.py:58
+#: participant/models.py:49
 msgid "Your profile text"
 msgstr "Ihr Profiltext"
 
-#: participant/models.py:61
+#: participant/models.py:52
 msgid "Only for notes."
 msgstr "Nur für Notizen."
 
-#: participant/models.py:64
+#: participant/models.py:55
 msgid "Default password"
 msgstr "Vorgegebenes Passwort"
 
-#: participant/models.py:118
+#: participant/models.py:113
 msgid "Can see participant"
 msgstr "Darf die Teilnehmer/inen sehen"
 
-#: participant/models.py:120
+#: participant/models.py:115
 msgid "Can manage participant"
 msgstr "Darf die Teilnehmer/inen verwalten"
 
-#: participant/models.py:142
+#: participant/models.py:137
 msgid "Use this group as participant"
 msgstr "Verwende diese Gruppe als Teilnehmer/in"
 
-#: participant/models.py:143
+#: participant/models.py:138
 msgid "For example as submitter of a motion."
 msgstr "Zum Beispiel als Antragsteller."
 
-#: participant/models.py:237
+#: participant/signals.py:38
+msgid "System URL"
+msgstr "System URL"
+
+#: participant/signals.py:39 participant/signals.py:47
+msgid "Printed in PDF of first time passwords only."
+msgstr "Erscheint nur im PDF der Erst-Passwörter"
+
+#: participant/signals.py:42
 msgid "Welcome to OpenSlides!"
 msgstr "Willkommen bei OpenSlides!"
 
-#: participant/views.py:198
+#: participant/signals.py:53
+msgid "Sort participants by first name"
+msgstr "Teilnehmer/innen nach Vornamen sortieren"
+
+#: participant/signals.py:54
+msgid "Disable for sorting by last name"
+msgstr "Deaktivieren für Sortierung nach Nachnamen"
+
+#: participant/signals.py:97 participant/templates/participant/import.html:25
+msgid "Anonymous"
+msgstr "Gast"
+
+#: participant/signals.py:99 participant/templates/participant/import.html:25
+msgid "Registered"
+msgstr "Registrierte/r"
+
+#: participant/signals.py:109
+msgid "Delegates"
+msgstr "Delegierte/r"
+
+#: participant/signals.py:123 participant/templates/participant/import.html:26
+msgid "Staff"
+msgstr "Mitarbeiter/in"
+
+#: participant/views.py:135
 msgid "You can not delete yourself."
 msgstr "Sie dürfen sich nicht selbst löschen."
 
-#: participant/views.py:219
+#: participant/views.py:156
 msgid "You can not deactivate yourself."
 msgstr "Sie dürfen sich nicht selbst deaktivieren."
 
-#: participant/views.py:222
+#: participant/views.py:159
 msgid "You can not deactivate the administrator."
 msgstr "Sie dürfen den Administrator nicht deaktivieren."
 
-#: participant/views.py:241
+#: participant/views.py:178
 msgid "Participant-list"
 msgstr "Teilnehmerliste"
 
-#: participant/views.py:242
+#: participant/views.py:179
 msgid "List of Participants"
 msgstr "Teilnehmerliste"
 
-#: participant/views.py:245
-#: participant/templates/participant/overview.html:101
+#: participant/views.py:182 participant/templates/participant/overview.html:64
 msgid "Last Name"
 msgstr "Nachname"
 
-#: participant/views.py:245
-#: participant/templates/participant/overview.html:100
+#: participant/views.py:182 participant/templates/participant/overview.html:63
 msgid "First Name"
 msgstr "Vorname"
 
-#: participant/views.py:245
+#: participant/views.py:183
 #: participant/templates/participant/group_overview.html:18
+#: participant/templates/participant/overview.html:66
 msgid "Group"
 msgstr "Gruppe"
 
-#: participant/views.py:277
+#: participant/views.py:219
 msgid "Participant-passwords"
 msgstr "Teilnehmer-Passwoerter"
 
-#: participant/views.py:299
+#: participant/views.py:249
 msgid "Account for OpenSlides"
 msgstr "Zugang für OpenSlides"
 
-#: participant/views.py:301
+#: participant/views.py:251
 #, python-format
 msgid "for %s"
 msgstr "für %s"
 
-#: participant/views.py:304
+#: participant/views.py:254
 #, python-format
 msgid "User: %s"
 msgstr "Nutzername: %s"
 
-#: participant/views.py:308
+#: participant/views.py:258
 #, python-format
 msgid "Password: %s"
 msgstr "Passwort: %s"
 
-#: participant/views.py:313
-#, python-format
-msgid "URL: %s"
-msgstr "URL: %s"
-
-#: participant/views.py:355
+#: participant/views.py:305
 #, python-format
 msgid "%d new participants were successfully imported."
 msgstr "%d neue Teilnehmer/innen wurden erfolgreich importiert."
 
-#: participant/views.py:366
+#: participant/views.py:316
 msgid "Do you really want to reset the password?"
 msgstr "Soll das Passwort wirklich zurückgesetzt werden?"
 
-#: participant/views.py:379
+#: participant/views.py:329
 #, python-format
 msgid "The Password for %s was successfully reset."
 msgstr "Das Passwort für %s wurde erfolgreich zurückgesetzt."
 
-#: participant/views.py:434
+#: participant/views.py:404
 msgid "You can not delete this Group."
 msgstr "Sie dürfen diese Gruppe nicht löschen."
 
-#: participant/views.py:463
-msgid "Participants settings successfully saved."
-msgstr "Teilnehmer/innen-Einstellungen wurden erfolgreich gespeichert."
-
-#: participant/views.py:473
+#: participant/views.py:415
 #, python-format
 msgid ""
 "Installation was successfully! Use %(user)s (password: %(password)s) for "
@@ -1734,17 +2053,13 @@ msgstr ""
 "Sie das Passwort nach der ersten Anmeldung! Anderenfalls erscheint diese "
 "Meldung weiterhin für alle und ist ein Sicherheitsrisiko."
 
-#: participant/views.py:499
+#: participant/views.py:441
 msgid "User settings successfully saved."
 msgstr "Nutzereinstellungen wurden erfolgreich gespeichert."
 
-#: participant/views.py:522
+#: participant/views.py:464
 msgid "Password successfully changed."
 msgstr "Passwort wurde erfolgreich geändert."
-
-#: participant/templates/participant/config.html:5
-msgid "Participant settings"
-msgstr "Teilnehmer/innen-Einstellungen"
 
 #: participant/templates/participant/edit.html:8
 #: participant/templates/participant/edit.html:17
@@ -1753,7 +2068,7 @@ msgstr "Teilnehmer/in bearbeiten"
 
 #: participant/templates/participant/edit.html:10
 #: participant/templates/participant/edit.html:19
-#: participant/templates/participant/overview.html:20
+#: participant/templates/participant/overview.html:26
 msgid "New participant"
 msgstr "Neue/r Teilnehmer/in"
 
@@ -1790,7 +2105,7 @@ msgstr "Keine Gruppen vorhanden."
 
 #: participant/templates/participant/import.html:5
 #: participant/templates/participant/import.html:9
-#: participant/templates/participant/overview.html:22
+#: participant/templates/participant/overview.html:28
 msgid "Import participants"
 msgstr "Teilnehmer/innen importieren"
 
@@ -1799,24 +2114,39 @@ msgid "Select a CSV file to import participants!"
 msgstr "Wählen Sie eine CSV-Datei zum Importieren von Teilnehmer/innen aus!"
 
 #: participant/templates/participant/import.html:17
+msgid "Please note"
+msgstr "Bitte beachten"
+
+#: participant/templates/participant/import.html:20
 msgid "Required comma separated values"
 msgstr "Erforderliche kommaseparierte Werte"
 
-#: participant/templates/participant/import.html:18
+#: participant/templates/participant/import.html:21
 msgid ""
-"first_name, last_name, gender, structure level, type, committee, comment"
-msgstr "Vorname, Nachname, Geschlecht, Gliederungsebene, Typ, Amt, Kommentar"
+"title, first name, last name, gender, email, group id, structure level, "
+"committee, about me, comment, is active"
+msgstr ""
+"Titel, Vorname, Nachname, Geschlecht, E-Mail, Gruppen-ID, Gliederungsebene, "
+"Amt, Über mich, Kommentar, Aktiviert"
 
-#: participant/templates/participant/import.html:20
+#: participant/templates/participant/import.html:24
+msgid "Default groups"
+msgstr "Vorgegebene Gruppen"
+
+#: participant/templates/participant/import.html:26
+msgid "Delegate"
+msgstr "Delegierte/r"
+
+#: participant/templates/participant/import.html:28
 msgid "Required CSV file encoding: UTF-8 (Unicode)."
 msgstr "Erforderliches CSV-Datei-Encoding: UTF-8 (Unicode)."
 
-#: participant/templates/participant/import.html:23
-msgid "A CSV example file is available in OpenSlides Wiki."
-msgstr "Eine CSV-Beispiel-Datei gibt es im OpenSlides Wiki."
+#: participant/templates/participant/import.html:29
+msgid "Use the CSV example file from OpenSlides Wiki."
+msgstr "Verwenden Sie die CSV-Beispiel-Datei vom OpenSlides Wiki."
 
-#: participant/templates/participant/import.html:30
-#: participant/templates/participant/overview.html:22
+#: participant/templates/participant/import.html:36
+#: participant/templates/participant/overview.html:28
 msgid "Import"
 msgstr "Importieren"
 
@@ -1827,6 +2157,7 @@ msgstr ""
 "erneut."
 
 #: participant/templates/participant/login.html:38
+#: participant/templates/participant/user_detail.html:45
 msgid "Username"
 msgstr "Benutzername"
 
@@ -1835,7 +2166,7 @@ msgid "Password"
 msgstr "Passwort"
 
 #: participant/templates/participant/login.html:47
-#: participant/templates/participant/overview.html:37 templates/base.html:46
+#: participant/templates/participant/overview.html:43 templates/base.html:46
 msgid "Login"
 msgstr "Anmelden"
 
@@ -1843,59 +2174,46 @@ msgstr "Anmelden"
 msgid "Continue as guest"
 msgstr "Weiter als Gast"
 
-#: participant/templates/participant/overview.html:21
+#: participant/templates/participant/overview.html:27
 msgid "All groups"
 msgstr "Alle Gruppen"
 
-#: participant/templates/participant/overview.html:33
+#: participant/templates/participant/overview.html:39
 msgid "List of participants"
 msgstr "Teilnehmerliste"
 
-#: participant/templates/participant/overview.html:34
+#: participant/templates/participant/overview.html:40
 msgid "First time passwords"
 msgstr "Erst-Passwörter"
 
-#: participant/templates/participant/overview.html:42
+#: participant/templates/participant/overview.html:48
 msgid "Print list of participants as PDF"
 msgstr "Teilnehmerliste als PDF drucken"
 
-#: participant/templates/participant/overview.html:45
+#: participant/templates/participant/overview.html:51
 msgid "Print first time passwords as PDF"
 msgstr "Erst-Passwörter als PDF drucken"
 
-#: participant/templates/participant/overview.html:59
-#: participant/templates/participant/overview.html:74
-msgid "Not specified"
-msgstr "Nicht angegeben"
+#: participant/templates/participant/overview.html:61
+msgid "Present"
+msgstr "Anwesend"
 
-#: participant/templates/participant/overview.html:85 projector/models.py:65
-msgid "Active"
-msgstr "Aktiv"
-
-#: participant/templates/participant/overview.html:86
-msgid "Inactive"
-msgstr "Inaktiv"
-
-#: participant/templates/participant/overview.html:93
-msgid "participant"
-msgid_plural "participants"
-msgstr[0] "Teilnehmer/in"
-msgstr[1] "Teilnehmer/innen"
-
-#: participant/templates/participant/overview.html:95
-msgid "of"
-msgstr "von"
-
-#: participant/templates/participant/overview.html:107
-#: participant/templates/participant/user_detail.html:53
+#: participant/templates/participant/overview.html:70
+#: participant/templates/participant/user_detail.html:49
 msgid "Last Login"
 msgstr "Letzer Login"
 
-#: participant/templates/participant/overview.html:143
-msgid "Change status (active/inactive)"
-msgstr "Status ändern (aktiv/inaktiv)"
+#: participant/templates/participant/overview.html:82
+#: participant/templates/participant/overview.html:89
+msgid "present"
+msgstr "anwesend"
 
-#: participant/templates/participant/overview.html:153
+#: participant/templates/participant/overview.html:82
+#: participant/templates/participant/overview.html:89
+msgid "absent"
+msgstr "abwesend"
+
+#: participant/templates/participant/overview.html:133
 #: participant/templates/participant/user_widget.html:19
 msgid "No participants available."
 msgstr "Keine Teilnehmer/innen vorhanden."
@@ -1905,34 +2223,32 @@ msgstr "Keine Teilnehmer/innen vorhanden."
 msgid "Password Settings"
 msgstr "Passwort-Einstellungen"
 
-#: participant/templates/participant/personal_info_widget.html:5
-msgid "I submitted the following motions:"
-msgstr "Ich habe folgende Anträge gestellt:"
-
-#: participant/templates/participant/personal_info_widget.html:17
-#: participant/templates/participant/personal_info_widget.html:36
-#: participant/templates/participant/personal_info_widget.html:47
-msgid "None"
-msgstr "Keine"
-
-#: participant/templates/participant/personal_info_widget.html:24
-msgid "I support the following motions:"
-msgstr "Ich unterstütze folgende Anträge:"
-
-#: participant/templates/participant/personal_info_widget.html:43
-msgid "I am candidate for the following elections:"
-msgstr "Ich bin Kandidat/in bei folgenden Wahlen:"
-
 #: participant/templates/participant/settings.html:5
 #: participant/templates/participant/settings.html:8 templates/base.html:40
 msgid "Edit profile"
 msgstr "Profil bearbeiten"
 
-#: participant/templates/participant/user_detail.html:23
+#: participant/templates/participant/user_detail.html:19
+msgid "Personal data"
+msgstr "Persönliche Daten"
+
+#: participant/templates/participant/user_detail.html:22
+msgid "Email"
+msgstr "E-Mail"
+
+#: participant/templates/participant/user_detail.html:29
+msgid "Event data"
+msgstr "Veranstaltungsdaten"
+
+#: participant/templates/participant/user_detail.html:38
 msgid "The participant is not member of any group."
 msgstr "Teilnehmer/in ist kein Mitglied einer Gruppe."
 
-#: participant/templates/participant/user_detail.html:57
+#: participant/templates/participant/user_detail.html:44
+msgid "Administrative data"
+msgstr "Administrative Daten"
+
+#: participant/templates/participant/user_detail.html:53
 msgid "The participant has not logged in yet."
 msgstr "Teilnehmer/in hat sich noch nicht angemeldet."
 
@@ -1948,62 +2264,37 @@ msgstr "Ungültige Stimmen"
 msgid "votes"
 msgstr "Stimmen"
 
-#: projector/models.py:52
+#: projector/models.py:50
 msgid "Can manage the projector"
 msgstr "Darf den Projektor steuern"
 
-#: projector/models.py:53
+#: projector/models.py:51
 msgid "Can see the projector"
 msgstr "Darf den Projektor sehen"
 
-#: projector/models.py:54
+#: projector/models.py:52
 msgid "Can see the dashboard"
 msgstr "Darf das Dashboard sehen"
 
-#: projector/views.py:199
+#: projector/views.py:195
 msgid "Errors in the form"
 msgstr "Fehler im Formular"
 
-#: projector/views.py:373 projector/templates/projector/dashboard.html:18
+#: projector/views.py:364 projector/templates/projector/dashboard.html:18
 msgid "Dashboard"
 msgstr "Dashboard"
 
-#: projector/views.py:401
+#: projector/views.py:392
 msgid "Projector live view"
 msgstr "Projektor-Live-Ansicht"
 
-#: projector/views.py:427
+#: projector/views.py:407
 msgid "Overlays"
 msgstr "Einblendungen"
 
-#: projector/views.py:439
+#: projector/views.py:419
 msgid "Custom Slides"
 msgstr "Benutzerdefinierte Folien"
-
-#: projector/templates/projector/control_countdown.html:7
-msgctxt "seconds"
-msgid "s"
-msgstr "s"
-
-#: projector/templates/projector/control_countdown.html:9
-msgid "Save time as default"
-msgstr "Zeit als Voreinstellung speichern"
-
-#: projector/templates/projector/control_countdown.html:12
-msgid "Reset countdown"
-msgstr "Countdown zurücksetzen"
-
-#: projector/templates/projector/control_countdown.html:15
-msgid "Start countdown"
-msgstr "Countdown starten"
-
-#: projector/templates/projector/control_countdown.html:18
-msgid "Stop countdown"
-msgstr "Countdown stoppen"
-
-#: projector/templates/projector/control_overlay_message.html:10
-msgid "Clean message"
-msgstr "Message leeren"
 
 #: projector/templates/projector/custom_slide_widget.html:12
 msgid "Welcome Page"
@@ -2026,12 +2317,12 @@ msgid "Zoom out"
 msgstr "Verkleinern"
 
 #: projector/templates/projector/live_view_widget.html:16
-msgid "Scroll text up"
-msgstr "Text nach oben scrollen"
+msgid "Scroll visible view up"
+msgstr "Sichtbaren Bereich nach oben scrollen"
 
 #: projector/templates/projector/live_view_widget.html:19
-msgid "Scroll text down"
-msgstr "Text nach unten scrollen"
+msgid "Scroll visible view down"
+msgstr "Sichtbaren Bereich nach unten scrollen"
 
 #: projector/templates/projector/live_view_widget.html:24
 msgid "Reset projector view"
@@ -2042,13 +2333,38 @@ msgstr "Projektor-Ansicht zurücksetzen"
 msgid "Custom slide"
 msgstr "Benutzerdefinierte Folie"
 
-#: projector/templates/projector/overlay_widget.html:22
+#: projector/templates/projector/overlay_countdown_widget.html:5
 msgid "Countdown for speaking time"
 msgstr "Countdown zur Redezeitbegrenzung"
 
-#: projector/templates/projector/overlay_widget.html:26
+#: projector/templates/projector/overlay_countdown_widget.html:9
+msgctxt "seconds"
+msgid "s"
+msgstr "s"
+
+#: projector/templates/projector/overlay_countdown_widget.html:10
+msgid "Save time as default"
+msgstr "Zeit als Voreinstellung speichern"
+
+#: projector/templates/projector/overlay_countdown_widget.html:14
+msgid "Reset countdown"
+msgstr "Countdown zurücksetzen"
+
+#: projector/templates/projector/overlay_countdown_widget.html:17
+msgid "Start countdown"
+msgstr "Countdown starten"
+
+#: projector/templates/projector/overlay_countdown_widget.html:20
+msgid "Stop countdown"
+msgstr "Countdown stoppen"
+
+#: projector/templates/projector/overlay_message_widget.html:5
 msgid "Message"
 msgstr "Mitteilung"
+
+#: projector/templates/projector/overlay_message_widget.html:12
+msgid "Clean message"
+msgstr "Message leeren"
 
 #: projector/templates/projector/select_widgets.html:5
 #: projector/templates/projector/select_widgets.html:8
@@ -2079,30 +2395,22 @@ msgstr "Passwort ändern"
 msgid "Logout"
 msgstr "Abmelden"
 
-#: templates/base.html:100
-msgid ""
-"Get <a href='http://openslides.org/support' target='_blank'>professional "
-"support</a> for OpenSlides."
-msgstr ""
-"Nutzen Sie unseren <a href='http://openslides.org/support' "
-"target='_blank'>professionellen Support</a> für OpenSlides."
-
-#: utils/pdf.py:226
+#: utils/pdf.py:280
 #, python-format
 msgid "As of: %s"
 msgstr "Stand: %s"
 
-#: utils/pdf.py:237 utils/pdf.py:246
+#: utils/pdf.py:291 utils/pdf.py:300
 #, python-format
 msgid "Page %s"
 msgstr "Seite %s"
 
-#: utils/utils.py:59 utils/views.py:313
+#: utils/utils.py:60 utils/views.py:328
 #, python-format
 msgid "Do you really want to delete %s?"
 msgstr "Soll %s wirklich gelöscht werden?"
 
-#: utils/utils.py:106
+#: utils/utils.py:107
 msgid "Sorry, you have no rights to see this page."
 msgstr "Bedaure, Sie haben keine Berechtigung diese Seite zu sehen."
 
@@ -2114,404 +2422,25 @@ msgstr "Sind Sie sicher?"
 msgid "Thank you for your answer"
 msgstr "Danke für Ihre Antwort"
 
-#: utils/views.py:285
+#: utils/views.py:299
 #, python-format
 msgid "%s was successfully modified."
 msgstr "%s wurde erfolgreich bearbeitet."
 
-#: utils/views.py:295
+#: utils/views.py:309
 #, python-format
 msgid "%s was successfully created."
 msgstr "%s wurde erfolgreich angelegt."
 
-#: utils/views.py:319
+#: utils/views.py:334
 #, python-format
 msgid "%s was successfully deleted."
 msgstr "%s wurde erfolgreich gelöscht."
 
-#: utils/views.py:329
+#: utils/views.py:347
 msgid "undefined-filename"
 msgstr "undefinierter-dateiname"
 
 #: utils/jsonfield/fields.py:22
 msgid "Enter valid JSON"
 msgstr "Gebe valides JSON ein"
-
-#~ msgid "Item %s was successfully modified."
-#~ msgstr "Eintrag %s wurde erfolgreich bearbeitet."
-
-#~ msgid "Item %s was successfully created."
-#~ msgstr "Eintrag %s wurde erfolgreich angelegt."
-
-#~ msgid "All items"
-#~ msgstr "Alle Einträge"
-
-#~ msgid "Agenda as PDF"
-#~ msgstr "Tagesordnung als PDF"
-
-#~ msgid "View item"
-#~ msgstr "Eintrag anzeigen"
-
-#~ msgid "Show item"
-#~ msgstr "Eintrag projizieren"
-
-#~ msgid "Activate item"
-#~ msgstr "Eintrag projizieren"
-
-#~ msgid "Trivial change"
-#~ msgstr "Triviale Änderung"
-
-#~ msgid "Import motions with status \"authorized\""
-#~ msgstr "Anträge als \"Zugelassen\" importieren"
-
-#~ msgid "Set the initial status for each motion to \"authorized\""
-#~ msgstr "Setzt den initialen Status für jeden Antrag auf \"zugelassen\""
-
-#~ msgid "Allow trivial changes"
-#~ msgstr "Triviale Änderungen erlauben"
-
-#~ msgid "Warning: Trivial changes undermine the motions autorisation system."
-#~ msgstr ""
-#~ "Warnung: Triviale Änderungen unterlaufen das Zulassungssystem von "
-#~ "Anträgen."
-
-#~ msgid "Version %d authorized"
-#~ msgstr "Version %d zugelassen"
-
-#~ msgctxt "Rejected means not authorized"
-#~ msgid "Version %d rejected"
-#~ msgstr "Version %d verworfen"
-
-#~ msgid "Searching for supporters."
-#~ msgstr "Auf Unterstützersuche."
-
-#~ msgid "Not yet authorized."
-#~ msgstr "Noch nicht zugelassen."
-
-#~ msgid "Not yet authorized changes."
-#~ msgstr "Noch nicht zugelassene Änderungen."
-
-#~ msgid ""
-#~ "Trivial changes to version %(version)d; changed fields: %(changed_fields)s"
-#~ msgstr ""
-#~ "Triviale Änderung an Version %(version)d; Geänderte Felder: "
-#~ "%(changed_fields)s"
-
-#~ msgid "Version %s created"
-#~ msgstr "Version %s erstellt"
-
-#~ msgid "Supporters removed"
-#~ msgstr "Unterstützer/innen gelöscht"
-
-#~ msgid "Status reseted to: %s"
-#~ msgstr "Status zurückgesetzt auf: %s"
-
-#~ msgid "Number set: %s"
-#~ msgstr "Nummer gesetzt: %s"
-
-#~ msgid "Version %s authorized"
-#~ msgstr "Version %s zugelassen"
-
-#~ msgid "Version %s not authorized"
-#~ msgstr "Version %s nicht zugelassen"
-
-#~ msgid "The motion status is already '%s.'"
-#~ msgstr "Der Antragsstatus ist bereits '%s'."
-
-#~ msgid ""
-#~ "The motion status is: '%(currentstatus)s'. You can not set the status to "
-#~ "'%(newstatus)s'."
-#~ msgstr ""
-#~ "Der Antragsstatus ist: '%(currentstatus)s'. Sie können den Status nicht "
-#~ "auf '%(newstatus)s' setzen."
-
-#~ msgid "Status modified"
-#~ msgstr "Status geändert"
-
-#~ msgid "by"
-#~ msgstr "von"
-
-#~ msgid "You have not the necessary rights to create or edit motions."
-#~ msgstr ""
-#~ "Sie haben nicht die nötigen Rechte, um Anträge zu erstellen oder zu "
-#~ "bearbeiten."
-
-#~ msgid "You can not edit this motion."
-#~ msgstr "Sie dürfen diesen Antrag nicht bearbeiten."
-
-#~ msgid "New motion was successfully created."
-#~ msgstr "Neuer Antrag wurde erfolgreich angelegt."
-
-#~ msgid "Motion was successfully modified."
-#~ msgstr "Antrag wurde erfolgreich geändert."
-
-#~ msgid ""
-#~ "Attention: Do you really want to edit this motion? The supporters will "
-#~ "<b>not</b> be removed automatically because you can manage motions. "
-#~ "Please check if the supports are valid after your changing!"
-#~ msgstr ""
-#~ "Achtung: Wollen Sie den Antrag wirklich ändern? Die Unterstützer/innen "
-#~ "werden <b>nicht</b> automatisch entfernt, da Sie Anträge verwalten "
-#~ "dürfen. Prüfen Sie, ob die Unterstützungen noch gültig sind."
-
-#~ msgid ""
-#~ "Attention: Do you really want to edit this motion? All <b>%s</b> "
-#~ "supporters will be removed! Try to convince the supporters again."
-#~ msgstr ""
-#~ "Wollen Sie den Antrag wirklich ändern? Alle <b>%s</b> Unterstützer/innen "
-#~ "werden dann automatisch entfernt. Versuchen Sie diese erneut zu gewinnen."
-
-#~ msgid "Motion number was successfully set."
-#~ msgstr "Antragsnummer wurde erfolgreich gesetzt."
-
-#~ msgid "Motion was successfully authorized."
-#~ msgstr "Antrag wurde erfolgreich zugelassen."
-
-#~ msgid "Motion was successfully rejected."
-#~ msgstr "Antrag wurde erfolgreich verworfen."
-
-#~ msgid "Motion status was reset."
-#~ msgstr "Antragsstatus wurde zurückgesetzt."
-
-#~ msgid "Poll was successfully deleted."
-#~ msgstr "Abstimmung wurde erfolgreich gelöscht."
-
-#~ msgid "the %s. poll"
-#~ msgstr "die %s. Abstimmung"
-
-#~ msgid "You can not delete motion <b>%s</b>."
-#~ msgstr "Sie können Antrag <b>%s</b> nicht löschen."
-
-#~ msgid "Motion <b>%s</b> was successfully deleted."
-#~ msgstr "Antrag <b>%s</b> wurde erfolgreich gelöscht."
-
-#~ msgid "Invalid request"
-#~ msgstr "Ungültige Anfrage"
-
-#~ msgid "Version <b>%s</b> accepted."
-#~ msgstr "Version <b>%s</b> akzeptiert."
-
-#~ msgid "Do you really want to authorize version <b>%s</b>?"
-#~ msgstr "Soll Version <b>%s</b> wirklich zugelassen werden?"
-
-#~ msgid "Version <b>%s</b> rejected."
-#~ msgstr "Version <b>%s</b> zurückgewiesen."
-
-#~ msgid "ERROR by rejecting the version."
-#~ msgstr "FEHLER beim Zurückweisen der Version."
-
-#~ msgid "Ignoring line %d because the assigned group may not act as a person."
-#~ msgstr ""
-#~ "Fehlerhafte Zeile %d der Quelldatei wurde ignoriert da die verwendete "
-#~ "Gruppe nicht als Person auftreten darf."
-
-#~ msgid "Created by motion import."
-#~ msgstr "Erstellt durch Antragsimport."
-
-#~ msgid ""
-#~ "Ignoring line %d because it contains an incomplete first / last name pair."
-#~ msgstr ""
-#~ "Fehlerhafte Zeile %d der Quelldatei wurde ignoriert, da Vor- bzw. "
-#~ "Nachname Leerstrings enthalten."
-
-#~ msgid "%d motion was successfully imported."
-#~ msgid_plural "%d motions were successfully imported."
-#~ msgstr[0] "%d Antrag wurde erfolgreich importiert."
-#~ msgstr[1] "%d Anträge wurden erfolgreich importiert."
-
-#~ msgid "%d motion was successfully modified."
-#~ msgid_plural "%d motions were successfully modified."
-#~ msgstr[0] "%d Antrag wurde erfolgreich geändert."
-#~ msgstr[1] "%d Anträge wurden erfolgreich geändert."
-
-#~ msgid "%d new user was added."
-#~ msgid_plural "%d new users were added."
-#~ msgstr[0] "%d neuer Nutzer wurde erstellt."
-#~ msgstr[1] "%d neue Nutzer wurden erstellt."
-
-#~ msgid "%d new group was added."
-#~ msgid_plural "%d new groups were added."
-#~ msgstr[0] "%d neue Gruppe wurde erstellt."
-#~ msgstr[1] "%d neue Gruppen wurden erstellt."
-
-#~ msgid "%d group assigned to motions."
-#~ msgid_plural "%d groups assigned to motions."
-#~ msgstr[0] "%d Gruppe wurde zugewiesen."
-#~ msgstr[1] "%d Gruppen wurden zugewiesen."
-
-#~ msgid ""
-#~ "Attention: Existing motions will be modified if you import new motions "
-#~ "with the same number."
-#~ msgstr ""
-#~ "Achtung: Existierende Anträge werden geändert wenn Sie neue Anträge mit "
-#~ "identischer Nummer importieren."
-
-#~ msgid ""
-#~ "Attention: Importing an motions without a number multiple times will "
-#~ "create duplicates."
-#~ msgstr ""
-#~ "Achtung: Bei mehrfachem Import eines Antrags ohne Nummer können Duplikate "
-#~ "entstehen."
-
-#~ msgid "Poll"
-#~ msgstr "Abstimmung"
-
-#~ msgid "Motion No. %s"
-#~ msgstr "Antrag Nr. %s"
-
-#~ msgid "%d. Vote"
-#~ msgstr "%d. Abstimmung"
-
-#~ msgid "Edit motion"
-#~ msgstr "Antrag bearbeiten"
-
-#~ msgid "New motion"
-#~ msgstr "Neuer Antrag"
-
-#~ msgid "Import motions"
-#~ msgstr "Anträge importieren"
-
-#~ msgid "Select a CSV file to import motions!"
-#~ msgstr "Wählen Sie eine CSV-Datei zum Importieren von Anträgen aus!"
-
-#~ msgid "number, title, text, reason, first_name, last_name, is_group"
-#~ msgstr "Nummer, Titel, Text, Begründung, Vorname, Nachname, Gruppenantrag"
-
-#~ msgid ""
-#~ "<code>number</code>, <code>reason</code> and <code>is_group</code> are "
-#~ "optional and may be empty"
-#~ msgstr ""
-#~ "<code>Nummer</code>, <code>Begründung</code> und <code>Gruppenantrag</"
-#~ "code> sind optional und können auch leer sein"
-
-#~ msgid "Print all motions as PDF"
-#~ msgstr "Alle Anträge als PDF drucken"
-
-#~ msgid "Need supporters"
-#~ msgstr "Benötigt Unterstützer/innen"
-
-#~ msgid "Without number"
-#~ msgstr "Ohne Nummer"
-
-#~ msgid "Not yet authorized"
-#~ msgstr "Noch nicht zugelassen"
-
-#~ msgid "Authorized"
-#~ msgstr "Zugelassen"
-
-#~ msgid "Withdrawen (by submitter)"
-#~ msgstr "Zurückgezogen (durch Antragsteller/in)"
-
-#~ msgctxt "number of motions"
-#~ msgid "motion"
-#~ msgid_plural "motions"
-#~ msgstr[0] "Antrag"
-#~ msgstr[1] "Anträge"
-
-#~ msgid "#"
-#~ msgstr "#"
-
-#~ msgid "Motion title"
-#~ msgstr "Antragstitel"
-
-#~ msgid "Number of supporters"
-#~ msgstr "Anzahl der Unterstützer/innen"
-
-#~ msgid "Creation Time"
-#~ msgstr "Erstellungszeit"
-
-#~ msgid "Print motion as PDF"
-#~ msgstr "Antrag als PDF drucken"
-
-#~ msgid "Back to motion"
-#~ msgstr "Zurück zum Antrag"
-
-#~ msgid "Show motion"
-#~ msgstr "Antrag anzeigen"
-
-#~ msgid "Print this motion as PDF"
-#~ msgstr "Diesen Antrag als PDF drucken"
-
-#~ msgid "Delete motion"
-#~ msgstr "Antrag löschen"
-
-#~ msgid "This is not the newest version."
-#~ msgstr "Dies ist nicht die neuste Version."
-
-#~ msgid "Go to version"
-#~ msgstr "Gehe zu Version"
-
-#~ msgid "This is not the authorized version."
-#~ msgstr "Dies ist nicht die zugelassene Version."
-
-#~ msgid "Version History"
-#~ msgstr "Versionshistorie"
-
-#~ msgid "This version is authorized"
-#~ msgstr "Diese Version wurde zugelassen"
-
-#~ msgid "Permit this version"
-#~ msgstr "Diese Version zulassen"
-
-#~ msgid "Reject this version"
-#~ msgstr "Diese Version verwerfen"
-
-#~ msgid "This version is rejected"
-#~ msgstr "Diese Version wurde verworfen"
-
-#~ msgid "unchanged"
-#~ msgstr "unverändert"
-
-#~ msgid "Show log"
-#~ msgstr "Log anzeigen"
-
-#~ msgid "No results"
-#~ msgstr "Keine Ergebnisse"
-
-#~ msgid "Withdraw motion"
-#~ msgstr "Antrag zurückziehen"
-
-#~ msgid "Unsupport motion"
-#~ msgstr "Antrag nicht unterstützen"
-
-#~ msgid "Support"
-#~ msgstr "Unterstützen"
-
-#~ msgid "minimum required supporters"
-#~ msgstr "minimal erforderliche Unterstützer/innen"
-
-#~ msgid "Manage motion"
-#~ msgstr "Antrag verwalten"
-
-#~ msgid "Formal validation"
-#~ msgstr "Formale Gültigkeitsprüfung"
-
-#~ msgid "Publish"
-#~ msgstr "Veröffentlichen"
-
-#~ msgid "Permit"
-#~ msgstr "Zulassen"
-
-#~ msgid "Not permit"
-#~ msgstr "Nicht zulassen"
-
-#~ msgid "Set number"
-#~ msgstr "Setze Nummer"
-
-#~ msgid "Result after vote"
-#~ msgstr "Ergebnis nach der Abstimmung"
-
-#~ msgid "Withdrawed by Submitter"
-#~ msgstr "Zurückgezogen durch Antragsteller/in"
-
-#~ msgid "For Administration only:"
-#~ msgstr "Nur zur Administration:"
-
-#~ msgid "Reset"
-#~ msgstr "Zurücksetzen"
-
-#~ msgid "My motions and elections"
-#~ msgstr "Meine Anträge und Wahlen"
-
-#~ msgid "Countdown"
-#~ msgstr "Countdown"
