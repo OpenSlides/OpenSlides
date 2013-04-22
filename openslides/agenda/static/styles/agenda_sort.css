@@ -39,44 +39,12 @@ ol {
 			overflow: auto;
 		}
 
-		.agenda_list li.mjs-nestedSortable-branch > div {
-			background: -moz-linear-gradient(top,  #ffffff 0%, #f6f6f6 47%, #f0ece9 100%);
-			background: -webkit-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#f0ece9 100%);
-
-		}
-
-		.agenda_list li.mjs-nestedSortable-leaf > div {
-			background: -moz-linear-gradient(top,  #ffffff 0%, #f6f6f6 47%, #bcccbc 100%);
-			background: -webkit-linear-gradient(top,  #ffffff 0%,#f6f6f6 47%,#bcccbc 100%);
-
-		}
-
-		li.mjs-nestedSortable-collapsed.mjs-nestedSortable-hovering div {
-			border-color: #999;
-			background: #fafafa;
-		}
-
 		.disclose {
 			cursor: pointer;
 			width: 10px;
 			display: none;
 		}
 
-		.agenda_list li.mjs-nestedSortable-collapsed > ol {
-			display: none;
-		}
-
-		.agenda_list li.mjs-nestedSortable-branch > div > .disclose {
-			display: inline-block;
-		}
-
-		.agenda_list li.mjs-nestedSortable-collapsed > div > .disclose > span:before {
-			content: '+ ';
-		}
-
-		.agenda_list li.mjs-nestedSortable-expanded > div > .disclose > span:before {
-			content: '- ';
-		}
 		
 		.placeholder {
 			outline: 1px dashed #4183C4;
@@ -91,3 +59,11 @@ ol {
 .agenda_list .manage { width: 150px; float: right; }
 .agenda_list .title { float: left; }
 .agenda_list .optional { float: left; }
+.agenda_list .opener_closer { float: right; }
+
+.agenda_list .opener, .agenda_list .closer { border: solid 1px gray; background-color: lightgray; border-radius: 3px; display: inline-block; width: 20px; height: 20px; line-height: 20px; vertical-align: middle; text-align: center; }
+.agenda_list .opener:hover, .agenda_list .closer:hover { background-color: gray; }
+.agenda_list .opener { display: none; }
+.agenda_list li.closed ol { display: none; }
+.agenda_list li.closed .closer { display: none; }
+.agenda_list li.closed > div .opener { display: inline-block; }

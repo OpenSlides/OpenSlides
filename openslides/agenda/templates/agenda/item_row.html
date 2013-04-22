@@ -21,6 +21,12 @@
         {% endif %}
     </div>
     {% endif %}
+    
+    <div class="opener_closer">
+		<a href="#" class="opener">+</a>
+		<a href="#" class="closer">-</a>
+    </div>
+    
     {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
     <div class="manage">
         <span style="width: 1px; white-space: nowrap;">
