@@ -121,9 +121,7 @@ class Projector(TemplateView, AjaxMixin):
         if not data:
             data = self.data
             cache.set('projector_data', data)
-        # clear cache if countdown is enabled
-        if config['countdown_state'] == 'active':
-            clear_projector_cache()
+
         context = super(Projector, self).get_ajax_context(**kwargs)
         content_hash = hash(content)
         context.update({
