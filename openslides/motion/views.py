@@ -29,19 +29,15 @@ from openslides.utils.utils import html_strong, htmldiff
 from openslides.poll.views import PollFormView
 from openslides.projector.api import get_active_slide
 from openslides.projector.projector import Widget, SLIDE
-from openslides.config.models import config
+from openslides.config.api import config
 from openslides.agenda.models import Item
 
 from .models import (Motion, MotionSubmitter, MotionSupporter, MotionPoll,
                      MotionVersion, State, WorkflowError, Category)
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
-                    MotionDisableVersioningMixin, ConfigForm, MotionCategoryMixin,
+                    MotionDisableVersioningMixin, MotionCategoryMixin,
                     MotionIdentifierMixin)
 from .pdf import motions_to_pdf, motion_to_pdf
-
-
-# TODO: into the config-tab
-config['motion_identifier'] = ('manually', 'per_category', 'serially_numbered')[2]
 
 
 class MotionListView(ListView):
@@ -87,21 +83,22 @@ motion_detail = MotionDetailView.as_view()
 
 
 class MotionMixin(object):
-    """Mixin for MotionViewsClasses to save the version data."""
+    """
+    Mixin for MotionViewsClasses to save the version data.
+    """
 
     def manipulate_object(self, form):
-        """Save the version data into the motion object before it is saved in
-        the Database."""
-
+        """
+        Save the version data into the motion object before it is saved in
+        the Database.
+        """
         super(MotionMixin, self).manipulate_object(form)
         for attr in ['title', 'text', 'reason']:
             setattr(self.object, attr, form.cleaned_data[attr])
 
-        try:
-            if form.cleaned_data['new_version']:
+        if type(self) != MotionCreateView:
+            if self.object.state.versioning and form.cleaned_data.get('new_version', True):
                 self.object.new_version
-        except KeyError:
-            pass
 
         try:
             self.object.category = form.cleaned_data['category']
@@ -156,8 +153,19 @@ class MotionMixin(object):
 
 class MotionCreateView(MotionMixin, CreateView):
     """View to create a motion."""
-    permission_required = 'motion.can_create_motion'
     model = Motion
+
+    def has_permission(self, request, *args, **kwargs):
+        """
+        Checks whether the requesting user can submit a new motion. He needs
+        at least the permission 'motion.can_create_motion'. If the submitting
+        of new motions by non-staff users is stopped via config variable
+        'motion_stop_submitting', the requesting user needs also to have
+        'motion.can_manage_motion'.
+        """
+        if request.user.has_perm('motion.can_create_motion'):
+            return not config['motion_stop_submitting'] or request.user.has_perm('motion.can_manage_motion')
+        return False
 
     def form_valid(self, form):
         """Write a log message, if the form is valid."""
@@ -203,29 +211,40 @@ motion_delete = MotionDeleteView.as_view()
 
 
 class VersionPermitView(GetVersionMixin, SingleObjectMixin, QuestionMixin, RedirectView):
-    """View to permit a version of a motion."""
+    """
+    View to permit a version of a motion.
+    """
 
     model = Motion
     question_url_name = 'motion_version_detail'
     success_url_name = 'motion_version_detail'
+    success_message = ugettext_lazy('Version successfully permitted.')
 
     def get(self, *args, **kwargs):
-        """Set self.object to a motion."""
+        """
+        Set self.object to a motion.
+        """
         self.object = self.get_object()
         return super(VersionPermitView, self).get(*args, **kwargs)
 
     def get_url_name_args(self):
-        """Return a list with arguments to create the success- and question_url."""
+        """
+        Return a list with arguments to create the success- and question_url.
+        """
         return [self.object.pk, self.object.version.version_number]
 
     def get_question(self):
-        """Return a string, shown to the user as question to permit the version."""
+        """
+        Return a string, shown to the user as question to permit the version.
+        """
         return _('Are you sure you want permit Version %s?') % self.object.version.version_number
 
     def case_yes(self):
-        """Activate the version, if the user chooses 'yes'."""
-        self.object.activate_version(self.object.version)  # TODO: Write log message
-        self.object.save()
+        """
+        Activate the version, if the user chooses 'yes'.
+        """
+        self.object.set_active_version(self.object.version)  # TODO: Write log message
+        self.object.save(no_new_version=True)
 
 version_permit = VersionPermitView.as_view()
 
@@ -590,49 +609,15 @@ class CategoryDeleteView(DeleteView):
 category_delete = CategoryDeleteView.as_view()
 
 
-class Config(FormView):
-    """The View for the config tab."""
-    permission_required = 'config.can_manage_config'
-    form_class = ConfigForm
-    template_name = 'motion/config.html'
-    success_url_name = 'config_motion'
-
-    def get_initial(self):
-        return {
-            'motion_min_supporters': config['motion_min_supporters'],
-            'motion_preamble': config['motion_preamble'],
-            'motion_pdf_ballot_papers_selection': config['motion_pdf_ballot_papers_selection'],
-            'motion_pdf_ballot_papers_number': config['motion_pdf_ballot_papers_number'],
-            'motion_pdf_title': config['motion_pdf_title'],
-            'motion_pdf_preamble': config['motion_pdf_preamble'],
-            'motion_allow_disable_versioning': config['motion_allow_disable_versioning'],
-            'motion_workflow': config['motion_workflow'],
-        }
-
-    def form_valid(self, form):
-        config['motion_min_supporters'] = form.cleaned_data['motion_min_supporters']
-        config['motion_preamble'] = form.cleaned_data['motion_preamble']
-        config['motion_pdf_ballot_papers_selection'] = form.cleaned_data['motion_pdf_ballot_papers_selection']
-        config['motion_pdf_ballot_papers_number'] = form.cleaned_data['motion_pdf_ballot_papers_number']
-        config['motion_pdf_title'] = form.cleaned_data['motion_pdf_title']
-        config['motion_pdf_preamble'] = form.cleaned_data['motion_pdf_preamble']
-        config['motion_allow_disable_versioning'] = form.cleaned_data['motion_allow_disable_versioning']
-        config['motion_workflow'] = form.cleaned_data['motion_workflow']
-        messages.success(self.request, _('Motion settings successfully saved.'))
-        return super(Config, self).form_valid(form)
-
-
 def register_tab(request):
     """Return the motion tab."""
-    # TODO: Find a bether way to set the selected var.
-    selected = request.path.startswith('/motion/')
+    # TODO: Find a better way to set the selected var.
     return Tab(
         title=_('Motions'),
         app='motion',
         url=reverse('motion_list'),
         permission=request.user.has_perm('motion.can_see_motion'),
-        selected=selected,
-    )
+        selected=request.path.startswith('/motion/'))
 
 
 def get_widgets(request):

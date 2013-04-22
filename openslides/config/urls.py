@@ -4,42 +4,28 @@
     openslides.config.urls
     ~~~~~~~~~~~~~~~~~~~~~~
 
-    URL list for the config app.
+    Url patterns for the config app.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.conf import settings
 from django.conf.urls import patterns, url
-from django.utils.importlib import import_module
 
-from openslides.config.views import GeneralConfig, VersionConfig
+from openslides.utils.views import RedirectView
+from .signals import config_signal
+from .views import ConfigView
+
 
 urlpatterns = patterns('',
-    url(r'^general/$',
-        GeneralConfig.as_view(),
-        name='config_general',
-    ),
-
-    url(r'^version/$',
-        VersionConfig.as_view(),
-        name='config_version',
+    url(r'^$',
+        RedirectView.as_view(url_name='config_general'),
+        name='config_first_config_page',
     ),
 )
 
-for app in settings.INSTALLED_APPS:
-    try:
-        mod = import_module(app + '.views')
-    except ImportError:
-        continue
-    appname = mod.__name__.split('.')[-2]
-    try:
-        urlpatterns += patterns('', url(
-            r'^%s/$' % appname,
-            mod.Config.as_view(),
-            name='config_%s' % appname,
-        ))
-    except AttributeError:
-        continue
-
+for receiver, config_page in config_signal.send(sender='config_urls'):
+    if config_page.is_shown():
+        urlpatterns += patterns('', url(r'^%s/$' % config_page.url,
+                                ConfigView.as_view(config_page=config_page),
+                                name='config_%s' % config_page.url))

@@ -3,6 +3,17 @@
 {% load tags %}
 {% load i18n %}
 
+{% load staticfiles %}
+
+{% block header %}
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/ckeditor.css' %}" />
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript" src="{% static 'javascript/ckeditor/ckeditor.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascript/ckeditor-config.js' %}"></script>
+{% endblock %}
+
 {% block title %}
     {{ block.super }} –
     {% if motion %}

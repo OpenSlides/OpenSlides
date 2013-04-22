@@ -1,0 +1,29 @@
+{% load i18n %}
+
+<style type="text/css">
+#overlay_speaker_inner {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    border-radius: 0.2em;
+    background-color: #cccccc;
+    opacity: 0.6;
+    padding: 0.2em 0;
+    margin: 1em;
+    z-index:2;
+    padding: 3px;
+}
+</style>
+
+<div id="overlay_speaker_inner">
+    {% if speakers %}
+    <header>{% trans "List of speakers:" %}</header>
+    <ol>
+        {% for speaker in speakers %}
+            <li>{{ speaker }}</li>
+        {% endfor %}
+    </ol>
+    {% else %}
+    <i>{% trans 'The list of speakers is empty.' %}</i>
+    {% endif %}
+</div>

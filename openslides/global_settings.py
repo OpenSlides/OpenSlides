@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    openslides.openslides_settings
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    openslides.global_settings
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     OpenSlides default settings.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -14,6 +14,7 @@ import os
 import sys
 
 from openslides.main import fs2unicode
+
 
 SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 
@@ -34,7 +35,6 @@ LANGUAGES = (
     ('fr', ugettext('French')),
 )
 
-
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
 USE_I18N = True
@@ -47,18 +47,14 @@ LOCALE_PATHS = (
     fs2unicode(os.path.join(SITE_ROOT, 'locale')),
 )
 
-# Absolute path to the directory that holds media.
-# Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = fs2unicode(os.path.join(SITE_ROOT, './static/'))
-
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = ''
+MEDIA_URL = '/media/'
 
 # Absolute path to the directory that holds static media from ``collectstatic``
 # Example: "/home/media/static.lawrence.com/"
-STATIC_ROOT = fs2unicode(os.path.join(SITE_ROOT, '../site-static'))
+STATIC_ROOT = fs2unicode(os.path.join(SITE_ROOT, '../collected-site-static'))
 
 # URL that handles the media served from STATIC_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -93,6 +89,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'openslides.participant.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'openslides.config.middleware.ConfigCacheMiddleware',
 )
 
 ROOT_URLCONF = 'openslides.urls'
@@ -114,11 +111,14 @@ INSTALLED_APPS = (
     'mptt',
     'openslides.utils',
     'openslides.poll',
+    'openslides.core',
+    'openslides.account',
     'openslides.projector',
     'openslides.agenda',
     'openslides.motion',
     'openslides.assignment',
     'openslides.participant',
+    'openslides.mediafile',
     'openslides.config',
 )
 

@@ -7,55 +7,50 @@
 
 {% block content %}
 
-<h1>{{ shown_user }}
+<h1>{{ shown_user.clean_name }}
     <small class="pull-right">
         <a href="{% url 'user_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
     </small>
 </h1>
 
-<p>{{ shown_user.email }}</p>
 
-<h4>{% trans "Groups" %}</h4>
-<p>
+
+<fieldset>
+    <legend>{% trans "Personal data" %}</legend>
+    <label>{% trans "Gender" %}</label>
+    {{ shown_user.get_gender_display }}
+    <label>{% trans "Email" %}</label>
+    {{ shown_user.email }}
+    <label>{% trans "About me" %}</label>
+    {{ shown_user.about_me|linebreaks }}
+</fieldset>
+
+<fieldset>
+    <legend>{% trans "Event data" %}</legend>
+    <label>{% trans "Structure level" %}</label>
+    {{ shown_user.structure_level }}
+    <label>{% trans "Committee" %}</label>
+    {{ shown_user.committee }}
+    <label>{% trans "Groups" %}</label>
     {% if shown_user.groups.all %}
         {{ shown_user.groups.all|join:", " }}
     {% else %}
         {% trans "The participant is not member of any group." %}
     {% endif %}
-</p>
-
-{% if shown_user.get_gender_display %}
-    <h4>{% trans "Gender" %}</h4>
-    <p>{{ shown_user.get_gender_display }}</p>
-{% endif %}
-
-{% if shown_user.get_type_display %}
-<h4>{% trans "Type" %}</h4>
-<p>{{ shown_user.get_type_display }}</p>
-{% endif %}
-
-{% if shown_user.committee %}
-<h4>{% trans "Committee" %}</h4>
-<p>{{ shown_user.committee }}</p>
-{% endif %}
-
-{% if shown_user.about_me %}
-    <h4>{% trans "About me" %}</h4>
-    <p>{{ shown_user.about_me }}</p>
-{% endif %}
+</fieldset>
 
 {% if perms.participant.can_manage_participant %}
-    {% if shown_user.comment %}
-    <h4>{% trans "Comment" %}</h4>
-    <p>{{ shown_user.comment }}</p>
-    {% endif %}
-
-    <h4>{% trans "Last Login" %}</h4>
+<fieldset>
+    <legend>{% trans "Administrative data" %}</legend>
+    <label>{% trans "User name" %}</label>
+    {{ shown_user.username }}
+    <label>{% trans "Comment" %}</label>
+    {{ shown_user.comment|linebreaks }}
+    <label>{% trans "Last Login" %}</label>
     {% if shown_user.last_login > shown_user.date_joined %}
-        <p>{{ shown_user.last_login }}</p>
+        {{ shown_user.last_login }}
     {% else %}
-        <p>{% trans "The participant has not logged in yet." %}</p>
+        {% trans "The participant has not logged in yet." %}
     {% endif %}
 {% endif %}
-
 {% endblock %}

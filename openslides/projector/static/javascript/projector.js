@@ -8,7 +8,6 @@
 content_hash = null;
 
 function presentation_reload() {
-    
     if ($('#config > #ajax').html() == 'on') {
         $.ajax({
             type: 'GET',
@@ -33,11 +32,8 @@ function presentation_reload() {
                 $('#scrollcontent').animate({'margin-top': data.up + 'em'}, 200);
                 // overlays
                 $('#overlays div').remove();
-                $('#overlays span').remove();
-                $.each(data['overlays'], function (index, value){
-                    if (value[0] != "Countdown")
-                        $('#overlays').append('<span id="overlay_transparent"></span>')
-                    $('#overlays').append('<div id="overlay_' + value[0] + '">' + value[1] + '</div>');
+                $.each(data['overlays'], function (index, overlay){
+                    $('#overlays').append('<div id="overlay_' + overlay['name'] + '">' + overlay['html'] + '</div>');
                 });
                 setTimeout("presentation_reload()", 1000);
             },

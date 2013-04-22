@@ -1,12 +1,15 @@
-"Vorname";"Nachname";"Geschlecht";"Gliederungsebene";"Typ";"Amt";"Kommentar"
-"Angramain";"Aranea";"female";;"delegate";;
-"Bastian";"Bux";"male";;"observer";"2. Vorsitzender";
-"Emma";"Dampf";"female";"Ortsverband Berlin-Mitte";"delegate";"AG Frauen";
-"David";"Delegierter";"male";"Ortsverband Berlin-Mitte";"delegate";"Haushaltsausschuss";"Demo-Account"
-"Marta";"Grankvist";"female";"Ortsverband Köln";"delegate";"1. Vorsitzende";
-"Atréju";"Grün";"male";"Ortsverband Freiburg";"staff";"Versammlungsleitung";
-"Li Si";"Mandala";"female";;"staff";;
-"Malin";"Melchersson";"male";"Gastredner e.V.";"guest";;
-"Molly";"Tender";"female";"Ortsverband Berlin-Mitte";"delegate";;
-"Dr. Karl";"Tur Tur";"male";;"observer";;
-"Volker";"Versammlungsleitung";"male";"Ortsverband Hamburg";"delegate";"Versammlungsleitung";"Demo-Account"
+"Titel";"Vorname";"Nachname";"Geschlecht";"E-Mail";"Gruppen-ID";"Gliederungsebene";"Amt";"Über mich";"Kommentar";"Aktiviert"
+;"Angramain";"Aranea";"female";;;;;;;1
+;"Bastian";"Bux";"male";;;;"2. Vorsitzender";;;1
+;"Emma";"Dampf";"female";;3;"Ortsverband Berlin-Mitte";"AG Frauen";;;0
+"Dr.";"David";"Delegierter";"male";"david@example.com";3;"Ortsverband Berlin-Mitte";"Haushaltsausschuss";"Zu meiner Person:
+A
+B
+C";"Demo-Account";1
+;"Marta";"Grankvist";"female";;3,4;"Ortsverband Köln";"1. Vorsitzende";;;0
+"Prof. Dr.";"Atréju";"Grün";"male";;4;"Ortsverband Freiburg";"Versammlungsleitung";;;1
+;"Li Si";"Mandala";"female";;4;;;;;1
+;"Malin";"Melchersson";"male";;;"Gastredner e.V.";;;;1
+;"Molly";"Tender";"female";;3;"Ortsverband Berlin-Mitte";;;;1
+"Dr. med.";"Karl";"Tur Tur";"male";;;;;;;1
+"Dipl.-Ing.";"Volker";"Versammlungsleitung";"male";"volker@example.com";3,4;"Ortsverband Hamburg";"Versammlungsleitung";;"Demo-Account";1

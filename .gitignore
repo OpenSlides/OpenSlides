@@ -1,7 +1,12 @@
-.venv/*
+# General
 *.pyc
 *.swp
 *~
+
+# Virtual Environment
+.venv/*
+
+# Development settings and database
 settings.py
 database.sqlite
 !tests/settings.py
@@ -14,6 +19,6 @@ dist/*
 .DS_Store
 versiontools*
 
-# Unit test / coverage reports
+# Unit test and coverage reports
 .coverage
 htmlcov

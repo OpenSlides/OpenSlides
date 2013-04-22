@@ -6,17 +6,25 @@
 
     Views for the participant app.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
+try:
+    import qrcode
+except ImportError:
+    draw_qrcode = False
+else:
+    draw_qrcode = True
+
+from cStringIO import StringIO
 from urllib import urlencode
 from urlparse import parse_qs
 
 from reportlab.lib import colors
 from reportlab.lib.units import cm
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, LongTable, Spacer, Table, TableStyle)
+    SimpleDocTemplate, Paragraph, LongTable, Spacer, Table, TableStyle, Image)
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -33,14 +41,12 @@ from openslides.utils.utils import (
 from openslides.utils.views import (
     FormView, PDFView, CreateView, UpdateView, DeleteView, PermissionMixin,
     RedirectView, SingleObjectMixin, ListView, QuestionMixin, DetailView)
-from openslides.config.models import config
+from openslides.config.api import config
 from openslides.projector.projector import Widget
-from openslides.motion.models import Motion
-from openslides.assignment.models import Assignment
 from openslides.participant.api import gen_username, gen_password, import_users
 from openslides.participant.forms import (
     UserCreateForm, UserUpdateForm, UsersettingsForm,
-    UserImportForm, GroupForm, ConfigForm)
+    UserImportForm, GroupForm)
 from openslides.participant.models import User, Group
 
 
@@ -80,16 +86,6 @@ class UserDetailView(DetailView, PermissionMixin):
     context_object_name = 'shown_user'
 
 
-class GroupDetailView(DetailView, PermissionMixin):
-    """
-    Classed based view to show a specific group in the interface.
-    """
-    permission_required = 'participant.can_manage_participant'
-    model = Group
-    template_name = 'participant/group_detail.html'
-    context_object_name = 'group'
-
-
 class UserCreateView(CreateView):
     """
     Create a new participant.
@@ -119,6 +115,11 @@ class UserUpdateView(UpdateView):
     context_object_name = 'edit_user'
     form_class = UserUpdateForm
     success_url_name = 'user_overview'
+
+    def get_form_kwargs(self, *args, **kwargs):
+        form_kwargs = super(UserUpdateView, self).get_form_kwargs(*args, **kwargs)
+        form_kwargs.update({'request': self.request})
+        return form_kwargs
 
 
 class UserDeleteView(DeleteView):
@@ -178,8 +179,8 @@ class ParticipantsListPDF(PDFView):
     document_title = ugettext_lazy('List of Participants')
 
     def append_to_pdf(self, story):
-        data = [['#', _('Last Name'), _('First Name'), _('Group'), _('Type'),
-                 _('Committee')]]
+        data = [['#', _('Title'), _('Last Name'), _('First Name'),
+                 _('Structure level'), _('Group'), _('Committee')]]
         if config['participant_sort_users_by_first_name']:
             sort = 'first_name'
         else:
@@ -187,12 +188,17 @@ class ParticipantsListPDF(PDFView):
         counter = 0
         for user in User.objects.all().order_by(sort):
             counter += 1
+            groups = ''
+            for group in user.groups.all():
+                if unicode(group) != "Registered":
+                    groups += "%s<br/>" % unicode(group)
             data.append([
                 counter,
+                Paragraph(user.title, stylesheet['Tablecell']),
                 Paragraph(user.last_name, stylesheet['Tablecell']),
                 Paragraph(user.first_name, stylesheet['Tablecell']),
                 Paragraph(user.structure_level, stylesheet['Tablecell']),
-                Paragraph(user.get_type_display(), stylesheet['Tablecell']),
+                Paragraph(groups, stylesheet['Tablecell']),
                 Paragraph(user.committee, stylesheet['Tablecell'])])
         t = LongTable(data, style=[
             ('VALIGN', (0, 0), (-1, -1), 'TOP'),
@@ -229,13 +235,21 @@ class ParticipantsPasswordsPDF(PDFView):
             sort = 'first_name'
         else:
             sort = 'last_name'
+        # create qrcode image object from system url
+        if draw_qrcode:
+            qrcode_img = qrcode.make(participant_pdf_system_url)
+            img_stream = StringIO()
+            qrcode_img.save(img_stream, 'PNG')
+            img_stream.seek(0)
+            size = 2 * cm
+            I = Image(img_stream, width=size, height=size)
         for user in User.objects.all().order_by(sort):
             cell = []
             cell.append(Spacer(0, 0.8 * cm))
             cell.append(Paragraph(_("Account for OpenSlides"),
-                        stylesheet['Ballot_title']))
+                        stylesheet['Password_title']))
             cell.append(Paragraph(_("for %s") % (user),
-                        stylesheet['Ballot_subtitle']))
+                        stylesheet['Password_subtitle']))
             cell.append(Spacer(0, 0.5 * cm))
             cell.append(Paragraph(_("User: %s") % (user.username),
                         stylesheet['Monotype']))
@@ -243,12 +257,10 @@ class ParticipantsPasswordsPDF(PDFView):
                 Paragraph(
                     _("Password: %s")
                     % (user.default_password), stylesheet['Monotype']))
-            cell.append(Spacer(0, 0.5 * cm))
             cell.append(
-                Paragraph(
-                    _("URL: %s") % (participant_pdf_system_url),
-                    stylesheet['Ballot_option']))
-            cell.append(Spacer(0, 0.5 * cm))
+                Paragraph(participant_pdf_system_url, stylesheet['Monotype']))
+            if draw_qrcode:
+                cell.append(I)
             cell2 = []
             cell2.append(Spacer(0, 0.8 * cm))
             if participant_pdf_welcometext is not None:
@@ -264,6 +276,7 @@ class ParticipantsPasswordsPDF(PDFView):
         # build table
         t = Table(data, 10.5 * cm, 7.42 * cm)
         t.setStyle(TableStyle([
+            ('LEFTPADDING', (0, 0), (0, -1), 30),
             ('LINEBELOW', (0, 0), (-1, 0), 0.25, colors.grey),
             ('LINEBELOW', (0, 1), (-1, 1), 0.25, colors.grey),
             ('LINEBELOW', (0, 1), (-1, -1), 0.25, colors.grey),
@@ -279,7 +292,7 @@ class UserImportView(FormView):
     permission_required = 'participant.can_manage_participant'
     template_name = 'participant/import.html'
     form_class = UserImportForm
-    success_url_name = 'user_import'
+    success_url_name = 'user_overview'
 
     def form_valid(self, form):
         # check for valid encoding (will raise UnicodeDecodeError if not)
@@ -324,6 +337,26 @@ class GroupOverview(ListView):
     template_name = 'participant/group_overview.html'
     context_object_name = 'groups'
     model = Group
+
+
+class GroupDetailView(DetailView, PermissionMixin):
+    """
+    Classed based view to show a specific group in the interface.
+    """
+    permission_required = 'participant.can_manage_participant'
+    model = Group
+    template_name = 'participant/group_detail.html'
+    context_object_name = 'group'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(GroupDetailView, self).get_context_data(*args, **kwargs)
+        query = User.objects
+        if config['participant_sort_users_by_first_name']:
+            query = query.order_by('first_name')
+        else:
+            query = query.order_by('last_name')
+        context['group_members'] = query.filter(django_user__groups__in=[context['group']])
+        return context
 
 
 class GroupCreateView(CreateView):
@@ -371,34 +404,6 @@ class GroupDeleteView(DeleteView):
             messages.error(request, _("You can not delete this Group."))
         else:
             super(GroupDeleteView, self).pre_redirect(request, *args, **kwargs)
-
-
-class Config(FormView):
-    """
-    Config page for the participant app.
-    """
-    permission_required = 'config.can_manage_config'
-    form_class = ConfigForm
-    template_name = 'participant/config.html'
-    success_url_name = 'config_participant'
-
-    def get_initial(self):
-        return {
-            'participant_pdf_system_url': config['participant_pdf_system_url'],
-            'participant_pdf_welcometext': config['participant_pdf_welcometext'],
-            'participant_sort_users_by_first_name': config['participant_sort_users_by_first_name']}
-
-    def form_valid(self, form):
-        config['participant_pdf_system_url'] = (
-            form.cleaned_data['participant_pdf_system_url'])
-        config['participant_pdf_welcometext'] = (
-            form.cleaned_data['participant_pdf_welcometext'])
-        config['participant_sort_users_by_first_name'] = (
-            form.cleaned_data['participant_sort_users_by_first_name'])
-        messages.success(
-            self.request,
-            _('Participants settings successfully saved.'))
-        return super(Config, self).form_valid(form)
 
 
 def login(request):
@@ -470,7 +475,7 @@ def user_settings_password(request):
 
 def register_tab(request):
     """
-    Register the participant tab.
+    Registers the participant tab.
     """
     selected = request.path.startswith('/participant/')
     return Tab(
@@ -485,34 +490,10 @@ def register_tab(request):
 
 def get_widgets(request):
     """
-    Returns all widgets of the participant app. This is a user_widget, a
-    group_widget and a personal_info_widget.
+    Returns all widgets of the participant app. This is a user_widget
+    and a group_widget.
     """
-    return [
-        #get_personal_info_widget(request),
-        get_user_widget(request),
-        get_group_widget(request)]
-
-
-## def get_personal_info_widget(request):
-    ## """
-    ## Provides a widget for personal info. It shows your submitted motions
-    ## and where you are supporter or candidate.
-    ## """
-    ## personal_info_context = {
-        ## 'submitted_motions': Motion.objects.filter(submitter=request.user),
-        ## 'config_motion_min_supporters': config['motion_min_supporters'],
-        ## 'supported_motions': Motion.objects.filter(motionsupporter=request.user),
-        ## 'assignments': Assignment.objects.filter(
-            ## assignmentcandidate__person=request.user,
-            ## assignmentcandidate__blocked=False)}
-    ## return Widget(
-        ## name='personal_info',
-        ## display_name=_('My motions and elections'),
-        ## template='participant/personal_info_widget.html',
-        ## context=personal_info_context,
-        ## permission_required=None,
-        ## default_column=1)
+    return [get_user_widget(request), get_group_widget(request)]
 
 
 def get_user_widget(request):

@@ -11,8 +11,8 @@ RELEASE = False
 
 def get_version(version=None, release=None):
     """
-    Derives a PEP386-compliant version number from VERSION. Adds id of
-    the current git commit.
+    Derives a PEP386-compliant version number from VERSION. Adds '-dev',
+    if it is not a release commit.
     """
     if version is None:
         version = VERSION

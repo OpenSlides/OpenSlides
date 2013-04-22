@@ -6,7 +6,7 @@
 
     Models for the participant app.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -14,44 +14,35 @@ from django.contrib.auth.models import User as DjangoUser, Group as DjangoGroup
 from django.db import models
 from django.db.models import signals
 from django.dispatch import receiver
-from django.utils.translation import ugettext_lazy as _, ugettext_noop
+from django.utils.translation import ugettext_lazy as _, ugettext_noop  # TODO: Change this in the code
 
 from openslides.utils.person import PersonMixin, Person
 from openslides.utils.person.signals import receive_persons
-
-from openslides.config.models import config
-from openslides.config.signals import default_config_value
-
+from openslides.config.api import config
 from openslides.projector.api import register_slidemodel
 from openslides.projector.projector import SlideMixin
 
 
-class User(DjangoUser, PersonMixin, Person, SlideMixin):
+class User(PersonMixin, Person, SlideMixin, DjangoUser):
     prefix = 'user'  # This is for the slides
     person_prefix = 'user'
     GENDER_CHOICES = (
         ('male', _('Male')),
         ('female', _('Female')),
     )
-    TYPE_CHOICES = (
-        ('delegate', _('Delegate')),
-        ('observer', _('Observer')),
-        ('staff', _('Staff')),
-        ('guest', _('Guest')),
-    )
 
     django_user = models.OneToOneField(DjangoUser, editable=False, parent_link=True)
     structure_level = models.CharField(
-        max_length=100, blank=True, default='', verbose_name=_("Structure level"),
+        max_length=255, blank=True, default='', verbose_name=_("Structure level"),
         help_text=_('Will be shown after the name.'))
+    title = models.CharField(
+        max_length=50, blank=True, default='', verbose_name=_("Titel"),
+        help_text=_('Will be shown before the name.'))
     gender = models.CharField(
         max_length=50, choices=GENDER_CHOICES, blank=True,
         verbose_name=_("Gender"), help_text=_('Only for filtering the participant list.'))
-    type = models.CharField(
-        max_length=100, choices=TYPE_CHOICES, blank=True,
-        verbose_name=_("Typ"), help_text=_('Only for filtering the participant list.'))
     committee = models.CharField(
-        max_length=100, blank=True, default='', verbose_name=_("Committee"),
+        max_length=255, blank=True, default='', verbose_name=_("Committee"),
         help_text=_('Only for filtering the participant list.'))
     about_me = models.TextField(
         blank=True, default='', verbose_name=_('About me'),
@@ -65,7 +56,11 @@ class User(DjangoUser, PersonMixin, Person, SlideMixin):
 
     @property
     def clean_name(self):
-        return self.get_full_name() or self.username
+        if self.title:
+            name = "%s %s" % (self.title, self.get_full_name())
+        else:
+            name = self.get_full_name()
+        return name or self.username
 
     def get_name_suffix(self):
         return self.structure_level
@@ -91,16 +86,16 @@ class User(DjangoUser, PersonMixin, Person, SlideMixin):
         return self.last_name.lower()
 
     @models.permalink
-    def get_absolute_url(self, link='view'):
+    def get_absolute_url(self, link='detail'):
         """
         Return the URL to this user.
 
         link can be:
-        * view
+        * detail
         * edit
         * delete
         """
-        if link == 'view':
+        if link == 'detail' or link == 'view':
             return ('user_view', [str(self.id)])
         if link == 'edit':
             return ('user_edit', [str(self.id)])
@@ -133,7 +128,7 @@ class User(DjangoUser, PersonMixin, Person, SlideMixin):
 register_slidemodel(User)
 
 
-class Group(DjangoGroup, PersonMixin, Person, SlideMixin):
+class Group(PersonMixin, Person, SlideMixin, DjangoGroup):
     prefix = 'group'  # This is for the slides
     person_prefix = 'group'
 
@@ -224,19 +219,6 @@ def receive_persons(sender, **kwargs):
     return UsersAndGroupsToPersons(
         person_prefix_filter=kwargs['person_prefix_filter'],
         id_filter=kwargs['id_filter'])
-
-
-@receiver(default_config_value, dispatch_uid="participant_default_config")
-def default_config(sender, key, **kwargs):
-    """
-    Default values for the participant app.
-    """
-    # TODO: Rename config-vars
-    return {
-        'participant_pdf_system_url': 'http://example.com:8000',
-        'participant_pdf_welcometext': _('Welcome to OpenSlides!'),
-        'participant_sort_users_by_first_name': False,
-    }.get(key)
 
 
 @receiver(signals.post_save, sender=DjangoUser)

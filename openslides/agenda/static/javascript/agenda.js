@@ -24,6 +24,10 @@ function hideClosedSlides(hide) {
     return false;
 }
 
+$('#speaker_list_changed_form').submit(function() {
+    $('#sort_order').val($('#list_of_speakers').sortable("toArray"));
+});
+
 $(function() {
     // change participant status (on/off)
     $('.close_link').click(function(event) {
@@ -62,11 +66,18 @@ $(function() {
             $('#hide_closed_items').attr('checked', true);
         }
     });
-    if ($.cookie('Slide.HideClosed') === null) {
-        $('#hide_closed_items').attr('checked', false);
-        $.cookie('Slide.HideClosed', 0);
-    } else if ($.cookie('Slide.HideClosed') == 1) {
-        hideClosedSlides(true);
-        $('#hide_closed_items').attr('checked', true);
-    }
+
+    // TODO: Fix this code and reactivate it again
+    //# if ($.cookie('Slide.HideClosed') === null) {
+        //# $('#hide_closed_items').attr('checked', false);
+        //# $.cookie('Slide.HideClosed', 0);
+    //# } else if ($.cookie('Slide.HideClosed') == 1) {
+        //# hideClosedSlides(true);
+        //# $('#hide_closed_items').attr('checked', true);
+    //# }
+
+    $('#list_of_speakers').sortable({axis: "y", containment: "parent", update: function(event, ui) {
+        $('#speaker_list_changed_form').show();
+    }});
+    $('#list_of_speakers').disableSelection();
 });

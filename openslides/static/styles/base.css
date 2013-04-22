@@ -117,7 +117,19 @@ tr.total td {
 .optional {
     display: auto;
 }
-
+fieldset {
+    margin-bottom: 10px;
+}
+fieldset legend {
+    margin-bottom: 5px;
+}
+fieldset label {
+    font-weight: bold;
+    margin: 10px 0 0 0;
+}
+fieldset label:after {
+    content: ":";
+}
 
 /** Forms **/
 input, textarea {
@@ -144,7 +156,14 @@ form .required label:after {
 legend + .control-group {
     margin-top: 0px !important;
 }
-
+#id_permissions {
+    height: 310px;
+    width: auto;
+}
+#id_submitter, #id_supporter, #id_users {
+    height: 110px;
+    width: auto;
+}
 
 /** Left sitebar navigation **/
 .leftmenu ul {

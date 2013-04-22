@@ -6,25 +6,19 @@
 
     Useful functions for the participant app.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
 from random import choice
 import csv
 
-from django.contrib.auth.models import Permission
 from django.db import transaction
 from django.utils.translation import ugettext as _
 
 from openslides.utils import csv_ext
 
 from openslides.participant.models import User, Group
-
-
-DEFAULT_PERMS = ['can_see_agenda', 'can_see_projector',
-                 'can_see_motion', 'can_see_assignment',
-                 'can_see_dashboard']
 
 
 def gen_password():
@@ -41,7 +35,7 @@ def gen_username(first_name, last_name):
     """
     generates the username for new users.
     """
-    testname = "%s %s" % (first_name.strip(), last_name.strip())
+    testname = "%s_%s" % (first_name.strip(), last_name.strip())
     try:
         User.objects.get(username=testname)
     except User.DoesNotExist:
@@ -49,7 +43,7 @@ def gen_username(first_name, last_name):
     i = 0
     while True:
         i += 1
-        testname = "%s %s %s" % (first_name, last_name, i)
+        testname = "%s_%s_%s" % (first_name, last_name, i)
         try:
             User.objects.get(username=testname)
         except User.DoesNotExist:
@@ -73,21 +67,38 @@ def import_users(csv_file):
                                                         dialect=dialect)):
                 if line_no:
                     try:
-                        (first_name, last_name, gender, structure_level, type, committee, comment) = line[:7]
+                        (title, first_name, last_name, gender, email, groups,
+                         structure_level, committee, about_me, comment, is_active) = line[:11]
                     except ValueError:
                         error_messages.append(_('Ignoring malformed line %d in import file.') % (line_no + 1))
                         continue
                     user = User()
+                    user.title = title
                     user.last_name = last_name
                     user.first_name = first_name
                     user.username = gen_username(first_name, last_name)
                     user.gender = gender
+                    user.email = email
                     user.structure_level = structure_level
-                    user.type = type
                     user.committee = committee
+                    user.about_me = about_me
                     user.comment = comment
+                    if is_active == '1':
+                        user.is_active = True
+                    else:
+                        user.is_active = False
                     user.default_password = gen_password()
                     user.save()
+                    for groupid in groups:
+                        try:
+                            if groupid != ",":
+                                Group.objects.get(pk=groupid).user_set.add(user)
+                        except ValueError:
+                            error_messages.append(_('Ignoring malformed group id in line %d.') % (line_no + 1))
+                            continue
+                        except Group.DoesNotExist:
+                            error_messages.append(_('Group id %s does not exists (line %d).') % (groupid, line_no + 1))
+                            continue
                     user.reset_password()
                     count_success += 1
     except csv.Error:

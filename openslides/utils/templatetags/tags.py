@@ -11,12 +11,18 @@
 """
 
 from django import template
-from openslides.config.models import config
+from openslides.config.api import config
+
 
 register = template.Library()
 
 
 @register.simple_tag
+def get_config(key):
+    return config[key]
+
+
+@register.filter
 def get_config(key):
     return config[key]
 

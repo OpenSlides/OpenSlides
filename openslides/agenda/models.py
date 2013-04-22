@@ -10,17 +10,20 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+from datetime import datetime
+
 from django.db import models
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy as _, ugettext_noop, ugettext
 
 from mptt.models import MPTTModel, TreeForeignKey
 
-from openslides.config.models import config
+from openslides.utils.exceptions import OpenSlidesError
+from openslides.config.api import config
 from openslides.projector.projector import SlideMixin
 from openslides.projector.api import (
     register_slidemodel, get_slide_from_sid, register_slidefunc)
-from .slides import agenda_show
+from openslides.utils.person.models import PersonField
 
 
 class Item(MPTTModel, SlideMixin):
@@ -39,15 +42,62 @@ class Item(MPTTModel, SlideMixin):
         (ORGANIZATIONAL_ITEM, _('Organizational item')))
 
     title = models.CharField(null=True, max_length=255, verbose_name=_("Title"))
+    """
+    Title of the agenda item.
+    """
+
     text = models.TextField(null=True, blank=True, verbose_name=_("Text"))
+    """
+    The optional text of the agenda item.
+    """
+
     comment = models.TextField(null=True, blank=True, verbose_name=_("Comment"))
+    """
+    Optional comment to the agenda item. Will not be shoun to normal users.
+    """
+
     closed = models.BooleanField(default=False, verbose_name=_("Closed"))
+    """
+    Flag, if the item is finished.
+    """
+
     weight = models.IntegerField(default=0, verbose_name=_("Weight"))
+    """
+    Weight to sort the item in the agenda.
+    """
+
     parent = TreeForeignKey('self', null=True, blank=True,
                             related_name='children')
-    type = models.IntegerField(max_length=1, choices=ITEM_TYPE, default=AGENDA_ITEM, verbose_name=_("Type"))
-    duration = models.CharField(null=True, blank=True, max_length=5, verbose_name=_("Duration (hh:mm)"))
+    """
+    The parent item in the agenda tree.
+    """
+
+    type = models.IntegerField(max_length=1, choices=ITEM_TYPE,
+                               default=AGENDA_ITEM, verbose_name=_("Type"))
+    """
+    Type of the agenda item.
+
+    See Agenda.ITEM_TYPE for more informations.
+    """
+
+    duration = models.CharField(null=True, blank=True, max_length=5,
+                                verbose_name=_("Duration (hh:mm)"))
+    """
+    The intended duration for the topic.
+    """
+
     related_sid = models.CharField(null=True, blank=True, max_length=63)
+    """
+    Slide-ID to another object to show it in the agenda.
+
+    For example a motion or assignment.
+    """
+
+    speaker_list_closed = models.BooleanField(
+        default=False, verbose_name=_("List of speakers is closed"))
+    """
+    True, if the list of speakers is closed.
+    """
 
     def get_related_slide(self):
         """
@@ -106,6 +156,11 @@ class Item(MPTTModel, SlideMixin):
                 'items': self.get_children(),
                 'template': 'projector/AgendaSummary.html',
             }
+        elif config['presentation_argument'] == 'show_list_of_speakers':
+            speakers = Speaker.objects.filter(time=None, item=self.pk).order_by('weight')
+            data = {'title': _('List of speakers for %s') % self.get_title(),
+                    'template': 'projector/agenda_list_of_speaker.html',
+                    'speakers': speakers}
         elif self.related_sid:
             data = self.get_related_slide().slide()
         else:
@@ -186,5 +241,63 @@ class Item(MPTTModel, SlideMixin):
         order_insertion_by = ['weight']
 
 
-register_slidemodel(Item, control_template='agenda/control_item.html')
-register_slidefunc('agenda', agenda_show, weight=-1, name=_('Agenda'))
+class SpeakerManager(models.Manager):
+    def add(self, person, item):
+        if self.filter(person=person, item=item, time=None).exists():
+            raise OpenSlidesError(_('%s is already on the list of speakers of item %d.') % (person, item.id))
+        weight = (self.filter(item=item).aggregate(
+            models.Max('weight'))['weight__max'] or 0)
+        return self.create(item=item, person=person, weight=weight + 1)
+
+
+class Speaker(models.Model):
+    """
+    Model for the Speaker list.
+    """
+
+    objects = SpeakerManager()
+
+    person = PersonField()
+    """
+    ForeinKey to the person who speaks.
+    """
+
+    item = models.ForeignKey(Item)
+    """
+    ForeinKey to the AgendaItem to which the person want to speak.
+    """
+
+    time = models.DateTimeField(null=True)
+    """
+    Saves the time, when the speaker has spoken. None, if he has not spoken yet.
+    """
+
+    weight = models.IntegerField(null=True)
+    """
+    The sort order of the list of speakers. None, if he has already spoken.
+    """
+
+    class Meta:
+        permissions = (
+            ('can_be_speaker', ugettext_noop('Can be speaker')),
+        )
+
+    def __unicode__(self):
+        return unicode(self.person)
+
+    def get_absolute_url(self, link='detail'):
+        if link == 'detail' or link == 'view':
+            return self.person.get_absolute_url('detail')
+        if link == 'delete':
+            return reverse('agenda_speaker_delete',
+                           args=[self.item.pk, self.pk])
+
+    def speak(self):
+        """
+        Let the person speak.
+
+        Set the weight to None and the time to now.
+        """
+        self.weight = None
+        self.time = datetime.now()
+        self.save()

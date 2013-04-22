@@ -6,7 +6,7 @@
 
     Main script to start and set up OpenSlides.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -64,6 +64,11 @@ INSTALLED_PLUGINS = (
 )
 
 INSTALLED_APPS += INSTALLED_PLUGINS
+
+# Absolute path to the directory that holds media.
+# Example: "/home/media/media.lawrence.com/"
+MEDIA_ROOT = %(media_root_path)s
+
 """
 
 KEY_LENGTH = 30
@@ -73,7 +78,7 @@ KEY_LENGTH = 30
 _portable_db_path = object()
 
 
-def process_options(argv=None, check_args=True):
+def process_options(argv=None, manage_runserver=False):
     if argv is None:
         argv = sys.argv[1:]
 
@@ -101,14 +106,19 @@ def process_options(argv=None, check_args=True):
         help="Show version and exit.")
 
     opts, args = parser.parse_args(argv)
+
+    # Do not parse any argv if the script is started via manage.py runserver.
+    # This simulates the django runserver command
+    if manage_runserver:
+        opts.start_browser = False
+        opts.no_reload = False
+        return opts
+
     if opts.version:
         print get_version()
         exit(0)
 
-    # Don't check for further args if we come from our custom management
-    # command, that always sets them
-    if args and check_args:
-
+    if args:
         sys.stderr.write("This command does not take arguments!\n\n")
         parser.print_help()
         sys.exit(1)
@@ -116,8 +126,8 @@ def process_options(argv=None, check_args=True):
     return opts
 
 
-def main(argv=None, check_args=True):
-    opts = process_options(argv, check_args)
+def main(argv=None, manage_runserver=False):
+    opts = process_options(argv, manage_runserver)
     _main(opts)
 
 
@@ -178,15 +188,15 @@ def _main(opts, database_path=None):
         create_or_reset_admin_user()
 
     # Start OpenSlides
+    reload = True
     if opts.no_reload:
-        extra_args = ['--noreload']
-    else:
-        extra_args = []
+        reload = False
 
     if opts.start_browser:
         start_browser(url)
 
-    start_openslides(addr, port, extra_args=extra_args)
+    # Start the server
+    run_tornado(addr, port, reload)
 
 
 def create_settings(settings_path, database_path=None):
@@ -195,14 +205,17 @@ def create_settings(settings_path, database_path=None):
     if database_path is _portable_db_path:
         database_path = get_portable_db_path()
         dbpath_value = 'openslides.main.get_portable_db_path()'
+        media_root_path_value = 'openslides.main.get_portable_media_root_path()'
     else:
         if database_path is None:
             database_path = get_user_data_path('openslides', 'database.sqlite')
         dbpath_value = repr(fs2unicode(database_path))
+        media_root_path_value = repr(fs2unicode(get_user_data_path('openslides', 'media', '')))
 
     settings_content = CONFIG_TEMPLATE % dict(
         default_key=base64.b64encode(os.urandom(KEY_LENGTH)),
-        dbpath=dbpath_value)
+        dbpath=dbpath_value,
+        media_root_path=media_root_path_value)
 
     if not os.path.exists(settings_module):
         os.makedirs(settings_module)
@@ -276,12 +289,10 @@ def run_syncdb():
 def set_system_url(url):
     # can't be imported in global scope as it already requires
     # the settings module during import
-    from openslides.config.models import config
+    from openslides.config.api import config
 
-    key = "participant_pdf_system_url"
-    if key in config:
-        return
-    config[key] = url
+    if config['participant_pdf_system_url'] == 'http://example.com:8000':
+        config['participant_pdf_system_url'] = url
 
 
 def create_or_reset_admin_user():
@@ -301,15 +312,6 @@ def create_or_reset_admin_user():
     admin.default_password = 'admin'
     admin.set_password(admin.default_password)
     admin.save()
-
-
-def start_openslides(addr, port, start_browser_url=None, extra_args=[]):
-    # Open the browser
-    if start_browser_url:
-        start_browser(start_browser_url)
-
-    # Start the server
-    run_tornado(addr, port)
 
 
 def start_browser(url):
@@ -368,6 +370,10 @@ def get_portable_path(*args):
 
 def get_portable_db_path():
     return get_portable_path('openslides', 'database.sqlite')
+
+
+def get_portable_media_root_path():
+    return get_portable_path('openslides', 'media', '')
 
 
 def win32_get_app_data_path(*args):

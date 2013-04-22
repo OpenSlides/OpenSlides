@@ -149,15 +149,26 @@ class QuestionMixin(object):
 
     def get_redirect_url(self, **kwargs):
         if self.request.method == 'GET':
-            return reverse(self.question_url_name, args=self.get_url_name_args())
+            return reverse(self.question_url_name, args=self.get_question_url_name_args())
         else:
-            return reverse(self.success_url_name, args=self.get_url_name_args())
+            return reverse(self.success_url_name, args=self.get_success_url_name_args())
+
+    def get_question_url_name_args(self):
+        return self.get_url_name_args()
+
+    def get_success_url_name_args(self):
+        return self.get_url_name_args()
 
     def get_url_name_args(self):
-        return []
+        try:
+            return [self.object.pk]
+        except AttributeError:
+            return []
 
     def pre_redirect(self, request, *args, **kwargs):
-        # Prints the question in a GET request
+        """
+        Prints the question in a GET request.
+        """
         self.confirm_form()
 
     def get_question(self):
@@ -251,7 +262,10 @@ class RedirectView(PermissionMixin, AjaxMixin, _RedirectView):
             return super(RedirectView, self).get_redirect_url(**kwargs)
 
     def get_url_name_args(self):
-        return []
+        try:
+            return [self.object.pk]
+        except AttributeError:
+            return []
 
 
 class FormView(PermissionMixin, ExtraContextMixin, UrlMixin, _FormView):
@@ -319,6 +333,9 @@ class DeleteView(SingleObjectMixin, QuestionMixin, RedirectView):
     def get_success_message(self):
         return _('%s was successfully deleted.') % html_strong(self.object)
 
+    def get_url_name_args(self):
+        return []
+
 
 class DetailView(PermissionMixin, ExtraContextMixin, _DetailView):
     def get(self, request, *args, **kwargs):
@@ -385,14 +402,25 @@ def server_error(request, template_name='500.html'):
 
 @receiver(template_manipulation, dispatch_uid="send_register_tab")
 def send_register_tab(sender, request, context, **kwargs):
+    """
+    Receiver to the template_manipulation signal. Collects from the file
+    views.py in all apps the tabs setup by the function register_tab.
+    Inserts the tab objects and also the extra_stylefiles to the context.
+    """
     tabs = []
+    if 'extra_stylefiles' in context:
+        extra_stylefiles = context['extra_stylefiles']
+    else:
+        extra_stylefiles = []
     for app in settings.INSTALLED_APPS:
         try:
             mod = import_module(app + '.views')
-            tabs.append(mod.register_tab(request))
+            tab = mod.register_tab(request)
+            tabs.append(tab)
+            if tab.stylefile:
+                extra_stylefiles.append(tab.stylefile)
         except (ImportError, AttributeError):
             continue
-
     context.update({
         'tabs': tabs,
-    })
+        'extra_stylefiles': extra_stylefiles})

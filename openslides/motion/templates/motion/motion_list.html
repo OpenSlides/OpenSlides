@@ -10,7 +10,9 @@
         {% trans "Motions" %}
         <small class="pull-right">
         {% if perms.motion.can_create_motion %}
-            <a href="{% url 'motion_new' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New motion' %}"><i class="icon-plus icon-white"></i> {% trans 'New' %}</a>
+            {% if not 'motion_stop_submitting'|get_config or perms.motion.can_manage_motion %}
+                <a href="{% url 'motion_new' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New motion' %}"><i class="icon-plus icon-white"></i> {% trans 'New' %}</a>
+            {% endif %}
         {% endif %}
         {% if perms.motion.can_manage_motion %}
             <a href="{% url 'motion_category_list' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New motion' %}"><i class="icon-th-large"></i> {% trans 'Category' %}</a>
@@ -61,7 +63,7 @@
         </tr>
     {% for motion in motion_list %}
         <tr class="{% if motion.active %}activeline{% endif %}">
-            <td>{{ motion.identifier }}</td>
+            <td>{{ motion.identifier|default:'' }}</td>
             <td><a href="{% model_url motion %}">{{ motion.title }}</a></td>
         {% if min_supporters > 0 %}
             <td class="optional">{# motion.count_supporters #}</td>

@@ -4,12 +4,13 @@
     Tests for openslides.motion.models
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
 from django.test.client import Client
 
+from openslides.config.api import config
 from openslides.utils.test import TestCase
 from openslides.participant.models import User, Group
 from openslides.motion.models import Motion
@@ -21,6 +22,14 @@ class MotionViewTestCase(TestCase):
         self.admin = User.objects.create_superuser('admin', 'admin@admin.admin', 'admin')
         self.admin_client = Client()
         self.admin_client.login(username='admin', password='admin')
+
+        # Staff
+        self.staff = User.objects.create_user('staff', 'staff@user.user', 'staff')
+        staff_group = Group.objects.get(name='Staff')
+        self.staff.groups.add(staff_group)
+        self.staff.save()
+        self.staff_client = Client()
+        self.staff_client.login(username='staff', password='staff')
 
         # Delegate
         self.delegate = User.objects.create_user('delegate', 'delegate@user.user', 'delegate')
@@ -90,6 +99,26 @@ class TestMotionCreateView(MotionViewTestCase):
         self.assertEqual(response.status_code, 403)
         self.assertFalse(Motion.objects.filter(versions__title='registered motion').exists())
 
+    def test_delegate_after_stop_submitting_new_motions(self):
+        config['motion_stop_submitting'] = True
+        response = self.delegate_client.get(self.url)
+        self.assertEqual(response.status_code, 403)
+
+    def test_delegate_after_stop_submitting_new_motions_overview(self):
+        config['motion_stop_submitting'] = True
+        response = self.delegate_client.get('/motion/')
+        self.assertNotContains(response, 'href="/motion/new/"', status_code=200)
+
+    def test_staff_after_stop_submitting_new_motions(self):
+        config['motion_stop_submitting'] = True
+        response = self.staff_client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_staff_after_stop_submitting_new_motions_overview(self):
+        config['motion_stop_submitting'] = True
+        response = self.staff_client.get('/motion/')
+        self.assertContains(response, 'href="/motion/new/"', status_code=200)
+
 
 class TestMotionUpdateView(MotionViewTestCase):
     url = '/motion/1/edit/'
@@ -136,3 +165,31 @@ class TestMotionDeleteView(MotionViewTestCase):
         motion = Motion.objects.get(pk=2).add_submitter(self.delegate)
         response = self.delegate_client.post('/motion/2/del/', {})
         self.assertRedirects(response, '/motion/')
+
+
+class TestVersionPermitView(MotionViewTestCase):
+    def setUp(self):
+        super(TestVersionPermitView, self).setUp()
+        self.motion1.new_version
+        self.motion1.save()
+
+    def test_get(self):
+        response = self.check_url('/motion/1/version/2/permit/', self.admin_client, 302)
+        self.assertRedirects(response, '/motion/1/version/2/')
+
+    def test_post(self):
+        new_version = self.motion1.last_version
+        response = self.admin_client.post('/motion/1/version/2/permit/', {'yes': 1})
+        self.assertRedirects(response, '/motion/1/version/2/')
+        self.assertEqual(self.motion1.active_version, new_version)
+
+    def test_activate_old_version(self):
+        new_version = self.motion1.last_version
+        first_version = self.motion1.versions.order_by('version_number')[0]
+
+        self.motion1.set_active_version(new_version)
+        self.assertEqual(self.motion1.versions.count(), 2)
+        response = self.admin_client.post('/motion/1/version/1/permit/', {'yes': 1})
+        self.motion1 = Motion.objects.get(pk=1)
+        self.assertEqual(self.motion1.active_version, first_version)
+        self.assertEqual(self.motion1.versions.count(), 2)

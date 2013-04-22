@@ -4,13 +4,13 @@
     Tests for openslides.motion.models
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
 from openslides.utils.test import TestCase
 from openslides.participant.models import User
-from openslides.config.models import config
+from openslides.config.api import config
 from openslides.motion.models import Motion, Workflow, State
 from openslides.motion.exceptions import WorkflowError
 
@@ -136,3 +136,38 @@ class ModelTest(TestCase):
         with self.assertRaises(WorkflowError):
             state_1.next_states.add(state_2)
             state_1.save()
+
+    def test_two_empty_identifiers(self):
+        motion1 = Motion.objects.create(title='foo', text='bar', identifier='')
+        motion2 = Motion.objects.create(title='foo2', text='bar2', identifier='')
+
+    def test_do_not_create_new_version_when_permit_old_version(self):
+        motion = Motion()
+        motion.title = 'foo'
+        motion.text = 'bar'
+        first_version = motion.version
+        my_state = State.objects.create(name='automatic_versioning', workflow=self.workflow,
+                                        versioning=True, dont_set_new_version_active=True)
+        motion.state = my_state
+        motion.save()
+
+        motion = Motion.objects.get(pk=motion.pk)
+        motion.new_version
+        motion.title = 'New Title'
+        motion.save()
+        new_version = motion.last_version
+        self.assertEqual(motion.versions.count(), 2)
+
+        motion.set_active_version(new_version)
+        motion.save()
+        self.assertEqual(motion.versions.count(), 2)
+
+        motion.set_active_version(first_version)
+        motion.version = first_version
+        motion.save(no_new_version=True)
+        self.assertEqual(motion.versions.count(), 2)
+
+
+class ConfigTest(TestCase):
+    def test_stop_submitting(self):
+        self.assertFalse(config['motion_stop_submitting'])

@@ -6,7 +6,7 @@
 
     Views for the assignment app.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -30,14 +30,13 @@ from openslides.utils.utils import (
     template, permission_required, gen_confirm_form, del_confirm_form, ajax_request)
 from openslides.utils.views import FormView, DeleteView, PDFView, RedirectView
 from openslides.utils.person import get_person
-from openslides.config.models import config
+from openslides.config.api import config
 from openslides.participant.models import User
 from openslides.projector.projector import Widget
 from openslides.poll.views import PollFormView
 from openslides.agenda.models import Item
 from openslides.assignment.models import Assignment, AssignmentPoll
-from openslides.assignment.forms import (
-    AssignmentForm, AssignmentRunForm, ConfigForm)
+from openslides.assignment.forms import AssignmentForm, AssignmentRunForm
 
 
 @permission_required('assignment.can_see_assignment')
@@ -631,45 +630,6 @@ class AssignmentPollPDF(PDFView):
             ('GRID', (0, 0), (-1, -1), 0.25, colors.grey),
             ('VALIGN', (0, 0), (-1, -1), 'TOP')]))
         story.append(t)
-
-
-class Config(FormView):
-    permission_required = 'config.can_manage_config'
-    form_class = ConfigForm
-    template_name = 'assignment/config.html'
-    success_url_name = 'config_assignment'
-
-    def get_initial(self):
-        return {
-            'assignment_publish_winner_results_only':
-            config['assignment_publish_winner_results_only'],
-            'assignment_pdf_ballot_papers_selection':
-            config['assignment_pdf_ballot_papers_selection'],
-            'assignment_pdf_ballot_papers_number':
-            config['assignment_pdf_ballot_papers_number'],
-            'assignment_pdf_title': config['assignment_pdf_title'],
-            'assignment_pdf_preamble': config['assignment_pdf_preamble'],
-            'assignment_poll_vote_values':
-            config['assignment_poll_vote_values']}
-
-    def form_valid(self, form):
-        if form.cleaned_data['assignment_publish_winner_results_only']:
-            config['assignment_publish_winner_results_only'] = True
-        else:
-            config['assignment_publish_winner_results_only'] = False
-        config['assignment_pdf_ballot_papers_selection'] = \
-            form.cleaned_data['assignment_pdf_ballot_papers_selection']
-        config['assignment_pdf_ballot_papers_number'] = \
-            form.cleaned_data['assignment_pdf_ballot_papers_number']
-        config['assignment_pdf_title'] = \
-            form.cleaned_data['assignment_pdf_title']
-        config['assignment_pdf_preamble'] = \
-            form.cleaned_data['assignment_pdf_preamble']
-        config['assignment_poll_vote_values'] = \
-            form.cleaned_data['assignment_poll_vote_values']
-        messages.success(
-            self.request, _('Election settings successfully saved.'))
-        return super(Config, self).form_valid(form)
 
 
 def register_tab(request):

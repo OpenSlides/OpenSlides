@@ -15,7 +15,7 @@ from django.core.cache import cache
 from django.utils.datastructures import SortedDict
 from django.utils.importlib import import_module
 
-from openslides.config.models import config
+from openslides.config.api import config
 from openslides.projector.projector import SLIDE, Slide
 
 
@@ -118,28 +118,6 @@ def register_slidefunc(key, func, control_template=None, weight=0, name=''):
     SLIDE[key] = Slide(model_slide=False, func=func, category=category,
                        key=key, control_template=control_template, weight=weight,
                        name=name,)
-
-
-def projector_message_set(message, sid=None):
-    """
-    Set the overlay-message.
-    if sid is set, only show the message on the sid-slide.
-    """
-    from models import ProjectorOverlay
-    config['projector_message'] = message
-    try:
-        overlay = ProjectorOverlay.objects.get(def_name='Message')
-    except ProjectorOverlay.DoesNotExist:
-        overlay = ProjectorOverlay(def_name='Message', active=False)
-    overlay.sid = sid
-    overlay.save()
-
-
-def projector_message_delete():
-    """
-    Delete the overlay-message.
-    """
-    config['projector_message'] = ''
 
 
 def get_all_widgets(request, session=False):

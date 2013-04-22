@@ -28,7 +28,7 @@ COMMON_EXCLUDE = [
     r".pyo$",
     r".po$",
     r".egg-info",
-    r"\blocale/(?!de/|en/)[^/]+/"
+    r"\blocale/(?!de/|en/|fr/)[^/]+/"
 ]
 
 LIBEXCLUDE = [
@@ -39,8 +39,6 @@ LIBEXCLUDE = [
     r"^lib2to3/",
     r"^lib-tk/",
     r"^msilib/",
-    r"^multiprocessing/",
-    r"^unittest/",
 ]
 
 
@@ -48,19 +46,20 @@ SITE_PACKAGES = {
     "django": {
         "copy": ["django"],
         "exclude": [
-            r"^contrib/admindocs/",
-            r"^contrib/comments/",
-            r"^contrib/databrowse/",
-            r"^contrib/flatpages/",
-            r"^contrib/formtools/",
-            r"^contrib/gis/",
-            r"^contrib/humanize/",
-            r"^contrib/localflavor/",
-            r"^contrib/markup/",
-            r"^contrib/redirects/",
-            r"^contrib/sitemaps/",
-            r"^contrib/syndication/",
-            r"^contrib/webdesign/",
+            r"^django/contrib/admin/",
+            r"^django/contrib/admindocs/",
+            r"^django/contrib/comments/",
+            r"^django/contrib/databrowse/",
+            r"^django/contrib/flatpages/",
+            r"^django/contrib/formtools/",
+            r"^django/contrib/gis/",
+            r"^django/contrib/humanize/",
+            r"^django/contrib/localflavor/",
+            r"^django/contrib/markup/",
+            r"^django/contrib/redirects/",
+            r"^django/contrib/sitemaps/",
+            r"^django/contrib/syndication/",
+            r"^django/contrib/webdesign/",
         ]
     },
     "django-mptt": {
@@ -71,13 +70,35 @@ SITE_PACKAGES = {
             "reportlab",
             "_renderPM.pyd",
             "_rl_accel.pyd",
-            "sgmlop.pyd",
             "pyHnj.pyd",
+            "sgmlop.pyd",
         ],
     },
-    "pil": {
-        # NOTE: PIL is a special case, see copy_pil
-        "copy": [],
+    "pillow": {
+        "copy": [
+            "PIL",
+            "_imaging.pyd",
+            "_imagingcms.pyd",
+            "_imagingft.pyd",
+            "_imagingmath.pyd",
+            "_imagingtk.pyd",
+            "_webp.pyd",
+        ],
+    },
+    "tornado": {
+        "copy": ["tornado"],
+    },
+    "qrcode": {
+        "copy": ["qrcode"],
+    },
+    "beautifulsoup4": {
+        "copy": ["bs4"],
+    },
+    "bleach": {
+        "copy": ["bleach"],
+    },
+    "html5lib": {
+        "copy": ["html5lib"],
     }
 }
 
@@ -88,6 +109,9 @@ PY_DLLS = [
     "_socket.pyd",
     "select.pyd",
     "_ctypes.pyd",
+    "_ssl.pyd",
+    "_multiprocessing.pyd",
+    "pyexpat.pyd",
 ]
 
 MSVCR_PUBLIC_KEY = "1fc8b3b9a1e18e3b"
@@ -177,28 +201,12 @@ def copy_package(name, info, odir):
         else:
             copy_dir_exclude(exclude, site_dir, fp, odir)
 
-def copy_pil(odir):
-    dist = pkg_resources.get_distribution("pil")
-    exclude = get_pkg_exclude("pil")
-
-    dest_dir = os.path.join(odir, "PIL")
-    copy_dir_exclude(exclude, dist.location, dist.location, dest_dir)
-    fp = os.path.join(dest_dir, "PIL.pth")
-    if os.path.isfile(fp):
-        os.rename(fp, os.path.join(odir, "PIL.pth"))
-    else:
-        fp = os.path.join(os.path.dirname(dist.location), "PIL.pth")
-        shutil.copyfile(fp, os.path.join(odir, "PIL.pth"))
-
 def collect_site_packages(sitedir, odir):
     if not os.path.exists(odir):
         os.makedirs(odir)
 
     for name, info in SITE_PACKAGES.iteritems():
         copy_package(name, info, odir)
-
-    assert "pil" in SITE_PACKAGES
-    copy_pil(odir)
 
 def compile_openslides_launcher():
     try:
@@ -306,9 +314,6 @@ def main():
 
     shutil.copyfile("extras/win32-portable/openslides.exe",
         os.path.join(odir, "openslides.exe"))
-
-    shutil.copyfile("openslides/participant/fixtures/groups_de.json",
-        os.path.join(odir, "groups_de.json"))
 
     copy_dlls(odir)
     copy_msvcr(odir)
