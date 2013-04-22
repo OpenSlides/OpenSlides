@@ -160,7 +160,7 @@ def create_builtin_workflows(sender, **kwargs):
                                      allow_create_poll=True,
                                      allow_submitter_edit=True,
                                      versioning=True,
-                                     dont_set_new_version_active=True)
+                                     leave_old_version_active=True)
     state_2_3 = State.objects.create(name=ugettext_noop('accepted'),
                                      workflow=workflow_2,
                                      action_word=ugettext_noop('Accept'),
