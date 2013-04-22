@@ -20,7 +20,8 @@ from openslides.config.api import ConfigVariable, ConfigPage
 
 from openslides.projector.signals import projector_overlays
 from openslides.projector.projector import Overlay
-from openslides.projector.api import get_active_slide, get_slide_from_sid
+from openslides.projector.api import (get_active_slide, get_slide_from_sid,
+                                      clear_projector_cache)
 
 from .models import Speaker, Item
 
@@ -78,6 +79,7 @@ def agenda_list_of_speakers(sender, **kwargs):
         if not isinstance(slide, Item):
             # Only show list of speakers on Agenda-Items
             return None
+        clear_projector_cache()
         speakers = Speaker.objects.filter(time=None, item=slide)[:5]
         context = {'speakers': speakers}
         return render_to_string('agenda/overlay_speaker_projector.html', context)
