@@ -78,7 +78,7 @@ KEY_LENGTH = 30
 _portable_db_path = object()
 
 
-def process_options(argv=None, check_args=True):
+def process_options(argv=None, manage_runserver=False):
     if argv is None:
         argv = sys.argv[1:]
 
@@ -106,14 +106,19 @@ def process_options(argv=None, check_args=True):
         help="Show version and exit.")
 
     opts, args = parser.parse_args(argv)
+
+    # Do not parse any argv if the script is started via manage.py runserver.
+    # This simulates the django runserver command
+    if manage_runserver:
+        opts.start_browser = False
+        opts.no_reload = False
+        return opts
+
     if opts.version:
         print get_version()
         exit(0)
 
-    # Don't check for further args if we come from our custom management
-    # command, that always sets them
-    if args and check_args:
-
+    if args:
         sys.stderr.write("This command does not take arguments!\n\n")
         parser.print_help()
         sys.exit(1)
@@ -121,8 +126,8 @@ def process_options(argv=None, check_args=True):
     return opts
 
 
-def main(argv=None, check_args=True):
-    opts = process_options(argv, check_args)
+def main(argv=None, manage_runserver=False):
+    opts = process_options(argv, manage_runserver)
     _main(opts)
 
 
