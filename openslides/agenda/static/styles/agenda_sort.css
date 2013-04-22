@@ -77,8 +77,7 @@
 	#menu-overview .optional { width: 100px; }
 	.agenda_list .optional { float: right; width: 108px; padding-left: 8px;}
 }
-.agenda_list .opener, .agenda_list .closer { border: solid 1px gray; background-color: lightgray; border-radius: 3px; display: inline-block; width: 20px; height: 20px; line-height: 20px; vertical-align: middle; text-align: center; }
-.agenda_list .opener:hover, .agenda_list .closer:hover { background-color: gray; }
+.agenda_list .opener, .agenda_list .closer {  }
 .agenda_list .opener { display: none; }
 .agenda_list li.closed ol { display: none; }
 .agenda_list li.closed .closer { display: none; }
