@@ -31,7 +31,7 @@ $(function() {
 		
 	};
 	
-	$agenda_list.nestedSortable({
+	if ($agenda_list.hasClass("sortable")) $agenda_list.nestedSortable({
 		forcePlaceholderSize: true,
 		handle: 'div',
 		helper:	'clone',

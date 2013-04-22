@@ -20,8 +20,8 @@
         <script type="text/javascript" src="{% static 'javascript/jquery-ui.custom.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'javascript/jquery.tmpl.js' %}"></script>
         <script type="text/javascript" src="{% static 'javascript/jquery.mjs.nestedSortable.js' %}"></script>
-        <script type="text/javascript" src="{% static 'javascript/agenda_sort.js' %}"></script>
     {% endif %}
+    <script type="text/javascript" src="{% static 'javascript/agenda_sort.js' %}"></script>
 {% endblock %}
 
 {% block content %}
@@ -106,9 +106,9 @@
             </tr>
         </table>
         {% if items %}
-		<ol class="agenda_list">
+		<ol class="agenda_list {% if perms.agenda.can_manage_agenda %}sortable{% endif %}">
             {% recursetree items %}
-            <li class="mjs-nestedSortable-expanded draggable{% if item.active %} activeline{% endif %}{% if item.closed %} offline{% endif %}">
+            <li class="draggable{% if item.active %} activeline{% endif %}{% if item.closed %} offline{% endif %}">
                 {% include "agenda/item_row.html" %}
                 {% if not node.is_leaf_node %}
 				<ol>

@@ -2,31 +2,7 @@
 {% load tags %}
 
 <div>
-    <div class="openclose">
-        {% if perms.agenda.can_manage_agenda %}
-            <a href="{% if node.closed %}{% url 'item_open' node.id %}{% else %}{% url 'item_close' node.id %}{% endif %}"
-                class="close_link btn btn-mini {% if node.closed %}btn-success{% endif %}" title="{% trans 'Change status (open/closed)' %}">
-                <i class="{% if node.closed %}icon-checked-new{% else %}icon-unchecked-new{% endif %}"></i>
-            </a>
-        {% else %}
-            <span class="close_link">
-                <i class="{% if node.closed %}icon-checked-new{% else %}icon-unchecked-new{% endif %}"></i>
-            </span>
-        {% endif %}
-    </div>
-    {% if perms.agenda.can_see_orga_items %}
-    <div class="duration">
-        {% if node.duration %}
-            {{ node.duration }}h {% if start and end %}<a {% if node.tooltip %}rel="tooltip" data-original-title="{% trans 'End' %}: {{ node.tooltip|date:"DATETIME_FORMAT" }}"{% endif %}><i class="icon-clock"></i></a>{% endif %}
-        {% endif %}
-    </div>
-    {% endif %}
-    
-    <div class="opener_closer">
-		<a href="#" class="opener">+</a>
-		<a href="#" class="closer">-</a>
-    </div>
-    
+	
     {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
     <div class="manage">
         <span style="width: 1px; white-space: nowrap;">
@@ -51,6 +27,39 @@
         </span>
     </div>
     {% endif %}    
+
+    {% if perms.agenda.can_see_orga_items %}
+    <div class="duration">
+        {% if node.duration %}
+            {{ node.duration }}h {% if start and end %}<a {% if node.tooltip %}rel="tooltip" data-original-title="{% trans 'End' %}: {{ node.tooltip|date:"DATETIME_FORMAT" }}"{% endif %}><i class="icon-clock"></i></a>{% endif %}
+        {% endif %}
+    </div>
+    {% endif %}
+    
+    {% if perms.agenda.can_manage_agenda %}
+    <div class="optional">
+        {{ node.comment|first_line }}
+    </div>
+    {% endif %}
+
+    <div class="opener_closer">
+		<a href="#" class="opener">+</a>
+		<a href="#" class="closer">-</a>
+    </div>
+    
+    <div class="openclose">
+        {% if perms.agenda.can_manage_agenda %}
+            <a href="{% if node.closed %}{% url 'item_open' node.id %}{% else %}{% url 'item_close' node.id %}{% endif %}"
+                class="close_link btn btn-mini {% if node.closed %}btn-success{% endif %}" title="{% trans 'Change status (open/closed)' %}">
+                <i class="{% if node.closed %}icon-checked-new{% else %}icon-unchecked-new{% endif %}"></i>
+            </a>
+        {% else %}
+            <span class="close_link">
+                <i class="{% if node.closed %}icon-checked-new{% else %}icon-unchecked-new{% endif %}"></i>
+            </span>
+        {% endif %}
+    </div>
+    
     <div class="title">
         {% with form=node.weight_form %}
             {{ form.weight }}
@@ -60,10 +69,5 @@
         <a href="{% model_url node 'view' %}">{% if node.type == node.ORGANIZATIONAL_ITEM %}<i>[{% endif %}{{ node }}{% if node.type == node.ORGANIZATIONAL_ITEM %}]</i>{% endif %}</a>
         {{ node.get_title_supplement|safe }}
     </div>
-    {% if perms.agenda.can_manage_agenda %}
-    <div class="optional">
-        {{ node.comment|first_line }}
-    </div>
-    {% endif %}
  </div>
  

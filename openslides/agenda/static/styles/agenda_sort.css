@@ -1,4 +1,4 @@
-ol {
+		ol {
 			margin: 0;
 			padding: 0;
 			padding-left: 30px;
@@ -27,7 +27,6 @@ ol {
 			border-color: #D4D4D4 #D4D4D4 #BCBCBC;
 			padding: 6px;
 			margin: 0;
-			cursor: move;
 			background: #f6f6f6;
 			background: -moz-linear-gradient(top,  #ffffff 0%, #f6f6f6 47%, #ededed 100%);
 			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(47%,#f6f6f6), color-stop(100%,#ededed));
@@ -37,6 +36,9 @@ ol {
 			background: linear-gradient(to bottom,  #ffffff 0%,#f6f6f6 47%,#ededed 100%);
 			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 );
 			overflow: auto;
+		}
+		.agenda_list.sortable li > div {
+			cursor: move;
 		}
 
 		.disclose {
@@ -54,13 +56,27 @@ ol {
 			margin: -1px;*/
 		}
 		
-.agenda_list .openclose { width: 40px; float: left; }
-.agenda_list .duration { width: 75px; float: left; }
-.agenda_list .manage { width: 150px; float: right; }
+.agenda_list .openclose { width: 40px; float: left; min-height: 1px; }
+.agenda_list .duration { width: 92px; float: right; min-height: 1px; padding-left: 5px; }
+.agenda_list .manage { width: 150px; float: right; min-height: 1px; padding-left: 5px; }
 .agenda_list .title { float: left; }
 .agenda_list .optional { float: left; }
-.agenda_list .opener_closer { float: right; }
+.agenda_list .opener_closer { float: left; margin-right: 10px; }
+.agenda_list .optional { float: right; width: 208px; padding-left: 8px;}
 
+#menu-overview .manage { width: 150px; }
+#menu-overview .duration { width: 75px; }
+#menu-overview .optional { width: 200px; }
+
+@media screen and (max-width: 1000px) {
+	#menu-overview .optional { width: 150px; }
+	.agenda_list .optional { float: right; width: 158px; padding-left: 8px;}
+}
+
+@media screen and (max-width: 800px) {
+	#menu-overview .optional { width: 100px; }
+	.agenda_list .optional { float: right; width: 108px; padding-left: 8px;}
+}
 .agenda_list .opener, .agenda_list .closer { border: solid 1px gray; background-color: lightgray; border-radius: 3px; display: inline-block; width: 20px; height: 20px; line-height: 20px; vertical-align: middle; text-align: center; }
 .agenda_list .opener:hover, .agenda_list .closer:hover { background-color: gray; }
 .agenda_list .opener { display: none; }
