@@ -22,6 +22,7 @@ from openslides.config.signals import config_signal
 from openslides.config.api import ConfigVariable, ConfigPage
 
 from .projector import Overlay
+from .api import clear_projector_cache
 
 
 projector_overlays = Signal(providing_args=['request'])
@@ -116,6 +117,7 @@ def countdown(sender, **kwargs):
             seconds = 0
         if seconds == 0:
             config['countdown_state'] = 'expired'
+        clear_projector_cache()
         return render_to_string('projector/overlay_countdown_projector.html',
                                 {'seconds': '%02d:%02d' % (seconds / 60, seconds % 60)})
 
