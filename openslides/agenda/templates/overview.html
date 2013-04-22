@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+
+{% load tags %}
+{% load i18n %}
+{% load mptt_tags %}
+{% load staticfiles %}
+
+{% block title %}{{ block.super }} – {% trans "Agenda" %}{% endblock %}
+
+{% block header %}
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/agenda.css' %}" />
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/agenda_sort.css' %}" />
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript" src="{% static 'javascript/agenda.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascript/jquery.cookie.js' %}"></script>
+    {% if perms.agenda.can_manage_agenda %}
+        <script type="text/javascript" src="{% static 'javascript/jquery.once.js' %}"></script>
+        <script type="text/javascript" src="{% static 'javascript/jquery-ui.custom.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'javascript/jquery.tmpl.js' %}"></script>
+        <script type="text/javascript" src="{% static 'javascript/jquery.mjs.nestedSortable.js' %}"></script>
+    {% endif %}
+    <script type="text/javascript" src="{% static 'javascript/agenda_sort.js' %}"></script>
+{% endblock %}
+
+{% block content %}
+   <form action="" method="post">{% csrf_token %}
+       {% if perms.agenda.can_manage_agenda %}
+       <div id="changed-order-message" style="display:none" class="alert alert-warning">
+           <button type="button" class="close" data-dismiss="alert">×</button>
+           <p>{% trans "Do you want to save the changed order of agenda items?" %}</p>
+           <p>
+               <button class="btn" type="submit">{% trans 'Yes' %}</button>
+               <a href="{% url 'item_overview' %}" class="btn">{% trans 'No' %}</a>
+            </p>
+       </div>
+       {% endif %}
+
+        <h1>{% trans "Agenda" %}
+            <small class="pull-right">
+            {% if perms.agenda.can_manage_agenda %}
+            <a href="{% url 'item_new' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New item' %}"><i class="icon-plus icon-white"></i> {% trans "New" %}</a>
+            {% endif %}
+            <a href="{% url 'print_agenda' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print agenda as PDF' %}"><i class="icon-print"></i> PDF</a>
+            </small>
+        </h1>
+        
+        {% if perms.agenda.can_see_orga_items %}
+        {% if start and end %}
+        <table id="agendatime" class="table table-bordered">
+           <tr>
+               <td>{% trans "Start of event" %}:</td>
+               <td>{{ start|date:"DATETIME_FORMAT" }}</td>
+           </tr>
+           <tr>
+               <td>{% trans "Estimated end" %}:</td>
+               <td>{{ end|date:"DATETIME_FORMAT" }}</td>
+           </tr>
+        </table>
+        {% endif %}
+        {% endif %}
+        <label class="checkbox">
+            <input type="checkbox" id="hide_closed_items"> {% trans "Hide closed items" %}
+        </label>
+
+        <small><i>{{ items|length }}
+        {% blocktrans count counter=items|length %}item{% plural %}items{% endblocktrans %}<span id="hiddencount"></span>
+        </i></small>
+        <table id="menu-overview" class="table table-striped table-bordered">
+            <tr>
+                <th class="openclose"></th>
+                <th class="title">{% trans "Item" %}</th>
+                {% if perms.agenda.can_manage_agenda %}
+                    <th class="optional">{% trans "Comment" %}</th>
+                {% endif %}
+                {% if perms.agenda.can_see_orga_items %}
+                    <th class="duration">{% trans "Duration" %}</th>
+                {% endif %}
+                {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
+                    <th class="manage">{% trans "Actions" %}</th>
+                {% endif %}
+            </tr>
+            <tr class="topline{% if active_sid == 'agenda' %} activeline{% endif %}">
+                <td class="openclose"></td>
+                <td class="title">
+                    {% trans "Agenda" %}
+                </td>
+                {% if perms.agenda.can_manage_agenda %}
+                <td class="optional"></td>
+                {% endif %}
+                {% if perms.agenda.can_see_orga_items %}
+                <td class="duration">{{ duration }}h</td>
+                {% endif %}
+                {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
+                <td class="manage">
+                {% if perms.projector.can_manage_projector %}
+                    <span>
+                    <a href="{% url 'projector_activate_slide' 'agenda' %}" class="activate_link btn {% if active_sid == 'agenda' %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+                        <i class="icon-facetime-video {% if active_sid == 'agenda' %}icon-white{% endif %}"></i>
+                    </a>
+                    </span>
+                {% endif %}
+                </td>
+                {% endif %}
+            </tr>
+        </table>
+        {% if items %}
+        <ol class="agenda_list {% if perms.agenda.can_manage_agenda %}sortable{% endif %}">
+            {% recursetree items %}
+            <li class="draggable{% if item.active %} activeline{% endif %}{% if item.closed %} offline{% endif %}">
+                {% include "agenda/item_row.html" %}
+                {% if not node.is_leaf_node %}
+                <ol>
+                    {{ children }}
+                </ol>
+                {% endif %}
+            </li>
+            {% endrecursetree %}
+        </ol>
+        {% else %}
+        <div class="overview_no_items">{% trans "No items available." %}</div>
+        {% endif %}
+    </form>
+{% endblock %}
