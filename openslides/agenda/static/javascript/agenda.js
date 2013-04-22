@@ -11,9 +11,9 @@ function hideClosedSlides(hide) {
         $('#hidelink').attr('title', 'show');
         $('#hidelink').removeClass('hide').addClass('show');
         $('.close_link .icon-checked-new').each(function() {
-			$(this).parents("li").first().hide();
-		});
-		var hidden = $(".agenda_list li:hidden").length;
+            $(this).parents("li").first().hide();
+        });
+        var hidden = $(".agenda_list li:hidden").length;
         $('#hiddencount').text(interpolate(gettext(', of which %s are hidden.'), [hidden]));
     } else {
         $('.agenda_list li').show();
