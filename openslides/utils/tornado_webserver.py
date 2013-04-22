@@ -38,12 +38,6 @@ class DjangoStaticFileHandler(StaticFileHandler):
 
 
 def run_tornado(addr, port, reload=False):
-    # We need to add the no-browser option to argv, otherwise with each reload
-    # a new browser will be opened (tornado simply re-executes Python using
-    # sys.executable and sys.argv)
-    if '--no-browser' not in sys.argv:
-        sys.argv.append('--no-browser')
-
     # Don't try to read the command line args from openslides
     parse_command_line(args=[])
 
