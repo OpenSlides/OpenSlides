@@ -40,20 +40,12 @@ class ItemForm(forms.ModelForm, CssClassMixin):
         exclude = ('closed', 'weight', 'related_sid')
 
 
-def gen_weight_choices():
-    """
-    Creates a list of tuples (n, n) for n from -49 to 50.
-    """
-    return zip(*(range(-50, 51), range(-50, 51)))
-
-
-class ItemOrderForm(CssClassMixin, forms.Form):
+class ItemOrderForm(forms.Form, CssClassMixin):
     """
     Form to change the order of the items.
     """
-    weight = forms.ChoiceField(
-        choices=gen_weight_choices(),
-        widget=forms.Select(attrs={'class': 'menu-weight'}))
+    weight = forms.IntegerField(
+        widget=forms.HiddenInput(attrs={'class': 'menu-weight'}))
     self = forms.IntegerField(
         widget=forms.HiddenInput(attrs={'class': 'menu-mlid'}))
     parent = forms.IntegerField(

@@ -9,7 +9,7 @@ Dieses Tutorial ist noch nicht fertiggestellt. Wenn Sie Interesse haben, uns zu 
 
 .. TODO, ggf. nach oben verschieben
 
-.. Das Aussehen von Openslides wird durch die folgenden Dateien beeinflusst: base.css, tabledrag.css, agenda.css, beamer.css
+.. Das Aussehen von Openslides wird durch die folgenden Dateien beeinflusst: base.css, agenda.css, projector.css
 
 .. Die Dateien liegen im Unterverzeichnis "/static/styles/" des Installationsverzeichnisses.
 
