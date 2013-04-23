@@ -52,8 +52,7 @@ class ItemOrderForm(CssClassMixin, forms.Form):
     Form to change the order of the items.
     """
     weight = forms.ChoiceField(
-        choices=gen_weight_choices(),
-        widget=forms.Select(attrs={'class': 'menu-weight'}))
+        widget=forms.HiddenInput(attrs={'class': 'menu-weight'}))
     self = forms.IntegerField(
         widget=forms.HiddenInput(attrs={'class': 'menu-mlid'}))
     parent = forms.IntegerField(
