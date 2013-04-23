@@ -5,28 +5,17 @@
  * :license: GNU GPL, see LICENSE for more details.
  */
 
-function hideLine(object) {
-    if (object == []) {
-        return;
-    }
-    object.hide();
-    id = object.children('td.tabledrag-hide').children('input.menu-mlid').attr('value');
-    $('.menu-plid[value=\'' + id + '\']').parent().parent().each(function() {
-        hideLine($(this));
-    });
-}
-
 function hideClosedSlides(hide) {
     if (hide) {
         $('#hidelink').attr('title', 'show');
         $('#hidelink').removeClass('hide').addClass('show');
-        $('.close_link .icon-checked-new').parent().parent().parent().each(function() {
-            hideLine($(this));
+        $('.close_link .icon-checked-new').each(function() {
+            $(this).parents("li").first().hide();
         });
-        hidden = $('#menu-overview tr:hidden').size();
+        var hidden = $(".agenda_list li:hidden").length;
         $('#hiddencount').text(interpolate(gettext(', of which %s are hidden.'), [hidden]));
     } else {
-        $('#menu-overview tr').show();
+        $('.agenda_list li').show();
         $('#hidelink').attr('title','hide');
         $('#hidelink').removeClass('show').addClass('hide');
         $('#hiddencount').text('');

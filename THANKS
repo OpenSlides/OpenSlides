@@ -22,8 +22,8 @@ OpenSlides uses parts of the following projects:
 * ReportLab
   <http://www.reportlab.com/software/opensource/rl-toolkit/>
 
-* Drupal (tabledrag function)
-  <http://www.drupal.org/>
+* nestedSortable jQuery Plugin
+  <http://mjsarfatti.com/sandbox/nestedSortable/>
 
 * Ubuntu TrueType Font
   <http://font.ubuntu.com/>
