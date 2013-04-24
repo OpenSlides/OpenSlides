@@ -11,6 +11,8 @@
 """
 from django.db import models
 
+from openslides.utils.exceptions import OpenSlidesError
+
 from .forms import PersonFormField
 from .api import get_person, generate_person_id
 
@@ -41,11 +43,16 @@ class PersonField(models.fields.Field):
         Convert a person object to a string, to store it in the database.
         """
         if value is None:
+            # For Fields with null=True
             return None
         elif isinstance(value, basestring):
+            # The object is already a a person_id
             return value
-        else:
+        elif hasattr(value, 'person_id'):
+            # The object is a person
             return value.person_id
+        else:
+            OpenSlidesError('%s (%s) is no person' % (value, type(value)))
 
     def formfield(self, **kwargs):
         defaults = {'form_class': PersonFormField}
