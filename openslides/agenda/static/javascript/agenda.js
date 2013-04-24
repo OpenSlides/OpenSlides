@@ -76,8 +76,10 @@ $(function() {
         //# $('#hide_closed_items').attr('checked', true);
     //# }
 
-    $('#list_of_speakers').sortable({axis: "y", containment: "parent", update: function(event, ui) {
-        $('#speaker_list_changed_form').show();
-    }});
-    $('#list_of_speakers').disableSelection();
+    if ($('#list_of_speakers').length > 0) {
+        $('#list_of_speakers').sortable({axis: "y", containment: "parent", update: function(event, ui) {
+            $('#speaker_list_changed_form').show();
+        }});
+        $('#list_of_speakers').disableSelection();
+    }
 });
