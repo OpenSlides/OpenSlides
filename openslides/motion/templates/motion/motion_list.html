@@ -87,11 +87,9 @@
                     <a href="{% model_url motion 'edit' %}" title="{% trans 'Edit' %}" class="btn btn-mini">
                         <i class="icon-pencil"></i>
                     </a>
-                    {% if "delete" in useractions %}
                     <a href="{% model_url motion 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
                         <i class="icon-remove"></i>
                     </a>
-                    {% endif %}
                 {% endif %}
                 <a href="{% url 'motion_detail_pdf' motion.id  %}" class="btn btn-mini" title="{% trans 'Print motion as PDF' %}">
                     <i class="icon-print"></i> PDF
