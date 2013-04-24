@@ -158,9 +158,9 @@
                     {{ poll.get_ballot }}. {% trans 'ballot' %}
                     {% if perms.assignment.can_manage_assignment %}
                         <br>
-                        <a class="publish_link btn btn-mini {% if poll.published %}btn-primary{% endif %}"
+                        <a class="publish_link btn btn-mini btn-danger {% if poll.published %}btn-primary{% endif %}"
                         href="{% url 'assignment_poll_publish_status' poll.id %}"
-                        rel="tooltip" data-original-title="{% trans 'Publish/unpublish results' %}">
+                        rel="tooltip" data-original-title="{% trans 'Publish results' %}">
                         {% if poll.published %}
                             <i class="icon-checked-new_white"></i>
                             {% else %}
