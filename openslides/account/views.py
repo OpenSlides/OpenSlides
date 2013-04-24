@@ -11,6 +11,7 @@
 """
 
 from django.utils.translation import ugettext as _
+from django.contrib.auth.models import AnonymousUser
 
 from openslides.config.api import config
 from openslides.projector.projector import Widget
@@ -20,7 +21,10 @@ def get_widgets(request):
     """
     Returns the widgets of the account app. It is only a personal_info_widget.
     """
-    return [get_personal_info_widget(request)]
+    if not isinstance(request.user, AnonymousUser):
+        return [get_personal_info_widget(request)]
+    else:
+        return []
 
 
 def get_personal_info_widget(request):
