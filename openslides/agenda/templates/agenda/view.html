@@ -8,15 +8,12 @@
 
 {% block header %}
     <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/agenda.css' %}" />
-    {% comment %} TODO: include stylesheet in our repo{% endcomment %}
-    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" href="{% static 'styles/jquery-ui/jquery-ui.custom.min.css' %}" />
 {% endblock %}
 
 {% block javascript %}
-    {{ block.super }}
-    {% comment %} TODO: import the sortable-plugin in our custom jquery-file {% endcomment %}
-    <script src="http://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
-    <script src="{% static 'javascript/agenda.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascript/jquery-ui.custom.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascript/agenda.js' %}"></script>
 {% endblock %}
 
 {% block content %}
