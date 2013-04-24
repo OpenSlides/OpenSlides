@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-04-23 21:38+0200\n"
+"POT-Creation-Date: 2013-04-24 14:34+0200\n"
 "PO-Revision-Date: 2012-07-28 11:07+0200\n"
 "Last-Translator: Emanuel Schuetze <emanuel@intevation.de>\n"
 "Language-Team: support@openslides.de\n"
@@ -29,7 +29,7 @@ msgstr "Englisch"
 msgid "French"
 msgstr "Französisch"
 
-#: account/views.py:60
+#: account/views.py:61
 msgid "My motions and elections"
 msgstr "Meine Anträge und Wahlen"
 
@@ -78,11 +78,11 @@ msgstr "Ungültiges Format. Stunden von 0 bis 99 und Minuten von 00 bis 59"
 msgid "Duration (hh:mm)"
 msgstr "Dauer (hh:mm)"
 
-#: agenda/forms.py:69
+#: agenda/forms.py:61
 msgid "Add participant"
 msgstr "Neue/n Teilnehmer/in hinzufügen"
 
-#: agenda/forms.py:82
+#: agenda/forms.py:74
 #, python-format
 msgid "%s is already on the list of speakers."
 msgstr "%s ist bereits auf der Rednerliste"
@@ -107,8 +107,8 @@ msgstr "Titel"
 msgid "Text"
 msgstr "Text"
 
-#: agenda/models.py:54 agenda/templates/agenda/overview.html:90
-#: agenda/templates/agenda/view.html:56 participant/models.py:51
+#: agenda/models.py:54 agenda/templates/agenda/overview.html:75
+#: agenda/templates/agenda/view.html:51 participant/models.py:51
 #: participant/templates/participant/overview.html:69
 #: participant/templates/participant/user_detail.html:47
 msgid "Comment"
@@ -118,8 +118,7 @@ msgstr "Kommentar"
 msgid "Closed"
 msgstr "Abgeschlossen"
 
-#: agenda/models.py:64 agenda/templates/agenda/overview.html:99
-#: projector/models.py:29
+#: agenda/models.py:64 projector/models.py:29
 msgid "Weight"
 msgstr "Gewichtung"
 
@@ -131,31 +130,24 @@ msgstr "Typ"
 msgid "List of speakers is closed"
 msgstr "Rednerliste ist geschlossen"
 
-#: agenda/models.py:162
-#: agenda/templates/agenda/overlay_speaker_projector.html:20
-#: agenda/templates/agenda/overlay_speaker_widget.html:5
-#: agenda/templates/agenda/view.html:62
-msgid "List of speakers"
-msgstr "Rednerliste"
-
-#: agenda/models.py:236
+#: agenda/models.py:238
 msgid "Can see agenda"
 msgstr "Darf die Tagesordnung sehen"
 
-#: agenda/models.py:237
+#: agenda/models.py:239
 msgid "Can manage agenda"
 msgstr "Darf die Tagesordung verwalten"
 
-#: agenda/models.py:238
+#: agenda/models.py:240
 msgid "Can see orga items and time scheduling of agenda"
 msgstr "Darf Organisationspunkte und Tagesordnung-Zeitplan sehen"
 
-#: agenda/models.py:248
+#: agenda/models.py:250
 #, python-format
 msgid "%(person)s is already on the list of speakers of item %(id)s."
 msgstr "%(person)s ist bereits auf der Rednerliste von Eintrag %(id)s."
 
-#: agenda/models.py:283
+#: agenda/models.py:285
 msgid "Can put oneself on the list of speakers"
 msgstr "Darf sich selbst auf die Rednerliste setzen"
 
@@ -170,8 +162,8 @@ msgstr "Eingabeformat: TT.MM.JJJJ HH:MM"
 #: agenda/signals.py:52 agenda/slides.py:23 agenda/slides.py:29
 #: agenda/views.py:243 agenda/views.py:244 agenda/views.py:469
 #: agenda/views.py:484 agenda/templates/agenda/overview.html:8
-#: agenda/templates/agenda/overview.html:55
-#: agenda/templates/agenda/overview.html:105
+#: agenda/templates/agenda/overview.html:40
+#: agenda/templates/agenda/overview.html:87
 #: agenda/templates/projector/AgendaSummary.html:6
 #: agenda/templates/projector/AgendaSummary.html:10
 msgid "Agenda"
@@ -245,16 +237,16 @@ msgid "To the current list of speakers"
 msgstr "Zur aktuellen Rednerliste"
 
 #: agenda/templates/agenda/edit.html:8 agenda/templates/agenda/edit.html:17
-#: agenda/templates/agenda/view.html:37
+#: agenda/templates/agenda/view.html:32
 msgid "Edit item"
 msgstr "Eintrag bearbeiten"
 
 #: agenda/templates/agenda/edit.html:10 agenda/templates/agenda/edit.html:19
-#: agenda/templates/agenda/overview.html:58
+#: agenda/templates/agenda/overview.html:43
 msgid "New item"
 msgstr "Neuer Eintrag"
 
-#: agenda/templates/agenda/edit.html:22 agenda/templates/agenda/view.html:29
+#: agenda/templates/agenda/edit.html:22 agenda/templates/agenda/view.html:24
 #: assignment/templates/assignment/edit.html:22
 #: assignment/templates/assignment/view.html:20
 #: mediafile/templates/mediafile/mediafile_form.html:22
@@ -298,17 +290,9 @@ msgstr "Abbrechen"
 msgid "required"
 msgstr "erforderlich"
 
-#: agenda/templates/agenda/item_row.html:7
-msgid "Change status (open/closed)"
-msgstr "Status ändern (offen/abgeschlossen)"
-
-#: agenda/templates/agenda/item_row.html:34
-msgid "End"
-msgstr "Ende"
-
-#: agenda/templates/agenda/item_row.html:42
-#: agenda/templates/agenda/overview.html:117
-#: agenda/templates/agenda/view.html:45 agenda/templates/agenda/widget.html:8
+#: agenda/templates/agenda/item_row.html:9
+#: agenda/templates/agenda/overview.html:99
+#: agenda/templates/agenda/view.html:40 agenda/templates/agenda/widget.html:8
 #: agenda/templates/agenda/widget.html:23
 #: assignment/templates/assignment/overview.html:54
 #: assignment/templates/assignment/widget.html:7
@@ -324,7 +308,7 @@ msgstr "Ende"
 msgid "Show"
 msgstr "Anzeigen"
 
-#: agenda/templates/agenda/item_row.html:47
+#: agenda/templates/agenda/item_row.html:14
 #: agenda/templates/agenda/widget.html:26
 #: assignment/templates/assignment/overview.html:59
 #: assignment/templates/assignment/view.html:170
@@ -341,38 +325,53 @@ msgstr "Anzeigen"
 msgid "Edit"
 msgstr "Bearbeiten"
 
-#: agenda/templates/agenda/item_row.html:50
-#: agenda/templates/agenda/view.html:100 agenda/templates/agenda/view.html:114
-#: agenda/templates/agenda/view.html:147
+#: agenda/templates/agenda/item_row.html:17
+#: agenda/templates/agenda/view.html:95 agenda/templates/agenda/view.html:109
+#: agenda/templates/agenda/view.html:142
 #: assignment/templates/assignment/overview.html:62
 #: assignment/templates/assignment/view.html:171
 #: mediafile/templates/mediafile/mediafile_list.html:38
 #: motion/templates/motion/category_list.html:33
 #: motion/templates/motion/motion_detail.html:133
-#: motion/templates/motion/motion_list.html:91
+#: motion/templates/motion/motion_list.html:90
 #: participant/templates/participant/group_overview.html:37
 #: participant/templates/participant/overview.html:123
 #: projector/templates/projector/custom_slide_widget.html:23
 msgid "Delete"
 msgstr "Löschen"
 
-#: agenda/templates/agenda/item_row.html:54
+#: agenda/templates/agenda/item_row.html:21
 #: agenda/templates/agenda/widget.html:40
 msgid "Show summary for this item"
 msgstr "Zusammenfassung für diesen Eintrag anzeigen"
 
-#: agenda/templates/agenda/overlay_speaker_projector.html:27
-#: agenda/templates/agenda/view.html:153
-#: agenda/templates/projector/agenda_list_of_speaker.html:32
+#: agenda/templates/agenda/item_row.html:33
+msgid "End"
+msgstr "Ende"
+
+#: agenda/templates/agenda/item_row.html:52
+msgid "Change status (open/closed)"
+msgstr "Status ändern (offen/abgeschlossen)"
+
+#: agenda/templates/agenda/overlay_speaker_projector.html:5
+#: agenda/templates/agenda/overlay_speaker_widget.html:5
+#: agenda/templates/agenda/view.html:57
+#: agenda/templates/projector/agenda_list_of_speaker.html:9
+msgid "List of speakers"
+msgstr "Rednerliste"
+
+#: agenda/templates/agenda/overlay_speaker_projector.html:12
+#: agenda/templates/agenda/view.html:148
+#: agenda/templates/projector/agenda_list_of_speaker.html:28
 msgid "The list of speakers is empty."
 msgstr "Die Rednerliste ist leer."
 
-#: agenda/templates/agenda/overview.html:47
+#: agenda/templates/agenda/overview.html:32
 msgid "Do you want to save the changed order of agenda items?"
 msgstr "Möchten Sie die geänderte Reihenfolge der Einträge speichern?"
 
-#: agenda/templates/agenda/overview.html:49
-#: agenda/templates/agenda/view.html:130 assignment/models.py:288
+#: agenda/templates/agenda/overview.html:34
+#: agenda/templates/agenda/view.html:125 assignment/models.py:288
 #: assignment/views.py:593 assignment/templates/assignment/view.html:204
 #: assignment/templates/assignment/view.html:208
 #: assignment/templates/projector/Assignment.html:78
@@ -384,8 +383,8 @@ msgstr "Möchten Sie die geänderte Reihenfolge der Einträge speichern?"
 msgid "Yes"
 msgstr "Ja"
 
-#: agenda/templates/agenda/overview.html:50
-#: agenda/templates/agenda/view.html:131 assignment/models.py:288
+#: agenda/templates/agenda/overview.html:35
+#: agenda/templates/agenda/view.html:126 assignment/models.py:288
 #: assignment/views.py:594 assignment/templates/assignment/view.html:205
 #: assignment/templates/projector/Assignment.html:79 motion/models.py:725
 #: motion/pdf.py:147 motion/pdf.py:270
@@ -395,7 +394,7 @@ msgstr "Ja"
 msgid "No"
 msgstr "Nein"
 
-#: agenda/templates/agenda/overview.html:58
+#: agenda/templates/agenda/overview.html:43
 #: assignment/templates/assignment/overview.html:12
 #: mediafile/templates/mediafile/mediafile_list.html:12
 #: motion/templates/motion/category_list.html:13
@@ -406,37 +405,37 @@ msgstr "Nein"
 msgid "New"
 msgstr "Neu"
 
-#: agenda/templates/agenda/overview.html:60
+#: agenda/templates/agenda/overview.html:45
 msgid "Print agenda as PDF"
 msgstr "Tagesordnung als PDF drucken"
 
-#: agenda/templates/agenda/overview.html:68
+#: agenda/templates/agenda/overview.html:53
 msgid "Start of event"
 msgstr "Beginn der Veranstaltung"
 
-#: agenda/templates/agenda/overview.html:72
+#: agenda/templates/agenda/overview.html:57
 msgid "Estimated end"
 msgstr "Voraussichtliches Ende"
 
-#: agenda/templates/agenda/overview.html:79
+#: agenda/templates/agenda/overview.html:64
 msgid "Hide closed items"
 msgstr "Verstecke abgeschlossene Einträge"
 
-#: agenda/templates/agenda/overview.html:83
+#: agenda/templates/agenda/overview.html:68
 msgid "item"
 msgid_plural "items"
 msgstr[0] "Eintrag"
 msgstr[1] "Einträge"
 
-#: agenda/templates/agenda/overview.html:88
+#: agenda/templates/agenda/overview.html:73
 msgid "Item"
 msgstr "Eintrag"
 
-#: agenda/templates/agenda/overview.html:93
+#: agenda/templates/agenda/overview.html:78
 msgid "Duration"
 msgstr "Dauer"
 
-#: agenda/templates/agenda/overview.html:96
+#: agenda/templates/agenda/overview.html:81
 #: assignment/templates/assignment/overview.html:38
 #: mediafile/templates/mediafile/mediafile_list.html:24
 #: motion/templates/motion/category_list.html:23
@@ -447,7 +446,7 @@ msgstr "Dauer"
 msgid "Actions"
 msgstr "Aktionen"
 
-#: agenda/templates/agenda/overview.html:133
+#: agenda/templates/agenda/overview.html:122
 #: agenda/templates/agenda/widget.html:51
 #: projector/templates/projector/custom_slide_widget.html:34
 msgid "No items available."
@@ -457,65 +456,65 @@ msgstr "Keine Einträge vorhanden."
 msgid "Put me on the current list of speakers"
 msgstr "Auf die aktuelle Rednerliste setzen"
 
-#: agenda/templates/agenda/view.html:33
+#: agenda/templates/agenda/view.html:28
 #: assignment/templates/assignment/view.html:29
 #: motion/templates/motion/motion_detail.html:34
 msgid "More actions"
 msgstr "Mehr Aktionen"
 
-#: agenda/templates/agenda/view.html:38
+#: agenda/templates/agenda/view.html:33
 msgid "Delete item"
 msgstr "Eintrag löschen"
 
-#: agenda/templates/agenda/view.html:62
+#: agenda/templates/agenda/view.html:57
 msgid "closed"
 msgstr "geschlossen"
 
-#: agenda/templates/agenda/view.html:66
+#: agenda/templates/agenda/view.html:61
 msgid "Open list"
 msgstr "Liste öffnen"
 
-#: agenda/templates/agenda/view.html:68
+#: agenda/templates/agenda/view.html:63
 msgid "Close list"
 msgstr "Liste schließen"
 
-#: agenda/templates/agenda/view.html:74 agenda/templates/agenda/widget.html:34
+#: agenda/templates/agenda/view.html:69 agenda/templates/agenda/widget.html:34
 msgid "Show list of speakers"
 msgstr "Rednerliste projizieren"
 
-#: agenda/templates/agenda/view.html:76
+#: agenda/templates/agenda/view.html:71
 msgid "Show list"
 msgstr "Liste projizieren"
 
-#: agenda/templates/agenda/view.html:84
+#: agenda/templates/agenda/view.html:79
 msgid "Last speakers"
 msgstr "Letzte Redner"
 
-#: agenda/templates/agenda/view.html:88
+#: agenda/templates/agenda/view.html:83
 msgid "Show all speakers"
 msgstr "Alle Redner anzeigen"
 
-#: agenda/templates/agenda/view.html:127
+#: agenda/templates/agenda/view.html:122
 msgid "Do you want to save the changed order of speakers?"
 msgstr "Möchten Sie die geänderte Reihenfolge der Einträge speichern?"
 
-#: agenda/templates/agenda/view.html:138
+#: agenda/templates/agenda/view.html:133
 msgid "Next speakers:"
 msgstr "Nächste Redner"
 
-#: agenda/templates/agenda/view.html:146
+#: agenda/templates/agenda/view.html:141
 msgid "Next speaker"
 msgstr "Nächster Redner"
 
-#: agenda/templates/agenda/view.html:160
+#: agenda/templates/agenda/view.html:154
 msgid "Remove me from the list"
 msgstr "Entferne mich von der Liste"
 
-#: agenda/templates/agenda/view.html:162
+#: agenda/templates/agenda/view.html:156
 msgid "Put me on the list"
 msgstr "Setze mich auf die Liste"
 
-#: agenda/templates/agenda/view.html:173
+#: agenda/templates/agenda/view.html:166
 #: assignment/templates/assignment/poll_view.html:83
 #: assignment/templates/assignment/view.html:112
 #: motion/templates/motion/poll_form.html:70
@@ -524,7 +523,7 @@ msgstr "Setze mich auf die Liste"
 msgid "Apply"
 msgstr "Übernehmen"
 
-#: agenda/templates/agenda/view.html:175
+#: agenda/templates/agenda/view.html:168
 #: assignment/templates/assignment/view.html:114
 msgid "Add new participant"
 msgstr "Neue/n Teilnehmer/in hinzufügen"
@@ -1033,8 +1032,8 @@ msgid "Election results"
 msgstr "Wahlergebnisse"
 
 #: assignment/templates/assignment/view.html:163
-msgid "Publish/unpublish results"
-msgstr "Ergebnisse veröffentlichen/unveröffentlichen"
+msgid "Publish results"
+msgstr "Ergebnisse veröffentlichen"
 
 #: assignment/templates/assignment/view.html:178
 #: assignment/templates/assignment/view.html:259
@@ -1279,7 +1278,7 @@ msgstr "Status"
 msgid "Vote"
 msgstr "Abstimmung"
 
-#: motion/pdf.py:254 motion/templates/motion/motion_list.html:104
+#: motion/pdf.py:254 motion/templates/motion/motion_list.html:102
 msgid "No motions available."
 msgstr "Keine Anträge vorhanden."
 
@@ -1535,7 +1534,7 @@ msgstr "Abstimmung gelöscht"
 
 #: motion/views.py:523
 msgid "Poll"
-msgstr ""
+msgstr "Abstimmung"
 
 #: motion/views.py:559
 #, python-format
@@ -1767,7 +1766,7 @@ msgstr "Antragstitel"
 msgid "Number of supporters"
 msgstr "Anzahl der Unterstützer/innen"
 
-#: motion/templates/motion/motion_list.html:96
+#: motion/templates/motion/motion_list.html:94
 msgid "Print motion as PDF"
 msgstr "Antrag als PDF drucken"
 

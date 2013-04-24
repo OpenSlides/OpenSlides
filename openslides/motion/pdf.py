@@ -27,7 +27,7 @@ from .models import Motion
 
 # Needed to count the delegates
 # TODO: find another way to do this.
-from openslides.participant.models import User
+from openslides.participant.models import User, Group
 
 
 def motions_to_pdf(pdf):
@@ -277,7 +277,11 @@ def motion_poll_to_pdf(pdf, poll):
     # set number of ballot papers
     if ballot_papers_selection == "NUMBER_OF_DELEGATES":
         # TODO: get this number from persons
-        number = User.objects.filter(type__iexact="delegate").count()
+        try:
+            if Group.objects.get(pk=3):
+                number = User.objects.filter(groups__pk=3).count()
+        except Group.DoesNotExist:
+            number = 0
     elif ballot_papers_selection == "NUMBER_OF_ALL_PARTICIPANTS":
         # TODO: get the number from the persons
         number = int(User.objects.count())

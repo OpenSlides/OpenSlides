@@ -2,7 +2,7 @@
 English README file for OpenSlides
 ==================================
 
-This is OpenSlides, version 1.4.0 (unreleased).
+This is OpenSlides, version 1.4-beta1-dev (unreleased).
 
 
 What is OpenSlides?
@@ -69,6 +69,9 @@ The following command line options are available:
 
 --no-reload
     Does not reload the development server
+
+--no-browser
+    Do not automatically start web browser.
 
 --version
     Show version and exit.
