@@ -45,6 +45,8 @@ setup(
         'reportlab',
         'pillow',
         'tornado',
+        'bleach',
+        'beautifulsoup4',
     ],
     entry_points={
         'console_scripts': [
