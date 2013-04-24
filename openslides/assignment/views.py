@@ -569,7 +569,6 @@ class AssignmentPollPDF(PDFView):
                     number = User.objects.filter(groups__pk=3).count()
             except Group.DoesNotExist:
                 number = 0
-
         elif ballot_papers_selection == "NUMBER_OF_ALL_PARTICIPANTS":
             number = int(User.objects.count())
         else:  # ballot_papers_selection == "CUSTOM_NUMBER"

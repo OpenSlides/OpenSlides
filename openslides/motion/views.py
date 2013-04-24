@@ -20,6 +20,8 @@ from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
 from django.views.generic.detail import SingleObjectMixin
 from django.http import Http404
 
+from reportlab.platypus import SimpleDocTemplate
+
 from openslides.utils.pdf import stylesheet
 from openslides.utils.views import (
     TemplateView, RedirectView, UpdateView, CreateView, DeleteView, PDFView,
@@ -511,6 +513,7 @@ class PollPDFView(PollMixin, PDFView):
     """
 
     permission_required = 'motion.can_manage_motion'
+    top_space = 0
 
     def get(self, *args, **kwargs):
         self.object = self.get_object()
@@ -521,6 +524,14 @@ class PollPDFView(PollMixin, PDFView):
         Return the filename for the PDF.
         """
         return u'%s%s_%s' % (_("Motion"), str(self.object.poll_number), _("Poll"))
+
+    def get_template(self, buffer):
+        return SimpleDocTemplate(
+            buffer, topMargin=-6, bottomMargin=-6, leftMargin=0, rightMargin=0,
+            showBoundary=False)
+
+    def build_document(self, pdf_document, story):
+        pdf_document.build(story)
 
     def append_to_pdf(self, pdf):
         """
