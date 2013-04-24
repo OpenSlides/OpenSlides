@@ -12,7 +12,7 @@
 
 from django.dispatch import receiver
 from django import forms
-from django.utils.translation import ugettext_lazy, ugettext_noop, ugettext as _
+from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
 
 from openslides.config.signals import config_signal
 from openslides.config.api import ConfigVariable, ConfigPage
@@ -28,19 +28,19 @@ def setup_assignment_config_page(sender, **kwargs):
         default_value=False,
         form_field=forms.BooleanField(
             required=False,
-            label=_('Only publish voting results for selected winners '
-                    '(Projector view only)')))
+            label=ugettext_lazy('Only publish voting results for selected '
+                                'winners (Projector view only)')))
     assignment_pdf_ballot_papers_selection = ConfigVariable(
         name='assignment_pdf_ballot_papers_selection',
         default_value='CUSTOM_NUMBER',
         form_field=forms.ChoiceField(
             widget=forms.Select(),
             required=False,
-            label=_('Number of ballot papers (selection)'),
+            label=ugettext_lazy('Number of ballot papers (selection)'),
             choices=(
-                ('NUMBER_OF_DELEGATES', _('Number of all delegates')),
-                ('NUMBER_OF_ALL_PARTICIPANTS', _('Number of all participants')),
-                ('CUSTOM_NUMBER', _('Use the following custom number')))))
+                ('NUMBER_OF_DELEGATES', ugettext_lazy('Number of all delegates')),
+                ('NUMBER_OF_ALL_PARTICIPANTS', ugettext_lazy('Number of all participants')),
+                ('CUSTOM_NUMBER', ugettext_lazy('Use the following custom number')))))
     assignment_pdf_ballot_papers_number = ConfigVariable(
         name='assignment_pdf_ballot_papers_number',
         default_value=8,
@@ -48,32 +48,32 @@ def setup_assignment_config_page(sender, **kwargs):
             widget=forms.TextInput(attrs={'class': 'small-input'}),
             required=False,
             min_value=1,
-            label=_('Custom number of ballot papers')))
+            label=ugettext_lazy('Custom number of ballot papers')))
     assignment_pdf_title = ConfigVariable(
         name='assignment_pdf_title',
         default_value=_('Elections'),
         form_field=forms.CharField(
             widget=forms.TextInput(),
             required=False,
-            label=_('Title for PDF document (all elections)')))
+            label=ugettext_lazy('Title for PDF document (all elections)')))
     assignment_pdf_preamble = ConfigVariable(
         name='assignment_pdf_preamble',
         default_value='',
         form_field=forms.CharField(
             widget=forms.Textarea(),
             required=False,
-            label=_('Preamble text for PDF document (all elections)')))
+            label=ugettext_lazy('Preamble text for PDF document (all elections)')))
     assignment_poll_vote_values = ConfigVariable(
         name='assignment_poll_vote_values',
         default_value='auto',
         form_field=forms.ChoiceField(
             widget=forms.Select(),
             required=False,
-            label=_('Election method'),
+            label=ugettext_lazy('Election method'),
             choices=(
-                ('auto', _('Automatic assign of method.')),
-                ('votes', _('Always one option per candidate.')),
-                ('yesnoabstain', _('Always Yes-No-Abstain per candidate.')))))
+                ('auto', ugettext_lazy('Automatic assign of method')),
+                ('votes', ugettext_lazy('Always one option per candidate')),
+                ('yesnoabstain', ugettext_lazy('Always Yes-No-Abstain per candidate')))))
 
     return ConfigPage(title=ugettext_noop('Elections'),
                       url='assignment',

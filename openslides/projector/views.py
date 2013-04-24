@@ -21,7 +21,7 @@ from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.template import RequestContext
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 from openslides.utils.template import render_block_to_string, Tab
 from openslides.utils.views import (

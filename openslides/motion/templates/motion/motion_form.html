@@ -31,7 +31,11 @@
             {% trans "New motion" %}
         {% endif %}
         <small class="pull-right">
-        <a href="{% url 'motion_list' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        {% if motion %}
+            <a href="{% model_url motion 'view' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to motion" %}</a>
+        {% else %}
+            <a href="{% url 'motion_list' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        {% endif %}
         </small>
     </h1>
     <form action="" method="post">{% csrf_token %}

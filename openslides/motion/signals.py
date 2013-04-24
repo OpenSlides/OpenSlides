@@ -30,36 +30,36 @@ def setup_motion_config_page(sender, **kwargs):
         name='motion_stop_submitting',
         default_value=False,
         form_field=forms.BooleanField(
-            label=_('Stop submitting new motions by non-staff users'),
+            label=ugettext_lazy('Stop submitting new motions by non-staff users'),
             required=False))
     motion_min_supporters = ConfigVariable(
         name='motion_min_supporters',
         default_value=0,
         form_field=forms.IntegerField(
             widget=forms.TextInput(attrs={'class': 'small-input'}),
-            label=_('Number of (minimum) required supporters for a motion'),
+            label=ugettext_lazy('Number of (minimum) required supporters for a motion'),
             initial=4,
             min_value=0,
             max_value=8,
-            help_text=_('Choose 0 to disable the supporting system')))
+            help_text=ugettext_lazy('Choose 0 to disable the supporting system')))
     motion_preamble = ConfigVariable(
         name='motion_preamble',
         default_value=_('The assembly may decide,'),
         form_field=forms.CharField(
             widget=forms.TextInput(),
             required=False,
-            label=_('Motion preamble')))
+            label=ugettext_lazy('Motion preamble')))
     motion_pdf_ballot_papers_selection = ConfigVariable(
         name='motion_pdf_ballot_papers_selection',
         default_value='CUSTOM_NUMBER',
         form_field=forms.ChoiceField(
             widget=forms.Select(),
             required=False,
-            label=_('Number of ballot papers (selection)'),
+            label=ugettext_lazy('Number of ballot papers (selection)'),
             choices=[
-                ('NUMBER_OF_DELEGATES', _('Number of all delegates')),
-                ('NUMBER_OF_ALL_PARTICIPANTS', _('Number of all participants')),
-                ('CUSTOM_NUMBER', _("Use the following custom number"))]))
+                ('NUMBER_OF_DELEGATES', ugettext_lazy('Number of all delegates')),
+                ('NUMBER_OF_ALL_PARTICIPANTS', ugettext_lazy('Number of all participants')),
+                ('CUSTOM_NUMBER', ugettext_lazy("Use the following custom number"))]))
     motion_pdf_ballot_papers_number = ConfigVariable(
         name='motion_pdf_ballot_papers_number',
         default_value=8,
@@ -67,46 +67,46 @@ def setup_motion_config_page(sender, **kwargs):
             widget=forms.TextInput(attrs={'class': 'small-input'}),
             required=False,
             min_value=1,
-            label=_('Custom number of ballot papers')))
+            label=ugettext_lazy('Custom number of ballot papers')))
     motion_pdf_title = ConfigVariable(
         name='motion_pdf_title',
         default_value=_('Motions'),
         form_field=forms.CharField(
             widget=forms.TextInput(),
             required=False,
-            label=_('Title for PDF document (all motions)')))
+            label=ugettext_lazy('Title for PDF document (all motions)')))
     motion_pdf_preamble = ConfigVariable(
         name='motion_pdf_preamble',
         default_value='',
         form_field=forms.CharField(
             widget=forms.Textarea(),
             required=False,
-            label=_('Preamble text for PDF document (all motions)')))
+            label=ugettext_lazy('Preamble text for PDF document (all motions)')))
     motion_allow_disable_versioning = ConfigVariable(
         name='motion_allow_disable_versioning',
         default_value=False,
         form_field=forms.BooleanField(
-            label=_('Allow to disable versioning'),
+            label=ugettext_lazy('Allow to disable versioning'),
             required=False))
     motion_workflow = ConfigVariable(
         name='motion_workflow',
         default_value=1,
         form_field=forms.ChoiceField(
             widget=forms.Select(),
-            label=_('Workflow of new motions'),
+            label=ugettext_lazy('Workflow of new motions'),
             required=True,
-            choices=[(workflow.pk, workflow.name) for workflow in Workflow.objects.all()]))
+            choices=[(workflow.pk, ugettext_lazy(workflow.name)) for workflow in Workflow.objects.all()]))
     motion_identifier = ConfigVariable(
         name='motion_identifier',
         default_value='manually',
         form_field=forms.ChoiceField(
             widget=forms.Select(),
             required=False,
-            label=_('Identifier'),
+            label=ugettext_lazy('Identifier'),
             choices=[
-                ('manually', _('Set it manually')),
-                ('per_category', _('Numbered per category')),
-                ('serially_numbered', _('Serially numbered'))]))
+                ('manually', ugettext_lazy('Set it manually')),
+                ('per_category', ugettext_lazy('Numbered per category')),
+                ('serially_numbered', ugettext_lazy('Serially numbered'))]))
 
     return ConfigPage(title=ugettext_noop('Motion'),
                       url='motion',

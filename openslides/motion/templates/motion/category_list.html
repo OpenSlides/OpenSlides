@@ -10,7 +10,7 @@
         {% trans "Categories" %}
         <small class="pull-right">
         {% if perms.motion.can_manage_motion %}
-            <a href="{% url 'motion_category_create' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New motion' %}"><i class="icon-plus icon-white"></i> {% trans 'New' %}</a>
+            <a href="{% url 'motion_category_create' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New category' %}"><i class="icon-plus icon-white"></i> {% trans 'New' %}</a>
         {% endif %}
         <a href="{% url 'motion_list' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
         </small>

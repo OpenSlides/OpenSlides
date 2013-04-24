@@ -31,7 +31,7 @@ from openslides.utils.utils import (
 from openslides.utils.views import FormView, DeleteView, PDFView, RedirectView
 from openslides.utils.person import get_person
 from openslides.config.api import config
-from openslides.participant.models import User
+from openslides.participant.models import User, Group
 from openslides.projector.projector import Widget
 from openslides.poll.views import PollFormView
 from openslides.agenda.models import Item
@@ -564,7 +564,12 @@ class AssignmentPollPDF(PDFView):
 
         # set number of ballot papers
         if ballot_papers_selection == "NUMBER_OF_DELEGATES":
-            number = User.objects.filter(type__iexact="delegate").count()
+            try:
+                if Group.objects.get(pk=3):
+                    number = User.objects.filter(groups__pk=3).count()
+            except Group.DoesNotExist:
+                number = 0
+
         elif ballot_papers_selection == "NUMBER_OF_ALL_PARTICIPANTS":
             number = int(User.objects.count())
         else:  # ballot_papers_selection == "CUSTOM_NUMBER"

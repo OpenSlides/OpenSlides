@@ -97,7 +97,7 @@ def import_users(csv_file):
                             error_messages.append(_('Ignoring malformed group id in line %d.') % (line_no + 1))
                             continue
                         except Group.DoesNotExist:
-                            error_messages.append(_('Group id %s does not exists (line %d).') % (groupid, line_no + 1))
+                            error_messages.append(_('Group id %(id)s does not exists (line %(line)d).') % {'id': groupid, 'line': line_no + 1})
                             continue
                     user.reset_password()
                     count_success += 1

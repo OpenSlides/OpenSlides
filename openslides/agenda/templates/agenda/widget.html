@@ -3,7 +3,9 @@
 
 <ul style="line-height: 180%">
     <li class="{% if agenda.active %}activeline{% endif %}">
-        <a href="{% url 'projector_activate_slide' agenda.key  %}" class="activate_link btn {% if agenda.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+        <a href="{% url 'projector_activate_slide' agenda.key  %}"
+           class="activate_link btn {% if agenda.active %}btn-primary{% endif %} btn-mini"
+           rel="tooltip" data-original-title="{% trans 'Show' %}">
             <i class="icon-facetime-video {% if agenda.active %}icon-white{% endif %}"></i>
         </a>&nbsp;
         <a href="{% url 'projctor_preview_slide' agenda.key %}" title="{% trans 'Preview' %}" class="icon preview right">
@@ -16,8 +18,10 @@
 <ul style="line-height: 180%">
 {% for item in items %}
     <li class="{% if item.active %}activeline{% endif %}">
-        <a href="{% url 'projector_activate_slide' item.sid  %}" class="activate_link btn {% if item.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
-            <i class="icon-facetime-video {% if item.active %}icon-white{% endif %}"></i>
+        <a href="{% url 'projector_activate_slide' item.sid  %}"
+           class="activate_link btn {% if item.active and not summary and not speakers  %}btn-primary{% endif %} btn-mini"
+           rel="tooltip" data-original-title="{% trans 'Show' %}">
+            <i class="icon-facetime-video {% if item.active and not summary and not speakers %}icon-white{% endif %}"></i>
         </a>&nbsp;
         <a href="{% model_url item 'edit' %}" title="{% trans 'Edit' %}" class="btn btn-mini right">
             <i class="icon-pencil"></i>
@@ -25,9 +29,16 @@
         <a href="{% url 'projctor_preview_slide' item.sid %}" title="{% trans 'Preview' %}" class="btn btn-mini right">
             <i class="icon-search"></i>
         </a>
+        <a href="{% url 'projector_activate_slide' item.sid 'show_list_of_speakers' %}"
+          class="activate_link btn btn-mini right {% if item.active and speakers %}btn-primary{% endif %}"
+          rel="tooltip" data-original-title="{% trans 'Show list of speakers' %}">
+          <i class="icon icon-bell {% if item.active and speakers %}icon-white{% endif %}"></i>
+        </a>
         {% if not item.is_leaf_node %}
-        <a class="activate_link btn btn-mini {% if item.active %}btn-primary{% endif %} right" href="{% url 'projector_activate_slide' item.sid 'summary' %}" title="{% trans 'Show summary for this item' %}">
-            <i class="icon-summary {% if item.active %}icon-white{% endif %}"></i>
+        <a href="{% url 'projector_activate_slide' item.sid 'summary' %}"
+          class="activate_link btn btn-mini {% if item.active and summary %}btn-primary{% endif %} right"
+          rel="tooltip" data-original-title="{% trans 'Show summary for this item' %}">
+            <i class="icon-summary {% if item.active and summary %}icon-white{% endif %}"></i>
         </a>
         {% endif %}
         {% for p in item.get_ancestors %}

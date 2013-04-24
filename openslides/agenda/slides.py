@@ -10,7 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy, ugettext as _
 
 from openslides.projector.api import register_slidemodel, register_slidefunc
 
@@ -26,4 +26,4 @@ def agenda_show():
     return data
 
 register_slidemodel(Item, control_template='agenda/control_item.html')
-register_slidefunc('agenda', agenda_show, weight=-1, name=_('Agenda'))
+register_slidefunc('agenda', agenda_show, weight=-1, name=ugettext_lazy('Agenda'))

@@ -12,7 +12,7 @@
 
 from django.db import models
 from django.dispatch import receiver
-from django.utils.translation import ugettext_lazy as _, ugettext_noop
+from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.projector.api import register_slidemodel
 from openslides.projector.projector import SlideMixin
@@ -24,9 +24,9 @@ class ProjectorSlide(models.Model, SlideMixin):
     """
     prefix = 'ProjectorSlide'
 
-    title = models.CharField(max_length=256, verbose_name=_("Title"))
-    text = models.TextField(null=True, blank=True, verbose_name=_("Text"))
-    weight = models.IntegerField(default=0, verbose_name=_("Weight"))
+    title = models.CharField(max_length=256, verbose_name=ugettext_lazy("Title"))
+    text = models.TextField(null=True, blank=True, verbose_name=ugettext_lazy("Text"))
+    weight = models.IntegerField(default=0, verbose_name=ugettext_lazy("Weight"))
 
     def slide(self):
         return {

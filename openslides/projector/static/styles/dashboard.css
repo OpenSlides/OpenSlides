@@ -77,8 +77,8 @@
     visibility: hidden;
 }
 
-.overlay_list .form-inline {
-    margin: 5px 0 0 31px;
+.overlay_list .overlayblock {
+    margin: 0 0 0 31px;
 }
 
 #countdown_time {

@@ -117,11 +117,11 @@ class GroupForm(forms.ModelForm, CssClassMixin):
             # Editing the anonymous-user
             if self.instance.name.lower() != data.lower():
                 raise forms.ValidationError(
-                    ugettext_lazy('You can not edit the name for this group.'))
+                    _('You can not edit the name for this group.'))
         else:
             if data.lower() in ['anonymous', 'registered']:
                 raise forms.ValidationError(
-                    ugettext_lazy('Group name "%s" is reserved for internal use.') % data)
+                    _('Group name "%s" is reserved for internal use.') % data)
         return data
 
     class Meta:

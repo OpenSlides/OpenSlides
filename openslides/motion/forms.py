@@ -11,7 +11,7 @@
 """
 
 from django import forms
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ugettext_lazy
 
 from openslides.utils.forms import CssClassMixin
 from openslides.utils.forms import CleanHtmlFormMixin
@@ -30,18 +30,18 @@ class BaseMotionForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
     """
     clean_html_fields = ('text', 'reason')
 
-    title = forms.CharField(widget=forms.TextInput(), label=_("Title"))
+    title = forms.CharField(widget=forms.TextInput(), label=ugettext_lazy("Title"))
     """
     Title of the motion. Will be saved in a MotionVersion object.
     """
 
-    text = forms.CharField(widget=forms.Textarea(), label=_("Text"))
+    text = forms.CharField(widget=forms.Textarea(), label=ugettext_lazy("Text"))
     """
     Text of the motion. Will be saved in a MotionVersion object.
     """
 
     reason = forms.CharField(
-        widget=forms.Textarea(), required=False, label=_("Reason"))
+        widget=forms.Textarea(), required=False, label=ugettext_lazy("Reason"))
     """
     Reason of the motion. will be saved in a MotionVersion object.
     """
@@ -64,7 +64,7 @@ class BaseMotionForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
 class MotionSubmitterMixin(forms.ModelForm):
     """Mixin to append the submitter field to a MotionForm."""
 
-    submitter = MultiplePersonFormField(label=_("Submitter"))
+    submitter = MultiplePersonFormField(label=ugettext_lazy("Submitter"))
     """Submitter of the motion. Can be one or more persons."""
 
     def __init__(self, *args, **kwargs):
@@ -78,7 +78,7 @@ class MotionSubmitterMixin(forms.ModelForm):
 class MotionSupporterMixin(forms.ModelForm):
     """Mixin to append the supporter field to a Motionform."""
 
-    supporter = MultiplePersonFormField(required=False, label=_("Supporters"))
+    supporter = MultiplePersonFormField(required=False, label=ugettext_lazy("Supporters"))
     """Supporter of the motion. Can be one or more persons."""
 
     def __init__(self, *args, **kwargs):
@@ -93,8 +93,8 @@ class MotionDisableVersioningMixin(forms.ModelForm):
     """Mixin to add the option to the form to choose to disable versioning."""
 
     disable_versioning = forms.BooleanField(
-        required=False, label=_("Don't create a new version"),
-        help_text=_("Don't create a new version. Useful e. g. for trivial changes."))
+        required=False, label=ugettext_lazy("Don't create a new version"),
+        help_text=ugettext_lazy("Don't create a new version. Useful e.g. for trivial changes."))
     """BooleanField to decide, if a new version will be created, or the
     last_version will be used."""
 
@@ -102,10 +102,10 @@ class MotionDisableVersioningMixin(forms.ModelForm):
 class MotionCategoryMixin(forms.ModelForm):
     """Mixin to let the user choose the category for the motion."""
 
-    category = forms.ModelChoiceField(queryset=Category.objects.all(), required=False)
+    category = forms.ModelChoiceField(queryset=Category.objects.all(), required=False, label=ugettext_lazy("Category"))
 
 
 class MotionIdentifierMixin(forms.ModelForm):
     """Mixin to let the user choose the identifier for the motion."""
 
-    identifier = forms.CharField(required=False)
+    identifier = forms.CharField(required=False, label=ugettext_lazy("Identifier"))
