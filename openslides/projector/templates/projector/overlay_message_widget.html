@@ -4,7 +4,7 @@
 <span>
     {% trans "Message" %}:
     <form class="form-inline" id="overlay_message" action="{% url 'projector_overlay_message' %}" method="post">{% csrf_token %}
-        <div class="input-append" style="width: 85%;">
+        <div class="input-append overlayblock" style="width: 77%;">
         <input class="input-block-level" id="overlay_message_text" name='message_text' type='text' value="{% get_config 'projector_message' %}">
         <button type="submit" class="btn btn-primary" name="message" title="{% trans 'Apply' %}" style="width: 16px;">
             <i class="icon-ok icon-white"></i>

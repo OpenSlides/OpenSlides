@@ -12,7 +12,7 @@
 
 from django.dispatch import Signal, receiver
 from django import forms
-from django.utils.translation import ugettext_lazy, ugettext_noop, ugettext as _
+from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
 
 from openslides.config.signals import config_signal
 from openslides.config.api import ConfigVariable, ConfigGroup, ConfigGroupedPage

@@ -48,6 +48,7 @@ class PersonField(models.fields.Field):
         elif isinstance(value, basestring):
             # The object is already a a person_id
             return value
+
         elif hasattr(value, 'person_id'):
             # The object is a person
             return value.person_id

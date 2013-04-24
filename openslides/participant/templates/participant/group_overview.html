@@ -21,7 +21,7 @@
     {% for group in groups %}
         <tr class="{% if group.active %}activeline{% endif %}">
             <td>
-                <a href="{% model_url group 'view' %}">{{ group.name }}</a>
+                <a href="{% model_url group 'view' %}">{% trans group.name %}</a>
             </td>
             <td>
                 <span style="width: 1px; white-space: nowrap;">

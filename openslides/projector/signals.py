@@ -13,7 +13,6 @@ from time import time
 
 from django.dispatch import Signal, receiver
 from django import forms
-from django.utils.translation import ugettext_lazy, ugettext as _
 from django.template.loader import render_to_string
 from django.core.context_processors import csrf
 

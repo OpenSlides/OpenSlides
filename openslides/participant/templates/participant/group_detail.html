@@ -3,11 +3,11 @@
 {% load i18n %}
 {% load tags %}
 
-{% block title %}{{ block.super }} – {{ group }}{% endblock %}
+{% block title %}{{ block.super }} – {% trans group.name %}{% endblock %}
 
 {% block content %}
 
-<h1>{{ group }}
+<h1>{% trans group.name %}
     <small class="pull-right">
         <a href="{% url 'user_group_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
     </small>

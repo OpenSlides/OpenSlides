@@ -1,20 +1,209 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# German translations for JavaScript file in OpenSlides package.
+# Copyright (C) 2011-2013 by OpenSlides team, see AUTHORS.
+# This file is distributed under the same license as the OpenSlides package.
+# Emanuel Schütze <emanuel@intevation.de>, 2013.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides 1.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-12 21:29+0100\n"
+"POT-Creation-Date: 2013-04-23 16:17+0200\n"
 "PO-Revision-Date: 2012-07-28 11:07+0200\n"
-"Last-Translator: Oskar Hahn <mail@oshahn.de>\n"
+"Last-Translator: Emanuel Schütze <emanuel@intevation.de>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:9
+#: agenda/static/javascript/agenda-config-datepicker.js:39
+msgid "en"
+msgstr "en"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:10
+msgid "previous month"
+msgstr "vorheriger Monat"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:11
+msgid "next month"
+msgstr "nächster Monat"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:13
+msgid "January"
+msgstr "Januar"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:13
+msgid "February"
+msgstr "Februar"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:13
+msgid "March"
+msgstr "März"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:14
+msgid "April"
+msgstr "April"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:14
+#: agenda/static/javascript/agenda-config-datepicker.js:20
+msgid "May"
+msgstr "Mai"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:14
+msgid "June"
+msgstr "Juni"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:15
+msgid "July"
+msgstr "Juli"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:15
+msgid "August"
+msgstr "August"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:15
+msgid "September"
+msgstr "September"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:16
+msgid "October"
+msgstr "Oktober"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:16
+msgid "November"
+msgstr "November"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:16
+msgid "December"
+msgstr "Dezember"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:19
+msgid "Jan"
+msgstr "Jan"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:19
+msgid "Feb"
+msgstr "Feb"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:19
+msgid "Mar"
+msgstr "Mär"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:20
+msgid "Apr"
+msgstr "Apr"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:20
+msgid "Jun"
+msgstr "Jun"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:21
+msgid "Jul"
+msgstr "Jul"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:21
+msgid "Aug"
+msgstr "Aug"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:21
+msgid "Sep"
+msgstr "Sep"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:22
+msgid "Oct"
+msgstr "Okt"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:22
+msgid "Nov"
+msgstr "Nov"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:22
+msgid "Dec"
+msgstr "Dez"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:25
+msgid "Sunday"
+msgstr "Sonntag"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:25
+msgid "Monday"
+msgstr "Montag"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:25
+msgid "Tuesdey"
+msgstr "Dienstag"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:25
+msgid "Wednesday"
+msgstr "Mittwoch"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:26
+msgid "Thursday"
+msgstr "Donnerstag"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:26
+msgid "Friday"
+msgstr "Freitag"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:26
+msgid "Saturday"
+msgstr "Samstag"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:29
+#: agenda/static/javascript/agenda-config-datepicker.js:33
+msgid "Su"
+msgstr "So"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:29
+#: agenda/static/javascript/agenda-config-datepicker.js:33
+msgid "Mo"
+msgstr "Mo"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:29
+#: agenda/static/javascript/agenda-config-datepicker.js:33
+msgid "Tu"
+msgstr "Di"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:29
+#: agenda/static/javascript/agenda-config-datepicker.js:33
+msgid "We"
+msgstr "Mi"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:30
+#: agenda/static/javascript/agenda-config-datepicker.js:34
+msgid "Th"
+msgstr "Do"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:30
+#: agenda/static/javascript/agenda-config-datepicker.js:34
+msgid "Fr"
+msgstr "Fr"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:30
+#: agenda/static/javascript/agenda-config-datepicker.js:34
+msgid "Sa"
+msgstr "Sa"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:45
+msgid "Time"
+msgstr "Zeit"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:46
+msgid "Hour"
+msgstr "Stunde"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:47
+msgid "Minute"
+msgstr "Minute"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:48
+msgid "Current time"
+msgstr "Aktuelle Zeit"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:49
+msgid "Close"
+msgstr "Schließen"
 
 #: agenda/static/javascript/agenda.js:27
 #, c-format

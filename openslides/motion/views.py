@@ -291,7 +291,7 @@ class VersionDiffView(DetailView):
             diff_text = htmldiff(version_rev1.text, version_rev2.text)
             diff_reason = htmldiff(version_rev1.reason, version_rev2.reason)
         except (KeyError, ValueError, MotionVersion.DoesNotExist):
-            messages.error(self.request, _('At least one version number was not valid.'))
+            messages.error(self.request, _('At least one version number is not valid.'))
             version_rev1 = None
             version_rev2 = None
             diff_text = None
@@ -556,7 +556,7 @@ class MotionSetStateView(SingleObjectMixin, RedirectView):
         else:
             self.object.save()
             # TODO: the state is not translated
-            self.object.write_log(ugettext_noop('Changed state to %s') %
+            self.object.write_log(ugettext_noop('State changed to %s') %
                                   self.object.state.name, self.request.user)
             messages.success(request, _('Motion status was set to: %s.'
                                         % html_strong(self.object.state)))
@@ -583,7 +583,7 @@ class CreateAgendaItemView(SingleObjectMixin, RedirectView):
     def pre_redirect(self, request, *args, **kwargs):
         """Create the agenda item."""
         self.item = Item.objects.create(related_sid=self.object.sid)
-        self.object.write_log(ugettext_noop('Created Agenda Item'), self.request.user)
+        self.object.write_log(ugettext_noop('Agenda item created'), self.request.user)
 
 create_agenda_item = CreateAgendaItemView.as_view()
 
@@ -595,7 +595,7 @@ class MotionPDFView(SingleObjectMixin, PDFView):
 
     If self.print_all_motions is False, the view returns a PDF with only one
     motion."""
-    permission_required = 'motion.can_manage_motion'
+    permission_required = 'motion.can_see_motion'
     model = Motion
     top_space = 0
     print_all_motions = False

@@ -14,7 +14,7 @@ from django.contrib.auth.models import User as DjangoUser, Group as DjangoGroup
 from django.db import models
 from django.db.models import signals
 from django.dispatch import receiver
-from django.utils.translation import ugettext_lazy as _, ugettext_noop  # TODO: Change this in the code
+from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.utils.person import PersonMixin, Person
 from openslides.utils.person.signals import receive_persons
@@ -27,32 +27,32 @@ class User(PersonMixin, Person, SlideMixin, DjangoUser):
     prefix = 'user'  # This is for the slides
     person_prefix = 'user'
     GENDER_CHOICES = (
-        ('male', _('Male')),
-        ('female', _('Female')),
+        ('male', ugettext_lazy('Male')),
+        ('female', ugettext_lazy('Female')),
     )
 
     django_user = models.OneToOneField(DjangoUser, editable=False, parent_link=True)
     structure_level = models.CharField(
-        max_length=255, blank=True, default='', verbose_name=_("Structure level"),
-        help_text=_('Will be shown after the name.'))
+        max_length=255, blank=True, default='', verbose_name=ugettext_lazy("Structure level"),
+        help_text=ugettext_lazy('Will be shown after the name.'))
     title = models.CharField(
-        max_length=50, blank=True, default='', verbose_name=_("Titel"),
-        help_text=_('Will be shown before the name.'))
+        max_length=50, blank=True, default='', verbose_name=ugettext_lazy("Title"),
+        help_text=ugettext_lazy('Will be shown before the name.'))
     gender = models.CharField(
         max_length=50, choices=GENDER_CHOICES, blank=True,
-        verbose_name=_("Gender"), help_text=_('Only for filtering the participant list.'))
+        verbose_name=ugettext_lazy("Gender"), help_text=ugettext_lazy('Only for filtering the participant list.'))
     committee = models.CharField(
-        max_length=255, blank=True, default='', verbose_name=_("Committee"),
-        help_text=_('Only for filtering the participant list.'))
+        max_length=255, blank=True, default='', verbose_name=ugettext_lazy("Committee"),
+        help_text=ugettext_lazy('Only for filtering the participant list.'))
     about_me = models.TextField(
-        blank=True, default='', verbose_name=_('About me'),
-        help_text=_('Your profile text'))
+        blank=True, default='', verbose_name=ugettext_lazy('About me'),
+        help_text=ugettext_lazy('Your profile text'))
     comment = models.TextField(
-        blank=True, default='', verbose_name=_('Comment'),
-        help_text=_('Only for notes.'))
+        blank=True, default='', verbose_name=ugettext_lazy('Comment'),
+        help_text=ugettext_lazy('Only for notes.'))
     default_password = models.CharField(
         max_length=100, blank=True, default='',
-        verbose_name=_("Default password"))
+        verbose_name=ugettext_lazy("Default password"))
 
     @property
     def clean_name(self):
@@ -134,9 +134,9 @@ class Group(PersonMixin, Person, SlideMixin, DjangoGroup):
 
     django_group = models.OneToOneField(DjangoGroup, editable=False, parent_link=True)
     group_as_person = models.BooleanField(
-        default=False, verbose_name=_("Use this group as participant"),
-        help_text=_('For example as submitter of a motion.'))
-    description = models.TextField(blank=True, verbose_name=_("Description"))
+        default=False, verbose_name=ugettext_lazy("Use this group as participant"),
+        help_text=ugettext_lazy('For example as submitter of a motion.'))
+    description = models.TextField(blank=True, verbose_name=ugettext_lazy("Description"))
 
     @models.permalink
     def get_absolute_url(self, link='view'):

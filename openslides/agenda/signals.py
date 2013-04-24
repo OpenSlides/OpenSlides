@@ -12,7 +12,7 @@
 
 from django.dispatch import receiver
 from django import forms
-from django.utils.translation import ugettext_lazy, ugettext_noop, ugettext as _
+from django.utils.translation import ugettext_lazy, ugettext_noop
 from django.template.loader import render_to_string
 
 from openslides.config.signals import config_signal
@@ -41,7 +41,7 @@ def setup_agenda_config_page(sender, **kwargs):
             widget=forms.DateTimeInput(format='%d.%m.%Y %H:%M'),
             required=False,
             label=ugettext_lazy('Begin of event'),
-            help_text=_('Input format: DD.MM.YYYY HH:MM')))
+            help_text=ugettext_lazy('Input format: DD.MM.YYYY HH:MM')))
 
     extra_stylefiles = ['styles/timepicker.css', 'styles/jquery-ui/jquery-ui.custom.min.css']
     extra_javascript = ['javascript/jquery-ui.custom.min.js',

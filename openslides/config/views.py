@@ -13,7 +13,7 @@
 from django import forms
 from django.core.urlresolvers import reverse
 from django.contrib import messages
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ugettext_lazy
 
 from openslides.utils.views import FormView
 from openslides.utils.template import Tab
@@ -115,7 +115,7 @@ class ConfigView(FormView):
         """
         for key in form.cleaned_data:
             config[key] = form.cleaned_data[key]
-        messages.success(self.request, _('%s settings successfully saved.' % self.config_page.title))
+        messages.success(self.request, _('%s settings successfully saved.') % _(self.config_page.title))
         return super(ConfigView, self).form_valid(form)
 
 

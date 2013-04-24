@@ -58,7 +58,7 @@ body{
     top:110px;
     right:40px;
     padding-left:30px;
-    background: url(../img/glyphicons_054_clock.png) no-repeat scroll 0px 4px;
+    background: url(../img/glyphicons_054_clock_big.png) no-repeat scroll 0px 4px;
 }
 
 #currentTime.ajax_error {
@@ -72,6 +72,19 @@ body{
     left: 0;
     width: 100%;
     height: 100%;
+}
+#overlay_list_of_speaker_box {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    border-radius: 0.4em;
+    border: 0.1em solid #777777;
+    background-color: #cccccc;
+    opacity: 0.9;
+    padding: 0 1em;
+    margin: 1em;
+    z-index: 2;
+    width: 50%;
 }
 
 /*** CONTENT ***/
@@ -145,6 +158,14 @@ body{
 {
     color: #9FA9B7;
     list-style-type: none;
+}
+.list_of_speakers li {
+    font-size: 130%;
+    line-height: 160%;
+}
+.last_speakers li {
+    color: #9FA9B7;
+    list-style: none;
 }
 
 /* Table */

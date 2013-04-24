@@ -13,7 +13,7 @@
 import mimetypes
 
 from django.db import models
-from django.utils.translation import ugettext_noop
+from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.utils.person.models import PersonField
 
@@ -23,16 +23,16 @@ class Mediafile(models.Model):
     Class for uploaded files which can be delivered under a certain url.
     """
 
-    mediafile = models.FileField(upload_to='file')
+    mediafile = models.FileField(upload_to='file', verbose_name=ugettext_lazy("File"))
     """
     See https://docs.djangoproject.com/en/dev/ref/models/fields/#filefield
     for more information.
     """
 
-    title = models.CharField(max_length=255, unique=True)
+    title = models.CharField(max_length=255, unique=True, verbose_name=ugettext_lazy("Title"))
     """A string representing the title of the file."""
 
-    uploader = PersonField(blank=True)
+    uploader = PersonField(blank=True, verbose_name=ugettext_lazy("Uploaded by"))
     """A person – the uploader of a file."""
 
     timestamp = models.DateTimeField(auto_now_add=True)
