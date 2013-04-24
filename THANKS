@@ -16,6 +16,9 @@ OpenSlides uses parts of the following projects:
   with css theme 'smoothness'
   and some addons: slider access, timepicker
 
+* nestedSortable jQuery Plugin
+  <http://mjsarfatti.com/sandbox/nestedSortable/>
+
 * Twitter Bootstrap
   <http://twitter.github.com/bootstrap/>
 
@@ -24,6 +27,3 @@ OpenSlides uses parts of the following projects:
 
 * Ubuntu TrueType Font
   <http://font.ubuntu.com/>
-
-* nestedSortable jQuery Plugin
-  <http://mjsarfatti.com/sandbox/nestedSortable/>
