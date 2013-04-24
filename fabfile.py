@@ -8,6 +8,7 @@
 """
 
 import os
+import sys
 import webbrowser
 
 from fabric.api import local
@@ -68,3 +69,13 @@ def travis_ci():
     """
     coverage_report_plain()
     pep8()
+
+
+def run_script(script):
+    """
+    Run a script with the development version of OpenSlides.
+
+    You can find some usefull scripts in extras/scrips/ in the OpenSlides repo.
+    """
+    os.environ['PYTHONPATH'] = os.path.join(os.path.dirname(__file__))
+    os.system("python " + script)

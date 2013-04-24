@@ -13,3 +13,6 @@ Fabric==1.6.0
 coverage==3.6
 django-discover-runner==0.3
 pep8==1.4.5
+
+# For python 2.6 support
+argparse==1.2.1
