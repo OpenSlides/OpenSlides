@@ -27,7 +27,7 @@
             <div class="span12">
                 <div id="header">
                     <a href="/" class="logo" title="{% trans 'Home' %}"><img src="{% static 'img/logo.png' %}" /></a>
-                    <span class="title optional">{% get_config 'event_name' %} - {% get_config 'event_description' %}</span>
+                    <span class="title optional">{% get_config 'event_name' %} – {% get_config 'event_description' %}</span>
                     {% block loginbutton %}
                     <div class="btn-group pull-right">
                         {% if user.is_authenticated %}
@@ -97,7 +97,7 @@
   <hr />
   <footer>
       <small>
-      &copy; Copyright 2011–2013 | Powered by <a href="http://openslides.org" target="_blank">OpenSlides</a>
+      &copy; Copyright 2011–2013 | Powered by <a href="http://openslides.org" target="_blank">OpenSlides</a> | <a href="{% url 'core_version' %}">Version</a>
       </small>
   </footer>
   </div><!--/content-->

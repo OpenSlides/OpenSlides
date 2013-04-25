@@ -5,20 +5,7 @@
 {% block title %}{{ block.super }} – {% trans 'Version' %}{% endblock %}
 
 {% block content %}
-    <h1>
-        {% trans 'Version' %}
-        <small>{% trans active_config_page.title %}</small>
-        <small class="pull-right">
-        <div class="btn-toolbar">
-            <div class="btn-group">
-            {% for config_page_dict in config_pages_list %}
-                <a href="/config/{{ config_page_dict.config_page.url }}/" class="btn btn-mini">{% trans config_page_dict.config_page.title %}</a>
-            {% endfor %}
-                <a href="{% url 'core_version' %}" class="btn btn-mini active">{% trans 'Version' %}</a>
-            </div>
-        </div>
-        </small>
-    </h1>
+    <h1>{% trans 'Version' %}</h1>
     {% for version in versions %}
         <p>{{ version.0 }} {% trans "Version" %}: {{ version.1 }}</p>
     {% endfor %}
