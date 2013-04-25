@@ -80,7 +80,7 @@ def agenda_list_of_speakers(sender, **kwargs):
             # Only show list of speakers on Agenda-Items
             return None
         clear_projector_cache()
-        speakers = Speaker.objects.filter(time=None, item=slide)[:5]
+        speakers = Speaker.objects.filter(begin_time=None, item=slide)[:5]
         context = {'speakers': speakers}
         return render_to_string('agenda/overlay_speaker_projector.html', context)
 

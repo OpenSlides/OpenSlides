@@ -6,7 +6,7 @@
 
     Forms for the agenda app.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -69,7 +69,7 @@ class AppendSpeakerForm(CssClassMixin, forms.Form):
         Checks, that the user is not already on the list.
         """
         speaker = self.cleaned_data['speaker']
-        if Speaker.objects.filter(person=speaker, item=self.item, time=None).exists():
+        if Speaker.objects.filter(person=speaker, item=self.item, begin_time=None).exists():
             raise forms.ValidationError(ugettext_lazy(
                 '%s is already on the list of speakers.'
                 % unicode(speaker)))

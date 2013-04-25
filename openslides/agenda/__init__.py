@@ -8,7 +8,7 @@
 
     It includes time-management and list of speakers.
 
-    :copyright: (c) 2011-2013 by the OpenSlides team, see AUTHORS.
+    :copyright: (c) 2011–2013 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 

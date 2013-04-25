@@ -77,42 +77,40 @@
 {% if old_speakers %}
 <div class="well">
     <b>{% trans "Last speakers" %}:</b>
-    {% if old_speakers|length > 1 %}
-        <div class="btn-group" data-toggle="buttons-checkbox">
-            <button type="button" class="btn btn-mini" data-toggle="collapse" data-target="#all_speakers">
-                {% trans "Show all speakers" %}
-            </button>
-        </div>
-    {% endif %}
-    <br>
+    <div class="btn-group" data-toggle="buttons-checkbox">
+        <button type="button" class="btn btn-mini" data-toggle="collapse" data-target="#all_speakers">
+            {% trans "Show all speakers" %}
+        </button>
+    </div>
+    <br />
     <div id="all_speakers" class="collapse out">
         {% for speaker in old_speakers %}
-            {% if not forloop.last %}
-                <small>{{forloop.counter}}.
-                    [{{ speaker.time }}h]
-                    <a href="{% model_url speaker %}">{{ speaker }}</a>
-                    {% if perms.agenda.can_manage_agenda %}
-                        <a href="{% model_url speaker 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
-                            <i class="icon-remove"></i>
-                        </a>
-                    {% endif %}
-                </small><br>
-            {% endif %}
+            <small>{{forloop.counter}}.
+                [{{ speaker.begin_time }} – {{ speaker.end_time }}]
+                <a href="{% model_url speaker %}">{{ speaker }}</a>
+                {% if perms.agenda.can_manage_agenda %}
+                    <a href="{% model_url speaker 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
+                        <i class="icon-remove"></i>
+                    </a>
+                {% endif %}
+            </small><br />
         {% endfor %}
     </div>
-    {% if old_speakers %}
-        {% with last=old_speakers|last %}
-        <small>{{ old_speakers|length }}.
-            [{{ last.time }}h]
-            <a href="{% model_url last %}">{{ last }}</a>
-            {% if perms.agenda.can_manage_agenda %}
-                <a href="{% model_url last 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
-                    <i class="icon-remove"></i>
-                </a>
-            {% endif %}
-        </small>
-        {% endwith %}
-    {% endif %}
+
+</div>
+{% endif %}
+
+{% if actual_speaker %}
+<div class="well">
+    <b>{% trans 'Actual speaker' %}:</b><br />
+        [{{ actual_speaker.begin_time }}]
+        <a href="{% model_url actual_speaker %}">{{ actual_speaker }}</a>
+        {% if perms.agenda.can_manage_agenda %}
+            <a href="{% url 'agenda_speaker_end_speach' item.pk %}" class="btn btn-mini"><i class="icon-bell"></i> {% trans 'End speach' %}</a>
+            <a href="{% model_url actual_speaker 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
+                <i class="icon-remove"></i>
+            </a>
+        {% endif %}
 </div>
 {% endif %}
 
@@ -128,11 +126,10 @@
     </form>
 {% endif %}
 
-
 <div class="well">
-    <b>{% trans "Next speakers:" %}</b>
+    <b>{% trans "Next speakers" %}:</b>
     <ul {% if perms.agenda.can_manage_agenda %}id="list_of_speakers"{% endif %}>
-        {% for speaker in speakers %}
+        {% for speaker in coming_speakers %}
             <li id="speaker_{{ speaker.pk }}">
                 <span {% if perms.agenda.can_manage_agenda %}class="ui-icon ui-icon-arrowthick-2-n-s"{% endif %}></span>
                 <span>{{ forloop.counter }}.</span>
@@ -150,7 +147,7 @@
     </ul>
 
     <p>
-        {% if is_speaker %}
+        {% if is_on_the_list_of_speakers %}
             <a href="{% url 'agenda_speaker_delete' object.id %}" class="btn">{% trans "Remove me from the list" %}</a>
         {% elif not object.speaker_list_closed and perms.can_be_speaker %}
             <a href="{% url 'agenda_speaker_append' object.id %}" class="btn">{% trans "Put me on the list" %}</a>
