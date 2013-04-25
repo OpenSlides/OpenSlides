@@ -13,7 +13,6 @@
             {% for config_page_dict in config_pages_list %}
                 <a href="/config/{{ config_page_dict.config_page.url }}/" class="btn btn-mini {% if config_page_dict.active %}active{% endif %}">{% trans config_page_dict.config_page.title %}</a>
             {% endfor %}
-                <a href="{% url 'core_version' %}" class="btn btn-mini">{% trans 'Version' %}</a>
             </div>
         </div>
     </small>
