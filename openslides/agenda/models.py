@@ -6,7 +6,7 @@
 
     Models for the agenda app.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -157,13 +157,21 @@ class Item(MPTTModel, SlideMixin):
                 'template': 'projector/AgendaSummary.html',
             }
         elif config['presentation_argument'] == 'show_list_of_speakers':
-            speakers = Speaker.objects.filter(time=None, item=self.pk).order_by('weight')
-            old_speakers = Speaker.objects.filter(item=self.pk).exclude(time=None).order_by('time')
+
+            speaker_query = Speaker.objects.filter(item=self)
+
+            coming_speakers = speaker_query.filter(begin_time=None).order_by('weight')
+            old_speakers = speaker_query.exclude(begin_time=None).exclude(end_time=None).order_by('end_time')
+            try:
+                actual_speaker = speaker_query.filter(end_time=None).exclude(begin_time=None).get()
+            except Speaker.DoesNotExist:
+                actual_speaker = None
             slice_items = max(0, old_speakers.count()-2)
             data = {'title': self.get_title(),
                     'template': 'projector/agenda_list_of_speaker.html',
-                    'speakers': speakers,
-                    'old_speakers': old_speakers[slice_items:]}
+                    'coming_speakers': coming_speakers,
+                    'old_speakers': old_speakers[slice_items:],
+                    'actual_speaker': actual_speaker}
         elif self.related_sid:
             data = self.get_related_slide().slide()
         else:
@@ -246,7 +254,7 @@ class Item(MPTTModel, SlideMixin):
 
 class SpeakerManager(models.Manager):
     def add(self, person, item):
-        if self.filter(person=person, item=item, time=None).exists():
+        if self.filter(person=person, item=item, begin_time=None).exists():
             raise OpenSlidesError(_('%(person)s is already on the list of speakers of item %(id)s.') % {'person': person, 'id': item.id})
         weight = (self.filter(item=item).aggregate(
             models.Max('weight'))['weight__max'] or 0)
@@ -270,9 +278,14 @@ class Speaker(models.Model):
     ForeinKey to the AgendaItem to which the person want to speak.
     """
 
-    time = models.DateTimeField(null=True)
+    begin_time = models.DateTimeField(null=True)
     """
-    Saves the time, when the speaker has spoken. None, if he has not spoken yet.
+    Saves the time, when the speaker begins to speak. None, if he has not spoken yet.
+    """
+
+    end_time = models.DateTimeField(null=True)
+    """
+    Saves the time, when the speaker ends his speach. None, if he is not finished yet.
     """
 
     weight = models.IntegerField(null=True)
@@ -295,12 +308,26 @@ class Speaker(models.Model):
             return reverse('agenda_speaker_delete',
                            args=[self.item.pk, self.pk])
 
-    def speak(self):
+    def begin_speach(self):
         """
         Let the person speak.
 
-        Set the weight to None and the time to now.
+        Set the weight to None and the time to now. If anyone is still
+        speaking, end his speach.
         """
+        try:
+            actual_speaker = Speaker.objects.filter(item=self.item, end_time=None).exclude(begin_time=None).get()
+        except Speaker.DoesNotExist:
+            pass
+        else:
+            actual_speaker.end_speach()
         self.weight = None
-        self.time = datetime.now()
+        self.begin_time = datetime.now()
+        self.save()
+
+    def end_speach(self):
+        """
+        The speach is finished. Set the time to now.
+        """
+        self.end_time = datetime.now()
         self.save()

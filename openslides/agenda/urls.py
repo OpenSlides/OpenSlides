@@ -6,13 +6,13 @@
 
     URL list for the agenda app.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
 from django.conf.urls import url, patterns
 from openslides.agenda.views import (
-    Overview, AgendaItemView, SetClosed, ItemUpdate, SpeakerSpeakView,
+    Overview, AgendaItemView, SetClosed, ItemUpdate, SpeakerSpeakView, SpeakerEndSpeachView,
     ItemCreate, ItemDelete, AgendaPDF, SpeakerAppendView, SpeakerDeleteView,
     SpeakerListCloseView, SpeakerChangeOrderView, CurrentListOfSpeakersView)
 
@@ -89,6 +89,11 @@ urlpatterns = patterns(
     url(r'^(?P<pk>\d+)/speaker/(?P<person_id>[^/]+)/speak/$',
         SpeakerSpeakView.as_view(),
         name='agenda_speaker_speak',
+    ),
+
+    url(r'^(?P<pk>\d+)/speaker/end_speach/$',
+        SpeakerEndSpeachView.as_view(),
+        name='agenda_speaker_end_speach',
     ),
 
     url(r'^(?P<pk>\d+)/speaker/change_order/$',
