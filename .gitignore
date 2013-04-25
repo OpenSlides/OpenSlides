@@ -17,7 +17,6 @@ docs/_build/*
 build/*
 dist/*
 .DS_Store
-versiontools*
 
 # Unit test and coverage reports
 .coverage

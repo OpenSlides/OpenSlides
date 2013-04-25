@@ -3,7 +3,7 @@
 """
     Setup script for OpenSlides.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -12,8 +12,9 @@ from setuptools import find_packages
 from openslides import get_version
 
 
-with open('README.txt') as file:
-    long_description = file.read()
+with open('README.txt') as readme:
+    long_description = readme.read()
+
 
 setup(
     name='openslides',
@@ -36,11 +37,8 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
     ],
-    setup_requires=[
-        'versiontools >= 1.6',
-    ],
     install_requires=[
-        'django >= 1.5',
+        'django == 1.5.1',
         'django-mptt',
         'reportlab',
         'pillow',

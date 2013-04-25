@@ -1,11 +1,12 @@
-Installation Instructions for OpenSlides 1.4
-============================================
+==============================================
+ Installation Instructions for OpenSlides 1.4
+==============================================
 
 Content
--------
+=======
 
-I.  Installation on GNU/Linux and MacOSX using the Python Package Index (PyPI)
-II. Installation on GNU/Linux and MacOSX using the sources
+I.   Installation on GNU/Linux and MacOSX using the Python Package Index (PyPI)
+II.  Installation on GNU/Linux and MacOSX using the sources
 III. Installation on Windows (32bit) using the Python Package Index (PyPI)
 
 If you need help ask on OpenSlides users mailing list.
@@ -13,7 +14,7 @@ See http://openslides.org for more information.
 
 
 I. Installation on GNU/Linux and MacOSX using the Python Package Index (PyPI)
------------------------------------------------------------------------------
+=============================================================================
 
   1. Check requirements:
 
@@ -28,6 +29,9 @@ I. Installation on GNU/Linux and MacOSX using the Python Package Index (PyPI)
 
         You can setup a virtual environment to install OpenSlides as
         non-root user.
+
+        Make sure that you have installed Virtual Python Environment builder
+        on your system.
 
         E. g. for Ubuntu run:
         $ sudo apt-get install python-virtualenv
@@ -66,18 +70,26 @@ I. Installation on GNU/Linux and MacOSX using the Python Package Index (PyPI)
 
         Use 'openslides --help' to show all start options.
 
+  5. Restart OpenSlides:
+
+        To restart OpenSlides after closing the terminal activate the
+        virtual environment before starting the server:
+
+        $ source .venv/bin/activate
+        $ openslides
+
 
 II. Installation on GNU/Linux and MacOSX using the sources
-----------------------------------------------------------
+==========================================================
 
   1. Check requirements:
 
         Make sure that you have installed Python Programming Language 2
-        (>= 2.6) and virtualenv (>= 1.4.1) on your system. You will also
-        need the Python development headers.
+        (>= 2.6) on your system. You will also need the Python
+        development headers.
 
         E. g. for Ubuntu run:
-        $ sudo apt-get install python-dev python-virtualenv
+        $ sudo apt-get install python-dev
 
   2. Get OpenSlides:
 
@@ -86,18 +98,20 @@ II. Installation on GNU/Linux and MacOSX using the sources
      OR
 
      b) Clone current master version from OpenSlides' GitHub repository
-        https://github.com/OpenSlides/OpenSlides.
-        
-        $ git clone git://github.com/OpenSlides/OpenSlides.git OpenSlides
-        
-        This requires Git (see http://git-scm.com/).
-        To install Git e.g. on Ubuntu run:
+        https://github.com/OpenSlides/OpenSlides. This requires Git
+        (see http://git-scm.com/).
+
+        E. g. for Ubuntu run:
         $ sudo apt-get install git
+        $ git clone git://github.com/OpenSlides/OpenSlides.git
 
   3. Setup a virtual environment with virtualenv (optional):
 
         You can setup a virtual environment to install OpenSlides as
         non-root user.
+
+        Make sure that you have installed Virtual Python Environment builder
+        on your system.
 
         E. g. for Ubuntu run:
         $ sudo apt-get install python-virtualenv
@@ -135,7 +149,7 @@ II. Installation on GNU/Linux and MacOSX using the sources
 
 
 III. Installation on Windows (32bit) using the Python Package Index (PyPI)
---------------------------------------------------------------------------
+==========================================================================
 
 NOTE: There is a portable version of OpenSlides for Windows which does not
 required any install steps! If there is a reason that you can not use the
@@ -150,30 +164,41 @@ portable version you should run the following install steps.
 
      a) Download and run 32bit MSI installer from http://www.python.org/:
 
-        http://python.org/ftp/python/2.7.3/python-2.7.3.msi
+        http://python.org/ftp/python/2.7.4/python-2.7.4.msi
 
      b) Add python dirs to PATH (via Control Panel > System > Advanced):
 
         ";C:\Python27;C:\Python27\Scripts"
 
-     c) Install Setuptools:
+     c) Download and run 32bit binary installer from http://pypi.python.org/pypi/setuptools:
 
-        Download and run 32bit binary installer from
-        http://pypi.python.org/pypi/setuptools:
+        https://pypi.python.org/packages/2.7/s/setuptools/setuptools-0.6c11.win32-py2.7.exe
 
-        http://pypi.python.org/packages/2.7/s/setuptools/setuptools-0.6c11.win32-py2.7.exe
+  2. Setup a virtual environment with virtualenv (optional):
 
-  2. Install OpenSlides:
+        You can setup a virtual environment to install OpenSlides as
+        non-root user.
 
-        Open command line (cmd) and run:
+        To setup and activate the virtual environment, create your
+        OpenSlides directory, open command line (cmd), change to the
+        directory and run:
 
-        easy_install openslides
+        > virtualenv .venv
+        > .venv\Scripts\activate
 
-  3. Start OpenSlides server and open URL in your default browser:
+  3. Install OpenSlides:
 
-        Open command line (cmd) and run:
+        Run on command line (cmd):
 
-        openslides
+        > pip install openslides
+
+        OpenSlides will install all required python packages.
+
+  4. Start OpenSlides server and open URL in your default browser:
+
+        Run on command line (cmd):
+
+        > openslides
 
         If you run this script the first time a new database and the
         admin account are created. Please change the password after
@@ -183,3 +208,11 @@ portable version you should run the following install steps.
         Password: admin
 
         Use 'openslides --help' to show all start options.
+
+  5. Restart OpenSlides:
+
+        To restart OpenSlides after closing the command line activate the
+        virtual environment before starting the server:
+
+        > .venv/Scripts/activate
+        > openslides
