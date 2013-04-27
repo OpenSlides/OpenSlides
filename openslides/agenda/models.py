@@ -161,17 +161,24 @@ class Item(MPTTModel, SlideMixin):
             speaker_query = Speaker.objects.filter(item=self)
 
             coming_speakers = speaker_query.filter(begin_time=None).order_by('weight')
-            old_speakers = speaker_query.exclude(begin_time=None).exclude(end_time=None).order_by('end_time')
+
+            old_speakers_count = config['agenda_show_last_speakers']
+            if old_speakers_count > 0:
+                old_speakers = speaker_query.exclude(end_time=None)
+                old_speakers = old_speakers[max(0, old_speakers.count()) - old_speakers_count:]
+            else:
+                old_speakers = speaker_query.none()
+
             try:
                 actual_speaker = speaker_query.filter(end_time=None).exclude(begin_time=None).get()
             except Speaker.DoesNotExist:
                 actual_speaker = None
-            slice_items = max(0, old_speakers.count()-2)
+            speakers = list(old_speakers) + [actual_speaker] + list(coming_speakers)
             data = {'title': self.get_title(),
                     'template': 'projector/agenda_list_of_speaker.html',
-                    'coming_speakers': coming_speakers,
-                    'old_speakers': old_speakers[slice_items:],
-                    'actual_speaker': actual_speaker}
+                    'speakers': speakers,
+                    'actual_speaker': actual_speaker,
+                    'old_speakers_count': -(old_speakers_count + 1)}
         elif self.related_sid:
             data = self.get_related_slide().slide()
         else:

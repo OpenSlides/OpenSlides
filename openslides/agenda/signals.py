@@ -12,11 +12,11 @@
 
 from django.dispatch import receiver
 from django import forms
-from django.utils.translation import ugettext_lazy, ugettext_noop
+from django.utils.translation import ugettext_lazy, ugettext_noop, ugettext as _
 from django.template.loader import render_to_string
 
 from openslides.config.signals import config_signal
-from openslides.config.api import ConfigVariable, ConfigPage
+from openslides.config.api import ConfigVariable, ConfigPage, config
 
 from openslides.projector.signals import projector_overlays
 from openslides.projector.projector import Overlay
@@ -40,8 +40,15 @@ def setup_agenda_config_page(sender, **kwargs):
         form_field=forms.CharField(
             widget=forms.DateTimeInput(format='%d.%m.%Y %H:%M'),
             required=False,
-            label=ugettext_lazy('Begin of event'),
-            help_text=ugettext_lazy('Input format: DD.MM.YYYY HH:MM')))
+            label=_('Begin of event'),
+            help_text=_('Input format: DD.MM.YYYY HH:MM')))
+
+    agenda_show_last_speakers = ConfigVariable(
+        name='agenda_show_last_speakers',
+        default_value=0,
+        form_field=forms.IntegerField(
+            min_value=0,
+            label=_('Number of last speakers, to show on the projector')))
 
     extra_stylefiles = ['styles/timepicker.css', 'styles/jquery-ui/jquery-ui.custom.min.css']
     extra_javascript = ['javascript/jquery-ui.custom.min.js',
@@ -53,7 +60,7 @@ def setup_agenda_config_page(sender, **kwargs):
                       url='agenda',
                       required_permission='config.can_manage',
                       weight=20,
-                      variables=(agenda_start_event_date_time,),
+                      variables=(agenda_start_event_date_time, agenda_show_last_speakers),
                       extra_context={'extra_stylefiles': extra_stylefiles,
                                      'extra_javascript': extra_javascript})
 
@@ -80,8 +87,27 @@ def agenda_list_of_speakers(sender, **kwargs):
             # Only show list of speakers on Agenda-Items
             return None
         clear_projector_cache()
-        speakers = Speaker.objects.filter(begin_time=None, item=slide)[:5]
-        context = {'speakers': speakers}
+
+        speaker_query = Speaker.objects.filter(item=slide)
+        try:
+            actual_speaker = speaker_query.filter(end_time=None).exclude(begin_time=None).get()
+        except Speaker.DoesNotExist:
+            actual_speaker = None
+
+        coming_speakers = speaker_query.filter(begin_time=None)[:5]
+
+        old_speakers_count = config['agenda_show_last_speakers']
+        if old_speakers_count > 0:
+            old_speakers = speaker_query.exclude(end_time=None)
+            old_speakers = old_speakers[max(0, old_speakers.count()) - old_speakers_count:]
+        else:
+            old_speakers = speaker_query.none()
+
+        speakers = list(old_speakers) + [actual_speaker] + list(coming_speakers)
+        context = {
+            'actual_speaker': actual_speaker,
+            'speakers': speakers,
+            'old_speakers_count': -(old_speakers_count + 1)}
         return render_to_string('agenda/overlay_speaker_projector.html', context)
 
     return Overlay(name, get_widget_html, get_projector_html)
