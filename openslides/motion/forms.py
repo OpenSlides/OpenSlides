@@ -106,6 +106,18 @@ class MotionCategoryMixin(forms.ModelForm):
 
 
 class MotionIdentifierMixin(forms.ModelForm):
-    """Mixin to let the user choose the identifier for the motion."""
+    """
+    Mixin to let the user choose the identifier for the motion.
+    """
 
-    identifier = forms.CharField(required=False, label=ugettext_lazy("Identifier"))
+    identifier = forms.CharField(required=False, label=ugettext_lazy('Identifier'))
+
+    def clean_identifier(self):
+        """
+        Test, that the identifier is unique
+        """
+        identifier = self.cleaned_data['identifier']
+        if Motion.objects.filter(identifier=identifier).exists():
+            raise forms.ValidationError(_('The Identifier is not unique.'))
+        else:
+            return identifier

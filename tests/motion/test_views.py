@@ -119,6 +119,15 @@ class TestMotionCreateView(MotionViewTestCase):
         response = self.staff_client.get('/motion/')
         self.assertContains(response, 'href="/motion/new/"', status_code=200)
 
+    def test_identifier_not_unique(self):
+        Motion.objects.create(identifier='foo')
+        response = self.admin_client.post(self.url, {'title': 'foo',
+                                                     'text': 'bar',
+                                                     'submitter': self.admin,
+                                                     'identifier': 'foo'})
+        self.assertFormError(response, 'form', 'identifier', 'The Identifier is not unique.')
+
+
 
 class TestMotionUpdateView(MotionViewTestCase):
     url = '/motion/1/edit/'
