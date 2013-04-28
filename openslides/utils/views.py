@@ -83,7 +83,7 @@ class PermissionMixin(object):
                     "%s?next=%s" % (settings.LOGIN_URL, path))
             else:
                 return render_to_forbidden(request)
-        return _View.dispatch(self, request, *args, **kwargs)
+        return super(PermissionMixin, self).dispatch(request, *args, **kwargs)
 
 
 class AjaxMixin(object):
