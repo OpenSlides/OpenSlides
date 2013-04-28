@@ -118,6 +118,9 @@ INSTALLED_APPS = (
     'openslides.participant',
     'openslides.mediafile',
     'openslides.config',
+
+    # full-text-search
+    'haystack',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -142,3 +145,9 @@ TEST_DISCOVER_TOP_LEVEL = os.path.dirname(os.path.dirname(__file__))
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = ['*']
+
+
+# Full-text search
+HAYSTACK_SITECONF = 'openslides.search_sites'
+HAYSTACK_SEARCH_ENGINE = 'whoosh'
+HAYSTACK_WHOOSH_PATH = os.path.join(os.path.dirname(__file__), 'whoosh_index')
