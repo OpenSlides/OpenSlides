@@ -127,6 +127,10 @@ class TestMotionCreateView(MotionViewTestCase):
                                                      'identifier': 'foo'})
         self.assertFormError(response, 'form', 'identifier', 'The Identifier is not unique.')
 
+    def test_empty_text_field(self):
+        response = self.admin_client.post(self.url, {'title': 'foo',
+                                                     'submitter': self.admin})
+        self.assertFormError(response, 'form', 'text', 'This field is required.')
 
 
 class TestMotionUpdateView(MotionViewTestCase):

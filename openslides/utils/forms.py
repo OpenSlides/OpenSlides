@@ -85,9 +85,14 @@ class CleanHtmlFormMixin(object):
     def clean(self):
         cleaned_data = super(CleanHtmlFormMixin, self).clean()
         for field in self.get_clean_html_fields():
-            cleaned_data[field] = bleach.clean(cleaned_data[field],
-                                               tags=HTML_TAG_WHITELIST,
-                                               attributes=HTML_ATTRIBUTES_WHITELIST,
-                                               styles=HTML_STYLES_WHITELIST,
-                                               strip=True)
+            try:
+                cleaned_data[field] = bleach.clean(
+                    cleaned_data[field],
+                    tags=HTML_TAG_WHITELIST,
+                    attributes=HTML_ATTRIBUTES_WHITELIST,
+                    styles=HTML_STYLES_WHITELIST,
+                    strip=True)
+            except KeyError:
+                # The field 'field' is not pressent. Do not change cleaned_data
+                pass
         return cleaned_data
