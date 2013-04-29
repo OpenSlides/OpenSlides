@@ -1,13 +1,57 @@
 {% load i18n %}
+{% load tags %}
+
+<style type="text/css">
+#overlay_list_of_speaker_box {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    border-radius: 0.4em;
+    border: 0.1em solid #777777;
+    background-color: #cccccc;
+    opacity: 0.9;
+    padding: 0 .5em;
+    margin: 1em;
+    z-index: 2;
+    width: 30%;
+    min-width: 200px;
+}
+#overlay_list_of_speaker_box h3 {
+    margin: 5px;
+}
+#overlay_list_of_speaker_box ul {
+    list-style-type: None;
+    padding-left: 0;
+    margin: 5px;
+}
+#overlay_list_of_speaker_box li {
+    margin-bottom: 1px;
+}
+#overlay_list_of_speaker_box li span.number {
+    display: block;
+    float: left;
+    width: 1.3em;
+}
+</style>
 
 <div id="overlay_list_of_speaker_box">
-    {% if speakers %}
+    {% if list_of_speakers %}
     <h3>{% trans "List of speakers" %}:</h3>
-    <ol>
-        {% for speaker in speakers %}
-            <li>{{ speaker }}</li>
+    <ul>
+        {% for speaker_dict in list_of_speakers %}
+        <li>
+            {% if speaker_dict.type == 'actual_speaker' %}
+                <span class="number">→</span><strong>
+            {% else %}
+                <span class="number">{{ speaker_dict.prefix }}</span>
+            {% endif %}
+            <span class="name">{{ speaker_dict.speaker }}</span>
+            {% if speaker_dict.type == 'actual_speaker' %}
+                </strong>
+            {% endif %}
+        </li>
         {% endfor %}
-    </ol>
+    </ul>
     {% else %}
     <i>{% trans 'The list of speakers is empty.' %}</i>
     {% endif %}

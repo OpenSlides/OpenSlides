@@ -41,7 +41,8 @@ class ListOfSpeakerModelTests(TestCase):
 
         # Check time and weight
         for object in (speaker1_item1, speaker2_item1, speaker1_item2):
-            self.assertIsNone(object.time)
+            self.assertIsNone(object.begin_time)
+            self.assertIsNone(object.end_time)
         self.assertEqual(speaker1_item1.weight, 1)
         self.assertEqual(speaker1_item2.weight, 1)
         self.assertEqual(speaker2_item1.weight, 2)
@@ -52,13 +53,25 @@ class ListOfSpeakerModelTests(TestCase):
         self.item1.save()
         self.assertTrue(Item.objects.get(pk=self.item1.pk).speaker_list_closed)
 
-    def test_speak(self):
+    def test_speak_and_finish(self):
         speaker1_item1 = Speaker.objects.add(self.speaker1, self.item1)
-
-        self.assertIsNone(speaker1_item1.time)
-        speaker1_item1.speak()
-        self.assertIsNotNone(Speaker.objects.get(pk=speaker1_item1.pk).time)
+        self.assertIsNone(speaker1_item1.begin_time)
+        self.assertIsNone(speaker1_item1.end_time)
+        speaker1_item1.begin_speach()
+        self.assertIsNotNone(Speaker.objects.get(pk=speaker1_item1.pk).begin_time)
         self.assertIsNone(Speaker.objects.get(pk=speaker1_item1.pk).weight)
+        speaker1_item1.end_speach()
+        self.assertIsNotNone(Speaker.objects.get(pk=speaker1_item1.pk).end_time)
+
+    def test_finish_when_other_speaker_begins(self):
+        speaker1_item1 = Speaker.objects.add(self.speaker1, self.item1)
+        speaker2_item1 = Speaker.objects.add(self.speaker2, self.item1)
+        speaker1_item1.begin_speach()
+        self.assertIsNone(speaker1_item1.end_time)
+        self.assertIsNone(speaker2_item1.begin_time)
+        speaker2_item1.begin_speach()
+        self.assertIsNotNone(Speaker.objects.get(person=self.speaker1, item=self.item1).end_time)
+        self.assertIsNotNone(speaker2_item1.begin_time)
 
 
 class SpeakerViewTestCase(TestCase):
@@ -160,7 +173,21 @@ class TestSpeakerSpeakView(SpeakerViewTestCase):
         speaker = Speaker.objects.add(self.speaker1, self.item1)
         response = self.check_url(url, self.admin_client, 302)
         speaker = Speaker.objects.get(pk=speaker.pk)
-        self.assertIsNotNone(speaker.time)
+        self.assertIsNotNone(speaker.begin_time)
+        self.assertIsNone(speaker.weight)
+
+
+class TestSpeakerEndSpeachView(SpeakerViewTestCase):
+    def test_get(self):
+        url = '/agenda/1/speaker/end_speach/'
+        response = self.check_url(url, self.admin_client, 302)
+        self.assertMessage(response, 'There is no one speaking at the moment according to item1.')
+        speaker = Speaker.objects.add(self.speaker1, self.item1)
+        speaker.begin_speach()
+        response = self.check_url(url, self.admin_client, 302)
+        speaker = Speaker.objects.get(pk=speaker.pk)
+        self.assertIsNotNone(speaker.begin_time)
+        self.assertIsNotNone(speaker.end_time)
         self.assertIsNone(speaker.weight)
 
 

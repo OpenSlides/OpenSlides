@@ -6,7 +6,7 @@
 
     Views for the agenda app.
 
-    :copyright: 2011, 2012 by the OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 # TODO: Rename all views and template names
@@ -37,7 +37,7 @@ from .forms import ItemOrderForm, ItemForm, AppendSpeakerForm
 
 class Overview(TemplateView):
     """
-    Show all agenda items, and update there range via post.
+    Show all agenda items, and update their range via post.
     """
     permission_required = 'agenda.can_see_agenda'
     template_name = 'agenda/overview.html'
@@ -127,15 +127,11 @@ class AgendaItemView(SingleObjectMixin, FormView):
 
     def get_context_data(self, **kwargs):
         self.object = self.get_object()
-        speakers = Speaker.objects.filter(time=None, item=self.object.pk).order_by('weight')
-        old_speakers = list(Speaker.objects.filter(item=self.object.pk)
-                                   .exclude(time=None).order_by('time'))
+        list_of_speakers = self.object.get_list_of_speakers()
         kwargs.update({
             'object': self.object,
-            'speakers': speakers,
-            'old_speakers': old_speakers,
-            'is_speaker': Speaker.objects.filter(
-                time=None, person=self.request.user, item=self.object).exists(),
+            'list_of_speakers': list_of_speakers,
+            'is_on_the_list_of_speakers': Speaker.objects.filter(item=self.object, begin_time=None, person=self.request.user).exists(),
             'show_list': config['presentation_argument'] == 'show_list_of_speakers',
         })
         return super(AgendaItemView, self).get_context_data(**kwargs)
@@ -288,7 +284,7 @@ class SpeakerDeleteView(DeleteView):
         if 'speaker' in kwargs:
             return request.user.has_perm('agenda.can_manage_agenda')
         else:
-            # Any person how is on the list of speakers can delete him self from the list
+            # Any person who is on the list of speakers can delete himself from the list.
             return True
 
     def get(self, *args, **kwargs):
@@ -334,15 +330,41 @@ class SpeakerSpeakView(SingleObjectMixin, RedirectView):
         try:
             speaker = Speaker.objects.filter(
                 person=kwargs['person_id'],
-                item=self.object.pk).exclude(
-                    weight=None).get()
-        except Speaker.DoesNotExist:
+                item=self.object,
+                begin_time=None).get()
+        except Speaker.DoesNotExist:  # TODO: Check the MultipleObjectsReturned error here?
             messages.error(
                 self.request,
                 _('%(person)s is not on the list of %(item)s.')
                 % {'person': kwargs['person_id'], 'item': self.object})
         else:
-            speaker.speak()
+            speaker.begin_speach()
+
+    def get_url_name_args(self):
+        return [self.object.pk]
+
+
+class SpeakerEndSpeachView(SingleObjectMixin, RedirectView):
+    """
+    The speach of the actual speaker is finished.
+    """
+    permission_required = 'agenda.can_manage_agenda'
+    url_name = 'item_view'
+    model = Item
+
+    def pre_redirect(self, *args, **kwargs):
+        self.object = self.get_object()
+        try:
+            speaker = Speaker.objects.filter(
+                item=self.object,
+                end_time=None).exclude(begin_time=None).get()
+        except Speaker.DoesNotExist:
+            messages.error(
+                self.request,
+                _('There is no one speaking at the moment according to %(item)s.')
+                % {'item': self.object})
+        else:
+            speaker.end_speach()
 
     def get_url_name_args(self):
         return [self.object.pk]
