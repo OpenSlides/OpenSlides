@@ -16,7 +16,7 @@ from django.utils.translation import ugettext_lazy, ugettext_noop, ugettext as _
 from django.template.loader import render_to_string
 
 from openslides.config.signals import config_signal
-from openslides.config.api import ConfigVariable, ConfigPage, config
+from openslides.config.api import config, ConfigVariable, ConfigPage
 
 from openslides.projector.signals import projector_overlays
 from openslides.projector.projector import Overlay
@@ -45,10 +45,10 @@ def setup_agenda_config_page(sender, **kwargs):
 
     agenda_show_last_speakers = ConfigVariable(
         name='agenda_show_last_speakers',
-        default_value=0,
+        default_value=1,
         form_field=forms.IntegerField(
             min_value=0,
-            label=_('Number of last speakers, to show on the projector')))
+            label=_('Number of last speakers to be shown on the projector')))
 
     extra_stylefiles = ['styles/timepicker.css', 'styles/jquery-ui/jquery-ui.custom.min.css']
     extra_javascript = ['javascript/jquery-ui.custom.min.js',
@@ -87,27 +87,10 @@ def agenda_list_of_speakers(sender, **kwargs):
             # Only show list of speakers on Agenda-Items
             return None
         clear_projector_cache()
-
-        speaker_query = Speaker.objects.filter(item=slide)
-        try:
-            actual_speaker = speaker_query.filter(end_time=None).exclude(begin_time=None).get()
-        except Speaker.DoesNotExist:
-            actual_speaker = None
-
-        coming_speakers = speaker_query.filter(begin_time=None)[:5]
-
-        old_speakers_count = config['agenda_show_last_speakers']
-        if old_speakers_count > 0:
-            old_speakers = speaker_query.exclude(end_time=None)
-            old_speakers = old_speakers[max(0, old_speakers.count()) - old_speakers_count:]
-        else:
-            old_speakers = speaker_query.none()
-
-        speakers = list(old_speakers) + [actual_speaker] + list(coming_speakers)
-        context = {
-            'actual_speaker': actual_speaker,
-            'speakers': speakers,
-            'old_speakers_count': -(old_speakers_count + 1)}
+        list_of_speakers = slide.get_list_of_speakers(
+            old_speakers_count=config['agenda_show_last_speakers'],
+            coming_speakers_count=5)
+        context = {'list_of_speakers': list_of_speakers}
         return render_to_string('agenda/overlay_speaker_projector.html', context)
 
     return Overlay(name, get_widget_html, get_projector_html)

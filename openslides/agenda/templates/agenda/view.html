@@ -70,52 +70,11 @@
         <i class="icon icon-facetime-video {% if item.active and show_list %}icon-white{% endif %}"></i>
         {% trans 'Show list' %}
     </a>
-
 {% endif %}
 </p>
 
-{% if old_speakers %}
-<div class="well">
-    <b>{% trans "Last speakers" %}:</b>
-    <div class="btn-group" data-toggle="buttons-checkbox">
-        <button type="button" class="btn btn-mini" data-toggle="collapse" data-target="#all_speakers">
-            {% trans "Show all speakers" %}
-        </button>
-    </div>
-    <br />
-    <div id="all_speakers" class="collapse out">
-        {% for speaker in old_speakers %}
-            <small>{{forloop.counter}}.
-                [{{ speaker.begin_time }} – {{ speaker.end_time }}]
-                <a href="{% model_url speaker %}">{{ speaker }}</a>
-                {% if perms.agenda.can_manage_agenda %}
-                    <a href="{% model_url speaker 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
-                        <i class="icon-remove"></i>
-                    </a>
-                {% endif %}
-            </small><br />
-        {% endfor %}
-    </div>
-
-</div>
-{% endif %}
-
-{% if actual_speaker %}
-<div class="well">
-    <b>{% trans 'Actual speaker' %}:</b><br />
-        [{{ actual_speaker.begin_time }}]
-        <a href="{% model_url actual_speaker %}">{{ actual_speaker }}</a>
-        {% if perms.agenda.can_manage_agenda %}
-            <a href="{% url 'agenda_speaker_end_speach' item.pk %}" class="btn btn-mini"><i class="icon-bell"></i> {% trans 'End speach' %}</a>
-            <a href="{% model_url actual_speaker 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
-                <i class="icon-remove"></i>
-            </a>
-        {% endif %}
-</div>
-{% endif %}
-
 {% if perms.agenda.can_manage_agenda %}
-    <form id="speaker_list_changed_form" action="{% url 'agenda_speaker_change_order' item.pk %}" method="post" style="display:none" class="alert alert-warning">{% csrf_token %}
+    <form id="coming_speakers_changed_form" action="{% url 'agenda_speaker_change_order' item.pk %}" method="post" style="display:none" class="alert alert-warning">{% csrf_token %}
         <button type="button" class="close" data-dismiss="alert">×</button>
         <p>{% trans "Do you want to save the changed order of speakers?" %}</p>
         <input id="sort_order" name="sort_order" type="hidden"></hidden>
@@ -126,25 +85,52 @@
     </form>
 {% endif %}
 
-<div class="well">
-    <b>{% trans "Next speakers" %}:</b>
-    <ul {% if perms.agenda.can_manage_agenda %}id="list_of_speakers"{% endif %}>
-        {% for speaker in coming_speakers %}
-            <li id="speaker_{{ speaker.pk }}">
-                <span {% if perms.agenda.can_manage_agenda %}class="ui-icon ui-icon-arrowthick-2-n-s"{% endif %}></span>
-                <span>{{ forloop.counter }}.</span>
-                <a href="{% model_url speaker %}">{{ speaker }}</a>
-                {% if perms.agenda.can_manage_agenda %}
-                    <a href="{% url 'agenda_speaker_speak' item.pk speaker.person.person_id %}" class="btn btn-mini"><i class="icon-bell"></i> {% trans "Next speaker" %}</a>
-                    <a href="{% model_url speaker 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
-                        <i class="icon-remove"></i>
-                    </a>
+<div id="complete_list_of_speakers" class="well">
+    {% for speaker_dict in list_of_speakers %}
+        {% if speaker_dict.first_in_group %}
+            {% if speaker_dict.type == 'old_speaker' %}
+                <b>{% trans "Last speakers" %}:</b>
+                <div class="btn-group" data-toggle="buttons-checkbox">
+                    <button type="button" class="btn btn-mini" data-toggle="collapse" data-target="#old_speakers">
+                        {% trans "Show all speakers" %}
+                    </button>
+                </div>
+            {% elif speaker_dict.type == 'actual_speaker' %}
+                <b>{% trans 'Actual speaker' %}:</b>
+            {% else %}
+                <b>{% trans "Next speakers" %}:</b>
+            {% endif %}
+            <ul
+                {% if speaker_dict.type == 'old_speaker' %}
+                    id="old_speakers" class="collapse out"
+                {% elif speaker_dict.type == 'coming_speaker' %}
+                    id="coming_speakers"
                 {% endif %}
-            </li>
-        {% empty %}
-            <i>{% trans "The list of speakers is empty." %}</i>
-        {% endfor %}
-    </ul>
+            >
+        {% endif %}
+        <li id="speaker_{{ speaker_dict.speaker.pk }}">
+            {% if speaker_dict.type == 'coming_speaker' %}
+                <span {% if perms.agenda.can_manage_agenda %}class="ui-icon ui-icon-arrowthick-2-n-s"{% endif %}></span>
+                {{ speaker_dict.prefix }}.
+            {% else %}
+                [{{ speaker_dict.speaker.begin_time }}{% if speaker_dict.type == 'old_speaker' %} – {{ speaker_dict.speaker.end_time }}{% endif %}]
+            {% endif %}
+            <a href="{% model_url speaker_dict.speaker %}">{{ speaker_dict.speaker }}</a>
+            {% if perms.agenda.can_manage_agenda %}
+                {% if speaker_dict.type == 'actual_speaker' %}
+                    <a href="{% url 'agenda_speaker_end_speach' item.pk %}" class="btn btn-mini"><i class="icon-bell"></i> {% trans 'End speach' %}</a>
+                {% elif speaker_dict.type == 'coming_speaker' %}
+                    <a href="{% url 'agenda_speaker_speak' item.pk speaker_dict.speaker.person.person_id %}" class="btn btn-mini"><i class="icon-bell"></i> {% trans "Next speaker" %}</a>
+                {% endif %}
+                <a href="{% model_url speaker_dict.speaker 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
+                    <i class="icon-remove"></i>
+                </a>
+            {% endif %}
+        </li>
+        {% if speaker_dict.last_in_group %}
+            </ul>
+        {% endif %}
+    {% endfor %}
 
     <p>
         {% if is_on_the_list_of_speakers %}
@@ -171,6 +157,6 @@
             {% endfor %}
         </form>
     {% endif %}
-
 </div>
+
 {% endblock %}

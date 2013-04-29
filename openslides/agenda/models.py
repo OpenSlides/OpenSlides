@@ -99,10 +99,44 @@ class Item(MPTTModel, SlideMixin):
     True, if the list of speakers is closed.
     """
 
+    class Meta:
+        permissions = (
+            ('can_see_agenda', ugettext_noop("Can see agenda")),
+            ('can_manage_agenda', ugettext_noop("Can manage agenda")),
+            ('can_see_orga_items', ugettext_noop("Can see orga items and time scheduling of agenda")))
+
+    class MPTTMeta:
+        order_insertion_by = ['weight']
+
+    def __unicode__(self):
+        return self.get_title()
+
+    def get_absolute_url(self, link='view'):
+        """
+        Return the URL to this item. By default it is the link to its
+        view or the view of a related object.
+
+        The link can be:
+        * view
+        * edit
+        * delete
+        """
+        if link == 'view':
+            if self.related_sid:
+                return self.get_related_slide().get_absolute_url(link)
+            return reverse('item_view', args=[str(self.id)])
+        if link == 'edit':
+            if self.related_sid:
+                return self.get_related_slide().get_absolute_url(link)
+            return reverse('item_edit', args=[str(self.id)])
+        if link == 'delete':
+            return reverse('item_delete', args=[str(self.id)])
+
     def get_related_slide(self):
         """
-        return the object, of which the item points.
+        Return the object at which the item points.
         """
+        # TODO: Rename it to 'get_related_object'
         object = get_slide_from_sid(self.related_sid, element=True)
         if object is None:
             self.title = 'Item for deleted slide: %s' % self.related_sid
@@ -114,7 +148,7 @@ class Item(MPTTModel, SlideMixin):
 
     def get_related_type(self):
         """
-        return the type of the releated slide.
+        Return the type of the releated slide.
         """
         return self.get_related_slide().prefix
 
@@ -129,7 +163,7 @@ class Item(MPTTModel, SlideMixin):
 
     def get_title(self):
         """
-        return the title of this item.
+        Return the title of this item.
         """
         if self.related_sid is None:
             return self.title
@@ -137,7 +171,7 @@ class Item(MPTTModel, SlideMixin):
 
     def get_title_supplement(self):
         """
-        return a supplement for the title.
+        Return a supplement for the title.
         """
         if self.related_sid is None:
             return ''
@@ -148,45 +182,36 @@ class Item(MPTTModel, SlideMixin):
 
     def slide(self):
         """
-        Return a map with all Data for the Slide
+        Return a map with all data for the slide.
+
+        There are four cases:
+        * summary slide
+        * list of speakers
+        * related slide, i. e. the slide of the related object
+        * normal slide of the item
+
+        The method returns only one of them according to the config value
+        'presentation_argument' and the attribut 'related_sid'.
         """
         if config['presentation_argument'] == 'summary':
-            data = {
-                'title': self.get_title(),
-                'items': self.get_children(),
-                'template': 'projector/AgendaSummary.html',
-            }
+            data = {'title': self.get_title(),
+                    'items': self.get_children(),
+                    'template': 'projector/AgendaSummary.html'}
+
         elif config['presentation_argument'] == 'show_list_of_speakers':
-
-            speaker_query = Speaker.objects.filter(item=self)
-
-            coming_speakers = speaker_query.filter(begin_time=None).order_by('weight')
-
-            old_speakers_count = config['agenda_show_last_speakers']
-            if old_speakers_count > 0:
-                old_speakers = speaker_query.exclude(end_time=None)
-                old_speakers = old_speakers[max(0, old_speakers.count()) - old_speakers_count:]
-            else:
-                old_speakers = speaker_query.none()
-
-            try:
-                actual_speaker = speaker_query.filter(end_time=None).exclude(begin_time=None).get()
-            except Speaker.DoesNotExist:
-                actual_speaker = None
-            speakers = list(old_speakers) + [actual_speaker] + list(coming_speakers)
+            list_of_speakers = self.get_list_of_speakers(
+                old_speakers_count=config['agenda_show_last_speakers'])
             data = {'title': self.get_title(),
                     'template': 'projector/agenda_list_of_speaker.html',
-                    'speakers': speakers,
-                    'actual_speaker': actual_speaker,
-                    'old_speakers_count': -(old_speakers_count + 1)}
+                    'list_of_speakers': list_of_speakers}
         elif self.related_sid:
             data = self.get_related_slide().slide()
+
         else:
-            data = {
-                'item': self,
-                'title': self.get_title(),
-                'template': 'projector/AgendaText.html',
-            }
+            data = {'item': self,
+                    'title': self.get_title(),
+                    'template': 'projector/AgendaText.html'}
+
         return data
 
     def set_closed(self, closed=True):
@@ -224,39 +249,67 @@ class Item(MPTTModel, SlideMixin):
         super(Item, self).delete()
         Item.objects.rebuild()
 
-    def get_absolute_url(self, link='view'):
+    def get_list_of_speakers(self, old_speakers_count=None, coming_speakers_count=None):
         """
-        Return the URL to this item. By default it is the Link to its
-        slide
-
-        link can be:
-        * view
-        * edit
-        * delete
+        Returns the list of speakers as a list of dictionaries. Each
+        dictionary contains a prefix, the speaker and its type. Types
+        are old_speaker, actual_speaker and coming_speaker.
         """
-        if link == 'view':
-            if self.related_sid:
-                return self.get_related_slide().get_absolute_url(link)
-            return reverse('item_view', args=[str(self.id)])
-        if link == 'edit':
-            if self.related_sid:
-                return self.get_related_slide().get_absolute_url(link)
-            return reverse('item_edit', args=[str(self.id)])
-        if link == 'delete':
-            return reverse('item_delete', args=[str(self.id)])
+        speaker_query = Speaker.objects.filter(item=self)
+        list_of_speakers = []
 
-    def __unicode__(self):
-        return self.get_title()
+        # Parse old speakers
+        old_speakers = speaker_query.exclude(begin_time=None).exclude(end_time=None).order_by('end_time')
+        if old_speakers_count is None:
+            old_speakers_count = old_speakers.count()
+        last_old_speakers_count = max(0, old_speakers.count() - old_speakers_count)
+        old_speakers = old_speakers[last_old_speakers_count:]
+        for number, speaker in enumerate(old_speakers):
+            prefix = old_speakers_count - number
+            speaker_dict = {
+                'prefix': '-%d' % prefix,
+                'speaker': speaker,
+                'type': 'old_speaker',
+                'first_in_group': False,
+                'last_in_group': False}
+            if number == 0:
+                speaker_dict['first_in_group'] = True
+            if number == old_speakers_count - 1:
+                speaker_dict['last_in_group'] = True
+            list_of_speakers.append(speaker_dict)
 
-    class Meta:
-        permissions = (
-            ('can_see_agenda', ugettext_noop("Can see agenda")),
-            ('can_manage_agenda', ugettext_noop("Can manage agenda")),
-            ('can_see_orga_items', ugettext_noop("Can see orga items and time scheduling of agenda")),
-        )
+        # Parse actual speaker
+        try:
+            actual_speaker = speaker_query.filter(end_time=None).exclude(begin_time=None).get()
+        except Speaker.DoesNotExist:
+            pass
+        else:
+            list_of_speakers.append({
+                'prefix': '0',
+                'speaker': actual_speaker,
+                'type': 'actual_speaker',
+                'first_in_group': True,
+                'last_in_group': True})
 
-    class MPTTMeta:
-        order_insertion_by = ['weight']
+        # Parse coming speakers
+        coming_speakers = speaker_query.filter(begin_time=None).order_by('weight')
+        if coming_speakers_count is None:
+            coming_speakers_count = coming_speakers.count()
+        coming_speakers = coming_speakers[:max(0, coming_speakers_count)]
+        for number, speaker in enumerate(coming_speakers):
+            speaker_dict = {
+                'prefix': number + 1,
+                'speaker': speaker,
+                'type': 'coming_speaker',
+                'first_in_group': False,
+                'last_in_group': False}
+            if number == 0:
+                speaker_dict['first_in_group'] = True
+            if number == coming_speakers_count - 1:
+                speaker_dict['last_in_group'] = True
+            list_of_speakers.append(speaker_dict)
+
+        return list_of_speakers
 
 
 class SpeakerManager(models.Manager):
