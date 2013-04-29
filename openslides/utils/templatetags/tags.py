@@ -27,11 +27,6 @@ def get_config(key):
     return config[key]
 
 
-@register.filter
-def addition(value, add):
-    return int(value) + int(add)
-
-
 @register.simple_tag
 def active(request, pattern):
     if request.path.startswith(pattern):

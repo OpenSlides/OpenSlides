@@ -37,7 +37,7 @@ from .forms import ItemOrderForm, ItemForm, AppendSpeakerForm
 
 class Overview(TemplateView):
     """
-    Show all agenda items, and update there range via post.
+    Show all agenda items, and update their range via post.
     """
     permission_required = 'agenda.can_see_agenda'
     template_name = 'agenda/overview.html'
@@ -127,19 +127,11 @@ class AgendaItemView(SingleObjectMixin, FormView):
 
     def get_context_data(self, **kwargs):
         self.object = self.get_object()
-        speaker_query = Speaker.objects.filter(item=self.object)
-        coming_speakers = speaker_query.filter(begin_time=None).order_by('weight')
-        old_speakers = speaker_query.exclude(begin_time=None).exclude(end_time=None).order_by('end_time')
-        try:
-            actual_speaker = speaker_query.filter(end_time=None).exclude(begin_time=None).get()
-        except Speaker.DoesNotExist:
-            actual_speaker = None
+        list_of_speakers = self.object.get_list_of_speakers()
         kwargs.update({
             'object': self.object,
-            'coming_speakers': coming_speakers,
-            'old_speakers': old_speakers,
-            'actual_speaker': actual_speaker,
-            'is_on_the_list_of_speakers': speaker_query.filter(begin_time=None, person=self.request.user).exists(),
+            'list_of_speakers': list_of_speakers,
+            'is_on_the_list_of_speakers': Speaker.objects.filter(item=self.object, begin_time=None, person=self.request.user).exists(),
             'show_list': config['presentation_argument'] == 'show_list_of_speakers',
         })
         return super(AgendaItemView, self).get_context_data(**kwargs)
@@ -292,7 +284,7 @@ class SpeakerDeleteView(DeleteView):
         if 'speaker' in kwargs:
             return request.user.has_perm('agenda.can_manage_agenda')
         else:
-            # Any person how is on the list of speakers can delete him self from the list
+            # Any person who is on the list of speakers can delete himself from the list.
             return True
 
     def get(self, *args, **kwargs):

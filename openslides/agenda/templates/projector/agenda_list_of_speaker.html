@@ -12,29 +12,29 @@
 
 {% block scrollcontent %}
     <style type="text/css">
-    ul#list_of_speakers {
-        list-style-type: None;
-    }
-    #overlay_list_of_speaker_box li {
-        margin-bottom: 1px;
-    }
-    #overlay_list_of_speaker_box li span.number {
-        display: block;
-        float: left;
-        width: 1.3em;
-    }
+        ul#list_of_speakers {
+            list-style-type: None;
+        }
+        #overlay_list_of_speaker_box li {
+            margin-bottom: 1px;
+        }
+        #overlay_list_of_speaker_box li span.number {
+            display: block;
+            float: left;
+            width: 1.3em;
+        }
     </style>
-    {% if speakers %}
+    {% if list_of_speakers %}
     <ul id="list_of_speakers">
-        {% for speaker in speakers %}
+        {% for speaker_dict in list_of_speakers %}
         <li>
-            {% if speaker == actual_speaker %}
+            {% if speaker_dict.type == 'actual_speaker' %}
                 <span class="number">→</span><strong>
             {% else %}
-                <span class="number">{{ forloop.counter|addition:old_speakers_count }}</span>
+                <span class="number">{{ speaker_dict.prefix }} </span>
             {% endif %}
-            <span class="name">{{ speaker }}</span>
-            {% if speaker == actual_speaker %}
+            <span class="name">{{ speaker_dict.speaker }}</span>
+            {% if speaker_dict.type == 'actual_speaker' %}
                 </strong>
             {% endif %}
         </li>
