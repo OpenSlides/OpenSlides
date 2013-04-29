@@ -4,12 +4,19 @@ Tagesordnung verwalten
 In diesem Teil lernen Sie, wie Sie Einträge in der Tagesordnung erstellen und verwalten.
 
 
+Konfiguration der Tagesordnung
+------------------------------
+
+Gehen Sie zunächst im Menüpunkt „Konfiguration“ links oben zum Unterpunkt „Tagesordnung“. Hier können stellen Sie als genauen Beginn der Veranstaltung ein:
+  02.03.2013 10:00
+
+
 Eingabe der Tagesordnung
 ------------------------
 
 Die Tagesordnung enthält bei Neuinstallation noch keine Einträge. Legen Sie zunächst einige Einträge an.
 
-Klicken Sie dazu im Tab „Tagesordnung“ auf „Neuer Eintrag“
+Klicken Sie dazu im Menüpunkt „Tagesordnung“ oben rechts auf „Neu“
 
 .. image:: _static/images/tutorial_de_2_01.png
  :class: screenshot
@@ -21,6 +28,9 @@ Titel:
 
 Text:
   Es begrüßt Sie der Vereinsvorsitzende Dr. Hans Schulze.
+
+Dauer:
+  00:15
 
 .. image:: _static/images/tutorial_de_2_02.png
  :class: screenshot
@@ -34,12 +44,12 @@ Die Übersicht über die Einträge (links bei „Alle Einträge“) müsste nun 
 .. image:: _static/images/tutorial_de_2_03.png
  :class: screenshot
 
-Sie können nun nachträglich die Reihenfolge der Einträge verändern und auch Tagesordnungspunkte zu Unterpunkten verschieben. Ziehen Sie zum Beispiel mit der Maus an den gekreuzten Pfeilen des Punktes „Sonstiges“, um seine Position zu verändern und ihn nach unten zu verschieben. Richten Sie die Tagesordnung durch Verschieben der übrigen Einträge so ein, dass sie wie folgt aussieht:
+Sie können nun nachträglich die Reihenfolge der Einträge verändern und auch Tagesordnungspunkte zu Unterpunkten verschieben. Ziehen Sie zum Beispiel mit der Maus den Punkt „Sonstiges“, um seine Position zu verändern und ihn nach unten zu verschieben. Richten Sie die Tagesordnung durch Verschieben der übrigen Einträge so ein, dass sie wie folgt aussieht:
 
 .. image:: _static/images/tutorial_de_2_04.png
  :class: screenshot
 
-Klicken Sie auf ``Ja``, um die geänderte Reihenfolge zu speichern. Solange Sie die veränderte Reihenfolge nicht gespeichert haben, wird die Veränderung nicht in der Datenbank hinterlegt. Dies wird Ihnen durch die kleinen Sternchen hinter den verschobenen Tagesordnungspunkten angezeigt.
+Klicken Sie auf ``Ja``, um die geänderte Reihenfolge zu speichern. Solange Sie die veränderte Reihenfolge nicht gespeichert haben, wird die Veränderung nicht in der Datenbank hinterlegt.
 
 *Zu jedem Antrag und zu jedem Wahlamt können Sie über einen Link im Seitenmenü des betreffenden Antrags oder Wahlamts auch einen eigenen Eintrag in der Tagesordnung erstellen, der direkt mit der Antrags- bzw. Wahlfolie verknüpft ist. Dies empfiehlt sich, wenn ein einzelner Antrag oder eine einzelne Wahl an einer bestimmten Stelle der Tagesordnung behandelt werden soll.*
 
@@ -47,7 +57,7 @@ Klicken Sie auf ``Ja``, um die geänderte Reihenfolge zu speichern. Solange Sie 
 Ändern von Einträgen in der Tagesordnung
 ----------------------------------------
 
-Titel und Inhalt der Tagesordnungspunkte (Einträge) können jederzeit, insbesondere während des laufenden Betriebs geändert werden. Solange ein Eintrag keinen Inhalt im Feld „Text“ enthält, wird der Titel auf dem Beamer groß und zentriert dargestellt. Wenn Sie einen zusätzlichen Text eingeben, werden Überschrift und Text linksbündig dargestellt.
+Titel und Inhalt sowie die weiteren Felder der Tagesordnungspunkte (Einträge) können jederzeit, insbesondere während des laufenden Betriebs geändert werden. Solange ein Eintrag keinen Inhalt im Feld „Text“ enthält, wird der Titel auf dem Beamer groß und zentriert dargestellt. Wenn Sie einen zusätzlichen Text eingeben, werden Überschrift und Text linksbündig dargestellt.
 
 Ändern Sie zum Beispiel den Inhalt des Tagesordnungspunktes „Bericht des Vorstandes“, indem Sie in der Zeile dieses Eintrags auf das Bearbeiten-Symbol |document-edit| klicken und zusätzlich zum Titel einen Text zum Tagesordnungspunkt wie folgt eingeben:
   Der Vorstand berichtet über seine Arbeit, insbesondere die Entwicklung der Mitgliederzahlen und Finanzen.
@@ -57,20 +67,24 @@ Titel und Inhalt der Tagesordnungspunkte (Einträge) können jederzeit, insbeson
 
 .. |document-edit| image:: _static/images/document-edit.png
 
+Mehr Informationen zur Verwaltungs der Tagesordnung, insbesondere den Organisationseinträgen und den Rednerlisten finden Sie hier__.
+
+.. __: Tagesordnung.html
+
 
 Auswahl der Beamerfolien
 ------------------------
 
-Wenn Sie in den Tab „Projektor“ wechseln
+Wenn Sie in den Menüpunkt „Dahsboard“ wechseln
 
 .. image:: _static/images/tutorial_de_2_06.png
  :class: screenshot
 
-können Sie durch einen Klick auf den jeweiligen grauen Haken eine bestimmte Folie auswählen. Die jeweils aktive Folie zeigt einen blauen Haken. Probieren Sie, verschiedene Tagesordnungspunkte auf dem Beamer anzuzeigen.
+können Sie durch einen Klick auf das jeweilige Projektorsymbol eine bestimmte Folie auswählen. Die jeweils aktive Folie zeigt ein blaues Projektorsymbol. Probieren Sie, verschiedene Tagesordnungspunkte auf dem Beamer anzuzeigen.
 
 .. image:: _static/images/tutorial_de_2_07.png
  :class: screenshot
 
 Weiter geht es mit dem dritten Teil des Tutorials: `Teilnehmer/innen verwalten`__
 
-.. __: tutorial_de_3.html
+.. __: Tutorial_3.html

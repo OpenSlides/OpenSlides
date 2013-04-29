@@ -1,7 +1,8 @@
 Einführung
 ==========
 
-OpenSlides ist ein freies, webbasiertes Präsentationssystem zur Darstellung und Steuerung von Tagesordnungen, Anträgen, Abstimmungen und Wahlen einer Veranstaltung, insbesondere bei Einsatz eines oder mehrerer Beamer.
+
+OpenSlides ist ein freies, webbasiertes Präsentations- und Versammlungssystem zur Darstellung und Steuerung von Tagesordnung, Anträgen und Wahlen einer Veranstaltung, insbesondere bei Einsatz eines oder mehrerer Beamer.
 
 OpenSlides wurde vor allem für Mitgliederversammlungen, Delegiertenversammlungen, Hauptversammlungen oder Parteitage entwickelt. Mit OpenSlides können alle Inhalte der Veranstaltung zeitaktuell anhand des Verlaufs der Veranstaltung angepasst und an die Leinwand projiziert werden. Dies betrifft vor allem die Tagesordnung und aktuelle Informationen für die Anwesenden. Zusätzlich gibt es Funktionen für die Teilnehmerverwaltung, Anträge, Abstimmungen und Wahlen.
 
