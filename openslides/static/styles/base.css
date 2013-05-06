@@ -133,6 +133,11 @@ tr.total td {
     content: ":";
 }
 
+/** Colors **/
+.grey {
+    color: grey;
+}
+
 /** Forms **/
 input, textarea {
     width: 320px;
@@ -348,6 +353,10 @@ legend + .control-group {
 }
 .icon-clock {
     background-image: url("../img/glyphicons_054_clock.png");
+    background-position: 0;
+}
+.icon-speaker {
+    background-image: url("../img/glyphicons_300_microphone.png");
     background-position: 0;
 }
 

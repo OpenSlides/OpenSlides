@@ -18,6 +18,7 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Model
+from django.template import RequestContext
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.views.generic.detail import SingleObjectMixin
 
@@ -81,7 +82,8 @@ class Overview(TemplateView):
             'active_sid': get_active_slide(only_sid=True),
             'duration': duration,
             'start': start,
-            'end': end})
+            'end': end,
+            'show_list': config['presentation_argument'] == 'show_list_of_speakers'})
         return context
 
     @transaction.commit_manually
@@ -436,6 +438,8 @@ class CurrentListOfSpeakersView(RedirectView):
     """
     Redirect to the current list of speakers and set the request.user on it.
     """
+    set_speaker = False
+
     def get_item(self):
         """
         Returns the current Item, or None, if the current Slide is not an Agenda Item.
@@ -467,19 +471,18 @@ class CurrentListOfSpeakersView(RedirectView):
                 'Please choose the agenda item manually from the agenda.'))
             return reverse('dashboard')
 
-        if item.speaker_list_closed:
-            messages.error(request, _('The list of speakers is closed.'))
-            return reverse('dashboard')
+        if self.set_speaker:
+            if item.speaker_list_closed:
+                messages.error(request, _('The list of speakers is closed.'))
+                return reverse('dashboard')
 
-        if self.request.user.has_perm('agenda.can_be_speaker'):
-            try:
-                Speaker.objects.add(self.request.user, item)
-            except OpenSlidesError:
-                messages.error(request, _('You are already on the list of speakers.'))
+            if self.request.user.has_perm('agenda.can_be_speaker'):
+                try:
+                    Speaker.objects.add(self.request.user, item)
+                except OpenSlidesError:
+                    messages.error(request, _('You are already on the list of speakers.'))
             else:
-                messages.success(request, _('You are now on the list of speakers.'))
-        else:
-            messages.error(request, _('You can not put yourself on the list of speakers.'))
+                messages.error(request, _('You can not put yourself on the list of speakers.'))
 
         if not self.request.user.has_perm('agenda.can_see_agenda'):
             return reverse('dashboard')
@@ -519,7 +522,7 @@ def get_widgets(request):
 
         Widget(
             name='append_to_list_of_speakers',
-            display_name=_('To the current list of speakers'),
+            display_name=_('List of speakers'),
             template='agenda/speaker_widget.html',
-            context={},
+            context=RequestContext(request, {}),
             permission_required='agenda.can_be_speaker')]

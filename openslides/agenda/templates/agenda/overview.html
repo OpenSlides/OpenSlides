@@ -96,7 +96,9 @@
                 <td class="manage">
                 {% if perms.projector.can_manage_projector %}
                     <span>
-                    <a href="{% url 'projector_activate_slide' 'agenda' %}" class="activate_link btn {% if active_sid == 'agenda' %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+                    <a href="{% url 'projector_activate_slide' 'agenda' %}"
+                        class="activate_link btn {% if active_sid == 'agenda' %}btn-primary{% endif %} btn-mini"
+                        rel="tooltip" data-original-title="{% trans 'Show agenda' %}">
                         <i class="icon-facetime-video {% if active_sid == 'agenda' %}icon-white{% endif %}"></i>
                     </a>
                     </span>

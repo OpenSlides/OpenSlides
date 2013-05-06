@@ -7,40 +7,27 @@
 
 {% block content %}
     <h1>{{ title }}</h1>
-    <h2 style="margin-top: -15px;">{% trans 'List of speakers' %}</h2>
+    <h2 style="margin-top: -10px;">
+        {% trans 'List of speakers' %}
+        {% if item.speaker_list_closed %}(<span class="closed">{% trans 'closed' %}</span>){% endif %}
+    </h2>
 {% endblock %}
 
 {% block scrollcontent %}
-    <style type="text/css">
-        ul#list_of_speakers {
-            list-style-type: None;
-        }
-        #overlay_list_of_speaker_box li {
-            margin-bottom: 1px;
-        }
-        #overlay_list_of_speaker_box li span.number {
-            display: block;
-            float: left;
-            width: 1.3em;
-        }
-    </style>
+<p>
     {% if list_of_speakers %}
     <ul id="list_of_speakers">
         {% for speaker_dict in list_of_speakers %}
-        <li>
-            {% if speaker_dict.type == 'actual_speaker' %}
-                <span class="number">→</span><strong>
-            {% else %}
-                <span class="number">{{ speaker_dict.prefix }} </span>
+        <li class="{{speaker_dict.type}}"> {#o ld_speaker, actual_speaker, coming_speaker #}
+            {% if speaker_dict.type == 'coming_speaker' %}
+                {{ speaker_dict.prefix }}.
             {% endif %}
-            <span class="name">{{ speaker_dict.speaker }}</span>
-            {% if speaker_dict.type == 'actual_speaker' %}
-                </strong>
-            {% endif %}
+            {{ speaker_dict.speaker }}
         </li>
         {% endfor %}
     </ul>
     {% else %}
         <i>{% trans 'The list of speakers is empty.' %}</i>
     {% endif %}
+</p>
 {% endblock %}

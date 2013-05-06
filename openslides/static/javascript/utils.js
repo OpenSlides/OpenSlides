@@ -17,7 +17,7 @@ $(function () {
             }, 1000);
         }
     });
-   // activate an element to show it on projector
+    // activate an element to show it on projector
     $('.activate_link').click(function(event) {
         event.preventDefault();
         var link = $(this);
@@ -41,6 +41,27 @@ $(function () {
                 }
                 link.addClass('btn-primary');
                 link.children('i').addClass('icon-white');
+            }
+        });
+    });
+    // change status of an object (on/off)
+    $('.status_link').click(function(event) {
+        event.preventDefault();
+        var link = $(this);
+        $.ajax({
+            type: 'GET',
+            url: $(this).attr('href'),
+            dataType: 'json',
+            success: function(data) {
+                if (data.active) {
+                    newclass = 'icon-on';
+                    link.addClass('btn-success');
+                } else {
+                    newclass = 'icon-off';
+                    link.removeClass('btn-success');
+                }
+                link.children('i').removeClass('icon-off icon-on').addClass(newclass);
+                link.attr('href', data.link);
             }
         });
     });

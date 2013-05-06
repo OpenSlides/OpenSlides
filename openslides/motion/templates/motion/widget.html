@@ -13,18 +13,17 @@
         <a href="{% url 'projctor_preview_slide' motion.sid %}" title="{% trans 'Preview' %}" class="btn btn-mini right">
             <i class="icon-search"></i>
         </a>
-        <a href="{% model_url motion 'view' %}">
-            {{ motion.public_version.title }}
+        <a href="{% model_url motion %}">
+            {% if motion.identifier %}
+                [#{{ motion.identifier }}]
+            {% else %}
+                [---]
+            {% endif %}
+            {{ motion }}
         </a>
-        ({% trans "motion" %}
-        {% if motion.identifier %}
-            {{ motion.identifier }})
-        {% else %}
-            <i>[{% trans "no number" %}]</i>)
-        {% endif %}
     </li>
 {% empty %}
-    <li>{% trans 'No motion available.' %}</li>
+    <li>{% trans 'No motions available.' %}</li>
 {% endfor %}
 </ul>
 

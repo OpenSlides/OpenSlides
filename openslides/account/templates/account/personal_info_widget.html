@@ -15,13 +15,14 @@
     {% trans 'I submitted the following motions:' %}
     {% for motion in submitted_motions %}
         <li>
-            <a href="{% model_url motion %}">{{ motion }}</a>
-            ({% trans 'motion' %}
-            {% if motion.identifier %}
-                {{ motion.identifier }})
-            {% else %}
-                <i>[{% trans 'no number' %}]</i>)
-            {% endif %}
+            <a href="{% model_url motion %}">
+                {% if motion.identifier %}
+                    [#{{ motion.identifier }}]
+                {% else %}
+                    [---]
+                {% endif %}
+                {{ motion }}
+            </a>
         </li>
     {% empty %}
         <li><i>{% trans 'None' %}</i></li>
@@ -34,13 +35,14 @@
     {% trans 'I support the following motions:' %}
     {% for motion in supported_motions %}
         <li>
-            <a href="{% model_url motion %}">{{ motion }}</a>
-            ({% trans 'motion' %}
-            {% if motion.identifier %}
-                {{ motion.identifier }})
-            {% else %}
-                <i>[{% trans 'no number' %}]</i>)
-            {% endif %}
+            <a href="{% model_url motion %}">
+                {% if motion.identifier %}
+                    [#{{ motion.identifier }}]
+                {% else %}
+                    [---]
+                {% endif %}
+                {{ motion }}
+            </a>
         </li>
     {% empty %}
         <li><i>{% trans 'None' %}</i></li>
