@@ -96,7 +96,7 @@
                 <td class="optional">
                     {% for group in user.groups.all %}
                         {% if group.name != 'Registered' %}
-                            {{ group}}
+                            {% trans group.name %}
                             {% if not forloop.last %}<br>{% endif %}
                         {% endif %}
                     {% endfor %}
