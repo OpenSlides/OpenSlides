@@ -139,4 +139,9 @@ urlpatterns = patterns('openslides.motion.views',
         'category_delete',
         name='motion_category_delete',
     ),
+
+    url(r'^csv_import/$',
+        'motion_csv_import',
+        name='motion_csv_import',
+    ),
 )

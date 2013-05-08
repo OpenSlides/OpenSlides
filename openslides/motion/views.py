@@ -38,8 +38,9 @@ from .models import (Motion, MotionSubmitter, MotionSupporter, MotionPoll,
                      MotionVersion, State, WorkflowError, Category)
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
                     MotionDisableVersioningMixin, MotionCategoryMixin,
-                    MotionIdentifierMixin)
+                    MotionIdentifierMixin, MotionImportForm)
 from .pdf import motions_to_pdf, motion_to_pdf, motion_poll_to_pdf
+from .csv_import import import_motions
 
 
 class MotionListView(ListView):
@@ -665,6 +666,29 @@ class CategoryDeleteView(DeleteView):
     success_url_name = 'motion_category_list'
 
 category_delete = CategoryDeleteView.as_view()
+
+
+class MotionCSVImportView(FormView):
+    """
+    Import motions via csv.
+    """
+    permission_required = 'motions.can_manage_participant'
+    template_name = 'motion/motion_form_csv_import.html'
+    form_class = MotionImportForm
+    success_url_name = 'motion_list'
+
+    def form_valid(self, form):
+        # check for valid encoding (will raise UnicodeDecodeError if not)
+        count_success, error_messages = import_motions(self.request.FILES['csvfile'])
+        for message in error_messages:
+            messages.error(self.request, message)
+        if count_success:
+            messages.success(
+                self.request,
+                _('%d motions were successfully imported.') % count_success)
+        return super(MotionCSVImportView, self).form_valid(form)
+
+motion_csv_import = MotionCSVImportView.as_view()
 
 
 def register_tab(request):

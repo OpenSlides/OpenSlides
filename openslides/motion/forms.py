@@ -121,3 +121,8 @@ class MotionIdentifierMixin(forms.ModelForm):
             raise forms.ValidationError(_('The Identifier is not unique.'))
         else:
             return identifier
+
+
+class MotionImportForm(CssClassMixin, forms.Form):
+    csvfile = forms.FileField(widget=forms.FileInput(attrs={'size': '50'}),
+                              label=ugettext_lazy('CSV File'))
