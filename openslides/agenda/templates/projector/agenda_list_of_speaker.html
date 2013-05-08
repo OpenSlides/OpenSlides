@@ -1,8 +1,9 @@
-{% extends "base-projector.html" %}
+{% extends 'base-projector.html' %}
 
 {% load i18n %}
+{% load tags %}
 
-{% block title %}{{ block.super }} - {{ item }}{% endblock %}
+{% block title %}{{ block.super }} – {{ item }}{% endblock %}
 
 {% block content %}
     <h1>{{ title }}</h1>
@@ -10,21 +11,36 @@
 {% endblock %}
 
 {% block scrollcontent %}
-    {% if old_speakers|length > 0 %}
-        <ul class="list_of_speakers last_speakers">
-            {% for speaker in old_speakers %}
-                <li>{{ speaker }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
-    {% if speakers %}
-    <ol class="list_of_speakers">
-        {% for speaker in speakers %}
-            <li>{{ speaker }}</li>
+    <style type="text/css">
+        ul#list_of_speakers {
+            list-style-type: None;
+        }
+        #overlay_list_of_speaker_box li {
+            margin-bottom: 1px;
+        }
+        #overlay_list_of_speaker_box li span.number {
+            display: block;
+            float: left;
+            width: 1.3em;
+        }
+    </style>
+    {% if list_of_speakers %}
+    <ul id="list_of_speakers">
+        {% for speaker_dict in list_of_speakers %}
+        <li>
+            {% if speaker_dict.type == 'actual_speaker' %}
+                <span class="number">→</span><strong>
+            {% else %}
+                <span class="number">{{ speaker_dict.prefix }} </span>
+            {% endif %}
+            <span class="name">{{ speaker_dict.speaker }}</span>
+            {% if speaker_dict.type == 'actual_speaker' %}
+                </strong>
+            {% endif %}
+        </li>
         {% endfor %}
-    </ol>
+    </ul>
     {% else %}
-        <p><i>{% trans 'The list of speakers is empty.' %}</i></p>
+        <i>{% trans 'The list of speakers is empty.' %}</i>
     {% endif %}
 {% endblock %}

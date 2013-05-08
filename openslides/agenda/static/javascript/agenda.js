@@ -24,8 +24,8 @@ function hideClosedSlides(hide) {
     return false;
 }
 
-$('#speaker_list_changed_form').submit(function() {
-    $('#sort_order').val($('#list_of_speakers').sortable("toArray"));
+$('#coming_speakers_changed_form').submit(function() {
+    $('#sort_order').val($('#coming_speakers').sortable("toArray"));
 });
 
 $(function() {
@@ -76,10 +76,10 @@ $(function() {
         //# $('#hide_closed_items').attr('checked', true);
     //# }
 
-    if ($('#list_of_speakers').length > 0) {
-        $('#list_of_speakers').sortable({axis: "y", containment: "parent", update: function(event, ui) {
-            $('#speaker_list_changed_form').show();
+    if ($('#coming_speakers').length > 0) {
+        $('#coming_speakers').sortable({axis: "y", containment: "parent", update: function(event, ui) {
+            $('#coming_speakers_changed_form').show();
         }});
-        $('#list_of_speakers').disableSelection();
+        $('#coming_speakers').disableSelection();
     }
 });
