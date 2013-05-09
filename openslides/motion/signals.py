@@ -98,15 +98,15 @@ def setup_motion_config_page(sender, **kwargs):
             choices=[(workflow.pk, ugettext_lazy(workflow.name)) for workflow in Workflow.objects.all()]))
     motion_identifier = ConfigVariable(
         name='motion_identifier',
-        default_value='manually',
+        default_value='serially_numbered',
         form_field=forms.ChoiceField(
             widget=forms.Select(),
-            required=False,
+            required=True,
             label=ugettext_lazy('Identifier'),
             choices=[
-                ('manually', ugettext_lazy('Set it manually')),
+                ('serially_numbered', ugettext_lazy('Serially numbered')),
                 ('per_category', ugettext_lazy('Numbered per category')),
-                ('serially_numbered', ugettext_lazy('Serially numbered'))]))
+                ('manually', ugettext_lazy('Set it manually'))]))
 
     return ConfigPage(title=ugettext_noop('Motion'),
                       url='motion',

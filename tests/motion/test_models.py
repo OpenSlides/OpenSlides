@@ -36,8 +36,8 @@ class ModelTest(TestCase):
         motion.save()
         self.assertEqual(motion.versions.count(), 2)
 
-        motion.state = State.objects.create(name='automatic_versioning', workflow=self.workflow, versioning=True)
         motion.text = 'new text'
+        motion.new_version
         motion.save()
         self.assertEqual(motion.versions.count(), 3)
 
@@ -58,11 +58,13 @@ class ModelTest(TestCase):
 
     def test_version(self):
         motion = Motion.objects.create(title='v1')
-        motion.state = State.objects.create(name='automatic_versioning', workflow=self.workflow, versioning=True)
+
         motion.title = 'v2'
+        motion.new_version
         motion.save()
         v2_version = motion.version
         motion.title = 'v3'
+        motion.new_version
         motion.save()
         with self.assertRaises(AttributeError):
             self._title
@@ -146,9 +148,6 @@ class ModelTest(TestCase):
         motion.title = 'foo'
         motion.text = 'bar'
         first_version = motion.version
-        my_state = State.objects.create(name='automatic_versioning', workflow=self.workflow,
-                                        versioning=True, leave_old_version_active=True)
-        motion.state = my_state
         motion.save()
 
         motion = Motion.objects.get(pk=motion.pk)
@@ -164,7 +163,7 @@ class ModelTest(TestCase):
 
         motion.set_active_version(first_version)
         motion.version = first_version
-        motion.save(no_new_version=True)
+        motion.save(ignore_version_data=True)
         self.assertEqual(motion.versions.count(), 2)
 
 

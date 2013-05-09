@@ -13,7 +13,7 @@ from django.test.client import Client
 from openslides.config.api import config
 from openslides.utils.test import TestCase
 from openslides.participant.models import User, Group
-from openslides.motion.models import Motion
+from openslides.motion.models import Motion, State
 
 
 class MotionViewTestCase(TestCase):
@@ -120,12 +120,13 @@ class TestMotionCreateView(MotionViewTestCase):
         self.assertContains(response, 'href="/motion/new/"', status_code=200)
 
     def test_identifier_not_unique(self):
-        Motion.objects.create(identifier='foo')
-        response = self.admin_client.post(self.url, {'title': 'foo',
+        Motion.objects.create(title='Another motion 3', identifier='uufag5faoX0thahBi8Fo')
+        config['motion_identifier'] = 'manually'
+        response = self.admin_client.post(self.url, {'title': 'something',
                                                      'text': 'bar',
                                                      'submitter': self.admin,
-                                                     'identifier': 'foo'})
-        self.assertFormError(response, 'form', 'identifier', 'The Identifier is not unique.')
+                                                     'identifier': 'uufag5faoX0thahBi8Fo'})
+        self.assertFormError(response, 'form', 'identifier', 'Motion with this Identifier already exists.')
 
     def test_empty_text_field(self):
         response = self.admin_client.post(self.url, {'title': 'foo',
@@ -161,6 +162,62 @@ class TestMotionUpdateView(MotionViewTestCase):
         self.assertRedirects(response, '/motion/1/')
         motion = Motion.objects.get(pk=1)
         self.assertEqual(motion.title, 'my title')
+
+    def test_versioning(self):
+        self.assertFalse(self.motion1.state.versioning)
+        versioning_state = State.objects.create(name='automatic_versioning', workflow=self.motion1.state.workflow, versioning=True)
+        self.motion1.state = versioning_state
+        self.motion1.save()
+        motion = Motion.objects.get(pk=self.motion1.pk)
+        self.assertTrue(self.motion1.state.versioning)
+
+        self.assertEqual(motion.versions.count(), 1)
+        response = self.admin_client.post(self.url, {'title': 'another new motion_title',
+                                                     'text': 'another motion text',
+                                                     'reason': 'another motion reason',
+                                                     'submitter': self.admin})
+        self.assertRedirects(response, '/motion/1/')
+        motion = Motion.objects.get(pk=self.motion1.pk)
+        self.assertEqual(motion.versions.count(), 2)
+
+    def test_disable_versioning(self):
+        self.assertFalse(self.motion1.state.versioning)
+        versioning_state = State.objects.create(name='automatic_versioning', workflow=self.motion1.state.workflow, versioning=True)
+        self.motion1.state = versioning_state
+        self.motion1.save()
+        motion = Motion.objects.get(pk=self.motion1.pk)
+        self.assertTrue(self.motion1.state.versioning)
+
+        config['motion_allow_disable_versioning'] = True
+        self.assertEqual(motion.versions.count(), 1)
+        response = self.admin_client.post(self.url, {'title': 'another new motion_title',
+                                                     'text': 'another motion text',
+                                                     'reason': 'another motion reason',
+                                                     'submitter': self.admin,
+                                                     'disable_versioning': 'true'})
+        self.assertRedirects(response, '/motion/1/')
+        motion = Motion.objects.get(pk=self.motion1.pk)
+        self.assertEqual(motion.versions.count(), 1)
+
+    def test_no_versioning_without_new_data(self):
+        self.assertFalse(self.motion1.state.versioning)
+        versioning_state = State.objects.create(name='automatic_versioning', workflow=self.motion1.state.workflow, versioning=True)
+        self.motion1.state = versioning_state
+        self.motion1.title = 'Chah4kaaKasiVuishi5x'
+        self.motion1.text = 'eedieFoothae2iethuo3'
+        self.motion1.reason = 'ier2laiy1veeGoo0mau2'
+        self.motion1.save()
+        motion = Motion.objects.get(pk=self.motion1.pk)
+        self.assertTrue(self.motion1.state.versioning)
+
+        self.assertEqual(motion.versions.count(), 1)
+        response = self.admin_client.post(self.url, {'title': 'Chah4kaaKasiVuishi5x',
+                                                     'text': 'eedieFoothae2iethuo3',
+                                                     'reason': 'ier2laiy1veeGoo0mau2',
+                                                     'submitter': self.admin})
+        self.assertRedirects(response, '/motion/1/')
+        motion = Motion.objects.get(pk=self.motion1.pk)
+        self.assertEqual(motion.versions.count(), 1)
 
 
 class TestMotionDeleteView(MotionViewTestCase):
