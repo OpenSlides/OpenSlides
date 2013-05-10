@@ -233,7 +233,11 @@
 
         <!-- Category -->
         <h5>{% trans "Category" %}:</h5>
-        {{ motion.category }}
+        {% if motion.category %}
+            {{ motion.category }}
+        {% else %}
+            <i>{% trans 'No category' %}</i>
+        {% endif %}
 
         <!-- Creation Time -->
         <h5>{% trans "Creation Time" %}:</h5>
