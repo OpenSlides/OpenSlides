@@ -16,7 +16,7 @@
         {% endif %}
         {% if perms.motion.can_manage_motion %}
             <a href="{% url 'motion_category_list' %}" class="btn btn-mini"><i class="icon-th-large"></i> {% trans 'Categories' %}</a>
-            {# <a href="{% url 'motion_import' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import motions' %}"><i class="icon-import"></i> {% trans 'Import' %}</a>#}
+            <a href="{% url 'motion_csv_import' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import motions' %}"><i class="icon-import"></i> {% trans 'Import' %}</a>
         {% endif %}
         <a href="{% url 'motion_list_pdf' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print all motions as PDF' %}"><i class="icon-print"></i> PDF</a>
         </small>

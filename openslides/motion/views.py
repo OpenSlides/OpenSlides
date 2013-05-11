@@ -672,16 +672,31 @@ class MotionCSVImportView(FormView):
     """
     Import motions via csv.
     """
-    permission_required = 'motions.can_manage_participant'
+    permission_required = 'motion.can_manage_motion'
     template_name = 'motion/motion_form_csv_import.html'
     form_class = MotionImportForm
     success_url_name = 'motion_list'
 
+    def get_initial(self, *args, **kwargs):
+        """
+        Sets the request user as initial for the default submitter.
+        """
+        return_value = super(MotionCSVImportView, self).get_initial(*args, **kwargs)
+        return_value.update({'default_submitter': self.request.user.person_id})
+        return return_value
+
     def form_valid(self, form):
-        # check for valid encoding (will raise UnicodeDecodeError if not)
-        count_success, error_messages = import_motions(self.request.FILES['csvfile'])
+        """
+        Processes the import function.
+        """
+        count_success, error_messages, warning_messages = import_motions(
+            self.request.FILES['csvfile'],
+            default_submitter=self.request.user,
+            override=form.cleaned_data['override'])
         for message in error_messages:
             messages.error(self.request, message)
+        for message in warning_messages:
+            messages.warning(self.request, message)
         if count_success:
             messages.success(
                 self.request,

@@ -1,30 +1,30 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% load i18n %}
 
-{% block title %}{{ block.super }} – {% trans "Import motions" %} {% endblock %}
+{% block title %}{{ block.super }} – {% trans 'Import motions' %} {% endblock %}
 
 {% block content %}
     <h1>
         {% trans 'Import motions' %}
         <small class="pull-right">
-        <a href="{% url 'motion_list' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        <a href="{% url 'motion_list' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans 'Back to overview' %}</a>
         </small>
     </h1>
 
-    <p>{% trans 'Select a CSV file to import motions!' %}</p>
+    <p>{% trans 'Select a CSV file to import motions' %}.</p>
 
     <p>{% trans 'Please note' %}:</p>
     <ul>
         <li>
-            {% trans 'Required comma separated values' %}:<br>
-            <code>({% trans 'identifier, title, text, reason, submitter_id' %})</code>
+            {% trans 'Required comma separated values' %}:<br />
+            <code>({% trans 'identifier, title, text, reason, submitter (clean name), category' %})</code>
         </li>
         <li>
-            {% trans 'identifier and reason are optional and may be empty' %}.
+            {% trans 'Identifier, reason, submitter and category are optional and may be empty' %}.
         </li>
         <li>
-            {% trans 'Required CSV file encoding: UTF-8 (Unicode).' %}
+            {% trans 'Required CSV file encoding: UTF-8.' %}
         </li>
         <li>
             <a href="https://github.com/OpenSlides/OpenSlides/wiki/CSV-Import">{% trans 'Use the CSV example file from OpenSlides Wiki.' %}</a>
@@ -32,7 +32,7 @@
     </ul>
 
     <form enctype="multipart/form-data" action="" method="post">{% csrf_token %}
-        {% include "form.html" %}
+        {% include 'form.html' %}
         <p>
         <button class="btn btn-primary" type="submit">
             <span class="icon import">{% trans 'Import' %}</span>
