@@ -19,7 +19,7 @@ from openslides.projector.projector import Widget
 
 def get_widgets(request):
     """
-    Returns the widgets of the account app. It is only a personal_info_widget.
+    Returns the widgets of the account app. It is only the personal_info_widget.
     """
     if not isinstance(request.user, AnonymousUser):
         return [get_personal_info_widget(request)]
@@ -30,12 +30,21 @@ def get_widgets(request):
 def get_personal_info_widget(request):
     """
     Provides a widget for personal info. It shows your submitted and supported
-    motions and where you are supporter or candidate. If one of the modules
-    motion or assignment does not exist, it is not loaded. If both don't
-    exist, the widget disapears.
+    motions, where you are on the list of speakers and where you are supporter
+    or candidate. If one of the modules agenda, motion or assignment does
+    not exist, it is not loaded. If all does not exist, the widget disapears.
     """
     personal_info_context = {}
 
+    try:
+        from openslides.agenda.models import Item
+    except ImportError:
+        pass
+    else:
+        personal_info_context.update({
+            'items': Item.objects.filter(
+                speaker__person=request.user,
+                speaker__begin_time=None)})
     try:
         from openslides.motion.models import Motion
     except ImportError:
@@ -58,7 +67,7 @@ def get_personal_info_widget(request):
     if personal_info_context:
         return Widget(
             name='personal_info',
-            display_name=_('My motions and elections'),
+            display_name=_('My items, motions and elections'),
             template='account/personal_info_widget.html',
             context=personal_info_context,
             permission_required=None,

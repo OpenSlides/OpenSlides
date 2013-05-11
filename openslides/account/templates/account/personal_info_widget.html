@@ -2,6 +2,16 @@
 {% load tags %}
 
 <ul style="line-height: 180%">
+    {% trans 'I am on the list of speakers of the following items:' %}
+    {% for item in items %}
+        <li><a href="{% model_url item %}">{{ item }}</a></li>
+    {% empty %}
+        <li><i>{% trans 'None' %}</i></li>
+    {% endfor %}
+</ul>
+
+<hr />
+<ul style="line-height: 180%">
     {% trans 'I submitted the following motions:' %}
     {% for motion in submitted_motions %}
         <li>
