@@ -18,7 +18,7 @@ Die Tagesordnung enthält bei Neuinstallation noch keine Einträge. Legen Sie zu
 
 Klicken Sie dazu im Menüpunkt „Tagesordnung“ oben rechts auf „Neu“
 
-.. image:: _static/images/tutorial_de_2_01.png
+.. image:: _static/images/Platzhalter.png
  :class: screenshot
 
 und geben Sie den Eintrag wie folgt ein:
@@ -32,26 +32,26 @@ Text:
 Dauer:
   00:15
 
-.. image:: _static/images/tutorial_de_2_02.png
+.. image:: _static/images/Platzhalter.png
  :class: screenshot
 
 Klicken Sie anschließend auf ``Speichern``.
 
 Erweitern Sie nun die Tagesordnung um folgende Einträge: Bericht des Vorstands, Satzungsänderung, Gartenfest, Sonstiges, Wahlen der Vereinsämter.
 
-Die Übersicht über die Einträge (links bei „Alle Einträge“) müsste nun so aussehen:
+Die Übersicht über die Einträge (rechts oben bei „Zurück zur Übersicht“) müsste nun so aussehen:
 
-.. image:: _static/images/tutorial_de_2_03.png
+.. image:: _static/images/Platzhalter.png
  :class: screenshot
 
 Sie können nun nachträglich die Reihenfolge der Einträge verändern und auch Tagesordnungspunkte zu Unterpunkten verschieben. Ziehen Sie zum Beispiel mit der Maus den Punkt „Sonstiges“, um seine Position zu verändern und ihn nach unten zu verschieben. Richten Sie die Tagesordnung durch Verschieben der übrigen Einträge so ein, dass sie wie folgt aussieht:
 
-.. image:: _static/images/tutorial_de_2_04.png
+.. image:: _static/images/Platzhalter.png
  :class: screenshot
 
 Klicken Sie auf ``Ja``, um die geänderte Reihenfolge zu speichern. Solange Sie die veränderte Reihenfolge nicht gespeichert haben, wird die Veränderung nicht in der Datenbank hinterlegt.
 
-*Zu jedem Antrag und zu jedem Wahlamt können Sie über einen Link im Seitenmenü des betreffenden Antrags oder Wahlamts auch einen eigenen Eintrag in der Tagesordnung erstellen, der direkt mit der Antrags- bzw. Wahlfolie verknüpft ist. Dies empfiehlt sich, wenn ein einzelner Antrag oder eine einzelne Wahl an einer bestimmten Stelle der Tagesordnung behandelt werden soll.*
+*Zu jedem Antrag und zu jedem Wahlamt können Sie über einen Link in der oberen Leiste des betreffenden Antrags oder Wahlamts („Mehr Aktionen“) auch einen eigenen Eintrag in der Tagesordnung erstellen, der direkt mit der Antrags- bzw. Wahlfolie verknüpft ist. Dies empfiehlt sich, wenn ein einzelner Antrag oder eine einzelne Wahl an einer bestimmten Stelle der Tagesordnung behandelt werden soll.*
 
 
 Ändern von Einträgen in der Tagesordnung
@@ -59,13 +59,13 @@ Klicken Sie auf ``Ja``, um die geänderte Reihenfolge zu speichern. Solange Sie 
 
 Titel und Inhalt sowie die weiteren Felder der Tagesordnungspunkte (Einträge) können jederzeit, insbesondere während des laufenden Betriebs geändert werden. Solange ein Eintrag keinen Inhalt im Feld „Text“ enthält, wird der Titel auf dem Beamer groß und zentriert dargestellt. Wenn Sie einen zusätzlichen Text eingeben, werden Überschrift und Text linksbündig dargestellt.
 
-Ändern Sie zum Beispiel den Inhalt des Tagesordnungspunktes „Bericht des Vorstandes“, indem Sie in der Zeile dieses Eintrags auf das Bearbeiten-Symbol |document-edit| klicken und zusätzlich zum Titel einen Text zum Tagesordnungspunkt wie folgt eingeben:
+Ändern Sie zum Beispiel den Inhalt des Tagesordnungspunktes „Bericht des Vorstandes“, indem Sie in der Zeile dieses Eintrags auf das Bearbeiten-Symbol |edit| klicken und zusätzlich zum Titel einen Text zum Tagesordnungspunkt wie folgt eingeben:
   Der Vorstand berichtet über seine Arbeit, insbesondere die Entwicklung der Mitgliederzahlen und Finanzen.
 
-.. image:: _static/images/tutorial_de_2_05.png
+.. image:: _static/images/Platzhalter.png
  :class: screenshot
 
-.. |document-edit| image:: _static/images/document-edit.png
+.. |edit| image:: _static/images/PlatzhalterIcon.png
 
 Mehr Informationen zur Verwaltungs der Tagesordnung, insbesondere den Organisationseinträgen und den Rednerlisten finden Sie hier__.
 
@@ -75,15 +75,18 @@ Mehr Informationen zur Verwaltungs der Tagesordnung, insbesondere den Organisati
 Auswahl der Beamerfolien
 ------------------------
 
-Wenn Sie in den Menüpunkt „Dahsboard“ wechseln
+Wenn Sie in den Menüpunkt „Dashboard“ wechseln
 
-.. image:: _static/images/tutorial_de_2_06.png
+.. image:: _static/images/Platzhalter.png
  :class: screenshot
 
-können Sie durch einen Klick auf das jeweilige Projektorsymbol eine bestimmte Folie auswählen. Die jeweils aktive Folie zeigt ein blaues Projektorsymbol. Probieren Sie, verschiedene Tagesordnungspunkte auf dem Beamer anzuzeigen.
+können Sie durch einen Klick auf das jeweilige Projektorsymbol eine bestimmte Folie auswählen. Die jeweils aktive Folie zeigt ein blaues Projektorsymbol |projector-blue|. Probieren Sie, verschiedene Tagesordnungspunkte auf dem Beamer anzuzeigen.
 
-.. image:: _static/images/tutorial_de_2_07.png
+.. image:: _static/images/Platzhalter.png
  :class: screenshot
+
+.. |projector-blue| image:: _static/images/PlatzhalterIcon.png
+
 
 Weiter geht es mit dem dritten Teil des Tutorials: `Teilnehmer/innen verwalten`__
 

@@ -29,6 +29,7 @@ Laden Sie die aktuelle OpenSlides Version für Linux/MacOS von http://openslides
 
 .. _INSTALL.txt: http://files.openslides.org/INSTALL-1.4.txt
 
+
 Konfiguration
 +++++++++++++
 
@@ -86,7 +87,7 @@ Arbeiten mit OpenSlides
 
 Im Webinterface von OpenSlides können Sie über die verschiedenen Menüpunkte alle Inhalte in OpenSlides eingeben und verwalten.
 
-.. image:: _static/images/ErsteSchritte_01.png
+.. image:: _static/images/Platzhalter.png
    :class: screenshot
 
 Im Menüunkt „Dashboard“ steuern Sie, welche Folien auf dem Beamer angezeigt werden. Dazu klicken Sie einfach auf das jeweilige Projektorsymbol. Im Menüpunkt „Tagesordnung“ können Sie die Tagesordnung der Veranstaltung im Vorfeld anlegen, entsprechende Folien vorbereiten und die Rednerliste verwalten. In den Menüpunkten „Anträge“ und „Wahlen“ verwalten Sie die gestellten Anträge und die Wahlämter mit den Kandidaten sowie die dazugehörigen Abstimmungen und Wahlen. Der Menüpunkt „Teilnehmer/innen“ ermöglicht einen Zugriff auf die Personenprofile. Unter dem Punkt „Medien“ können Sie eigene Dateien auf den Server laden und zum Download anbieten. Im Menüpunkt „Konfiguration“ können einige Einstellungen vorgenommen werden.
