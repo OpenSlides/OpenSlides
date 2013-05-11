@@ -135,7 +135,7 @@
     <p>
         {% if is_on_the_list_of_speakers %}
             <a href="{% url 'agenda_speaker_delete' object.id %}" class="btn">{% trans "Remove me from the list" %}</a>
-        {% elif not object.speaker_list_closed and perms.can_be_speaker %}
+        {% elif not object.speaker_list_closed and perms.agenda.can_be_speaker %}
             <a href="{% url 'agenda_speaker_append' object.id %}" class="btn">{% trans "Put me on the list" %}</a>
         {% endif %}
     </p>
