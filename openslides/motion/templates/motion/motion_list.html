@@ -53,6 +53,7 @@
         <tr>
             <th><a href="?sort=number{% if 'number' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "#" %}</a></th>
             <th><a href="?sort=title{% if 'title' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Motion title" %}</a></th>
+            <th>{% trans 'Category' %}</th>
             {% if min_supporters > 0 %}
             <th class="optional"><a href="?sort=supporter{% if 'supporter' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Number of supporters" %}</a></th>
             {% endif %}
@@ -65,6 +66,7 @@
         <tr class="{% if motion.active %}activeline{% endif %}">
             <td>{{ motion.identifier|default:'' }}</td>
             <td><a href="{% model_url motion %}">{{ motion.title }}</a></td>
+            <td>{% if motion.category %}{{ motion.category }}{% else %}<i>{% trans 'No category' %}</i>{% endif %}</td>
         {% if min_supporters > 0 %}
             <td class="optional">{# motion.count_supporters #}</td>
         {% endif %}
