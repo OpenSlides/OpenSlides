@@ -19,6 +19,17 @@ class PersonalInfoWidget(TestCase):
     """
     Tests the content of the personal info widget.
     """
+    def import_agenda(self):
+        """
+        Helper function to make the module agenda optional.
+        """
+        try:
+            from openslides import agenda
+        except ImportError:
+            return False
+        else:
+            return agenda
+
     def import_motion(self):
         """
         Helper function to make the module motion optional.
@@ -49,7 +60,19 @@ class PersonalInfoWidget(TestCase):
 
     def test_widget_appearance(self):
         response = self.client.get('/projector/dashboard/')
-        self.assertContains(response, '<h3>My motions and elections</h3>', status_code=200)
+        self.assertContains(response, '<h3>My items, motions and elections</h3>', status_code=200)
+
+    def test_item_list(self):
+        agenda = self.import_agenda()
+        if agenda:
+            item_1 = agenda.models.Item.objects.create(title='My Item Title iw5ohNgee4eiYahb5Eiv')
+            speaker = agenda.models.Speaker.objects.add(item=item_1, person=self.user)
+            response = self.client.get('/projector/dashboard/')
+            self.assertContains(response, 'I am on the list of speakers of the following items:', status_code=200)
+            self.assertContains(response, 'My Item Title iw5ohNgee4eiYahb5Eiv', status_code=200)
+            speaker.begin_speach()
+            response = self.client.get('/projector/dashboard/')
+            self.assertNotContains(response, 'My Item Title iw5ohNgee4eiYahb5Eiv', status_code=200)
 
     def test_submitter_list(self):
         motion = self.import_motion()
