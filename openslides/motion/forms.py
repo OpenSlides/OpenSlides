@@ -16,7 +16,7 @@ from django.utils.translation import ugettext as _, ugettext_lazy
 from openslides.utils.forms import CssClassMixin
 from openslides.utils.forms import CleanHtmlFormMixin
 from openslides.utils.person import PersonFormField, MultiplePersonFormField
-from .models import Motion, Category
+from .models import Motion, Category, Workflow
 
 
 class BaseMotionForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
@@ -132,6 +132,19 @@ class MotionIdentifierMixin(forms.ModelForm):
     class Meta:
         model = Motion
         fields = ('identifier',)
+
+
+class MotionSetWorkflowMixin(forms.ModelForm):
+    """
+    Mixin to let the user change the workflow of the motion. When he does
+    so, the motion's state is reset.
+    """
+
+    set_workflow = forms.ModelChoiceField(
+        queryset=Workflow.objects.all(),
+        required=False,
+        label=ugettext_lazy('Workflow'),
+        help_text=ugettext_lazy('Set a specific workflow to switch to it. If you do so, the state of the motion will be reset.'))
 
 
 class MotionImportForm(CssClassMixin, forms.Form):

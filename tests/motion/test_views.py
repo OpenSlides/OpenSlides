@@ -219,6 +219,19 @@ class TestMotionUpdateView(MotionViewTestCase):
         motion = Motion.objects.get(pk=self.motion1.pk)
         self.assertEqual(motion.versions.count(), 1)
 
+    def test_set_another_workflow(self):
+        self.assertEqual(self.motion1.state.workflow.pk, 1)
+        response = self.admin_client.post(self.url, {'title': 'oori4KiaghaeSeuzaim2',
+                                                     'text': 'eequei1Tee1aegeNgee0',
+                                                     'submitter': self.admin})
+        self.assertEqual(Motion.objects.get(pk=self.motion1.pk).state.workflow.pk, 1)
+        response = self.admin_client.post(self.url, {'title': 'oori4KiaghaeSeuzaim2',
+                                                     'text': 'eequei1Tee1aegeNgee0',
+                                                     'submitter': self.admin,
+                                                     'set_workflow': 2})
+        self.assertRedirects(response, '/motion/1/')
+        self.assertEqual(Motion.objects.get(pk=self.motion1.pk).state.workflow.pk, 2)
+
 
 class TestMotionDeleteView(MotionViewTestCase):
     def test_get(self):
