@@ -77,7 +77,7 @@ class Item(MPTTModel, SlideMixin):
     """
     Type of the agenda item.
 
-    See Agenda.ITEM_TYPE for more informations.
+    See Item.ITEM_TYPE for more information.
     """
 
     duration = models.CharField(null=True, blank=True, max_length=5,
@@ -191,11 +191,11 @@ class Item(MPTTModel, SlideMixin):
         * normal slide of the item
 
         The method returns only one of them according to the config value
-        'presentation_argument' and the attribut 'related_sid'.
+        'presentation_argument' and the attribute 'related_sid'.
         """
         if config['presentation_argument'] == 'summary':
             data = {'title': self.get_title(),
-                    'items': self.get_children(),
+                    'items': self.get_children().filter(type__exact=Item.AGENDA_ITEM),
                     'template': 'projector/AgendaSummary.html'}
 
         elif config['presentation_argument'] == 'show_list_of_speakers':
