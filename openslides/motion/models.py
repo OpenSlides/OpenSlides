@@ -102,87 +102,61 @@ class Motion(SlideMixin, models.Model):
         return self.get_title()
 
     # TODO: Use transaction
-    def save(self, no_new_version=False, *args, **kwargs):
+    def save(self, ignore_version_data=False, *args, **kwargs):
         """
         Save the motion.
 
         1. Set the state of a new motion to the default state.
-        2. Save the motion object.
-        3. Save the version data.
-        4. Set the active version for the motion.
-
-        A new version will be saved if motion.new_version was called
-        between the creation of this object and the last call of motion.save()
-
-            or
-
-        If the motion has new version data (title, text, reason)
-
-            and
-
-        the config 'motion_create_new_version' is set to
-        'ALWAYS_CREATE_NEW_VERSION'.
-
-        If no_new_version is True, a new version will never be used.
+        2. Ensure that the identifier is not an empty string.
+        3. Save the motion object.
+        4. Save the version data, if ignore_version_data == False.
+        5. Set the active version for the motion, if ignore_version_data == False.
         """
         if not self.state:
             self.reset_state()
+            # TODO: Bad hack here to make Motion.objects.create() work
+            # again. We have to remove the flag to force an INSERT given
+            # by Django's create() method without knowing its advantages
+            # because of our misuse of the save() method in the
+            # set_identifier() method.
+            kwargs.pop('force_insert', None)
 
-        if not self.identifier and self.identifier is not None:
+        if not self.identifier and self.identifier is not None:  # TODO: Why not >if self.identifier is '':<
             self.identifier = None
 
         super(Motion, self).save(*args, **kwargs)
 
-        if no_new_version:
-            return
-
-        # Find out if the version data has changed
-        for attr in ['title', 'text', 'reason']:
-            if not self.versions.exists():
-                new_data = True
-                break
-            if getattr(self, attr) != getattr(self.last_version, attr):
-                new_data = True
-                break
-        else:
-            new_data = False
-
-        # TODO: Check everything here. The decision whether to create a new
-        #       version has to be done in the view. Update docstings too.
-        need_new_version = self.state.versioning
-        if hasattr(self, '_new_version') or (new_data and need_new_version):
-            version = self.new_version
-            del self._new_version
-            version.motion = self  # TODO: Test if this line is really neccessary.
-        elif new_data and not need_new_version:
+        if not ignore_version_data:
+            # Select version object
             version = self.last_version
-        else:
-            # We do not need to save the motion version.
-            return
+            if hasattr(self, '_new_version'):
+                version = self.new_version
+                del self._new_version
+                version.motion = self  # TODO: Test if this line is really neccessary.
 
-        # Save title, text and reason in the version object
-        for attr in ['title', 'text', 'reason']:
-            _attr = '_%s' % attr
-            try:
-                setattr(version, attr, getattr(self, _attr))
-                delattr(self, _attr)
-            except AttributeError:
-                if self.versions.exists():
-                    # If the _attr was not set, use the value from last_version
-                    setattr(version, attr, getattr(self.last_version, attr))
+            # Save title, text and reason in the version object
+            for attr in ['title', 'text', 'reason']:
+                _attr = '_%s' % attr
+                try:
+                    setattr(version, attr, getattr(self, _attr))
+                    delattr(self, _attr)
+                except AttributeError:
+                    if self.versions.exists():
+                        # If the _attr was not set, use the value from last_version
+                        setattr(version, attr, getattr(self.last_version, attr))
 
-        # Set version_number of the new Version (if neccessary) and save it into the DB
-        if version.id is None:
-            # TODO: auto increment the version_number in the Database
-            version_number = self.versions.aggregate(Max('version_number'))['version_number__max'] or 0
-            version.version_number = version_number + 1
-        version.save()
+            # Set version_number of the new Version (if neccessary) and save it into the DB
+            if version.id is None:
+                # TODO: auto increment the version_number in the Database
+                version_number = self.versions.aggregate(Max('version_number'))['version_number__max'] or 0
+                version.version_number = version_number + 1
+            version.save()
 
-        # Set the active version of this motion. This has to be done after the
-        # version is saved to the database
-        if self.active_version is None or not self.state.leave_old_version_active:
-            self.active_version = version
-            self.save()
+            # Set the active version of this motion. This has to be done after the
+            # version is saved to the database
+            if self.active_version is None or not self.state.leave_old_version_active:
+                self.active_version = version
+                self.save(ignore_version_data=True)
 
     def get_absolute_url(self, link='detail'):
         """
@@ -198,12 +172,16 @@ class Motion(SlideMixin, models.Model):
             return reverse('motion_delete', args=[str(self.id)])
 
     def set_identifier(self):
-        if config['motion_identifier'] == 'manually':
+        """
+        Sets the motion identifier automaticly according to the config
+        value, if it is not set yet.
+        """
+        if config['motion_identifier'] == 'manually' or self.identifier:
             # Do not set an identifier.
             return
         elif config['motion_identifier'] == 'per_category':
             motions = Motion.objects.filter(category=self.category)
-        else:
+        else:  # That means: config['motion_identifier'] == 'serially_numbered'
             motions = Motion.objects.all()
 
         number = motions.aggregate(Max('identifier_number'))['identifier_number__max'] or 0
@@ -212,23 +190,24 @@ class Motion(SlideMixin, models.Model):
         else:
             prefix = self.category.prefix + ' '
 
+        # TODO: Do not use the save() method in this method, see note in
+        # the save() method above.
         while True:
             number += 1
             self.identifier = '%s%d' % (prefix, number)
+            self.identifier_number = number
             try:
-                self.save()
+                self.save(ignore_version_data=True)
             except IntegrityError:
                 continue
             else:
-                self.number = number
-                self.save()
                 break
 
     def get_title(self):
         """
         Get the title of the motion.
 
-        The titel is taken from motion.version.
+        The title is taken from motion.version.
         """
         try:
             return self._title
@@ -239,7 +218,7 @@ class Motion(SlideMixin, models.Model):
         """
         Set the titel of the motion.
 
-        The titel will me saved into the version object, wenn motion.save() is
+        The title will be saved into the version object, wenn motion.save() is
         called.
         """
         self._title = title
@@ -449,10 +428,11 @@ class Motion(SlideMixin, models.Model):
         If the motion is new, it chooses the default workflow from config.
         """
         if self.state:
-            self.state = self.state.workflow.first_state
+            new_state = self.state.workflow.first_state
         else:
-            self.state = (Workflow.objects.get(pk=config['motion_workflow']).first_state or
-                          Workflow.objects.get(pk=config['motion_workflow']).state_set.all()[0])
+            new_state = (Workflow.objects.get(pk=config['motion_workflow']).first_state or
+                         Workflow.objects.get(pk=config['motion_workflow']).state_set.all()[0])
+        self.set_state(new_state)
 
     def slide(self):
         """

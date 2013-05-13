@@ -99,8 +99,16 @@ class MotionMixin(object):
         for attr in ['title', 'text', 'reason']:
             setattr(self.object, attr, form.cleaned_data[attr])
 
-        if type(self) != MotionCreateView:
-            if self.object.state.versioning and form.cleaned_data.get('new_version', True):
+        if type(self) == MotionCreateView:
+            self.object.new_version
+        else:
+            for attr in ['title', 'text', 'reason']:
+                if getattr(self.object, attr) != getattr(self.object.last_version, attr):
+                    new_data = True
+                    break
+            else:
+                new_data = False
+            if new_data and self.object.state.versioning and not form.cleaned_data.get('disable_versioning', False):
                 self.object.new_version
 
         try:
@@ -114,7 +122,9 @@ class MotionMixin(object):
             pass
 
     def post_save(self, form):
-        """Save the submitter an the supporter so the motion."""
+        """
+        Save the submitter an the supporter so the motion.
+        """
         super(MotionMixin, self).post_save(form)
         # TODO: only delete and save neccessary submitters and supporter
         if 'submitter' in form.cleaned_data:
@@ -129,7 +139,8 @@ class MotionMixin(object):
                  for person in form.cleaned_data['supporter']])
 
     def get_form_class(self):
-        """Return the FormClass to Create or Update the Motion.
+        """
+        Return the FormClass to Create or Update the Motion.
 
         forms.BaseMotionForm is the base for the Class, and some FormMixins
         will be mixed in dependence of some config values. See motion.forms
@@ -138,7 +149,7 @@ class MotionMixin(object):
         form_classes = []
 
         if (self.request.user.has_perm('motion.can_manage_motion') and
-                config['motion_identifier'] == 'manually'):
+                (config['motion_identifier'] == 'manually' or type(self) == MotionUpdateView)):
             form_classes.append(MotionIdentifierMixin)
 
         form_classes.append(BaseMotionForm)
@@ -247,33 +258,42 @@ class VersionPermitView(GetVersionMixin, SingleObjectMixin, QuestionMixin, Redir
         Activate the version, if the user chooses 'yes'.
         """
         self.object.set_active_version(self.object.version)  # TODO: Write log message
-        self.object.save(no_new_version=True)
+        self.object.save(ignore_version_data=True)
 
 version_permit = VersionPermitView.as_view()
 
 
 class VersionRejectView(GetVersionMixin, SingleObjectMixin, QuestionMixin, RedirectView):
-    """View to reject a version."""
+    """
+    View to reject a version.
+    """
+
     model = Motion
     question_url_name = 'motion_version_detail'
     success_url_name = 'motion_version_detail'
 
     def get(self, *args, **kwargs):
-        """Set self.object to a motion."""
+        """
+        Set self.object to a motion.
+        """
         self.object = self.get_object()
         return super(VersionRejectView, self).get(*args, **kwargs)
 
     def get_url_name_args(self):
-        """Return a list with arguments to create the success- and question_url."""
+        """
+        Return a list with arguments to create the success- and question_url.
+        """
         return [self.object.pk, self.object.version.version_number]
 
     def get_question(self):
         return _('Are you sure you want reject Version %s?') % self.object.version.version_number
 
     def case_yes(self):
-        """Reject the version, if the user chooses 'yes'."""
+        """
+        Reject the version, if the user chooses 'yes'.
+        """
         self.object.reject_version(self.object.version)  # TODO: Write log message
-        self.object.save()
+        self.object.save(ignore_version_data=True)
 
 version_reject = VersionRejectView.as_view()
 
@@ -309,30 +329,6 @@ class VersionDiffView(DetailView):
         return context
 
 version_diff = VersionDiffView.as_view()
-
-
-class SetIdentifierView(SingleObjectMixin, RedirectView):
-    """Set the identifier of the motion.
-
-    See motion.set_identifier for more informations
-    """
-    permission_required = 'motion.can_manage_motion'
-    model = Motion
-    url_name = 'motion_detail'
-
-    def get(self, request, *args, **kwargs):
-        """Set self.object to a motion."""
-        self.object = self.get_object()
-        return super(SetIdentifierView, self).get(request, *args, **kwargs)
-
-    def pre_redirect(self, request, *args, **kwargs):
-        """Set the identifier."""
-        self.object.set_identifier()
-
-    def get_url_name_args(self):
-        return [self.object.id]
-
-set_identifier = SetIdentifierView.as_view()
 
 
 class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
@@ -544,10 +540,10 @@ poll_pdf = PollPDFView.as_view()
 
 
 class MotionSetStateView(SingleObjectMixin, RedirectView):
-    """View to set the state of a motion.
+    """
+    View to set the state of a motion.
 
     If self.reset is False, the new state is taken from url.
-
     If self.reset is True, the default state is taken.
     """
     permission_required = 'motion.can_manage_motion'
@@ -556,7 +552,9 @@ class MotionSetStateView(SingleObjectMixin, RedirectView):
     reset = False
 
     def pre_redirect(self, request, *args, **kwargs):
-        """Save the new state and write a log message."""
+        """
+        Save the new state and write a log message.
+        """
         self.object = self.get_object()
         try:
             if self.reset:
@@ -566,16 +564,12 @@ class MotionSetStateView(SingleObjectMixin, RedirectView):
         except WorkflowError, e:  # TODO: Is a WorkflowError still possible here?
             messages.error(request, e)
         else:
-            self.object.save()
+            self.object.save(ignore_version_data=True)
             # TODO: the state is not translated
             self.object.write_log(ugettext_noop('State changed to %s') %
                                   self.object.state.name, self.request.user)
             messages.success(request, _('Motion status was set to: %s.'
                                         % html_strong(self.object.state)))
-
-    def get_url_name_args(self):
-        """Return the arguments to generate the redirect_url."""
-        return [self.object.pk]
 
 set_state = MotionSetStateView.as_view()
 reset_state = MotionSetStateView.as_view(reset=True)
