@@ -584,8 +584,9 @@ reset_state = MotionSetStateView.as_view(reset=True)
 class CreateAgendaItemView(SingleObjectMixin, RedirectView):
     """View to create and agenda item for a motion."""
     permission_required = 'agenda.can_manage_agenda'
-    url_name = 'item_overview'
     model = Motion
+    url_name = 'item_overview'
+    url_name_args = []
 
     def get(self, request, *args, **kwargs):
         """Set self.object to a motion."""
