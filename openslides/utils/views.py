@@ -103,8 +103,17 @@ class ExtraContextMixin(object):
 
 
 class UrlMixin(object):
+    """
+    Mixin to provide the use of url names in views with success url and
+    apply url.
+
+    The initial value of url_name_args is None, but the default given by
+    the used get_url_name_args method is [], because in the future, the
+    method might return another default value. Compare this with the QuestionMixin.
+    """
     apply_url_name = None
     success_url_name = None
+    url_name_args = None
     success_url = None
     apply_url = None
 
@@ -133,19 +142,33 @@ class UrlMixin(object):
                 return self.object.get_absolute_url()
             except AttributeError:
                 raise ImproperlyConfigured(
-                    "No URL to redirect to.  Either provide a url or define"
-                    " a get_absolute_url method on the Model.")
+                    "No URL to redirect to. Either provide an URL or define "
+                    "a get_absolute_url method of the model.")
 
     def get_url_name_args(self):
+        """
+        Returns the arguments for the url name. Default is an empty list.
+        """
+        if self.url_name_args is not None:
+            return self.url_name_args
         return []
 
 
 class QuestionMixin(object):
+    """
+    Mixin for questions to the requesting user.
+
+    The initial value of url_name_args is None, but the default given by
+    the used get_url_name_args method is [self.object.pk] if it exist, else
+    an empty list. Set url_name_args to an empty list, if you use an url
+    name which does not need any arguments.
+    """
     question = ugettext_lazy('Are you sure?')
     success_message = ugettext_lazy('Thank you for your answer')
     answer_options = [('yes', ugettext_lazy("Yes")), ('no', ugettext_lazy("No"))]
     question_url_name = None
     success_url_name = None
+    url_name_args = None
 
     def get_redirect_url(self, **kwargs):
         if self.request.method == 'GET':
@@ -160,6 +183,12 @@ class QuestionMixin(object):
         return self.get_url_name_args()
 
     def get_url_name_args(self):
+        """
+        Returns the arguments for the url name. Default is an empty list
+        or [self.object.pk] if this exist.
+        """
+        if self.url_name_args is not None:
+            return self.url_name_args
         try:
             return [self.object.pk]
         except AttributeError:
@@ -235,9 +264,18 @@ class AjaxView(PermissionMixin, AjaxMixin, View):
 
 
 class RedirectView(PermissionMixin, AjaxMixin, _RedirectView):
+    """
+    View to redirect to another url.
+
+    The initial value of url_name_args is None, but the default given by
+    the used get_url_name_args method is [self.object.pk] if it exist, else
+    an empty list. Set url_name_args to an empty list, if you use an url
+    name which does not need any arguments.
+    """
     permanent = False
     allow_ajax = False
     url_name = None
+    url_name_args = None
 
     def pre_redirect(self, request, *args, **kwargs):
         pass
@@ -262,6 +300,12 @@ class RedirectView(PermissionMixin, AjaxMixin, _RedirectView):
             return super(RedirectView, self).get_redirect_url(**kwargs)
 
     def get_url_name_args(self):
+        """
+        Returns the arguments for the url name. Default is an empty list
+        or [self.object.pk] if this exist.
+        """
+        if self.url_name_args is not None:
+            return self.url_name_args
         try:
             return [self.object.pk]
         except AttributeError:
