@@ -386,6 +386,9 @@ class Motion(SlideMixin, models.Model):
     def add_submitter(self, person):
         MotionSubmitter.objects.create(motion=self, person=person)
 
+    def clear_submitters(self):
+        MotionSubmitter.objects.filter(motion=self).delete()
+
     def is_supporter(self, person):
         """
         Return True, if person is a supporter of this motion. Else: False.

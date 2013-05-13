@@ -38,8 +38,9 @@ from .models import (Motion, MotionSubmitter, MotionSupporter, MotionPoll,
                      MotionVersion, State, WorkflowError, Category)
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
                     MotionDisableVersioningMixin, MotionCategoryMixin,
-                    MotionIdentifierMixin)
+                    MotionIdentifierMixin, MotionImportForm)
 from .pdf import motions_to_pdf, motion_to_pdf, motion_poll_to_pdf
+from .csv_import import import_motions
 
 
 class MotionListView(ListView):
@@ -665,6 +666,44 @@ class CategoryDeleteView(DeleteView):
     success_url_name = 'motion_category_list'
 
 category_delete = CategoryDeleteView.as_view()
+
+
+class MotionCSVImportView(FormView):
+    """
+    Import motions via csv.
+    """
+    permission_required = 'motion.can_manage_motion'
+    template_name = 'motion/motion_form_csv_import.html'
+    form_class = MotionImportForm
+    success_url_name = 'motion_list'
+
+    def get_initial(self, *args, **kwargs):
+        """
+        Sets the request user as initial for the default submitter.
+        """
+        return_value = super(MotionCSVImportView, self).get_initial(*args, **kwargs)
+        return_value.update({'default_submitter': self.request.user.person_id})
+        return return_value
+
+    def form_valid(self, form):
+        """
+        Processes the import function.
+        """
+        count_success, error_messages, warning_messages = import_motions(
+            self.request.FILES['csvfile'],
+            default_submitter=self.request.user,
+            override=form.cleaned_data['override'])
+        for message in error_messages:
+            messages.error(self.request, message)
+        for message in warning_messages:
+            messages.warning(self.request, message)
+        if count_success:
+            messages.success(
+                self.request,
+                _('%d motions were successfully imported.') % count_success)
+        return super(MotionCSVImportView, self).form_valid(form)
+
+motion_csv_import = MotionCSVImportView.as_view()
 
 
 def register_tab(request):
