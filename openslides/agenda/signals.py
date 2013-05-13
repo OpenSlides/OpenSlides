@@ -84,7 +84,10 @@ def agenda_list_of_speakers(sender, **kwargs):
         """
         slide = get_slide_from_sid(get_active_slide(only_sid=True), element=True)
         if not isinstance(slide, Item):
-            # Only show list of speakers on Agenda-Items
+            # Only show list of speakers overlay on agenda items
+            return None
+        if config['presentation_argument'] == 'show_list_of_speakers':
+            # Do not show list of speakers overlay on the list of speakers slide
             return None
         clear_projector_cache()
         list_of_speakers = slide.get_list_of_speakers(

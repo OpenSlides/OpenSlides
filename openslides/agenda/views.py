@@ -450,13 +450,14 @@ class CurrentListOfSpeakersView(RedirectView):
         """
         Returns the URL to the item_view if:
 
-        * the current slide is an item and
-        * the user has the permission to see the item
+        * the current slide is an item,
+        * the user has the permission to see the item and
+        * the list of speakers of the item is not closed,
 
         in other case, it returns the URL to the dashboard.
 
-        This method also add the request.user to the list of speakers, if he
-        has the right permissions.
+        This method also adds the request.user to the list of speakers, if he
+        has the right permissions and the list is not closed.
         """
         item = self.get_item()
         request = self.request
@@ -464,6 +465,10 @@ class CurrentListOfSpeakersView(RedirectView):
             messages.error(request, _(
                 'There is no list of speakers for the current slide. '
                 'Please choose the agenda item manually from the agenda.'))
+            return reverse('dashboard')
+
+        if item.speaker_list_closed:
+            messages.error(request, _('The list of speakers is closed.'))
             return reverse('dashboard')
 
         if self.request.user.has_perm('agenda.can_be_speaker'):

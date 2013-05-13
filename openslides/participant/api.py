@@ -102,9 +102,9 @@ def import_users(csv_file):
                     user.reset_password()
                     count_success += 1
     except csv.Error:
-        error_messages.appen(_('Import aborted because of severe errors in the input file.'))
+        error_messages.append(_('Import aborted because of severe errors in the input file.'))
     except UnicodeDecodeError:
-        error_messages.appen(_('Import file has wrong character encoding, only UTF-8 is supported!'))
+        error_messages.append(_('Import file has wrong character encoding, only UTF-8 is supported!'))
     return (count_success, error_messages)
 
 

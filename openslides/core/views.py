@@ -19,7 +19,7 @@ from openslides.utils.views import TemplateView
 
 class VersionView(TemplateView):
     """
-    Show version infos.
+    Shows version infos.
     """
     template_name = 'core/version.html'
 
@@ -32,20 +32,35 @@ class VersionView(TemplateView):
         # OpenSlides version. During development the git commit id is added.
         openslides_version_string = get_version()
         if not RELEASE:
-            openslides_version_string += ' Commit: %s' % get_git_commit_id()
+            openslides_version_string += ' – Commit %s' % get_git_commit_id()
         context['versions'] = [('OpenSlides', openslides_version_string)]
 
         # Versions of plugins.
         for plugin in settings.INSTALLED_PLUGINS:
+            # Get plugin
             try:
                 mod = import_module(plugin)
-                plugin_version = get_version(mod.VERSION)
-            except (ImportError, AttributeError, AssertionError):
+            except ImportError:
                 continue
+
+            # Get version.
             try:
-                plugin_name = mod.NAME
+                plugin_version = mod.get_version()
             except AttributeError:
-                plugin_name = mod.__name__.split('.')[0]
+                try:
+                    plugin_version = mod.VERSION
+                except AttributeError:
+                    continue
+
+            # Get name.
+            try:
+                plugin_name = mod.get_name()
+            except AttributeError:
+                try:
+                    plugin_name = mod.NAME
+                except AttributeError:
+                    plugin_name = mod.__name__.split('.')[0]
+
             context['versions'].append((plugin_name, plugin_version))
 
         return context
