@@ -121,3 +121,34 @@ class MotionIdentifierMixin(forms.ModelForm):
             raise forms.ValidationError(_('The Identifier is not unique.'))
         else:
             return identifier
+
+
+class MotionImportForm(CssClassMixin, forms.Form):
+    """
+    Form for motion import via csv file.
+    """
+    csvfile = forms.FileField(
+        widget=forms.FileInput(attrs={'size': '50'}),
+        label=ugettext_lazy('CSV File'),
+        help_text=ugettext_lazy('The file should be encoded in UTF-8.'))
+    """
+    CSV filt with import data.
+    """
+
+    override = forms.BooleanField(
+        required=False,
+        label=ugettext_lazy('Override existing motions with the same identifier'),
+        help_text=ugettext_lazy('If this is active, every motion with the same identifier as in your csv file will be overridden.'))
+    """
+    Flag to decide whether existing motions (according to the identifier)
+    should be overridden.
+    """
+
+    default_submitter = PersonFormField(
+        required=True,
+        label=ugettext_lazy('Default submitter'),
+        help_text=ugettext_lazy('This person is used as submitter for any line of your csv file which does not contain valid submitter data.'))
+    """
+    Person which is used as submitter, if the line of the csv file does
+    not contain valid submitter data.
+    """
