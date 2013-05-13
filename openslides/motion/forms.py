@@ -99,10 +99,27 @@ class MotionDisableVersioningMixin(forms.ModelForm):
     last_version will be used."""
 
 
+# TODO: Add category and identifier to the form as normal fields (the django way),
+# not as 'new' field from 'new' forms.
+
 class MotionCategoryMixin(forms.ModelForm):
-    """Mixin to let the user choose the category for the motion."""
+    """
+    Mixin to let the user choose the category for the motion.
+    """
 
     category = forms.ModelChoiceField(queryset=Category.objects.all(), required=False, label=ugettext_lazy("Category"))
+    """
+    Category of the motion.
+    """
+
+    def __init__(self, *args, **kwargs):
+        """
+        Fill in the category of the motion as default value.
+        """
+        if self.motion is not None:
+            category = self.motion.category
+            self.initial['category'] = category
+        super(MotionCategoryMixin, self).__init__(*args, **kwargs)
 
 
 class MotionIdentifierMixin(forms.ModelForm):
@@ -112,15 +129,9 @@ class MotionIdentifierMixin(forms.ModelForm):
 
     identifier = forms.CharField(required=False, label=ugettext_lazy('Identifier'))
 
-    def clean_identifier(self):
-        """
-        Test, that the identifier is unique
-        """
-        identifier = self.cleaned_data['identifier']
-        if Motion.objects.filter(identifier=identifier).exists():
-            raise forms.ValidationError(_('The Identifier is not unique.'))
-        else:
-            return identifier
+    class Meta:
+        model = Motion
+        fields = ('identifier',)
 
 
 class MotionImportForm(CssClassMixin, forms.Form):
