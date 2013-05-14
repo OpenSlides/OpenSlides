@@ -145,9 +145,11 @@
 
     <!-- Log -->
     {% if perms.motion.can_manage_motion %}
+        <div class="btn-group" data-toggle="buttons-checkbox">
         <button type="button" class="btn" data-toggle="collapse" data-target="#log">
             {% trans "Show log" %}
         </button>
+        </div>
         <div id="log" class="collapse out">
             <ul class="unstyled">
                 {% for message in motion.log_messages.all %}
@@ -188,10 +190,6 @@
             <span class="label label-info">{{ motion.state }}</span>
             <br>
         {% endif %}
-        {% for note in motion.notes %}
-            {{ note }}
-            {% if not forloop.last %}<br>{% endif %}
-        {% endfor %}
 
         <!-- Vote results -->
         <h5>{% trans "Vote results" %}:</h5>

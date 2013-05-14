@@ -202,6 +202,7 @@ class Item(MPTTModel, SlideMixin):
             list_of_speakers = self.get_list_of_speakers(
                 old_speakers_count=config['agenda_show_last_speakers'])
             data = {'title': self.get_title(),
+                    'item': self,
                     'template': 'projector/agenda_list_of_speaker.html',
                     'list_of_speakers': list_of_speakers}
         elif self.related_sid:

@@ -60,7 +60,7 @@ urlpatterns = patterns(
         name='print_agenda',
     ),
 
-    # Speaker List
+    # List of speakers
     url(r'^(?P<pk>\d+)/speaker/$',
         SpeakerAppendView.as_view(),
         name='agenda_speaker_append',
@@ -101,8 +101,14 @@ urlpatterns = patterns(
         name='agenda_speaker_change_order',
     ),
 
+    url(r'^list_of_speakers/add/$',
+        CurrentListOfSpeakersView.as_view(set_speaker=True),
+        name='agenda_add_to_current_list_of_speakers',
+    ),
+
     url(r'^list_of_speakers/$',
         CurrentListOfSpeakersView.as_view(),
         name='agenda_current_list_of_speakers',
     ),
+
 )

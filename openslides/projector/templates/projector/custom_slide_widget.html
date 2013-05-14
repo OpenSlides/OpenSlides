@@ -9,7 +9,7 @@
         <a href="{% url 'projctor_preview_welcomepage' %}" title="{% trans 'Preview' %}" class="btn btn-mini right">
             <i class="icon-search"></i>
         </a>
-        {% trans 'Welcome Page' %}
+        {% get_config 'welcome_title' %}
     </li>
 </ul>
 <hr>

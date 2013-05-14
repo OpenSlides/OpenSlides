@@ -20,8 +20,8 @@
             <a href="{% url 'projector_select_widgets' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Manage widgets' %}"><i class="icon-th-large"></i> {% trans 'Widgets' %}</a>
         </small>
     </h1>
-
-    <div class="column" id="col1">
+    <div class="row-fluid">
+    <div class="span6 column" id="col1">
         {% for name, widget in widgets.items %}
             {% if widget.default_column == 1 %}
                 <div class="widget" id="widget_{{ widget.get_name }}">
@@ -37,7 +37,7 @@
         {% endfor %}
     </div> <!-- end column-->
 
-    <div class="column" id="col2">
+    <div class="span6 column" id="col2">
         {% for name, widget in widgets.items %}
             {% if widget.default_column == 2 %}
                 <div class="widget" id="widget_{{ widget.get_name }}">
@@ -51,4 +51,5 @@
             {% endif %}
         {% endfor %}
     </div> <!-- end column -->
+    </div>
 {% endblock %}

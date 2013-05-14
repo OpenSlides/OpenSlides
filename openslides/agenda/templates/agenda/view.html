@@ -29,7 +29,7 @@
                 <span class="caret"></span>
             </a>
             <ul class="dropdown-menu pull-right">
-                <li><a href="{% url 'item_edit' item.id %}"><i class="icon-edit"></i> {% trans 'Edit item' %}</a></li>
+                <li><a href="{% url 'item_edit' item.id %}"><i class="icon-pencil"></i> {% trans 'Edit item' %}</a></li>
                 <li><a href="{% url 'item_delete' item.id %}"><i class="icon-remove"></i> {% trans 'Delete item' %}</a></li>
             </ul>
         {% endif %}
@@ -67,7 +67,7 @@
     <a href="{% url 'projector_activate_slide' item.sid 'show_list_of_speakers' %}"
         class="activate_link btn btn-mini {% if item.active and show_list %}btn-primary{% endif %}"
         rel="tooltip" data-original-title="{% trans 'Show list of speakers' %}">
-        <i class="icon icon-facetime-video {% if item.active and show_list %}icon-white{% endif %}"></i>
+        <i class="icon icon-bell {% if item.active and show_list %}icon-white{% endif %}"></i>
         {% trans 'Show list' %}
     </a>
 {% endif %}
@@ -96,7 +96,7 @@
                     </button>
                 </div>
             {% elif speaker_dict.type == 'actual_speaker' %}
-                <b>{% trans 'Actual speaker' %}:</b>
+                <b>{% trans 'Current speaker' %}:</b>
             {% else %}
                 <b>{% trans "Next speakers" %}:</b>
             {% endif %}
@@ -113,14 +113,14 @@
                 <span {% if perms.agenda.can_manage_agenda %}class="ui-icon ui-icon-arrowthick-2-n-s"{% endif %}></span>
                 {{ speaker_dict.prefix }}.
             {% else %}
-                [{{ speaker_dict.speaker.begin_time }}{% if speaker_dict.type == 'old_speaker' %} – {{ speaker_dict.speaker.end_time }}{% endif %}]
+                <small class="grey">[{{ speaker_dict.speaker.begin_time }}{% if speaker_dict.type == 'old_speaker' %} – {{ speaker_dict.speaker.end_time }}{% endif %}]</small>
             {% endif %}
             <a href="{% model_url speaker_dict.speaker %}">{{ speaker_dict.speaker }}</a>
             {% if perms.agenda.can_manage_agenda %}
                 {% if speaker_dict.type == 'actual_speaker' %}
-                    <a href="{% url 'agenda_speaker_end_speach' item.pk %}" class="btn btn-mini"><i class="icon-bell"></i> {% trans 'End speach' %}</a>
+                    <a href="{% url 'agenda_speaker_end_speach' item.pk %}" class="btn btn-mini btn-danger"><i class="icon-bell icon-white"></i> {% trans 'End speach' %}</a>
                 {% elif speaker_dict.type == 'coming_speaker' %}
-                    <a href="{% url 'agenda_speaker_speak' item.pk speaker_dict.speaker.person.person_id %}" class="btn btn-mini"><i class="icon-bell"></i> {% trans "Next speaker" %}</a>
+                    <a href="{% url 'agenda_speaker_speak' item.pk speaker_dict.speaker.person.person_id %}" class="btn btn-mini"><i class="icon-bell"></i> {% trans "Begin speach" %}</a>
                 {% endif %}
                 <a href="{% model_url speaker_dict.speaker 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
                     <i class="icon-remove"></i>

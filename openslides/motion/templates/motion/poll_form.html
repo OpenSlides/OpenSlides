@@ -31,7 +31,7 @@
 </p>
 <form action="" method="post" class="small-form">{% csrf_token %}
     {{ pre_form }}
-    <span id="poll_id" style="display:none">{{ object.pk }}</span>
+    <span id="poll_id" style="display:none">{{ poll.pk }}</span>
     <table class="table table-striped table-bordered" style="width: auto;">
         <tr>
             <th>{% trans "Option" %}</th>

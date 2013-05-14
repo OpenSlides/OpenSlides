@@ -19,7 +19,7 @@
 {% for item in items %}
     <li class="{% if item.active %}activeline{% endif %}">
         <a href="{% url 'projector_activate_slide' item.sid  %}"
-           class="activate_link btn {% if item.active and not summary and not speakers  %}btn-primary{% endif %} btn-mini"
+           class="activate_link btn {% if item.active and not summary and not speakers %}btn-primary{% endif %} btn-mini"
            rel="tooltip" data-original-title="{% trans 'Show' %}">
             <i class="icon-facetime-video {% if item.active and not summary and not speakers %}icon-white{% endif %}"></i>
         </a>&nbsp;
@@ -51,4 +51,3 @@
     <li>{% trans 'No items available.' %}</li>
 {% endfor %}
 </ul>
-

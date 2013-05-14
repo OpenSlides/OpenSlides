@@ -146,14 +146,7 @@ body{
     color: #9FA9B7;
     list-style-type: none;
 }
-.list_of_speakers li {
-    font-size: 130%;
-    line-height: 160%;
-}
-.last_speakers li {
-    color: #9FA9B7;
-    list-style: none;
-}
+
 
 /* Table */
 table {

@@ -93,7 +93,10 @@ def agenda_list_of_speakers(sender, **kwargs):
         list_of_speakers = slide.get_list_of_speakers(
             old_speakers_count=config['agenda_show_last_speakers'],
             coming_speakers_count=5)
-        context = {'list_of_speakers': list_of_speakers}
+        context = {
+            'list_of_speakers': list_of_speakers,
+            'closed': slide.speaker_list_closed,
+        }
         return render_to_string('agenda/overlay_speaker_projector.html', context)
 
     return Overlay(name, get_widget_html, get_projector_html)

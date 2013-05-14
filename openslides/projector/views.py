@@ -215,10 +215,10 @@ class ProjectorEdit(RedirectView):
         elif direction == 'smaller':
             config['bigger'] = int(config['bigger']) - 20
         elif direction == 'down':
-            config['up'] = int(config['up']) - 10
+            config['up'] = int(config['up']) - 5
         elif direction == 'up':
             if config['up'] < 0:
-                config['up'] = int(config['up']) + 10
+                config['up'] = int(config['up']) + 5
         elif direction == 'clean':
             config['up'] = 0  # TODO: Use default value from the signal instead of fix value here
             config['bigger'] = 100  # TODO: Use default value from the signal instead of fix value here
