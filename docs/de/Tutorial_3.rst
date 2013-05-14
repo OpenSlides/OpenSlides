@@ -13,8 +13,8 @@ Sie können die Teilnehmer und Teilnehmerinnen einzeln eintragen oder wie hier__
 
 Wechseln Sie zum Menüpunkt „Teilnehmer/innen“. Klicken Sie oben rechts auf „Neu“
 
-.. image:: _static/images/Platzhalter.png
- :class: screenshot
+.. image:: ../_images/Platzhalter.png
+   :class: screenshot
 
 und geben Sie einen neuen Teilnehmer wie folgt ein:
 
@@ -31,17 +31,17 @@ Geschlecht:
   männlich
 
 Gruppen:
-  Registrierter
+  Delegierter
 
-.. image:: _static/images/Platzhalter.png
- :class: screenshot
+.. image:: ../_images/Platzhalter.png
+   :class: screenshot
 
 Wiederholen Sie diese Schritte und geben Sie folgende weitere Teilnehmer und Teilnehmerinnen ein: Peter Müller, Franziska Meyer, Luise Schmidt und Prof. Dr. Hans Schulze.
 
 Wenn Sie anschließend links auf den Menüpunkt „Teilnehmer/innen“ klicken, sehen Sie die folgende Übersicht:
 
-.. image:: _static/images/Platzhalter.png
- :class: screenshot
+.. image:: ../_images/Platzhalter.png
+   :class: screenshot
 
 
 Bearbeiten eines Teilnehmers
@@ -49,10 +49,8 @@ Bearbeiten eines Teilnehmers
 
 Sie können die Angaben zu einem Teilnehmer jederzeit bearbeiten. Klicken Sie zum Beispiel beim Teilnehmer „Max Mustermann“ unter der Rubrik „Aktionen“ auf das Bearbeiten-Symbol |edit| und weisen Sie der Person die Gruppen „Registrierter“, „Delegierter“ und „Mitarbeiter“ zu. Um mehrere Einträge auszuwählen, halten Sie beim Anklicken die Taste ``Strg`` gedrückt.
 
-.. image:: _static/images/Platzhalter.png
- :class: screenshot
-
-.. |edit| image:: _static/images/PlatzhalterIcon.png
+.. image:: ../_images/Platzhalter.png
+   :class: screenshot
 
 
 Passworts eines Teilnehmers
@@ -64,10 +62,10 @@ Bitten Sie jeden, dem Sie sein Erst-Passwort aushändigen, dieses nach dem erste
 
 Um als Administrator das Passwort von zum Beispiel Max Mustermann neu zu setzen, klicken Sie erneut auf das Bearbeiten-Symbol |edit| und tragen Sie unten unter „Vorgegebenes Passwort“ ein neues, selbstgewähltes Passwort ein.  Für dieses Tutorial sei als Passwort ``geheim`` gewählt. Anschließend klicken Sie auf ``Übernehmen``. In einem zweiten Schritt müssen Sie auf den Link „Auf Erst-Passwort zurücksetzen“ klicken, um das im System gespeicherte Passwort mit Ihrem neu eingegebenen zu ersetzen. Bestätigen Sie den oben auf der Seite erscheinenden Dialog mit ``Ja``.
 
-.. image:: _static/images/Platzhalter.png
- :class: screenshot
+.. image:: ../_images/Platzhalter.png
+   :class: screenshot
 
-.. |edit| image:: _static/images/PlatzhalterIcon.png
+.. |edit| image:: ../_images/PlatzhalterIcon.png
 
 
 Weiter geht es mit dem vierten Teil des Tutorials: `Anträge verwalten und behandeln`__

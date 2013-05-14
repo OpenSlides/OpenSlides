@@ -9,7 +9,7 @@ Installation
 
 OpenSlides muss nur auf einem Computer installiert werden. Dieser fungiert im Netzwerk als Server. Im Präsentationsmodus Single gibt es kein Netzwerk. OpenSlides muss dann auf dem einen verwendeten Computer installiert werden.
 
-Die aktuelle Version von OpenSlides ist Version 1.4.
+Die aktuelle Version von OpenSlides, für die dieses Handbuch gültig ist, ist Version |version|.
 
 
 Verwendung der Windows-Version (Portable Version mit openslides.exe)
@@ -17,23 +17,21 @@ Verwendung der Windows-Version (Portable Version mit openslides.exe)
 
 Laden Sie die aktuelle OpenSlides Version für Windows von
 http://openslides.org herunter.  Extrahieren Sie das zip-Archiv
-(z. B. ``openslides-1.4-portable.zip``) in einen beliebigen Ordner.
+(z. B. ``openslides-N.N-portable.zip``) in einen beliebigen Ordner.
 OpenSlides muss nun nicht weiter installiert werden. Alle notwendigen
 Programmelemente sind in dem Ordner enthalten.
 
 
-Verwendung der Linux/MacOS-Version oder des Quellcodes aus dem OpenSlides-Repository
-------------------------------------------------------------------------------------
+Verwendung der Linux/MacOS-Version
+----------------------------------
 
-Laden Sie die aktuelle OpenSlides Version für Linux/MacOS von http://openslides.org oder über den Python Package Index (PyPI) (``$ pip install openslides``) herunter. Die Installationsanleitung für diese Version finden Sie in der beiliegenden INSTALL.txt_. Folgen Sie den Anweisungen der Anleitung.
-
-.. _INSTALL.txt: http://files.openslides.org/INSTALL-1.4.txt
+Laden Sie die aktuelle OpenSlides Version für Linux/MacOS von http://openslides.org oder über den Python Package Index (PyPI) (``$ pip install openslides``) herunter. Die Installationsanleitung für diese Version finden Sie in der beiliegenden INSTALL.txt oder in der passenden Version unter http://files.openslides.org/. Folgen Sie den Anweisungen der Anleitung.
 
 
 Konfiguration
 +++++++++++++
 
-Nach der Installation ist OpenSlides bereits vorkonfiguriert. Die beim ersten Start erzeugte (leere) Datenbank enthält einige Voreinstellungen. Die Konfiguration kann im laufenden Programm unter dem Tab „Konfiguration“ vorgenommen werden. Weitere Einstellungsmöglichkeiten für erfahrene Benutzer sind in der Datei ``settings.py`` möglich. Diese Datei liegt nicht im extrahierten OpenSlides Verzeichnis, sondern in einem Benutzerverzeichnis, das abhängig von Ihrem Betriebssystem ist. Unter Windows ist es standardmäßig ``$HOME\AppData\Local\openslides``, unter Linux/MacOS ist es standardmäßig ``~/.config/openslides``.
+Nach der Installation ist OpenSlides bereits vorkonfiguriert. Die beim ersten Start erzeugte (leere) Datenbank enthält einige Voreinstellungen. Die Konfiguration kann im laufenden Programm unter dem Tab „Konfiguration“ vorgenommen werden. Weitere Einstellungsmöglichkeiten für erfahrene Benutzer sind in der Datei ``settings.py`` möglich. Diese Datei liegt nicht im extrahierten OpenSlides Verzeichnis, sondern in einem Benutzerverzeichnis, das abhängig von Ihrem Betriebssystem ist. Unter Windows (außer bei der Portable Version) ist es standardmäßig ``$HOME\AppData\Local\openslides``, unter Linux/MacOS ist es standardmäßig ``~/.config/openslides``.
 
 
 Start des Servers und Öffnen des Browsers
@@ -47,12 +45,12 @@ Wenn Sie die Windows-Version (Portable Version mit openslides.exe) verwenden, br
 OpenSlides kann jederzeit im schwarzen Fenster der Kommandozeile mit der Tastenkombination ``Strg`` + ``Pause`` beendet werden. Alle eingegebenen Daten bleiben in der Datenbank gespeichert.
 
 
-Verwendung der Linux/MacOS-Version oder des Quellcodes aus dem OpenSlides-Repository
-------------------------------------------------------------------------------------
+Verwendung der Linux/MacOS-Version
+----------------------------------
 
-Starten Sie den Server, indem Sie in der Kommandozeile in den Ordner wechseln, der die Datei ``start.py`` enthält, und eingeben::
+Starten Sie den Server, indem Sie in der Kommandozeile eingeben::
 
-  $ python start.py
+  $ openslides
 
 Wenn Sie eine virtuellen Arbeitsumgebung (virtualenv) verwenden, müssen Sie diese zuvor aktivieren::
 
@@ -64,7 +62,7 @@ OpenSlides kann jederzeit im Fenster der Kommandozeile mit der Tastenkombination
 
 Weitere Startoptionen können Sie mit folgender Eingabe sehen::
 
-  $ python start.py --help
+  $ openslides --help
 
 
 Öffnen des Browsers
@@ -80,14 +78,14 @@ Erster Login
 
 Der erste Login als Administrator ist mit dem Benutzernamen ``admin`` und dem Passwort ``admin`` möglich. Sie sollten das Passwort nach dem ersten Start ändern__, um Unbefugten keinen Zugriff auf Ihre Daten zu gewähren.
 
-.. __: An_Abmelden.html#
+.. __: LoginLogout.html#
 
 Arbeiten mit OpenSlides
 +++++++++++++++++++++++
 
 Im Webinterface von OpenSlides können Sie über die verschiedenen Menüpunkte alle Inhalte in OpenSlides eingeben und verwalten.
 
-.. image:: _static/images/Platzhalter.png
+.. image:: ../_images/Platzhalter.png
    :class: screenshot
 
 Im Menüunkt „Dashboard“ steuern Sie, welche Folien auf dem Beamer angezeigt werden. Dazu klicken Sie einfach auf das jeweilige Projektorsymbol. Im Menüpunkt „Tagesordnung“ können Sie die Tagesordnung der Veranstaltung im Vorfeld anlegen, entsprechende Folien vorbereiten und die Rednerliste verwalten. In den Menüpunkten „Anträge“ und „Wahlen“ verwalten Sie die gestellten Anträge und die Wahlämter mit den Kandidaten sowie die dazugehörigen Abstimmungen und Wahlen. Der Menüpunkt „Teilnehmer/innen“ ermöglicht einen Zugriff auf die Personenprofile. Unter dem Punkt „Medien“ können Sie eigene Dateien auf den Server laden und zum Download anbieten. Im Menüpunkt „Konfiguration“ können einige Einstellungen vorgenommen werden.

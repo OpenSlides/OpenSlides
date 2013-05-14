@@ -22,4 +22,4 @@ Benutzer mit den entsprechenden Rechten wie Mitarbeiter können alle Benutzer ü
 
 Klicken Sie beim jeweiligen Teilnehmer auf das Bearbeiten-Symbol |edit| und tragen Sie unter „Erst-Passwort“ ein neues, selbstgewähltes Passwort ein. Anschließend klicken Sie auf ``Übernehmen``. In einem zweiten Schritt müssen Sie auf den Link „Auf Erst-Passwort zurücksetzen“ klicken, um das im System gespeicherte Passwort mit Ihrem neu eingegebenen zu ersetzen. Bestätigen Sie den oben auf der Seite erscheinenden Dialog mit ``Ja``.
 
-.. |edit| image:: _static/images/PlatzhalterIcon.png
+.. |edit| image:: ../_images/PlatzhalterIcon.png

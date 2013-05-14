@@ -8,10 +8,10 @@ Dieses Handbuch ist noch nicht fertiggestellt. Wenn Sie Interesse haben, uns zu 
 .. toctree::
  :maxdepth: 2
 
- Netzwerktechnik_fuer_Dummies
+ Network
 
- Datenschutz
+ Privacy
 
- Aussehen_aendern
+ ChangeLook
 
  Weblinks
