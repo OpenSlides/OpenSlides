@@ -8,5 +8,5 @@ Am Ende der Versammlung können Sie sich für das Protokoll einige Anhänge dire
 
 Alle weiteren Funktionen von OpenSlides finden Sie in der im Aufbau befindlichen Dokumentation hier__. Wie Sie weitere Anpassungen vornehmen erfahren Sie hier__. Viel Spaß weiterhin mit OpenSlides.
 
-.. __: EinzelneFunktionen.html
-.. __: Anpassungen.html
+.. __: FeaturesInDetail.html
+.. __: Customizing.html

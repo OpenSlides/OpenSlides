@@ -17,8 +17,8 @@ Anschließend sollten Sie sofort das Administrator-Passwort ändern. Geben Sie i
 .. image:: _static/images/Platzhalter.png
  :class: screenshot
 
-.. __: ErsteSchritte.html#installation
-.. __: ErsteSchritte.html#start-des-servers-und-offnen-des-browsers
+.. __: FirstSteps.html#installation
+.. __: FirstSteps.html#start-des-servers-und-offnen-des-browsers
 
 
 Konfiguration des Systems

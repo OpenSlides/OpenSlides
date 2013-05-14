@@ -69,7 +69,7 @@ Titel und Inhalt sowie die weiteren Felder der Tagesordnungspunkte (Einträge) k
 
 Mehr Informationen zur Verwaltungs der Tagesordnung, insbesondere den Organisationseinträgen und den Rednerlisten finden Sie hier__.
 
-.. __: Tagesordnung.html
+.. __: Agenda.html
 
 
 Auswahl der Beamerfolien

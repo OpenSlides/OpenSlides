@@ -9,7 +9,7 @@ Installation
 
 OpenSlides muss nur auf einem Computer installiert werden. Dieser fungiert im Netzwerk als Server. Im Präsentationsmodus Single gibt es kein Netzwerk. OpenSlides muss dann auf dem einen verwendeten Computer installiert werden.
 
-Die aktuelle Version von OpenSlides ist Version 1.4.
+Die aktuelle Version von OpenSlides, für die dieses Handbuch gültig ist, ist Version |version|.
 
 
 Verwendung der Windows-Version (Portable Version mit openslides.exe)
@@ -17,7 +17,7 @@ Verwendung der Windows-Version (Portable Version mit openslides.exe)
 
 Laden Sie die aktuelle OpenSlides Version für Windows von
 http://openslides.org herunter.  Extrahieren Sie das zip-Archiv
-(z. B. ``openslides-1.4-portable.zip``) in einen beliebigen Ordner.
+(z. B. ``openslides-N.N-portable.zip``) in einen beliebigen Ordner.
 OpenSlides muss nun nicht weiter installiert werden. Alle notwendigen
 Programmelemente sind in dem Ordner enthalten.
 
@@ -25,9 +25,7 @@ Programmelemente sind in dem Ordner enthalten.
 Verwendung der Linux/MacOS-Version oder des Quellcodes aus dem OpenSlides-Repository
 ------------------------------------------------------------------------------------
 
-Laden Sie die aktuelle OpenSlides Version für Linux/MacOS von http://openslides.org oder über den Python Package Index (PyPI) (``$ pip install openslides``) herunter. Die Installationsanleitung für diese Version finden Sie in der beiliegenden INSTALL.txt_. Folgen Sie den Anweisungen der Anleitung.
-
-.. _INSTALL.txt: http://files.openslides.org/INSTALL-1.4.txt
+Laden Sie die aktuelle OpenSlides Version für Linux/MacOS von http://openslides.org oder über den Python Package Index (PyPI) (``$ pip install openslides``) herunter. Die Installationsanleitung für diese Version finden Sie in der beiliegenden INSTALL.txt oder in der passenden Version unter http://files.openslides.org/. Folgen Sie den Anweisungen der Anleitung.
 
 
 Konfiguration
@@ -80,7 +78,7 @@ Erster Login
 
 Der erste Login als Administrator ist mit dem Benutzernamen ``admin`` und dem Passwort ``admin`` möglich. Sie sollten das Passwort nach dem ersten Start ändern__, um Unbefugten keinen Zugriff auf Ihre Daten zu gewähren.
 
-.. __: An_Abmelden.html#
+.. __: LoginLogout.html#
 
 Arbeiten mit OpenSlides
 +++++++++++++++++++++++

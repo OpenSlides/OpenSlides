@@ -6,22 +6,22 @@ Im Folgenden werden die einzelnen Funktionen von OpenSlides erläutert. Die Funk
 .. toctree::
  :maxdepth: 2
 
- An_Abmelden
+ LoginLogout
 
- Konfiguration
+ Configuration
 
- Projektorsteuerung
+ Projector
 
- Benutzerdefinierte_Folien
+ CustomSlides
 
- Countdown_Messages
+ CountdownMessages
 
- Tagesordnung
+ Agenda
 
- Teilnehmer
+ Participant
 
- Antraege
+ Motion
 
- Wahlen
+ Assignment
 
- Medien
+ Mediafile

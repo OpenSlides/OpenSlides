@@ -60,7 +60,7 @@ Die Antragsseite sieht nun wie folgt aus:
 
 Auf die gleiche Weise können Sie vor und während der Veranstaltung alle gestellten Anträge eingeben. Mehr Informationen zur Antragsverwaltung finden Sie hier__.
 
-.. __: Antraege.html
+.. __: Motion.html
 
 
 Behandlung eines Antrags während der Veranstaltung

@@ -3,24 +3,24 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-OpenSlides 1.4 Handbuch
-=======================
+OpenSlides |version| Handbuch
+=============================
 
 Inhalt:
 
 .. toctree::
  :maxdepth: 2
 
- Einfuehrung
+ Introduction
 
- ErsteSchritte
+ FirstSteps
 
  Tutorial
 
- EinzelneFunktionen
+ FeaturesInDetail
 
- Anpassungen
+ Customizing
 
- Sonstiges
+ Miscellaneous
 
- Impressum
+ About
