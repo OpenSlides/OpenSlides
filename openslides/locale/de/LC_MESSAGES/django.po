@@ -217,7 +217,7 @@ msgid ""
 "There is no list of speakers for the current slide. Please choose the agenda "
 "item manually from the agenda."
 msgstr ""
-"Es existiert keine Rednerliste für die aktuelle Folie. Bitte wähle den "
+"Es existiert keine Rednerliste für die aktuelle Folie. Bitte wählen Sie den "
 "Tagesordnungseintrag manuell von der Tagesordnung."
 
 #: agenda/views.py:451

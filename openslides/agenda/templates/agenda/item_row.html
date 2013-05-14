@@ -6,8 +6,15 @@
     <div class="manage">
         <span style="width: 1px; white-space: nowrap;">
         {% if perms.projector.can_manage_projector %}
-            <a href="{% url 'projector_activate_slide' node.sid  %}" class="activate_link btn {% if node.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
-                <i class="icon-facetime-video {% if node.active %}icon-white{% endif %}"></i>
+            <a href="{% url 'projector_activate_slide' node.sid  %}"
+                class="activate_link btn {% if node.active and not show_list %}btn-primary{% endif %} btn-mini"
+                rel="tooltip" data-original-title="{% trans 'Show agenda item' %}">
+                <i class="icon-facetime-video {% if node.active and not show_list %}icon-white{% endif %}"></i>
+            </a>
+            <a href="{% url 'projector_activate_slide' node.sid 'show_list_of_speakers' %}"
+                class="activate_link btn btn-mini {% if node.active and show_list %}btn-primary{% endif %}"
+                rel="tooltip" data-original-title="{% trans 'Show list of speakers' %}">
+                <i class="icon icon-bell {% if node.active and show_list %}icon-white{% endif %}"></i>
             </a>
         {% endif %}
         {% if perms.agenda.can_manage_agenda %}

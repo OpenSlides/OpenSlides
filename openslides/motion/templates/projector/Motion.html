@@ -8,52 +8,45 @@
 {% block content %}
     <div id="sidebar">
     <div class="box">
+        <!-- Status -->
         <p><b>{% trans "Status" %}:</b><br>
-        {% if motion.status != "pub" %}
-            {% if motion.status == "acc" %}
-            <img src="{% static 'img/voting-yes.png' %}">
-            {% endif %}
-            {% if motion.status == "rej" %}
-            <img src="{% static 'img/voting-no.png' %}">
-            {% endif %}
-            {% trans motion.status %}
-        {% else %}
-            {% for note in motion.notes %}
-                {{ note }}
-            {% endfor %}
-        {% endif %}
+            {% trans motion.state.name %}
         </p>
 
+        <!-- poll results -->
         {% with motion.polls as polls %}
         {% if polls.exists and polls.0.has_votes %}
         <p><b>{% trans "Poll result" %}:</b>
-        {% for poll in polls %}
-            {% if poll.has_votes %}
-                {% if polls|length > 1 %}
-                    <p>{{forloop.counter}}. {% trans "Vote" %}:</p>
+            {% for poll in polls %}
+                {% if poll.has_votes %}
+                    {% if polls|length > 1 %}
+                        <p>{{forloop.counter}}. {% trans "Vote" %}:</p>
+                    {% endif %}
+                    {% with poll.get_options.0 as option %}
+                    <div class="results">
+                        <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.Yes }} <br>
+                        <img src="{% static 'img/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.No }} <br>
+                        <img src="{% static 'img/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ option.Abstain }}<br>
+                        <img src="{% static 'img/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}<br>
+                        <hr>
+                        <img src="{% static 'img/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
+                    </div>
+                    {% endwith %}
+                {% else %}
+                    {% if poll|length  == 1 %}
+                    <i>{% trans "No poll results available." %}</i>
+                    {% endif %}
                 {% endif %}
-                {% with poll.get_options.0 as option %}
-                <div class="results">
-                    <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.Yes }} <br>
-                    <img src="{% static 'img/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.No }} <br>
-                    <img src="{% static 'img/voting-abstention.png' %}" title="{% trans 'Abstention' %}">  {{ option.Abstain }}<br>
-                    <img src="{% static 'img/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}<br>
-                    <hr>
-                    <img src="{% static 'img/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
-                </div>
-                {% endwith %}
-            {% else %}
-                {% if poll|length  == 1 %}
-                <i>{% trans "No poll results available." %}</i>
-                {% endif %}
-            {% endif %}
-        {% endfor %}
+            {% endfor %}
         </p>
         {% endif %}
         {% endwith %}
 
+        <!-- Submitter -->
         <p><b>{% trans "Submitter" %}:</b><br>
-        {{ motion.submitter.person }}
+            {% for submitter in motion.submitter.all %}
+                {{ submitter.person }}{% if not forloop.last %},<br> {% endif %}
+            {% endfor %}
         </p>
     </div>
     </div>
@@ -62,20 +55,23 @@
     {% if motion.identifier %}
         {% trans "Motion No." %} {{ motion.identifier }}
     {% else %}
-        {% trans "Motion" %} <i>[{% trans "no number" %}]</i>
+        {% trans "Motion" %} [---]
     {% endif %}
+    <small>
+        {% if motion.last_version.version_number > 1 %}({% trans 'Version' %} {{ motion.active_version.version_number }}){% endif %}
+    </small>
     </h1>
-    <b>{{ motion.title }}</b>
+    <b>{{ motion.active_version.title }}</b>
     <hr>
 {% endblock %}
 
 {% block scrollcontent %}
     <p>
-    <div class="text">{{ motion.public_version.text|linebreaks }}</div>
-    {% if motion.public_version.reason %}
+    <div class="text">{{ motion.active_version.text|safe }}</div>
+    {% if motion.active_version.reason %}
         <br>
         <div class="reason"><p><b>{% trans "Reason" %}:</b></p>
-        {{ motion.public_version.reason|linebreaks }}</div>
+        {{ motion.active_version.reason|safe }}</div>
     {% endif %}
     </p>
 {% endblock %}

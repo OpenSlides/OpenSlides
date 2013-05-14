@@ -97,6 +97,7 @@ class AjaxMixin(object):
 class ExtraContextMixin(object):
     def get_context_data(self, **kwargs):
         context = super(ExtraContextMixin, self).get_context_data(**kwargs)
+        context.setdefault('extra_javascript', [])
         template_manipulation.send(
             sender=self.__class__, request=self.request, context=context)
         return context

@@ -22,6 +22,8 @@
         </small>
     </h1>
 
+{% comment %}
+    TODO: remove this filter and add client side filtering with DataTables
     <form action="{{ request.url }}" name="filter" method="get" class="form-inline">
         {% if min_supporters > 0 %}
         <label class="checkbox">
@@ -46,6 +48,8 @@
             <option value="rev" {% if 'rev' in request.GET.statusvalue %}selected{% endif %}>{% trans "Needs Review" %}</option>
         </select>
     </form>
+{% endcomment %}
+
     <small><i>{{ motion_list|length }}
     {% blocktrans count counter=motion_list|length context "number of motions"%}motion{% plural %}motions{% endblocktrans %}
     </i></small>
@@ -53,11 +57,11 @@
         <tr>
             <th><a href="?sort=number{% if 'number' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "#" %}</a></th>
             <th><a href="?sort=title{% if 'title' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Motion title" %}</a></th>
-            <th>{% trans 'Category' %}</th>
+            <th class="optional">{% trans 'Category' %}</th>
             {% if min_supporters > 0 %}
             <th class="optional"><a href="?sort=supporter{% if 'supporter' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Number of supporters" %}</a></th>
             {% endif %}
-            <th><a href="?sort=status{% if 'status' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Status" %}</a></th>
+            <th class="optional"><a href="?sort=status{% if 'status' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Status" %}</a></th>
             <th class="optional"><a href="?sort=submitter{% if 'submitter' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Submitter" %}</a></th>
             <th class="optional"><a href="?sort=time{% if 'time' in request.GET.sort and 'reverse' not in request.GET %}&reverse{%endif%}">{% trans "Creation Time" %}<a></th>
             <th class="mini_width">{% trans "Actions" %}</th>
@@ -66,11 +70,11 @@
         <tr class="{% if motion.active %}activeline{% endif %}">
             <td>{{ motion.identifier|default:'' }}</td>
             <td><a href="{% model_url motion %}">{{ motion.title }}</a></td>
-            <td>{% if motion.category %}{{ motion.category }}{% else %}<i>{% trans 'No category' %}</i>{% endif %}</td>
+            <td class="optional">{% if motion.category %}{{ motion.category }}{% else %}<i>{% trans 'No category' %}</i>{% endif %}</td>
         {% if min_supporters > 0 %}
             <td class="optional">{# motion.count_supporters #}</td>
         {% endif %}
-            <td><span class="label label-info">{{ motion.state }}</span></td>
+            <td class="optional"><span class="label label-info">{% trans motion.state.name %}</span></td>
             <td class="optional">
                 {% for submitter in motion.submitter.all %}
                     {{ submitter.person }}{% if not forloop.last %}, {% endif %}
