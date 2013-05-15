@@ -170,7 +170,7 @@
         {% endfor %}
 
         <!-- Supporters -->
-        {% if min_supporters > 0 %}
+        {% if 'motion_min_supporters'|get_config > 0 %}
             <h5>{% trans "Supporters" %}: *</h5>
             {% if not motion.supporters %}
                 -
@@ -187,7 +187,7 @@
         <h5>{% trans "Status" %}:</h5>
         {% if motion.state_id != "pub" %}
             {# TODO: trans motion.state #}
-            <span class="label label-info">{{ motion.state }}</span>
+            <span class="label label-info">{% trans motion.state.name %}</span>
             <br>
         {% endif %}
 
@@ -220,6 +220,8 @@
                     {% endif %}
                 </li>
             {% endif %}
+        {% empty %}
+        <span style="margin-left:-25px;">-</span>
         {% endfor %}
         </ol>
         {% if allowed_actions.create_poll %}
@@ -234,15 +236,23 @@
         {% if motion.category %}
             {{ motion.category }}
         {% else %}
-            <i>{% trans 'No category' %}</i>
+            -
         {% endif %}
 
         <!-- Creation Time -->
-        <h5>{% trans "Creation Time" %}:</h5>
-        {# TODO: use creation time of _first_ version #}
+        <h5>
+            {% with versions=motion.versions.all %}
+            {% if versions|length > 1 %}
+                {% trans "Last changes (of this version)" %}:
+            {% else %}
+                {% trans "Last changes" %}:
+            {% endif %}
+            {% endwith %}
+        </h5>
         {{ motion.version.creation_time }}
 
         <!-- Widthdraw button -->
+        {# TODO: Check this button #}
         {% if  allowed_actions.wit and user in motion.submitters %}
             <br><br>
             <a href="{% url 'motion_set_state' motion.id 'wit' %}" class="btn">
@@ -251,7 +261,7 @@
         {% endif %}
 
         <!-- Support/Unsupport button -->
-        {% if perms.motion.can_support_motion and min_supporters > 0 %}
+        {% if perms.motion.can_support_motion and 'motion_min_supporters'|get_config > 0 %}
             {% if allowed_actions.unsupport %}
                 <br><br>
                 <a href="{% url 'motion_unsupport' motion.id %}" class="btn">
@@ -267,9 +277,9 @@
         {% endif %}
 
         <!-- Footnote: requried supporters -->
-        {% if min_supporters > 0 %}
+        {% if 'motion_min_supporters'|get_config > 0 %}
             <br><br>
-            <small>* {% trans "minimum required supporters" %}: {{ min_supporters }}</small>
+            <small>* {% trans "minimum required supporters" %}: {{ 'motion_min_supporters'|get_config }}</small>
         {% endif %}
     </div> <!--/well-->
 
@@ -279,13 +289,13 @@
     <h4>{% trans "Manage motion" %}</h4>
         <div class="btn-group btn-group-vertical">
         {% for state in motion.state.next_states.all %}
-            <a href="{% url 'motion_set_state' motion.pk state.pk %}" class="btn btn-small">{{ state }}</a>
+            <a href="{% url 'motion_set_state' motion.pk state.pk %}" class="btn btn-small">{% trans state.name %}</a>
         {% endfor %}
         </div>
     <p></p>
     <hr>
     <h5>{% trans "For administration only:" %}</h5>
-    <a href="{% url 'motion_reset_state' motion.id %}" class="btn btn-danger">
+    <a href="{% url 'motion_reset_state' motion.id %}" class="btn btn-mini btn-danger">
         <i class="icon-exclamation-sign icon-white"></i> {% trans 'Reset state' %}
     </a>
     </div> <!--/well-->

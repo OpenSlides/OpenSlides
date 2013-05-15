@@ -5,18 +5,18 @@
 {% block title %}
     {{ block.super }} –
     {% if mediafile %}
-        {% trans "Edit media" %}
+        {% trans "Edit file" %}
     {% else %}
-        {% trans "New media" %}
+        {% trans "New file" %}
     {% endif %}
 {% endblock %}
 
 {% block content %}
     <h1>
         {% if mediafile %}
-            {% trans "Edit media" %}
+            {% trans "Edit file" %}
         {% else %}
-            {% trans "New media" %}
+            {% trans "New file" %}
         {% endif %}
         <small class="pull-right">
         <a href="{% url 'mediafile_list' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>

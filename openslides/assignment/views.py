@@ -42,19 +42,7 @@ from openslides.assignment.forms import AssignmentForm, AssignmentRunForm
 @permission_required('assignment.can_see_assignment')
 @template('assignment/overview.html')
 def get_overview(request):
-    query = Assignment.objects
-    if 'status' in request.GET and '---' not in request.GET['status']:
-        query = query.filter(status__iexact=request.GET['status'])
-    try:
-        sort = request.GET['sort']
-        if sort in ['name', 'status']:
-            query = query.order_by(sort)
-    except KeyError:
-        pass
-    if 'reverse' in request.GET:
-        query = query.reverse()
-
-    assignments = query.all()
+    assignments = Assignment.objects.all()
     return {
         'assignments': assignments,
     }

@@ -98,7 +98,7 @@ def register_tab(request):
     """
     selected = request.path.startswith('/mediafile/')
     return Tab(
-        title=_('Media'),
+        title=_('Files'),
         app='mediafile',  # TODO: Rename this to icon='mediafile' later
         stylefile='styles/mediafile.css',
         url=reverse('mediafile_list'),

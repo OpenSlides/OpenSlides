@@ -3,13 +3,13 @@
 {% load i18n %}
 {% load tags %}
 
-{% block title %}{{ block.super }} – {% trans 'Media' %}{% endblock %}
+{% block title %}{{ block.super }} – {% trans 'Files' %}{% endblock %}
 
 {% block content %}
-    <h1>{% trans 'Media' %}
+    <h1>{% trans 'Files' %}
         <small class="pull-right">
         {% if perms.mediafile.can_upload %}
-            <a href="{% url 'mediafile_create' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New media' %}"><i class="icon-plus icon-white"></i> {% trans "New" %}</a>
+            <a href="{% url 'mediafile_create' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New file' %}"><i class="icon-plus icon-white"></i> {% trans "New" %}</a>
         {% endif %}
         </small>
     </h1>
@@ -42,7 +42,7 @@
         </tr>
         {% empty %}
         <tr>
-            <td colspan="6"><i>{% trans 'No media available.' %}</i></td>
+            <td colspan="6"><i>{% trans 'No files available.' %}</i></td>
         </tr>
         {% endfor %}
     </table>

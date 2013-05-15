@@ -10,22 +10,24 @@
  
 /* Table initialisation */
 $(document).ready(function() {
-    $('#dataTableParticipants').dataTable( {
+    $('#dataTable').dataTable( {
         "aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
         "aoColumnDefs": [
           { "bSortable": false, "aTargets": [ -1 ] }
         ],
         "oLanguage": {
-            "sLengthMenu": gettext("_MENU_ participants per page"),
+            "sLengthMenu": gettext("_MENU_ entries per page"),
             "sSearch": gettext("Search:"),
-            "sInfo": gettext("Showing _START_ to _END_ of _TOTAL_ participants"),
+            "sInfo": gettext("Showing _START_ to _END_ of _TOTAL_ entries"),
             "sInfoEmpty": gettext("Showing 0 participants"),
             "sInfoFiltered": gettext("(filtered from _MAX_ total entries)"),
             "sZeroRecords": gettext("No matching records found"),
-            "sFirst": gettext("First"),
-            "sLast": gettext("Last"),
-            "sNext": gettext("Next"),
-            "sPrevious": gettext("Previous"),
+            "oPaginate": {
+                "sFirst": gettext("First"),
+                "sLast": gettext("Last"),
+                "sNext": gettext("Next"),
+                "sPrevious": gettext("Previous"),
+            }
         }
     } );
 } );
