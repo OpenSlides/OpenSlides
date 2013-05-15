@@ -35,7 +35,7 @@ def gen_username(first_name, last_name):
     """
     generates the username for new users.
     """
-    testname = "%s_%s" % (first_name.strip(), last_name.strip())
+    testname = "%s%s" % (first_name.strip(), last_name.strip())
     try:
         User.objects.get(username=testname)
     except User.DoesNotExist:
@@ -43,7 +43,7 @@ def gen_username(first_name, last_name):
     i = 0
     while True:
         i += 1
-        testname = "%s_%s_%s" % (first_name, last_name, i)
+        testname = "%s%s%s" % (first_name, last_name, i)
         try:
             User.objects.get(username=testname)
         except User.DoesNotExist:
@@ -110,6 +110,6 @@ def import_users(csv_file):
 
 def get_registered_group():
     """
-    Returns the Group 'Registered'. Upper and lower case is possible.
+    Returns the group 'Registered' (pk=2).
     """
-    return Group.objects.get(name__iexact='Registered')
+    return Group.objects.get(pk=2)

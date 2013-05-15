@@ -27,7 +27,7 @@ class AnonymousAuth(object):
         """
         Authenticate a user based in username / password.
 
-        - always return None as anonymous can't login..
+        - always return None as anonymous can't login.
         """
         return None
 
@@ -35,13 +35,13 @@ class AnonymousAuth(object):
         """
         Return the permissions a user is graneted by his group membership(s).
 
-        - try to return  the permissions for the 'Anonymous' group
+        - try to return the permissions for the 'Anonymous' group (pk=1).
         """
         if (not user_obj.is_anonymous() or obj is not None or
                 not config['system_enable_anonymous']):
             return set()
 
-        perms = Permission.objects.filter(group__name='Anonymous')
+        perms = Permission.objects.filter(group__pk=1)
         if perms is None:
             return set()
         perms = perms.values_list('content_type__app_label', 'codename') \

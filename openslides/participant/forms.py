@@ -22,17 +22,12 @@ from openslides.participant.models import User, Group
 from openslides.participant.api import get_registered_group
 
 
-class UserCreateForm(forms.ModelForm, CssClassMixin):
-    groups = forms.ModelMultipleChoiceField(
-        queryset=Group.objects.exclude(name__iexact='anonymous'),
-        label=ugettext_lazy('Groups'), required=False)
-
-    def __init__(self, *args, **kwargs):
-        if kwargs.get('instance', None) is None:
-            initial = kwargs.setdefault('initial', {})
-            registered = get_registered_group()
-            initial['groups'] = [registered.pk]
-        super(UserCreateForm, self).__init__(*args, **kwargs)
+class UserCreateForm(CssClassMixin, forms.ModelForm):
+    groups = LocalizedModelMultipleChoiceField(
+        # Hide the built-in groups 'Anonymous' (pk=1) and 'Registered' (pk=2)
+        queryset=Group.objects.exclude(pk=1).exclude(pk=2),
+        label=ugettext_lazy('Groups'), required=False,
+        help_text=ugettext_lazy('Hold down "Control", or "Command" on a Mac, to select more than one.'))
 
     class Meta:
         model = User
@@ -108,21 +103,6 @@ class GroupForm(forms.ModelForm, CssClassMixin):
             self.save_m2m()
 
         return instance
-
-    def clean_name(self):
-        # Do not allow to change the name "anonymous" or give another group
-        # this name
-        data = self.cleaned_data['name']
-        if self.instance.name.lower() in ['anonymous', 'registered']:
-            # Editing the anonymous-user
-            if self.instance.name.lower() != data.lower():
-                raise forms.ValidationError(
-                    _('You can not edit the name for this group.'))
-        else:
-            if data.lower() in ['anonymous', 'registered']:
-                raise forms.ValidationError(
-                    _('Group name "%s" is reserved for internal use.') % data)
-        return data
 
     class Meta:
         model = Group
