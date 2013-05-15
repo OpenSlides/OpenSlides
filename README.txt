@@ -1,12 +1,13 @@
-==================================
-English README file for OpenSlides
-==================================
+====================================
+ English README file for OpenSlides
+====================================
 
-This is OpenSlides, version 1.4-beta1-dev (unreleased).
+This is OpenSlides, version 1.4b1-dev (unreleased).
 
 
 What is OpenSlides?
 ===================
+
 OpenSlides is a free web-based presentation and assembly system for
 displaying and controlling of agenda, motions and elections of an assembly.
 
@@ -15,6 +16,7 @@ See http://openslides.org for more information.
 
 Getting started
 ===============
+
 Install and start OpenSlides as described in the INSTALL.txt.
 
 If you need help please contact the OpenSlides team on public mailing
@@ -23,6 +25,10 @@ list or read the OpenSlides manual. See http://openslides.org.
 
 The start script of OpenSlides
 ==============================
+
+Start OpenSlides
+----------------
+
 Simply running
   openslides.exe (on Windows)
 or
@@ -47,6 +53,7 @@ is as follows:
 
 Command line options
 --------------------
+
 The following command line options are available:
 
 -h, --help
@@ -85,6 +92,7 @@ Example 2: Like above, but also specify the port as 8080
 
 Supported operating systems and browsers
 ========================================
+
 Operating Systems (OpenSlides runs anywhere where Pyhton is running):
   Windows XP or newer (32 and 64bit)
   MacOS X
