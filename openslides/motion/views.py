@@ -256,8 +256,11 @@ class VersionPermitView(GetVersionMixin, SingleObjectMixin, QuestionMixin, Redir
         """
         Activate the version, if the user chooses 'yes'.
         """
-        self.object.set_active_version(self.object.version)  # TODO: Write log message
+        self.object.set_active_version(self.object.version)
         self.object.save(ignore_version_data=True)
+        self.object.write_log(
+            message=ugettext_noop('Version %d permitted') % self.object.version.version_number,
+            person=self.request.user)
 
 version_permit = VersionPermitView.as_view()
 
@@ -291,8 +294,11 @@ class VersionRejectView(GetVersionMixin, SingleObjectMixin, QuestionMixin, Redir
         """
         Reject the version, if the user chooses 'yes'.
         """
-        self.object.reject_version(self.object.version)  # TODO: Write log message
+        self.object.reject_version(self.object.version)
         self.object.save(ignore_version_data=True)
+        self.object.write_log(
+            message=ugettext_noop('Version %d rejected') % self.object.version.version_number,
+            person=self.request.user)
 
 version_reject = VersionRejectView.as_view()
 
