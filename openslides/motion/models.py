@@ -493,11 +493,11 @@ class Motion(SlideMixin, models.Model):
         return actions
 
     def write_log(self, message, person=None):
-        """Write a log message.
+        """
+        Write a log message.
 
-        Message should be in english and translatable.
-
-        e.g.: motion.write_log(ugettext_noob('Message Text'))
+        The message should be in English and translatable,
+        e. g. motion.write_log(message=ugettext_noop('Message Text'))
         """
         MotionLog.objects.create(motion=self, message=message, person=person)
 
