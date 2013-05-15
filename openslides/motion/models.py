@@ -23,6 +23,7 @@ from django.utils import formats
 from django.utils.translation import pgettext
 from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
 
+from openslides.utils.jsonfield import JSONField
 from openslides.utils.person import PersonField
 from openslides.config.api import config
 from openslides.poll.models import (
@@ -495,14 +496,14 @@ class Motion(SlideMixin, models.Model):
         actions['reset_state'] = actions['change_state']
         return actions
 
-    def write_log(self, message, person=None):
+    def write_log(self, message_list, person=None):
         """
         Write a log message.
 
         The message should be in English and translatable,
-        e. g. motion.write_log(message=ugettext_noop('Message Text'))
+        e. g. motion.write_log(message_list=[ugettext_noop('Message Text')])
         """
-        MotionLog.objects.create(motion=self, message=message, person=person)
+        MotionLog.objects.create(motion=self, message_list=message_list, person=person)
 
     def set_active_version(self, version):
         """
@@ -652,10 +653,9 @@ class MotionLog(models.Model):
     motion = models.ForeignKey(Motion, related_name='log_messages')
     """The motion to witch the object belongs."""
 
-    message = models.CharField(max_length=255)  # TODO: arguments in message, not translatable
-    """The log message.
-
-    Should be in english.
+    message_list = JSONField()
+    """
+    The log message. It should be a list of strings in english.
     """
 
     person = PersonField(null=True)
@@ -668,12 +668,16 @@ class MotionLog(models.Model):
         ordering = ['-time']
 
     def __unicode__(self):
-        """Return a string, representing the log message."""
+        """
+        Return a string, representing the log message.
+        """
         time = formats.date_format(self.time, 'DATETIME_FORMAT')
-        if self.person is None:
-            return "%s %s" % (time, _(self.message))
-        else:
-            return "%s %s by %s" % (time, _(self.message), self.person)
+        return_message = '%s ' % time
+        for message in self.message_list:
+            return_message += _(message)
+        if self.person is not None:
+            return_message += ' by %s' % self.person
+        return return_message
 
 
 class MotionVote(BaseVote):
