@@ -1,4 +1,7 @@
-CHANGELOG of OpenSlides
+=========================
+ CHANGELOG of OpenSlides
+=========================
+
 http://openslides.org
 
 
@@ -104,13 +107,11 @@ Participants:
 - Made OpenSlides user a child model of Django user model.
 - Appended tests.
 - Fixed error to allow admins to delete anonymous group
-
 Other:
 - Added French translation (Thanks to Moira).
 - Updated setup.py to make an openslides python package.
 - Removed frontpage (welcome widget contains it's content) and redirect '/' to dashboard url.
-
-- Added LOCALE_PATHS to openslides_settings to avoid deprication in Django 1.5.
+- Added LOCALE_PATHS to openslides_settings to avoid deprecation in Django 1.5.
 - Redesigned the DeleteView (append QuestionMixin to send question via the django message API).
 - Fixed encoding error in settings.py. (#349)
 - Renamed openslides_settings.py to openslides_global_settings.py.
