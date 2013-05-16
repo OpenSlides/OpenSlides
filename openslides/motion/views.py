@@ -38,7 +38,7 @@ from .models import (Motion, MotionSubmitter, MotionSupporter, MotionPoll,
                      MotionVersion, State, WorkflowError, Category)
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
                     MotionDisableVersioningMixin, MotionCategoryMixin,
-                    MotionIdentifierMixin, MotionImportForm)
+                    MotionIdentifierMixin, MotionSetWorkflowMixin, MotionImportForm)
 from .pdf import motions_to_pdf, motion_to_pdf, motion_poll_to_pdf
 from .csv_import import import_motions
 
@@ -91,8 +91,9 @@ class MotionMixin(object):
 
     def manipulate_object(self, form):
         """
-        Save the version data into the motion object before it is saved in
-        the Database.
+        Saves the version data into the motion object before it is saved in
+        the Database. Does also set category, identifier and new workflow
+        if given.
         """
         super(MotionMixin, self).manipulate_object(form)
         for attr in ['title', 'text', 'reason']:
@@ -119,6 +120,10 @@ class MotionMixin(object):
             self.object.identifier = form.cleaned_data['identifier']
         except KeyError:
             pass
+
+        workflow = form.cleaned_data.get('set_workflow', None)
+        if workflow:
+            self.object.reset_state(workflow)
 
     def post_save(self, form):
         """
@@ -161,6 +166,8 @@ class MotionMixin(object):
         if self.object:
             if config['motion_allow_disable_versioning'] and self.object.state.versioning:
                 form_classes.append(MotionDisableVersioningMixin)
+            if self.request.user.has_perm('motion.can_manage_motion'):
+                form_classes.append(MotionSetWorkflowMixin)
         return type('MotionForm', tuple(form_classes), {})
 
 
