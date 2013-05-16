@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load staticfiles %}
+{% load tags %}
 
 {% block title %}{{ block.super }} – {% trans "Election" %} "{{ assignment }}"{% endblock %}
 
@@ -18,36 +19,32 @@
     {{ assignment }}
     <small class="pull-right">
     <a href="{% url 'assignment_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+    <a href="{% url 'print_assignment' assignment.id  %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print election as PDF' %}"><i class="icon-print"></i> PDF</a>
     <!-- activate projector -->
     {% if perms.projector.can_manage_projector %}
         <a href="{% url 'projector_activate_slide' assignment.sid  %}" class="activate_link btn {% if assignment.active %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show election' %}">
             <i class="icon-facetime-video {% if assignment.active %}icon-white{% endif %}"></i>
         </a>
     {% endif %}
+    {% if perms.assignment.can_manage_assignment or perms.agenda.can_manage_agenda %}
     <div class="btn-group">
-        <a data-toggle="dropdown" href="#" class="btn btn-mini dropdown-toggle">
-            {% trans 'More actions' %}
-            <span class="caret"></span>
+        <a data-toggle="dropdown" class="btn btn-mini dropdown-toggle">
+            {% trans 'More actions' %} <span class="caret"></span>
         </a>
         <ul class="dropdown-menu pull-right">
-            <!-- edit -->
-            <li><a href="{% url 'assignment_edit' assignment.id  %}"><i class="icon-pencil"></i> {% trans 'Edit election' %}</a></li>
-            <!-- delete -->
-            <li><a href="{% url 'assignment_delete' assignment.id  %}"><i class="icon-remove"></i> {% trans 'Delete election' %}</a></li>
-            <!-- edit poll -->
             {% if perms.assignment.can_manage_assignment %}
-                {% for poll in motion.polls %}
-                    <li><a href="{% url 'assignment_poll_view' poll.id %}"><i class="icon-edit"></i> {{ forloop.counter }}. {% trans "Ballot" %}</a></li>
-                {% endfor %}
+                <!-- edit -->
+                <li><a href="{% url 'assignment_edit' assignment.id  %}"><i class="icon-pencil"></i> {% trans 'Edit election' %}</a></li>
+                <!-- delete -->
+                <li><a href="{% url 'assignment_delete' assignment.id  %}"><i class="icon-remove"></i> {% trans 'Delete election' %}</a></li>
             {% endif %}
             <!-- create agenda item -->
             {% if perms.agenda.can_manage_agenda %}
-            <li>
-                <a href="{% url 'assignment_create_agenda' assignment.id  %}"><i class="icon-plus"></i> {% trans 'New agenda item' %}</a>
-            </li>
+                <li><a href="{% url 'assignment_create_agenda' assignment.id  %}"><i class="icon-plus"></i> {% trans 'New agenda item' %}</a></li>
             {% endif %}
         </ul>
     </div>
+    {% endif %}
     </small>
 </h1>
 
@@ -67,7 +64,7 @@
     <ol>
     {% for person in assignment.get_participants %}
         <li>
-            {{ person }}
+            <a href="{% model_url person 'view' %}">{{ person }}</a>
             {% if perms.assignment.can_manage_assignment %}
                 {% if assignment.status == "sea" or assignment.status == "vot" %}
                     <a href="{% url 'assignment_delother' assignment.id person.person_id %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Remove candidate' %}"><i class="icon-remove"></i></a>
@@ -126,7 +123,7 @@
     <ul>
     {% for person in blocked_candidates %}
         <li>
-            {{ person }}
+            <a href="{% model_url person 'view' %}">{{ person }}</a>
             <a class="btn btn-mini" href="{% url 'assignment_delother' assignment.id person.person_id %}" title="{% trans 'Remove candidate' %}">
                 <i class="icon-ban-circle"></i>
             </a>
@@ -196,7 +193,7 @@
                         <a class="election_link" href="{% url 'assignment_user_elected' assignment.id candidate.person_id %}"></a>
                     {% endif %}
                 {% endif %}
-                {{ candidate }}
+                <a href="{% model_url candidate 'view' %}">{{ candidate }}</a>
             </td>
             {% for vote in poll_list %}
                 <td style="white-space:nowrap;">

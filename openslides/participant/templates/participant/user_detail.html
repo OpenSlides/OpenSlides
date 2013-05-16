@@ -7,9 +7,29 @@
 
 {% block content %}
 
-<h1>{{ shown_user.clean_name }}
+<h1>
+    {{ shown_user.clean_name }}
     <small class="pull-right">
-        <a href="{% url 'user_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+    <a href="{% url 'user_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+    <!-- activate projector -->
+    {% if perms.projector.can_manage_projector %}
+        <a href="{% url 'projector_activate_slide' shown_user.sid  %}" class="activate_link btn {% if shown_user.active %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show participant' %}">
+            <i class="icon-facetime-video {% if shown_user.active %}icon-white{% endif %}"></i>
+        </a>
+    {% endif %}
+    {% if perms.participant.can_manage_participant %}
+    <div class="btn-group">
+        <a data-toggle="dropdown" class="btn btn-mini dropdown-toggle">
+            {% trans 'More actions' %} <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu pull-right">
+            <!-- edit -->
+            <li><a href="{% url 'user_edit' shown_user.id  %}"><i class="icon-pencil"></i> {% trans 'Edit participant' %}</a></li>
+            <!-- delete -->
+            <li><a href="{% url 'user_delete' shown_user.id  %}"><i class="icon-remove"></i> {% trans 'Delete participant' %}</a></li>
+        </ul>
+    </div>
+    {% endif %}
     </small>
 </h1>
 

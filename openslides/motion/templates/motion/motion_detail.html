@@ -20,38 +20,37 @@
     {% trans "Version" %} {{ motion.version.version_number }}
     </small>
     <small class="pull-right">
-    <div class="btn-toolbar">
         <a href="{% url 'motion_list' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
-        <a href="{% url 'motion_detail_pdf' motion.id  %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print this motion as PDF' %}"><i class="icon-print"></i> PDF</a>
+        <a href="{% url 'motion_detail_pdf' motion.id  %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print motion as PDF' %}"><i class="icon-print"></i> PDF</a>
         <!-- activate projector -->
         {% if perms.projector.can_manage_projector %}
             <a href="{% url 'projector_activate_slide' motion.sid  %}" class="activate_link btn {% if motion.active %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show motion' %}">
                 <i class="icon-facetime-video {% if motion.active %}icon-white{% endif %}"></i>
             </a>
         {% endif %}
+        {% if perms.motion.can_manage_motion or perms.agenda.can_manage_agenda %}
         <div class="btn-group">
-            <a data-toggle="dropdown" href="#" class="btn btn-mini dropdown-toggle">
-                {% trans 'More actions' %}
-                <span class="caret"></span>
+            <a data-toggle="dropdown" class="btn btn-mini dropdown-toggle">
+                {% trans 'More actions' %} <span class="caret"></span>
             </a>
             <ul class="dropdown-menu pull-right">
-                <!-- edit -->
-                {% if allowed_actions.edit %}
-                     <li><a href="{% model_url motion 'edit' %}"><i class="icon-pencil"></i> {% trans 'Edit motion' %}</a></li>
-                {% endif %}
-                <!-- delete -->
-                {% if allowed_actions.delete %}
-                    <li><a href="{% model_url motion 'delete' %}"><i class="icon-remove"></i> {% trans 'Delete motion' %}</a></li>
+                {% if perms.motion.can_manage_motion %}
+                    <!-- edit -->
+                    {% if allowed_actions.edit %}
+                         <li><a href="{% model_url motion 'edit' %}"><i class="icon-pencil"></i> {% trans 'Edit motion' %}</a></li>
+                    {% endif %}
+                    <!-- delete -->
+                    {% if allowed_actions.delete %}
+                        <li><a href="{% model_url motion 'delete' %}"><i class="icon-remove"></i> {% trans 'Delete motion' %}</a></li>
+                    {% endif %}
                 {% endif %}
                 <!-- create agenda item -->
                 {% if perms.agenda.can_manage_agenda %}
-                <li>
-                    <a href="{% url 'motion_create_agenda' motion.id  %}"><i class="icon-plus"></i> {% trans 'New agenda item' %}</a>
-                </li>
+                    <li><a href="{% url 'motion_create_agenda' motion.id  %}"><i class="icon-plus"></i> {% trans 'New agenda item' %}</a></li>
                 {% endif %}
             </ul>
         </div>
-    </div>
+        {% endif %}
     </small>
 </h1>
 
@@ -166,7 +165,7 @@
         <!-- Submitter -->
         <h5>{% trans "Submitter" %}:</h5>
         {% for submitter in motion.submitter.all %}
-            {{ submitter.person }}{% if not forloop.last %}, {% endif %}
+            <a href="{% model_url submitter.person 'view' %}">{{ submitter }}</a>{% if not forloop.last %}, {% endif %}
         {% endfor %}
 
         <!-- Supporters -->
@@ -177,7 +176,7 @@
             {% else %}
                 <ol>
                 {% for supporter in motion.supporter.all %}
-                    <li>{{ supporter }}</li>
+                    <li><a href="{% model_url supporter.person 'view' %}">{{ supporter }}</a></li>
                 {% endfor %}
                 </ol>
             {% endif %}

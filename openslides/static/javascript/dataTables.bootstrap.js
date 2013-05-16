@@ -19,7 +19,7 @@ $(document).ready(function() {
             "sLengthMenu": gettext("_MENU_ entries per page"),
             "sSearch": gettext("Search:"),
             "sInfo": gettext("Showing _START_ to _END_ of _TOTAL_ entries"),
-            "sInfoEmpty": gettext("Showing 0 participants"),
+            "sInfoEmpty": gettext("Showing 0 entries"),
             "sInfoFiltered": gettext("(filtered from _MAX_ total entries)"),
             "sZeroRecords": gettext("No matching records found"),
             "oPaginate": {

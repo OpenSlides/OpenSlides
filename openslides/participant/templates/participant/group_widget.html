@@ -3,7 +3,7 @@
 
 <ul style="line-height: 180%">
 {% for group in groups %}
-    {% if group.name != 'Anonymous' and group.name != 'Registered' %}
+    {% if group.pk != 1 and group.pk != 2 %}
     <li class="{% if group.active %}activeline{% endif %}">
         <a href="{% url 'projector_activate_slide' group.sid  %}" class="activate_link btn {% if group.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
             <i class="icon-facetime-video {% if group.active %}icon-white{% endif %}"></i>

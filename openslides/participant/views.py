@@ -104,6 +104,17 @@ class UserCreateView(CreateView):
             self.object.default_password = gen_password()
         self.object.set_password(self.object.default_password)
 
+    def post_save(self, form):
+        super(UserCreateView, self).post_save(form)
+        # TODO: find a better solution that makes the following lines obsolete
+        # Background: motion.models.use_post_save adds already the registerd group
+        # to new user but super(..).post_save(form) removes it and sets only the
+        # groups selected in the form (without 'registered')
+        # workaround: add registered group again manually
+        from openslides.participant.api import get_registered_group  # TODO: Test, if global import is possible
+        registered = get_registered_group()
+        self.object.groups.add(registered)
+
 
 class UserUpdateView(UpdateView):
     """
@@ -190,7 +201,7 @@ class ParticipantsListPDF(PDFView):
             counter += 1
             groups = ''
             for group in user.groups.all():
-                if unicode(group) != "Registered":
+                if group.pk != 2:
                     groups += "%s<br/>" % unicode(group)
             data.append([
                 counter,
@@ -400,7 +411,7 @@ class GroupDeleteView(DeleteView):
     success_url_name = 'user_group_overview'
 
     def pre_redirect(self, request, *args, **kwargs):
-        if self.get_object().name.lower() in ['anonymous', 'registered']:
+        if self.get_object().pk in [1, 2]:
             messages.error(request, _("You can not delete this Group."))
         else:
             super(GroupDeleteView, self).pre_redirect(request, *args, **kwargs)

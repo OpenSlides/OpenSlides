@@ -76,7 +76,7 @@ class TestMotionCreateView(MotionViewTestCase):
         response = self.admin_client.post(self.url, {'title': 'new motion',
                                                      'text': 'motion text',
                                                      'reason': 'motion reason',
-                                                     'submitter': self.admin})
+                                                     'submitter': self.admin.person_id})
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Motion.objects.filter(versions__title='new motion').exists())
 
@@ -85,7 +85,7 @@ class TestMotionCreateView(MotionViewTestCase):
         response = self.delegate_client.post(self.url, {'title': 'delegate motion',
                                                         'text': 'motion text',
                                                         'reason': 'motion reason',
-                                                        'submitter': self.admin})
+                                                        'submitter': self.admin.person_id})
         self.assertEqual(response.status_code, 302)
         motion = Motion.objects.get(versions__title='delegate motion')
         self.assertTrue(motion.is_submitter(self.delegate))
@@ -95,7 +95,7 @@ class TestMotionCreateView(MotionViewTestCase):
         response = self.registered_client.post(self.url, {'title': 'registered motion',
                                                           'text': 'motion text',
                                                           'reason': 'motion reason',
-                                                          'submitter': self.admin})
+                                                          'submitter': self.admin.person_id})
         self.assertEqual(response.status_code, 403)
         self.assertFalse(Motion.objects.filter(versions__title='registered motion').exists())
 
@@ -124,13 +124,13 @@ class TestMotionCreateView(MotionViewTestCase):
         config['motion_identifier'] = 'manually'
         response = self.admin_client.post(self.url, {'title': 'something',
                                                      'text': 'bar',
-                                                     'submitter': self.admin,
+                                                     'submitter': self.admin.person_id,
                                                      'identifier': 'uufag5faoX0thahBi8Fo'})
         self.assertFormError(response, 'form', 'identifier', 'Motion with this Identifier already exists.')
 
     def test_empty_text_field(self):
         response = self.admin_client.post(self.url, {'title': 'foo',
-                                                     'submitter': self.admin})
+                                                     'submitter': self.admin.person_id})
         self.assertFormError(response, 'form', 'text', 'This field is required.')
 
 
@@ -144,7 +144,7 @@ class TestMotionUpdateView(MotionViewTestCase):
         response = self.admin_client.post(self.url, {'title': 'new motion_title',
                                                      'text': 'motion text',
                                                      'reason': 'motion reason',
-                                                     'submitter': self.admin})
+                                                     'submitter': self.admin.person_id})
         self.assertRedirects(response, '/motion/1/')
         motion = Motion.objects.get(pk=1)
         self.assertEqual(motion.title, 'new motion_title')
@@ -175,7 +175,7 @@ class TestMotionUpdateView(MotionViewTestCase):
         response = self.admin_client.post(self.url, {'title': 'another new motion_title',
                                                      'text': 'another motion text',
                                                      'reason': 'another motion reason',
-                                                     'submitter': self.admin})
+                                                     'submitter': self.admin.person_id})
         self.assertRedirects(response, '/motion/1/')
         motion = Motion.objects.get(pk=self.motion1.pk)
         self.assertEqual(motion.versions.count(), 2)
@@ -193,7 +193,7 @@ class TestMotionUpdateView(MotionViewTestCase):
         response = self.admin_client.post(self.url, {'title': 'another new motion_title',
                                                      'text': 'another motion text',
                                                      'reason': 'another motion reason',
-                                                     'submitter': self.admin,
+                                                     'submitter': self.admin.person_id,
                                                      'disable_versioning': 'true'})
         self.assertRedirects(response, '/motion/1/')
         motion = Motion.objects.get(pk=self.motion1.pk)
@@ -214,7 +214,7 @@ class TestMotionUpdateView(MotionViewTestCase):
         response = self.admin_client.post(self.url, {'title': 'Chah4kaaKasiVuishi5x',
                                                      'text': 'eedieFoothae2iethuo3',
                                                      'reason': 'ier2laiy1veeGoo0mau2',
-                                                     'submitter': self.admin})
+                                                     'submitter': self.admin.person_id})
         self.assertRedirects(response, '/motion/1/')
         motion = Motion.objects.get(pk=self.motion1.pk)
         self.assertEqual(motion.versions.count(), 1)
@@ -223,11 +223,11 @@ class TestMotionUpdateView(MotionViewTestCase):
         self.assertEqual(self.motion1.state.workflow.pk, 1)
         response = self.admin_client.post(self.url, {'title': 'oori4KiaghaeSeuzaim2',
                                                      'text': 'eequei1Tee1aegeNgee0',
-                                                     'submitter': self.admin})
+                                                     'submitter': self.admin.person_id})
         self.assertEqual(Motion.objects.get(pk=self.motion1.pk).state.workflow.pk, 1)
         response = self.admin_client.post(self.url, {'title': 'oori4KiaghaeSeuzaim2',
                                                      'text': 'eequei1Tee1aegeNgee0',
-                                                     'submitter': self.admin,
+                                                     'submitter': self.admin.person_id,
                                                      'set_workflow': 2})
         self.assertRedirects(response, '/motion/1/')
         self.assertEqual(Motion.objects.get(pk=self.motion1.pk).state.workflow.pk, 2)
