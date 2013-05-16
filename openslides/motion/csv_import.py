@@ -17,14 +17,14 @@
 import csv
 
 from django.db import transaction
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ugettext_noop
 
 from openslides.utils.person.api import Persons
 
 from .models import Motion, Category
 
 
-def import_motions(csv_file, default_submitter, override=False):
+def import_motions(csv_file, default_submitter, override=False, importing_person=None):
     """
     Imports motions from a csv file.
 
@@ -102,6 +102,8 @@ def import_motions(csv_file, default_submitter, override=False):
             motion.clear_submitters()
             motion.add_submitter(new_submitter)
 
+            motion.write_log(message=ugettext_noop('Motion imported'),
+                             person=importing_person)
             count_success += 1
 
     return (count_success, error_messages, warning_messages)
