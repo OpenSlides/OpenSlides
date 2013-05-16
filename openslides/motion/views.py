@@ -190,7 +190,7 @@ class MotionCreateView(MotionMixin, CreateView):
     def form_valid(self, form):
         """Write a log message, if the form is valid."""
         value = super(MotionCreateView, self).form_valid(form)
-        self.object.write_log(ugettext_noop('Motion created'), self.request.user)
+        self.object.write_log([ugettext_noop('Motion created')], self.request.user)
         return value
 
     def post_save(self, form):
@@ -212,7 +212,7 @@ class MotionUpdateView(MotionMixin, UpdateView):
     def form_valid(self, form):
         """Write a log message, if the form is valid."""
         value = super(MotionUpdateView, self).form_valid(form)
-        self.object.write_log(ugettext_noop('Motion updated'), self.request.user)
+        self.object.write_log([ugettext_noop('Motion updated')], self.request.user)
         return value
 
 motion_edit = MotionUpdateView.as_view()
@@ -266,7 +266,7 @@ class VersionPermitView(GetVersionMixin, SingleObjectMixin, QuestionMixin, Redir
         self.object.set_active_version(self.object.version)
         self.object.save(ignore_version_data=True)
         self.object.write_log(
-            message=ugettext_noop('Version %d permitted') % self.object.version.version_number,
+            message_list=[ugettext_noop('Version %d permitted') % self.object.version.version_number],
             person=self.request.user)
 
 version_permit = VersionPermitView.as_view()
@@ -304,7 +304,7 @@ class VersionRejectView(GetVersionMixin, SingleObjectMixin, QuestionMixin, Redir
         self.object.reject_version(self.object.version)
         self.object.save(ignore_version_data=True)
         self.object.write_log(
-            message=ugettext_noop('Version %d rejected') % self.object.version.version_number,
+            message_list=[ugettext_noop('Version %d rejected') % self.object.version.version_number],
             person=self.request.user)
 
 version_reject = VersionRejectView.as_view()
@@ -389,10 +389,10 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
             user = self.request.user
             if self.support:
                 self.object.support(person=user)
-                self.object.write_log(ugettext_noop("Supporter: +%s") % user, user)
+                self.object.write_log([ugettext_noop("Supporter: +%s") % user], user)
             else:
                 self.object.unsupport(person=user)
-                self.object.write_log(ugettext_noop("Supporter: -%s") % user, user)
+                self.object.write_log([ugettext_noop("Supporter: -%s") % user], user)
 
     def get_success_message(self):
         """Return the success message."""
@@ -422,7 +422,7 @@ class PollCreateView(SingleObjectMixin, RedirectView):
     def pre_redirect(self, request, *args, **kwargs):
         """Create the poll for the motion."""
         self.poll = self.object.create_poll()
-        self.object.write_log(ugettext_noop("Poll created"), request.user)
+        self.object.write_log([ugettext_noop("Poll created")], request.user)
         messages.success(request, _("New vote was successfully created."))
 
     def get_redirect_url(self, **kwargs):
@@ -487,7 +487,7 @@ class PollUpdateView(PollMixin, PollFormView):
         Write a log message, if the form is valid.
         """
         value = super(PollUpdateView, self).form_valid(form)
-        self.object.write_log(ugettext_noop('Poll updated'), self.request.user)
+        self.object.write_log([ugettext_noop('Poll updated')], self.request.user)
         return value
 
 poll_edit = PollUpdateView.as_view()
@@ -505,7 +505,7 @@ class PollDeleteView(PollMixin, DeleteView):
         Write a log message, if the form is valid.
         """
         super(PollDeleteView, self).case_yes()
-        self.object.write_log(ugettext_noop('Poll deleted'), self.request.user)
+        self.object.write_log([ugettext_noop('Poll deleted')], self.request.user)
 
     def get_redirect_url(self, **kwargs):
         """
@@ -577,10 +577,10 @@ class MotionSetStateView(SingleObjectMixin, RedirectView):
             messages.error(request, e)
         else:
             self.object.save(ignore_version_data=True)
-            # TODO: the state is not translated
-            self.object.write_log(ugettext_noop('State changed to %s') %
-                                  self.object.state.name, self.request.user)
-            messages.success(request, _('Motion status was set to: %s.'
+            self.object.write_log(
+                message_list=[ugettext_noop('State changed to '), self.object.state.name],
+                person=self.request.user)
+            messages.success(request, _('The state of the motion was set to %s.'
                                         % html_strong(self.object.state)))
 
 set_state = MotionSetStateView.as_view()
@@ -602,7 +602,7 @@ class CreateAgendaItemView(SingleObjectMixin, RedirectView):
     def pre_redirect(self, request, *args, **kwargs):
         """Create the agenda item."""
         self.item = Item.objects.create(related_sid=self.object.sid)
-        self.object.write_log(ugettext_noop('Agenda item created'), self.request.user)
+        self.object.write_log([ugettext_noop('Agenda item created')], self.request.user)
 
 create_agenda_item = CreateAgendaItemView.as_view()
 

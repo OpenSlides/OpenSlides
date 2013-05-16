@@ -102,7 +102,7 @@ def import_motions(csv_file, default_submitter, override=False, importing_person
             motion.clear_submitters()
             motion.add_submitter(new_submitter)
 
-            motion.write_log(message=ugettext_noop('Motion imported'),
+            motion.write_log(message_list=[ugettext_noop('Motion imported')],
                              person=importing_person)
             count_success += 1
 
