@@ -580,8 +580,8 @@ class MotionSetStateView(SingleObjectMixin, RedirectView):
             self.object.write_log(
                 message_list=[ugettext_noop('State changed to '), self.object.state.name],
                 person=self.request.user)
-            messages.success(request, _('The state of the motion was set to %s.'
-                                        % html_strong(self.object.state)))
+            messages.success(request, _('The state of the motion was set to %s.')
+                                        % html_strong(_(self.object.state.name)))
 
 set_state = MotionSetStateView.as_view()
 reset_state = MotionSetStateView.as_view(reset=True)
