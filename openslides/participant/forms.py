@@ -35,6 +35,16 @@ class UserCreateForm(CssClassMixin, forms.ModelForm):
                   'groups', 'structure_level', 'committee', 'about_me', 'comment',
                   'is_active', 'default_password')
 
+    def clean(self, *args, **kwargs):
+        """
+        Ensures that a user has either a first name or a last name.
+        """
+        cleaned_data = super(UserCreateForm, self).clean(*args, **kwargs)
+        if not cleaned_data['first_name'] and not cleaned_data['last_name']:
+            error_msg = _('First name and last name can not both be empty.')
+            raise forms.ValidationError(error_msg)
+        return cleaned_data
+
 
 class UserUpdateForm(UserCreateForm):
     """
