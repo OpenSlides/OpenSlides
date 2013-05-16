@@ -13,6 +13,7 @@
 from django import forms
 from django.utils.translation import ugettext as _, ugettext_lazy
 
+from openslides.config.api import config
 from openslides.utils.forms import CssClassMixin
 from openslides.utils.forms import CleanHtmlFormMixin
 from openslides.utils.person import PersonFormField, MultiplePersonFormField
@@ -58,6 +59,8 @@ class BaseMotionForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
             self.initial['title'] = self.motion.title
             self.initial['text'] = self.motion.text
             self.initial['reason'] = self.motion.reason
+        else:
+            self.initial['text'] = config['motion_preamble']
         super(BaseMotionForm, self).__init__(*args, **kwargs)
 
 
