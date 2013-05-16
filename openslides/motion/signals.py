@@ -187,10 +187,11 @@ def create_builtin_workflows(sender, **kwargs):
                                      versioning=True)
     state_2_9 = State.objects.create(name=ugettext_noop('needs review'),
                                      workflow=workflow_2,
+                                     action_word=ugettext_noop('Needs review'),
                                      versioning=True)
     state_2_10 = State.objects.create(name=ugettext_noop('rejected (not authorized)'),
                                       workflow=workflow_2,
-                                      action_word=ugettext_noop('reject (not authorized)'),
+                                      action_word=ugettext_noop('Reject (not authorized)'),
                                       versioning=True)
     state_2_1.next_states.add(state_2_2, state_2_5, state_2_10)
     state_2_2.next_states.add(state_2_3, state_2_4, state_2_5, state_2_6, state_2_7, state_2_8, state_2_9)

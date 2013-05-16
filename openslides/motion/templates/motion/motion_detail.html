@@ -57,7 +57,7 @@
 
 <div class="row-fluid">
 <div class="span8">
-    {# TODO: show only for complex workflow #}
+    {# TODO: show only for workflow with versioning #}
     {% if motion.version.version_number < motion.last_version.version_number %}
         <span class="label label-warning">
             <i class="icon-warning-sign icon-white"></i> {% trans "This is not the newest version." %}
@@ -289,7 +289,7 @@
     <h4>{% trans "Manage motion" %}</h4>
         <div class="btn-group btn-group-vertical">
         {% for state in motion.state.next_states.all %}
-            <a href="{% url 'motion_set_state' motion.pk state.pk %}" class="btn btn-small">{% trans state.name %}</a>
+            <a href="{% url 'motion_set_state' motion.pk state.pk %}" class="btn btn-small">{% trans state.get_action_word %}</a>
         {% endfor %}
         </div>
     <p></p>

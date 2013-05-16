@@ -421,13 +421,16 @@ class Motion(SlideMixin, models.Model):
             self.set_identifier()
         self.state = state
 
-    def reset_state(self):
+    def reset_state(self, workflow=None):
         """
         Set the state to the default state.
 
-        If the motion is new, it chooses the default workflow from config.
+        If the motion is new and workflow is None, it chooses the default
+        workflow from config.
         """
-        if self.state:
+        if workflow:
+            new_state = workflow.first_state
+        elif self.state:
             new_state = self.state.workflow.first_state
         else:
             new_state = (Workflow.objects.get(pk=config['motion_workflow']).first_state or
