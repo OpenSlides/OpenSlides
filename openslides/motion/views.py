@@ -698,8 +698,9 @@ class MotionCSVImportView(FormView):
         """
         count_success, error_messages, warning_messages = import_motions(
             self.request.FILES['csvfile'],
-            default_submitter=self.request.user,
-            override=form.cleaned_data['override'])
+            default_submitter=form.cleaned_data['default_submitter'],
+            override=form.cleaned_data['override'],
+            importing_person=self.request.user)
         for message in error_messages:
             messages.error(self.request, message)
         for message in warning_messages:
