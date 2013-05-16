@@ -1,3 +1,12 @@
+{% if form.non_field_errors %}
+    <div class="alert alert-error">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {% for msg in form.non_field_errors %}
+            {{ msg }}
+            {% if not forloop.last %}<br />{% endif %}
+        {% endfor %}
+    </div>
+{% endif %}
 {% for field in form %}
     <div class="control-group {% if field.errors %}error{% endif%}">
         <label for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}:</label>

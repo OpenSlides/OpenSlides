@@ -24,7 +24,6 @@
     </h1>
 
     <form action="" method="post">{% csrf_token %}
-        {{ form.non_field_errors }}
         {% include "form.html" %}
         {% if edit_user %}
             <p style="margin: -15px 0 25px 0;">
