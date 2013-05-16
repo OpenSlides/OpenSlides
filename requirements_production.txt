@@ -1,0 +1,8 @@
+Django==1.5.1
+django-mptt==0.5.5
+reportlab==2.7
+pillow==2.0.0
+qrcode==2.7
+tornado==3.0.1
+bleach==1.2.1
+beautifulsoup4==4.1.3
