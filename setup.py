@@ -7,8 +7,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from setuptools import setup
-from setuptools import find_packages
+from setuptools import setup, find_packages
 from openslides import get_version
 
 
@@ -16,18 +15,23 @@ with open('README.txt') as readme:
     long_description = readme.read()
 
 
+with open('requirements_production.txt') as requirements_production:
+    install_requires = requirements_production.readlines()
+
+
+# For Python 2.6 support
+install_requires.append('argparse==1.2.1')
+
+
 setup(
     name='openslides',
-    description='Presentation and assembly system',
-    long_description=long_description,
     version=get_version(),
-    url='http://openslides.org',
     author='OpenSlides-Team',
     author_email='support@openslides.org',
-    license='GPL2+',
-    packages=find_packages(exclude=['tests']),
-    include_package_data = True,
-    classifiers = [
+    url='http://openslides.org',
+    description='Presentation and assembly system',
+    long_description=long_description,
+    classifiers=[
         # http://pypi.python.org/pypi?%3Aaction=list_classifiers
         'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
@@ -37,18 +41,7 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
     ],
-    install_requires=[
-        'django == 1.5.1',
-        'django-mptt',
-        'reportlab',
-        'pillow',
-        'tornado',
-        'bleach',
-        'beautifulsoup4',
-    ],
-    entry_points={
-        'console_scripts': [
-            'openslides = openslides.main:main',
-        ],
-    },
-)
+    license='GPL2+',
+    packages=find_packages(exclude=['tests', 'tests.*']),
+    install_requires=install_requires,
+    entry_points={'console_scripts': ['openslides = openslides.main:main']})
