@@ -16,39 +16,28 @@
 {% endblock %}
     
 {% block content %}
-    <h1>{% trans "Participants" %}
+    <h1>
+        {% trans "Participants" %}
         <small class="pull-right">
-        <div class="btn-toolbar">
-            {% if perms.participant.can_manage_participant %}
-                <a href="{% url 'user_new' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New participant' %}"><i class="icon-plus icon-white"></i> {% trans "New" %}</a>
-                <a href="{% url 'user_group_overview' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'All groups' %}"><i class="icon-group"></i> {% trans "Groups" %}</a>
-                <a href="{% url 'user_import' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import participants' %}"><i class="icon-import"></i> {% trans 'Import' %}</a>
-            {% endif %}
-            {% if perms.participant.can_see_participant and perms.participant.can_manage_participant %}
-                <div class="btn-group pull-right">
-                    {% if user.is_authenticated %}
-                    <a href="#" data-toggle="dropdown" class="btn btn-mini dropdown-toggle">
-                          <i class="icon-print"></i> PDF
-                          <span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        {% url 'user_settings' as url_usersettings %}
-                        <li><a href="{% url 'user_print' %}"><i class="icon-list"></i> {% trans 'List of participants' %}</a></li>
-                        <li><a href="{% url 'print_passwords' %}"><i class="icon-th-large"></i> {% trans 'First time passwords' %}</a></li>
-                    </ul>
-                    {% else %}
-                        <a href="{% url 'user_login' %}" class="btn">{% trans "Login" %}</a>
-                    {% endif %}
-                </div>
-            {% else %}
-                {% if perms.participant.can_see_participant %}
-                    <a href="{% url 'user_print' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print list of participants as PDF' %}"><i class="icon-print"></i> PDF</a>
-                {% endif %}
-                {% if perms.participant.can_manage_participant %}
-                    <a href="{% url 'print_passwords' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print first time passwords as PDF' %}"><i class="icon-print"></i> PDF</a>
-                {% endif %}
-            {% endif %}
-        </div>
+        {% if perms.participant.can_manage_participant %}
+            <a href="{% url 'user_new' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New participant' %}"><i class="icon-plus icon-white"></i> {% trans "New" %}</a>
+            <a href="{% url 'user_group_overview' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'All groups' %}"><i class="icon-group"></i> {% trans "Groups" %}</a>
+            <a href="{% url 'user_import' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import participants' %}"><i class="icon-import"></i> {% trans 'Import' %}</a>
+        {% endif %}
+        {% if perms.participant.can_see_participant and perms.participant.can_manage_participant %}
+            <div class="btn-group">
+                <a data-toggle="dropdown" class="btn btn-mini dropdown-toggle">
+                    <i class="icon-print"></i> PDF <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu  pull-right">
+                    {% url 'user_settings' as url_usersettings %}
+                    <li><a href="{% url 'user_print' %}"><i class="icon-list"></i> {% trans 'List of participants' %}</a></li>
+                    <li><a href="{% url 'print_passwords' %}"><i class="icon-th-large"></i> {% trans 'First time passwords' %}</a></li>
+                </ul>
+            </div>
+        {% else %}
+            <a href="{% url 'user_print' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print list of participants as PDF' %}"><i class="icon-print"></i> PDF</a>
+        {% endif %}
         </small>
     </h1>
 
@@ -92,7 +81,7 @@
                 <td class="optional">{{ user.structure_level }}</td>
                 <td class="optional">
                     {% for group in user.groups.all %}
-                        {% if group.name != 'Registered' %}
+                        {% if group.pk != 2 %}
                             {% trans group.name %}
                             {% if not forloop.last %}<br>{% endif %}
                         {% endif %}
