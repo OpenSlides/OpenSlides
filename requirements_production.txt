@@ -5,4 +5,5 @@ pillow==2.0.0
 qrcode==2.7
 tornado==3.0.1
 bleach==1.2.1
+html5lib==0.95
 beautifulsoup4==4.1.3
