@@ -349,6 +349,12 @@ class Motion(SlideMixin, models.Model):
         except IndexError:
             return self.new_version
 
+    def get_last_not_rejected_version(self):
+        """
+        Returns the newest version of the motion, which is not rejected.
+        """
+        return self.versions.filter(rejected=False).order_by('-version_number')[0]
+
     @property
     def submitters(self):
         return sorted([object.person for object in self.submitter.all()],

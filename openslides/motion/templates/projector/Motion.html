@@ -14,7 +14,7 @@
         </p>
 
         <!-- poll results -->
-        {% with motion.polls as polls %}
+        {% with motion.polls.all as polls %}
         {% if polls.exists and polls.0.has_votes %}
         <p><b>{% trans "Poll result" %}:</b>
             {% for poll in polls %}

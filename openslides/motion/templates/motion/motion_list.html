@@ -51,7 +51,7 @@
         <tr class="{% if motion.active %}activeline{% endif %}">
             <td class="nobr">{{ motion.identifier|default:'' }}</td>
             <td><a href="{% model_url motion %}">{{ motion.title }}</a></td>
-            <td class="optional">{% if motion.category %}{{ motion.category }}{% else %}-{% endif %}</td>
+            <td class="optional">{% if motion.category %}{{ motion.category }}{% else %}–{% endif %}</td>
             <td><span class="label label-info">{% trans motion.state.name %}</span></td>
             <td class="optional">
                 {% for submitter in motion.submitter.all %}

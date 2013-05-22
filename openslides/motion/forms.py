@@ -157,7 +157,7 @@ class MotionImportForm(CssClassMixin, forms.Form):
     csvfile = forms.FileField(
         widget=forms.FileInput(attrs={'size': '50'}),
         label=ugettext_lazy('CSV File'),
-        help_text=ugettext_lazy('The file should be encoded in UTF-8.'))
+        help_text=ugettext_lazy('The file has to be encoded in UTF-8.'))
     """
     CSV filt with import data.
     """

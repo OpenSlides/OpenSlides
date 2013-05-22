@@ -64,6 +64,8 @@ class GetVersionMixin(object):
                 object.version = int(version_number)
             except MotionVersion.DoesNotExist:
                 raise Http404('Version %s not found' % version_number)
+        else:
+            object.version = object.get_last_not_rejected_version()
         return object
 
 
@@ -227,6 +229,9 @@ class MotionDeleteView(DeleteView):
         """Check if the request.user has the permission to delete the motion."""
         return self.get_object().get_allowed_actions(request.user)['delete']
 
+    def get_success_message(self):
+        return _('%s was successfully deleted.') % _('Motion')
+
 motion_delete = MotionDeleteView.as_view()
 
 
@@ -279,7 +284,7 @@ class VersionRejectView(GetVersionMixin, SingleObjectMixin, QuestionMixin, Redir
 
     model = Motion
     question_url_name = 'motion_version_detail'
-    success_url_name = 'motion_version_detail'
+    success_url_name = 'motion_detail'
 
     def get(self, *args, **kwargs):
         """
@@ -306,6 +311,12 @@ class VersionRejectView(GetVersionMixin, SingleObjectMixin, QuestionMixin, Redir
         self.object.write_log(
             message_list=[ugettext_noop('Version %d rejected') % self.object.version.version_number],
             person=self.request.user)
+
+    def get_success_url_name_args(self):
+        """
+        Returns the motion pk as argument for the success url name.
+        """
+        return [self.object.pk]
 
 version_reject = VersionRejectView.as_view()
 
@@ -505,7 +516,7 @@ class PollDeleteView(PollMixin, DeleteView):
         Write a log message, if the form is valid.
         """
         super(PollDeleteView, self).case_yes()
-        self.object.write_log([ugettext_noop('Poll deleted')], self.request.user)
+        self.object.motion.write_log([ugettext_noop('Poll deleted')], self.request.user)
 
     def get_redirect_url(self, **kwargs):
         """
