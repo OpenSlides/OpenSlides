@@ -111,21 +111,19 @@ class Item(MPTTModel, SlideMixin):
     def __unicode__(self):
         return self.get_title()
 
-    def get_absolute_url(self, link='view'):
+    def get_absolute_url(self, link='detail'):
         """
         Return the URL to this item. By default it is the link to its
         view or the view of a related object.
 
         The link can be:
-        * view
-        * edit
+        * detail or view
+        * update or edit
         * delete
         """
-        if link == 'view':
-            if self.related_sid:
-                return self.get_related_slide().get_absolute_url(link)
+        if link == 'detail' or link == 'view':
             return reverse('item_view', args=[str(self.id)])
-        if link == 'edit':
+        if link == 'update' or link == 'edit':
             if self.related_sid:
                 return self.get_related_slide().get_absolute_url(link)
             return reverse('item_edit', args=[str(self.id)])
@@ -139,7 +137,7 @@ class Item(MPTTModel, SlideMixin):
         # TODO: Rename it to 'get_related_object'
         object = get_slide_from_sid(self.related_sid, element=True)
         if object is None:
-            self.title = 'Item for deleted slide: %s' % self.related_sid
+            self.title = _('Item for deleted slide %s') % self.related_sid
             self.related_sid = None
             self.save()
             return self

@@ -4,7 +4,7 @@
 {% load tags %}
 {% load staticfiles %}
 
-{% block title %}{{ block.super }} – {{ item.title }}{% endblock %}
+{% block title %}{{ block.super }} – {{ item }}{% endblock %}
 
 {% block header %}
     <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/agenda.css' %}" />
@@ -36,15 +36,21 @@
                 <span class="caret"></span>
             </a>
             <ul class="dropdown-menu pull-right">
-                <li><a href="{% url 'item_edit' item.id %}"><i class="icon-pencil"></i> {% trans 'Edit item' %}</a></li>
-                <li><a href="{% url 'item_delete' item.id %}"><i class="icon-remove"></i> {% trans 'Delete item' %}</a></li>
+                <li><a href="{% model_url item 'update' %}"><i class="icon-pencil"></i> {% trans 'Edit item' %}</a></li>
+                <li><a href="{% model_url item 'delete' %}"><i class="icon-remove"></i> {% trans 'Delete item' %}</a></li>
             </ul>
         {% endif %}
         </div>
     </div>
     </small>
 </h1>
-<p>{{ item.text|safe|linebreaks }}</p>
+<p>
+    {% if item.get_related_slide == item %}
+        {{ item.text|safe|linebreaks }}
+    {% else %}
+        <a href="{% model_url item.get_related_slide %}">{% trans 'Goto' %} {% trans item.get_related_type %} {{ item.get_related_slide }}</a>
+    {% endif %}
+</p>
 
 {% if perms.agenda.can_manage_agenda %}
     {% if item.comment %}
