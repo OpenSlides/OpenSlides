@@ -678,11 +678,9 @@ class MotionLog(models.Model):
         Return a string, representing the log message.
         """
         time = formats.date_format(self.time, 'DATETIME_FORMAT')
-        return_message = '%s ' % time
-        for message in self.message_list:
-            return_message += _(message)
+        return_message = '%s ' % time + ''.join(map(_, self.message_list))
         if self.person is not None:
-            return_message += ' by %s' % self.person
+            return_message += _(' by %s') % self.person
         return return_message
 
 
