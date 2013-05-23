@@ -436,9 +436,11 @@ class SpeakerChangeOrderView(SingleObjectMixin, RedirectView):
 
 class CurrentListOfSpeakersView(RedirectView):
     """
-    Redirect to the current list of speakers and set the request.user on it.
+    Redirect to the current list of speakers and set the request.user on it or
+    begins speach of the next speaker.
     """
     set_speaker = False
+    next_speaker = False
 
     def get_item(self):
         """
@@ -455,16 +457,21 @@ class CurrentListOfSpeakersView(RedirectView):
         Returns the URL to the item_view if:
 
         * the current slide is an item,
-        * the user has the permission to see the item and
+        * the user has the permission to see the item,
+        * the user who wants to be a speaker has this permission and
         * the list of speakers of the item is not closed,
 
         in other case, it returns the URL to the dashboard.
 
         This method also adds the request.user to the list of speakers, if he
         has the right permissions and the list is not closed.
+
+        This method also begins the speach of the next speaker, if the flag
+        next_speaker is given.
         """
         item = self.get_item()
         request = self.request
+
         if item is None:
             messages.error(request, _(
                 'There is no list of speakers for the current slide. '
@@ -474,17 +481,32 @@ class CurrentListOfSpeakersView(RedirectView):
         if self.set_speaker:
             if item.speaker_list_closed:
                 messages.error(request, _('The list of speakers is closed.'))
-                return reverse('dashboard')
-
-            if self.request.user.has_perm('agenda.can_be_speaker'):
-                try:
-                    Speaker.objects.add(self.request.user, item)
-                except OpenSlidesError:
-                    messages.error(request, _('You are already on the list of speakers.'))
+                reverse_to_dashboard = True
             else:
-                messages.error(request, _('You can not put yourself on the list of speakers.'))
+                if self.request.user.has_perm('agenda.can_be_speaker'):
+                    try:
+                        Speaker.objects.add(self.request.user, item)
+                    except OpenSlidesError:
+                        messages.error(request, _('You are already on the list of speakers.'))
+                    finally:
+                        reverse_to_dashboard = False
+                else:
+                    messages.error(request, _('You can not put yourself on the list of speakers.'))
+                    reverse_to_dashboard = True
+        else:
+            reverse_to_dashboard = False
 
-        if not self.request.user.has_perm('agenda.can_see_agenda'):
+        if self.next_speaker:
+            next_speaker_object = item.get_next_speaker()
+            if next_speaker_object:
+                next_speaker_object.begin_speach()
+                messages.success(request, _('%s is now speaking.') % next_speaker_object)
+            else:
+                messages.error(request, _('The list of speakers is empty.'))
+            if not self.set_speaker:
+                reverse_to_dashboard = True
+
+        if reverse_to_dashboard or not self.request.user.has_perm('agenda.can_see_agenda'):
             return reverse('dashboard')
         else:
             return reverse('item_view', args=[item.pk])

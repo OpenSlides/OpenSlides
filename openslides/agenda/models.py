@@ -254,7 +254,7 @@ class Item(MPTTModel, SlideMixin):
         dictionary contains a prefix, the speaker and its type. Types
         are old_speaker, actual_speaker and coming_speaker.
         """
-        speaker_query = Speaker.objects.filter(item=self)
+        speaker_query = Speaker.objects.filter(item=self)  # TODO: Why not self.speaker_set?
         list_of_speakers = []
 
         # Parse old speakers
@@ -309,6 +309,16 @@ class Item(MPTTModel, SlideMixin):
             list_of_speakers.append(speaker_dict)
 
         return list_of_speakers
+
+    def get_next_speaker(self):
+        """
+        Returns the speaker object of the person who is next.
+        """
+        try:
+            return self.speaker_set.filter(begin_time=None).order_by('weight')[0]
+        except IndexError:
+            # The list of speakers is empty.
+            return None
 
 
 class SpeakerManager(models.Manager):
