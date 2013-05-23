@@ -4,7 +4,7 @@
 {% load tags %}
 {% load staticfiles %}
 
-{% block title %}{{ block.super }} – {{ item.title }}{% endblock %}
+{% block title %}{{ block.super }} – {{ item }}{% endblock %}
 
 {% block header %}
     <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/agenda.css' %}" />
@@ -22,18 +22,6 @@
     <small class="pull-right">
     <div class="btn-toolbar">
         <a href="{% url 'item_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
-        {% if perms.agenda.can_manage_agenda %}
-        <div class="btn-group">
-            <a data-toggle="dropdown" href="#" class="btn btn-mini dropdown-toggle">
-                {% trans 'More actions' %}
-                <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu pull-right">
-                <li><a href="{% url 'item_edit' item.id %}"><i class="icon-pencil"></i> {% trans 'Edit item' %}</a></li>
-                <li><a href="{% url 'item_delete' item.id %}"><i class="icon-remove"></i> {% trans 'Delete item' %}</a></li>
-            </ul>
-        {% endif %}
-        </div>
         {% if perms.projector.can_manage_projector %}
             <a href="{% url 'projector_activate_slide' item.sid  %}"
                 class="activate_link btn btn-mini {% if item.active and not show_list %}btn-primary{% endif %}"
@@ -41,10 +29,28 @@
                 <i class="icon icon-facetime-video {% if item.active and not show_list %}icon-white{% endif %}"></i>
             </a>
         {% endif %}
+        {% if perms.agenda.can_manage_agenda %}
+        <div class="btn-group">
+            <a data-toggle="dropdown" href="#" class="btn btn-mini dropdown-toggle">
+                {% trans 'More actions' %}
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu pull-right">
+                <li><a href="{% model_url item 'update' %}"><i class="icon-pencil"></i> {% trans 'Edit item' %}</a></li>
+                <li><a href="{% model_url item 'delete' %}"><i class="icon-remove"></i> {% trans 'Delete item' %}</a></li>
+            </ul>
+        {% endif %}
+        </div>
     </div>
     </small>
 </h1>
-<p>{{ item.text|safe|linebreaks }}</p>
+<p>
+    {% if item.get_related_slide == item %}
+        {{ item.text|safe|linebreaks }}
+    {% else %}
+        <a href="{% model_url item.get_related_slide %}">{% trans 'Goto' %} {% trans item.get_related_type %} {{ item.get_related_slide }}</a>
+    {% endif %}
+</p>
 
 {% if perms.agenda.can_manage_agenda %}
     {% if item.comment %}

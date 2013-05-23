@@ -136,7 +136,7 @@ III. Installation on GNU/Linux and MacOSX using the sources (for development)
 
   4. Install all required python packages:
 
-        $ pip install -r requirements_development.txt
+        $ pip install -r requirements.txt
 
   5. Start OpenSlides server and open URL in your default browser:
 

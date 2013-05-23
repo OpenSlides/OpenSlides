@@ -16,7 +16,7 @@
     {% else %}
         <i>[{% trans "no number" %}]</i>,
     {% endif %}
-    {# TODO: show only for complex workflow #}
+    {# TODO: show only for workflow with versioning #}
     {% trans "Version" %} {{ motion.version.version_number }}
     </small>
     <small class="pull-right">
@@ -57,19 +57,19 @@
 <div class="row-fluid">
 <div class="span8">
     {# TODO: show only for workflow with versioning #}
-    {% if motion.version.version_number < motion.last_version.version_number %}
+    {% if motion.version.version_number != motion.get_last_not_rejected_version.version_number %}
         <span class="label label-warning">
-            <i class="icon-warning-sign icon-white"></i> {% trans "This is not the newest version." %}
+            <i class="icon-warning-sign icon-white"></i> {% trans "This is not the last not rejected version." %}
         </span>
-        <a href="{% model_url motion.last_version %}" class="btn btn-small">{% trans "Go to last version" %}
-        (#{{ motion.last_version.version_number }})</a>
+        <a href="{% model_url motion.get_last_not_rejected_version %}" class="btn btn-small">{% trans "Go to last not rejected version" %}
+        (# {{ motion.get_last_not_rejected_version.version_number }})</a>
     {% endif %}
-    {% if motion.version.version_number > motion.active_version.version_number %}
+    {% if motion.version.version_number != motion.active_version.version_number %}
         <span class="label label-warning">
-            <i class="icon-warning-sign icon-white"></i> {% trans "This version is not yet authorized." %}
+            <i class="icon-warning-sign icon-white"></i> {% trans "This version is not authorized." %}
         </span>
         <a href="{% model_url motion.active_version %}" class="btn btn-small">{% trans "Go to last authorized version" %}
-        (#{{ motion.active_version.version_number }})</a>
+        (# {{ motion.active_version.version_number }})</a>
     {% endif %}
 
     <!-- Text -->
@@ -198,7 +198,7 @@
             {% if perms.motion.can_manage_motion or poll.has_votes %}
                 <li>{% trans "Vote" %}
                     {% if perms.motion.can_manage_motion %}
-                        <a class="btn btn-mini" href="{% url 'motion_poll_edit' motion.id poll.id %}" title="{% trans 'Edit Vote' %}"><i class="icon-edit"></i></a>
+                        <a class="btn btn-mini" href="{% url 'motion_poll_edit' motion.id poll.id %}" title="{% trans 'Edit Vote' %}"><i class="icon-pencil"></i></a>
                         <a class="btn btn-mini" href="{% url 'motion_poll_delete' motion.id poll.id %}" title="{% trans 'Delete Vote' %}"><i class="icon-remove"></i></a>
                     {% endif %}
                     <br>
@@ -220,7 +220,7 @@
                 </li>
             {% endif %}
         {% empty %}
-        <span style="margin-left:-25px;">-</span>
+        <span style="margin-left:-25px;">–</span>
         {% endfor %}
         </ol>
         {% if allowed_actions.create_poll %}
@@ -235,7 +235,7 @@
         {% if motion.category %}
             {{ motion.category }}
         {% else %}
-            -
+            –
         {% endif %}
 
         <!-- Creation Time -->

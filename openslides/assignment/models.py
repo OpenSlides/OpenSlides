@@ -37,7 +37,7 @@ class AssignmentCandidate(models.Model):
 
 
 class Assignment(models.Model, SlideMixin):
-    prefix = 'assignment'
+    prefix = ugettext_noop('assignment')
     STATUS = (
         ('sea', ugettext_lazy('Searching for candidates')),
         ('vot', ugettext_lazy('Voting')),
@@ -226,10 +226,10 @@ class Assignment(models.Model, SlideMixin):
         data['template'] = 'projector/Assignment.html'
         return data
 
-    def get_absolute_url(self, link='view'):
-        if link == 'view':
+    def get_absolute_url(self, link='detail'):
+        if link == 'detail' or link == 'view':
             return reverse('assignment_view', args=[str(self.id)])
-        if link == 'edit':
+        if link == 'update' or link == 'edit':
             return reverse('assignment_edit', args=[str(self.id)])
         if link == 'delete':
             return reverse('assignment_delete', args=[str(self.id)])
