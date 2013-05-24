@@ -5,6 +5,23 @@
 
 {% block title %}{{ block.super }} – {{ item }}{% endblock %}
 
+{% block header %}
+    <style type="text/css">
+        /* List of speakers – projector slide */
+        ul#list_of_speakers {
+            list-style-type: none;
+            padding: 0}
+        #list_of_speakers li {
+            font-size: 130%;
+            line-height: 150%}
+        #list_of_speakers .old_speaker {
+            color: #9FA9B7}
+        #list_of_speakers .actual_speaker {
+            font-weight: bold;
+            margin-bottom: 0.5em}
+    </style>
+{% endblock %}
+
 {% block content %}
     <h1>{{ title }}</h1>
     <h2 style="margin-top: -10px;">
@@ -18,7 +35,7 @@
     {% if list_of_speakers %}
     <ul id="list_of_speakers">
         {% for speaker_dict in list_of_speakers %}
-        <li class="{{speaker_dict.type}}"> {#o ld_speaker, actual_speaker, coming_speaker #}
+        <li class="{{ speaker_dict.type }}"> {# old_speaker, actual_speaker, coming_speaker #}
             {% if speaker_dict.type == 'coming_speaker' %}
                 {{ speaker_dict.prefix }}.
             {% endif %}

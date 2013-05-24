@@ -43,7 +43,7 @@ class Motion(SlideMixin, models.Model):
     This class is the main entry point to all other classes related to a motion.
     """
 
-    prefix = 'motion'
+    prefix = ugettext_noop('motion')
     """
     Prefix for the slide system.
     """
@@ -100,7 +100,7 @@ class Motion(SlideMixin, models.Model):
         """
         Return a human readable name of this motion.
         """
-        return self.get_title()
+        return self.active_version.title
 
     # TODO: Use transaction
     def save(self, ignore_version_data=False, *args, **kwargs):
@@ -163,11 +163,11 @@ class Motion(SlideMixin, models.Model):
         """
         Return an URL for this version.
 
-        The keyword argument 'link' can be 'detail', 'view', 'edit' or 'delete'.
+        The keyword argument 'link' can be 'detail', 'view', 'edit', 'update' or 'delete'.
         """
         if link == 'view' or link == 'detail':
             return reverse('motion_detail', args=[str(self.id)])
-        if link == 'edit':
+        if link == 'update' or link == 'edit':
             return reverse('motion_edit', args=[str(self.id)])
         if link == 'delete':
             return reverse('motion_delete', args=[str(self.id)])
@@ -349,6 +349,12 @@ class Motion(SlideMixin, models.Model):
         except IndexError:
             return self.new_version
 
+    def get_last_not_rejected_version(self):
+        """
+        Returns the newest version of the motion, which is not rejected.
+        """
+        return self.versions.filter(rejected=False).order_by('-version_number')[0]
+
     @property
     def submitters(self):
         return sorted([object.person for object in self.submitter.all()],
@@ -452,11 +458,15 @@ class Motion(SlideMixin, models.Model):
         """
         Return a title for the Agenda.
         """
-        return self.last_version.title  # TODO: nutze active_version
+        return self.active_version.title
 
-    ## def get_agenda_title_supplement(self):
-        ## number = self.number or '<i>[%s]</i>' % ugettext('no number')
-        ## return '(%s %s)' % (ugettext('motion'), number)
+    def get_agenda_title_supplement(self):
+        """
+        Returns the supplement to the title for the agenda item.
+        """
+        if self.identifier:
+            return '(%s %s)' % (_('Motion'), self.identifier)
+        return '(%s)' % _('Motion')
 
     def get_allowed_actions(self, person):
         """
@@ -672,11 +682,9 @@ class MotionLog(models.Model):
         Return a string, representing the log message.
         """
         time = formats.date_format(self.time, 'DATETIME_FORMAT')
-        return_message = '%s ' % time
-        for message in self.message_list:
-            return_message += _(message)
+        return_message = '%s ' % time + ''.join(map(_, self.message_list))
         if self.person is not None:
-            return_message += ' by %s' % self.person
+            return_message += _(' by %s') % self.person
         return return_message
 
 
