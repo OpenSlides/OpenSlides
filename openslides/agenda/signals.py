@@ -10,10 +10,13 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+from datetime import datetime
+
 from django.dispatch import receiver
 from django import forms
 from django.utils.translation import ugettext_lazy, ugettext_noop, ugettext as _
 from django.template.loader import render_to_string
+from django.core.exceptions import ValidationError
 
 from openslides.config.signals import config_signal
 from openslides.config.api import config, ConfigVariable, ConfigPage
@@ -24,6 +27,13 @@ from openslides.projector.api import (get_active_slide, get_slide_from_sid,
                                       clear_projector_cache)
 
 from .models import Speaker, Item
+
+
+def validate_start_time(value):
+    try:
+        datetime.strptime(value, '%d.%m.%Y %H:%M')
+    except ValueError:
+        raise ValidationError(_('Invalid input.'))
 
 
 # TODO: Reinsert the datepicker scripts in the template
@@ -38,6 +48,7 @@ def setup_agenda_config_page(sender, **kwargs):
         name='agenda_start_event_date_time',
         default_value='',
         form_field=forms.CharField(
+            validators=[validate_start_time,],
             widget=forms.DateTimeInput(format='%d.%m.%Y %H:%M'),
             required=False,
             label=_('Begin of event'),
