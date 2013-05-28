@@ -48,7 +48,7 @@ def setup_agenda_config_page(sender, **kwargs):
         name='agenda_start_event_date_time',
         default_value='',
         form_field=forms.CharField(
-            validators=[validate_start_time,],
+            validators=[validate_start_time, ],
             widget=forms.DateTimeInput(format='%d.%m.%Y %H:%M'),
             required=False,
             label=_('Begin of event'),
