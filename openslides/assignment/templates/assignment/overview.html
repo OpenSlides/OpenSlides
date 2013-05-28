@@ -21,7 +21,7 @@
             <a href="{% url 'assignment_new' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New election' %}"><i class="icon-plus icon-white"></i> {% trans "New" %}</a>
         {% endif %}
         {% if perms.assignment.can_see_assignment %}
-            <a href="{% url 'print_assignment' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print all elections as PDF' %}"><i class="icon-print"></i> PDF</a>
+            <a href="{% url 'print_assignment' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print all elections as PDF' %}" target="_blank"><i class="icon-print"></i> PDF</a>
         {% endif %}
         </small>
     </h1>
@@ -65,7 +65,7 @@
                         <i class="icon-remove"></i>
                     </a>
                 {% endif %}
-                <a href="{% url 'print_assignment' assignment.id  %}" class="btn btn-mini" title="{% trans 'Print election as PDF' %}">
+                <a href="{% url 'print_assignment' assignment.id  %}" class="btn btn-mini" title="{% trans 'Print election as PDF' %}" target="_blank">
                     <i class="icon-print"></i> PDF
                 </a>
                 </span>
