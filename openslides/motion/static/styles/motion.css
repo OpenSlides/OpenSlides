@@ -5,6 +5,11 @@
  * :license: GNU GPL, see LICENSE for more details.
  */
 
+/* motion create/update form fields */
+#id_submitter, #id_supporter {
+    height: 110px;
+    width: auto;
+}
 /* motion version diff table */
 table.diff, .diff_row {
     font-size: 12px;

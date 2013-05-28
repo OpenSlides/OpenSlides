@@ -56,7 +56,8 @@ def motion_to_pdf(pdf, motion):
                             stylesheet['Heading4']))
     cell1b = []
     cell1b.append(Spacer(0, 0.2 * cm))
-    cell1b.append(Paragraph(unicode(motion.submitter), stylesheet['Normal']))
+    for submitter in motion.submitter.all():
+        cell1b.append(Paragraph(unicode(submitter), stylesheet['Normal']))
     motion_data.append([cell1a, cell1b])
 
     # TODO: choose this in workflow
@@ -88,26 +89,12 @@ def motion_to_pdf(pdf, motion):
         cell3b.append(Spacer(0, 0.2 * cm))
         motion_data.append([cell3a, cell3b])
 
-    ## # status
-    ## cell4a = []
-    ## cell4b = []
-    ## note = " ".join(motion.notes)
-    ## cell4a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Status"), stylesheet['Heading4']))
-    ## if note != "":
-        ## if motion.status == "pub":
-            ## cell4b.append(Paragraph(note, stylesheet['Normal']))
-        ## else:
-            ## cell4b.append(Paragraph("%s | %s" % (motion.get_status_display(), note), stylesheet['Normal']))
-    ## else:
-        ## cell4b.append(Paragraph("%s" % motion.get_status_display(), stylesheet['Normal']))
-    ## data.append([cell4a, cell4b])
-
     # Motion state
     cell4a = []
     cell4b = []
     cell4a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("State"),
                             stylesheet['Heading4']))
-    cell4b.append(Paragraph(motion.state.name, stylesheet['Normal']))
+    cell4b.append(Paragraph(_(motion.state.name), stylesheet['Normal']))
     motion_data.append([cell4a, cell4b])
 
     # Version number (aid)
@@ -137,7 +124,7 @@ def motion_to_pdf(pdf, motion):
             option = poll.get_options()[0]
             yes, no, abstain, invalid, votecast = (
                 option['Yes'], option['No'], option['Abstain'],
-                poll.print_voteinvalid(), poll.print_votecast())
+                poll.print_votesinvalid(), poll.print_votescast())
 
             if len(polls) > 1:
                 cell6b.append(Paragraph("%s. %s" % (ballotcounter, _("Vote")),

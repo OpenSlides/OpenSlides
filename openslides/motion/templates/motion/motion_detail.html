@@ -184,11 +184,8 @@
 
         <!-- Status -->
         <h5>{% trans "Status" %}:</h5>
-        {% if motion.state_id != "pub" %}
-            {# TODO: trans motion.state #}
-            <span class="label label-info">{% trans motion.state.name %}</span>
-            <br>
-        {% endif %}
+        <span class="label label-info">{% trans motion.state.name %}</span>
+        <br>
 
         <!-- Vote results -->
         <h5>{% trans "Vote results" %}:</h5>
