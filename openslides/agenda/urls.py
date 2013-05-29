@@ -114,5 +114,10 @@ urlpatterns = patterns(
     url(r'^list_of_speakers/next/$',
         CurrentListOfSpeakersView.as_view(next_speaker=True),
         name='agenda_next_on_current_list_of_speakers',
+    ),
+
+    url(r'^list_of_speakers/end_speach/$',
+        CurrentListOfSpeakersView.as_view(end_speach=True),
+        name='agenda_end_speach_on_current_list_of_speakers',
     )
 )
