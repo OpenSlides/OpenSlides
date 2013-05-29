@@ -707,7 +707,7 @@ class MotionCSVImportView(FormView):
         """
         Processes the import function.
         """
-        count_success, error_messages, warning_messages = import_motions(
+        count_success, count_lines, error_messages, warning_messages = import_motions(
             self.request.FILES['csvfile'],
             default_submitter=form.cleaned_data['default_submitter'],
             override=form.cleaned_data['override'],
@@ -719,7 +719,7 @@ class MotionCSVImportView(FormView):
         if count_success:
             messages.success(
                 self.request,
-                _('%d motions were successfully imported.') % count_success)
+                "<strong>%s</strong><br>%s" % (_('Summary'), _('%d of %d motions successfully imported.') % (count_success, count_lines)))
         return super(MotionCSVImportView, self).form_valid(form)
 
 motion_csv_import = MotionCSVImportView.as_view()

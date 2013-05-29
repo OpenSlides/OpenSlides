@@ -1970,7 +1970,7 @@ msgstr "Import auf Grund von schweren Fehlern in der Quelldatei abgebrochen."
 msgid "Import file has wrong character encoding, only UTF-8 is supported!"
 msgstr ""
 "Die Quelldatei benutzt eine ungültige Zeichenkodierung, es wird nur UTF-8 "
-"wird unterstützt!"
+"unterstützt!"
 
 #: participant/forms.py:29 participant/views.py:542
 #: participant/templates/participant/group_overview.html:7
