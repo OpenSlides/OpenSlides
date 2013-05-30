@@ -20,27 +20,25 @@
 <h1>
     {{ item }}
     <small class="pull-right">
-    <div class="btn-toolbar">
-        <a href="{% url 'item_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
-        {% if perms.projector.can_manage_projector %}
-            <a href="{% url 'projector_activate_slide' item.sid  %}"
-                class="activate_link btn btn-mini {% if item.active and not show_list %}btn-primary{% endif %}"
-                rel="tooltip" data-original-title="{% trans 'Show' %}">
-                <i class="icon icon-facetime-video {% if item.active and not show_list %}icon-white{% endif %}"></i>
-            </a>
-        {% endif %}
-        {% if perms.agenda.can_manage_agenda %}
-        <div class="btn-group">
-            <a data-toggle="dropdown" href="#" class="btn btn-mini dropdown-toggle">
-                {% trans 'More actions' %}
-                <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu pull-right">
-                <li><a href="{% model_url item 'update' %}"><i class="icon-pencil"></i> {% trans 'Edit item' %}</a></li>
-                <li><a href="{% model_url item 'delete' %}"><i class="icon-remove"></i> {% trans 'Delete item' %}</a></li>
-            </ul>
-        {% endif %}
-        </div>
+    <a href="{% url 'item_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+    {% if perms.projector.can_manage_projector %}
+        <a href="{% url 'projector_activate_slide' item.sid  %}"
+            class="activate_link btn btn-mini {% if item.active and not show_list %}btn-primary{% endif %}"
+            rel="tooltip" data-original-title="{% trans 'Show' %}">
+            <i class="icon icon-facetime-video {% if item.active and not show_list %}icon-white{% endif %}"></i>
+        </a>
+    {% endif %}
+    {% if perms.agenda.can_manage_agenda %}
+    <div class="btn-group">
+        <a data-toggle="dropdown" href="#" class="btn btn-mini dropdown-toggle">
+            {% trans 'More actions' %}
+            <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu pull-right">
+            <li><a href="{% model_url item 'update' %}"><i class="icon-pencil"></i> {% trans 'Edit item' %}</a></li>
+            <li><a href="{% model_url item 'delete' %}"><i class="icon-remove"></i> {% trans 'Delete item' %}</a></li>
+        </ul>
+    {% endif %}
     </div>
     </small>
 </h1>
@@ -48,7 +46,7 @@
     {% if item.get_related_slide == item %}
         {{ item.text|safe|linebreaks }}
     {% else %}
-        <a href="{% model_url item.get_related_slide %}">{% trans 'Goto' %} {% trans item.get_related_type %} {{ item.get_related_slide }}</a>
+        <a href="{% model_url item.get_related_slide %}" class="btn btn-small">{% trans 'View' %} "{{ item.get_related_slide }}" ({% trans item.get_related_type %})</a>
     {% endif %}
 </p>
 
@@ -146,7 +144,7 @@
         {% endif %}
     </p>
 
-    {% if perms.can_manage_agenda %}
+    {% if perms.agenda.can_manage_agenda %}
         <form action="" method="post">{% csrf_token %}
             {% for field in form %}
                 <label>{{ field.label }}:</label>

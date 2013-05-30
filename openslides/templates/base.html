@@ -2,10 +2,8 @@
 {% load i18n %}
 {% load staticfiles %}
 
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
-    "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<!DOCTYPE html>
+<html lang="{{LANGUAGE_CODE}}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,7 +24,7 @@
         <div class="row-fluid">
             <div class="span12">
                 <div id="header">
-                    <a href="/" class="logo" title="{% trans 'Home' %}"><img src="{% static 'img/logo.png' %}" /></a>
+                    <a href="/" class="logo" title="{% trans 'Home' %}"><img src="{% static 'img/logo.png' %}" alt="{% trans 'Logo' %}" /></a>
                     <span class="title optional">{% get_config 'event_name' %} – {% get_config 'event_description' %}</span>
                     {% block loginbutton %}
                     <div class="btn-group pull-right">

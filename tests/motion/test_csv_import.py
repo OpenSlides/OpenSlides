@@ -56,7 +56,7 @@ class CSVImport(TestCase):
         csv_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'extras', 'csv-examples')
         self.assertEqual(Motion.objects.count(), 0)
         with open(csv_dir + '/motions-demo_de.csv') as f:
-            count_success, error_messages, warning_messages = import_motions(csv_file=f, default_submitter=self.normal_user.person_id)
+            count_success, count_lines, error_messages, warning_messages = import_motions(csv_file=f, default_submitter=self.normal_user.person_id)
         self.assertEqual(Motion.objects.count(), 4)
         self.assertEqual(count_success, 4)
 
@@ -68,8 +68,8 @@ class CSVImport(TestCase):
         self.assertEqual(len(motion1.submitter.all()), 1)
         self.assertEqual(motion1.submitter.all()[0].person, self.normal_user)
         self.assertTrue(motion1.category is None)
-        self.assertTrue('Line 2 in import file: Default submitter is used.' in warning_messages)
-        self.assertTrue('Line 2 in import file: Category not found.' in error_messages)
+        self.assertTrue(any('Submitter unknown.' in w for w in warning_messages))
+        self.assertTrue(any('Category unknown.' in w for w in warning_messages))
 
         motion2 = Motion.objects.get(pk=2)
         self.assertEqual(motion2.identifier, 'S 2')
@@ -81,15 +81,15 @@ class CSVImport(TestCase):
         self.assertEqual(motion2.submitter.all()[0].person, special_user)
         self.assertEqual(motion2.category, self.category1)
 
-        self.assertTrue('Line 5 in import file: Multiple persons found.' in error_messages)
-        self.assertTrue('Line 5 in import file: Multiple categories found.' in error_messages)
+        self.assertTrue(any('Several suitable submitters found.' in w for w in warning_messages))
+        self.assertTrue(any('Several suitable categories found.' in w for w in warning_messages))
 
     def test_malformed_file(self):
         csv_file = StringIO.StringIO()
         csv_file.write('Header\nMalformed data,\n,Title,Text,,,\n')
-        count_success, error_messages, warning_messages = import_motions(csv_file=csv_file, default_submitter=self.normal_user.person_id)
-        self.assertEqual(count_success, 1)
-        self.assertTrue('Ignoring malformed line 2 in import file.' in error_messages)
+        count_success, count_lines, error_messages, warning_messages = import_motions(csv_file=csv_file, default_submitter=self.normal_user.person_id)
+        self.assertEqual(count_success, 0)
+        self.assertTrue(any('Line is malformed.' in e for e in error_messages))
 
     def test_wrong_encoding(self):
         csv_file = StringIO.StringIO()
@@ -98,4 +98,4 @@ class CSVImport(TestCase):
         csv_file.seek(0)
         count_success, error_messages, warning_messages = import_motions(csv_file=csv_file, default_submitter=self.normal_user.person_id)
         self.assertEqual(count_success, 0)
-        self.assertTrue('Encoding error in import file. Ensure using UTF-8.' in error_messages)
+        self.assertTrue('Import file has wrong character encoding, only UTF-8 is supported!' in error_messages)

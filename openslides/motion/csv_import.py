@@ -19,7 +19,9 @@ import csv
 from django.db import transaction
 from django.utils.translation import ugettext as _, ugettext_noop
 
+from openslides.utils import csv_ext
 from openslides.utils.person.api import Persons
+from openslides.utils.utils import html_strong
 
 from .models import Motion, Category
 
@@ -37,25 +39,33 @@ def import_motions(csv_file, default_submitter, override=False, importing_person
     error_messages = []
     warning_messages = []
     count_success = 0
+    count_lines = 0
 
     # Check encoding
     try:
         csv_file.read().decode('utf8')
     except UnicodeDecodeError:
-        return (0, [_('Encoding error in import file. Ensure using UTF-8.')], [])
+        return (0, [_('Import file has wrong character encoding, only UTF-8 is supported!')], [])
     csv_file.seek(0)
 
     with transaction.commit_on_success():
-        for (line_no, line) in enumerate(csv.reader(csv_file)):
+        dialect = csv.Sniffer().sniff(csv_file.readline())
+        dialect = csv_ext.patchup(dialect)
+        csv_file.seek(0)
+        for (line_no, line) in enumerate(csv.reader(csv_file, dialect=dialect)):
+            warnings = []
             if line_no < 1:
                 # Do not read the header line
                 continue
 
+            count_lines += 1
             # Check format
             try:
                 (identifier, title, text, reason, submitter, category) = line[:6]
             except ValueError:
-                error_messages.append(_('Ignoring malformed line %d in import file.') % (line_no + 1))
+                error_line = html_strong(_('Line %d of import file:') % (line_no + 1))
+                msg = _('Line is malformed. Motion not imported. Please check the required values.')
+                error_messages.append("%s<br>%s" % (error_line, msg))
                 continue
 
             # Check existing motions according to the identifier
@@ -66,7 +76,9 @@ def import_motions(csv_file, default_submitter, override=False, importing_person
                     motion = Motion(identifier=identifier)
                 else:
                     if not override:
-                        error_messages.append(_('Line %d in import file: Ignoring existing motion.') % (line_no + 1))
+                        error_line = html_strong(_('Line %d of import file:') % (line_no + 1))
+                        msg = _('Identifier already exists. Motion not imported.')
+                        error_messages.append("%s<br>%s" % (error_line, msg))
                         continue
             else:
                 motion = Motion()
@@ -79,9 +91,9 @@ def import_motions(csv_file, default_submitter, override=False, importing_person
                 try:
                     motion.category = Category.objects.get(name=category)
                 except Category.DoesNotExist:
-                    error_messages.append(_('Line %d in import file: Category not found.') % (line_no + 1))
+                    warnings.append(_('Category unknown. No category is used.'))
                 except Category.MultipleObjectsReturned:
-                    error_messages.append(_('Line %d in import file: Multiple categories found.') % (line_no + 1))
+                    warnings.append(_('Several suitable categories found. No category is used.'))
             motion.save()
 
             # Add submitter
@@ -90,15 +102,24 @@ def import_motions(csv_file, default_submitter, override=False, importing_person
                 for person in Persons():
                     if person.clean_name == submitter.decode('utf8'):
                         if person_found:
-                            error_messages.append(_('Line %d in import file: Multiple persons found.') % (line_no + 1))
+                            warnings.append(_('Several suitable submitters found.'))
                             person_found = False
                             break
                         else:
                             new_submitter = person
                             person_found = True
             if not person_found:
-                warning_messages.append(_('Line %d in import file: Default submitter is used.') % (line_no + 1))
+                warnings.append(_('Submitter unknown. Default submitter is used.'))
                 new_submitter = default_submitter
+
+            # show summarized warning message for each import line
+            if warnings:
+                warning_line = _('Line %d of import file:') % (line_no + 1)
+                warning_message_string = "%s<ul>" % html_strong(warning_line)
+                for w in warnings:
+                    warning_message_string += "<li>%s</li>" % w
+                warning_message_string += "</ul>"
+                warning_messages.append(warning_message_string)
             motion.clear_submitters()
             motion.add_submitter(new_submitter)
 
@@ -106,4 +127,4 @@ def import_motions(csv_file, default_submitter, override=False, importing_person
                              person=importing_person)
             count_success += 1
 
-    return (count_success, error_messages, warning_messages)
+    return (count_success, count_lines, error_messages, warning_messages)

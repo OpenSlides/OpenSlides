@@ -137,7 +137,7 @@ class Item(MPTTModel, SlideMixin):
         # TODO: Rename it to 'get_related_object'
         object = get_slide_from_sid(self.related_sid, element=True)
         if object is None:
-            self.title = _('Item for deleted slide %s') % self.related_sid
+            self.title = _('< Item for deleted slide (%s) >') % self.related_sid
             self.related_sid = None
             self.save()
             return self

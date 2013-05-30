@@ -28,13 +28,6 @@ def get_config(key):
 
 
 @register.simple_tag
-def active(request, pattern):
-    if request.path.startswith(pattern):
-        return 'selected'
-    return ''
-
-
-@register.simple_tag
 def model_url(object, link='view'):
     # TODO: Rename to object_url
     return object.get_absolute_url(link)

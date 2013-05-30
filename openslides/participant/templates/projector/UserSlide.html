@@ -1,7 +1,6 @@
 {% extends "base-projector.html" %}
 
 {% load i18n %}
-{% load tags %}
 
 {% block title %}{{ block.super }} - {{ title }}{% endblock %}
 
@@ -13,7 +12,9 @@
         {% endif %}
         <p>
             {% if shown_user.groups.all %}
-                {{ shown_user.groups.all|join:", " }}
+                {% for group in shown_user.groups.all %}
+                    {% trans group.name %}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
             {% endif %}
         </p>
         </span>

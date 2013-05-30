@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 
-{% load tags %}
 {% load i18n %}
 {% load mptt_tags %}
 {% load staticfiles %}
@@ -42,7 +41,7 @@
             {% if perms.agenda.can_manage_agenda %}
             <a href="{% url 'item_new' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New item' %}"><i class="icon-plus icon-white"></i> {% trans "New" %}</a>
             {% endif %}
-            <a href="{% url 'print_agenda' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print agenda as PDF' %}"><i class="icon-print"></i> PDF</a>
+            <a href="{% url 'print_agenda' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print agenda as PDF' %}" target="_blank"><i class="icon-print"></i> PDF</a>
             </small>
         </h1>
 
