@@ -734,7 +734,7 @@ class MotionPoll(CountInvalid, CountVotesCast, BasePoll):
 
     def __unicode__(self):
         """Return a string, representing the poll."""
-        return _('Ballot %d') % self.poll_number
+        return _('Vote %d') % self.poll_number
 
     def get_absolute_url(self, link='edit'):
         """Return an URL for the poll.

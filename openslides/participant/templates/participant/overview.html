@@ -31,12 +31,12 @@
                 </a>
                 <ul class="dropdown-menu  pull-right">
                     {% url 'user_settings' as url_usersettings %}
-                    <li><a href="{% url 'user_print' %}"><i class="icon-list"></i> {% trans 'List of participants' %}</a></li>
-                    <li><a href="{% url 'print_passwords' %}"><i class="icon-th-large"></i> {% trans 'First time passwords' %}</a></li>
+                    <li><a href="{% url 'user_print' %}" target="_blank"><i class="icon-list"></i> {% trans 'List of participants' %}</a></li>
+                    <li><a href="{% url 'print_passwords' %}" target="_blank"><i class="icon-th-large"></i> {% trans 'First time passwords' %}</a></li>
                 </ul>
             </div>
         {% else %}
-            <a href="{% url 'user_print' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print list of participants as PDF' %}"><i class="icon-print"></i> PDF</a>
+            <a href="{% url 'user_print' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print list of participants as PDF' %}" target="_blank"><i class="icon-print"></i> PDF</a>
         {% endif %}
         </small>
     </h1>

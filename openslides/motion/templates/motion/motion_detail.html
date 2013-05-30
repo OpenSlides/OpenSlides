@@ -21,7 +21,7 @@
     </small>
     <small class="pull-right">
         <a href="{% url 'motion_list' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
-        <a href="{% url 'motion_detail_pdf' motion.id  %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print motion as PDF' %}"><i class="icon-print"></i> PDF</a>
+        <a href="{% url 'motion_detail_pdf' motion.id  %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print motion as PDF' %}" target="_blank"><i class="icon-print"></i> PDF</a>
         <!-- activate projector -->
         {% if perms.projector.can_manage_projector %}
             <a href="{% url 'projector_activate_slide' motion.sid  %}" class="activate_link btn {% if motion.active %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show motion' %}">
@@ -184,11 +184,8 @@
 
         <!-- Status -->
         <h5>{% trans "Status" %}:</h5>
-        {% if motion.state_id != "pub" %}
-            {# TODO: trans motion.state #}
-            <span class="label label-info">{% trans motion.state.name %}</span>
-            <br>
-        {% endif %}
+        <span class="label label-info">{% trans motion.state.name %}</span>
+        <br>
 
         <!-- Vote results -->
         <h5>{% trans "Vote results" %}:</h5>

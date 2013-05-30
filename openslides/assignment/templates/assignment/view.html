@@ -19,7 +19,7 @@
     {{ assignment }}
     <small class="pull-right">
     <a href="{% url 'assignment_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
-    <a href="{% url 'print_assignment' assignment.id  %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print election as PDF' %}"><i class="icon-print"></i> PDF</a>
+    <a href="{% url 'print_assignment' assignment.id  %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print election as PDF' %}" target="_blank"><i class="icon-print"></i> PDF</a>
     <!-- activate projector -->
     {% if perms.projector.can_manage_projector %}
         <a href="{% url 'projector_activate_slide' assignment.sid  %}" class="activate_link btn {% if assignment.active %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show election' %}">

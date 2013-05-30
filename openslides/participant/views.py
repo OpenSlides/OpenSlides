@@ -132,6 +132,17 @@ class UserUpdateView(UpdateView):
         form_kwargs.update({'request': self.request})
         return form_kwargs
 
+    def post_save(self, form):
+        super(UserUpdateView, self).post_save(form)
+        # TODO: find a better solution that makes the following lines obsolete
+        # Background: motion.models.use_post_save adds already the registerd group
+        # to new user but super(..).post_save(form) removes it and sets only the
+        # groups selected in the form (without 'registered')
+        # workaround: add registered group again manually
+        from openslides.participant.api import get_registered_group  # TODO: Test, if global import is possible
+        registered = get_registered_group()
+        self.object.groups.add(registered)
+
 
 class UserDeleteView(DeleteView):
     """

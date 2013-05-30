@@ -1,13 +1,12 @@
 {% load i18n %}
-{% load tags %}
 
 {% if perms.agenda.can_be_speaker %}
-<p><a href="{% url 'agenda_add_to_current_list_of_speakers' %}" class="btn"><i class="icon icon-speaker"></i> {% trans 'Put me on the current list of speakers' %}</a></p>
+    <p><a href="{% url 'agenda_add_to_current_list_of_speakers' %}" class="btn"><i class="icon icon-speaker"></i> {% trans 'Put me on the current list of speakers' %}</a></p>
 {% endif %}
 
 <p><a href="{% url 'agenda_current_list_of_speakers' %}" class="btn"><i class="icon icon-bell"></i> {% trans 'Go to current list of speakers' %}</a></p>
 
 {% if perms.agenda.can_manage_agenda %}
-<hr>
-<a href="{% url 'agenda_next_on_current_list_of_speakers' %}" class="btn btn-mini"><i class="icon icon-bell"></i> {% trans 'Next speaker' %}</a>
+    <hr>
+    <a href="{% url 'agenda_next_on_current_list_of_speakers' %}" class="btn btn-mini"><i class="icon icon-bell"></i> {% trans 'Next speaker' %}</a>
 {% endif %}
