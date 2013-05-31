@@ -51,9 +51,9 @@ def get_personal_info_widget(request):
         pass
     else:
         personal_info_context.update({
-            'submitted_motions': Motion.objects.filter(submitter=request.user),
+            'submitted_motions': Motion.objects.filter(submitter__person=request.user),
             'config_motion_min_supporters': config['motion_min_supporters'],
-            'supported_motions': Motion.objects.filter(supporter=request.user)})
+            'supported_motions': Motion.objects.filter(supporter__person=request.user)})
     try:
         from openslides.assignment.models import Assignment
     except ImportError:
