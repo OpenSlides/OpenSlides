@@ -78,20 +78,26 @@ class PersonalInfoWidget(TestCase):
         motion = self.import_motion()
         if motion:
             motion_1 = motion.models.Motion.objects.create(title='My Motion Title pa8aeNohYai0ahge', text='My Motion Text')
+            motion_2 = motion.models.Motion.objects.create(title='My Motion Title quielohL7vah1weochai', text='My Motion Text')
             submitter_1 = motion.models.MotionSubmitter.objects.create(motion=motion_1, person=self.user)
+            submitter_2 = motion.models.MotionSubmitter.objects.create(motion=motion_2, person=self.user)
             response = self.client.get('/projector/dashboard/')
             self.assertContains(response, 'I submitted the following motions:', status_code=200)
             self.assertContains(response, 'My Motion Title pa8aeNohYai0ahge', status_code=200)
+            self.assertContains(response, 'My Motion Title quielohL7vah1weochai', status_code=200)
 
     def test_supporter_list(self):
         motion = self.import_motion()
         if motion:
-            motion_1 = motion.models.Motion.objects.create(title='My Motion Title pa8aeNohYai0ahge', text='My Motion Text')
+            motion_1 = motion.models.Motion.objects.create(title='My Motion Title jahN9phaiThae5ooKubu', text='My Motion Text')
+            motion_2 = motion.models.Motion.objects.create(title='My Motion Title vech9ash8aeh9eej2Ga2', text='My Motion Text')
             supporter_1 = motion.models.MotionSupporter.objects.create(motion=motion_1, person=self.user)
+            supporter_2 = motion.models.MotionSupporter.objects.create(motion=motion_2, person=self.user)
             config['motion_min_supporters'] = 1
             response = self.client.get('/projector/dashboard/')
             self.assertContains(response, 'I support the following motions:', status_code=200)
-            self.assertContains(response, 'My Motion Title pa8aeNohYai0ahge', status_code=200)
+            self.assertContains(response, 'My Motion Title jahN9phaiThae5ooKubu', status_code=200)
+            self.assertContains(response, 'My Motion Title vech9ash8aeh9eej2Ga2', status_code=200)
 
     def test_candidate_list(self):
         assignment = self.import_assignment()
