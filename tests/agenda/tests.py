@@ -192,6 +192,16 @@ class ViewTest(TestCase):
         self.refreshItems()
         self.assertEqual(self.item1.title, 'newitem1')
 
+    def test_view(self):
+        item = Item.objects.create(title='quai5OTeephaequ0xei0')
+        c = self.adminClient
+        response = c.get('/agenda/%s/' % item.id)
+        self.assertContains(response, 'quai5OTeephaequ0xei0')
+        self.assertTemplateUsed(response, 'agenda/view.html')
+        # Test it twice for former error in the template
+        response = c.get('/agenda/%s/' % item.id)
+        self.assertContains(response, 'quai5OTeephaequ0xei0')
+
 
 class ConfigTest(TestCase):
     def setUp(self):
