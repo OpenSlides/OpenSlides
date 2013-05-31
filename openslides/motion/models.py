@@ -343,17 +343,12 @@ class Motion(SlideMixin, models.Model):
         """
         Return the newest version of the motion.
         """
-        # TODO: Fix the case, that the motion has no version
+        # TODO: Fix the case, that the motion has no version.
+        # Check whether the case, that a motion has not any version, can still appear.
         try:
             return self.versions.order_by('-version_number')[0]
         except IndexError:
             return self.new_version
-
-    def get_last_not_rejected_version(self):
-        """
-        Returns the newest version of the motion, which is not rejected.
-        """
-        return self.versions.filter(rejected=False).order_by('-version_number')[0]
 
     @property
     def submitters(self):
@@ -517,32 +512,13 @@ class Motion(SlideMixin, models.Model):
 
     def set_active_version(self, version):
         """
-        Set the active state of a version to 'version'.
+        Set the active version of a motion to 'version'.
 
         'version' can be a version object, or the version_number of a version.
         """
         if type(version) is int:
             version = self.versions.get(version_number=version)
         self.active_version = version
-
-        if version.rejected:
-            version.rejected = False
-            version.save()
-
-    def reject_version(self, version):
-        """
-        Reject a version of this motion.
-
-        'version' can be a version object, or the version_number of a version.
-        """
-        if type(version) is int:
-            version = self.versions.get(version_number=version)
-
-        if version.active:
-            raise MotionError('The active version can not be rejected')
-
-        version.rejected = True
-        version.save()
 
 
 class MotionVersion(models.Model):
@@ -567,9 +543,6 @@ class MotionVersion(models.Model):
 
     reason = models.TextField(null=True, blank=True, verbose_name=ugettext_lazy("Reason"))
     """The reason for a motion."""
-
-    rejected = models.BooleanField(default=False)
-    """Saves if the version is rejected."""
 
     creation_time = models.DateTimeField(auto_now=True)
     """Time when the version was saved."""
