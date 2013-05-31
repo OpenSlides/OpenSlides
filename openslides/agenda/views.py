@@ -436,11 +436,12 @@ class SpeakerChangeOrderView(SingleObjectMixin, RedirectView):
 
 class CurrentListOfSpeakersView(RedirectView):
     """
-    Redirect to the current list of speakers and set the request.user on it or
-    begins speach of the next speaker.
+    Redirect to the current list of speakers and set the request.user on it,
+    begins speach of the next speaker or ends the speach of the current speaker.
     """
     set_speaker = False
     next_speaker = False
+    end_speach = False
 
     def get_item(self):
         """
@@ -463,11 +464,14 @@ class CurrentListOfSpeakersView(RedirectView):
 
         in other case, it returns the URL to the dashboard.
 
-        This method also adds the request.user to the list of speakers, if he
+        This method also adds the request.user to the list of speakers if he
         has the right permissions and the list is not closed.
 
-        This method also begins the speach of the next speaker, if the flag
+        This method also begins the speach of the next speaker if the flag
         next_speaker is given.
+
+        This method also ends the speach of the current speaker if the flag
+        end_speach is given.
         """
         item = self.get_item()
         request = self.request
@@ -505,6 +509,16 @@ class CurrentListOfSpeakersView(RedirectView):
                 messages.error(request, _('The list of speakers is empty.'))
             if not self.set_speaker:
                 reverse_to_dashboard = True
+
+        if self.end_speach:
+            try:
+                current_speaker = item.speaker_set.filter(end_time=None).exclude(begin_time=None).get()
+            except Speaker.DoesNotExist:
+                messages.error(request, _('There is no one speaking at the moment.'))
+            else:
+                current_speaker.end_speach()
+                messages.success(request, _('%s is now finished.') % current_speaker)
+            reverse_to_dashboard = True
 
         if reverse_to_dashboard or not self.request.user.has_perm('agenda.can_see_agenda'):
             return reverse('dashboard')
