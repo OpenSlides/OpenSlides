@@ -15,4 +15,8 @@ class ReleatedItem(SlideMixin, models.Model):
     def get_agenda_title_supplement(self):
         return 'test item'
 
+    def get_absolute_url(self, *args, **kwargs):
+        return '/absolute-url-here/'
+
+
 register_slidemodel(ReleatedItem)
