@@ -13,6 +13,7 @@ from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.test import TestCase
 from openslides.participant.models import User
 from openslides.agenda.models import Item, Speaker
+from openslides.config.api import config
 
 
 class ListOfSpeakerModelTests(TestCase):
@@ -200,3 +201,70 @@ class SpeakerListOpenView(SpeakerViewTestCase):
         response = self.check_url('/agenda/1/speaker/reopen/', self.admin_client, 302)
         item = Item.objects.get(pk=self.item1.pk)
         self.assertFalse(item.speaker_list_closed)
+
+
+class GlobalListOfSpeakersLinks(SpeakerViewTestCase):
+    def test_global_redirect_url(self):
+        self.assertFalse(config['presentation'])
+        response = self.speaker1_client.get('/agenda/list_of_speakers/')
+        self.assertRedirects(response, '/projector/dashboard/')
+        self.assertMessage(response, 'There is no list of speakers for the current slide. Please choose the agenda item manually from the agenda.')
+
+        response = self.admin_client.get('/projector/activate/item-1/')
+        self.assertEqual(config['presentation'], 'item-1')
+        response = self.speaker1_client.get('/agenda/list_of_speakers/')
+        self.assertRedirects(response, '/agenda/1/')
+
+    def test_global_add_url(self):
+        self.assertFalse(config['presentation'])
+        response = self.speaker1_client.get('/agenda/list_of_speakers/add/')
+        self.assertRedirects(response, '/projector/dashboard/')
+        self.assertMessage(response, 'There is no list of speakers for the current slide. Please choose the agenda item manually from the agenda.')
+
+        response = self.admin_client.get('/projector/activate/item-1/')
+        self.assertEqual(config['presentation'], 'item-1')
+        response = self.speaker1_client.get('/agenda/list_of_speakers/add/')
+        self.assertRedirects(response, '/agenda/1/')
+        self.assertEqual(Speaker.objects.get(item__pk='1').person, self.speaker1)
+
+    def test_global_next_speaker_url(self):
+        self.assertFalse(config['presentation'])
+        response = self.admin_client.get('/agenda/list_of_speakers/next/')
+        self.assertRedirects(response, '/projector/dashboard/')
+        self.assertMessage(response, 'There is no list of speakers for the current slide. Please choose the agenda item manually from the agenda.')
+
+        response = self.admin_client.get('/projector/activate/item-1/')
+        self.assertEqual(config['presentation'], 'item-1')
+        response = self.admin_client.get('/agenda/list_of_speakers/next/')
+        self.assertRedirects(response, '/projector/dashboard/')
+        self.assertMessage(response, 'The list of speakers is empty.')
+
+        response = self.speaker1_client.get('/agenda/list_of_speakers/add/')
+        self.assertTrue(Speaker.objects.get(item__pk='1').begin_time is None)
+        response = self.admin_client.get('/agenda/list_of_speakers/next/')
+        self.assertRedirects(response, '/projector/dashboard/')
+        self.assertTrue(Speaker.objects.get(item__pk='1').begin_time is not None)
+
+    def test_global_end_speach_url(self):
+        self.assertFalse(config['presentation'])
+        response = self.admin_client.get('/agenda/list_of_speakers/end_speach/')
+        self.assertRedirects(response, '/projector/dashboard/')
+        self.assertMessage(response, 'There is no list of speakers for the current slide. Please choose the agenda item manually from the agenda.')
+
+        response = self.admin_client.get('/projector/activate/item-1/')
+        self.assertEqual(config['presentation'], 'item-1')
+        response = self.admin_client.get('/agenda/list_of_speakers/end_speach/')
+        self.assertRedirects(response, '/projector/dashboard/')
+        self.assertMessage(response, 'There is no one speaking at the moment.')
+
+        response = self.speaker1_client.get('/agenda/list_of_speakers/add/')
+        self.assertTrue(Speaker.objects.get(item__pk='1').begin_time is None)
+        response = self.admin_client.get('/agenda/list_of_speakers/end_speach/')
+        self.assertRedirects(response, '/projector/dashboard/')
+        self.assertMessage(response, 'There is no one speaking at the moment.')
+
+        response = self.admin_client.get('/agenda/list_of_speakers/next/')
+        self.assertTrue(Speaker.objects.get(item__pk='1').end_time is None)
+        response = self.admin_client.get('/agenda/list_of_speakers/end_speach/')
+        self.assertRedirects(response, '/projector/dashboard/')
+        self.assertTrue(Speaker.objects.get(item__pk='1').end_time is not None)
