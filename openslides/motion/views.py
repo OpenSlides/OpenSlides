@@ -65,7 +65,7 @@ class GetVersionMixin(object):
             except MotionVersion.DoesNotExist:
                 raise Http404('Version %s not found' % version_number)
         else:
-            object.version = object.get_last_not_rejected_version()
+            object.version = object.active_version
         return object
 
 
@@ -275,50 +275,6 @@ class VersionPermitView(GetVersionMixin, SingleObjectMixin, QuestionMixin, Redir
             person=self.request.user)
 
 version_permit = VersionPermitView.as_view()
-
-
-class VersionRejectView(GetVersionMixin, SingleObjectMixin, QuestionMixin, RedirectView):
-    """
-    View to reject a version.
-    """
-
-    model = Motion
-    question_url_name = 'motion_version_detail'
-    success_url_name = 'motion_detail'
-
-    def get(self, *args, **kwargs):
-        """
-        Set self.object to a motion.
-        """
-        self.object = self.get_object()
-        return super(VersionRejectView, self).get(*args, **kwargs)
-
-    def get_url_name_args(self):
-        """
-        Return a list with arguments to create the success- and question_url.
-        """
-        return [self.object.pk, self.object.version.version_number]
-
-    def get_question(self):
-        return _('Are you sure you want reject Version %s?') % self.object.version.version_number
-
-    def case_yes(self):
-        """
-        Reject the version, if the user chooses 'yes'.
-        """
-        self.object.reject_version(self.object.version)
-        self.object.save(ignore_version_data=True)
-        self.object.write_log(
-            message_list=[ugettext_noop('Version %d rejected') % self.object.version.version_number],
-            person=self.request.user)
-
-    def get_success_url_name_args(self):
-        """
-        Returns the motion pk as argument for the success url name.
-        """
-        return [self.object.pk]
-
-version_reject = VersionRejectView.as_view()
 
 
 class VersionDiffView(DetailView):
