@@ -216,3 +216,12 @@ class ConfigTest(TestCase):
         response = self.client.get('/config/agenda/')
         self.assertContains(response, 'timepicker.css', status_code=200)
         self.assertContains(response, 'jquery-ui-timepicker-addon.min.js', status_code=200)
+
+    def test_wrong_input(self):
+        response = self.client.post(
+            '/config/agenda/',
+            {'agenda_start_event_date_time': 'wrong_format',
+             'agenda_show_last_speakers': '3'})
+        self.assertFormError(response, form='form',
+                             field='agenda_start_event_date_time',
+                             errors='Invalid input.')
