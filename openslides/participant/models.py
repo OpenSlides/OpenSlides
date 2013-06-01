@@ -139,7 +139,7 @@ class Group(PersonMixin, Person, SlideMixin, DjangoGroup):
     description = models.TextField(blank=True, verbose_name=ugettext_lazy("Description"))
 
     @models.permalink
-    def get_absolute_url(self, link='view'):
+    def get_absolute_url(self, link='detail'):
         """
         Return the URL to this user group.
 
@@ -148,7 +148,7 @@ class Group(PersonMixin, Person, SlideMixin, DjangoGroup):
         * edit
         * delete
         """
-        if link == 'view':
+        if link == 'detail' or link == 'view':
             return ('user_group_view', [str(self.id)])
         if link == 'edit':
             return ('user_group_edit', [str(self.id)])

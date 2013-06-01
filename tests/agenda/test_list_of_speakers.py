@@ -11,7 +11,7 @@ from django.test.client import Client
 
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.test import TestCase
-from openslides.participant.models import User
+from openslides.participant.models import User, Group
 from openslides.agenda.models import Item, Speaker
 from openslides.config.api import config
 
@@ -142,6 +142,15 @@ class TestAgendaItemView(SpeakerViewTestCase):
         response = self.admin_client.post(
             '/agenda/1/', {'speaker': self.speaker1.person_id})
         self.assertFormError(response, 'form', 'speaker', 'speaker1 is already on the list of speakers.')
+
+    def test_group_as_speaker(self):
+        """
+        Test to show a group as a speaker on the agenda-view.
+        """
+        group = Group.objects.create(name='test', group_as_person=True)
+        Speaker.objects.add(group, self.item1)
+        self.assertTrue(Speaker.objects.filter(person=group.person_id, item=self.item1).exists())
+        response = self.admin_client.get('/agenda/1/')
 
 
 class TestSpeakerDeleteView(SpeakerViewTestCase):
