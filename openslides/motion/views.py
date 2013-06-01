@@ -18,7 +18,7 @@ from django.db import transaction
 from django.db.models import Model
 from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
 from django.views.generic.detail import SingleObjectMixin
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 
 from reportlab.platypus import SimpleDocTemplate
 
@@ -44,74 +44,71 @@ from .csv_import import import_motions
 
 
 class MotionListView(ListView):
-    """View, to list all motions."""
+    """
+    View, to list all motions.
+    """
     permission_required = 'motion.can_see_motion'
     model = Motion
 
 motion_list = MotionListView.as_view()
 
 
-class GetVersionMixin(object):
-    """Mixin to set a specific version to a motion."""
-
-    def get_object(self):
-        """Return a Motion object. The id is taken from the url and the version
-        is set to the version with the 'version_number' from the URL."""
-        object = super(GetVersionMixin, self).get_object()
-        version_number = self.kwargs.get('version_number', None)
-        if version_number is not None:
-            try:
-                object.version = int(version_number)
-            except MotionVersion.DoesNotExist:
-                raise Http404('Version %s not found' % version_number)
-        else:
-            object.version = object.active_version
-        return object
-
-
-class MotionDetailView(GetVersionMixin, DetailView):
-    """Show one motion."""
+class MotionDetailView(DetailView):
+    """
+    Show one motion.
+    """
     permission_required = 'motion.can_see_motion'
     model = Motion
 
     def get_context_data(self, **kwargs):
-        """Return the template context.
+        """
+        Return the template context.
 
         Append the allowed actions for the motion to the context.
         """
-        context = super(MotionDetailView, self).get_context_data(**kwargs)
-        context['allowed_actions'] = self.object.get_allowed_actions(self.request.user)
-        return context
+        version_number = self.kwargs.get('version_number', None)
+        if version_number is not None:
+            try:
+                version = self.object.versions.get(version_number=int(version_number))
+            except MotionVersion.DoesNotExist:
+                raise Http404('Version %s not found' % version_number)
+        else:
+            version = self.object.get_active_version()
+
+        kwargs.update({
+            'allowed_actions': self.object.get_allowed_actions(self.request.user),
+            'version': version,
+            'title': version.title,
+            'text': version.text,
+            'reason': version.reason})
+        return super(MotionDetailView, self).get_context_data(**kwargs)
 
 motion_detail = MotionDetailView.as_view()
 
 
-class MotionMixin(object):
+class MotionEditMixin(object):
     """
     Mixin for MotionViewsClasses to save the version data.
     """
 
-    def manipulate_object(self, form):
+    def form_valid(self, form):
         """
-        Saves the version data into the motion object before it is saved in
-        the Database. Does also set category, identifier and new workflow
-        if given.
+        Saves the Create or UpdateForm into a motion object.
         """
-        super(MotionMixin, self).manipulate_object(form)
-        for attr in ['title', 'text', 'reason']:
-            setattr(self.object, attr, form.cleaned_data[attr])
+        self.object = form.save(commit=False)
 
-        if type(self) == MotionCreateView:
-            self.object.new_version
-        else:
-            for attr in ['title', 'text', 'reason']:
-                if getattr(self.object, attr) != getattr(self.object.last_version, attr):
-                    new_data = True
-                    break
+        if type(self) == MotionUpdateView:
+            # Decide if a new version is saved to the database
+            if (self.object.state.versioning and
+                    not form.cleaned_data.get('disable_versioning', False)):
+                version = self.object.get_new_version()
             else:
-                new_data = False
-            if new_data and self.object.state.versioning and not form.cleaned_data.get('disable_versioning', False):
-                self.object.new_version
+                version = self.object.get_last_version()
+        else:
+            version = self.object.get_new_version()
+
+        for attr in ['title', 'text', 'reason']:
+            setattr(version, attr, form.cleaned_data[attr])
 
         try:
             self.object.category = form.cleaned_data['category']
@@ -127,11 +124,9 @@ class MotionMixin(object):
         if workflow:
             self.object.reset_state(workflow)
 
-    def post_save(self, form):
-        """
-        Save the submitter an the supporter so the motion.
-        """
-        super(MotionMixin, self).post_save(form)
+        self.object.save(use_version=version)
+
+        # Save the submitter an the supporter so the motion.
         # TODO: only delete and save neccessary submitters and supporter
         if 'submitter' in form.cleaned_data:
             self.object.submitter.all().delete()
@@ -143,6 +138,7 @@ class MotionMixin(object):
             MotionSupporter.objects.bulk_create(
                 [MotionSupporter(motion=self.object, person=person)
                  for person in form.cleaned_data['supporter']])
+        return HttpResponseRedirect(self.get_success_url())
 
     def get_form_class(self):
         """
@@ -173,8 +169,10 @@ class MotionMixin(object):
         return type('MotionForm', tuple(form_classes), {})
 
 
-class MotionCreateView(MotionMixin, CreateView):
-    """View to create a motion."""
+class MotionCreateView(MotionEditMixin, CreateView):
+    """
+    View to create a motion.
+    """
     model = Motion
 
     def has_permission(self, request, *args, **kwargs):
@@ -190,21 +188,22 @@ class MotionCreateView(MotionMixin, CreateView):
         return False
 
     def form_valid(self, form):
-        """Write a log message, if the form is valid."""
-        value = super(MotionCreateView, self).form_valid(form)
+        """
+        Write a log message, if the form is valid.
+        """
+        response = super(MotionCreateView, self).form_valid(form)
         self.object.write_log([ugettext_noop('Motion created')], self.request.user)
-        return value
-
-    def post_save(self, form):
-        super(MotionCreateView, self).post_save(form)
         if not 'submitter' in form.cleaned_data:
             self.object.add_submitter(self.request.user)
+        return response
 
 motion_create = MotionCreateView.as_view()
 
 
-class MotionUpdateView(MotionMixin, UpdateView):
-    """View to update a motion."""
+class MotionUpdateView(MotionEditMixin, UpdateView):
+    """
+    View to update a motion.
+    """
     model = Motion
 
     def has_permission(self, request, *args, **kwargs):
@@ -213,32 +212,28 @@ class MotionUpdateView(MotionMixin, UpdateView):
 
     def form_valid(self, form):
         """Write a log message, if the form is valid."""
-        value = super(MotionUpdateView, self).form_valid(form)
-        self.object.write_log([ugettext_noop('Motion updated')], self.request.user)
-        return value
-
-    def manipulate_object(self, *args, **kwargs):
-        """
-        Removes the supporters if config option is True and supporting is still
-        available in the state.
-        """
-        return_value = super(MotionUpdateView, self).manipulate_object(*args, **kwargs)
+        response = super(MotionUpdateView, self).form_valid(form)
         if (config['motion_remove_supporters'] and self.object.state.allow_support and
                 not self.request.user.has_perm('motion.can_manage_motion')):
             self.object.clear_supporters()
             self.object.write_log([ugettext_noop('All supporters removed')], self.request.user)
-        return return_value
+        self.object.write_log([ugettext_noop('Motion updated')], self.request.user)
+        return response
 
 motion_edit = MotionUpdateView.as_view()
 
 
 class MotionDeleteView(DeleteView):
-    """View to delete a motion."""
+    """
+    View to delete a motion.
+    """
     model = Motion
     success_url_name = 'motion_list'
 
     def has_permission(self, request, *args, **kwargs):
-        """Check if the request.user has the permission to delete the motion."""
+        """
+        Check if the request.user has the permission to delete the motion.
+        """
         return self.get_object().get_allowed_actions(request.user)['delete']
 
     def get_success_message(self):
@@ -247,7 +242,7 @@ class MotionDeleteView(DeleteView):
 motion_delete = MotionDeleteView.as_view()
 
 
-class VersionPermitView(GetVersionMixin, SingleObjectMixin, QuestionMixin, RedirectView):
+class VersionPermitView(SingleObjectMixin, QuestionMixin, RedirectView):
     """
     View to permit a version of a motion.
     """
@@ -262,46 +257,56 @@ class VersionPermitView(GetVersionMixin, SingleObjectMixin, QuestionMixin, Redir
         Set self.object to a motion.
         """
         self.object = self.get_object()
+        version_number = self.kwargs.get('version_number', None)
+        try:
+            self.version = self.object.versions.get(version_number=int(version_number))
+        except MotionVersion.DoesNotExist:
+            raise Http404('Version %s not found' % version_number)
         return super(VersionPermitView, self).get(*args, **kwargs)
 
     def get_url_name_args(self):
         """
-        Return a list with arguments to create the success- and question_url.
+        Returns a list with arguments to create the success- and question_url.
         """
-        return [self.object.pk, self.object.version.version_number]
+        return [self.object.pk, self.version.version_number]
 
     def get_question(self):
         """
         Return a string, shown to the user as question to permit the version.
         """
-        return _('Are you sure you want permit Version %s?') % self.object.version.version_number
+        return _('Are you sure you want permit version %s?') % self.version.version_number
 
     def case_yes(self):
         """
         Activate the version, if the user chooses 'yes'.
         """
-        self.object.set_active_version(self.object.version)
-        self.object.save(ignore_version_data=True)
+        self.object.active_version = self.version
+        self.object.save(update_fields=['active_version'])
         self.object.write_log(
-            message_list=[ugettext_noop('Version %d permitted') % self.object.version.version_number],
+            message_list=[ugettext_noop('Version %d permitted')
+                          % self.version.version_number],
             person=self.request.user)
 
 version_permit = VersionPermitView.as_view()
 
 
 class VersionDiffView(DetailView):
-    """Show diff between two versions of a motion."""
+    """
+    Show diff between two versions of a motion.
+    """
     permission_required = 'motion.can_see_motion'
     model = Motion
     template_name = 'motion/motion_diff.html'
 
     def get_context_data(self, **kwargs):
-        """Return the template context with versions and html diff strings."""
+        """
+        Return the template context with versions and html diff strings.
+        """
         try:
             rev1 = int(self.request.GET['rev1'])
             rev2 = int(self.request.GET['rev2'])
-            version_rev1 = self.object.versions.get(version_number=self.request.GET['rev1'])
-            version_rev2 = self.object.versions.get(version_number=self.request.GET['rev2'])
+            version_rev1 = self.object.versions.get(version_number=rev1)
+            version_rev2 = self.object.versions.get(version_number=rev2)
             diff_text = htmldiff(version_rev1.text, version_rev2.text)
             diff_reason = htmldiff(version_rev1.reason, version_rev2.reason)
         except (KeyError, ValueError, MotionVersion.DoesNotExist):
@@ -323,7 +328,8 @@ version_diff = VersionDiffView.as_view()
 
 
 class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
-    """View to support or unsupport a motion.
+    """
+    View to support or unsupport a motion.
 
     If self.support is True, the view will append a request.user to the supporter list.
 
@@ -335,12 +341,16 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
     support = True
 
     def get(self, request, *args, **kwargs):
-        """Set self.object to a motion."""
+        """
+        Set self.object to a motion.
+        """
         self.object = self.get_object()
         return super(SupportView, self).get(request, *args, **kwargs)
 
     def check_permission(self, request):
-        """Return True if the user can support or unsupport the motion. Else: False."""
+        """
+        Return True if the user can support or unsupport the motion. Else: False.
+        """
         allowed_actions = self.object.get_allowed_actions(request.user)
         if self.support and not allowed_actions['support']:
             messages.error(request, _('You can not support this motion.'))
@@ -352,14 +362,17 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
             return True
 
     def get_question(self):
-        """Return the question string."""
+        """
+        Return the question string.
+        """
         if self.support:
             return _('Do you really want to support this motion?')
         else:
             return _('Do you really want to unsupport this motion?')
 
     def case_yes(self):
-        """Append or remove the request.user from the motion.
+        """
+        Append or remove the request.user from the motion.
 
         First the method checks the permissions, and writes a log message after
         appending or removing the user.
@@ -374,14 +387,18 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
                 self.object.write_log([ugettext_noop("Supporter: -%s") % user], user)
 
     def get_success_message(self):
-        """Return the success message."""
+        """
+        Return the success message.
+        """
         if self.support:
             return _("You have supported this motion successfully.")
         else:
             return _("You have unsupported this motion successfully.")
 
     def get_redirect_url(self, **kwargs):
-        """Return the url, the view should redirect to."""
+        """
+        Return the url, the view should redirect to.
+        """
         return self.object.get_absolute_url()
 
 motion_support = SupportView.as_view(support=True)
@@ -389,23 +406,31 @@ motion_unsupport = SupportView.as_view(support=False)
 
 
 class PollCreateView(SingleObjectMixin, RedirectView):
-    """View to create a poll for a motion."""
+    """
+    View to create a poll for a motion.
+    """
     permission_required = 'motion.can_manage_motion'
     model = Motion
 
     def get(self, request, *args, **kwargs):
-        """Set self.object to a motion."""
+        """
+        Set self.object to a motion.
+        """
         self.object = self.get_object()
         return super(PollCreateView, self).get(request, *args, **kwargs)
 
     def pre_redirect(self, request, *args, **kwargs):
-        """Create the poll for the motion."""
+        """
+        Create the poll for the motion.
+        """
         self.poll = self.object.create_poll()
         self.object.write_log([ugettext_noop("Poll created")], request.user)
         messages.success(request, _("New vote was successfully created."))
 
     def get_redirect_url(self, **kwargs):
-        """Return the URL to the EditView of the poll."""
+        """
+        Return the URL to the EditView of the poll.
+        """
         return reverse('motion_poll_edit', args=[self.object.pk, self.poll.poll_number])
 
 poll_create = PollCreateView.as_view()
@@ -555,31 +580,38 @@ class MotionSetStateView(SingleObjectMixin, RedirectView):
         except WorkflowError, e:  # TODO: Is a WorkflowError still possible here?
             messages.error(request, e)
         else:
-            self.object.save(ignore_version_data=True)
+            self.object.save(update_fields=['state'])
             self.object.write_log(
                 message_list=[ugettext_noop('State changed to '), self.object.state.name],
                 person=self.request.user)
             messages.success(request,
-                             _('The state of the motion was set to %s.') % html_strong(_(self.object.state.name)))
+                             _('The state of the motion was set to %s.')
+                             % html_strong(_(self.object.state.name)))
 
 set_state = MotionSetStateView.as_view()
 reset_state = MotionSetStateView.as_view(reset=True)
 
 
 class CreateAgendaItemView(SingleObjectMixin, RedirectView):
-    """View to create and agenda item for a motion."""
+    """
+    View to create and agenda item for a motion.
+    """
     permission_required = 'agenda.can_manage_agenda'
     model = Motion
     url_name = 'item_overview'
     url_name_args = []
 
     def get(self, request, *args, **kwargs):
-        """Set self.object to a motion."""
+        """
+        Set self.object to a motion.
+        """
         self.object = self.get_object()
         return super(CreateAgendaItemView, self).get(request, *args, **kwargs)
 
     def pre_redirect(self, request, *args, **kwargs):
-        """Create the agenda item."""
+        """
+        Create the agenda item.
+        """
         self.item = Item.objects.create(related_sid=self.object.sid)
         self.object.write_log([ugettext_noop('Agenda item created')], self.request.user)
 
@@ -587,32 +619,40 @@ create_agenda_item = CreateAgendaItemView.as_view()
 
 
 class MotionPDFView(SingleObjectMixin, PDFView):
-    """Create the PDF for one, or all motions.
+    """
+    Create the PDF for one, or all motions.
 
     If self.print_all_motions is True, the view returns a PDF with all motions.
 
     If self.print_all_motions is False, the view returns a PDF with only one
-    motion."""
+    motion.
+    """
     permission_required = 'motion.can_see_motion'
     model = Motion
     top_space = 0
     print_all_motions = False
 
     def get(self, request, *args, **kwargs):
-        """Set self.object to a motion."""
+        """
+        Set self.object to a motion.
+        """
         if not self.print_all_motions:
             self.object = self.get_object()
         return super(MotionPDFView, self).get(request, *args, **kwargs)
 
     def get_filename(self):
-        """Return the filename for the PDF."""
+        """
+        Return the filename for the PDF.
+        """
         if self.print_all_motions:
             return _("Motions")
         else:
             return _("Motion: %s") % unicode(self.object)
 
     def append_to_pdf(self, pdf):
-        """Append PDF objects."""
+        """
+        Append PDF objects.
+        """
         if self.print_all_motions:
             motions_to_pdf(pdf)
         else:
@@ -694,7 +734,9 @@ motion_csv_import = MotionCSVImportView.as_view()
 
 
 def register_tab(request):
-    """Return the motion tab."""
+    """
+    Return the motion tab.
+    """
     # TODO: Find a better way to set the selected var.
     return Tab(
         title=_('Motions'),
@@ -705,7 +747,8 @@ def register_tab(request):
 
 
 def get_widgets(request):
-    """Return the motion widgets for the dashboard.
+    """
+    Return the motion widgets for the dashboard.
 
     There is only one widget. It shows all motions.
     """

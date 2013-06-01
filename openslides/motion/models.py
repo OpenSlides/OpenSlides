@@ -93,8 +93,7 @@ class Motion(SlideMixin, models.Model):
             ('can_support_motion', ugettext_noop('Can support motions')),
             ('can_manage_motion', ugettext_noop('Can manage motions')),
         )
-        # TODO: order per default by category and identifier
-        # ordering = ('number',)
+        ordering = ('identifier', )
 
     def __unicode__(self):
         """
@@ -103,67 +102,90 @@ class Motion(SlideMixin, models.Model):
         return self.active_version.title
 
     # TODO: Use transaction
-    def save(self, ignore_version_data=False, *args, **kwargs):
+    def save(self, use_version=None, *args, **kwargs):
         """
         Save the motion.
 
         1. Set the state of a new motion to the default state.
         2. Ensure that the identifier is not an empty string.
         3. Save the motion object.
-        4. Save the version data, if ignore_version_data == False.
-        5. Set the active version for the motion, if ignore_version_data == False.
+        4. Save the version data
+        5. Set the active version for the motion, if a new version object was saved.
+
+        The version data is *not* saved, if
+            1. The django-feature 'update_fields' is used or
+            2. The argument use_version is False (differ to None).
+
+        The version object into which the data is saved is picked in this order:
+            1. The argument use_version.
+            2. The attribute use_version. As default, use_version is the
+               active_version. If the active_version is not set, it is the
+               last_version. If the last_version is not set, it is a
+               new_version. See use_version property.
+
+        use_version is the version object, in which the version data is saved.
+        * If use_version is False, no version data ist saved.
+        * If use_version is None, the last version is used.
+
+        To use a new version object, you have to set it via use_version. You have
+        to set the title, text and reason into this version object. motion.title
+        etc will be ignored.
         """
         if not self.state:
             self.reset_state()
-            # TODO: Bad hack here to make Motion.objects.create() work
-            # again. We have to remove the flag to force an INSERT given
-            # by Django's create() method without knowing its advantages
-            # because of our misuse of the save() method in the
-            # set_identifier() method.
-            kwargs.pop('force_insert', None)
 
-        if not self.identifier and self.identifier is not None:  # TODO: Why not >if self.identifier is '':<
+        # Solves the problem, that there can only be one motion with an empty
+        # string as identifier
+        if self.identifier is '':
             self.identifier = None
 
         super(Motion, self).save(*args, **kwargs)
 
-        if not ignore_version_data:
-            # Select version object
-            version = self.last_version
-            if hasattr(self, '_new_version'):
-                version = self.new_version
-                del self._new_version
-                version.motion = self  # TODO: Test if this line is really neccessary.
+        if 'update_fields' in kwargs:
+            # Do not save the version-data, if only some motion fields are updated
+            return
 
-            # Save title, text and reason in the version object
+        if use_version is False:
+            # We do not need to save the version
+            return
+        elif use_version is None:
+            use_version = self.get_last_version()
+
+            # Save title, text and reason in the version object.
             for attr in ['title', 'text', 'reason']:
                 _attr = '_%s' % attr
-                try:
-                    setattr(version, attr, getattr(self, _attr))
+                data = getattr(self, _attr, None)
+                if data is not None:
+                    setattr(use_version, attr, data)
                     delattr(self, _attr)
-                except AttributeError:
-                    if self.versions.exists():
-                        # If the _attr was not set, use the value from last_version
-                        setattr(version, attr, getattr(self.last_version, attr))
 
-            # Set version_number of the new Version (if neccessary) and save it into the DB
-            if version.id is None:
-                # TODO: auto increment the version_number in the Database
-                version_number = self.versions.aggregate(Max('version_number'))['version_number__max'] or 0
-                version.version_number = version_number + 1
-            version.save()
+        # If version is not in the database, test if it has new data and set
+        # the version_number
+        if use_version.id is None:
+            if not self.version_data_changed(use_version):
+                # We do not need to save the version
+                return
+            version_number = self.versions.aggregate(Max('version_number'))['version_number__max'] or 0
+            use_version.version_number = version_number + 1
 
-            # Set the active version of this motion. This has to be done after the
-            # version is saved to the database
-            if self.active_version is None or not self.state.leave_old_version_active:
-                self.active_version = version
-                self.save(ignore_version_data=True)
+        # Necessary line, if the version was set before the motion had an id.
+        # propably a django bug.
+        use_version.motion = use_version.motion
+
+        use_version.save()
+
+        # Set the active version of this motion. This has to be done after the
+        # version is saved to the database
+        if self.active_version is None or not self.state.leave_old_version_active:
+            self.active_version = use_version
+            self.save(update_fields=['active_version'])
 
     def get_absolute_url(self, link='detail'):
         """
         Return an URL for this version.
 
-        The keyword argument 'link' can be 'detail', 'view', 'edit', 'update' or 'delete'.
+        The keyword argument 'link' can be 'detail', 'view', 'edit',
+        'update' or 'delete'.
         """
         if link == 'view' or link == 'detail':
             return reverse('motion_detail', args=[str(self.id)])
@@ -171,6 +193,23 @@ class Motion(SlideMixin, models.Model):
             return reverse('motion_edit', args=[str(self.id)])
         if link == 'delete':
             return reverse('motion_delete', args=[str(self.id)])
+
+    def version_data_changed(self, version):
+        """
+        Compare the version with the last version of the motion.
+
+        Returns True if the version data (title, text, reason) is different.
+        Else, returns False.
+        """
+        if not self.versions.exists():
+            # if there is no version in the database, the data has always changed
+            return True
+
+        last_version = self.get_last_version()
+        for attr in ['title', 'text', 'reason']:
+            if getattr(last_version, attr) != getattr(version, attr):
+                return True
+        return False
 
     def set_identifier(self):
         """
@@ -189,20 +228,16 @@ class Motion(SlideMixin, models.Model):
         if self.category is None or not self.category.prefix:
             prefix = ''
         else:
-            prefix = self.category.prefix + ' '
+            prefix = '%s ' % self.category.prefix
 
-        # TODO: Do not use the save() method in this method, see note in
-        # the save() method above.
-        while True:
+        number += 1
+        identifier = '%s%d' % (prefix, number)
+        while Motion.objects.filter(identifier=identifier).exists():
             number += 1
-            self.identifier = '%s%d' % (prefix, number)
-            self.identifier_number = number
-            try:
-                self.save(ignore_version_data=True)
-            except IntegrityError:
-                continue
-            else:
-                break
+            identifier = '%s%d' % (prefix, number)
+
+        self.identifier = identifier
+        self.identifier_number = number
 
     def get_title(self):
         """
@@ -213,7 +248,7 @@ class Motion(SlideMixin, models.Model):
         try:
             return self._title
         except AttributeError:
-            return self.version.title
+            return self.get_active_version().title
 
     def set_title(self, title):
         """
@@ -240,7 +275,7 @@ class Motion(SlideMixin, models.Model):
         try:
             return self._text
         except AttributeError:
-            return self.version.text
+            return self.get_active_version().text
 
     def set_text(self, text):
         """
@@ -266,7 +301,7 @@ class Motion(SlideMixin, models.Model):
         try:
             return self._reason
         except AttributeError:
-            return self.version.reason
+            return self.get_active_version().reason
 
     def set_reason(self, reason):
         """
@@ -283,72 +318,47 @@ class Motion(SlideMixin, models.Model):
     Is saved in a MotionVersion object.
     """
 
-    @property
-    def new_version(self):
+    def get_new_version(self):
         """
         Return a version object, not saved in the database.
 
-        On the first call, it creates a new version. On any later call, it
-        use the existing new version.
-
-        The new_version object will be deleted when it is saved into the db.
+        The version data of the new version object is populated with the data
+        set via motion.title, motion.text, motion.reason. If the data is not set,
+        it is population with the data from the last version object.
         """
-        try:
-            return self._new_version
-        except AttributeError:
-            self._new_version = MotionVersion(motion=self)
-            return self._new_version
-
-    def get_version(self):
-        """
-        Get the 'active' version object.
-
-        This version will be used to get the data for this motion.
-        """
-        try:
-            return self._version
-        except AttributeError:
-            return self.last_version
-
-    def set_version(self, version):
-        """
-        Set the 'active' version object.
-
-        The keyword argument 'version' can be a MotionVersion object or the
-        version_number of a version object or None.
-
-        If the argument is None, the newest version will be used.
-        """
-        if version is None:
-            try:
-                del self._version
-            except AttributeError:
-                pass
+        new_version = MotionVersion(motion=self)
+        if self.versions.exists():
+            last_version = self.get_last_version()
         else:
-            if type(version) is int:
-                version = self.versions.get(version_number=version)
-            elif type(version) is not MotionVersion:
-                raise ValueError('The argument \'version\' has to be int or '
-                                 'MotionVersion, not %s' % type(version))
-            # TODO: Test, that the version is one of this motion
-            self._version = version
+            last_version = None
+        for attr in ['title', 'text', 'reason']:
+            _attr = '_%s' % attr
+            data = getattr(self, _attr, None)
+            if data is None and not last_version is None:
+                data = getattr(last_version, attr)
+            if data is not None:
+                setattr(new_version, attr, data)
+        return new_version
 
-    version = property(get_version, set_version)
-    """
-    The active version of this motion.
-    """
+    def get_active_version(self):
+        """
+        Returns the active version of the motion.
 
-    @property
-    def last_version(self):
+        If no active version is set by now, the last_version is used
+        """
+        if self.active_version:
+            return self.active_version
+        else:
+            return self.get_last_version()
+
+    def get_last_version(self):
         """
         Return the newest version of the motion.
         """
-        # TODO: Fix the case, that the motion has no version.
-        # Check whether the case, that a motion has not any version, can still appear.
         try:
             return self.versions.order_by('-version_number')[0]
         except IndexError:
-            return self.new_version
+            return self.get_new_version()
 
     @property
     def submitters(self):
@@ -459,7 +469,7 @@ class Motion(SlideMixin, models.Model):
         """
         Return a title for the Agenda.
         """
-        return self.active_version.title
+        return self.title
 
     def get_agenda_title_supplement(self):
         """
@@ -517,16 +527,6 @@ class Motion(SlideMixin, models.Model):
         e. g. motion.write_log(message_list=[ugettext_noop('Message Text')])
         """
         MotionLog.objects.create(motion=self, message_list=message_list, person=person)
-
-    def set_active_version(self, version):
-        """
-        Set the active version of a motion to 'version'.
-
-        'version' can be a version object, or the version_number of a version.
-        """
-        if type(version) is int:
-            version = self.versions.get(version_number=version)
-        self.active_version = version
 
 
 class MotionVersion(models.Model):
