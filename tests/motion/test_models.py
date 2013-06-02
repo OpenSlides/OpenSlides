@@ -19,30 +19,24 @@ class ModelTest(TestCase):
     def setUp(self):
         self.motion = Motion.objects.create(title='v1')
         self.test_user = User.objects.create(username='blub')
+        # Use the simple workflow
         self.workflow = Workflow.objects.get(pk=1)
 
     def test_create_new_version(self):
-        motion = Motion.objects.create(title='m1')
+        motion = self.motion
         self.assertEqual(motion.versions.count(), 1)
 
-        motion.new_version
-        motion.save()
-        self.assertEqual(motion.versions.count(), 2)
-
+        # new data, but no new version
         motion.title = 'new title'
         motion.save()
-        self.assertEqual(motion.versions.count(), 2)
+        self.assertEqual(motion.versions.count(), 1)
 
-        motion.save()
-        self.assertEqual(motion.versions.count(), 2)
-
+        # new data and new version
         motion.text = 'new text'
-        motion.new_version
-        motion.save()
-        self.assertEqual(motion.versions.count(), 3)
-
-        motion.save()
-        self.assertEqual(motion.versions.count(), 3)
+        motion.save(use_version=motion.get_new_version())
+        self.assertEqual(motion.versions.count(), 2)
+        self.assertEqual(motion.title, 'new title')
+        self.assertEqual(motion.text, 'new text')
 
     def test_version_data(self):
         motion = Motion()
@@ -53,35 +47,23 @@ class ModelTest(TestCase):
         motion.title = 'title'
         self.assertEqual(motion._title, 'title')
 
+        motion.text = 'text'
+        self.assertEqual(motion._text, 'text')
+
         motion.reason = 'reason'
         self.assertEqual(motion._reason, 'reason')
 
     def test_version(self):
-        motion = Motion.objects.create(title='v1')
+        motion = self.motion
 
         motion.title = 'v2'
-        motion.new_version
-        motion.save()
-        v2_version = motion.version
+        motion.save(use_version=motion.get_new_version())
+        v2_version = motion.get_last_version()
         motion.title = 'v3'
-        motion.new_version
-        motion.save()
+        motion.save(use_version=motion.get_new_version())
         with self.assertRaises(AttributeError):
             self._title
         self.assertEqual(motion.title, 'v3')
-
-        motion.version = 1
-        self.assertEqual(motion.title, 'v1')
-
-        motion.version = v2_version
-        self.assertEqual(motion.title, 'v2')
-
-        motion.version = None
-        motion.version = None  # Test to set a version to None, which is already None
-        self.assertEqual(motion.title, 'v3')
-
-        with self.assertRaises(ValueError):
-            motion.version = 'wrong'
 
     def test_absolute_url(self):
         motion_id = self.motion.id
@@ -147,23 +129,21 @@ class ModelTest(TestCase):
         motion = Motion()
         motion.title = 'foo'
         motion.text = 'bar'
-        first_version = motion.version
         motion.save()
+        first_version = motion.get_last_version()
 
         motion = Motion.objects.get(pk=motion.pk)
-        motion.new_version
         motion.title = 'New Title'
-        motion.save()
-        new_version = motion.last_version
+        motion.save(use_version=motion.get_new_version())
+        new_version = motion.get_last_version()
         self.assertEqual(motion.versions.count(), 2)
 
-        motion.set_active_version(new_version)
+        motion.active_version = new_version
         motion.save()
         self.assertEqual(motion.versions.count(), 2)
 
-        motion.set_active_version(first_version)
-        motion.version = first_version
-        motion.save(ignore_version_data=True)
+        motion.active_version = first_version
+        motion.save(use_version=False)
         self.assertEqual(motion.versions.count(), 2)
 
 
