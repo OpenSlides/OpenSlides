@@ -67,7 +67,8 @@ class BaseMotionForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
 class MotionSubmitterMixin(forms.ModelForm):
     """Mixin to append the submitter field to a MotionForm."""
 
-    submitter = MultiplePersonFormField(label=ugettext_lazy("Submitter"))
+    submitter = MultiplePersonFormField(label=ugettext_lazy("Submitter"),
+                                        required=False)
     """Submitter of the motion. Can be one or more persons."""
 
     def __init__(self, *args, **kwargs):

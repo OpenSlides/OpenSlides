@@ -65,6 +65,16 @@ class TestMotionDetailView(MotionViewTestCase):
         self.check_url('/motion/500/', self.admin_client, 404)
 
 
+class TestMotionDetailVersionView(MotionViewTestCase):
+    def test_get(self):
+        self.motion1.title = 'AFWEROBjwerGwer'
+        self.motion1.save(use_version=self.motion1.get_new_version())
+        self.check_url('/motion/1/version/1/', self.admin_client, 200)
+        response = self.check_url('/motion/1/version/2/', self.admin_client, 200)
+        self.assertContains(response, 'AFWEROBjwerGwer')
+        self.check_url('/motion/1/version/500/', self.admin_client, 404)
+
+
 class TestMotionCreateView(MotionViewTestCase):
     url = '/motion/new/'
 
@@ -72,7 +82,6 @@ class TestMotionCreateView(MotionViewTestCase):
         self.check_url(self.url, self.admin_client, 200)
 
     def test_admin(self):
-        self.assertFalse(Motion.objects.filter(versions__title='new motion').exists())
         response = self.admin_client.post(self.url, {'title': 'new motion',
                                                      'text': 'motion text',
                                                      'reason': 'motion reason',
@@ -81,7 +90,6 @@ class TestMotionCreateView(MotionViewTestCase):
         self.assertTrue(Motion.objects.filter(versions__title='new motion').exists())
 
     def test_delegate(self):
-        self.assertFalse(Motion.objects.filter(versions__title='delegate motion').exists())
         response = self.delegate_client.post(self.url, {'title': 'delegate motion',
                                                         'text': 'motion text',
                                                         'reason': 'motion reason',
@@ -91,7 +99,6 @@ class TestMotionCreateView(MotionViewTestCase):
         self.assertTrue(motion.is_submitter(self.delegate))
 
     def test_registered(self):
-        self.assertFalse(Motion.objects.filter(versions__title='registered motion').exists())
         response = self.registered_client.post(self.url, {'title': 'registered motion',
                                                           'text': 'motion text',
                                                           'reason': 'motion reason',
@@ -297,24 +304,25 @@ class TestMotionDeleteView(MotionViewTestCase):
 class TestVersionPermitView(MotionViewTestCase):
     def setUp(self):
         super(TestVersionPermitView, self).setUp()
-        self.motion1.new_version
-        self.motion1.save()
+        self.motion1.title = 'new'
+        self.motion1.save(use_version=self.motion1.get_new_version())
 
     def test_get(self):
         response = self.check_url('/motion/1/version/2/permit/', self.admin_client, 302)
         self.assertRedirects(response, '/motion/1/version/2/')
 
     def test_post(self):
-        new_version = self.motion1.last_version
+        new_version = self.motion1.get_last_version()
         response = self.admin_client.post('/motion/1/version/2/permit/', {'yes': 1})
         self.assertRedirects(response, '/motion/1/version/2/')
-        self.assertEqual(self.motion1.active_version, new_version)
+        self.assertEqual(self.motion1.get_active_version(), new_version)
 
     def test_activate_old_version(self):
-        new_version = self.motion1.last_version
+        new_version = self.motion1.get_last_version()
         first_version = self.motion1.versions.order_by('version_number')[0]
 
-        self.motion1.set_active_version(new_version)
+        self.motion1.active_version = new_version
+        self.motion1.save()
         self.assertEqual(self.motion1.versions.count(), 2)
         response = self.admin_client.post('/motion/1/version/1/permit/', {'yes': 1})
         self.motion1 = Motion.objects.get(pk=1)
