@@ -42,6 +42,12 @@ def setup_motion_config_page(sender, **kwargs):
             min_value=0,
             max_value=8,
             help_text=ugettext_lazy('Choose 0 to disable the supporting system')))
+    motion_remove_supporters = ConfigVariable(
+        name='motion_remove_supporters',
+        default_value=False,
+        form_field=forms.BooleanField(
+            label=ugettext_lazy('Supporters of a motion will be removed if a submitter edits his motion in early state.'),
+            required=False))
     motion_preamble = ConfigVariable(
         name='motion_preamble',
         default_value=_('The assembly may decide,'),
@@ -114,6 +120,7 @@ def setup_motion_config_page(sender, **kwargs):
                       weight=30,
                       variables=(motion_stop_submitting,
                                  motion_min_supporters,
+                                 motion_remove_supporters,
                                  motion_preamble,
                                  motion_pdf_ballot_papers_selection,
                                  motion_pdf_ballot_papers_number,

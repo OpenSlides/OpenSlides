@@ -232,6 +232,50 @@ class TestMotionUpdateView(MotionViewTestCase):
         self.assertRedirects(response, '/motion/1/')
         self.assertEqual(Motion.objects.get(pk=self.motion1.pk).state.workflow.pk, 2)
 
+    def test_remove_supporters(self):
+        # Setup a new motion with one supporter
+        config['motion_min_supporters'] = 1
+        motion = Motion.objects.create(title='cuoPhoX4Baifoxoothi3', text='zee7xei3taediR9loote')
+        response = self.staff_client.get('/motion/%s/' % motion.id)
+        self.assertNotContains(response, 'aengeing3quair3fieGi')
+        motion.support(self.registered)
+        self.registered.last_name = 'aengeing3quair3fieGi'
+        self.registered.save()
+        response = self.staff_client.get('/motion/%s/' % motion.id)
+        self.assertContains(response, 'aengeing3quair3fieGi')
+
+        # Check editing by submitter
+        response = self.delegate_client.post(
+            '/motion/%s/edit/' % motion.id,
+            {'title': 'oori4KiaghaeSeuzaim2',
+             'text': 'eequei1Tee1aegeNgee0',
+             'submitter': self.delegate.person_id})
+        self.assertEqual(response.status_code, 403)
+        motion.add_submitter(self.delegate)
+
+        # Edit three times, without removal of supporters, with removal and in another state
+        for i in range(3):
+            if i == 1:
+                config['motion_remove_supporters'] = True
+            response = self.delegate_client.post(
+                '/motion/%s/edit/' % motion.id,
+                {'title': 'iezae8reevaT6phiesoa',
+                 'text': 'Lohjuu1aebewiu2or3oh'})
+            self.assertRedirects(response, '/motion/%s/' % motion.id)
+            if i == 0 or i == 2:
+                self.assertTrue(self.registered in Motion.objects.get(pk=motion.pk).supporters)
+            else:
+                self.assertFalse(self.registered in Motion.objects.get(pk=motion.pk).supporters)
+                # Preparing the comming (third) run
+                motion = Motion.objects.get(pk=motion.pk)
+                motion.support(self.registered)
+                motion.state = State.objects.create(
+                    name='not_support',
+                    workflow=self.motion1.state.workflow,
+                    allow_submitter_edit=True,
+                    allow_support=False)
+                motion.save()
+
 
 class TestMotionDeleteView(MotionViewTestCase):
     def test_get(self):
@@ -247,7 +291,7 @@ class TestMotionDeleteView(MotionViewTestCase):
         self.assertEqual(response.status_code, 403)
         motion = Motion.objects.get(pk=2).add_submitter(self.delegate)
         response = self.delegate_client.post('/motion/2/del/', {})
-        self.assertRedirects(response, '/motion/')
+        self.assertEqual(response.status_code, 403)
 
 
 class TestVersionPermitView(MotionViewTestCase):
