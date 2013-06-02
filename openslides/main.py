@@ -90,6 +90,9 @@ def process_options(argv=None, manage_runserver=False):
         "--syncdb", action="store_true",
         help="Update/create database before starting the server.")
     parser.add_option(
+        "--backupdb", action="store", metavar="BACKUP_PATH",
+        help="Make a backup copy of the database to BACKUP_PATH")
+    parser.add_option(
         "--reset-admin", action="store_true",
         help="Make sure the user 'admin' exists and uses 'admin' as password.")
     parser.add_option(
@@ -189,6 +192,9 @@ def _main(opts, database_path=None):
     # Reset Admin
     elif opts.reset_admin:
         create_or_reset_admin_user()
+
+    if opts.backupdb:
+        backup_database(opts.backupdb)
 
     if opts.no_run:
         return
@@ -318,6 +324,11 @@ def create_or_reset_admin_user():
     admin.default_password = 'admin'
     admin.set_password(admin.default_password)
     admin.save()
+
+
+def backup_database(dest_path):
+    argv = ["", "backupdb", "--destination={0}".format(dest_path)]
+    execute_from_command_line(argv)
 
 
 def start_browser(url):
