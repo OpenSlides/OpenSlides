@@ -109,49 +109,44 @@ class Motion(SlideMixin, models.Model):
         1. Set the state of a new motion to the default state.
         2. Ensure that the identifier is not an empty string.
         3. Save the motion object.
-        4. Save the version data
-        5. Set the active version for the motion, if a new version object was saved.
+        4. Save the version data.
+        5. Set the active version for the motion if a new version object was saved.
 
         The version data is *not* saved, if
-            1. The django-feature 'update_fields' is used or
-            2. The argument use_version is False (differ to None).
+            1. the django-feature 'update_fields' is used or
+            2. the argument use_version is False (differ to None).
 
-        The version object into which the data is saved is picked in this order:
-            1. The argument use_version.
-            2. The attribute use_version. As default, use_version is the
-               active_version. If the active_version is not set, it is the
-               last_version. If the last_version is not set, it is a
-               new_version. See use_version property.
+        The argument use_version is choose the version object into which the
+        version data is saved.
+            * If use_version is False, no version data is saved.
+            * If use_version is None, the last version is used.
+            * Else the given version is used.
 
-        use_version is the version object, in which the version data is saved.
-        * If use_version is False, no version data ist saved.
-        * If use_version is None, the last version is used.
-
-        To use a new version object, you have to set it via use_version. You have
-        to set the title, text and reason into this version object. motion.title
-        etc will be ignored.
+        To create and use a new version object, you have to set it via the
+        use_version argument. You have to set the title, text and reason into
+        this version object before giving it to this save method. The properties
+        motion.title, motion.text and motion.reason will be ignored.
         """
         if not self.state:
             self.reset_state()
 
         # Solves the problem, that there can only be one motion with an empty
-        # string as identifier
+        # string as identifier.
         if self.identifier is '':
             self.identifier = None
 
         super(Motion, self).save(*args, **kwargs)
 
         if 'update_fields' in kwargs:
-            # Do not save the version-data, if only some motion fields are updated
+            # Do not save the version data if only some motion fields are updated.
             return
 
         if use_version is False:
-            # We do not need to save the version
+            # We do not need to save the version.
             return
         elif use_version is None:
             use_version = self.get_last_version()
-
-            # Save title, text and reason in the version object.
+            # Save title, text and reason into the version object.
             for attr in ['title', 'text', 'reason']:
                 _attr = '_%s' % attr
                 data = getattr(self, _attr, None)
@@ -160,22 +155,24 @@ class Motion(SlideMixin, models.Model):
                     delattr(self, _attr)
 
         # If version is not in the database, test if it has new data and set
-        # the version_number
+        # the version_number.
         if use_version.id is None:
             if not self.version_data_changed(use_version):
-                # We do not need to save the version
+                # We do not need to save the version.
                 return
             version_number = self.versions.aggregate(Max('version_number'))['version_number__max'] or 0
             use_version.version_number = version_number + 1
 
-        # Necessary line, if the version was set before the motion had an id.
-        # propably a django bug.
+        # Necessary line if the version was set before the motion got an id.
+        # This is probably a Django bug.
         use_version.motion = use_version.motion
 
         use_version.save()
 
         # Set the active version of this motion. This has to be done after the
-        # version is saved to the database
+        # version is saved in the database.
+        # TODO: Move parts of these last lines of code outside the save method
+        # when other versions than the last ones should be edited later on.
         if self.active_version is None or not self.state.leave_old_version_active:
             self.active_version = use_version
             self.save(update_fields=['active_version'])
@@ -198,11 +195,11 @@ class Motion(SlideMixin, models.Model):
         """
         Compare the version with the last version of the motion.
 
-        Returns True if the version data (title, text, reason) is different.
-        Else, returns False.
+        Returns True if the version data (title, text, reason) is different,
+        else returns False.
         """
         if not self.versions.exists():
-            # if there is no version in the database, the data has always changed
+            # If there is no version in the database, the data has always changed.
             return True
 
         last_version = self.get_last_version()
@@ -214,7 +211,7 @@ class Motion(SlideMixin, models.Model):
     def set_identifier(self):
         """
         Sets the motion identifier automaticly according to the config
-        value, if it is not set yet.
+        value if it is not set yet.
         """
         if config['motion_identifier'] == 'manually' or self.identifier:
             # Do not set an identifier.
@@ -254,7 +251,7 @@ class Motion(SlideMixin, models.Model):
         """
         Set the titel of the motion.
 
-        The title will be saved into the version object, wenn motion.save() is
+        The title will be saved in the version object, when motion.save() is
         called.
         """
         self._title = title
@@ -324,7 +321,7 @@ class Motion(SlideMixin, models.Model):
 
         The version data of the new version object is populated with the data
         set via motion.title, motion.text, motion.reason. If the data is not set,
-        it is population with the data from the last version object.
+        it is populated with the data from the last version object.
         """
         new_version = MotionVersion(motion=self)
         if self.versions.exists():
@@ -334,7 +331,7 @@ class Motion(SlideMixin, models.Model):
         for attr in ['title', 'text', 'reason']:
             _attr = '_%s' % attr
             data = getattr(self, _attr, None)
-            if data is None and not last_version is None:
+            if data is None and last_version is not None:
                 data = getattr(last_version, attr)
             if data is not None:
                 setattr(new_version, attr, data)
@@ -344,7 +341,7 @@ class Motion(SlideMixin, models.Model):
         """
         Returns the active version of the motion.
 
-        If no active version is set by now, the last_version is used
+        If no active version is set by now, the last_version is used.
         """
         if self.active_version:
             return self.active_version
@@ -796,7 +793,7 @@ class State(models.Model):
         return self.name
 
     def save(self, **kwargs):
-        """Saves a state to the database.
+        """Saves a state in the database.
 
         Used to check the integrity before saving.
         """
@@ -831,7 +828,7 @@ class Workflow(models.Model):
         return self.name
 
     def save(self, **kwargs):
-        """Saves a workflow to the database.
+        """Saves a workflow in the database.
 
         Used to check the integrity before saving.
         """

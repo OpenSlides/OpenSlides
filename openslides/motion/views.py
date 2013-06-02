@@ -8,7 +8,7 @@
 
     The views are automaticly imported from openslides.motion.urls.
 
-    :copyright: (c) 2011-2013 by the OpenSlides team, see AUTHORS.
+    :copyright: (c) 2011–2013 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -64,7 +64,8 @@ class MotionDetailView(DetailView):
         """
         Return the template context.
 
-        Append the allowed actions for the motion to the context.
+        Append the allowed actions for the motion, the shown version and its
+        data to the context.
         """
         version_number = self.kwargs.get('version_number', None)
         if version_number is not None:
@@ -88,12 +89,12 @@ motion_detail = MotionDetailView.as_view()
 
 class MotionEditMixin(object):
     """
-    Mixin for MotionViewsClasses to save the version data.
+    Mixin for motion views classes to save the version data.
     """
 
     def form_valid(self, form):
         """
-        Saves the Create or UpdateForm into a motion object.
+        Saves the CreateForm or UpdateForm into a motion object.
         """
         self.object = form.save(commit=False)
 
@@ -127,7 +128,7 @@ class MotionEditMixin(object):
         self.object.save(use_version=version)
 
         # Save the submitter an the supporter so the motion.
-        # TODO: only delete and save neccessary submitters and supporter
+        # TODO: Only delete and save neccessary submitters and supporters
         if 'submitter' in form.cleaned_data:
             self.object.submitter.all().delete()
             MotionSubmitter.objects.bulk_create(
@@ -142,7 +143,7 @@ class MotionEditMixin(object):
 
     def get_form_class(self):
         """
-        Return the FormClass to Create or Update the Motion.
+        Return the FormClass to create or update the motion.
 
         forms.BaseMotionForm is the base for the Class, and some FormMixins
         will be mixed in dependence of some config values. See motion.forms
@@ -189,7 +190,7 @@ class MotionCreateView(MotionEditMixin, CreateView):
 
     def form_valid(self, form):
         """
-        Write a log message, if the form is valid.
+        Write a log message if the form is valid.
         """
         response = super(MotionCreateView, self).form_valid(form)
         self.object.write_log([ugettext_noop('Motion created')], self.request.user)
@@ -207,17 +208,21 @@ class MotionUpdateView(MotionEditMixin, UpdateView):
     model = Motion
 
     def has_permission(self, request, *args, **kwargs):
-        """Check, if the request.user has the permission to edit the motion."""
+        """
+        Check if the request.user has the permission to edit the motion.
+        """
         return self.get_object().get_allowed_actions(request.user)['update']
 
     def form_valid(self, form):
-        """Write a log message, if the form is valid."""
+        """
+        Write a log message if the form is valid.
+        """
         response = super(MotionUpdateView, self).form_valid(form)
+        self.object.write_log([ugettext_noop('Motion updated')], self.request.user)
         if (config['motion_remove_supporters'] and self.object.state.allow_support and
                 not self.request.user.has_perm('motion.can_manage_motion')):
             self.object.clear_supporters()
             self.object.write_log([ugettext_noop('All supporters removed')], self.request.user)
-        self.object.write_log([ugettext_noop('Motion updated')], self.request.user)
         return response
 
 motion_edit = MotionUpdateView.as_view()
@@ -246,7 +251,6 @@ class VersionPermitView(SingleObjectMixin, QuestionMixin, RedirectView):
     """
     View to permit a version of a motion.
     """
-
     model = Motion
     question_url_name = 'motion_version_detail'
     success_url_name = 'motion_version_detail'
