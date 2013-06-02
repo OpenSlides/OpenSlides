@@ -395,6 +395,12 @@ class Motion(SlideMixin, models.Model):
         else:
             raise WorkflowError('You can not unsupport a motion in state %s.' % self.state.name)
 
+    def clear_supporters(self):
+        """
+        Deletes all supporters of this motion.
+        """
+        MotionSupporter.objects.filter(motion=self).delete()
+
     def create_poll(self):
         """
         Create a new poll for this motion.
@@ -469,7 +475,7 @@ class Motion(SlideMixin, models.Model):
 
         The dictonary contains the following actions.
 
-        * edit
+        * update / edit
         * delete
         * create_poll
         * support
@@ -478,9 +484,11 @@ class Motion(SlideMixin, models.Model):
         * reset_state
         """
         actions = {
-            'edit': ((self.is_submitter(person) and
-                      self.state.allow_submitter_edit) or
-                     person.has_perm('motion.can_manage_motion')),
+            'update': ((self.is_submitter(person) and
+                       self.state.allow_submitter_edit) or
+                       person.has_perm('motion.can_manage_motion')),
+
+            'delete': person.has_perm('motion.can_manage_motion'),
 
             'create_poll': (person.has_perm('motion.can_manage_motion') and
                             self.state.allow_create_poll),
@@ -491,14 +499,14 @@ class Motion(SlideMixin, models.Model):
                         not self.is_supporter(person)),
 
             'unsupport': (self.state.allow_support and
-                          not self.is_submitter(person) and
                           self.is_supporter(person)),
 
             'change_state': person.has_perm('motion.can_manage_motion'),
 
-        }
-        actions['delete'] = actions['edit']  # TODO: Only if the motion has no number
-        actions['reset_state'] = actions['change_state']
+            'reset_state': person.has_perm('motion.can_manage_motion')}
+
+        actions['edit'] = actions['update']
+
         return actions
 
     def write_log(self, message_list, person=None):

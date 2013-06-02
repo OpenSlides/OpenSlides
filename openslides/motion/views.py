@@ -209,13 +209,25 @@ class MotionUpdateView(MotionMixin, UpdateView):
 
     def has_permission(self, request, *args, **kwargs):
         """Check, if the request.user has the permission to edit the motion."""
-        return self.get_object().get_allowed_actions(request.user)['edit']
+        return self.get_object().get_allowed_actions(request.user)['update']
 
     def form_valid(self, form):
         """Write a log message, if the form is valid."""
         value = super(MotionUpdateView, self).form_valid(form)
         self.object.write_log([ugettext_noop('Motion updated')], self.request.user)
         return value
+
+    def manipulate_object(self, *args, **kwargs):
+        """
+        Removes the supporters if config option is True and supporting is still
+        available in the state.
+        """
+        return_value = super(MotionUpdateView, self).manipulate_object(*args, **kwargs)
+        if (config['motion_remove_supporters'] and self.object.state.allow_support and
+                not self.request.user.has_perm('motion.can_manage_motion')):
+            self.object.clear_supporters()
+            self.object.write_log([ugettext_noop('All supporters removed')], self.request.user)
+        return return_value
 
 motion_edit = MotionUpdateView.as_view()
 
