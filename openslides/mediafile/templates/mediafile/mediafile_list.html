@@ -34,8 +34,8 @@
             {% if perms.mediafile.can_manage %}
             <td>
                 <span style="width: 1px; white-space: nowrap;">
-                    <a href="{% model_url mediafile 'update' %}" title="{% trans 'Edit' %}" class="btn btn-mini"><i class="icon-pencil"></i></a>
-                    <a href="{% model_url mediafile 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini"><i class="icon-remove"></i></a>
+                    <a href="{% model_url mediafile 'update' %}" rel="tooltip" data-original-title="{% trans 'Edit' %}" class="btn btn-mini"><i class="icon-pencil"></i></a>
+                    <a href="{% model_url mediafile 'delete' %}" rel="tooltip" data-original-title="{% trans 'Delete' %}" class="btn btn-mini"><i class="icon-remove"></i></a>
                 </span>
             </td>
             {% endif %}

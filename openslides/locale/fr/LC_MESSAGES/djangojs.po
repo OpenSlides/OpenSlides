@@ -3,13 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
-#   <moosline@savvy.ch>, 2012.
+# moosline <moosline@savvy.ch>, 2013
+# moosline <moosline@savvy.ch>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-01 21:13+0200\n"
-"PO-Revision-Date: 2012-12-09 11:46+0000\n"
+"POT-Creation-Date: 2013-06-04 00:21+0200\n"
+"PO-Revision-Date: 2013-06-03 15:05+0000\n"
 "Last-Translator: moosline <moosline@savvy.ch>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/openslides/"
 "language/fr/)\n"
@@ -22,191 +23,191 @@ msgstr ""
 #: agenda/static/javascript/agenda-config-datepicker.js:9
 #: agenda/static/javascript/agenda-config-datepicker.js:39
 msgid "en"
-msgstr ""
+msgstr "en"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:10
 msgid "previous month"
-msgstr ""
+msgstr "le mois dernier"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:11
 msgid "next month"
-msgstr ""
+msgstr "le mois prochain"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:13
 msgid "January"
-msgstr ""
+msgstr "Janvier"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:13
 msgid "February"
-msgstr ""
+msgstr "Février"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:13
 msgid "March"
-msgstr ""
+msgstr "Mars"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:14
 msgid "April"
-msgstr ""
+msgstr "Avril"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:14
 #: agenda/static/javascript/agenda-config-datepicker.js:20
 msgid "May"
-msgstr ""
+msgstr "Mai"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:14
 msgid "June"
-msgstr ""
+msgstr "Juin"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:15
 msgid "July"
-msgstr ""
+msgstr "Juillet"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:15
 msgid "August"
-msgstr ""
+msgstr "Août"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:15
 msgid "September"
-msgstr ""
+msgstr "Septembre"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:16
 msgid "October"
-msgstr ""
+msgstr "Octobre"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:16
 msgid "November"
-msgstr ""
+msgstr "Novembre"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:16
 msgid "December"
-msgstr ""
+msgstr "Décembre"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:19
 msgid "Jan"
-msgstr ""
+msgstr "Jan"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:19
 msgid "Feb"
-msgstr ""
+msgstr "Feb"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:19
 msgid "Mar"
-msgstr ""
+msgstr "Mar"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:20
 msgid "Apr"
-msgstr ""
+msgstr "Apr"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:20
 msgid "Jun"
-msgstr ""
+msgstr "Jui"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:21
 msgid "Jul"
-msgstr ""
+msgstr "Jul"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:21
 msgid "Aug"
-msgstr ""
+msgstr "Aou"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:21
 msgid "Sep"
-msgstr ""
+msgstr "Sep"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:22
 msgid "Oct"
-msgstr ""
+msgstr "Oct"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:22
 msgid "Nov"
-msgstr ""
+msgstr "Nov"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:22
 msgid "Dec"
-msgstr ""
+msgstr "Déc"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:25
 msgid "Sunday"
-msgstr ""
+msgstr "Dimanche"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:25
 msgid "Monday"
-msgstr ""
+msgstr "Lundi"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:25
 msgid "Tuesdey"
-msgstr ""
+msgstr "Mardi"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:25
 msgid "Wednesday"
-msgstr ""
+msgstr "Mecredi"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:26
 msgid "Thursday"
-msgstr ""
+msgstr "Jeudi"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:26
 msgid "Friday"
-msgstr ""
+msgstr "Vendredi"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:26
 msgid "Saturday"
-msgstr ""
+msgstr "Samedi"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:29
 #: agenda/static/javascript/agenda-config-datepicker.js:33
 msgid "Su"
-msgstr ""
+msgstr "Di"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:29
 #: agenda/static/javascript/agenda-config-datepicker.js:33
 msgid "Mo"
-msgstr ""
+msgstr "Lu"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:29
 #: agenda/static/javascript/agenda-config-datepicker.js:33
 msgid "Tu"
-msgstr ""
+msgstr "Ma"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:29
 #: agenda/static/javascript/agenda-config-datepicker.js:33
 msgid "We"
-msgstr ""
+msgstr "Me"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:30
 #: agenda/static/javascript/agenda-config-datepicker.js:34
 msgid "Th"
-msgstr ""
+msgstr "Je"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:30
 #: agenda/static/javascript/agenda-config-datepicker.js:34
 msgid "Fr"
-msgstr ""
+msgstr "Ve"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:30
 #: agenda/static/javascript/agenda-config-datepicker.js:34
 msgid "Sa"
-msgstr ""
+msgstr "Sa"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:45
 msgid "Time"
-msgstr ""
+msgstr "Heure"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:46
 msgid "Hour"
-msgstr ""
+msgstr "Heure"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:47
 msgid "Minute"
-msgstr ""
+msgstr "Minute"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:48
 msgid "Current time"
-msgstr ""
+msgstr "heure actuelle"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:49
 msgid "Close"
-msgstr ""
+msgstr "Fermer"
 
 #: agenda/static/javascript/agenda.js:17
 #, c-format
@@ -215,40 +216,40 @@ msgstr ", dans %s sont cachés"
 
 #: static/javascript/dataTables.bootstrap.js:19
 msgid "_MENU_ entries per page"
-msgstr ""
+msgstr "_MENU_ Entrées par page"
 
 #: static/javascript/dataTables.bootstrap.js:20
 msgid "Search:"
-msgstr ""
+msgstr "Recherche:"
 
 #: static/javascript/dataTables.bootstrap.js:21
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
-msgstr ""
+msgstr "Voici _START_ à _END_ sur _TOTAL_ entrées"
 
 #: static/javascript/dataTables.bootstrap.js:22
 msgid "Showing 0 entries"
-msgstr ""
+msgstr "Affichage de 0 entrées"
 
 #: static/javascript/dataTables.bootstrap.js:23
 msgid "(filtered from _MAX_ total entries)"
-msgstr ""
+msgstr "(filtrée à partir des entrées totales _Max_)"
 
 #: static/javascript/dataTables.bootstrap.js:24
 msgid "No matching records found"
-msgstr ""
+msgstr "Aucun enregistrement correspondant n'a été trouvé"
 
 #: static/javascript/dataTables.bootstrap.js:26
 msgid "First"
-msgstr ""
+msgstr "Premier"
 
 #: static/javascript/dataTables.bootstrap.js:27
 msgid "Last"
-msgstr ""
+msgstr "Dernier"
 
 #: static/javascript/dataTables.bootstrap.js:28
 msgid "Next"
-msgstr ""
+msgstr "Prochain"
 
 #: static/javascript/dataTables.bootstrap.js:29
 msgid "Previous"
-msgstr ""
+msgstr "Avant"

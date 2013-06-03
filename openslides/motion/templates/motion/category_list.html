@@ -27,11 +27,11 @@
             <td>{{ category.prefix }}</td>
             <td><a href="{% model_url category 'update' %}">{{ category }}</a></td>
             <td><span style="width: 1px; white-space: nowrap;">
-                <a href="{% model_url category 'update' %}" title="{% trans 'Edit' %}" class="btn btn-mini">
-                    <i class="icon-pencil"></i>
+                <a href="{% model_url category 'update' %}" rel="tooltip" data-original-title="{% trans 'Edit' %}"
+                    class="btn btn-mini"><i class="icon-pencil"></i>
                 </a>
-                <a href="{% model_url category 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
-                    <i class="icon-remove"></i>
+                <a href="{% model_url category 'delete' %}" rel="tooltip" data-original-title="{% trans 'Delete' %}"
+                    class="btn btn-mini"><i class="icon-remove"></i>
                 </a>
                 </span>
             </td>

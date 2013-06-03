@@ -29,14 +29,19 @@ $(function () {
             success: function(data) {
                 $('.activate_link').removeClass('btn-primary');
                 $('.activate_link i').removeClass('icon-white');
+                $('tr').removeClass('activeline');
+                $('div').removeClass('activeline');
+                $('li').removeClass('activeline');
                 // is table line
                 if ( link.parent().parent().parent().is("tr") ) {
-                    $('tr').removeClass('activeline');
+                    link.parent().parent().parent().addClass('activeline');
+                }
+                // is sortable list (agenda)
+                if ( link.parent().parent().parent().is("div") ) {
                     link.parent().parent().parent().addClass('activeline');
                 }
                 // is widget list item
                 if ( link.parent().is("li") ) {
-                    $('li').removeClass('activeline');
                     link.parent().addClass('activeline');
                 }
                 link.addClass('btn-primary');
@@ -165,6 +170,13 @@ $(document).ready(function(){
     $('.tooltip-bottom').tooltip({
         placement: 'bottom'
     });
+    //Popover
+    $(this).popover({
+      selector: "a[rel=popover]",
+      placement: 'bottom',
+      html: true
+    });
+
     // Resize menu and content container
     function iconmenu(){
         $('.leftmenu').removeClass('span2').addClass('lefticon').addClass('span1');

@@ -731,7 +731,10 @@ class MotionCSVImportView(FormView):
         if count_success:
             messages.success(
                 self.request,
-                "<strong>%s</strong><br>%s" % (_('Summary'), _('%d of %d motions successfully imported.') % (count_success, count_lines)))
+                "<strong>%s</strong><br>%s" % (
+                    _('Summary'),
+                    _('%(counts)d of %(total)d motions successfully imported.')
+                    % {'counts': count_success, 'total': count_lines}))
         return super(MotionCSVImportView, self).form_valid(form)
 
 motion_csv_import = MotionCSVImportView.as_view()

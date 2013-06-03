@@ -5,29 +5,84 @@
 OpenSlides uses parts of the following projects:
 
 * Django
-  <https://www.djangoproject.com/>
+  <https://www.djangoproject.com>
+  License: BSD
+
+* Django mptt
+  <https://github.com/django-mptt/django-mptt>
+  License: BSD
 
 * jQuery
-  <http://www.jquery.com/>
-  and some addons: cookie, form, once, templating
+  <http://www.jquery.com>
+  License: MIT
+  and some plugins:
+  - jQuery DataTables Plugin
+    <http://www.datatables.net>
+    License: BSD/GPLv2
+  - jQuery Cookie Plugin
+    <https://github.com/carhartl/jquery-cookie/>
+    License: MIT/GPL
+  - jQuery Form Plugin
+    <http://malsup.com/jquery/form/>
+    License: MIT/GPLv2
+  - jQuery Once Plugin
+    <http://plugins.jquery.com/project/once/>
+    License: MIT/GPL
+  - jQuery Templating Plugin
+    <https://github.com/BorisMoore/jquery-tmpl/>
+    License: MIT/GPLv2
 
 * jQuery UI
-  <http://jqueryui.com/>
-  custom ui components: core, widget, mouse, sortable, datepicker, slider
-  with css theme 'smoothness'
-  and some addons: slider access, timepicker
-
-* nestedSortable jQuery Plugin
-  <http://mjsarfatti.com/sandbox/nestedSortable/>
+  <http://jqueryui.com>
+  with custom ui components: core, widget, mouse, sortable, datepicker, slider
+  and css theme 'smoothness'
+  License: MIT
+  and some addons:
+  - jQuery UI Nested Sortable
+    <http://mjsarfatti.com/code/nestedSortable/>
+    License: MIT
+  - jQuery UI Slider Access
+    <http://trentrichardson.com/examples/jQuery-SliderAccess/>
+    License: MIT/GPLv2
+  - jQuery timepicker addon
+    <http://trentrichardson.com/examples/timepicker/>
+    License: MIT/GPLv2
 
 * Twitter Bootstrap
   <http://twitter.github.com/bootstrap/>
+  License: Apache License v2.0
+
+* CKEditor
+  <http://ckeditor.com>
+  License: GPL, LGPL, MPL
+
+* Beautiful Soup
+  <http://www.crummy.com/software/BeautifulSoup/>
+  License: MIT
+
+* Bleach
+  <https://github.com/jsocol/bleach/>
+  License: BSD
+
+* Pillow
+  <https://github.com/python-imaging/Pillow>
+  License: Standard PIL License
+
+* qrcode
+  <https://github.com/lincolnloop/python-qrcode>
+  License: BSD
 
 * ReportLab
   <http://www.reportlab.com/software/opensource/rl-toolkit/>
+  License: BSD
+
+* Tornado
+  <http://www.tornadoweb.org/en/stable/>
+  License: Apache License v2.0
 
 * Ubuntu TrueType Font
-  <http://font.ubuntu.com/>
+  <http://font.ubuntu.com>
+  License: Ubuntu Font Licence 1.0
 
 * Sphinx
   <http://sphinx-doc.org/>

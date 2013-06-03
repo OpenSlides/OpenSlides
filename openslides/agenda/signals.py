@@ -51,15 +51,15 @@ def setup_agenda_config_page(sender, **kwargs):
             validators=[validate_start_time, ],
             widget=forms.DateTimeInput(format='%d.%m.%Y %H:%M'),
             required=False,
-            label=_('Begin of event'),
-            help_text=_('Input format: DD.MM.YYYY HH:MM')))
+            label=ugettext_lazy('Begin of event'),
+            help_text=ugettext_lazy('Input format: DD.MM.YYYY HH:MM')))
 
     agenda_show_last_speakers = ConfigVariable(
         name='agenda_show_last_speakers',
         default_value=1,
         form_field=forms.IntegerField(
             min_value=0,
-            label=_('Number of last speakers to be shown on the projector')))
+            label=ugettext_lazy('Number of last speakers to be shown on the projector')))
 
     extra_stylefiles = ['styles/timepicker.css', 'styles/jquery-ui/jquery-ui.custom.min.css']
     extra_javascript = ['javascript/jquery-ui.custom.min.js',
