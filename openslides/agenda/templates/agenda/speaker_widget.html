@@ -4,7 +4,7 @@
     <p><a href="{% url 'agenda_add_to_current_list_of_speakers' %}" class="btn"><i class="icon icon-speaker"></i> {% trans 'Put me on the current list of speakers' %}</a></p>
 {% endif %}
 
-<p><a href="{% url 'agenda_current_list_of_speakers' %}" class="btn"><i class="icon icon-bell"></i> {% trans 'Go to current list of speakers' %}</a></p>
+<p><a href="{% url 'agenda_current_list_of_speakers' %}" class="btn"> {% trans 'Go to current list of speakers' %}</a></p>
 
 {% if perms.agenda.can_manage_agenda %}
     <hr>

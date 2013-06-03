@@ -24,7 +24,7 @@
     {% if perms.projector.can_manage_projector %}
         <a href="{% url 'projector_activate_slide' item.sid  %}"
             class="activate_link btn btn-mini {% if item.active and not show_list %}btn-primary{% endif %}"
-            rel="tooltip" data-original-title="{% trans 'Show' %}">
+            rel="tooltip" data-original-title="{% trans 'Show item' %}">
             <i class="icon icon-facetime-video {% if item.active and not show_list %}icon-white{% endif %}"></i>
         </a>
     {% endif %}
@@ -46,7 +46,7 @@
     {% if not item.related_sid %}
         {{ item.text|safe|linebreaks }}
     {% else %}
-        <a href="{% model_url item.get_related_slide %}" class="btn btn-small">{% trans 'View' %} "{{ item.get_related_slide }}" ({% trans item.get_related_type %})</a>
+        <a href="{% model_url item.get_related_slide %}" class="btn btn-small">{% trans item.get_related_type %} {{ item.get_related_slide }}</a>
     {% endif %}
 </p>
 
@@ -124,9 +124,11 @@
                 {% if speaker_dict.type == 'actual_speaker' %}
                     <a href="{% url 'agenda_speaker_end_speach' item.pk %}" class="btn btn-mini btn-danger"><i class="icon-bell icon-white"></i> {% trans 'End speach' %}</a>
                 {% elif speaker_dict.type == 'coming_speaker' %}
-                    <a href="{% url 'agenda_speaker_speak' item.pk speaker_dict.speaker.person.person_id %}" class="btn btn-mini"><i class="icon-bell"></i> {% trans "Begin speach" %}</a>
+                    <a href="{% url 'agenda_speaker_speak' item.pk speaker_dict.speaker.person.person_id %}" 
+                    class="btn btn-mini"><i class="icon-bell"></i> {% trans "Begin speach" %}</a>
                 {% endif %}
-                <a href="{% model_url speaker_dict.speaker 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
+                <a href="{% model_url speaker_dict.speaker 'delete' %}" 
+                    rel="tooltip" data-original-title="{% trans 'Delete' %}" class="btn btn-mini">
                     <i class="icon-remove"></i>
                 </a>
             {% endif %}
@@ -138,9 +140,9 @@
 
     <p>
         {% if is_on_the_list_of_speakers %}
-            <a href="{% url 'agenda_speaker_delete' object.id %}" class="btn">{% trans "Remove me from the list" %}</a>
+            <a href="{% url 'agenda_speaker_delete' object.id %}" class="btn"><i class="icon icon-speaker"></i> {% trans "Remove me from the list" %}</a>
         {% elif not object.speaker_list_closed and perms.agenda.can_be_speaker %}
-            <a href="{% url 'agenda_speaker_append' object.id %}" class="btn">{% trans "Put me on the list" %}</a>
+            <a href="{% url 'agenda_speaker_append' object.id %}" class="btn"><i class="icon icon-speaker"></i> {% trans "Put me on the list" %}</a>
         {% endif %}
     </p>
 
@@ -150,9 +152,9 @@
                 <label>{{ field.label }}:</label>
                 <div class="control-group input-append {% if field.errors %}error{% endif %}">
                     {{ field }}
-                    <button class="btn btn-primary" type="submit" title="{% trans 'Apply' %}"><i class="icon-ok icon-white"></i></button>
+                    <button class="btn btn-primary tooltip-bottom" type="submit" data-original-title="{% trans 'Apply' %}"><i class="icon-ok icon-white"></i></button>
                 {% if perms.participant.can_see_participant and perms.participant.can_manage_participant %}
-                    <a href="{% url 'user_new' %}" class="btn"  title="{% trans 'Add new participant' %}"><i class="icon-add-user"></i></a>
+                    <a href="{% url 'user_new' %}" class="btn" rel="tooltip" data-original-title="{% trans 'Add new participant' %}"><i class="icon-add-user"></i></a>
                 {% endif %}
                 {% if field.errors %}
                     <span class="help-inline">{{ field.errors }}</span>
