@@ -42,6 +42,8 @@ Participants:
 - Added warning if non-superuser removes his last group containing permission to manage participants.
 Other:
 - New template based on twitter bootstrap.
+- New GUI frontend for the Windows portable version.
+- Added command to backup sqlite database.
 - Used Tornado web server (instead of Django's default development server).
 - New mediafile app (files) to upload/download files via frontend.
 - New config app: Apps have to define config vars only once; config pages and
