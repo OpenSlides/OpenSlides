@@ -38,11 +38,11 @@
                 {% trans 'More actions' %} <span class="caret"></span>
             </a>
             <ul class="dropdown-menu pull-right">
+                <!-- edit -->
+                {% if allowed_actions.edit %}
+                     <li><a href="{% model_url motion 'edit' %}"><i class="icon-pencil"></i> {% trans 'Edit motion' %}</a></li>
+                {% endif %}
                 {% if perms.motion.can_manage_motion %}
-                    <!-- edit -->
-                    {% if allowed_actions.edit %}
-                         <li><a href="{% model_url motion 'edit' %}"><i class="icon-pencil"></i> {% trans 'Edit motion' %}</a></li>
-                    {% endif %}
                     <!-- delete -->
                     {% if allowed_actions.delete %}
                         <li><a href="{% model_url motion 'delete' %}"><i class="icon-remove"></i> {% trans 'Delete motion' %}</a></li>

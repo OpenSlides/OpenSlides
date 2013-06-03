@@ -44,7 +44,7 @@
     {% if perms.agenda.can_see_orga_items %}
     <div class="duration">
         {% if node.duration %}
-            {{ node.duration }}h
+            {{ node.duration }} h
             {% if start and end %}
                 <a rel="tooltip" data-original-title="{% trans 'End' %}:
                 {{ end|date:"DATETIME_FORMAT" }}"><i class="icon-clock"></i>
