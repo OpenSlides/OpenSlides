@@ -12,18 +12,9 @@
 
 #include <Python.h>
 
-static const char *site_code =
-    "import sys;"
-    "import os;"
-    "import site;"
-    "path = os.path.dirname(sys.executable);"
-    "site_dir = os.path.join(path, \"site-packages\");"
-    "site.addsitedir(site_dir);"
-    "sys.path.append(path)";
-
 static const char *run_openslides_code =
-    "import openslides.main;"
-    "openslides.main.win32_portable_main()";
+    "import openslides_gui.gui;"
+    "openslides_gui.gui.main()";
 
 /* determine the path to the executable
  * NOTE: Py_GetFullProgramPath() can't be used because
@@ -61,7 +52,7 @@ _get_module_name()
 	else if (res == size)
 	{
 	    /* NOTE: Don't check GetLastError() == ERROR_INSUFFICIENT_BUFFER
-	     *       here, it isn't set consisntently across all platforms
+	     *       here, it isn't set consistently across all platforms
 	     */
 
 	    size += 4096;
@@ -83,12 +74,6 @@ _get_module_name()
 static int
 _run()
 {
-    if (PyRun_SimpleString(site_code) != 0)
-    {
-	fprintf(stderr, "ERROR: failed to initialize site path\n");
-	return 1;
-    }
-
     if (PyRun_SimpleString(run_openslides_code) != 0)
     {
 	fprintf(stderr, "ERROR: failed to execute openslides\n");
@@ -99,13 +84,14 @@ _run()
 }
 
 
-int
-main(int argc, char *argv[])
+int WINAPI
+WinMain(HINSTANCE inst, HINSTANCE prev_inst, LPSTR cmdline, int show)
 {
     int returncode;
+    int run_py_main = __argc > 1;
     char *py_home, *sep = NULL;
 
-    Py_SetProgramName(argv[0]);
+    Py_SetProgramName(__argv[0]);
 
     py_home = _get_module_name();
 
@@ -116,14 +102,24 @@ main(int argc, char *argv[])
     {
 	*sep = '\0';
 	Py_SetPythonHome(py_home);
+	Py_IgnoreEnvironmentFlag = 1;
     }
 
-    Py_Initialize();
-    PySys_SetArgvEx(argc, argv, 0);
+    if (run_py_main)
+    {
+	/* we where given extra arguments, behave like python.exe */
+	returncode =  Py_Main(__argc, __argv);
+    }
+    else
+    {
+	/* no arguments given => start openslides gui */
+	Py_Initialize();
+	PySys_SetArgvEx(__argc, __argv, 0);
 
-    returncode = _run();
+	returncode = _run();
+	Py_Finalize();
+    }
 
-    Py_Finalize();
     free(py_home);
 
     return returncode;

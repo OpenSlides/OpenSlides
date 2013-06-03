@@ -90,6 +90,9 @@ def process_options(argv=None, manage_runserver=False):
         "--syncdb", action="store_true",
         help="Update/create database before starting the server.")
     parser.add_option(
+        "--backupdb", action="store", metavar="BACKUP_PATH",
+        help="Make a backup copy of the database to BACKUP_PATH")
+    parser.add_option(
         "--reset-admin", action="store_true",
         help="Make sure the user 'admin' exists and uses 'admin' as password.")
     parser.add_option(
@@ -101,6 +104,9 @@ def process_options(argv=None, manage_runserver=False):
         "--no-browser",
         action="store_false", dest="start_browser", default=True,
         help="Do not automatically start web browser.")
+    parser.add_option(
+        "--no-run", action="store_true",
+        help="Do not start the development server.")
     parser.add_option(
         "--version", action="store_true",
         help="Show version and exit.")
@@ -187,6 +193,12 @@ def _main(opts, database_path=None):
     elif opts.reset_admin:
         create_or_reset_admin_user()
 
+    if opts.backupdb:
+        backup_database(opts.backupdb)
+
+    if opts.no_run:
+        return
+
     # Start OpenSlides
     reload = True
     if opts.no_reload:
@@ -238,7 +250,7 @@ def setup_django_environment(settings_path):
     os.environ[ENVIRONMENT_VARIABLE] = '%s' % settings_module_name
 
 
-def detect_listen_opts(address, port):
+def detect_listen_opts(address=None, port=None):
     if address is None:
         try:
             address = socket.gethostbyname(socket.gethostname())
@@ -314,6 +326,11 @@ def create_or_reset_admin_user():
     admin.save()
 
 
+def backup_database(dest_path):
+    argv = ["", "backupdb", "--destination={0}".format(dest_path)]
+    execute_from_command_line(argv)
+
+
 def start_browser(url):
     browser = webbrowser.get()
 
@@ -353,13 +370,17 @@ def get_user_data_path(*args):
     return os.path.join(fs2unicode(data_home), *args)
 
 
+def is_portable():
+    exename = os.path.basename(sys.executable).lower()
+    return exename == "openslides.exe"
+
+
 def get_portable_path(*args):
     # NOTE: sys.executable will be the path to openslides.exe
     #       since it is essentially a small wrapper that embeds the
     #       python interpreter
 
-    exename = os.path.basename(sys.executable).lower()
-    if exename != "openslides.exe":
+    if not is_portable():
         raise Exception(
             "Cannot determine portable path when "
             "not running as portable")
@@ -396,4 +417,7 @@ def win32_get_app_data_path(*args):
 
 
 if __name__ == "__main__":
-    main()
+    if is_portable():
+        win32_portable_main()
+    else:
+        main()
