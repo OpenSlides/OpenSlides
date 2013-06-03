@@ -39,8 +39,8 @@ def first_line(text):
         lines = text.split('\n')
     except AttributeError:
         return ''
-    if len(lines) > 1 or len(lines[0]) > 40:
+    if len(lines) > 1 or len(lines[0]) > 30:
         s = "%s ..."
     else:
         s = "%s"
-    return s % lines[0][:40]
+    return s % lines[0][:30]

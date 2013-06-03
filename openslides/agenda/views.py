@@ -83,6 +83,7 @@ class Overview(TemplateView):
             'duration': duration,
             'start': start,
             'end': end,
+            'summary': config['presentation_argument'] == 'summary',
             'show_list': config['presentation_argument'] == 'show_list_of_speakers'})
         return context
 

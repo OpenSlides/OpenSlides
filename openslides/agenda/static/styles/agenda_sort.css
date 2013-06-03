@@ -37,6 +37,9 @@ ol.agenda_list {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 );
     overflow: auto;
 }
+.agenda_list li > div.activeline  {
+    background: #bed4de !important;
+}
 .agenda_list.sortable li > div {
     cursor: move;
 }
@@ -52,13 +55,14 @@ ol.agenda_list {
         
 .agenda_list .openclose { width: 40px; float: left; min-height: 1px; }
 .agenda_list .duration { width: 92px; float: right; min-height: 1px; padding-left: 5px; }
-.agenda_list .manage { width: 150px; float: right; min-height: 1px; padding-left: 5px; }
+.agenda_list .manage { width: 200px; float: right; min-height: 1px; padding-left: 5px; }
 .agenda_list .title { float: left; }
 .agenda_list .optional { float: left; }
-.agenda_list .opener_closer { float: left; margin-right: 10px; }
+.agenda_list .opener_closer { float: left; margin-right: 10px; margin-left:-6px;}
+.agenda_list .opener_closer .btn { padding: 0 2px; }
 .agenda_list .optional { float: right; width: 208px; padding-left: 8px;}
 
-#menu-overview .manage { width: 150px; }
+#menu-overview .manage { width: 200px; }
 #menu-overview .duration { width: 75px; }
 #menu-overview .optional { width: 200px; }
 
