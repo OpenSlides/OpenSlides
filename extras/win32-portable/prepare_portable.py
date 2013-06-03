@@ -20,8 +20,12 @@ import distutils.sysconfig
 
 import pkg_resources
 
+import wx
+
 sys.path.insert(0, os.getcwd())
+sys.path.insert(1, os.path.join(os.getcwd(), "extras"))
 import openslides
+import openslides_gui
 
 COMMON_EXCLUDE = [
     r".pyc$",
@@ -99,7 +103,43 @@ SITE_PACKAGES = {
     },
     "html5lib": {
         "copy": ["html5lib"],
-    }
+    },
+    "wx": {
+        # NOTE: wxpython is a special case, see copy_wx
+        "copy": [],
+        "exclude": [
+            r"^wx/tools/",
+            r"^wx/py/",
+            r"^wx/build/",
+            r"^wx/lib/",
+            r"wx/_activex.pyd",
+            r"wx/_animate.pyd",
+            r"wx/_aui.pyd",
+            r"wx/_calendar.pyd",
+            r"wx/_combo.pyd",
+            r"wx/_gizmos.pyd",
+            r"wx/_glcanvas.pyd",
+            r"wx/_grid.pyd",
+            r"wx/_html.pyd",
+            r"wx/_media.pyd",
+            r"wx/_richtext.pyd",
+            r"wx/_stc.pyd",
+            r"wx/_webkit.pyd",
+            r"wx/_wizard.pyd",
+            r"wx/_xrc.pyd",
+            r"wx/gdiplus.dll",
+            r"wx/wxbase28uh_xml_vc.dll",
+            r"wx/wxmsw28uh_aui_vc.dll",
+            r"wx/wxmsw28uh_gizmos_vc.dll",
+            r"wx/wxmsw28uh_gizmos_xrc_vc.dll",
+            r"wx/wxmsw28uh_gl_vc.dll",
+            r"wx/wxmsw28uh_media_vc.dll",
+            r"wx/wxmsw28uh_qa_vc.dll",
+            r"wx/wxmsw28uh_richtext_vc.dll",
+            r"wx/wxmsw28uh_stc_vc.dll",
+            r"wx/wxmsw28uh_xrc_vc.dll",
+        ],
+    },
 }
 
 PY_DLLS = [
@@ -128,11 +168,52 @@ bundled packages, please refer to the corresponding file in the
 licenses/ directory.
 """
 
+OPENSLIDES_RC_TMPL = """
+#include <winresrc.h>
+
+#define ID_ICO_OPENSLIDES 1
+
+ID_ICO_OPENSLIDES ICON "openslides.ico"
+
+VS_VERSION_INFO VERSIONINFO
+  FILEVERSION {version[0]},{version[1]},{version[2]},{version[4]}
+  PRODUCTVERSION {version[0]},{version[1]},{version[2]},{version[4]}
+  FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
+  FILEFLAGS {file_flags}
+  FILEOS VOS__WINDOWS32
+  FILETYPE VFT_APP
+  FILESUBTYPE VFT2_UNKNOWN
+
+  BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+      BLOCK "040904E4"
+      BEGIN
+        VALUE "CompanyName", "OpenSlides team\\0"
+        VALUE "FileDescription", "OpenSlides\\0"
+        VALUE "FileVersion", "{version_str}\\0"
+        VALUE "InternalName", "OpenSlides\\0"
+        VALUE "LegalCopyright", "Copyright \\251 2011-2013\\0"
+        VALUE "OriginalFilename", "openslides.exe\\0"
+        VALUE "ProductName", "OpenSlides\\0"
+        VALUE "ProductVersion", "{version_str}\\0"
+      END
+    END
+
+    BLOCK "VarFileInfo"
+    BEGIN
+      VALUE "Translation", 0x409, 0x4E4
+    END
+  END
+"""
+
+
 def compile_re_list(patterns):
     expr = "|".join("(?:{0})".format(x) for x in patterns)
     return re.compile(expr)
 
-def relpath(base, path, addslash = False):
+
+def relpath(base, path, addslash=False):
     b = os.path.normpath(os.path.abspath(base))
     p = os.path.normpath(os.path.abspath(path))
     if p == b:
@@ -150,6 +231,7 @@ def relpath(base, path, addslash = False):
 
     return p
 
+
 def filter_excluded_dirs(exclude_pattern, basedir, dirpath, dnames):
     i, l = 0, len(dnames)
     while i < l:
@@ -159,6 +241,7 @@ def filter_excluded_dirs(exclude_pattern, basedir, dirpath, dnames):
             l -= 1
         else:
             i += 1
+
 
 def copy_dir_exclude(exclude, basedir, srcdir, destdir):
     for dp, dnames, fnames in os.walk(srcdir):
@@ -177,22 +260,29 @@ def copy_dir_exclude(exclude, basedir, srcdir, destdir):
 
             shutil.copyfile(fp, os.path.join(destdir, rp))
 
+
 def collect_lib(libdir, odir):
     exclude = compile_re_list(COMMON_EXCLUDE + LIBEXCLUDE)
     copy_dir_exclude(exclude, libdir, libdir, os.path.join(odir, "Lib"))
 
-def get_pkg_exclude(name, extra = ()):
+
+def get_pkg_exclude(name, extra=()):
     exclude = COMMON_EXCLUDE[:]
     exclude.extend(SITE_PACKAGES.get(name, {}).get("exclude", []))
     exclude.extend(extra)
     return compile_re_list(exclude)
 
+
 def copy_package(name, info, odir):
+    copy_things = info.get("copy", [])
+    if not copy_things:
+        return
+
     dist = pkg_resources.get_distribution(name)
     exclude = get_pkg_exclude(name)
 
     site_dir = dist.location
-    for thing in info.get("copy", []):
+    for thing in copy_things:
         fp = os.path.join(site_dir, thing)
         if not os.path.isdir(fp):
             rp = relpath(site_dir, fp)
@@ -201,12 +291,24 @@ def copy_package(name, info, odir):
         else:
             copy_dir_exclude(exclude, site_dir, fp, odir)
 
+
+def copy_wx(odir):
+    base_dir = os.path.dirname(os.path.dirname(wx.__file__))
+    wx_dir = os.path.join(base_dir, "wx")
+    exclude = get_pkg_exclude("wx")
+    copy_dir_exclude(exclude, base_dir, wx_dir, odir)
+
+
 def collect_site_packages(sitedir, odir):
     if not os.path.exists(odir):
         os.makedirs(odir)
 
     for name, info in SITE_PACKAGES.iteritems():
         copy_package(name, info, odir)
+
+    assert "wx" in SITE_PACKAGES
+    copy_wx(odir)
+
 
 def compile_openslides_launcher():
     try:
@@ -219,9 +321,33 @@ def compile_openslides_launcher():
     cc.add_include_dir(distutils.sysconfig.get_python_inc())
     cc.add_library_dir(os.path.join(sys.exec_prefix, "Libs"))
 
-    objs = cc.compile(["extras/win32-portable/openslides.c"])
-    cc.link_executable(objs, "extras/win32-portable/openslides")
+    gui_data_dir = os.path.dirname(openslides_gui.__file__)
+    gui_data_dir = os.path.join(gui_data_dir, "data")
+    shutil.copyfile(
+        os.path.join(gui_data_dir, "openslides.ico"),
+        "extras/win32-portable/openslides.ico")
+    rcfile = "extras/win32-portable/openslides.rc"
+    with open(rcfile, "w") as f:
+        if openslides.VERSION[3] == "final":
+            file_flags = "0"
+        else:
+            file_flags = "VS_FF_PRERELEASE"
+
+        f.write(OPENSLIDES_RC_TMPL.format(
+            version=openslides.VERSION,
+            version_str=openslides.get_version(),
+            file_flags=file_flags))
+
+    objs = cc.compile([
+        "extras/win32-portable/openslides.c",
+        rcfile,
+    ])
+    cc.link_executable(
+        objs, "extras/win32-portable/openslides",
+        extra_preargs=["/subsystem:windows"],
+    )
     return True
+
 
 def copy_dlls(odir):
     dll_src = os.path.join(sys.exec_prefix, "DLLs")
@@ -239,6 +365,7 @@ def copy_dlls(odir):
     dest = os.path.join(odir, pydllname)
     shutil.copyfile(src, dest)
 
+
 def copy_msvcr(odir):
     candidates = glob.glob("{0}/x86_*{1}_{2}*".format(
         os.path.join(os.environ["WINDIR"], "winsxs"),
@@ -253,10 +380,10 @@ def copy_msvcr(odir):
             msvcr_dll_dir = dp
             break
     else:
-        sys.stderr.write("Warning could not determine msvcr runtime location\n")
-        sys.stderr.write("Private asssembly for VC runtime must be added manually\n")
+        sys.stderr.write(
+            "Warning could not determine msvcr runtime location\n"
+            "Private asssembly for VC runtime must be added manually\n")
         return
-
 
     msvcr_dest_dir = os.path.join(odir, MSVCR_NAME)
     if not os.path.exists(msvcr_dest_dir):
@@ -267,7 +394,8 @@ def copy_msvcr(odir):
         dest = os.path.join(msvcr_dest_dir, fn)
         shutil.copyfile(src, dest)
 
-    src = os.path.join(os.environ["WINDIR"], "winsxs", "Manifests",
+    src = os.path.join(
+        os.environ["WINDIR"], "winsxs", "Manifests",
         "{0}.manifest".format(msvcr_local_name))
     dest = os.path.join(msvcr_dest_dir, "{0}.manifest".format(MSVCR_NAME))
     shutil.copyfile(src, dest)
@@ -279,9 +407,13 @@ def write_readme(orig_readme, outfile):
 
     text.extend(["\n", "\n", "Included Packages\n", 17 * "=" + "\n"])
     for pkg in sorted(SITE_PACKAGES):
-        dist = pkg_resources.get_distribution(pkg)
-        text.append("{0}-{1}\n".format(dist.project_name, dist.version))
-
+        try:
+            dist = pkg_resources.get_distribution(pkg)
+            text.append("{0}-{1}\n".format(dist.project_name, dist.version))
+        except pkg_resources.DistributionNotFound:
+            # FIXME: wxpython comes from an installer and has no distribution
+            #        see what we can do about that
+            text.append("{0}-???\n".format(pkg))
 
     with open(outfile, "w") as f:
         f.writelines(text)
@@ -301,7 +433,7 @@ def main():
             raise
 
     os.makedirs(odir)
-    out_site_packages = os.path.join(odir, "site-packages")
+    out_site_packages = os.path.join(odir, "Lib", "site-packages")
 
     collect_lib(libdir, odir)
     collect_site_packages(sitedir, out_site_packages)
@@ -312,20 +444,26 @@ def main():
     if not compile_openslides_launcher():
         sys.stdout.write("Using prebuild openslides.exe\n")
 
-    shutil.copyfile("extras/win32-portable/openslides.exe",
+    shutil.copyfile(
+        "extras/win32-portable/openslides.exe",
         os.path.join(odir, "openslides.exe"))
+
+    shutil.copytree(
+        "extras/openslides_gui",
+        os.path.join(out_site_packages, "openslides_gui"))
 
     copy_dlls(odir)
     copy_msvcr(odir)
 
-    shutil.copytree("extras/win32-portable/licenses",
+    shutil.copytree(
+        "extras/win32-portable/licenses",
         os.path.join(odir, "licenses"))
 
-    zip_fp = os.path.join("dist", "openslides-{0}-portable.zip".format(
+    zip_fp = os.path.join(
+        "dist", "openslides-{0}-portable.zip".format(
         openslides.get_version()))
 
-    write_readme("README.txt",
-        os.path.join(odir, "README.txt"))
+    write_readme("README.txt", os.path.join(odir, "README.txt"))
 
     with zipfile.ZipFile(zip_fp, "w", zipfile.ZIP_DEFLATED) as zf:
         for dp, dnames, fnames in os.walk(odir):
