@@ -40,7 +40,10 @@ Start des Servers und Öffnen des Browsers
 Verwendung der Windows-Version (Portable Version mit openslides.exe)
 --------------------------------------------------------------------
 
-Wenn Sie die Windows-Version (Portable Version mit openslides.exe) verwenden, brauchen Sie nur die Datei ``openslides.exe`` ausführen. Mit dieser wird der Server gestartet und ihr Browser mit der richtigen URL geöffnet.
+Wenn Sie die Windows-Version (Portable Version mit openslides.exe)
+verwenden, brauchen Sie nur die Datei ``openslides.exe`` auszuführen.
+Mit dieser wird der Server gestartet und ihr Browser mit der richtigen
+URL geöffnet.
 
 OpenSlides kann jederzeit im schwarzen Fenster der Kommandozeile mit der Tastenkombination ``Strg`` + ``Pause`` beendet werden. Alle eingegebenen Daten bleiben in der Datenbank gespeichert.
 
@@ -52,7 +55,7 @@ Starten Sie den Server, indem Sie in der Kommandozeile eingeben::
 
   $ openslides
 
-Wenn Sie eine virtuellen Arbeitsumgebung (virtualenv) verwenden, müssen Sie diese zuvor aktivieren::
+Wenn Sie eine virtuelle Arbeitsumgebung (virtualenv) verwenden, müssen Sie diese zuvor aktivieren::
 
   $ source .venv/bin/activate
 
@@ -88,7 +91,7 @@ Im Webinterface von OpenSlides können Sie über die verschiedenen Menüpunkte a
 .. image:: ../_images/Platzhalter.png
    :class: screenshot
 
-Im Menüunkt „Dashboard“ steuern Sie, welche Folien auf dem Beamer angezeigt werden. Dazu klicken Sie einfach auf das jeweilige Projektorsymbol. Im Menüpunkt „Tagesordnung“ können Sie die Tagesordnung der Veranstaltung im Vorfeld anlegen, entsprechende Folien vorbereiten und die Rednerliste verwalten. In den Menüpunkten „Anträge“ und „Wahlen“ verwalten Sie die gestellten Anträge und die Wahlämter mit den Kandidaten sowie die dazugehörigen Abstimmungen und Wahlen. Der Menüpunkt „Teilnehmer/innen“ ermöglicht einen Zugriff auf die Personenprofile. Unter dem Punkt „Medien“ können Sie eigene Dateien auf den Server laden und zum Download anbieten. Im Menüpunkt „Konfiguration“ können einige Einstellungen vorgenommen werden.
+Im Menüpunkt „Dashboard“ steuern Sie, welche Folien auf dem Beamer angezeigt werden. Dazu klicken Sie einfach auf das jeweilige Projektorsymbol. Im Menüpunkt „Tagesordnung“ können Sie die Tagesordnung der Veranstaltung im Vorfeld anlegen, entsprechende Folien vorbereiten und die Rednerliste verwalten. In den Menüpunkten „Anträge“ und „Wahlen“ verwalten Sie die gestellten Anträge und die Wahlämter mit den Kandidaten sowie die dazugehörigen Abstimmungen und Wahlen. Der Menüpunkt „Teilnehmer/innen“ ermöglicht einen Zugriff auf die Personenprofile. Unter dem Punkt „Medien“ können Sie eigene Dateien auf den Server laden und zum Download anbieten. Im Menüpunkt „Konfiguration“ können einige Einstellungen vorgenommen werden.
 
 Das Beamerbild ist unter der URL ``/projector/`` zu finden. Sie können auch auf dem Dashboard auf die Projektor-Live-Ansicht klicken. Loggen Sie sich an dem Computer, an dem der Beamer angeschlossen ist, in OpenSlides ein und rufen Sie den Link oder die URL auf. Legen Sie die Anzeige in einem eigenen Browserfenster auf den Beamer und projizieren Sie sie so auf die Leinwand. In vielen Browsern kann mit der Taste ``F11`` in den Vollbildmodus gewechselt werden. Im *Präsentationsmodus Single* müssen Sie die Bildschirmanzeige auf Erweiterung/erweiterter Desktop stellen und das Browserfenster mit dem Beamerbild auf den Beamer schieben.
 

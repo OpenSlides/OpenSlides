@@ -10,7 +10,7 @@ Beim ersten Aufruf von OpenSlides erscheint die Login-Seite. Der erste Benutzern
 Eigene Benutzereinstellungen (insbesondere Benutzername oder Passwort) ändern
 -----------------------------------------------------------------------------
 
-Die eigenen Benutzereinstellungen wie Benutzername und Passwort können und über den Link ``Benutzereinstellungen`` oben rechts geändert werden. Klicken Sie auf den Link, wählen Sie im oberen rechten Menü aus, ob Sie Ihre persönlichen Einstellungen oder Ihr Passwort ändern möchten, und ändern Sie die jeweiligen Einstellungen. Klicken Sie abschließend auf ``Speichern``.
+Die eigenen Benutzereinstellungen wie Benutzername und Passwort können über den Link ``Benutzereinstellungen`` oben rechts geändert werden. Klicken Sie auf den Link, wählen Sie im oberen rechten Menü aus, ob Sie Ihre persönlichen Einstellungen oder Ihr Passwort ändern möchten, und ändern Sie die jeweiligen Einstellungen. Klicken Sie abschließend auf ``Speichern``.
 
 
 Fremde Benutzereinstellungen (insbesondere Benutzername oder Passwort) ändern

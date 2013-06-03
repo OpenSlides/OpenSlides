@@ -36,10 +36,10 @@ benutzerdefinierten Folien auf dem Dashboard an. Wechseln Sie zum Menüpunkt
 .. image:: ../_images/Platzhalter.png
    :class: screenshot
 
-Gegen Sie Titel und Text wie folgt ein:
+Geben Sie Titel und Text wie folgt ein:
 
 Titel:
-  Schönster Garten des Anlage
+  Schönster Garten der Anlage
 
 Text:
   <img src="/media/file/bild.jpg" />

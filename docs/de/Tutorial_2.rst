@@ -9,8 +9,7 @@ Konfiguration der Tagesordnung
 ------------------------------
 
 Gehen Sie zunächst im Menüpunkt „Konfiguration“ links oben zum Unterpunkt
-„Tagesordnung“. Hier können stellen Sie als genauen Beginn der
-Veranstaltung ein:
+„Tagesordnung“. Hier können Sie den genauen Beginn der Veranstaltung einstellen:
 
   02.03.2013 10:00
 
@@ -104,7 +103,7 @@ Organisationseinträgen und den Rednerlisten finden Sie hier__.
 Auswahl der Beamerfolien
 ------------------------
 
-Wenn Sie in den Menüpunkt „Dashboard“ wechseln
+Wenn Sie in den Menüpunkt „Dashboard“ wechseln,
 
 .. image:: ../_images/Platzhalter.png
    :class: screenshot

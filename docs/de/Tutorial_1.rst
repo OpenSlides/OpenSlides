@@ -121,7 +121,7 @@ Auswahl der Beamerfolien
 
 Testen Sie, ob auf dem Beamer die gewünschten Folien zu sehen sind, wenn
 Sie bei OpenSlides im Menüpunkt „Dashboard“ verschiedene Folien auswählen.
-Sie können eine bestimmte Folien anwählen, indem Sie auf das jeweilige
+Sie können eine bestimmte Folie anwählen, indem Sie auf das jeweilige
 Projektorsymbol |projector| klicken. Die jeweils aktive Folie zeigt ein
 blaues Projektorsymbol.
 

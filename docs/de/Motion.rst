@@ -48,7 +48,7 @@ werden:
   zur Verfügung, bei denen zum Teil die `automatische Versionierung`__
   aktiviert ist.
 
-* Um die Anträge im Vorfeld zu strukturieren besteht die Möglichkeit, sie
+* Um die Anträge im Vorfeld zu strukturieren, besteht die Möglichkeit, sie
   pro Sachgebiet zu nummerieren, sie fortlaufend, das heißt über die
   Sachgebiete hinweg, zu nummerieren oder manuell die Nummerierung für den
   Bezeichner zu setzen.
@@ -184,7 +184,7 @@ Dialog mit „Ja“ bestätigen.
 
 Wenn Sie (bei entsprechender Voreinstellung__) einen Antrag
 bearbeiten, haben Sie mit dem Haken „Keine neue Version erzeugen“ die
-Möglichkeit die ansonsten erfolgende Versionierung im Einzelfall
+Möglichkeit, die ansonsten erfolgende Versionierung im Einzelfall
 ausnahmsweise zu umgehen. Dies kann sinnvoll sein, wenn Sie einen Antrag
 nur redaktionell (trivial) ändern wollen.
 
@@ -222,7 +222,7 @@ Sie diese mit dem Button „Neue Abstimmung“ auf der betreffenden
 Antragsseite (im Kasten rechts) in OpenSlides aufnehmen. Tragen Sie die
 entsprechenden Abstimmungsergebnisse in die Tabelle ein. Wenn Sie ``-1``
 eintragen, wird das Wort „Mehrheit“ ausgegeben. ``-2`` steht für „Nicht
-erfasst“. Sollten Sie bei Abgegebene Stimmen einen Wert eintragen,
+erfasst“. Sollten Sie bei abgegebene Stimmen einen Wert eintragen,
 berechnet OpenSlides automatisch die prozentualen Anteile der übrigen
 Stimmzahlen. Klicken Sie am Ende auf ``Speichern`` oder ``Übernehmen``.
 

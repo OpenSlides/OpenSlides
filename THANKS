@@ -28,3 +28,11 @@ OpenSlides uses parts of the following projects:
 
 * Ubuntu TrueType Font
   <http://font.ubuntu.com/>
+
+* Sphinx
+  <http://sphinx-doc.org/>
+  License: BSD
+
+* Sphinx Bootstrap Theme
+  <http://ryan-roemer.github.io/sphinx-bootstrap-theme/>
+  License: MIT

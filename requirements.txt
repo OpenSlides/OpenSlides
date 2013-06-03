@@ -7,5 +7,9 @@ coverage==3.6
 django-discover-runner==0.3
 pep8==1.4.5
 
+# Requirements for OpenSlides handbook/documentation
+Sphinx==1.2b1
+sphinx-bootstrap-theme==0.2.3
+
 # For Python 2.6 support
 argparse==1.2.1

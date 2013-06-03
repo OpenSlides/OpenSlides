@@ -22,7 +22,7 @@ Benutzerdefinierte Anzahl von Stimmzetteln:
    :class: screenshot
 
 *Bei Anträgen und Wahlen kann es unter Umständen vorkommen, dass
-verschieden viele Stimmzettel benötigt werden, weshalb hierfür jeweils
+unterschiedlich viele Stimmzettel benötigt werden, weshalb hierfür jeweils
 eigene Einstellungen vorzunehmen sind.*
 
 

@@ -26,7 +26,7 @@ einberechnet, ist für die Benutzer auf der Tagesordnung aber nicht sichtbar.
 Bei der Projektion der gesamten Tagesordnung oder einzelner Unterpunkte
 erscheint ein organisatorischer Eintrag ebenfalls nicht.
 
-Zusätzlich haben Sie die Möglichkeit unter dem „Titel“ einen „Text“
+Zusätzlich haben Sie die Möglichkeit, unter dem „Titel“ einen „Text“
 einzufügen, der auf dem Projektor erscheinen soll. Einträge im Feld
 „Kommentar“ sind nur für die Versammlungsleitung sichtbar.
 
@@ -117,11 +117,11 @@ Folie dargestellt.
 
 .. |bell| image:: ../_images/bell.png
 
-Zusätzlich zu allen bereits genannten Anzeigemöglichkeiten, kann auf dem
+Zusätzlich zu allen bereits genannten Anzeigemöglichkeiten kann auf dem
 Dashboard eine Einblendung der Rednerliste eingestellt werden. Aktivieren
 Sie diese, wenn Sie auf den Kästchen-Button |checkbox| klicken. Die in einem
-grauen Rahmen, rechts unten auf der Folie, angezeigte Rednerliste
-visualisiert die letzten, hervorgehoben den aktuellen und die nächsten fünf
+grauen Rahmen, rechts unten auf der Folie angezeigte Rednerliste,
+visualisiert die letzten, den aktuellen (hervorgehoben) und die nächsten (fünf)
 Redner. Die Einblendung erscheint nur auf Folien von Tagesordnungspunkten.
 
 .. |checkbox| image:: ../_images/checkbox.png

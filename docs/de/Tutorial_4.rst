@@ -29,7 +29,7 @@ Die übrigen Einstellungen können Sie erst einmal so belassen.
    :class: screenshot
 
 *Bei Anträgen und Wahlen kann es unter Umständen vorkommen, dass
-verschieden viele Stimmzettel benötigt werden, weshalb hierfür jeweils
+unterschiedlich viele Stimmzettel benötigt werden, weshalb hierfür jeweils
 eigene Einstellungen vorzunehmen sind.*
 
 
@@ -96,7 +96,7 @@ Die Antragsansicht sieht dann wie folgt aus:
 .. image:: ../_images/Platzhalter.png
    :class: screenshot
 
-Nach Abschluss der Diskussion ruft der Vorsitzende zur Abstimmung. Klicken
+Nach Abschluss der Diskussion ruft der Vorsitzende zur Abstimmung auf. Klicken
 Sie rechts auf „Neue Abstimmung“ und tragen Sie das Abstimmungsergebnis wie
 folgt in das Formular ein:
 
