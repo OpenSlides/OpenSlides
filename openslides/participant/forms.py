@@ -13,12 +13,11 @@
 from django import forms
 from django.contrib import messages
 from django.contrib.auth.models import Permission
-from django.contrib.contenttypes.models import ContentType
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.conf import settings
 
 from openslides.utils.forms import CssClassMixin, LocalizedModelMultipleChoiceField
-from openslides.participant.models import User, Group
+from openslides.participant.models import User, Group, get_protected_perm
 from openslides.participant.api import get_registered_group
 
 
@@ -64,19 +63,15 @@ class UserUpdateForm(UserCreateForm):
 
     def clean(self, *args, **kwargs):
         """
-        Raises a validation error, if a non-superuser user edits himself
+        Raises a validation error if a non-superuser user edits himself
         and removes the last group containing the permission to manage participants.
         """
         # TODO: Check this in clean_groups
-        if self.request.user == self.instance and not self.instance.is_superuser:
-            protected_perm = Permission.objects.get(
-                content_type=ContentType.objects.get(app_label='participant',
-                                                     model='user'),
-                codename='can_manage_participant')
-            if not self.cleaned_data['groups'].filter(permissions__in=[protected_perm]).exists():
-                error_msg = _('You can not remove the last group containing the permission to manage participants.')
-                messages.error(self.request, error_msg)
-                raise forms.ValidationError(error_msg)
+        if (self.request.user == self.instance and
+                not self.instance.is_superuser and
+                not self.cleaned_data['groups'].filter(permissions__in=[get_protected_perm()]).exists()):
+            error_msg = _('You can not remove the last group containing the permission to manage participants.')
+            raise forms.ValidationError(error_msg)
         return super(UserUpdateForm, self).clean(*args, **kwargs)
 
 
@@ -87,7 +82,12 @@ class GroupForm(forms.ModelForm, CssClassMixin):
     users = forms.ModelMultipleChoiceField(
         queryset=User.objects.all(), label=ugettext_lazy('Participants'), required=False)
 
+    class Meta:
+        model = Group
+
     def __init__(self, *args, **kwargs):
+        # Take request argument
+        self.request = kwargs.pop('request', None)
         # Initial users
         if kwargs.get('instance', None) is not None:
             initial = kwargs.setdefault('initial', {})
@@ -114,8 +114,32 @@ class GroupForm(forms.ModelForm, CssClassMixin):
 
         return instance
 
-    class Meta:
-        model = Group
+    def clean(self, *args, **kwargs):
+        """
+        Raises a validation error if a non-superuser user removes himself
+        from the last group containing the permission to manage participants.
+
+        Raises also a validation error if a non-superuser removes his last
+        permission to manage participants from the (last) group.
+        """
+        # TODO: Check this in clean_users or clean_permissions
+        if (self.request and
+                not self.request.user.is_superuser and
+                not self.request.user in self.cleaned_data['users'] and
+                not Group.objects.exclude(pk=self.instance.pk).filter(
+                    permissions__in=[get_protected_perm()],
+                    user__pk=self.request.user.pk).exists()):
+            error_msg = _('You can not remove yourself from the last group containing the permission to manage participants.')
+            raise forms.ValidationError(error_msg)
+        if (self.request and
+                not self.request.user.is_superuser and
+                not get_protected_perm() in self.cleaned_data['permissions'] and
+                not Group.objects.exclude(pk=self.instance.pk).filter(
+                    permissions__in=[get_protected_perm()],
+                    user__pk=self.request.user.pk).exists()):
+            error_msg = _('You can not remove the permission to manage participants from the last group your are in.')
+            raise forms.ValidationError(error_msg)
+        return super(GroupForm, self).clean(*args, **kwargs)
 
 
 class UsersettingsForm(forms.ModelForm, CssClassMixin):
