@@ -61,17 +61,6 @@ class Item(MPTTModel, SlideMixin):
     Flag, if the item is finished.
     """
 
-    weight = models.IntegerField(default=0, verbose_name=ugettext_lazy("Weight"))
-    """
-    Weight to sort the item in the agenda.
-    """
-
-    parent = TreeForeignKey('self', null=True, blank=True,
-                            related_name='children')
-    """
-    The parent item in the agenda tree.
-    """
-
     type = models.IntegerField(max_length=1, choices=ITEM_TYPE,
                                default=AGENDA_ITEM, verbose_name=ugettext_lazy("Type"))
     """
@@ -84,6 +73,17 @@ class Item(MPTTModel, SlideMixin):
                                 verbose_name=ugettext_lazy("Duration (hh:mm)"))
     """
     The intended duration for the topic.
+    """
+
+    parent = TreeForeignKey('self', null=True, blank=True,
+                            related_name='children')
+    """
+    The parent item in the agenda tree.
+    """
+
+    weight = models.IntegerField(default=0, verbose_name=ugettext_lazy("Weight"))
+    """
+    Weight to sort the item in the agenda.
     """
 
     related_sid = models.CharField(null=True, blank=True, max_length=63)
