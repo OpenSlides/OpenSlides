@@ -12,7 +12,9 @@ Version 1.4 (unreleased)
 Projector:
 - New overlay API
 Agenda:
-- New feature: list of speakers for each agenda item.
+- New feature: list of speakers for each agenda item with timestamp for begin
+  and end of speach, new widget and new overlay on the dashboard for easy managing
+  and presanting lists of speakers.
 - New item type: organisational item (vs. agenda item).
 - New time field for each agenda item (with total event time calculation).
 - New sorting of agenda items (with nestedSortable jQuery plugin).
@@ -28,6 +30,8 @@ Motions:
 - New modifiable identifier.
 - New motion version diff view. Improved history table in motion detail view.
 - New config variable 'Stop submitting of new motions' (for non-manager users).
+- New overview table for sorting of motions.
+- Updated motion status log.
 Participants:
 - Integrated DataTables jQuery plugin for participants table (for client side
   sorting/filtering/pagination).
@@ -39,12 +43,19 @@ Participants:
 Other:
 - New template based on twitter bootstrap.
 - Used Tornado web server (instead of Django's default development server).
-- New mediafile app to upload/download files via frontend.
+- New mediafile app (files) to upload/download files via frontend.
 - New config app: Apps have to define config vars only once; config pages and
   forms are created automatically.
 - Updated to Django 1.5.
 - Dropped support for python 2.5.
 - Updated win32 portable version to use Tornado.
+- Moved version page out of the config app.
+- Changed version number api for plugins.
+- Moved widget with personal info to account app. Inserted info about lists of speakers.
+- Updatet packaging.
+- Updated way to open all PDF. They are opened in a new tab now.
+- Changed Doctype to HTML 5.
+- Updated German documentation.
 
 
 Version 1.3.1 (2013-01-09)
