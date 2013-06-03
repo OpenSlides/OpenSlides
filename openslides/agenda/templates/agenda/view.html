@@ -46,7 +46,7 @@
     {% if not item.related_sid %}
         {{ item.text|safe|linebreaks }}
     {% else %}
-        <a href="{% model_url item.get_related_slide %}" class="btn btn-small">{% trans 'View' %} "{{ item.get_related_slide }}" ({% trans item.get_related_type %})</a>
+        <a href="{% model_url item.get_related_slide %}" class="btn btn-small">{% trans item.get_related_type %} {{ item.get_related_slide }}</a>
     {% endif %}
 </p>
 
