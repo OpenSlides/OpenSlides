@@ -53,20 +53,25 @@
             <td>
                 <span style="width: 1px; white-space: nowrap;">
                 {% if perms.projector.can_manage_projector %}
-                    <a href="{% url 'projector_activate_slide' assignment.sid  %}" class="activate_link btn {% if assignment.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+                    <a href="{% url 'projector_activate_slide' assignment.sid  %}" 
+                        class="activate_link btn {% if assignment.active %}btn-primary{% endif %} btn-mini"
+                        rel="tooltip" data-original-title="{% trans 'Show election' %}">
                         <i class="icon-facetime-video {% if assignment.active %}icon-white{% endif %}"></i>
                     </a>
                 {% endif %}
                 {% if perms.assignment.can_manage_assignment %}
-                    <a href="{% url 'assignment_edit' assignment.id %}" title="{% trans 'Edit' %}" class="btn btn-mini">
-                        <i class="icon-pencil"></i>
+                    <a href="{% url 'assignment_edit' assignment.id %}"
+                        rel="tooltip" data-original-title="{% trans 'Edit' %}"
+                        class="btn btn-mini"><i class="icon-pencil"></i>
                     </a>
-                    <a href="{% url 'assignment_delete' assignment.id %}" title="{% trans 'Delete' %}" class="btn btn-mini">
-                        <i class="icon-remove"></i>
+                    <a href="{% url 'assignment_delete' assignment.id %}"
+                        rel="tooltip" data-original-title="{% trans 'Delete' %}"
+                        class="btn btn-mini"><i class="icon-remove"></i>
                     </a>
                 {% endif %}
-                <a href="{% url 'print_assignment' assignment.id  %}" class="btn btn-mini" title="{% trans 'Print election as PDF' %}" target="_blank">
-                    <i class="icon-print"></i> PDF
+                <a href="{% url 'print_assignment' assignment.id  %}"
+                    data-original-title="{% trans 'Print election as PDF' %}" target="_blank"
+                    class="btn btn-mini tooltip-left"><i class="icon-print"></i> PDF
                 </a>
                 </span>
             </td>

@@ -25,7 +25,7 @@
             {% endif %}
         {% endif %}
         {% if perms.motion.can_manage_motion %}
-            <a href="{% url 'motion_category_list' %}" class="btn btn-mini"><i class="icon-th-large"></i> {% trans 'Categories' %}</a>
+            <a href="{% url 'motion_category_list' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Manage categories' %}"><i class="icon-th-large"></i> {% trans 'Categories' %}</a>
             <a href="{% url 'motion_csv_import' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import motions' %}"><i class="icon-import"></i> {% trans 'Import' %}</a>
         {% endif %}
         <a href="{% url 'motion_list_pdf' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print all motions as PDF' %}" target="_blank"><i class="icon-print"></i> PDF</a>
@@ -79,15 +79,15 @@
                     </a>
                 {% endif %}
                 {% if perms.motion.can_manage_motion %}
-                    <a href="{% model_url motion 'edit' %}" title="{% trans 'Edit' %}" class="btn btn-mini">
-                        <i class="icon-pencil"></i>
+                    <a href="{% model_url motion 'edit' %}" rel="tooltip" data-original-title="{% trans 'Edit' %}"
+                        class="btn btn-mini"><i class="icon-pencil"></i>
                     </a>
-                    <a href="{% model_url motion 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
-                        <i class="icon-remove"></i>
+                    <a href="{% model_url motion 'delete' %}" rel="tooltip" data-original-title="{% trans 'Delete' %}"
+                        class="btn btn-mini"><i class="icon-remove"></i>
                     </a>
                 {% endif %}
-                <a href="{% url 'motion_detail_pdf' motion.id  %}" class="btn btn-mini" title="{% trans 'Print motion as PDF' %}" target="_blank">
-                    <i class="icon-print"></i> PDF
+                <a href="{% url 'motion_detail_pdf' motion.id  %}" data-original-title="{% trans 'Print motion as PDF' %}"
+                    class="btn btn-mini tooltip-left" target="_blank"><i class="icon-print"></i> PDF
                 </a>
                 </span>
             </td>

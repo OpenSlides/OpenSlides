@@ -46,18 +46,22 @@
         </h1>
 
         {% if perms.agenda.can_see_orga_items %}
-        {% if start and end %}
-        <table id="agendatime" class="table table-bordered">
-           <tr>
-               <td>{% trans "Start of event" %}:</td>
-               <td>{{ start|date:"DATETIME_FORMAT" }}</td>
-           </tr>
-           <tr>
-               <td>{% trans "Estimated end" %}:</td>
-               <td>{{ end|date:"DATETIME_FORMAT" }}</td>
-           </tr>
-        </table>
-        {% endif %}
+            {% if start and end %}
+                <table id="agendatime" class="table table-bordered">
+                    <tr>
+                        <td>{% trans "Start of event" %}:</td>
+                        <td>{{ start|date:"DATETIME_FORMAT" }}</td>
+                    </tr>
+                    <tr>
+                        <td>{% trans "Estimated end" %}:</td>
+                        <td>{{ end|date:"DATETIME_FORMAT" }}</td>
+                    </tr>
+                </table>
+            {% else %}
+                <div style="float: right;">
+                    <a href="{% url 'config_agenda' %}" class="btn btn-mini">{% trans 'Set start time of event' %}</a>
+                </div>
+            {% endif %}
         {% endif %}
         <label class="checkbox">
             <input type="checkbox" id="hide_closed_items"> {% trans "Hide closed items" %}
@@ -68,7 +72,6 @@
         </i></small>
         <table id="menu-overview" class="table table-striped table-bordered">
             <tr>
-                <th class="openclose"></th>
                 <th class="title">{% trans "Item" %}</th>
                 {% if perms.agenda.can_manage_agenda %}
                     <th class="optional">{% trans "Comment" %}</th>
@@ -81,7 +84,6 @@
                 {% endif %}
             </tr>
             <tr class="topline{% if active_sid == 'agenda' %} activeline{% endif %}">
-                <td class="openclose"></td>
                 <td class="title">
                     {% trans "Agenda" %}
                 </td>

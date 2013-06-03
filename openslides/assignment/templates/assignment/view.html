@@ -106,9 +106,11 @@
                 <label>{{ field.label }}:</label>
                 <div class="input-append">
                     {{ field }}
-                    <button class="btn btn-primary" type="submit" title="{% trans 'Apply' %}"><i class="icon-ok icon-white"></i></button>
+                    <button class="btn btn-primary tooltip-bottom" type="submit"
+                        data-original-title="{% trans 'Apply' %}"><i class="icon-ok icon-white"></i></button>
                     {% if perms.participant.can_see_participant and perms.participant.can_manage_participant %}
-                        <a href="{% url 'user_new' %}" target="_blank" class="btn"  title="{% trans 'Add new participant' %}"><i class="icon-add-user"></i></a>
+                        <a href="{% url 'user_new' %}" target="_blank" class="btn"
+                            rel="tooltip" data-original-title="{% trans 'Add new participant' %}"><i class="icon-add-user"></i></a>
                     {% endif %}
                 </div>
             {% endfor %}
@@ -124,7 +126,8 @@
     {% for person in blocked_candidates %}
         <li>
             <a href="{% model_url person 'view' %}">{{ person }}</a>
-            <a class="btn btn-mini" href="{% url 'assignment_delother' assignment.id person.person_id %}" title="{% trans 'Remove candidate' %}">
+            <a class="btn btn-mini" href="{% url 'assignment_delother' assignment.id person.person_id %}"
+                rel="tooltip" data-original-title="{% trans 'Remove candidate' %}">
                 <i class="icon-ban-circle"></i>
             </a>
         </li>
@@ -164,8 +167,10 @@
                             <i class="icon-unchecked-new"></i>
                             {% endif %}
                         </a>
-                        <a href="{% url 'assignment_poll_view' poll.id %}" class="btn btn-mini" title="{% trans 'Edit' %}"><i class="icon-pencil"></i></a>
-                        <a href="{% url 'assignment_poll_delete' poll.id %}" class="btn btn-mini" title="{% trans 'Delete' %}"><i class="icon-remove"></i></a>
+                        <a href="{% url 'assignment_poll_view' poll.id %}" class="btn btn-mini"
+                            rel="tooltip" data-original-title="{% trans 'Edit' %}"><i class="icon-pencil"></i></a>
+                        <a href="{% url 'assignment_poll_delete' poll.id %}" class="btn btn-mini"
+                            rel="tooltip" data-original-title="{% trans 'Delete' %}"><i class="icon-remove"></i></a>
                     {% endif %}
                 </th>
             {% endfor %}
@@ -182,10 +187,11 @@
             <td>
                 {% if candidate in assignment.elected %}
                     {% if perms.assignment.can_manage_assignment %}
-                        <a class="election_link elected" href="{% url 'assignment_user_not_elected' assignment.id candidate.person_id %}"></a>
+                        <a class="election_link elected" href="{% url 'assignment_user_not_elected' assignment.id candidate.person_id %}"
+                            rel="tooltip" data-original-title="{% trans 'Mark candidate as elected' %}"></a>
                     {% else %}
                         <a class="elected">
-                            <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Candidate is elected' %}">
+                            <img src="{% static 'img/voting-yes.png' %}" class="tooltip-bottom" data-original-title="{% trans 'Candidate is elected' %}">
                         </a>
                     {% endif %}
                 {% else %}
@@ -198,11 +204,11 @@
             {% for vote in poll_list %}
                 <td style="white-space:nowrap;">
                     {% if 'Yes' in vote and 'No' in vote and 'Abstain' in vote %}
-                        <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Yes }}<br>
-                        <img src="{% static 'img/voting-no.png' %}" title="{% trans 'No' %}"> {{ vote.No }}<br>
-                        <img src="{% static 'img/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ vote.Abstain }}<br>
+                        <img src="{% static 'img/voting-yes.png' %}" class="tooltip-left" data-original-title="{% trans 'Yes' %}"> {{ vote.Yes }}<br>
+                        <img src="{% static 'img/voting-no.png' %}" class="tooltip-left" data-original-title="{% trans 'No' %}"> {{ vote.No }}<br>
+                        <img src="{% static 'img/voting-abstention.png' %}" class="tooltip-left" data-original-title="{% trans 'Abstention' %}"> {{ vote.Abstain }}<br>
                     {% elif 'Votes' in vote %}
-                        <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Votes }}
+                        <img src="{% static 'img/voting-yes.png' %}" class="tooltip-left" data-original-title="{% trans 'Yes' %}"> {{ vote.Votes }}
                     {% elif vote == None %}
                         {% trans 'was not a <br> candidate'%}
                     {% else %}
@@ -221,7 +227,7 @@
                 {% if poll.published or perms.assignment.can_manage_assignment %}
                     <td style="white-space:nowrap;">
                         {% if poll.has_votes %}
-                            <img src="{% static 'img/voting-invalid.png' %}" title="{% trans 'Invalid' %}">
+                            <img src="{% static 'img/voting-invalid.png' %}" class="tooltip-left" data-original-title="{% trans 'Invalid' %}">
                             {{ poll.print_votesinvalid }}
                         {% endif %}
                     </td>
@@ -237,7 +243,7 @@
                 {% if poll.published or perms.assignment.can_manage_assignment %}
                     <td style="white-space:nowrap;">
                         {% if poll.has_votes %}
-                            <img src="{% static 'img/voting-total.png' %}" title="{% trans 'Votes cast' %}">
+                            <img src="{% static 'img/voting-total.png' %}" class="tooltip-left" data-original-title="{% trans 'Votes cast' %}">
                             <strong>{{ poll.print_votescast }}</strong>
                         {% endif %}
                     </td>
