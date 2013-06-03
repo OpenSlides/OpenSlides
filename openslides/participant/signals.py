@@ -68,8 +68,9 @@ def create_builtin_groups(sender, **kwargs):
     Creates the builtin groups: Anonymous, Registered, Delegates and Staff.
     """
     # Check whether the group pks 1 to 4 are free
-    for pk in range(1, 5):
-        assert not Group.objects.filter(pk=pk).exists(), 'There should not be any group with pk 1, 2, 3 or 4.'
+    if Group.objects.filter(pk__in=range(1, 5)).exists():
+        # Do completely nothing if there are already some of our groups in the database.
+        return
 
     # Anonymous and Registered
     ct_projector = ContentType.objects.get(app_label='projector', model='projectorslide')
