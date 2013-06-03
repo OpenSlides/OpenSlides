@@ -2,9 +2,9 @@
 -r requirements_production.txt
 
 # Requirements for development and tests
-Fabric==1.6.0
+Fabric==1.6.1
 coverage==3.6
-django-discover-runner==0.3
+django-discover-runner==0.4
 pep8==1.4.5
 
 # Requirements for OpenSlides handbook/documentation
