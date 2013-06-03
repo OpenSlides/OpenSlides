@@ -10,8 +10,9 @@ die sich jeweils rechts oben befinden.
    :class: screenshot
 
 Alle weiteren Funktionen von OpenSlides finden Sie in der im Aufbau
-befindlichen Dokumentation hier__. Wie Sie weitere Anpassungen vornehmen
-erfahren Sie hier__. Viel Spaß weiterhin mit OpenSlides.
+befindlichen Dokumentation im Kapitel `Einzelne Funktionen`__. Wie Sie
+weitere Anpassungen vornehmen, erfahren Sie im Kapitel `Weitere Anpassung
+bei Open Slides`__. Viel Spaß weiterhin mit OpenSlides.
 
 .. __: FeaturesInDetail.html
 .. __: Customizing.html

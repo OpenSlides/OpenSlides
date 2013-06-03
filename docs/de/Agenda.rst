@@ -197,7 +197,7 @@ Am Ende Ihrer Veranstaltung können Sie sämtliche Rednerlisten mit den
 jeweiligen Redezeiten als CSV-Datei exportieren. Sie benötigen dazu das
 Plugin `„CSV Export Plugin for OpenSlides“`__.
 
-__ http://openslides.org
+__ https://github.com/OpenSlides/openslides-csv-export/
 
 
 Tagesordnung drucken

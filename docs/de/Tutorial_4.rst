@@ -71,7 +71,7 @@ Die Antragsseite sieht nun wie folgt aus:
 
 Auf die gleiche Weise können Sie vor und während der Veranstaltung alle
 gestellten Anträge eingeben. Mehr Informationen zur Antragsverwaltung
-finden Sie hier__.
+finden Sie im Kapitel Einzelne Funktionen, Abschnitt Anträge__.
 
 .. __: Motion.html
 
@@ -106,7 +106,7 @@ folgt in das Formular ein:
 Der Vorsitzende stellt fest, dass der Antrag angenommen ist. Klicken Sie
 deshalb auf der rechten Seite auf „Angenommen“.
 
-Das Beamerbild sieht nun wie folgt aus:
+Das Projektorbild sieht nun wie folgt aus:
 
 .. image:: ../_images/Platzhalter.png
    :class: screenshot

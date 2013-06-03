@@ -153,7 +153,8 @@ einen Antrag nur im jeweiligen Anfangsstatus unterstützen.
 .. __: #abstimmungen
 .. __: #voreinstellungen
 
-Eine Übersicht über die beiden Arbeitsabläufe mit allen Status finden Sie hier:
+Eine Übersicht über die beiden Arbeitsabläufe mit allen Status finden Sie
+in der folgenden Übersicht:
 
 .. image:: ../_images/Platzhalter.png
    :class: screenshot

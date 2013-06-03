@@ -9,7 +9,8 @@ Konfiguration der Tagesordnung
 ------------------------------
 
 Gehen Sie zunächst im Menüpunkt „Konfiguration“ links oben zum Unterpunkt
-„Tagesordnung“. Hier können Sie den genauen Beginn der Veranstaltung einstellen:
+„Tagesordnung“. Hier können Sie den genauen Beginn der Veranstaltung
+einstellen:
 
   02.03.2013 10:00
 
@@ -77,7 +78,7 @@ Tagesordnung behandelt werden soll.*
 Titel und Inhalt sowie die weiteren Felder der Tagesordnungspunkte
 (Einträge) können jederzeit, insbesondere während des laufenden Betriebs
 geändert werden. Solange ein Eintrag keinen Inhalt im Feld „Text“ enthält,
-wird der Titel auf dem Beamer groß und zentriert dargestellt. Wenn Sie
+wird der Titel auf dem Projektor groß und zentriert dargestellt. Wenn Sie
 einen zusätzlichen Text eingeben, werden Überschrift und Text linksbündig
 dargestellt.
 
@@ -95,13 +96,14 @@ Tagesordnungspunkt wie folgt eingeben:
 .. |edit| image:: ../_images/pencil.png
 
 Mehr Informationen zur Verwaltungs der Tagesordnung, insbesondere den
-Organisationseinträgen und den Rednerlisten finden Sie hier__.
+Organisationseinträgen und den Rednerlisten finden Sie im Kapitel Einzelne
+Funktionen, Abschnitt Tagesordnung__.
 
 .. __: Agenda.html
 
 
-Auswahl der Beamerfolien
-------------------------
+Auswahl der Projektorfolien
+---------------------------
 
 Wenn Sie in den Menüpunkt „Dashboard“ wechseln,
 
@@ -111,7 +113,7 @@ Wenn Sie in den Menüpunkt „Dashboard“ wechseln,
 können Sie durch einen Klick auf das jeweilige Projektorsymbol eine
 bestimmte Folie auswählen. Die jeweils aktive Folie zeigt ein blaues
 Projektorsymbol. Probieren Sie, verschiedene
-Tagesordnungspunkte auf dem Beamer anzuzeigen.
+Tagesordnungspunkte auf dem Projektor anzuzeigen.
 
 .. image:: ../_images/Platzhalter.png
    :class: screenshot

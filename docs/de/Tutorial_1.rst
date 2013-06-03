@@ -3,25 +3,26 @@ Einrichtung von OpenSlides
 
 Zunächst müssen Sie OpenSlides auf dem Server installieren, den Server
 starten und einige Einstellungen für Ihre Veranstaltung vornehmen. Danach
-können Sie Ihre ersten Folien einrichten und auf dem Beamer zeigen.
+können Sie Ihre ersten Folien einrichten und auf dem Projektor zeigen.
 
 
 Installation und Start des Servers
 ----------------------------------
 
-Installieren Sie OpenSlides wie hier__ beschrieben. Starten Sie den Server
-wie hier__ beschrieben. Sie sehen jetzt die Login-Seite von OpenSlides in
-Ihrem Browser. Loggen Sie sich als Administrator ein, indem Sie als
-Benutzernamen ``admin`` und als Passwort ``admin`` eingeben und auf
-``Anmelden`` klicken.
+Installieren Sie OpenSlides wie im Kapitel Erste Schritte, Abschnitt
+Installation__ beschrieben. Starten Sie den Server wie im Kapitel Erste
+Schritte, Abschnitt `Start des Servers und Öffnen des Browsers`__
+beschrieben. Sie sehen jetzt die Login-Seite von OpenSlides in Ihrem
+Browser. Loggen Sie sich als Administrator ein, indem Sie als Benutzernamen
+``admin`` und als Passwort ``admin`` eingeben und auf ``Anmelden`` klicken.
 
 .. image:: ../_images/Platzhalter.png
    :class: screenshot
 
 Anschließend sollten Sie sofort das Administrator-Passwort ändern. Geben
-Sie in die entsprechenden Felder Ihr altes Passwort ``admin`` und als neues
-Passwort ``geheim`` ein. Wiederholen Sie das neue Passwort im dritten
-Formularfeld. Bestätigen Sie die Eingabe mit ``Speichern``.
+Sie in die entsprechenden Felder Ihr altes Passwort ``admin`` und
+anschließend Ihr neues Passwort ein. Wiederholen Sie das neue Passwort im
+dritten Formularfeld. Bestätigen Sie die Eingabe mit ``Speichern``.
 
 .. image:: ../_images/Platzhalter.png
    :class: screenshot
@@ -34,8 +35,8 @@ Konfiguration des Systems
 -------------------------
 
 Geben Sie die Rahmendaten Ihrer Veranstaltung ins System ein. Wechseln Sie
-dazu zum Menüpunkt „Konfiguration“ und geben Sie die Allgemeinen
-Einstellungen wie folgt ein:
+dazu zum Menüpunkt „Konfiguration“ (Allgemein) und geben Sie die
+Veranstaltungsdaten wie folgt ein:
 
 Veranstaltungsname:
   Schreberverein Nord e. V.
@@ -51,6 +52,8 @@ Veranstaltungsort:
 
 Veranstalter:
   Schreberverein Nord e. V.
+
+Geben Sie außerdem für das Willkommens-Widget ein:
 
 Startseite – Titel:
   Willkommen zur Mitgliederversammlung
@@ -98,9 +101,9 @@ Technische Einrichtung im Veranstaltungsraum
 --------------------------------------------
 
 Richten Sie Ihren Veranstaltungsraum ein. Im Präsentationsmodus Single
-schließen Sie den Beamer an Ihren Computer an und schieben ein zweites
+schließen Sie den Projektor an Ihren Computer an und schieben ein zweites
 Browserfenster auf den erweiterten Bildschirm. Ansonsten richten Sie ein
-Netzwerk ein, schließen Sie einen beliebigen Computer an den Beamer an und
+Netzwerk ein, schließen Sie einen beliebigen Computer an den Projektor an und
 öffnen im Vollbildmodus die Seite mit der Projektoransicht. Den
 entsprechend Link finden Sie bei OpenSlides im Menüpunkt „Dashboard“ bei
 der Projektor-Live-Ansicht. Er lautet zum Beispiel
@@ -110,16 +113,16 @@ mit ein bis drei Ziffern stehen.
 .. image:: ../_images/Platzhalter.png
    :class: screenshot
 
-Das Beamerbild sieht zurzeit wie folgt aus:
+Das Projektorbild sieht zurzeit wie folgt aus:
 
 .. image:: ../_images/Platzhalter.png
    :class: screenshot
 
 
-Auswahl der Beamerfolien
-------------------------
+Auswahl der Projektorfolien
+---------------------------
 
-Testen Sie, ob auf dem Beamer die gewünschten Folien zu sehen sind, wenn
+Testen Sie, ob auf dem Projektor die gewünschten Folien zu sehen sind, wenn
 Sie bei OpenSlides im Menüpunkt „Dashboard“ verschiedene Folien auswählen.
 Sie können eine bestimmte Folie anwählen, indem Sie auf das jeweilige
 Projektorsymbol |projector| klicken. Die jeweils aktive Folie zeigt ein
@@ -145,7 +148,7 @@ Kästchen klicken.
 .. image:: ../_images/Platzhalter.png
    :class: screenshot
 
-Das Beamerbild sieht dann wie folgt aus:
+Das Projektorbild sieht dann wie folgt aus:
 
 .. image:: ../_images/Platzhalter.png
    :class: screenshot

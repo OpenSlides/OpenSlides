@@ -129,7 +129,7 @@ Wahlgangs in eben dieses Formular ein:
    :class: screenshot
 
 Klicken Sie anschließend auf den roten Knopf bei dem ersten Wahlgang, um
-die Wahlergebnisse auf dem Beamer zu veröffentlichen. Der Knopf erhält
+die Wahlergebnisse auf dem Projektor zu veröffentlichen. Der Knopf erhält
 einen weißen Haken.
 
 .. image:: ../_images/Platzhalter.png
@@ -141,7 +141,7 @@ Hans Schulze, um diese als gewählt zu markieren.
 .. image:: ../_images/Platzhalter.png
    :class: screenshot
 
-Ändern Sie rechts den Status der Wahl auf „Abgeschlossen“. Das Beamerbild
+Ändern Sie rechts den Status der Wahl auf „Abgeschlossen“. Das Projektorbild
 sieht nun wie folgt aus:
 
 .. image:: ../_images/Platzhalter.png
@@ -165,7 +165,7 @@ Single muss der Drucker stets auch an den Rechner angeschlossen sein, mit
 dem Sie arbeiten.*
 
 
-Weiter geht es mit dem sechsten Teil des Tutorials: `Medien hochladen und
+Weiter geht es mit dem sechsten Teil des Tutorials: `Dateien hochladen und
 anzeigen`__
 
 .. __: Tutorial_6.html

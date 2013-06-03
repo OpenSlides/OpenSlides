@@ -10,12 +10,13 @@ verwalten, Anträge stellen oder unterstützen oder bei Wahlen kandidieren.
 Eingabe der Teilnehmer und Teilnehmerinnen
 ------------------------------------------
 
-Sie können die Teilnehmer und Teilnehmerinnen einzeln eintragen oder wie
-hier__ beschrieben importieren. Jedoch werden beim Import alle vorher
-eingetragenen Teilnehmer gelöscht. Eingetragenen Personen, die das System
-verwalten sollen, müssen die entsprechenden Berechtigungen zugewiesen werden.
+Sie können die Teilnehmer und Teilnehmerinnen einzeln eintragen oder, wie im
+Kapitel Einzelne Funktionen, Abschnitt `Teilnehmer/innen`__ beschrieben,
+importieren. Jedoch werden beim Import alle vorher eingetragenen Teilnehmer
+gelöscht. Eingetragenen Personen, die das System verwalten sollen, müssen
+die entsprechenden Berechtigungen zugewiesen werden.
 
-.. __: Teilnehmer.html
+.. __: Participant.html
 
 Wechseln Sie zum Menüpunkt „Teilnehmer/innen“. Klicken Sie oben rechts auf
 „Neu“
@@ -81,11 +82,10 @@ ersten Login zu ändern.
 Um als Administrator das Passwort von zum Beispiel Max Mustermann neu zu
 setzen, klicken Sie erneut auf das Bearbeiten-Symbol |edit| und tragen Sie
 unten unter „Vorgegebenes Passwort“ ein neues, selbstgewähltes Passwort
-ein.  Für dieses Tutorial sei als Passwort ``geheim`` gewählt. Anschließend
-klicken Sie auf ``Übernehmen``. In einem zweiten Schritt müssen Sie auf den
-Link „Auf Erst-Passwort zurücksetzen“ klicken, um das im System
-gespeicherte Passwort mit Ihrem neu eingegebenen zu ersetzen. Bestätigen
-Sie den oben auf der Seite erscheinenden Dialog mit ``Ja``.
+ein. Anschließend klicken Sie auf ``Übernehmen``. In einem zweiten Schritt
+müssen Sie auf den Link „Auf Erst-Passwort zurücksetzen“ klicken, um das im
+System gespeicherte Passwort mit Ihrem neu eingegebenen zu ersetzen.
+Bestätigen Sie den oben auf der Seite erscheinenden Dialog mit ``Ja``.
 
 .. image:: ../_images/Platzhalter.png
    :class: screenshot

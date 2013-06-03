@@ -4,7 +4,7 @@ An- und Abmelden – Benutzername und Passwort ändern
 An- und Abmelden
 ----------------
 
-Beim ersten Aufruf von OpenSlides erscheint die Login-Seite. Der erste Benutzername des Administrators ist ``admin``. Er hat das erste Passwort ``admin``. Über die Teilnehmerverwaltung neu angelegte Teilnehmer haben einen aus dem Vor- und Nachnamen zusammengesetzten Benutzernamen, wobei Groß- und Kleinschreibung zu beachten ist und zwischen den Namen ein Unterstrich liegt. Beispiel: Mit dem Vornamen ``Max`` und dem Nachnamen ``Mustermann`` angelegte Teilnehmer hat den Benutzernahmen ``Max_Mustermann``. Das Erstpasswort kann über die Teilnehmerverwaltung eingesehen werden. Zum Einloggen geben Sie einfach Ihren Benutzernamen und Ihr Passwort ein und klicken Sie auf ``Anmelden``.
+Beim ersten Aufruf von OpenSlides erscheint die Login-Seite. Der erste Benutzername des Administrators ist ``admin``. Er hat das erste Passwort ``admin``. Über die Teilnehmerverwaltung neu angelegte Teilnehmer haben einen aus dem Vor- und Nachnamen zusammengesetzten Benutzernamen, wobei Groß- und Kleinschreibung zu beachten ist. Beispiel: Ein mit dem Vornamen ``Max`` und dem Nachnamen ``Mustermann`` angelegter Teilnehmer hat den Benutzernamen ``MaxMustermann``. Das Erstpasswort kann über die Teilnehmerverwaltung eingesehen werden. Zum Einloggen geben Sie einfach Ihren Benutzernamen und Ihr Passwort ein und klicken Sie auf ``Anmelden``.
 
 
 Eigene Benutzereinstellungen (insbesondere Benutzername oder Passwort) ändern
@@ -22,4 +22,4 @@ Benutzer mit den entsprechenden Rechten wie Mitarbeiter können alle Benutzer ü
 
 Klicken Sie beim jeweiligen Teilnehmer auf das Bearbeiten-Symbol |edit| und tragen Sie unter „Erst-Passwort“ ein neues, selbstgewähltes Passwort ein. Anschließend klicken Sie auf ``Übernehmen``. In einem zweiten Schritt müssen Sie auf den Link „Auf Erst-Passwort zurücksetzen“ klicken, um das im System gespeicherte Passwort mit Ihrem neu eingegebenen zu ersetzen. Bestätigen Sie den oben auf der Seite erscheinenden Dialog mit ``Ja``.
 
-.. |edit| image:: ../_images/PlatzhalterIcon.png
+.. |edit| image:: ../_images/pencil.png
