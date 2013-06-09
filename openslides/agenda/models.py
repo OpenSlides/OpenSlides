@@ -13,6 +13,7 @@
 from datetime import datetime
 
 from django.db import models
+from django.contrib.auth.models import AnonymousUser
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy, ugettext_noop, ugettext as _
 
@@ -324,7 +325,12 @@ class Item(MPTTModel, SlideMixin):
 class SpeakerManager(models.Manager):
     def add(self, person, item):
         if self.filter(person=person, item=item, begin_time=None).exists():
-            raise OpenSlidesError(_('%(person)s is already on the list of speakers of item %(id)s.') % {'person': person, 'id': item.id})
+            raise OpenSlidesError(_(
+                '%(person)s is already on the list of speakers of item %(id)s.')
+                % {'person': person, 'id': item.id})
+        if isinstance(person, AnonymousUser):
+            raise OpenSlidesError(
+                _('An anonymous user can not be on the list of speakers.'))
         weight = (self.filter(item=item).aggregate(
             models.Max('weight'))['weight__max'] or 0)
         return self.create(item=item, person=person, weight=weight + 1)
