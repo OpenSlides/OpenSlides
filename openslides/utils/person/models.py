@@ -10,6 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 from django.db import models
+from django.contrib.auth.models import AnonymousUser
 
 from openslides.utils.exceptions import OpenSlidesError
 
@@ -29,14 +30,23 @@ class PersonField(models.fields.Field):
 
     def to_python(self, value):
         """
-        Convert string value to a User Object.
+        Convert an object to an user Object.
+
+        'value' has to be an object derivated from PersonMixin, None or has to
+        have an attribute 'person_id'.
         """
         if isinstance(value, PersonMixin):
             return value
         elif value is None:
             return None
+        elif isinstance(value, AnonymousUser):
+            raise AttributeError('An AnonymousUser can not be saved into the database.')
         else:
-            return get_person(value)
+            try:
+                return get_person(value)
+            except AttributeError:
+                raise AttributeError('You can not save \'%s\' into a person field.'
+                                     % type(value))
 
     def get_prep_value(self, value):
         """

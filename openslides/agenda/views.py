@@ -491,8 +491,8 @@ class CurrentListOfSpeakersView(RedirectView):
                 if self.request.user.has_perm('agenda.can_be_speaker'):
                     try:
                         Speaker.objects.add(self.request.user, item)
-                    except OpenSlidesError:
-                        messages.error(request, _('You are already on the list of speakers.'))
+                    except OpenSlidesError, e:
+                        messages.error(request, e)
                     finally:
                         reverse_to_dashboard = False
                 else:
