@@ -13,7 +13,7 @@
 import bleach
 
 from django import forms
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext as _, ugettext_lazy
 
 
 # Allowed tags, attributes and styles allowed in textareas edited with a JS
@@ -46,6 +46,18 @@ HTML_STYLES_WHITELIST = ()
 class CssClassMixin(object):
     error_css_class = 'error'
     required_css_class = 'required'
+
+
+class LocalizedModelChoiceField(forms.ModelChoiceField):
+    """
+    Subclass of Django's ModelChoiceField to translate the labels of the
+    model's objects.
+    """
+    def label_from_instance(self, *args, **kwargs):
+        """
+        Translates the output from Django's label_from_instance method.
+        """
+        return _(super(LocalizedModelChoiceField, self).label_from_instance(*args, **kwargs))
 
 
 class LocalizedModelMultipleChoiceField(forms.ModelMultipleChoiceField):
