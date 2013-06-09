@@ -14,8 +14,7 @@ from django import forms
 from django.utils.translation import ugettext as _, ugettext_lazy
 
 from openslides.config.api import config
-from openslides.utils.forms import CssClassMixin
-from openslides.utils.forms import CleanHtmlFormMixin
+from openslides.utils.forms import CssClassMixin, CleanHtmlFormMixin, LocalizedModelChoiceField
 from openslides.utils.person import PersonFormField, MultiplePersonFormField
 from .models import Motion, Category, Workflow
 
@@ -144,7 +143,7 @@ class MotionSetWorkflowMixin(forms.ModelForm):
     so, the motion's state is reset.
     """
 
-    set_workflow = forms.ModelChoiceField(
+    set_workflow = LocalizedModelChoiceField(
         queryset=Workflow.objects.all(),
         required=False,
         label=ugettext_lazy('Workflow'),
