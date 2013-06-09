@@ -12,6 +12,7 @@
 
 from django.test.client import Client
 from django.db.models.query import EmptyQuerySet
+from django.contrib.auth.models import AnonymousUser
 
 from openslides.utils.test import TestCase
 
@@ -32,3 +33,15 @@ class ItemTest(TestCase):
         # update person field
         test_object.save()
         self.assertEqual(TestModel.objects.get(pk=test_object.pk).person, self.person1)
+
+    def test_save_anonymous_user_in_person_field(self):
+        with self.assertRaisesRegexp(
+                AttributeError,
+                'An AnonymousUser can not be saved into the database.'):
+            TestModel.objects.create(person=AnonymousUser())
+
+    def test_save_unsupported_object_in_person_field(self):
+        with self.assertRaisesRegexp(
+                AttributeError,
+                'You can not save \'<type \'int\'>\' into a person field.'):
+            TestModel.objects.create(person=5)
