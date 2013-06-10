@@ -1,0 +1,8 @@
+/*
+ * Extra style for OpenSlides documentation
+ */
+
+.screenshot {
+    width: 30%;
+    border: 2px solid;
+    margin-bottom: 10px;}
