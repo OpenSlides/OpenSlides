@@ -283,6 +283,22 @@ class TestMotionUpdateView(MotionViewTestCase):
                     allow_support=False)
                 motion.save()
 
+    def test_form_version_content(self):
+        """
+        The content seen in the update view should be the last version
+        independently from the active_version.
+        """
+        motion = Motion.objects.create(title='test', text='wrowerjlgw')
+        new_version = motion.get_new_version()
+        new_version.text = 'tpdfgojwerldkfgertdfg'
+        motion.save(use_version=new_version)
+        motion.active_version = motion.versions.all()[0]
+        motion.save(use_version=False)
+        self.assertNotEqual(motion.active_version, motion.get_last_version())
+
+        response = self.admin_client.get('/motion/%s/edit/' % motion.id)
+        self.assertEqual(response.context['form'].initial['text'], 'tpdfgojwerldkfgertdfg')
+
 
 class TestMotionDeleteView(MotionViewTestCase):
     def test_get(self):

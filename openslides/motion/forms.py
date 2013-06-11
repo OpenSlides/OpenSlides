@@ -51,13 +51,16 @@ class BaseMotionForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
         fields = ()
 
     def __init__(self, *args, **kwargs):
-        """Fill the FormFields releated to the version data with initial data."""
+        """
+        Fill the FormFields releated to the version data with initial data.
+        """
         self.motion = kwargs.get('instance', None)
         self.initial = kwargs.setdefault('initial', {})
         if self.motion is not None:
-            self.initial['title'] = self.motion.title
-            self.initial['text'] = self.motion.text
-            self.initial['reason'] = self.motion.reason
+            last_version = self.motion.get_last_version()
+            self.initial['title'] = last_version.title
+            self.initial['text'] = last_version.text
+            self.initial['reason'] = last_version.reason
         else:
             self.initial['text'] = config['motion_preamble']
         super(BaseMotionForm, self).__init__(*args, **kwargs)
