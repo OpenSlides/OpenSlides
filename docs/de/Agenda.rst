@@ -11,10 +11,8 @@ Einen neuen Tagesordnungspunkt erstellen
 Um einen neuen Punkt auf die Tagesordnung zu setzen, klicken Sie unter dem
 Menüpunkt „Tagesordnung“ auf den rechts oben befindlichen blauen Button „Neu“.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Agenda_01.png
    :class: screenshot
-
-.. Menüseite Tagesordnung ohne Einträge (keine TOPS)
 
 Es öffnet sich eine Seite, auf der Sie den neuen Eintrag bearbeiten können.
 Erforderliche Angaben für die Erstellung eines neuen Tagesordnungspunktes
@@ -73,10 +71,8 @@ der Maus horizontal und vertikal an die gewünschte Position zu verschieben.
 Die geänderte Reihenfolge muss am Ende im oben erscheinenden Dialog
 bestätigt werden.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Agenda_02.png
    :class: screenshot
-
-.. Menüseite mit mehreren TOPS, auch Unterpunkte, die verschoben sind, oben Dialogfeld Bestätigen
 
 
 Projizierung
@@ -91,10 +87,8 @@ oder auf der Tagesordnungsseite auf den Projektor-Button in der oberen Zeile
 rechts. Projiziert werden nur die Haupttagesordnungspunkte, nicht die
 Unterpunkte.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Agenda_03.png
    :class: screenshot
-
-.. Projektorbild der TO (3 TOPS)
 
 Sie haben die Möglichkeit, auch einzelne Tagesordnungspunkte mit ihren
 dazugehörigen Texten anzeigen zu lassen. Nutzen Sie dafür den
@@ -126,10 +120,8 @@ Redner. Die Einblendung erscheint nur auf Folien von Tagesordnungspunkten.
 
 .. |checkbox| image:: ../_images/checkbox.png
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Agenda_04.png
    :class: screenshot
-
-.. Projektorbild mit Einblendung Rednerliste (ein alter, ein aktueller, 5 neue Redner)
 
 
 Die Rednerliste verwalten
@@ -158,10 +150,8 @@ setzen.
 Um die Reihenfolge von Rednern zu ändern, verschieben Sie sie mit der Maus
 an die gewünschte Position. Bestätigen Sie danach Ihre Änderungen.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Agenda_05.png
    :class: screenshot
-
-.. Rednerliste mit einigen Rednern, die verschoben wurden, mit Dialogfeld
 
 Wenn eine Person mit ihrem Redebeitrag beginnt, klicken Sie auf den Button
 „Rede beginnen“ |microphone|. Sie wird nun als aktueller Redner angezeigt.
@@ -171,11 +161,6 @@ beginnen“ |microphone| aufrufen.
 
 .. |microphone| image:: ../_images/microphone.png
 
-.. image:: ../_images/Platzhalter.png
-   :class: screenshot
-
-.. Rednerliste mit aktuellem redner und kommenden rednern
-
 Auf dem Dashboard finden Sie im Widget „Rednerliste“ zwei weitere Buttons,
 um den obersten Redner des aktuell ausgewählten Tagesordnungseintrags
 aufzurufen beziehungsweise den aktuellen Redebeitrag dieses Punktes zu
@@ -184,10 +169,8 @@ beenden.
 Die Einstellung, wie viele letzte Redner projiziert werden sollen, finden
 Sie im Menüpunkt „Konfiguration“ in der oberen Leiste unter „Tagesordnung“.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Agenda_06.png
    :class: screenshot
-
-.. Konfiguration der Tagesordnung
 
 
 CSV-Export der Rednerlisten

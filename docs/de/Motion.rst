@@ -57,10 +57,8 @@ werden:
 .. __: #arbeitsablauf-und-status
 .. __: #versionierung
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Motion_01.png
    :class: screenshot
-
-.. Konfiguration des Antragssystems
 
 
 Strukturierung von Anträgen
@@ -130,10 +128,8 @@ verwalten“ von einem bestimmten Status aus bestimmte andere Status
 ausgewählt und angeklickt werden. Mit dem roten Button „Status
 zurücksetzen“ können Sie auf den Ausgangsstatus zurückspringen.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Motion_02.png
    :class: screenshot
-
-.. Antragsseite eines bestimmten Antrags mit komplexem Arbeitsablauf (viele Status), Status muss zugelassen sein
 
 Beim einfachen Arbeitsablauf kann bei der Verwaltung eines eingereichten
 Antrags zwischen „angenommen“, „abgelehnt“ und „nicht entschieden“ gewählt
@@ -159,7 +155,7 @@ in der folgenden Übersicht:
 .. image:: ../_images/Platzhalter.png
    :class: screenshot
 
-.. handgemalte Übersicht
+.. handgemalte Übersicht (Motion_03.png)
 
 
 Versionierung
@@ -172,10 +168,8 @@ Antragsversion an. Sie können auf der Antragsseite mehrere Versionen
 miteinander vergleichen. Wählen Sie dazu je einen Knopf links und rechts
 aus und klicken Sie auf den Button „Unterschied“.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Motion_04.png
    :class: screenshot
-
-.. Antragsseite eines bestimmten Antrags mit 3 Versionen, Punkte bei Unterschied links oben und rechts unten
 
 Nur eine der Versionen eines Antrags gilt in OpenSlides als zugelassene
 Version. Diese wird auf dem Projektor angezeigt und in der Antragsseite mit
@@ -203,10 +197,8 @@ Seite eines Antrags auf den Projektor-Button in der oberen Zeile rechts.
 
 .. |projector| image:: ../_images/projector.png
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Motion_05.png
    :class: screenshot
-
-.. Projektorbild mit Antrag und Text
 
 Zu jedem Antrag können Sie über einen Link („Neuer Tagesordnungseintrag“)
 in der oberen Leiste des betreffenden Antrags („Mehr Aktionen“) auch einen
@@ -227,10 +219,8 @@ erfasst“. Sollten Sie bei abgegebene Stimmen einen Wert eintragen,
 berechnet OpenSlides automatisch die prozentualen Anteile der übrigen
 Stimmzahlen. Klicken Sie am Ende auf ``Speichern`` oder ``Übernehmen``.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Motion_06.png
    :class: screenshot
-
-.. Abstimmungsformular mit den Abstimmungswerten -1, 15, 3, -2, -2
 
 In der Abstimmungsansicht können Sie außerdem eventuell benötigte
 Abstimmungszettel als PDF |printer| abrufen. Nachträglich können Sie
@@ -252,10 +242,9 @@ Person als Antragsteller eingetragen werden soll, falls die CSV-Datei in
 einer Zeile keinen gültigen Antragsteller enthält. Die weiteren Hinweise
 auf der Import-Seite müssen beachtet werden.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Motion_07.png
    :class: screenshot
 
-.. Anträge importieren mit Auswahl (bsp-datei) und antragsteller
 
 PDF
 ---
