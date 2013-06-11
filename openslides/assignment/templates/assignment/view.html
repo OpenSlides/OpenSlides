@@ -3,6 +3,7 @@
 {% load i18n %}
 {% load staticfiles %}
 {% load tags %}
+{% load humanize %}
 
 {% block title %}{{ block.super }} – {% trans "Election" %} "{{ assignment }}"{% endblock %}
 
@@ -147,7 +148,7 @@
             <th></th>
             {% with ballotnumber=polls.count %}
             <th colspan="{{ ballotnumber|add:'1' }}" style="text-align: center;">
-                {% trans "ballot" %}
+                {% trans "Ballot" %}
             </th>
             {% endwith %}
         </tr>
@@ -155,7 +156,7 @@
             <th>{% trans "Candidates" %}</th>
             {% for poll in polls %}
                 <th style="white-space:nowrap;" class="span1">
-                    {{ poll.get_ballot }}. {% trans 'ballot' %}
+                    {{ poll.get_ballot|ordinal|safe }} {% trans 'ballot' %}
                     {% if perms.assignment.can_manage_assignment %}
                         <br>
                         <a class="publish_link btn btn-mini btn-danger {% if poll.published %}btn-primary{% endif %}"
