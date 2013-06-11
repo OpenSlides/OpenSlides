@@ -47,7 +47,7 @@ from openslides.participant.api import gen_username, gen_password, import_users
 from openslides.participant.forms import (
     UserCreateForm, UserUpdateForm, UsersettingsForm,
     UserImportForm, GroupForm)
-from openslides.participant.models import User, Group
+from openslides.participant.models import User, Group, get_protected_perm
 
 
 class UserOverview(ListView):
@@ -153,10 +153,16 @@ class UserDeleteView(DeleteView):
     success_url_name = 'user_overview'
 
     def pre_redirect(self, request, *args, **kwargs):
-        if self.get_object() == self.request.user:
+        if self.object == self.request.user:
             messages.error(request, _("You can not delete yourself."))
         else:
             super(UserDeleteView, self).pre_redirect(request, *args, **kwargs)
+
+    def pre_post_redirect(self, request, *args, **kwargs):
+        if self.object == self.request.user:
+            messages.error(self.request, _("You can not delete yourself."))
+        else:
+            super(UserDeleteView, self).pre_post_redirect(request, *args, **kwargs)
 
 
 class SetUserStatusView(RedirectView, SingleObjectMixin):
@@ -174,10 +180,10 @@ class SetUserStatusView(RedirectView, SingleObjectMixin):
         if action == 'activate':
             self.object.is_active = True
         elif action == 'deactivate':
-            if self.get_object().user == self.request.user:
+            if self.object.user == self.request.user:
                 messages.error(request, _("You can not deactivate yourself."))
                 return
-            elif self.get_object().is_superuser:
+            elif self.object.is_superuser:
                 messages.error(request, _("You can not deactivate the administrator."))
                 return
             self.object.is_active = False
@@ -412,20 +418,46 @@ class GroupUpdateView(UpdateView):
         delete_default_permissions()
         return super(GroupUpdateView, self).get(request, *args, **kwargs)
 
+    def get_form_kwargs(self, *args, **kwargs):
+        form_kwargs = super(GroupUpdateView, self).get_form_kwargs(*args, **kwargs)
+        form_kwargs.update({'request': self.request})
+        return form_kwargs
+
 
 class GroupDeleteView(DeleteView):
     """
-    Delete a Group.
+    Delete a group.
     """
     permission_required = 'participant.can_manage_participant'
     model = Group
     success_url_name = 'user_group_overview'
 
     def pre_redirect(self, request, *args, **kwargs):
-        if self.get_object().pk in [1, 2]:
-            messages.error(request, _("You can not delete this Group."))
-        else:
+        if not self.is_protected_from_deleting():
             super(GroupDeleteView, self).pre_redirect(request, *args, **kwargs)
+
+    def pre_post_redirect(self, request, *args, **kwargs):
+        if not self.is_protected_from_deleting():
+            super(GroupDeleteView, self).pre_post_redirect(request, *args, **kwargs)
+
+    def is_protected_from_deleting(self):
+        """
+        Checks whether the group is protected.
+        """
+        if self.object.pk in [1, 2]:
+            messages.error(request, _('You can not delete this group.'))
+            return True
+        if (not self.request.user.is_superuser and
+            get_protected_perm() in self.object.permissions.all() and
+            not Group.objects.exclude(pk=self.object.pk).filter(
+                permissions__in=[get_protected_perm()],
+                user__pk=self.request.user.pk).exists()):
+            messages.error(
+                self.request,
+                _('You can not delete the last group containing the permission '
+                  'to manage participants you are in.'))
+            return True
+        return False
 
 
 def login(request):

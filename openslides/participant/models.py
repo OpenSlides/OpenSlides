@@ -10,7 +10,8 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.contrib.auth.models import User as DjangoUser, Group as DjangoGroup
+from django.contrib.auth.models import User as DjangoUser, Group as DjangoGroup, Permission
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import signals
 from django.dispatch import receiver
@@ -245,3 +246,13 @@ def user_post_save(sender, instance, *args, **kwargs):
     registered = get_registered_group()
     instance.groups.add(registered)
     instance.save()
+
+
+def get_protected_perm():
+    """
+    Returns the permission to manage participants. This function is a helper
+    function used to protect manager users from locking out themselves.
+    """
+    return Permission.objects.get(
+        content_type=ContentType.objects.get(app_label='participant', model='user'),
+        codename='can_manage_participant')

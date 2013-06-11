@@ -13,7 +13,7 @@ from django.test.client import Client
 
 from openslides.config.api import config
 from openslides.utils.test import TestCase
-from openslides.participant.models import User, Group
+from openslides.participant.models import User, Group, get_protected_perm
 
 
 class GroupViews(TestCase):
@@ -52,3 +52,75 @@ class GroupViews(TestCase):
         match = re.findall(pattern, response.content)
         self.assertEqual(match[1], 'mi6iu2Te6ei9iohue3ex chahshah7eiqueip5eiW')
         self.assertEqual(match[0], 'aWei4ien6Se0vie0xeiv uquahx3Wohtieph9baer')
+
+
+class LockoutProtection(TestCase):
+    """
+    Tests that a manager user can not lockout himself by doing
+    something that removes his last permission to manage participants.
+    """
+    def setUp(self):
+        self.user = User.objects.create(last_name='AQu9ie7ach2ek2Xoozoo',
+                                        first_name='guR3La9alah7lahsief6',
+                                        username='Iedei0eecoh1aiwahnoo')
+        self.user.reset_password('default')
+        self.user.groups.add(Group.objects.get(pk=4))
+        self.client = Client()
+        self.client.login(username='Iedei0eecoh1aiwahnoo', password='default')
+        self.assertEqual(User.objects.count(), 1)
+        self.assertEqual(Group.objects.count(), 4)
+
+    def test_delete_yourself(self):
+        response = self.client.get('/participant/1/del/')
+        self.assertRedirects(response, '/participant/1/')
+        self.assertTrue('You can not delete yourself.' in response.cookies['messages'].value)
+        response = self.client.post('/participant/1/del/',
+                                    {'yes': 'yes'})
+        self.assertTrue('You can not delete yourself.' in response.cookies['messages'].value)
+        self.assertRedirects(response, '/participant/')
+        self.assertEqual(User.objects.count(), 1)
+
+    def test_delete_last_manager_group(self):
+        response = self.client.get('/participant/group/4/del/')
+        self.assertRedirects(response, '/participant/group/4/')
+        self.assertTrue('You can not delete the last group containing the permission '
+                        'to manage participants you are in.' in response.cookies['messages'].value)
+        response = self.client.post('/participant/group/4/del/',
+                                    {'yes': 'yes'})
+        self.assertTrue('You can not delete the last group containing the permission '
+                        'to manage participants you are in.' in response.cookies['messages'].value)
+        self.assertRedirects(response, '/participant/group/')
+        self.assertEqual(Group.objects.count(), 4)
+
+    def test_remove_user_from_last_manager_group_via_UserUpdateView(self):
+        response = self.client.post('/participant/1/edit/',
+                                    {'username': 'arae0eQu8eeghoogeik0',
+                                     'groups': '3'})
+        self.assertFormError(
+            response=response,
+            form='form',
+            field=None,
+            errors='You can not remove the last group containing the permission to manage participants.')
+
+    def test_remove_user_from_last_manager_group_via_GroupUpdateView(self):
+        User.objects.get_or_create(username='foo', pk=2)
+        response = self.client.post('/participant/group/4/edit/',
+                                    {'name': 'ChaeFaev4leephaiChae',
+                                     'users': '2'})
+        self.assertFormError(
+            response=response,
+            form='form',
+            field=None,
+            errors='You can not remove yourself from the last group containing the permission to manage participants.')
+
+    def test_remove_perm_from_last_manager_group(self):
+        self.assertNotEqual(get_protected_perm().pk, 90)
+        response = self.client.post('/participant/group/4/edit/',
+                                    {'name': 'ChaeFaev4leephaiChae',
+                                     'users': '1',
+                                     'permissions': '90'})
+        self.assertFormError(
+            response=response,
+            form='form',
+            field=None,
+            errors='You can not remove the permission to manage participants from the last group your are in.')
