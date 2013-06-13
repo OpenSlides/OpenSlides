@@ -20,6 +20,15 @@ class Command(_Command):
     Setup the database and sends the signal post_database_setup.
     """
     def handle_noargs(self, *args, **kwargs):
-        return_value = super(Command, self).handle_noargs(*args, **kwargs)
+        """
+        Calls Django's syncdb command but always in non-interactive mode. After
+        this it sends our post_database_setup signal.
+        """
+        interactive = kwargs.pop('interactive')
+        return_value = super(Command, self).handle_noargs(*args, interactive=False, **kwargs)
         post_database_setup.send(sender=self)
+        if interactive:
+            print('Interactive mode (e. g. creating a superuser) is not possibile '
+                  'via this command. To create a superuser use the --reset-admin '
+                  'option of the main script.')
         return return_value
