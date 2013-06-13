@@ -556,6 +556,7 @@ def get_user_widget(request):
     user slides.
     """
     return Widget(
+        request,
         name='user',
         display_name=_('Participants'),
         template='participant/user_widget.html',
@@ -570,6 +571,7 @@ def get_group_widget(request):
     group slides.
     """
     return Widget(
+        request,
         name='group',
         display_name=_('Groups'),
         template='participant/group_widget.html',

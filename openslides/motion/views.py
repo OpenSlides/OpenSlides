@@ -760,6 +760,7 @@ def get_widgets(request):
     There is only one widget. It shows all motions.
     """
     return [Widget(
+        request,
         name='motions',
         display_name=_('Motions'),
         template='motion/widget.html',
