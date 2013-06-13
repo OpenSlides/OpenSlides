@@ -20,6 +20,7 @@ from tornado.options import options, parse_command_line
 
 from django.core.handlers.wsgi import WSGIHandler as Django_WSGIHandler
 from django.conf import settings
+from django.utils.translation import ugettext as _
 
 
 class DjangoStaticFileHandler(StaticFileHandler):
@@ -40,6 +41,13 @@ class DjangoStaticFileHandler(StaticFileHandler):
 def run_tornado(addr, port, reload=False):
     # Don't try to read the command line args from openslides
     parse_command_line(args=[])
+
+    # Print listening address and port to command line
+    if addr == '0.0.0.0':
+        url_string = _("the machine's local ip address")
+    else:
+        url_string = 'http://%s:%s' % (addr, port)
+    print _("Starting OpenSlides' tornado webserver listening to %(url_string)s") % {'url_string': url_string}
 
     # Start the application
     app = WSGIContainer(Django_WSGIHandler())
