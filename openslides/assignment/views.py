@@ -641,6 +641,7 @@ def register_tab(request):
 
 def get_widgets(request):
     return [Widget(
+        request,
         name='assignments',
         display_name=_('Elections'),
         template='assignment/widget.html',

@@ -18,7 +18,6 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Model
-from django.template import RequestContext
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.views.generic.detail import SingleObjectMixin
 
@@ -547,6 +546,7 @@ def get_widgets(request):
     """
     return [
         Widget(
+            request,
             name='agenda',
             display_name=_('Agenda'),
             template='agenda/widget.html',
@@ -558,8 +558,8 @@ def get_widgets(request):
             permission_required='projector.can_manage_projector'),
 
         Widget(
+            request,
             name='append_to_list_of_speakers',
             display_name=_('List of speakers'),
             template='agenda/speaker_widget.html',
-            context=RequestContext(request, {}),
             permission_required='agenda.can_be_speaker')]

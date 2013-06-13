@@ -121,6 +121,13 @@ def register_slidefunc(key, func, control_template=None, weight=0, name=''):
 
 
 def get_all_widgets(request, session=False):
+    """
+    Collects the widgets from all apps and returns the Widget objects as sorted
+    dictionary.
+
+    The session flag decides whether to return only the widgets which are
+    active, that means that they are mentioned in the session.
+    """
     widgets = SortedDict()
     session_widgets = request.session.get('widgets', {})
     for app in settings.INSTALLED_APPS:

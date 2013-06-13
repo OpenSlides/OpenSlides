@@ -16,6 +16,8 @@ from django.dispatch import receiver
 from django.template.loader import render_to_string
 
 from openslides.config.api import config
+from django.template import RequestContext
+from openslides.utils.exceptions import OpenSlidesError
 
 
 SLIDE = {}
@@ -113,7 +115,7 @@ class Widget(object):
     """
     Class for a Widget for the Projector-Tab.
     """
-    def __init__(self, name, html=None, template=None, context={},
+    def __init__(self, request, name, html=None, template=None, context={},
                  permission_required=None, display_name=None, default_column=1):
         self.name = name
         if display_name is None:
@@ -124,7 +126,12 @@ class Widget(object):
         if html is not None:
             self.html = html
         elif template is not None:
-            self.html = render_to_string(template, context)
+            self.html = render_to_string(
+                template_name=template,
+                dictionary=context,
+                context_instance=RequestContext(request))
+        else:
+            raise OpenSlidesError('A Widget must have either a html or a template argument.')
 
         self.permission_required = permission_required
         self.default_column = default_column
