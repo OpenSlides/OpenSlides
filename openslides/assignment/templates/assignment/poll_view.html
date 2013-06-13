@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load i18n %}
+{% load humanize %}
 
 {% block title %}{{ block.super }} – {% trans "Election" %} "{{ assignment }}" – {{ ballotnumber }}. {% trans "ballot" %}{% endblock %}
 
@@ -8,7 +9,7 @@
 <h1>
     {{ assignment }}
     <small>
-    {{ ballotnumber }}. {% trans "ballot" %}
+    {{ ballotnumber|ordinal|safe }} {% trans "ballot" %}
     </small>
     <small class="pull-right">
     <a href="{% url 'assignment_view' assignment.id %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to election" %}</a>

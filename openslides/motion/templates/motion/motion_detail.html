@@ -3,8 +3,14 @@
 {% load tags %}
 {% load i18n %}
 {% load staticfiles %}
+{% load humanize %}
 
 {% block title %}{{ block.super }} – {% trans "Motion" %} {{ motion.identifier|default:'' }}{% endblock %}
+
+{% block header %}
+    {{ block.super }}
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/motion.css' %}" />
+{% endblock %}
 
 {% block content %}
 <h1>
@@ -188,10 +194,10 @@
         <!-- Vote results -->
         <h5>{% trans "Vote results" %}:</h5>
         {% with motion.polls.all as polls %}
-        <ol>
+        <ul id="motion-vote-results">
         {% for poll in polls %}
             {% if perms.motion.can_manage_motion or poll.has_votes %}
-                <li>{% trans "Vote" %}
+                <li><b>{{ poll.poll_number|ordinal|safe }} {% trans "vote" %}</b>
                     {% if perms.motion.can_manage_motion %}
                         <a class="btn btn-mini" href="{% url 'motion_poll_edit' motion.id poll.id %}" title="{% trans 'Edit Vote' %}"><i class="icon-pencil"></i></a>
                         <a class="btn btn-mini" href="{% url 'motion_poll_delete' motion.id poll.id %}" title="{% trans 'Delete Vote' %}"><i class="icon-remove"></i></a>
@@ -217,7 +223,7 @@
         {% empty %}
         <span style="margin-left:-25px;">–</span>
         {% endfor %}
-        </ol>
+        </ul>
         {% if allowed_actions.create_poll %}
         <a href="{% url 'motion_poll_create' motion.id %}" class="btn btn-mini">
             <i class="icon-assignment"></i> {% trans 'New vote' %}
