@@ -49,7 +49,8 @@ class Motion(SlideMixin, models.Model):
     """
 
     active_version = models.ForeignKey('MotionVersion', null=True,
-                                       related_name="active_version")
+                                       related_name="active_version",
+                                       on_delete=models.SET_NULL)
     """
     Points to a specific version.
 
@@ -315,20 +316,24 @@ class Motion(SlideMixin, models.Model):
     Is saved in a MotionVersion object.
     """
 
-    def get_new_version(self):
+    def get_new_version(self, **kwargs):
         """
         Return a version object, not saved in the database.
 
         The version data of the new version object is populated with the data
-        set via motion.title, motion.text, motion.reason. If the data is not set,
-        it is populated with the data from the last version object.
+        set via motion.title, motion.text, motion.reason if these data are
+        not given as keyword arguments. If the data is not set in the motion
+        attributes, it is populated with the data from the last version
+        object if such object exists.
         """
-        new_version = MotionVersion(motion=self)
+        new_version = MotionVersion(motion=self, **kwargs)
         if self.versions.exists():
             last_version = self.get_last_version()
         else:
             last_version = None
         for attr in ['title', 'text', 'reason']:
+            if attr in kwargs:
+                continue
             _attr = '_%s' % attr
             data = getattr(self, _attr, None)
             if data is None and last_version is not None:
@@ -561,15 +566,19 @@ class MotionVersion(models.Model):
     def __unicode__(self):
         """Return a string, representing this object."""
         counter = self.version_number or ugettext_lazy('new')
-        return "%s Version %s" % (self.motion, counter)  # TODO: Should this really be self.motion or the title of the specific version?
+        return "Motion %s, Version %s" % (self.motion_id, counter)
 
     def get_absolute_url(self, link='detail'):
-        """Return the URL of this Version.
+        """
+        Return the URL of this Version.
 
-        The keyargument link can be 'view' or 'detail'.
+        The keyargument link can be 'detail' or 'delete'.
         """
         if link == 'view' or link == 'detail':
             return reverse('motion_version_detail', args=[str(self.motion.id),
+                                                          str(self.version_number)])
+        if link == 'delete':
+            return reverse('motion_version_delete', args=[str(self.motion.id),
                                                           str(self.version_number)])
 
     @property

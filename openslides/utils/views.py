@@ -172,6 +172,7 @@ class QuestionMixin(object):
     url_name_args = None
 
     def get_redirect_url(self, **kwargs):
+        # TODO: raise error when question_url_name/success_url_name is not present
         if self.request.method == 'GET':
             return reverse(self.question_url_name, args=self.get_question_url_name_args())
         else:

@@ -344,3 +344,19 @@ class TestVersionPermitView(MotionViewTestCase):
         self.motion1 = Motion.objects.get(pk=1)
         self.assertEqual(self.motion1.active_version, first_version)
         self.assertEqual(self.motion1.versions.count(), 2)
+
+
+class TestVersionDeleteView(MotionViewTestCase):
+    def test_get(self):
+        response = self.check_url('/motion/1/version/1/del/', self.admin_client, 302)
+        self.assertRedirects(response, '/motion/1/version/1/')
+
+    def test_post(self):
+        new_version = self.motion1.get_new_version
+        self.motion1.save(use_version=new_version(title='new', text='new'))
+        self.motion1.save(use_version=new_version(title='new2', text='new'))
+        self.assertEqual(self.motion1.versions.count(), 3)
+
+        response = self.admin_client.post('/motion/1/version/2/del/', {'yes': 1})
+        self.assertRedirects(response, '/motion/1/')
+        self.assertEqual(self.motion1.versions.count(), 2)
