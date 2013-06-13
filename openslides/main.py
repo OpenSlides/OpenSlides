@@ -178,15 +178,10 @@ def _main(opts, database_path=None):
 
     # Find url to openslides
     addr, port = detect_listen_opts(opts.address, opts.port)
-    if port == 80:
-        url = "http://%s" % addr
-    else:
-        url = "http://%s:%d" % (addr, port)
 
     # Create Database if necessary
     if not database_exists() or opts.syncdb:
         run_syncdb()
-        set_system_url(url)
         create_or_reset_admin_user()
 
     # Reset Admin
@@ -205,7 +200,11 @@ def _main(opts, database_path=None):
         reload = False
 
     if opts.start_browser:
-        start_browser(url)
+        if port == 80:
+            suffix = ""
+        else:
+            suffix = ":%d" % port
+        start_browser("http://localhost%s" % suffix)
 
     # Start the server
     run_tornado(addr, port, reload)
@@ -252,10 +251,7 @@ def setup_django_environment(settings_path):
 
 def detect_listen_opts(address=None, port=None):
     if address is None:
-        try:
-            address = socket.gethostbyname(socket.gethostname())
-        except socket.error:
-            address = "127.0.0.1"
+        address = "0.0.0.0"
 
     if port is None:
         # test if we can use port 80
@@ -296,15 +292,6 @@ def run_syncdb():
     # now initialize the database
     argv = ["", "syncdb", "--noinput"]
     execute_from_command_line(argv)
-
-
-def set_system_url(url):
-    # can't be imported in global scope as it already requires
-    # the settings module during import
-    from openslides.config.api import config
-
-    if config['participant_pdf_system_url'] == 'http://example.com:8000':
-        config['participant_pdf_system_url'] = url
 
 
 def create_or_reset_admin_user():
