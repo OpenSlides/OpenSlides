@@ -57,7 +57,6 @@ SITE_PACKAGES = {
             r"^django/contrib/flatpages/",
             r"^django/contrib/formtools/",
             r"^django/contrib/gis/",
-            r"^django/contrib/humanize/",
             r"^django/contrib/localflavor/",
             r"^django/contrib/markup/",
             r"^django/contrib/redirects/",

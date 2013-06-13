@@ -43,4 +43,11 @@ td.diff_header {
 .diff_sub {
     background-color:#ffaaaa;
 }
-
+/* motion vote results list */
+#motion-vote-results {
+    list-style: none;
+}
+#motion-vote-results li {
+    margin-top: 5px;
+    margin-bottom: 15px;
+}

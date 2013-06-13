@@ -3,7 +3,7 @@
 {% load i18n %}
 
 {% block title %}
-    {{ block.super }} - {% trans "Motion" %} {{ motion.identifier }}, {{ poll }}. {% trans "Vote" %}
+    {{ block.super }} - {% trans "Motion" %} {{ motion.identifier }}, {{ poll }}
 {% endblock %}
 
 {% block content %}
@@ -11,7 +11,7 @@
     {{ motion }}
     <br>
     <small>
-    {% trans "Motion" %} {{ motion.identifier }}, {{ poll }}. {% trans "Vote" %}
+    {% trans "Motion" %} {{ motion.identifier }}, {{ poll }}
     </small>
     <small class="pull-right">
     <div class="btn-toolbar">
