@@ -66,6 +66,7 @@ def get_personal_info_widget(request):
 
     if personal_info_context:
         return Widget(
+            request,
             name='personal_info',
             display_name=_('My items, motions and elections'),
             template='account/personal_info_widget.html',

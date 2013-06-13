@@ -375,34 +375,33 @@ def get_widgets(request):
     """
     widgets = []
 
-    # welcome widget
-    context = {
-        'welcometext': config['welcome_text']}
+    # Welcome widget
     widgets.append(Widget(
+        request,
         name='welcome',
         display_name=config['welcome_title'],
         template='projector/welcome_widget.html',
-        context=context,
+        context={'welcometext': config['welcome_text']},
         permission_required='projector.can_see_dashboard',
         default_column=1))
 
     # Projector live view widget
     widgets.append(Widget(
+        request,
         name='live_view',
         display_name=_('Projector live view'),
         template='projector/live_view_widget.html',
-        context=RequestContext(request, {}),
         permission_required='projector.can_see_projector',
         default_column=2))
 
-    # Overlay Widget
+    # Overlay widget
     overlays = []
     for receiver, overlay in projector_overlays.send(sender='overlay_widget', request=request):
         overlays.append(overlay)
-
     context = {'overlays': overlays}
     context.update(csrf(request))
     widgets.append(Widget(
+        request,
         name='overlays',
         display_name=_('Overlays'),
         template='projector/overlay_widget.html',
@@ -411,14 +410,14 @@ def get_widgets(request):
         context=context))
 
     # Custom slide widget
-    context = {
-        'slides': ProjectorSlide.objects.all().order_by('weight'),
-        'welcomepage_is_active': not bool(config["presentation"])}
     widgets.append(Widget(
+        request,
         name='custom_slide',
         display_name=_('Custom Slides'),
         template='projector/custom_slide_widget.html',
-        context=context,
+        context={
+            'slides': ProjectorSlide.objects.all().order_by('weight'),
+            'welcomepage_is_active': not bool(config["presentation"])},
         permission_required='projector.can_manage_projector',
         default_column=2))
 
