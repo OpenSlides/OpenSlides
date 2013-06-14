@@ -4,7 +4,7 @@
 {% load staticfiles %}
 {% load tags %}
 
-{% block title %}{{ block.super }} – {% trans "Groups" %}{% endblock %}
+{% block title %}{% trans "Groups" %} – {{ block.super }}{% endblock %}
 
 {% block header %}
     <link href="{% static 'styles/dataTables/dataTables.bootstrap.css' %}" type="text/css" rel="stylesheet">

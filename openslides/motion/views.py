@@ -16,6 +16,7 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Model
+from django.utils.text import slugify
 from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
 from django.views.generic.detail import SingleObjectMixin
 from django.http import Http404, HttpResponseRedirect
@@ -672,7 +673,12 @@ class MotionPDFView(SingleObjectMixin, PDFView):
         if self.print_all_motions:
             return _("Motions")
         else:
-            return _("Motion: %s") % unicode(self.object)
+            if self.object.identifier:
+                suffix = self.object.identifier
+            else:
+                suffix = self.object.title.replace(' ', '_')
+                suffix = slugify(suffix)
+            return '%s-%s' % (_("Motion"), suffix)
 
     def append_to_pdf(self, pdf):
         """

@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block title %}{{ block.super }} – {% trans "Motion" %} {{ motion.identifier }}{% endblock %}
+{% block title %}{% trans "Motion" %} {{ motion.identifier }} – {{ block.super }}{% endblock %}
 
 {% block header %}
     <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/motion.css' %}" />

@@ -13,6 +13,8 @@
     <script type="text/javascript" src="{% static 'javascript/dashboard.js' %}"></script>
 {% endblock %}
 
+{% block title %}{% trans "Dashboard" %} – {{ block.super }}{% endblock %}
+
 {% block content %}
     <h1>{% trans 'Dashboard' %}
         <small class="pull-right">

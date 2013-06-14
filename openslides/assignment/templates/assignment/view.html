@@ -5,7 +5,7 @@
 {% load tags %}
 {% load humanize %}
 
-{% block title %}{{ block.super }} – {% trans "Election" %} "{{ assignment }}"{% endblock %}
+{% block title %}{% trans "Election" %} "{{ assignment }}" – {{ block.super }}{% endblock %}
 
 {% block header %}
     <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/assignment.css' %}" />
