@@ -11,6 +11,7 @@
 """
 
 from django import template
+from django.utils.translation import ugettext as _
 from openslides.config.api import config
 
 
@@ -25,6 +26,11 @@ def get_config(key):
 @register.filter
 def get_config(key):
     return config[key]
+
+
+@register.filter
+def trans(value):
+    return _(value)
 
 
 @register.simple_tag
