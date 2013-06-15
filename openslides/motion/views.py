@@ -247,6 +247,26 @@ class MotionDeleteView(DeleteView):
 motion_delete = MotionDeleteView.as_view()
 
 
+class VersionDeleteView(DeleteView):
+    """
+    View to delete a motion version.
+    """
+    model = MotionVersion
+    permission_required = 'motion.can_manage_motion'
+    success_url_name = 'motion_detail'
+
+    def get_object(self):
+        motion_id = int(self.kwargs.get('pk'))
+        version_number = int(self.kwargs.get('version_number'))
+        return MotionVersion.objects.get(motion=motion_id,
+                                         version_number=version_number)
+
+    def get_success_url_name_args(self):
+        return (self.object.motion_id, )
+
+version_delete = VersionDeleteView.as_view()
+
+
 class VersionPermitView(SingleObjectMixin, QuestionMixin, RedirectView):
     """
     View to permit a version of a motion.
@@ -255,6 +275,7 @@ class VersionPermitView(SingleObjectMixin, QuestionMixin, RedirectView):
     question_url_name = 'motion_version_detail'
     success_url_name = 'motion_version_detail'
     success_message = ugettext_lazy('Version successfully permitted.')
+    permission_required = 'motion.can_manage_motion'
 
     def get(self, *args, **kwargs):
         """
