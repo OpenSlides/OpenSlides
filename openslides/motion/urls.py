@@ -50,6 +50,11 @@ urlpatterns = patterns('openslides.motion.views',
         name='motion_version_permit',
     ),
 
+    url(r'^(?P<pk>\d+)/version/(?P<version_number>\d+)/del/$',
+        'version_delete',
+        name='motion_version_delete',
+    ),
+
     url(r'^(?P<pk>\d+)/diff/$',
         'version_diff',
         name='motion_version_diff',
