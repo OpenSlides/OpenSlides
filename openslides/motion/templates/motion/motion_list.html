@@ -4,7 +4,7 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block title %}{{ block.super }} – {% trans "Motions" %}{% endblock %}
+{% block title %}{% trans "Motions" %} – {{ block.super }}{% endblock %}
 
 {% block header %}
     <link href="{% static 'styles/dataTables/dataTables.bootstrap.css' %}" type="text/css" rel="stylesheet">

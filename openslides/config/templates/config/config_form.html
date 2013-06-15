@@ -3,6 +3,8 @@
 {% load i18n %}
 {% load staticfiles %}
 
+{% block title %}{% trans "Configuration" %} – {{ block.super }}{% endblock %}
+
 {% block content %}
 <h1>
     {% trans 'Configuration' %}

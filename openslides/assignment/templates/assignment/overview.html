@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load staticfiles %}
 
-{% block title %}{{ block.super }} – {% trans "Elections" %}{% endblock %}
+{% block title %}{% trans "Elections" %} – {{ block.super }}{% endblock %}
 
 {% block header %}
     <link href="{% static 'styles/dataTables/dataTables.bootstrap.css' %}" type="text/css" rel="stylesheet">

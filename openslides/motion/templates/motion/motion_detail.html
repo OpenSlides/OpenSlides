@@ -5,7 +5,7 @@
 {% load staticfiles %}
 {% load humanize %}
 
-{% block title %}{{ block.super }} – {% trans "Motion" %} {{ motion.identifier|default:'' }}{% endblock %}
+{% block title %}{% trans "Motion" %} {{ motion.identifier|default:'' }} – {{ block.super }}{% endblock %}
 
 {% block header %}
     {{ block.super }}
@@ -38,7 +38,7 @@
                 <i class="icon-facetime-video {% if motion.active %}icon-white{% endif %}"></i>
             </a>
         {% endif %}
-        {% if perms.motion.can_manage_motion or perms.agenda.can_manage_agenda %}
+        {% if perms.motion.can_manage_motion or perms.agenda.can_manage_agenda or allowed_actions.edit %}
         <div class="btn-group">
             <a data-toggle="dropdown" class="btn btn-mini dropdown-toggle">
                 {% trans 'More actions' %} <span class="caret"></span>

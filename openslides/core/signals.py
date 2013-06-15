@@ -33,7 +33,7 @@ def setup_general_config_page(sender, **kwargs):
         form_field=forms.CharField(
             widget=forms.TextInput(),
             label=ugettext_lazy('Event name'),
-            max_length=30))
+            max_length=50))
 
     event_description = ConfigVariable(
         name='event_description',

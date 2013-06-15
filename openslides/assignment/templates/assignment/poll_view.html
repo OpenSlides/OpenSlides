@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load humanize %}
 
-{% block title %}{{ block.super }} – {% trans "Election" %} "{{ assignment }}" – {{ ballotnumber }}. {% trans "ballot" %}{% endblock %}
+{% block title %}{% trans "Election" %} "{{ assignment }}", {{ ballotnumber }}. {% trans "ballot" %} – {{ block.super }}{% endblock %}
 
 {% block content %}
 <h1>

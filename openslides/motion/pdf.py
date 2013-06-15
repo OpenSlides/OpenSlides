@@ -97,13 +97,14 @@ def motion_to_pdf(pdf, motion):
     cell4b.append(Paragraph(_(motion.state.name), stylesheet['Normal']))
     motion_data.append([cell4a, cell4b])
 
-    # Version number (aid)
+    # Version number
     if motion.versions.count() > 1:
+        version = motion.get_active_version()
         cell5a = []
         cell5b = []
         cell5a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" % _("Version"),
                                 stylesheet['Heading4']))
-        cell5b.append(Paragraph("%s" % motion.version.version_number, stylesheet['Normal']))
+        cell5b.append(Paragraph("%s" % version.version_number, stylesheet['Normal']))
         motion_data.append([cell5a, cell5b])
 
     # voting results

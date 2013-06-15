@@ -46,7 +46,7 @@ def setup_motion_config_page(sender, **kwargs):
         name='motion_remove_supporters',
         default_value=False,
         form_field=forms.BooleanField(
-            label=ugettext_lazy('Supporters of a motion will be removed if a submitter edits his motion in early state.'),
+            label=ugettext_lazy('Remove all supporters of a motion if a submitter edits his motion in early state'),
             required=False))
     motion_preamble = ConfigVariable(
         name='motion_preamble',

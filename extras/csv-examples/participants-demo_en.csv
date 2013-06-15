@@ -1,15 +1,15 @@
-"First Name";"Last Name";"Gender";"Email";"Group id";"Structure Level";"Committee";"About me";"Comment";"Is active"
-"Angramain";"Aranea";"female";;;;;;;1
-"Bastian";"Bux";"male";;;;"2. Vorsitzender";;;1
-"Emma";"Dampf";"female";;3;"Ortsverband Berlin-Mitte";"AG Frauen";;;0
-"David";"Delegierter";"male";"david@example.com";3;"Ortsverband Berlin-Mitte";"Haushaltsausschuss";"Zu meiner Person:
+"Title";"First Name";"Last Name";"Gender";"Email";"Group id";"Structure Level";"Committee";"About me";"Comment";"Is active"
+;"Angramain";"Aranea";"female";;;;;;;1
+;"Bastian";"Bux";"male";;;;"2. Vorsitzender";;;1
+;"Emma";"Dampf";"female";;3;"Ortsverband Berlin-Mitte";"AG Frauen";;;0
+PhD;"David";"Delegierter";"male";"david@example.com";3;"Ortsverband Berlin-Mitte";"Haushaltsausschuss";"Zu meiner Person:
 A
 B
 C";"Demo-Account";1
-"Marta";"Grankvist";"female";;3,4;"Ortsverband Köln";"1. Vorsitzende";;;0
-"Atréju";"Grün";"male";;4;"Ortsverband Freiburg";"Versammlungsleitung";;;1
-"Li Si";"Mandala";"female";;4;;;;;1
-"Malin";"Melchersson";"male";;;"Gastredner e.V.";;;;1
-"Molly";"Tender";"female";;3;"Ortsverband Berlin-Mitte";;;;1
-"Karl";"Tur Tur";"male";;;;;;;1
-"Volker";"Versammlungsleitung";"male";"volker@example.com";3,4;"Ortsverband Hamburg";"Versammlungsleitung";;"Demo-Account";1
+;"Marta";"Grankvist";"female";;3,4;"Ortsverband Köln";"1. Vorsitzende";;;0
+"Prof. Dr.";"Atréju";"Grün";"male";;4;"Ortsverband Freiburg";"Versammlungsleitung";;;1
+;"Li Si";"Mandala";"female";;4;;;;;1
+;"Malin";"Melchersson";"male";;;"Gastredner e.V.";;;;1
+;"Molly";"Tender";"female";;3;"Ortsverband Berlin-Mitte";;;;1
+;"Karl";"Tur Tur";"male";;;;;;;1
+;"Volker";"Versammlungsleitung";"male";"volker@example.com";3,4;"Ortsverband Hamburg";"Versammlungsleitung";;"Demo-Account";1
