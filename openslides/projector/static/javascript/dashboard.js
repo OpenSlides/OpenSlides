@@ -104,6 +104,16 @@ $(function() {
             $('#overlay_message_text').val(data['overlay_message']);
         }
     });
+    $('.fixbutton button').click(function (event) {
+        event.preventDefault();
+        if($(this).hasClass('active')) {
+            $(this).closest('.widget').removeClass('affix');
+            $(this).closest('.widget').removeAttr('data-spy');
+        } else {
+            $(this).closest('.widget').addClass('affix');
+            $(this).closest('.widget').attr('data-spy', 'affix');
+        }
+    });
 
 /* comment out this function because '$.browser' has been removed from jquery 1.9, see:
    http://blog.jquery.com/2013/01/15/jquery-1-9-final-jquery-2-0-beta-migrate-final-released/

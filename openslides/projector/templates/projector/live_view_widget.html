@@ -1,32 +1,5 @@
 {% load i18n %}
 
-<!-- projector control buttons -->
-{% if perms.projector.can_manage_projector %}
-    <div style="float: right;">
-        <p>
-        <a class="projector_edit btn btn-mini" href="{% url 'projector_bigger' %}" title="{% trans 'Zoom in' %}">
-            <i class="icon-zoom-in"></i>
-        </a><br>
-        <a class="projector_edit btn btn-mini" href="{% url 'projector_smaller' %}" title="{% trans 'Zoom out' %}">
-            <i class="icon-zoom-out"></i>
-        </a>
-        </p>
-        <p>
-        <a class="projector_edit btn btn-mini" href="{% url 'projector_up' %}" title="{% trans 'Scroll visible view up' %}">
-            <i class="icon-arrow-up"></i>
-        </a><br>
-        <a class="projector_edit btn btn-mini" href="{% url 'projector_down' %}" title="{% trans 'Scroll visible view down' %}">
-            <i class="icon-arrow-down"></i>
-        </a>
-        </p>
-        <p>
-        <a class="projector_edit btn btn-mini" href="{% url 'projector_clean' %}" title="{% trans 'Reset projector view' %}">
-            <i class="icon-resize-small"></i>
-        </a>
-        </p>
-    </div>
-{% endif %}
-
 <!-- projector live view -->
 <a href="{% url 'projector_show' %}" target="_blank">
     <div id="iframewrapper">
@@ -34,3 +7,26 @@
         <div id="iframeoverlay"></div>
     </div>
 </a>
+
+<!-- projector control buttons -->
+{% if perms.projector.can_manage_projector %}
+    <p>
+        <a class="projector_edit btn btn-mini" href="{% url 'projector_bigger' %}" title="{% trans 'Zoom in' %}">
+            <i class="icon-zoom-in"></i>
+        </a>
+        <a class="projector_edit btn btn-mini" href="{% url 'projector_smaller' %}" title="{% trans 'Zoom out' %}">
+            <i class="icon-zoom-out"></i>
+        </a>
+        &nbsp;&nbsp;
+        <a class="projector_edit btn btn-mini" href="{% url 'projector_up' %}" title="{% trans 'Scroll visible view up' %}">
+            <i class="icon-arrow-up"></i>
+        </a>
+        <a class="projector_edit btn btn-mini" href="{% url 'projector_down' %}" title="{% trans 'Scroll visible view down' %}">
+            <i class="icon-arrow-down"></i>
+        </a>
+        &nbsp;&nbsp;
+        <a class="projector_edit btn btn-mini" href="{% url 'projector_clean' %}" title="{% trans 'Reset projector view' %}">
+            <i class="icon-resize-small"></i>
+        </a>
+    </p>
+{% endif %}
