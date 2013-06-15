@@ -32,7 +32,7 @@ from openslides.utils.utils import html_strong
 from openslides.projector.api import get_active_slide, get_slide_from_sid
 from openslides.projector.projector import Widget, SLIDE
 from .models import Item, Speaker
-from .forms import ItemOrderForm, ItemForm, AppendSpeakerForm
+from .forms import ItemOrderForm, ItemForm, AppendSpeakerForm, RelatedItemForm
 
 
 class Overview(TemplateView):
@@ -187,8 +187,13 @@ class ItemUpdate(UpdateView):
     template_name = 'agenda/edit.html'
     model = Item
     context_object_name = 'item'
-    form_class = ItemForm
     success_url_name = 'item_overview'
+
+    def get_form_class(self):
+        if self.object.related_sid is None:
+            return ItemForm
+        else:
+            return RelatedItemForm
 
 
 class ItemCreate(CreateView):

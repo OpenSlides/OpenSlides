@@ -21,7 +21,7 @@ from openslides.utils.person.forms import PersonFormField
 from .models import Item, Speaker
 
 
-class ItemForm(forms.ModelForm, CssClassMixin):
+class ItemForm(CssClassMixin, forms.ModelForm):
     """
     Form to create of update an item.
     """
@@ -40,7 +40,16 @@ class ItemForm(forms.ModelForm, CssClassMixin):
         exclude = ('closed', 'weight', 'related_sid')
 
 
-class ItemOrderForm(forms.Form, CssClassMixin):
+class RelatedItemForm(ItemForm):
+    """
+    Form to update an related item.
+    """
+    class Meta:
+        model = Item
+        exclude = ('closed', 'type', 'weight', 'related_sid', 'title', 'text')
+
+
+class ItemOrderForm(CssClassMixin, forms.Form):
     """
     Form to change the order of the items.
     """
