@@ -114,19 +114,13 @@ class Item(MPTTModel, SlideMixin):
 
     def get_absolute_url(self, link='detail'):
         """
-        Return the URL to this item. By default it is the link to its
-        view or the view of a related object.
+        Return the URL to this item.
 
-        The link can be:
-        * detail or view
-        * update or edit
-        * delete
+        The link can be detail, update or delete.
         """
         if link == 'detail' or link == 'view':
             return reverse('item_view', args=[str(self.id)])
         if link == 'update' or link == 'edit':
-            if self.related_sid:
-                return self.get_related_slide().get_absolute_url(link)
             return reverse('item_edit', args=[str(self.id)])
         if link == 'delete':
             return reverse('item_delete', args=[str(self.id)])
