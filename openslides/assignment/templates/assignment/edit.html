@@ -3,12 +3,12 @@
 {% load i18n %}
 
 {% block title %}
-    {{ block.super }} –
     {% if assignment %}
         {% trans "Edit election" %}
     {% else %}
         {% trans "New election" %}
     {% endif %}
+    – {{ block.super }}
 {% endblock %}
 
 {% block content %}

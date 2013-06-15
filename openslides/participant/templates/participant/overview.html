@@ -4,7 +4,7 @@
 {% load staticfiles %}
 {% load tags %}
 
-{% block title %}{{ block.super }} – {% trans "Participants" %}{% endblock %}
+{% block title %}{% trans "Participants" %} – {{ block.super }}{% endblock %}
 
 {% block header %}
     <link href="{% static 'styles/dataTables/dataTables.bootstrap.css' %}" type="text/css" rel="stylesheet">
@@ -79,7 +79,7 @@
                     {% if 'participant_sort_users_by_first_name'|get_config %}
                         <a href="{% url 'user_view' user.id %}">{{ user.first_name }} {{ user.last_name }}</a>
                     {% else %}
-                        <a href="{% url 'user_view' user.id %}">{{ user.last_name }}, {{ user.first_name }}</a>
+                        <a href="{% url 'user_view' user.id %}">{{ user.last_name }}{% if user.last_name and user.first_name %},{% endif %} {{ user.first_name }}</a>
                     {% endif %}
                 </td>
                 <td class="optional">{{ user.structure_level }}</td>

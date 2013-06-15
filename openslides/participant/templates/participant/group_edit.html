@@ -3,12 +3,12 @@
 {% load i18n %}
 
 {% block title %}
-    {{ block.super }} –
     {% if group %}
         {% trans "Edit group" %}
     {% else %}
         {% trans "New group" %}
     {% endif %}
+    – {{ block.super }}
 {% endblock %}
 
 {% block content %}

@@ -3,12 +3,12 @@
 {% load i18n %}
 
 {% block title %}
-    {{ block.super }} –
     {% if item %}
         {{ item.title }} – {% trans "Edit item" %}
     {% else %}
         {% trans "New item" %}
     {% endif %}
+    – {{ block.super }}
 {% endblock %}
 
 {% block content %}

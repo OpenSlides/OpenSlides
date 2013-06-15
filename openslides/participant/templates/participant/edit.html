@@ -3,12 +3,12 @@
 {% load i18n %}
 
 {% block title %}
-    {{ block.super }} –
     {% if edit_user %}
         {% trans "Edit participant" %}
     {% else %}
         {% trans "New participant" %}
     {% endif %}
+    – {{ block.super }}
 {% endblock %}
 
 {% block content %}

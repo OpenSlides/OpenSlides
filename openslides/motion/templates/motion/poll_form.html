@@ -3,7 +3,7 @@
 {% load i18n %}
 
 {% block title %}
-    {{ block.super }} - {% trans "Motion" %} {{ motion.identifier }}, {{ poll }}
+    {% trans "Motion" %} {{ motion.identifier }}, {{ poll }} – {{ block.super }}
 {% endblock %}
 
 {% block content %}

@@ -3,12 +3,12 @@
 {% load i18n %}
 
 {% block title %}
-    {{ block.super }} –
     {% if mediafile %}
         {% trans "Edit file" %}
     {% else %}
         {% trans "New file" %}
     {% endif %}
+    – {{ block.super }}
 {% endblock %}
 
 {% block content %}

@@ -16,12 +16,12 @@
 {% endblock %}
 
 {% block title %}
-    {{ block.super }} –
     {% if motion %}
         {% trans "Edit motion" %}
     {% else %}
         {% trans "New motion" %}
     {% endif %}
+    – {{ block.super }}
 {% endblock %}
 
 {% block content %}

@@ -4,7 +4,7 @@
 {% load mptt_tags %}
 {% load staticfiles %}
 
-{% block title %}{{ block.super }} – {% trans "Agenda" %}{% endblock %}
+{% block title %}{% trans "Agenda" %} – {{ block.super }}{% endblock %}
 
 {% block header %}
     <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/agenda.css' %}" />

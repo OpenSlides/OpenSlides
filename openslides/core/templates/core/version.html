@@ -2,7 +2,7 @@
 
 {% load i18n %}
 
-{% block title %}{{ block.super }} – {% trans 'Version' %}{% endblock %}
+{% block title %}{% trans 'Version' %} – {{ block.super }}{% endblock %}
 
 {% block content %}
     <h1>{% trans 'Version' %}</h1>

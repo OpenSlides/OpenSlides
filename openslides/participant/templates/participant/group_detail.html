@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load tags %}
 
-{% block title %}{{ block.super }} – {% trans group.name %}{% endblock %}
+{% block title %}{% trans group.name %} – {{ block.super }}{% endblock %}
 
 {% block content %}
 
