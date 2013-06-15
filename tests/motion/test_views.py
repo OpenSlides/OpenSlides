@@ -85,7 +85,7 @@ class TestMotionCreateView(MotionViewTestCase):
         response = self.admin_client.post(self.url, {'title': 'new motion',
                                                      'text': 'motion text',
                                                      'reason': 'motion reason',
-                                                     'submitter': self.admin.person_id})
+                                                     'workflow': 1})
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Motion.objects.filter(versions__title='new motion').exists())
 
@@ -151,7 +151,8 @@ class TestMotionUpdateView(MotionViewTestCase):
         response = self.admin_client.post(self.url, {'title': 'new motion_title',
                                                      'text': 'motion text',
                                                      'reason': 'motion reason',
-                                                     'submitter': self.admin.person_id})
+                                                     'submitter': self.admin.person_id,
+                                                     'workflow': 1})
         self.assertRedirects(response, '/motion/1/')
         motion = Motion.objects.get(pk=1)
         self.assertEqual(motion.title, 'new motion_title')
@@ -172,7 +173,8 @@ class TestMotionUpdateView(MotionViewTestCase):
 
     def test_versioning(self):
         self.assertFalse(self.motion1.state.versioning)
-        versioning_state = State.objects.create(name='automatic_versioning', workflow=self.motion1.state.workflow, versioning=True)
+        workflow = self.motion1.state.workflow
+        versioning_state = State.objects.create(name='automatic_versioning', workflow=workflow, versioning=True)
         self.motion1.state = versioning_state
         self.motion1.save()
         motion = Motion.objects.get(pk=self.motion1.pk)
@@ -182,6 +184,7 @@ class TestMotionUpdateView(MotionViewTestCase):
         response = self.admin_client.post(self.url, {'title': 'another new motion_title',
                                                      'text': 'another motion text',
                                                      'reason': 'another motion reason',
+                                                     'workflow': workflow.pk,
                                                      'submitter': self.admin.person_id})
         self.assertRedirects(response, '/motion/1/')
         motion = Motion.objects.get(pk=self.motion1.pk)
@@ -189,7 +192,8 @@ class TestMotionUpdateView(MotionViewTestCase):
 
     def test_disable_versioning(self):
         self.assertFalse(self.motion1.state.versioning)
-        versioning_state = State.objects.create(name='automatic_versioning', workflow=self.motion1.state.workflow, versioning=True)
+        workflow = self.motion1.state.workflow
+        versioning_state = State.objects.create(name='automatic_versioning', workflow=workflow, versioning=True)
         self.motion1.state = versioning_state
         self.motion1.save()
         motion = Motion.objects.get(pk=self.motion1.pk)
@@ -201,6 +205,7 @@ class TestMotionUpdateView(MotionViewTestCase):
                                                      'text': 'another motion text',
                                                      'reason': 'another motion reason',
                                                      'submitter': self.admin.person_id,
+                                                     'workflow': workflow.pk,
                                                      'disable_versioning': 'true'})
         self.assertRedirects(response, '/motion/1/')
         motion = Motion.objects.get(pk=self.motion1.pk)
@@ -208,7 +213,8 @@ class TestMotionUpdateView(MotionViewTestCase):
 
     def test_no_versioning_without_new_data(self):
         self.assertFalse(self.motion1.state.versioning)
-        versioning_state = State.objects.create(name='automatic_versioning', workflow=self.motion1.state.workflow, versioning=True)
+        workflow = self.motion1.state.workflow
+        versioning_state = State.objects.create(name='automatic_versioning', workflow=workflow, versioning=True)
         self.motion1.state = versioning_state
         self.motion1.title = 'Chah4kaaKasiVuishi5x'
         self.motion1.text = 'eedieFoothae2iethuo3'
@@ -221,6 +227,7 @@ class TestMotionUpdateView(MotionViewTestCase):
         response = self.admin_client.post(self.url, {'title': 'Chah4kaaKasiVuishi5x',
                                                      'text': 'eedieFoothae2iethuo3',
                                                      'reason': 'ier2laiy1veeGoo0mau2',
+                                                     'workflow': workflow.pk,
                                                      'submitter': self.admin.person_id})
         self.assertRedirects(response, '/motion/1/')
         motion = Motion.objects.get(pk=self.motion1.pk)
@@ -235,7 +242,7 @@ class TestMotionUpdateView(MotionViewTestCase):
         response = self.admin_client.post(self.url, {'title': 'oori4KiaghaeSeuzaim2',
                                                      'text': 'eequei1Tee1aegeNgee0',
                                                      'submitter': self.admin.person_id,
-                                                     'set_workflow': 2})
+                                                     'workflow': 2})
         self.assertRedirects(response, '/motion/1/')
         self.assertEqual(Motion.objects.get(pk=self.motion1.pk).state.workflow.pk, 2)
 

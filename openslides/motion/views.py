@@ -39,7 +39,7 @@ from .models import (Motion, MotionSubmitter, MotionSupporter, MotionPoll,
                      MotionVersion, State, WorkflowError, Category)
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
                     MotionDisableVersioningMixin, MotionCategoryMixin,
-                    MotionIdentifierMixin, MotionSetWorkflowMixin, MotionImportForm)
+                    MotionIdentifierMixin, MotionWorkflowMixin, MotionImportForm)
 from .pdf import motions_to_pdf, motion_to_pdf, motion_poll_to_pdf
 from .csv_import import import_motions
 
@@ -98,19 +98,10 @@ class MotionEditMixin(object):
         Saves the CreateForm or UpdateForm into a motion object.
         """
         self.object = form.save(commit=False)
-
-        if type(self) == MotionUpdateView:
-            # Decide if a new version is saved to the database
-            if (self.object.state.versioning and
-                    not form.cleaned_data.get('disable_versioning', False)):
-                version = self.object.get_new_version()
-            else:
-                version = self.object.get_last_version()
-        else:
-            version = self.object.get_new_version()
+        self.manipulate_object(form)
 
         for attr in ['title', 'text', 'reason']:
-            setattr(version, attr, form.cleaned_data[attr])
+            setattr(self.version, attr, form.cleaned_data[attr])
 
         try:
             self.object.category = form.cleaned_data['category']
@@ -122,11 +113,7 @@ class MotionEditMixin(object):
         except KeyError:
             pass
 
-        workflow = form.cleaned_data.get('set_workflow', None)
-        if workflow:
-            self.object.reset_state(workflow)
-
-        self.object.save(use_version=version)
+        self.object.save(use_version=self.version)
 
         # Save the submitter an the supporter so the motion.
         # TODO: Only delete and save neccessary submitters and supporters
@@ -163,11 +150,12 @@ class MotionEditMixin(object):
             form_classes.append(MotionCategoryMixin)
             if config['motion_min_supporters'] > 0:
                 form_classes.append(MotionSupporterMixin)
+            form_classes.append(MotionWorkflowMixin)
+
         if self.object:
             if config['motion_allow_disable_versioning'] and self.object.state.versioning:
                 form_classes.append(MotionDisableVersioningMixin)
-            if self.request.user.has_perm('motion.can_manage_motion'):
-                form_classes.append(MotionSetWorkflowMixin)
+
         return type('MotionForm', tuple(form_classes), {})
 
 
@@ -195,9 +183,22 @@ class MotionCreateView(MotionEditMixin, CreateView):
         """
         response = super(MotionCreateView, self).form_valid(form)
         self.object.write_log([ugettext_noop('Motion created')], self.request.user)
-        if not 'submitter' in form.cleaned_data:
+        if (not 'submitter' in form.cleaned_data or
+                not form.cleaned_data['submitter']):
             self.object.add_submitter(self.request.user)
         return response
+
+    def get_initial(self):
+        initial = super(MotionCreateView, self).get_initial()
+        if self.request.user.has_perm('motion.can_manage_motion'):
+            initial['workflow'] = config['motion_workflow']
+        return initial
+
+    def manipulate_object(self, form):
+        self.version = self.object.get_new_version()
+
+        workflow = form.cleaned_data.get('workflow', config['motion_workflow'])
+        self.object.reset_state(workflow)
 
 motion_create = MotionCreateView.as_view()
 
@@ -225,6 +226,25 @@ class MotionUpdateView(MotionEditMixin, UpdateView):
             self.object.clear_supporters()
             self.object.write_log([ugettext_noop('All supporters removed')], self.request.user)
         return response
+
+    def get_initial(self):
+        initial = super(MotionUpdateView, self).get_initial()
+        if self.request.user.has_perm('motion.can_manage_motion'):
+            initial['workflow'] = self.object.state.workflow
+        return initial
+
+    def manipulate_object(self, form):
+        workflow = form.cleaned_data.get('workflow', None)
+        if (workflow is not None and
+                workflow != self.object.state.workflow):
+            self.object.reset_state(workflow)
+
+        # Decide if a new version is saved to the database
+        if (self.object.state.versioning and
+                not form.cleaned_data.get('disable_versioning', False)):
+            self.version = self.object.get_new_version()
+        else:
+            self.version = self.object.get_last_version()
 
 motion_edit = MotionUpdateView.as_view()
 
