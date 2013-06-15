@@ -133,7 +133,7 @@ class Motion(SlideMixin, models.Model):
 
         # Solves the problem, that there can only be one motion with an empty
         # string as identifier.
-        if self.identifier is '':
+        if not self.identifier and isinstance(self.identifier, basestring):
             self.identifier = None
 
         super(Motion, self).save(*args, **kwargs)
@@ -432,7 +432,7 @@ class Motion(SlideMixin, models.Model):
         """
         Set the state of the motion.
 
-        State can be the id of a state object or a state object.
+        'state' can be the id of a state object or a state object.
         """
         if type(state) is int:
             state = State.objects.get(pk=state)
@@ -445,10 +445,15 @@ class Motion(SlideMixin, models.Model):
         """
         Set the state to the default state.
 
+        'workflow' can be a workflow, an id of a workflow or None.
+
         If the motion is new and workflow is None, it chooses the default
         workflow from config.
         """
-        if workflow:
+        if type(workflow) is int:
+            workflow = Workflow.objects.get(pk=workflow)
+
+        if workflow is not None:
             new_state = workflow.first_state
         elif self.state:
             new_state = self.state.workflow.first_state

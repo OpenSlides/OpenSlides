@@ -140,17 +140,17 @@ class MotionIdentifierMixin(forms.ModelForm):
         fields = ('identifier',)
 
 
-class MotionSetWorkflowMixin(forms.ModelForm):
+class MotionWorkflowMixin(forms.ModelForm):
     """
-    Mixin to let the user change the workflow of the motion. When he does
-    so, the motion's state is reset.
+    Mixin to let the user change the workflow of the motion.
     """
 
-    set_workflow = LocalizedModelChoiceField(
+    workflow = LocalizedModelChoiceField(
         queryset=Workflow.objects.all(),
-        required=False,
+        empty_label=None,
         label=ugettext_lazy('Workflow'),
-        help_text=ugettext_lazy('Set a specific workflow to switch to it. If you do so, the state of the motion will be reset.'))
+        help_text=ugettext_lazy('Set a specific workflow to switch to it. '
+                                'If you do so, the state of the motion will be reset.'))
 
 
 class MotionImportForm(CssClassMixin, forms.Form):
