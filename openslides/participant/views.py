@@ -183,9 +183,6 @@ class SetUserStatusView(RedirectView, SingleObjectMixin):
             if self.object.user == self.request.user:
                 messages.error(request, _("You can not deactivate yourself."))
                 return
-            elif self.object.is_superuser:
-                messages.error(request, _("You can not deactivate the administrator."))
-                return
             self.object.is_active = False
         elif action == 'toggle':
             self.object.is_active = not self.object.is_active
