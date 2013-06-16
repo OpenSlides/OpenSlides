@@ -78,7 +78,7 @@ class ListOfSpeakerModelTests(TestCase):
 class SpeakerViewTestCase(TestCase):
     def setUp(self):
         # Admin
-        self.admin = User.objects.create_superuser('admin', 'admin@admin.admin', 'admin')
+        self.admin = User.objects.get(pk=1)
         self.admin_client = Client()
         self.admin_client.login(username='admin', password='admin')
 
