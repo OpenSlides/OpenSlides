@@ -324,7 +324,7 @@ class SpeakerManager(models.Manager):
                 % {'person': person, 'id': item.id})
         if isinstance(person, AnonymousUser):
             raise OpenSlidesError(
-                _('An anonymous user can not be on the list of speakers.'))
+                _('An anonymous user can not be on lists of speakers.'))
         weight = (self.filter(item=item).aggregate(
             models.Max('weight'))['weight__max'] or 0)
         return self.create(item=item, person=person, weight=weight + 1)
