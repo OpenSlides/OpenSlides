@@ -21,10 +21,10 @@ class GroupViews(TestCase):
     Tests the detail view for groups and later also the other views.
     """
     def setUp(self):
-        self.user_1 = User.objects.create(last_name='chahshah7eiqueip5eiW',
-                                          first_name='mi6iu2Te6ei9iohue3ex',
-                                          username='mi6iu2Te6ei9iohue3ex chahshah7eiqueip5eiW',
-                                          is_superuser=True)
+        self.user_1 = User.objects.get(pk=1)
+        self.user_1.first_name = 'admins_first_name'
+        self.user_1.save()
+
         self.user_2 = User.objects.create(last_name='uquahx3Wohtieph9baer',
                                           first_name='aWei4ien6Se0vie0xeiv',
                                           username='aWei4ien6Se0vie0xeiv uquahx3Wohtieph9baer')
@@ -40,17 +40,17 @@ class GroupViews(TestCase):
     def test_detail(self):
         self.assertFalse(config['participant_sort_users_by_first_name'])
         response = self.client.get('/participant/group/3/')
-        pattern = r'mi6iu2Te6ei9iohue3ex chahshah7eiqueip5eiW|aWei4ien6Se0vie0xeiv uquahx3Wohtieph9baer'
+        pattern = r'admins_first_name Administrator|aWei4ien6Se0vie0xeiv uquahx3Wohtieph9baer'
         match = re.findall(pattern, response.content)
-        self.assertEqual(match[0], 'mi6iu2Te6ei9iohue3ex chahshah7eiqueip5eiW')
+        self.assertEqual(match[0], 'admins_first_name Administrator')
         self.assertEqual(match[1], 'aWei4ien6Se0vie0xeiv uquahx3Wohtieph9baer')
 
         config['participant_sort_users_by_first_name'] = True
         self.assertTrue(config['participant_sort_users_by_first_name'])
         response = self.client.get('/participant/group/3/')
-        pattern = r'mi6iu2Te6ei9iohue3ex chahshah7eiqueip5eiW|aWei4ien6Se0vie0xeiv uquahx3Wohtieph9baer'
+        pattern = r'admins_first_name Administrator|aWei4ien6Se0vie0xeiv uquahx3Wohtieph9baer'
         match = re.findall(pattern, response.content)
-        self.assertEqual(match[1], 'mi6iu2Te6ei9iohue3ex chahshah7eiqueip5eiW')
+        self.assertEqual(match[1], 'admins_first_name Administrator')
         self.assertEqual(match[0], 'aWei4ien6Se0vie0xeiv uquahx3Wohtieph9baer')
 
 
@@ -60,15 +60,13 @@ class LockoutProtection(TestCase):
     something that removes his last permission to manage participants.
     """
     def setUp(self):
-        self.user = User.objects.create(last_name='AQu9ie7ach2ek2Xoozoo',
-                                        first_name='guR3La9alah7lahsief6',
-                                        username='Iedei0eecoh1aiwahnoo')
-        self.user.reset_password('default')
+        self.user = User.objects.get(pk=1)
         self.user.groups.add(Group.objects.get(pk=4))
         self.client = Client()
-        self.client.login(username='Iedei0eecoh1aiwahnoo', password='default')
+        self.client.login(username='admin', password='admin')
         self.assertEqual(User.objects.count(), 1)
         self.assertEqual(Group.objects.count(), 4)
+        self.assertFalse(self.user.is_superuser)
 
     def test_delete_yourself(self):
         response = self.client.get('/participant/1/del/')

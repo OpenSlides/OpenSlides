@@ -21,6 +21,7 @@ from openslides.config.signals import config_signal
 from openslides.config.api import ConfigVariable, ConfigPage
 
 from .models import Group
+from .api import create_or_reset_admin_user
 
 
 @receiver(config_signal, dispatch_uid='setup_participant_config_page')
@@ -62,10 +63,14 @@ def setup_participant_config_page(sender, **kwargs):
                                  participant_sort_users_by_first_name))
 
 
-@receiver(post_database_setup, dispatch_uid='participant_create_builtin_groups')
-def create_builtin_groups(sender, **kwargs):
+@receiver(post_database_setup, dispatch_uid='participant_create_builtin_groups_and_admin')
+def create_builtin_groups_and_admin(sender, **kwargs):
     """
+    Creates the buildin groups and the admin user.
+
     Creates the builtin groups: Anonymous, Registered, Delegates and Staff.
+
+    Creates the builtin user: admin.
     """
     # Check whether the group pks 1 to 4 are free
     if Group.objects.filter(pk__in=range(1, 5)).exists():
@@ -123,3 +128,6 @@ def create_builtin_groups(sender, **kwargs):
 
     group_staff = Group.objects.create(name=ugettext_noop('Staff'), pk=4)
     group_staff.permissions.add(perm_7, perm_9, perm_10, perm_10a, perm_11, perm_12, perm_13, perm_14, perm_15, perm_15a, perm_16)
+
+    # Admin user
+    create_or_reset_admin_user()

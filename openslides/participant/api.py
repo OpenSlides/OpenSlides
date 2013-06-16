@@ -113,3 +113,18 @@ def get_registered_group():
     Returns the group 'Registered' (pk=2).
     """
     return Group.objects.get(pk=2)
+
+
+def create_or_reset_admin_user():
+    group_staff = Group.objects.get(pk=4)
+    try:
+        admin = User.objects.get(username="admin")
+    except User.DoesNotExist:
+        admin = User()
+        admin.username = 'admin'
+        admin.last_name = 'Administrator'
+
+    admin.default_password = 'admin'
+    admin.set_password(admin.default_password)
+    admin.save()
+    admin.groups.add(group_staff)

@@ -182,11 +182,10 @@ def _main(opts, database_path=None):
     # Create Database if necessary
     if not database_exists() or opts.syncdb:
         run_syncdb()
-        create_or_reset_admin_user()
 
     # Reset Admin
     elif opts.reset_admin:
-        create_or_reset_admin_user()
+        reset_admin_user()
 
     if opts.backupdb:
         backup_database(opts.backupdb)
@@ -294,23 +293,11 @@ def run_syncdb():
     execute_from_command_line(argv)
 
 
-def create_or_reset_admin_user():
+def reset_admin_user():
     # can't be imported in global scope as it already requires
     # the settings module during import
-    from openslides.participant.models import User
-    try:
-        admin = User.objects.get(username="admin")
-        print("Password for user admin was reset to 'admin'")
-    except User.DoesNotExist:
-        admin = User()
-        admin.username = 'admin'
-        admin.last_name = 'Administrator'
-        print("Created default admin user")
-
-    admin.is_superuser = True
-    admin.default_password = 'admin'
-    admin.set_password(admin.default_password)
-    admin.save()
+    from openslides.participant.api import create_or_reset_admin_user
+    create_or_reset_admin_user()
 
 
 def backup_database(dest_path):
