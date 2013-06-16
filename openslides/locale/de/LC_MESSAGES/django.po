@@ -1,9 +1,11 @@
-# English source language file of OpenSlides used by transifex:
+# Language file of OpenSlides used by transifex:
 # https://www.transifex.com/projects/p/openslides/
 # Copyright (C) 2011–2013 by OpenSlides team, see AUTHORS.
 # This file is distributed under the same license as the OpenSlides package.
 # Translators:
+# emanuelschuetze <emanuelschuetze@gmail.com>, 2013
 # emanuel <emanuel@intevation.de>, 2013
+# ostcar <mail@oshahn.de>, 2012
 # normanjaeckel <transifex16062013@normanjaeckel.de>, 2013
 # ostcar <mail@oshahn.de>, 2012-2013
 msgid ""
