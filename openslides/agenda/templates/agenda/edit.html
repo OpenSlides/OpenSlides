@@ -26,9 +26,7 @@
     <p>
         {% if item.related_sid %}
             <a href="{% model_url item.get_related_slide 'update' %}" class="btn btn-small">
-                {% blocktrans with type=item.get_related_type|trans name=item.get_related_slide %}
-                    Edit {{ type }} {{ name }}
-                {% endblocktrans %}
+                {% blocktrans with type=item.get_related_type|trans name=item.get_related_slide %}Edit {{ type }} {{ name }}{% endblocktrans %}
             </a>
         {% endif %}
     </p>
