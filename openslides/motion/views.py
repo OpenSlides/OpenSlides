@@ -626,7 +626,7 @@ class MotionSetStateView(SingleObjectMixin, RedirectView):
         except WorkflowError, e:  # TODO: Is a WorkflowError still possible here?
             messages.error(request, e)
         else:
-            self.object.save(update_fields=['state'])
+            self.object.save(update_fields=['state', 'identifier'])
             self.object.write_log(
                 message_list=[ugettext_noop('State changed to '), self.object.state.name],
                 person=self.request.user)
