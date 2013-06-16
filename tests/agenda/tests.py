@@ -101,13 +101,9 @@ class ViewTest(TestCase):
         self.item2 = Item.objects.create(title='item2')
         self.refreshItems()
 
-        self.admin, created = User.objects.get_or_create(username='testadmin')
+        self.admin = User.objects.get(pk=1)
         self.anonym, created = User.objects.get_or_create(username='testanonym')
-        self.admin.reset_password('default')
         self.anonym.reset_password('default')
-
-        self.admin.is_superuser = True
-        self.admin.save()
 
     def refreshItems(self):
         self.item1 = Item.objects.get(pk=self.item1.id)
@@ -116,7 +112,7 @@ class ViewTest(TestCase):
     @property
     def adminClient(self):
         c = Client()
-        c.login(username='testadmin', password='default')
+        c.login(username='admin', password='admin')
         return c
 
     @property

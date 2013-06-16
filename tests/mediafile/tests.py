@@ -36,9 +36,7 @@ class MediafileTest(TestCase):
         perm_3 = Permission.objects.get(content_type=ct, codename='can_manage')
 
         # Setup three different users
-        self.manager = User.objects.create(username='mediafile_test_manager')
-        self.manager.reset_password('default')
-        self.manager.user_permissions.add(perm_1, perm_2, perm_3)
+        self.manager = User.objects.get(pk=1)
         self.vip_user = User.objects.create(username='mediafile_test_vip_user')
         self.vip_user.reset_password('default')
         self.vip_user.user_permissions.add(perm_1, perm_2)
@@ -69,7 +67,7 @@ class MediafileTest(TestCase):
         Helper function to login all three test users.
         """
         client_manager = Client()
-        client_manager.login(username='mediafile_test_manager', password='default')
+        client_manager.login(username='admin', password='admin')
         client_vip_user = Client()
         client_vip_user.login(username='mediafile_test_vip_user', password='default')
         client_normal_user = Client()
@@ -91,7 +89,7 @@ class MediafileTest(TestCase):
         clients = self.login_clients()
         response = clients['client_manager'].get('/mediafile/new/')
         self.assertContains(response, '---------', status_code=200)
-        self.assertContains(response, '<option value="user:1" selected="selected">mediafile_test_manager</option>', status_code=200)
+        self.assertContains(response, '<option value="user:1" selected="selected">Administrator</option>', status_code=200)
         self.assertTemplateUsed(response, 'mediafile/mediafile_form.html')
         response = clients['client_vip_user'].get('/mediafile/new/')
         self.assertNotContains(response, '<select id="id_uploader" name="uploader">', status_code=200)
