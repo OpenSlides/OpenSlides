@@ -98,14 +98,17 @@
 
 /* iframe */
 #iframe {
+    width: 1024px;
+    height: 768px;
     -moz-transform-origin: 0 0;
     -webkit-transform-origin: 0 0;
     -o-transform-origin: 0 0;
     -moz-transform: scale(0.25);
     -webkit-transform: scale(0.25);
     -o-transform: scale(0.25);
-    width: 1024px;
-    height: 768px;
+    transform: scale(0.25);
+    /* IE8+ - must be on one line, unfortunately */
+    -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.25, M12=0, M21=0, M22=0.25, SizingMethod='auto expand')";
 }
 #iframewrapper {
     width: 256px;
