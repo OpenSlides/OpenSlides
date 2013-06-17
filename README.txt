@@ -57,28 +57,35 @@ Command line options
 The following command line options are available:
 
 -h, --help
-    Shows all options
+    Show this help message and exit.
 
 -a, --address=ADDRESS
-    Changes the address on which the server will listen for connections
+    IP Address to listen on. Default: 0.0.0.0
 
 -p PORT, --port=PORT
-    Changes the port on which the server will listen for connections
+    Port to listen on. Default: 8000 (start as admin/root: 80)
 
 --syncdb
-    Creates/updates database before starting the server
+    Update/create database before starting the server.
+
+--backupdb=BACKUP_PATH
+    Make a backup copy of the database to BACKUP_PATH.
 
 --reset-admin
-    Resets the password to 'admin' for user 'admin'
+    Make sure the user 'admin' exists and uses 'admin' as
+    password.
 
 -s SETTINGS, --settings=SETTINGS
-    Sets the path to the settings file.
-
---no-reload
-    Does not reload the development server
+    Set the path to the settings file.
 
 --no-browser
     Do not automatically start web browser.
+
+--no-reload
+    Do not reload the web server.
+
+--no-run
+    Do not start the web server.
 
 --version
     Show version and exit.
@@ -100,6 +107,6 @@ Operating Systems (OpenSlides runs anywhere where Pyhton is running):
 
 Browsers:
   Firefox 3.6+
-  IE 7+
+  IE 8+
   Chrome
   Safari

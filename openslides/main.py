@@ -84,29 +84,33 @@ def process_options(argv=None, manage_runserver=False):
 
     parser = optparse.OptionParser(
         description="Run openslides using the tornado webserver")
-    parser.add_option("-a", "--address", help="IP Address to listen on.")
-    parser.add_option("-p", "--port", type="int", help="Port to listen on.")
+    parser.add_option(
+        "-a", "--address",
+        help="IP Address to listen on. Default: 0.0.0.0")
+    parser.add_option(
+        "-p", "--port", type="int",
+        help="Port to listen on. Default: 8000 (start as admin/root: 80)")
     parser.add_option(
         "--syncdb", action="store_true",
         help="Update/create database before starting the server.")
     parser.add_option(
         "--backupdb", action="store", metavar="BACKUP_PATH",
-        help="Make a backup copy of the database to BACKUP_PATH")
+        help="Make a backup copy of the database to BACKUP_PATH.")
     parser.add_option(
         "--reset-admin", action="store_true",
         help="Make sure the user 'admin' exists and uses 'admin' as password.")
     parser.add_option(
-        "-s", "--settings", help="Path to the openslides configuration.")
-    parser.add_option(
-        "--no-reload", action="store_true",
-        help="Do not reload the development server.")
+        "-s", "--settings", help="Set the path to the settings file.")
     parser.add_option(
         "--no-browser",
         action="store_false", dest="start_browser", default=True,
-        help="Do not automatically start web browser.")
+        help="Do not automatically start the web browser.")
+    parser.add_option(
+        "--no-reload", action="store_true",
+        help="Do not reload the web server.")
     parser.add_option(
         "--no-run", action="store_true",
-        help="Do not start the development server.")
+        help="Do not start the web server.")
     parser.add_option(
         "--version", action="store_true",
         help="Show version and exit.")
