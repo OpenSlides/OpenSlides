@@ -36,7 +36,7 @@
         </tr>
     </thead>
     {% for assignment in assignments %}
-        <tr {% if assignment.active %}activeline{% endif %}>
+        <tr class="{% if assignment.active %}activeline{% endif %}">
             <td><a href="{% url 'assignment_view' assignment.id %}">{{ assignment }}</a></td>
             <td  class="optional">
                 <!-- posts -->
