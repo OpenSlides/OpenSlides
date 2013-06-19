@@ -674,10 +674,11 @@ class MotionLog(models.Model):
         Return a string, representing the log message.
         """
         time = formats.date_format(self.time, 'DATETIME_FORMAT')
-        return_message = '%s ' % time + ''.join(map(_, self.message_list))
+        time_and_messages = '%s ' % time + ''.join(map(_, self.message_list))
         if self.person is not None:
-            return_message += _(' by %s') % self.person
-        return return_message
+            return _('%(time_and_messages)s by %(person)s') % {'time_and_messages': time_and_messages,
+                                                               'person': self.person}
+        return time_and_messages
 
 
 class MotionVote(BaseVote):
