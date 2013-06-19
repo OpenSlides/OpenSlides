@@ -175,6 +175,7 @@ class Motion(SlideMixin, models.Model):
         # TODO: Move parts of these last lines of code outside the save method
         # when other versions than the last ones should be edited later on.
         if self.active_version is None or not self.state.leave_old_version_active:
+            # TODO: Don't call this if it was not a new version
             self.active_version = use_version
             self.save(update_fields=['active_version'])
 
