@@ -10,9 +10,13 @@ Konfiguration der Tagesordnung
 
 Gehen Sie zunächst im Menüpunkt „Konfiguration“ links oben zum Unterpunkt
 „Tagesordnung“. Hier können Sie den genauen Beginn der Veranstaltung
-einstellen:
+einstellen.
 
+Beginn der Veranstaltung:
   02.03.2013 10:00
+
+.. image:: ../_images/Tutorial_2_01.png
+   :class: screenshot
 
 
 Eingabe der Tagesordnung
@@ -23,7 +27,7 @@ zunächst einige Einträge an.
 
 Klicken Sie dazu im Menüpunkt „Tagesordnung“ oben rechts auf „Neu“
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_2_02.png
    :class: screenshot
 
 und geben Sie den Eintrag wie folgt ein:
@@ -37,7 +41,7 @@ Text:
 Dauer:
   00:15
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_2_03.png
    :class: screenshot
 
 Klicken Sie anschließend auf ``Speichern``.
@@ -45,10 +49,9 @@ Klicken Sie anschließend auf ``Speichern``.
 Erweitern Sie nun die Tagesordnung um folgende Einträge: Bericht des
 Vorstands, Satzungsänderung, Gartenfest, Sonstiges, Wahlen der Vereinsämter.
 
-Die Übersicht über die Einträge (rechts oben bei „Zurück zur Übersicht“)
-müsste nun so aussehen:
+Die Übersicht über die Einträge müsste nun so aussehen:
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_2_04.png
    :class: screenshot
 
 Sie können nun nachträglich die Reihenfolge der Einträge verändern und auch
@@ -57,7 +60,7 @@ mit der Maus den Punkt „Sonstiges“, um seine Position zu verändern und ihn
 nach unten zu verschieben. Richten Sie die Tagesordnung durch Verschieben
 der übrigen Einträge so ein, dass sie wie folgt aussieht:
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_2_05.png
    :class: screenshot
 
 Klicken Sie auf ``Ja``, um die geänderte Reihenfolge zu speichern. Solange
@@ -85,12 +88,13 @@ dargestellt.
 Ändern Sie zum Beispiel den Inhalt des Tagesordnungspunktes „Bericht des
 Vorstandes“, indem Sie in der Zeile dieses Eintrags auf das
 Bearbeiten-Symbol |edit| klicken und zusätzlich zum Titel einen Text zum
-Tagesordnungspunkt wie folgt eingeben:
+Tagesordnungspunkt eingeben.
 
+Text:
   Der Vorstand berichtet über seine Arbeit, insbesondere die Entwicklung
   der Mitgliederzahlen und Finanzen.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_2_06.png
    :class: screenshot
 
 .. |edit| image:: ../_images/pencil.png
@@ -106,16 +110,12 @@ Auswahl der Projektorfolien
 ---------------------------
 
 Wenn Sie in den Menüpunkt „Dashboard“ wechseln,
-
-.. image:: ../_images/Platzhalter.png
-   :class: screenshot
-
 können Sie durch einen Klick auf das jeweilige Projektorsymbol eine
 bestimmte Folie auswählen. Die jeweils aktive Folie zeigt ein blaues
 Projektorsymbol. Probieren Sie, verschiedene
 Tagesordnungspunkte auf dem Projektor anzuzeigen.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_2_07.png
    :class: screenshot
 
 
