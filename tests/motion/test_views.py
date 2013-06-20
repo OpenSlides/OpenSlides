@@ -13,7 +13,7 @@ from django.test.client import Client
 from openslides.config.api import config
 from openslides.utils.test import TestCase
 from openslides.participant.models import User, Group
-from openslides.motion.models import Motion, State
+from openslides.motion.models import Motion, State, Category
 
 
 class MotionViewTestCase(TestCase):
@@ -139,6 +139,16 @@ class TestMotionCreateView(MotionViewTestCase):
         response = self.admin_client.post(self.url, {'title': 'foo',
                                                      'submitter': self.admin.person_id})
         self.assertFormError(response, 'form', 'text', 'This field is required.')
+
+    def test_identifier_with_category_prefix(self):
+        category = Category.objects.create(name='category_oosozieh9eBa9aegujee', prefix='prefix_raiLie6keik6Eikeiphi')
+        response = self.admin_client.post(self.url, {'title': 'motion io2iez3Iwoh3aengi5hu',
+                                                     'text': 'motion text thoiveshoongoNg7ceek',
+                                                     'category': 1,
+                                                     'workflow': 1})
+        self.assertEqual(response.status_code, 302)
+        motion = Motion.objects.filter(category=category).get()
+        self.assertEqual(motion.identifier, 'prefix_raiLie6keik6Eikeiphi 1')
 
 
 class TestMotionUpdateView(MotionViewTestCase):
