@@ -16,7 +16,7 @@ beschrieben. Sie sehen jetzt die Login-Seite von OpenSlides in Ihrem
 Browser. Loggen Sie sich als Administrator ein, indem Sie als Benutzernamen
 ``admin`` und als Passwort ``admin`` eingeben und auf ``Anmelden`` klicken.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_1_01.png
    :class: screenshot
 
 Anschließend sollten Sie sofort das Administrator-Passwort ändern. Geben
@@ -24,7 +24,7 @@ Sie in die entsprechenden Felder Ihr altes Passwort ``admin`` und
 anschließend Ihr neues Passwort ein. Wiederholen Sie das neue Passwort im
 dritten Formularfeld. Bestätigen Sie die Eingabe mit ``Speichern``.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_1_02.png
    :class: screenshot
 
 .. __: FirstSteps.html#installation
@@ -62,7 +62,7 @@ Startseite – Willkommenstext:
   Herzlich willkommen, liebe Gartenfreunde!
 
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_1_03.png
    :class: screenshot
 
 Klicken Sie anschließend auf ``Speichern``. Auch bei allen folgenden
@@ -77,7 +77,7 @@ Um erste benutzerdefinierte Folien hinzuzufügen, wechseln Sie zum Menüpunkt
 „Dashboard“. Klicken Sie in dem Fenster „Benutzerdefinierte Folien“ auf
 ``Neu``
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_1_04.png
    :class: screenshot
 
 und geben Sie eine Folie wie folgt ein:
@@ -88,12 +88,12 @@ Titel:
 Text:
   Bitte kommen Sie pünktlich um 16.00 Uhr zurück in den Saal.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_1_05.png
    :class: screenshot
 
 Die Ansicht im Menüpunkt „Dashboard“ müsste nun wie folgt aussehen:
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_1_06.png
    :class: screenshot
 
 
@@ -102,7 +102,7 @@ Technische Einrichtung im Veranstaltungsraum
 
 Richten Sie Ihren Veranstaltungsraum ein. Im Präsentationsmodus Single
 schließen Sie den Projektor an Ihren Computer an und schieben ein zweites
-Browserfenster auf den erweiterten Bildschirm. Ansonsten richten Sie ein
+Browserfenster auf den erweiterten Bildschirm. In den anderen Modi richten Sie ein
 Netzwerk ein, schließen Sie einen beliebigen Computer an den Projektor an und
 öffnen im Vollbildmodus die Seite mit der Projektoransicht. Den
 entsprechend Link finden Sie bei OpenSlides im Menüpunkt „Dashboard“ bei
@@ -110,12 +110,12 @@ der Projektor-Live-Ansicht. Er lautet zum Beispiel
 ``http://192.168.x.y/projector/`` wobei x und y für je eine bestimmte Zahl
 mit ein bis drei Ziffern stehen.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_1_07.png
    :class: screenshot
 
 Das Projektorbild sieht zurzeit wie folgt aus:
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_1_08.png
    :class: screenshot
 
 
@@ -128,7 +128,7 @@ Sie können eine bestimmte Folie anwählen, indem Sie auf das jeweilige
 Projektorsymbol |projector| klicken. Die jeweils aktive Folie zeigt ein
 blaues Projektorsymbol.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_1_09.png
    :class: screenshot
 
 .. |projector| image:: ../_images/projector.png
@@ -145,12 +145,7 @@ angelegt werden soll, können Sie die Mitteilungsfunktion im Fenster
 aktivieren schließlich die Einblendung, indem Sie auf das davor gestellte
 Kästchen klicken.
 
-.. image:: ../_images/Platzhalter.png
-   :class: screenshot
-
-Das Projektorbild sieht dann wie folgt aus:
-
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_1_10.png
    :class: screenshot
 
 Schalten Sie die Einblendung wieder aus, indem Sie erneut auf das (nunmehr
