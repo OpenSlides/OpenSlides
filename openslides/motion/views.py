@@ -98,10 +98,6 @@ class MotionEditMixin(object):
         Saves the CreateForm or UpdateForm into a motion object.
         """
         self.object = form.save(commit=False)
-        self.manipulate_object(form)
-
-        for attr in ['title', 'text', 'reason']:
-            setattr(self.version, attr, form.cleaned_data[attr])
 
         try:
             self.object.category = form.cleaned_data['category']
@@ -112,6 +108,11 @@ class MotionEditMixin(object):
             self.object.identifier = form.cleaned_data['identifier']
         except KeyError:
             pass
+
+        self.manipulate_object(form)
+
+        for attr in ['title', 'text', 'reason']:
+            setattr(self.version, attr, form.cleaned_data[attr])
 
         self.object.save(use_version=self.version)
 
@@ -195,10 +196,13 @@ class MotionCreateView(MotionEditMixin, CreateView):
         return initial
 
     def manipulate_object(self, form):
-        self.version = self.object.get_new_version()
-
+        """
+        Sets first state according to given or default workflow and initiates
+        a new version.
+        """
         workflow = form.cleaned_data.get('workflow', config['motion_workflow'])
         self.object.reset_state(workflow)
+        self.version = self.object.get_new_version()
 
 motion_create = MotionCreateView.as_view()
 
@@ -234,6 +238,10 @@ class MotionUpdateView(MotionEditMixin, UpdateView):
         return initial
 
     def manipulate_object(self, form):
+        """
+        Resets state if the workflow should change and decides whether to use a
+        new version or the last version.
+        """
         workflow = form.cleaned_data.get('workflow', None)
         if (workflow is not None and
                 workflow != self.object.state.workflow):
