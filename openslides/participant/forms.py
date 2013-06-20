@@ -19,6 +19,7 @@ from django.conf import settings
 from openslides.utils.forms import CssClassMixin, LocalizedModelMultipleChoiceField
 from openslides.participant.models import User, Group, get_protected_perm
 from openslides.participant.api import get_registered_group
+from openslides.config.api import config
 
 
 class UserCreateForm(CssClassMixin, forms.ModelForm):
@@ -94,6 +95,8 @@ class GroupForm(forms.ModelForm, CssClassMixin):
             initial['users'] = [django_user.user.pk for django_user in kwargs['instance'].user_set.all()]
 
         super(GroupForm, self).__init__(*args, **kwargs)
+        if config['participant_sort_users_by_first_name']:
+            self.fields['users'].queryset = self.fields['users'].queryset.order_by('first_name')
 
     def save(self, commit=True):
         instance = forms.ModelForm.save(self, False)
