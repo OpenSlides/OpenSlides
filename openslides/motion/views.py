@@ -221,15 +221,31 @@ class MotionUpdateView(MotionEditMixin, UpdateView):
 
     def form_valid(self, form):
         """
-        Write a log message if the form is valid.
+        Writes a log message and removes supports in some cases if the form is valid.
         """
         response = super(MotionUpdateView, self).form_valid(form)
-        self.object.write_log([ugettext_noop('Motion updated')], self.request.user)
+        self.write_log()
         if (config['motion_remove_supporters'] and self.object.state.allow_support and
                 not self.request.user.has_perm('motion.can_manage_motion')):
             self.object.clear_supporters()
             self.object.write_log([ugettext_noop('All supporters removed')], self.request.user)
         return response
+
+    def write_log(self):
+        """
+        Writes a log message. Distinguishs whether a version was created or updated.
+        """
+        if self.version.id is None:
+            number = self.object.get_last_version().version_number
+            created = False
+        else:
+            number = self.version.version_number
+            created = self.used_new_version
+        self.object.write_log(
+            [ugettext_noop('Motion version '),
+             str(number),
+             ugettext_noop(' created') if created else ugettext_noop(' updated')],
+            self.request.user)
 
     def get_initial(self):
         initial = super(MotionUpdateView, self).get_initial()
@@ -251,8 +267,10 @@ class MotionUpdateView(MotionEditMixin, UpdateView):
         if (self.object.state.versioning and
                 not form.cleaned_data.get('disable_versioning', False)):
             self.version = self.object.get_new_version()
+            self.used_new_version = True
         else:
             self.version = self.object.get_last_version()
+            self.used_new_version = False
 
 motion_edit = MotionUpdateView.as_view()
 
@@ -337,8 +355,9 @@ class VersionPermitView(SingleObjectMixin, QuestionMixin, RedirectView):
         self.object.active_version = self.version
         self.object.save(update_fields=['active_version'])
         self.object.write_log(
-            message_list=[ugettext_noop('Version %d permitted')
-                          % self.version.version_number],
+            message_list=[ugettext_noop('Version '),
+                          str(self.version.version_number),
+                          ugettext_noop(' permitted')],
             person=self.request.user)
 
 version_permit = VersionPermitView.as_view()
@@ -435,10 +454,10 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
             user = self.request.user
             if self.support:
                 self.object.support(person=user)
-                self.object.write_log([ugettext_noop("Supporter: +%s") % user], user)
+                self.object.write_log([ugettext_noop('Motion supported')], user)
             else:
                 self.object.unsupport(person=user)
-                self.object.write_log([ugettext_noop("Supporter: -%s") % user], user)
+                self.object.write_log([ugettext_noop('Motion unsupported')], user)
 
     def get_success_message(self):
         """
