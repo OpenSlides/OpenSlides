@@ -23,7 +23,7 @@ from openslides.participant.models import User, Group
 
 def gen_password():
     """
-    generates a random passwort.
+    Generates a random passwort.
     """
     chars = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"
     size = 8
@@ -33,21 +33,28 @@ def gen_password():
 
 def gen_username(first_name, last_name):
     """
-    generates the username for new users.
+    Generates a username from a first- and lastname.
     """
-    testname = "%s%s" % (first_name.strip(), last_name.strip())
-    try:
-        User.objects.get(username=testname)
-    except User.DoesNotExist:
-        return testname
-    i = 0
+    first_name = first_name.strip()
+    last_name = last_name.strip()
+
+    if first_name and last_name:
+        base_name = " ".join((first_name, last_name))
+    else:
+        base_name = first_name or last_name
+        if not base_name:
+            raise ValueError('Either \'first_name\' or \'last_name\' can not be '
+                             'empty')
+
+    if not User.objects.filter(username=base_name).exists():
+        return base_name
+
+    counter = 0
     while True:
-        i += 1
-        testname = "%s%s%s" % (first_name, last_name, i)
-        try:
-            User.objects.get(username=testname)
-        except User.DoesNotExist:
-            return testname
+        counter += 1
+        test_name = "%s %d" % (base_name, counter)
+        if not User.objects.filter(username=test_name).exists():
+            return test_name
 
 
 def import_users(csv_file):
