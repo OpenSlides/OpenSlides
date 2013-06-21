@@ -9,7 +9,7 @@ Konfiguration der Tagesordnung
 ------------------------------
 
 Gehen Sie zunächst im Menüpunkt „Konfiguration“ links oben zum Unterpunkt
-„Tagesordnung“. Hier können Sie den genauen Beginn der Veranstaltung
+``Tagesordnung``. Hier können Sie den genauen Beginn der Veranstaltung
 einstellen.
 
 Beginn der Veranstaltung:
@@ -25,7 +25,7 @@ Eingabe der Tagesordnung
 Die Tagesordnung enthält bei Neuinstallation noch keine Einträge. Legen Sie
 zunächst einige Einträge an.
 
-Klicken Sie dazu im Menüpunkt „Tagesordnung“ oben rechts auf „Neu“
+Klicken Sie dazu im Menüpunkt „Tagesordnung“ oben rechts auf ``Neu``
 
 .. image:: ../_images/Tutorial_2_02.png
    :class: screenshot

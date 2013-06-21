@@ -10,7 +10,7 @@ Konfiguration des Wahlsystems
 
 Zunächst können Sie im Menüpunkt „Konfiguration“ einige Einstellungen
 vornehmen. Wechseln Sie zu diesem Menüpunkt und klicken Sie oben rechts auf
-„Wahlen“. Stellen Sie die Anzahl der Stimmzettel wie folgt ein:
+``Wahlen``. Stellen Sie die Anzahl der Stimmzettel wie folgt ein:
 
 Anzahl der Stimmzettel (Vorauswahl):
   Verwende die folgende benutzerdefinierte Anzahl
@@ -18,7 +18,7 @@ Anzahl der Stimmzettel (Vorauswahl):
 Benutzerdefinierte Anzahl von Stimmzetteln:
   40
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_5_01.png
    :class: screenshot
 
 *Bei Anträgen und Wahlen kann es unter Umständen vorkommen, dass
@@ -30,9 +30,9 @@ Eingabe der anstehenden Wahlen/Wahlämter
 ----------------------------------------
 
 Vor Veranstaltungsbeginn sind die anstehenden Wahlen vorzubereiten. Geben
-Sie dazu im Menüpunkt „Wahlen“ rechts oben unter „Neu“
+Sie dazu im Menüpunkt „Wahlen“ rechts oben unter ``Neu``
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_5_02.png
    :class: screenshot
 
 ein Wahlamt wie folgt ein:
@@ -46,7 +46,7 @@ Beschreibung:
 Anzahl der zur Wahl stehenden Posten:
   3
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_5_03.png
    :class: screenshot
 
 Geben Sie auf die gleiche Weise ein weiteres Wahlamt wie folgt ein:
@@ -60,12 +60,12 @@ Beschreibung:
 Anzahl der zur Wahl stehenden Posten:
   7
 
-.. image:: ../_images/Platzhalter.png
-   :class: screenshot
+Kommentar für den Stimmzettel:
+  Sie haben sieben Stimmen.
 
 Die Wahlübersicht (Menüpunkt „Wahlen“) müsste nun so aussehen:
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_5_04.png
    :class: screenshot
 
 
@@ -76,14 +76,14 @@ Wenn der Vorsitzende während der Veranstaltung die Wahlen zum neuen
 Vorstand aufruft, klicken Sie zunächst im Menüpunkt „Dashboard“ auf das
 entsprechende Projektorsymbol vor der ersten Wahl.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_5_05.png
    :class: screenshot
 
 Wechseln Sie dann zur Wahlansicht, indem Sie auf den Titel der Wahl klicken.
 
 Die Wahlansicht sieht dann wie folgt aus:
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_5_06.png
    :class: screenshot
 
 Es werden nun verschiedene Kandidaten vorgeschlagen, die Sie durch Auswahl
@@ -91,7 +91,7 @@ eines Teilnehmers und Klick auf den blauen Haken auf die Kandidatenliste
 setzen können. Sie können nur Kandidaten auswählen, die auch im System
 gespeichert sind.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_5_07.png
    :class: screenshot
 
 *Das kleine Symbol neben dem Auswahlformular ist ein direkter Link zur
@@ -100,24 +100,24 @@ kurzfristig eine Person nominiert wird, die noch nicht ins System
 eingetragen wurde.*
 
 Steht die Kandidatenauswahl fest, ändern Sie rechts den Status der Wahl auf
-„Im Wahlvorgang“. Klicken Sie anschließend unten auf ``Neuer Wahlgang``, um
-einen ersten Wahlgang anzulegen.
+„Im Wahlvorgang“. 
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_5_08.png
    :class: screenshot
 
-Da es eine geheime Wahl ist und die Stimmzettel erst ausgeteilt werden
-müssen, können Sie jetzt noch keine Wahlergebnisse eintragen. Klicken Sie
-stattdessen auf ``Stimmzettel als PDF``.
+Klicken Sie anschließend unten auf ``Neuer Wahlgang``, um einen ersten
+Wahlgang anzulegen. Da es eine geheime Wahl ist und die Stimmzettel erst
+ausgeteilt werden müssen, können Sie jetzt noch keine Wahlergebnisse
+eintragen. Klicken Sie stattdessen auf ``Stimmzettel als PDF``.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_5_09.png
    :class: screenshot
 
 OpenSlides liefert Ihnen daraufhin eine PDF-Datei, die Sie direkt
 ausdrucken können. Die Stimmzettel können anschließend auseinander
 geschnitten und verteilt werden.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_5_10.png
    :class: screenshot
 
 *Bei mehrfachen Wahlen bietet sich der Einsatz einer Hebelschere an.*
@@ -125,26 +125,26 @@ geschnitten und verteilt werden.
 Nach Auszählung der Stimmzettel tragen Sie die Ergebnisse des ersten
 Wahlgangs in eben dieses Formular ein:
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_5_11.png
    :class: screenshot
 
 Klicken Sie anschließend auf den roten Knopf bei dem ersten Wahlgang, um
 die Wahlergebnisse auf dem Projektor zu veröffentlichen. Der Knopf erhält
 einen weißen Haken.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_5_12.png
    :class: screenshot
 
-Klicken Sie nun auf die grauen Haken vor Peter Müller, Luise Schmidt und
-Hans Schulze, um diese als gewählt zu markieren.
+Klicken Sie nun auf die grauen Haken vor Prof. Dr. Franziska Meyer, Luise Schmidt und
+Dr. Hans Schulze, um diese als gewählt zu markieren.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_5_13.png
    :class: screenshot
 
 Ändern Sie rechts den Status der Wahl auf „Abgeschlossen“. Das Projektorbild
 sieht nun wie folgt aus:
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_5_14.png
    :class: screenshot
 
 Auf die gleiche Weise können Sie nun auch die zweite Wahl durchführen. Sie
@@ -152,16 +152,16 @@ werden feststellen, dass als Wahlmethode automatisch eine
 Ja-Nein-Enthaltungs-Wahl bezüglich eines jeden Kandidaten ausgewählt wird,
 wenn es weniger oder gleich viele Kandidaten wie Plätze gibt.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_5_15.png
    :class: screenshot
 
-*Wenn Sie nicht im Präsentationsmodus Single arbeiten, kann es sinnvoll
+*Falls Sie nicht im Präsentationsmodus Single arbeiten, kann es sinnvoll
 sein, den Drucker und die Hebelschere an der Seite oder am hinteren Ende
 des Raums aufzustellen, damit die Sitzungsleitung ungestört fortfahren
 kann, während Wahlzettel vorbereitet werden. Nötig ist dazu nur, dass der
 Drucker an einen anderen Computer angeschlossen ist, der über das Netzwerk
 auf den Server und damit auf OpenSlides zugreift. Im Präsentationsmodus
-Single muss der Drucker stets auch an den Rechner angeschlossen sein, mit
+Single sollte der Drucker stets auch an den Rechner angeschlossen sein, mit
 dem Sie arbeiten.*
 
 
