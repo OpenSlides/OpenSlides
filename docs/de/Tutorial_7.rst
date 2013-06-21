@@ -3,10 +3,10 @@ Nach einer Veranstaltung
 
 Am Ende der Versammlung können Sie sich für das Protokoll einige Anhänge
 direkt aus OpenSlides holen. Klicken Sie jeweils im Menüpunkt
-„Tagesordnung“, „Anträge“, „Wahlen“ und „Teilnehmer“ auf die Links „PDF“,
+„Tagesordnung“, „Anträge“, „Wahlen“ und „Teilnehmer“ auf die Links ``PDF``,
 die sich jeweils rechts oben befinden.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_7_01.png
    :class: screenshot
 
 Alle weiteren Funktionen von OpenSlides finden Sie in der im Aufbau

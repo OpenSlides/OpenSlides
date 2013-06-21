@@ -19,7 +19,7 @@ die entsprechenden Berechtigungen zugewiesen werden.
 .. __: Participant.html
 
 Wechseln Sie zum Menüpunkt „Teilnehmer/innen“. Klicken Sie oben rechts auf
-„Neu“
+``Neu``
 
 .. image:: ../_images/Tutorial_3_01.png
    :class: screenshot
@@ -72,7 +72,7 @@ Passworts eines Teilnehmers
 
 Beim Anlegen eines Teilnehmers wird automatisch ein zufälliges
 Erst-Passwort gesetzt. Sie können das Erst-Passwort aus einer PDF-Datei
-ablesen, die Sie durch Klick auf den Link „Erst-Passwörter als PDF“ im
+ablesen, die Sie durch Klick auf ``PDF``, Unterpunkt ``Erst-Passwörter``, im
 rechten oberen Menü erreichen.
 
 Bitten Sie jeden, dem Sie sein Erst-Passwort aushändigen, dieses nach dem
