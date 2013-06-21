@@ -33,13 +33,13 @@ js_info_dict = {'packages': [],}
 for plugin in settings.INSTALLED_PLUGINS:
     try:
         mod = import_module(plugin + '.urls')
-    except ImportError, err:
+    except ImportError:
         continue
 
     plugin_name = mod.__name__.split('.')[0]
     urlpatterns += patterns('', (r'^%s/' % plugin_name, include('%s.urls'
-        % plugin_name)))
-    js_info_dict['packages'].append(plugin_name)
+                                                                % plugin)))
+    js_info_dict['packages'].append(plugin)
 
 urlpatterns += patterns('',
     (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
