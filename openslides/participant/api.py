@@ -15,6 +15,7 @@ import csv
 
 from django.db import transaction
 from django.utils.translation import ugettext as _
+from django.utils.text import slugify
 
 from openslides.utils import csv_ext
 
@@ -31,11 +32,23 @@ def gen_password():
     return ''.join([choice(chars) for i in range(size)])
 
 
+def prepare_name(name):
+    """
+    Prepares a username for django 1.5.
+
+    Removes spaces and changes umlauts.
+    """
+    # This limitation is only for the auth app in django => 1.5. If we use our own
+    # UserModel in later releases of OpenSlides, we can allow complexer names.
+    name = "".join(name.split(' '))
+    return slugify(name)
+
+
 def gen_username(first_name, last_name):
     """
     generates the username for new users.
     """
-    testname = "%s%s" % (first_name.strip(), last_name.strip())
+    testname = prepare_name("%s%s" % (first_name.strip(), last_name.strip()))
     try:
         User.objects.get(username=testname)
     except User.DoesNotExist:
@@ -43,7 +56,7 @@ def gen_username(first_name, last_name):
     i = 0
     while True:
         i += 1
-        testname = "%s%s%s" % (first_name, last_name, i)
+        testname = prepare_name("%s%s%s" % (first_name, last_name, i))
         try:
             User.objects.get(username=testname)
         except User.DoesNotExist:
