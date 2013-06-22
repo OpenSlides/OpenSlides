@@ -8,14 +8,14 @@ OpenSlides hochladen und in den Projektor einbinden.
 Hochladen von eigenen Dateien
 -----------------------------
 
-Wechseln Sie zum Menüpunkt „Dateien“ und klicken Sie oben rechts auf „Neu“.
+Wechseln Sie zum Menüpunkt „Dateien“ und klicken Sie oben rechts auf ``Neu``.
 
 Laden Sie eine Datei hoch, indem Sie mit „Durchsuchen“ die Datei aus dem
 Dateisystem ihres Computers auswählen. Wir unterstellen, dass der Dateiname
 ``bild.jpg`` lautet. Außerdem können Sie noch einen ergänzenden Titel
 angeben.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_6_01.png
    :class: screenshot
 
 Die Datei ist nun auf den Server geladen und unter ihrem Namen auf der
@@ -31,10 +31,7 @@ Bilddatei auf dem Projektor anzeigen
 Wenn Sie nun das Bild auf der Projektorleinwand sehen wollen, müssen Sie es
 zunächst in eine Folie einbinden. Dazu bieten sich zum Beispiel die
 benutzerdefinierten Folien auf dem Dashboard an. Wechseln Sie zum Menüpunkt
-„Dashboard“ und klicken Sie im Fenster „Benutzerdefinierte Folien“ auf „Neu“.
-
-.. image:: ../_images/Platzhalter.png
-   :class: screenshot
+„Dashboard“ und klicken Sie im Fenster „Benutzerdefinierte Folien“ auf ``Neu``.
 
 Geben Sie Titel und Text wie folgt ein:
 
@@ -45,16 +42,19 @@ Text:
   <img src="/media/file/bild.jpg" />
 
 Beachten Sie die richtige Schreibweise des Links im verwendeten HTML-Tag.
+Der Link entspricht dem zuvor kopierten.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_6_02.png
    :class: screenshot
 
 Wenn Sie nun die benutzerdefinierte Folie mit Hilfe des Projektorsymbols
 |projector| auswählen, wird das Bild auf dem Projektor angezeigt. Weitere
 Feineinstellungen können Sie im HTML-Tag mit Style-Attributen vornehmen.
-Das Anzeigen von PDF-Dateien wird derzeit noch nicht unterstützt.
+Falls beispielsweise das Bild nicht die passende Größe hat, können Sie
+``style="width:80%;"`` verwenden. Das Anzeigen von PDF-Dateien wird derzeit
+noch nicht unterstützt.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_6_03.png
    :class: screenshot
 
 .. |projector| image:: ../_images/projector.png

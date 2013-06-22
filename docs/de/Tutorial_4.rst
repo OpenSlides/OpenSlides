@@ -11,7 +11,7 @@ Konfiguration des Antragssystems
 
 Zunächst können Sie im Menüpunkt „Konfiguration“ einige Einstellungen
 vornehmen. Wechseln Sie zu diesem Menüpunkt und klicken Sie oben rechts auf
-„Antrag“. Stellen Sie die Antragseinleitung und die Anzahl der Stimmzettel
+``Antrag``. Stellen Sie die Antragseinleitung und die Anzahl der Stimmzettel
 wie folgt ein:
 
 Antragseinleitung:
@@ -25,7 +25,7 @@ Benutzerdefinierte Anzahl von Stimmzetteln:
 
 Die übrigen Einstellungen können Sie erst einmal so belassen.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_4_01.png
    :class: screenshot
 
 *Bei Anträgen und Wahlen kann es unter Umständen vorkommen, dass
@@ -36,12 +36,12 @@ eigene Einstellungen vorzunehmen sind.*
 Eingabe eines bereits vorliegenden Antrags
 ------------------------------------------
 
-Vor Beginn der Veranstaltung liegen bereits zwei Anträge an die Versammlung
+Vor Beginn der Veranstaltung liegen bereits Anträge an die Versammlung
 vor, welche ins System gebracht werden sollen.
 
-Wechseln Sie zum Menüpunkt „Anträge“ und klicken Sie rechts oben auf „Neu“.
+Wechseln Sie zum Menüpunkt „Anträge“ und klicken Sie rechts oben auf ``Neu``.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_4_02.png
    :class: screenshot
 
 Geben Sie einen Antrag, mit dem die Vereinssatzung geändert und die Zahl
@@ -59,14 +59,14 @@ Begründung:
   Mitglieder.
 
 Antragsteller:
-  Hans Schulze
+  Dr. Hans Schulze
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_4_03.png
    :class: screenshot
 
 Die Antragsseite sieht nun wie folgt aus:
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_4_04.png
    :class: screenshot
 
 Auf die gleiche Weise können Sie vor und während der Veranstaltung alle
@@ -83,32 +83,32 @@ Wenn der Vorsitzende während der Veranstaltung den Antrag zur
 Satzungsänderung aufruft, klicken Sie zunächst im Menüpunkt „Dashboard“ auf
 das entsprechende Projektorsymbol |projector| vor dem Antrag.
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_4_05.png
    :class: screenshot
 
 .. |projector| image:: ../_images/projector.png
 
+Die Projektoransicht sieht dann wie folgt aus:
+
+.. image:: ../_images/Tutorial_4_06.png
+   :class: screenshot
+
 Um schnell zur Antragsverwaltung zu wechseln, können Sie auf den Titel des
 Antrags klicken.
 
-Die Antragsansicht sieht dann wie folgt aus:
-
-.. image:: ../_images/Platzhalter.png
-   :class: screenshot
-
 Nach Abschluss der Diskussion ruft der Vorsitzende zur Abstimmung auf. Klicken
-Sie rechts auf „Neue Abstimmung“ und tragen Sie das Abstimmungsergebnis wie
+Sie im rechten Kasten auf ``Neue Abstimmung`` und tragen Sie das Abstimmungsergebnis wie
 folgt in das Formular ein:
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_4_07.png
    :class: screenshot
 
 Der Vorsitzende stellt fest, dass der Antrag angenommen ist. Klicken Sie
-deshalb auf der rechten Seite auf „Angenommen“.
+deshalb auf der im rechten unteren Kasten unter „Antrag verwalten“ auf ``Annehmen``.
 
 Das Projektorbild sieht nun wie folgt aus:
 
-.. image:: ../_images/Platzhalter.png
+.. image:: ../_images/Tutorial_4_08.png
    :class: screenshot
 
 
