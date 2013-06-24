@@ -331,7 +331,7 @@ class TestMotionUpdateView(MotionViewTestCase):
         response = self.admin_client.post(self.url, {'title': 'new motion_title',
                                                      'text': 'motion text',
                                                      'workflow': 2})
-        self.assertEqual(MotionLog.objects.get(pk=1).message_list, ['Motion version ', '1', ' updated'])
+        self.assertEqual(MotionLog.objects.get(pk=1).message_list, ['Motion version', ' 1 ', 'updated'])
 
         # Update motion by creating a new version
         self.motion1.set_state(6)  # Set to state 'permitted' which has versioning=True
@@ -340,7 +340,7 @@ class TestMotionUpdateView(MotionViewTestCase):
         response = self.admin_client.post(self.url, {'title': 'new motion_title',
                                                      'text': 'new motion text',
                                                      'workflow': 2})
-        self.assertEqual(MotionLog.objects.get(pk=2).message_list, ['Motion version ', '2', ' created'])
+        self.assertEqual(MotionLog.objects.get(pk=2).message_list, ['Motion version', ' 2 ', 'created'])
 
         # Update motion with so called 'trivial changes'
         config['motion_allow_disable_versioning'] = True
@@ -348,20 +348,20 @@ class TestMotionUpdateView(MotionViewTestCase):
                                                      'text': 'more new motion text',
                                                      'disable_versioning': 'on',
                                                      'workflow': 2})
-        self.assertEqual(MotionLog.objects.get(pk=3).message_list, ['Motion version ', '2', ' updated'])
+        self.assertEqual(MotionLog.objects.get(pk=3).message_list, ['Motion version', ' 2 ', 'updated'])
 
         # Update motion without changes in the version data
         response = self.admin_client.post(self.url, {'title': 'new motion_title',
                                                      'text': 'more new motion text',
                                                      'workflow': 2})
-        self.assertEqual(MotionLog.objects.get(pk=4).message_list, ['Motion version ', '2', ' updated'])
+        self.assertEqual(MotionLog.objects.get(pk=4).message_list, ['Motion version', ' 2 ', 'updated'])
 
         # Update motion without changes in the version data but also with the 'trivial changes' flag
         response = self.admin_client.post(self.url, {'title': 'new motion_title',
                                                      'text': 'more new motion text',
                                                      'disable_versioning': 'on',
                                                      'workflow': 2})
-        self.assertEqual(MotionLog.objects.get(pk=5).message_list, ['Motion version ', '2', ' updated'])
+        self.assertEqual(MotionLog.objects.get(pk=5).message_list, ['Motion version', ' 2 ', 'updated'])
 
 
 class TestMotionDeleteView(MotionViewTestCase):

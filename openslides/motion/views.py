@@ -242,9 +242,9 @@ class MotionUpdateView(MotionEditMixin, UpdateView):
             number = self.version.version_number
             created = self.used_new_version
         self.object.write_log(
-            [ugettext_noop('Motion version '),
-             str(number),
-             ugettext_noop(' created') if created else ugettext_noop(' updated')],
+            [ugettext_noop('Motion version'),
+             ' %d ' % number,
+             ugettext_noop('created') if created else ugettext_noop('updated')],
             self.request.user)
 
     def get_initial(self):
@@ -355,9 +355,9 @@ class VersionPermitView(SingleObjectMixin, QuestionMixin, RedirectView):
         self.object.active_version = self.version
         self.object.save(update_fields=['active_version'])
         self.object.write_log(
-            message_list=[ugettext_noop('Version '),
-                          str(self.version.version_number),
-                          ugettext_noop(' permitted')],
+            message_list=[ugettext_noop('Version'),
+                          ' %d ' % self.version.version_number,
+                          ugettext_noop('permitted')],
             person=self.request.user)
 
 version_permit = VersionPermitView.as_view()
@@ -655,7 +655,7 @@ class MotionSetStateView(SingleObjectMixin, RedirectView):
         else:
             self.object.save(update_fields=['state', 'identifier'])
             self.object.write_log(
-                message_list=[ugettext_noop('State changed to '), self.object.state.name],
+                message_list=[ugettext_noop('State changed to'), ' %s' % self.object.state.name],
                 person=self.request.user)
             messages.success(request,
                              _('The state of the motion was set to %s.')
