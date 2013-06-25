@@ -25,7 +25,8 @@ ungettext = lambda msg1, msg2, n: _translations.ungettext(msg1, msg2, n)
 
 
 def get_data_path(*args):
-    return os.path.join(os.path.dirname(__file__), "data", *args)
+    path = openslides.main.fs2unicode(__file__)
+    return os.path.join(os.path.dirname(path), "data", *args)
 
 
 class RunCmdEvent(wx.PyCommandEvent):
@@ -82,6 +83,15 @@ class RunCommandControl(wx.Panel):
 
         cmd = [sys.executable, "-u", "-m", "openslides.main"]
         cmd.extend(args)
+
+        # XXX: subprocess on windows only handles byte strings
+        #      with python3 this will hopefully no longer be the case
+        fs_encoding = sys.getfilesystemencoding() or sys.getdefaultencoding()
+        cmd = [
+            x.encode(fs_encoding) if isinstance(x, unicode) else x
+            for x in cmd
+        ]
+
         creationflags = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)
         self.child_process = subprocess.Popen(
             cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
@@ -682,7 +692,8 @@ def main():
     lang = locale.getdefaultlocale()[0]
     if lang:
         global _translations
-        localedir = os.path.dirname(openslides.__file__)
+        localedir = openslides.main.fs2unicode(openslides.__file__)
+        localedir = os.path.dirname(localedir)
         localedir = os.path.join(localedir, "locale")
         _translations = gettext.translation(
             "django", localedir, [lang], fallback=True)
