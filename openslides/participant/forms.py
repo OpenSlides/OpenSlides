@@ -52,14 +52,23 @@ class UserUpdateForm(UserCreateForm):
     user edits himself and removes the last group containing the permission
     to manage participants.
     """
+    user_name = forms.CharField()
+    """
+    Field to save the username.
+
+    The field username (without the underscore) from the UserModel does not
+    allow whitespaces and umlauts.
+    """
+
     class Meta:
         model = User
-        fields = ('username', 'title', 'first_name', 'last_name', 'gender', 'email',
+        fields = ('user_name', 'title', 'first_name', 'last_name', 'gender', 'email',
                   'groups', 'structure_level', 'committee', 'about_me', 'comment',
                   'is_active', 'default_password')
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request')
+        kwargs['initial']['user_name'] = kwargs['instance'].username
         return super(UserUpdateForm, self).__init__(*args, **kwargs)
 
     def clean(self, *args, **kwargs):
@@ -145,15 +154,27 @@ class GroupForm(forms.ModelForm, CssClassMixin):
         return super(GroupForm, self).clean(*args, **kwargs)
 
 
-class UsersettingsForm(forms.ModelForm, CssClassMixin):
+class UsersettingsForm(CssClassMixin, forms.ModelForm):
+    user_name = forms.CharField()
+    """
+    Field to save the username.
+
+    The field username (without the underscore) from the UserModel does not
+    allow whitespaces and umlauts.
+    """
+
     language = forms.ChoiceField(choices=settings.LANGUAGES)
+
+    def __init__(self, *args, **kwargs):
+        kwargs['initial']['user_name'] = kwargs['instance'].username
+        return super(UsersettingsForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = User
-        fields = ('username', 'title', 'first_name', 'last_name', 'gender', 'email',
+        fields = ('user_name', 'title', 'first_name', 'last_name', 'gender', 'email',
                   'committee', 'about_me')
 
 
-class UserImportForm(forms.Form, CssClassMixin):
+class UserImportForm(CssClassMixin, forms.Form):
     csvfile = forms.FileField(widget=forms.FileInput(attrs={'size': '50'}),
                               label=ugettext_lazy('CSV File'))

@@ -132,6 +132,9 @@ class UserUpdateView(UpdateView):
         form_kwargs.update({'request': self.request})
         return form_kwargs
 
+    def manipulate_object(self, form):
+        self.object.username = form.cleaned_data['user_name']
+
     def post_save(self, form):
         super(UserUpdateView, self).post_save(form)
         # TODO: find a better solution that makes the following lines obsolete
@@ -485,7 +488,9 @@ def user_settings(request):
     if request.method == 'POST':
         form_user = UsersettingsForm(request.POST, instance=request.user)
         if form_user.is_valid():
-            form_user.save()
+            user = form_user.save(commit=False)
+            user.username = form_user.cleaned_data['user_name']
+            user.save()
             language = request.LANGUAGE_CODE = \
                 request.session['django_language'] = form_user.cleaned_data['language']
             activate(language)
