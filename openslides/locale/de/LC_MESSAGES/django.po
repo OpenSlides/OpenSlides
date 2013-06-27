@@ -3,7 +3,6 @@
 # Copyright (C) 2011–2013 by OpenSlides team, see AUTHORS.
 # This file is distributed under the same license as the OpenSlides package.
 # Translators:
-# emanuelschuetze <emanuelschuetze@gmail.com>, 2013
 # emanuel <emanuel@intevation.de>, 2013
 # ostcar <mail@oshahn.de>, 2012
 # normanjaeckel <transifex16062013@normanjaeckel.de>, 2013
@@ -12,9 +11,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-16 18:08+0200\n"
-"PO-Revision-Date: 2013-06-16 16:17+0000\n"
-"Last-Translator: normanjaeckel <transifex16062013@normanjaeckel.de>\n"
+"POT-Creation-Date: 2013-06-25 00:58+0200\n"
+"PO-Revision-Date: 2013-06-26 18:52+0000\n"
+"Last-Translator: emanuel <emanuel@intevation.de>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/openslides/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -92,12 +91,12 @@ msgstr "Organisatorischer Eintrag"
 
 #: agenda/models.py:45 core/signals.py:76 mediafile/models.py:32
 #: mediafile/templates/mediafile/mediafile_list.html:18 motion/forms.py:33
-#: motion/models.py:553 participant/models.py:40 participant/views.py:207
+#: motion/models.py:554 participant/models.py:40 participant/views.py:207
 #: participant/templates/participant/overview.html:48 projector/models.py:27
 msgid "Title"
 msgstr "Titel"
 
-#: agenda/models.py:50 motion/forms.py:38 motion/models.py:556
+#: agenda/models.py:50 motion/forms.py:38 motion/models.py:557
 #: projector/models.py:28
 msgid "Text"
 msgstr "Text"
@@ -413,7 +412,7 @@ msgstr "Möchten Sie die geänderte Reihenfolge der Einträge speichern?"
 #: assignment/views.py:580 assignment/templates/assignment/view.html:208
 #: assignment/templates/assignment/view.html:212
 #: assignment/templates/projector/Assignment.html:77
-#: assignment/templates/projector/Assignment.html:81 motion/models.py:715
+#: assignment/templates/projector/Assignment.html:81 motion/models.py:717
 #: motion/pdf.py:135 motion/pdf.py:257
 #: motion/templates/motion/motion_detail.html:207
 #: motion/templates/projector/Motion.html:26 utils/utils.py:46
@@ -424,7 +423,7 @@ msgstr "Ja"
 #: agenda/templates/agenda/overview.html:34
 #: agenda/templates/agenda/view.html:87 assignment/models.py:288
 #: assignment/views.py:581 assignment/templates/assignment/view.html:209
-#: assignment/templates/projector/Assignment.html:78 motion/models.py:715
+#: assignment/templates/projector/Assignment.html:78 motion/models.py:717
 #: motion/pdf.py:135 motion/pdf.py:258
 #: motion/templates/motion/motion_detail.html:208
 #: motion/templates/projector/Motion.html:27 utils/utils.py:46
@@ -699,7 +698,7 @@ msgstr "Darf selbst für Wahlen kandidieren"
 msgid "Can manage assignment"
 msgstr "Darf Wahlen verwalten"
 
-#: assignment/models.py:288 motion/models.py:715
+#: assignment/models.py:288 motion/models.py:717
 msgid "Abstain"
 msgstr "Enthaltung"
 
@@ -1193,7 +1192,7 @@ msgid "General"
 msgstr "Allgemein"
 
 #: core/templates/core/version.html:5 core/templates/core/version.html.py:8
-#: core/templates/core/version.html:11 motion/pdf.py:105
+#: core/templates/core/version.html:11 motion/pdf.py:105 motion/views.py:358
 #: motion/templates/motion/motion_detail.html:26
 #: motion/templates/motion/motion_diff.html:35
 #: motion/templates/motion/motion_diff.html:39
@@ -1291,7 +1290,7 @@ msgstr "Antragsteller unbekannt. Voreingestellter Antragsteller wird verwendet."
 msgid "Motion imported"
 msgstr "Antrag importiert"
 
-#: motion/forms.py:44 motion/models.py:559 motion/pdf.py:158
+#: motion/forms.py:44 motion/models.py:560 motion/pdf.py:158
 #: motion/templates/motion/motion_detail.html:93
 #: motion/templates/motion/motion_diff.html:54
 #: motion/templates/projector/Motion.html:72
@@ -1338,7 +1337,7 @@ msgid ""
 "motion will be reset."
 msgstr "Setzt den Antrag auf einen bestimmten Arbeitsablauf. In diesem Fall wird der Status des Antrags zurückgesetzt."
 
-#: motion/forms.py:162 participant/forms.py:156
+#: motion/forms.py:162 participant/forms.py:159
 msgid "CSV File"
 msgstr "CSV-Datei"
 
@@ -1386,8 +1385,8 @@ msgstr "Darf Anträge unterstützen"
 msgid "Can manage motions"
 msgstr "Darf Anträge verwalten"
 
-#: motion/models.py:486 motion/models.py:487 motion/signals.py:117
-#: motion/views.py:266 motion/views.py:585 motion/views.py:701
+#: motion/models.py:487 motion/models.py:488 motion/signals.py:117
+#: motion/views.py:292 motion/views.py:612 motion/views.py:728
 #: motion/templates/motion/motion_detail.html:8
 #: motion/templates/motion/motion_detail.html:21
 #: motion/templates/motion/motion_diff.html:6
@@ -1400,24 +1399,24 @@ msgstr "Darf Anträge verwalten"
 msgid "Motion"
 msgstr "Antrag"
 
-#: motion/models.py:573
+#: motion/models.py:574
 msgid "new"
 msgstr "Neu"
 
-#: motion/models.py:624 motion/templates/motion/category_list.html:22
+#: motion/models.py:625 motion/templates/motion/category_list.html:22
 msgid "Category name"
 msgstr "Sachgebiet"
 
-#: motion/models.py:627 motion/templates/motion/category_list.html:21
+#: motion/models.py:628 motion/templates/motion/category_list.html:21
 msgid "Prefix"
 msgstr "Präfix"
 
-#: motion/models.py:679
+#: motion/models.py:680
 #, python-format
-msgid " by %s"
-msgstr "durch %s"
+msgid "%(time_and_messages)s by %(person)s"
+msgstr "%(time_and_messages)s durch %(person)s"
 
-#: motion/models.py:729
+#: motion/models.py:731
 #, python-format
 msgid "Vote %d"
 msgstr "Abstimmung %d"
@@ -1479,8 +1478,8 @@ msgstr "Die Versammlung möge beschließen,"
 msgid "Motion preamble"
 msgstr "Antragseinleitung"
 
-#: motion/signals.py:79 motion/views.py:694 motion/views.py:796
-#: motion/views.py:812 motion/templates/motion/category_list.html:6
+#: motion/signals.py:79 motion/views.py:721 motion/views.py:823
+#: motion/views.py:839 motion/templates/motion/category_list.html:6
 #: motion/templates/motion/motion_list.html:7
 #: motion/templates/motion/motion_list.html:20
 msgid "Motions"
@@ -1492,7 +1491,7 @@ msgstr "Titel für PDF-Dokument (alle Anträge)"
 
 #: motion/signals.py:90
 msgid "Preamble text for PDF document (all motions)"
-msgstr "Einleitungstext für PDF-Dokument (alle Wahlen) "
+msgstr "Einleitungstext für PDF-Dokument (alle Anträge) "
 
 #: motion/signals.py:95
 msgid "Allow to disable versioning"
@@ -1554,7 +1553,7 @@ msgstr "Komplexer Arbeitsablauf"
 msgid "published"
 msgstr "veröffentlicht"
 
-#: motion/signals.py:166
+#: motion/signals.py:166 motion/views.py:360
 msgid "permitted"
 msgstr "zugelassen"
 
@@ -1610,113 +1609,114 @@ msgstr "Verworfen (nicht zulässig)"
 msgid "Reject (not authorized)"
 msgstr "Verwerfen (nicht zulässig)"
 
-#: motion/views.py:185
+#: motion/views.py:186
 msgid "Motion created"
 msgstr "Antrag erstellt"
 
-#: motion/views.py:223
-msgid "Motion updated"
-msgstr "Antrag aktualisiert"
-
-#: motion/views.py:227
+#: motion/views.py:231
 msgid "All supporters removed"
 msgstr "Alle Unterstützer entfernt"
 
-#: motion/views.py:266 utils/views.py:380
+#: motion/views.py:245
+msgid "Motion version"
+msgstr "Version"
+
+#: motion/views.py:247
+msgid "created"
+msgstr "erstellt"
+
+#: motion/views.py:247
+msgid "updated"
+msgstr "aktualisiert"
+
+#: motion/views.py:292 utils/views.py:380
 #, python-format
 msgid "%s was successfully deleted."
 msgstr "%s wurde erfolgreich gelöscht."
 
-#: motion/views.py:298
+#: motion/views.py:324
 msgid "Version successfully permitted."
 msgstr "Version erfolgreich zugelassen."
 
-#: motion/views.py:323
+#: motion/views.py:349
 #, python-format
 msgid "Are you sure you want permit version %s?"
 msgstr "Soll Version %s wirklich zugelassen werden?"
 
-#: motion/views.py:332
-#, python-format
-msgid "Version %d permitted"
-msgstr "Version %d zugelassen"
-
-#: motion/views.py:359
+#: motion/views.py:386
 msgid "At least one version number is not valid."
 msgstr "Mindestens eine Versionsnummer ist ungültig"
 
-#: motion/views.py:402
+#: motion/views.py:429
 msgid "You can not support this motion."
 msgstr "Sie dürfen diesen Antrag nicht unterstützen."
 
-#: motion/views.py:405
+#: motion/views.py:432
 msgid "You can not unsupport this motion."
 msgstr "Sie dürfen Ihre Unterstützung für diesen Antrag nicht entziehen."
 
-#: motion/views.py:415
+#: motion/views.py:442
 msgid "Do you really want to support this motion?"
 msgstr "Wollen Sie wirklich diesen Antrag unterstützen?"
 
-#: motion/views.py:417
+#: motion/views.py:444
 msgid "Do you really want to unsupport this motion?"
 msgstr "Wollen Sie wirklich Ihre Unterstützung für diesen Antrag entziehen?"
 
-#: motion/views.py:430
-#, python-format
-msgid "Supporter: +%s"
-msgstr "Unterstützer/in: +%s"
+#: motion/views.py:457
+msgid "Motion supported"
+msgstr "Antrag unterstützt"
 
-#: motion/views.py:433
-#, python-format
-msgid "Supporter: -%s"
-msgstr "Unterstützer/in: -%s"
+#: motion/views.py:460
+msgid "Motion unsupported"
+msgstr "Unterstützung zurückgezogen"
 
-#: motion/views.py:440
+#: motion/views.py:467
 msgid "You have supported this motion successfully."
 msgstr "Sie haben den Antrag erfolgreich unterstützt."
 
-#: motion/views.py:442
+#: motion/views.py:469
 msgid "You have unsupported this motion successfully."
 msgstr "Sie haben dem Antrag erfolgreich Ihre Unterstützung entzogen."
 
-#: motion/views.py:473
+#: motion/views.py:500
 msgid "Poll created"
 msgstr "Abstimmung erstellt"
 
-#: motion/views.py:474
+#: motion/views.py:501
 msgid "New vote was successfully created."
 msgstr "Neue Abstimmung erfolgreich angelegt."
 
-#: motion/views.py:540
+#: motion/views.py:567
 msgid "Poll updated"
 msgstr "Abstimmung wurde aktualisiert"
 
-#: motion/views.py:558
+#: motion/views.py:585
 msgid "Poll deleted"
 msgstr "Abstimmung gelöscht"
 
-#: motion/views.py:585
+#: motion/views.py:612
 msgid "Poll"
 msgstr "Abstimmung"
 
-#: motion/views.py:631
-msgid "State changed to "
-msgstr "Status geändert zu "
+#: motion/views.py:658
+msgid "State changed to"
+msgstr "Status geändert zu"
 
-#: motion/views.py:634
+#: motion/views.py:661
 #, python-format
 msgid "The state of the motion was set to %s."
 msgstr "Der Status des Antrags wurde auf %s gesetzt."
 
-#: motion/views.py:662
+#: motion/views.py:689
 msgid "Agenda item created"
 msgstr "Tagesordnungseintrag angelegt"
 
-#: motion/views.py:782
+#: motion/views.py:809
 msgid "Summary"
 msgstr "Zusammenfassung"
 
-#: motion/views.py:783
+#: motion/views.py:810
 #, python-format
 msgid "%(counts)d of %(total)d motions successfully imported."
 msgstr "%(counts)d von %(total)d Anträgen erfolgreich importiert."
@@ -1995,7 +1995,7 @@ msgstr "Gruppen-ID %(id)s existiert nicht (Zeile %(line)d)."
 msgid "Import aborted because of severe errors in the input file."
 msgstr "Import auf Grund von schweren Fehlern in der Quelldatei abgebrochen."
 
-#: participant/forms.py:28 participant/views.py:573
+#: participant/forms.py:29 participant/views.py:573
 #: participant/templates/participant/group_overview.html:7
 #: participant/templates/participant/group_overview.html:20
 #: participant/templates/participant/overview.html:24
@@ -2003,37 +2003,37 @@ msgstr "Import auf Grund von schweren Fehlern in der Quelldatei abgebrochen."
 msgid "Groups"
 msgstr "Gruppen"
 
-#: participant/forms.py:29
+#: participant/forms.py:30
 msgid "Hold down \"Control\", or \"Command\" on a Mac, to select more than one."
 msgstr "Halten Sie die Strg-Taste (⌘ für Mac) während des Klickens gedrückt, um mehrere Einträge auszuwählen."
 
-#: participant/forms.py:43
+#: participant/forms.py:44
 msgid "First name and last name can not both be empty."
 msgstr "Vorname und Nachname dürfen nicht beide leer sein."
 
-#: participant/forms.py:73
+#: participant/forms.py:74
 msgid ""
 "You can not remove the last group containing the permission to manage "
 "participants."
 msgstr "Sie dürfen nicht die letzte Gruppe löschen, die das Recht zur Verwaltung von Teilnehmern enthält."
 
-#: participant/forms.py:80
+#: participant/forms.py:81
 msgid "Permissions"
 msgstr "Rechte"
 
-#: participant/forms.py:83 participant/views.py:533 participant/views.py:558
+#: participant/forms.py:84 participant/views.py:533 participant/views.py:558
 #: participant/templates/participant/overview.html:7
 #: participant/templates/participant/overview.html:20
 msgid "Participants"
 msgstr "Teilnehmer/innen"
 
-#: participant/forms.py:132
+#: participant/forms.py:135
 msgid ""
 "You can not remove yourself from the last group containing the permission to"
 " manage participants."
 msgstr "Sie dürfen sich nicht selbst aus der letzten Gruppe löschen, die das Recht zur Verwaltung von Teilnehmern enthält."
 
-#: participant/forms.py:140
+#: participant/forms.py:143
 msgid ""
 "You can not remove the permission to manage participants from the last group"
 " your are in."

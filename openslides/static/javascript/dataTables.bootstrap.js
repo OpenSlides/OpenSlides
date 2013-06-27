@@ -11,7 +11,7 @@
 /* Table initialisation */
 $(document).ready(function() {
     $('#dataTable').dataTable( {
-        "aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        "aLengthMenu": [[10, 25, 50, -1], [10, 25, 50, gettext("All")]],
         "aoColumnDefs": [
           { "bSortable": false, "aTargets": [ -1 ] }
         ],
