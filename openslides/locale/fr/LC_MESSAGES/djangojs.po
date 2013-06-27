@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-06-04 00:21+0200\n"
+"POT-Creation-Date: 2013-06-26 21:33+0200\n"
 "PO-Revision-Date: 2013-06-03 15:05+0000\n"
 "Last-Translator: moosline <moosline@savvy.ch>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/openslides/"
@@ -213,6 +213,10 @@ msgstr "Fermer"
 #, c-format
 msgid ", of which %s are hidden."
 msgstr ", dans %s sont cachés"
+
+#: static/javascript/dataTables.bootstrap.js:14
+msgid "All"
+msgstr "Tous"
 
 #: static/javascript/dataTables.bootstrap.js:19
 msgid "_MENU_ entries per page"
