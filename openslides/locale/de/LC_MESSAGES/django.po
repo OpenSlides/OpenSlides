@@ -1701,7 +1701,7 @@ msgstr "Abstimmung"
 
 #: motion/views.py:658
 msgid "State changed to"
-msgstr "Status geändert zu "
+msgstr "Status geändert zu"
 
 #: motion/views.py:661
 #, python-format
