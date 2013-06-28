@@ -23,7 +23,7 @@ from django.conf import settings
 
 from openslides.config.api import config
 from openslides.utils.pdf import stylesheet
-from .models import Motion
+from .models import Motion, Category
 
 # Needed to count the delegates
 # TODO: find another way to do this.
@@ -45,7 +45,10 @@ def motion_to_pdf(pdf, motion):
     """
     Create a PDF for one motion.
     """
-    pdf.append(Paragraph(_("Motion: %s") % motion.title, stylesheet['Heading1']))
+    identifier = ""
+    if motion.identifier:
+        identifier = " %s" % motion.identifier
+    pdf.append(Paragraph(_("Motion") + "%s: %s" % (identifier, motion.title), stylesheet['Heading1']))
 
     motion_data = []
 
@@ -155,7 +158,7 @@ def motion_to_pdf(pdf, motion):
 
     # motion reason
     if motion.reason:
-        pdf.append(Paragraph(_("Reason")+":", stylesheet['Heading3']))
+        pdf.append(Paragraph(_("Reason") + ":", stylesheet['Heading3']))
         convert_html_to_reportlab(pdf, motion.reason)
     return pdf
 
@@ -204,7 +207,7 @@ def convert_html_to_reportlab(pdf, text):
     text = soup.body.contents
     paragraph_number = 1
     for paragraph in text:
-        paragraph = str(paragraph)
+        paragraph = unicode(paragraph)
         # ignore empty paragraphs (created by newlines/tabs of ckeditor)
         if paragraph == '\n' or paragraph == '\n\n' or paragraph == '\n\t':
             continue
@@ -222,7 +225,7 @@ def convert_html_to_reportlab(pdf, text):
         elif "<h3>" in paragraph:
             pdf.append(Paragraph(paragraph, stylesheet['InnerH3Paragraph']))
         else:
-            pdf.append(Paragraph(str(paragraph), stylesheet['InnerParagraph'], str(paragraph_number)))
+            pdf.append(Paragraph(paragraph, stylesheet['InnerParagraph'], str(paragraph_number)))
             paragraph_number += 1
 
 
@@ -238,11 +241,25 @@ def all_motion_cover(pdf, motions):
 
     pdf.append(Spacer(0, 0.75 * cm))
 
+    # list of categories
+    categories = False
+    for i, category in enumerate(Category.objects.all()):
+        categories = True
+        if i == 0:
+            pdf.append(Paragraph(_("Categories"), stylesheet['Heading2']))
+        pdf.append(Paragraph("%s &nbsp;&nbsp; %s" % (category.prefix, category.name), stylesheet['Paragraph']))
+    if categories:
+        pdf.append(PageBreak())
+
+    # list of motions
     if not motions:
         pdf.append(Paragraph(_("No motions available."), stylesheet['Heading3']))
     else:
         for motion in motions:
-            pdf.append(Paragraph(motion.title, stylesheet['Heading3']))
+            identifier = ""
+            if motion.identifier:
+                identifier = "%s " % motion.identifier
+            pdf.append(Paragraph("%s%s" % (identifier, motion.title), stylesheet['Heading3']))
 
 
 def motion_poll_to_pdf(pdf, poll):
