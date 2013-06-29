@@ -318,7 +318,7 @@ def compile_openslides_launcher():
         return False
 
     cc.add_include_dir(distutils.sysconfig.get_python_inc())
-    cc.add_library_dir(os.path.join(sys.exec_prefix, "Libs"))
+    cc.define_macro("_CRT_SECURE_NO_WARNINGS")
 
     gui_data_dir = os.path.dirname(openslides_gui.__file__)
     gui_data_dir = os.path.join(gui_data_dir, "data")
@@ -343,7 +343,8 @@ def compile_openslides_launcher():
     ])
     cc.link_executable(
         objs, "extras/win32-portable/openslides",
-        extra_preargs=["/subsystem:windows"],
+        extra_preargs=["/subsystem:windows", "/nodefaultlib:python27.lib"],
+        libraries = ["user32"]
     )
     return True
 
@@ -361,7 +362,7 @@ def copy_dlls(odir):
 
     pydllname = "python{0}{1}.dll".format(*sys.version_info[:2])
     src = os.path.join(os.environ["WINDIR"], "System32", pydllname)
-    dest = os.path.join(odir, pydllname)
+    dest = os.path.join(dll_dest, pydllname)
     shutil.copyfile(src, dest)
 
 
