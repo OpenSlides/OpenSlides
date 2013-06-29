@@ -344,9 +344,49 @@ def compile_openslides_launcher():
     cc.link_executable(
         objs, "extras/win32-portable/openslides",
         extra_preargs=["/subsystem:windows", "/nodefaultlib:python27.lib"],
-        libraries = ["user32"]
+        libraries=["user32"]
     )
     return True
+
+
+def openslides_launcher_update_version_resource():
+    try:
+        import win32api
+        import win32verstamp
+    except ImportError:
+        sys.stderr.write(
+            "Using precompiled executable and pywin32 is not available - "
+            "version resource may be out of date!\n")
+        return False
+    import struct
+
+    sys.stdout.write("Updating version resource")
+    # code based on win32verstamp.stamp() with some minor differences in
+    # version handling
+    major, minor, sub = openslides.VERSION[:3]
+    build = openslides.VERSION[4]
+    pre_release = openslides.VERSION[3] != "final"
+    version_str = openslides.get_version()
+
+    sdata = {
+        "CompanyName": "OpenSlides team",
+        "FileDescription": "OpenSlides",
+        "FileVersion": version_str,
+        "InternalName": "OpenSlides",
+        "LegalCopyright": u"Copyright \xa9 2011-2013",
+        "OriginalFilename": "openslides.exe",
+        "ProductName": "OpenSlides",
+        "ProductVersion": version_str,
+    }
+    vdata = {
+        "Translation": struct.pack("hh", 0x409, 0x4e4),
+    }
+
+    vs = win32verstamp.VS_VERSION_INFO(
+        major, minor, sub, build, sdata, vdata, pre_release, False)
+    h = win32api.BeginUpdateResource("extras/win32-portable/openslides.exe", 0)
+    win32api.UpdateResource(h, 16, 1, vs)
+    win32api.EndUpdateResource(h, 0)
 
 
 def copy_dlls(odir):
@@ -443,6 +483,7 @@ def main():
 
     if not compile_openslides_launcher():
         sys.stdout.write("Using prebuild openslides.exe\n")
+        openslides_launcher_update_version_resource()
 
     shutil.copyfile(
         "extras/win32-portable/openslides.exe",
