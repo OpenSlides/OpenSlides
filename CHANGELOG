@@ -5,59 +5,62 @@
 http://openslides.org
 
 
-Version 1.4 (unreleased)
+Version 1.4 (2013-07-10)
 ========================
 [https://github.com/OpenSlides/OpenSlides/issues?milestone=7]
 
-Projector:
-- New overlay API
 Agenda:
-- New feature: list of speakers for each agenda item with timestamp for begin
-  and end of speach, new widget and new overlay on the dashboard for easy managing
-  and presanting lists of speakers.
+- New feature: list of speakers for each agenda item which saves begin and end
+  time of each speaker; added new widget and overlay on the dashboard for easy
+  managing and presenting lists of speakers.
 - New item type: organisational item (vs. agenda item).
-- New time field for each agenda item (with total event time calculation).
-- New sorting of agenda items (with nestedSortable jQuery plugin).
+- New duration field for each item (with total time calculation for end time of event).
+- Better drag'n'drop sorting of agenda items (with nestedSortable jQuery plugin).
 Motions:
-- Integrated CKEditor with server-side white list filtering of HTML tags (with bleach)
-  and added HTML support for reportlab in motion pdf.
+- Integrated CKEditor to use allowed HTML formatting in motion text/reason.
+  With server-side whitelist filtering of HTML tags (with bleach) and HTML support
+  for reportlab in motion pdf.
 - New motion API.
 - Support for serveral submitters.
 - New workflow concept with two built-in workflows:
   a) complex workflow (like in OpenSlides <= v1.3)
-  b) simple workflow (only 4 states: submitted -> accepted|rejected|not decided; no versioning)
-- Manage categories for grouping motions.
+  b) simple workflow (only 4 states: submitted -> accepted|rejected|not decided;
+     no versioning)
+- Categories for grouping motions.
 - New modifiable identifier.
 - New motion version diff view. Improved history table in motion detail view.
 - New config variable 'Stop submitting of new motions' (for non-manager users).
-- New overview table for sorting of motions.
 - Updated motion status log.
+- Updated csv import.
 Participants:
-- Integrated DataTables jQuery plugin for participants table (for client side
-  sorting/filtering/pagination).
 - New feature: qr-code for system url on participants password pdf.
 - Update default groups and permissions.
 - New participant field: 'title'.
 - Removed participants field 'type'. Use 'group' field instead. Updated csv import.
-- Added warning if non-superuser removes his last group containing permission to manage participants.
+- Added warning if non-superuser removes his last group containing permission to
+  manage participants.
 Other:
-- New template based on twitter bootstrap.
+- New html template based on twitter bootstrap.
 - New GUI frontend for the Windows portable version.
-- Added command to backup sqlite database.
-- Used Tornado web server (instead of Django's default development server).
+- New command to backup sqlite database.
 - New mediafile app (files) to upload/download files via frontend.
+- Used Tornado web server (instead of Django's default development server).
+- Updated win32 portable version to use Tornado.
+- Integrated DataTables jQuery plugin for overview tables of motions, elections
+  and participants (for client side sorting/filtering/pagination).
+- New overlay API for projector view.
 - New config app: Apps have to define config vars only once; config pages and
   forms are created automatically.
-- Updated to Django 1.5.
-- Dropped support for python 2.5.
-- Updated win32 portable version to use Tornado.
 - Moved version page out of the config app.
 - Changed version number api for plugins.
 - Moved widget with personal info to account app. Inserted info about lists of speakers.
-- Updatet packaging.
-- Updated way to open all PDF. They are opened in a new tab now.
-- Changed Doctype to HTML 5.
-- Updated German documentation.
+- Updated to Django 1.5.
+- Dropped support for python 2.5.
+- Updated packaging (setup.py and portable).
+- Open all PDFs in a new tab.
+- Changed Doctype to HTML5.
+- Updated German documentation (especially sections about agenda and motions).
+- Several minor fixes and improvements.
 
 
 Version 1.3.1 (2013-01-09)
