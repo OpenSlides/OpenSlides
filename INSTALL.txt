@@ -26,7 +26,7 @@ I. Installation on GNU/Linux and MacOSX using the Python Package Index (PyPI)
         E. g. for Ubuntu run:
         $ sudo apt-get install python-dev
 
-  2. Setup a virtual environment with virtualenv (optional):
+  2. Setup a virtual environment with Virtual Python Environment builder (optional):
 
         You can setup a virtual environment to install OpenSlides as
         non-root user.
@@ -117,7 +117,7 @@ III. Installation on GNU/Linux and MacOSX using the sources (for development)
         $ sudo apt-get install git
         $ git clone git://github.com/OpenSlides/OpenSlides.git
 
-  3. Setup a virtual environment with virtualenv (optional):
+  3. Setup a virtual environment with Virtual Python Environment builder (optional):
 
         You can setup a virtual environment to install OpenSlides as
         non-root user.
@@ -176,20 +176,28 @@ portable version you should run the following install steps.
 
      a) Download and run 32bit MSI installer from http://www.python.org/:
 
-        http://python.org/ftp/python/2.7.4/python-2.7.4.msi
+        http://www.python.org/ftp/python/2.7.5/python-2.7.5.msi
 
      b) Add python dirs to PATH (via Control Panel > System > Advanced):
 
         ";C:\Python27;C:\Python27\Scripts"
 
-     c) Download and run 32bit binary installer from http://pypi.python.org/pypi/setuptools:
+        Note that the path can differ if you customized the install of
+        Python in step a).
 
-        https://pypi.python.org/packages/2.7/s/setuptools/setuptools-0.6c11.win32-py2.7.exe
+     c) Download the install script ez_setup.py for Setuptools 0.7.7 from
+        https://pypi.python.org/pypi/setuptools/0.7.7#windows and run (via
+        double click).
 
-  2. Setup a virtual environment with virtualenv (optional):
+  2. Setup a virtual environment with Virtual Python Environment builder (optional):
 
         You can setup a virtual environment to install OpenSlides as
         non-root user.
+
+        To install Virtual Python Environment builder, open command line
+        (cmd) and run:
+
+        > easy_install https://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.9.1.tar.gz
 
         To setup and activate the virtual environment, create your
         OpenSlides directory, open command line (cmd), change to the
@@ -202,7 +210,7 @@ portable version you should run the following install steps.
 
         Run on command line (cmd):
 
-        > pip install openslides
+        > easy_install openslides
 
         OpenSlides will install all required python packages.
 
