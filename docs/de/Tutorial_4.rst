@@ -71,7 +71,7 @@ Die Antragsseite sieht nun wie folgt aus:
 
 Auf die gleiche Weise können Sie vor und während der Veranstaltung alle
 gestellten Anträge eingeben. Mehr Informationen zur Antragsverwaltung
-finden Sie im Kapitel Einzelne Funktionen, Abschnitt Anträge__.
+finden Sie im Kapitel „Einzelne Funktionen“, Abschnitt `Anträge`__.
 
 .. __: Motion.html
 

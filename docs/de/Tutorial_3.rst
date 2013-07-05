@@ -11,7 +11,7 @@ Eingabe der Teilnehmer und Teilnehmerinnen
 ------------------------------------------
 
 Sie können die Teilnehmer und Teilnehmerinnen einzeln eintragen oder, wie im
-Kapitel Einzelne Funktionen, Abschnitt `Teilnehmer/innen`__ beschrieben,
+Kapitel „Einzelne Funktionen“, Abschnitt `Teilnehmer/innen`__ beschrieben,
 importieren. Jedoch werden beim Import alle vorher eingetragenen Teilnehmer
 gelöscht. Eingetragenen Personen, die das System verwalten sollen, müssen
 die entsprechenden Berechtigungen zugewiesen werden.
