@@ -219,7 +219,7 @@ class ParticipantsListPDF(PDFView):
             groups = ''
             for group in user.groups.all():
                 if group.pk != 2:
-                    groups += "%s<br/>" % unicode(group)
+                    groups += "%s<br/>" % unicode(_(group.name))
             data.append([
                 counter,
                 Paragraph(user.title, stylesheet['Tablecell']),
