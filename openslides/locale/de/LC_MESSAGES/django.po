@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: OpenSlides\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-06-25 00:58+0200\n"
-"PO-Revision-Date: 2013-06-26 18:52+0000\n"
+"PO-Revision-Date: 2013-07-05 12:49+0000\n"
 "Last-Translator: emanuel <emanuel@intevation.de>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/openslides/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -1210,7 +1210,7 @@ msgstr "Hochgeladen durch"
 
 #: mediafile/models.py:50
 msgid "Can see the list of files"
-msgstr "Darf Dateilisten sehen"
+msgstr "Darf die Dateiliste sehen"
 
 #: mediafile/models.py:51
 msgid "Can upload files"
@@ -1739,7 +1739,7 @@ msgstr "Sachgebiete"
 
 #: motion/templates/motion/category_list.html:41
 msgid "No categories available."
-msgstr "Keine Sachgebieter vorhanden."
+msgstr "Keine Sachgebiete vorhanden."
 
 #: motion/templates/motion/motion_detail.html:23
 #: motion/templates/motion/motion_diff.html:21
@@ -2099,7 +2099,7 @@ msgstr "Darf Teilnehmer sehen"
 
 #: participant/models.py:116
 msgid "Can manage participant"
-msgstr "Darf Teilnehmer hinzufügen"
+msgstr "Darf Teilnehmer verwalten"
 
 #: participant/models.py:138
 msgid "Use this group as participant"
