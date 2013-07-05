@@ -99,9 +99,9 @@ Text:
 
 .. |edit| image:: ../_images/pencil.png
 
-Mehr Informationen zur Verwaltungs der Tagesordnung, insbesondere den
-Organisationseinträgen und den Rednerlisten finden Sie im Kapitel Einzelne
-Funktionen, Abschnitt Tagesordnung__.
+Mehr Informationen zur Verwaltung der Tagesordnung, insbesondere den
+Organisationseinträgen und den Rednerlisten finden Sie im Kapitel
+„Einzelne Funktionen", Abschnitt `Tagesordnung__.
 
 .. __: Agenda.html
 

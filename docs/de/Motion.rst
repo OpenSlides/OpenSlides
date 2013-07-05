@@ -13,7 +13,7 @@ werden:
   Beispiel sinnvoll, wenn es im Laufe der Versammlung einen Antragsschluss
   gibt.
 
-* Es besteht die Option, eine Mindestanzahl von Unterstützer und
+* Es besteht die Option, eine Mindestanzahl von Unterstützern und
   Unterstützerinnen für einen Antrag manuell einzutragen. Als Vorauswahl ist
   die „0“ eingegeben, die das Unterstützersystem automatisch deaktiviert. Ist
   das Unterstützersystem aktiv, können die berechtigten Teilnehmer und
@@ -215,7 +215,7 @@ Sie diese mit dem Button „Neue Abstimmung“ auf der betreffenden
 Antragsseite (im Kasten rechts) in OpenSlides aufnehmen. Tragen Sie die
 entsprechenden Abstimmungsergebnisse in die Tabelle ein. Wenn Sie ``-1``
 eintragen, wird das Wort „Mehrheit“ ausgegeben. ``-2`` steht für „Nicht
-erfasst“. Sollten Sie bei abgegebene Stimmen einen Wert eintragen,
+erfasst“. Sollten Sie bei den abgegebenen Stimmen einen Wert eintragen,
 berechnet OpenSlides automatisch die prozentualen Anteile der übrigen
 Stimmzahlen. Klicken Sie am Ende auf ``Speichern`` oder ``Übernehmen``.
 
