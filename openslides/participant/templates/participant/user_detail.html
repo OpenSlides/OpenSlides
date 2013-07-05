@@ -52,7 +52,12 @@
         {{ shown_user.committee }}
         <label>{% trans "Groups" %}</label>
         {% if shown_user.groups.all %}
-            {{ shown_user.groups.all|join:", " }}
+            {% for group in shown_user.groups.all %}
+                {% if group.pk != 2 %}
+                    {% trans group.name %}
+                    {% if not forloop.last %}, {% endif %}
+                {% endif %}
+            {% endfor %}
         {% else %}
             {% trans "The participant is not member of any group." %}
         {% endif %}
