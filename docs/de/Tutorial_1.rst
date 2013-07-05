@@ -9,10 +9,10 @@ können Sie Ihre ersten Folien einrichten und auf dem Projektor zeigen.
 Installation und Start des Servers
 ----------------------------------
 
-Installieren Sie OpenSlides wie im Kapitel Erste Schritte, Abschnitt
-Installation__ beschrieben. Starten Sie den Server wie im Kapitel Erste
-Schritte, Abschnitt `Start des Servers und Öffnen des Browsers`__
-beschrieben. Sie sehen jetzt die Login-Seite von OpenSlides in Ihrem
+Installieren Sie OpenSlides wie im Kapitel „Erste Schritte", Abschnitt
+`Installation`__ beschrieben. Starten Sie anschließend den Server wie im
+Abschnitt `Start des Servers und Öffnen des Browsers`__ erläutert.
+Sie sehen jetzt die Login-Seite von OpenSlides in Ihrem
 Browser. Loggen Sie sich als Administrator ein, indem Sie als Benutzernamen
 ``admin`` und als Passwort ``admin`` eingeben und auf ``Anmelden`` klicken.
 
