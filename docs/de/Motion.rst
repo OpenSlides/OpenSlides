@@ -149,13 +149,52 @@ einen Antrag nur im jeweiligen Anfangsstatus unterstützen.
 .. __: #abstimmungen
 .. __: #voreinstellungen
 
-Eine Übersicht über die beiden Arbeitsabläufe mit allen Status finden Sie
-in der folgenden Übersicht:
+Es folgt eine Übersicht über die beiden Arbeitsabläufe mit allen Status.
 
-.. image:: ../_images/Platzhalter.png
+
+Einfacher Arbeitsablauf
+'''''''''''''''''''''''
+
+.. image:: ../_images/Motion_03_1.png
    :class: screenshot
 
-.. handgemalte Übersicht (Motion_03.png)
+.. table:: Einfacher Arbeitsablauf
+   :class: workflow-table table-bordered table-striped
+
+   +-------------------+-----------------+---------------+------------+---------------+---------------+
+   | Status            | Antragsteller   | Unterstützung | Abstimmung | Automatische  | Automatischer |
+   |                   | darf bearbeiten | möglich       | möglich    | Versionierung | Bezeichner    |
+   +===================+=================+===============+============+===============+===============+
+   | Eingereicht       |       Ja        |      Ja       |     Ja     |     Nein      |      Ja       |
+   +-------------------+-----------------+---------------+------------+---------------+---------------+
+   | Angenommen        |      Nein       |     Nein      |    Nein    |     Nein      |      Ja       |
+   +-------------------+-----------------+---------------+------------+---------------+---------------+
+   | Abgelehnt         |      Nein       |     Nein      |    Nein    |     Nein      |      Ja       |
+   +-------------------+-----------------+---------------+------------+---------------+---------------+
+   | Nicht entschieden |      Nein       |     Nein      |    Nein    |     Nein      |      Ja       |
+   +-------------------+-----------------+---------------+------------+---------------+---------------+
+
+
+Komplexer Arbeitsablauf
+'''''''''''''''''''''''
+
+.. image:: ../_images/Motion_03_2.png
+   :class: screenshot
+
+.. table:: Komplexer Arbeitsablauf
+   :class: workflow-table table-bordered table-striped
+
+   +---------------------+-----------------+---------------+------------+---------------+------------------------+---------------+
+   | Status              | Antragsteller   | Unterstützung | Abstimmung | Automatische  | Neue Version wird      | Automatischer |
+   |                     | darf bearbeiten | möglich       | möglich    | Versionierung | automatisch zugelassen | Bezeichner    |
+   +=====================+=================+===============+============+===============+========================+===============+
+   | Veröffentlicht      |       Ja        |      Ja       |    Nein    |     Nein      |           –            |    Nein       |
+   +---------------------+-----------------+---------------+------------+---------------+------------------------+---------------+
+   | Zugelassen          |       Ja        |     Nein      |     Ja     |      Ja       |          Nein          |     Ja        |
+   +---------------------+-----------------+---------------+------------+---------------+------------------------+---------------+
+   | Alle anderen Status |      Nein       |     Nein      |    Nein    |      Ja       |           Ja           |     Ja        |
+   | des Arbeitsablaufs  |                 |               |            |               |                        |               |
+   +---------------------+-----------------+---------------+------------+---------------+------------------------+---------------+
 
 
 Versionierung
