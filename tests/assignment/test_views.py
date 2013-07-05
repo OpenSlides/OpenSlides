@@ -64,3 +64,29 @@ class TestAssignmentPollDelete(AssignmentViewTestCase):
     def test_post(self):
         response = self.admin_client.post('/assignment/poll/1/del/', {'yes': 1})
         self.assertRedirects(response, '/assignment/1/')
+
+
+class TestAssignmentDetailView(AssignmentViewTestCase):
+    def test_blocked_candidates_view(self):
+        """
+        Tests that a delegate runs for a vote and then withdraws himself.
+        """
+        response = self.staff_client.get('/assignment/1/')
+        self.assertContains(response, 'No candidates available.')
+        self.assertNotContains(response, 'Blocked Candidates')
+
+        response = self.delegate_client.get('/assignment/1/run/')
+        self.assertTrue(self.assignment1.is_candidate(self.delegate))
+        self.assertFalse(self.assignment1.is_blocked(self.delegate))
+
+        response = self.staff_client.get('/assignment/1/')
+        self.assertNotContains(response, 'No candidates available.')
+        self.assertNotContains(response, 'Blocked Candidates')
+
+        response = self.delegate_client.get('/assignment/1/delrun/')
+        self.assertFalse(self.assignment1.is_candidate(self.delegate))
+        self.assertTrue(self.assignment1.is_blocked(self.delegate))
+
+        response = self.staff_client.get('/assignment/1/')
+        self.assertContains(response, 'No candidates available.')
+        self.assertContains(response, 'Blocked Candidates')
