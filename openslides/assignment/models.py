@@ -239,10 +239,10 @@ class Assignment(models.Model, SlideMixin):
 
     class Meta:
         permissions = (
-            ('can_see_assignment', ugettext_noop("Can see assignment")),
-            ('can_nominate_other', ugettext_noop("Can nominate another person")),
-            ('can_nominate_self', ugettext_noop("Can nominate oneself")),
-            ('can_manage_assignment', ugettext_noop("Can manage assignment")),
+            ('can_see_assignment', ugettext_noop('Can see assignments')),  # TODO: Add plural s to the codestring
+            ('can_nominate_other', ugettext_noop('Can nominate another person')),
+            ('can_nominate_self', ugettext_noop('Can nominate oneself')),
+            ('can_manage_assignment', ugettext_noop('Can manage assignments')),  # TODO: Add plural s also to the codestring
         )
         ordering = ('name',)
 
