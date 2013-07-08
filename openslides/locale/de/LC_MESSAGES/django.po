@@ -3,9 +3,10 @@
 # Copyright (C) 2011–2013 by OpenSlides team, see AUTHORS.
 # This file is distributed under the same license as the OpenSlides package.
 # Translators:
-# emanuelschuetze <emanuelschuetze@gmail.com>, 2013
+# emanuelschuetze <emanuel.schuetze@intevation.de>, 2013
 # emanuel <emanuel@intevation.de>, 2013
-# emanuelschuetze <emanuelschuetze@gmail.com>, 2013
+# emanuelschuetze <emanuel.schuetze@intevation.de>, 2013
+# emanuelschuetze <emanuel.schuetze@intevation.de>, 2013
 # ostcar <mail@oshahn.de>, 2012
 # normanjaeckel <transifex16062013@normanjaeckel.de>, 2013
 # ostcar <mail@oshahn.de>, 2012-2013
@@ -14,8 +15,8 @@ msgstr ""
 "Project-Id-Version: OpenSlides\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-07-07 23:49+0200\n"
-"PO-Revision-Date: 2013-07-07 21:53+0000\n"
-"Last-Translator: normanjaeckel <transifex16062013@normanjaeckel.de>\n"
+"PO-Revision-Date: 2013-07-08 10:04+0000\n"
+"Last-Translator: emanuelschuetze <emanuel.schuetze@intevation.de>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/openslides/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -150,7 +151,7 @@ msgstr "%(person)s ist bereits auf der Rednerliste von Eintrag %(id)s."
 
 #: agenda/models.py:327
 msgid "An anonymous user can not be on lists of speakers."
-msgstr "Anonyme Gast-Benutzer können nicht auf Redelisten stehen."
+msgstr "Anonyme Gast-Benutzer können nicht auf Rednerlisten stehen."
 
 #: agenda/models.py:367
 msgid "Can put oneself on the list of speakers"
@@ -1359,7 +1360,7 @@ msgstr "Wenn dies aktiviert ist, wird jeder Antrag mit dem gleichen Bezeichner w
 
 #: motion/forms.py:179
 msgid "Default submitter"
-msgstr "Voreinstellter Antragsteller/in"
+msgstr "Voreingestellte/r Antragsteller/in"
 
 #: motion/forms.py:180
 msgid ""
@@ -2088,7 +2089,7 @@ msgstr "Nur für Notizen."
 
 #: participant/models.py:56
 msgid "Default password"
-msgstr "Voreinstelltes Passwort"
+msgstr "Voreingestelltes Passwort"
 
 #: participant/models.py:114
 msgid "Can see participants"
