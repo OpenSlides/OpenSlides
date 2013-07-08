@@ -4,7 +4,7 @@
 
 {% block title %}{{ item }}{% endblock %}
 
-{% block header %}
+{% block content %}
     <style type="text/css">
         /* List of speakers – projector slide */
         ul#list_of_speakers {
@@ -19,9 +19,6 @@
             font-weight: bold;
             margin-bottom: 0.5em;}
     </style>
-{% endblock %}
-
-{% block content %}
     <h1>{{ title }}</h1>
     <h2 style="margin-top: -10px;">
         {% trans 'List of speakers' %}
