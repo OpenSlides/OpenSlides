@@ -721,7 +721,7 @@ class MotionPDFView(SingleObjectMixin, PDFView):
             return _("Motions")
         else:
             if self.object.identifier:
-                suffix = self.object.identifier
+                suffix = self.object.identifier.replace(' ', '')
             else:
                 suffix = self.object.title.replace(' ', '_')
                 suffix = slugify(suffix)
