@@ -19,8 +19,8 @@ Getting started
 
 Install and start OpenSlides as described in the INSTALL.txt.
 
-If you need help please contact the OpenSlides team on public mailing
-list or read the OpenSlides manual. See http://openslides.org.
+If you need help please contact the OpenSlides team on public mailing list
+or read the OpenSlides manual. See http://openslides.org.
 
 
 The start script of OpenSlides
@@ -34,13 +34,13 @@ Simply running
 or
   openslides (on Linux/MacOS)
 
-will start OpenSlides using djangos development server. It will also
+will start OpenSlides using the integrated Tornado webserver. It will also
 try to open OpenSlides in your default webbrowser.
 
-The server will listen on the IP address of your current hostname on
-port 80 (if port 80 is not available port 8000 will be used).
-This means that the server will be available to everyone on your
-local network (at least for commonly used network configurations).
+The server will listen on the IP address of your current hostname on port
+80. If port 80 is not available, port 8000 will be used. This means that
+the server will be available to everyone on your local network (at least
+for commonly used network configurations).
 
 See `Command line options` below if you need to change this.
 
