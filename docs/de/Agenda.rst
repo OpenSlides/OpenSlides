@@ -28,6 +28,10 @@ Zusätzlich haben Sie die Möglichkeit, unter dem „Titel“ einen „Text“
 einzufügen, der auf dem Projektor erscheinen soll. Einträge im Feld
 „Kommentar“ sind nur für die Versammlungsleitung sichtbar.
 
+*Sie können im Textfeld auch HTML-Elemente verwenden. Innerhalb solcher
+sollten jedoch keine Zeilenumbrüche eingegeben werden, da letztere automatisch
+in <br>-Elemente umgewandelt werden.*
+
 Im Feld „Dauer“ können Sie die geplante Zeit des Tagesordnungspunktes im
 Format „hh:mm“ (Stunden:Minuten) angeben. Auf der Übersichtsseite der
 Tagesordnung werden alle eingegebenen Zeiten summiert und visualisiert.
