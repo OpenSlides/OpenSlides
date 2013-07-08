@@ -111,9 +111,8 @@ class User(PersonMixin, Person, SlideMixin, DjangoUser):
     class Meta:
         # Rename permissions
         permissions = (
-            ('can_see_participant', ugettext_noop("Can see participant")),
-            ('can_manage_participant',
-                ugettext_noop("Can manage participant")),
+            ('can_see_participant', ugettext_noop('Can see participants')),  # TODO: Add plural s to the codestring
+            ('can_manage_participant', ugettext_noop('Can manage participants')),  # TODO: Add plural s to the codestring
         )
         ordering = ('last_name',)
 
