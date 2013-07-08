@@ -13,6 +13,7 @@
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
+from django.utils.datastructures import SortedDict
 
 from openslides.utils.person import PersonField
 from openslides.config.api import config
@@ -173,7 +174,7 @@ class Assignment(models.Model, SlideMixin):
         returns a table represented as a list with all candidates from all
         related polls and their vote results.
         """
-        vote_results_dict = {}
+        vote_results_dict = SortedDict()
         # All polls related to this assigment
         polls = self.poll_set.all()
         if only_published:
@@ -182,6 +183,8 @@ class Assignment(models.Model, SlideMixin):
         options = []
         for poll in polls:
             options += poll.get_options()
+
+        options.sort(key=lambda option: option.candidate.sort_name)
 
         for option in options:
             candidate = option.candidate
