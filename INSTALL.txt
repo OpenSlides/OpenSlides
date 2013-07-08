@@ -8,7 +8,7 @@ Content
 I.   Installation on GNU/Linux and MacOSX using the Python Package Index (PyPI)
 II.  Installation on GNU/Linux and MacOSX using the package from openslides.org
 III. Installation on GNU/Linux and MacOSX using the sources (for development)
-IV.  Installation on Windows (32bit) using the Python Package Index (PyPI)
+IV.  Installation on Windows using the Python Package Index (PyPI)
 
 If you need help ask on OpenSlides users mailing list.
 See http://openslides.org for more information.
@@ -57,7 +57,7 @@ I. Installation on GNU/Linux and MacOSX using the Python Package Index (PyPI)
           + bleach
           + beautifulsoup4
           + html5lib
-          
+
   4. Start OpenSlides server and open URL in your default browser:
 
         $ openslides
@@ -84,7 +84,7 @@ II.   Installation on GNU/Linux and MacOSX using the package from openslides.org
 ================================================================================
 
   1. Get OpenSlides:
-  
+
         Download latest OpenSlides release from http://openslides.org as
         compressed tar archive.
 
@@ -160,7 +160,7 @@ III. Installation on GNU/Linux and MacOSX using the sources (for development)
         $ python start.py
 
 
-IV. Installation on Windows (32bit) using the Python Package Index (PyPI)
+IV. Installation on Windows using the Python Package Index (PyPI)
 =========================================================================
 
 NOTE: There is a portable version of OpenSlides for Windows which does not
@@ -174,9 +174,14 @@ portable version you should run the following install steps.
           + Python Programming Language 2 (>= 2.6)
           + Setuptools
 
-     a) Download and run 32bit MSI installer from http://www.python.org/:
+     a) Download and run 32-bit MSI installer from http://www.python.org/:
 
         http://www.python.org/ftp/python/2.7.5/python-2.7.5.msi
+
+        Note that the 32-bit MSI installer is required even on a 64-bit
+        Windows system. If you use the 64-bit MSI installer, step 3 of this
+        instruction will fail unless you installed the packages reportlab
+        and pillow manually.
 
      b) Add python dirs to PATH (via Control Panel > System > Advanced):
 
