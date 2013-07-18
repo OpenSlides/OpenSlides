@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011 – 2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
-VERSION = (1, 4, 1, 'final', 1)  # During development it is the next release
+VERSION = (1, 5, 0, 'alpha', 1)  # During development it is the next release
 RELEASE = False
 
 
