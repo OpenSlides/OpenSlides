@@ -198,8 +198,8 @@
             {% if perms.motion.can_manage_motion or poll.has_votes %}
                 <li><b>{{ poll.poll_number|ordinal|safe }} {% trans "vote" %}</b>
                     {% if perms.motion.can_manage_motion %}
-                        <a class="btn btn-mini" href="{% url 'motion_poll_edit' motion.id poll.id %}" title="{% trans 'Edit Vote' %}"><i class="icon-pencil"></i></a>
-                        <a class="btn btn-mini" href="{% url 'motion_poll_delete' motion.id poll.id %}" title="{% trans 'Delete Vote' %}"><i class="icon-remove"></i></a>
+                        <a class="btn btn-mini" href="{% model_url poll 'edit' %}" title="{% trans 'Edit Vote' %}"><i class="icon-pencil"></i></a>
+                        <a class="btn btn-mini" href="{% model_url poll 'delete' %}" title="{% trans 'Delete Vote' %}"><i class="icon-remove"></i></a>
                     {% endif %}
                     <br>
                     {% if poll.has_votes %}
