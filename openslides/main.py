@@ -203,11 +203,15 @@ def _main(opts, database_path=None):
         reload = False
 
     if opts.start_browser:
+        if opts.address:
+            prefix = opts.address
+        else:
+            prefix = 'localhost'
         if port == 80:
             suffix = ""
         else:
             suffix = ":%d" % port
-        start_browser("http://localhost%s" % suffix)
+        start_browser("http://%s%s" % (prefix, suffix))
 
     # Start the server
     run_tornado(addr, port, reload)
