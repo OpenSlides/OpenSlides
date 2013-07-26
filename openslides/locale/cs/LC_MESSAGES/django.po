@@ -1,0 +1,2642 @@
+# Language file of OpenSlides used by transifex:
+# https://www.transifex.com/projects/p/openslides/
+# Copyright (C) 2011–2013 by OpenSlides team, see AUTHORS.
+# This file is distributed under the same license as the OpenSlides package.
+# Translators:
+# emanuel <emanuel@intevation.de>, 2013
+# emanuelschuetze <emanuel.schuetze@intevation.de>, 2013
+# normanjaeckel <transifex16062013@normanjaeckel.de>, 2013
+# ostcar <mail@oshahn.de>, 2012
+# fri <pavelfric@seznam.cz>, 2013
+# fri <pavelfric@seznam.cz>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenSlides\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-07 23:49+0200\n"
+"PO-Revision-Date: 2013-07-19 16:46+0000\n"
+"Last-Translator: fri <pavelfric@seznam.cz>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/openslides/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: global_settings.py:33
+msgid "German"
+msgstr "Německý"
+
+#: global_settings.py:34
+msgid "English"
+msgstr "Anglický"
+
+#: global_settings.py:35
+msgid "French"
+msgstr "Francouzský"
+
+#: account/views.py:71
+msgid "My items, motions and elections"
+msgstr "Moje body pořadu jednání, návrhy a volby"
+
+#: account/templates/account/personal_info_widget.html:5
+msgid "I am on the list of speakers of the following items:"
+msgstr "Jsem na seznamu řečníků následujících položek pořadu jednání:"
+
+#: account/templates/account/personal_info_widget.html:9
+#: account/templates/account/personal_info_widget.html:28
+#: account/templates/account/personal_info_widget.html:48
+#: account/templates/account/personal_info_widget.html:59
+msgid "None"
+msgstr "Žádné"
+
+#: account/templates/account/personal_info_widget.html:15
+msgid "I submitted the following motions:"
+msgstr "Podal jsem následující návrhy:"
+
+#: account/templates/account/personal_info_widget.html:35
+msgid "I support the following motions:"
+msgstr "Podporuji následující návrhy:"
+
+#: account/templates/account/personal_info_widget.html:55
+msgid "I am candidate for the following elections:"
+msgstr "Jsem uchazečem/uchazečkou v následujících volbách:"
+
+#: agenda/forms.py:29
+msgid "Parent item"
+msgstr "Rodičovská položka"
+
+#: agenda/forms.py:33
+msgid "Invalid format. Hours from 0 to 99 and minutes from 00 to 59"
+msgstr "Neplatný formát. Hodiny od 0 do 99 a minuty od 00 do 59"
+
+#: agenda/forms.py:36 agenda/models.py:74
+msgid "Duration (hh:mm)"
+msgstr "Doba trvání (hh:mm)"
+
+#: agenda/forms.py:70
+msgid "Add participant"
+msgstr "Přidat nového účastníka/účastnici"
+
+#: agenda/forms.py:83
+#, python-format
+msgid "%s is already on the list of speakers."
+msgstr "%s je již na seznamu řečníků."
+
+#: agenda/models.py:42
+msgid "Agenda item"
+msgstr "Položka pořadu jednání"
+
+#: agenda/models.py:43
+msgid "Organizational item"
+msgstr "Organizační bod"
+
+#: agenda/models.py:45 core/signals.py:76 mediafile/models.py:32
+#: mediafile/templates/mediafile/mediafile_list.html:18 motion/forms.py:33
+#: motion/models.py:554 participant/models.py:40 participant/views.py:210
+#: participant/templates/participant/overview.html:48 projector/models.py:27
+msgid "Title"
+msgstr "Název"
+
+#: agenda/models.py:50 motion/forms.py:38 motion/models.py:557
+#: projector/models.py:28
+msgid "Text"
+msgstr "Text"
+
+#: agenda/models.py:55 agenda/templates/agenda/overview.html:77
+#: agenda/templates/agenda/view.html:55 participant/models.py:52
+#: participant/templates/participant/overview.html:54
+#: participant/templates/participant/user_detail.html:71
+msgid "Comment"
+msgstr "Poznámka"
+
+#: agenda/models.py:60
+msgid "Closed"
+msgstr "Zavřeno"
+
+#: agenda/models.py:66 mediafile/templates/mediafile/mediafile_list.html:19
+msgid "Type"
+msgstr "Typ"
+
+#: agenda/models.py:85 projector/models.py:29
+msgid "Weight"
+msgstr "Váha"
+
+#: agenda/models.py:98
+msgid "List of speakers is closed"
+msgstr "Seznam řečníků je uzavřen"
+
+#: agenda/models.py:105
+msgid "Can see agenda"
+msgstr "Smí vidět pořad jednání"
+
+#: agenda/models.py:106
+msgid "Can manage agenda"
+msgstr "Smí spravovat pořad jednání"
+
+#: agenda/models.py:107
+msgid "Can see orga items and time scheduling of agenda"
+msgstr "Smí vidět organizační body a časový rozvrh pořadu dne"
+
+#: agenda/models.py:135
+#, python-format
+msgid "< Item for deleted slide (%s) >"
+msgstr "< Položka pro smazané snímky (%s) >"
+
+#: agenda/models.py:323
+#, python-format
+msgid "%(person)s is already on the list of speakers of item %(id)s."
+msgstr "%(person)s je již na seznamu řečníků položky %(id)s."
+
+#: agenda/models.py:327
+msgid "An anonymous user can not be on lists of speakers."
+msgstr "Anonymní uživatel nemůže být v seznamu řečníků."
+
+#: agenda/models.py:367
+msgid "Can put oneself on the list of speakers"
+msgstr "Smí se sám umístit na seznamu řečníků"
+
+#: agenda/signals.py:36
+msgid "Invalid input."
+msgstr "Neplatné zadání."
+
+#: agenda/signals.py:54
+msgid "Begin of event"
+msgstr "Začátek události"
+
+#: agenda/signals.py:55
+msgid "Input format: DD.MM.YYYY HH:MM"
+msgstr "Zadávací formát: DD.MM.RRRR HH:MM"
+
+#: agenda/signals.py:62
+msgid "Number of last speakers to be shown on the projector"
+msgstr "Počet posledních řečníků zobrazených na promítacím přístroji"
+
+#: agenda/signals.py:70 agenda/slides.py:23 agenda/slides.py:29
+#: agenda/views.py:246 agenda/views.py:247 agenda/views.py:540
+#: agenda/views.py:556 agenda/templates/agenda/overview.html:7
+#: agenda/templates/agenda/overview.html:39
+#: agenda/templates/agenda/overview.html:88
+#: agenda/templates/projector/AgendaSummary.html:6
+#: agenda/templates/projector/AgendaSummary.html:10
+msgid "Agenda"
+msgstr "Pořad jednání"
+
+#: agenda/views.py:95
+msgid "You are not authorized to manage the agenda."
+msgstr "Nejste oprávněn ke správě pořadu jednání."
+
+#: agenda/views.py:111
+msgid "Errors when reordering of the agenda"
+msgstr "Chyba při přeuspořádávání pořadu jednání."
+
+#: agenda/views.py:222
+msgid "Yes, with all child items."
+msgstr "Ano, se všemi podřízenými prvky."
+
+#: agenda/views.py:231
+#, python-format
+msgid "Item %s and his children were successfully deleted."
+msgstr "Položka %s a její podřízené prvky byly úspěšně smazány."
+
+#: agenda/views.py:237
+#, python-format
+msgid "Item %s was successfully deleted."
+msgstr "Položka %s byla úspěšně smazána."
+
+#: agenda/views.py:272 agenda/views.py:492
+msgid "The list of speakers is closed."
+msgstr "Seznam řečníků je uzavřen."
+
+#: agenda/views.py:301
+msgid "You are not on the list of speakers."
+msgstr "Nejste na seznamu řečníků."
+
+#: agenda/views.py:324
+msgid "Do you really want to remove yourself from the list of speakers?"
+msgstr "Opravdu se chcete odstranit ze seznamu řečníků?"
+
+#: agenda/views.py:345
+#, python-format
+msgid "%(person)s is not on the list of %(item)s."
+msgstr "%(person)s není na seznamu řečníků %(item)s."
+
+#: agenda/views.py:371
+#, python-format
+msgid "There is no one speaking at the moment according to %(item)s."
+msgstr "Nyní nemluví žádný řečník podle %(item)s."
+
+#: agenda/views.py:436
+msgid "Could not change order. Invalid data."
+msgstr "Nepodařilo se změnit pořadí. Neplatná data."
+
+#: agenda/views.py:486
+msgid ""
+"There is no list of speakers for the current slide. Please choose the agenda"
+" item manually from the agenda."
+msgstr "Pro nynější snímek není žádný seznam řečníků. Zvolte, prosím, položku pořadu jednání ručně z pořadu jednání."
+
+#: agenda/views.py:503
+msgid "You can not put yourself on the list of speakers."
+msgstr "Nemůžete se sám umístit na seznam řečníků."
+
+#: agenda/views.py:512
+#, python-format
+msgid "%s is now speaking."
+msgstr "%s nyní mluví."
+
+#: agenda/views.py:514
+#: agenda/templates/agenda/overlay_speaker_projector.html:46
+#: agenda/templates/projector/agenda_list_of_speaker.html:46
+msgid "The list of speakers is empty."
+msgstr "Seznam řečníků je prázdný."
+
+#: agenda/views.py:522
+msgid "There is no one speaking at the moment."
+msgstr "Nyní nemluví nikdo."
+
+#: agenda/views.py:525
+#, python-format
+msgid "%s is now finished."
+msgstr "%s je nyní hotový."
+
+#: agenda/views.py:568
+#: agenda/templates/agenda/overlay_speaker_projector.html:33
+#: agenda/templates/agenda/overlay_speaker_widget.html:4
+#: agenda/templates/agenda/view.html:61
+#: agenda/templates/projector/agenda_list_of_speaker.html:27
+msgid "List of speakers"
+msgstr "Seznam řečníků"
+
+#: agenda/templates/agenda/edit.html:8 agenda/templates/agenda/edit.html:18
+#: agenda/templates/agenda/view.html:38
+msgid "Edit item"
+msgstr "Upravit položku"
+
+#: agenda/templates/agenda/edit.html:10 agenda/templates/agenda/edit.html:20
+#: agenda/templates/agenda/overview.html:42
+msgid "New item"
+msgstr "Nová položka"
+
+#: agenda/templates/agenda/edit.html:23 agenda/templates/agenda/view.html:23
+#: assignment/templates/assignment/edit.html:22
+#: assignment/templates/assignment/view.html:22
+#: mediafile/templates/mediafile/mediafile_form.html:22
+#: motion/templates/motion/category_list.html:15
+#: motion/templates/motion/motion_detail.html:31
+#: motion/templates/motion/motion_form.html:38
+#: motion/templates/motion/motion_form_csv_import.html:11
+#: participant/templates/participant/edit.html:22
+#: participant/templates/participant/group_detail.html:12
+#: participant/templates/participant/group_edit.html:22
+#: participant/templates/participant/import.html:11
+#: participant/templates/participant/user_detail.html:12
+#: projector/templates/projector/new.html:10
+#: projector/templates/projector/select_widgets.html:10
+msgid "Back to overview"
+msgstr "Zpět do přehledu"
+
+#: agenda/templates/agenda/edit.html:29
+#, python-format
+msgid "Edit %(type)s %(name)s"
+msgstr "Upravit %(type)s %(name)s"
+
+#: agenda/templates/agenda/edit.html:38
+#: assignment/templates/assignment/edit.html:31
+#: assignment/templates/assignment/poll_view.html:87
+#: config/templates/config/config_form.html:46
+#: mediafile/templates/mediafile/mediafile_form.html:33
+#: motion/templates/motion/category_form.html:27
+#: motion/templates/motion/motion_form.html:47
+#: motion/templates/motion/motion_form_csv_import.html:42
+#: motion/templates/motion/poll_form.html:73
+#: participant/templates/participant/edit.html:36
+#: participant/templates/participant/group_edit.html:31
+#: participant/templates/participant/import.html:44
+msgid "Cancel"
+msgstr "Zrušit"
+
+#: agenda/templates/agenda/edit.html:41
+#: assignment/templates/assignment/edit.html:34
+#: config/templates/config/config_form.html:48
+#: mediafile/templates/mediafile/mediafile_form.html:35
+#: motion/templates/motion/category_form.html:30
+#: motion/templates/motion/motion_form.html:50
+#: motion/templates/motion/motion_form_csv_import.html:45
+#: participant/templates/participant/edit.html:39
+#: participant/templates/participant/group_edit.html:34
+#: participant/templates/participant/import.html:47
+#: projector/templates/projector/new.html:18
+msgid "required"
+msgstr "požadováno"
+
+#: agenda/templates/agenda/item_row.html:11
+msgid "Show agenda item"
+msgstr "Promítat položku pořadu jednání"
+
+#: agenda/templates/agenda/item_row.html:16
+#: agenda/templates/agenda/view.html:73 agenda/templates/agenda/widget.html:34
+msgid "Show list of speakers"
+msgstr "Promítat seznam řečníků"
+
+#: agenda/templates/agenda/item_row.html:21
+#: agenda/templates/agenda/widget.html:26
+#: assignment/templates/assignment/overview.html:64
+#: assignment/templates/assignment/view.html:172
+#: assignment/templates/assignment/widget.html:10
+#: mediafile/templates/mediafile/mediafile_list.html:37
+#: motion/templates/motion/category_list.html:30
+#: motion/templates/motion/motion_list.html:82
+#: motion/templates/motion/widget.html:10
+#: participant/templates/participant/group_overview.html:52
+#: participant/templates/participant/group_widget.html:10
+#: participant/templates/participant/overview.html:116
+#: participant/templates/participant/user_widget.html:10
+#: projector/templates/projector/custom_slide_widget.html:26
+msgid "Edit"
+msgstr "Upravit"
+
+#: agenda/templates/agenda/item_row.html:24
+#: agenda/templates/agenda/view.html:131
+#: assignment/templates/assignment/overview.html:68
+#: assignment/templates/assignment/view.html:174
+#: mediafile/templates/mediafile/mediafile_list.html:38
+#: motion/templates/motion/category_list.html:33
+#: motion/templates/motion/motion_detail.html:133
+#: motion/templates/motion/motion_list.html:85
+#: participant/templates/participant/group_overview.html:56
+#: participant/templates/participant/overview.html:121
+#: projector/templates/projector/custom_slide_widget.html:23
+msgid "Delete"
+msgstr "Smazat"
+
+#: agenda/templates/agenda/item_row.html:29
+msgid "Change status (open/closed)"
+msgstr "Změnit stav (otevřený/zavřený)"
+
+#: agenda/templates/agenda/item_row.html:35
+#: agenda/templates/agenda/widget.html:40
+msgid "Show summary for this item"
+msgstr "Promítat shrnutí pro tuto položku"
+
+#: agenda/templates/agenda/item_row.html:49
+msgid "End"
+msgstr "Konec"
+
+#: agenda/templates/agenda/item_row.html:69
+msgid "Expand items"
+msgstr "Rozbalit položky"
+
+#: agenda/templates/agenda/item_row.html:70
+msgid "Collapse items"
+msgstr "Sbalit položky"
+
+#: agenda/templates/agenda/item_row.html:74
+msgid "Item closed"
+msgstr "Položka zavřena"
+
+#: agenda/templates/agenda/overlay_speaker_projector.html:33
+#: agenda/templates/agenda/view.html:61
+#: agenda/templates/projector/agenda_list_of_speaker.html:28
+msgid "closed"
+msgstr "zavřeno"
+
+#: agenda/templates/agenda/overlay_speaker_widget.html:5
+msgid "This overlay only appears on agenda slides if it is activated."
+msgstr "Toto prolínání se, pokud je zapnuto, objeví jen na promítaných snímcích pořadu jednání."
+
+#: agenda/templates/agenda/overview.html:31
+msgid "Do you want to save the changed order of agenda items?"
+msgstr "Chcete uložit změněné pořadí položek?"
+
+#: agenda/templates/agenda/overview.html:33
+#: agenda/templates/agenda/view.html:86 assignment/models.py:288
+#: assignment/views.py:580 assignment/templates/assignment/view.html:208
+#: assignment/templates/assignment/view.html:212
+#: assignment/templates/projector/Assignment.html:77
+#: assignment/templates/projector/Assignment.html:81 motion/models.py:717
+#: motion/pdf.py:138 motion/pdf.py:274
+#: motion/templates/motion/motion_detail.html:207
+#: motion/templates/projector/Motion.html:26 utils/utils.py:46
+#: utils/views.py:169
+msgid "Yes"
+msgstr "Ano"
+
+#: agenda/templates/agenda/overview.html:34
+#: agenda/templates/agenda/view.html:87 assignment/models.py:288
+#: assignment/views.py:581 assignment/templates/assignment/view.html:209
+#: assignment/templates/projector/Assignment.html:78 motion/models.py:717
+#: motion/pdf.py:138 motion/pdf.py:275
+#: motion/templates/motion/motion_detail.html:208
+#: motion/templates/projector/Motion.html:27 utils/utils.py:46
+#: utils/views.py:169
+msgid "No"
+msgstr "Ne"
+
+#: agenda/templates/agenda/overview.html:42
+#: assignment/templates/assignment/overview.html:21
+#: mediafile/templates/mediafile/mediafile_list.html:12
+#: motion/templates/motion/category_list.html:13
+#: motion/templates/motion/motion_list.html:24
+#: participant/templates/participant/group_overview.html:22
+#: participant/templates/participant/overview.html:23
+#: projector/templates/projector/custom_slide_widget.html:39
+msgid "New"
+msgstr "Nový"
+
+#: agenda/templates/agenda/overview.html:44
+msgid "Print agenda as PDF"
+msgstr "Vytisknout pořad jednání jako PDF"
+
+#: agenda/templates/agenda/overview.html:52
+msgid "Start of event"
+msgstr "Začátek události"
+
+#: agenda/templates/agenda/overview.html:56
+msgid "Estimated end"
+msgstr "Odhadovaný konec"
+
+#: agenda/templates/agenda/overview.html:62
+msgid "Set start time of event"
+msgstr "Stanovit začátek události"
+
+#: agenda/templates/agenda/overview.html:67
+msgid "Hide closed items"
+msgstr "Skrýt zavřené události"
+
+#: agenda/templates/agenda/overview.html:71
+msgid "item"
+msgid_plural "items"
+msgstr[0] "položka"
+msgstr[1] "položky"
+msgstr[2] "položek"
+
+#: agenda/templates/agenda/overview.html:75
+msgid "Item"
+msgstr "Položka"
+
+#: agenda/templates/agenda/overview.html:80
+msgid "Duration"
+msgstr "Doba trvání"
+
+#: agenda/templates/agenda/overview.html:83
+#: assignment/templates/assignment/overview.html:35
+#: mediafile/templates/mediafile/mediafile_list.html:24
+#: motion/templates/motion/category_list.html:23
+#: motion/templates/motion/motion_detail.html:110
+#: motion/templates/motion/motion_list.html:47
+#: participant/templates/participant/group_overview.html:32
+#: participant/templates/participant/overview.html:56
+msgid "Actions"
+msgstr "Činnosti"
+
+#: agenda/templates/agenda/overview.html:102
+msgid "Show agenda"
+msgstr "Promítat pořad jednání"
+
+#: agenda/templates/agenda/overview.html:125
+#: agenda/templates/agenda/widget.html:51
+#: projector/templates/projector/custom_slide_widget.html:34
+msgid "No items available."
+msgstr "Nejsou dostupné žádné položky."
+
+#: agenda/templates/agenda/speaker_widget.html:4
+msgid "Put me on the current list of speakers"
+msgstr "Umístit mě na nynější seznam řečníků"
+
+#: agenda/templates/agenda/speaker_widget.html:7
+msgid "Go to current list of speakers"
+msgstr "Jít na nynější seznam řečníků"
+
+#: agenda/templates/agenda/speaker_widget.html:11
+msgid "Next speaker"
+msgstr "Další řečník"
+
+#: agenda/templates/agenda/speaker_widget.html:12
+#: agenda/templates/agenda/view.html:125
+msgid "End speach"
+msgstr "Ukončit projev"
+
+#: agenda/templates/agenda/view.html:27
+#: motion/templates/motion/motion_detail.html:30
+msgid "Show item"
+msgstr "Promítat položku"
+
+#: agenda/templates/agenda/view.html:34
+#: assignment/templates/assignment/view.html:33
+#: motion/templates/motion/motion_detail.html:44
+#: participant/templates/participant/group_detail.html:22
+#: participant/templates/participant/user_detail.html:22
+msgid "More actions"
+msgstr "Další činnosti"
+
+#: agenda/templates/agenda/view.html:39
+msgid "Delete item"
+msgstr "Smazat položku"
+
+#: agenda/templates/agenda/view.html:65
+msgid "Open list"
+msgstr "Otevřít seznam"
+
+#: agenda/templates/agenda/view.html:67
+msgid "Close list"
+msgstr "Zavřít seznam"
+
+#: agenda/templates/agenda/view.html:75
+msgid "Show list"
+msgstr "Promítat seznam"
+
+#: agenda/templates/agenda/view.html:83
+msgid "Do you want to save the changed order of speakers?"
+msgstr "Chcete uložit změněné pořadí řečníků?"
+
+#: agenda/templates/agenda/view.html:96
+msgid "Last speakers"
+msgstr "Poslední řečník"
+
+#: agenda/templates/agenda/view.html:99
+msgid "Show all speakers"
+msgstr "Ukázat všechny řečníky"
+
+#: agenda/templates/agenda/view.html:103
+msgid "Current speaker"
+msgstr "Nynější řečník"
+
+#: agenda/templates/agenda/view.html:105
+msgid "Next speakers"
+msgstr "Další řečník"
+
+#: agenda/templates/agenda/view.html:128
+msgid "Begin speach"
+msgstr "Začít projev"
+
+#: agenda/templates/agenda/view.html:143
+msgid "Remove me from the list"
+msgstr "Odstranit mě ze seznamu"
+
+#: agenda/templates/agenda/view.html:145
+msgid "Put me on the list"
+msgstr "Dát mě na seznam"
+
+#: agenda/templates/agenda/view.html:155
+#: assignment/templates/assignment/poll_view.html:84
+#: assignment/templates/assignment/view.html:111
+#: motion/templates/motion/poll_form.html:70
+#: projector/templates/projector/overlay_message_widget.html:9
+#: templates/formbuttons_saveapply.html:7
+msgid "Apply"
+msgstr "Použít"
+
+#: agenda/templates/agenda/view.html:157
+#: assignment/templates/assignment/view.html:114
+msgid "Add new participant"
+msgstr "Přidat nového účastníka"
+
+#: agenda/templates/agenda/widget.html:8
+#: agenda/templates/agenda/widget.html:23
+#: assignment/templates/assignment/widget.html:7
+#: motion/templates/motion/motion_detail.html:130
+#: motion/templates/motion/motion_list.html:77
+#: motion/templates/motion/widget.html:7
+#: participant/templates/participant/group_overview.html:48
+#: participant/templates/participant/group_widget.html:7
+#: participant/templates/participant/user_widget.html:7
+#: projector/templates/projector/custom_slide_widget.html:6
+#: projector/templates/projector/custom_slide_widget.html:19
+msgid "Show"
+msgstr "Ukázat"
+
+#: agenda/templates/agenda/widget.html:11
+#: agenda/templates/agenda/widget.html:29
+#: assignment/templates/assignment/widget.html:13
+#: motion/templates/motion/widget.html:13
+#: participant/templates/participant/group_widget.html:13
+#: participant/templates/participant/user_widget.html:13
+#: projector/templates/projector/custom_slide_widget.html:9
+#: projector/templates/projector/custom_slide_widget.html:29
+msgid "Preview"
+msgstr "Náhled"
+
+#: assignment/forms.py:24 assignment/models.py:49 assignment/views.py:370
+#: assignment/templates/assignment/view.html:277
+#: assignment/templates/projector/Assignment.html:20
+msgid "Number of available posts"
+msgstr "Počet míst dostupných pro volbu"
+
+#: assignment/forms.py:34
+msgid "Nominate a participant"
+msgstr "Navrhnout účastníka"
+
+#: assignment/models.py:40
+msgid "assignment"
+msgstr "Volba"
+
+#: assignment/models.py:42 assignment/templates/assignment/view.html:286
+msgid "Searching for candidates"
+msgstr "Hledání uchazečů"
+
+#: assignment/models.py:43 assignment/templates/assignment/view.html:290
+msgid "Voting"
+msgstr "Hlasování"
+
+#: assignment/models.py:44 assignment/templates/assignment/view.html:294
+msgid "Finished"
+msgstr "Dokončeno"
+
+#: assignment/models.py:47 participant/templates/participant/overview.html:49
+msgid "Name"
+msgstr "Název"
+
+#: assignment/models.py:48 assignment/templates/assignment/view.html:55
+#: participant/models.py:139
+msgid "Description"
+msgstr "Popis"
+
+#: assignment/models.py:52
+msgid "Comment on the ballot paper"
+msgstr "Poznámka na hlasovacím lístku"
+
+#: assignment/models.py:62
+#, python-format
+msgid "%s is not a valid status."
+msgstr "%s není platný stav."
+
+#: assignment/models.py:65
+#, python-format
+msgid "The assignment status is already %s."
+msgstr "Stav voleb je již %s."
+
+#: assignment/models.py:78
+#, python-format
+msgid "<b>%s</b> is already a candidate."
+msgstr "<b>%s</b> je již uchazečem."
+
+#: assignment/models.py:80 assignment/views.py:183
+msgid "The candidate list is already closed."
+msgstr "Seznam uchazečů je již uzavřen."
+
+#: assignment/models.py:87
+#, python-format
+msgid "%s does not want to be a candidate."
+msgstr "%s se nechce ucházet."
+
+#: assignment/models.py:101
+#, python-format
+msgid "%s is no candidate"
+msgstr "%s není uchazečem"
+
+#: assignment/models.py:242
+msgid "Can see assignments"
+msgstr "Smí vidět volby"
+
+#: assignment/models.py:243
+msgid "Can nominate another person"
+msgstr "Smí navrhovat jiné osoby pro volby"
+
+#: assignment/models.py:244
+msgid "Can nominate oneself"
+msgstr "Smí se sám ucházet ve volbách"
+
+#: assignment/models.py:245
+msgid "Can manage assignments"
+msgstr "Smí spravovat volby"
+
+#: assignment/models.py:288 motion/models.py:717
+msgid "Abstain"
+msgstr "Zdržení se"
+
+#: assignment/models.py:290 motion/templates/motion/poll_form.html:38
+msgid "Votes"
+msgstr "Hlasy"
+
+#: assignment/models.py:307
+#, python-format
+msgid "Ballot %d"
+msgstr "Volba %d"
+
+#: assignment/signals.py:31
+msgid "Only publish voting results for selected winners (Projector view only)"
+msgstr "Skrýt volební výsledky nezvolených uchazečů (pouze u promítacího přístroje)"
+
+#: assignment/signals.py:39 motion/signals.py:64
+msgid "Number of ballot papers (selection)"
+msgstr "Počet hlasovacích lístků (předběžná volba)"
+
+#: assignment/signals.py:41 motion/signals.py:66
+msgid "Number of all delegates"
+msgstr "Počet všech zástupců"
+
+#: assignment/signals.py:42 motion/signals.py:67
+msgid "Number of all participants"
+msgstr "Počet všech účastníků"
+
+#: assignment/signals.py:43 motion/signals.py:68
+msgid "Use the following custom number"
+msgstr "Použít následující uživatelsky stanovený počet"
+
+#: assignment/signals.py:51 motion/signals.py:76
+msgid "Custom number of ballot papers"
+msgstr "Uživatelsky stanovený počet hlasovacích lístků"
+
+#: assignment/signals.py:54 assignment/signals.py:78 assignment/views.py:325
+#: assignment/views.py:630 assignment/views.py:646
+#: assignment/templates/assignment/overview.html:6
+#: assignment/templates/assignment/overview.html:18
+msgid "Elections"
+msgstr "Volby"
+
+#: assignment/signals.py:58
+msgid "Title for PDF document (all elections)"
+msgstr "Název dokumentu PDF (všechny volby)"
+
+#: assignment/signals.py:65
+msgid "Preamble text for PDF document (all elections)"
+msgstr "Text úvodu dokumentu PDF (všechny volby)"
+
+#: assignment/signals.py:72
+msgid "Election method"
+msgstr "Způsob volby"
+
+#: assignment/signals.py:74
+msgid "Automatic assign of method"
+msgstr "Automatické určení způsobu"
+
+#: assignment/signals.py:75
+msgid "Always one option per candidate"
+msgstr "Jeden hlas pro uchazeče"
+
+#: assignment/signals.py:76
+msgid "Always Yes-No-Abstain per candidate"
+msgstr "Ano, Ne, Zdržení se pro uchazeče"
+
+#: assignment/views.py:67
+#, python-format
+msgid "Candidate <b>%s</b> was nominated successfully."
+msgstr "Uchazeč <b>%s</b> byl úspěšně navržen."
+
+#: assignment/views.py:109
+msgid "New election was successfully created."
+msgstr "Nová volba byla úspěšně vytvořena."
+
+#: assignment/views.py:111
+msgid "Election was successfully modified."
+msgstr "Volba byla úspěšně změněna."
+
+#: assignment/views.py:117 participant/views.py:499 participant/views.py:523
+#: utils/views.py:319 utils/views.py:341 utils/views.py:351
+msgid "Please check the form for errors."
+msgstr "Zkontrolujte, prosím, formulář kvůli chybám."
+
+#: assignment/views.py:137
+#, python-format
+msgid "Election <b>%s</b> was successfully deleted."
+msgstr "Volba <b>%s</b> byla úspěšně smazána."
+
+#: assignment/views.py:150
+#, python-format
+msgid "Election status was set to: <b>%s</b>."
+msgstr "Stav voleb byl nastaven na: <b>%s</b>."
+
+#: assignment/views.py:163
+msgid "You have set your candidature successfully."
+msgstr "Předložil jste své uchazečství úspěšně."
+
+#: assignment/views.py:180
+msgid ""
+"You have withdrawn your candidature successfully. You can not be nominated "
+"by other participants anymore."
+msgstr "Stáhl jste své uchazečství úspěšně. Nyní už jinými účastníky nemůžete být navržen."
+
+#: assignment/views.py:202
+#, python-format
+msgid "Candidate <b>%s</b> was withdrawn successfully."
+msgstr "Uchazeč <b>%s</b> byl úspěšně stažen."
+
+#: assignment/views.py:204
+#, python-format
+msgid "<b>%s</b> was unblocked successfully."
+msgstr "<b>%s</b> byl úspěšně uvolněn."
+
+#: assignment/views.py:208
+#, python-format
+msgid "Do you really want to withdraw <b>%s</b> from the election?"
+msgstr "Má být <b>%s</b> skutečně z volby stažen?"
+
+#: assignment/views.py:210
+#, python-format
+msgid "Do you really want to unblock <b>%s</b> for the election?"
+msgstr "Má být <b>%s</b> skutečně pro volby uvolněn?"
+
+#: assignment/views.py:225
+msgid "New ballot was successfully created."
+msgstr "Nové hlasování bylo úspěšně vytvořeno."
+
+#: assignment/views.py:257
+#, python-format
+msgid "Ballot ID %d does not exist."
+msgstr "ID hlasování %d neexistuje."
+
+#: assignment/views.py:264
+msgid "Ballot successfully published."
+msgstr "Hlasování bylo úspěšně zveřejněno."
+
+#: assignment/views.py:266
+msgid "Ballot successfully unpublished."
+msgstr "Hlasování bylo úspěšně nezveřejněno."
+
+#: assignment/views.py:279
+msgid "not elected"
+msgstr "nezvolen"
+
+#: assignment/views.py:282 assignment/views.py:471
+#: assignment/templates/assignment/view.html:75
+msgid "elected"
+msgstr "zvolen"
+
+#: assignment/views.py:310
+msgid "Ballot was successfully deleted."
+msgstr "Hlasování bylo úspěšně smazáno."
+
+#: assignment/views.py:322
+msgid "Assignment"
+msgstr "Volba"
+
+#: assignment/views.py:345 assignment/templates/assignment/widget.html:19
+msgid "No assignments available."
+msgstr "Nejsou dostupné žádné volby."
+
+#: assignment/views.py:364
+#, python-format
+msgid "Election: %s"
+msgstr "Volba: %s"
+
+#: assignment/views.py:377 assignment/views.py:413
+#: assignment/templates/assignment/overview.html:33
+#: assignment/templates/assignment/overview.html:47
+#: assignment/templates/assignment/poll_view.html:35
+#: assignment/templates/assignment/view.html:64
+#: assignment/templates/assignment/view.html:156
+#: assignment/templates/projector/Assignment.html:37
+#: assignment/templates/projector/Assignment.html:55
+msgid "Candidates"
+msgstr "Uchazeči"
+
+#: assignment/views.py:402 motion/pdf.py:124
+#: motion/templates/motion/motion_detail.html:194
+msgid "Vote results"
+msgstr "Výsledky hlasování"
+
+#: assignment/views.py:406 assignment/templates/assignment/poll_view.html:6
+#: assignment/templates/assignment/poll_view.html:12
+#: assignment/templates/assignment/view.html:159
+#: assignment/templates/projector/Assignment.html:58
+msgid "ballot"
+msgstr "Hlasování"
+
+#: assignment/views.py:409
+msgid "ballots"
+msgstr "Hlasování"
+
+#: assignment/views.py:434
+#, python-format
+msgid ""
+"Y: %(YES)s\n"
+"N: %(NO)s\n"
+"A: %(ABSTAIN)s"
+msgstr "A: %(YES)s\nN: %(NO)s\nZ: %(ABSTAIN)s"
+
+#: assignment/views.py:445 assignment/templates/assignment/poll_view.html:52
+#: assignment/templates/assignment/view.html:226
+#: assignment/templates/projector/Assignment.html:95
+#: motion/templates/motion/poll_form.html:47
+msgid "Invalid votes"
+msgstr "Neplatné hlasy"
+
+#: assignment/views.py:452 assignment/templates/assignment/poll_view.html:62
+#: assignment/templates/assignment/view.html:242
+#: assignment/templates/assignment/view.html:247
+#: assignment/templates/projector/Assignment.html:108
+#: assignment/templates/projector/Assignment.html:114 motion/pdf.py:139
+#: motion/templates/motion/motion_detail.html:212
+#: motion/templates/motion/poll_form.html:51
+#: motion/templates/projector/Motion.html:31 poll/models.py:76
+msgid "Votes cast"
+msgstr "Odevzdané hlasy"
+
+#: assignment/views.py:512 assignment/views.py:530
+#: assignment/templates/assignment/overview.html:32
+#: assignment/templates/assignment/poll_view.html:6
+#: assignment/templates/assignment/view.html:8
+#: assignment/templates/projector/Assignment.html:26
+msgid "Election"
+msgstr "Volba"
+
+#: assignment/views.py:537
+#, python-format
+msgid "%d. ballot"
+msgstr "%d. hlasování"
+
+#: assignment/views.py:539
+#, python-format
+msgid "%d candidate"
+msgid_plural "%d candidates"
+msgstr[0] "%d uchazeč"
+msgstr[1] "%d uchazeči"
+msgstr[2] "%d uchazečů"
+
+#: assignment/views.py:541
+#, python-format
+msgid "%d available post"
+msgid_plural "%d available posts"
+msgstr[0] "%d dostupné místo"
+msgstr[1] "%d dostupná místa"
+msgstr[2] "%d dostupných míst"
+
+#: assignment/views.py:581 assignment/templates/assignment/view.html:210
+#: assignment/templates/projector/Assignment.html:79 motion/pdf.py:138
+#: motion/pdf.py:276 motion/templates/motion/motion_detail.html:209
+#: motion/templates/projector/Motion.html:28
+msgid "Abstention"
+msgstr "Zdržení se"
+
+#: assignment/templates/assignment/edit.html:7
+#: assignment/templates/assignment/edit.html:17
+#: assignment/templates/assignment/view.html:38
+msgid "Edit election"
+msgstr "Upravit volbu"
+
+#: assignment/templates/assignment/edit.html:9
+#: assignment/templates/assignment/edit.html:19
+#: assignment/templates/assignment/overview.html:21
+msgid "New election"
+msgstr "Nová volba"
+
+#: assignment/templates/assignment/overview.html:24
+msgid "Print all elections as PDF"
+msgstr "Vytisknout všechny volby jako PDF"
+
+#: assignment/templates/assignment/overview.html:34
+#: assignment/templates/assignment/view.html:274
+#: assignment/templates/projector/Assignment.html:17
+#: motion/templates/motion/motion_detail.html:189
+#: motion/templates/motion/motion_list.html:41
+#: motion/templates/projector/Motion.html:11
+msgid "Status"
+msgstr "Stav"
+
+#: assignment/templates/assignment/overview.html:43
+msgctxt "Number of searched candidates for an election"
+msgid "Posts"
+msgstr "Místa"
+
+#: assignment/templates/assignment/overview.html:50
+msgid "Elected"
+msgstr "Zvolen"
+
+#: assignment/templates/assignment/overview.html:58
+#: assignment/templates/assignment/poll_view.html:18
+#: assignment/templates/assignment/view.html:26
+msgid "Show election"
+msgstr "Promítnout volbu"
+
+#: assignment/templates/assignment/overview.html:73
+#: assignment/templates/assignment/view.html:23
+msgid "Print election as PDF"
+msgstr "Vytisknout volbu jako PDF"
+
+#: assignment/templates/assignment/poll_view.html:15
+msgid "Back to election"
+msgstr "Zpět k volbě"
+
+#: assignment/templates/assignment/poll_view.html:26
+msgid "Short description (for ballot paper)"
+msgstr "Krátký popis (pro hlasovací lístek)"
+
+#: assignment/templates/assignment/poll_view.html:30
+#: motion/templates/motion/poll_form.html:30
+msgid "Special values"
+msgstr "Zvláštní hodnoty"
+
+#: assignment/templates/assignment/poll_view.html:30
+#: motion/templates/motion/poll_form.html:30 poll/models.py:234
+msgid "majority"
+msgstr "Většina"
+
+#: assignment/templates/assignment/poll_view.html:30
+#: motion/templates/motion/poll_form.html:30 poll/models.py:236
+#: poll/models.py:238
+msgid "undocumented"
+msgstr "nedokumentováno"
+
+#: assignment/templates/assignment/poll_view.html:75
+#: motion/templates/motion/poll_form.html:61
+msgid "Ballot paper as PDF"
+msgstr "Hlasovací lístek jako PDF"
+
+#: assignment/templates/assignment/poll_view.html:81
+#: motion/templates/motion/poll_form.html:67
+#: projector/templates/projector/select_widgets.html:28
+#: templates/formbuttons_save.html:4 templates/formbuttons_saveapply.html:4
+msgid "Save"
+msgstr "Uložit"
+
+#: assignment/templates/assignment/view.html:40
+msgid "Delete election"
+msgstr "Smazat volbu"
+
+#: assignment/templates/assignment/view.html:44
+#: motion/templates/motion/motion_detail.html:59
+msgid "New agenda item"
+msgstr "Nová položka pořadu jednání"
+
+#: assignment/templates/assignment/view.html:71
+#: assignment/templates/assignment/view.html:131
+msgid "Remove candidate"
+msgstr "Odstranit uchazeče"
+
+#: assignment/templates/assignment/view.html:78
+msgid "Mark candidate as not elected"
+msgstr "Označit uchazeče jako nezvoleného"
+
+#: assignment/templates/assignment/view.html:86
+#: assignment/templates/projector/Assignment.html:43
+msgid "No candidates available."
+msgstr "Nejsou dostupní žádní uchazeči."
+
+#: assignment/templates/assignment/view.html:96
+msgid "Withdraw self candidature"
+msgstr "Stáhnout vlastní uchazečství"
+
+#: assignment/templates/assignment/view.html:100
+msgid "Self candidature"
+msgstr "Ucházet se sám"
+
+#: assignment/templates/assignment/view.html:125
+msgid "Blocked Candidates"
+msgstr "Blokovaní uchazeči"
+
+#: assignment/templates/assignment/view.html:136
+msgid "No blocked candidates available."
+msgstr "Nejsou dostupní žádní blokovaní uchazeči."
+
+#: assignment/templates/assignment/view.html:144
+#: assignment/templates/projector/Assignment.html:51
+msgid "Election results"
+msgstr "Výsledky volby"
+
+#: assignment/templates/assignment/view.html:151
+msgid "Ballot"
+msgstr "Hlasování"
+
+#: assignment/templates/assignment/view.html:164
+msgid "Publish results"
+msgstr "Zveřejnit výsledky"
+
+#: assignment/templates/assignment/view.html:181
+#: assignment/templates/assignment/view.html:263
+msgid "New ballot"
+msgstr "Nové hlasování"
+
+#: assignment/templates/assignment/view.html:192
+msgid "Mark candidate as elected"
+msgstr "Označit uchazeče jako zvoleného"
+
+#: assignment/templates/assignment/view.html:195
+#: assignment/templates/projector/Assignment.html:68
+msgid "Candidate is elected"
+msgstr "Uchazeč je zvolen"
+
+#: assignment/templates/assignment/view.html:214
+#: assignment/templates/projector/Assignment.html:83
+msgid "was not a <br> candidate"
+msgstr "nebyl <br> uchazečem"
+
+#: assignment/templates/assignment/view.html:231
+#: assignment/templates/projector/Assignment.html:99 motion/pdf.py:138
+#: motion/templates/motion/motion_detail.html:210
+#: motion/templates/projector/Motion.html:29
+msgid "Invalid"
+msgstr "Neplatný"
+
+#: assignment/templates/assignment/view.html:259
+msgid "No ballots available."
+msgstr "Nejsou dostupná žádná hlasování."
+
+#: assignment/templates/assignment/view.html:283
+msgid "Change status"
+msgstr "Změnit stav"
+
+#: config/models.py:31
+msgid "Can manage configuration"
+msgstr "Smí spravovat nastavení"
+
+#: config/views.py:118
+#, python-format
+msgid "%s settings successfully saved."
+msgstr "Nastavení '%s' úspěšně uloženo."
+
+#: config/views.py:127 config/templates/config/config_form.html:6
+#: config/templates/config/config_form.html:10
+msgid "Configuration"
+msgstr "Nastavení"
+
+#: core/signals.py:35
+msgid "Event name"
+msgstr "Název události"
+
+#: core/signals.py:40
+msgid "Presentation and assembly system"
+msgstr "Předváděcí a schůzovací systém"
+
+#: core/signals.py:43
+msgid "Short description of event"
+msgstr "Krátký popis události"
+
+#: core/signals.py:52
+msgid "Event date"
+msgstr "Doba události"
+
+#: core/signals.py:60
+msgid "Event location"
+msgstr "Místo události"
+
+#: core/signals.py:68
+msgid "Event organizer"
+msgstr "Pořadatel události"
+
+#: core/signals.py:73
+msgid "Welcome to OpenSlides"
+msgstr "Vítejte v OpenSlides"
+
+#: core/signals.py:81
+msgid "[Place for your welcome text.]"
+msgstr "[Místo pro váš uvítací text.]"
+
+#: core/signals.py:84 participant/signals.py:47
+msgid "Welcome text"
+msgstr "Uvítací text"
+
+#: core/signals.py:91
+msgid "Allow access for anonymous guest users"
+msgstr "Povolit přístup anonymním hostům-uživatelům"
+
+#: core/signals.py:95
+msgid "Event"
+msgstr "Událost"
+
+#: core/signals.py:99
+msgid "Welcome Widget"
+msgstr "Uvítání"
+
+#: core/signals.py:103
+msgid "System"
+msgstr "Systém"
+
+#: core/signals.py:107
+msgid "General"
+msgstr "Obecné"
+
+#: core/templates/core/version.html:5 core/templates/core/version.html.py:8
+#: core/templates/core/version.html:11 motion/pdf.py:108 motion/views.py:358
+#: motion/templates/motion/motion_detail.html:26
+#: motion/templates/motion/motion_diff.html:35
+#: motion/templates/motion/motion_diff.html:39
+#: motion/templates/projector/Motion.html:60
+msgid "Version"
+msgstr "Verze"
+
+#: mediafile/models.py:26
+msgid "File"
+msgstr "Soubor"
+
+#: mediafile/models.py:35 mediafile/templates/mediafile/mediafile_list.html:22
+msgid "Uploaded by"
+msgstr "Nahráno"
+
+#: mediafile/models.py:50
+msgid "Can see the list of files"
+msgstr "Smí vidět seznam souborů"
+
+#: mediafile/models.py:51
+msgid "Can upload files"
+msgstr "Smí nahrávat soubory"
+
+#: mediafile/models.py:52
+msgid "Can manage files"
+msgstr "Smí spravovat soubory"
+
+#: mediafile/models.py:65 mediafile/models.py:67
+msgid "unknown"
+msgstr "neznámý"
+
+#: mediafile/views.py:101 mediafile/templates/mediafile/mediafile_list.html:6
+#: mediafile/templates/mediafile/mediafile_list.html:9
+msgid "Files"
+msgstr "Soubory"
+
+#: mediafile/templates/mediafile/mediafile_form.html:7
+#: mediafile/templates/mediafile/mediafile_form.html:17
+msgid "Edit file"
+msgstr "Upravit soubor"
+
+#: mediafile/templates/mediafile/mediafile_form.html:9
+#: mediafile/templates/mediafile/mediafile_form.html:19
+#: mediafile/templates/mediafile/mediafile_list.html:12
+msgid "New file"
+msgstr "Nový soubor"
+
+#: mediafile/templates/mediafile/mediafile_list.html:20
+msgid "Size"
+msgstr "Velikost"
+
+#: mediafile/templates/mediafile/mediafile_list.html:21
+msgid "Upload time"
+msgstr "Doba nahrávání"
+
+#: mediafile/templates/mediafile/mediafile_list.html:45
+msgid "No files available."
+msgstr "Nejsou dostupné žádné soubory."
+
+#: motion/csv_import.py:48 participant/api.py:114
+msgid "Import file has wrong character encoding, only UTF-8 is supported!"
+msgstr "Zdrojový soubor používá neplatné kódování znaků. Je podporováno pouze UTF-8!"
+
+#: motion/csv_import.py:66 motion/csv_import.py:79 motion/csv_import.py:117
+#, python-format
+msgid "Line %d of import file:"
+msgstr "Řádek %d zdrojového souboru:"
+
+#: motion/csv_import.py:67
+msgid ""
+"Line is malformed. Motion not imported. Please check the required values."
+msgstr "Řádek je chybný. Návrh nezaveden. Ověřte, prosím, požadované hodnoty."
+
+#: motion/csv_import.py:80
+msgid "Identifier already exists. Motion not imported."
+msgstr "Identifikátor již existuje. Návrh nezaveden."
+
+#: motion/csv_import.py:94
+msgid "Category unknown. No category is used."
+msgstr "Skupina neznámá. Nepoužívá se žádná skupina."
+
+#: motion/csv_import.py:96
+msgid "Several suitable categories found. No category is used."
+msgstr "Nalezeno více odpovídajících skupin. Nepoužívá se žádná skupina."
+
+#: motion/csv_import.py:105
+msgid "Several suitable submitters found."
+msgstr "Nalezeno více odpovídajících navrhovatelů."
+
+#: motion/csv_import.py:112
+msgid "Submitter unknown. Default submitter is used."
+msgstr "Navrhovatel neznámý. Používá se přednastavený navrhovatel."
+
+#: motion/csv_import.py:126
+msgid "Motion imported"
+msgstr "Návrh zaveden"
+
+#: motion/forms.py:44 motion/models.py:560 motion/pdf.py:161
+#: motion/templates/motion/motion_detail.html:93
+#: motion/templates/motion/motion_diff.html:54
+#: motion/templates/projector/Motion.html:72
+msgid "Reason"
+msgstr "Zdůvodnění"
+
+#: motion/forms.py:72 motion/pdf.py:58
+#: motion/templates/motion/motion_detail.html:169
+#: motion/templates/motion/motion_list.html:42
+#: motion/templates/projector/Motion.html:45
+msgid "Submitter"
+msgstr "Navrhovatel"
+
+#: motion/forms.py:87 motion/pdf.py:83
+#: motion/templates/motion/motion_detail.html:176
+#: motion/templates/motion/motion_list.html:44
+msgid "Supporters"
+msgstr "Podporovatel"
+
+#: motion/forms.py:102
+msgid "Don't create a new version"
+msgstr "Nevytvářet novou verzi"
+
+#: motion/forms.py:103
+msgid "Don't create a new version. Useful e.g. for trivial changes."
+msgstr "Nevytvářet novou verzi. Užitečné například pro nepodstatné změny."
+
+#: motion/forms.py:116 motion/templates/motion/motion_detail.html:234
+#: motion/templates/motion/motion_list.html:40
+msgid "Category"
+msgstr "Skupina"
+
+#: motion/forms.py:136 motion/signals.py:111
+msgid "Identifier"
+msgstr "Identifikátor"
+
+#: motion/forms.py:151
+msgid "Workflow"
+msgstr "Průběh práce"
+
+#: motion/forms.py:152
+msgid ""
+"Set a specific workflow to switch to it. If you do so, the state of the "
+"motion will be reset."
+msgstr "Nastaví návrh na určitý průběh práce. V tom případě je stav návrhu nastaven znovu."
+
+#: motion/forms.py:162 participant/forms.py:180
+msgid "CSV File"
+msgstr "Soubor CSV"
+
+#: motion/forms.py:163
+msgid "The file has to be encoded in UTF-8."
+msgstr "Soubor musí být kódován v UTF-8."
+
+#: motion/forms.py:170
+msgid "Override existing motions with the same identifier"
+msgstr "Přepsat stávající návrhy týmž identifikátorem"
+
+#: motion/forms.py:171
+msgid ""
+"If this is active, every motion with the same identifier as in your csv file"
+" will be overridden."
+msgstr "Pokud je toto zapnuto, je každý návrh s týmž identifikátorem, jaký je ve vašem souboru CSV, přepsán."
+
+#: motion/forms.py:179
+msgid "Default submitter"
+msgstr "Přednastavený navrhovatel"
+
+#: motion/forms.py:180
+msgid ""
+"This person is used as submitter for any line of your csv file which does "
+"not contain valid submitter data."
+msgstr "Tato osoba se používá jako navrhovatel pro každý řádek ve vašem souboru CSV, který neobsahuje žádného platného navrhovatele."
+
+#: motion/models.py:46
+msgid "motion"
+msgstr "Návrh"
+
+#: motion/models.py:92
+msgid "Can see motions"
+msgstr "Smí vidět návrhy"
+
+#: motion/models.py:93
+msgid "Can create motions"
+msgstr "Smí vytvářet návrhy"
+
+#: motion/models.py:94
+msgid "Can support motions"
+msgstr "Smí podporovat návrhy"
+
+#: motion/models.py:95
+msgid "Can manage motions"
+msgstr "Smí spravovat návrhy"
+
+#: motion/models.py:487 motion/models.py:488 motion/pdf.py:51
+#: motion/signals.py:117 motion/views.py:292 motion/views.py:612
+#: motion/views.py:728 motion/templates/motion/motion_detail.html:8
+#: motion/templates/motion/motion_detail.html:21
+#: motion/templates/motion/motion_diff.html:6
+#: motion/templates/motion/motion_diff.html:19
+#: motion/templates/motion/poll_form.html:6
+#: motion/templates/motion/poll_form.html:14
+#: motion/templates/projector/Motion.html:6
+#: motion/templates/projector/Motion.html:55
+#: motion/templates/projector/Motion.html:57
+msgid "Motion"
+msgstr "Návrh"
+
+#: motion/models.py:574
+msgid "new"
+msgstr "Nový"
+
+#: motion/models.py:625 motion/templates/motion/category_list.html:22
+msgid "Category name"
+msgstr "Název skupiny"
+
+#: motion/models.py:628 motion/templates/motion/category_list.html:21
+msgid "Prefix"
+msgstr "Předpona"
+
+#: motion/models.py:680
+#, python-format
+msgid "%(time_and_messages)s by %(person)s"
+msgstr "%(time_and_messages)s od %(person)s"
+
+#: motion/models.py:731
+#, python-format
+msgid "Vote %d"
+msgstr "Hlasování %d"
+
+#: motion/pdf.py:72
+msgid "Signature"
+msgstr "Podpis"
+
+#: motion/pdf.py:98
+msgid "State"
+msgstr "Stav"
+
+#: motion/pdf.py:134 motion/templates/projector/Motion.html:22
+msgid "Vote"
+msgstr "Hlasování"
+
+#: motion/pdf.py:249 motion/templates/motion/category_list.html:10
+#: motion/templates/motion/motion_list.html:28
+msgid "Categories"
+msgstr "Skupiny"
+
+#: motion/pdf.py:256 motion/templates/motion/widget.html:26
+msgid "No motions available."
+msgstr "Nejsou dostupné žádné návrhy."
+
+#: motion/pdf.py:270
+#, python-format
+msgid "Motion No. %s"
+msgstr "Návrh č. %s"
+
+#: motion/pdf.py:272
+#, python-format
+msgid "%d. Vote"
+msgstr "%d. hlasování"
+
+#: motion/signals.py:33
+msgid "Stop submitting new motions by non-staff users"
+msgstr "Podávání nových návrhů zastaveno pro uživatele bez práv správce"
+
+#: motion/signals.py:40
+msgid "Number of (minimum) required supporters for a motion"
+msgstr "Nejnižší počet podporovatelů potřebných pro návrh"
+
+#: motion/signals.py:44
+msgid "Choose 0 to disable the supporting system."
+msgstr "Zadejte 0 pro vypnutí podpůrného systému."
+
+#: motion/signals.py:49
+msgid ""
+"Remove all supporters of a motion if a submitter edits his motion in early "
+"state"
+msgstr "Odstranit všechny podporovatele návrhu, pokud navrhovatel svůj návrh v počátečním stavu upravuje"
+
+#: motion/signals.py:53
+msgid "The assembly may decide,"
+msgstr "Shromáždění se žádá, aby rozhodlo o"
+
+#: motion/signals.py:57
+msgid "Motion preamble"
+msgstr "Úvod návrhu"
+
+#: motion/signals.py:79 motion/views.py:721 motion/views.py:823
+#: motion/views.py:839 motion/templates/motion/category_list.html:6
+#: motion/templates/motion/motion_list.html:7
+#: motion/templates/motion/motion_list.html:20
+msgid "Motions"
+msgstr "Návrhy"
+
+#: motion/signals.py:83
+msgid "Title for PDF document (all motions)"
+msgstr "Název dokumentu PDF (všechny návrhy)"
+
+#: motion/signals.py:90
+msgid "Preamble text for PDF document (all motions)"
+msgstr "Text úvodu dokumentu PDF (všechny návrhy)"
+
+#: motion/signals.py:95
+msgid "Allow to disable versioning"
+msgstr "Povolit vypnutí tvorby nových verzí"
+
+#: motion/signals.py:102
+msgid "Workflow of new motions"
+msgstr "Průběh práce na nových návrzích"
+
+#: motion/signals.py:113
+msgid "Numbered per category"
+msgstr "Číslovat na základě skupin"
+
+#: motion/signals.py:114
+msgid "Serially numbered"
+msgstr "Číslovat běžně"
+
+#: motion/signals.py:115
+msgid "Set it manually"
+msgstr "Nastavit ručně"
+
+#: motion/signals.py:139
+msgid "Simple Workflow"
+msgstr "Jednoduchý průběh práce"
+
+#: motion/signals.py:141
+msgid "submitted"
+msgstr "podáno"
+
+#: motion/signals.py:146 motion/signals.py:173
+msgid "accepted"
+msgstr "přijato"
+
+#: motion/signals.py:148 motion/signals.py:175
+msgid "Accept"
+msgstr "Přijmout"
+
+#: motion/signals.py:149 motion/signals.py:177
+msgid "rejected"
+msgstr "odmítnuto"
+
+#: motion/signals.py:151 motion/signals.py:179
+msgid "Reject"
+msgstr "Odmítnout"
+
+#: motion/signals.py:152
+msgid "not decided"
+msgstr "nerozhodnuto"
+
+#: motion/signals.py:154
+msgid "Do not decide"
+msgstr "Nerozhodovat"
+
+#: motion/signals.py:159
+msgid "Complex Workflow"
+msgstr "Složitý průběh práce"
+
+#: motion/signals.py:161
+msgid "published"
+msgstr "zveřejněno"
+
+#: motion/signals.py:166 motion/views.py:360
+msgid "permitted"
+msgstr "schváleno"
+
+#: motion/signals.py:168
+msgid "Permit"
+msgstr "Schválit"
+
+#: motion/signals.py:181
+msgid "withdrawed"
+msgstr "staženo"
+
+#: motion/signals.py:183
+msgid "Withdraw"
+msgstr "Stáhnout"
+
+#: motion/signals.py:185
+msgid "adjourned"
+msgstr "odloženo"
+
+#: motion/signals.py:187
+msgid "Adjourn"
+msgstr "Odložit"
+
+#: motion/signals.py:189
+msgid "not concerned"
+msgstr "neprobíráno"
+
+#: motion/signals.py:191
+msgid "Do not concern"
+msgstr "Nezaobírat se"
+
+#: motion/signals.py:193
+msgid "commited a bill"
+msgstr "předáno výboru"
+
+#: motion/signals.py:195
+msgid "Commit a bill"
+msgstr "Předat výboru"
+
+#: motion/signals.py:197
+msgid "needs review"
+msgstr "potřeba posouzení"
+
+#: motion/signals.py:199
+msgid "Needs review"
+msgstr "Potřebuje posoudit"
+
+#: motion/signals.py:201
+msgid "rejected (not authorized)"
+msgstr "odmítnuto (není schváleno)"
+
+#: motion/signals.py:203
+msgid "Reject (not authorized)"
+msgstr "Odmítnout (není schváleno)"
+
+#: motion/views.py:186
+msgid "Motion created"
+msgstr "Návrh vytvořen"
+
+#: motion/views.py:231
+msgid "All supporters removed"
+msgstr "Všichni podporovatelé odstraněni"
+
+#: motion/views.py:245
+msgid "Motion version"
+msgstr "Verze návrhu"
+
+#: motion/views.py:247
+msgid "created"
+msgstr "vytvořeno"
+
+#: motion/views.py:247
+msgid "updated"
+msgstr "aktualizováno"
+
+#: motion/views.py:292 utils/views.py:380
+#, python-format
+msgid "%s was successfully deleted."
+msgstr "%s byl úspěšně smazán."
+
+#: motion/views.py:324
+msgid "Version successfully permitted."
+msgstr "Verze úspěšně schválena."
+
+#: motion/views.py:349
+#, python-format
+msgid "Are you sure you want permit version %s?"
+msgstr "Opravdu má být povolena verze %s?"
+
+#: motion/views.py:386
+msgid "At least one version number is not valid."
+msgstr "Alespoň jedno číslo verze není platné."
+
+#: motion/views.py:429
+msgid "You can not support this motion."
+msgstr "Nesmíte podporovat tento návrh."
+
+#: motion/views.py:432
+msgid "You can not unsupport this motion."
+msgstr "Nesmíte odepřít svou podporu pro tento návrh."
+
+#: motion/views.py:442
+msgid "Do you really want to support this motion?"
+msgstr "Skutečně chcete podporovat tento návrh?"
+
+#: motion/views.py:444
+msgid "Do you really want to unsupport this motion?"
+msgstr "Skutečně chcete odepřít svou podporu pro tento návrh?"
+
+#: motion/views.py:457
+msgid "Motion supported"
+msgstr "Návrh podporován"
+
+#: motion/views.py:460
+msgid "Motion unsupported"
+msgstr "Podpora pro návrh stažena"
+
+#: motion/views.py:467
+msgid "You have supported this motion successfully."
+msgstr "Podporoval jste úspěšně tento návrh."
+
+#: motion/views.py:469
+msgid "You have unsupported this motion successfully."
+msgstr "Svou podporu pro návrh jste úspěšně stáhl."
+
+#: motion/views.py:500
+msgid "Poll created"
+msgstr "Hlasování vytvořeno"
+
+#: motion/views.py:501
+msgid "New vote was successfully created."
+msgstr "Nové hlasování bylo úspěšně vytvořeno."
+
+#: motion/views.py:567
+msgid "Poll updated"
+msgstr "Hlasování aktualizováno"
+
+#: motion/views.py:585
+msgid "Poll deleted"
+msgstr "Hlasování smazáno"
+
+#: motion/views.py:612
+msgid "Poll"
+msgstr "Hlasování"
+
+#: motion/views.py:658
+msgid "State changed to"
+msgstr "Stav změněn na"
+
+#: motion/views.py:661
+#, python-format
+msgid "The state of the motion was set to %s."
+msgstr "Stav návrhu byl nastaven na %s."
+
+#: motion/views.py:689
+msgid "Agenda item created"
+msgstr "Položka pořadu jednání vytvořena"
+
+#: motion/views.py:809
+msgid "Summary"
+msgstr "Shrnutí"
+
+#: motion/views.py:810
+#, python-format
+msgid "%(counts)d of %(total)d motions successfully imported."
+msgstr "%(counts)d z %(total)d návrhů úspěšně zavedeno."
+
+#: motion/templates/motion/category_form.html:7
+#: motion/templates/motion/category_form.html:17
+msgid "Edit category"
+msgstr "Upravit skupinu"
+
+#: motion/templates/motion/category_form.html:9
+#: motion/templates/motion/category_form.html:19
+#: motion/templates/motion/category_list.html:13
+msgid "New category"
+msgstr "Nová skupina"
+
+#: motion/templates/motion/category_list.html:41
+msgid "No categories available."
+msgstr "Nejsou dostupné žádné skupiny."
+
+#: motion/templates/motion/motion_detail.html:23
+#: motion/templates/motion/motion_diff.html:21
+msgid "no number"
+msgstr "bez čísla"
+
+#: motion/templates/motion/motion_detail.html:33
+#: motion/templates/motion/motion_list.html:89
+msgid "Print motion as PDF"
+msgstr "Vytisknout návrh jako PDF"
+
+#: motion/templates/motion/motion_detail.html:37
+#: motion/templates/motion/poll_form.html:21
+msgid "Show motion"
+msgstr "Promítnout návrh"
+
+#: motion/templates/motion/motion_detail.html:49
+#: motion/templates/motion/motion_form.html:20
+#: motion/templates/motion/motion_form.html:30
+msgid "Edit motion"
+msgstr "Upravit návrh"
+
+#: motion/templates/motion/motion_detail.html:54
+msgid "Delete motion"
+msgstr "Smazat návrh"
+
+#: motion/templates/motion/motion_detail.html:73
+msgid "This is not the newest version."
+msgstr "Toto není nejnovější verze."
+
+#: motion/templates/motion/motion_detail.html:75
+msgid "Go to the newest version"
+msgstr "Jít na nejnovější verzi"
+
+#: motion/templates/motion/motion_detail.html:80
+msgid "This version is not authorized."
+msgstr "Tato verze není schválena."
+
+#: motion/templates/motion/motion_detail.html:82
+msgid "Go to the authorized version"
+msgstr "Jít na schválenou verzi"
+
+#: motion/templates/motion/motion_detail.html:88
+msgid "Motion text"
+msgstr "Text návrhu"
+
+#: motion/templates/motion/motion_detail.html:102
+msgid "Version history"
+msgstr "Historie verzí"
+
+#: motion/templates/motion/motion_detail.html:108
+msgid "Time"
+msgstr "Čas"
+
+#: motion/templates/motion/motion_detail.html:109
+msgid "Difference"
+msgstr "Rozdíl"
+
+#: motion/templates/motion/motion_detail.html:116
+msgid "This version is authorized"
+msgstr "Tato verze byla schválena"
+
+#: motion/templates/motion/motion_detail.html:119
+msgid "Permit this version"
+msgstr "Schválit tuto verzi"
+
+#: motion/templates/motion/motion_detail.html:151
+msgid "Show log"
+msgstr "Ukázat zápis"
+
+#: motion/templates/motion/motion_detail.html:199
+msgid "vote"
+msgstr "Hlasování"
+
+#: motion/templates/motion/motion_detail.html:201
+msgid "Edit Vote"
+msgstr "Upravit hlasování"
+
+#: motion/templates/motion/motion_detail.html:202
+msgid "Delete Vote"
+msgstr "Smazat hlasování"
+
+#: motion/templates/motion/motion_detail.html:217
+msgid "No results"
+msgstr "Žádné výsledky"
+
+#: motion/templates/motion/motion_detail.html:228
+msgid "New vote"
+msgstr "Nové hlasování"
+
+#: motion/templates/motion/motion_detail.html:245
+msgid "Last changes (of this version)"
+msgstr "Poslední změny (této verze)"
+
+#: motion/templates/motion/motion_detail.html:247
+#: motion/templates/motion/motion_diff.html:36
+#: motion/templates/motion/motion_diff.html:40
+#: motion/templates/motion/motion_list.html:46
+msgid "Last changes"
+msgstr "Poslední změny"
+
+#: motion/templates/motion/motion_detail.html:258
+msgid "Withdraw motion"
+msgstr "Stáhnout návrh"
+
+#: motion/templates/motion/motion_detail.html:267
+msgid "Unsupport"
+msgstr "Nepodporovat"
+
+#: motion/templates/motion/motion_detail.html:273
+msgid "Support"
+msgstr "Podporovat"
+
+#: motion/templates/motion/motion_detail.html:281
+msgid "minimum required supporters"
+msgstr "Nejnižší počet požadovaných podporovatelů"
+
+#: motion/templates/motion/motion_detail.html:288
+msgid "Manage motion"
+msgstr "Spravovat návrh"
+
+#: motion/templates/motion/motion_detail.html:296
+msgid "For administration only:"
+msgstr "Pouze pro správu:"
+
+#: motion/templates/motion/motion_detail.html:298
+msgid "Reset state"
+msgstr "Nastavit stav znovu"
+
+#: motion/templates/motion/motion_diff.html:23
+msgid "Diff view"
+msgstr "Zobrazení změn"
+
+#: motion/templates/motion/motion_diff.html:27
+#: motion/templates/motion/motion_form.html:36
+#: motion/templates/motion/poll_form.html:18
+msgid "Back to motion"
+msgstr "Zpět na návrh"
+
+#: motion/templates/motion/motion_form.html:22
+#: motion/templates/motion/motion_form.html:32
+#: motion/templates/motion/motion_list.html:24
+msgid "New motion"
+msgstr "Nový návrh"
+
+#: motion/templates/motion/motion_form_csv_import.html:5
+#: motion/templates/motion/motion_form_csv_import.html:9
+#: motion/templates/motion/motion_list.html:29
+msgid "Import motions"
+msgstr "Zavést návrhy"
+
+#: motion/templates/motion/motion_form_csv_import.html:15
+msgid "Select a CSV file to import motions"
+msgstr "Vyberte soubor CSV pro zavedení návrhů"
+
+#: motion/templates/motion/motion_form_csv_import.html:17
+#: participant/templates/participant/import.html:17
+msgid "Please note"
+msgstr "Vezměte, prosím, na vědomí"
+
+#: motion/templates/motion/motion_form_csv_import.html:20
+#: participant/templates/participant/import.html:20
+msgid "Required comma separated values"
+msgstr "Vyžadovány čárkou oddělené hodnoty"
+
+#: motion/templates/motion/motion_form_csv_import.html:21
+msgid "identifier, title, text, reason, submitter (clean name), category"
+msgstr "Identifikátor, název, text, zdůvodnění, navrhovatel (křestní jméno příjmení), skupina"
+
+#: motion/templates/motion/motion_form_csv_import.html:24
+msgid ""
+"Identifier, reason, submitter and category are optional and may be empty"
+msgstr "Identifikátor, zdůvodnění, navrhovatel a skupina jsou nepovinné a mohou zůstat prázdné"
+
+#: motion/templates/motion/motion_form_csv_import.html:26
+#: participant/templates/participant/import.html:30
+msgid "The first line (header) is ignored"
+msgstr "První řádek (záhlaví) se přehlíží"
+
+#: motion/templates/motion/motion_form_csv_import.html:28
+#: participant/templates/participant/import.html:32
+msgid "Required CSV file encoding is UTF-8"
+msgstr "Vyžadované kódování souboru CSV je UTF-8"
+
+#: motion/templates/motion/motion_form_csv_import.html:31
+#: participant/templates/participant/import.html:34
+msgid "Use the CSV example file from OpenSlides Wiki."
+msgstr "Použijte ukázkový soubor CSV z OpenSlides Wiki."
+
+#: motion/templates/motion/motion_form_csv_import.html:39
+#: motion/templates/motion/motion_list.html:29
+#: participant/templates/participant/import.html:41
+#: participant/templates/participant/overview.html:25
+msgid "Import"
+msgstr "Zavést"
+
+#: motion/templates/motion/motion_list.html:28
+msgid "Manage categories"
+msgstr "Spravovat skupiny"
+
+#: motion/templates/motion/motion_list.html:31
+msgid "Print all motions as PDF"
+msgstr "Vytisknout všechny návrhy jako PDF"
+
+#: motion/templates/motion/motion_list.html:38
+msgid "#"
+msgstr "#"
+
+#: motion/templates/motion/motion_list.html:39
+msgid "Motion title"
+msgstr "Název návrhu"
+
+#: motion/templates/motion/motion_list.html:65
+msgid "Enough supporters"
+msgstr "Dostačující počet podporovatelů"
+
+#: motion/templates/motion/motion_list.html:68
+msgid "Needs supporters"
+msgstr "Potřebuje podporovatele"
+
+#: motion/templates/motion/poll_form.html:37
+msgid "Option"
+msgstr "Možnost volby"
+
+#: motion/templates/projector/Motion.html:18
+msgid "Poll result"
+msgstr "Výsledek hlasování"
+
+#: motion/templates/projector/Motion.html:36
+msgid "No poll results available."
+msgstr "Nejsou dostupné žádné výsledky hlasování."
+
+#: participant/__init__.py:18 participant/signals.py:57
+msgid "Participant"
+msgstr "Účastník"
+
+#: participant/api.py:80
+#, python-format
+msgid "Ignoring malformed line %d in import file."
+msgstr "Chybový řádek %d zdrojového souboru se přehlíží."
+
+#: participant/api.py:104
+#, python-format
+msgid "Ignoring malformed group id in line %d."
+msgstr "Chybové ID skupiny v řádku %d se přehlíží."
+
+#: participant/api.py:107
+#, python-format
+msgid "Group id %(id)s does not exists (line %(line)d)."
+msgstr "ID skupiny %(id)s neexistuje (řádek %(line)d)."
+
+#: participant/api.py:112
+msgid "Import aborted because of severe errors in the input file."
+msgstr "Zavedení zrušeno na základě vážných chyb ve zdrojovém souboru."
+
+#: participant/forms.py:29 participant/views.py:578
+#: participant/templates/participant/group_overview.html:7
+#: participant/templates/participant/group_overview.html:20
+#: participant/templates/participant/overview.html:24
+#: participant/templates/participant/user_detail.html:53
+msgid "Groups"
+msgstr "Skupiny"
+
+#: participant/forms.py:30
+msgid "Hold down \"Control\", or \"Command\" on a Mac, to select more than one."
+msgstr "Podržte během klepnutí stisknutu klávesu Ctrl (⌘ pro Mac) pro výběr více položek."
+
+#: participant/forms.py:44
+msgid "First name and last name can not both be empty."
+msgstr "Křestní jméno a příjmení nesmí být obě prázdné."
+
+#: participant/forms.py:83
+msgid ""
+"You can not remove the last group containing the permission to manage "
+"participants."
+msgstr "Nesmíte smazat poslední skupinu, která obsahuje oprávnění ke správě účastníků."
+
+#: participant/forms.py:90
+msgid "Permissions"
+msgstr "Oprávnění"
+
+#: participant/forms.py:93 participant/views.py:538 participant/views.py:563
+#: participant/templates/participant/overview.html:7
+#: participant/templates/participant/overview.html:20
+msgid "Participants"
+msgstr "Účastníci"
+
+#: participant/forms.py:144
+msgid ""
+"You can not remove yourself from the last group containing the permission to"
+" manage participants."
+msgstr "Nesmíte smazat sami sebe z poslední skupiny, která obsahuje oprávnění ke správě účastníků."
+
+#: participant/forms.py:152
+msgid ""
+"You can not remove the permission to manage participants from the last group"
+" your are in."
+msgstr "Nesmíte odstranit oprávnění ke správě účastníků z poslední skupiny, ve které jste členem."
+
+#: participant/models.py:31
+msgid "Male"
+msgstr "Muž"
+
+#: participant/models.py:32
+msgid "Female"
+msgstr "Žena"
+
+#: participant/models.py:37 participant/views.py:211
+#: participant/templates/participant/overview.html:50
+#: participant/templates/participant/user_detail.html:49
+msgid "Structure level"
+msgstr "Strukturní úroveň"
+
+#: participant/models.py:38
+msgid "Will be shown after the name."
+msgstr "Bude ukázána po jménu."
+
+#: participant/models.py:41
+msgid "Will be shown before the name."
+msgstr "Bude ukázána před jménem"
+
+#: participant/models.py:44
+#: participant/templates/participant/user_detail.html:39
+msgid "Gender"
+msgstr "Pohlaví"
+
+#: participant/models.py:44 participant/models.py:47
+msgid "Only for filtering the participant list."
+msgstr "Jen k filtrování seznamu účastníků."
+
+#: participant/models.py:46 participant/views.py:211
+#: participant/templates/participant/overview.html:52
+#: participant/templates/participant/user_detail.html:51
+msgid "Committee"
+msgstr "Výbor"
+
+#: participant/models.py:49
+#: participant/templates/participant/user_detail.html:43
+msgid "About me"
+msgstr "O mě"
+
+#: participant/models.py:50
+msgid "Your profile text"
+msgstr "Text ve vašem profilu"
+
+#: participant/models.py:53
+msgid "Only for notes."
+msgstr "Jen pro poznámky."
+
+#: participant/models.py:56
+msgid "Default password"
+msgstr "Přednastavené heslo"
+
+#: participant/models.py:114
+msgid "Can see participants"
+msgstr "Smí vidět účastníky"
+
+#: participant/models.py:115
+msgid "Can manage participants"
+msgstr "Smí spravovat účastníky"
+
+#: participant/models.py:137
+msgid "Use this group as participant"
+msgstr "Použít tuto skupinu jako účastníka"
+
+#: participant/models.py:138
+msgid "For example as submitter of a motion."
+msgstr "Například jako předkladatele návrhu."
+
+#: participant/signals.py:39
+msgid "System URL"
+msgstr "Adresa systému (URL)"
+
+#: participant/signals.py:40 participant/signals.py:48
+msgid "Printed in PDF of first time passwords only."
+msgstr "Objeví se jen v PDF se seznamem prvních hesel"
+
+#: participant/signals.py:43
+msgid "Welcome to OpenSlides!"
+msgstr "Vítejte v OpenSlides!"
+
+#: participant/signals.py:54
+msgid "Sort participants by first name"
+msgstr "Třídit účastníky podle křestních jmen"
+
+#: participant/signals.py:55
+msgid "Disable for sorting by last name"
+msgstr "Vypnout pro třídění podle příjmení"
+
+#: participant/signals.py:103
+msgid "Anonymous"
+msgstr "Neoznačený jménem"
+
+#: participant/signals.py:105
+msgid "Registered"
+msgstr "Přihlášený účastník"
+
+#: participant/signals.py:115
+msgid "Delegates"
+msgstr "Zástupci"
+
+#: participant/signals.py:129 participant/templates/participant/import.html:25
+msgid "Staff"
+msgstr "Zaměstnanci"
+
+#: participant/views.py:160 participant/views.py:166
+msgid "You can not delete yourself."
+msgstr "Nesmíte smazat sami sebe."
+
+#: participant/views.py:187
+msgid "You can not deactivate yourself."
+msgstr "Nesmíte vypnout sami sebe."
+
+#: participant/views.py:206
+msgid "Participant-list"
+msgstr "Seznam účastníků"
+
+#: participant/views.py:207
+msgid "List of Participants"
+msgstr "Seznam účastníků"
+
+#: participant/views.py:210
+msgid "Last Name"
+msgstr "Příjmení"
+
+#: participant/views.py:210
+msgid "First Name"
+msgstr "Křestní jméno"
+
+#: participant/views.py:211
+#: participant/templates/participant/group_overview.html:31
+#: participant/templates/participant/overview.html:51
+msgid "Group"
+msgstr "Skupina"
+
+#: participant/views.py:247
+msgid "Participant-passwords"
+msgstr "Heslo účastníka"
+
+#: participant/views.py:277
+msgid "Account for OpenSlides"
+msgstr "Účet pro přístup k OpenSlides"
+
+#: participant/views.py:279
+#, python-format
+msgid "for %s"
+msgstr "pro %s"
+
+#: participant/views.py:282
+#, python-format
+msgid "User: %s"
+msgstr "Uživatelské jméno: %s"
+
+#: participant/views.py:286
+#, python-format
+msgid "Password: %s"
+msgstr "Heslo: %s"
+
+#: participant/views.py:333
+#, python-format
+msgid "%d new participants were successfully imported."
+msgstr "%d noví účastníci byli úspěšně zavedeni."
+
+#: participant/views.py:344
+msgid "Do you really want to reset the password?"
+msgstr "Má se heslo skutečně nastavit znovu?"
+
+#: participant/views.py:357
+#, python-format
+msgid "The Password for %s was successfully reset."
+msgstr "Heslo pro %s bylo úspěšně nastaveno znovu."
+
+#: participant/views.py:448
+msgid "You can not delete this group."
+msgstr "Nesmíte smazat tuto skupinu."
+
+#: participant/views.py:457
+msgid ""
+"You can not delete the last group containing the permission to manage "
+"participants you are in."
+msgstr "Nesmíte smazat poslední skupinu, ve které jste členem a která obsahuje oprávnění ke správě účastníků."
+
+#: participant/views.py:469
+#, python-format
+msgid ""
+"Installation was successfully! Use %(user)s (password: %(password)s) for "
+"first login.<br><strong>Important:</strong> Please change the password after"
+" first login! Otherwise this message still appears for everyone  and could "
+"be a security risk."
+msgstr "Instalace byla úspěšná! Použijte %(user)s (Heslo: %(password)s) pro první přihlášení.<br><strong>Důležité:</strong> Po prvním přihlášení změňte heslo! V opačném/ případě se tato zpráva bude i nadále ukazovat všem a bude bezpečnostním rizikem."
+
+#: participant/views.py:497
+msgid "User settings successfully saved."
+msgstr "Uživatelské nastavení úspěšně uloženo"
+
+#: participant/views.py:520
+msgid "Password successfully changed."
+msgstr "Heslo bylo úspěšně změněno."
+
+#: participant/templates/participant/edit.html:7
+#: participant/templates/participant/edit.html:17
+#: participant/templates/participant/user_detail.html:26
+msgid "Edit participant"
+msgstr "Upravit účastníka"
+
+#: participant/templates/participant/edit.html:9
+#: participant/templates/participant/edit.html:19
+#: participant/templates/participant/overview.html:23
+msgid "New participant"
+msgstr "Nový účastník"
+
+#: participant/templates/participant/edit.html:30
+msgid "Reset to First Password"
+msgstr "Nastavit znovu na první heslo"
+
+#: participant/templates/participant/group_detail.html:15
+msgid "Show group"
+msgstr "Promítnout skupinu"
+
+#: participant/templates/participant/group_detail.html:26
+#: participant/templates/participant/group_edit.html:7
+#: participant/templates/participant/group_edit.html:17
+msgid "Edit group"
+msgstr "Upravit skupinu"
+
+#: participant/templates/participant/group_detail.html:28
+msgid "Delete group"
+msgstr "Smazat skupinu"
+
+#: participant/templates/participant/group_detail.html:37
+msgid "Members"
+msgstr "Členové"
+
+#: participant/templates/participant/group_detail.html:43
+msgid "No members available."
+msgstr "Nejsou dostupní žádní členové."
+
+#: participant/templates/participant/group_edit.html:9
+#: participant/templates/participant/group_edit.html:19
+#: participant/templates/participant/group_overview.html:22
+msgid "New group"
+msgstr "Nová skupina"
+
+#: participant/templates/participant/group_overview.html:23
+msgid "Back to participants overview"
+msgstr "Zpět na přehled účastníků"
+
+#: participant/templates/participant/group_overview.html:30
+msgid "ID"
+msgstr "ID"
+
+#: participant/templates/participant/group_overview.html:39
+msgid ""
+"The groups 1 ('Anonymous') and 2 ('Registered') are fixed default groups "
+"which can not be deleted. Each created or imported participant is a member "
+"of group 2. Use custom groups to set additional permissions for a subset of "
+"participants."
+msgstr "Skupiny 1 (Neoznačený jménem) a 2 (Přihlášený účastník) jsou pevné výchozí skupiny, které nelze smazat. Každý vytvořený nebo zavedený účastník je členem skupiny 2. Použijte uživatelsky stanovené skupiny k nastavení dodatečných oprávnění pro podmnožinu účastníků."
+
+#: participant/templates/participant/import.html:5
+#: participant/templates/participant/import.html:9
+#: participant/templates/participant/overview.html:25
+msgid "Import participants"
+msgstr "Zavést účastníky"
+
+#: participant/templates/participant/import.html:15
+msgid "Select a CSV file to import participants"
+msgstr "Vyberte soubor CSV pro zavedení účastníků"
+
+#: participant/templates/participant/import.html:21
+msgid ""
+"title, first name, last name, gender, email, group id, structure level, "
+"committee, about me, comment, is active"
+msgstr "Název, křestní jméno, příjmení, pohlaví, E-mail, ID skupiny, strukturní úroveň, výbor, o mě, poznámka jsou zapnuty"
+
+#: participant/templates/participant/import.html:24
+msgid "Default groups"
+msgstr "Výchozí skupiny"
+
+#: participant/templates/participant/import.html:25
+msgid "Delegate"
+msgstr "Zástupce"
+
+#: participant/templates/participant/import.html:28
+msgid ""
+"At least first name or last name have to filled in. All other fields are "
+"optional and may be empty."
+msgstr "Musí být vyplněny alespoň křestní jméno nebo příjmení. Všechna zbývající pole jsou nepovinná a smějí být prázdná."
+
+#: participant/templates/participant/login.html:6
+#: participant/templates/participant/login.html:49 templates/base.html:44
+msgid "Login"
+msgstr "Přihlášení"
+
+#: participant/templates/participant/login.html:21
+msgid "Your username and password were not accepted. Please try again."
+msgstr "Uživatelské jméno a heslo nebyly přijaty. Zkuste to, prosím, znovu."
+
+#: participant/templates/participant/login.html:40
+#: participant/templates/participant/user_detail.html:69
+msgid "Username"
+msgstr "Uživatelské jméno"
+
+#: participant/templates/participant/login.html:44
+msgid "Password"
+msgstr "Heslo"
+
+#: participant/templates/participant/login.html:53
+msgid "Continue as guest"
+msgstr "Pokračovat jako host"
+
+#: participant/templates/participant/overview.html:24
+msgid "All groups"
+msgstr "Všechny skupiny"
+
+#: participant/templates/participant/overview.html:34
+msgid "List of participants"
+msgstr "Seznam účastníků"
+
+#: participant/templates/participant/overview.html:35
+msgid "First time passwords"
+msgstr "První hesla"
+
+#: participant/templates/participant/overview.html:39
+msgid "Print list of participants as PDF"
+msgstr "Vytisknout seznam účastníků jako PDF"
+
+#: participant/templates/participant/overview.html:47
+msgid "Present"
+msgstr "Přítomen"
+
+#: participant/templates/participant/overview.html:55
+#: participant/templates/participant/user_detail.html:73
+msgid "Last Login"
+msgstr "Poslední přihlášení"
+
+#: participant/templates/participant/overview.html:67
+#: participant/templates/participant/overview.html:74
+msgid "present"
+msgstr "Přítomen"
+
+#: participant/templates/participant/overview.html:67
+#: participant/templates/participant/overview.html:74
+msgid "absent"
+msgstr "Nepřítomen"
+
+#: participant/templates/participant/overview.html:112
+#: participant/templates/participant/user_detail.html:15
+msgid "Show participant"
+msgstr "Promítnout účastníka"
+
+#: participant/templates/participant/password_change.html:5
+#: participant/templates/participant/password_change.html:8
+msgid "Password settings"
+msgstr "Nastavení hesla"
+
+#: participant/templates/participant/settings.html:5
+#: participant/templates/participant/settings.html:8 templates/base.html:38
+msgid "Edit profile"
+msgstr "Upravit profil"
+
+#: participant/templates/participant/user_detail.html:28
+msgid "Delete participant"
+msgstr "Smazat účastníka"
+
+#: participant/templates/participant/user_detail.html:38
+msgid "Personal data"
+msgstr "Osobní údaje"
+
+#: participant/templates/participant/user_detail.html:41
+msgid "Email"
+msgstr "E-mail"
+
+#: participant/templates/participant/user_detail.html:48
+msgid "Event data"
+msgstr "Data události"
+
+#: participant/templates/participant/user_detail.html:62
+msgid "The participant is not member of any group."
+msgstr "Účastník není členem žádné skupiny."
+
+#: participant/templates/participant/user_detail.html:68
+msgid "Administrative data"
+msgstr "Administrativní data"
+
+#: participant/templates/participant/user_detail.html:77
+msgid "The participant has not logged in yet."
+msgstr "Účastník ještě není přihlášen."
+
+#: participant/templates/participant/user_widget.html:19
+msgid "No participants available."
+msgstr "Nejsou dostupní žádní účastníci"
+
+#: participant/templates/projector/GroupSlide.html:10
+msgid "participants"
+msgstr "Účastníci"
+
+#: poll/models.py:95
+msgid "Votes invalid"
+msgstr "Neplatné hlasy"
+
+#: poll/models.py:128
+msgid "votes"
+msgstr "Hlasy"
+
+#: projector/models.py:50
+msgid "Can manage the projector"
+msgstr "Smí spravovat promítací přístroj"
+
+#: projector/models.py:51
+msgid "Can see the projector"
+msgstr "Smí vidět promítací přístroj"
+
+#: projector/models.py:52
+msgid "Can see the dashboard"
+msgstr "Smí vidět nástěnku"
+
+#: projector/views.py:195
+msgid "Errors in the form"
+msgstr "Chyby ve formuláři"
+
+#: projector/views.py:364 projector/templates/projector/dashboard.html:16
+#: projector/templates/projector/dashboard.html:19
+msgid "Dashboard"
+msgstr "Nástěnka"
+
+#: projector/views.py:392
+msgid "Projector live view"
+msgstr "Živě přenášený pohled promítacího přístroje"
+
+#: projector/views.py:406
+msgid "Overlays"
+msgstr "Přidání"
+
+#: projector/views.py:416
+msgid "Custom Slides"
+msgstr "Vlastní snímky"
+
+#: projector/templates/projector/dashboard.html:21
+msgid "Manage widgets"
+msgstr "Spravovat doplňky"
+
+#: projector/templates/projector/dashboard.html:21
+msgid "Widgets"
+msgstr "Doplňky"
+
+#: projector/templates/projector/dashboard.html:35
+#: projector/templates/projector/dashboard.html:64
+msgid "Collapse widget content"
+msgstr "Sbalit obsah doplňků"
+
+#: projector/templates/projector/dashboard.html:40
+#: projector/templates/projector/dashboard.html:69
+msgid "Fix widget position"
+msgstr "Určit místo doplňku"
+
+#: projector/templates/projector/live_view_widget.html:14
+msgid "Zoom in"
+msgstr "Přiblížit"
+
+#: projector/templates/projector/live_view_widget.html:17
+msgid "Zoom out"
+msgstr "Oddálit"
+
+#: projector/templates/projector/live_view_widget.html:21
+msgid "Scroll visible view up"
+msgstr "Posunout obraz s viditelnou oblastí nahoru"
+
+#: projector/templates/projector/live_view_widget.html:24
+msgid "Scroll visible view down"
+msgstr "Posunout obraz s viditelnou oblastí dolů"
+
+#: projector/templates/projector/live_view_widget.html:28
+msgid "Reset projector view"
+msgstr "Nastavit pohled promítacího přístroje znovu"
+
+#: projector/templates/projector/new.html:5
+#: projector/templates/projector/new.html:8
+msgid "Custom slide"
+msgstr "Vlastní snímek"
+
+#: projector/templates/projector/overlay_countdown_widget.html:4
+msgid "Countdown for speaking time"
+msgstr "Odpočítávání k vymezení času vyměřeného každému z řečníků"
+
+#: projector/templates/projector/overlay_countdown_widget.html:8
+msgctxt "seconds"
+msgid "s"
+msgstr "s"
+
+#: projector/templates/projector/overlay_countdown_widget.html:9
+msgid "Save time as default"
+msgstr "Uložit čas jako výchozí"
+
+#: projector/templates/projector/overlay_countdown_widget.html:13
+msgid "Reset countdown"
+msgstr "Nastavit odpočítávání znovu"
+
+#: projector/templates/projector/overlay_countdown_widget.html:16
+msgid "Start countdown"
+msgstr "Spustit odpočítávání"
+
+#: projector/templates/projector/overlay_countdown_widget.html:19
+msgid "Stop countdown"
+msgstr "Zastavit odpočítávání"
+
+#: projector/templates/projector/overlay_message_widget.html:5
+msgid "Message"
+msgstr "Oznámení"
+
+#: projector/templates/projector/overlay_message_widget.html:12
+msgid "Clean message"
+msgstr "Vyprázdnit oznámení"
+
+#: projector/templates/projector/select_widgets.html:5
+#: projector/templates/projector/select_widgets.html:8
+msgid "Select widgets"
+msgstr "Vybrat doplňky"
+
+#: projector/templates/projector/select_widgets.html:23
+msgid "No widgets available"
+msgstr "Nejsou dostupné žádné doplňky"
+
+#: templates/404.html:6
+msgid "Page not found."
+msgstr "Strana nenalezena."
+
+#: templates/500.html:6
+msgid "Server Error"
+msgstr "Chyba serveru"
+
+#: templates/base.html:27
+msgid "Home"
+msgstr "Domovská stránka"
+
+#: templates/base.html:27
+msgid "Logo"
+msgstr "Logo"
+
+#: templates/base.html:39
+msgid "Change password"
+msgstr "Změnit heslo"
+
+#: templates/base.html:41
+msgid "Logout"
+msgstr "Odhlásit se"
+
+#: utils/pdf.py:280
+#, python-format
+msgid "As of: %s"
+msgstr "Stav: %s"
+
+#: utils/pdf.py:291 utils/pdf.py:300
+#, python-format
+msgid "Page %s"
+msgstr "Strana %s"
+
+#: utils/tornado_webserver.py:47
+msgid "the machine's local ip address"
+msgstr "Místní adresa IP tohoto počítače"
+
+#: utils/tornado_webserver.py:50
+#, python-format
+msgid "Starting OpenSlides' tornado webserver listening to %(url_string)s"
+msgstr "OpenSlides' Tornado Webserver se spouští na %(url_string)s"
+
+#: utils/utils.py:60 utils/views.py:374
+#, python-format
+msgid "Do you really want to delete %s?"
+msgstr "Opravdu chcete smazat %s?"
+
+#: utils/utils.py:107
+msgid "Sorry, you have no rights to see this page."
+msgstr "Promiňte, nemáte žádné oprávnění k tomu, abyste se mohl podívat na tuto stránku."
+
+#: utils/views.py:167
+msgid "Are you sure?"
+msgstr "Jste si jistý?"
+
+#: utils/views.py:168
+msgid "Thank you for your answer"
+msgstr "Děkuji za vaši odpověď"
+
+#: utils/views.py:345
+#, python-format
+msgid "%s was successfully modified."
+msgstr "%s byl úspěšně změněn."
+
+#: utils/views.py:355
+#, python-format
+msgid "%s was successfully created."
+msgstr "%s byl úspěšně vytvořen."
+
+#: utils/views.py:393
+msgid "undefined-filename"
+msgstr "Nestanovený-Název souboru"
+
+#: utils/jsonfield/fields.py:22
+msgid "Enter valid JSON"
+msgstr "Zadejte platný JSON"

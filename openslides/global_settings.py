@@ -33,6 +33,7 @@ LANGUAGES = (
     ('de', ugettext('German')),
     ('en', ugettext('English')),
     ('fr', ugettext('French')),
+    ('cs', ugettext('Czech')),
 )
 
 # If you set this to False, Django will make some optimizations so as not
