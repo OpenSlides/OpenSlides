@@ -1,0 +1,260 @@
+# Language file (for JavaScript) of OpenSlides used by transifex:
+# https://www.transifex.com/projects/p/openslides/
+# Copyright (C) 2011–2013 by OpenSlides team, see AUTHORS.
+# This file is distributed under the same license as the OpenSlides package.
+# Translators:
+# emanuel <emanuel@intevation.de>, 2013
+# emanuelschuetze <emanuelschuetze@gmail.com>, 2013
+# ostcar <mail@oshahn.de>, 2012
+# fri <pavelfric@seznam.cz>, 2013
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenSlides\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-07-07 23:49+0200\n"
+"PO-Revision-Date: 2013-07-15 23:01+0000\n"
+"Last-Translator: fri <pavelfric@seznam.cz>\n"
+"Language-Team: Czech (http://www.transifex.com/projects/p/openslides/language/cs/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: cs\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:9
+#: agenda/static/javascript/agenda-config-datepicker.js:39
+msgid "en"
+msgstr "en"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:10
+msgid "previous month"
+msgstr "Předchozí měsíc"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:11
+msgid "next month"
+msgstr "Další měsíc"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:13
+msgid "January"
+msgstr "Leden"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:13
+msgid "February"
+msgstr "Únor"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:13
+msgid "March"
+msgstr "Březen"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:14
+msgid "April"
+msgstr "Duben"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:14
+#: agenda/static/javascript/agenda-config-datepicker.js:20
+msgid "May"
+msgstr "Květen"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:14
+msgid "June"
+msgstr "Červen"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:15
+msgid "July"
+msgstr "Červenec"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:15
+msgid "August"
+msgstr "Srpen"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:15
+msgid "September"
+msgstr "Září"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:16
+msgid "October"
+msgstr "Říjen"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:16
+msgid "November"
+msgstr "Listopad"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:16
+msgid "December"
+msgstr "Prosinec"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:19
+msgid "Jan"
+msgstr "Led"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:19
+msgid "Feb"
+msgstr "Úno"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:19
+msgid "Mar"
+msgstr "Bře"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:20
+msgid "Apr"
+msgstr "Dub"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:20
+msgid "Jun"
+msgstr "Čer"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:21
+msgid "Jul"
+msgstr "Čec"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:21
+msgid "Aug"
+msgstr "Srp"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:21
+msgid "Sep"
+msgstr "Zář"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:22
+msgid "Oct"
+msgstr "Říj"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:22
+msgid "Nov"
+msgstr "Lis"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:22
+msgid "Dec"
+msgstr "Pro"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:25
+msgid "Sunday"
+msgstr "Neděle"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:25
+msgid "Monday"
+msgstr "Pondělí"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:25
+msgid "Tuesdey"
+msgstr "Úterý"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:25
+msgid "Wednesday"
+msgstr "Středa"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:26
+msgid "Thursday"
+msgstr "Čtvrtek"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:26
+msgid "Friday"
+msgstr "Pátek"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:26
+msgid "Saturday"
+msgstr "Sobota"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:29
+#: agenda/static/javascript/agenda-config-datepicker.js:33
+msgid "Su"
+msgstr "Ne"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:29
+#: agenda/static/javascript/agenda-config-datepicker.js:33
+msgid "Mo"
+msgstr "Po"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:29
+#: agenda/static/javascript/agenda-config-datepicker.js:33
+msgid "Tu"
+msgstr "Út"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:29
+#: agenda/static/javascript/agenda-config-datepicker.js:33
+msgid "We"
+msgstr "St"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:30
+#: agenda/static/javascript/agenda-config-datepicker.js:34
+msgid "Th"
+msgstr "Čt"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:30
+#: agenda/static/javascript/agenda-config-datepicker.js:34
+msgid "Fr"
+msgstr "Pá"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:30
+#: agenda/static/javascript/agenda-config-datepicker.js:34
+msgid "Sa"
+msgstr "So"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:45
+msgid "Time"
+msgstr "Čas"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:46
+msgid "Hour"
+msgstr "Hodina"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:47
+msgid "Minute"
+msgstr "Minuta"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:48
+msgid "Current time"
+msgstr "Nynější čas"
+
+#: agenda/static/javascript/agenda-config-datepicker.js:49
+msgid "Close"
+msgstr "Zavřít"
+
+#: agenda/static/javascript/agenda.js:17
+#, c-format
+msgid ", of which %s are hidden."
+msgstr ", z toho %s skryto."
+
+#: static/javascript/dataTables.bootstrap.js:14
+msgid "All"
+msgstr "Vše"
+
+#: static/javascript/dataTables.bootstrap.js:19
+msgid "_MENU_ entries per page"
+msgstr "_MENU_ záznamů na stranu"
+
+#: static/javascript/dataTables.bootstrap.js:20
+msgid "Search:"
+msgstr "Hledání:"
+
+#: static/javascript/dataTables.bootstrap.js:21
+msgid "Showing _START_ to _END_ of _TOTAL_ entries"
+msgstr "_START_ až _END_ z _TOTAL_ záznamů"
+
+#: static/javascript/dataTables.bootstrap.js:22
+msgid "Showing 0 entries"
+msgstr "0 záznamů"
+
+#: static/javascript/dataTables.bootstrap.js:23
+msgid "(filtered from _MAX_ total entries)"
+msgstr "(filtrováno z _MAX_ záznamů)"
+
+#: static/javascript/dataTables.bootstrap.js:24
+msgid "No matching records found"
+msgstr "Nebyly nalezeny žádné odpovídající záznamy"
+
+#: static/javascript/dataTables.bootstrap.js:26
+msgid "First"
+msgstr "První"
+
+#: static/javascript/dataTables.bootstrap.js:27
+msgid "Last"
+msgstr "Poslední"
+
+#: static/javascript/dataTables.bootstrap.js:28
+msgid "Next"
+msgstr "Další"
+
+#: static/javascript/dataTables.bootstrap.js:29
+msgid "Previous"
+msgstr "Předchozí"
