@@ -59,8 +59,8 @@ class Overview(TemplateView):
         duration = timedelta()
 
         for item in items:
-            if not item.closed and (item.duration is not None
-                                    and len(item.duration) > 0):
+            if (item.duration is not None and
+                    len(item.duration) > 0):
                 duration_list = item.duration.split(':')
                 duration += timedelta(hours=int(duration_list[0]),
                                       minutes=int(duration_list[1]))
