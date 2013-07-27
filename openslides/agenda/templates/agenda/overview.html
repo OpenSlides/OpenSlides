@@ -111,7 +111,7 @@
         {% if items %}
         <ol class="agenda_list {% if perms.agenda.can_manage_agenda %}sortable{% endif %}">
             {% recursetree items %}
-            <li class="draggable{% if item.active %} activeline{% endif %}{% if item.closed %} offline{% endif %}">
+            <li class="draggable">
                 {% include "agenda/item_row.html" %}
                 {% if not node.is_leaf_node %}
                 <ol>

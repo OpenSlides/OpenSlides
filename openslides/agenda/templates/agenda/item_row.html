@@ -45,9 +45,9 @@
     <div class="duration">
         {% if node.duration %}
             {{ node.duration }} h
-            {% if start and end %}
+            {% if node.tooltip %}
                 <a class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'End' %}:
-                {{ end|date:"DATETIME_FORMAT" }}"><i class="icon-clock"></i>
+                {{ node.tooltip|date:"DATETIME_FORMAT" }}"><i class="icon-clock"></i>
                 </a>
             {% endif %}
         {% endif %}
