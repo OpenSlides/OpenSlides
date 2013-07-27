@@ -130,9 +130,11 @@
                         <a href="{% model_url version %}" title="{% trans 'Show' %}" class="btn btn-mini">
                             <i class="icon-search"></i>
                         </a>
-                        <a href="{% model_url version 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
-                            <i class="icon-remove"></i>
-                        </a>
+                        {% if version != motion.active_version %}
+                            <a href="{% model_url version 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
+                                <i class="icon-remove"></i>
+                            </a>
+                        {% endif %}
                     </td>
                 </tr>
                 {% if forloop.last %}

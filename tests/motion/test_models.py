@@ -150,7 +150,7 @@ class ModelTest(TestCase):
         motion = Motion.objects.create(title='foo', text='bar', identifier='')
         motion.active_version = None
         motion.save(update_fields=['active_version'])
-        self.assertEqual(str(motion), 'foo')  # motion.__unicode__() did rais an AttributeError
+        self.assertEqual(str(motion), 'foo')  # motion.__unicode__() raised an AttributeError
 
 
 class ConfigTest(TestCase):
