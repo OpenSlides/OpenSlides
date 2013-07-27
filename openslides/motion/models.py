@@ -100,7 +100,7 @@ class Motion(SlideMixin, models.Model):
         """
         Return a human readable name of this motion.
         """
-        return self.active_version.title
+        return self.get_active_version().title
 
     # TODO: Use transaction
     def save(self, use_version=None, *args, **kwargs):
