@@ -303,10 +303,19 @@ class VersionDeleteView(DeleteView):
     success_url_name = 'motion_detail'
 
     def get_object(self):
-        motion_id = int(self.kwargs.get('pk'))
-        version_number = int(self.kwargs.get('version_number'))
-        return MotionVersion.objects.get(motion=motion_id,
-                                         version_number=version_number)
+        try:
+            motion = Motion.objects.get(pk=int(self.kwargs.get('pk')))
+        except Motion.DoesNotExist:
+            raise Http404('Motion %s not found.' % self.kwargs.get('pk'))
+        try:
+            version = MotionVersion.objects.get(
+                motion=motion,
+                version_number=int(self.kwargs.get('version_number')))
+        except MotionVersion.DoesNotExist:
+            raise Http404('Version %s not found.' % self.kwargs.get('version_number'))
+        if version == motion.active_version:
+            raise Http404('You can not delete the active version of a motion.')
+        return version
 
     def get_success_url_name_args(self):
         return (self.object.motion_id, )
@@ -333,7 +342,7 @@ class VersionPermitView(SingleObjectMixin, QuestionMixin, RedirectView):
         try:
             self.version = self.object.versions.get(version_number=int(version_number))
         except MotionVersion.DoesNotExist:
-            raise Http404('Version %s not found' % version_number)
+            raise Http404('Version %s not found.' % version_number)
         return super(VersionPermitView, self).get(*args, **kwargs)
 
     def get_url_name_args(self):
