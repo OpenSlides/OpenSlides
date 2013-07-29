@@ -11,7 +11,7 @@
 from django.test.client import Client
 
 from openslides.utils.test import TestCase
-from openslides import get_version
+from openslides import __version__
 from openslides.participant.models import User
 
 
@@ -21,4 +21,4 @@ class VersionViewTest(TestCase):
         client = Client()
         client.login(username='CoreMaximilian', password='default')
         response = client.get('/version/')
-        self.assertContains(response, get_version(), status_code=200)
+        self.assertContains(response, __version__, status_code=200)

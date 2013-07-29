@@ -371,7 +371,7 @@ class MainWindow(wx.Frame):
         logo_box.Add(logo_wide)
         logo_box.AddStretchSpacer()
 
-        version_str = _("Version {0}").format(openslides.get_version())
+        version_str = _("Version {0}").format(openslides.__version__)
         lb_version = wx.StaticText(panel, label=version_str)
         font = lb_version.GetFont()
         font.SetPointSize(8)
@@ -601,7 +601,7 @@ class MainWindow(wx.Frame):
     def on_about_clicked(self, evt):
         info = wx.AboutDialogInfo()
         info.SetName("OpenSlides")
-        info.SetVersion(openslides.get_version())
+        info.SetVersion(openslides.__version__)
         info.SetDescription(_(
             "OpenSlides is a free web based presentation and "
             "assembly system.\n"
