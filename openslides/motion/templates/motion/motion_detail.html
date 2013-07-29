@@ -69,18 +69,18 @@
     {# TODO: show only for workflow with versioning #}
     {% with last_version=motion.get_last_version active_version=motion.get_active_version %}
         {% if version.version_number != last_version.version_number %}
-            <span class="label label-warning">
+            <p><span class="label label-warning">
                 <i class="icon-warning-sign icon-white"></i> {% trans "This is not the newest version." %}
             </span>
             <a href="{% model_url last_version %}" class="btn btn-small">{% trans "Go to the newest version" %}
-            (# {{ last_version.version_number }})</a>
+            (# {{ last_version.version_number }})</a></p>
         {% endif %}
         {% if version.version_number != active_version.version_number %}
-            <span class="label label-warning">
+            <p><span class="label label-warning">
                 <i class="icon-warning-sign icon-white"></i> {% trans "This version is not authorized." %}
             </span>
             <a href="{% model_url active_version %}" class="btn btn-small">{% trans "Go to the authorized version" %}
-            (# {{ active_version.version_number }})</a>
+            (# {{ active_version.version_number }})</a></p>
         {% endif %}
     {% endwith %}
 
