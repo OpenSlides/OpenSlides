@@ -50,6 +50,13 @@ class Overview(TemplateView):
         else:
             items = Item.objects.filter(type__exact=Item.AGENDA_ITEM)
 
+        # Save the items as a list (not a queryset). This is important,
+        # because in other case, django-mtpp reloads the items in the
+        # template. But we add some attributes (in this function), which are
+        # not in the database and would be lost if the items were reloaded.
+        # TODO: Try to remove this line in later versions of django-mptt
+        items = list(items)
+
         start = config['agenda_start_event_date_time']
         if start is None or len(start) == 0:
             start = None
@@ -59,8 +66,8 @@ class Overview(TemplateView):
         duration = timedelta()
 
         for item in items:
-            if not item.closed and (item.duration is not None
-                                    and len(item.duration) > 0):
+            if (item.duration is not None and
+                    len(item.duration) > 0):
                 duration_list = item.duration.split(':')
                 duration += timedelta(hours=int(duration_list[0]),
                                       minutes=int(duration_list[1]))

@@ -4,9 +4,24 @@
 
 http://openslides.org
 
-
-Version 1.4.1 (unreleased)
+Version 1.4.2 (unreleased)
 ==========================
+
+
+Version 1.4.1 (2013-07-29)
+==========================
+[https://github.com/OpenSlides/OpenSlides/issues?milestone=11]
+
+- Fix tooltip which shows the end of each agenda item.
+- Fix duration of agenda with closed agenda items.
+- Disable deleting active version of a motion.
+- Start browser on custom IP address.
+- Fix wrong URLs to polls in motion detail view.
+- Add Czech translation.
+
+
+Version 1.4 (2013-07-10)
+======================== 
 [https://github.com/OpenSlides/OpenSlides/issues?milestone=7]
 
 Agenda:

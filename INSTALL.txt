@@ -1,6 +1,6 @@
-==============================================
- Installation instructions for OpenSlides 1.4
-==============================================
+================================================
+ Installation instructions for OpenSlides 1.4.1
+================================================
 
 Content
 =======
@@ -90,7 +90,7 @@ II.  Installation on GNU/Linux and MacOSX using the package from openslides.org
 
   2. Follow the same steps as in I. but use in step 3.
 
-        $ pip install openslides-1.4.tar.gz
+        $ pip install openslides-1.4.1.tar.gz
 
      instead of $ pip install openslides.
 
