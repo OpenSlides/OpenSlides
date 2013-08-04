@@ -4,7 +4,7 @@
 <ul style="line-height: 180%">
     {% trans 'I am on the list of speakers of the following items:' %}
     {% for item in items %}
-        <li><a href="{% model_url item %}">{{ item }}</a></li>
+        <li><a href="{{ item|absolute_url }}">{{ item }}</a></li>
     {% empty %}
         <li><i>{% trans 'None' %}</i></li>
     {% endfor %}
@@ -15,7 +15,7 @@
     {% trans 'I submitted the following motions:' %}
     {% for motion in submitted_motions %}
         <li>
-            <a href="{% model_url motion %}">
+            <a href="{{ motion|absolute_url }}">
                 {{ motion.identifier|add:' | '|default:'' }}
                 {{ motion }}
             </a>
@@ -31,7 +31,7 @@
     {% trans 'I support the following motions:' %}
     {% for motion in supported_motions %}
         <li>
-            <a href="{% model_url motion %}">
+            <a href="{{ motion|absolute_url }}">
                 {% if motion.identifier %}
                     [# {{ motion.identifier }}]
                 {% else %}
@@ -50,7 +50,7 @@
 <ul style="line-height: 180%">
     {% trans 'I am candidate for the following elections:' %}
     {% for assignment in assignments %}
-        <li><a href="{% model_url assignment %}">{{ assignment }}</a></li>
+        <li><a href="{{ assignment|absolute_url }}">{{ assignment }}</a></li>
     {% empty %}
         <li><i>{% trans 'None' %}</i></li>
     {% endfor %}

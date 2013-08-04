@@ -29,8 +29,8 @@ from openslides.utils.views import (
     DetailView, FormView, SingleObjectMixin)
 from openslides.utils.template import Tab
 from openslides.utils.utils import html_strong
-from openslides.projector.api import get_active_slide, get_slide_from_sid
-from openslides.projector.projector import Widget, SLIDE
+from openslides.projector.api import get_active_slide, update_projector
+from openslides.projector.projector import Widget
 from .models import Item, Speaker
 from .forms import ItemOrderForm, ItemForm, AppendSpeakerForm, RelatedItemForm
 
@@ -83,14 +83,21 @@ class Overview(TemplateView):
             (duration.days * 24 + duration.seconds / 3600.0),
             (duration.seconds / 60.0 % 60))
 
+        active_slide = get_active_slide()
+        if active_slide['callback'] == 'agenda':
+            agenda_active = active_slide.get('pk', 'agenda') == 'agenda'
+            active_type = active_slide.get('type', 'text')
+        else:
+            agenda_is_active = None
+            active_type = None
+
         context.update({
             'items': items,
-            'active_sid': get_active_slide(only_sid=True),
+            'agenda_is_active': agenda_is_active,
             'duration': duration,
             'start': start,
             'end': end,
-            'summary': config['presentation_argument'] == 'summary',
-            'show_list': config['presentation_argument'] == 'show_list_of_speakers'})
+            'active_type': active_type})
         return context
 
     @transaction.commit_manually
@@ -100,6 +107,7 @@ class Overview(TemplateView):
                 request,
                 _('You are not authorized to manage the agenda.'))
             return self.render_to_response(context)
+
         transaction.commit()
         for item in Item.objects.all():
             form = ItemOrderForm(request.POST, prefix="i%d" % item.id)
@@ -121,6 +129,11 @@ class Overview(TemplateView):
         # TODO: assure, that it is a valid tree
         context = self.get_context_data(**kwargs)
         transaction.commit()
+
+        if get_active_slide()['callback'] == 'agenda':
+            update_projector()
+        context = self.get_context_data(**kwargs)
+        transaction.commit()
         return self.render_to_response(context)
 
 
@@ -138,11 +151,16 @@ class AgendaItemView(SingleObjectMixin, FormView):
     def get_context_data(self, **kwargs):
         self.object = self.get_object()
         list_of_speakers = self.object.get_list_of_speakers()
+
+        active_slide = get_active_slide()
+        active_type = active_slide.get('type', None)
+
         kwargs.update({
             'object': self.object,
             'list_of_speakers': list_of_speakers,
-            'is_on_the_list_of_speakers': Speaker.objects.filter(item=self.object, begin_time=None, person=self.request.user).exists(),
-            'show_list': config['presentation_argument'] == 'show_list_of_speakers',
+            'is_on_the_list_of_speakers': Speaker.objects.filter(
+                item=self.object, begin_time=None, person=self.request.user).exists(),
+            'active_type': active_type,
         })
         return super(AgendaItemView, self).get_context_data(**kwargs)
 
@@ -486,11 +504,14 @@ class CurrentListOfSpeakersView(RedirectView):
         """
         Returns the current Item, or None, if the current Slide is not an Agenda Item.
         """
-        slide = get_slide_from_sid(get_active_slide(only_sid=True), element=True)
-        if not isinstance(slide, Item):
-            return None
+        active_slide = get_active_slide()
+        if active_slide['callback'] == 'agenda':
+            try:
+                return Item.objects.get(pk=active_slide.get('pk', None))
+            except Item.DoesNotExist:
+                return None
         else:
-            return slide
+            return None
 
     def get_redirect_url(self):
         """
@@ -583,6 +604,14 @@ def get_widgets(request):
     """
     Returns the agenda widget for the projector tab.
     """
+    active_slide = get_active_slide()
+    if active_slide['callback'] == 'agenda':
+        agenda_is_active = active_slide.get('pk', 'agenda') == 'agenda'
+        active_type = active_slide.get('type', 'text')
+    else:
+        agenda_is_active = None
+        active_type = None
+
     return [
         Widget(
             request,
@@ -590,10 +619,9 @@ def get_widgets(request):
             display_name=_('Agenda'),
             template='agenda/widget.html',
             context={
-                'agenda': SLIDE['agenda'],
+                'agenda_is_active': agenda_is_active,
                 'items': Item.objects.all(),
-                'summary': config['presentation_argument'] == 'summary',
-                'speakers': config['presentation_argument'] == 'show_list_of_speakers'},
+                'active_type': active_type},
             permission_required='projector.can_manage_projector',
             default_column=1,
             default_weight=20),

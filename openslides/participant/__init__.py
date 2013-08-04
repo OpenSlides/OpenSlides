@@ -13,6 +13,7 @@
 from django.utils.translation import ugettext_noop
 
 from . import signals
+from . import slides
 
 
 NAME = ugettext_noop('Participant')

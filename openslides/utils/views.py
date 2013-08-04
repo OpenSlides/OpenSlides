@@ -480,6 +480,7 @@ def send_register_tab(sender, request, context, **kwargs):
         extra_stylefiles = context['extra_stylefiles']
     else:
         extra_stylefiles = []
+    # TODO: Do not go over the filesystem by any request
     for app in settings.INSTALLED_APPS:
         try:
             mod = import_module(app + '.views')

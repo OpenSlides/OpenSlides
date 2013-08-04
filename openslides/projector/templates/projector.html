@@ -1,0 +1,34 @@
+{% load tags %}
+{% load i18n %}
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="{{LANGUAGE_CODE}}">
+    <head>
+        <link type="text/css" rel="stylesheet" href="{% static 'styles/projector.css' %}">
+        <link rel="shortcut icon" href="{% static 'img/favicon.png' %}" type="image/png" />
+        <title>{{ 'event_name'|get_config }} – {% trans 'Projector' %}</title>
+    </head>
+    <body>
+        <div id="header">
+            <div id="logo"><img src="{% static 'img/logo-projector.png' %}"></div>
+            <div class="event_name">{% get_config 'event_name' %}</div>
+            <div class="event_description">{% get_config 'event_description' %}</div>
+        </div>
+
+        <div id="overlays">
+            {{ overlays }}
+        </div>
+
+        <div id="content" {% if reload %}class="reload"{% endif %}>
+            {{ content }}
+        </div>
+        <script type="text/javascript" src="{% static 'javascript/jquery.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'javascript/projector.js' %}"></script>
+        <script type="text/javascript">
+            {% for js in overlay_js %}
+                projector.update_data({{ js|safe }});
+            {% endfor %}
+        </script>
+    </body>
+</html>

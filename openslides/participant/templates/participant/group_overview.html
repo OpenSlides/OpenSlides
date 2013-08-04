@@ -40,7 +40,7 @@
             {% endif %}
             </td>
             <td>
-                <a href="{% model_url group 'view' %}">{% trans group.name %}</a>
+                <a href="{{ group|absolute_url }}">{% trans group.name %}</a>
             </td>
             <td>
                 <span style="width: 1px; white-space: nowrap;">

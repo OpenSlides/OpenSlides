@@ -1,0 +1,9 @@
+{% load i18n %}
+
+<h1>{% if title %}{{ title }}{% else %}{% trans "Agenda" %}{% endif %}</h1>
+
+<ul class="itemlist">
+    {% for item in items %}
+        <li{% if item.closed %} class="closed" {% endif %}>{{ item }}</li>
+    {% endfor %}
+</ul>

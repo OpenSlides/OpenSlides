@@ -22,10 +22,10 @@
     <small class="pull-right">
     <a href="{% url 'item_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
     {% if perms.projector.can_manage_projector %}
-        <a href="{% url 'projector_activate_slide' item.sid  %}"
-            class="activate_link btn btn-mini {% if item.active and not show_list %}btn-primary{% endif %}"
+        <a href="{{ item|absolute_url:'projector' }}"
+            class="activate_link btn btn-mini {% if item.is_active and active_type != 'list_of_speakers' %}btn-primary{% endif %}"
             rel="tooltip" data-original-title="{% trans 'Show item' %}">
-            <i class="icon icon-facetime-video {% if item.active and not show_list %}icon-white{% endif %}"></i>
+            <i class="icon icon-facetime-video {% if item.is_active and active_type != 'list_of_speakers' %}icon-white{% endif %}"></i>
         </a>
     {% endif %}
     {% if perms.agenda.can_manage_agenda %}
@@ -35,8 +35,8 @@
             <span class="caret"></span>
         </a>
         <ul class="dropdown-menu pull-right">
-            <li><a href="{% model_url item 'update' %}"><i class="icon-pencil"></i> {% trans 'Edit item' %}</a></li>
-            <li><a href="{% model_url item 'delete' %}"><i class="icon-remove"></i> {% trans 'Delete item' %}</a></li>
+            <li><a href="{{ item|absolute_url:'update' }}"><i class="icon-pencil"></i> {% trans 'Edit item' %}</a></li>
+            <li><a href="{{ item|absolute_url:'delete' }}"><i class="icon-remove"></i> {% trans 'Delete item' %}</a></li>
         </ul>
     {% endif %}
     </div>
@@ -68,10 +68,10 @@
     {% endif %}
 {% endif %}
 {% if perms.projector.can_manage_projector %}
-    <a href="{% url 'projector_activate_slide' item.sid 'show_list_of_speakers' %}"
-        class="activate_link btn btn-mini {% if item.active and show_list %}btn-primary{% endif %}"
+    <a href="{{ item|absolute_url:'projector_list_of_speakers' }}"
+        class="activate_link btn btn-mini {% if item.is_active and active_type == 'list_of_speakers' %}btn-primary{% endif %}"
         rel="tooltip" data-original-title="{% trans 'Show list of speakers' %}">
-        <i class="icon icon-bell {% if item.active and show_list %}icon-white{% endif %}"></i>
+        <i class="icon icon-bell {% if item.is_active and active_type == 'list_of_speakers' %}icon-white{% endif %}"></i>
         {% trans 'Show list' %}
     </a>
 {% endif %}
@@ -119,15 +119,15 @@
             {% else %}
                 <small class="grey">[{{ speaker_dict.speaker.begin_time }}{% if speaker_dict.type == 'old_speaker' %} – {{ speaker_dict.speaker.end_time }}{% endif %}]</small>
             {% endif %}
-            <a href="{% model_url speaker_dict.speaker %}">{{ speaker_dict.speaker }}</a>
+            <a href="{{ speaker_dict.speaker|absolute_url }}">{{ speaker_dict.speaker }}</a>
             {% if perms.agenda.can_manage_agenda %}
                 {% if speaker_dict.type == 'actual_speaker' %}
                     <a href="{% url 'agenda_speaker_end_speach' item.pk %}" class="btn btn-mini btn-danger"><i class="icon-bell icon-white"></i> {% trans 'End speach' %}</a>
                 {% elif speaker_dict.type == 'coming_speaker' %}
-                    <a href="{% url 'agenda_speaker_speak' item.pk speaker_dict.speaker.person.person_id %}" 
+                    <a href="{% url 'agenda_speaker_speak' item.pk speaker_dict.speaker.person.person_id %}"
                     class="btn btn-mini"><i class="icon-bell"></i> {% trans "Begin speach" %}</a>
                 {% endif %}
-                <a href="{% model_url speaker_dict.speaker 'delete' %}" 
+                <a href="{{ speaker_dict.speaker|absolute_url:'delete' }}"
                     rel="tooltip" data-original-title="{% trans 'Delete' %}" class="btn btn-mini">
                     <i class="icon-remove"></i>
                 </a>
