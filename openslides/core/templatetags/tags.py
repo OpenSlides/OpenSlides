@@ -10,6 +10,8 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+import warnings
+
 from django import template
 from django.utils.translation import ugettext as _
 from openslides.config.api import config
@@ -35,8 +37,23 @@ def trans(value):
 
 @register.simple_tag
 def model_url(object, link='view'):
-    # TODO: Rename to object_url
+    warnings.warn("model_url is deprecated; use absolute_url instead",
+                  DeprecationWarning)
     return object.get_absolute_url(link)
+
+
+@register.filter
+def absolute_url(model, link='detail'):
+    """
+    Returns the absolute_url to a model. The 'link' argument decides which url
+    will be returned. See get_absolute_url() in the model.
+
+    Example: {{ motion|absolute_url:'delete' }}
+    """
+    try:
+        return model.get_absolute_url(link)
+    except ValueError:
+        return ''
 
 
 @register.filter
