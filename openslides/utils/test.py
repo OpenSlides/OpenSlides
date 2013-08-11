@@ -25,5 +25,6 @@ class TestCase(_TestCase):
     def _pre_setup(self, *args, **kwargs):
         return_value = super(TestCase, self)._pre_setup(*args, **kwargs)
         post_database_setup.send(sender=self)
-        config.setup_cache()
+        # Resetting the config object by deleting the cache
+        del config._cache
         return return_value
