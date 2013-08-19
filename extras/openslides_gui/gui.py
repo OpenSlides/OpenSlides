@@ -520,6 +520,9 @@ class MainWindow(wx.Frame):
         if not last_backup is None:
             self.last_backup = datetime.datetime.strptime(
                 last_backup, "%Y-%m-%d %H:%M:%S")
+        server_settings = settings.get("server_settings", {})
+        setattr_unless_none("host", server_settings.get("host"))
+        setattr_unless_none("port", server_settings.get("port"))
 
     def save_gui_settings(self):
         if self.last_backup is None:
@@ -534,6 +537,9 @@ class MainWindow(wx.Frame):
                 "interval_unit": self.backupdb_interval_unit,
                 "last_backup": last_backup
             },
+            "server_settings": {
+                "host": self.host,
+                "port": self.port,
         }
 
         dp = os.path.dirname(self.gui_settings_path)
@@ -613,7 +619,10 @@ class MainWindow(wx.Frame):
             self.cmd_run_ctrl.cancel_command()
             return
 
-        args = ["--address", self._host, "--port", self._port]
+        if self._host == "0.0.0.0":
+            args = ["--port", self._port]
+        else:
+            args = ["--address", self._host, "--port", self._port]
         if not self.cb_start_browser.GetValue():
             args.append("--no-browser")
 

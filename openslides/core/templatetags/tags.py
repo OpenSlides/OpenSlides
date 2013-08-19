@@ -39,7 +39,10 @@ def trans(value):
 def model_url(object, link='view'):
     warnings.warn("model_url is deprecated; use absolute_url instead",
                   DeprecationWarning)
-    return object.get_absolute_url(link)
+    try:
+        return object.get_absolute_url(link)
+    except ValueError:
+        return ''
 
 
 @register.filter
