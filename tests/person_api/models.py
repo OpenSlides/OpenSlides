@@ -13,6 +13,9 @@ class TestPerson(PersonMixin, models.Model):
     def __unicode__(self):
         return self.name
 
+    def get_absolute_url(self, link='detail'):
+        return 'absolute_url_of_test_person'
+
 
 class TestPersonToPerson(object):
     def __init__(self, person_prefix_filter=None, id_filter=None):

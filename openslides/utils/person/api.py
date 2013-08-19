@@ -51,6 +51,20 @@ class Person(object):
         """
         return ''
 
+    def get_absolute_url(self, link='detail'):
+        """
+        Return an absolute url for the person.
+
+        The argument 'link' affects which url it is. Typically it is one of:
+        * detail
+        * edit
+        * delete
+
+        You should raise an 'ValueError', if your person does not have
+        one of this links.
+        """
+        raise ValueError('This person object has no url.')
+
 
 class Persons(object):
     """

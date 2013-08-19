@@ -36,7 +36,10 @@ def trans(value):
 @register.simple_tag
 def model_url(object, link='view'):
     # TODO: Rename to object_url
-    return object.get_absolute_url(link)
+    try:
+        return object.get_absolute_url(link)
+    except ValueError:
+        return ''
 
 
 @register.filter
