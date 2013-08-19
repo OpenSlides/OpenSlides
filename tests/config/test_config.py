@@ -24,7 +24,7 @@ from openslides.config.exceptions import ConfigError, ConfigNotFound
 class HandleConfigTest(TestCase):
 
     def get_config_var(self, key):
-            return config[key]
+        return config[key]
 
     def test_get_config_default_value(self):
         self.assertEqual(config['string_var'], 'default_string_rien4ooCZieng6ah')
