@@ -81,7 +81,7 @@ class PersonMixin(object):
                                  % self)
 
     def __unicode__(self):
-        return 'MyPerson: %s' % self.person_id
+        return self.person_id
 
     def prepare_database_save(self, field):
         if type(field) is PersonField:

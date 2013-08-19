@@ -15,11 +15,12 @@ from django.db.models.query import EmptyQuerySet
 from django.contrib.auth.models import AnonymousUser
 
 from openslides.utils.test import TestCase
+from openslides.utils.person.api import get_person
 
 from .models import TestPerson, TestModel
 
 
-class ItemTest(TestCase):
+class PersonTest(TestCase):
     def setUp(self):
         self.person1 = TestPerson.objects.create(name='test1')
 
@@ -45,3 +46,12 @@ class ItemTest(TestCase):
                 AttributeError,
                 'You can not save \'<type \'int\'>\' into a person field.'):
             TestModel.objects.create(person=5)
+
+    def test_get_absolute_url_with_deleted_person(self):
+        person2 = TestPerson.objects.create(name='test2')
+        self.assertEqual(person2.get_absolute_url(), 'absolute_url_of_test_person')
+        person_id = person2.person_id
+        self.assertEqual(get_person(person_id).get_absolute_url(), 'absolute_url_of_test_person')
+        person2.delete()
+        with self.assertRaisesRegexp(ValueError, 'This person object has no url.'):
+            get_person(person_id).get_absolute_url()
