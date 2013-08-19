@@ -111,7 +111,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'mptt',
-    'openslides.utils',
     'openslides.poll',
     'openslides.core',
     'openslides.account',
