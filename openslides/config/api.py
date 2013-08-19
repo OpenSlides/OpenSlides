@@ -34,7 +34,12 @@ class ConfigHandler(object):
         updated_rows = ConfigStore.objects.filter(key=key).update(value=value)
         if not updated_rows:
             ConfigStore.objects.create(key=key, value=value)
-        self._cache[key] = value
+        try:
+            self._cache[key] = value
+        except AttributeError:
+            # This happens, when a config-var is set, before __getitem__ was
+            # called. In this case nothing should happen.
+            pass
 
     def setup_cache(self):
         """
