@@ -24,7 +24,7 @@ from openslides.config.exceptions import ConfigError, ConfigNotFound
 class HandleConfigTest(TestCase):
 
     def get_config_var(self, key):
-            return config[key]
+        return config[key]
 
     def test_get_config_default_value(self):
         self.assertEqual(config['string_var'], 'default_string_rien4ooCZieng6ah')
@@ -44,6 +44,10 @@ class HandleConfigTest(TestCase):
         config_signal.disconnect(set_simple_config_page_multiple_vars, dispatch_uid='set_simple_config_page_multiple_vars_for_testing')
 
     def test_database_queries(self):
+        """
+        Test that no database queries are send, after the cache was created.
+        """
+        config.setup_cache()
         self.assertNumQueries(0, self.get_config_var, key='string_var')
 
     def test_setup_config_var(self):
@@ -57,12 +61,17 @@ class HandleConfigTest(TestCase):
         self.assertEqual(config['string_var'], 'other_special_unique_string dauTex9eAiy7jeen')
 
     def test_missing_cache_(self):
-        del config._cache
         self.assertEqual(config['string_var'], 'default_string_rien4ooCZieng6ah')
 
     def test_config_contains(self):
         self.assertTrue('string_var' in config)
         self.assertFalse('unknown_config_var' in config)
+
+    def test_set_value_before_getting_it(self):
+        """
+        Try to call __setitem__ before __getitem.
+        """
+        config['my_config_var'] = 'value'
 
 
 class ConfigFormTest(TestCase):
