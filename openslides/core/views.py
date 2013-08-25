@@ -13,7 +13,7 @@
 from django.conf import settings
 from django.utils.importlib import import_module
 
-from openslides import __version__
+from openslides import __version__ as openslides_version_string
 from openslides.utils.views import TemplateView
 
 
@@ -30,18 +30,7 @@ class VersionView(TemplateView):
         context = super(VersionView, self).get_context_data(**kwargs)
 
         # OpenSlides version. During development the git commit id is added.
-        openslides_version_string = __version__
-        if openslides_version_string[-4:] == '-dev':
-            try:
-                git_head = open('.git/HEAD', 'r').read().rstrip()
-                if git_head[:5] == 'ref: ':
-                    git_commit_id = open('.git/%s' % git_head[5:], 'r').read().rstrip()
-                else:
-                    git_commit_id = git_head
-            except IOError:
-                git_commit_id = 'unknown'
-            openslides_version_string += ' – Commit %s' % str(git_commit_id)
-        context['versions'] = [('OpenSlides', openslides_version_string)]
+        context['versions'] = [('OpenSlides', get_openslides_version_string_with_git_commit_id_during_dev())]
 
         # Versions of plugins.
         for plugin in settings.INSTALLED_PLUGINS:
@@ -66,3 +55,21 @@ class VersionView(TemplateView):
             context['versions'].append((plugin_name, plugin_version))
 
         return context
+
+
+def get_openslides_version_string_with_git_commit_id_during_dev():
+    """
+    Special function to add the git commit id to the openslides version
+    string during development.
+    """
+    if '-dev' in openslides_version_string:
+        try:
+            git_head = open('.git/HEAD', 'r').read().rstrip()
+            if 'ref: ' in git_head:
+                git_commit_id = open('.git/%s' % git_head[5:], 'r').read().rstrip()
+            else:
+                git_commit_id = git_head
+        except IOError:
+            git_commit_id = 'unknown'
+        return openslides_version_string + ' – Commit %s' % str(git_commit_id)
+    return openslides_version_string
