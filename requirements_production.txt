@@ -1,4 +1,4 @@
-Django==1.5.1
+Django==1.5.2
 django-mptt==0.5.5
 reportlab==2.7
 pillow==2.0.0
