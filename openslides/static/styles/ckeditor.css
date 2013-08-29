@@ -103,4 +103,7 @@ body.ckeditor_html
     background-color: Yellow;
 }
 
-.cke_dialog_contents textarea.blocksize { font-family: Courier; font-size: 14px; }
+.cke_dialog_contents textarea {
+    font-family: Courier New, monospace;
+    font-size: 14px;
+}
