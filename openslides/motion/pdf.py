@@ -84,11 +84,7 @@ def motion_to_pdf(pdf, motion):
         supporters = motion.supporter.all()
         for supporter in supporters:
             cell3b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % unicode(supporter),
-                                    stylesheet['Signaturefield']))
-        if motion.state.allow_support:
-            for count in range(config['motion_min_supporters'] - supporters.count()):
-                cell3b.append(Paragraph("<seq id='counter'/>.&nbsp;" + 42 * "_",
-                                        stylesheet['Signaturefield']))
+                                    stylesheet['Normal']))
         cell3b.append(Spacer(0, 0.2 * cm))
         motion_data.append([cell3a, cell3b])
 

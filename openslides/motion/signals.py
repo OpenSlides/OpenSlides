@@ -38,9 +38,7 @@ def setup_motion_config_page(sender, **kwargs):
         form_field=forms.IntegerField(
             widget=forms.TextInput(attrs={'class': 'small-input'}),
             label=ugettext_lazy('Number of (minimum) required supporters for a motion'),
-            initial=4,
             min_value=0,
-            max_value=8,
             help_text=ugettext_lazy('Choose 0 to disable the supporting system.')))
     motion_remove_supporters = ConfigVariable(
         name='motion_remove_supporters',
