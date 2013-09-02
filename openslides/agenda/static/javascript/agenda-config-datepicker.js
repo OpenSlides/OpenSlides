@@ -22,7 +22,7 @@ $(function() {
             gettext('Oct'), gettext('Nov'), gettext('Dec')
         ],
         dayNames: [
-            gettext('Sunday'), gettext('Monday'), gettext('Tuesdey'), gettext('Wednesday'),
+            gettext('Sunday'), gettext('Monday'), gettext('Tuesday'), gettext('Wednesday'),
             gettext('Thursday'), gettext('Friday'), gettext('Saturday')
         ],
         dayNamesMin: [
