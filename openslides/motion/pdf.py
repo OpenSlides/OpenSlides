@@ -212,8 +212,11 @@ def convert_html_to_reportlab(pdf, text):
         if paragraph == '\n' or paragraph == '\n\n' or paragraph == '\n\t':
             continue
         if "<pre>" in paragraph:
-            pdf.append(Paragraph(paragraph.replace('\n', '<br/>'), stylesheet['InnerMonotypeParagraph'], str(paragraph_number)))
-            paragraph_number += 1
+            if config["motion_pdf_paragraph_numbering"]:
+                pdf.append(Paragraph(paragraph.replace('\n', '<br/>'), stylesheet['InnerMonotypeParagraph'], str(paragraph_number)))
+                paragraph_number += 1
+            else:
+                pdf.append(Paragraph(paragraph.replace('\n', '<br/>'), stylesheet['InnerMonotypeParagraph']))
         elif "<para>" in paragraph:
             pdf.append(Paragraph(paragraph, stylesheet['InnerListParagraph']))
         elif "<seqreset" in paragraph:
@@ -225,8 +228,11 @@ def convert_html_to_reportlab(pdf, text):
         elif "<h3>" in paragraph:
             pdf.append(Paragraph(paragraph, stylesheet['InnerH3Paragraph']))
         else:
-            pdf.append(Paragraph(paragraph, stylesheet['InnerParagraph'], str(paragraph_number)))
-            paragraph_number += 1
+            if config["motion_pdf_paragraph_numbering"]:
+                pdf.append(Paragraph(paragraph, stylesheet['InnerParagraph'], str(paragraph_number)))
+                paragraph_number += 1
+            else:
+                pdf.append(Paragraph(paragraph, stylesheet['InnerParagraph']))
 
 
 def all_motion_cover(pdf, motions):

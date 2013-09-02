@@ -88,6 +88,12 @@ def setup_motion_config_page(sender, **kwargs):
             widget=forms.Textarea(),
             required=False,
             label=ugettext_lazy('Preamble text for PDF document (all motions)')))
+    motion_pdf_paragraph_numbering = ConfigVariable(
+        name='motion_pdf_paragraph_numbering',
+        default_value=False,
+        form_field=forms.BooleanField(
+            label=ugettext_lazy('Show paragraph numbering'),
+            required=False))
     motion_allow_disable_versioning = ConfigVariable(
         name='motion_allow_disable_versioning',
         default_value=False,
@@ -126,6 +132,7 @@ def setup_motion_config_page(sender, **kwargs):
                                  motion_pdf_ballot_papers_number,
                                  motion_pdf_title,
                                  motion_pdf_preamble,
+                                 motion_pdf_paragraph_numbering,
                                  motion_allow_disable_versioning,
                                  motion_workflow,
                                  motion_identifier))
