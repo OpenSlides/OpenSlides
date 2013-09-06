@@ -540,6 +540,7 @@ class MainWindow(wx.Frame):
             "server_settings": {
                 "host": self.host,
                 "port": self.port,
+            },
         }
 
         dp = os.path.dirname(self.gui_settings_path)
