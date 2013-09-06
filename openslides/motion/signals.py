@@ -38,9 +38,7 @@ def setup_motion_config_page(sender, **kwargs):
         form_field=forms.IntegerField(
             widget=forms.TextInput(attrs={'class': 'small-input'}),
             label=ugettext_lazy('Number of (minimum) required supporters for a motion'),
-            initial=4,
             min_value=0,
-            max_value=8,
             help_text=ugettext_lazy('Choose 0 to disable the supporting system.')))
     motion_remove_supporters = ConfigVariable(
         name='motion_remove_supporters',
@@ -88,6 +86,12 @@ def setup_motion_config_page(sender, **kwargs):
             widget=forms.Textarea(),
             required=False,
             label=ugettext_lazy('Preamble text for PDF document (all motions)')))
+    motion_pdf_paragraph_numbering = ConfigVariable(
+        name='motion_pdf_paragraph_numbering',
+        default_value=False,
+        form_field=forms.BooleanField(
+            label=ugettext_lazy('Show paragraph numbering'),
+            required=False))
     motion_allow_disable_versioning = ConfigVariable(
         name='motion_allow_disable_versioning',
         default_value=False,
@@ -126,6 +130,7 @@ def setup_motion_config_page(sender, **kwargs):
                                  motion_pdf_ballot_papers_number,
                                  motion_pdf_title,
                                  motion_pdf_preamble,
+                                 motion_pdf_paragraph_numbering,
                                  motion_allow_disable_versioning,
                                  motion_workflow,
                                  motion_identifier))

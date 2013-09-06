@@ -54,8 +54,8 @@ CKEDITOR.plugins.add( 'insertpre',
 			{
 				return {
 					title : editor.lang.insertpre.title,
-					minWidth : 540,
-					minHeight : 380,
+					minWidth : 400,
+					minHeight : 200,
 					contents : [
 						{
 							id : 'general',
@@ -65,10 +65,8 @@ CKEDITOR.plugins.add( 'insertpre',
 									type : 'textarea',
 									id : 'contents',
 									label : editor.lang.insertpre.code,
-									cols: 140,
-									rows: 22,
-									class: "blocksize",
-									style: "font-family: Courier;",
+									cols: 80,
+									rows: 13,
 									validate : CKEDITOR.dialog.validate.notEmpty( editor.lang.insertpre.notEmpty ),
 									required : true,
 									setup : function( element )
