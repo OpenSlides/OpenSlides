@@ -26,8 +26,7 @@ class UserCreateForm(CssClassMixin, forms.ModelForm):
     groups = LocalizedModelMultipleChoiceField(
         # Hide the built-in groups 'Anonymous' (pk=1) and 'Registered' (pk=2)
         queryset=Group.objects.exclude(pk=1).exclude(pk=2),
-        label=ugettext_lazy('Groups'), required=False,
-        help_text=ugettext_lazy('Hold down "Control", or "Command" on a Mac, to select more than one.'))
+        label=ugettext_lazy('Groups'), required=False)
 
     class Meta:
         model = User

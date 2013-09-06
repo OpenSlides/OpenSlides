@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-07 23:49+0200\n"
+"POT-Creation-Date: 2013-09-02 13:52+0200\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -126,7 +126,7 @@ msgid "Monday"
 msgstr ""
 
 #: agenda/static/javascript/agenda-config-datepicker.js:25
-msgid "Tuesdey"
+msgid "Tuesday"
 msgstr ""
 
 #: agenda/static/javascript/agenda-config-datepicker.js:25
