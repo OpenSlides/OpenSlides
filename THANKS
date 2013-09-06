@@ -31,6 +31,9 @@ OpenSlides uses parts of the following projects:
   - jQuery Templating Plugin
     <https://github.com/BorisMoore/jquery-tmpl/>
     License: MIT/GPLv2
+  - jQuery bsmSelect
+    <https://github.com/vicb/bsmSelect>
+    License: MIT/GPLv2
 
 * jQuery UI
   <http://jqueryui.com>
