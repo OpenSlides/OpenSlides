@@ -12,6 +12,8 @@
 
 from datetime import datetime
 
+from django.contrib.contenttypes.models import ContentType
+from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django import forms
 from django.utils.translation import ugettext_lazy, ugettext_noop, ugettext as _
@@ -111,3 +113,16 @@ def agenda_list_of_speakers(sender, **kwargs):
         return render_to_string('agenda/overlay_speaker_projector.html', context)
 
     return Overlay(name, get_widget_html, get_projector_html)
+
+
+@receiver(pre_delete)
+def listen_to_related_object_delete_signal(sender, instance, **kwargs):
+    """
+    Receiver to listen whether a related item has been deleted.
+    """
+    if hasattr(instance, 'get_agenda_title'):
+        for item in Item.objects.filter(content_type=ContentType.objects.get_for_model(sender), object_id=instance.pk):
+            item.title = '< Item for deleted slide (%s) >' % instance.get_agenda_title()
+            item.content_type = None
+            item.object_id = None
+            item.save()

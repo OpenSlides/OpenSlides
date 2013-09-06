@@ -9,6 +9,9 @@ class ReleatedItem(SlideMixin, models.Model):
 
     name = models.CharField(max_length='255')
 
+    class Meta:
+        verbose_name = 'Releated Item CHFNGEJ5634DJ34F'
+
     def get_agenda_title(self):
         return self.name
 
@@ -19,4 +22,11 @@ class ReleatedItem(SlideMixin, models.Model):
         return '/absolute-url-here/'
 
 
+class BadReleatedItem(SlideMixin, models.Model):
+    prefix = 'badreleateditem'
+
+    name = models.CharField(max_length='255')
+
+
 register_slidemodel(ReleatedItem)
+register_slidemodel(BadReleatedItem)

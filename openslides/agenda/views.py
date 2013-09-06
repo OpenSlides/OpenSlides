@@ -197,10 +197,11 @@ class ItemUpdate(UpdateView):
     success_url_name = 'item_overview'
 
     def get_form_class(self):
-        if self.object.related_sid is None:
-            return ItemForm
+        if self.object.content_object:
+            form = RelatedItemForm
         else:
-            return RelatedItemForm
+            form = ItemForm
+        return form
 
 
 class ItemCreate(CreateView):
@@ -243,6 +244,31 @@ class ItemDelete(DeleteView):
                 request,
                 _("Item %s was successfully deleted.")
                 % html_strong(self.object))
+
+
+class CreateRelatedAgendaItemView(SingleObjectMixin, RedirectView):
+    """
+    View to create and agenda item for a related object.
+
+    This view is only for subclassing in views of related apps. You
+    have to define 'model = ....'
+    """
+    permission_required = 'agenda.can_manage_agenda'
+    url_name = 'item_overview'
+    url_name_args = []
+
+    def get(self, request, *args, **kwargs):
+        """
+        Set self.object to the relevant object.
+        """
+        self.object = self.get_object()
+        return super(CreateRelatedAgendaItemView, self).get(request, *args, **kwargs)
+
+    def pre_redirect(self, request, *args, **kwargs):
+        """
+        Create the agenda item.
+        """
+        self.item = Item.objects.create(content_object=self.object)
 
 
 class AgendaPDF(PDFView):
