@@ -95,6 +95,7 @@ class Motion(SlideMixin, models.Model):
             ('can_manage_motion', ugettext_noop('Can manage motions')),
         )
         ordering = ('identifier', )
+        verbose_name = ugettext_noop('Motion')
 
     def __unicode__(self):
         """
@@ -475,7 +476,7 @@ class Motion(SlideMixin, models.Model):
 
     def get_agenda_title(self):
         """
-        Return a title for the Agenda.
+        Return a title for the agenda.
         """
         return self.title
 

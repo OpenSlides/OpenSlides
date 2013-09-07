@@ -207,6 +207,9 @@ class Assignment(models.Model, SlideMixin):
     def get_agenda_title(self):
         return self.name
 
+    def get_agenda_title_supplement(self):
+        return '(%s)' % _('Assignment')
+
     def delete(self):
         # Remove any Agenda-Item, which is related to this assignment.
         for item in Item.objects.filter(related_sid=self.sid):
@@ -248,6 +251,7 @@ class Assignment(models.Model, SlideMixin):
             ('can_manage_assignment', ugettext_noop('Can manage assignments')),  # TODO: Add plural s also to the codestring
         )
         ordering = ('name',)
+        verbose_name = ugettext_noop('Assignment')
 
 register_slidemodel(Assignment)
 

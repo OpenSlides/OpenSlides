@@ -13,7 +13,7 @@
 from django.conf.urls import url, patterns
 
 from openslides.assignment.views import (ViewPoll, AssignmentPDF,
-    AssignmentPollPDF, AssignmentPollDelete, CreateAgendaItem)
+    AssignmentPollPDF, AssignmentPollDelete, CreateRelatedAgendaItemView)
 
 urlpatterns = patterns('openslides.assignment.views',
     url(r'^$',
@@ -70,8 +70,8 @@ urlpatterns = patterns('openslides.assignment.views',
         name='print_assignment_poll',
     ),
 
-    url(r'^(?P<assignment_id>\d+)/agenda/$',
-        CreateAgendaItem.as_view(),
+    url(r'^(?P<pk>\d+)/agenda/$',
+        CreateRelatedAgendaItemView.as_view(),
         name='assignment_create_agenda',
     ),
 
