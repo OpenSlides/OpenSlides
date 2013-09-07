@@ -146,7 +146,7 @@ class Widget(object):
         return self.display_name
 
     def __repr__(self):
-        return unicode(self.display_name)
+        return repr(self.display_name)
 
     def __unicode__(self):
         return unicode(self.display_name)
