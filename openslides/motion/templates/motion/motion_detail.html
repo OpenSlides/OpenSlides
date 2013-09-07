@@ -16,14 +16,10 @@
 <h1>
     {{ title }}
     <br>
-    <small>
-    {% if motion.identifier %}
-        {% trans "Motion" %} {{ motion.identifier|default:'' }},
-    {% else %}
-        <i>[{% trans "no number" %}]</i>,
+    <small>{% trans "Motion" %} {{ motion.identifier|default:'' }}
+    {% if motion.versions.count > 1 %}
+        | {% trans "Version" %} {{ version.version_number }}
     {% endif %}
-    {# TODO: show only for workflow with versioning #}
-    {% trans "Version" %} {{ version.version_number }}
     </small>
     <small class="pull-right">
         <a href="{% url 'motion_list' %}" class="btn btn-mini"
@@ -242,15 +238,13 @@
 
         <!-- Creation Time -->
         <h5>
-            {% with versions=motion.versions.all %}
-            {% if versions|length > 1 %}
+            {% if motion.versions.count > 1 %}
                 {% trans "Last changes (of this version)" %}:
             {% else %}
                 {% trans "Last changes" %}:
             {% endif %}
-            {% endwith %}
         </h5>
-        {{ motion.use_version.creation_time }}
+        {{ version.creation_time }}
 
         <!-- Widthdraw button -->
         {# TODO: Check this button #}
