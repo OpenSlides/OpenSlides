@@ -207,12 +207,6 @@ class Assignment(models.Model, SlideMixin):
     def get_agenda_title(self):
         return self.name
 
-    def delete(self):
-        # Remove any Agenda-Item, which is related to this assignment.
-        for item in Item.objects.filter(related_sid=self.sid):
-            item.delete()
-        super(Assignment, self).delete()
-
     def slide(self):
         """
         return the slide dict
