@@ -837,4 +837,6 @@ def get_widgets(request):
         display_name=_('Motions'),
         template='motion/widget.html',
         context={'motions': Motion.objects.all()},
-        permission_required='projector.can_manage_projector')]
+        permission_required='projector.can_manage_projector',
+        default_column=1,
+        default_weight=40)]

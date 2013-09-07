@@ -564,7 +564,8 @@ def get_user_widget(request):
         template='participant/user_widget.html',
         context={'users': User.objects.all()},
         permission_required='projector.can_manage_projector',
-        default_column=1)
+        default_column=1,
+        default_weight=60)
 
 
 def get_group_widget(request):
@@ -579,4 +580,5 @@ def get_group_widget(request):
         template='participant/group_widget.html',
         context={'groups': Group.objects.all()},
         permission_required='projector.can_manage_projector',
-        default_column=1)
+        default_column=1,
+        default_weight=70)

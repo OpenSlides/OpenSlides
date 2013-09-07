@@ -593,11 +593,15 @@ def get_widgets(request):
                 'items': Item.objects.all(),
                 'summary': config['presentation_argument'] == 'summary',
                 'speakers': config['presentation_argument'] == 'show_list_of_speakers'},
-            permission_required='projector.can_manage_projector'),
+            permission_required='projector.can_manage_projector',
+            default_column=1,
+            default_weight=20),
 
         Widget(
             request,
             name='append_to_list_of_speakers',
             display_name=_('List of speakers'),
             template='agenda/speaker_widget.html',
-            permission_required='agenda.can_be_speaker')]
+            permission_required='agenda.can_be_speaker',
+            default_column=1,
+            default_weight=30)]

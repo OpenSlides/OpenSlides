@@ -72,4 +72,5 @@ def get_personal_info_widget(request):
             template='account/personal_info_widget.html',
             context=personal_info_context,
             permission_required=None,
-            default_column=1)
+            default_column=1,
+            default_weight=80)

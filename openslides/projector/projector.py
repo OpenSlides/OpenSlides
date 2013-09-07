@@ -116,7 +116,8 @@ class Widget(object):
     Class for a Widget for the Projector-Tab.
     """
     def __init__(self, request, name, html=None, template=None, context={},
-                 permission_required=None, display_name=None, default_column=1):
+                 permission_required=None, display_name=None, default_column=1,
+                 default_weight=0):
         self.name = name
         if display_name is None:
             self.display_name = name.capitalize()
@@ -132,9 +133,9 @@ class Widget(object):
                 context_instance=RequestContext(request))
         else:
             raise OpenSlidesError('A Widget must have either a html or a template argument.')
-
         self.permission_required = permission_required
         self.default_column = default_column
+        self.default_weight = default_weight
 
     def get_name(self):
         return self.name.lower()

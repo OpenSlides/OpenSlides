@@ -128,21 +128,23 @@ def get_all_widgets(request, session=False):
     The session flag decides whether to return only the widgets which are
     active, that means that they are mentioned in the session.
     """
-    widgets = SortedDict()
-    session_widgets = request.session.get('widgets', {})
+    all_module_widgets = []
     for app in settings.INSTALLED_APPS:
         try:
             mod = import_module(app + '.views')
         except ImportError:
             continue
         try:
-            modul_widgets = mod.get_widgets(request)
+            module_widgets = mod.get_widgets(request)
         except AttributeError:
             continue
-
-        for widget in modul_widgets:
-            if (widget.permission_required is None or
-                    request.user.has_perm(widget.permission_required)):
-                if not session or session_widgets.get(widget.get_name(), True):
-                    widgets[widget.get_name()] = widget
+        all_module_widgets.extend(module_widgets)
+    all_module_widgets.sort(key=lambda widget: widget.default_weight)
+    session_widgets = request.session.get('widgets', {})
+    widgets = SortedDict()
+    for widget in all_module_widgets:
+        if (widget.permission_required is None or
+                request.user.has_perm(widget.permission_required)):
+            if not session or session_widgets.get(widget.get_name(), True):
+                widgets[widget.get_name()] = widget
     return widgets
