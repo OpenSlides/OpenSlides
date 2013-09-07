@@ -16,11 +16,7 @@
     {% for motion in submitted_motions %}
         <li>
             <a href="{% model_url motion %}">
-                {% if motion.identifier %}
-                    [# {{ motion.identifier }}]
-                {% else %}
-                    [---]
-                {% endif %}
+                {{ motion.identifier|add:' | '|default:'' }}
                 {{ motion }}
             </a>
         </li>
