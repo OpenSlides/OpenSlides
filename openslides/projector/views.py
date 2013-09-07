@@ -383,7 +383,8 @@ def get_widgets(request):
         template='projector/welcome_widget.html',
         context={'welcometext': config['welcome_text']},
         permission_required='projector.can_see_dashboard',
-        default_column=1))
+        default_column=1,
+        default_weight=10))
 
     # Projector live view widget
     widgets.append(Widget(
@@ -392,7 +393,8 @@ def get_widgets(request):
         display_name=_('Projector live view'),
         template='projector/live_view_widget.html',
         permission_required='projector.can_see_projector',
-        default_column=2))
+        default_column=2,
+        default_weight=10))
 
     # Overlay widget
     overlays = []
@@ -407,6 +409,7 @@ def get_widgets(request):
         template='projector/overlay_widget.html',
         permission_required='projector.can_manage_projector',
         default_column=2,
+        default_weight=20,
         context=context))
 
     # Custom slide widget
@@ -419,6 +422,7 @@ def get_widgets(request):
             'slides': ProjectorSlide.objects.all().order_by('weight'),
             'welcomepage_is_active': not bool(config["presentation"])},
         permission_required='projector.can_manage_projector',
-        default_column=2))
+        default_column=2,
+        default_weight=30))
 
     return widgets
