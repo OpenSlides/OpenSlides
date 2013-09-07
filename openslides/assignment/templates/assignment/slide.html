@@ -2,20 +2,23 @@
 {% load staticfiles %}
 {% load tags %}
 
-{% if assignment.status != "fin" %}
 <div id="sidebar">
-    <div class="box">
-    <p><b>{% trans "Status" %}:</b><br>
+<div class="well">
+    <!-- Status -->
+    <h4 class="first">{% trans "Status" %}:</h4>
     {% trans assignment.get_status_display %}</p>
-    {% if assignment.status == "sea" or assignment.status == "vot" %}
-        <p><b>{% trans "Number of available posts" %}:</b><br>
-        {{ assignment.posts }}</p>
-    {% endif %}
-    </div>
+        <h4>{% trans "Number of available posts" %}:</h4>
+        {{ assignment.posts }}
 </div>
-{% endif %}
+</div>
 
-<h1>{% trans "Election" %}: {{ assignment }}</h1>
+<h1>{{ assignment }}
+    <br>
+    <small>
+        {% trans "Election" %}
+    </small>
+    <hr>
+</h1>
 {% if not assignment.candidates %}
     <p>
         <div class="text">{{ assignment.description|linebreaks }}</div>

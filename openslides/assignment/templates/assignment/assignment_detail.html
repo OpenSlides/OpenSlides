@@ -23,8 +23,10 @@
     <a href="{% url 'assignment_pdf' assignment.id  %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print election as PDF' %}" target="_blank"><i class="icon-print"></i> PDF</a>
     <!-- activate projector -->
     {% if perms.projector.can_manage_projector %}
-        <a href="{% url 'projector_activate_slide' assignment.sid  %}" class="activate_link btn {% if assignment.active %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show election' %}">
-            <i class="icon-facetime-video {% if assignment.active %}icon-white{% endif %}"></i>
+        <a href="{{ assignment|absolute_url:'projector' }}"
+            class="activate_link btn {% if assignment.is_active_slide %}btn-primary{% endif %} btn-mini"
+            rel="tooltip" data-original-title="{% trans 'Show election' %}">
+            <i class="icon-facetime-video {% if assignment.is_active_slide %}icon-white{% endif %}"></i>
         </a>
     {% endif %}
     {% if perms.assignment.can_manage_assignment or perms.agenda.can_manage_agenda %}
@@ -177,7 +179,7 @@
             {% endfor %}
             {% if assignment.candidates and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
                 <th class="span1 nobr">
-                    <a href="{% url 'assignment_gen_poll' assignment.id %}" class="btn btn-mini">
+                    <a href="{% url 'assignment_poll_create' assignment.id %}" class="btn btn-mini">
                        <i class="icon-plus"></i> {% trans 'New ballot' %}
                     </a>
                 </th>

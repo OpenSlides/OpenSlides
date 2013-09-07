@@ -59,7 +59,7 @@
     </thead>
     <tbody>
         {% for user in users %}
-            <tr class="{% if user.active %}activeline{% endif %}">
+            <tr class="{% if user.is_active_slide %}activeline{% endif %}">
                 <td>{% if perms.participant.can_manage_participant %}
                         {% if user != request_user %}
                          <a href="{% url 'user_status_toggle' user.id %}"
@@ -108,9 +108,9 @@
                     <td>
                         <span style="width: 1px; white-space: nowrap;">
                             {% if perms.projector.can_manage_projector %}
-                                <a href="{% url 'projector_activate_slide' user.sid  %}" class="activate_link btn {% if user.active %}btn-primary{% endif %} btn-mini"
+                                <a href="{{ user|absolute_url:'projector' }}" class="activate_link btn {% if user.is_active_slide %}btn-primary{% endif %} btn-mini"
                                     rel="tooltip" data-original-title="{% trans 'Show participant' %}">
-                                    <i class="icon-facetime-video {% if user.active %}icon-white{% endif %}"></i>
+                                    <i class="icon-facetime-video {% if user.is_active_slide %}icon-white{% endif %}"></i>
                                 </a>
                             {% endif %}
                             <a href="{% url 'user_edit' user.id %}" rel="tooltip" data-original-title="{% trans 'Edit' %}"

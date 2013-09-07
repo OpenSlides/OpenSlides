@@ -1,15 +1,19 @@
 {% load i18n %}
-<div class="item_fullscreen">{{ shown_user }}
-    <span>
-    {% if shown_user.committee %}
-        <p>{{ shown_user.committee }}</p>
+
+<h1>
+    {{ shown_user.clean_name }}<br>
+    <small>{{ shown_user.structure_level }}</small>
+    <hr>
+</h1>
+
+{% if shown_user.committee %}
+    <p>{{ shown_user.committee }}</p>
+{% endif %}
+
+<p>
+    {% if shown_user.groups.all %}
+        {% for group in shown_user.groups.all %}
+            {% trans group.name %}{% if not forloop.last %}<br> {% endif %}
+        {% endfor %}
     {% endif %}
-    <p>
-        {% if shown_user.groups.all %}
-            {% for group in shown_user.groups.all %}
-                {% trans group.name %}{% if not forloop.last %}, {% endif %}
-            {% endfor %}
-        {% endif %}
-    </p>
-    </span>
-</div>
+</p>

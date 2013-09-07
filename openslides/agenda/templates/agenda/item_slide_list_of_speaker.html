@@ -16,10 +16,10 @@
 </style>
 
 <h1>{{ title }}</h1>
-<h2 style="margin-top: -10px;">
+<h3>
     {% trans 'List of speakers' %}
     {% if item.speaker_list_closed %}(<span class="closed">{% trans 'closed' %}</span>){% endif %}
-</h2>
+</h3>
 
 <p>
     {% if list_of_speakers %}

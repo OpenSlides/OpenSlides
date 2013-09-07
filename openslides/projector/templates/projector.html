@@ -5,15 +5,15 @@
 <!DOCTYPE html>
 <html lang="{{LANGUAGE_CODE}}">
     <head>
-        <link type="text/css" rel="stylesheet" href="{% static 'styles/projector.css' %}">
-        <link rel="shortcut icon" href="{% static 'img/favicon.png' %}" type="image/png" />
-        <title>{{ 'event_name'|get_config }} – {% trans 'Projector' %}</title>
+        <link href="{% static 'styles/projector.css' %}" type="text/css" rel="stylesheet">
+        <link href="{% static 'styles/bootstrap.min.css' %}" type="text/css" rel="stylesheet">
+        <link  href="{% static 'img/favicon.png' %}" type="image/png" rel="shortcut icon">
+        <title>{% trans 'Projector' %} – {{ 'event_name'|get_config }}</title>
     </head>
     <body>
         <div id="header">
-            <div id="logo"><img src="{% static 'img/logo-projector.png' %}"></div>
-            <div class="event_name">{% get_config 'event_name' %}</div>
-            <div class="event_description">{% get_config 'event_description' %}</div>
+            <a title="Startseite" id="logo" href="/"><img alt="Logo" src="/static/img/logo.png"></a>
+            <div class="pull-right"></div>
         </div>
 
         <div id="overlays">
@@ -22,6 +22,17 @@
 
         <div id="content" {% if reload %}class="reload"{% endif %}>
             {{ content }}
+        </div>
+
+        <div id="footer">
+            <div class="event_name_description">
+                {{ 'event_name'|get_config }} | {{ 'event_description'|get_config }}
+            </div>
+            <div class="event_date_location">
+                {% if 'event_date'|get_config %}
+                    {{ 'event_date'|get_config }}{% if 'event_location'|get_config %}, {{ 'event_location'|get_config }}{% endif %}
+                {% endif %}
+            </div>
         </div>
         <script type="text/javascript" src="{% static 'javascript/jquery.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'javascript/projector.js' %}"></script>

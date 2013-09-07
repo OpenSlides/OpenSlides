@@ -22,16 +22,15 @@
     {% endif %}
     </small>
     <small class="pull-right">
-        <a href="{% url 'motion_list' %}" class="btn btn-mini"
-            rel="tooltip" data-original-title="{% trans 'Show item' %}">
+        <a href="{% url 'motion_list' %}" class="btn btn-mini">
             <i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
         <a href="{% url 'motion_detail_pdf' motion.id  %}" class="btn btn-mini"
             rel="tooltip" data-original-title="{% trans 'Print motion as PDF' %}" target="_blank">
             <i class="icon-print"></i> PDF</a>
         <!-- activate projector -->
         {% if perms.projector.can_manage_projector %}
-            <a href="{% url 'projector_activate_slide' motion.sid  %}" class="activate_link btn {% if motion.active %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show motion' %}">
-                <i class="icon-facetime-video {% if motion.active %}icon-white{% endif %}"></i>
+            <a href="{{ motion|absolute_url:'projector' }}" class="activate_link btn {% if motion.is_active_slide %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show motion' %}">
+                <i class="icon-facetime-video {% if motion.is_active_slide %}icon-white{% endif %}"></i>
             </a>
         {% endif %}
         {% if perms.motion.can_manage_motion or perms.agenda.can_manage_agenda or allowed_actions.edit %}
@@ -42,7 +41,7 @@
             <ul class="dropdown-menu pull-right">
                 <!-- edit -->
                 {% if allowed_actions.edit %}
-                     <li><a href="{{ motion|absolute_url:'edit' }}"><i class="icon-pencil"></i> {% trans 'Edit motion' %}</a></li>
+                     <li><a href="{{ motion|absolute_url:'update' }}"><i class="icon-pencil"></i> {% trans 'Edit motion' %}</a></li>
                 {% endif %}
                 {% if perms.motion.can_manage_motion %}
                     <!-- delete -->
@@ -196,7 +195,7 @@
             {% if perms.motion.can_manage_motion or poll.has_votes %}
                 <li><b>{{ poll.poll_number|ordinal|safe }} {% trans "vote" %}</b>
                     {% if perms.motion.can_manage_motion %}
-                        <a class="btn btn-mini" href="{{ poll|absolute_url:'edit' }}" title="{% trans 'Edit Vote' %}"><i class="icon-pencil"></i></a>
+                        <a class="btn btn-mini" href="{{ poll|absolute_url:'update' }}" title="{% trans 'Edit Vote' %}"><i class="icon-pencil"></i></a>
                         <a class="btn btn-mini" href="{{ poll|absolute_url:'delete' }}" title="{% trans 'Delete Vote' %}"><i class="icon-remove"></i></a>
                     {% endif %}
                     <br>
