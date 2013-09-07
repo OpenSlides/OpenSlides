@@ -127,6 +127,7 @@ class MotionEditMixin(object):
             MotionSupporter.objects.bulk_create(
                 [MotionSupporter(motion=self.object, person=person)
                  for person in form.cleaned_data['supporter']])
+        messages.success(self.request, self.get_success_message())
         return HttpResponseRedirect(self.get_success_url())
 
     def get_form_class(self):
