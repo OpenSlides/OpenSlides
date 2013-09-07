@@ -37,7 +37,7 @@ class ItemForm(CssClassMixin, forms.ModelForm):
 
     class Meta:
         model = Item
-        exclude = ('closed', 'weight', 'related_sid')
+        exclude = ('closed', 'weight', 'content_type', 'object_id')
 
 
 class RelatedItemForm(ItemForm):
@@ -46,7 +46,7 @@ class RelatedItemForm(ItemForm):
     """
     class Meta:
         model = Item
-        exclude = ('closed', 'type', 'weight', 'related_sid', 'title', 'text')
+        exclude = ('closed', 'type', 'weight', 'content_type', 'object_id', 'title', 'text')
 
 
 class ItemOrderForm(CssClassMixin, forms.Form):

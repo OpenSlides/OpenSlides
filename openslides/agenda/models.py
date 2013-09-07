@@ -14,6 +14,8 @@ from datetime import datetime
 
 from django.db import models
 from django.contrib.auth.models import AnonymousUser
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext_lazy, ugettext_noop, ugettext as _
 
@@ -87,11 +89,19 @@ class Item(MPTTModel, SlideMixin):
     Weight to sort the item in the agenda.
     """
 
-    related_sid = models.CharField(null=True, blank=True, max_length=63)
+    content_type = models.ForeignKey(ContentType, null=True, blank=True)
     """
-    Slide-ID to another object to show it in the agenda.
+    Field for generic relation to a related object. Type of the object.
+    """
 
-    For example a motion or assignment.
+    object_id = models.PositiveIntegerField(null=True, blank=True)
+    """
+    Field for generic relation to a related object. Id of the object.
+    """
+
+    content_object = generic.GenericForeignKey()
+    """
+    Field for generic relation to a related object. General field to the related object.
     """
 
     speaker_list_closed = models.BooleanField(
@@ -125,53 +135,27 @@ class Item(MPTTModel, SlideMixin):
         if link == 'delete':
             return reverse('item_delete', args=[str(self.id)])
 
-    def get_related_slide(self):
-        """
-        Return the object at which the item points.
-        """
-        # TODO: Rename it to 'get_related_object'
-        object = get_slide_from_sid(self.related_sid, element=True)
-        if object is None:
-            self.title = _('< Item for deleted slide (%s) >') % self.related_sid
-            self.related_sid = None
-            self.save()
-            return self
-        else:
-            return object
-
-    def get_related_type(self):
-        """
-        Return the type of the releated slide.
-        """
-        return self.get_related_slide().prefix
-
-    def print_related_type(self):
-        """
-        Print the type of the related item.
-
-        For use in Template
-        ??Why does {% trans item.print_related_type|capfirst %} not work??
-        """
-        return _(self.get_related_type().capitalize())
-
     def get_title(self):
         """
         Return the title of this item.
         """
-        if self.related_sid is None:
+        if not self.content_object:
             return self.title
-        return self.get_related_slide().get_agenda_title()
+        try:
+            return self.content_object.get_agenda_title()
+        except AttributeError:
+            raise NotImplementedError('You have to provide a get_agenda_title method on your related model.')
 
     def get_title_supplement(self):
         """
         Return a supplement for the title.
         """
-        if self.related_sid is None:
+        if not self.content_object:
             return ''
         try:
-            return self.get_related_slide().get_agenda_title_supplement()
+            return self.content_object.get_agenda_title_supplement()
         except AttributeError:
-            return '(%s)' % self.print_related_type()
+            raise NotImplementedError('You have to provide a get_agenda_title_supplement method on your related model.')
 
     def slide(self):
         """
@@ -180,11 +164,11 @@ class Item(MPTTModel, SlideMixin):
         There are four cases:
         * summary slide
         * list of speakers
-        * related slide, i. e. the slide of the related object
+        * related item, i. e. the slide of the related object
         * normal slide of the item
 
         The method returns only one of them according to the config value
-        'presentation_argument' and the attribute 'related_sid'.
+        'presentation_argument' and the attribute 'content_object'.
         """
         if config['presentation_argument'] == 'summary':
             data = {'title': self.get_title(),
@@ -198,8 +182,8 @@ class Item(MPTTModel, SlideMixin):
                     'item': self,
                     'template': 'projector/agenda_list_of_speaker.html',
                     'list_of_speakers': list_of_speakers}
-        elif self.related_sid:
-            data = self.get_related_slide().slide()
+        elif self.content_object:
+            data = self.content_object.slide()
 
         else:
             data = {'item': self,

@@ -18,7 +18,6 @@ from django.db import transaction
 from django.db.models import Model
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
-from django.views.generic.detail import SingleObjectMixin
 from django.http import Http404, HttpResponseRedirect
 
 from reportlab.platypus import SimpleDocTemplate
@@ -33,7 +32,7 @@ from openslides.poll.views import PollFormView
 from openslides.projector.api import get_active_slide
 from openslides.projector.projector import Widget, SLIDE
 from openslides.config.api import config
-from openslides.agenda.models import Item
+from openslides.agenda.views import CreateRelatedAgendaItemView as _CreateRelatedAgendaItemView
 
 from .models import (Motion, MotionSubmitter, MotionSupporter, MotionPoll,
                      MotionVersion, State, WorkflowError, Category)
@@ -674,30 +673,20 @@ set_state = MotionSetStateView.as_view()
 reset_state = MotionSetStateView.as_view(reset=True)
 
 
-class CreateAgendaItemView(SingleObjectMixin, RedirectView):
+class CreateRelatedAgendaItemView(_CreateRelatedAgendaItemView):
     """
     View to create and agenda item for a motion.
     """
-    permission_required = 'agenda.can_manage_agenda'
     model = Motion
-    url_name = 'item_overview'
-    url_name_args = []
-
-    def get(self, request, *args, **kwargs):
-        """
-        Set self.object to a motion.
-        """
-        self.object = self.get_object()
-        return super(CreateAgendaItemView, self).get(request, *args, **kwargs)
 
     def pre_redirect(self, request, *args, **kwargs):
         """
         Create the agenda item.
         """
-        self.item = Item.objects.create(related_sid=self.object.sid)
+        super(CreateRelatedAgendaItemView, self).pre_redirect(request, *args, **kwargs)
         self.object.write_log([ugettext_noop('Agenda item created')], self.request.user)
 
-create_agenda_item = CreateAgendaItemView.as_view()
+create_agenda_item = CreateRelatedAgendaItemView.as_view()
 
 
 class MotionPDFView(SingleObjectMixin, PDFView):

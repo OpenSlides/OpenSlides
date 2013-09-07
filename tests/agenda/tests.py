@@ -6,7 +6,7 @@
 
     Unit test for the agenda app.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011-2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -19,7 +19,7 @@ from openslides.participant.models import User
 from openslides.agenda.models import Item
 from openslides.agenda.slides import agenda_show
 
-from .models import ReleatedItem
+from .models import ReleatedItem, BadReleatedItem  # TODO: Rename releated to related
 
 
 class ItemTest(TestCase):
@@ -28,8 +28,8 @@ class ItemTest(TestCase):
         self.item2 = Item.objects.create(title='item2')
         self.item3 = Item.objects.create(title='item1A', parent=self.item1)
         self.item4 = Item.objects.create(title='item1Aa', parent=self.item3)
-        self.releated = ReleatedItem.objects.create(name='foo')
-        self.item5 = Item.objects.create(title='item5', related_sid=self.releated.sid)
+        self.releated = ReleatedItem.objects.create(name='ekdfjen458gj1siek45nv')
+        self.item5 = Item.objects.create(title='item5', content_object=self.releated)
 
     def testClosed(self):
         self.assertFalse(self.item1.closed)
@@ -61,10 +61,6 @@ class ItemTest(TestCase):
                 self.assertEqual(initial['parent'], 0)
             self.assertEqual(initial['weight'], item.weight)
 
-    def testRelated_sid(self):
-        self.item1.related_sid = 'foobar'
-        self.assertFalse(self.item1.get_related_slide() is None)
-
     def test_title_supplement(self):
         self.assertEqual(self.item1.get_title_supplement(), '')
 
@@ -91,8 +87,24 @@ class ItemTest(TestCase):
     def test_releated_item(self):
         self.assertEqual(self.item5.get_title(), self.releated.name)
         self.assertEqual(self.item5.get_title_supplement(), 'test item')
-        self.assertEqual(self.item5.get_related_type(), 'releateditem')
-        self.assertEqual(self.item5.print_related_type(), 'Releateditem')
+        self.assertEqual(self.item5.content_type.name, 'Releated Item CHFNGEJ5634DJ34F')
+
+    def test_deleted_releated_item(self):
+        self.releated.delete()
+        self.assertFalse(ReleatedItem.objects.all().exists())
+        self.assertEqual(Item.objects.get(pk=self.item5.pk).title, '< Item for deleted slide (ekdfjen458gj1siek45nv) >')
+
+    def test_bad_releated_item(self):
+        bad = BadReleatedItem.objects.create(name='dhfne94irkgl2047fzvb')
+        item = Item.objects.create(title='item_jghfndzrh46w738kdmc', content_object=bad)
+        self.assertRaisesMessage(
+            NotImplementedError,
+            'You have to provide a get_agenda_title method on your related model.',
+            item.get_title)
+        self.assertRaisesMessage(
+            NotImplementedError,
+            'You have to provide a get_agenda_title_supplement method on your related model.',
+            item.get_title_supplement)
 
 
 class ViewTest(TestCase):

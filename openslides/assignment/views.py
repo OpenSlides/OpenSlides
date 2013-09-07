@@ -34,7 +34,7 @@ from openslides.config.api import config
 from openslides.participant.models import User, Group
 from openslides.projector.projector import Widget
 from openslides.poll.views import PollFormView
-from openslides.agenda.models import Item
+from openslides.agenda.views import CreateRelatedAgendaItemView as _CreateRelatedAgendaItemView
 from openslides.assignment.models import Assignment, AssignmentPoll
 from openslides.assignment.forms import AssignmentForm, AssignmentRunForm
 
@@ -487,16 +487,11 @@ class AssignmentPDF(PDFView):
             '<br/>'), stylesheet['Paragraph']))
 
 
-class CreateAgendaItem(RedirectView):
-    permission_required = 'agenda.can_manage_agenda'
-
-    def pre_redirect(self, request, *args, **kwargs):
-        self.assignment = Assignment.objects.get(pk=kwargs['assignment_id'])
-        self.item = Item(related_sid=self.assignment.sid)
-        self.item.save()
-
-    def get_redirect_url(self, **kwargs):
-        return reverse('item_overview')
+class CreateRelatedAgendaItemView(_CreateRelatedAgendaItemView):
+    """
+    View to create and agenda item for an assignment.
+    """
+    model = Assignment
 
 
 class AssignmentPollPDF(PDFView):
