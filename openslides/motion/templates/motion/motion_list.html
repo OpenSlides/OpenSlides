@@ -70,7 +70,7 @@
                     </td>
                 {% endwith %}
             {% endif %}
-            <td class="optional">{{ motion.last_version.creation_time }}</td>
+            <td class="optional">{{ motion.get_last_version.creation_time }}</td>
             <td>
                 <span style="width: 1px; white-space: nowrap;">
                 {% if perms.projector.can_manage_projector %}
