@@ -1,18 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    Django's execute manager.
+    Manage script for OpenSlides.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
-import os, sys
-from django.core.management import execute_from_command_line
-from openslides.main import get_user_config_path, setup_django_environment
+import sys
+
+
+from openslides.__main__ import main
+
 
 if __name__ == "__main__":
-    if 'DJANGO_SETTINGS_MODULE' not in os.environ:
-        setup_django_environment(
-            get_user_config_path('openslides', 'settings.py'))
-    execute_from_command_line(sys.argv)
+    if len(sys.argv) == 1:
+        sys.argv.append('--help')
+    exit(main())

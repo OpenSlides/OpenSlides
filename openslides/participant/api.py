@@ -130,8 +130,11 @@ def create_or_reset_admin_user():
         admin = User()
         admin.username = 'admin'
         admin.last_name = 'Administrator'
-
+        created = True
+    else:
+        created = False
     admin.default_password = 'admin'
     admin.set_password(admin.default_password)
     admin.save()
     admin.groups.add(group_staff)
+    return created

@@ -45,4 +45,4 @@ setup(
     packages=find_packages(exclude=['tests', 'tests.*']),
     include_package_data=True,
     install_requires=install_requires,
-    entry_points={'console_scripts': ['openslides = openslides.main:main']})
+    entry_points={'console_scripts': ['openslides = openslides.__main__:main']})

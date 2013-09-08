@@ -11,7 +11,7 @@
 """
 
 import os
-from openslides.main import fs2unicode
+from openslides.utils.main import filesystem2unicode
 
 
 SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
@@ -44,7 +44,7 @@ USE_I18N = True
 USE_L10N = True
 
 LOCALE_PATHS = (
-    fs2unicode(os.path.join(SITE_ROOT, 'locale')),
+    filesystem2unicode(os.path.join(SITE_ROOT, 'locale')),
 )
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
@@ -54,7 +54,7 @@ MEDIA_URL = '/media/'
 
 # Absolute path to the directory that holds static media from ``collectstatic``
 # Example: "/home/media/static.lawrence.com/"
-STATIC_ROOT = fs2unicode(os.path.join(SITE_ROOT, '../collected-site-static'))
+STATIC_ROOT = filesystem2unicode(os.path.join(SITE_ROOT, '../collected-site-static'))
 
 # URL that handles the media served from STATIC_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
@@ -64,12 +64,14 @@ STATIC_URL = '/static/'
 # Additional directories containing static files (not application specific)
 # Examples: "/home/media/lawrence.com/extra-static/"
 STATICFILES_DIRS = (
-    fs2unicode(os.path.join(SITE_ROOT, 'static')),
+    filesystem2unicode(os.path.join(SITE_ROOT, 'static')),
 )
 
+#XXX: Note this setting (as well as our workaround finder)
+#     can be removed again once django-bug-#18404 has been resolved
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'openslides.utils.staticfiles.AppDirectoriesFinder',
 )
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
@@ -97,7 +99,7 @@ TEMPLATE_DIRS = (
     # "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
-    fs2unicode(os.path.join(SITE_ROOT, 'templates')),
+    filesystem2unicode(os.path.join(SITE_ROOT, 'templates')),
 )
 
 INSTALLED_APPS = (
