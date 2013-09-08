@@ -95,7 +95,6 @@ class Overview(TemplateView):
 
     @transaction.commit_manually
     def post(self, request, *args, **kwargs):
-        context = self.get_context_data(**kwargs)
         if not request.user.has_perm('agenda.can_manage_agenda'):
             messages.error(
                 request,
@@ -116,9 +115,11 @@ class Overview(TemplateView):
                 transaction.rollback()
                 messages.error(
                     request, _('Errors when reordering of the agenda'))
-                return self.render_to_response(context)
-        Item.objects.rebuild()
+                break
+        else:
+            Item.objects.rebuild()
         # TODO: assure, that it is a valid tree
+        context = self.get_context_data(**kwargs)
         transaction.commit()
         return self.render_to_response(context)
 
