@@ -31,15 +31,25 @@ class ConfigHandler(object):
             return self[key]
 
     def __setitem__(self, key, value):
+        # Save the new value to the database
         updated_rows = ConfigStore.objects.filter(key=key).update(value=value)
         if not updated_rows:
             ConfigStore.objects.create(key=key, value=value)
+
+        # Update cache
         try:
             self._cache[key] = value
         except AttributeError:
             # This happens, when a config-var is set, before __getitem__ was
             # called. In this case nothing should happen.
             pass
+
+        # Call on_change callback
+        for receiver, config_page in config_signal.send(sender=self):
+            for config_variable in config_page.variables:
+                if config_variable.name == key and config_variable.on_change:
+                    config_variable.on_change()
+                    break
 
     def setup_cache(self):
         """
@@ -144,9 +154,11 @@ class ConfigVariable(object):
     A simple object class to wrap new config variables. The keyword
     arguments 'name' and 'default_value' are required. The keyword
     argument 'form_field' has to be set, if the variable should appear
-    on the ConfigView.
+    on the ConfigView. The argument 'on_change' can get a callback
+    which is called every time, the variable is changed.
     """
-    def __init__(self, name, default_value, form_field=None):
+    def __init__(self, name, default_value, form_field=None, on_change=None):
         self.name = name
         self.default_value = default_value
         self.form_field = form_field
+        self.on_change = on_change
