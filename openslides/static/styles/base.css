@@ -34,6 +34,10 @@ body {
     position: absolute;
     margin: 8px 0 0 50px;
 }
+#header .navbar-search {
+    margin-top: 0px;
+}
+
 footer {
     margin-bottom: 20px;
 }
@@ -179,6 +183,15 @@ legend + .control-group {
 }
 #dataTable_wrapper .row-fluid:after {
     clear: none;
+}
+.searchresults li {
+    margin-bottom: 15px;
+}
+.searchresults li .app {
+    color: #999999;
+}
+.highlighted {
+    font-weight: bold;
 }
 
 

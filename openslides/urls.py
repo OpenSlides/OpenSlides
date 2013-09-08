@@ -26,7 +26,6 @@ urlpatterns = patterns(
     (r'^config/', include('openslides.config.urls')),
     (r'^projector/', include('openslides.projector.urls')),
     (r'^i18n/', include('django.conf.urls.i18n')),
-    (r'^search/', include('haystack.urls')),
 )
 
 js_info_dict = {'packages': []}

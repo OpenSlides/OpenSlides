@@ -4,7 +4,7 @@ How to create a new portable Windows distribution of OpenSlides:
 1.) Follow the OpenSlides installation instructions for windows,
     but add the option "-Z" when executing easy_install, e.g.:
 
-      easy_install -Z django django-mptt beautifulsoup4 bleach pillow qrcode reportlab tornado
+      easy_install -Z django django-mptt beautifulsoup4 bleach pillow qrcode reportlab tornado django-haystack whoosh
 
 2.) To update the version resource of the prebuild openslides.exe
     pywin32 should be installed (it is not strictly required but at

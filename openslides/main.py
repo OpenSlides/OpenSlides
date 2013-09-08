@@ -70,6 +70,8 @@ INSTALLED_APPS += INSTALLED_PLUGINS
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = %(media_root_path)s
 
+# Path to Whoosh search index
+HAYSTACK_CONNECTIONS['default']['PATH'] = %(whoosh_index_path)s
 """
 
 KEY_LENGTH = 30
@@ -225,16 +227,19 @@ def create_settings(settings_path, database_path=None):
         database_path = get_portable_db_path()
         dbpath_value = 'openslides.main.get_portable_db_path()'
         media_root_path_value = 'openslides.main.get_portable_media_root_path()'
+        whoosh_index_path_value = 'openslides.main.get_portable_whoosh_index_path()'
     else:
         if database_path is None:
             database_path = get_user_data_path('openslides', 'database.sqlite')
         dbpath_value = repr(fs2unicode(database_path))
         media_root_path_value = repr(fs2unicode(get_user_data_path('openslides', 'media', '')))
+        whoosh_index_path_value = repr(fs2unicode(get_user_data_path('openslides', 'whoosh_index', '')))
 
     settings_content = CONFIG_TEMPLATE % dict(
         default_key=base64.b64encode(os.urandom(KEY_LENGTH)),
         dbpath=dbpath_value,
-        media_root_path=media_root_path_value)
+        media_root_path=media_root_path_value,
+        whoosh_index_path=whoosh_index_path_value)
 
     if not os.path.exists(settings_module):
         os.makedirs(settings_module)
@@ -386,6 +391,10 @@ def get_portable_db_path():
 
 def get_portable_media_root_path():
     return get_portable_path('openslides', 'media', '')
+
+
+def get_portable_whoosh_index_path():
+    return get_portable_path('openslides', 'whoosh_index', '')
 
 
 def win32_get_app_data_path(*args):

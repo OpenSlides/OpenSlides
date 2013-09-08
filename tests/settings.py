@@ -37,3 +37,6 @@ INSTALLED_APPS += INSTALLED_PLUGINS
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = ''
+
+# Use RAM storage for whoosh index
+HAYSTACK_CONNECTIONS['default']['STORAGE'] = 'ram'

@@ -108,6 +108,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'mptt',
+    'haystack',  # full-text-search
     'openslides.poll',
     'openslides.core',
     'openslides.account',
@@ -118,9 +119,6 @@ INSTALLED_APPS = (
     'openslides.participant',
     'openslides.mediafile',
     'openslides.config',
-
-    # full-text-search
-    'haystack',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
@@ -146,8 +144,12 @@ TEST_DISCOVER_TOP_LEVEL = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
 ALLOWED_HOSTS = ['*']
 
+# Use Haystack with Whoosh for full text search
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine'
+    },
+}
 
-# Full-text search
-HAYSTACK_SITECONF = 'openslides.search_sites'
-HAYSTACK_SEARCH_ENGINE = 'whoosh'
-HAYSTACK_WHOOSH_PATH = os.path.join(os.path.dirname(__file__), 'whoosh_index')
+# Haystack updates search index after each save/delete action by apps
+HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'

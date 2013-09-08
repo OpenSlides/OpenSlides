@@ -1,0 +1,10 @@
+{% load i18n %}
+{% load highlight %}
+
+{% if perms.motion.can_see_motion %}
+    <li>
+        <a href="{{ result.object.get_absolute_url }}">{{ result.object }}</a><br>
+        <span class="app">{% trans "Motion" %}</a></span><br>
+        {% highlight result.text with request.GET.q %}
+    </li>
+{% endif %}
