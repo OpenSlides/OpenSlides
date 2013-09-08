@@ -26,6 +26,9 @@ class HandleConfigTest(TestCase):
     def get_config_var(self, key):
         return config[key]
 
+    def set_config_var(self, key, value):
+        config[key] = value
+
     def test_get_config_default_value(self):
         self.assertEqual(config['string_var'], 'default_string_rien4ooCZieng6ah')
         self.assertTrue(config['bool_var'])
@@ -72,6 +75,19 @@ class HandleConfigTest(TestCase):
         Try to call __setitem__ before __getitem.
         """
         config['my_config_var'] = 'value'
+
+    def test_on_change(self):
+        """
+        Tests that the special callback is called and raises a special
+        message.
+        """
+        self.assertRaisesMessage(
+            Exception,
+            'Change callback dhcnfg34dlg06kdg successfully called.',
+            self.set_config_var,
+            key='var_with_callback_ghvnfjd5768gdfkwg0hm2',
+            value='new_string_kbmbnfhdgibkdjshg452bc')
+        self.assertEqual(config['var_with_callback_ghvnfjd5768gdfkwg0hm2'], 'new_string_kbmbnfhdgibkdjshg452bc')
 
 
 class ConfigFormTest(TestCase):
@@ -286,3 +302,16 @@ def set_simple_config_page_disabled_page(sender, **kwargs):
                       url='testsimplepage3',
                       required_permission='No permission required',
                       variables=(ConfigVariable(name='hidden_config_var_2', default_value=''),))
+
+
+@receiver(config_signal, dispatch_uid='set_simple_config_page_with_callback_for_testing')
+def set_simple_config_page_with_callback(sender, **kwargs):
+    def callback():
+        raise Exception('Change callback dhcnfg34dlg06kdg successfully called.')
+    return ConfigPage(title='Hvndfhsbgkridfgdfg',
+                      url='testsimplepage4',
+                      required_permission='No permission required',
+                      variables=(ConfigVariable(
+                          name='var_with_callback_ghvnfjd5768gdfkwg0hm2',
+                          default_value='',
+                          on_change=callback),))
