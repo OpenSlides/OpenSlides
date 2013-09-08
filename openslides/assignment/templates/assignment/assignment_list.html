@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load staticfiles %}
+{% load tags %}
 
 {% block title %}{% trans "Elections" %} – {{ block.super }}{% endblock %}
 
@@ -18,10 +19,10 @@
     <h1>{% trans "Elections" %}
         <small class="pull-right">
         {% if perms.assignment.can_manage_assignment %}
-            <a href="{% url 'assignment_new' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New election' %}"><i class="icon-plus icon-white"></i> {% trans "New" %}</a>
+            <a href="{% url 'assignment_create' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New election' %}"><i class="icon-plus icon-white"></i> {% trans "New" %}</a>
         {% endif %}
         {% if perms.assignment.can_see_assignment %}
-            <a href="{% url 'print_assignment' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print all elections as PDF' %}" target="_blank"><i class="icon-print"></i> PDF</a>
+            <a href="{% url 'assignment_list_pdf' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print all elections as PDF' %}" target="_blank"><i class="icon-print"></i> PDF</a>
         {% endif %}
         </small>
     </h1>
@@ -35,41 +36,41 @@
             <th class="mini_width">{% trans "Actions" %}</th>
         </tr>
     </thead>
-    {% for assignment in assignments %}
-        <tr class="{% if assignment.active %}activeline{% endif %}">
-            <td><a href="{% url 'assignment_view' assignment.id %}">{{ assignment }}</a></td>
+    {% for object in object_list %}
+        <tr class="{% if object.active %}activeline{% endif %}">
+            <td><a href="{{ object|absolute_url:'detail' }}">{{ object }}</a></td>
             <td  class="optional">
                 <!-- posts -->
                 {% trans "Posts" context "Number of searched candidates for an election" %}:
-                <span class="badge badge-info">{{ assignment.posts }}</span>
+                <span class="badge badge-info">{{ object.posts }}</span>
                 <!-- candidates -->
-                {% if assignment.status != 'fin' %}
-                    | {% trans "Candidates" %}: <span class="badge badge-warning">{{ assignment.get_participants|length }}</span>
+                {% if object.status != 'fin' %}
+                    | {% trans "Candidates" %}: <span class="badge badge-warning">{{ object.get_participants|length }}</span>
                 {% endif %}
                 <!-- elected candidates -->
-                | {% trans "Elected" %}: <span class="badge badge-success">{{ assignment.elected|length }}</span>
+                | {% trans "Elected" %}: <span class="badge badge-success">{{ object.elected|length }}</span>
             </td>
-            <td><span class="label label-info">{{ assignment.get_status_display }}</status></td>
+            <td><span class="label label-info">{{ object.get_status_display }}</status></td>
             <td>
                 <span style="width: 1px; white-space: nowrap;">
                 {% if perms.projector.can_manage_projector %}
-                    <a href="{% url 'projector_activate_slide' assignment.sid  %}" 
-                        class="activate_link btn {% if assignment.active %}btn-primary{% endif %} btn-mini"
+                    <a href="{% url 'projector_activate_slide' object.sid  %}" 
+                        class="activate_link btn {% if object.active %}btn-primary{% endif %} btn-mini"
                         rel="tooltip" data-original-title="{% trans 'Show election' %}">
-                        <i class="icon-facetime-video {% if assignment.active %}icon-white{% endif %}"></i>
+                        <i class="icon-facetime-video {% if object.active %}icon-white{% endif %}"></i>
                     </a>
                 {% endif %}
                 {% if perms.assignment.can_manage_assignment %}
-                    <a href="{% url 'assignment_edit' assignment.id %}"
+                    <a href="{{ object|absolute_url:'update' }}"
                         rel="tooltip" data-original-title="{% trans 'Edit' %}"
                         class="btn btn-mini"><i class="icon-pencil"></i>
                     </a>
-                    <a href="{% url 'assignment_delete' assignment.id %}"
+                    <a href="{% url 'assignment_delete' object.id %}"
                         rel="tooltip" data-original-title="{% trans 'Delete' %}"
                         class="btn btn-mini"><i class="icon-remove"></i>
                     </a>
                 {% endif %}
-                <a href="{% url 'print_assignment' assignment.id  %}"
+                <a href="{% url 'assignment_pdf' object.id  %}"
                     data-original-title="{% trans 'Print election as PDF' %}" target="_blank"
                     class="btn btn-mini tooltip-left"><i class="icon-print"></i> PDF
                 </a>
