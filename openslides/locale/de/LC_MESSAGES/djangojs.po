@@ -5,16 +5,17 @@
 # Translators:
 # emanuel <emanuel@intevation.de>, 2013
 # emanuel <emanuel@intevation.de>, 2013
-# emanuelschuetze <emanuelschuetze@gmail.com>, 2013
+# emanuelschuetze <emanuel.schuetze@intevation.de>, 2013
+# emanuelschuetze <emanuel.schuetze@intevation.de>, 2013
 # ostcar <mail@oshahn.de>, 2012
 # ostcar <mail@oshahn.de>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-07-07 23:49+0200\n"
-"PO-Revision-Date: 2013-06-28 09:47+0000\n"
-"Last-Translator: emanuelschuetze <emanuelschuetze@gmail.com>\n"
+"POT-Creation-Date: 2013-09-02 13:52+0200\n"
+"PO-Revision-Date: 2013-09-09 20:05+0000\n"
+"Last-Translator: emanuelschuetze <emanuel.schuetze@intevation.de>\n"
 "Language-Team: German (http://www.transifex.com/projects/p/openslides/language/de/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -137,7 +138,7 @@ msgid "Monday"
 msgstr "Montag"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:25
-msgid "Tuesdey"
+msgid "Tuesday"
 msgstr "Dienstag"
 
 #: agenda/static/javascript/agenda-config-datepicker.js:25
