@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
 VERSION = (1, 4, 2, 'final', 1)  # During development it is the next release
-RELEASE = False
+RELEASE = True
 
 
 def get_version(version=None, release=None):
