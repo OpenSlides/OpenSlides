@@ -4,20 +4,34 @@
 
 http://openslides.org
 
-Version 1.4.2 (unreleased)
+Version 1.4.2 (2013-09-10) 
 ==========================
+[https://github.com/OpenSlides/OpenSlides/issues?milestone=12]
+
+- Used jQuery plugin bsmSelect for better <select multiple> form elements.
+- New config option to disable paragraph numbering in motion pdf. (Default value: disabled.)
+- Removed max value limitation in config field 'motion_min_supporters'.
+- Removed supporters signature field in motion pdf.
+- Fixed missing creation time of motion version. Show now string if identifier is not set (in widgets and motion detail).
+- Fixed error when a person is deleted.
+- Fixed deleting of assignments with related agenda items.
+- Fixed wrong ordering of agenda items after order change.
+- Fixed error in portable version: Open browser on localhost when server listens to 0.0.0.0.
+- Fixed typo and updated translations.
+- Updated CKEditor from 4.1.1 to 4.2. Fixed errors in MS Internet Explorer.
+- Updated to Django 1.5.2.
 
 
 Version 1.4.1 (2013-07-29)
 ==========================
 [https://github.com/OpenSlides/OpenSlides/issues?milestone=11]
 
-- Fix tooltip which shows the end of each agenda item.
-- Fix duration of agenda with closed agenda items.
-- Disable deleting active version of a motion.
+- Fixed tooltip which shows the end of each agenda item.
+- Fixed duration of agenda with closed agenda items.
+- Disabled deleting active version of a motion.
 - Start browser on custom IP address.
-- Fix wrong URLs to polls in motion detail view.
-- Add Czech translation.
+- Fixed wrong URLs to polls in motion detail view.
+- Added Czech translation.
 
 
 Version 1.4 (2013-07-10)
