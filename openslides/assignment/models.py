@@ -16,12 +16,12 @@ from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
 from django.utils.datastructures import SortedDict
 
 from openslides.utils.person import PersonField
+from openslides.utils.utils import html_strong
 from openslides.config.api import config
 from openslides.projector.api import register_slidemodel
 from openslides.projector.projector import SlideMixin
 from openslides.poll.models import (
     BasePoll, CountInvalid, CountVotesCast, BaseOption, PublishPollMixin, BaseVote)
-from openslides.agenda.models import Item
 
 
 class AssignmentCandidate(models.Model):
@@ -54,16 +54,12 @@ class Assignment(models.Model, SlideMixin):
     status = models.CharField(max_length=3, choices=STATUS, default='sea')
 
     def set_status(self, status):
-        error = True
-        for a, b in Assignment.STATUS:
-            if status == a:
-                error = False
-                break
-        if error:
-            raise NameError(_('%s is not a valid status.') % status)
+        status_dict = dict(self.STATUS)
+        if status not in status_dict:
+            raise ValueError(_('%s is not a valid status.') % html_strong(status))
         if self.status == status:
-            raise NameError(
-                _('The assignment status is already %s.') % self.status)
+            raise ValueError(
+                _('The assignment status is already %s.') % html_strong(status_dict[status]))
         self.status = status
         self.save()
 
@@ -228,9 +224,9 @@ class Assignment(models.Model, SlideMixin):
 
     def get_absolute_url(self, link='detail'):
         if link == 'detail' or link == 'view':
-            return reverse('assignment_view', args=[str(self.id)])
+            return reverse('assignment_detail', args=[str(self.id)])
         if link == 'update' or link == 'edit':
-            return reverse('assignment_edit', args=[str(self.id)])
+            return reverse('assignment_update', args=[str(self.id)])
         if link == 'delete':
             return reverse('assignment_delete', args=[str(self.id)])
 
@@ -299,7 +295,7 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
 
     @models.permalink
     def get_absolute_url(self, link='view'):
-        if link == 'view':
+        if link == 'view' or link == 'detail' or link == 'update':
             return ('assignment_poll_view', [str(self.id)])
         if link == 'delete':
             return ('assignment_poll_delete', [str(self.id)])

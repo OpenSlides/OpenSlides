@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load humanize %}
+{% load tags %}
 
 {% block title %}{% trans "Election" %} "{{ assignment }}", {{ ballotnumber }}. {% trans "ballot" %} – {{ block.super }}{% endblock %}
 
@@ -12,7 +13,7 @@
     {{ ballotnumber|ordinal|safe }} {% trans "ballot" %}
     </small>
     <small class="pull-right">
-    <a href="{% url 'assignment_view' assignment.id %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to election" %}</a>
+    <a href="{{ assignment|absolute_url:'detail' }}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to election" %}</a>
     <!-- activate projector -->
     {% if perms.projector.can_manage_projector %}
         <a href="{% url 'projector_activate_slide' assignment.sid  %}" class="activate_link btn {% if assignment.active %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show election' %}">
@@ -71,7 +72,7 @@
     </table>
 
     <p>
-    <a href="{% url 'print_assignment_poll' poll.id %}" class="btn" target="_blank">
+    <a href="{% url 'assignment_poll_pdf' poll.id %}" class="btn" target="_blank">
         <i class="icon-print"></i> {% trans 'Ballot paper as PDF' %}
     </a>
     </p>
@@ -83,7 +84,7 @@
         <button type="submit" name="apply" class="btn">
             {% trans 'Apply' %}
         </button>
-        <a href="{% url 'assignment_view' poll.assignment.id %}" class="btn">
+        <a href="{{ poll.assignment|absolute_url:'detail' }}" class="btn">
             {% trans 'Cancel' %}
         </a>
     </div>
