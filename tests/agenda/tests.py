@@ -210,6 +210,25 @@ class ViewTest(TestCase):
         response = c.get('/agenda/%s/' % item.id)
         self.assertContains(response, 'quai5OTeephaequ0xei0')
 
+    def test_change_item_order(self):
+        data = {
+            'i1-self': 1,
+            'i1-weight': 50,
+            'i1-parent': 0,
+            'i2-self': 2,
+            'i2-weight': 50,
+            'i2-parent': 1}
+        response = self.adminClient.post('/agenda/', data)
+
+        # Test values in response.
+        items = response.context['items']
+        self.assertIsNone(items[0].parent)
+        self.assertEqual(items[1].parent_id, 1)
+
+        # Test values in DB
+        self.assertIsNone(Item.objects.get(pk=1).parent)
+        self.assertEqual(Item.objects.get(pk=2).parent_id, 1)
+
 
 class ConfigTest(TestCase):
     def setUp(self):
