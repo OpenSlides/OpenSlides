@@ -7,13 +7,13 @@
         <a href="{% url 'projector_activate_slide' assignment.sid  %}" class="activate_link btn {% if assignment.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
             <i class="icon-facetime-video {% if assignment.active %}icon-white{% endif %}"></i>
         </a>&nbsp;
-        <a href="{% model_url assignment 'edit' %}" title="{% trans 'Edit' %}" class="btn btn-mini right">
+        <a href="{{ assignment|absolute_url:'update' }}" title="{% trans 'Edit' %}" class="btn btn-mini right">
             <i class="icon-pencil"></i>
         </a>
         <a href="{% url 'projctor_preview_slide' assignment.sid %}" title="{% trans 'Preview' %}" class="btn btn-mini right">
             <i class="icon-search"></i>
         </a>
-        <a href="{% model_url assignment 'view' %}">{{ assignment }}</a>
+        <a href="{{ assignment|absolute_url:'detail' }}">{{ assignment }}</a>
     </li>
 {% empty %}
     <li>{% trans 'No assignments available.' %}</li>

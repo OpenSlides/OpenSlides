@@ -19,7 +19,7 @@
             {% trans "New election" %}
         {% endif %}
         <small class="pull-right">
-        <a href="{% url 'assignment_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        <a href="{% url 'assignment_list' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
         </small>
     </h1>
 
@@ -27,7 +27,7 @@
         {% include "form.html" %}
         <p>
         {% include "formbuttons_saveapply.html" %}
-        <a href='{% url 'assignment_overview' %}' class="btn">
+        <a href='{% url 'assignment_list' %}' class="btn">
             {% trans 'Cancel' %}
         </a>
         </p>
