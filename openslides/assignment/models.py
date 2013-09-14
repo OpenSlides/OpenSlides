@@ -230,7 +230,7 @@ class Assignment(models.Model, SlideMixin):
         if link == 'detail' or link == 'view':
             return reverse('assignment_view', args=[str(self.id)])
         if link == 'update' or link == 'edit':
-            return reverse('assignment_edit', args=[str(self.id)])
+            return reverse('assignment_update', args=[str(self.id)])
         if link == 'delete':
             return reverse('assignment_delete', args=[str(self.id)])
 

@@ -24,11 +24,15 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.utils.translation import ungettext, ugettext as _
 
+from django.views.generic.detail import SingleObjectMixin
+
 from openslides.utils.pdf import stylesheet
 from openslides.utils.template import Tab
-from openslides.utils.utils import (
-    template, permission_required, gen_confirm_form, del_confirm_form, ajax_request)
-from openslides.utils.views import FormView, DeleteView, PDFView, RedirectView
+from openslides.utils.utils import (template, permission_required,
+    gen_confirm_form, ajax_request)
+
+from openslides.utils.views import (CreateView, DeleteView, UpdateView,
+    ListView, PDFView, DetailView, View, PermissionMixin)
 from openslides.utils.person import get_person
 from openslides.config.api import config
 from openslides.participant.models import User, Group
@@ -39,192 +43,205 @@ from openslides.assignment.models import Assignment, AssignmentPoll
 from openslides.assignment.forms import AssignmentForm, AssignmentRunForm
 
 
-@permission_required('assignment.can_see_assignment')
-@template('assignment/overview.html')
-def get_overview(request):
-    assignments = Assignment.objects.all()
-    return {
-        'assignments': assignments,
-    }
+class AssignmentListView(ListView):
+    """ListView for all Assignments"""
+    permission_required = 'assignment.can_see_assignment'
+    model = Assignment
+
+    def get_queryset(self):
+        query = self.model.objects
+        if 'status' in self.request.GET and '---' not in self.request.GET['status']:
+            query = query.filter(status__iexact=self.request.GET['status'])
+        try:
+            sort = self.request.GET['sort']
+            if sort in ['name', 'status']:
+                query = query.order_by(sort)
+        except KeyError:
+            pass
+        if 'reverse' in self.request.GET:
+            query = query.reverse()
+        return query.all()
 
 
-@permission_required('assignment.can_see_assignment')
-@template('assignment/view.html')
-def view(request, assignment_id=None):
-    form = None
-    assignment = Assignment.objects.get(pk=assignment_id)
-    if request.method == 'POST':
-        if request.user.has_perm('assignment.can_nominate_other'):
-            form = AssignmentRunForm(request.POST)
+class AssignmentDetail(DetailView):
+    permission_required = 'assignment.can_see_assignment'
+    model = Assignment
+    form_class = AssignmentRunForm
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(AssignmentDetail, self).get_context_data(*args, **kwargs)
+        if self.request.META.get('REQUEST_METHOD') == 'POST':
+            context['form'] = self.form_class(self.request.POST)
+        else:
+            context['form'] = self.form_class()
+        polls = self.object.poll_set.all()
+        if not self.request.user.has_perm('assignment.can_manage_assignment'):
+            polls = self.object.poll_set.filter(published=True)
+            vote_results = self.object.vote_results(only_published=True)
+        else:
+            polls = self.object.poll_set.all()
+            vote_results = self.object.vote_results(only_published=False)
+
+        blocked_candidates = [
+            candidate.person for candidate in
+            self.object.assignment_candidates.filter(blocked=True)]
+        context['polls'] = polls
+        context['vote_results'] = vote_results
+        context['blocked_candidates'] = blocked_candidates
+        return context
+
+    def post(self, *args, **kwargs):
+        self.object = self.get_object()
+        if self.request.user.has_perm('assignment.can_nominate_other'):
+            form = AssignmentRunForm(self.request.POST)
             if form.is_valid():
                 user = form.cleaned_data['candidate']
                 try:
-                    assignment.run(user, request.user)
+                    self.object.run(user, self.request.user)
                 except NameError, e:
-                    messages.error(request, e)
+                    messages.error(self.request, e)
                 else:
-                    messages.success(request, _(
+                    messages.success(self.request, _(
                         "Candidate <b>%s</b> was nominated successfully.")
                         % user)
-    else:
-        if request.user.has_perm('assignment.can_nominate_other'):
-            form = AssignmentRunForm()
-
-    polls = assignment.poll_set.all()
-    if not request.user.has_perm('assignment.can_manage_assignment'):
-        polls = assignment.poll_set.filter(published=True)
-        vote_results = assignment.vote_results(only_published=True)
-    else:
-        polls = assignment.poll_set.all()
-        vote_results = assignment.vote_results(only_published=False)
-
-    blocked_candidates = [
-        candidate.person for candidate in
-        assignment.assignment_candidates.filter(blocked=True)]
-    return {
-        'assignment': assignment,
-        'blocked_candidates': blocked_candidates,
-        'form': form,
-        'vote_results': vote_results,
-        'polls': polls,
-        'user_is_candidate': assignment.is_candidate(request.user)}
+        return super(AssignmentDetail, self).get(*args, **kwargs) 
 
 
-@permission_required('assignment.can_manage_assignment')
-@template('assignment/edit.html')
-def edit(request, assignment_id=None):
-    """
-    View zum editieren und neuanlegen von Wahlen
-    """
-    if assignment_id is not None:
-        assignment = Assignment.objects.get(id=assignment_id)
-    else:
-        assignment = None
+class AssignmentCreateView(CreateView):
+    model = Assignment
+    form_class = AssignmentForm
+    permission_required = 'assignment.can_manage_assignment'
 
-    if request.method == 'POST':
-        form = AssignmentForm(request.POST, instance=assignment)
-        if form.is_valid():
-            assignment = form.save()
-            if assignment_id is None:
-                messages.success(request, _('New election was successfully created.'))
-            else:
-                messages.success(request, _('Election was successfully modified.'))
-            if not 'apply' in request.POST:
-                return redirect(reverse("assignment_overview"))
-            if assignment_id is None:
-                return redirect(reverse('assignment_edit', args=[assignment.id]))
-        else:
-            messages.error(request, _('Please check the form for errors.'))
-    else:
-        form = AssignmentForm(instance=assignment)
-    if assignment:
-        polls = assignment.poll_set.filter(assignment=assignment)
-    else:
-        polls = None
-    return {
-        'form': form,
-        'assignment': assignment,
-        'polls': polls,
-    }
+    def get_success_message(self):
+        return _('New election was successfully created.')
+
+    def get_success_url(self):
+        return reverse("assignment_list")
 
 
-@permission_required('assignment.can_manage_assignment')
-def delete(request, assignment_id):
-    assignment = Assignment.objects.get(pk=assignment_id)
-    if request.method == 'POST':
-        if 'submit' in request.POST:
-            assignment.delete()
-            messages.success(request, _('Election <b>%s</b> was successfully deleted.') % assignment)
-    else:
-        del_confirm_form(request, assignment)
-    return redirect(reverse('assignment_overview'))
+
+class AssignmentUpdateView(UpdateView):
+    model = Assignment
+    form_class = AssignmentForm
+    permission_required = 'assignment.can_manage_assignment'
+
+    def get_success_message(self):
+        return _('Election was successfully modified.')
+
+    def get_success_url(self, *args, **kwargs):
+        success_url = reverse('assignment_update', args=[self.object.pk])
+        if not 'apply' in self.request.POST:
+            success_url = reverse("assignment_list")
+        return success_url
 
 
-@permission_required('assignment.can_manage_assignment')
-@template('assignment/view.html')
-def set_status(request, assignment_id=None, status=None):
-    try:
-        if status is not None:
-            assignment = Assignment.objects.get(pk=assignment_id)
-            assignment.set_status(status)
-            messages.success(request, _('Election status was set to: <b>%s</b>.') % assignment.get_status_display())
-    except Assignment.DoesNotExist:
-        pass
-    except NameError, e:
-        messages.error(request, e)
-    return redirect(reverse('assignment_view', args=[assignment_id]))
+class AssignmentDeleteView(DeleteView):
+    permission_required = 'assignment.can_manage_assignment'
+    model = Assignment
+    success_url_name = 'assignment_list'
+
+    def get_success_message(self):
+        return _('Election <b>%s</b> was successfully deleted.') % self.object
 
 
-@permission_required('assignment.can_nominate_self')
-def run(request, assignment_id):
-    assignment = Assignment.objects.get(pk=assignment_id)
-    try:
-        assignment.run(request.user, request.user)
-        messages.success(request, _('You have set your candidature successfully.'))
-    except NameError, e:
-        messages.error(request, e)
-    return redirect(reverse('assignment_view', args=[assignment_id]))
+class AssignmentSetStatusView(SingleObjectMixin, PermissionMixin, View):
+    model = Assignment
+    permission_required = 'assignment.can_manage_assignment'
 
-
-@login_required
-def delrun(request, assignment_id):
-    assignment = Assignment.objects.get(pk=assignment_id)
-    if assignment.status == 'sea' or request.user.has_perm("assignment.can_manage_assignment"):
+    def get(self, *args, **kwargs):
+        status = kwargs.get('status')
         try:
-            assignment.delrun(request.user, blocked=True)
-        except Exception, e:
-            messages.error(request, e)
+            if status is not None:
+                assignment = self.get_object()
+                assignment.set_status(status)
+                messages.success(self.request,
+                    _('Election status was set to: <b>%s</b>.') % 
+                    assignment.get_status_display())
+        except self.model.DoesNotExist:
+            pass
+        except NameError, e:
+            messages.error(self.request, e)
+        return redirect(reverse('assignment_view', args=[kwargs['pk']]))
+
+
+class AssignmentRunView(SingleObjectMixin, PermissionMixin, View):
+    model = Assignment
+    permission_required = 'assignment.can_nominate_self'
+
+    def get(self, *args, **kwargs):
+        assignment = self.get_object()
+        try:
+            assignment.run(self.request.user, self.request.user)
+            messages.success(self.request,
+                _('You have set your candidature successfully.'))
+        except NameError, e:
+            messages.error(self.request, e)
+        return redirect(reverse('assignment_view', args=[assignment.pk]))
+
+
+class AssignmentRunDeleteView(SingleObjectMixin, View):
+    model = Assignment
+
+    def get(self, *args, **kwargs):
+        assignment = self.get_object()
+        if assignment.status == 'sea' or self.request.user.has_perm(
+                "assignment.can_manage_assignment"):
+            try:
+                assignment.delrun(self.request.user, blocked=True)
+            except Exception, e:
+                messages.error(self.request, e)
+            else:
+                messages.success(self.request,
+                    _("You have withdrawn your candidature successfully. "
+                      "You can not be nominated by other participants anymore.")
+                )
         else:
-            messages.success(
-                request,
-                _("You have withdrawn your candidature successfully. "
-                  "You can not be nominated by other participants anymore."))
-    else:
-        messages.error(request, _('The candidate list is already closed.'))
-
-    return redirect(reverse('assignment_view', args=[assignment_id]))
+            messages.error(self.request, _('The candidate list is already closed.'))
+        return redirect(reverse('assignment_view', args=[kwargs.get('pk')]))
 
 
-@permission_required('assignment.can_manage_assignment')
-def delother(request, assignment_id, user_id):
-    assignment = Assignment.objects.get(pk=assignment_id)
-    person = get_person(user_id)
-    is_blocked = assignment.is_blocked(person)
+class AssignmentRunOtherDeleteView(SingleObjectMixin, PermissionMixin, View):
+    model = Assignment
+    permission_required = 'assignment.can_manage_assignment'
 
-    if request.method == 'POST':
-        if 'submit' in request.POST:
+    def post(self, *args, **kwargs):
+        assignment = self.get_object()
+        person = get_person(kwargs.get('user_id'))
+        is_blocked = assignment.is_blocked(person)
+        if 'submit' in self.request.POST:
             try:
                 assignment.delrun(person, blocked=False)
             except Exception, e:
-                messages.error(request, e)
+                messages.error(self.request, e)
             else:
                 if not is_blocked:
                     message = _("Candidate <b>%s</b> was withdrawn successfully.") % person
                 else:
                     message = _("<b>%s</b> was unblocked successfully.") % person
-                messages.success(request, message)
-    else:
+                messages.success(self.request, message)
+        return redirect(reverse('assignment_view', args=[kwargs.get('pk')]))
+
+    def get(self, *args, **kwargs):
+        user_id = kwargs.get('user_id')
+        assignment = self.get_object()
+        person = get_person(user_id)
+        is_blocked = assignment.is_blocked(person)        
         if not is_blocked:
             message = _("Do you really want to withdraw <b>%s</b> from the election?") % person
         else:
             message = _("Do you really want to unblock <b>%s</b> for the election?") % person
-        gen_confirm_form(request, message, reverse('assignment_delother', args=[assignment_id, user_id]))
-    return redirect(reverse('assignment_view', args=[assignment_id]))
+        gen_confirm_form(self.request, message,
+            reverse('assignment_delother', args=[assignment.pk, user_id]))
+        return redirect(reverse('assignment_view', args=[assignment.pk]))
 
+class GeneratePollView(SingleObjectMixin, PermissionMixin, View):
+    model = Assignment
+    permission_required = 'assignment.can_manage_assignment'
 
-@permission_required('assignment.can_manage_assignment')
-def set_active(request, assignment_id):
-    assignment = Assignment.objects.get(pk=assignment_id)
-    assignment.set_active()
-    return redirect(reverse('assignment_view', args=[assignment_id]))
-
-
-@permission_required('assignment.can_manage_assignment')
-def gen_poll(request, assignment_id):
-    poll = Assignment.objects.get(pk=assignment_id).gen_poll()
-    messages.success(request, _("New ballot was successfully created."))
-    return redirect(reverse('assignment_poll_view', args=[poll.id]))
-
+    def get(self, *args, **kwargs):
+        poll = self.get_object().gen_poll()
+        messages.success(self.request, _("New ballot was successfully created."))
+        return redirect(reverse('assignment_poll_view', args=[poll.id]))
 
 class ViewPoll(PollFormView):
     poll_class = AssignmentPoll
@@ -240,49 +257,60 @@ class ViewPoll(PollFormView):
         return context
 
     def get_success_url(self):
+        return_url = ''
         if not 'apply' in self.request.POST:
-            return reverse('assignment_view', args=[self.poll.assignment.id])
-        return ''
+            return_url = reverse('assignment_view', args=[self.poll.assignment.id])
+        return return_url
 
 
-@permission_required('assignment.can_manage_assignment')
-def set_publish_status(request, poll_id):
-    try:
-        poll = AssignmentPoll.objects.get(pk=poll_id)
-        if poll.published:
-            poll.set_published(False)
-        else:
-            poll.set_published(True)
-    except AssignmentPoll.DoesNotExist:
-        messages.error(request, _('Ballot ID %d does not exist.') % int(poll_id))
-        return redirect(reverse('assignment_overview'))
+class SetPublishStatusView(SingleObjectMixin, PermissionMixin, View):
+    model = AssignmentPoll
+    permission_required = 'assignment.can_manage_assignment'
 
-    if request.is_ajax():
-        return ajax_request({'published': poll.published})
+    def get(self, *args, **kwargs):
+        poll = self.get_object()
+        return_url = redirect(reverse('assignment_view', 
+            args=[poll.assignment.id]))
+        try:
+            if poll.published:
+                poll.set_published(False)
+            else:
+                poll.set_published(True)
 
-    if poll.published:
-        messages.success(request, _("Ballot successfully published."))
-    else:
-        messages.success(request, _("Ballot successfully unpublished."))
-    return redirect(reverse('assignment_view', args=[poll.assignment.id]))
+            if self.request.is_ajax():
+                return_url = ajax_request({'published': poll.published})
+
+            if poll.published:
+                messages.success(self.request, _("Ballot successfully published."))
+            else:
+                messages.success(self.request, _("Ballot successfully unpublished."))
+        except self.model.DoesNotExist:
+            messages.error(self.request, _('Ballot ID %d does not exist.') %
+                int(kwargs['poll_id']))
+            return_url = redirect(reverse('assignment_list'))
+        return return_url
 
 
-@permission_required('assignment.can_manage_assignment')
-def set_elected(request, assignment_id, user_id, elected=True):
-    assignment = Assignment.objects.get(pk=assignment_id)
-    person = get_person(user_id)
-    assignment.set_elected(person, elected)
+class SetElectedView(SingleObjectMixin, PermissionMixin, View):
+    model = Assignment
+    permission_required = 'assignment.can_manage_assignment'
 
-    if request.is_ajax():
-        if elected:
-            link = reverse('assignment_user_not_elected', args=[assignment.id, person.person_id])
-            text = _('not elected')
-        else:
-            link = reverse('assignment_user_elected', args=[assignment.id, person.person_id])
-            text = _('elected')
-        return ajax_request({'elected': elected, 'link': link, 'text': text})
-
-    return redirect(reverse('assignment_view', args=[assignment_id]))
+    def get(self, *args, **kwargs):
+        assignment = self.get_object()
+        person = get_person(kwargs['user_id'])
+        elected = kwargs['elected']
+        assignment.set_elected(person, elected)
+    
+        if self.request.is_ajax():
+            if elected:
+                link = reverse('assignment_user_not_elected', args=[assignment.id, person.person_id])
+                text = _('not elected')
+            else:
+                link = reverse('assignment_user_elected', args=[assignment.id, person.person_id])
+                text = _('elected')
+            return ajax_request({'elected': elected, 'link': link, 'text': text})
+    
+        return redirect(reverse('assignment_view', args=[assignment.pk]))
 
 
 class AssignmentPollDelete(DeleteView):
@@ -316,7 +344,7 @@ class AssignmentPDF(PDFView):
 
     def get_filename(self):
         try:
-            assignment_id = self.kwargs['assignment_id']
+            assignment_id = self.kwargs['pk']
             assignment = Assignment.objects.get(id=assignment_id)
             filename = u'%s-%s' % (
                 _("Assignment"),
@@ -327,7 +355,7 @@ class AssignmentPDF(PDFView):
 
     def append_to_pdf(self, story):
         try:
-            assignment_id = self.kwargs['assignment_id']
+            assignment_id = self.kwargs['pk']
         except KeyError:
             assignment_id = None
         if assignment_id is None:  # print all assignments
@@ -624,7 +652,7 @@ def register_tab(request):
     return Tab(
         title=_('Elections'),
         app='assignment',
-        url=reverse('assignment_overview'),
+        url=reverse('assignment_list'),
         permission=(
             request.user.has_perm('assignment.can_see_assignment') or
             request.user.has_perm('assignment.can_nominate_other') or
