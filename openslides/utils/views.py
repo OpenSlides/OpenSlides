@@ -337,22 +337,44 @@ class ModelFormMixin(object):
 
 class UpdateView(PermissionMixin, UrlMixin, ExtraContextMixin,
                  ModelFormMixin, _UpdateView):
+    success_message = None
+
     def form_invalid(self, form):
         messages.error(self.request, _('Please check the form for errors.'))
         return super(UpdateView, self).form_invalid(form)
 
+    def form_valid(self, form):
+        value = super(UpdateView, self).form_valid(form)
+        messages.success(self.request, self.get_success_message())
+        return value
+
     def get_success_message(self):
-        return _('%s was successfully modified.') % html_strong(self.object)
+        if self.success_message is None:
+            message = _('%s was successfully modified.') % html_strong(self.object)
+        else:
+            message = self.success_message
+        return message
 
 
 class CreateView(PermissionMixin, UrlMixin, ExtraContextMixin,
                  ModelFormMixin, _CreateView):
+    success_message = None
+
     def form_invalid(self, form):
         messages.error(self.request, _('Please check the form for errors.'))
         return super(CreateView, self).form_invalid(form)
 
+    def form_valid(self, form):
+        value = super(CreateView, self).form_valid(form)
+        messages.success(self.request, self.get_success_message())
+        return value
+
     def get_success_message(self):
-        return _('%s was successfully created.') % html_strong(self.object)
+        if self.success_message is None:
+            message = _('%s was successfully created.') % html_strong(self.object)
+        else:
+            message = self.success_message
+        return message
 
 
 class DeleteView(SingleObjectMixin, QuestionMixin, RedirectView):
