@@ -165,6 +165,7 @@ class UsersettingsForm(CssClassMixin, forms.ModelForm):
     language = forms.ChoiceField(choices=settings.LANGUAGES)
 
     def __init__(self, *args, **kwargs):
+        kwargs['initial'] = kwargs.get('initial', {})
         kwargs['initial']['user_name'] = kwargs['instance'].username
         return super(UsersettingsForm, self).__init__(*args, **kwargs)
 
