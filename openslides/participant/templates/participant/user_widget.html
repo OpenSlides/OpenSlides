@@ -1,19 +1,18 @@
 {% load i18n %}
 {% load tags %}
-
 <ul style="line-height: 180%">
 {% for user in users %}
-    <li class="{% if user.active %}activeline{% endif %}">
-        <a href="{% url 'projector_activate_slide' user.sid  %}" class="activate_link btn {% if user.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
-            <i class="icon-facetime-video {% if user.active %}icon-white{% endif %}"></i>
+    <li class="{% if user.is_active_slide %}activeline{% endif %}">
+        <a href="{{ user|absolute_url:'projector' }}" class="activate_link btn {% if user.is_active_slide %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+            <i class="icon-facetime-video {% if user.is_active_slide %}icon-white{% endif %}"></i>
         </a>&nbsp;
-        <a href="{% model_url user 'edit' %}" title="{% trans 'Edit' %}" class="btn btn-mini right">
+        <a href="{{ user|absolute_url:'edit' }}" title="{% trans 'Edit' %}" class="btn btn-mini right">
             <i class="icon-pencil"></i>
         </a>
-        <a href="{% url 'projctor_preview_slide' user.sid %}" title="{% trans 'Preview' %}" class="btn btn-mini right">
+        <a href="{{ user|absolute_url:'projector_preview' }}" title="{% trans 'Preview' %}" class="btn btn-mini right">
             <i class="icon-search"></i>
         </a>
-        <a href="{% model_url user 'view' %}">{{ user }}</a>
+        <a href="{{ user|absolute_url }}">{{ user }}</a>
     </li>
 {% empty %}
     <li>{% trans 'No participants available.' %}</li>

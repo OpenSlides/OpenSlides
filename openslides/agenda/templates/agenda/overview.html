@@ -83,7 +83,7 @@
                     <th class="manage">{% trans "Actions" %}</th>
                 {% endif %}
             </tr>
-            <tr class="topline{% if active_sid == 'agenda' %} activeline{% endif %}">
+            <tr class="topline{% if agenda_is_active %} activeline{% endif %}">
                 <td class="title">
                     {% trans "Agenda" %}
                 </td>
@@ -98,9 +98,9 @@
                 {% if perms.projector.can_manage_projector %}
                     <span>
                     <a href="{% url 'projector_activate_slide' 'agenda' %}"
-                        class="activate_link btn {% if active_sid == 'agenda' %}btn-primary{% endif %} btn-mini"
+                        class="activate_link btn {% if agenda_is_active %}btn-primary{% endif %} btn-mini"
                         rel="tooltip" data-original-title="{% trans 'Show agenda' %}">
-                        <i class="icon-facetime-video {% if active_sid == 'agenda' %}icon-white{% endif %}"></i>
+                        <i class="icon-facetime-video {% if agenda_is_active %}icon-white{% endif %}"></i>
                     </a>
                     </span>
                 {% endif %}

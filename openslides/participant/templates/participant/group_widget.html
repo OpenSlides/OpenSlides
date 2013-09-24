@@ -3,17 +3,17 @@
 
 <ul style="line-height: 180%">
 {% for group in groups %}
-    <li class="{% if group.active %}activeline{% endif %}">
-        <a href="{% url 'projector_activate_slide' group.sid  %}" class="activate_link btn {% if group.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
-            <i class="icon-facetime-video {% if group.active %}icon-white{% endif %}"></i>
+    <li class="{% if group.is_active_slide %}activeline{% endif %}">
+        <a href="{{ group|absolute_url:'projector' }}" class="activate_link btn {% if group.is_active_slide %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+            <i class="icon-facetime-video {% if group.is_active_slide %}icon-white{% endif %}"></i>
         </a>&nbsp;
-        <a href="{% model_url group 'edit' %}" title="{% trans 'Edit' %}" class="btn btn-mini right">
+        <a href="{{ group|absolute_url:'update' }}" title="{% trans 'Edit' %}" class="btn btn-mini right">
             <i class="icon-pencil"></i>
         </a>
-        <a href="{% url 'projctor_preview_slide' group.sid %}" title="{% trans 'Preview' %}" class="btn btn-mini right">
+        <a href="{{ group|absolute_url:'projector_preview' }}" title="{% trans 'Preview' %}" class="btn btn-mini right">
             <i class="icon-search"></i>
         </a>
-        <a href="{% model_url group 'view' %}">{% trans group.name %}</a>
+        <a href="{{ group|absolute_url }}">{% trans group.name %}</a>
     </li>
 {% endfor %}
 </ul>

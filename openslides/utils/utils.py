@@ -141,3 +141,10 @@ def htmldiff(text1, text2):
 
     diff = difflib.HtmlDiff(wrapcolumn=60)
     return diff.make_table(text1.splitlines(), text2.splitlines())
+
+
+def int_or_none(object):
+    try:
+        return int(object)
+    except TypeError:
+        return None

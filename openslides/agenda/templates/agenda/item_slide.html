@@ -1,0 +1,8 @@
+{% load i18n %}
+
+{% if item.text %}
+    <h1>{{ item }}</h1>
+    <span>{{ item.text|safe|linebreaks }}</span>
+{% else %}
+    <div class="item_fullscreen">{{ item }}</div>
+{% endif %}

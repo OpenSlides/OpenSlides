@@ -30,7 +30,7 @@ from openslides.utils.template import Tab
 from openslides.utils.utils import html_strong, htmldiff
 from openslides.poll.views import PollFormView
 from openslides.projector.api import get_active_slide
-from openslides.projector.projector import Widget, SLIDE
+from openslides.projector.projector import Widget
 from openslides.config.api import config
 from openslides.agenda.views import CreateRelatedAgendaItemView as _CreateRelatedAgendaItemView
 

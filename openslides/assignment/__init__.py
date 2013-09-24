@@ -11,3 +11,4 @@
 """
 
 from . import signals
+from . import slides

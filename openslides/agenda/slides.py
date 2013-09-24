@@ -10,20 +10,63 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.utils.translation import ugettext_lazy, ugettext as _
+from django.template.loader import render_to_string
 
-from openslides.projector.api import register_slidemodel, register_slidefunc
+from openslides.config.api import config
+from openslides.projector.api import register_slide, get_projector_content
 
 from .models import Item
 
 
-def agenda_show():
-    data = {}
-    items = Item.objects.filter(parent=None, type__exact=Item.AGENDA_ITEM)
-    data['title'] = _("Agenda")
-    data['items'] = items
-    data['template'] = 'projector/AgendaSummary.html'
-    return data
+def agenda_slide(**kwargs):
+    """
+    Return the html code for all slides of the agenda app.
 
-register_slidemodel(Item, control_template='agenda/control_item.html')
-register_slidefunc('agenda', agenda_show, weight=-1, name=ugettext_lazy('Agenda'))
+    If no id is given, show a summary of all parent items.
+
+    If an id is given, show the item depending of the argument 'type'.
+
+    If 'type' is not set, show only the item.
+
+    If 'type' is 'summary', show a summary of all children of the item.
+
+    If 'type' is 'list_of_speakers', show the list of speakers for the item.
+    """
+    item_pk = kwargs.get('pk', None)
+    slide_type = kwargs.get('type', None)
+
+    try:
+        item = Item.objects.get(pk=item_pk)
+    except Item.DoesNotExist:
+        item = None
+
+    if slide_type == 'summary' or item is None:
+        context = {}
+        if item is None:
+            items = Item.objects.filter(parent=None, type__exact=Item.AGENDA_ITEM)
+        else:
+            items = item.get_children().filter(type__exact=Item.AGENDA_ITEM)
+            context['title'] = item.get_title()
+        context['items'] = items
+        return render_to_string('agenda/item_slide_summary.html', context)
+
+    elif slide_type == 'list_of_speakers':
+        list_of_speakers = item.get_list_of_speakers(
+            old_speakers_count=config['agenda_show_last_speakers'])
+        context = {'title': item.get_title(),
+                   'item': item,
+                   'list_of_speakers': list_of_speakers}
+        return render_to_string('agenda/item_slide_list_of_speaker.html', context)
+
+    elif item.content_object:
+        slide_dict = {
+            'callback': item.content_object.slide_callback_name,
+            'pk': item.content_object.pk}
+        return get_projector_content(slide_dict)
+
+    else:
+        context = {'item': item}
+        return render_to_string('agenda/item_slide.html', context)
+
+
+register_slide('agenda', agenda_slide)

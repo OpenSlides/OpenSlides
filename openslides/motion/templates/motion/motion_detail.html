@@ -42,12 +42,12 @@
             <ul class="dropdown-menu pull-right">
                 <!-- edit -->
                 {% if allowed_actions.edit %}
-                     <li><a href="{% model_url motion 'edit' %}"><i class="icon-pencil"></i> {% trans 'Edit motion' %}</a></li>
+                     <li><a href="{{ motion|absolute_url:'edit' }}"><i class="icon-pencil"></i> {% trans 'Edit motion' %}</a></li>
                 {% endif %}
                 {% if perms.motion.can_manage_motion %}
                     <!-- delete -->
                     {% if allowed_actions.delete %}
-                        <li><a href="{% model_url motion 'delete' %}"><i class="icon-remove"></i> {% trans 'Delete motion' %}</a></li>
+                        <li><a href="{{ motion|absolute_url:'delete' }}"><i class="icon-remove"></i> {% trans 'Delete motion' %}</a></li>
                     {% endif %}
                 {% endif %}
                 <!-- create agenda item -->
@@ -68,14 +68,14 @@
             <p><span class="label label-warning">
                 <i class="icon-warning-sign icon-white"></i> {% trans "This is not the newest version." %}
             </span>
-            <a href="{% model_url last_version %}" class="btn btn-small">{% trans "Go to the newest version" %}
+            <a href="{{ last_version|absolute_url }}" class="btn btn-small">{% trans "Go to the newest version" %}
             (# {{ last_version.version_number }})</a></p>
         {% endif %}
         {% if version.version_number != active_version.version_number %}
             <p><span class="label label-warning">
                 <i class="icon-warning-sign icon-white"></i> {% trans "This version is not authorized." %}
             </span>
-            <a href="{% model_url active_version %}" class="btn btn-small">{% trans "Go to the authorized version" %}
+            <a href="{{ active_version|absolute_url }}" class="btn btn-small">{% trans "Go to the authorized version" %}
             (# {{ active_version.version_number }})</a></p>
         {% endif %}
     {% endwith %}
@@ -123,11 +123,11 @@
                         <input type="radio" value="{{ version.version_number }}" name="rev2">
                     </td>
                     <td>
-                        <a href="{% model_url version %}" title="{% trans 'Show' %}" class="btn btn-mini">
+                        <a href="{{ version|absolute_url }}" title="{% trans 'Show' %}" class="btn btn-mini">
                             <i class="icon-search"></i>
                         </a>
                         {% if version != motion.active_version %}
-                            <a href="{% model_url version 'delete' %}" title="{% trans 'Delete' %}" class="btn btn-mini">
+                            <a href="{{ version|absolute_url:'delete' }}" title="{% trans 'Delete' %}" class="btn btn-mini">
                                 <i class="icon-remove"></i>
                             </a>
                         {% endif %}
@@ -166,7 +166,7 @@
         <!-- Submitter -->
         <h5>{% trans "Submitter" %}:</h5>
         {% for submitter in motion.submitter.all %}
-            <a href="{% model_url submitter.person 'view' %}">{{ submitter }}</a>{% if not forloop.last %}, {% endif %}
+            <a href="{{ submitter.person|absolute_url }}">{{ submitter }}</a>{% if not forloop.last %}, {% endif %}
         {% endfor %}
 
         <!-- Supporters -->
@@ -177,7 +177,7 @@
             {% else %}
                 <ol>
                 {% for supporter in motion.supporter.all %}
-                    <li><a href="{% model_url supporter.person 'view' %}">{{ supporter }}</a></li>
+                    <li><a href="{{ supporter.person|absolute_url }}">{{ supporter }}</a></li>
                 {% endfor %}
                 </ol>
             {% endif %}
@@ -196,8 +196,8 @@
             {% if perms.motion.can_manage_motion or poll.has_votes %}
                 <li><b>{{ poll.poll_number|ordinal|safe }} {% trans "vote" %}</b>
                     {% if perms.motion.can_manage_motion %}
-                        <a class="btn btn-mini" href="{% model_url poll 'edit' %}" title="{% trans 'Edit Vote' %}"><i class="icon-pencil"></i></a>
-                        <a class="btn btn-mini" href="{% model_url poll 'delete' %}" title="{% trans 'Delete Vote' %}"><i class="icon-remove"></i></a>
+                        <a class="btn btn-mini" href="{{ poll|absolute_url:'edit' }}" title="{% trans 'Edit Vote' %}"><i class="icon-pencil"></i></a>
+                        <a class="btn btn-mini" href="{{ poll|absolute_url:'delete' }}" title="{% trans 'Delete Vote' %}"><i class="icon-remove"></i></a>
                     {% endif %}
                     <br>
                     {% if poll.has_votes %}

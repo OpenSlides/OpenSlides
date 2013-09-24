@@ -65,7 +65,7 @@
     <ol>
     {% for person in assignment.get_participants %}
         <li>
-            <a href="{{ person|absolute_url:'detail' }}">{{ person }}</a>
+            <a href="{{ person|absolute_url }}">{{ person }}</a>
             {% if perms.assignment.can_manage_assignment %}
                 {% if assignment.status == "sea" or assignment.status == "vot" %}
                     <a href="{% url 'assignment_delother' assignment.id person.person_id %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Remove candidate' %}"><i class="icon-remove"></i></a>
@@ -126,7 +126,7 @@
     <ul>
     {% for person in blocked_candidates %}
         <li>
-            <a href="{{ person|absolute_url:'detail' }}">{{ person }}</a>
+            <a href="{{ person|absolute_url }}">{{ person }}</a>
             <a class="btn btn-mini" href="{% url 'assignment_delother' assignment.id person.person_id %}"
                 rel="tooltip" data-original-title="{% trans 'Remove candidate' %}">
                 <i class="icon-ban-circle"></i>
@@ -168,16 +168,16 @@
                             <i class="icon-unchecked-new"></i>
                             {% endif %}
                         </a>
-                        <a href="{{ poll|absolute_url:'update' }}" class="btn btn-mini"
+                        <a href="{% url 'assignment_poll_view' poll.id %}" class="btn btn-mini"
                             rel="tooltip" data-original-title="{% trans 'Edit' %}"><i class="icon-pencil"></i></a>
-                        <a href="{{ poll|absolute_url:'delete' }}" class="btn btn-mini"
+                        <a href="{% url 'assignment_poll_delete' poll.id %}" class="btn btn-mini"
                             rel="tooltip" data-original-title="{% trans 'Delete' %}"><i class="icon-remove"></i></a>
                     {% endif %}
                 </th>
             {% endfor %}
             {% if assignment.candidates and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
                 <th class="span1 nobr">
-                    <a href="{% url 'assignment_poll_create' assignment.id %}" class="btn btn-mini">
+                    <a href="{% url 'assignment_gen_poll' assignment.id %}" class="btn btn-mini">
                        <i class="icon-plus"></i> {% trans 'New ballot' %}
                     </a>
                 </th>
@@ -200,7 +200,7 @@
                         <a class="election_link" href="{% url 'assignment_user_elected' assignment.id candidate.person_id %}"></a>
                     {% endif %}
                 {% endif %}
-                <a href="{{ candidate|absolute_url:'detail' }}">{{ candidate }}</a>
+                <a href="{{ candidate|absolute_url }}">{{ candidate }}</a>
             </td>
             {% for vote in poll_list %}
                 <td style="white-space:nowrap;">

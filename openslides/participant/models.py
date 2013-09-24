@@ -10,6 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User as DjangoUser, Group as DjangoGroup, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
@@ -20,13 +21,13 @@ from django.utils.translation import ugettext_lazy, ugettext_noop
 from openslides.utils.person import PersonMixin, Person
 from openslides.utils.person.signals import receive_persons
 from openslides.config.api import config
-from openslides.projector.api import register_slidemodel
-from openslides.projector.projector import SlideMixin
+from openslides.projector.models import SlideMixin
 
 
-class User(PersonMixin, Person, SlideMixin, DjangoUser):
-    prefix = 'user'  # This is for the slides
+class User(SlideMixin, PersonMixin, Person, DjangoUser):
+    slide_callback_name = 'user'
     person_prefix = 'user'
+
     GENDER_CHOICES = (
         ('male', ugettext_lazy('Male')),
         ('female', ugettext_lazy('Female')),
@@ -54,6 +55,30 @@ class User(PersonMixin, Person, SlideMixin, DjangoUser):
     default_password = models.CharField(
         max_length=100, blank=True, default='',
         verbose_name=ugettext_lazy("Default password"))
+
+    class Meta:
+        permissions = (
+            ('can_see_participant', ugettext_noop('Can see participants')),
+            ('can_manage_participant', ugettext_noop('Can manage participants')),
+        )
+        ordering = ('last_name',)
+
+    def __unicode__(self):
+        if self.name_suffix:
+            return u"%s (%s)" % (self.clean_name, self.name_suffix)
+        return u"%s" % self.clean_name
+
+    def get_absolute_url(self, link='detail'):
+        """
+        Return the URL to the user.
+        """
+        if link == 'detail' or link == 'view':
+            return reverse('user_view', args=[str(self.id)])
+        if link == 'edit':
+            return reverse('user_edit', args=[str(self.id)])
+        if link == 'delete':
+            return reverse('user_delete', args=[str(self.id)])
+        return super(User, self).get_absolute_url(link)
 
     @property
     def clean_name(self):
@@ -86,50 +111,9 @@ class User(PersonMixin, Person, SlideMixin, DjangoUser):
             return self.first_name.lower()
         return self.last_name.lower()
 
-    @models.permalink
-    def get_absolute_url(self, link='detail'):
-        """
-        Return the URL to this user.
 
-        link can be:
-        * detail
-        * edit
-        * delete
-        """
-        if link == 'detail' or link == 'view':
-            return ('user_view', [str(self.id)])
-        if link == 'edit':
-            return ('user_edit', [str(self.id)])
-        if link == 'delete':
-            return ('user_delete', [str(self.id)])
-
-    def __unicode__(self):
-        if self.name_suffix:
-            return u"%s (%s)" % (self.clean_name, self.name_suffix)
-        return u"%s" % self.clean_name
-
-    class Meta:
-        # Rename permissions
-        permissions = (
-            ('can_see_participant', ugettext_noop('Can see participants')),  # TODO: Add plural s to the codestring
-            ('can_manage_participant', ugettext_noop('Can manage participants')),  # TODO: Add plural s to the codestring
-        )
-        ordering = ('last_name',)
-
-    def slide(self):
-        """
-        Returns a map with the data for the slides.
-        """
-        return {
-            'shown_user': self,
-            'title': self.clean_name,
-            'template': 'projector/UserSlide.html'}
-
-register_slidemodel(User)
-
-
-class Group(PersonMixin, Person, SlideMixin, DjangoGroup):
-    prefix = 'group'  # This is for the slides
+class Group(SlideMixin, PersonMixin, Person, DjangoGroup):
+    slide_callback_name = 'group'
     person_prefix = 'group'
 
     django_group = models.OneToOneField(DjangoGroup, editable=False, parent_link=True)
@@ -138,39 +122,23 @@ class Group(PersonMixin, Person, SlideMixin, DjangoGroup):
         help_text=ugettext_lazy('For example as submitter of a motion.'))
     description = models.TextField(blank=True, verbose_name=ugettext_lazy("Description"))
 
-    @models.permalink
-    def get_absolute_url(self, link='detail'):
-        """
-        Return the URL to this user group.
-
-        link can be:
-        * view
-        * edit
-        * delete
-        """
-        if link == 'detail' or link == 'view':
-            return ('user_group_view', [str(self.id)])
-        if link == 'edit':
-            return ('user_group_edit', [str(self.id)])
-        if link == 'delete':
-            return ('user_group_delete', [str(self.id)])
+    class Meta:
+        ordering = ('name',)
 
     def __unicode__(self):
         return unicode(self.name)
 
-    class Meta:
-        ordering = ('name',)
-
-    def slide(self):
+    def get_absolute_url(self, link='detail'):
         """
-        Returns a map with the data for the slides.
+        Return the URL to the user group.
         """
-        return {
-            'group': self,
-            'title': self.name,
-            'template': 'projector/GroupSlide.html'}
-
-register_slidemodel(Group)
+        if link == 'detail' or link == 'view':
+            return reverse('user_group_view', args=[str(self.id)])
+        if link == 'update' or link == 'edit':
+            return reverse('user_group_edit', args=[str(self.id)])
+        if link == 'delete':
+            return reverse('user_group_delete', args=[str(self.id)])
+        return super(Group, self).get_absolute_url(link)
 
 
 class UsersAndGroupsToPersons(object):
