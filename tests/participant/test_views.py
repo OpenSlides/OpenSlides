@@ -122,3 +122,23 @@ class LockoutProtection(TestCase):
             form='form',
             field=None,
             errors='You can not remove the permission to manage participants from the last group your are in.')
+
+
+class TestUserSettings(TestCase):
+    def setUp(self):
+        self.admin = User.objects.get(pk=1)
+        self.admin_client = Client()
+        self.admin_client.login(username='admin', password='admin')
+
+    def test_get(self):
+        response = self.admin_client.get('/usersettings/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_pst(self):
+        response = self.admin_client.post('/usersettings/', {
+            'user_name': 'new_name',
+            'language': 'de'})
+        self.assertEqual(response.status_code, 200)
+
+        admin = User.objects.get(pk=1)
+        self.assertEqual(admin.username, 'new_name')
