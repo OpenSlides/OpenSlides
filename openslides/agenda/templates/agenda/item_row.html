@@ -1,27 +1,27 @@
 {% load i18n %}
 {% load tags %}
 
-<div class="{% if node.active %}activeline{% endif %}">
+<div class="{% if node.is_active_slide %}activeline{% endif %}">
     {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
     <div class="manage">
         <span style="width: 1px; white-space: nowrap;">
         {% if perms.projector.can_manage_projector %}
-            <a href="{% url 'projector_activate_slide' node.sid  %}"
-                class="activate_link btn {% if node.active and not show_list and not summary %}btn-primary{% endif %} btn-mini"
+            <a href="{{ node|absolute_url:'projector' }}"
+                class="activate_link btn {% if node.is_active_slide and active_type == 'text' %}btn-primary{% endif %} btn-mini"
                 rel="tooltip" data-original-title="{% trans 'Show agenda item' %}">
-                <i class="icon-facetime-video {% if node.active and not show_list and not summary %}icon-white{% endif %}"></i>
+                <i class="icon-facetime-video {% if node.is_active_slide and active_type == 'text' %}icon-white{% endif %}"></i>
             </a>
-            <a href="{% url 'projector_activate_slide' node.sid 'show_list_of_speakers' %}"
-                class="activate_link btn btn-mini {% if node.active and show_list %}btn-primary{% endif %}"
+            <a href="{{ node|absolute_url:'projector_list_of_speakers' }}"
+                class="activate_link btn btn-mini {% if node.is_active_slide and active_type == 'list_of_speakers' %}btn-primary{% endif %}"
                 rel="tooltip" data-original-title="{% trans 'Show list of speakers' %}">
-                <i class="icon icon-bell {% if node.active and show_list %}icon-white{% endif %}"></i>
+                <i class="icon icon-bell {% if node.is_active_slide and active_type == 'list_of_speakers' %}icon-white{% endif %}"></i>
             </a>
         {% endif %}
         {% if perms.agenda.can_manage_agenda %}
-            <a href="{% model_url node 'edit' %}" rel="tooltip" data-original-title="{% trans 'Edit' %}" class="btn btn-mini">
+            <a href="{{ node|absolute_url:'edit' }}" rel="tooltip" data-original-title="{% trans 'Edit' %}" class="btn btn-mini">
                 <i class="icon-pencil"></i>
             </a>
-            <a href="{% model_url node 'delete' %}" rel="tooltip" data-original-title="{% trans 'Delete' %}" class="btn btn-mini">
+            <a href="{{ node|absolute_url:'delete' }}" rel="tooltip" data-original-title="{% trans 'Delete' %}" class="btn btn-mini">
                 <i class="icon-remove"></i>
             </a>
             <a href="{% if node.closed %}{% url 'item_open' node.id %}{% else %}{% url 'item_close' node.id %}{% endif %}"
@@ -30,10 +30,10 @@
                 <i class="{% if node.closed %}icon-checked-new{% else %}icon-unchecked-new{% endif %}"></i>
             </a>
             {% if not node.is_leaf_node %}
-                <a href="{% url 'projector_activate_slide' node.sid 'summary' %}"
-                    class="activate_link btn btn-mini {% if node.active and summary %}btn-primary{% endif %}"
+                <a href="{{ node|absolute_url:'projector_summary' }}"
+                    class="activate_link btn btn-mini {% if node.is_active_slide and active_type == 'summary' %}btn-primary{% endif %}"
                     title="{% trans 'Show summary for this item' %}">
-                    <i class="icon-summary {% if node.active and summary %}icon-white{% endif %}"></i>
+                    <i class="icon-summary {% if node.is_active_slide and active_type == 'summary' %}icon-white{% endif %}"></i>
                 </a>
             {% endif %}
         {% endif %}
@@ -79,7 +79,7 @@
             {{ form.self }}
             {{ form.parent }}
         {% endwith %}
-        <a href="{% model_url node 'view' %}">{% if node.type == node.ORGANIZATIONAL_ITEM %}<i>[{% endif %}{{ node }}{% if node.type == node.ORGANIZATIONAL_ITEM %}]</i>{% endif %}</a>
+        <a href="{{ node|absolute_url }}">{% if node.type == node.ORGANIZATIONAL_ITEM %}<i>[{% endif %}{{ node }}{% if node.type == node.ORGANIZATIONAL_ITEM %}]</i>{% endif %}</a>
         {{ node.get_title_supplement|safe }}
     </div>
 </div>

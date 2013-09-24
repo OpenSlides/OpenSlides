@@ -38,7 +38,7 @@
 
 <ol>
 {% for member in group_members %}
-    <li><a href="{% model_url member 'view' %}">{{ member }}</a></li>
+    <li><a href="{{ member|absolute_url }}">{{ member }}</a></li>
 {% empty %}
     <p>{% trans "No members available." %}</p>
 {% endfor %}

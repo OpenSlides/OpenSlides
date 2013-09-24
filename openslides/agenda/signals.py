@@ -25,8 +25,7 @@ from openslides.config.api import config, ConfigVariable, ConfigPage
 
 from openslides.projector.signals import projector_overlays
 from openslides.projector.projector import Overlay
-from openslides.projector.api import (get_active_slide, get_slide_from_sid,
-                                      clear_projector_cache)
+from openslides.projector.api import get_active_slide
 
 from .models import Speaker, Item
 
@@ -94,23 +93,27 @@ def agenda_list_of_speakers(sender, **kwargs):
     def get_projector_html():
         """
         Returns an html-code to show on the projector.
+
+        The overlay is only shown on agenda-items and not on the
+        list-of-speakers slide.
         """
-        slide = get_slide_from_sid(get_active_slide(only_sid=True), element=True)
-        if not isinstance(slide, Item):
-            # Only show list of speakers overlay on agenda items
+        active_slide = get_active_slide()
+        slide_type = active_slide.get('type', None)
+        active_slide_pk = active_slide.get('pk', None)
+        if (active_slide['callback'] == 'agenda' and
+                slide_type != 'list_of_speakers' and
+                active_slide_pk is not None):
+            item = Item.objects.get(pk=active_slide_pk)
+            list_of_speakers = item.get_list_of_speakers(
+                old_speakers_count=config['agenda_show_last_speakers'],
+                coming_speakers_count=5)
+            context = {
+                'list_of_speakers': list_of_speakers,
+                'closed': item.speaker_list_closed,
+            }
+            return render_to_string('agenda/overlay_speaker_projector.html', context)
+        else:
             return None
-        if config['presentation_argument'] == 'show_list_of_speakers':
-            # Do not show list of speakers overlay on the list of speakers slide
-            return None
-        clear_projector_cache()
-        list_of_speakers = slide.get_list_of_speakers(
-            old_speakers_count=config['agenda_show_last_speakers'],
-            coming_speakers_count=5)
-        context = {
-            'list_of_speakers': list_of_speakers,
-            'closed': slide.speaker_list_closed,
-        }
-        return render_to_string('agenda/overlay_speaker_projector.html', context)
 
     return Overlay(name, get_widget_html, get_projector_html)
 

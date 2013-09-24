@@ -10,114 +10,146 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+import json
+
 from django.conf import settings
 from django.core.cache import cache
 from django.utils.datastructures import SortedDict
 from django.utils.importlib import import_module
+from django.template.loader import render_to_string
 
 from openslides.config.api import config
-from openslides.projector.projector import SLIDE, Slide
+from openslides.utils.tornado_webserver import ProjectorSocketHandler
+from .signals import projector_overlays
 
 
-def split_sid(sid):
+slide_callback = {}
+"""
+A dictonary where the key is the name of a slide, and the value is a
+callable object which returns the html code for a slide.
+"""
+
+
+def update_projector():
     """
-    Slit a SID in the model-part and in the model-id
+    Sends the data to the clients, who listen to the projector.
     """
+    # TODO: only send necessary html
+    ProjectorSocketHandler.send_updates({'content': get_projector_content()})
+
+
+def update_projector_overlay(overlay):
+    """
+    Update one overlay on the projector.
+
+    Checks if the overlay is activated and updates it in this case.
+
+    'overlay' has to be an overlay object, the name of a ovleray or None.
+
+    If 'overlay' is None, then all overlays are updated.
+    """
+    if isinstance(overlay, basestring):
+        overlay = get_overlays()[overlay]
+    if overlay is None:
+        overlays = [overlay for overlay in get_overlays().values()]
+    else:
+        overlays = [overlay]
+
+    overlay_dict = {}
+    for overlay in overlays:
+        if overlay.is_active():
+            overlay_dict[overlay.name] = {
+                'html': overlay.get_projector_html(),
+                'javascript': overlay.get_javascript()}
+        else:
+            overlay_dict[overlay.name] = None
+    ProjectorSocketHandler.send_updates({'overlays': overlay_dict})
+
+
+def get_projector_content(slide_dict=None):
+    """
+    Returns the HTML-Content block of the projector.
+    """
+    if slide_dict is None:
+        slide_dict = config['projector_active_slide'].copy()
+    callback = slide_dict.pop('callback', None)
+
     try:
-        data = sid.split('-')
-    except AttributeError:
-        return None
-    if len(data) == 2:
-        model = data[0]
-        id = data[1]
-        return (model, id)
-    if len(data) == 1:
-        try:
-            return (SLIDE[data[0]].key, None)
-        except KeyError:
-            return None
-    return None
-
-
-def get_slide_from_sid(sid, element=False):
-    """
-    Return the Slide for an given sid.
-    If element== False, return the slide-dict,
-    else, return the object.
-    """
-    try:
-        key, id = split_sid(sid)
-    except TypeError:
-        return None
-
-    if id is not None:
-        try:
-            object = SLIDE[key].model.objects.get(pk=id)
-        except SLIDE[key].model.DoesNotExist:
-            return None
-        if element:
-            return object
-        return object.slide()
-    try:
-        return SLIDE[key].func()
+        return slide_callback[callback](**slide_dict)
     except KeyError:
-        return None
+        return default_slide()
 
 
-def get_active_slide(only_sid=False):
+def default_slide():
     """
-    Returns the active slide. If no slide is active, or it can not find an Item,
-    return None
-
-    if only_sid is True, returns only the id of this item. Returns None if not
-    Item is active.
+    Returns the HTML Code for the default slide.
     """
-    sid = config["presentation"]
-
-    if only_sid:
-        return sid
-    return get_slide_from_sid(sid)
+    return render_to_string('projector/default_slide.html')
 
 
-def set_active_slide(sid, argument=None):
+def get_overlays():
+    """
+    Returns all overlay objects.
+
+    The returned value is a dictonary with the name of the overlay as key, and
+    the overlay object as value.
+    """
+    overlays = {}
+    for receiver, overlay in projector_overlays.send(sender='get_overlays'):
+        overlays[overlay.name] = overlay
+    return overlays
+
+
+def get_projector_overlays():
+    """
+    Returns the HTML code for all active overlays.
+    """
+    overlays = [{'name': key, 'html': overlay.get_projector_html()}
+                for key, overlay in get_overlays().items()
+                if overlay.is_active()]
+    return render_to_string('projector/all_overlays.html', {'overlays': overlays})
+
+
+def get_projector_overlays_js():
+    """
+    Returns JS-Code for the overlays.
+
+    The retuned value is a list of json objects.
+    """
+    js = []
+    for key, overlay in get_overlays().items():
+        if overlay.is_active():
+            overlay_js = overlay.get_javascript()
+            if overlay_js:
+                js.append(json.dumps(overlay_js))
+    return js
+
+
+def register_slide(name, callback):
+    """
+    Register a function as slide callback.
+    """
+    slide_callback[name] = callback
+
+
+def set_active_slide(callback, kwargs={}):
     """
     Set the active Slide.
+
+    callback: The name of the slide callback.
+    kwargs: Keyword arguments for the slide callback.
     """
-    config["presentation"] = sid
-    config['presentation_argument'] = argument
-    clear_projector_cache()
+    kwargs.update(callback=callback)
+    config['projector_active_slide'] = kwargs
+    update_projector()
+    update_projector_overlay(None)
 
 
-def clear_projector_cache():
-    cache.delete('projector_content')
-    cache.delete('projector_scrollcontent')
-    cache.delete('projector_data')
-
-
-def register_slidemodel(model, model_name=None, control_template=None, weight=0):
+def get_active_slide():
     """
-    Register a Model as a slide.
+    Returns the dictonary, witch defindes the active slide.
     """
-    # TODO: control_template should never be None
-    if model_name is None:
-        model_name = model.prefix
-
-    category = model.__module__.split('.')[0]
-    SLIDE[model_name] = Slide(model_slide=True, model=model, category=category,
-                              key=model.prefix, model_name=model_name,
-                              control_template=control_template, weight=weight)
-
-
-def register_slidefunc(key, func, control_template=None, weight=0, name=''):
-    """
-    Register a function for as a slide.
-    """
-    if control_template is None:
-        control_template = 'projector/default_control_slidefunc.html'
-    category = func.__module__.split('.')[0]
-    SLIDE[key] = Slide(model_slide=False, func=func, category=category,
-                       key=key, control_template=control_template, weight=weight,
-                       name=name,)
+    return config['projector_active_slide']
 
 
 def get_all_widgets(request, session=False):
@@ -135,9 +167,11 @@ def get_all_widgets(request, session=False):
         except ImportError:
             continue
         try:
-            module_widgets = mod.get_widgets(request)
+            mod_get_widgets = mod.get_widgets
         except AttributeError:
             continue
+        else:
+            module_widgets = mod_get_widgets(request)
         all_module_widgets.extend(module_widgets)
     all_module_widgets.sort(key=lambda widget: widget.default_weight)
     session_widgets = request.session.get('widgets', {})

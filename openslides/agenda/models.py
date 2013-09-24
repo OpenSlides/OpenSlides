@@ -23,19 +23,19 @@ from mptt.models import MPTTModel, TreeForeignKey
 
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.config.api import config
-from openslides.projector.projector import SlideMixin
-from openslides.projector.api import (
-    register_slidemodel, get_slide_from_sid, register_slidefunc)
 from openslides.utils.person.models import PersonField
+from openslides.projector.api import (
+    update_projector, get_active_slide, update_projector_overlay)
+from openslides.projector.models import SlideMixin
 
 
-class Item(MPTTModel, SlideMixin):
+class Item(SlideMixin, MPTTModel):
     """
     An Agenda Item
 
     MPTT-model. See http://django-mptt.github.com/django-mptt/
     """
-    prefix = 'item'
+    slide_callback_name = 'agenda'
 
     AGENDA_ITEM = 1
     ORGANIZATIONAL_ITEM = 2
@@ -98,6 +98,7 @@ class Item(MPTTModel, SlideMixin):
     """
     Field for generic relation to a related object. Id of the object.
     """
+    # TODO: rename it to object_pk
 
     content_object = generic.GenericForeignKey()
     """
@@ -119,6 +120,14 @@ class Item(MPTTModel, SlideMixin):
     class MPTTMeta:
         order_insertion_by = ['weight']
 
+    def save(self, *args, **kwargs):
+        super(Item, self).save(*args, **kwargs)
+        active_slide = get_active_slide()
+        active_slide_pk = active_slide.get('pk', None)
+        if (active_slide['callback'] == 'agenda' and
+                unicode(self.parent_id) == unicode(active_slide_pk)):
+            update_projector()
+
     def __unicode__(self):
         return self.get_title()
 
@@ -134,6 +143,11 @@ class Item(MPTTModel, SlideMixin):
             return reverse('item_edit', args=[str(self.id)])
         if link == 'delete':
             return reverse('item_delete', args=[str(self.id)])
+        if link == 'projector_list_of_speakers':
+            return '%s&type=list_of_speakers' % super(Item, self).get_absolute_url('projector')
+        if link == 'projector_summary':
+            return '%s&type=summary' % super(Item, self).get_absolute_url('projector')
+        return super(Item, self).get_absolute_url(link)
 
     def get_title(self):
         """
@@ -156,41 +170,6 @@ class Item(MPTTModel, SlideMixin):
             return self.content_object.get_agenda_title_supplement()
         except AttributeError:
             raise NotImplementedError('You have to provide a get_agenda_title_supplement method on your related model.')
-
-    def slide(self):
-        """
-        Return a map with all data for the slide.
-
-        There are four cases:
-        * summary slide
-        * list of speakers
-        * related item, i. e. the slide of the related object
-        * normal slide of the item
-
-        The method returns only one of them according to the config value
-        'presentation_argument' and the attribute 'content_object'.
-        """
-        if config['presentation_argument'] == 'summary':
-            data = {'title': self.get_title(),
-                    'items': self.get_children().filter(type__exact=Item.AGENDA_ITEM),
-                    'template': 'projector/AgendaSummary.html'}
-
-        elif config['presentation_argument'] == 'show_list_of_speakers':
-            list_of_speakers = self.get_list_of_speakers(
-                old_speakers_count=config['agenda_show_last_speakers'])
-            data = {'title': self.get_title(),
-                    'item': self,
-                    'template': 'projector/agenda_list_of_speaker.html',
-                    'list_of_speakers': list_of_speakers}
-        elif self.content_object:
-            data = self.content_object.slide()
-
-        else:
-            data = {'item': self,
-                    'title': self.get_title(),
-                    'template': 'projector/AgendaText.html'}
-
-        return data
 
     def set_closed(self, closed=True):
         """
@@ -351,6 +330,14 @@ class Speaker(models.Model):
             ('can_be_speaker', ugettext_noop('Can put oneself on the list of speakers')),
         )
 
+    def save(self, *args, **kwargs):
+        super(Speaker, self).save(*args, **kwargs)
+        self.check_and_update_projector()
+
+    def delete(self, *args, **kwargs):
+        super(Speaker, self).delete(*args, **kwargs)
+        self.check_and_update_projector()
+
     def __unicode__(self):
         return unicode(self.person)
 
@@ -360,6 +347,21 @@ class Speaker(models.Model):
         if link == 'delete':
             return reverse('agenda_speaker_delete',
                            args=[self.item.pk, self.pk])
+
+    def check_and_update_projector(self):
+        """
+        Checks, if the agenda item, or parts of it, is on the projector.
+        If yes, it updates the projector.
+        """
+        active_slide = get_active_slide()
+        active_slide_pk = active_slide.get('pk', None)
+        slide_type = active_slide.get('type', None)
+        if (active_slide['callback'] == 'agenda' and
+                unicode(self.item_id) == unicode(active_slide_pk)):
+            if slide_type == 'list_of_speakers':
+                update_projector()
+            elif slide_type is None:
+                update_projector_overlay('agenda_speaker')
 
     def begin_speach(self):
         """

@@ -14,12 +14,12 @@ from django.test.client import Client
 from django.db.models.query import EmptyQuerySet
 
 from openslides.utils.test import TestCase
-from openslides.projector.api import get_active_slide
+from openslides.projector.api import get_active_slide, set_active_slide
 from openslides.participant.models import User
 from openslides.agenda.models import Item
-from openslides.agenda.slides import agenda_show
+from openslides.agenda.slides import agenda_slide
 
-from .models import ReleatedItem, BadReleatedItem  # TODO: Rename releated to related
+from .models import RelatedItem, BadRelatedItem
 
 
 class ItemTest(TestCase):
@@ -28,8 +28,8 @@ class ItemTest(TestCase):
         self.item2 = Item.objects.create(title='item2')
         self.item3 = Item.objects.create(title='item1A', parent=self.item1)
         self.item4 = Item.objects.create(title='item1Aa', parent=self.item3)
-        self.releated = ReleatedItem.objects.create(name='ekdfjen458gj1siek45nv')
-        self.item5 = Item.objects.create(title='item5', content_object=self.releated)
+        self.related = RelatedItem.objects.create(name='ekdfjen458gj1siek45nv')
+        self.item5 = Item.objects.create(title='item5', content_object=self.related)
 
     def testClosed(self):
         self.assertFalse(self.item1.closed)
@@ -78,24 +78,18 @@ class ItemTest(TestCase):
         self.assertEqual(self.item1.get_absolute_url('edit'), '/agenda/1/edit/')
         self.assertEqual(self.item1.get_absolute_url('delete'), '/agenda/1/del/')
 
-    def test_agenda_slide(self):
-        data = agenda_show()
-        self.assertEqual(list(data['items']), list(Item.objects.all().filter(parent=None)))
-        self.assertEqual(data['template'], 'projector/AgendaSummary.html')
-        self.assertEqual(data['title'], 'Agenda')
-
-    def test_releated_item(self):
-        self.assertEqual(self.item5.get_title(), self.releated.name)
+    def test_related_item(self):
+        self.assertEqual(self.item5.get_title(), self.related.name)
         self.assertEqual(self.item5.get_title_supplement(), 'test item')
-        self.assertEqual(self.item5.content_type.name, 'Releated Item CHFNGEJ5634DJ34F')
+        self.assertEqual(self.item5.content_type.name, 'Related Item CHFNGEJ5634DJ34F')
 
-    def test_deleted_releated_item(self):
-        self.releated.delete()
-        self.assertFalse(ReleatedItem.objects.all().exists())
+    def test_deleted_related_item(self):
+        self.related.delete()
+        self.assertFalse(RelatedItem.objects.all().exists())
         self.assertEqual(Item.objects.get(pk=self.item5.pk).title, '< Item for deleted slide (ekdfjen458gj1siek45nv) >')
 
-    def test_bad_releated_item(self):
-        bad = BadReleatedItem.objects.create(name='dhfne94irkgl2047fzvb')
+    def test_bad_related_item(self):
+        bad = BadRelatedItem.objects.create(name='dhfne94irkgl2047fzvb')
         item = Item.objects.create(title='item_jghfndzrh46w738kdmc', content_object=bad)
         self.assertRaisesMessage(
             NotImplementedError,
@@ -137,20 +131,6 @@ class ViewTest(TestCase):
         response = c.get('/agenda/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['items']), len(Item.objects.all()))
-
-    def testActivate(self):
-        c = self.adminClient
-
-        response = c.get('/projector/activate/%s/' % self.item1.sid)
-        self.assertEqual(response.status_code, 302)
-        self.assertTrue(self.item1.active)
-        self.assertFalse(self.item2.active)
-
-        response = c.get('/projector/activate/%s/' % 'agenda')
-        self.assertEqual(response.status_code, 302)
-        self.assertFalse(self.item2.active)
-        self.assertFalse(self.item1.active)
-        self.assertEqual(get_active_slide(only_sid=True), 'agenda')
 
     def testClose(self):
         c = self.adminClient

@@ -28,15 +28,16 @@ from openslides.utils.views import (
     TemplateView, RedirectView, CreateView, UpdateView, DeleteView, AjaxMixin)
 from openslides.config.api import config
 from .api import (
-    get_active_slide, set_active_slide, get_slide_from_sid, get_all_widgets,
-    clear_projector_cache)
+    get_projector_content, get_projector_overlays, get_all_widgets,
+    set_active_slide, update_projector, get_active_slide, update_projector_overlay,
+    get_overlays, get_projector_overlays_js)
 from .forms import SelectWidgetsForm
 from .models import ProjectorSlide
 from .projector import Widget
 from .signals import projector_overlays
 
 
-class DashboardView(TemplateView, AjaxMixin):
+class DashboardView(AjaxMixin, TemplateView):
     """
     Overview over all possible slides, the overlays and a liveview.
     """
@@ -50,96 +51,33 @@ class DashboardView(TemplateView, AjaxMixin):
         return context
 
 
-class Projector(TemplateView, AjaxMixin):
+class Projector(TemplateView):
     """
     The Projector-Page.
     """
     permission_required = 'projector.can_see_projector'
-
-    @property
-    def data(self):
-        try:
-            return self._data
-        except AttributeError:
-            pass
-        sid = self.kwargs['sid']
-        if sid is None:
-            try:
-                data = get_active_slide()
-            except AttributeError:  # TODO: It has to be an Slide.DoesNotExist
-                data = None
-            ajax = 'on'
-            active_sid = get_active_slide(True)
-        else:
-            data = get_slide_from_sid(sid)
-            ajax = 'off'
-
-        if data is None:
-            data = {
-                'title': config['event_name'],
-                'template': 'projector/default.html',
-            }
-        data['ajax'] = ajax
-
-        # Projector overlays
-        data['overlays'] = []
-        # Do not show overlays on slide preview
-        if self.kwargs['sid'] is None:
-            for receiver, overlay in projector_overlays.send(sender=self):
-                if overlay.show_on_projector():
-                    data['overlays'].append({'name': overlay.name,
-                                             'html': overlay.get_projector_html()})
-
-        self._data = data
-        return data
-
-    def get_template_names(self):
-        return [self.data['template']]
+    template_name = 'projector.html'
 
     def get_context_data(self, **kwargs):
-        context = super(Projector, self).get_context_data(**kwargs)
-        context.update(self.data)
-        return context
+        slide_dict = dict(self.request.GET.items())
+        callback = self.kwargs.get('callback', None)
+        if callback:
+            slide_dict['callback'] = callback
 
-    def get_ajax_context(self, **kwargs):
-        content = cache.get('projector_content')
-        if not content:
-            content = render_block_to_string(
-                self.get_template_names()[0],
-                'content', self.data)
-            cache.set('projector_content', content, 1)
+        if not slide_dict:
+            kwargs.update({
+                'content':  get_projector_content(),
+                'overlays': get_projector_overlays(),
+                'overlay_js': get_projector_overlays_js(),
+                'reload': True})
 
-        scrollcontent = cache.get('projector_scrollcontent')
-        if not scrollcontent:
-            scrollcontent = render_block_to_string(
-                self.get_template_names()[0],
-                'scrollcontent', self.data)
-            cache.set('projector_scrollcontent', scrollcontent, 1)
+        # For the Preview
+        else:
+            kwargs.update({
+                'content':  get_projector_content(slide_dict),
+                'reload': False})
 
-        # TODO: do not call the hole data-methode, if we only need some vars
-        data = cache.get('projector_data')
-        if not data:
-            data = self.data
-            cache.set('projector_data', data)
-
-        context = super(Projector, self).get_ajax_context(**kwargs)
-        content_hash = hash(content)
-        context.update({
-            'content': content,
-            'scrollcontent': scrollcontent,
-            'time': datetime.now().strftime('%H:%M'),
-            'overlays': data['overlays'],
-            'title': data['title'],
-            'bigger': config['bigger'],
-            'up': config['up'],
-            'content_hash': content_hash,
-        })
-        return context
-
-    def get(self, request, *args, **kwargs):
-        if request.is_ajax():
-            return self.ajax_get(request, *args, **kwargs)
-        return super(Projector, self).get(request, *args, **kwargs)
+        return super(Projector, self).get_context_data(**kwargs)
 
 
 class ActivateView(RedirectView):
@@ -151,10 +89,7 @@ class ActivateView(RedirectView):
     allow_ajax = True
 
     def pre_redirect(self, request, *args, **kwargs):
-        try:
-            set_active_slide(kwargs['sid'], kwargs['argument'])
-        except KeyError:
-            set_active_slide(kwargs['sid'])
+        set_active_slide(kwargs['callback'], kwargs=dict(request.GET.items()))
         config['up'] = 0
         config['bigger'] = 100
 
@@ -267,9 +202,9 @@ class CountdownEdit(RedirectView):
                 pass
             except AttributeError:
                 pass
+        update_projector_overlay('projector_countdown')
 
     def get_ajax_context(self, **kwargs):
-        clear_projector_cache()
         return {
             'state': config['countdown_state'],
             'countdown_time': config['countdown_time'],
@@ -289,9 +224,9 @@ class OverlayMessageView(RedirectView):
             config['projector_message'] = request.POST['message_text']
         elif 'message-clean' in request.POST:
             config['projector_message'] = ''
+        update_projector_overlay('projector_message')
 
     def get_ajax_context(self, **kwargs):
-        clear_projector_cache()
         return {
             'overlay_message': config['projector_message'],
         }
@@ -306,21 +241,20 @@ class ActivateOverlay(RedirectView):
     permission_required = 'projector.can_manage_projector'
 
     def pre_redirect(self, request, *args, **kwargs):
-        self.name = kwargs['name']
-        active_overlays = config['projector_active_overlays']
+        overlay = get_overlays()[kwargs['name']]
+        self.name = overlay.name
         if kwargs['activate']:
-            if self.name not in active_overlays:
-                active_overlays.append(self.name)
-                config['projector_active_overlays'] = active_overlays
+            if not overlay.is_active():
+                overlay.set_active(True)
+                update_projector_overlay(overlay)
             self.active = True
-        elif not kwargs['activate']:
-            if self.name in active_overlays:
-                active_overlays.remove(self.name)
-                config['projector_active_overlays'] = active_overlays
+        else:
+            if overlay.is_active():
+                overlay.set_active(False)
+                update_projector_overlay(overlay)
             self.active = False
 
     def get_ajax_context(self, **kwargs):
-        clear_projector_cache()
         return {'active': self.active, 'name': self.name}
 
 
@@ -399,7 +333,8 @@ def get_widgets(request):
     # Overlay widget
     overlays = []
     for receiver, overlay in projector_overlays.send(sender='overlay_widget', request=request):
-        overlays.append(overlay)
+        if overlay.widget_html_callback is not None:
+            overlays.append(overlay)
     context = {'overlays': overlays}
     context.update(csrf(request))
     widgets.append(Widget(
@@ -413,6 +348,7 @@ def get_widgets(request):
         context=context))
 
     # Custom slide widget
+    welcomepage_is_active = get_active_slide().get('callback', 'default') == 'default'
     widgets.append(Widget(
         request,
         name='custom_slide',
@@ -420,7 +356,7 @@ def get_widgets(request):
         template='projector/custom_slide_widget.html',
         context={
             'slides': ProjectorSlide.objects.all().order_by('weight'),
-            'welcomepage_is_active': not bool(config["presentation"])},
+            'welcomepage_is_active': welcomepage_is_active},
         permission_required='projector.can_manage_projector',
         default_column=2,
         default_weight=30))

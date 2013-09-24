@@ -43,11 +43,12 @@ from openslides.utils.views import (
     RedirectView, SingleObjectMixin, ListView, QuestionMixin, DetailView)
 from openslides.config.api import config
 from openslides.projector.projector import Widget
-from openslides.participant.api import gen_username, gen_password, import_users
-from openslides.participant.forms import (
+
+from .api import gen_username, gen_password, import_users
+from .forms import (
     UserCreateForm, UserUpdateForm, UsersettingsForm,
     UserImportForm, GroupForm)
-from openslides.participant.models import User, Group, get_protected_perm
+from .models import User, Group, get_protected_perm
 
 
 class UserOverview(ListView):

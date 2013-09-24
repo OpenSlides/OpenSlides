@@ -29,7 +29,6 @@ from openslides.config.api import config
 from openslides.poll.models import (
     BaseOption, BasePoll, CountVotesCast, CountInvalid, BaseVote)
 from openslides.participant.models import User
-from openslides.projector.api import register_slidemodel
 from openslides.projector.models import SlideMixin
 from openslides.agenda.models import Item
 
@@ -43,9 +42,9 @@ class Motion(SlideMixin, models.Model):
     This class is the main entry point to all other classes related to a motion.
     """
 
-    prefix = ugettext_noop('motion')
+    slide_callback_name = 'motion'
     """
-    Prefix for the slide system.
+    Name of the callback for the slide-system.
     """
 
     active_version = models.ForeignKey('MotionVersion', null=True,
@@ -193,6 +192,7 @@ class Motion(SlideMixin, models.Model):
             return reverse('motion_edit', args=[str(self.id)])
         if link == 'delete':
             return reverse('motion_delete', args=[str(self.id)])
+        return super(Motion, self).get_absolute_url(link)
 
     def version_data_changed(self, version):
         """
@@ -463,16 +463,6 @@ class Motion(SlideMixin, models.Model):
             new_state = (Workflow.objects.get(pk=config['motion_workflow']).first_state or
                          Workflow.objects.get(pk=config['motion_workflow']).state_set.all()[0])
         self.set_state(new_state)
-
-    def slide(self):
-        """
-        Return the slide dict.
-        """
-        data = super(Motion, self).slide()
-        data['motion'] = self
-        data['title'] = self.title
-        data['template'] = 'projector/Motion.html'
-        return data
 
     def get_agenda_title(self):
         """

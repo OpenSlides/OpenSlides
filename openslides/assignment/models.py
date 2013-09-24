@@ -18,8 +18,7 @@ from django.utils.datastructures import SortedDict
 from openslides.utils.person import PersonField
 from openslides.utils.utils import html_strong
 from openslides.config.api import config
-from openslides.projector.api import register_slidemodel
-from openslides.projector.projector import SlideMixin
+from openslides.projector.models import SlideMixin
 from openslides.poll.models import (
     BasePoll, CountInvalid, CountVotesCast, BaseOption, PublishPollMixin, BaseVote)
 
@@ -37,8 +36,9 @@ class AssignmentCandidate(models.Model):
         unique_together = ("assignment", "person")
 
 
-class Assignment(models.Model, SlideMixin):
-    prefix = ugettext_noop('assignment')
+class Assignment(SlideMixin, models.Model):
+    slide_callback_name = 'assignment'
+
     STATUS = (
         ('sea', ugettext_lazy('Searching for candidates')),
         ('vot', ugettext_lazy('Voting')),
@@ -52,6 +52,27 @@ class Assignment(models.Model, SlideMixin):
         max_length=100, null=True, blank=True,
         verbose_name=ugettext_lazy("Comment on the ballot paper"))
     status = models.CharField(max_length=3, choices=STATUS, default='sea')
+
+    class Meta:
+        permissions = (
+            ('can_see_assignment', ugettext_noop('Can see assignments')),  # TODO: Add plural s to the codestring
+            ('can_nominate_other', ugettext_noop('Can nominate another person')),
+            ('can_nominate_self', ugettext_noop('Can nominate oneself')),
+            ('can_manage_assignment', ugettext_noop('Can manage assignments')),  # TODO: Add plural s also to the codestring
+        )
+        ordering = ('name',)
+
+    def __unicode__(self):
+        return self.name
+
+    def get_absolute_url(self, link='detail'):
+        if link == 'detail' or link == 'view':
+            return reverse('assignment_detail', args=[str(self.id)])
+        if link == 'update' or link == 'update':
+            return reverse('assignment_update', args=[str(self.id)])
+        if link == 'delete':
+            return reverse('assignment_delete', args=[str(self.id)])
+        return super(Assignment, self).get_absolute_url(link)
 
     def set_status(self, status):
         status_dict = dict(self.STATUS)
@@ -206,45 +227,6 @@ class Assignment(models.Model, SlideMixin):
     def get_agenda_title_supplement(self):
         return '(%s)' % _('Assignment')
 
-    def slide(self):
-        """
-        return the slide dict
-        """
-        polls = self.poll_set
-        data = super(Assignment, self).slide()
-        data['assignment'] = self
-        data['title'] = self.name
-        data['some_polls_available'] = polls.exists()
-        data['polls'] = polls.filter(published=True)
-        data['vote_results'] = self.vote_results(only_published=True)
-        data['assignment_publish_winner_results_only'] = \
-            config['assignment_publish_winner_results_only']
-        data['template'] = 'projector/Assignment.html'
-        return data
-
-    def get_absolute_url(self, link='detail'):
-        if link == 'detail' or link == 'view':
-            return reverse('assignment_detail', args=[str(self.id)])
-        if link == 'update' or link == 'edit':
-            return reverse('assignment_update', args=[str(self.id)])
-        if link == 'delete':
-            return reverse('assignment_delete', args=[str(self.id)])
-
-    def __unicode__(self):
-        return self.name
-
-    class Meta:
-        permissions = (
-            ('can_see_assignment', ugettext_noop('Can see assignments')),  # TODO: Add plural s to the codestring
-            ('can_nominate_other', ugettext_noop('Can nominate another person')),
-            ('can_nominate_self', ugettext_noop('Can nominate oneself')),
-            ('can_manage_assignment', ugettext_noop('Can manage assignments')),  # TODO: Add plural s also to the codestring
-        )
-        ordering = ('name',)
-        verbose_name = ugettext_noop('Assignment')
-
-register_slidemodel(Assignment)
-
 
 class AssignmentVote(BaseVote):
     option = models.ForeignKey('AssignmentOption')
@@ -294,7 +276,7 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
         return self.assignment.poll_set.filter(id__lte=self.id).count()
 
     @models.permalink
-    def get_absolute_url(self, link='view'):
+    def get_absolute_url(self, link='detail'):
         if link == 'view' or link == 'detail' or link == 'update':
             return ('assignment_poll_view', [str(self.id)])
         if link == 'delete':

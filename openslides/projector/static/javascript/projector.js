@@ -1,62 +1,67 @@
 /**
  * OpenSlides projector functions
  *
- * :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+ * :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
  * :license: GNU GPL, see LICENSE for more details.
  */
 
-content_hash = null;
+$(document).ready(function() {
+    if ($('#content.reload').length > 0) {
+        updater.start();
+    }
+});
 
-function presentation_reload() {
-    if ($('#config > #ajax').html() == 'on') {
-        $.ajax({
-            type: 'GET',
-            url: '/projector/',
-            dataType: 'json',
-            success: function(data) {
-                $('#currentTime').removeClass('ajax_error');
-                var new_content_hash = data['content_hash'];
-                if (new_content_hash != content_hash) {
-                    $('#content').html(data.content);
-                    content_hash = new_content_hash;
+var projector = {
+    _loaded_files: {},
+
+    load_file: function(src) {
+        if (projector._loaded_files[src] === undefined) {
+            projector._loaded_files[src] = document.createElement('script');
+            projector._loaded_files[src].setAttribute("type","text/javascript");
+            projector._loaded_files[src].setAttribute("src", src);
+            $('head').append(projector._loaded_files[src]);
+        }
+    },
+
+    update_data: function(data) {
+       $.each(data, function (key, value) {
+            if (key === 'load_file')
+                projector.load_file(value);
+            else
+                projector[key] = value;
+        });
+    }
+};
+
+var updater = {
+    socket: null,
+
+    start: function() {
+        var url = "ws://" + location.host + "/projector/socket/";
+        updater.socket = new WebSocket(url);
+        updater.socket.onmessage = function(event) {
+            updater.updateProjector(JSON.parse(event.data));
+        }
+        updater.socket.onclose = function() {
+            setTimeout('updater.start()', 5000);
+        }
+    },
+
+    updateProjector: function(data) {
+        $('#content').html(data.content);
+        var overlays = data.overlays;
+        $.each(overlays, function (key, value) {
+            var overlay = $('#overlays #overlay_' + key)
+            if (!value)
+                overlay.remove();
+            else {
+                if (overlay.length) {
+                    overlay.html(value.html)
+                } else {
+                    $('#overlays').append(value.html);
                 }
-                $('#scrollcontent').html(data.scrollcontent);
-                document.title = data.title;
-                $('#currentTime').html(data.time);
-                $('#content').clearQueue();
-                // content font-size
-                $('#content').animate({'font-size': data.bigger + '%'}, 200);
-                $('#content #sidebar').css({'font-size': '18px'}, 0);
-                $('#scrollcontent').animate({'font-size': data.bigger + '%'}, 100);
-                // content position
-                $('#scrollcontent').animate({'margin-top': data.up + 'em'}, 100);
-                // overlays
-                $('#overlays div').remove();
-                $.each(data['overlays'], function (index, overlay){
-                    $('#overlays').append('<div id="overlay_' + overlay['name'] + '">' + overlay['html'] + '</div>');
-                });
-                setTimeout("presentation_reload()", 1000);
-            },
-            error: function () {
-                $('#currentTime').addClass('ajax_error');
-                setTimeout("presentation_reload()", 1000);
+                projector.update_data(value.javascript);
             }
         });
     }
-}
-
-function switchajax() {
-    if ($('#config > #ajax').html() == 'on') {
-        $('#config > #ajax').html('off');
-        $('#ajaxswitcher').html('<a href="#" onClick="switchajax()">Ajax Anschalten</a>');
-    } else {
-        $('#config > #ajax').html('on');
-        $('#ajaxswitcher').html('<a href="#" onClick="switchajax()">Ajax Ausschalten</a>');
-    }
-}
-
-$(document).ready(function() {
-    switchajax();
-    switchajax();
-    presentation_reload();
-});
+};

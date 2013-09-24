@@ -15,13 +15,12 @@ from django.dispatch import Signal, receiver
 from django import forms
 from django.template.loader import render_to_string
 from django.core.context_processors import csrf
+from django.contrib.staticfiles.templatetags.staticfiles import static
 
-from openslides.config.api import config
+from openslides.config.api import config, ConfigVariable, ConfigPage
 from openslides.config.signals import config_signal
-from openslides.config.api import ConfigVariable, ConfigPage
 
 from .projector import Overlay
-from .api import clear_projector_cache
 
 
 projector_overlays = Signal(providing_args=['request'])
@@ -34,13 +33,13 @@ def setup_projector_config_variables(sender, **kwargs):
     config page.
     """
 
-    presentation = ConfigVariable(
-        name='presentation',
-        default_value='')
-
-    presentation_argument = ConfigVariable(
-        name='presentation_argument',
-        default_value=None)
+    projector = ConfigVariable(
+        name='projector_active_slide',
+        default_value={'callback': None})
+    """
+    The active slide. The config-value is a dictonary with at least the entrie
+    'callback'.
+    """
 
     projector_message = ConfigVariable(
         name='projector_message',
@@ -76,7 +75,7 @@ def setup_projector_config_variables(sender, **kwargs):
 
     return ConfigPage(
         title='No title here', url='bar', required_permission=None, variables=(
-            presentation, presentation_argument, projector_message,
+            projector, projector_message,
             countdown_time, countdown_start_stamp, countdown_pause_stamp,
             countdown_state, bigger, up, projector_active_overlays))
 
@@ -97,30 +96,32 @@ def countdown(sender, **kwargs):
             'countdown_time': config['countdown_time'],
             'countdown_state': config['countdown_state']}
         context.update(csrf(request))
-        return render_to_string('projector/overlay_countdown_widget.html', context)
+        return render_to_string('projector/overlay_countdown_widget.html',
+                                context)
+
+    def get_projector_js():
+        """
+        Returns JavaScript for the projector
+        """
+        start = int(config['countdown_start_stamp'])
+        duration = int(config['countdown_time'])
+        pause = int(config['countdown_pause_stamp'])
+        state = config['countdown_state']
+
+        return {
+            'load_file': static('javascript/countdown.js'),
+            'projector_countdown_start': start,
+            'projector_countdown_duration': duration,
+            'projector_countdown_pause': pause,
+            'projector_countdown_state': state}
 
     def get_projector_html():
         """
         Returns an html-code to show on the projector.
         """
-        start = config['countdown_start_stamp']
-        duration = config['countdown_time']
-        pause = config['countdown_pause_stamp']
-        if config['countdown_state'] == 'active':
-            seconds = max(0, int(start + duration - time()))
-        elif config['countdown_state'] == 'paused':
-            seconds = max(0, int(start + duration - pause))
-        elif config['countdown_state'] == 'inactive':
-            seconds = max(0, int(duration))
-        else:
-            seconds = 0
-        if seconds == 0:
-            config['countdown_state'] = 'expired'
-        clear_projector_cache()
-        return render_to_string('projector/overlay_countdown_projector.html',
-                                {'seconds': '%02d:%02d' % (seconds / 60, seconds % 60)})
+        return render_to_string('projector/overlay_countdown_projector.html')
 
-    return Overlay(name, get_widget_html, get_projector_html)
+    return Overlay(name, get_widget_html, get_projector_html, get_projector_js)
 
 
 @receiver(projector_overlays, dispatch_uid="projector_message")
@@ -148,3 +149,26 @@ def projector_message(sender, **kwargs):
         return None
 
     return Overlay(name, get_widget_html, get_projector_html)
+
+
+@receiver(projector_overlays, dispatch_uid="projector_clock")
+def projector_clock(sender, **kwargs):
+    """
+    Receiver to show the clock on the projector.
+    """
+    name = 'projector_clock'
+
+    def get_projector_html():
+        """
+        Returns the html-code for the clock.
+        """
+        return render_to_string('projector/overlay_clock_projector.html')
+
+    def get_projector_js():
+        """
+        Returns JavaScript for the projector
+        """
+        return {'load_file': static('javascript/clock.js')}
+
+    return Overlay(name, None, get_projector_html, get_projector_js,
+                   allways_active=True)
