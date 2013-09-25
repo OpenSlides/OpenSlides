@@ -10,31 +10,25 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.conf.urls import url, patterns
+from django.conf.urls import patterns, url
 
-from .models import Mediafile
-from .views import (MediafileListView, MediafileCreateView,
-                    MediafileUpdateView, MediafileDeleteView)
+from . import views
 
-
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^$',
-        MediafileListView.as_view(),
-        name='mediafile_list',
-    ),
+        views.MediafileListView.as_view(),
+        name='mediafile_list'),
 
     url(r'^new/$',
-        MediafileCreateView.as_view(),
-        name='mediafile_create',
-    ),
+        views.MediafileCreateView.as_view(),
+        name='mediafile_create'),
 
     url(r'^(?P<pk>\d+)/edit/$',
-        MediafileUpdateView.as_view(),
-        name='mediafile_update',
-    ),
+        views.MediafileUpdateView.as_view(),
+        name='mediafile_update'),
 
     url(r'^(?P<pk>\d+)/del/$',
-        MediafileDeleteView.as_view(),
-        name='mediafile_delete',
-    ),
+        views.MediafileDeleteView.as_view(),
+        name='mediafile_delete'),
 )

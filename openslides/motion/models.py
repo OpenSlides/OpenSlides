@@ -13,27 +13,21 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from datetime import datetime
-
 from django.core.urlresolvers import reverse
-from django.db import models, IntegrityError
+from django.db import models
 from django.db.models import Max
-from django.dispatch import receiver
 from django.utils import formats
-from django.utils.translation import pgettext
-from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
+from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy, ugettext_noop
 
-from openslides.agenda.models import Item
 from openslides.config.api import config
-from openslides.participant.models import User
-from openslides.poll.models import (
-    BaseOption, BasePoll, CountVotesCast, CountInvalid, BaseVote)
-from openslides.projector.models import SlideMixin, RelatedModelMixin
-from openslides.projector.api import (update_projector, get_active_slide)
+from openslides.poll.models import (BaseOption, BasePoll, BaseVote,
+                                    CountInvalid, CountVotesCast)
+from openslides.projector.models import RelatedModelMixin, SlideMixin
 from openslides.utils.jsonfield import JSONField
 from openslides.utils.person import PersonField
 
-from .exceptions import MotionError, WorkflowError
+from .exceptions import WorkflowError
 
 
 class Motion(SlideMixin, models.Model):

@@ -11,12 +11,13 @@
 """
 
 from django import forms
-from django.core.urlresolvers import reverse
 from django.contrib import messages
-from django.utils.translation import ugettext as _, ugettext_lazy
+from django.core.urlresolvers import reverse
+from django.utils.translation import ugettext as _
 
-from openslides.utils.views import FormView
 from openslides.utils.template import Tab
+from openslides.utils.views import FormView
+
 from .api import config
 from .signals import config_signal
 

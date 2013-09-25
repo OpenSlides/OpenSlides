@@ -11,12 +11,14 @@
 """
 
 from django import forms
-from django.utils.translation import ugettext as _, ugettext_lazy
+from django.utils.translation import ugettext_lazy
 
 from openslides.config.api import config
-from openslides.utils.forms import CssClassMixin, CleanHtmlFormMixin, LocalizedModelChoiceField
-from openslides.utils.person import PersonFormField, MultiplePersonFormField
-from .models import Motion, Category, Workflow
+from openslides.utils.forms import (CleanHtmlFormMixin, CssClassMixin,
+                                    LocalizedModelChoiceField)
+from openslides.utils.person import MultiplePersonFormField, PersonFormField
+
+from .models import Category, Motion, Workflow
 
 
 class BaseMotionForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):

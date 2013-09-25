@@ -11,16 +11,15 @@
 import posixpath
 from urllib import unquote
 
+from django.conf import settings
+from django.core.handlers.wsgi import WSGIHandler as Django_WSGIHandler
+from django.utils.translation import ugettext as _
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
-from tornado.web import FallbackHandler, Application, StaticFileHandler
+from tornado.options import parse_command_line
+from tornado.web import Application, FallbackHandler, StaticFileHandler
 from tornado.websocket import WebSocketHandler
 from tornado.wsgi import WSGIContainer
-from tornado.options import parse_command_line
-
-from django.core.handlers.wsgi import WSGIHandler as Django_WSGIHandler
-from django.conf import settings
-from django.utils.translation import ugettext as _
 
 
 class DjangoStaticFileHandler(StaticFileHandler):

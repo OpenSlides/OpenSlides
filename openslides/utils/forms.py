@@ -11,10 +11,9 @@
 """
 
 import bleach
-
 from django import forms
-from django.utils.translation import ugettext as _, ugettext_lazy
-
+from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy
 
 # Allowed tags, attributes and styles allowed in textareas edited with a JS
 # editor. Everything not in these whitelists is stripped.

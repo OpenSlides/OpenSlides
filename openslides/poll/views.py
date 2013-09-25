@@ -10,9 +10,9 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.http import HttpResponseRedirect
-from django.forms.models import modelform_factory
 from django.core.exceptions import ImproperlyConfigured
+from django.forms.models import modelform_factory
+from django.http import HttpResponseRedirect
 
 from openslides.utils.views import TemplateView, FormMixin
 

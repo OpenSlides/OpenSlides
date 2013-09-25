@@ -10,27 +10,24 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from datetime import datetime
 from time import time
 
 from django.contrib import messages
-from django.core.cache import cache
 from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.db import transaction
-from django.db.models import Q
 from django.shortcuts import redirect
-from django.template import RequestContext
 from django.utils.translation import ugettext as _
 
-from openslides.utils.template import Tab
-from openslides.utils.views import (
-    TemplateView, RedirectView, CreateView, UpdateView, DeleteView, AjaxMixin)
 from openslides.config.api import config
-from .api import (
-    get_projector_content, get_projector_overlays, get_all_widgets,
-    set_active_slide, update_projector, get_active_slide, update_projector_overlay,
-    get_overlays, get_projector_overlays_js)
+from openslides.utils.template import Tab
+from openslides.utils.views import (AjaxMixin, CreateView, DeleteView,
+                                    RedirectView, TemplateView, UpdateView)
+
+from .api import (get_active_slide, get_all_widgets, get_overlays,
+                  get_projector_content, get_projector_overlays,
+                  get_projector_overlays_js, set_active_slide,
+                  update_projector_overlay)
 from .forms import SelectWidgetsForm
 from .models import ProjectorSlide
 from .projector import Widget
@@ -118,6 +115,9 @@ class SelectWidgetsView(TemplateView):
 
     @transaction.commit_manually
     def post(self, request, *args, **kwargs):
+        """
+        Activates or deactivates the widgets in a post request.
+        """
         context = self.get_context_data(**kwargs)
         activated_widgets = self.request.session.get('widgets', {})
 

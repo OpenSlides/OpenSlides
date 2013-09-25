@@ -8,10 +8,9 @@
 """
 
 from django import forms
-from django.db import models
 
-from openslides.utils.test import TestCase
 from openslides.utils.forms import CleanHtmlFormMixin
+from openslides.utils.test import TestCase
 
 
 class HtmlTestForm(CleanHtmlFormMixin, forms.Form):

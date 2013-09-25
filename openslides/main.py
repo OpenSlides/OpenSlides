@@ -34,6 +34,7 @@ CONFIG_TEMPLATE = """#!/usr/bin/env python
 import openslides.main
 from openslides.global_settings import *
 
+
 # Use 'DEBUG = True' to get more details for server errors
 # (Default for releases: 'False')
 DEBUG = False

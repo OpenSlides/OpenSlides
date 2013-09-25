@@ -13,15 +13,15 @@
 import os
 import tempfile
 
-from django.test.client import Client
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.conf import settings
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
+from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test.client import Client
 
-from openslides.utils.test import TestCase
 from openslides.mediafile.models import Mediafile
 from openslides.participant.models import User
+from openslides.utils.test import TestCase
 
 
 class MediafileTest(TestCase):
@@ -33,7 +33,6 @@ class MediafileTest(TestCase):
         ct = ContentType.objects.get(app_label='mediafile', model='mediafile')
         perm_1 = Permission.objects.get(content_type=ct, codename='can_see')
         perm_2 = Permission.objects.get(content_type=ct, codename='can_upload')
-        perm_3 = Permission.objects.get(content_type=ct, codename='can_manage')
 
         # Setup three different users
         self.manager = User.objects.get(pk=1)

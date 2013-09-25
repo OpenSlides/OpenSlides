@@ -11,28 +11,29 @@
 """
 # TODO: Rename all views and template names
 
-from reportlab.platypus import Paragraph
 from datetime import datetime, timedelta
 
-from django.core.urlresolvers import reverse
 from django.contrib import messages
+from django.core.urlresolvers import reverse
 from django.db import transaction
 from django.db.models import Model
-from django.utils.translation import ugettext as _, ugettext_lazy
-from django.views.generic.detail import SingleObjectMixin
+from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy
+from reportlab.platypus import Paragraph
 
 from openslides.config.api import config
-from openslides.utils.pdf import stylesheet
-from openslides.utils.exceptions import OpenSlidesError
-from openslides.utils.views import (
-    TemplateView, RedirectView, UpdateView, CreateView, DeleteView, PDFView,
-    DetailView, FormView, SingleObjectMixin)
-from openslides.utils.template import Tab
-from openslides.utils.utils import html_strong
 from openslides.projector.api import get_active_slide, update_projector
 from openslides.projector.projector import Widget
+from openslides.utils.exceptions import OpenSlidesError
+from openslides.utils.pdf import stylesheet
+from openslides.utils.template import Tab
+from openslides.utils.utils import html_strong
+from openslides.utils.views import (CreateView, DeleteView, FormView, PDFView,
+                                    RedirectView, SingleObjectMixin,
+                                    TemplateView, UpdateView)
+
+from .forms import AppendSpeakerForm, ItemForm, ItemOrderForm, RelatedItemForm
 from .models import Item, Speaker
-from .forms import ItemOrderForm, ItemForm, AppendSpeakerForm, RelatedItemForm
 
 
 class Overview(TemplateView):
@@ -106,6 +107,7 @@ class Overview(TemplateView):
             messages.error(
                 request,
                 _('You are not authorized to manage the agenda.'))
+            context = self.get_context_data(**kwargs)
             return self.render_to_response(context)
 
         transaction.commit()

@@ -10,16 +10,12 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.contrib.messages.storage import default_storage
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import clear_url_caches
-from django.dispatch import receiver
-from django.http.response import HttpResponseNotAllowed
 from django.test import RequestFactory
 from django.test.client import Client
 from django.test.utils import override_settings
 
-from openslides.participant.models import User
 from openslides.utils import views
 from openslides.utils.signals import template_manipulation
 from openslides.utils.test import TestCase
@@ -38,7 +34,6 @@ class ViewTestCase(TestCase):
 
 class LoginMixinTest(ViewTestCase):
     def test_dispatch(self):
-        view = test_views.LoginMixinView.as_view()
         client = Client()
         response = client.get('/login_mixin/')
         self.assertEqual(response['Location'], 'http://testserver/login/?next=/login_mixin/')

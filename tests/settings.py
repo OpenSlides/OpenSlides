@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import openslides.main
-from openslides.global_settings import *
+from openslides.global_settings import *  # noqa
 
 # Use 'DEBUG = True' to get more details for server errors
 # (Default for releases: 'False')

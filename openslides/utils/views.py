@@ -12,8 +12,6 @@
 
 import json
 from cStringIO import StringIO
-from reportlab.platypus import SimpleDocTemplate, Spacer
-from reportlab.lib.units import cm
 
 from django.conf import settings
 from django.contrib import messages
@@ -32,7 +30,6 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 from django.views import generic as django_views
 from django.views.generic.detail import SingleObjectMixin
-from django.views.generic.list import TemplateResponseMixin
 from reportlab.lib.units import cm
 from reportlab.platypus import SimpleDocTemplate, Spacer
 

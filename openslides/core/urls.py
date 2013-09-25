@@ -13,17 +13,17 @@
 from django.conf.urls import patterns, url
 
 from openslides.utils.views import RedirectView
-from .views import VersionView
 
+from . import views
 
-urlpatterns = patterns('',
-
+urlpatterns = patterns(
+    '',
     # Redirect to dashboard URL
     url(r'^$',
         RedirectView.as_view(url='projector/dashboard/'),
         name='home',),
 
     url(r'^version/$',
-        VersionView.as_view(),
+        views.VersionView.as_view(),
         name='core_version',),
 )

@@ -11,8 +11,6 @@
 """
 
 import os
-import sys
-
 from openslides.main import fs2unicode
 
 

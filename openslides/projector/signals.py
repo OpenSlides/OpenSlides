@@ -9,37 +9,31 @@
     :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
-from time import time
-
-from django.dispatch import Signal, receiver
-from django import forms
-from django.template.loader import render_to_string
-from django.core.context_processors import csrf
 from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.core.context_processors import csrf
+from django.dispatch import receiver, Signal
+from django.template.loader import render_to_string
 
-from openslides.config.api import config, ConfigVariable, ConfigPage
+from openslides.config.api import config, ConfigPage, ConfigVariable
 from openslides.config.signals import config_signal
 
 from .projector import Overlay
-
 
 projector_overlays = Signal(providing_args=['request'])
 
 
 @receiver(config_signal, dispatch_uid='setup_projector_config_variables')
-def setup_projector_config_variables(sender, **kwargs):
+def config_variables(sender, **kwargs):
     """
     Projector config variables for OpenSlides. They are not shown on a
     config page.
     """
 
+    # The active slide. The config-value is a dictonary with at least the entry
+    # 'callback'.
     projector = ConfigVariable(
         name='projector_active_slide',
         default_value={'callback': None})
-    """
-    The active slide. The config-value is a dictonary with at least the entrie
-    'callback'.
-    """
 
     projector_message = ConfigVariable(
         name='projector_message',
@@ -65,7 +59,7 @@ def setup_projector_config_variables(sender, **kwargs):
         name='bigger',
         default_value=100)
 
-    up = ConfigVariable(
+    projector_up = ConfigVariable(
         name='up',
         default_value=0)
 
@@ -77,7 +71,7 @@ def setup_projector_config_variables(sender, **kwargs):
         title='No title here', url='bar', required_permission=None, variables=(
             projector, projector_message,
             countdown_time, countdown_start_stamp, countdown_pause_stamp,
-            countdown_state, bigger, up, projector_active_overlays))
+            countdown_state, bigger, projector_up, projector_active_overlays))
 
 
 @receiver(projector_overlays, dispatch_uid="projector_countdown")
@@ -124,8 +118,8 @@ def countdown(sender, **kwargs):
     return Overlay(name, get_widget_html, get_projector_html, get_projector_js)
 
 
-@receiver(projector_overlays, dispatch_uid="projector_message")
-def projector_message(sender, **kwargs):
+@receiver(projector_overlays, dispatch_uid="projector_overlay_message")
+def projector_overlay_message(sender, **kwargs):
     """
     Receiver to show the overlay_message on the projector or the form in the
     overlay-widget on the dashboard.

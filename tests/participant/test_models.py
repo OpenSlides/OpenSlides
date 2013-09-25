@@ -8,12 +8,10 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from openslides.utils.test import TestCase
-
+from openslides.participant.api import gen_password, gen_username
+from openslides.participant.models import Group, User
 from openslides.utils.person import get_person, Persons
-
-from openslides.participant.models import User, Group
-from openslides.participant.api import gen_username, gen_password
+from openslides.utils.test import TestCase
 
 
 class UserTest(TestCase):

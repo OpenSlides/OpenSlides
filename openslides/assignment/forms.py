@@ -16,7 +16,7 @@ from django.utils.translation import ugettext_lazy
 from openslides.utils.forms import CssClassMixin
 from openslides.utils.person import PersonFormField
 
-from openslides.assignment.models import Assignment
+from .models import Assignment
 
 
 class AssignmentForm(forms.ModelForm, CssClassMixin):

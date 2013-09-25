@@ -13,8 +13,8 @@
 
 from django.test import TestCase as _TestCase
 
-from openslides.core.signals import post_database_setup
 from openslides.config.api import config
+from openslides.core.signals import post_database_setup
 
 
 class TestCase(_TestCase):

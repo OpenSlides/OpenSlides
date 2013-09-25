@@ -4,7 +4,7 @@ from optparse import make_option
 import django.conf
 import django.db
 import django.db.transaction
-from django.core.management.base import NoArgsCommand, CommandError
+from django.core.management.base import CommandError, NoArgsCommand
 
 
 class Command(NoArgsCommand):

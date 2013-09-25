@@ -10,14 +10,12 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.test.client import Client
-from django.db.models.query import EmptyQuerySet
 from django.contrib.auth.models import AnonymousUser
 
-from openslides.utils.test import TestCase
 from openslides.utils.person.api import get_person
+from openslides.utils.test import TestCase
 
-from .models import TestPerson, TestModel
+from .models import TestModel, TestPerson
 
 
 class PersonTest(TestCase):

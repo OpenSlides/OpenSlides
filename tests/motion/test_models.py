@@ -8,11 +8,11 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from openslides.utils.test import TestCase
-from openslides.participant.models import User
 from openslides.config.api import config
-from openslides.motion.models import Motion, Workflow, State
 from openslides.motion.exceptions import WorkflowError
+from openslides.motion.models import Motion, State, Workflow
+from openslides.participant.models import User
+from openslides.utils.test import TestCase
 
 
 class ModelTest(TestCase):
@@ -58,7 +58,6 @@ class ModelTest(TestCase):
 
         motion.title = 'v2'
         motion.save(use_version=motion.get_new_version())
-        v2_version = motion.get_last_version()
         motion.title = 'v3'
         motion.save(use_version=motion.get_new_version())
         with self.assertRaises(AttributeError):
@@ -122,8 +121,8 @@ class ModelTest(TestCase):
             state_1.save()
 
     def test_two_empty_identifiers(self):
-        motion1 = Motion.objects.create(title='foo', text='bar', identifier='')
-        motion2 = Motion.objects.create(title='foo2', text='bar2', identifier='')
+        Motion.objects.create(title='foo', text='bar', identifier='')
+        Motion.objects.create(title='foo2', text='bar2', identifier='')
 
     def test_do_not_create_new_version_when_permit_old_version(self):
         motion = Motion()

@@ -20,7 +20,7 @@ from openslides.utils.test import TestCase
 class WidgetObject(TestCase):
     def test_error(self):
         with self.assertRaises(OpenSlidesError):
-            w = Widget(HttpRequest(), name='chahghuyeim8ie0Noong')
+            Widget(HttpRequest(), name='chahghuyeim8ie0Noong')
 
     def test_repr(self):
         w = Widget(HttpRequest(), name='abcdefgäöüß', html='<strong>html</strong>')

@@ -10,24 +10,24 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-import random
 import os
-from bs4 import BeautifulSoup
+import random
 
+from bs4 import BeautifulSoup
+from django.conf import settings
+from django.utils.translation import ugettext as _
 from reportlab.lib import colors
 from reportlab.lib.units import cm
-from reportlab.platypus import (
-    SimpleDocTemplate, PageBreak, Paragraph, Spacer, Table, TableStyle)
-from django.utils.translation import ugettext as _
-from django.conf import settings
+from reportlab.platypus import PageBreak, Paragraph, Spacer, Table, TableStyle
 
 from openslides.config.api import config
+from openslides.participant.models import Group, User
 from openslides.utils.pdf import stylesheet
-from .models import Motion, Category
+
+from .models import Category, Motion
 
 # Needed to count the delegates
 # TODO: find another way to do this.
-from openslides.participant.models import User, Group
 
 
 def motions_to_pdf(pdf):

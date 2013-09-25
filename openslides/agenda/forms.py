@@ -18,6 +18,7 @@ from mptt.forms import TreeNodeChoiceField
 
 from openslides.utils.forms import CssClassMixin
 from openslides.utils.person.forms import PersonFormField
+
 from .models import Item, Speaker
 
 

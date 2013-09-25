@@ -13,11 +13,6 @@
 from openslides.utils.exceptions import OpenSlidesError
 
 
-class MotionError(OpenSlidesError):
-    """Exception raised when errors in the motion accure."""
-    pass
-
-
 class WorkflowError(OpenSlidesError):
     """Exception raised when errors in a workflow or state accure."""
     pass

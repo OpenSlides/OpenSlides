@@ -45,12 +45,12 @@ def coverage():
     webbrowser.open(os.path.join(os.path.dirname(__file__), 'htmlcov', 'index.html'))
 
 
-def pep8():
+def check():
     """
     Checks for PEP 8 errors in openslides and in tests.
     """
-    local('pep8 --max-line-length=150 --exclude="urls.py," --statistics openslides')
-    local('pep8 --max-line-length=150 --statistics tests')
+    local('flake8 --max-line-length=150 --statistics openslides')
+    local('flake8 --max-line-length=150 --statistics tests')
 
 
 def prepare_commit():
@@ -60,7 +60,7 @@ def prepare_commit():
     At the moment it is running the tests and check for PEP 8 errors.
     """
     test()
-    pep8()
+    check()
 
 
 def travis_ci():
@@ -68,7 +68,7 @@ def travis_ci():
     Command that is run by Travis CI.
     """
     coverage_report_plain()
-    pep8()
+    check()
 
 
 def run_script(script):
