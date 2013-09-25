@@ -8,7 +8,7 @@
 """
 
 from setuptools import setup, find_packages
-from openslides import get_version
+from openslides import __version__
 
 
 with open('README.txt') as readme:
@@ -25,7 +25,7 @@ install_requires.append('argparse==1.2.1')
 
 setup(
     name='openslides',
-    version=get_version(),
+    version=__version__,
     author='OpenSlides-Team',
     author_email='support@openslides.org',
     url='http://openslides.org',

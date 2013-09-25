@@ -24,7 +24,7 @@ import webbrowser
 from django.conf import ENVIRONMENT_VARIABLE
 from django.core.management import execute_from_command_line
 
-from openslides import get_version
+from openslides import __version__
 from openslides.utils.tornado_webserver import run_tornado
 
 
@@ -125,7 +125,7 @@ def process_options(argv=None, manage_runserver=False):
         return opts
 
     if opts.version:
-        print get_version()
+        print __version__
         exit(0)
 
     if args:
