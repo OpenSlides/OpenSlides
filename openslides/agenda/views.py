@@ -184,16 +184,12 @@ class SetClosed(RedirectView, SingleObjectMixin):
     model = Item
 
     def get_ajax_context(self, **kwargs):
-        context = super(SetClosed, self).get_ajax_context(**kwargs)
-        closed = kwargs['closed']
+        closed = self.kwargs['closed']
         if closed:
-            link = reverse('item_open', args=[self.object.id])
+            link = reverse('item_open', args=[self.object.pk])
         else:
-            link = reverse('item_close', args=[self.object.id])
-        context.update({
-            'closed': kwargs['closed'],
-            'link': link})
-        return context
+            link = reverse('item_close', args=[self.object.pk])
+        return super(SetClosed, self).get_ajax_context(closed=closed, link=link)
 
     def pre_redirect(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -214,6 +210,7 @@ class ItemUpdate(UpdateView):
     model = Item
     context_object_name = 'item'
     success_url_name = 'item_overview'
+    url_name_args = []
 
     def get_form_class(self):
         if self.object.content_object:
@@ -233,6 +230,7 @@ class ItemCreate(CreateView):
     context_object_name = 'item'
     form_class = ItemForm
     success_url_name = 'item_overview'
+    url_name_args = []
 
 
 class ItemDelete(DeleteView):

@@ -370,14 +370,14 @@ class TestMotionDeleteView(MotionViewTestCase):
         self.assertRedirects(response, '/motion/2/')
 
     def test_admin(self):
-        response = self.admin_client.post('/motion/2/del/', {})
+        response = self.admin_client.post('/motion/2/del/', {'yes': 'yes'})
         self.assertRedirects(response, '/motion/')
 
     def test_delegate(self):
-        response = self.delegate_client.post('/motion/2/del/', {})
+        response = self.delegate_client.post('/motion/2/del/', {'yes': 'yes'})
         self.assertEqual(response.status_code, 403)
         motion = Motion.objects.get(pk=2).add_submitter(self.delegate)
-        response = self.delegate_client.post('/motion/2/del/', {})
+        response = self.delegate_client.post('/motion/2/del/', {'yes': 'yes'})
         self.assertEqual(response.status_code, 403)
 
 
@@ -394,7 +394,7 @@ class TestVersionPermitView(MotionViewTestCase):
     def test_post(self):
         new_version = self.motion1.get_last_version()
         response = self.admin_client.post('/motion/1/version/2/permit/', {'yes': 1})
-        self.assertRedirects(response, '/motion/1/version/2/')
+        self.assertRedirects(response, '/motion/1/')
         self.assertEqual(self.motion1.get_active_version(), new_version)
 
     def test_activate_old_version(self):

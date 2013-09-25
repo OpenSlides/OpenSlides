@@ -23,7 +23,7 @@ from django.shortcuts import redirect
 from django.template import RequestContext
 from django.utils.translation import ugettext as _
 
-from openslides.utils.template import render_block_to_string, Tab
+from openslides.utils.template import Tab
 from openslides.utils.views import (
     TemplateView, RedirectView, CreateView, UpdateView, DeleteView, AjaxMixin)
 from openslides.config.api import config

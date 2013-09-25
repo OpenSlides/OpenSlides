@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 
+{% load i18n %}
+
 {% block content %}
-    <h1>{{ error }}</h1>
+    <h1>{% trans 'Permission Denied' %}</h1>
+    {% trans 'Sorry, you have no rights to see this page.' %}
 {% endblock %}

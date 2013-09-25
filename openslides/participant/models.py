@@ -138,11 +138,11 @@ class Group(SlideMixin, PersonMixin, Person, DjangoGroup):
         Return the URL to the user group.
         """
         if link == 'detail' or link == 'view':
-            return reverse('user_group_view', args=[str(self.id)])
+            return reverse('user_group_view', args=[str(self.pk)])
         if link == 'update' or link == 'edit':
-            return reverse('user_group_edit', args=[str(self.id)])
+            return reverse('user_group_edit', args=[str(self.pk)])
         if link == 'delete':
-            return reverse('user_group_delete', args=[str(self.id)])
+            return reverse('user_group_delete', args=[str(self.pk)])
         return super(Group, self).get_absolute_url(link)
 
 

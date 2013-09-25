@@ -40,6 +40,7 @@ class MediafileCreateView(CreateView):
     model = Mediafile
     permission_required = 'mediafile.can_upload'
     success_url_name = 'mediafile_list'
+    url_name_args = []
 
     def get_form(self, form_class):
         form_kwargs = self.get_form_kwargs()
@@ -71,6 +72,7 @@ class MediafileUpdateView(UpdateView):
     permission_required = 'mediafile.can_manage'
     form_class = MediafileUpdateForm
     success_url_name = 'mediafile_list'
+    url_name_args = []
 
     def get_form_kwargs(self, *args, **kwargs):
         form_kwargs = super(MediafileUpdateView, self).get_form_kwargs(*args, **kwargs)
@@ -86,10 +88,10 @@ class MediafileDeleteView(DeleteView):
     permission_required = 'mediafile.can_manage'
     success_url_name = 'mediafile_list'
 
-    def case_yes(self, *args, **kwargs):
+    def on_clicked_yes(self, *args, **kwargs):
         """Deletes the file in the filesystem, if user clicks "Yes"."""
         self.object.mediafile.delete()
-        return super(MediafileDeleteView, self).case_yes(*args, **kwargs)
+        return super(MediafileDeleteView, self).on_clicked_yes(*args, **kwargs)
 
 
 def register_tab(request):
