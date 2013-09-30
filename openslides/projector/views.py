@@ -6,7 +6,7 @@
 
     Views for the projector app.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -155,8 +155,8 @@ class ProjectorEdit(RedirectView):
             if config['up'] < 0:
                 config['up'] = int(config['up']) + 5
         elif direction == 'clean':
-            config['up'] = 0  # TODO: Use default value from the signal instead of fix value here
-            config['bigger'] = 100  # TODO: Use default value from the signal instead of fix value here
+            config['up'] = config.get_default('up')
+            config['bigger'] = config.get_default('bigger')
 
 
 class CountdownEdit(RedirectView):

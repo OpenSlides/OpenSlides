@@ -89,6 +89,17 @@ class HandleConfigTest(TestCase):
             value='new_string_kbmbnfhdgibkdjshg452bc')
         self.assertEqual(config['var_with_callback_ghvnfjd5768gdfkwg0hm2'], 'new_string_kbmbnfhdgibkdjshg452bc')
 
+    def test_get_default(self):
+        """
+        Tests the methode 'default'.
+        """
+        self.assertEqual(config.get_default('string_var'), 'default_string_rien4ooCZieng6ah')
+        self.assertRaisesMessage(
+            ConfigNotFound,
+            'The config variable unknown_var was not found.',
+            config.get_default,
+            'unknown_var')
+
 
 class ConfigFormTest(TestCase):
 

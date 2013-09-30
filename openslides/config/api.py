@@ -45,11 +45,21 @@ class ConfigHandler(object):
             pass
 
         # Call on_change callback
-        for receiver, config_page in config_signal.send(sender=self):
+        for receiver, config_page in config_signal.send(sender='set_value'):
             for config_variable in config_page.variables:
                 if config_variable.name == key and config_variable.on_change:
                     config_variable.on_change()
                     break
+
+    def get_default(self, key):
+        """
+        Returns the default value for 'key'.
+        """
+        for receiver, config_page in config_signal.send(sender='get_default'):
+            for config_variable in config_page.variables:
+                if config_variable.name == key:
+                    return config_variable.default_value
+        raise ConfigNotFound('The config variable %s was not found.' % key)
 
     def setup_cache(self):
         """
@@ -57,7 +67,7 @@ class ConfigHandler(object):
         signal to get the default into the cache.
         """
         self._cache = {}
-        for receiver, config_page in config_signal.send(sender=self):
+        for receiver, config_page in config_signal.send(sender='setup_cache'):
             for config_variable in config_page.variables:
                 if config_variable.name in self._cache:
                     raise ConfigError('Too many values for config variable %s found.' % config_variable.name)
