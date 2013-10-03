@@ -39,7 +39,13 @@ class DjangoStaticFileHandler(StaticFileHandler):
 
 
 class ProjectorSocketHandler(WebSocketHandler):
+    """
+    Handels the websocket for the projector.
+    """
     waiters = set()
+
+    # The following lines can be uncommented, if there are any problems with
+    # websockts in iOS Safari 5.0
 
     ## def allow_draft76(self):
         ## # for iOS 5.0 Safari

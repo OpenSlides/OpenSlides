@@ -11,36 +11,36 @@
     :copyright: (c) 2011–2013 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
+from reportlab.platypus import SimpleDocTemplate
 
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from django.db import transaction
 from django.db.models import Model
+from django.http import Http404, HttpResponseRedirect
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
-from django.http import Http404, HttpResponseRedirect
 
-from reportlab.platypus import SimpleDocTemplate
-
+from openslides.agenda.views import (
+    CreateRelatedAgendaItemView as _CreateRelatedAgendaItemView)
+from openslides.config.api import config
+from openslides.poll.views import PollFormView
+from openslides.projector.api import get_active_slide, update_projector
+from openslides.projector.projector import Widget
 from openslides.utils.pdf import stylesheet
+from openslides.utils.template import Tab
+from openslides.utils.utils import html_strong, htmldiff
 from openslides.utils.views import (
     TemplateView, RedirectView, UpdateView, CreateView, DeleteView, PDFView,
     DetailView, ListView, FormView, QuestionMixin, SingleObjectMixin)
-from openslides.utils.template import Tab
-from openslides.utils.utils import html_strong, htmldiff
-from openslides.poll.views import PollFormView
-from openslides.projector.api import get_active_slide
-from openslides.projector.projector import Widget
-from openslides.config.api import config
-from openslides.agenda.views import CreateRelatedAgendaItemView as _CreateRelatedAgendaItemView
 
-from .models import (Motion, MotionSubmitter, MotionSupporter, MotionPoll,
-                     MotionVersion, State, WorkflowError, Category)
+from .csv_import import import_motions
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
                     MotionDisableVersioningMixin, MotionCategoryMixin,
                     MotionIdentifierMixin, MotionWorkflowMixin, MotionImportForm)
+from .models import (Motion, MotionSubmitter, MotionSupporter, MotionPoll,
+                     MotionVersion, State, WorkflowError, Category)
 from .pdf import motions_to_pdf, motion_to_pdf, motion_poll_to_pdf
-from .csv_import import import_motions
 
 
 class MotionListView(ListView):
@@ -127,6 +127,15 @@ class MotionEditMixin(object):
             MotionSupporter.objects.bulk_create(
                 [MotionSupporter(motion=self.object, person=person)
                  for person in form.cleaned_data['supporter']])
+
+        # Update the projector if the motion is on it. This can not be done in
+        # the model, because bulk_create does not call the save method.
+        active_slide = get_active_slide()
+        active_slide_pk = active_slide.get('pk', None)
+        if (active_slide['callback'] == 'motion' and
+                unicode(self.object.pk) == unicode(active_slide_pk)):
+            update_projector()
+
         messages.success(self.request, self.get_success_message())
         return HttpResponseRedirect(self.get_success_url())
 

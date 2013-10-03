@@ -23,14 +23,15 @@ from django.utils import formats
 from django.utils.translation import pgettext
 from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
 
-from openslides.utils.jsonfield import JSONField
-from openslides.utils.person import PersonField
+from openslides.agenda.models import Item
 from openslides.config.api import config
+from openslides.participant.models import User
 from openslides.poll.models import (
     BaseOption, BasePoll, CountVotesCast, CountInvalid, BaseVote)
-from openslides.participant.models import User
-from openslides.projector.models import SlideMixin
-from openslides.agenda.models import Item
+from openslides.projector.models import SlideMixin, RelatedModelMixin
+from openslides.projector.api import (update_projector, get_active_slide)
+from openslides.utils.jsonfield import JSONField
+from openslides.utils.person import PersonField
 
 from .exceptions import MotionError, WorkflowError
 
@@ -584,7 +585,7 @@ class MotionVersion(models.Model):
         return self.active_version.exists()
 
 
-class MotionSubmitter(models.Model):
+class MotionSubmitter(RelatedModelMixin, models.Model):
     """Save the submitter of a Motion."""
 
     motion = models.ForeignKey('Motion', related_name="submitter")
@@ -596,6 +597,9 @@ class MotionSubmitter(models.Model):
     def __unicode__(self):
         """Return the name of the submitter as string."""
         return unicode(self.person)
+
+    def get_related_model(self):
+        return self.motion
 
 
 class MotionSupporter(models.Model):
@@ -695,7 +699,7 @@ class MotionOption(BaseOption):
     """The VoteClass, to witch this Class links."""
 
 
-class MotionPoll(CountInvalid, CountVotesCast, BasePoll):
+class MotionPoll(RelatedModelMixin, CountInvalid, CountVotesCast, BasePoll):
     """The Class to saves the poll results for a motion poll."""
 
     motion = models.ForeignKey(Motion, related_name='polls')
@@ -722,7 +726,8 @@ class MotionPoll(CountInvalid, CountVotesCast, BasePoll):
         return _('Vote %d') % self.poll_number
 
     def get_absolute_url(self, link='edit'):
-        """Return an URL for the poll.
+        """
+        Return an URL for the poll.
 
         The keyargument 'link' can be 'edit' or 'delete'.
         """
@@ -744,9 +749,13 @@ class MotionPoll(CountInvalid, CountVotesCast, BasePoll):
         CountInvalid.append_pollform_fields(self, fields)
         CountVotesCast.append_pollform_fields(self, fields)
 
+    def get_related_model(self):
+        return self.motion
+
 
 class State(models.Model):
-    """Defines a state for a motion.
+    """
+    Defines a state for a motion.
 
     Every state belongs to a workflow. All states of a workflow are linked together
     via 'next_states'. One of these states is the first state, but this

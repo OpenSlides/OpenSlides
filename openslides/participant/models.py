@@ -80,6 +80,11 @@ class User(SlideMixin, PersonMixin, Person, DjangoUser):
             return reverse('user_delete', args=[str(self.id)])
         return super(User, self).get_absolute_url(link)
 
+    def get_slide_context(self, **context):
+        # Does not call super. In this case the context would override the name
+        # 'user'.
+        return {'shown_user': self}
+
     @property
     def clean_name(self):
         if self.title:

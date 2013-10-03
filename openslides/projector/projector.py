@@ -102,7 +102,7 @@ class Overlay(object):
 
     def set_active(self, active):
         """
-        Publish or depublish the ovleray on the projector.
+        Publish or depublish the overlay on the projector.
 
         publish, if active is true,
         depublish, if active is false.
