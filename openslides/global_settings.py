@@ -34,6 +34,7 @@ LANGUAGES = (
     ('en', ugettext('English')),
     ('fr', ugettext('French')),
     ('cs', ugettext('Czech')),
+    ('pt', ugettext('Portuguese')),
 )
 
 # If you set this to False, Django will make some optimizations so as not
