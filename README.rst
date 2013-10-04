@@ -250,6 +250,8 @@ OpenSlides uses the following projects or parts of them:
 
 * `Django haystack <http://haystacksearch.org>`_, License: BSD
 
+* `pdf.js <http://mozilla.github.io/pdf.js/>`_, License: Apache License v2.0
+
 * `Pillow <https://github.com/python-imaging/Pillow/>`_, License: Standard
   PIL License
 

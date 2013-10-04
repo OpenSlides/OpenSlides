@@ -66,6 +66,9 @@ var updater = {
 
     updateProjector: function(data) {
         if (data.content) {
+            $('#content').removeClass('fullscreen');
+            $('#footer').removeClass('black');
+            $('body').removeClass('black');
             $('#content').html(data.content);
         }
         if (data.overlays) {

@@ -322,7 +322,9 @@ legend + .control-group {
 .icon-append_to_list_of_speakers {
     background-position: -48px -144px;
 }
-
+.icon-presentations {
+    background-position: -264px -48px;
+}
 /** More glyphicons free icons **/
 .status_link .icon-on, .icon-checked-new {
     background-image: url("../img/glyphicons_152_check.png");

@@ -22,7 +22,7 @@ function restoreOrder() {
         var colid = value.id;
         var cookieName = "cookie-" + colid;
         var cookie = $.cookie(cookieName);
-        if ( cookie == null ) { return; }
+        if ( cookie === null ) { return; }
         var IDs = cookie.split(",");
         for (var i = 0, n = IDs.length; i < n; i++ ) {
             var widgetID = IDs[i];
@@ -81,7 +81,7 @@ $(function() {
                     $('#countdown_play').show();
                     $('#countdown_stop').hide();
                 }
-                $('#countdown_time').val(data['countdown_time'])
+                $('#countdown_time').val(data['countdown_time']);
             }
         });
     });
@@ -121,6 +121,55 @@ $(function() {
             $(this).closest('.widget').addClass('affix');
             $(this).closest('.widget').attr('data-spy', 'affix');
         }
+    });
+
+    // control pdf pages
+    $('.pdf-page-ctl').click(function(event){
+        event.preventDefault();
+        var link = $(this);
+        $.ajax({
+            type: 'GET',
+            url: link.attr('href'),
+            dataType: 'json',
+            success: function(data) {
+                if (typeof data.current_page !== 'undefined') {
+                    $('#page_num').val(data.current_page);
+                }
+            }
+        });
+    });
+
+    $('.set-page-form').submit(function() {
+        $(this).ajaxSubmit();
+        return false;
+    });
+
+    $('.go-first-page').click(function() {
+        $('#page_num').val('1');
+        $('.set-page-form').ajaxSubmit();
+    });
+
+    $('.pdf-toggle-fullscreen').click(function(event){
+        event.preventDefault();
+        var link = $(this);
+        $.ajax({
+            type: 'GET',
+            url: link.attr('href'),
+            dataType: 'json',
+            success: function(data) {
+                if(data.fullscreen) {
+                    if (!link.hasClass('btn-primary')) {
+                        link.addClass('btn-primary');
+                        link.find('i').addClass('icon-white');
+                    }
+                } else {
+                    if (link.hasClass('btn-primary')) {
+                        link.removeClass('btn-primary');
+                        link.find('i').removeClass('icon-white');
+                    }
+                }
+            }
+        });
     });
 
 /* comment out this function because '$.browser' has been removed from jquery 1.9, see:

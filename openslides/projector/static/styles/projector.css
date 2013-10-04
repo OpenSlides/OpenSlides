@@ -86,12 +86,11 @@ body{
     top: 150px;
     right: 40px;
     z-index: -1;
-    transition: all 1s;
     line-height: normal;
+    transition-property: margin, font-size;
+    transition-duration: 1s;
 }
-#content .scroll {
-    transition: margin 1s;
-}
+
 h1 {
     font-size: 2.25em;
     margin-bottom: 40px;
@@ -192,4 +191,38 @@ tr.total td {
 }
 td.elected {
     background-color: #BED4DE !important;
+}
+
+/* PDF Presentation */
+
+.canvas-container {
+   width: 100%;
+   text-align:center;
+}
+
+#presentation {
+    position: relative;
+    left:-75px;
+    top: -77px;
+}
+
+#presentation.fullscreen {
+    left: 0;
+    top: 0;
+}
+
+.fullscreen {
+    z-index: 1000!important;
+    left: 0!important;
+    top: 0!important;
+    right: 0!important;
+    background-color: #000000;
+}
+
+#footer.black {
+    display: none;
+}
+
+body.black {
+    background-color: #000000;
 }

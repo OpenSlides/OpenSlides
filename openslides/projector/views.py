@@ -18,9 +18,11 @@ from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
 
 from openslides.config.api import config
+from openslides.utils.tornado_webserver import ProjectorSocketHandler
 from openslides.utils.template import Tab
 from openslides.utils.views import (AjaxMixin, CreateView, DeleteView,
                                     RedirectView, TemplateView, UpdateView)
+from openslides.mediafile.models import Mediafile
 
 from .api import (call_on_projector, get_active_slide, get_all_widgets,
                   get_overlays, get_projector_content, get_projector_overlays,
@@ -84,7 +86,17 @@ class ActivateView(RedirectView):
     allow_ajax = True
 
     def pre_redirect(self, request, *args, **kwargs):
-        set_active_slide(kwargs['callback'], kwargs=dict(request.GET.items()))
+        if kwargs['callback'] == 'mediafile' and \
+                get_active_slide()['callback'] == 'mediafile':
+            # If the current slide is a pdf and the new page is also a slide, we dont have to use
+            # set_active_slide, because is causes a content reload.
+            kwargs.update({'page_num': 1, 'pk': request.GET.get('pk')})
+            url = Mediafile.objects.get(pk=kwargs['pk'], is_presentable=True).mediafile.url
+            config['projector_active_slide'] = kwargs
+            ProjectorSocketHandler.send_updates(
+                {'calls': {'load_pdf': {'url': url, 'page_num': kwargs['page_num']}}})
+        else:
+            set_active_slide(kwargs['callback'], kwargs=dict(request.GET.items()))
         config['projector_scroll'] = config.get_default('projector_scroll')
         config['projector_scale'] = config.get_default('projector_scale')
 
