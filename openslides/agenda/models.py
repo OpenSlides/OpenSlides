@@ -11,6 +11,7 @@
 """
 
 from datetime import datetime
+from time import time
 
 from django.db import models
 from django.contrib.auth.models import AnonymousUser
@@ -379,6 +380,11 @@ class Speaker(models.Model):
         self.weight = None
         self.begin_time = datetime.now()
         self.save()
+        # start countdown
+        if config['agenda_couple_countdown_and_speakers']:
+            config['countdown_start_stamp'] = time()
+            config['countdown_state'] = 'active'
+            config['countdown_pause_stamp'] = 0
 
     def end_speach(self):
         """
@@ -386,3 +392,8 @@ class Speaker(models.Model):
         """
         self.end_time = datetime.now()
         self.save()
+        # stop countdown
+        if config['agenda_couple_countdown_and_speakers']:
+            if config['countdown_state'] == 'active':
+                config['countdown_state'] = 'paused'
+                config['countdown_pause_stamp'] = time()
