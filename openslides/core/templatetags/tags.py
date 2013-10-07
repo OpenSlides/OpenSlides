@@ -46,17 +46,21 @@ def model_url(object, link='view'):
 
 
 @register.filter
-def absolute_url(model, link='detail'):
+def absolute_url(model, link=None):
     """
     Returns the absolute_url to a model. The 'link' argument decides which url
     will be returned. See get_absolute_url() in the model.
 
     Example: {{ motion|absolute_url:'delete' }}
     """
-    try:
-        return model.get_absolute_url(link)
-    except ValueError:
-        return ''
+    if link is None:
+        url = model.get_absolute_url()
+    else:
+        try:
+            url = model.get_absolute_url(link)
+        except ValueError:
+            url = ''
+    return url
 
 
 @register.filter

@@ -45,7 +45,7 @@
         {% endif %}
         <small class="pull-right">
         {% if motion %}
-            <a href="{% model_url motion 'view' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to motion" %}</a>
+            <a href="{{ motion|absolute_url }}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to motion" %}</a>
         {% else %}
             <a href="{% url 'motion_list' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
         {% endif %}

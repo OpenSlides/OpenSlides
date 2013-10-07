@@ -121,7 +121,7 @@ class LockoutProtection(TestCase):
             response=response,
             form='form',
             field=None,
-            errors='You can not remove the permission to manage participants from the last group your are in.')
+            errors='You can not remove the permission to manage participants from the last group you are in.')
 
 
 class TestUserSettings(TestCase):

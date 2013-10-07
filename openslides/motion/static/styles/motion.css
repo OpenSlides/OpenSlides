@@ -46,3 +46,6 @@ td.diff_header {
     margin-top: 5px;
     margin-bottom: 15px;
 }
+#motion-vote-results img {
+    margin-top: -4px;
+}
