@@ -11,6 +11,7 @@
 """
 
 import json
+from time import time
 
 from django.conf import settings
 from django.template.loader import render_to_string
@@ -208,3 +209,39 @@ def get_all_widgets(request, session=False):
             if not session or session_widgets.get(widget.get_name(), True):
                 widgets[widget.get_name()] = widget
     return widgets
+
+
+def start_countdown():
+    """
+    Starts the countdown
+    """
+    # if we had stopped the countdown resume were we left of
+    if config['countdown_state'] == 'paused':
+        start_stamp = config['countdown_start_stamp']
+        pause_stamp = config['countdown_pause_stamp']
+        now = time()
+        config['countdown_start_stamp'] = now - \
+            (pause_stamp - start_stamp)
+    else:
+        config['countdown_start_stamp'] = time()
+
+    config['countdown_state'] = 'active'
+    config['countdown_pause_stamp'] = 0
+
+
+def stop_countdown():
+    """
+    Stops the countdown
+    """
+    if config['countdown_state'] == 'active':
+        config['countdown_state'] = 'paused'
+        config['countdown_pause_stamp'] = time()
+
+
+def reset_countdown():
+    """
+    Resets the countdown
+    """
+    config['countdown_start_stamp'] = time()
+    config['countdown_pause_stamp'] = 0
+    config['countdown_state'] = 'inactive'

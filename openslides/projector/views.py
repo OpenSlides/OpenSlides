@@ -26,7 +26,7 @@ from openslides.utils.views import (AjaxMixin, CreateView, DeleteView,
 
 from .api import (get_active_slide, get_all_widgets, get_overlays,
                   get_projector_content, get_projector_overlays,
-                  get_projector_overlays_js, set_active_slide,
+                  get_projector_overlays_js, set_active_slide, start_countdown, stop_countdown, reset_countdown,
                   update_projector_overlay)
 from .forms import SelectWidgetsForm
 from .models import ProjectorSlide
@@ -169,31 +169,12 @@ class CountdownEdit(RedirectView):
 
     def pre_redirect(self, request, *args, **kwargs):
         command = kwargs['command']
-        # countdown_state is one of 'inactive', 'paused' and 'active', 'expired'
-        if command in ['reset', 'start', 'stop']:
-            config['countdown_time'] = config['countdown_time']
-
         if command == 'reset':
-            config['countdown_start_stamp'] = time()
-            config['countdown_pause_stamp'] = 0
-            config['countdown_state'] = 'inactive'
+            reset_countdown()
         elif command == 'start':
-            # if we had stopped the countdown resume were we left of
-            if config['countdown_state'] == 'paused':
-                start_stamp = config['countdown_start_stamp']
-                pause_stamp = config['countdown_pause_stamp']
-                now = time()
-                config['countdown_start_stamp'] = now - \
-                    (pause_stamp - start_stamp)
-            else:
-                config['countdown_start_stamp'] = time()
-
-            config['countdown_state'] = 'active'
-            config['countdown_pause_stamp'] = 0
+            start_countdown()
         elif command == 'stop':
-            if config['countdown_state'] == 'active':
-                config['countdown_pause_stamp'] = time()
-                config['countdown_state'] = 'paused'
+            stop_countdown()
         elif command == 'set-default':
             try:
                 config['countdown_time'] = \
