@@ -33,7 +33,7 @@
         </tr>
     </thead>
     {% for group in groups %}
-        <tr class="{% if group.active %}activeline{% endif %}">
+        <tr class="{% if group.is_active_slide %}activeline{% endif %}">
             <td class="nobr">{{ group.pk }}
             {% if group.pk == 1 or group.pk == 2 %}
                 <a title="{% blocktrans %}The groups 1 ('Anonymous') and 2 ('Registered') are fixed default groups which can not be deleted. Each created or imported participant is a member of group 2. Use custom groups to set additional permissions for a subset of participants.{% endblocktrans %}"><i class="icon-info-sign"></i></a>
@@ -45,9 +45,11 @@
             <td>
                 <span style="width: 1px; white-space: nowrap;">
                     {% if perms.projector.can_manage_projector %}
-                       <a href="{% url 'projector_activate_slide' group.sid  %}" class="activate_link btn {% if group.active %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
-                           <i class="icon-facetime-video {% if group.active %}icon-white{% endif %}"></i>
-                       </a>
+                        <a href="{{ group|absolute_url:'projector' }}"
+                            class="activate_link btn {% if group.is_active_slide %}btn-primary{% endif %} btn-mini"
+                            rel="tooltip" data-original-title="{% trans 'Show group' %}">
+                            <i class="icon-facetime-video {% if group.is_active_slide %}icon-white{% endif %}"></i>
+                        </a>
                     {% endif %}
                     <a href="{% url 'user_group_edit' group.id %}" title="{% trans 'Edit' %}" class="btn btn-mini">
                         <i class="icon-pencil"></i>

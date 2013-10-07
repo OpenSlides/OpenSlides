@@ -2,16 +2,15 @@
 {% load staticfiles %}
 
 <div id="sidebar">
-<div class="box">
+<div class="well">
     <!-- Status -->
-    <p><b>{% trans "Status" %}:</b><br>
-        {% trans motion.state.name %}
-    </p>
+    <h4 class="first">{% trans "Status" %}:</h4>
+    {% trans motion.state.name %}
 
     <!-- poll results -->
     {% with motion.polls.all as polls %}
     {% if polls.exists and polls.0.has_votes %}
-    <p><b>{% trans "Poll result" %}:</b>
+    <h4>{% trans "Poll result" %}:</h4>
         {% for poll in polls %}
             {% if poll.has_votes %}
                 {% if polls|length > 1 %}
@@ -33,31 +32,34 @@
                 {% endif %}
             {% endif %}
         {% endfor %}
-    </p>
     {% endif %}
     {% endwith %}
 
     <!-- Submitter -->
-    <p><b>{% trans "Submitter" %}:</b><br>
-        {% for submitter in motion.submitter.all %}
-            {{ submitter.person }}{% if not forloop.last %},<br> {% endif %}
-        {% endfor %}
-    </p>
+    <h4>{% trans "Submitter" %}:</h4>
+    {% for submitter in motion.submitter.all %}
+        {{ submitter.person }}{% if not forloop.last %},<br> {% endif %}
+    {% empty %}
+        -
+    {% endfor %}
+
+    <!-- Category -->
+    {% if motion.category %}
+        <h4>{% trans "Category" %}:</h4>
+        {{ motion.category }}
+    {% endif %}
 </div>
 </div>
 
 <h1>
-{% if motion.identifier %}
-    {% trans "Motion" %} {{ motion.identifier }}
-{% else %}
-    {% trans "Motion" %} [---]
-{% endif %}
-<small>
-    {% if motion.last_version.version_number > 1 %}({% trans 'Version' %} {{ motion.active_version.version_number }}){% endif %}
-</small>
+    {{ motion.active_version.title }}
+    <br>
+    <small>
+        {% trans "Motion" %} {{ motion.identifier|default:'' }}
+        {% if motion.get_active_version.version_number > 1 %} | {% trans 'Version' %} {{ motion.active_version.version_number }}{% endif %}
+    </small>
+    <hr>
 </h1>
-<b>{{ motion.active_version.title }}</b>
-<hr>
 
 <p>
 <div class="text">{{ motion.active_version.text|safe }}</div>

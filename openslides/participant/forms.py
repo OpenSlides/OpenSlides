@@ -148,7 +148,7 @@ class GroupForm(forms.ModelForm, CssClassMixin):
                 not Group.objects.exclude(pk=self.instance.pk).filter(
                     permissions__in=[get_protected_perm()],
                     user__pk=self.request.user.pk).exists()):
-            error_msg = _('You can not remove the permission to manage participants from the last group your are in.')
+            error_msg = _('You can not remove the permission to manage participants from the last group you are in.')
             raise forms.ValidationError(error_msg)
         return super(GroupForm, self).clean(*args, **kwargs)
 

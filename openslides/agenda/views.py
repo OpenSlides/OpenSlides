@@ -85,7 +85,7 @@ class Overview(TemplateView):
 
         active_slide = get_active_slide()
         if active_slide['callback'] == 'agenda':
-            agenda_active = active_slide.get('pk', 'agenda') == 'agenda'
+            agenda_is_active = active_slide.get('pk', 'agenda') == 'agenda'
             active_type = active_slide.get('type', 'text')
         else:
             agenda_is_active = None

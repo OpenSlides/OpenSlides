@@ -1,11 +1,6 @@
 {% load i18n %}
 
-{% if slide.text %}
-    <h1>{{ slide.title }}</h1>
-{% else %}
-    <div class="item_fullscreen">{{ slide.title }}</div>
-{% endif %}
-
+<h1>{{ slide.title }}</h1>
 
 {% if slide.text %}
     <span>{{ slide.text|safe|linebreaks }}</span>

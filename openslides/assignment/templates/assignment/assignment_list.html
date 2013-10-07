@@ -37,7 +37,7 @@
         </tr>
     </thead>
     {% for object in object_list %}
-        <tr class="{% if object.active %}activeline{% endif %}">
+        <tr class="{% if object.is_active_slide %}activeline{% endif %}">
             <td><a href="{{ object|absolute_url:'detail' }}">{{ object }}</a></td>
             <td  class="optional">
                 <!-- posts -->
@@ -54,10 +54,10 @@
             <td>
                 <span style="width: 1px; white-space: nowrap;">
                 {% if perms.projector.can_manage_projector %}
-                    <a href="{% url 'projector_activate_slide' object.sid  %}" 
-                        class="activate_link btn {% if object.active %}btn-primary{% endif %} btn-mini"
+                    <a href="{{ object|absolute_url:'projector' }}"
+                        class="activate_link btn {% if object.is_active_slide %}btn-primary{% endif %} btn-mini"
                         rel="tooltip" data-original-title="{% trans 'Show election' %}">
-                        <i class="icon-facetime-video {% if object.active %}icon-white{% endif %}"></i>
+                        <i class="icon-facetime-video {% if object.is_active_slide %}icon-white{% endif %}"></i>
                     </a>
                 {% endif %}
                 {% if perms.assignment.can_manage_assignment %}

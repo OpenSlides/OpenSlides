@@ -23,7 +23,7 @@
            rel="tooltip" data-original-title="{% trans 'Show' %}">
             <i class="icon-facetime-video {% if item.is_active_slide and active_type == 'text' %}icon-white{% endif %}"></i>
         </a>&nbsp;
-        <a href="{{ item|absolute_url:'edit' }}" title="{% trans 'Edit' %}" class="btn btn-mini right">
+        <a href="{{ item|absolute_url:'update' }}" title="{% trans 'Edit' %}" class="btn btn-mini right">
             <i class="icon-pencil"></i>
         </a>
         <a href="{{ item|absolute_url:'projector_preview' }}" title="{% trans 'Preview' %}" class="btn btn-mini right">

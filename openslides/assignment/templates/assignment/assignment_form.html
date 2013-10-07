@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load i18n %}
+{% load tags %}
 
 {% block title %}
     {% if assignment %}
@@ -19,7 +20,11 @@
             {% trans "New election" %}
         {% endif %}
         <small class="pull-right">
-        <a href="{% url 'assignment_list' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        {% if assignment %}
+            <a href="{{ assignment|absolute_url }}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to election" %}</a>
+        {% else %}
+            <a href="{% url 'assignment_list' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+        {% endif %}
         </small>
     </h1>
 

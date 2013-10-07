@@ -1,7 +1,8 @@
 {% load i18n %}
 
-<div class="item_fullscreen">{% trans group.name %}
-    <span>
-    <p><i>{{ group.user_set.all.count }} {% trans "participants" %}</i></p>
-    </span>
-</div>
+<h1>
+    {% trans group.name %}
+    <hr>
+</h1>
+
+<i>{{ group.user_set.all.count }} {% trans "participants" %}</i>
