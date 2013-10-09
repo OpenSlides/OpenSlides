@@ -64,10 +64,10 @@ def setup_agenda_config_page(sender, **kwargs):
 
     agenda_couple_countdown_and_speakers = ConfigVariable(
         name='agenda_couple_countdown_and_speakers',
-        default_value=True,
+        default_value=False,
         form_field=forms.BooleanField(
             label=ugettext_lazy('Couple countdown with the list of speakers'),
-            help_text=ugettext_lazy('[Begin speach] starts countdown, [End speach] stops countdown.'),
+            help_text=ugettext_lazy('[Begin speach] starts the countdown, [End speach] stops the countdown.'),
             required=False))
 
     extra_stylefiles = ['styles/timepicker.css', 'styles/jquery-ui/jquery-ui.custom.min.css']

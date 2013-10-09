@@ -11,7 +11,6 @@
 """
 
 from datetime import datetime
-from time import time
 
 from django.db import models
 from django.contrib.auth.models import AnonymousUser
@@ -26,7 +25,8 @@ from openslides.utils.exceptions import OpenSlidesError
 from openslides.config.api import config
 from openslides.utils.person.models import PersonField
 from openslides.projector.api import (
-    update_projector, get_active_slide, update_projector_overlay)
+    update_projector, get_active_slide, update_projector_overlay,
+    start_countdown, stop_countdown)
 from openslides.projector.models import SlideMixin
 
 
@@ -382,9 +382,7 @@ class Speaker(models.Model):
         self.save()
         # start countdown
         if config['agenda_couple_countdown_and_speakers']:
-            config['countdown_start_stamp'] = time()
-            config['countdown_state'] = 'active'
-            config['countdown_pause_stamp'] = 0
+            start_countdown()
 
     def end_speach(self):
         """
@@ -394,6 +392,4 @@ class Speaker(models.Model):
         self.save()
         # stop countdown
         if config['agenda_couple_countdown_and_speakers']:
-            if config['countdown_state'] == 'active':
-                config['countdown_state'] = 'paused'
-                config['countdown_pause_stamp'] = time()
+            stop_countdown()
