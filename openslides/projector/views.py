@@ -170,9 +170,6 @@ class CountdownEdit(RedirectView):
 
     def pre_redirect(self, request, *args, **kwargs):
         command = kwargs['command']
-        # countdown_state is one of 'inactive', 'paused' and 'active', 'expired'
-        if command in ['reset', 'start', 'stop']:
-            config['countdown_time'] = config['countdown_time']
         if command == 'reset':
             reset_countdown()
         elif command == 'start':
