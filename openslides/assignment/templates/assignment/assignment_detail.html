@@ -179,7 +179,7 @@
             {% endfor %}
             {% if assignment.candidates and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
                 <th class="span1 nobr">
-                    <a href="{% url 'assignment_poll_create' assignment.id %}" class="btn btn-mini">
+                    <a href="{% url 'assignment_poll_create' assignment.pk %}" class="btn btn-mini">
                        <i class="icon-plus"></i> {% trans 'New ballot' %}
                     </a>
                 </th>

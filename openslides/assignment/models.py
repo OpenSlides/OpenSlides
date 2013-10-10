@@ -18,22 +18,31 @@ from django.utils.datastructures import SortedDict
 from openslides.utils.person import PersonField
 from openslides.utils.utils import html_strong
 from openslides.config.api import config
-from openslides.projector.models import SlideMixin
+from openslides.projector.models import SlideMixin, RelatedModelMixin
 from openslides.poll.models import (
     BasePoll, CountInvalid, CountVotesCast, BaseOption, PublishPollMixin, BaseVote)
 
 
-class AssignmentCandidate(models.Model):
+class AssignmentCandidate(RelatedModelMixin, models.Model):
+    """
+    Many2Many table between an assignment and the candidates.
+    """
     assignment = models.ForeignKey("Assignment")
     person = PersonField(db_index=True)
     elected = models.BooleanField(default=False)
     blocked = models.BooleanField(default=False)
 
+    class Meta:
+        unique_together = ("assignment", "person")
+
     def __unicode__(self):
         return unicode(self.person)
 
-    class Meta:
-        unique_together = ("assignment", "person")
+    def get_related_model(self):
+        """
+        Returns the assignment
+        """
+        return self.assignment
 
 
 class Assignment(SlideMixin, models.Model):
@@ -73,6 +82,12 @@ class Assignment(SlideMixin, models.Model):
         if link == 'delete':
             return reverse('assignment_delete', args=[str(self.id)])
         return super(Assignment, self).get_absolute_url(link)
+
+    def get_slide_context(self, **context):
+        context.update({
+            'polls': self.poll_set.filter(published=True),
+            'vote_results': self.vote_results(only_published=True)})
+        return super(Assignment, self).get_slide_context(**context)
 
     def set_status(self, status):
         status_dict = dict(self.STATUS)
@@ -241,13 +256,27 @@ class AssignmentOption(BaseOption):
         return unicode(self.candidate)
 
 
-class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
+class AssignmentPoll(RelatedModelMixin, CountInvalid, CountVotesCast,
+                     PublishPollMixin, BasePoll):
     option_class = AssignmentOption
 
     assignment = models.ForeignKey(Assignment, related_name='poll_set')
     yesnoabstain = models.NullBooleanField()
 
+    def __unicode__(self):
+        return _("Ballot %d") % self.get_ballot()
+
+    @models.permalink
+    def get_absolute_url(self, link='detail'):
+        if link == 'view' or link == 'detail' or link == 'update':
+            return ('assignment_poll_view', [str(self.pk)])
+        if link == 'delete':
+            return ('assignment_poll_delete', [str(self.pk)])
+
     def get_assignment(self):
+        return self.assignment
+
+    def get_related_model(self):
         return self.assignment
 
     def get_vote_values(self):
@@ -274,13 +303,3 @@ class AssignmentPoll(BasePoll, CountInvalid, CountVotesCast, PublishPollMixin):
 
     def get_ballot(self):
         return self.assignment.poll_set.filter(id__lte=self.id).count()
-
-    @models.permalink
-    def get_absolute_url(self, link='detail'):
-        if link == 'view' or link == 'detail' or link == 'update':
-            return ('assignment_poll_view', [str(self.id)])
-        if link == 'delete':
-            return ('assignment_poll_delete', [str(self.id)])
-
-    def __unicode__(self):
-        return _("Ballot %d") % self.get_ballot()

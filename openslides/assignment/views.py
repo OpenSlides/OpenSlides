@@ -246,10 +246,10 @@ class PollUpdateView(PollFormView):
 class SetPublishStatusView(SingleObjectMixin, RedirectView):
     model = AssignmentPoll
     permission_required = 'assignment.can_manage_assignment'
-    url_name = 'assignment_list'
+    url_name = 'assignment_detail'
     allow_ajax = True
 
-    def get_ajax_context(self):
+    def get_ajax_context(self, **kwargs):
         return {'published': self.object.published}
 
     def pre_redirect(self, *args, **kwargs):
@@ -258,15 +258,11 @@ class SetPublishStatusView(SingleObjectMixin, RedirectView):
         except self.model.DoesNotExist:
             messages.error(self.request, _('Ballot ID %d does not exist.') %
                            int(kwargs['poll_id']))
-            return
-        if self.object.published:
-            self.object.set_published(False)
         else:
-            self.object.set_published(True)
-        if self.object.published:
-            messages.success(self.request, _("Ballot successfully published."))
-        else:
-            messages.success(self.request, _("Ballot successfully unpublished."))
+            if self.object.published:
+                self.object.set_published(False)
+            else:
+                self.object.set_published(True)
 
 
 class SetElectedView(SingleObjectMixin, RedirectView):
@@ -281,14 +277,14 @@ class SetElectedView(SingleObjectMixin, RedirectView):
         self.elected = kwargs['elected']
         self.object.set_elected(self.person, self.elected)
 
-    def get_ajax_context(self):
+    def get_ajax_context(self, **kwargs):
         if self.elected:
             link = reverse('assignment_user_not_elected',
                            args=[self.object.id, self.person.person_id])
             text = _('not elected')
         else:
             link = reverse('assignment_user_elected',
-                           args=[self.self.object.id, self.person.person_id])
+                           args=[self.object.id, self.person.person_id])
             text = _('elected')
         return {'elected': self.elected, 'link': link, 'text': text}
 

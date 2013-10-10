@@ -40,18 +40,17 @@ def update_projector():
 
 def update_projector_overlay(overlay):
     """
-    Update one overlay on the projector.
+    Update one or all overlay on the projector.
 
     Checks if the overlay is activated and updates it in this case.
 
-    'overlay' has to be an overlay object, the name of a ovleray or None.
-
-    If 'overlay' is None, then all overlays are updated.
+    The argument 'overlay' has to be an overlay object, the name of a
+    ovleray or None. If it is None, all overlays will be updated.
     """
-    if isinstance(overlay, basestring):
-        overlay = get_overlays()[overlay]
     if overlay is None:
         overlays = [overlay for overlay in get_overlays().values()]
+    elif isinstance(overlay, basestring):
+        overlays = [get_overlays()[overlay]]
     else:
         overlays = [overlay]
 
@@ -132,6 +131,33 @@ def register_slide(name, callback):
     slide_callback[name] = callback
 
 
+def register_slide_model(SlideModel, template):
+    """
+    Shortcut for register_slide for a Model with the SlideMixin.
+
+    The Argument 'SlideModel' has to be a Django-Model-Class, which is a subclass
+    of SlideMixin. Template has to be a string to the path of a template.
+    """
+
+    def model_slide(**kwargs):
+        """
+        Return the html code for the model slide.
+        """
+        slide_pk = kwargs.get('pk', None)
+
+        try:
+            slide = SlideModel.objects.get(pk=slide_pk)
+        except SlideModel.DoesNotExist:
+            slide = None
+            context = {'slide': None}
+        else:
+            context = slide.get_slide_context()
+
+        return render_to_string(template, context)
+
+    register_slide(SlideModel.slide_callback_name, model_slide)
+
+
 def set_active_slide(callback, kwargs={}):
     """
     Set the active Slide.
@@ -147,7 +173,7 @@ def set_active_slide(callback, kwargs={}):
 
 def get_active_slide():
     """
-    Returns the dictonary, witch defindes the active slide.
+    Returns the dictonary, which defines the active slide.
     """
     return config['projector_active_slide']
 
