@@ -99,6 +99,8 @@ urlpatterns = patterns('openslides.assignment.views',
         name='assignment_poll_delete',
     ),
 
+    # TODO: use seperate urls to publish and unpublish the poll
+    #       see assignment_user_elected
     url(r'^poll/(?P<pk>\d+)/pub/$',
         SetPublishStatusView.as_view(),
         name='assignment_poll_publish_status',
