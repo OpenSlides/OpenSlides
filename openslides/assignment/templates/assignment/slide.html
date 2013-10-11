@@ -41,8 +41,7 @@
 
 {% if polls.exists %}
     <h3>{% trans "Election results" %}</h3>
-    <table>
-
+    <table class="table-striped table-bordered">
     <tr>
         <th>{% trans "Candidates" %}</th>
         {% for poll in polls %}
@@ -51,10 +50,9 @@
             </th>
         {% endfor %}
     </tr>
-
     {% for candidate, poll_list in vote_results.items %}
-        <tr class="{% cycle 'odd' '' as rowcolors %}">
-            <td class="candidate{% if candidate in assignment.elected %} elected{% endif %}">
+        <tr>
+            <td class="{% if candidate in assignment.elected %} elected{% endif %}">
                 {% if candidate in assignment.elected %}
                     <a class="elected">
                         <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Candidate is elected' %}">
@@ -83,7 +81,7 @@
         {% endfor %}
         </tr>
     {% endfor %}
-    <tr class="{% cycle rowcolors %}">
+    <tr>
         <td>{% trans 'Invalid votes' %}</td>
         {% for poll in polls %}
             <td style="white-space:nowrap;">
@@ -100,7 +98,6 @@
             <strong>{% trans 'Votes cast' %}</strong>
         </td>
         {% for poll in polls %}
-
             <td style="white-space:nowrap;">
                 {% if poll.has_votes %}
                     <img src="{% static 'img/voting-total.png' %}" title="{% trans 'Votes cast' %}">

@@ -190,7 +190,7 @@ class Motion(SlideMixin, models.Model):
         if link == 'view' or link == 'detail':
             return reverse('motion_detail', args=[str(self.id)])
         if link == 'update' or link == 'edit':
-            return reverse('motion_edit', args=[str(self.id)])
+            return reverse('motion_update', args=[str(self.id)])
         if link == 'delete':
             return reverse('motion_delete', args=[str(self.id)])
         return super(Motion, self).get_absolute_url(link)
@@ -725,15 +725,15 @@ class MotionPoll(RelatedModelMixin, CountInvalid, CountVotesCast, BasePoll):
         """Return a string, representing the poll."""
         return _('Vote %d') % self.poll_number
 
-    def get_absolute_url(self, link='edit'):
+    def get_absolute_url(self, link='update'):
         """
         Return an URL for the poll.
 
-        The keyargument 'link' can be 'edit' or 'delete'.
+        The keyargument 'link' can be 'update' or 'delete'.
         """
-        if link == 'edit':
-            return reverse('motion_poll_edit', args=[str(self.motion.pk),
-                                                     str(self.poll_number)])
+        if link == 'update':
+            return reverse('motion_poll_update', args=[str(self.motion.pk),
+                                                       str(self.poll_number)])
         if link == 'delete':
             return reverse('motion_poll_delete', args=[str(self.motion.pk),
                                                        str(self.poll_number)])
