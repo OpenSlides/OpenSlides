@@ -281,7 +281,7 @@ class MotionUpdateView(MotionEditMixin, UpdateView):
             self.version = self.object.get_last_version()
             self.used_new_version = False
 
-motion_edit = MotionUpdateView.as_view()
+motion_update = MotionUpdateView.as_view()
 
 
 class MotionDeleteView(DeleteView):
@@ -502,6 +502,7 @@ class PollCreateView(SingleObjectMixin, RedirectView):
     """
     permission_required = 'motion.can_manage_motion'
     model = Motion
+    url_name = 'motion_poll_detail'
 
     def get(self, request, *args, **kwargs):
         """
@@ -520,9 +521,9 @@ class PollCreateView(SingleObjectMixin, RedirectView):
 
     def get_redirect_url(self, **kwargs):
         """
-        Return the URL to the EditView of the poll.
+        Return the URL to the UpdateView of the poll.
         """
-        return reverse('motion_poll_edit', args=[self.object.pk, self.poll.poll_number])
+        return reverse('motion_poll_update', args=[self.object.pk, self.poll.poll_number])
 
 poll_create = PollCreateView.as_view()
 
@@ -557,7 +558,6 @@ class PollUpdateView(PollMixin, PollFormView):
     """
     View to update a MotionPoll.
     """
-
     poll_class = MotionPoll
     """
     Poll Class to use for this view.
@@ -585,7 +585,7 @@ class PollUpdateView(PollMixin, PollFormView):
         self.object.write_log([ugettext_noop('Poll updated')], self.request.user)
         return value
 
-poll_edit = PollUpdateView.as_view()
+poll_update = PollUpdateView.as_view()
 
 
 class PollDeleteView(PollMixin, DeleteView):

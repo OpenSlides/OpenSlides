@@ -90,7 +90,7 @@ def setup_motion_config_page(sender, **kwargs):
         name='motion_pdf_paragraph_numbering',
         default_value=False,
         form_field=forms.BooleanField(
-            label=ugettext_lazy('Show paragraph numbering'),
+            label=ugettext_lazy('Show paragraph numbering (only in PDF)'),
             required=False))
     motion_allow_disable_versioning = ConfigVariable(
         name='motion_allow_disable_versioning',
