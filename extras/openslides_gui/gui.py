@@ -15,7 +15,17 @@ import threading
 import wx
 
 import openslides
-import openslides.main
+from openslides.utils.main import (
+    filesystem2unicode,
+    is_portable,
+    detect_openslides_type,
+    get_win32_portable_path,
+)
+
+from openslides.__main__ import (
+    get_port,
+    get_default_settings_path
+)
 
 # NOTE: djangos translation module can't be used here since it requires
 #       a defined settings module
@@ -25,7 +35,7 @@ ungettext = lambda msg1, msg2, n: _translations.ungettext(msg1, msg2, n)
 
 
 def get_data_path(*args):
-    path = openslides.main.fs2unicode(__file__)
+    path = filesystem2unicode(__file__)
     return os.path.join(os.path.dirname(path), "data", *args)
 
 
@@ -81,7 +91,7 @@ class RunCommandControl(wx.Panel):
         if self.is_alive():
             raise ValueError("already running a command")
 
-        cmd = [sys.executable, "-u", "-m", "openslides.main"]
+        cmd = [sys.executable, "-u", "-m", "openslides"]
         cmd.extend(args)
 
         # XXX: subprocess on windows only handles byte strings
@@ -336,12 +346,12 @@ class MainWindow(wx.Frame):
         self.SetIcons(icons)
 
         self.server_running = False
-        if openslides.main.is_portable():
-            self.gui_settings_path = openslides.main.get_portable_path(
-                "openslides", "gui_settings.json")
-        else:
-            self.gui_settings_path = openslides.main.get_user_config_path(
-                "openslides", "gui_settings.json")
+        openslides_type = detect_openslides_type()
+        # XXX: this works, but I'd prefer keeping get_user_config_path
+        #      it was much clearer what path was intended IMHO ...
+        self.gui_settings_path = os.path.join(
+            os.path.dirname(get_default_settings_path(openslides_type)),
+            "gui_settings.json")
 
         self.backupdb_enabled = False
         self.backupdb_destination = ""
@@ -417,9 +427,8 @@ class MainWindow(wx.Frame):
         self.bt_server.Bind(wx.EVT_BUTTON, self.on_start_server_clicked)
         server_box.Add(self.bt_server, flag=wx.EXPAND)
 
-        host, port = openslides.main.detect_listen_opts()
-        self.host = host
-        self.port = unicode(port)
+        self.host = "0.0.0.0"
+        self.port = unicode(get_port(self.host, 80))
 
         # "action" buttons
         action_vbox = wx.BoxSizer(wx.VERTICAL)
@@ -568,9 +577,8 @@ class MainWindow(wx.Frame):
 
     def do_backup(self):
         cmd = [
-            sys.executable, "-u", "-m", "openslides.main",
-            "--no-run",
-            "--backupdb={0}".format(self.backupdb_destination),
+            sys.executable, "-u", "-m", "openslides", "backupdb",
+            self.backupdb_destination,
         ]
         p = subprocess.Popen(
             cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE,
@@ -593,11 +601,11 @@ class MainWindow(wx.Frame):
 
     def on_syncdb_clicked(self, evt):
         self.cmd_run_ctrl.append_message(_("Syncing database..."))
-        self.cmd_run_ctrl.run_command("--no-run", "--syncdb")
+        self.cmd_run_ctrl.run_command("syncdb")
 
     def on_reset_admin_clicked(self, evt):
         self.cmd_run_ctrl.append_message(_("Resetting admin user..."))
-        self.cmd_run_ctrl.run_command("--no-run", "--reset-admin")
+        self.cmd_run_ctrl.run_command("createsuperuser")
 
     def on_about_clicked(self, evt):
         info = wx.AboutDialogInfo()
@@ -624,11 +632,13 @@ class MainWindow(wx.Frame):
             args = ["--port", self._port]
         else:
             args = ["--address", self._host, "--port", self._port]
-        if not self.cb_start_browser.GetValue():
-            args.append("--no-browser")
+
+        # XXX: --no-browser is missing
+        #if not self.cb_start_browser.GetValue():
+        #    args.append("--no-browser")
 
         self.server_running = True
-        self.cmd_run_ctrl.run_command(*args)
+        self.cmd_run_ctrl.run_command("start", *args)
 
         # initiate backup_timer if backup is enabled
         self.apply_backup_settings()
@@ -702,7 +712,7 @@ def main():
     lang = locale.getdefaultlocale()[0]
     if lang:
         global _translations
-        localedir = openslides.main.fs2unicode(openslides.__file__)
+        localedir = filesystem2unicode(openslides.__file__)
         localedir = os.path.dirname(localedir)
         localedir = os.path.join(localedir, "locale")
         _translations = gettext.translation(

@@ -13,12 +13,15 @@
 import os
 import sys
 import ctypes
+import tempfile
 
 
 UNIX_VERSION = 'Unix Version'
 WINDOWS_VERSION = 'Windows Version'
 WINDOWS_PORTABLE_VERSION = 'Windows Portable Version'
 
+class PortableDirNotWritable(Exception):
+    pass
 
 def filesystem2unicode(path):
     """
@@ -92,8 +95,10 @@ def get_win32_portable_path():
     try:
         fd, test_file = tempfile.mkstemp(dir=portable_path)
     except OSError:
-        raise Exception('Portable directory is not writeable. Please choose another directory for settings and local files.')
-    finally:
+        raise PortableDirNotWritable(
+            'Portable directory is not writeable. '
+            'Please choose another directory for settings and local files.')
+    else:
         os.close(fd)
         os.unlink(test_file)
     return portable_path
