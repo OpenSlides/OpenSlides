@@ -14,10 +14,10 @@ from django.http import HttpResponseRedirect
 from django.forms.models import modelform_factory
 from django.core.exceptions import ImproperlyConfigured
 
-from openslides.utils.views import TemplateView, UrlMixin
+from openslides.utils.views import TemplateView, FormMixin
 
 
-class PollFormView(UrlMixin, TemplateView):
+class PollFormView(FormMixin, TemplateView):
     poll_class = None
 
     def get(self, request, *args, **kwargs):
