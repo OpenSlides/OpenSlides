@@ -9,7 +9,6 @@
 
 import sys
 
-
 from openslides.__main__ import main
 
 

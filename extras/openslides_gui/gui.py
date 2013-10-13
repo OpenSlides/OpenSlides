@@ -15,17 +15,15 @@ import threading
 import wx
 
 import openslides
+
 from openslides.utils.main import (
-    filesystem2unicode,
-    is_portable,
     detect_openslides_type,
+    filesystem2unicode,
+    get_default_user_data_path,
+    get_port,
     get_win32_portable_path,
 )
 
-from openslides.__main__ import (
-    get_port,
-    get_default_settings_path
-)
 
 # NOTE: djangos translation module can't be used here since it requires
 #       a defined settings module
@@ -346,12 +344,14 @@ class MainWindow(wx.Frame):
         self.SetIcons(icons)
 
         self.server_running = False
+
+        # Set path for gui settings to default user data according to the
+        # OpenSlides type. This does not depend on any argument the user might
+        # type in.
         openslides_type = detect_openslides_type()
-        # XXX: this works, but I'd prefer keeping get_user_config_path
-        #      it was much clearer what path was intended IMHO ...
+        default_user_data_path = get_default_user_data_path(openslides_type)
         self.gui_settings_path = os.path.join(
-            os.path.dirname(get_default_settings_path(openslides_type)),
-            "gui_settings.json")
+            default_user_data_path, 'openslides', 'gui_settings.json')
 
         self.backupdb_enabled = False
         self.backupdb_destination = ""
@@ -633,9 +633,8 @@ class MainWindow(wx.Frame):
         else:
             args = ["--address", self._host, "--port", self._port]
 
-        # XXX: --no-browser is missing
-        #if not self.cb_start_browser.GetValue():
-        #    args.append("--no-browser")
+        if not self.cb_start_browser.GetValue():
+            args.append("--no-browser")
 
         self.server_running = True
         self.cmd_run_ctrl.run_command("start", *args)

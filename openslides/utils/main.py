@@ -10,9 +10,10 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-import os
-import sys
 import ctypes
+import os
+import socket
+import sys
 import tempfile
 
 
@@ -20,8 +21,10 @@ UNIX_VERSION = 'Unix Version'
 WINDOWS_VERSION = 'Windows Version'
 WINDOWS_PORTABLE_VERSION = 'Windows Portable Version'
 
+
 class PortableDirNotWritable(Exception):
     pass
+
 
 def filesystem2unicode(path):
     """
@@ -36,7 +39,7 @@ def filesystem2unicode(path):
 
 def detect_openslides_type():
     """
-    Returns the type of this version.
+    Returns the type of this OpenSlides version.
     """
     if sys.platform == 'win32':
         if os.path.basename(sys.executable).lower() == 'openslides.exe':
@@ -54,12 +57,24 @@ def detect_openslides_type():
     return openslides_type
 
 
-def is_portable():
+def get_default_user_data_path(openslides_type):
     """
-    Helper function just for the GUI.
+    Returns the default path for user specific data according to the OpenSlides
+    type.
+
+    The argument 'openslides_type' has to be one of the three types mentioned
+    in openslides.utils.main.
     """
-    # TODO: Remove this function.
-    return detect_openslides_type() == WINDOWS_PORTABLE_VERSION
+    if openslides_type == UNIX_VERSION:
+        default_user_data_path = filesystem2unicode(os.environ.get(
+            'XDG_DATA_HOME', os.path.join(os.path.expanduser('~'), '.local', 'share')))
+    elif openslides_type == WINDOWS_VERSION:
+        default_user_data_path = get_win32_app_data_path()
+    elif openslides_type == WINDOWS_PORTABLE_VERSION:
+        default_user_data_path = get_win32_portable_path()
+    else:
+        raise TypeError('%s is not a valid OpenSlides type.' % openslides_type)
+    return default_user_data_path
 
 
 def get_win32_app_data_path():
@@ -79,7 +94,7 @@ def get_win32_app_data_path():
     buf = ctypes.create_unicode_buffer(MAX_PATH)
     res = SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, 0, 0, buf)
     if res != 0:
-        raise Exception("Could not deterime APPDATA path")
+        raise Exception("Could not determine Windows' APPDATA path")
 
     return buf.value
 
@@ -97,7 +112,7 @@ def get_win32_portable_path():
     except OSError:
         raise PortableDirNotWritable(
             'Portable directory is not writeable. '
-            'Please choose another directory for settings and local files.')
+            'Please choose another directory for settings and data files.')
     else:
         os.close(fd)
         os.unlink(test_file)
@@ -107,13 +122,36 @@ def get_win32_portable_path():
 def get_portable_paths(name):
     """
     Returns the paths for the Windows portable version on runtime for the
-    SQLite3 database and the media directory. The argument 'name' can be
-    'database' or 'media'.
+    SQLite3 database, the media directory and the search index. The argument
+    'name' can be 'database', 'media' or 'whoosh_index'.
     """
     if name == 'database':
         path = os.path.join(get_win32_portable_path(), 'openslides', 'database.sqlite')
     elif name == 'media':
         path = os.path.join(get_win32_portable_path(), 'openslides', 'media', '')
+    elif name == 'whoosh_index':
+        path = os.path.join(get_win32_portable_path(), 'openslides', 'whoosh_index', '')
     else:
-        raise TypeError('Unknow type %s' % name)
+        raise TypeError('Unknown type %s' % name)
     return path
+
+
+def get_port(address, port):
+    """
+    Returns the port for the server. If port 80 is given, checks if it is
+    available. If not returns port 8000.
+
+    The argument 'address' should be an IP address. The argument 'port' should
+    be an integer.
+    """
+    if port == 80:
+        # test if we can use port 80
+        s = socket.socket()
+        try:
+            s.bind((address, port))
+            s.listen(-1)
+        except socket.error:
+            port = 8000
+        finally:
+            s.close()
+    return port

@@ -67,11 +67,9 @@ STATICFILES_DIRS = (
     filesystem2unicode(os.path.join(SITE_ROOT, 'static')),
 )
 
-#XXX: Note this setting (as well as our workaround finder)
-#     can be removed again once django-bug-#18404 has been resolved
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
-    'openslides.utils.staticfiles.AppDirectoriesFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
 
 MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
