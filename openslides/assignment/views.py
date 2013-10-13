@@ -25,11 +25,10 @@ from django.utils.translation import ungettext, ugettext as _
 
 from openslides.utils.pdf import stylesheet
 from openslides.utils.template import Tab
-from openslides.utils.utils import gen_confirm_form
 
 from openslides.utils.views import (
     CreateView, DeleteView, RedirectView, UpdateView, ListView, PDFView,
-    DetailView, View, PermissionMixin, SingleObjectMixin, QuestionMixin)
+    DetailView, View, PermissionMixin, SingleObjectMixin, QuestionView)
 from openslides.utils.person import get_person
 from openslides.utils.utils import html_strong
 from openslides.config.api import config
@@ -150,8 +149,6 @@ class AssignmentRunView(SingleObjectMixin, PermissionMixin, View):
 class AssignmentRunDeleteView(SingleObjectMixin, RedirectView):
     model = Assignment
     url_name = 'assignment_detail'
-    success_message = _("You have withdrawn your candidature successfully. "
-                        "You can not be nominated by other participants anymore.")
 
     def pre_redirect(self, *args, **kwargs):
         self.object = self.get_object()
@@ -162,54 +159,49 @@ class AssignmentRunDeleteView(SingleObjectMixin, RedirectView):
             except Exception, e:
                 messages.error(self.request, e)
             else:
-                messages.success(self.request, self.success_message)
+                messages.success(self.request, _(
+                    'You have withdrawn your candidature successfully. '
+                    'You can not be nominated by other participants anymore.'))
         else:
             messages.error(self.request, _('The candidate list is already closed.'))
 
 
-class AssignmentRunOtherDeleteView(SingleObjectMixin, QuestionMixin,
-                                   RedirectView):
+class AssignmentRunOtherDeleteView(SingleObjectMixin, QuestionView):
     model = Assignment
     permission_required = 'assignment.can_manage_assignment'
-    question_url_name = 'assignment_detail'
-    success_url_name = 'assignment_detail'
-    success_message = ''
 
-    def pre_redirect(self, *args, **kwargs):
-        self._get_person_information(*args, **kwargs)
+    def get_question_message(self):
+        self._get_person_information()
         if not self.is_blocked:
-            message = _("Do you really want to withdraw %s from the election?") % html_strong(self.person)
+            question = _("Do you really want to withdraw %s from the election?") % html_strong(self.person)
         else:
-            message = _("Do you really want to unblock %s for the election?") % html_strong(self.person)
-        gen_confirm_form(self.request, message, reverse('assignment_delother',
-                         args=[self.object.pk, kwargs['user_id']]))
+            question = _("Do you really want to unblock %s for the election?") % html_strong(self.person)
+        return question
 
-    def pre_post_redirect(self, *args, **kwargs):
-        self._get_person_information(*args, **kwargs)
-        if self.get_answer() == 'yes':
-            self.case_yes()
-
-    def get_answer(self):
-        if 'submit' in self.request.POST:
-            return 'yes'
-
-    def case_yes(self):
+    def on_clicked_yes(self):
+        self._get_person_information()
         try:
             self.object.delrun(self.person, blocked=False)
         except Exception, e:
-            messages.error(self.request, e)
+            self.error = e
         else:
-            messages.success(self.request, self.get_success_message())
+            self.error = False
 
-    def get_success_message(self):
-        success_message = _("Candidate %s was withdrawn successfully.") % html_strong(self.person)
+    def create_final_message(self):
+        if self.error:
+            messages.error(self.request, self.error)
+        else:
+            messages.success(self.request, self.get_final_message())
+
+    def get_final_message(self):
+        message = _("Candidate %s was withdrawn successfully.") % html_strong(self.person)
         if self.is_blocked:
-            success_message = _("%s was unblocked successfully.") % html_strong(self.person)
-        return success_message
+            message = _("%s was unblocked successfully.") % html_strong(self.person)
+        return message
 
-    def _get_person_information(self, *args, **kwargs):
+    def _get_person_information(self):
         self.object = self.get_object()
-        self.person = get_person(kwargs.get('user_id'))
+        self.person = get_person(self.kwargs.get('user_id'))
         self.is_blocked = self.object.is_blocked(self.person)
 
 
@@ -310,7 +302,7 @@ class AssignmentPollDeleteView(DeleteView):
     def get_redirect_url(self, **kwargs):
         return reverse('assignment_detail', args=[self.assignment.id])
 
-    def get_success_message(self):
+    def get_final_message(self):
         return _('Ballot was successfully deleted.')
 
 

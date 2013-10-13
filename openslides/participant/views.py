@@ -40,7 +40,7 @@ from openslides.utils.utils import (
     template, delete_default_permissions, html_strong)
 from openslides.utils.views import (
     FormView, PDFView, CreateView, UpdateView, DeleteView, PermissionMixin,
-    RedirectView, SingleObjectMixin, ListView, QuestionMixin, DetailView)
+    RedirectView, SingleObjectMixin, ListView, QuestionView, DetailView)
 from openslides.config.api import config
 from openslides.projector.projector import Widget
 
@@ -155,6 +155,7 @@ class UserDeleteView(DeleteView):
     permission_required = 'participant.can_manage_participant'
     model = User
     success_url_name = 'user_overview'
+    url_name_args = []
 
     def pre_redirect(self, request, *args, **kwargs):
         if self.object == self.request.user:
@@ -335,14 +336,14 @@ class UserImportView(FormView):
         return super(UserImportView, self).form_valid(form)
 
 
-class ResetPasswordView(SingleObjectMixin, QuestionMixin, RedirectView):
+class ResetPasswordView(SingleObjectMixin, QuestionView):
     """
     Set the Passwort for a user to his default password.
     """
     permission_required = 'participant.can_manage_participant'
     model = User
     allow_ajax = True
-    question = ugettext_lazy('Do you really want to reset the password?')
+    question_message = ugettext_lazy('Do you really want to reset the password?')
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
@@ -351,10 +352,10 @@ class ResetPasswordView(SingleObjectMixin, QuestionMixin, RedirectView):
     def get_redirect_url(self, **kwargs):
         return reverse('user_edit', args=[self.object.id])
 
-    def case_yes(self):
+    def on_clicked_yes(self):
         self.object.reset_password()
 
-    def get_success_message(self):
+    def get_final_message(self):
         return _('The Password for %s was successfully reset.') % html_strong(self.object)
 
 
@@ -432,6 +433,7 @@ class GroupDeleteView(DeleteView):
     permission_required = 'participant.can_manage_participant'
     model = Group
     success_url_name = 'user_group_overview'
+    url_name_args = []
 
     def pre_redirect(self, request, *args, **kwargs):
         if not self.is_protected_from_deleting():
@@ -466,14 +468,17 @@ def login(request):
     try:
         admin = User.objects.get(pk=1)
         if admin.check_password(admin.default_password):
+            user_data = {
+                'user': html_strong(admin.username),
+                'password': html_strong(admin.default_password)}
+
             extra_content['first_time_message'] = _(
                 "Installation was successfully! Use %(user)s "
                 "(password: %(password)s) for first login.<br>"
                 "<strong>Important:</strong> Please change the password after "
                 "first login! Otherwise this message still appears for "
-                "everyone  and could be a security risk.") % {
-                    'user': html_strong(admin.username),
-                    'password': html_strong(admin.default_password)}
+                "everyone  and could be a security risk.") % user_data
+
             extra_content['next'] = reverse('password_change')
     except User.DoesNotExist:
         pass

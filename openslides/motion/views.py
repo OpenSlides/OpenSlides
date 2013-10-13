@@ -11,7 +11,6 @@
     :copyright: (c) 2011–2013 by the OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
-from reportlab.platypus import SimpleDocTemplate
 
 from django.core.urlresolvers import reverse
 from django.contrib import messages
@@ -20,26 +19,26 @@ from django.db.models import Model
 from django.http import Http404, HttpResponseRedirect
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
+from reportlab.platypus import SimpleDocTemplate
 
-from openslides.agenda.views import (
-    CreateRelatedAgendaItemView as _CreateRelatedAgendaItemView)
-from openslides.config.api import config
-from openslides.poll.views import PollFormView
-from openslides.projector.api import get_active_slide, update_projector
-from openslides.projector.projector import Widget
 from openslides.utils.pdf import stylesheet
-from openslides.utils.template import Tab
-from openslides.utils.utils import html_strong, htmldiff
 from openslides.utils.views import (
     TemplateView, RedirectView, UpdateView, CreateView, DeleteView, PDFView,
-    DetailView, ListView, FormView, QuestionMixin, SingleObjectMixin)
+    DetailView, ListView, FormView, QuestionView, SingleObjectMixin)
+from openslides.utils.template import Tab
+from openslides.utils.utils import html_strong, htmldiff
+from openslides.poll.views import PollFormView
+from openslides.projector.api import get_active_slide
+from openslides.projector.projector import Widget
+from openslides.config.api import config
+from openslides.agenda.views import CreateRelatedAgendaItemView as _CreateRelatedAgendaItemView
 
 from .csv_import import import_motions
+from .models import (Motion, MotionSubmitter, MotionSupporter, MotionPoll,
+                     MotionVersion, State, WorkflowError, Category)
 from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
                     MotionDisableVersioningMixin, MotionCategoryMixin,
                     MotionIdentifierMixin, MotionWorkflowMixin, MotionImportForm)
-from .models import (Motion, MotionSubmitter, MotionSupporter, MotionPoll,
-                     MotionVersion, State, WorkflowError, Category)
 from .pdf import motions_to_pdf, motion_to_pdf, motion_poll_to_pdf
 
 
@@ -297,7 +296,7 @@ class MotionDeleteView(DeleteView):
         """
         return self.get_object().get_allowed_actions(request.user)['delete']
 
-    def get_success_message(self):
+    def get_final_message(self):
         return _('%s was successfully deleted.') % _('Motion')
 
 motion_delete = MotionDeleteView.as_view()
@@ -326,21 +325,20 @@ class VersionDeleteView(DeleteView):
             raise Http404('You can not delete the active version of a motion.')
         return version
 
-    def get_success_url_name_args(self):
+    def get_url_name_args(self):
         return (self.object.motion_id, )
 
 version_delete = VersionDeleteView.as_view()
 
 
-class VersionPermitView(SingleObjectMixin, QuestionMixin, RedirectView):
+class VersionPermitView(SingleObjectMixin, QuestionView):
     """
     View to permit a version of a motion.
     """
     model = Motion
-    question_url_name = 'motion_version_detail'
-    success_url_name = 'motion_version_detail'
-    success_message = ugettext_lazy('Version successfully permitted.')
+    final_message = ugettext_lazy('Version successfully permitted.')
     permission_required = 'motion.can_manage_motion'
+    question_url_name = 'motion_version_detail'
 
     def get(self, *args, **kwargs):
         """
@@ -360,13 +358,13 @@ class VersionPermitView(SingleObjectMixin, QuestionMixin, RedirectView):
         """
         return [self.object.pk, self.version.version_number]
 
-    def get_question(self):
+    def get_question_message(self):
         """
         Return a string, shown to the user as question to permit the version.
         """
         return _('Are you sure you want permit version %s?') % self.version.version_number
 
-    def case_yes(self):
+    def on_clicked_yes(self):
         """
         Activate the version, if the user chooses 'yes'.
         """
@@ -418,7 +416,7 @@ class VersionDiffView(DetailView):
 version_diff = VersionDiffView.as_view()
 
 
-class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
+class SupportView(SingleObjectMixin, QuestionView):
     """
     View to support or unsupport a motion.
 
@@ -452,7 +450,7 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
         else:
             return True
 
-    def get_question(self):
+    def get_question_message(self):
         """
         Return the question string.
         """
@@ -461,7 +459,7 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
         else:
             return _('Do you really want to unsupport this motion?')
 
-    def case_yes(self):
+    def on_clicked_yes(self):
         """
         Append or remove the request.user from the motion.
 
@@ -477,7 +475,7 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
                 self.object.unsupport(person=user)
                 self.object.write_log([ugettext_noop('Motion unsupported')], user)
 
-    def get_success_message(self):
+    def get_final_message(self):
         """
         Return the success message.
         """
@@ -485,12 +483,6 @@ class SupportView(SingleObjectMixin, QuestionMixin, RedirectView):
             return _("You have supported this motion successfully.")
         else:
             return _("You have unsupported this motion successfully.")
-
-    def get_redirect_url(self, **kwargs):
-        """
-        Return the url, the view should redirect to.
-        """
-        return self.object.get_absolute_url()
 
 motion_support = SupportView.as_view(support=True)
 motion_unsupport = SupportView.as_view(support=False)
@@ -558,6 +550,7 @@ class PollUpdateView(PollMixin, PollFormView):
     """
     View to update a MotionPoll.
     """
+
     poll_class = MotionPoll
     """
     Poll Class to use for this view.
@@ -595,11 +588,11 @@ class PollDeleteView(PollMixin, DeleteView):
 
     model = MotionPoll
 
-    def case_yes(self):
+    def on_clicked_yes(self):
         """
         Write a log message, if the form is valid.
         """
-        super(PollDeleteView, self).case_yes()
+        super(PollDeleteView, self).on_clicked_yes()
         self.object.motion.write_log([ugettext_noop('Poll deleted')], self.request.user)
 
     def get_redirect_url(self, **kwargs):

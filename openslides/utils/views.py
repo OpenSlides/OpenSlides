@@ -6,7 +6,7 @@
 
     Views for OpenSlides.
 
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -15,257 +15,280 @@ from cStringIO import StringIO
 from reportlab.platypus import SimpleDocTemplate, Spacer
 from reportlab.lib.units import cm
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
-from django.core.exceptions import ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.core.urlresolvers import reverse
-from django.conf import settings
 from django.dispatch import receiver
-from django.http import HttpResponseServerError, HttpResponse, HttpResponseRedirect
-from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext as _, ugettext_lazy
-from django.utils.importlib import import_module
+from django.http import (HttpResponse, HttpResponseRedirect,
+                         HttpResponseServerError)
 from django.template import RequestContext
 from django.template.loader import render_to_string
-from django.views.generic import (
-    TemplateView as _TemplateView,
-    RedirectView as _RedirectView,
-    UpdateView as _UpdateView,
-    CreateView as _CreateView,
-    View as _View,
-    FormView as _FormView,
-    ListView as _ListView,
-    DetailView as _DetailView,
-)
+from django.utils.decorators import method_decorator
+from django.utils.importlib import import_module
+from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy
+from django.views import generic as django_views
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.list import TemplateResponseMixin
+from reportlab.lib.units import cm
+from reportlab.platypus import SimpleDocTemplate, Spacer
 
-from openslides.utils.utils import render_to_forbidden, html_strong
-from openslides.utils.signals import template_manipulation
-from openslides.utils.pdf import firstPage, laterPages
-
+from .pdf import firstPage, laterPages
+from .signals import template_manipulation
+from .utils import html_strong
 
 NO_PERMISSION_REQUIRED = 'No permission required'
 
-View = _View
-
-
-class SetCookieMixin(object):
-    def render_to_response(self, context, **response_kwargs):
-        response = TemplateResponseMixin.render_to_response(
-            self, context, **response_kwargs)
-        if 'cookie' in context:
-            response.set_cookie(context['cookie'][0], context['cookie'][1])
-        return response
+View = django_views.View
 
 
 class LoginMixin(object):
+    """
+    Mixin for Views, that only can be viseted from users how are logedin.
+    """
+
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
+        """
+        Check if the user is loged in.
+        """
         return super(LoginMixin, self).dispatch(request, *args, **kwargs)
 
 
 class PermissionMixin(object):
+    """
+    Mixin for views, that only can be visited from users with special rights.
+
+    Set the attribute 'permission_required' to the required permission string.
+    """
     permission_required = NO_PERMISSION_REQUIRED
 
     def has_permission(self, request, *args, **kwargs):
+        """
+        Checks if the user has the required permission.
+        """
         if self.permission_required == NO_PERMISSION_REQUIRED:
             return True
         else:
             return request.user.has_perm(self.permission_required)
 
     def dispatch(self, request, *args, **kwargs):
+        """
+        Check if the user has the permission.
+
+        If the user is not logged in, redirect the user to the login page.
+        """
         if not self.has_permission(request, *args, **kwargs):
             if not request.user.is_authenticated():
                 path = request.get_full_path()
                 return HttpResponseRedirect(
                     "%s?next=%s" % (settings.LOGIN_URL, path))
             else:
-                return render_to_forbidden(request)
+                raise PermissionDenied
         return super(PermissionMixin, self).dispatch(request, *args, **kwargs)
 
 
 class AjaxMixin(object):
+    """
+    Mixin to response to an ajax request with an json object.
+    """
+
     def get_ajax_context(self, **kwargs):
-        return {}
+        """
+        Returns a dictonary with the context for the ajax response.
+        """
+        return kwargs
 
     def ajax_get(self, request, *args, **kwargs):
-        return HttpResponse(json.dumps(self.get_ajax_context(**kwargs)))
+        """
+        Returns the HttpResponse.
+        """
+        return HttpResponse(json.dumps(self.get_ajax_context()))
 
 
 class ExtraContextMixin(object):
+    """
+    Mixin to send the signal 'template_manipulation' to add extra content to the
+    context of the view.
+
+    For example this is used to add the main menu of openslides.
+    """
+
     def get_context_data(self, **kwargs):
+        """
+        Sends the signal.
+        """
         context = super(ExtraContextMixin, self).get_context_data(**kwargs)
-        context.setdefault('extra_javascript', [])
         template_manipulation.send(
             sender=self.__class__, request=self.request, context=context)
         return context
 
 
 class UrlMixin(object):
-    """
-    Mixin to provide the use of url names in views with success url and
-    apply url.
-
-    The initial value of url_name_args is None, but the default given by
-    the used get_url_name_args method is [], because in the future, the
-    method might return another default value. Compare this with the QuestionMixin.
-    """
-    apply_url_name = None
-    success_url_name = None
     url_name_args = None
+
+    def get_url(self, url_name=None, url=None, args=None, use_absolute_url_link=None):
+        """
+        Returns an url.
+
+        Tries
+        1. to use the reverse for the attribute 'url_name',
+        2. to use the attribute 'url' or
+        3. to use self.object.get_absolute_url().
+
+        Uses the attribute 'use_absolute_url_link' as argument for
+        get_absolute_url in the third step. If the attribute is 'None' then
+        the default value of get_absolute_url is used.
+
+        Raises ImproperlyConfigured if no url can be found.
+        """
+        if url_name:
+            value = reverse(url_name, args=args or [])
+        elif url:
+            value = url
+        else:
+            try:
+                if use_absolute_url_link is None:
+                    value = self.object.get_absolute_url()
+                else:
+                    value = self.object.get_absolute_url(use_absolute_url_link)
+            except AttributeError:
+                raise ImproperlyConfigured(
+                    'No url to redirect to. See openslides.utils.views.UrlMixin for more details.')
+        return value
+
+    def get_url_name_args(self):
+        """
+        Returns the arguments for the url name.
+
+        Default is an empty list or [self.object.pk] if this exist.
+        """
+        if self.url_name_args is not None:
+            value = self.url_name_args
+        else:
+            try:
+                pk = self.object.pk
+            except AttributeError:
+                value = []
+            else:
+                if pk:
+                    value = [pk]
+                else:
+                    value = []
+        return value
+
+
+class FormMixin(UrlMixin):
+    """
+    Mixin for views with forms.
+    """
+
+    use_apply = True
+    success_url_name = None
     success_url = None
+    success_message = None
+    apply_url_name = None
     apply_url = None
+    error_message = ugettext_lazy('Please check the form for errors.')
 
     def get_apply_url(self):
-        if self.apply_url_name:
-            return reverse(self.apply_url_name, args=self.get_url_name_args())
-        elif self.apply_url:
-            return self.apply_url
-        else:
-            try:
-                return self.object.get_absolute_url('edit')
-            except AttributeError:
-                raise ImproperlyConfigured(
-                    "No URL to redirect to. Provide an apply_url_name.")
+        """
+        Returns the url when the user clicks on 'apply'.
+        """
+        return self.get_url(self.apply_url_name, self.apply_url,
+                            args=self.get_url_name_args(),
+                            use_absolute_url_link='update')
 
     def get_success_url(self):
-        if 'apply' in self.request.POST:
-            return self.get_apply_url()
+        """
+        Returns the url when the user submits a form.
 
-        if self.success_url_name:
-            return reverse(self.success_url_name, args=self.get_url_name_args())
-        elif self.success_url:
-            return self.success_url
+        Redirects to get_apply_url if self.use_apply is True
+        """
+        if self.use_apply and 'apply' in self.request.POST:
+            value = self.get_apply_url()
         else:
-            try:
-                return self.object.get_absolute_url()
-            except AttributeError:
-                raise ImproperlyConfigured(
-                    "No URL to redirect to. Either provide an URL or define "
-                    "a get_absolute_url method of the model.")
+            value = self.get_url(self.success_url_name, self.success_url,
+                                 args=self.get_url_name_args())
+        return value
 
-    def get_url_name_args(self):
-        """
-        Returns the arguments for the url name. Default is an empty list.
-        """
-        if self.url_name_args is not None:
-            return self.url_name_args
-        return []
+    def form_valid(self, form):
+        value = super(FormMixin, self).form_valid(form)
+        messages.success(self.request, self.get_success_message())
+        return value
 
-
-class QuestionMixin(object):
-    """
-    Mixin for questions to the requesting user.
-
-    The initial value of url_name_args is None, but the default given by
-    the used get_url_name_args method is [self.object.pk] if it exist, else
-    an empty list. Set url_name_args to an empty list, if you use an url
-    name which does not need any arguments.
-    """
-    question = ugettext_lazy('Are you sure?')
-    success_message = ugettext_lazy('Thank you for your answer')
-    answer_options = [('yes', ugettext_lazy("Yes")), ('no', ugettext_lazy("No"))]
-    question_url_name = None
-    success_url_name = None
-    url_name_args = None
-
-    def get_redirect_url(self, **kwargs):
-        # TODO: raise error when question_url_name/success_url_name is not present
-        if self.request.method == 'GET':
-            return reverse(self.question_url_name, args=self.get_question_url_name_args())
-        else:
-            return reverse(self.success_url_name, args=self.get_success_url_name_args())
-
-    def get_question_url_name_args(self):
-        return self.get_url_name_args()
-
-    def get_success_url_name_args(self):
-        return self.get_url_name_args()
-
-    def get_url_name_args(self):
-        """
-        Returns the arguments for the url name. Default is an empty list
-        or [self.object.pk] if this exist.
-        """
-        if self.url_name_args is not None:
-            return self.url_name_args
-        try:
-            return [self.object.pk]
-        except AttributeError:
-            return []
-
-    def pre_redirect(self, request, *args, **kwargs):
-        """
-        Prints the question in a GET request.
-        """
-        self.confirm_form()
-
-    def get_question(self):
-        return unicode(self.question)
-
-    def get_answer_options(self):
-        return self.answer_options
-
-    def get_answer_url(self):
-        try:
-            return self.answer_url
-        except AttributeError:
-            return self.request.path
-
-    def confirm_form(self):
-        option_fields = "\n".join([
-            '<button type="submit" class="btn btn-mini" name="%s">%s</button>' % (option[0], unicode(option[1]))
-            for option in self.get_answer_options()])
-        messages.warning(
-            self.request,
-            """
-            %(message)s
-            <form action="%(url)s" method="post">
-                <input type="hidden" value="%(csrf)s" name="csrfmiddlewaretoken">
-                %(option_fields)s
-            </form>
-            """ % {'message': self.get_question(),
-                   'url': self.get_answer_url(),
-                   'csrf': csrf(self.request)['csrf_token'],
-                   'option_fields': option_fields})
-
-    def pre_post_redirect(self, request, *args, **kwargs):
-        # Reacts on the response of the user in a POST-request.
-        # TODO: call the methodes for all possible answers.
-        if self.get_answer() == 'yes':
-            self.case_yes()
-            messages.success(request, self.get_success_message())
-
-    def get_answer(self):
-        for option in self.get_answer_options():
-            if option[0] in self.request.POST:
-                return option[0]
-        return None
-
-    def case_yes(self):
-        # TODO: raise a warning
-        pass
+    def form_invalid(self, form):
+        value = super(FormMixin, self).form_invalid(form)
+        messages.error(self.request, self.get_error_message())
+        return value
 
     def get_success_message(self):
         return self.success_message
 
+    def get_error_message(self):
+        return self.error_message
 
-class TemplateView(PermissionMixin, ExtraContextMixin, _TemplateView):
+
+class ModelFormMixin(FormMixin):
+    """
+    Mixin for FormViews.
+    """
+
+    def form_valid(self, form):
+        """
+        Called if the form is valid.
+
+        1. saves the form into the model,
+        2. calls 'self.manipulate_object,
+        3. saves the object in the database,
+        4. calls self.post_save.
+        """
+        self.object = form.save(commit=False)
+        self.manipulate_object(form)
+        self.object.save()
+        self.post_save(form)
+        messages.success(self.request, self.get_success_message())
+        return HttpResponseRedirect(self.get_success_url())
+
+    def manipulate_object(self, form):
+        """
+        Called before the object is saved into the database.
+        """
+        pass
+
+    def post_save(self, form):
+        """
+        Called after the object is saved into the database.
+        """
+        form.save_m2m()
+
+
+class TemplateView(PermissionMixin, ExtraContextMixin, django_views.TemplateView):
+    """
+    View to return with an template.
+    """
     pass
 
 
-class ListView(PermissionMixin, SetCookieMixin, ExtraContextMixin, _ListView):
+class ListView(PermissionMixin, ExtraContextMixin, django_views.ListView):
+    """
+    View to show a list of model objects.
+    """
     pass
 
 
 class AjaxView(PermissionMixin, AjaxMixin, View):
+    """
+    View for ajax requests.
+    """
     def get(self, request, *args, **kwargs):
         return self.ajax_get(request, *args, **kwargs)
 
 
-class RedirectView(PermissionMixin, AjaxMixin, _RedirectView):
+class RedirectView(PermissionMixin, AjaxMixin, UrlMixin, django_views.RedirectView):
     """
     View to redirect to another url.
 
@@ -277,12 +300,19 @@ class RedirectView(PermissionMixin, AjaxMixin, _RedirectView):
     permanent = False
     allow_ajax = False
     url_name = None
-    url_name_args = None
 
     def pre_redirect(self, request, *args, **kwargs):
+        """
+        Called before the redirect.
+        """
+        # TODO: Also call this method on post-request.
+        #       Add pre_get_redirect for get requests.
         pass
 
     def pre_post_redirect(self, request, *args, **kwargs):
+        """
+        Called before the redirect, if it is a post request.
+        """
         pass
 
     def get(self, request, *args, **kwargs):
@@ -291,62 +321,143 @@ class RedirectView(PermissionMixin, AjaxMixin, _RedirectView):
         elif request.method == 'POST':
             self.pre_post_redirect(request, *args, **kwargs)
 
-        if self.request.is_ajax() and self.allow_ajax:
+        if request.is_ajax() and self.allow_ajax:
             return self.ajax_get(request, *args, **kwargs)
         return super(RedirectView, self).get(request, *args, **kwargs)
 
     def get_redirect_url(self, **kwargs):
-        if self.url_name is not None:
-            return reverse(self.url_name, args=self.get_url_name_args())
+        """
+        Returns the url to which the redirect should go.
+        """
+        return self.get_url(self.url_name, self.url,
+                            args=self.get_url_name_args())
+
+
+class QuestionView(RedirectView):
+    """
+    Mixin for questions to the requesting user.
+
+    The BaseView has to be a RedirectView.
+    """
+
+    question_message = ugettext_lazy('Are you sure?')
+    final_message = ugettext_lazy('Thank you for your answer.')
+    answer_options = [('yes', ugettext_lazy("Yes")), ('no', ugettext_lazy("No"))]
+    question_url_name = None
+    question_url = None
+
+    def get_redirect_url(self, **kwargs):
+        """
+        Returns the url to which the view should redirect.
+        """
+        if self.request.method == 'GET':
+            url = self.get_url(self.question_url_name, self.question_url,
+                               args=self.get_url_name_args())
         else:
-            return super(RedirectView, self).get_redirect_url(**kwargs)
+            url = super(QuestionView, self).get_redirect_url()
+        return url
 
-    def get_url_name_args(self):
+    def pre_redirect(self, request, *args, **kwargs):
         """
-        Returns the arguments for the url name. Default is an empty list
-        or [self.object.pk] if this exist.
+        Prints the question in a GET request.
         """
-        if self.url_name_args is not None:
-            return self.url_name_args
-        try:
-            return [self.object.pk]
-        except AttributeError:
-            return []
+        self.confirm_form()
+
+    def get_question_message(self):
+        """
+        Returns the question.
+        """
+        return self.question_message
+
+    def get_answer_options(self):
+        """
+        Returns the possible answers.
+
+        This is a list of tubles. The first element of the tuble is the key,
+        the second element is shown to the user.
+        """
+        return self.answer_options
+
+    def confirm_form(self):
+        """
+        Returns the form to show in the message.
+        """
+        option_fields = "\n".join([
+            '<button type="submit" class="btn btn-mini" name="%s">%s</button>'
+            % (option[0], unicode(option[1]))
+            for option in self.get_answer_options()])
+        messages.warning(
+            self.request,
+            """
+            %(message)s
+            <form action="%(url)s" method="post">
+                <input type="hidden" value="%(csrf)s" name="csrfmiddlewaretoken">
+                %(option_fields)s
+            </form>
+            """ % {'message': self.get_question_message(),
+                   'url': self.request.path,
+                   'csrf': csrf(self.request)['csrf_token'],
+                   'option_fields': option_fields})
+
+    def pre_post_redirect(self, request, *args, **kwargs):
+        """
+        Calls the method for the answer the user clicked.
+
+        The method name is on_clicked_ANSWER where ANSWER is the key from the
+        clicked answer. See get_answer_options. If this method is not defined,
+        raises a NotImplementedError.
+
+        If the method returns True, then the success message is printed to the
+        user.
+        """
+        method_name = 'on_clicked_%s' % self.get_answer()
+        method = getattr(self, method_name, None)
+        if method is None:
+            pass
+        else:
+            method()
+            self.create_final_message()
+
+    def get_answer(self):
+        """
+        Returns the key of the clicked answer.
+
+        Raises ImproperlyConfigured, if the answer is not one of
+        get_answer_options.
+        """
+        for option_key, option_name in self.get_answer_options():
+            if option_key in self.request.POST:
+                return option_key
+        raise ImproperlyConfigured('%s is not a valid answer' % self.request.POST)
+
+    def get_final_message(self):
+        """
+        Returns the message to show after the action.
+
+        Uses the attribute 'final_messsage' as default
+        """
+        return self.final_message
+
+    def create_final_message(self):
+        """
+        Creates a message.
+        """
+        messages.success(self.request, self.get_final_message())
 
 
-class FormView(PermissionMixin, ExtraContextMixin, UrlMixin, _FormView):
-    def form_invalid(self, form):
-        messages.error(self.request, _('Please check the form for errors.'))
-        return super(FormView, self).form_invalid(form)
+class FormView(PermissionMixin, ExtraContextMixin, FormMixin,
+               django_views.FormView):
+    """
+    View for forms.
+    """
+    pass
 
 
-class ModelFormMixin(object):
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        self.manipulate_object(form)
-        self.object.save()
-        self.post_save(form)
-        return HttpResponseRedirect(self.get_success_url())
-
-    def manipulate_object(self, form):
-        pass
-
-    def post_save(self, form):
-        form.save_m2m()
-
-
-class UpdateView(PermissionMixin, UrlMixin, ExtraContextMixin,
-                 ModelFormMixin, _UpdateView):
-    success_message = None
-
-    def form_invalid(self, form):
-        messages.error(self.request, _('Please check the form for errors.'))
-        return super(UpdateView, self).form_invalid(form)
-
-    def form_valid(self, form):
-        value = super(UpdateView, self).form_valid(form)
-        messages.success(self.request, self.get_success_message())
-        return value
+class UpdateView(PermissionMixin, ExtraContextMixin,
+                 ModelFormMixin, django_views.UpdateView):
+    """
+    View to update an model object.
+    """
 
     def get_success_message(self):
         if self.success_message is None:
@@ -356,18 +467,11 @@ class UpdateView(PermissionMixin, UrlMixin, ExtraContextMixin,
         return message
 
 
-class CreateView(PermissionMixin, UrlMixin, ExtraContextMixin,
-                 ModelFormMixin, _CreateView):
-    success_message = None
-
-    def form_invalid(self, form):
-        messages.error(self.request, _('Please check the form for errors.'))
-        return super(CreateView, self).form_invalid(form)
-
-    def form_valid(self, form):
-        value = super(CreateView, self).form_valid(form)
-        messages.success(self.request, self.get_success_message())
-        return value
+class CreateView(PermissionMixin, ExtraContextMixin,
+                 ModelFormMixin, django_views.CreateView):
+    """
+    View to create a model object.
+    """
 
     def get_success_message(self):
         if self.success_message is None:
@@ -377,8 +481,12 @@ class CreateView(PermissionMixin, UrlMixin, ExtraContextMixin,
         return message
 
 
-class DeleteView(SingleObjectMixin, QuestionMixin, RedirectView):
-    question_url_name = None
+class DeleteView(SingleObjectMixin, QuestionView):
+    """
+    View to delete an model object.
+    """
+
+    success_url = None
     success_url_name = None
 
     def get(self, request, *args, **kwargs):
@@ -386,32 +494,53 @@ class DeleteView(SingleObjectMixin, QuestionMixin, RedirectView):
         return super(DeleteView, self).get(request, *args, **kwargs)
 
     def get_redirect_url(self, **kwargs):
-        if self.question_url_name is None and (self.request.method == 'GET' or
-                                               self.get_answer() == 'no'):
-            return self.object.get_absolute_url()
-        else:
-            return super(DeleteView, self).get_redirect_url(**kwargs)
+        """
+        Returns the url on which the delete dialog is shown and the url after
+        the deleten.
 
-    def get_question(self):
+        On GET-requests and on aborted POST-requests, redirect to the detail
+        view as default. The attributes question_url_name or question_url can
+        define other urls.
+        """
+        if self.request.method == 'GET' or self.get_answer() == 'no':
+            url = self.get_url(self.question_url_name, self.question_url,
+                               args=self.get_url_name_args())
+        else:
+            url = self.get_url(self.success_url_name, self.success_url,
+                               args=self.get_url_name_args())
+        return url
+
+    def get_question_message(self):
+        """
+        Returns the question for the delete dialog.
+        """
         return _('Do you really want to delete %s?') % html_strong(self.object)
 
-    def case_yes(self):
+    def on_clicked_yes(self):
+        """
+        Deletes the object.
+        """
         self.object.delete()
 
-    def get_success_message(self):
+    def get_final_message(self):
+        """
+        Prints the success message to the user.
+        """
         return _('%s was successfully deleted.') % html_strong(self.object)
 
-    def get_url_name_args(self):
-        return []
 
-
-class DetailView(PermissionMixin, ExtraContextMixin, _DetailView):
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return super(DetailView, self).get(request, *args, **kwargs)
+class DetailView(PermissionMixin, ExtraContextMixin, django_views.DetailView):
+    """
+    View to show an model object.
+    """
+    pass
 
 
 class PDFView(PermissionMixin, View):
+    """
+    View to generate an PDF.
+    """
+
     filename = _('undefined-filename')
     top_space = 3
     document_title = None
@@ -480,6 +609,8 @@ def send_register_tab(sender, request, context, **kwargs):
         extra_stylefiles = context['extra_stylefiles']
     else:
         extra_stylefiles = []
+    context.setdefault('extra_javascript', [])
+
     # TODO: Do not go over the filesystem by any request
     for app in settings.INSTALLED_APPS:
         try:
