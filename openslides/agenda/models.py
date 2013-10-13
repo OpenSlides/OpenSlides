@@ -25,7 +25,8 @@ from openslides.utils.exceptions import OpenSlidesError
 from openslides.config.api import config
 from openslides.utils.person.models import PersonField
 from openslides.projector.api import (
-    update_projector, get_active_slide, update_projector_overlay)
+    update_projector, get_active_slide, update_projector_overlay,
+    start_countdown, stop_countdown)
 from openslides.projector.models import SlideMixin
 
 
@@ -379,6 +380,9 @@ class Speaker(models.Model):
         self.weight = None
         self.begin_time = datetime.now()
         self.save()
+        # start countdown
+        if config['agenda_couple_countdown_and_speakers']:
+            start_countdown()
 
     def end_speach(self):
         """
@@ -386,3 +390,6 @@ class Speaker(models.Model):
         """
         self.end_time = datetime.now()
         self.save()
+        # stop countdown
+        if config['agenda_couple_countdown_and_speakers']:
+            stop_countdown()
