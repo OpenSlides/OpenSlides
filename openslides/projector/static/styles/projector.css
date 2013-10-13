@@ -176,3 +176,6 @@ tr.total td {
     border-top: 1px solid #333333;
     background-color: #e3e3e3;
 }
+td.elected {
+    background-color: #BED4DE !important;
+}

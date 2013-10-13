@@ -31,8 +31,8 @@ urlpatterns = patterns('openslides.motion.views',
     ),
 
     url(r'^(?P<pk>\d+)/edit/$',
-        'motion_edit',
-        name='motion_edit',
+        'motion_update',
+        name='motion_update',
     ),
 
     url(r'^(?P<pk>\d+)/del/$',
@@ -76,8 +76,8 @@ urlpatterns = patterns('openslides.motion.views',
     ),
 
     url(r'^(?P<pk>\d+)/poll/(?P<poll_number>\d+)/edit/$',
-        'poll_edit',
-        name='motion_poll_edit',
+        'poll_update',
+        name='motion_poll_update',
     ),
 
     url(r'^(?P<pk>\d+)/poll/(?P<poll_number>\d+)/del/$',
