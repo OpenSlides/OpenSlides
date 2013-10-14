@@ -12,7 +12,8 @@
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
-from django.utils.translation import ugettext_lazy as _, ugettext_noop
+from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext_noop
 
 from openslides.utils.models import MinMaxIntegerField
 

@@ -12,7 +12,7 @@
 
 from django import forms
 
-from openslides.utils.person.api import Persons, get_person
+from openslides.utils.person.api import get_person, Persons
 
 
 class PersonChoices(object):

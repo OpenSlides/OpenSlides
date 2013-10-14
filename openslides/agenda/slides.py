@@ -13,7 +13,7 @@
 from django.template.loader import render_to_string
 
 from openslides.config.api import config
-from openslides.projector.api import register_slide, get_projector_content
+from openslides.projector.api import get_projector_content, register_slide
 
 from .models import Item
 

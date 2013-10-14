@@ -10,12 +10,13 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.dispatch import receiver
 from django import forms
-from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
+from django.dispatch import receiver
+from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy, ugettext_noop
 
+from openslides.config.api import ConfigPage, ConfigVariable
 from openslides.config.signals import config_signal
-from openslides.config.api import ConfigVariable, ConfigPage
 
 
 @receiver(config_signal, dispatch_uid='setup_assignment_config_page')

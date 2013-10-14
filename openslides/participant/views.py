@@ -18,13 +18,6 @@ else:
     draw_qrcode = True
 
 from cStringIO import StringIO
-from urllib import urlencode
-from urlparse import parse_qs
-
-from reportlab.lib import colors
-from reportlab.lib.units import cm
-from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, LongTable, Spacer, Table, TableStyle, Image)
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -32,23 +25,28 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import login as django_login
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
-from django.utils.translation import ugettext as _, ugettext_lazy, activate
+from django.utils.translation import ugettext as _
+from django.utils.translation import activate, ugettext_lazy
+from reportlab.lib import colors
+from reportlab.lib.units import cm
+from reportlab.platypus import (Image, LongTable, Paragraph, SimpleDocTemplate,
+                                Spacer, Table, TableStyle)
 
-from openslides.utils.pdf import stylesheet
-from openslides.utils.template import Tab
-from openslides.utils.utils import (
-    template, delete_default_permissions, html_strong)
-from openslides.utils.views import (
-    FormView, PDFView, CreateView, UpdateView, DeleteView, PermissionMixin,
-    RedirectView, SingleObjectMixin, ListView, QuestionView, DetailView)
 from openslides.config.api import config
 from openslides.projector.projector import Widget
+from openslides.utils.pdf import stylesheet
+from openslides.utils.template import Tab
+from openslides.utils.utils import (delete_default_permissions, html_strong,
+                                    template)
+from openslides.utils.views import (CreateView, DeleteView, DetailView,
+                                    FormView, ListView, PDFView,
+                                    PermissionMixin, QuestionView,
+                                    RedirectView, SingleObjectMixin, UpdateView)
 
-from .api import gen_username, gen_password, import_users
-from .forms import (
-    UserCreateForm, UserUpdateForm, UsersettingsForm,
-    UserImportForm, GroupForm)
-from .models import User, Group, get_protected_perm
+from .api import gen_password, gen_username, import_users
+from .forms import (GroupForm, UserCreateForm, UserImportForm, UsersettingsForm,
+                    UserUpdateForm)
+from .models import get_protected_perm, Group, User
 
 
 class UserOverview(ListView):
@@ -448,7 +446,7 @@ class GroupDeleteView(DeleteView):
         Checks whether the group is protected.
         """
         if self.object.pk in [1, 2]:
-            messages.error(request, _('You can not delete this group.'))
+            messages.error(self.request, _('You can not delete this group.'))
             return True
         if (not self.request.user.is_superuser and
             get_protected_perm() in self.object.permissions.all() and

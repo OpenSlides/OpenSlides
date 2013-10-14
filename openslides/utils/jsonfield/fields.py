@@ -1,10 +1,10 @@
 import json
 
-from django.db import models
 from django.core.serializers.json import DjangoJSONEncoder
-from django.utils.translation import ugettext as _
+from django.db import models
 from django.forms.fields import Field
 from django.forms.util import ValidationError as FormValidationError
+from django.utils.translation import ugettext as _
 
 
 class JSONFormField(Field):

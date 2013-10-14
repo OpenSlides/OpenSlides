@@ -11,7 +11,7 @@
 """
 
 from openslides.projector.api import register_slide_model
-from .models import Assignment
 
+from .models import Assignment
 
 register_slide_model(Assignment, 'assignment/slide.html')

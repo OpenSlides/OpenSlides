@@ -13,19 +13,17 @@
 from datetime import datetime
 from os.path import join as path_join
 
+from django.conf import settings
+from django.utils import formats
+from django.utils.translation import ugettext as _
 from reportlab.lib import colors
-from reportlab.lib.styles import StyleSheet1, ParagraphStyle
+from reportlab.lib.styles import ParagraphStyle, StyleSheet1
 from reportlab.lib.units import cm
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.rl_config import defaultPageSize
 
-from django.conf import settings
-from django.utils import formats
-from django.utils.translation import ugettext as _
-
 from openslides.config.api import config
-
 
 # register new truetype fonts
 pdfmetrics.registerFont(TTFont(

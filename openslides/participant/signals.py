@@ -10,18 +10,19 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.dispatch import receiver
 from django import forms
-from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
+from django.dispatch import receiver
+from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy, ugettext_noop
 
-from openslides.core.signals import post_database_setup
+from openslides.config.api import ConfigPage, ConfigVariable
 from openslides.config.signals import config_signal
-from openslides.config.api import ConfigVariable, ConfigPage
+from openslides.core.signals import post_database_setup
 
-from .models import Group
 from .api import create_or_reset_admin_user
+from .models import Group
 
 
 @receiver(config_signal, dispatch_uid='setup_participant_config_page')

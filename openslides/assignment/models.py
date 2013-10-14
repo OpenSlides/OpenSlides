@@ -12,15 +12,17 @@
 
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
 from django.utils.datastructures import SortedDict
+from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy, ugettext_noop
 
+from openslides.config.api import config
+from openslides.poll.models import (BaseOption, BasePoll, BaseVote,
+                                    CountInvalid, CountVotesCast,
+                                    PublishPollMixin)
+from openslides.projector.models import RelatedModelMixin, SlideMixin
 from openslides.utils.person import PersonField
 from openslides.utils.utils import html_strong
-from openslides.config.api import config
-from openslides.projector.models import SlideMixin, RelatedModelMixin
-from openslides.poll.models import (
-    BasePoll, CountInvalid, CountVotesCast, BaseOption, PublishPollMixin, BaseVote)
 
 
 class AssignmentCandidate(RelatedModelMixin, models.Model):

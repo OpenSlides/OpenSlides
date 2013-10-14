@@ -12,22 +12,22 @@
 
 from datetime import datetime
 
+from django import forms
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
-from django import forms
-from django.utils.translation import ugettext_lazy, ugettext_noop, ugettext as _
 from django.template.loader import render_to_string
-from django.core.exceptions import ValidationError
+from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy, ugettext_noop
 
+from openslides.config.api import config, ConfigPage, ConfigVariable
 from openslides.config.signals import config_signal
-from openslides.config.api import config, ConfigVariable, ConfigPage
-
-from openslides.projector.signals import projector_overlays
-from openslides.projector.projector import Overlay
 from openslides.projector.api import get_active_slide
+from openslides.projector.projector import Overlay
+from openslides.projector.signals import projector_overlays
 
-from .models import Speaker, Item
+from .models import Item
 
 
 def validate_start_time(value):

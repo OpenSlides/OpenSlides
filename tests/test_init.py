@@ -7,7 +7,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from openslides import get_version, get_git_commit_id
+from openslides import get_git_commit_id, get_version
 from openslides.utils.test import TestCase
 
 

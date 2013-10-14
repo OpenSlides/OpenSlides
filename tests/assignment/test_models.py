@@ -10,10 +10,10 @@
 
 from django.test.client import Client
 
-from openslides.utils.test import TestCase
 from openslides.agenda.models import Item
 from openslides.assignment.models import Assignment
 from openslides.participant.models import User
+from openslides.utils.test import TestCase
 
 
 class AssignmentModelTest(TestCase):

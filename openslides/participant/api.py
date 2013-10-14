@@ -10,15 +10,15 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from random import choice
 import csv
+from random import choice
 
 from django.db import transaction
 from django.utils.translation import ugettext as _
 
 from openslides.utils import csv_ext
 
-from openslides.participant.models import User, Group
+from .models import Group, User
 
 
 def gen_password():

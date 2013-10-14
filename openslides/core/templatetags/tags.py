@@ -14,18 +14,19 @@ import warnings
 
 from django import template
 from django.utils.translation import ugettext as _
-from openslides.config.api import config
 
+from openslides.config.api import config
 
 register = template.Library()
 
 
+# TODO: remove the tag get_config
 @register.simple_tag
 def get_config(key):
     return config[key]
 
 
-@register.filter
+@register.filter  # noqa
 def get_config(key):
     return config[key]
 

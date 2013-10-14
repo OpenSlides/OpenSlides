@@ -15,7 +15,7 @@ from django import forms
 from openslides.utils.forms import CssClassMixin
 
 
-class SelectWidgetsForm(forms.Form, CssClassMixin):
+class SelectWidgetsForm(CssClassMixin, forms.Form):
     """
     Form to select the widgets.
     """

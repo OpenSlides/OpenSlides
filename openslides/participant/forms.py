@@ -11,15 +11,16 @@
 """
 
 from django import forms
-from django.contrib import messages
-from django.contrib.auth.models import Permission
-from django.utils.translation import ugettext as _, ugettext_lazy
 from django.conf import settings
+from django.contrib.auth.models import Permission
+from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy
 
-from openslides.utils.forms import CssClassMixin, LocalizedModelMultipleChoiceField
-from openslides.participant.models import User, Group, get_protected_perm
-from openslides.participant.api import get_registered_group
 from openslides.config.api import config
+from openslides.utils.forms import (CssClassMixin,
+                                    LocalizedModelMultipleChoiceField)
+
+from .models import get_protected_perm, Group, User
 
 
 class UserCreateForm(CssClassMixin, forms.ModelForm):

@@ -17,13 +17,14 @@
 import csv
 
 from django.db import transaction
-from django.utils.translation import ugettext as _, ugettext_noop
+from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_noop
 
 from openslides.utils import csv_ext
 from openslides.utils.person.api import Persons
 from openslides.utils.utils import html_strong
 
-from .models import Motion, Category
+from .models import Category, Motion
 
 
 def import_motions(csv_file, default_submitter, override=False, importing_person=None):

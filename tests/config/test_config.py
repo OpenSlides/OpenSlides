@@ -8,17 +8,18 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.test.client import Client
-from django.dispatch import receiver
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.auth.models import Permission
 from django import forms
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
+from django.dispatch import receiver
+from django.test.client import Client
 
-from openslides.utils.test import TestCase
-from openslides.participant.models import User
-from openslides.config.api import config, ConfigGroupedPage, ConfigPage, ConfigGroup, ConfigVariable
-from openslides.config.signals import config_signal
+from openslides.config.api import (config, ConfigGroup, ConfigGroupedPage,
+                                   ConfigPage, ConfigVariable)
 from openslides.config.exceptions import ConfigError, ConfigNotFound
+from openslides.config.signals import config_signal
+from openslides.participant.models import User
+from openslides.utils.test import TestCase
 
 
 class HandleConfigTest(TestCase):

@@ -12,21 +12,20 @@
 
 from datetime import datetime
 
-from django.db import models
 from django.contrib.auth.models import AnonymousUser
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext_lazy, ugettext_noop, ugettext as _
-
+from django.db import models
+from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy, ugettext_noop
 from mptt.models import MPTTModel, TreeForeignKey
 
-from openslides.utils.exceptions import OpenSlidesError
-from openslides.config.api import config
-from openslides.utils.person.models import PersonField
-from openslides.projector.api import (
-    update_projector, get_active_slide, update_projector_overlay)
+from openslides.projector.api import (get_active_slide, update_projector,
+                                      update_projector_overlay)
 from openslides.projector.models import SlideMixin
+from openslides.utils.exceptions import OpenSlidesError
+from openslides.utils.person.models import PersonField
 
 
 class Item(SlideMixin, MPTTModel):

@@ -8,14 +8,13 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-import StringIO
 import os
+import StringIO
 
 from django.test.client import Client
 
-from openslides.config.api import config
-from openslides.motion.models import Motion, Category
 from openslides.motion.csv_import import import_motions
+from openslides.motion.models import Category, Motion
 from openslides.participant.models import User
 from openslides.utils.test import TestCase
 

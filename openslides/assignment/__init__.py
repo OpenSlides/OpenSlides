@@ -10,5 +10,4 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from . import signals
-from . import slides
+from . import signals, slides  # noqa

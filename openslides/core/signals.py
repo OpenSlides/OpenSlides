@@ -10,13 +10,13 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.dispatch import Signal, receiver
 from django import forms
-from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
+from django.dispatch import receiver, Signal
+from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy, ugettext_noop
 
+from openslides.config.api import ConfigGroup, ConfigGroupedPage, ConfigVariable
 from openslides.config.signals import config_signal
-from openslides.config.api import ConfigVariable, ConfigGroup, ConfigGroupedPage
-
 
 post_database_setup = Signal()
 

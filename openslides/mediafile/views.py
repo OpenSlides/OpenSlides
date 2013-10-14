@@ -14,10 +14,10 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 
 from openslides.utils.template import Tab
-from openslides.utils.views import ListView, CreateView, UpdateView, DeleteView
+from openslides.utils.views import CreateView, DeleteView, ListView, UpdateView
 
-from .models import Mediafile
 from .forms import MediafileNormalUserCreateForm, MediafileUpdateForm
+from .models import Mediafile
 
 
 class MediafileListView(ListView):
