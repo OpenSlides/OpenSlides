@@ -1,9 +1,8 @@
 from django.db import models
 from django.dispatch import receiver
 
-from openslides.utils.person.models import PersonMixin, PersonField
+from openslides.utils.person.models import PersonField, PersonMixin
 from openslides.utils.person.signals import receive_persons
-from openslides.utils.person.api import Person
 
 
 class TestPerson(PersonMixin, models.Model):

@@ -13,15 +13,15 @@
 from django.conf.urls import patterns, url
 
 from openslides.utils.views import RedirectView
+
 from .signals import config_signal
 from .views import ConfigView
 
-
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     url(r'^$',
         RedirectView.as_view(url_name='config_general'),
-        name='config_first_config_page',
-    ),
+        name='config_first_config_page')
 )
 
 for receiver, config_page in config_signal.send(sender='config_urls'):

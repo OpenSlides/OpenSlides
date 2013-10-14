@@ -5,4 +5,4 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from AnonymousAuth import *
+from AnonymousAuth import *  # noqa

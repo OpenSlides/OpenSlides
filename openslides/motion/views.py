@@ -12,34 +12,33 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.core.urlresolvers import reverse
 from django.contrib import messages
-from django.db import transaction
-from django.db.models import Model
+from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseRedirect
 from django.utils.text import slugify
-from django.utils.translation import ugettext as _, ugettext_lazy, ugettext_noop
+from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy, ugettext_noop
 from reportlab.platypus import SimpleDocTemplate
 
-from openslides.utils.pdf import stylesheet
-from openslides.utils.views import (
-    TemplateView, RedirectView, UpdateView, CreateView, DeleteView, PDFView,
-    DetailView, ListView, FormView, QuestionView, SingleObjectMixin)
+from openslides.agenda.views import CreateRelatedAgendaItemView as _CreateRelatedAgendaItemView
+from openslides.config.api import config
+from openslides.poll.views import PollFormView
+from openslides.projector.api import get_active_slide, update_projector
+from openslides.projector.projector import Widget
 from openslides.utils.template import Tab
 from openslides.utils.utils import html_strong, htmldiff
-from openslides.poll.views import PollFormView
-from openslides.projector.api import get_active_slide
-from openslides.projector.projector import Widget
-from openslides.config.api import config
-from openslides.agenda.views import CreateRelatedAgendaItemView as _CreateRelatedAgendaItemView
+from openslides.utils.views import (CreateView, DeleteView, DetailView,
+                                    FormView, ListView, PDFView, QuestionView,
+                                    RedirectView, SingleObjectMixin, UpdateView)
 
 from .csv_import import import_motions
-from .models import (Motion, MotionSubmitter, MotionSupporter, MotionPoll,
-                     MotionVersion, State, WorkflowError, Category)
-from .forms import (BaseMotionForm, MotionSubmitterMixin, MotionSupporterMixin,
-                    MotionDisableVersioningMixin, MotionCategoryMixin,
-                    MotionIdentifierMixin, MotionWorkflowMixin, MotionImportForm)
-from .pdf import motions_to_pdf, motion_to_pdf, motion_poll_to_pdf
+from .forms import (BaseMotionForm, MotionCategoryMixin,
+                    MotionDisableVersioningMixin, MotionIdentifierMixin,
+                    MotionImportForm, MotionSubmitterMixin,
+                    MotionSupporterMixin, MotionWorkflowMixin)
+from .models import (Category, Motion, MotionPoll, MotionSubmitter,
+                     MotionSupporter, MotionVersion, WorkflowError)
+from .pdf import motion_poll_to_pdf, motion_to_pdf, motions_to_pdf
 
 
 class MotionListView(ListView):

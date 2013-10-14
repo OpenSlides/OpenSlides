@@ -9,13 +9,13 @@
     :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
-from django.db import models
 from django.contrib.auth.models import AnonymousUser
+from django.db import models
 
 from openslides.utils.exceptions import OpenSlidesError
 
+from .api import generate_person_id, get_person
 from .forms import PersonFormField
-from .api import get_person, generate_person_id
 
 
 class PersonField(models.fields.Field):

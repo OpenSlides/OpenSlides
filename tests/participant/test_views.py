@@ -9,11 +9,12 @@
 """
 
 import re
+
 from django.test.client import Client
 
 from openslides.config.api import config
+from openslides.participant.models import get_protected_perm, Group, User
 from openslides.utils.test import TestCase
-from openslides.participant.models import User, Group, get_protected_perm
 
 
 class GroupViews(TestCase):

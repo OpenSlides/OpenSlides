@@ -12,32 +12,33 @@
 
 import os
 
-from reportlab.lib import colors
-from reportlab.platypus import (
-    SimpleDocTemplate, PageBreak, Paragraph, Spacer, Table, TableStyle)
-from reportlab.lib.units import cm
-
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.contrib import messages
+from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
-from django.utils.translation import ungettext, ugettext as _
+from django.utils.translation import ugettext as _
+from django.utils.translation import ungettext
+from reportlab.lib import colors
+from reportlab.lib.units import cm
+from reportlab.platypus import (PageBreak, Paragraph, SimpleDocTemplate, Spacer,
+                                Table, TableStyle)
 
-from openslides.utils.pdf import stylesheet
-from openslides.utils.template import Tab
-
-from openslides.utils.views import (
-    CreateView, DeleteView, RedirectView, UpdateView, ListView, PDFView,
-    DetailView, View, PermissionMixin, SingleObjectMixin, QuestionView)
-from openslides.utils.person import get_person
-from openslides.utils.utils import html_strong
-from openslides.config.api import config
-from openslides.participant.models import User, Group
-from openslides.projector.projector import Widget
-from openslides.poll.views import PollFormView
 from openslides.agenda.views import CreateRelatedAgendaItemView as _CreateRelatedAgendaItemView
-from openslides.assignment.models import Assignment, AssignmentPoll
-from openslides.assignment.forms import AssignmentForm, AssignmentRunForm
+from openslides.config.api import config
+from openslides.participant.models import Group, User
+from openslides.poll.views import PollFormView
+from openslides.projector.projector import Widget
+from openslides.utils.pdf import stylesheet
+from openslides.utils.person import get_person
+from openslides.utils.template import Tab
+from openslides.utils.utils import html_strong
+from openslides.utils.views import (CreateView, DeleteView, DetailView,
+                                    ListView, PDFView, PermissionMixin,
+                                    QuestionView, RedirectView,
+                                    SingleObjectMixin, UpdateView, View)
+
+from .forms import AssignmentForm, AssignmentRunForm
+from .models import Assignment, AssignmentPoll
 
 
 class AssignmentListView(ListView):

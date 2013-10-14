@@ -10,14 +10,14 @@
 
 from django.test.client import Client
 
-from openslides.utils.test import TestCase
 from openslides import get_version
 from openslides.participant.models import User
+from openslides.utils.test import TestCase
 
 
 class VersionViewTest(TestCase):
     def test_get(self):
-        user = User.objects.create_user('CoreMaximilian', 'xxx@xx.xx', 'default')
+        User.objects.create_user('CoreMaximilian', 'xxx@xx.xx', 'default')
         client = Client()
         client.login(username='CoreMaximilian', password='default')
         response = client.get('/version/')

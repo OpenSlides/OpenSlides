@@ -10,16 +10,14 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.test.client import Client
 from django.db.models.query import EmptyQuerySet
+from django.test.client import Client
 
-from openslides.utils.test import TestCase
-from openslides.projector.api import get_active_slide, set_active_slide
-from openslides.participant.models import User
 from openslides.agenda.models import Item
-from openslides.agenda.slides import agenda_slide
+from openslides.participant.models import User
+from openslides.utils.test import TestCase
 
-from .models import RelatedItem, BadRelatedItem
+from .models import BadRelatedItem, RelatedItem
 
 
 class ItemTest(TestCase):

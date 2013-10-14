@@ -10,10 +10,4 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.utils.translation import ugettext_noop
-
-from . import signals
-from . import slides
-
-
-NAME = ugettext_noop('Participant')
+from . import signals, slides  # noqa

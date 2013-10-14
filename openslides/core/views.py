@@ -13,7 +13,7 @@
 from django.conf import settings
 from django.utils.importlib import import_module
 
-from openslides import get_version, get_git_commit_id, RELEASE
+from openslides import get_git_commit_id, get_version, RELEASE
 from openslides.utils.views import TemplateView
 
 

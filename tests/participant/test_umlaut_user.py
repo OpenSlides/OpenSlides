@@ -10,9 +10,8 @@
 
 from django.test.client import Client
 
+from openslides.participant.models import Group, User
 from openslides.utils.test import TestCase
-from openslides.config.api import config
-from openslides.participant.models import User, Group
 
 
 class TestUmlautUser(TestCase):

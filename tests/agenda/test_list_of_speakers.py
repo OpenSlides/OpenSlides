@@ -9,12 +9,11 @@
 
 from django.test.client import Client
 
+from openslides.agenda.models import Item, Speaker
+from openslides.participant.models import Group, User
+from openslides.projector.api import set_active_slide
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.test import TestCase
-from openslides.participant.models import User, Group
-from openslides.agenda.models import Item, Speaker
-from openslides.config.api import config
-from openslides.projector.api import set_active_slide
 
 
 class ListOfSpeakerModelTests(TestCase):
@@ -151,7 +150,7 @@ class TestAgendaItemView(SpeakerViewTestCase):
         group = Group.objects.create(name='test', group_as_person=True)
         Speaker.objects.add(group, self.item1)
         self.assertTrue(Speaker.objects.filter(person=group.person_id, item=self.item1).exists())
-        response = self.admin_client.get('/agenda/1/')
+        self.admin_client.get('/agenda/1/')
 
 
 class TestSpeakerDeleteView(SpeakerViewTestCase):
@@ -167,7 +166,7 @@ class TestSpeakerDeleteView(SpeakerViewTestCase):
         self.assertFalse(Speaker.objects.filter(person=self.speaker1, item=self.item1).exists())
 
     def test_post_as_user(self):
-        speaker = Speaker.objects.add(self.speaker1, self.item1)
+        Speaker.objects.add(self.speaker1, self.item1)
 
         response = self.speaker1_client.post(
             '/agenda/1/speaker/del/', {'yes': 'yes'})
@@ -204,11 +203,11 @@ class TestSpeakerEndSpeachView(SpeakerViewTestCase):
 
 class SpeakerListOpenView(SpeakerViewTestCase):
     def test_get(self):
-        response = self.check_url('/agenda/1/speaker/close/', self.admin_client, 302)
+        self.check_url('/agenda/1/speaker/close/', self.admin_client, 302)
         item = Item.objects.get(pk=self.item1.pk)
         self.assertTrue(item.speaker_list_closed)
 
-        response = self.check_url('/agenda/1/speaker/reopen/', self.admin_client, 302)
+        self.check_url('/agenda/1/speaker/reopen/', self.admin_client, 302)
         item = Item.objects.get(pk=self.item1.pk)
         self.assertFalse(item.speaker_list_closed)
 

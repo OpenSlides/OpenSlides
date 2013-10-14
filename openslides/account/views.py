@@ -10,8 +10,8 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.utils.translation import ugettext as _
 from django.contrib.auth.models import AnonymousUser
+from django.utils.translation import ugettext as _
 
 from openslides.config.api import config
 from openslides.projector.projector import Widget

@@ -8,10 +8,10 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.template import Template, Context
+from django.template import Context, Template
 
-from openslides.utils.test import TestCase
 from openslides.config.api import config
+from openslides.utils.test import TestCase
 
 from .models import TestModel
 

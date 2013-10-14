@@ -11,13 +11,13 @@
 """
 
 from django.conf import settings
-from django.conf.urls import patterns, url, include
+from django.conf.urls import include, patterns, url
 from django.utils.importlib import import_module
-
 
 handler500 = 'openslides.utils.views.server_error'
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     (r'^agenda/', include('openslides.agenda.urls')),
     (r'^motion/', include('openslides.motion.urls')),
     (r'^assignment/', include('openslides.assignment.urls')),
@@ -28,7 +28,7 @@ urlpatterns = patterns('',
     (r'^i18n/', include('django.conf.urls.i18n')),
 )
 
-js_info_dict = {'packages': [],}
+js_info_dict = {'packages': []}
 
 for plugin in settings.INSTALLED_PLUGINS:
     try:
@@ -41,30 +41,29 @@ for plugin in settings.INSTALLED_PLUGINS:
                                                                 % plugin)))
     js_info_dict['packages'].append(plugin)
 
-urlpatterns += patterns('',
+# TODO: move this patterns into core or the participant app
+urlpatterns += patterns(
+    '',
     (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
 
     url(r'^login/$',
         'openslides.participant.views.login',
-        name='user_login',
-    ),
+        name='user_login'),
 
     url(r'^logout/$',
         'django.contrib.auth.views.logout_then_login',
-        name='user_logout',
-    ),
+        name='user_logout'),
 
     url(r'^usersettings/$',
         'openslides.participant.views.user_settings',
-        name='user_settings',
-    ),
+        name='user_settings'),
 
     url(r'^usersettings/changepassword/$',
         'openslides.participant.views.user_settings_password',
-        name='password_change',
-    ),
+        name='password_change'),
 )
 
-urlpatterns += patterns('',
+urlpatterns += patterns(
+    '',
     (r'^', include('openslides.core.urls')),
 )

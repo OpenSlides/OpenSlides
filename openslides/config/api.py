@@ -10,8 +10,8 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from .models import ConfigStore
 from .exceptions import ConfigError, ConfigNotFound
+from .models import ConfigStore
 from .signals import config_signal
 
 

@@ -10,11 +10,10 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.db import models
-from django.dispatch import receiver
-from django.utils.translation import ugettext_lazy, ugettext_noop
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
+from django.db import models
+from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.utils.utils import int_or_none
 
@@ -64,7 +63,7 @@ class SlideMixin(object):
 
     def save(self, *args, **kwargs):
         """
-        Updates the projector, if 'self' is the active slide.
+        Updates the projector, if the object is on the projector and changed.
         """
         from openslides.projector.api import update_projector
         value = super(SlideMixin, self).save(*args, **kwargs)
@@ -73,6 +72,9 @@ class SlideMixin(object):
         return value
 
     def delete(self, *args, **kwargs):
+        """
+        Updates the projector, if the object is on the projector and is deleted.
+        """
         from openslides.projector.api import update_projector
         value = super(SlideMixin, self).delete(*args, **kwargs)
         if self.is_active_slide():
@@ -100,9 +102,9 @@ class SlideMixin(object):
         """
         from openslides.projector.api import get_active_slide
         active_slide = get_active_slide()
-        pk = int_or_none(active_slide.get('pk', None))
+        slide_pk = int_or_none(active_slide.get('pk', None))
         return (active_slide['callback'] == self.slide_callback_name and
-                self.pk == pk)
+                self.pk == slide_pk)
 
     def get_slide_context(self, **context):
         """
