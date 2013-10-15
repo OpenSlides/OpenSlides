@@ -41,9 +41,17 @@
         </small>
     </h1>
 
+    {% if perms.participant.can_manage_participant %}
+    <form action="{% url 'user_bulk_action' %}" method="post">
+    {% csrf_token %}
+    {% endif %}
+
     <table id="dataTable" class="table table-striped table-bordered" cellpadding="0" cellspacing="0" border="0">
     <thead>
         <tr>
+            {% if perms.participant.can_manage_participant %}
+            <th><input type="checkbox" id="all-users" /></th>
+            {% endif %}
             <th>{% trans "Present" %}</th>
             <th class="optional">{% trans "Title" %}</th>
             <th>{% trans "Name" %}</th>
@@ -60,6 +68,13 @@
     <tbody>
         {% for user in users %}
             <tr class="{% if user.is_active_slide %}activeline{% endif %}">
+                {% if perms.participant.can_manage_participant %}
+                <td>
+                    {% if user != request_user %}
+                    <input type="checkbox" name="users" value="{{ user.id }}" />
+                    {% endif %}
+                </td>
+                {% endif %}
                 <td>{% if perms.participant.can_manage_participant %}
                         {% if user != request_user %}
                          <a href="{% url 'user_status_toggle' user.id %}"
@@ -69,9 +84,10 @@
                          </a>
                          {% endif %}
                     {% else %}
-                        <span class="status_link">
-                         <i class="status_link {% if user.is_active %}icon-on{% else %}icon-off{% endif %} tooltip-bottom"
-                            data-original-title="{% if user.is_active %}{% trans 'present' %}{% else %}{% trans 'absent' %}{% endif %}"></i>
+                         <span class="status_link">
+                             <i class="status_link {% if user.is_active %}icon-on{% else %}icon-off{% endif %} tooltip-bottom"
+                                data-original-title="{% if user.is_active %}{% trans 'present' %}{% else %}{% trans 'absent' %}{% endif %}"></i>
+                         </span>
                     {% endif %}
                 </td>
                 <td class="optional">{{ user.title }}</td>
@@ -130,4 +146,21 @@
         {% endfor %}
     </tbody>
     </table>
+    {% if perms.participant.can_manage_participant %}
+        <label class="select inline">
+            {% trans 'Selection' %}
+            <select name="action">
+                <option value="activate">{% trans 'present' %}</option>
+                <option value="deactivate">{% trans 'absent' %}</option>
+                <option value="delete">{% trans 'Delete' %}</option>
+            </select>
+        </label>
+        <input type="submit" />
+    </form>
+    <script type="text/javascript">
+        $('#all-users').on("click", function() {
+            $(':checkbox[name=users]').prop('checked', $('#all-users').prop('checked'))
+        });
+    </script>
+    {% endif %}
 {% endblock %}

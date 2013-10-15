@@ -13,6 +13,7 @@
 from django.conf.urls import patterns, url
 
 from . import views
+from openslides.participant.views import UserBulkActionView
 
 urlpatterns = patterns(
     '',
@@ -59,6 +60,10 @@ urlpatterns = patterns(
     url(r'^import/$',
         views.UserImportView.as_view(),
         name='user_import'),
+
+    url(r'^bulk/$',
+        UserBulkActionView.as_view(),
+        name='user_bulk_action'),
 
     # Group
     url(r'^group/$',
