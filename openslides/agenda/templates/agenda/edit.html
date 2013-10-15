@@ -2,6 +2,7 @@
 
 {% load i18n %}
 {% load tags %}
+{% load staticfiles %}
 
 {% block title %}
     {% if item %}
@@ -10,6 +11,23 @@
         {% trans "New item" %}
     {% endif %}
     – {{ block.super }}
+{% endblock %}
+
+{% block header %}
+    {{ block.super }}
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/ckeditor.css' %}" />
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'javascript/ckeditor/ckeditor.js' %}"></script>
+    <script type="text/javascript" src="{% static 'javascript/ckeditor-config.js' %}"></script>
+    <script>
+        // Init CKeditor
+        $(function() {
+            CKEDITOR.replace('id_text', ck_options);
+        });
+    </script>
 {% endblock %}
 
 {% block content %}

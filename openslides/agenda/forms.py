@@ -16,16 +16,19 @@ from django import forms
 from django.utils.translation import ugettext_lazy
 from mptt.forms import TreeNodeChoiceField
 
-from openslides.utils.forms import CssClassMixin
+from openslides.utils.forms import CssClassMixin, CleanHtmlFormMixin
 from openslides.utils.person.forms import PersonFormField
 
 from .models import Item, Speaker
 
 
-class ItemForm(CssClassMixin, forms.ModelForm):
+class ItemForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
     """
     Form to create of update an item.
     """
+
+    clean_html_fields = ('text', )
+
     parent = TreeNodeChoiceField(
         queryset=Item.objects.all(), label=ugettext_lazy("Parent item"), required=False)
 
