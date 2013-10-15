@@ -44,13 +44,13 @@ View = django_views.View
 
 class LoginMixin(object):
     """
-    Mixin for Views, that only can be viseted from users how are logedin.
+    Mixin for Views, that only can be visited from users who are logged in.
     """
 
     @method_decorator(login_required)
     def dispatch(self, request, *args, **kwargs):
         """
-        Check if the user is loged in.
+        Check if the user is logged in.
         """
         return super(LoginMixin, self).dispatch(request, *args, **kwargs)
 
@@ -95,7 +95,7 @@ class AjaxMixin(object):
 
     def get_ajax_context(self, **kwargs):
         """
-        Returns a dictonary with the context for the ajax response.
+        Returns a dictionary with the context for the ajax response.
         """
         return kwargs
 
@@ -431,7 +431,7 @@ class QuestionView(RedirectView):
         """
         Returns the message to show after the action.
 
-        Uses the attribute 'final_messsage' as default
+        Uses the attribute 'final_message' as default
         """
         return self.final_message
 
@@ -448,6 +448,15 @@ class FormView(PermissionMixin, ExtraContextMixin, FormMixin,
     View for forms.
     """
     pass
+class NoRenderFormView(FormView):
+    """
+    Like FormView but doesn't render the form on GET.
+    """
+    def get(self, request, *args,**kwargs):
+        return self.redirect_to_success_url()
+
+    def redirect_to_success_url(self):
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class UpdateView(PermissionMixin, ExtraContextMixin,
@@ -493,7 +502,7 @@ class DeleteView(SingleObjectMixin, QuestionView):
     def get_redirect_url(self, **kwargs):
         """
         Returns the url on which the delete dialog is shown and the url after
-        the deleten.
+        the deletion.
 
         On GET-requests and on aborted POST-requests, redirect to the detail
         view as default. The attributes question_url_name or question_url can
