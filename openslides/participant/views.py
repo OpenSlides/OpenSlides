@@ -41,11 +41,13 @@ from openslides.utils.utils import (delete_default_permissions, html_strong,
 from openslides.utils.views import (CreateView, DeleteView, DetailView,
                                     FormView, ListView, PDFView,
                                     PermissionMixin, QuestionView,
-                                    RedirectView, SingleObjectMixin, UpdateView)
+                                    RedirectView, SingleObjectMixin,
+                                    UpdateView, NoRenderFormView)
 
 from .api import gen_password, gen_username, import_users
-from .forms import (GroupForm, UserCreateForm, UserImportForm, UsersettingsForm,
-                    UserUpdateForm)
+from .forms import (GroupForm, UserCreateForm,
+                    UserImportForm, UsersettingsForm,
+                    UserUpdateForm, UserBulkActionForm)
 from .models import get_protected_perm, Group, User
 
 
@@ -167,6 +169,30 @@ class UserDeleteView(DeleteView):
         else:
             super(UserDeleteView, self).pre_post_redirect(request, *args, **kwargs)
 
+
+class UserBulkActionView(NoRenderFormView):
+    permission_required = 'participant.can_manage_participant'
+    form_class = UserBulkActionForm
+    success_url_name = 'user_overview'
+
+    def form_invalid(self, form):
+        messages.error(self.request, _('Form invalid.'))
+        return self.redirect_to_success_url()
+
+    def form_valid(self, form):
+        action = form.cleaned_data['action']
+        users = form.cleaned_data['users']
+        count = users.count()
+
+        if users.filter(id = self.request.user.id).count() is not 0:
+            messages.error(self.request, _('You can not select yourself.'))
+        elif action == 'delete':
+            users.delete()
+            messages.success(self.request, _('%d User deleted.') % count)
+        else:
+            users.update(is_active = (action == 'activate'))
+            messages.success(self.request, _('%d User updated.') % count)
+        return self.redirect_to_success_url()
 
 class SetUserStatusView(RedirectView, SingleObjectMixin):
     """

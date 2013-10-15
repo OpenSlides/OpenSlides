@@ -179,3 +179,7 @@ class UsersettingsForm(CssClassMixin, forms.ModelForm):
 class UserImportForm(CssClassMixin, forms.Form):
     csvfile = forms.FileField(widget=forms.FileInput(attrs={'size': '50'}),
                               label=ugettext_lazy('CSV File'))
+
+class UserBulkActionForm(forms.Form):
+    users = forms.ModelMultipleChoiceField(queryset=User._default_manager.all())
+    action = forms.ChoiceField(choices=[('activate', ''), ('deactivate', ''),('delete', '')])
