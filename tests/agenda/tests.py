@@ -207,6 +207,13 @@ class ViewTest(TestCase):
         self.assertIsNone(Item.objects.get(pk=1).parent)
         self.assertEqual(Item.objects.get(pk=2).parent_id, 1)
 
+    def test_delete(self):
+        response = self.adminClient.get('/agenda/%s/del/' % self.item1.pk)
+        self.assertRedirects(response, '/agenda/')
+        response = self.adminClient.post('/agenda/%s/del/' % self.item1.pk, {'yes': 1})
+        self.assertRedirects(response, '/agenda/')
+        self.assertFalse(Item.objects.filter(pk=1).exists())
+
 
 class ConfigTest(TestCase):
     def setUp(self):
