@@ -43,9 +43,8 @@ class MediafileTest(TestCase):
         self.normal_user.reset_password('default')
 
         # Setup a mediafile object
-        self.tmp_dir = os.path.realpath(os.path.dirname(__file__))
-        settings.MEDIA_ROOT = self.tmp_dir
-        tmpfile_no, mediafile_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=self.tmp_dir)
+        self.tmp_dir = settings.MEDIA_ROOT
+        tmpfile_no, mediafile_path = tempfile.mkstemp(prefix='tmp_openslides_test_', dir=self.tmp_dir)
         self.object = Mediafile.objects.create(title='Title File 1', mediafile=mediafile_path, uploader=self.vip_user)
         os.close(tmpfile_no)
 
@@ -155,7 +154,7 @@ class MediafileTest(TestCase):
 
     def test_edit_mediafile_post_request(self):
         # Test only one user
-        tmpfile_no, mediafile_2_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=self.tmp_dir)
+        tmpfile_no, mediafile_2_path = tempfile.mkstemp(prefix='tmp_openslides_test_', dir=self.tmp_dir)
         os.close(tmpfile_no)
         object_2 = Mediafile.objects.create(title='Title File 2', mediafile=mediafile_2_path, uploader=self.vip_user)
         client_1 = self.login_clients()['client_manager']
@@ -185,7 +184,7 @@ class MediafileTest(TestCase):
         self.assertRedirects(response, expected_url='/login/?next=/mediafile/2/del/', status_code=302, target_status_code=200)
 
     def test_delete_mediafile_post_request(self):
-        tmpfile_no, mediafile_3_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=self.tmp_dir)
+        tmpfile_no, mediafile_3_path = tempfile.mkstemp(prefix='tmp_openslides_test_', dir=self.tmp_dir)
         os.close(tmpfile_no)
         object_3 = Mediafile.objects.create(title='Title File 3', mediafile=mediafile_3_path)
         client_1 = self.login_clients()['client_manager']
@@ -194,7 +193,7 @@ class MediafileTest(TestCase):
         self.assertFalse(os.path.exists(object_3.mediafile.path))
 
     def test_filesize(self):
-        tmpfile_no, mediafile_4_path = tempfile.mkstemp(prefix='tmp_openslides_test', dir=self.tmp_dir)
+        tmpfile_no, mediafile_4_path = tempfile.mkstemp(prefix='tmp_openslides_test_', dir=self.tmp_dir)
         os.close(tmpfile_no)
         object_4 = Mediafile.objects.create(title='Title File 4', mediafile=mediafile_4_path)
         self.assertEqual(object_4.get_filesize(), '< 1 kB')
