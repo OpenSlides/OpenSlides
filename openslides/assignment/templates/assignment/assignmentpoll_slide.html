@@ -1,0 +1,59 @@
+{% load i18n %}
+{% load humanize %}
+{% load staticfiles %}
+{% load tags %}
+
+<h1>
+    {{ poll.assignment }}
+    <br>
+    <small>
+        {% trans "Election" %}
+        {% if poll.get_ballot > 1 %}| {{ poll.get_ballot|ordinal|safe }} {% trans "ballot" %}{% endif %}
+    </small>
+</h1>
+
+<p>
+{% if poll.has_votes and poll.published %}
+        <table class="result big nobr">
+        {% for option in poll.get_options %}
+            <tr {% if option.candidate in poll.assignment.elected %}class="elected"{% endif %}>
+                <td>{{ option }}</td>
+                <td class="bold">
+                {% if not "assignment_publish_winner_results_only"|get_config or option.candidate in poll.assignment.elected %}
+                    {% if poll.yesnoabstain %}
+                        <img src="{% static 'img/voting-yes.png' %}"> {% trans 'Yes' %}:
+                        {{ option.Yes }}<br>
+                        <img src="{% static 'img/voting-no.png' %}"> {% trans 'No' %}:
+                        {{ option.No }}<br>
+                        <img src="{% static 'img/voting-abstention.png' %}"> {% trans 'Abstention' %}:
+                        {{ option.Abstain }}
+                    {% else %}
+                        {{ option.Votes }}
+                    {% endif %}
+                {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        {% if poll.votesvalid != None %}
+            <tr class="total">
+                <td><img src="{% static 'img/voting-yes-grey.png' %}"> {% trans 'Valid votes' %}:</td>
+                <td class="bold">{{ poll.print_votesvalid }}</td>
+            </tr>
+        {% endif %}
+        {% if poll.votesinvalid != None %}
+            <tr class="total">
+                <td><img src="{% static 'img/voting-invalid.png' %}"> {% trans 'Invalid votes' %}:</td>
+                <td class="bold">{{ poll.print_votesinvalid }}</td>
+            </tr>
+        {% endif %}
+        {% if poll.votescast != None %}
+            <tr class="total">
+                <td><img src="{% static 'img/voting-total.png' %}"> {% trans 'Votes cast' %}:</td>
+                <td class="bold">{{ poll.print_votescast }}</td>
+            </tr>
+        {% endif %}
+        </table>
+{% else %}
+    <i>{% trans "No result available." %}</i>
+{% endif %}
+</p>

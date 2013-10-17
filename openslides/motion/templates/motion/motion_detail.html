@@ -204,54 +204,60 @@
         <span class="label label-info">{% trans motion.state.name %}</span>
         <br>
 
-        <!-- Vote results -->
-        <h5>{% trans "Vote results" %}:</h5>
+        <!-- Vote result -->
+        <h5>{% trans "Vote result" %}:</h5>
         {% with motion.polls.all as polls %}
-        <ul id="motion-vote-results">
         {% for poll in polls %}
             {% if perms.motion.can_manage_motion or poll.has_votes %}
-                <li><b>{{ poll.poll_number|ordinal|safe }} {% trans "vote" %}</b>
+                <p>{{ poll.poll_number|ordinal|safe }} {% trans "vote" %}:<br>
                     {% if perms.motion.can_manage_motion %}
-                        <a class="btn btn-mini" href="{{ poll|absolute_url:'update' }}" title="{% trans 'Edit Vote' %}"><i class="icon-pencil"></i></a>
-                        <a class="btn btn-mini" href="{{ poll|absolute_url:'delete' }}" title="{% trans 'Delete Vote' %}"><i class="icon-remove"></i></a>
+                        <a class="btn btn-mini activate_link {% if poll.is_active_slide %}btn-primary{% endif %}" href="{{ poll|absolute_url:'projector' }}"
+                            rel="tooltip" data-original-title="{% trans 'Show vote result' %}">
+                            <i class="icon-facetime-video {% if poll.is_active_slide %}icon-white{% endif %}"></i></a>
+                        <a href="{% url 'motionpoll_pdf' motion.id poll.poll_number %}" class="btn btn-mini" target="_blank"
+                            rel="tooltip" data-original-title="{% trans 'Ballot paper as PDF' %}"><i class="icon-print"></i></a>
+                        <a class="btn btn-mini" href="{{ poll|absolute_url:'update' }}"
+                            rel="tooltip" data-original-title="{% trans 'Edit Vote' %}"><i class="icon-pencil"></i></a>
+                        <a class="btn btn-mini" href="{{ poll|absolute_url:'delete' }}"
+                            rel="tooltip" data-original-title="{% trans 'Delete Vote' %}"><i class="icon-remove"></i></a>
+                        </p>
                     {% endif %}
-                    <br>
                     {% if poll.has_votes %}
+                        <div class="result">
                         {% with poll.get_options.0 as option %}
                             <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.Yes }}<br>
                             <img src="{% static 'img/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.No }}<br>
                             <img src="{% static 'img/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ option.Abstain }}<br>
                             {% if poll.votesvalid != None or poll.votesinvalid != None %}
-                                <div class="resultline">
+                                <hr>
                                 {% if poll.votesvalid != None %}
                                     <img src="{% static 'img/voting-yes-grey.png' %}" title="{% trans 'Valid votes' %}"> {{ poll.print_votesvalid }}<br>
                                 {% endif %}
                                 {% if poll.votesinvalid != None %}
                                     <img src="{% static 'img/voting-invalid.png' %}" title="{% trans 'Invalid votes' %}"> {{ poll.print_votesinvalid }}<br>
                                 {% endif %}
-                                </div>
                             {% endif %}
                             {% if poll.votescast != None %}
-                                <div class="resultline">
-                                    <img src="{% static 'img/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
-                                </div>
+                                <hr>
+                                <img src="{% static 'img/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
                             {% endif %}
                         {% endwith %}
+                        </div>
                     {% else %}
                         {% if perms.motion.can_manage_motion %}
-                            <span class="label label-info">{% trans 'No results' %}</span>
+                            <p><span class="label label-info">{% trans 'No result' %}</span></p>
                          {% endif %}
                     {% endif %}
-                </li>
             {% endif %}
         {% empty %}
-        <span style="margin-left:-25px;">–</span>
+            –
         {% endfor %}
-        </ul>
         {% if allowed_actions.create_poll %}
-        <a href="{% url 'motion_poll_create' motion.id %}" class="btn btn-mini">
-            <i class="icon-assignment"></i> {% trans 'New vote' %}
-        </a>
+            <p>
+                <a href="{% url 'motionpoll_create' motion.id %}" class="btn btn-mini">
+                    <i class="icon-assignment"></i> {% trans 'New vote' %}
+                </a>
+            </p>
         {% endif %}
         {% endwith %}
 

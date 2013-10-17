@@ -42,10 +42,6 @@ urlpatterns = patterns(
         views.AssignmentRunOtherDeleteView.as_view(),
         name='assignment_delother'),
 
-    url(r'^poll/(?P<poll_id>\d+)/print/$',
-        views.AssignmentPollPDF.as_view(),
-        name='assignment_poll_pdf'),
-
     url(r'^(?P<pk>\d+)/agenda/$',
         views.CreateRelatedAgendaItemView.as_view(),
         name='assignment_create_agenda'),
@@ -60,21 +56,25 @@ urlpatterns = patterns(
 
     url(r'^(?P<pk>\d+)/gen_poll/$',
         views.PollCreateView.as_view(),
-        name='assignment_poll_create'),
+        name='assignmentpoll_create'),
 
-    url(r'^poll/(?P<poll_id>\d+)/$',
+    url(r'^poll/(?P<poll_id>\d+)/edit/$',
         views.PollUpdateView.as_view(),
-        name='assignment_poll_view'),
+        name='assignmentpoll_update'),
 
     url(r'^poll/(?P<pk>\d+)/del/$',
         views.AssignmentPollDeleteView.as_view(),
-        name='assignment_poll_delete'),
+        name='assignmentpoll_delete'),
+
+    url(r'^poll/(?P<poll_id>\d+)/print/$',
+        views.AssignmentPollPDF.as_view(),
+        name='assignmentpoll_pdf'),
 
     # TODO: use seperate urls to publish and unpublish the poll
     #       see assignment_user_elected
     url(r'^poll/(?P<pk>\d+)/pub/$',
         views.SetPublishStatusView.as_view(),
-        name='assignment_poll_publish_status'),
+        name='assignmentpoll_publish_status'),
 
     url(r'^(?P<pk>\d+)/elected/(?P<user_id>[^/]+)/$',
         views.SetElectedView.as_view(),

@@ -39,20 +39,15 @@ td.diff_header {
 }
 
 
-/*** motion vote results list ***/
-#motion-vote-results {
-    list-style: none;
-}
-#motion-vote-results li {
-    margin-top: 5px;
-    margin-bottom: 15px;
-}
-#motion-vote-results img {
+/*** motion vote result ***/
+.well .result img {
     margin-top: -4px;
 }
-#motion-vote-results .resultline {
+.well .result {
+    margin-bottom: 10px;
+}
+.well .result hr {
     border-top: 1px solid;
-    padding-top: 5px;
     margin: 5px 0;
     width: 10em;
 }

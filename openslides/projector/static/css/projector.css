@@ -53,7 +53,7 @@ body{
     background: url(../img/glyphicons_054_clock_big.png) no-repeat scroll 0px 0px;
 }
 
-/*** CONTENT with base style elements***/
+/*** CONTENT with base style elements ***/
 #content {
     position: absolute;
     left: 75px;
@@ -104,10 +104,20 @@ li {
 .well h4.first {
     margin-top: 0;
 }
-.resultline {
+.well .result {
+    line-height: 30px;
+}
+.well .result hr {
     border-top: 1px solid;
     margin: 5px 0;
     width: 10em;
+}
+.result.big {
+    font-size: 120%;
+    line-height: 40px;
+}
+.result .bold {
+    font-weight: bold;
 }
 hr {
     margin: 10px 0;
@@ -187,6 +197,6 @@ tr.total td {
     border-top: 1px solid #333333;
     background-color: #e3e3e3;
 }
-td.elected {
+tr.elected td {
     background-color: #BED4DE !important;
 }

@@ -8,7 +8,7 @@
     <h4 class="first">{% trans "Status" %}:</h4>
     {% trans motion.state.name %}
 
-    <!-- poll results -->
+    <!-- vote result -->
     {% with motion.polls.all as polls %}
     {% if polls.exists and polls.0.has_votes %}
         {% for poll in polls reversed %}
@@ -19,12 +19,12 @@
                     <h4>{% trans "Poll result" %}:</h4>
                 {% endif %}
                 {% with poll.get_options.0 as option %}
-                <div class="results">
+                <div class="result">
                     <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.Yes }} <br>
                     <img src="{% static 'img/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.No }} <br>
                     <img src="{% static 'img/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ option.Abstain }}<br>
                     {% if poll.votesvalid != None or poll.votesinvalid != None %}
-                        <div class="resultline"></div>
+                        <hr>
                         {% if poll.votesvalid != None %}
                             <img src="{% static 'img/voting-yes-grey.png' %}" title="{% trans 'Valid votes' %}"> {{ poll.print_votesvalid }}<br>
                         {% endif %}
@@ -33,14 +33,14 @@
                         {% endif %}
                     {% endif %}
                     {% if poll.votescast != None %}
-                        <div class="resultline"></div>
+                        <hr>
                         <img src="{% static 'img/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
                     {% endif %}
                 </div>
                 {% endwith %}
             {% else %}
                 {% if poll|length == 1 %}
-                <i>{% trans "No poll results available." %}</i>
+                <i>{% trans "No result available." %}</i>
                 {% endif %}
             {% endif %}
         {% endfor %}

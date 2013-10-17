@@ -12,7 +12,7 @@
             {% if field.name == "q" %}
                 <label for="id_q">{% trans 'Search' %}:</label>
                 <div class="input-append">
-                    <input type="text" id="id_q" name="q" class="" value="{{ field.value }}">
+                    <input type="text" id="id_q" name="q" value="{{ field.value }}">
                     <button type="submit" class="btn">{% trans "Search" %}</button>
                 </div>
             {% elif field.name == "models" %}

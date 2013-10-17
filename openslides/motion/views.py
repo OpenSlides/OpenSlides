@@ -483,7 +483,7 @@ class PollCreateView(SingleObjectMixin, RedirectView):
     """
     permission_required = 'motion.can_manage_motion'
     model = Motion
-    url_name = 'motion_poll_detail'
+    url_name = 'motionpoll_detail'
 
     def get(self, request, *args, **kwargs):
         """
@@ -504,7 +504,7 @@ class PollCreateView(SingleObjectMixin, RedirectView):
         """
         Return the URL to the UpdateView of the poll.
         """
-        return reverse('motion_poll_update', args=[self.object.pk, self.poll.poll_number])
+        return reverse('motionpoll_update', args=[self.object.pk, self.poll.poll_number])
 
 poll_create = PollCreateView.as_view()
 
@@ -545,7 +545,7 @@ class PollUpdateView(PollMixin, PollFormView):
     Poll Class to use for this view.
     """
 
-    template_name = 'motion/poll_form.html'
+    template_name = 'motion/motionpoll_form.html'
 
     def get_context_data(self, **kwargs):
         """

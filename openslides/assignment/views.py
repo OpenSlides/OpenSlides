@@ -204,7 +204,7 @@ class PollCreateView(SingleObjectMixin, RedirectView):
 
 class PollUpdateView(PollFormView):
     poll_class = AssignmentPoll
-    template_name = 'assignment/poll_view.html'
+    template_name = 'assignment/assignmentpoll_form.html'
 
     def get_context_data(self, **kwargs):
         context = super(PollUpdateView, self).get_context_data(**kwargs)
@@ -382,7 +382,7 @@ class AssignmentPDF(PDFView):
         # Left side
         cell3a = []
         cell3a.append(Paragraph(
-            "%s:" % (_("Vote results")), stylesheet['Heading4']))
+            "%s:" % (_("Vote result")), stylesheet['Heading4']))
 
         if polls.count() == 1:
             cell3a.append(Paragraph(

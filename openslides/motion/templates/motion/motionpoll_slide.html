@@ -1,0 +1,54 @@
+{% load i18n %}
+{% load humanize %}
+{% load staticfiles %}
+
+<h1>
+    {{ poll.motion.active_version.title }}
+    <br>
+    <small>
+        {% trans "Motion" %} {{ poll.motion.identifier|default:'' }}
+        {% if poll.motion.get_active_version.version_number > 1 %} | {% trans 'Version' %} {{ poll.motion.active_version.version_number }}{% endif %}
+        {% if poll.poll_number > 1 %}| {{ poll.poll_number|ordinal|safe }} {% trans "vote" %}{% endif %}
+    </small>
+</h1>
+
+<p>
+    {% if poll.has_votes %}
+        {% with poll.get_options.0 as option %}
+        <table class="well result big">
+            <tr>
+                <td><img src="{% static 'img/voting-yes.png' %}"> {% trans 'Yes' %}:</td>
+                <td class="bold">{{ option.Yes }}</td>
+            </tr>
+            <tr>
+                <td><img src="{% static 'img/voting-no.png' %}"> {% trans 'No' %}:</td>
+                <td class="bold">{{ option.No }}</td>
+            </tr>
+            <tr>
+                <td><img src="{% static 'img/voting-abstention.png' %}"> {% trans 'Abstention' %}:</td>
+                <td class="bold">{{ option.No }}</td>
+            </tr>
+            {% if poll.votesvalid != None %}
+                <tr class="total">
+                    <td><img src="{% static 'img/voting-yes-grey.png' %}"> {% trans 'Valid votes' %}:</td>
+                    <td class="bold">{{ poll.print_votesvalid }}</td>
+                </tr>
+            {% endif %}
+            {% if poll.votesinvalid != None %}
+                <tr class="total">
+                    <td><img src="{% static 'img/voting-invalid.png' %}"> {% trans 'Invalid votes' %}:</td>
+                    <td class="bold">{{ poll.print_votesinvalid }}</td>
+                </tr>
+            {% endif %}
+            {% if poll.votescast != None %}
+                <tr class="total">
+                    <td><img src="{% static 'img/voting-total.png' %}"> {% trans 'Votes cast' %}:</td>
+                    <td class="bold">{{ poll.print_votescast }}</td>
+                </tr>
+            {% endif %}
+        </table>
+        {% endwith %}
+    {% else %}
+        <i>{% trans "No result available." %}</i>
+    {% endif %}
+</p>

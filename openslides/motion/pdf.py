@@ -97,7 +97,7 @@ def motion_to_pdf(pdf, motion):
         cell5b.append(Paragraph("%s" % version.version_number, stylesheet['Normal']))
         motion_data.append([cell5a, cell5b])
 
-    # voting results
+    # voting result
     polls = []
     for poll in motion.polls.all():
         if not poll.has_votes():
@@ -108,7 +108,7 @@ def motion_to_pdf(pdf, motion):
         cell6a = []
         cell6b = []
         cell6a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font>" %
-                                _("Vote results"), stylesheet['Heading4']))
+                                _("Vote result"), stylesheet['Heading4']))
         ballotcounter = 0
         for poll in polls:
             ballotcounter += 1

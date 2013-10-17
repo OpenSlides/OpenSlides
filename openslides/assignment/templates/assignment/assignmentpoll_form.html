@@ -13,15 +13,22 @@
     {{ ballotnumber|ordinal|safe }} {% trans "ballot" %}
     </small>
     <small class="pull-right">
-    <a href="{{ assignment|absolute_url:'detail' }}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to election" %}</a>
-    <!-- activate projector -->
-    {% if perms.core.can_manage_projector %}
-        <a href="{{ assignment|absolute_url:'projector' }}"
-            class="activate_link btn {% if assignment.is_active_slide %}btn-primary{% endif %} btn-mini"
-            rel="tooltip" data-original-title="{% trans 'Show election' %}">
-            <i class="icon-facetime-video {% if assignment.is_active_slide %}icon-white{% endif %}"></i>
-        </a>
-    {% endif %}
+        <a href="{{ assignment|absolute_url:'detail' }}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to election" %}</a>
+        <!-- activate projector -->
+        {% if perms.core.can_manage_projector %}
+            <a href="{{ assignment|absolute_url:'projector' }}"
+                class="activate_link btn {% if assignment.is_active_slide %}btn-primary{% endif %} btn-mini"
+                rel="tooltip" data-original-title="{% trans 'Show election' %}">
+                <i class="icon-facetime-video {% if assignment.is_active_slide %}icon-white{% endif %}"></i>
+            </a>
+            <a class="btn btn-mini activate_link {% if poll.is_active_slide %}btn-primary{% endif %}" href="{{ poll|absolute_url:'projector' }}"
+                rel="tooltip" data-original-title="{% trans 'Show election result' %}">
+                <i class="icon-facetime-video {% if poll.is_active_slide %}icon-white{% endif %}"></i> {% trans "Vote result" %}</a>
+        {% endif %}
+        {% if perms.motion.can_manage_motion %}
+            <a class="btn btn-mini" href="{{ poll|absolute_url:'delete' }}"
+                rel="tooltip" data-original-title="{% trans 'Delete ballot' %}"><i class="icon-remove"></i></a>
+        {% endif %}
     </small>
 </h1>
 
@@ -50,7 +57,7 @@
                 {% endfor %}
             </tr>
         {% endfor %}
-        <tr>
+        <tr class="total warning">
             <td>{% trans "Valid votes" %}</td>
             {% for value in poll.get_vote_values %}
                 {% if forloop.first %}
@@ -85,7 +92,7 @@
     <p><strong>{% trans "Short description (for ballot paper)" %}:</strong></p>
     <p class="normal-form">{{ pollform.description }}</p>
     <p>
-        <a href="{% url 'assignment_poll_pdf' poll.id %}" class="btn" target="_blank">
+        <a href="{% url 'assignmentpoll_pdf' poll.id %}" class="btn" target="_blank">
             <i class="icon-print"></i> {% trans 'Ballot paper as PDF' %}
         </a>
     </p>

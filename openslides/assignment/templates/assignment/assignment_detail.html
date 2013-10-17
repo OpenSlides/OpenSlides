@@ -18,6 +18,8 @@
 {% block content %}
 <h1>
     {{ assignment }}
+    <br>
+    <small>{% trans "Election" %}</small>
     <small class="pull-right">
     <a href="{% url 'assignment_list' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
     <a href="{% url 'assignment_pdf' assignment.id  %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print election as PDF' %}" target="_blank"><i class="icon-print"></i> PDF</a>
@@ -141,9 +143,9 @@
 {% endif %}
 
 
-<!-- Results -->
+<!-- Election result -->
 {% if assignment.status != "sea" or polls.exists %}
-    <h4>{% trans "Election results" %}</h4>
+    <h4>{% trans "Election result" %}</h4>
     {% if polls.exists %}
         <table class="table table-striped table-bordered">
         <tr>
@@ -154,8 +156,8 @@
                     {{ poll.get_ballot|ordinal|safe }} {% trans 'ballot' %}
                     {% if perms.assignment.can_manage_assignment %}
                         <a class="publish_link btn btn-mini btn-danger {% if poll.published %}btn-primary{% endif %}"
-                        href="{% url 'assignment_poll_publish_status' poll.id %}"
-                        rel="tooltip" data-original-title="{% trans 'Publish results' %}">
+                        href="{% url 'assignmentpoll_publish_status' poll.id %}"
+                        rel="tooltip" data-original-title="{% trans 'Publish result' %}">
                         {% if poll.published %}
                             <i class="icon-checked-new_white"></i>
                             {% else %}
@@ -164,11 +166,15 @@
                         </a>
                         </p>
                         <p class="text-center">
-                        <a href="{% url 'assignment_poll_pdf' poll.id %}" class="btn btn-mini" target="_blank"
+                        <a href="{{ poll|absolute_url:'projector' }}"
+                            class="btn btn-mini activate_link {% if poll.is_active_slide %}btn-primary{% endif %}"
+                            rel="tooltip" data-original-title="{% trans 'Show election result' %}">
+                            <i class="icon-facetime-video {% if poll.is_active_slide %}icon-white{% endif %}"></i></a>
+                        <a href="{% url 'assignmentpoll_pdf' poll.id %}" class="btn btn-mini" target="_blank"
                             rel="tooltip" data-original-title="{% trans 'Ballot paper as PDF' %}"><i class="icon-print"></i></a>
-                        <a href="{% url 'assignment_poll_view' poll.id %}" class="btn btn-mini"
+                        <a href="{% url 'assignmentpoll_update' poll.id %}" class="btn btn-mini"
                             rel="tooltip" data-original-title="{% trans 'Edit' %}"><i class="icon-pencil"></i></a>
-                        <a href="{% url 'assignment_poll_delete' poll.id %}" class="btn btn-mini"
+                        <a href="{% url 'assignmentpoll_delete' poll.id %}" class="btn btn-mini"
                             rel="tooltip" data-original-title="{% trans 'Delete' %}"><i class="icon-remove"></i></a>
                         </p>
                     {% endif %}
@@ -176,7 +182,7 @@
             {% endfor %}
             {% if assignment.candidates and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
                 <th class="span1 nobr">
-                    <a href="{% url 'assignment_poll_create' assignment.pk %}" class="btn btn-mini">
+                    <a href="{% url 'assignmentpoll_create' assignment.pk %}" class="btn btn-mini">
                        <i class="icon-plus"></i> {% trans 'New ballot' %}
                     </a>
                 </th>
@@ -275,7 +281,7 @@
         <i>{% trans "No ballots available." %}</i>
         {% if assignment.candidates and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
             <p>
-            <a href='{% url 'assignment_poll_create' assignment.id %}' class="btn">
+            <a href='{% url 'assignmentpoll_create' assignment.id %}' class="btn">
                <i class="icon-plus"></i> {% trans 'New ballot' %}
             </a>
             </p>

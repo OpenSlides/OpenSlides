@@ -36,7 +36,7 @@ class BaseOption(models.Model):
         try:
             return self.get_votes().get(value=name)
         except self.get_vote_class().DoesNotExist:
-            return None
+            raise KeyError
 
 
 class BaseVote(models.Model):
