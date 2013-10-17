@@ -57,9 +57,9 @@ class ProjectorSocketHandler(WebSocketHandler):
         ProjectorSocketHandler.waiters.remove(self)
 
     @classmethod
-    def send_updates(cls, slide):
+    def send_updates(cls, data):
         for waiter in cls.waiters:
-            waiter.write_message(slide)
+            waiter.write_message(data)
 
 
 def run_tornado(addr, port, reload=False):

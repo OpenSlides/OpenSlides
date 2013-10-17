@@ -40,6 +40,9 @@
             {% for js in overlay_js %}
                 projector.update_data({{ js|safe }});
             {% endfor %}
+            {% for key, value in calls.items %}
+                projector.{{ key }}({{ value }});
+            {% endfor %}
         </script>
     </body>
 </html>

@@ -55,13 +55,17 @@ def config_variables(sender, **kwargs):
         name='countdown_state',
         default_value='inactive')
 
-    bigger = ConfigVariable(
-        name='bigger',
+    projector_scale = ConfigVariable(
+        name='projector_scale',
         default_value=100)
 
-    projector_up = ConfigVariable(
-        name='up',
+    projector_scroll = ConfigVariable(
+        name='projector_scroll',
         default_value=0)
+
+    projector_js_cache = ConfigVariable(
+        name='projector_js_cache',
+        default_value={})
 
     projector_active_overlays = ConfigVariable(
         name='projector_active_overlays',
@@ -71,7 +75,8 @@ def config_variables(sender, **kwargs):
         title='No title here', url='bar', required_permission=None, variables=(
             projector, projector_message,
             countdown_time, countdown_start_stamp, countdown_pause_stamp,
-            countdown_state, bigger, projector_up, projector_active_overlays))
+            countdown_state, projector_scale, projector_scroll,
+            projector_active_overlays, projector_js_cache))
 
 
 @receiver(projector_overlays, dispatch_uid="projector_countdown")

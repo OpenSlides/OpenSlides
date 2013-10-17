@@ -5,6 +5,8 @@
     <hr>
 </h1>
 
-{% if item.text %}
-    {{ item.text|safe|linebreaks }}
-{% endif %}
+<div class="scroll">
+    {% if item.text %}
+        {{ item.text|safe|linebreaks }}
+    {% endif %}
+</div>
