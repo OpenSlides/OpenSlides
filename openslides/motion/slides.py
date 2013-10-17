@@ -12,6 +12,7 @@
 
 from openslides.projector.api import register_slide_model
 
-from .models import Motion
+from .models import Motion, MotionPoll
 
 register_slide_model(Motion, 'motion/slide.html')
+register_slide_model(MotionPoll, 'motion/motion_slide_poll.html')

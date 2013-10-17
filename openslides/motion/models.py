@@ -693,8 +693,11 @@ class MotionOption(BaseOption):
     """The VoteClass, to witch this Class links."""
 
 
-class MotionPoll(RelatedModelMixin, CountInvalid, CountVotesCast, BasePoll):
+class MotionPoll(SlideMixin, RelatedModelMixin, CountInvalid, CountVotesCast, BasePoll):
     """The Class to saves the poll results for a motion poll."""
+
+    slide_callback_name = 'motionpoll'
+    """Name of the callback for the slide-system."""
 
     motion = models.ForeignKey(Motion, related_name='polls')
     """The motion to witch the object belongs."""
@@ -723,14 +726,18 @@ class MotionPoll(RelatedModelMixin, CountInvalid, CountVotesCast, BasePoll):
         """
         Return an URL for the poll.
 
-        The keyargument 'link' can be 'update' or 'delete'.
+        The keyargument 'link' can be 'detail', 'update' or 'delete'.
         """
+        if link == 'detail':
+            return reverse('motion_poll_detail', args=[str(self.motion.pk),
+                                                       str(self.poll_number)])
         if link == 'update':
             return reverse('motion_poll_update', args=[str(self.motion.pk),
                                                        str(self.poll_number)])
         if link == 'delete':
             return reverse('motion_poll_delete', args=[str(self.motion.pk),
                                                        str(self.poll_number)])
+        return super(MotionPoll, self).get_absolute_url(link)
 
     def set_options(self):
         """Create the option class for this poll."""
@@ -745,6 +752,9 @@ class MotionPoll(RelatedModelMixin, CountInvalid, CountVotesCast, BasePoll):
 
     def get_related_model(self):
         return self.motion
+
+    def get_slide_context(self, **context):
+        return {'poll': self}
 
 
 class State(models.Model):

@@ -1,0 +1,44 @@
+{% load i18n %}
+{% load staticfiles %}
+
+<h1>
+    {{ poll.motion.active_version.title }}
+    <br>
+    <small>
+        {% trans "Motion" %} {{ poll.motion.identifier|default:'' }}
+        {% if poll.motion.get_active_version.version_number > 1 %} | {% trans 'Version' %} {{ poll.motion.active_version.version_number }}{% endif %} |
+        {% trans "Poll result" %}
+    </small>
+    <hr>
+</h1>
+
+<p>
+    {% if poll.has_votes %}
+        {% with poll.get_options.0 as option %}
+        <div class="well results big">
+            <div class="row-fluid">
+                <div class="span6">
+                    <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Yes' %}"> {% trans 'Yes' %}:<br>
+                    <img src="{% static 'img/voting-no.png' %}" title="{% trans 'No' %}"> {% trans 'No' %}:<br>
+                    <img src="{% static 'img/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {% trans 'Abstention' %}:<br>
+                    <img src="{% static 'img/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {% trans 'Invalid' %}:
+                    <hr>
+                    <img src="{% static 'img/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {% trans 'Votes cast' %}:
+                </div>
+                <div class="span6 bold">
+                    {{ option.Yes }}<br>
+                    {{ option.No }}<br>
+                    {{ option.Abstain }}<br>
+                    {{ poll.print_votesinvalid }}
+                    <hr>
+                    {{ poll.print_votescast }}
+                </div>
+            </div>
+        </div>
+        {% endwith %}
+    {% else %}
+        {% if poll|length  == 1 %}
+        <i>{% trans "No poll results available." %}</i>
+        {% endif %}
+    {% endif %}
+</p>

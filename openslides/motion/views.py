@@ -545,6 +545,33 @@ class PollMixin(object):
         return [self.object.motion.pk]
 
 
+class PollDetailView(PollMixin, DetailView):
+    """
+    View to show a MotionPoll.
+    """
+
+    poll_class = MotionPoll
+    """
+    Poll Class to use for this view.
+    """
+
+    template_name = 'motion/motion_poll_detail.html'
+
+    def get_context_data(self, **kwargs):
+        """
+        Return the template context.
+
+        Append the motion object to the context.
+        """
+        context = super(PollDetailView, self).get_context_data(**kwargs)
+        context.update({
+            'motion': self.object.motion,
+            'poll': self.object})
+        return context
+
+poll_detail = PollDetailView.as_view()
+
+
 class PollUpdateView(PollMixin, PollFormView):
     """
     View to update a MotionPoll.
