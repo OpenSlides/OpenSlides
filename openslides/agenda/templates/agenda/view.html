@@ -44,7 +44,7 @@
 </h1>
 <p>
     {% if not item.content_object %}
-        {{ item.text|safe|linebreaks }}
+        {{ item.text|safe }}
     {% else %}
         <a href="{{ item.content_object|absolute_url }}" class="btn btn-small">{% trans item.content_type.name %} {{ item.content_object }}</a>
     {% endif %}
