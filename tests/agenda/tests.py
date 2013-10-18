@@ -214,6 +214,14 @@ class ViewTest(TestCase):
         self.assertRedirects(response, '/agenda/')
         self.assertFalse(Item.objects.filter(pk=1).exists())
 
+    def test_delete_item_with_children(self):
+        item1 = Item.objects.create(title='item1')
+        item2 = Item.objects.create(title='item2', parent=item1)
+
+        self.adminClient.post('/agenda/%d/del/' % item1.pk, {'all': 'all'})
+        query = Item.objects.filter(pk__in=[item1.pk, item2.pk])
+        self.assertFalse(query)
+
 
 class ConfigTest(TestCase):
     def setUp(self):

@@ -246,12 +246,25 @@ class ItemDelete(DeleteView):
     url_name_args = []
 
     def get_answer_options(self):
-        if self.object.children.exists():
-            return [('all', _("Yes, with all child items."))] + self.answer_options
-        else:
-            return self.answer_options
+        """
+        Returns the possible answers to the delete view.
+
+        'all' is a possible answer, when the item has children.
+        """
+        # Cache the result in the request, so when the children are deleted, the
+        # result does not change
+        try:
+            options = self.item_delete_answer_options
+        except AttributeError:
+            if self.object.children.exists():
+                options = [('all', _("Yes, with all child items."))] + self.answer_options
+            else:
+                options = self.answer_options
+            self.item_delete_answer_options = options
+        return options
 
     def pre_post_redirect(self, request, *args, **kwargs):
+        # TODO: rewrite this method with on_case_all and on_case_yes
         if self.get_answer() == 'all':
             self.object.delete(with_children=True)
             messages.success(
