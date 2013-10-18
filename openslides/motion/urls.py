@@ -64,6 +64,10 @@ urlpatterns = patterns(
         'poll_create',
         name='motion_poll_create'),
 
+    url(r'^(?P<pk>\d+)/poll/(?P<poll_number>\d+)/$',
+        'poll_detail',
+        name='motion_poll_detail'),
+
     url(r'^(?P<pk>\d+)/poll/(?P<poll_number>\d+)/edit/$',
         'poll_update',
         name='motion_poll_update'),

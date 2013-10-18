@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
 {% load i18n %}
+{% load tags %}
 
 {% block title %}
     {% trans "Motion" %} {{ motion.identifier }}, {{ poll }} – {{ block.super }}
@@ -18,8 +19,8 @@
         <a href="{% url 'motion_detail' motion.id %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to motion" %}</a>
         <!-- activate projector -->
         {% if perms.projector.can_manage_projector %}
-            <a href="{% url 'projector_activate_slide' motion.sid %}" class="activate_link btn {% if motion.active %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show motion' %}">
-                <i class="icon-facetime-video {% if motion.active %}icon-white{% endif %}"></i>
+            <a href="{{ motion|absolute_url:'projector' }}" class="activate_link btn {% if motion.is_active_slide %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show motion' %}">
+                <i class="icon-facetime-video {% if motion.is_active_slide %}icon-white{% endif %}"></i>
             </a>
         {% endif %}
     </div>

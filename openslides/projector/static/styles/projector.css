@@ -106,6 +106,13 @@ h1 {
 .well .results {
     line-height: 30px;
 }
+.results.big {
+    font-size: 120%;
+    line-height: 40px;
+}
+.results .bold {
+    font-weight: bold;
+}
 .well .results hr {
     margin: 5px 0 !important;
 }
