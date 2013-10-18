@@ -8,9 +8,14 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+import os
+import tempfile
+
+from django.conf import settings
 from django.test.client import Client
 
 from openslides.config.api import config
+from openslides.mediafile.models import Mediafile
 from openslides.motion.models import Category, Motion, MotionLog, State
 from openslides.participant.models import Group, User
 from openslides.utils.test import TestCase
@@ -63,6 +68,25 @@ class TestMotionDetailView(MotionViewTestCase):
         self.check_url('/motion/1/', self.admin_client, 200)
         self.check_url('/motion/2/', self.admin_client, 200)
         self.check_url('/motion/500/', self.admin_client, 404)
+
+    def test_attachment(self):
+        # Preparation
+        tmpfile_no, attachment_path = tempfile.mkstemp(prefix='tmp_openslides_test_', dir=settings.MEDIA_ROOT)
+        os.close(tmpfile_no)
+        attachment = Mediafile.objects.create(title='TestFile_Neiri4xai4ueseGohzid', mediafile=attachment_path)
+        self.motion1.attachments.add(attachment)
+
+        # Test appearance
+        response = self.registered_client.get('/motion/1/')
+        self.assertContains(response, '<h4>Attachments:</h4>')
+        self.assertContains(response, 'TestFile_Neiri4xai4ueseGohzid')
+
+        # Test disappearance
+        attachment.mediafile.delete()
+        attachment.delete()
+        response = self.registered_client.get('/motion/1/')
+        self.assertNotContains(response, '<h4>Attachments:</h4>')
+        self.assertNotContains(response, 'TestFile_Neiri4xai4ueseGohzid')
 
 
 class TestMotionDetailVersionView(MotionViewTestCase):
@@ -362,6 +386,15 @@ class TestMotionUpdateView(MotionViewTestCase):
                                           'disable_versioning': 'on',
                                           'workflow': 2})
         self.assertEqual(MotionLog.objects.get(pk=5).message_list, ['Motion version', ' 2 ', 'updated'])
+
+    def test_attachment_initial(self):
+        attachment = Mediafile.objects.create(title='test_title_iech1maatahShiecohca')
+        self.motion1.attachments.add(attachment)
+        response = self.admin_client.get(self.url)
+        self.assertContains(response, '<option value="1" selected="selected">%s</option>' % attachment.title)
+        self.motion1.attachments.clear()
+        response = self.admin_client.get(self.url)
+        self.assertNotContains(response, '<option value="1" selected="selected">%s</option>' % attachment.title)
 
 
 class TestMotionDeleteView(MotionViewTestCase):

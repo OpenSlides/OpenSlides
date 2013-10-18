@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
+
 from openslides.global_settings import *  # noqa
 
 # Use 'DEBUG = True' to get more details for server errors
@@ -36,7 +38,7 @@ INSTALLED_APPS += INSTALLED_PLUGINS
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = os.path.realpath(os.path.dirname(__file__))
 
 # Use RAM storage for whoosh index
 HAYSTACK_CONNECTIONS['default']['STORAGE'] = 'ram'

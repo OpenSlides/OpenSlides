@@ -126,6 +126,10 @@ class MotionEditMixin(object):
                 [MotionSupporter(motion=self.object, person=person)
                  for person in form.cleaned_data['supporter']])
 
+        # Save the attachments
+        self.object.attachments.clear()
+        self.object.attachments.add(*form.cleaned_data['attachments'])
+
         # Update the projector if the motion is on it. This can not be done in
         # the model, because bulk_create does not call the save method.
         active_slide = get_active_slide()

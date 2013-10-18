@@ -14,6 +14,7 @@ from django import forms
 from django.utils.translation import ugettext_lazy
 
 from openslides.config.api import config
+from openslides.mediafile.models import Mediafile
 from openslides.utils.forms import (CleanHtmlFormMixin, CssClassMixin,
                                     LocalizedModelChoiceField)
 from openslides.utils.person import MultiplePersonFormField, PersonFormField
@@ -48,13 +49,22 @@ class BaseMotionForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
     Reason of the motion. will be saved in a MotionVersion object.
     """
 
+    attachments = forms.ModelMultipleChoiceField(
+        queryset=Mediafile.objects.all(),
+        required=False,
+        label=ugettext_lazy('Attachments'))
+    """
+    Attachments of the motion.
+    """
+
     class Meta:
         model = Motion
         fields = ()
 
     def __init__(self, *args, **kwargs):
         """
-        Fill the FormFields releated to the version data with initial data.
+        Fill the FormFields related to the version data with initial data.
+        Fill also the initial data for attachments.
         """
         self.motion = kwargs.get('instance', None)
         self.initial = kwargs.setdefault('initial', {})
@@ -63,6 +73,7 @@ class BaseMotionForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
             self.initial['title'] = last_version.title
             self.initial['text'] = last_version.text
             self.initial['reason'] = last_version.reason
+            self.initial['attachments'] = self.motion.attachments.all()
         else:
             self.initial['text'] = config['motion_preamble']
         super(BaseMotionForm, self).__init__(*args, **kwargs)

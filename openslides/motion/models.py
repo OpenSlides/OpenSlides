@@ -21,6 +21,7 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.config.api import config
+from openslides.mediafile.models import Mediafile
 from openslides.poll.models import (BaseOption, BasePoll, BaseVote,
                                     CountInvalid, CountVotesCast)
 from openslides.projector.models import RelatedModelMixin, SlideMixin
@@ -76,6 +77,11 @@ class Motion(SlideMixin, models.Model):
     category = models.ForeignKey('Category', null=True, blank=True)
     """
     ForeignKey to one category of motions.
+    """
+
+    attachments = models.ManyToManyField(Mediafile)
+    """
+    Many to many relation to mediafile objects.
     """
 
     # TODO: proposal
