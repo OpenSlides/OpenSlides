@@ -1,0 +1,4 @@
+{{ object.django_user }}
+{{ object.structure_level }}
+{{ object.committee }}
+{{ object.about_me }}

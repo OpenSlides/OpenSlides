@@ -27,22 +27,32 @@
                     <a href="/" class="logo" title="{% trans 'Home' %}"><img src="{% static 'img/logo.png' %}" alt="{% trans 'Logo' %}" /></a>
                     <span class="title optional">{% get_config 'event_name' %} – {% get_config 'event_description' %}</span>
                     {% block loginbutton %}
-                    <div class="btn-group pull-right">
-                        {% if user.is_authenticated %}
-                        <a href="#" data-toggle="dropdown" class="btn btn-small dropdown-toggle">
-                              <i class="icon-user"></i> {{ user.username }}
-                              <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu">
-                            {% url 'user_settings' as url_usersettings %}
-                            <li><a href="{% url 'user_settings' %}"><i class="icon-cog"></i> {% trans "Edit profile" %}</a></li>
-                            <li><a href="{% url 'password_change' %}"><i class="icon-lock"></i> {% trans "Change password" %}</a></li>
-                            <li class="divider"></li>
-                            <li><a href="{% url 'user_logout' %}"><i class="icon-off"></i> {% trans "Logout" %}</a></li>
-                        </ul>
-                        {% else %}
-                            <a href="{% url 'user_login' %}" class="btn"><i class="icon-login"></i> {% trans "Login" %}</a>
-                        {% endif %}
+                    <div class="pull-right">
+                        <!-- Search field -->
+                        <form class="navbar-search form-search" action="{% url 'search' %}" method="get">
+                            <div class="input-append">
+                                <input type="text" id="id_q" name="q" class="search-query input-medium" placeholder="{% trans 'Search' %}">
+                                <button type="submit" class="btn"><i class="icon-search"></i></button>
+                            </div>
+                        </form> &nbsp;
+
+                        <!-- login/logout button -->
+                        <div class="btn-group pull-right">
+                            {% if user.is_authenticated %}
+                            <a href="#" data-toggle="dropdown" class="btn dropdown-toggle">
+                                  <i class="icon-user"></i> {{ user.username }}
+                                  <span class="caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a href="{% url 'user_settings' %}"><i class="icon-cog"></i> {% trans "Edit profile" %}</a></li>
+                                <li><a href="{% url 'password_change' %}"><i class="icon-lock"></i> {% trans "Change password" %}</a></li>
+                                <li class="divider"></li>
+                                <li><a href="{% url 'user_logout' %}"><i class="icon-off"></i> {% trans "Logout" %}</a></li>
+                            </ul>
+                            {% else %}
+                                <a href="{% url 'user_login' %}" class="btn"><i class="icon-login"></i> {% trans "Login" %}</a>
+                            {% endif %}
+                        </div>
                     </div>
                     {% endblock %}
                 </div> <!--/#header-->

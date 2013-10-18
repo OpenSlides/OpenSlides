@@ -50,7 +50,6 @@ SITE_PACKAGES = {
     "django": {
         "copy": ["django"],
         "exclude": [
-            r"^django/contrib/admin/",
             r"^django/contrib/admindocs/",
             r"^django/contrib/comments/",
             r"^django/contrib/databrowse/",
@@ -102,6 +101,12 @@ SITE_PACKAGES = {
     },
     "html5lib": {
         "copy": ["html5lib"],
+    },
+    "django-haystack": {
+        "copy": ["haystack"],
+    },
+    "whoosh": {
+        "copy": ["whoosh"],
     },
     "wx": {
         # NOTE: wxpython is a special case, see copy_wx

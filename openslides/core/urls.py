@@ -26,4 +26,8 @@ urlpatterns = patterns(
     url(r'^version/$',
         views.VersionView.as_view(),
         name='core_version',),
+
+    url(r'^search/$',
+        views.SearchView(),
+        name='search',),
 )

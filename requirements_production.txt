@@ -6,3 +6,5 @@ qrcode==2.7
 tornado==3.0.1
 bleach==1.2.2
 beautifulsoup4==4.2.0
+django-haystack==2.1.0
+whoosh==2.5.4

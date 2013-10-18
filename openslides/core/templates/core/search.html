@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% load i18n %}
+
+{% block title %}{{ block.super }} – {% trans "Search" %}{% endblock %}
+
+{% block content %}
+    <h2>{% trans 'Search results' %}</h2>
+    <form class="form-search well" action="" method="get">
+        {% for field in form %}
+        <div class="control-group">
+            {% if field.name == "q" %}
+                <label for="id_q">{% trans 'Search' %}:</label>
+                <div class="input-append">
+                    <input type="text" id="id_q" name="q" class="" value="{{ field.value }}">
+                    <button type="submit" class="btn">{% trans "Search" %}</button>
+                </div>
+            {% elif field.name == "models" %}
+            {% trans 'Filter' %}:
+                <div class="control-group">
+                {% for model in models %}
+                    <label class="checkbox inline">
+                        <input type="checkbox" value="{{ model.1 }}" name="models"
+                        {% if model.1 in get_values %}checked{% endif %}> {% trans model.0 %}
+                    </label>
+                {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </form>
+
+    {% if query %}
+        {% for result in page.object_list %}
+            {% if forloop.first %}
+                <ol class="searchresults">
+            {% endif %}
+            {% with result_template=result.app_label|add:"-results.html" %}
+                {% include "search/"|add:result_template %}
+            {% endwith %}
+            {% if forloop.last %}
+                </ol>
+            {% endif %}
+        {% empty %}
+            <p><i>{% trans "No results found." %}</i></p>
+        {% endfor %}
+
+        {% if page.has_previous or page.has_next %}
+            <div>
+                {% if page.has_previous %}<a href="?q={{ query }}&amp;page={{ page.previous_page_number }}">{% endif %}&laquo; Previous{% if page.has_previous %}</a>{% endif %}
+                |
+                {% if page.has_next %}<a href="?q={{ query }}&amp;page={{ page.next_page_number }}">{% endif %}Next &raquo;{% if page.has_next %}</a>{% endif %}
+            </div>
+        {% endif %}
+    {% endif %}
+{% endblock %}

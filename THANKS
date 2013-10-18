@@ -9,7 +9,11 @@ OpenSlides uses parts of the following projects:
   License: BSD
 
 * Django mptt
-  <https://github.com/django-mptt/django-mptt>
+  <https://github.com/django-mptt/django-mptt/>
+  License: BSD
+
+* Django haystack
+  <http://haystacksearch.org>
   License: BSD
 
 * jQuery
@@ -32,7 +36,7 @@ OpenSlides uses parts of the following projects:
     <https://github.com/BorisMoore/jquery-tmpl/>
     License: MIT/GPLv2
   - jQuery bsmSelect
-    <https://github.com/vicb/bsmSelect>
+    <https://github.com/vicb/bsmSelect/>
     License: MIT/GPLv2
 
 * jQuery UI
@@ -68,11 +72,11 @@ OpenSlides uses parts of the following projects:
   License: BSD
 
 * Pillow
-  <https://github.com/python-imaging/Pillow>
+  <https://github.com/python-imaging/Pillow/>
   License: Standard PIL License
 
 * qrcode
-  <https://github.com/lincolnloop/python-qrcode>
+  <https://github.com/lincolnloop/python-qrcode/>
   License: BSD
 
 * ReportLab
@@ -87,6 +91,10 @@ OpenSlides uses parts of the following projects:
   <http://font.ubuntu.com>
   License: Ubuntu Font Licence 1.0
 
+* Whoosh
+  <https://bitbucket.org/mchaput/whoosh/wiki/Home/>
+  License: BSD
+  
 * Sphinx
   <http://sphinx-doc.org/>
   License: BSD
