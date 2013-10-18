@@ -243,6 +243,7 @@ class ItemDelete(DeleteView):
     model = Item
     question_url_name = 'item_overview'
     success_url_name = 'item_overview'
+    url_name_args = []
 
     def get_answer_options(self):
         if self.object.children.exists():
