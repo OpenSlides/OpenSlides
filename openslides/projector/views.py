@@ -10,8 +10,6 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from time import time
-
 from django.contrib import messages
 from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
@@ -26,8 +24,8 @@ from openslides.utils.views import (AjaxMixin, CreateView, DeleteView,
 
 from .api import (get_active_slide, get_all_widgets, get_overlays,
                   get_projector_content, get_projector_overlays,
-                  get_projector_overlays_js, set_active_slide, start_countdown, stop_countdown, reset_countdown,
-                  update_projector_overlay)
+                  get_projector_overlays_js, reset_countdown, set_active_slide,
+                  start_countdown, stop_countdown, update_projector_overlay)
 from .forms import SelectWidgetsForm
 from .models import ProjectorSlide
 from .projector import Widget
