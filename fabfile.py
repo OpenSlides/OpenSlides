@@ -23,7 +23,7 @@ def test(module='tests'):
     environment variable DJANGO_SETTINGS_MODULE is set to 'tests.settings'.
     """
     django.settings_module('tests.settings')
-    local('coverage run ./manage.py test %s' % module)
+    local('coverage run ./manage.py django test %s' % module)
 
 
 def coverage_report_plain():
