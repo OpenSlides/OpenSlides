@@ -10,6 +10,7 @@
 from django.test.client import Client
 
 from openslides.agenda.models import Item, Speaker
+from openslides.config.api import config
 from openslides.participant.models import Group, User
 from openslides.projector.api import set_active_slide
 from openslides.utils.exceptions import OpenSlidesError
@@ -73,6 +74,25 @@ class ListOfSpeakerModelTests(TestCase):
         speaker2_item1.begin_speach()
         self.assertIsNotNone(Speaker.objects.get(person=self.speaker1, item=self.item1).end_time)
         self.assertIsNotNone(speaker2_item1.begin_time)
+
+    def test_speach_coupled_with_countdown(self):
+        config['agenda_couple_countdown_and_speakers'] = True
+        self.assertTrue(config['countdown_state'] == 'inactive')
+        speaker1_item1 = Speaker.objects.add(self.speaker1, self.item1)
+        speaker1_item1.begin_speach()
+        self.assertTrue(config['countdown_state'] == 'active')
+        speaker1_item1.end_speach()
+        self.assertTrue(config['countdown_state'] == 'paused')
+
+    def test_begin_speach_not_coupled_with_countdown(self):
+        config['agenda_couple_countdown_and_speakers'] = False
+        self.assertTrue(config['countdown_state'] == 'inactive')
+        speaker1_item1 = Speaker.objects.add(self.speaker1, self.item1)
+        speaker1_item1.begin_speach()
+        self.assertTrue(config['countdown_state'] == 'inactive')
+        config['countdown_state'] = 'active'
+        speaker1_item1.end_speach()
+        self.assertTrue(config['countdown_state'] == 'active')
 
 
 class SpeakerViewTestCase(TestCase):

@@ -62,6 +62,14 @@ def setup_agenda_config_page(sender, **kwargs):
             min_value=0,
             label=ugettext_lazy('Number of last speakers to be shown on the projector')))
 
+    agenda_couple_countdown_and_speakers = ConfigVariable(
+        name='agenda_couple_countdown_and_speakers',
+        default_value=False,
+        form_field=forms.BooleanField(
+            label=ugettext_lazy('Couple countdown with the list of speakers'),
+            help_text=ugettext_lazy('[Begin speach] starts the countdown, [End speach] stops the countdown.'),
+            required=False))
+
     extra_stylefiles = ['styles/timepicker.css', 'styles/jquery-ui/jquery-ui.custom.min.css']
     extra_javascript = ['javascript/jquery-ui.custom.min.js',
                         'javascript/jquery-ui-timepicker-addon.min.js',
@@ -72,7 +80,9 @@ def setup_agenda_config_page(sender, **kwargs):
                       url='agenda',
                       required_permission='config.can_manage',
                       weight=20,
-                      variables=(agenda_start_event_date_time, agenda_show_last_speakers),
+                      variables=(agenda_start_event_date_time,
+                                 agenda_show_last_speakers,
+                                 agenda_couple_countdown_and_speakers),
                       extra_context={'extra_stylefiles': extra_stylefiles,
                                      'extra_javascript': extra_javascript})
 

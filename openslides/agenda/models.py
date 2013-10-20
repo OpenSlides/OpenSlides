@@ -21,8 +21,10 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 from mptt.models import MPTTModel, TreeForeignKey
 
-from openslides.projector.api import (get_active_slide, update_projector,
-                                      update_projector_overlay)
+from openslides.config.api import config
+from openslides.projector.api import (get_active_slide, reset_countdown,
+                                      start_countdown, stop_countdown,
+                                      update_projector, update_projector_overlay)
 from openslides.projector.models import SlideMixin
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.person.models import PersonField
@@ -378,6 +380,10 @@ class Speaker(models.Model):
         self.weight = None
         self.begin_time = datetime.now()
         self.save()
+        # start countdown
+        if config['agenda_couple_countdown_and_speakers']:
+            reset_countdown()
+            start_countdown()
 
     def end_speach(self):
         """
@@ -385,3 +391,6 @@ class Speaker(models.Model):
         """
         self.end_time = datetime.now()
         self.save()
+        # stop countdown
+        if config['agenda_couple_countdown_and_speakers']:
+            stop_countdown()
