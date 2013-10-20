@@ -17,6 +17,35 @@ from openslides.participant.models import get_protected_perm, Group, User
 from openslides.utils.test import TestCase
 
 
+class UserViews(TestCase):
+    """
+    Tests some views for users.
+    """
+    def setUp(self):
+        self.admin = User.objects.get(pk=1)
+        self.client = Client()
+        self.client.login(username='admin', password='admin')
+
+    def test_create(self):
+        response = self.client.get('/participant/new/')
+        self.assertTemplateUsed(response, 'participant/edit.html')
+        self.assertContains(response, 'New participant')
+        response = self.client.post('/participant/new/', {'first_name': 'test_name_ho8hui2niz4nohSupahb'})
+        self.assertRedirects(response, '/participant/')
+
+    def test_update(self):
+        response = self.client.get('/participant/1/edit/')
+        self.assertTemplateUsed(response, 'participant/edit.html')
+        self.assertContains(response, 'Edit participant')
+        response = self.client.post(
+            '/participant/1/edit/',
+            {'user_name': 'test_name_unaewae5Ir0saijeac2I',
+             'first_name': 'test_name_aJi5jaizaVingaeF3Ohj',
+             'groups': '4',
+             'is_active': 'yes'})
+        self.assertRedirects(response, '/participant/')
+
+
 class GroupViews(TestCase):
     """
     Tests the detail view for groups and later also the other views.
@@ -53,6 +82,20 @@ class GroupViews(TestCase):
         match = re.findall(pattern, response.content)
         self.assertEqual(match[1], 'admins_first_name Administrator')
         self.assertEqual(match[0], 'aWei4ien6Se0vie0xeiv uquahx3Wohtieph9baer')
+
+    def test_create(self):
+        response = self.client.get('/participant/group/new/')
+        self.assertTemplateUsed(response, 'participant/group_edit.html')
+        self.assertContains(response, 'New group')
+        response = self.client.post('/participant/group/new/', {'name': 'test_group_name_Oeli1aeXoobohv8eikai'})
+        self.assertRedirects(response, '/participant/group/')
+
+    def test_update(self):
+        response = self.client.get('/participant/group/1/edit/')
+        self.assertTemplateUsed(response, 'participant/group_edit.html')
+        self.assertContains(response, 'Edit group')
+        response = self.client.post('/participant/group/1/edit/', {'name': 'test_group_name_ahFeicoz5jedie4Fop0U'})
+        self.assertRedirects(response, '/participant/group/')
 
 
 class LockoutProtection(TestCase):
