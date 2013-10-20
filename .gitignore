@@ -4,6 +4,7 @@
 *~
 
 # Virtual Environment
+.virtualenv/*
 .venv/*
 
 # Development settings and database

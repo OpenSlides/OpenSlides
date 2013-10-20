@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-    :copyright: 2012 by OpenSlides team, see AUTHORS.
+    :copyright: 2012–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
 
@@ -161,16 +161,6 @@ PY_DLLS = [
 MSVCR_PUBLIC_KEY = "1fc8b3b9a1e18e3b"
 MSVCR_VERSION = "9.0.21022.8"
 MSVCR_NAME = "Microsoft.VC90.CRT"
-
-README_LICENSE_SECTION = """
-
-License
-=======
-OpenSlides is distributed under the GNU General Public License
-version 2. For details about this license and the licenses of the
-bundled packages, please refer to the corresponding file in the
-licenses/ directory.
-"""
 
 OPENSLIDES_RC_TMPL = """
 #include <winresrc.h>
@@ -446,11 +436,11 @@ def copy_msvcr(odir):
     shutil.copyfile(src, dest)
 
 
-def write_readme(orig_readme, outfile):
-    with open(orig_readme, "rU") as f:
-        text = [l for l in f]
-
-    text.extend(["\n", "\n", "Included Packages\n", 17 * "=" + "\n"])
+def write_package_info_content(outfile):
+    """
+    Writes a list of all included packages into outfile.
+    """
+    text = ['Included Packages\n', 17 * '=' + '\n', '\n']
     for pkg in sorted(SITE_PACKAGES):
         try:
             dist = pkg_resources.get_distribution(pkg)
@@ -459,10 +449,19 @@ def write_readme(orig_readme, outfile):
             # FIXME: wxpython comes from an installer and has no distribution
             #        see what we can do about that
             text.append("{0}-???\n".format(pkg))
-
     with open(outfile, "w") as f:
         f.writelines(text)
-        f.write(README_LICENSE_SECTION)
+
+
+def write_metadatafile(infile, outfile):
+    """
+    Writes content from metadata files like README, AUTHORS and LICENSE into
+    outfile.
+    """
+    with open(infile, "rU") as f:
+        text = [l for l in f]
+    with open(outfile, "w") as f:
+        f.writelines(text)
 
 
 def main():
@@ -501,15 +500,21 @@ def main():
     copy_dlls(odir)
     copy_msvcr(odir)
 
+    # Info on included packages
     shutil.copytree(
         "extras/win32-portable/licenses",
-        os.path.join(odir, "licenses"))
+        os.path.join(odir, "packages-info"))
+    write_package_info_content(os.path.join(odir, 'packages-info', 'PACKAGES.txt'))
+
+    # AUTHORS, LICENSE, README
+    write_metadatafile('AUTHORS', os.path.join(odir, 'AUTHORS.txt'))
+    write_metadatafile('LICENSE', os.path.join(odir, 'LICENSE.txt'))
+    write_metadatafile('README.rst', os.path.join(odir, 'README.txt'))
 
     zip_fp = os.path.join(
         "dist", "openslides-{0}-portable.zip".format(
         openslides.get_version()))
 
-    write_readme("README.txt", os.path.join(odir, "README.txt"))
 
     with zipfile.ZipFile(zip_fp, "w", zipfile.ZIP_DEFLATED) as zf:
         for dp, dnames, fnames in os.walk(odir):
