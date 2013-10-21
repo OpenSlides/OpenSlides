@@ -249,6 +249,7 @@ class CustomSlideCreateView(CreateView):
     model = ProjectorSlide
     context_object_name = 'customslide'
     success_url_name = 'dashboard'
+    url_name_args = []
 
 
 class CustomSlideUpdateView(UpdateView):
@@ -260,6 +261,7 @@ class CustomSlideUpdateView(UpdateView):
     model = ProjectorSlide
     context_object_name = 'customslide'
     success_url_name = 'dashboard'
+    url_name_args = []
 
 
 class CustomSlideDeleteView(DeleteView):

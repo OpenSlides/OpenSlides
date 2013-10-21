@@ -465,3 +465,29 @@ class TestVersionDeleteView(MotionViewTestCase):
         self.assertEqual(motion.get_active_version().title, 'new_title_yae6Aequaiw5saeb8suG')
         response = self.admin_client.post('/motion/1/version/2/del/', {'yes': 1})
         self.assertEqual(response.status_code, 404)
+
+
+class CategoryViewsTest(TestCase):
+    def setUp(self):
+        self.admin_client = Client()
+        self.admin_client.login(username='admin', password='admin')
+
+    def test_create(self):
+        url = '/motion/category/new/'
+        response = self.admin_client.get(url)
+        self.assertTemplateUsed(response, 'motion/category_form.html')
+        response = self.admin_client.post(url, {'name': 'test_title_eingee0hiveeZ6coohoo'})
+        self.assertRedirects(response, '/motion/category/')
+        self.assertTrue(Category.objects.filter(name='test_title_eingee0hiveeZ6coohoo').exists())
+
+    def test_update(self):
+        # Setup
+        url = '/motion/category/1/edit/'
+        Category.objects.create(name='test_title_chu6zu3deithae1gooL1')
+        # Test
+        response = self.admin_client.get(url)
+        self.assertTemplateUsed(response, 'motion/category_form.html')
+        self.assertContains(response, 'test_title_chu6zu3deithae1gooL1')
+        response = self.admin_client.post(url, {'name': 'test_title_jaiShae1sheingahlee2'})
+        self.assertRedirects(response, '/motion/category/')
+        self.assertEqual(Category.objects.get(pk=1).name, 'test_title_jaiShae1sheingahlee2')
