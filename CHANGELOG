@@ -4,11 +4,32 @@
 
 http://openslides.org
 
-Version 1.4.3 (unreleased)
-==========================
+Version 1.5 (unreleased)
+========================
+[https://github.com/OpenSlides/OpenSlides/issues?milestone=10]
+
+Projector:
+- Improved projector update process via new websocket API.
+- New template with twitter bootstrap.
+Agenda:
+- New config option: couple countdown with list of speakers.
+- Use HTML editor (CKEditor) for agenda item text field.
+Motion:
+- Enabled attachments for motions.
+Assignment:
+- Refactored assignment app to use class based views instead of functions.
+Other:
+- Full text search integration (with Haystack and Whoosh).
+- New start script with new command line options.
+- Fixed keyerror on user settings view.
+- New message on success of many actions like creating or editing objects.
+- Added Feature to config app to return the default value for a key.
+- Cleaned up OpenSlides utils views.
+- Used flake8 instead of pep8 for style check, sort all import statements with isort.
+- Added Portuguese translation (Thanks to Marco A.G.Pinto).
 
 
-Version 1.4.2 (2013-09-10) 
+Version 1.4.2 (2013-09-10)
 ==========================
 [https://github.com/OpenSlides/OpenSlides/issues?milestone=12]
 
