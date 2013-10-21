@@ -22,8 +22,8 @@ from openslides.utils.template import Tab
 from openslides.utils.views import (AjaxMixin, CreateView, DeleteView,
                                     RedirectView, TemplateView, UpdateView)
 
-from .api import (get_active_slide, get_all_widgets, get_overlays,
-                  get_projector_content, get_projector_overlays,
+from .api import (call_on_projector, get_active_slide, get_all_widgets,
+                  get_overlays, get_projector_content, get_projector_overlays,
                   get_projector_overlays_js, reset_countdown, set_active_slide,
                   start_countdown, stop_countdown, update_projector_overlay)
 from .forms import SelectWidgetsForm
@@ -64,8 +64,8 @@ class Projector(TemplateView):
                 'content':  get_projector_content(),
                 'overlays': get_projector_overlays(),
                 'overlay_js': get_projector_overlays_js(),
-                'reload': True})
-
+                'reload': True,
+                'calls': config['projector_js_cache']})
         # For the Preview
         else:
             kwargs.update({
@@ -85,8 +85,8 @@ class ActivateView(RedirectView):
 
     def pre_redirect(self, request, *args, **kwargs):
         set_active_slide(kwargs['callback'], kwargs=dict(request.GET.items()))
-        config['up'] = 0
-        config['bigger'] = 100
+        config['projector_scroll'] = config.get_default('projector_scroll')
+        config['projector_scale'] = config.get_default('projector_scale')
 
 
 class SelectWidgetsView(TemplateView):
@@ -133,7 +133,7 @@ class SelectWidgetsView(TemplateView):
         return redirect(reverse('dashboard'))
 
 
-class ProjectorEdit(RedirectView):
+class ProjectorControllView(RedirectView):
     """
     Scale or scroll the projector.
     """
@@ -144,20 +144,23 @@ class ProjectorEdit(RedirectView):
     def pre_redirect(self, request, *args, **kwargs):
         direction = kwargs['direction']
         if direction == 'bigger':
-            config['bigger'] = int(config['bigger']) + 20
+            config['projector_scale'] = int(config['projector_scale']) + 20
         elif direction == 'smaller':
-            config['bigger'] = int(config['bigger']) - 20
+            config['projector_scale'] = int(config['projector_scale']) - 20
         elif direction == 'down':
-            config['up'] = int(config['up']) - 5
+            config['projector_scroll'] = int(config['projector_scroll']) - 5
         elif direction == 'up':
-            if config['up'] < 0:
-                config['up'] = int(config['up']) + 5
+            if config['projector_scroll'] < 0:
+                config['projector_scroll'] = int(config['projector_scroll']) + 5
         elif direction == 'clean':
-            config['up'] = config.get_default('up')
-            config['bigger'] = config.get_default('bigger')
+            config['projector_scroll'] = config.get_default('projector_scroll')
+            config['projector_scale'] = config.get_default('projector_scale')
+
+        call_on_projector({'scroll': config['projector_scroll'],
+                          'scale': config['projector_scale']})
 
 
-class CountdownEdit(RedirectView):
+class CountdownControllView(RedirectView):
     """
     Start, stop or reset the countdown.
     """

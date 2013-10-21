@@ -65,6 +65,16 @@ def update_projector_overlay(overlay):
     ProjectorSocketHandler.send_updates({'overlays': overlay_dict})
 
 
+def call_on_projector(calls):
+    """
+    Sends data to the projector.
+    """
+    projector_js_cache = config['projector_js_cache']
+    projector_js_cache.update(calls)
+    config['projector_js_cache'] = projector_js_cache
+    ProjectorSocketHandler.send_updates(json.dumps({'calls': calls}))
+
+
 def get_projector_content(slide_dict=None):
     """
     Returns the HTML-Content block of the projector.

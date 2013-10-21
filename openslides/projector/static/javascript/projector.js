@@ -6,6 +6,7 @@
  */
 
 $(document).ready(function() {
+    $('#content .scroll').wrap('<div class="scrollwrapper"></div>');
     if ($('#content.reload').length > 0) {
         updater.start();
     }
@@ -23,8 +24,17 @@ var projector = {
         }
     },
 
+    scroll: function(value) {
+        $('#content .scroll').css('margin-top', value + 'em')
+    },
+
+    scale: function(value) {
+        $('#content').css('font-size', value  + '%');
+        $('#content #sidebar').css('font-size', '18px');
+    },
+
     update_data: function(data) {
-       $.each(data, function (key, value) {
+        $.each(data, function (key, value) {
             if (key === 'load_file')
                 projector.load_file(value);
             else
@@ -48,20 +58,29 @@ var updater = {
     },
 
     updateProjector: function(data) {
-        $('#content').html(data.content);
-        var overlays = data.overlays;
-        $.each(overlays, function (key, value) {
-            var overlay = $('#overlays #overlay_' + key)
-            if (!value)
-                overlay.remove();
-            else {
-                if (overlay.length) {
-                    overlay.html(value.html)
-                } else {
-                    $('#overlays').append(value.html);
+        if (data.content) {
+            $('#content').html(data.content);
+            $('#content .scroll').wrap('<div class="scrollwrapper"></div>');
+        }
+        if (data.overlays) {
+            $.each(data.overlays, function (key, value) {
+                var overlay = $('#overlays #overlay_' + key)
+                if (!value)
+                    overlay.remove();
+                else {
+                    if (overlay.length) {
+                        overlay.html(value.html)
+                    } else {
+                        $('#overlays').append(value.html);
+                    }
+                    projector.update_data(value.javascript);
                 }
-                projector.update_data(value.javascript);
-            }
-        });
+            });
+        }
+        if (data.calls) {
+            $.each(data.calls, function (call, argument) {
+                projector[call](argument);
+            });
+        }
     }
 };

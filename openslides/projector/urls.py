@@ -58,47 +58,47 @@ urlpatterns = patterns(
         name='customslide_delete'),
 
     url(r'^bigger/$',
-        views.ProjectorEdit.as_view(),
+        views.ProjectorControllView.as_view(),
         {'direction': 'bigger'},
         name='projector_bigger'),
 
     url(r'^smaller/$',
-        views.ProjectorEdit.as_view(),
+        views.ProjectorControllView.as_view(),
         {'direction': 'smaller'},
         name='projector_smaller'),
 
     url(r'^up/$',
-        views.ProjectorEdit.as_view(),
+        views.ProjectorControllView.as_view(),
         {'direction': 'up'},
         name='projector_up'),
 
     url(r'^down/$',
-        views.ProjectorEdit.as_view(),
+        views.ProjectorControllView.as_view(),
         {'direction': 'down'},
         name='projector_down'),
 
     url(r'^clean/$',
-        views.ProjectorEdit.as_view(),
+        views.ProjectorControllView.as_view(),
         {'direction': 'clean'},
         name='projector_clean'),
 
     url(r'^countdown/reset/$',
-        views.CountdownEdit.as_view(),
+        views.CountdownControllView.as_view(),
         {'command': 'reset'},
         name='countdown_reset'),
 
     url(r'^countdown/start/$',
-        views.CountdownEdit.as_view(),
+        views.CountdownControllView.as_view(),
         {'command': 'start'},
         name='countdown_start'),
 
     url(r'^countdown/stop/$',
-        views.CountdownEdit.as_view(),
+        views.CountdownControllView.as_view(),
         {'command': 'stop'},
         name='countdown_stop'),
 
     url(r'^countdown/set-default/$',
-        views.CountdownEdit.as_view(),
+        views.CountdownControllView.as_view(),
         {'command': 'set-default'},
         name='countdown_set_default'),
 

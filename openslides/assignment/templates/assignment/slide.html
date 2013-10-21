@@ -19,92 +19,94 @@
     </small>
     <hr>
 </h1>
-{% if not assignment.candidates %}
-    <p>
-        <div class="text">{{ assignment.description|linebreaks }}</div>
-    </p>
-{% endif %}
+<div class="scroll">
+    {% if not assignment.candidates %}
+        <p>
+            <div class="text">{{ assignment.description|linebreaks }}</div>
+        </p>
+    {% endif %}
 
-{% if assignment.candidates and assignment.status != "fin" %}
-    <h3>{% trans "Candidates" %}</h3>
-    <ol>
-        {% for candidate in assignment.candidates %}
-            <li>{{ candidate }} </li>
-        {% empty %}
-            <li style="list-style: none outside none;">
-                <i>{% trans "No candidates available." %}</i>
-            </li>
-        {% endfor %}
-    </ol>
-    <p><br></p>
-{% endif %}
+    {% if assignment.candidates and assignment.status != "fin" %}
+        <h3>{% trans "Candidates" %}</h3>
+        <ol>
+            {% for candidate in assignment.candidates %}
+                <li>{{ candidate }} </li>
+            {% empty %}
+                <li style="list-style: none outside none;">
+                    <i>{% trans "No candidates available." %}</i>
+                </li>
+            {% endfor %}
+        </ol>
+        <p><br></p>
+    {% endif %}
 
-{% if polls.exists %}
-    <h3>{% trans "Election results" %}</h3>
-    <table class="table-striped table-bordered">
-    <tr>
-        <th>{% trans "Candidates" %}</th>
-        {% for poll in polls %}
-            <th>
-                <nobr>{{ poll.get_ballot }}. {% trans "ballot" %}</nobr>
-            </th>
-        {% endfor %}
-    </tr>
-    {% for candidate, poll_list in vote_results.items %}
+    {% if polls.exists %}
+        <h3>{% trans "Election results" %}</h3>
+        <table class="table-striped table-bordered">
         <tr>
-            <td class="{% if candidate in assignment.elected %} elected{% endif %}">
-                {% if candidate in assignment.elected %}
-                    <a class="elected">
-                        <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Candidate is elected' %}">
-                    </a>
-                {% endif %}
-                {{ candidate }}
-            </td>
-        {% for vote in poll_list %}
-            <td style="white-space:nowrap;"{% if candidate in assignment.elected %} class="elected"{% endif %}>
-                {% if not "assignment_publish_winner_results_only"|get_config or candidate in assignment.elected %}
-                    {% if 'Yes' in vote and 'No' in vote and 'Abstain' in vote %}
-                        <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Yes }}<br>
-                        <img src="{% static 'img/voting-no.png' %}" title="{% trans 'No' %}"> {{ vote.No }}<br>
-                        <img src="{% static 'img/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ vote.Abstain }}<br>
-                    {% elif 'Votes' in vote %}
-                        <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Votes }}
-                    {% elif vote == None %}
-                        {% trans 'was not a <br> candidate'%}
+            <th>{% trans "Candidates" %}</th>
+            {% for poll in polls %}
+                <th>
+                    <nobr>{{ poll.get_ballot }}. {% trans "ballot" %}</nobr>
+                </th>
+            {% endfor %}
+        </tr>
+        {% for candidate, poll_list in vote_results.items %}
+            <tr>
+                <td class="{% if candidate in assignment.elected %} elected{% endif %}">
+                    {% if candidate in assignment.elected %}
+                        <a class="elected">
+                            <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Candidate is elected' %}">
+                        </a>
+                    {% endif %}
+                    {{ candidate }}
+                </td>
+            {% for vote in poll_list %}
+                <td style="white-space:nowrap;"{% if candidate in assignment.elected %} class="elected"{% endif %}>
+                    {% if not "assignment_publish_winner_results_only"|get_config or candidate in assignment.elected %}
+                        {% if 'Yes' in vote and 'No' in vote and 'Abstain' in vote %}
+                            <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Yes }}<br>
+                            <img src="{% static 'img/voting-no.png' %}" title="{% trans 'No' %}"> {{ vote.No }}<br>
+                            <img src="{% static 'img/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ vote.Abstain }}<br>
+                        {% elif 'Votes' in vote %}
+                            <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ vote.Votes }}
+                        {% elif vote == None %}
+                            {% trans 'was not a <br> candidate'%}
+                        {% else %}
+                            &nbsp;
+                        {% endif %}
                     {% else %}
                         &nbsp;
                     {% endif %}
-                {% else %}
-                    &nbsp;
-                {% endif %}
-            </td>
+                </td>
+            {% endfor %}
+            </tr>
         {% endfor %}
-        </tr>
-    {% endfor %}
-    <tr>
-        <td>{% trans 'Invalid votes' %}</td>
-        {% for poll in polls %}
-            <td style="white-space:nowrap;">
-                {% if  poll.has_votes %}
-                    <img src="{% static 'img/voting-invalid.png' %}" title="{% trans 'Invalid' %}">
-                    {{ poll.print_votesinvalid }}
-                {% endif %}
-            </td>
+        <tr>
+            <td>{% trans 'Invalid votes' %}</td>
+            {% for poll in polls %}
+                <td style="white-space:nowrap;">
+                    {% if  poll.has_votes %}
+                        <img src="{% static 'img/voting-invalid.png' %}" title="{% trans 'Invalid' %}">
+                        {{ poll.print_votesinvalid }}
+                    {% endif %}
+                </td>
 
-        {% endfor %}
-    </tr>
-    <tr class="total">
-        <td>
-            <strong>{% trans 'Votes cast' %}</strong>
-        </td>
-        {% for poll in polls %}
-            <td style="white-space:nowrap;">
-                {% if poll.has_votes %}
-                    <img src="{% static 'img/voting-total.png' %}" title="{% trans 'Votes cast' %}">
-                    <strong>{{ poll.print_votescast }}</strong>
-                {% endif %}
+            {% endfor %}
+        </tr>
+        <tr class="total">
+            <td>
+                <strong>{% trans 'Votes cast' %}</strong>
             </td>
-        {% endfor %}
-    </tr>
-    </table>
-{% endif %}
+            {% for poll in polls %}
+                <td style="white-space:nowrap;">
+                    {% if poll.has_votes %}
+                        <img src="{% static 'img/voting-total.png' %}" title="{% trans 'Votes cast' %}">
+                        <strong>{{ poll.print_votescast }}</strong>
+                    {% endif %}
+                </td>
+            {% endfor %}
+        </tr>
+        </table>
+    {% endif %}
+</div>

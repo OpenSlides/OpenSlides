@@ -61,11 +61,11 @@
     <hr>
 </h1>
 
-<p>
+<div class="scroll">
 <div class="text">{{ motion.active_version.text|safe }}</div>
 {% if motion.active_version.reason %}
     <br>
     <div class="reason"><p><b>{% trans "Reason" %}:</b></p>
     {{ motion.active_version.reason|safe }}</div>
 {% endif %}
-</p>
+</div>

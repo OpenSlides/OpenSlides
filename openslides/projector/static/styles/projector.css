@@ -86,6 +86,13 @@ body{
     top: 150px;
     right: 40px;
     z-index: -1;
+    transition: all 2s;
+}
+#content .scroll {
+    transition: margin 2s;
+}
+#content .scrollwrapper {
+    overflow: hidden;
 }
 h1 {
     font-size: 45px !important;
