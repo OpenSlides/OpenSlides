@@ -10,15 +10,6 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-try:
-    import qrcode
-except ImportError:
-    draw_qrcode = False
-else:
-    draw_qrcode = True
-
-from cStringIO import StringIO
-
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
@@ -27,9 +18,11 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
 from django.utils.translation import activate, ugettext_lazy
+from reportlab.graphics.barcode.qr import QrCodeWidget
+from reportlab.graphics.shapes import Drawing
 from reportlab.lib import colors
 from reportlab.lib.units import cm
-from reportlab.platypus import (Image, LongTable, Paragraph, SimpleDocTemplate,
+from reportlab.platypus import (LongTable, Paragraph, SimpleDocTemplate,
                                 Spacer, Table, TableStyle)
 
 from openslides.config.api import config
@@ -266,13 +259,14 @@ class ParticipantsPasswordsPDF(PDFView):
         else:
             sort = 'last_name'
         # create qrcode image object from system url
-        if draw_qrcode:
-            qrcode_img = qrcode.make(participant_pdf_system_url)
-            img_stream = StringIO()
-            qrcode_img.save(img_stream, 'PNG')
-            img_stream.seek(0)
-            size = 2 * cm
-            I = Image(img_stream, width=size, height=size)
+        qrcode = QrCodeWidget(participant_pdf_system_url)
+        size = 1.5 * cm
+        qrcode.barHeight = size
+        qrcode.barWidth = size
+        qrcode.barBorder = 0
+        draw = Drawing(45, 45)
+        draw.add(qrcode)
+
         for user in User.objects.all().order_by(sort):
             cell = []
             cell.append(Spacer(0, 0.8 * cm))
@@ -289,8 +283,7 @@ class ParticipantsPasswordsPDF(PDFView):
                     % (user.default_password), stylesheet['Monotype']))
             cell.append(
                 Paragraph(participant_pdf_system_url, stylesheet['Monotype']))
-            if draw_qrcode:
-                cell.append(I)
+            cell.append(draw)
             cell2 = []
             cell2.append(Spacer(0, 0.8 * cm))
             if participant_pdf_welcometext is not None:

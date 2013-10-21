@@ -90,9 +90,6 @@ SITE_PACKAGES = {
     "tornado": {
         "copy": ["tornado"],
     },
-    "qrcode": {
-        "copy": ["qrcode"],
-    },
     "beautifulsoup4": {
         "copy": ["bs4"],
     },
