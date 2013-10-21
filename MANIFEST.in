@@ -1,9 +1,7 @@
 include AUTHORS
 include CHANGELOG
-include INSTALL.txt
 include LICENSE
-include README.txt
-include THANKS
+include README.rst
 include requirements_production.txt
 recursive-include openslides *.*
 recursive-exclude openslides *.pyc
