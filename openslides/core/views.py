@@ -16,6 +16,7 @@ from django.utils.importlib import import_module
 from haystack.views import SearchView as _SearchView
 
 from openslides import get_git_commit_id, get_version, RELEASE
+from openslides.config.api import config
 from openslides.utils.signals import template_manipulation
 from openslides.utils.views import TemplateView
 
@@ -76,7 +77,7 @@ class SearchView(_SearchView):
     template = 'core/search.html'
 
     def __call__(self, request):
-        if not request.user.is_authenticated():
+        if not request.user.is_authenticated() and not config['system_enable_anonymous']:
             raise PermissionDenied
         return super(SearchView, self).__call__(request)
 

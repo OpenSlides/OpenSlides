@@ -144,19 +144,26 @@ class AgendaItemView(SingleObjectMixin, FormView):
     Show an agenda item.
     """
     # TODO: use 'SingleObjectTemplateResponseMixin' to choose the right template name
-    permission_required = 'agenda.can_see_agenda'
     template_name = 'agenda/view.html'
     model = Item
     context_object_name = 'item'
     form_class = AppendSpeakerForm
 
+    def has_permission(self, request, *args, **kwargs):
+        """
+        Checks if the user has the required permission.
+        """
+        if self.get_object().type == Item.ORGANIZATIONAL_ITEM:
+            permission = request.user.has_perm('agenda.can_see_orga_items')
+        else:
+            permission = request.user.has_perm('agenda.can_see_agenda')
+        return permission
+
     def get_context_data(self, **kwargs):
         self.object = self.get_object()
         list_of_speakers = self.object.get_list_of_speakers()
-
         active_slide = get_active_slide()
         active_type = active_slide.get('type', None)
-
         kwargs.update({
             'object': self.object,
             'list_of_speakers': list_of_speakers,
@@ -594,10 +601,16 @@ class CurrentListOfSpeakersView(RedirectView):
                 messages.success(request, _('%s is now finished.') % current_speaker)
             reverse_to_dashboard = True
 
-        if reverse_to_dashboard or not self.request.user.has_perm('agenda.can_see_agenda'):
-            return reverse('dashboard')
+        if item.type == Item.ORGANIZATIONAL_ITEM:
+            if reverse_to_dashboard or not self.request.user.has_perm('agenda.can_see_orga_items'):
+                return reverse('dashboard')
+            else:
+                return reverse('item_view', args=[item.pk])
         else:
-            return reverse('item_view', args=[item.pk])
+            if reverse_to_dashboard or not self.request.user.has_perm('agenda.can_see_agenda'):
+                return reverse('dashboard')
+            else:
+                return reverse('item_view', args=[item.pk])
 
 
 def register_tab(request):

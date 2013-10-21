@@ -46,7 +46,7 @@ OpenSlides uses parts of the following projects:
   License: MIT
   and some addons:
   - jQuery UI Nested Sortable
-    <http://mjsarfatti.com/code/nestedSortable/>
+    <https://github.com/mjsarfatti/nestedSortable/>
     License: MIT
   - jQuery UI Slider Access
     <http://trentrichardson.com/examples/jQuery-SliderAccess/>
