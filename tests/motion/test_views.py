@@ -491,3 +491,14 @@ class CategoryViewsTest(TestCase):
         response = self.admin_client.post(url, {'name': 'test_title_jaiShae1sheingahlee2'})
         self.assertRedirects(response, '/motion/category/')
         self.assertEqual(Category.objects.get(pk=1).name, 'test_title_jaiShae1sheingahlee2')
+
+    def test_delete(self):
+        # Setup
+        url = '/motion/category/1/del/'
+        Category.objects.create(name='test_title_nei1wooHes2aiquuraep')
+        # Test
+        response = self.admin_client.get(url)
+        self.assertRedirects(response, '/motion/category/')
+        response = self.admin_client.post(url, {'yes': 'true'})
+        self.assertRedirects(response, '/motion/category/')
+        self.assertFalse(Category.objects.exists())
