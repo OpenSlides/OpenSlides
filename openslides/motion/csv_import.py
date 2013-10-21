@@ -46,7 +46,7 @@ def import_motions(csv_file, default_submitter, override=False, importing_person
     try:
         csv_file.read().decode('utf8')
     except UnicodeDecodeError:
-        return (0, [_('Import file has wrong character encoding, only UTF-8 is supported!')], [])
+        return (0, 0, [_('Import file has wrong character encoding, only UTF-8 is supported!')], [])
     csv_file.seek(0)
 
     with transaction.commit_on_success():
