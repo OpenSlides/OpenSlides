@@ -2,13 +2,13 @@
 -r requirements_production.txt
 
 # Requirements for development and tests
-Fabric==1.6.1
-coverage==3.6
-django-discover-runner==0.4
+Fabric==1.8.0
+coverage==3.7
+django-discover-runner==1.0
 flake8==2.0
 
 # Requirements for OpenSlides handbook/documentation
-Sphinx==1.2b1
+Sphinx==1.2b3
 sphinx-bootstrap-theme==0.2.4
 
 # For Python 2.6 support
