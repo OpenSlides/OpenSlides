@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-10-21 20:45+0200\n"
+"POT-Creation-Date: 2013-10-21 20:59+0200\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -415,8 +415,6 @@ msgstr ""
 #: assignment/views.py:575
 #: assignment/templates/assignment/assignment_detail.html:210
 #: assignment/templates/assignment/assignment_detail.html:214
-#: assignment/templates/assignment/assignment_poll_slide.html:32
-#: assignment/templates/assignment/assignment_poll_slide.html:36
 #: assignment/templates/assignment/slide.html:68
 #: assignment/templates/assignment/slide.html:72 motion/models.py:712
 #: motion/pdf.py:134 motion/pdf.py:276
@@ -429,7 +427,6 @@ msgstr ""
 #: agenda/templates/agenda/view.html:87 assignment/models.py:298
 #: assignment/views.py:576
 #: assignment/templates/assignment/assignment_detail.html:211
-#: assignment/templates/assignment/assignment_poll_slide.html:33
 #: assignment/templates/assignment/slide.html:69 motion/models.py:712
 #: motion/pdf.py:134 motion/pdf.py:277
 #: motion/templates/motion/motion_detail.html:216
@@ -862,7 +859,6 @@ msgstr ""
 
 #: assignment/views.py:403
 #: assignment/templates/assignment/assignment_detail.html:161
-#: assignment/templates/assignment/assignment_poll_slide.html:12
 #: assignment/templates/assignment/poll_view.html:7
 #: assignment/templates/assignment/poll_view.html:13
 #: assignment/templates/assignment/slide.html:50
@@ -892,7 +888,6 @@ msgstr ""
 #: assignment/views.py:449
 #: assignment/templates/assignment/assignment_detail.html:244
 #: assignment/templates/assignment/assignment_detail.html:249
-#: assignment/templates/assignment/assignment_poll_slide.html:58
 #: assignment/templates/assignment/poll_view.html:65
 #: assignment/templates/assignment/slide.html:99
 #: assignment/templates/assignment/slide.html:104 motion/pdf.py:135
@@ -905,7 +900,6 @@ msgstr ""
 #: assignment/views.py:507 assignment/views.py:525
 #: assignment/templates/assignment/assignment_detail.html:8
 #: assignment/templates/assignment/assignment_list.html:33
-#: assignment/templates/assignment/assignment_poll_slide.html:10
 #: assignment/templates/assignment/poll_view.html:7
 #: assignment/templates/assignment/slide.html:18
 #: assignment/templates/search/assignment-results.html:7
@@ -933,7 +927,6 @@ msgstr[1] ""
 
 #: assignment/views.py:576
 #: assignment/templates/assignment/assignment_detail.html:212
-#: assignment/templates/assignment/assignment_poll_slide.html:34
 #: assignment/templates/assignment/slide.html:70 motion/pdf.py:134
 #: motion/pdf.py:278 motion/templates/motion/motion_detail.html:217
 #: motion/templates/motion/slide.html:23
@@ -1029,7 +1022,6 @@ msgid "was not a <br> candidate"
 msgstr ""
 
 #: assignment/templates/assignment/assignment_detail.html:233
-#: assignment/templates/assignment/assignment_poll_slide.html:49
 #: assignment/templates/assignment/slide.html:90 motion/pdf.py:134
 #: motion/templates/motion/motion_detail.html:218
 #: motion/templates/motion/slide.html:24
@@ -1075,14 +1067,6 @@ msgstr ""
 
 #: assignment/templates/assignment/assignment_list.html:51
 msgid "Elected"
-msgstr ""
-
-#: assignment/templates/assignment/assignment_poll_slide.html:11
-msgid "Election result"
-msgstr ""
-
-#: assignment/templates/assignment/assignment_poll_slide.html:70
-msgid "No vote result available."
 msgstr ""
 
 #: assignment/templates/assignment/poll_view.html:29
