@@ -755,6 +755,7 @@ class CategoryCreateView(CreateView):
     permission_required = 'motion.can_manage_motion'
     model = Category
     success_url_name = 'motion_category_list'
+    url_name_args = []
 
 category_create = CategoryCreateView.as_view()
 
@@ -763,6 +764,7 @@ class CategoryUpdateView(UpdateView):
     permission_required = 'motion.can_manage_motion'
     model = Category
     success_url_name = 'motion_category_list'
+    url_name_args = []
 
 category_update = CategoryUpdateView.as_view()
 
