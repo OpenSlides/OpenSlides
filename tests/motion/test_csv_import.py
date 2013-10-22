@@ -93,6 +93,9 @@ class CSVImport(TestCase):
         text = u'Müller'.encode('iso-8859-15')
         csv_file.write(text)
         csv_file.seek(0)
-        count_success, error_messages, warning_messages = import_motions(csv_file=csv_file, default_submitter=self.normal_user.person_id)
+        count_success, count_lines, error_messages, warning_messages = import_motions(
+            csv_file=csv_file,
+            default_submitter=self.normal_user.person_id)
         self.assertEqual(count_success, 0)
+        self.assertEqual(count_lines, 0)
         self.assertTrue('Import file has wrong character encoding, only UTF-8 is supported!' in error_messages)
