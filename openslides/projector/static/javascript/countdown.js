@@ -33,7 +33,7 @@ function update_countdown() {
     } else {
         seconds = Math.max(0, Math.floor(seconds));
     }
-    if(seconds != = undefined) {
+    if(seconds !== undefined) {
         $('#overlay_countdown_inner').html(seconds);
     }
     setTimeout('update_countdown()', 200);
