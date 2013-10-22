@@ -5,6 +5,7 @@ function update_clock()
     var currentMinutes = currentTime.getMinutes();
     currentHours = normalise(currentHours);
     currentMinutes = normalise(currentMinutes);
+
     $('#currentTime').html(currentHours + ':' + currentMinutes);
     setTimeout('update_clock()', 200);
 }

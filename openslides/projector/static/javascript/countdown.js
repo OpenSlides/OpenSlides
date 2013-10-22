@@ -44,6 +44,7 @@ function update_countdown()
     if(seconds !== undefined)
     {
         $('#overlay_countdown_inner').html(seconds);
+        
     }
     setTimeout('update_countdown()', 200);
 }
