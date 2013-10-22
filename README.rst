@@ -91,9 +91,9 @@ portable version you should observe the following install steps.*
       Advanced): ``";C:\\Python27;C:\\Python27\\Scripts"``. Note that the path
       can differ if you customized the install of Python in the first step.
 
-   c. Download and run (via double click) the `install script ez_setup.py
-      for Setuptools 0.7.7
-      <https://pypi.python.org/pypi/setuptools/0.7.7#windows>`_.
+   c. Download and run (via double click) the last `install script
+      ez_setup.py for Setuptools
+      <https://pypi.python.org/pypi/setuptools/#windows>`_.
 
 2. Setup a virtual environment with Virtual Python Environment builder
    (optional)
