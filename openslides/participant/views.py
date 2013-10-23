@@ -22,8 +22,8 @@ from reportlab.graphics.barcode.qr import QrCodeWidget
 from reportlab.graphics.shapes import Drawing
 from reportlab.lib import colors
 from reportlab.lib.units import cm
-from reportlab.platypus import (LongTable, Paragraph, SimpleDocTemplate,
-                                Spacer, Table, TableStyle)
+from reportlab.platypus import (LongTable, PageBreak, Paragraph, Spacer, Table,
+                                TableStyle)
 
 from openslides.config.api import config
 from openslides.projector.projector import Widget
@@ -239,73 +239,104 @@ class ParticipantsPasswordsPDF(PDFView):
     Generate the Welcomepaper for the users.
     """
     permission_required = 'participant.can_manage_participant'
-    filename = ugettext_lazy("Participant-passwords")
+    filename = ugettext_lazy("Participant-access-data")
     top_space = 0
-
-    def get_template(self, buffer):
-        return SimpleDocTemplate(
-            buffer, topMargin=-6, bottomMargin=-6,
-            leftMargin=0, rightMargin=0, showBoundary=False)
 
     def build_document(self, pdf_document, story):
         pdf_document.build(story)
 
     def append_to_pdf(self, story):
-        data = []
-        participant_pdf_system_url = config["participant_pdf_system_url"]
+        system_wlan_ssid = config["system_wlan_ssid"] or "-"
+        system_wlan_password = config["system_wlan_password"] or "-"
+        system_wlan_encryption = config["system_wlan_encryption"] or "-"
+        system_url = config["system_url"] or "-"
+        participant_pdf_welcometitle = config["participant_pdf_welcometitle"]
         participant_pdf_welcometext = config["participant_pdf_welcometext"]
         if config['participant_sort_users_by_first_name']:
             sort = 'first_name'
         else:
             sort = 'last_name'
-        # create qrcode image object from system url
-        qrcode = QrCodeWidget(participant_pdf_system_url)
-        size = 1.5 * cm
-        qrcode.barHeight = size
-        qrcode.barWidth = size
-        qrcode.barBorder = 0
-        draw = Drawing(45, 45)
-        draw.add(qrcode)
+        qrcode_size = 2 * cm
+        # qrcode for system url
+        qrcode_url = QrCodeWidget(system_url)
+        qrcode_url.barHeight = qrcode_size
+        qrcode_url.barWidth = qrcode_size
+        qrcode_url.barBorder = 0
+        qrcode_url_draw = Drawing(45, 45)
+        qrcode_url_draw.add(qrcode_url)
+        # qrcode for wlan
+        text = "WIFI:S:%s;T:%s;P:%s;;" % (system_wlan_ssid, system_wlan_encryption, system_wlan_password)
+        qrcode_wlan = QrCodeWidget(text)
+        qrcode_wlan.barHeight = qrcode_size
+        qrcode_wlan.barWidth = qrcode_size
+        qrcode_wlan.barBorder = 0
+        qrcode_wlan_draw = Drawing(45, 45)
+        qrcode_wlan_draw.add(qrcode_wlan)
 
         for user in User.objects.all().order_by(sort):
+            story.append(Paragraph(unicode(user), stylesheet['h1']))
+            story.append(Spacer(0, 1 * cm))
+            data = []
+            # WLAN access data
             cell = []
-            cell.append(Spacer(0, 0.8 * cm))
-            cell.append(Paragraph(_("Account for OpenSlides"),
-                        stylesheet['Password_title']))
-            cell.append(Paragraph(_("for %s") % (user),
-                        stylesheet['Password_subtitle']))
+            cell.append(Paragraph(_("WLAN access data"),
+                        stylesheet['h2']))
+            cell.append(Paragraph("%s:" % _("WLAN name (SSID)"),
+                        stylesheet['formfield']))
+            cell.append(Paragraph(system_wlan_ssid,
+                        stylesheet['formfield_value']))
+            cell.append(Paragraph("%s:" % _("WLAN password"),
+                        stylesheet['formfield']))
+            cell.append(Paragraph(system_wlan_password,
+                        stylesheet['formfield_value']))
+            cell.append(Paragraph("%s:" % _("WLAN encryption"),
+                        stylesheet['formfield']))
+            cell.append(Paragraph(system_wlan_encryption,
+                        stylesheet['formfield_value']))
             cell.append(Spacer(0, 0.5 * cm))
-            cell.append(Paragraph(_("User: %s") % (user.username),
-                        stylesheet['Monotype']))
-            cell.append(
-                Paragraph(
-                    _("Password: %s")
-                    % (user.default_password), stylesheet['Monotype']))
-            cell.append(
-                Paragraph(participant_pdf_system_url, stylesheet['Monotype']))
-            cell.append(draw)
+            # OpenSlides access data
             cell2 = []
-            cell2.append(Spacer(0, 0.8 * cm))
-            if participant_pdf_welcometext is not None:
-                cell2.append(Paragraph(
-                    participant_pdf_welcometext.replace('\r\n', '<br/>'),
-                    stylesheet['Ballot_subtitle']))
-
+            cell2.append(Paragraph(_("OpenSlides access data"),
+                         stylesheet['h2']))
+            cell2.append(Paragraph("%s:" % _("Username"),
+                         stylesheet['formfield']))
+            cell2.append(Paragraph(user.username,
+                         stylesheet['formfield_value']))
+            cell2.append(Paragraph("%s:" % _("Password"),
+                         stylesheet['formfield']))
+            cell2.append(Paragraph(user.default_password,
+                         stylesheet['formfield_value']))
+            cell2.append(Paragraph("URL:",
+                         stylesheet['formfield']))
+            cell2.append(Paragraph(system_url,
+                         stylesheet['formfield_value']))
             data.append([cell, cell2])
+            # QRCodes
+            cell = []
+            if system_wlan_ssid != "-" and system_wlan_encryption != "-":
+                cell.append(qrcode_wlan_draw)
+                cell.append(Paragraph(_("Scan this QRCode to connect WLAN."),
+                            stylesheet['qrcode_comment']))
+            cell2 = []
+            if system_url != "-":
+                cell2.append(qrcode_url_draw)
+                cell2.append(Paragraph(_("Scan this QRCode to open URL."),
+                             stylesheet['qrcode_comment']))
+            data.append([cell, cell2])
+            # build table
+            table = Table(data)
+            table._argW[0] = 8 * cm
+            table._argW[1] = 8 * cm
+            table.setStyle(TableStyle([('VALIGN', (0, 0), (-1, -1), 'TOP')]))
+            story.append(table)
+            story.append(Spacer(0, 2 * cm))
 
-        # add empty table line if no participants available
-        if not data:
-            data.append(['', ''])
-        # build table
-        t = Table(data, 10.5 * cm, 7.42 * cm)
-        t.setStyle(TableStyle([
-            ('LEFTPADDING', (0, 0), (0, -1), 30),
-            ('LINEBELOW', (0, 0), (-1, 0), 0.25, colors.grey),
-            ('LINEBELOW', (0, 1), (-1, 1), 0.25, colors.grey),
-            ('LINEBELOW', (0, 1), (-1, -1), 0.25, colors.grey),
-            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ]))
-        story.append(t)
+            # welcome title and text
+            story.append(Paragraph(participant_pdf_welcometitle,
+                         stylesheet['h2']))
+            story.append(Paragraph(participant_pdf_welcometext.replace('\r\n', '<br/>'),
+                         stylesheet['Paragraph12']))
+            story.append(PageBreak())
 
 
 class UserImportView(FormView):

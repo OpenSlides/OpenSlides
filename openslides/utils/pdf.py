@@ -53,6 +53,11 @@ stylesheet.add(ParagraphStyle(
     spaceAfter=15
 ))
 stylesheet.add(ParagraphStyle(
+    name='Paragraph12',
+    parent=stylesheet['Paragraph'],
+    fontSize=12
+))
+stylesheet.add(ParagraphStyle(
     name='InnerParagraph',
     parent=stylesheet['Normal'],
     leading=14,
@@ -138,7 +143,7 @@ stylesheet.add(ParagraphStyle(
     parent=stylesheet['Bold'],
     fontSize=10,
     leading=20,
-))
+), alias='h4')
 stylesheet.add(ParagraphStyle(
     name='Item',
     parent=stylesheet['Normal'],
@@ -216,45 +221,23 @@ stylesheet.add(ParagraphStyle(name='Ballot_option_group_right',
                               leftIndent=49),
                )
 # Password paper stylesheets
-stylesheet.add(ParagraphStyle(name='Password_title',
-                              parent=stylesheet['Ballot_title'],
+stylesheet.add(ParagraphStyle(name='formfield',
+                              parent=stylesheet['Normal'],
+                              fontSize=12,
+                              leading=18,
                               leftIndent=0),
                )
-stylesheet.add(ParagraphStyle(name='Password_subtitle',
-                              parent=stylesheet['Ballot_subtitle'],
-                              leftIndent=0),
-               )
-stylesheet.add(ParagraphStyle(name='Monotype',
+stylesheet.add(ParagraphStyle(name='formfield_value',
                               parent=stylesheet['Normal'],
                               fontName='Courier',
                               fontSize=12,
-                              leading=24,
-                              leftIndent=0),
+                              leading=28,
+                              leftIndent=10),
                )
-stylesheet.add(ParagraphStyle(name='Badge_title',
-                              parent=stylesheet['Bold'],
-                              fontSize=16,
-                              leading=22,
-                              leftIndent=30),
+stylesheet.add(ParagraphStyle(name='qrcode_comment',
+                              parent=stylesheet['Small'],
+                              spaceBefore=6),
                )
-stylesheet.add(ParagraphStyle(name='Badge_subtitle',
-                              parent=stylesheet['Normal'],
-                              fontSize=12,
-                              leading=24,
-                              leftIndent=30),
-               )
-stylesheet.add(ParagraphStyle(
-    name='Badge_italic',
-    parent=stylesheet['Italic'],
-    fontSize=12,
-    leading=24,
-    leftIndent=30,
-))
-stylesheet.add(ParagraphStyle(
-    name='Badge_qrcode',
-    fontSize=12,
-    leftIndent=190,
-))
 
 
 def firstPage(canvas, doc):
