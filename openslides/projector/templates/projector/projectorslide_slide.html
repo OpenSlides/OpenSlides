@@ -2,8 +2,6 @@
 
 <h1>{{ slide.title }}</h1>
 
-<div class="scroll">
-    {% if slide.text %}
-        <span>{{ slide.text|safe|linebreaks }}</span>
-    {% endif %}
-</div>
+{% if slide.text %}
+    <span>{{ slide.text|safe|linebreaks }}</span>
+{% endif %}

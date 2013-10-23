@@ -6,7 +6,6 @@
  */
 
 $(document).ready(function() {
-    $('#content .scroll').wrap('<div class="scrollwrapper"></div>');
     if ($('#content.reload').length > 0) {
         updater.start();
     }
@@ -25,12 +24,11 @@ var projector = {
     },
 
     scroll: function(value) {
-        $('#content .scroll').css('margin-top', value + 'em')
+        $('#content').css('margin-top', -10 * value + 'em');
     },
 
     scale: function(value) {
-        $('#content').css('font-size', value  + '%');
-        $('#content #sidebar').css('font-size', '18px');
+        $('#content').css('font-size', 100 + 20 * value  + '%');
     },
 
     update_data: function(data) {
@@ -60,7 +58,6 @@ var updater = {
     updateProjector: function(data) {
         if (data.content) {
             $('#content').html(data.content);
-            $('#content .scroll').wrap('<div class="scrollwrapper"></div>');
         }
         if (data.overlays) {
             $.each(data.overlays, function (key, value) {

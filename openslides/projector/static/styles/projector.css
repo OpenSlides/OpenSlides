@@ -86,22 +86,33 @@ body{
     top: 150px;
     right: 40px;
     z-index: -1;
-    transition: all 2s;
+    transition: all 1s;
+    line-height: normal;
 }
 #content .scroll {
-    transition: margin 2s;
-}
-#content .scrollwrapper {
-    overflow: hidden;
+    transition: margin 1s;
 }
 h1 {
-    font-size: 45px !important;
-    margin-bottom: 40px !important;
+    font-size: 2.25em;
+    margin-bottom: 40px;
+    line-height: 0.95em;
+}
+h1 small {
+    font-size: 0.55em;
+}
+h3 {
+    font-size: 1.2em;
 }
 #sidebar {
     width: 255px;
     float: right;
     margin: 0 0 20px 10px;
+}
+ul, ol {
+    margin: 0 0 10px 2em;
+}
+li {
+    line-height: normal;
 }
 .well h4 {
     margin: 20px 0 2px 0;
@@ -109,16 +120,12 @@ h1 {
 .well h4 .first {
     margin-top: 0;
 }
-
-.well .results {
-    line-height: 30px;
-}
 .well .results hr {
-    margin: 5px 0 !important;
+    margin: 5px 0;
+    border: 1px solid #E3E3E3;
 }
-
 hr {
-    margin: 10px 0 !important;
+    margin: 10px 0;
 }
 
 
