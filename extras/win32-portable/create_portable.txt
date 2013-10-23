@@ -1,24 +1,35 @@
 How to create a new portable Windows distribution of OpenSlides:
 ----------------------------------------------------------------
 
-1.) Follow the OpenSlides installation instructions for windows,
-    but add the option "-Z" when executing easy_install, e.g.:
+1. Install Python 2.7.x and Setuptools
+   Follow the instructions in the README, section III (Windows installation), step 1.
 
-      easy_install -Z django django-mptt beautifulsoup4 bleach pillow reportlab tornado django-haystack whoosh
 
-2.) To update the version resource of the prebuild openslides.exe
-    pywin32 should be installed (it is not strictly required but at
-    least for releases that are to be published it is highly advisable)
+2. Install all required python packages (see requirements_production.txt):
 
-    To install it just grab the binary installer from:
-    http://sourceforge.net/projects/pywin32/files/pywin32/Build%20218/pywin32-218.win32-py2.7.exe/download
+       easy_install -Z django django-mptt beautifulsoup4 bleach pillow reportlab tornado django-haystack whoosh
 
-3.) Run in the main directory of the OpenSlides checkout:
 
-      python extras\win32-portable\prepare_portable.py
+3. Install pywin32 from binary installer:
+   http://sourceforge.net/projects/pywin32/files/pywin32/Build%20218/pywin32-218.win32-py2.7.exe/download
 
-4.) The portable OpenSlides distribution is now ready as a zip archive
-    in the 'dist' directory
+   Pywin32 is used to update the version resource of the prebuild openslides.exe.
+   It is not strictly required but at least for published releases it is highly advisable.
+
+
+4. Install wxPython from binary installer:
+   http://downloads.sourceforge.net/wxpython/wxPython2.8-win32-unicode-2.8.12.1-py27.exe
+
+   WxPython is required to build the OpenSlides GUI frontend.
+
+
+5. Run in the main directory of the OpenSlides checkout:
+
+       python extras\win32-portable\prepare_portable.py
+
+
+=> The portable OpenSlides distribution is created as a zip archive in
+   the 'dist' directory of OpenSlides checkout.
 
 
 NOTE: Creating the portable Windows distribution of OpenSlides is not possible
