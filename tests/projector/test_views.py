@@ -40,3 +40,14 @@ class CustomSlidesTest(TestCase):
         response = self.admin_client.post(url, {'title': 'test_title_ai8Ooboh5bahr6Ee7goo', 'weight': '0'})
         self.assertRedirects(response, '/projector/dashboard/')
         self.assertEqual(ProjectorSlide.objects.get(pk=1).title, 'test_title_ai8Ooboh5bahr6Ee7goo')
+
+    def test_delete(self):
+        # Setup
+        url = '/projector/1/del/'
+        ProjectorSlide.objects.create(title='test_title_oyie0em1chieM7YohX4H')
+        # Test
+        response = self.admin_client.get(url)
+        self.assertRedirects(response, '/projector/1/edit/')
+        response = self.admin_client.post(url, {'yes': 'true'})
+        self.assertRedirects(response, '/projector/dashboard/')
+        self.assertFalse(ProjectorSlide.objects.exists())
