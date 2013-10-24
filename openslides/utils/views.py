@@ -33,6 +33,7 @@ from django.views.generic.detail import SingleObjectMixin
 from reportlab.lib.units import cm
 from reportlab.platypus import SimpleDocTemplate, Spacer
 
+from .exceptions import OpenSlidesError
 from .pdf import firstPage, laterPages
 from .signals import template_manipulation
 from .utils import html_strong
@@ -400,32 +401,38 @@ class QuestionView(RedirectView):
         """
         Calls the method for the answer the user clicked.
 
-        The method name is on_clicked_ANSWER where ANSWER is the key from the
-        clicked answer. See get_answer_options. If this method is not defined,
-        raises a NotImplementedError.
-
-        If the method returns True, then the success message is printed to the
-        user.
+        The method name is on_clicked_ANSWER where ANSWER is the key from
+        the clicked answer. See get_answer_options. Prints an error
+        message, if no valid answer was given. If this method is not
+        defined, nothing happens, else it is called and the success message
+        is printed to the user.
         """
-        method_name = 'on_clicked_%s' % self.get_answer()
-        method = getattr(self, method_name, None)
-        if method is None:
-            pass
+        try:
+            answer = self.get_answer()
+        except OpenSlidesError as error:
+            messages.error(self.request, error)
         else:
-            method()
-            self.create_final_message()
+            method_name = 'on_clicked_%s' % answer
+            method = getattr(self, method_name, None)
+            if method is None:
+                pass
+            else:
+                method()
+                self.create_final_message()
 
     def get_answer(self):
         """
         Returns the key of the clicked answer.
 
-        Raises ImproperlyConfigured, if the answer is not one of
-        get_answer_options.
+        Raises OpenSlidesError if the answer is not one of get_answer_options.
         """
         for option_key, option_name in self.get_answer_options():
             if option_key in self.request.POST:
-                return option_key
-        raise ImproperlyConfigured('%s is not a valid answer' % self.request.POST)
+                answer = option_key
+                break
+        else:
+            raise OpenSlidesError(ugettext_lazy('You did not send a valid answer.'))
+        return answer
 
     def get_final_message(self):
         """
@@ -493,17 +500,25 @@ class DeleteView(SingleObjectMixin, QuestionView):
     def get_redirect_url(self, **kwargs):
         """
         Returns the url on which the delete dialog is shown and the url after
-        the deleten.
+        the deleting.
 
-        On GET-requests and on aborted POST-requests, redirect to the detail
+        On GET-requests and on aborted or failed POST-requests, redirects to the detail
         view as default. The attributes question_url_name or question_url can
         define other urls.
         """
-        if self.request.method == 'GET' or self.get_answer() == 'no':
-            url = self.get_url(self.question_url_name, self.question_url,
-                               args=self.get_url_name_args())
+        if self.request.method == 'POST':
+            try:
+                answer = self.get_answer()
+            except OpenSlidesError:
+                answer = 'no'
+            if answer == 'no':
+                url = self.get_url(self.question_url_name, self.question_url,
+                                   args=self.get_url_name_args())
+            else:
+                url = self.get_url(self.success_url_name, self.success_url,
+                                   args=self.get_url_name_args())
         else:
-            url = self.get_url(self.success_url_name, self.success_url,
+            url = self.get_url(self.question_url_name, self.question_url,
                                args=self.get_url_name_args())
         return url
 

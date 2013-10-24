@@ -270,20 +270,29 @@ class ItemDelete(DeleteView):
             self.item_delete_answer_options = options
         return options
 
-    def pre_post_redirect(self, request, *args, **kwargs):
-        # TODO: rewrite this method with on_case_all and on_case_yes
-        if self.get_answer() == 'all':
-            self.object.delete(with_children=True)
-            messages.success(
-                request,
-                _("Item %s and his children were successfully deleted.")
-                % html_strong(self.object))
-        elif self.get_answer() == 'yes':
-            self.object.delete(with_children=False)
-            messages.success(
-                request,
-                _("Item %s was successfully deleted.")
-                % html_strong(self.object))
+    def on_clicked_yes(self):
+        """
+        Deletes the item but not its children.
+        """
+        self.object.delete(with_children=False)
+
+    def on_clicked_all(self):
+        """
+        Deletes the item and its children.
+        """
+        self.object.delete(with_children=True)
+
+    def get_final_message(self):
+        """
+        Prints the success message to the user.
+        """
+        # OpenSlidesError (invalid answer) should never be raised here because
+        # this method should only be called if the answer is 'yes' or 'all'.
+        if self.get_answer() == 'yes':
+            message = _('Item %s was successfully deleted.') % html_strong(self.object)
+        else:
+            message = _('Item %s and its children were successfully deleted.') % html_strong(self.object)
+        return message
 
 
 class CreateRelatedAgendaItemView(SingleObjectMixin, RedirectView):

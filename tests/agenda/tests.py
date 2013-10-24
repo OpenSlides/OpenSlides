@@ -222,6 +222,13 @@ class ViewTest(TestCase):
         query = Item.objects.filter(pk__in=[item1.pk, item2.pk])
         self.assertFalse(query)
 
+    def test_delete_item_with_wrong_answer(self):
+        response = self.adminClient.post(
+            '/agenda/%s/del/' % self.item1.pk,
+            {'unknown_answer_aicipohc1Eeph2chaeng': 1})
+        self.assertRedirects(response, '/agenda/')
+        self.assertTrue(Item.objects.filter(pk=self.item1.pk).exists())
+
 
 class ConfigTest(TestCase):
     def setUp(self):
