@@ -14,11 +14,11 @@ from urllib import unquote
 from django.conf import settings
 from django.core.handlers.wsgi import WSGIHandler as Django_WSGIHandler
 from django.utils.translation import ugettext as _
+from sockjs.tornado import SockJSRouter, SockJSConnection
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.options import parse_command_line
 from tornado.web import Application, FallbackHandler, StaticFileHandler
-from tornado.websocket import WebSocketHandler
 from tornado.wsgi import WSGIContainer
 
 
@@ -37,20 +37,13 @@ class DjangoStaticFileHandler(StaticFileHandler):
         return super(DjangoStaticFileHandler, self).get(absolute_path, include_body)
 
 
-class ProjectorSocketHandler(WebSocketHandler):
+class ProjectorSocketHandler(SockJSConnection):
     """
     Handels the websocket for the projector.
     """
     waiters = set()
 
-    # The following lines can be uncommented, if there are any problems with
-    # websockts in iOS Safari 5.0
-
-    ## def allow_draft76(self):
-        ## # for iOS 5.0 Safari
-        ## return True
-
-    def open(self):
+    def on_open(self, info):
         ProjectorSocketHandler.waiters.add(self)
 
     def on_close(self):
@@ -59,7 +52,7 @@ class ProjectorSocketHandler(WebSocketHandler):
     @classmethod
     def send_updates(cls, data):
         for waiter in cls.waiters:
-            waiter.write_message(data)
+            waiter.send(data)
 
 
 def run_tornado(addr, port, reload=False):
@@ -73,12 +66,13 @@ def run_tornado(addr, port, reload=False):
         url_string = 'http://%s:%s' % (addr, port)
     print _("Starting OpenSlides' tornado webserver listening to %(url_string)s") % {'url_string': url_string}
 
+    socket_js_router = SockJSRouter(ProjectorSocketHandler, '/projector/socket')
+
     # Start the application
     app = WSGIContainer(Django_WSGIHandler())
-    tornado_app = Application([
+    tornado_app = Application(socket_js_router.urls + [
         (r"%s(.*)" % settings.STATIC_URL, DjangoStaticFileHandler),
         (r'%s(.*)' % settings.MEDIA_URL, StaticFileHandler, {'path': settings.MEDIA_ROOT}),
-        (r'/projector/socket/', ProjectorSocketHandler),
         ('.*', FallbackHandler, dict(fallback=app))
     ], debug=reload)
 

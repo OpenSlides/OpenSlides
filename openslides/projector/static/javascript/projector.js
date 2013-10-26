@@ -45,10 +45,10 @@ var updater = {
     socket: null,
 
     start: function() {
-        var url = "ws://" + location.host + "/projector/socket/";
-        updater.socket = new WebSocket(url);
+        var url = "http://" + location.host + "/projector/socket";
+        updater.socket = new SockJS(url);
         updater.socket.onmessage = function(event) {
-            updater.updateProjector(JSON.parse(event.data));
+            updater.updateProjector(event.data);
         }
         updater.socket.onclose = function() {
             setTimeout('updater.start()', 5000);

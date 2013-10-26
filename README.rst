@@ -258,6 +258,12 @@ OpenSlides uses the following projects or parts of them:
 * `ReportLab <http://www.reportlab.com/software/opensource/rl-toolkit/>`_,
   License: BSD
 
+* `sockjs-client <https://github.com/sockjs/sockjs-client>`_,
+  License: MIT
+
+* `sockjs-tornado <https://github.com/mrjoes/sockjs-tornado>`_,
+  License: MIT
+
 * `Sphinx <http://sphinx-doc.org/>`_, License: BSD
 
 * `Sphinx Bootstrap Theme
