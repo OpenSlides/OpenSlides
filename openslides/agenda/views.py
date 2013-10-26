@@ -348,6 +348,8 @@ class SpeakerAppendView(SingleObjectMixin, RedirectView):
                 Speaker.objects.add(item=self.object, person=request.user)
             except OpenSlidesError, e:
                 messages.error(request, e)
+            else:
+                messages.success(request, _('You were successfully added to the list of speakers.'))
 
 
 class SpeakerDeleteView(DeleteView):
@@ -573,6 +575,8 @@ class CurrentListOfSpeakersView(RedirectView):
                         Speaker.objects.add(self.request.user, item)
                     except OpenSlidesError, e:
                         messages.error(request, e)
+                    else:
+                        messages.success(request, _('You were successfully added to the list of speakers.'))
                     finally:
                         reverse_to_dashboard = False
                 else:

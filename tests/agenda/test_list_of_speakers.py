@@ -7,6 +7,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+from django.contrib.auth.models import Permission
 from django.test.client import Client
 
 from openslides.agenda.models import Item, Speaker
@@ -133,9 +134,10 @@ class TestSpeakerAppendView(SpeakerViewTestCase):
         self.assertEqual(Speaker.objects.filter(item=self.item1).count(), 0)
 
         # Set speaker1 to item1
-        self.check_url('/agenda/1/speaker/', self.speaker1_client, 302)
+        response = self.check_url('/agenda/1/speaker/', self.speaker1_client, 302)
         self.assertTrue(Speaker.objects.filter(person=self.speaker1, item=self.item1).exists())
         self.assertEqual(Speaker.objects.filter(item=self.item1).count(), 1)
+        self.assertMessage(response, 'You were successfully added to the list of speakers.')
 
         # Try to set speaker 1 to item 1 again
         response = self.check_url('/agenda/1/speaker/', self.speaker1_client, 302)
@@ -251,6 +253,12 @@ class GlobalListOfSpeakersLinks(SpeakerViewTestCase):
         response = self.speaker1_client.get('/agenda/list_of_speakers/add/')
         self.assertRedirects(response, '/agenda/1/')
         self.assertEqual(Speaker.objects.get(item__pk='1').person, self.speaker1)
+        self.assertMessage(response, 'You were successfully added to the list of speakers.')
+
+        perm = Permission.objects.filter(name='Can see agenda').get()
+        self.speaker2.groups.get(name='Registered').permissions.remove(perm)
+        response = self.speaker2_client.get('/agenda/list_of_speakers/add/')
+        self.assertMessage(response, 'You were successfully added to the list of speakers.')
 
     def test_global_next_speaker_url(self):
         response = self.admin_client.get('/agenda/list_of_speakers/next/')
