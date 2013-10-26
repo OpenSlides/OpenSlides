@@ -77,15 +77,7 @@ SITE_PACKAGES = {
         ],
     },
     "pillow": {
-        "copy": [
-            "PIL",
-            "_imaging.pyd",
-            "_imagingcms.pyd",
-            "_imagingft.pyd",
-            "_imagingmath.pyd",
-            "_imagingtk.pyd",
-            "_webp.pyd",
-        ],
+        "copy": ["PIL"],
     },
     "tornado": {
         "copy": ["tornado"],
