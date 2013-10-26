@@ -48,6 +48,14 @@ $(function() {
             url: link.attr('href'),
             dataType: 'json',
             success: function(data) {
+                $('#scale_level').html(data['scale_level']);
+                $('#scroll_level').html(data['scroll_level']);
+                if ( data['scroll_level'] == 0 )
+                    $('#scroll_up_button').addClass('disabled');
+                else {
+                    if ( $('#scroll_up_button').hasClass('disabled') )
+                        $('#scroll_up_button').removeClass('disabled');
+                }
             }
         });
     });

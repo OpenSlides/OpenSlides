@@ -77,10 +77,15 @@ urlpatterns = patterns(
         {'direction': 'down'},
         name='projector_down'),
 
-    url(r'^clean/$',
+    url(r'^clean/scale/$',
         views.ProjectorControllView.as_view(),
-        {'direction': 'clean'},
-        name='projector_clean'),
+        {'direction': 'clean_scale'},
+        name='projector_clean_scale'),
+
+    url(r'^clean/scroll/$',
+        views.ProjectorControllView.as_view(),
+        {'direction': 'clean_scroll'},
+        name='projector_clean_scroll'),
 
     url(r'^countdown/reset/$',
         views.CountdownControllView.as_view(),

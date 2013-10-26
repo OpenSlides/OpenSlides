@@ -57,7 +57,7 @@ def config_variables(sender, **kwargs):
 
     projector_scale = ConfigVariable(
         name='projector_scale',
-        default_value=100)
+        default_value=0)
 
     projector_scroll = ConfigVariable(
         name='projector_scroll',

@@ -21,8 +21,7 @@
     {% if item.speaker_list_closed %}(<span class="closed">{% trans 'closed' %}</span>){% endif %}
 </h3>
 
-<div class="scroll">
-    {% if list_of_speakers %}
+{% if list_of_speakers %}
     <ul id="list_of_speakers">
         {% for speaker_dict in list_of_speakers %}
         <li class="{{ speaker_dict.type }}"> {# old_speaker, actual_speaker, coming_speaker #}
@@ -33,8 +32,6 @@
         </li>
         {% endfor %}
     </ul>
-    {% else %}
-        <i>{% trans 'The list of speakers is empty.' %}</i>
-    {% endif %}
-</div>
-
+{% else %}
+    <i>{% trans 'The list of speakers is empty.' %}</i>
+{% endif %}

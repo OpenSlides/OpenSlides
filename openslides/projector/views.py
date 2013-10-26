@@ -144,20 +144,27 @@ class ProjectorControllView(RedirectView):
     def pre_redirect(self, request, *args, **kwargs):
         direction = kwargs['direction']
         if direction == 'bigger':
-            config['projector_scale'] = int(config['projector_scale']) + 20
+            config['projector_scale'] = int(config['projector_scale']) + 1
         elif direction == 'smaller':
-            config['projector_scale'] = int(config['projector_scale']) - 20
+            config['projector_scale'] = int(config['projector_scale']) - 1
         elif direction == 'down':
-            config['projector_scroll'] = int(config['projector_scroll']) - 5
+            config['projector_scroll'] = int(config['projector_scroll']) + 1
         elif direction == 'up':
-            if config['projector_scroll'] < 0:
-                config['projector_scroll'] = int(config['projector_scroll']) + 5
-        elif direction == 'clean':
-            config['projector_scroll'] = config.get_default('projector_scroll')
+            if config['projector_scroll'] > 0:
+                config['projector_scroll'] = int(config['projector_scroll']) - 1
+        elif direction == 'clean_scale':
             config['projector_scale'] = config.get_default('projector_scale')
+        elif direction == 'clean_scroll':
+            config['projector_scroll'] = config.get_default('projector_scroll')
 
         call_on_projector({'scroll': config['projector_scroll'],
                           'scale': config['projector_scale']})
+
+    def get_ajax_context(self, **kwargs):
+        return {
+            'scale_level': config['projector_scale'],
+            'scroll_level': config['projector_scroll'],
+        }
 
 
 class CountdownControllView(RedirectView):
