@@ -30,23 +30,22 @@ def setup_participant_config_page(sender, **kwargs):
     """
     Participant config variables.
     """
-    # TODO: Rename config-vars
-    participant_pdf_system_url = ConfigVariable(
-        name='participant_pdf_system_url',
-        default_value='http://example.com:8000',
-        form_field=forms.CharField(
-            widget=forms.TextInput(),
-            required=False,
-            label=ugettext_lazy('System URL'),
-            help_text=ugettext_lazy('Printed in PDF of first time passwords only.')))
-    participant_pdf_welcometext = ConfigVariable(
-        name='participant_pdf_welcometext',
+    participant_pdf_welcometitle = ConfigVariable(
+        name='participant_pdf_welcometitle',
         default_value=_('Welcome to OpenSlides!'),
         form_field=forms.CharField(
             widget=forms.Textarea(),
             required=False,
-            label=ugettext_lazy('Welcome text'),
-            help_text=ugettext_lazy('Printed in PDF of first time passwords only.')))
+            label=ugettext_lazy('Title for access data and welcome PDF')))
+
+    participant_pdf_welcometext = ConfigVariable(
+        name='participant_pdf_welcometext',
+        default_value=_('[Place for your welcome and help text.]'),
+        form_field=forms.CharField(
+            widget=forms.Textarea(),
+            required=False,
+            label=ugettext_lazy('Help text for access data and welcome PDF')))
+
     participant_sort_users_by_first_name = ConfigVariable(
         name='participant_sort_users_by_first_name',
         default_value=False,
@@ -59,7 +58,7 @@ def setup_participant_config_page(sender, **kwargs):
                       url='participant',
                       required_permission='config.can_manage',
                       weight=50,
-                      variables=(participant_pdf_system_url,
+                      variables=(participant_pdf_welcometitle,
                                  participant_pdf_welcometext,
                                  participant_sort_users_by_first_name))
 
