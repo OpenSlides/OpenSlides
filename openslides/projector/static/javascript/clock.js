@@ -1,5 +1,5 @@
 function update_clock() {
-    var currentTime = new Date();
+    var currentTime = projector.get_server_time()
     var currentHours = currentTime.getHours();
     var currentMinutes = currentTime.getMinutes();
     currentHours = normalise(currentHours);
@@ -9,8 +9,9 @@ function update_clock() {
 }
 
 update_clock();
+
 function normalise(i) {
-    if(i < 10) {
+    if (i < 10) {
         i = "0" + i;
     }
     return i;
