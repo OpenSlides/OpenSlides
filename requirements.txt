@@ -4,7 +4,6 @@
 # Requirements for development and tests
 Fabric==1.8.0
 coverage==3.7
-django-discover-runner==1.0
 flake8==2.0
 
 # Requirements for OpenSlides handbook/documentation
