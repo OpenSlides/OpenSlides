@@ -10,6 +10,7 @@
 # Development settings and database
 settings.py
 database.sqlite
+whoosh_index/*
 !tests/settings.py
 
 # Package building

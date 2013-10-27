@@ -12,6 +12,7 @@ import os
 import sys
 
 from django.core.exceptions import ImproperlyConfigured
+from mock import patch, MagicMock
 
 from openslides.__main__ import (
     get_default_settings_path,
@@ -20,9 +21,8 @@ from openslides.__main__ import (
     setup_django_settings_module)
 from openslides.utils.test import TestCase
 from openslides.utils.main import (
-    get_default_user_data_path,
-    UNIX_VERSION,
-    WINDOWS_PORTABLE_VERSION)
+    get_default_user_data_path, UNIX_VERSION, WINDOWS_PORTABLE_VERSION,
+    create_settings)
 
 
 class TestFunctions(TestCase):
@@ -35,10 +35,7 @@ class TestFunctions(TestCase):
     def test_get_user_data_path_values_case_one(self):
         self.assertEqual(
             get_user_data_path_values('test_path_dfhvndshfgsef', default=False),
-            {'import_function': '',
-             'database_path_value': "'test_path_dfhvndshfgsef/openslides/database.sqlite'",
-             'media_path_value': "'test_path_dfhvndshfgsef/openslides/media/'",
-             'whoosh_index_path_value': "'test_path_dfhvndshfgsef/openslides/whoosh_index/'"})
+            {'local_share': 'test_path_dfhvndshfgsef/openslides'})
 
     def test_get_user_data_path_values_case_two(self):
         self.assertEqual(
@@ -65,3 +62,23 @@ class TestFunctions(TestCase):
         self.assertEqual(get_browser_url('123.456.789.365', 80), 'http://123.456.789.365')
         self.assertEqual(get_browser_url('0.0.0.0', 6789), 'http://localhost:6789')
         self.assertEqual(get_browser_url('0.0.0.0', 80), 'http://localhost')
+
+    @patch('os.makedirs')
+    @patch('__builtin__.open')
+    def test_create_settings(self, mock_open, mock_makedirs):
+        template = MagicMock()
+        #template.__mod__.side_effect = lambda x:x
+        create_settings(
+            '/some/path/to/settings', template,
+            local_share='/path/to/local/share/', secret_key='tested_secret_key',
+            extra_var='12345')
+
+        context = template.__mod__.call_args[0][0]
+        self.assertFalse(context['debug'])
+        self.assertEqual(context['secret_key'], 'tested_secret_key')
+        self.assertEqual(context['extra_var'], '12345')
+        self.assertEqual(context['database_path_value'], '"/path/to/local/share/database.sqlite"')
+        self.assertIn('media_path_value', context)
+        self.assertIn('whoosh_index_path_value', context)
+        mock_open.assert_called_with('/some/path/to/settings', 'w')
+        mock_makedirs.assert_called_with('/some/path/to')

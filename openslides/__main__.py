@@ -11,7 +11,6 @@
 """
 
 import argparse
-import base64
 import os
 import shutil
 import sys
@@ -33,53 +32,9 @@ from openslides.utils.main import (
     get_win32_portable_path,
     UNIX_VERSION,
     WINDOWS_VERSION,
-    WINDOWS_PORTABLE_VERSION)
+    WINDOWS_PORTABLE_VERSION,
+    create_settings)
 from openslides.utils.tornado_webserver import run_tornado
-
-
-SETTINGS_TEMPLATE = """# -*- coding: utf-8 -*-
-#
-# Settings file for OpenSlides
-#
-
-%(import_function)s
-from openslides.global_settings import *
-
-# Use 'DEBUG = True' to get more details for server errors. Default for releases: False
-DEBUG = False
-TEMPLATE_DEBUG = DEBUG
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': %(database_path_value)s,
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
-    }
-}
-
-# Set timezone
-TIME_ZONE = 'Europe/Berlin'
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = %(secret_key)r
-
-# Add OpenSlides plugins to this list (see example entry in comment)
-INSTALLED_PLUGINS = (
-#    'pluginname',
-)
-
-INSTALLED_APPS += INSTALLED_PLUGINS
-
-# Absolute path to the directory that holds media.
-# Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = %(media_path_value)s
-
-# Path to Whoosh search index
-HAYSTACK_CONNECTIONS['default']['PATH'] = %(whoosh_index_path_value)s
-"""
 
 
 def main():
@@ -118,7 +73,8 @@ def main():
                 user_data_path=args.user_data_path,
                 default=True,
                 openslides_type=openslides_type)
-        create_settings(settings, user_data_path_values)
+        create_settings(settings, **user_data_path_values)
+        print('Settings file at %s successfully created.' % settings)
 
     # Process the subcommand's callback
     return args.callback(args)
@@ -320,33 +276,8 @@ def get_user_data_path_values(user_data_path, default=False, openslides_type=Non
         user_data_path_values['media_path_value'] = "get_portable_paths('media')"
         user_data_path_values['whoosh_index_path_value'] = "get_portable_paths('whoosh_index')"
     else:
-        user_data_path_values['import_function'] = ''
-        # TODO: Decide whether to use only absolute paths here.
-        user_data_path_values['database_path_value'] = "'%s'" % os.path.join(
-            user_data_path, 'openslides', 'database.sqlite')
-        # TODO: Decide whether to use only absolute paths here.
-        user_data_path_values['media_path_value'] = "'%s'" % os.path.join(
-            user_data_path, 'openslides', 'media', '')
-        # TODO: Decide whether to use only absolute paths here.
-        user_data_path_values['whoosh_index_path_value'] = "'%s'" % os.path.join(
-            user_data_path, 'openslides', 'whoosh_index', '')
+        user_data_path_values['local_share'] = os.path.join(user_data_path, 'openslides')
     return user_data_path_values
-
-
-def create_settings(settings_path, user_data_path_values):
-    """
-    Creates the settings file at the given path using the given values for the
-    file template.
-    """
-    settings_module = os.path.realpath(os.path.dirname(settings_path))
-    if not os.path.exists(settings_module):
-        os.makedirs(settings_module)
-    context = {'secret_key': base64.b64encode(os.urandom(30))}
-    context.update(user_data_path_values)
-    settings_content = SETTINGS_TEMPLATE % context
-    with open(settings_path, 'w') as settings_file:
-        settings_file.write(settings_content)
-    print('Settings file at %s successfully created.' % settings_path)
 
 
 def setup_django_settings_module(settings_path):
