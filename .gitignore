@@ -7,7 +7,7 @@
 .virtualenv/*
 .venv/*
 
-# Development settings and database
+# Development user data
 settings.py
 database.sqlite
 whoosh_index/*

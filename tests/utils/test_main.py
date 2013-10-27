@@ -12,17 +12,14 @@ import os
 import sys
 
 from django.core.exceptions import ImproperlyConfigured
-from mock import patch, MagicMock
+from mock import MagicMock, patch
 
-from openslides.__main__ import (
-    get_default_settings_path,
-    get_browser_url,
-    get_user_data_path_values,
-    setup_django_settings_module)
+from openslides.__main__ import (get_browser_url, get_default_settings_path,
+                                 get_user_data_path_values,
+                                 setup_django_settings_module)
+from openslides.utils.main import (create_settings, get_default_user_data_path,
+                                   UNIX_VERSION, WINDOWS_PORTABLE_VERSION)
 from openslides.utils.test import TestCase
-from openslides.utils.main import (
-    get_default_user_data_path, UNIX_VERSION, WINDOWS_PORTABLE_VERSION,
-    create_settings)
 
 
 class TestFunctions(TestCase):
@@ -67,7 +64,6 @@ class TestFunctions(TestCase):
     @patch('__builtin__.open')
     def test_create_settings(self, mock_open, mock_makedirs):
         template = MagicMock()
-        #template.__mod__.side_effect = lambda x:x
         create_settings(
             '/some/path/to/settings', template,
             local_share='/path/to/local/share/', secret_key='tested_secret_key',

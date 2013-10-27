@@ -14,8 +14,8 @@ import argparse
 import os
 import shutil
 import sys
-import time
 import threading
+import time
 import webbrowser
 
 from django.conf import ENVIRONMENT_VARIABLE
@@ -23,17 +23,12 @@ from django.core.exceptions import ImproperlyConfigured
 from django.core.management import execute_from_command_line
 
 from openslides import get_version
-from openslides.utils.main import (
-    filesystem2unicode,
-    detect_openslides_type,
-    get_default_user_data_path,
-    get_port,
-    get_win32_app_data_path,
-    get_win32_portable_path,
-    UNIX_VERSION,
-    WINDOWS_VERSION,
-    WINDOWS_PORTABLE_VERSION,
-    create_settings)
+from openslides.utils.main import (create_settings, detect_openslides_type,
+                                   filesystem2unicode,
+                                   get_default_user_data_path, get_port,
+                                   get_win32_app_data_path,
+                                   get_win32_portable_path, UNIX_VERSION,
+                                   WINDOWS_PORTABLE_VERSION, WINDOWS_VERSION)
 from openslides.utils.tornado_webserver import run_tornado
 
 
