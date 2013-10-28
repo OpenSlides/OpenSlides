@@ -10,7 +10,6 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-import json
 from time import time
 
 from django.conf import settings
@@ -72,7 +71,7 @@ def call_on_projector(calls):
     projector_js_cache = config['projector_js_cache']
     projector_js_cache.update(calls)
     config['projector_js_cache'] = projector_js_cache
-    ProjectorSocketHandler.send_updates(json.dumps({'calls': calls}))
+    ProjectorSocketHandler.send_updates({'calls': calls})
 
 
 def get_projector_content(slide_dict=None):
@@ -130,7 +129,7 @@ def get_projector_overlays_js():
         if overlay.is_active():
             overlay_js = overlay.get_javascript()
             if overlay_js:
-                javascript.append(json.dumps(overlay_js))
+                javascript.append(overlay_js)
     return javascript
 
 
