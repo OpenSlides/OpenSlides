@@ -79,6 +79,9 @@ SITE_PACKAGES = {
     "pillow": {
         "copy": ["PIL"],
     },
+    "sockjs-tornado": {
+        "copy": ["sockjs"],
+    },
     "tornado": {
         "copy": ["tornado"],
     },
