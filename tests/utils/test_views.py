@@ -15,6 +15,7 @@ from django.core.urlresolvers import clear_url_caches
 from django.test import RequestFactory
 from django.test.client import Client
 from django.test.utils import override_settings
+from mock import patch
 
 from openslides.utils import views
 from openslides.utils.signals import template_manipulation
@@ -151,51 +152,49 @@ class UrlMixinTest(ViewTestCase):
         self.assertEqual(get_url_name_args(), [5])
 
 
-## class QuestionMixinTest(ViewTestCase):
-    ## def test_get_redirect_url(self):
-        ## view = views.QuestionMixin()
-        ## get_redirect_url = view.get_redirect_url
-##
-        ## view.request = self.rf.get('/')
-        ## view.question_url = 'redirect_to_get_url'
-        ## self.assertEqual(get_redirect_url(), 'redirect_to_get_url')
-##
-        ## view.request = self.rf.post('/')
-        ## view.success_url = 'redirect_to_post_url'
-        ## self.assertEqual(get_redirect_url(), 'redirect_to_post_url')
-##
-    ## def test_get_question(self):
-        ## view = views.QuestionMixin()
-        ## get_redirect_url = view.get_question
-##
-        ## self.assertEqual(get_redirect_url(), 'Are you sure?')
-##
-        ## view.question = 'new_question'
-        ## self.assertEqual(get_redirect_url(), 'new_question')
-##
-    ## def test_get_answer_options(self):
-        ## view = views.QuestionMixin()
-        ## get_answer_options = view.get_answer_options
-##
-        ## self.assertIn('yes', dict(get_answer_options()))
-        ## self.assertIn('no', dict(get_answer_options()))
-##
-        ## view.answer_options = [('new_answer', 'Answer')]
-        ## self.assertNotIn('yes', dict(get_answer_options()))
-        ## self.assertIn('new_answer', dict(get_answer_options()))
-##
-    ## def test_confirm_form(self):
-        ## view = views.QuestionMixin()
-        ## confirm_form = view.confirm_form
-        ## view.request = self.rf.get('/')
-        ## view.request._messages = default_storage(view.request)
-##
-        ## confirm_form()
-        ## message = "".join(view.request._messages._queued_messages[0].message.split())
-        ## self.assertEqual(
-            ## message, 'Areyousure?<formaction="/"method="post">'
-            ## '<inputtype="hidden"value="NOTPROVIDED"name="csrfmiddlewaretoken">' '<buttontype="submit"class="btnbtn-mini"name="yes">Yes</button>'
-            ## '<buttontype="submit"class="btnbtn-mini"name="no">No</button></form>')
+class QuestionViewTest(ViewTestCase):
+    def test_get_redirect_url(self):
+        view = views.QuestionView()
+        get_redirect_url = view.get_redirect_url
+
+        view.request = self.rf.get('/')
+        view.question_url = 'redirect_to_get_url'
+        self.assertEqual(get_redirect_url(), 'redirect_to_get_url')
+
+        view.request = self.rf.post('/')
+        view.url = 'redirect_to_post_url'
+        self.assertEqual(get_redirect_url(), 'redirect_to_post_url')
+
+    def test_get_question_message(self):
+        view = views.QuestionView()
+        get_question_message = view.get_question_message
+
+        self.assertEqual(get_question_message(), 'Are you sure?')
+
+        view.question_message = 'new_question'
+        self.assertEqual(get_question_message(), 'new_question')
+
+    def test_get_answer_options(self):
+        view = views.QuestionView()
+        get_answer_options = view.get_answer_options
+
+        self.assertIn('yes', dict(get_answer_options()))
+        self.assertIn('no', dict(get_answer_options()))
+
+        view.answer_options = [('new_answer', 'Answer')]
+        self.assertNotIn('yes', dict(get_answer_options()))
+        self.assertIn('new_answer', dict(get_answer_options()))
+
+    @patch('openslides.utils.views.messages')
+    def test_confirm_form(self, mock_messages):
+        view = views.QuestionView()
+        view.question_message = 'the question'
+        confirm_form = view.confirm_form
+        view.request = self.rf.get('/')
+
+        confirm_form()
+
+        self.assertTrue(mock_messages.warning.called)
 
 
 def set_context(sender, request, context, **kwargs):
