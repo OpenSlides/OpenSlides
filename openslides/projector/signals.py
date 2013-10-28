@@ -9,6 +9,8 @@
     :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
     :license: GNU GPL, see LICENSE for more details.
 """
+from time import time
+
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.context_processors import csrf
 from django.dispatch import receiver, Signal
@@ -167,7 +169,8 @@ def projector_clock(sender, **kwargs):
         """
         Returns JavaScript for the projector
         """
-        return {'load_file': static('javascript/clock.js')}
+        return {'load_file': static('javascript/clock.js'),
+                'server_time': int(time())}
 
     return Overlay(name, None, get_projector_html, get_projector_js,
                    allways_active=True)

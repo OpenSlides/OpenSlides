@@ -31,11 +31,20 @@ var projector = {
         $('#content').css('font-size', 100 + 20 * value  + '%');
     },
 
+    get_server_time: function () {
+        var date = new Date();
+        date.setTime(date.getTime() + projector.server_time_offset);
+        return date;
+    },
+
     update_data: function(data) {
         $.each(data, function (key, value) {
             if (key === 'load_file')
                 projector.load_file(value);
-            else
+            else if (key === 'server_time') {
+                var local_time = Date.parse(new Date().toUTCString());
+                projector.server_time_offset = local_time - value * 1000;
+            } else
                 projector[key] = value;
         });
     }
