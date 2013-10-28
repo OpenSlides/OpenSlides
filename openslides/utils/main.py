@@ -10,6 +10,7 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
+from base64 import b64encode
 import ctypes
 import os
 import socket
@@ -20,6 +21,50 @@ import tempfile
 UNIX_VERSION = 'Unix Version'
 WINDOWS_VERSION = 'Windows Version'
 WINDOWS_PORTABLE_VERSION = 'Windows Portable Version'
+
+SETTINGS_TEMPLATE = """# -*- coding: utf-8 -*-
+#
+# Settings file for OpenSlides
+#
+
+%(import_function)s
+from openslides.global_settings import *
+
+# Use 'DEBUG = True' to get more details for server errors. Default for releases: False
+DEBUG = %(debug)s
+TEMPLATE_DEBUG = DEBUG
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': %(database_path_value)s,
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': '',
+        'PORT': '',
+    }
+}
+
+# Set timezone
+TIME_ZONE = 'Europe/Berlin'
+
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = %(secret_key)r
+
+# Add OpenSlides plugins to this list (see example entry in comment)
+INSTALLED_PLUGINS = (
+#    'pluginname',
+)
+
+INSTALLED_APPS += INSTALLED_PLUGINS
+
+# Absolute path to the directory that holds media.
+# Example: "/home/media/media.lawrence.com/"
+MEDIA_ROOT = %(media_path_value)s
+
+# Path to Whoosh search index
+HAYSTACK_CONNECTIONS['default']['PATH'] = %(whoosh_index_path_value)s
+"""
 
 
 class PortableDirNotWritable(Exception):
@@ -155,3 +200,33 @@ def get_port(address, port):
         finally:
             s.close()
     return port
+
+
+def create_settings(settings_path, template=SETTINGS_TEMPLATE, **values):
+    """
+    Creates the settings file at the given path using the given values for the
+    file template.
+    """
+    # Set some default values
+    context = {'debug': False,
+               'import_function': '',
+               'secret_key': b64encode(os.urandom(30))}
+
+    # Add more default values, if 'local_share' is given
+    if 'local_share' in values:
+        local_share = values['local_share']
+        context.update({
+            'database_path_value': '"%s"' % os.path.join(local_share, 'database.sqlite'),
+            'media_path_value': '"%s"' % os.path.join(local_share, 'media', ''),
+            'whoosh_index_path_value': '"%s"' % os.path.join(local_share, 'whoosh_index', '')})
+
+    # override the default values with the given data
+    context.update(values)
+
+    # Create the settings_content and write it into the new settings file
+    settings_content = template % context
+    settings_module = os.path.realpath(os.path.dirname(settings_path))
+    if not os.path.exists(settings_module):
+        os.makedirs(settings_module)
+    with open(settings_path, 'w') as settings_file:
+        settings_file.write(settings_content)
