@@ -73,12 +73,17 @@ def config_variables(sender, **kwargs):
         name='projector_active_overlays',
         default_value=[])
 
+    projector_pdf_fullscreen = ConfigVariable(
+        name='pdf_fullscreen',
+        default_value=False)
+
     return ConfigPage(
         title='No title here', url='bar', required_permission=None, variables=(
             projector, projector_message,
             countdown_time, countdown_start_stamp, countdown_pause_stamp,
             countdown_state, projector_scale, projector_scroll,
-            projector_active_overlays, projector_js_cache))
+            projector_active_overlays, projector_js_cache,
+            projector_pdf_fullscreen))
 
 
 @receiver(projector_overlays, dispatch_uid="projector_countdown")

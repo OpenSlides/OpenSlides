@@ -12,16 +12,20 @@
 
 import mimetypes
 
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
+from openslides.projector.models import SlideMixin
 from openslides.utils.person.models import PersonField
 
 
-class Mediafile(models.Model):
+class Mediafile(SlideMixin, models.Model):
     """
     Class for uploaded files which can be delivered under a certain url.
     """
+    slide_callback_name = 'mediafile'
+    PRESENTABLE_FILE_TYPES = ['application/pdf']
 
     mediafile = models.FileField(upload_to='file', verbose_name=ugettext_lazy("File"))
     """
@@ -40,6 +44,12 @@ class Mediafile(models.Model):
 
     filetype = models.CharField(max_length=255, editable=False)
     """A string used to show the type of the file."""
+
+    is_presentable = models.BooleanField(
+        default=False,
+        verbose_name=ugettext_lazy("Is Presentable"),
+        help_text=ugettext_lazy("If checked, this file can be presented on the projector. "
+                                "Currently, this is only possible for PDFs."))
 
     class Meta:
         """
@@ -67,15 +77,16 @@ class Mediafile(models.Model):
             self.filetype = ugettext_noop('unknown')
         return super(Mediafile, self).save(*args, **kwargs)
 
-    @models.permalink
     def get_absolute_url(self, link='update'):
         """
-        Returns the URL to a mediafile. The link can be 'update' or 'delete'.
+        Returns the URL to a mediafile. The link can be 'projector',
+        'update' or 'delete'.
         """
         if link == 'update' or link == 'edit':  # 'edit' ist only used until utils/views.py is fixed
-            return ('mediafile_update', [str(self.id)])
+            return reverse('mediafile_update', kwargs={'pk': str(self.id)})
         if link == 'delete':
-            return ('mediafile_delete', [str(self.id)])
+            return reverse('mediafile_delete', kwargs={'pk': str(self.id)})
+        return super(Mediafile, self).get_absolute_url(link)
 
     def get_filesize(self):
         """

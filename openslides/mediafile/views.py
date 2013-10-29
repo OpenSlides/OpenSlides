@@ -11,10 +11,16 @@
 """
 
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse
 from django.utils.translation import ugettext as _
 
+from openslides.config.api import config
+from openslides.projector.api import get_active_slide
+from openslides.projector.projector import Widget
 from openslides.utils.template import Tab
-from openslides.utils.views import CreateView, DeleteView, ListView, UpdateView
+from openslides.utils.tornado_webserver import ProjectorSocketHandler
+from openslides.utils.views import (AjaxView, CreateView, DeleteView, RedirectView, ListView,
+                                    UpdateView)
 
 from .forms import MediafileNormalUserCreateForm, MediafileUpdateForm
 from .models import Mediafile
@@ -92,6 +98,132 @@ class MediafileDeleteView(DeleteView):
         """Deletes the file in the filesystem, if user clicks "Yes"."""
         self.object.mediafile.delete()
         return super(MediafileDeleteView, self).on_clicked_yes(*args, **kwargs)
+
+
+class PdfNavBaseView(AjaxView):
+    """
+    BaseView for the Pdf Ajax Navigation.
+    """
+
+    def get_ajax_context(self, *args, **kwargs):
+        return {'current_page': self.active_slide['page_num']}
+
+    def load_other_page(self, active_slide):
+        """
+        Tell connected clients to load an other pdf page.
+        """
+        config['projector_active_slide'] = active_slide
+        ProjectorSocketHandler.send_updates(
+            {'calls': {'load_pdf_page': active_slide['page_num']}})
+
+
+class PdfNextView(PdfNavBaseView):
+    """
+    Activate the next Page of a pdf and return the number of the current page.
+    """
+
+    def get(self, request, *args, **kwargs):
+        """
+        Increment the page number by 1.
+
+        If the page number is set in the active slide, we are the value is
+        incremented by 1. Otherwise, it is the first page and it is set to 2.
+        """
+        self.active_slide = get_active_slide()
+        if self.active_slide['callback'] == 'mediafile':
+            if 'page_num' not in self.active_slide:
+                self.active_slide['page_num'] = 2
+            else:
+                self.active_slide['page_num'] += 1
+            self.load_other_page(self.active_slide)
+            response = super(PdfNextView, self).get(self, request, *args, **kwargs)
+        else:
+            # no Mediafile is active and the JavaScript should not do anything.
+            response = HttpResponse()
+        return response
+
+
+class PdfPreviousView(PdfNavBaseView):
+    """
+    Activate the previous Page of a pdf and return the number of the current page.
+    """
+
+    def get(self, request, *args, **kwargs):
+        """
+        Decrement the page number by 1.
+
+        If the page number is set and it is greater than 1, it is decremented
+        by 1. Otherwise, it is the first page and nothing happens.
+        """
+        self.active_slide = get_active_slide()
+        response = None
+        if self.active_slide['callback'] == 'mediafile':
+            if 'page_num' in self.active_slide and self.active_slide['page_num'] > 1:
+                self.active_slide['page_num'] -= 1
+                self.load_other_page(self.active_slide)
+                response = super(PdfPreviousView, self).get(self, request, *args, **kwargs)
+        if not response:
+            response = HttpResponse()
+        return response
+
+
+class PdfGoToPageView(PdfNavBaseView):
+    """
+    Activate the page set in the textfield.
+    """
+
+    def get(self, request, *args, **kwargs):
+        target_page = int(request.GET.get('page_num'))
+        self.active_slide = get_active_slide()
+        if target_page:
+            self.active_slide['page_num'] = target_page
+            self.load_other_page(self.active_slide)
+            response = super(PdfGoToPageView, self).get(self, request, *args, **kwargs)
+        else:
+            response = HttpResponse()
+        return response
+
+
+class PdfToggleFullscreenView(RedirectView):
+    """
+    Toggle fullscreen mode for pdf presentations.
+    """
+    allow_ajax = True
+    url_name = 'dashboard'
+
+    def get_ajax_context(self, *args, **kwargs):
+        config['pdf_fullscreen'] = not config['pdf_fullscreen']
+        active_slide = get_active_slide()
+        if active_slide['callback'] == 'mediafile':
+            ProjectorSocketHandler.send_updates(
+                {'calls': {'toggle_fullscreen': config['pdf_fullscreen']}})
+        return {'fullscreen': config['pdf_fullscreen']}
+
+
+def get_widgets(request):
+    """
+    Return the widgets of the projector app
+    """
+    widgets = []
+
+    # PDF-Presentation widget
+    pdfs = Mediafile.objects.filter(
+        filetype__in=Mediafile.PRESENTABLE_FILE_TYPES,
+        is_presentable=True
+    )
+    current_page = get_active_slide().get('page_num', 1)
+    widgets.append(Widget(
+        request,
+        name='presentations',
+        display_name=_('Presentations'),
+        template='mediafile/pdfs_widget.html',
+        context={'pdfs': pdfs, 'current_page': current_page,
+                 'pdf_fullscreen': config['pdf_fullscreen']},
+        permission_required='projector.can_manage_projector',
+        default_column=1,
+        default_weight=75))
+
+    return widgets
 
 
 def register_tab(request):

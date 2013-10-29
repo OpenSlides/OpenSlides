@@ -46,6 +46,10 @@ $(function () {
                 }
                 link.addClass('btn-primary');
                 link.children('i').addClass('icon-white');
+                // set page_num to 1 if a pdf is activated
+                if ( link.hasClass('choose-pdf') ) {
+                    $('#page_num').val(1);
+                }
             }
         });
     });

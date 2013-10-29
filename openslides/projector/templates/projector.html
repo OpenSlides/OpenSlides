@@ -9,6 +9,19 @@
         <link href="{% static 'styles/projector.css' %}" type="text/css" rel="stylesheet">
         <link  href="{% static 'img/favicon.png' %}" type="image/png" rel="shortcut icon">
         <title>{% trans 'Projector' %} – {{ 'event_name'|get_config }}</title>
+
+        <script type="text/javascript" src="{% static 'javascript/jquery.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'javascript/sockjs-0.3.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'javascript/projector.js' %}"></script>
+        <script type="text/javascript">
+            {% for js in overlay_js %}
+                projector.update_data({{ js|safe }});
+            {% endfor %}
+            {% for key, value in calls.items %}
+                projector.{{ key }}({{ value }});
+            {% endfor %}
+        </script>
+
     </head>
     <body>
         <div id="header">
@@ -34,16 +47,5 @@
                 {% endif %}
             </div>
         </div>
-        <script type="text/javascript" src="{% static 'javascript/jquery.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'javascript/sockjs-0.3.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'javascript/projector.js' %}"></script>
-        <script type="text/javascript">
-            {% for js in overlay_js %}
-                projector.update_data({{ js|safe }});
-            {% endfor %}
-            {% for key, value in calls.items %}
-                projector.{{ key }}({{ value }});
-            {% endfor %}
-        </script>
     </body>
 </html>
