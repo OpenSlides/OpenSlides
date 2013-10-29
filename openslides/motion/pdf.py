@@ -208,11 +208,12 @@ def convert_html_to_reportlab(pdf, text):
         if paragraph == '\n' or paragraph == '\n\n' or paragraph == '\n\t':
             continue
         if "<pre>" in paragraph:
+            txt = paragraph.replace('\n', '<br/>').replace(' ', '&nbsp;')
             if config["motion_pdf_paragraph_numbering"]:
-                pdf.append(Paragraph(paragraph.replace('\n', '<br/>'), stylesheet['InnerMonotypeParagraph'], str(paragraph_number)))
+                pdf.append(Paragraph(txt, stylesheet['InnerMonotypeParagraph'], str(paragraph_number)))
                 paragraph_number += 1
             else:
-                pdf.append(Paragraph(paragraph.replace('\n', '<br/>'), stylesheet['InnerMonotypeParagraph']))
+                pdf.append(Paragraph(txt, stylesheet['InnerMonotypeParagraph']))
         elif "<para>" in paragraph:
             pdf.append(Paragraph(paragraph, stylesheet['InnerListParagraph']))
         elif "<seqreset" in paragraph:
