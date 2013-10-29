@@ -6,6 +6,7 @@ Fabric==1.8.0
 coverage==3.7
 django-discover-runner==1.0
 flake8==2.0
+mock==1.0.1
 
 # Requirements for OpenSlides handbook/documentation
 Sphinx==1.2b3

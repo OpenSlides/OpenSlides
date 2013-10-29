@@ -11,75 +11,28 @@
 """
 
 import argparse
-import base64
 import os
 import shutil
 import sys
-import time
-import threading
-import webbrowser
 
 from django.conf import ENVIRONMENT_VARIABLE
-from django.core.exceptions import ImproperlyConfigured
 from django.core.management import execute_from_command_line
 
 from openslides import get_version
 from openslides.utils.main import (
-    filesystem2unicode,
     detect_openslides_type,
+    ensure_settings,
+    filesystem2unicode,
+    get_browser_url,
+    get_database_path_from_settings,
+    get_default_settings_path,
     get_default_user_data_path,
     get_port,
-    get_win32_app_data_path,
-    get_win32_portable_path,
-    UNIX_VERSION,
-    WINDOWS_VERSION,
-    WINDOWS_PORTABLE_VERSION)
+    get_user_data_path_values_with_path,
+    setup_django_settings_module,
+    start_browser,
+    write_settings)
 from openslides.utils.tornado_webserver import run_tornado
-
-
-SETTINGS_TEMPLATE = """# -*- coding: utf-8 -*-
-#
-# Settings file for OpenSlides
-#
-
-%(import_function)s
-from openslides.global_settings import *
-
-# Use 'DEBUG = True' to get more details for server errors. Default for releases: False
-DEBUG = False
-TEMPLATE_DEBUG = DEBUG
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': %(database_path_value)s,
-        'USER': '',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
-    }
-}
-
-# Set timezone
-TIME_ZONE = 'Europe/Berlin'
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = %(secret_key)r
-
-# Add OpenSlides plugins to this list (see example entry in comment)
-INSTALLED_PLUGINS = (
-#    'pluginname',
-)
-
-INSTALLED_APPS += INSTALLED_PLUGINS
-
-# Absolute path to the directory that holds media.
-# Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = %(media_path_value)s
-
-# Path to Whoosh search index
-HAYSTACK_CONNECTIONS['default']['PATH'] = %(whoosh_index_path_value)s
-"""
 
 
 def main():
@@ -103,25 +56,8 @@ def main():
             # anything more here.
             settings = None
 
-    # Create settings if if still does not exist.
-    if settings and not os.path.exists(settings):
-        # Setup path for user specific data (SQLite3 database, media, search index, ...):
-        # Take it either from command line or get default path
-        if hasattr(args, 'user_data_path') and args.user_data_path:
-            user_data_path_values = get_user_data_path_values(
-                user_data_path=args.user_data_path,
-                default=False)
-        else:
-            openslides_type = detect_openslides_type()
-            args.user_data_path = get_default_user_data_path(openslides_type)
-            user_data_path_values = get_user_data_path_values(
-                user_data_path=args.user_data_path,
-                default=True,
-                openslides_type=openslides_type)
-        create_settings(settings, user_data_path_values)
-
     # Process the subcommand's callback
-    return args.callback(args)
+    return args.callback(settings, args)
 
 
 def parse_args():
@@ -215,6 +151,12 @@ def parse_args():
     add_general_arguments(subcommand_deletedb, ('settings', 'user_data_path'))
     subcommand_deletedb.set_defaults(callback=deletedb)
 
+    # Subcommand create-dev-settings
+    subcommand_create_dev_settings = subparsers.add_parser(
+        'create-dev-settings',
+        help='Create a settings file at current working directory for development use.')
+    subcommand_create_dev_settings.set_defaults(callback=create_dev_settings)
+
     # Subcommand django
     subcommand_django_command_line_utility = subparsers.add_parser(
         'django',
@@ -277,107 +219,23 @@ def add_general_arguments(subcommand, arguments):
         subcommand.add_argument(*args, **kwargs)
 
 
-def get_default_settings_path(openslides_type):
-    """
-    Returns the default settings path according to the OpenSlides type.
-
-    The argument 'openslides_type' has to be one of the three types mentioned in
-    openslides.utils.main.
-    """
-    if openslides_type == UNIX_VERSION:
-        parent_directory = filesystem2unicode(os.environ.get(
-            'XDG_CONFIG_HOME', os.path.join(os.path.expanduser('~'), '.config')))
-    elif openslides_type == WINDOWS_VERSION:
-        parent_directory = get_win32_app_data_path()
-    elif openslides_type == WINDOWS_PORTABLE_VERSION:
-        parent_directory = get_win32_portable_path()
-    else:
-        raise TypeError('%s is not a valid OpenSlides type.' % openslides_type)
-    return os.path.join(parent_directory, 'openslides', 'settings.py')
-
-
-def get_user_data_path_values(user_data_path, default=False, openslides_type=None):
-    """
-    Returns a dictionary of the user specific data path values for the new
-    settings file.
-
-    The argument 'user_data_path' is a path to the directory where OpenSlides
-    should store the user specific data like SQLite3 database, media and search
-    index.
-
-    The argument 'default' is a simple flag. If it is True and the OpenSlides
-    type is the Windows portable version, the returned dictionary contains
-    strings of callable functions for the settings file, else it contains
-    string paths.
-
-    The argument 'openslides_type' can to be one of the three types mentioned in
-    openslides.utils.main.
-    """
-    user_data_path_values = {}
-    if default and openslides_type == WINDOWS_PORTABLE_VERSION:
-        user_data_path_values['import_function'] = 'from openslides.utils.main import get_portable_paths'
-        user_data_path_values['database_path_value'] = "get_portable_paths('database')"
-        user_data_path_values['media_path_value'] = "get_portable_paths('media')"
-        user_data_path_values['whoosh_index_path_value'] = "get_portable_paths('whoosh_index')"
-    else:
-        user_data_path_values['import_function'] = ''
-        # TODO: Decide whether to use only absolute paths here.
-        user_data_path_values['database_path_value'] = "'%s'" % os.path.join(
-            user_data_path, 'openslides', 'database.sqlite')
-        # TODO: Decide whether to use only absolute paths here.
-        user_data_path_values['media_path_value'] = "'%s'" % os.path.join(
-            user_data_path, 'openslides', 'media', '')
-        # TODO: Decide whether to use only absolute paths here.
-        user_data_path_values['whoosh_index_path_value'] = "'%s'" % os.path.join(
-            user_data_path, 'openslides', 'whoosh_index', '')
-    return user_data_path_values
-
-
-def create_settings(settings_path, user_data_path_values):
-    """
-    Creates the settings file at the given path using the given values for the
-    file template.
-    """
-    settings_module = os.path.realpath(os.path.dirname(settings_path))
-    if not os.path.exists(settings_module):
-        os.makedirs(settings_module)
-    context = {'secret_key': base64.b64encode(os.urandom(30))}
-    context.update(user_data_path_values)
-    settings_content = SETTINGS_TEMPLATE % context
-    with open(settings_path, 'w') as settings_file:
-        settings_file.write(settings_content)
-    print('Settings file at %s successfully created.' % settings_path)
-
-
-def setup_django_settings_module(settings_path):
-    """
-    Sets the environment variable ENVIRONMENT_VARIABLE, that means
-    'DJANGO_SETTINGS_MODULE', to the given settings.
-    """
-    settings_file = os.path.basename(settings_path)
-    settings_module_name = ".".join(settings_file.split('.')[:-1])
-    if '.' in settings_module_name:
-        raise ImproperlyConfigured("'.' is not an allowed character in the settings-file")
-    settings_module_dir = os.path.dirname(settings_path)  # TODO: Use absolute path here or not?
-    sys.path.insert(0, settings_module_dir)
-    os.environ[ENVIRONMENT_VARIABLE] = '%s' % settings_module_name
-
-
-def start(args):
+def start(settings, args):
     """
     Starts OpenSlides: Runs syncdb and runs runserver (tornado webserver).
     """
-    syncdb(args)
+    ensure_settings(settings, args)
+    syncdb(settings, args)
     args.start_browser = not args.no_browser
     args.no_reload = False
-    runserver(args)
+    runserver(settings, args)
 
 
-def runserver(args):
+def runserver(settings, args):
     """
     Runs tornado webserver. Runs the function start_browser if the respective
     argument is given.
     """
+    ensure_settings(settings, args)
     port = get_port(address=args.address, port=args.port)
     if args.start_browser:
         browser_url = get_browser_url(address=args.address, port=port)
@@ -385,42 +243,11 @@ def runserver(args):
     run_tornado(args.address, port, not args.no_reload)
 
 
-def get_browser_url(address, port):
-    """
-    Returns the url to open the web browser.
-
-    The argument 'address' should be an IP address. The argument 'port' should
-    be an integer.
-    """
-    browser_url = 'http://'
-    if address == '0.0.0.0':
-        browser_url += 'localhost'
-    else:
-        browser_url += address
-    if not port == 80:
-        browser_url += ":%d" % port
-    return browser_url
-
-
-def start_browser(browser_url):
-    """
-    Launches the default web browser at the given url and opens the
-    webinterface.
-    """
-    browser = webbrowser.get()
-
-    def function():
-        time.sleep(1)
-        browser.open(browser_url)
-
-    thread = threading.Thread(target=function)
-    thread.start()
-
-
-def syncdb(args):
+def syncdb(settings, args):
     """
     Run syncdb to create or update the database.
     """
+    ensure_settings(settings, args)
     # TODO: Check use of filesystem2unicode here.
     path = filesystem2unicode(os.path.dirname(get_database_path_from_settings()))
     if not os.path.exists(path):
@@ -429,30 +256,11 @@ def syncdb(args):
     return 0
 
 
-def get_database_path_from_settings():
-    """
-    Retrieves the database path out of the settings file. Returns None,
-    if it is not a SQLite3 database.
-    """
-    from django.conf import settings as django_settings
-    from django.db import DEFAULT_DB_ALIAS
-
-    db_settings = django_settings.DATABASES
-    default = db_settings.get(DEFAULT_DB_ALIAS)
-    if not default:
-        raise Exception("Default databases is not configured")
-    database_path = default.get('NAME')
-    if not database_path:
-        raise Exception('No path specified for default database.')
-    if default.get('ENGINE') != 'django.db.backends.sqlite3':
-        database_path = None
-    return database_path
-
-
-def createsuperuser(args):
+def createsuperuser(settings, args):
     """
     Creates or resets the admin user. Returns 0 to show success.
     """
+    ensure_settings(settings, args)
     # can't be imported in global scope as it already requires
     # the settings module during import
     from openslides.participant.api import create_or_reset_admin_user
@@ -463,10 +271,12 @@ def createsuperuser(args):
     return 0
 
 
-def backupdb(args):
+def backupdb(settings, args):
     """
     Stores a backup copy of the SQlite3 database. Returns 0 on success, else 1.
     """
+    ensure_settings(settings, args)
+
     from django.db import connection, transaction
 
     @transaction.commit_manually
@@ -496,10 +306,11 @@ def backupdb(args):
     return return_value
 
 
-def deletedb(args):
+def deletedb(settings, args):
     """
     Deletes the sqlite3 database. Returns 0 on success, else 1.
     """
+    ensure_settings(settings, args)
     database_path = get_database_path_from_settings()
     if database_path and os.path.exists(database_path):
         os.remove(database_path)
@@ -511,7 +322,24 @@ def deletedb(args):
     return return_value
 
 
-def django_command_line_utility(args):
+def create_dev_settings(settings, args):
+    """
+    Creates a settings file at the currect working directory for development use.
+    """
+    settings = os.path.join(os.getcwd(), 'settings.py')
+    if not os.path.exists(settings):
+        context = get_user_data_path_values_with_path(os.getcwd())
+        context['debug'] = 'True'
+        write_settings(settings, **context)
+        print('Settings file at %s successfully created.' % settings)
+        return_value = 0
+    else:
+        print('Error: Settings file %s already exists.' % settings)
+        return_value = 1
+    return return_value
+
+
+def django_command_line_utility(settings, args):
     """
     Runs Django's command line utility. Returns 0 on success, else 1.
     """
@@ -528,6 +356,7 @@ def django_command_line_utility(args):
               "command line utility." % command)
         return_value = 1
     else:
+        ensure_settings(settings, args)
         execute_from_command_line(args.django_args)
         return_value = 0
     return return_value

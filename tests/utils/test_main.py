@@ -13,32 +13,31 @@ import sys
 
 from django.core.exceptions import ImproperlyConfigured
 
-from openslides.__main__ import (
-    get_default_settings_path,
-    get_browser_url,
-    get_user_data_path_values,
-    setup_django_settings_module)
-from openslides.utils.test import TestCase
 from openslides.utils.main import (
+    get_browser_url,
+    get_default_settings_path,
     get_default_user_data_path,
+    get_user_data_path_values,
+    setup_django_settings_module,
     UNIX_VERSION,
     WINDOWS_PORTABLE_VERSION)
+from openslides.utils.test import TestCase
 
 
 class TestFunctions(TestCase):
     def test_get_default_user_data_path(self):
-        self.assertTrue('.local/share' in get_default_user_data_path(UNIX_VERSION))
+        self.assertIn(os.path.join('.local', 'share'), get_default_user_data_path(UNIX_VERSION))
 
     def test_get_default_settings_path(self):
-        self.assertTrue('.config/openslides/settings.py' in get_default_settings_path(UNIX_VERSION))
+        self.assertIn(
+            os.path.join('.config', 'openslides', 'settings.py'), get_default_settings_path(UNIX_VERSION))
 
     def test_get_user_data_path_values_case_one(self):
-        self.assertEqual(
-            get_user_data_path_values('test_path_dfhvndshfgsef', default=False),
-            {'import_function': '',
-             'database_path_value': "'test_path_dfhvndshfgsef/openslides/database.sqlite'",
-             'media_path_value': "'test_path_dfhvndshfgsef/openslides/media/'",
-             'whoosh_index_path_value': "'test_path_dfhvndshfgsef/openslides/whoosh_index/'"})
+        values = get_user_data_path_values('/test_path_dfhvndshfgsef', default=False)
+        self.assertEqual(values['import_function'], '')
+        self.assertIn('database.sqlite', values['database_path_value'])
+        self.assertIn('media', values['media_path_value'])
+        self.assertIn('whoosh_index', values['whoosh_index_path_value'])
 
     def test_get_user_data_path_values_case_two(self):
         self.assertEqual(
