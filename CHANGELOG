@@ -9,22 +9,30 @@ Version 1.5 (unreleased)
 [https://github.com/OpenSlides/OpenSlides/issues?milestone=10]
 
 Projector:
-- Improved projector update process via new websocket API.
-- New template with twitter bootstrap.
+- New feature: Show PDF presentations on projector (with included pdf.js).
+- Improved projector update process via new websocket API (using sockjs and tornado).
+- New projector template with twitter bootstrap.
+- Improved projector zoom and scroll behaviour.
 Agenda:
 - New config option: couple countdown with list of speakers.
 - Use HTML editor (CKEditor) for agenda item text field.
-Motion:
+Motions:
 - Enabled attachments for motions.
-Assignment:
+Elections:
 - Refactored assignment app to use class based views instead of functions.
+Participants:
+- Updated access data PDF: WLAN access (with QRCode for WLAN ssid/password)
+  and OpenSlides access (with QRCode for system URL), printed on a single A4 page
+  for each participant.
 Other:
 - Full text search integration (with Haystack and Whoosh).
-- New start script with new command line options.
+- New start script with new command line options (see python manage.py --help)
 - Fixed keyerror on user settings view.
 - New messages on success or error of many actions like creating or editing objects.
 - Added feature to config app to return the default value for a key.
 - Cleaned up OpenSlides utils views.
+- Improved README (now with install instructions and used components).
+- Updated all required package versions.
 - Used flake8 instead of pep8 for style check, sort all import statements with isort.
 - Added Portuguese translation (Thanks to Marco A.G.Pinto).
 
