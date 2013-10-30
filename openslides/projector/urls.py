@@ -17,16 +17,16 @@ from . import views
 urlpatterns = patterns(
     '',
     url(r'^$',
-        views.Projector.as_view(),
+        views.ProjectorView.as_view(),
         name='projector_show'),
 
     url(r'^preview/$',
-        views.Projector.as_view(),
+        views.ProjectorView.as_view(),
         {'callback': None},
         name='projctor_preview_welcomepage'),
 
     url(r'^preview/(?P<callback>[^/]*)/$',
-        views.Projector.as_view(),
+        views.ProjectorView.as_view(),
         name='projector_preview'),
 
     url(r'^activate/(?P<callback>[^/]*)/$',

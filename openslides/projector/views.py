@@ -48,7 +48,7 @@ class DashboardView(AjaxMixin, TemplateView):
         return context
 
 
-class Projector(TemplateView):
+class ProjectorView(TemplateView):
     """
     The Projector-Page.
     """
@@ -56,12 +56,9 @@ class Projector(TemplateView):
     template_name = 'projector.html'
 
     def get_context_data(self, **kwargs):
-        slide_dict = dict(self.request.GET.items())
         callback = self.kwargs.get('callback', None)
-        if callback:
-            slide_dict['callback'] = callback
 
-        if not slide_dict:
+        if callback is None:
             kwargs.update({
                 'content':  get_projector_content(),
                 'overlays': get_projector_overlays(),
@@ -70,11 +67,13 @@ class Projector(TemplateView):
                 'calls': config['projector_js_cache']})
         # For the Preview
         else:
+            slide_dict = dict(self.request.GET.items())
+            slide_dict['callback'] = callback
             kwargs.update({
-                'content':  get_projector_content(slide_dict),
+                'content': get_projector_content(slide_dict),
                 'reload': False})
 
-        return super(Projector, self).get_context_data(**kwargs)
+        return super(ProjectorView, self).get_context_data(**kwargs)
 
 
 class ActivateView(RedirectView):
@@ -86,10 +85,11 @@ class ActivateView(RedirectView):
     allow_ajax = True
 
     def pre_redirect(self, request, *args, **kwargs):
-        if kwargs['callback'] == 'mediafile' and \
-                get_active_slide()['callback'] == 'mediafile':
-            # If the current slide is a pdf and the new page is also a slide, we dont have to use
-            # set_active_slide, because is causes a content reload.
+        if (kwargs['callback'] == 'mediafile' and
+                get_active_slide()['callback'] == 'mediafile'):
+            # If the current slide is a pdf and the new page is also a slide,
+            # we dont have to use set_active_slide, because is causes a content
+            # reload.
             kwargs.update({'page_num': 1, 'pk': request.GET.get('pk')})
             url = Mediafile.objects.get(pk=kwargs['pk'], is_presentable=True).mediafile.url
             config['projector_active_slide'] = kwargs

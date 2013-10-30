@@ -10,10 +10,60 @@
     :license: GNU GPL, see LICENSE for more details.
 """
 
-from django.test.client import Client
+from django.test.client import Client, RequestFactory
+from mock import call, patch
 
 from openslides.projector.models import ProjectorSlide
+from openslides.projector import views
 from openslides.utils.test import TestCase
+
+
+class ProjectorViewTest(TestCase):
+    rf = RequestFactory()
+
+    @patch('openslides.projector.views.get_projector_overlays_js')
+    @patch('openslides.projector.views.get_projector_overlays')
+    @patch('openslides.projector.views.get_projector_content')
+    def test_get(self, mock_get_projector_content, mock_get_projector_overlays,
+                 mock_get_projector_overlays_js):
+        view = views.ProjectorView()
+        view.request = self.rf.get('/')
+
+        # Test preview
+        view.kwargs = {'callback': 'slide_callback'}
+        context = view.get_context_data()
+        mock_get_projector_content.assert_called_with(
+            {'callback': 'slide_callback'})
+        self.assertFalse(context['reload'])
+
+        # Test live view
+        view.kwargs = {}
+        mock_config = {'projector_js_cache': 'js_cache'}
+        with patch('openslides.projector.views.config', mock_config):
+            context = view.get_context_data()
+        mock_get_projector_content.assert_called_with()
+        mock_get_projector_overlays.assert_called_with()
+        mock_get_projector_overlays_js.assert_called_with()
+        self.assertTrue(context['reload'])
+        self.assertEqual(context['calls'], 'js_cache')
+
+
+class ActivateViewTest(TestCase):
+    rf = RequestFactory()
+
+    @patch('openslides.projector.views.config')
+    @patch('openslides.projector.views.set_active_slide')
+    def test_get(self, mock_set_active_slide, mock_config):
+        view = views.ActivateView()
+        view.request = self.rf.get('/?some_key=some_value')
+
+        view.pre_redirect(view.request, callback='some_callback')
+
+        mock_set_active_slide.called_with('some_callback',
+                                          {'some_key': 'some_value'})
+        mock_config.get_default.assert_has_calls([call('projector_scroll'),
+                                                  call('projector_scale')])
+        self.assertEqual(mock_config.__setitem__.call_count, 2)
 
 
 class CustomSlidesTest(TestCase):

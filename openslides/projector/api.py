@@ -67,6 +67,9 @@ def update_projector_overlay(overlay):
 def call_on_projector(calls):
     """
     Sends data to the projector.
+
+    The argument call has to be a dictionary with the javascript function name
+    as key and the argument for it as value.
     """
     projector_js_cache = config['projector_js_cache']
     projector_js_cache.update(calls)
@@ -76,16 +79,21 @@ def call_on_projector(calls):
 
 def get_projector_content(slide_dict=None):
     """
-    Returns the HTML-Content block of the projector.
+    Returns the HTML-Content block for the projector.
+
+    Slide_dict has to be an dictonary with the key 'callback'.
+
+    If slide_dict is None, use the active slide from the database.
     """
     if slide_dict is None:
         slide_dict = config['projector_active_slide'].copy()
     callback = slide_dict.pop('callback', None)
 
     try:
-        return slide_callback[callback](**slide_dict)
+        slide_content = slide_callback[callback](**slide_dict)
     except KeyError:
-        return default_slide()
+        slide_content = default_slide()
+    return slide_content
 
 
 def default_slide():
@@ -120,7 +128,7 @@ def get_projector_overlays():
 
 def get_projector_overlays_js():
     """
-    Returns JS-Code for the overlays.
+    Returns JS-Code for the active overlays.
 
     The retuned value is a list of json objects.
     """
