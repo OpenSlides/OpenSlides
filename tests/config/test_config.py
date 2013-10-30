@@ -13,6 +13,7 @@ from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.dispatch import receiver
 from django.test.client import Client
+from mock import patch
 
 from openslides.config.api import (config, ConfigGroup, ConfigGroupedPage,
                                    ConfigPage, ConfigVariable)
@@ -209,6 +210,18 @@ class ConfigFormTest(TestCase):
         response = self.client_manager.get('/config/testgroupedpage1/')
         text = '<script src="/static/javascript/test-config-djg4dFGVslk4209f.js" type="text/javascript"></script>'
         self.assertContains(response=response, text=text, status_code=200)
+
+    @patch('openslides.config.views.FormView.get_context_data')
+    def test_extra_stylefiles_other_context(self, mock_get_context_data):
+        """
+        Tests the view with empty context data at the beginning.
+        """
+        mock_get_context_data.return_value = {}
+        response = self.client_manager.get('/config/testgroupedpage1/')
+        text1 = '<link href="/static/styles/test-config-sjNN56dFGDrg2.css" type="text/css" rel="stylesheet" />'
+        text2 = '<script src="/static/javascript/test-config-djg4dFGVslk4209f.js" type="text/javascript"></script>'
+        self.assertContains(response=response, text=text1, status_code=200)
+        self.assertContains(response=response, text=text2, status_code=200)
 
 
 class ConfigWeightTest(TestCase):

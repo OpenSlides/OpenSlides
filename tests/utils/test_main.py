@@ -12,13 +12,18 @@ import os
 import sys
 
 from django.core.exceptions import ImproperlyConfigured
+from mock import MagicMock, patch
 
 from openslides.utils.main import (
     get_browser_url,
+    get_database_path_from_settings,
     get_default_settings_path,
     get_default_user_data_path,
+    get_port,
+    get_portable_paths,
     get_user_data_path_values,
     setup_django_settings_module,
+    start_browser,
     UNIX_VERSION,
     WINDOWS_PORTABLE_VERSION)
 from openslides.utils.test import TestCase
@@ -64,3 +69,31 @@ class TestFunctions(TestCase):
         self.assertEqual(get_browser_url('123.456.789.365', 80), 'http://123.456.789.365')
         self.assertEqual(get_browser_url('0.0.0.0', 6789), 'http://localhost:6789')
         self.assertEqual(get_browser_url('0.0.0.0', 80), 'http://localhost')
+
+    def test_get_port(self):
+        class MyException(Exception):
+            pass
+        self.assertEqual(get_port('localhost', 8234), 8234)
+        with patch('openslides.utils.main.socket') as mock_socket:
+            mock_socket.error = MyException
+            mock_socket.socket().listen = MagicMock(side_effect=MyException)
+            self.assertEqual(get_port('localhost', 80), 8000)
+
+    @patch('openslides.utils.main.time')
+    @patch('openslides.utils.main.webbrowser')
+    def test_start_browser(self,  mock_webbrowser, mock_time):
+        browser_mock = MagicMock()
+        mock_webbrowser.get.return_value = browser_mock
+        start_browser('http://localhost:8234')
+        browser_mock.open.assert_called_with('http://localhost:8234')
+
+    def test_get_database_path_from_settings_memory(self):
+        self.assertEqual(get_database_path_from_settings(), ':memory:')
+
+    @patch('openslides.utils.main.get_win32_portable_path')
+    def test_get_portable_paths(self, mock_get_win32_portable_path):
+        mock_get_win32_portable_path.return_value = '/test_path_AhgheeGee1eixaeYe1ra'
+        self.assertEqual(get_portable_paths('database'), '/test_path_AhgheeGee1eixaeYe1ra/openslides/database.sqlite')
+        self.assertEqual(get_portable_paths('media'), '/test_path_AhgheeGee1eixaeYe1ra/openslides/media/')
+        self.assertEqual(get_portable_paths('whoosh_index'), '/test_path_AhgheeGee1eixaeYe1ra/openslides/whoosh_index/')
+        self.assertRaisesMessage(TypeError, 'Unknown type unknown_string', get_portable_paths, 'unknown_string')
