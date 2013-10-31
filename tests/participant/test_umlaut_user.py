@@ -9,11 +9,13 @@
 """
 
 from django.test.client import Client
+from django.test.utils import override_settings
 
 from openslides.participant.models import Group, User
 from openslides.utils.test import TestCase
 
 
+@override_settings(PASSWORD_HASHERS=('django.contrib.auth.hashers.PBKDF2PasswordHasher',))
 class TestUmlautUser(TestCase):
     """
     Tests persons with umlauts in there name.
