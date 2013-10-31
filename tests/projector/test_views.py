@@ -11,7 +11,7 @@
 """
 
 from django.test.client import Client, RequestFactory
-from mock import call, patch
+from mock import call, MagicMock, patch
 
 from openslides.projector.models import ProjectorSlide
 from openslides.projector import views
@@ -64,6 +64,112 @@ class ActivateViewTest(TestCase):
         mock_config.get_default.assert_has_calls([call('projector_scroll'),
                                                   call('projector_scale')])
         self.assertEqual(mock_config.__setitem__.call_count, 2)
+
+
+class SelectWidgetsViewTest(TestCase):
+    rf = RequestFactory()
+
+    @patch('openslides.projector.views.SelectWidgetsForm')
+    @patch('openslides.projector.views.TemplateView.get_context_data')
+    @patch('openslides.projector.views.get_all_widgets')
+    def test_get_context_data(self, mock_get_all_widgets, mock_get_context_data,
+                              mock_SelectWidgetsForm):
+        view = views.SelectWidgetsView()
+        view.request = self.rf.get('/')
+        view.request.session = MagicMock()
+        widget = MagicMock()
+        widget.name.return_value = 'some_widget'
+        mock_get_all_widgets.return_value = {'some_widget': widget}
+        mock_get_context_data.return_value = {}
+
+        # Test get
+        context = view.get_context_data()
+        self.assertIn('widgets', context)
+        self.assertIn('some_widget', context['widgets'])
+        mock_SelectWidgetsForm.called_with(
+            prefix='some_widget', initial={'widget': True})
+
+        # Test post
+        view.request = self.rf.post('/')
+        view.request.session = MagicMock()
+        context = view.get_context_data()
+        mock_SelectWidgetsForm.called_with(
+            view.request.POST, prefix='some_widget', initial={'widget': True})
+
+    @patch('openslides.projector.views.messages')
+    def test_post(self, mock_messages):
+        view = views.SelectWidgetsView()
+        view.request = self.rf.post('/')
+        view.request.session = {}
+        widget = MagicMock()
+        widget.name.return_value = 'some_widget'
+        context = {'widgets': {'some_widget': widget}}
+        mock_context_data = MagicMock(return_value=context)
+
+        with patch('openslides.projector.views.SelectWidgetsView.get_context_data', mock_context_data):
+            widget.form.is_valid.return_value = True
+            view.post(view.request)
+            self.assertIn('some_widget', view.request.session['widgets'])
+
+            # Test with errors in form
+            widget.form.is_valid.return_value = False
+            view.request.session = {}
+            view.post(view.request)
+            self.assertNotIn('widgets', view.request.session)
+            mock_messages.error.assert_called_with(view.request, 'Errors in the form.')
+
+
+class ProjectorControllViewTest(TestCase):
+    @patch('openslides.projector.views.call_on_projector')
+    def test_bigger(self, mock_call_on_projector):
+        view = views.ProjectorControllView()
+        request = True  # request is required, but not used in the method
+        mock_config = MagicMock()
+
+        mock_config_store = {'projector_scale': 5, 'projector_scroll': 5}
+
+        def getter(key):
+            return mock_config_store[key]
+
+        def setter(key, value):
+            mock_config_store[key] = value
+
+        mock_config.__getitem__.side_effect = getter
+        mock_config.__setitem__.side_effect = setter
+        mock_config.get_default.return_value = 0
+
+        self.assertRaises(KeyError, view.pre_redirect, request)
+        with patch('openslides.projector.views.config', mock_config):
+            view.pre_redirect(request, direction='bigger')
+            self.assertEqual(mock_config_store['projector_scale'], 6)
+            mock_call_on_projector.assert_called_with({'scroll': 5, 'scale': 6})
+
+            view.pre_redirect(request, direction='smaller')
+            self.assertEqual(mock_config_store['projector_scale'], 5)
+            mock_call_on_projector.assert_called_with({'scroll': 5, 'scale': 5})
+
+            view.pre_redirect(request, direction='down')
+            self.assertEqual(mock_config_store['projector_scroll'], 6)
+            mock_call_on_projector.assert_called_with({'scroll': 6, 'scale': 5})
+
+            view.pre_redirect(request, direction='up')
+            self.assertEqual(mock_config_store['projector_scroll'], 5)
+            mock_call_on_projector.assert_called_with({'scroll': 5, 'scale': 5})
+
+            view.pre_redirect(request, direction='clean_scale')
+            self.assertEqual(mock_config_store['projector_scale'], 0)
+            mock_call_on_projector.assert_called_with({'scroll': 5, 'scale': 0})
+
+            view.pre_redirect(request, direction='clean_scroll')
+            self.assertEqual(mock_config_store['projector_scroll'], 0)
+            mock_call_on_projector.assert_called_with({'scroll': 0, 'scale': 0})
+
+    def test_get_ajax_context(self):
+        view = views.ProjectorControllView()
+        with patch('openslides.projector.views.config', {'projector_scale': 1,
+                                                         'projector_scroll': 2}):
+            context = view.get_ajax_context()
+            self.assertEqual(context, {'scale_level': 1, 'scroll_level': 2})
 
 
 class CustomSlidesTest(TestCase):

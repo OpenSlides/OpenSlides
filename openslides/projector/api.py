@@ -205,6 +205,7 @@ def get_all_widgets(request, session=False):
     active, that means that they are mentioned in the session.
     """
     all_module_widgets = []
+    # TODO: Do not touch the filesystem on any request
     for app in settings.INSTALLED_APPS:
         try:
             mod = import_module(app + '.views')
