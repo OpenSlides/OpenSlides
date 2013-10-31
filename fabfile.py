@@ -31,7 +31,7 @@ def coverage_report_plain():
     Runs all tests and prints the coverage report.
     """
     test()
-    local('coverage report -m')
+    local('coverage report -m --fail-under=73')
 
 
 def coverage():
