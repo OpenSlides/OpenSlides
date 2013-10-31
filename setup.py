@@ -1,11 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    Setup script for OpenSlides.
-
-    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
-    :license: GNU GPL, see LICENSE for more details.
-"""
 
 from setuptools import setup, find_packages
 from openslides import get_version
@@ -37,11 +31,11 @@ setup(
         'Environment :: Web Environment',
         'Intended Audience :: Other Audience',
         'Framework :: Django',
-        'License :: OSI Approved :: GNU General Public License (GPL)',
+        'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
     ],
-    license='GPL2+',
+    license='MIT',
     packages=find_packages(exclude=['tests', 'tests.*']),
     include_package_data=True,
     install_requires=install_requires,

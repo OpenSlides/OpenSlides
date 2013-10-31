@@ -1,14 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    Tests for openslides utils.utils
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    TODO: Move this test to the correct place when the projector app is cleaned up.
-
-    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
-    :license: GNU GPL, see LICENSE for more details.
-"""
 
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import clear_url_caches

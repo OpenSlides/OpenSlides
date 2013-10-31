@@ -1,14 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    openslides.utils.person.models
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    Models and ModelFields for the OpenSlides person api.
-
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
-    :license: GNU GPL, see LICENSE for more details.
-"""
 from django.contrib.auth.models import AnonymousUser
 from django.db import models
 

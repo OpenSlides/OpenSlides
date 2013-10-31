@@ -1,14 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    openslides.global_settings
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    OpenSlides default settings.
-
-    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
-    :license: GNU GPL, see LICENSE for more details.
-"""
 
 import os
 from openslides.utils.main import filesystem2unicode

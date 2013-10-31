@@ -1,11 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    Test the openslides forms.
-
-    :copyright: 2011, 2012, 2013 by the OpenSlides team, see AUTHORS.
-    :license: GNU GPL, see LICENSE for more details.
-"""
 
 from django import forms
 

@@ -1,16 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    openslides.motion.views
-    ~~~~~~~~~~~~~~~~~~~~~~~
-
-    Views for the motion app.
-
-    The views are automaticly imported from openslides.motion.urls.
-
-    :copyright: (c) 2011–2013 by the OpenSlides team, see AUTHORS.
-    :license: GNU GPL, see LICENSE for more details.
-"""
 
 from django.contrib import messages
 from django.core.urlresolvers import reverse

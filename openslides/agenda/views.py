@@ -1,14 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    openslides.agenda.views
-    ~~~~~~~~~~~~~~~~~~~~~~~
-
-    Views for the agenda app.
-
-    :copyright: 2011–2013 by the OpenSlides team, see AUTHORS.
-    :license: GNU GPL, see LICENSE for more details.
-"""
 # TODO: Rename all views and template names
 
 from datetime import datetime, timedelta

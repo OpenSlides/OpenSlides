@@ -1,14 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    openslides.config.api
-    ~~~~~~~~~~~~~~~~~~~~~
-
-    Api for the config app.
-
-    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
-    :license: GNU GPL, see LICENSE for more details.
-"""
 
 from .exceptions import ConfigError, ConfigNotFound
 from .models import ConfigStore
