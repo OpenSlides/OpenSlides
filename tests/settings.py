@@ -41,3 +41,8 @@ MEDIA_ROOT = os.path.realpath(os.path.dirname(__file__))
 # Path to Whoosh search index
 # Use RAM storage
 HAYSTACK_CONNECTIONS['default']['STORAGE'] = 'ram'
+
+# Use a faster passwort hasher
+PASSWORD_HASHERS = (
+    'django.contrib.auth.hashers.MD5PasswordHasher',
+)
