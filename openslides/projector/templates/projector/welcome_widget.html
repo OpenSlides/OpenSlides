@@ -1,5 +1,8 @@
 {% load i18n %}
+{% load tags %}
 
-{% if welcometext %}
-    <p>{{ welcometext|safe|linebreaks }}</p>
-{% endif %}
+{% with 'welcome_text'|get_config as welcometext %}
+    {% if welcometext %}
+        <p>{{ welcometext|safe|linebreaks }}</p>
+    {% endif %}
+{% endwith %}

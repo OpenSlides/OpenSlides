@@ -3,26 +3,26 @@
 from django.contrib.auth.models import AnonymousUser
 from django.utils.translation import ugettext as _
 
-from openslides.config.api import config
-from openslides.projector.projector import Widget
+from openslides.core.widgets import Widget
 
 
-def get_widgets(request):
+def get_personal_info_widget(sender, request, **kwargs):
     """
-    Returns the widgets of the account app. It is only the personal_info_widget.
+    Returns the personal info widget. Returns None for an anonymous user.
     """
-    if not isinstance(request.user, AnonymousUser):
-        return [get_personal_info_widget(request)]
+    if isinstance(request.user, AnonymousUser):
+        widget = None
     else:
-        return []
+        widget = get_personal_info_widget_with_context(request)
+    return widget
 
 
-def get_personal_info_widget(request):
+def get_personal_info_widget_with_context(request):
     """
     Provides a widget for personal info. It shows your submitted and supported
-    motions, where you are on the list of speakers and where you are supporter
-    or candidate. If one of the modules agenda, motion or assignment does
-    not exist, it is not loaded. If all does not exist, the widget disapears.
+    motions, where you are on the list of speakers and where you are candidate.
+    If one of the modules agenda, motion or assignment does not exist, it is
+    not loaded. If all do not exist, the widget disapears.
     """
     personal_info_context = {}
 
@@ -42,7 +42,6 @@ def get_personal_info_widget(request):
     else:
         personal_info_context.update({
             'submitted_motions': Motion.objects.filter(submitter__person=request.user),
-            'config_motion_min_supporters': config['motion_min_supporters'],
             'supported_motions': Motion.objects.filter(supporter__person=request.user)})
     try:
         from openslides.assignment.models import Assignment
@@ -55,12 +54,15 @@ def get_personal_info_widget(request):
                 assignmentcandidate__blocked=False)})
 
     if personal_info_context:
-        return Widget(
-            request,
+        widget = Widget(
             name='personal_info',
             display_name=_('My items, motions and elections'),
             template='account/personal_info_widget.html',
             context=personal_info_context,
+            request=request,
             permission_required=None,
             default_column=1,
-            default_weight=80)
+            default_weight=90)
+    else:
+        widget = None
+    return widget

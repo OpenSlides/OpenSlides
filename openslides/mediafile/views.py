@@ -6,7 +6,6 @@ from django.utils.translation import ugettext as _
 
 from openslides.config.api import config
 from openslides.projector.api import get_active_slide
-from openslides.projector.projector import Widget
 from openslides.utils.template import Tab
 from openslides.utils.tornado_webserver import ProjectorSocketHandler
 from openslides.utils.views import (AjaxView, CreateView, DeleteView, RedirectView, ListView,
@@ -188,32 +187,6 @@ class PdfToggleFullscreenView(RedirectView):
             ProjectorSocketHandler.send_updates(
                 {'calls': {'toggle_fullscreen': config['pdf_fullscreen']}})
         return {'fullscreen': config['pdf_fullscreen']}
-
-
-def get_widgets(request):
-    """
-    Return the widgets of the projector app
-    """
-    widgets = []
-
-    # PDF-Presentation widget
-    pdfs = Mediafile.objects.filter(
-        filetype__in=Mediafile.PRESENTABLE_FILE_TYPES,
-        is_presentable=True
-    )
-    current_page = get_active_slide().get('page_num', 1)
-    widgets.append(Widget(
-        request,
-        name='presentations',
-        display_name=_('Presentations'),
-        template='mediafile/pdfs_widget.html',
-        context={'pdfs': pdfs, 'current_page': current_page,
-                 'pdf_fullscreen': config['pdf_fullscreen']},
-        permission_required='projector.can_manage_projector',
-        default_column=1,
-        default_weight=75))
-
-    return widgets
 
 
 def register_tab(request):

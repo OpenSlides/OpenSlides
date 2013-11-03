@@ -30,7 +30,7 @@ Other:
 - Fixed keyerror on user settings view.
 - New messages on success or error of many actions like creating or editing objects.
 - Added feature to config app to return the default value for a key.
-- Cleaned up OpenSlides utils views.
+- Cleaned up OpenSlides utils views and widget api.
 - Improved README (now with install instructions and used components).
 - Updated all required package versions.
 - Used flake8 instead of pep8 for style check, sort all import statements with isort.

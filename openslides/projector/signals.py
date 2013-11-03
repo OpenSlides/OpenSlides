@@ -6,74 +6,11 @@ from django.core.context_processors import csrf
 from django.dispatch import receiver, Signal
 from django.template.loader import render_to_string
 
-from openslides.config.api import config, ConfigPage, ConfigVariable
-from openslides.config.signals import config_signal
+from openslides.config.api import config
 
 from .projector import Overlay
 
 projector_overlays = Signal(providing_args=['request'])
-
-
-@receiver(config_signal, dispatch_uid='setup_projector_config_variables')
-def config_variables(sender, **kwargs):
-    """
-    Projector config variables for OpenSlides. They are not shown on a
-    config page.
-    """
-
-    # The active slide. The config-value is a dictonary with at least the entry
-    # 'callback'.
-    projector = ConfigVariable(
-        name='projector_active_slide',
-        default_value={'callback': None})
-
-    projector_message = ConfigVariable(
-        name='projector_message',
-        default_value='')
-
-    countdown_time = ConfigVariable(
-        name='countdown_time',
-        default_value=60)
-
-    countdown_start_stamp = ConfigVariable(
-        name='countdown_start_stamp',
-        default_value=0)
-
-    countdown_pause_stamp = ConfigVariable(
-        name='countdown_pause_stamp',
-        default_value=0)
-
-    countdown_state = ConfigVariable(
-        name='countdown_state',
-        default_value='inactive')
-
-    projector_scale = ConfigVariable(
-        name='projector_scale',
-        default_value=0)
-
-    projector_scroll = ConfigVariable(
-        name='projector_scroll',
-        default_value=0)
-
-    projector_js_cache = ConfigVariable(
-        name='projector_js_cache',
-        default_value={})
-
-    projector_active_overlays = ConfigVariable(
-        name='projector_active_overlays',
-        default_value=[])
-
-    projector_pdf_fullscreen = ConfigVariable(
-        name='pdf_fullscreen',
-        default_value=False)
-
-    return ConfigPage(
-        title='No title here', url='bar', required_permission=None, variables=(
-            projector, projector_message,
-            countdown_time, countdown_start_stamp, countdown_pause_stamp,
-            countdown_state, projector_scale, projector_scroll,
-            projector_active_overlays, projector_js_cache,
-            projector_pdf_fullscreen))
 
 
 @receiver(projector_overlays, dispatch_uid="projector_countdown")

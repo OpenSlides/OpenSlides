@@ -3,10 +3,7 @@
 from json import dumps
 from time import time
 
-from django.conf import settings
 from django.template.loader import render_to_string
-from django.utils.datastructures import SortedDict
-from django.utils.importlib import import_module
 
 from openslides.config.api import config
 from openslides.utils.tornado_webserver import ProjectorSocketHandler
@@ -187,39 +184,6 @@ def get_active_slide():
     Returns the dictonary, which defines the active slide.
     """
     return config['projector_active_slide']
-
-
-def get_all_widgets(request, session=False):
-    """
-    Collects the widgets from all apps and returns the Widget objects as sorted
-    dictionary.
-
-    The session flag decides whether to return only the widgets which are
-    active, that means that they are mentioned in the session.
-    """
-    all_module_widgets = []
-    # TODO: Do not touch the filesystem on any request
-    for app in settings.INSTALLED_APPS:
-        try:
-            mod = import_module(app + '.views')
-        except ImportError:
-            continue
-        try:
-            mod_get_widgets = mod.get_widgets
-        except AttributeError:
-            continue
-        else:
-            module_widgets = mod_get_widgets(request)
-        all_module_widgets.extend(module_widgets)
-    all_module_widgets.sort(key=lambda widget: widget.default_weight)
-    session_widgets = request.session.get('widgets', {})
-    widgets = SortedDict()
-    for widget in all_module_widgets:
-        if (widget.permission_required is None or
-                request.user.has_perm(widget.permission_required)):
-            if not session or session_widgets.get(widget.get_name(), True):
-                widgets[widget.get_name()] = widget
-    return widgets
 
 
 def start_countdown():

@@ -12,7 +12,6 @@ from openslides.agenda.views import CreateRelatedAgendaItemView as _CreateRelate
 from openslides.config.api import config
 from openslides.poll.views import PollFormView
 from openslides.projector.api import get_active_slide, update_projector
-from openslides.projector.projector import Widget
 from openslides.utils.template import Tab
 from openslides.utils.utils import html_strong, htmldiff
 from openslides.utils.views import (CreateView, DeleteView, DetailView,
@@ -820,20 +819,3 @@ def register_tab(request):
         url=reverse('motion_list'),
         permission=request.user.has_perm('motion.can_see_motion'),
         selected=request.path.startswith('/motion/'))
-
-
-def get_widgets(request):
-    """
-    Return the motion widgets for the dashboard.
-
-    There is only one widget. It shows all motions.
-    """
-    return [Widget(
-        request,
-        name='motions',
-        display_name=_('Motions'),
-        template='motion/widget.html',
-        context={'motions': Motion.objects.all()},
-        permission_required='projector.can_manage_projector',
-        default_column=1,
-        default_weight=40)]
