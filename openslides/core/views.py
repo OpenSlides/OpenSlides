@@ -1,14 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    openslides.core.views
-    ~~~~~~~~~~~~~~~~~~~~~
-
-    Views for the core app.
-
-    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
-    :license: GNU GPL, see LICENSE for more details.
-"""
 
 from django.conf import settings
 from django.core.exceptions import PermissionDenied

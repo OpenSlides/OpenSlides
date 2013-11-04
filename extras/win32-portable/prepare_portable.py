@@ -1,9 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    :copyright: 2012–2013 by OpenSlides team, see AUTHORS.
-    :license: GNU GPL, see LICENSE for more details.
-"""
 
 import errno
 import glob

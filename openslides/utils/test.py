@@ -1,14 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    openslides.utils.test
-    ~~~~~~~~~~~~~~~~~~~~~
-
-    Unit test class.
-
-    :copyright: 2011-2013 by OpenSlides team, see AUTHORS.
-    :license: GNU GPL, see LICENSE for more details.
-"""
 
 from django.core.management import call_command
 from django.test import TestCase as _TestCase

@@ -1,14 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    openslides.assignment.models
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    Models for the assignment app.
-
-    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
-    :license: GNU GPL, see LICENSE for more details.
-"""
 
 from django.core.urlresolvers import reverse
 from django.db import models

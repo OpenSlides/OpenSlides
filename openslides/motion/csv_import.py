@@ -1,14 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    openslides.motion.csv_import
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    Functions to import motions from a csv file.
-
-    :copyright: (c) 2011–2013 by the OpenSlides team, see AUTHORS.
-    :license: GNU GPL, see LICENSE for more details.
-"""
 
 # TODO: Rename the file to 'csv.py' when we drop python2 support. At the moment
 #       the name csv has a conflict with the core-module. See:

@@ -1,14 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    openslides.utils.pdf
-    ~~~~~~~~~~~~~~~~~~~~
-
-    Additional definitions for creating PDF documents.
-
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
-    :license: GNU GPL, see LICENSE for more details.
-"""
 
 from datetime import datetime
 from os.path import join as path_join

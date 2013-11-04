@@ -1,12 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    openslides.utils.tornado_webserver
-    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    :copyright: (c) 2011-2013 by the OpenSlides team, see AUTHORS.
-    :license: GNU GPL, see LICENSE for more details.
-"""
 
 import posixpath
 from urllib import unquote

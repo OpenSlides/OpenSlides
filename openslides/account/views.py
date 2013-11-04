@@ -1,14 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    openslides.account.views
-    ~~~~~~~~~~~~~~~~~~~~~~~~
-
-    Views for the account app.
-
-    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
-    :license: GNU GPL, see LICENSE for more details.
-"""
 
 from django.contrib.auth.models import AnonymousUser
 from django.utils.translation import ugettext as _

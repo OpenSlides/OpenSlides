@@ -35,6 +35,7 @@ Other:
 - Updated all required package versions.
 - Used flake8 instead of pep8 for style check, sort all import statements with isort.
 - Added Portuguese translation (Thanks to Marco A.G.Pinto).
+- Change license from GPLv2+ to MIT, see LICENSE file.
 
 
 Version 1.4.2 (2013-09-10)

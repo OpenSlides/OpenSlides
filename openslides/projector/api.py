@@ -1,14 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    openslides.projector.api
-    ~~~~~~~~~~~~~~~~~~~~~~~~
-
-    Useful functions for the projector app.
-
-    :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
-    :license: GNU GPL, see LICENSE for more details.
-"""
 
 from time import time
 

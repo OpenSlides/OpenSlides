@@ -1,14 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    openslides.config.views
-    ~~~~~~~~~~~~~~~~~~~~~~~
-
-    Views for the config app.
-
-    :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
-    :license: GNU GPL, see LICENSE for more details.
-"""
 
 from django import forms
 from django.contrib import messages

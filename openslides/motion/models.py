@@ -1,17 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
-    openslides.motion.models
-    ~~~~~~~~~~~~~~~~~~~~~~~~
-
-    Models for the motion app.
-
-    To use a motion object, you only have to import the Motion class. Any
-    functionality can be reached from a motion object.
-
-    :copyright: (c) 2011–2013 by the OpenSlides team, see AUTHORS.
-    :license: GNU GPL, see LICENSE for more details.
-"""
 
 from django.core.urlresolvers import reverse
 from django.db import models
