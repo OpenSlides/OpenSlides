@@ -6,6 +6,12 @@ import sys
 from django.core.exceptions import ImproperlyConfigured
 from mock import MagicMock, patch
 
+from openslides.__main__ import (
+    add_general_arguments,
+    django_command_line_utility,
+    runserver,
+    start,
+    syncdb)
 from openslides.utils.main import (
     get_browser_url,
     get_database_path_from_settings,
@@ -93,3 +99,44 @@ class TestFunctions(TestCase):
         self.assertEqual(get_portable_paths('media'), '/test_path_AhgheeGee1eixaeYe1ra/openslides/media/')
         self.assertEqual(get_portable_paths('whoosh_index'), '/test_path_AhgheeGee1eixaeYe1ra/openslides/whoosh_index/')
         self.assertRaisesMessage(TypeError, 'Unknown type unknown_string', get_portable_paths, 'unknown_string')
+
+
+class TestOtherFunctions(TestCase):
+    """
+    Tests functions in openslides.__main__
+    """
+    def test_add_general_arguments_wrong_arg(self):
+        self.assertRaisesMessage(
+            TypeError,
+            'The argument invalid_argument is not a valid general argument.',
+            add_general_arguments,
+            None,
+            ['invalid_argument'])
+
+    @patch('openslides.__main__.syncdb')
+    @patch('openslides.__main__.runserver')
+    def test_start(self, mock_runserver, mock_syncdb):
+        mock_args = MagicMock()
+        start(settings=None, args=mock_args)
+        mock_syncdb.assert_called()
+        mock_runserver.assert_called_with(None, mock_args)
+
+    @patch('openslides.__main__.run_tornado')
+    @patch('openslides.__main__.start_browser')
+    def test_runserver(self, mock_start_browser, mock_run_tornado):
+        mock_args = MagicMock()
+        runserver(settings=None, args=mock_args)
+        mock_run_tornado.assert_called()
+
+    @patch('openslides.__main__.os.makedirs')
+    @patch('openslides.__main__.execute_from_command_line')
+    def test_syncdb(self, mock_execute_from_command_line, mock_os):
+        mock_args = MagicMock()
+        syncdb(settings=None, args=mock_args)
+        mock_execute_from_command_line.assert_called()
+
+    @patch('openslides.__main__.execute_from_command_line')
+    def test_django_command_line_utility(self, mock_execute_from_command_line):
+        mock_args = MagicMock()
+        django_command_line_utility(settings=None, args=mock_args)
+        mock_execute_from_command_line.assert_called()
