@@ -13,7 +13,6 @@
 from django.contrib import messages
 from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
-from django.db import transaction
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
 
@@ -109,7 +108,7 @@ class SelectWidgetsView(TemplateView):
     template_name = 'projector/select_widgets.html'
 
     def get_context_data(self, **kwargs):
-        context = super(SelectWidgetsView, self). get_context_data(**kwargs)
+        context = super(SelectWidgetsView, self).get_context_data(**kwargs)
         widgets = get_all_widgets(self.request)
         activated_widgets = self.request.session.get('widgets', {})
         for name, widget in widgets.items():
@@ -123,7 +122,6 @@ class SelectWidgetsView(TemplateView):
         context['widgets'] = widgets
         return context
 
-    @transaction.commit_manually
     def post(self, request, *args, **kwargs):
         """
         Activates or deactivates the widgets in a post request.
@@ -131,16 +129,13 @@ class SelectWidgetsView(TemplateView):
         context = self.get_context_data(**kwargs)
         activated_widgets = self.request.session.get('widgets', {})
 
-        transaction.commit()
         for name, widget in context['widgets'].items():
             if widget.form.is_valid():
                 activated_widgets[name] = widget.form.cleaned_data['widget']
             else:
-                transaction.rollback()
-                messages.error(request, _('Errors in the form'))
+                messages.error(request, _('Errors in the form.'))
                 break
         else:
-            transaction.commit()
             self.request.session['widgets'] = activated_widgets
         return redirect(reverse('dashboard'))
 
