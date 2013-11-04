@@ -6,73 +6,70 @@ from django.utils.translation import ugettext as _
 from openslides.config.api import config
 from openslides.core.widgets import Widget
 
+from .api import get_active_slide
 from .models import ProjectorSlide
 from .signals import projector_overlays
 
 
-def get_projector_welcome_widget(sender, request, **kwargs):
+class WelcomeWidget(Widget):
     """
-    Returns the welcome widget.
+    Welcome widget.
     """
-    return Widget(
-        name='welcome',
-        display_name=config['welcome_title'],
-        template='projector/welcome_widget.html',
-        request=request,
-        permission_required='projector.can_see_dashboard',
-        default_column=1,
-        default_weight=10)
+    name = 'welcome'
+    permission_required = 'projector.can_see_dashboard'
+    default_column = 1
+    default_weight = 10
+    template_name = 'projector/welcome_widget.html'
+
+    def get_display_name(self):
+        return config['welcome_title']
 
 
-def get_projector_live_widget(sender, request, **kwargs):
+class LiveViewWidget(Widget):
     """
-    Returns the widget with the live view of the projector.
+    Widget with the live view of the projector.
     """
-    return Widget(
-        name='live_view',
-        display_name=_('Projector live view'),
-        template='projector/live_view_widget.html',
-        request=request,
-        permission_required='projector.can_see_projector',
-        default_column=2,
-        default_weight=10)
+    name = 'live_view'
+    display_name = _('Projector live view')
+    permission_required = 'projector.can_see_projector'
+    default_column = 2
+    default_weight = 10
+    template_name = 'projector/live_view_widget.html'
 
 
-def get_projector_overlay_widget(sender, request, **kwargs):
+class OverlayWidget(Widget):
     """
-    Returns the widget to control all overlays.
+    Widget to control all overlays.
     """
-    overlays = []
-    for receiver, overlay in projector_overlays.send(sender='overlay_widget', request=request):
-        if overlay.widget_html_callback is not None:
-            overlays.append(overlay)
-    context = {'overlays': overlays}
-    context.update(csrf(request))
-    return Widget(
-        name='overlays',
-        display_name=_('Overlays'),
-        template='projector/overlay_widget.html',
-        context=context,
-        request=request,
-        permission_required='projector.can_manage_projector',
-        default_column=2,
-        default_weight=20)
+    name = 'overlays'
+    display_name = _('Overlays')
+    permission_required = 'projector.can_manage_projector'
+    default_column = 2
+    default_weight = 20
+    template_name = 'projector/overlay_widget.html'
+
+    def get_context(self):
+        overlays = []
+        for receiver, overlay in projector_overlays.send(sender='overlay_widget', request=self.request):
+            if overlay.widget_html_callback is not None:
+                overlays.append(overlay)
+        context = {'overlays': overlays}
+        context.update(csrf(self.request))
+        return context
 
 
-def get_projector_custom_slide_widget(sender, request, **kwargs):
+class CustomSlideWidget(Widget):
     """
-    Returns the widget for custom slides.
+    Widget for custom slides.
     """
-    from .api import get_active_slide
-    welcomepage_is_active = get_active_slide().get('callback', 'default') == 'default'
-    return Widget(
-        name='custom_slide',
-        display_name=_('Custom Slides'),
-        template='projector/custom_slide_widget.html',
-        context={
-            'slides': ProjectorSlide.objects.all().order_by('weight'),
-            'welcomepage_is_active': welcomepage_is_active},
-        request=request,
-        permission_required='projector.can_manage_projector',
-        default_column=2,
-        default_weight=30)
+    name = 'custom_slide'
+    display_name = _('Custom Slides')
+    permission_required = 'projector.can_manage_projector'
+    default_column = 2
+    default_weight = 30
+    template_name = 'projector/custom_slide_widget.html'
+
+    def get_context(self):
+        welcomepage_is_active = get_active_slide().get('callback', 'default') == 'default'
+        return {'slides': ProjectorSlide.objects.all().order_by('weight'),
+                'welcomepage_is_active': welcomepage_is_active}

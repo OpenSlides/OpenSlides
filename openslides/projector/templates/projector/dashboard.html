@@ -25,13 +25,13 @@
     <div class="span6 column" id="col1">
         {% for name, widget in widgets.items %}
             {% if widget.default_column == 1 %}
-                <div class="widget" id="widget_{{ widget.get_name }}">
+                <div class="widget" id="widget_{{ widget.get_lower_name }}">
                     <div class="widget-header">
                         <h3>
                             <i class="{% if widget %}icon-{{widget.name}}{% else %}icon-star{% endif %}"></i>
                             <div class="collapsebutton btn-group right" data-toggle="buttons-checkbox">
                                 <button type="button" class="btn btn-mini"
-                                    data-toggle="collapse" data-target="#widgetcontent_{{ widget.get_name }}"
+                                    data-toggle="collapse" data-target="#widgetcontent_{{ widget.get_lower_name }}"
                                     title="{% trans 'Collapse widget content' %}">
                                     _</button>
                             </div>
@@ -40,10 +40,10 @@
                                     title="{% trans 'Fix widget position' %}">
                                     <i class="icon-pushpin"></i></button>
                             </div>
-                            {% trans widget.get_title %}
+                            {% trans widget.get_display_name %}
                         </h3>
                     </div>
-                    <div class="widget-content collapse in" id="widgetcontent_{{ widget.get_name }}">
+                    <div class="widget-content collapse in" id="widgetcontent_{{ widget.get_lower_name }}">
                         <br>{{ widget.get_html }}<br>
                     </div>
                 </div>
@@ -54,13 +54,13 @@
     <div class="span6 column" id="col2">
         {% for name, widget in widgets.items %}
             {% if widget.default_column == 2 %}
-                <div class="widget" id="widget_{{ widget.get_name }}">
+                <div class="widget" id="widget_{{ widget.get_lower_name }}">
                     <div class="widget-header">
                         <h3>
                             <i class="{% if widget %}icon-{{widget.name}}{% else %}icon-star{% endif %}"></i>
                             <div class="collapsebutton btn-group right" data-toggle="buttons-checkbox">
                                 <button type="button" class="btn btn-mini"
-                                    data-toggle="collapse" data-target="#widgetcontent_{{ widget.get_name }}"
+                                    data-toggle="collapse" data-target="#widgetcontent_{{ widget.get_lower_name }}"
                                     title="{% trans 'Collapse widget content' %}">
                                     _</button>
                             </div>
@@ -69,10 +69,10 @@
                                     title="{% trans 'Fix widget position' %}">
                                     <i class="icon-pushpin"></i></button>
                             </div>
-                            {% trans widget.get_title %}
+                            {% trans widget.get_display_name %}
                         </h3>
                     </div>
-                    <div class="widget-content collapse in" id="widgetcontent_{{ widget.get_name }}">
+                    <div class="widget-content collapse in" id="widgetcontent_{{ widget.get_lower_name }}">
                         <br>{{ widget.get_html }}<br>
                     </div>
                 </div>
