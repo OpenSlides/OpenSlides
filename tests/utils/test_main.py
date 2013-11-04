@@ -79,12 +79,16 @@ class TestFunctions(TestCase):
             mock_socket.socket().listen = MagicMock(side_effect=MyException)
             self.assertEqual(get_port('localhost', 80), 8000)
 
+    @patch('openslides.utils.main.threading.Thread')
     @patch('openslides.utils.main.time')
     @patch('openslides.utils.main.webbrowser')
-    def test_start_browser(self,  mock_webbrowser, mock_time):
+    def test_start_browser(self,  mock_webbrowser, mock_time, mock_Thread):
         browser_mock = MagicMock()
         mock_webbrowser.get.return_value = browser_mock
         start_browser('http://localhost:8234')
+        self.assertTrue(mock_Thread.called)
+        inner_function = mock_Thread.call_args[1]['target']
+        inner_function()
         browser_mock.open.assert_called_with('http://localhost:8234')
 
     def test_get_database_path_from_settings_memory(self):
