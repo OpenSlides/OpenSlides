@@ -173,6 +173,9 @@ class SetUserStatusView(RedirectView, SingleObjectMixin):
                 return
             self.object.is_active = False
         elif action == 'toggle':
+            if self.object.user == self.request.user and self.object.is_active:
+                messages.error(request, _("You can not deactivate yourself."))
+                return
             self.object.is_active = not self.object.is_active
         self.object.save()
         return super(SetUserStatusView, self).pre_redirect(request, *args, **kwargs)
