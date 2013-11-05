@@ -45,7 +45,7 @@ verwenden, brauchen Sie nur die Datei ``openslides.exe`` auszuführen.
 Mit dieser wird der Server gestartet und ihr Browser mit der richtigen
 URL geöffnet.
 
-OpenSlides kann jederzeit im schwarzen Fenster der Kommandozeile mit der Tastenkombination ``Strg`` + ``Pause`` beendet werden. Alle eingegebenen Daten bleiben in der Datenbank gespeichert.
+.. TODO: GUI-Funktionen beschreiben + Screenshot
 
 
 Verwendung der Linux/MacOS-Version

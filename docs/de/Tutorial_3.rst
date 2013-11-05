@@ -67,12 +67,12 @@ Einträge auszuwählen, halten Sie beim Anklicken die Taste ``Strg`` gedrückt.
    :class: screenshot
 
 
-Passworts eines Teilnehmers
----------------------------
+Passwort eines Teilnehmers
+--------------------------
 
 Beim Anlegen eines Teilnehmers wird automatisch ein zufälliges
 Erst-Passwort gesetzt. Sie können das Erst-Passwort aus einer PDF-Datei
-ablesen, die Sie durch Klick auf ``PDF``, Unterpunkt ``Erst-Passwörter``, im
+ablesen, die Sie durch Klick auf ``PDF``, Unterpunkt ``Zugangsdatenliste``, im
 rechten oberen Menü erreichen.
 
 Bitten Sie jeden, dem Sie sein Erst-Passwort aushändigen, dieses nach dem
@@ -80,10 +80,10 @@ ersten Login zu ändern.
 
 Um als Administrator das Passwort von zum Beispiel Max Mustermann neu zu
 setzen, klicken Sie erneut auf das Bearbeiten-Symbol |edit| und tragen Sie
-unten unter „Voreingestelltes Passwort“ ein neues, selbstgewähltes Passwort
+im Feld „Voreingestelltes Passwort“ ein neues, selbstgewähltes Passwort
 ein. Anschließend klicken Sie auf ``Übernehmen``. In einem zweiten Schritt
 müssen Sie auf den Link ``Auf Erst-Passwort zurücksetzen`` klicken, um das im
-System gespeicherte Passwort mit Ihrem neu eingegebenen zu ersetzen.
+System gespeicherte Passwort mit Ihrem neu Eingegebenen zu ersetzen.
 Bestätigen Sie den oben auf der Seite erscheinenden Dialog mit ``Ja``.
 
 .. image:: ../_images/Tutorial_3_05.png
