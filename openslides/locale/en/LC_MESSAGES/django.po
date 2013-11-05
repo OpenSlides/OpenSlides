@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-06 08:56+0100\n"
+"POT-Creation-Date: 2013-11-07 14:07+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -87,7 +87,7 @@ msgstr ""
 msgid "Organizational item"
 msgstr ""
 
-#: agenda/models.py:38 core/signals.py:66 mediafile/models.py:26
+#: agenda/models.py:38 core/signals.py:67 mediafile/models.py:26
 #: mediafile/templates/mediafile/mediafile_list.html:18 motion/forms.py:26
 #: motion/models.py:533 participant/models.py:33 participant/views.py:195
 #: participant/templates/participant/overview.html:48 projector/models.py:116
@@ -340,24 +340,24 @@ msgid "Show agenda item"
 msgstr ""
 
 #: agenda/templates/agenda/item_row.html:16
-#: agenda/templates/agenda/view.html:73 agenda/templates/agenda/widget.html:34
+#: agenda/templates/agenda/view.html:73 agenda/templates/agenda/widget.html:36
 msgid "Show list of speakers"
 msgstr ""
 
 #: agenda/templates/agenda/item_row.html:21
-#: agenda/templates/agenda/widget.html:26
+#: agenda/templates/agenda/widget.html:27
 #: assignment/templates/assignment/assignment_detail.html:174
 #: assignment/templates/assignment/assignment_list.html:65
-#: assignment/templates/assignment/widget.html:10
+#: assignment/templates/assignment/widget.html:12
 #: mediafile/templates/mediafile/mediafile_list.html:37
 #: motion/templates/motion/category_list.html:30
 #: motion/templates/motion/motion_list.html:83
-#: motion/templates/motion/widget.html:10
+#: motion/templates/motion/widget.html:12
 #: participant/templates/participant/group_overview.html:54
-#: participant/templates/participant/group_widget.html:10
+#: participant/templates/participant/group_widget.html:12
 #: participant/templates/participant/overview.html:116
-#: participant/templates/participant/user_widget.html:9
-#: projector/templates/projector/custom_slide_widget.html:26
+#: participant/templates/participant/user_widget.html:11
+#: projector/templates/projector/custom_slide_widget.html:31
 msgid "Edit"
 msgstr ""
 
@@ -371,7 +371,7 @@ msgstr ""
 #: motion/templates/motion/motion_list.html:86
 #: participant/templates/participant/group_overview.html:58
 #: participant/templates/participant/overview.html:121
-#: projector/templates/projector/custom_slide_widget.html:23
+#: projector/templates/projector/custom_slide_widget.html:27
 msgid "Delete"
 msgstr ""
 
@@ -380,7 +380,7 @@ msgid "Change status (open/closed)"
 msgstr ""
 
 #: agenda/templates/agenda/item_row.html:35
-#: agenda/templates/agenda/widget.html:40
+#: agenda/templates/agenda/widget.html:42
 msgid "Show summary for this item"
 msgstr ""
 
@@ -445,7 +445,7 @@ msgstr ""
 #: motion/templates/motion/motion_list.html:24
 #: participant/templates/participant/group_overview.html:22
 #: participant/templates/participant/overview.html:23
-#: projector/templates/projector/custom_slide_widget.html:39
+#: projector/templates/projector/custom_slide_widget.html:44
 msgid "New"
 msgstr ""
 
@@ -499,8 +499,8 @@ msgid "Show agenda"
 msgstr ""
 
 #: agenda/templates/agenda/overview.html:125
-#: agenda/templates/agenda/widget.html:51
-#: projector/templates/projector/custom_slide_widget.html:34
+#: agenda/templates/agenda/widget.html:53
+#: projector/templates/projector/custom_slide_widget.html:40
 msgid "No items available."
 msgstr ""
 
@@ -508,17 +508,17 @@ msgstr ""
 msgid "Put me on the current list of speakers"
 msgstr ""
 
-#: agenda/templates/agenda/speaker_widget.html:7
-msgid "Go to current list of speakers"
-msgstr ""
-
-#: agenda/templates/agenda/speaker_widget.html:11
+#: agenda/templates/agenda/speaker_widget.html:9
 msgid "Next speaker"
 msgstr ""
 
-#: agenda/templates/agenda/speaker_widget.html:12
+#: agenda/templates/agenda/speaker_widget.html:10
 #: agenda/templates/agenda/view.html:125
 msgid "End speach"
+msgstr ""
+
+#: agenda/templates/agenda/speaker_widget.html:14
+msgid "Go to current list of speakers"
 msgstr ""
 
 #: agenda/templates/agenda/view.html:27
@@ -584,8 +584,9 @@ msgstr ""
 #: agenda/templates/agenda/view.html:155
 #: assignment/templates/assignment/assignment_detail.html:113
 #: assignment/templates/assignment/poll_view.html:87
+#: mediafile/templates/mediafile/pdfs_widget.html:32
 #: motion/templates/motion/poll_form.html:70
-#: projector/templates/projector/overlay_message_widget.html:9
+#: projector/templates/projector/overlay_message_widget.html:10
 #: templates/formbuttons_saveapply.html:7
 msgid "Apply"
 msgstr ""
@@ -597,27 +598,36 @@ msgstr ""
 
 #: agenda/templates/agenda/widget.html:8
 #: agenda/templates/agenda/widget.html:23
-#: assignment/templates/assignment/widget.html:7
+#: assignment/templates/assignment/widget.html:8
 #: mediafile/templates/mediafile/mediafile_list.html:40
-#: mediafile/templates/mediafile/pdfs_widget.html:38
+#: mediafile/templates/mediafile/pdfs_widget.html:43
 #: motion/templates/motion/motion_detail.html:136
-#: motion/templates/motion/widget.html:7
-#: participant/templates/participant/group_widget.html:7
-#: participant/templates/participant/user_widget.html:6
-#: projector/templates/projector/custom_slide_widget.html:6
-#: projector/templates/projector/custom_slide_widget.html:19
+#: motion/templates/motion/widget.html:8
+#: participant/templates/participant/group_widget.html:8
+#: participant/templates/participant/user_widget.html:7
+#: projector/templates/projector/custom_slide_widget.html:7
+#: projector/templates/projector/custom_slide_widget.html:22
 msgid "Show"
 msgstr ""
 
 #: agenda/templates/agenda/widget.html:11
-#: agenda/templates/agenda/widget.html:29
-#: assignment/templates/assignment/widget.html:13
-#: motion/templates/motion/widget.html:13
-#: participant/templates/participant/group_widget.html:13
-#: participant/templates/participant/user_widget.html:12
-#: projector/templates/projector/custom_slide_widget.html:9
-#: projector/templates/projector/custom_slide_widget.html:29
+#: agenda/templates/agenda/widget.html:31
+#: assignment/templates/assignment/widget.html:16
+#: motion/templates/motion/widget.html:16
+#: participant/templates/participant/group_widget.html:16
+#: participant/templates/participant/user_widget.html:15
+#: projector/templates/projector/custom_slide_widget.html:11
+#: projector/templates/projector/custom_slide_widget.html:35
 msgid "Preview"
+msgstr ""
+
+#: agenda/templates/agenda/widget.html:57
+#: assignment/templates/assignment/widget.html:26
+#: mediafile/templates/mediafile/pdfs_widget.html:52
+#: motion/templates/motion/widget.html:29
+#: participant/templates/participant/group_widget.html:24
+#: participant/templates/participant/user_widget.html:25
+msgid "More..."
 msgstr ""
 
 #: assignment/forms.py:14 assignment/models.py:51 assignment/views.py:357
@@ -838,7 +848,7 @@ msgstr ""
 msgid "Ballot was successfully deleted."
 msgstr ""
 
-#: assignment/views.py:332 assignment/templates/assignment/widget.html:19
+#: assignment/views.py:332 assignment/templates/assignment/widget.html:22
 msgid "No assignments available."
 msgstr ""
 
@@ -1121,99 +1131,99 @@ msgstr ""
 msgid "Configuration"
 msgstr ""
 
-#: core/signals.py:25
+#: core/signals.py:26
 msgid "Event name"
 msgstr ""
 
-#: core/signals.py:30
+#: core/signals.py:31
 msgid "Presentation and assembly system"
 msgstr ""
 
-#: core/signals.py:33
+#: core/signals.py:34
 msgid "Short description of event"
 msgstr ""
 
-#: core/signals.py:42
+#: core/signals.py:43
 msgid "Event date"
 msgstr ""
 
-#: core/signals.py:50
+#: core/signals.py:51
 msgid "Event location"
 msgstr ""
 
-#: core/signals.py:58
+#: core/signals.py:59
 msgid "Event organizer"
 msgstr ""
 
-#: core/signals.py:63
+#: core/signals.py:64
 msgid "Welcome to OpenSlides"
 msgstr ""
 
-#: core/signals.py:71
+#: core/signals.py:73
 msgid "[Place for your welcome text.]"
 msgstr ""
 
-#: core/signals.py:74
+#: core/signals.py:76
 msgid "Welcome text"
 msgstr ""
 
-#: core/signals.py:81
+#: core/signals.py:83
 msgid "Allow access for anonymous guest users"
 msgstr ""
 
-#: core/signals.py:90
+#: core/signals.py:92
 msgid "System URL"
 msgstr ""
 
-#: core/signals.py:91
+#: core/signals.py:93
 msgid "Used for QRCode in PDF of access data."
 msgstr ""
 
-#: core/signals.py:99 participant/views.py:274
+#: core/signals.py:101 participant/views.py:274
 msgid "WLAN name (SSID)"
 msgstr ""
 
-#: core/signals.py:100 core/signals.py:109 core/signals.py:118
+#: core/signals.py:102 core/signals.py:111 core/signals.py:120
 msgid "Used for WLAN QRCode in PDF of access data."
 msgstr ""
 
-#: core/signals.py:108 participant/views.py:278
+#: core/signals.py:110 participant/views.py:278
 msgid "WLAN password"
 msgstr ""
 
-#: core/signals.py:117 participant/views.py:282
+#: core/signals.py:119 participant/views.py:282
 msgid "WLAN encryption"
 msgstr ""
 
-#: core/signals.py:120
+#: core/signals.py:122
 msgid "---------"
 msgstr ""
 
-#: core/signals.py:121
+#: core/signals.py:123
 msgid "WEP"
 msgstr ""
 
-#: core/signals.py:122
+#: core/signals.py:124
 msgid "WPA/WPA2"
 msgstr ""
 
-#: core/signals.py:123
+#: core/signals.py:125
 msgid "No encryption"
 msgstr ""
 
-#: core/signals.py:126
+#: core/signals.py:128
 msgid "Event"
 msgstr ""
 
-#: core/signals.py:130
+#: core/signals.py:132
 msgid "Welcome Widget"
 msgstr ""
 
-#: core/signals.py:134
+#: core/signals.py:136
 msgid "System"
 msgstr ""
 
-#: core/signals.py:138
+#: core/signals.py:140
 msgid "General"
 msgstr ""
 
@@ -1309,7 +1319,27 @@ msgstr ""
 msgid "No files available."
 msgstr ""
 
-#: mediafile/templates/mediafile/pdfs_widget.html:43
+#: mediafile/templates/mediafile/pdfs_widget.html:7
+msgid "First page"
+msgstr ""
+
+#: mediafile/templates/mediafile/pdfs_widget.html:11
+msgid "Previous page"
+msgstr ""
+
+#: mediafile/templates/mediafile/pdfs_widget.html:15
+msgid "Next page"
+msgstr ""
+
+#: mediafile/templates/mediafile/pdfs_widget.html:22
+msgid "Fullscreen"
+msgstr ""
+
+#: mediafile/templates/mediafile/pdfs_widget.html:28
+msgid "Page"
+msgstr ""
+
+#: mediafile/templates/mediafile/pdfs_widget.html:48
 msgid "No PDFs available."
 msgstr ""
 
@@ -1500,7 +1530,7 @@ msgstr ""
 msgid "Categories"
 msgstr ""
 
-#: motion/pdf.py:249 motion/templates/motion/widget.html:22
+#: motion/pdf.py:249 motion/templates/motion/widget.html:25
 msgid "No motions available."
 msgstr ""
 
@@ -2497,7 +2527,7 @@ msgstr ""
 msgid "The participant has not logged in yet."
 msgstr ""
 
-#: participant/templates/participant/user_widget.html:18
+#: participant/templates/participant/user_widget.html:21
 msgid "No participants available."
 msgstr ""
 
@@ -2610,19 +2640,19 @@ msgctxt "seconds"
 msgid "s"
 msgstr ""
 
-#: projector/templates/projector/overlay_countdown_widget.html:9
+#: projector/templates/projector/overlay_countdown_widget.html:10
 msgid "Save time as default"
 msgstr ""
 
-#: projector/templates/projector/overlay_countdown_widget.html:13
+#: projector/templates/projector/overlay_countdown_widget.html:15
 msgid "Reset countdown"
 msgstr ""
 
-#: projector/templates/projector/overlay_countdown_widget.html:16
+#: projector/templates/projector/overlay_countdown_widget.html:19
 msgid "Start countdown"
 msgstr ""
 
-#: projector/templates/projector/overlay_countdown_widget.html:19
+#: projector/templates/projector/overlay_countdown_widget.html:24
 msgid "Stop countdown"
 msgstr ""
 
@@ -2630,7 +2660,7 @@ msgstr ""
 msgid "Message"
 msgstr ""
 
-#: projector/templates/projector/overlay_message_widget.html:12
+#: projector/templates/projector/overlay_message_widget.html:14
 msgid "Clean message"
 msgstr ""
 

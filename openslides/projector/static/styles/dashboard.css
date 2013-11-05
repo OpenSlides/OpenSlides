@@ -55,7 +55,6 @@
 .widget-header .icon-pushpin {
     background-image: url("../img/glyphicons_335_pushpin.png");
     background-position: 0 center;
-    margin-left:4px !important;
 }
 .widget-content {
     padding: 0px 15px 0px 13px;
@@ -64,6 +63,9 @@
     border-radius: 0 0 5px 5px;
     -moz-border-radius: 0 0 5px 5px;
     -webkit-border-radius: 0 0 5px 5px;
+}
+.widget-content-inner {
+    margin-top: 10px;
 }
 .widget-content li {
     padding: 4px 0;
@@ -127,4 +129,12 @@
     left: 0px;
     display: block;
     z-index: 1;
+}
+
+.custom-btn-mini {
+    width: 20px;
+}
+.custom-btn-mini i {
+    -moz-margin-start: 4px !important;
+    margin-left: -6px;
 }

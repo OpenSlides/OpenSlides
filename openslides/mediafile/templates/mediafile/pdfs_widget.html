@@ -3,28 +3,33 @@
 
 <form action="{% url 'target_pdf_page' %}" method="GET" class="set-page-form">
     <div class="input-prepend" style="margin-bottom:0;">
-        <a class="btn go-first-page">
+        <a class="btn go-first-page"
+            rel="tooltip" data-original-title="{% trans 'First page' %}">
             <i class="icon-fast-backward"></i>
         </a>
-        <a class="btn pdf-page-ctl"  href="{% url 'prev_pdf_page' %}">
+        <a class="btn pdf-page-ctl"  href="{% url 'prev_pdf_page' %}"
+            rel="tooltip" data-original-title="{% trans 'Previous page' %}">
             <i class="icon-backward"></i>
         </a>
-        <a class="btn pdf-page-ctl" href="{% url 'next_pdf_page' %}">
+        <a class="btn pdf-page-ctl" href="{% url 'next_pdf_page' %}"
+            rel="tooltip" data-original-title="{% trans 'Next page' %}">
             <i class="icon-forward"></i>
         </a>
     </div>
 
     <div class="input-append" style="margin-bottom:0;">
-        <a class="btn pdf-toggle-fullscreen {%if pdf_fullscreen %}btn-primary{% endif %}" href="{% url 'toggle_fullscreen' %}">
+        <a class="btn pdf-toggle-fullscreen {%if pdf_fullscreen %}btn-primary{% endif %}" href="{% url 'toggle_fullscreen' %}"
+            rel="tooltip" data-original-title="{% trans 'Fullscreen' %}">
             <i class="icon-fullscreen {%if pdf_fullscreen %}icon-white{% endif %}"></i>
         </a>
     </div>
 
     <div class="input-append input-prepend" style="margin-bottom:0;">
-        <span class="add-on">Page:</span>
+        <span class="add-on">{% trans "Page" %}:</span>
         <input id="page_num" name="page_num" type="number" style="width: 22px;" value="{{ current_page }}">
 
-        <button type="submit" id="go_to_page" class="btn" style="width: 40px;">
+        <button type="submit" id="go_to_page" class="btn tooltip-bottom"
+            rel="tooltip" data-original-title="{% trans 'Apply' %}">
             <i class="icon-refresh"></i>
         </button>
     </div>
@@ -43,3 +48,6 @@
     <li>{% trans 'No PDFs available.' %}</li>
 {% endfor %}
 </ul>
+
+<small><p class="text-right"><a href="{% url 'mediafile_list' %}">{% trans "More..." %}</a></p></small>
+
