@@ -88,6 +88,8 @@ class ActivateView(RedirectView):
             set_active_slide(kwargs['callback'], kwargs=dict(request.GET.items()))
         config['projector_scroll'] = config.get_default('projector_scroll')
         config['projector_scale'] = config.get_default('projector_scale')
+        call_on_projector({'scroll': config['projector_scroll'],
+                           'scale': config['projector_scale']})
 
 
 class SelectWidgetsView(TemplateView):
@@ -155,7 +157,7 @@ class ProjectorControllView(RedirectView):
             config['projector_scroll'] = config.get_default('projector_scroll')
 
         call_on_projector({'scroll': config['projector_scroll'],
-                          'scale': config['projector_scale']})
+                           'scale': config['projector_scale']})
 
     def get_ajax_context(self, **kwargs):
         return {
