@@ -66,7 +66,7 @@ class User(SlideMixin, PersonMixin, Person, DjangoUser):
         """
         if link == 'detail' or link == 'view':
             return reverse('user_view', args=[str(self.id)])
-        if link == 'edit':
+        if link == 'edit' or link == 'update':
             return reverse('user_edit', args=[str(self.id)])
         if link == 'delete':
             return reverse('user_delete', args=[str(self.id)])

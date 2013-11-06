@@ -43,6 +43,13 @@ class UserTest(TestCase):
         self.assertEqual(get_person('user:2'), self.user1)
         self.assertEqual(len(Persons(person_prefix_filter='user')), 2)
 
+    def test_get_absolute_url(self):
+        urls = (('detail', '/participant/2/'),
+                ('update', '/participant/2/edit/'),
+                ('delete', '/participant/2/del/'))
+        for link, url in urls:
+            self.assertEqual(self.user1.get_absolute_url(link), url)
+
 
 class GroupTest(TestCase):
     def setUp(self):
