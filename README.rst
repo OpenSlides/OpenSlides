@@ -246,6 +246,9 @@ OpenSlides uses the following projects or parts of them:
 
 * `Django <https://www.djangoproject.com>`_, License: BSD
 
+* `Django-jsonfield <https://github.com/bradjasper/django-jsonfield>`_,
+  License: MIT
+
 * `Django mptt <https://github.com/django-mptt/django-mptt/>`_, License: BSD
 
 * `Django haystack <http://haystacksearch.org>`_, License: BSD
