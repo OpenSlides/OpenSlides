@@ -51,7 +51,7 @@ class ProjectorView(TemplateView):
             kwargs.update({
                 'content':  get_projector_content(),
                 'overlays': get_projector_overlays(),
-                'overlay_js': get_projector_overlays_js(),
+                'overlay_js': get_projector_overlays_js(as_json=True),
                 'reload': True,
                 'calls': config['projector_js_cache']})
         # For the Preview
