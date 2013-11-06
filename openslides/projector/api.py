@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from json import dumps
 from time import time
 
 from django.conf import settings
@@ -116,7 +117,7 @@ def get_projector_overlays():
     return render_to_string('projector/all_overlays.html', {'overlays': overlays})
 
 
-def get_projector_overlays_js():
+def get_projector_overlays_js(as_json=False):
     """
     Returns JS-Code for the active overlays.
 
@@ -127,6 +128,8 @@ def get_projector_overlays_js():
         if overlay.is_active():
             overlay_js = overlay.get_javascript()
             if overlay_js:
+                if as_json:
+                    overlay_js = dumps(overlay_js)
                 javascript.append(overlay_js)
     return javascript
 
