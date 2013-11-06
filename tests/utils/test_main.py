@@ -20,6 +20,7 @@ from openslides.utils.main import (
     get_port,
     get_portable_paths,
     get_user_data_path_values,
+    PortIsBlockedError,
     setup_django_settings_module,
     start_browser,
     UNIX_VERSION,
@@ -71,11 +72,19 @@ class TestFunctions(TestCase):
     def test_get_port(self):
         class MyException(Exception):
             pass
+
+        def block_some_ports(mock):
+            if not 8000 == mock_socket.socket().bind.call_args[0][0][1]:
+                raise MyException
+
+        # Test open port
         self.assertEqual(get_port('localhost', 8234), 8234)
+        # Test blocked ports
         with patch('openslides.utils.main.socket') as mock_socket:
             mock_socket.error = MyException
-            mock_socket.socket().listen = MagicMock(side_effect=MyException)
+            mock_socket.socket().listen = MagicMock(side_effect=block_some_ports)
             self.assertEqual(get_port('localhost', 80), 8000)
+            self.assertRaises(PortIsBlockedError, get_port, 'localhost', 81)
 
     @patch('openslides.utils.main.threading.Thread')
     @patch('openslides.utils.main.time')
@@ -121,9 +130,11 @@ class TestOtherFunctions(TestCase):
         mock_syncdb.assert_called()
         mock_runserver.assert_called_with(None, mock_args)
 
+    @patch('openslides.__main__.get_port')
     @patch('openslides.__main__.run_tornado')
     @patch('openslides.__main__.start_browser')
-    def test_runserver(self, mock_start_browser, mock_run_tornado):
+    def test_runserver(self, mock_start_browser, mock_run_tornado, mock_get_port):
+        mock_get_port.return_value = 8000
         mock_args = MagicMock()
         runserver(settings=None, args=mock_args)
         mock_run_tornado.assert_called()

@@ -23,6 +23,10 @@ class PortableDirNotWritable(Exception):
     pass
 
 
+class PortIsBlockedError(Exception):
+    pass
+
+
 class DatabaseInSettingsError(Exception):
     pass
 
@@ -273,22 +277,27 @@ def get_portable_paths(name):
 
 def get_port(address, port):
     """
-    Returns the port for the server. If port 80 is given, checks if it is
-    available. If not returns port 8000.
+    Checks if the port for the server is available and returns it the port. If
+    it is port 80, try also port 8000.
 
     The argument 'address' should be an IP address. The argument 'port' should
     be an integer.
     """
-    if port == 80:
-        # test if we can use port 80
-        s = socket.socket()
-        try:
-            s.bind((address, port))
-            s.listen(-1)
-        except socket.error:
-            port = 8000
-        finally:
-            s.close()
+    s = socket.socket()
+    try:
+        s.bind((address, port))
+        s.listen(-1)
+    except socket.error:
+        error = True
+    else:
+        error = False
+    finally:
+        s.close()
+    if error:
+        if port == 80:
+            port = get_port(address, 8000)
+        else:
+            raise PortIsBlockedError('Port %d is not available. Try another port using the --port option.' % port)
     return port
 
 
