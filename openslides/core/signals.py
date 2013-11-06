@@ -7,6 +7,7 @@ from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.config.api import ConfigGroup, ConfigGroupedPage, ConfigVariable
 from openslides.config.signals import config_signal
+from openslides.projector.api import update_projector
 
 post_database_setup = Signal()
 
@@ -64,7 +65,8 @@ def setup_general_config_page(sender, **kwargs):
         form_field=forms.CharField(
             widget=forms.TextInput(),
             label=ugettext_lazy('Title'),
-            required=False))
+            required=False),
+        on_change=update_projector)
 
     welcome_text = ConfigVariable(
         name='welcome_text',
