@@ -456,7 +456,7 @@ def main():
     prefix = os.path.dirname(sys.executable)
     libdir = os.path.join(prefix, "Lib")
     sitedir = os.path.join(libdir, "site-packages")
-    odir = "dist/openslides-{0}-portable".format(openslides.get_version())
+    odir = "dist/OpenSlides-{version}/openslides-{version}-portable".format(version=openslides.get_version())
 
     try:
         shutil.rmtree(odir)
