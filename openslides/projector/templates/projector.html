@@ -14,12 +14,14 @@
         <script type="text/javascript" src="{% static 'javascript/sockjs-0.3.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'javascript/projector.js' %}"></script>
         <script type="text/javascript">
+            $(function() {
             {% for js in overlay_js %}
                 projector.update_data({{ js|safe }});
             {% endfor %}
             {% for key, value in calls.items %}
                 projector.{{ key }}({{ value }});
             {% endfor %}
+            });
         </script>
 
     </head>

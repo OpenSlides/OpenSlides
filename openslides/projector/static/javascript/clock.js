@@ -5,10 +5,9 @@ function update_clock() {
     currentHours = normalise(currentHours);
     currentMinutes = normalise(currentMinutes);
     $('#currentTime').html(currentHours + ':' + currentMinutes);
-    setTimeout('update_clock()', 200);
 }
 
-update_clock();
+setInterval('update_clock()', 200);
 
 function normalise(i) {
     if (i < 10) {
