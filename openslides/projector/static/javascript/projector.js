@@ -37,13 +37,19 @@ var projector = {
         return date;
     },
 
+    set_server_time: function(value) {
+        var local_time = Date.parse(new Date().toUTCString());
+        projector.server_time_offset = local_time - value * 1000;
+    },
+
     update_data: function(data) {
         $.each(data, function (key, value) {
             if (key === 'load_file')
                 projector.load_file(value);
-            else if (key === 'server_time') {
-                var local_time = Date.parse(new Date().toUTCString());
-                projector.server_time_offset = local_time - value * 1000;
+            else if (key === 'call') {
+                try {
+                    eval(value);
+                } catch (e) {}
             } else
                 projector[key] = value;
         });

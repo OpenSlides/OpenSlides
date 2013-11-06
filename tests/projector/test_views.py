@@ -33,7 +33,7 @@ class ProjectorViewTest(TestCase):
             context = view.get_context_data()
         mock_get_projector_content.assert_called_with()
         mock_get_projector_overlays.assert_called_with()
-        mock_get_projector_overlays_js.assert_called_with()
+        mock_get_projector_overlays_js.assert_called_with(as_json=True)
         self.assertTrue(context['reload'])
         self.assertEqual(context['calls'], 'js_cache')
 
