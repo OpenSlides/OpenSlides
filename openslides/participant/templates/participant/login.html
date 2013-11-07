@@ -27,12 +27,6 @@
             <em>{{ first_time_message|safe }}</em>
         </div>
     {% endif %}
-
-    <script>
-        $("div.notification").click(function () {
-            $(this).hide("fast");
-        });
-    </script>
     <form method="post" action="{% url 'user_login' %}{% if next %}?next={{ next }}{% endif %}" class="well">
         {% csrf_token %}
         <div class="input-prepend">
@@ -43,7 +37,7 @@
             <span class="add-on"><i class="icon-lock"></i></span>
             <input type="password" maxlength="30" name="password" id="id_password" placeholder="{% trans 'Password' %}">
         </div>
-        
+
         <p>
         <button type="submit" class="btn btn-primary">
             {% trans 'Login' %}
