@@ -41,9 +41,10 @@ class ProjectorViewTest(TestCase):
 class ActivateViewTest(TestCase):
     rf = RequestFactory()
 
+    @patch('openslides.projector.views.call_on_projector')
     @patch('openslides.projector.views.config')
     @patch('openslides.projector.views.set_active_slide')
-    def test_get(self, mock_set_active_slide, mock_config):
+    def test_get(self, mock_set_active_slide, mock_config, mock_call_on_projector):
         view = views.ActivateView()
         view.request = self.rf.get('/?some_key=some_value')
 
@@ -54,6 +55,7 @@ class ActivateViewTest(TestCase):
         mock_config.get_default.assert_has_calls([call('projector_scroll'),
                                                   call('projector_scale')])
         self.assertEqual(mock_config.__setitem__.call_count, 2)
+        self.assertTrue(mock_call_on_projector.called)
 
 
 class SelectWidgetsViewTest(TestCase):
