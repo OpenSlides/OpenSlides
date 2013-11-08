@@ -25,7 +25,7 @@
     {% endfor %}
 </ul>
 
-{% if config_motion_min_supporters %}
+{% if 'motion_min_supporters'|get_config %}
 <hr />
 <ul style="line-height: 180%">
     {% trans 'I support the following motions:' %}

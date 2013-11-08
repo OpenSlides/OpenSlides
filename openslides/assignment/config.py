@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
-from django.dispatch import receiver
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.config.api import ConfigPage, ConfigVariable
-from openslides.config.signals import config_signal
 
 
-@receiver(config_signal, dispatch_uid='setup_assignment_config_page')
-def setup_assignment_config_page(sender, **kwargs):
+def get_assignment_config_page(sender, **kwargs):
     """
-    Assignment config variables.
+    Assignment config variables and page.
     """
     assignment_publish_winner_results_only = ConfigVariable(
         name='assignment_publish_winner_results_only',

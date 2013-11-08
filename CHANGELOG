@@ -4,6 +4,14 @@
 
 http://openslides.org
 
+Version 1.6 (unreleased)
+========================
+[https://github.com/OpenSlides/OpenSlides/issues?milestone=14]
+
+Other:
+- Changed widget api. Used new metaclass.
+
+
 Version 1.5 (unreleased)
 ========================
 [https://github.com/OpenSlides/OpenSlides/issues?milestone=10]

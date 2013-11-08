@@ -1,26 +1,24 @@
 # -*- coding: utf-8 -*-
 
 from django.contrib import messages
-from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
 
 from openslides.config.api import config
+from openslides.core.widgets import get_all_widgets
 from openslides.utils.tornado_webserver import ProjectorSocketHandler
 from openslides.utils.template import Tab
 from openslides.utils.views import (AjaxMixin, CreateView, DeleteView,
                                     RedirectView, TemplateView, UpdateView)
 from openslides.mediafile.models import Mediafile
 
-from .api import (call_on_projector, get_active_slide, get_all_widgets,
+from .api import (call_on_projector, get_active_slide,
                   get_overlays, get_projector_content, get_projector_overlays,
                   get_projector_overlays_js, reset_countdown, set_active_slide,
                   start_countdown, stop_countdown, update_projector_overlay)
 from .forms import SelectWidgetsForm
 from .models import ProjectorSlide
-from .projector import Widget
-from .signals import projector_overlays
 
 
 class DashboardView(AjaxMixin, TemplateView):
@@ -94,7 +92,7 @@ class ActivateView(RedirectView):
 
 class SelectWidgetsView(TemplateView):
     """
-    Show a Form to Select the widgets.
+    Show a form to select the widgets.
     """
     permission_required = 'projector.can_see_dashboard'
     template_name = 'projector/select_widgets.html'
@@ -291,64 +289,3 @@ def register_tab(request):
         permission=request.user.has_perm('projector.can_see_dashboard'),
         selected=selected,
     )
-
-
-def get_widgets(request):
-    """
-    Return the widgets of the projector app
-    """
-    widgets = []
-
-    # Welcome widget
-    widgets.append(Widget(
-        request,
-        name='welcome',
-        display_name=config['welcome_title'],
-        template='projector/welcome_widget.html',
-        context={'welcometext': config['welcome_text']},
-        permission_required='projector.can_see_dashboard',
-        default_column=1,
-        default_weight=10))
-
-    # Projector live view widget
-    widgets.append(Widget(
-        request,
-        name='live_view',
-        display_name=_('Projector live view'),
-        template='projector/live_view_widget.html',
-        permission_required='projector.can_see_projector',
-        default_column=2,
-        default_weight=10))
-
-    # Overlay widget
-    overlays = []
-    for receiver, overlay in projector_overlays.send(sender='overlay_widget', request=request):
-        if overlay.widget_html_callback is not None:
-            overlays.append(overlay)
-    context = {'overlays': overlays}
-    context.update(csrf(request))
-    widgets.append(Widget(
-        request,
-        name='overlays',
-        display_name=_('Overlays'),
-        template='projector/overlay_widget.html',
-        permission_required='projector.can_manage_projector',
-        default_column=2,
-        default_weight=20,
-        context=context))
-
-    # Custom slide widget
-    welcomepage_is_active = get_active_slide().get('callback', 'default') == 'default'
-    widgets.append(Widget(
-        request,
-        name='custom_slide',
-        display_name=_('Custom Slides'),
-        template='projector/custom_slide_widget.html',
-        context={
-            'slides': ProjectorSlide.objects.all().order_by('weight'),
-            'welcomepage_is_active': welcomepage_is_active},
-        permission_required='projector.can_manage_projector',
-        default_column=2,
-        default_weight=30))
-
-    return widgets

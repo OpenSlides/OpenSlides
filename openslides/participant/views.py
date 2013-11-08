@@ -16,7 +16,6 @@ from reportlab.platypus import (LongTable, PageBreak, Paragraph, Spacer, Table,
                                 TableStyle)
 
 from openslides.config.api import config
-from openslides.projector.projector import Widget
 from openslides.utils.pdf import stylesheet
 from openslides.utils.template import Tab
 from openslides.utils.utils import (delete_default_permissions, html_strong,
@@ -564,43 +563,3 @@ def register_tab(request):
             request.user.has_perm('participant.can_see_participant') or
             request.user.has_perm('participant.can_manage_participant')),
         selected=selected)
-
-
-def get_widgets(request):
-    """
-    Returns all widgets of the participant app. This is a user_widget
-    and a group_widget.
-    """
-    return [get_user_widget(request), get_group_widget(request)]
-
-
-def get_user_widget(request):
-    """
-    Provides a widget with all users. This is for short activation of
-    user slides.
-    """
-    return Widget(
-        request,
-        name='user',
-        display_name=_('Participants'),
-        template='participant/user_widget.html',
-        context={'users': User.objects.all()},
-        permission_required='projector.can_manage_projector',
-        default_column=1,
-        default_weight=60)
-
-
-def get_group_widget(request):
-    """
-    Provides a widget with all groups. This is for short activation of
-    group slides.
-    """
-    return Widget(
-        request,
-        name='group',
-        display_name=_('Groups'),
-        template='participant/group_widget.html',
-        context={'groups': Group.objects.all()},
-        permission_required='projector.can_manage_projector',
-        default_column=1,
-        default_weight=70)
