@@ -3,7 +3,8 @@
 from django.template.loader import render_to_string
 
 from openslides.config.api import config
-from openslides.projector.api import get_projector_content, register_slide
+from openslides.projector.api import (
+    get_projector_content, register_slide, SlideError)
 
 from .models import Item
 
@@ -28,7 +29,7 @@ def agenda_slide(**kwargs):
     try:
         item = Item.objects.get(pk=item_pk)
     except Item.DoesNotExist:
-        item = None
+        raise SlideError
 
     if slide_type == 'summary' or item is None:
         context = {}
@@ -38,7 +39,7 @@ def agenda_slide(**kwargs):
             items = item.get_children().filter(type__exact=Item.AGENDA_ITEM)
             context['title'] = item.get_title()
         context['items'] = items
-        return render_to_string('agenda/item_slide_summary.html', context)
+        slide = render_to_string('agenda/item_slide_summary.html', context)
 
     elif slide_type == 'list_of_speakers':
         list_of_speakers = item.get_list_of_speakers(
@@ -46,17 +47,18 @@ def agenda_slide(**kwargs):
         context = {'title': item.get_title(),
                    'item': item,
                    'list_of_speakers': list_of_speakers}
-        return render_to_string('agenda/item_slide_list_of_speaker.html', context)
+        slide = render_to_string('agenda/item_slide_list_of_speaker.html', context)
 
     elif item.content_object:
         slide_dict = {
             'callback': item.content_object.slide_callback_name,
             'pk': item.content_object.pk}
-        return get_projector_content(slide_dict)
+        slide = get_projector_content(slide_dict)
 
     else:
         context = {'item': item}
-        return render_to_string('agenda/item_slide.html', context)
+        slide = render_to_string('agenda/item_slide.html', context)
+    return slide
 
 
 register_slide('agenda', agenda_slide)
