@@ -27,9 +27,10 @@ HTML_TAG_WHITELIST = ('a',
 
 HTML_ATTRIBUTES_WHITELIST = {
     'a': ['href'],
+    '*': ['style'],
 }
 
-HTML_STYLES_WHITELIST = ()
+HTML_STYLES_WHITELIST = ('color', 'background-color', 'list-style')
 
 
 class CssClassMixin(object):

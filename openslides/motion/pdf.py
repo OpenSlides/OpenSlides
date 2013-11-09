@@ -189,6 +189,8 @@ def convert_html_to_reportlab(pdf, text):
         tag.unwrap()
     for tag in soup.find_all('li'):
         tag.unwrap()
+    for tag in soup.find_all('span'):
+        tag.unwrap()
     # print paragraphs with numbers
     text = soup.body.contents
     paragraph_number = 1
