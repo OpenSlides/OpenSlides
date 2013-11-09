@@ -33,7 +33,7 @@ var projector = {
 
     get_server_time: function () {
         var date = new Date();
-        date.setTime(date.getTime() + projector.server_time_offset);
+        date.setTime(date.getTime() - projector.server_time_offset);
         return date;
     },
 
