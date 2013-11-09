@@ -292,13 +292,15 @@
     <!-- Manage motion box -->
     <div class="well">
     <h4>{% trans "Manage motion" %}</h4>
-        <div class="btn-group btn-group-vertical">
         {% for state in motion.state.next_states.all %}
+            {% if forloop.first %}
+                <div class="btn-group btn-group-vertical">
+            {% endif %}
             <a href="{% url 'motion_set_state' motion.pk state.pk %}" class="btn btn-small">{% trans state.get_action_word %}</a>
+            {% if forloop.last %}
+                </div>
+            {% endif %}
         {% endfor %}
-        </div>
-    <p></p>
-    <hr>
     <h5>{% trans "For administration only:" %}</h5>
     <a href="{% url 'motion_reset_state' motion.id %}" class="btn btn-mini btn-danger">
         <i class="icon-exclamation-sign icon-white"></i> {% trans 'Reset state' %}

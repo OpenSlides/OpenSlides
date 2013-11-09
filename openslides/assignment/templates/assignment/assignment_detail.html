@@ -283,18 +283,17 @@
     {% if perms.assignment.can_manage_assignment %}
     <div class="well">
         <h4>{% trans "Change status" %}:</h4>
-        <label class="radio">
-            <input type="radio" name="status" onclick="window.location.href='{% url 'assignment_set_status' assignment.id 'sea' %}';"
-                {% if 'sea' in assignment.status %}checked{% endif %}>{% trans 'Searching for candidates' %}
-        </label>
-        <label class="radio">
-            <input type="radio" name="status" onclick="window.location.href='{% url 'assignment_set_status' assignment.id 'vot' %}';"
-                {% if 'vot' in assignment.status %}checked{% endif %}>{% trans 'Voting' %}<br>
-        </label>
-        <label class="radio">
-            <input type="radio" name="status" onclick="window.location.href='{% url 'assignment_set_status' assignment.id 'fin' %}';"
-                {% if 'fin' in assignment.status %}checked{% endif %}>{% trans 'Finished' %}
-        </label>
+        <div class="btn-group btn-group-vertical" data-toggle="buttons-radio">
+            <a href="{% url 'assignment_set_status' assignment.id 'sea' %}"
+                class="btn btn-small {% if 'sea' in assignment.status %}active{% endif %}">
+                {% trans 'Searching for candidates' %}</a>
+            <a href="{% url 'assignment_set_status' assignment.id 'vot' %}"
+                class="btn btn-small {% if 'vot' in assignment.status %}active{% endif %}">
+                {% trans 'Voting' %}</a>
+            <a href="{% url 'assignment_set_status' assignment.id 'fin' %}"
+                class="btn btn-small {% if 'fin' in assignment.status %}active{% endif %}">
+                {% trans 'Finished' %}</a>
+        </div>
     </div> <!--/well-->
     {% endif %}
 </div> <!--/span-->

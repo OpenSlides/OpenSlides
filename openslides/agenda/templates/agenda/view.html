@@ -23,9 +23,9 @@
     <a href="{% url 'item_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
     {% if perms.projector.can_manage_projector %}
         <a href="{{ item|absolute_url:'projector' }}"
-            class="activate_link btn btn-mini {% if item.is_active and active_type != 'list_of_speakers' %}btn-primary{% endif %}"
+            class="activate_link btn btn-mini {% if item.is_active_slide and active_type != 'list_of_speakers' %}btn-primary{% endif %}"
             rel="tooltip" data-original-title="{% trans 'Show item' %}">
-            <i class="icon icon-facetime-video {% if item.is_active and active_type != 'list_of_speakers' %}icon-white{% endif %}"></i>
+            <i class="icon icon-facetime-video {% if item.is_active_slide and active_type != 'list_of_speakers' %}icon-white{% endif %}"></i>
         </a>
     {% endif %}
     {% if perms.agenda.can_manage_agenda %}
@@ -69,9 +69,9 @@
 {% endif %}
 {% if perms.projector.can_manage_projector %}
     <a href="{{ item|absolute_url:'projector_list_of_speakers' }}"
-        class="activate_link btn btn-mini {% if item.is_active and active_type == 'list_of_speakers' %}btn-primary{% endif %}"
+        class="activate_link btn btn-mini {% if item.is_active_slide and active_type == 'list_of_speakers' %}btn-primary{% endif %}"
         rel="tooltip" data-original-title="{% trans 'Show list of speakers' %}">
-        <i class="icon icon-bell {% if item.is_active and active_type == 'list_of_speakers' %}icon-white{% endif %}"></i>
+        <i class="icon icon-bell {% if item.is_active_slide and active_type == 'list_of_speakers' %}icon-white{% endif %}"></i>
         {% trans 'Show list' %}
     </a>
 {% endif %}

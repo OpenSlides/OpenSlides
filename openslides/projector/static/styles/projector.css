@@ -13,25 +13,37 @@ body{
 
 /*** HEADER ***/
 #header {
-    background-color: #333333;
-    background-image: -moz-linear-gradient(top, #444444, #222222);
-    background-image: -ms-linear-gradient(top, #444444, #222222);
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#444444), to(#222222));
-    background-image: -webkit-linear-gradient(top, #444444, #222222);
-    background-image: -o-linear-gradient(top, #444444, #222222);
-    background-image: linear-gradient(top, #444444, #222222);
     box-shadow: 0 0 7px rgba(0,0,0,0.6);
     height: 70px;
     margin-bottom: 20px;
-    padding: 7px 20px 0;
-    position: relative;
 }
 #logo {
-    position: absolute;
-    top: 8px;
+    position: relative;
     left: 75px;
+    top: 4px;
+    height: 60px;
+    margin-right: 35px;
+    float: left;
 }
-
+#eventdata {
+    position: relative;
+    left: 75px;
+    top: 12px;
+    height: 50px;
+    overflow: hidden;
+}
+#eventdata .title {
+    font-size: 26px;
+    font-weight: bold;
+ }
+#eventdata .title.titleonly {
+    position: relative;
+    top: 12px;
+}
+#eventdata .description {
+    font-size: 18px;
+    opacity: 0.5;
+}
 #currentTime {
     border:0 solid #000000;
     font-size:24px;
@@ -41,42 +53,6 @@ body{
     right:40px;
     padding-left:30px;
     background: url(../img/glyphicons_054_clock_big.png) no-repeat scroll 0px 0px;
-}
-
-/*** FOOTER ***/
-#footer {
-    color: #999999;
-    font-size: 16px;
-    clear: both;
-    margin-top: 50px;
-    position: fixed;
-    left: 0px;
-    right: 0;
-    bottom: 0px;
-    height: 30px;
-    padding-top: 10px;
-    background-color: #333333;
-    background-image: -moz-linear-gradient(top, #444444, #222222);
-    background-image: -ms-linear-gradient(top, #444444, #222222);
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#444444), to(#222222));
-    background-image: -webkit-linear-gradient(top, #444444, #222222);
-    background-image: -o-linear-gradient(top, #444444, #222222);
-    background-image: linear-gradient(top, #444444, #222222);
-    box-shadow: 0 0 7px rgba(0,0,0,0.6);
-    border-top: 1px solid #999999;
-
-}
-.event_name_description {
-    left: 75px;
-    float: left;
-    position: absolute;
-    width: 50%;
-}
-.event_date_location {
-    text-align: right;
-    right: 40px;
-    position: absolute;
-    width: 40%;
 }
 
 /*** CONTENT ***/
