@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from django.db.models.query import EmptyQuerySet
 from django.test.client import Client
 
 from openslides.agenda.models import Item
@@ -29,7 +28,7 @@ class ItemTest(TestCase):
         self.assertFalse(self.item1.closed)
 
     def testParents(self):
-        self.assertEqual(type(self.item1.get_ancestors()), EmptyQuerySet)
+        self.assertFalse(self.item1.get_ancestors())
         self.assertTrue(self.item1 in self.item3.get_ancestors())
         self.assertTrue(self.item1 in self.item4.get_ancestors())
         self.assertFalse(self.item2 in self.item4.get_ancestors())
