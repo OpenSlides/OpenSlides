@@ -23,7 +23,6 @@ from openslides.utils.main import (
     setup_django_settings_module,
     start_browser,
     write_settings)
-from openslides.utils.tornado_webserver import run_tornado
 
 
 def main():
@@ -231,6 +230,9 @@ def runserver(settings, args):
     if args.start_browser:
         browser_url = get_browser_url(address=args.address, port=port)
         start_browser(browser_url)
+
+    # Now the settings is available and the function can be imported.
+    from openslides.utils.tornado_webserver import run_tornado
     run_tornado(args.address, port, not args.no_reload)
 
 

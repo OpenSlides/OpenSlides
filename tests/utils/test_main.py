@@ -131,7 +131,7 @@ class TestOtherFunctions(TestCase):
         mock_runserver.assert_called_with(None, mock_args)
 
     @patch('openslides.__main__.get_port')
-    @patch('openslides.__main__.run_tornado')
+    @patch('openslides.utils.tornado_webserver.run_tornado')
     @patch('openslides.__main__.start_browser')
     def test_runserver(self, mock_start_browser, mock_run_tornado, mock_get_port):
         mock_get_port.return_value = 8000
