@@ -91,7 +91,8 @@ def import_motions(csv_file, default_submitter, override=False, importing_person
             person_found = False
             if submitter:
                 for person in Persons():
-                    if person.clean_name == submitter.decode('utf8'):
+                    if (submitter.decode('utf8') in person.clean_name or
+                            person.clean_name in submitter.decode('utf8')):
                         if person_found:
                             warnings.append(_('Several suitable submitters found.'))
                             person_found = False
