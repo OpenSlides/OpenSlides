@@ -10,6 +10,7 @@ from django.utils.importlib import import_module
 
 from openslides.config.api import config
 from openslides.utils.tornado_webserver import ProjectorSocketHandler
+from openslides.utils.exceptions import OpenSlidesError
 
 from .signals import projector_overlays
 
@@ -18,6 +19,10 @@ slide_callback = {}
 A dictonary where the key is the name of a slide, and the value is a
 callable object which returns the html code for a slide.
 """
+
+
+class SlideError(OpenSlidesError):
+    pass
 
 
 def update_projector():
@@ -82,7 +87,7 @@ def get_projector_content(slide_dict=None):
 
     try:
         slide_content = slide_callback[callback](**slide_dict)
-    except KeyError:
+    except (KeyError, SlideError):
         slide_content = default_slide()
     return slide_content
 
@@ -158,8 +163,7 @@ def register_slide_model(SlideModel, template):
         try:
             slide = SlideModel.objects.get(pk=slide_pk)
         except SlideModel.DoesNotExist:
-            slide = None
-            context = {'slide': None}
+            raise SlideError
         else:
             context = slide.get_slide_context()
 

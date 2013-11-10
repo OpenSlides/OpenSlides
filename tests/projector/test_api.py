@@ -77,6 +77,10 @@ class ApiFunctions(TestCase):
                 value = projector_api.get_projector_content()
                 self.assertEqual(value, 'slide content')
 
+            mock_slide.side_effect = projector_api.SlideError
+            projector_api.get_projector_content({'callback': 'mock_slide'})
+            self.assertTrue(mock_default_slide.called)
+
     @patch('openslides.projector.api.render_to_string')
     def test_default_slide(self, mock_render_to_string):
         projector_api.default_slide()
@@ -159,8 +163,7 @@ class ApiFunctions(TestCase):
 
         # Test with non existing object
         mock_SlideModel.objects.get.side_effect = Exception
-        used_args[1](pk=1)
-        mock_render_to_string.assert_called_with('some template', {'slide': None})
+        self.assertRaises(projector_api.SlideError, used_args[1], pk=1)
 
     @patch('openslides.projector.api.update_projector_overlay')
     @patch('openslides.projector.api.update_projector')

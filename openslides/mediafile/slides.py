@@ -4,7 +4,7 @@
 from django.template.loader import render_to_string
 
 from openslides.config.api import config
-from openslides.projector.api import register_slide
+from openslides.projector.api import register_slide, SlideError
 
 from .models import Mediafile
 
@@ -24,8 +24,7 @@ def mediafile_presentation_as_slide(**kwargs):
             filetype__in=Mediafile.PRESENTABLE_FILE_TYPES,
             is_presentable=True)
     except Mediafile.DoesNotExist:
-        # TODO what doing, if a wrong pk is given?
-        pdf = None
+        raise SlideError
     context = {'pdf': pdf, 'page_num': page_num,
                'fullscreen': config['pdf_fullscreen']}
     return render_to_string('mediafile/presentation_slide.html', context)
