@@ -29,9 +29,9 @@
                     {% block loginbutton %}
                     <div class="pull-right">
                         <!-- Search field -->
-                        <form class="navbar-search form-search" action="{% url 'search' %}" method="get">
+                        <form class="navbar-search" action="{% url 'search' %}" method="get">
                             <div class="input-append">
-                                <input type="text" id="id_q" name="q" class="search-query input-medium" placeholder="{% trans 'Search' %}">
+                                <input type="text" id="id_q" name="q" class="input-medium" placeholder="{% trans 'Search' %}">
                                 <button type="submit" class="btn"><i class="icon-search"></i></button>
                             </div>
                         </form> &nbsp;

@@ -4,13 +4,16 @@
 <ul style="line-height: 180%">
 {% for motion in motions %}
     <li class="{% if motion.is_active_slide %}activeline{% endif %}">
-        <a href="{{ motion|absolute_url:'projector' }}" class="activate_link btn {% if motion.is_active_slide %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
+        <a href="{{ motion|absolute_url:'projector' }}" class="activate_link btn {% if motion.is_active_slide %}btn-primary{% endif %} btn-mini"
+            rel="tooltip" data-original-title="{% trans 'Show' %}">
             <i class="icon-facetime-video {% if motion.is_active_slide %}icon-white{% endif %}"></i>
         </a>&nbsp;
-        <a href="{{ motion|absolute_url:'update' }}" title="{% trans 'Edit' %}" class="btn btn-mini right">
+        <a href="{{ motion|absolute_url:'update' }}"
+            rel="tooltip" data-original-title="{% trans 'Edit' %}" class="btn btn-mini right">
             <i class="icon-pencil"></i>
         </a>
-        <a href="{{ motion|absolute_url:'projector_preview' }}" title="{% trans 'Preview' %}" class="btn btn-mini right">
+        <a href="{{ motion|absolute_url:'projector_preview' }}"
+            rel="tooltip" data-original-title="{% trans 'Preview' %}" class="btn btn-mini right">
             <i class="icon-search"></i>
         </a>
         <a href="{{ motion|absolute_url }}">
@@ -23,3 +26,4 @@
 {% endfor %}
 </ul>
 
+<small><p class="text-right"><a href="{% url 'motion_list' %}">{% trans "More..." %}</a></p></small>

@@ -36,7 +36,7 @@
                                     _</button>
                             </div>
                             <div class="fixbutton btn-group right" data-toggle="buttons-checkbox">
-                                <button type="button" class="btn btn-mini" style="width: 20px;"
+                                <button type="button" class="btn btn-mini custom-btn-mini"
                                     title="{% trans 'Fix widget position' %}">
                                     <i class="icon-pushpin"></i></button>
                             </div>
@@ -44,7 +44,7 @@
                         </h3>
                     </div>
                     <div class="widget-content collapse in" id="widgetcontent_{{ widget.get_name }}">
-                        <br>{{ widget.html }}<br>
+                        <div class="widget-content-inner">{{ widget.html }}</div>
                     </div>
                 </div>
             {% endif %}
@@ -65,7 +65,7 @@
                                     _</button>
                             </div>
                             <div class="fixbutton btn-group right" data-toggle="buttons-checkbox">
-                                <button type="button" class="btn btn-mini" style="width: 20px;"
+                                <button type="button" class="btn btn-mini custom-btn-mini"
                                     title="{% trans 'Fix widget position' %}">
                                     <i class="icon-pushpin"></i></button>
                             </div>
@@ -73,7 +73,7 @@
                         </h3>
                     </div>
                     <div class="widget-content collapse in" id="widgetcontent_{{ widget.get_name }}">
-                        <br>{{ widget.html }}<br>
+                        <div class="widget-content-inner">{{ widget.html }}</div>
                     </div>
                 </div>
             {% endif %}

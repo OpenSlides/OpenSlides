@@ -6,10 +6,12 @@
     <form class="form-inline" id="overlay_message" action="{% url 'projector_overlay_message' %}" method="post">{% csrf_token %}
         <div class="input-append overlayblock" style="width: 77%;">
         <input class="input-block-level" id="overlay_message_text" name='message_text' type='text' value="{% get_config 'projector_message' %}">
-        <button type="submit" class="btn btn-primary" name="message" title="{% trans 'Apply' %}" style="width: 16px;">
+        <button type="submit" class="btn btn-primary tooltip-bottom" name="message"
+            rel="tooltip" data-original-title="{% trans 'Apply' %}">
             <i class="icon-ok icon-white"></i>
         </button>
-        <button type="submit" class="btn" name='message-clean' title="{% trans 'Clean message' %}" style="width: 16px;">
+        <button type="submit" class="btn tooltip-bottom custom-btn-mini" name='message-clean'
+            rel="tooltip" data-original-title="{% trans 'Clean message' %}">
             <i class="icon-delete"></i>
         </button>
         </div>
