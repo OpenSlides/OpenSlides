@@ -23,12 +23,38 @@
             {% endfor %}
             });
         </script>
-
+        <style type="text/css">
+            #header {
+                {% if 'projector_backgroundcolor2'|get_config %}
+                    background-image: -moz-linear-gradient(top, {{ 'projector_backgroundcolor1'|get_config }}, {{ 'projector_backgroundcolor2'|get_config }});
+                    background-image: -ms-linear-gradient(top, {{ 'projector_backgroundcolor1'|get_config }}, {{ 'projector_backgroundcolor2'|get_config }});
+                    background-image: -webkit-gradient(linear, 0 0, 0 100%, from({{ 'projector_backgroundcolor1'|get_config }}), to({{ 'projector_backgroundcolor2'|get_config }}));
+                    background-image: -webkit-linear-gradient(top, {{ 'projector_backgroundcolor1'|get_config }}, {{ 'projector_backgroundcolor2'|get_config }});
+                    background-image: -o-linear-gradient(top, {{ 'projector_backgroundcolor1'|get_config }}, {{ 'projector_backgroundcolor2'|get_config }});
+                    background-image: linear-gradient(top, {{ 'projector_backgroundcolor1'|get_config }}, {{ 'projector_backgroundcolor2'|get_config }});
+                {% else %}
+                    background-color: {{ 'projector_backgroundcolor1'|get_config }};
+                {% endif %}
+            }
+            #eventdata {
+                color: {{ 'projector_fontcolor'|get_config }};
+            }
+        </style>
     </head>
     <body>
         <div id="header">
-            <a title="Startseite" id="logo" href="/"><img alt="Logo" src="/static/img/logo.png"></a>
-            <div class="pull-right"></div>
+            {% if 'projector_enable_logo'|get_config %}
+                <img id="logo" alt="Logo" src="/static/img/logo.png">
+            {% endif %}
+            {% if 'projector_enable_title'|get_config %}
+                <div id="eventdata">
+                    <div class="title {% if not 'event_description'|get_config %}titleonly{% endif %}">{{ 'event_name'|get_config }}</div>
+                    {% if 'event_description'|get_config %}
+                        <div class="description">{{ 'event_description'|get_config }}</div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
         </div>
 
         <div id="overlays">
@@ -37,17 +63,6 @@
 
         <div id="content" {% if reload %}class="reload"{% endif %}>
             {{ content }}
-        </div>
-
-        <div id="footer">
-            <div class="event_name_description">
-                {{ 'event_name'|get_config }} | {{ 'event_description'|get_config }}
-            </div>
-            <div class="event_date_location">
-                {% if 'event_date'|get_config %}
-                    {{ 'event_date'|get_config }}{% if 'event_location'|get_config %}, {{ 'event_location'|get_config }}{% endif %}
-                {% endif %}
-            </div>
         </div>
     </body>
 </html>

@@ -25,7 +25,7 @@
             {% endif %}
         </tr>
         {% for mediafile in mediafile_list %}
-        <tr>
+        <tr class="{% if mediafile.is_active_slide %}activeline{% endif %}">
             <td><a href="{{ mediafile.mediafile.url }}">{{ mediafile }}</a></td>
             <td>{{ mediafile.filetype }}</td>
             <td>{{ mediafile.get_filesize }}</td>
