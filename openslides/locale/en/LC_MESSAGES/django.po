@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-07 14:07+0100\n"
+"POT-Creation-Date: 2013-11-10 21:11+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -87,7 +87,7 @@ msgstr ""
 msgid "Organizational item"
 msgstr ""
 
-#: agenda/models.py:38 core/signals.py:67 mediafile/models.py:26
+#: agenda/models.py:38 core/signals.py:109 mediafile/models.py:26
 #: mediafile/templates/mediafile/mediafile_list.html:18 motion/forms.py:26
 #: motion/models.py:533 participant/models.py:33 participant/views.py:195
 #: participant/templates/participant/overview.html:48 projector/models.py:116
@@ -421,7 +421,7 @@ msgstr ""
 #: assignment/templates/assignment/assignment_detail.html:214
 #: assignment/templates/assignment/slide.html:68
 #: assignment/templates/assignment/slide.html:72 motion/models.py:699
-#: motion/pdf.py:124 motion/pdf.py:267
+#: motion/pdf.py:124 motion/pdf.py:269
 #: motion/templates/motion/motion_detail.html:215
 #: motion/templates/motion/slide.html:21 utils/views.py:333
 msgid "Yes"
@@ -432,7 +432,7 @@ msgstr ""
 #: assignment/views.py:566
 #: assignment/templates/assignment/assignment_detail.html:211
 #: assignment/templates/assignment/slide.html:69 motion/models.py:699
-#: motion/pdf.py:124 motion/pdf.py:268
+#: motion/pdf.py:124 motion/pdf.py:270
 #: motion/templates/motion/motion_detail.html:216
 #: motion/templates/motion/slide.html:22 utils/views.py:333
 msgid "No"
@@ -641,7 +641,7 @@ msgid "Nominate a participant"
 msgstr ""
 
 #: assignment/models.py:44
-#: assignment/templates/assignment/assignment_detail.html:288
+#: assignment/templates/assignment/assignment_detail.html:289
 msgid "Searching for candidates"
 msgstr ""
 
@@ -651,7 +651,7 @@ msgid "Voting"
 msgstr ""
 
 #: assignment/models.py:46
-#: assignment/templates/assignment/assignment_detail.html:296
+#: assignment/templates/assignment/assignment_detail.html:295
 msgid "Finished"
 msgstr ""
 
@@ -944,7 +944,7 @@ msgstr[1] ""
 #: assignment/views.py:566
 #: assignment/templates/assignment/assignment_detail.html:212
 #: assignment/templates/assignment/slide.html:70 motion/pdf.py:124
-#: motion/pdf.py:269 motion/templates/motion/motion_detail.html:217
+#: motion/pdf.py:271 motion/templates/motion/motion_detail.html:217
 #: motion/templates/motion/slide.html:23
 msgid "Abstention"
 msgstr ""
@@ -1155,75 +1155,97 @@ msgstr ""
 msgid "Event organizer"
 msgstr ""
 
-#: core/signals.py:64
+#: core/signals.py:66
+msgid "Show logo on projector"
+msgstr ""
+
+#: core/signals.py:67
+msgid ""
+"You can find and replace the logo under \"openslides/static/img/projector/"
+"static/img/logo-projector.png\"."
+msgstr ""
+
+#: core/signals.py:74
+msgid "Show titel and description of event on projector"
+msgstr ""
+
+#: core/signals.py:82
+msgid "Background color of projector header"
+msgstr ""
+
+#: core/signals.py:83 core/signals.py:92 core/signals.py:101
+msgid "Use web color names like \"red\" or hex numbers like \"#ff0000\"."
+msgstr ""
+
+#: core/signals.py:91
+msgid "Second (optional) background color for linear color gradient"
+msgstr ""
+
+#: core/signals.py:100
+msgid "Font color of projector header"
+msgstr ""
+
+#: core/signals.py:106
 msgid "Welcome to OpenSlides"
 msgstr ""
 
-#: core/signals.py:73
+#: core/signals.py:115
 msgid "[Place for your welcome text.]"
 msgstr ""
 
-#: core/signals.py:76
+#: core/signals.py:118
 msgid "Welcome text"
 msgstr ""
 
-#: core/signals.py:83
+#: core/signals.py:125
 msgid "Allow access for anonymous guest users"
 msgstr ""
 
-#: core/signals.py:92
+#: core/signals.py:134
 msgid "System URL"
 msgstr ""
 
-#: core/signals.py:93
+#: core/signals.py:135
 msgid "Used for QRCode in PDF of access data."
 msgstr ""
 
-#: core/signals.py:101 participant/views.py:274
+#: core/signals.py:143 participant/views.py:274
 msgid "WLAN name (SSID)"
 msgstr ""
 
-#: core/signals.py:102 core/signals.py:111 core/signals.py:120
+#: core/signals.py:144 core/signals.py:153 core/signals.py:162
 msgid "Used for WLAN QRCode in PDF of access data."
 msgstr ""
 
-#: core/signals.py:110 participant/views.py:278
+#: core/signals.py:152 participant/views.py:278
 msgid "WLAN password"
 msgstr ""
 
-#: core/signals.py:119 participant/views.py:282
+#: core/signals.py:161 participant/views.py:282
 msgid "WLAN encryption"
 msgstr ""
 
-#: core/signals.py:122
-msgid "---------"
-msgstr ""
-
-#: core/signals.py:123
-msgid "WEP"
-msgstr ""
-
-#: core/signals.py:124
-msgid "WPA/WPA2"
-msgstr ""
-
-#: core/signals.py:125
+#: core/signals.py:167
 msgid "No encryption"
 msgstr ""
 
-#: core/signals.py:128
+#: core/signals.py:170
 msgid "Event"
 msgstr ""
 
-#: core/signals.py:132
+#: core/signals.py:174 projector/templates/projector.html:11
+msgid "Projector"
+msgstr ""
+
+#: core/signals.py:178
 msgid "Welcome Widget"
 msgstr ""
 
-#: core/signals.py:136
+#: core/signals.py:182
 msgid "System"
 msgstr ""
 
-#: core/signals.py:140
+#: core/signals.py:186
 msgid "General"
 msgstr ""
 
@@ -1525,21 +1547,21 @@ msgstr ""
 msgid "Vote"
 msgstr ""
 
-#: motion/pdf.py:242 motion/templates/motion/category_list.html:10
+#: motion/pdf.py:244 motion/templates/motion/category_list.html:10
 #: motion/templates/motion/motion_list.html:28
 msgid "Categories"
 msgstr ""
 
-#: motion/pdf.py:249 motion/templates/motion/widget.html:25
+#: motion/pdf.py:251 motion/templates/motion/widget.html:25
 msgid "No motions available."
 msgstr ""
 
-#: motion/pdf.py:263
+#: motion/pdf.py:265
 #, python-format
 msgid "Motion No. %s"
 msgstr ""
 
-#: motion/pdf.py:265
+#: motion/pdf.py:267
 #, python-format
 msgid "%d. Vote"
 msgstr ""
@@ -1948,11 +1970,11 @@ msgstr ""
 msgid "Manage motion"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:302
+#: motion/templates/motion/motion_detail.html:304
 msgid "For administration only:"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:304
+#: motion/templates/motion/motion_detail.html:306
 msgid "Reset state"
 msgstr ""
 
@@ -2279,12 +2301,12 @@ msgstr ""
 msgid "OpenSlides access data"
 msgstr ""
 
-#: participant/views.py:291 participant/templates/participant/login.html:40
+#: participant/views.py:291 participant/templates/participant/login.html:34
 #: participant/templates/participant/user_detail.html:69
 msgid "Username"
 msgstr ""
 
-#: participant/views.py:295 participant/templates/participant/login.html:44
+#: participant/views.py:295 participant/templates/participant/login.html:38
 msgid "Password"
 msgstr ""
 
@@ -2437,7 +2459,7 @@ msgid ""
 msgstr ""
 
 #: participant/templates/participant/login.html:6
-#: participant/templates/participant/login.html:49 templates/base.html:53
+#: participant/templates/participant/login.html:43 templates/base.html:53
 msgid "Login"
 msgstr ""
 
@@ -2445,7 +2467,7 @@ msgstr ""
 msgid "Your username and password were not accepted. Please try again."
 msgstr ""
 
-#: participant/templates/participant/login.html:53
+#: participant/templates/participant/login.html:47
 msgid "Continue as guest"
 msgstr ""
 
@@ -2551,29 +2573,25 @@ msgstr ""
 msgid "Can see the dashboard"
 msgstr ""
 
-#: projector/views.py:126
+#: projector/views.py:128
 msgid "Errors in the form."
 msgstr ""
 
-#: projector/views.py:286 projector/templates/projector/dashboard.html:16
+#: projector/views.py:288 projector/templates/projector/dashboard.html:16
 #: projector/templates/projector/dashboard.html:19
 msgid "Dashboard"
 msgstr ""
 
-#: projector/views.py:315
+#: projector/views.py:317
 msgid "Projector live view"
 msgstr ""
 
-#: projector/views.py:331
+#: projector/views.py:333
 msgid "Overlays"
 msgstr ""
 
-#: projector/views.py:343
+#: projector/views.py:345
 msgid "Custom Slides"
-msgstr ""
-
-#: projector/templates/projector.html:11
-msgid "Projector"
 msgstr ""
 
 #: projector/templates/projector/dashboard.html:21
