@@ -40,14 +40,13 @@ class CleanHtmlTest(TestCase):
         self.clean_html('<p href="evil.com">good?</p>', '<p>good?</p>')
         self.clean_html('<p onclick="javascript:evil();">Not evil</p>', '<p>Not evil</p>')
         self.clean_html('<div style="margin-top: 100000em;">evil</div>', 'evil')
-        self.clean_html('<p style="font-weight:bold;">bad</p>', '<p>bad</p>')
         self.clean_html('<table><tbody><tr><td>OK</td></tr></tbody></table>', 'OK')
-        self.clean_html('<blockquote>OK</blockquote>', 'OK')
-        self.clean_html('<p style="text-decoration: underline;">OK</p>', '<p>OK</p>')
+        self.clean_html('<p style="text-decoration: underline;">OK</p>', '<p style="">OK</p>')
 
         # Allowed tags and attributes
         self.clean_html('<a href="evil.com">good?</a>')
         self.clean_html('<p>OK</p>')
         self.clean_html('<p><strong>OK</strong></p>')
         self.clean_html('<pre>OK</pre>')
-        self.clean_html('<ul><li>OK</li></ul>')
+        self.clean_html('<ul style="list-style: circle inside;"><li>OK</li></ul>')
+        self.clean_html('<span style="color: red;">OK</span>')

@@ -11,7 +11,7 @@ var ck_options = {
         bodyClass: "ckeditor_html",
 
         allowedContent:
-                'h1 h2 h3 pre blockquote b i u strike;' +
+                'h1 h2 h3 pre b i u strike em;' +
 
                 // A workaround for the problem described in http://dev.ckeditor.com/ticket/10192
                 // Hopefully, the problem will be solved in the final version of CKEditor 4.1
@@ -19,10 +19,9 @@ var ck_options = {
                 'p{margin-left};' +
 
                 'a[!href];' +
-                'table tr th td caption;' +
-                'ol ul li;' +
-                'span{!font-family};' +
-                'span{!color};',
+                'ol ul{list-style};' +
+                'li;' +
+                'span{color,background-color};',
         removePlugins: "save, print, preview, pagebreak, templates, showblocks, magicline",
 
         // Not part of the standard package of CKEditor
@@ -37,7 +36,7 @@ var ck_options = {
                 { name: 'basicstyles', items : [ 'Bold','Italic','Underline','Strike','Subscript','Superscript','-','RemoveFormat' ] },
                 { name: 'paragraph',   items : [ 'NumberedList','BulletedList','-','Pre','InsertPre','CreateDiv','-','JustifyLeft','JustifyCenter','JustifyRight','JustifyBlock','-','BidiLtr','BidiRtl' ] },
                 { name: 'links',       items : [ 'Link','Unlink','Anchor' ] },
-                { name: 'styles',      items : [ 'Format','FontSize' ] },
+                { name: 'styles',      items : [ 'Format','FontSize','TextColor','BGColor' ] },
                 { name: 'tools',       items : [ 'Maximize', 'ShowBlocks','-','About' ] }
         ],
         toolbar: 'Full'
