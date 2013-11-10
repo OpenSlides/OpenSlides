@@ -430,13 +430,13 @@ def write_package_info_content(outfile):
     """
     text = ['Included Packages\n', 17 * '=' + '\n', '\n']
     for pkg in sorted(SITE_PACKAGES):
-        try:
+        if pkg == "wx":
+            # wxpython comes from an installer and has no distribution
+            # --> handle it separately
+            text.append("wxpython-{0}\n".format(wx.__version__))
+        else:
             dist = pkg_resources.get_distribution(pkg)
             text.append("{0}-{1}\n".format(dist.project_name, dist.version))
-        except pkg_resources.DistributionNotFound:
-            # FIXME: wxpython comes from an installer and has no distribution
-            #        see what we can do about that
-            text.append("{0}-???\n".format(pkg))
     with open(outfile, "w") as f:
         f.writelines(text)
 
