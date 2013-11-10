@@ -29,12 +29,15 @@ Other:
 - New start script with new command line options (see python manage.py --help)
 - Fixed keyerror on user settings view.
 - New messages on success or error of many actions like creating or editing objects.
+- A lot of template fixes and improvements.
+- Extended css style options in CKEditor.
 - Added feature to config app to return the default value for a key.
 - Cleaned up OpenSlides utils views.
 - Improved README (now with install instructions and used components).
 - Updated all required package versions.
 - Used flake8 instead of pep8 for style check, sort all import statements with isort.
 - Added Portuguese translation (Thanks to Marco A.G.Pinto).
+- Updated to Django 1.6.
 - Change license from GPLv2+ to MIT, see LICENSE file.
 
 
