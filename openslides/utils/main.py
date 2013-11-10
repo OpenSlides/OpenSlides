@@ -42,6 +42,17 @@ def filesystem2unicode(path):
     return path
 
 
+def unicode2filesystem(path):
+    """
+    Transforms a path unicode to string according to the filesystem's encoding.
+    """
+    # TODO: Delete this function after switch to Python 3.
+    if not isinstance(path, str):
+        filesystem_encoding = sys.getfilesystemencoding() or sys.getdefaultencoding()
+        path = path.encode(filesystem_encoding)
+    return path
+
+
 def detect_openslides_type():
     """
     Returns the type of this OpenSlides version.
@@ -90,7 +101,7 @@ def setup_django_settings_module(settings_path):
     settings_module_name = ".".join(settings_file.split('.')[:-1])
     if '.' in settings_module_name:
         raise ImproperlyConfigured("'.' is not an allowed character in the settings-file")
-    settings_module_dir = os.path.dirname(settings_path)  # TODO: Use absolute path here or not?
+    settings_module_dir = unicode2filesystem(os.path.dirname(settings_path))  # TODO: Use absolute path here or not?
     sys.path.insert(0, settings_module_dir)
     os.environ[ENVIRONMENT_VARIABLE] = '%s' % settings_module_name
 
@@ -105,7 +116,7 @@ def ensure_settings(settings, args):
         else:
             context = get_default_settings_context(args.user_data_path)
         write_settings(settings, **context)
-        print('Settings file at %s successfully created.' % settings)
+        print('Settings file at %s successfully created.' % unicode2filesystem(settings))
 
 
 def get_default_settings_context(user_data_path=None):
