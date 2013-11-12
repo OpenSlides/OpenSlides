@@ -71,7 +71,7 @@ def setup_general_config_page(sender, **kwargs):
         name='projector_enable_title',
         default_value=True,
         form_field=forms.BooleanField(
-            label=ugettext_lazy('Show titel and description of event on projector'),
+            label=ugettext_lazy('Show title and description of event on projector'),
             required=False))
 
     projector_backgroundcolor1 = ConfigVariable(

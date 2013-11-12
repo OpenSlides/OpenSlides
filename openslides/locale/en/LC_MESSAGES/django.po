@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-11-10 21:11+0100\n"
+"POT-Creation-Date: 2013-11-12 10:56+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1166,7 +1166,7 @@ msgid ""
 msgstr ""
 
 #: core/signals.py:74
-msgid "Show titel and description of event on projector"
+msgid "Show title and description of event on projector"
 msgstr ""
 
 #: core/signals.py:82
