@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from django.test.client import Client
+from mock import patch
 
 from openslides.agenda.models import Item
+from openslides.agenda.slides import agenda_slide
 from openslides.participant.models import User
 from openslides.utils.test import TestCase
 
@@ -241,3 +243,38 @@ class ConfigTest(TestCase):
         self.assertFormError(response, form='form',
                              field='agenda_start_event_date_time',
                              errors='Invalid input.')
+
+
+@patch('openslides.agenda.slides.render_to_string')
+class SlideTest(TestCase):
+    """
+    Test the agenda slide.
+    """
+
+    def setUp(self):
+        self.item1 = Item.objects.create(title='first slide')
+        Item.objects.create(title='second slide')
+        Item.objects.create(title='first child', parent=self.item1)
+        Item.objects.create(title='second child', parent=self.item1)
+
+    def test_full_agenda_summary(self, mock_render_to_string):
+        agenda_slide()
+        self.assertTrue(mock_render_to_string.called)
+        self.assertEqual(mock_render_to_string.call_args[0][0], 'agenda/item_slide_summary.html')
+        query = mock_render_to_string.call_args[0][1]['items']
+        self.assertEqual(repr(query), repr(Item.objects.filter(pk__in=[1, 2])))
+
+    def test_item_summary(self, mock_render_to_string):
+        agenda_slide(type='summary', pk=1)
+        self.assertTrue(mock_render_to_string.called)
+        self.assertEqual(mock_render_to_string.call_args[0][0], 'agenda/item_slide_summary.html')
+        self.assertEqual(mock_render_to_string.call_args[0][1]['title'], self.item1.get_title())
+        query = mock_render_to_string.call_args[0][1]['items']
+        self.assertEqual(repr(query), repr(Item.objects.filter(pk__in=[3, 4])))
+
+    def test_normal_slide(self, mock_render_to_string):
+        agenda_slide(pk=1)
+        self.assertTrue(mock_render_to_string.called)
+        self.assertEqual(mock_render_to_string.call_args[0][0], 'agenda/item_slide.html')
+        item = mock_render_to_string.call_args[0][1]['item']
+        self.assertEqual(item, Item.objects.get(pk=1))

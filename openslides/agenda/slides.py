@@ -3,8 +3,7 @@
 from django.template.loader import render_to_string
 
 from openslides.config.api import config
-from openslides.projector.api import (
-    get_projector_content, register_slide, SlideError)
+from openslides.projector.api import get_projector_content, register_slide
 
 from .models import Item
 
@@ -29,7 +28,7 @@ def agenda_slide(**kwargs):
     try:
         item = Item.objects.get(pk=item_pk)
     except Item.DoesNotExist:
-        raise SlideError
+        item = None
 
     if slide_type == 'summary' or item is None:
         context = {}
