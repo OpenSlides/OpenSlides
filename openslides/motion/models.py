@@ -240,7 +240,7 @@ class Motion(SlideMixin, models.Model):
 
     def set_title(self, title):
         """
-        Set the titel of the motion.
+        Set the title of the motion.
 
         The title will be saved in the version object, when motion.save() is
         called.
