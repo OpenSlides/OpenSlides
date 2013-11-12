@@ -5,6 +5,7 @@
  * :license: GNU GPL, see LICENSE for more details.
  */
 
+
 // function that writes the widget list order to a cookie
 function saveOrder() {
     $(".column").each(function(index, value){
@@ -12,7 +13,21 @@ function saveOrder() {
         var cookieName = "cookie-" + colid;
         // Get the order for this column.
         var order = $('#' + colid).sortable("toArray");
-        $.cookie(cookieName, order, { path: "/", expiry: new Date(2012, 1, 1)});
+        var cookie_content = [];
+        for (var i = 0; i < order.length; i++) {
+            widget_id = order[i];
+            widget = $('#' + widget_id);
+            var is_collabsed = 0;
+            var is_pinned = 0;
+            if (!widget.find('.collapse').hasClass('in')) {
+                is_collabsed = 1;
+            }
+            if (widget.hasClass('affix')) {
+                is_pinned = 1;
+            }
+            cookie_content[i] = widget_id + '/' + is_collabsed + '/' + is_pinned;
+        }
+        $.cookie(cookieName, cookie_content, { path: "/", expiry: new Date(2012, 1, 1)});
     });
 }
 
@@ -23,14 +38,27 @@ function restoreOrder() {
         var cookieName = "cookie-" + colid;
         var cookie = $.cookie(cookieName);
         if ( cookie === null ) { return; }
-        var IDs = cookie.split(",");
-        for (var i = 0, n = IDs.length; i < n; i++ ) {
-            var widgetID = IDs[i];
-            var widget = $(".column")
-                .find('#' + widgetID)
-                .appendTo($('#' + colid));
+        var widgets = cookie.split(",");
+        for (var i = 0, n = widgets.length; i < n; i++ ) {
+            var widget_information = widgets[i].split('/');
+            var widgetID = widget_information[0];
+            var widget = $(".column").find('#' + widgetID);
+            widget.appendTo($('#' + colid));
+            if (widget_information[1] === "1") {
+                widget.find('.collapse').removeClass('in');
+                console.log(widget_information[0]);
+                widget.find('.collapsebutton').find('.btn').addClass('active');
+            }
+            if (widget_information[2] === "1") {
+                widget.addClass('affix');
+                widget.data('spy', 'affix');
+                widget.find('.fixbutton').find('.btn').addClass('active');
+            }
         }
     });
+    $('.collapse')
+        .on('hidden', function () { saveOrder(); })
+        .on('shown', function () { saveOrder(); });
 }
 
 $(function() {
@@ -50,7 +78,7 @@ $(function() {
             success: function(data) {
                 $('#scale_level').html(data['scale_level']);
                 $('#scroll_level').html(data['scroll_level']);
-                if ( data['scroll_level'] == 0 )
+                if ( data['scroll_level'] === 0 )
                     $('#scroll_up_button').addClass('disabled');
                 else {
                     if ( $('#scroll_up_button').hasClass('disabled') )
@@ -117,9 +145,11 @@ $(function() {
         if($(this).hasClass('active')) {
             $(this).closest('.widget').removeClass('affix');
             $(this).closest('.widget').removeAttr('data-spy');
+            saveOrder();
         } else {
             $(this).closest('.widget').addClass('affix');
             $(this).closest('.widget').attr('data-spy', 'affix');
+            saveOrder();
         }
     });
 
