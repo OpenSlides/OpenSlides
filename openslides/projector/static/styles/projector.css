@@ -92,7 +92,7 @@ li {
 .well h4 {
     margin: 20px 0 2px 0;
 }
-.well h4 .first {
+.well h4.first {
     margin-top: 0;
 }
 .well .results hr {
