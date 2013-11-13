@@ -62,6 +62,7 @@ class Assignment(SlideMixin, models.Model):
             ('can_manage_assignment', ugettext_noop('Can manage assignments')),  # TODO: Add plural s also to the codestring
         )
         ordering = ('name',)
+        verbose_name = ugettext_noop('Assignment')
 
     def __unicode__(self):
         return self.name
