@@ -1,13 +1,13 @@
 # Requirements for OpenSlides in production
 -r requirements_production.txt
 
-# Requirements for development and tests
+# Requirements for development and tests in alphabetical order
 Fabric==1.8.0
 coverage==3.7
 flake8==2.0
 mock==1.0.1
 
-# Requirements for OpenSlides handbook/documentation
+# Requirements for OpenSlides handbook/documentation in alphabetical order
 Sphinx==1.2b3
 sphinx-bootstrap-theme==0.2.4
 
