@@ -5,6 +5,7 @@ from mock import MagicMock, patch
 
 from openslides import get_version
 from openslides.agenda.models import Item
+from openslides.config.api import config
 from openslides.participant.models import User
 from openslides.utils.test import TestCase
 
@@ -51,3 +52,9 @@ class SearchViewTest(TestCase):
         response = self.client.get('/search/?q=agenda_item_bnghfd')
         text = '<span class="highlighted">agenda_item_bnghfd</span>jkgndkjdfg'
         self.assertContains(response, text)
+
+    def test_anonymous(self):
+        self.assertFalse(config['system_enable_anonymous'])
+        self.assertEqual(Client().get('/search/').status_code, 403)
+        config['system_enable_anonymous'] = True
+        self.assertEqual(Client().get('/search/').status_code, 200)
