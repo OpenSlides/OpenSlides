@@ -10,7 +10,7 @@ function hideClosedSlides(hide) {
     if (hide) {
         $('#hidelink').attr('title', 'show');
         $('#hidelink').removeClass('hide').addClass('show');
-        $('.close_link .icon-checked-new').each(function() {
+        $('.agenda_list .icon-checked-new').each(function() {
             $(this).parents("li").first().hide();
         });
         var hidden = $(".agenda_list li:hidden").length;
