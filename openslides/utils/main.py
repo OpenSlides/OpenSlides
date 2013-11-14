@@ -296,6 +296,7 @@ def get_port(address, port):
     """
     s = socket.socket()
     try:
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         s.bind((address, port))
         s.listen(-1)
     except socket.error:
