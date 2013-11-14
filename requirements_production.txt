@@ -1,10 +1,11 @@
+# Requirements for OpenSlides in production in alphabetical order
 Django==1.6.0
-django-mptt==0.6.0
-reportlab==2.7
-pillow==2.2.1
-tornado==3.1.1
-sockjs-tornado==1.0.0
-bleach==1.2.2
 beautifulsoup4==4.3.2
+bleach==1.2.2
 django-haystack==2.1.0
+django-mptt==0.6.0
+pillow==2.2.1
+reportlab==2.7
+sockjs-tornado==1.0.0
+tornado==3.1.1
 whoosh==2.5.4
