@@ -1,5 +1,8 @@
+{% extends 'core/widget.html' %}
+
 {% load i18n %}
 
+{% block content %}
 <ul class="overlay_list">
     {% for overlay in overlays %}
         <li>
@@ -19,3 +22,4 @@
         </li>
     {% endfor %}
 </ul>
+{% endblock %}

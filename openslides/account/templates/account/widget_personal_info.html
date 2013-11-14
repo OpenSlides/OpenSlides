@@ -1,6 +1,9 @@
+{% extends 'core/widget.html' %}
+
 {% load i18n %}
 {% load tags %}
 
+{% block content %}
 <ul style="line-height: 180%">
     {% trans 'I am on the list of speakers of the following items:' %}
     {% for item in items %}
@@ -25,7 +28,7 @@
     {% endfor %}
 </ul>
 
-{% if config_motion_min_supporters %}
+{% if 'motion_min_supporters'|get_config %}
 <hr />
 <ul style="line-height: 180%">
     {% trans 'I support the following motions:' %}
@@ -55,3 +58,4 @@
         <li><i>{% trans 'None' %}</i></li>
     {% endfor %}
 </ul>
+{% endblock %}

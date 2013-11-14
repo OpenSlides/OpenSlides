@@ -8,7 +8,7 @@ urlpatterns = patterns(
     '',
     url(r'^$',
         views.Overview.as_view(),
-        name='item_overview'),
+        name='item_overview'),  # TODO: Rename this to item_list
 
     url(r'^(?P<pk>\d+)/$',
         views.AgendaItemView.as_view(),

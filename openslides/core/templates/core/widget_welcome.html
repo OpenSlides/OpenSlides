@@ -1,0 +1,12 @@
+{% extends 'core/widget.html' %}
+
+{% load i18n %}
+{% load tags %}
+
+{% block content %}
+    {% with 'welcome_text'|get_config as welcometext %}
+        {% if welcometext %}
+            <p>{{ welcometext|safe|linebreaks }}</p>
+        {% endif %}
+    {% endwith %}
+{% endblock %}

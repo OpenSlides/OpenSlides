@@ -1,5 +1,9 @@
+{% extends 'core/widget.html' %}
+
 {% load i18n %}
 {% load tags %}
+
+{% block content %}
 
 <!-- projector live view -->
 <a href="{% url 'projector_show' %}" target="_blank">
@@ -37,3 +41,5 @@
         {% trans "Scroll level" %}: <span id="scroll_level">{{ 'projector_scroll'|get_config }}</span>
     </p>
 {% endif %}
+
+{% endblock %}
