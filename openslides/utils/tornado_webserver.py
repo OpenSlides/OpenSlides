@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import os
 import posixpath
 from urllib import unquote
 
@@ -10,7 +11,12 @@ from sockjs.tornado import SockJSRouter, SockJSConnection
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.options import parse_command_line
-from tornado.web import Application, FallbackHandler, StaticFileHandler
+from tornado.web import (
+    Application,
+    FallbackHandler,
+    StaticFileHandler,
+    HTTPError
+)
 from tornado.wsgi import WSGIContainer
 
 
@@ -19,14 +25,29 @@ class DjangoStaticFileHandler(StaticFileHandler):
 
     def initialize(self):
         """Overwrite some attributes."""
-        self.root = ''
+        # NOTE: root is never actually used and default_filename is not
+        #       supported (must always be None)
+        self.root = u''
         self.default_filename = None
 
-    def get(self, path, include_body=True):
+    @classmethod
+    def get_absolute_path(cls, root, path):
         from django.contrib.staticfiles import finders
         normalized_path = posixpath.normpath(unquote(path)).lstrip('/')
         absolute_path = finders.find(normalized_path)
-        return super(DjangoStaticFileHandler, self).get(absolute_path, include_body)
+        return absolute_path
+
+    def validate_absolute_path(self, root, absolute_path):
+        # differences from base implementation:
+        #   - we ignore self.root since our files do not necessarily have
+        #     a shared root prefix
+        #   - we do not handle self.default_filename (we do not use it and it
+        #     does not make much sense here anyway)
+        if not os.path.exists(absolute_path):
+            raise HTTPError(404)
+        if not os.path.isfile(absolute_path):
+            raise HTTPError(403, "%s is not a file", self.path)
+        return absolute_path
 
 
 class ProjectorSocketHandler(SockJSConnection):
