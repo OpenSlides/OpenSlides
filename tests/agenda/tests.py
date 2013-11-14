@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from django.test.client import Client
 from mock import patch
 
@@ -219,6 +221,31 @@ class ViewTest(TestCase):
             {'unknown_answer_aicipohc1Eeph2chaeng': 1})
         self.assertRedirects(response, '/agenda/')
         self.assertTrue(Item.objects.filter(pk=self.item1.pk).exists())
+
+    def test_orga_item_permission(self):
+        # Prepare
+        self.item1.type = Item.ORGANIZATIONAL_ITEM
+        self.item1.save()
+        user = User.objects.create(username='testuser_EeBoPh5uyookoowoodii')
+        user.reset_password('default')
+        client = Client()
+        client.login(username='testuser_EeBoPh5uyookoowoodii', password='default')
+        # Test view with permission
+        self.assertTrue(user.has_perm('agenda.can_see_orga_items'))
+        self.assertContains(client.get('/agenda/1/'), 'item1')
+        # Remove permission
+        orga_perm = Permission.objects.get(
+            content_type=ContentType.objects.get_for_model(Item),
+            codename='can_see_orga_items')
+        user.groups.get(name='Registered').permissions.remove(orga_perm)
+        # Reload user
+        user = User.objects.get(username=user.username)
+        # Test view without permission
+        self.assertFalse(user.has_perm('agenda.can_see_orga_items'))
+        response = client.get('/agenda/1/')
+        self.assertEqual(response.status_code, 403)
+        response = client.get('/agenda/2/')
+        self.assertEqual(response.status_code, 200)
 
 
 class ConfigTest(TestCase):
