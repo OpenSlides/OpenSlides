@@ -1,10 +1,3 @@
-/**
- * OpenSlides projector functions
- *
- * :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
- * :license: GNU GPL, see LICENSE for more details.
- */
-
 $(document).ready(function() {
     if ($('#content.reload').length > 0) {
         updater.start();
