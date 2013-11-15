@@ -2,7 +2,7 @@
  * OpenSlides projector functions
  *
  * :copyright: 2011, 2012 by OpenSlides team, see AUTHORS.
- * :license: GNU GPL, see LICENSE for more details.
+ * :license: MIT, see LICENSE for more details.
  */
 
 

@@ -2,7 +2,7 @@
  * OpenSlides agenda config functions for the datepicker
  *
  * :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
- * :license: GNU GPL, see LICENSE for more details.
+ * :license: MIT, see LICENSE for more details.
  */
 
 $(function() {
