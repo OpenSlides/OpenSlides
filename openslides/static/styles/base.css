@@ -19,7 +19,8 @@ body {
     background-image: -o-linear-gradient(top, #444444, #222222);
     background-image: linear-gradient(top, #444444, #222222);
     box-shadow: 0 0 7px rgba(0,0,0,0.6);
-    height: 35px;
+    height: auto;
+    overflow: hidden;
     margin-bottom: 20px;
     padding: 7px 20px 0;
     position: relative;
@@ -391,6 +392,6 @@ legend + .control-group {
     }
     /* hide optional column */ 
     .optional {
-        display: none;
+        display: none !important;
     }
 }
