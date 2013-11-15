@@ -32,6 +32,7 @@
                     background-image: -webkit-linear-gradient(top, {{ 'projector_backgroundcolor1'|get_config }}, {{ 'projector_backgroundcolor2'|get_config }});
                     background-image: -o-linear-gradient(top, {{ 'projector_backgroundcolor1'|get_config }}, {{ 'projector_backgroundcolor2'|get_config }});
                     background-image: linear-gradient(top, {{ 'projector_backgroundcolor1'|get_config }}, {{ 'projector_backgroundcolor2'|get_config }});
+                    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='{{ 'projector_backgroundcolor1'|get_config }}', encColorstr='{{ 'projector_backgroundcolor2'|get_config }}')"; /* IE 8+ */
                 {% else %}
                     background-color: {{ 'projector_backgroundcolor1'|get_config }};
                 {% endif %}
