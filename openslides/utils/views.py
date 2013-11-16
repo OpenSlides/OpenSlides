@@ -355,7 +355,7 @@ class QuestionView(RedirectView):
         """
         Returns the question.
         """
-        return self.question_message
+        return unicode(self.question_message)
 
     def get_answer_options(self):
         """
@@ -376,16 +376,13 @@ class QuestionView(RedirectView):
             for option in self.get_answer_options()])
         messages.warning(
             self.request,
-            """
-            %(message)s
-            <form action="%(url)s" method="post">
-                <input type="hidden" value="%(csrf)s" name="csrfmiddlewaretoken">
-                %(option_fields)s
-            </form>
-            """ % {'message': self.get_question_message(),
-                   'url': self.request.path,
-                   'csrf': csrf(self.request)['csrf_token'],
-                   'option_fields': option_fields})
+            '%(message)s<form action="%(url)s" method="post">'
+            '<input type="hidden" value="%(csrf)s" name="csrfmiddlewaretoken">'
+            '%(option_fields)s</form>' % {
+                'message': self.get_question_message(),
+                'url': self.request.path,
+                'csrf': csrf(self.request)['csrf_token'],
+                'option_fields': option_fields})
 
     def pre_post_redirect(self, request, *args, **kwargs):
         """
