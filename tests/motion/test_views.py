@@ -80,6 +80,17 @@ class TestMotionDetailView(MotionViewTestCase):
         self.assertNotContains(response, '<h4>Attachments:</h4>')
         self.assertNotContains(response, 'TestFile_Neiri4xai4ueseGohzid')
 
+    def test_poll(self):
+        response = self.staff_client.get('/motion/1/create_poll/')
+        self.assertRedirects(response, '/motion/1/poll/1/edit/')
+        response = self.staff_client.post(
+            '/motion/1/poll/1/edit/',
+            {'option-1-Yes': '10',
+             'pollform-votescast': '50'})
+        self.assertRedirects(response, '/motion/1/')
+        response = self.staff_client.get('/motion/1/')
+        self.assertContains(response, '100.00 %')
+
 
 class TestMotionDetailVersionView(MotionViewTestCase):
     def test_get(self):

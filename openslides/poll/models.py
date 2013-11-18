@@ -70,7 +70,7 @@ class CountVotesCast(models.Model):
         fields.append('votescast')
 
     def print_votescast(self):
-        return print_value(self.votescast)
+        return print_value(self.votescast, self.percent_base())
 
     def percent_base(self):
         if self.votescast > 0:
