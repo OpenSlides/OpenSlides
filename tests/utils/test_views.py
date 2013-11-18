@@ -164,6 +164,9 @@ class QuestionViewTest(ViewTestCase):
         view.question_message = 'new_question'
         self.assertEqual(get_question_message(), 'new_question')
 
+        # Make sure it is unicode, so ugettext_lazy can work
+        self.assertIsInstance(get_question_message(), unicode)
+
     def test_get_answer_options(self):
         view = views.QuestionView()
         get_answer_options = view.get_answer_options
@@ -185,6 +188,9 @@ class QuestionViewTest(ViewTestCase):
         confirm_form()
 
         self.assertTrue(mock_messages.warning.called)
+
+        question = mock_messages.warning.call_args[0][1]
+        self.assertIn('the question', question)
 
 
 def set_context(sender, request, context, **kwargs):
