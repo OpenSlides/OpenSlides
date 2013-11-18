@@ -56,13 +56,13 @@ class Assignment(SlideMixin, models.Model):
 
     class Meta:
         permissions = (
-            ('can_see_assignment', ugettext_noop('Can see assignments')),  # TODO: Add plural s to the codestring
+            ('can_see_assignment', ugettext_noop('Can see elections')),  # TODO: Add plural s to the codestring
             ('can_nominate_other', ugettext_noop('Can nominate another person')),
             ('can_nominate_self', ugettext_noop('Can nominate oneself')),
-            ('can_manage_assignment', ugettext_noop('Can manage assignments')),  # TODO: Add plural s also to the codestring
+            ('can_manage_assignment', ugettext_noop('Can manage elections')),  # TODO: Add plural s also to the codestring
         )
         ordering = ('name',)
-        verbose_name = ugettext_noop('Assignment')
+        verbose_name = ugettext_noop('Election')
 
     def __unicode__(self):
         return self.name
@@ -88,7 +88,7 @@ class Assignment(SlideMixin, models.Model):
             raise ValueError(_('%s is not a valid status.') % html_strong(status))
         if self.status == status:
             raise ValueError(
-                _('The assignment status is already %s.') % html_strong(status_dict[status]))
+                _('The election status is already %s.') % html_strong(status_dict[status]))
         self.status = status
         self.save()
 

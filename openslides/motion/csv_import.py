@@ -27,8 +27,6 @@ def import_motions(csv_file, default_submitter, override=False, importing_person
     when the flag 'override' is true. If no or multiple categories found,
     the category is set to None.
     """
-    error_messages = []
-    warning_messages = []
     count_success = 0
     count_lines = 0
 
@@ -43,20 +41,21 @@ def import_motions(csv_file, default_submitter, override=False, importing_person
         dialect = csv.Sniffer().sniff(csv_file.readline())
         dialect = csv_ext.patchup(dialect)
         csv_file.seek(0)
+        all_error_messages = []
+        all_warning_messages = []
         for (line_no, line) in enumerate(csv.reader(csv_file, dialect=dialect)):
-            warnings = []
+            warning = []
             if line_no < 1:
                 # Do not read the header line
                 continue
-
+            importline = html_strong(_('Line %d:') % (line_no + 1))
             count_lines += 1
             # Check format
             try:
                 (identifier, title, text, reason, submitter, category) = line[:6]
             except ValueError:
-                error_line = html_strong(_('Line %d of import file:') % (line_no + 1))
                 msg = _('Line is malformed. Motion not imported. Please check the required values.')
-                error_messages.append("%s<br>%s" % (error_line, msg))
+                all_error_messages.append("%s %s" % (importline, msg))
                 continue
 
             # Check existing motions according to the identifier
@@ -67,9 +66,8 @@ def import_motions(csv_file, default_submitter, override=False, importing_person
                     motion = Motion(identifier=identifier)
                 else:
                     if not override:
-                        error_line = html_strong(_('Line %d of import file:') % (line_no + 1))
                         msg = _('Identifier already exists. Motion not imported.')
-                        error_messages.append("%s<br>%s" % (error_line, msg))
+                        all_error_messages.append("%s %s" % (importline, msg))
                         continue
             else:
                 motion = Motion()
@@ -82,9 +80,9 @@ def import_motions(csv_file, default_submitter, override=False, importing_person
                 try:
                     motion.category = Category.objects.get(name=category)
                 except Category.DoesNotExist:
-                    warnings.append(_('Category unknown. No category is used.'))
+                    warning.append(_('Category unknown. No category is used.'))
                 except Category.MultipleObjectsReturned:
-                    warnings.append(_('Several suitable categories found. No category is used.'))
+                    warning.append(_('Several suitable categories found. No category is used.'))
             motion.save()
 
             # Add submitter
@@ -93,24 +91,22 @@ def import_motions(csv_file, default_submitter, override=False, importing_person
                 for person in Persons():
                     if person.clean_name == submitter.decode('utf8'):
                         if person_found:
-                            warnings.append(_('Several suitable submitters found.'))
+                            warning.append(_('Several suitable submitters found.'))
                             person_found = False
                             break
                         else:
                             new_submitter = person
                             person_found = True
             if not person_found:
-                warnings.append(_('Submitter unknown. Default submitter is used.'))
+                warning.append(_('Submitter unknown. Default submitter is used.'))
                 new_submitter = default_submitter
 
-            # show summarized warning message for each import line
-            if warnings:
-                warning_line = _('Line %d of import file:') % (line_no + 1)
-                warning_message_string = "%s<ul>" % html_strong(warning_line)
-                for w in warnings:
-                    warning_message_string += "<li>%s</li>" % w
-                warning_message_string += "</ul>"
-                warning_messages.append(warning_message_string)
+            # add all warnings of each csv line to one warning message
+            if warning:
+                warning_message_string = "%s " % importline
+                warning_message_string += " ".join(warning)
+                all_warning_messages.append(warning_message_string)
+
             motion.clear_submitters()
             motion.add_submitter(new_submitter)
 
@@ -118,4 +114,20 @@ def import_motions(csv_file, default_submitter, override=False, importing_person
                              person=importing_person)
             count_success += 1
 
-    return (count_success, count_lines, error_messages, warning_messages)
+        # Build final error message with all error items (one bullet point for each csv line)
+        full_error_message = None
+        if all_error_messages:
+            full_error_message = "%s <ul>" % html_strong(_("Errors"))
+            for error in all_error_messages:
+                full_error_message += "<li>%s</li>" % error
+            full_error_message += "</ul>"
+
+        # Build final warning message with all warning items (one bullet point for each csv line)
+        full_warning_message = None
+        if all_warning_messages:
+            full_warning_message = "%s <ul>" % html_strong(_("Warnings"))
+            for warning in all_warning_messages:
+                full_warning_message += "<li>%s</li>" % warning
+            full_warning_message += "</ul>"
+
+    return (count_success, count_lines, [full_error_message], [full_warning_message])
