@@ -8,16 +8,9 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
 from django.utils.translation import activate, ugettext_lazy
-from reportlab.graphics.barcode.qr import QrCodeWidget
-from reportlab.graphics.shapes import Drawing
-from reportlab.lib import colors
-from reportlab.lib.units import cm
-from reportlab.platypus import (LongTable, PageBreak, Paragraph, Spacer, Table,
-                                TableStyle)
 
 from openslides.config.api import config
 from openslides.projector.projector import Widget
-from openslides.utils.pdf import stylesheet
 from openslides.utils.template import Tab
 from openslides.utils.utils import (delete_default_permissions, html_strong,
                                     template)
@@ -30,6 +23,7 @@ from .api import gen_password, gen_username, import_users
 from .forms import (GroupForm, UserCreateForm, UserImportForm, UsersettingsForm,
                     UserUpdateForm)
 from .models import get_protected_perm, Group, User
+from .pdf import participants_to_pdf, participants_passwords_to_pdf
 
 
 class UserOverview(ListView):
@@ -191,42 +185,16 @@ class ParticipantsListPDF(PDFView):
     filename = ugettext_lazy("Participant-list")
     document_title = ugettext_lazy('List of Participants')
 
-    def append_to_pdf(self, story):
-        data = [['#', _('Title'), _('Last Name'), _('First Name'),
-                 _('Structure level'), _('Group'), _('Committee')]]
-        if config['participant_sort_users_by_first_name']:
-            sort = 'first_name'
-        else:
-            sort = 'last_name'
-        counter = 0
-        for user in User.objects.all().order_by(sort):
-            counter += 1
-            groups = ''
-            for group in user.groups.all():
-                if group.pk != 2:
-                    groups += "%s<br/>" % unicode(_(group.name))
-            data.append([
-                counter,
-                Paragraph(user.title, stylesheet['Tablecell']),
-                Paragraph(user.last_name, stylesheet['Tablecell']),
-                Paragraph(user.first_name, stylesheet['Tablecell']),
-                Paragraph(user.structure_level, stylesheet['Tablecell']),
-                Paragraph(groups, stylesheet['Tablecell']),
-                Paragraph(user.committee, stylesheet['Tablecell'])])
-        t = LongTable(data, style=[
-            ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-            ('LINEABOVE', (0, 0), (-1, 0), 2, colors.black),
-            ('LINEABOVE', (0, 1), (-1, 1), 1, colors.black),
-            ('LINEBELOW', (0, -1), (-1, -1), 2, colors.black),
-            ('ROWBACKGROUNDS', (0, 1), (-1, -1),
-                (colors.white, (.9, .9, .9)))])
-        t._argW[0] = 0.75 * cm
-        story.append(t)
+    def append_to_pdf(self, pdf):
+        """
+        Append PDF objects.
+        """
+        participants_to_pdf(pdf)
 
 
 class ParticipantsPasswordsPDF(PDFView):
     """
-    Generate the Welcomepaper for the users.
+    Generate the access data welcome paper for all participants as PDF.
     """
     permission_required = 'participant.can_manage_participant'
     filename = ugettext_lazy("Participant-access-data")
@@ -235,98 +203,11 @@ class ParticipantsPasswordsPDF(PDFView):
     def build_document(self, pdf_document, story):
         pdf_document.build(story)
 
-    def append_to_pdf(self, story):
-        system_wlan_ssid = config["system_wlan_ssid"] or "-"
-        system_wlan_password = config["system_wlan_password"] or "-"
-        system_wlan_encryption = config["system_wlan_encryption"] or "-"
-        system_url = config["system_url"] or "-"
-        participant_pdf_welcometitle = config["participant_pdf_welcometitle"]
-        participant_pdf_welcometext = config["participant_pdf_welcometext"]
-        if config['participant_sort_users_by_first_name']:
-            sort = 'first_name'
-        else:
-            sort = 'last_name'
-        qrcode_size = 2 * cm
-        # qrcode for system url
-        qrcode_url = QrCodeWidget(system_url)
-        qrcode_url.barHeight = qrcode_size
-        qrcode_url.barWidth = qrcode_size
-        qrcode_url.barBorder = 0
-        qrcode_url_draw = Drawing(45, 45)
-        qrcode_url_draw.add(qrcode_url)
-        # qrcode for wlan
-        text = "WIFI:S:%s;T:%s;P:%s;;" % (system_wlan_ssid, system_wlan_encryption, system_wlan_password)
-        qrcode_wlan = QrCodeWidget(text)
-        qrcode_wlan.barHeight = qrcode_size
-        qrcode_wlan.barWidth = qrcode_size
-        qrcode_wlan.barBorder = 0
-        qrcode_wlan_draw = Drawing(45, 45)
-        qrcode_wlan_draw.add(qrcode_wlan)
-
-        for user in User.objects.all().order_by(sort):
-            story.append(Paragraph(unicode(user), stylesheet['h1']))
-            story.append(Spacer(0, 1 * cm))
-            data = []
-            # WLAN access data
-            cell = []
-            cell.append(Paragraph(_("WLAN access data"),
-                        stylesheet['h2']))
-            cell.append(Paragraph("%s:" % _("WLAN name (SSID)"),
-                        stylesheet['formfield']))
-            cell.append(Paragraph(system_wlan_ssid,
-                        stylesheet['formfield_value']))
-            cell.append(Paragraph("%s:" % _("WLAN password"),
-                        stylesheet['formfield']))
-            cell.append(Paragraph(system_wlan_password,
-                        stylesheet['formfield_value']))
-            cell.append(Paragraph("%s:" % _("WLAN encryption"),
-                        stylesheet['formfield']))
-            cell.append(Paragraph(system_wlan_encryption,
-                        stylesheet['formfield_value']))
-            cell.append(Spacer(0, 0.5 * cm))
-            # OpenSlides access data
-            cell2 = []
-            cell2.append(Paragraph(_("OpenSlides access data"),
-                         stylesheet['h2']))
-            cell2.append(Paragraph("%s:" % _("Username"),
-                         stylesheet['formfield']))
-            cell2.append(Paragraph(user.username,
-                         stylesheet['formfield_value']))
-            cell2.append(Paragraph("%s:" % _("Password"),
-                         stylesheet['formfield']))
-            cell2.append(Paragraph(user.default_password,
-                         stylesheet['formfield_value']))
-            cell2.append(Paragraph("URL:",
-                         stylesheet['formfield']))
-            cell2.append(Paragraph(system_url,
-                         stylesheet['formfield_value']))
-            data.append([cell, cell2])
-            # QRCodes
-            cell = []
-            if system_wlan_ssid != "-" and system_wlan_encryption != "-":
-                cell.append(qrcode_wlan_draw)
-                cell.append(Paragraph(_("Scan this QRCode to connect WLAN."),
-                            stylesheet['qrcode_comment']))
-            cell2 = []
-            if system_url != "-":
-                cell2.append(qrcode_url_draw)
-                cell2.append(Paragraph(_("Scan this QRCode to open URL."),
-                             stylesheet['qrcode_comment']))
-            data.append([cell, cell2])
-            # build table
-            table = Table(data)
-            table._argW[0] = 8 * cm
-            table._argW[1] = 8 * cm
-            table.setStyle(TableStyle([('VALIGN', (0, 0), (-1, -1), 'TOP')]))
-            story.append(table)
-            story.append(Spacer(0, 2 * cm))
-
-            # welcome title and text
-            story.append(Paragraph(participant_pdf_welcometitle,
-                         stylesheet['h2']))
-            story.append(Paragraph(participant_pdf_welcometext.replace('\r\n', '<br/>'),
-                         stylesheet['Paragraph12']))
-            story.append(PageBreak())
+    def append_to_pdf(self, pdf):
+        """
+        Append PDF objects.
+        """
+        participants_passwords_to_pdf(pdf)
 
 
 class UserImportView(FormView):
