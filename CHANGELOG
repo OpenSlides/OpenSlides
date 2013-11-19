@@ -20,6 +20,8 @@ Motions:
 - Enabled attachments for motions.
 Elections:
 - Refactored assignment app to use class based views instead of functions.
+Polls:
+- Added percent base to votes cast values.
 Participants:
 - Updated access data PDF: WLAN access (with QRCode for WLAN ssid/password)
   and OpenSlides access (with QRCode for system URL), printed on a single A4 page
