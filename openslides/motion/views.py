@@ -25,7 +25,7 @@ from .forms import (BaseMotionForm, MotionCategoryMixin,
                     MotionImportForm, MotionSubmitterMixin,
                     MotionSupporterMixin, MotionWorkflowMixin)
 from .models import (Category, Motion, MotionPoll, MotionSubmitter,
-                     MotionSupporter, MotionVersion, WorkflowError)
+                     MotionSupporter, MotionVersion, State)
 from .pdf import motion_poll_to_pdf, motion_to_pdf, motions_to_pdf
 
 
@@ -647,17 +647,21 @@ class MotionSetStateView(SingleObjectMixin, RedirectView):
         Save the new state and write a log message.
         """
         self.object = self.get_object()
-        try:
-            if self.reset:
-                self.object.reset_state()
-            else:
-                self.object.set_state(int(kwargs['state']))
-        except WorkflowError, e:  # TODO: Is a WorkflowError still possible here?
-            messages.error(request, e)
+        success = False
+        if self.reset:
+            self.object.reset_state()
+            success = True
+        elif self.object.state.id == int(kwargs['state']):
+            messages.error(request, _('You can not set the state of the motion. It is already done.'))
+        elif int(kwargs['state']) not in [state.id for state in self.object.state.next_states.all()]:
+            messages.error(request, _('You can not set the state of the motion to %s.') % _(State.objects.get(pk=int(kwargs['state'])).name))
         else:
+            self.object.set_state(int(kwargs['state']))
+            success = True
+        if success:
             self.object.save(update_fields=['state', 'identifier'])
             self.object.write_log(
-                message_list=[ugettext_noop('State changed to'), ' %s' % self.object.state.name],
+                message_list=[ugettext_noop('State changed to'), ' %s' % self.object.state.name],  # TODO: Change string to 'State set to ...'
                 person=self.request.user)
             messages.success(request,
                              _('The state of the motion was set to %s.')
