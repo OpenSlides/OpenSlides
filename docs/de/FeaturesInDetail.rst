@@ -1,7 +1,9 @@
 Einzelne Funktionen
 ===================
 
-Im Folgenden werden die einzelnen Funktionen von OpenSlides erläutert. Die Funktionen sind mit wenigen Ausnahmen alle über die Menüpunkte des Webinterfaces zu erreichen.
+Im Folgenden werden die einzelnen Funktionen von OpenSlides erläutert. Die
+Funktionen sind mit wenigen Ausnahmen alle über die Menüpunkte des
+Webinterfaces zu erreichen.
 
 .. toctree::
  :maxdepth: 2
