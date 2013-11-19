@@ -57,11 +57,19 @@ class Overview(TemplateView):
         duration = timedelta()
 
         for item in items:
-            if (item.duration is not None and
-                    len(item.duration) > 0):
-                duration_list = item.duration.split(':')
-                duration += timedelta(hours=int(duration_list[0]),
-                                      minutes=int(duration_list[1]))
+            if item.duration is not None and len(item.duration) > 0:
+                if ':' in item.duration:
+                    duration_list = item.duration.split(':')
+                    duration += timedelta(hours=int(duration_list[0]),
+                                          minutes=int(duration_list[1]))
+                else:
+                    hours = int(item.duration) / 60
+                    minutes = int(item.duration) - (60 * hours)
+                    duration += timedelta(hours=hours,
+                                          minutes=minutes)
+                    if minutes < 10:
+                        minutes = "%s%s" % (0, minutes)
+                    item.duration = "%s:%s" % (hours, minutes)
                 if not start is None:
                     item.tooltip = start + duration
 
@@ -118,7 +126,7 @@ class Overview(TemplateView):
                 break
         else:
             Item.objects.rebuild()
-        # TODO: assure, that it is a valid tree
+            # TODO: assure, that it is a valid tree
         context = self.get_context_data(**kwargs)
         transaction.commit()
 
