@@ -55,12 +55,10 @@
 
 <h1>
     {{ motion.active_version.title }}
-    <br>
     <small>
         {% trans "Motion" %} {{ motion.identifier|default:'' }}
         {% if motion.get_active_version.version_number > 1 %} | {% trans 'Version' %} {{ motion.active_version.version_number }}{% endif %}
     </small>
-    <hr>
 </h1>
 
 <div class="text">{{ motion.active_version.text|safe }}</div>

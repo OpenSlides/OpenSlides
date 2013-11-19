@@ -62,7 +62,7 @@
                 {% with supporters=motion.supporters|length %}
                     <td class="optional">
                     {% if supporters >= 'motion_min_supporters'|get_config %}
-                        <a class="badge badge-success"  rel="tooltip" data-original-title="{% trans 'Enough supporters' %}">{{ supporters }}</a>
+                        <a class="badge badge-success" rel="tooltip" data-original-title="{% trans 'Enough supporters' %}">{{ supporters }}</a>
                     {% endif %}
                     {% if supporters < 'motion_min_supporters'|get_config %}
                         <a class="badge badge-warning" rel="tooltip" data-original-title="{% trans 'Needs supporters' %}">{{ supporters }}</a>
@@ -70,7 +70,12 @@
                     </td>
                 {% endwith %}
             {% endif %}
-            <td class="optional">{{ motion.get_last_version.creation_time }}</td>
+            <td class="optional">{{ motion.get_last_version.creation_time }}
+                {% if motion.get_last_version.version_number != motion.active_version.version_number %}
+                    <a href="{{ motion.get_last_version|absolute_url }}" class="label label-warning" rel="tooltip" data-original-title="{% trans 'There is a newer (unauthorized) version.' %}">
+                        <i class="icon-warning-sign icon-white"></i>
+                    </a>
+                {% endif %}</td>
             <td>
                 <span style="width: 1px; white-space: nowrap;">
                 {% if perms.projector.can_manage_projector %}

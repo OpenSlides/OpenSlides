@@ -42,7 +42,7 @@ class UserUpdateForm(UserCreateForm):
     user edits himself and removes the last group containing the permission
     to manage participants.
     """
-    user_name = forms.CharField()
+    user_name = forms.CharField(label=ugettext_lazy('Username'))
     """
     Field to save the username.
 
@@ -145,7 +145,7 @@ class GroupForm(forms.ModelForm, CssClassMixin):
 
 
 class UsersettingsForm(CssClassMixin, forms.ModelForm):
-    user_name = forms.CharField()
+    user_name = forms.CharField(label=ugettext_lazy('Username'))
     """
     Field to save the username.
 
@@ -153,7 +153,8 @@ class UsersettingsForm(CssClassMixin, forms.ModelForm):
     allow whitespaces and umlauts.
     """
 
-    language = forms.ChoiceField(choices=settings.LANGUAGES)
+    language = forms.ChoiceField(
+        choices=settings.LANGUAGES, label=ugettext_lazy('Language'))
 
     def __init__(self, *args, **kwargs):
         kwargs['initial'] = kwargs.get('initial', {})

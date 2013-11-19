@@ -54,7 +54,7 @@ ol.agenda_list {
 }
         
 .agenda_list .openclose { width: 40px; float: left; min-height: 1px; }
-.agenda_list .duration { width: 92px; float: right; min-height: 1px; padding-left: 5px; }
+.agenda_list .duration { width: 92px; float: right; min-height: 1px; padding-right: 25px; text-align: right; }
 .agenda_list .manage { width: 200px; float: right; min-height: 1px; padding-left: 5px; }
 .agenda_list .title { float: left; padding-left: 5px;}
 .agenda_list .optional { float: left; }
@@ -63,7 +63,7 @@ ol.agenda_list {
 .agenda_list .optional { float: right; width: 208px; padding-left: 8px;}
 
 #menu-overview .manage { width: 200px; }
-#menu-overview .duration { width: 75px; }
+#menu-overview .duration { width: 65px; text-align: right; padding-right: 19px;}
 #menu-overview .optional { width: 200px; }
 
 @media screen and (max-width: 1000px) {
