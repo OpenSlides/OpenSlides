@@ -459,6 +459,21 @@ class TestVersionDeleteView(MotionViewTestCase):
         self.assertEqual(response.status_code, 404)
 
 
+class MotionSetStatusView(MotionViewTestCase):
+    def test_set_status(self):
+        self.assertEqual(self.motion1.state, State.objects.get(name='submitted'))
+        self.check_url('/motion/1/set_state/4/', self.registered_client, 403)
+        response = self.staff_client.get('/motion/1/set_state/4/')
+        self.assertRedirects(response, '/motion/1/')
+        self.assertEqual(Motion.objects.get(pk=1).state, State.objects.get(name='not decided'))
+        response = self.staff_client.get('/motion/1/set_state/1/')
+        self.assertTrue('You can not set the state of the motion to submitted.' in response.cookies['messages'].value)
+        self.assertRedirects(response, '/motion/1/')
+        response = self.staff_client.get('/motion/1/set_state/4/')
+        self.assertTrue('You can not set the state of the motion. It is already done.' in response.cookies['messages'].value)
+        self.assertRedirects(response, '/motion/1/')
+
+
 class CategoryViewsTest(TestCase):
     def setUp(self):
         self.admin_client = Client()
