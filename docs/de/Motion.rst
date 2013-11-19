@@ -36,6 +36,9 @@ werden:
 * Sie können einen eigenen Titel und einen Einleitungstext für das
   PDF-Dokument formulieren.
 
+* Sie können einstellen, ob in den PDF-Dokumenten die Absätze der
+  Antragstexte nummeriert sein sollen.
+
 * Es kann die Möglichkeit eingestellt werden, beim späteren Ändern von
   Anträgen die automatische Versionierung im Einzelfall ausnahmsweise zu
   deaktivieren. Dies kann sinnvoll sein, wenn Anträge nur redaktionell
@@ -243,7 +246,8 @@ Zu jedem Antrag können Sie über einen Link („Neuer Tagesordnungseintrag“)
 in der oberen Leiste des betreffenden Antrags („Mehr Aktionen“) auch einen
 eigenen Eintrag in der Tagesordnung erstellen, der direkt mit der
 Antragsfolie verknüpft ist. Dies empfiehlt sich, wenn ein einzelner Antrag
-an einer bestimmten Stelle der Tagesordnung behandelt werden soll.
+an einer bestimmten Stelle der Tagesordnung behandelt werden und dazu eine
+Rednerliste verwendet soll.
 
 
 Abstimmungen
