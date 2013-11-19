@@ -59,12 +59,21 @@ class Overview(TemplateView):
         for item in items:
             if (item.duration is not None and
                     len(item.duration) > 0):
-                duration_list = item.duration.split(':')
-                duration += timedelta(hours=int(duration_list[0]),
-                                      minutes=int(duration_list[1]))
+                if ':' in item.duration:
+                    duration_list = item.duration.split(':')
+                    duration += timedelta(hours=int(duration_list[0]),
+                                          minutes=int(duration_list[1]))
+
+                if ':' not in item.duration:
+                    hours = int(item.duration)/60
+                    minutes = int(item.duration)-(60*hours)
+                    print(hours, minutes)
+                    duration += timedelta(hours=hours,
+                                          minutes=minutes)
+
                 if not start is None:
                     item.tooltip = start + duration
-
+        item.duration = unicode(str(hours) + ':' + str(minutes))
         if start is None:
             end = None
         else:

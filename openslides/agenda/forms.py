@@ -23,7 +23,7 @@ class ItemForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
         queryset=Item.objects.all(), label=ugettext_lazy("Parent item"), required=False)
 
     duration = forms.RegexField(
-        regex=re.compile('[0-99]:[0-5][0-9]'),
+        regex=re.compile("[0-99]:[0-5][0-9]+" "|[0-9][0-9]"),
         error_message=ugettext_lazy("Invalid format. Hours from 0 to 99 and minutes from 00 to 59"),
         max_length=5,
         required=False,
