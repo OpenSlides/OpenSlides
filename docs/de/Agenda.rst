@@ -28,10 +28,6 @@ Zusätzlich haben Sie die Möglichkeit, unter dem „Titel“ einen „Text“
 einzufügen, der auf dem Projektor erscheinen soll. Einträge im Feld
 „Kommentar“ sind nur für die Versammlungsleitung sichtbar.
 
-*Sie können im Textfeld auch HTML-Elemente verwenden. Innerhalb solcher
-sollten jedoch keine Zeilenumbrüche eingegeben werden, da letztere automatisch
-in <br>-Elemente umgewandelt werden.*
-
 Im Feld „Dauer“ können Sie die geplante Zeit des Tagesordnungspunktes im
 Format „hh:mm“ (Stunden:Minuten) angeben. Auf der Übersichtsseite der
 Tagesordnung werden alle eingegebenen Zeiten summiert und visualisiert.
@@ -163,8 +159,6 @@ Ist der Redebeitrag zu Ende, können Sie dies mit dem Button „Rede beenden“
 |microphone| bestätigen oder direkt den nächsten Redner mit dem Button „Rede
 beginnen“ |microphone| aufrufen.
 
-.. |microphone| image:: ../_images/microphone.png
-
 Auf dem Dashboard finden Sie im Widget „Rednerliste“ zwei weitere Buttons,
 um den obersten Redner des aktuell ausgewählten Tagesordnungseintrags
 aufzurufen beziehungsweise den aktuellen Redebeitrag dieses Punktes zu
@@ -175,6 +169,13 @@ Sie im Menüpunkt „Konfiguration“ in der oberen Leiste unter „Tagesordnung
 
 .. image:: ../_images/Agenda_06.png
    :class: screenshot
+
+Schließlich können Sie in diesem Menüpunkt einstellen, dass die Rednerliste
+mit dem Countdown gekoppelt wird. Wenn Sie auf „Rede beginnen“ |microphone|
+oder Rede beenden“ |microphone| klicken, wird der Countdown automatisch
+gestartet beziehungsweise gestoppt und beim nächsten Redner zurückgesetzt.
+
+.. |microphone| image:: ../_images/microphone.png
 
 
 CSV-Export der Rednerlisten

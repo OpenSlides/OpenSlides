@@ -1,6 +1,8 @@
 Tutorial – Präsentationsmodus
 =============================
 
+Dieses Tutorial ist auf dem Stand von OpenSlides 1.4.x.
+
 In diesem Tutorial sehen Sie am Beispiel der Mitgliederversammlung eines
 Kleingartenvereins, wie Sie OpenSlides im Präsentationsmodus bedienen.
 
@@ -24,13 +26,13 @@ Die einzelen Tutorials:
  Tutorial_1
 
  Tutorial_2
- 
+
  Tutorial_3
 
  Tutorial_4
 
  Tutorial_5
 
- Tutorial_6 
+ Tutorial_6
 
  Tutorial_7
