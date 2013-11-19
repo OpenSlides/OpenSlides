@@ -44,13 +44,13 @@ def absolute_url(model, link=None):
 
     Example: {{ motion|absolute_url:'delete' }}
     """
-    if link is None:
-        url = model.get_absolute_url()
-    else:
-        try:
+    try:
+        if link is None:
+            url = model.get_absolute_url()
+        else:
             url = model.get_absolute_url(link)
-        except ValueError:
-            url = ''
+    except ValueError:
+        url = ''
     return url
 
 

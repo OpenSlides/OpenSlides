@@ -91,6 +91,14 @@ class TestMotionDetailView(MotionViewTestCase):
         response = self.staff_client.get('/motion/1/')
         self.assertContains(response, '100.00 %')
 
+    def test_deleted_supporter(self):
+        config['motion_min_supporters'] = 1
+        self.motion1.support(self.registered)
+        self.assertContains(self.admin_client.get('/motion/1/'), 'registered')
+        self.registered.delete()
+        self.assertNotContains(self.admin_client.get('/motion/1/'), 'registered')
+        self.assertContains(self.admin_client.get('/motion/1/'), 'empty')
+
 
 class TestMotionDetailVersionView(MotionViewTestCase):
     def test_get(self):
