@@ -1,3 +1,7 @@
+.. raw:: latex
+
+   \newpage
+
 Anträge
 +++++++
 
@@ -60,8 +64,11 @@ werden:
 .. __: #arbeitsablauf-und-status
 .. __: #versionierung
 
-.. image:: ../_images/Motion_01.png
+.. autoimage:: Motion_01.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 75
+   :alt: Konfiguration Antrag
 
 
 Strukturierung von Anträgen
@@ -131,8 +138,11 @@ verwalten“ von einem bestimmten Status aus bestimmte andere Status
 ausgewählt und angeklickt werden. Mit dem roten Button „Status
 zurücksetzen“ können Sie auf den Ausgangsstatus zurückspringen.
 
-.. image:: ../_images/Motion_02.png
+.. autoimage:: Motion_02.png
    :class: screenshot
+   :scale-html: 75
+   :scale-latex: 45
+   :alt: Antrag verwalten Buttons
 
 Beim einfachen Arbeitsablauf kann bei der Verwaltung eines eingereichten
 Antrags zwischen „angenommen“, „abgelehnt“ und „nicht entschieden“ gewählt
@@ -158,8 +168,11 @@ Es folgt eine Übersicht über die beiden Arbeitsabläufe mit allen Status.
 Einfacher Arbeitsablauf
 '''''''''''''''''''''''
 
-.. image:: ../_images/Motion_03_1.png
+.. autoimage:: Motion_03_1.png
    :class: screenshot
+   :scale-html: 60
+   :scale-latex: 80
+   :alt: Einfacher Arbeitsablauf
 
 .. table:: Einfacher Arbeitsablauf
    :class: workflow-table table-bordered table-striped
@@ -181,8 +194,11 @@ Einfacher Arbeitsablauf
 Komplexer Arbeitsablauf
 '''''''''''''''''''''''
 
-.. image:: ../_images/Motion_03_2.png
+.. autoimage:: Motion_03_2.png
    :class: screenshot
+   :scale-html: 60
+   :scale-latex: 80
+   :alt: Komplexer Arbeitsablauf
 
 .. table:: Komplexer Arbeitsablauf
    :class: workflow-table table-bordered table-striped
@@ -210,8 +226,11 @@ Antragsversion an. Sie können auf der Antragsseite mehrere Versionen
 miteinander vergleichen. Wählen Sie dazu je einen Knopf links und rechts
 aus und klicken Sie auf den Button „Unterschied“.
 
-.. image:: ../_images/Motion_04.png
+.. autoimage:: Motion_04.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: Antrag mit Versionshistorie
 
 Nur eine der Versionen eines Antrags gilt in OpenSlides als zugelassene
 Version. Diese wird auf dem Projektor angezeigt und in der Antragsseite mit
@@ -239,8 +258,11 @@ Seite eines Antrags auf den Projektor-Button in der oberen Zeile rechts.
 
 .. |projector| image:: ../_images/projector.png
 
-.. image:: ../_images/Motion_05.png
+.. autoimage:: Motion_05.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: Projektoransicht Antrag
 
 Zu jedem Antrag können Sie über einen Link („Neuer Tagesordnungseintrag“)
 in der oberen Leiste des betreffenden Antrags („Mehr Aktionen“) auch einen
@@ -262,8 +284,11 @@ erfasst“. Sollten Sie bei den abgegebenen Stimmen einen Wert eintragen,
 berechnet OpenSlides automatisch die prozentualen Anteile der übrigen
 Stimmzahlen. Klicken Sie am Ende auf ``Speichern`` oder ``Übernehmen``.
 
-.. image:: ../_images/Motion_06.png
+.. autoimage:: Motion_06.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 60
+   :alt: Eingabe des Abstimmungsergebnisses
 
 In der Abstimmungsansicht können Sie außerdem eventuell benötigte
 Abstimmungszettel als PDF |printer| abrufen. Nachträglich können Sie
@@ -285,8 +310,11 @@ Person als Antragsteller eingetragen werden soll, falls die CSV-Datei in
 einer Zeile keinen gültigen Antragsteller enthält. Die weiteren Hinweise
 auf der Import-Seite müssen beachtet werden.
 
-.. image:: ../_images/Motion_07.png
+.. autoimage:: Motion_07.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: CSV-Import
 
 
 PDF

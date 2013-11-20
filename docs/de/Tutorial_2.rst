@@ -1,3 +1,7 @@
+.. raw:: latex
+
+   \newpage
+
 Tagesordnung verwalten
 ======================
 
@@ -8,15 +12,18 @@ und verwalten.
 Konfiguration der Tagesordnung
 ------------------------------
 
-Gehen Sie zunächst im Menüpunkt „Konfiguration“ links oben zum Unterpunkt
+Gehen Sie zunächst im Menüpunkt „Konfiguration“ zum Unterpunkt
 ``Tagesordnung``. Hier können Sie den genauen Beginn der Veranstaltung
 einstellen.
 
 Beginn der Veranstaltung:
   02.03.2013 10:00
 
-.. image:: ../_images/Tutorial_2_01.png
+.. autoimage:: Tutorial_2_01.png
    :class: screenshot
+   :scale-html: 75
+   :scale-latex: 45
+   :alt: Konfiguration der Tagesordnung
 
 
 Eingabe der Tagesordnung
@@ -27,8 +34,11 @@ zunächst einige Einträge an.
 
 Klicken Sie dazu im Menüpunkt „Tagesordnung“ oben rechts auf ``Neu``
 
-.. image:: ../_images/Tutorial_2_02.png
+.. autoimage:: Tutorial_2_02.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: Tagesordnungseintrag erstellen
 
 und geben Sie den Eintrag wie folgt ein:
 
@@ -41,8 +51,11 @@ Text:
 Dauer:
   00:15
 
-.. image:: ../_images/Tutorial_2_03.png
+.. autoimage:: Tutorial_2_03.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: Formular für neuen Tagesordnungseintrag
 
 Klicken Sie anschließend auf ``Speichern``.
 
@@ -51,8 +64,11 @@ Vorstands, Satzungsänderung, Gartenfest, Sonstiges, Wahlen der Vereinsämter.
 
 Die Übersicht über die Einträge müsste nun so aussehen:
 
-.. image:: ../_images/Tutorial_2_04.png
+.. autoimage:: Tutorial_2_04.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: Tagesordnung Übericht
 
 Sie können nun nachträglich die Reihenfolge der Einträge verändern und auch
 Tagesordnungspunkte zu Unterpunkten verschieben. Ziehen Sie zum Beispiel
@@ -60,8 +76,11 @@ mit der Maus den Punkt „Sonstiges“, um seine Position zu verändern und ihn
 nach unten zu verschieben. Richten Sie die Tagesordnung durch Verschieben
 der übrigen Einträge so ein, dass sie wie folgt aussieht:
 
-.. image:: ../_images/Tutorial_2_05.png
+.. autoimage:: Tutorial_2_05.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: Geänderte Tagesordnungs-Reihenfolge speichern
 
 Klicken Sie auf ``Ja``, um die geänderte Reihenfolge zu speichern. Solange
 Sie die veränderte Reihenfolge nicht gespeichert haben, wird die
@@ -94,14 +113,17 @@ Text:
   Der Vorstand berichtet über seine Arbeit, insbesondere die Entwicklung
   der Mitgliederzahlen und Finanzen.
 
-.. image:: ../_images/Tutorial_2_06.png
+.. autoimage:: Tutorial_2_06.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: Tagesordnungseintrag bearbeiten
 
 .. |edit| image:: ../_images/pencil.png
 
 Mehr Informationen zur Verwaltung der Tagesordnung, insbesondere den
 Organisationseinträgen und den Rednerlisten finden Sie im Kapitel
-„Einzelne Funktionen", Abschnitt `Tagesordnung__.
+„Einzelne Funktionen", Abschnitt Tagesordnung__.
 
 .. __: Agenda.html
 
@@ -115,8 +137,11 @@ bestimmte Folie auswählen. Die jeweils aktive Folie zeigt ein blaues
 Projektorsymbol. Probieren Sie, verschiedene
 Tagesordnungspunkte auf dem Projektor anzuzeigen.
 
-.. image:: ../_images/Tutorial_2_07.png
+.. autoimage:: Tutorial_2_07.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: Dashboard-Widget Tagesordnung
 
 
 Weiter geht es mit dem dritten Teil des Tutorials: `Teilnehmer/innen verwalten`__

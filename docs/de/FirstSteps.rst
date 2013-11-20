@@ -34,6 +34,9 @@ install openslides``) herunter. Die Installationsanleitung für diese
 Version finden Sie in der beiliegenden README.rst. Folgen Sie den
 Anweisungen der Anleitung.
 
+.. raw:: latex
+
+   \newpage
 
 Konfiguration
 +++++++++++++
@@ -118,23 +121,31 @@ Arbeiten mit OpenSlides
 Im Webinterface von OpenSlides können Sie über die verschiedenen Menüpunkte
 alle Inhalte in OpenSlides eingeben und verwalten.
 
-.. image:: ../_images/FirstSteps_01.png
+.. autoimage:: FirstSteps_01.png
    :class: screenshot
+   :scale-html: 100
+   :scale-latex: 75
+   :alt: Hauptmenü
 
-Im Menüpunkt „Dashboard“ steuern Sie, welche Folien auf dem Projektor
-angezeigt werden. Dazu klicken Sie einfach auf das jeweilige
-Projektorsymbol. Im Menüpunkt „Tagesordnung“ können Sie die Tagesordnung
-der Veranstaltung im Vorfeld anlegen, entsprechende Folien vorbereiten und
-die Rednerliste verwalten. In den Menüpunkten „Anträge“ und „Wahlen“
-verwalten Sie die gestellten Anträge und die Wahlämter mit den Kandidaten
-sowie die dazugehörigen Abstimmungen und Wahlen. Der Menüpunkt
-„Teilnehmer/innen“ ermöglicht einen Zugriff auf die Personenprofile. Unter
-dem Punkt „Dateien“ können Sie eigene Dateien auf den Server laden und zum
-Download anbieten. PDF-Dateien können auch auf dem Projektor angezeigt
-werden. Im Menüpunkt „Konfiguration“ können einige Einstellungen
-vorgenommen werden.
 
-Das Projektorbild ist unter der Url ``/projector/`` zu finden. Sie können
+* Im Menüpunkt **Dashboard** steuern Sie, welche Folien auf dem Projektor
+  angezeigt werden. Dazu klicken Sie einfach auf das jeweilige
+  Projektorsymbol. 
+* Im Menüpunkt **Tagesordnung** können Sie die Tagesordnung
+  der Veranstaltung im Vorfeld anlegen, entsprechende Folien vorbereiten und
+  die Rednerliste verwalten. 
+* Unter **Anträge** verwalten Sie die gestellten Anträge und die dazugehörigen
+  Abstimmungen.
+* Der Puntk **Wahlen** verwaltet die Wahlämter mit den Kandidaten
+  sowie die jeweiligen Wahlergebnisse.
+* Der Menüpunkt **Teilnehmer/innen** ermöglicht einen Zugriff auf die
+  Personenprofile.
+* Unter dem Punkt **Dateien** können Sie eigene Dateien auf den Server laden
+  und zum Download anbieten. PDF-Dateien können auch auf dem Projektor angezeigt
+  werden.
+* Im Menüpunkt **Konfiguration** können einige Einstellungen vorgenommen werden.
+
+Das Projektorbild ist unter der URL ``/projector/`` zu finden. Sie können
 auch auf dem Dashboard auf die Projektor-Live-Ansicht klicken. Loggen Sie
 sich an dem Computer, an dem der Projektor angeschlossen ist, in OpenSlides
 ein und rufen Sie den Link oder die URL auf. Legen Sie die Anzeige in einem
