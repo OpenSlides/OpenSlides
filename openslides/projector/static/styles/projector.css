@@ -71,9 +71,13 @@ h1 {
     font-size: 2.25em;
     margin-bottom: 40px;
     line-height: 0.95em;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e6e6e6;
 }
 h1 small {
     font-size: 0.55em;
+    margin-top: 15px;
+    display: block;
 }
 h3 {
     font-size: 1.2em;

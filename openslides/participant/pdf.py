@@ -46,7 +46,6 @@ def participants_to_pdf(pdf):
         ('ROWBACKGROUNDS', (0, 1), (-1, -1),
             (colors.white, (.9, .9, .9)))])
     t._argW[0] = 0.75 * cm
-    t._argW[1] = 1 * cm
     pdf.append(t)
     return pdf
 

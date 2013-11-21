@@ -2,7 +2,13 @@
 
 <h1>
     {% trans group.name %}
-    <hr>
+    <small>{% trans "Group" %}</small>
 </h1>
 
-<i>{{ group.user_set.all.count }} {% trans "participants" %}</i>
+<p><i>{{ group.user_set.all.count }} {% trans "participants" %}</i></p>
+
+<ol>
+{% for member in group.user_set.all %}
+    <li>{{ member }}</li>
+{% endfor %}
+</ol>

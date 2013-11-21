@@ -16,10 +16,19 @@
 <h1>
     {{ title }}
     <br>
-    <small>{% trans "Motion" %} {{ motion.identifier|default:'' }}
-    {% if motion.versions.count > 1 %}
-        | {% trans "Version" %} {{ version.version_number }}
-    {% endif %}
+    <small>
+        {% trans "Motion" %} {{ motion.identifier|default:'' }}
+        {% if motion.versions.count > 1 %}
+            | {% trans "Version" %} {{ version.version_number }}
+            {% if version == motion.active_version %}
+                <span class="badge badge-success"> {% trans 'This version is authorized' %}</span>
+            {% endif %}
+            {% if version.version_number != motion.active_version.version_number %}
+                <span class="label label-warning">
+                    <i class="icon-warning-sign icon-white"></i> {% trans "This version is not authorized." %}
+                </span>
+            {% endif %}
+        {% endif %}
     </small>
     <small class="pull-right">
         <a href="{% url 'motion_list' %}" class="btn btn-mini">
@@ -62,20 +71,17 @@
 <div class="row-fluid">
 <div class="span8">
     {# TODO: show only for workflow with versioning #}
-    {% with last_version=motion.get_last_version active_version=motion.get_active_version %}
-        {% if version.version_number != last_version.version_number %}
-            <p><span class="label label-warning">
-                <i class="icon-warning-sign icon-white"></i> {% trans "This is not the newest version." %}
-            </span>
+    {% with last_version=motion.get_last_version %}
+        {% if version.version_number != motion.active_version.version_number %}
+            <p>
+            <a href="{{ motion.active_version|absolute_url }}" class="btn btn-small">{% trans "Go to the authorized version" %}
+            (# {{ motion.active_version.version_number }})</a>
+            </p>
+        {% elif version.version_number != last_version.version_number %}
+            <p>
             <a href="{{ last_version|absolute_url }}" class="btn btn-small">{% trans "Go to the newest version" %}
-            (# {{ last_version.version_number }})</a></p>
-        {% endif %}
-        {% if version.version_number != active_version.version_number %}
-            <p><span class="label label-warning">
-                <i class="icon-warning-sign icon-white"></i> {% trans "This version is not authorized." %}
-            </span>
-            <a href="{{ active_version|absolute_url }}" class="btn btn-small">{% trans "Go to the authorized version" %}
-            (# {{ active_version.version_number }})</a></p>
+            (# {{ last_version.version_number }})</a>
+            </p>
         {% endif %}
     {% endwith %}
 
@@ -136,7 +142,7 @@
                         <a href="{{ version|absolute_url }}" title="{% trans 'Show' %}" class="btn btn-mini">
                             <i class="icon-search"></i>
                         </a>
-                        {% if version != motion.active_version %}
+                        {% if perms.motion.can_manage_motion and version != motion.active_version %}
                             <a href="{{ version|absolute_url:'delete' }}" title="{% trans 'Delete' %}" class="btn btn-mini">
                                 <i class="icon-remove"></i>
                             </a>

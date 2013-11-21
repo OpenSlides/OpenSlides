@@ -147,20 +147,12 @@
     {% if polls.exists %}
         <table class="table table-striped table-bordered">
         <tr>
-            <th></th>
-            {% with ballotnumber=polls.count %}
-            <th colspan="{{ ballotnumber|add:'1' }}" style="text-align: center;">
-                {% trans "Ballot" %}
-            </th>
-            {% endwith %}
-        </tr>
-        <tr>
             <th>{% trans "Candidates" %}</th>
             {% for poll in polls %}
                 <th style="white-space:nowrap;" class="span1">
+                    {% if perms.assignment.can_manage_assignment %}<p>{% endif %}
                     {{ poll.get_ballot|ordinal|safe }} {% trans 'ballot' %}
                     {% if perms.assignment.can_manage_assignment %}
-                        <br>
                         <a class="publish_link btn btn-mini btn-danger {% if poll.published %}btn-primary{% endif %}"
                         href="{% url 'assignment_poll_publish_status' poll.id %}"
                         rel="tooltip" data-original-title="{% trans 'Publish results' %}">
@@ -170,10 +162,15 @@
                             <i class="icon-unchecked-new"></i>
                             {% endif %}
                         </a>
+                        </p>
+                        <p class="text-center">
+                        <a href="{% url 'assignment_poll_pdf' poll.id %}" class="btn btn-mini" target="_blank"
+                            rel="tooltip" data-original-title="{% trans 'Ballot paper as PDF' %}"><i class="icon-print"></i></a>
                         <a href="{% url 'assignment_poll_view' poll.id %}" class="btn btn-mini"
                             rel="tooltip" data-original-title="{% trans 'Edit' %}"><i class="icon-pencil"></i></a>
                         <a href="{% url 'assignment_poll_delete' poll.id %}" class="btn btn-mini"
                             rel="tooltip" data-original-title="{% trans 'Delete' %}"><i class="icon-remove"></i></a>
+                        </p>
                     {% endif %}
                 </th>
             {% endfor %}

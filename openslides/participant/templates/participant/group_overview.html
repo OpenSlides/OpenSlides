@@ -29,6 +29,7 @@
         <tr>
             <th class="mini_width">{% trans "ID" %}</th>
             <th>{% trans "Group" %}</th>
+            <th>{% trans "Members" %}</th>
             <th class="mini_width">{% trans "Actions" %}</th>
         </tr>
     </thead>
@@ -41,6 +42,9 @@
             </td>
             <td>
                 <a href="{{ group|absolute_url }}">{% trans group.name %}</a>
+            </td>
+            <td>
+                <span class="badge badge-info">{{ group.user_set.all.count }}</span>
             </td>
             <td>
                 <span style="width: 1px; white-space: nowrap;">

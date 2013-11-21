@@ -24,22 +24,20 @@
 {% endblock %}
 
 {% block content %}
-   <form action="" method="post">{% csrf_token %}
-       {% if perms.agenda.can_manage_agenda %}
-       <div id="changed-order-message" style="display:none" class="alert alert-warning">
-           <button type="button" class="close" data-dismiss="alert">×</button>
-           <p>{% trans "Do you want to save the changed order of agenda items?" %}</p>
-           <p>
-               <button class="btn" type="submit">{% trans 'Yes' %}</button>
-               <a href="{% url 'item_overview' %}" class="btn">{% trans 'No' %}</a>
-            </p>
-       </div>
-       {% endif %}
+    <form action="" method="post">{% csrf_token %}
+        {% if perms.agenda.can_manage_agenda %}
+            <div id="changed-order-message" style="display:none" class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                {% trans "Do you want to save the changed order of agenda items?" %}<br>
+                <button class="btn btn-mini" type="submit">{% trans 'Yes' %}</button>
+                <a href="{% url 'item_overview' %}" class="btn btn-mini">{% trans 'No' %}</a>
+            </div>
+        {% endif %}
 
         <h1>{% trans "Agenda" %}
             <small class="pull-right">
             {% if perms.agenda.can_manage_agenda %}
-            <a href="{% url 'item_new' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New item' %}"><i class="icon-plus icon-white"></i> {% trans "New" %}</a>
+                <a href="{% url 'item_new' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New item' %}"><i class="icon-plus icon-white"></i> {% trans "New" %}</a>
             {% endif %}
             <a href="{% url 'print_agenda' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print agenda as PDF' %}" target="_blank"><i class="icon-print"></i> PDF</a>
             </small>
