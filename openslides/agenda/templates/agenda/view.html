@@ -80,12 +80,10 @@
 {% if perms.agenda.can_manage_agenda %}
     <form id="coming_speakers_changed_form" action="{% url 'agenda_speaker_change_order' item.pk %}" method="post" style="display:none" class="alert alert-warning">{% csrf_token %}
         <button type="button" class="close" data-dismiss="alert">×</button>
-        <p>{% trans "Do you want to save the changed order of speakers?" %}</p>
+        {% trans "Do you want to save the changed order of speakers?" %}<br>
         <input id="sort_order" name="sort_order" type="hidden"></hidden>
-        <p>
-            <button class="btn" type="submit">{% trans 'Yes' %}</button>
-            <a href="{% url 'item_view' item.pk %}" class="btn">{% trans 'No' %}</a>
-        </p>
+        <button class="btn btn-mini" type="submit">{% trans 'Yes' %}</button>
+        <a href="{% url 'item_view' item.pk %}" class="btn btn-mini">{% trans 'No' %}</a>
     </form>
 {% endif %}
 
