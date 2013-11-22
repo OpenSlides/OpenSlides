@@ -85,7 +85,7 @@ class ActivateView(RedirectView):
             ProjectorSocketHandler.send_updates(
                 {'calls': {'load_pdf': {'url': url, 'page_num': kwargs['page_num']}}})
         else:
-            set_active_slide(kwargs['callback'], kwargs=dict(request.GET.items()))
+            set_active_slide(kwargs['callback'], **dict(request.GET.items()))
         config['projector_scroll'] = config.get_default('projector_scroll')
         config['projector_scale'] = config.get_default('projector_scale')
         call_on_projector({'scroll': config['projector_scroll'],
@@ -186,10 +186,10 @@ class CountdownControllView(RedirectView):
             try:
                 config['countdown_time'] = \
                     int(self.request.GET['countdown_time'])
-            except ValueError:
+            except (ValueError, AttributeError):
                 pass
-            except AttributeError:
-                pass
+            else:
+                reset_countdown()
         update_projector_overlay('projector_countdown')
 
     def get_ajax_context(self, **kwargs):

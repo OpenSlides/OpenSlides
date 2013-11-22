@@ -128,16 +128,21 @@ class Item(SlideMixin, MPTTModel):
         The link can be detail, update or delete.
         """
         if link == 'detail' or link == 'view':
-            return reverse('item_view', args=[str(self.id)])
-        if link == 'update' or link == 'edit':
-            return reverse('item_edit', args=[str(self.id)])
-        if link == 'delete':
-            return reverse('item_delete', args=[str(self.id)])
-        if link == 'projector_list_of_speakers':
-            return '%s&type=list_of_speakers' % super(Item, self).get_absolute_url('projector')
-        if link == 'projector_summary':
-            return '%s&type=summary' % super(Item, self).get_absolute_url('projector')
-        return super(Item, self).get_absolute_url(link)
+            url = reverse('item_view', args=[str(self.id)])
+        elif link == 'update' or link == 'edit':
+            url = reverse('item_edit', args=[str(self.id)])
+        elif link == 'delete':
+            url = reverse('item_delete', args=[str(self.id)])
+        elif link == 'projector_list_of_speakers':
+            url = '%s&type=list_of_speakers' % super(Item, self).get_absolute_url('projector')
+        elif link == 'projector_summary':
+            url = '%s&type=summary' % super(Item, self).get_absolute_url('projector')
+        elif (link in ('projector', 'projector_preview') and
+                self.content_object and isinstance(self.content_object, SlideMixin)):
+            url = self.content_object.get_absolute_url(link)
+        else:
+            url = super(Item, self).get_absolute_url(link)
+        return url
 
     def get_title(self):
         """
@@ -268,6 +273,17 @@ class Item(SlideMixin, MPTTModel):
             # The list of speakers is empty.
             return None
 
+    def is_active_slide(self):
+        """
+        Returns True if the slide is True. If the slide is a related item,
+        Returns True if the related object is active.
+        """
+        if self.content_object and isinstance(self.content_object, SlideMixin):
+            value = self.content_object.is_active_slide()
+        else:
+            value = super(Item, self).is_active_slide()
+        return value
+
 
 class SpeakerManager(models.Manager):
     def add(self, person, item):
@@ -373,6 +389,10 @@ class Speaker(models.Model):
         if config['agenda_couple_countdown_and_speakers']:
             reset_countdown()
             start_countdown()
+            if self.item.is_active_slide():
+                # TODO: only update the overlay if the overlay is active and
+                #       slide type is None.
+                update_projector_overlay('projector_countdown')
 
     def end_speach(self):
         """
@@ -383,3 +403,7 @@ class Speaker(models.Model):
         # stop countdown
         if config['agenda_couple_countdown_and_speakers']:
             stop_countdown()
+            if self.item.is_active_slide():
+                # TODO: only update the overlay if the overlay is active and
+                #       slide type is None.
+                update_projector_overlay('projector_countdown')

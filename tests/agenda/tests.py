@@ -8,6 +8,7 @@ from mock import patch
 from openslides.agenda.models import Item
 from openslides.agenda.slides import agenda_slide
 from openslides.participant.models import User
+from openslides.projector.api import set_active_slide
 from openslides.utils.test import TestCase
 
 from .models import BadRelatedItem, RelatedItem
@@ -77,7 +78,26 @@ class ItemTest(TestCase):
     def test_deleted_related_item(self):
         self.related.delete()
         self.assertFalse(RelatedItem.objects.all().exists())
-        self.assertEqual(Item.objects.get(pk=self.item5.pk).title, '< Item for deleted slide (ekdfjen458gj1siek45nv) >')
+        self.assertEqual(Item.objects.get(pk=self.item5.pk).title,
+                         '< Item for deleted slide (ekdfjen458gj1siek45nv) >')
+
+    def test_related_item_get_absolute_url(self):
+        """
+        Tests that the get_absolute_url method with the link 'projector'
+        and 'projector_preview' returns the absolute_url for the related
+        item.
+        """
+        self.assertEqual(self.item5.get_absolute_url('projector'),
+                         '/projector/activate/test_related_item/?pk=1')
+        self.assertEqual(self.item5.get_absolute_url('projector_preview'),
+                         '/projector/preview/test_related_item/?pk=1')
+
+    def test_activate_related_item(self):
+        """
+        The agenda item has to be active, if its related item is.
+        """
+        set_active_slide('test_related_item', pk=1)
+        self.assertTrue(self.item5.is_active_slide)
 
     def test_bad_related_item(self):
         bad = BadRelatedItem.objects.create(name='dhfne94irkgl2047fzvb')
