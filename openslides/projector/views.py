@@ -186,10 +186,10 @@ class CountdownControllView(RedirectView):
             try:
                 config['countdown_time'] = \
                     int(self.request.GET['countdown_time'])
-            except ValueError:
+            except (ValueError, AttributeError):
                 pass
-            except AttributeError:
-                pass
+            else:
+                reset_countdown()
         update_projector_overlay('projector_countdown')
 
     def get_ajax_context(self, **kwargs):
