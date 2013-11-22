@@ -661,7 +661,7 @@ class MotionSetStateView(SingleObjectMixin, RedirectView):
         if success:
             self.object.save(update_fields=['state', 'identifier'])
             self.object.write_log(
-                message_list=[ugettext_noop('State changed to'), ' %s' % self.object.state.name],  # TODO: Change string to 'State set to ...'
+                message_list=[ugettext_noop('State changed to'), ' ', self.object.state.name],  # TODO: Change string to 'State set to ...'
                 person=self.request.user)
             messages.success(request,
                              _('The state of the motion was set to %s.')

@@ -63,8 +63,7 @@ class Item(SlideMixin, MPTTModel):
     See Item.ITEM_TYPE for more information.
     """
 
-    duration = models.CharField(null=True, blank=True, max_length=5,
-                                verbose_name=ugettext_lazy("Duration (hh:mm)"))
+    duration = models.CharField(null=True, blank=True, max_length=5)
     """
     The intended duration for the topic.
     """

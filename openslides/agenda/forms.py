@@ -27,7 +27,8 @@ class ItemForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
         error_message=ugettext_lazy("Invalid format. Hours from 0 to 99 and minutes from 00 to 59"),
         max_length=5,
         required=False,
-        label=ugettext_lazy("Duration (hh:mm)"))
+        label=ugettext_lazy("Duration"),
+        help_text=ugettext_lazy('Input format: HH:MM or M or MM or MMM'))
 
     class Meta:
         model = Item
