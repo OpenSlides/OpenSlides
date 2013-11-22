@@ -389,6 +389,10 @@ class Speaker(models.Model):
         if config['agenda_couple_countdown_and_speakers']:
             reset_countdown()
             start_countdown()
+            if self.item.is_active_slide():
+                # TODO: only update the overlay if the overlay is active and
+                #       slide type is None.
+                update_projector_overlay('projector_countdown')
 
     def end_speach(self):
         """
@@ -399,3 +403,7 @@ class Speaker(models.Model):
         # stop countdown
         if config['agenda_couple_countdown_and_speakers']:
             stop_countdown()
+            if self.item.is_active_slide():
+                # TODO: only update the overlay if the overlay is active and
+                #       slide type is None.
+                update_projector_overlay('projector_countdown')

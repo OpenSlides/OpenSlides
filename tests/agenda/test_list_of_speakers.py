@@ -2,6 +2,7 @@
 
 from django.contrib.auth.models import Permission
 from django.test.client import Client
+from mock import patch, MagicMock
 
 from openslides.agenda.models import Item, Speaker
 from openslides.config.api import config
@@ -69,24 +70,33 @@ class ListOfSpeakerModelTests(TestCase):
         self.assertIsNotNone(Speaker.objects.get(person=self.speaker1, item=self.item1).end_time)
         self.assertIsNotNone(speaker2_item1.begin_time)
 
-    def test_speach_coupled_with_countdown(self):
+    @patch('openslides.agenda.models.update_projector_overlay')
+    def test_speach_coupled_with_countdown(self, mock_update_projector_overlay):
         config['agenda_couple_countdown_and_speakers'] = True
-        self.assertTrue(config['countdown_state'] == 'inactive')
         speaker1_item1 = Speaker.objects.add(self.speaker1, self.item1)
-        speaker1_item1.begin_speach()
-        self.assertTrue(config['countdown_state'] == 'active')
-        speaker1_item1.end_speach()
-        self.assertTrue(config['countdown_state'] == 'paused')
+        self.item1.is_active_slide = MagicMock(return_value=True)
 
-    def test_begin_speach_not_coupled_with_countdown(self):
-        config['agenda_couple_countdown_and_speakers'] = False
-        self.assertTrue(config['countdown_state'] == 'inactive')
-        speaker1_item1 = Speaker.objects.add(self.speaker1, self.item1)
         speaker1_item1.begin_speach()
-        self.assertTrue(config['countdown_state'] == 'inactive')
+        self.assertEqual(config['countdown_state'], 'active')
+        mock_update_projector_overlay.assert_called_with('projector_countdown')
+
+        mock_update_projector_overlay.reset_mock()
+        speaker1_item1.end_speach()
+        self.assertEqual(config['countdown_state'], 'paused')
+        mock_update_projector_overlay.assert_called_with('projector_countdown')
+
+    @patch('openslides.agenda.models.update_projector_overlay')
+    def test_begin_speach_not_coupled_with_countdown(self, mock_update_projector_overlay):
+        config['agenda_couple_countdown_and_speakers'] = False
+        speaker1_item1 = Speaker.objects.add(self.speaker1, self.item1)
+
+        speaker1_item1.begin_speach()
+        self.assertEqual(config['countdown_state'], 'inactive')
+
         config['countdown_state'] = 'active'
         speaker1_item1.end_speach()
-        self.assertTrue(config['countdown_state'] == 'active')
+        self.assertEqual(config['countdown_state'], 'active')
+        self.assertFalse(mock_update_projector_overlay.called)
 
 
 class SpeakerViewTestCase(TestCase):
