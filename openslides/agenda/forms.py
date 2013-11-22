@@ -28,7 +28,7 @@ class ItemForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
         max_length=5,
         required=False,
         label=ugettext_lazy("Duration"),
-        help_text=ugettext_lazy('Input format: HH:MM or MM'))
+        help_text=ugettext_lazy('Input format: HH:MM or M or MM or MMM'))
 
     class Meta:
         model = Item
