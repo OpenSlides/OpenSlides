@@ -127,7 +127,7 @@ class TestOtherFunctions(TestCase):
     def test_start(self, mock_runserver, mock_syncdb):
         mock_args = MagicMock()
         start(settings=None, args=mock_args)
-        mock_syncdb.assert_called()
+        self.assertTrue(mock_syncdb.called)
         mock_runserver.assert_called_with(None, mock_args)
 
     @patch('openslides.__main__.get_port')
@@ -137,17 +137,19 @@ class TestOtherFunctions(TestCase):
         mock_get_port.return_value = 8000
         mock_args = MagicMock()
         runserver(settings=None, args=mock_args)
-        mock_run_tornado.assert_called()
+        self.assertTrue(mock_run_tornado.called)
 
+    @patch('openslides.__main__.os.path.exists')
     @patch('openslides.__main__.os.makedirs')
     @patch('openslides.__main__.execute_from_command_line')
-    def test_syncdb(self, mock_execute_from_command_line, mock_os):
+    def test_syncdb(self, mock_execute_from_command_line, mock_os, mock_exists):
+        mock_exists.return_value = True
         mock_args = MagicMock()
         syncdb(settings=None, args=mock_args)
-        mock_execute_from_command_line.assert_called()
+        self.assertTrue(mock_execute_from_command_line.called)
 
     @patch('openslides.__main__.execute_from_command_line')
     def test_django_command_line_utility(self, mock_execute_from_command_line):
         mock_args = MagicMock()
         django_command_line_utility(settings=None, args=mock_args)
-        mock_execute_from_command_line.assert_called()
+        self.assertTrue(mock_execute_from_command_line.called)
