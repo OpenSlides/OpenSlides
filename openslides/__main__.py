@@ -79,7 +79,7 @@ def parse_args():
     subparsers = parser.add_subparsers(
         dest='subcommand',
         title='Available subcommands',
-        description="Type 'python %s <subcommand> --help' for help on a "
+        description="Type '%s <subcommand> --help' for help on a "
                     "specific subcommand." % parser.prog,
         help='You can choose only one subcommand at once.')
 
@@ -151,7 +151,7 @@ def parse_args():
     subcommand_django_command_line_utility = subparsers.add_parser(
         'django',
         description="Link to Django's command-line utility. Type "
-                    "'python %s django help' for more help on this." % parser.prog,
+                    "'%s django help' for more help on this." % parser.prog,
         help="Call Django's command-line utility.")
     subcommand_django_command_line_utility.set_defaults(
         callback=django_command_line_utility,
