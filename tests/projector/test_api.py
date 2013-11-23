@@ -170,7 +170,7 @@ class ApiFunctions(TestCase):
     def test_set_active_slide(self, mock_update_projector, mock_update_projector_overlay):
         mock_config = {}
         with patch('openslides.projector.api.config', mock_config):
-            projector_api.set_active_slide('callback_name', {'some': 'kwargs'})
+            projector_api.set_active_slide('callback_name', some='kwargs')
         self.assertEqual(mock_config,
                          {'projector_active_slide': {'callback': 'callback_name',
                                                      'some': 'kwargs'}})

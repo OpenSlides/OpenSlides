@@ -5,6 +5,7 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.context_processors import csrf
 from django.dispatch import receiver, Signal
 from django.template.loader import render_to_string
+from django.utils.datastructures import SortedDict
 
 from openslides.config.api import config, ConfigPage, ConfigVariable
 from openslides.config.signals import config_signal
@@ -99,18 +100,14 @@ def countdown(sender, **kwargs):
         """
         Returns JavaScript for the projector
         """
-        start = int(config['countdown_start_stamp'])
-        duration = int(config['countdown_time'])
-        pause = int(config['countdown_pause_stamp'])
-        state = config['countdown_state']
-
-        return {
-            'load_file': static('javascript/countdown.js'),
-            'call': 'update_countdown();',
-            'projector_countdown_start': start,
-            'projector_countdown_duration': duration,
-            'projector_countdown_pause': pause,
-            'projector_countdown_state': state}
+        value = SortedDict()
+        value['load_file'] = static('javascript/countdown.js')
+        value['projector_countdown_start'] = int(config['countdown_start_stamp'])
+        value['projector_countdown_duration'] = int(config['countdown_time'])
+        value['projector_countdown_pause'] = int(config['countdown_pause_stamp'])
+        value['projector_countdown_state'] = config['countdown_state']
+        value['call'] = 'update_countdown();'
+        return value
 
     def get_projector_html():
         """
