@@ -43,31 +43,35 @@
             </small>
         </h1>
 
-        {% if perms.agenda.can_see_orga_items %}
-            {% if start and end %}
-                <table id="agendatime" class="table table-bordered">
-                    <tr>
-                        <td>{% trans "Start of event" %}:</td>
-                        <td>{{ start|date:"DATETIME_FORMAT" }}</td>
-                    </tr>
-                    <tr>
-                        <td>{% trans "Estimated end" %}:</td>
-                        <td>{{ end|date:"DATETIME_FORMAT" }}</td>
-                    </tr>
-                </table>
-            {% else %}
-                <div style="float: right;">
-                    <a href="{% url 'config_agenda' %}" class="btn btn-mini">{% trans 'Set start time of event' %}</a>
-                </div>
-            {% endif %}
-        {% endif %}
-        <label class="checkbox">
-            <input type="checkbox" id="hide_closed_items"> {% trans "Hide closed items" %}
-        </label>
+        <div class="row-fluid">
+            <div class="span6">
+                <label class="checkbox">
+                    <input type="checkbox" id="hide_closed_items"> {% trans "Hide closed items" %}
+                </label>
+                <small><i>{{ items|length }}
+                {% blocktrans count counter=items|length %}item{% plural %}items{% endblocktrans %}<span id="hiddencount"></span>
+                </i></small>
+            </div>
+            <div class="span6">
+                {% if perms.agenda.can_see_orga_items %}
+                    {% if start and end %}
+                        <table id="agendatime" class="table table-bordered pull-right">
+                            <tr>
+                                <td>{% trans "Start of event" %}:</td>
+                                <td>{{ start|date:"DATETIME_FORMAT" }}</td>
+                            </tr>
+                            <tr>
+                                <td>{% trans "Estimated end" %}:</td>
+                                <td>{{ end|date:"DATETIME_FORMAT" }}</td>
+                            </tr>
+                        </table>
+                    {% else %}
+                        <a href="{% url 'config_agenda' %}" class="btn btn-mini pull-right">{% trans 'Set start time of event' %}</a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
 
-        <small><i>{{ items|length }}
-        {% blocktrans count counter=items|length %}item{% plural %}items{% endblocktrans %}<span id="hiddencount"></span>
-        </i></small>
         <table id="menu-overview" class="table table-striped table-bordered">
             <tr>
                 <th class="title">{% trans "Item" %}</th>
