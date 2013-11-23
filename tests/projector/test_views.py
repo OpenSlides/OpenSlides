@@ -9,7 +9,6 @@ from openslides.projector import views
 from openslides.utils.test import TestCase
 
 
-
 class ProjectorViewTest(TestCase):
     rf = RequestFactory()
 

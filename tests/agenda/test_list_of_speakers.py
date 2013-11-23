@@ -243,7 +243,7 @@ class GlobalListOfSpeakersLinks(SpeakerViewTestCase):
         self.assertRedirects(response, '/projector/dashboard/')
         self.assertMessage(response, 'There is no list of speakers for the current slide. Please choose the agenda item manually from the agenda.')
 
-        set_active_slide('agenda', pk=1})
+        set_active_slide('agenda', pk=1)
         response = self.speaker1_client.get('/agenda/list_of_speakers/')
         self.assertRedirects(response, '/agenda/1/')
 

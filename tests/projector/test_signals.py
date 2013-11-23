@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from mock import MagicMock, patch
-
 from openslides.projector.signals import countdown
 from openslides.utils.test import TestCase
 

@@ -128,9 +128,9 @@ class Item(SlideMixin, MPTTModel):
         The link can be detail, update or delete.
         """
         if link == 'detail' or link == 'view':
-            url =  reverse('item_view', args=[str(self.id)])
+            url = reverse('item_view', args=[str(self.id)])
         elif link == 'update' or link == 'edit':
-            url =  reverse('item_edit', args=[str(self.id)])
+            url = reverse('item_edit', args=[str(self.id)])
         elif link == 'delete':
             url = reverse('item_delete', args=[str(self.id)])
         elif link == 'projector_list_of_speakers':
