@@ -150,7 +150,7 @@
             <th>{% trans "Candidates" %}</th>
             {% for poll in polls %}
                 <th style="white-space:nowrap;" class="span1">
-                    {% if perms.assignment.can_manage_assignment %}<p>{% endif %}
+                    {% if perms.assignment.can_manage_assignment %}<p class="text-center">{% endif %}
                     {{ poll.get_ballot|ordinal|safe }} {% trans 'ballot' %}
                     {% if perms.assignment.can_manage_assignment %}
                         <a class="publish_link btn btn-mini btn-danger {% if poll.published %}btn-primary{% endif %}"

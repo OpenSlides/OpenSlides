@@ -11,7 +11,6 @@ tr.topline td {
 }
 
 table#agendatime {
-    float: right;
     width: auto;
     margin-bottom: 1em;
     font-size: 12px;
