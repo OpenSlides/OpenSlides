@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import sys
 from setuptools import setup, find_packages
+
 from openslides import get_version
 
 
@@ -14,7 +16,8 @@ with open('requirements_production.txt') as requirements_production:
 
 
 # For Python 2.6 support
-install_requires.append('argparse==1.2.1')
+if sys.version_info[1] == 6:
+    install_requires.append('argparse>=1.2,<1.3')
 
 
 setup(
