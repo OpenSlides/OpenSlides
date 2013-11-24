@@ -3,6 +3,7 @@
 from django.test.client import Client, RequestFactory
 from mock import call, MagicMock, patch
 
+from openslides.config.api import config
 from openslides.projector.models import ProjectorSlide
 from openslides.projector import views
 from openslides.utils.test import TestCase
@@ -199,3 +200,19 @@ class CustomSlidesTest(TestCase):
         response = self.admin_client.post(url, {'yes': 'true'})
         self.assertRedirects(response, '/projector/dashboard/')
         self.assertFalse(ProjectorSlide.objects.exists())
+
+
+class CountdownControllView(TestCase):
+    def setUp(self):
+        self.admin_client = Client()
+        self.admin_client.login(username='admin', password='admin')
+
+    @patch('openslides.projector.views.reset_countdown')
+    def test_set_default(self, mock_reset_countdown):
+        """
+        Test, that the url /countdown/set-default/ sets the time for the countdown
+        and reset the countdown.
+        """
+        self.admin_client.get('/projector/countdown/set-default/', {'countdown_time': 42})
+        self.assertEqual(config['countdown_time'], 42)
+        mock_reset_countdown.assert_called_with()

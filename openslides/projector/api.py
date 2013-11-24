@@ -172,14 +172,13 @@ def register_slide_model(SlideModel, template):
     register_slide(SlideModel.slide_callback_name, model_slide)
 
 
-def set_active_slide(callback, kwargs=None):
+def set_active_slide(callback, **kwargs):
     """
     Set the active Slide.
 
     callback: The name of the slide callback.
     kwargs: Keyword arguments for the slide callback.
     """
-    kwargs = kwargs or {}
     kwargs.update(callback=callback)
     config['projector_active_slide'] = kwargs
     update_projector()
