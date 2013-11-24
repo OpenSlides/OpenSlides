@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 
 import os
+
+from django.utils.translation import ugettext_lazy
+
 from openslides.utils.main import filesystem2unicode
 
 
@@ -15,14 +18,12 @@ LOGIN_REDIRECT_URL = '/'
 
 SESSION_COOKIE_NAME = 'OpenSlidesSessionID'
 
-ugettext = lambda s: s
-
 LANGUAGES = (
-    ('de', ugettext('German')),
-    ('en', ugettext('English')),
-    ('fr', ugettext('French')),
-    ('cs', ugettext('Czech')),
-    ('pt', ugettext('Portuguese')),
+    ('cs', ugettext_lazy('Czech')),
+    ('en', ugettext_lazy('English')),
+    ('fr', ugettext_lazy('French')),
+    ('de', ugettext_lazy('German')),
+    ('pt', ugettext_lazy('Portuguese')),
 )
 
 # If you set this to False, Django will make some optimizations so as not
