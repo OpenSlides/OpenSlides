@@ -24,6 +24,7 @@ from openslides.utils.main import (
     get_default_user_data_path,
     get_port,
     get_win32_portable_path,
+    PortableDirNotWritable
 )
 
 
@@ -347,13 +348,8 @@ class MainWindow(wx.Frame):
 
         self.server_running = False
 
-        # Set path for gui settings to default user data according to the
-        # OpenSlides type. This does not depend on any argument the user might
-        # type in.
-        openslides_type = detect_openslides_type()
-        default_user_data_path = get_default_user_data_path(openslides_type)
-        self.gui_settings_path = os.path.join(
-            default_user_data_path, 'openslides', 'gui_settings.json')
+        self.gui_settings_path = None
+        self.gui_initialized = False
 
         self.backupdb_enabled = False
         self.backupdb_destination = ""
@@ -471,9 +467,32 @@ class MainWindow(wx.Frame):
 
         self.Bind(wx.EVT_CLOSE, self.on_close)
 
+    def initialize_gui(self):
+        if self.gui_initialized:
+            return True
+
+        # Set path for gui settings to default user data according to the
+        # OpenSlides type. This does not depend on any argument the user might
+        # type in.
+        openslides_type = detect_openslides_type()
+        try:
+            default_user_data_path = get_default_user_data_path(openslides_type)
+        except PortableDirNotWritable:
+            wx.MessageBox(
+                _("The portable directory is not writable. Please copy the "
+                "openslides portable to a writeable location and start it "
+                "again from there"),
+                _("Error: Portable directory not writable"),
+                wx.OK | wx.ICON_ERROR)
+            return False
+
+        self.gui_settings_path = os.path.join(
+            default_user_data_path, 'openslides', 'gui_settings.json')
         self.load_gui_settings()
         self.apply_backup_settings()
-        self.Show()
+
+        self.gui_initialized = True
+        return True
 
     @property
     def backup_interval_seconds(self):
@@ -505,6 +524,9 @@ class MainWindow(wx.Frame):
         self.lb_port.SetLabel(_("Port: {0}").format(port))
 
     def load_gui_settings(self):
+        if self.gui_settings_path is None:
+            return
+
         try:
             f = open(self.gui_settings_path, "rb")
         except IOError as e:
@@ -707,6 +729,20 @@ class MainWindow(wx.Frame):
         self.save_gui_settings()
         self.Destroy()
 
+class OpenslidesApp(wx.App):
+    def __init__(self):
+        super(OpenslidesApp, self).__init__(False)
+
+    def OnInit(self):
+        window = MainWindow()
+        self.SetTopWindow(window)
+
+        if not window.initialize_gui():
+            self.Exit()
+            return False
+
+        window.Show()
+        return True
 
 def main():
     locale.setlocale(locale.LC_ALL, "")
@@ -719,8 +755,7 @@ def main():
         _translations = gettext.translation(
             "django", localedir, [lang], fallback=True)
 
-    app = wx.App(False)
-    window = MainWindow()
+    app = OpenslidesApp()
     app.MainLoop()
 
 if __name__ == "__main__":
