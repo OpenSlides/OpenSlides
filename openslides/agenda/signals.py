@@ -13,7 +13,7 @@ from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.config.api import config, ConfigPage, ConfigVariable
 from openslides.config.signals import config_signal
-from openslides.projector.api import get_active_slide
+from openslides.projector.api import get_active_slide, get_active_object
 from openslides.projector.projector import Overlay
 from openslides.projector.signals import projector_overlays
 
@@ -97,23 +97,30 @@ def agenda_list_of_speakers(sender, **kwargs):
         The overlay is only shown on agenda-items and not on the
         list-of-speakers slide.
         """
-        active_slide = get_active_slide()
-        slide_type = active_slide.get('type', None)
-        active_slide_pk = active_slide.get('pk', None)
-        if (active_slide['callback'] == 'agenda' and
-                slide_type != 'list_of_speakers' and
-                active_slide_pk is not None):
-            item = Item.objects.get(pk=active_slide_pk)
+        slide = get_active_object()
+        if isinstance(slide, Item):
+            item = slide
+        else:
+            # TODO: If there are more the one items, use the first one in the
+            #       mptt tree that is not closed
+            try:
+                item = Item.objects.filter(
+                    content_type=ContentType.objects.get_for_model(slide),
+                    object_id=slide.pk)[0]
+            except IndexError:
+                item = None
+
+        if item and get_active_slide().get('type', None) != 'list_of_speakers':
             list_of_speakers = item.get_list_of_speakers(
                 old_speakers_count=config['agenda_show_last_speakers'],
                 coming_speakers_count=5)
-            context = {
+
+            value = render_to_string('agenda/overlay_speaker_projector.html', {
                 'list_of_speakers': list_of_speakers,
-                'closed': item.speaker_list_closed,
-            }
-            return render_to_string('agenda/overlay_speaker_projector.html', context)
+                'closed': item.speaker_list_closed})
         else:
-            return None
+            value = None
+        return value
 
     return Overlay(name, get_widget_html, get_projector_html)
 

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from django.conf import settings
 from django.template import RequestContext
 from django.template.loader import render_to_string
 
@@ -86,7 +87,15 @@ class Overlay(object):
         """
         Returns the html code for the projector.
         """
-        return self.get_html_wrapper(self.projector_html_callback())
+        try:
+            value = self.get_html_wrapper(self.projector_html_callback())
+        except Exception as exception:
+            if settings.DEBUG:
+                raise exception
+            else:
+                # Catch all errors, so an overlay can not kill the projector
+                value = ''
+        return value
 
     def get_javascript(self):
         """

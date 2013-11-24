@@ -30,4 +30,4 @@ def mediafile_presentation_as_slide(**kwargs):
     return render_to_string('mediafile/presentation_slide.html', context)
 
 
-register_slide('mediafile', mediafile_presentation_as_slide)
+register_slide('mediafile', mediafile_presentation_as_slide, Mediafile)

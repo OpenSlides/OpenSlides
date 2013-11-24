@@ -139,9 +139,14 @@ class ApiFunctions(TestCase):
 
     def test_register_slide(self):
         mock_slide_callback = {}
-        with patch('openslides.projector.api.slide_callback', mock_slide_callback):
-            projector_api.register_slide('some name', 'some callback')
-        self.assertEqual(mock_slide_callback, {'some name': 'some callback'})
+        mock_slide_model = {}
+        with patch('openslides.projector.api.slide_model', mock_slide_model):
+            with patch('openslides.projector.api.slide_callback', mock_slide_callback):
+                projector_api.register_slide('some name', 'some callback')
+                projector_api.register_slide('other name', 'other callback', 'Model')
+        self.assertEqual(mock_slide_callback, {'some name': 'some callback',
+                                               'other name': 'other callback'})
+        self.assertEqual(mock_slide_model, {'other name': 'Model'})
 
     @patch('openslides.projector.api.render_to_string')
     @patch('openslides.projector.api.register_slide')
@@ -156,6 +161,7 @@ class ApiFunctions(TestCase):
         projector_api.register_slide_model(mock_SlideModel, 'some template')
         used_args, __ = mock_register_slide.call_args
         self.assertEqual(used_args[0], 'mock_callback_name')
+        self.assertEqual(used_args[2], mock_SlideModel)
 
         # Test the generated slide function
         used_args[1](pk=1)
@@ -182,3 +188,26 @@ class ApiFunctions(TestCase):
         with patch('openslides.projector.api.config', mock_config):
             value = projector_api.get_active_slide()
         self.assertEqual(value, 'value')
+
+    def test_get_active_object(self):
+        mock_Model = MagicMock()
+        mock_Model.DoesNotExist = Exception
+        mock_slide_model = {'mock_model': mock_Model}
+        mock_active_slide = {'callback': 'unknown'}
+        mock_get_active_slide = MagicMock(return_value=mock_active_slide)
+
+        with patch('openslides.projector.api.get_active_slide', mock_get_active_slide):
+            with patch('openslides.projector.api.slide_model', mock_slide_model):
+                # test unknwon slide_callback_name
+                self.assertIsNone(projector_api.get_active_object())
+
+                # test unknown object
+                mock_Model.objects.get.side_effect = Exception
+                mock_active_slide.update(callback='mock_model', pk=42)
+                self.assertIsNone(projector_api.get_active_object())
+                mock_Model.objects.get.assert_called_with(pk=42)
+
+                # test success
+                mock_Model.objects.get.side_effect = None
+                mock_Model.objects.get.return_value = 'success'
+                self.assertEqual(projector_api.get_active_object(), 'success')
