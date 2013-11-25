@@ -242,6 +242,9 @@ OpenSlides uses the following projects or parts of them:
 
 * `Bleach <https://github.com/jsocol/bleach/>`_, License: BSD
 
+* `Bootstrap <http://getbootstrap.com/2.3.2/>`_, License: Apache
+  License v2.0
+
 * `CKEditor <http://ckeditor.com>`_, License: GPL, LGPL, MPL
 
 * `Django <https://www.djangoproject.com>`_, License: BSD
@@ -258,8 +261,6 @@ OpenSlides uses the following projects or parts of them:
 * `Pillow <https://github.com/python-imaging/Pillow/>`_, License: Standard
   PIL License
 
-* `qrcode <https://github.com/lincolnloop/python-qrcode/>`_, License: BSD
-
 * `ReportLab <http://www.reportlab.com/software/opensource/rl-toolkit/>`_,
   License: BSD
 
@@ -275,9 +276,6 @@ OpenSlides uses the following projects or parts of them:
   <http://ryan-roemer.github.io/sphinx-bootstrap-theme/>`_, License: MIT
 
 * `Tornado <http://www.tornadoweb.org/en/stable/>`_, License: Apache
-  License v2.0
-
-* `Twitter Bootstrap <http://getbootstrap.com/2.3.2/>`_, License: Apache
   License v2.0
 
 * `Ubuntu TrueType Font <http://font.ubuntu.com>`_, License: Ubuntu Font
