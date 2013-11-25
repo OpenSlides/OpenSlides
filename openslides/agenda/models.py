@@ -112,10 +112,7 @@ class Item(SlideMixin, MPTTModel):
 
     def save(self, *args, **kwargs):
         super(Item, self).save(*args, **kwargs)
-        active_slide = get_active_slide()
-        active_slide_pk = active_slide.get('pk', None)
-        if (active_slide['callback'] == 'agenda' and
-                unicode(self.parent_id) == unicode(active_slide_pk)):
+        if self.parent and self.parent.is_active_slide():
             update_projector()
 
     def __unicode__(self):
@@ -359,14 +356,10 @@ class Speaker(models.Model):
         Checks, if the agenda item, or parts of it, is on the projector.
         If yes, it updates the projector.
         """
-        active_slide = get_active_slide()
-        active_slide_pk = active_slide.get('pk', None)
-        slide_type = active_slide.get('type', None)
-        if (active_slide['callback'] == 'agenda' and
-                unicode(self.item_id) == unicode(active_slide_pk)):
-            if slide_type == 'list_of_speakers':
+        if self.item.is_active_slide():
+            if get_active_slide().get('type', None) == 'list_of_speakers':
                 update_projector()
-            elif slide_type is None:
+            else:
                 update_projector_overlay('agenda_speaker')
 
     def begin_speach(self):

@@ -60,4 +60,4 @@ def agenda_slide(**kwargs):
     return slide
 
 
-register_slide('agenda', agenda_slide)
+register_slide('agenda', agenda_slide, Item)

@@ -20,6 +20,14 @@ A dictonary where the key is the name of a slide, and the value is a
 callable object which returns the html code for a slide.
 """
 
+slide_model = {}
+"""
+A dictonary for SlideMixin models to reference from the slide_callback_name to
+the Model
+"""
+# TODO: Find a bether way to do this. Maybe by reimplementing slides with
+#       metaclasses
+
 
 class SlideError(OpenSlidesError):
     pass
@@ -139,11 +147,15 @@ def get_projector_overlays_js(as_json=False):
     return javascript
 
 
-def register_slide(name, callback):
+def register_slide(name, callback, model=None):
     """
-    Register a function as slide callback.
+    Registers a function as slide callback.
+
+    The optional argument 'model' is used to register a SlideModelClass.
     """
     slide_callback[name] = callback
+    if model is not None:
+        slide_model[name] = model
 
 
 def register_slide_model(SlideModel, template):
@@ -169,7 +181,7 @@ def register_slide_model(SlideModel, template):
 
         return render_to_string(template, context)
 
-    register_slide(SlideModel.slide_callback_name, model_slide)
+    register_slide(SlideModel.slide_callback_name, model_slide, SlideModel)
 
 
 def set_active_slide(callback, **kwargs):
@@ -190,6 +202,26 @@ def get_active_slide():
     Returns the dictonary, which defines the active slide.
     """
     return config['projector_active_slide']
+
+
+def get_active_object():
+    """
+    Returns an object if the active slide is an instance of SlideMixin.
+    In other case, returns None
+    """
+    active_slide_dict = get_active_slide()
+    callback_name = active_slide_dict.get('callback', None)
+    object_pk = active_slide_dict.get('pk', None)
+    try:
+        Model = slide_model[callback_name]
+    except KeyError:
+        value = None
+    else:
+        try:
+            value = Model.objects.get(pk=object_pk)
+        except Model.DoesNotExist:
+            value = None
+    return value
 
 
 def get_all_widgets(request, session=False):
