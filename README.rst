@@ -272,6 +272,8 @@ OpenSlides uses the following projects or parts of them:
 
 * `Sphinx <http://sphinx-doc.org/>`_, License: BSD
 
+* Sphinx extension `autoimage <https://gist.github.com/kroger/3856821/>`_, License: MIT
+
 * `Sphinx Bootstrap Theme
   <http://ryan-roemer.github.io/sphinx-bootstrap-theme/>`_, License: MIT
 
