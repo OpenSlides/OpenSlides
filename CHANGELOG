@@ -15,9 +15,11 @@ Projector:
 - Improved projector zoom and scroll behaviour.
 Agenda:
 - New config option: couple countdown with list of speakers.
-- Use HTML editor (CKEditor) for agenda item text field.
+- Used HTML editor (CKEditor) for agenda item text field.
+- Added additional input format for agenda item duration field.
 Motions:
 - Enabled attachments for motions.
+- Refactored warnings on CSV import view.
 Elections:
 - Refactored assignment app to use class based views instead of functions.
 Polls:
@@ -31,6 +33,7 @@ Other:
 - New start script with new command line options (see python manage.py --help)
 - Fixed keyerror on user settings view.
 - New messages on success or error of many actions like creating or editing objects.
+- Changed messages backend, used Django's default now.
 - A lot of template fixes and improvements.
 - Extended css style options in CKEditor.
 - Added feature to config app to return the default value for a key.
@@ -38,8 +41,10 @@ Other:
 - Improved README (now with install instructions and used components).
 - Updated all required package versions.
 - Used flake8 instead of pep8 for style check, sort all import statements with isort.
-- Added Portuguese translation (Thanks to Marco A.G.Pinto).
-- Updated to Django 1.6.
+- Added Portuguese translation (Thanks to Marco A. G. Pinto).
+- Switched to more flexible versions of required third party packages.
+- Updated to Django 1.6.x.
+- Updated German documentation.
 - Change license from GPLv2+ to MIT, see LICENSE file.
 
 
