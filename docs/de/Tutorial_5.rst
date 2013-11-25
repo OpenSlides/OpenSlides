@@ -1,3 +1,7 @@
+.. raw:: latex
+
+   \newpage
+
 Wahlen durchführen
 ==================
 
@@ -18,8 +22,11 @@ Anzahl der Stimmzettel (Vorauswahl):
 Benutzerdefinierte Anzahl von Stimmzetteln:
   40
 
-.. image:: ../_images/Tutorial_5_01.png
+.. autoimage:: Tutorial_5_01.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 60
+   :alt: Konfiguration Wahlen
 
 *Bei Anträgen und Wahlen kann es unter Umständen vorkommen, dass
 unterschiedlich viele Stimmzettel benötigt werden, weshalb hierfür jeweils
@@ -32,8 +39,11 @@ Eingabe der anstehenden Wahlen/Wahlämter
 Vor Veranstaltungsbeginn sind die anstehenden Wahlen vorzubereiten. Geben
 Sie dazu im Menüpunkt „Wahlen“ rechts oben unter ``Neu``
 
-.. image:: ../_images/Tutorial_5_02.png
+.. autoimage:: Tutorial_5_02.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: Wahl anlegen
 
 ein Wahlamt wie folgt ein:
 
@@ -46,8 +56,11 @@ Beschreibung:
 Anzahl der zur Wahl stehenden Posten:
   3
 
-.. image:: ../_images/Tutorial_5_03.png
+.. autoimage:: Tutorial_5_03.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 60
+   :alt: Formular Neue Wahl
 
 Geben Sie auf die gleiche Weise ein weiteres Wahlamt wie folgt ein:
 
@@ -65,8 +78,11 @@ Kommentar für den Stimmzettel:
 
 Die Wahlübersicht (Menüpunkt „Wahlen“) müsste nun so aussehen:
 
-.. image:: ../_images/Tutorial_5_04.png
+.. autoimage:: Tutorial_5_04.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: Übersicht Wahlen
 
 
 Durchführung einer Wahl während der Veranstaltung
@@ -76,23 +92,32 @@ Wenn der Vorsitzende während der Veranstaltung die Wahlen zum neuen
 Vorstand aufruft, klicken Sie zunächst im Menüpunkt „Dashboard“ auf das
 entsprechende Projektorsymbol vor der ersten Wahl.
 
-.. image:: ../_images/Tutorial_5_05.png
+.. autoimage:: Tutorial_5_05.png
    :class: screenshot
+   :scale-html: 75
+   :scale-latex: 45
+   :alt: Widget Wahl
 
 Wechseln Sie dann zur Wahlansicht, indem Sie auf den Titel der Wahl klicken.
 
 Die Wahlansicht sieht dann wie folgt aus:
 
-.. image:: ../_images/Tutorial_5_06.png
+.. autoimage:: Tutorial_5_06.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: Wahl im Detail
 
 Es werden nun verschiedene Kandidaten vorgeschlagen, die Sie durch Auswahl
 eines Teilnehmers und Klick auf den blauen Haken auf die Kandidatenliste
 setzen können. Sie können nur Kandidaten auswählen, die auch im System
 gespeichert sind.
 
-.. image:: ../_images/Tutorial_5_07.png
+.. autoimage:: Tutorial_5_07.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: Wahl mit Kandidatenliste
 
 *Das kleine Symbol neben dem Auswahlformular ist ein direkter Link zur
 Eingabe eines neuen Teilnehmers. Dieser kann sehr nützlich sein, wenn
@@ -102,58 +127,82 @@ eingetragen wurde.*
 Steht die Kandidatenauswahl fest, ändern Sie rechts den Status der Wahl auf
 „Im Wahlvorgang“. 
 
-.. image:: ../_images/Tutorial_5_08.png
+.. autoimage:: Tutorial_5_08.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: Wahl im Wahlvorgang
 
 Klicken Sie anschließend unten auf ``Neuer Wahlgang``, um einen ersten
 Wahlgang anzulegen. Da es eine geheime Wahl ist und die Stimmzettel erst
 ausgeteilt werden müssen, können Sie jetzt noch keine Wahlergebnisse
 eintragen. Klicken Sie stattdessen auf ``Stimmzettel als PDF``.
 
-.. image:: ../_images/Tutorial_5_09.png
+.. autoimage:: Tutorial_5_09.png
    :class: screenshot
+   :scale-html: 75
+   :scale-latex: 45
+   :alt: Stimmzettel als PDF drücken
 
 OpenSlides liefert Ihnen daraufhin eine PDF-Datei, die Sie direkt
 ausdrucken können. Die Stimmzettel können anschließend auseinander
 geschnitten und verteilt werden.
 
-.. image:: ../_images/Tutorial_5_10.png
+.. autoimage:: Tutorial_5_10.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: Wahlstimmzettel als PDF
 
 *Bei mehrfachen Wahlen bietet sich der Einsatz einer Hebelschere an.*
 
 Nach Auszählung der Stimmzettel tragen Sie die Ergebnisse des ersten
 Wahlgangs in eben dieses Formular ein:
 
-.. image:: ../_images/Tutorial_5_11.png
+.. autoimage:: Tutorial_5_11.png
    :class: screenshot
+   :scale-html: 75
+   :scale-latex: 45
+   :alt: Eingabe der Wahlergebnisse
 
 Klicken Sie anschließend auf den roten Knopf bei dem ersten Wahlgang, um
 die Wahlergebnisse auf dem Projektor zu veröffentlichen. Der Knopf erhält
 einen weißen Haken.
 
-.. image:: ../_images/Tutorial_5_12.png
+.. autoimage:: Tutorial_5_12.png
    :class: screenshot
+   :scale-html: 75
+   :scale-latex: 45
+   :alt: Wahlergebnisse veröffentlichen
 
 Klicken Sie nun auf die grauen Haken vor Prof. Dr. Franziska Meyer, Luise Schmidt und
 Dr. Hans Schulze, um diese als gewählt zu markieren.
 
-.. image:: ../_images/Tutorial_5_13.png
+.. autoimage:: Tutorial_5_13.png
    :class: screenshot
+   :scale-html: 75
+   :scale-latex: 45
+   :alt: Wahlsieger festlegen
 
 Ändern Sie rechts den Status der Wahl auf „Abgeschlossen“. Das Projektorbild
 sieht nun wie folgt aus:
 
-.. image:: ../_images/Tutorial_5_14.png
+.. autoimage:: Tutorial_5_14.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: Projektoransicht Wahl
 
 Auf die gleiche Weise können Sie nun auch die zweite Wahl durchführen. Sie
 werden feststellen, dass als Wahlmethode automatisch eine
 Ja-Nein-Enthaltungs-Wahl bezüglich eines jeden Kandidaten ausgewählt wird,
 wenn es weniger oder gleich viele Kandidaten wie Plätze gibt.
 
-.. image:: ../_images/Tutorial_5_15.png
+.. autoimage:: Tutorial_5_15.png
    :class: screenshot
+   :scale-html: 75
+   :scale-latex: 45
+   :alt: Ja-Nein-Enthaltungs-Wahl
 
 *Falls Sie nicht im Präsentationsmodus Single arbeiten, kann es sinnvoll
 sein, den Drucker und die Hebelschere an der Seite oder am hinteren Ende

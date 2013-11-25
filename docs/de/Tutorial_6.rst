@@ -1,3 +1,7 @@
+.. raw:: latex
+
+   \newpage
+
 Dateien hochladen und verwalten
 ===============================
 
@@ -15,8 +19,11 @@ Dateisystem ihres Computers auswählen. Wir unterstellen, dass der Dateiname
 ``bild.jpg`` lautet. Außerdem können Sie noch einen ergänzenden Titel
 angeben.
 
-.. image:: ../_images/Tutorial_6_01.png
+.. autoimage:: Tutorial_6_01.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 60
+   :alt: Formular Neue Datei
 
 Die Datei ist nun auf den Server geladen und unter ihrem Namen auf der
 Übersichtsseite des Menüpunkts „Dateien“ verlinkt. Um den Link kurzzeitig
@@ -44,18 +51,23 @@ Text:
 Beachten Sie die richtige Schreibweise des Links im verwendeten HTML-Tag.
 Der Link entspricht dem zuvor kopierten.
 
-.. image:: ../_images/Tutorial_6_02.png
+.. autoimage:: Tutorial_6_02.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 60
+   :alt: Benutzerdefinierte Folie
 
 Wenn Sie nun die benutzerdefinierte Folie mit Hilfe des Projektorsymbols
 |projector| auswählen, wird das Bild auf dem Projektor angezeigt. Weitere
 Feineinstellungen können Sie im HTML-Tag mit Style-Attributen vornehmen.
 Falls beispielsweise das Bild nicht die passende Größe hat, können Sie
-``style="width:80%;"`` verwenden. Das Anzeigen von PDF-Dateien wird derzeit
-noch nicht unterstützt.
+``style="width:80%;"`` verwenden.
 
-.. image:: ../_images/Tutorial_6_03.png
+.. autoimage:: Tutorial_6_03.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: Projektor mit benutzerdefinierter Folie
 
 .. |projector| image:: ../_images/projector.png
 

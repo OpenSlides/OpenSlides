@@ -1,3 +1,7 @@
+.. raw:: latex
+
+   \newpage
+
 Tagesordnung
 ++++++++++++
 
@@ -11,8 +15,11 @@ Einen neuen Tagesordnungspunkt erstellen
 Um einen neuen Punkt auf die Tagesordnung zu setzen, klicken Sie unter dem
 Menüpunkt „Tagesordnung“ auf den rechts oben befindlichen blauen Button „Neu“.
 
-.. image:: ../_images/Agenda_01.png
+.. autoimage:: Agenda_01.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: leere Tagesordnung
 
 Es öffnet sich eine Seite, auf der Sie den neuen Eintrag bearbeiten können.
 Erforderliche Angaben für die Erstellung eines neuen Tagesordnungspunktes
@@ -27,10 +34,6 @@ erscheint ein organisatorischer Eintrag ebenfalls nicht.
 Zusätzlich haben Sie die Möglichkeit, unter dem „Titel“ einen „Text“
 einzufügen, der auf dem Projektor erscheinen soll. Einträge im Feld
 „Kommentar“ sind nur für die Versammlungsleitung sichtbar.
-
-*Sie können im Textfeld auch HTML-Elemente verwenden. Innerhalb solcher
-sollten jedoch keine Zeilenumbrüche eingegeben werden, da letztere automatisch
-in <br>-Elemente umgewandelt werden.*
 
 Im Feld „Dauer“ können Sie die geplante Zeit des Tagesordnungspunktes im
 Format „hh:mm“ (Stunden:Minuten) angeben. Auf der Übersichtsseite der
@@ -75,8 +78,11 @@ der Maus horizontal und vertikal an die gewünschte Position zu verschieben.
 Die geänderte Reihenfolge muss am Ende im oben erscheinenden Dialog
 bestätigt werden.
 
-.. image:: ../_images/Agenda_02.png
+.. autoimage:: Agenda_02.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: Beispiel Tagesordung mit Meldung 'geänderte Reihenfolge'
 
 
 Projizierung
@@ -91,8 +97,11 @@ oder auf der Tagesordnungsseite auf den Projektor-Button in der oberen Zeile
 rechts. Projiziert werden nur die Haupttagesordnungspunkte, nicht die
 Unterpunkte.
 
-.. image:: ../_images/Agenda_03.png
+.. autoimage:: Agenda_03.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: Projektor-Ansicht Tagesordnung
 
 Sie haben die Möglichkeit, auch einzelne Tagesordnungspunkte mit ihren
 dazugehörigen Texten anzeigen zu lassen. Nutzen Sie dafür den
@@ -113,8 +122,6 @@ Bei einem Klick auf den Glocken-Button |bell| auf dem Dashboard oder auf der
 Tagesordnungsseite wird die Rednerliste für den jeweiligen Eintrag auf der
 Folie dargestellt.
 
-.. |bell| image:: ../_images/bell.png
-
 Zusätzlich zu allen bereits genannten Anzeigemöglichkeiten kann auf dem
 Dashboard eine Einblendung der Rednerliste eingestellt werden. Aktivieren
 Sie diese, wenn Sie auf den Kästchen-Button |checkbox| klicken. Die in einem
@@ -124,8 +131,11 @@ Redner. Die Einblendung erscheint nur auf Folien von Tagesordnungspunkten.
 
 .. |checkbox| image:: ../_images/checkbox.png
 
-.. image:: ../_images/Agenda_04.png
+.. autoimage:: Agenda_04.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: Projektor-Ansicht mit Rednerlisten-Overlay
 
 
 Die Rednerliste verwalten
@@ -154,16 +164,17 @@ setzen.
 Um die Reihenfolge von Rednern zu ändern, verschieben Sie sie mit der Maus
 an die gewünschte Position. Bestätigen Sie danach Ihre Änderungen.
 
-.. image:: ../_images/Agenda_05.png
+.. autoimage:: Agenda_05.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: Rednerlistenverwaltung
 
 Wenn eine Person mit ihrem Redebeitrag beginnt, klicken Sie auf den Button
-„Rede beginnen“ |microphone|. Sie wird nun als aktueller Redner angezeigt.
+„Rede beginnen“ |bell|. Sie wird nun als aktueller Redner angezeigt.
 Ist der Redebeitrag zu Ende, können Sie dies mit dem Button „Rede beenden“
-|microphone| bestätigen oder direkt den nächsten Redner mit dem Button „Rede
-beginnen“ |microphone| aufrufen.
-
-.. |microphone| image:: ../_images/microphone.png
+|bell| bestätigen oder direkt den nächsten Redner mit dem Button „Rede
+beginnen“ |bell| aufrufen.
 
 Auf dem Dashboard finden Sie im Widget „Rednerliste“ zwei weitere Buttons,
 um den obersten Redner des aktuell ausgewählten Tagesordnungseintrags
@@ -173,9 +184,19 @@ beenden.
 Die Einstellung, wie viele letzte Redner projiziert werden sollen, finden
 Sie im Menüpunkt „Konfiguration“ in der oberen Leiste unter „Tagesordnung“.
 
-.. image:: ../_images/Agenda_06.png
+.. autoimage:: Agenda_06.png
    :class: screenshot
+   :scale-html: 75
+   :scale-latex: 60
+   :alt: Konfiguration Tagesordnung
 
+Schließlich können Sie in diesem Menüpunkt einstellen, dass die Rednerliste
+mit dem Countdown gekoppelt wird. Wenn Sie auf „Rede beginnen“ |bell|
+oder „Rede beenden“ |bell| klicken, wird der Countdown automatisch
+gestartet beziehungsweise gestoppt und beim nächsten Redner zurückgesetzt.
+
+.. |microphone| image:: ../_images/microphone.png
+.. |bell| image:: ../_images/bell.png
 
 CSV-Export der Rednerlisten
 ---------------------------

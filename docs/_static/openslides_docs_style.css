@@ -2,13 +2,13 @@
  * Extra style for OpenSlides documentation
  */
 
-.screenshot {
-    width: 30%;
-    border: 1px solid;
+img.screenshot {
+    border: 1px solid lightgrey;
+    padding: 4px;
     margin-bottom: 10px;
 }
-.screenshot:hover{
-    width: 80%;
+h2  {
+    margin-top: 35px !important;
 }
 a.headerlink {
     visibility: hidden;

@@ -1,6 +1,9 @@
 Tutorial – Präsentationsmodus
 =============================
 
+Dieses Tutorial ist auf dem Stand von OpenSlides 1.4.x und weicht nur
+sehr gerinfügig von OpenSlides 1.5 ab.
+
 In diesem Tutorial sehen Sie am Beispiel der Mitgliederversammlung eines
 Kleingartenvereins, wie Sie OpenSlides im Präsentationsmodus bedienen.
 
@@ -16,7 +19,7 @@ Versammlung werden verschiedene Berichte gehalten und über eine
 Satzungsänderung abgestimmt. Außerdem finden Wahlen zum Vorstand (drei
 Personen) und zum Beirat (sieben Personen) statt.
 
-Die einzelen Tutorials:
+Auf den nächsten Seiten folgen die einzelen Tutorials.
 
 .. toctree::
  :maxdepth: 1
@@ -24,13 +27,13 @@ Die einzelen Tutorials:
  Tutorial_1
 
  Tutorial_2
- 
+
  Tutorial_3
 
  Tutorial_4
 
  Tutorial_5
 
- Tutorial_6 
+ Tutorial_6
 
  Tutorial_7

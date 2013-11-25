@@ -1,3 +1,7 @@
+.. raw:: latex
+
+   \newpage
+
 Einrichtung von OpenSlides
 ==========================
 
@@ -16,16 +20,22 @@ Sie sehen jetzt die Login-Seite von OpenSlides in Ihrem
 Browser. Loggen Sie sich als Administrator ein, indem Sie als Benutzernamen
 ``admin`` und als Passwort ``admin`` eingeben und auf ``Anmelden`` klicken.
 
-.. image:: ../_images/Tutorial_1_01.png
+.. autoimage:: Tutorial_1_01.png
    :class: screenshot
+   :scale-html: 75
+   :scale-latex: 45
+   :alt: Loginmaske
 
 Anschließend sollten Sie sofort das Administrator-Passwort ändern. Geben
 Sie in die entsprechenden Felder Ihr altes Passwort ``admin`` und
 anschließend Ihr neues Passwort ein. Wiederholen Sie das neue Passwort im
 dritten Formularfeld. Bestätigen Sie die Eingabe mit ``Speichern``.
 
-.. image:: ../_images/Tutorial_1_02.png
+.. autoimage:: Tutorial_1_02.png
    :class: screenshot
+   :scale-html: 75
+   :scale-latex: 45
+   :alt: Formular zum Passwort ändern
 
 .. __: FirstSteps.html#installation
 .. __: FirstSteps.html#start-des-servers-und-offnen-des-browsers
@@ -62,8 +72,11 @@ Startseite – Willkommenstext:
   Herzlich willkommen, liebe Gartenfreunde!
 
 
-.. image:: ../_images/Tutorial_1_03.png
+.. autoimage:: Tutorial_1_03.png
    :class: screenshot
+   :scale-html: 75
+   :scale-latex: 45
+   :alt: Allgemeine Konfiguration
 
 Klicken Sie anschließend auf ``Speichern``. Auch bei allen folgenden
 Eingaben dieses Tutorials müssen Sie stets auf ``Speichern`` klicken, um
@@ -74,11 +87,14 @@ Einrichtung eigener Folien
 --------------------------
 
 Um erste benutzerdefinierte Folien hinzuzufügen, wechseln Sie zum Menüpunkt
-„Dashboard“. Klicken Sie in dem Fenster „Benutzerdefinierte Folien“ auf
+„Dashboard“. Klicken Sie in dem Widget „Benutzerdefinierte Folien“ auf
 ``Neu``
 
-.. image:: ../_images/Tutorial_1_04.png
+.. autoimage:: Tutorial_1_04.png
    :class: screenshot
+   :scale-html: 75
+   :scale-latex: 45
+   :alt: Widget Benutzerdefinierte Folien
 
 und geben Sie eine Folie wie folgt ein:
 
@@ -88,13 +104,19 @@ Titel:
 Text:
   Bitte kommen Sie pünktlich um 16.00 Uhr zurück in den Saal.
 
-.. image:: ../_images/Tutorial_1_05.png
+.. autoimage:: Tutorial_1_05.png
    :class: screenshot
+   :scale-html: 75
+   :scale-latex: 45
+   :alt: Bearbeitungsformular der Benutzerdefinierten Folie
 
 Die Ansicht im Menüpunkt „Dashboard“ müsste nun wie folgt aussehen:
 
-.. image:: ../_images/Tutorial_1_06.png
+.. autoimage:: Tutorial_1_06.png
    :class: screenshot
+   :scale-html: 75
+   :scale-latex: 45
+   :alt: Dashboard mit neu angelegter benutzerdefinierter Folie
 
 
 Technische Einrichtung im Veranstaltungsraum
@@ -110,13 +132,19 @@ der Projektor-Live-Ansicht. Er lautet zum Beispiel
 ``http://192.168.x.y/projector/`` wobei x und y für je eine bestimmte Zahl
 mit ein bis drei Ziffern stehen.
 
-.. image:: ../_images/Tutorial_1_07.png
+.. autoimage:: Tutorial_1_07.png
    :class: screenshot
+   :scale-html: 75
+   :scale-latex: 45
+   :alt: Widget Projektor-Live-Ansicht
 
 Das Projektorbild sieht zurzeit wie folgt aus:
 
-.. image:: ../_images/Tutorial_1_08.png
+.. autoimage:: Tutorial_1_08.png
    :class: screenshot
+   :scale-html: 45
+   :scale-latex: 80
+   :alt: Projektor-Ansicht
 
 
 Auswahl der Projektorfolien
@@ -128,8 +156,11 @@ Sie können eine bestimmte Folie anwählen, indem Sie auf das jeweilige
 Projektorsymbol |projector| klicken. Die jeweils aktive Folie zeigt ein
 blaues Projektorsymbol.
 
-.. image:: ../_images/Tutorial_1_09.png
+.. autoimage:: Tutorial_1_09.png
    :class: screenshot
+   :scale-html: 75
+   :scale-latex: 45
+   :alt: Ausgewählte Folie im Widget Benutzerdefinierte Folien
 
 .. |projector| image:: ../_images/projector.png
 
@@ -145,8 +176,11 @@ angelegt werden soll, können Sie die Mitteilungsfunktion im Fenster
 aktivieren schließlich die Einblendung, indem Sie auf das davor gestellte
 Kästchen klicken.
 
-.. image:: ../_images/Tutorial_1_10.png
+.. autoimage:: Tutorial_1_10.png
    :class: screenshot
+   :scale-html: 75
+   :scale-latex: 45
+   :alt: Mitteilung projizieren im Widget Einblendungen
 
 Schalten Sie die Einblendung wieder aus, indem Sie erneut auf das (nunmehr
 blaue) Kästchen klicken.
