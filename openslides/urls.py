@@ -2,11 +2,22 @@
 
 from django.conf import settings
 from django.conf.urls import include, patterns, url
-from django.utils.importlib import import_module
+
+from openslides.utils.plugins import get_urlpatterns
 
 handler500 = 'openslides.utils.views.server_error'
 
-urlpatterns = patterns(
+urlpatterns = []
+
+js_info_dict = {'packages': []}
+
+for plugin in settings.INSTALLED_PLUGINS:
+    plugin_urlpatterns = get_urlpatterns(plugin)
+    if plugin_urlpatterns:
+        urlpatterns += plugin_urlpatterns
+        js_info_dict['packages'].append(plugin)
+
+urlpatterns += patterns(
     '',
     (r'^agenda/', include('openslides.agenda.urls')),
     (r'^motion/', include('openslides.motion.urls')),
@@ -17,19 +28,6 @@ urlpatterns = patterns(
     (r'^projector/', include('openslides.projector.urls')),
     (r'^i18n/', include('django.conf.urls.i18n')),
 )
-
-js_info_dict = {'packages': []}
-
-for plugin in settings.INSTALLED_PLUGINS:
-    try:
-        mod = import_module(plugin + '.urls')
-    except ImportError:
-        continue
-
-    plugin_name = mod.__name__.split('.')[0]
-    urlpatterns += patterns('', (r'^%s/' % plugin_name, include('%s.urls'
-                                                                % plugin)))
-    js_info_dict['packages'].append(plugin)
 
 # TODO: move this patterns into core or the participant app
 urlpatterns += patterns(
