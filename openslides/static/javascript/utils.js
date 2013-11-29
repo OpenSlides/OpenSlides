@@ -72,7 +72,7 @@ $(function () {
 
 function new_message(text, type) {
     var message = $('#dummy-notification').clone(true);
-    $(message).removeAttr('id').addClass(type).children('em').html(text);
+    $(message).removeAttr('id').addClass(type).html(text);
     $('#notifications').append(message);
     message.slideDown('fast');
 }
