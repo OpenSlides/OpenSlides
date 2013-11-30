@@ -638,7 +638,7 @@ class MainWindow(wx.Frame):
         info.SetDescription(_(
             "OpenSlides is a free web based presentation and "
             "assembly system.\n"
-            "OpenSlides is free software; licensed under the GNU GPL v2+."
+            "OpenSlides is free software; licensed under the MIT license."
         ).replace(u" ", u"\u00a0"))
         info.SetCopyright(_(u"\u00a9 2011-2013 by OpenSlides team"))
         info.SetWebSite(("http://www.openslides.org/", "www.openslides.org"))

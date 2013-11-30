@@ -1,12 +1,4 @@
-/*
- * OpenSlides mediafile style
- *
- * :copyright: 2011–2013 by OpenSlides team, see AUTHORS.
- * :license: GNU GPL, see LICENSE for more details.
- */
-
 /** Navigation icons (mapping to glyphicons-halflings) **/
-
 .icon-mediafile {
     background-image: url("../img/glyphicons_062_paperclip.png");
     background-position: 0;
