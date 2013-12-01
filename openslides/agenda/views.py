@@ -13,7 +13,6 @@ from reportlab.platypus import Paragraph
 
 from openslides.config.api import config
 from openslides.projector.api import get_active_slide, update_projector
-from openslides.projector.projector import Widget
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.pdf import stylesheet
 from openslides.utils.template import Tab
@@ -636,39 +635,3 @@ def register_tab(request):
         permission=(request.user.has_perm('agenda.can_see_agenda') or
                     request.user.has_perm('agenda.can_manage_agenda')),
         selected=selected)
-
-
-def get_widgets(request):
-    """
-    Returns the agenda widget for the projector tab.
-    """
-    active_slide = get_active_slide()
-    if active_slide['callback'] == 'agenda':
-        agenda_is_active = active_slide.get('pk', 'agenda') == 'agenda'
-        active_type = active_slide.get('type', 'text')
-    else:
-        agenda_is_active = None
-        active_type = None
-
-    return [
-        Widget(
-            request,
-            name='agenda',
-            display_name=_('Agenda'),
-            template='agenda/widget.html',
-            context={
-                'agenda_is_active': agenda_is_active,
-                'items': Item.objects.all(),
-                'active_type': active_type},
-            permission_required='projector.can_manage_projector',
-            default_column=1,
-            default_weight=20),
-
-        Widget(
-            request,
-            name='append_to_list_of_speakers',
-            display_name=_('List of speakers'),
-            template='agenda/speaker_widget.html',
-            permission_required='agenda.can_be_speaker',
-            default_column=1,
-            default_weight=30)]

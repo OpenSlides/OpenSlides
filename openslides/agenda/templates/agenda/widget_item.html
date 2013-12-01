@@ -1,6 +1,9 @@
+{% extends 'core/widget.html' %}
+
 {% load i18n %}
 {% load tags %}
 
+{% block content %}
 <ul style="line-height: 180%">
     <li class="{% if agenda_is_active %}activeline{% endif %}">
         <a href="{% url 'projector_activate_slide' 'agenda' %}"
@@ -53,5 +56,4 @@
     <li>{% trans 'No items available.' %}</li>
 {% endfor %}
 </ul>
-
-<small><p class="text-right"><a href="{% url 'item_overview' %}">{% trans "More..." %}</a></p></small>
+{% endblock %}

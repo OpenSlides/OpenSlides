@@ -1,62 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from django.conf import settings
-from django.template import RequestContext
-from django.template.loader import render_to_string
 
 from openslides.config.api import config
-from openslides.utils.exceptions import OpenSlidesError
-
-
-class Widget(object):
-    """
-    Class for a Widget for the Projector-Tab.
-    """
-    def __init__(self, request, name, html=None, template=None, context=None,
-                 permission_required=None, display_name=None, default_column=1,
-                 default_weight=0):
-        self.name = name
-        if display_name is None:
-            self.display_name = name.capitalize()
-        else:
-            self.display_name = display_name
-
-        if html is not None:
-            self.html = html
-        elif template is not None:
-            self.html = render_to_string(
-                template_name=template,
-                dictionary=context or {},
-                context_instance=RequestContext(request))
-        else:
-            raise OpenSlidesError('A Widget must have either a html or a template argument.')
-        self.permission_required = permission_required
-        self.default_column = default_column
-        self.default_weight = default_weight
-
-    def get_name(self):
-        """
-        Returns the lower case of the widget name.
-        """
-        return self.name.lower()
-
-    def get_html(self):
-        """
-        Returns the html code of the widget.
-        """
-        return self.html
-
-    def get_title(self):
-        """
-        Returns the title of the widget.
-        """
-        return self.display_name
-
-    def __repr__(self):
-        return repr(self.display_name)
-
-    def __unicode__(self):
-        return unicode(self.display_name)
 
 
 class Overlay(object):

@@ -51,8 +51,8 @@ class ActivateViewTest(TestCase):
 
         view.pre_redirect(view.request, callback='some_callback')
 
-        mock_set_active_slide.called_with('some_callback',
-                                          {'some_key': 'some_value'})
+        mock_set_active_slide.assert_called_with('some_callback',
+                                                 **{'some_key': 'some_value'})
         mock_config.get_default.assert_has_calls([call('projector_scroll'),
                                                   call('projector_scale')])
         self.assertEqual(mock_config.__setitem__.call_count, 2)
@@ -64,30 +64,31 @@ class SelectWidgetsViewTest(TestCase):
 
     @patch('openslides.projector.views.SelectWidgetsForm')
     @patch('openslides.projector.views.TemplateView.get_context_data')
-    @patch('openslides.projector.views.get_all_widgets')
-    def test_get_context_data(self, mock_get_all_widgets, mock_get_context_data,
+    @patch('openslides.projector.views.Widget')
+    def test_get_context_data(self, mock_Widget, mock_get_context_data,
                               mock_SelectWidgetsForm):
         view = views.SelectWidgetsView()
         view.request = self.rf.get('/')
         view.request.session = MagicMock()
         widget = MagicMock()
-        widget.name.return_value = 'some_widget'
-        mock_get_all_widgets.return_value = {'some_widget': widget}
+        widget.name = 'some_widget_Bohsh1Pa0eeziRaihu8O'
+        widget.is_active.return_value = True
+        mock_Widget.get_all.return_value = [widget]
         mock_get_context_data.return_value = {}
 
         # Test get
         context = view.get_context_data()
         self.assertIn('widgets', context)
-        self.assertIn('some_widget', context['widgets'])
-        mock_SelectWidgetsForm.called_with(
-            prefix='some_widget', initial={'widget': True})
+        self.assertIn(widget, context['widgets'])
+        mock_SelectWidgetsForm.assert_called_with(
+            prefix='some_widget_Bohsh1Pa0eeziRaihu8O', initial={'widget': True})
 
         # Test post
         view.request = self.rf.post('/')
         view.request.session = MagicMock()
         context = view.get_context_data()
-        mock_SelectWidgetsForm.called_with(
-            view.request.POST, prefix='some_widget', initial={'widget': True})
+        mock_SelectWidgetsForm.assert_called_with(
+            view.request.POST, prefix='some_widget_Bohsh1Pa0eeziRaihu8O', initial={'widget': True})
 
     @patch('openslides.projector.views.messages')
     def test_post(self, mock_messages):
@@ -95,14 +96,14 @@ class SelectWidgetsViewTest(TestCase):
         view.request = self.rf.post('/')
         view.request.session = {}
         widget = MagicMock()
-        widget.name.return_value = 'some_widget'
-        context = {'widgets': {'some_widget': widget}}
+        widget.name = 'some_widget_ahgaeree8JeReichue8u'
+        context = {'widgets': [widget]}
         mock_context_data = MagicMock(return_value=context)
 
         with patch('openslides.projector.views.SelectWidgetsView.get_context_data', mock_context_data):
             widget.form.is_valid.return_value = True
             view.post(view.request)
-            self.assertIn('some_widget', view.request.session['widgets'])
+            self.assertIn('some_widget_ahgaeree8JeReichue8u', view.request.session['widgets'])
 
             # Test with errors in form
             widget.form.is_valid.return_value = False

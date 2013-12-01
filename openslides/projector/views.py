@@ -1,39 +1,42 @@
 # -*- coding: utf-8 -*-
 
 from django.contrib import messages
-from django.core.context_processors import csrf
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
 
 from openslides.config.api import config
+from openslides.mediafile.models import Mediafile
 from openslides.utils.tornado_webserver import ProjectorSocketHandler
 from openslides.utils.template import Tab
 from openslides.utils.views import (AjaxMixin, CreateView, DeleteView,
                                     RedirectView, TemplateView, UpdateView)
-from openslides.mediafile.models import Mediafile
+from openslides.utils.widgets import Widget
 
-from .api import (call_on_projector, get_active_slide, get_all_widgets,
+from .api import (call_on_projector, get_active_slide,
                   get_overlays, get_projector_content, get_projector_overlays,
                   get_projector_overlays_js, reset_countdown, set_active_slide,
                   start_countdown, stop_countdown, update_projector_overlay)
 from .forms import SelectWidgetsForm
 from .models import ProjectorSlide
-from .projector import Widget
-from .signals import projector_overlays
 
 
 class DashboardView(AjaxMixin, TemplateView):
     """
-    Overview over all possible slides, the overlays and a liveview.
+    Overview over all possible slides, the overlays and a live view.
     """
     template_name = 'projector/dashboard.html'
     permission_required = 'projector.can_see_dashboard'
 
     def get_context_data(self, **kwargs):
         context = super(DashboardView, self).get_context_data(**kwargs)
-
-        context['widgets'] = get_all_widgets(self.request, session=True)
+        widgets = []
+        for widget in Widget.get_all(self.request):
+            if widget.is_active():
+                widgets.append(widget)
+                context['extra_stylefiles'].extend(widget.get_stylesheets())
+                context['extra_javascript'].extend(widget.get_javascript_files())
+        context['widgets'] = widgets
         return context
 
 
@@ -101,16 +104,16 @@ class SelectWidgetsView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(SelectWidgetsView, self).get_context_data(**kwargs)
-        widgets = get_all_widgets(self.request)
-        activated_widgets = self.request.session.get('widgets', {})
-        for name, widget in widgets.items():
-            initial = {'widget': activated_widgets.get(name, True)}
+
+        widgets = Widget.get_all(self.request)
+        for widget in widgets:
+            initial = {'widget': widget.is_active()}
+            prefix = widget.name
             if self.request.method == 'POST':
-                widget.form = SelectWidgetsForm(self.request.POST, prefix=name,
+                widget.form = SelectWidgetsForm(self.request.POST, prefix=prefix,
                                                 initial=initial)
             else:
-                widget.form = SelectWidgetsForm(prefix=name, initial=initial)
-
+                widget.form = SelectWidgetsForm(prefix=prefix, initial=initial)
         context['widgets'] = widgets
         return context
 
@@ -119,16 +122,15 @@ class SelectWidgetsView(TemplateView):
         Activates or deactivates the widgets in a post request.
         """
         context = self.get_context_data(**kwargs)
-        activated_widgets = self.request.session.get('widgets', {})
-
-        for name, widget in context['widgets'].items():
+        session_widgets = self.request.session.get('widgets', {})
+        for widget in context['widgets']:
             if widget.form.is_valid():
-                activated_widgets[name] = widget.form.cleaned_data['widget']
+                session_widgets[widget.name] = widget.form.cleaned_data['widget']
             else:
                 messages.error(request, _('Errors in the form.'))
                 break
         else:
-            self.request.session['widgets'] = activated_widgets
+            self.request.session['widgets'] = session_widgets
         return redirect(reverse('dashboard'))
 
 
@@ -291,64 +293,3 @@ def register_tab(request):
         permission=request.user.has_perm('projector.can_see_dashboard'),
         selected=selected,
     )
-
-
-def get_widgets(request):
-    """
-    Return the widgets of the projector app
-    """
-    widgets = []
-
-    # Welcome widget
-    widgets.append(Widget(
-        request,
-        name='welcome',
-        display_name=config['welcome_title'],
-        template='projector/welcome_widget.html',
-        context={'welcometext': config['welcome_text']},
-        permission_required='projector.can_see_dashboard',
-        default_column=1,
-        default_weight=10))
-
-    # Projector live view widget
-    widgets.append(Widget(
-        request,
-        name='live_view',
-        display_name=_('Projector live view'),
-        template='projector/live_view_widget.html',
-        permission_required='projector.can_see_projector',
-        default_column=2,
-        default_weight=10))
-
-    # Overlay widget
-    overlays = []
-    for receiver, overlay in projector_overlays.send(sender='overlay_widget', request=request):
-        if overlay.widget_html_callback is not None:
-            overlays.append(overlay)
-    context = {'overlays': overlays}
-    context.update(csrf(request))
-    widgets.append(Widget(
-        request,
-        name='overlays',
-        display_name=_('Overlays'),
-        template='projector/overlay_widget.html',
-        permission_required='projector.can_manage_projector',
-        default_column=2,
-        default_weight=20,
-        context=context))
-
-    # Custom slide widget
-    welcomepage_is_active = get_active_slide().get('callback', 'default') == 'default'
-    widgets.append(Widget(
-        request,
-        name='custom_slide',
-        display_name=_('Custom Slides'),
-        template='projector/custom_slide_widget.html',
-        context={
-            'slides': ProjectorSlide.objects.all().order_by('weight'),
-            'welcomepage_is_active': welcomepage_is_active},
-        permission_required='projector.can_manage_projector',
-        default_column=2,
-        default_weight=30))
-
-    return widgets

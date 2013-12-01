@@ -6,6 +6,7 @@
 {% block header %}
     <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/dashboard.css' %}" />
 {% endblock %}
+
 {% block javascript %}
     <script type="text/javascript" src="{% static 'javascript/jquery-ui.custom.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'javascript/jquery.cookie.js' %}"></script>
@@ -13,71 +14,31 @@
     <script type="text/javascript" src="{% static 'javascript/dashboard.js' %}"></script>
 {% endblock %}
 
-{% block title %}{% trans "Dashboard" %} – {{ block.super }}{% endblock %}
+{% block title %}{% trans 'Dashboard' %} – {{ block.super }}{% endblock %}
 
 {% block content %}
     <h1>{% trans 'Dashboard' %}
         <small class="pull-right">
-            <a href="{% url 'projector_select_widgets' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Manage widgets' %}"><i class="icon-th-large"></i> {% trans 'Widgets' %}</a>
+            <a href="{% url 'projector_select_widgets' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Manage widgets' %}">
+                <i class="icon-th-large"></i>
+                {% trans 'Widgets' %}
+            </a>
         </small>
     </h1>
     <div class="row-fluid">
-    <div class="span6 column" id="col1">
-        {% for name, widget in widgets.items %}
-            {% if widget.default_column == 1 %}
-                <div class="widget" id="widget_{{ widget.get_name }}">
-                    <div class="widget-header">
-                        <h3>
-                            <i class="{% if widget %}icon-{{widget.name}}{% else %}icon-star{% endif %}"></i>
-                            <div class="collapsebutton btn-group right" data-toggle="buttons-checkbox">
-                                <button type="button" class="btn btn-mini"
-                                    data-toggle="collapse" data-target="#widgetcontent_{{ widget.get_name }}"
-                                    title="{% trans 'Collapse widget content' %}">
-                                    _</button>
-                            </div>
-                            <div class="fixbutton btn-group right" data-toggle="buttons-checkbox">
-                                <button type="button" class="btn btn-mini custom-btn-mini"
-                                    title="{% trans 'Fix widget position' %}">
-                                    <i class="icon-pushpin"></i></button>
-                            </div>
-                            {% trans widget.get_title %}
-                        </h3>
-                    </div>
-                    <div class="widget-content collapse in" id="widgetcontent_{{ widget.get_name }}">
-                        <div class="widget-content-inner">{{ widget.html }}</div>
-                    </div>
-                </div>
-            {% endif %}
-        {% endfor %}
-    </div> <!-- end column-->
-
-    <div class="span6 column" id="col2">
-        {% for name, widget in widgets.items %}
-            {% if widget.default_column == 2 %}
-                <div class="widget" id="widget_{{ widget.get_name }}">
-                    <div class="widget-header">
-                        <h3>
-                            <i class="{% if widget %}icon-{{widget.name}}{% else %}icon-star{% endif %}"></i>
-                            <div class="collapsebutton btn-group right" data-toggle="buttons-checkbox">
-                                <button type="button" class="btn btn-mini"
-                                    data-toggle="collapse" data-target="#widgetcontent_{{ widget.get_name }}"
-                                    title="{% trans 'Collapse widget content' %}">
-                                    _</button>
-                            </div>
-                            <div class="fixbutton btn-group right" data-toggle="buttons-checkbox">
-                                <button type="button" class="btn btn-mini custom-btn-mini"
-                                    title="{% trans 'Fix widget position' %}">
-                                    <i class="icon-pushpin"></i></button>
-                            </div>
-                            {% trans widget.get_title %}
-                        </h3>
-                    </div>
-                    <div class="widget-content collapse in" id="widgetcontent_{{ widget.get_name }}">
-                        <div class="widget-content-inner">{{ widget.html }}</div>
-                    </div>
-                </div>
-            {% endif %}
-        {% endfor %}
-    </div> <!-- end column -->
+        <div class="span6 column" id="col1">
+            {% for widget in widgets %}
+                {% if widget.default_column == 1 %}
+                    {{ widget.get_html }}
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="span6 column" id="col2">
+            {% for widget in widgets %}
+                {% if widget.default_column == 2 %}
+                    {{ widget.get_html }}
+                {% endif %}
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}

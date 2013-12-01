@@ -17,7 +17,6 @@ from openslides.agenda.views import CreateRelatedAgendaItemView as _CreateRelate
 from openslides.config.api import config
 from openslides.participant.models import Group, User
 from openslides.poll.views import PollFormView
-from openslides.projector.projector import Widget
 from openslides.utils.pdf import stylesheet
 from openslides.utils.person import get_person
 from openslides.utils.template import Tab
@@ -622,15 +621,3 @@ def register_tab(request):
             request.user.has_perm('assignment.can_manage_assignment')),
         selected=selected,
     )
-
-
-def get_widgets(request):
-    return [Widget(
-        request,
-        name='assignments',
-        display_name=_('Elections'),
-        template='assignment/widget.html',
-        context={'assignments': Assignment.objects.all()},
-        permission_required='projector.can_manage_projector',
-        default_column=1,
-        default_weight=50)]

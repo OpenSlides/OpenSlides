@@ -1,0 +1,40 @@
+{% load i18n %}
+
+<div class="widget" id="widget_{{ widget.name }}">
+    <div class="widget-header">
+        {% block header %}
+            <h3>
+                <i class="{{ widget.get_icon_css_class }}"></i>
+                <div class="collapsebutton btn-group right" data-toggle="buttons-checkbox">
+                    <button type="button" class="btn btn-mini"
+                        data-toggle="collapse" data-target="#widgetcontent_{{ widget.name }}"
+                        title="{% trans 'Collapse widget content' %}">
+                        _</button>
+                </div>
+                <div class="fixbutton btn-group right" data-toggle="buttons-checkbox">
+                    <button type="button" class="btn btn-mini custom-btn-mini"
+                        title="{% trans 'Fix widget position' %}">
+                        <i class="icon-pushpin"></i></button>
+                </div>
+                {{ widget.get_verbose_name }}
+            </h3>
+        {% endblock %}
+    </div>
+    <div class="widget-content collapse in" id="widgetcontent_{{ widget.name }}">
+        {% block content-wrapper %}
+            <div class="widget-content-inner">
+                {% block content %}
+                {% endblock %}
+            </div>
+            <div> <!-- widget-content-footer -->
+                {% block footer %}
+                    {% if widget.get_url_for_more %}
+                        <small>
+                            <p class="text-right"><a href="{{ widget.get_url_for_more }}">{% trans 'More ...' %}</a></p>
+                        </small>
+                    {% endif %}
+                {% endblock %}
+            </div>
+        {% endblock %}
+    </div>
+</div>

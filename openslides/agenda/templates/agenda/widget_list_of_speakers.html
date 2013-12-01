@@ -1,0 +1,16 @@
+{% extends 'core/widget.html' %}
+
+{% load i18n %}
+
+{% block content %}
+{% if perms.agenda.can_be_speaker %}
+    <p><a href="{% url 'agenda_add_to_current_list_of_speakers' %}" class="btn"><i class="icon icon-speaker"></i> {% trans 'Put me on the current list of speakers' %}</a></p>
+{% endif %}
+{% if perms.agenda.can_manage_agenda %}
+    <p>
+        <a href="{% url 'agenda_next_on_current_list_of_speakers' %}" class="btn btn-mini"><i class="icon icon-bell"></i> {% trans 'Next speaker' %}</a>
+        <a href="{% url 'agenda_end_speach_on_current_list_of_speakers' %}" class="btn btn-mini"><i class="icon icon-bell"></i> {% trans 'End speach' %}</a>
+    </p>
+{% endif %}
+<small><p class="text-right"><a href="{% url 'agenda_current_list_of_speakers' %}">{% trans 'Go to current list of speakers' %} ...</a></p></small>
+{% endblock %}

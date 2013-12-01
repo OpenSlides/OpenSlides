@@ -54,6 +54,7 @@ class PermissionMixin(object):
     """
     permission_required = NO_PERMISSION_REQUIRED
 
+    # TODO: Rename this to check_permission
     def has_permission(self, request, *args, **kwargs):
         """
         Checks if the user has the required permission.

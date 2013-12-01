@@ -1,6 +1,9 @@
+{% extends 'core/widget.html' %}
+
 {% load i18n %}
 {% load tags %}
 
+{% block content %}
 <ul style="line-height: 180%">
 {% for group in groups %}
     <li class="{% if group.is_active_slide %}activeline{% endif %}">
@@ -20,5 +23,4 @@
     </li>
 {% endfor %}
 </ul>
-
-<small><p class="text-right"><a href="{% url 'user_group_overview' %}">{% trans "More..." %}</a></p></small>
+{% endblock %}

@@ -9,7 +9,7 @@ urlpatterns = patterns(
     # User
     url(r'^$',
         views.UserOverview.as_view(),
-        name='user_overview'),
+        name='user_overview'),  # TODO: Rename this to user_list
 
     url(r'^new/$',
         views.UserCreateView.as_view(),
@@ -53,7 +53,7 @@ urlpatterns = patterns(
     # Group
     url(r'^group/$',
         views.GroupOverview.as_view(),
-        name='user_group_overview'),
+        name='user_group_overview'),  # TODO: Rename this to group_list
 
     url(r'^group/new/$',
         views.GroupCreateView.as_view(),

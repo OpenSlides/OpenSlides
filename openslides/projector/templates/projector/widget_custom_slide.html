@@ -1,6 +1,9 @@
+{% extends 'core/widget.html' %}
+
 {% load i18n %}
 {% load tags %}
 
+{% block content %}
 <ul style="line-height: 180%">
     <li class="{% if welcomepage_is_active %}activeline{% endif %}">
         <a href="{% url 'projector_activate_slide' 'default' %}" class="activate_link btn {% if welcomepage_is_active %}btn-primary{% endif %} btn-mini"
@@ -11,7 +14,7 @@
             rel="tooltip" data-original-title="{% trans 'Preview' %}" class="btn btn-mini right">
             <i class="icon-search"></i>
         </a>
-        {% get_config 'welcome_title' %}
+        {{ 'welcome_title'|get_config }}
     </li>
 </ul>
 <hr>
@@ -43,3 +46,4 @@
 <a href="{% url 'customslide_new' %}" class="btn btn-mini right" style="margin: 10px 0;">
     <i class="icon-plus"></i>{% trans 'New' %}
 </a>
+{% endblock %}
