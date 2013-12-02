@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.config.api import config
 from openslides.poll.models import (BaseOption, BasePoll, BaseVote,
-                                    CountInvalid, CountVotesCast,
+                                    CollectInvalid, CollectVotesCast,
                                     PublishPollMixin)
 from openslides.projector.models import RelatedModelMixin, SlideMixin
 from openslides.utils.person import PersonField
@@ -249,7 +249,7 @@ class AssignmentOption(BaseOption):
         return unicode(self.candidate)
 
 
-class AssignmentPoll(RelatedModelMixin, CountInvalid, CountVotesCast,
+class AssignmentPoll(RelatedModelMixin, CollectInvalid, CollectVotesCast,
                      PublishPollMixin, BasePoll):
     option_class = AssignmentOption
 
@@ -289,10 +289,6 @@ class AssignmentPoll(RelatedModelMixin, CountInvalid, CountVotesCast,
             return [ugettext_noop('Yes'), ugettext_noop('No'), ugettext_noop('Abstain')]
         else:
             return [ugettext_noop('Votes')]
-
-    def append_pollform_fields(self, fields):
-        CountInvalid.append_pollform_fields(self, fields)
-        CountVotesCast.append_pollform_fields(self, fields)
 
     def get_ballot(self):
         return self.assignment.poll_set.filter(id__lte=self.id).count()

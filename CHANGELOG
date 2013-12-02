@@ -16,6 +16,7 @@ Other:
 - Changed widget api. Used new metaclass.
 - Changed api for plugins.
 - Renamed config api classes.
+- Renamed some classes of the poll api.
 
 
 Version 1.5.1 (unreleased)
