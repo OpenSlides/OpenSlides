@@ -17,6 +17,7 @@ class UserWidget(Widget):
     permission_required = 'projector.can_manage_projector'
     default_column = 1
     default_weight = 60
+    default_active = False
     template_name = 'participant/widget_user.html'
     more_link_pattern_name = 'user_overview'
 
@@ -36,6 +37,7 @@ class GroupWidget(Widget):
     permission_required = 'projector.can_manage_projector'
     default_column = 1
     default_weight = 70
+    default_active = False
     template_name = 'participant/widget_group.html'
     more_link_pattern_name = 'user_group_overview'
 
