@@ -11,7 +11,7 @@ from openslides.utils.tornado_webserver import ProjectorSocketHandler
 from openslides.utils.views import (AjaxView, CreateView, DeleteView, RedirectView, ListView,
                                     UpdateView)
 
-from .forms import MediafileNormalUserCreateForm, MediafileUpdateForm
+from .forms import MediafileManagerForm, MediafileNormalUserForm
 from .models import Mediafile
 
 
@@ -26,27 +26,34 @@ class MediafileListView(ListView):
                 request.user.has_perm('mediafile.can_upload') or
                 request.user.has_perm('mediafile.can_manage'))
 
+    def get_context_data(self, *args, **kwargs):
+        context = super(MediafileListView, self).get_context_data(*args, **kwargs)
+        for mediafile in context['mediafile_list']:
+            if self.request.user.has_perm('mediafile.can_manage'):
+                mediafile.with_action_buttons = True
+            elif self.request.user.has_perm('mediafile.can_upload') and self.request.user == mediafile.uploader:
+                mediafile.with_action_buttons = True
+            else:
+                mediafile.with_action_buttons = False
+        return context
 
-class MediafileCreateView(CreateView):
+
+class MediafileViewMixin(object):
     """
-    View to upload a new file. A manager can also set the uploader, else
-    the request user is set as uploader.
+    Mixin for create and update views for mediafiles.
+
+    A manager can set the uploader manually, else the request user is set as uploader.
     """
     model = Mediafile
-    permission_required = 'mediafile.can_upload'
     success_url_name = 'mediafile_list'
     url_name_args = []
 
     def get_form(self, form_class):
         form_kwargs = self.get_form_kwargs()
-        if self.request.method == 'GET':
-            form_kwargs['initial'].update({'uploader': self.request.user.person_id})
         if not self.request.user.has_perm('mediafile.can_manage'):
-            # Returns our own ModelForm from .forms
-            return MediafileNormalUserCreateForm(**form_kwargs)
+            return MediafileNormalUserForm(**form_kwargs)
         else:
-            # Returns a ModelForm created by Django.
-            return form_class(**form_kwargs)
+            return MediafileManagerForm(**form_kwargs)
 
     def manipulate_object(self, *args, **kwargs):
         """
@@ -56,18 +63,29 @@ class MediafileCreateView(CreateView):
         """
         if not self.request.user.has_perm('mediafile.can_manage'):
             self.object.uploader = self.request.user
-        return super(MediafileCreateView, self).manipulate_object(*args, **kwargs)
+        return super(MediafileViewMixin, self).manipulate_object(*args, **kwargs)
 
 
-class MediafileUpdateView(UpdateView):
+class MediafileCreateView(MediafileViewMixin, CreateView):
+    """
+    View to upload a new file.
+    """
+    permission_required = 'mediafile.can_upload'
+
+    def get_form_kwargs(self, *args, **kwargs):
+        form_kwargs = super(MediafileCreateView, self).get_form_kwargs(*args, **kwargs)
+        if self.request.method == 'GET':
+            form_kwargs['initial'].update({'uploader': self.request.user.person_id})
+        return form_kwargs
+
+
+class MediafileUpdateView(MediafileViewMixin, UpdateView):
     """
     View to edit the entry of an uploaded file.
     """
-    model = Mediafile
-    permission_required = 'mediafile.can_manage'
-    form_class = MediafileUpdateForm
-    success_url_name = 'mediafile_list'
-    url_name_args = []
+    def has_permission(self, request, *args, **kwargs):
+        return (request.user.has_perm('mediafile.can_manage') or
+                (request.user.has_perm('mediafile.can_upload') and self.get_object().uploader == self.request.user))
 
     def get_form_kwargs(self, *args, **kwargs):
         form_kwargs = super(MediafileUpdateView, self).get_form_kwargs(*args, **kwargs)
@@ -80,8 +98,11 @@ class MediafileDeleteView(DeleteView):
     View to delete the entry of an uploaded file and the file itself.
     """
     model = Mediafile
-    permission_required = 'mediafile.can_manage'
     success_url_name = 'mediafile_list'
+
+    def has_permission(self, request, *args, **kwargs):
+        return (request.user.has_perm('mediafile.can_manage') or
+                (request.user.has_perm('mediafile.can_upload') and self.get_object().uploader == self.request.user))
 
     def on_clicked_yes(self, *args, **kwargs):
         """Deletes the file in the filesystem, if user clicks "Yes"."""

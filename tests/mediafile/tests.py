@@ -35,7 +35,7 @@ class MediafileTest(TestCase):
         # Setup a mediafile object
         self.tmp_dir = settings.MEDIA_ROOT
         tmpfile_no, mediafile_path = tempfile.mkstemp(prefix='tmp_openslides_test_', dir=self.tmp_dir)
-        self.object = Mediafile.objects.create(title='Title File 1', mediafile=mediafile_path, uploader=self.vip_user)
+        self.object = Mediafile.objects.create(title='Title File 1', mediafile=mediafile_path, uploader=self.normal_user)
         os.close(tmpfile_no)
 
     def tearDown(self):
@@ -132,7 +132,7 @@ class MediafileTest(TestCase):
         clients = self.login_clients()
         response = clients['client_manager'].get('/mediafile/1/edit/')
         self.assertContains(response, '---------', status_code=200)
-        self.assertContains(response, '<option value="user:2" selected="selected">mediafile_test_vip_user</option>', status_code=200)
+        self.assertContains(response, '<option value="user:3" selected="selected">mediafile_test_normal_user</option>', status_code=200)
         self.assertTemplateUsed(response, 'mediafile/mediafile_form.html')
         response = clients['client_vip_user'].get('/mediafile/1/edit/')
         self.assertEqual(response.status_code, 403)
@@ -141,6 +141,15 @@ class MediafileTest(TestCase):
         bad_client = Client()
         response = bad_client.get('/mediafile/1/edit/')
         self.assertRedirects(response, expected_url='/login/?next=/mediafile/1/edit/', status_code=302, target_status_code=200)
+
+    def test_edit_mediafile_get_request_own_file(self):
+        clients = self.login_clients()
+        self.object.uploader = self.vip_user
+        self.object.save()
+        response = clients['client_vip_user'].get('/mediafile/1/edit/')
+        self.assertNotContains(response, '---------', status_code=200)
+        self.assertNotContains(response, '<option value="user:2" selected="selected">mediafile_test_vip_user</option>', status_code=200)
+        self.assertTemplateUsed(response, 'mediafile/mediafile_form.html')
 
     def test_edit_mediafile_post_request(self):
         # Test only one user
@@ -161,6 +170,31 @@ class MediafileTest(TestCase):
         object_2.mediafile.delete()
         self.assertFalse(os.path.exists(path_2))
 
+    def test_edit_mediafile_post_request_own_file(self):
+        tmpfile_no, mediafile_2_path = tempfile.mkstemp(prefix='tmp_openslides_test_', dir=self.tmp_dir)
+        os.close(tmpfile_no)
+        object_2 = Mediafile.objects.create(title='Title File 2b', mediafile=mediafile_2_path, uploader=self.vip_user)
+        client = self.login_clients()['client_vip_user']
+        new_file_1 = SimpleUploadedFile(name='new_test_file.txt', content='test content hello vip user')
+        response_1 = client.post('/mediafile/2/edit/',
+                                 {'title': 'new_test_file_title_2b',
+                                  'mediafile': new_file_1})
+        self.assertEqual(response_1.status_code, 302)
+        object_2 = Mediafile.objects.get(pk=2)
+        self.assertEqual(object_2.mediafile.url, '/media/file/new_test_file.txt')
+        self.assertEqual(object_2.uploader, self.vip_user)
+        path_2 = object_2.mediafile.path
+        object_2.mediafile.delete()
+        self.assertFalse(os.path.exists(path_2))
+
+    def test_edit_mediafile_post_request_another_file(self):
+        client = self.login_clients()['client_vip_user']
+        new_file_1 = SimpleUploadedFile(name='new_test_file.txt', content='test content hello vip user')
+        response = client.post('/mediafile/1/edit/',
+                               {'title': 'new_test_file_title_2c',
+                                'mediafile': new_file_1})
+        self.assertEqual(response.status_code, 403)
+
     def test_delete_mediafile_get_request(self):
         clients = self.login_clients()
         response = clients['client_manager'].get('/mediafile/1/del/')
@@ -173,6 +207,12 @@ class MediafileTest(TestCase):
         response = bad_client.get('/mediafile/2/del/')
         self.assertRedirects(response, expected_url='/login/?next=/mediafile/2/del/', status_code=302, target_status_code=200)
 
+    def test_delete_mediafile_get_request_own_file(self):
+        self.object.uploader = self.vip_user
+        self.object.save()
+        response = self.login_clients()['client_vip_user'].get('/mediafile/1/del/')
+        self.assertRedirects(response, expected_url='/mediafile/1/edit/', status_code=302, target_status_code=200)
+
     def test_delete_mediafile_post_request(self):
         tmpfile_no, mediafile_3_path = tempfile.mkstemp(prefix='tmp_openslides_test_', dir=self.tmp_dir)
         os.close(tmpfile_no)
@@ -181,6 +221,27 @@ class MediafileTest(TestCase):
         response_1 = client_1.post('/mediafile/2/del/', {'yes': 'foo'})
         self.assertRedirects(response_1, expected_url='/mediafile/', status_code=302, target_status_code=200)
         self.assertFalse(os.path.exists(object_3.mediafile.path))
+
+    def test_delete_mediafile_post_request_own_file(self):
+        tmpfile_no, mediafile_3_path = tempfile.mkstemp(prefix='tmp_openslides_test_', dir=self.tmp_dir)
+        os.close(tmpfile_no)
+        object_3 = Mediafile.objects.create(title='Title File 3b', mediafile=mediafile_3_path, uploader=self.vip_user)
+        client_1 = self.login_clients()['client_vip_user']
+        response_1 = client_1.post('/mediafile/2/del/', {'yes': 'foo'})
+        self.assertRedirects(response_1, expected_url='/mediafile/', status_code=302, target_status_code=200)
+        self.assertFalse(os.path.exists(object_3.mediafile.path))
+
+    def test_delete_mediafile_post_request_another_file(self):
+        tmpfile_no, mediafile_3_path = tempfile.mkstemp(prefix='tmp_openslides_test_', dir=self.tmp_dir)
+        os.close(tmpfile_no)
+        object_3 = Mediafile.objects.create(title='Title File 3c', mediafile=mediafile_3_path, uploader=self.normal_user)
+        client_1 = self.login_clients()['client_vip_user']
+        response = client_1.post('/mediafile/2/del/', {'yes': 'foo'})
+        self.assertEqual(response.status_code, 403)
+        path_3 = object_3.mediafile.path
+        self.assertTrue(os.path.exists(path_3))
+        object_3.mediafile.delete()
+        self.assertFalse(os.path.exists(path_3))
 
     def test_filesize(self):
         tmpfile_no, mediafile_4_path = tempfile.mkstemp(prefix='tmp_openslides_test_', dir=self.tmp_dir)

@@ -10,6 +10,8 @@ Version 1.6 (unreleased)
 
 Participants:
 - Disable widgets by default.
+Files:
+- Enabled update and delete view for uploader refering to his own files.
 Other:
 - Changed widget api. Used new metaclass.
 
