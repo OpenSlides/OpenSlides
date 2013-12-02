@@ -5,15 +5,15 @@ from django.dispatch import receiver, Signal
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
-from openslides.config.api import ConfigGroup, ConfigGroupedPage, ConfigVariable
+from openslides.config.api import ConfigGroup, ConfigGroupedCollection, ConfigVariable
 from openslides.config.signals import config_signal
 from openslides.projector.api import update_projector
 
 post_database_setup = Signal()
 
 
-@receiver(config_signal, dispatch_uid='setup_general_config_page')
-def setup_general_config_page(sender, **kwargs):
+@receiver(config_signal, dispatch_uid='setup_general_config')
+def setup_general_config(sender, **kwargs):
     """
     General config variables for OpenSlides. They are grouped in 'Event',
     'Welcome Widget' and 'System'.
@@ -182,7 +182,7 @@ def setup_general_config_page(sender, **kwargs):
         title=ugettext_lazy('System'),
         variables=(system_enable_anonymous, system_url, system_wlan_ssid, system_wlan_password, system_wlan_encryption))
 
-    return ConfigGroupedPage(
+    return ConfigGroupedCollection(
         title=ugettext_noop('General'),
         url='general',
         required_permission='config.can_manage',

@@ -14,34 +14,34 @@ from .signals import config_signal
 
 class ConfigView(FormView):
     """
-    The view for a config page.
+    The view for a config collection.
     """
     template_name = 'config/config_form.html'
-    config_page = None
+    config_collection = None
     form_class = forms.Form
 
     def has_permission(self, *args, **kwargs):
         """
-        Ensures that only users with tab's permission can see this view.
+        Ensures that only users with permission can see this view.
         """
-        self.permission_required = self.config_page.required_permission
+        self.permission_required = self.config_collection.required_permission
         return super(ConfigView, self).has_permission(*args, **kwargs)
 
     def get_form(self, *args):
         """
         Gets the form for the view. Includes all form fields given by the
-        tab's config objects.
+        config collection.
         """
         form = super(ConfigView, self).get_form(*args)
-        for name, field in self.generate_form_fields_from_config_page():
+        for name, field in self.generate_form_fields_from_config_collection():
             form.fields[name] = field
         return form
 
-    def generate_form_fields_from_config_page(self):
+    def generate_form_fields_from_config_collection(self):
         """
         Generates the fields for the get_form function.
         """
-        for variable in self.config_page.variables:
+        for variable in self.config_collection.variables:
             if variable.form_field is not None:
                 yield (variable.name, variable.form_field)
 
@@ -51,54 +51,55 @@ class ConfigView(FormView):
         as intial value for the form.
         """
         initial = super(ConfigView, self).get_initial()
-        for variable in self.config_page.variables:
+        for variable in self.config_collection.variables:
             initial.update({variable.name: config[variable.name]})
         return initial
 
     def get_context_data(self, **kwargs):
         """
-        Adds to the context the active config tab, a list of dictionaries
-        containing all config tabs each with a flag which is true if the
-        tab is the active one and adds a flag whether the config page has
-        groups. Adds also extra_stylefiles and extra_javascript.
+        Adds to the context the active config view, a list of dictionaries
+        containing all config collections each with a flag which is true if its
+        view is the active one and adds a flag whether the config collection
+        has groups. Adds also extra_stylefiles and extra_javascript.
         """
         context = super(ConfigView, self).get_context_data(**kwargs)
 
-        context['active_config_page'] = self.config_page
+        context['active_config_collection_view'] = self.config_collection
 
-        config_pages_list = []
-        for receiver, config_page in config_signal.send(sender=self):
-            if config_page.is_shown():
-                config_pages_list.append({
-                    'config_page': config_page,
-                    'active': self.request.path == reverse('config_%s' % config_page.url)})
-        context['config_pages_list'] = sorted(config_pages_list, key=lambda config_page_dict: config_page_dict['config_page'].weight)
+        config_collection_list = []
+        for receiver, config_collection in config_signal.send(sender=self):
+            if config_collection.is_shown():
+                config_collection_list.append({
+                    'config_collection': config_collection,
+                    'active': self.request.path == reverse('config_%s' % config_collection.url)})
+        context['config_collection_list'] = sorted(
+            config_collection_list, key=lambda config_collection_dict: config_collection_dict['config_collection'].weight)
 
-        if hasattr(self.config_page, 'groups'):
-            context['groups'] = self.config_page.groups
+        if hasattr(self.config_collection, 'groups'):
+            context['groups'] = self.config_collection.groups
         else:
             context['groups'] = None
 
-        if 'extra_stylefiles' in self.config_page.extra_context:
+        if 'extra_stylefiles' in self.config_collection.extra_context:
             if 'extra_stylefiles' in context:
-                context['extra_stylefiles'].extend(self.config_page.extra_context['extra_stylefiles'])
+                context['extra_stylefiles'].extend(self.config_collection.extra_context['extra_stylefiles'])
             else:
-                context['extra_stylefiles'] = self.config_page.extra_context['extra_stylefiles']
+                context['extra_stylefiles'] = self.config_collection.extra_context['extra_stylefiles']
 
-        if 'extra_javascript' in self.config_page.extra_context:
+        if 'extra_javascript' in self.config_collection.extra_context:
             if 'extra_javascript' in context:
-                context['extra_javascript'].extend(self.config_page.extra_context['extra_javascript'])
+                context['extra_javascript'].extend(self.config_collection.extra_context['extra_javascript'])
             else:
-                context['extra_javascript'] = self.config_page.extra_context['extra_javascript']
+                context['extra_javascript'] = self.config_collection.extra_context['extra_javascript']
 
         return context
 
     def get_success_url(self):
         """
         Returns the success url when changes are saved. Here it is the same
-        url as the tab.
+        url as the main menu entry.
         """
-        return reverse('config_%s' % self.config_page.url)
+        return reverse('config_%s' % self.config_collection.url)
 
     def form_valid(self, form):
         """
@@ -106,17 +107,17 @@ class ConfigView(FormView):
         """
         for key in form.cleaned_data:
             config[key] = form.cleaned_data[key]
-        messages.success(self.request, _('%s settings successfully saved.') % _(self.config_page.title))
+        messages.success(self.request, _('%s settings successfully saved.') % _(self.config_collection.title))
         return super(ConfigView, self).form_valid(form)
 
 
 def register_tab(request):
     """
-    Registers the tab for this app in the main menu.
+    Registers the entry for this app in the main menu.
     """
     return Tab(
         title=_('Configuration'),
         app='config',
-        url=reverse('config_first_config_page'),
+        url=reverse('config_first_config_collection_view'),
         permission=request.user.has_perm('config.can_manage'),
         selected=request.path.startswith('/config/'))

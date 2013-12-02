@@ -7,8 +7,8 @@ from django.dispatch import receiver
 from django.test.client import Client
 from mock import patch
 
-from openslides.config.api import (config, ConfigGroup, ConfigGroupedPage,
-                                   ConfigPage, ConfigVariable)
+from openslides.config.api import (config, ConfigCollection, ConfigGroup,
+                                   ConfigGroupedCollection, ConfigVariable)
 from openslides.config.exceptions import ConfigError, ConfigNotFound
 from openslides.config.signals import config_signal
 from openslides.participant.models import User
@@ -34,11 +34,11 @@ class HandleConfigTest(TestCase):
                                  callable_obj=self.get_config_var, key='unknown_config_var')
 
     def test_get_multiple_config_var_error(self):
-        config_signal.connect(set_simple_config_page_multiple_vars, dispatch_uid='set_simple_config_page_multiple_vars_for_testing')
+        config_signal.connect(set_simple_config_view_multiple_vars, dispatch_uid='set_simple_config_view_multiple_vars_for_testing')
         self.assertRaisesMessage(expected_exception=ConfigError,
                                  expected_message='Too many values for config variable multiple_config_var found.',
                                  callable_obj=config.setup_cache)
-        config_signal.disconnect(set_simple_config_page_multiple_vars, dispatch_uid='set_simple_config_page_multiple_vars_for_testing')
+        config_signal.disconnect(set_simple_config_view_multiple_vars, dispatch_uid='set_simple_config_view_multiple_vars_for_testing')
 
     def test_database_queries(self):
         """
@@ -187,11 +187,49 @@ class ConfigFormTest(TestCase):
             {'integer_var': 'bad_string_value'})
         self.assertContains(response=response, text='errorlist', status_code=200)
 
-    def test_disabled_config_page(self):
+    def test_disabled_config_view(self):
         response = self.client_manager.get('/config/testsimplepage3/')
         self.assertEqual(response.status_code, 404)
         response = self.client_manager.get('/config/testgroupedpage1/')
         self.assertNotContains(response=response, text='Ho5iengaoon5Hoht', status_code=200)
+
+    def test_improperly_configured_config_view(self):
+        from openslides.config import urls
+        collection = ConfigCollection(
+            title='Only a small title but no url ci6xahb8Chula0Thesho',
+            variables=(ConfigVariable(name='some_var_paiji9theiW8ooXivae6',
+                                      default_value='',
+                                      form_field=forms.CharField()),))
+
+        def setup_bad_config_view_one(sender, **kwargs):
+            return collection
+
+        config_signal.connect(setup_bad_config_view_one, dispatch_uid='setup_bad_config_view_one_for_testing')
+        self.assertRaisesMessage(
+            ConfigError,
+            'The config collection %s must have a title and an url attribute.' % repr(collection),
+            reload,
+            urls)
+        config_signal.disconnect(setup_bad_config_view_one, dispatch_uid='setup_bad_config_view_one_for_testing')
+
+    def test_improperly_configured_config_view_two(self):
+        from openslides.config import urls
+        collection = ConfigCollection(
+            url='only_url_ureiraeY1Oochuad7xei',
+            variables=(ConfigVariable(name='some_var_vuuC6eiXeiyae3ik4gie',
+                                      default_value='',
+                                      form_field=forms.CharField()),))
+
+        def setup_bad_config_view_two(sender, **kwargs):
+            return collection
+
+        config_signal.connect(setup_bad_config_view_two, dispatch_uid='setup_bad_config_view_twoe_for_testing')
+        self.assertRaisesMessage(
+            ConfigError,
+            'The config collection %s must have a title and an url attribute.' % repr(collection),
+            reload,
+            urls)
+        config_signal.disconnect(setup_bad_config_view_two, dispatch_uid='setup_bad_config_view_twoe_for_testing')
 
     def test_extra_stylefiles(self):
         response = self.client_manager.get('/config/testgroupedpage1/')
@@ -232,24 +270,24 @@ class ConfigWeightTest(TestCase):
         self.client_manager = Client()
         self.client_manager.login(username='config_test_manager', password='default')
 
-    def test_order_of_config_pages_abstract(self):
-        config_page_dict = {}
-        for receiver, config_page in config_signal.send(sender=self):
-            config_page_dict[receiver.__name__] = config_page
-        self.assertGreater(config_page_dict['set_grouped_config_page'].weight, config_page_dict['set_simple_config_page'].weight)
+    def test_order_of_config_views_abstract(self):
+        config_collection_dict = {}
+        for receiver, config_collection in config_signal.send(sender=self):
+            config_collection_dict[receiver.__name__] = config_collection
+        self.assertGreater(config_collection_dict['set_grouped_config_view'].weight, config_collection_dict['set_simple_config_view'].weight)
 
-    def test_order_of_config_pages_on_view(self):
+    def test_order_of_config_collections_on_view(self):
         response = self.client_manager.get('/config/testgroupedpage1/')
         import re
-        m1 = re.search('<a href="/config/testgroupedpage1/" class="btn btn-mini active">Config vars for testing 1</a>', response.content)
-        m2 = re.search('<a href="/config/testsimplepage1/" class="btn btn-mini ">Config vars for testing 2</a>', response.content)
+        m1 = re.search('<a href="/config/testgroupedpage1/" class="btn btn-mini active">\s*Config vars for testing 1\s*</a>', response.content)
+        m2 = re.search('<a href="/config/testsimplepage1/" class="btn btn-mini ">\s*Config vars for testing 2\s*</a>', response.content)
         self.assertGreater(m1.start(), m2.start())
 
 
-@receiver(config_signal, dispatch_uid='set_grouped_config_page_for_testing')
-def set_grouped_config_page(sender, **kwargs):
+@receiver(config_signal, dispatch_uid='set_grouped_config_view_for_testing')
+def set_grouped_config_view(sender, **kwargs):
     """
-    Sets a grouped config page which can be reached under the url
+    Sets a grouped config collection view which can be reached under the url
     '/config/testgroupedpage1/'. There are some variables, one variable
     with a string as default value, one with a boolean as default value,
     one with an integer as default value, one with choices and one
@@ -278,57 +316,62 @@ def set_grouped_config_page(sender, **kwargs):
         form_field=forms.ChoiceField(choices=((1, 'Choice One Ughoch4ocoche6Ee'), (2, 'Choice Two Vahnoh5yalohv5Eb'))))
     group_2 = ConfigGroup(title='Group 2 Toongai7ahyahy7B', variables=(hidden_var, choices_var))
 
-    return ConfigGroupedPage(title='Config vars for testing 1',
-                             url='testgroupedpage1',
-                             required_permission='config.can_manage',
-                             weight=10000,
-                             groups=(group_1, group_2),
-                             extra_context={'extra_stylefiles': ['styles/test-config-sjNN56dFGDrg2.css'],
-                                            'extra_javascript': ['javascript/test-config-djg4dFGVslk4209f.js']})
+    return ConfigGroupedCollection(
+        title='Config vars for testing 1',
+        url='testgroupedpage1',
+        required_permission='config.can_manage',
+        weight=10000,
+        groups=(group_1, group_2),
+        extra_context={'extra_stylefiles': ['styles/test-config-sjNN56dFGDrg2.css'],
+                       'extra_javascript': ['javascript/test-config-djg4dFGVslk4209f.js']})
 
 
-@receiver(config_signal, dispatch_uid='set_simple_config_page_for_testing')
-def set_simple_config_page(sender, **kwargs):
+@receiver(config_signal, dispatch_uid='set_simple_config_view_for_testing')
+def set_simple_config_view(sender, **kwargs):
     """
-    Sets a simple config page with some config variables but without
+    Sets a simple config view with some config variables but without
     grouping.
     """
-    return ConfigPage(title='Config vars for testing 2',
-                      url='testsimplepage1',
-                      required_permission='No permission required',
-                      variables=(ConfigVariable(name='additional_config_var', default_value='BaeB0ahcMae3feem'),
-                                 ConfigVariable(name='additional_config_var_2', default_value='', form_field=forms.CharField()),
-                                 ConfigVariable(name='none_config_var', default_value=None)))
+    return ConfigCollection(
+        title='Config vars for testing 2',
+        url='testsimplepage1',
+        required_permission='No permission required',
+        variables=(ConfigVariable(name='additional_config_var', default_value='BaeB0ahcMae3feem'),
+                   ConfigVariable(name='additional_config_var_2', default_value='', form_field=forms.CharField()),
+                   ConfigVariable(name='none_config_var', default_value=None)))
 
 
 # Do not connect to the signal now but later inside the test.
-def set_simple_config_page_multiple_vars(sender, **kwargs):
+def set_simple_config_view_multiple_vars(sender, **kwargs):
     """
-    Sets a bad config page with some multiple config vars.
+    Sets a bad config view with some multiple config vars.
     """
-    return ConfigPage(title='Config vars for testing 3',
-                      url='testsimplepage2',
-                      required_permission='No permission required',
-                      variables=(ConfigVariable(name='multiple_config_var', default_value='foobar1'),
-                                 ConfigVariable(name='multiple_config_var', default_value='foobar2')))
+    return ConfigCollection(
+        title='Config vars for testing 3',
+        url='testsimplepage2',
+        required_permission='No permission required',
+        variables=(ConfigVariable(name='multiple_config_var', default_value='foobar1'),
+                   ConfigVariable(name='multiple_config_var', default_value='foobar2')))
 
 
-@receiver(config_signal, dispatch_uid='set_simple_config_page_disabled_page_for_testing')
-def set_simple_config_page_disabled_page(sender, **kwargs):
-    return ConfigPage(title='Ho5iengaoon5Hoht',
-                      url='testsimplepage3',
-                      required_permission='No permission required',
-                      variables=(ConfigVariable(name='hidden_config_var_2', default_value=''),))
+@receiver(config_signal, dispatch_uid='set_simple_config_collection_disabled_view_for_testing')
+def set_simple_config_collection_disabled_view(sender, **kwargs):
+    return ConfigCollection(
+        title='Ho5iengaoon5Hoht',
+        url='testsimplepage3',
+        required_permission='No permission required',
+        variables=(ConfigVariable(name='hidden_config_var_2', default_value=''),))
 
 
-@receiver(config_signal, dispatch_uid='set_simple_config_page_with_callback_for_testing')
-def set_simple_config_page_with_callback(sender, **kwargs):
+@receiver(config_signal, dispatch_uid='set_simple_config_collection_with_callback_for_testing')
+def set_simple_config_collection_with_callback(sender, **kwargs):
     def callback():
         raise Exception('Change callback dhcnfg34dlg06kdg successfully called.')
-    return ConfigPage(title='Hvndfhsbgkridfgdfg',
-                      url='testsimplepage4',
-                      required_permission='No permission required',
-                      variables=(ConfigVariable(
-                          name='var_with_callback_ghvnfjd5768gdfkwg0hm2',
-                          default_value='',
-                          on_change=callback),))
+    return ConfigCollection(
+        title='Hvndfhsbgkridfgdfg',
+        url='testsimplepage4',
+        required_permission='No permission required',
+        variables=(ConfigVariable(
+            name='var_with_callback_ghvnfjd5768gdfkwg0hm2',
+            default_value='',
+            on_change=callback),))

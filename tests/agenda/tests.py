@@ -277,7 +277,7 @@ class ConfigTest(TestCase):
         self.client = Client()
         self.client.login(username='config_test_admin', password='default')
 
-    def test_config_page_css_javascript(self):
+    def test_config_collection_css_javascript(self):
         response = self.client.get('/config/agenda/')
         self.assertContains(response, 'timepicker.css', status_code=200)
         self.assertContains(response, 'jquery-ui-timepicker-addon.min.js', status_code=200)

@@ -8,12 +8,14 @@
 {% block content %}
 <h1>
     {% trans 'Configuration' %}
-    <small>{% trans active_config_page.title %}</small>
+    <small>{% trans active_config_collection_view.title %}</small>
     <small class="pull-right">
         <div class="btn-toolbar">
             <div class="btn-group">
-            {% for config_page_dict in config_pages_list %}
-                <a href="/config/{{ config_page_dict.config_page.url }}/" class="btn btn-mini {% if config_page_dict.active %}active{% endif %}">{% trans config_page_dict.config_page.title %}</a>
+            {% for config_collection_dict in config_collection_list %}
+                <a href="/config/{{ config_collection_dict.config_collection.url }}/" class="btn btn-mini {% if config_collection_dict.active %}active{% endif %}">
+                    {% trans config_collection_dict.config_collection.title %}
+                </a>
             {% endfor %}
             </div>
         </div>
@@ -43,7 +45,7 @@
     {% endfor %}
     <p>
         {% include 'formbuttons_save.html' %}
-        <a href="/config/{{ active_config_page.url }}/" class="btn">{% trans 'Cancel' %}</a>
+        <a href="/config/{{ active_config_collection_view.url }}/" class="btn">{% trans 'Cancel' %}</a>
     </p>
     <small>* {% trans 'required' %}</small>
 </form>

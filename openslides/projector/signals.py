@@ -7,7 +7,7 @@ from django.dispatch import receiver, Signal
 from django.template.loader import render_to_string
 from django.utils.datastructures import SortedDict
 
-from openslides.config.api import config, ConfigPage, ConfigVariable
+from openslides.config.api import config, ConfigCollection, ConfigVariable
 from openslides.config.signals import config_signal
 
 from .projector import Overlay
@@ -15,13 +15,12 @@ from .projector import Overlay
 projector_overlays = Signal(providing_args=['request'])
 
 
-@receiver(config_signal, dispatch_uid='setup_projector_config_variables')
-def config_variables(sender, **kwargs):
+@receiver(config_signal, dispatch_uid='setup_projector_config')
+def setup_projector_config(sender, **kwargs):
     """
     Projector config variables for OpenSlides. They are not shown on a
-    config page.
+    config view.
     """
-
     # The active slide. The config-value is a dictonary with at least the entry
     # 'callback'.
     projector = ConfigVariable(
@@ -68,8 +67,8 @@ def config_variables(sender, **kwargs):
         name='pdf_fullscreen',
         default_value=False)
 
-    return ConfigPage(
-        title='No title here', url='bar', required_permission=None, variables=(
+    return ConfigCollection(
+        required_permission=None, variables=(
             projector, projector_message,
             countdown_time, countdown_start_stamp, countdown_pause_stamp,
             countdown_state, projector_scale, projector_scroll,

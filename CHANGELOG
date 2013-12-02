@@ -15,6 +15,7 @@ Files:
 Other:
 - Changed widget api. Used new metaclass.
 - Changed api for plugins.
+- Renamed config api classes.
 
 
 Version 1.5.1 (unreleased)

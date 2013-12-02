@@ -11,11 +11,11 @@ urlpatterns = patterns(
     '',
     url(r'^$',
         RedirectView.as_view(url_name='config_general'),
-        name='config_first_config_page')
+        name='config_first_config_collection_view')
 )
 
-for receiver, config_page in config_signal.send(sender='config_urls'):
-    if config_page.is_shown():
-        urlpatterns += patterns('', url(r'^%s/$' % config_page.url,
-                                ConfigView.as_view(config_page=config_page),
-                                name='config_%s' % config_page.url))
+for receiver, config_collection in config_signal.send(sender='config_urls'):
+    if config_collection.is_shown():
+        urlpatterns += patterns('', url(r'^%s/$' % config_collection.url,
+                                ConfigView.as_view(config_collection=config_collection),
+                                name='config_%s' % config_collection.url))
