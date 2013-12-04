@@ -20,7 +20,7 @@
             <th>{% trans 'Size' %}</th>
             <th>{% trans 'Upload time' %}</th>
             <th>{% trans 'Uploaded by' %}</th>
-            {% if perms.mediafile.can_manage %}
+            {% if perms.mediafile.can_manage or perms.mediafile.can_upload %}
                 <th class="mini_width">{% trans "Actions" %}</th>
             {% endif %}
         </tr>
@@ -31,18 +31,22 @@
             <td>{{ mediafile.get_filesize }}</td>
             <td>{{ mediafile.timestamp }}</td>
             <td><a href="{{ mediafile.uploader|absolute_url }}">{{ mediafile.uploader }}</a></td>
-            {% if perms.mediafile.can_manage %}
+            {% if perms.mediafile.can_manage or perms.mediafile.can_upload %}
             <td>
+                {% if mediafile.with_action_buttons %}
                 <span style="width: 1px; white-space: nowrap;">
                     <a href="{{ mediafile|absolute_url:'update' }}" rel="tooltip" data-original-title="{% trans 'Edit' %}" class="btn btn-mini"><i class="icon-pencil"></i></a>
                     <a href="{{ mediafile|absolute_url:'delete' }}" rel="tooltip" data-original-title="{% trans 'Delete' %}" class="btn btn-mini"><i class="icon-remove"></i></a>
-                    {% if mediafile.is_presentable %}{% if mediafile.filetype in mediafile.PRESENTABLE_FILE_TYPES %}
+                    {% if perms.mediafile.can_manage and mediafile.is_presentable %}{% if mediafile.filetype in mediafile.PRESENTABLE_FILE_TYPES %}
                     <a href="{{ mediafile|absolute_url:'projector' }}" class="activate_link choose-pdf btn {% if mediafile.is_active_slide %}btn-primary{% endif %} btn-mini" title="{% trans 'Show' %}">
                         <i class="icon-facetime-video {% if mediafile.is_active_slide %}icon-white{% endif %}">
                         </i>
                     </a>
                     {% endif %}{% endif %}
                 </span>
+                {% else %}
+                    &nbsp;
+                {% endif %}
             </td>
             {% endif %}
         </tr>

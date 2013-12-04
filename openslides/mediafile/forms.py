@@ -7,30 +7,34 @@ from openslides.utils.forms import CssClassMixin
 from .models import Mediafile
 
 
-class MediafileNormalUserCreateForm(CssClassMixin, ModelForm):
+class MediafileFormMixin(object):
     """
-    Form to create a media file. This form is only used by normal users,
-    not by managers.
+    Mixin for mediafile forms. It is used to delete old files.
     """
-    class Meta:
-        model = Mediafile
-        exclude = ('uploader',)
-
-
-class MediafileUpdateForm(CssClassMixin, ModelForm):
-    """
-    Form to edit mediafile entries. This form is only for managers to update
-    the mediafile entry.
-    """
-    class Meta:
-        model = Mediafile
-
     def save(self, *args, **kwargs):
         """
-        Method to save the form. Here the overwrite is to delete old files.
+        Method to save the form. Here the override is to delete old files.
         """
         if not self.instance.pk is None:
             old_file = Mediafile.objects.get(pk=self.instance.pk).mediafile
             if not old_file == self.instance.mediafile:
                 old_file.delete()
-        return super(MediafileUpdateForm, self).save(*args, **kwargs)
+        return super(MediafileFormMixin, self).save(*args, **kwargs)
+
+
+class MediafileNormalUserForm(MediafileFormMixin, CssClassMixin, ModelForm):
+    """
+    This form is only used by normal users, not by managers.
+    """
+    class Meta:
+        model = Mediafile
+        fields = ('mediafile', 'title', 'is_presentable')
+
+
+class MediafileManagerForm(MediafileFormMixin, CssClassMixin, ModelForm):
+    """
+    This form is only used be managers, not by normal users.
+    """
+    class Meta:
+        model = Mediafile
+        fields = ('mediafile', 'title', 'uploader', 'is_presentable')
