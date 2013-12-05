@@ -5,8 +5,10 @@ from django.core.exceptions import PermissionDenied
 from django.utils.importlib import import_module
 from haystack.views import SearchView as _SearchView
 
-from openslides import get_git_commit_id, get_version, RELEASE
+from openslides import get_version as get_openslides_version
+from openslides import get_git_commit_id, RELEASE
 from openslides.config.api import config
+from openslides.utils.plugins import get_plugin_description, get_plugin_verbose_name, get_plugin_version
 from openslides.utils.signals import template_manipulation
 from openslides.utils.views import TemplateView
 
@@ -22,41 +24,19 @@ class VersionView(TemplateView):
         Adds version strings to the context.
         """
         context = super(VersionView, self).get_context_data(**kwargs)
-
         # OpenSlides version. During development the git commit id is added.
-        openslides_version_string = get_version()
-        if not RELEASE:
-            openslides_version_string += ' – Commit %s' % get_git_commit_id()
-        context['versions'] = [('OpenSlides', openslides_version_string)]
-
+        if RELEASE:
+            description = ''
+        else:
+            description = 'Commit %s' % get_git_commit_id()
+        context['modules'] = [{'verbose_name': 'OpenSlides',
+                               'description': description,
+                               'version': get_openslides_version()}]
         # Versions of plugins.
         for plugin in settings.INSTALLED_PLUGINS:
-            # Get plugin
-            try:
-                mod = import_module(plugin)
-            except ImportError:
-                continue
-
-            # Get version.
-            try:
-                plugin_version = mod.get_version()
-            except AttributeError:
-                try:
-                    plugin_version = mod.VERSION
-                except AttributeError:
-                    continue
-
-            # Get name.
-            try:
-                plugin_name = mod.get_name()
-            except AttributeError:
-                try:
-                    plugin_name = mod.NAME
-                except AttributeError:
-                    plugin_name = mod.__name__.split('.')[0]
-
-            context['versions'].append((plugin_name, plugin_version))
-
+            context['modules'].append({'verbose_name': get_plugin_verbose_name(plugin),
+                                       'description': get_plugin_description(plugin),
+                                       'version': get_plugin_version(plugin)})
         return context
 
 

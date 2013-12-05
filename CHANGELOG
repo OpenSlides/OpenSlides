@@ -14,6 +14,7 @@ Files:
 - Enabled update and delete view for uploader refering to his own files.
 Other:
 - Changed widget api. Used new metaclass.
+- Changed api for plugins.
 
 
 Version 1.5.1 (unreleased)

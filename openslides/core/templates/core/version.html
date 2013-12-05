@@ -7,8 +7,14 @@
 {% block content %}
     <h1>{% trans 'Version' %}</h1>
     <ul>
-    {% for version in versions %}
-        <li>{{ version.0 }} – {% trans 'Version' %} {{ version.1 }}</li>
+    {% for module in modules %}
+        <li>
+            {{ module.verbose_name }}
+            {% if module.description %}
+                ({{ module.description }})
+            {% endif %}
+            – {% trans 'Version' %} {{ module.version }}
+        </li>
     {% endfor %}
     </ul>
 {% endblock %}

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.test.client import Client
-from mock import MagicMock, patch
+from mock import patch
 
 from openslides import get_version
 from openslides.agenda.models import Item
@@ -23,24 +23,10 @@ class VersionViewTest(TestCase):
     @patch('openslides.core.views.settings')
     def test_with_missing_plugin(self, mock_settings):
         """
-        Tests that an not existing app does not appear on the version view.
+        Tests that a not existing app does not appear on the version view.
         """
         mock_settings.INSTALLED_PLUGINS = ('unexisting_app_nvhbkdfgmnsd',)
-        response = self.client.get('/version/')
-        self.assertNotContains(response, 'unexisting_app_nvhbkdfgmnsd', status_code=200)
-
-    @patch('openslides.core.views.settings')
-    @patch('openslides.core.views.import_module')
-    def test_with_plugin_without_version(self, mock_import_module, mock_settings):
-        """
-        Tests that an exisiting app does not appear in the version view if
-        there are no version data.
-        """
-        mock_settings.INSTALLED_PLUGINS = ('existing_app_without_version',)
-        mock_module = MagicMock(spec=['some_useless_attribute_ghbnckj756j36'])
-        mock_import_module.configure_mock(return_value=mock_module)
-        response = self.client.get('/version/')
-        self.assertNotContains(response, 'unexisting_app_nvhbkdfgmnsd', status_code=200)
+        self.assertRaises(ImportError, self.client.get, '/version/')
 
 
 class SearchViewTest(TestCase):
