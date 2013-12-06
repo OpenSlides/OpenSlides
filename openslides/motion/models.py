@@ -10,7 +10,7 @@ from django.utils.translation import ugettext_lazy, ugettext_noop
 from openslides.config.api import config
 from openslides.mediafile.models import Mediafile
 from openslides.poll.models import (BaseOption, BasePoll, BaseVote,
-                                    CountInvalid, CountVotesCast)
+                                    CollectInvalid, CollectVotesCast)
 from openslides.projector.models import RelatedModelMixin, SlideMixin
 from openslides.utils.jsonfield import JSONField
 from openslides.utils.person import PersonField
@@ -686,7 +686,7 @@ class MotionOption(BaseOption):
     """The VoteClass, to witch this Class links."""
 
 
-class MotionPoll(RelatedModelMixin, CountInvalid, CountVotesCast, BasePoll):
+class MotionPoll(RelatedModelMixin, CollectInvalid, CollectVotesCast, BasePoll):
     """The Class to saves the poll results for a motion poll."""
 
     motion = models.ForeignKey(Motion, related_name='polls')
@@ -730,11 +730,6 @@ class MotionPoll(RelatedModelMixin, CountInvalid, CountVotesCast, BasePoll):
         #TODO: maybe it is possible with .create() to call this without poll=self
         #      or call this in save()
         self.get_option_class()(poll=self).save()
-
-    def append_pollform_fields(self, fields):
-        """Apend the fields for invalid and votecast to the ModelForm."""
-        CountInvalid.append_pollform_fields(self, fields)
-        CountVotesCast.append_pollform_fields(self, fields)
 
     def get_related_model(self):
         return self.motion

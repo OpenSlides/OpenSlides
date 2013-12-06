@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from django.core.exceptions import ImproperlyConfigured
 from django.forms.models import modelform_factory
 from django.http import HttpResponseRedirect
 
@@ -40,7 +39,7 @@ class PollFormView(FormMixin, TemplateView):
             data = {}
             for value in self.poll.get_vote_values():
                 data[value] = form.cleaned_data[value]
-            self.poll.set_form_values(form.option, data)
+            self.poll.set_vote_objects_with_values(form.option, data)
 
         pollform.save()
         return HttpResponseRedirect(self.get_success_url())
@@ -49,9 +48,9 @@ class PollFormView(FormMixin, TemplateView):
         if self.poll_class is not None:
             return self.poll_class
         else:
-            raise ImproperlyConfigured(
-                "No poll class defined.  Either provide a poll_class or define"
-                " a get_poll_class method.")
+            raise NotImplementedError(
+                'No poll class defined. Either provide a poll_class or define '
+                'a get_poll_class method.')
 
     def get_object(self):
         return self.get_poll_class().objects.get(pk=self.kwargs['poll_id'])
