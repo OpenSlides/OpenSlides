@@ -11,7 +11,7 @@ from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
-from openslides.config.api import config, ConfigPage, ConfigVariable
+from openslides.config.api import config, ConfigCollection, ConfigVariable
 from openslides.config.signals import config_signal
 from openslides.projector.api import get_active_slide, get_active_object
 from openslides.projector.projector import Overlay
@@ -29,8 +29,8 @@ def validate_start_time(value):
 
 # TODO: Reinsert the datepicker scripts in the template
 
-@receiver(config_signal, dispatch_uid='setup_agenda_config_page')
-def setup_agenda_config_page(sender, **kwargs):
+@receiver(config_signal, dispatch_uid='setup_agenda_config')
+def setup_agenda_config(sender, **kwargs):
     """
     Agenda config variables.
     """
@@ -66,15 +66,15 @@ def setup_agenda_config_page(sender, **kwargs):
                         'javascript/jquery-ui-sliderAccess.min.js',
                         'javascript/agenda-config-datepicker.js']
 
-    return ConfigPage(title=ugettext_noop('Agenda'),
-                      url='agenda',
-                      required_permission='config.can_manage',
-                      weight=20,
-                      variables=(agenda_start_event_date_time,
-                                 agenda_show_last_speakers,
-                                 agenda_couple_countdown_and_speakers),
-                      extra_context={'extra_stylefiles': extra_stylefiles,
-                                     'extra_javascript': extra_javascript})
+    return ConfigCollection(title=ugettext_noop('Agenda'),
+                            url='agenda',
+                            required_permission='config.can_manage',
+                            weight=20,
+                            variables=(agenda_start_event_date_time,
+                                       agenda_show_last_speakers,
+                                       agenda_couple_countdown_and_speakers),
+                            extra_context={'extra_stylefiles': extra_stylefiles,
+                                           'extra_javascript': extra_javascript})
 
 
 @receiver(projector_overlays, dispatch_uid="agenda_list_of_speakers")

@@ -5,12 +5,12 @@ from django.dispatch import receiver
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
-from openslides.config.api import ConfigPage, ConfigVariable
+from openslides.config.api import ConfigCollection, ConfigVariable
 from openslides.config.signals import config_signal
 
 
-@receiver(config_signal, dispatch_uid='setup_assignment_config_page')
-def setup_assignment_config_page(sender, **kwargs):
+@receiver(config_signal, dispatch_uid='setup_assignment_config')
+def setup_assignment_config(sender, **kwargs):
     """
     Assignment config variables.
     """
@@ -66,13 +66,13 @@ def setup_assignment_config_page(sender, **kwargs):
                 ('votes', ugettext_lazy('Always one option per candidate')),
                 ('yesnoabstain', ugettext_lazy('Always Yes-No-Abstain per candidate')))))
 
-    return ConfigPage(title=ugettext_noop('Elections'),
-                      url='assignment',
-                      required_permission='config.can_manage',
-                      weight=40,
-                      variables=(assignment_publish_winner_results_only,
-                                 assignment_pdf_ballot_papers_selection,
-                                 assignment_pdf_ballot_papers_number,
-                                 assignment_pdf_title,
-                                 assignment_pdf_preamble,
-                                 assignment_poll_vote_values))
+    return ConfigCollection(title=ugettext_noop('Elections'),
+                            url='assignment',
+                            required_permission='config.can_manage',
+                            weight=40,
+                            variables=(assignment_publish_winner_results_only,
+                                       assignment_pdf_ballot_papers_selection,
+                                       assignment_pdf_ballot_papers_number,
+                                       assignment_pdf_title,
+                                       assignment_pdf_preamble,
+                                       assignment_poll_vote_values))

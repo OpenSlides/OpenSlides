@@ -35,8 +35,8 @@ class ConfigHandler(object):
             pass
 
         # Call on_change callback
-        for receiver, config_page in config_signal.send(sender='set_value'):
-            for config_variable in config_page.variables:
+        for receiver, config_collection in config_signal.send(sender='set_value'):
+            for config_variable in config_collection.variables:
                 if config_variable.name == key and config_variable.on_change:
                     config_variable.on_change()
                     break
@@ -45,8 +45,8 @@ class ConfigHandler(object):
         """
         Returns the default value for 'key'.
         """
-        for receiver, config_page in config_signal.send(sender='get_default'):
-            for config_variable in config_page.variables:
+        for receiver, config_collection in config_signal.send(sender='get_default'):
+            for config_variable in config_collection.variables:
                 if config_variable.name == key:
                     return config_variable.default_value
         raise ConfigNotFound('The config variable %s was not found.' % key)
@@ -57,8 +57,8 @@ class ConfigHandler(object):
         signal to get the default into the cache.
         """
         self._cache = {}
-        for receiver, config_page in config_signal.send(sender='setup_cache'):
-            for config_variable in config_page.variables:
+        for receiver, config_collection in config_signal.send(sender='setup_cache'):
+            for config_variable in config_collection.variables:
                 if config_variable.name in self._cache:
                     raise ConfigError('Too many values for config variable %s found.' % config_variable.name)
                 self._cache[config_variable.name] = config_variable.default_value
@@ -81,15 +81,17 @@ use x = config[...], to set it use config[...] = x.
 """
 
 
-class ConfigBasePage(object):
+class ConfigBaseCollection(object):
     """
-    An abstract base class for simple and grouped config pages. The
-    attributes title and url are required. The attribute weight is used
-    for the order of the links in the submenu of the views. The attribute
-    extra_context can be used to insert extra css and js files into the
-    template.
+    An abstract base class for simple and grouped config collections. The
+    attributes title and url are required for collections that should be
+    shown as a view. The attribute required_permission is used to set which
+    users can control the view showing the colletion. The attribute weight
+    is used for the order of the links in the submenu of the views. The
+    attribute extra_context can be used to insert extra css and js files
+    into the template.
     """
-    def __init__(self, title, url, required_permission=None, weight=0, extra_context={}):
+    def __init__(self, title=None, url=None, required_permission=None, weight=0, extra_context={}):
         self.title = title
         self.url = url
         self.required_permission = required_permission
@@ -98,25 +100,29 @@ class ConfigBasePage(object):
 
     def is_shown(self):
         """
-        Returns True if at least one variable of the page has a form field.
+        Returns True if at least one variable of the collection has a form field.
         """
         for variable in self.variables:
             if variable.form_field is not None:
-                return True
+                is_shown = True
+                break
         else:
-            return False
+            is_shown = False
+        if is_shown and (self.title is None or self.url is None):
+            raise ConfigError('The config collection %s must have a title and an url attribute.' % self)
+        return is_shown
 
 
-class ConfigGroupedPage(ConfigBasePage):
+class ConfigGroupedCollection(ConfigBaseCollection):
     """
-    A simple object class for a grouped config page. Developers have to
+    A simple object class for a grouped config collection. Developers have to
     set the groups attribute (tuple). The config variables are available
-    via the variables attribute. The page is shown as view in the config
-    tab, if there is at least one variable with a form field.
+    via the variables attribute. The collection is shown as a view via the config
+    main menu entry if there is at least one variable with a form field.
     """
     def __init__(self, groups, **kwargs):
         self.groups = groups
-        super(ConfigGroupedPage, self).__init__(**kwargs)
+        super(ConfigGroupedCollection, self).__init__(**kwargs)
 
     @property
     def variables(self):
@@ -125,15 +131,16 @@ class ConfigGroupedPage(ConfigBasePage):
                 yield variable
 
 
-class ConfigPage(ConfigBasePage):
+class ConfigCollection(ConfigBaseCollection):
     """
-    A simple object class for a ungrouped config page. Developers have
-    to set the variables (tuple) directly. The page is shown as view in
-    the config tab, if there is at least one variable with a form field.
+    A simple object class for a ungrouped config collection. Developers have
+    to set the variables (tuple) directly. The collection is shown as a view via
+    the config main menu entry if there is at least one variable with a
+    form field.
     """
     def __init__(self, variables, **kwargs):
         self.variables = variables
-        super(ConfigPage, self).__init__(**kwargs)
+        super(ConfigCollection, self).__init__(**kwargs)
 
 
 class ConfigGroup(object):
@@ -153,7 +160,7 @@ class ConfigVariable(object):
     """
     A simple object class to wrap new config variables. The keyword
     arguments 'name' and 'default_value' are required. The keyword
-    argument 'form_field' has to be set, if the variable should appear
+    argument 'form_field' has to be set if the variable should appear
     on the ConfigView. The argument 'on_change' can get a callback
     which is called every time, the variable is changed.
     """

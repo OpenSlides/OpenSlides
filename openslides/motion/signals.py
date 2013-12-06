@@ -5,15 +5,15 @@ from django.dispatch import receiver
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
-from openslides.config.api import ConfigPage, ConfigVariable
+from openslides.config.api import ConfigCollection, ConfigVariable
 from openslides.config.signals import config_signal
 from openslides.core.signals import post_database_setup
 
 from .models import State, Workflow
 
 
-@receiver(config_signal, dispatch_uid='setup_motion_config_page')
-def setup_motion_config_page(sender, **kwargs):
+@receiver(config_signal, dispatch_uid='setup_motion_config')
+def setup_motion_config(sender, **kwargs):
     """
     Motion config variables.
     """
@@ -109,22 +109,22 @@ def setup_motion_config_page(sender, **kwargs):
                 ('serially_numbered', ugettext_lazy('Serially numbered')),
                 ('manually', ugettext_lazy('Set it manually'))]))
 
-    return ConfigPage(title=ugettext_noop('Motion'),
-                      url='motion',
-                      required_permission='config.can_manage',
-                      weight=30,
-                      variables=(motion_stop_submitting,
-                                 motion_min_supporters,
-                                 motion_remove_supporters,
-                                 motion_preamble,
-                                 motion_pdf_ballot_papers_selection,
-                                 motion_pdf_ballot_papers_number,
-                                 motion_pdf_title,
-                                 motion_pdf_preamble,
-                                 motion_pdf_paragraph_numbering,
-                                 motion_allow_disable_versioning,
-                                 motion_workflow,
-                                 motion_identifier))
+    return ConfigCollection(title=ugettext_noop('Motion'),
+                            url='motion',
+                            required_permission='config.can_manage',
+                            weight=30,
+                            variables=(motion_stop_submitting,
+                                       motion_min_supporters,
+                                       motion_remove_supporters,
+                                       motion_preamble,
+                                       motion_pdf_ballot_papers_selection,
+                                       motion_pdf_ballot_papers_number,
+                                       motion_pdf_title,
+                                       motion_pdf_preamble,
+                                       motion_pdf_paragraph_numbering,
+                                       motion_allow_disable_versioning,
+                                       motion_workflow,
+                                       motion_identifier))
 
 
 @receiver(post_database_setup, dispatch_uid='motion_create_builtin_workflows')

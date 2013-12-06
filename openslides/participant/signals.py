@@ -7,7 +7,7 @@ from django.dispatch import receiver
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
-from openslides.config.api import ConfigPage, ConfigVariable
+from openslides.config.api import ConfigCollection, ConfigVariable
 from openslides.config.signals import config_signal
 from openslides.core.signals import post_database_setup
 
@@ -15,8 +15,8 @@ from .api import create_or_reset_admin_user
 from .models import Group
 
 
-@receiver(config_signal, dispatch_uid='setup_participant_config_page')
-def setup_participant_config_page(sender, **kwargs):
+@receiver(config_signal, dispatch_uid='setup_participant_config')
+def setup_participant_config(sender, **kwargs):
     """
     Participant config variables.
     """
@@ -44,13 +44,13 @@ def setup_participant_config_page(sender, **kwargs):
             label=ugettext_lazy('Sort participants by first name'),
             help_text=ugettext_lazy('Disable for sorting by last name')))
 
-    return ConfigPage(title=ugettext_noop('Participant'),
-                      url='participant',
-                      required_permission='config.can_manage',
-                      weight=50,
-                      variables=(participant_pdf_welcometitle,
-                                 participant_pdf_welcometext,
-                                 participant_sort_users_by_first_name))
+    return ConfigCollection(title=ugettext_noop('Participant'),
+                            url='participant',
+                            required_permission='config.can_manage',
+                            weight=50,
+                            variables=(participant_pdf_welcometitle,
+                                       participant_pdf_welcometext,
+                                       participant_sort_users_by_first_name))
 
 
 @receiver(post_database_setup, dispatch_uid='participant_create_builtin_groups_and_admin')
