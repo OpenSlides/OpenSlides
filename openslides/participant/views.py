@@ -10,7 +10,6 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import activate, ugettext_lazy
 
 from openslides.config.api import config
-from openslides.utils.template import Tab
 from openslides.utils.utils import (delete_default_permissions, html_strong,
                                     template)
 from openslides.utils.views import (CreateView, DeleteView, DetailView,
@@ -420,7 +419,7 @@ def user_settings_password(request):
         if form.is_valid():
             form.save()
             messages.success(request, _('Password successfully changed.'))
-            return redirect(reverse('dashboard'))
+            return redirect(reverse('core_dashboard'))
         else:
             messages.error(request, _('Please check the form for errors.'))
     else:
@@ -429,18 +428,3 @@ def user_settings_password(request):
     return {
         'form': form,
     }
-
-
-def register_tab(request):
-    """
-    Registers the participant tab.
-    """
-    selected = request.path.startswith('/participant/')
-    return Tab(
-        title=_('Participants'),
-        app='participant',
-        url=reverse('user_overview'),
-        permission=(
-            request.user.has_perm('participant.can_see_participant') or
-            request.user.has_perm('participant.can_manage_participant')),
-        selected=selected)

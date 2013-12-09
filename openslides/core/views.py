@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
 
 from django.conf import settings
+from django.contrib import messages
 from django.core.exceptions import PermissionDenied
+from django.core.urlresolvers import reverse
+from django.shortcuts import redirect, render_to_response
+from django.template import RequestContext
 from django.utils.importlib import import_module
+from django.utils.translation import ugettext as _
 from haystack.views import SearchView as _SearchView
 
 from openslides import get_version as get_openslides_version
@@ -10,7 +15,73 @@ from openslides import get_git_commit_id, RELEASE
 from openslides.config.api import config
 from openslides.utils.plugins import get_plugin_description, get_plugin_verbose_name, get_plugin_version
 from openslides.utils.signals import template_manipulation
-from openslides.utils.views import TemplateView
+from openslides.utils.views import AjaxMixin, TemplateView, View
+from openslides.utils.widgets import Widget
+
+from .forms import SelectWidgetsForm
+
+
+class DashboardView(AjaxMixin, TemplateView):
+    """
+    Overview over all possible slides, the overlays and a live view: the
+    Dashboard of OpenSlides. This main view uses the widget api to collect all
+    widgets from all apps. See openslides.utils.widgets.Widget for more details.
+    """
+    permission_required = 'projector.can_see_dashboard'  # TODO: Rename this to core.can_see_dashboard
+    template_name = 'core/dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(DashboardView, self).get_context_data(**kwargs)
+        widgets = []
+        for widget in Widget.get_all(self.request):
+            if widget.is_active():
+                widgets.append(widget)
+                context['extra_stylefiles'].extend(widget.get_stylesheets())
+                context['extra_javascript'].extend(widget.get_javascript_files())
+        context['widgets'] = widgets
+        return context
+
+
+class SelectWidgetsView(TemplateView):
+    """
+    Shows a form to select which widgets should be displayed on the own
+    dashboard. The setting is saved in the session.
+    """
+    # TODO: Use another base view class here, e. g. a FormView
+    permission_required = 'projector.can_see_dashboard'  # TODO: Rename this to core.can_see_dashboard
+    template_name = 'core/select_widgets.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(SelectWidgetsView, self).get_context_data(**kwargs)
+        widgets = Widget.get_all(self.request)
+        for widget in widgets:
+            initial = {'widget': widget.is_active()}
+            prefix = widget.name
+            if self.request.method == 'POST':
+                widget.form = SelectWidgetsForm(
+                    self.request.POST,
+                    prefix=prefix,
+                    initial=initial)
+            else:
+                widget.form = SelectWidgetsForm(prefix=prefix, initial=initial)
+        context['widgets'] = widgets
+        return context
+
+    def post(self, request, *args, **kwargs):
+        """
+        Activates or deactivates the widgets in a post request.
+        """
+        context = self.get_context_data(**kwargs)
+        session_widgets = self.request.session.get('widgets', {})
+        for widget in context['widgets']:
+            if widget.form.is_valid():
+                session_widgets[widget.name] = widget.form.cleaned_data['widget']
+            else:
+                messages.error(request, _('There are errors in the form.'))
+                break
+        else:
+            self.request.session['widgets'] = session_widgets
+        return redirect(reverse('core_dashboard'))
 
 
 class VersionView(TemplateView):
@@ -82,3 +153,30 @@ class SearchView(_SearchView):
             else:
                 models.append([module.Index.modelfilter_name, module.Index.modelfilter_value])
         return models
+
+
+class ErrorView(View):
+    """
+    View for Http 403, 404 and 500 error pages.
+    """
+    status_code = None
+
+    def dispatch(self, request, *args, **kwargs):
+        http_error_strings = {
+            403: {'name': _('Forbidden'),
+                  'description': _('Sorry, you have no permission to see this page.'),
+                  'status_code': '403'},
+            404: {'name': _('Not Found'),
+                  'description': _('Sorry, the requested page could not be found.'),
+                  'status_code': '404'},
+            500: {'name': _('Internal Server Error'),
+                  'description': _('Sorry, there was an unknown error. Please contact the event manager.'),
+                  'status_code': '500'}}
+        context = {}
+        context['http_error'] = http_error_strings[self.status_code]
+        template_manipulation.send(sender=self.__class__, request=request, context=context)
+        response = render_to_response(
+            'core/error.html',
+            context_instance=RequestContext(request, context))
+        response.status_code = self.status_code
+        return response

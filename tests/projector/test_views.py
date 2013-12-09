@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from django.contrib.auth.models import AnonymousUser
 from django.test.client import Client, RequestFactory
 from mock import call, MagicMock, patch
 
@@ -19,6 +20,7 @@ class ProjectorViewTest(TestCase):
                  mock_get_projector_overlays_js):
         view = views.ProjectorView()
         view.request = self.rf.get('/')
+        view.request.user = AnonymousUser()
 
         # Test preview
         view.kwargs = {'callback': 'slide_callback'}
@@ -57,60 +59,6 @@ class ActivateViewTest(TestCase):
                                                   call('projector_scale')])
         self.assertEqual(mock_config.__setitem__.call_count, 2)
         self.assertTrue(mock_call_on_projector.called)
-
-
-class SelectWidgetsViewTest(TestCase):
-    rf = RequestFactory()
-
-    @patch('openslides.projector.views.SelectWidgetsForm')
-    @patch('openslides.projector.views.TemplateView.get_context_data')
-    @patch('openslides.projector.views.Widget')
-    def test_get_context_data(self, mock_Widget, mock_get_context_data,
-                              mock_SelectWidgetsForm):
-        view = views.SelectWidgetsView()
-        view.request = self.rf.get('/')
-        view.request.session = MagicMock()
-        widget = MagicMock()
-        widget.name = 'some_widget_Bohsh1Pa0eeziRaihu8O'
-        widget.is_active.return_value = True
-        mock_Widget.get_all.return_value = [widget]
-        mock_get_context_data.return_value = {}
-
-        # Test get
-        context = view.get_context_data()
-        self.assertIn('widgets', context)
-        self.assertIn(widget, context['widgets'])
-        mock_SelectWidgetsForm.assert_called_with(
-            prefix='some_widget_Bohsh1Pa0eeziRaihu8O', initial={'widget': True})
-
-        # Test post
-        view.request = self.rf.post('/')
-        view.request.session = MagicMock()
-        context = view.get_context_data()
-        mock_SelectWidgetsForm.assert_called_with(
-            view.request.POST, prefix='some_widget_Bohsh1Pa0eeziRaihu8O', initial={'widget': True})
-
-    @patch('openslides.projector.views.messages')
-    def test_post(self, mock_messages):
-        view = views.SelectWidgetsView()
-        view.request = self.rf.post('/')
-        view.request.session = {}
-        widget = MagicMock()
-        widget.name = 'some_widget_ahgaeree8JeReichue8u'
-        context = {'widgets': [widget]}
-        mock_context_data = MagicMock(return_value=context)
-
-        with patch('openslides.projector.views.SelectWidgetsView.get_context_data', mock_context_data):
-            widget.form.is_valid.return_value = True
-            view.post(view.request)
-            self.assertIn('some_widget_ahgaeree8JeReichue8u', view.request.session['widgets'])
-
-            # Test with errors in form
-            widget.form.is_valid.return_value = False
-            view.request.session = {}
-            view.post(view.request)
-            self.assertNotIn('widgets', view.request.session)
-            mock_messages.error.assert_called_with(view.request, 'Errors in the form.')
 
 
 class ProjectorControllViewTest(TestCase):
@@ -176,7 +124,7 @@ class CustomSlidesTest(TestCase):
         response = self.admin_client.get(url)
         self.assertTemplateUsed(response, 'projector/new.html')
         response = self.admin_client.post(url, {'title': 'test_title_roo2xi2EibooHie1kohd', 'weight': '0'})
-        self.assertRedirects(response, '/projector/dashboard/')
+        self.assertRedirects(response, '/dashboard/')
         self.assertTrue(ProjectorSlide.objects.filter(title='test_title_roo2xi2EibooHie1kohd').exists())
 
     def test_update(self):
@@ -188,7 +136,7 @@ class CustomSlidesTest(TestCase):
         self.assertTemplateUsed(response, 'projector/new.html')
         self.assertContains(response, 'test_title_jeeDeB3aedei8ahceeso')
         response = self.admin_client.post(url, {'title': 'test_title_ai8Ooboh5bahr6Ee7goo', 'weight': '0'})
-        self.assertRedirects(response, '/projector/dashboard/')
+        self.assertRedirects(response, '/dashboard/')
         self.assertEqual(ProjectorSlide.objects.get(pk=1).title, 'test_title_ai8Ooboh5bahr6Ee7goo')
 
     def test_delete(self):
@@ -199,7 +147,7 @@ class CustomSlidesTest(TestCase):
         response = self.admin_client.get(url)
         self.assertRedirects(response, '/projector/1/edit/')
         response = self.admin_client.post(url, {'yes': 'true'})
-        self.assertRedirects(response, '/projector/dashboard/')
+        self.assertRedirects(response, '/dashboard/')
         self.assertFalse(ProjectorSlide.objects.exists())
 
 

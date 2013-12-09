@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% load i18n %}
 {% load staticfiles %}
@@ -19,7 +19,7 @@
 {% block content %}
     <h1>{% trans 'Dashboard' %}
         <small class="pull-right">
-            <a href="{% url 'projector_select_widgets' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Manage widgets' %}">
+            <a href="{% url 'core_select_widgets' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Manage widgets' %}">
                 <i class="icon-th-large"></i>
                 {% trans 'Widgets' %}
             </a>

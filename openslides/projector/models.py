@@ -110,7 +110,8 @@ class ProjectorSlide(SlideMixin, models.Model):
     """
     Model for Slides, only for the projector. Also called custom slides.
     """
-    # TODO: Rename it to CustomSlide
+    # TODO: Rename it to CustomSlide and move it to core app.
+    #       Check and rename permissions.
     slide_callback_name = 'projector_slide'
 
     title = models.CharField(max_length=256, verbose_name=ugettext_lazy("Title"))

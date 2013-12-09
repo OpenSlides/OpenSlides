@@ -117,6 +117,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.i18n',
     'django.core.context_processors.static',
     'openslides.utils.auth.anonymous_context_additions',
+    'openslides.utils.main_menu.main_menu_entries',
 )
 
 CACHES = {

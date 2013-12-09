@@ -1,3 +1,3 @@
 # -*- coding: utf-8 -*-
 
-from . import signals, slides, widgets  # noqa
+from . import main_menu, signals, slides, widgets  # noqa
