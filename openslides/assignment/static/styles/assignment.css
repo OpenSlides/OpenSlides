@@ -1,3 +1,11 @@
+.icon-charts {
+    background-image: url("../img/glyphicons_041_charts.png");
+    background-position: 0px center;
+}
+.leftmenu ul li.active a span.ico i.icon-charts {
+    background-image: url("../img/glyphicons_041_charts_white.png");
+}
+
 td.elected {
     background-color: #BED4DE !important;
 }
