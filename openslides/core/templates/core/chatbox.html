@@ -1,0 +1,24 @@
+{% load i18n %}
+
+{% if chat_messages != None %}
+    <div class="hidden well" id="chatbox">
+        <div>
+            <h1>Chatbox</h1>
+            <button class="btn btn-mini pull-right" id="close-chatbox"><i class="icon-remove"></i></button>
+        </div>
+        <div id="chatbox-text">
+            {% for message in chat_messages %}
+                <p>{{ message.html_time_and_person|safe }} {{ message.message }}</p>
+            {% endfor %}
+        </div>
+        <hr />
+        <form class="form-inline" id="chatbox-form">
+            <div class="input-append">
+            <input id="chatbox-form-input" type="text" />
+            <button id="chatbox-form-send" type="submit" class="btn btn-primary" title="{% trans 'Send message' %}">
+                <i class="icon-ok icon-white"></i>
+            </button>
+            </div>
+        </form>
+    </div>
+{% endif %}
