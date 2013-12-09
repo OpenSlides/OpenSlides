@@ -52,7 +52,7 @@ class PersonalInfoWidget(TestCase):
 
     def test_widget_appearance(self):
         response = self.client.get('/projector/dashboard/')
-        self.assertContains(response, 'My items, motions and elections', status_code=200)
+        self.assertContains(response, 'My personal info', status_code=200)
 
     def test_item_list(self):
         agenda = self.import_agenda()

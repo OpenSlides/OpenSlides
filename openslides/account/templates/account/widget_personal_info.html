@@ -4,58 +4,19 @@
 {% load tags %}
 
 {% block content %}
-<ul style="line-height: 180%">
-    {% trans 'I am on the list of speakers of the following items:' %}
-    {% for item in items %}
-        <li><a href="{{ item|absolute_url }}">{{ item }}</a></li>
-    {% empty %}
-        <li><i>{% trans 'None' %}</i></li>
+    {% for infoblock in infoblocks %}
+        {% if infoblock.is_active %}
+            <ul style="line-height: 180%">
+                {{ infoblock.headline }}:
+                {% for object in infoblock.get_queryset %}
+                    <li><a href="{{ object|absolute_url }}">{{ object }}</a></li>
+                {% empty %}
+                    <li><i>{% trans 'None' %}</i></li>
+                {% endfor %}
+            </ul>
+            {% if not forloop.last %}
+                <hr />
+            {% endif %}
+        {% endif %}
     {% endfor %}
-</ul>
-
-<hr />
-<ul style="line-height: 180%">
-    {% trans 'I submitted the following motions:' %}
-    {% for motion in submitted_motions %}
-        <li>
-            <a href="{{ motion|absolute_url }}">
-                {{ motion.identifier|add:' | '|default:'' }}
-                {{ motion }}
-            </a>
-        </li>
-    {% empty %}
-        <li><i>{% trans 'None' %}</i></li>
-    {% endfor %}
-</ul>
-
-{% if 'motion_min_supporters'|get_config %}
-<hr />
-<ul style="line-height: 180%">
-    {% trans 'I support the following motions:' %}
-    {% for motion in supported_motions %}
-        <li>
-            <a href="{{ motion|absolute_url }}">
-                {% if motion.identifier %}
-                    [# {{ motion.identifier }}]
-                {% else %}
-                    [---]
-                {% endif %}
-                {{ motion }}
-            </a>
-        </li>
-    {% empty %}
-        <li><i>{% trans 'None' %}</i></li>
-    {% endfor %}
-</ul>
-{% endif %}
-
-<hr />
-<ul style="line-height: 180%">
-    {% trans 'I am candidate for the following elections:' %}
-    {% for assignment in assignments %}
-        <li><a href="{{ assignment|absolute_url }}">{{ assignment }}</a></li>
-    {% empty %}
-        <li><i>{% trans 'None' %}</i></li>
-    {% endfor %}
-</ul>
 {% endblock %}
