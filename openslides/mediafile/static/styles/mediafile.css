@@ -1,8 +1,8 @@
 /** Navigation icons (mapping to glyphicons-halflings) **/
-.icon-mediafile {
+.icon-paperclip {
     background-image: url("../img/glyphicons_062_paperclip.png");
     background-position: 0;
 }
-.leftmenu ul li.active a span.ico i.icon-mediafile {
+.leftmenu ul li.active a span.ico i.icon-paperclip {
     background-image: url("../img/glyphicons_062_paperclip_white.png");
 }

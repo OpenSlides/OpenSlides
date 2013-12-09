@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import clear_url_caches
 from django.test import RequestFactory
@@ -76,23 +77,23 @@ class AjaxMixinTest(ViewTestCase):
 
 class ExtraContextMixinTest(ViewTestCase):
     """
-    Tests the ExtraContextMixin by testen the TemplateView
+    Tests the ExtraContextMixin by testing the TemplateView.
     """
     def test_get_context_data(self):
         view = views.TemplateView()
         get_context_data = view.get_context_data
         view.request = self.rf.get('/', {})
+        view.request.user = AnonymousUser()
 
         context = get_context_data()
-        self.assertIn('tabs', context)
+        self.assertIn('extra_stylefiles', context)
+        self.assertIn('extra_javascript', context)
 
         context = get_context_data(some_context='context')
-        self.assertIn('tabs', context)
         self.assertIn('some_context', context)
 
         template_manipulation.connect(set_context, dispatch_uid='set_context_test')
         context = get_context_data()
-        self.assertIn('tabs', context)
         self.assertIn('new_context', context)
         template_manipulation.disconnect(set_context, dispatch_uid='set_context_test')
 

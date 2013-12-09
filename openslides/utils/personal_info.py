@@ -11,7 +11,7 @@ class PersonalInfo(object):
 
     Every app which wants to add info has to create a class subclassing
     from this base class. For the content the headline and default_weight
-    argument and the get_queryset method have to be set. The __metaclass__
+    attribute and the get_queryset method have to be set. The __metaclass__
     attribute (SignalConnectMetaClass) does the rest of the magic.
     """
     __metaclass__ = SignalConnectMetaClass
@@ -21,7 +21,7 @@ class PersonalInfo(object):
 
     def __init__(self, sender, request, **kwargs):
         """
-        Initialize the personal info instance. This is done when the signal is sent.
+        Initializes the personal info instance. This is done when the signal is sent.
 
         Only the required request argument is used. Because of Django's signal
         API, we have to take also a sender argument and wildcard keyword
@@ -37,12 +37,6 @@ class PersonalInfo(object):
         """
         if not cls.__name__ == 'PersonalInfo':
             return cls.__name__
-
-    def get_default_weight(self):
-        """
-        Returns the default weight of the personal info class.
-        """
-        return self.default_weight
 
     def get_queryset(self):
         """
