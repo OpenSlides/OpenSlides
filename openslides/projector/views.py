@@ -8,7 +8,6 @@ from django.utils.translation import ugettext as _
 from openslides.config.api import config
 from openslides.mediafile.models import Mediafile
 from openslides.utils.tornado_webserver import ProjectorSocketHandler
-from openslides.utils.template import Tab
 from openslides.utils.views import (AjaxMixin, CreateView, DeleteView,
                                     RedirectView, TemplateView, UpdateView)
 from openslides.utils.widgets import Widget
@@ -279,17 +278,3 @@ class CustomSlideDeleteView(DeleteView):
     permission_required = 'projector.can_manage_projector'
     model = ProjectorSlide
     success_url_name = 'dashboard'
-
-
-def register_tab(request):
-    """
-    Register the projector tab.
-    """
-    selected = request.path.startswith('/projector/')
-    return Tab(
-        title=_('Dashboard'),
-        app='dashboard',
-        url=reverse('dashboard'),
-        permission=request.user.has_perm('projector.can_see_dashboard'),
-        selected=selected,
-    )

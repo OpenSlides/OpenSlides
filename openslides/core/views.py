@@ -58,6 +58,8 @@ class SearchView(_SearchView):
         Returns a context dictionary.
         """
         context = {}
+        context.setdefault('extra_stylefiles', [])
+        context.setdefault('extra_javascript', [])
         template_manipulation.send(
             sender=self.__class__, request=self.request, context=context)
         context['models'] = self.get_indexed_searchmodels()

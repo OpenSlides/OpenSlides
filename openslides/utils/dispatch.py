@@ -14,9 +14,15 @@ class SignalConnectMetaClass(type):
     The classmethod get_all_objects is added as get_all classmethod to every
     class using this metaclass. Calling this on a base class or on child
     classes will retrieve all connected children, on instance for each child
-    class. These instances will have a check_permission method which
-    returns True by default. You can override this method to return False
-    on runtime if you want to filter some children.
+    class.
+
+    These instances will have a check_permission method which returns True
+    by default. You can override this method to return False on runtime if
+    you want to filter some children.
+
+    They will also have a get_default_weight method which returns the value
+    of the default_weight attribute which is 0 by default. You can override
+    the attribute or the method to sort the children.
 
     Example:
 
@@ -37,7 +43,8 @@ class SignalConnectMetaClass(type):
     """
     def __new__(metaclass, class_name, class_parents, class_attributes):
         """
-        Creates the class and connects it to the signal if so.
+        Creates the class and connects it to the signal if so. Adds all
+        default attributes and methods.
         """
         class_attributes['get_all'] = get_all_objects
         new_class = super(SignalConnectMetaClass, metaclass).__new__(
@@ -53,8 +60,12 @@ class SignalConnectMetaClass(type):
                 raise NotImplementedError('Your class %s must have a signal argument, which must be a Django Signal instance.' % class_name)
             else:
                 signal.connect(new_class, dispatch_uid=dispatch_uid)
-        if not hasattr(new_class, 'check_permission'):
-            setattr(new_class, 'check_permission', check_permission)
+        attributes = {'check_permission': check_permission,
+                      'get_default_weight': get_default_weight,
+                      'default_weight': 0}
+        for name, attribute in attributes.items():
+            if not hasattr(new_class, name):
+                setattr(new_class, name, attribute)
         return new_class
 
 
@@ -62,9 +73,8 @@ class SignalConnectMetaClass(type):
 def get_all_objects(cls, request):
     """
     Collects all objects of the class created by the SignalConnectMetaClass
-    from all apps via signal. If they have a get_default_weight method,
-    they are sorted. Does not return objects where check_permission returns
-    False.
+    from all apps via signal. They are sorted using the get_default_weight
+    method. Does not return objects where check_permission returns False.
 
     Expects a request object.
 
@@ -72,8 +82,7 @@ def get_all_objects(cls, request):
     the SignalConnectMetaClass.
     """
     all_objects = [obj for __, obj in cls.signal.send(sender=cls, request=request) if obj.check_permission()]
-    if hasattr(cls, 'get_default_weight'):
-        all_objects.sort(key=lambda obj: obj.get_default_weight())
+    all_objects.sort(key=lambda obj: obj.get_default_weight())
     return all_objects
 
 
@@ -85,3 +94,14 @@ def check_permission(self):
     SignalConnectMetaClass.
     """
     return True
+
+
+def get_default_weight(self):
+    """
+    Returns the value of the default_weight attribute by default. Override
+    this to sort some children on runtime.
+
+    This method is added to every instance of classes using the
+    SignalConnectMetaClass.
+    """
+    return self.default_weight

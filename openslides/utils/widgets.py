@@ -12,15 +12,15 @@ class Widget(object):
     """
     Base class for a widget for the dashboard.
 
-    Every app which wants to add a widget to the dashboard has to create a
+    Every app which wants to add widgets to the dashboard has to create a
     widget class subclassing from this base class. The name attribute has to
     be set. The __metaclass__ attribute (SignalConnectMetaClass) does the
     rest of the magic.
 
-    For the appearance of the widget there are some more attributes like
+    For the appearance of the widget there are some optional attributes like
     verbose_name, permission_required, default_column, default_weight,
-    default_active, template_name, context, icon, more_link_pattern_name,
-    stylesheets and javascript_files.
+    default_active, template_name, context, icon_css_class,
+    more_link_pattern_name, stylesheets and javascript_files.
     """
     __metaclass__ = SignalConnectMetaClass
     signal = Signal(providing_args=['request'])
@@ -39,7 +39,7 @@ class Widget(object):
 
     def __init__(self, sender, request, **kwargs):
         """
-        Initialize the widget instance. This is done when the signal is sent.
+        Initializes the widget instance. This is done when the signal is sent.
 
         Only the required request argument is used. Because of Django's signal
         API, we have to take also a sender argument and wildcard keyword
@@ -72,12 +72,6 @@ class Widget(object):
         Returns True if the request user is allowed to see the widget.
         """
         return self.permission_required is None or self.request.user.has_perm(self.permission_required)
-
-    def get_default_weight(self):
-        """
-        Returns the default weight of the widget.
-        """
-        return self.default_weight
 
     def is_active(self):
         """
