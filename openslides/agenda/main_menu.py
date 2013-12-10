@@ -12,7 +12,7 @@ class AgendaEntry(MainMenuEntry):
     verbose_name = ugettext_lazy('Agenda')
     default_weight = 20
     pattern_name = 'item_overview'
-    icon_css_class = 'icon-list-alt'
+    icon_css_class = 'icon-calendar'
     stylesheets = ['styles/agenda.css']
     selected_path = '/agenda/'
 

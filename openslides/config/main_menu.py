@@ -13,6 +13,6 @@ class ConfigEntry(MainMenuEntry):
     permission_required = 'config.can_manage'
     default_weight = 70
     pattern_name = 'config_first_config_collection_view'
-    icon_css_class = 'icon-wrench'
+    icon_css_class = 'icon-cog'
     stylesheets = ['styles/config.css']
     selected_path = '/config/'
