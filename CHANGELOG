@@ -15,7 +15,7 @@ Files:
 - Enabled update and delete view for uploader refering to his own files.
 Other:
 - Changed widget api. Used new metaclass.
-- Changed api for plugins.
+- Changed api for plugins. Used entry points to detect them automaticly.
 - Renamed config api classes.
 - Renamed some classes of the poll api.
 - Inserted api for the personal info widget.

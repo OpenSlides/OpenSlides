@@ -5,6 +5,7 @@ import os
 from django.utils.translation import ugettext_lazy
 
 from openslides.utils.main import filesystem2unicode
+from openslides.utils.plugins import get_plugins_from_entry_points
 
 SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 
@@ -125,3 +126,6 @@ HAYSTACK_CONNECTIONS = {
 
 # Haystack updates search index after each save/delete action by apps
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+
+# Adds all automaticly collected plugins
+INSTALLED_PLUGINS = get_plugins_from_entry_points()
