@@ -429,18 +429,3 @@ def user_settings_password(request):
     return {
         'form': form,
     }
-
-
-def register_tab(request):
-    """
-    Registers the participant tab.
-    """
-    selected = request.path.startswith('/participant/')
-    return Tab(
-        title=_('Participants'),
-        app='participant',
-        url=reverse('user_overview'),
-        permission=(
-            request.user.has_perm('participant.can_see_participant') or
-            request.user.has_perm('participant.can_manage_participant')),
-        selected=selected)

@@ -59,7 +59,7 @@ class SignalConnectMetaClass(type):
 
 
 @classmethod
-def get_all_objects(cls, request):
+def get_all_objects(cls, request, **kwargs):
     """
     Collects all objects of the class created by the SignalConnectMetaClass
     from all apps via signal. If they have a get_default_weight method,
@@ -71,7 +71,7 @@ def get_all_objects(cls, request):
     This classmethod is added as get_all classmethod to every class using
     the SignalConnectMetaClass.
     """
-    all_objects = [obj for __, obj in cls.signal.send(sender=cls, request=request) if obj.check_permission()]
+    all_objects = [obj for __, obj in cls.signal.send(sender=cls, request=request, **kwargs) if obj.check_permission()]
     if hasattr(cls, 'get_default_weight'):
         all_objects.sort(key=lambda obj: obj.get_default_weight())
     return all_objects

@@ -621,17 +621,3 @@ class CurrentListOfSpeakersView(RedirectView):
                 return reverse('dashboard')
             else:
                 return reverse('item_view', args=[item.pk])
-
-
-def register_tab(request):
-    """
-    Registers the agenda tab.
-    """
-    selected = request.path.startswith('/agenda/')
-    return Tab(
-        title=_('Agenda'),
-        app='agenda',
-        url=reverse('item_overview'),
-        permission=(request.user.has_perm('agenda.can_see_agenda') or
-                    request.user.has_perm('agenda.can_manage_agenda')),
-        selected=selected)

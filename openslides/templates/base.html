@@ -3,7 +3,7 @@
 {% load staticfiles %}
 
 <!DOCTYPE html>
-<html lang="{{LANGUAGE_CODE}}">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -69,15 +69,13 @@
   <!-- Sidebar navigation-->
   <div class="span2 leftmenu lefticon">
       <ul>
-        {% for tab in tabs %}
-            {% if tab.permission %}
-            <li{% if tab.selected %} class="active"{% endif %}>
-                <a href="{{ tab.url }}" class="tooltip-right">
-                <span class="ico"><i class="icon-{{ tab.app }}"></i></span>
-                <span class="text">{{ tab.title }}</span>
+        {% for entry in menu %}
+            <li{% if entry.is_active %} class="active"{% endif %}>
+                <a href="{{ entry.url }}" class="tooltip-right">
+                <span class="ico"><i class="{{ entry.get_icon_css_class }}"></i></span>
+                <span class="text">{{ entry }}</span>
                 </a>
             </li>
-            {% endif %}
         {% endfor %}
       </ul>
   </div>
@@ -97,7 +95,7 @@
           </div>
           {% endfor %}
       </div>
-       
+
       {% block content %}
       {% endblock %}
     </div>
