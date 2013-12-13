@@ -24,6 +24,7 @@ from reportlab.lib.units import cm
 from reportlab.platypus import SimpleDocTemplate, Spacer
 
 from .exceptions import OpenSlidesError
+from .menu import Menu
 from .pdf import firstPage, laterPages
 from .signals import template_manipulation
 from .utils import html_strong
@@ -597,30 +598,15 @@ def server_error(request, template_name='500.html'):
         template_name, context_instance=RequestContext(request)))
 
 
-@receiver(template_manipulation, dispatch_uid="send_register_tab")
-def send_register_tab(sender, request, context, **kwargs):
+@receiver(template_manipulation, dispatch_uid="register_menu")
+def register_menu(sender, request, context, **kwargs):
     """
     Receiver to the template_manipulation signal. Collects from the file
     views.py in all apps the tabs setup by the function register_tab.
     Inserts the tab objects and also the extra_stylefiles to the context.
     """
-    tabs = []
-    if 'extra_stylefiles' in context:
-        extra_stylefiles = context['extra_stylefiles']
-    else:
-        extra_stylefiles = []
+    context.setdefault('extra_stylefiles', [])
     context.setdefault('extra_javascript', [])
 
-    # TODO: Do not go over the filesystem by any request
-    for app in settings.INSTALLED_APPS:
-        try:
-            mod = import_module(app + '.views')
-            tab = mod.register_tab(request)
-            tabs.append(tab)
-            if tab.stylefile:
-                extra_stylefiles.append(tab.stylefile)
-        except (ImportError, AttributeError):
-            continue
-    context.update({
-        'tabs': tabs,
-        'extra_stylefiles': extra_stylefiles})
+    menu = Menu.get_all(request=request, view_class=sender)
+    context.update(menu=menu)

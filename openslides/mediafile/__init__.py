@@ -1,4 +1,4 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from . import slides, widgets  # noqa
+from . import menu, signals, slides, widgets  # noqa

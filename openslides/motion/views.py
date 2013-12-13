@@ -810,16 +810,3 @@ class MotionCSVImportView(FormView):
         return super(MotionCSVImportView, self).form_valid(form)
 
 motion_csv_import = MotionCSVImportView.as_view()
-
-
-def register_tab(request):
-    """
-    Return the motion tab.
-    """
-    # TODO: Find a better way to set the selected var.
-    return Tab(
-        title=_('Motions'),
-        app='motion',
-        url=reverse('motion_list'),
-        permission=request.user.has_perm('motion.can_see_motion'),
-        selected=request.path.startswith('/motion/'))

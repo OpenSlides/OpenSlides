@@ -23,6 +23,7 @@ urlpatterns = patterns(
         views.ActivateView.as_view(),
         name='projector_activate_slide'),
 
+    # TODO: Move the dashboard to the core app
     url(r'^dashboard/$',
         views.DashboardView.as_view(),
         name='dashboard'),

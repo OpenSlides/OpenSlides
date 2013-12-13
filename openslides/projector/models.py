@@ -131,5 +131,6 @@ class ProjectorSlide(SlideMixin, models.Model):
         permissions = (
             ('can_manage_projector', ugettext_noop("Can manage the projector")),
             ('can_see_projector', ugettext_noop("Can see the projector")),
+            # TODO: move dashboard permission to the core app
             ('can_see_dashboard', ugettext_noop("Can see the dashboard")),
         )

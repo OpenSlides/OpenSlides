@@ -606,18 +606,3 @@ class AssignmentPollPDF(PDFView):
             ('GRID', (0, 0), (-1, -1), 0.25, colors.grey),
             ('VALIGN', (0, 0), (-1, -1), 'TOP')]))
         story.append(t)
-
-
-def register_tab(request):
-    selected = request.path.startswith('/assignment/')
-    return Tab(
-        title=_('Elections'),
-        app='assignment',
-        url=reverse('assignment_list'),
-        permission=(
-            request.user.has_perm('assignment.can_see_assignment') or
-            request.user.has_perm('assignment.can_nominate_other') or
-            request.user.has_perm('assignment.can_nominate_self') or
-            request.user.has_perm('assignment.can_manage_assignment')),
-        selected=selected,
-    )

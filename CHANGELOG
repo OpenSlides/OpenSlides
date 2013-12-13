@@ -18,6 +18,7 @@ Other:
 - Renamed config api classes.
 - Renamed some classes of the poll api.
 - Inserted api for the personal info widget.
+- Changed menu api.
 
 
 Version 1.5.1 (unreleased)

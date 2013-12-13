@@ -279,17 +279,3 @@ class CustomSlideDeleteView(DeleteView):
     permission_required = 'projector.can_manage_projector'
     model = ProjectorSlide
     success_url_name = 'dashboard'
-
-
-def register_tab(request):
-    """
-    Register the projector tab.
-    """
-    selected = request.path.startswith('/projector/')
-    return Tab(
-        title=_('Dashboard'),
-        app='dashboard',
-        url=reverse('dashboard'),
-        permission=request.user.has_perm('projector.can_see_dashboard'),
-        selected=selected,
-    )
