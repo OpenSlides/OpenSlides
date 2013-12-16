@@ -2,4 +2,16 @@
 
 from django.dispatch import Signal
 
-template_manipulation = Signal(providing_args=['request', 'context'])
+
+class TemplateManipulationSignal(Signal):
+    """
+    Derived class to ensure that the key extra_stylefiles and extra_javascript
+    exist in the context dictionary.
+    """
+    def send(self, **kwargs):
+        kwargs['context'].setdefault('extra_stylefiles', [])
+        kwargs['context'].setdefault('extra_javascript', [])
+        return super(TemplateManipulationSignal, self).send(**kwargs)
+
+
+template_manipulation = TemplateManipulationSignal(providing_args=['request', 'context'])

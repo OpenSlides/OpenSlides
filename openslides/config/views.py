@@ -5,7 +5,6 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 
-from openslides.utils.template import Tab
 from openslides.utils.views import FormView
 
 from .api import config
@@ -109,15 +108,3 @@ class ConfigView(FormView):
             config[key] = form.cleaned_data[key]
         messages.success(self.request, _('%s settings successfully saved.') % _(self.config_collection.title))
         return super(ConfigView, self).form_valid(form)
-
-
-def register_tab(request):
-    """
-    Registers the entry for this app in the main menu.
-    """
-    return Tab(
-        title=_('Configuration'),
-        app='config',
-        url=reverse('config_first_config_collection_view'),
-        permission=request.user.has_perm('config.can_manage'),
-        selected=request.path.startswith('/config/'))

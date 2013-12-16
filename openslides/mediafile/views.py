@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from django.core.urlresolvers import reverse
 from django.http import HttpResponse
-from django.utils.translation import ugettext as _
 
 from openslides.config.api import config
 from openslides.projector.api import get_active_slide
-from openslides.utils.template import Tab
 from openslides.utils.tornado_webserver import ProjectorSocketHandler
 from openslides.utils.views import (AjaxView, CreateView, DeleteView, RedirectView, ListView,
                                     UpdateView)
@@ -208,19 +205,3 @@ class PdfToggleFullscreenView(RedirectView):
             ProjectorSocketHandler.send_updates(
                 {'calls': {'toggle_fullscreen': config['pdf_fullscreen']}})
         return {'fullscreen': config['pdf_fullscreen']}
-
-
-def register_tab(request):
-    """
-    Inserts a new Tab to the views for files.
-    """
-    selected = request.path.startswith('/mediafile/')
-    return Tab(
-        title=_('Files'),
-        app='mediafile',  # TODO: Rename this to icon='mediafile' later
-        stylefile='styles/mediafile.css',
-        url=reverse('mediafile_list'),
-        permission=(request.user.has_perm('mediafile.can_see') or
-                    request.user.has_perm('mediafile.can_upload') or
-                    request.user.has_perm('mediafile.can_manage')),
-        selected=selected)

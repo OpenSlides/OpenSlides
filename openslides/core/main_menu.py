@@ -1,0 +1,16 @@
+# -*- coding: utf-8 -*-
+
+from django.utils.translation import ugettext_lazy
+
+from openslides.utils.main_menu import MainMenuEntry
+
+
+class DashboardMainMenuEntry(MainMenuEntry):
+    """
+    Main menu entry to the dashboard.
+    """
+    verbose_name = ugettext_lazy('Dashboard')
+    permission_required = 'projector.can_see_dashboard'
+    default_weight = 10
+    icon_css_class = 'icon-home'
+    pattern_name = 'dashboard'

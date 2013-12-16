@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from django.contrib.auth.models import AnonymousUser
 from django.test.client import Client, RequestFactory
 from mock import call, MagicMock, patch
 
@@ -19,6 +20,7 @@ class ProjectorViewTest(TestCase):
                  mock_get_projector_overlays_js):
         view = views.ProjectorView()
         view.request = self.rf.get('/')
+        view.request.user = AnonymousUser()
 
         # Test preview
         view.kwargs = {'callback': 'slide_callback'}

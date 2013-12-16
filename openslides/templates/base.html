@@ -3,7 +3,7 @@
 {% load staticfiles %}
 
 <!DOCTYPE html>
-<html lang="{{LANGUAGE_CODE}}">
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -60,61 +60,56 @@
         </div>
     </div> <!--/.container-fluid-->
 
+    {% block body %}
+    <!-- Container -->
+    <div class="container-fluid" id="container">
+    <div class="row-fluid">
 
-{% block body %}
-<!-- Container -->
-<div class="container-fluid" id="container">
-<div class="row-fluid">
+        <!-- Sidebar navigation (main menu) -->
+        <div class="span2 leftmenu lefticon">
+            <ul>
+                {% for entry in main_menu_entries %}
+                    <li{% if entry.is_active %} class="active"{% endif %}>
+                        <a href="{{ entry.get_url }}" class="tooltip-right">
+                        <span class="ico"><i class="{{ entry.get_icon_css_class }}"></i></span>
+                        <span class="text">{{ entry }}</span>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
 
-  <!-- Sidebar navigation-->
-  <div class="span2 leftmenu lefticon">
-      <ul>
-        {% for tab in tabs %}
-            {% if tab.permission %}
-            <li{% if tab.selected %} class="active"{% endif %}>
-                <a href="{{ tab.url }}" class="tooltip-right">
-                <span class="ico"><i class="icon-{{ tab.app }}"></i></span>
-                <span class="text">{{ tab.title }}</span>
-                </a>
-            </li>
-            {% endif %}
-        {% endfor %}
-      </ul>
-  </div>
+        <!-- Content -->
+        <div id="content" class="span10">
+            <div class="row-fluid">
+                <div class="span12">
+                    <div id="notifications">
+                        <div id="dummy-notification" class="notification" style="display:none">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                        </div>
+                        {% for message in messages %}
+                        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                            <button type="button" class="close" data-dismiss="alert">×</button>
+                            {{ message|safe }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% block content %}{% endblock %}
+                </div>
+            </div>
+            <hr />
+            <footer>
+                <small>
+                    &copy; Copyright 2011–2013 | Powered by <a href="http://openslides.org" target="_blank">OpenSlides</a> | <a href="{% url 'core_version' %}">Version</a>
+                </small>
+            </footer>
+        </div><!--/#content-->
 
-  <!-- Content -->
-  <div id="content" class="span10">
-  <div class="row-fluid">
-    <div class="span12">
-      <div id="notifications">
-          <div id="dummy-notification" class="notification" style="display:none">
-              <button type="button" class="close" data-dismiss="alert">×</button>
-          </div>
-          {% for message in messages %}
-          <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-              <button type="button" class="close" data-dismiss="alert">×</button>
-              {{ message|safe }}
-          </div>
-          {% endfor %}
-      </div>
-       
-      {% block content %}
-      {% endblock %}
-    </div>
-  </div>
-  <hr />
-  <footer>
-      <small>
-      &copy; Copyright 2011–2013 | Powered by <a href="http://openslides.org" target="_blank">OpenSlides</a> | <a href="{% url 'core_version' %}">Version</a>
-      </small>
-  </footer>
-  </div><!--/content-->
-</div><!--/row-->
-</div><!--/container-fluid-->
+    </div><!--/.row-fluid-->
+    </div><!--/#container-->
+    {% endblock %}<!--/body-->
 
-{% endblock %}<!--/body-->
-
-<!-- JavaScript (Placed at the end of the document so the pages load faster) -->
+    <!-- JavaScript (Placed at the end of the document so the pages load faster) -->
     <script src="{% static 'javascript/jquery.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'javascript/bootstrap.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'javascript/utils.js' %}" type="text/javascript"></script>
