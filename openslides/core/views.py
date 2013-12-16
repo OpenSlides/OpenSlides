@@ -61,8 +61,6 @@ class SearchView(_SearchView):
         Returns a context dictionary.
         """
         context = {}
-        context.setdefault('extra_stylefiles', [])
-        context.setdefault('extra_javascript', [])
         template_manipulation.send(
             sender=self.__class__, request=self.request, context=context)
         context['models'] = self.get_indexed_searchmodels()
@@ -96,7 +94,6 @@ class ErrorView(View):
     status_code = None
 
     def dispatch(self, request, *args, **kwargs):
-        context = {'extra_stylefiles': [], 'extra_javascript': []}
         http_error_strings = {
             403: {'name': _('Forbidden'),
                   'description': _('Sorry, you have no permission to see this page.'),
@@ -107,6 +104,7 @@ class ErrorView(View):
             500: {'name': _('Internal Server Error'),
                   'description': _('Sorry, there was an unknown error. Please contact the event manager.'),
                   'status_code': '500'}}
+        context = {}
         context['http_error'] = http_error_strings[self.status_code]
         template_manipulation.send(sender=self.__class__, request=request, context=context)
         response = render_to_response(

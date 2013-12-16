@@ -18,7 +18,7 @@ class MainMenuEntry(object):
     magic.
 
     For the appearance there are some optional attributes like
-    permission_required, default_weight and stylesheets.
+    permission_required, default_weight, stylesheets and javascript_files.
     """
     __metaclass__ = SignalConnectMetaClass
     signal = Signal(providing_args=['request'])
@@ -26,9 +26,9 @@ class MainMenuEntry(object):
     permission_required = None
     default_weight = 0
     pattern_name = None
-    icon_css_class = None
+    icon_css_class = 'icon-home'
     stylesheets = None
-    selected_path = None
+    javascript_files = None
 
     def __init__(self, sender, request, **kwargs):
         """
@@ -42,6 +42,10 @@ class MainMenuEntry(object):
         self.request = request
 
     def __unicode__(self):
+        if self.verbose_name is None:
+            raise NotImplementedError(
+                'The main menu entry class %s must provide a verbose_name '
+                'attribute or override the __unicode__ method.' % type(self).__name__)
         return unicode(self.verbose_name)
 
     @classmethod
@@ -61,27 +65,41 @@ class MainMenuEntry(object):
 
     def get_icon_css_class(self):
         """
-        Returns the css class name of the icon.
+        Returns the css class name of the icon. Default is 'icon-home'.
         """
         return self.icon_css_class
 
     def get_url(self):
         """
-        Returns the url of the entry
+        Returns the url of the entry.
         """
+        if self.pattern_name is None:
+            raise NotImplementedError(
+                'The main menu entry class %s must provide a pattern_name '
+                'attribute or override the get_url method.' % type(self).__name__)
         return reverse(self.pattern_name)
 
     def is_active(self):
         """
         Returns True if the entry is selected at the moment.
         """
-        return self.request.path.startswith(self.selected_path)
+        try:
+            return_value = isinstance(self, self.request.active_main_menu_class)
+        except AttributeError:
+            return_value = self.request.path.startswith(self.get_url())
+        return return_value
 
     def get_stylesheets(self):
         """
         Returns an interable of stylesheets to be loaded.
         """
         return iter(self.stylesheets or [])
+
+    def get_javascript_files(self):
+        """
+        Returns an interable of javascript files to be loaded.
+        """
+        return iter(self.javascript_files or [])
 
 
 def main_menu_entries(request):
@@ -99,3 +117,4 @@ def add_main_menu_context(sender, request, context, **kwargs):
     """
     for main_menu_entry in MainMenuEntry.get_all(request):
         context['extra_stylefiles'].extend(main_menu_entry.get_stylesheets())
+        context['extra_javascript'].extend(main_menu_entry.get_javascript_files())

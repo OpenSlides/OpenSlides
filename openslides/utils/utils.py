@@ -23,8 +23,6 @@ def template(template_name):
             if not isinstance(output, dict):
                 return output
             context = {}
-            context.setdefault('extra_stylefiles', [])
-            context.setdefault('extra_javascript', [])
             template_manipulation.send(
                 sender='utils_template', request=request, context=context)
             output.update(context)

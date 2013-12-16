@@ -106,8 +106,6 @@ class ExtraContextMixin(object):
         Sends the signal.
         """
         context = super(ExtraContextMixin, self).get_context_data(**kwargs)
-        context.setdefault('extra_stylefiles', [])
-        context.setdefault('extra_javascript', [])
         template_manipulation.send(
             sender=self.__class__, request=self.request, context=context)
         return context

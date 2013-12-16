@@ -5,7 +5,7 @@ from django.utils.translation import ugettext_lazy
 from openslides.utils.main_menu import MainMenuEntry
 
 
-class DashboardEntry(MainMenuEntry):
+class DashboardMainMenuEntry(MainMenuEntry):
     """
     Main menu entry to the dashboard.
     """
@@ -14,5 +14,3 @@ class DashboardEntry(MainMenuEntry):
     default_weight = 10
     icon_css_class = 'icon-home'
     pattern_name = 'dashboard'
-    stylesheets = ['styles/core.css']
-    selected_path = '/projector/'
