@@ -8,6 +8,8 @@ Version 1.5.1 (unreleased)
 ==========================
 [https://github.com/OpenSlides/OpenSlides/issues?milestone=15]
 
+Participant:
+- Added permission to see participants also to the manager group.
 Files:
 - Fixed error when a file was removed from filesystem.
 Other:
