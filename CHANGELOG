@@ -8,6 +8,8 @@ Version 1.5.1 (unreleased)
 ==========================
 [https://github.com/OpenSlides/OpenSlides/issues?milestone=15]
 
+Files:
+- Fixed error when a file was removed from filesystem.
 Other:
 - Fixed http status code when requesting a non-existing static page using
   Tordado web server.
