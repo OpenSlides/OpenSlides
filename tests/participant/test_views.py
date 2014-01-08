@@ -2,9 +2,12 @@
 
 import re
 
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from django.test.client import Client
 
 from openslides.config.api import config
+from openslides.participant.api import get_registered_group
 from openslides.participant.models import get_protected_perm, Group, User
 from openslides.utils.test import TestCase
 
@@ -93,7 +96,9 @@ class GroupViews(TestCase):
 class LockoutProtection(TestCase):
     """
     Tests that a manager user can not lockout himself by doing
-    something that removes his last permission to manage participants.
+    something that removes his last permission to manage participants. Tests
+    also that he can see the participant app (although there is no absolute
+    protection).
     """
     def setUp(self):
         self.user = User.objects.get(pk=1)
@@ -158,6 +163,17 @@ class LockoutProtection(TestCase):
             form='form',
             field=None,
             errors='You can not remove the permission to manage participants from the last group you are in.')
+
+    def test_remove_permission_can_see_participant_from_registered(self):
+        self.assertTrue(self.user.has_perm('participant.can_see_participant'))
+        # Remove perm from registered group
+        can_see_perm = Permission.objects.get(
+            content_type=ContentType.objects.get(app_label='participant', model='user'),
+            codename='can_see_participant')
+        get_registered_group().permissions.remove(can_see_perm)
+        # Reload user
+        self.user = User.objects.get(pk=1)
+        self.assertTrue(self.user.has_perm('participant.can_see_participant'))
 
 
 class TestUserSettings(TestCase):

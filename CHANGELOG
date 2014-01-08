@@ -8,6 +8,14 @@ Version 1.5.1 (unreleased)
 ==========================
 [https://github.com/OpenSlides/OpenSlides/issues?milestone=15]
 
+Participant:
+- Added permission to see participants also to the manager group.
+Files:
+- Fixed error when a file was removed from filesystem.
+Other:
+- Fixed http status code when requesting a non-existing static page using
+  Tordado web server.
+
 
 Version 1.5 (2013-11-25)
 ========================
