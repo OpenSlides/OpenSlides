@@ -98,7 +98,7 @@ def agenda_list_of_speakers(sender, **kwargs):
         list-of-speakers slide.
         """
         slide = get_active_object()
-        if isinstance(slide, Item):
+        if slide is None or isinstance(slide, Item):
             item = slide
         else:
             # TODO: If there are more the one items, use the first one in the
