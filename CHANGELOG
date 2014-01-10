@@ -9,7 +9,7 @@ Version 1.6 (unreleased)
 [https://github.com/OpenSlides/OpenSlides/issues?milestone=14]
 
 Participants:
-- Disable widgets by default.
+- Disabled widgets by default.
 Files:
 - Enabled update and delete view for uploader refering to his own files.
 Other:
@@ -18,6 +18,9 @@ Other:
 - Renamed config api classes.
 - Renamed some classes of the poll api.
 - Inserted api for the personal info widget.
+- Changed api for main menu entries.
+- Enhanced http error pages.
+- Moved dashboard and select widgets view from projector to core app.
 
 
 Version 1.5.1 (unreleased)

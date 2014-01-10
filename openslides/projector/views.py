@@ -1,43 +1,16 @@
 # -*- coding: utf-8 -*-
 
-from django.contrib import messages
-from django.core.urlresolvers import reverse
-from django.shortcuts import redirect
-from django.utils.translation import ugettext as _
-
 from openslides.config.api import config
 from openslides.mediafile.models import Mediafile
 from openslides.utils.tornado_webserver import ProjectorSocketHandler
-from openslides.utils.template import Tab
-from openslides.utils.views import (AjaxMixin, CreateView, DeleteView,
+from openslides.utils.views import (CreateView, DeleteView,
                                     RedirectView, TemplateView, UpdateView)
-from openslides.utils.widgets import Widget
 
 from .api import (call_on_projector, get_active_slide,
                   get_overlays, get_projector_content, get_projector_overlays,
                   get_projector_overlays_js, reset_countdown, set_active_slide,
                   start_countdown, stop_countdown, update_projector_overlay)
-from .forms import SelectWidgetsForm
 from .models import ProjectorSlide
-
-
-class DashboardView(AjaxMixin, TemplateView):
-    """
-    Overview over all possible slides, the overlays and a live view.
-    """
-    template_name = 'projector/dashboard.html'
-    permission_required = 'projector.can_see_dashboard'
-
-    def get_context_data(self, **kwargs):
-        context = super(DashboardView, self).get_context_data(**kwargs)
-        widgets = []
-        for widget in Widget.get_all(self.request):
-            if widget.is_active():
-                widgets.append(widget)
-                context['extra_stylefiles'].extend(widget.get_stylesheets())
-                context['extra_javascript'].extend(widget.get_javascript_files())
-        context['widgets'] = widgets
-        return context
 
 
 class ProjectorView(TemplateView):
@@ -73,7 +46,7 @@ class ActivateView(RedirectView):
     Activate a Slide.
     """
     permission_required = 'projector.can_manage_projector'
-    url_name = 'dashboard'
+    url_name = 'core_dashboard'
     allow_ajax = True
 
     def pre_redirect(self, request, *args, **kwargs):
@@ -95,51 +68,12 @@ class ActivateView(RedirectView):
                            'scale': config['projector_scale']})
 
 
-class SelectWidgetsView(TemplateView):
-    """
-    Show a Form to Select the widgets.
-    """
-    permission_required = 'projector.can_see_dashboard'
-    template_name = 'projector/select_widgets.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(SelectWidgetsView, self).get_context_data(**kwargs)
-
-        widgets = Widget.get_all(self.request)
-        for widget in widgets:
-            initial = {'widget': widget.is_active()}
-            prefix = widget.name
-            if self.request.method == 'POST':
-                widget.form = SelectWidgetsForm(self.request.POST, prefix=prefix,
-                                                initial=initial)
-            else:
-                widget.form = SelectWidgetsForm(prefix=prefix, initial=initial)
-        context['widgets'] = widgets
-        return context
-
-    def post(self, request, *args, **kwargs):
-        """
-        Activates or deactivates the widgets in a post request.
-        """
-        context = self.get_context_data(**kwargs)
-        session_widgets = self.request.session.get('widgets', {})
-        for widget in context['widgets']:
-            if widget.form.is_valid():
-                session_widgets[widget.name] = widget.form.cleaned_data['widget']
-            else:
-                messages.error(request, _('Errors in the form.'))
-                break
-        else:
-            self.request.session['widgets'] = session_widgets
-        return redirect(reverse('dashboard'))
-
-
 class ProjectorControllView(RedirectView):
     """
     Scale or scroll the projector.
     """
     permission_required = 'projector.can_manage_projector'
-    url_name = 'dashboard'
+    url_name = 'core_dashboard'
     allow_ajax = True
 
     def pre_redirect(self, request, *args, **kwargs):
@@ -173,7 +107,7 @@ class CountdownControllView(RedirectView):
     Start, stop or reset the countdown.
     """
     permission_required = 'projector.can_manage_projector'
-    url_name = 'dashboard'
+    url_name = 'core_dashboard'
     allow_ajax = True
 
     def pre_redirect(self, request, *args, **kwargs):
@@ -205,7 +139,7 @@ class OverlayMessageView(RedirectView):
     """
     Sets or clears the overlay message
     """
-    url_name = 'dashboard'
+    url_name = 'core_dashboard'
     allow_ajax = True
     permission_required = 'projector.can_manage_projector'
 
@@ -226,7 +160,7 @@ class ActivateOverlay(RedirectView):
     """
     Activate or deactivate an overlay.
     """
-    url_name = 'dashboard'
+    url_name = 'core_dashboard'
     allow_ajax = True
     permission_required = 'projector.can_manage_projector'
 
@@ -256,7 +190,7 @@ class CustomSlideCreateView(CreateView):
     template_name = 'projector/new.html'
     model = ProjectorSlide
     context_object_name = 'customslide'
-    success_url_name = 'dashboard'
+    success_url_name = 'core_dashboard'
     url_name_args = []
 
 
@@ -268,7 +202,7 @@ class CustomSlideUpdateView(UpdateView):
     template_name = 'projector/new.html'
     model = ProjectorSlide
     context_object_name = 'customslide'
-    success_url_name = 'dashboard'
+    success_url_name = 'core_dashboard'
     url_name_args = []
 
 
@@ -278,18 +212,4 @@ class CustomSlideDeleteView(DeleteView):
     """
     permission_required = 'projector.can_manage_projector'
     model = ProjectorSlide
-    success_url_name = 'dashboard'
-
-
-def register_tab(request):
-    """
-    Register the projector tab.
-    """
-    selected = request.path.startswith('/projector/')
-    return Tab(
-        title=_('Dashboard'),
-        app='dashboard',
-        url=reverse('dashboard'),
-        permission=request.user.has_perm('projector.can_see_dashboard'),
-        selected=selected,
-    )
+    success_url_name = 'core_dashboard'

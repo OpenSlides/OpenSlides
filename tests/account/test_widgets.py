@@ -51,7 +51,7 @@ class PersonalInfoWidget(TestCase):
         self.client.login(username='HansMeiser', password='default')
 
     def test_widget_appearance(self):
-        response = self.client.get('/projector/dashboard/')
+        response = self.client.get('/dashboard/')
         self.assertContains(response, 'My personal info', status_code=200)
 
     def test_item_list(self):
@@ -59,11 +59,11 @@ class PersonalInfoWidget(TestCase):
         if agenda:
             item_1 = agenda.models.Item.objects.create(title='My Item Title iw5ohNgee4eiYahb5Eiv')
             speaker = agenda.models.Speaker.objects.add(item=item_1, person=self.user)
-            response = self.client.get('/projector/dashboard/')
+            response = self.client.get('/dashboard/')
             self.assertContains(response, 'I am on the list of speakers of the following items:', status_code=200)
             self.assertContains(response, 'My Item Title iw5ohNgee4eiYahb5Eiv', status_code=200)
             speaker.begin_speach()
-            response = self.client.get('/projector/dashboard/')
+            response = self.client.get('/dashboard/')
             self.assertNotContains(response, 'My Item Title iw5ohNgee4eiYahb5Eiv', status_code=200)
 
     def test_submitter_list(self):
@@ -73,7 +73,7 @@ class PersonalInfoWidget(TestCase):
             motion_2 = motion.models.Motion.objects.create(title='My Motion Title quielohL7vah1weochai', text='My Motion Text')
             motion.models.MotionSubmitter.objects.create(motion=motion_1, person=self.user)
             motion.models.MotionSubmitter.objects.create(motion=motion_2, person=self.user)
-            response = self.client.get('/projector/dashboard/')
+            response = self.client.get('/dashboard/')
             self.assertContains(response, 'I submitted the following motions:', status_code=200)
             self.assertContains(response, 'My Motion Title pa8aeNohYai0ahge', status_code=200)
             self.assertContains(response, 'My Motion Title quielohL7vah1weochai', status_code=200)
@@ -86,7 +86,7 @@ class PersonalInfoWidget(TestCase):
             motion.models.MotionSupporter.objects.create(motion=motion_1, person=self.user)
             motion.models.MotionSupporter.objects.create(motion=motion_2, person=self.user)
             config['motion_min_supporters'] = 1
-            response = self.client.get('/projector/dashboard/')
+            response = self.client.get('/dashboard/')
             self.assertContains(response, 'I support the following motions:', status_code=200)
             self.assertContains(response, 'My Motion Title jahN9phaiThae5ooKubu', status_code=200)
             self.assertContains(response, 'My Motion Title vech9ash8aeh9eej2Ga2', status_code=200)
@@ -96,6 +96,6 @@ class PersonalInfoWidget(TestCase):
         if assignment:
             assignment_1 = assignment.models.Assignment.objects.create(name='Hausmeister ooKoh7roApoo3phe', posts=1)
             assignment_1.run(candidate=self.user, person=self.user)
-            response = self.client.get('/projector/dashboard/')
+            response = self.client.get('/dashboard/')
             self.assertContains(response, 'I am candidate for the following elections:', status_code=200)
             self.assertContains(response, 'Hausmeister ooKoh7roApoo3phe', status_code=200)

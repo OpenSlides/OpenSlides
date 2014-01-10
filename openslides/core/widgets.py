@@ -14,7 +14,7 @@ class WelcomeWidget(Widget):
     default_column = 1
     default_weight = 10
     template_name = 'core/widget_welcome.html'
-    stylesheets = ['styles/core.css']
+    icon_css_class = 'icon-home'
 
     def get_verbose_name(self):
         return config['welcome_title']

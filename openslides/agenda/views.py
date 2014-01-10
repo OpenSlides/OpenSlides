@@ -15,7 +15,6 @@ from openslides.config.api import config
 from openslides.projector.api import get_active_slide, update_projector
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.pdf import stylesheet
-from openslides.utils.template import Tab
 from openslides.utils.utils import html_strong
 from openslides.utils.views import (CreateView, DeleteView, FormView, PDFView,
                                     RedirectView, SingleObjectMixin,
@@ -569,7 +568,7 @@ class CurrentListOfSpeakersView(RedirectView):
             messages.error(request, _(
                 'There is no list of speakers for the current slide. '
                 'Please choose the agenda item manually from the agenda.'))
-            return reverse('dashboard')
+            return reverse('core_dashboard')
 
         if self.set_speaker:
             if item.speaker_list_closed:
@@ -613,25 +612,11 @@ class CurrentListOfSpeakersView(RedirectView):
 
         if item.type == Item.ORGANIZATIONAL_ITEM:
             if reverse_to_dashboard or not self.request.user.has_perm('agenda.can_see_orga_items'):
-                return reverse('dashboard')
+                return reverse('core_dashboard')
             else:
                 return reverse('item_view', args=[item.pk])
         else:
             if reverse_to_dashboard or not self.request.user.has_perm('agenda.can_see_agenda'):
-                return reverse('dashboard')
+                return reverse('core_dashboard')
             else:
                 return reverse('item_view', args=[item.pk])
-
-
-def register_tab(request):
-    """
-    Registers the agenda tab.
-    """
-    selected = request.path.startswith('/agenda/')
-    return Tab(
-        title=_('Agenda'),
-        app='agenda',
-        url=reverse('item_overview'),
-        permission=(request.user.has_perm('agenda.can_see_agenda') or
-                    request.user.has_perm('agenda.can_manage_agenda')),
-        selected=selected)

@@ -23,14 +23,6 @@ urlpatterns = patterns(
         views.ActivateView.as_view(),
         name='projector_activate_slide'),
 
-    url(r'^dashboard/$',
-        views.DashboardView.as_view(),
-        name='dashboard'),
-
-    url(r'^widgets/$',
-        views.SelectWidgetsView.as_view(),
-        name='projector_select_widgets'),
-
     url(r'^overlay_message/$',
         views.OverlayMessageView.as_view(),
         name='projector_overlay_message'),

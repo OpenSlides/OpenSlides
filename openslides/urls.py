@@ -3,9 +3,12 @@
 from django.conf import settings
 from django.conf.urls import include, patterns, url
 
+from openslides.core.views import ErrorView
 from openslides.utils.plugins import get_urlpatterns
 
-handler500 = 'openslides.utils.views.server_error'
+handler403 = ErrorView.as_view(status_code=403)
+handler404 = ErrorView.as_view(status_code=404)
+handler500 = ErrorView.as_view(status_code=500)
 
 urlpatterns = []
 
