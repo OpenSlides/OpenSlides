@@ -243,12 +243,13 @@ def syncdb(settings, args):
     ensure_settings(settings, args)
     # TODO: Check use of filesystem2unicode here.
     db_file = get_database_path_from_settings()
-    db_dir = filesystem2unicode(os.path.dirname(db_file))
-    if not os.path.exists(db_dir):
-        os.makedirs(db_dir)
-    if not os.path.exists(db_file):
-        print('Clearing old search index...')
-        execute_from_command_line(["", "clear_index", "--noinput"])
+    if db_file is not None:
+        db_dir = filesystem2unicode(os.path.dirname(db_file))
+        if not os.path.exists(db_dir):
+            os.makedirs(db_dir)
+        if not os.path.exists(db_file):
+            print('Clearing old search index...')
+            execute_from_command_line(["", "clear_index", "--noinput"])
     execute_from_command_line(["", "syncdb", "--noinput"])
     return 0
 

@@ -34,6 +34,7 @@ Files:
 Other:
 - Fixed http status code when requesting a non-existing static page using
   Tordado web server.
+- Fixed error in main script when using other database engine.
 
 
 Version 1.5 (2013-11-25)
