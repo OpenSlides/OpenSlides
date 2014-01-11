@@ -15,11 +15,10 @@ from openslides.__main__ import (
 from openslides.utils.main import (
     get_browser_url,
     get_database_path_from_settings,
+    get_default_settings_context,
     get_default_settings_path,
     get_default_user_data_path,
     get_port,
-    get_portable_paths,
-    get_user_data_path_values,
     PortIsBlockedError,
     setup_django_settings_module,
     start_browser,
@@ -36,20 +35,11 @@ class TestFunctions(TestCase):
         self.assertIn(
             os.path.join('.config', 'openslides', 'settings.py'), get_default_settings_path(UNIX_VERSION))
 
-    def test_get_user_data_path_values_case_one(self):
-        values = get_user_data_path_values('/test_path_dfhvndshfgsef', default=False)
-        self.assertEqual(values['import_function'], '')
-        self.assertIn('database.sqlite', values['database_path_value'])
-        self.assertIn('media', values['media_path_value'])
-        self.assertIn('whoosh_index', values['whoosh_index_path_value'])
-
-    def test_get_user_data_path_values_case_two(self):
-        self.assertEqual(
-            get_user_data_path_values('test_path_dfhvndshfgsef', default=True, openslides_type=WINDOWS_PORTABLE_VERSION),
-            {'import_function': 'from openslides.utils.main import get_portable_paths',
-             'database_path_value': "get_portable_paths('database')",
-             'media_path_value': "get_portable_paths('media')",
-             'whoosh_index_path_value': "get_portable_paths('whoosh_index')"})
+    @patch('openslides.utils.main.detect_openslides_type')
+    def test_get_default_settings_context_portable(self, detect_mock):
+        detect_mock.return_value = WINDOWS_PORTABLE_VERSION
+        context = get_default_settings_context()
+        self.assertEqual(context['openslides_user_data_path'], 'get_win32_portable_path()')
 
     def test_setup_django_settings_module(self):
         setup_django_settings_module('test_dir_dhvnghfjdh456fzheg2f/test_path_bngjdhc756dzwncshdfnx.py')
@@ -100,14 +90,6 @@ class TestFunctions(TestCase):
 
     def test_get_database_path_from_settings_memory(self):
         self.assertEqual(get_database_path_from_settings(), ':memory:')
-
-    @patch('openslides.utils.main.get_win32_portable_path')
-    def test_get_portable_paths(self, mock_get_win32_portable_path):
-        mock_get_win32_portable_path.return_value = '/test_path_AhgheeGee1eixaeYe1ra'
-        self.assertEqual(get_portable_paths('database'), '/test_path_AhgheeGee1eixaeYe1ra/openslides/database.sqlite')
-        self.assertEqual(get_portable_paths('media'), '/test_path_AhgheeGee1eixaeYe1ra/openslides/media/')
-        self.assertEqual(get_portable_paths('whoosh_index'), '/test_path_AhgheeGee1eixaeYe1ra/openslides/whoosh_index/')
-        self.assertRaisesMessage(TypeError, 'Unknown type unknown_string', get_portable_paths, 'unknown_string')
 
 
 class TestOtherFunctions(TestCase):

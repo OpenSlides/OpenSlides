@@ -6,7 +6,6 @@ from django.utils.translation import ugettext_lazy
 
 from openslides.utils.main import filesystem2unicode
 
-
 SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 
 AUTHENTICATION_BACKENDS = (
@@ -52,12 +51,6 @@ STATIC_ROOT = filesystem2unicode(os.path.join(SITE_ROOT, '../collected-site-stat
 # Examples: "http://static.lawrence.com", "http://example.com/static/"
 STATIC_URL = '/static/'
 
-# Additional directories containing static files (not application specific)
-# Examples: "/home/media/lawrence.com/extra-static/"
-STATICFILES_DIRS = (
-    filesystem2unicode(os.path.join(SITE_ROOT, 'static')),
-)
-
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -80,14 +73,6 @@ MIDDLEWARE_CLASSES = (
 )
 
 ROOT_URLCONF = 'openslides.urls'
-
-TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or
-    # "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
-    filesystem2unicode(os.path.join(SITE_ROOT, 'templates')),
-)
 
 INSTALLED_APPS = (
     'django.contrib.auth',

@@ -13,7 +13,6 @@ from base64 import b64encode
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import ENVIRONMENT_VARIABLE
 
-
 UNIX_VERSION = 'Unix Version'
 WINDOWS_VERSION = 'Windows Version'
 WINDOWS_PORTABLE_VERSION = 'Windows Portable Version'
@@ -121,23 +120,26 @@ def ensure_settings(settings, args):
 
 def get_default_settings_context(user_data_path=None):
     """
-    Returns the default context values for the settings template.
+    Returns the default context values for the settings template:
+    'openslides_user_data_path', 'import_function' and 'debug'.
 
     The argument 'user_data_path' is a given path for user specific data or None.
     """
     # Setup path for user specific data (SQLite3 database, media, search index, ...):
     # Take it either from command line or get default path
+    default_context = {}
     if user_data_path:
-        default_context = get_user_data_path_values(
-            user_data_path=user_data_path,
-            default=False)
+        default_context['openslides_user_data_path'] = repr(user_data_path)
+        default_context['import_function'] = ''
     else:
         openslides_type = detect_openslides_type()
-        user_data_path = get_default_user_data_path(openslides_type)
-        default_context = get_user_data_path_values(
-            user_data_path=user_data_path,
-            default=True,
-            openslides_type=openslides_type)
+        if openslides_type == WINDOWS_PORTABLE_VERSION:
+            default_context['openslides_user_data_path'] = 'get_win32_portable_path()'
+            default_context['import_function'] = 'from openslides.utils.main import get_win32_portable_path'
+        else:
+            path = get_default_user_data_path(openslides_type)
+            default_context['openslides_user_data_path'] = repr(os.path.join(path, 'openslides'))
+            default_context['import_function'] = ''
     default_context['debug'] = 'False'
     return default_context
 
@@ -204,54 +206,6 @@ def get_win32_portable_path():
     return portable_path
 
 
-def get_user_data_path_values(user_data_path, default=False, openslides_type=None):
-    """
-    Returns a dictionary of the user specific data path values for the new
-    settings file.
-
-    The argument 'user_data_path' is a path to the directory where OpenSlides
-    should store the user specific data like SQLite3 database, media and search
-    index.
-
-    The argument 'default' is a simple flag. If it is True and the OpenSlides
-    type is the Windows portable version, the returned dictionary contains
-    strings of callable functions for the settings file, else it contains
-    string paths.
-
-    The argument 'openslides_type' can to be one of the three types mentioned in
-    openslides.utils.main.
-    """
-    if default and openslides_type == WINDOWS_PORTABLE_VERSION:
-        user_data_path_values = {}
-        user_data_path_values['import_function'] = 'from openslides.utils.main import get_portable_paths'
-        user_data_path_values['database_path_value'] = "get_portable_paths('database')"
-        user_data_path_values['media_path_value'] = "get_portable_paths('media')"
-        user_data_path_values['whoosh_index_path_value'] = "get_portable_paths('whoosh_index')"
-    else:
-        user_data_path_values = get_user_data_path_values_with_path(user_data_path, 'openslides')
-    return user_data_path_values
-
-
-def get_user_data_path_values_with_path(*paths):
-    """
-    Returns a dictionary of the user specific data path values for the new
-    settings file. Therefor it uses the given arguments as parts of the path.
-    """
-    final_path = os.path.abspath(os.path.join(*paths))
-    user_data_path_values = {}
-    user_data_path_values['import_function'] = ''
-    variables = (('database_path_value', 'database.sqlite'),
-                 ('media_path_value', 'media'),
-                 ('whoosh_index_path_value', 'whoosh_index'))
-    for key, value in variables:
-        path_list = [final_path, value]
-        if '.' not in value:
-            path_list.append('')
-        user_data_path_values[key] = repr(
-            filesystem2unicode(os.path.join(*path_list)))
-    return user_data_path_values
-
-
 def write_settings(settings_path, template=None, **context):
     """
     Creates the settings file at the given path using the given values for the
@@ -267,23 +221,6 @@ def write_settings(settings_path, template=None, **context):
         os.makedirs(settings_module)
     with open(settings_path, 'w') as settings_file:
         settings_file.write(content)
-
-
-def get_portable_paths(name):
-    """
-    Returns the paths for the Windows portable version on runtime for the
-    SQLite3 database, the media directory and the search index. The argument
-    'name' can be 'database', 'media' or 'whoosh_index'.
-    """
-    if name == 'database':
-        path = os.path.join(get_win32_portable_path(), 'openslides', 'database.sqlite')
-    elif name == 'media':
-        path = os.path.join(get_win32_portable_path(), 'openslides', 'media', '')
-    elif name == 'whoosh_index':
-        path = os.path.join(get_win32_portable_path(), 'openslides', 'whoosh_index', '')
-    else:
-        raise TypeError('Unknown type %s' % name)
-    return path
 
 
 def get_port(address, port):
