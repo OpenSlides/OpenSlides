@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
+from openslides.utils.models import AbsoluteUrlMixin
 from openslides.utils.utils import int_or_none
 
 
@@ -106,7 +107,7 @@ class SlideMixin(object):
         return context
 
 
-class ProjectorSlide(SlideMixin, models.Model):
+class ProjectorSlide(SlideMixin, AbsoluteUrlMixin, models.Model):
     """
     Model for Slides, only for the projector. Also called custom slides.
     """
@@ -118,19 +119,21 @@ class ProjectorSlide(SlideMixin, models.Model):
     text = models.TextField(null=True, blank=True, verbose_name=ugettext_lazy("Text"))
     weight = models.IntegerField(default=0, verbose_name=ugettext_lazy("Weight"))
 
-    def get_absolute_url(self, link='update'):
-        if link == 'update':
-            return reverse('customslide_edit', args=[str(self.pk)])
-        if link == 'delete':
-            return reverse('customslide_delete', args=[str(self.pk)])
-        return super(ProjectorSlide, self).get_absolute_url(link)
-
-    def __unicode__(self):
-        return self.title
-
     class Meta:
         permissions = (
             ('can_manage_projector', ugettext_noop("Can manage the projector")),
             ('can_see_projector', ugettext_noop("Can see the projector")),
             ('can_see_dashboard', ugettext_noop("Can see the dashboard")),
         )
+
+    def __unicode__(self):
+        return self.title
+
+    def get_absolute_url(self, link='update'):
+        if link == 'update':
+            url = reverse('customslide_edit', args=[str(self.pk)])
+        elif link == 'delete':
+            url = reverse('customslide_delete', args=[str(self.pk)])
+        else:
+            url = super(ProjectorSlide, self).get_absolute_url(link)
+        return url

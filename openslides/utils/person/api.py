@@ -51,9 +51,14 @@ class Person(object):
         * delete
 
         You should raise an 'ValueError', if your person does not have
-        one of this links.
+        one of this links, or use the AbsoluteURLMixin, which raises the
+        ValueError for you.
         """
-        raise ValueError('This person object has no url.')
+        try:
+            url = super(Person, self).get_absolute_url(link)
+        except AttributeError:
+            raise ValueError('This person object has no url.')
+        return url
 
 
 class Persons(object):

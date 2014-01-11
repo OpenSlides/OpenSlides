@@ -8,10 +8,11 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.projector.models import SlideMixin
+from openslides.utils.models import AbsoluteUrlMixin
 from openslides.utils.person.models import PersonField
 
 
-class Mediafile(SlideMixin, models.Model):
+class Mediafile(SlideMixin, AbsoluteUrlMixin, models.Model):
     """
     Class for uploaded files which can be delivered under a certain url.
     """
@@ -74,10 +75,12 @@ class Mediafile(SlideMixin, models.Model):
         'update' or 'delete'.
         """
         if link == 'update':
-            return reverse('mediafile_update', kwargs={'pk': str(self.id)})
-        if link == 'delete':
-            return reverse('mediafile_delete', kwargs={'pk': str(self.id)})
-        return super(Mediafile, self).get_absolute_url(link)
+            url = reverse('mediafile_update', kwargs={'pk': str(self.pk)})
+        elif link == 'delete':
+            url = reverse('mediafile_delete', kwargs={'pk': str(self.pk)})
+        else:
+            url = super(Mediafile, self).get_absolute_url(link)
+        return url
 
     def get_filesize(self):
         """

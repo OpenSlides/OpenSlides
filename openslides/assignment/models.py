@@ -11,6 +11,7 @@ from openslides.poll.models import (BaseOption, BasePoll, BaseVote,
                                     CollectInvalid, CollectVotesCast,
                                     PublishPollMixin)
 from openslides.projector.models import RelatedModelMixin, SlideMixin
+from openslides.utils.models import AbsoluteUrlMixin
 from openslides.utils.person import PersonField
 from openslides.utils.utils import html_strong
 
@@ -37,7 +38,7 @@ class AssignmentCandidate(RelatedModelMixin, models.Model):
         return self.assignment
 
 
-class Assignment(SlideMixin, models.Model):
+class Assignment(SlideMixin, AbsoluteUrlMixin, models.Model):
     slide_callback_name = 'assignment'
 
     STATUS = (
@@ -68,13 +69,15 @@ class Assignment(SlideMixin, models.Model):
         return self.name
 
     def get_absolute_url(self, link='detail'):
-        if link == 'detail' or link == 'view':
-            return reverse('assignment_detail', args=[str(self.id)])
-        if link == 'update' or link == 'update':
-            return reverse('assignment_update', args=[str(self.id)])
-        if link == 'delete':
-            return reverse('assignment_delete', args=[str(self.id)])
-        return super(Assignment, self).get_absolute_url(link)
+        if link == 'detail':
+            url = reverse('assignment_detail', args=[str(self.pk)])
+        elif link == 'update':
+            url = reverse('assignment_update', args=[str(self.pk)])
+        elif link == 'delete':
+            url = reverse('assignment_delete', args=[str(self.pk)])
+        else:
+            url = super(Assignment, self).get_absolute_url(link)
+        return url
 
     def get_slide_context(self, **context):
         context.update({
@@ -250,7 +253,7 @@ class AssignmentOption(BaseOption):
 
 
 class AssignmentPoll(RelatedModelMixin, CollectInvalid, CollectVotesCast,
-                     PublishPollMixin, BasePoll):
+                     PublishPollMixin, AbsoluteUrlMixin, BasePoll):
     option_class = AssignmentOption
 
     assignment = models.ForeignKey(Assignment, related_name='poll_set')
@@ -259,12 +262,14 @@ class AssignmentPoll(RelatedModelMixin, CollectInvalid, CollectVotesCast,
     def __unicode__(self):
         return _("Ballot %d") % self.get_ballot()
 
-    @models.permalink
-    def get_absolute_url(self, link='detail'):
-        if link == 'view' or link == 'detail' or link == 'update':
-            return ('assignment_poll_view', [str(self.pk)])
-        if link == 'delete':
-            return ('assignment_poll_delete', [str(self.pk)])
+    def get_absolute_url(self, link='update'):
+        if link == 'update':
+            url = reverse('assignment_poll_view', args=[str(self.pk)])
+        elif link == 'delete':
+            url = reverse('assignment_poll_delete', args=[str(self.pk)])
+        else:
+            url = super(AssignmentPoll, self).get_absolute_url(link)
+        return url
 
     def get_assignment(self):
         return self.assignment

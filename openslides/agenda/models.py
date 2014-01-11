@@ -17,10 +17,11 @@ from openslides.projector.api import (get_active_slide, reset_countdown,
                                       update_projector, update_projector_overlay)
 from openslides.projector.models import SlideMixin
 from openslides.utils.exceptions import OpenSlidesError
+from openslides.utils.models import AbsoluteUrlMixin
 from openslides.utils.person.models import PersonField
 
 
-class Item(SlideMixin, MPTTModel):
+class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
     """
     An Agenda Item
 
@@ -296,7 +297,7 @@ class SpeakerManager(models.Manager):
         return self.create(item=item, person=person, weight=weight + 1)
 
 
-class Speaker(models.Model):
+class Speaker(AbsoluteUrlMixin, models.Model):
     """
     Model for the Speaker list.
     """
@@ -346,10 +347,13 @@ class Speaker(models.Model):
 
     def get_absolute_url(self, link='detail'):
         if link == 'detail':
-            return self.person.get_absolute_url('detail')
-        if link == 'delete':
-            return reverse('agenda_speaker_delete',
-                           args=[self.item.pk, self.pk])
+            url = self.person.get_absolute_url('detail')
+        elif link == 'delete':
+            url = reverse('agenda_speaker_delete',
+                          args=[self.item.pk, self.pk])
+        else:
+            url = super(Speaker, self).get_absolute_url(link)
+        return url
 
     def check_and_update_projector(self):
         """

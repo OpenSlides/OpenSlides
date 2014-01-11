@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import warnings
-
 from django import template
 from django.utils.translation import ugettext as _
 
@@ -24,16 +22,6 @@ def get_config(key):
 @register.filter
 def trans(value):
     return _(value)
-
-
-@register.simple_tag
-def model_url(object, link='view'):
-    warnings.warn("model_url is deprecated; use absolute_url instead",
-                  DeprecationWarning)
-    try:
-        return object.get_absolute_url(link)
-    except ValueError:
-        return ''
 
 
 @register.filter
