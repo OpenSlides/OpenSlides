@@ -360,7 +360,7 @@ def get_database_path_from_settings():
         raise DatabaseInSettingsError("Default databases is not configured")
     database_path = default.get('NAME')
     if not database_path:
-        raise DatabaseInSettingsError('No path specified for default database.')
+        raise DatabaseInSettingsError('No path or name specified for default database.')
     if default.get('ENGINE') != 'django.db.backends.sqlite3':
         database_path = None
     return database_path
