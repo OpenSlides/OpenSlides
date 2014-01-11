@@ -118,6 +118,7 @@ def create_builtin_groups_and_admin(sender, **kwargs):
 
     group_staff = Group.objects.create(name=ugettext_noop('Staff'), pk=4)
     group_staff.permissions.add(perm_7, perm_9, perm_10, perm_10a, perm_11, perm_12, perm_13, perm_14, perm_15, perm_15a, perm_16)
+    group_staff.permissions.add(perm_6)  # TODO: Remove this redundancy after cleanup of the permission system
 
     # Admin user
     create_or_reset_admin_user()

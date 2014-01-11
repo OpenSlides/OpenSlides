@@ -255,4 +255,5 @@ class MediafileTest(TestCase):
             bigfile.seek(1048575)
             bigfile.write('0')
         self.assertEqual(object_4.get_filesize(), '1 MB')
-        object_4.mediafile.delete()
+        os.remove(mediafile_4_path)
+        self.assertEqual(object_4.get_filesize(), 'unknown')

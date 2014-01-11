@@ -43,10 +43,10 @@ class DjangoStaticFileHandler(StaticFileHandler):
         #     a shared root prefix
         #   - we do not handle self.default_filename (we do not use it and it
         #     does not make much sense here anyway)
-        if not os.path.exists(absolute_path):
+        if absolute_path is None or not os.path.exists(absolute_path):
             raise HTTPError(404)
         if not os.path.isfile(absolute_path):
-            raise HTTPError(403, "%s is not a file", self.path)
+            raise HTTPError(403, 'The requested resource is not a file.')
         return absolute_path
 
 

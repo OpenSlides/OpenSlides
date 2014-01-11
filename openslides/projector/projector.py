@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from django.conf import settings
+import warnings
+
 
 from openslides.config.api import config
+
+from .exceptions import ProjectorExceptionWarning
 
 
 class Overlay(object):
@@ -17,6 +20,9 @@ class Overlay(object):
         self.projector_html_callback = get_projector_html
         self.javascript_callback = get_javascript
         self.allways_active = allways_active
+
+    def __repr__(self):
+        return self.name
 
     def get_widget_html(self):
         """
@@ -36,11 +42,10 @@ class Overlay(object):
         try:
             value = self.get_html_wrapper(self.projector_html_callback())
         except Exception as exception:
-            if settings.DEBUG:
-                raise exception
-            else:
-                # Catch all errors, so an overlay can not kill the projector
-                value = ''
+            warnings.warn('%s in overlay "%s": %s'
+                          % (type(exception).__name__, self, exception),
+                          ProjectorExceptionWarning)
+            value = ''
         return value
 
     def get_javascript(self):

@@ -4,6 +4,7 @@ import mimetypes
 
 from django.core.urlresolvers import reverse
 from django.db import models
+from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.projector.models import SlideMixin
@@ -80,15 +81,20 @@ class Mediafile(SlideMixin, models.Model):
 
     def get_filesize(self):
         """
-        Transforms Bytes to Kilobytes or Megabytes. Returns the size as string.
+        Transforms bytes to kilobytes or megabytes. Returns the size as string.
         """
         # TODO: Read http://stackoverflow.com/a/1094933 and think about it.
-        size = self.mediafile.size
-        if size < 1024:
-            return '< 1 kB'
-        if size >= 1024 * 1024:
-            mB = size / 1024 / 1024
-            return '%d MB' % mB
+        try:
+            size = self.mediafile.size
+        except OSError:
+            size_string = _('unknown')
         else:
-            kB = size / 1024
-            return '%d kB' % kB
+            if size < 1024:
+                size_string = '< 1 kB'
+            elif size >= 1024 * 1024:
+                mB = size / 1024 / 1024
+                size_string = '%d MB' % mB
+            else:
+                kB = size / 1024
+                size_string = '%d kB' % kB
+        return size_string

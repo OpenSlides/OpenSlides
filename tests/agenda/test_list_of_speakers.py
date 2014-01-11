@@ -5,6 +5,7 @@ from django.test.client import Client
 from mock import patch, MagicMock
 
 from openslides.agenda.models import Item, Speaker
+from openslides.agenda.signals import agenda_list_of_speakers
 from openslides.config.api import config
 from openslides.participant.models import Group, User
 from openslides.projector.api import set_active_slide
@@ -300,3 +301,16 @@ class GlobalListOfSpeakersLinks(SpeakerViewTestCase):
         response = self.admin_client.get('/agenda/list_of_speakers/end_speach/')
         self.assertRedirects(response, '/dashboard/')
         self.assertTrue(Speaker.objects.get(item__pk='1').end_time is not None)
+
+
+class TestOverlay(TestCase):
+    def test_overlay_with_no_model_slide(self):
+        """
+        When a slide is active, that is not a model (for example the agenda)
+        an Attribute Error was raised.
+        """
+        config['projector_active_slide'] = {'callback': None}
+
+        value = agenda_list_of_speakers(sender='test').get_projector_html()
+
+        self.assertEqual(value, '')
