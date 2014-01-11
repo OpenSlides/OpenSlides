@@ -179,7 +179,7 @@ class ConfigFormTest(TestCase):
         self.assertEqual(config['string_var'], 'other_special_unique_string faiPaid4utie6eeL')
         self.assertFalse(config['bool_var'])
         self.assertEqual(config['integer_var'], 3)
-        self.assertEqual(config['choices_var'], 2)
+        self.assertEqual(config['choices_var'], '2')
 
     def test_post_config_form_error(self):
         response = self.client_manager.post(
