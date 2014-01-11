@@ -46,7 +46,6 @@ class MediafileTest(TestCase):
 
     def test_absolute_url(self):
         self.assertEqual(self.object.get_absolute_url(), '/mediafile/1/edit/')
-        self.assertEqual(self.object.get_absolute_url('edit'), '/mediafile/1/edit/')
         self.assertEqual(self.object.get_absolute_url('update'), '/mediafile/1/edit/')
         self.assertEqual(self.object.get_absolute_url(link='delete'), '/mediafile/1/del/')
 

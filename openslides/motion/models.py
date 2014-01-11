@@ -171,12 +171,11 @@ class Motion(SlideMixin, models.Model):
         """
         Return an URL for this version.
 
-        The keyword argument 'link' can be 'detail', 'view', 'edit',
-        'update' or 'delete'.
+        The keyword argument 'link' can be 'detail', 'update' or 'delete'.
         """
-        if link == 'view' or link == 'detail':
+        if link == 'detail':
             return reverse('motion_detail', args=[str(self.id)])
-        if link == 'update' or link == 'edit':
+        if link == 'update':
             return reverse('motion_update', args=[str(self.id)])
         if link == 'delete':
             return reverse('motion_delete', args=[str(self.id)])
@@ -617,7 +616,7 @@ class Category(models.Model):
         return self.name
 
     def get_absolute_url(self, link='update'):
-        if link == 'update' or link == 'edit':
+        if link == 'update':
             return reverse('motion_category_update', args=[str(self.id)])
         if link == 'delete':
             return reverse('motion_category_delete', args=[str(self.id)])

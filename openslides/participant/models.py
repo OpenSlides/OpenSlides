@@ -64,9 +64,9 @@ class User(SlideMixin, PersonMixin, Person, DjangoUser):
         """
         Return the URL to the user.
         """
-        if link == 'detail' or link == 'view':
+        if link == 'detail':
             return reverse('user_view', args=[str(self.id)])
-        if link == 'edit' or link == 'update':
+        if link == 'update':
             return reverse('user_edit', args=[str(self.id)])
         if link == 'delete':
             return reverse('user_delete', args=[str(self.id)])
@@ -129,9 +129,9 @@ class Group(SlideMixin, PersonMixin, Person, DjangoGroup):
         """
         Return the URL to the user group.
         """
-        if link == 'detail' or link == 'view':
+        if link == 'detail':
             return reverse('user_group_view', args=[str(self.pk)])
-        if link == 'update' or link == 'edit':
+        if link == 'update':
             return reverse('user_group_edit', args=[str(self.pk)])
         if link == 'delete':
             return reverse('user_group_delete', args=[str(self.pk)])

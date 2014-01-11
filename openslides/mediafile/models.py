@@ -72,7 +72,7 @@ class Mediafile(SlideMixin, models.Model):
         Returns the URL to a mediafile. The link can be 'projector',
         'update' or 'delete'.
         """
-        if link == 'update' or link == 'edit':  # 'edit' ist only used until utils/views.py is fixed
+        if link == 'update':
             return reverse('mediafile_update', kwargs={'pk': str(self.id)})
         if link == 'delete':
             return reverse('mediafile_delete', kwargs={'pk': str(self.id)})
