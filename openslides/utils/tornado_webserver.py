@@ -79,17 +79,20 @@ def run_tornado(addr, port, reload=False):
         url_string = 'http://%s:%s' % (addr, port)
     print _("Starting OpenSlides' tornado webserver listening to %(url_string)s") % {'url_string': url_string}
 
-    socket_js_router = SockJSRouter(ProjectorSocketHandler, '/projector/socket')
-
-    # Start the application
+    # Setup WSGIContainer
     app = WSGIContainer(Django_WSGIHandler())
-    tornado_app = Application(socket_js_router.urls + [
+
+    # Collect urls
+    projectpr_socket_js_router = SockJSRouter(ProjectorSocketHandler, '/projector/socket')
+    from openslides.core.chatbox import ChatboxSocketHandler
+    chatbox_socket_js_router = SockJSRouter(ChatboxSocketHandler, '/core/chatbox')
+    other_urls = [
         (r"%s(.*)" % settings.STATIC_URL, DjangoStaticFileHandler),
         (r'%s(.*)' % settings.MEDIA_URL, StaticFileHandler, {'path': settings.MEDIA_ROOT}),
-        ('.*', FallbackHandler, dict(fallback=app))
-    ], debug=reload)
+        ('.*', FallbackHandler, dict(fallback=app))]
 
+    # Start the application
+    tornado_app = Application(projectpr_socket_js_router.urls + chatbox_socket_js_router.urls + other_urls, debug=reload)
     server = HTTPServer(tornado_app)
-    server.listen(port=port,
-                  address=addr)
+    server.listen(port=port, address=addr)
     IOLoop.instance().start()

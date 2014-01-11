@@ -12,6 +12,7 @@
     <link href="{% static 'styles/bootstrap.min.css' %}" type="text/css" rel="stylesheet" />
     <link href="{% static 'styles/bootstrap-responsive.min.css' %}" type="text/css" rel="stylesheet" />
     <link href="{% static 'styles/base.css' %}" type="text/css" rel="stylesheet" />
+    <link href="{% static 'styles/chatbox.css' %}" type="text/css" rel="stylesheet" />
     <link href="{% static 'img/favicon.png' %}" type="image/png" rel="shortcut icon" />
     {% for stylefile in extra_stylefiles %}
         <link href="{% static stylefile %}" type="text/css" rel="stylesheet" />
@@ -35,6 +36,14 @@
                                 <button type="submit" class="btn"><i class="icon-search"></i></button>
                             </div>
                         </form> &nbsp;
+
+                        <!-- Chatbox button -->
+                        {% if chat_messages != None %}
+                            <button class="btn" id="open-chatbox">
+                                    <i class="icon-comments"></i>
+                                    {% trans 'Chat' %}
+                            </button>
+                        {% endif %}
 
                         <!-- login/logout button -->
                         <div class="btn-group">
@@ -109,10 +118,14 @@
     </div><!--/#container-->
     {% endblock %}<!--/body-->
 
+    {% include 'core/chatbox.html' %}
+
     <!-- JavaScript (Placed at the end of the document so the pages load faster) -->
     <script src="{% static 'javascript/jquery.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'javascript/bootstrap.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'javascript/sockjs-0.3.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'javascript/utils.js' %}" type="text/javascript"></script>
+    <script src="{% static 'javascript/chatbox.js' %}" type="text/javascript"></script>
     <script src="{% url 'django.views.i18n.javascript_catalog' %}" type="text/javascript"></script>
     {% for javascript in extra_javascript %}
         <script src="{% static javascript %}" type="text/javascript"></script>

@@ -187,8 +187,7 @@ legend + .control-group {
     font-weight: bold;
 }
 
-
-/** Left sitebar navigation **/
+/** Left sidebar navigation **/
 .leftmenu ul {
     margin: 0;
     list-style: none;
@@ -315,6 +314,7 @@ legend + .control-group {
 .icon-presentations {
     background-position: -264px -48px;
 }
+
 /** More glyphicons free icons **/
 .status_link .icon-on, .icon-checked-new {
     background-image: url("../img/glyphicons_152_check.png");
@@ -365,7 +365,6 @@ legend + .control-group {
     background-position: 0;
 }
 
-
 /** Responsive **/
 @media (max-width: 767px) {
     body {
@@ -379,7 +378,7 @@ legend + .control-group {
         margin: 0 5px 0 45px;
         width: auto;
     }
-    /* hide optional column */ 
+    /* hide optional column */
     .optional {
         display: none;
     }
