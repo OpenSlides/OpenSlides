@@ -197,10 +197,11 @@ class AssignmentRunOtherDeleteView(SingleObjectMixin, QuestionView):
 class PollCreateView(SingleObjectMixin, RedirectView):
     model = Assignment
     permission_required = 'assignment.can_manage_assignment'
-    url_name = 'assignment_poll_view'
+    url_name = 'assignment_detail'
 
     def pre_redirect(self, *args, **kwargs):
-        self.object = self.get_object().gen_poll()
+        self.object = self.get_object()
+        self.object.gen_poll()
         messages.success(self.request, _("New ballot was successfully created."))
 
 
@@ -213,7 +214,7 @@ class PollUpdateView(PollFormView):
         self.assignment = self.poll.get_assignment()
         context['assignment'] = self.assignment
         context['poll'] = self.poll
-        context['polls'] = self.assignment.poll_set.filter(assignment=self.assignment)
+        context['polls'] = self.assignment.poll_set.all()
         context['ballotnumber'] = self.poll.get_ballot()
         return context
 
@@ -513,7 +514,7 @@ class AssignmentPollPDF(PDFView):
             _("Election") + ": " + self.poll.assignment.name,
             stylesheet['Ballot_title']))
         cell.append(Paragraph(
-            self.poll.assignment.polldescription,
+            self.poll.description or '',
             stylesheet['Ballot_subtitle']))
         options = self.poll.get_options()
 

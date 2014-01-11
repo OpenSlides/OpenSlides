@@ -10,6 +10,13 @@ from openslides.utils.main_menu import MainMenuEntry
 class MainMenuEntryObject(TestCase):
     request_factory = RequestFactory()
 
+    def tearDown(self):
+        """
+        Remove all receivers of the MainMenuEntry-signal, so it is not called in
+        other tests.
+        """
+        MainMenuEntry.signal.receivers = []
+
     def get_entry(self, cls):
         request = self.request_factory.get('/')
         request.user = AnonymousUser()

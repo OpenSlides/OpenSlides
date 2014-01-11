@@ -9,7 +9,7 @@ from openslides.utils.person import PersonFormField
 from .models import Assignment
 
 
-class AssignmentForm(forms.ModelForm, CssClassMixin):
+class AssignmentForm(CssClassMixin, forms.ModelForm):
     posts = forms.IntegerField(
         min_value=1, initial=1, label=ugettext_lazy("Number of available posts"))
 
@@ -18,8 +18,7 @@ class AssignmentForm(forms.ModelForm, CssClassMixin):
         exclude = ('status', 'elected')
 
 
-class AssignmentRunForm(forms.Form, CssClassMixin):
+class AssignmentRunForm(CssClassMixin, forms.Form):
     candidate = PersonFormField(
         widget=forms.Select(attrs={'class': 'medium-input'}),
-        label=ugettext_lazy("Nominate a participant"),
-    )
+        label=ugettext_lazy("Nominate a participant"))

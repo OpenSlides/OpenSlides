@@ -25,14 +25,13 @@
     </small>
 </h1>
 
-{% if assignment.polldescription %}
-    <p><b>{% trans "Short description (for ballot paper)" %}:</b> {{ assignment.polldescription }}</p>
-{% endif %}
-
-<p>
-{% trans "Special values" %}: <span class="badge badge-success">-1</span> = {% trans 'majority' %} | <span class="badge">-2</span> = {% trans 'undocumented' %}
-</p>
 <form action="" method="post" class="small-form">{% csrf_token %}
+    <p>
+      {% trans "Special values" %}:
+        <span class="badge badge-success">-1</span> = {% trans 'majority' %}|
+        <span class="badge">-2</span> = {% trans 'undocumented' %}
+    </p>
+
     <table class="table table-striped table-bordered" style="width: auto;">
         <tr>
             <th>{% trans "Candidates" %}</th>
@@ -73,10 +72,12 @@
         </tr>
     </table>
 
+    <p><strong>{% trans "Short description (for ballot paper)" %}:</strong></p>
+    <p class="normal-form">{{ pollform.description }}</p>
     <p>
-    <a href="{% url 'assignment_poll_pdf' poll.id %}" class="btn" target="_blank">
-        <i class="icon-print"></i> {% trans 'Ballot paper as PDF' %}
-    </a>
+        <a href="{% url 'assignment_poll_pdf' poll.id %}" class="btn" target="_blank">
+            <i class="icon-print"></i> {% trans 'Ballot paper as PDF' %}
+        </a>
     </p>
     <!-- Control buttons -->
     <div class="control-group">

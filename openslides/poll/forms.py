@@ -5,7 +5,7 @@ from django import forms
 from openslides.utils.forms import CssClassMixin
 
 
-class OptionForm(forms.Form, CssClassMixin):
+class OptionForm(CssClassMixin, forms.Form):
     def __init__(self, *args, **kwargs):
         extra = kwargs.pop('extra')
         formid = kwargs.pop('formid')
@@ -20,5 +20,4 @@ class OptionForm(forms.Form, CssClassMixin):
                 label=value,
                 initial=weight,
                 min_value=-2,
-                required=False,
-            )
+                required=False)
