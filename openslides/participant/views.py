@@ -3,6 +3,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.views import login as django_login
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
@@ -18,8 +19,8 @@ from openslides.utils.views import (CreateView, DeleteView, DetailView,
                                     RedirectView, SingleObjectMixin, UpdateView)
 
 from .api import gen_password, gen_username, import_users
-from .forms import (GroupForm, UserCreateForm, UserImportForm, UsersettingsForm,
-                    UserUpdateForm)
+from .forms import (GroupForm, UserCreateForm, UserMultipleCreateForm, UserImportForm,
+                    UsersettingsForm, UserUpdateForm)
 from .models import get_protected_perm, Group, User
 from .pdf import participants_to_pdf, participants_passwords_to_pdf
 
@@ -89,6 +90,33 @@ class UserCreateView(CreateView):
         from openslides.participant.api import get_registered_group  # TODO: Test, if global import is possible
         registered = get_registered_group()
         self.object.groups.add(registered)
+
+
+class UserMultipleCreateView(FormView):
+    """
+    View to create multiple users at once using a big text field.
+    """
+    permission_required = 'participant.can_manage_participant'
+    template_name = 'participant/user_form_multiple.html'
+    form_class = UserMultipleCreateForm
+    success_url_name = 'user_overview'
+
+    def form_valid(self, form):
+        # TODO: Use bulk_create after rework of participant.models.User
+        for number, line in enumerate(form.cleaned_data['participants_block'].splitlines()):
+            names_list = line.split()
+            first_name = ' '.join(names_list[:-1])
+            last_name = names_list[-1]
+            username = gen_username(first_name, last_name)
+            default_password = gen_password()
+            User.objects.create(
+                username=username,
+                first_name=first_name,
+                last_name=last_name,
+                default_password=default_password,
+                password=make_password(default_password, '', 'md5'))
+        messages.success(self.request, _('%(number)d users successfully created.') % {'number': number + 1})
+        return super(UserMultipleCreateView, self).form_valid(form)
 
 
 class UserUpdateView(UpdateView):

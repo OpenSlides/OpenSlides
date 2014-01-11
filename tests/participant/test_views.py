@@ -28,6 +28,17 @@ class UserViews(TestCase):
         response = self.client.post('/participant/new/', {'first_name': 'test_name_ho8hui2niz4nohSupahb'})
         self.assertRedirects(response, '/participant/')
 
+    def test_create_multiple(self):
+        response = self.client.get('/participant/new_multiple/')
+        self.assertTemplateUsed(response, 'participant/user_form_multiple.html')
+        self.assertContains(response, 'New multiple participants')
+        self.assertEqual(User.objects.count(), 1)
+        block = ('first_name_ksdjfhkjsdhf75utgeitrten last_name_khonizt958zh8fh\n'
+                 'first_name_1_bmgnf7z8ru first_name_2_kjc98vivt last_name_dfg76kjkjuibv')
+        response = self.client.post('/participant/new_multiple/',
+                                    {'participants_block': block})
+        self.assertEqual(User.objects.count(), 3)
+
     def test_update(self):
         response = self.client.get('/participant/1/edit/')
         self.assertTemplateUsed(response, 'participant/edit.html')
