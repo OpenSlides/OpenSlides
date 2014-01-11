@@ -119,7 +119,7 @@ class ProjectorSlide(SlideMixin, models.Model):
     weight = models.IntegerField(default=0, verbose_name=ugettext_lazy("Weight"))
 
     def get_absolute_url(self, link='update'):
-        if link == 'edit' or link == 'update':
+        if link == 'update':
             return reverse('customslide_edit', args=[str(self.pk)])
         if link == 'delete':
             return reverse('customslide_delete', args=[str(self.pk)])

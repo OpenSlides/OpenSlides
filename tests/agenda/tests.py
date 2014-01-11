@@ -67,7 +67,7 @@ class ItemTest(TestCase):
 
     def test_absolute_url(self):
         self.assertEqual(self.item1.get_absolute_url(), '/agenda/1/')
-        self.assertEqual(self.item1.get_absolute_url('edit'), '/agenda/1/edit/')
+        self.assertEqual(self.item1.get_absolute_url('update'), '/agenda/1/edit/')
         self.assertEqual(self.item1.get_absolute_url('delete'), '/agenda/1/del/')
 
     def test_related_item(self):

@@ -124,9 +124,9 @@ class Item(SlideMixin, MPTTModel):
 
         The link can be detail, update or delete.
         """
-        if link == 'detail' or link == 'view':
+        if link == 'detail':
             url = reverse('item_view', args=[str(self.id)])
-        elif link == 'update' or link == 'edit':
+        elif link == 'update':
             url = reverse('item_edit', args=[str(self.id)])
         elif link == 'delete':
             url = reverse('item_delete', args=[str(self.id)])
@@ -345,7 +345,7 @@ class Speaker(models.Model):
         return unicode(self.person)
 
     def get_absolute_url(self, link='detail'):
-        if link == 'detail' or link == 'view':
+        if link == 'detail':
             return self.person.get_absolute_url('detail')
         if link == 'delete':
             return reverse('agenda_speaker_delete',
