@@ -12,7 +12,7 @@ from openslides.mediafile.models import Mediafile
 from openslides.poll.models import (BaseOption, BasePoll, BaseVote,
                                     CollectInvalid, CollectVotesCast)
 from openslides.projector.models import RelatedModelMixin, SlideMixin
-from openslides.utils.jsonfield import JSONField
+from jsonfield import JSONField
 from openslides.utils.person import PersonField
 
 from .exceptions import WorkflowError
