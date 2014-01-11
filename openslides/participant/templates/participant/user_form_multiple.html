@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}
+    {% trans 'New multiple participants' %} – {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    <h1>
+        {% trans 'New multiple participants' %}
+        <small class="pull-right">
+            <a href="{% url 'user_overview' %}" class="btn btn-mini">
+                <i class="icon-chevron-left"></i> {% trans 'Back to overview' %}
+            </a>
+        </small>
+    </h1>
+    <form action="" method="post">{% csrf_token %}
+        {% include 'form.html' %}
+        <p>
+        {% include 'formbuttons_save.html' %}
+        <a href="{% url 'user_overview' %}" class="btn">
+            {% trans 'Cancel' %}
+        </a>
+        </p>
+        <small>* {% trans 'required' %}</small>
+    </form>
+{% endblock %}

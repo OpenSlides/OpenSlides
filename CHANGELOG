@@ -10,6 +10,7 @@ Version 1.6 (unreleased)
 
 Participants:
 - Disabled widgets by default.
+- Added form field for multiple creation of new participants.
 Files:
 - Enabled update and delete view for uploader refering to his own files.
 Other:

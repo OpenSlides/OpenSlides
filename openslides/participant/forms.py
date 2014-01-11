@@ -36,6 +36,13 @@ class UserCreateForm(CssClassMixin, forms.ModelForm):
         return cleaned_data
 
 
+class UserMultipleCreateForm(forms.Form):
+    participants_block = forms.CharField(
+        widget=forms.Textarea,
+        label=ugettext_lazy('Participants'),
+        help_text=ugettext_lazy('Use one line per participant for its name (first name and last name).'))
+
+
 class UserUpdateForm(UserCreateForm):
     """
     Form to update an user. It raises a validation error, if a non-superuser

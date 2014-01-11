@@ -15,6 +15,10 @@ urlpatterns = patterns(
         views.UserCreateView.as_view(),
         name='user_new'),
 
+    url(r'^new_multiple/$',
+        views.UserMultipleCreateView.as_view(),
+        name='user_new_multiple'),
+
     url(r'^(?P<pk>\d+)/$',
         views.UserDetailView.as_view(),
         name='user_view'),
