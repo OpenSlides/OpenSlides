@@ -22,6 +22,7 @@ Other:
 - Changed api for main menu entries.
 - Enhanced http error pages.
 - Moved dashboard and select widgets view from projector to core app.
+- Created a poll description field for each assignment-poll.
 
 
 Version 1.5.1 (unreleased)

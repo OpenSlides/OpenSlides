@@ -50,9 +50,9 @@ class Assignment(SlideMixin, AbsoluteUrlMixin, models.Model):
     name = models.CharField(max_length=100, verbose_name=ugettext_lazy("Name"))
     description = models.TextField(null=True, blank=True, verbose_name=ugettext_lazy("Description"))
     posts = models.PositiveSmallIntegerField(verbose_name=ugettext_lazy("Number of available posts"))
-    polldescription = models.CharField(
-        max_length=100, null=True, blank=True,
-        verbose_name=ugettext_lazy("Comment on the ballot paper"))
+    poll_description_default = models.CharField(
+        max_length=79, null=True, blank=True,
+        verbose_name=ugettext_lazy("Default comment on the ballot paper"))
     status = models.CharField(max_length=3, choices=STATUS, default='sea')
 
     class Meta:
@@ -192,8 +192,8 @@ class Assignment(SlideMixin, AbsoluteUrlMixin, models.Model):
         return person in self.elected
 
     def gen_poll(self):
-        poll = AssignmentPoll(assignment=self)
-        poll.save()
+        poll = AssignmentPoll.objects.create(
+            assignment=self, description=self.poll_description_default)
         poll.set_options([{'candidate': person} for person in self.candidates])
         return poll
 
@@ -255,9 +255,11 @@ class AssignmentOption(BaseOption):
 class AssignmentPoll(RelatedModelMixin, CollectInvalid, CollectVotesCast,
                      PublishPollMixin, AbsoluteUrlMixin, BasePoll):
     option_class = AssignmentOption
-
     assignment = models.ForeignKey(Assignment, related_name='poll_set')
     yesnoabstain = models.NullBooleanField()
+    description = models.CharField(
+        max_length=79, null=True, blank=True,
+        verbose_name=ugettext_lazy("Comment on the ballot paper"))
 
     def __unicode__(self):
         return _("Ballot %d") % self.get_ballot()
@@ -297,3 +299,6 @@ class AssignmentPoll(RelatedModelMixin, CollectInvalid, CollectVotesCast,
 
     def get_ballot(self):
         return self.assignment.poll_set.filter(id__lte=self.id).count()
+
+    def append_pollform_fields(self, fields):
+        fields.append('description')

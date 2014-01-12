@@ -142,6 +142,9 @@ input, textarea {
 .small-form input {
     width: 55px;
 }
+.normal-form input {
+    width: 320px;
+}
 textarea {
     height: 100px;
 }
@@ -379,7 +382,7 @@ legend + .control-group {
         margin: 0 5px 0 45px;
         width: auto;
     }
-    /* hide optional column */ 
+    /* hide optional column */
     .optional {
         display: none;
     }

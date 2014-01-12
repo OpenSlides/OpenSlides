@@ -30,19 +30,19 @@ class PollFormView(FormMixin, TemplateView):
             error = True
 
         if error:
-            return self.render_to_response(self.get_context_data(
+            response = self.render_to_response(self.get_context_data(
                 forms=option_forms,
-                pollform=pollform,
-            ))
+                pollform=pollform))
+        else:
+            for form in option_forms:
+                data = {}
+                for value in self.poll.get_vote_values():
+                    data[value] = form.cleaned_data[value]
+                self.poll.set_vote_objects_with_values(form.option, data)
 
-        for form in option_forms:
-            data = {}
-            for value in self.poll.get_vote_values():
-                data[value] = form.cleaned_data[value]
-            self.poll.set_vote_objects_with_values(form.option, data)
-
-        pollform.save()
-        return HttpResponseRedirect(self.get_success_url())
+            pollform.save()
+            response = HttpResponseRedirect(self.get_success_url())
+        return response
 
     def get_poll_class(self):
         if self.poll_class is not None:
@@ -71,4 +71,4 @@ class PollFormView(FormMixin, TemplateView):
     def get_modelform_class(self):
         fields = []
         self.poll.append_pollform_fields(fields)
-        return modelform_factory(self.poll.__class__, fields=fields)
+        return modelform_factory(type(self.poll), fields=fields)
