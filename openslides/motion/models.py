@@ -13,12 +13,13 @@ from openslides.poll.models import (BaseOption, BasePoll, BaseVote,
                                     CollectInvalid, CollectVotesCast)
 from openslides.projector.models import RelatedModelMixin, SlideMixin
 from jsonfield import JSONField
+from openslides.utils.models import AbsoluteUrlMixin
 from openslides.utils.person import PersonField
 
 from .exceptions import WorkflowError
 
 
-class Motion(SlideMixin, models.Model):
+class Motion(SlideMixin, AbsoluteUrlMixin, models.Model):
     """
     The Motion Class.
 
@@ -174,12 +175,14 @@ class Motion(SlideMixin, models.Model):
         The keyword argument 'link' can be 'detail', 'update' or 'delete'.
         """
         if link == 'detail':
-            return reverse('motion_detail', args=[str(self.id)])
-        if link == 'update':
-            return reverse('motion_update', args=[str(self.id)])
-        if link == 'delete':
-            return reverse('motion_delete', args=[str(self.id)])
-        return super(Motion, self).get_absolute_url(link)
+            url = reverse('motion_detail', args=[str(self.pk)])
+        elif link == 'update':
+            url = reverse('motion_update', args=[str(self.pk)])
+        elif link == 'delete':
+            url = reverse('motion_delete', args=[str(self.pk)])
+        else:
+            url = super(Motion, self).get_absolute_url(link)
+        return url
 
     def version_data_changed(self, version):
         """
@@ -515,7 +518,7 @@ class Motion(SlideMixin, models.Model):
         MotionLog.objects.create(motion=self, message_list=message_list, person=person)
 
 
-class MotionVersion(models.Model):
+class MotionVersion(AbsoluteUrlMixin, models.Model):
     """
     A MotionVersion object saves some date of the motion.
     """
@@ -558,12 +561,15 @@ class MotionVersion(models.Model):
 
         The keyargument link can be 'detail' or 'delete'.
         """
-        if link == 'view' or link == 'detail':
-            return reverse('motion_version_detail', args=[str(self.motion.id),
-                                                          str(self.version_number)])
-        if link == 'delete':
-            return reverse('motion_version_delete', args=[str(self.motion.id),
-                                                          str(self.version_number)])
+        if link == 'detail':
+            url = reverse('motion_version_detail', args=[str(self.motion.pk),
+                                                         str(self.version_number)])
+        elif link == 'delete':
+            url = reverse('motion_version_delete', args=[str(self.motion.pk),
+                                                         str(self.version_number)])
+        else:
+            url = super(MotionVersion, self).get_absolute_url(link)
+        return url
 
     @property
     def active(self):
@@ -602,7 +608,7 @@ class MotionSupporter(models.Model):
         return unicode(self.person)
 
 
-class Category(models.Model):
+class Category(AbsoluteUrlMixin, models.Model):
     name = models.CharField(max_length=255, verbose_name=ugettext_lazy("Category name"))
     """Name of the category."""
 
@@ -617,9 +623,12 @@ class Category(models.Model):
 
     def get_absolute_url(self, link='update'):
         if link == 'update':
-            return reverse('motion_category_update', args=[str(self.id)])
-        if link == 'delete':
-            return reverse('motion_category_delete', args=[str(self.id)])
+            url = reverse('motion_category_update', args=[str(self.pk)])
+        elif link == 'delete':
+            url = reverse('motion_category_delete', args=[str(self.pk)])
+        else:
+            url = super(Category, self).get_absolute_url(link)
+        return url
 
     class Meta:
         ordering = ['prefix']
@@ -685,7 +694,8 @@ class MotionOption(BaseOption):
     """The VoteClass, to witch this Class links."""
 
 
-class MotionPoll(RelatedModelMixin, CollectInvalid, CollectVotesCast, BasePoll):
+class MotionPoll(RelatedModelMixin, CollectInvalid, CollectVotesCast,
+                 AbsoluteUrlMixin, BasePoll):
     """The Class to saves the poll results for a motion poll."""
 
     motion = models.ForeignKey(Motion, related_name='polls')
@@ -718,11 +728,14 @@ class MotionPoll(RelatedModelMixin, CollectInvalid, CollectVotesCast, BasePoll):
         The keyargument 'link' can be 'update' or 'delete'.
         """
         if link == 'update':
-            return reverse('motion_poll_update', args=[str(self.motion.pk),
-                                                       str(self.poll_number)])
-        if link == 'delete':
-            return reverse('motion_poll_delete', args=[str(self.motion.pk),
-                                                       str(self.poll_number)])
+            url = reverse('motion_poll_update', args=[str(self.motion.pk),
+                                                      str(self.poll_number)])
+        elif link == 'delete':
+            url = reverse('motion_poll_delete', args=[str(self.motion.pk),
+                                                      str(self.poll_number)])
+        else:
+            url = super(MotionPoll, self).get_absolute_url(link)
+        return url
 
     def set_options(self):
         """Create the option class for this poll."""

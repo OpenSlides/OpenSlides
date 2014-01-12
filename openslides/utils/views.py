@@ -141,7 +141,8 @@ class UrlMixin(object):
                     value = self.object.get_absolute_url(use_absolute_url_link)
             except AttributeError:
                 raise ImproperlyConfigured(
-                    'No url to redirect to. See openslides.utils.views.UrlMixin for more details.')
+                    'No url to redirect to. See openslides.utils.views.UrlMixin '
+                    'for more details.')
         return value
 
     def get_url_name_args(self):

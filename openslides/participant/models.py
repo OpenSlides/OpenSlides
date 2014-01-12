@@ -12,11 +12,12 @@ from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.config.api import config
 from openslides.projector.models import SlideMixin
+from openslides.utils.models import AbsoluteUrlMixin
 from openslides.utils.person import Person, PersonMixin
 from openslides.utils.person.signals import receive_persons
 
 
-class User(SlideMixin, PersonMixin, Person, DjangoUser):
+class User(SlideMixin, PersonMixin, Person, AbsoluteUrlMixin, DjangoUser):
     slide_callback_name = 'user'
     person_prefix = 'user'
 
@@ -65,12 +66,14 @@ class User(SlideMixin, PersonMixin, Person, DjangoUser):
         Return the URL to the user.
         """
         if link == 'detail':
-            return reverse('user_view', args=[str(self.id)])
-        if link == 'update':
-            return reverse('user_edit', args=[str(self.id)])
-        if link == 'delete':
-            return reverse('user_delete', args=[str(self.id)])
-        return super(User, self).get_absolute_url(link)
+            url = reverse('user_view', args=[str(self.pk)])
+        elif link == 'update':
+            url = reverse('user_edit', args=[str(self.pk)])
+        elif link == 'delete':
+            url = reverse('user_delete', args=[str(self.pk)])
+        else:
+            url = super(User, self).get_absolute_url(link)
+        return url
 
     def get_slide_context(self, **context):
         # Does not call super. In this case the context would override the name
@@ -109,7 +112,7 @@ class User(SlideMixin, PersonMixin, Person, DjangoUser):
         return self.last_name.lower()
 
 
-class Group(SlideMixin, PersonMixin, Person, DjangoGroup):
+class Group(SlideMixin, PersonMixin, Person, AbsoluteUrlMixin, DjangoGroup):
     slide_callback_name = 'group'
     person_prefix = 'group'
 
@@ -130,12 +133,14 @@ class Group(SlideMixin, PersonMixin, Person, DjangoGroup):
         Return the URL to the user group.
         """
         if link == 'detail':
-            return reverse('user_group_view', args=[str(self.pk)])
-        if link == 'update':
-            return reverse('user_group_edit', args=[str(self.pk)])
-        if link == 'delete':
-            return reverse('user_group_delete', args=[str(self.pk)])
-        return super(Group, self).get_absolute_url(link)
+            url = reverse('user_group_view', args=[str(self.pk)])
+        elif link == 'update':
+            url = reverse('user_group_edit', args=[str(self.pk)])
+        elif link == 'delete':
+            url = reverse('user_group_delete', args=[str(self.pk)])
+        else:
+            url = super(Group, self).get_absolute_url(link)
+        return url
 
 
 class UsersAndGroupsToPersons(object):
