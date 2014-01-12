@@ -1,8 +1,18 @@
 # -*- coding: utf-8 -*-
 
 from django.utils.importlib import import_module
+from pkg_resources import iter_entry_points
 
 plugins = {}
+
+
+def get_plugins_from_entry_points():
+    """
+    Collects all entry points in the group openslides_plugins from all
+    distributions in the default working set and returns their module names as
+    tuple.
+    """
+    return tuple(entry_point.module_name for entry_point in iter_entry_points('openslides_plugins'))
 
 
 def get_plugin(plugin):

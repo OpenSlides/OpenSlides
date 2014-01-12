@@ -27,7 +27,7 @@ DATABASES = {
         'PORT': ''}}
 
 # Add OpenSlides plugins to this list (see example entry in comment)
-INSTALLED_PLUGINS = (
+INSTALLED_PLUGINS += (
 #    'pluginname',
 )
 
