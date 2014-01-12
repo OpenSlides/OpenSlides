@@ -273,13 +273,15 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
 
     def is_active_slide(self):
         """
-        Returns True if the slide is True. If the slide is a related item,
+        Returns True if the slide is active. If the slide is a related item,
         Returns True if the related object is active.
         """
-        if self.content_object and isinstance(self.content_object, SlideMixin):
+        if super(Item, self).is_active_slide():
+            value = True
+        elif self.content_object and isinstance(self.content_object, SlideMixin):
             value = self.content_object.is_active_slide()
         else:
-            value = super(Item, self).is_active_slide()
+            value = False
         return value
 
 

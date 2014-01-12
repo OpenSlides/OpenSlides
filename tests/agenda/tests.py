@@ -97,7 +97,15 @@ class ItemTest(TestCase):
         The agenda item has to be active, if its related item is.
         """
         set_active_slide('test_related_item', pk=1)
-        self.assertTrue(self.item5.is_active_slide)
+        self.assertTrue(self.item5.is_active_slide())
+
+    def test_is_active_related_item_list_of_speakers(self):
+        """
+        Test the method 'is_active_slide' if the item is related but the list
+        of speakers is shown on the projector.
+        """
+        set_active_slide('agenda', type='list_of_speakers', pk=5)
+        self.assertTrue(self.item5.is_active_slide())
 
     def test_bad_related_item(self):
         bad = BadRelatedItem.objects.create(name='dhfne94irkgl2047fzvb')
