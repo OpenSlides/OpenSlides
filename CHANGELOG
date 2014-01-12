@@ -23,6 +23,8 @@ Other:
 - Enhanced http error pages.
 - Moved dashboard and select widgets view from projector to core app.
 - Created a poll description field for each assignment-poll.
+- Added possibility to use custom templates and static files in user data path
+  directory.
 
 
 Version 1.5.1 (unreleased)

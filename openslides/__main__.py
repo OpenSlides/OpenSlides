@@ -19,7 +19,6 @@ from openslides.utils.main import (
     get_default_settings_path,
     get_default_user_data_path,
     get_port,
-    get_user_data_path_values_with_path,
     setup_django_settings_module,
     start_browser,
     write_settings)
@@ -328,7 +327,9 @@ def create_dev_settings(settings, args):
     """
     settings = os.path.join(os.getcwd(), 'settings.py')
     if not os.path.exists(settings):
-        context = get_user_data_path_values_with_path(os.getcwd())
+        context = {}
+        context['openslides_user_data_path'] = repr(os.getcwd())
+        context['import_function'] = ''
         context['debug'] = 'True'
         write_settings(settings, **context)
         print('Settings file at %s successfully created.' % settings)
