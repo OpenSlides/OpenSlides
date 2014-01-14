@@ -256,6 +256,8 @@ OpenSlides uses the following projects or parts of them:
 
 * `Django haystack <http://haystacksearch.org>`_, License: BSD
 
+* `natsort <https://pypi.python.org/pypi/natsort>`_, License: MIT
+
 * `pdf.js <http://mozilla.github.io/pdf.js/>`_, License: Apache License v2.0
 
 * `Pillow <https://github.com/python-imaging/Pillow/>`_, License: Standard
@@ -291,6 +293,9 @@ OpenSlides uses the following projects or parts of them:
 
   - `jQuery DataTables Plugin <http://www.datatables.net>`_, License:
     BSD/GPLv2
+
+  - `DataTables Natural Sort Plugin <http://datatables.net/plug-ins/sorting#natrual>`_,
+    License: MIT
 
   - `jQuery Cookie Plugin <https://github.com/carhartl/jquery-cookie/>`_,
     License: MIT/GPL
