@@ -4,11 +4,11 @@
 {% load staticfiles %}
 
 {% block header %}
-    <link href="{% static 'styles/jquery.bsmselect.css' %}" type="text/css" rel="stylesheet" />
+    <link href="{% static 'css/jquery.bsmselect.css' %}" type="text/css" rel="stylesheet" />
 {% endblock %}
 
 {% block javascript %}
-    <script type="text/javascript" src="{% static 'javascript/jquery.bsmselect.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery/jquery.bsmselect.js' %}"></script>
     <script type="text/javascript">
         // use jquery-bsmselect for all <select multiple> form elements
         $("select[multiple]").bsmSelect({

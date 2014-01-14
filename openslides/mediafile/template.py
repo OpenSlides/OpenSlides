@@ -10,4 +10,4 @@ def add_mediafile_stylesheets(sender, request, context, **kwargs):
     """
     Adds the mediafile.css to the context.
     """
-    context['extra_stylefiles'].append('styles/mediafile.css')
+    context['extra_stylefiles'].append('css/mediafile.css')

@@ -1,0 +1,139 @@
+/*
+ * OpenSlides dashboard styles
+ *
+ */
+
+/*** Widgets ***/
+.column {
+    width: 50%;
+    float: left;
+    padding-bottom: 100px;
+}
+.widget {
+    margin: 0 10px 10px 0;
+}
+.widget.affix {
+    position: fixed;
+    z-index: 100;
+    right: 20px;
+    top: 42px;
+    max-width: 40%;
+}
+.widget-header {
+    min-height: 30px;
+    background: #E9E9E9;
+    background:-moz-linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%); /* FF3.6+ */
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#FAFAFA), color-stop(100%,#E9E9E9)); /* Chrome,Safari4+ */
+    background:-webkit-linear-gradient(top, #FAFAFA 0%,#E9E9E9 100%); /* Chrome10+,Safari5.1+ */
+    background:-o-linear-gradient(top, #FAFAFA 0%,#E9E9E9 100%); /* Opera11.10+ */
+    background:-ms-linear-gradient(top, #FAFAFA 0%,#E9E9E9 100%); /* IE10+ */
+    background:linear-gradient(top, #FAFAFA 0%,#E9E9E9 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA', endColorstr='#E9E9E9');
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA', endColorstr='#E9E9E9')";
+    border: 1px solid #D5D5D5;
+    border-radius: 5px 5px 0 0;
+}
+.widget-header h3 {
+    margin: 7px 0 7px 14px;
+    font-size: 14px;
+    color: #555;
+    line-height: 18px;
+}
+.widget-header [class^="icon-"], .widget-header [class*=" icon-"] {
+    margin: -2px 5px 0 0px;
+    color: #555;
+    vertical-align: middle;
+}
+.widget-header .collapsebutton, .widget-header .fixbutton{
+    margin: -2px 4px 0 0px;
+}
+.widget-header .fixbutton{
+    margin-left: 6px;
+}
+.widget-header .icon-pushpin {
+    background-image: url("../img/glyphicons_335_pushpin.png");
+    background-position: 0 center;
+}
+.widget-content {
+    padding: 0px 15px 0px 13px;
+    background: #FFF;
+    border: 1px solid #D5D5D5;
+    border-radius: 0 0 5px 5px;
+    -moz-border-radius: 0 0 5px 5px;
+    -webkit-border-radius: 0 0 5px 5px;
+}
+.widget-content-inner {
+    margin-top: 10px;
+}
+.widget-content li {
+    padding: 4px 0;
+}
+.widget-content .overlay_list li {
+    padding-bottom: 10px;
+}
+.widget-content ul {
+    list-style: none inside none;
+    margin: 0;
+}
+.widget-content hr {
+    margin: 5px 0;
+}
+
+.ui-sortable-placeholder {
+    border: 2px dashed #555555;
+    visibility: visible !important;
+    height: 50px !important;
+}
+.ui-sortable-placeholder * {
+    visibility: hidden;
+}
+
+.overlay_list .overlayblock {
+    margin: 0 0 0 31px;
+}
+
+#countdown_time {
+    width: 40px;
+}
+
+/*** iframe for live view ***/
+#iframe {
+    width: 1024px;
+    height: 768px;
+    -moz-transform-origin: 0 0;
+    -webkit-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+    transform-origin: 0 0 0;
+    -moz-transform: scale(0.25);
+    -webkit-transform: scale(0.25);
+    -o-transform: scale(0.25);
+    transform: scale(0.25);
+    /* IE8+ - must be on one line, unfortunately */
+    -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.25, M12=0, M21=0, M22=0.25, SizingMethod='auto expand')";
+}
+#iframewrapper {
+    width: 256px;
+    height: 192px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #D5D5D5;
+    margin-bottom: 10px;
+}
+#iframeoverlay {
+    width: 256px;
+    height: 192px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: block;
+    z-index: 1;
+}
+
+/*** misc ***/
+.custom-btn-mini {
+    width: 20px;
+}
+.custom-btn-mini i {
+    -moz-margin-start: 4px !important;
+    margin-left: -6px;
+}

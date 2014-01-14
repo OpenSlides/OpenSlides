@@ -5,14 +5,14 @@
 <!DOCTYPE html>
 <html lang="{{LANGUAGE_CODE}}">
     <head>
-        <link href="{% static 'styles/bootstrap.min.css' %}" type="text/css" rel="stylesheet">
-        <link href="{% static 'styles/projector.css' %}" type="text/css" rel="stylesheet">
+        <link href="{% static 'css/bootstrap.min.css' %}" type="text/css" rel="stylesheet">
+        <link href="{% static 'css/projector.css' %}" type="text/css" rel="stylesheet">
         <link  href="{% static 'img/favicon.png' %}" type="image/png" rel="shortcut icon">
         <title>{% trans 'Projector' %} – {{ 'event_name'|get_config }}</title>
 
-        <script type="text/javascript" src="{% static 'javascript/jquery.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'javascript/sockjs-0.3.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'javascript/projector.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery/jquery.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/sockjs-0.3.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/projector.js' %}"></script>
         <script type="text/javascript">
             $(function() {
             {% for js in overlay_js %}
@@ -45,7 +45,7 @@
     <body>
         <div id="header">
             {% if 'projector_enable_logo'|get_config %}
-                <img id="logo" alt="Logo" src="/static/img/logo.png">
+                <img id="logo" alt="Logo" src="{% static 'img/logo.png' %}">
             {% endif %}
             {% if 'projector_enable_title'|get_config %}
                 <div id="eventdata">

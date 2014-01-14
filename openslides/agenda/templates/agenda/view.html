@@ -7,13 +7,13 @@
 {% block title %}{{ item }} – {{ block.super }}{% endblock %}
 
 {% block header %}
-    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/agenda.css' %}" />
-    <link rel="stylesheet" href="{% static 'styles/jquery-ui/jquery-ui.custom.min.css' %}" />
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'css/agenda.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/jquery-ui/jquery-ui.custom.min.css' %}" />
 {% endblock %}
 
 {% block javascript %}
-    <script type="text/javascript" src="{% static 'javascript/jquery-ui.custom.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascript/agenda.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery/jquery-ui.custom.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/agenda.js' %}"></script>
 {% endblock %}
 
 {% block content %}

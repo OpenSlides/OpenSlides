@@ -1,0 +1,33 @@
+/*
+ * Styles for projector slides of mediafile app
+ *
+ */
+
+
+/*** PDF presentation ***/
+.canvas-container {
+   width: 100%;
+   text-align:center;
+}
+#presentation {
+    position: relative;
+    left:-75px;
+    top: -77px;
+}
+#presentation.fullscreen {
+    left: 0;
+    top: 0;
+}
+.fullscreen {
+    z-index: 1000!important;
+    left: 0!important;
+    top: 0!important;
+    right: 0!important;
+    background-color: #000000;
+}
+#footer.black {
+    display: none;
+}
+body.black {
+    background-color: #000000;
+}

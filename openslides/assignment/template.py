@@ -10,4 +10,4 @@ def add_assignment_stylesheets(sender, request, context, **kwargs):
     """
     Adds the assignment.css to the context.
     """
-    context['extra_stylefiles'].append('styles/assignment.css')
+    context['extra_stylefiles'].append('css/assignment.css')
