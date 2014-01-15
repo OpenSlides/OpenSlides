@@ -1,16 +1,19 @@
 # -*- coding: utf-8 -*-
 
+from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
+from openslides.agenda.models import Item, Speaker
 from openslides.config.api import config
 from openslides.poll.models import (BaseOption, BasePoll, BaseVote,
                                     CollectInvalid, CollectVotesCast,
                                     PublishPollMixin)
 from openslides.projector.models import RelatedModelMixin, SlideMixin
+from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import AbsoluteUrlMixin
 from openslides.utils.person import PersonField
 from openslides.utils.utils import html_strong
@@ -192,9 +195,25 @@ class Assignment(SlideMixin, AbsoluteUrlMixin, models.Model):
         return person in self.elected
 
     def gen_poll(self):
+        """
+        Creates an new poll for the assignment and adds all candidates to all
+        lists of speakers of related agenda items.
+        """
         poll = AssignmentPoll.objects.create(
             assignment=self, description=self.poll_description_default)
         poll.set_options([{'candidate': person} for person in self.candidates])
+        items = Item.objects.filter(content_type=ContentType.objects.get_for_model(Assignment), object_id=self.pk)
+        for item in items:
+            someone_added = None
+            for candidate in self.candidates:
+                try:
+                    someone_added = Speaker.objects.add(candidate, item)
+                except OpenSlidesError:
+                    # The Speaker is already on the list. Do nothing.
+                    # TODO: Find a smart way not to catch the error concerning AnonymousUser.
+                    pass
+            if someone_added is not None:
+                someone_added.check_and_update_projector()
         return poll
 
     def vote_results(self, only_published):

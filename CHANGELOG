@@ -8,6 +8,8 @@ Version 1.6 (unreleased)
 ========================
 [https://github.com/OpenSlides/OpenSlides/issues?milestone=14]
 
+Assignment:
+- Coupled assignment candidates with list of speakers.
 Participants:
 - Disabled widgets by default.
 - Added form field for multiple creation of new participants.
