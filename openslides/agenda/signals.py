@@ -60,11 +60,11 @@ def setup_agenda_config(sender, **kwargs):
             help_text=ugettext_lazy('[Begin speach] starts the countdown, [End speach] stops the countdown.'),
             required=False))
 
-    extra_stylefiles = ['styles/timepicker.css', 'styles/jquery-ui/jquery-ui.custom.min.css']
-    extra_javascript = ['javascript/jquery-ui.custom.min.js',
-                        'javascript/jquery-ui-timepicker-addon.min.js',
-                        'javascript/jquery-ui-sliderAccess.min.js',
-                        'javascript/agenda-config-datepicker.js']
+    extra_stylefiles = ['css/jquery-ui-timepicker.css', 'css/jquery-ui/jquery-ui.custom.min.css']
+    extra_javascript = ['js/jquery/jquery-ui.custom.min.js',
+                        'js/jquery/jquery-ui-timepicker-addon.min.js',
+                        'js/jquery/jquery-ui-sliderAccess.min.js',
+                        'js/jquery/datepicker-config.js']
 
     return ConfigCollection(title=ugettext_noop('Agenda'),
                             url='agenda',
@@ -109,7 +109,6 @@ def agenda_list_of_speakers(sender, **kwargs):
                     object_id=slide.pk)[0]
             except IndexError:
                 item = None
-
         if item and get_active_slide().get('type', None) != 'list_of_speakers':
             list_of_speakers = item.get_list_of_speakers(
                 old_speakers_count=config['agenda_show_last_speakers'],

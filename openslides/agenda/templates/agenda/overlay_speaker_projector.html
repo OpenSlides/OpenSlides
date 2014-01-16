@@ -1,35 +1,5 @@
 {% load i18n %}
 
-<style type="text/css">
-    /* List of speakers – overlay */
-    #overlay_list_of_speaker_box {
-        position: fixed;
-        bottom: 0;
-        right: 0;
-        border-radius: 0.4em;
-        border: 0.1em solid #777777;
-        background-color: #cccccc;
-        opacity: 0.9;
-        padding: 1em;
-        margin: 1em;
-        z-index: 2;
-        width: 45%;
-        min-width: 200px;}
-    #overlay_list_of_speaker_box h3 {
-        margin: 5px;}
-    #overlay_list_of_speaker_box ul {
-        list-style-type: none;
-        margin: 5px;}
-    #overlay_list_of_speaker_box li {
-        font-size: 120%;
-        line-height: 120%;}
-    #overlay_list_of_speaker_box .old_speaker {
-        color: #777777;}
-    #overlay_list_of_speaker_box .actual_speaker {
-        font-weight: bold;
-        margin-bottom: 0em;}
-</style>
-
 <div id="overlay_list_of_speaker_box">
     <h3>{% trans "List of speakers" %} {% if closed %}(<span class="closed">{% trans 'closed' %}</span>){% endif %}</h3>
     {% if list_of_speakers %}

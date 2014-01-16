@@ -4,14 +4,14 @@
 {% load staticfiles %}
 
 {% block header %}
-    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/dashboard.css' %}" />
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'css/dashboard.css' %}" />
 {% endblock %}
 
 {% block javascript %}
-    <script type="text/javascript" src="{% static 'javascript/jquery-ui.custom.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascript/jquery.cookie.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascript/jquery.form.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascript/dashboard.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery/jquery-ui.custom.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery/jquery.cookie.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery/jquery.form.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/dashboard.js' %}"></script>
 {% endblock %}
 
 {% block title %}{% trans 'Dashboard' %} – {{ block.super }}{% endblock %}

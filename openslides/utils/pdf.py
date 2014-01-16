@@ -17,11 +17,11 @@ from openslides.config.api import config
 
 # register new truetype fonts
 pdfmetrics.registerFont(TTFont(
-    'Ubuntu', path_join(settings.SITE_ROOT, 'static/fonts/Ubuntu-R.ttf')))
+    'Ubuntu', path_join(settings.SITE_ROOT, 'core/static/fonts/Ubuntu-R.ttf')))
 pdfmetrics.registerFont(TTFont(
-    'Ubuntu-Bold', path_join(settings.SITE_ROOT, 'static/fonts/Ubuntu-B.ttf')))
+    'Ubuntu-Bold', path_join(settings.SITE_ROOT, 'core/static/fonts/Ubuntu-B.ttf')))
 pdfmetrics.registerFont(TTFont(
-    'Ubuntu-Italic', path_join(settings.SITE_ROOT, 'static/fonts/Ubuntu-RI.ttf')))
+    'Ubuntu-Italic', path_join(settings.SITE_ROOT, 'core/static/fonts/Ubuntu-RI.ttf')))
 
 
 # set style information

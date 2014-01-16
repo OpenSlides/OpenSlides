@@ -16,6 +16,7 @@ class MotionWidget(Widget):
     permission_required = 'projector.can_manage_projector'
     default_column = 1
     default_weight = 40
+    icon_css_class = 'icon-file'
     template_name = 'motion/widget_motion.html'
     more_link_pattern_name = 'motion_list'
 

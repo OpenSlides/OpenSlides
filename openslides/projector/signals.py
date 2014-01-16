@@ -100,7 +100,7 @@ def countdown(sender, **kwargs):
         Returns JavaScript for the projector
         """
         value = SortedDict()
-        value['load_file'] = static('javascript/countdown.js')
+        value['load_file'] = static('js/countdown.js')
         value['projector_countdown_start'] = int(config['countdown_start_stamp'])
         value['projector_countdown_duration'] = int(config['countdown_time'])
         value['projector_countdown_pause'] = int(config['countdown_pause_stamp'])
@@ -162,7 +162,7 @@ def projector_clock(sender, **kwargs):
         Returns JavaScript for the projector
         """
         javascript = 'projector.set_server_time(%d);update_clock();' % int(time())
-        return {'load_file': static('javascript/clock.js'),
+        return {'load_file': static('js/clock.js'),
                 'call': javascript}
 
     return Overlay(name, None, get_projector_html, get_projector_js,

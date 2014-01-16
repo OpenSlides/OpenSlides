@@ -7,20 +7,18 @@
 {% block title %}{% trans "Agenda" %} – {{ block.super }}{% endblock %}
 
 {% block header %}
-    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/agenda.css' %}" />
-    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/agenda_sort.css' %}" />
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'css/agenda.css' %}" />
 {% endblock %}
 
 {% block javascript %}
-    <script type="text/javascript" src="{% static 'javascript/agenda.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascript/jquery.cookie.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/agenda.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery/jquery.cookie.js' %}"></script>
     {% if perms.agenda.can_manage_agenda %}
-        <script type="text/javascript" src="{% static 'javascript/jquery.once.js' %}"></script>
-        <script type="text/javascript" src="{% static 'javascript/jquery-ui.custom.min.js' %}"></script>
-        <script type="text/javascript" src="{% static 'javascript/jquery.tmpl.js' %}"></script>
-        <script type="text/javascript" src="{% static 'javascript/jquery.mjs.nestedSortable.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery/jquery-ui.custom.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery/jquery.once.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery/jquery.tmpl.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery/jquery-ui-nestedSortable.js' %}"></script>
     {% endif %}
-    <script type="text/javascript" src="{% static 'javascript/agenda_sort.js' %}"></script>
 {% endblock %}
 
 {% block content %}

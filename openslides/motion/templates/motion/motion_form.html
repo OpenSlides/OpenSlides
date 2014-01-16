@@ -6,16 +6,16 @@
 
 {% block header %}
     {{ block.super }}
-    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/motion.css' %}" />
-    <link type="text/css" rel="stylesheet" media="all" href="{% static 'styles/ckeditor.css' %}" />
-    <link href="{% static 'styles/jquery.bsmselect.css' %}" type="text/css" rel="stylesheet" />
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'css/motion.css' %}" />
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'css/ckeditor.css' %}" />
+    <link href="{% static 'css/jquery.bsmselect.css' %}" type="text/css" rel="stylesheet" />
 {% endblock %}
 
 {% block javascript %}
     {{ block.super }}
-    <script type="text/javascript" src="{% static 'javascript/ckeditor/ckeditor.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascript/ckeditor-config.js' %}"></script>
-    <script type="text/javascript" src="{% static 'javascript/jquery.bsmselect.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/ckeditor/ckeditor.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/ckeditor-config.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/jquery/jquery.bsmselect.js' %}"></script>
     <script type="text/javascript">
         // use jquery-bsmselect for all <select multiple> form elements
         $("select[multiple]").bsmSelect({

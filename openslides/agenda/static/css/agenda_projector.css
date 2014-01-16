@@ -1,0 +1,61 @@
+/*
+ * Styles for projector slides of agenda app
+ *
+ */
+
+/*** List of speakers – projector slide ***/
+ul#list_of_speakers {
+    list-style-type: none;
+    padding: 0;}
+#list_of_speakers li {
+    font-size: 130%;
+    line-height: 150%;}
+#list_of_speakers .old_speaker {
+    color: #9FA9B7;}
+#list_of_speakers .actual_speaker {
+    font-weight: bold;
+    margin-bottom: 0.5em;}
+
+
+/*** List of speakers – overlay ***/
+#overlay_list_of_speaker_box {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    border-radius: 0.4em;
+    border: 0.1em solid #777777;
+    background-color: #cccccc;
+    opacity: 0.9;
+    padding: 1em;
+    margin: 1em;
+    z-index: 2;
+    width: 45%;
+    min-width: 200px;}
+#overlay_list_of_speaker_box h3 {
+    margin: 5px;}
+#overlay_list_of_speaker_box ul {
+    list-style-type: none;
+    margin: 5px;}
+#overlay_list_of_speaker_box li {
+    font-size: 120%;
+    line-height: 120%;}
+#overlay_list_of_speaker_box .old_speaker {
+    color: #777777;}
+#overlay_list_of_speaker_box .actual_speaker {
+    font-weight: bold;
+    margin-bottom: 0em;}
+
+
+/*** Agenda Items ***/
+.itemlist {
+    margin-top: 20px;
+}
+.itemlist li {
+    font-size:130%;
+    padding-bottom: 20px;
+    list-style-type: none;
+}
+.itemlist .closed {
+    color: #9FA9B7;
+    list-style-type: none;
+}
