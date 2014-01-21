@@ -258,7 +258,7 @@ def all_motion_cover(pdf, motions):
 
 
 def motion_poll_to_pdf(pdf, poll):
-    imgpath = os.path.join(settings.SITE_ROOT, 'static/img/circle.png')
+    imgpath = os.path.join(settings.SITE_ROOT, 'core', 'static', 'img', 'circle.png')
     circle = "<img src='%s' width='15' height='15'/>&nbsp;&nbsp;" % imgpath
     cell = []
     cell.append(Spacer(0, 0.8 * cm))
