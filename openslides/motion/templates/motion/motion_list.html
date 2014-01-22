@@ -12,7 +12,15 @@
 
 {% block javascript %}
     <script src="{% static 'javascript/jquery.dataTables.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'javascript/naturalSort.js' %}" type="text/javascript"></script>
     <script src="{% static 'javascript/dataTables.bootstrap.js' %}" type="text/javascript"></script>
+    <script type="text/javascript" charset="utf-8">
+        $('#dataTable').dataTable( {
+            "aoColumnDefs": [
+                { "sType": "natural", "aTargets": [ 0 ] }
+            ],
+        });
+    </script>
 {% endblock %}
 
 {% block content %}

@@ -93,6 +93,9 @@ SITE_PACKAGES = {
     "django-haystack": {
         "copy": ["haystack"],
     },
+    "natsort": {
+        "copy": ["natsort"],
+    },
     "whoosh": {
         "copy": ["whoosh"],
     },
