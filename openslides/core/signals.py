@@ -64,7 +64,7 @@ def setup_general_config_page(sender, **kwargs):
         default_value=True,
         form_field=forms.BooleanField(
             label=ugettext_lazy('Show logo on projector'),
-            help_text=ugettext_lazy('You can find and replace the logo under "openslides/static/img/projector/static/img/logo-projector.png".'),
+            help_text=ugettext_lazy('You can find and replace the logo under "openslides/projector/static/img/logo-projector.png".'),
             required=False))
 
     projector_enable_title = ConfigVariable(
