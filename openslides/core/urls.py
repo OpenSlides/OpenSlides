@@ -27,4 +27,18 @@ urlpatterns = patterns(
 
     url(r'^search/$',
         views.SearchView(),
-        name='core_search',))
+        name='core_search',),
+
+    # CustomSlide urls
+    url(r'^customslide/new/$',
+        views.CustomSlideCreateView.as_view(),
+        name='customslide_create'),
+
+    url(r'^customslide/(?P<pk>\d+)/edit/$',
+        views.CustomSlideUpdateView.as_view(),
+        name='customslide_update'),
+
+    url(r'^customslide/(?P<pk>\d+)/del/$',
+        views.CustomSlideDeleteView.as_view(),
+        name='customslide_delete'),
+)

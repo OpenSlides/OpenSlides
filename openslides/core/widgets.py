@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from openslides.config.api import config
+from django.utils.translation import ugettext_lazy
 
+from openslides.config.api import config
+from openslides.projector.api import get_active_slide
 from openslides.utils.widgets import Widget
+
+from .models import CustomSlide
 
 
 class WelcomeWidget(Widget):
@@ -10,7 +14,7 @@ class WelcomeWidget(Widget):
     Welcome widget with static info for all users.
     """
     name = 'welcome'
-    permission_required = 'projector.can_see_dashboard'
+    permission_required = 'core.can_see_dashboard'
     default_column = 1
     default_weight = 10
     template_name = 'core/widget_welcome.html'
@@ -18,3 +22,23 @@ class WelcomeWidget(Widget):
 
     def get_verbose_name(self):
         return config['welcome_title']
+
+
+class CustonSlideWidget(Widget):
+    """
+    Widget to control custom slides.
+    """
+    name = 'custom_slide'
+    verbose_name = ugettext_lazy('Custom Slides')
+    permission_required = 'core.can_manage_projector'
+    default_column = 2
+    default_weight = 30
+    template_name = 'core/widget_customslide.html'
+    context = None
+
+    def get_context_data(self, **context):
+        return super(CustonSlideWidget, self).get_context_data(
+            slides=CustomSlide.objects.all().order_by('weight'),
+            welcomepage_is_active=(
+                get_active_slide().get('callback', 'default') == 'default'),
+            **context)

@@ -14,7 +14,7 @@
 </a>
 
 <!-- projector control buttons -->
-{% if perms.projector.can_manage_projector %}
+{% if perms.core.can_manage_projector %}
     <p>
         <a class="projector_edit btn" href="{% url 'projector_bigger' %}" title="{% trans 'Zoom in' %}">
             <i class="icon-zoom-in"></i>

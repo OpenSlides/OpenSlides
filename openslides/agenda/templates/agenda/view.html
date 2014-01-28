@@ -21,7 +21,7 @@
     {{ item }}
     <small class="pull-right">
     <a href="{% url 'item_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
-    {% if perms.projector.can_manage_projector %}
+    {% if perms.core.can_manage_projector %}
         <a href="{{ item|absolute_url:'projector' }}"
             class="activate_link btn btn-mini {% if item.is_active_slide and active_type != 'list_of_speakers' %}btn-primary{% endif %}"
             rel="tooltip" data-original-title="{% trans 'Show item' %}">
@@ -67,7 +67,7 @@
         <a href="{% url 'agenda_speaker_close' item.pk %}" class="btn btn-mini btn-danger">{% trans 'Close list' %}</a>
     {% endif %}
 {% endif %}
-{% if perms.projector.can_manage_projector %}
+{% if perms.core.can_manage_projector %}
     <a href="{{ item|absolute_url:'projector_list_of_speakers' }}"
         class="activate_link btn btn-mini {% if item.is_active_slide and active_type == 'list_of_speakers' %}btn-primary{% endif %}"
         rel="tooltip" data-original-title="{% trans 'Show list of speakers' %}">

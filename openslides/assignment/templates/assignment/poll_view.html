@@ -15,7 +15,7 @@
     <small class="pull-right">
     <a href="{{ assignment|absolute_url:'detail' }}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to election" %}</a>
     <!-- activate projector -->
-    {% if perms.projector.can_manage_projector %}
+    {% if perms.core.can_manage_projector %}
         <a href="{{ assignment|absolute_url:'projector' }}"
             class="activate_link btn {% if assignment.is_active_slide %}btn-primary{% endif %} btn-mini"
             rel="tooltip" data-original-title="{% trans 'Show election' %}">

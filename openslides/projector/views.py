@@ -3,21 +3,19 @@
 from openslides.config.api import config
 from openslides.mediafile.models import Mediafile
 from openslides.utils.tornado_webserver import ProjectorSocketHandler
-from openslides.utils.views import (CreateView, DeleteView,
-                                    RedirectView, TemplateView, UpdateView)
+from openslides.utils.views import RedirectView, TemplateView
 
 from .api import (call_on_projector, get_active_slide,
                   get_overlays, get_projector_content, get_projector_overlays,
                   get_projector_overlays_js, reset_countdown, set_active_slide,
                   start_countdown, stop_countdown, update_projector_overlay)
-from .models import ProjectorSlide
 
 
 class ProjectorView(TemplateView):
     """
     The Projector-Page.
     """
-    permission_required = 'projector.can_see_projector'
+    permission_required = 'core.can_see_projector'
     template_name = 'projector.html'
 
     def get_context_data(self, **kwargs):
@@ -45,7 +43,7 @@ class ActivateView(RedirectView):
     """
     Activate a Slide.
     """
-    permission_required = 'projector.can_manage_projector'
+    permission_required = 'core.can_manage_projector'
     url_name = 'core_dashboard'
     allow_ajax = True
 
@@ -72,7 +70,7 @@ class ProjectorControllView(RedirectView):
     """
     Scale or scroll the projector.
     """
-    permission_required = 'projector.can_manage_projector'
+    permission_required = 'core.can_manage_projector'
     url_name = 'core_dashboard'
     allow_ajax = True
 
@@ -106,7 +104,7 @@ class CountdownControllView(RedirectView):
     """
     Start, stop or reset the countdown.
     """
-    permission_required = 'projector.can_manage_projector'
+    permission_required = 'core.can_manage_projector'
     url_name = 'core_dashboard'
     allow_ajax = True
 
@@ -141,7 +139,7 @@ class OverlayMessageView(RedirectView):
     """
     url_name = 'core_dashboard'
     allow_ajax = True
-    permission_required = 'projector.can_manage_projector'
+    permission_required = 'core.can_manage_projector'
 
     def pre_post_redirect(self, request, *args, **kwargs):
         if 'message' in request.POST:
@@ -162,7 +160,7 @@ class ActivateOverlay(RedirectView):
     """
     url_name = 'core_dashboard'
     allow_ajax = True
-    permission_required = 'projector.can_manage_projector'
+    permission_required = 'core.can_manage_projector'
 
     def pre_redirect(self, request, *args, **kwargs):
         overlay = get_overlays()[kwargs['name']]
@@ -180,36 +178,3 @@ class ActivateOverlay(RedirectView):
 
     def get_ajax_context(self, **kwargs):
         return {'active': self.active, 'name': self.name}
-
-
-class CustomSlideCreateView(CreateView):
-    """
-    Create a custom slide.
-    """
-    permission_required = 'agenda.can_manage_agenda'
-    template_name = 'projector/new.html'
-    model = ProjectorSlide
-    context_object_name = 'customslide'
-    success_url_name = 'core_dashboard'
-    url_name_args = []
-
-
-class CustomSlideUpdateView(UpdateView):
-    """
-    Update a custom slide.
-    """
-    permission_required = 'projector.can_manage_projector'
-    template_name = 'projector/new.html'
-    model = ProjectorSlide
-    context_object_name = 'customslide'
-    success_url_name = 'core_dashboard'
-    url_name_args = []
-
-
-class CustomSlideDeleteView(DeleteView):
-    """
-    Delete a custom slide.
-    """
-    permission_required = 'projector.can_manage_projector'
-    model = ProjectorSlide
-    success_url_name = 'core_dashboard'

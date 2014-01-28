@@ -82,8 +82,8 @@ class DefaultGroups(TestCase):
 
     def test_default_perms_anonymous(self):
         anonymous = Group.objects.get(pk=1)
-        default_perms = ('projector.can_see_projector',
-                         'projector.can_see_dashboard',
+        default_perms = ('core.can_see_projector',
+                         'core.can_see_dashboard',
                          'agenda.can_see_agenda',
                          'agenda.can_see_orga_items',
                          'motion.can_see_motion',

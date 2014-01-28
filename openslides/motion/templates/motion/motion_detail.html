@@ -37,7 +37,7 @@
             rel="tooltip" data-original-title="{% trans 'Print motion as PDF' %}" target="_blank">
             <i class="icon-print"></i> PDF</a>
         <!-- activate projector -->
-        {% if perms.projector.can_manage_projector %}
+        {% if perms.core.can_manage_projector %}
             <a href="{{ motion|absolute_url:'projector' }}" class="activate_link btn {% if motion.is_active_slide %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show motion' %}">
                 <i class="icon-facetime-video {% if motion.is_active_slide %}icon-white{% endif %}"></i>
             </a>

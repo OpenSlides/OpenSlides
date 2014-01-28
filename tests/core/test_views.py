@@ -7,6 +7,7 @@ from openslides import get_version
 from openslides.agenda.models import Item
 from openslides.config.api import config
 from openslides.core import views
+from openslides.core.models import CustomSlide
 from openslides.participant.models import User
 from openslides.utils.test import TestCase
 
@@ -15,7 +16,7 @@ class SelectWidgetsViewTest(TestCase):
     rf = RequestFactory()
 
     @patch('openslides.core.views.SelectWidgetsForm')
-    @patch('openslides.core.views.TemplateView.get_context_data')
+    @patch('openslides.core.views.utils_views.TemplateView.get_context_data')
     @patch('openslides.core.views.Widget')
     def test_get_context_data(self, mock_Widget, mock_get_context_data,
                               mock_SelectWidgetsForm):
@@ -99,3 +100,46 @@ class SearchViewTest(TestCase):
         self.assertEqual(Client().get('/search/').status_code, 403)
         config['system_enable_anonymous'] = True
         self.assertEqual(Client().get('/search/').status_code, 200)
+
+
+class CustomSlidesTest(TestCase):
+    def setUp(self):
+        self.admin_client = Client()
+        self.admin_client.login(username='admin', password='admin')
+
+    def test_create(self):
+        url = '/customslide/new/'
+        response = self.admin_client.get(url)
+        self.assertTemplateUsed(response, 'core/customslide_update.html')
+        response = self.admin_client.post(
+            url,
+            {'title': 'test_title_roo2xi2EibooHie1kohd', 'weight': '0'})
+        self.assertRedirects(response, '/dashboard/')
+        self.assertTrue(CustomSlide.objects.filter(
+            title='test_title_roo2xi2EibooHie1kohd').exists())
+
+    def test_update(self):
+        # Setup
+        url = '/customslide/1/edit/'
+        CustomSlide.objects.create(title='test_title_jeeDeB3aedei8ahceeso')
+        # Test
+        response = self.admin_client.get(url)
+        self.assertTemplateUsed(response, 'core/customslide_update.html')
+        self.assertContains(response, 'test_title_jeeDeB3aedei8ahceeso')
+        response = self.admin_client.post(
+            url,
+            {'title': 'test_title_ai8Ooboh5bahr6Ee7goo', 'weight': '0'})
+        self.assertRedirects(response, '/dashboard/')
+        self.assertEqual(CustomSlide.objects.get(pk=1).title,
+                         'test_title_ai8Ooboh5bahr6Ee7goo')
+
+    def test_delete(self):
+        # Setup
+        url = '/customslide/1/del/'
+        CustomSlide.objects.create(title='test_title_oyie0em1chieM7YohX4H')
+        # Test
+        response = self.admin_client.get(url)
+        self.assertRedirects(response, '/customslide/1/edit/')
+        response = self.admin_client.post(url, {'yes': 'true'})
+        self.assertRedirects(response, '/dashboard/')
+        self.assertFalse(CustomSlide.objects.exists())

@@ -68,9 +68,9 @@ def create_builtin_groups_and_admin(sender, **kwargs):
         return
 
     # Anonymous and Registered
-    ct_projector = ContentType.objects.get(app_label='projector', model='projectorslide')
-    perm_1 = Permission.objects.get(content_type=ct_projector, codename='can_see_projector')
-    perm_2 = Permission.objects.get(content_type=ct_projector, codename='can_see_dashboard')
+    ct_core = ContentType.objects.get(app_label='core', model='customslide')
+    perm_1 = Permission.objects.get(content_type=ct_core, codename='can_see_projector')
+    perm_2 = Permission.objects.get(content_type=ct_core, codename='can_see_dashboard')
 
     ct_agenda = ContentType.objects.get(app_label='agenda', model='item')
     ct_speaker = ContentType.objects.get(app_label='agenda', model='speaker')
@@ -110,7 +110,7 @@ def create_builtin_groups_and_admin(sender, **kwargs):
     perm_12 = Permission.objects.get(content_type=ct_motion, codename='can_manage_motion')
     perm_13 = Permission.objects.get(content_type=ct_assignment, codename='can_manage_assignment')
     perm_14 = Permission.objects.get(content_type=ct_participant, codename='can_manage_participant')
-    perm_15 = Permission.objects.get(content_type=ct_projector, codename='can_manage_projector')
+    perm_15 = Permission.objects.get(content_type=ct_core, codename='can_manage_projector')
     perm_15a = Permission.objects.get(content_type=ct_mediafile, codename='can_manage')
 
     ct_config = ContentType.objects.get(app_label='config', model='configstore')
