@@ -45,7 +45,7 @@
     <body>
         <div id="header">
             {% if 'projector_enable_logo'|get_config %}
-                <img id="logo" alt="Logo" src="/static/img/logo.png">
+                <img id="logo" alt="Logo" src="{% static 'img/logo-projector.png' %}">
             {% endif %}
             {% if 'projector_enable_title'|get_config %}
                 <div id="eventdata">
