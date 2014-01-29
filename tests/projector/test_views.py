@@ -5,7 +5,6 @@ from django.test.client import Client, RequestFactory
 from mock import call, MagicMock, patch
 
 from openslides.config.api import config
-from openslides.projector.models import ProjectorSlide
 from openslides.projector import views
 from openslides.utils.test import TestCase
 
@@ -112,43 +111,6 @@ class ProjectorControllViewTest(TestCase):
                                                          'projector_scroll': 2}):
             context = view.get_ajax_context()
             self.assertEqual(context, {'scale_level': 1, 'scroll_level': 2})
-
-
-class CustomSlidesTest(TestCase):
-    def setUp(self):
-        self.admin_client = Client()
-        self.admin_client.login(username='admin', password='admin')
-
-    def test_create(self):
-        url = '/projector/new/'
-        response = self.admin_client.get(url)
-        self.assertTemplateUsed(response, 'projector/new.html')
-        response = self.admin_client.post(url, {'title': 'test_title_roo2xi2EibooHie1kohd', 'weight': '0'})
-        self.assertRedirects(response, '/dashboard/')
-        self.assertTrue(ProjectorSlide.objects.filter(title='test_title_roo2xi2EibooHie1kohd').exists())
-
-    def test_update(self):
-        # Setup
-        url = '/projector/1/edit/'
-        ProjectorSlide.objects.create(title='test_title_jeeDeB3aedei8ahceeso')
-        # Test
-        response = self.admin_client.get(url)
-        self.assertTemplateUsed(response, 'projector/new.html')
-        self.assertContains(response, 'test_title_jeeDeB3aedei8ahceeso')
-        response = self.admin_client.post(url, {'title': 'test_title_ai8Ooboh5bahr6Ee7goo', 'weight': '0'})
-        self.assertRedirects(response, '/dashboard/')
-        self.assertEqual(ProjectorSlide.objects.get(pk=1).title, 'test_title_ai8Ooboh5bahr6Ee7goo')
-
-    def test_delete(self):
-        # Setup
-        url = '/projector/1/del/'
-        ProjectorSlide.objects.create(title='test_title_oyie0em1chieM7YohX4H')
-        # Test
-        response = self.admin_client.get(url)
-        self.assertRedirects(response, '/projector/1/edit/')
-        response = self.admin_client.post(url, {'yes': 'true'})
-        self.assertRedirects(response, '/dashboard/')
-        self.assertFalse(ProjectorSlide.objects.exists())
 
 
 class CountdownControllView(TestCase):

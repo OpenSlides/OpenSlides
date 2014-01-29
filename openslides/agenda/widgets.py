@@ -14,7 +14,7 @@ class AgendaWidget(Widget):
     """
     name = 'agenda'
     verbose_name = ugettext_lazy('Agenda')
-    permission_required = 'projector.can_manage_projector'
+    permission_required = 'core.can_manage_projector'
     default_column = 1
     default_weight = 20
     template_name = 'agenda/widget_item.html'

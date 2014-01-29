@@ -2,10 +2,10 @@
 {% load tags %}
 
 <div class="{% if node.is_active_slide %}activeline{% endif %}">
-    {% if perms.agenda.can_manage_agenda or perms.projector.can_manage_projector %}
+    {% if perms.agenda.can_manage_agenda or perms.core.can_manage_projector %}
     <div class="manage">
         <span style="width: 1px; white-space: nowrap;">
-        {% if perms.projector.can_manage_projector %}
+        {% if perms.core.can_manage_projector %}
             <a href="{{ node|absolute_url:'projector' }}"
                 class="activate_link btn {% if node.is_active_slide and active_type == 'text' %}btn-primary{% endif %} btn-mini"
                 rel="tooltip" data-original-title="{% trans 'Show agenda item' %}">

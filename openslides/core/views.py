@@ -15,19 +15,20 @@ from openslides import get_git_commit_id, RELEASE
 from openslides.config.api import config
 from openslides.utils.plugins import get_plugin_description, get_plugin_verbose_name, get_plugin_version
 from openslides.utils.signals import template_manipulation
-from openslides.utils.views import AjaxMixin, TemplateView, View
+from openslides.utils import views as utils_views
 from openslides.utils.widgets import Widget
 
 from .forms import SelectWidgetsForm
+from .models import CustomSlide
 
 
-class DashboardView(AjaxMixin, TemplateView):
+class DashboardView(utils_views.AjaxMixin, utils_views.TemplateView):
     """
     Overview over all possible slides, the overlays and a live view: the
     Dashboard of OpenSlides. This main view uses the widget api to collect all
     widgets from all apps. See openslides.utils.widgets.Widget for more details.
     """
-    permission_required = 'projector.can_see_dashboard'  # TODO: Rename this to core.can_see_dashboard
+    permission_required = 'core.can_see_dashboard'
     template_name = 'core/dashboard.html'
 
     def get_context_data(self, **kwargs):
@@ -42,13 +43,13 @@ class DashboardView(AjaxMixin, TemplateView):
         return context
 
 
-class SelectWidgetsView(TemplateView):
+class SelectWidgetsView(utils_views.TemplateView):
     """
     Shows a form to select which widgets should be displayed on the own
     dashboard. The setting is saved in the session.
     """
     # TODO: Use another base view class here, e. g. a FormView
-    permission_required = 'projector.can_see_dashboard'  # TODO: Rename this to core.can_see_dashboard
+    permission_required = 'core.can_see_dashboard'
     template_name = 'core/select_widgets.html'
 
     def get_context_data(self, **kwargs):
@@ -84,7 +85,7 @@ class SelectWidgetsView(TemplateView):
         return redirect(reverse('core_dashboard'))
 
 
-class VersionView(TemplateView):
+class VersionView(utils_views.TemplateView):
     """
     Shows version infos.
     """
@@ -155,7 +156,7 @@ class SearchView(_SearchView):
         return models
 
 
-class ErrorView(View):
+class ErrorView(utils_views.View):
     """
     View for Http 403, 404 and 500 error pages.
     """
@@ -180,3 +181,35 @@ class ErrorView(View):
             context_instance=RequestContext(request, context))
         response.status_code = self.status_code
         return response
+
+
+class CustomSlideViewMixin(object):
+    """
+    Mixin for for CustomSlide Views.
+    """
+    permission_required = 'core.can_manage_projector'
+    template_name = 'core/customslide_update.html'
+    model = CustomSlide
+    success_url_name = 'core_dashboard'
+    url_name_args = []
+
+
+class CustomSlideCreateView(CustomSlideViewMixin, utils_views.CreateView):
+    """
+    Create a custom slide.
+    """
+    pass
+
+
+class CustomSlideUpdateView(CustomSlideViewMixin, utils_views.UpdateView):
+    """
+    Update a custom slide.
+    """
+    pass
+
+
+class CustomSlideDeleteView(CustomSlideViewMixin, utils_views.DeleteView):
+    """
+    Delete a custom slide.
+    """
+    pass

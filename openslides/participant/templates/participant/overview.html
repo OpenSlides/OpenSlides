@@ -108,7 +108,7 @@
                     </td>
                     <td>
                         <span style="width: 1px; white-space: nowrap;">
-                            {% if perms.projector.can_manage_projector %}
+                            {% if perms.core.can_manage_projector %}
                                 <a href="{{ user|absolute_url:'projector' }}" class="activate_link btn {% if user.is_active_slide %}btn-primary{% endif %} btn-mini"
                                     rel="tooltip" data-original-title="{% trans 'Show participant' %}">
                                     <i class="icon-facetime-video {% if user.is_active_slide %}icon-white{% endif %}"></i>

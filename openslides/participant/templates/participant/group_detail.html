@@ -11,7 +11,7 @@
     <small class="pull-right">
     <a href="{% url 'user_group_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
     <!-- activate projector -->
-    {% if perms.projector.can_manage_projector %}
+    {% if perms.core.can_manage_projector %}
         <a href="{% url 'projector_activate_slide' group.sid  %}" class="activate_link btn {% if group.active %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show group' %}">
             <i class="icon-facetime-video {% if group.active %}icon-white{% endif %}"></i>
         </a>

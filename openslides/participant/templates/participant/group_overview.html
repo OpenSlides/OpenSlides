@@ -48,7 +48,7 @@
             </td>
             <td>
                 <span style="width: 1px; white-space: nowrap;">
-                    {% if perms.projector.can_manage_projector %}
+                    {% if perms.core.can_manage_projector %}
                         <a href="{{ group|absolute_url:'projector' }}"
                             class="activate_link btn {% if group.is_active_slide %}btn-primary{% endif %} btn-mini"
                             rel="tooltip" data-original-title="{% trans 'Show group' %}">

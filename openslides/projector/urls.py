@@ -27,18 +27,6 @@ urlpatterns = patterns(
         views.OverlayMessageView.as_view(),
         name='projector_overlay_message'),
 
-    url(r'^new/$',
-        views.CustomSlideCreateView.as_view(),
-        name='customslide_new'),
-
-    url(r'^(?P<pk>\d+)/edit/$',
-        views.CustomSlideUpdateView.as_view(),
-        name='customslide_edit'),
-
-    url(r'^(?P<pk>\d+)/del/$',
-        views.CustomSlideDeleteView.as_view(),
-        name='customslide_delete'),
-
     url(r'^bigger/$',
         views.ProjectorControllView.as_view(),
         {'direction': 'bigger'},

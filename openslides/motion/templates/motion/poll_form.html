@@ -18,7 +18,7 @@
     <div class="btn-toolbar">
         <a href="{% url 'motion_detail' motion.id %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to motion" %}</a>
         <!-- activate projector -->
-        {% if perms.projector.can_manage_projector %}
+        {% if perms.core.can_manage_projector %}
             <a href="{{ motion|absolute_url:'projector' }}" class="activate_link btn {% if motion.is_active_slide %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show motion' %}">
                 <i class="icon-facetime-video {% if motion.is_active_slide %}icon-white{% endif %}"></i>
             </a>

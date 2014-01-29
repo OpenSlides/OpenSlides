@@ -43,8 +43,7 @@ def check():
     """
     Checks for PEP 8 errors in openslides and in tests.
     """
-    local('flake8 --max-line-length=150 --statistics openslides')
-    local('flake8 --max-line-length=150 --statistics tests')
+    local('flake8 --max-line-length=150 --statistics openslides tests')
 
 
 def prepare_commit():
