@@ -43,6 +43,15 @@ LIBEXCLUDE = [
 
 
 SITE_PACKAGES = {
+    "beautifulsoup4": {
+        "copy": ["bs4"],
+    },
+    "bleach": {
+        "copy": ["bleach"],
+    },
+    "html5lib": {
+        "copy": ["html5lib"],
+    },
     "django": {
         "copy": ["django"],
         "exclude": [
@@ -60,8 +69,17 @@ SITE_PACKAGES = {
             r"^django/contrib/webdesign/",
         ]
     },
+    "django-haystack": {
+        "copy": ["haystack"],
+    },
     "django-mptt": {
         "copy": ["mptt"],
+    },
+    "jsonfield": {
+        "copy": ["jsonfield"],
+    },
+    "pillow": {
+        "copy": ["PIL"],
     },
     "reportlab": {
         "copy": [
@@ -72,26 +90,14 @@ SITE_PACKAGES = {
             "sgmlop.pyd",
         ],
     },
-    "pillow": {
-        "copy": ["PIL"],
+    "setuptools": {
+        "copy": ["pkg_resources.py"],
     },
     "sockjs-tornado": {
         "copy": ["sockjs"],
     },
     "tornado": {
         "copy": ["tornado"],
-    },
-    "beautifulsoup4": {
-        "copy": ["bs4"],
-    },
-    "bleach": {
-        "copy": ["bleach"],
-    },
-    "html5lib": {
-        "copy": ["html5lib"],
-    },
-    "django-haystack": {
-        "copy": ["haystack"],
     },
     "whoosh": {
         "copy": ["whoosh"],
