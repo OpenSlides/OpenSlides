@@ -109,6 +109,7 @@ def setup_general_config(sender, **kwargs):
         form_field=forms.CharField(
             widget=forms.TextInput(),
             label=ugettext_lazy('Title'),
+            help_text=ugettext_lazy('Also used for the default welcome slide.'),
             required=False),
         on_change=update_projector)
 
@@ -128,47 +129,6 @@ def setup_general_config(sender, **kwargs):
             label=ugettext_lazy('Allow access for anonymous guest users'),
             required=False))
 
-    system_url = ConfigVariable(
-        name='system_url',
-        default_value='http://example.com:8000',
-        form_field=forms.CharField(
-            widget=forms.TextInput(),
-            required=False,
-            label=ugettext_lazy('System URL'),
-            help_text=ugettext_lazy('Used for QRCode in PDF of access data.')))
-
-    system_wlan_ssid = ConfigVariable(
-        name='system_wlan_ssid',
-        default_value='',
-        form_field=forms.CharField(
-            widget=forms.TextInput(),
-            required=False,
-            label=ugettext_lazy('WLAN name (SSID)'),
-            help_text=ugettext_lazy('Used for WLAN QRCode in PDF of access data.')))
-
-    system_wlan_password = ConfigVariable(
-        name='system_wlan_password',
-        default_value='',
-        form_field=forms.CharField(
-            widget=forms.TextInput(),
-            required=False,
-            label=ugettext_lazy('WLAN password'),
-            help_text=ugettext_lazy('Used for WLAN QRCode in PDF of access data.')))
-
-    system_wlan_encryption = ConfigVariable(
-        name='system_wlan_encryption',
-        default_value='',
-        form_field=forms.ChoiceField(
-            widget=forms.Select(),
-            required=False,
-            label=ugettext_lazy('WLAN encryption'),
-            help_text=ugettext_lazy('Used for WLAN QRCode in PDF of access data.'),
-            choices=(
-                ('', '---------'),
-                ('WEP', 'WEP'),
-                ('WPA', 'WPA/WPA2'),
-                ('nopass', ugettext_lazy('No encryption')))))
-
     group_event = ConfigGroup(
         title=ugettext_lazy('Event'),
         variables=(event_name, event_description, event_date, event_location, event_organizer))
@@ -183,7 +143,7 @@ def setup_general_config(sender, **kwargs):
 
     group_system = ConfigGroup(
         title=ugettext_lazy('System'),
-        variables=(system_enable_anonymous, system_url, system_wlan_ssid, system_wlan_password, system_wlan_encryption))
+        variables=(system_enable_anonymous,))
 
     return ConfigGroupedCollection(
         title=ugettext_noop('General'),

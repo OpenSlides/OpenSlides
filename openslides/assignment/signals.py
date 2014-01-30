@@ -5,7 +5,7 @@ from django.dispatch import receiver
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
-from openslides.config.api import ConfigCollection, ConfigVariable
+from openslides.config.api import ConfigGroup, ConfigGroupedCollection, ConfigVariable
 from openslides.config.signals import config_signal
 
 
@@ -14,13 +14,18 @@ def setup_assignment_config(sender, **kwargs):
     """
     Assignment config variables.
     """
-    assignment_publish_winner_results_only = ConfigVariable(
-        name='assignment_publish_winner_results_only',
-        default_value=False,
-        form_field=forms.BooleanField(
+    # Ballot and ballot papers
+    assignment_poll_vote_values = ConfigVariable(
+        name='assignment_poll_vote_values',
+        default_value='auto',
+        form_field=forms.ChoiceField(
+            widget=forms.Select(),
             required=False,
-            label=ugettext_lazy('Only publish voting results for selected '
-                                'winners (Projector view only)')))
+            label=ugettext_lazy('Election method'),
+            choices=(
+                ('auto', ugettext_lazy('Automatic assign of method')),
+                ('votes', ugettext_lazy('Always one option per candidate')),
+                ('yesnoabstain', ugettext_lazy('Always Yes-No-Abstain per candidate')))))
     assignment_pdf_ballot_papers_selection = ConfigVariable(
         name='assignment_pdf_ballot_papers_selection',
         default_value='CUSTOM_NUMBER',
@@ -40,6 +45,21 @@ def setup_assignment_config(sender, **kwargs):
             required=False,
             min_value=1,
             label=ugettext_lazy('Custom number of ballot papers')))
+    assignment_publish_winner_results_only = ConfigVariable(
+        name='assignment_publish_winner_results_only',
+        default_value=False,
+        form_field=forms.BooleanField(
+            required=False,
+            label=ugettext_lazy('Only publish voting results for selected '
+                                'winners (Projector view only)')))
+    group_ballot = ConfigGroup(
+        title=ugettext_lazy('Ballot and ballot papers'),
+        variables=(assignment_poll_vote_values,
+                   assignment_pdf_ballot_papers_selection,
+                   assignment_pdf_ballot_papers_number,
+                   assignment_publish_winner_results_only))
+
+    # PDF
     assignment_pdf_title = ConfigVariable(
         name='assignment_pdf_title',
         default_value=_('Elections'),
@@ -55,25 +75,13 @@ def setup_assignment_config(sender, **kwargs):
             widget=forms.Textarea(),
             required=False,
             label=ugettext_lazy('Preamble text for PDF document (all elections)')))
-    assignment_poll_vote_values = ConfigVariable(
-        name='assignment_poll_vote_values',
-        default_value='auto',
-        form_field=forms.ChoiceField(
-            widget=forms.Select(),
-            required=False,
-            label=ugettext_lazy('Election method'),
-            choices=(
-                ('auto', ugettext_lazy('Automatic assign of method')),
-                ('votes', ugettext_lazy('Always one option per candidate')),
-                ('yesnoabstain', ugettext_lazy('Always Yes-No-Abstain per candidate')))))
+    group_pdf = ConfigGroup(
+        title=ugettext_lazy('PDF'),
+        variables=(assignment_pdf_title, assignment_pdf_preamble))
 
-    return ConfigCollection(title=ugettext_noop('Elections'),
-                            url='assignment',
-                            required_permission='config.can_manage',
-                            weight=40,
-                            variables=(assignment_publish_winner_results_only,
-                                       assignment_pdf_ballot_papers_selection,
-                                       assignment_pdf_ballot_papers_number,
-                                       assignment_pdf_title,
-                                       assignment_pdf_preamble,
-                                       assignment_poll_vote_values))
+    return ConfigGroupedCollection(
+        title=ugettext_noop('Elections'),
+        url='assignment',
+        required_permission='config.can_manage',
+        weight=40,
+        groups=(group_ballot, group_pdf))

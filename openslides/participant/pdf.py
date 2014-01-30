@@ -54,10 +54,10 @@ def participants_passwords_to_pdf(pdf):
     """
     Create access data sheets for all participants as PDF
     """
-    system_wlan_ssid = config["system_wlan_ssid"] or "-"
-    system_wlan_password = config["system_wlan_password"] or "-"
-    system_wlan_encryption = config["system_wlan_encryption"] or "-"
-    system_url = config["system_url"] or "-"
+    participant_pdf_wlan_ssid = config["participant_pdf_wlan_ssid"] or "-"
+    participant_pdf_wlan_password = config["participant_pdf_wlan_password"] or "-"
+    participant_pdf_wlan_encryption = config["participant_pdf_wlan_encryption"] or "-"
+    participant_pdf_url = config["participant_pdf_url"] or "-"
     participant_pdf_welcometitle = config["participant_pdf_welcometitle"]
     participant_pdf_welcometext = config["participant_pdf_welcometext"]
     if config['participant_sort_users_by_first_name']:
@@ -66,14 +66,14 @@ def participants_passwords_to_pdf(pdf):
         sort = 'last_name'
     qrcode_size = 2 * cm
     # qrcode for system url
-    qrcode_url = QrCodeWidget(system_url)
+    qrcode_url = QrCodeWidget(participant_pdf_url)
     qrcode_url.barHeight = qrcode_size
     qrcode_url.barWidth = qrcode_size
     qrcode_url.barBorder = 0
     qrcode_url_draw = Drawing(45, 45)
     qrcode_url_draw.add(qrcode_url)
     # qrcode for wlan
-    text = "WIFI:S:%s;T:%s;P:%s;;" % (system_wlan_ssid, system_wlan_encryption, system_wlan_password)
+    text = "WIFI:S:%s;T:%s;P:%s;;" % (participant_pdf_wlan_ssid, participant_pdf_wlan_encryption, participant_pdf_wlan_password)
     qrcode_wlan = QrCodeWidget(text)
     qrcode_wlan.barHeight = qrcode_size
     qrcode_wlan.barWidth = qrcode_size
@@ -91,15 +91,15 @@ def participants_passwords_to_pdf(pdf):
                     stylesheet['h2']))
         cell.append(Paragraph("%s:" % _("WLAN name (SSID)"),
                     stylesheet['formfield']))
-        cell.append(Paragraph(system_wlan_ssid,
+        cell.append(Paragraph(participant_pdf_wlan_ssid,
                     stylesheet['formfield_value']))
         cell.append(Paragraph("%s:" % _("WLAN password"),
                     stylesheet['formfield']))
-        cell.append(Paragraph(system_wlan_password,
+        cell.append(Paragraph(participant_pdf_wlan_password,
                     stylesheet['formfield_value']))
         cell.append(Paragraph("%s:" % _("WLAN encryption"),
                     stylesheet['formfield']))
-        cell.append(Paragraph(system_wlan_encryption,
+        cell.append(Paragraph(participant_pdf_wlan_encryption,
                     stylesheet['formfield_value']))
         cell.append(Spacer(0, 0.5 * cm))
         # OpenSlides access data
@@ -116,17 +116,17 @@ def participants_passwords_to_pdf(pdf):
                      stylesheet['formfield_value']))
         cell2.append(Paragraph("URL:",
                      stylesheet['formfield']))
-        cell2.append(Paragraph(system_url,
+        cell2.append(Paragraph(participant_pdf_url,
                      stylesheet['formfield_value']))
         data.append([cell, cell2])
         # QRCodes
         cell = []
-        if system_wlan_ssid != "-" and system_wlan_encryption != "-":
+        if participant_pdf_wlan_ssid != "-" and participant_pdf_wlan_encryption != "-":
             cell.append(qrcode_wlan_draw)
             cell.append(Paragraph(_("Scan this QRCode to connect WLAN."),
                         stylesheet['qrcode_comment']))
         cell2 = []
-        if system_url != "-":
+        if participant_pdf_url != "-":
             cell2.append(qrcode_url_draw)
             cell2.append(Paragraph(_("Scan this QRCode to open URL."),
                          stylesheet['qrcode_comment']))

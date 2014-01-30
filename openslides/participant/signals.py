@@ -7,7 +7,7 @@ from django.dispatch import receiver
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
-from openslides.config.api import ConfigCollection, ConfigVariable
+from openslides.config.api import ConfigGroup, ConfigGroupedCollection, ConfigVariable
 from openslides.config.signals import config_signal
 from openslides.core.signals import post_database_setup
 
@@ -20,6 +20,20 @@ def setup_participant_config(sender, **kwargs):
     """
     Participant config variables.
     """
+    # General
+    participant_sort_users_by_first_name = ConfigVariable(
+        name='participant_sort_users_by_first_name',
+        default_value=False,
+        form_field=forms.BooleanField(
+            required=False,
+            label=ugettext_lazy('Sort participants by first name'),
+            help_text=ugettext_lazy('Disable for sorting by last name')))
+
+    group_general = ConfigGroup(
+        title=ugettext_lazy('Sorting'),
+        variables=(participant_sort_users_by_first_name,))
+
+    # PDF
     participant_pdf_welcometitle = ConfigVariable(
         name='participant_pdf_welcometitle',
         default_value=_('Welcome to OpenSlides!'),
@@ -38,21 +52,62 @@ def setup_participant_config(sender, **kwargs):
             required=False,
             label=ugettext_lazy('Help text for access data and welcome PDF')))
 
-    participant_sort_users_by_first_name = ConfigVariable(
-        name='participant_sort_users_by_first_name',
-        default_value=False,
-        form_field=forms.BooleanField(
+    participant_pdf_url = ConfigVariable(
+        name='participant_pdf_url',
+        default_value='http://example.com:8000',
+        form_field=forms.CharField(
+            widget=forms.TextInput(),
             required=False,
-            label=ugettext_lazy('Sort participants by first name'),
-            help_text=ugettext_lazy('Disable for sorting by last name')))
+            label=ugettext_lazy('System URL'),
+            help_text=ugettext_lazy('Used for QRCode in PDF of access data.')))
 
-    return ConfigCollection(title=ugettext_noop('Participant'),
-                            url='participant',
-                            required_permission='config.can_manage',
-                            weight=50,
-                            variables=(participant_pdf_welcometitle,
-                                       participant_pdf_welcometext,
-                                       participant_sort_users_by_first_name))
+    participant_pdf_wlan_ssid = ConfigVariable(
+        name='participant_pdf_wlan_ssid',
+        default_value='',
+        form_field=forms.CharField(
+            widget=forms.TextInput(),
+            required=False,
+            label=ugettext_lazy('WLAN name (SSID)'),
+            help_text=ugettext_lazy('Used for WLAN QRCode in PDF of access data.')))
+
+    participant_pdf_wlan_password = ConfigVariable(
+        name='participant_pdf_wlan_password',
+        default_value='',
+        form_field=forms.CharField(
+            widget=forms.TextInput(),
+            required=False,
+            label=ugettext_lazy('WLAN password'),
+            help_text=ugettext_lazy('Used for WLAN QRCode in PDF of access data.')))
+
+    participant_pdf_wlan_encryption = ConfigVariable(
+        name='participant_pdf_wlan_encryption',
+        default_value='',
+        form_field=forms.ChoiceField(
+            widget=forms.Select(),
+            required=False,
+            label=ugettext_lazy('WLAN encryption'),
+            help_text=ugettext_lazy('Used for WLAN QRCode in PDF of access data.'),
+            choices=(
+                ('', '---------'),
+                ('WEP', 'WEP'),
+                ('WPA', 'WPA/WPA2'),
+                ('nopass', ugettext_lazy('No encryption')))))
+
+    group_pdf = ConfigGroup(
+        title=ugettext_lazy('PDF'),
+        variables=(participant_pdf_welcometitle,
+                   participant_pdf_welcometext,
+                   participant_pdf_url,
+                   participant_pdf_wlan_ssid,
+                   participant_pdf_wlan_password,
+                   participant_pdf_wlan_encryption))
+
+    return ConfigGroupedCollection(
+        title=ugettext_noop('Participant'),
+        url='participant',
+        required_permission='config.can_manage',
+        weight=50,
+        groups=(group_general, group_pdf))
 
 
 @receiver(post_database_setup, dispatch_uid='participant_create_builtin_groups_and_admin')
