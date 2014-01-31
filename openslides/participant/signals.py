@@ -23,6 +23,7 @@ def setup_participant_config(sender, **kwargs):
     participant_pdf_welcometitle = ConfigVariable(
         name='participant_pdf_welcometitle',
         default_value=_('Welcome to OpenSlides!'),
+        translatable=True,
         form_field=forms.CharField(
             widget=forms.Textarea(),
             required=False,
@@ -31,6 +32,7 @@ def setup_participant_config(sender, **kwargs):
     participant_pdf_welcometext = ConfigVariable(
         name='participant_pdf_welcometext',
         default_value=_('[Place for your welcome and help text.]'),
+        translatable=True,
         form_field=forms.CharField(
             widget=forms.Textarea(),
             required=False,

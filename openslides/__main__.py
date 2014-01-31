@@ -21,6 +21,7 @@ from openslides.utils.main import (
     get_port,
     setup_django_settings_module,
     start_browser,
+    translate_customizable_strings,
     write_settings)
 
 
@@ -87,7 +88,7 @@ def parse_args():
         'start',
         help='Setup settings and database, start tornado webserver, launch the '
              'default web browser and open the webinterface.')
-    add_general_arguments(subcommand_start, ('settings', 'user_data_path', 'address', 'port'))
+    add_general_arguments(subcommand_start, ('settings', 'user_data_path', 'language', 'address', 'port'))
     subcommand_start.add_argument(
         '--no-browser',
         action='store_true',
@@ -113,7 +114,7 @@ def parse_args():
     subcommand_syncdb = subparsers.add_parser(
         'syncdb',
         help='Create or update database tables.')
-    add_general_arguments(subcommand_syncdb, ('settings', 'user_data_path'))
+    add_general_arguments(subcommand_syncdb, ('settings', 'user_data_path', 'language'))
     subcommand_syncdb.set_defaults(callback=syncdb)
 
     # Subcommand createsuperuser
@@ -191,6 +192,11 @@ def add_general_arguments(subcommand, arguments):
                   'when a new settings file is created. The given path is only '
                   'written into the new settings file. Default according to the '
                   'OpenSlides is at the moment %s' % get_default_user_data_path(openslides_type)))
+    general_arguments['language'] = (
+        ('-l', '--language'),
+        dict(help='Language code. All customizable strings will be translated '
+                  'during database setup. See https://www.transifex.com/projects/p/openslides/ '
+                  'for supported languages.'))
     general_arguments['address'] = (
         ('-a', '--address',),
         dict(default='0.0.0.0', help='IP address to listen on. Default is %(default)s.'))
@@ -250,6 +256,8 @@ def syncdb(settings, args):
             print('Clearing old search index...')
             execute_from_command_line(["", "clear_index", "--noinput"])
     execute_from_command_line(["", "syncdb", "--noinput"])
+    if args.language:
+        translate_customizable_strings(args.language)
     return 0
 
 

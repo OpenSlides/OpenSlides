@@ -43,6 +43,7 @@ def setup_assignment_config(sender, **kwargs):
     assignment_pdf_title = ConfigVariable(
         name='assignment_pdf_title',
         default_value=_('Elections'),
+        translatable=True,
         form_field=forms.CharField(
             widget=forms.TextInput(),
             required=False,
