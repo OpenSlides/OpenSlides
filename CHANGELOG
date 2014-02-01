@@ -20,6 +20,7 @@ Other:
 - Changed api for plugins. Used entry points to detect them automaticly.
 - Renamed config api classes.
 - Renamed some classes of the poll api.
+- Inserted command line option to translate config strings during database setup.
 - Inserted api for the personal info widget.
 - Changed api for main menu entries.
 - Enhanced http error pages.

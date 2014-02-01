@@ -53,8 +53,8 @@ class ConfigHandler(object):
 
     def setup_cache(self):
         """
-        Loads all config variables from the database and by sending a
-        signal to get the default into the cache.
+        Loads all config variables from the database by sending a signal to
+        save the default to the cache.
         """
         self._cache = {}
         for receiver, config_collection in config_signal.send(sender='setup_cache'):
@@ -73,6 +73,15 @@ class ConfigHandler(object):
         else:
             return True
 
+    def get_all_translatable(self):
+        """
+        Generator to get all config variables as strings when their values are
+        intended to be translated.
+        """
+        for receiver, config_collection in config_signal.send(sender='get_all_translatable'):
+            for config_variable in config_collection.variables:
+                if config_variable.translatable:
+                    yield config_variable.name
 
 config = ConfigHandler()
 """
@@ -162,10 +171,13 @@ class ConfigVariable(object):
     arguments 'name' and 'default_value' are required. The keyword
     argument 'form_field' has to be set if the variable should appear
     on the ConfigView. The argument 'on_change' can get a callback
-    which is called every time, the variable is changed.
+    which is called every time, the variable is changed. If the argument
+    'translatable' is set, OpenSlides is able to translate the value during
+    setup of the database if the admin uses the respective command line option.
     """
-    def __init__(self, name, default_value, form_field=None, on_change=None):
+    def __init__(self, name, default_value, form_field=None, on_change=None, translatable=False):
         self.name = name
         self.default_value = default_value
         self.form_field = form_field
         self.on_change = on_change
+        self.translatable = translatable

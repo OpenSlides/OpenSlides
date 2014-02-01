@@ -12,6 +12,7 @@ from openslides.__main__ import (
     runserver,
     start,
     syncdb)
+from openslides.config.api import config
 from openslides.utils.main import (
     get_browser_url,
     get_database_path_from_settings,
@@ -22,6 +23,7 @@ from openslides.utils.main import (
     PortIsBlockedError,
     setup_django_settings_module,
     start_browser,
+    translate_customizable_strings,
     UNIX_VERSION,
     WINDOWS_PORTABLE_VERSION)
 from openslides.utils.test import TestCase
@@ -91,6 +93,11 @@ class TestFunctions(TestCase):
     def test_get_database_path_from_settings_memory(self):
         self.assertEqual(get_database_path_from_settings(), ':memory:')
 
+    def test_translate_customizable_strings(self):
+        self.assertEqual(config['event_description'], 'Presentation and assembly system')
+        translate_customizable_strings('de')
+        self.assertEqual(config['event_description'], u'Präsentations- und Versammlungssystem')
+
 
 class TestOtherFunctions(TestCase):
     """
@@ -127,6 +134,7 @@ class TestOtherFunctions(TestCase):
     def test_syncdb(self, mock_execute_from_command_line, mock_os, mock_exists):
         mock_exists.return_value = True
         mock_args = MagicMock()
+        mock_args.language = None
         syncdb(settings=None, args=mock_args)
         self.assertTrue(mock_execute_from_command_line.called)
 

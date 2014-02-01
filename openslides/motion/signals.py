@@ -40,6 +40,7 @@ def setup_motion_config(sender, **kwargs):
     motion_preamble = ConfigVariable(
         name='motion_preamble',
         default_value=_('The assembly may decide,'),
+        translatable=True,
         form_field=forms.CharField(
             widget=forms.TextInput(),
             required=False,
@@ -66,6 +67,7 @@ def setup_motion_config(sender, **kwargs):
     motion_pdf_title = ConfigVariable(
         name='motion_pdf_title',
         default_value=_('Motions'),
+        translatable=True,
         form_field=forms.CharField(
             widget=forms.TextInput(),
             required=False,

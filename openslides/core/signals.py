@@ -29,6 +29,7 @@ def setup_general_config(sender, **kwargs):
     event_description = ConfigVariable(
         name='event_description',
         default_value=_('Presentation and assembly system'),
+        translatable=True,
         form_field=forms.CharField(
             widget=forms.TextInput(),
             label=ugettext_lazy('Short description of event'),
@@ -104,6 +105,7 @@ def setup_general_config(sender, **kwargs):
     welcome_title = ConfigVariable(
         name='welcome_title',
         default_value=_('Welcome to OpenSlides'),
+        translatable=True,
         form_field=forms.CharField(
             widget=forms.TextInput(),
             label=ugettext_lazy('Title'),
@@ -113,6 +115,7 @@ def setup_general_config(sender, **kwargs):
     welcome_text = ConfigVariable(
         name='welcome_text',
         default_value=_('[Place for your welcome text.]'),
+        translatable=True,
         form_field=forms.CharField(
             widget=forms.Textarea(),
             label=ugettext_lazy('Welcome text'),
