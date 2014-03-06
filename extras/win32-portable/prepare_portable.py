@@ -72,9 +72,6 @@ SITE_PACKAGES = {
             "sgmlop.pyd",
         ],
     },
-    "pillow": {
-        "copy": ["PIL"],
-    },
     "sockjs-tornado": {
         "copy": ["sockjs"],
     },
