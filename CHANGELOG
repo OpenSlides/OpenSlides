@@ -8,6 +8,8 @@ Version 1.5.1 (unreleased)
 ==========================
 [https://github.com/OpenSlides/OpenSlides/issues?milestone=15]
 
+Agenda:
+- Fixed permission error in list of speakers widget.
 Participant:
 - Added permission to see participants also to the manager group.
 Files:

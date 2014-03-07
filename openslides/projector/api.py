@@ -250,6 +250,11 @@ def get_all_widgets(request, session=False):
     session_widgets = request.session.get('widgets', {})
     widgets = SortedDict()
     for widget in all_module_widgets:
+        if isinstance(widget.permission_required, tuple):
+            for perm in widget.permission_required:
+                if request.user.has_perm(perm):
+                    widget.permission_required = None
+                    break
         if (widget.permission_required is None or
                 request.user.has_perm(widget.permission_required)):
             if not session or session_widgets.get(widget.get_name(), True):

@@ -669,6 +669,6 @@ def get_widgets(request):
             name='append_to_list_of_speakers',
             display_name=_('List of speakers'),
             template='agenda/speaker_widget.html',
-            permission_required='agenda.can_be_speaker',
+            permission_required=('agenda.can_be_speaker', 'agenda.can_manage_agenda'),  # Short hack only for OpenSlides >=1.5.1, <1.6.0
             default_column=1,
             default_weight=30)]
