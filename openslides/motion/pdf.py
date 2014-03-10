@@ -164,7 +164,7 @@ def convert_html_to_reportlab(pdf, text):
             else:
                 element.name = "para"
                 bullet_tag = soup.new_tag("bullet")
-                bullet_tag.string = "&bull;"
+                bullet_tag.string = u"•"
                 element.insert(0, bullet_tag)
         # ... and replace ol list elements with <para><bullet><seq id="%id"></seq>.</bullet>...</para>
         if element.parent.name == "ol":
