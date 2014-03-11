@@ -11,8 +11,9 @@
            rel="tooltip" data-original-title="{% trans 'Show' %}">
             <i class="icon-facetime-video {% if agenda_is_active %}icon-white{% endif %}"></i>
         </a>&nbsp;
-        <a href="{% url 'projector_preview' 'agenda' %}" title="{% trans 'Preview' %}" class="icon preview right">
-            <span></span>
+        <a href="{% url 'projector_preview' 'agenda' %}"
+            rel="tooltip" data-original-title="{% trans 'Preview' %}" class="btn btn-mini right">
+            <i class="icon-search"></i>
         </a>
         {% trans "Agenda" %}
     </li>
