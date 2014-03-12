@@ -99,6 +99,9 @@ SITE_PACKAGES = {
     "tornado": {
         "copy": ["tornado"],
     },
+    "natsort": {
+        "copy": ["natsort"],
+    },
     "whoosh": {
         "copy": ["whoosh"],
     },

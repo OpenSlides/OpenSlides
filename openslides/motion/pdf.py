@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
+from operator import attrgetter
 import os
 import random
 
 from bs4 import BeautifulSoup
 from django.conf import settings
 from django.utils.translation import ugettext as _
+from natsort import natsorted
 from reportlab.lib import colors
 from reportlab.lib.units import cm
 from reportlab.platypus import PageBreak, Paragraph, Spacer, Table, TableStyle
@@ -25,6 +27,7 @@ def motions_to_pdf(pdf):
     Create a PDF with all motions.
     """
     motions = Motion.objects.all()
+    motions = natsorted(motions, key=attrgetter('identifier'))
     all_motion_cover(pdf, motions)
     for motion in motions:
         pdf.append(PageBreak())
@@ -254,7 +257,7 @@ def all_motion_cover(pdf, motions):
             identifier = ""
             if motion.identifier:
                 identifier = "%s " % motion.identifier
-            pdf.append(Paragraph("%s%s" % (identifier, motion.title), stylesheet['Heading3']))
+            pdf.append(Paragraph("%s &nbsp; %s" % (identifier, motion.title), stylesheet['Heading3']))
 
 
 def motion_poll_to_pdf(pdf, poll):
