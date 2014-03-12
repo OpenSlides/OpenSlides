@@ -4,6 +4,7 @@ from datetime import datetime
 
 from django.conf import settings
 from django.contrib.sessions.models import Session
+from django.utils.html import urlize
 from sockjs.tornado import SockJSConnection
 
 
@@ -19,6 +20,9 @@ class ChatboxSocketHandler(SockJSConnection):
         """
         from openslides.participant.models import User
 
+        # TODO: Use the django way to get the session to be compatible with
+        # other auth-backends; see comment in pull request #1220:
+        # https://github.com/OpenSlides/OpenSlides/pull/1220#discussion_r11565705
         session_key = info.get_cookie(settings.SESSION_COOKIE_NAME).value
         session = Session.objects.get(session_key=session_key)
         try:
@@ -26,8 +30,7 @@ class ChatboxSocketHandler(SockJSConnection):
         except User.DoesNotExist:
             return_value = False
         else:
-            # TODO: Use correct permission here
-            if self.user.has_perm('projector.can_manage_projector'):
+            if self.user.has_perm('core.can_use_chat'):
                 self.clients.add(self)
                 return_value = True
             else:
@@ -41,16 +44,16 @@ class ChatboxSocketHandler(SockJSConnection):
         Also appends the message to the cache and removes old messages if there
         are more than 100.
         """
-        # TODO: Use correct permission here
-        if self.user.has_perm('projector.can_manage_projector') and message:
+        if self.user.has_perm('core.can_use_chat') and message:
             message_object = ChatMessage(person=self.user, message=message)
             chat_messages.append(message_object)
             if len(chat_messages) > 100:
                 chat_messages.pop(0)
             self.broadcast(
                 self.clients,
-                '%s %s' % (message_object.html_time_and_person(),
-                           message_object.message))
+                '%s %s %s' % (message_object.html_time(),
+                              message_object.html_person(),
+                              urlize(message_object.message)))
 
     def on_close(self):
         """
@@ -73,14 +76,19 @@ class ChatMessage(object):
         self.color = color or (0, 0, 0)
         self.time = datetime.now()
 
-    def html_time_and_person(self):
+    def html_time(self):
         """
-        Returns a styled prefix for each message using span and small html tags.
+        Returns the message time in html style.
         """
-        return '<span style="color:%(color)s;">%(person)s <small class="grey">%(time)s</small>:</span>' % {
+        return '<small class="grey">%s</small>' % self.time.strftime('%H:%M')
+
+    def html_person(self):
+        """
+        Returns the message sender name in html style.
+        """
+        return "<span style='color:%(color)s;'>%(person)s:</span>" % {
             'color': 'rgb(%d,%d,%d)' % self.color,
-            'person': self.person.clean_name,
-            'time': self.time.strftime('%H:%M')}
+            'person': self.person.clean_name}
 
 
 chat_messages = []
@@ -92,8 +100,9 @@ Cache with all messages during livetime of the server.
 def chat_messages_context_processor(request):
     """
     Adds all chat messages to the request context as template context processor.
+    Returns None if the request user has no permission to use the chat.
     """
-    if True:  # TODO: Add permission check here
+    if request.user.has_perm('core.can_use_chat'):
         value = chat_messages
     else:
         value = None

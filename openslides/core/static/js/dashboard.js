@@ -7,7 +7,7 @@
 function saveOrder() {
     $(".column").each(function(index, value){
         var colid = value.id;
-        var cookieName = "cookie-" + colid;
+        var cookieName = "openslides-dashboard-" + colid;
         // Get the order for this column.
         var order = $('#' + colid).sortable("toArray");
         var cookie_content = [];
@@ -24,7 +24,7 @@ function saveOrder() {
             }
             cookie_content[i] = widget_id + '/' + is_collabsed + '/' + is_pinned;
         }
-        $.cookie(cookieName, cookie_content, { path: "/", expiry: new Date(2012, 1, 1)});
+        $.cookie(cookieName, cookie_content);
     });
 }
 
@@ -32,9 +32,9 @@ function saveOrder() {
 function restoreOrder() {
     $(".column").each(function(index, value) {
         var colid = value.id;
-        var cookieName = "cookie-" + colid;
+        var cookieName = "openslides-dashboard-" + colid;
         var cookie = $.cookie(cookieName);
-        if ( cookie === null ) { return; }
+        if ( cookie === undefined ) { return; }
         var widgets = cookie.split(",");
         for (var i = 0, n = widgets.length; i < n; i++ ) {
             var widget_information = widgets[i].split('/');

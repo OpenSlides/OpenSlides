@@ -124,58 +124,63 @@ def create_builtin_groups_and_admin(sender, **kwargs):
         # Do completely nothing if there are already some of our groups in the database.
         return
 
-    # Anonymous and Registered
+    # Anonymous (pk 1) and Registered (pk 2)
     ct_core = ContentType.objects.get(app_label='core', model='customslide')
-    perm_1 = Permission.objects.get(content_type=ct_core, codename='can_see_projector')
-    perm_2 = Permission.objects.get(content_type=ct_core, codename='can_see_dashboard')
+    perm_11 = Permission.objects.get(content_type=ct_core, codename='can_see_projector')
+    perm_12 = Permission.objects.get(content_type=ct_core, codename='can_see_dashboard')
 
     ct_agenda = ContentType.objects.get(app_label='agenda', model='item')
     ct_speaker = ContentType.objects.get(app_label='agenda', model='speaker')
-    perm_3 = Permission.objects.get(content_type=ct_agenda, codename='can_see_agenda')
-    perm_3a = Permission.objects.get(content_type=ct_agenda, codename='can_see_orga_items')
+    perm_13 = Permission.objects.get(content_type=ct_agenda, codename='can_see_agenda')
+    perm_14 = Permission.objects.get(content_type=ct_agenda, codename='can_see_orga_items')
     can_speak = Permission.objects.get(content_type=ct_speaker, codename='can_be_speaker')
 
     ct_motion = ContentType.objects.get(app_label='motion', model='motion')
-    perm_4 = Permission.objects.get(content_type=ct_motion, codename='can_see_motion')
+    perm_15 = Permission.objects.get(content_type=ct_motion, codename='can_see_motion')
 
     ct_assignment = ContentType.objects.get(app_label='assignment', model='assignment')
-    perm_5 = Permission.objects.get(content_type=ct_assignment, codename='can_see_assignment')
+    perm_16 = Permission.objects.get(content_type=ct_assignment, codename='can_see_assignment')
 
     ct_participant = ContentType.objects.get(app_label='participant', model='user')
-    perm_6 = Permission.objects.get(content_type=ct_participant, codename='can_see_participant')
+    perm_17 = Permission.objects.get(content_type=ct_participant, codename='can_see_participant')
 
     ct_mediafile = ContentType.objects.get(app_label='mediafile', model='mediafile')
-    perm_6a = Permission.objects.get(content_type=ct_mediafile, codename='can_see')
+    perm_18 = Permission.objects.get(content_type=ct_mediafile, codename='can_see')
 
     group_anonymous = Group.objects.create(name=ugettext_noop('Anonymous'), pk=1)
-    group_anonymous.permissions.add(perm_1, perm_2, perm_3, perm_3a, perm_4, perm_5, perm_6, perm_6a)
+    group_anonymous.permissions.add(perm_11, perm_12, perm_13, perm_14, perm_15, perm_16, perm_17, perm_18)
     group_registered = Group.objects.create(name=ugettext_noop('Registered'), pk=2)
-    group_registered.permissions.add(perm_1, perm_2, perm_3, perm_3a, perm_4, perm_5, perm_6, perm_6a, can_speak)
+    group_registered.permissions.add(perm_11, perm_12, perm_13, perm_14, perm_15, perm_16, perm_17, perm_18, can_speak)
 
-    # Delegates
-    perm_7 = Permission.objects.get(content_type=ct_motion, codename='can_create_motion')
-    perm_8 = Permission.objects.get(content_type=ct_motion, codename='can_support_motion')
-    perm_9 = Permission.objects.get(content_type=ct_assignment, codename='can_nominate_other')
-    perm_10 = Permission.objects.get(content_type=ct_assignment, codename='can_nominate_self')
-    perm_10a = Permission.objects.get(content_type=ct_mediafile, codename='can_upload')
+    # Delegates (pk 3)
+    perm_31 = Permission.objects.get(content_type=ct_motion, codename='can_create_motion')
+    perm_32 = Permission.objects.get(content_type=ct_motion, codename='can_support_motion')
+    perm_33 = Permission.objects.get(content_type=ct_assignment, codename='can_nominate_other')
+    perm_34 = Permission.objects.get(content_type=ct_assignment, codename='can_nominate_self')
+    perm_35 = Permission.objects.get(content_type=ct_mediafile, codename='can_upload')
 
     group_delegates = Group.objects.create(name=ugettext_noop('Delegates'), pk=3)
-    group_delegates.permissions.add(perm_7, perm_8, perm_9, perm_10, perm_10a)
+    group_delegates.permissions.add(perm_31, perm_32, perm_33, perm_34, perm_35)
 
-    # Staff
-    perm_11 = Permission.objects.get(content_type=ct_agenda, codename='can_manage_agenda')
-    perm_12 = Permission.objects.get(content_type=ct_motion, codename='can_manage_motion')
-    perm_13 = Permission.objects.get(content_type=ct_assignment, codename='can_manage_assignment')
-    perm_14 = Permission.objects.get(content_type=ct_participant, codename='can_manage_participant')
-    perm_15 = Permission.objects.get(content_type=ct_core, codename='can_manage_projector')
-    perm_15a = Permission.objects.get(content_type=ct_mediafile, codename='can_manage')
+    # Staff (pk 4)
+    perm_41 = Permission.objects.get(content_type=ct_agenda, codename='can_manage_agenda')
+    perm_42 = Permission.objects.get(content_type=ct_motion, codename='can_manage_motion')
+    perm_43 = Permission.objects.get(content_type=ct_assignment, codename='can_manage_assignment')
+    perm_44 = Permission.objects.get(content_type=ct_participant, codename='can_manage_participant')
+    perm_45 = Permission.objects.get(content_type=ct_core, codename='can_manage_projector')
+    perm_46 = Permission.objects.get(content_type=ct_core, codename='can_use_chat')
+    perm_47 = Permission.objects.get(content_type=ct_mediafile, codename='can_manage')
 
     ct_config = ContentType.objects.get(app_label='config', model='configstore')
-    perm_16 = Permission.objects.get(content_type=ct_config, codename='can_manage')
+    perm_48 = Permission.objects.get(content_type=ct_config, codename='can_manage')
 
     group_staff = Group.objects.create(name=ugettext_noop('Staff'), pk=4)
-    group_staff.permissions.add(perm_7, perm_9, perm_10, perm_10a, perm_11, perm_12, perm_13, perm_14, perm_15, perm_15a, perm_16)
-    group_staff.permissions.add(perm_6)  # TODO: Remove this redundancy after cleanup of the permission system
+    # add delegate permissions (without can_support_motion)
+    group_staff.permissions.add(perm_31, perm_33, perm_34, perm_35)
+    # add staff permissions
+    group_staff.permissions.add(perm_41, perm_42, perm_43, perm_44, perm_45, perm_46, perm_47, perm_48)
+    # add can_see_participant permission
+    group_staff.permissions.add(perm_17)  # TODO: Remove this redundancy after cleanup of the permission system
 
     # Admin user
     create_or_reset_admin_user()

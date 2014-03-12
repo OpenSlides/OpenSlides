@@ -12,7 +12,6 @@
 
 {% block javascript %}
     <script type="text/javascript" src="{% static 'js/agenda.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/jquery/jquery.cookie.js' %}"></script>
     {% if perms.agenda.can_manage_agenda %}
         <script type="text/javascript" src="{% static 'js/jquery/jquery-ui.custom.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/jquery/jquery.once.js' %}"></script>
