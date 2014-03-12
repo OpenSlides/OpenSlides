@@ -19,6 +19,7 @@ Other:
 - Changed widget api. Used new metaclass.
 - Changed api for plugins. Used entry points to detect them automaticly.
 - Renamed config api classes.
+- Regrouped config collections and pages.
 - Renamed some classes of the poll api.
 - Inserted command line option to translate config strings during database setup.
 - Inserted api for the personal info widget.
