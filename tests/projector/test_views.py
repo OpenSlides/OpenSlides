@@ -2,7 +2,7 @@
 
 from django.contrib.auth.models import AnonymousUser
 from django.test.client import Client, RequestFactory
-from mock import call, MagicMock, patch
+from mock import MagicMock, patch
 
 from openslides.config.api import config
 from openslides.projector import views
@@ -54,9 +54,8 @@ class ActivateViewTest(TestCase):
 
         mock_set_active_slide.assert_called_with('some_callback',
                                                  **{'some_key': 'some_value'})
-        mock_config.get_default.assert_has_calls([call('projector_scroll'),
-                                                  call('projector_scale')])
-        self.assertEqual(mock_config.__setitem__.call_count, 2)
+        mock_config.get_default.assert_has_calls([])
+        self.assertEqual(mock_config.__setitem__.call_count, 0)
         self.assertTrue(mock_call_on_projector.called)
 
 

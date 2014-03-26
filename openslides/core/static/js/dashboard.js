@@ -73,13 +73,22 @@ $(function() {
             url: link.attr('href'),
             dataType: 'json',
             success: function(data) {
+                // change scale level number
                 $('#scale_level').html(data['scale_level']);
+                if ( data['scale_level'] != 0 )
+                    $('#scale_level').addClass('notNull');
+                else
+                    $('#scale_level').removeClass('notNull');
+                // change scroll level number
                 $('#scroll_level').html(data['scroll_level']);
-                if ( data['scroll_level'] === 0 )
-                    $('#scroll_up_button').addClass('disabled');
-                else {
+                if ( data['scroll_level'] != 0 ) {
+                    $('#scroll_level').addClass('notNull');
                     if ( $('#scroll_up_button').hasClass('disabled') )
                         $('#scroll_up_button').removeClass('disabled');
+                }
+                else {
+                    $('#scroll_level').removeClass('notNull');
+                    $('#scroll_up_button').addClass('disabled');
                 }
             }
         });
