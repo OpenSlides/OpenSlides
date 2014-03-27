@@ -52,7 +52,7 @@ def html_strong(string):
     """
     Returns the text wrapped in an HTML-Strong element.
     """
-    return u"<strong>%s</strong>" % unicode(string, 'utf-8')
+    return u"<strong>%s</strong>" % unicode(str(string), 'utf-8')
 
 
 def htmldiff(text1, text2):
