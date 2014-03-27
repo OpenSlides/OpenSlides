@@ -26,6 +26,10 @@ urlpatterns = patterns(
         views.AssignmentDeleteView.as_view(),
         name='assignment_delete'),
 
+    url(r'^multi_delete/$',
+        views.AssignmentMultipleDeleteView.as_view(),
+        name='assignment_multi_delete'),
+
     url(r'^(?P<pk>\d+)/setstatus/(?P<status>[a-z]{3})/$',
         views.AssignmentSetStatusView.as_view(),
         name='assignment_set_status'),
