@@ -22,7 +22,7 @@ from openslides.utils.person import get_person
 from openslides.utils.utils import html_strong
 from openslides.utils.views import (CreateView, DeleteView, DetailView,
                                     ListView, PDFView, PermissionMixin,
-                                    QuestionView, RedirectView,
+                                    QuestionView, RedirectView, MultipleDeleteView,
                                     SingleObjectMixin, UpdateView, View)
 
 from .forms import AssignmentForm, AssignmentRunForm
@@ -96,6 +96,37 @@ class AssignmentDeleteView(DeleteView):
     permission_required = 'assignment.can_manage_assignment'
     model = Assignment
     success_url_name = 'assignment_list'
+
+
+class AssignmentMultipleDeleteView(MultipleDeleteView):
+    permission_required = 'assignment.can_manage_assignment'
+    question_url_name = 'assignment_list'
+    success_url_name = 'assignment_list'
+    url_name_args = []
+    model = Assignment
+
+    def get(self, request, *args, **kwargs):
+        self.objects = self.get_objects(self.request.GET.getlist('assignments') or request.session['assignments'])
+        return super(AssignmentMultipleDeleteView, self).get(request, *args, **kwargs)
+
+    def pre_redirect(self, request, *args, **kwargs):
+        assignments = self.request.GET.getlist('assignments')
+        request.session['assignments'] = assignments
+        super(AssignmentMultipleDeleteView, self).pre_redirect(request, *args, **kwargs)
+
+    def get_question_message(self):
+        """
+        Returns the question for the delete dialog.
+        """
+        assignments = [str(object) for object in self.objects]
+        assign_names = ", ".join(assignments[:-1]) + (' ' + _('and') + ' ' if assignments[:-1] else '') + ''.join(assignments[-1:])
+        return _('Do you really want to delete %s ?') % html_strong(assign_names)
+
+    def get_final_message(self):
+        """
+        Prints the success message to the user.
+        """
+        return _('Assignment(s) successfully deleted.')
 
 
 class AssignmentSetStatusView(SingleObjectMixin, RedirectView):
