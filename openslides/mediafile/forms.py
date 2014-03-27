@@ -29,7 +29,7 @@ class MediafileUpdateForm(CssClassMixin, ModelForm):
         """
         Method to save the form. Here the overwrite is to delete old files.
         """
-        if not self.instance.pk is None:
+        if self.instance.pk is not None:
             old_file = Mediafile.objects.get(pk=self.instance.pk).mediafile
             if not old_file == self.instance.mediafile:
                 old_file.delete()

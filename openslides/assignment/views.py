@@ -221,7 +221,7 @@ class PollUpdateView(PollFormView):
 
     def get_success_url(self):
         return_url = ''
-        if not 'apply' in self.request.POST:
+        if 'apply' not in self.request.POST:
             return_url = reverse('assignment_detail', args=[self.poll.assignment.id])
         return return_url
 
