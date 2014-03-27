@@ -8,16 +8,24 @@ Version 1.5.1 (unreleased)
 ==========================
 [https://github.com/OpenSlides/OpenSlides/issues?milestone=15]
 
+Projector:
+- Fixed path and config help text for logo on the projector.
 Agenda:
-- Fixed permission error in list of speakers widget.
+- Fixed permission error in the list of speakers widget.
+- Fixed Item instance method is_active_slide().
+Motion:
+- Fixed sorting of motions concerning the identifier. Used natsort and
+  DataTables Natural Sort Plugin.
 Participant:
-- Added permission to see participants also to the manager group.
+- Added permission to see participants to the manager group.
+- Fixed user status view for use without Javascript.
 Files:
-- Fixed error when a file was removed from filesystem.
+- Fixed error when an uploaded file was removed from filesystem.
 Other:
-- Used unicode font for circle in ballot pdf. Removed pillow dependency package.
+- Set minimum Python version to 2.6.9. Fixed setup file for use with Python 2.6.
+- Used unicode font for circle in ballot pdf. Removed Pillow dependency package.
 - Fixed http status code when requesting a non-existing static page using
-  Tordado web server.
+  Tornado web server.
 - Fixed error in main script when using other database engine.
 
 
