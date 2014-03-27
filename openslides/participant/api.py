@@ -1,12 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import csv
 from random import choice
-
-from django.db import transaction
-from django.utils.translation import ugettext as _
-
-from openslides.utils import csv_ext
 
 from .models import Group, User
 
@@ -45,64 +39,6 @@ def gen_username(first_name, last_name):
         test_name = "%s %d" % (base_name, counter)
         if not User.objects.filter(username=test_name).exists():
             return test_name
-
-
-def import_users(csv_file):
-    error_messages = []
-    count_success = 0
-    try:
-        # check for valid encoding (will raise UnicodeDecodeError if not)
-        csv_file.read().decode('utf-8')
-        csv_file.seek(0)
-
-        with transaction.commit_on_success():
-            dialect = csv.Sniffer().sniff(csv_file.readline())
-            dialect = csv_ext.patchup(dialect)
-            csv_file.seek(0)
-
-            for (line_no, line) in enumerate(csv.reader(csv_file,
-                                                        dialect=dialect)):
-                if line_no:
-                    try:
-                        (title, first_name, last_name, gender, email, groups,
-                         structure_level, committee, about_me, comment, is_active) = line[:11]
-                    except ValueError:
-                        error_messages.append(_('Ignoring malformed line %d in import file.') % (line_no + 1))
-                        continue
-                    user = User()
-                    user.title = title
-                    user.last_name = last_name
-                    user.first_name = first_name
-                    user.username = gen_username(first_name, last_name)
-                    user.gender = gender
-                    user.email = email
-                    user.structure_level = structure_level
-                    user.committee = committee
-                    user.about_me = about_me
-                    user.comment = comment
-                    if is_active == '1':
-                        user.is_active = True
-                    else:
-                        user.is_active = False
-                    user.default_password = gen_password()
-                    user.save()
-                    for groupid in groups:
-                        try:
-                            if groupid != ",":
-                                Group.objects.get(pk=groupid).user_set.add(user)
-                        except ValueError:
-                            error_messages.append(_('Ignoring malformed group id in line %d.') % (line_no + 1))
-                            continue
-                        except Group.DoesNotExist:
-                            error_messages.append(_('Group id %(id)s does not exists (line %(line)d).') % {'id': groupid, 'line': line_no + 1})
-                            continue
-                    user.reset_password()
-                    count_success += 1
-    except csv.Error:
-        error_messages.append(_('Import aborted because of severe errors in the input file.'))
-    except UnicodeDecodeError:
-        error_messages.append(_('Import file has wrong character encoding, only UTF-8 is supported!'))
-    return (count_success, error_messages)
 
 
 def get_registered_group():

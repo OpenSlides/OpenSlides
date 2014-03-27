@@ -50,9 +50,9 @@ urlpatterns = patterns(
         {'action': 'toggle'},
         name='user_status_toggle'),
 
-    url(r'^import/$',
-        views.UserImportView.as_view(),
-        name='user_import'),
+    url(r'^csv_import/$',
+        views.UserCSVImportView.as_view(),
+        name='user_csv_import'),
 
     # Group
     url(r'^group/$',

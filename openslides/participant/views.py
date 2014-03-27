@@ -13,13 +13,14 @@ from django.utils.translation import activate, ugettext_lazy
 from openslides.config.api import config
 from openslides.utils.utils import (delete_default_permissions, html_strong,
                                     template)
-from openslides.utils.views import (CreateView, DeleteView, DetailView,
+from openslides.utils.views import (CreateView, CSVImportView, DeleteView, DetailView,
                                     FormView, ListView, PDFView,
                                     PermissionMixin, QuestionView,
                                     RedirectView, SingleObjectMixin, UpdateView)
 
-from .api import gen_password, gen_username, import_users
-from .forms import (GroupForm, UserCreateForm, UserMultipleCreateForm, UserImportForm,
+from .api import gen_password, gen_username
+from .csv_import import import_users
+from .forms import (GroupForm, UserCreateForm, UserMultipleCreateForm,
                     UsersettingsForm, UserUpdateForm)
 from .models import get_protected_perm, Group, User
 from .pdf import participants_to_pdf, participants_passwords_to_pdf
@@ -237,25 +238,14 @@ class ParticipantsPasswordsPDF(PDFView):
         participants_passwords_to_pdf(pdf)
 
 
-class UserImportView(FormView):
+class UserCSVImportView(CSVImportView):
     """
-    Import Users via csv.
+    Import users via CSV.
     """
+    import_function = staticmethod(import_users)
     permission_required = 'participant.can_manage_participant'
-    template_name = 'participant/import.html'
-    form_class = UserImportForm
     success_url_name = 'user_overview'
-
-    def form_valid(self, form):
-        # check for valid encoding (will raise UnicodeDecodeError if not)
-        success, error_messages = import_users(self.request.FILES['csvfile'])
-        for message in error_messages:
-            messages.error(self.request, message)
-        if success:
-            messages.success(
-                self.request,
-                _('%d new participants were successfully imported.') % success)
-        return super(UserImportView, self).form_valid(form)
+    template_name = 'participant/user_form_csv_import.html'
 
 
 class ResetPasswordView(SingleObjectMixin, QuestionView):

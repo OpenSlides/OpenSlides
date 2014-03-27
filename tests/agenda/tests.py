@@ -2,6 +2,7 @@
 
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test.client import Client
 from mock import patch
 
@@ -274,6 +275,18 @@ class ViewTest(TestCase):
         self.assertEqual(response.status_code, 403)
         response = client.get('/agenda/2/')
         self.assertEqual(response.status_code, 200)
+
+    def test_csv_import(self):
+        item_number = Item.objects.all().count()
+        new_csv_file = SimpleUploadedFile(
+            name='new_csv_file.csv',
+            content='Title,text,duration\nTitle thei5KieK6ohphuilahs,Text Chai1ioWae3ASh0Eloh1,42\n,Bad line\n')
+        self.adminClient.post('/agenda/csv_import/', {'csvfile': new_csv_file})
+        self.assertEqual(Item.objects.all().count(), item_number + 1)
+        item = Item.objects.get(pk=3)
+        self.assertEqual(item.title, 'Title thei5KieK6ohphuilahs')
+        self.assertEqual(item.text, 'Text Chai1ioWae3ASh0Eloh1')
+        self.assertEqual(item.duration, '42')
 
 
 class ConfigTest(TestCase):

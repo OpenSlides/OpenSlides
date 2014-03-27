@@ -19,6 +19,7 @@ from reportlab.lib.units import cm
 from reportlab.platypus import SimpleDocTemplate, Spacer
 
 from .exceptions import OpenSlidesError
+from .forms import CSVImportForm
 from .pdf import firstPage, laterPages
 from .signals import template_manipulation
 from .utils import html_strong
@@ -581,3 +582,38 @@ class PDFView(PermissionMixin, View):
 
     def get(self, request, *args, **kwargs):
         return self.render_to_response(self.get_filename())
+
+
+class CSVImportView(FormView):
+    """
+    View for a csv import of some data.
+
+    The attribute import_function might to be a staticmethod.
+    """
+    form_class = CSVImportForm
+    import_function = None
+
+    def get_import_function(self):
+        """
+        Override this to return a specific function to import data from
+        a given csv file using some extra kwargs. This function has to
+        return a three-tuple of strings which are the messages for the
+        user.
+
+        Example function:
+
+        def my_import(csvfile, **kwargs):
+            # Parse file and import data
+            return success_message, warning_message, error_message
+        """
+        if self.import_function is None:
+            raise NotImplementedError('A CSVImportView must provide an import_function '
+                                      'attribute or override a get_import_function method.')
+        return self.import_function
+
+    def form_valid(self, form):
+        success, warning, error = self.get_import_function()(**form.cleaned_data)
+        messages.success(self.request, success)
+        messages.warning(self.request, warning)
+        messages.error(self.request, error)
+        return super(CSVImportView, self).form_valid(form)

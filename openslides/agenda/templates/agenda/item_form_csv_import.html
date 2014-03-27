@@ -2,26 +2,26 @@
 
 {% load i18n %}
 
-{% block title %}{% trans 'Import motions' %} – {{ block.super }}{% endblock %}
+{% block title %}{% trans 'Import agenda items' %} – {{ block.super }}{% endblock %}
 
 {% block content %}
     <h1>
-        {% trans 'Import motions' %}
+        {% trans 'Import agenda items' %}
         <small class="pull-right">
-        <a href="{% url 'motion_list' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans 'Back to overview' %}</a>
+        <a href="{% url 'item_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans 'Back to overview' %}</a>
         </small>
     </h1>
 
-    <p>{% trans 'Select a CSV file to import motions' %}.</p>
+    <p>{% trans 'Select a CSV file to import agenda items' %}.</p>
 
     <p>{% trans 'Please note' %}:</p>
     <ul>
         <li>
             {% trans 'Required comma separated values' %}:<br />
-            <code>{% trans 'identifier, title, text, reason, submitter (clean name), category' %}</code>
+            <code>{% trans 'title, text, duration' %}</code>
         </li>
         <li>
-            {% trans 'Identifier, reason, submitter and category are optional and may be empty' %}.
+            {% trans 'Text and duration are optional and may be empty' %}.
         </li>
         <li>{% trans 'The first line (header) is ignored' %}.</li>
         <li>
@@ -38,7 +38,7 @@
         <button class="btn btn-primary" type="submit">
             <span class="icon import">{% trans 'Import' %}</span>
         </button>
-        <a href="{% url 'motion_list' %}" class="btn">
+        <a href="{% url 'item_overview' %}" class="btn">
             {% trans 'Cancel' %}
         </a>
         </p>

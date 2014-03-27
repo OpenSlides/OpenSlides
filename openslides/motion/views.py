@@ -13,14 +13,14 @@ from openslides.config.api import config
 from openslides.poll.views import PollFormView
 from openslides.projector.api import get_active_slide, update_projector
 from openslides.utils.utils import html_strong, htmldiff
-from openslides.utils.views import (CreateView, DeleteView, DetailView,
-                                    FormView, ListView, PDFView, QuestionView,
+from openslides.utils.views import (CreateView, CSVImportView, DeleteView, DetailView,
+                                    ListView, PDFView, QuestionView,
                                     RedirectView, SingleObjectMixin, UpdateView)
 
 from .csv_import import import_motions
 from .forms import (BaseMotionForm, MotionCategoryMixin,
                     MotionDisableVersioningMixin, MotionIdentifierMixin,
-                    MotionImportForm, MotionSubmitterMixin,
+                    MotionCSVImportForm, MotionSubmitterMixin,
                     MotionSupporterMixin, MotionWorkflowMixin)
 from .models import (Category, Motion, MotionPoll, MotionSubmitter,
                      MotionSupporter, MotionVersion, State)
@@ -769,14 +769,14 @@ class CategoryDeleteView(DeleteView):
 category_delete = CategoryDeleteView.as_view()
 
 
-class MotionCSVImportView(FormView):
+class MotionCSVImportView(CSVImportView):
     """
-    Import motions via csv.
+    Imports motions from an uploaded csv file.
     """
+    form_class = MotionCSVImportForm
     permission_required = 'motion.can_manage_motion'
-    template_name = 'motion/motion_form_csv_import.html'
-    form_class = MotionImportForm
     success_url_name = 'motion_list'
+    template_name = 'motion/motion_form_csv_import.html'
 
     def get_initial(self, *args, **kwargs):
         """
@@ -787,25 +787,11 @@ class MotionCSVImportView(FormView):
         return return_value
 
     def form_valid(self, form):
-        """
-        Processes the import function.
-        """
-        count_success, count_lines, error_messages, warning_messages = import_motions(
-            self.request.FILES['csvfile'],
-            default_submitter=form.cleaned_data['default_submitter'],
-            override=form.cleaned_data['override'],
-            importing_person=self.request.user)
-        for message in error_messages:
-            messages.error(self.request, message)
-        for message in warning_messages:
-            messages.warning(self.request, message)
-        if count_success:
-            messages.success(
-                self.request,
-                "<strong>%s</strong><br>%s" % (
-                    _('Summary'),
-                    _('%(counts)d of %(total)d motions successfully imported.')
-                    % {'counts': count_success, 'total': count_lines}))
-        return super(MotionCSVImportView, self).form_valid(form)
+        success, warning, error = import_motions(importing_person=self.request.user, **form.cleaned_data)
+        messages.success(self.request, success)
+        messages.warning(self.request, warning)
+        messages.error(self.request, error)
+        # Overleap method of CSVImportView
+        return super(CSVImportView, self).form_valid(form)
 
 motion_csv_import = MotionCSVImportView.as_view()

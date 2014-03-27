@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy
 from openslides.config.api import config
 from openslides.mediafile.models import Mediafile
 from openslides.utils.forms import (CleanHtmlFormMixin, CssClassMixin,
-                                    LocalizedModelChoiceField)
+                                    CSVImportForm, LocalizedModelChoiceField)
 from openslides.utils.person import MultiplePersonFormField, PersonFormField
 
 from .models import Category, Motion, Workflow
@@ -156,18 +156,10 @@ class MotionWorkflowMixin(forms.ModelForm):
                                 'If you do so, the state of the motion will be reset.'))
 
 
-class MotionImportForm(CssClassMixin, forms.Form):
+class MotionCSVImportForm(CSVImportForm):
     """
     Form for motion import via csv file.
     """
-    csvfile = forms.FileField(
-        widget=forms.FileInput(attrs={'size': '50'}),
-        label=ugettext_lazy('CSV File'),
-        help_text=ugettext_lazy('The file has to be encoded in UTF-8.'))
-    """
-    CSV filt with import data.
-    """
-
     override = forms.BooleanField(
         required=False,
         label=ugettext_lazy('Override existing motions with the same identifier'),
