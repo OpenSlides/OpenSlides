@@ -207,7 +207,41 @@ class UserMultipleDeleteView(MultipleDeleteView):
         return _('User(s) successfully deleted.')
 
 
-class SetUserStatusView(SingleObjectMixin, RedirectView):
+class UserMultipleDeleteView(MultipleDeleteView):
+    permission_required = 'participant.can_manage_participant'
+    question_url_name = 'user_overview'
+    success_url_name = 'user_overview'
+    url_name_args = []
+    model = User
+
+    def get(self, request, *args, **kwargs):
+        self.objects = self.get_objects(self.request.GET.getlist('users') or request.session['users'])
+        return super(UserMultipleDeleteView, self).get(request, *args, **kwargs)
+
+    def pre_redirect(self, request, *args, **kwargs):
+        users = self.request.GET.getlist('users')
+        request.session['users'] = users
+        if self.request.user.id in users:
+            messages.error(self.request, _("You can not delete yourself."))
+        else:
+            super(UserMultipleDeleteView, self).pre_redirect(request, *args, **kwargs)
+
+    def get_question_message(self):
+        """
+        Returns the question for the delete dialog.
+        """
+        users = [str(object) for object in self.objects]
+        user_names = ", ".join(users[:-1]) + (' ' + _('and') + ' ' if users[:-1] else '') + ''.join(users[-1:])
+        return _('Do you really want to delete %s ?') % html_strong(user_names)
+
+    def get_final_message(self):
+        """
+        Prints the success message to the user.
+        """
+        return _('User(s) successfully deleted.')
+
+
+class SetUserStatusView(RedirectView, SingleObjectMixin):
     """
     Activate or deactivate an user.
     """
