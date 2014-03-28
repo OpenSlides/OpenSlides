@@ -117,7 +117,7 @@ class AssignmentMultipleDeleteView(MultipleDeleteView):
         """
         assignments = [unicode(str(object), 'utf-8') for object in self.objects]
         assign_names = ", ".join(assignments[:-1]) + (' ' + _('and') + ' ' if assignments[:-1] else '') + ''.join(assignments[-1:])
-        return _('Do you really want to delete %s ?') % html_strong(assign_names)
+        return _('Do you really want to delete %s ?') % html_strong(unicode(assign_names, 'utf-8'))
 
     def get_final_message(self):
         """

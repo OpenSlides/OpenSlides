@@ -232,7 +232,7 @@ class UserMultipleDeleteView(MultipleDeleteView):
         """
         users = [str(object) for object in self.objects]
         user_names = ", ".join(users[:-1]) + (' ' + _('and') + ' ' if users[:-1] else '') + ''.join(users[-1:])
-        return _('Do you really want to delete %s ?') % html_strong(user_names)
+        return _('Do you really want to delete %s ?') % html_strong(unicode(user_names, 'utf-8'))
 
     def get_final_message(self):
         """
