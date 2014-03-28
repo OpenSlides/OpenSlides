@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import re
 
 from setuptools import setup, find_packages
 
@@ -12,13 +13,10 @@ with open('README.rst') as readme:
     long_description = readme.read()
 
 
+dependency_line = re.compile('[^#-]')
 with open('requirements_production.txt') as requirements_production:
-    install_requires = requirements_production.readlines()
-
-
-# For Python 2.6 support
-if sys.version_info[1] == 6:
-    install_requires.append('argparse>=1.2,<1.3')
+    install_requires = [line for line in requirements_production.readlines()
+                             if dependency_line.match(line)]
 
 
 setup(
