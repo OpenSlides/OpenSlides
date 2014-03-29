@@ -67,6 +67,11 @@ Installation on GNU/Linux or Mac OS X
    OpenSlides will install all required python packages (see
    requirements_production.txt).
 
+   When you use python 2.6 you have to add the argument '--allow-external
+   argparse' to pip.
+
+       $ pip install --allow-external argparse openslides
+
 
 Installation on Windows
 -----------------------
