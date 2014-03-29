@@ -13,6 +13,8 @@ Agenda:
 - Added CSV import.
 Assignment:
 - Coupled assignment candidates with list of speakers.
+Dashboard:
+- Shortcuts for the countdown.
 Participants:
 - Disabled widgets by default.
 - Added form field for multiple creation of new participants.

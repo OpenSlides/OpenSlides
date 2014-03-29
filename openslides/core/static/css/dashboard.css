@@ -137,3 +137,22 @@
     -moz-margin-start: 4px !important;
     margin-left: -6px;
 }
+
+
+/*
+ * style for countdown shortcuts
+ *
+ * TODO: move to projector app or merge projector with core
+ */
+
+#countdown_shortcut_storage .countdown_shortcut_time {
+    margin-right: 2px;
+}
+
+#countdown_shortcut_storage .countdown_shortcut_time span {
+    padding-right: 5px;
+}
+
+#countdown_shortcut_dummy {
+    display: none;
+}
