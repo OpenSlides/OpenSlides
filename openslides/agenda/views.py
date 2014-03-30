@@ -17,7 +17,7 @@ from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.pdf import stylesheet
 from openslides.utils.utils import html_strong
 from openslides.utils.views import (CreateView, DeleteView, FormView, PDFView,
-                                    RedirectView, SingleObjectMixin,
+                                    RedirectView, QuestionView, SingleObjectMixin,
                                     TemplateView, UpdateView)
 
 from .forms import AppendSpeakerForm, ItemForm, ItemOrderForm, RelatedItemForm
@@ -314,6 +314,26 @@ class CreateRelatedAgendaItemView(SingleObjectMixin, RedirectView):
         Create the agenda item.
         """
         self.item = Item.objects.create(content_object=self.object)
+
+class FixAgendaView(QuestionView):
+    permission_required = 'agenda.can_manage_agenda'
+    question_url_name = 'item_overview'
+    url_name = 'item_overview'
+    question_message = ugettext_lazy('Do you really want to fix tha agenda numbering?')
+    url_name_args = []
+
+    def get(self, request, *args, **kwargs):
+        self.items = Item.objects.all()
+        return super(FixAgendaView, self).get(request, *args, **kwargs)
+
+    def on_clicked_yes(self):
+        config['agenda_agenda_fixed'] = True
+        for item in self.items:
+            item.item_number = item.calc_item_no()
+            item.save()
+
+    def get_final_message(self):
+         return ugettext_lazy('The agenda has been fixed.')
 
 
 class AgendaPDF(PDFView):

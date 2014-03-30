@@ -19,6 +19,7 @@ from openslides.projector.models import SlideMixin
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import AbsoluteUrlMixin
 from openslides.utils.person.models import PersonField
+from openslides.utils.utils import toRoman
 
 
 class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
@@ -39,6 +40,11 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
     title = models.CharField(null=True, max_length=255, verbose_name=ugettext_lazy("Title"))
     """
     Title of the agenda item.
+    """
+
+    item_number = models.CharField(null=True, max_length=255, verbose_name=ugettext_lazy("Number"))
+    """
+    Number of agenda item.
     """
 
     text = models.TextField(null=True, blank=True, verbose_name=ugettext_lazy("Text"))
@@ -147,6 +153,9 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
         Return the title of this item.
         """
         if not self.content_object:
+            if config['agenda_enable_auto_numbering']:
+                item_no = self.item_no
+                return item_no + ' ' + self.title if item_no else self.title
             return self.title
         try:
             return self.content_object.get_agenda_title()
@@ -170,6 +179,7 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
         """
         self.closed = closed
         self.save()
+
 
     @property
     def weight_form(self):
@@ -283,6 +293,40 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
         else:
             value = False
         return value
+
+    @property
+    def item_no(self):
+        if config['agenda_agenda_fixed']:
+            item_no = self.item_number
+        else:
+            item_no = self.calc_item_no()
+        if item_no:
+            return '%s %s' % (config['agenda_number_prefix'], item_no)
+
+    def calc_item_no(self):
+        """
+        Returns the number of this agenda item
+        """
+        if self.type == self.AGENDA_ITEM:
+            if self.is_root_node():
+                if config['agenda_numeral_system'] == 'a':
+                    return str(self._calc_sibling_no())
+                else:
+                    return toRoman(self._calc_sibling_no())
+            else:
+                return '%s.%s' % (self.parent.calc_item_no(), self._calc_sibling_no())
+
+    def _calc_sibling_no(self):
+        """
+        Counts all siblings on the same level which are AGENDA_ITEMs
+        """
+        sibling_no = 0
+        prev_sibling = self.get_previous_sibling()
+        while not prev_sibling is None:
+            if prev_sibling.type == self.AGENDA_ITEM:
+                sibling_no += 1
+            prev_sibling = prev_sibling.get_previous_sibling()
+        return sibling_no + 1
 
 
 class SpeakerManager(models.Manager):

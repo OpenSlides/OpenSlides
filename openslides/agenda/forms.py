@@ -5,6 +5,7 @@ import re
 from django import forms
 from django.utils.translation import ugettext_lazy
 from mptt.forms import TreeNodeChoiceField
+from openslides.config.api import config
 
 from openslides.utils.forms import CssClassMixin, CleanHtmlFormMixin
 from openslides.utils.person.forms import PersonFormField
@@ -16,7 +17,6 @@ class ItemForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
     """
     Form to create of update an item.
     """
-
     clean_html_fields = ('text', )
 
     parent = TreeNodeChoiceField(
@@ -32,7 +32,7 @@ class ItemForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
 
     class Meta:
         model = Item
-        exclude = ('closed', 'weight', 'content_type', 'object_id')
+        exclude = ('closed', 'weight', 'content_type', 'object_id', 'item_number')
 
 
 class RelatedItemForm(ItemForm):
@@ -41,7 +41,7 @@ class RelatedItemForm(ItemForm):
     """
     class Meta:
         model = Item
-        exclude = ('closed', 'type', 'weight', 'content_type', 'object_id', 'title', 'text')
+        exclude = ('closed', 'type', 'weight', 'content_type', 'object_id', 'title', 'text', 'item_number')
 
 
 class ItemOrderForm(CssClassMixin, forms.Form):
