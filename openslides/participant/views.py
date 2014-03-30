@@ -147,13 +147,14 @@ class UserDeleteView(DeleteView):
             super(UserDeleteView, self).pre_post_redirect(request, *args, **kwargs)
 
 
-class SetUserStatusView(RedirectView, SingleObjectMixin):
+class SetUserStatusView(SingleObjectMixin, RedirectView):
     """
     Activate or deactivate an user.
     """
     permission_required = 'participant.can_manage_participant'
     allow_ajax = True
     url_name = 'user_overview'
+    url_name_args = []
     model = User
 
     def pre_redirect(self, request, *args, **kwargs):
@@ -164,8 +165,8 @@ class SetUserStatusView(RedirectView, SingleObjectMixin):
         elif action == 'deactivate':
             if self.object.user == self.request.user:
                 messages.error(request, _("You can not deactivate yourself."))
-                return
-            self.object.is_active = False
+            else:
+                self.object.is_active = False
         elif action == 'toggle':
             self.object.is_active = not self.object.is_active
         self.object.save()

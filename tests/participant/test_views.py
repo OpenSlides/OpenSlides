@@ -40,6 +40,10 @@ class UserViews(TestCase):
              'is_active': 'yes'})
         self.assertRedirects(response, '/participant/')
 
+    def test_activate(self):
+        response = self.client.get('/participant/1/status/activate/')
+        self.assertEqual(response.status_code, 302)
+
 
 class GroupViews(TestCase):
     """
