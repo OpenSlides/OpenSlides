@@ -7,7 +7,7 @@ How to create a new portable Windows distribution of OpenSlides:
 
 2. Install all required python packages (see requirements_production.txt):
 
-       easy_install -Z django django-mptt beautifulsoup4 bleach natsort reportlab sockjs_tornado tornado django-haystack whoosh
+       easy_install -Z django django-mptt beautifulsoup4 bleach natsort reportlab sockjs_tornado tornado backports.ssl_match_hostname django-haystack whoosh
 
 
 3. Install pywin32 from binary installer:

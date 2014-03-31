@@ -78,6 +78,9 @@ SITE_PACKAGES = {
     "tornado": {
         "copy": ["tornado"],
     },
+    "backports.ssl_match_hostname": {
+        "copy": ["backports"],
+    },
     "beautifulsoup4": {
         "copy": ["bs4"],
     },
