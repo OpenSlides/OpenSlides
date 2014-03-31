@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-VERSION = (1, 5, 1, 'final', 1)  # During development it is the next release
+VERSION = (1, 5, 2, 'final', 1)  # During development it is the next release
 RELEASE = False
 
 
