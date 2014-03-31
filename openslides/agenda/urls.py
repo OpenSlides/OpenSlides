@@ -44,6 +44,10 @@ urlpatterns = patterns(
         views.FixAgendaView.as_view(),
         name='fix_agenda'),
 
+    url(r'^reset/$',
+        views.ResetAgendaView.as_view(),
+        name='reset_agenda'),
+
     # List of speakers
     url(r'^(?P<pk>\d+)/speaker/$',
         views.SpeakerAppendView.as_view(),
