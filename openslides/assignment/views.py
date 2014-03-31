@@ -118,15 +118,15 @@ class AssignmentMultipleDeleteView(MultipleDeleteView):
         """
         Returns the question for the delete dialog.
         """
-        assignments = [str(object) for object in self.objects]
+        assignments = [unicode(str(object), 'utf-8') for object in self.objects]
         assign_names = ", ".join(assignments[:-1]) + (' ' + _('and') + ' ' if assignments[:-1] else '') + ''.join(assignments[-1:])
-        return _('Do you really want to delete %s ?') % html_strong(unicode(assign_names, 'utf-8'))
+        return _('Do you really want to delete %s ?') % html_strong(assign_names)
 
     def get_final_message(self):
         """
         Prints the success message to the user.
         """
-        return _('Assignment(s) successfully deleted.')
+        return _('Election(s) successfully deleted.')
 
 
 class AssignmentSetStatusView(SingleObjectMixin, RedirectView):

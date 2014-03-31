@@ -312,9 +312,9 @@ class MotionMultipleDeleteView(MultipleDeleteView):
         """
         Returns the question for the delete dialog.
         """
-        motions = [str(object) for object in self.objects]
+        motions = [unicode(str(object), 'utf-8') for object in self.objects]
         motion_names = ", ".join(motions[:-1]) + (' ' + _('and') + ' ' if motions[:-1] else '') + ''.join(motions[-1:])
-        return _('Do you really want to delete %s ?') % html_strong(unicode(motion_names, 'utf-8'))
+        return _('Do you really want to delete %s ?') % html_strong(motion_names)
 
     def get_final_message(self):
         """
