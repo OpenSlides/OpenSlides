@@ -88,11 +88,13 @@ class Overview(TemplateView):
             agenda_is_active = None
             active_type = None
 
+        agenda_enable_auto_numbering = True if config['agenda_enable_auto_numbering'] else False
         agenda_numbering_fixed = True if config['agenda_agenda_fixed'] else False
 
         context.update({
             'items': items,
             'agenda_is_active': agenda_is_active,
+            'agenda_enable_auto_numbering': agenda_enable_auto_numbering,
             'agenda_numbering_fixed': agenda_numbering_fixed,
             'duration': duration,
             'start': start,
