@@ -159,25 +159,25 @@ def convert_html_to_reportlab(pdf, text):
     for element in soup.find_all('li'):
         # ... and replace ul list elements with <para><bullet>&bull;</bullet>...<para>
         if element.parent.name == "ul":
-            if element.ul:
-                # for nested ul lists use simple spaces (pragmatic solution)
-                element.li.insert(0, '&nbsp;&nbsp;&nbsp;&nbsp;')
-                element.insert_before(element.find_all('li'))
+            # nested lists
+            if element.ul or element.ol:
+                for i in element.find_all('li'):
+                    element.insert_before(i)
                 element.clear()
             else:
                 element.name = "para"
                 bullet_tag = soup.new_tag("bullet")
-                bullet_tag.string = "&bull;"
+                bullet_tag.string = u"•"
                 element.insert(0, bullet_tag)
         # ... and replace ol list elements with <para><bullet><seq id="%id"></seq>.</bullet>...</para>
         if element.parent.name == "ol":
             # set list id if element is the first of numbered list
             if not element.find_previous_sibling():
                 id = random.randrange(0, 101)
-            if element.ol:
-                # nested ol list
-                element.li.insert(0, '&nbsp;&nbsp;&nbsp;&nbsp;')
-                element.insert_before(element.find_all('li'))
+            # nested lists
+            if element.ul or element.ol:
+                for i in element.find_all('li'):
+                    element.insert_before(i)
                 element.clear()
             else:
                 element.name = "para"
