@@ -180,7 +180,6 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
         self.closed = closed
         self.save()
 
-
     @property
     def weight_form(self):
         """
