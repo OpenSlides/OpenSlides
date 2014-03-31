@@ -196,9 +196,9 @@ class UserMultipleDeleteView(MultipleDeleteView):
         """
         Returns the question for the delete dialog.
         """
-        users = [str(object) for object in self.objects]
+        users = [unicode(str(object), 'utf-8') for object in self.objects]
         user_names = ", ".join(users[:-1]) + (' ' + _('and') + ' ' if users[:-1] else '') + ''.join(users[-1:])
-        return _('Do you really want to delete %s ?') % html_strong(unicode(user_names, 'utf-8'))
+        return _('Do you really want to delete %s ?') % html_strong(user_names)
 
     def get_final_message(self):
         """
