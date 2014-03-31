@@ -4,7 +4,7 @@
 
 http://openslides.org
 
-Version 1.5.1 (unreleased)
+Version 1.5.1 (2014-03-31)
 ==========================
 [https://github.com/OpenSlides/OpenSlides/issues?milestone=15]
 
@@ -27,7 +27,7 @@ Other:
 - Fixed http status code when requesting a non-existing static page using
   Tornado web server.
 - Fixed error in main script when using other database engine.
-- Fixed error on motion PDF with nested lists
+- Fixed error on motion PDF with nested lists.
 
 
 Version 1.5 (2013-11-25)
