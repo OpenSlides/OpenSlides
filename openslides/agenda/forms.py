@@ -5,7 +5,6 @@ import re
 from django import forms
 from django.utils.translation import ugettext_lazy
 from mptt.forms import TreeNodeChoiceField
-from openslides.config.api import config
 
 from openslides.utils.forms import CssClassMixin, CleanHtmlFormMixin
 from openslides.utils.person.forms import PersonFormField
