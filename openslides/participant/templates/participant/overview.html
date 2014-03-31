@@ -61,12 +61,13 @@
     {% if perms.participant.can_manage_participant %}
     <div class="action_border">
     <div class="btn-group">
-        <a data-toggle="dropdown" rel="tooltip" data-original-title="{% trans 'Actions related to selected users' %}" class="btn btn-mini dropdown-toggle">
-            <i class="icon-briefcase"></i>{% trans 'Action' %}<span class="caret"></span>
+        <a data-toggle="dropdown" class="btn btn-mini dropdown-toggle tooltip-right"
+           rel="tooltip" data-original-title="{% trans 'Actions related to selected users' %}">
+            <i class="icon-briefcase"></i> {% trans 'Action' %}<span class="caret"></span>
         </a>
-        <ul class="dropdown-menu  pull-right">
-            <li><a class="table_action" href="{% url 'user_multi_delete' %}"><i class="icon-remove"></i>{% trans 'Delete selected users' %}</a></li>
-            <li><a class="table_action" href="{% url 'user_multi_status_toggle' %}"><i class="icon-th-large"></i>{% trans 'Toggle user status' %}</a></li>
+        <ul class="dropdown-menu  pull-left">
+            <li><a class="table_action" href="{% url 'user_multi_delete' %}"><i class="icon-remove"></i> {% trans 'Delete selected users' %}</a></li>
+            <li><a class="table_action" href="{% url 'user_multi_status_toggle' %}"><i class="icon-th-large"></i> {% trans 'Toggle user status' %}</a></li>
         </ul>
     </div>
     </div>
