@@ -67,8 +67,8 @@
                         <a href="{% url 'config_agenda' %}" class="btn btn-mini pull-right">{% trans 'Set start time of event' %}</a>
                     {% endif %}
                     {% if perms.agenda.can_manage_agenda %}
-                        <a href="{% url 'config_agenda' %}" class="btn btn-mini pull-right">{% trans 'Reset numbering' %}</a>
-                        <a href="{% url 'fix_agenda' %}" class="btn btn-mini pull-right">{% trans 'Fix Agenda' %}</a>
+                        <a href="{% url 'fix_agenda' %}" class="btn btn-mini pull-left" {% if agenda_numbering_fixed %}disabled="disabled"{% endif %}>{% trans 'Fix numbering' %}</a>
+                        <a href="{% url 'reset_agenda' %}" class="btn btn-mini pull-left" {% if not agenda_numbering_fixed %}disabled="disabled"{% endif %}>{% trans 'Reset numbering' %}</a>
                     {% endif %}
                 {% endif %}
             </div>
