@@ -234,8 +234,8 @@ class ConfigWeightTest(TestCase):
 
     def test_order_of_config_pages_abstract(self):
         config_page_dict = {}
-        for receiver, config_page in config_signal.send(sender=self):
-            config_page_dict[receiver.__name__] = config_page
+        for signal_receiver, config_page in config_signal.send(sender=self):
+            config_page_dict[signal_receiver.__name__] = config_page
         self.assertGreater(config_page_dict['set_grouped_config_page'].weight, config_page_dict['set_simple_config_page'].weight)
 
     def test_order_of_config_pages_on_view(self):
