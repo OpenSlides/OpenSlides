@@ -258,14 +258,14 @@ class ObjectListMixin(object):
     model = None
     objects = None
 
-    def get_objects(self, pks, sort = None):
+    def get_objects(self, pks, sort=None):
         if self.model is None:
             raise ImproperlyConfigured('No model given')
         if pks is None:
             return None
 
         if sort:
-            return self.model.objects.filter(pk__in=pks).order_by(sort);
+            return self.model.objects.filter(pk__in=pks).order_by(sort)
         else:
             return self.model.objects.filter(pk__in=pks)
 
