@@ -50,7 +50,7 @@ def participants_to_pdf(pdf):
     return pdf
 
 
-def participants_passwords_to_pdf(pdf, users = None):
+def participants_passwords_to_pdf(pdf, users=None):
     """
     Create access data sheets for all participants as PDF
     """
