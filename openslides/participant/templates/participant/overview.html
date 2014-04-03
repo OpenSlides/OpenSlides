@@ -66,8 +66,12 @@
             <i class="icon-briefcase"></i> {% trans 'Action' %} <span class="caret"></span>
         </a>
         <ul class="dropdown-menu  pull-left">
-            <li><a class="table_action" href="{% url 'user_multi_delete' %}"><i class="icon-remove"></i> {% trans 'Delete selected users' %}</a></li>
-            <li><a class="table_action" href="{% url 'user_multi_status_toggle' %}"><i class="icon-th-large"></i> {% trans 'Toggle user status' %}</a></li>
+            <li><a class="table_action"
+                   href="{% url 'user_multi_delete' %}"><i class="icon-remove"></i> {% trans 'Delete selected users' %}</a></li>
+            <li><a class="table_action"
+                   href="{% url 'user_multi_status_toggle' %}"><i class="icon-ok-circle"></i> {% trans 'Toggle user status' %}</a></li>
+            <li><a class="table_action"
+                   href="{% url 'print_selected_passwords' %}" target="_blank"><i class="icon-th-large"></i> {% trans 'List of access data' %}</a></li>
         </ul>
     </div>
     </div>

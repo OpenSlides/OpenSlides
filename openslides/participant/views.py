@@ -268,13 +268,20 @@ class ParticipantsListPDF(PDFView):
         participants_to_pdf(pdf)
 
 
-class ParticipantsPasswordsPDF(PDFView):
+class ParticipantsPasswordsPDF(PDFView, ObjectListMixin):
     """
     Generate the access data welcome paper for all participants as PDF.
     """
     permission_required = 'participant.can_manage_participant'
     filename = ugettext_lazy("Participant-access-data")
     top_space = 0
+    users = None
+    model = User
+
+    def get(self, request, *args, **kwargs):
+        sort = 'first_name' if config['participant_sort_users_by_first_name'] else 'last_name'
+        self.users = self.get_objects(request.session['users'], sort)
+        return super(ParticipantsPasswordsPDF, self).get(request, *args, **kwargs)
 
     def build_document(self, pdf_document, story):
         pdf_document.build(story)
@@ -283,7 +290,19 @@ class ParticipantsPasswordsPDF(PDFView):
         """
         Append PDF objects.
         """
-        participants_passwords_to_pdf(pdf)
+        participants_passwords_to_pdf(pdf, self.users)
+
+
+class SelectedParticipantsPasswordsView(RedirectView):
+    """
+    Prepare the access data welcome paper for selected participants as PDF.
+    """
+    permission_required = 'participant.can_manage_participant'
+    url_name = 'print_passwords'
+
+    def pre_redirect(self, request, *args, **kwargs):
+        request.session['users'] = self.request.GET.getlist('users')
+        super(SelectedParticipantsPasswordsView, self).pre_redirect(request, *args, **kwargs)
 
 
 class UserImportView(FormView):
