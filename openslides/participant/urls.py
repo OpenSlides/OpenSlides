@@ -91,4 +91,9 @@ urlpatterns = patterns(
     url(r'^passwords/print/$',
         views.ParticipantsPasswordsPDF.as_view(),
         name='print_passwords'),
+
+    url(r'^passwords/print_selected/$',
+        views.SelectedParticipantsPasswordsView.as_view(),
+        name='print_selected_passwords'),
+
 )
