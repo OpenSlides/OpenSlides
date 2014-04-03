@@ -54,7 +54,12 @@ $(document).ready(function() {
         var link = $(this);
         var formData = $('input', $('#dataTable').dataTable().fnGetNodes()).serialize();
         if (formData) {
-            target = link.attr('href').replace(/\/$/, "") + '?' + formData;
+            href = link.attr('href');
+            if (href.indexOf('?') != -1) {
+                href = href.substr(0, href.indexOf('?'));
+            }
+            href = href.replace(/\/$/, "");
+            target = href + '?' + formData;
             link.attr('href', target);
             return;
         }
