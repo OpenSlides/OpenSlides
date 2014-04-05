@@ -73,7 +73,7 @@ class Motion(SlideMixin, AbsoluteUrlMixin, models.Model):
     """
 
     # TODO: proposal
-    #master = models.ForeignKey('self', null=True, blank=True)
+    # master = models.ForeignKey('self', null=True, blank=True)
 
     class Meta:
         permissions = (
@@ -544,8 +544,8 @@ class MotionVersion(AbsoluteUrlMixin, models.Model):
     creation_time = models.DateTimeField(auto_now=True)
     """Time when the version was saved."""
 
-    #identifier = models.CharField(max_length=255, verbose_name=ugettext_lazy("Version identifier"))
-    #note = models.TextField(null=True, blank=True)
+    # identifier = models.CharField(max_length=255, verbose_name=ugettext_lazy("Version identifier"))
+    # note = models.TextField(null=True, blank=True)
 
     class Meta:
         unique_together = ("motion", "version_number")
@@ -633,11 +633,11 @@ class Category(AbsoluteUrlMixin, models.Model):
     class Meta:
         ordering = ['prefix']
 
-## class Comment(models.Model):
-    ## motion_version = models.ForeignKey(MotionVersion)
-    ## text = models.TextField()
-    ## author = PersonField()
-    ## creation_time = models.DateTimeField(auto_now=True)
+# class Comment(models.Model):
+    # motion_version = models.ForeignKey(MotionVersion)
+    # text = models.TextField()
+    # author = PersonField()
+    # creation_time = models.DateTimeField(auto_now=True)
 
 
 class MotionLog(models.Model):
@@ -739,8 +739,8 @@ class MotionPoll(RelatedModelMixin, CollectInvalid, CollectVotesCast,
 
     def set_options(self):
         """Create the option class for this poll."""
-        #TODO: maybe it is possible with .create() to call this without poll=self
-        #      or call this in save()
+        # TODO: maybe it is possible with .create() to call this without poll=self
+        #       or call this in save()
         self.get_option_class()(poll=self).save()
 
     def get_related_model(self):

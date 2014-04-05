@@ -26,7 +26,7 @@ Installation on GNU/Linux or Mac OS X
 
 1. Check requirements
 
-   Make sure that you have installed Python Programming Language 2 (>= 2.6)
+   Make sure that you have installed Python Programming Language 2 (>= 2.6.9)
    on your system. You will also need the Python development headers.
 
    For example for Ubuntu run::
@@ -77,7 +77,7 @@ portable version you should observe the following install steps.*
 
 1. Check requirements
 
-   Make sure that you have installed Python Programming Language 2 (>= 2.6)
+   Make sure that you have installed Python Programming Language 2 (>= 2.6.9)
    and Setuptools on your system.
 
    a. Download and run the `Python 32-bit MSI installer

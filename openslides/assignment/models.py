@@ -184,7 +184,7 @@ class Assignment(SlideMixin, AbsoluteUrlMixin, models.Model):
             participants.append(candidate.person)
         participants.sort(key=lambda person: person.sort_name)
         return participants
-        #return candidates.values_list('person', flat=True)
+        # return candidates.values_list('person', flat=True)
 
     def set_elected(self, person, value=True):
         candidate = self.assignment_candidates.get(person=person)

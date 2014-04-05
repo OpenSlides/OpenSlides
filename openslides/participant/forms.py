@@ -134,7 +134,7 @@ class GroupForm(forms.ModelForm, CssClassMixin):
         # TODO: Check this in clean_users or clean_permissions
         if (self.request and
                 not self.request.user.is_superuser and
-                not self.request.user in self.cleaned_data['users'] and
+                self.request.user not in self.cleaned_data['users'] and
                 not Group.objects.exclude(pk=self.instance.pk).filter(
                     permissions__in=[get_protected_perm()],
                     user__pk=self.request.user.pk).exists()):
