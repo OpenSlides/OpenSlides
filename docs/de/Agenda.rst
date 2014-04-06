@@ -137,6 +137,12 @@ Redner. Die Einblendung erscheint nur auf Folien von Tagesordnungspunkten.
    :scale-latex: 80
    :alt: Projektor-Ansicht mit Rednerlisten-Overlay
 
+Schließlich haben Sie die Möglichkeit, die Rednerliste des jeweiligen
+Tagesordnungspunktes auf einem gesonderten Projektor anzeigen zu lassen.
+Klicken Sie auf der Tagesordnungsseite oben rechts auf auf den
+Glocken-Button |bell| und legen Sie die Seite im Vollbildmodus auf einen
+eigenen Projektor oder Bildschirm.
+
 
 Die Rednerliste verwalten
 -------------------------

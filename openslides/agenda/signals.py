@@ -101,8 +101,8 @@ def agenda_list_of_speakers(sender, **kwargs):
         if slide is None or isinstance(slide, Item):
             item = slide
         else:
-            # TODO: If there are more the one items, use the first one in the
-            #       mptt tree that is not closed
+            # TODO: If there is more than one item, use the first one in the
+            #       mptt tree that is not closed.
             try:
                 item = Item.objects.filter(
                     content_type=ContentType.objects.get_for_model(slide),

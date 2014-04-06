@@ -314,3 +314,23 @@ class TestOverlay(TestCase):
         value = agenda_list_of_speakers(sender='test').get_projector_html()
 
         self.assertEqual(value, '')
+
+
+class TestCurrentListOfSpeakersOnProjectorView(SpeakerViewTestCase):
+    """
+    Test the view with the current list of speakers depending on the actual
+    slide.
+    """
+    def test_get_none(self):
+        response = self.admin_client.get('/agenda/list_of_speakers/projector/')
+        self.assertContains(response, 'List of speakers</h1><i>Not available')
+
+    def test_get_normal(self):
+        self.item1.title = 'title_gupooDee8ahahnaxoo2a'
+        self.item1.save()
+        Speaker.objects.add(self.speaker1, self.item1)
+        config['projector_active_slide'] = {'callback': 'agenda', 'pk': self.item1.pk}
+        response = self.admin_client.get('/agenda/list_of_speakers/projector/')
+        self.assertContains(response, 'List of speakers')
+        self.assertContains(response, 'title_gupooDee8ahahnaxoo2a')
+        self.assertContains(response, 'speaker1')

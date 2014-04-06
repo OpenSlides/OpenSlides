@@ -9,6 +9,7 @@ Version 1.6 (unreleased)
 [https://github.com/OpenSlides/OpenSlides/issues?milestone=14]
 
 Agenda:
+- New projector view with the current list of speakers.
 - Added CSV import.
 Assignment:
 - Coupled assignment candidates with list of speakers.
