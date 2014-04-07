@@ -181,7 +181,7 @@ class MotionCreateView(MotionEditMixin, CreateView):
         """
         response = super(MotionCreateView, self).form_valid(form)
         self.object.write_log([ugettext_noop('Motion created')], self.request.user)
-        if (not 'submitter' in form.cleaned_data or
+        if ('submitter' not in form.cleaned_data or
                 not form.cleaned_data['submitter']):
             self.object.add_submitter(self.request.user)
         return response

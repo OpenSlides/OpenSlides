@@ -68,7 +68,7 @@ class Overview(TemplateView):
                     if minutes < 10:
                         minutes = "%s%s" % (0, minutes)
                     item.duration = "%s:%s" % (hours, minutes)
-                if not start is None:
+                if start is not None:
                     item.tooltip = start + duration
 
         if start is None:
