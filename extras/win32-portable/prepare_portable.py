@@ -78,9 +78,6 @@ SITE_PACKAGES = {
     "jsonfield": {
         "copy": ["jsonfield"],
     },
-    "pillow": {
-        "copy": ["PIL"],
-    },
     "reportlab": {
         "copy": [
             "reportlab",

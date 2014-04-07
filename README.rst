@@ -84,8 +84,7 @@ portable version you should observe the following install steps.*
       <http://www.python.org/ftp/python/2.7.5/python-2.7.5.msi>`_. Note
       that the 32-bit MSI installer is required even on a 64-bit Windows
       system. If you use the 64-bit MSI installer, step 3 of this
-      instruction will fail unless you installed the packages reportlab and
-      pillow manually.
+      instruction will fail unless you installed the packages reportlab manually.
 
    b. Add python directories to PATH (via Control Panel > System >
       Advanced): ``";C:\\Python27;C:\\Python27\\Scripts"``. Note that the path
@@ -259,9 +258,6 @@ OpenSlides uses the following projects or parts of them:
 * `natsort <https://pypi.python.org/pypi/natsort>`_, License: MIT
 
 * `pdf.js <http://mozilla.github.io/pdf.js/>`_, License: Apache License v2.0
-
-* `Pillow <https://github.com/python-imaging/Pillow/>`_, License: Standard
-  PIL License
 
 * `ReportLab <http://www.reportlab.com/software/opensource/rl-toolkit/>`_,
   License: BSD

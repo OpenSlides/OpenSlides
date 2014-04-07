@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 
 from operator import attrgetter
-import os
 import random
 
 from bs4 import BeautifulSoup
-from django.conf import settings
 from django.utils.translation import ugettext as _
 from natsort import natsorted
 from reportlab.lib import colors
@@ -261,17 +259,19 @@ def all_motion_cover(pdf, motions):
 
 
 def motion_poll_to_pdf(pdf, poll):
-    imgpath = os.path.join(settings.SITE_ROOT, 'core', 'static', 'img', 'circle.png')
-    circle = "<img src='%s' width='15' height='15'/>&nbsp;&nbsp;" % imgpath
+    circle = "*"  # = Unicode Character 'HEAVY LARGE CIRCLE' (U+2B55)
     cell = []
     cell.append(Spacer(0, 0.8 * cm))
     cell.append(Paragraph(_("Motion No. %s") % poll.motion.identifier, stylesheet['Ballot_title']))
     cell.append(Paragraph(poll.motion.title, stylesheet['Ballot_subtitle']))
     cell.append(Paragraph(_("%d. Vote") % poll.poll_number, stylesheet['Ballot_description']))
     cell.append(Spacer(0, 0.5 * cm))
-    cell.append(Paragraph(circle + unicode(_("Yes")), stylesheet['Ballot_option']))
-    cell.append(Paragraph(circle + unicode(_("No")), stylesheet['Ballot_option']))
-    cell.append(Paragraph(circle + unicode(_("Abstention")), stylesheet['Ballot_option']))
+    cell.append(Paragraph("<font name='circlefont' size='15'>%s</font> <font name='Ubuntu'>%s</font>"
+                % (circle, unicode(_("Yes"))), stylesheet['Ballot_option']))
+    cell.append(Paragraph("<font name='circlefont' size='15'>%s</font> <font name='Ubuntu'>%s</font>"
+                % (circle, unicode(_("No"))), stylesheet['Ballot_option']))
+    cell.append(Paragraph("<font name='circlefont' size='15'>%s</font> <font name='Ubuntu'>%s</font>"
+                % (circle, unicode(_("Abstention"))), stylesheet['Ballot_option']))
     data = []
     # get ballot papers config values
     ballot_papers_selection = config["motion_pdf_ballot_papers_selection"]
