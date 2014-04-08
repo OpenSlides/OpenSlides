@@ -272,8 +272,8 @@ class ConfigWeightTest(TestCase):
 
     def test_order_of_config_views_abstract(self):
         config_collection_dict = {}
-        for receiver, config_collection in config_signal.send(sender=self):
-            config_collection_dict[receiver.__name__] = config_collection
+        for signal_receiver, config_collection in config_signal.send(sender=self):
+            config_collection_dict[signal_receiver.__name__] = config_collection
         self.assertGreater(config_collection_dict['set_grouped_config_view'].weight, config_collection_dict['set_simple_config_view'].weight)
 
     def test_order_of_config_collections_on_view(self):

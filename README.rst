@@ -67,6 +67,11 @@ Installation on GNU/Linux or Mac OS X
    OpenSlides will install all required python packages (see
    requirements_production.txt).
 
+   If you use Python 2.6.x, you have to add the option `--allow-external
+   argparse` to the pip command::
+
+       $ pip install --allow-external argparse openslides
+
 
 Installation on Windows
 -----------------------
@@ -81,10 +86,11 @@ portable version you should observe the following install steps.*
    and Setuptools on your system.
 
    a. Download and run the `Python 32-bit MSI installer
-      <http://www.python.org/ftp/python/2.7.5/python-2.7.5.msi>`_. Note
+      <http://www.python.org/ftp/python/2.7.6/python-2.7.6.msi>`_. Note
       that the 32-bit MSI installer is required even on a 64-bit Windows
       system. If you use the 64-bit MSI installer, step 3 of this
-      instruction will fail unless you installed the packages reportlab manually.
+      instruction will fail unless you installed the packages reportlab
+      manually.
 
    b. Add python directories to PATH (via Control Panel > System >
       Advanced): ``";C:\\Python27;C:\\Python27\\Scripts"``. Note that the path
@@ -104,7 +110,7 @@ portable version you should observe the following install steps.*
    To install Virtual Python Environment builder, open command line (cmd)
    and run::
 
-       > easy_install https://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.10.1.tar.gz
+       > easy_install https://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.11.4.tar.gz
 
    Create your OpenSlides directory, change to it, setup and activate the
    virtual environment::
@@ -208,6 +214,11 @@ Installation and start of the development version
 
        $ pip install -r requirements.txt
 
+   If you use Python 2.6.x, you have to add the option `--allow-external
+   argparse` to the pip command::
+
+       $ pip install --allow-external argparse -r requirements.txt
+
    For Windows run::
 
        > easy_install  # Insert all packages from requirements.txt and requirements_production.txt here
@@ -227,8 +238,7 @@ Coding Style
 ------------
 
 You can find some information on the coding style in the `OpenSlides wiki
-<https://github.com/OpenSlides/OpenSlides/wiki/De%3ACode-Richtlinien-f%C3%BCr
--Openslides>`_.
+<https://github.com/OpenSlides/OpenSlides/wiki/De%3ACode-Richtlinien-f%C3%BCr-Openslides>`_.
 
 
 VI. Used software
@@ -270,7 +280,8 @@ OpenSlides uses the following projects or parts of them:
 
 * `Sphinx <http://sphinx-doc.org/>`_, License: BSD
 
-* Sphinx extension `autoimage <https://gist.github.com/kroger/3856821/>`_, License: MIT
+* Sphinx extension `autoimage <https://gist.github.com/kroger/3856821/>`_,
+  License: MIT
 
 * `Sphinx Bootstrap Theme
   <http://ryan-roemer.github.io/sphinx-bootstrap-theme/>`_, License: MIT
