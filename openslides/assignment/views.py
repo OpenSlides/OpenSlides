@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import os
-
-from django.conf import settings
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
@@ -506,8 +503,7 @@ class AssignmentPollPDF(PDFView):
         pdf_document.build(story)
 
     def append_to_pdf(self, story):
-        imgpath = os.path.join(settings.SITE_ROOT, 'core', 'static', 'img', 'circle.png')
-        circle = "<img src='%s' width='15' height='15'/>&nbsp;&nbsp;" % imgpath
+        circle = "*"  # = Unicode Character 'HEAVY LARGE CIRCLE' (U+2B55)
         cell = []
         cell.append(Spacer(0, 0.8 * cm))
         cell.append(Paragraph(
@@ -547,26 +543,44 @@ class AssignmentPollPDF(PDFView):
             number = int(ballot_papers_number)
         number = max(1, number)
 
-        # Choose kind of ballot paper
-        if self.poll.yesnoabstain:
+        counter = 0
+        cellcolumnA = []
+        # Choose kind of ballot paper (YesNoAbstain or Yes)
+        if self.poll.yesnoabstain:  # YesNoAbstain ballot: max 27 candidates
             for option in options:
+                counter += 1
                 candidate = option.candidate
                 cell.append(Paragraph(
-                    candidate.clean_name, stylesheet['Ballot_option_name']))
+                    candidate.clean_name, stylesheet['Ballot_option_name_YNA']))
                 if candidate.name_suffix:
                     cell.append(Paragraph(
                         "(%s)" % candidate.name_suffix,
-                        stylesheet['Ballot_option_group']))
+                        stylesheet['Ballot_option_suffix_YNA']))
                 else:
                     cell.append(Paragraph(
-                        "&nbsp;", stylesheet['Ballot_option_group']))
-                cell.append(Paragraph(
-                    circle + _("Yes") + "&nbsp; " * 3 + circle
-                    + _("No") + "&nbsp; " * 3 + circle + _("Abstention"),
-                    stylesheet['Ballot_option_YNA']))
+                        "&nbsp;", stylesheet['Ballot_option_suffix_YNA']))
+                cell.append(Paragraph("<font name='circlefont' size='15'>%(circle)s</font> \
+                    <font name='Ubuntu'>%(yes)s &nbsp;&nbsp;&nbsp;</font> \
+                    <font name='circlefont' size='15'>%(circle)s</font> \
+                    <font name='Ubuntu'>%(no)s &nbsp;&nbsp;&nbsp;</font> \
+                    <font name='circlefont' size='15'>%(circle)s</font> \
+                    <font name='Ubuntu'>%(abstain)s</font>" %
+                            {'circle': circle,
+                             'yes': _("Yes"),
+                             'no': _("No"),
+                             'abstain': _("Abstention")},
+                            stylesheet['Ballot_option_circle_YNA']))
+                if counter == 13:
+                    cellcolumnA = cell
+                    cell = []
+                    cell.append(Spacer(0, 1.3 * cm))
+
             # print ballot papers
             for user in xrange(number / 2):
-                data.append([cell, cell])
+                if len(options) > 13:
+                    data.append([cellcolumnA, cell])
+                else:
+                    data.append([cell, cell])
             rest = number % 2
             if rest:
                 data.append([cell, ''])
@@ -576,22 +590,31 @@ class AssignmentPollPDF(PDFView):
                 t = Table(data, 10.5 * cm, 14.84 * cm)
             else:
                 t = Table(data, 10.5 * cm, 29.7 * cm)
-        else:
+        else:  # Yes ballot: max 46 candidates
             for option in options:
+                counter += 1
                 candidate = option.candidate
-                cell.append(Paragraph(
-                    circle + candidate.clean_name,
-                    stylesheet['Ballot_option_name']))
+                cell.append(Paragraph("<font name='circlefont' size='15'>%s</font> \
+                            <font name='Ubuntu'>%s</font>" %
+                            (circle, candidate.clean_name), stylesheet['Ballot_option_name']))
                 if candidate.name_suffix:
                     cell.append(Paragraph(
                         "(%s)" % candidate.name_suffix,
-                        stylesheet['Ballot_option_group_right']))
+                        stylesheet['Ballot_option_suffix']))
                 else:
                     cell.append(Paragraph(
-                        "&nbsp;", stylesheet['Ballot_option_group_right']))
+                        "&nbsp;", stylesheet['Ballot_option_suffix']))
+                if counter == 22:
+                    cellcolumnA = cell
+                    cell = []
+                    cell.append(Spacer(0, 0.75 * cm))
+
             # print ballot papers
             for user in xrange(number / 2):
-                data.append([cell, cell])
+                if len(options) > 22:
+                    data.append([cellcolumnA, cell])
+                else:
+                    data.append([cell, cell])
             rest = number % 2
             if rest:
                 data.append([cell, ''])

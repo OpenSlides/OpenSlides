@@ -42,6 +42,7 @@ Participant:
 Files:
 - Fixed error when a file was removed from filesystem.
 Other:
+- Used unicode font for circle in ballot pdf. Removed pillow dependency package.
 - Fixed http status code when requesting a non-existing static page using
   Tordado web server.
 - Fixed error in main script when using other database engine.

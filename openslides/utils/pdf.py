@@ -21,7 +21,8 @@ pdfmetrics.registerFont(TTFont(
 pdfmetrics.registerFont(TTFont(
     'Ubuntu-Bold', path_join(settings.SITE_ROOT, 'core/static/fonts/Ubuntu-B.ttf')))
 pdfmetrics.registerFont(TTFont(
-    'Ubuntu-Italic', path_join(settings.SITE_ROOT, 'core/static/fonts/Ubuntu-RI.ttf')))
+pdfmetrics.registerFont(TTFont(
+    'circlefont', path_join(settings.SITE_ROOT, 'core/static/fonts/circle.ttf')))
 
 
 # set style information
@@ -185,30 +186,29 @@ stylesheet.add(ParagraphStyle(name='Ballot_option',
                               leading=24,
                               leftIndent=30),
                )
+stylesheet.add(ParagraphStyle(name='Ballot_option_name_YNA',
+                              parent=stylesheet['Ballot_option'],
+                              leading=14),
+               )
 stylesheet.add(ParagraphStyle(name='Ballot_option_name',
-                              parent=stylesheet['Normal'],
-                              fontSize=12,
-                              leading=15,
-                              leftIndent=30),
+                              parent=stylesheet['Ballot_option_name_YNA'],
+                              leading=17),
                )
-stylesheet.add(ParagraphStyle(name='Ballot_option_group',
-                              parent=stylesheet['Normal'],
+
+stylesheet.add(ParagraphStyle(name='Ballot_option_suffix_YNA',
+                              parent=stylesheet['Ballot_option_name_YNA'],
                               fontSize=8,
-                              leading=15,
-                              leftIndent=30),
+                              leading=11),
                )
-stylesheet.add(ParagraphStyle(name='Ballot_option_YNA',
-                              parent=stylesheet['Normal'],
-                              fontSize=12,
-                              leading=15,
-                              leftIndent=49,
-                              spaceAfter=18),
-               )
-stylesheet.add(ParagraphStyle(name='Ballot_option_group_right',
-                              parent=stylesheet['Normal'],
-                              fontSize=8,
+stylesheet.add(ParagraphStyle(name='Ballot_option_suffix',
+                              parent=stylesheet['Ballot_option_suffix_YNA'],
                               leading=16,
-                              leftIndent=49),
+                              leftIndent=48),
+               )
+stylesheet.add(ParagraphStyle(name='Ballot_option_circle_YNA',
+                              parent=stylesheet['Ballot_option_name_YNA'],
+                              leftIndent=48,
+                              spaceAfter=18),
                )
 # Password paper stylesheets
 stylesheet.add(ParagraphStyle(name='formfield',
