@@ -43,6 +43,9 @@ LIBEXCLUDE = [
 
 
 SITE_PACKAGES = {
+    "backports.ssl_match_hostname": {
+        "copy": ["backports"],
+    },
     "beautifulsoup4": {
         "copy": ["bs4"],
     },

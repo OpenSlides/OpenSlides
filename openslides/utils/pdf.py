@@ -21,7 +21,6 @@ pdfmetrics.registerFont(TTFont(
 pdfmetrics.registerFont(TTFont(
     'Ubuntu-Bold', path_join(settings.SITE_ROOT, 'core/static/fonts/Ubuntu-B.ttf')))
 pdfmetrics.registerFont(TTFont(
-pdfmetrics.registerFont(TTFont(
     'circlefont', path_join(settings.SITE_ROOT, 'core/static/fonts/circle.ttf')))
 
 

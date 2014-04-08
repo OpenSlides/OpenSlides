@@ -19,7 +19,7 @@ class PDFPresentationWidget(Widget):
     default_weight = 75
     template_name = 'mediafile/widget_pdfpresentation.html'
     more_link_pattern_name = 'mediafile_list'
-    #javascript_files = None  # TODO: Add pdf.js stuff here.
+    # javascript_files = None  # TODO: Add pdf.js stuff here.
 
     def get_context_data(self, **context):
         pdfs = Mediafile.objects.filter(
