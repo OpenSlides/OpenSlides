@@ -321,3 +321,4 @@ class AssignmentPoll(RelatedModelMixin, CollectInvalid, CollectVotesCast,
 
     def append_pollform_fields(self, fields):
         fields.append('description')
+        super(AssignmentPoll, self).append_pollform_fields(fields)
