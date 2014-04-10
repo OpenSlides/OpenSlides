@@ -45,6 +45,10 @@
             </tr>
         {% endfor %}
         <tr class="total">
+            <td>{% trans "Valid votes" %}</td>
+            <td>{{ pollform.votesvalid.errors }}{{ pollform.votesvalid }}</td>
+        </tr>
+        <tr class="">
             <td>{% trans "Invalid votes" %}</td>
             <td>{{ pollform.votesinvalid.errors }}{{ pollform.votesinvalid }}</td>
         </tr>

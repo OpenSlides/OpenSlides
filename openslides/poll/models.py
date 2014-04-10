@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import locale
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.translation import ugettext as _
@@ -60,17 +62,28 @@ class BaseVote(models.Model):
         if raw:
             return self.weight
         try:
-            percent_base = self.option.poll.percent_base()
+            percent_base = self.option.poll.get_percent_base()
         except AttributeError:
             # The poll class is no child of CollectVotesCast
             percent_base = 0
         return print_value(self.weight, percent_base)
 
 
-class CollectVotesCast(models.Model):
+PERCENT_BASE_CHOICES = (
+    ('WITHOUT_INVALID', ugettext_lazy('All valid votes (Yes + No + Abstention)')),
+    ('WITH_INVALID', ugettext_lazy('All votes casts (valid + invalid votes)')),
+    ('DISABLED', ugettext_lazy('Disabled (no percents)')))
+
+
+class CollectDefaultVotesMixin(models.Model):
     """
-    Mixin for a poll to collect the votes cast.
+    Mixin for a poll to collect the default vote values for valid votes,
+    invalid votes and votes cast.
     """
+    votesvalid = MinMaxIntegerField(null=True, blank=True, min_value=-2,
+                                    verbose_name=ugettext_lazy('Votes valid'))
+    votesinvalid = MinMaxIntegerField(null=True, blank=True, min_value=-2,
+                                      verbose_name=ugettext_lazy('Votes invalid'))
     votescast = MinMaxIntegerField(null=True, blank=True, min_value=-2,
                                    verbose_name=ugettext_lazy('Votes cast'))
 
@@ -78,39 +91,46 @@ class CollectVotesCast(models.Model):
         abstract = True
 
     def append_pollform_fields(self, fields):
-        fields.append('votescast')
-        super(CollectVotesCast, self).append_pollform_fields(fields)
-
-    def print_votescast(self):
-        return print_value(self.votescast, self.percent_base())
-
-    def percent_base(self):
-        if self.votescast > 0:
-            return 100 / float(self.votescast)
-        return 0
-
-
-class CollectInvalid(models.Model):
-    """
-    Mixin for a poll to collect invalid votes.
-    """
-    votesinvalid = MinMaxIntegerField(null=True, blank=True, min_value=-2,
-                                      verbose_name=ugettext_lazy('Votes invalid'))
-
-    class Meta:
-        abstract = True
-
-    def append_pollform_fields(self, fields):
+        fields.append('votesvalid')
         fields.append('votesinvalid')
-        super(CollectInvalid, self).append_pollform_fields(fields)
+        fields.append('votescast')
+        super(CollectDefaultVotesMixin, self).append_pollform_fields(fields)
+
+    def get_percent_base_choice(self):
+        """
+        Returns one of the three strings in PERCENT_BASE_CHOICES.
+        """
+        raise NotImplementedError('You have to provide a get_percent_base_choice() method.')
+
+    def print_votesvalid(self):
+        if self.get_percent_base_choice() == 'DISABLED':
+            value = print_value(self.votesvalid, None)
+        else:
+            value = print_value(self.votesvalid, self.get_percent_base())
+        return value
 
     def print_votesinvalid(self):
-        try:
-            percent_base = self.percent_base()
-        except AttributeError:
-            # The poll class is no child of CollectVotesCast
-            percent_base = 0
-        return print_value(self.votesinvalid, percent_base)
+        if self.get_percent_base_choice() == 'WITH_INVALID':
+            value = print_value(self.votesinvalid, self.get_percent_base())
+        else:
+            value = print_value(self.votesinvalid, None)
+        return value
+
+    def print_votescast(self):
+        if self.get_percent_base_choice() == 'WITH_INVALID':
+            value = print_value(self.votescast, self.get_percent_base())
+        else:
+            value = print_value(self.votescast, None)
+        return value
+
+    def get_percent_base(self):
+        if self.get_percent_base_choice() == "WITHOUT_INVALID" and self.votesvalid > 0:
+            base = 100 / float(self.votesvalid)
+        elif self.get_percent_base_choice() == "WITH_INVALID" and self.votescast > 0:
+            base = 100 / float(self.votescast)
+        else:
+            base = None
+        return base
 
 
 class PublishPollMixin(models.Model):
@@ -251,7 +271,8 @@ def print_value(value, percent_base=0):
         verbose_value = _('undocumented')
     else:
         if percent_base:
-            verbose_value = u'%d (%.2f %%)' % (value, value * percent_base)
+            locale.setlocale(locale.LC_ALL, '')
+            verbose_value = u'%d (%s %%)' % (value, locale.format('%.1f', value * percent_base))
         else:
             verbose_value = u'%s' % value
     return verbose_value

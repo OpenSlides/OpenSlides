@@ -80,12 +80,23 @@
         {% endfor %}
         </tr>
     {% endfor %}
+    <tr class="total">
+        <td>{% trans 'Valid votes' %}</td>
+        {% for poll in polls %}
+            <td style="white-space:nowrap;">
+                {% if poll.has_votes %}
+                    <img src="{% static 'img/voting-yes-grey.png' %}" title="{% trans 'Valid votes' %}">
+                    {{ poll.print_votesvalid }}
+                {% endif %}
+            </td>
+        {% endfor %}
+    </tr>
     <tr>
         <td>{% trans 'Invalid votes' %}</td>
         {% for poll in polls %}
             <td style="white-space:nowrap;">
-                {% if  poll.has_votes %}
-                    <img src="{% static 'img/voting-invalid.png' %}" title="{% trans 'Invalid' %}">
+                {% if poll.has_votes %}
+                    <img src="{% static 'img/voting-invalid.png' %}" title="{% trans 'Invalid votes' %}">
                     {{ poll.print_votesinvalid }}
                 {% endif %}
             </td>
@@ -94,13 +105,13 @@
     </tr>
     <tr class="total">
         <td>
-            <strong>{% trans 'Votes cast' %}</strong>
+            {% trans 'Votes cast' %}
         </td>
         {% for poll in polls %}
             <td style="white-space:nowrap;">
                 {% if poll.has_votes %}
                     <img src="{% static 'img/voting-total.png' %}" title="{% trans 'Votes cast' %}">
-                    <strong>{{ poll.print_votescast }}</strong>
+                    {{ poll.print_votescast }}
                 {% endif %}
             </td>
         {% endfor %}

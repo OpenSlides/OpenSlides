@@ -187,8 +187,8 @@
             <td>
                 {% if candidate in assignment.elected %}
                     {% if perms.assignment.can_manage_assignment %}
-                        <a class="election_link elected" href="{% url 'assignment_user_not_elected' assignment.id candidate.person_id %}"
-                            rel="tooltip" data-original-title="{% trans 'Mark candidate as elected' %}"></a>
+                        <a class="election_link elected tooltip-bottom" href="{% url 'assignment_user_not_elected' assignment.id candidate.person_id %}"
+                            data-original-title="{% trans 'Mark candidate as elected' %}"></a>
                     {% else %}
                         <a class="elected">
                             <img src="{% static 'img/voting-yes.png' %}" class="tooltip-bottom" data-original-title="{% trans 'Candidate is elected' %}">
@@ -196,7 +196,8 @@
                     {% endif %}
                 {% else %}
                     {% if perms.assignment.can_manage_assignment %}
-                        <a class="election_link" href="{% url 'assignment_user_elected' assignment.id candidate.person_id %}"></a>
+                        <a class="election_link tooltip-bottom" href="{% url 'assignment_user_elected' assignment.id candidate.person_id %}"
+                           data-original-title="{% trans 'Mark candidate as elected' %}"></a>
                     {% endif %}
                 {% endif %}
                 <a href="{{ candidate|absolute_url }}">{{ candidate }}</a>
@@ -222,12 +223,28 @@
         </tr>
         {% endfor %}
         <tr>
+            <td>{% trans 'Valid votes' %}</td>
+            {% for poll in polls %}
+                {% if poll.published or perms.assignment.can_manage_assignment %}
+                    <td style="white-space:nowrap;">
+                        {% if poll.has_votes %}
+                            <img src="{% static 'img/voting-yes-grey.png' %}" class="tooltip-left" data-original-title="{% trans 'Valid votes' %}">
+                            {{ poll.print_votesvalid }}
+                        {% endif %}
+                    </td>
+                {% endif %}
+            {% endfor %}
+            {% if assignment.candidates and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
+                <td></td>
+            {% endif %}
+        </tr>
+        <tr>
             <td>{% trans 'Invalid votes' %}</td>
             {% for poll in polls %}
                 {% if poll.published or perms.assignment.can_manage_assignment %}
                     <td style="white-space:nowrap;">
                         {% if poll.has_votes %}
-                            <img src="{% static 'img/voting-invalid.png' %}" class="tooltip-left" data-original-title="{% trans 'Invalid' %}">
+                            <img src="{% static 'img/voting-invalid.png' %}" class="tooltip-left" data-original-title="{% trans 'Invalid votes' %}">
                             {{ poll.print_votesinvalid }}
                         {% endif %}
                     </td>
@@ -238,13 +255,13 @@
             {% endif %}
         </tr>
         <tr class="info total">
-            <td><strong>{% trans 'Votes cast' %}</strong></td>
+            <td>{% trans 'Votes cast' %}</td>
             {% for poll in polls %}
                 {% if poll.published or perms.assignment.can_manage_assignment %}
                     <td style="white-space:nowrap;">
                         {% if poll.has_votes %}
                             <img src="{% static 'img/voting-total.png' %}" class="tooltip-left" data-original-title="{% trans 'Votes cast' %}">
-                            <strong>{{ poll.print_votescast }}</strong>
+                            {{ poll.print_votescast }}
                         {% endif %}
                     </td>
                 {% endif %}

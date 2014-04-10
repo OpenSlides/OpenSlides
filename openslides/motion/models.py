@@ -9,8 +9,7 @@ from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.config.api import config
 from openslides.mediafile.models import Mediafile
-from openslides.poll.models import (BaseOption, BasePoll, BaseVote,
-                                    CollectInvalid, CollectVotesCast)
+from openslides.poll.models import (BaseOption, BasePoll, BaseVote, CollectDefaultVotesMixin)
 from openslides.projector.models import RelatedModelMixin, SlideMixin
 from jsonfield import JSONField
 from openslides.utils.models import AbsoluteUrlMixin
@@ -694,8 +693,7 @@ class MotionOption(BaseOption):
     """The VoteClass, to witch this Class links."""
 
 
-class MotionPoll(RelatedModelMixin, CollectInvalid, CollectVotesCast,
-                 AbsoluteUrlMixin, BasePoll):
+class MotionPoll(RelatedModelMixin, CollectDefaultVotesMixin, AbsoluteUrlMixin, BasePoll):
     """The Class to saves the poll results for a motion poll."""
 
     motion = models.ForeignKey(Motion, related_name='polls')
@@ -745,6 +743,9 @@ class MotionPoll(RelatedModelMixin, CollectInvalid, CollectVotesCast,
 
     def get_related_model(self):
         return self.motion
+
+    def get_percent_base_choice(self):
+        return config['motion_poll_100_percent_base']
 
 
 class State(models.Model):

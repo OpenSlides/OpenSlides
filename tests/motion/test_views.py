@@ -86,10 +86,10 @@ class TestMotionDetailView(MotionViewTestCase):
         response = self.staff_client.post(
             '/motion/1/poll/1/edit/',
             {'option-1-Yes': '10',
-             'pollform-votescast': '50'})
+             'pollform-votesvalid': '50'})
         self.assertRedirects(response, '/motion/1/')
         response = self.staff_client.get('/motion/1/')
-        self.assertContains(response, '100.00 %')
+        self.assertContains(response, '50 (100')
 
     def test_deleted_supporter(self):
         config['motion_min_supporters'] = 1

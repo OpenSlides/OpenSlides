@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy, ugettext_noop
 from openslides.config.api import ConfigGroup, ConfigGroupedCollection, ConfigVariable
 from openslides.config.signals import config_signal
 from openslides.core.signals import post_database_setup
+from openslides.poll.models import PERCENT_BASE_CHOICES
 
 from .models import State, Workflow
 
@@ -85,7 +86,15 @@ def setup_motion_config(sender, **kwargs):
         title=ugettext_lazy('Supporters'),
         variables=(motion_min_supporters, motion_remove_supporters))
 
-    # Ballot papers
+    # Voting and ballot papers
+    motion_poll_100_percent_base = ConfigVariable(
+        name='motion_poll_100_percent_base',
+        default_value='WITHOUT_INVALID',
+        form_field=forms.ChoiceField(
+            widget=forms.Select(),
+            required=False,
+            label=ugettext_lazy('The 100 % base of a voting result consists of'),
+            choices=PERCENT_BASE_CHOICES))
     motion_pdf_ballot_papers_selection = ConfigVariable(
         name='motion_pdf_ballot_papers_selection',
         default_value='CUSTOM_NUMBER',
@@ -106,8 +115,8 @@ def setup_motion_config(sender, **kwargs):
             min_value=1,
             label=ugettext_lazy('Custom number of ballot papers')))
     group_ballot_papers = ConfigGroup(
-        title=ugettext_lazy('Ballot papers'),
-        variables=(motion_pdf_ballot_papers_selection, motion_pdf_ballot_papers_number))
+        title=ugettext_lazy('Voting and ballot papers'),
+        variables=(motion_poll_100_percent_base, motion_pdf_ballot_papers_selection, motion_pdf_ballot_papers_number))
 
     # PDF
     motion_pdf_title = ConfigVariable(
