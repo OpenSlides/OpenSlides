@@ -59,7 +59,9 @@
         </div>
 
         <div id="overlays">
-            {{ overlays }}
+            {% for overlay in overlays.values %}
+                {{ overlay.get_projector_html|safe }}
+            {% endfor %}
         </div>
 
         <div id="content" {% if reload %}class="reload"{% endif %}>

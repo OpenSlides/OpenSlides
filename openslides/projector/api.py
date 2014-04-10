@@ -104,27 +104,20 @@ def default_slide():
     return render_to_string('projector/default_slide.html')
 
 
-def get_overlays():
+def get_overlays(only_active=False):
     """
     Returns all overlay objects.
+
+    If only_active is True, returns only active overlays.
 
     The returned value is a dictonary with the name of the overlay as key, and
     the overlay object as value.
     """
     overlays = {}
     for receiver, overlay in projector_overlays.send(sender='get_overlays'):
-        overlays[overlay.name] = overlay
+        if not only_active or overlay.is_active():
+            overlays[overlay.name] = overlay
     return overlays
-
-
-def get_projector_overlays():
-    """
-    Returns the HTML code for all active overlays.
-    """
-    overlays = [{'name': key, 'html': overlay.get_projector_html()}
-                for key, overlay in get_overlays().items()
-                if overlay.is_active()]
-    return render_to_string('projector/all_overlays.html', {'overlays': overlays})
 
 
 def get_projector_overlays_js(as_json=False):

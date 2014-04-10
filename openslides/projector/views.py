@@ -6,7 +6,7 @@ from openslides.utils.tornado_webserver import ProjectorSocketHandler
 from openslides.utils.views import RedirectView, TemplateView
 
 from .api import (call_on_projector, get_active_slide,
-                  get_overlays, get_projector_content, get_projector_overlays,
+                  get_overlays, get_projector_content,
                   get_projector_overlays_js, reset_countdown, set_active_slide,
                   start_countdown, stop_countdown, update_projector_overlay)
 
@@ -24,7 +24,7 @@ class ProjectorView(TemplateView):
         if callback is None:
             kwargs.update({
                 'content':  get_projector_content(),
-                'overlays': get_projector_overlays(),
+                'overlays': get_overlays(only_active=True),
                 'overlay_js': get_projector_overlays_js(as_json=True),
                 'reload': True,
                 'calls': config['projector_js_cache']})
