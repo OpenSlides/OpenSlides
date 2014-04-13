@@ -98,3 +98,13 @@ class CleanHtmlFormMixin(object):
                 # The field 'field' is not pressent. Do not change cleaned_data
                 pass
         return cleaned_data
+
+
+class CSVImportForm(CssClassMixin, forms.Form):
+    """
+    Form for the CSVImportView.
+    """
+    csvfile = forms.FileField(
+        widget=forms.FileInput(attrs={'size': '50'}),
+        label=ugettext_lazy('CSV File'),
+        help_text=ugettext_lazy('The file has to be encoded in UTF-8.'))

@@ -17,14 +17,14 @@ from openslides.utils.utils import html_strong
 from .models import Category, Motion
 
 
-def import_motions(csv_file, default_submitter, override=False, importing_person=None):
+def import_motions(csvfile, default_submitter, override, importing_person=None):
     """
     Imports motions from a csv file.
 
     The file must be encoded in utf8. The first line (header) is ignored.
     If no or multiple submitters found, the default submitter is used. If
     a motion with a given identifier already exists, the motion is overridden,
-    when the flag 'override' is true. If no or multiple categories found,
+    when the flag 'override' is True. If no or multiple categories found,
     the category is set to None.
     """
     count_success = 0
@@ -32,18 +32,18 @@ def import_motions(csv_file, default_submitter, override=False, importing_person
 
     # Check encoding
     try:
-        csv_file.read().decode('utf8')
+        csvfile.read().decode('utf8')
     except UnicodeDecodeError:
-        return (0, 0, [_('Import file has wrong character encoding, only UTF-8 is supported!')], [])
-    csv_file.seek(0)
+        return '', '', _('Import file has wrong character encoding, only UTF-8 is supported!')
+    csvfile.seek(0)
 
     with transaction.commit_on_success():
-        dialect = csv.Sniffer().sniff(csv_file.readline())
+        dialect = csv.Sniffer().sniff(csvfile.readline())
         dialect = csv_ext.patchup(dialect)
-        csv_file.seek(0)
+        csvfile.seek(0)
         all_error_messages = []
         all_warning_messages = []
-        for (line_no, line) in enumerate(csv.reader(csv_file, dialect=dialect)):
+        for (line_no, line) in enumerate(csv.reader(csvfile, dialect=dialect)):
             warning = []
             if line_no < 1:
                 # Do not read the header line
@@ -115,7 +115,7 @@ def import_motions(csv_file, default_submitter, override=False, importing_person
             count_success += 1
 
         # Build final error message with all error items (one bullet point for each csv line)
-        full_error_message = None
+        full_error_message = ''
         if all_error_messages:
             full_error_message = "%s <ul>" % html_strong(_("Errors"))
             for error in all_error_messages:
@@ -123,11 +123,20 @@ def import_motions(csv_file, default_submitter, override=False, importing_person
             full_error_message += "</ul>"
 
         # Build final warning message with all warning items (one bullet point for each csv line)
-        full_warning_message = None
+        full_warning_message = ''
         if all_warning_messages:
             full_warning_message = "%s <ul>" % html_strong(_("Warnings"))
             for warning in all_warning_messages:
                 full_warning_message += "<li>%s</li>" % warning
             full_warning_message += "</ul>"
 
-    return (count_success, count_lines, [full_error_message], [full_warning_message])
+        # Build final success message
+        if count_success:
+            success_message = '<strong>%s</strong><br>%s' % (
+                _('Summary'),
+                _('%(counts)d of %(total)d motions successfully imported.')
+                % {'counts': count_success, 'total': count_lines})
+        else:
+            success_message = ''
+
+    return success_message, full_warning_message, full_error_message

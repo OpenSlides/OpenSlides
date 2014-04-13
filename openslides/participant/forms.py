@@ -172,8 +172,3 @@ class UsersettingsForm(CssClassMixin, forms.ModelForm):
         model = User
         fields = ('user_name', 'title', 'first_name', 'last_name', 'gender', 'email',
                   'committee', 'about_me')
-
-
-class UserImportForm(CssClassMixin, forms.Form):
-    csvfile = forms.FileField(widget=forms.FileInput(attrs={'size': '50'}),
-                              label=ugettext_lazy('CSV File'))

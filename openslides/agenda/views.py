@@ -16,10 +16,18 @@ from openslides.projector.api import get_active_slide, update_projector
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.pdf import stylesheet
 from openslides.utils.utils import html_strong
-from openslides.utils.views import (CreateView, DeleteView, FormView, PDFView,
-                                    RedirectView, SingleObjectMixin,
-                                    TemplateView, UpdateView)
+from openslides.utils.views import (
+    CreateView,
+    CSVImportView,
+    DeleteView,
+    FormView,
+    PDFView,
+    RedirectView,
+    SingleObjectMixin,
+    TemplateView,
+    UpdateView)
 
+from .csv_import import import_agenda_items
 from .forms import AppendSpeakerForm, ItemForm, ItemOrderForm, RelatedItemForm
 from .models import Item, Speaker
 
@@ -620,3 +628,13 @@ class CurrentListOfSpeakersView(RedirectView):
                 return reverse('core_dashboard')
             else:
                 return reverse('item_view', args=[item.pk])
+
+
+class ItemCSVImportView(CSVImportView):
+    """
+    Imports agenda items from an uploaded csv file.
+    """
+    import_function = staticmethod(import_agenda_items)
+    permission_required = 'agenda.can_manage_agenda'
+    success_url_name = 'item_overview'
+    template_name = 'agenda/item_form_csv_import.html'
