@@ -13,10 +13,10 @@ from django.utils.translation import activate, ugettext_lazy
 from openslides.config.api import config
 from openslides.utils.utils import (delete_default_permissions, html_strong,
                                     template)
-from openslides.utils.views import (CreateView, DeleteView, DetailView,
+from openslides.utils.views import (CreateView, DeleteView, MultipleDeleteView, DetailView,
                                     FormView, ListView, PDFView,
                                     PermissionMixin, QuestionView,
-                                    RedirectView, SingleObjectMixin, UpdateView)
+                                    RedirectView, SingleObjectMixin, ObjectListMixin, UpdateView)
 
 from .api import gen_password, gen_username, import_users
 from .forms import (GroupForm, UserCreateForm, UserMultipleCreateForm, UserImportForm,
@@ -173,7 +173,75 @@ class UserDeleteView(DeleteView):
             super(UserDeleteView, self).pre_post_redirect(request, *args, **kwargs)
 
 
-class SetUserStatusView(SingleObjectMixin, RedirectView):
+class UserMultipleDeleteView(MultipleDeleteView):
+    permission_required = 'participant.can_manage_participant'
+    question_url_name = 'user_overview'
+    success_url_name = 'user_overview'
+    url_name_args = []
+    model = User
+
+    def get(self, request, *args, **kwargs):
+        self.objects = self.get_objects(self.request.GET.getlist('users') or request.session['users'])
+        return super(UserMultipleDeleteView, self).get(request, *args, **kwargs)
+
+    def pre_redirect(self, request, *args, **kwargs):
+        users = self.request.GET.getlist('users')
+        request.session['users'] = users
+        if self.request.user.id in users:
+            messages.error(self.request, _("You can not delete yourself."))
+        else:
+            super(UserMultipleDeleteView, self).pre_redirect(request, *args, **kwargs)
+
+    def get_question_message(self):
+        """
+        Returns the question for the delete dialog.
+        """
+        users = [unicode(str(object), 'utf-8') for object in self.objects]
+        user_names = ", ".join(users[:-1]) + (' ' + _('and') + ' ' if users[:-1] else '') + ''.join(users[-1:])
+        return _('Do you really want to delete %s ?') % html_strong(user_names)
+
+    def get_final_message(self):
+        """
+        Prints the success message to the user.
+        """
+        return _('User(s) successfully deleted.')
+
+
+class UserMultipleDeleteView(MultipleDeleteView):
+    permission_required = 'participant.can_manage_participant'
+    question_url_name = 'user_overview'
+    success_url_name = 'user_overview'
+    url_name_args = []
+    model = User
+
+    def get(self, request, *args, **kwargs):
+        self.objects = self.get_objects(self.request.GET.getlist('users') or request.session['users'])
+        return super(UserMultipleDeleteView, self).get(request, *args, **kwargs)
+
+    def pre_redirect(self, request, *args, **kwargs):
+        users = self.request.GET.getlist('users')
+        request.session['users'] = users
+        if self.request.user.id in users:
+            messages.error(self.request, _("You can not delete yourself."))
+        else:
+            super(UserMultipleDeleteView, self).pre_redirect(request, *args, **kwargs)
+
+    def get_question_message(self):
+        """
+        Returns the question for the delete dialog.
+        """
+        users = [unicode(str(object), 'utf-8') for object in self.objects]
+        user_names = ", ".join(users[:-1]) + (' ' + _('and') + ' ' if users[:-1] else '') + ''.join(users[-1:])
+        return _('Do you really want to delete %s ?') % html_strong(user_names)
+
+    def get_final_message(self):
+        """
+        Prints the success message to the user.
+        """
+        return _('User(s) successfully deleted.')
+
+
+class SetUserStatusView(RedirectView, SingleObjectMixin):
     """
     Activate or deactivate an user.
     """
@@ -204,6 +272,22 @@ class SetUserStatusView(SingleObjectMixin, RedirectView):
         return context
 
 
+class UserMultipleStatusToggleView(RedirectView, ObjectListMixin):
+    """
+    Activate or deactivate multiple users.
+    """
+    permission_required = 'participant.can_manage_participant'
+    allow_ajax = True
+    url_name = 'user_overview'
+    model = User
+
+    def pre_redirect(self, request, *args, **kwargs):
+        self.objects = self.get_objects(self.request.GET.getlist('users'))
+        for object in self.objects:
+            object.is_active = not object.is_active
+            object.save()
+
+
 class ParticipantsListPDF(PDFView):
     """
     Generate the userliste as PDF.
@@ -219,13 +303,20 @@ class ParticipantsListPDF(PDFView):
         participants_to_pdf(pdf)
 
 
-class ParticipantsPasswordsPDF(PDFView):
+class ParticipantsPasswordsPDF(PDFView, ObjectListMixin):
     """
     Generate the access data welcome paper for all participants as PDF.
     """
     permission_required = 'participant.can_manage_participant'
     filename = ugettext_lazy("Participant-access-data")
     top_space = 0
+    users = None
+    model = User
+
+    def get(self, request, *args, **kwargs):
+        sort = 'first_name' if config['participant_sort_users_by_first_name'] else 'last_name'
+        self.users = self.get_objects(request.session['users'], sort)
+        return super(ParticipantsPasswordsPDF, self).get(request, *args, **kwargs)
 
     def build_document(self, pdf_document, story):
         pdf_document.build(story)
@@ -234,7 +325,19 @@ class ParticipantsPasswordsPDF(PDFView):
         """
         Append PDF objects.
         """
-        participants_passwords_to_pdf(pdf)
+        participants_passwords_to_pdf(pdf, self.users)
+
+
+class SelectedParticipantsPasswordsView(RedirectView):
+    """
+    Prepare the access data welcome paper for selected participants as PDF.
+    """
+    permission_required = 'participant.can_manage_participant'
+    url_name = 'print_passwords'
+
+    def pre_redirect(self, request, *args, **kwargs):
+        request.session['users'] = self.request.GET.getlist('users')
+        super(SelectedParticipantsPasswordsView, self).pre_redirect(request, *args, **kwargs)
 
 
 class UserImportView(FormView):

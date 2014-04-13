@@ -117,6 +117,11 @@ tr.total td {
 .mini_width {
     width: 1px;
 }
+
+.action_border {
+    margin-bottom: 0.5em;
+}
+
 /* show optional column */
 .optional {
     display: auto;

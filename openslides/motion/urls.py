@@ -26,6 +26,10 @@ urlpatterns = patterns(
         'motion_delete',
         name='motion_delete'),
 
+    url(r'^multi_delete/$',
+        'motion_multi_delete',
+        name='motion_multi_delete'),
+
     url(r'^(?P<pk>\d+)/version/(?P<version_number>\d+)/$',
         'motion_detail',
         name='motion_version_detail'),

@@ -31,13 +31,49 @@ $(document).ready(function() {
             }
         }
     } );
+
+    /*
+     * Toggle checkboxes when clicking on check_all
+     */
+    $('#check_all').on('click', function() {
+        var checkAll = this;
+        var oTable = $('#dataTable').dataTable();
+        $(oTable.fnGetNodes()).find(':checkbox').each(function () {
+            if (checkAll.checked) {
+                $(this).prop('checked', true);
+            } else {
+                $(this).prop('checked', false);
+            }
+        });
+    });
+
+    /*
+     * Get all selected rows from datatable and pass the values as GET parameters
+     */
+    $('.table_action').on('click', function(event) {
+        var link = $(this);
+        var formData = $('input', $('#dataTable').dataTable().fnGetNodes()).serialize();
+        if (formData) {
+            href = link.attr('href');
+            if (href.indexOf('?') != -1) {
+                href = href.substr(0, href.indexOf('?'));
+            }
+            href = href.replace(/\/$/, "");
+            target = href + '?' + formData;
+            link.attr('href', target);
+            return;
+        }
+
+        event.preventDefault();
+    });
+
 } );
 
 
 /* Set the defaults for DataTables initialisation */
 $.extend( true, $.fn.dataTable.defaults, {
     "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
-    "sPaginationType": "bootstrap",
+    "sPaginationType": "bootstrap"
 } );
 
 

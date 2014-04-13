@@ -54,6 +54,14 @@ urlpatterns = patterns(
         views.UserImportView.as_view(),
         name='user_import'),
 
+    url(r'^multi_delete/$',
+        views.UserMultipleDeleteView.as_view(),
+        name='user_multi_delete'),
+
+    url(r'^multi_status_toggle/$',
+        views.UserMultipleStatusToggleView.as_view(),
+        name='user_multi_status_toggle'),
+
     # Group
     url(r'^group/$',
         views.GroupOverview.as_view(),
@@ -83,4 +91,9 @@ urlpatterns = patterns(
     url(r'^passwords/print/$',
         views.ParticipantsPasswordsPDF.as_view(),
         name='print_passwords'),
+
+    url(r'^passwords/print_selected/$',
+        views.SelectedParticipantsPasswordsView.as_view(),
+        name='print_selected_passwords'),
+
 )
