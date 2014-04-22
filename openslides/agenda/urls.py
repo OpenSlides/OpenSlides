@@ -89,6 +89,10 @@ urlpatterns = patterns(
         views.CurrentListOfSpeakersView.as_view(end_speach=True),
         name='agenda_end_speach_on_current_list_of_speakers'),
 
+    url(r'^list_of_speakers/projector/$',
+        views.CurrentListOfSpeakersProjectorView.as_view(),
+        name='agenda_current_list_of_speakers_projector'),
+
     url(r'^csv_import/$',
         views.ItemCSVImportView.as_view(),
         name='item_csv_import'))

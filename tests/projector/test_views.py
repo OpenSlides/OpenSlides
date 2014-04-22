@@ -13,9 +13,9 @@ class ProjectorViewTest(TestCase):
     rf = RequestFactory()
 
     @patch('openslides.projector.views.get_projector_overlays_js')
-    @patch('openslides.projector.views.get_projector_overlays')
+    @patch('openslides.projector.views.get_overlays')
     @patch('openslides.projector.views.get_projector_content')
-    def test_get(self, mock_get_projector_content, mock_get_projector_overlays,
+    def test_get(self, mock_get_projector_content, mock_get_overlays,
                  mock_get_projector_overlays_js):
         view = views.ProjectorView()
         view.request = self.rf.get('/')
@@ -34,7 +34,7 @@ class ProjectorViewTest(TestCase):
         with patch('openslides.projector.views.config', mock_config):
             context = view.get_context_data()
         mock_get_projector_content.assert_called_with()
-        mock_get_projector_overlays.assert_called_with()
+        mock_get_overlays.assert_called_with(only_active=True)
         mock_get_projector_overlays_js.assert_called_with(as_json=True)
         self.assertTrue(context['reload'])
         self.assertEqual(context['calls'], 'js_cache')

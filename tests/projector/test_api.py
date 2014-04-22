@@ -91,30 +91,17 @@ class ApiFunctions(TestCase):
         mock_overlay = MagicMock()
         mock_overlay.name = 'mock_overlay'
         mock_projector_overlays.send.return_value = ((None, mock_overlay), )
-
         value = projector_api.get_overlays()
         self.assertEqual(value, {'mock_overlay': mock_overlay})
 
-    @patch('openslides.projector.api.render_to_string')
-    @patch('openslides.projector.api.get_overlays')
-    def test_get_projector_overlays(self, mock_get_overlays, mock_render_to_string):
+    @patch('openslides.projector.api.projector_overlays')
+    def test_get_overlays_inactive(self, mock_projector_overlays):
         mock_overlay = MagicMock()
-        mock_overlay.get_projector_html.return_value = 'some html'
-        mock_get_overlays.return_value = {'overlay_name': mock_overlay}
-
-        # Test with inactive overlay
+        mock_overlay.name = 'mock_overlay_2'
         mock_overlay.is_active.return_value = False
-        projector_api.get_projector_overlays()
-        mock_render_to_string.assert_called_with(
-            'projector/all_overlays.html',
-            {'overlays': []})
-
-        # Test with active overlay
-        mock_overlay.is_active.return_value = True
-        projector_api.get_projector_overlays()
-        mock_render_to_string.assert_Called_with(
-            'projector/all_overlays.html',
-            {'overlays': [{'name': 'overlay_name', 'html': 'some html'}]})
+        mock_projector_overlays.send.return_value = ((None, mock_overlay), )
+        value = projector_api.get_overlays(only_active=True)
+        self.assertNotEqual(value, {'mock_overlay_2': mock_overlay})
 
     @patch('openslides.projector.api.get_overlays')
     def test_get_projector_overlays_js(self, mock_get_overlays):

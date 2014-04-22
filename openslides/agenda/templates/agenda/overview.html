@@ -39,6 +39,10 @@
                 <a href="{% url 'item_csv_import' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import agenda items' %}"><i class="icon-import"></i> {% trans "Import" %}</a>
             {% endif %}
             <a href="{% url 'print_agenda' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print agenda as PDF' %}" target="_blank"><i class="icon-print"></i> PDF</a>
+            {% if perms.core.can_see_projector %}
+                <a href="{% url 'agenda_current_list_of_speakers_projector' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Current list of speakers' %}">
+                    <i class="icon-bell"></i> {% trans 'List of speakers' %}</a>
+            {% endif %}
             </small>
         </h1>
 
