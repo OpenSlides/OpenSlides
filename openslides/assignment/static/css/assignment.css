@@ -37,3 +37,11 @@ td a.election_link {
     margin-right: 5px;
     float: left;
 }
+.assignment_list li {
+    margin: 5px 0 0 0;
+    padding: 0;
+}
+.placeholder {
+    outline: 1px dashed #4183C4;
+}
+

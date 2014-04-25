@@ -27,6 +27,7 @@ class AssignmentCandidate(RelatedModelMixin, models.Model):
     person = PersonField(db_index=True)
     elected = models.BooleanField(default=False)
     blocked = models.BooleanField(default=False)
+    sort_order = models.PositiveSmallIntegerField(null=True, blank=True)
 
     class Meta:
         unique_together = ("assignment", "person")
@@ -39,6 +40,15 @@ class AssignmentCandidate(RelatedModelMixin, models.Model):
         Returns the assignment
         """
         return self.assignment
+
+    @classmethod
+    def save_sortorder(self, assignment_id, person, sort_order):
+        try:
+            candidature = self.objects.get(assignment=assignment_id, person=person)
+            candidature.sort_order = sort_order
+            candidature.save()
+        except AssignmentCandidate.DoesNotExist:
+            raise Exception(_('%s is no candidate for assignment %s') % (person, assignment_id))
 
 
 class Assignment(SlideMixin, AbsoluteUrlMixin, models.Model):
@@ -57,6 +67,7 @@ class Assignment(SlideMixin, AbsoluteUrlMixin, models.Model):
         max_length=79, null=True, blank=True,
         verbose_name=ugettext_lazy("Default comment on the ballot paper"))
     status = models.CharField(max_length=3, choices=STATUS, default='sea')
+    manual_sort = models.BooleanField(default=False)
 
     class Meta:
         permissions = (
@@ -179,10 +190,17 @@ class Assignment(SlideMixin, AbsoluteUrlMixin, models.Model):
         if only_candidate:
             candidates = candidates.filter(elected=False)
 
+        if self.manual_sort:
+            candidates = candidates.all().order_by('sort_order');
+        else:
+            candidates = candidates.all()
         participants = []
-        for candidate in candidates.all():
+        for candidate in candidates:
             participants.append(candidate.person)
-        participants.sort(key=lambda person: person.sort_name)
+            
+        if not self.manual_sort:
+            participants.sort(key=lambda person: person.sort_name)
+        
         return participants
         # return candidates.values_list('person', flat=True)
 
