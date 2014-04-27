@@ -60,6 +60,37 @@ def setup_agenda_config(sender, **kwargs):
             help_text=ugettext_lazy('[Begin speach] starts the countdown, [End speach] stops the countdown.'),
             required=False))
 
+    agenda_enable_auto_numbering = ConfigVariable(
+        name='agenda_enable_auto_numbering',
+        default_value=False,
+        form_field=forms.BooleanField(
+            label=ugettext_lazy('Enable automatic numbering of agenda items'),
+            required=False))
+
+    agenda_number_prefix = ConfigVariable(
+        name='agenda_number_prefix',
+        default_value='',
+        form_field=forms.CharField(
+            label=ugettext_lazy('Numbering prefix for agenda items'),
+            max_length=20,
+            required=False))
+
+    agenda_numeral_system = ConfigVariable(
+        name='agenda_numeral_system',
+        default_value='a',
+        form_field=forms.ChoiceField(
+            label=ugettext_lazy('Numeral System for Top items'),
+            widget=forms.Select(),
+            choices=(
+                ('a', ugettext_lazy('Arabic')),
+                ('r', ugettext_lazy('Roman'))),
+            required=False))
+
+    agenda_agenda_fixed = ConfigVariable(
+        name='agenda_agenda_fixed',
+        default_value=False,
+        form_field=None)
+
     extra_stylefiles = ['css/jquery-ui-timepicker.css']
     extra_javascript = ['js/jquery/jquery-ui-timepicker-addon.min.js',
                         'js/jquery/jquery-ui-sliderAccess.min.js',
@@ -71,7 +102,11 @@ def setup_agenda_config(sender, **kwargs):
                             weight=20,
                             variables=(agenda_start_event_date_time,
                                        agenda_show_last_speakers,
-                                       agenda_couple_countdown_and_speakers),
+                                       agenda_couple_countdown_and_speakers,
+                                       agenda_enable_auto_numbering,
+                                       agenda_number_prefix,
+                                       agenda_numeral_system,
+                                       agenda_agenda_fixed),
                             extra_context={'extra_stylefiles': extra_stylefiles,
                                            'extra_javascript': extra_javascript})
 

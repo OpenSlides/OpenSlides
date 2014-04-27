@@ -34,6 +34,7 @@ from openslides.utils.views import (
     DeleteView,
     FormView,
     PDFView,
+    QuestionView,
     RedirectView,
     SingleObjectMixin,
     TemplateView,
@@ -108,9 +109,14 @@ class Overview(TemplateView):
             agenda_is_active = None
             active_type = None
 
+        agenda_enable_auto_numbering = True if config['agenda_enable_auto_numbering'] else False
+        agenda_numbering_fixed = True if config['agenda_agenda_fixed'] else False
+
         context.update({
             'items': items,
             'agenda_is_active': agenda_is_active,
+            'agenda_enable_auto_numbering': agenda_enable_auto_numbering,
+            'agenda_numbering_fixed': agenda_numbering_fixed,
             'duration': duration,
             'start': start,
             'end': end,
@@ -334,6 +340,48 @@ class CreateRelatedAgendaItemView(SingleObjectMixin, RedirectView):
         Create the agenda item.
         """
         self.item = Item.objects.create(content_object=self.object)
+
+
+class FixAgendaView(QuestionView):
+    permission_required = 'agenda.can_manage_agenda'
+    question_url_name = 'item_overview'
+    url_name = 'item_overview'
+    question_message = ugettext_lazy('Do you really want to fix the agenda numbering?')
+    url_name_args = []
+
+    def get(self, request, *args, **kwargs):
+        self.items = Item.objects.all()
+        return super(FixAgendaView, self).get(request, *args, **kwargs)
+
+    def on_clicked_yes(self):
+        config['agenda_agenda_fixed'] = True
+        for item in self.items:
+            item.item_number = item.calc_item_no()
+            item.save()
+
+    def get_final_message(self):
+        return ugettext_lazy('The agenda has been fixed.')
+
+
+class ResetAgendaView(QuestionView):
+    permission_required = 'agenda.can_manage_agenda'
+    question_url_name = 'item_overview'
+    url_name = 'item_overview'
+    question_message = ugettext_lazy('Do you really want to reset the agenda numbering?')
+    url_name_args = []
+
+    def get(self, request, *args, **kwargs):
+        self.items = Item.objects.all()
+        return super(ResetAgendaView, self).get(request, *args, **kwargs)
+
+    def on_clicked_yes(self):
+        config['agenda_agenda_fixed'] = False
+        for item in self.items:
+            item.item_number = ''
+            item.save()
+
+    def get_final_message(self):
+        return ugettext_lazy('The agenda has been reset.')
 
 
 class AgendaPDF(PDFView):
