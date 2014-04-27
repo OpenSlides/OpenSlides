@@ -195,8 +195,7 @@ legend + .control-group {
     font-weight: bold;
 }
 
-
-/** Left sitebar navigation **/
+/** Left sidebar navigation **/
 .leftmenu ul {
     margin: 0;
     list-style: none;
@@ -320,6 +319,7 @@ legend + .control-group {
 .icon-presentations {
     background-position: -264px -48px;
 }
+
 /** More glyphicons free icons **/
 .status_link .icon-on, .icon-checked-new {
     background-image: url("../img/glyphicons_152_check.png");
@@ -369,7 +369,6 @@ legend + .control-group {
     background-image: url("../img/glyphicons_300_microphone.png");
     background-position: 0;
 }
-
 
 /** Responsive **/
 @media (max-width: 767px) {

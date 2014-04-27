@@ -24,6 +24,7 @@ class CustomSlide(SlideMixin, AbsoluteUrlMixin, models.Model):
             ('can_manage_projector', ugettext_noop('Can manage the projector')),
             ('can_see_projector', ugettext_noop('Can see the projector')),
             ('can_see_dashboard', ugettext_noop('Can see the dashboard')),
+            ('can_use_chat', ugettext_noop('Can use the chat')),
         )
 
     def __unicode__(self):

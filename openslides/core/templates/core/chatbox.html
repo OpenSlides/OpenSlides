@@ -1,0 +1,22 @@
+{% load i18n %}
+
+{% if chat_messages != None %}
+    <div class="hidden well" id="chatbox">
+        <div id="chatbox-header">
+            <h1 id="chatbox-title"><i class="icon-comments icon-white"></i> Chat
+            <button class="btn btn-mini right" id="close-chatbox"><i class="icon-remove"></i></button>
+            </h1>
+        </div>
+        <div id="chatbox-text">
+            {% for message in chat_messages %}
+                <br>{{ message.html_time|safe }} {{ message.html_person|safe }} {{ message.message|urlize }}
+            {% endfor %}
+        </div>
+        <form class="form-inline" id="chatbox-form">
+            <div class="input-append" style="width: calc(100% - 25px);">
+                <input id="chatbox-form-input" type="text" />
+                <button type="submit" class="btn"><i class="icon-comments"></i></button>
+            </div>
+        </form>
+    </div>
+{% endif %}

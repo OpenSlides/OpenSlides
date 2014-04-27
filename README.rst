@@ -296,10 +296,6 @@ OpenSlides uses the following projects or parts of them:
 
 * `jQuery <http://www.jquery.com>`_, License: MIT
 
-* `jQuery UI <http://jqueryui.com>`_ with custom ui components: core,
-  widget, mouse, sortable, datepicker, slider and css theme 'smoothness',
-  License: MIT
-
 * jQuery Plugins:
 
   - `jQuery DataTables Plugin <http://www.datatables.net>`_, License:
@@ -309,7 +305,7 @@ OpenSlides uses the following projects or parts of them:
     License: MIT
 
   - `jQuery Cookie Plugin <https://github.com/carhartl/jquery-cookie/>`_,
-    License: MIT/GPL
+    License: MIT
 
   - `jQuery Form Plugin <http://malsup.com/jquery/form/>`_, License: MIT/GPLv2
 
@@ -321,6 +317,12 @@ OpenSlides uses the following projects or parts of them:
   - `jQuery bsmSelect <https://github.com/vicb/bsmSelect/>`_, License:
     MIT/GPLv2
 
+* `jQuery UI <http://jqueryui.com>`_ with custom ui components: core,
+  widget, mouse, resizable, sortable, datepicker, slider and css theme 'smoothness',
+  License: MIT
+
+* jQuery UI AddOns:
+
   - `jQuery UI Nested Sortable
     <https://github.com/mjsarfatti/nestedSortable/>`_, License: MIT
 
@@ -330,7 +332,6 @@ OpenSlides uses the following projects or parts of them:
 
   - `jQuery UI Timepicker
     <http://trentrichardson.com/examples/timepicker/>`_, License: MIT/GPLv2
-
 
 
 VII. License and authors

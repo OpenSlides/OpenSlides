@@ -104,6 +104,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.static',
     'openslides.utils.auth.anonymous_context_additions',
     'openslides.utils.main_menu.main_menu_entries',
+    'openslides.core.chatbox.chat_messages_context_processor',
 )
 
 CACHES = {

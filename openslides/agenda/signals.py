@@ -60,9 +60,8 @@ def setup_agenda_config(sender, **kwargs):
             help_text=ugettext_lazy('[Begin speach] starts the countdown, [End speach] stops the countdown.'),
             required=False))
 
-    extra_stylefiles = ['css/jquery-ui-timepicker.css', 'css/jquery-ui/jquery-ui.custom.min.css']
-    extra_javascript = ['js/jquery/jquery-ui.custom.min.js',
-                        'js/jquery/jquery-ui-timepicker-addon.min.js',
+    extra_stylefiles = ['css/jquery-ui-timepicker.css']
+    extra_javascript = ['js/jquery/jquery-ui-timepicker-addon.min.js',
                         'js/jquery/jquery-ui-sliderAccess.min.js',
                         'js/jquery/datepicker-config.js']
 
