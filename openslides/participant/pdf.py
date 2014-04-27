@@ -50,7 +50,7 @@ def participants_to_pdf(pdf):
     return pdf
 
 
-def participants_passwords_to_pdf(pdf):
+def participants_passwords_to_pdf(pdf, users=None):
     """
     Create access data sheets for all participants as PDF
     """
@@ -81,7 +81,10 @@ def participants_passwords_to_pdf(pdf):
     qrcode_wlan_draw = Drawing(45, 45)
     qrcode_wlan_draw.add(qrcode_wlan)
 
-    for user in User.objects.all().order_by(sort):
+    if not users:
+        users = User.objects.all().order_by(sort)
+
+    for user in users:
         pdf.append(Paragraph(unicode(user), stylesheet['h1']))
         pdf.append(Spacer(0, 1 * cm))
         data = []
