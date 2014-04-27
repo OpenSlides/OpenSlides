@@ -25,7 +25,8 @@
         <a class="projector_edit btn" href="{% url 'projector_clean_scale' %}" title="{% trans 'Reset zoom level' %}">
             <i class="icon-resize-small"></i>
         </a>
-        {% trans "Zoom level" %}: <span id="scale_level">{{ 'projector_scale'|get_config }}</span>
+        {% trans "Zoom level" %}:
+        <span id="scale_level" {% if 'projector_scale'|get_config != 0 %}class="notNull"{% endif %}>{{ 'projector_scale'|get_config }}</span>
     </p>
     <p>
         <a class="projector_edit btn {% if 'projector_scroll'|get_config == 0 %}disabled{% endif %}" id="scroll_up_button"
@@ -38,7 +39,8 @@
         <a class="projector_edit btn" href="{% url 'projector_clean_scroll' %}" title="{% trans 'Reset scroll level' %}">
             <i class="icon-resize-small"></i>
         </a>
-        {% trans "Scroll level" %}: <span id="scroll_level">{{ 'projector_scroll'|get_config }}</span>
+        {% trans "Scroll level" %}:
+        <span id="scroll_level" {% if 'projector_scroll'|get_config != 0 %}class="notNull"{% endif %}>{{ 'projector_scroll'|get_config }}</span>
     </p>
 {% endif %}
 

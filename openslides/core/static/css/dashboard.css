@@ -129,6 +129,12 @@
     z-index: 1;
 }
 
+/* Projector control panel */
+.notNull {
+    color: red;
+    font-weight: bold;
+}
+
 /*** misc ***/
 .custom-btn-mini {
     width: 20px;

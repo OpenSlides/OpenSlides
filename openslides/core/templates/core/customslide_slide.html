@@ -1,6 +1,6 @@
 {% load i18n %}
 
-<h1>
+<h1 {% if not slide.text %}class="title_only"{% endif %}>
     {{ slide.title }}
 </h1>
 
