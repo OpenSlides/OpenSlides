@@ -7,8 +7,8 @@
             <input class="projector_countdown_spinval" id="countdown_time" name="countdown_time" type="number" min="0" value="{{ countdown_time }}">
             <span class="add-on">{% trans "s" context "seconds" %}</span>
             <button id="countdown_set" class="countdown_control btn tooltip-bottom" href="{% url 'countdown_set_default' %}"
-                rel="tooltip" data-original-title="{% trans 'Save time as default' %}">
-                <i class="icon-refresh"></i>
+                rel="tooltip" data-original-title="{% trans 'Add time to favourits' %}">
+                <i class="icon-star"></i>
             </button>
         </div>
         <a id="countdown_reset" class="countdown_control btn" href="{% url 'countdown_reset' %}"
@@ -25,5 +25,14 @@
             {% if countdown_state == 'inactive' or countdown_state == 'paused' or countdown_state == 'expired' %} style="display:none"{% endif %}>
             <i class="icon-pause"></i>
         </a>
+
+        <!-- countdown_shortcut -->
+        <span id="countdown_shortcut_dummy" class="countdown_shortcut_time btn btn-default">
+            <span></span>
+            <a class="countdown_shortcut_remove" href="#">
+                <button type="button" class="close" aria-hidden="true">&times;</button>
+            </a>
+        </span>
+        <div id="countdown_shortcut_storage"></div>
     </div>
 </span>

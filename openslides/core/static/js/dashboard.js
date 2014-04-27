@@ -86,6 +86,8 @@ $(function() {
     });
 
     // control countdown
+    // TODO: Move Countdown-code into the projector app, or merge the projector
+    //       app with the core app.
     $('.countdown_control').click(function(event) {
         event.preventDefault();
         var link = $(this);
@@ -110,6 +112,69 @@ $(function() {
             }
         });
     });
+
+    $('#countdown_set').click(function(event) {
+        // Create a shortcut from the value in the form
+        event.preventDefault();
+        var times = get_times();
+        times.push($("#countdown_time" ).val());
+        localStorage.setItem('countdown_shortcut', times.join());
+        build_countdown_shortcuts();
+    });
+
+    get_times = function() {
+        // Loads the time values from the local storages. Converts all values
+        // to integers and removes doubles.
+        // Returns an empty array if an error occurs
+        try {
+            return localStorage.getItem('countdown_shortcut').split(',')
+            .map(function(value) {
+                // converts times into int
+                return parseInt(value);
+            }).filter(function(value, index, self) {
+                // filters doubles
+                return self.indexOf(value) === index;
+            });
+        } catch(err) {
+            return [];
+        }
+    };
+
+    $('.countdown_shortcut_time').click(function(event) {
+        // click on a shortcut. Set the form value and simulate a click event.
+        event.preventDefault();
+        var time = $(this).children('span').html();
+        $('#countdown_time').val(time);
+        $('#countdown_set').click();
+    });
+
+    $('.countdown_shortcut_time .close').click(function(event) {
+        // Removes a shortcut.
+        event.preventDefault();
+        var time = $(this).parent().parent().children('span').html();
+        var times = get_times().filter(
+            function(value) {
+                return value !== parseInt(time);
+            }
+        );
+        localStorage.setItem('countdown_shortcut', times);
+        build_countdown_shortcuts();
+    });
+
+    build_countdown_shortcuts = function() {
+        // Recreates the countdown shortcuts
+        var times = get_times();
+        $('#countdown_shortcut_storage').empty();
+        $.each(times, function(index, time) {
+            var element = $('#countdown_shortcut_dummy').clone(withDataAndEvents=true);
+            element.attr('id', '');
+            $('span', element).html(time);
+            element.appendTo('#countdown_shortcut_storage');
+        });
+    };
+
+    // build shortcuts at start time.
+    build_countdown_shortcuts();
 
     // activate/deactivate overlay
     $('.overlay_activate_link').click(function(event) {
