@@ -229,6 +229,20 @@ class ViewTest(TestCase):
         self.assertIsNone(Item.objects.get(pk=1).parent)
         self.assertEqual(Item.objects.get(pk=2).parent_id, 1)
 
+    def test_change_item_order_with_orga_item(self):
+        self.item1.type = 2
+        self.item1.save()
+        data = {
+            'i1-self': 1,
+            'i1-weight': 50,
+            'i1-parent': 0,
+            'i2-self': 2,
+            'i2-weight': 50,
+            'i2-parent': 1}
+        response = self.adminClient.post('/agenda/', data)
+        self.assertNotEqual(Item.objects.get(pk=2).parent_id, 1)
+        self.assertContains(response, 'Agenda items can not be descendents of an organizational item.')
+
     def test_delete(self):
         response = self.adminClient.get('/agenda/%s/del/' % self.item1.pk)
         self.assertRedirects(response, '/agenda/')
@@ -275,6 +289,32 @@ class ViewTest(TestCase):
         self.assertEqual(response.status_code, 403)
         response = client.get('/agenda/2/')
         self.assertEqual(response.status_code, 200)
+
+    def test_orga_item_with_orga_parent_one(self):
+        item1 = Item.objects.create(title='item1_Taeboog1de1sahSeiM8y', type=2)
+        response = self.adminClient.post(
+            '/agenda/new/',
+            {'title': 'item2_faelohD2uK7ohNgeepi2',
+             'type': '1',
+             'parent': item1.pk})
+        self.assertFormError(
+            response,
+            'form',
+            None,
+            'Agenda items can not be descendents of an organizational item.')
+
+    def test_orga_item_with_orga_parent_two(self):
+        item1 = Item.objects.create(title='item1_aeNg4Heibee8ULooneep')
+        Item.objects.create(title='item2_fooshaeroo7Ohvoow0hoo', parent=item1)
+        response = self.adminClient.post(
+            '/agenda/%s/edit/' % item1.pk,
+            {'title': 'item1_aeNg4Heibee8ULooneep_changed',
+             'type': '2'})
+        self.assertFormError(
+            response,
+            'form',
+            None,
+            'Organizational items can not have agenda items as descendents.')
 
     def test_csv_import(self):
         item_number = Item.objects.all().count()

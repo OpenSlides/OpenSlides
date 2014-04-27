@@ -109,14 +109,11 @@ class Overview(TemplateView):
             agenda_is_active = None
             active_type = None
 
-        agenda_enable_auto_numbering = True if config['agenda_enable_auto_numbering'] else False
-        agenda_numbering_fixed = True if config['agenda_agenda_fixed'] else False
-
         context.update({
             'items': items,
             'agenda_is_active': agenda_is_active,
-            'agenda_enable_auto_numbering': agenda_enable_auto_numbering,
-            'agenda_numbering_fixed': agenda_numbering_fixed,
+            'agenda_enable_auto_numbering': config['agenda_enable_auto_numbering'],
+            'agenda_numbering_fixed': config['agenda_agenda_fixed'],
             'duration': duration,
             'start': start,
             'end': end,
@@ -140,8 +137,14 @@ class Overview(TemplateView):
                     parent = Item.objects.get(id=form.cleaned_data['parent'])
                 except Item.DoesNotExist:
                     parent = None
-                item.weight = form.cleaned_data['weight']
+                else:
+                    if item.type == item.AGENDA_ITEM and parent.type == item.ORGANIZATIONAL_ITEM:
+                        transaction.rollback()
+                        messages.error(
+                            request, _('Agenda items can not be descendents of an organizational item.'))
+                        break
                 item.parent = parent
+                item.weight = form.cleaned_data['weight']
                 Model.save(item)
             else:
                 transaction.rollback()
@@ -349,13 +352,9 @@ class FixAgendaView(QuestionView):
     question_message = ugettext_lazy('Do you really want to fix the agenda numbering?')
     url_name_args = []
 
-    def get(self, request, *args, **kwargs):
-        self.items = Item.objects.all()
-        return super(FixAgendaView, self).get(request, *args, **kwargs)
-
     def on_clicked_yes(self):
         config['agenda_agenda_fixed'] = True
-        for item in self.items:
+        for item in Item.objects.all():
             item.item_number = item.calc_item_no()
             item.save()
 
@@ -370,13 +369,9 @@ class ResetAgendaView(QuestionView):
     question_message = ugettext_lazy('Do you really want to reset the agenda numbering?')
     url_name_args = []
 
-    def get(self, request, *args, **kwargs):
-        self.items = Item.objects.all()
-        return super(ResetAgendaView, self).get(request, *args, **kwargs)
-
     def on_clicked_yes(self):
         config['agenda_agenda_fixed'] = False
-        for item in self.items:
+        for item in Item.objects.all():
             item.item_number = ''
             item.save()
 

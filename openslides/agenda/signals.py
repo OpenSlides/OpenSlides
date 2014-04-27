@@ -77,19 +77,18 @@ def setup_agenda_config(sender, **kwargs):
 
     agenda_numeral_system = ConfigVariable(
         name='agenda_numeral_system',
-        default_value='a',
+        default_value='arabic',
         form_field=forms.ChoiceField(
-            label=ugettext_lazy('Numeral System for Top items'),
+            label=ugettext_lazy('Numeral system for agenda items'),
             widget=forms.Select(),
             choices=(
-                ('a', ugettext_lazy('Arabic')),
-                ('r', ugettext_lazy('Roman'))),
+                ('arabic', ugettext_lazy('Arabic')),
+                ('roman', ugettext_lazy('Roman'))),
             required=False))
 
     agenda_agenda_fixed = ConfigVariable(
         name='agenda_agenda_fixed',
-        default_value=False,
-        form_field=None)
+        default_value=False)
 
     extra_stylefiles = ['css/jquery-ui-timepicker.css']
     extra_javascript = ['js/jquery/jquery-ui-timepicker-addon.min.js',
