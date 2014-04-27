@@ -270,14 +270,13 @@ class ParticipantsListPDF(PDFView):
         participants_to_pdf(pdf)
 
 
-class ParticipantsPasswordsPDF(PDFView, ObjectListMixin):
+class ParticipantsPasswordsPDF(ObjectListMixin, PDFView):
     """
     Generate the access data welcome paper for all participants as PDF.
     """
     permission_required = 'participant.can_manage_participant'
     filename = ugettext_lazy("Participant-access-data")
     top_space = 0
-    users = None
     model = User
 
     def get(self, request, *args, **kwargs):

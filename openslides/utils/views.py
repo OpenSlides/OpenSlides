@@ -254,17 +254,15 @@ class ModelFormMixin(FormMixin):
 
 class ObjectListMixin(object):
     """
-    Basic mixin to get a list of objects by pk values
+    Basic mixin to get a list of objects by pk values.
     """
     model = None
-    objects = None
 
     def get_objects(self, pks, sort=None):
         if self.model is None:
             raise ImproperlyConfigured('No model given')
         if pks is None:
             return None
-
         if sort:
             return self.model.objects.filter(pk__in=pks).order_by(sort)
         else:
@@ -548,8 +546,9 @@ class DeleteView(SingleObjectMixin, QuestionView):
 class MultipleDeleteView(ObjectListMixin, QuestionView):
     """
     View to delete multiple model objects.
-    """
 
+    Subclasses have to set self.objects in their get method.
+    """
     success_url = None
     success_url_name = None
 
@@ -562,7 +561,6 @@ class MultipleDeleteView(ObjectListMixin, QuestionView):
         view as default. The attributes question_url_name or question_url can
         define other urls.
         """
-
         if self.request.method == 'POST':
             try:
                 answer = self.get_answer()
@@ -581,7 +579,7 @@ class MultipleDeleteView(ObjectListMixin, QuestionView):
 
     def on_clicked_yes(self):
         """
-        Deletes the object.
+        Deletes the objects.
         """
         self.objects.delete()
 

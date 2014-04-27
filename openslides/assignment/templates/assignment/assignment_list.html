@@ -13,7 +13,7 @@
 {% block javascript %}
     <script src="{% static 'js/jquery/jquery.dataTables.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'js/jquery/dataTables.bootstrap.js' %}" type="text/javascript"></script>
-       <script type="text/javascript" charset="utf-8">
+    <script type="text/javascript" charset="utf-8">
         $('#dataTable').dataTable( {
             "aoColumnDefs": [
                 { "bSortable": false,      // Checkbox column
@@ -48,7 +48,7 @@
     <div class="btn-group">
         <a data-toggle="dropdown" class="btn btn-mini dropdown-toggle tooltip-right"
            rel="tooltip" data-original-title="{% trans 'Actions related to selected elections' %}">
-            <i class="icon-briefcase"></i> {% trans 'Action' %} <span class="caret"></span>
+            <i class="icon-briefcase"></i> {% trans 'Actions' %} <span class="caret"></span>
         </a>
         <ul class="dropdown-menu  pull-left">
             <li><a class="table_action" href="{% url 'assignment_multi_delete' %}"><i class="icon-remove"></i> {% trans 'Delete selected elections' %}</a></li>
