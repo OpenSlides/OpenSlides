@@ -21,10 +21,10 @@ import openslides
 from openslides.utils.main import (
     detect_openslides_type,
     filesystem2unicode,
+    unicode2filesystem,
     get_default_user_data_path,
     get_port,
-    get_win32_portable_path,
-    PortableDirNotWritable
+    PortableDirNotWritable,
 )
 
 
@@ -97,11 +97,7 @@ class RunCommandControl(wx.Panel):
 
         # XXX: subprocess on windows only handles byte strings
         #      with python3 this will hopefully no longer be the case
-        fs_encoding = sys.getfilesystemencoding() or sys.getdefaultencoding()
-        cmd = [
-            x.encode(fs_encoding) if isinstance(x, unicode) else x
-            for x in cmd
-        ]
+        cmd = [unicode2filesystem(x) for x in cmd]
 
         creationflags = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)
         self.child_process = subprocess.Popen(
