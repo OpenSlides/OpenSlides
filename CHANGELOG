@@ -8,39 +8,45 @@ Version 1.6 (unreleased)
 ========================
 [https://github.com/OpenSlides/OpenSlides/issues?milestone=14]
 
+Dashboard:
+- Added shortcuts for the countdown.
 Agenda:
 - New projector view with the current list of speakers.
 - Added CSV import.
 - Added automatic numbering of agenda items.
 - Fixed organizational item structuring.
+Motions:
+- New slide for vote results.
 Assignment:
 - Coupled assignment candidates with list of speakers.
-Dashboard:
-- Shortcuts for the countdown.
+- Created a poll description field for each assignment poll.
+- New slide for election results.
 Participants:
-- Disabled widgets by default.
+- Disabled dashboard widgets by default.
 - Added form field for multiple creation of new participants.
 Files:
 - Enabled update and delete view for uploader refering to his own files.
 Other:
-- New config option to set the 100% base for polls (motions/elections).
+- Added global chatbox for managers.
+- New config option to set the 100 % base for polls (motions/elections).
+- Changed api for plugins. Used entry points to detect them automaticly. Load
+  them automaticly from plugin directory of Windows portable version.
+- Added possibility to use custom templates and static files in user data path
+  directory.
 - Changed widget api. Used new metaclass.
-- Changed api for plugins. Used entry points to detect them automaticly.
+- Changed api for main menu entries. Used new metaclass.
+- Inserted api for the personal info widget. Used new metaclass.
 - Renamed config api classes.
 - Regrouped config collections and pages.
 - Renamed some classes of the poll api.
+- Added api for absolute urls in models.
 - Inserted command line option to translate config strings during database setup.
-- Inserted api for the personal info widget.
-- Changed api for main menu entries.
 - Enhanced http error pages.
+- Fixed headings on custom slides without text.
 - Moved dashboard and select widgets view from projector to core app.
-- Created a poll description field for each assignment-poll.
-- Added possibility to use custom templates and static files in user data path
-  directory.
-- Added global chatbox for managers.
-
-Version 1.5.2 (unreleased)
-==========================
+- Renamed and cleaned up static direcories.
+- Used jsonfield as required package. Removed jsonfield code.
+- Added new package backports.ssl_match_hostname for portable build script.
 
 
 Version 1.5.1 (2014-03-31)
