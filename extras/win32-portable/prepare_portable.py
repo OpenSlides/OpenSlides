@@ -91,7 +91,14 @@ SITE_PACKAGES = {
         ],
     },
     "setuptools": {
-        "copy": ["pkg_resources.py"],
+        "copy": [
+            "setuptools",
+            "easy_install.py",
+            "pkg_resources.py"
+        ],
+    },
+    "six": {
+        "copy": ["six.py"],
     },
     "sockjs-tornado": {
         "copy": ["sockjs"],
