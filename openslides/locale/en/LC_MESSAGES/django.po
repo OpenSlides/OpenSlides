@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-28 21:07+0200\n"
+"POT-Creation-Date: 2014-04-28 23:44+0200\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -101,13 +101,13 @@ msgstr ""
 
 #: agenda/models.py:39 core/models.py:15 core/signals.py:111
 #: mediafile/models.py:28 mediafile/templates/mediafile/mediafile_list.html:18
-#: motion/forms.py:26 motion/models.py:535 participant/models.py:34
+#: motion/forms.py:26 motion/models.py:534 participant/models.py:34
 #: participant/pdf.py:21 participant/templates/participant/overview.html:49
 msgid "Title"
 msgstr ""
 
 #: agenda/models.py:44 core/models.py:16 motion/forms.py:31
-#: motion/models.py:538
+#: motion/models.py:537
 msgid "Text"
 msgstr ""
 
@@ -322,13 +322,13 @@ msgstr ""
 #: agenda/templates/agenda/edit.html:56
 #: agenda/templates/agenda/item_form_csv_import.html:42
 #: assignment/templates/assignment/assignment_form.html:36
-#: assignment/templates/assignment/poll_view.html:91
+#: assignment/templates/assignment/poll_view.html:101
 #: config/templates/config/config_form.html:47
 #: mediafile/templates/mediafile/mediafile_form.html:33
 #: motion/templates/motion/category_form.html:27
 #: motion/templates/motion/motion_form.html:67
 #: motion/templates/motion/motion_form_csv_import.html:42
-#: motion/templates/motion/poll_form.html:74
+#: motion/templates/motion/poll_form.html:78
 #: participant/templates/participant/edit.html:56
 #: participant/templates/participant/group_edit.html:31
 #: participant/templates/participant/user_form_csv_import.html:44
@@ -491,12 +491,12 @@ msgstr ""
 
 #: agenda/templates/agenda/overview.html:29
 #: agenda/templates/agenda/view.html:84 assignment/models.py:315
-#: assignment/views.py:569
-#: assignment/templates/assignment/assignment_detail.html:207
-#: assignment/templates/assignment/assignment_detail.html:211
+#: assignment/views.py:579
+#: assignment/templates/assignment/assignment_detail.html:208
+#: assignment/templates/assignment/assignment_detail.html:212
 #: assignment/templates/assignment/slide.html:66
-#: assignment/templates/assignment/slide.html:70 motion/models.py:708
-#: motion/pdf.py:125 motion/pdf.py:270
+#: assignment/templates/assignment/slide.html:70 motion/models.py:706
+#: motion/pdf.py:129 motion/pdf.py:274
 #: motion/templates/motion/motion_detail.html:221
 #: motion/templates/motion/slide.html:23 utils/views.py:331
 msgid "Yes"
@@ -504,10 +504,10 @@ msgstr ""
 
 #: agenda/templates/agenda/overview.html:30
 #: agenda/templates/agenda/view.html:85 assignment/models.py:315
-#: assignment/views.py:570
-#: assignment/templates/assignment/assignment_detail.html:208
-#: assignment/templates/assignment/slide.html:67 motion/models.py:708
-#: motion/pdf.py:125 motion/pdf.py:272
+#: assignment/views.py:580
+#: assignment/templates/assignment/assignment_detail.html:209
+#: assignment/templates/assignment/slide.html:67 motion/models.py:706
+#: motion/pdf.py:129 motion/pdf.py:276
 #: motion/templates/motion/motion_detail.html:222
 #: motion/templates/motion/slide.html:24 utils/views.py:331
 msgid "No"
@@ -646,10 +646,10 @@ msgstr ""
 
 #: agenda/templates/agenda/view.html:152
 #: assignment/templates/assignment/assignment_detail.html:113
-#: assignment/templates/assignment/poll_view.html:88
+#: assignment/templates/assignment/poll_view.html:98
 #: core/templates/formbuttons_saveapply.html:7
 #: mediafile/templates/mediafile/widget_pdfpresentation.html:32
-#: motion/templates/motion/poll_form.html:71
+#: motion/templates/motion/poll_form.html:75
 #: projector/templates/projector/overlay_message_widget.html:10
 msgid "Apply"
 msgstr ""
@@ -697,7 +697,7 @@ msgid "Go to current list of speakers"
 msgstr ""
 
 #: assignment/forms.py:14 assignment/models.py:55 assignment/views.py:353
-#: assignment/templates/assignment/assignment_detail.html:276
+#: assignment/templates/assignment/assignment_detail.html:293
 #: assignment/templates/assignment/slide.html:10
 msgid "Number of available posts"
 msgstr ""
@@ -706,25 +706,25 @@ msgstr ""
 msgid "Nominate a participant"
 msgstr ""
 
-#: assignment/main_menu.py:12 assignment/signals.py:65
-#: assignment/signals.py:83 assignment/views.py:308 assignment/widgets.py:15
+#: assignment/main_menu.py:12 assignment/signals.py:75
+#: assignment/signals.py:93 assignment/views.py:308 assignment/widgets.py:15
 #: assignment/templates/assignment/assignment_list.html:7
 #: assignment/templates/assignment/assignment_list.html:19
 msgid "Elections"
 msgstr ""
 
 #: assignment/models.py:48
-#: assignment/templates/assignment/assignment_detail.html:286
+#: assignment/templates/assignment/assignment_detail.html:303
 msgid "Searching for candidates"
 msgstr ""
 
 #: assignment/models.py:49
-#: assignment/templates/assignment/assignment_detail.html:289
+#: assignment/templates/assignment/assignment_detail.html:306
 msgid "Voting"
 msgstr ""
 
 #: assignment/models.py:50
-#: assignment/templates/assignment/assignment_detail.html:292
+#: assignment/templates/assignment/assignment_detail.html:309
 msgid "Finished"
 msgstr ""
 
@@ -758,7 +758,7 @@ msgstr ""
 msgid "Can manage elections"
 msgstr ""
 
-#: assignment/models.py:69 assignment/views.py:493 assignment/views.py:510
+#: assignment/models.py:69 assignment/views.py:503 assignment/views.py:520
 #: assignment/templates/assignment/assignment_detail.html:8
 #: assignment/templates/assignment/assignment_list.html:33
 #: assignment/templates/assignment/poll_view.html:7
@@ -809,7 +809,7 @@ msgstr ""
 msgid "Ballot %d"
 msgstr ""
 
-#: assignment/models.py:315 motion/models.py:708
+#: assignment/models.py:315 motion/models.py:706
 msgid "Abstain"
 msgstr ""
 
@@ -821,59 +821,63 @@ msgstr ""
 msgid "I am candidate for the following elections"
 msgstr ""
 
-#: assignment/signals.py:24
+#: assignment/signals.py:25
 msgid "Election method"
 msgstr ""
 
-#: assignment/signals.py:26
+#: assignment/signals.py:27
 msgid "Automatic assign of method"
 msgstr ""
 
-#: assignment/signals.py:27
+#: assignment/signals.py:28
 msgid "Always one option per candidate"
 msgstr ""
 
-#: assignment/signals.py:28
+#: assignment/signals.py:29
 msgid "Always Yes-No-Abstain per candidate"
 msgstr ""
 
-#: assignment/signals.py:35 motion/signals.py:95
+#: assignment/signals.py:36
+msgid "The 100 % base of an election result consists of"
+msgstr ""
+
+#: assignment/signals.py:44 motion/signals.py:104
 msgid "Number of ballot papers (selection)"
 msgstr ""
 
-#: assignment/signals.py:37 motion/signals.py:97
+#: assignment/signals.py:46 motion/signals.py:106
 msgid "Number of all delegates"
 msgstr ""
 
-#: assignment/signals.py:38 motion/signals.py:98
+#: assignment/signals.py:47 motion/signals.py:107
 msgid "Number of all participants"
 msgstr ""
 
-#: assignment/signals.py:39 motion/signals.py:99
+#: assignment/signals.py:48 motion/signals.py:108
 msgid "Use the following custom number"
 msgstr ""
 
-#: assignment/signals.py:47 motion/signals.py:107
+#: assignment/signals.py:56 motion/signals.py:116
 msgid "Custom number of ballot papers"
 msgstr ""
 
-#: assignment/signals.py:53
+#: assignment/signals.py:62
 msgid "Only publish voting results for selected winners (Projector view only)"
 msgstr ""
 
-#: assignment/signals.py:56
+#: assignment/signals.py:65
 msgid "Ballot and ballot papers"
 msgstr ""
 
-#: assignment/signals.py:70
+#: assignment/signals.py:80
 msgid "Title for PDF document (all elections)"
 msgstr ""
 
-#: assignment/signals.py:77
+#: assignment/signals.py:87
 msgid "Preamble text for PDF document (all elections)"
 msgstr ""
 
-#: assignment/signals.py:79 motion/signals.py:135 participant/signals.py:97
+#: assignment/signals.py:89 motion/signals.py:144 participant/signals.py:97
 msgid "PDF"
 msgstr ""
 
@@ -930,7 +934,7 @@ msgstr ""
 msgid "not elected"
 msgstr ""
 
-#: assignment/views.py:267 assignment/views.py:457
+#: assignment/views.py:267 assignment/views.py:467
 #: assignment/templates/assignment/assignment_detail.html:77
 msgid "elected"
 msgstr ""
@@ -984,49 +988,65 @@ msgid ""
 "A: %(ABSTAIN)s"
 msgstr ""
 
-#: assignment/views.py:428
-#: assignment/templates/assignment/assignment_detail.html:225
+#: assignment/views.py:429
+#: assignment/templates/assignment/assignment_detail.html:226
+#: assignment/templates/assignment/assignment_detail.html:231
 #: assignment/templates/assignment/poll_view.html:54
 #: assignment/templates/assignment/slide.html:84
+#: assignment/templates/assignment/slide.html:88 motion/pdf.py:119
+#: motion/templates/motion/motion_detail.html:227
 #: motion/templates/motion/poll_form.html:48
+#: motion/templates/motion/slide.html:29
+msgid "Valid votes"
+msgstr ""
+
+#: assignment/views.py:437
+#: assignment/templates/assignment/assignment_detail.html:242
+#: assignment/templates/assignment/assignment_detail.html:247
+#: assignment/templates/assignment/poll_view.html:64
+#: assignment/templates/assignment/slide.html:95
+#: assignment/templates/assignment/slide.html:99 motion/pdf.py:121
+#: motion/templates/motion/motion_detail.html:230
+#: motion/templates/motion/poll_form.html:52
+#: motion/templates/motion/slide.html:32
 msgid "Invalid votes"
 msgstr ""
 
-#: assignment/views.py:435
-#: assignment/templates/assignment/assignment_detail.html:241
-#: assignment/templates/assignment/assignment_detail.html:246
-#: assignment/templates/assignment/poll_view.html:64
-#: assignment/templates/assignment/slide.html:97
-#: assignment/templates/assignment/slide.html:102 motion/pdf.py:126
-#: motion/templates/motion/motion_detail.html:226
-#: motion/templates/motion/poll_form.html:52
-#: motion/templates/motion/slide.html:28 poll/models.py:75
+#: assignment/views.py:445
+#: assignment/templates/assignment/assignment_detail.html:258
+#: assignment/templates/assignment/assignment_detail.html:263
+#: assignment/templates/assignment/poll_view.html:74
+#: assignment/templates/assignment/slide.html:108
+#: assignment/templates/assignment/slide.html:113 motion/pdf.py:123
+#: motion/templates/motion/motion_detail.html:236
+#: motion/templates/motion/poll_form.html:56
+#: motion/templates/motion/slide.html:37 poll/models.py:88
 msgid "Votes cast"
 msgstr ""
 
-#: assignment/views.py:517
+#: assignment/views.py:527
 #, python-format
 msgid "%d. ballot"
 msgstr ""
 
-#: assignment/views.py:519
+#: assignment/views.py:529
 #, python-format
 msgid "%d candidate"
 msgid_plural "%d candidates"
 msgstr[0] ""
 msgstr[1] ""
 
-#: assignment/views.py:521
+#: assignment/views.py:531
 #, python-format
 msgid "%d available post"
 msgid_plural "%d available posts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: assignment/views.py:571
-#: assignment/templates/assignment/assignment_detail.html:209
-#: assignment/templates/assignment/slide.html:68 motion/pdf.py:125
-#: motion/pdf.py:274 motion/templates/motion/motion_detail.html:223
+#: assignment/views.py:581
+#: assignment/templates/assignment/assignment_detail.html:210
+#: assignment/templates/assignment/slide.html:68 motion/pdf.py:129
+#: motion/pdf.py:278 motion/templates/motion/motion_detail.html:223
 #: motion/templates/motion/slide.html:25
 msgid "Abstention"
 msgstr ""
@@ -1097,17 +1117,18 @@ msgid "Publish results"
 msgstr ""
 
 #: assignment/templates/assignment/assignment_detail.html:168
-#: assignment/templates/assignment/poll_view.html:79
-#: motion/templates/motion/poll_form.html:62
+#: assignment/templates/assignment/poll_view.html:89
+#: motion/templates/motion/poll_form.html:66
 msgid "Ballot paper as PDF"
 msgstr ""
 
 #: assignment/templates/assignment/assignment_detail.html:180
-#: assignment/templates/assignment/assignment_detail.html:262
+#: assignment/templates/assignment/assignment_detail.html:279
 msgid "New ballot"
 msgstr ""
 
 #: assignment/templates/assignment/assignment_detail.html:191
+#: assignment/templates/assignment/assignment_detail.html:200
 msgid "Mark candidate as elected"
 msgstr ""
 
@@ -1116,23 +1137,16 @@ msgstr ""
 msgid "Candidate is elected"
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:213
+#: assignment/templates/assignment/assignment_detail.html:214
 #: assignment/templates/assignment/slide.html:72
 msgid "was not a <br> candidate"
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:230
-#: assignment/templates/assignment/slide.html:88 motion/pdf.py:125
-#: motion/templates/motion/motion_detail.html:224
-#: motion/templates/motion/slide.html:26
-msgid "Invalid"
-msgstr ""
-
-#: assignment/templates/assignment/assignment_detail.html:258
+#: assignment/templates/assignment/assignment_detail.html:275
 msgid "No ballots available."
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:273
+#: assignment/templates/assignment/assignment_detail.html:290
 #: assignment/templates/assignment/assignment_list.html:35
 #: assignment/templates/assignment/slide.html:8
 #: motion/templates/motion/motion_detail.html:203
@@ -1141,7 +1155,7 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:282
+#: assignment/templates/assignment/assignment_detail.html:299
 msgid "Change status"
 msgstr ""
 
@@ -1175,25 +1189,25 @@ msgid "Special values"
 msgstr ""
 
 #: assignment/templates/assignment/poll_view.html:31
-#: motion/templates/motion/poll_form.html:31 poll/models.py:247
+#: motion/templates/motion/poll_form.html:31 poll/models.py:267
 msgid "majority"
 msgstr ""
 
 #: assignment/templates/assignment/poll_view.html:32
-#: motion/templates/motion/poll_form.html:31 poll/models.py:249
-#: poll/models.py:251
+#: motion/templates/motion/poll_form.html:31 poll/models.py:269
+#: poll/models.py:271
 msgid "undocumented"
 msgstr ""
 
-#: assignment/templates/assignment/poll_view.html:75
+#: assignment/templates/assignment/poll_view.html:85
 msgid "Short description (for ballot paper)"
 msgstr ""
 
-#: assignment/templates/assignment/poll_view.html:85
+#: assignment/templates/assignment/poll_view.html:95
 #: core/templates/formbuttons_save.html:4
 #: core/templates/formbuttons_saveapply.html:4
 #: core/templates/core/select_widgets.html:28
-#: motion/templates/motion/poll_form.html:68
+#: motion/templates/motion/poll_form.html:72
 msgid "Save"
 msgstr ""
 
@@ -1326,7 +1340,7 @@ msgstr ""
 msgid "System"
 msgstr ""
 
-#: core/signals.py:149 motion/signals.py:61
+#: core/signals.py:149 motion/signals.py:62
 msgid "General"
 msgstr ""
 
@@ -1437,7 +1451,7 @@ msgstr ""
 #: motion/templates/motion/motion_detail.html:22
 #: motion/templates/motion/motion_diff.html:35
 #: motion/templates/motion/motion_diff.html:39
-#: motion/templates/motion/slide.html:60
+#: motion/templates/motion/slide.html:70
 msgid "Version"
 msgstr ""
 
@@ -1595,10 +1609,10 @@ msgstr ""
 msgid "%(counts)d of %(total)d motions successfully imported."
 msgstr ""
 
-#: motion/forms.py:37 motion/models.py:541 motion/pdf.py:148
+#: motion/forms.py:37 motion/models.py:540 motion/pdf.py:152
 #: motion/templates/motion/motion_detail.html:94
 #: motion/templates/motion/motion_diff.html:54
-#: motion/templates/motion/slide.html:67
+#: motion/templates/motion/slide.html:77
 msgid "Reason"
 msgstr ""
 
@@ -1609,11 +1623,11 @@ msgstr ""
 #: motion/forms.py:75 motion/pdf.py:49
 #: motion/templates/motion/motion_detail.html:183
 #: motion/templates/motion/motion_list.html:50
-#: motion/templates/motion/slide.html:41
+#: motion/templates/motion/slide.html:51
 msgid "Submitter"
 msgstr ""
 
-#: motion/forms.py:90 motion/pdf.py:74 motion/signals.py:85
+#: motion/forms.py:90 motion/pdf.py:74 motion/signals.py:86
 #: motion/templates/motion/motion_detail.html:190
 #: motion/templates/motion/motion_list.html:52
 msgid "Supporters"
@@ -1627,13 +1641,13 @@ msgstr ""
 msgid "Don't create a new version. Useful e.g. for trivial changes."
 msgstr ""
 
-#: motion/forms.py:119 motion/templates/motion/motion_detail.html:248
+#: motion/forms.py:119 motion/templates/motion/motion_detail.html:259
 #: motion/templates/motion/motion_list.html:48
-#: motion/templates/motion/slide.html:50
+#: motion/templates/motion/slide.html:60
 msgid "Category"
 msgstr ""
 
-#: motion/forms.py:139 motion/signals.py:35
+#: motion/forms.py:139 motion/signals.py:36
 msgid "Identifier"
 msgstr ""
 
@@ -1667,31 +1681,31 @@ msgid ""
 "not contain valid submitter data."
 msgstr ""
 
-#: motion/main_menu.py:12 motion/signals.py:115 motion/views.py:715
+#: motion/main_menu.py:12 motion/signals.py:124 motion/views.py:715
 #: motion/widgets.py:15 motion/templates/motion/category_list.html:6
 #: motion/templates/motion/motion_list.html:7
 #: motion/templates/motion/motion_list.html:28
 msgid "Motions"
 msgstr ""
 
-#: motion/models.py:80
+#: motion/models.py:79
 msgid "Can see motions"
 msgstr ""
 
-#: motion/models.py:81
+#: motion/models.py:80
 msgid "Can create motions"
 msgstr ""
 
-#: motion/models.py:82
+#: motion/models.py:81
 msgid "Can support motions"
 msgstr ""
 
-#: motion/models.py:83
+#: motion/models.py:82
 msgid "Can manage motions"
 msgstr ""
 
-#: motion/models.py:86 motion/models.py:468 motion/models.py:469
-#: motion/pdf.py:42 motion/signals.py:139 motion/views.py:289
+#: motion/models.py:85 motion/models.py:467 motion/models.py:468
+#: motion/pdf.py:42 motion/signals.py:148 motion/views.py:289
 #: motion/views.py:612 motion/views.py:722
 #: motion/templates/motion/motion_detail.html:8
 #: motion/templates/motion/motion_detail.html:20
@@ -1699,29 +1713,29 @@ msgstr ""
 #: motion/templates/motion/motion_diff.html:19
 #: motion/templates/motion/poll_form.html:7
 #: motion/templates/motion/poll_form.html:15
-#: motion/templates/motion/slide.html:59
+#: motion/templates/motion/slide.html:69
 #: motion/templates/search/motion-results.html:7
 msgid "Motion"
 msgstr ""
 
-#: motion/models.py:555
+#: motion/models.py:554
 msgid "new"
 msgstr ""
 
-#: motion/models.py:612 motion/templates/motion/category_list.html:22
+#: motion/models.py:611 motion/templates/motion/category_list.html:22
 msgid "Category name"
 msgstr ""
 
-#: motion/models.py:615 motion/templates/motion/category_list.html:21
+#: motion/models.py:614 motion/templates/motion/category_list.html:21
 msgid "Prefix"
 msgstr ""
 
-#: motion/models.py:670
+#: motion/models.py:669
 #, python-format
 msgid "%(time_and_messages)s by %(person)s"
 msgstr ""
 
-#: motion/models.py:722
+#: motion/models.py:720
 #, python-format
 msgid "Vote %d"
 msgstr ""
@@ -1734,25 +1748,25 @@ msgstr ""
 msgid "State"
 msgstr ""
 
-#: motion/pdf.py:121 motion/templates/motion/slide.html:17
+#: motion/pdf.py:125 motion/templates/motion/slide.html:17
 msgid "Vote"
 msgstr ""
 
-#: motion/pdf.py:245 motion/templates/motion/category_list.html:10
+#: motion/pdf.py:249 motion/templates/motion/category_list.html:10
 #: motion/templates/motion/motion_list.html:36
 msgid "Categories"
 msgstr ""
 
-#: motion/pdf.py:252 motion/templates/motion/widget_motion.html:28
+#: motion/pdf.py:256 motion/templates/motion/widget_motion.html:28
 msgid "No motions available."
 msgstr ""
 
-#: motion/pdf.py:265
+#: motion/pdf.py:269
 #, python-format
 msgid "Motion No. %s"
 msgstr ""
 
-#: motion/pdf.py:267
+#: motion/pdf.py:271
 #, python-format
 msgid "%d. Vote"
 msgstr ""
@@ -1765,161 +1779,165 @@ msgstr ""
 msgid "I support the following motions"
 msgstr ""
 
-#: motion/signals.py:26
+#: motion/signals.py:27
 msgid "Workflow of new motions"
 msgstr ""
 
-#: motion/signals.py:37
+#: motion/signals.py:38
 msgid "Numbered per category"
 msgstr ""
 
-#: motion/signals.py:38
+#: motion/signals.py:39
 msgid "Serially numbered"
 msgstr ""
 
-#: motion/signals.py:39
+#: motion/signals.py:40
 msgid "Set it manually"
 msgstr ""
 
-#: motion/signals.py:42
+#: motion/signals.py:43
 msgid "The assembly may decide,"
 msgstr ""
 
-#: motion/signals.py:47
+#: motion/signals.py:48
 msgid "Motion preamble"
 msgstr ""
 
-#: motion/signals.py:52
+#: motion/signals.py:53
 msgid "Stop submitting new motions by non-staff users"
 msgstr ""
 
-#: motion/signals.py:58
+#: motion/signals.py:59
 msgid "Allow to disable versioning"
 msgstr ""
 
-#: motion/signals.py:75
+#: motion/signals.py:76
 msgid "Number of (minimum) required supporters for a motion"
 msgstr ""
 
-#: motion/signals.py:77
+#: motion/signals.py:78
 msgid "Choose 0 to disable the supporting system."
 msgstr ""
 
-#: motion/signals.py:82
+#: motion/signals.py:83
 msgid ""
 "Remove all supporters of a motion if a submitter edits his motion in early "
 "state"
 msgstr ""
 
-#: motion/signals.py:109
-msgid "Ballot papers"
+#: motion/signals.py:96
+msgid "The 100 % base of a voting result consists of"
 msgstr ""
 
-#: motion/signals.py:120
+#: motion/signals.py:118
+msgid "Voting and ballot papers"
+msgstr ""
+
+#: motion/signals.py:129
 msgid "Title for PDF document (all motions)"
 msgstr ""
 
-#: motion/signals.py:127
+#: motion/signals.py:136
 msgid "Preamble text for PDF document (all motions)"
 msgstr ""
 
-#: motion/signals.py:132
+#: motion/signals.py:141
 msgid "Show paragraph numbering (only in PDF)"
 msgstr ""
 
-#: motion/signals.py:151
+#: motion/signals.py:160
 msgid "Simple Workflow"
 msgstr ""
 
-#: motion/signals.py:153
+#: motion/signals.py:162
 msgid "submitted"
 msgstr ""
 
-#: motion/signals.py:158 motion/signals.py:185
+#: motion/signals.py:167 motion/signals.py:194
 msgid "accepted"
 msgstr ""
 
-#: motion/signals.py:160 motion/signals.py:187
+#: motion/signals.py:169 motion/signals.py:196
 msgid "Accept"
 msgstr ""
 
-#: motion/signals.py:161 motion/signals.py:189
+#: motion/signals.py:170 motion/signals.py:198
 msgid "rejected"
 msgstr ""
 
-#: motion/signals.py:163 motion/signals.py:191
+#: motion/signals.py:172 motion/signals.py:200
 msgid "Reject"
 msgstr ""
 
-#: motion/signals.py:164
+#: motion/signals.py:173
 msgid "not decided"
 msgstr ""
 
-#: motion/signals.py:166
+#: motion/signals.py:175
 msgid "Do not decide"
 msgstr ""
 
-#: motion/signals.py:171
+#: motion/signals.py:180
 msgid "Complex Workflow"
 msgstr ""
 
-#: motion/signals.py:173
+#: motion/signals.py:182
 msgid "published"
 msgstr ""
 
-#: motion/signals.py:178 motion/views.py:365
+#: motion/signals.py:187 motion/views.py:365
 msgid "permitted"
 msgstr ""
 
-#: motion/signals.py:180
+#: motion/signals.py:189
 msgid "Permit"
 msgstr ""
 
-#: motion/signals.py:193
+#: motion/signals.py:202
 msgid "withdrawed"
 msgstr ""
 
-#: motion/signals.py:195
+#: motion/signals.py:204
 msgid "Withdraw"
 msgstr ""
 
-#: motion/signals.py:197
+#: motion/signals.py:206
 msgid "adjourned"
 msgstr ""
 
-#: motion/signals.py:199
+#: motion/signals.py:208
 msgid "Adjourn"
 msgstr ""
 
-#: motion/signals.py:201
+#: motion/signals.py:210
 msgid "not concerned"
 msgstr ""
 
-#: motion/signals.py:203
+#: motion/signals.py:212
 msgid "Do not concern"
 msgstr ""
 
-#: motion/signals.py:205
+#: motion/signals.py:214
 msgid "commited a bill"
 msgstr ""
 
-#: motion/signals.py:207
+#: motion/signals.py:216
 msgid "Commit a bill"
 msgstr ""
 
-#: motion/signals.py:209
+#: motion/signals.py:218
 msgid "needs review"
 msgstr ""
 
-#: motion/signals.py:211
+#: motion/signals.py:220
 msgid "Needs review"
 msgstr ""
 
-#: motion/signals.py:213
+#: motion/signals.py:222
 msgid "rejected (not authorized)"
 msgstr ""
 
-#: motion/signals.py:215
+#: motion/signals.py:224
 msgid "Reject (not authorized)"
 msgstr ""
 
@@ -2124,50 +2142,50 @@ msgstr ""
 msgid "Delete Vote"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:231
+#: motion/templates/motion/motion_detail.html:242
 msgid "No results"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:242
+#: motion/templates/motion/motion_detail.html:253
 msgid "New vote"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:258
+#: motion/templates/motion/motion_detail.html:269
 msgid "Last changes (of this version)"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:260
+#: motion/templates/motion/motion_detail.html:271
 #: motion/templates/motion/motion_diff.html:36
 #: motion/templates/motion/motion_diff.html:40
 #: motion/templates/motion/motion_list.html:54
 msgid "Last changes"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:270
+#: motion/templates/motion/motion_detail.html:281
 msgid "Withdraw motion"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:279
+#: motion/templates/motion/motion_detail.html:290
 msgid "Unsupport"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:285
+#: motion/templates/motion/motion_detail.html:296
 msgid "Support"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:293
+#: motion/templates/motion/motion_detail.html:304
 msgid "minimum required supporters"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:300
+#: motion/templates/motion/motion_detail.html:311
 msgid "Manage motion"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:310
+#: motion/templates/motion/motion_detail.html:321
 msgid "For administration only:"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:312
+#: motion/templates/motion/motion_detail.html:323
 msgid "Reset state"
 msgstr ""
 
@@ -2246,7 +2264,7 @@ msgstr ""
 msgid "Poll result"
 msgstr ""
 
-#: motion/templates/motion/slide.html:33
+#: motion/templates/motion/slide.html:43
 msgid "No poll results available."
 msgstr ""
 
@@ -2772,11 +2790,27 @@ msgstr ""
 msgid "No participants available."
 msgstr ""
 
-#: poll/models.py:98
+#: poll/models.py:73
+msgid "All valid votes (Yes + No + Abstention)"
+msgstr ""
+
+#: poll/models.py:74
+msgid "All votes casts (valid + invalid votes)"
+msgstr ""
+
+#: poll/models.py:75
+msgid "Disabled (no percents)"
+msgstr ""
+
+#: poll/models.py:84
+msgid "Votes valid"
+msgstr ""
+
+#: poll/models.py:86
 msgid "Votes invalid"
 msgstr ""
 
-#: poll/models.py:134
+#: poll/models.py:154
 msgid "votes"
 msgstr ""
 
