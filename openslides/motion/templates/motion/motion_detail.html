@@ -221,10 +221,21 @@
                             <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.Yes }}<br>
                             <img src="{% static 'img/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.No }}<br>
                             <img src="{% static 'img/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ option.Abstain }}<br>
-                            <img src="{% static 'img/voting-invalid.png' %}" title="{% trans 'Invalid' %}"> {{ poll.print_votesinvalid }}<br>
-                            <div style="border-top: 1px solid; padding-top: 5px; margin: 5px 0; width: 10em;">
-                                <img src="{% static 'img/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
-                            </div>
+                            {% if poll.votesvalid != None or poll.votesinvalid != None %}
+                                <div class="resultline">
+                                {% if poll.votesvalid != None %}
+                                    <img src="{% static 'img/voting-yes-grey.png' %}" title="{% trans 'Valid votes' %}"> {{ poll.print_votesvalid }}<br>
+                                {% endif %}
+                                {% if poll.votesinvalid != None %}
+                                    <img src="{% static 'img/voting-invalid.png' %}" title="{% trans 'Invalid votes' %}"> {{ poll.print_votesinvalid }}<br>
+                                {% endif %}
+                                </div>
+                            {% endif %}
+                            {% if poll.votescast != None %}
+                                <div class="resultline">
+                                    <img src="{% static 'img/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
+                                </div>
+                            {% endif %}
                         {% endwith %}
                     {% else %}
                         {% if perms.motion.can_manage_motion %}

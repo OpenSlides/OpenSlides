@@ -21,6 +21,7 @@ Participants:
 Files:
 - Enabled update and delete view for uploader refering to his own files.
 Other:
+- New config option to set the 100% base for polls (motions/elections).
 - Changed widget api. Used new metaclass.
 - Changed api for plugins. Used entry points to detect them automaticly.
 - Renamed config api classes.

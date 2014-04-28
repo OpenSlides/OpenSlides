@@ -51,6 +51,16 @@
             </tr>
         {% endfor %}
         <tr>
+            <td>{% trans "Valid votes" %}</td>
+            {% for value in poll.get_vote_values %}
+                {% if forloop.first %}
+                    <td>{{ pollform.votesvalid.errors }}{{ pollform.votesvalid }}</td>
+                {% else %}
+                    <td></td>
+                {% endif %}
+            {% endfor %}
+        </tr>
+        <tr>
             <td>{% trans "Invalid votes" %}</td>
             {% for value in poll.get_vote_values %}
                 {% if forloop.first %}

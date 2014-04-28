@@ -104,9 +104,10 @@ li {
 .well h4.first {
     margin-top: 0;
 }
-.well .results hr {
+.resultline {
+    border-top: 1px solid;
     margin: 5px 0;
-    border: 1px solid #E3E3E3;
+    width: 10em;
 }
 hr {
     margin: 10px 0;

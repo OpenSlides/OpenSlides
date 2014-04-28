@@ -50,3 +50,9 @@ td.diff_header {
 #motion-vote-results img {
     margin-top: -4px;
 }
+#motion-vote-results .resultline {
+    border-top: 1px solid;
+    padding-top: 5px;
+    margin: 5px 0;
+    width: 10em;
+}

@@ -7,6 +7,7 @@ from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.config.api import ConfigGroup, ConfigGroupedCollection, ConfigVariable
 from openslides.config.signals import config_signal
+from openslides.poll.models import PERCENT_BASE_CHOICES
 
 
 @receiver(config_signal, dispatch_uid='setup_assignment_config')
@@ -26,6 +27,14 @@ def setup_assignment_config(sender, **kwargs):
                 ('auto', ugettext_lazy('Automatic assign of method')),
                 ('votes', ugettext_lazy('Always one option per candidate')),
                 ('yesnoabstain', ugettext_lazy('Always Yes-No-Abstain per candidate')))))
+    assignment_poll_100_percent_base = ConfigVariable(
+        name='assignment_poll_100_percent_base',
+        default_value='WITHOUT_INVALID',
+        form_field=forms.ChoiceField(
+            widget=forms.Select(),
+            required=False,
+            label=ugettext_lazy('The 100 % base of an election result consists of'),
+            choices=PERCENT_BASE_CHOICES))
     assignment_pdf_ballot_papers_selection = ConfigVariable(
         name='assignment_pdf_ballot_papers_selection',
         default_value='CUSTOM_NUMBER',
@@ -55,6 +64,7 @@ def setup_assignment_config(sender, **kwargs):
     group_ballot = ConfigGroup(
         title=ugettext_lazy('Ballot and ballot papers'),
         variables=(assignment_poll_vote_values,
+                   assignment_poll_100_percent_base,
                    assignment_pdf_ballot_papers_selection,
                    assignment_pdf_ballot_papers_number,
                    assignment_publish_winner_results_only))

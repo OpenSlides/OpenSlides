@@ -423,19 +423,29 @@ class AssignmentPDF(PDFView):
                     pass
             data_votes.append(row)
 
-        # Add votes invalid row
-        footrow_one = []
-        footrow_one.append(_("Invalid votes"))
-        for poll in polls:
-            footrow_one.append(poll.print_votesinvalid())
-        data_votes.append(footrow_one)
+        # Add valid votes row
+        if poll.votesvalid is not None:
+            footrow_one = []
+            footrow_one.append(_("Valid votes"))
+            for poll in polls:
+                footrow_one.append(poll.print_votesvalid())
+            data_votes.append(footrow_one)
+
+        # Add invalid votes row
+        if poll.votesinvalid is not None:
+            footrow_two = []
+            footrow_two.append(_("Invalid votes"))
+            for poll in polls:
+                footrow_two.append(poll.print_votesinvalid())
+            data_votes.append(footrow_two)
 
         # Add votes cast row
-        footrow_two = []
-        footrow_two.append(_("Votes cast"))
-        for poll in polls:
-            footrow_two.append(poll.print_votescast())
-        data_votes.append(footrow_two)
+        if poll.votescast is not None:
+            footrow_three = []
+            footrow_three.append(_("Votes cast"))
+            for poll in polls:
+                footrow_three.append(poll.print_votescast())
+            data_votes.append(footrow_three)
 
         table_votes = Table(data_votes)
         table_votes.setStyle(

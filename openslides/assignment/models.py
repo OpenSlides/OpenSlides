@@ -10,7 +10,7 @@ from django.utils.translation import ugettext_lazy, ugettext_noop
 from openslides.agenda.models import Item, Speaker
 from openslides.config.api import config
 from openslides.poll.models import (BaseOption, BasePoll, BaseVote,
-                                    CollectInvalid, CollectVotesCast,
+                                    CollectDefaultVotesMixin,
                                     PublishPollMixin)
 from openslides.projector.models import RelatedModelMixin, SlideMixin
 from openslides.utils.exceptions import OpenSlidesError
@@ -271,7 +271,7 @@ class AssignmentOption(BaseOption):
         return unicode(self.candidate)
 
 
-class AssignmentPoll(RelatedModelMixin, CollectInvalid, CollectVotesCast,
+class AssignmentPoll(RelatedModelMixin, CollectDefaultVotesMixin,
                      PublishPollMixin, AbsoluteUrlMixin, BasePoll):
     option_class = AssignmentOption
     assignment = models.ForeignKey(Assignment, related_name='poll_set')
@@ -319,5 +319,9 @@ class AssignmentPoll(RelatedModelMixin, CollectInvalid, CollectVotesCast,
     def get_ballot(self):
         return self.assignment.poll_set.filter(id__lte=self.id).count()
 
+    def get_percent_base_choice(self):
+        return config['assignment_poll_100_percent_base']
+
     def append_pollform_fields(self, fields):
         fields.append('description')
+        super(AssignmentPoll, self).append_pollform_fields(fields)
