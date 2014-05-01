@@ -70,8 +70,8 @@ class BaseVote(models.Model):
 
 
 PERCENT_BASE_CHOICES = (
-    ('WITHOUT_INVALID', ugettext_lazy('All valid votes (Yes + No + Abstention)')),
-    ('WITH_INVALID', ugettext_lazy('All votes casts (valid + invalid votes)')),
+    ('WITHOUT_INVALID', ugettext_lazy('Only all valid votes')),
+    ('WITH_INVALID', ugettext_lazy('All votes cast (including invalid votes)')),
     ('DISABLED', ugettext_lazy('Disabled (no percents)')))
 
 
