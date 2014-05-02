@@ -94,8 +94,7 @@
                     <span class="status_link">
                     <i class="status_link {% if user.is_active %}icon-on{% else %}icon-off{% endif %} tooltip-bottom"
                        data-original-title="
-
-                               {% if user.is_active %}{% trans 'present' %}{% else %}{% trans 'absent' %}{% endif %}"></i>
+                              {% if user.is_active %}{% trans 'present' %}{% else %}{% trans 'absent' %}{% endif %}"></i>
                     <p style="display:none">
                         {% if user.is_active %}{% trans 'present' %}{% else %}{% trans 'absent' %}{% endif %}</p>
                 {% endif %}
@@ -162,3 +161,4 @@
         </tbody>
     </table>
 {% endblock %}
+
