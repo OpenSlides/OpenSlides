@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-04-28 23:44+0200\n"
+"POT-Creation-Date: 2014-05-02 23:51+0200\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -296,7 +296,7 @@ msgstr ""
 #: agenda/templates/agenda/edit.html:41
 #: agenda/templates/agenda/item_form_csv_import.html:11
 #: agenda/templates/agenda/view.html:22
-#: assignment/templates/assignment/assignment_detail.html:22
+#: assignment/templates/assignment/assignment_detail.html:24
 #: assignment/templates/assignment/assignment_form.html:26
 #: core/templates/core/customslide_update.html:10
 #: core/templates/core/select_widgets.html:10
@@ -322,13 +322,13 @@ msgstr ""
 #: agenda/templates/agenda/edit.html:56
 #: agenda/templates/agenda/item_form_csv_import.html:42
 #: assignment/templates/assignment/assignment_form.html:36
-#: assignment/templates/assignment/poll_view.html:101
+#: assignment/templates/assignment/assignmentpoll_form.html:108
 #: config/templates/config/config_form.html:47
 #: mediafile/templates/mediafile/mediafile_form.html:33
 #: motion/templates/motion/category_form.html:27
 #: motion/templates/motion/motion_form.html:67
 #: motion/templates/motion/motion_form_csv_import.html:42
-#: motion/templates/motion/poll_form.html:78
+#: motion/templates/motion/motionpoll_form.html:84
 #: participant/templates/participant/edit.html:56
 #: participant/templates/participant/group_edit.html:31
 #: participant/templates/participant/user_form_csv_import.html:44
@@ -421,7 +421,7 @@ msgstr ""
 
 #: agenda/templates/agenda/item_row.html:21
 #: agenda/templates/agenda/widget_item.html:31
-#: assignment/templates/assignment/assignment_detail.html:170
+#: assignment/templates/assignment/assignment_detail.html:176
 #: assignment/templates/assignment/assignment_list.html:65
 #: assignment/templates/assignment/widget_assignment.html:15
 #: core/templates/core/widget_customslide.html:34
@@ -438,7 +438,7 @@ msgstr ""
 
 #: agenda/templates/agenda/item_row.html:24
 #: agenda/templates/agenda/view.html:128
-#: assignment/templates/assignment/assignment_detail.html:172
+#: assignment/templates/assignment/assignment_detail.html:178
 #: assignment/templates/assignment/assignment_list.html:69
 #: core/templates/core/widget_customslide.html:30
 #: mediafile/templates/mediafile/mediafile_list.html:39
@@ -490,25 +490,26 @@ msgid "Do you want to save the changed order of agenda items?"
 msgstr ""
 
 #: agenda/templates/agenda/overview.html:29
-#: agenda/templates/agenda/view.html:84 assignment/models.py:315
+#: agenda/templates/agenda/view.html:84 assignment/models.py:330
 #: assignment/views.py:579
-#: assignment/templates/assignment/assignment_detail.html:208
-#: assignment/templates/assignment/assignment_detail.html:212
-#: assignment/templates/assignment/slide.html:66
-#: assignment/templates/assignment/slide.html:70 motion/models.py:706
-#: motion/pdf.py:129 motion/pdf.py:274
-#: motion/templates/motion/motion_detail.html:221
+#: assignment/templates/assignment/assignment_detail.html:214
+#: assignment/templates/assignment/assignment_detail.html:218
+#: assignment/templates/assignment/assignmentpoll_slide.html:24
+#: motion/models.py:710 motion/pdf.py:129 motion/pdf.py:274
+#: motion/templates/motion/motion_detail.html:228
+#: motion/templates/motion/motionpoll_slide.html:20
 #: motion/templates/motion/slide.html:23 utils/views.py:331
 msgid "Yes"
 msgstr ""
 
 #: agenda/templates/agenda/overview.html:30
-#: agenda/templates/agenda/view.html:85 assignment/models.py:315
+#: agenda/templates/agenda/view.html:85 assignment/models.py:330
 #: assignment/views.py:580
-#: assignment/templates/assignment/assignment_detail.html:209
-#: assignment/templates/assignment/slide.html:67 motion/models.py:706
-#: motion/pdf.py:129 motion/pdf.py:276
-#: motion/templates/motion/motion_detail.html:222
+#: assignment/templates/assignment/assignment_detail.html:215
+#: assignment/templates/assignment/assignmentpoll_slide.html:26
+#: motion/models.py:710 motion/pdf.py:129 motion/pdf.py:276
+#: motion/templates/motion/motion_detail.html:229
+#: motion/templates/motion/motionpoll_slide.html:24
 #: motion/templates/motion/slide.html:24 utils/views.py:331
 msgid "No"
 msgstr ""
@@ -584,7 +585,7 @@ msgid "Show item"
 msgstr ""
 
 #: agenda/templates/agenda/view.html:33
-#: assignment/templates/assignment/assignment_detail.html:35
+#: assignment/templates/assignment/assignment_detail.html:37
 #: motion/templates/motion/motion_detail.html:48
 #: participant/templates/participant/group_detail.html:22
 #: participant/templates/participant/user_detail.html:22
@@ -645,17 +646,17 @@ msgid "Put me on the list"
 msgstr ""
 
 #: agenda/templates/agenda/view.html:152
-#: assignment/templates/assignment/assignment_detail.html:113
-#: assignment/templates/assignment/poll_view.html:98
+#: assignment/templates/assignment/assignment_detail.html:115
+#: assignment/templates/assignment/assignmentpoll_form.html:105
 #: core/templates/formbuttons_saveapply.html:7
 #: mediafile/templates/mediafile/widget_pdfpresentation.html:32
-#: motion/templates/motion/poll_form.html:75
+#: motion/templates/motion/motionpoll_form.html:81
 #: projector/templates/projector/overlay_message_widget.html:10
 msgid "Apply"
 msgstr ""
 
 #: agenda/templates/agenda/view.html:154
-#: assignment/templates/assignment/assignment_detail.html:116
+#: assignment/templates/assignment/assignment_detail.html:118
 msgid "Add new participant"
 msgstr ""
 
@@ -696,9 +697,9 @@ msgstr ""
 msgid "Go to current list of speakers"
 msgstr ""
 
-#: assignment/forms.py:14 assignment/models.py:55 assignment/views.py:353
-#: assignment/templates/assignment/assignment_detail.html:293
-#: assignment/templates/assignment/slide.html:10
+#: assignment/forms.py:14 assignment/models.py:56 assignment/views.py:353
+#: assignment/templates/assignment/assignment_detail.html:299
+#: assignment/templates/assignment/slide.html:11
 msgid "Number of available posts"
 msgstr ""
 
@@ -713,107 +714,109 @@ msgstr ""
 msgid "Elections"
 msgstr ""
 
-#: assignment/models.py:48
-#: assignment/templates/assignment/assignment_detail.html:303
+#: assignment/models.py:49
+#: assignment/templates/assignment/assignment_detail.html:309
 msgid "Searching for candidates"
 msgstr ""
 
-#: assignment/models.py:49
-#: assignment/templates/assignment/assignment_detail.html:306
+#: assignment/models.py:50
+#: assignment/templates/assignment/assignment_detail.html:312
 msgid "Voting"
 msgstr ""
 
-#: assignment/models.py:50
-#: assignment/templates/assignment/assignment_detail.html:309
+#: assignment/models.py:51
+#: assignment/templates/assignment/assignment_detail.html:315
 msgid "Finished"
 msgstr ""
 
-#: assignment/models.py:53 participant/templates/participant/overview.html:50
+#: assignment/models.py:54 participant/templates/participant/overview.html:50
 msgid "Name"
 msgstr ""
 
-#: assignment/models.py:54
-#: assignment/templates/assignment/assignment_detail.html:57
+#: assignment/models.py:55
+#: assignment/templates/assignment/assignment_detail.html:59
 #: participant/models.py:123
 msgid "Description"
 msgstr ""
 
-#: assignment/models.py:58
+#: assignment/models.py:59
 msgid "Default comment on the ballot paper"
 msgstr ""
 
-#: assignment/models.py:63
+#: assignment/models.py:64
 msgid "Can see elections"
 msgstr ""
 
-#: assignment/models.py:64
+#: assignment/models.py:65
 msgid "Can nominate another person"
 msgstr ""
 
-#: assignment/models.py:65
+#: assignment/models.py:66
 msgid "Can nominate oneself"
 msgstr ""
 
-#: assignment/models.py:66
+#: assignment/models.py:67
 msgid "Can manage elections"
 msgstr ""
 
-#: assignment/models.py:69 assignment/views.py:503 assignment/views.py:520
+#: assignment/models.py:70 assignment/views.py:503 assignment/views.py:520
 #: assignment/templates/assignment/assignment_detail.html:8
+#: assignment/templates/assignment/assignment_detail.html:22
 #: assignment/templates/assignment/assignment_list.html:33
-#: assignment/templates/assignment/poll_view.html:7
-#: assignment/templates/assignment/slide.html:17
+#: assignment/templates/assignment/assignmentpoll_form.html:7
+#: assignment/templates/assignment/assignmentpoll_slide.html:10
+#: assignment/templates/assignment/slide.html:18
 #: assignment/templates/search/assignment-results.html:7
 msgid "Election"
 msgstr ""
 
-#: assignment/models.py:94
+#: assignment/models.py:95
 #, python-format
 msgid "%s is not a valid status."
 msgstr ""
 
-#: assignment/models.py:97
+#: assignment/models.py:98
 #, python-format
 msgid "The election status is already %s."
 msgstr ""
 
-#: assignment/models.py:110
+#: assignment/models.py:111
 #, python-format
 msgid "<b>%s</b> is already a candidate."
 msgstr ""
 
-#: assignment/models.py:112 assignment/views.py:152
+#: assignment/models.py:113 assignment/views.py:152
 msgid "The candidate list is already closed."
 msgstr ""
 
-#: assignment/models.py:119
+#: assignment/models.py:120
 #, python-format
 msgid "%s does not want to be a candidate."
 msgstr ""
 
-#: assignment/models.py:133
+#: assignment/models.py:134
 #, python-format
 msgid "%s is no candidate"
 msgstr ""
 
-#: assignment/models.py:258 assignment/views.py:305
+#: assignment/models.py:264 assignment/views.py:305
 msgid "Assignment"
 msgstr ""
 
-#: assignment/models.py:281
+#: assignment/models.py:291
 msgid "Comment on the ballot paper"
 msgstr ""
 
-#: assignment/models.py:284
+#: assignment/models.py:294
 #, python-format
 msgid "Ballot %d"
 msgstr ""
 
-#: assignment/models.py:315 motion/models.py:706
+#: assignment/models.py:330 motion/models.py:710
 msgid "Abstain"
 msgstr ""
 
-#: assignment/models.py:317 motion/templates/motion/poll_form.html:39
+#: assignment/models.py:332 motion/templates/motion/motionpoll_form.html:45
 msgid "Votes"
 msgstr ""
 
@@ -862,7 +865,7 @@ msgid "Custom number of ballot papers"
 msgstr ""
 
 #: assignment/signals.py:62
-msgid "Only publish voting results for selected winners (Projector view only)"
+msgid "Publish election result for elected candidates only (projector view)"
 msgstr ""
 
 #: assignment/signals.py:65
@@ -935,7 +938,7 @@ msgid "not elected"
 msgstr ""
 
 #: assignment/views.py:267 assignment/views.py:467
-#: assignment/templates/assignment/assignment_detail.html:77
+#: assignment/templates/assignment/assignment_detail.html:79
 msgid "elected"
 msgstr ""
 
@@ -953,26 +956,27 @@ msgid "Election: %s"
 msgstr ""
 
 #: assignment/views.py:360 assignment/views.py:396
-#: assignment/templates/assignment/assignment_detail.html:66
-#: assignment/templates/assignment/assignment_detail.html:150
+#: assignment/templates/assignment/assignment_detail.html:68
+#: assignment/templates/assignment/assignment_detail.html:152
 #: assignment/templates/assignment/assignment_list.html:34
 #: assignment/templates/assignment/assignment_list.html:48
-#: assignment/templates/assignment/poll_view.html:37
-#: assignment/templates/assignment/slide.html:28
-#: assignment/templates/assignment/slide.html:45
+#: assignment/templates/assignment/assignmentpoll_form.html:44
+#: assignment/templates/assignment/slide.html:29
 msgid "Candidates"
 msgstr ""
 
-#: assignment/views.py:385 motion/pdf.py:111
-#: motion/templates/motion/motion_detail.html:208
-msgid "Vote results"
+#: assignment/views.py:385
+#: assignment/templates/assignment/assignmentpoll_form.html:26
+#: motion/pdf.py:111 motion/templates/motion/motion_detail.html:208
+#: motion/templates/motion/motionpoll_form.html:27
+msgid "Vote result"
 msgstr ""
 
 #: assignment/views.py:389
-#: assignment/templates/assignment/assignment_detail.html:154
-#: assignment/templates/assignment/poll_view.html:7
-#: assignment/templates/assignment/poll_view.html:13
-#: assignment/templates/assignment/slide.html:48
+#: assignment/templates/assignment/assignment_detail.html:156
+#: assignment/templates/assignment/assignmentpoll_form.html:7
+#: assignment/templates/assignment/assignmentpoll_form.html:13
+#: assignment/templates/assignment/assignmentpoll_slide.html:11
 msgid "ballot"
 msgstr ""
 
@@ -989,37 +993,37 @@ msgid ""
 msgstr ""
 
 #: assignment/views.py:429
-#: assignment/templates/assignment/assignment_detail.html:226
-#: assignment/templates/assignment/assignment_detail.html:231
-#: assignment/templates/assignment/poll_view.html:54
-#: assignment/templates/assignment/slide.html:84
-#: assignment/templates/assignment/slide.html:88 motion/pdf.py:119
-#: motion/templates/motion/motion_detail.html:227
-#: motion/templates/motion/poll_form.html:48
+#: assignment/templates/assignment/assignment_detail.html:232
+#: assignment/templates/assignment/assignment_detail.html:237
+#: assignment/templates/assignment/assignmentpoll_form.html:61
+#: assignment/templates/assignment/assignmentpoll_slide.html:39
+#: motion/pdf.py:119 motion/templates/motion/motion_detail.html:234
+#: motion/templates/motion/motionpoll_form.html:54
+#: motion/templates/motion/motionpoll_slide.html:33
 #: motion/templates/motion/slide.html:29
 msgid "Valid votes"
 msgstr ""
 
 #: assignment/views.py:437
-#: assignment/templates/assignment/assignment_detail.html:242
-#: assignment/templates/assignment/assignment_detail.html:247
-#: assignment/templates/assignment/poll_view.html:64
-#: assignment/templates/assignment/slide.html:95
-#: assignment/templates/assignment/slide.html:99 motion/pdf.py:121
-#: motion/templates/motion/motion_detail.html:230
-#: motion/templates/motion/poll_form.html:52
+#: assignment/templates/assignment/assignment_detail.html:248
+#: assignment/templates/assignment/assignment_detail.html:253
+#: assignment/templates/assignment/assignmentpoll_form.html:71
+#: assignment/templates/assignment/assignmentpoll_slide.html:45
+#: motion/pdf.py:121 motion/templates/motion/motion_detail.html:237
+#: motion/templates/motion/motionpoll_form.html:58
+#: motion/templates/motion/motionpoll_slide.html:39
 #: motion/templates/motion/slide.html:32
 msgid "Invalid votes"
 msgstr ""
 
 #: assignment/views.py:445
-#: assignment/templates/assignment/assignment_detail.html:258
-#: assignment/templates/assignment/assignment_detail.html:263
-#: assignment/templates/assignment/poll_view.html:74
-#: assignment/templates/assignment/slide.html:108
-#: assignment/templates/assignment/slide.html:113 motion/pdf.py:123
-#: motion/templates/motion/motion_detail.html:236
-#: motion/templates/motion/poll_form.html:56
+#: assignment/templates/assignment/assignment_detail.html:264
+#: assignment/templates/assignment/assignment_detail.html:269
+#: assignment/templates/assignment/assignmentpoll_form.html:81
+#: assignment/templates/assignment/assignmentpoll_slide.html:51
+#: motion/pdf.py:123 motion/templates/motion/motion_detail.html:242
+#: motion/templates/motion/motionpoll_form.html:62
+#: motion/templates/motion/motionpoll_slide.html:45
 #: motion/templates/motion/slide.html:37 poll/models.py:88
 msgid "Votes cast"
 msgstr ""
@@ -1044,118 +1048,123 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: assignment/views.py:581
-#: assignment/templates/assignment/assignment_detail.html:210
-#: assignment/templates/assignment/slide.html:68 motion/pdf.py:129
-#: motion/pdf.py:278 motion/templates/motion/motion_detail.html:223
+#: assignment/templates/assignment/assignment_detail.html:216
+#: assignment/templates/assignment/assignmentpoll_slide.html:28
+#: motion/pdf.py:129 motion/pdf.py:278
+#: motion/templates/motion/motion_detail.html:230
+#: motion/templates/motion/motionpoll_slide.html:28
 #: motion/templates/motion/slide.html:25
 msgid "Abstention"
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:23
+#: assignment/templates/assignment/assignment_detail.html:25
 #: assignment/templates/assignment/assignment_list.html:74
 msgid "Print election as PDF"
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:28
+#: assignment/templates/assignment/assignment_detail.html:30
 #: assignment/templates/assignment/assignment_list.html:59
-#: assignment/templates/assignment/poll_view.html:21
+#: assignment/templates/assignment/assignmentpoll_form.html:21
 msgid "Show election"
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:40
+#: assignment/templates/assignment/assignment_detail.html:42
 #: assignment/templates/assignment/assignment_form.html:8
 #: assignment/templates/assignment/assignment_form.html:18
 msgid "Edit election"
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:42
+#: assignment/templates/assignment/assignment_detail.html:44
 msgid "Delete election"
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:46
+#: assignment/templates/assignment/assignment_detail.html:48
 #: motion/templates/motion/motion_detail.html:63
 msgid "New agenda item"
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:73
-#: assignment/templates/assignment/assignment_detail.html:133
+#: assignment/templates/assignment/assignment_detail.html:75
+#: assignment/templates/assignment/assignment_detail.html:135
 msgid "Remove candidate"
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:80
+#: assignment/templates/assignment/assignment_detail.html:82
 msgid "Mark candidate as not elected"
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:88
-#: assignment/templates/assignment/slide.html:34
+#: assignment/templates/assignment/assignment_detail.html:90
+#: assignment/templates/assignment/slide.html:35
 msgid "No candidates available."
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:98
+#: assignment/templates/assignment/assignment_detail.html:100
 msgid "Withdraw self candidature"
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:102
+#: assignment/templates/assignment/assignment_detail.html:104
 msgid "Self candidature"
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:127
+#: assignment/templates/assignment/assignment_detail.html:129
 msgid "Blocked Candidates"
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:138
+#: assignment/templates/assignment/assignment_detail.html:140
 msgid "No blocked candidates available."
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:146
-#: assignment/templates/assignment/slide.html:42
-msgid "Election results"
+#: assignment/templates/assignment/assignment_detail.html:148
+msgid "Election result"
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:158
-msgid "Publish results"
+#: assignment/templates/assignment/assignment_detail.html:160
+msgid "Publish result"
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:168
-#: assignment/templates/assignment/poll_view.html:89
-#: motion/templates/motion/poll_form.html:66
+#: assignment/templates/assignment/assignment_detail.html:171
+#: assignment/templates/assignment/assignmentpoll_form.html:25
+msgid "Show election result"
+msgstr ""
+
+#: assignment/templates/assignment/assignment_detail.html:174
+#: assignment/templates/assignment/assignmentpoll_form.html:96
+#: motion/templates/motion/motion_detail.html:218
+#: motion/templates/motion/motionpoll_form.html:72
 msgid "Ballot paper as PDF"
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:180
-#: assignment/templates/assignment/assignment_detail.html:279
+#: assignment/templates/assignment/assignment_detail.html:186
+#: assignment/templates/assignment/assignment_detail.html:285
 msgid "New ballot"
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:191
-#: assignment/templates/assignment/assignment_detail.html:200
+#: assignment/templates/assignment/assignment_detail.html:197
+#: assignment/templates/assignment/assignment_detail.html:206
 msgid "Mark candidate as elected"
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:194
-#: assignment/templates/assignment/slide.html:57
+#: assignment/templates/assignment/assignment_detail.html:200
 msgid "Candidate is elected"
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:214
-#: assignment/templates/assignment/slide.html:72
+#: assignment/templates/assignment/assignment_detail.html:220
 msgid "was not a <br> candidate"
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:275
+#: assignment/templates/assignment/assignment_detail.html:281
 msgid "No ballots available."
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:290
+#: assignment/templates/assignment/assignment_detail.html:296
 #: assignment/templates/assignment/assignment_list.html:35
-#: assignment/templates/assignment/slide.html:8
+#: assignment/templates/assignment/slide.html:9
 #: motion/templates/motion/motion_detail.html:203
 #: motion/templates/motion/motion_list.html:49
 #: motion/templates/motion/slide.html:8
 msgid "Status"
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:299
+#: assignment/templates/assignment/assignment_detail.html:305
 msgid "Change status"
 msgstr ""
 
@@ -1166,7 +1175,7 @@ msgid "New election"
 msgstr ""
 
 #: assignment/templates/assignment/assignment_form.html:24
-#: assignment/templates/assignment/poll_view.html:16
+#: assignment/templates/assignment/assignmentpoll_form.html:16
 msgid "Back to election"
 msgstr ""
 
@@ -1183,32 +1192,50 @@ msgstr ""
 msgid "Elected"
 msgstr ""
 
-#: assignment/templates/assignment/poll_view.html:30
-#: motion/templates/motion/poll_form.html:31
+#: assignment/templates/assignment/assignmentpoll_form.html:30
+msgid "Delete ballot"
+msgstr ""
+
+#: assignment/templates/assignment/assignmentpoll_form.html:37
+#: motion/templates/motion/motionpoll_form.html:37
 msgid "Special values"
 msgstr ""
 
-#: assignment/templates/assignment/poll_view.html:31
-#: motion/templates/motion/poll_form.html:31 poll/models.py:267
+#: assignment/templates/assignment/assignmentpoll_form.html:38
+#: motion/templates/motion/motionpoll_form.html:37 poll/models.py:267
 msgid "majority"
 msgstr ""
 
-#: assignment/templates/assignment/poll_view.html:32
-#: motion/templates/motion/poll_form.html:31 poll/models.py:269
+#: assignment/templates/assignment/assignmentpoll_form.html:39
+#: motion/templates/motion/motionpoll_form.html:37 poll/models.py:269
 #: poll/models.py:271
 msgid "undocumented"
 msgstr ""
 
-#: assignment/templates/assignment/poll_view.html:85
+#: assignment/templates/assignment/assignmentpoll_form.html:92
 msgid "Short description (for ballot paper)"
 msgstr ""
 
-#: assignment/templates/assignment/poll_view.html:95
+#: assignment/templates/assignment/assignmentpoll_form.html:102
 #: core/templates/formbuttons_save.html:4
 #: core/templates/formbuttons_saveapply.html:4
 #: core/templates/core/select_widgets.html:28
-#: motion/templates/motion/poll_form.html:72
+#: motion/templates/motion/motionpoll_form.html:78
 msgid "Save"
+msgstr ""
+
+#: assignment/templates/assignment/assignmentpoll_slide.html:57
+#: motion/templates/motion/motionpoll_slide.html:52
+#: motion/templates/motion/slide.html:43
+msgid "No result available."
+msgstr ""
+
+#: assignment/templates/assignment/slide.html:43
+msgid "Elected candidates"
+msgstr ""
+
+#: assignment/templates/assignment/slide.html:49
+msgid "No candidates elected."
 msgstr ""
 
 #: assignment/templates/assignment/widget_assignment.html:25
@@ -1451,6 +1478,7 @@ msgstr ""
 #: motion/templates/motion/motion_detail.html:22
 #: motion/templates/motion/motion_diff.html:35
 #: motion/templates/motion/motion_diff.html:39
+#: motion/templates/motion/motionpoll_slide.html:10
 #: motion/templates/motion/slide.html:70
 msgid "Version"
 msgstr ""
@@ -1641,7 +1669,7 @@ msgstr ""
 msgid "Don't create a new version. Useful e.g. for trivial changes."
 msgstr ""
 
-#: motion/forms.py:119 motion/templates/motion/motion_detail.html:259
+#: motion/forms.py:119 motion/templates/motion/motion_detail.html:265
 #: motion/templates/motion/motion_list.html:48
 #: motion/templates/motion/slide.html:60
 msgid "Category"
@@ -1711,8 +1739,9 @@ msgstr ""
 #: motion/templates/motion/motion_detail.html:20
 #: motion/templates/motion/motion_diff.html:6
 #: motion/templates/motion/motion_diff.html:19
-#: motion/templates/motion/poll_form.html:7
-#: motion/templates/motion/poll_form.html:15
+#: motion/templates/motion/motionpoll_form.html:7
+#: motion/templates/motion/motionpoll_form.html:15
+#: motion/templates/motion/motionpoll_slide.html:9
 #: motion/templates/motion/slide.html:69
 #: motion/templates/search/motion-results.html:7
 msgid "Motion"
@@ -1735,7 +1764,7 @@ msgstr ""
 msgid "%(time_and_messages)s by %(person)s"
 msgstr ""
 
-#: motion/models.py:720
+#: motion/models.py:724
 #, python-format
 msgid "Vote %d"
 msgstr ""
@@ -2084,7 +2113,7 @@ msgstr ""
 
 #: motion/templates/motion/motion_detail.html:41
 #: motion/templates/motion/motion_list.html:91
-#: motion/templates/motion/poll_form.html:22
+#: motion/templates/motion/motionpoll_form.html:22
 msgid "Show motion"
 msgstr ""
 
@@ -2130,62 +2159,69 @@ msgstr ""
 msgid "Show log"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:213
+#: motion/templates/motion/motion_detail.html:212
+#: motion/templates/motion/motionpoll_slide.html:11
 msgid "vote"
 msgstr ""
 
 #: motion/templates/motion/motion_detail.html:215
+#: motion/templates/motion/motionpoll_form.html:26
+msgid "Show vote result"
+msgstr ""
+
+#: motion/templates/motion/motion_detail.html:220
 msgid "Edit Vote"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:216
+#: motion/templates/motion/motion_detail.html:222
+#: motion/templates/motion/motionpoll_form.html:31
 msgid "Delete Vote"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:242
-msgid "No results"
+#: motion/templates/motion/motion_detail.html:248
+msgid "No result"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:253
+#: motion/templates/motion/motion_detail.html:258
 msgid "New vote"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:269
+#: motion/templates/motion/motion_detail.html:275
 msgid "Last changes (of this version)"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:271
+#: motion/templates/motion/motion_detail.html:277
 #: motion/templates/motion/motion_diff.html:36
 #: motion/templates/motion/motion_diff.html:40
 #: motion/templates/motion/motion_list.html:54
 msgid "Last changes"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:281
+#: motion/templates/motion/motion_detail.html:287
 msgid "Withdraw motion"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:290
+#: motion/templates/motion/motion_detail.html:296
 msgid "Unsupport"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:296
+#: motion/templates/motion/motion_detail.html:302
 msgid "Support"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:304
+#: motion/templates/motion/motion_detail.html:310
 msgid "minimum required supporters"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:311
+#: motion/templates/motion/motion_detail.html:317
 msgid "Manage motion"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:321
+#: motion/templates/motion/motion_detail.html:327
 msgid "For administration only:"
 msgstr ""
 
-#: motion/templates/motion/motion_detail.html:323
+#: motion/templates/motion/motion_detail.html:329
 msgid "Reset state"
 msgstr ""
 
@@ -2199,7 +2235,7 @@ msgstr ""
 
 #: motion/templates/motion/motion_diff.html:27
 #: motion/templates/motion/motion_form.html:56
-#: motion/templates/motion/poll_form.html:19
+#: motion/templates/motion/motionpoll_form.html:18
 msgid "Back to motion"
 msgstr ""
 
@@ -2256,16 +2292,12 @@ msgstr ""
 msgid "There is a newer (unauthorized) version."
 msgstr ""
 
-#: motion/templates/motion/poll_form.html:38
+#: motion/templates/motion/motionpoll_form.html:44
 msgid "Option"
 msgstr ""
 
 #: motion/templates/motion/slide.html:19
 msgid "Poll result"
-msgstr ""
-
-#: motion/templates/motion/slide.html:43
-msgid "No poll results available."
 msgstr ""
 
 #: participant/csv_import.py:35
