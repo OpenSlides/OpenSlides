@@ -12,6 +12,7 @@ from openslides.config.api import config
 from openslides.poll.models import (BaseOption, BasePoll, BaseVote,
                                     CollectDefaultVotesMixin,
                                     PublishPollMixin)
+from openslides.projector.api import get_active_object, update_projector
 from openslides.projector.models import RelatedModelMixin, SlideMixin
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import AbsoluteUrlMixin
@@ -190,6 +191,11 @@ class Assignment(SlideMixin, AbsoluteUrlMixin, models.Model):
         candidate = self.assignment_candidates.get(person=person)
         candidate.elected = value
         candidate.save()
+        # update projector if assignment or assignmentpoll slide is active
+        active_object = get_active_object()
+        if (type(active_object) is type(self) and active_object.pk == self.pk) or \
+           (type(active_object) is AssignmentPoll and active_object.assignment_id == self.pk):
+            update_projector()
 
     def is_elected(self, person):
         return person in self.elected
@@ -271,8 +277,12 @@ class AssignmentOption(BaseOption):
         return unicode(self.candidate)
 
 
-class AssignmentPoll(RelatedModelMixin, CollectDefaultVotesMixin,
+class AssignmentPoll(SlideMixin, RelatedModelMixin, CollectDefaultVotesMixin,
                      PublishPollMixin, AbsoluteUrlMixin, BasePoll):
+
+    slide_callback_name = 'assignmentpoll'
+    """Name of the callback for the slide-system."""
+
     option_class = AssignmentOption
     assignment = models.ForeignKey(Assignment, related_name='poll_set')
     yesnoabstain = models.NullBooleanField()
@@ -284,10 +294,15 @@ class AssignmentPoll(RelatedModelMixin, CollectDefaultVotesMixin,
         return _("Ballot %d") % self.get_ballot()
 
     def get_absolute_url(self, link='update'):
+        """
+        Return an URL for the poll.
+
+        The keyargument 'link' can be 'update' or 'delete'.
+        """
         if link == 'update':
-            url = reverse('assignment_poll_view', args=[str(self.pk)])
+            url = reverse('assignmentpoll_update', args=[str(self.pk)])
         elif link == 'delete':
-            url = reverse('assignment_poll_delete', args=[str(self.pk)])
+            url = reverse('assignmentpoll_delete', args=[str(self.pk)])
         else:
             url = super(AssignmentPoll, self).get_absolute_url(link)
         return url
@@ -325,3 +340,6 @@ class AssignmentPoll(RelatedModelMixin, CollectDefaultVotesMixin,
     def append_pollform_fields(self, fields):
         fields.append('description')
         super(AssignmentPoll, self).append_pollform_fields(fields)
+
+    def get_slide_context(self, **context):
+        return super(AssignmentPoll, self).get_slide_context(poll=self)

@@ -52,19 +52,19 @@ urlpatterns = patterns(
 
     url(r'^(?P<pk>\d+)/create_poll/$',
         'poll_create',
-        name='motion_poll_create'),
+        name='motionpoll_create'),
 
     url(r'^(?P<pk>\d+)/poll/(?P<poll_number>\d+)/edit/$',
         'poll_update',
-        name='motion_poll_update'),
+        name='motionpoll_update'),
 
     url(r'^(?P<pk>\d+)/poll/(?P<poll_number>\d+)/del/$',
         'poll_delete',
-        name='motion_poll_delete'),
+        name='motionpoll_delete'),
 
     url(r'^(?P<pk>\d+)/poll/(?P<poll_number>\d+)/pdf/$',
         'poll_pdf',
-        name='motion_poll_pdf'),
+        name='motionpoll_pdf'),
 
     url(r'^(?P<pk>\d+)/set_state/(?P<state>\d+)/$',
         'set_state',

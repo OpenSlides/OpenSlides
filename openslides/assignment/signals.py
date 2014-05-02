@@ -59,8 +59,8 @@ def setup_assignment_config(sender, **kwargs):
         default_value=False,
         form_field=forms.BooleanField(
             required=False,
-            label=ugettext_lazy('Only publish voting results for selected '
-                                'winners (Projector view only)')))
+            label=ugettext_lazy('Publish election result for elected candidates only '
+                                '(projector view)')))
     group_ballot = ConfigGroup(
         title=ugettext_lazy('Ballot and ballot papers'),
         variables=(assignment_poll_vote_values,

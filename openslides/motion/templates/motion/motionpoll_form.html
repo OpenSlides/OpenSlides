@@ -15,15 +15,21 @@
     {% trans "Motion" %} {{ motion.identifier }}, {{ poll }}
     </small>
     <small class="pull-right">
-    <div class="btn-toolbar">
         <a href="{% url 'motion_detail' motion.id %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to motion" %}</a>
         <!-- activate projector -->
         {% if perms.core.can_manage_projector %}
-            <a href="{{ motion|absolute_url:'projector' }}" class="activate_link btn {% if motion.is_active_slide %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show motion' %}">
+            <a href="{{ motion|absolute_url:'projector' }}" class="activate_link btn {% if motion.is_active_slide %}btn-primary{% endif %} btn-mini"
+                rel="tooltip" data-original-title="{% trans 'Show motion' %}">
                 <i class="icon-facetime-video {% if motion.is_active_slide %}icon-white{% endif %}"></i>
             </a>
+            <a class="btn btn-mini activate_link {% if poll.is_active_slide %}btn-primary{% endif %}" href="{{ poll|absolute_url:'projector' }}"
+                rel="tooltip" data-original-title="{% trans 'Show vote result' %}">
+                <i class="icon-facetime-video {% if poll.is_active_slide %}icon-white{% endif %}"></i> {% trans "Vote result" %}</a>
         {% endif %}
-    </div>
+        {% if perms.motion.can_manage_motion %}
+            <a class="btn btn-mini" href="{{ poll|absolute_url:'delete' }}"
+                rel="tooltip" data-original-title="{% trans 'Delete Vote' %}"><i class="icon-remove"></i></a>
+        {% endif %}
     </small>
 </h1>
 
@@ -44,15 +50,15 @@
                 <td>{{ value.errors }}{{ value }}</td>
             </tr>
         {% endfor %}
-        <tr class="total">
+        <tr class="total warning">
             <td>{% trans "Valid votes" %}</td>
             <td>{{ pollform.votesvalid.errors }}{{ pollform.votesvalid }}</td>
         </tr>
-        <tr class="">
+        <tr>
             <td>{% trans "Invalid votes" %}</td>
             <td>{{ pollform.votesinvalid.errors }}{{ pollform.votesinvalid }}</td>
         </tr>
-        <tr class="total">
+        <tr class="total warning">
             <td>{% trans "Votes cast" %}</td>
             <td>{{ pollform.votescast.errors }}{{ pollform.votescast }}</td>
         </tr>
@@ -62,7 +68,7 @@
 
 <!-- ballot paper button -->
 <p>
-<a href="{% url 'motion_poll_pdf' motion.id poll.poll_number %}" class="btn" target="_blank">
+<a href="{% url 'motionpoll_pdf' motion.id poll.poll_number %}" class="btn" target="_blank">
     <i class="icon-print"></i> {% trans 'Ballot paper as PDF' %}
 </a>
 </p>

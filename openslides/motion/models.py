@@ -693,8 +693,12 @@ class MotionOption(BaseOption):
     """The VoteClass, to witch this Class links."""
 
 
-class MotionPoll(RelatedModelMixin, CollectDefaultVotesMixin, AbsoluteUrlMixin, BasePoll):
-    """The Class to saves the poll results for a motion poll."""
+class MotionPoll(SlideMixin, RelatedModelMixin, CollectDefaultVotesMixin,
+                 AbsoluteUrlMixin, BasePoll):
+    """The Class to saves the vote result for a motion poll."""
+
+    slide_callback_name = 'motionpoll'
+    """Name of the callback for the slide-system."""
 
     motion = models.ForeignKey(Motion, related_name='polls')
     """The motion to witch the object belongs."""
@@ -726,11 +730,11 @@ class MotionPoll(RelatedModelMixin, CollectDefaultVotesMixin, AbsoluteUrlMixin, 
         The keyargument 'link' can be 'update' or 'delete'.
         """
         if link == 'update':
-            url = reverse('motion_poll_update', args=[str(self.motion.pk),
-                                                      str(self.poll_number)])
+            url = reverse('motionpoll_update', args=[str(self.motion.pk),
+                                                     str(self.poll_number)])
         elif link == 'delete':
-            url = reverse('motion_poll_delete', args=[str(self.motion.pk),
-                                                      str(self.poll_number)])
+            url = reverse('motionpoll_delete', args=[str(self.motion.pk),
+                                                     str(self.poll_number)])
         else:
             url = super(MotionPoll, self).get_absolute_url(link)
         return url
@@ -746,6 +750,9 @@ class MotionPoll(RelatedModelMixin, CollectDefaultVotesMixin, AbsoluteUrlMixin, 
 
     def get_percent_base_choice(self):
         return config['motion_poll_100_percent_base']
+
+    def get_slide_context(self, **context):
+        return super(MotionPoll, self).get_slide_context(poll=self)
 
 
 class State(models.Model):
