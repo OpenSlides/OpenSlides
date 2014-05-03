@@ -41,7 +41,7 @@ class TestFunctions(TestCase):
     def test_get_default_settings_context_portable(self, detect_mock):
         detect_mock.return_value = WINDOWS_PORTABLE_VERSION
         context = get_default_settings_context()
-        self.assertEqual(context['openslides_user_data_path'], 'get_win32_portable_path()')
+        self.assertEqual(context['openslides_user_data_path'], 'get_win32_portable_user_data_path()')
 
     def test_setup_django_settings_module(self):
         setup_django_settings_module('test_dir_dhvnghfjdh456fzheg2f/test_path_bngjdhc756dzwncshdfnx.py')

@@ -136,8 +136,8 @@ def get_default_settings_context(user_data_path=None):
     else:
         openslides_type = detect_openslides_type()
         if openslides_type == WINDOWS_PORTABLE_VERSION:
-            default_context['openslides_user_data_path'] = 'get_win32_portable_path()'
-            default_context['import_function'] = 'from openslides.utils.main import get_win32_portable_path'
+            default_context['openslides_user_data_path'] = 'get_win32_portable_user_data_path()'
+            default_context['import_function'] = 'from openslides.utils.main import get_win32_portable_user_data_path'
         else:
             path = get_default_user_data_path(openslides_type)
             default_context['openslides_user_data_path'] = repr(os.path.join(path, 'openslides'))
@@ -206,6 +206,13 @@ def get_win32_portable_path():
         os.close(fd)
         os.unlink(test_file)
     return portable_path
+
+
+def get_win32_portable_user_data_path():
+    """
+    Returns the user data path to the Windows portable version.
+    """
+    return os.path.join(get_win32_portable_path(), 'openslides')
 
 
 def write_settings(settings_path, template=None, **context):
