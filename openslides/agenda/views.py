@@ -112,8 +112,6 @@ class Overview(TemplateView):
         context.update({
             'items': items,
             'agenda_is_active': agenda_is_active,
-            'agenda_enable_auto_numbering': config['agenda_enable_auto_numbering'],
-            'agenda_numbering_fixed': config['agenda_agenda_fixed'],
             'duration': duration,
             'start': start,
             'end': end,
@@ -345,38 +343,20 @@ class CreateRelatedAgendaItemView(SingleObjectMixin, RedirectView):
         self.item = Item.objects.create(content_object=self.object)
 
 
-class FixAgendaView(QuestionView):
+class AgendaNumberingView(QuestionView):
     permission_required = 'agenda.can_manage_agenda'
     question_url_name = 'item_overview'
     url_name = 'item_overview'
-    question_message = ugettext_lazy('Do you really want to fix the agenda numbering?')
+    question_message = ugettext_lazy('Do you really want to generate agenda numbering? Manually added item numbers will be overwritten!')
     url_name_args = []
 
     def on_clicked_yes(self):
-        config['agenda_agenda_fixed'] = True
         for item in Item.objects.all():
             item.item_number = item.calc_item_no()
             item.save()
 
     def get_final_message(self):
-        return ugettext_lazy('The agenda has been fixed.')
-
-
-class ResetAgendaView(QuestionView):
-    permission_required = 'agenda.can_manage_agenda'
-    question_url_name = 'item_overview'
-    url_name = 'item_overview'
-    question_message = ugettext_lazy('Do you really want to reset the agenda numbering?')
-    url_name_args = []
-
-    def on_clicked_yes(self):
-        config['agenda_agenda_fixed'] = False
-        for item in Item.objects.all():
-            item.item_number = ''
-            item.save()
-
-    def get_final_message(self):
-        return ugettext_lazy('The agenda has been reset.')
+        return ugettext_lazy('The agenda has been numbered.')
 
 
 class AgendaPDF(PDFView):

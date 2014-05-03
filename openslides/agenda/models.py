@@ -164,10 +164,8 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
         Return the title of this item.
         """
         if not self.content_object:
-            if config['agenda_enable_auto_numbering']:
-                item_no = self.item_no
-                return '%s %s' % (item_no, self.title) if item_no else self.title
-            return self.title
+            item_no = self.item_no
+            return '%s %s' % (item_no, self.title) if item_no else self.title
         try:
             return self.content_object.get_agenda_title()
         except AttributeError:
@@ -306,12 +304,8 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
 
     @property
     def item_no(self):
-        if config['agenda_agenda_fixed']:
-            item_number = self.item_number
-        else:
-            item_number = self.calc_item_no()
-        if item_number:
-            item_no = '%s %s' % (config['agenda_number_prefix'], item_number)
+        if self.item_number:
+            item_no = '%s %s' % (config['agenda_number_prefix'], self.item_number)
         else:
             item_no = None
         return item_no
