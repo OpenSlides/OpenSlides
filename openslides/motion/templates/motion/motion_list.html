@@ -17,8 +17,13 @@
     <script type="text/javascript" charset="utf-8">
         $('#dataTable').dataTable( {
             "aoColumnDefs": [
-                { "sType": "natural", "aTargets": [ 0 ] }
-            ],
+                { "bSortable": false,      // Checkbox column
+                  "sTitle": "<input type='checkbox' id='check_all' />",
+                  "aTargets": [ 'check_all_col' ] },
+
+                { "sType": "natural",
+                  "aTargets": [ 'motion_no_col' ] }
+            ]
         });
     </script>
 {% endblock %}
@@ -40,10 +45,27 @@
         </small>
     </h1>
 
+    {% if perms.motion.can_manage_motion %}
+    <div class="action_border">
+    <div class="btn-group">
+        <a data-toggle="dropdown" class="btn btn-mini dropdown-toggle tooltip-right"
+           rel="tooltip" data-original-title="{% trans 'Actions related to selected motions' %}">
+            <i class="icon-briefcase"></i> {% trans 'Actions' %} <span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu  pull-left">
+            <li><a class="table_action" href="{% url 'motion_multi_delete' %}"><i class="icon-remove"></i> {% trans 'Delete selected motions' %}</a></li>
+        </ul>
+    </div>
+    </div>
+    {% endif %}
+
     <table id="dataTable" class="table table-striped table-bordered">
     <thead>
         <tr>
-            <th>{% trans "#" %}</th>
+            {% if perms.motion.can_manage_motion %}
+                <th class="check_all_col" title="{% trans 'Select all entries' %}"></th>
+            {% endif %}
+            <th class="motion_no_col">{% trans "#" %}</th>
             <th>{% trans "Motion title" %}</th>
             <th class="optional">{% trans 'Category' %}</th>
             <th>{% trans "Status" %}</th>
@@ -57,6 +79,9 @@
     </thead>
     {% for motion in motion_list %}
         <tr class="{% if motion.is_active_slide %}activeline{% endif %}">
+            {% if perms.participant.can_manage_participant %}
+                <td><input type="checkbox" name="motions" value="{{ motion.id }}" /></td>
+            {% endif %}
             <td class="nobr">{{ motion.identifier|default:'' }}</td>
             <td><a href="{{ motion|absolute_url }}">{{ motion }}</a></td>
             <td class="optional">{% if motion.category %}{{ motion.category }}{% else %}–{% endif %}</td>

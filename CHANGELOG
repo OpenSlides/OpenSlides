@@ -38,6 +38,8 @@ Other:
 - Added possibility to use custom templates and static files in user data path
   directory.
 - Added global chatbox for managers.
+- Added views for selection of multiple assigments, motions and participants.
+
 
 Version 1.5.2 (unreleased)
 ==========================

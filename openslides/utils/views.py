@@ -252,6 +252,23 @@ class ModelFormMixin(FormMixin):
         form.save_m2m()
 
 
+class ObjectListMixin(object):
+    """
+    Basic mixin to get a list of objects by pk values.
+    """
+    model = None
+
+    def get_objects(self, pks, sort=None):
+        if self.model is None:
+            raise ImproperlyConfigured('No model given')
+        if pks is None:
+            return None
+        if sort:
+            return self.model.objects.filter(pk__in=pks).order_by(sort)
+        else:
+            return self.model.objects.filter(pk__in=pks)
+
+
 class TemplateView(PermissionMixin, ExtraContextMixin, django_views.TemplateView):
     """
     View to return with an template.
@@ -524,6 +541,47 @@ class DeleteView(SingleObjectMixin, QuestionView):
         Prints the success message to the user.
         """
         return _('%s was successfully deleted.') % html_strong(self.object)
+
+
+class MultipleDeleteView(ObjectListMixin, QuestionView):
+    """
+    View to delete multiple model objects.
+
+    Subclasses have to set self.objects in their get method.
+    """
+    success_url = None
+    success_url_name = None
+
+    def get_redirect_url(self, **kwargs):
+        """
+        Returns the url on which the delete dialog is shown and the url after
+        the deleting.
+
+        On GET-requests and on aborted or failed POST-requests, redirects to the detail
+        view as default. The attributes question_url_name or question_url can
+        define other urls.
+        """
+        if self.request.method == 'POST':
+            try:
+                answer = self.get_answer()
+            except OpenSlidesError:
+                answer = 'no'
+            if answer == 'no':
+                url = self.get_url(self.question_url_name, self.question_url,
+                                   args=self.get_url_name_args())
+            else:
+                url = self.get_url(self.success_url_name, self.success_url,
+                                   args=self.get_url_name_args())
+        else:
+            url = self.get_url(self.question_url_name, self.question_url,
+                               args=self.get_url_name_args())
+        return url
+
+    def on_clicked_yes(self):
+        """
+        Deletes the objects.
+        """
+        self.objects.delete()
 
 
 class DetailView(PermissionMixin, ExtraContextMixin, django_views.DetailView):

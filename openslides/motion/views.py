@@ -14,7 +14,7 @@ from openslides.poll.views import PollFormView
 from openslides.projector.api import get_active_slide, update_projector
 from openslides.utils.utils import html_strong, htmldiff
 from openslides.utils.views import (CreateView, CSVImportView, DeleteView, DetailView,
-                                    ListView, PDFView, QuestionView,
+                                    ListView, PDFView, QuestionView, MultipleDeleteView,
                                     RedirectView, SingleObjectMixin, UpdateView)
 
 from .csv_import import import_motions
@@ -289,6 +289,39 @@ class MotionDeleteView(DeleteView):
         return _('%s was successfully deleted.') % _('Motion')
 
 motion_delete = MotionDeleteView.as_view()
+
+
+class MotionMultipleDeleteView(MultipleDeleteView):
+    permission_required = 'motion.can_manage_motion'
+    question_url_name = 'motion_list'
+    success_url_name = 'motion_list'
+    url_name_args = []
+    model = Motion
+
+    def get(self, request, *args, **kwargs):
+        self.objects = self.get_objects(self.request.GET.getlist('motions') or request.session['motions'])
+        return super(MotionMultipleDeleteView, self).get(request, *args, **kwargs)
+
+    def pre_redirect(self, request, *args, **kwargs):
+        motions = self.request.GET.getlist('motions')
+        request.session['motions'] = motions
+        super(MotionMultipleDeleteView, self).pre_redirect(request, *args, **kwargs)
+
+    def get_question_message(self):
+        """
+        Returns the question for the delete dialog.
+        """
+        motions = [unicode(str(object), 'utf-8') for object in self.objects]
+        motion_names = ", ".join(motions[:-1]) + (' ' + _('and') + ' ' if motions[:-1] else '') + ''.join(motions[-1:])
+        return _('Do you really want to delete %s ?') % html_strong(motion_names)
+
+    def get_final_message(self):
+        """
+        Prints the success message to the user.
+        """
+        return _('Motion(s) successfully deleted.')
+
+motion_multi_delete = MotionMultipleDeleteView.as_view()
 
 
 class VersionDeleteView(DeleteView):
