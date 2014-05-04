@@ -372,7 +372,7 @@ class AssignmentPDF(PDFView):
                         stylesheet['Signaturefield']))
         cell2b.append(Spacer(0, 0.2 * cm))
 
-        # Vote results
+        # Election result
 
         # Preparing
         vote_results = assignment.vote_results(only_published=True)
@@ -382,7 +382,7 @@ class AssignmentPDF(PDFView):
         # Left side
         cell3a = []
         cell3a.append(Paragraph(
-            "%s:" % (_("Vote result")), stylesheet['Heading4']))
+            "%s:" % (_("Election result")), stylesheet['Heading4']))
 
         if polls.count() == 1:
             cell3a.append(Paragraph(
