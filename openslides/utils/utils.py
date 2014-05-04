@@ -74,7 +74,7 @@ def int_or_none(var):
         return None
 
 
-def toRoman(number):
+def to_roman(number):
     """
     Converts an arabic number within range from 1 to 4999 to the corresponding roman number.
     Returns None on error conditions.

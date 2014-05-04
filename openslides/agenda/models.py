@@ -20,7 +20,7 @@ from openslides.projector.models import SlideMixin
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import AbsoluteUrlMixin
 from openslides.utils.person.models import PersonField
-from openslides.utils.utils import toRoman
+from openslides.utils.utils import to_roman
 
 
 class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
@@ -319,9 +319,11 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
                 if config['agenda_numeral_system'] == 'arabic':
                     return str(self._calc_sibling_no())
                 else:  # config['agenda_numeral_system'] == 'roman'
-                    return toRoman(self._calc_sibling_no())
+                    return to_roman(self._calc_sibling_no())
             else:
                 return '%s.%s' % (self.parent.calc_item_no(), self._calc_sibling_no())
+        else:
+            return ''
 
     def _calc_sibling_no(self):
         """
