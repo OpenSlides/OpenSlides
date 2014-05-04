@@ -70,6 +70,10 @@
                     {% else %}
                         <a href="{% url 'config_agenda' %}" class="btn btn-mini pull-right">{% trans 'Set start time of event' %}</a>
                     {% endif %}
+                    {% if perms.agenda.can_manage_agenda %}
+                        <a href="{% url 'agenda_numbering' %}"
+                           class="btn btn-mini pull-left">{% trans 'Number agenda items' %}</a>
+                    {% endif %}
                 {% endif %}
             </div>
         </div>

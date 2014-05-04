@@ -11,6 +11,8 @@ Version 1.6 (unreleased)
 Agenda:
 - New projector view with the current list of speakers.
 - Added CSV import.
+- Added automatic numbering of agenda items.
+- Fixed organizational item structuring.
 Assignment:
 - Coupled assignment candidates with list of speakers.
 Dashboard:

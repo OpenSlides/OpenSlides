@@ -5,6 +5,7 @@ from datetime import datetime
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext as _
@@ -19,6 +20,7 @@ from openslides.projector.models import SlideMixin
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import AbsoluteUrlMixin
 from openslides.utils.person.models import PersonField
+from openslides.utils.utils import to_roman
 
 
 class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
@@ -35,6 +37,11 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
     ITEM_TYPE = (
         (AGENDA_ITEM, ugettext_lazy('Agenda item')),
         (ORGANIZATIONAL_ITEM, ugettext_lazy('Organizational item')))
+
+    item_number = models.CharField(blank=True, max_length=255, verbose_name=ugettext_lazy("Number"))
+    """
+    Number of agenda item.
+    """
 
     title = models.CharField(null=True, max_length=255, verbose_name=ugettext_lazy("Title"))
     """
@@ -116,6 +123,16 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
         if self.parent and self.parent.is_active_slide():
             update_projector()
 
+    def clean(self):
+        """
+        Ensures that the children of orga items are only orga items.
+        """
+        if self.type == self.AGENDA_ITEM and self.parent is not None and self.parent.type == self.ORGANIZATIONAL_ITEM:
+            raise ValidationError(_('Agenda items can not be descendents of an organizational item.'))
+        if self.type == self.ORGANIZATIONAL_ITEM and self.get_descendants().filter(type=self.AGENDA_ITEM).exists():
+            raise ValidationError(_('Organizational items can not have agenda items as descendents.'))
+        return super(Item, self).clean()
+
     def __unicode__(self):
         return self.get_title()
 
@@ -147,7 +164,8 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
         Return the title of this item.
         """
         if not self.content_object:
-            return self.title
+            item_no = self.item_no
+            return '%s %s' % (item_no, self.title) if item_no else self.title
         try:
             return self.content_object.get_agenda_title()
         except AttributeError:
@@ -283,6 +301,41 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
         else:
             value = False
         return value
+
+    @property
+    def item_no(self):
+        if self.item_number:
+            item_no = '%s %s' % (config['agenda_number_prefix'], self.item_number)
+        else:
+            item_no = None
+        return item_no
+
+    def calc_item_no(self):
+        """
+        Returns the number of this agenda item.
+        """
+        if self.type == self.AGENDA_ITEM:
+            if self.is_root_node():
+                if config['agenda_numeral_system'] == 'arabic':
+                    return str(self._calc_sibling_no())
+                else:  # config['agenda_numeral_system'] == 'roman'
+                    return to_roman(self._calc_sibling_no())
+            else:
+                return '%s.%s' % (self.parent.calc_item_no(), self._calc_sibling_no())
+        else:
+            return ''
+
+    def _calc_sibling_no(self):
+        """
+        Counts all siblings on the same level which are AGENDA_ITEMs.
+        """
+        sibling_no = 0
+        prev_sibling = self.get_previous_sibling()
+        while prev_sibling is not None:
+            if prev_sibling.type == self.AGENDA_ITEM:
+                sibling_no += 1
+            prev_sibling = prev_sibling.get_previous_sibling()
+        return sibling_no + 1
 
 
 class SpeakerManager(models.Manager):

@@ -40,6 +40,10 @@ urlpatterns = patterns(
         views.AgendaPDF.as_view(),
         name='print_agenda'),
 
+    url(r'^numbering/$',
+        views.AgendaNumberingView.as_view(),
+        name='agenda_numbering'),
+
     # List of speakers
     url(r'^(?P<pk>\d+)/speaker/$',
         views.SpeakerAppendView.as_view(),

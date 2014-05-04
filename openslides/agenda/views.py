@@ -34,6 +34,7 @@ from openslides.utils.views import (
     DeleteView,
     FormView,
     PDFView,
+    QuestionView,
     RedirectView,
     SingleObjectMixin,
     TemplateView,
@@ -134,8 +135,14 @@ class Overview(TemplateView):
                     parent = Item.objects.get(id=form.cleaned_data['parent'])
                 except Item.DoesNotExist:
                     parent = None
-                item.weight = form.cleaned_data['weight']
+                else:
+                    if item.type == item.AGENDA_ITEM and parent.type == item.ORGANIZATIONAL_ITEM:
+                        transaction.rollback()
+                        messages.error(
+                            request, _('Agenda items can not be descendents of an organizational item.'))
+                        break
                 item.parent = parent
+                item.weight = form.cleaned_data['weight']
                 Model.save(item)
             else:
                 transaction.rollback()
@@ -334,6 +341,22 @@ class CreateRelatedAgendaItemView(SingleObjectMixin, RedirectView):
         Create the agenda item.
         """
         self.item = Item.objects.create(content_object=self.object)
+
+
+class AgendaNumberingView(QuestionView):
+    permission_required = 'agenda.can_manage_agenda'
+    question_url_name = 'item_overview'
+    url_name = 'item_overview'
+    question_message = ugettext_lazy('Do you really want to generate agenda numbering? Manually added item numbers will be overwritten!')
+    url_name_args = []
+
+    def on_clicked_yes(self):
+        for item in Item.objects.all():
+            item.item_number = item.calc_item_no()
+            item.save()
+
+    def get_final_message(self):
+        return ugettext_lazy('The agenda has been numbered.')
 
 
 class AgendaPDF(PDFView):

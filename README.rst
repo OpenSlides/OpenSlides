@@ -272,6 +272,8 @@ OpenSlides uses the following projects or parts of them:
 * `ReportLab <http://www.reportlab.com/software/opensource/rl-toolkit/>`_,
   License: BSD
 
+* `roman <https://pypi.python.org/pypi/roman>`_, License: Python 2.1.1
+
 * `sockjs-client <https://github.com/sockjs/sockjs-client>`_,
   License: MIT
 
