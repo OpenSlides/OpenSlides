@@ -15,10 +15,14 @@
     <script src="{% static 'js/naturalSort.js' %}" type="text/javascript"></script>
     <script src="{% static 'js/jquery/dataTables.bootstrap.js' %}" type="text/javascript"></script>
     <script type="text/javascript" charset="utf-8">
-        $('#dataTable').dataTable( {
-            "aoColumnDefs": [
-                { "sType": "natural", "aTargets": [ 0 ] }
-            ],
+        $(document).ready(function()
+        {
+            var tblapi = $('#dataTable').dataTable();
+            // change sort type to "natural", sadly there seems to be no public API
+            // to change the sort type so we have to resort to using a private API
+            tblapi._fnColumnOptions(0, {'sType': 'natural'});
+            // redraw necessary to apply changed sort settings
+            tblapi.fnDraw();
         });
     </script>
 {% endblock %}
