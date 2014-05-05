@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-02 23:52+0200\n"
+"POT-Creation-Date: 2014-05-05 20:29+0200\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -16,47 +16,47 @@ msgstr ""
 msgid ", of which %s are hidden."
 msgstr ""
 
-#: core/static/js/jquery/dataTables.bootstrap.js:15
+#: core/static/js/jquery/dataTables.bootstrap.js:14
 msgid "All"
 msgstr ""
 
-#: core/static/js/jquery/dataTables.bootstrap.js:20
+#: core/static/js/jquery/dataTables.bootstrap.js:19
 msgid "_MENU_ entries per page"
 msgstr ""
 
-#: core/static/js/jquery/dataTables.bootstrap.js:21
+#: core/static/js/jquery/dataTables.bootstrap.js:20
 msgid "Search:"
 msgstr ""
 
-#: core/static/js/jquery/dataTables.bootstrap.js:22
+#: core/static/js/jquery/dataTables.bootstrap.js:21
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr ""
 
-#: core/static/js/jquery/dataTables.bootstrap.js:23
+#: core/static/js/jquery/dataTables.bootstrap.js:22
 msgid "Showing 0 entries"
 msgstr ""
 
-#: core/static/js/jquery/dataTables.bootstrap.js:24
+#: core/static/js/jquery/dataTables.bootstrap.js:23
 msgid "(filtered from _MAX_ total entries)"
 msgstr ""
 
-#: core/static/js/jquery/dataTables.bootstrap.js:25
+#: core/static/js/jquery/dataTables.bootstrap.js:24
 msgid "No matching records found"
 msgstr ""
 
-#: core/static/js/jquery/dataTables.bootstrap.js:27
+#: core/static/js/jquery/dataTables.bootstrap.js:26
 msgid "First"
 msgstr ""
 
-#: core/static/js/jquery/dataTables.bootstrap.js:28
+#: core/static/js/jquery/dataTables.bootstrap.js:27
 msgid "Last"
 msgstr ""
 
-#: core/static/js/jquery/dataTables.bootstrap.js:29
+#: core/static/js/jquery/dataTables.bootstrap.js:28
 msgid "Next"
 msgstr ""
 
-#: core/static/js/jquery/dataTables.bootstrap.js:30
+#: core/static/js/jquery/dataTables.bootstrap.js:29
 msgid "Previous"
 msgstr ""
 

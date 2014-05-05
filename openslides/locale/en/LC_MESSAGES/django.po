@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-02 23:51+0200\n"
+"POT-Creation-Date: 2014-05-05 20:29+0200\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -54,108 +54,120 @@ msgstr ""
 msgid "Error in the following lines: %s."
 msgstr ""
 
-#: agenda/forms.py:23
+#: agenda/forms.py:22
 msgid "Parent item"
 msgstr ""
 
-#: agenda/forms.py:27
+#: agenda/forms.py:26
 msgid "Invalid format. Hours from 0 to 99 and minutes from 00 to 59"
 msgstr ""
 
-#: agenda/forms.py:30 agenda/templates/agenda/overview.html:84
+#: agenda/forms.py:29 agenda/templates/agenda/overview.html:88
 msgid "Duration"
 msgstr ""
 
-#: agenda/forms.py:31
+#: agenda/forms.py:30
 msgid "Input format: HH:MM or M or MM or MMM"
 msgstr ""
 
-#: agenda/forms.py:65
+#: agenda/forms.py:64
 msgid "Add participant"
 msgstr ""
 
-#: agenda/forms.py:78
+#: agenda/forms.py:77
 #, python-format
 msgid "%s is already on the list of speakers."
 msgstr ""
 
-#: agenda/main_menu.py:12 agenda/signals.py:68 agenda/views.py:344
-#: agenda/views.py:345 agenda/widgets.py:16
+#: agenda/main_menu.py:12 agenda/signals.py:87 agenda/views.py:367
+#: agenda/views.py:368 agenda/widgets.py:16
 #: agenda/templates/agenda/item_slide_summary.html:7
 #: agenda/templates/agenda/overview.html:7
 #: agenda/templates/agenda/overview.html:34
-#: agenda/templates/agenda/overview.html:92
+#: agenda/templates/agenda/overview.html:96
 #: agenda/templates/agenda/widget_item.html:18
 #: agenda/templates/search/agenda-results.html:7
 #: agenda/templates/search/agenda-results.html:13
 msgid "Agenda"
 msgstr ""
 
-#: agenda/models.py:36
+#: agenda/models.py:38
 msgid "Agenda item"
 msgstr ""
 
-#: agenda/models.py:37 agenda/templates/search/agenda-results.html:13
+#: agenda/models.py:39 agenda/templates/search/agenda-results.html:13
 msgid "Organizational item"
 msgstr ""
 
-#: agenda/models.py:39 core/models.py:15 core/signals.py:111
+#: agenda/models.py:41
+msgid "Number"
+msgstr ""
+
+#: agenda/models.py:46 core/models.py:15 core/signals.py:111
 #: mediafile/models.py:28 mediafile/templates/mediafile/mediafile_list.html:18
 #: motion/forms.py:26 motion/models.py:534 participant/models.py:34
 #: participant/pdf.py:21 participant/templates/participant/overview.html:49
 msgid "Title"
 msgstr ""
 
-#: agenda/models.py:44 core/models.py:16 motion/forms.py:31
+#: agenda/models.py:51 core/models.py:16 motion/forms.py:31
 #: motion/models.py:537
 msgid "Text"
 msgstr ""
 
-#: agenda/models.py:49 agenda/templates/agenda/overview.html:81
+#: agenda/models.py:56 agenda/templates/agenda/overview.html:85
 #: agenda/templates/agenda/view.html:54 participant/models.py:46
 #: participant/templates/participant/overview.html:55
 #: participant/templates/participant/user_detail.html:71
 msgid "Comment"
 msgstr ""
 
-#: agenda/models.py:54
+#: agenda/models.py:61
 msgid "Closed"
 msgstr ""
 
-#: agenda/models.py:60 mediafile/templates/mediafile/mediafile_list.html:19
+#: agenda/models.py:67 mediafile/templates/mediafile/mediafile_list.html:19
 msgid "Type"
 msgstr ""
 
-#: agenda/models.py:78 core/models.py:17
+#: agenda/models.py:85 core/models.py:17
 msgid "Weight"
 msgstr ""
 
-#: agenda/models.py:100
+#: agenda/models.py:107
 msgid "List of speakers is closed"
 msgstr ""
 
-#: agenda/models.py:107
+#: agenda/models.py:114
 msgid "Can see agenda"
 msgstr ""
 
-#: agenda/models.py:108
+#: agenda/models.py:115
 msgid "Can manage agenda"
 msgstr ""
 
-#: agenda/models.py:109
+#: agenda/models.py:116
 msgid "Can see orga items and time scheduling of agenda"
 msgstr ""
 
-#: agenda/models.py:292
+#: agenda/models.py:131 agenda/views.py:142
+msgid "Agenda items can not be descendents of an organizational item."
+msgstr ""
+
+#: agenda/models.py:133
+msgid "Organizational items can not have agenda items as descendents."
+msgstr ""
+
+#: agenda/models.py:345
 #, python-format
 msgid "%(person)s is already on the list of speakers of item %(id)s."
 msgstr ""
 
-#: agenda/models.py:296
+#: agenda/models.py:349
 msgid "An anonymous user can not be on lists of speakers."
 msgstr ""
 
-#: agenda/models.py:336
+#: agenda/models.py:389
 msgid "Can put oneself on the list of speakers"
 msgstr ""
 
@@ -187,89 +199,115 @@ msgstr ""
 msgid "[Begin speach] starts the countdown, [End speach] stops the countdown."
 msgstr ""
 
-#: agenda/views.py:125
+#: agenda/signals.py:67
+msgid "Numbering prefix for agenda items"
+msgstr ""
+
+#: agenda/signals.py:75
+msgid "Numeral system for agenda items"
+msgstr ""
+
+#: agenda/signals.py:78
+msgid "Arabic"
+msgstr ""
+
+#: agenda/signals.py:79
+msgid "Roman"
+msgstr ""
+
+#: agenda/views.py:126
 msgid "You are not authorized to manage the agenda."
 msgstr ""
 
-#: agenda/views.py:143
+#: agenda/views.py:150
 msgid "Errors when reordering of the agenda"
 msgstr ""
 
-#: agenda/views.py:283
+#: agenda/views.py:290
 msgid "Yes, with all child items."
 msgstr ""
 
-#: agenda/views.py:308
+#: agenda/views.py:315
 #, python-format
 msgid "Item %s was successfully deleted."
 msgstr ""
 
-#: agenda/views.py:310
+#: agenda/views.py:317
 #, python-format
 msgid "Item %s and its children were successfully deleted."
 msgstr ""
 
-#: agenda/views.py:370 agenda/views.py:595
+#: agenda/views.py:350
+msgid ""
+"Do you really want to generate agenda numbering? Manually added item numbers "
+"will be overwritten!"
+msgstr ""
+
+#: agenda/views.py:359
+msgid "The agenda has been numbered."
+msgstr ""
+
+#: agenda/views.py:393 agenda/views.py:618
 msgid "The list of speakers is closed."
 msgstr ""
 
-#: agenda/views.py:377 agenda/views.py:604
+#: agenda/views.py:400 agenda/views.py:627
 msgid "You were successfully added to the list of speakers."
 msgstr ""
 
-#: agenda/views.py:401
+#: agenda/views.py:424
 msgid "You are not on the list of speakers."
 msgstr ""
 
-#: agenda/views.py:424
+#: agenda/views.py:447
 msgid "Do you really want to remove yourself from the list of speakers?"
 msgstr ""
 
-#: agenda/views.py:445
+#: agenda/views.py:468
 #, python-format
 msgid "%(person)s is not on the list of %(item)s."
 msgstr ""
 
-#: agenda/views.py:471
+#: agenda/views.py:494
 #, python-format
 msgid "There is no one speaking at the moment according to %(item)s."
 msgstr ""
 
-#: agenda/views.py:536
+#: agenda/views.py:559
 msgid "Could not change order. Invalid data."
 msgstr ""
 
-#: agenda/views.py:589
+#: agenda/views.py:612
 msgid ""
 "There is no list of speakers for the current slide. Please choose the agenda "
 "item manually from the agenda."
 msgstr ""
 
-#: agenda/views.py:608
+#: agenda/views.py:631
 msgid "You can not put yourself on the list of speakers."
 msgstr ""
 
-#: agenda/views.py:617
+#: agenda/views.py:640
 #, python-format
 msgid "%s is now speaking."
 msgstr ""
 
-#: agenda/views.py:619
+#: agenda/views.py:642
 #: agenda/templates/agenda/item_slide_list_of_speaker.html:26
 #: agenda/templates/agenda/overlay_speaker_projector.html:17
 msgid "The list of speakers is empty."
 msgstr ""
 
-#: agenda/views.py:627
+#: agenda/views.py:650
 msgid "There is no one speaking at the moment."
 msgstr ""
 
-#: agenda/views.py:630
+#: agenda/views.py:653
 #, python-format
 msgid "%s is now finished."
 msgstr ""
 
-#: agenda/views.py:687 agenda/widgets.py:43
+#: agenda/views.py:710 agenda/widgets.py:43
 #: agenda/templates/agenda/current_list_of_speakers_projector.html:4
 #: agenda/templates/agenda/item_slide_list_of_speaker.html:9
 #: agenda/templates/agenda/overlay_speaker_projector.html:4
@@ -279,7 +317,7 @@ msgstr ""
 msgid "List of speakers"
 msgstr ""
 
-#: agenda/views.py:687
+#: agenda/views.py:710
 msgid "Not available."
 msgstr ""
 
@@ -403,7 +441,7 @@ msgstr ""
 #: agenda/templates/agenda/item_form_csv_import.html:39
 #: agenda/templates/agenda/overview.html:38
 #: motion/templates/motion/motion_form_csv_import.html:39
-#: motion/templates/motion/motion_list.html:37
+#: motion/templates/motion/motion_list.html:41
 #: participant/templates/participant/overview.html:26
 #: participant/templates/participant/user_form_csv_import.html:41
 msgid "Import"
@@ -427,7 +465,7 @@ msgstr ""
 #: core/templates/core/widget_customslide.html:34
 #: mediafile/templates/mediafile/mediafile_list.html:38
 #: motion/templates/motion/category_list.html:30
-#: motion/templates/motion/motion_list.html:96
+#: motion/templates/motion/motion_list.html:100
 #: motion/templates/motion/widget_motion.html:15
 #: participant/templates/participant/group_overview.html:58
 #: participant/templates/participant/overview.html:117
@@ -444,7 +482,7 @@ msgstr ""
 #: mediafile/templates/mediafile/mediafile_list.html:39
 #: motion/templates/motion/category_list.html:33
 #: motion/templates/motion/motion_detail.html:146
-#: motion/templates/motion/motion_list.html:99
+#: motion/templates/motion/motion_list.html:103
 #: participant/templates/participant/group_overview.html:62
 #: participant/templates/participant/overview.html:122
 msgid "Delete"
@@ -519,7 +557,7 @@ msgstr ""
 #: core/templates/core/widget_customslide.html:47
 #: mediafile/templates/mediafile/mediafile_list.html:12
 #: motion/templates/motion/category_list.html:13
-#: motion/templates/motion/motion_list.html:32
+#: motion/templates/motion/motion_list.html:36
 #: participant/templates/participant/group_overview.html:22
 #: participant/templates/participant/overview.html:23
 msgid "New"
@@ -555,26 +593,30 @@ msgstr ""
 msgid "Set start time of event"
 msgstr ""
 
-#: agenda/templates/agenda/overview.html:79
+#: agenda/templates/agenda/overview.html:75
+msgid "Number agenda items"
+msgstr ""
+
+#: agenda/templates/agenda/overview.html:83
 msgid "Item"
 msgstr ""
 
-#: agenda/templates/agenda/overview.html:87
+#: agenda/templates/agenda/overview.html:91
 #: assignment/templates/assignment/assignment_list.html:36
 #: mediafile/templates/mediafile/mediafile_list.html:24
 #: motion/templates/motion/category_list.html:23
 #: motion/templates/motion/motion_detail.html:122
-#: motion/templates/motion/motion_list.html:55
+#: motion/templates/motion/motion_list.html:59
 #: participant/templates/participant/group_overview.html:33
 #: participant/templates/participant/overview.html:57
 msgid "Actions"
 msgstr ""
 
-#: agenda/templates/agenda/overview.html:106
+#: agenda/templates/agenda/overview.html:110
 msgid "Show agenda"
 msgstr ""
 
-#: agenda/templates/agenda/overview.html:129
+#: agenda/templates/agenda/overview.html:133
 #: agenda/templates/agenda/widget_item.html:57
 #: core/templates/core/widget_customslide.html:43
 msgid "No items available."
@@ -966,10 +1008,9 @@ msgid "Candidates"
 msgstr ""
 
 #: assignment/views.py:385
+#: assignment/templates/assignment/assignment_detail.html:148
 #: assignment/templates/assignment/assignmentpoll_form.html:26
-#: motion/pdf.py:111 motion/templates/motion/motion_detail.html:208
-#: motion/templates/motion/motionpoll_form.html:27
-msgid "Vote result"
+msgid "Election result"
 msgstr ""
 
 #: assignment/views.py:389
@@ -1000,7 +1041,7 @@ msgstr ""
 #: motion/pdf.py:119 motion/templates/motion/motion_detail.html:234
 #: motion/templates/motion/motionpoll_form.html:54
 #: motion/templates/motion/motionpoll_slide.html:33
-#: motion/templates/motion/slide.html:29
+#: motion/templates/motion/slide.html:29 poll/models.py:84
 msgid "Valid votes"
 msgstr ""
 
@@ -1012,7 +1053,7 @@ msgstr ""
 #: motion/pdf.py:121 motion/templates/motion/motion_detail.html:237
 #: motion/templates/motion/motionpoll_form.html:58
 #: motion/templates/motion/motionpoll_slide.html:39
-#: motion/templates/motion/slide.html:32
+#: motion/templates/motion/slide.html:32 poll/models.py:86
 msgid "Invalid votes"
 msgstr ""
 
@@ -1113,10 +1154,6 @@ msgstr ""
 msgid "No blocked candidates available."
 msgstr ""
 
-#: assignment/templates/assignment/assignment_detail.html:148
-msgid "Election result"
-msgstr ""
-
 #: assignment/templates/assignment/assignment_detail.html:160
 msgid "Publish result"
 msgstr ""
@@ -1159,7 +1196,7 @@ msgstr ""
 #: assignment/templates/assignment/assignment_list.html:35
 #: assignment/templates/assignment/slide.html:9
 #: motion/templates/motion/motion_detail.html:203
-#: motion/templates/motion/motion_list.html:49
+#: motion/templates/motion/motion_list.html:53
 #: motion/templates/motion/slide.html:8
 msgid "Status"
 msgstr ""
@@ -1650,14 +1687,14 @@ msgstr ""
 
 #: motion/forms.py:75 motion/pdf.py:49
 #: motion/templates/motion/motion_detail.html:183
-#: motion/templates/motion/motion_list.html:50
+#: motion/templates/motion/motion_list.html:54
 #: motion/templates/motion/slide.html:51
 msgid "Submitter"
 msgstr ""
 
 #: motion/forms.py:90 motion/pdf.py:74 motion/signals.py:86
 #: motion/templates/motion/motion_detail.html:190
-#: motion/templates/motion/motion_list.html:52
+#: motion/templates/motion/motion_list.html:56
 msgid "Supporters"
 msgstr ""
 
@@ -1670,7 +1707,7 @@ msgid "Don't create a new version. Useful e.g. for trivial changes."
 msgstr ""
 
 #: motion/forms.py:119 motion/templates/motion/motion_detail.html:265
-#: motion/templates/motion/motion_list.html:48
+#: motion/templates/motion/motion_list.html:52
 #: motion/templates/motion/slide.html:60
 msgid "Category"
 msgstr ""
@@ -1712,7 +1749,7 @@ msgstr ""
 #: motion/main_menu.py:12 motion/signals.py:124 motion/views.py:715
 #: motion/widgets.py:15 motion/templates/motion/category_list.html:6
 #: motion/templates/motion/motion_list.html:7
-#: motion/templates/motion/motion_list.html:28
+#: motion/templates/motion/motion_list.html:32
 msgid "Motions"
 msgstr ""
 
@@ -1777,12 +1814,17 @@ msgstr ""
 msgid "State"
 msgstr ""
 
+#: motion/pdf.py:111 motion/templates/motion/motion_detail.html:208
+#: motion/templates/motion/motionpoll_form.html:27
+msgid "Vote result"
+msgstr ""
+
 #: motion/pdf.py:125 motion/templates/motion/slide.html:17
 msgid "Vote"
 msgstr ""
 
 #: motion/pdf.py:249 motion/templates/motion/category_list.html:10
-#: motion/templates/motion/motion_list.html:36
+#: motion/templates/motion/motion_list.html:40
 msgid "Categories"
 msgstr ""
 
@@ -2107,12 +2149,12 @@ msgid "This version is not authorized."
 msgstr ""
 
 #: motion/templates/motion/motion_detail.html:37
-#: motion/templates/motion/motion_list.html:103
+#: motion/templates/motion/motion_list.html:107
 msgid "Print motion as PDF"
 msgstr ""
 
 #: motion/templates/motion/motion_detail.html:41
-#: motion/templates/motion/motion_list.html:91
+#: motion/templates/motion/motion_list.html:95
 #: motion/templates/motion/motionpoll_form.html:22
 msgid "Show motion"
 msgstr ""
@@ -2193,7 +2235,7 @@ msgstr ""
 #: motion/templates/motion/motion_detail.html:277
 #: motion/templates/motion/motion_diff.html:36
 #: motion/templates/motion/motion_diff.html:40
-#: motion/templates/motion/motion_list.html:54
+#: motion/templates/motion/motion_list.html:58
 msgid "Last changes"
 msgstr ""
 
@@ -2241,13 +2283,13 @@ msgstr ""
 
 #: motion/templates/motion/motion_form.html:42
 #: motion/templates/motion/motion_form.html:52
-#: motion/templates/motion/motion_list.html:32
+#: motion/templates/motion/motion_list.html:36
 msgid "New motion"
 msgstr ""
 
 #: motion/templates/motion/motion_form_csv_import.html:5
 #: motion/templates/motion/motion_form_csv_import.html:9
-#: motion/templates/motion/motion_list.html:37
+#: motion/templates/motion/motion_list.html:41
 msgid "Import motions"
 msgstr ""
 
@@ -2264,31 +2306,31 @@ msgid ""
 "Identifier, reason, submitter and category are optional and may be empty"
 msgstr ""
 
-#: motion/templates/motion/motion_list.html:36
+#: motion/templates/motion/motion_list.html:40
 msgid "Manage categories"
 msgstr ""
 
-#: motion/templates/motion/motion_list.html:39
+#: motion/templates/motion/motion_list.html:43
 msgid "Print all motions as PDF"
 msgstr ""
 
-#: motion/templates/motion/motion_list.html:46
+#: motion/templates/motion/motion_list.html:50
 msgid "#"
 msgstr ""
 
-#: motion/templates/motion/motion_list.html:47
+#: motion/templates/motion/motion_list.html:51
 msgid "Motion title"
 msgstr ""
 
-#: motion/templates/motion/motion_list.html:73
+#: motion/templates/motion/motion_list.html:77
 msgid "Enough supporters"
 msgstr ""
 
-#: motion/templates/motion/motion_list.html:76
+#: motion/templates/motion/motion_list.html:80
 msgid "Needs supporters"
 msgstr ""
 
-#: motion/templates/motion/motion_list.html:83
+#: motion/templates/motion/motion_list.html:87
 msgid "There is a newer (unauthorized) version."
 msgstr ""
 
@@ -2568,7 +2610,7 @@ msgstr ""
 
 #: participant/views.py:119
 #, python-format
-msgid "%(number)d users successfully created."
+msgid "%(number)d participants successfully created."
 msgstr ""
 
 #: participant/views.py:166 participant/views.py:172
@@ -2823,23 +2865,15 @@ msgid "No participants available."
 msgstr ""
 
 #: poll/models.py:73
-msgid "All valid votes (Yes + No + Abstention)"
+msgid "Only all valid votes"
 msgstr ""
 
 #: poll/models.py:74
-msgid "All votes casts (valid + invalid votes)"
+msgid "All votes cast (including invalid votes)"
 msgstr ""
 
 #: poll/models.py:75
 msgid "Disabled (no percents)"
-msgstr ""
-
-#: poll/models.py:84
-msgid "Votes valid"
-msgstr ""
-
-#: poll/models.py:86
-msgid "Votes invalid"
 msgstr ""
 
 #: poll/models.py:154
@@ -2864,7 +2898,7 @@ msgid "s"
 msgstr ""
 
 #: projector/templates/projector/overlay_countdown_widget.html:10
-msgid "Add time to favourits"
+msgid "Add time to favourites"
 msgstr ""
 
 #: projector/templates/projector/overlay_countdown_widget.html:15
