@@ -89,7 +89,7 @@ portable version you should observe the following install steps.*
       <http://www.python.org/ftp/python/2.7.6/python-2.7.6.msi>`_. Note
       that the 32-bit MSI installer is required even on a 64-bit Windows
       system. If you use the 64-bit MSI installer, step 3 of this
-      instruction will fail unless you installed the packages reportlab
+      instruction will fail unless you installed the package reportlab
       manually.
 
    b. Add python directories to PATH (via Control Panel > System >
@@ -98,7 +98,7 @@ portable version you should observe the following install steps.*
 
    c. Download and run (via double click) the last `install script
       ez_setup.py for Setuptools
-      <https://pypi.python.org/pypi/setuptools/#windows>`_.
+      <https://pypi.python.org/pypi/setuptools/#installation-instructions>`_.
 
 2. Setup a virtual environment with Virtual Python Environment builder
    (optional)
@@ -246,6 +246,9 @@ VI. Used software
 
 OpenSlides uses the following projects or parts of them:
 
+* `backports.ssl_match_hostname <https://bitbucket.org/brandon/backports.ssl_match_hostname>`_,
+  License: Python Software Foundation License
+
 * `Beautiful Soup <http://www.crummy.com/software/BeautifulSoup/>`_,
   License: MIT
 
@@ -273,6 +276,9 @@ OpenSlides uses the following projects or parts of them:
   License: BSD
 
 * `roman <https://pypi.python.org/pypi/roman>`_, License: Python 2.1.1
+
+* `setuptools <https://pypi.python.org/pypi/setuptools>`_,
+  License: Python Software Foundation License
 
 * `sockjs-client <https://github.com/sockjs/sockjs-client>`_,
   License: MIT
