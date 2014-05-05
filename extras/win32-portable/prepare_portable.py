@@ -191,7 +191,7 @@ VS_VERSION_INFO VERSIONINFO
         VALUE "FileDescription", "OpenSlides\\0"
         VALUE "FileVersion", "{version_str}\\0"
         VALUE "InternalName", "OpenSlides\\0"
-        VALUE "LegalCopyright", "Copyright \\251 2011-2013\\0"
+        VALUE "LegalCopyright", "Copyright \\251 2011-2014\\0"
         VALUE "OriginalFilename", "openslides.exe\\0"
         VALUE "ProductName", "OpenSlides\\0"
         VALUE "ProductVersion", "{version_str}\\0"
@@ -372,7 +372,7 @@ def openslides_launcher_update_version_resource():
         "FileDescription": "OpenSlides",
         "FileVersion": version_str,
         "InternalName": "OpenSlides",
-        "LegalCopyright": u"Copyright \xa9 2011-2013",
+        "LegalCopyright": u"Copyright \xa9 2011-2014",
         "OriginalFilename": "openslides.exe",
         "ProductName": "OpenSlides",
         "ProductVersion": version_str,
@@ -509,6 +509,10 @@ def main():
         "extras/win32-portable/licenses",
         os.path.join(odir, "packages-info"))
     write_package_info_content(os.path.join(odir, 'packages-info', 'PACKAGES.txt'))
+
+    # Create empty plugins directory
+    plugindir = os.path.join(odir, "openslides", "plugins")
+    os.makedirs(plugindir)
 
     # AUTHORS, LICENSE, README
     write_metadatafile('AUTHORS', os.path.join(odir, 'AUTHORS.txt'))
