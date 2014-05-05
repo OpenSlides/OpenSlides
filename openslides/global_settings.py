@@ -5,7 +5,7 @@ import os
 from django.utils.translation import ugettext_lazy
 
 from openslides.utils.main import filesystem2unicode
-from openslides.utils.plugins import get_plugins_from_entry_points
+from openslides.utils.plugins import collect_plugins
 
 SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 
@@ -129,4 +129,4 @@ HAYSTACK_CONNECTIONS = {
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 # Adds all automaticly collected plugins
-INSTALLED_PLUGINS = get_plugins_from_entry_points()
+INSTALLED_PLUGINS = collect_plugins()
