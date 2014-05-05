@@ -116,7 +116,7 @@ class UserMultipleCreateView(FormView):
                 last_name=last_name,
                 default_password=default_password,
                 password=make_password(default_password, '', 'md5'))
-        messages.success(self.request, _('%(number)d users successfully created.') % {'number': number + 1})
+        messages.success(self.request, _('%(number)d participants successfully created.') % {'number': number + 1})
         return super(UserMultipleCreateView, self).form_valid(form)
 
 

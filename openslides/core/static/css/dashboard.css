@@ -150,6 +150,9 @@
  *
  * TODO: move to projector app or merge projector with core
  */
+#countdown_shortcut_storage {
+    margin-top: 5px;
+}
 
 #countdown_shortcut_storage .countdown_shortcut_time {
     margin-right: 2px;

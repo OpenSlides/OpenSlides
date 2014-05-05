@@ -81,9 +81,9 @@ class CollectDefaultVotesMixin(models.Model):
     invalid votes and votes cast.
     """
     votesvalid = MinMaxIntegerField(null=True, blank=True, min_value=-2,
-                                    verbose_name=ugettext_lazy('Votes valid'))
+                                    verbose_name=ugettext_lazy('Valid votes'))
     votesinvalid = MinMaxIntegerField(null=True, blank=True, min_value=-2,
-                                      verbose_name=ugettext_lazy('Votes invalid'))
+                                      verbose_name=ugettext_lazy('Invalid votes'))
     votescast = MinMaxIntegerField(null=True, blank=True, min_value=-2,
                                    verbose_name=ugettext_lazy('Votes cast'))
 

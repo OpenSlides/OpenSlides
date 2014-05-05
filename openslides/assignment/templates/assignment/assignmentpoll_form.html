@@ -23,7 +23,7 @@
             </a>
             <a class="btn btn-mini activate_link {% if poll.is_active_slide %}btn-primary{% endif %}" href="{{ poll|absolute_url:'projector' }}"
                 rel="tooltip" data-original-title="{% trans 'Show election result' %}">
-                <i class="icon-facetime-video {% if poll.is_active_slide %}icon-white{% endif %}"></i> {% trans "Vote result" %}</a>
+                <i class="icon-facetime-video {% if poll.is_active_slide %}icon-white{% endif %}"></i> {% trans "Election result" %}</a>
         {% endif %}
         {% if perms.motion.can_manage_motion %}
             <a class="btn btn-mini" href="{{ poll|absolute_url:'delete' }}"
