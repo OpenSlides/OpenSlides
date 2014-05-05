@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import pkgutil
 import os
+import pkgutil
 import sys
 
 from django.utils.importlib import import_module
@@ -35,9 +35,10 @@ def get_plugins_from_path(path):
 
 
 def collect_plugins():
-    """Collect all plugins that can be automatically discovered."""
+    """
+    Collect all plugins that can be automatically discovered.
+    """
     plugins = get_plugins_from_entry_points()
-
     # add all modules in plugins/ dir of portable automatically
     if detect_openslides_type() == WINDOWS_PORTABLE_VERSION:
         plugins_path = os.path.join(
@@ -45,7 +46,6 @@ def collect_plugins():
         if plugins_path not in sys.path:
             sys.path.append(plugins_path)
         plugins += get_plugins_from_path(plugins_path)
-
     return plugins
 
 

@@ -510,6 +510,10 @@ def main():
         os.path.join(odir, "packages-info"))
     write_package_info_content(os.path.join(odir, 'packages-info', 'PACKAGES.txt'))
 
+    # Create empty plugins directory
+    plugindir = os.path.join(odir, "openslides", "plugins")
+    os.makedirs(plugindir)
+
     # AUTHORS, LICENSE, README
     write_metadatafile('AUTHORS', os.path.join(odir, 'AUTHORS.txt'))
     write_metadatafile('LICENSE', os.path.join(odir, 'LICENSE.txt'))
