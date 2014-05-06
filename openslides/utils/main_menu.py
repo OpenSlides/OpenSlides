@@ -17,8 +17,10 @@ class MainMenuEntry(object):
     __metaclass__ attribute (SignalConnectMetaClass) does the rest of the
     magic.
 
-    For the appearance there are some optional attributes like
-    permission_required, default_weight, stylesheets and javascript_files.
+    For the appearance there are some optional attributes and methods like
+    permission_required, default_weight, stylesheets, javascript_files,
+    check_permission, get_url, get_default_weight, get_icon_css_class,
+    get_stylesheets and get_javascript_files.
     """
     __metaclass__ = SignalConnectMetaClass
     signal = Signal(providing_args=['request'])
