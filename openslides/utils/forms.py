@@ -23,14 +23,16 @@ HTML_TAG_WHITELIST = ('a',
                       'pre',
                       'h1',
                       'h2',
-                      'h3',)
+                      'h3',
+                      'img')
 
 HTML_ATTRIBUTES_WHITELIST = {
     'a': ['href'],
     '*': ['style'],
+    'img': ['src'],
 }
 
-HTML_STYLES_WHITELIST = ('color', 'background-color', 'list-style')
+HTML_STYLES_WHITELIST = ('color', 'background-color', 'list-style', 'width', 'height')
 
 
 class CssClassMixin(object):

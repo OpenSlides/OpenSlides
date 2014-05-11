@@ -13,23 +13,6 @@
     – {{ block.super }}
 {% endblock %}
 
-{% block header %}
-    {{ block.super }}
-    <link type="text/css" rel="stylesheet" media="all" href="{% static 'css/ckeditor.css' %}" />
-{% endblock %}
-
-{% block javascript %}
-    {{ block.super }}
-    <script type="text/javascript" src="{% static 'js/ckeditor/ckeditor.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/ckeditor-config.js' %}"></script>
-    <script>
-        // Init CKeditor
-        $(function() {
-            CKEDITOR.replace('id_text', ck_options);
-        });
-    </script>
-{% endblock %}
-
 {% block content %}
     <h1>
         {% if item %}
