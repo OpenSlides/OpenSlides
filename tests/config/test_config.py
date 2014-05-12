@@ -146,17 +146,13 @@ class ConfigFormTest(TestCase):
         self.assertRedirects(response=response, expected_url='/login/?next=/config/testgroupedpage1/',
                              status_code=302, target_status_code=200)
 
-    def test_get_config_form_testsimplepage1_other_clients(self):
-        response = self.client_normal_user.get('/config/testsimplepage1/')
+    def test_get_config_form_testsimplepage1_manager_client(self):
+        response = self.client_manager.get('/config/testsimplepage1/')
         self.assertNotContains(response=response, text='BaeB0ahcMae3feem', status_code=200)
         self.assertTemplateUsed(response=response, template_name='base.html')
         self.assertTemplateUsed(response=response, template_name='config/config_form.html')
         self.assertTemplateUsed(response=response, template_name='form.html')
         self.assertTemplateUsed(response=response, template_name='formbuttons_save.html')
-        bad_client = Client()
-        response = bad_client.get('/config/testsimplepage1/')
-        self.assertEqual(response.status_code, 200)
-        self.assertNotContains(response=response, text='BaeB0ahcMae3feem', status_code=200)
 
     def test_get_config_form_testgroupedpage1_initial(self):
         config['string_var'] = 'something unique AChie6eeiDie3Ieciy1bah4I'
@@ -319,7 +315,6 @@ def set_grouped_config_view(sender, **kwargs):
     return ConfigGroupedCollection(
         title='Config vars for testing 1',
         url='testgroupedpage1',
-        required_permission='config.can_manage',
         weight=10000,
         groups=(group_1, group_2),
         extra_context={'extra_stylefiles': ['styles/test-config-sjNN56dFGDrg2.css'],
@@ -335,7 +330,6 @@ def set_simple_config_view(sender, **kwargs):
     return ConfigCollection(
         title='Config vars for testing 2',
         url='testsimplepage1',
-        required_permission='No permission required',
         variables=(ConfigVariable(name='additional_config_var', default_value='BaeB0ahcMae3feem'),
                    ConfigVariable(name='additional_config_var_2', default_value='', form_field=forms.CharField()),
                    ConfigVariable(name='none_config_var', default_value=None)))
@@ -349,7 +343,6 @@ def set_simple_config_view_multiple_vars(sender, **kwargs):
     return ConfigCollection(
         title='Config vars for testing 3',
         url='testsimplepage2',
-        required_permission='No permission required',
         variables=(ConfigVariable(name='multiple_config_var', default_value='foobar1'),
                    ConfigVariable(name='multiple_config_var', default_value='foobar2')))
 
@@ -359,7 +352,6 @@ def set_simple_config_collection_disabled_view(sender, **kwargs):
     return ConfigCollection(
         title='Ho5iengaoon5Hoht',
         url='testsimplepage3',
-        required_permission='No permission required',
         variables=(ConfigVariable(name='hidden_config_var_2', default_value=''),))
 
 
@@ -370,7 +362,6 @@ def set_simple_config_collection_with_callback(sender, **kwargs):
     return ConfigCollection(
         title='Hvndfhsbgkridfgdfg',
         url='testsimplepage4',
-        required_permission='No permission required',
         variables=(ConfigVariable(
             name='var_with_callback_ghvnfjd5768gdfkwg0hm2',
             default_value='',

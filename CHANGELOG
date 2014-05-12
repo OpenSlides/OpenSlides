@@ -36,7 +36,7 @@ Other:
 - Changed widget api. Used new metaclass.
 - Changed api for main menu entries. Used new metaclass.
 - Inserted api for the personal info widget. Used new metaclass.
-- Renamed config api classes.
+- Renamed config api classes. Changed permission system for config pages.
 - Regrouped config collections and pages.
 - Renamed some classes of the poll api.
 - Added api for absolute urls in models.

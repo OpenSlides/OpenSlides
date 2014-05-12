@@ -15,16 +15,10 @@ class ConfigView(FormView):
     """
     The view for a config collection.
     """
+    permission_required = 'config.can_manage'
     template_name = 'config/config_form.html'
     config_collection = None
     form_class = forms.Form
-
-    def has_permission(self, *args, **kwargs):
-        """
-        Ensures that only users with permission can see this view.
-        """
-        self.permission_required = self.config_collection.required_permission
-        return super(ConfigView, self).has_permission(*args, **kwargs)
 
     def get_form(self, *args):
         """
