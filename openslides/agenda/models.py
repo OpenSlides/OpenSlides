@@ -128,9 +128,9 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
         Ensures that the children of orga items are only orga items.
         """
         if self.type == self.AGENDA_ITEM and self.parent is not None and self.parent.type == self.ORGANIZATIONAL_ITEM:
-            raise ValidationError(_('Agenda items can not be descendents of an organizational item.'))
+            raise ValidationError(_('Agenda items can not be child elements of an organizational item.'))
         if self.type == self.ORGANIZATIONAL_ITEM and self.get_descendants().filter(type=self.AGENDA_ITEM).exists():
-            raise ValidationError(_('Organizational items can not have agenda items as descendents.'))
+            raise ValidationError(_('Organizational items can not have agenda items as child elements.'))
         return super(Item, self).clean()
 
     def __unicode__(self):
