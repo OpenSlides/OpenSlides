@@ -11,10 +11,12 @@
             rel="tooltip" data-original-title="{% trans 'Show' %}">
             <i class="icon-facetime-video {% if group.is_active_slide %}icon-white{% endif %}"></i>
         </a>&nbsp;
-        <a href="{{ group|absolute_url:'update' }}"
-            rel="tooltip" data-original-title="{% trans 'Edit' %}" class="btn btn-mini right">
-            <i class="icon-pencil"></i>
-        </a>
+        {% if perms.participant.can_manage_participant %}
+            <a href="{{ group|absolute_url:'update' }}"
+                rel="tooltip" data-original-title="{% trans 'Edit' %}" class="btn btn-mini right">
+                <i class="icon-pencil"></i>
+            </a>
+        {% endif %}
         <a href="{{ group|absolute_url:'projector_preview' }}"
             rel="tooltip" data-original-title="{% trans 'Preview' %}" class="btn btn-mini right">
             <i class="icon-search"></i>
