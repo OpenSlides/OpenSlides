@@ -205,9 +205,24 @@ class Assignment(SlideMixin, AbsoluteUrlMixin, models.Model):
         Creates an new poll for the assignment and adds all candidates to all
         lists of speakers of related agenda items.
         """
+        if config['assignment_poll_vote_values'] == 'votes':
+            yesnoabstain = False
+        elif config['assignment_poll_vote_values'] == 'yesnoabstain':
+            yesnoabstain = True
+        else:
+            # config['assignment_poll_vote_values'] == 'auto'
+            # candidates <= available posts -> yes/no/abstain
+            if len(self.candidates) <= (self.posts - len(self.elected)):
+                yesnoabstain = True
+            else:
+                yesnoabstain = False
+
         poll = AssignmentPoll.objects.create(
-            assignment=self, description=self.poll_description_default)
+            assignment=self,
+            description=self.poll_description_default,
+            yesnoabstain=yesnoabstain)
         poll.set_options([{'candidate': person} for person in self.candidates])
+
         items = Item.objects.filter(content_type=ContentType.objects.get_for_model(Assignment), object_id=self.pk)
         for item in items:
             someone_added = None
@@ -220,6 +235,7 @@ class Assignment(SlideMixin, AbsoluteUrlMixin, models.Model):
                     pass
             if someone_added is not None:
                 someone_added.check_and_update_projector()
+
         return poll
 
     def vote_results(self, only_published):
@@ -281,11 +297,11 @@ class AssignmentPoll(SlideMixin, RelatedModelMixin, CollectDefaultVotesMixin,
                      PublishPollMixin, AbsoluteUrlMixin, BasePoll):
 
     slide_callback_name = 'assignmentpoll'
-    """Name of the callback for the slide-system."""
+    """Name of the callback for the slide system."""
 
     option_class = AssignmentOption
     assignment = models.ForeignKey(Assignment, related_name='poll_set')
-    yesnoabstain = models.NullBooleanField()
+    yesnoabstain = models.BooleanField()
     description = models.CharField(
         max_length=79, null=True, blank=True,
         verbose_name=ugettext_lazy("Comment on the ballot paper"))
@@ -314,18 +330,6 @@ class AssignmentPoll(SlideMixin, RelatedModelMixin, CollectDefaultVotesMixin,
         return self.assignment
 
     def get_vote_values(self):
-        if self.yesnoabstain is None:
-            if config['assignment_poll_vote_values'] == 'votes':
-                self.yesnoabstain = False
-            elif config['assignment_poll_vote_values'] == 'yesnoabstain':
-                self.yesnoabstain = True
-            else:
-                # candidates <= available posts -> yes/no/abstain
-                if len(self.assignment.candidates) <= (self.assignment.posts - len(self.assignment.elected)):
-                    self.yesnoabstain = True
-                else:
-                    self.yesnoabstain = False
-            self.save()
         if self.yesnoabstain:
             return [ugettext_noop('Yes'), ugettext_noop('No'), ugettext_noop('Abstain')]
         else:
