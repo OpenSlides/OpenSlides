@@ -14,13 +14,16 @@ class Widget(object):
 
     Every app which wants to add widgets to the dashboard has to create a
     widget class subclassing from this base class. The name attribute has to
-    be set. The __metaclass__ attribute (SignalConnectMetaClass) does the
-    rest of the magic.
+    be set. It has to be unique. The __metaclass__ attribute
+    (SignalConnectMetaClass) does the rest of the magic.
 
-    For the appearance of the widget there are some optional attributes like
-    verbose_name, permission_required, default_column, default_weight,
+    For the appearance of the widget there are some attributes and methods
+    like verbose_name, permission_required, default_column, default_weight,
     default_active, template_name, context, icon_css_class,
-    more_link_pattern_name, stylesheets and javascript_files.
+    more_link_pattern_name, stylesheets, javascript_files,
+    get_verbose_name, check_permission, get_html, get_context_data,
+    get_icon_css_class, get_url_for_more, get_stylesheets and
+    get_javascript_files. Most of them are optional.
     """
     __metaclass__ = SignalConnectMetaClass
     signal = Signal(providing_args=['request'])
@@ -58,6 +61,9 @@ class Widget(object):
         """
         Returns the name as a unique string for each class. Returns None for
         the base class so it will not be connected to the signal.
+
+        This does not follow the example implementation of
+        SignalConnectMetaClass, so take care here.
         """
         return cls.name
 

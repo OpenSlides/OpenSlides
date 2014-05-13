@@ -8,13 +8,13 @@ class SignalConnectMetaClass(type):
     Classes must have a signal argument and a get_dispatch_uid classmethod.
     The signal argument must be the Django signal the class should be
     connected to. The get_dispatch_uid classmethod must return a unique
-    value for each child class and None for base classes which will not be
-    connected.
+    value for each child class and None for base classes because they will
+    not be connected to the signal.
 
     The classmethod get_all_objects is added as get_all classmethod to every
     class using this metaclass. Calling this on a base class or on child
-    classes will retrieve all connected children, on instance for each child
-    class.
+    classes will retrieve all connected children, one instance for each
+    child class.
 
     These instances will have a check_permission method which returns True
     by default. You can override this method to return False on runtime if
@@ -23,6 +23,10 @@ class SignalConnectMetaClass(type):
     They will also have a get_default_weight method which returns the value
     of the default_weight attribute which is 0 by default. You can override
     the attribute or the method to sort the children.
+
+    Don't forget to set up the __init__ method so that it is able to receive
+    wildcard keyword arguments (see example below). This is necessary
+    because of Django's signal API.
 
     Example:
 
@@ -76,7 +80,7 @@ def get_all_objects(cls, request):
     from all apps via signal. They are sorted using the get_default_weight
     method. Does not return objects where check_permission returns False.
 
-    Expects a request object.
+    Expects a django.http.HttpRequest object.
 
     This classmethod is added as get_all classmethod to every class using
     the SignalConnectMetaClass.
