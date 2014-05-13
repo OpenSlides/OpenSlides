@@ -105,7 +105,6 @@ def setup_participant_config(sender, **kwargs):
     return ConfigGroupedCollection(
         title=ugettext_noop('Participant'),
         url='participant',
-        required_permission='config.can_manage',
         weight=50,
         groups=(group_general, group_pdf))
 

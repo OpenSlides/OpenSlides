@@ -94,16 +94,13 @@ class ConfigBaseCollection(object):
     """
     An abstract base class for simple and grouped config collections. The
     attributes title and url are required for collections that should be
-    shown as a view. The attribute required_permission is used to set which
-    users can control the view showing the colletion. The attribute weight
-    is used for the order of the links in the submenu of the views. The
-    attribute extra_context can be used to insert extra css and js files
-    into the template.
+    shown as a view. The attribute weight is used for the order of the
+    links in the submenu of the views. The attribute extra_context can be
+    used to insert extra css and js files into the template.
     """
-    def __init__(self, title=None, url=None, required_permission=None, weight=0, extra_context={}):
+    def __init__(self, title=None, url=None, weight=0, extra_context={}):
         self.title = title
         self.url = url
-        self.required_permission = required_permission
         self.weight = weight
         self.extra_context = extra_context
 

@@ -92,6 +92,5 @@ def setup_assignment_config(sender, **kwargs):
     return ConfigGroupedCollection(
         title=ugettext_noop('Elections'),
         url='assignment',
-        required_permission='config.can_manage',
         weight=40,
         groups=(group_ballot, group_pdf))

@@ -147,7 +147,6 @@ def setup_motion_config(sender, **kwargs):
     return ConfigGroupedCollection(
         title=ugettext_noop('Motion'),
         url='motion',
-        required_permission='config.can_manage',
         weight=30,
         groups=(group_general, group_supporters, group_ballot_papers, group_pdf))
 

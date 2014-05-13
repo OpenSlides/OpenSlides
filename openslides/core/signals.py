@@ -148,6 +148,5 @@ def setup_general_config(sender, **kwargs):
     return ConfigGroupedCollection(
         title=ugettext_noop('General'),
         url='general',
-        required_permission='config.can_manage',
         weight=10,
         groups=(group_event, group_projector, group_welcome_widget, group_system))

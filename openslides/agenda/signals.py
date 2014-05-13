@@ -86,7 +86,6 @@ def setup_agenda_config(sender, **kwargs):
 
     return ConfigCollection(title=ugettext_noop('Agenda'),
                             url='agenda',
-                            required_permission='config.can_manage',
                             weight=20,
                             variables=(agenda_start_event_date_time,
                                        agenda_show_last_speakers,

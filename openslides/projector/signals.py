@@ -68,7 +68,7 @@ def setup_projector_config(sender, **kwargs):
         default_value=False)
 
     return ConfigCollection(
-        required_permission=None, variables=(
+        variables=(
             projector, projector_message,
             countdown_time, countdown_start_stamp, countdown_pause_stamp,
             countdown_state, projector_scale, projector_scroll,
