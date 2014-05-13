@@ -2,7 +2,8 @@
 
 from django.test.client import Client
 
-from openslides.assignment.models import Assignment
+from openslides.assignment.models import Assignment, AssignmentPoll
+from openslides.config.api import config
 from openslides.participant.models import Group, User
 from openslides.utils.test import TestCase
 
@@ -81,3 +82,30 @@ class TestAssignmentDetailView(AssignmentViewTestCase):
         response = self.staff_client.get('/assignment/1/')
         self.assertContains(response, 'No candidates available.')
         self.assertContains(response, 'Blocked Candidates')
+
+
+class TestAssignmentPollCreateView(TestCase):
+    """
+    Tests the creation of assignment polls.
+    """
+    def test_assignment_add_candidate(self):
+        admin = User.objects.get(pk=1)
+        self.assignment = Assignment.objects.create(
+            name='test_assignment_oiL2heerookiegeirai0',
+            posts=1)
+        self.assignment.run(admin, admin)
+        self.assertEqual(len(Assignment.objects.get(pk=self.assignment.pk).candidates), 1)
+
+    def test_assignment_poll_creation(self):
+        self.test_assignment_add_candidate()
+        self.assignment.set_status('vot')
+        admin_client = Client()
+        admin_client.login(username='admin', password='admin')
+        self.assertFalse(AssignmentPoll.objects.exists())
+        self.assertEqual(config['assignment_poll_vote_values'], 'auto')
+        response = admin_client.get('/assignment/1/gen_poll/')
+        self.assertRedirects(response, '/assignment/1/')
+        poll = AssignmentPoll.objects.get()
+        self.assertEqual(poll.assignment, self.assignment)
+        self.assertEqual(poll.assignmentoption_set.count(), 1)
+        self.assertTrue(poll.yesnoabstain)
