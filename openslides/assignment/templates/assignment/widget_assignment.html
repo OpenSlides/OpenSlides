@@ -11,10 +11,12 @@
                 rel="tooltip" data-original-title="{% trans 'Show' %}">
                 <i class="icon-facetime-video {% if assignment.is_active_slide %}icon-white{% endif %}"></i>
             </a>&nbsp;
-            <a href="{{ assignment|absolute_url:'update' }}"
-                rel="tooltip" data-original-title="{% trans 'Edit' %}" class="btn btn-mini right">
-                <i class="icon-pencil"></i>
-            </a>
+            {% if perms.assignment.can_manage_assignment %}
+                <a href="{{ assignment|absolute_url:'update' }}"
+                    rel="tooltip" data-original-title="{% trans 'Edit' %}" class="btn btn-mini right">
+                    <i class="icon-pencil"></i>
+                </a>
+            {% endif %}
             <a href="{{ assignment|absolute_url:'projector_preview' }}"
                 rel="tooltip" data-original-title="{% trans 'Preview' %}" class="btn btn-mini right">
                 <i class="icon-search"></i>
