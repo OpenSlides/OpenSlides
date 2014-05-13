@@ -139,7 +139,7 @@ class Overview(TemplateView):
                     if item.type == item.AGENDA_ITEM and parent.type == item.ORGANIZATIONAL_ITEM:
                         transaction.rollback()
                         messages.error(
-                            request, _('Agenda items can not be descendents of an organizational item.'))
+                            request, _('Agenda items can not be child elements of an organizational item.'))
                         break
                 item.parent = parent
                 item.weight = form.cleaned_data['weight']

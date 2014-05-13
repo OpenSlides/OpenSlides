@@ -241,7 +241,7 @@ class ViewTest(TestCase):
             'i2-parent': 1}
         response = self.adminClient.post('/agenda/', data)
         self.assertNotEqual(Item.objects.get(pk=2).parent_id, 1)
-        self.assertContains(response, 'Agenda items can not be descendents of an organizational item.')
+        self.assertContains(response, 'Agenda items can not be child elements of an organizational item.')
 
     def test_delete(self):
         response = self.adminClient.get('/agenda/%s/del/' % self.item1.pk)
@@ -301,7 +301,7 @@ class ViewTest(TestCase):
             response,
             'form',
             None,
-            'Agenda items can not be descendents of an organizational item.')
+            'Agenda items can not be child elements of an organizational item.')
 
     def test_orga_item_with_orga_parent_two(self):
         item1 = Item.objects.create(title='item1_aeNg4Heibee8ULooneep')
@@ -314,7 +314,7 @@ class ViewTest(TestCase):
             response,
             'form',
             None,
-            'Organizational items can not have agenda items as descendents.')
+            'Organizational items can not have agenda items as child elements.')
 
     def test_csv_import(self):
         item_number = Item.objects.all().count()
