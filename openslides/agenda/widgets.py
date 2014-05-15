@@ -18,6 +18,7 @@ class AgendaWidget(Widget):
     default_column = 1
     default_weight = 20
     template_name = 'agenda/widget_item.html'
+    icon_css_class = 'icon-calendar'
     more_link_pattern_name = 'item_overview'
 
     def get_context_data(self, **context):
@@ -44,6 +45,7 @@ class ListOfSpeakersWidget(Widget):
     default_column = 1
     default_weight = 30
     template_name = 'agenda/widget_list_of_speakers.html'
+    icon_css_class = 'icon-bell'
 
     def check_permission(self):
         return (self.request.user.has_perm('agenda.can_manage_agenda') or

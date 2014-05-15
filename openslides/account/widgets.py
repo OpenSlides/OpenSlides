@@ -17,6 +17,7 @@ class PersonalInfoWidget(Widget):
     default_column = 1
     default_weight = 80
     template_name = 'account/widget_personal_info.html'
+    icon_css_class = 'icon-flag'
 
     def check_permission(self):
         """

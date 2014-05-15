@@ -1,6 +1,5 @@
 /*
  * OpenSlides default template styles of the web interface
- *
  */
 
 body {
@@ -277,50 +276,15 @@ legend + .control-group {
     padding-right: 15px;
 }
 
-/** Navigation icons (mapping to glyphicons-halflings) **/
-.icon-dashboard {
-    background-position: 0 -24px;
-}
-.icon-agenda {
-    background-position: 0;
-    background-image: url("../img/glyphicons_045_calendar.png");
-}
-.leftmenu ul li.active a span.ico i.icon-agenda {
-    background-image: url("../img/glyphicons_045_calendar_white.png");
-}
-.icon-assignment, .icon-assignments {
+/** Icons **/
+/* TODO: Move some of them to the respective apps. */
+.icon-assignment {
     background-image: url("../img/glyphicons_041_charts.png");
     background-position: 0;
 }
 .leftmenu ul li.active a span.ico i.icon-assignment {
     background-image: url("../img/glyphicons_041_charts_white.png");
 }
-.icon-participant, .icon-participants {
-    background-position: -168px 0;
-}
-.icon-config {
-    background-position: -432px 0px;
-}
-.icon-live_view {
-    background-position: -432px -48px;
-}
-.icon-overlays {
-    background-position: -120px 0px;
-}
-.icon-custom_slide {
-    background-position: -120px 0px;
-}
-.icon-personal_info {
-    background-position: -312px -24px;
-}
-.icon-append_to_list_of_speakers {
-    background-position: -48px -144px;
-}
-.icon-presentations {
-    background-position: -264px -48px;
-}
-
-/** More glyphicons free icons **/
 .status_link .icon-on, .icon-checked-new {
     background-image: url("../img/glyphicons_152_check.png");
     background-position: 0;
