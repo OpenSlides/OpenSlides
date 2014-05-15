@@ -90,6 +90,9 @@ SITE_PACKAGES = {
             "sgmlop.pyd",
         ],
     },
+    "roman": {
+        "copy": ["roman.py"],
+    },
     "setuptools": {
         "copy": [
             "setuptools",
