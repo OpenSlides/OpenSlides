@@ -35,6 +35,7 @@ class CustonSlideWidget(Widget):
     default_weight = 30
     template_name = 'core/widget_customslide.html'
     context = None
+    icon_css_class = 'icon-star'
 
     def get_context_data(self, **context):
         return super(CustonSlideWidget, self).get_context_data(

@@ -18,6 +18,7 @@ class ProjectorLiveWidget(Widget):
     default_column = 2
     default_weight = 10
     template_name = 'projector/widget_live_view.html'
+    icon_css_class = 'icon-facetime-video'
 
 
 class OverlayWidget(Widget):
@@ -30,6 +31,7 @@ class OverlayWidget(Widget):
     default_column = 2
     default_weight = 20
     template_name = 'projector/widget_overlay.html'
+    icon_css_class = 'icon-star'
 
     def get_context_data(self, **context):
         """
