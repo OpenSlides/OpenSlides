@@ -13,7 +13,7 @@ class AssignmentWidget(Widget):
     """
     name = 'assignment'
     verbose_name = ugettext_lazy('Elections')
-    permission_required = 'core.can_manage_projector'
+    required_permission = 'core.can_manage_projector'
     default_column = 1
     default_weight = 50
     template_name = 'assignment/widget_assignment.html'

@@ -10,7 +10,7 @@ class MotionMainMenuEntry(MainMenuEntry):
     Main menu entry for the motion app.
     """
     verbose_name = ugettext_lazy('Motions')
-    permission_required = 'motion.can_see_motion'
+    required_permission = 'motion.can_see_motion'
     default_weight = 30
     pattern_name = 'motion_list'
     icon_css_class = 'icon-file'

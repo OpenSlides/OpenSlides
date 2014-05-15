@@ -15,7 +15,7 @@ class ProjectorView(TemplateView):
     """
     The Projector-Page.
     """
-    permission_required = 'core.can_see_projector'
+    required_permission = 'core.can_see_projector'
     template_name = 'projector.html'
 
     def get_context_data(self, **kwargs):
@@ -43,7 +43,7 @@ class ActivateView(RedirectView):
     """
     Activate a Slide.
     """
-    permission_required = 'core.can_manage_projector'
+    required_permission = 'core.can_manage_projector'
     url_name = 'core_dashboard'
     allow_ajax = True
 
@@ -68,7 +68,7 @@ class ProjectorControllView(RedirectView):
     """
     Scale or scroll the projector.
     """
-    permission_required = 'core.can_manage_projector'
+    required_permission = 'core.can_manage_projector'
     url_name = 'core_dashboard'
     allow_ajax = True
 
@@ -102,7 +102,7 @@ class CountdownControllView(RedirectView):
     """
     Start, stop or reset the countdown.
     """
-    permission_required = 'core.can_manage_projector'
+    required_permission = 'core.can_manage_projector'
     url_name = 'core_dashboard'
     allow_ajax = True
 
@@ -137,7 +137,7 @@ class OverlayMessageView(RedirectView):
     """
     url_name = 'core_dashboard'
     allow_ajax = True
-    permission_required = 'core.can_manage_projector'
+    required_permission = 'core.can_manage_projector'
 
     def pre_post_redirect(self, request, *args, **kwargs):
         if 'message' in request.POST:
@@ -158,7 +158,7 @@ class ActivateOverlay(RedirectView):
     """
     url_name = 'core_dashboard'
     allow_ajax = True
-    permission_required = 'core.can_manage_projector'
+    required_permission = 'core.can_manage_projector'
 
     def pre_redirect(self, request, *args, **kwargs):
         overlay = get_overlays()[kwargs['name']]

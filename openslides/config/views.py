@@ -15,7 +15,7 @@ class ConfigView(FormView):
     """
     The view for a config collection.
     """
-    permission_required = 'config.can_manage'
+    required_permission = 'config.can_manage'
     template_name = 'config/config_form.html'
     config_collection = None
     form_class = forms.Form

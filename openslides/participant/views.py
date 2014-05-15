@@ -30,7 +30,7 @@ class UserOverview(ListView):
     """
     Show all participants (users).
     """
-    permission_required = 'participant.can_see_participant'
+    required_permission = 'participant.can_see_participant'
     template_name = 'participant/overview.html'
     context_object_name = 'users'
 
@@ -56,7 +56,7 @@ class UserDetailView(DetailView, PermissionMixin):
     """
     Classed based view to show a specific user in the interface.
     """
-    permission_required = 'participant.can_see_participant'
+    required_permission = 'participant.can_see_participant'
     model = User
     template_name = 'participant/user_detail.html'
     context_object_name = 'shown_user'
@@ -66,7 +66,7 @@ class UserCreateView(CreateView):
     """
     Create a new participant.
     """
-    permission_required = 'participant.can_manage_participant'
+    required_permission = 'participant.can_manage_participant'
     template_name = 'participant/edit.html'
     model = User
     context_object_name = 'edit_user'
@@ -97,7 +97,7 @@ class UserMultipleCreateView(FormView):
     """
     View to create multiple users at once using a big text field.
     """
-    permission_required = 'participant.can_manage_participant'
+    required_permission = 'participant.can_manage_participant'
     template_name = 'participant/user_form_multiple.html'
     form_class = UserMultipleCreateForm
     success_url_name = 'user_overview'
@@ -124,7 +124,7 @@ class UserUpdateView(UpdateView):
     """
     Update an existing participant.
     """
-    permission_required = 'participant.can_manage_participant'
+    required_permission = 'participant.can_manage_participant'
     template_name = 'participant/edit.html'
     model = User
     context_object_name = 'edit_user'
@@ -156,7 +156,7 @@ class UserDeleteView(DeleteView):
     """
     Delete an participant.
     """
-    permission_required = 'participant.can_manage_participant'
+    required_permission = 'participant.can_manage_participant'
     model = User
     success_url_name = 'user_overview'
     url_name_args = []
@@ -178,7 +178,7 @@ class SetUserStatusView(SingleObjectMixin, RedirectView):
     """
     Activate or deactivate an user.
     """
-    permission_required = 'participant.can_manage_participant'
+    required_permission = 'participant.can_manage_participant'
     allow_ajax = True
     url_name = 'user_overview'
     url_name_args = []
@@ -209,7 +209,7 @@ class ParticipantsListPDF(PDFView):
     """
     Generate the userliste as PDF.
     """
-    permission_required = 'participant.can_see_participant'
+    required_permission = 'participant.can_see_participant'
     filename = ugettext_lazy("Participant-list")
     document_title = ugettext_lazy('List of Participants')
 
@@ -224,7 +224,7 @@ class ParticipantsPasswordsPDF(PDFView):
     """
     Generate the access data welcome paper for all participants as PDF.
     """
-    permission_required = 'participant.can_manage_participant'
+    required_permission = 'participant.can_manage_participant'
     filename = ugettext_lazy("Participant-access-data")
     top_space = 0
 
@@ -243,7 +243,7 @@ class UserCSVImportView(CSVImportView):
     Import users via CSV.
     """
     import_function = staticmethod(import_users)
-    permission_required = 'participant.can_manage_participant'
+    required_permission = 'participant.can_manage_participant'
     success_url_name = 'user_overview'
     template_name = 'participant/user_form_csv_import.html'
 
@@ -252,7 +252,7 @@ class ResetPasswordView(SingleObjectMixin, QuestionView):
     """
     Set the Passwort for a user to his default password.
     """
-    permission_required = 'participant.can_manage_participant'
+    required_permission = 'participant.can_manage_participant'
     model = User
     allow_ajax = True
     question_message = ugettext_lazy('Do you really want to reset the password?')
@@ -275,7 +275,7 @@ class GroupOverview(ListView):
     """
     Overview over all groups.
     """
-    permission_required = 'participant.can_manage_participant'
+    required_permission = 'participant.can_manage_participant'
     template_name = 'participant/group_overview.html'
     context_object_name = 'groups'
     model = Group
@@ -285,7 +285,7 @@ class GroupDetailView(DetailView, PermissionMixin):
     """
     Classed based view to show a specific group in the interface.
     """
-    permission_required = 'participant.can_manage_participant'
+    required_permission = 'participant.can_manage_participant'
     model = Group
     template_name = 'participant/group_detail.html'
     context_object_name = 'group'
@@ -305,7 +305,7 @@ class GroupCreateView(CreateView):
     """
     Create a new group.
     """
-    permission_required = 'participant.can_manage_participant'
+    required_permission = 'participant.can_manage_participant'
     template_name = 'participant/group_edit.html'
     context_object_name = 'group'
     model = Group
@@ -322,7 +322,7 @@ class GroupUpdateView(UpdateView):
     """
     Update an existing group.
     """
-    permission_required = 'participant.can_manage_participant'
+    required_permission = 'participant.can_manage_participant'
     template_name = 'participant/group_edit.html'
     model = Group
     context_object_name = 'group'
@@ -344,7 +344,7 @@ class GroupDeleteView(DeleteView):
     """
     Delete a group.
     """
-    permission_required = 'participant.can_manage_participant'
+    required_permission = 'participant.can_manage_participant'
     model = Group
     success_url_name = 'user_group_overview'
     url_name_args = []

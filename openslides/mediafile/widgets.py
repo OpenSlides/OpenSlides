@@ -14,7 +14,7 @@ class PDFPresentationWidget(Widget):
     """
     name = 'presentations'
     verbose_name = ugettext_lazy('Presentations')
-    permission_required = 'core.can_manage_projector'
+    required_permission = 'core.can_manage_projector'
     default_column = 1
     default_weight = 75
     template_name = 'mediafile/widget_pdfpresentation.html'

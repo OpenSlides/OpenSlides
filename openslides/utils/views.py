@@ -24,8 +24,6 @@ from .pdf import firstPage, laterPages
 from .signals import template_manipulation
 from .utils import html_strong
 
-NO_PERMISSION_REQUIRED = 'No permission required'
-
 View = django_views.View
 
 
@@ -44,21 +42,22 @@ class LoginMixin(object):
 
 class PermissionMixin(object):
     """
-    Mixin for views, that only can be visited from users with special rights.
+    Mixin for views, that only can be visited from users with special
+    permissions.
 
-    Set the attribute 'permission_required' to the required permission string.
+    Set the attribute 'required_permission' to the required permission
+    string or override the method 'check_permission'.
     """
-    permission_required = NO_PERMISSION_REQUIRED
+    required_permission = None
 
-    # TODO: Rename this to check_permission
-    def has_permission(self, request, *args, **kwargs):
+    def check_permission(self, request, *args, **kwargs):
         """
         Checks if the user has the required permission.
         """
-        if self.permission_required == NO_PERMISSION_REQUIRED:
+        if self.required_permission is None:
             return True
         else:
-            return request.user.has_perm(self.permission_required)
+            return request.user.has_perm(self.required_permission)
 
     def dispatch(self, request, *args, **kwargs):
         """
@@ -66,7 +65,7 @@ class PermissionMixin(object):
 
         If the user is not logged in, redirect the user to the login page.
         """
-        if not self.has_permission(request, *args, **kwargs):
+        if not self.check_permission(request, *args, **kwargs):
             if not request.user.is_authenticated():
                 path = request.get_full_path()
                 return HttpResponseRedirect(

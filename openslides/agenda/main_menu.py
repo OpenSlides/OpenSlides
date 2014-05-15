@@ -10,7 +10,7 @@ class AgendaMainMenuEntry(MainMenuEntry):
     Main menu entry for the agenda app.
     """
     verbose_name = ugettext_lazy('Agenda')
-    permission_required = 'agenda.can_see_agenda'
+    required_permission = 'agenda.can_see_agenda'
     default_weight = 20
     pattern_name = 'item_overview'
     icon_css_class = 'icon-calendar'

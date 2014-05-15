@@ -40,22 +40,22 @@ class PermissionMixinTest(ViewTestCase):
     def test_dispatch(self):
         client = Client()
 
-        # View without permission_required
+        # View without required_permission
         response = client.get('/permission_mixin1/')
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.content, 'Well done.')
 
-        # View with permission_required without login
+        # View with required_permission without login
         response = client.get('/permission_mixin2/')
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response['Location'], 'http://testserver/login/?next=/permission_mixin2/')
 
-        # View with permission_required, with login, without permission
+        # View with required_permission, with login, without permission
         client.login(username='admin', password='admin')
         response = client.get('/permission_mixin2/')
         self.assertEqual(response.status_code, 403)
 
-        # View with permission_required, with login, with permission
+        # View with required_permission, with login, with permission
         response = client.get('/permission_mixin3/')
         self.assertEqual(response.status_code, 200)
 

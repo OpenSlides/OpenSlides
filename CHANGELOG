@@ -39,6 +39,7 @@ Other:
 - Renamed config api classes. Changed permission system for config pages.
 - Regrouped config collections and pages.
 - Renamed some classes of the poll api.
+- Renamed method and attribute of openslides.utils.views.PermissionMixin.
 - Added api for absolute urls in models.
 - Inserted command line option to translate config strings during database setup.
 - Enhanced http error pages.

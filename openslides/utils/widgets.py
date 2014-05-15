@@ -18,7 +18,7 @@ class Widget(object):
     (SignalConnectMetaClass) does the rest of the magic.
 
     For the appearance of the widget there are some attributes and methods
-    like verbose_name, permission_required, default_column, default_weight,
+    like verbose_name, required_permission, default_column, default_weight,
     default_active, template_name, context, icon_css_class,
     more_link_pattern_name, stylesheets, javascript_files,
     get_verbose_name, check_permission, get_html, get_context_data,
@@ -29,7 +29,7 @@ class Widget(object):
     signal = Signal(providing_args=['request'])
     name = None
     verbose_name = None
-    permission_required = None
+    required_permission = None
     default_column = 1
     default_weight = 0
     default_active = True
@@ -77,7 +77,7 @@ class Widget(object):
         """
         Returns True if the request user is allowed to see the widget.
         """
-        return self.permission_required is None or self.request.user.has_perm(self.permission_required)
+        return self.required_permission is None or self.request.user.has_perm(self.required_permission)
 
     def is_active(self):
         """

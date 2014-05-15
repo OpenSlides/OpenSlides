@@ -49,7 +49,7 @@ class Overview(TemplateView):
     """
     Show all agenda items, and update their range via post.
     """
-    permission_required = 'agenda.can_see_agenda'
+    required_permission = 'agenda.can_see_agenda'
     template_name = 'agenda/overview.html'
 
     def get_context_data(self, **kwargs):
@@ -172,15 +172,15 @@ class AgendaItemView(SingleObjectMixin, FormView):
     context_object_name = 'item'
     form_class = AppendSpeakerForm
 
-    def has_permission(self, request, *args, **kwargs):
+    def check_permission(self, request, *args, **kwargs):
         """
         Checks if the user has the required permission.
         """
         if self.get_object().type == Item.ORGANIZATIONAL_ITEM:
-            permission = request.user.has_perm('agenda.can_see_orga_items')
+            check_permission = request.user.has_perm('agenda.can_see_orga_items')
         else:
-            permission = request.user.has_perm('agenda.can_see_agenda')
-        return permission
+            check_permission = request.user.has_perm('agenda.can_see_agenda')
+        return check_permission
 
     def get_context_data(self, **kwargs):
         self.object = self.get_object()
@@ -210,7 +210,7 @@ class SetClosed(RedirectView, SingleObjectMixin):
     """
     Close or open an item.
     """
-    permission_required = 'agenda.can_manage_agenda'
+    required_permission = 'agenda.can_manage_agenda'
     allow_ajax = True
     url_name = 'item_overview'
     model = Item
@@ -237,7 +237,7 @@ class ItemUpdate(UpdateView):
     """
     Update an existing item.
     """
-    permission_required = 'agenda.can_manage_agenda'
+    required_permission = 'agenda.can_manage_agenda'
     template_name = 'agenda/edit.html'
     model = Item
     context_object_name = 'item'
@@ -256,7 +256,7 @@ class ItemCreate(CreateView):
     """
     Create a new item.
     """
-    permission_required = 'agenda.can_manage_agenda'
+    required_permission = 'agenda.can_manage_agenda'
     template_name = 'agenda/edit.html'
     model = Item
     context_object_name = 'item'
@@ -269,7 +269,7 @@ class ItemDelete(DeleteView):
     """
     Delete an item.
     """
-    permission_required = 'agenda.can_manage_agenda'
+    required_permission = 'agenda.can_manage_agenda'
     model = Item
     question_url_name = 'item_overview'
     success_url_name = 'item_overview'
@@ -325,7 +325,7 @@ class CreateRelatedAgendaItemView(SingleObjectMixin, RedirectView):
     This view is only for subclassing in views of related apps. You
     have to define 'model = ....'
     """
-    permission_required = 'agenda.can_manage_agenda'
+    required_permission = 'agenda.can_manage_agenda'
     url_name = 'item_overview'
     url_name_args = []
 
@@ -344,7 +344,7 @@ class CreateRelatedAgendaItemView(SingleObjectMixin, RedirectView):
 
 
 class AgendaNumberingView(QuestionView):
-    permission_required = 'agenda.can_manage_agenda'
+    required_permission = 'agenda.can_manage_agenda'
     question_url_name = 'item_overview'
     url_name = 'item_overview'
     question_message = ugettext_lazy('Do you really want to generate agenda numbering? Manually added item numbers will be overwritten!')
@@ -363,7 +363,7 @@ class AgendaPDF(PDFView):
     """
     Create a full agenda-PDF.
     """
-    permission_required = 'agenda.can_see_agenda'
+    required_permission = 'agenda.can_see_agenda'
     filename = ugettext_lazy('Agenda')
     document_title = ugettext_lazy('Agenda')
 
@@ -383,7 +383,7 @@ class SpeakerAppendView(SingleObjectMixin, RedirectView):
     """
     Set the request.user to the speaker list.
     """
-    permission_required = 'agenda.can_be_speaker'
+    required_permission = 'agenda.can_be_speaker'
     url_name = 'item_view'
     model = Item
 
@@ -407,7 +407,7 @@ class SpeakerDeleteView(DeleteView):
     success_url_name = 'item_view'
     question_url_name = 'item_view'
 
-    def has_permission(self, request, *args, **kwargs):
+    def check_permission(self, request, *args, **kwargs):
         """
         Check the permission to delete a speaker.
         """
@@ -451,7 +451,7 @@ class SpeakerSpeakView(SingleObjectMixin, RedirectView):
     """
     Mark the speaking person.
     """
-    permission_required = 'agenda.can_manage_agenda'
+    required_permission = 'agenda.can_manage_agenda'
     url_name = 'item_view'
     model = Item
 
@@ -478,7 +478,7 @@ class SpeakerEndSpeachView(SingleObjectMixin, RedirectView):
     """
     The speach of the actual speaker is finished.
     """
-    permission_required = 'agenda.can_manage_agenda'
+    required_permission = 'agenda.can_manage_agenda'
     url_name = 'item_view'
     model = Item
 
@@ -504,7 +504,7 @@ class SpeakerListCloseView(SingleObjectMixin, RedirectView):
     """
     View to close and reopen a list of speakers.
     """
-    permission_required = 'agenda.can_manage_agenda'
+    required_permission = 'agenda.can_manage_agenda'
     model = Item
     reopen = False
     url_name = 'item_view'
@@ -524,7 +524,7 @@ class SpeakerChangeOrderView(SingleObjectMixin, RedirectView):
 
     Has to be called as post-request with the new order of the speaker ids.
     """
-    permission_required = 'agenda.can_manage_agenda'
+    required_permission = 'agenda.can_manage_agenda'
     model = Item
     url_name = 'item_view'
 
@@ -772,6 +772,6 @@ class ItemCSVImportView(CSVImportView):
     Imports agenda items from an uploaded csv file.
     """
     import_function = staticmethod(import_agenda_items)
-    permission_required = 'agenda.can_manage_agenda'
+    required_permission = 'agenda.can_manage_agenda'
     success_url_name = 'item_overview'
     template_name = 'agenda/item_form_csv_import.html'

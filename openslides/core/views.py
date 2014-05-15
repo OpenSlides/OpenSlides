@@ -28,7 +28,7 @@ class DashboardView(utils_views.AjaxMixin, utils_views.TemplateView):
     Dashboard of OpenSlides. This main view uses the widget api to collect all
     widgets from all apps. See openslides.utils.widgets.Widget for more details.
     """
-    permission_required = 'core.can_see_dashboard'
+    required_permission = 'core.can_see_dashboard'
     template_name = 'core/dashboard.html'
 
     def get_context_data(self, **kwargs):
@@ -49,7 +49,7 @@ class SelectWidgetsView(utils_views.TemplateView):
     dashboard. The setting is saved in the session.
     """
     # TODO: Use another base view class here, e. g. a FormView
-    permission_required = 'core.can_see_dashboard'
+    required_permission = 'core.can_see_dashboard'
     template_name = 'core/select_widgets.html'
 
     def get_context_data(self, **kwargs):
@@ -187,7 +187,7 @@ class CustomSlideViewMixin(object):
     """
     Mixin for for CustomSlide Views.
     """
-    permission_required = 'core.can_manage_projector'
+    required_permission = 'core.can_manage_projector'
     template_name = 'core/customslide_update.html'
     model = CustomSlide
     success_url_name = 'core_dashboard'
