@@ -13,9 +13,28 @@
 
 {% block javascript %}
     <script type="text/javascript" src="{% static 'js/assignment.js' %}"></script>
+    {% if perms.assignment.can_manage_assignment and assignment.manual_sort %}
+        <script type="text/javascript" src="{% static 'js/jquery/jquery-ui.custom.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery/jquery.once.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery/jquery.tmpl.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery/jquery-ui-nestedSortable.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/assignment_sorting.js' %}"></script>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
+    {% if perms.assignment.can_manage_assignment and assignment.manual_sort %}
+        <form name="manual_sort_form" id="manual_sort_form" action="" method="post">{% csrf_token %}
+            <div id="changed-order-message" style="display:none" class="alert alert-warning">
+                <input name="manual_sort" type="hidden">
+                <input name="assignment" type="hidden" value="{{ assignment.id }}">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                {% trans "Do you want to save the changed order of assignment items?" %}<br>
+                <button class="btn btn-mini" type="submit">{% trans 'Yes' %}</button>
+                <a href="{% url 'assignment_detail' assignment.id %}" class="btn btn-mini">{% trans 'No' %}</a>
+            </div>
+        </form>
+    {% endif %}
 <h1>
     {{ assignment }}
     <br>
@@ -66,14 +85,14 @@
     <!-- Candidates -->
 {% if assignment.status != "fin" %}
     <h4>{% trans "Candidates" %}</h4>
-    <ol>
+    <ol class="assignment_list{% if perms.assignment.can_manage_assignment and assignment.manual_sort %} sortable{% endif %}">
     {% for person in assignment.get_participants %}
-        <li>
+        <li class="draggable" id="participant{{ person.person_id }}">
             <a href="{{ person|absolute_url }}">{{ person }}</a>
             {% if perms.assignment.can_manage_assignment %}
                 {% if assignment.status == "sea" or assignment.status == "vot" %}
                     <a href="{% url 'assignment_delother' assignment.id person.person_id %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Remove candidate' %}"><i class="icon-remove"></i></a>
-                {% endif %}
+                {% endif %}             
             {% endif %}
             {% if person in assignment.elected %}
                 | <b>{% trans "elected" %}</b>

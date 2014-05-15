@@ -23,7 +23,7 @@ from openslides.utils.views import (CreateView, DeleteView, DetailView,
                                     SingleObjectMixin, UpdateView, View)
 
 from .forms import AssignmentForm, AssignmentRunForm
-from .models import Assignment, AssignmentPoll
+from .models import Assignment, AssignmentPoll, AssignmentCandidate
 
 
 class AssignmentListView(ListView):
@@ -62,18 +62,29 @@ class AssignmentDetail(DetailView):
 
     def post(self, *args, **kwargs):
         self.object = self.get_object()
-        if self.request.user.has_perm('assignment.can_nominate_other'):
-            form = self.form_class(self.request.POST)
-            if form.is_valid():
-                user = form.cleaned_data['candidate']
-                try:
-                    self.object.run(user, self.request.user)
-                except NameError, e:
-                    messages.error(self.request, e)
-                else:
-                    messages.success(self.request, _(
-                        "Candidate %s was nominated successfully.")
-                        % html_strong(user))
+        if 'manual_sort' in self.request.POST:
+            if self.request.user.has_perm('assignment.can_manage_assignment'):
+                data = self.request.POST
+                model = AssignmentCandidate
+                for item in data:
+                    if item.startswith('participant'):
+                        model.save_sortorder(data['assignment'],
+                            item[11:], data[item])
+                messages.success(self.request, _(
+                    "Sorting of candidates successfully saved."))
+        else:
+            if self.request.user.has_perm('assignment.can_nominate_other'):
+                form = self.form_class(self.request.POST)
+                if form.is_valid():
+                    user = form.cleaned_data['candidate']
+                    try:
+                        self.object.run(user, self.request.user)
+                    except NameError, e:
+                        messages.error(self.request, e)
+                    else:
+                        messages.success(self.request, _(
+                            "Candidate %s was nominated successfully.")
+                            % html_strong(user))
         return super(AssignmentDetail, self).get(*args, **kwargs)
 
 
