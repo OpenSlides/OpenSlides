@@ -424,27 +424,36 @@ class AssignmentPDF(PDFView):
             data_votes.append(row)
 
         # Add valid votes row
-        if poll.votesvalid is not None:
-            footrow_one = []
-            footrow_one.append(_("Valid votes"))
-            for poll in polls:
-                footrow_one.append(poll.print_votesvalid())
+        footrow_one = []
+        footrow_one.append(_("Valid votes"))
+        votesvalid_is_used = False
+        for poll in polls:
+            footrow_one.append(poll.print_votesvalid())
+            if poll.votesvalid is not None:
+                votesvalid_is_used = True
+        if votesvalid_is_used:
             data_votes.append(footrow_one)
 
         # Add invalid votes row
-        if poll.votesinvalid is not None:
-            footrow_two = []
-            footrow_two.append(_("Invalid votes"))
-            for poll in polls:
-                footrow_two.append(poll.print_votesinvalid())
+        footrow_two = []
+        footrow_two.append(_("Invalid votes"))
+        votesinvalid_is_used = False
+        for poll in polls:
+            footrow_two.append(poll.print_votesinvalid())
+            if poll.votesinvalid is not None:
+                votesinvalid_is_used = True
+        if votesinvalid_is_used:
             data_votes.append(footrow_two)
 
         # Add votes cast row
-        if poll.votescast is not None:
-            footrow_three = []
-            footrow_three.append(_("Votes cast"))
-            for poll in polls:
-                footrow_three.append(poll.print_votescast())
+        footrow_three = []
+        footrow_three.append(_("Votes cast"))
+        votescast_is_used = False
+        for poll in polls:
+            footrow_three.append(poll.print_votescast())
+            if poll.votescast is not None:
+                votescast_is_used = True
+        if votescast_is_used:
             data_votes.append(footrow_three)
 
         table_votes = Table(data_votes)
