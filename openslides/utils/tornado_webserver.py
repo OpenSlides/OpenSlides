@@ -68,7 +68,7 @@ class ProjectorSocketHandler(SockJSConnection):
             waiter.send(data)
 
 
-def run_tornado(addr, port, reload=False):
+def run_tornado(addr, port, block_reload=False):
     # Don't try to read the command line args from openslides
     parse_command_line(args=[])
 
@@ -92,7 +92,8 @@ def run_tornado(addr, port, reload=False):
         ('.*', FallbackHandler, dict(fallback=app))]
 
     # Start the application
-    tornado_app = Application(projectpr_socket_js_router.urls + chatbox_socket_js_router.urls + other_urls, debug=reload)
+    debug = False if block_reload else settings.DEBUG
+    tornado_app = Application(projectpr_socket_js_router.urls + chatbox_socket_js_router.urls + other_urls, debug=debug)
     server = HTTPServer(tornado_app)
     server.listen(port=port, address=addr)
     IOLoop.instance().start()

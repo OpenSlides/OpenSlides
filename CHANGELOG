@@ -51,6 +51,7 @@ Other:
 - Used jsonfield as required package. Removed jsonfield code.
 - Added new package backports.ssl_match_hostname for portable build script.
 - Use app "django-ckeditor-updated" to render WYSIWYG HTML editors
+- Only reload the webserver in debug-mode.
 
 
 Version 1.5.1 (2014-03-31)
