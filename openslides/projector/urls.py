@@ -10,11 +10,6 @@ urlpatterns = patterns(
         views.ProjectorView.as_view(),
         name='projector_show'),
 
-    url(r'^preview/$',
-        views.ProjectorView.as_view(),
-        {'callback': None},
-        name='projctor_preview_welcomepage'),
-
     url(r'^preview/(?P<callback>[^/]*)/$',
         views.ProjectorView.as_view(),
         name='projector_preview'),

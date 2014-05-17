@@ -50,6 +50,7 @@ class ActivateView(RedirectView):
     def pre_redirect(self, request, *args, **kwargs):
         if (kwargs['callback'] == 'mediafile' and
                 get_active_slide()['callback'] == 'mediafile'):
+            # TODO: find a way to do this in the mediafile-app
             # If the current slide is a pdf and the new page is also a slide,
             # we dont have to use set_active_slide, because is causes a content
             # reload.
