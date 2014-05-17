@@ -18,14 +18,14 @@ class MainMenuEntry(object):
     magic.
 
     For the appearance there are some optional attributes and methods like
-    permission_required, default_weight, stylesheets, javascript_files,
+    required_permission, default_weight, stylesheets, javascript_files,
     check_permission, get_url, get_default_weight, get_icon_css_class,
     get_stylesheets and get_javascript_files.
     """
     __metaclass__ = SignalConnectMetaClass
     signal = Signal(providing_args=['request'])
     verbose_name = None
-    permission_required = None
+    required_permission = None
     default_weight = 0
     pattern_name = None
     icon_css_class = 'icon-home'
@@ -63,7 +63,7 @@ class MainMenuEntry(object):
         """
         Returns True if the request user is allowed to see the entry.
         """
-        return self.permission_required is None or self.request.user.has_perm(self.permission_required)
+        return self.required_permission is None or self.request.user.has_perm(self.required_permission)
 
     def get_icon_css_class(self):
         """

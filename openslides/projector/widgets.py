@@ -14,7 +14,7 @@ class ProjectorLiveWidget(Widget):
     """
     name = 'live_view'
     verbose_name = ugettext_lazy('Projector live view')
-    permission_required = 'core.can_see_projector'
+    required_permission = 'core.can_see_projector'
     default_column = 2
     default_weight = 10
     template_name = 'projector/widget_live_view.html'
@@ -27,7 +27,7 @@ class OverlayWidget(Widget):
     """
     name = 'overlays'  # TODO: Use singular here
     verbose_name = ugettext_lazy('Overlays')
-    permission_required = 'core.can_manage_projector'
+    required_permission = 'core.can_manage_projector'
     default_column = 2
     default_weight = 20
     template_name = 'projector/widget_overlay.html'

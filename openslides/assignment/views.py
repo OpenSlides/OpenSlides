@@ -28,12 +28,12 @@ from .models import Assignment, AssignmentPoll
 
 class AssignmentListView(ListView):
     """ListView for all Assignments"""
-    permission_required = 'assignment.can_see_assignment'
+    required_permission = 'assignment.can_see_assignment'
     model = Assignment
 
 
 class AssignmentDetail(DetailView):
-    permission_required = 'assignment.can_see_assignment'
+    required_permission = 'assignment.can_see_assignment'
     model = Assignment
     form_class = AssignmentRunForm
 
@@ -80,24 +80,24 @@ class AssignmentDetail(DetailView):
 class AssignmentCreateView(CreateView):
     model = Assignment
     form_class = AssignmentForm
-    permission_required = 'assignment.can_manage_assignment'
+    required_permission = 'assignment.can_manage_assignment'
 
 
 class AssignmentUpdateView(UpdateView):
     model = Assignment
     form_class = AssignmentForm
-    permission_required = 'assignment.can_manage_assignment'
+    required_permission = 'assignment.can_manage_assignment'
 
 
 class AssignmentDeleteView(DeleteView):
-    permission_required = 'assignment.can_manage_assignment'
+    required_permission = 'assignment.can_manage_assignment'
     model = Assignment
     success_url_name = 'assignment_list'
 
 
 class AssignmentSetStatusView(SingleObjectMixin, RedirectView):
     model = Assignment
-    permission_required = 'assignment.can_manage_assignment'
+    required_permission = 'assignment.can_manage_assignment'
     url_name = 'assignment_detail'
 
     def pre_redirect(self, *args, **kwargs):
@@ -118,7 +118,7 @@ class AssignmentSetStatusView(SingleObjectMixin, RedirectView):
 
 class AssignmentRunView(SingleObjectMixin, PermissionMixin, View):
     model = Assignment
-    permission_required = 'assignment.can_nominate_self'
+    required_permission = 'assignment.can_nominate_self'
 
     def get(self, *args, **kwargs):
         assignment = self.get_object()
@@ -154,7 +154,7 @@ class AssignmentRunDeleteView(SingleObjectMixin, RedirectView):
 
 class AssignmentRunOtherDeleteView(SingleObjectMixin, QuestionView):
     model = Assignment
-    permission_required = 'assignment.can_manage_assignment'
+    required_permission = 'assignment.can_manage_assignment'
 
     def get_question_message(self):
         self._get_person_information()
@@ -193,7 +193,7 @@ class AssignmentRunOtherDeleteView(SingleObjectMixin, QuestionView):
 
 class PollCreateView(SingleObjectMixin, RedirectView):
     model = Assignment
-    permission_required = 'assignment.can_manage_assignment'
+    required_permission = 'assignment.can_manage_assignment'
     url_name = 'assignment_detail'
 
     def pre_redirect(self, *args, **kwargs):
@@ -224,7 +224,7 @@ class PollUpdateView(PollFormView):
 
 class SetPublishStatusView(SingleObjectMixin, RedirectView):
     model = AssignmentPoll
-    permission_required = 'assignment.can_manage_assignment'
+    required_permission = 'assignment.can_manage_assignment'
     url_name = 'assignment_detail'
     allow_ajax = True
 
@@ -246,7 +246,7 @@ class SetPublishStatusView(SingleObjectMixin, RedirectView):
 
 class SetElectedView(SingleObjectMixin, RedirectView):
     model = Assignment
-    permission_required = 'assignment.can_manage_assignment'
+    required_permission = 'assignment.can_manage_assignment'
     url_name = 'assignment_detail'
     allow_ajax = True
 
@@ -272,7 +272,7 @@ class AssignmentPollDeleteView(DeleteView):
     """
     Delete an assignment poll object.
     """
-    permission_required = 'assignment.can_manage_assignment'
+    required_permission = 'assignment.can_manage_assignment'
     model = AssignmentPoll
 
     def pre_redirect(self, request, *args, **kwargs):
@@ -294,7 +294,7 @@ class AssignmentPollDeleteView(DeleteView):
 
 
 class AssignmentPDF(PDFView):
-    permission_required = 'assignment.can_see_assignment'
+    required_permission = 'assignment.can_see_assignment'
     top_space = 0
 
     def get_filename(self):
@@ -500,7 +500,7 @@ class CreateRelatedAgendaItemView(_CreateRelatedAgendaItemView):
 
 
 class AssignmentPollPDF(PDFView):
-    permission_required = 'assignment.can_manage_assignment'
+    required_permission = 'assignment.can_manage_assignment'
     top_space = 0
 
     def get(self, request, *args, **kwargs):

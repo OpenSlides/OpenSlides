@@ -18,7 +18,7 @@ class MediafileListView(ListView):
     """
     model = Mediafile
 
-    def has_permission(self, request, *args, **kwargs):
+    def check_permission(self, request, *args, **kwargs):
         return (request.user.has_perm('mediafile.can_see') or
                 request.user.has_perm('mediafile.can_upload') or
                 request.user.has_perm('mediafile.can_manage'))
@@ -67,7 +67,7 @@ class MediafileCreateView(MediafileViewMixin, CreateView):
     """
     View to upload a new file.
     """
-    permission_required = 'mediafile.can_upload'
+    required_permission = 'mediafile.can_upload'
 
     def get_form_kwargs(self, *args, **kwargs):
         form_kwargs = super(MediafileCreateView, self).get_form_kwargs(*args, **kwargs)
@@ -80,7 +80,7 @@ class MediafileUpdateView(MediafileViewMixin, UpdateView):
     """
     View to edit the entry of an uploaded file.
     """
-    def has_permission(self, request, *args, **kwargs):
+    def check_permission(self, request, *args, **kwargs):
         return (request.user.has_perm('mediafile.can_manage') or
                 (request.user.has_perm('mediafile.can_upload') and self.get_object().uploader == self.request.user))
 
@@ -97,7 +97,7 @@ class MediafileDeleteView(DeleteView):
     model = Mediafile
     success_url_name = 'mediafile_list'
 
-    def has_permission(self, request, *args, **kwargs):
+    def check_permission(self, request, *args, **kwargs):
         return (request.user.has_perm('mediafile.can_manage') or
                 (request.user.has_perm('mediafile.can_upload') and self.get_object().uploader == self.request.user))
 

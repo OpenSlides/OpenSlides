@@ -14,7 +14,7 @@ class WelcomeWidget(Widget):
     Welcome widget with static info for all users.
     """
     name = 'welcome'
-    permission_required = 'core.can_see_dashboard'
+    required_permission = 'core.can_see_dashboard'
     default_column = 1
     default_weight = 10
     template_name = 'core/widget_welcome.html'
@@ -30,7 +30,7 @@ class CustonSlideWidget(Widget):
     """
     name = 'custom_slide'
     verbose_name = ugettext_lazy('Custom Slides')
-    permission_required = 'core.can_manage_projector'
+    required_permission = 'core.can_manage_projector'
     default_column = 2
     default_weight = 30
     template_name = 'core/widget_customslide.html'

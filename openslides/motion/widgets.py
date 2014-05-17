@@ -13,7 +13,7 @@ class MotionWidget(Widget):
     """
     name = 'motion'
     verbose_name = ugettext_lazy('Motions')
-    permission_required = 'core.can_manage_projector'
+    required_permission = 'core.can_manage_projector'
     default_column = 1
     default_weight = 40
     icon_css_class = 'icon-file'

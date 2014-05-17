@@ -24,8 +24,8 @@ urlpatterns += patterns(
         views.PermissionMixinView.as_view()),
 
     url(r'^permission_mixin2/$',
-        views.PermissionMixinView.as_view(permission_required='permission_string')),
+        views.PermissionMixinView.as_view(required_permission='permission_string')),
 
     url(r'^permission_mixin3/$',
-        views.PermissionMixinView.as_view(permission_required='agenda.can_see_agenda')),
+        views.PermissionMixinView.as_view(required_permission='agenda.can_see_agenda')),
 )

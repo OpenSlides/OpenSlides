@@ -31,7 +31,7 @@ class MotionListView(ListView):
     """
     View, to list all motions.
     """
-    permission_required = 'motion.can_see_motion'
+    required_permission = 'motion.can_see_motion'
     model = Motion
 
 motion_list = MotionListView.as_view()
@@ -41,7 +41,7 @@ class MotionDetailView(DetailView):
     """
     Show one motion.
     """
-    permission_required = 'motion.can_see_motion'
+    required_permission = 'motion.can_see_motion'
     model = Motion
 
     def get_context_data(self, **kwargs):
@@ -163,7 +163,7 @@ class MotionCreateView(MotionEditMixin, CreateView):
     """
     model = Motion
 
-    def has_permission(self, request, *args, **kwargs):
+    def check_permission(self, request, *args, **kwargs):
         """
         Checks whether the requesting user can submit a new motion. He needs
         at least the permission 'motion.can_create_motion'. If the submitting
@@ -210,7 +210,7 @@ class MotionUpdateView(MotionEditMixin, UpdateView):
     """
     model = Motion
 
-    def has_permission(self, request, *args, **kwargs):
+    def check_permission(self, request, *args, **kwargs):
         """
         Check if the request.user has the permission to edit the motion.
         """
@@ -279,7 +279,7 @@ class MotionDeleteView(DeleteView):
     model = Motion
     success_url_name = 'motion_list'
 
-    def has_permission(self, request, *args, **kwargs):
+    def check_permission(self, request, *args, **kwargs):
         """
         Check if the request.user has the permission to delete the motion.
         """
@@ -296,7 +296,7 @@ class VersionDeleteView(DeleteView):
     View to delete a motion version.
     """
     model = MotionVersion
-    permission_required = 'motion.can_manage_motion'
+    required_permission = 'motion.can_manage_motion'
     success_url_name = 'motion_detail'
 
     def get_object(self):
@@ -326,7 +326,7 @@ class VersionPermitView(SingleObjectMixin, QuestionView):
     """
     model = Motion
     final_message = ugettext_lazy('Version successfully permitted.')
-    permission_required = 'motion.can_manage_motion'
+    required_permission = 'motion.can_manage_motion'
     question_url_name = 'motion_version_detail'
 
     def get(self, *args, **kwargs):
@@ -372,7 +372,7 @@ class VersionDiffView(DetailView):
     """
     Show diff between two versions of a motion.
     """
-    permission_required = 'motion.can_see_motion'
+    required_permission = 'motion.can_see_motion'
     model = Motion
     template_name = 'motion/motion_diff.html'
 
@@ -414,7 +414,7 @@ class SupportView(SingleObjectMixin, QuestionView):
     If self.support is False, the view will remove a request.user from the supporter list.
     """
 
-    permission_required = 'motion.can_support_motion'
+    required_permission = 'motion.can_support_motion'
     model = Motion
     support = True
 
@@ -481,7 +481,7 @@ class PollCreateView(SingleObjectMixin, RedirectView):
     """
     View to create a poll for a motion.
     """
-    permission_required = 'motion.can_manage_motion'
+    required_permission = 'motion.can_manage_motion'
     model = Motion
     url_name = 'motionpoll_detail'
 
@@ -514,7 +514,7 @@ class PollMixin(object):
     Mixin for the PollUpdateView and the PollDeleteView.
     """
 
-    permission_required = 'motion.can_manage_motion'
+    required_permission = 'motion.can_manage_motion'
     success_url_name = 'motion_detail'
 
     def get_object(self):
@@ -598,7 +598,7 @@ class PollPDFView(PollMixin, PDFView):
     Generates a ballotpaper.
     """
 
-    permission_required = 'motion.can_manage_motion'
+    required_permission = 'motion.can_manage_motion'
     top_space = 0
 
     def get(self, *args, **kwargs):
@@ -635,7 +635,7 @@ class MotionSetStateView(SingleObjectMixin, RedirectView):
     If self.reset is False, the new state is taken from url.
     If self.reset is True, the default state is taken.
     """
-    permission_required = 'motion.can_manage_motion'
+    required_permission = 'motion.can_manage_motion'
     url_name = 'motion_detail'
     model = Motion
     reset = False
@@ -694,7 +694,7 @@ class MotionPDFView(SingleObjectMixin, PDFView):
     If self.print_all_motions is False, the view returns a PDF with only one
     motion.
     """
-    permission_required = 'motion.can_see_motion'
+    required_permission = 'motion.can_see_motion'
     model = Motion
     top_space = 0
     print_all_motions = False
@@ -735,14 +735,14 @@ motion_detail_pdf = MotionPDFView.as_view(print_all_motions=False)
 
 
 class CategoryListView(ListView):
-    permission_required = 'motion.can_manage_motion'
+    required_permission = 'motion.can_manage_motion'
     model = Category
 
 category_list = CategoryListView.as_view()
 
 
 class CategoryCreateView(CreateView):
-    permission_required = 'motion.can_manage_motion'
+    required_permission = 'motion.can_manage_motion'
     model = Category
     success_url_name = 'motion_category_list'
     url_name_args = []
@@ -751,7 +751,7 @@ category_create = CategoryCreateView.as_view()
 
 
 class CategoryUpdateView(UpdateView):
-    permission_required = 'motion.can_manage_motion'
+    required_permission = 'motion.can_manage_motion'
     model = Category
     success_url_name = 'motion_category_list'
     url_name_args = []
@@ -760,7 +760,7 @@ category_update = CategoryUpdateView.as_view()
 
 
 class CategoryDeleteView(DeleteView):
-    permission_required = 'motion.can_manage_motion'
+    required_permission = 'motion.can_manage_motion'
     model = Category
     question_url_name = 'motion_category_list'
     url_name_args = []
@@ -774,7 +774,7 @@ class MotionCSVImportView(CSVImportView):
     Imports motions from an uploaded csv file.
     """
     form_class = MotionCSVImportForm
-    permission_required = 'motion.can_manage_motion'
+    required_permission = 'motion.can_manage_motion'
     success_url_name = 'motion_list'
     template_name = 'motion/motion_form_csv_import.html'
 
