@@ -8,9 +8,11 @@ from openslides.agenda.models import Item, Speaker
 from openslides.agenda.signals import agenda_list_of_speakers
 from openslides.config.api import config
 from openslides.participant.models import Group, User
-from openslides.projector.api import set_active_slide
+from openslides.projector.api import set_active_slide, register_slide_model
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.test import TestCase
+
+from .models import RelatedItem
 
 
 class ListOfSpeakerModelTests(TestCase):
@@ -262,6 +264,20 @@ class GlobalListOfSpeakersLinks(SpeakerViewTestCase):
         perm = Permission.objects.filter(name='Can see agenda').get()
         self.speaker2.groups.get(name='Registered').permissions.remove(perm)
         response = self.speaker2_client.get('/agenda/list_of_speakers/add/')
+        self.assertMessage(response, 'You were successfully added to the list of speakers.')
+
+    def test_next_speaker_on_related_item(self):
+        """
+        Test to add a speaker on a related item.
+        """
+        register_slide_model(RelatedItem, 'some/template.html')
+        related_item = RelatedItem.objects.create()
+        agenda_item = Item.objects.create(content_object=related_item)
+        config['projector_active_slide'] = {'callback': 'test_related_item', 'pk': 1}
+        response = self.speaker1_client.get('/agenda/list_of_speakers/add/')
+
+        self.assertRedirects(response, '/agenda/%d/' % agenda_item.pk)
+        self.assertEqual(Speaker.objects.get(item__pk=agenda_item.pk).person, self.speaker1)
         self.assertMessage(response, 'You were successfully added to the list of speakers.')
 
     def test_global_next_speaker_url(self):
