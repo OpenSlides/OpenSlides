@@ -7,9 +7,6 @@
 
 {% block title %}{% trans "Election" %} "{{ assignment }}" – {{ block.super }}{% endblock %}
 
-{% block header %}
-    <link type="text/css" rel="stylesheet" media="all" href="{% static 'css/assignment.css' %}" />
-{% endblock %}
 
 {% block javascript %}
     <script type="text/javascript" src="{% static 'js/assignment.js' %}"></script>
@@ -147,7 +144,7 @@
 {% if assignment.status != "sea" or polls.exists %}
     <h4>{% trans "Election result" %}</h4>
     {% if polls.exists %}
-        <table class="table table-striped table-bordered">
+        <table id="election-result-table" class="table table-striped table-bordered">
         <tr>
             <th>{% trans "Candidates" %}</th>
             {% for poll in polls %}

@@ -14,10 +14,10 @@
 }
 
 /* Election result table */
-td.elected {
+#election-result-table td.elected {
     background-color: #BED4DE !important;
 }
-td.elected a.election_link {
+#election-result-table td.elected a.election_link {
     background-image: url(../img/voting-yes.png);
     background-repeat: no-repeat;
     background-position: center;
@@ -27,7 +27,7 @@ td.elected a.election_link {
     margin-right: 5px;
     float: left;
 }
-td a.election_link {
+#election-result-table td a.election_link {
     background-image: url(../img/voting-yes-grey.png);
     background-repeat: no-repeat;
     background-position: center;
