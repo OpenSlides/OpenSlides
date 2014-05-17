@@ -117,7 +117,7 @@ class TestOtherFunctions(TestCase):
         mock_args = MagicMock()
         start(settings=None, args=mock_args)
         self.assertTrue(mock_syncdb.called)
-        mock_runserver.assert_called_with(None, mock_args)
+        mock_runserver.assert_called_with(None, mock_args, block_reload=True)
 
     @patch('openslides.__main__.get_port')
     @patch('openslides.utils.tornado_webserver.run_tornado')
