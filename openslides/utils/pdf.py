@@ -21,8 +21,11 @@ pdfmetrics.registerFont(TTFont(
 pdfmetrics.registerFont(TTFont(
     'Ubuntu-Bold', path_join(settings.SITE_ROOT, 'core/static/fonts/Ubuntu-B.ttf')))
 pdfmetrics.registerFont(TTFont(
+    'Ubuntu-Italic', path_join(settings.SITE_ROOT, 'core/static/fonts/Ubuntu-RI.ttf')))
+pdfmetrics.registerFont(TTFont(
     'circlefont', path_join(settings.SITE_ROOT, 'core/static/fonts/circle.ttf')))
 
+pdfmetrics.registerFontFamily('Ubuntu', normal='Ubuntu', bold='Ubuntu-Bold', italic='Ubuntu-Italic')
 
 # set style information
 PAGE_HEIGHT = defaultPageSize[1]
@@ -33,6 +36,7 @@ PAGE_WIDTH = defaultPageSize[0]
 stylesheet = StyleSheet1()
 stylesheet.add(ParagraphStyle(
     name='Normal',
+    fontName='Ubuntu',
     fontSize=10,
     leading=12,
 ))
