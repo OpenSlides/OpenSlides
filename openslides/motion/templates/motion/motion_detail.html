@@ -32,10 +32,10 @@
     </small>
     <small class="pull-right">
         <a href="{% url 'motion_list' %}" class="btn btn-mini">
-            <i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+            <i class="icon-chevron-left"></i><span class="optional-small"> {% trans "Back to overview" %}</span></a>
         <a href="{% url 'motion_detail_pdf' motion.id  %}" class="btn btn-mini"
             rel="tooltip" data-original-title="{% trans 'Print motion as PDF' %}" target="_blank">
-            <i class="icon-print"></i> PDF</a>
+            <i class="icon-print"></i><span class="optional-small"> PDF</span></a>
         <!-- activate projector -->
         {% if perms.core.can_manage_projector %}
             <a href="{{ motion|absolute_url:'projector' }}" class="activate_link btn {% if motion.is_active_slide %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show motion' %}">
@@ -45,7 +45,7 @@
         {% if perms.motion.can_manage_motion or perms.agenda.can_manage_agenda or allowed_actions.edit %}
         <div class="btn-group">
             <a data-toggle="dropdown" class="btn btn-mini dropdown-toggle">
-                {% trans 'More actions' %} <span class="caret"></span>
+                <span class="optional-small">{% trans 'More actions' %} </span> <span class="caret"></span>
             </a>
             <ul class="dropdown-menu pull-right">
                 <!-- edit -->

@@ -85,7 +85,7 @@ ol.agenda_list {
     outline: 1px dashed #4183C4;
 }
 .agenda_list .openclose { width: 40px; float: left; min-height: 1px; }
-.agenda_list .duration { width: 92px; float: right; min-height: 1px; text-align: right; }
+.agenda_list .duration { width: 92px; float: right; min-height: 1px; text-align: right; padding-right: 15px; }
 .agenda_list .manage { width: 200px; float: right; min-height: 1px; padding-left: 15px; }
 .agenda_list .title { float: left; padding-left: 5px;}
 .agenda_list .optional { float: left; }
@@ -110,3 +110,19 @@ ol.agenda_list {
 .agenda_list li.closed ol { display: none; }
 .agenda_list li.closed .closer { display: none; }
 .agenda_list li.closed > div .opener { display: inline-block; }
+
+
+@media (max-width: 480px) {
+    #menu-overview .manage, .agenda_list .manage {
+        width: 50px;
+    }
+    .agenda_list .manage {
+        padding-right: 14px;
+    }
+    #menu-overview  .duration, .agenda_list .duration {
+        width: 60px;
+    }
+    .agenda_list .duration {
+        padding-right: 11px;
+    }
+}

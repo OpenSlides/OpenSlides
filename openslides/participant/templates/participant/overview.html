@@ -22,13 +22,13 @@
         {% if perms.participant.can_manage_participant %}
             <a href="{% url 'user_new' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New participant' %}"><i class="icon-plus icon-white"></i> {% trans "New" %}</a>
             <a href="{% url 'user_new_multiple' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New multiple participants' %}"><i class="icon-plus"></i> {% trans 'New multiple' %}</a>
-            <a href="{% url 'user_group_overview' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'All groups' %}"><i class="icon-group"></i> {% trans "Groups" %}</a>
-            <a href="{% url 'user_csv_import' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import participants' %}"><i class="icon-import"></i> {% trans 'Import' %}</a>
+            <a href="{% url 'user_group_overview' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'All groups' %}"><i class="icon-group"></i><span class="optional-small"> {% trans "Groups" %}</span></a>
+            <a href="{% url 'user_csv_import' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import participants' %}"><i class="icon-import"></i><span class="optional-small"> {% trans 'Import' %}</span></a>
         {% endif %}
         {% if perms.participant.can_see_participant and perms.participant.can_manage_participant %}
             <div class="btn-group">
                 <a data-toggle="dropdown" class="btn btn-mini dropdown-toggle">
-                    <i class="icon-print"></i> PDF <span class="caret"></span>
+                    <i class="icon-print"></i><span class="optional-small"> PDF</span> <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu  pull-right">
                     {% url 'user_settings' as url_usersettings %}

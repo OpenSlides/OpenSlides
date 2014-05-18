@@ -21,8 +21,8 @@
     <br>
     <small>{% trans "Election" %}</small>
     <small class="pull-right">
-    <a href="{% url 'assignment_list' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
-    <a href="{% url 'assignment_pdf' assignment.id  %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print election as PDF' %}" target="_blank"><i class="icon-print"></i> PDF</a>
+    <a href="{% url 'assignment_list' %}" class="btn btn-mini"><i class="icon-chevron-left"></i><span class="optional-small"> {% trans "Back to overview" %}</span></a>
+    <a href="{% url 'assignment_pdf' assignment.id  %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print election as PDF' %}" target="_blank"><i class="icon-print"></i><span class="optional-small"> PDF</span></a>
     <!-- activate projector -->
     {% if perms.core.can_manage_projector %}
         <a href="{{ assignment|absolute_url:'projector' }}"
@@ -34,7 +34,7 @@
     {% if perms.assignment.can_manage_assignment or perms.agenda.can_manage_agenda %}
     <div class="btn-group">
         <a data-toggle="dropdown" class="btn btn-mini dropdown-toggle">
-            {% trans 'More actions' %} <span class="caret"></span>
+            <span class="optional-small">{% trans 'More actions' %}</span> <span class="caret"></span>
         </a>
         <ul class="dropdown-menu pull-right">
             {% if perms.assignment.can_manage_assignment %}

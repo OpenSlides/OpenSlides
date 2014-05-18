@@ -27,11 +27,11 @@
             <div class="span12">
                 <div id="header">
                     <a href="/" class="logo" title="{% trans 'Home' %}"><img src="{% static 'img/logo.png' %}" alt="{% trans 'Logo' %}" /></a>
-                    <span class="title optional">{% get_config 'event_name' %} {% if 'event_description'|get_config %}– {% get_config 'event_description' %}{% endif %}</span>
+                    <span class="title optional">{% get_config 'event_name' %}</span>
                     {% block loginbutton %}
                     <div class="pull-right">
                         <!-- Search field -->
-                        <form class="navbar-search" action="{% url 'core_search' %}" method="get">
+                        <form id="searchbutton" class="navbar-search" action="{% url 'core_search' %}" method="get">
                             <div class="input-append">
                                 <input type="text" id="id_q" name="q" class="input-medium" placeholder="{% trans 'Search' %}">
                                 <button type="submit" class="btn"><i class="icon-search"></i></button>
@@ -42,7 +42,7 @@
                         {% if chat_messages != None %}
                             <button class="btn" id="chatboxbutton" data-toggle="button">
                                     <i class="icon-comments"></i>
-                                    {% trans 'Chat' %}
+                                    <span class="optional-small">{% trans 'Chat' %}</span>
                                     <span id="newchatmessage"></span>
                             </button>
                         {% endif %}
@@ -51,7 +51,8 @@
                         <div class="btn-group">
                             {% if user.is_authenticated %}
                             <a href="#" data-toggle="dropdown" class="btn dropdown-toggle">
-                                  <i class="icon-user"></i> {{ user.username }}
+                                  <i class="icon-user"></i>
+                                  <span class="optional-small">{{ user.username }}</span>
                                   <span class="caret"></span>
                             </a>
                             <ul class="dropdown-menu pull-right">
