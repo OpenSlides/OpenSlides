@@ -61,6 +61,7 @@ function restoreOrder() {
 $(function() {
     $( ".column" ).sortable({
         connectWith: ".column",
+        handle: ".widget-header",
         stop: function() { saveOrder(); }
     });
 

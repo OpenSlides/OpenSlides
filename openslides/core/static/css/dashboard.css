@@ -33,6 +33,12 @@
     border: 1px solid #D5D5D5;
     border-radius: 5px 5px 0 0;
 }
+.widget-header:hover {
+    cursor: pointer;
+}
+.widget-header button:hover {
+    cursor: default;
+}
 .widget-header h3 {
     margin: 7px 0 7px 14px;
     font-size: 14px;
