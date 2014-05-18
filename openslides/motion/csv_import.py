@@ -78,11 +78,14 @@ def import_motions(csvfile, default_submitter, override, importing_person=None):
             motion.reason = reason
             if category:
                 try:
-                    motion.category = Category.objects.get(name=category)
+                    category_object = Category.objects.get(name=category)
                 except Category.DoesNotExist:
-                    warning.append(_('Category unknown. No category is used.'))
+                    category_object = Category.objects.create(name=category, prefix=category[:1])
+                    warning.append(_('Category unknown. New category created.'))
                 except Category.MultipleObjectsReturned:
+                    category_object = None
                     warning.append(_('Several suitable categories found. No category is used.'))
+                motion.category = category_object
             motion.save()
 
             # Add submitter
