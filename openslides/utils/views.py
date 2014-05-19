@@ -561,7 +561,7 @@ class PDFView(PermissionMixin, View):
             story, onFirstPage=firstPage, onLaterPages=laterPages)
 
     def render_to_response(self, filename):
-        response = HttpResponse(mimetype='application/pdf')
+        response = HttpResponse(content_type='application/pdf')
         filename = u'filename=%s.pdf;' % self.get_filename()
         response['Content-Disposition'] = filename.encode('utf-8')
 
