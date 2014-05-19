@@ -10,7 +10,7 @@
             rel="tooltip" data-original-title="{% trans 'Show' %}">
             <i class="icon-facetime-video {% if welcomepage_is_active %}icon-white{% endif %}"></i>
         </a>&nbsp;
-        <a href="{% url 'projctor_preview_welcomepage' %}"
+        <a href="{% url 'projector_preview' callback='default' %}"
             rel="tooltip" data-original-title="{% trans 'Preview' %}" class="btn btn-mini right">
             <i class="icon-search"></i>
         </a>
