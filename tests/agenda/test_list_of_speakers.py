@@ -266,9 +266,14 @@ class GlobalListOfSpeakersLinks(SpeakerViewTestCase):
         response = self.speaker2_client.get('/agenda/list_of_speakers/add/')
         self.assertMessage(response, 'You were successfully added to the list of speakers.')
 
+    @patch('openslides.projector.api.slide_callback', {})
+    @patch('openslides.projector.api.slide_model', {})
     def test_next_speaker_on_related_item(self):
         """
         Test to add a speaker on a related item.
+
+        The patching of slide_callback and slide_model is needed to cleanup the
+        call of register_slide_model after the test is run.
         """
         register_slide_model(RelatedItem, 'some/template.html')
         related_item = RelatedItem.objects.create()
