@@ -348,7 +348,34 @@ legend + .control-group {
         width: auto;
     }
     /* hide optional column */
-    .optional {
+    .optional, #searchbutton #id_q {
         display: none;
+    }
+    #searchbutton button {
+        border-radius: 4px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 0;
+    }
+    .row-fluid .leftmenu {
+        float: left;
+        width: auto;
+    }
+    #header {
+        padding: 7px 5px 0;
+    }
+    #content {
+        margin: 0 5px 0 45px;
+        width: auto;
+    }
+    /* hide optional column */
+    .optional, .optional-small{
+        display: none;
+    }
+    #menu-overview .manage, .agenda_list .manage {
+        width: 50px !important;
     }
 }

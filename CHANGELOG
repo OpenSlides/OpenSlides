@@ -44,6 +44,7 @@ Other:
 - Added api for absolute urls in models.
 - Inserted command line option to translate config strings during database setup.
 - Enhanced http error pages.
+- Improved responsive design for templates.
 - Fixed headings on custom slides without text.
 - Moved dashboard and select widgets view from projector to core app.
 - Renamed and cleaned up static direcories.

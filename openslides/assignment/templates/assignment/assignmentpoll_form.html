@@ -13,7 +13,7 @@
     {{ ballotnumber|ordinal|safe }} {% trans "ballot" %}
     </small>
     <small class="pull-right">
-        <a href="{{ assignment|absolute_url:'detail' }}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to election" %}</a>
+        <a href="{{ assignment|absolute_url:'detail' }}" class="btn btn-mini"><i class="icon-chevron-left"></i><span class="optional-small"> {% trans "Back to election" %}</span></a>
         <!-- activate projector -->
         {% if perms.core.can_manage_projector %}
             <a href="{{ assignment|absolute_url:'projector' }}"

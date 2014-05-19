@@ -9,7 +9,7 @@
 
 <h1>{% trans group.name %}
     <small class="pull-right">
-    <a href="{% url 'user_group_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+    <a href="{% url 'user_group_overview' %}" class="btn btn-mini"><i class="icon-chevron-left"></i><span class="optional-small"> {% trans "Back to overview" %}</span></a>
     <!-- activate projector -->
     {% if perms.core.can_manage_projector %}
         <a href="{% url 'projector_activate_slide' group.sid  %}" class="activate_link btn {% if group.active %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show group' %}">
@@ -19,7 +19,7 @@
     {% if perms.participant.can_manage_participant and group.pk != 1 and group.pk != 2 %}
     <div class="btn-group">
         <a data-toggle="dropdown" class="btn btn-mini dropdown-toggle">
-            {% trans 'More actions' %} <span class="caret"></span>
+            <span class="optional-small">{% trans 'More actions' %} </span><span class="caret"></span>
         </a>
         <ul class="dropdown-menu pull-right">
             <!-- edit -->

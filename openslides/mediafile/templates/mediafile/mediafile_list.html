@@ -16,10 +16,10 @@
     <table class="table table-striped table-bordered">
         <tr>
             <th>{% trans 'Title' %}</th>
-            <th>{% trans 'Type' %}</th>
-            <th>{% trans 'Size' %}</th>
-            <th>{% trans 'Upload time' %}</th>
-            <th>{% trans 'Uploaded by' %}</th>
+            <th class="optional">{% trans 'Type' %}</th>
+            <th class="optional-small">{% trans 'Size' %}</th>
+            <th class="optional">{% trans 'Upload time' %}</th>
+            <th class="optional">{% trans 'Uploaded by' %}</th>
             {% if perms.mediafile.can_manage or perms.mediafile.can_upload %}
                 <th class="mini_width">{% trans "Actions" %}</th>
             {% endif %}
@@ -27,10 +27,10 @@
         {% for mediafile in mediafile_list %}
         <tr class="{% if mediafile.is_active_slide %}activeline{% endif %}">
             <td><a href="{{ mediafile.mediafile.url }}">{{ mediafile }}</a></td>
-            <td>{% trans mediafile.filetype %}</td>
-            <td>{{ mediafile.get_filesize }}</td>
-            <td>{{ mediafile.timestamp }}</td>
-            <td><a href="{{ mediafile.uploader|absolute_url }}">{{ mediafile.uploader }}</a></td>
+            <td class="optional">{% trans mediafile.filetype %}</td>
+            <td class="optional-small">{{ mediafile.get_filesize }}</td>
+            <td class="optional">{{ mediafile.timestamp }}</td>
+            <td class="optional"><a href="{{ mediafile.uploader|absolute_url }}">{{ mediafile.uploader }}</a></td>
             {% if perms.mediafile.can_manage or perms.mediafile.can_upload %}
             <td>
                 {% if mediafile.with_action_buttons %}
