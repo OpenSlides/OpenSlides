@@ -17,6 +17,7 @@ Agenda:
 - Fixed organizational item structuring.
 Motions:
 - New slide for vote results.
+- Created new categories during CSV import.
 Assignment:
 - Coupled assignment candidates with list of speakers.
 - Created a poll description field for each assignment poll.

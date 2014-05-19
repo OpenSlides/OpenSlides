@@ -24,9 +24,8 @@ class CSVImport(TestCase):
         self.normal_client.login(username='User_CiuNgo4giqueeChie5oi', password='eihi1Eequaek4eagaiKu')
 
         # Category
-        self.category1 = Category.objects.create(name='Satzungsanträge', prefix='SA')
-        self.category2 = Category.objects.create(name='Bildung', prefix='B1')
-        self.category3 = Category.objects.create(name='Bildung', prefix='B2')
+        self.category1 = Category.objects.create(name='Bildung', prefix='B1')
+        self.category2 = Category.objects.create(name='Bildung', prefix='B2')
 
     def test_example_file_de(self):
         special_user = User.objects.create_user(username='Harry_Holland',
@@ -66,7 +65,7 @@ class CSVImport(TestCase):
         self.assertEqual(motion2.reason, u'Die Änderung der Satzung ist aufgrund der letzten Erfahrungen eine sinnvolle Maßnahme, weil ...')
         self.assertEqual(len(motion2.submitter.all()), 1)
         self.assertEqual(motion2.submitter.all()[0].person, special_user)
-        self.assertEqual(motion2.category, self.category1)
+        self.assertEqual(motion2.category.name, u"Satzungsanträge")  # category is created automatically
 
         # check user 'John Doe'
         self.assertTrue('Several suitable submitters found.' in warning_message)
