@@ -575,14 +575,20 @@ class CurrentListOfSpeakersView(RedirectView):
         """
         Returns the current Item, or None, if the current Slide is not an Agenda Item.
         """
-        active_slide = get_active_slide()
-        if active_slide['callback'] == 'agenda':
-            try:
-                return Item.objects.get(pk=active_slide.get('pk', None))
-            except Item.DoesNotExist:
-                return None
+        slide = get_active_object()
+        if slide is None or isinstance(slide, Item):
+            # No Slide or an agenda item is active
+            item = slide
         else:
-            return None
+            # A related Item is active
+            try:
+                item = Item.objects.filter(
+                    content_type=ContentType.objects.get_for_model(slide),
+                    object_id=slide.pk)[0]
+            except IndexError:
+                item = None
+
+        return item
 
     def get_redirect_url(self):
         """
