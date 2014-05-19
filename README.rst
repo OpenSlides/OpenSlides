@@ -257,11 +257,9 @@ OpenSlides uses the following projects or parts of them:
 * `Bootstrap <http://getbootstrap.com/2.3.2/>`_, License: Apache
   License v2.0
 
-* `CKEditor <http://ckeditor.com>`_, License: GPL, LGPL, MPL
-
 * `Django <https://www.djangoproject.com>`_, License: BSD
 
-* `Django CKeditor <https://github.com/riklaunim/django-ckeditor>`_, License: BSD
+* `Django CKEditor <https://github.com/riklaunim/django-ckeditor>`_, License: BSD
 
 * `django-jsonfield <https://github.com/bradjasper/django-jsonfield>`_,
   License: MIT
