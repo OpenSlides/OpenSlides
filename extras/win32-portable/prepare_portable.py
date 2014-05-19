@@ -516,9 +516,14 @@ def main():
         os.path.join(odir, "packages-info"))
     write_package_info_content(os.path.join(odir, 'packages-info', 'PACKAGES.txt'))
 
-    # Create empty plugins directory
+    # Create plugins directory with README.txt
     plugindir = os.path.join(odir, "openslides", "plugins")
     os.makedirs(plugindir)
+    readmetext = ["Please copy your plugin directory into this directory.\n", "\n",
+        "For more information about OpenSlides plugins see:\n",
+        "https://github.com/OpenSlides/OpenSlides/wiki/De%3APlugins\n"]
+    with open(os.path.join(plugindir, 'README.txt'), "w") as readme:
+        readme.writelines(readmetext)
 
     # AUTHORS, LICENSE, README
     write_metadatafile('AUTHORS', os.path.join(odir, 'AUTHORS.txt'))
