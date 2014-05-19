@@ -30,6 +30,7 @@ urlpatterns += patterns(
     (r'^config/', include('openslides.config.urls')),
     (r'^projector/', include('openslides.projector.urls')),
     (r'^i18n/', include('django.conf.urls.i18n')),
+    (r'^ckeditor/', include('ckeditor.urls')),
 )
 
 # TODO: move this patterns into core or the participant app

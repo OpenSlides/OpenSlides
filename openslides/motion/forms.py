@@ -9,6 +9,8 @@ from openslides.utils.forms import (CleanHtmlFormMixin, CssClassMixin,
                                     CSVImportForm, LocalizedModelChoiceField)
 from openslides.utils.person import MultiplePersonFormField, PersonFormField
 
+from ckeditor.widgets import CKEditorWidget
+
 from .models import Category, Motion, Workflow
 
 
@@ -28,13 +30,13 @@ class BaseMotionForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
     Title of the motion. Will be saved in a MotionVersion object.
     """
 
-    text = forms.CharField(widget=forms.Textarea(), label=ugettext_lazy("Text"))
+    text = forms.CharField(widget=CKEditorWidget(), label=ugettext_lazy("Text"))
     """
     Text of the motion. Will be saved in a MotionVersion object.
     """
 
     reason = forms.CharField(
-        widget=forms.Textarea(), required=False, label=ugettext_lazy("Reason"))
+        widget=CKEditorWidget(), required=False, label=ugettext_lazy("Reason"))
     """
     Reason of the motion. will be saved in a MotionVersion object.
     """

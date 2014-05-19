@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import copy
 
 from django.utils.translation import ugettext_lazy
 
@@ -84,6 +85,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'mptt',
     'haystack',  # full-text-search
+    'ckeditor',
     'openslides.poll',
     'openslides.core',
     'openslides.account',
@@ -130,3 +132,40 @@ HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
 # Adds all automaticly collected plugins
 INSTALLED_PLUGINS = collect_plugins()
+
+# CKeditor settings
+CKEDITOR_DEFAULT_CONFIG = {'toolbar': 'Full',
+                           'contentsCss': '/static/css/ckeditor.css',
+                           'bodyClass': 'ckeditor_html',
+                           'allowedContent':
+                               'h1 h2 h3 pre b i u strike em; '
+
+                               # A workaround for the problem described in http://dev.ckeditor.com/ticket/10192
+                               # Hopefully, the problem will be solved in the final version of CKEditor 4.1
+                               # If so, then {margin-left} can be removed
+                               'p{margin-left}; '
+
+                               'a[!href]; '
+                               'ol ul{list-style}; '
+                               'li; '
+                               'span{color,background-color}; ',
+                           'removePlugins': 'save, print, preview, pagebreak, templates, showblocks, magicline',
+                           'toolbar_Full': [
+                               {'name': 'document',    'items': ['Source', '-', 'Save', 'DocProps', 'Preview', 'Print', '-', 'Templates']},
+                               {'name': 'clipboard',   'items': ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
+                               {'name': 'editing',     'items': ['Find', 'Replace', '-', 'SpellChecker', 'Scayt']},
+                               {'name': 'basicstyles', 'items': ['Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat']},
+                               {'name': 'paragraph',   'items': ['NumberedList', 'BulletedList', '-', 'Pre', 'InsertPre']},
+                               {'name': 'links',       'items': ['Link', 'Unlink']},
+                               {'name': 'styles',      'items': ['Format', 'TextColor', 'BGColor']},
+                               {'name': 'tools',       'items': ['Maximize', 'ShowBlocks', '-', 'About']}
+                           ]}
+CKEDITOR_IMG_CONFIG = copy.deepcopy(CKEDITOR_DEFAULT_CONFIG)
+CKEDITOR_IMG_CONFIG['allowedContent'] += 'img; '
+CKEDITOR_IMG_CONFIG['toolbar_Full'].append({'name': 'images', 'items': ['Image']})
+
+CKEDITOR_UPLOAD_PATH = 'ckeditor'
+CKEDITOR_CONFIGS = {
+    'default': CKEDITOR_DEFAULT_CONFIG,
+    'images': CKEDITOR_IMG_CONFIG,
+}

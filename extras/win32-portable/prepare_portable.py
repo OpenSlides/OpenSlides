@@ -72,6 +72,9 @@ SITE_PACKAGES = {
             r"^django/contrib/webdesign/",
         ]
     },
+    "django_ckeditor_updated": {
+        "copy": ["ckeditor"],
+    },
     "django-haystack": {
         "copy": ["haystack"],
     },

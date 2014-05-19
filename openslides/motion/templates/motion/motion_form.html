@@ -13,9 +13,8 @@
 
 {% block javascript %}
     {{ block.super }}
-    <script type="text/javascript" src="{% static 'js/ckeditor/ckeditor.js' %}"></script>
-    <script type="text/javascript" src="{% static 'js/ckeditor-config.js' %}"></script>
     <script type="text/javascript" src="{% static 'js/jquery/jquery.bsmselect.js' %}"></script>
+
     <script type="text/javascript">
         // use jquery-bsmselect for all <select multiple> form elements
         $("select[multiple]").bsmSelect({
@@ -25,12 +24,6 @@
           listItemClass: 'bsmListItem-custom',
           listItemLabelClass: 'bsmListItemLabel-custom',
           removeClass: 'bsmListItemRemove-custom'
-        });
-
-        // Init CKeditor
-        $(function() {
-            CKEDITOR.replace('id_text', ck_options);
-            CKEDITOR.replace('id_reason', ck_options);
         });
     </script>
 {% endblock %}

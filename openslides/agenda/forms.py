@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import re
+from ckeditor.widgets import CKEditorWidget
 
 from django import forms
 from django.utils.translation import ugettext_lazy
@@ -32,6 +33,7 @@ class ItemForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
     class Meta:
         model = Item
         fields = ('item_number', 'title', 'text', 'comment', 'type', 'duration', 'parent', 'speaker_list_closed')
+        widgets = {'text': CKEditorWidget(config_name='images')}
 
 
 class RelatedItemForm(ItemForm):
