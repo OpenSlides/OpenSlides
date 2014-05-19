@@ -138,10 +138,14 @@ class ModelTest(TestCase):
         self.assertEqual(motion.versions.count(), 2)
 
     def test_unicode_with_no_active_version(self):
-        motion = Motion.objects.create(title='foo', text='bar', identifier='')
+        motion = Motion.objects.create(
+            title='test_title_Koowoh1ISheemeey1air',
+            text='test_text_zieFohph0doChi1Uiyoh',
+            identifier='test_identifier_VohT1hu9uhiSh6ooVBFS')
         motion.active_version = None
         motion.save(update_fields=['active_version'])
-        self.assertEqual(str(motion), 'foo')  # motion.__unicode__() raised an AttributeError
+        # motion.__unicode__() raised an AttributeError
+        self.assertEqual(str(motion), 'test_identifier_VohT1hu9uhiSh6ooVBFS | test_title_Koowoh1ISheemeey1air')
 
 
 class ConfigTest(TestCase):
