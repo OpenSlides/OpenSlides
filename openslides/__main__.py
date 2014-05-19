@@ -104,7 +104,6 @@ def parse_args():
         '--start-browser',
         action='store_true',
         help='Launch the default web browser and open the webinterface.')
-
     subcommand_runserver.set_defaults(callback=runserver)
 
     # Subcommand syncdb
@@ -218,10 +217,10 @@ def start(settings, args):
     ensure_settings(settings, args)
     syncdb(settings, args)
     args.start_browser = not args.no_browser
-    runserver(settings, args, block_reload=True)
+    runserver(settings, args)
 
 
-def runserver(settings, args, block_reload=False):
+def runserver(settings, args):
     """
     Runs tornado webserver. Runs the function start_browser if the respective
     argument is given.
@@ -234,7 +233,7 @@ def runserver(settings, args, block_reload=False):
 
     # Now the settings is available and the function can be imported.
     from openslides.utils.tornado_webserver import run_tornado
-    run_tornado(args.address, port, block_reload)
+    run_tornado(args.address, port)
 
 
 def syncdb(settings, args):

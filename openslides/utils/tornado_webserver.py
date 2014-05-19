@@ -68,7 +68,7 @@ class ProjectorSocketHandler(SockJSConnection):
             waiter.send(data)
 
 
-def run_tornado(addr, port, block_reload=False):
+def run_tornado(addr, port):
     # Don't try to read the command line args from openslides
     parse_command_line(args=[])
 
@@ -92,7 +92,7 @@ def run_tornado(addr, port, block_reload=False):
         ('.*', FallbackHandler, dict(fallback=app))]
 
     # Start the application
-    debug = False if block_reload else settings.DEBUG
+    debug = settings.DEBUG
     tornado_app = Application(projectpr_socket_js_router.urls + chatbox_socket_js_router.urls + other_urls, debug=debug)
     server = HTTPServer(tornado_app)
     server.listen(port=port, address=addr)
