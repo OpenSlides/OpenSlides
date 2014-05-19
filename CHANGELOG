@@ -10,6 +10,7 @@ Version 1.6 (unreleased)
 
 Dashboard:
 - Added shortcuts for the countdown.
+- Enabled copy and paste in widgets.
 Agenda:
 - New projector view with the current list of speakers.
 - Added CSV import.
@@ -50,7 +51,8 @@ Other:
 - Renamed and cleaned up static direcories.
 - Used jsonfield as required package. Removed jsonfield code.
 - Added new package backports.ssl_match_hostname for portable build script.
-- Use app "django-ckeditor-updated" to render WYSIWYG HTML editors
+- Used new app "django-ckeditor-updated" to render WYSIWYG html editors.
+  Removed CKEditor from sources.
 - Only reload the webserver in debug-mode.
 
 
