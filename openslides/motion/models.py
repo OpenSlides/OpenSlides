@@ -88,7 +88,11 @@ class Motion(SlideMixin, AbsoluteUrlMixin, models.Model):
         """
         Return a human readable name of this motion.
         """
-        return self.get_active_version().title
+        if self.identifier:
+            string = '%s | %s' % (self.identifier, self.title)
+        else:
+            string = self.title
+        return string
 
     # TODO: Use transaction
     def save(self, use_version=None, *args, **kwargs):
@@ -457,14 +461,12 @@ class Motion(SlideMixin, AbsoluteUrlMixin, models.Model):
         """
         Return a title for the agenda.
         """
-        return self.title
+        return unicode(self)
 
     def get_agenda_title_supplement(self):
         """
         Returns the supplement to the title for the agenda item.
         """
-        if self.identifier:
-            return '(%s %s)' % (_('Motion'), self.identifier)
         return '(%s)' % _('Motion')
 
     def get_allowed_actions(self, person):

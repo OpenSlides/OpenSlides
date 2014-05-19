@@ -36,10 +36,10 @@ def motion_to_pdf(pdf, motion):
     """
     Create a PDF for one motion.
     """
-    identifier = ""
+    identifier = ''
     if motion.identifier:
-        identifier = " %s" % motion.identifier
-    pdf.append(Paragraph(_("Motion") + "%s: %s" % (identifier, motion.title), stylesheet['Heading1']))
+        identifier = ' %s' % motion.identifier
+    pdf.append(Paragraph('%s%s: %s' % (_('Motion'), identifier, motion.title), stylesheet['Heading1']))
 
     motion_data = []
 
@@ -256,10 +256,10 @@ def all_motion_cover(pdf, motions):
         pdf.append(Paragraph(_("No motions available."), stylesheet['Heading3']))
     else:
         for motion in motions:
-            identifier = ""
+            identifier = ''
             if motion.identifier:
-                identifier = "%s " % motion.identifier
-            pdf.append(Paragraph("%s &nbsp; %s" % (identifier, motion.title), stylesheet['Heading3']))
+                identifier = ' %s' % motion.identifier
+            pdf.append(Paragraph('%s%s: %s' % (_('Motion'), identifier, motion.title), stylesheet['Heading3']))
 
 
 def motion_poll_to_pdf(pdf, poll):
