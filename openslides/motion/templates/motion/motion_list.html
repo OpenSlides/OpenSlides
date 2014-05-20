@@ -62,7 +62,7 @@
     {% for motion in motion_list %}
         <tr class="{% if motion.is_active_slide %}activeline{% endif %}">
             <td class="nobr">{{ motion.identifier|default:'' }}</td>
-            <td><a href="{{ motion|absolute_url }}">{{ motion }}</a></td>
+            <td><a href="{{ motion|absolute_url }}">{{ motion.title }}</a></td>
             <td class="optional">{% if motion.category %}{{ motion.category }}{% else %}–{% endif %}</td>
             <td class="optional-small"><span class="label label-info">{% trans motion.state.name %}</span></td>
             <td class="optional">
