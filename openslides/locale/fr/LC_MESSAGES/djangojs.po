@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-02 13:52+0200\n"
-"PO-Revision-Date: 2013-09-09 20:08+0000\n"
+"POT-Creation-Date: 2014-05-05 20:29+0200\n"
+"PO-Revision-Date: 2013-11-20 12:42+0000\n"
 "Last-Translator: emanuelschuetze <emanuel.schuetze@intevation.de>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/openslides/language/fr/)\n"
 "MIME-Version: 1.0\n"
@@ -22,240 +22,240 @@ msgstr ""
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: agenda/static/javascript/agenda-config-datepicker.js:9
-#: agenda/static/javascript/agenda-config-datepicker.js:39
-msgid "en"
-msgstr "en"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:10
-msgid "previous month"
-msgstr "le mois dernier"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:11
-msgid "next month"
-msgstr "le mois prochain"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:13
-msgid "January"
-msgstr "Janvier"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:13
-msgid "February"
-msgstr "Février"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:13
-msgid "March"
-msgstr "Mars"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:14
-msgid "April"
-msgstr "Avril"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:14
-#: agenda/static/javascript/agenda-config-datepicker.js:20
-msgid "May"
-msgstr "Mai"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:14
-msgid "June"
-msgstr "Juin"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:15
-msgid "July"
-msgstr "Juillet"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:15
-msgid "August"
-msgstr "Août"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:15
-msgid "September"
-msgstr "Septembre"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:16
-msgid "October"
-msgstr "Octobre"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:16
-msgid "November"
-msgstr "Novembre"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:16
-msgid "December"
-msgstr "Décembre"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:19
-msgid "Jan"
-msgstr "Jan"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:19
-msgid "Feb"
-msgstr "Feb"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:19
-msgid "Mar"
-msgstr "Mar"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:20
-msgid "Apr"
-msgstr "Apr"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:20
-msgid "Jun"
-msgstr "Jui"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:21
-msgid "Jul"
-msgstr "Jul"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:21
-msgid "Aug"
-msgstr "Aou"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:21
-msgid "Sep"
-msgstr "Sep"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:22
-msgid "Oct"
-msgstr "Oct"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:22
-msgid "Nov"
-msgstr "Nov"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:22
-msgid "Dec"
-msgstr "Déc"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:25
-msgid "Sunday"
-msgstr "Dimanche"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:25
-msgid "Monday"
-msgstr "Lundi"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:25
-msgid "Tuesday"
-msgstr "Mardi"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:25
-msgid "Wednesday"
-msgstr "Mecredi"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:26
-msgid "Thursday"
-msgstr "Jeudi"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:26
-msgid "Friday"
-msgstr "Vendredi"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:26
-msgid "Saturday"
-msgstr "Samedi"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:29
-#: agenda/static/javascript/agenda-config-datepicker.js:33
-msgid "Su"
-msgstr "Di"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:29
-#: agenda/static/javascript/agenda-config-datepicker.js:33
-msgid "Mo"
-msgstr "Lu"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:29
-#: agenda/static/javascript/agenda-config-datepicker.js:33
-msgid "Tu"
-msgstr "Ma"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:29
-#: agenda/static/javascript/agenda-config-datepicker.js:33
-msgid "We"
-msgstr "Me"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:30
-#: agenda/static/javascript/agenda-config-datepicker.js:34
-msgid "Th"
-msgstr "Je"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:30
-#: agenda/static/javascript/agenda-config-datepicker.js:34
-msgid "Fr"
-msgstr "Ve"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:30
-#: agenda/static/javascript/agenda-config-datepicker.js:34
-msgid "Sa"
-msgstr "Sa"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:45
-msgid "Time"
-msgstr "Heure"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:46
-msgid "Hour"
-msgstr "Heure"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:47
-msgid "Minute"
-msgstr "Minute"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:48
-msgid "Current time"
-msgstr "heure actuelle"
-
-#: agenda/static/javascript/agenda-config-datepicker.js:49
-msgid "Close"
-msgstr "Fermer"
-
-#: agenda/static/javascript/agenda.js:17
+#: agenda/static/js/agenda.js:14
 #, c-format
 msgid ", of which %s are hidden."
 msgstr ", dans %s sont cachés"
 
-#: static/javascript/dataTables.bootstrap.js:14
+#: core/static/js/jquery/dataTables.bootstrap.js:14
 msgid "All"
 msgstr "Tous"
 
-#: static/javascript/dataTables.bootstrap.js:19
+#: core/static/js/jquery/dataTables.bootstrap.js:19
 msgid "_MENU_ entries per page"
 msgstr "_MENU_ Entrées par page"
 
-#: static/javascript/dataTables.bootstrap.js:20
+#: core/static/js/jquery/dataTables.bootstrap.js:20
 msgid "Search:"
 msgstr "Recherche:"
 
-#: static/javascript/dataTables.bootstrap.js:21
+#: core/static/js/jquery/dataTables.bootstrap.js:21
 msgid "Showing _START_ to _END_ of _TOTAL_ entries"
 msgstr "Voici _START_ à _END_ sur _TOTAL_ entrées"
 
-#: static/javascript/dataTables.bootstrap.js:22
+#: core/static/js/jquery/dataTables.bootstrap.js:22
 msgid "Showing 0 entries"
 msgstr "Affichage de 0 entrées"
 
-#: static/javascript/dataTables.bootstrap.js:23
+#: core/static/js/jquery/dataTables.bootstrap.js:23
 msgid "(filtered from _MAX_ total entries)"
 msgstr "(filtrée à partir des entrées totales _Max_)"
 
-#: static/javascript/dataTables.bootstrap.js:24
+#: core/static/js/jquery/dataTables.bootstrap.js:24
 msgid "No matching records found"
 msgstr "Aucun enregistrement correspondant n'a été trouvé"
 
-#: static/javascript/dataTables.bootstrap.js:26
+#: core/static/js/jquery/dataTables.bootstrap.js:26
 msgid "First"
 msgstr "Premier"
 
-#: static/javascript/dataTables.bootstrap.js:27
+#: core/static/js/jquery/dataTables.bootstrap.js:27
 msgid "Last"
 msgstr "Dernier"
 
-#: static/javascript/dataTables.bootstrap.js:28
+#: core/static/js/jquery/dataTables.bootstrap.js:28
 msgid "Next"
 msgstr "Prochain"
 
-#: static/javascript/dataTables.bootstrap.js:29
+#: core/static/js/jquery/dataTables.bootstrap.js:29
 msgid "Previous"
 msgstr "Avant"
+
+#: core/static/js/jquery/datepicker-config.js:2
+#: core/static/js/jquery/datepicker-config.js:32
+msgid "en"
+msgstr "en"
+
+#: core/static/js/jquery/datepicker-config.js:3
+msgid "previous month"
+msgstr "le mois dernier"
+
+#: core/static/js/jquery/datepicker-config.js:4
+msgid "next month"
+msgstr "le mois prochain"
+
+#: core/static/js/jquery/datepicker-config.js:6
+msgid "January"
+msgstr "Janvier"
+
+#: core/static/js/jquery/datepicker-config.js:6
+msgid "February"
+msgstr "Février"
+
+#: core/static/js/jquery/datepicker-config.js:6
+msgid "March"
+msgstr "Mars"
+
+#: core/static/js/jquery/datepicker-config.js:7
+msgid "April"
+msgstr "Avril"
+
+#: core/static/js/jquery/datepicker-config.js:7
+#: core/static/js/jquery/datepicker-config.js:13
+msgid "May"
+msgstr "Mai"
+
+#: core/static/js/jquery/datepicker-config.js:7
+msgid "June"
+msgstr "Juin"
+
+#: core/static/js/jquery/datepicker-config.js:8
+msgid "July"
+msgstr "Juillet"
+
+#: core/static/js/jquery/datepicker-config.js:8
+msgid "August"
+msgstr "Août"
+
+#: core/static/js/jquery/datepicker-config.js:8
+msgid "September"
+msgstr "Septembre"
+
+#: core/static/js/jquery/datepicker-config.js:9
+msgid "October"
+msgstr "Octobre"
+
+#: core/static/js/jquery/datepicker-config.js:9
+msgid "November"
+msgstr "Novembre"
+
+#: core/static/js/jquery/datepicker-config.js:9
+msgid "December"
+msgstr "Décembre"
+
+#: core/static/js/jquery/datepicker-config.js:12
+msgid "Jan"
+msgstr "Jan"
+
+#: core/static/js/jquery/datepicker-config.js:12
+msgid "Feb"
+msgstr "Feb"
+
+#: core/static/js/jquery/datepicker-config.js:12
+msgid "Mar"
+msgstr "Mar"
+
+#: core/static/js/jquery/datepicker-config.js:13
+msgid "Apr"
+msgstr "Apr"
+
+#: core/static/js/jquery/datepicker-config.js:13
+msgid "Jun"
+msgstr "Jui"
+
+#: core/static/js/jquery/datepicker-config.js:14
+msgid "Jul"
+msgstr "Jul"
+
+#: core/static/js/jquery/datepicker-config.js:14
+msgid "Aug"
+msgstr "Aou"
+
+#: core/static/js/jquery/datepicker-config.js:14
+msgid "Sep"
+msgstr "Sep"
+
+#: core/static/js/jquery/datepicker-config.js:15
+msgid "Oct"
+msgstr "Oct"
+
+#: core/static/js/jquery/datepicker-config.js:15
+msgid "Nov"
+msgstr "Nov"
+
+#: core/static/js/jquery/datepicker-config.js:15
+msgid "Dec"
+msgstr "Déc"
+
+#: core/static/js/jquery/datepicker-config.js:18
+msgid "Sunday"
+msgstr "Dimanche"
+
+#: core/static/js/jquery/datepicker-config.js:18
+msgid "Monday"
+msgstr "Lundi"
+
+#: core/static/js/jquery/datepicker-config.js:18
+msgid "Tuesday"
+msgstr "Mardi"
+
+#: core/static/js/jquery/datepicker-config.js:18
+msgid "Wednesday"
+msgstr "Mecredi"
+
+#: core/static/js/jquery/datepicker-config.js:19
+msgid "Thursday"
+msgstr "Jeudi"
+
+#: core/static/js/jquery/datepicker-config.js:19
+msgid "Friday"
+msgstr "Vendredi"
+
+#: core/static/js/jquery/datepicker-config.js:19
+msgid "Saturday"
+msgstr "Samedi"
+
+#: core/static/js/jquery/datepicker-config.js:22
+#: core/static/js/jquery/datepicker-config.js:26
+msgid "Su"
+msgstr "Di"
+
+#: core/static/js/jquery/datepicker-config.js:22
+#: core/static/js/jquery/datepicker-config.js:26
+msgid "Mo"
+msgstr "Lu"
+
+#: core/static/js/jquery/datepicker-config.js:22
+#: core/static/js/jquery/datepicker-config.js:26
+msgid "Tu"
+msgstr "Ma"
+
+#: core/static/js/jquery/datepicker-config.js:22
+#: core/static/js/jquery/datepicker-config.js:26
+msgid "We"
+msgstr "Me"
+
+#: core/static/js/jquery/datepicker-config.js:23
+#: core/static/js/jquery/datepicker-config.js:27
+msgid "Th"
+msgstr "Je"
+
+#: core/static/js/jquery/datepicker-config.js:23
+#: core/static/js/jquery/datepicker-config.js:27
+msgid "Fr"
+msgstr "Ve"
+
+#: core/static/js/jquery/datepicker-config.js:23
+#: core/static/js/jquery/datepicker-config.js:27
+msgid "Sa"
+msgstr "Sa"
+
+#: core/static/js/jquery/datepicker-config.js:38
+msgid "Time"
+msgstr "Heure"
+
+#: core/static/js/jquery/datepicker-config.js:39
+msgid "Hour"
+msgstr "Heure"
+
+#: core/static/js/jquery/datepicker-config.js:40
+msgid "Minute"
+msgstr "Minute"
+
+#: core/static/js/jquery/datepicker-config.js:41
+msgid "Current time"
+msgstr "heure actuelle"
+
+#: core/static/js/jquery/datepicker-config.js:42
+msgid "Close"
+msgstr "Fermer"
