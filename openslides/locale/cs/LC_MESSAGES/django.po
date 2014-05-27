@@ -10,14 +10,14 @@
 # normanjaeckel <transifex16062013@normanjaeckel.de>, 2013
 # ostcar <mail@oshahn.de>, 2012
 # fri, 2013
-# fri, 2013
+# fri, 2013-2014
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-05 20:29+0200\n"
-"PO-Revision-Date: 2014-05-05 18:40+0000\n"
-"Last-Translator: normanjaeckel <transifex16062013@normanjaeckel.de>\n"
+"POT-Creation-Date: 2014-05-20 12:31+0200\n"
+"PO-Revision-Date: 2014-05-26 14:33+0000\n"
+"Last-Translator: fri\n"
 "Language-Team: Czech (http://www.transifex.com/projects/p/openslides/language/cs/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -25,29 +25,29 @@ msgstr ""
 "Language: cs\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
-#: global_settings.py:22
+#: global_settings.py:23
 msgid "Czech"
 msgstr "Čeština"
 
-#: global_settings.py:23
+#: global_settings.py:24
 msgid "English"
 msgstr "Anglický"
 
-#: global_settings.py:24
+#: global_settings.py:25
 msgid "French"
 msgstr "Francouzský"
 
-#: global_settings.py:25
+#: global_settings.py:26
 msgid "German"
 msgstr "Německý"
 
-#: global_settings.py:26
+#: global_settings.py:27
 msgid "Portuguese"
 msgstr "Portugalština"
 
 #: account/widgets.py:16
 msgid "My personal info"
-msgstr ""
+msgstr "Moje osobní údaje"
 
 #: account/templates/account/widget_personal_info.html:14
 msgid "None"
@@ -61,34 +61,34 @@ msgstr "Zdrojový soubor používá neplatné kódování znaků. Je podporován
 #: agenda/csv_import.py:48
 #, python-format
 msgid "%d items successfully imported."
-msgstr ""
+msgstr "%d položek bylo úspěšně zavedeno."
 
 #: agenda/csv_import.py:50
 #, python-format
 msgid "Error in the following lines: %s."
-msgstr ""
+msgstr "Chyba na následujících řádcích: %s."
 
-#: agenda/forms.py:22
+#: agenda/forms.py:23
 msgid "Parent item"
 msgstr "Rodičovská položka"
 
-#: agenda/forms.py:26
+#: agenda/forms.py:27
 msgid "Invalid format. Hours from 0 to 99 and minutes from 00 to 59"
 msgstr "Neplatný formát. Hodiny od 0 do 99 a minuty od 00 do 59"
 
-#: agenda/forms.py:29 agenda/templates/agenda/overview.html:88
+#: agenda/forms.py:30 agenda/templates/agenda/overview.html:88
 msgid "Duration"
 msgstr "Doba trvání"
 
-#: agenda/forms.py:30
+#: agenda/forms.py:31
 msgid "Input format: HH:MM or M or MM or MMM"
 msgstr "Zadávací formát: HH:MM nebo M nebo MM nebo MMM"
 
-#: agenda/forms.py:64
+#: agenda/forms.py:66
 msgid "Add participant"
 msgstr "Přidat nového účastníka/účastnici"
 
-#: agenda/forms.py:77
+#: agenda/forms.py:79
 #, python-format
 msgid "%s is already on the list of speakers."
 msgstr "%s je již na seznamu řečníků."
@@ -115,17 +115,17 @@ msgstr "Organizační bod"
 
 #: agenda/models.py:41
 msgid "Number"
-msgstr ""
+msgstr "Číslo"
 
 #: agenda/models.py:46 core/models.py:15 core/signals.py:111
 #: mediafile/models.py:28 mediafile/templates/mediafile/mediafile_list.html:18
-#: motion/forms.py:26 motion/models.py:534 participant/models.py:34
+#: motion/forms.py:28 motion/models.py:536 participant/models.py:34
 #: participant/pdf.py:21 participant/templates/participant/overview.html:49
 msgid "Title"
 msgstr "Název"
 
-#: agenda/models.py:51 core/models.py:16 motion/forms.py:31
-#: motion/models.py:537
+#: agenda/models.py:51 core/models.py:16 motion/forms.py:33
+#: motion/models.py:539
 msgid "Text"
 msgstr "Text"
 
@@ -165,12 +165,12 @@ msgid "Can see orga items and time scheduling of agenda"
 msgstr "Smí vidět organizační body a časový rozvrh pořadu dne"
 
 #: agenda/models.py:131 agenda/views.py:142
-msgid "Agenda items can not be descendents of an organizational item."
-msgstr ""
+msgid "Agenda items can not be child elements of an organizational item."
+msgstr "Položky pořadu jednání nemohou být potomky organizačních položek."
 
 #: agenda/models.py:133
-msgid "Organizational items can not have agenda items as descendents."
-msgstr ""
+msgid "Organizational items can not have agenda items as child elements."
+msgstr "Organizační položky nemohou mít položky pořadu jednání jako potomky."
 
 #: agenda/models.py:345
 #, python-format
@@ -187,7 +187,7 @@ msgstr "Smí se sám umístit na seznamu řečníků"
 
 #: agenda/personal_info.py:14
 msgid "I am on the list of speakers of the following items"
-msgstr ""
+msgstr "Jsem na seznamu řečníků následujících položek pořadu jednání"
 
 #: agenda/signals.py:27
 msgid "Invalid input."
@@ -215,19 +215,19 @@ msgstr "[Začít řeč] spustí odpočítávání, [Ukončit řeč] zastaví odp
 
 #: agenda/signals.py:67
 msgid "Numbering prefix for agenda items"
-msgstr ""
+msgstr "Předpona pro číslování položek pořadu jednání"
 
 #: agenda/signals.py:75
 msgid "Numeral system for agenda items"
-msgstr ""
+msgstr "Číselný systém pro položky pořadu jednání"
 
 #: agenda/signals.py:78
 msgid "Arabic"
-msgstr ""
+msgstr "Arabský"
 
 #: agenda/signals.py:79
 msgid "Roman"
-msgstr ""
+msgstr "Římský"
 
 #: agenda/views.py:126
 msgid "You are not authorized to manage the agenda."
@@ -255,17 +255,17 @@ msgstr "Položka %s a její podřízené prvky byly úspěšně smazány."
 msgid ""
 "Do you really want to generate agenda numbering? Manually added item numbers"
 " will be overwritten!"
-msgstr ""
+msgstr "Opravdu chcete vytvořit číslování pořadu jednání? Ručně přidaná čísla položek budou přepsána!"
 
 #: agenda/views.py:359
 msgid "The agenda has been numbered."
-msgstr ""
+msgstr "Pořad jednání byl očíslován."
 
-#: agenda/views.py:393 agenda/views.py:618
+#: agenda/views.py:393 agenda/views.py:624
 msgid "The list of speakers is closed."
 msgstr "Seznam řečníků je uzavřen."
 
-#: agenda/views.py:400 agenda/views.py:627
+#: agenda/views.py:400 agenda/views.py:633
 msgid "You were successfully added to the list of speakers."
 msgstr "Byl jste úspěšně přidán do seznamu řečníků."
 
@@ -291,37 +291,37 @@ msgstr "Nyní nemluví žádný řečník podle %(item)s."
 msgid "Could not change order. Invalid data."
 msgstr "Nepodařilo se změnit pořadí. Neplatná data."
 
-#: agenda/views.py:612
+#: agenda/views.py:618
 msgid ""
 "There is no list of speakers for the current slide. Please choose the agenda"
 " item manually from the agenda."
 msgstr "Pro nynější snímek není žádný seznam řečníků. Zvolte, prosím, položku pořadu jednání ručně z pořadu jednání."
 
-#: agenda/views.py:631
+#: agenda/views.py:637
 msgid "You can not put yourself on the list of speakers."
 msgstr "Nemůžete se sám umístit na seznam řečníků."
 
-#: agenda/views.py:640
+#: agenda/views.py:646
 #, python-format
 msgid "%s is now speaking."
 msgstr "%s nyní mluví."
 
-#: agenda/views.py:642
+#: agenda/views.py:648
 #: agenda/templates/agenda/item_slide_list_of_speaker.html:26
 #: agenda/templates/agenda/overlay_speaker_projector.html:17
 msgid "The list of speakers is empty."
 msgstr "Seznam řečníků je prázdný."
 
-#: agenda/views.py:650
+#: agenda/views.py:656
 msgid "There is no one speaking at the moment."
 msgstr "Nyní nemluví nikdo."
 
-#: agenda/views.py:653
+#: agenda/views.py:659
 #, python-format
 msgid "%s is now finished."
 msgstr "%s je nyní hotový."
 
-#: agenda/views.py:710 agenda/widgets.py:43
+#: agenda/views.py:716 agenda/widgets.py:44
 #: agenda/templates/agenda/current_list_of_speakers_projector.html:4
 #: agenda/templates/agenda/item_slide_list_of_speaker.html:9
 #: agenda/templates/agenda/overlay_speaker_projector.html:4
@@ -331,31 +331,31 @@ msgstr "%s je nyní hotový."
 msgid "List of speakers"
 msgstr "Seznam řečníků"
 
-#: agenda/views.py:710
+#: agenda/views.py:716
 msgid "Not available."
-msgstr ""
+msgstr "Nedostupné."
 
-#: agenda/templates/agenda/edit.html:9 agenda/templates/agenda/edit.html:36
+#: agenda/templates/agenda/edit.html:9 agenda/templates/agenda/edit.html:19
 #: agenda/templates/agenda/view.html:37
 msgid "Edit item"
 msgstr "Upravit položku"
 
-#: agenda/templates/agenda/edit.html:11 agenda/templates/agenda/edit.html:38
+#: agenda/templates/agenda/edit.html:11 agenda/templates/agenda/edit.html:21
 #: agenda/templates/agenda/overview.html:37
 msgid "New item"
 msgstr "Nová položka"
 
-#: agenda/templates/agenda/edit.html:41
+#: agenda/templates/agenda/edit.html:24
 #: agenda/templates/agenda/item_form_csv_import.html:11
 #: agenda/templates/agenda/view.html:22
-#: assignment/templates/assignment/assignment_detail.html:24
+#: assignment/templates/assignment/assignment_detail.html:21
 #: assignment/templates/assignment/assignment_form.html:26
 #: core/templates/core/customslide_update.html:10
 #: core/templates/core/select_widgets.html:10
 #: mediafile/templates/mediafile/mediafile_form.html:22
 #: motion/templates/motion/category_list.html:15
 #: motion/templates/motion/motion_detail.html:35
-#: motion/templates/motion/motion_form.html:58
+#: motion/templates/motion/motion_form.html:51
 #: motion/templates/motion/motion_form_csv_import.html:11
 #: participant/templates/participant/edit.html:42
 #: participant/templates/participant/group_detail.html:12
@@ -366,19 +366,19 @@ msgstr "Nová položka"
 msgid "Back to overview"
 msgstr "Zpět do přehledu"
 
-#: agenda/templates/agenda/edit.html:47
+#: agenda/templates/agenda/edit.html:30
 #, python-format
 msgid "Edit %(type)s %(name)s"
 msgstr "Upravit %(type)s %(name)s"
 
-#: agenda/templates/agenda/edit.html:56
+#: agenda/templates/agenda/edit.html:39
 #: agenda/templates/agenda/item_form_csv_import.html:42
 #: assignment/templates/assignment/assignment_form.html:36
 #: assignment/templates/assignment/assignmentpoll_form.html:108
 #: config/templates/config/config_form.html:47
 #: mediafile/templates/mediafile/mediafile_form.html:33
 #: motion/templates/motion/category_form.html:27
-#: motion/templates/motion/motion_form.html:67
+#: motion/templates/motion/motion_form.html:60
 #: motion/templates/motion/motion_form_csv_import.html:42
 #: motion/templates/motion/motionpoll_form.html:84
 #: participant/templates/participant/edit.html:56
@@ -388,14 +388,14 @@ msgstr "Upravit %(type)s %(name)s"
 msgid "Cancel"
 msgstr "Zrušit"
 
-#: agenda/templates/agenda/edit.html:59
+#: agenda/templates/agenda/edit.html:42
 #: agenda/templates/agenda/item_form_csv_import.html:45
 #: assignment/templates/assignment/assignment_form.html:39
 #: config/templates/config/config_form.html:49
 #: core/templates/core/customslide_update.html:18
 #: mediafile/templates/mediafile/mediafile_form.html:35
 #: motion/templates/motion/category_form.html:30
-#: motion/templates/motion/motion_form.html:70
+#: motion/templates/motion/motion_form.html:63
 #: motion/templates/motion/motion_form_csv_import.html:45
 #: participant/templates/participant/edit.html:59
 #: participant/templates/participant/group_edit.html:34
@@ -408,11 +408,11 @@ msgstr "požadováno"
 #: agenda/templates/agenda/item_form_csv_import.html:9
 #: agenda/templates/agenda/overview.html:38
 msgid "Import agenda items"
-msgstr ""
+msgstr "Zavést položky pořadu jednání"
 
 #: agenda/templates/agenda/item_form_csv_import.html:15
 msgid "Select a CSV file to import agenda items"
-msgstr ""
+msgstr "Vyberte soubor CSV pro zavedení položek pořadu jednání"
 
 #: agenda/templates/agenda/item_form_csv_import.html:17
 #: motion/templates/motion/motion_form_csv_import.html:17
@@ -428,11 +428,11 @@ msgstr "Vyžadovány čárkou oddělené hodnoty"
 
 #: agenda/templates/agenda/item_form_csv_import.html:21
 msgid "title, text, duration"
-msgstr ""
+msgstr "název, text, doba trvání"
 
 #: agenda/templates/agenda/item_form_csv_import.html:24
 msgid "Text and duration are optional and may be empty"
-msgstr ""
+msgstr "Text a doba trvání jsou nepovinné a mohou zůstat prázdné"
 
 #: agenda/templates/agenda/item_form_csv_import.html:26
 #: motion/templates/motion/motion_form_csv_import.html:26
@@ -467,30 +467,30 @@ msgstr "Promítat položku pořadu jednání"
 
 #: agenda/templates/agenda/item_row.html:16
 #: agenda/templates/agenda/view.html:72
-#: agenda/templates/agenda/widget_item.html:40
+#: agenda/templates/agenda/widget_item.html:42
 msgid "Show list of speakers"
 msgstr "Promítat seznam řečníků"
 
-#: agenda/templates/agenda/item_row.html:21
-#: agenda/templates/agenda/widget_item.html:31
-#: assignment/templates/assignment/assignment_detail.html:176
+#: agenda/templates/agenda/item_row.html:22
+#: agenda/templates/agenda/widget_item.html:32
+#: assignment/templates/assignment/assignment_detail.html:173
 #: assignment/templates/assignment/assignment_list.html:65
-#: assignment/templates/assignment/widget_assignment.html:15
+#: assignment/templates/assignment/widget_assignment.html:16
 #: core/templates/core/widget_customslide.html:34
 #: mediafile/templates/mediafile/mediafile_list.html:38
 #: motion/templates/motion/category_list.html:30
 #: motion/templates/motion/motion_list.html:100
-#: motion/templates/motion/widget_motion.html:15
+#: motion/templates/motion/widget_motion.html:16
 #: participant/templates/participant/group_overview.html:58
 #: participant/templates/participant/overview.html:117
-#: participant/templates/participant/widget_group.html:15
-#: participant/templates/participant/widget_user.html:15
+#: participant/templates/participant/widget_group.html:16
+#: participant/templates/participant/widget_user.html:16
 msgid "Edit"
 msgstr "Upravit"
 
-#: agenda/templates/agenda/item_row.html:24
+#: agenda/templates/agenda/item_row.html:25
 #: agenda/templates/agenda/view.html:128
-#: assignment/templates/assignment/assignment_detail.html:178
+#: assignment/templates/assignment/assignment_detail.html:175
 #: assignment/templates/assignment/assignment_list.html:69
 #: core/templates/core/widget_customslide.html:30
 #: mediafile/templates/mediafile/mediafile_list.html:39
@@ -502,28 +502,28 @@ msgstr "Upravit"
 msgid "Delete"
 msgstr "Smazat"
 
-#: agenda/templates/agenda/item_row.html:29
+#: agenda/templates/agenda/item_row.html:30
 msgid "Change status (open/closed)"
 msgstr "Změnit stav (otevřený/zavřený)"
 
-#: agenda/templates/agenda/item_row.html:35
-#: agenda/templates/agenda/widget_item.html:46
+#: agenda/templates/agenda/item_row.html:37
+#: agenda/templates/agenda/widget_item.html:48
 msgid "Show summary for this item"
 msgstr "Promítat shrnutí pro tuto položku"
 
-#: agenda/templates/agenda/item_row.html:49
+#: agenda/templates/agenda/item_row.html:51
 msgid "End"
 msgstr "Konec"
 
-#: agenda/templates/agenda/item_row.html:69
+#: agenda/templates/agenda/item_row.html:71
 msgid "Expand items"
 msgstr "Rozbalit položky"
 
-#: agenda/templates/agenda/item_row.html:70
+#: agenda/templates/agenda/item_row.html:72
 msgid "Collapse items"
 msgstr "Sbalit položky"
 
-#: agenda/templates/agenda/item_row.html:74
+#: agenda/templates/agenda/item_row.html:76
 msgid "Item closed"
 msgstr "Položka zavřena"
 
@@ -542,27 +542,27 @@ msgid "Do you want to save the changed order of agenda items?"
 msgstr "Chcete uložit změněné pořadí položek?"
 
 #: agenda/templates/agenda/overview.html:29
-#: agenda/templates/agenda/view.html:84 assignment/models.py:330
-#: assignment/views.py:579
-#: assignment/templates/assignment/assignment_detail.html:214
-#: assignment/templates/assignment/assignment_detail.html:218
+#: agenda/templates/agenda/view.html:84 assignment/models.py:334
+#: assignment/views.py:588
+#: assignment/templates/assignment/assignment_detail.html:211
+#: assignment/templates/assignment/assignment_detail.html:215
 #: assignment/templates/assignment/assignmentpoll_slide.html:24
-#: motion/models.py:710 motion/pdf.py:129 motion/pdf.py:274
+#: motion/models.py:712 motion/pdf.py:129 motion/pdf.py:274
 #: motion/templates/motion/motion_detail.html:228
 #: motion/templates/motion/motionpoll_slide.html:20
-#: motion/templates/motion/slide.html:23 utils/views.py:331
+#: motion/templates/motion/slide.html:23 utils/views.py:330
 msgid "Yes"
 msgstr "Ano"
 
 #: agenda/templates/agenda/overview.html:30
-#: agenda/templates/agenda/view.html:85 assignment/models.py:330
-#: assignment/views.py:580
-#: assignment/templates/assignment/assignment_detail.html:215
+#: agenda/templates/agenda/view.html:85 assignment/models.py:334
+#: assignment/views.py:589
+#: assignment/templates/assignment/assignment_detail.html:212
 #: assignment/templates/assignment/assignmentpoll_slide.html:26
-#: motion/models.py:710 motion/pdf.py:129 motion/pdf.py:276
+#: motion/models.py:712 motion/pdf.py:129 motion/pdf.py:276
 #: motion/templates/motion/motion_detail.html:229
 #: motion/templates/motion/motionpoll_slide.html:24
-#: motion/templates/motion/slide.html:24 utils/views.py:331
+#: motion/templates/motion/slide.html:24 utils/views.py:330
 msgid "No"
 msgstr "Ne"
 
@@ -583,7 +583,7 @@ msgstr "Vytisknout pořad jednání jako PDF"
 
 #: agenda/templates/agenda/overview.html:42
 msgid "Current list of speakers"
-msgstr ""
+msgstr "Nynější seznam řečníků"
 
 #: agenda/templates/agenda/overview.html:51
 msgid "Hide closed items"
@@ -610,7 +610,7 @@ msgstr "Stanovit začátek události"
 
 #: agenda/templates/agenda/overview.html:75
 msgid "Number agenda items"
-msgstr ""
+msgstr "Očíslovat položky pořadu jednání"
 
 #: agenda/templates/agenda/overview.html:83
 msgid "Item"
@@ -632,7 +632,7 @@ msgid "Show agenda"
 msgstr "Promítat pořad jednání"
 
 #: agenda/templates/agenda/overview.html:133
-#: agenda/templates/agenda/widget_item.html:57
+#: agenda/templates/agenda/widget_item.html:59
 #: core/templates/core/widget_customslide.html:43
 msgid "No items available."
 msgstr "Nejsou dostupné žádné položky."
@@ -642,7 +642,7 @@ msgid "Show item"
 msgstr "Promítat položku"
 
 #: agenda/templates/agenda/view.html:33
-#: assignment/templates/assignment/assignment_detail.html:37
+#: assignment/templates/assignment/assignment_detail.html:34
 #: motion/templates/motion/motion_detail.html:48
 #: participant/templates/participant/group_detail.html:22
 #: participant/templates/participant/user_detail.html:22
@@ -703,7 +703,7 @@ msgid "Put me on the list"
 msgstr "Dát mě na seznam"
 
 #: agenda/templates/agenda/view.html:152
-#: assignment/templates/assignment/assignment_detail.html:115
+#: assignment/templates/assignment/assignment_detail.html:112
 #: assignment/templates/assignment/assignmentpoll_form.html:105
 #: core/templates/formbuttons_saveapply.html:7
 #: mediafile/templates/mediafile/widget_pdfpresentation.html:32
@@ -713,7 +713,7 @@ msgid "Apply"
 msgstr "Použít"
 
 #: agenda/templates/agenda/view.html:154
-#: assignment/templates/assignment/assignment_detail.html:118
+#: assignment/templates/assignment/assignment_detail.html:115
 msgid "Add new participant"
 msgstr "Přidat nového účastníka"
 
@@ -732,13 +732,13 @@ msgid "Show"
 msgstr "Ukázat"
 
 #: agenda/templates/agenda/widget_item.html:15
-#: agenda/templates/agenda/widget_item.html:35
-#: assignment/templates/assignment/widget_assignment.html:19
+#: agenda/templates/agenda/widget_item.html:37
+#: assignment/templates/assignment/widget_assignment.html:21
 #: core/templates/core/widget_customslide.html:14
 #: core/templates/core/widget_customslide.html:38
-#: motion/templates/motion/widget_motion.html:19
-#: participant/templates/participant/widget_group.html:19
-#: participant/templates/participant/widget_user.html:19
+#: motion/templates/motion/widget_motion.html:21
+#: participant/templates/participant/widget_group.html:21
+#: participant/templates/participant/widget_user.html:21
 msgid "Preview"
 msgstr "Náhled"
 
@@ -755,7 +755,7 @@ msgid "Go to current list of speakers"
 msgstr "Jít na nynější seznam řečníků"
 
 #: assignment/forms.py:14 assignment/models.py:56 assignment/views.py:353
-#: assignment/templates/assignment/assignment_detail.html:299
+#: assignment/templates/assignment/assignment_detail.html:296
 #: assignment/templates/assignment/slide.html:11
 msgid "Number of available posts"
 msgstr "Počet míst dostupných pro volbu"
@@ -772,17 +772,17 @@ msgid "Elections"
 msgstr "Volby"
 
 #: assignment/models.py:49
-#: assignment/templates/assignment/assignment_detail.html:309
+#: assignment/templates/assignment/assignment_detail.html:306
 msgid "Searching for candidates"
 msgstr "Hledání uchazečů"
 
 #: assignment/models.py:50
-#: assignment/templates/assignment/assignment_detail.html:312
+#: assignment/templates/assignment/assignment_detail.html:309
 msgid "Voting"
 msgstr "Hlasování"
 
 #: assignment/models.py:51
-#: assignment/templates/assignment/assignment_detail.html:315
+#: assignment/templates/assignment/assignment_detail.html:312
 msgid "Finished"
 msgstr "Dokončeno"
 
@@ -791,14 +791,14 @@ msgid "Name"
 msgstr "Název"
 
 #: assignment/models.py:55
-#: assignment/templates/assignment/assignment_detail.html:59
+#: assignment/templates/assignment/assignment_detail.html:56
 #: participant/models.py:123
 msgid "Description"
 msgstr "Popis"
 
 #: assignment/models.py:59
 msgid "Default comment on the ballot paper"
-msgstr ""
+msgstr "Výchozí poznámka na hlasovacím lístku"
 
 #: assignment/models.py:64
 msgid "Can see elections"
@@ -816,9 +816,9 @@ msgstr "Smí se sám ucházet ve volbách"
 msgid "Can manage elections"
 msgstr "Smí spravovat volby"
 
-#: assignment/models.py:70 assignment/views.py:503 assignment/views.py:520
+#: assignment/models.py:70 assignment/views.py:512 assignment/views.py:529
 #: assignment/templates/assignment/assignment_detail.html:8
-#: assignment/templates/assignment/assignment_detail.html:22
+#: assignment/templates/assignment/assignment_detail.html:19
 #: assignment/templates/assignment/assignment_list.html:33
 #: assignment/templates/assignment/assignmentpoll_form.html:7
 #: assignment/templates/assignment/assignmentpoll_slide.html:10
@@ -856,30 +856,30 @@ msgstr "%s se nechce ucházet."
 msgid "%s is no candidate"
 msgstr "%s není uchazečem"
 
-#: assignment/models.py:264 assignment/views.py:305
+#: assignment/models.py:280 assignment/views.py:305
 msgid "Assignment"
 msgstr "Volba"
 
-#: assignment/models.py:291
+#: assignment/models.py:307
 msgid "Comment on the ballot paper"
 msgstr "Poznámka na hlasovacím lístku"
 
-#: assignment/models.py:294
+#: assignment/models.py:310
 #, python-format
 msgid "Ballot %d"
 msgstr "Volba %d"
 
-#: assignment/models.py:330 motion/models.py:710
+#: assignment/models.py:334 motion/models.py:712
 msgid "Abstain"
 msgstr "Zdržení se"
 
-#: assignment/models.py:332 motion/templates/motion/motionpoll_form.html:45
+#: assignment/models.py:336 motion/templates/motion/motionpoll_form.html:45
 msgid "Votes"
 msgstr "Hlasy"
 
 #: assignment/personal_info.py:14
 msgid "I am candidate for the following elections"
-msgstr ""
+msgstr "Jsem uchazečem/uchazečkou v následujících volbách"
 
 #: assignment/signals.py:25
 msgid "Election method"
@@ -899,7 +899,7 @@ msgstr "Ano, Ne, Zdržení se pro uchazeče"
 
 #: assignment/signals.py:36
 msgid "The 100 % base of an election result consists of"
-msgstr ""
+msgstr "100 % základ volebních výsledků se skládá z"
 
 #: assignment/signals.py:44 motion/signals.py:104
 msgid "Number of ballot papers (selection)"
@@ -923,11 +923,11 @@ msgstr "Uživatelsky stanovený počet hlasovacích lístků"
 
 #: assignment/signals.py:62
 msgid "Publish election result for elected candidates only (projector view)"
-msgstr ""
+msgstr "Zveřejnit výsledek volby zvolených uchazečů (pohled promítacího přístroje)"
 
 #: assignment/signals.py:65
 msgid "Ballot and ballot papers"
-msgstr ""
+msgstr "Volba a hlasovací lístky"
 
 #: assignment/signals.py:80
 msgid "Title for PDF document (all elections)"
@@ -939,7 +939,7 @@ msgstr "Text úvodu dokumentu PDF (všechny volby)"
 
 #: assignment/signals.py:89 motion/signals.py:144 participant/signals.py:97
 msgid "PDF"
-msgstr ""
+msgstr "PDF"
 
 #: assignment/views.py:75
 #, python-format
@@ -994,8 +994,8 @@ msgstr "ID hlasování %d neexistuje."
 msgid "not elected"
 msgstr "nezvolen"
 
-#: assignment/views.py:267 assignment/views.py:467
-#: assignment/templates/assignment/assignment_detail.html:79
+#: assignment/views.py:267 assignment/views.py:476
+#: assignment/templates/assignment/assignment_detail.html:76
 msgid "elected"
 msgstr "zvolen"
 
@@ -1013,8 +1013,8 @@ msgid "Election: %s"
 msgstr "Volba: %s"
 
 #: assignment/views.py:360 assignment/views.py:396
-#: assignment/templates/assignment/assignment_detail.html:68
-#: assignment/templates/assignment/assignment_detail.html:152
+#: assignment/templates/assignment/assignment_detail.html:65
+#: assignment/templates/assignment/assignment_detail.html:149
 #: assignment/templates/assignment/assignment_list.html:34
 #: assignment/templates/assignment/assignment_list.html:48
 #: assignment/templates/assignment/assignmentpoll_form.html:44
@@ -1023,13 +1023,13 @@ msgid "Candidates"
 msgstr "Uchazeči"
 
 #: assignment/views.py:385
-#: assignment/templates/assignment/assignment_detail.html:148
+#: assignment/templates/assignment/assignment_detail.html:145
 #: assignment/templates/assignment/assignmentpoll_form.html:26
 msgid "Election result"
-msgstr ""
+msgstr "Výsledek volby"
 
 #: assignment/views.py:389
-#: assignment/templates/assignment/assignment_detail.html:156
+#: assignment/templates/assignment/assignment_detail.html:153
 #: assignment/templates/assignment/assignmentpoll_form.html:7
 #: assignment/templates/assignment/assignmentpoll_form.html:13
 #: assignment/templates/assignment/assignmentpoll_slide.html:11
@@ -1048,9 +1048,9 @@ msgid ""
 "A: %(ABSTAIN)s"
 msgstr "A: %(YES)s\nN: %(NO)s\nZ: %(ABSTAIN)s"
 
-#: assignment/views.py:429
-#: assignment/templates/assignment/assignment_detail.html:232
-#: assignment/templates/assignment/assignment_detail.html:237
+#: assignment/views.py:428
+#: assignment/templates/assignment/assignment_detail.html:229
+#: assignment/templates/assignment/assignment_detail.html:234
 #: assignment/templates/assignment/assignmentpoll_form.html:61
 #: assignment/templates/assignment/assignmentpoll_slide.html:39
 #: motion/pdf.py:119 motion/templates/motion/motion_detail.html:234
@@ -1058,11 +1058,11 @@ msgstr "A: %(YES)s\nN: %(NO)s\nZ: %(ABSTAIN)s"
 #: motion/templates/motion/motionpoll_slide.html:33
 #: motion/templates/motion/slide.html:29 poll/models.py:84
 msgid "Valid votes"
-msgstr ""
+msgstr "Platné hlasy"
 
-#: assignment/views.py:437
-#: assignment/templates/assignment/assignment_detail.html:248
-#: assignment/templates/assignment/assignment_detail.html:253
+#: assignment/views.py:439
+#: assignment/templates/assignment/assignment_detail.html:245
+#: assignment/templates/assignment/assignment_detail.html:250
 #: assignment/templates/assignment/assignmentpoll_form.html:71
 #: assignment/templates/assignment/assignmentpoll_slide.html:45
 #: motion/pdf.py:121 motion/templates/motion/motion_detail.html:237
@@ -1072,9 +1072,9 @@ msgstr ""
 msgid "Invalid votes"
 msgstr "Neplatné hlasy"
 
-#: assignment/views.py:445
-#: assignment/templates/assignment/assignment_detail.html:264
-#: assignment/templates/assignment/assignment_detail.html:269
+#: assignment/views.py:450
+#: assignment/templates/assignment/assignment_detail.html:261
+#: assignment/templates/assignment/assignment_detail.html:266
 #: assignment/templates/assignment/assignmentpoll_form.html:81
 #: assignment/templates/assignment/assignmentpoll_slide.html:51
 #: motion/pdf.py:123 motion/templates/motion/motion_detail.html:242
@@ -1084,12 +1084,12 @@ msgstr "Neplatné hlasy"
 msgid "Votes cast"
 msgstr "Odevzdané hlasy"
 
-#: assignment/views.py:527
+#: assignment/views.py:536
 #, python-format
 msgid "%d. ballot"
 msgstr "%d. hlasování"
 
-#: assignment/views.py:529
+#: assignment/views.py:538
 #, python-format
 msgid "%d candidate"
 msgid_plural "%d candidates"
@@ -1097,7 +1097,7 @@ msgstr[0] "%d uchazeč"
 msgstr[1] "%d uchazeči"
 msgstr[2] "%d uchazečů"
 
-#: assignment/views.py:531
+#: assignment/views.py:540
 #, python-format
 msgid "%d available post"
 msgid_plural "%d available posts"
@@ -1105,8 +1105,8 @@ msgstr[0] "%d dostupné místo"
 msgstr[1] "%d dostupná místa"
 msgstr[2] "%d dostupných míst"
 
-#: assignment/views.py:581
-#: assignment/templates/assignment/assignment_detail.html:216
+#: assignment/views.py:590
+#: assignment/templates/assignment/assignment_detail.html:213
 #: assignment/templates/assignment/assignmentpoll_slide.html:28
 #: motion/pdf.py:129 motion/pdf.py:278
 #: motion/templates/motion/motion_detail.html:230
@@ -1115,101 +1115,101 @@ msgstr[2] "%d dostupných míst"
 msgid "Abstention"
 msgstr "Zdržení se"
 
-#: assignment/templates/assignment/assignment_detail.html:25
+#: assignment/templates/assignment/assignment_detail.html:22
 #: assignment/templates/assignment/assignment_list.html:74
 msgid "Print election as PDF"
 msgstr "Vytisknout volbu jako PDF"
 
-#: assignment/templates/assignment/assignment_detail.html:30
+#: assignment/templates/assignment/assignment_detail.html:27
 #: assignment/templates/assignment/assignment_list.html:59
 #: assignment/templates/assignment/assignmentpoll_form.html:21
 msgid "Show election"
 msgstr "Promítnout volbu"
 
-#: assignment/templates/assignment/assignment_detail.html:42
+#: assignment/templates/assignment/assignment_detail.html:39
 #: assignment/templates/assignment/assignment_form.html:8
 #: assignment/templates/assignment/assignment_form.html:18
 msgid "Edit election"
 msgstr "Upravit volbu"
 
-#: assignment/templates/assignment/assignment_detail.html:44
+#: assignment/templates/assignment/assignment_detail.html:41
 msgid "Delete election"
 msgstr "Smazat volbu"
 
-#: assignment/templates/assignment/assignment_detail.html:48
+#: assignment/templates/assignment/assignment_detail.html:45
 #: motion/templates/motion/motion_detail.html:63
 msgid "New agenda item"
 msgstr "Nová položka pořadu jednání"
 
-#: assignment/templates/assignment/assignment_detail.html:75
-#: assignment/templates/assignment/assignment_detail.html:135
+#: assignment/templates/assignment/assignment_detail.html:72
+#: assignment/templates/assignment/assignment_detail.html:132
 msgid "Remove candidate"
 msgstr "Odstranit uchazeče"
 
-#: assignment/templates/assignment/assignment_detail.html:82
+#: assignment/templates/assignment/assignment_detail.html:79
 msgid "Mark candidate as not elected"
 msgstr "Označit uchazeče jako nezvoleného"
 
-#: assignment/templates/assignment/assignment_detail.html:90
+#: assignment/templates/assignment/assignment_detail.html:87
 #: assignment/templates/assignment/slide.html:35
 msgid "No candidates available."
 msgstr "Nejsou dostupní žádní uchazeči."
 
-#: assignment/templates/assignment/assignment_detail.html:100
+#: assignment/templates/assignment/assignment_detail.html:97
 msgid "Withdraw self candidature"
 msgstr "Stáhnout vlastní uchazečství"
 
-#: assignment/templates/assignment/assignment_detail.html:104
+#: assignment/templates/assignment/assignment_detail.html:101
 msgid "Self candidature"
 msgstr "Ucházet se sám"
 
-#: assignment/templates/assignment/assignment_detail.html:129
+#: assignment/templates/assignment/assignment_detail.html:126
 msgid "Blocked Candidates"
 msgstr "Blokovaní uchazeči"
 
-#: assignment/templates/assignment/assignment_detail.html:140
+#: assignment/templates/assignment/assignment_detail.html:137
 msgid "No blocked candidates available."
 msgstr "Nejsou dostupní žádní blokovaní uchazeči."
 
-#: assignment/templates/assignment/assignment_detail.html:160
+#: assignment/templates/assignment/assignment_detail.html:157
 msgid "Publish result"
-msgstr ""
+msgstr "Zveřejnit výsledek"
 
-#: assignment/templates/assignment/assignment_detail.html:171
+#: assignment/templates/assignment/assignment_detail.html:168
 #: assignment/templates/assignment/assignmentpoll_form.html:25
 msgid "Show election result"
-msgstr ""
+msgstr "Ukázat výsledek volby"
 
-#: assignment/templates/assignment/assignment_detail.html:174
+#: assignment/templates/assignment/assignment_detail.html:171
 #: assignment/templates/assignment/assignmentpoll_form.html:96
 #: motion/templates/motion/motion_detail.html:218
 #: motion/templates/motion/motionpoll_form.html:72
 msgid "Ballot paper as PDF"
 msgstr "Hlasovací lístek jako PDF"
 
-#: assignment/templates/assignment/assignment_detail.html:186
-#: assignment/templates/assignment/assignment_detail.html:285
+#: assignment/templates/assignment/assignment_detail.html:183
+#: assignment/templates/assignment/assignment_detail.html:282
 msgid "New ballot"
 msgstr "Nové hlasování"
 
-#: assignment/templates/assignment/assignment_detail.html:197
-#: assignment/templates/assignment/assignment_detail.html:206
+#: assignment/templates/assignment/assignment_detail.html:194
+#: assignment/templates/assignment/assignment_detail.html:203
 msgid "Mark candidate as elected"
 msgstr "Označit uchazeče jako zvoleného"
 
-#: assignment/templates/assignment/assignment_detail.html:200
+#: assignment/templates/assignment/assignment_detail.html:197
 msgid "Candidate is elected"
 msgstr "Uchazeč je zvolen"
 
-#: assignment/templates/assignment/assignment_detail.html:220
+#: assignment/templates/assignment/assignment_detail.html:217
 msgid "was not a <br> candidate"
 msgstr "nebyl <br> uchazečem"
 
-#: assignment/templates/assignment/assignment_detail.html:281
+#: assignment/templates/assignment/assignment_detail.html:278
 msgid "No ballots available."
 msgstr "Nejsou dostupná žádná hlasování."
 
-#: assignment/templates/assignment/assignment_detail.html:296
+#: assignment/templates/assignment/assignment_detail.html:293
 #: assignment/templates/assignment/assignment_list.html:35
 #: assignment/templates/assignment/slide.html:9
 #: motion/templates/motion/motion_detail.html:203
@@ -1218,7 +1218,7 @@ msgstr "Nejsou dostupná žádná hlasování."
 msgid "Status"
 msgstr "Stav"
 
-#: assignment/templates/assignment/assignment_detail.html:305
+#: assignment/templates/assignment/assignment_detail.html:302
 msgid "Change status"
 msgstr "Změnit stav"
 
@@ -1248,7 +1248,7 @@ msgstr "Zvolen"
 
 #: assignment/templates/assignment/assignmentpoll_form.html:30
 msgid "Delete ballot"
-msgstr ""
+msgstr "Smazat hlasování"
 
 #: assignment/templates/assignment/assignmentpoll_form.html:37
 #: motion/templates/motion/motionpoll_form.html:37
@@ -1282,21 +1282,21 @@ msgstr "Uložit"
 #: motion/templates/motion/motionpoll_slide.html:52
 #: motion/templates/motion/slide.html:43
 msgid "No result available."
-msgstr ""
+msgstr "Není dostupný žádný výsledek."
 
 #: assignment/templates/assignment/slide.html:43
 msgid "Elected candidates"
-msgstr ""
+msgstr "Zvolení uchazeči"
 
 #: assignment/templates/assignment/slide.html:49
 msgid "No candidates elected."
-msgstr ""
+msgstr "Nejsou zvoleni žádní uchazeči."
 
-#: assignment/templates/assignment/widget_assignment.html:25
+#: assignment/templates/assignment/widget_assignment.html:27
 msgid "No elections available."
 msgstr "Žádné volby nejsou dostupné."
 
-#: config/main_menu.py:14 config/templates/config/config_form.html:5
+#: config/main_menu.py:12 config/templates/config/config_form.html:5
 #: config/templates/config/config_form.html:9
 msgid "Configuration"
 msgstr "Nastavení"
@@ -1305,7 +1305,7 @@ msgstr "Nastavení"
 msgid "Can manage configuration"
 msgstr "Smí spravovat nastavení"
 
-#: config/views.py:109
+#: config/views.py:103
 #, python-format
 msgid "%s settings successfully saved."
 msgstr "Nastavení '%s' úspěšně uloženo."
@@ -1329,7 +1329,7 @@ msgstr "Smí vidět nástěnku"
 
 #: core/models.py:27
 msgid "Can use the chat"
-msgstr ""
+msgstr "Smí použít rozhovor"
 
 #: core/signals.py:26
 msgid "Event name"
@@ -1391,7 +1391,7 @@ msgstr "Vítejte v OpenSlides"
 
 #: core/signals.py:112
 msgid "Also used for the default welcome slide."
-msgstr ""
+msgstr "Také použito pro výchozí uvítací snímek."
 
 #: core/signals.py:118
 msgid "[Place for your welcome text.]"
@@ -1427,31 +1427,31 @@ msgstr "Obecné"
 
 #: core/views.py:81
 msgid "There are errors in the form."
-msgstr ""
+msgstr "Ve formuláři jsou chyby."
 
 #: core/views.py:167
 msgid "Forbidden"
-msgstr ""
+msgstr "Zakázáno"
 
 #: core/views.py:168
 msgid "Sorry, you have no permission to see this page."
-msgstr ""
+msgstr "Promiňte, nemáte žádné oprávnění k tomu, abyste se mohl podívat na tuto stránku."
 
 #: core/views.py:170
 msgid "Not Found"
-msgstr ""
+msgstr "Nenalezeno"
 
 #: core/views.py:171
 msgid "Sorry, the requested page could not be found."
-msgstr ""
+msgstr "Promiňte, požadovanou stránku se nepodařilo najít."
 
 #: core/views.py:173
 msgid "Internal Server Error"
-msgstr ""
+msgstr "Vnitřní chyba serveru"
 
 #: core/views.py:174
 msgid "Sorry, there was an unknown error. Please contact the event manager."
-msgstr ""
+msgstr "Promiňte, vyskytla se neznámá chyba. Spojte se, prosím, se správcem událostí."
 
 #: core/widgets.py:32
 msgid "Custom Slides"
@@ -1472,23 +1472,23 @@ msgstr "Hledání"
 
 #: core/templates/base.html:45
 msgid "Chat"
-msgstr ""
+msgstr "Rozhovor"
 
-#: core/templates/base.html:58
+#: core/templates/base.html:59
 #: participant/templates/participant/settings.html:5
 #: participant/templates/participant/settings.html:8
 msgid "Edit profile"
 msgstr "Upravit profil"
 
-#: core/templates/base.html:59
+#: core/templates/base.html:60
 msgid "Change password"
 msgstr "Změnit heslo"
 
-#: core/templates/base.html:61
+#: core/templates/base.html:62
 msgid "Logout"
 msgstr "Odhlásit se"
 
-#: core/templates/base.html:64 participant/templates/participant/login.html:6
+#: core/templates/base.html:65 participant/templates/participant/login.html:6
 #: participant/templates/participant/login.html:43
 msgid "Login"
 msgstr "Přihlášení"
@@ -1547,7 +1547,7 @@ msgstr "Určit místo doplňku"
 
 #: core/templates/core/widget.html:33
 msgid "More ..."
-msgstr ""
+msgstr "Více..."
 
 #: mediafile/main_menu.py:12
 #: mediafile/templates/mediafile/mediafile_list.html:6
@@ -1654,110 +1654,110 @@ msgstr "Řádek je chybný. Návrh nezaveden. Ověřte, prosím, požadované ho
 msgid "Identifier already exists. Motion not imported."
 msgstr "Identifikátor již existuje. Návrh nezaveden."
 
-#: motion/csv_import.py:83
-msgid "Category unknown. No category is used."
-msgstr "Skupina neznámá. Nepoužívá se žádná skupina."
+#: motion/csv_import.py:84
+msgid "Category unknown. New category created."
+msgstr "Skupina neznámá. Vytvořena nová skupina."
 
-#: motion/csv_import.py:85
+#: motion/csv_import.py:87
 msgid "Several suitable categories found. No category is used."
 msgstr "Nalezeno více odpovídajících skupin. Nepoužívá se žádná skupina."
 
-#: motion/csv_import.py:94
+#: motion/csv_import.py:97
 msgid "Several suitable submitters found."
 msgstr "Nalezeno více odpovídajících navrhovatelů."
 
-#: motion/csv_import.py:101
+#: motion/csv_import.py:104
 msgid "Submitter unknown. Default submitter is used."
 msgstr "Navrhovatel neznámý. Používá se přednastavený navrhovatel."
 
-#: motion/csv_import.py:113
+#: motion/csv_import.py:116
 msgid "Motion imported"
 msgstr "Návrh zaveden"
 
-#: motion/csv_import.py:120 participant/csv_import.py:83
+#: motion/csv_import.py:123 participant/csv_import.py:83
 msgid "Errors"
 msgstr "Chyby"
 
-#: motion/csv_import.py:128
+#: motion/csv_import.py:131
 msgid "Warnings"
 msgstr "Varování"
 
-#: motion/csv_import.py:136
+#: motion/csv_import.py:139
 msgid "Summary"
 msgstr "Shrnutí"
 
-#: motion/csv_import.py:137
+#: motion/csv_import.py:140
 #, python-format
 msgid "%(counts)d of %(total)d motions successfully imported."
 msgstr "%(counts)d z %(total)d návrhů úspěšně zavedeno."
 
-#: motion/forms.py:37 motion/models.py:540 motion/pdf.py:152
+#: motion/forms.py:39 motion/models.py:542 motion/pdf.py:152
 #: motion/templates/motion/motion_detail.html:94
 #: motion/templates/motion/motion_diff.html:54
 #: motion/templates/motion/slide.html:77
 msgid "Reason"
 msgstr "Zdůvodnění"
 
-#: motion/forms.py:45 motion/templates/motion/motion_detail.html:101
+#: motion/forms.py:47 motion/templates/motion/motion_detail.html:101
 msgid "Attachments"
 msgstr "Přílohy"
 
-#: motion/forms.py:75 motion/pdf.py:49
+#: motion/forms.py:77 motion/pdf.py:49
 #: motion/templates/motion/motion_detail.html:183
 #: motion/templates/motion/motion_list.html:54
 #: motion/templates/motion/slide.html:51
 msgid "Submitter"
 msgstr "Navrhovatel"
 
-#: motion/forms.py:90 motion/pdf.py:74 motion/signals.py:86
+#: motion/forms.py:92 motion/pdf.py:74 motion/signals.py:86
 #: motion/templates/motion/motion_detail.html:190
 #: motion/templates/motion/motion_list.html:56
 msgid "Supporters"
 msgstr "Podporovatel"
 
-#: motion/forms.py:105
+#: motion/forms.py:107
 msgid "Don't create a new version"
 msgstr "Nevytvářet novou verzi"
 
-#: motion/forms.py:106
+#: motion/forms.py:108
 msgid "Don't create a new version. Useful e.g. for trivial changes."
 msgstr "Nevytvářet novou verzi. Užitečné například pro nepodstatné změny."
 
-#: motion/forms.py:119 motion/templates/motion/motion_detail.html:265
+#: motion/forms.py:121 motion/templates/motion/motion_detail.html:265
 #: motion/templates/motion/motion_list.html:52
 #: motion/templates/motion/slide.html:60
 msgid "Category"
 msgstr "Skupina"
 
-#: motion/forms.py:139 motion/signals.py:36
+#: motion/forms.py:141 motion/signals.py:36
 msgid "Identifier"
 msgstr "Identifikátor"
 
-#: motion/forms.py:154
+#: motion/forms.py:156
 msgid "Workflow"
 msgstr "Průběh práce"
 
-#: motion/forms.py:155
+#: motion/forms.py:157
 msgid ""
 "Set a specific workflow to switch to it. If you do so, the state of the "
 "motion will be reset."
 msgstr "Nastaví návrh na určitý průběh práce. V tom případě je stav návrhu nastaven znovu."
 
-#: motion/forms.py:165
+#: motion/forms.py:167
 msgid "Override existing motions with the same identifier"
 msgstr "Přepsat stávající návrhy týmž identifikátorem"
 
-#: motion/forms.py:166
+#: motion/forms.py:168
 msgid ""
 "If this is active, every motion with the same identifier as in your csv file"
 " will be overridden."
 msgstr "Pokud je toto zapnuto, je každý návrh s týmž identifikátorem, jaký je ve vašem souboru CSV, přepsán."
 
-#: motion/forms.py:174
+#: motion/forms.py:176
 msgid "Default submitter"
 msgstr "Přednastavený navrhovatel"
 
-#: motion/forms.py:175
+#: motion/forms.py:177
 msgid ""
 "This person is used as submitter for any line of your csv file which does "
 "not contain valid submitter data."
@@ -1786,10 +1786,9 @@ msgstr "Smí podporovat návrhy"
 msgid "Can manage motions"
 msgstr "Smí spravovat návrhy"
 
-#: motion/models.py:85 motion/models.py:467 motion/models.py:468
-#: motion/pdf.py:42 motion/signals.py:148 motion/views.py:289
-#: motion/views.py:612 motion/views.py:722
-#: motion/templates/motion/motion_detail.html:8
+#: motion/models.py:85 motion/models.py:470 motion/pdf.py:42 motion/pdf.py:262
+#: motion/signals.py:148 motion/views.py:289 motion/views.py:612
+#: motion/views.py:722 motion/templates/motion/motion_detail.html:8
 #: motion/templates/motion/motion_detail.html:20
 #: motion/templates/motion/motion_diff.html:6
 #: motion/templates/motion/motion_diff.html:19
@@ -1801,24 +1800,24 @@ msgstr "Smí spravovat návrhy"
 msgid "Motion"
 msgstr "Návrh"
 
-#: motion/models.py:554
+#: motion/models.py:556
 msgid "new"
 msgstr "Nový"
 
-#: motion/models.py:611 motion/templates/motion/category_list.html:22
+#: motion/models.py:613 motion/templates/motion/category_list.html:22
 msgid "Category name"
 msgstr "Název skupiny"
 
-#: motion/models.py:614 motion/templates/motion/category_list.html:21
+#: motion/models.py:616 motion/templates/motion/category_list.html:21
 msgid "Prefix"
 msgstr "Předpona"
 
-#: motion/models.py:669
+#: motion/models.py:671
 #, python-format
 msgid "%(time_and_messages)s by %(person)s"
 msgstr "%(time_and_messages)s od %(person)s"
 
-#: motion/models.py:724
+#: motion/models.py:726
 #, python-format
 msgid "Vote %d"
 msgstr "Hlasování %d"
@@ -1834,7 +1833,7 @@ msgstr "Stav"
 #: motion/pdf.py:111 motion/templates/motion/motion_detail.html:208
 #: motion/templates/motion/motionpoll_form.html:27
 msgid "Vote result"
-msgstr ""
+msgstr "Výsledek hlasování"
 
 #: motion/pdf.py:125 motion/templates/motion/slide.html:17
 msgid "Vote"
@@ -1845,7 +1844,7 @@ msgstr "Hlasování"
 msgid "Categories"
 msgstr "Skupiny"
 
-#: motion/pdf.py:256 motion/templates/motion/widget_motion.html:28
+#: motion/pdf.py:256 motion/templates/motion/widget_motion.html:29
 msgid "No motions available."
 msgstr "Nejsou dostupné žádné návrhy."
 
@@ -1861,11 +1860,11 @@ msgstr "%d. hlasování"
 
 #: motion/personal_info.py:15
 msgid "I submitted the following motions"
-msgstr ""
+msgstr "Podal jsem následující návrhy"
 
 #: motion/personal_info.py:26
 msgid "I support the following motions"
-msgstr ""
+msgstr "Podporuji následující návrhy"
 
 #: motion/signals.py:27
 msgid "Workflow of new motions"
@@ -1915,11 +1914,11 @@ msgstr "Odstranit všechny podporovatele návrhu, pokud navrhovatel svůj návrh
 
 #: motion/signals.py:96
 msgid "The 100 % base of a voting result consists of"
-msgstr ""
+msgstr "100 % základ výsledků hlasování se skládá z"
 
 #: motion/signals.py:118
 msgid "Voting and ballot papers"
-msgstr ""
+msgstr "Hlasování a hlasovací lístky"
 
 #: motion/signals.py:129
 msgid "Title for PDF document (all motions)"
@@ -1933,99 +1932,99 @@ msgstr "Text úvodu dokumentu PDF (všechny návrhy)"
 msgid "Show paragraph numbering (only in PDF)"
 msgstr "Ukázat číslování odstavců (jen v PDF)"
 
-#: motion/signals.py:160
+#: motion/signals.py:159
 msgid "Simple Workflow"
 msgstr "Jednoduchý průběh práce"
 
-#: motion/signals.py:162
+#: motion/signals.py:161
 msgid "submitted"
 msgstr "podáno"
 
-#: motion/signals.py:167 motion/signals.py:194
+#: motion/signals.py:166 motion/signals.py:193
 msgid "accepted"
 msgstr "přijato"
 
-#: motion/signals.py:169 motion/signals.py:196
+#: motion/signals.py:168 motion/signals.py:195
 msgid "Accept"
 msgstr "Přijmout"
 
-#: motion/signals.py:170 motion/signals.py:198
+#: motion/signals.py:169 motion/signals.py:197
 msgid "rejected"
 msgstr "odmítnuto"
 
-#: motion/signals.py:172 motion/signals.py:200
+#: motion/signals.py:171 motion/signals.py:199
 msgid "Reject"
 msgstr "Odmítnout"
 
-#: motion/signals.py:173
+#: motion/signals.py:172
 msgid "not decided"
 msgstr "nerozhodnuto"
 
-#: motion/signals.py:175
+#: motion/signals.py:174
 msgid "Do not decide"
 msgstr "Nerozhodovat"
 
-#: motion/signals.py:180
+#: motion/signals.py:179
 msgid "Complex Workflow"
 msgstr "Složitý průběh práce"
 
-#: motion/signals.py:182
+#: motion/signals.py:181
 msgid "published"
 msgstr "zveřejněno"
 
-#: motion/signals.py:187 motion/views.py:365
+#: motion/signals.py:186 motion/views.py:365
 msgid "permitted"
 msgstr "schváleno"
 
-#: motion/signals.py:189
+#: motion/signals.py:188
 msgid "Permit"
 msgstr "Schválit"
 
-#: motion/signals.py:202
+#: motion/signals.py:201
 msgid "withdrawed"
 msgstr "staženo"
 
-#: motion/signals.py:204
+#: motion/signals.py:203
 msgid "Withdraw"
 msgstr "Stáhnout"
 
-#: motion/signals.py:206
+#: motion/signals.py:205
 msgid "adjourned"
 msgstr "odloženo"
 
-#: motion/signals.py:208
+#: motion/signals.py:207
 msgid "Adjourn"
 msgstr "Odložit"
 
-#: motion/signals.py:210
+#: motion/signals.py:209
 msgid "not concerned"
 msgstr "neprobíráno"
 
-#: motion/signals.py:212
+#: motion/signals.py:211
 msgid "Do not concern"
 msgstr "Nezaobírat se"
 
-#: motion/signals.py:214
+#: motion/signals.py:213
 msgid "commited a bill"
 msgstr "předáno výboru"
 
-#: motion/signals.py:216
+#: motion/signals.py:215
 msgid "Commit a bill"
 msgstr "Předat výboru"
 
-#: motion/signals.py:218
+#: motion/signals.py:217
 msgid "needs review"
 msgstr "potřeba posouzení"
 
-#: motion/signals.py:220
+#: motion/signals.py:219
 msgid "Needs review"
 msgstr "Potřebuje posoudit"
 
-#: motion/signals.py:222
+#: motion/signals.py:221
 msgid "rejected (not authorized)"
 msgstr "odmítnuto (není schváleno)"
 
-#: motion/signals.py:224
+#: motion/signals.py:223
 msgid "Reject (not authorized)"
 msgstr "Odmítnout (není schváleno)"
 
@@ -2049,7 +2048,7 @@ msgstr "vytvořeno"
 msgid "updated"
 msgstr "aktualizováno"
 
-#: motion/views.py:289 utils/views.py:526
+#: motion/views.py:289 utils/views.py:525
 #, python-format
 msgid "%s was successfully deleted."
 msgstr "%s byl úspěšně smazán."
@@ -2166,7 +2165,6 @@ msgid "This version is not authorized."
 msgstr "Tato verze není schválena."
 
 #: motion/templates/motion/motion_detail.html:37
-#: motion/templates/motion/motion_list.html:107
 msgid "Print motion as PDF"
 msgstr "Vytisknout návrh jako PDF"
 
@@ -2177,8 +2175,8 @@ msgid "Show motion"
 msgstr "Promítnout návrh"
 
 #: motion/templates/motion/motion_detail.html:53
-#: motion/templates/motion/motion_form.html:40
-#: motion/templates/motion/motion_form.html:50
+#: motion/templates/motion/motion_form.html:33
+#: motion/templates/motion/motion_form.html:43
 msgid "Edit motion"
 msgstr "Upravit návrh"
 
@@ -2226,7 +2224,7 @@ msgstr "Hlasování"
 #: motion/templates/motion/motion_detail.html:215
 #: motion/templates/motion/motionpoll_form.html:26
 msgid "Show vote result"
-msgstr ""
+msgstr "Ukázat výsledek hlasování"
 
 #: motion/templates/motion/motion_detail.html:220
 msgid "Edit Vote"
@@ -2239,7 +2237,7 @@ msgstr "Smazat hlasování"
 
 #: motion/templates/motion/motion_detail.html:248
 msgid "No result"
-msgstr ""
+msgstr "Žádný výsledek"
 
 #: motion/templates/motion/motion_detail.html:258
 msgid "New vote"
@@ -2293,13 +2291,13 @@ msgid "Diff view"
 msgstr "Zobrazení změn"
 
 #: motion/templates/motion/motion_diff.html:27
-#: motion/templates/motion/motion_form.html:56
+#: motion/templates/motion/motion_form.html:49
 #: motion/templates/motion/motionpoll_form.html:18
 msgid "Back to motion"
 msgstr "Zpět na návrh"
 
-#: motion/templates/motion/motion_form.html:42
-#: motion/templates/motion/motion_form.html:52
+#: motion/templates/motion/motion_form.html:35
+#: motion/templates/motion/motion_form.html:45
 #: motion/templates/motion/motion_list.html:36
 msgid "New motion"
 msgstr "Nový návrh"
@@ -2367,7 +2365,7 @@ msgstr "Chybový řádek %d zdrojového souboru se přehlíží."
 #: participant/csv_import.py:38
 #, python-format
 msgid "In line %d you have to provide either 'first_name' or 'last_name'."
-msgstr ""
+msgstr "Na řádku %d musíte poskytnout buď 'křestní_jméno' nebo 'příjmení'."
 
 #: participant/csv_import.py:62
 #, python-format
@@ -2408,7 +2406,7 @@ msgstr "Účastníci"
 
 #: participant/forms.py:43
 msgid "Use one line per participant for its name (first name and last name)."
-msgstr ""
+msgstr "Použijte jeden řádek na účastníka pro zapsání jeho jména (křestní jméno a příjmení)."
 
 #: participant/forms.py:52 participant/forms.py:155 participant/pdf.py:109
 #: participant/templates/participant/login.html:34
@@ -2568,7 +2566,7 @@ msgstr "Vypnout pro třídění podle příjmení"
 
 #: participant/signals.py:33
 msgid "Sorting"
-msgstr ""
+msgstr "Třídění"
 
 #: participant/signals.py:39
 msgid "Welcome to OpenSlides!"
@@ -2608,19 +2606,19 @@ msgstr "Žádné šifrování"
 msgid "Participant"
 msgstr "Účastník"
 
-#: participant/signals.py:150
+#: participant/signals.py:149
 msgid "Anonymous"
 msgstr "Neoznačený jménem"
 
-#: participant/signals.py:152
+#: participant/signals.py:151
 msgid "Registered"
 msgstr "Přihlášený účastník"
 
-#: participant/signals.py:162
+#: participant/signals.py:161
 msgid "Delegates"
 msgstr "Zástupci"
 
-#: participant/signals.py:177
+#: participant/signals.py:176
 #: participant/templates/participant/user_form_csv_import.html:25
 msgid "Staff"
 msgstr "Zaměstnanci"
@@ -2628,7 +2626,7 @@ msgstr "Zaměstnanci"
 #: participant/views.py:119
 #, python-format
 msgid "%(number)d participants successfully created."
-msgstr ""
+msgstr "%(number)d účastníků bylo úspěšně vytvořeno."
 
 #: participant/views.py:166 participant/views.py:172
 msgid "You can not delete yourself."
@@ -2682,7 +2680,7 @@ msgstr "Instalace byla úspěšná! Použijte %(user)s (Heslo: %(password)s) pro
 msgid "User settings successfully saved."
 msgstr "Uživatelské nastavení úspěšně uloženo"
 
-#: participant/views.py:419 participant/views.py:443 utils/views.py:181
+#: participant/views.py:419 participant/views.py:443 utils/views.py:180
 msgid "Please check the form for errors."
 msgstr "Zkontrolujte, prosím, formulář kvůli chybám."
 
@@ -2768,11 +2766,11 @@ msgstr "Pokračovat jako host"
 #: participant/templates/participant/user_form_multiple.html:6
 #: participant/templates/participant/user_form_multiple.html:11
 msgid "New multiple participants"
-msgstr ""
+msgstr "Více nových účastníků"
 
 #: participant/templates/participant/overview.html:24
 msgid "New multiple"
-msgstr ""
+msgstr "Více nových"
 
 #: participant/templates/participant/overview.html:25
 msgid "All groups"
@@ -2877,21 +2875,21 @@ msgid ""
 "optional and may be empty."
 msgstr "Musí být vyplněny alespoň křestní jméno nebo příjmení. Všechna zbývající pole jsou nepovinná a smějí být prázdná."
 
-#: participant/templates/participant/widget_user.html:25
+#: participant/templates/participant/widget_user.html:27
 msgid "No participants available."
 msgstr "Nejsou dostupní žádní účastníci"
 
 #: poll/models.py:73
 msgid "Only all valid votes"
-msgstr ""
+msgstr "Pouze všechny platné hlasy"
 
 #: poll/models.py:74
 msgid "All votes cast (including invalid votes)"
-msgstr ""
+msgstr "Všechny odevzdané hlasy (včetně neplatných hlasů)"
 
 #: poll/models.py:75
 msgid "Disabled (no percents)"
-msgstr ""
+msgstr "Zakázáno (žádná procenta)"
 
 #: poll/models.py:154
 msgid "votes"
@@ -2901,7 +2899,7 @@ msgstr "Hlasy"
 msgid "Projector live view"
 msgstr "Živě přenášený pohled promítacího přístroje"
 
-#: projector/widgets.py:28
+#: projector/widgets.py:29
 msgid "Overlays"
 msgstr "Přidání"
 
@@ -2916,7 +2914,7 @@ msgstr "s"
 
 #: projector/templates/projector/overlay_countdown_widget.html:10
 msgid "Add time to favourites"
-msgstr ""
+msgstr "Přidat čas do oblíbených"
 
 #: projector/templates/projector/overlay_countdown_widget.html:15
 msgid "Reset countdown"
@@ -2970,20 +2968,20 @@ msgstr "Nastavit úroveň posunu obrazu znovu"
 msgid "Scroll level"
 msgstr "Úroveň posunu obrazu"
 
-#: utils/forms.py:109
+#: utils/forms.py:111
 msgid "CSV File"
 msgstr "Soubor CSV"
 
-#: utils/forms.py:110
+#: utils/forms.py:112
 msgid "The file has to be encoded in UTF-8."
 msgstr "Soubor musí být kódován v UTF-8."
 
-#: utils/pdf.py:250
+#: utils/pdf.py:254
 #, python-format
 msgid "As of: %s"
 msgstr "Stav: %s"
 
-#: utils/pdf.py:261 utils/pdf.py:270
+#: utils/pdf.py:265 utils/pdf.py:274
 #, python-format
 msgid "Page %s"
 msgstr "Strana %s"
@@ -2997,33 +2995,33 @@ msgstr "Místní adresa IP tohoto počítače"
 msgid "Starting OpenSlides' tornado webserver listening to %(url_string)s"
 msgstr "OpenSlides' Tornado Webserver se spouští na %(url_string)s"
 
-#: utils/views.py:329
+#: utils/views.py:328
 msgid "Are you sure?"
 msgstr "Jste si jistý?"
 
-#: utils/views.py:330
+#: utils/views.py:329
 msgid "Thank you for your answer."
 msgstr "Děkujeme za vaši odpověď."
 
-#: utils/views.py:419
+#: utils/views.py:418
 msgid "You did not send a valid answer."
 msgstr "Neposlal jste platnou odpověď,"
 
-#: utils/views.py:453
+#: utils/views.py:452
 #, python-format
 msgid "%s was successfully modified."
 msgstr "%s byl úspěšně změněn."
 
-#: utils/views.py:467
+#: utils/views.py:466
 #, python-format
 msgid "%s was successfully created."
 msgstr "%s byl úspěšně vytvořen."
 
-#: utils/views.py:514
+#: utils/views.py:513
 #, python-format
 msgid "Do you really want to delete %s?"
 msgstr "Opravdu chcete smazat %s?"
 
-#: utils/views.py:541
+#: utils/views.py:540
 msgid "undefined-filename"
 msgstr "Nestanovený-Název souboru"
