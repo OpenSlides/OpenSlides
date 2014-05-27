@@ -27,7 +27,7 @@ class HandleConfigTest(TestCase):
         self.assertEqual(config['string_var'], 'default_string_rien4ooCZieng6ah')
         self.assertTrue(config['bool_var'])
         self.assertEqual(config['integer_var'], 3)
-        self.assertEqual(config['choices_var'], 1)
+        self.assertEqual(config['choices_var'], '1')
         self.assertEqual(config['none_config_var'], None)
         self.assertRaisesMessage(expected_exception=ConfigNotFound,
                                  expected_message='The config variable unknown_config_var was not found.',
@@ -308,8 +308,8 @@ def set_grouped_config_view(sender, **kwargs):
         default_value='hidden_value')
     choices_var = ConfigVariable(
         name='choices_var',
-        default_value=1,
-        form_field=forms.ChoiceField(choices=((1, 'Choice One Ughoch4ocoche6Ee'), (2, 'Choice Two Vahnoh5yalohv5Eb'))))
+        default_value='1',
+        form_field=forms.ChoiceField(choices=(('1', 'Choice One Ughoch4ocoche6Ee'), ('2', 'Choice Two Vahnoh5yalohv5Eb'))))
     group_2 = ConfigGroup(title='Group 2 Toongai7ahyahy7B', variables=(hidden_var, choices_var))
 
     return ConfigGroupedCollection(

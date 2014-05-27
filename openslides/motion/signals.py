@@ -21,12 +21,12 @@ def setup_motion_config(sender, **kwargs):
     # General
     motion_workflow = ConfigVariable(
         name='motion_workflow',
-        default_value=1,
+        default_value='1',
         form_field=forms.ChoiceField(
             widget=forms.Select(),
             label=ugettext_lazy('Workflow of new motions'),
             required=True,
-            choices=[(workflow.pk, ugettext_lazy(workflow.name)) for workflow in Workflow.objects.all()]))
+            choices=[(str(workflow.pk), ugettext_lazy(workflow.name)) for workflow in Workflow.objects.all()]))
     motion_identifier = ConfigVariable(
         name='motion_identifier',
         default_value='per_category',
