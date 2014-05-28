@@ -1,4 +1,7 @@
 {% load i18n %}
+{% load staticfiles %}
+
+<link type="text/css" rel="stylesheet" media="all" href="{% static 'css/agenda_projector.css' %}" />
 
 <div id="overlay_list_of_speaker_box">
     <h3>{% trans "List of speakers" %} {% if closed %}(<span class="closed">{% trans 'closed' %}</span>){% endif %}</h3>
