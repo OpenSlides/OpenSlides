@@ -120,7 +120,7 @@ class TestMotionCreateView(MotionViewTestCase):
         response = self.admin_client.post(self.url, {'title': 'new motion',
                                                      'text': 'motion text',
                                                      'reason': 'motion reason',
-                                                     'workflow': 1})
+                                                     'workflow': '1'})
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Motion.objects.filter(versions__title='new motion').exists())
 

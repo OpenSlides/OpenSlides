@@ -197,7 +197,7 @@ class MotionCreateView(MotionEditMixin, CreateView):
         Sets first state according to given or default workflow and initiates
         a new version.
         """
-        workflow = form.cleaned_data.get('workflow', config['motion_workflow'])
+        workflow = form.cleaned_data.get('workflow', int(config['motion_workflow']))
         self.object.reset_state(workflow)
         self.version = self.object.get_new_version()
 
