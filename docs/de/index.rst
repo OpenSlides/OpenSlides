@@ -6,6 +6,11 @@
 OpenSlides Handbuch |version|
 =============================
 
+Dieses Handbuch wurde für OpenSlides 1.5 erstellt, kann aber im
+Wesentlichen auch für OpenSlides 1.6 verwendet werden. OpenSlides 1.6
+enthält noch einige weitere Feautures und die Oberfläche wurde geringfügig
+geändert.
+
 .. toctree::
  :maxdepth: 2
 
