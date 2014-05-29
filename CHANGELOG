@@ -13,13 +13,13 @@ Dashboard:
 - Enabled copy and paste in widgets.
 Agenda:
 - New projector view with the current list of speakers.
-- Added CSV import.
+- Added CSV import of agenda items.
 - Added automatic numbering of agenda items.
 - Fixed organizational item structuring.
 Motions:
 - New slide for vote results.
 - Created new categories during CSV import.
-Assignment:
+Assignments/Elections:
 - Coupled assignment candidates with list of speakers.
 - Created a poll description field for each assignment poll.
 - New slide for election results.

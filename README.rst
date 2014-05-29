@@ -110,7 +110,7 @@ portable version you should observe the following install steps.*
    To install Virtual Python Environment builder, open command line (cmd)
    and run::
 
-       > easy_install https://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.11.4.tar.gz
+       > easy_install https://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.11.6.tar.gz
 
    Create your OpenSlides directory, change to it, setup and activate the
    virtual environment::
@@ -227,7 +227,9 @@ Installation and start of the development version
 
    To start OpenSlides use the command line script::
 
-       python manage.py start
+       python manage.py create-dev-settings
+
+       python manage.py start --settings settings.py
 
    To get help on the command line options run::
 
