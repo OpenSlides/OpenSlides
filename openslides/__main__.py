@@ -98,7 +98,8 @@ def parse_args():
     # Subcommand runserver
     subcommand_runserver = subparsers.add_parser(
         'runserver',
-        help='Run OpenSlides using tornado webserver.')
+        help='Run OpenSlides using tornado webserver. The database tables must '
+             'be created before. Use syncdb subcommand for this.')
     add_general_arguments(subcommand_runserver, ('settings', 'user_data_path', 'address', 'port'))
     subcommand_runserver.add_argument(
         '--start-browser',
@@ -116,7 +117,8 @@ def parse_args():
     # Subcommand createsuperuser
     subcommand_createsuperuser = subparsers.add_parser(
         'createsuperuser',
-        help="Make sure the user 'admin' exists and uses 'admin' as password.")
+        help="Make sure the user 'admin' exists and uses 'admin' as password. "
+             "The database tables must be created before. Use syncdb subcommand for this.")
     add_general_arguments(subcommand_createsuperuser, ('settings', 'user_data_path'))
     subcommand_createsuperuser.set_defaults(callback=createsuperuser)
 
@@ -175,19 +177,20 @@ def add_general_arguments(subcommand, arguments):
 
     general_arguments['settings'] = (
         ('-s', '--settings'),
-        dict(help="Path to settings file. If this isn't provided, the "
-                  "%s environment variable will be used. "
-                  "If this isn't provided too, a default path according to the "
-                  "OpenSlides type will be used. At the moment it is %s" % (
+        dict(help="Path to settings file. The file must be a python module. "
+                  "If if isn't provided, the %s environment variable will be "
+                  "used. If the environment variable isn't provided too, a "
+                  "default path according to the OpenSlides type will be "
+                  "used. At the moment it is %s" % (
                       ENVIRONMENT_VARIABLE,
                       get_default_settings_path(openslides_type))))
     general_arguments['user_data_path'] = (
         ('-d', '--user-data-path'),
         dict(help='Path to the directory for user specific data files like SQLite3 '
-                  'database, uploaded media and search index. This is only used, '
+                  'database, uploaded media and search index. It is only used, '
                   'when a new settings file is created. The given path is only '
                   'written into the new settings file. Default according to the '
-                  'OpenSlides is at the moment %s' % get_default_user_data_path(openslides_type)))
+                  'OpenSlides type is at the moment %s' % get_default_user_data_path(openslides_type)))
     general_arguments['language'] = (
         ('-l', '--language'),
         dict(help='Language code. All customizable strings will be translated '
