@@ -46,36 +46,37 @@
         </h1>
 
         <div class="row-fluid">
-            <div class="span6">
+            <div class="pull-left">
+                {% if perms.agenda.can_manage_agenda %}
+                    <p><a href="{% url 'agenda_numbering' %}"
+                       class="btn btn-mini">{% trans 'Number agenda items' %}</a>
+                    </p>
+                {% endif %}
+                <p>
                 <label class="checkbox">
                     <input type="checkbox" id="hide_closed_items"> {% trans "Hide closed items" %}
                 </label>
                 <small><i>{{ items|length }}
                 {% blocktrans count counter=items|length %}item{% plural %}items{% endblocktrans %}<span id="hiddencount"></span>
                 </i></small>
+                </p>
             </div>
-            <div class="span6">
-                {% if perms.agenda.can_see_orga_items %}
-                    {% if start and end %}
-                        <table id="agendatime" class="table table-bordered pull-right">
-                            <tr>
-                                <td>{% trans "Start of event" %}:</td>
-                                <td>{{ start|date:"DATETIME_FORMAT" }}</td>
-                            </tr>
-                            <tr>
-                                <td>{% trans "Estimated end" %}:</td>
-                                <td>{{ end|date:"DATETIME_FORMAT" }}</td>
-                            </tr>
-                        </table>
-                    {% else %}
-                        <a href="{% url 'config_agenda' %}" class="btn btn-mini pull-right">{% trans 'Set start time of event' %}</a>
-                    {% endif %}
-                    {% if perms.agenda.can_manage_agenda %}
-                        <a href="{% url 'agenda_numbering' %}"
-                           class="btn btn-mini pull-left">{% trans 'Number agenda items' %}</a>
-                    {% endif %}
+            {% if perms.agenda.can_see_orga_items %}
+                {% if start and end %}
+                    <table id="agendatime" class="table table-bordered pull-right">
+                        <tr>
+                            <td>{% trans "Start of event" %}:</td>
+                            <td>{{ start|date:"DATETIME_FORMAT" }}</td>
+                        </tr>
+                        <tr>
+                            <td>{% trans "Estimated end" %}:</td>
+                            <td>{{ end|date:"DATETIME_FORMAT" }}</td>
+                        </tr>
+                    </table>
+                {% elif perms.config.can_manage %}
+                    <a href="{% url 'config_agenda' %}" class="btn btn-mini pull-right">{% trans 'Set start time of event' %}</a>
                 {% endif %}
-            </div>
+            {% endif %}
         </div>
 
         <table id="menu-overview" class="table table-striped table-bordered">
