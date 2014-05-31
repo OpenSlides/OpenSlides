@@ -140,7 +140,7 @@ Redner. Die Einblendung erscheint nur auf Folien von Tagesordnungspunkten.
 Schließlich haben Sie die Möglichkeit, die Rednerliste des jeweiligen
 Tagesordnungspunktes auf einem gesonderten Projektor anzeigen zu lassen.
 Klicken Sie auf der Tagesordnungsseite oben rechts auf auf den
-Glocken-Button |bell| und legen Sie die Seite im Vollbildmodus auf einen
+Rednerliste-Button |bell| und legen Sie die Seite im Vollbildmodus auf einen
 eigenen Projektor oder Bildschirm.
 
 

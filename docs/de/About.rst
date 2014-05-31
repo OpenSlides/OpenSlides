@@ -1,11 +1,11 @@
 Impressum
 =========
 
-Copyright 2012–2013
+Copyright 2012–2014
 
 OpenSlides-Autorenteam:
  - Norman Jäckel
- - Anja Hitziger
+ - Anja Jäckel
  - Emanuel Schütze
 
 
