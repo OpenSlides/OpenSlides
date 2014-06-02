@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-VERSION = (1, 6, 0, 'final', 1)  # During development it is the next release
-RELEASE = True
+VERSION = (1, 6, 1, 'final', 1)  # During development it is the next release
+RELEASE = False
 
 
 def get_version(version=None, release=None):
