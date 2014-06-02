@@ -56,7 +56,9 @@
                 <th class="optional">{% trans "Supporters" %}</th>
             {% endif %}
             <th class="optional">{% trans "Last changes" %}</th>
-            <th class="mini_width">{% trans "Actions" %}</th>
+            {% if perms.motion.can_manage_motion or perms.core.can_manage_projector %}
+                <th class="mini_width">{% trans "Actions" %}</th>
+            {% endif %}
         </tr>
     </thead>
     {% for motion in motion_list %}
@@ -88,6 +90,7 @@
                         <i class="icon-warning-sign icon-white"></i>
                     </a>
                 {% endif %}</td>
+            {% if perms.motion.can_manage_motion or perms.core.can_manage_projector %}
             <td>
                 <span style="width: 1px; white-space: nowrap;">
                 {% if perms.core.can_manage_projector %}
@@ -106,6 +109,7 @@
                 {% endif %}
                 </span>
             </td>
+            {% endif %}
         </tr>
     {% endfor %}
     </table>

@@ -33,7 +33,9 @@
             <th>{% trans "Election" %}</th>
             <th class="optional">{% trans "Candidates" %}</th>
             <th>{% trans "Status" %}</th>
-            <th class="mini_width">{% trans "Actions" %}</th>
+            {% if perms.assignment.can_manage_assignment or perms.core.can_manage_projector %}
+                <th class="mini_width">{% trans "Actions" %}</th>
+            {% endif %}
         </tr>
     </thead>
     {% for object in object_list %}
@@ -51,6 +53,7 @@
                 | {% trans "Elected" %}: <span class="badge badge-success">{{ object.elected|length }}</span>
             </td>
             <td><span class="label label-info">{{ object.get_status_display }}</status></td>
+            {% if perms.assignment.can_manage_assignment or perms.core.can_manage_projector %}
             <td>
                 <span style="width: 1px; white-space: nowrap;">
                 {% if perms.core.can_manage_projector %}
@@ -70,12 +73,9 @@
                         class="btn btn-mini"><i class="icon-remove"></i>
                     </a>
                 {% endif %}
-                <a href="{% url 'assignment_pdf' object.id  %}"
-                    data-original-title="{% trans 'Print election as PDF' %}" target="_blank"
-                    class="btn btn-mini tooltip-left"><i class="icon-print"></i> PDF
-                </a>
                 </span>
             </td>
+            {% endif %}
         </tr>
     {% endfor %}
     </table>
