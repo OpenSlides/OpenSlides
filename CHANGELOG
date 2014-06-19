@@ -8,6 +8,9 @@ Version 1.6.1 (unreleased)
 ==========================
 [https://github.com/OpenSlides/OpenSlides/issues?milestone=16]
 
+Motions:
+- Show supporters on motion slide if available.
+
 Participants:
 - Fixed participant csv import for group id:
   * Allowed to add multiple groups in csv group id field, e.g. "3,4".
