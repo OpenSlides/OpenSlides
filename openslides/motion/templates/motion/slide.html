@@ -55,6 +55,17 @@
         -
     {% endfor %}
 
+    <!-- Supporters -->
+    {% with motion.supporter.all as supporters %}
+    {% if supporters|length > 0 %}
+        <h4>{% trans "Supporters" %}:</h4>
+        {% for supporter in supporters %}
+            {{ supporter.person }}{% if not forloop.last %},<br> {% endif %}
+        {% endfor %}
+        </p>
+    {% endif %}
+    {% endwith %}
+
     <!-- Category -->
     {% if motion.category %}
         <h4>{% trans "Category" %}:</h4>
