@@ -135,7 +135,6 @@ INSTALLED_PLUGINS = collect_plugins()
 
 # CKeditor settings
 CKEDITOR_DEFAULT_CONFIG = {'toolbar': 'Full',
-                           'contentsCss': '/static/css/ckeditor.css',
                            'bodyClass': 'ckeditor_html',
                            'allowedContent':
                                'h1 h2 h3 pre b i u strike em; '
@@ -148,14 +147,16 @@ CKEDITOR_DEFAULT_CONFIG = {'toolbar': 'Full',
                                'a[!href]; '
                                'ol ul{list-style}; '
                                'li; '
+                               'pre; '
                                'span{color,background-color}; ',
                            'removePlugins': 'save, print, preview, pagebreak, templates, showblocks, magicline',
+                           'extraPlugins': 'insertpre',  # see http://ckeditor.com/addon/insertpre
                            'toolbar_Full': [
                                {'name': 'document',    'items': ['Source', '-', 'Save', 'DocProps', 'Preview', 'Print', '-', 'Templates']},
                                {'name': 'clipboard',   'items': ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
                                {'name': 'editing',     'items': ['Find', 'Replace', '-', 'SpellChecker', 'Scayt']},
                                {'name': 'basicstyles', 'items': ['Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat']},
-                               {'name': 'paragraph',   'items': ['NumberedList', 'BulletedList', '-', 'Pre', 'InsertPre']},
+                               {'name': 'paragraph',   'items': ['NumberedList', 'BulletedList', '-', 'InsertPre']},
                                {'name': 'links',       'items': ['Link', 'Unlink']},
                                {'name': 'styles',      'items': ['Format', 'TextColor', 'BGColor']},
                                {'name': 'tools',       'items': ['Maximize', 'ShowBlocks', '-', 'About']}

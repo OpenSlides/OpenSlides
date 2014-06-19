@@ -8,6 +8,9 @@ Version 1.6.1 (unreleased)
 ==========================
 [https://github.com/OpenSlides/OpenSlides/issues?milestone=16]
 
+Other:
+- Fixed CKEditor stuff (added insertpre plugin and removed unused code)
+
 
 Version 1.6 (2014-06-02)
 ========================
