@@ -194,6 +194,12 @@ legend + .control-group {
     font-weight: bold;
 }
 
+/* ckeditor plugin insertpre: textarea style */
+table.cke_dialog_contents textarea {
+    font-family: monospace !important;
+}
+
+
 /** Left sidebar navigation **/
 .leftmenu ul {
     margin: 0;
