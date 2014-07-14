@@ -54,15 +54,13 @@ def import_users(csvfile):
                         user.is_active = False
                     user.default_password = gen_password()
                     user.save()
-                    for groupid in groups:
+                    for groupid in groups.split(','):
                         try:
-                            if groupid != ",":
+                            if groupid and int(groupid):
                                 Group.objects.get(pk=groupid).user_set.add(user)
-                        except ValueError:
-                            error_messages.append(_('Ignoring malformed group id in line %d.') % (line_no + 1))
-                            continue
-                        except Group.DoesNotExist:
-                            error_messages.append(_('Group id %(id)s does not exists (line %(line)d).') % {'id': groupid, 'line': line_no + 1})
+                        except (Group.DoesNotExist, ValueError):
+                            error_messages.append(_('Ignoring group id "%(id)s" in line %(line)d which does not exist.') %
+                                                  {'id': groupid, 'line': line_no + 1})
                             continue
                     user.reset_password()
                     count_success += 1
