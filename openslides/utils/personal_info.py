@@ -1,11 +1,9 @@
-# -*- coding: utf-8 -*-
-
 from django.dispatch import Signal
 
 from .dispatch import SignalConnectMetaClass
 
 
-class PersonalInfo(object):
+class PersonalInfo(object, metaclass=SignalConnectMetaClass):
     """
     Base class for a personal info collection for the personal info widget
     on the dashboard.
@@ -13,10 +11,9 @@ class PersonalInfo(object):
     Every app which wants to add info has to create a class subclassing
     from this base class. For the content the headline attribute, the
     default_weight attribute and the get_queryset method have to be set.
-    The __metaclass__ attribute (SignalConnectMetaClass) does the rest of
+    The metaclass (SignalConnectMetaClass) does the rest of
     the magic.
     """
-    __metaclass__ = SignalConnectMetaClass
     signal = Signal(providing_args=['request'])
     headline = None
     default_weight = 0

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Settings file for OpenSlides' tests
 #
@@ -42,11 +41,11 @@ HAYSTACK_CONNECTIONS['default']['STORAGE'] = 'ram'
 
 TEMPLATE_DIRS = (
     os.path.join(OPENSLIDES_USER_DATA_PATH, 'templates'),
-    filesystem2unicode(os.path.join(SITE_ROOT, 'templates')))
+    os.path.join(SITE_ROOT, 'templates'))
 
 STATICFILES_DIRS = (
     os.path.join(OPENSLIDES_USER_DATA_PATH, 'static'),
-    filesystem2unicode(os.path.join(SITE_ROOT, 'static')))
+    os.path.join(SITE_ROOT, 'static'))
 
 # Use a faster passwort hasher
 PASSWORD_HASHERS = (

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.dispatch import receiver
 
 from openslides.utils.signals import template_manipulation

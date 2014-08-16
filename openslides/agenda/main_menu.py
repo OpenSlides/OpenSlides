@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.utils.translation import ugettext_lazy
 
 from openslides.utils.main_menu import MainMenuEntry

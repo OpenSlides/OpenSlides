@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Extension for Sphinx to add new directive 'autoimage' which works as subclass
 # of the internal Image directive.

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import csv
 import re
 
@@ -23,14 +21,15 @@ def import_agenda_items(csvfile):
     else:
         csvfile.seek(0)
         # Check dialect
-        dialect = csv.Sniffer().sniff(csvfile.readline())
+        dialect = csv.Sniffer().sniff(csvfile.readline().decode('utf8'))
         dialect = csv_ext.patchup(dialect)
         csvfile.seek(0)
         # Parse CSV file
         with transaction.commit_on_success():
             success_lines = []
             error_lines = []
-            for (line_no, line) in enumerate(csv.reader(csvfile, dialect=dialect)):
+            for (line_no, line) in enumerate(csv.reader(
+                    (line.decode('utf8') for line in csvfile.readlines()), dialect=dialect)):
                 if line_no == 0:
                     # Do not read the header line
                     continue

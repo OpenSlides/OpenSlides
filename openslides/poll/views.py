@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.forms.models import modelform_factory
 from django.http import HttpResponseRedirect
 

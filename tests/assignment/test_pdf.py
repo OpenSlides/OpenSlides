@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.test.client import Client
 
 from openslides.assignment.models import Assignment

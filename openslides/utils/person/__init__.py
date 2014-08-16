@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from openslides.utils.person.signals import receive_persons
 from openslides.utils.person.api import (
     generate_person_id, get_person, Person, Persons)

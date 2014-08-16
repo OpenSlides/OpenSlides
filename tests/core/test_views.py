@@ -1,7 +1,6 @@
-# -*- coding: utf-8 -*-
+from unittest.mock import MagicMock, patch
 
 from django.test.client import Client, RequestFactory
-from mock import MagicMock, patch
 
 from openslides import get_version
 from openslides.agenda.models import Item

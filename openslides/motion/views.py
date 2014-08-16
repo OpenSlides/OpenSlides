@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.http import Http404, HttpResponseRedirect
@@ -121,7 +119,7 @@ class MotionEditMixin(object):
         active_slide = get_active_slide()
         active_slide_pk = active_slide.get('pk', None)
         if (active_slide['callback'] == 'motion' and
-                unicode(self.object.pk) == unicode(active_slide_pk)):
+                str(self.object.pk) == str(active_slide_pk)):
             update_projector()
 
         messages.success(self.request, self.get_success_message())

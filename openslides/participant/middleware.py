@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.contrib.auth.middleware import AuthenticationMiddleware as _AuthenticationMiddleware
 from django.contrib.auth.models import AnonymousUser
 

@@ -1,15 +1,13 @@
-# -*- coding: utf-8 -*-
+from unittest.mock import patch
 
 from django.dispatch import Signal
 from django.test.client import RequestFactory
-from mock import patch
 
 from openslides.utils.dispatch import SignalConnectMetaClass
 from openslides.utils.test import TestCase
 
 
-class TestBaseOne(object):
-    __metaclass__ = SignalConnectMetaClass
+class TestBaseOne(object, metaclass=SignalConnectMetaClass):
     signal = Signal()
 
     @classmethod
@@ -18,8 +16,7 @@ class TestBaseOne(object):
             return 'test_vieM1eingi6luish5Sei'
 
 
-class TestBaseTwo(object):
-    __metaclass__ = SignalConnectMetaClass
+class TestBaseTwo(object, metaclass=SignalConnectMetaClass):
     signal = Signal()
 
     @classmethod
@@ -46,8 +43,9 @@ class TestSignalConnectMetaClass(TestCase):
 
     def test_bad_base_class(self):
         def wrapper():
-            class BadClass1(object):
-                __metaclass__ = SignalConnectMetaClass
+            class BadClass1(object, metaclass=SignalConnectMetaClass):
+                pass
+
         self.assertRaisesMessage(
             NotImplementedError,
             'Your class BadClass1 must have a get_dispatch_uid classmethod.',
@@ -55,9 +53,7 @@ class TestSignalConnectMetaClass(TestCase):
 
     def test_bad_base_class_without_signal(self):
         def wrapper():
-            class BadClass2(object):
-                __metaclass__ = SignalConnectMetaClass
-
+            class BadClass2(object, metaclass=SignalConnectMetaClass):
                 @classmethod
                 def get_dispatch_uid(cls):
                     return True

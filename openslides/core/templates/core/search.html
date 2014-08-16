@@ -35,9 +35,11 @@
             {% if forloop.first %}
                 <ol class="searchresults">
             {% endif %}
-            {% with result_template=result.app_label|add:"-results.html" %}
-                {% include "search/"|add:result_template %}
-            {% endwith %}
+            {% if result.app_label %}
+                {% with result_template=result.app_label|add:"-results.html" %}
+                    {% include "search/"|add:result_template %}
+                {% endwith %}
+            {% endif %}
             {% if forloop.last %}
                 </ol>
             {% endif %}

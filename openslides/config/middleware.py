@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from openslides.config.api import config
 
 

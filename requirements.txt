@@ -2,10 +2,8 @@
 -r requirements_production.txt
 
 # Requirements for development and tests in alphabetical order
-Fabric==1.8.3
 coverage==3.7.1
 flake8==2.1.0
-mock==1.0.1
 
 # Requirements for OpenSlides handbook/documentation in alphabetical order
 Sphinx==1.2.2

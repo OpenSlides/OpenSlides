@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from random import choice
 
 from .models import Group, User

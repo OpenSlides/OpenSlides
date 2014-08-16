@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from .exceptions import ConfigError, ConfigNotFound
 from .models import ConfigStore
 from .signals import config_signal

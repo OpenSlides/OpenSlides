@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.test.client import Client
 from openslides.motion.models import Motion
 from openslides.participant.models import User

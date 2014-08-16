@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
-
 import os
 import posixpath
-from urllib import unquote
+from urllib.parse import unquote
 
 from django.conf import settings
 from django.core.handlers.wsgi import WSGIHandler as Django_WSGIHandler
@@ -27,7 +25,7 @@ class DjangoStaticFileHandler(StaticFileHandler):
         """Overwrite some attributes."""
         # NOTE: root is never actually used and default_filename is not
         #       supported (must always be None)
-        self.root = u''
+        self.root = ''
         self.default_filename = None
 
     @classmethod
@@ -77,7 +75,8 @@ def run_tornado(addr, port):
         url_string = _("the machine's local ip address")
     else:
         url_string = 'http://%s:%s' % (addr, port)
-    print _("Starting OpenSlides' tornado webserver listening to %(url_string)s") % {'url_string': url_string}
+    # TODO: don't use print, use django logging
+    print(_("Starting OpenSlides' tornado webserver listening to %(url_string)s") % {'url_string': url_string})
 
     # Setup WSGIContainer
     app = WSGIContainer(Django_WSGIHandler())

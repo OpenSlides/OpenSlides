@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from datetime import datetime
 
 from django.contrib.auth.models import AnonymousUser
@@ -133,7 +131,7 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
             raise ValidationError(_('Organizational items can not have agenda items as child elements.'))
         return super(Item, self).clean()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.get_title()
 
     def get_absolute_url(self, link='detail'):
@@ -397,8 +395,8 @@ class Speaker(AbsoluteUrlMixin, models.Model):
         super(Speaker, self).delete(*args, **kwargs)
         self.check_and_update_projector()
 
-    def __unicode__(self):
-        return unicode(self.person)
+    def __str__(self):
+        return str(self.person)
 
     def get_absolute_url(self, link='detail'):
         if link == 'detail':

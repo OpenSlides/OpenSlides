@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.test.client import Client
 
 from openslides.agenda.models import Item, Speaker

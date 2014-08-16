@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from openslides.utils.test import TestCase
 from openslides.utils.utils import html_strong, int_or_none
 

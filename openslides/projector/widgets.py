@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.core.context_processors import csrf
 from django.utils.translation import ugettext_lazy
 

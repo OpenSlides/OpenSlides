@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Max
@@ -84,7 +82,7 @@ class Motion(SlideMixin, AbsoluteUrlMixin, models.Model):
         ordering = ('identifier', )
         verbose_name = ugettext_noop('Motion')
 
-    def __unicode__(self):
+    def __str__(self):
         """
         Return a human readable name of this motion.
         """
@@ -125,7 +123,7 @@ class Motion(SlideMixin, AbsoluteUrlMixin, models.Model):
 
         # Solves the problem, that there can only be one motion with an empty
         # string as identifier.
-        if not self.identifier and isinstance(self.identifier, basestring):
+        if not self.identifier and isinstance(self.identifier, str):
             self.identifier = None
 
         super(Motion, self).save(*args, **kwargs)
@@ -461,7 +459,7 @@ class Motion(SlideMixin, AbsoluteUrlMixin, models.Model):
         """
         Return a title for the agenda.
         """
-        return unicode(self)
+        return str(self)
 
     def get_agenda_title_supplement(self):
         """
@@ -551,7 +549,7 @@ class MotionVersion(AbsoluteUrlMixin, models.Model):
     class Meta:
         unique_together = ("motion", "version_number")
 
-    def __unicode__(self):
+    def __str__(self):
         """Return a string, representing this object."""
         counter = self.version_number or ugettext_lazy('new')
         return "Motion %s, Version %s" % (self.motion_id, counter)
@@ -587,9 +585,9 @@ class MotionSubmitter(RelatedModelMixin, models.Model):
     person = PersonField()
     """The person, who is the submitter."""
 
-    def __unicode__(self):
+    def __str__(self):
         """Return the name of the submitter as string."""
-        return unicode(self.person)
+        return str(self.person)
 
     def get_related_model(self):
         return self.motion
@@ -604,9 +602,9 @@ class MotionSupporter(models.Model):
     person = PersonField()
     """The person, who is the supporter."""
 
-    def __unicode__(self):
+    def __str__(self):
         """Return the name of the supporter as string."""
-        return unicode(self.person)
+        return str(self.person)
 
 
 class Category(AbsoluteUrlMixin, models.Model):
@@ -619,7 +617,7 @@ class Category(AbsoluteUrlMixin, models.Model):
     Used to build the identifier of a motion.
     """
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_absolute_url(self, link='update'):
@@ -661,7 +659,7 @@ class MotionLog(models.Model):
     class Meta:
         ordering = ['-time']
 
-    def __unicode__(self):
+    def __str__(self):
         """
         Return a string, representing the log message.
         """
@@ -721,7 +719,7 @@ class MotionPoll(SlideMixin, RelatedModelMixin, CollectDefaultVotesMixin,
     class Meta:
         unique_together = ("motion", "poll_number")
 
-    def __unicode__(self):
+    def __str__(self):
         """Return a string, representing the poll."""
         return _('Vote %d') % self.poll_number
 
@@ -808,7 +806,7 @@ class State(models.Model):
     If true, the motion does not get an identifier if the state change to
     this one, else it does."""
 
-    def __unicode__(self):
+    def __str__(self):
         """Returns the name of the state."""
         return self.name
 
@@ -843,7 +841,7 @@ class Workflow(models.Model):
     first_state = models.OneToOneField(State, related_name='+', null=True)
     """A one-to-one relation to a state, the starting point for the workflow."""
 
-    def __unicode__(self):
+    def __str__(self):
         """Returns the name of the workflow."""
         return self.name
 

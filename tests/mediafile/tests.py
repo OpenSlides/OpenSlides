@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import os
 import tempfile
 
@@ -41,8 +39,8 @@ class MediafileTest(TestCase):
     def tearDown(self):
         self.object.mediafile.delete()
 
-    def test_unicode(self):
-        self.assertEqual(self.object.__unicode__(), 'Title File 1')
+    def test_str(self):
+        self.assertEqual(str(self.object), 'Title File 1')
 
     def test_absolute_url(self):
         self.assertEqual(self.object.get_absolute_url(), '/mediafile/1/edit/')
@@ -64,7 +62,7 @@ class MediafileTest(TestCase):
                 'client_normal_user': client_normal_user}
 
     def test_see_mediafilelist(self):
-        for client in self.login_clients().itervalues():
+        for client in self.login_clients().values():
             response = client.get('/mediafile/')
             self.assertEqual(response.status_code, 200)
             self.assertTemplateUsed(response, 'mediafile/mediafile_list.html')
@@ -90,7 +88,7 @@ class MediafileTest(TestCase):
     def test_upload_mediafile_post_request(self):
         # Test first user
         client_1 = self.login_clients()['client_manager']
-        new_file_1 = SimpleUploadedFile(name='new_test_file.txt', content='test content hello manager')
+        new_file_1 = SimpleUploadedFile(name='new_test_file.txt', content=bytes('test content hello manager', 'UTF-8'))
         response_1 = client_1.post('/mediafile/new/',
                                    {'title': 'new_test_file_title_1',
                                     'mediafile': new_file_1,
@@ -105,7 +103,7 @@ class MediafileTest(TestCase):
 
         # Test second user
         client_2 = self.login_clients()['client_vip_user']
-        new_file_2 = SimpleUploadedFile(name='new_test_file.txt', content='test content hello vip_user')
+        new_file_2 = SimpleUploadedFile(name='new_test_file.txt', content=bytes('test content hello vip_user', 'UTF-8'))
         response_2 = client_2.post('/mediafile/new/',
                                    {'title': 'new_test_file_title_2',
                                     'mediafile': new_file_2})
@@ -121,7 +119,7 @@ class MediafileTest(TestCase):
 
         # Test third user
         client_3 = self.login_clients()['client_normal_user']
-        new_file_3 = SimpleUploadedFile(name='new_test_file.txt', content='test content hello vip_user')
+        new_file_3 = SimpleUploadedFile(name='new_test_file.txt', content=bytes('test content hello vip_user', 'UTF-8'))
         response_3 = client_3.post('/mediafile/new/',
                                    {'title': 'new_test_file_title_2',
                                     'mediafile': new_file_3})
@@ -156,7 +154,7 @@ class MediafileTest(TestCase):
         os.close(tmpfile_no)
         object_2 = Mediafile.objects.create(title='Title File 2', mediafile=mediafile_2_path, uploader=self.vip_user)
         client_1 = self.login_clients()['client_manager']
-        new_file_1 = SimpleUploadedFile(name='new_test_file.txt', content='test content hello manager')
+        new_file_1 = SimpleUploadedFile(name='new_test_file.txt', content=bytes('test content hello manager', 'UTF-8'))
         response_1 = client_1.post('/mediafile/2/edit/',
                                    {'title': 'new_test_file_title_1',
                                     'mediafile': new_file_1,
@@ -174,7 +172,7 @@ class MediafileTest(TestCase):
         os.close(tmpfile_no)
         object_2 = Mediafile.objects.create(title='Title File 2b', mediafile=mediafile_2_path, uploader=self.vip_user)
         client = self.login_clients()['client_vip_user']
-        new_file_1 = SimpleUploadedFile(name='new_test_file.txt', content='test content hello vip user')
+        new_file_1 = SimpleUploadedFile(name='new_test_file.txt', content=bytes('test content hello vip user', 'UTF-8'))
         response_1 = client.post('/mediafile/2/edit/',
                                  {'title': 'new_test_file_title_2b',
                                   'mediafile': new_file_1})
@@ -188,7 +186,7 @@ class MediafileTest(TestCase):
 
     def test_edit_mediafile_post_request_another_file(self):
         client = self.login_clients()['client_vip_user']
-        new_file_1 = SimpleUploadedFile(name='new_test_file.txt', content='test content hello vip user')
+        new_file_1 = SimpleUploadedFile(name='new_test_file.txt', content=bytes('test content hello vip user', 'UTF-8'))
         response = client.post('/mediafile/1/edit/',
                                {'title': 'new_test_file_title_2c',
                                 'mediafile': new_file_1})
@@ -249,11 +247,11 @@ class MediafileTest(TestCase):
         self.assertEqual(object_4.get_filesize(), '< 1 kB')
         with open(object_4.mediafile.path, 'wb') as bigfile:
             bigfile.seek(2047)
-            bigfile.write('0')
+            bigfile.write(b'0')
         self.assertEqual(object_4.get_filesize(), '2 kB')
         with open(object_4.mediafile.path, 'wb') as bigfile:
             bigfile.seek(1048575)
-            bigfile.write('0')
+            bigfile.write(b'0')
         self.assertEqual(object_4.get_filesize(), '1 MB')
         os.remove(mediafile_4_path)
         self.assertEqual(object_4.get_filesize(), 'unknown')

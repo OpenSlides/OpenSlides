@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import ctypes
 import os
 import socket
@@ -9,9 +7,9 @@ import threading
 import time
 import webbrowser
 
-from base64 import b64encode
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import ENVIRONMENT_VARIABLE
+from django.utils.crypto import get_random_string
 from django.utils.translation import activate, check_for_language, get_language
 from django.utils.translation import ugettext as _
 
@@ -30,28 +28,6 @@ class PortIsBlockedError(Exception):
 
 class DatabaseInSettingsError(Exception):
     pass
-
-
-def filesystem2unicode(path):
-    """
-    Transforms a path string to unicode according to the filesystem's encoding.
-    """
-    # TODO: Delete this function after switch to Python 3.
-    if not isinstance(path, unicode):
-        filesystem_encoding = sys.getfilesystemencoding() or sys.getdefaultencoding()
-        path = path.decode(filesystem_encoding)
-    return path
-
-
-def unicode2filesystem(path):
-    """
-    Transforms a path unicode to string according to the filesystem's encoding.
-    """
-    # TODO: Delete this function after switch to Python 3.
-    if not isinstance(path, str):
-        filesystem_encoding = sys.getfilesystemencoding() or sys.getdefaultencoding()
-        path = path.encode(filesystem_encoding)
-    return path
 
 
 def detect_openslides_type():
@@ -82,8 +58,8 @@ def get_default_settings_path(openslides_type):
     openslides.utils.main.
     """
     if openslides_type == UNIX_VERSION:
-        parent_directory = filesystem2unicode(os.environ.get(
-            'XDG_CONFIG_HOME', os.path.join(os.path.expanduser('~'), '.config')))
+        parent_directory = os.environ.get(
+            'XDG_CONFIG_HOME', os.path.join(os.path.expanduser('~'), '.config'))
     elif openslides_type == WINDOWS_VERSION:
         parent_directory = get_win32_app_data_path()
     elif openslides_type == WINDOWS_PORTABLE_VERSION:
@@ -102,7 +78,7 @@ def setup_django_settings_module(settings_path):
     settings_module_name = ".".join(settings_file.split('.')[:-1])
     if '.' in settings_module_name:
         raise ImproperlyConfigured("'.' is not an allowed character in the settings-file")
-    settings_module_dir = unicode2filesystem(os.path.dirname(settings_path))  # TODO: Use absolute path here or not?
+    settings_module_dir = os.path.dirname(settings_path)  # TODO: Use absolute path here or not?
     sys.path.insert(0, settings_module_dir)
     os.environ[ENVIRONMENT_VARIABLE] = '%s' % settings_module_name
 
@@ -117,7 +93,7 @@ def ensure_settings(settings, args):
         else:
             context = get_default_settings_context(args.user_data_path)
         write_settings(settings, **context)
-        print('Settings file at %s successfully created.' % unicode2filesystem(settings))
+        print('Settings file at %s successfully created.' % settings)
 
 
 def get_default_settings_context(user_data_path=None):
@@ -155,8 +131,8 @@ def get_default_user_data_path(openslides_type):
     in openslides.utils.main.
     """
     if openslides_type == UNIX_VERSION:
-        default_user_data_path = filesystem2unicode(os.environ.get(
-            'XDG_DATA_HOME', os.path.join(os.path.expanduser('~'), '.local', 'share')))
+        default_user_data_path = os.environ.get(
+            'XDG_DATA_HOME', os.path.join(os.path.expanduser('~'), '.local', 'share'))
     elif openslides_type == WINDOWS_VERSION:
         default_user_data_path = get_win32_app_data_path()
     elif openslides_type == WINDOWS_PORTABLE_VERSION:
@@ -183,6 +159,7 @@ def get_win32_app_data_path():
     buf = ctypes.create_unicode_buffer(MAX_PATH)
     res = SHGetFolderPath(0, CSIDL_LOCAL_APPDATA, 0, 0, buf)
     if res != 0:
+        # TODO: Write other exception
         raise Exception("Could not determine Windows' APPDATA path")
 
     return buf.value
@@ -195,7 +172,7 @@ def get_win32_portable_path():
     # NOTE: sys.executable will be the path to openslides.exe
     #       since it is essentially a small wrapper that embeds the
     #       python interpreter
-    portable_path = filesystem2unicode(os.path.dirname(os.path.abspath(sys.executable)))
+    portable_path = os.path.dirname(os.path.abspath(sys.executable))
     try:
         fd, test_file = tempfile.mkstemp(dir=portable_path)
     except OSError:
@@ -223,7 +200,11 @@ def write_settings(settings_path, template=None, **context):
     if template is None:
         with open(os.path.join(os.path.dirname(__file__), 'settings.py.tpl')) as template_file:
             template = template_file.read()
-    context.setdefault('secret_key', b64encode(os.urandom(30)))
+
+    # Create a random SECRET_KEY to put it in the settings.
+    # from django.core.management.commands.startproject
+    chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
+    context.setdefault('secret_key', get_random_string(50, chars))
     content = template % context
     settings_module = os.path.realpath(os.path.dirname(settings_path))
     if not os.path.exists(settings_module):

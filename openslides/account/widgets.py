@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.contrib.auth.models import AnonymousUser
 from django.utils.translation import ugettext_lazy
 

@@ -27,7 +27,7 @@ class CustomSlide(SlideMixin, AbsoluteUrlMixin, models.Model):
             ('can_use_chat', ugettext_noop('Can use the chat')),
         )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title
 
     def get_absolute_url(self, link='update'):

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.core.urlresolvers import reverse
 from django.dispatch import Signal, receiver
 
@@ -7,14 +5,14 @@ from .dispatch import SignalConnectMetaClass
 from .signals import template_manipulation
 
 
-class MainMenuEntry(object):
+class MainMenuEntry(object, metaclass=SignalConnectMetaClass):
     """
     Base class for a main menu entry.
 
     Every app which wants to add entries has to create a class subclassing
     from this base class. For the appearance the verbose_name, the
     pattern_name and the icon-css-class attribute have to be set. The
-    __metaclass__ attribute (SignalConnectMetaClass) does the rest of the
+    metaclass (SignalConnectMetaClass) does the rest of the
     magic.
 
     For the appearance there are some optional attributes and methods like
@@ -22,7 +20,6 @@ class MainMenuEntry(object):
     check_permission, get_url, get_default_weight, get_icon_css_class,
     get_stylesheets and get_javascript_files.
     """
-    __metaclass__ = SignalConnectMetaClass
     signal = Signal(providing_args=['request'])
     verbose_name = None
     required_permission = None
@@ -43,12 +40,12 @@ class MainMenuEntry(object):
         """
         self.request = request
 
-    def __unicode__(self):
+    def __str__(self):
         if self.verbose_name is None:
             raise NotImplementedError(
                 'The main menu entry class %s must provide a verbose_name '
-                'attribute or override the __unicode__ method.' % type(self).__name__)
-        return unicode(self.verbose_name)
+                'attribute or override the __str__ method.' % type(self).__name__)
+        return str(self.verbose_name)
 
     @classmethod
     def get_dispatch_uid(cls):

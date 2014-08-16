@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.contrib.auth.models import AnonymousUser
 from django.db import models
 
@@ -8,9 +7,7 @@ from .api import generate_person_id, get_person
 from .forms import PersonFormField
 
 
-class PersonField(models.fields.Field):
-    __metaclass__ = models.SubfieldBase
-
+class PersonField(models.fields.Field, metaclass=models.SubfieldBase):
     def __init__(self, *args, **kwargs):
         kwargs['max_length'] = 255
         super(PersonField, self).__init__(*args, **kwargs)
@@ -45,7 +42,7 @@ class PersonField(models.fields.Field):
         if value is None:
             # For Fields with null=True
             return None
-        elif isinstance(value, basestring):
+        elif isinstance(value, str):
             # The object is already a a person_id
             return value
 
@@ -70,7 +67,7 @@ class PersonMixin(object):
             raise AttributeError("%s has to have a attribute 'person_prefix'"
                                  % self)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.person_id
 
     def prepare_database_save(self, field):

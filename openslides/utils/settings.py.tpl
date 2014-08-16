@@ -42,8 +42,8 @@ HAYSTACK_CONNECTIONS['default']['PATH'] = os.path.join(OPENSLIDES_USER_DATA_PATH
 
 TEMPLATE_DIRS = (
     os.path.join(OPENSLIDES_USER_DATA_PATH, 'templates'),
-    filesystem2unicode(os.path.join(SITE_ROOT, 'templates')))
+    os.path.join(SITE_ROOT, 'templates'))
 
 STATICFILES_DIRS = (
     os.path.join(OPENSLIDES_USER_DATA_PATH, 'static'),
-    filesystem2unicode(os.path.join(SITE_ROOT, 'static')))
+    os.path.join(SITE_ROOT, 'static'))

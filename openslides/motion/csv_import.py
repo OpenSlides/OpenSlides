@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # TODO: Rename the file to 'csv.py' when we drop python2 support. At the moment
 #       the name csv has a conflict with the core-module. See:
 #       http://docs.python.org/2/tutorial/modules.html#intra-package-references
@@ -38,12 +36,13 @@ def import_motions(csvfile, default_submitter, override, importing_person=None):
     csvfile.seek(0)
 
     with transaction.commit_on_success():
-        dialect = csv.Sniffer().sniff(csvfile.readline())
+        dialect = csv.Sniffer().sniff(csvfile.readline().decode('utf8'))
         dialect = csv_ext.patchup(dialect)
         csvfile.seek(0)
         all_error_messages = []
         all_warning_messages = []
-        for (line_no, line) in enumerate(csv.reader(csvfile, dialect=dialect)):
+        for (line_no, line) in enumerate(csv.reader(
+                (line.decode('utf8') for line in csvfile.readlines()), dialect=dialect)):
             warning = []
             if line_no < 1:
                 # Do not read the header line
@@ -92,7 +91,7 @@ def import_motions(csvfile, default_submitter, override, importing_person=None):
             person_found = False
             if submitter:
                 for person in Persons():
-                    if person.clean_name == submitter.decode('utf8'):
+                    if person.clean_name == submitter:
                         if person_found:
                             warning.append(_('Several suitable submitters found.'))
                             person_found = False

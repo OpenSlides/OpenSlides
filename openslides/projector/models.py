@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse
 

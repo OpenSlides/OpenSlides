@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from openslides.participant.api import gen_password, gen_username
 from openslides.participant.models import Group, User
 from openslides.utils.person import get_person, Persons
@@ -21,16 +19,16 @@ class UserTest(TestCase):
         self.assertEqual(self.django_user1.user, self.user1)
         self.assertEqual(self.django_user1, self.user1.django_user)
 
-    def test_repr(self):
-        self.assertEqual(unicode(self.user1), 'Max Mustermann')
+    def test_str(self):
+        self.assertEqual(str(self.user1), 'Max Mustermann')
 
     def test_name_suffix(self):
         self.user1.structure_level = u'München'
         self.user1.save()
-        self.assertEqual(unicode(self.user1), u'Max Mustermann (München)')
+        self.assertEqual(str(self.user1), u'Max Mustermann (München)')
 
     def test_reset_password(self):
-        self.assertIsInstance(self.user1.default_password, basestring)
+        self.assertIsInstance(self.user1.default_password, str)
         self.assertEqual(len(self.user1.default_password), 8)
         self.user1.set_unusable_password()
         self.assertFalse(self.user1.check_password(self.user1.default_password))
@@ -78,7 +76,7 @@ class DefaultGroups(TestCase):
                           (3, 'Delegates'),
                           (4, 'Staff'))
         for pk, name in default_groups:
-            self.assertEquals(Group.objects.get(pk=pk).name, name)
+            self.assertEqual(Group.objects.get(pk=pk).name, name)
 
     def test_default_perms_anonymous(self):
         anonymous = Group.objects.get(pk=1)

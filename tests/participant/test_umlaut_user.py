@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.test.client import Client
 from django.test.utils import override_settings
 

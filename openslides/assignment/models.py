@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -32,8 +30,8 @@ class AssignmentCandidate(RelatedModelMixin, models.Model):
     class Meta:
         unique_together = ("assignment", "person")
 
-    def __unicode__(self):
-        return unicode(self.person)
+    def __str__(self):
+        return str(self.person)
 
     def get_related_model(self):
         """
@@ -69,7 +67,7 @@ class Assignment(SlideMixin, AbsoluteUrlMixin, models.Model):
         ordering = ('name',)
         verbose_name = ugettext_noop('Election')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_absolute_url(self, link='detail'):
@@ -289,8 +287,8 @@ class AssignmentOption(BaseOption):
     candidate = PersonField()
     vote_class = AssignmentVote
 
-    def __unicode__(self):
-        return unicode(self.candidate)
+    def __str__(self):
+        return str(self.candidate)
 
 
 class AssignmentPoll(SlideMixin, RelatedModelMixin, CollectDefaultVotesMixin,
@@ -306,7 +304,7 @@ class AssignmentPoll(SlideMixin, RelatedModelMixin, CollectDefaultVotesMixin,
         max_length=79, null=True, blank=True,
         verbose_name=ugettext_lazy("Comment on the ballot paper"))
 
-    def __unicode__(self):
+    def __str__(self):
         return _("Ballot %d") % self.get_ballot()
 
     def get_absolute_url(self, link='update'):

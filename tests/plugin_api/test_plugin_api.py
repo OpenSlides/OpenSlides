@@ -1,15 +1,14 @@
-# -*- coding: utf-8 -*-
+from imp import reload
 
 from django.test.client import Client
 from django.test.utils import override_settings
+from django.core.urlresolvers import clear_url_caches
 
 from openslides.utils.test import TestCase
 
 
 @override_settings(INSTALLED_PLUGINS=('tests.plugin_api.test_plugin_one',))
 class TestPluginOne(TestCase):
-    urls = 'tests.plugin_api.urls'  # Use reloaded urlpatterns for this TestCase
-
     def setUp(self):
         self.admin_client = Client()
         self.admin_client.login(username='admin', password='admin')
@@ -21,6 +20,9 @@ class TestPluginOne(TestCase):
         self.assertContains(response, '– Version test_version_string_MoHonepahfofiree6Iej')
 
     def test_url_patterns(self):
+        from openslides import urls
+        reload(urls)
+        clear_url_caches()
         response = self.admin_client.get('/test_plugin_one_url_Eexea4nie1fexaax3oX7/')
         self.assertRedirects(response, '/version/')
 

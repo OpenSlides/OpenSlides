@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.contrib.auth.models import AnonymousUser
 
 from openslides.utils.person.api import get_person
@@ -24,15 +22,15 @@ class PersonTest(TestCase):
         self.assertEqual(TestModel.objects.get(pk=test_object.pk).person, self.person1)
 
     def test_save_anonymous_user_in_person_field(self):
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 AttributeError,
                 'An AnonymousUser can not be saved into the database.'):
             TestModel.objects.create(person=AnonymousUser())
 
     def test_save_unsupported_object_in_person_field(self):
-        with self.assertRaisesRegexp(
+        with self.assertRaisesRegex(
                 AttributeError,
-                'You can not save \'<type \'int\'>\' into a person field.'):
+                'You can not save \'<class \'int\'>\' into a person field.'):
             TestModel.objects.create(person=5)
 
     def test_get_absolute_url_with_deleted_person(self):
@@ -41,5 +39,5 @@ class PersonTest(TestCase):
         person_id = person2.person_id
         self.assertEqual(get_person(person_id).get_absolute_url(), 'absolute_url_of_test_person')
         person2.delete()
-        with self.assertRaisesRegexp(ValueError, 'This person object has no url.'):
+        with self.assertRaisesRegex(ValueError, 'This person object has no url.'):
             get_person(person_id).get_absolute_url()

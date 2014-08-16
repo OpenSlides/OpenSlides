@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 import json
-from cStringIO import StringIO
+from io import BytesIO
 
 from django.conf import settings
 from django.contrib import messages
@@ -352,7 +350,7 @@ class QuestionView(RedirectView):
         """
         Returns the question.
         """
-        return unicode(self.question_message)
+        return str(self.question_message)
 
     def get_answer_options(self):
         """
@@ -369,7 +367,7 @@ class QuestionView(RedirectView):
         """
         option_fields = "\n".join([
             '<button type="submit" class="btn btn-mini" name="%s">%s</button>'
-            % (option[0], unicode(option[1]))
+            % (option[0], str(option[1]))
             for option in self.get_answer_options()])
         messages.warning(
             self.request,
@@ -546,7 +544,7 @@ class PDFView(PermissionMixin, View):
 
     def get_document_title(self):
         if self.document_title:
-            return unicode(self.document_title)
+            return str(self.document_title)
         else:
             return ''
 
@@ -562,10 +560,10 @@ class PDFView(PermissionMixin, View):
 
     def render_to_response(self, filename):
         response = HttpResponse(content_type='application/pdf')
-        filename = u'filename=%s.pdf;' % self.get_filename()
+        filename = 'filename=%s.pdf;' % self.get_filename()
         response['Content-Disposition'] = filename.encode('utf-8')
 
-        buffer = StringIO()
+        buffer = BytesIO()
         pdf_document = self.get_template(buffer)
         pdf_document.title = self.get_document_title()
         story = [Spacer(1, self.get_top_space() * cm)]

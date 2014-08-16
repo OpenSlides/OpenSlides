@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.test.client import Client
 
 from openslides.assignment.models import Assignment, AssignmentPoll
@@ -109,3 +107,25 @@ class TestAssignmentPollCreateView(TestCase):
         self.assertEqual(poll.assignment, self.assignment)
         self.assertEqual(poll.assignmentoption_set.count(), 1)
         self.assertTrue(poll.yesnoabstain)
+
+
+class TestAssignmentPollPdfView(TestCase):
+    """
+    Tests the creation of the assignment poll pdf
+    """
+
+    def test_assignment_create_poll_pdf(self):
+        # Create a assignment with a poll
+        admin = User.objects.get(pk=1)
+        assignment = Assignment.objects.create(name='assignment1', posts=1)
+        assignment.run(admin, admin)
+        assignment.set_status('vot')
+        assignment.gen_poll()
+        client = Client()
+        client.login(username='admin', password='admin')
+
+        # request the pdf
+        response = client.get('/assignment/poll/1/print/')
+
+        # test the response
+        self.assertEqual(response.status_code, 200)

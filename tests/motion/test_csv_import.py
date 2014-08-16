@@ -1,7 +1,5 @@
-# -*- coding: utf-8 -*-
-
 import os
-import StringIO
+from io import BytesIO
 
 from django.test.client import Client
 
@@ -41,7 +39,7 @@ class CSVImport(TestCase):
 
         csv_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'extras', 'csv-examples')
         self.assertEqual(Motion.objects.count(), 0)
-        with open(csv_dir + '/motions-demo_de.csv') as f:
+        with open(csv_dir + '/motions-demo_de.csv', 'rb') as f:
             success_message, warning_message, error_message = import_motions(
                 csvfile=f, default_submitter=self.normal_user.person_id, override=False, importing_person=self.admin)
         self.assertEqual(Motion.objects.count(), 11)
@@ -73,21 +71,18 @@ class CSVImport(TestCase):
         self.assertTrue('Several suitable categories found.' in warning_message)
 
     def test_malformed_file(self):
-        csv_file = StringIO.StringIO()
-        csv_file.write('Header\nMalformed data,\n,Title,Text,,,\n')
+        csv_file = BytesIO()
+        csv_file.write(bytes('Header\nMalformed data,\n,Title,Text,,,\n', 'utf8'))
         success_message, warning_message, error_message = import_motions(
             csvfile=csv_file, default_submitter=self.normal_user.person_id, override=False)
         self.assertEqual(success_message, '')
         self.assertTrue('Line is malformed.' in error_message)
 
     def test_wrong_encoding(self):
-        csv_file = StringIO.StringIO()
-        text = u'Müller'.encode('iso-8859-15')
-        csv_file.write(text)
-        csv_file.seek(0)
+        csv_file = BytesIO(bytes('Müller', 'iso-8859-15'))
         success_message, warning_message, error_message = import_motions(
             csvfile=csv_file,
             default_submitter=self.normal_user.person_id,
             override=False)
         self.assertEqual(success_message, '')
-        self.assertTrue('Import file has wrong character encoding, only UTF-8 is supported!' in error_message)
+        self.assertIn('Import file has wrong character encoding, only UTF-8 is supported!', error_message)
