@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.core.management.commands.syncdb import Command as _Command
 
 from openslides.core.signals import post_database_setup

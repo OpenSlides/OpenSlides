@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from csv import Dialect, excel, register_dialect
 
 

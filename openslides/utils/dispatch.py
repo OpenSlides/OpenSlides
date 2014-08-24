@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 class SignalConnectMetaClass(type):
     """
     Metaclass to connect the children of a base class to a Django signal.
@@ -30,8 +27,7 @@ class SignalConnectMetaClass(type):
 
     Example:
 
-    class Base(object):
-        __metaclass__ = SignalConnectMetaClass
+    class Base(object, metaclass=SignalConnectMetaClass):
         signal = django.dispatch.Signal()
         @classmethod
         def get_dispatch_uid(cls):

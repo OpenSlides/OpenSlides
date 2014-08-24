@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+from unittest.mock import patch
 
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ImproperlyConfigured
@@ -6,7 +6,6 @@ from django.core.urlresolvers import clear_url_caches
 from django.test import RequestFactory
 from django.test.client import Client
 from django.test.utils import override_settings
-from mock import patch
 
 from openslides.utils import views
 from openslides.utils.signals import template_manipulation
@@ -33,7 +32,7 @@ class LoginMixinTest(ViewTestCase):
         client.login(username='admin', password='admin')
         response = client.get('/login_mixin/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, 'Well done.')
+        self.assertEqual(response.content, b'Well done.')
 
 
 class PermissionMixinTest(ViewTestCase):
@@ -43,7 +42,7 @@ class PermissionMixinTest(ViewTestCase):
         # View without required_permission
         response = client.get('/permission_mixin1/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, 'Well done.')
+        self.assertEqual(response.content, b'Well done.')
 
         # View with required_permission without login
         response = client.get('/permission_mixin2/')
@@ -65,7 +64,7 @@ class AjaxMixinTest(ViewTestCase):
         view = test_views.AjaxMixinView()
         ajax_get = view.ajax_get
         response = ajax_get(self.rf.get('/', {}))
-        self.assertEqual(response.content, '{"new_context": "newer_context"}')
+        self.assertEqual(response.content, b'{"new_context": "newer_context"}')
 
     def test_get_ajax_context(self):
         get_ajax_context = test_views.AjaxMixinView().get_ajax_context
@@ -165,8 +164,7 @@ class QuestionViewTest(ViewTestCase):
         view.question_message = 'new_question'
         self.assertEqual(get_question_message(), 'new_question')
 
-        # Make sure it is unicode, so ugettext_lazy can work
-        self.assertIsInstance(get_question_message(), unicode)
+        self.assertIsInstance(get_question_message(), str)
 
     def test_get_answer_options(self):
         view = views.QuestionView()

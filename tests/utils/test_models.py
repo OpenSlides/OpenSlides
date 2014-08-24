@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from openslides.utils.models import AbsoluteUrlMixin
 from openslides.utils.test import TestCase
 

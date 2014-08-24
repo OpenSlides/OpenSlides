@@ -1,8 +1,7 @@
-# -*- coding: utf-8 -*-
+from unittest.mock import patch, MagicMock
 
 from django.contrib.auth.models import Permission
 from django.test.client import Client
-from mock import patch, MagicMock
 
 from openslides.agenda.models import Item, Speaker
 from openslides.agenda.signals import agenda_list_of_speakers

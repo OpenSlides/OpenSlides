@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
-
 import os
 import sys
+from unittest.mock import MagicMock, patch
 
 from django.core.exceptions import ImproperlyConfigured
-from mock import MagicMock, patch
 
 from openslides.__main__ import (
     add_general_arguments,

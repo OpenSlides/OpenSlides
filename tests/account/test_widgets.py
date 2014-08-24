@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.test.client import Client
 
 from openslides.config.api import config

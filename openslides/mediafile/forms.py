@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.forms import ModelForm
 
 from openslides.utils.forms import CssClassMixin

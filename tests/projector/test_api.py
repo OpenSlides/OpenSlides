@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-
-from mock import MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 from openslides.projector import api as projector_api
 from openslides.utils.test import TestCase

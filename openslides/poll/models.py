@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import locale
 
 from django.core.exceptions import ObjectDoesNotExist
@@ -52,7 +50,7 @@ class BaseVote(models.Model):
     class Meta:
         abstract = True
 
-    def __unicode__(self):
+    def __str__(self):
         return self.print_weight()
 
     def get_value(self):

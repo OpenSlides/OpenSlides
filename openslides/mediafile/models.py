@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import mimetypes
 
 from django.core.urlresolvers import reverse
@@ -53,7 +51,7 @@ class Mediafile(SlideMixin, AbsoluteUrlMixin, models.Model):
             ('can_upload', ugettext_noop('Can upload files')),
             ('can_manage', ugettext_noop('Can manage files')),)
 
-    def __unicode__(self):
+    def __str__(self):
         """
         Method for representation.
         """

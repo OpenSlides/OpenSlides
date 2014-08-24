@@ -1,11 +1,12 @@
-# -*- coding: utf-8 -*-
+import re
+from unittest.mock import patch
 
 from django import forms
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.dispatch import receiver
 from django.test.client import Client
-from mock import patch
+
 
 from openslides.config.api import (config, ConfigCollection, ConfigGroup,
                                    ConfigGroupedCollection, ConfigVariable)
@@ -75,6 +76,7 @@ class HandleConfigTest(TestCase):
         Tests that the special callback is called and raises a special
         message.
         """
+        # TODO: use right exception
         self.assertRaisesMessage(
             Exception,
             'Change callback dhcnfg34dlg06kdg successfully called.',
@@ -190,42 +192,36 @@ class ConfigFormTest(TestCase):
         self.assertNotContains(response=response, text='Ho5iengaoon5Hoht', status_code=200)
 
     def test_improperly_configured_config_view(self):
-        from openslides.config import urls
+        """
+        Tests that a ConfigCollection object without an url raises ConfigError
+        when is_shown() is called.
+        """
         collection = ConfigCollection(
             title='Only a small title but no url ci6xahb8Chula0Thesho',
             variables=(ConfigVariable(name='some_var_paiji9theiW8ooXivae6',
                                       default_value='',
                                       form_field=forms.CharField()),))
 
-        def setup_bad_config_view_one(sender, **kwargs):
-            return collection
-
-        config_signal.connect(setup_bad_config_view_one, dispatch_uid='setup_bad_config_view_one_for_testing')
         self.assertRaisesMessage(
             ConfigError,
             'The config collection %s must have a title and an url attribute.' % repr(collection),
-            reload,
-            urls)
-        config_signal.disconnect(setup_bad_config_view_one, dispatch_uid='setup_bad_config_view_one_for_testing')
+            collection.is_shown)
 
     def test_improperly_configured_config_view_two(self):
-        from openslides.config import urls
+        """
+        Tests that a ConfigCollection object without a title raises ConfigError
+        when is_shown() is called.
+        """
         collection = ConfigCollection(
             url='only_url_ureiraeY1Oochuad7xei',
             variables=(ConfigVariable(name='some_var_vuuC6eiXeiyae3ik4gie',
                                       default_value='',
                                       form_field=forms.CharField()),))
 
-        def setup_bad_config_view_two(sender, **kwargs):
-            return collection
-
-        config_signal.connect(setup_bad_config_view_two, dispatch_uid='setup_bad_config_view_twoe_for_testing')
         self.assertRaisesMessage(
             ConfigError,
             'The config collection %s must have a title and an url attribute.' % repr(collection),
-            reload,
-            urls)
-        config_signal.disconnect(setup_bad_config_view_two, dispatch_uid='setup_bad_config_view_twoe_for_testing')
+            collection.is_shown)
 
     def test_extra_stylefiles(self):
         response = self.client_manager.get('/config/testgroupedpage1/')
@@ -274,9 +270,9 @@ class ConfigWeightTest(TestCase):
 
     def test_order_of_config_collections_on_view(self):
         response = self.client_manager.get('/config/testgroupedpage1/')
-        import re
-        m1 = re.search('<a href="/config/testgroupedpage1/" class="btn btn-mini active">\s*Config vars for testing 1\s*</a>', response.content)
-        m2 = re.search('<a href="/config/testsimplepage1/" class="btn btn-mini ">\s*Config vars for testing 2\s*</a>', response.content)
+        content = response.content.decode('utf-8')
+        m1 = re.search('<a href="/config/testgroupedpage1/" class="btn btn-mini active">\s*Config vars for testing 1\s*</a>', content)
+        m2 = re.search('<a href="/config/testsimplepage1/" class="btn btn-mini ">\s*Config vars for testing 2\s*</a>', content)
         self.assertGreater(m1.start(), m2.start())
 
 

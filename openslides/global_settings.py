@@ -1,11 +1,8 @@
-# -*- coding: utf-8 -*-
-
 import os
 import copy
 
 from django.utils.translation import ugettext_lazy
 
-from openslides.utils.main import filesystem2unicode
 from openslides.utils.plugins import collect_plugins
 
 SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
@@ -36,7 +33,7 @@ USE_I18N = True
 USE_L10N = True
 
 LOCALE_PATHS = (
-    filesystem2unicode(os.path.join(SITE_ROOT, 'locale')),
+    os.path.join(SITE_ROOT, 'locale'),
 )
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
@@ -46,7 +43,7 @@ MEDIA_URL = '/media/'
 
 # Absolute path to the directory that holds static media from ``collectstatic``
 # Example: "/home/media/static.lawrence.com/"
-STATIC_ROOT = filesystem2unicode(os.path.join(SITE_ROOT, '../collected-site-static'))
+STATIC_ROOT = os.path.join(SITE_ROOT, '../collected-site-static')
 
 # URL that handles the media served from STATIC_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).

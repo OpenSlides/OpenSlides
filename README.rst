@@ -26,12 +26,12 @@ Installation on GNU/Linux or Mac OS X
 
 1. Check requirements
 
-   Make sure that you have installed Python Programming Language 2 (>= 2.6.9)
+   Make sure that you have installed Python Programming Language 3 (>= 3.3)
    on your system. You will also need the Python development headers.
 
    For example for Ubuntu run::
 
-       $ sudo apt-get install python-dev
+       $ sudo apt-get install python3-dev
 
 2. Setup a virtual environment with Virtual Python Environment builder
    (optional)
@@ -49,7 +49,7 @@ Installation on GNU/Linux or Mac OS X
 
        $ mkdir OpenSlides
        $ cd OpenSlides
-       $ virtualenv .virtualenv
+       $ virtualenv -p /usr/bin/python3 .virtualenv
        $ source .virtualenv/bin/activate
 
 3. Install OpenSlides
@@ -67,11 +67,6 @@ Installation on GNU/Linux or Mac OS X
    OpenSlides will install all required python packages (see
    requirements_production.txt).
 
-   If you use Python 2.6.x, you have to add the option `--allow-external
-   argparse` to the pip command::
-
-       $ pip install --allow-external argparse openslides
-
 
 Installation on Windows
 -----------------------
@@ -82,18 +77,18 @@ portable version you should observe the following install steps.*
 
 1. Check requirements
 
-   Make sure that you have installed Python Programming Language 2 (>= 2.6.9)
+   Make sure that you have installed Python Programming Language 3 (>= 3.3)
    and Setuptools on your system.
 
    a. Download and run the `Python 32-bit MSI installer
-      <http://www.python.org/ftp/python/2.7.6/python-2.7.6.msi>`_. Note
+      <https://www.python.org/ftp/python/3.4.1/python-3.4.1.msi>`_. Note
       that the 32-bit MSI installer is required even on a 64-bit Windows
       system. If you use the 64-bit MSI installer, step 3 of this
       instruction will fail unless you installed the package reportlab
       manually.
 
    b. Add python directories to PATH (via Control Panel > System >
-      Advanced): ``";C:\\Python27;C:\\Python27\\Scripts"``. Note that the path
+      Advanced): ``";C:\\Python34;C:\\Python34\\Scripts"``. Note that the path
       can differ if you customized the install of Python in the first step.
 
    c. Download and run (via double click) the last `install script
@@ -213,11 +208,6 @@ Installation and start of the development version
    For Unix and Mac OS X run::
 
        $ pip install -r requirements.txt
-
-   If you use Python 2.6.x, you have to add the option `--allow-external
-   argparse` to the pip command::
-
-       $ pip install --allow-external argparse -r requirements.txt
 
    For Windows run::
 

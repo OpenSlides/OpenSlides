@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import argparse
 import os
@@ -13,7 +12,6 @@ from openslides import get_version
 from openslides.utils.main import (
     detect_openslides_type,
     ensure_settings,
-    filesystem2unicode,
     get_browser_url,
     get_database_path_from_settings,
     get_default_settings_path,
@@ -244,10 +242,9 @@ def syncdb(settings, args):
     Run syncdb to create or update the database.
     """
     ensure_settings(settings, args)
-    # TODO: Check use of filesystem2unicode here.
     db_file = get_database_path_from_settings()
     if db_file is not None:
-        db_dir = filesystem2unicode(os.path.dirname(db_file))
+        db_dir = os.path.dirname(db_file)
         if not os.path.exists(db_dir):
             os.makedirs(db_dir)
         if not os.path.exists(db_file):

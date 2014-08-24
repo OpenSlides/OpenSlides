@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from openslides.participant.api import gen_username
 from openslides.participant.models import User
 from openslides.utils.test import TestCase

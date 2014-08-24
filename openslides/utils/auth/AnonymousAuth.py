@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.contrib.auth.models import Permission
 
 from openslides.config.api import config

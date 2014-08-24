@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import re
 from ckeditor.widgets import CKEditorWidget
 
@@ -77,5 +75,5 @@ class AppendSpeakerForm(CssClassMixin, forms.Form):
         if Speaker.objects.filter(person=speaker, item=self.item, begin_time=None).exists():
             raise forms.ValidationError(ugettext_lazy(
                 '%s is already on the list of speakers.'
-                % unicode(speaker)))
+                % str(speaker)))
         return speaker

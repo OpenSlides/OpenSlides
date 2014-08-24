@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 
 import re
 import sys
@@ -32,7 +31,7 @@ setup(
         'Framework :: Django',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3',
     ],
     license='MIT',
     packages=find_packages(exclude=['tests', 'tests.*']),

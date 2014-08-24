@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.contrib.auth.models import Group as DjangoGroup
 from django.contrib.auth.models import User as DjangoUser
 from django.contrib.auth.models import Permission
@@ -56,7 +54,7 @@ class User(SlideMixin, PersonMixin, Person, AbsoluteUrlMixin, DjangoUser):
         )
         ordering = ('last_name',)
 
-    def __unicode__(self):
+    def __str__(self):
         if self.name_suffix:
             return u"%s (%s)" % (self.clean_name, self.name_suffix)
         return u"%s" % self.clean_name
@@ -125,8 +123,8 @@ class Group(SlideMixin, PersonMixin, Person, AbsoluteUrlMixin, DjangoGroup):
     class Meta:
         ordering = ('name',)
 
-    def __unicode__(self):
-        return unicode(self.name)
+    def __str__(self):
+        return str(self.name)
 
     def get_absolute_url(self, link='detail'):
         """

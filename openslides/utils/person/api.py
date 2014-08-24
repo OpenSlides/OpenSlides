@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from .signals import receive_persons
 
 
@@ -13,7 +11,7 @@ class Person(object):
         """
         raise NotImplementedError('Any person object needs a person_id')
 
-    def __unicode__(self):
+    def __str__(self):
         """
         Return a string for this person.
         """
@@ -32,7 +30,7 @@ class Person(object):
         """
         Return the name of this person without a suffix
         """
-        return unicode(self)
+        return str(self)
 
     @property
     def name_suffix(self):

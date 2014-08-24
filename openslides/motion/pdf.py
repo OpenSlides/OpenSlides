@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from operator import attrgetter
 import random
 
@@ -51,7 +49,7 @@ def motion_to_pdf(pdf, motion):
     cell1b = []
     cell1b.append(Spacer(0, 0.2 * cm))
     for submitter in motion.submitter.all():
-        cell1b.append(Paragraph(unicode(submitter), stylesheet['Normal']))
+        cell1b.append(Paragraph(str(submitter), stylesheet['Normal']))
     motion_data.append([cell1a, cell1b])
 
     # TODO: choose this in workflow
@@ -74,7 +72,7 @@ def motion_to_pdf(pdf, motion):
                                 % _("Supporters"), stylesheet['Heading4']))
         supporters = motion.supporter.all()
         for supporter in supporters:
-            cell3b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % unicode(supporter),
+            cell3b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % str(supporter),
                                     stylesheet['Normal']))
         cell3b.append(Spacer(0, 0.2 * cm))
         motion_data.append([cell3a, cell3b])
@@ -200,7 +198,7 @@ def convert_html_to_reportlab(pdf, text):
     text = soup.body.contents
     paragraph_number = 1
     for paragraph in text:
-        paragraph = unicode(paragraph)
+        paragraph = str(paragraph)
         # ignore empty paragraphs (created by newlines/tabs of ckeditor)
         if paragraph == '\n' or paragraph == '\n\n' or paragraph == '\n\t':
             continue
@@ -271,11 +269,11 @@ def motion_poll_to_pdf(pdf, poll):
     cell.append(Paragraph(_("%d. Vote") % poll.poll_number, stylesheet['Ballot_description']))
     cell.append(Spacer(0, 0.5 * cm))
     cell.append(Paragraph("<font name='circlefont' size='15'>%s</font> <font name='Ubuntu'>%s</font>"
-                % (circle, unicode(_("Yes"))), stylesheet['Ballot_option']))
+                % (circle, _("Yes")), stylesheet['Ballot_option']))
     cell.append(Paragraph("<font name='circlefont' size='15'>%s</font> <font name='Ubuntu'>%s</font>"
-                % (circle, unicode(_("No"))), stylesheet['Ballot_option']))
+                % (circle, _("No")), stylesheet['Ballot_option']))
     cell.append(Paragraph("<font name='circlefont' size='15'>%s</font> <font name='Ubuntu'>%s</font>"
-                % (circle, unicode(_("Abstention"))), stylesheet['Ballot_option']))
+                % (circle, _("Abstention")), stylesheet['Ballot_option']))
     data = []
     # get ballot papers config values
     ballot_papers_selection = config["motion_pdf_ballot_papers_selection"]
@@ -299,7 +297,7 @@ def motion_poll_to_pdf(pdf, poll):
     # print ballot papers
     if number > 0:
         # TODO: try [cell, cell] * (number / 2)
-        for user in xrange(number / 2):
+        for user in range(number / 2):
             data.append([cell, cell])
         rest = number % 2
         if rest:

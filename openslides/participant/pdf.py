@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.utils.translation import ugettext as _
 from reportlab.graphics.barcode.qr import QrCodeWidget
 from reportlab.graphics.shapes import Drawing
@@ -30,7 +28,7 @@ def participants_to_pdf(pdf):
         groups = ''
         for group in user.groups.all():
             if group.pk != 2:
-                groups += "%s<br/>" % unicode(_(group.name))
+                groups += "%s<br/>" % _(group.name)
         data.append([
             counter,
             Paragraph(user.title, stylesheet['Tablecell']),
@@ -82,7 +80,7 @@ def participants_passwords_to_pdf(pdf):
     qrcode_wlan_draw.add(qrcode_wlan)
 
     for user in User.objects.all().order_by(sort):
-        pdf.append(Paragraph(unicode(user), stylesheet['h1']))
+        pdf.append(Paragraph(user, stylesheet['h1']))
         pdf.append(Spacer(0, 1 * cm))
         data = []
         # WLAN access data

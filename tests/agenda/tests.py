@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
+from unittest.mock import patch
 
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test.client import Client
-from mock import patch
 
 from openslides.agenda.models import Item
 from openslides.agenda.slides import agenda_slide
@@ -317,12 +316,16 @@ class ViewTest(TestCase):
             'Organizational items can not have agenda items as child elements.')
 
     def test_csv_import(self):
-        item_number = Item.objects.all().count()
+        """
+        Test to upload a csv file.
+        """
         new_csv_file = SimpleUploadedFile(
             name='new_csv_file.csv',
-            content='Title,text,duration\nTitle thei5KieK6ohphuilahs,Text Chai1ioWae3ASh0Eloh1,42\n,Bad line\n')
+            content=bytes('Title,text,duration\nTitle thei5KieK6ohphuilahs,Text Chai1ioWae3ASh0Eloh1,42\n,Bad line\n', 'UTF-8'))
+
         self.adminClient.post('/agenda/csv_import/', {'csvfile': new_csv_file})
-        self.assertEqual(Item.objects.all().count(), item_number + 1)
+
+        self.assertEqual(Item.objects.all().count(), 3)
         item = Item.objects.get(pk=3)
         self.assertEqual(item.title, 'Title thei5KieK6ohphuilahs')
         self.assertEqual(item.text, 'Text Chai1ioWae3ASh0Eloh1')

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # OpenSlides documentation build configuration file, created by
 # sphinx-quickstart on Mon Mar 12 08:08:56 2012.

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from json import dumps
 from time import time
 
@@ -49,7 +47,7 @@ def update_projector_overlay(overlay):
     """
     if overlay is None:
         overlays = [item for item in get_overlays().values()]
-    elif isinstance(overlay, basestring):
+    elif isinstance(overlay, str):
         overlays = [get_overlays()[overlay]]
     else:
         overlays = [overlay]

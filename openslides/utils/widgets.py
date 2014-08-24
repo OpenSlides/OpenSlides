@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.core.urlresolvers import reverse
 from django.dispatch import Signal
 from django.template import RequestContext
@@ -8,14 +6,14 @@ from django.template.loader import render_to_string
 from .dispatch import SignalConnectMetaClass
 
 
-class Widget(object):
+class Widget(object, metaclass=SignalConnectMetaClass):
     """
     Base class for a widget for the dashboard.
 
     Every app which wants to add widgets to the dashboard has to create a
-    widget class subclassing from this base class. The name attribute has to
-    be set. It has to be unique. The __metaclass__ attribute
-    (SignalConnectMetaClass) does the rest of the magic.
+    widget class subclassing from this base class. The name attribute has to be
+    set. It has to be unique. The metaclass (SignalConnectMetaClass) does the
+    rest of the magic.
 
     For the appearance of the widget there are some attributes and methods
     like verbose_name, required_permission, default_column, default_weight,
@@ -25,7 +23,6 @@ class Widget(object):
     get_icon_css_class, get_url_for_more, get_stylesheets and
     get_javascript_files. Most of them are optional.
     """
-    __metaclass__ = SignalConnectMetaClass
     signal = Signal(providing_args=['request'])
     name = None
     verbose_name = None
@@ -53,8 +50,8 @@ class Widget(object):
     def __repr__(self):
         return repr(self.get_verbose_name())
 
-    def __unicode__(self):
-        return unicode(self.get_verbose_name())
+    def __str__(self):
+        return str(self.get_verbose_name())
 
     @classmethod
     def get_dispatch_uid(cls):

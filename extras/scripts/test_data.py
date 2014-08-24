@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from random import randint, choice
 
 # Import the openslide settings. Has has to be done before any other openslides

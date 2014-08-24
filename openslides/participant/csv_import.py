@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import csv
 
 from django.db import transaction
@@ -21,12 +19,12 @@ def import_users(csvfile):
         csvfile.seek(0)
 
         with transaction.commit_on_success():
-            dialect = csv.Sniffer().sniff(csvfile.readline())
+            dialect = csv.Sniffer().sniff(csvfile.readline().decode('utf-8'))
             dialect = csv_ext.patchup(dialect)
             csvfile.seek(0)
 
-            for (line_no, line) in enumerate(csv.reader(csvfile,
-                                                        dialect=dialect)):
+            for (line_no, line) in enumerate(csv.reader(
+                    (line.decode('utf8') for line in csvfile.readlines()),                                                        dialect=dialect)):
                 if line_no:
                     try:
                         (title, first_name, last_name, gender, email, groups,

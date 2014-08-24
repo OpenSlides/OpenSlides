@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 VERSION = (2, 0, 0, 'alpha', 1)  # During development it is the next release
 RELEASE = False
 
@@ -38,9 +36,10 @@ def get_git_commit_id():
     try:
         git_head = open('.git/HEAD', 'r').read().rstrip()
         if git_head[:5] == 'ref: ':
+            # The file is a reference. We have to follow it to get the commit id
             git_commit_id = open('.git/%s' % git_head[5:], 'r').read().rstrip()
         else:
             git_commit_id = git_head
+        return git_commit_id
     except IOError:
-        git_commit_id = 'unknown'
-    return str(git_commit_id)
+        return 'unknown'

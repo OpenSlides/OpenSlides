@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from openslides.config.api import config
 from openslides.mediafile.models import Mediafile
 from openslides.utils.tornado_webserver import ProjectorSocketHandler

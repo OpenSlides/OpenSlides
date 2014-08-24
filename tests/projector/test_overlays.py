@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
-
 import warnings
 
-from mock import MagicMock
+from unittest.mock import MagicMock
 
 from openslides.projector.projector import Overlay
 from openslides.utils.test import TestCase
@@ -18,4 +16,4 @@ class OverlayTest(TestCase):
 
         with warnings.catch_warnings(record=True) as warning:
             overlay.get_projector_html()
-            self.assertEqual(warning[0].message.message, 'Exception in overlay "test_overlay": no good error')
+            self.assertEqual(str(warning[0].message), 'Exception in overlay "test_overlay": no good error')

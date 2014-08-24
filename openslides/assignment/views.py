@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
@@ -68,7 +66,7 @@ class AssignmentDetail(DetailView):
                 user = form.cleaned_data['candidate']
                 try:
                     self.object.run(user, self.request.user)
-                except NameError, e:
+                except NameError as e:
                     messages.error(self.request, e)
                 else:
                     messages.success(self.request, _(
@@ -106,7 +104,7 @@ class AssignmentSetStatusView(SingleObjectMixin, RedirectView):
         if status is not None:
             try:
                 self.object.set_status(status)
-            except ValueError, e:
+            except ValueError as e:
                 messages.error(self.request, e)
             else:
                 messages.success(
@@ -124,7 +122,7 @@ class AssignmentRunView(SingleObjectMixin, PermissionMixin, View):
         assignment = self.get_object()
         try:
             assignment.run(self.request.user, self.request.user)
-        except NameError, e:
+        except NameError as e:
             messages.error(self.request, e)
         else:
             messages.success(
@@ -142,7 +140,8 @@ class AssignmentRunDeleteView(SingleObjectMixin, RedirectView):
                 "assignment.can_manage_assignment"):
             try:
                 self.object.delrun(self.request.user, blocked=True)
-            except Exception, e:
+            except Exception as e:
+                # TODO: only catch relevant exception
                 messages.error(self.request, e)
             else:
                 messages.success(self.request, _(
@@ -168,7 +167,8 @@ class AssignmentRunOtherDeleteView(SingleObjectMixin, QuestionView):
         self._get_person_information()
         try:
             self.object.delrun(self.person, blocked=False)
-        except Exception, e:
+        except Exception as e:
+            # TODO: only catch relevant exception
             self.error = e
         else:
             self.error = False
@@ -400,7 +400,7 @@ class AssignmentPDF(PDFView):
 
         # Add result rows
         elected_candidates = list(assignment.elected)
-        for candidate, poll_list in vote_results.iteritems():
+        for candidate, poll_list in vote_results.items():
             row = []
 
             candidate_string = candidate.clean_name
@@ -595,7 +595,7 @@ class AssignmentPollPDF(PDFView):
                     cell.append(Spacer(0, 1.3 * cm))
 
             # print ballot papers
-            for user in xrange(number / 2):
+            for user in range(number // 2):
                 if len(options) > 13:
                     data.append([cellcolumnA, cell])
                 else:
@@ -629,7 +629,7 @@ class AssignmentPollPDF(PDFView):
                     cell.append(Spacer(0, 0.75 * cm))
 
             # print ballot papers
-            for user in xrange(number / 2):
+            for user in range(number // 2):
                 if len(options) > 22:
                     data.append([cellcolumnA, cell])
                 else:

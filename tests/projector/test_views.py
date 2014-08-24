@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
-
 from django.contrib.auth.models import AnonymousUser
 from django.test.client import Client, RequestFactory
-from mock import MagicMock, patch
+from unittest.mock import MagicMock, patch
 
 from openslides.config.api import config
 from openslides.projector import views

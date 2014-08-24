@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from openslides.projector.signals import countdown
 from openslides.utils.test import TestCase
 
@@ -15,7 +13,7 @@ class CountdownTest(TestCase):
 
         self.assertIsInstance(test_value, dict)
         self.assertEqual(
-            test_value.keys(),
+            list(test_value.keys()),
             ['load_file', 'projector_countdown_start',
              'projector_countdown_duration', 'projector_countdown_pause',
              'projector_countdown_state', 'call'])

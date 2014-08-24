@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # TODO: Rename all views and template names
 
 from datetime import datetime, timedelta
@@ -394,7 +393,7 @@ class SpeakerAppendView(SingleObjectMixin, RedirectView):
         else:
             try:
                 Speaker.objects.add(item=self.object, person=request.user)
-            except OpenSlidesError, e:
+            except OpenSlidesError as e:
                 messages.error(request, e)
             else:
                 messages.success(request, _('You were successfully added to the list of speakers.'))
@@ -627,7 +626,7 @@ class CurrentListOfSpeakersView(RedirectView):
                 if self.request.user.has_perm('agenda.can_be_speaker'):
                     try:
                         Speaker.objects.add(self.request.user, item)
-                    except OpenSlidesError, e:
+                    except OpenSlidesError as e:
                         messages.error(request, e)
                     else:
                         messages.success(request, _('You were successfully added to the list of speakers.'))

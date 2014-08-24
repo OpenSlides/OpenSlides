@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 import re
 
 from django.contrib.auth.models import Permission
@@ -78,10 +76,9 @@ class GroupViews(TestCase):
         self.client.login(username='loginusername', password='default')
 
     def test_detail(self):
-        self.assertFalse(config['participant_sort_users_by_first_name'])
         response = self.client.get('/participant/group/3/')
         pattern = r'admins_first_name Administrator|aWei4ien6Se0vie0xeiv uquahx3Wohtieph9baer'
-        match = re.findall(pattern, response.content)
+        match = re.findall(pattern, response.content.decode('utf8'))
         self.assertEqual(match[0], 'admins_first_name Administrator')
         self.assertEqual(match[1], 'aWei4ien6Se0vie0xeiv uquahx3Wohtieph9baer')
 
@@ -89,7 +86,7 @@ class GroupViews(TestCase):
         self.assertTrue(config['participant_sort_users_by_first_name'])
         response = self.client.get('/participant/group/3/')
         pattern = r'admins_first_name Administrator|aWei4ien6Se0vie0xeiv uquahx3Wohtieph9baer'
-        match = re.findall(pattern, response.content)
+        match = re.findall(pattern, response.content.decode('utf8'))
         self.assertEqual(match[1], 'admins_first_name Administrator')
         self.assertEqual(match[0], 'aWei4ien6Se0vie0xeiv uquahx3Wohtieph9baer')
 
