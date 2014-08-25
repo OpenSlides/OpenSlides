@@ -1,5 +1,7 @@
+import os
 from parser import command, argument, call
 import re
+from urllib.request import urlopen
 
 
 @argument('module', nargs='?', default='')
@@ -81,3 +83,26 @@ def lowest_requirements(args=None):
             yield '%s==%s' % (line.req.key, line.req.specs[0][1])
 
     print('pip install %s' % ' '.join(get_lowest_versions(args.requirements)))
+
+
+@argument('-d', '--development', action='store_true')
+@command('jsrequirements', help="Downloads the JS requirements")
+def download_js_requirements(args=None):
+    from js_requirements import JS_REQUIREMENTS
+
+    development = getattr(args, 'development', False)
+    directory = os.path.join('openslides', 'core', 'static', 'js', 'lib')
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    for requirement in JS_REQUIREMENTS:
+        if development and len(requirements) == 3:
+            url_part = 2
+        else:
+            url_part = 1
+        url = requirement[url_part]
+        response = urlopen(url)
+        path = os.path.join(directory, requirement[0])
+        with open(path, 'wb') as f:
+            f.write(response.read())

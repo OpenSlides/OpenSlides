@@ -24,3 +24,6 @@ dist/*
 # Unit test and coverage reports
 .coverage
 htmlcov/*
+
+# OpenSlides
+openslides/core/static/js/lib
