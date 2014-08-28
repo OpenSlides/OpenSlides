@@ -114,7 +114,7 @@ $(document).ready(function(){
     }
     // Sticky navigation
     $(window).scroll(function(){
-        var el = $('.leftmenu > ul'); 
+        var el = $('.leftmenu > ul');
         if($(window).width() > 479) {
             if ( ($(this).scrollTop() > 80) && ($(this).scrollLeft() < 10)) {
                 el.css({'position':'fixed','top':'10px','width':'14.15%'});
@@ -188,12 +188,20 @@ $(document).ready(function(){
         });
         $('#content').removeClass('span10').addClass('span11');
     }
-    
+
     function fullmenu(){
         $('.leftmenu').removeClass('span1').removeClass('lefticon').addClass('span2');
         $('.leftmenu > ul > li > a').each(function(){
             $(this).attr({'rel':'','title':''});
         });
-        $('#content').removeClass('span11').addClass('span10'); 
+        $('#content').removeClass('span11').addClass('span10');
     }
 });
+
+// use naturalSort as dataTable extension
+jQuery.fn.dataTableExt.oSort['natural-asc']  = function(a,b) {
+    return naturalSort(a,b);
+};
+jQuery.fn.dataTableExt.oSort['natural-desc'] = function(a,b) {
+    return naturalSort(a,b) * -1;
+};
