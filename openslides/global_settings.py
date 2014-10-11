@@ -88,6 +88,7 @@ INSTALLED_APPS = (
     'mptt',
     'haystack',  # full-text-search
     'ckeditor',
+    'rest_framework',
     'openslides.poll',
     'openslides.core',
     'openslides.account',
