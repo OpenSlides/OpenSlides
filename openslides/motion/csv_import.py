@@ -9,7 +9,7 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_noop
 
 from openslides.utils import csv_ext
-from openslides.utils.person.api import Persons
+from openslides.users.models import User
 from openslides.utils.utils import html_strong
 
 from .models import Category, Motion
@@ -90,8 +90,8 @@ def import_motions(csvfile, default_submitter, override, importing_person=None):
             # Add submitter
             person_found = False
             if submitter:
-                for person in Persons():
-                    if person.clean_name == submitter:
+                for person in User.objects.all():
+                    if person.get_short_name() == submitter:
                         if person_found:
                             warning.append(_('Several suitable submitters found.'))
                             person_found = False

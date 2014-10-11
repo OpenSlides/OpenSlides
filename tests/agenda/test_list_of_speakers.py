@@ -6,7 +6,7 @@ from django.test.client import Client
 from openslides.agenda.models import Item, Speaker
 from openslides.agenda.signals import agenda_list_of_speakers
 from openslides.config.api import config
-from openslides.participant.models import Group, User
+from openslides.users.models import User
 from openslides.projector.api import set_active_slide, register_slide_model
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.test import TestCase
@@ -24,15 +24,15 @@ class ListOfSpeakerModelTests(TestCase):
     def test_append_speaker(self):
         # Append speaker1 to the list of item1
         speaker1_item1 = Speaker.objects.add(self.speaker1, self.item1)
-        self.assertTrue(Speaker.objects.filter(person=self.speaker1, item=self.item1).exists())
+        self.assertTrue(Speaker.objects.filter(user=self.speaker1, item=self.item1).exists())
 
         # Append speaker1 to the list of item2
         speaker1_item2 = Speaker.objects.add(self.speaker1, self.item2)
-        self.assertTrue(Speaker.objects.filter(person=self.speaker1, item=self.item2).exists())
+        self.assertTrue(Speaker.objects.filter(user=self.speaker1, item=self.item2).exists())
 
         # Append speaker2 to the list of item1
         speaker2_item1 = Speaker.objects.add(self.speaker2, self.item1)
-        self.assertTrue(Speaker.objects.filter(person=self.speaker2, item=self.item1).exists())
+        self.assertTrue(Speaker.objects.filter(user=self.speaker2, item=self.item1).exists())
 
         # Try to append speaker 1 again to the list of item1
         with self.assertRaises(OpenSlidesError):
@@ -69,7 +69,7 @@ class ListOfSpeakerModelTests(TestCase):
         self.assertIsNone(speaker1_item1.end_time)
         self.assertIsNone(speaker2_item1.begin_time)
         speaker2_item1.begin_speach()
-        self.assertIsNotNone(Speaker.objects.get(person=self.speaker1, item=self.item1).end_time)
+        self.assertIsNotNone(Speaker.objects.get(user=self.speaker1, item=self.item1).end_time)
         self.assertIsNotNone(speaker2_item1.begin_time)
 
     @patch('openslides.agenda.models.update_projector_overlay')
@@ -109,12 +109,12 @@ class SpeakerViewTestCase(TestCase):
         self.admin_client.login(username='admin', password='admin')
 
         # Speaker1
-        self.speaker1 = User.objects.create_user('speaker1', 'speaker1@user.user', 'speaker')
+        self.speaker1 = User.objects.create_user('speaker1', 'speaker')
         self.speaker1_client = Client()
         self.speaker1_client.login(username='speaker1', password='speaker')
 
         # Speaker2
-        self.speaker2 = User.objects.create_user('speaker2', 'speaker2@user.user', 'speaker')
+        self.speaker2 = User.objects.create_user('speaker2', 'speaker')
         self.speaker2_client = Client()
         self.speaker2_client.login(username='speaker2', password='speaker')
 
@@ -135,12 +135,12 @@ class SpeakerViewTestCase(TestCase):
 
 class TestSpeakerAppendView(SpeakerViewTestCase):
     def test_get(self):
-        self.assertFalse(Speaker.objects.filter(person=self.speaker1, item=self.item1).exists())
+        self.assertFalse(Speaker.objects.filter(user=self.speaker1, item=self.item1).exists())
         self.assertEqual(Speaker.objects.filter(item=self.item1).count(), 0)
 
         # Set speaker1 to item1
         response = self.check_url('/agenda/1/speaker/', self.speaker1_client, 302)
-        self.assertTrue(Speaker.objects.filter(person=self.speaker1, item=self.item1).exists())
+        self.assertTrue(Speaker.objects.filter(user=self.speaker1, item=self.item1).exists())
         self.assertEqual(Speaker.objects.filter(item=self.item1).count(), 1)
         self.assertMessage(response, 'You were successfully added to the list of speakers.')
 
@@ -162,22 +162,13 @@ class TestAgendaItemView(SpeakerViewTestCase):
     def test_post(self):
         # Set speaker1 to item1
         response = self.admin_client.post(
-            '/agenda/1/', {'speaker': self.speaker1.person_id})
-        self.assertTrue(Speaker.objects.filter(person=self.speaker1, item=self.item1).exists())
+            '/agenda/1/', {'speaker': self.speaker1.id})
+        self.assertTrue(Speaker.objects.filter(user=self.speaker1, item=self.item1).exists())
 
         # Try it again
         response = self.admin_client.post(
-            '/agenda/1/', {'speaker': self.speaker1.person_id})
+            '/agenda/1/', {'speaker': self.speaker1.id})
         self.assertFormError(response, 'form', 'speaker', 'speaker1 is already on the list of speakers.')
-
-    def test_group_as_speaker(self):
-        """
-        Test to show a group as a speaker on the agenda-view.
-        """
-        group = Group.objects.create(name='test', group_as_person=True)
-        Speaker.objects.add(group, self.item1)
-        self.assertTrue(Speaker.objects.filter(person=group.person_id, item=self.item1).exists())
-        self.admin_client.get('/agenda/1/')
 
 
 class TestSpeakerDeleteView(SpeakerViewTestCase):
@@ -190,7 +181,7 @@ class TestSpeakerDeleteView(SpeakerViewTestCase):
         response = self.admin_client.post(
             '/agenda/1/speaker/%d/del/' % speaker.pk, {'yes': 'yes'})
         self.assertEqual(response.status_code, 302)
-        self.assertFalse(Speaker.objects.filter(person=self.speaker1, item=self.item1).exists())
+        self.assertFalse(Speaker.objects.filter(user=self.speaker1, item=self.item1).exists())
 
     def test_post_as_user(self):
         Speaker.objects.add(self.speaker1, self.item1)
@@ -198,14 +189,14 @@ class TestSpeakerDeleteView(SpeakerViewTestCase):
         response = self.speaker1_client.post(
             '/agenda/1/speaker/del/', {'yes': 'yes'})
         self.assertEqual(response.status_code, 302)
-        self.assertFalse(Speaker.objects.filter(person=self.speaker1, item=self.item1).exists())
+        self.assertFalse(Speaker.objects.filter(user=self.speaker1, item=self.item1).exists())
 
 
 class TestSpeakerSpeakView(SpeakerViewTestCase):
     def test_get(self):
-        url = '/agenda/1/speaker/%s/speak/' % self.speaker1.person_id
+        url = '/agenda/1/speaker/%s/speak/' % self.speaker1.pk
         response = self.check_url(url, self.admin_client, 302)
-        self.assertMessage(response, 'user:2 is not on the list of item1.')
+        self.assertMessage(response, '2 is not on the list of item1.')
 
         speaker = Speaker.objects.add(self.speaker1, self.item1)
         response = self.check_url(url, self.admin_client, 302)
@@ -257,7 +248,7 @@ class GlobalListOfSpeakersLinks(SpeakerViewTestCase):
         set_active_slide('agenda', pk=1)
         response = self.speaker1_client.get('/agenda/list_of_speakers/add/')
         self.assertRedirects(response, '/agenda/1/')
-        self.assertEqual(Speaker.objects.get(item__pk='1').person, self.speaker1)
+        self.assertEqual(Speaker.objects.get(item__pk='1').user, self.speaker1)
         self.assertMessage(response, 'You were successfully added to the list of speakers.')
 
         perm = Permission.objects.filter(name='Can see agenda').get()
@@ -281,7 +272,7 @@ class GlobalListOfSpeakersLinks(SpeakerViewTestCase):
         response = self.speaker1_client.get('/agenda/list_of_speakers/add/')
 
         self.assertRedirects(response, '/agenda/%d/' % agenda_item.pk)
-        self.assertEqual(Speaker.objects.get(item__pk=agenda_item.pk).person, self.speaker1)
+        self.assertEqual(Speaker.objects.get(item__pk=agenda_item.pk).user, self.speaker1)
         self.assertMessage(response, 'You were successfully added to the list of speakers.')
 
     def test_global_next_speaker_url(self):

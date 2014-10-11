@@ -190,13 +190,13 @@ class AgendaItemView(SingleObjectMixin, FormView):
             'object': self.object,
             'list_of_speakers': list_of_speakers,
             'is_on_the_list_of_speakers': Speaker.objects.filter(
-                item=self.object, begin_time=None, person=self.request.user).exists(),
+                item=self.object, begin_time=None, user=self.request.user).exists(),
             'active_type': active_type,
         })
         return super(AgendaItemView, self).get_context_data(**kwargs)
 
     def form_valid(self, form):
-        Speaker.objects.add(person=form.cleaned_data['speaker'], item=self.get_object())
+        Speaker.objects.add(user=form.cleaned_data['speaker'], item=self.get_object())
         return self.render_to_response(self.get_context_data(form=form))
 
     def get_form_kwargs(self):
@@ -392,7 +392,7 @@ class SpeakerAppendView(SingleObjectMixin, RedirectView):
             messages.error(request, _('The list of speakers is closed.'))
         else:
             try:
-                Speaker.objects.add(item=self.object, person=request.user)
+                Speaker.objects.add(item=self.object, user=request.user)
             except OpenSlidesError as e:
                 messages.error(request, e)
             else:
@@ -413,7 +413,7 @@ class SpeakerDeleteView(DeleteView):
         if 'speaker' in kwargs:
             return request.user.has_perm('agenda.can_manage_agenda')
         else:
-            # Any person who is on the list of speakers can delete himself from the list.
+            # Any user who is on the list of speakers can delete himself from the list.
             return True
 
     def get(self, *args, **kwargs):
@@ -434,7 +434,7 @@ class SpeakerDeleteView(DeleteView):
             return Speaker.objects.get(pk=self.kwargs['speaker'])
         except KeyError:
             return Speaker.objects.filter(
-                item=self.kwargs['pk'], person=self.request.user).exclude(weight=None).get()
+                item=self.kwargs['pk'], user=self.request.user).exclude(weight=None).get()
 
     def get_url_name_args(self):
         return [self.kwargs['pk']]
@@ -448,7 +448,7 @@ class SpeakerDeleteView(DeleteView):
 
 class SpeakerSpeakView(SingleObjectMixin, RedirectView):
     """
-    Mark the speaking person.
+    Mark the speaking user.
     """
     required_permission = 'agenda.can_manage_agenda'
     url_name = 'item_view'
@@ -458,14 +458,14 @@ class SpeakerSpeakView(SingleObjectMixin, RedirectView):
         self.object = self.get_object()
         try:
             speaker = Speaker.objects.filter(
-                person=kwargs['person_id'],
+                user=kwargs['user_id'],
                 item=self.object,
                 begin_time=None).get()
         except Speaker.DoesNotExist:  # TODO: Check the MultipleObjectsReturned error here?
             messages.error(
                 self.request,
-                _('%(person)s is not on the list of %(item)s.')
-                % {'person': kwargs['person_id'], 'item': self.object})
+                _('%(user)s is not on the list of %(item)s.')
+                % {'user': kwargs['user_id'], 'item': self.object})
         else:
             speaker.begin_speach()
 

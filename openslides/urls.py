@@ -23,7 +23,7 @@ urlpatterns += patterns(
     (r'^agenda/', include('openslides.agenda.urls')),
     (r'^motion/', include('openslides.motion.urls')),
     (r'^assignment/', include('openslides.assignment.urls')),
-    (r'^participant/', include('openslides.participant.urls')),
+    (r'^user/', include('openslides.users.urls')),
     (r'^mediafile/', include('openslides.mediafile.urls')),
     (r'^config/', include('openslides.config.urls')),
     (r'^projector/', include('openslides.projector.urls')),
@@ -32,12 +32,13 @@ urlpatterns += patterns(
 )
 
 # TODO: move this patterns into core or the participant app
+from openslides.users.views import UserSettingsView, UserPasswordSettingsView
 urlpatterns += patterns(
     '',
     (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
 
     url(r'^login/$',
-        'openslides.participant.views.login',
+        'openslides.users.views.login',
         name='user_login'),
 
     url(r'^logout/$',
@@ -45,11 +46,11 @@ urlpatterns += patterns(
         name='user_logout'),
 
     url(r'^usersettings/$',
-        'openslides.participant.views.user_settings',
+        UserSettingsView.as_view(),
         name='user_settings'),
 
     url(r'^usersettings/changepassword/$',
-        'openslides.participant.views.user_settings_password',
+        UserPasswordSettingsView.as_view(),
         name='password_change'),
 )
 

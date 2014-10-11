@@ -8,7 +8,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test.client import Client
 
 from openslides.mediafile.models import Mediafile
-from openslides.participant.models import User
+from openslides.core.models import User
 from openslides.utils.test import TestCase
 
 
@@ -24,11 +24,9 @@ class MediafileTest(TestCase):
 
         # Setup three different users
         self.manager = User.objects.get(pk=1)
-        self.vip_user = User.objects.create(username='mediafile_test_vip_user')
-        self.vip_user.reset_password('default')
+        self.vip_user = User.objects.create_user('mediafile_test_vip_user', 'default')
         self.vip_user.user_permissions.add(perm_1, perm_2)
-        self.normal_user = User.objects.create(username='mediafile_test_normal_user')
-        self.normal_user.reset_password('default')
+        self.normal_user = User.objects.create_user('mediafile_test_normal_user', 'default')
 
         # Setup a mediafile object
         self.tmp_dir = settings.MEDIA_ROOT
@@ -74,13 +72,16 @@ class MediafileTest(TestCase):
         clients = self.login_clients()
         response = clients['client_manager'].get('/mediafile/new/')
         self.assertContains(response, '---------', status_code=200)
-        self.assertContains(response, '<option value="user:1" selected="selected">Administrator</option>', status_code=200)
+        self.assertContains(response, '<option value="1" selected="selected">Administrator</option>', status_code=200)
         self.assertTemplateUsed(response, 'mediafile/mediafile_form.html')
+
         response = clients['client_vip_user'].get('/mediafile/new/')
         self.assertNotContains(response, '<select id="id_uploader" name="uploader">', status_code=200)
         self.assertTemplateUsed(response, 'mediafile/mediafile_form.html')
+
         response = clients['client_normal_user'].get('/mediafile/new/')
         self.assertEqual(response.status_code, 403)
+
         bad_client = Client()
         response = bad_client.get('/mediafile/new/')
         self.assertRedirects(response, expected_url='/login/?next=/mediafile/new/', status_code=302, target_status_code=200)
@@ -92,7 +93,7 @@ class MediafileTest(TestCase):
         response_1 = client_1.post('/mediafile/new/',
                                    {'title': 'new_test_file_title_1',
                                     'mediafile': new_file_1,
-                                    'uploader': self.normal_user.person_id})
+                                    'uploader': self.normal_user.pk})
         self.assertRedirects(response_1, expected_url='/mediafile/', status_code=302, target_status_code=200)
         object_1 = Mediafile.objects.latest('timestamp')
         self.assertEqual(object_1.mediafile.url, '/media/file/new_test_file.txt')
@@ -129,12 +130,15 @@ class MediafileTest(TestCase):
         clients = self.login_clients()
         response = clients['client_manager'].get('/mediafile/1/edit/')
         self.assertContains(response, '---------', status_code=200)
-        self.assertContains(response, '<option value="user:3" selected="selected">mediafile_test_normal_user</option>', status_code=200)
+        self.assertContains(response, '<option value="3" selected="selected">mediafile_test_normal_user</option>', status_code=200)
         self.assertTemplateUsed(response, 'mediafile/mediafile_form.html')
+
         response = clients['client_vip_user'].get('/mediafile/1/edit/')
         self.assertEqual(response.status_code, 403)
+
         response = clients['client_normal_user'].get('/mediafile/1/edit/')
         self.assertEqual(response.status_code, 403)
+
         bad_client = Client()
         response = bad_client.get('/mediafile/1/edit/')
         self.assertRedirects(response, expected_url='/login/?next=/mediafile/1/edit/', status_code=302, target_status_code=200)
@@ -145,7 +149,7 @@ class MediafileTest(TestCase):
         self.object.save()
         response = clients['client_vip_user'].get('/mediafile/1/edit/')
         self.assertNotContains(response, '---------', status_code=200)
-        self.assertNotContains(response, '<option value="user:2" selected="selected">mediafile_test_vip_user</option>', status_code=200)
+        self.assertNotContains(response, '<option value="2" selected="selected">mediafile_test_vip_user</option>', status_code=200)
         self.assertTemplateUsed(response, 'mediafile/mediafile_form.html')
 
     def test_edit_mediafile_post_request(self):
@@ -158,7 +162,7 @@ class MediafileTest(TestCase):
         response_1 = client_1.post('/mediafile/2/edit/',
                                    {'title': 'new_test_file_title_1',
                                     'mediafile': new_file_1,
-                                    'uploader': self.manager.person_id})
+                                    'uploader': self.manager.pk})
         self.assertEqual(response_1.status_code, 302)
         object_2 = Mediafile.objects.get(pk=2)
         self.assertEqual(object_2.mediafile.url, '/media/file/new_test_file.txt')

@@ -2,7 +2,7 @@ from django.test.client import Client
 
 from openslides.agenda.models import Item, Speaker
 from openslides.assignment.models import Assignment
-from openslides.participant.models import User
+from openslides.users.models import User
 from openslides.utils.test import TestCase
 
 
@@ -34,6 +34,6 @@ class AssignmentModelTest(TestCase):
         self.assertEqual(item.speaker_set.count(), 1)
 
         assignment.gen_poll()
-        self.assertTrue(item.speaker_set.filter(person=person_1).exists())
-        self.assertTrue(item.speaker_set.filter(person=person_2).exists())
-        self.assertTrue(item.speaker_set.filter(person=person_3).exists())
+        self.assertTrue(item.speaker_set.filter(user=person_1).exists())
+        self.assertTrue(item.speaker_set.filter(user=person_2).exists())
+        self.assertTrue(item.speaker_set.filter(user=person_3).exists())

@@ -1,9 +1,13 @@
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy, ugettext_noop
+from django.contrib.auth import get_user_model
 
 from openslides.utils.models import AbsoluteUrlMixin
 from openslides.projector.models import SlideMixin
+
+# Imports the default user so that other apps can import it from here.
+User = get_user_model()
 
 
 class CustomSlide(SlideMixin, AbsoluteUrlMixin, models.Model):
@@ -38,3 +42,7 @@ class CustomSlide(SlideMixin, AbsoluteUrlMixin, models.Model):
         else:
             url = super(CustomSlide, self).get_absolute_url(link)
         return url
+
+
+# TODO: apploader
+from . import main_menu, signals, slides, widgets  # noqa

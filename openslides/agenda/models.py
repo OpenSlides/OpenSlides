@@ -17,8 +17,8 @@ from openslides.projector.api import (get_active_slide, reset_countdown,
 from openslides.projector.models import SlideMixin
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import AbsoluteUrlMixin
-from openslides.utils.person.models import PersonField
 from openslides.utils.utils import to_roman
+from openslides.users.models import User
 
 
 class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
@@ -279,7 +279,7 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
 
     def get_next_speaker(self):
         """
-        Returns the speaker object of the person who is next.
+        Returns the speaker object of the user who is next.
         """
         try:
             return self.speaker_set.filter(begin_time=None).order_by('weight')[0]
@@ -337,17 +337,17 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
 
 
 class SpeakerManager(models.Manager):
-    def add(self, person, item):
-        if self.filter(person=person, item=item, begin_time=None).exists():
+    def add(self, user, item):
+        if self.filter(user=user, item=item, begin_time=None).exists():
             raise OpenSlidesError(_(
-                '%(person)s is already on the list of speakers of item %(id)s.')
-                % {'person': person, 'id': item.id})
-        if isinstance(person, AnonymousUser):
+                '%(user)s is already on the list of speakers of item %(id)s.')
+                % {'user': user, 'id': item.id})
+        if isinstance(user, AnonymousUser):
             raise OpenSlidesError(
                 _('An anonymous user can not be on lists of speakers.'))
         weight = (self.filter(item=item).aggregate(
             models.Max('weight'))['weight__max'] or 0)
-        return self.create(item=item, person=person, weight=weight + 1)
+        return self.create(item=item, user=user, weight=weight + 1)
 
 
 class Speaker(AbsoluteUrlMixin, models.Model):
@@ -357,14 +357,14 @@ class Speaker(AbsoluteUrlMixin, models.Model):
 
     objects = SpeakerManager()
 
-    person = PersonField()
+    user = models.ForeignKey(User)
     """
-    ForeinKey to the person who speaks.
+    ForeinKey to the user who speaks.
     """
 
     item = models.ForeignKey(Item)
     """
-    ForeinKey to the AgendaItem to which the person want to speak.
+    ForeinKey to the AgendaItem to which the user want to speak.
     """
 
     begin_time = models.DateTimeField(null=True)
@@ -396,11 +396,11 @@ class Speaker(AbsoluteUrlMixin, models.Model):
         self.check_and_update_projector()
 
     def __str__(self):
-        return str(self.person)
+        return str(self.user)
 
     def get_absolute_url(self, link='detail'):
         if link == 'detail':
-            url = self.person.get_absolute_url('detail')
+            url = self.user.get_absolute_url('detail')
         elif link == 'delete':
             url = reverse('agenda_speaker_delete',
                           args=[self.item.pk, self.pk])
@@ -421,7 +421,7 @@ class Speaker(AbsoluteUrlMixin, models.Model):
 
     def begin_speach(self):
         """
-        Let the person speak.
+        Let the user speak.
 
         Set the weight to None and the time to now. If anyone is still
         speaking, end his speach.

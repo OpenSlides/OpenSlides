@@ -7,7 +7,7 @@ from django.test.client import Client
 from openslides.config.api import config
 from openslides.mediafile.models import Mediafile
 from openslides.motion.models import Category, Motion, MotionLog, State
-from openslides.participant.models import Group, User
+from openslides.users.models import Group, User
 from openslides.utils.test import TestCase
 
 
@@ -19,7 +19,7 @@ class MotionViewTestCase(TestCase):
         self.admin_client.login(username='admin', password='admin')
 
         # Staff
-        self.staff = User.objects.create_user('staff', 'staff@user.user', 'staff')
+        self.staff = User.objects.create_user('staff', 'staff')
         staff_group = Group.objects.get(name='Staff')
         self.staff.groups.add(staff_group)
         self.staff.save()
@@ -27,7 +27,7 @@ class MotionViewTestCase(TestCase):
         self.staff_client.login(username='staff', password='staff')
 
         # Delegate
-        self.delegate = User.objects.create_user('delegate', 'delegate@user.user', 'delegate')
+        self.delegate = User.objects.create_user('delegate', 'delegate')
         delegate_group = Group.objects.get(name='Delegates')
         self.delegate.groups.add(delegate_group)
         self.delegate.save()
@@ -35,7 +35,7 @@ class MotionViewTestCase(TestCase):
         self.delegate_client.login(username='delegate', password='delegate')
 
         # Registered
-        self.registered = User.objects.create_user('registered', 'registered@user.user', 'registered')
+        self.registered = User.objects.create_user('registered', 'registered')
         self.registered_client = Client()
         self.registered_client.login(username='registered', password='registered')
 
@@ -95,7 +95,6 @@ class TestMotionDetailView(MotionViewTestCase):
         self.assertContains(self.admin_client.get('/motion/1/'), 'registered')
         self.registered.delete()
         self.assertNotContains(self.admin_client.get('/motion/1/'), 'registered')
-        self.assertContains(self.admin_client.get('/motion/1/'), 'empty')
 
 
 class TestMotionDetailVersionView(MotionViewTestCase):
@@ -126,7 +125,7 @@ class TestMotionCreateView(MotionViewTestCase):
         response = self.delegate_client.post(self.url, {'title': 'delegate motion',
                                                         'text': 'motion text',
                                                         'reason': 'motion reason',
-                                                        'submitter': self.admin.person_id})
+                                                        'submitter': self.admin.id})
         self.assertEqual(response.status_code, 302)
         motion = Motion.objects.get(versions__title='delegate motion')
         self.assertTrue(motion.is_submitter(self.delegate))
@@ -135,7 +134,7 @@ class TestMotionCreateView(MotionViewTestCase):
         response = self.registered_client.post(self.url, {'title': 'registered motion',
                                                           'text': 'motion text',
                                                           'reason': 'motion reason',
-                                                          'submitter': self.admin.person_id})
+                                                          'submitter': self.admin.id})
         self.assertEqual(response.status_code, 403)
         self.assertFalse(Motion.objects.filter(versions__title='registered motion').exists())
 
@@ -164,13 +163,13 @@ class TestMotionCreateView(MotionViewTestCase):
         config['motion_identifier'] = 'manually'
         response = self.admin_client.post(self.url, {'title': 'something',
                                                      'text': 'bar',
-                                                     'submitter': self.admin.person_id,
+                                                     'submitter': self.admin.id,
                                                      'identifier': 'uufag5faoX0thahBi8Fo'})
         self.assertFormError(response, 'form', 'identifier', 'Motion with this Identifier already exists.')
 
     def test_empty_text_field(self):
         response = self.admin_client.post(self.url, {'title': 'foo',
-                                                     'submitter': self.admin.person_id})
+                                                     'submitter': self.admin.id})
         self.assertFormError(response, 'form', 'text', 'This field is required.')
 
     def test_identifier_with_category_prefix(self):
@@ -201,7 +200,7 @@ class TestMotionUpdateView(MotionViewTestCase):
         response = self.admin_client.post(self.url, {'title': 'new motion_title',
                                                      'text': 'motion text',
                                                      'reason': 'motion reason',
-                                                     'submitter': self.admin.person_id,
+                                                     'submitter': self.admin.id,
                                                      'workflow': 1})
         self.assertRedirects(response, '/motion/1/')
         motion = Motion.objects.get(pk=1)
@@ -235,7 +234,7 @@ class TestMotionUpdateView(MotionViewTestCase):
                                                      'text': 'another motion text',
                                                      'reason': 'another motion reason',
                                                      'workflow': workflow.pk,
-                                                     'submitter': self.admin.person_id})
+                                                     'submitter': self.admin.id})
         self.assertRedirects(response, '/motion/1/')
         motion = Motion.objects.get(pk=self.motion1.pk)
         self.assertEqual(motion.versions.count(), 2)
@@ -254,7 +253,7 @@ class TestMotionUpdateView(MotionViewTestCase):
         response = self.admin_client.post(self.url, {'title': 'another new motion_title',
                                                      'text': 'another motion text',
                                                      'reason': 'another motion reason',
-                                                     'submitter': self.admin.person_id,
+                                                     'submitter': self.admin.id,
                                                      'workflow': workflow.pk,
                                                      'disable_versioning': 'true'})
         self.assertRedirects(response, '/motion/1/')
@@ -278,7 +277,7 @@ class TestMotionUpdateView(MotionViewTestCase):
                                                      'text': 'eedieFoothae2iethuo3',
                                                      'reason': 'ier2laiy1veeGoo0mau2',
                                                      'workflow': workflow.pk,
-                                                     'submitter': self.admin.person_id})
+                                                     'submitter': self.admin.id})
         self.assertRedirects(response, '/motion/1/')
         motion = Motion.objects.get(pk=self.motion1.pk)
         self.assertEqual(motion.versions.count(), 1)
@@ -287,11 +286,11 @@ class TestMotionUpdateView(MotionViewTestCase):
         self.assertEqual(self.motion1.state.workflow.pk, 1)
         response = self.admin_client.post(self.url, {'title': 'oori4KiaghaeSeuzaim2',
                                                      'text': 'eequei1Tee1aegeNgee0',
-                                                     'submitter': self.admin.person_id})
+                                                     'submitter': self.admin.id})
         self.assertEqual(Motion.objects.get(pk=self.motion1.pk).state.workflow.pk, 1)
         response = self.admin_client.post(self.url, {'title': 'oori4KiaghaeSeuzaim2',
                                                      'text': 'eequei1Tee1aegeNgee0',
-                                                     'submitter': self.admin.person_id,
+                                                     'submitter': self.admin.id,
                                                      'workflow': 2})
         self.assertRedirects(response, '/motion/1/')
         self.assertEqual(Motion.objects.get(pk=self.motion1.pk).state.workflow.pk, 2)
@@ -302,6 +301,7 @@ class TestMotionUpdateView(MotionViewTestCase):
         motion = Motion.objects.create(title='cuoPhoX4Baifoxoothi3', text='zee7xei3taediR9loote')
         response = self.staff_client.get('/motion/%s/' % motion.id)
         self.assertNotContains(response, 'aengeing3quair3fieGi')
+
         motion.support(self.registered)
         self.registered.last_name = 'aengeing3quair3fieGi'
         self.registered.save()
@@ -313,7 +313,7 @@ class TestMotionUpdateView(MotionViewTestCase):
             '/motion/%s/edit/' % motion.id,
             {'title': 'oori4KiaghaeSeuzaim2',
              'text': 'eequei1Tee1aegeNgee0',
-             'submitter': self.delegate.person_id})
+             'submitter': self.delegate.id})
         self.assertEqual(response.status_code, 403)
         motion.add_submitter(self.delegate)
 

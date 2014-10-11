@@ -9,7 +9,7 @@ from reportlab.lib.units import cm
 from reportlab.platypus import PageBreak, Paragraph, Spacer, Table, TableStyle
 
 from openslides.config.api import config
-from openslides.participant.models import Group, User
+from openslides.users.models import Group, User  # TODO: remove this line
 from openslides.utils.pdf import stylesheet
 
 from .models import Category, Motion
@@ -281,9 +281,9 @@ def motion_poll_to_pdf(pdf, poll):
 
     # set number of ballot papers
     if ballot_papers_selection == "NUMBER_OF_DELEGATES":
-        # TODO: get this number from persons
+        # TODO: get this number from users
         try:
-            if Group.objects.get(pk=3):
+            if Group.objects.get(pk=3):  # TODO: Find a better way
                 number = User.objects.filter(groups__pk=3).count()
         except Group.DoesNotExist:
             number = 0

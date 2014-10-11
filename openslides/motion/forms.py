@@ -5,7 +5,7 @@ from openslides.config.api import config
 from openslides.mediafile.models import Mediafile
 from openslides.utils.forms import (CleanHtmlFormMixin, CssClassMixin,
                                     CSVImportForm, LocalizedModelChoiceField)
-from openslides.utils.person import MultiplePersonFormField, PersonFormField
+from openslides.users.models import User
 
 from ckeditor.widgets import CKEditorWidget
 
@@ -72,14 +72,14 @@ class BaseMotionForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
 class MotionSubmitterMixin(forms.ModelForm):
     """Mixin to append the submitter field to a MotionForm."""
 
-    submitter = MultiplePersonFormField(label=ugettext_lazy("Submitter"),
-                                        required=False)
+    submitter = forms.ModelMultipleChoiceField(
+        User.objects, label=ugettext_lazy("Submitter"), required=False)
     """Submitter of the motion. Can be one or more persons."""
 
     def __init__(self, *args, **kwargs):
         """Fill in the submitter of the motion as default value."""
         if self.motion is not None:
-            submitter = [submitter.person.person_id for submitter in self.motion.submitter.all()]
+            submitter = [submitter.person.id for submitter in self.motion.submitter.all()]
             self.initial['submitter'] = submitter
         super(MotionSubmitterMixin, self).__init__(*args, **kwargs)
 
@@ -87,13 +87,14 @@ class MotionSubmitterMixin(forms.ModelForm):
 class MotionSupporterMixin(forms.ModelForm):
     """Mixin to append the supporter field to a Motionform."""
 
-    supporter = MultiplePersonFormField(required=False, label=ugettext_lazy("Supporters"))
+    supporter = forms.ModelMultipleChoiceField(
+        User.objects, required=False, label=ugettext_lazy("Supporters"))
     """Supporter of the motion. Can be one or more persons."""
 
     def __init__(self, *args, **kwargs):
         """Fill in the supporter of the motions as default value."""
         if self.motion is not None:
-            supporter = [supporter.person.person_id for supporter in self.motion.supporter.all()]
+            supporter = [supporter.person.id for supporter in self.motion.supporter.all()]
             self.initial['supporter'] = supporter
         super(MotionSupporterMixin, self).__init__(*args, **kwargs)
 
@@ -169,7 +170,8 @@ class MotionCSVImportForm(CSVImportForm):
     should be overridden.
     """
 
-    default_submitter = PersonFormField(
+    default_submitter = forms.ModelChoiceField(
+        User.objects.all(),
         required=True,
         label=ugettext_lazy('Default submitter'),
         help_text=ugettext_lazy('This person is used as submitter for any line of your csv file which does not contain valid submitter data.'))

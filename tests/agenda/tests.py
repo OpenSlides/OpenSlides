@@ -7,7 +7,7 @@ from django.test.client import Client
 
 from openslides.agenda.models import Item
 from openslides.agenda.slides import agenda_slide
-from openslides.participant.models import User
+from openslides.users.models import User
 from openslides.projector.api import set_active_slide
 from openslides.utils.test import TestCase
 
@@ -127,8 +127,7 @@ class ViewTest(TestCase):
         self.refreshItems()
 
         self.admin = User.objects.get(pk=1)
-        self.anonym, created = User.objects.get_or_create(username='testanonym')
-        self.anonym.reset_password('default')
+        self.anonym = User.objects.create_user('testanonym', 'default')
 
     def refreshItems(self):
         self.item1 = Item.objects.get(pk=self.item1.id)
@@ -268,8 +267,7 @@ class ViewTest(TestCase):
         # Prepare
         self.item1.type = Item.ORGANIZATIONAL_ITEM
         self.item1.save()
-        user = User.objects.create(username='testuser_EeBoPh5uyookoowoodii')
-        user.reset_password('default')
+        user = User.objects.create_user('testuser_EeBoPh5uyookoowoodii', 'default')
         client = Client()
         client.login(username='testuser_EeBoPh5uyookoowoodii', password='default')
         # Test view with permission
@@ -334,12 +332,8 @@ class ViewTest(TestCase):
 
 class ConfigTest(TestCase):
     def setUp(self):
-        self.admin = User.objects.create(username='config_test_admin')
-        self.admin.reset_password('default')
-        self.admin.is_superuser = True
-        self.admin.save()
         self.client = Client()
-        self.client.login(username='config_test_admin', password='default')
+        self.client.login(username='admin', password='admin')
 
     def test_config_collection_css_javascript(self):
         response = self.client.get('/config/agenda/')

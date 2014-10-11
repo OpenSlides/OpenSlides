@@ -121,7 +121,7 @@
                 {% if speaker_dict.type == 'actual_speaker' %}
                     <a href="{% url 'agenda_speaker_end_speach' item.pk %}" class="btn btn-mini btn-danger"><i class="icon-bell icon-white"></i> {% trans 'End speach' %}</a>
                 {% elif speaker_dict.type == 'coming_speaker' %}
-                    <a href="{% url 'agenda_speaker_speak' item.pk speaker_dict.speaker.person.person_id %}"
+                    <a href="{% url 'agenda_speaker_speak' item.pk speaker_dict.speaker.user.pk %}"
                     class="btn btn-mini"><i class="icon-bell"></i> {% trans "Begin speach" %}</a>
                 {% endif %}
                 <a href="{{ speaker_dict.speaker|absolute_url:'delete' }}"
@@ -150,8 +150,8 @@
                 <div class="control-group input-append {% if field.errors %}error{% endif %}">
                     {{ field }}
                     <button class="btn btn-primary tooltip-bottom" type="submit" data-original-title="{% trans 'Apply' %}"><i class="icon-ok icon-white"></i></button>
-                {% if perms.participant.can_see_participant and perms.participant.can_manage_participant %}
-                    <a href="{% url 'user_new' %}" class="btn" rel="tooltip" data-original-title="{% trans 'Add new participant' %}"><i class="icon-add-user"></i></a>
+                {% if perms.users.can_see and perms.users.can_manage %}
+                    <a href="{% url 'user_new' %}" class="btn" rel="tooltip" data-original-title="{% trans 'Add new user' %}"><i class="icon-add-user"></i></a>
                 {% endif %}
                 {% if field.errors %}
                     <span class="help-inline">{{ field.errors }}</span>

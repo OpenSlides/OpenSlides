@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy
 from mptt.forms import TreeNodeChoiceField
 
 from openslides.utils.forms import CssClassMixin, CleanHtmlFormMixin
-from openslides.utils.person.forms import PersonFormField
+from openslides.users.models import User
 
 from .models import Item, Speaker
 
@@ -59,7 +59,8 @@ class AppendSpeakerForm(CssClassMixin, forms.Form):
     """
     Form to set an user to a list of speakers.
     """
-    speaker = PersonFormField(
+    speaker = forms.ModelChoiceField(
+        User.objects.all(),
         widget=forms.Select(attrs={'class': 'medium-input'}),
         label=ugettext_lazy("Add participant"))
 
@@ -72,7 +73,7 @@ class AppendSpeakerForm(CssClassMixin, forms.Form):
         Checks, that the user is not already on the list.
         """
         speaker = self.cleaned_data['speaker']
-        if Speaker.objects.filter(person=speaker, item=self.item, begin_time=None).exists():
+        if Speaker.objects.filter(user=speaker, item=self.item, begin_time=None).exists():
             raise forms.ValidationError(ugettext_lazy(
                 '%s is already on the list of speakers.'
                 % str(speaker)))

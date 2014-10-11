@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load staticfiles %}
+
+{% block header %}
+    <link href="{% static 'css/jquery.bsmselect.css' %}" type="text/css" rel="stylesheet" />
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript" src="{% static 'js/jquery/jquery.bsmselect.js' %}"></script>
+    <script type="text/javascript">
+        // use jquery-bsmselect for all <select multiple> form elements
+        $("select[multiple]").bsmSelect({
+          removeLabel: '<sup><b>X</b></sup>',
+          containerClass: 'bsmContainer',
+          listClass: 'bsmList-custom',
+          listItemClass: 'bsmListItem-custom',
+          listItemLabelClass: 'bsmListItemLabel-custom',
+          removeClass: 'bsmListItemRemove-custom'
+        });
+    </script>
+{% endblock %}
+
+{% block title %}
+    {% if edit_user %}
+        {% trans "Edit user" %}
+    {% else %}
+        {% trans "New user" %}
+    {% endif %}
+    – {{ block.super }}
+{% endblock %}
+
+{% block content %}
+    <h1>
+        {% if edit_user %}
+            {% trans "Edit user" %}
+        {% else %}
+            {% trans "New user" %}
+        {% endif %}
+        <small class="pull-right">
+            <a href="{% url 'user_list' %}" class="btn btn-mini">
+                <i class="icon-chevron-left"></i>
+                {% trans "Back to overview" %}
+            </a>
+        </small>
+    </h1>
+
+    <form action="" method="post">{% csrf_token %}
+        {% include "form.html" %}
+        {% if edit_user %}
+            <p style="margin: -15px 0 25px 0;">
+                <a class="btn btn-mini" href="{% url 'user_reset_password' edit_user.id %}">
+                    <i class="icon-exclamation-sign"></i>
+                    {% trans 'Reset to First Password' %}
+                </a>
+            </p>
+        {% endif %}
+        <p>
+        {% include "formbuttons_saveapply.html" %}
+        <a href="{% url 'user_list' %}" class="btn">
+            {% trans 'Cancel' %}
+        </a>
+        </p>
+        <small>* {% trans "required" %}</small>
+    </form>
+{% endblock %}

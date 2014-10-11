@@ -63,7 +63,7 @@ urlpatterns = patterns(
         views.SpeakerDeleteView.as_view(),
         name='agenda_speaker_delete'),
 
-    url(r'^(?P<pk>\d+)/speaker/(?P<person_id>[^/]+)/speak/$',
+    url(r'^(?P<pk>\d+)/speaker/(?P<user_id>[^/]+)/speak/$',
         views.SpeakerSpeakView.as_view(),
         name='agenda_speaker_speak'),
 

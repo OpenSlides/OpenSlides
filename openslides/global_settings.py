@@ -11,6 +11,8 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'openslides.utils.auth.AnonymousAuth',)
 
+AUTH_USER_MODEL = 'users.User'
+
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 
@@ -66,7 +68,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'openslides.participant.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'openslides.config.middleware.ConfigCacheMiddleware',
 )
@@ -90,7 +92,7 @@ INSTALLED_APPS = (
     'openslides.agenda',
     'openslides.motion',
     'openslides.assignment',
-    'openslides.participant',
+    'openslides.users',
     'openslides.mediafile',
     'openslides.config',
 )

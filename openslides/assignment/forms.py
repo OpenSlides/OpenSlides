@@ -1,8 +1,8 @@
 from django import forms
 from django.utils.translation import ugettext_lazy
 
+from openslides.users.models import User
 from openslides.utils.forms import CssClassMixin
-from openslides.utils.person import PersonFormField
 
 from .models import Assignment
 
@@ -17,6 +17,7 @@ class AssignmentForm(CssClassMixin, forms.ModelForm):
 
 
 class AssignmentRunForm(CssClassMixin, forms.Form):
-    candidate = PersonFormField(
+    candidate = forms.ModelChoiceField(
+        queryset=User.objects.all(),
         widget=forms.Select(attrs={'class': 'medium-input'}),
         label=ugettext_lazy("Nominate a participant"))
