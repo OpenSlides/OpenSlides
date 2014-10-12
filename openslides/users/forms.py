@@ -1,8 +1,7 @@
 from django import forms
 from django.conf import settings
 from django.contrib.auth.models import Permission
-from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext as _, ugettext_lazy
 
 from openslides.config.api import config
 from openslides.utils.forms import (CssClassMixin,
@@ -58,7 +57,7 @@ class UserUpdateForm(UserCreateForm):
 
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request')
-        return super(UserUpdateForm, self).__init__(*args, **kwargs)
+        return super().__init__(*args, **kwargs)
 
     def clean(self, *args, **kwargs):
         """
@@ -74,7 +73,7 @@ class UserUpdateForm(UserCreateForm):
         return super().clean(*args, **kwargs)
 
 
-class GroupForm(forms.ModelForm, CssClassMixin):
+class GroupForm(CssClassMixin, forms.ModelForm):
     permissions = LocalizedModelMultipleChoiceField(
         queryset=Permission.objects.all(), label=ugettext_lazy('Permissions'),
         required=False)
@@ -83,6 +82,7 @@ class GroupForm(forms.ModelForm, CssClassMixin):
 
     class Meta:
         model = Group
+        fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         # Take request argument

@@ -9,8 +9,7 @@ from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.core.urlresolvers import reverse
 from django.http import (HttpResponse, HttpResponseRedirect)
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy
+from django.utils.translation import ugettext as _, ugettext_lazy
 from django.views import generic as django_views
 from django.views.generic.detail import SingleObjectMixin
 from reportlab.lib.units import cm
@@ -534,7 +533,7 @@ class PDFView(PermissionMixin, View):
     View to generate an PDF.
     """
 
-    filename = _('undefined-filename')
+    filename = ugettext_lazy('undefined-filename')
     top_space = 3
     document_title = None
 

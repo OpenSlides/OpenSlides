@@ -1,5 +1,5 @@
 # Requirements for OpenSlides in production in alphabetical order
-Django>=1.6,<1.7
+Django>=1.7,<1.8
 beautifulsoup4>=4.1,<4.4
 bleach>=1.4,<1.5
 django-ckeditor-updated>=4.2.3,<4.3

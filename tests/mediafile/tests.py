@@ -8,7 +8,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test.client import Client
 
 from openslides.mediafile.models import Mediafile
-from openslides.core.models import User
+from openslides.users.models import User
 from openslides.utils.test import TestCase
 
 

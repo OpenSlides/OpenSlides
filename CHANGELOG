@@ -8,6 +8,8 @@ Version 2.0.0 (unreleased)
 ==========================
 
 - Changed supported Python version to >= 3.3
+- Used Django 1.7 as lowest requirement
+- Refactoring of the participant app. Now called 'users'
 
 Version 1.6.1 (unreleased)
 ==========================
