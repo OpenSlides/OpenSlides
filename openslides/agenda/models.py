@@ -163,11 +163,12 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
         """
         Return the title of this item.
         """
+        item_no = self.item_no
         if not self.content_object:
-            item_no = self.item_no
             return '%s %s' % (item_no, self.title) if item_no else self.title
         try:
-            return self.content_object.get_agenda_title()
+            agenda_title =  self.content_object.get_agenda_title()
+            return '%s %s' % (item_no, agenda_title) if item_no else agenda_title
         except AttributeError:
             raise NotImplementedError('You have to provide a get_agenda_title method on your related model.')
 
