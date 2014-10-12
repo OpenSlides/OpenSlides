@@ -364,7 +364,7 @@ class AssignmentPDF(PDFView):
                 "<seq id='counter'/>.&nbsp; %s" % candidate,
                 stylesheet['Signaturefield']))
         if assignment.status == "sea":
-            for x in range(0, 2 * assignment.posts):
+            for x in range(0, 7):
                 cell2b.append(
                     Paragraph(
                         "<seq id='counter'/>.&nbsp; "
