@@ -1,7 +1,7 @@
 from django.test.client import Client
 
 from openslides.config.api import config
-from openslides.participant.models import User
+from openslides.users.models import User
 from openslides.utils.test import TestCase
 
 
@@ -43,8 +43,7 @@ class PersonalInfoWidget(TestCase):
             return assignment
 
     def setUp(self):
-        self.user = User.objects.create(username='HansMeiser')
-        self.user.reset_password('default')
+        self.user = User.objects.create_user('HansMeiser', 'default')
         self.client = Client()
         self.client.login(username='HansMeiser', password='default')
 
@@ -56,7 +55,7 @@ class PersonalInfoWidget(TestCase):
         agenda = self.import_agenda()
         if agenda:
             item_1 = agenda.models.Item.objects.create(title='My Item Title iw5ohNgee4eiYahb5Eiv')
-            speaker = agenda.models.Speaker.objects.add(item=item_1, person=self.user)
+            speaker = agenda.models.Speaker.objects.add(item=item_1, user=self.user)
             response = self.client.get('/dashboard/')
             self.assertContains(response, 'I am on the list of speakers of the following items:', status_code=200)
             self.assertContains(response, 'My Item Title iw5ohNgee4eiYahb5Eiv', status_code=200)

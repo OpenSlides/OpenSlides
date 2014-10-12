@@ -263,7 +263,7 @@ def createsuperuser(settings, args):
     ensure_settings(settings, args)
     # can't be imported in global scope as it already requires
     # the settings module during import
-    from openslides.participant.api import create_or_reset_admin_user
+    from openslides.users.api import create_or_reset_admin_user
     if create_or_reset_admin_user():
         print('Admin user successfully created.')
     else:

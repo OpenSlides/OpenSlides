@@ -439,8 +439,8 @@ class FormView(PermissionMixin, ExtraContextMixin, FormMixin,
     pass
 
 
-class UpdateView(PermissionMixin, ExtraContextMixin,
-                 ModelFormMixin, django_views.UpdateView):
+class UpdateView(PermissionMixin, ExtraContextMixin, ModelFormMixin,
+                 django_views.UpdateView):
     """
     View to update an model object.
     """
@@ -471,13 +471,12 @@ class DeleteView(SingleObjectMixin, QuestionView):
     """
     View to delete an model object.
     """
-
     success_url = None
     success_url_name = None
 
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
-        return super(DeleteView, self).get(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
     def get_redirect_url(self, **kwargs):
         """

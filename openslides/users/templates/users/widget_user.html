@@ -1,0 +1,30 @@
+{% extends 'core/widget.html' %}
+
+{% load i18n %}
+{% load tags %}
+
+{% block content %}
+<ul style="line-height: 180%">
+{% for user in users %}
+    <li class="{% if user.is_active_slide %}activeline{% endif %}">
+        <a href="{{ user|absolute_url:'projector' }}" class="activate_link btn {% if user.is_active_slide %}btn-primary{% endif %} btn-mini"
+            rel="tooltip" data-original-title="{% trans 'Show' %}">
+            <i class="icon-facetime-video {% if user.is_active_slide %}icon-white{% endif %}"></i>
+        </a>&nbsp;
+        {% if perms.users.can_manage %}
+            <a href="{{ user|absolute_url:'update' }}"
+                rel="tooltip" data-original-title="{% trans 'Edit' %}" class="btn btn-mini right">
+                <i class="icon-pencil"></i>
+            </a>
+        {% endif %}
+        <a href="{{ user|absolute_url:'projector_preview' }}"
+            rel="tooltip" data-original-title="{% trans 'Preview' %}" class="btn btn-mini right">
+            <i class="icon-search"></i>
+        </a>
+        <a href="{{ user|absolute_url }}">{{ user }}</a>
+    </li>
+{% empty %}
+    <li>{% trans 'No users available.' %}</li>
+{% endfor %}
+</ul>
+{% endblock %}

@@ -70,7 +70,7 @@ class MediafileCreateView(MediafileViewMixin, CreateView):
     def get_form_kwargs(self, *args, **kwargs):
         form_kwargs = super(MediafileCreateView, self).get_form_kwargs(*args, **kwargs)
         if self.request.method == 'GET':
-            form_kwargs['initial'].update({'uploader': self.request.user.person_id})
+            form_kwargs['initial'].update({'uploader': self.request.user})
         return form_kwargs
 
 
@@ -80,11 +80,12 @@ class MediafileUpdateView(MediafileViewMixin, UpdateView):
     """
     def check_permission(self, request, *args, **kwargs):
         return (request.user.has_perm('mediafile.can_manage') or
-                (request.user.has_perm('mediafile.can_upload') and self.get_object().uploader == self.request.user))
+                (request.user.has_perm('mediafile.can_upload') and
+                 self.get_object().uploader == self.request.user))
 
     def get_form_kwargs(self, *args, **kwargs):
         form_kwargs = super(MediafileUpdateView, self).get_form_kwargs(*args, **kwargs)
-        form_kwargs['initial'].update({'uploader': self.object.uploader.person_id})
+        form_kwargs['initial'].update({'uploader': self.object.uploader.pk})
         return form_kwargs
 
 

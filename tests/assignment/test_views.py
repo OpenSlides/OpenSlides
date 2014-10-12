@@ -2,7 +2,7 @@ from django.test.client import Client
 
 from openslides.assignment.models import Assignment, AssignmentPoll
 from openslides.config.api import config
-from openslides.participant.models import Group, User
+from openslides.users.models import Group, User
 from openslides.utils.test import TestCase
 
 
@@ -14,7 +14,7 @@ class AssignmentViewTestCase(TestCase):
         self.admin_client.login(username='admin', password='admin')
 
         # Staff
-        self.staff = User.objects.create_user('staff', 'staff@user.user', 'staff')
+        self.staff = User.objects.create_user('staff', 'staff')
         staff_group = Group.objects.get(name='Staff')
         self.staff.groups.add(staff_group)
         self.staff.save()
@@ -22,7 +22,7 @@ class AssignmentViewTestCase(TestCase):
         self.staff_client.login(username='staff', password='staff')
 
         # Delegate
-        self.delegate = User.objects.create_user('delegate', 'delegate@user.user', 'delegate')
+        self.delegate = User.objects.create_user(username='delegate', password='delegate')
         delegate_group = Group.objects.get(name='Delegates')
         self.delegate.groups.add(delegate_group)
         self.delegate.save()
@@ -30,7 +30,7 @@ class AssignmentViewTestCase(TestCase):
         self.delegate_client.login(username='delegate', password='delegate')
 
         # Registered
-        self.registered = User.objects.create_user('registered', 'registered@user.user', 'registered')
+        self.registered = User.objects.create_user(username='registered', password='registered')
         self.registered_client = Client()
         self.registered_client.login(username='registered', password='registered')
 

@@ -14,8 +14,8 @@ from openslides.projector.api import get_active_object, update_projector
 from openslides.projector.models import RelatedModelMixin, SlideMixin
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import AbsoluteUrlMixin
-from openslides.utils.person import PersonField
 from openslides.utils.utils import html_strong
+from openslides.users.models import User
 
 
 class AssignmentCandidate(RelatedModelMixin, models.Model):
@@ -23,7 +23,7 @@ class AssignmentCandidate(RelatedModelMixin, models.Model):
     Many2Many table between an assignment and the candidates.
     """
     assignment = models.ForeignKey("Assignment")
-    person = PersonField(db_index=True)
+    person = models.ForeignKey(User, db_index=True)
     elected = models.BooleanField(default=False)
     blocked = models.BooleanField(default=False)
 
@@ -178,12 +178,11 @@ class Assignment(SlideMixin, AbsoluteUrlMixin, models.Model):
         if only_candidate:
             candidates = candidates.filter(elected=False)
 
+        # TODO: rewrite this with a queryset
         participants = []
         for candidate in candidates.all():
             participants.append(candidate.person)
-        participants.sort(key=lambda person: person.sort_name)
         return participants
-        # return candidates.values_list('person', flat=True)
 
     def set_elected(self, person, value=True):
         candidate = self.assignment_candidates.get(person=person)
@@ -251,8 +250,6 @@ class Assignment(SlideMixin, AbsoluteUrlMixin, models.Model):
         for poll in polls:
             options += poll.get_options()
 
-        options.sort(key=lambda option: option.candidate.sort_name)
-
         for option in options:
             candidate = option.candidate
             if candidate in vote_results_dict:
@@ -284,7 +281,7 @@ class AssignmentVote(BaseVote):
 
 class AssignmentOption(BaseOption):
     poll = models.ForeignKey('AssignmentPoll')
-    candidate = PersonField()
+    candidate = models.ForeignKey(User)
     vote_class = AssignmentVote
 
     def __str__(self):
@@ -345,3 +342,7 @@ class AssignmentPoll(SlideMixin, RelatedModelMixin, CollectDefaultVotesMixin,
 
     def get_slide_context(self, **context):
         return super(AssignmentPoll, self).get_slide_context(poll=self)
+
+
+# TODO: use the app framework
+from . import main_menu, personal_info, signals, slides, template, widgets  # noqa

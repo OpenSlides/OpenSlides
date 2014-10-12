@@ -7,7 +7,7 @@ from openslides.agenda.models import Item
 from openslides.config.api import config
 from openslides.core import views
 from openslides.core.models import CustomSlide
-from openslides.participant.models import User
+from openslides.users.models import User
 from openslides.utils.test import TestCase
 
 
@@ -67,7 +67,7 @@ class SelectWidgetsViewTest(TestCase):
 
 class VersionViewTest(TestCase):
     def setUp(self):
-        User.objects.create_user('CoreMaximilian', 'xxx@xx.xx', 'default')
+        User.objects.create_user('CoreMaximilian', 'default')
         self.client = Client()
         self.client.login(username='CoreMaximilian', password='default')
 
@@ -87,7 +87,7 @@ class VersionViewTest(TestCase):
 class SearchViewTest(TestCase):
     def test_simple_search(self):
         Item.objects.create(title='agenda_item_bnghfdjkgndkjdfg')
-        User.objects.create_user('CoreMaximilian', 'xxx@xx.xx', 'default')
+        User.objects.create_user('CoreMaximilian', 'default')
         self.client = Client()
         self.client.login(username='CoreMaximilian', password='default')
         response = self.client.get('/search/?q=agenda_item_bnghfd')

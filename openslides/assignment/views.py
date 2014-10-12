@@ -10,10 +10,9 @@ from reportlab.platypus import (PageBreak, Paragraph, SimpleDocTemplate, Spacer,
 
 from openslides.agenda.views import CreateRelatedAgendaItemView as _CreateRelatedAgendaItemView
 from openslides.config.api import config
-from openslides.participant.models import Group, User
+from openslides.users.models import Group, User  # TODO: remove this
 from openslides.poll.views import PollFormView
 from openslides.utils.pdf import stylesheet
-from openslides.utils.person import get_person
 from openslides.utils.utils import html_strong
 from openslides.utils.views import (CreateView, DeleteView, DetailView,
                                     ListView, PDFView, PermissionMixin,
@@ -187,7 +186,7 @@ class AssignmentRunOtherDeleteView(SingleObjectMixin, QuestionView):
 
     def _get_person_information(self):
         self.object = self.get_object()
-        self.person = get_person(self.kwargs.get('user_id'))
+        self.person = User.objects.get(pk=self.kwargs.get('user_id'))
         self.is_blocked = self.object.is_blocked(self.person)
 
 
@@ -252,7 +251,7 @@ class SetElectedView(SingleObjectMixin, RedirectView):
 
     def pre_redirect(self, *args, **kwargs):
         self.object = self.get_object()
-        self.person = get_person(kwargs['user_id'])
+        self.person = User.objects.get(pk=kwargs['user_id'])
         self.elected = kwargs['elected']
         self.object.set_elected(self.person, self.elected)
 
@@ -406,8 +405,8 @@ class AssignmentPDF(PDFView):
             candidate_string = candidate.clean_name
             if candidate in elected_candidates:
                 candidate_string = "* " + candidate_string
-            if candidate.name_suffix:
-                candidate_string += "\n(%s)" % candidate.name_suffix
+            if candidate.structure_level:
+                candidate_string += "\n(%s)" % candidate.structure_level
             row.append(candidate_string)
             for vote in poll_list:
                 if vote is None:
@@ -505,7 +504,7 @@ class AssignmentPollPDF(PDFView):
 
     def get(self, request, *args, **kwargs):
         self.poll = AssignmentPoll.objects.get(id=self.kwargs['poll_id'])
-        return super(AssignmentPollPDF, self).get(request, *args, **kwargs)
+        return super().get(request, *args, **kwargs)
 
     def get_filename(self):
         filename = u'%s-%s_%s' % (
@@ -570,10 +569,10 @@ class AssignmentPollPDF(PDFView):
                 counter += 1
                 candidate = option.candidate
                 cell.append(Paragraph(
-                    candidate.clean_name, stylesheet['Ballot_option_name_YNA']))
-                if candidate.name_suffix:
+                    candidate.get_short_name(), stylesheet['Ballot_option_name_YNA']))
+                if candidate.structure_level:
                     cell.append(Paragraph(
-                        "(%s)" % candidate.name_suffix,
+                        "(%s)" % candidate.structure_level,
                         stylesheet['Ballot_option_suffix_YNA']))
                 else:
                     cell.append(Paragraph(
@@ -616,9 +615,9 @@ class AssignmentPollPDF(PDFView):
                 cell.append(Paragraph("<font name='circlefont' size='15'>%s</font> \
                             <font name='Ubuntu'>%s</font>" %
                             (circle, candidate.clean_name), stylesheet['Ballot_option_name']))
-                if candidate.name_suffix:
+                if candidate.structure_level:
                     cell.append(Paragraph(
-                        "(%s)" % candidate.name_suffix,
+                        "(%s)" % candidate.structure_level,
                         stylesheet['Ballot_option_suffix']))
                 else:
                     cell.append(Paragraph(

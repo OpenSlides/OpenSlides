@@ -9,11 +9,11 @@ from openslides.global_settings import *  # noqa
 OPENSLIDES_USER_DATA_PATH = os.path.realpath(os.path.dirname(__file__))
 
 # Use 'DEBUG = True' to get more details for server errors. Default for releases: False
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = 'secred'
+SECRET_KEY = 'secret'
 
 # Database settings. Change this to use MySQL or PostgreSQL
 DATABASES = {
@@ -24,13 +24,6 @@ DATABASES = {
         'PASSWORD': '',
         'HOST': '',
         'PORT': ''}}
-
-# Add OpenSlides plugins to this list
-INSTALLED_PLUGINS = (
-    'tests.person_api',
-)
-
-INSTALLED_APPS += INSTALLED_PLUGINS
 
 # Some other settings
 TIME_ZONE = 'Europe/Berlin'

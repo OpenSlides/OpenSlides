@@ -11,7 +11,7 @@ from openslides.poll.models import (BaseOption, BasePoll, BaseVote, CollectDefau
 from openslides.projector.models import RelatedModelMixin, SlideMixin
 from jsonfield import JSONField
 from openslides.utils.models import AbsoluteUrlMixin
-from openslides.utils.person import PersonField
+from openslides.users.models import User
 
 from .exceptions import WorkflowError
 
@@ -366,8 +366,7 @@ class Motion(SlideMixin, AbsoluteUrlMixin, models.Model):
 
     @property
     def supporters(self):
-        return sorted([object.person for object in self.supporter.all()],
-                      key=lambda person: person.sort_name)
+        return [supporter.person for supporter in self.supporter.all()]
 
     def add_submitter(self, person):
         MotionSubmitter.objects.create(motion=self, person=person)
@@ -582,8 +581,8 @@ class MotionSubmitter(RelatedModelMixin, models.Model):
     motion = models.ForeignKey('Motion', related_name="submitter")
     """The motion to witch the object belongs."""
 
-    person = PersonField()
-    """The person, who is the submitter."""
+    person = models.ForeignKey(User)
+    """The user, who is the submitter."""
 
     def __str__(self):
         """Return the name of the submitter as string."""
@@ -599,7 +598,7 @@ class MotionSupporter(models.Model):
     motion = models.ForeignKey('Motion', related_name="supporter")
     """The motion to witch the object belongs."""
 
-    person = PersonField()
+    person = models.ForeignKey(User)
     """The person, who is the supporter."""
 
     def __str__(self):
@@ -632,12 +631,6 @@ class Category(AbsoluteUrlMixin, models.Model):
     class Meta:
         ordering = ['prefix']
 
-# class Comment(models.Model):
-    # motion_version = models.ForeignKey(MotionVersion)
-    # text = models.TextField()
-    # author = PersonField()
-    # creation_time = models.DateTimeField(auto_now=True)
-
 
 class MotionLog(models.Model):
     """Save a logmessage for a motion."""
@@ -650,7 +643,7 @@ class MotionLog(models.Model):
     The log message. It should be a list of strings in english.
     """
 
-    person = PersonField(null=True)
+    person = models.ForeignKey(User, null=True)
     """A person object, who created the log message. Optional."""
 
     time = models.DateTimeField(auto_now=True)
@@ -856,4 +849,10 @@ class Workflow(models.Model):
     def check_first_state(self):
         """Checks whether the first_state itself belongs to the workflow."""
         if self.first_state and not self.first_state.workflow == self:
-            raise WorkflowError('%s can not be first state of %s because it does not belong to it.' % (self.first_state, self))
+            raise WorkflowError(
+                '%s can not be first state of %s because it '
+                'does not belong to it.' % (self.first_state, self))
+
+
+# TODO: Apploading
+from . import main_menu, personal_info, signals, slides, widgets  # noqa

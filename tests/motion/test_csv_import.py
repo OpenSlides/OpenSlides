@@ -1,29 +1,23 @@
 import os
 from io import BytesIO
 
-from django.test.client import Client
-
 from openslides.motion.csv_import import import_motions
 from openslides.motion.models import Category, Motion
-from openslides.participant.models import User
+from openslides.users.models import User
 from openslides.utils.test import TestCase
 
 
 class CSVImport(TestCase):
     def setUp(self):
-        # Admin
-        self.admin = User.objects.create_superuser('Admin_ieY0Eereimeimeizuosh', 'admin@admin.admin', 'eHiK1aiRahxaix0Iequ2')
-        self.admin_client = Client()
-        self.admin_client.login(username='Admin_ieY0Eereimeimeizuosh', password='eHiK1aiRahxaix0Iequ2')
+        # User1
+        self.user1 = User.objects.create_user('Admin_ieY0Eereimeimeizuosh', 'eHiK1aiRahxaix0Iequ2')
 
         # Normal user
-        self.normal_user = User.objects.create_user('User_CiuNgo4giqueeChie5oi', 'user@user.user', 'eihi1Eequaek4eagaiKu')
-        self.normal_client = Client()
-        self.normal_client.login(username='User_CiuNgo4giqueeChie5oi', password='eihi1Eequaek4eagaiKu')
+        self.normal_user = User.objects.create_user('User_CiuNgo4giqueeChie5oi', 'eihi1Eequaek4eagaiKu')
 
         # Category
-        self.category1 = Category.objects.create(name='Bildung', prefix='B1')
-        self.category2 = Category.objects.create(name='Bildung', prefix='B2')
+        Category.objects.create(name='Bildung', prefix='B1')
+        Category.objects.create(name='Bildung', prefix='B2')
 
     def test_example_file_de(self):
         special_user = User.objects.create_user(username='Harry_Holland',
@@ -41,7 +35,7 @@ class CSVImport(TestCase):
         self.assertEqual(Motion.objects.count(), 0)
         with open(csv_dir + '/motions-demo_de.csv', 'rb') as f:
             success_message, warning_message, error_message = import_motions(
-                csvfile=f, default_submitter=self.normal_user.person_id, override=False, importing_person=self.admin)
+                csvfile=f, default_submitter=self.normal_user, override=False, importing_person=self.user1)
         self.assertEqual(Motion.objects.count(), 11)
 
         motion1 = Motion.objects.get(pk=1)
@@ -74,7 +68,7 @@ class CSVImport(TestCase):
         csv_file = BytesIO()
         csv_file.write(bytes('Header\nMalformed data,\n,Title,Text,,,\n', 'utf8'))
         success_message, warning_message, error_message = import_motions(
-            csvfile=csv_file, default_submitter=self.normal_user.person_id, override=False)
+            csvfile=csv_file, default_submitter=self.normal_user.id, override=False)
         self.assertEqual(success_message, '')
         self.assertTrue('Line is malformed.' in error_message)
 
@@ -82,7 +76,7 @@ class CSVImport(TestCase):
         csv_file = BytesIO(bytes('Müller', 'iso-8859-15'))
         success_message, warning_message, error_message = import_motions(
             csvfile=csv_file,
-            default_submitter=self.normal_user.person_id,
+            default_submitter=self.normal_user.id,
             override=False)
         self.assertEqual(success_message, '')
         self.assertIn('Import file has wrong character encoding, only UTF-8 is supported!', error_message)

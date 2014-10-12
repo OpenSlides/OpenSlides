@@ -7,7 +7,7 @@ from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.projector.models import SlideMixin
 from openslides.utils.models import AbsoluteUrlMixin
-from openslides.utils.person.models import PersonField
+from openslides.users.models import User
 
 
 class Mediafile(SlideMixin, AbsoluteUrlMixin, models.Model):
@@ -17,17 +17,17 @@ class Mediafile(SlideMixin, AbsoluteUrlMixin, models.Model):
     slide_callback_name = 'mediafile'
     PRESENTABLE_FILE_TYPES = ['application/pdf']
 
-    mediafile = models.FileField(upload_to='file', verbose_name=ugettext_lazy("File"))
+    mediafile = models.FileField(upload_to='file', verbose_name=ugettext_lazy('File'))
     """
     See https://docs.djangoproject.com/en/dev/ref/models/fields/#filefield
     for more information.
     """
 
-    title = models.CharField(max_length=255, unique=True, verbose_name=ugettext_lazy("Title"))
+    title = models.CharField(max_length=255, unique=True, verbose_name=ugettext_lazy('Title'))
     """A string representing the title of the file."""
 
-    uploader = PersonField(blank=True, verbose_name=ugettext_lazy("Uploaded by"))
-    """A person – the uploader of a file."""
+    uploader = models.ForeignKey(User, null=True, blank=True, verbose_name=ugettext_lazy('Uploaded by'))
+    """A user – the uploader of a file."""
 
     timestamp = models.DateTimeField(auto_now_add=True)
     """A DateTimeField to save the upload date and time."""

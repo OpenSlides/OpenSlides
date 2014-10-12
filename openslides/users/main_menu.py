@@ -1,0 +1,14 @@
+from django.utils.translation import ugettext_lazy
+
+from openslides.utils.main_menu import MainMenuEntry
+
+
+class UserMainMenuEntry(MainMenuEntry):
+    """
+    Main menu entry for the participant app.
+    """
+    verbose_name = ugettext_lazy('Users')
+    required_permission = 'users.can_see'
+    default_weight = 50
+    pattern_name = 'user_list'
+    icon_css_class = 'icon-user'

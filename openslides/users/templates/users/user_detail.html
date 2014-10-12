@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+
+{% block title %}{{ shown_user }} – {{ block.super }}{% endblock %}
+
+{% block content %}
+
+<h1>
+    {{ shown_user.clean_name }}
+    <small class="pull-right">
+    <a href="{% url 'user_list' %}" class="btn btn-mini">
+        <i class="icon-chevron-left"></i>
+        <span class="optional-small">
+            {% trans "Back to overview" %}
+        </span>
+    </a>
+    <!-- activate projector -->
+    {% if perms.core.can_manage_projector %}
+        <a href="{% url 'projector_activate_slide' shown_user.sid  %}" class="activate_link btn {% if shown_user.active %}btn-primary{% endif %} btn-mini" rel="tooltip" data-original-title="{% trans 'Show users' %}">
+            <i class="icon-facetime-video {% if shown_user.active %}icon-white{% endif %}"></i>
+        </a>
+    {% endif %}
+    {% if perms.users.can_manage %}
+    <div class="btn-group">
+        <a data-toggle="dropdown" class="btn btn-mini dropdown-toggle">
+            <span class="optional-small">{% trans 'More actions' %} </span><span class="caret"></span>
+        </a>
+        <ul class="dropdown-menu pull-right">
+            <!-- edit -->
+            <li>
+                <a href="{% url 'user_edit' shown_user.id  %}">
+                    <i class="icon-pencil"></i>
+                    {% trans 'Edit user' %}
+                </a>
+            </li>
+            <!-- delete -->
+            <li><a href="{% url 'user_delete' shown_user.id  %}"><i class="icon-remove"></i> {% trans 'Delete user' %}</a></li>
+        </ul>
+    </div>
+    {% endif %}
+    </small>
+</h1>
+
+
+<div class="user_details">
+    <fieldset>
+        <legend>{% trans "Personal data" %}</legend>
+        <label>{% trans "Gender" %}</label>
+        {{ shown_user.get_gender_display }}
+        <label>{% trans "Email" %}</label>
+        {{ shown_user.email }}
+        <label>{% trans "About me" %}</label>
+        {{ shown_user.about_me|linebreaks }}
+    </fieldset>
+
+    <fieldset>
+        <legend>{% trans "Event data" %}</legend>
+        <label>{% trans "Structure level" %}</label>
+        {{ shown_user.structure_level }}
+        <label>{% trans "Committee" %}</label>
+        {{ shown_user.committee }}
+        <label>{% trans "Groups" %}</label>
+        {% if shown_user.groups.all %}
+            {% for group in shown_user.groups.all %}
+                {% if group.pk != 2 %}
+                    {% trans group.name %}
+                    {% if not forloop.last %}, {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            {% trans "The user is not member of any group." %}
+        {% endif %}
+    </fieldset>
+
+    {% if perms.users.can_manage %}
+    <fieldset>
+        <legend>{% trans "Administrative data" %}</legend>
+        <label>{% trans "Username" %}</label>
+        {{ shown_user.username }}
+        <label>{% trans "Comment" %}</label>
+        {{ shown_user.comment|linebreaks }}
+        <label>{% trans "Last Login" %}</label>
+        {% if shown_user.last_login > shown_user.date_joined %}
+            {{ shown_user.last_login }}
+        {% else %}
+            {% trans "The user has not logged in yet." %}
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %}

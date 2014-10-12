@@ -12,7 +12,7 @@ from openslides.config.api import (config, ConfigCollection, ConfigGroup,
                                    ConfigGroupedCollection, ConfigVariable)
 from openslides.config.exceptions import ConfigError, ConfigNotFound
 from openslides.config.signals import config_signal
-from openslides.participant.models import User
+from openslides.users.models import User
 from openslides.utils.test import TestCase
 
 
@@ -105,12 +105,10 @@ class ConfigFormTest(TestCase):
         perm = Permission.objects.get(content_type=ct, codename='can_manage')
 
         # Setup two users
-        self.manager = User.objects.create(username='config_test_manager')
-        self.manager.reset_password('default')
+        self.manager = User.objects.create_user('config_test_manager', 'default')
         self.manager.user_permissions.add(perm)
 
-        self.normal_user = User.objects.create(username='config_test_normal_user')
-        self.normal_user.reset_password('default')
+        self.normal_user = User.objects.create_user('config_test_normal_user', 'default')
 
         # Login
         self.client_manager = Client()
@@ -254,8 +252,7 @@ class ConfigWeightTest(TestCase):
         perm = Permission.objects.get(content_type=ct, codename='can_manage')
 
         # Setup two users
-        self.manager = User.objects.create(username='config_test_manager')
-        self.manager.reset_password('default')
+        self.manager = User.objects.create_user('config_test_manager', 'default')
         self.manager.user_permissions.add(perm)
 
         # Login

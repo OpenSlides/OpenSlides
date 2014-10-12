@@ -1,7 +1,7 @@
 from django.test.client import Client
 
 from openslides.assignment.models import Assignment
-from openslides.participant.models import User
+from openslides.users.models import User
 from openslides.utils.test import TestCase
 
 

@@ -16,7 +16,7 @@ class ChatboxSocketHandler(SockJSConnection):
         """
         Checks connecting user and adds his client to the clients list.
         """
-        from openslides.participant.models import User
+        from openslides.users.models import User
 
         # TODO: Use the django way to get the session to be compatible with
         # other auth-backends; see comment in pull request #1220:

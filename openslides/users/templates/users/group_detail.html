@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load tags %}
+
+{% block title %}{% trans group.name %} – {{ block.super }}{% endblock %}
+
+{% block content %}
+
+<h1>{% trans group.name %}
+    <small class="pull-right">
+    <a href="{% url 'group_list' %}" class="btn btn-mini">
+        <i class="icon-chevron-left"></i>
+        <span class="optional-small">{% trans "Back to overview" %}</span>
+    </a>
+    {% if perms.users.can_manage and group.pk != 1 and group.pk != 2 %}
+        <div class="btn-group">
+            <a data-toggle="dropdown" class="btn btn-mini dropdown-toggle">
+                <span class="optional-small">{% trans 'More actions' %} </span>
+                <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu pull-right">
+                <!-- edit -->
+                <li>
+                    <a href="{% url 'group_update' group.id  %}">
+                        <i class="icon-pencil"></i>
+                        {% trans 'Edit group' %}
+                    </a>
+                </li>
+                <!-- delete -->
+                <li>
+                    <a href="{% url 'group_delete' group.id  %}">
+                        <i class="icon-remove"></i>
+                        {% trans 'Delete group' %}
+                    </a>
+                </li>
+            </ul>
+        </div>
+    {% endif %}
+    </small>
+</h1>
+
+<p>{{ group.description }}</p>
+
+<h4>{% trans "Members" %}</h4>
+
+<ol>
+{% for member in group_members %}
+    <li><a href="{{ member|absolute_url }}">{{ member }}</a></li>
+{% empty %}
+    <p>{% trans "No members available." %}</p>
+{% endfor %}
+</ol>
+
+{% endblock %}
