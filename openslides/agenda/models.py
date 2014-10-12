@@ -304,10 +304,12 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
 
     @property
     def item_no(self):
+        item_no = None
         if self.item_number:
-            item_no = '%s %s' % (config['agenda_number_prefix'], self.item_number)
-        else:
-            item_no = None
+            if config['agenda_number_prefix']:
+                item_no = '%s %s' % (config['agenda_number_prefix'], self.item_number)
+            else:
+                item_no = str(self.item_number)
         return item_no
 
     def calc_item_no(self):
