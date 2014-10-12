@@ -8,6 +8,9 @@ Version 1.6.1 (unreleased)
 ==========================
 [https://github.com/OpenSlides/OpenSlides/issues?milestone=16]
 
+Agenda:
+- Fixed error in item numbers.
+
 Motions:
 - Show supporters on motion slide if available.
 - Fixed motion detail view template. Added block to enable extra content via
