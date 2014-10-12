@@ -92,7 +92,7 @@
 
     <!-- Reason -->
     <h4>{% trans "Reason" %}:</h4>
-        {{ reason|safe|default:'–' }}
+    {{ reason|safe|default:'–' }}
     <br>
 
     <!-- Attachments -->
@@ -208,9 +208,12 @@
         <h5>{% trans "Vote result" %}:</h5>
         {% with motion.polls.all as polls %}
         {% for poll in polls %}
-            {% if perms.motion.can_manage_motion or poll.has_votes %}
-                <p>{{ poll.poll_number|ordinal|safe }} {% trans "vote" %}:<br>
+                <p>
+                    {% if polls.count > 1 %}
+                        {{ poll.poll_number|ordinal|safe }} {% trans "vote" %}:
+                    {% endif %}
                     {% if perms.motion.can_manage_motion %}
+                        {% if polls.count > 1 %}<br>{% endif %}
                         <a class="btn btn-mini activate_link {% if poll.is_active_slide %}btn-primary{% endif %}" href="{{ poll|absolute_url:'projector' }}"
                             rel="tooltip" data-original-title="{% trans 'Show vote result' %}">
                             <i class="icon-facetime-video {% if poll.is_active_slide %}icon-white{% endif %}"></i></a>
@@ -220,7 +223,6 @@
                             rel="tooltip" data-original-title="{% trans 'Edit Vote' %}"><i class="icon-pencil"></i></a>
                         <a class="btn btn-mini" href="{{ poll|absolute_url:'delete' }}"
                             rel="tooltip" data-original-title="{% trans 'Delete Vote' %}"><i class="icon-remove"></i></a>
-                        </p>
                     {% endif %}
                     {% if poll.has_votes %}
                         <div class="result">
@@ -244,11 +246,10 @@
                         {% endwith %}
                         </div>
                     {% else %}
-                        {% if perms.motion.can_manage_motion %}
-                            <p><span class="label label-info">{% trans 'No result' %}</span></p>
-                         {% endif %}
+                        <p><span class="label label-info">{% trans 'No result' %}</span></p>
                     {% endif %}
-            {% endif %}
+                    {% block meta_box_poll_extras %}{% endblock %}
+                </p>
         {% empty %}
             –
         {% endfor %}
@@ -278,15 +279,6 @@
             {% endif %}
         </h5>
         {{ version.creation_time }}
-
-        <!-- Widthdraw button -->
-        {# TODO: Check this button #}
-        {% if  allowed_actions.wit and user in motion.submitters %}
-            <br><br>
-            <a href="{% url 'motion_set_state' motion.id 'wit' %}" class="btn">
-                <span class="icon revert">{% trans 'Withdraw motion' %}</span>
-            </a>
-        {% endif %}
 
         <!-- Support/Unsupport button -->
         {% if perms.motion.can_support_motion and 'motion_min_supporters'|get_config > 0 %}
