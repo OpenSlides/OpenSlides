@@ -2,6 +2,7 @@
 
 from django.forms.models import modelform_factory
 from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 
 from openslides.utils.views import TemplateView, FormMixin
 
@@ -53,7 +54,11 @@ class PollFormView(FormMixin, TemplateView):
                 'a get_poll_class method.')
 
     def get_object(self):
-        return self.get_poll_class().objects.get(pk=self.kwargs['poll_id'])
+        """
+        Returns the poll object. Raises Http404 if the poll does not exist.
+        """
+        queryset = self.get_poll_class().objects.filter(pk=self.kwargs['poll_id'])
+        return get_object_or_404(queryset)
 
     def get_context_data(self, **kwargs):
         context = super(PollFormView, self).get_context_data(**kwargs)
