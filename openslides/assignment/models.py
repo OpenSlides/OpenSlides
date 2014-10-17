@@ -296,7 +296,7 @@ class AssignmentPoll(SlideMixin, RelatedModelMixin, CollectDefaultVotesMixin,
 
     option_class = AssignmentOption
     assignment = models.ForeignKey(Assignment, related_name='poll_set')
-    yesnoabstain = models.BooleanField()
+    yesnoabstain = models.BooleanField(default=False)
     description = models.CharField(
         max_length=79, null=True, blank=True,
         verbose_name=ugettext_lazy("Comment on the ballot paper"))

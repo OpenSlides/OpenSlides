@@ -3,8 +3,7 @@ import posixpath
 from urllib.parse import unquote
 
 from django.conf import settings
-from django.core.handlers.wsgi import WSGIHandler as Django_WSGIHandler
-from django.utils.translation import ugettext as _
+from django.core.wsgi import get_wsgi_application
 from sockjs.tornado import SockJSRouter, SockJSConnection
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
@@ -72,14 +71,14 @@ def run_tornado(addr, port):
 
     # Print listening address and port to command line
     if addr == '0.0.0.0':
-        url_string = _("the machine's local ip address")
+        url_string = "the machine's local ip address"
     else:
         url_string = 'http://%s:%s' % (addr, port)
     # TODO: don't use print, use django logging
-    print(_("Starting OpenSlides' tornado webserver listening to %(url_string)s") % {'url_string': url_string})
+    print("Starting OpenSlides' tornado webserver listening to %(url_string)s" % {'url_string': url_string})
 
     # Setup WSGIContainer
-    app = WSGIContainer(Django_WSGIHandler())
+    app = WSGIContainer(get_wsgi_application())
 
     # Collect urls
     projectpr_socket_js_router = SockJSRouter(ProjectorSocketHandler, '/projector/socket')
