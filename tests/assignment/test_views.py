@@ -109,3 +109,20 @@ class TestAssignmentPollCreateView(TestCase):
         self.assertEqual(poll.assignment, self.assignment)
         self.assertEqual(poll.assignmentoption_set.count(), 1)
         self.assertTrue(poll.yesnoabstain)
+
+
+class TestPollUpdateView(TestCase):
+    def setUp(self):
+        self.admin_client = Client()
+        self.admin_client.login(username='admin', password='admin')
+
+    def test_not_existing_poll(self):
+        """
+        Tests that a 404 is returned, when a non existing poll is requested.
+        """
+        Assignment.objects.create(name='test assignment', posts=1)
+        url = '/assignment/poll/1/edit/'
+
+        response = self.admin_client.get(url)
+
+        self.assertTrue(response.status_code, '404')
