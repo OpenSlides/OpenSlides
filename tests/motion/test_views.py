@@ -526,3 +526,20 @@ class CategoryViewsTest(TestCase):
         response = self.admin_client.post(url, {'yes': 'true'})
         self.assertRedirects(response, '/motion/category/')
         self.assertFalse(Category.objects.exists())
+
+
+class PollUpdateViewTest(TestCase):
+    def setUp(self):
+        self.admin_client = Client()
+        self.admin_client.login(username='admin', password='admin')
+
+    def test_not_existing_poll(self):
+        """
+        Tests that a 404 is returned, when a non existing poll is requested
+        """
+        Motion.objects.create(title='test_motion')
+        url = '/motion/1/poll/1/edit/'
+
+        response = self.admin_client.get(url)
+
+        self.assertTrue(response.status_code, '404')

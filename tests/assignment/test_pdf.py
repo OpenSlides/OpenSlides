@@ -19,3 +19,8 @@ class AssignmentPDFTest(TestCase):
         Assignment.objects.create(name='assignment_name_ith8qua1Eiferoqu5ju2', description="test", posts=1)
         response = self.admin_client.get('/assignment/print/')
         self.assertEqual(response.status_code, 200)
+
+    def test_render_many_posts(self):
+        Assignment.objects.create(name='assignment_name_cohZ9shaipee3Phaing4', description="test", posts=20)
+        response = self.admin_client.get('/assignment/print/')
+        self.assertEqual(response.status_code, 200)

@@ -15,6 +15,27 @@ Version 1.6.1 (unreleased)
 ==========================
 [https://github.com/OpenSlides/OpenSlides/issues?milestone=16]
 
+Agenda:
+- Fixed error in item numbers.
+
+Motions:
+- Show supporters on motion slide if available.
+- Fixed motion detail view template. Added block to enable extra content via
+  plugins.
+
+Assignments:
+- Fixed PDF when an assignment has a lot of posts. Used only 7 signature
+  lines.
+
+Participants:
+- Fixed participant csv import with group ids:
+  * Allowed to add multiple groups in csv group id field, e. g. "3,4".
+  * Fixed bug that group ids greater than 9 can not be imported.
+  * Updated error message if group id does not exists.
+
+Other:
+- Fixed CKEditor stuff (added insertpre plugin and removed unused code).
+
 
 Version 1.6 (2014-06-02)
 ========================

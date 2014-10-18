@@ -50,10 +50,20 @@
     <!-- Submitter -->
     <h4>{% trans "Submitter" %}:</h4>
     {% for submitter in motion.submitter.all %}
-        {{ submitter.person }}{% if not forloop.last %},<br> {% endif %}
+        {{ submitter.person }}{% if not forloop.last %},<br>{% endif %}
     {% empty %}
         -
     {% endfor %}
+
+    <!-- Supporters -->
+    {% with motion.supporter.all as supporters %}
+    {% if supporters|length > 0 %}
+        <h4>{% trans "Supporters" %}:</h4>
+        {% for supporter in supporters %}
+            {{ supporter.person }}{% if not forloop.last %},<br>{% endif %}
+        {% endfor %}
+    {% endif %}
+    {% endwith %}
 
     <!-- Category -->
     {% if motion.category %}
@@ -71,9 +81,14 @@
     </small>
 </h1>
 
-<div class="text">{{ motion.active_version.text|safe }}</div>
+<div class="text">
+    {{ motion.active_version.text|safe }}
+</div>
+
 {% if motion.active_version.reason %}
     <br>
-    <div class="reason"><p><b>{% trans "Reason" %}:</b></p>
-    {{ motion.active_version.reason|safe }}</div>
+    <div class="reason">
+        <p><b>{% trans "Reason" %}:</b></p>
+        {{ motion.active_version.reason|safe }}
+    </div>
 {% endif %}

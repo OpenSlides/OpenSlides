@@ -27,7 +27,8 @@ HTML_TAG_WHITELIST = ('a',
 HTML_ATTRIBUTES_WHITELIST = {
     'a': ['href'],
     '*': ['style'],
-    'img': ['src'],
+    'pre': ['class'],
+    'img': ['src', 'width', 'height'],
 }
 
 HTML_STYLES_WHITELIST = ('color', 'background-color', 'list-style', 'width', 'height')

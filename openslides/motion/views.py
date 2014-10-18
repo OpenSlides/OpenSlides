@@ -5,6 +5,7 @@ from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 from reportlab.platypus import SimpleDocTemplate
+from django.shortcuts import get_object_or_404
 
 from openslides.agenda.views import CreateRelatedAgendaItemView as _CreateRelatedAgendaItemView
 from openslides.config.api import config
@@ -522,9 +523,10 @@ class PollMixin(object):
         Use the motion id and the poll_number from the url kwargs to get the
         object.
         """
-        return MotionPoll.objects.filter(
+        queryset = MotionPoll.objects.filter(
             motion=self.kwargs['pk'],
-            poll_number=self.kwargs['poll_number']).get()
+            poll_number=self.kwargs['poll_number'])
+        return get_object_or_404(queryset)
 
     def get_url_name_args(self):
         """
