@@ -122,9 +122,9 @@ class SpeakerViewTestCase(TestCase):
         self.item1 = Item.objects.create(title='item1')
         self.item2 = Item.objects.create(title='item2')
 
-    def check_url(self, url, test_client, response_cose):
+    def check_url(self, url, test_client, response_code):
         response = test_client.get(url)
-        self.assertEqual(response.status_code, response_cose)
+        self.assertEqual(response.status_code, response_code)
         return response
 
     def assertMessage(self, response, message):
@@ -345,3 +345,49 @@ class TestCurrentListOfSpeakersOnProjectorView(SpeakerViewTestCase):
         self.assertContains(response, 'List of speakers')
         self.assertContains(response, 'title_gupooDee8ahahnaxoo2a')
         self.assertContains(response, 'speaker1')
+
+
+class TestSpeakerChangeOrderView(SpeakerViewTestCase):
+    def setUp(self):
+        super().setUp()
+        Speaker.objects.add(self.speaker1, self.item1)
+        Speaker.objects.add(self.speaker2, self.item1)
+
+    def test_post(self):
+        """
+        Tests to change the order of two speakers.
+        """
+        data = {'sort_order': 'speaker_2,speaker_1'}
+        self.admin_client.post('/agenda/1/speaker/change_order/',
+                               data)
+
+        self.assertEqual(Speaker.objects.get(pk=1).weight, 2)
+        self.assertEqual(Speaker.objects.get(pk=2).weight, 1)
+
+    def test_invalid_data1(self):
+        """
+        Tests to send invalid data.
+
+        The order should not change.
+        """
+        data = {'sort_order': 'speaker_2,speaker:1'}
+        response = self.admin_client.post('/agenda/1/speaker/change_order/',
+                                          data)
+
+        self.assertEqual(Speaker.objects.get(pk=1).weight, 1)
+        self.assertEqual(Speaker.objects.get(pk=2).weight, 2)
+        self.assertMessage(response, 'Could not change order. Invalid data.')
+
+    def test_invalid_data2(self):
+        """
+        Tests to send a speaker that does not exist.
+
+        The order should not change.
+        """
+        data = {'sort_order': 'speaker_2,speaker_10'}
+        response = self.admin_client.post('/agenda/1/speaker/change_order/',
+                                          data)
+
+        self.assertEqual(Speaker.objects.get(pk=1).weight, 1)
+        self.assertEqual(Speaker.objects.get(pk=2).weight, 2)
+        self.assertMessage(response, 'Could not change order. Invalid data.')

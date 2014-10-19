@@ -1,4 +1,5 @@
 from unittest.mock import patch
+from unittest import skip
 
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
@@ -230,6 +231,7 @@ class ViewTest(TestCase):
     def test_change_item_order_with_orga_item(self):
         self.item1.type = 2
         self.item1.save()
+
         data = {
             'i1-self': 1,
             'i1-weight': 50,
@@ -238,8 +240,46 @@ class ViewTest(TestCase):
             'i2-weight': 50,
             'i2-parent': 1}
         response = self.adminClient.post('/agenda/', data)
+
         self.assertNotEqual(Item.objects.get(pk=2).parent_id, 1)
         self.assertContains(response, 'Agenda items can not be child elements of an organizational item.')
+
+    def test_change_item_order_with_form_error(self):
+        """
+        Sends invalid data to the view. The expected behavior is to change
+        nothing.
+        """
+        data = {
+            'i1-self': 1,
+            'i1-weight': 50,
+            'i1-parent': 2,
+            'i2-self': 2,
+            'i2-weight': "invalid",
+            'i2-parent': "invalid"}
+
+        self.adminClient.post('/agenda/', data)
+
+        self.assertIsNone(Item.objects.get(pk=1).parent_id, 0)
+        self.assertIsNone(Item.objects.get(pk=2).parent_id, 0)
+
+    @skip('Check the tree for integrety in the openslides code')
+    def test_change_item_order_with_tree_error(self):
+        """
+        Sends invalid data to the view. The expected behavior is to change
+        nothing.
+        """
+        data = {
+            'i1-self': 1,
+            'i1-weight': 50,
+            'i1-parent': 2,
+            'i2-self': 2,
+            'i2-weight': 50,
+            'i2-parent': 1}
+
+        self.adminClient.post('/agenda/', data)
+
+        self.assertEqual(Item.objects.get(pk=1).parent_id, 0)
+        self.assertEqual(Item.objects.get(pk=2).parent_id, 0)
 
     def test_delete(self):
         response = self.adminClient.get('/agenda/%s/del/' % self.item1.pk)
