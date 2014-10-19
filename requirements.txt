@@ -3,7 +3,7 @@
 
 # Requirements for development and tests in alphabetical order
 coverage==3.7.1
-flake8==2.1.0
+flake8==2.2.4
 
 # Requirements for OpenSlides handbook/documentation in alphabetical order
 Sphinx==1.2.2
