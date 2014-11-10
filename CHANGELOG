@@ -23,7 +23,7 @@ Participants:
   * Updated error message if group id does not exists.
 Other:
 - Fixed CKEditor stuff (added insertpre plugin and removed unused code).
-- Updated German and Czech translation.
+- Updated French, German and Czech translation.
 
 
 Version 1.6 (2014-06-02)
