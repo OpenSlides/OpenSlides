@@ -1,20 +1,17 @@
 from django import forms
-from django.dispatch import receiver
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.config.api import ConfigGroup, ConfigGroupedCollection, ConfigVariable
-from openslides.config.signals import config_signal
-from openslides.core.signals import post_database_setup
 from openslides.poll.models import PERCENT_BASE_CHOICES
 
 from .models import State, Workflow
 
 
-@receiver(config_signal, dispatch_uid='setup_motion_config')
 def setup_motion_config(sender, **kwargs):
     """
-    Motion config variables.
+    Receiver function to setup all motion config variables. It is connected to
+    the signal openslides.config.signals.config_signal during app loading.
     """
     # General
     motion_workflow = ConfigVariable(
@@ -149,10 +146,11 @@ def setup_motion_config(sender, **kwargs):
         groups=(group_general, group_supporters, group_ballot_papers, group_pdf))
 
 
-@receiver(post_database_setup, dispatch_uid='motion_create_builtin_workflows')
 def create_builtin_workflows(sender, **kwargs):
     """
-    Creates a simple and a complex workflow.
+    Receiver function to create a simple and a complex workflow. It is
+    connected to the signal openslides.core.signals.post_database_setup
+    during app loading.
     """
     workflow_1, created = Workflow.objects.get_or_create(name=ugettext_noop('Simple Workflow'))
     if created:

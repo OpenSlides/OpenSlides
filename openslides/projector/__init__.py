@@ -1,1 +1,1 @@
-from . import signals, widgets  # noqa
+default_app_config = 'openslides.projector.apps.ProjectorAppConfig'

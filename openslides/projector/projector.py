@@ -1,6 +1,5 @@
 import warnings
 
-
 from openslides.config.api import config
 
 from .exceptions import ProjectorExceptionWarning

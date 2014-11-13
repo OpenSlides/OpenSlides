@@ -1,1 +1,1 @@
-from . import main_menu, personal_info, signals, slides, widgets  # noqa
+default_app_config = 'openslides.agenda.apps.AgendaAppConfig'

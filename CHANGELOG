@@ -7,9 +7,13 @@ http://openslides.org
 Version 2.0.0 (unreleased)
 ==========================
 
-- Changed supported Python version to >= 3.3
-- Used Django 1.7 as lowest requirement
-- Refactoring of the participant app. Now called 'users'
+Other:
+- Changed supported Python version to >= 3.3.
+- Used Django 1.7 as lowest requirement.
+- Refactoring of the participant app. Now called 'users'.
+- Added Django's application configuration. Refactored loading of signals,
+  template signals and slides.
+
 
 
 Version 1.6.1 (2014-12-08)

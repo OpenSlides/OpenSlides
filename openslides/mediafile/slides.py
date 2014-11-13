@@ -1,9 +1,7 @@
-#!/usr/bin/env python
-
 from django.template.loader import render_to_string
 
 from openslides.config.api import config
-from openslides.projector.api import register_slide, SlideError
+from openslides.projector.api import SlideError
 
 from .models import Mediafile
 
@@ -13,6 +11,8 @@ def mediafile_presentation_as_slide(**kwargs):
     Return the html code for a presentation of a Mediafile.
 
     At the moment, only the presentation of pdfs is supported.
+
+    The function is registered during app loading.
     """
     file_pk = kwargs.get('pk', None)
     page_num = kwargs.get('page_num', 1)
@@ -27,6 +27,3 @@ def mediafile_presentation_as_slide(**kwargs):
     context = {'pdf': pdf, 'page_num': page_num,
                'fullscreen': config['pdf_fullscreen']}
     return render_to_string('mediafile/presentation_slide.html', context)
-
-
-register_slide('mediafile', mediafile_presentation_as_slide, Mediafile)

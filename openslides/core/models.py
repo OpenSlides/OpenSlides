@@ -44,7 +44,3 @@ class CustomSlide(SlideMixin, AbsoluteUrlMixin, models.Model):
         else:
             url = super(CustomSlide, self).get_absolute_url(link)
         return url
-
-
-# TODO: apploader
-from . import main_menu, signals, slides, widgets  # noqa

@@ -2,23 +2,22 @@ from time import time
 
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.context_processors import csrf
-from django.dispatch import receiver, Signal
+from django.dispatch import Signal
 from django.template.loader import render_to_string
 from django.utils.datastructures import SortedDict
 
 from openslides.config.api import config, ConfigCollection, ConfigVariable
-from openslides.config.signals import config_signal
 
 from .projector import Overlay
 
 projector_overlays = Signal(providing_args=['request'])
 
 
-@receiver(config_signal, dispatch_uid='setup_projector_config')
 def setup_projector_config(sender, **kwargs):
     """
-    Projector config variables for OpenSlides. They are not shown on a
-    config view.
+    Receiver function to setup all projector config variables. They are not
+    shown on a config view. The function is connected to the signal
+    openslides.config.signals.config_signal during app loading.
     """
     # The active slide. The config-value is a dictonary with at least the entry
     # 'callback'.
@@ -75,10 +74,10 @@ def setup_projector_config(sender, **kwargs):
             projector_pdf_fullscreen))
 
 
-@receiver(projector_overlays, dispatch_uid="projector_countdown")
 def countdown(sender, **kwargs):
     """
-    Receiver for the countdown.
+    Receiver function for the projector countdown. The function is
+    connected to the signal projector_overlays during app loading.
     """
     name = 'projector_countdown'
     request = kwargs.get('request', None)
@@ -116,11 +115,11 @@ def countdown(sender, **kwargs):
     return Overlay(name, get_widget_html, get_projector_html, get_projector_js)
 
 
-@receiver(projector_overlays, dispatch_uid="projector_overlay_message")
 def projector_overlay_message(sender, **kwargs):
     """
-    Receiver to show the overlay_message on the projector or the form in the
-    overlay-widget on the dashboard.
+    Receiver function to show the overlay_message on the projector or the
+    form in the overlay-widget on the dashboard. The function is connected
+    to the signal projector_overlays during app loading.
     """
     name = 'projector_message'
     request = kwargs.get('request', None)
@@ -143,10 +142,10 @@ def projector_overlay_message(sender, **kwargs):
     return Overlay(name, get_widget_html, get_projector_html)
 
 
-@receiver(projector_overlays, dispatch_uid="projector_clock")
 def projector_clock(sender, **kwargs):
     """
-    Receiver to show the clock on the projector.
+    Receiver function to show the clock on the projector. The function is
+    connected to the signal projector_overlays during app loading.
     """
     name = 'projector_clock'
 

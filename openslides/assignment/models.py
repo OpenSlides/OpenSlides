@@ -342,7 +342,3 @@ class AssignmentPoll(SlideMixin, RelatedModelMixin, CollectDefaultVotesMixin,
 
     def get_slide_context(self, **context):
         return super(AssignmentPoll, self).get_slide_context(poll=self)
-
-
-# TODO: use the app framework
-from . import main_menu, personal_info, signals, slides, template, widgets  # noqa

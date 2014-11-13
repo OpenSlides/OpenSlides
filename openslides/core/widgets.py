@@ -36,8 +36,11 @@ class CustonSlideWidget(Widget):
     icon_css_class = 'icon-star'
 
     def get_context_data(self, **context):
-        return super(CustonSlideWidget, self).get_context_data(
-            slides=CustomSlide.objects.all().order_by('weight'),
-            welcomepage_is_active=(
-                get_active_slide().get('callback', 'default') == 'default'),
-            **context)
+        """
+        Adds custom slides and a flag whether the welcome page is active to
+        the context.
+        """
+        context['slides'] = CustomSlide.objects.all().order_by('weight')
+        context['welcomepage_is_active'] = (
+            get_active_slide().get('callback', 'default') == 'default')
+        return super(CustonSlideWidget, self).get_context_data(**context)

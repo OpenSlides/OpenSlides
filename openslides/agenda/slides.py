@@ -1,7 +1,7 @@
 from django.template.loader import render_to_string
 
 from openslides.config.api import config
-from openslides.projector.api import get_projector_content, register_slide
+from openslides.projector.api import get_projector_content
 
 from .models import Item
 
@@ -19,6 +19,8 @@ def agenda_slide(**kwargs):
     If 'type' is 'summary', show a summary of all children of the item.
 
     If 'type' is 'list_of_speakers', show the list of speakers for the item.
+
+    The function is registered during app loading.
     """
     item_pk = kwargs.get('pk', None)
     slide_type = kwargs.get('type', None)
@@ -56,6 +58,3 @@ def agenda_slide(**kwargs):
         context = {'item': item}
         slide = render_to_string('agenda/item_slide.html', context)
     return slide
-
-
-register_slide('agenda', agenda_slide, Item)
