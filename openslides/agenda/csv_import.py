@@ -25,7 +25,7 @@ def import_agenda_items(csvfile):
         dialect = csv_ext.patchup(dialect)
         csvfile.seek(0)
         # Parse CSV file
-        with transaction.commit_on_success():
+        with transaction.atomic():
             success_lines = []
             error_lines = []
             for (line_no, line) in enumerate(csv.reader(

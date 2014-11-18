@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.urlresolvers import reverse
-from django.db import transaction
+from django.db import transaction, IntegrityError
 from django.db.models import Model
 from django.template.loader import render_to_string
 from django.utils.datastructures import SortedDict
@@ -117,7 +117,6 @@ class Overview(TemplateView):
             'active_type': active_type})
         return context
 
-    @transaction.commit_manually
     def post(self, request, *args, **kwargs):
         if not request.user.has_perm('agenda.can_manage_agenda'):
             messages.error(
@@ -126,38 +125,42 @@ class Overview(TemplateView):
             context = self.get_context_data(**kwargs)
             return self.render_to_response(context)
 
-        transaction.commit()
-        for item in Item.objects.all():
-            form = ItemOrderForm(request.POST, prefix="i%d" % item.id)
-            if form.is_valid():
-                try:
-                    parent = Item.objects.get(id=form.cleaned_data['parent'])
-                except Item.DoesNotExist:
-                    parent = None
-                else:
-                    if item.type == item.AGENDA_ITEM and parent.type == item.ORGANIZATIONAL_ITEM:
-                        transaction.rollback()
+        # Use transaction.atomic() to change all items at once.
+        # Raise IntegrityError if some data is invalid.
+        # In this case, django does not commit anything, else, the mptt-tree is
+        # rebuild.
+        try:
+            with transaction.atomic():
+                for item in Item.objects.all():
+                    form = ItemOrderForm(request.POST, prefix="i%d" % item.id)
+                    if form.is_valid():
+                        try:
+                            parent = Item.objects.get(id=form.cleaned_data['parent'])
+                        except Item.DoesNotExist:
+                            parent = None
+                        else:
+                            if item.type == item.AGENDA_ITEM and parent.type == item.ORGANIZATIONAL_ITEM:
+                                messages.error(
+                                    request, _('Agenda items can not be child elements of an organizational item.'))
+                                raise IntegrityError
+                        item.parent = parent
+                        item.weight = form.cleaned_data['weight']
+                        Model.save(item)
+                    else:
                         messages.error(
-                            request, _('Agenda items can not be child elements of an organizational item.'))
-                        break
-                item.parent = parent
-                item.weight = form.cleaned_data['weight']
-                Model.save(item)
-            else:
-                transaction.rollback()
-                messages.error(
-                    request, _('Errors when reordering of the agenda'))
-                break
+                            request, _('Errors when reordering of the agenda'))
+                        raise IntegrityError
+        except IntegrityError:
+            pass
         else:
             Item.objects.rebuild()
             # TODO: assure, that it is a valid tree
+
         context = self.get_context_data(**kwargs)
-        transaction.commit()
 
         if get_active_slide()['callback'] == 'agenda':
             update_projector()
         context = self.get_context_data(**kwargs)
-        transaction.commit()
         return self.render_to_response(context)
 
 
@@ -530,7 +533,6 @@ class SpeakerChangeOrderView(SingleObjectMixin, RedirectView):
     def pre_redirect(self, args, **kwargs):
         self.object = self.get_object()
 
-    @transaction.commit_manually
     def pre_post_redirect(self, request, *args, **kwargs):
         """
         Reorder the list of speaker.
@@ -538,24 +540,22 @@ class SpeakerChangeOrderView(SingleObjectMixin, RedirectView):
         Take the string 'sort_order' from the post-data, and use this order.
         """
         self.object = self.get_object()
-        transaction.commit()
-        for (counter, speaker) in enumerate(self.request.POST['sort_order'].split(',')):
-            try:
-                speaker_pk = int(speaker.split('_')[1])
-            except IndexError:
-                transaction.rollback()
-                break
-            try:
-                speaker = Speaker.objects.filter(item=self.object).get(pk=speaker_pk)
-            except:
-                transaction.rollback()
-                break
-            speaker.weight = counter + 1
-            speaker.save()
-        else:
-            transaction.commit()
-            return None
-        messages.error(request, _('Could not change order. Invalid data.'))
+
+        try:
+            with transaction.atomic():
+                for (counter, speaker) in enumerate(self.request.POST['sort_order'].split(',')):
+                    try:
+                        speaker_pk = int(speaker.split('_')[1])
+                    except IndexError:
+                        raise IntegrityError
+                    try:
+                        speaker = Speaker.objects.filter(item=self.object).get(pk=speaker_pk)
+                    except Speaker.DoesNotExist:
+                        raise IntegrityError
+                    speaker.weight = counter + 1
+                    speaker.save()
+        except IntegrityError:
+            messages.error(request, _('Could not change order. Invalid data.'))
 
     def get_url_name_args(self):
         return [self.object.pk]

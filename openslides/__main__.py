@@ -279,7 +279,7 @@ def backupdb(settings, args):
 
     from django.db import connection, transaction
 
-    @transaction.commit_manually
+    @transaction.atomic
     def do_backup(src_path, dest_path):
         # perform a simple file-copy backup of the database
         # first we need a shared lock on the database, issuing a select()
@@ -291,8 +291,6 @@ def backupdb(settings, args):
             shutil.copy(src_path, dest_path)
         except IOError:
             raise Exception("Database backup failed.")
-        # and release the lock again
-        transaction.commit()
 
     database_path = get_database_path_from_settings()
     if database_path:

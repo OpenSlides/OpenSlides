@@ -35,7 +35,7 @@ def import_motions(csvfile, default_submitter, override, importing_person=None):
         return '', '', _('Import file has wrong character encoding, only UTF-8 is supported!')
     csvfile.seek(0)
 
-    with transaction.commit_on_success():
+    with transaction.atomic():
         dialect = csv.Sniffer().sniff(csvfile.readline().decode('utf8'))
         dialect = csv_ext.patchup(dialect)
         csvfile.seek(0)

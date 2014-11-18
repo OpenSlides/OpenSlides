@@ -18,13 +18,13 @@ def import_users(csvfile):
         csvfile.read().decode('utf-8')
         csvfile.seek(0)
 
-        with transaction.commit_on_success():
+        with transaction.atomic():
             dialect = csv.Sniffer().sniff(csvfile.readline().decode('utf-8'))
             dialect = csv_ext.patchup(dialect)
             csvfile.seek(0)
 
             for (line_no, line) in enumerate(csv.reader(
-                    (line.decode('utf8') for line in csvfile.readlines()),                                                        dialect=dialect)):
+                    (line.decode('utf8') for line in csvfile.readlines()), dialect=dialect)):
                 if line_no:
                     try:
                         (title, first_name, last_name, gender, email, groups,
