@@ -15,8 +15,7 @@ Motions:
 - Fixed motion detail view template. Added block to enable extra content via
   plugins.
 Assignments:
-- Fixed PDF when an assignment has a lot of posts. Used only 7 signature
-  lines.
+- Fixed PDF build error when an election has more than 20 posts or candidates.
 Participants:
 - Fixed participant csv import with group ids:
   * Allowed to add multiple groups in csv group id field, e. g. "3,4".
