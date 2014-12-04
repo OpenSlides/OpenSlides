@@ -8,7 +8,7 @@ from django.utils.translation import ungettext
 from reportlab.lib import colors
 from reportlab.lib.units import cm
 from reportlab.platypus import (PageBreak, Paragraph, SimpleDocTemplate, Spacer,
-                                Table, TableStyle)
+                                LongTable, Table, TableStyle)
 
 from openslides.agenda.views import CreateRelatedAgendaItemView as _CreateRelatedAgendaItemView
 from openslides.config.api import config
@@ -346,138 +346,129 @@ class AssignmentPDF(PDFView):
         story.append(Paragraph(
             _("Election: %s") % assignment.name, stylesheet['Heading1']))
         story.append(Spacer(0, 0.5 * cm))
-        # posts
-        cell1a = []
-        cell1a.append(Paragraph(
-            "<font name='Ubuntu-Bold'>%s:</font>" %
-            _("Number of available posts"), stylesheet['Bold']))
-        cell1b = []
-        cell1b.append(Paragraph(str(assignment.posts), stylesheet['Paragraph']))
-        # candidates
-        cell2a = []
-        cell2a.append(Paragraph(
-            "<font name='Ubuntu-Bold'>%s:</font><seqreset"
-            " id='counter'>" % _("Candidates"), stylesheet['Heading4']))
-        cell2b = []
-        for candidate in assignment.candidates:
-            cell2b.append(Paragraph(
-                "<seq id='counter'/>.&nbsp; %s" % candidate,
-                stylesheet['Signaturefield']))
-        if assignment.status == "sea":
-            for x in range(0, 7):
-                cell2b.append(
-                    Paragraph(
-                        "<seq id='counter'/>.&nbsp; "
-                        "__________________________________________",
-                        stylesheet['Signaturefield']))
-        cell2b.append(Spacer(0, 0.2 * cm))
 
-        # Election result
-
-        # Preparing
-        vote_results = assignment.vote_results(only_published=True)
-        polls = assignment.poll_set.filter(published=True)
-        data_votes = []
-
-        # Left side
-        cell3a = []
-        cell3a.append(Paragraph(
-            "%s:" % (_("Election result")), stylesheet['Heading4']))
-
-        if polls.count() == 1:
-            cell3a.append(Paragraph(
-                "%s %s" % (polls.count(), _("ballot")), stylesheet['Normal']))
-        elif polls.count() > 1:
-            cell3a.append(Paragraph(
-                "%s %s" % (polls.count(), _("ballots")), stylesheet['Normal']))
-
-        # Add table head row
-        headrow = []
-        headrow.append(_("Candidates"))
-        for poll in polls:
-            headrow.append("%s." % poll.get_ballot())
-        data_votes.append(headrow)
-
-        # Add result rows
-        elected_candidates = list(assignment.elected)
-        for candidate, poll_list in vote_results.iteritems():
-            row = []
-
-            candidate_string = candidate.clean_name
-            if candidate in elected_candidates:
-                candidate_string = "* " + candidate_string
-            if candidate.name_suffix:
-                candidate_string += "\n(%s)" % candidate.name_suffix
-            row.append(candidate_string)
-            for vote in poll_list:
-                if vote is None:
-                    row.append('–')
-                elif 'Yes' in vote and 'No' in vote and 'Abstain' in vote:
-                    row.append(
-                        _("Y: %(YES)s\nN: %(NO)s\nA: %(ABSTAIN)s")
-                        % {'YES': vote['Yes'], 'NO': vote['No'],
-                           'ABSTAIN': vote['Abstain']})
-                elif 'Votes' in vote:
-                    row.append(vote['Votes'])
-                else:
-                    pass
-            data_votes.append(row)
-
-        # Add valid votes row
-        footrow_one = []
-        footrow_one.append(_("Valid votes"))
-        votesvalid_is_used = False
-        for poll in polls:
-            footrow_one.append(poll.print_votesvalid())
-            if poll.votesvalid is not None:
-                votesvalid_is_used = True
-        if votesvalid_is_used:
-            data_votes.append(footrow_one)
-
-        # Add invalid votes row
-        footrow_two = []
-        footrow_two.append(_("Invalid votes"))
-        votesinvalid_is_used = False
-        for poll in polls:
-            footrow_two.append(poll.print_votesinvalid())
-            if poll.votesinvalid is not None:
-                votesinvalid_is_used = True
-        if votesinvalid_is_used:
-            data_votes.append(footrow_two)
-
-        # Add votes cast row
-        footrow_three = []
-        footrow_three.append(_("Votes cast"))
-        votescast_is_used = False
-        for poll in polls:
-            footrow_three.append(poll.print_votescast())
-            if poll.votescast is not None:
-                votescast_is_used = True
-        if votescast_is_used:
-            data_votes.append(footrow_three)
-
-        table_votes = Table(data_votes)
-        table_votes.setStyle(
-            TableStyle([
-                ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
-                ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-                ('LINEABOVE', (0, 0), (-1, 0), 2, colors.black),
-                ('LINEABOVE', (0, 1), (-1, 1), 1, colors.black),
-                ('LINEBELOW', (0, -1), (-1, -1), 2, colors.black),
-                ('ROWBACKGROUNDS', (0, 1), (-1, -1), (colors.white, (.9, .9, .9)))
-            ])
-        )
-
-        # table
+        # Filling table rows...
         data = []
-        data.append([cell1a, cell1b])
+        polls = assignment.poll_set.filter(published=True)
+        # 1. posts
+        data.append([
+            Paragraph("%s:" %
+                      _("Number of available posts"), stylesheet['Bold']),
+            Paragraph(str(assignment.posts), stylesheet['Paragraph'])])
+
+        # 2a. if no polls available print candidates
+        if not polls:
+            data.append([
+                Paragraph("%s:<seqreset id='counter'>" %
+                          _("Candidates"), stylesheet['Heading4']),
+                []])
+            for candidate in assignment.candidates:
+                data.append([
+                    [],
+                    Paragraph("<seq id='counter'/>.&nbsp; %s" % candidate,
+                              stylesheet['Signaturefield'])])
+            if assignment.status == "sea":
+                for x in range(0, 7):
+                    data.append([
+                        [],
+                        Paragraph("<seq id='counter'/>.&nbsp; "
+                                  "__________________________________________",
+                                  stylesheet['Signaturefield'])])
+
+        # 2b. if polls available print election result
         if polls:
-            data.append([cell3a, table_votes])
-            data.append(['', '* = ' + _('elected')])
-        else:
-            data.append([cell2a, cell2b])
-        data.append([Spacer(0, 0.2 * cm), ''])
-        t = Table(data)
+            # Preparing
+            vote_results = assignment.vote_results(only_published=True)
+            data_votes = []
+
+            # Left side
+            cell = []
+            cell.append(Paragraph(
+                "%s:" % (_("Election result")), stylesheet['Heading4']))
+
+            # Add table head row
+            headrow = []
+            headrow.append(_("Candidates"))
+            for poll in polls:
+                headrow.append("%s. %s" % (poll.get_ballot(), _("ballot")))
+            data_votes.append(headrow)
+
+            # Add result rows
+            elected_candidates = list(assignment.elected)
+            length = len(vote_results)
+            for candidate, poll_list in vote_results.iteritems():
+                row = []
+                candidate_string = candidate.clean_name
+                if candidate in elected_candidates:
+                    candidate_string = "* " + candidate_string
+                if candidate.name_suffix and length < 20:
+                    candidate_string += "\n(%s)" % candidate.name_suffix
+                row.append(candidate_string)
+                for vote in poll_list:
+                    if vote is None:
+                        row.append('–')
+                    elif 'Yes' in vote and 'No' in vote and 'Abstain' in vote:
+                        row.append(
+                            _("Y: %(YES)s\nN: %(NO)s\nA: %(ABSTAIN)s")
+                            % {'YES': vote['Yes'], 'NO': vote['No'],
+                               'ABSTAIN': vote['Abstain']})
+                    elif 'Votes' in vote:
+                        row.append(vote['Votes'])
+                    else:
+                        pass
+                data_votes.append(row)
+
+            # Add valid votes row
+            footrow_one = []
+            footrow_one.append(_("Valid votes"))
+            votesvalid_is_used = False
+            for poll in polls:
+                footrow_one.append(poll.print_votesvalid())
+                if poll.votesvalid is not None:
+                    votesvalid_is_used = True
+            if votesvalid_is_used:
+                data_votes.append(footrow_one)
+
+            # Add invalid votes row
+            footrow_two = []
+            footrow_two.append(_("Invalid votes"))
+            votesinvalid_is_used = False
+            for poll in polls:
+                footrow_two.append(poll.print_votesinvalid())
+                if poll.votesinvalid is not None:
+                    votesinvalid_is_used = True
+            if votesinvalid_is_used:
+                data_votes.append(footrow_two)
+
+            # Add votes cast row
+            footrow_three = []
+            footrow_three.append(_("Votes cast"))
+            votescast_is_used = False
+            for poll in polls:
+                footrow_three.append(poll.print_votescast())
+                if poll.votescast is not None:
+                    votescast_is_used = True
+            if votescast_is_used:
+                data_votes.append(footrow_three)
+
+            table_votes = Table(data_votes)
+            table_votes.setStyle(
+                TableStyle([
+                    ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+                    ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+                    ('LINEABOVE', (0, 0), (-1, 0), 2, colors.black),
+                    ('LINEABOVE', (0, 1), (-1, 1), 1, colors.black),
+                    ('LINEBELOW', (0, -1), (-1, -1), 2, colors.black),
+                    ('ROWBACKGROUNDS', (0, 1), (-1, -1), (colors.white, (.9, .9, .9)))
+                ])
+            )
+            data.append([cell, table_votes])
+            if elected_candidates:
+                data.append(['', '* = ' + _('elected')])
+
+        # table style
+        data.append(['', ''])
+        t = LongTable(data)
         t._argW[0] = 4.5 * cm
         t._argW[1] = 11 * cm
         t.setStyle(TableStyle([
@@ -486,7 +477,7 @@ class AssignmentPDF(PDFView):
         story.append(t)
         story.append(Spacer(0, 1 * cm))
 
-        # text
+        # election description
         story.append(
             Paragraph("%s" % assignment.description.replace('\r\n', '<br/>'),
                       stylesheet['Paragraph']))
