@@ -260,6 +260,9 @@ OpenSlides uses the following projects or parts of them:
 
 * `Django haystack <http://haystacksearch.org>`_, License: BSD
 
+* `insertpre CKEditor plugin <http://ckeditor.com/addon/insertpre>`_,
+  License: GPL/LGPL/MPL
+
 * `natsort <https://pypi.python.org/pypi/natsort>`_, License: MIT
 
 * `pdf.js <http://mozilla.github.io/pdf.js/>`_, License: Apache License v2.0
