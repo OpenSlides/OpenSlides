@@ -4,7 +4,12 @@
 
 http://openslides.org
 
-Version 1.6.1 (unreleased)
+Version 1.6.2 (unreleased)
+==========================
+[https://github.com/OpenSlides/OpenSlides/milestones/1.6.2]
+
+
+Version 1.6.1 (2014-12-08)
 ==========================
 [https://github.com/OpenSlides/OpenSlides/issues?milestone=16]
 
@@ -23,7 +28,7 @@ Participants:
   * Updated error message if group id does not exists.
 Other:
 - Fixed CKEditor stuff (added insertpre plugin and removed unused code).
-- Updated German and Czech translation.
+- Updated French, German and Czech translation.
 
 
 Version 1.6 (2014-06-02)
