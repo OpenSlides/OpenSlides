@@ -1,23 +1,19 @@
 from django import forms
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
-from django.dispatch import receiver
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
-from django.db.models import signals
 
 from openslides.config.api import ConfigGroup, ConfigGroupedCollection, ConfigVariable
-from openslides.config.signals import config_signal
-from openslides.core.signals import post_database_setup
 
 from .api import create_or_reset_admin_user
-from .models import Group, User
+from .models import Group
 
 
-@receiver(config_signal, dispatch_uid='setup_users_config')
 def setup_users_config(sender, **kwargs):
     """
-    Participant config variables.
+    Receiver function to setup all users config variables. It is connected
+    to the signal openslides.config.signals.config_signal during app loading.
     """
     # General
     users_sort_users_by_first_name = ConfigVariable(
@@ -108,14 +104,16 @@ def setup_users_config(sender, **kwargs):
         groups=(group_general, group_pdf))
 
 
-@receiver(post_database_setup, dispatch_uid='users_create_builtin_groups_and_admin')
 def create_builtin_groups_and_admin(sender, **kwargs):
     """
-    Creates the buildin groups and the admin user.
+    Receiver function to builtin groups and the admin user.
 
     Creates the builtin groups: Anonymous, Registered, Delegates and Staff.
 
     Creates the builtin user: admin.
+
+    It is connected to the signal
+    openslides.core.signals.post_database_setup during app loading.
     """
     # Check whether the group pks 1 to 4 are free
     if Group.objects.filter(pk__in=range(1, 5)).exists():
@@ -184,8 +182,12 @@ def create_builtin_groups_and_admin(sender, **kwargs):
     create_or_reset_admin_user()
 
 
-@receiver(signals.post_save, sender=User)
 def user_post_save(sender, instance, *args, **kwargs):
+    """
+    Receiver function to add a new user to the registered group. It is
+    connected to the signal django.db.models.signals.post_save during app
+    loading.
+    """
     if not kwargs['created']:
         return
 

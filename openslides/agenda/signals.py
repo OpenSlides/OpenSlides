@@ -3,17 +3,13 @@ from datetime import datetime
 from django import forms
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
-from django.db.models.signals import pre_delete
-from django.dispatch import receiver
 from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.config.api import config, ConfigCollection, ConfigVariable
-from openslides.config.signals import config_signal
 from openslides.projector.api import get_active_slide, get_active_object
 from openslides.projector.projector import Overlay
-from openslides.projector.signals import projector_overlays
 
 from .models import Item
 
@@ -27,10 +23,10 @@ def validate_start_time(value):
 
 # TODO: Reinsert the datepicker scripts in the template
 
-@receiver(config_signal, dispatch_uid='setup_agenda_config')
 def setup_agenda_config(sender, **kwargs):
     """
-    Agenda config variables.
+    Receiver function to setup all agenda config variables. It is connected to
+    the signal openslides.config.signals.config_signal during app loading.
     """
     # TODO: Insert validator for the format or use other field carefully.
     agenda_start_event_date_time = ConfigVariable(
@@ -94,10 +90,11 @@ def setup_agenda_config(sender, **kwargs):
                                            'extra_javascript': extra_javascript})
 
 
-@receiver(projector_overlays, dispatch_uid="agenda_list_of_speakers")
 def agenda_list_of_speakers(sender, **kwargs):
     """
-    Receiver for the list of speaker overlay.
+    Receiver function to setup the list of speaker overlay. It is connected
+    to the signal openslides.projector.signals.projector_overlays during
+    app loading.
     """
     name = 'agenda_speaker'
 
@@ -141,10 +138,11 @@ def agenda_list_of_speakers(sender, **kwargs):
     return Overlay(name, get_widget_html, get_projector_html)
 
 
-@receiver(pre_delete)
 def listen_to_related_object_delete_signal(sender, instance, **kwargs):
     """
-    Receiver to listen whether a related item has been deleted.
+    Receiver function to changed agenda items of a related items that is to
+    be deleted. It is connected to the signal
+    django.db.models.signals.pre_delete during app loading.
     """
     if hasattr(instance, 'get_agenda_title'):
         for item in Item.objects.filter(content_type=ContentType.objects.get_for_model(sender), object_id=instance.pk):

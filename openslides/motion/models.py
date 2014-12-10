@@ -852,7 +852,3 @@ class Workflow(models.Model):
             raise WorkflowError(
                 '%s can not be first state of %s because it '
                 'does not belong to it.' % (self.first_state, self))
-
-
-# TODO: Apploading
-from . import main_menu, personal_info, signals, slides, widgets  # noqa

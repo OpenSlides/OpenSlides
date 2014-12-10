@@ -1,17 +1,16 @@
 from django import forms
-from django.dispatch import receiver
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.config.api import ConfigGroup, ConfigGroupedCollection, ConfigVariable
-from openslides.config.signals import config_signal
 from openslides.poll.models import PERCENT_BASE_CHOICES
 
 
-@receiver(config_signal, dispatch_uid='setup_assignment_config')
 def setup_assignment_config(sender, **kwargs):
     """
-    Assignment config variables.
+    Receiver function to setup all assignment config variables. It is
+    connected to the signal openslides.config.signals.config_signal during
+    app loading.
     """
     # Ballot and ballot papers
     assignment_poll_vote_values = ConfigVariable(

@@ -1,1 +1,1 @@
-from . import main_menu, signals, slides, widgets  # noqa
+default_app_config = 'openslides.users.apps.UsersAppConfig'

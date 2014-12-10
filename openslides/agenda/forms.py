@@ -1,6 +1,6 @@
 import re
-from ckeditor.widgets import CKEditorWidget
 
+from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.utils.translation import ugettext_lazy
 from mptt.forms import TreeNodeChoiceField

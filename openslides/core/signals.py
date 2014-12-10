@@ -1,20 +1,20 @@
 from django import forms
-from django.dispatch import receiver, Signal
+from django.dispatch import Signal
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.config.api import ConfigGroup, ConfigGroupedCollection, ConfigVariable
-from openslides.config.signals import config_signal
 from openslides.projector.api import update_projector
 
 post_database_setup = Signal()
 
 
-@receiver(config_signal, dispatch_uid='setup_general_config')
 def setup_general_config(sender, **kwargs):
     """
-    General config variables for OpenSlides. They are grouped in 'Event',
-    'Welcome Widget' and 'System'.
+    Receiver function to setup general config variables for OpenSlides.
+    They are grouped in 'Event', 'Welcome Widget' and 'System'. The
+    function is connected to the signal
+    openslides.config.signals.config_signal during app loading.
     """
     event_name = ConfigVariable(
         name='event_name',
