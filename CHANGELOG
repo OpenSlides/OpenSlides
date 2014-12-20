@@ -7,6 +7,8 @@ http://openslides.org
 Version 1.6.2 (unreleased)
 ==========================
 [https://github.com/OpenSlides/OpenSlides/milestones/1.6.2]
+Motions:
+- Added possibility to hide motions from non staff users in some states.
 
 Other:
 - Cleaned up utils.views to increase performance when fetching single objects

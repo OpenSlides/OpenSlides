@@ -14,17 +14,16 @@ from openslides.config.api import config
 from openslides.participant.models import Group, User
 from openslides.utils.pdf import stylesheet
 
-from .models import Category, Motion
+from .models import Category
 
 # Needed to count the delegates
 # TODO: find another way to do this.
 
 
-def motions_to_pdf(pdf):
+def motions_to_pdf(pdf, motions):
     """
     Create a PDF with all motions.
     """
-    motions = Motion.objects.all()
     motions = natsorted(motions, key=attrgetter('identifier'))
     all_motion_cover(pdf, motions)
     for motion in motions:

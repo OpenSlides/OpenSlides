@@ -216,6 +216,21 @@ Komplexer Arbeitsablauf
    +---------------------+-----------------+---------------+------------+---------------+------------------------+---------------+
 
 
+Experteneinstellung
+'''''''''''''''''''
+
+Es kann eingestellt werden, dass ein Antrag in einem bestimmten Status nur
+für bestimmte Benutzer sichtbar ist. Die Anpassung kann vor dem ersten
+Anlegen der Datenbank in der Datei ``openslides/motion/signals.py`` in der
+Funktion ``create_builtin_workflows()`` erfolgen: Dazu beim gewünschten
+Status beispielsweise die Zeile
+``required_permission_to_see='motion.can_manage_motion',`` einfügen. Die
+Anpassung kann aber auch bei bestehender Datenbank erfolgen: Dazu mit einem
+entsprechenden Tool direkt auf die Datenbank zugreifen und beim gewünschten
+Status das Feld ``required_permission_to_see`` beispielsweise mit der
+Zeichenkette ``motion.can_manage_motion`` überschreiben.
+
+
 Versionierung
 -------------
 

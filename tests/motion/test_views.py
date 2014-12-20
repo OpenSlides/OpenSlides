@@ -54,6 +54,20 @@ class TestMotionListView(MotionViewTestCase):
     def test_get(self):
         self.check_url('/motion/', self.admin_client, 200)
 
+    def test_get_with_motion(self):
+        self.motion1.title = 'motion1_iozaixeeDuMah8sheGhe'
+        self.motion1.save()
+        response = self.admin_client.get('/motion/')
+        self.assertContains(response, 'motion1_iozaixeeDuMah8sheGhe')
+
+    def test_get_with_filtered_motion_list(self):
+        self.motion1.state.required_permission_to_see = 'motion.can_manage_motion'
+        self.motion1.state.save()
+        self.motion1.title = 'motion1_djfplquczyxasvvgdnmbr'
+        self.motion1.save()
+        response = self.registered_client.get('/motion/')
+        self.assertNotContains(response, 'motion1_djfplquczyxasvvgdnmbr')
+
 
 class TestMotionDetailView(MotionViewTestCase):
     def test_get(self):
@@ -99,6 +113,21 @@ class TestMotionDetailView(MotionViewTestCase):
         self.assertNotContains(self.admin_client.get('/motion/1/'), 'registered')
         self.assertContains(self.admin_client.get('/motion/1/'), 'empty')
 
+    def test_get_without_required_permission_from_state(self):
+        self.motion1.state.required_permission_to_see = 'motion.can_manage_motion'
+        self.motion1.state.save()
+        self.check_url('/motion/1/', self.admin_client, 200)
+        self.check_url('/motion/1/', self.registered_client, 403)
+        self.motion1.set_state(state=State.objects.get(name='permitted'))
+        self.motion1.save()
+        self.check_url('/motion/1/', self.registered_client, 200)
+
+    def test_get_without_required_permission_from_state_but_by_submitter(self):
+        self.motion1.state.required_permission_to_see = 'motion.can_manage_motion'
+        self.motion1.state.save()
+        self.motion1.add_submitter(self.registered)
+        self.check_url('/motion/1/', self.registered_client, 200)
+
 
 class TestMotionDetailVersionView(MotionViewTestCase):
     def test_get(self):
@@ -108,6 +137,28 @@ class TestMotionDetailVersionView(MotionViewTestCase):
         response = self.check_url('/motion/1/version/2/', self.admin_client, 200)
         self.assertContains(response, 'AFWEROBjwerGwer')
         self.check_url('/motion/1/version/500/', self.admin_client, 404)
+
+
+class TestMotionVersionDiffView(MotionViewTestCase):
+    def test_get_without_required_permission_from_state(self):
+        self.motion1.reason = 'reason1_bnmkjiutufjbnvcde334'
+        self.motion1.save()
+        self.motion1.title = 'motion1_bnvhfzqsgxcyvasfr57t'
+        self.motion1.save(use_version=self.motion1.get_new_version())
+
+        response = self.registered_client.get(
+            '/motion/1/diff/',
+            {'rev1': '1', 'rev2': '2'})
+        self.assertNotContains(response, 'At least one version number is not valid.')
+        self.assertEqual(response.status_code, 200)
+
+        self.motion1.state.required_permission_to_see = 'motion.can_manage_motion'
+        self.motion1.state.save()
+
+        response = self.registered_client.get(
+            '/motion/1/diff/',
+            {'rev1': '1', 'rev2': '2'})
+        self.assertEqual(response.status_code, 403)
 
 
 class TestMotionCreateView(MotionViewTestCase):

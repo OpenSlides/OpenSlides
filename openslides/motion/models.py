@@ -475,6 +475,7 @@ class Motion(SlideMixin, AbsoluteUrlMixin, models.Model):
 
         The dictonary contains the following actions.
 
+        * see
         * update / edit
         * delete
         * create_poll
@@ -484,9 +485,14 @@ class Motion(SlideMixin, AbsoluteUrlMixin, models.Model):
         * reset_state
         """
         actions = {
-            'update': ((self.is_submitter(person) and
-                       self.state.allow_submitter_edit) or
-                       person.has_perm('motion.can_manage_motion')),
+            'see': (person.has_perm('motion.can_see_motion') and
+                    (not self.state.required_permission_to_see or
+                     person.has_perm(self.state.required_permission_to_see) or
+                     self.is_submitter(person))),
+
+            'update': (person.has_perm('motion.can_manage_motion') or
+                       (self.is_submitter(person) and
+                        self.state.allow_submitter_edit)),
 
             'delete': person.has_perm('motion.can_manage_motion'),
 
@@ -782,6 +788,16 @@ class State(models.Model):
 
     icon = models.CharField(max_length=255)
     """A string representing the url to the icon-image."""
+
+    required_permission_to_see = models.CharField(max_length=255, blank=True)
+    """
+    A permission string. If not empty, the user has to have this permission to
+    see a motion in this state.
+
+    To use this feature change the database entry of a state object and add
+    your favourite permission string. You can do this e. g. by editing the
+    definitions in create_builtin_workflows() in openslides/motion/signals.py.
+    """
 
     allow_support = models.BooleanField(default=False)
     """If true, persons can support the motion in this state."""
