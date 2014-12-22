@@ -183,15 +183,14 @@ class AgendaItemView(SingleObjectMixin, FormView):
         return check_permission
 
     def get_context_data(self, **kwargs):
-        self.object = self.get_object()
-        list_of_speakers = self.object.get_list_of_speakers()
+        list_of_speakers = self.get_object().get_list_of_speakers()
         active_slide = get_active_slide()
         active_type = active_slide.get('type', None)
         kwargs.update({
-            'object': self.object,
+            'object': self.get_object(),
             'list_of_speakers': list_of_speakers,
             'is_on_the_list_of_speakers': Speaker.objects.filter(
-                item=self.object, begin_time=None, person=self.request.user).exists(),
+                item=self.get_object(), begin_time=None, person=self.request.user).exists(),
             'active_type': active_type,
         })
         return super(AgendaItemView, self).get_context_data(**kwargs)
@@ -206,7 +205,7 @@ class AgendaItemView(SingleObjectMixin, FormView):
         return kwargs
 
 
-class SetClosed(RedirectView, SingleObjectMixin):
+class SetClosed(SingleObjectMixin, RedirectView):
     """
     Close or open an item.
     """
@@ -218,15 +217,14 @@ class SetClosed(RedirectView, SingleObjectMixin):
     def get_ajax_context(self, **kwargs):
         closed = self.kwargs['closed']
         if closed:
-            link = reverse('item_open', args=[self.object.pk])
+            link = reverse('item_open', args=[self.get_object().pk])
         else:
-            link = reverse('item_close', args=[self.object.pk])
+            link = reverse('item_close', args=[self.get_object().pk])
         return super(SetClosed, self).get_ajax_context(closed=closed, link=link)
 
     def pre_redirect(self, request, *args, **kwargs):
-        self.object = self.get_object()
         closed = kwargs['closed']
-        self.object.set_closed(closed)
+        self.get_object().set_closed(closed)
         return super(SetClosed, self).pre_redirect(request, *args, **kwargs)
 
     def get_url_name_args(self):
@@ -245,7 +243,7 @@ class ItemUpdate(UpdateView):
     url_name_args = []
 
     def get_form_class(self):
-        if self.object.content_object:
+        if self.get_object().content_object:
             form = RelatedItemForm
         else:
             form = ItemForm
@@ -286,7 +284,7 @@ class ItemDelete(DeleteView):
         try:
             options = self.item_delete_answer_options
         except AttributeError:
-            if self.object.children.exists():
+            if self.get_object().children.exists():
                 options = [('all', _("Yes, with all child items."))] + self.answer_options
             else:
                 options = self.answer_options
@@ -297,13 +295,13 @@ class ItemDelete(DeleteView):
         """
         Deletes the item but not its children.
         """
-        self.object.delete(with_children=False)
+        self.get_object().delete(with_children=False)
 
     def on_clicked_all(self):
         """
         Deletes the item and its children.
         """
-        self.object.delete(with_children=True)
+        self.get_object().delete(with_children=True)
 
     def get_final_message(self):
         """
@@ -312,9 +310,9 @@ class ItemDelete(DeleteView):
         # OpenSlidesError (invalid answer) should never be raised here because
         # this method should only be called if the answer is 'yes' or 'all'.
         if self.get_answer() == 'yes':
-            message = _('Item %s was successfully deleted.') % html_strong(self.object)
+            message = _('Item %s was successfully deleted.') % html_strong(self.get_object())
         else:
-            message = _('Item %s and its children were successfully deleted.') % html_strong(self.object)
+            message = _('Item %s and its children were successfully deleted.') % html_strong(self.get_object())
         return message
 
 
@@ -329,18 +327,11 @@ class CreateRelatedAgendaItemView(SingleObjectMixin, RedirectView):
     url_name = 'item_overview'
     url_name_args = []
 
-    def get(self, request, *args, **kwargs):
-        """
-        Set self.object to the relevant object.
-        """
-        self.object = self.get_object()
-        return super(CreateRelatedAgendaItemView, self).get(request, *args, **kwargs)
-
     def pre_redirect(self, request, *args, **kwargs):
         """
         Create the agenda item.
         """
-        self.item = Item.objects.create(content_object=self.object)
+        self.item = Item.objects.create(content_object=self.get_object())
 
 
 class AgendaNumberingView(QuestionView):
@@ -388,12 +379,11 @@ class SpeakerAppendView(SingleObjectMixin, RedirectView):
     model = Item
 
     def pre_redirect(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if self.object.speaker_list_closed:
+        if self.get_object().speaker_list_closed:
             messages.error(request, _('The list of speakers is closed.'))
         else:
             try:
-                Speaker.objects.add(item=self.object, person=request.user)
+                Speaker.objects.add(item=self.get_object(), person=request.user)
             except OpenSlidesError, e:
                 messages.error(request, e)
             else:
@@ -418,11 +408,10 @@ class SpeakerDeleteView(DeleteView):
             return True
 
     def get(self, *args, **kwargs):
-        try:
-            return super(SpeakerDeleteView, self).get(*args, **kwargs)
-        except Speaker.DoesNotExist:
-            messages.error(self.request, _('You are not on the list of speakers.'))
+        if self.get_object() is None:
             return super(RedirectView, self).get(*args, **kwargs)
+        else:
+            return super(SpeakerDeleteView, self).get(*args, **kwargs)
 
     def get_object(self):
         """
@@ -432,10 +421,22 @@ class SpeakerDeleteView(DeleteView):
         object with the request.user as speaker.
         """
         try:
-            return Speaker.objects.get(pk=self.kwargs['speaker'])
-        except KeyError:
-            return Speaker.objects.filter(
-                item=self.kwargs['pk'], person=self.request.user).exclude(weight=None).get()
+            speaker = self._object
+        except AttributeError:
+            speaker_pk = self.kwargs.get('speaker')
+            if speaker_pk is not None:
+                queryset = Speaker.objects.filter(pk=speaker_pk)
+            else:
+                queryset = Speaker.objects.filter(
+                    item=self.kwargs['pk'], person=self.request.user).exclude(weight=None)
+            try:
+                speaker = queryset.get()
+            except Speaker.DoesNotExist:
+                speaker = None
+                if speaker_pk is not None:
+                    messages.error(self.request, _('You are not on the list of speakers.'))
+            self._object = speaker
+        return speaker
 
     def get_url_name_args(self):
         return [self.kwargs['pk']]
@@ -456,22 +457,21 @@ class SpeakerSpeakView(SingleObjectMixin, RedirectView):
     model = Item
 
     def pre_redirect(self, *args, **kwargs):
-        self.object = self.get_object()
         try:
             speaker = Speaker.objects.filter(
                 person=kwargs['person_id'],
-                item=self.object,
+                item=self.get_object(),
                 begin_time=None).get()
         except Speaker.DoesNotExist:  # TODO: Check the MultipleObjectsReturned error here?
             messages.error(
                 self.request,
                 _('%(person)s is not on the list of %(item)s.')
-                % {'person': kwargs['person_id'], 'item': self.object})
+                % {'person': kwargs['person_id'], 'item': self.get_object()})
         else:
             speaker.begin_speach()
 
     def get_url_name_args(self):
-        return [self.object.pk]
+        return [self.get_object().pk]
 
 
 class SpeakerEndSpeachView(SingleObjectMixin, RedirectView):
@@ -483,21 +483,20 @@ class SpeakerEndSpeachView(SingleObjectMixin, RedirectView):
     model = Item
 
     def pre_redirect(self, *args, **kwargs):
-        self.object = self.get_object()
         try:
             speaker = Speaker.objects.filter(
-                item=self.object,
+                item=self.get_object(),
                 end_time=None).exclude(begin_time=None).get()
         except Speaker.DoesNotExist:
             messages.error(
                 self.request,
                 _('There is no one speaking at the moment according to %(item)s.')
-                % {'item': self.object})
+                % {'item': self.get_object()})
         else:
             speaker.end_speach()
 
     def get_url_name_args(self):
-        return [self.object.pk]
+        return [self.get_object().pk]
 
 
 class SpeakerListCloseView(SingleObjectMixin, RedirectView):
@@ -510,12 +509,11 @@ class SpeakerListCloseView(SingleObjectMixin, RedirectView):
     url_name = 'item_view'
 
     def pre_redirect(self, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.speaker_list_closed = not self.reopen
-        self.object.save()
+        self.get_object().speaker_list_closed = not self.reopen
+        self.get_object().save()
 
     def get_url_name_args(self):
-        return [self.object.pk]
+        return [self.get_object().pk]
 
 
 class SpeakerChangeOrderView(SingleObjectMixin, RedirectView):
@@ -528,9 +526,6 @@ class SpeakerChangeOrderView(SingleObjectMixin, RedirectView):
     model = Item
     url_name = 'item_view'
 
-    def pre_redirect(self, args, **kwargs):
-        self.object = self.get_object()
-
     @transaction.commit_manually
     def pre_post_redirect(self, request, *args, **kwargs):
         """
@@ -538,7 +533,6 @@ class SpeakerChangeOrderView(SingleObjectMixin, RedirectView):
 
         Take the string 'sort_order' from the post-data, and use this order.
         """
-        self.object = self.get_object()
         transaction.commit()
         for (counter, speaker) in enumerate(self.request.POST['sort_order'].split(',')):
             try:
@@ -547,7 +541,7 @@ class SpeakerChangeOrderView(SingleObjectMixin, RedirectView):
                 transaction.rollback()
                 break
             try:
-                speaker = Speaker.objects.filter(item=self.object).get(pk=speaker_pk)
+                speaker = Speaker.objects.filter(item=self.get_object()).get(pk=speaker_pk)
             except:
                 transaction.rollback()
                 break
@@ -559,7 +553,7 @@ class SpeakerChangeOrderView(SingleObjectMixin, RedirectView):
         messages.error(request, _('Could not change order. Invalid data.'))
 
     def get_url_name_args(self):
-        return [self.object.pk]
+        return [self.get_object().pk]
 
 
 class CurrentListOfSpeakersView(RedirectView):

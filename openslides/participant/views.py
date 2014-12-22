@@ -162,13 +162,13 @@ class UserDeleteView(DeleteView):
     url_name_args = []
 
     def pre_redirect(self, request, *args, **kwargs):
-        if self.object == self.request.user:
+        if self.get_object() == self.request.user:
             messages.error(request, _("You can not delete yourself."))
         else:
             super(UserDeleteView, self).pre_redirect(request, *args, **kwargs)
 
     def pre_post_redirect(self, request, *args, **kwargs):
-        if self.object == self.request.user:
+        if self.get_object() == self.request.user:
             messages.error(self.request, _("You can not delete yourself."))
         else:
             super(UserDeleteView, self).pre_post_redirect(request, *args, **kwargs)
@@ -185,23 +185,22 @@ class SetUserStatusView(SingleObjectMixin, RedirectView):
     model = User
 
     def pre_redirect(self, request, *args, **kwargs):
-        self.object = self.get_object()
         action = kwargs['action']
         if action == 'activate':
-            self.object.is_active = True
+            self.get_object().is_active = True
         elif action == 'deactivate':
-            if self.object.user == self.request.user:
+            if self.get_object().user == self.request.user:
                 messages.error(request, _("You can not deactivate yourself."))
             else:
-                self.object.is_active = False
+                self.get_object().is_active = False
         elif action == 'toggle':
-            self.object.is_active = not self.object.is_active
-        self.object.save()
+            self.get_object().is_active = not self.get_object().is_active
+        self.get_object().save()
         return super(SetUserStatusView, self).pre_redirect(request, *args, **kwargs)
 
     def get_ajax_context(self, **kwargs):
         context = super(SetUserStatusView, self).get_ajax_context(**kwargs)
-        context['active'] = self.object.is_active
+        context['active'] = self.get_object().is_active
         return context
 
 
@@ -257,18 +256,14 @@ class ResetPasswordView(SingleObjectMixin, QuestionView):
     allow_ajax = True
     question_message = ugettext_lazy('Do you really want to reset the password?')
 
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return super(ResetPasswordView, self).get(request, *args, **kwargs)
-
     def get_redirect_url(self, **kwargs):
-        return reverse('user_edit', args=[self.object.id])
+        return reverse('user_edit', args=[self.get_object().id])
 
     def on_clicked_yes(self):
-        self.object.reset_password()
+        self.get_object().reset_password()
 
     def get_final_message(self):
-        return _('The Password for %s was successfully reset.') % html_strong(self.object)
+        return _('The Password for %s was successfully reset.') % html_strong(self.get_object())
 
 
 class GroupOverview(ListView):
@@ -361,12 +356,12 @@ class GroupDeleteView(DeleteView):
         """
         Checks whether the group is protected.
         """
-        if self.object.pk in [1, 2]:
+        if self.get_object().pk in [1, 2]:
             messages.error(self.request, _('You can not delete this group.'))
             return True
         if (not self.request.user.is_superuser and
-            get_protected_perm() in self.object.permissions.all() and
-            not Group.objects.exclude(pk=self.object.pk).filter(
+            get_protected_perm() in self.get_object().permissions.all() and
+            not Group.objects.exclude(pk=self.get_object().pk).filter(
                 permissions__in=[get_protected_perm()],
                 user__pk=self.request.user.pk).exists()):
             messages.error(

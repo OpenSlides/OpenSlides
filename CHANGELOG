@@ -8,6 +8,10 @@ Version 1.6.2 (unreleased)
 ==========================
 [https://github.com/OpenSlides/OpenSlides/milestones/1.6.2]
 
+Other:
+- Cleaned up utils.views to increase performance when fetching single objects
+  from the database for a view (#1378).
+
 
 Version 1.6.1 (2014-12-08)
 ==========================

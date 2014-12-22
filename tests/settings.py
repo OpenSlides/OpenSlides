@@ -29,6 +29,7 @@ DATABASES = {
 # Add OpenSlides plugins to this list
 INSTALLED_PLUGINS = (
     'tests.person_api',
+    'tests.utils',
 )
 
 INSTALLED_APPS += INSTALLED_PLUGINS
