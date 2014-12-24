@@ -86,7 +86,7 @@ class MediafileUpdateView(MediafileViewMixin, UpdateView):
 
     def get_form_kwargs(self, *args, **kwargs):
         form_kwargs = super(MediafileUpdateView, self).get_form_kwargs(*args, **kwargs)
-        form_kwargs['initial'].update({'uploader': self.object.uploader.person_id})
+        form_kwargs['initial'].update({'uploader': self.get_object().uploader.person_id})
         return form_kwargs
 
 
@@ -103,7 +103,7 @@ class MediafileDeleteView(DeleteView):
 
     def on_clicked_yes(self, *args, **kwargs):
         """Deletes the file in the filesystem, if user clicks "Yes"."""
-        self.object.mediafile.delete()
+        self.get_object().mediafile.delete()
         return super(MediafileDeleteView, self).on_clicked_yes(*args, **kwargs)
 
 

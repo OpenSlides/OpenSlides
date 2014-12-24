@@ -3,6 +3,7 @@
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import clear_url_caches
+from django.db import connection, reset_queries
 from django.test import RequestFactory
 from django.test.client import Client
 from django.test.utils import override_settings
@@ -13,6 +14,7 @@ from openslides.utils.signals import template_manipulation
 from openslides.utils.test import TestCase
 
 from . import views as test_views
+from .models import DummyModel
 
 
 @override_settings(ROOT_URLCONF='tests.utils.urls')
@@ -192,6 +194,17 @@ class QuestionViewTest(ViewTestCase):
 
         question = mock_messages.warning.call_args[0][1]
         self.assertIn('the question', question)
+
+
+class DetailViewTest(ViewTestCase):
+    def test_get_object_cache(self):
+        with self.settings(DEBUG=True):
+            DummyModel.objects.create(title='title_ooth8she7yos1Oi8Boh3')
+            reset_queries()
+            client = Client()
+            response = client.get('/dummy_detail_view/1/')
+            self.assertContains(response, 'title_ooth8she7yos1Oi8Boh3')
+            self.assertEqual(len(connection.queries), 3)
 
 
 def set_context(sender, request, context, **kwargs):
