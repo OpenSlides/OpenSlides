@@ -13,6 +13,7 @@ from django.utils.translation import ugettext_lazy, ugettext_noop
 from mptt.models import MPTTModel, TreeForeignKey
 
 from openslides.config.api import config
+from openslides.core.models import Tag
 from openslides.projector.api import (get_active_slide, reset_countdown,
                                       start_countdown, stop_countdown,
                                       update_projector, update_projector_overlay)
@@ -107,6 +108,11 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
         default=False, verbose_name=ugettext_lazy("List of speakers is closed"))
     """
     True, if the list of speakers is closed.
+    """
+
+    tags = models.ManyToManyField(Tag, blank=True)
+    """
+    Tags to categorise agenda items.
     """
 
     class Meta:

@@ -34,8 +34,22 @@
         <h1>{% trans "Agenda" %}
             <small class="pull-right">
             {% if perms.agenda.can_manage_agenda %}
-                <a href="{% url 'item_new' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New item' %}"><i class="icon-plus icon-white"></i> {% trans "New" %}</a>
-                <a href="{% url 'item_csv_import' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import agenda items' %}"><i class="icon-import"></i> {% trans "Import" %}</a>
+                <a href="{% url 'item_new' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New item' %}">
+                    <i class="icon-plus icon-white"></i>
+                    {% trans "New" %}
+                </a>
+            {% endif %}
+            {% if perms.core.can_manage_tags %}
+                <a href="{% url 'core_tag_list' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Manage tags' %}">
+                    <i class="icon-th"></i>
+                    <span class="optional-small"> {% trans 'Tags' %}</span>
+                </a>
+            {% endif %}
+            {% if perms.agenda.can_manage_agenda %}
+                <a href="{% url 'item_csv_import' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import agenda items' %}">
+                    <i class="icon-import"></i>
+                    {% trans "Import" %}
+                </a>
             {% endif %}
             <a href="{% url 'print_agenda' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print agenda as PDF' %}" target="_blank"><i class="icon-print"></i> PDF</a>
             {% if perms.core.can_see_projector %}

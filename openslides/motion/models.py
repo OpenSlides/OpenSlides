@@ -8,6 +8,7 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.config.api import config
+from openslides.core.models import Tag
 from openslides.mediafile.models import Mediafile
 from openslides.poll.models import (BaseOption, BasePoll, BaseVote, CollectDefaultVotesMixin)
 from openslides.projector.models import RelatedModelMixin, SlideMixin
@@ -76,6 +77,11 @@ class Motion(SlideMixin, AbsoluteUrlMixin, models.Model):
     Field for amendments to reference to the motion that should be altered.
 
     Null if the motion is not an amendment.
+    """
+
+    tags = models.ManyToManyField(Tag)
+    """
+    Tags to categorise motions.
     """
 
     class Meta:

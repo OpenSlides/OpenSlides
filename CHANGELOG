@@ -8,6 +8,9 @@ Version 1.7 (unreleased)
 ========================
 [https://github.com/OpenSlides/OpenSlides/milestones/1.7]
 
+Core:
+- New feature to tag motions, agenda and assignments.
+
 motion:
 - New Feature to create amendments, which are related to a parent motion.
 

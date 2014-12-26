@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
+from django.db import IntegrityError
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
 from django.utils.importlib import import_module
@@ -19,7 +20,8 @@ from openslides.utils import views as utils_views
 from openslides.utils.widgets import Widget
 
 from .forms import SelectWidgetsForm
-from .models import CustomSlide
+from .models import CustomSlide, Tag
+from .exceptions import TagException
 
 
 class DashboardView(utils_views.AjaxMixin, utils_views.TemplateView):
@@ -213,3 +215,81 @@ class CustomSlideDeleteView(CustomSlideViewMixin, utils_views.DeleteView):
     Delete a custom slide.
     """
     pass
+
+
+class TagListView(utils_views.AjaxMixin, utils_views.ListView):
+    """
+    View to list and manipulate tags.
+
+    Shows all tags when requested via a GET-request. Manipulates tags with
+    POST-requests.
+    """
+
+    model = Tag
+    required_permission = 'core.can_manage_tags'
+
+    def post(self, *args, **kwargs):
+        return self.ajax_get(*args, **kwargs)
+
+    def ajax_get(self, request, *args, **kwargs):
+        name, value = request.POST['name'], request.POST.get('value', None)
+
+        # Create a new tag
+        if name == 'new':
+            try:
+                tag = Tag.objects.create(name=value)
+            except IntegrityError:
+                # The name of the tag is already taken. It must be unique.
+                self.error = 'Tag name is already taken'
+            else:
+                self.pk = tag.pk
+                self.action = 'created'
+
+        # Update an existing tag
+        elif name.startswith('edit-tag-'):
+            try:
+                self.get_tag_queryset(name, 9).update(name=value)
+            except TagException as error:
+                self.error = str(error)
+            except IntegrityError:
+                self.error = 'Tag name is already taken'
+            except Tag.DoesNotExist:
+                self.error = 'Tag does not exist'
+            else:
+                self.action = 'updated'
+
+        # Delete a tag
+        elif name.startswith('delete-tag-'):
+            try:
+                self.get_tag_queryset(name, 11).delete()
+            except TagException as error:
+                self.error = str(error)
+            except Tag.DoesNotExist:
+                self.error = 'Tag does not exist'
+            else:
+                self.action = 'deleted'
+        return super(TagListView, self).ajax_get(request, *args, **kwargs)
+
+    def get_tag_queryset(self, name, place_in_str):
+        """
+        Get a django-tag-queryset from a string.
+
+        'name' is the string in which the pk is (at the end).
+
+        'place_in_str' is the place where to look for the pk. It has to be an int.
+
+        Returns a Tag QuerySet or raises TagException.
+        Also sets self.pk to the pk inside the name.
+        """
+        try:
+            self.pk = int(name[place_in_str:])
+        except ValueError:
+            raise TagException('Invalid name in request')
+        return Tag.objects.filter(pk=self.pk)
+
+    def get_ajax_context(self, **context):
+        return super(TagListView, self).get_ajax_context(
+            pk=getattr(self, 'pk', None),
+            action=getattr(self, 'action', None),
+            error=getattr(self, 'error', None),
+            **context)

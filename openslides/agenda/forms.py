@@ -32,7 +32,7 @@ class ItemForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
 
     class Meta:
         model = Item
-        fields = ('item_number', 'title', 'text', 'comment', 'type', 'duration', 'parent', 'speaker_list_closed')
+        fields = ('item_number', 'title', 'text', 'comment', 'tags', 'type', 'duration', 'parent', 'speaker_list_closed')
         widgets = {'text': CKEditorWidget(config_name='images')}
 
 

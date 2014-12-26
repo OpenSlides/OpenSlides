@@ -38,3 +38,20 @@ class CustomSlide(SlideMixin, AbsoluteUrlMixin, models.Model):
         else:
             url = super(CustomSlide, self).get_absolute_url(link)
         return url
+
+
+class Tag(AbsoluteUrlMixin, models.Model):
+    """
+    Model to save tags.
+    """
+
+    name = models.CharField(max_length=255, unique=True,
+                            verbose_name=ugettext_lazy('Tag'))
+
+    class Meta:
+        ordering = ['name']
+        permissions = (
+            ('can_manage_tags', ugettext_noop('Can manage tags')), )
+
+    def __unicode__(self):
+        return self.name
