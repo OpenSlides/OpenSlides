@@ -205,8 +205,8 @@ class MediafileTest(TestCase):
         response = clients['client_normal_user'].get('/mediafile/1/del/')
         self.assertEqual(response.status_code, 403)
         bad_client = Client()
-        response = bad_client.get('/mediafile/2/del/')
-        self.assertRedirects(response, expected_url='/login/?next=/mediafile/2/del/', status_code=302, target_status_code=200)
+        response = bad_client.get('/mediafile/1/del/')
+        self.assertRedirects(response, expected_url='/login/?next=/mediafile/1/del/', status_code=302, target_status_code=200)
 
     def test_delete_mediafile_get_request_own_file(self):
         self.object.uploader = self.vip_user

@@ -6,6 +6,7 @@ http://openslides.org
 
 Version 2.0.0 (unreleased)
 ==========================
+[https://github.com/OpenSlides/OpenSlides/milestones/2.0]
 
 Other:
 - Changed supported Python version to >= 3.3.
@@ -14,6 +15,16 @@ Other:
 - Added Django's application configuration. Refactored loading of signals,
   template signals and slides.
 
+
+Version 1.7.0 (unreleased)
+==========================
+[https://github.com/OpenSlides/OpenSlides/milestones/1.7]
+
+Motions:
+- Added possibility to hide motions from non staff users in some states.
+Other:
+- Cleaned up utils.views to increase performance when fetching single objects
+  from the database for a view (#1378).
 
 
 Version 1.6.1 (2014-12-08)

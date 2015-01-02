@@ -9,11 +9,11 @@ class PollFormView(FormMixin, TemplateView):
     poll_class = None
 
     def get(self, request, *args, **kwargs):
-        self.poll = self.object = self.get_object()
+        self.poll = self.get_object()
         return super(PollFormView, self).get(request, *args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        self.poll = self.object = self.get_object()
+        self.poll = self.get_object()
         option_forms = self.poll.get_vote_forms(data=self.request.POST)
 
         FormClass = self.get_modelform_class()
@@ -55,8 +55,13 @@ class PollFormView(FormMixin, TemplateView):
         """
         Returns the poll object. Raises Http404 if the poll does not exist.
         """
-        queryset = self.get_poll_class().objects.filter(pk=self.kwargs['poll_id'])
-        return get_object_or_404(queryset)
+        try:
+            obj = self._object
+        except AttributeError:
+            queryset = self.get_poll_class().objects.filter(pk=self.kwargs['poll_id'])
+            obj = get_object_or_404(queryset)
+            self._object = obj
+        return obj
 
     def get_context_data(self, **kwargs):
         context = super(PollFormView, self).get_context_data(**kwargs)

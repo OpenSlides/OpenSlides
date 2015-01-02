@@ -40,31 +40,30 @@ class AssignmentDetail(DetailView):
             context['form'] = self.form_class(self.request.POST)
         else:
             context['form'] = self.form_class()
-        polls = self.object.poll_set.all()
+        polls = self.get_object().poll_set.all()
         if not self.request.user.has_perm('assignment.can_manage_assignment'):
-            polls = self.object.poll_set.filter(published=True)
-            vote_results = self.object.vote_results(only_published=True)
+            polls = self.get_object().poll_set.filter(published=True)
+            vote_results = self.get_object().vote_results(only_published=True)
         else:
-            polls = self.object.poll_set.all()
-            vote_results = self.object.vote_results(only_published=False)
+            polls = self.get_object().poll_set.all()
+            vote_results = self.get_object().vote_results(only_published=False)
 
         blocked_candidates = [
             candidate.person for candidate in
-            self.object.assignment_candidates.filter(blocked=True)]
+            self.get_object().assignment_candidates.filter(blocked=True)]
         context['polls'] = polls
         context['vote_results'] = vote_results
         context['blocked_candidates'] = blocked_candidates
-        context['user_is_candidate'] = self.object.is_candidate(self.request.user)
+        context['user_is_candidate'] = self.get_object().is_candidate(self.request.user)
         return context
 
     def post(self, *args, **kwargs):
-        self.object = self.get_object()
         if self.request.user.has_perm('assignment.can_nominate_other'):
             form = self.form_class(self.request.POST)
             if form.is_valid():
                 user = form.cleaned_data['candidate']
                 try:
-                    self.object.run(user, self.request.user)
+                    self.get_object().run(user, self.request.user)
                 except NameError as e:
                     messages.error(self.request, e)
                 else:
@@ -98,18 +97,17 @@ class AssignmentSetStatusView(SingleObjectMixin, RedirectView):
     url_name = 'assignment_detail'
 
     def pre_redirect(self, *args, **kwargs):
-        self.object = self.get_object()
         status = kwargs.get('status')
         if status is not None:
             try:
-                self.object.set_status(status)
+                self.get_object().set_status(status)
             except ValueError as e:
                 messages.error(self.request, e)
             else:
                 messages.success(
                     self.request,
                     _('Election status was set to: %s.') %
-                    html_strong(self.object.get_status_display())
+                    html_strong(self.get_object().get_status_display())
                 )
 
 
@@ -134,11 +132,10 @@ class AssignmentRunDeleteView(SingleObjectMixin, RedirectView):
     url_name = 'assignment_detail'
 
     def pre_redirect(self, *args, **kwargs):
-        self.object = self.get_object()
-        if self.object.status == 'sea' or self.request.user.has_perm(
+        if self.get_object().status == 'sea' or self.request.user.has_perm(
                 "assignment.can_manage_assignment"):
             try:
-                self.object.delrun(self.request.user, blocked=True)
+                self.get_object().delrun(self.request.user, blocked=True)
             except Exception as e:
                 # TODO: only catch relevant exception
                 messages.error(self.request, e)
@@ -165,7 +162,7 @@ class AssignmentRunOtherDeleteView(SingleObjectMixin, QuestionView):
     def on_clicked_yes(self):
         self._get_person_information()
         try:
-            self.object.delrun(self.person, blocked=False)
+            self.get_object().delrun(self.person, blocked=False)
         except Exception as e:
             # TODO: only catch relevant exception
             self.error = e
@@ -185,9 +182,8 @@ class AssignmentRunOtherDeleteView(SingleObjectMixin, QuestionView):
         return message
 
     def _get_person_information(self):
-        self.object = self.get_object()
         self.person = User.objects.get(pk=self.kwargs.get('user_id'))
-        self.is_blocked = self.object.is_blocked(self.person)
+        self.is_blocked = self.get_object().is_blocked(self.person)
 
 
 class PollCreateView(SingleObjectMixin, RedirectView):
@@ -196,8 +192,7 @@ class PollCreateView(SingleObjectMixin, RedirectView):
     url_name = 'assignment_detail'
 
     def pre_redirect(self, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.gen_poll()
+        self.get_object().gen_poll()
         messages.success(self.request, _("New ballot was successfully created."))
 
 
@@ -232,15 +227,15 @@ class SetPublishStatusView(SingleObjectMixin, RedirectView):
 
     def pre_redirect(self, *args, **kwargs):
         try:
-            self.object = self.get_object()
+            poll = self.get_object()
         except self.model.DoesNotExist:
             messages.error(self.request, _('Ballot ID %d does not exist.') %
                            int(kwargs['poll_id']))
         else:
-            if self.object.published:
-                self.object.set_published(False)
+            if poll.published:
+                poll.set_published(False)
             else:
-                self.object.set_published(True)
+                poll.set_published(True)
 
 
 class SetElectedView(SingleObjectMixin, RedirectView):
@@ -250,19 +245,18 @@ class SetElectedView(SingleObjectMixin, RedirectView):
     allow_ajax = True
 
     def pre_redirect(self, *args, **kwargs):
-        self.object = self.get_object()
         self.person = User.objects.get(pk=kwargs['user_id'])
         self.elected = kwargs['elected']
-        self.object.set_elected(self.person, self.elected)
+        self.get_object().set_elected(self.person, self.elected)
 
     def get_ajax_context(self, **kwargs):
         if self.elected:
             link = reverse('assignment_user_not_elected',
-                           args=[self.object.id, self.person.person_id])
+                           args=[self.get_object().id, self.person.person_id])
             text = _('not elected')
         else:
             link = reverse('assignment_user_elected',
-                           args=[self.object.id, self.person.person_id])
+                           args=[self.get_object().id, self.person.person_id])
             text = _('elected')
         return {'elected': self.elected, 'link': link, 'text': text}
 
@@ -283,7 +277,7 @@ class AssignmentPollDeleteView(DeleteView):
         super(AssignmentPollDeleteView, self).pre_post_redirect(request, *args, **kwargs)
 
     def set_assignment(self):
-        self.assignment = self.object.assignment
+        self.assignment = self.get_object().assignment
 
     def get_redirect_url(self, **kwargs):
         return reverse('assignment_detail', args=[self.assignment.id])

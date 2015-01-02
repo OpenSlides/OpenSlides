@@ -25,6 +25,13 @@ DATABASES = {
         'HOST': '',
         'PORT': ''}}
 
+# Add OpenSlides plugins to this list
+INSTALLED_PLUGINS = (
+    'tests.utils',
+)
+
+INSTALLED_APPS += INSTALLED_PLUGINS
+
 # Some other settings
 TIME_ZONE = 'Europe/Berlin'
 

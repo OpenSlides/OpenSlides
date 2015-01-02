@@ -11,7 +11,6 @@ from django.http import (HttpResponse, HttpResponseRedirect)
 from django.utils.decorators import method_decorator
 from django.utils.translation import ugettext as _, ugettext_lazy
 from django.views import generic as django_views
-from django.views.generic.detail import SingleObjectMixin
 from reportlab.lib.units import cm
 from reportlab.platypus import SimpleDocTemplate, Spacer
 
@@ -161,6 +160,32 @@ class UrlMixin(object):
                 else:
                     value = []
         return value
+
+
+class SingleObjectMixin(django_views.detail.SingleObjectMixin):
+    """
+    Mixin for single objects from the database.
+    """
+
+    def dispatch(self, *args, **kwargs):
+        if not hasattr(self, 'object'):
+            # Save the object not only in the cache but in the public
+            # attribute self.object because Django expects this later.
+            # Because get_object() has an internal cache this line is not a
+            # performance problem.
+            self.object = self.get_object()
+        return super().dispatch(*args, **kwargs)
+
+    def get_object(self, *args, **kwargs):
+        """
+        Returns the single object from database or cache.
+        """
+        try:
+            obj = self._object
+        except AttributeError:
+            obj = super().get_object(*args, **kwargs)
+            self._object = obj
+        return obj
 
 
 class FormMixin(UrlMixin):
@@ -438,15 +463,15 @@ class FormView(PermissionMixin, ExtraContextMixin, FormMixin,
     pass
 
 
-class UpdateView(PermissionMixin, ExtraContextMixin, ModelFormMixin,
-                 django_views.UpdateView):
+class UpdateView(PermissionMixin, ExtraContextMixin,
+                 ModelFormMixin, SingleObjectMixin, django_views.UpdateView):
     """
     View to update an model object.
     """
 
     def get_success_message(self):
         if self.success_message is None:
-            message = _('%s was successfully modified.') % html_strong(self.object)
+            message = _('%s was successfully modified.') % html_strong(self.get_object())
         else:
             message = self.success_message
         return message
@@ -456,6 +481,10 @@ class CreateView(PermissionMixin, ExtraContextMixin,
                  ModelFormMixin, django_views.CreateView):
     """
     View to create a model object.
+
+    Note: This class has a django method get_object() which is different form
+          the method in openslides.utils.views.SingleObjectMixin. The result
+          is not cached.
     """
 
     def get_success_message(self):
@@ -472,10 +501,6 @@ class DeleteView(SingleObjectMixin, QuestionView):
     """
     success_url = None
     success_url_name = None
-
-    def get(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return super().get(request, *args, **kwargs)
 
     def get_redirect_url(self, **kwargs):
         """
@@ -506,22 +531,22 @@ class DeleteView(SingleObjectMixin, QuestionView):
         """
         Returns the question for the delete dialog.
         """
-        return _('Do you really want to delete %s?') % html_strong(self.object)
+        return _('Do you really want to delete %s?') % html_strong(self.get_object())
 
     def on_clicked_yes(self):
         """
         Deletes the object.
         """
-        self.object.delete()
+        self.get_object().delete()
 
     def get_final_message(self):
         """
         Prints the success message to the user.
         """
-        return _('%s was successfully deleted.') % html_strong(self.object)
+        return _('%s was successfully deleted.') % html_strong(self.get_object())
 
 
-class DetailView(PermissionMixin, ExtraContextMixin, django_views.DetailView):
+class DetailView(PermissionMixin, ExtraContextMixin, SingleObjectMixin, django_views.DetailView):
     """
     View to show an model object.
     """
