@@ -32,8 +32,30 @@ class MotionListView(ListView):
     """
     View, to list all motions.
     """
-    required_permission = 'motion.can_see_motion'
     model = Motion
+    required_permission = 'motion.can_see_motion'
+    # The template name must be set explicitly because the overridden method
+    # get_queryset() does not return a QuerySet any more so that Django can't
+    # generate the template name from the name of the model.
+    template_name = 'motion/motion_list.html'
+    # The attribute context_object_name must be set explicitly because the
+    # overridden method get_queryset() does not return a QuerySet any more so
+    # that Django can't generate the context_object_name from the name of the
+    # model.
+    context_object_name = 'motion_list'
+
+    def get_queryset(self, *args, **kwargs):
+        """
+        Returns not a QuerySet but a filtered list of motions. Excludes motions
+        that the user is not allowed to see.
+        """
+        queryset = super(MotionListView, self).get_queryset(*args, **kwargs)
+        motions = []
+        for motion in queryset:
+            if (not motion.state.required_permission_to_see or
+                    self.request.user.has_perm(motion.state.required_permission_to_see)):
+                motions.append(motion)
+        return motions
 
 motion_list = MotionListView.as_view()
 
@@ -42,8 +64,13 @@ class MotionDetailView(DetailView):
     """
     Show one motion.
     """
-    required_permission = 'motion.can_see_motion'
     model = Motion
+
+    def check_permission(self, request, *args, **kwargs):
+        """
+        Check if the request.user has the permission to see the motion.
+        """
+        return self.get_object().get_allowed_actions(request.user)['see']
 
     def get_context_data(self, **kwargs):
         """
@@ -376,9 +403,14 @@ class VersionDiffView(DetailView):
     """
     Show diff between two versions of a motion.
     """
-    required_permission = 'motion.can_see_motion'
     model = Motion
     template_name = 'motion/motion_diff.html'
+
+    def check_permission(self, request, *args, **kwargs):
+        """
+        Check if the request.user has the permission to see the motion.
+        """
+        return self.get_object().get_allowed_actions(request.user)['see']
 
     def get_context_data(self, **kwargs):
         """
@@ -678,17 +710,27 @@ create_agenda_item = CreateRelatedAgendaItemView.as_view()
 
 class MotionPDFView(SingleObjectMixin, PDFView):
     """
-    Create the PDF for one, or all motions.
+    Create the PDF for one or for all motions.
 
     If self.print_all_motions is True, the view returns a PDF with all motions.
 
     If self.print_all_motions is False, the view returns a PDF with only one
     motion.
     """
-    required_permission = 'motion.can_see_motion'
     model = Motion
     top_space = 0
     print_all_motions = False
+
+    def check_permission(self, request, *args, **kwargs):
+        """
+        Checks if the requesting user has the permission to see the motion as
+        PDF.
+        """
+        if self.print_all_motions:
+            is_allowed = request.user.has_perm('motion.can_see_motion')
+        else:
+            is_allowed = self.get_object().get_allowed_actions(request.user)['see']
+        return is_allowed
 
     def get_object(self, *args, **kwargs):
         if self.print_all_motions:
@@ -716,7 +758,12 @@ class MotionPDFView(SingleObjectMixin, PDFView):
         Append PDF objects.
         """
         if self.print_all_motions:
-            motions_to_pdf(pdf)
+            motions = []
+            for motion in Motion.objects.all():
+                if (not motion.state.required_permission_to_see or
+                        self.request.user.has_perm(motion.state.required_permission_to_see)):
+                    motions.append(motion)
+            motions_to_pdf(pdf, motions)
         else:
             motion_to_pdf(pdf, self.get_object())
 
