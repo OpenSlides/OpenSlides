@@ -1,5 +1,5 @@
-import os
 import copy
+import os
 
 from django.utils.translation import ugettext_lazy
 

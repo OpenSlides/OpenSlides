@@ -7,15 +7,13 @@ from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.agenda.models import Item, Speaker
 from openslides.config.api import config
-from openslides.poll.models import (BaseOption, BasePoll, BaseVote,
-                                    CollectDefaultVotesMixin,
-                                    PublishPollMixin)
+from openslides.poll.models import BaseOption, BasePoll, BaseVote, CollectDefaultVotesMixin, PublishPollMixin
 from openslides.projector.api import get_active_object, update_projector
 from openslides.projector.models import RelatedModelMixin, SlideMixin
+from openslides.users.models import User
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import AbsoluteUrlMixin
 from openslides.utils.utils import html_strong
-from openslides.users.models import User
 
 
 class AssignmentCandidate(RelatedModelMixin, models.Model):

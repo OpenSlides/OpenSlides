@@ -4,26 +4,12 @@ from unittest.mock import MagicMock, patch
 
 from django.core.exceptions import ImproperlyConfigured
 
-from openslides.__main__ import (
-    add_general_arguments,
-    django_command_line_utility,
-    runserver,
-    start,
-    syncdb)
+from openslides.__main__ import add_general_arguments, django_command_line_utility, runserver, start, syncdb
 from openslides.config.api import config
 from openslides.utils.main import (
-    get_browser_url,
-    get_database_path_from_settings,
-    get_default_settings_context,
-    get_default_settings_path,
-    get_default_user_data_path,
-    get_port,
-    PortIsBlockedError,
-    setup_django_settings_module,
-    start_browser,
-    translate_customizable_strings,
-    UNIX_VERSION,
-    WINDOWS_PORTABLE_VERSION)
+    UNIX_VERSION, WINDOWS_PORTABLE_VERSION, PortIsBlockedError, get_browser_url, get_database_path_from_settings,
+    get_default_settings_context, get_default_settings_path, get_default_user_data_path, get_port,
+    setup_django_settings_module, start_browser, translate_customizable_strings)
 from openslides.utils.test import TestCase
 
 

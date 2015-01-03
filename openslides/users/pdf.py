@@ -3,8 +3,7 @@ from reportlab.graphics.barcode.qr import QrCodeWidget
 from reportlab.graphics.shapes import Drawing
 from reportlab.lib import colors
 from reportlab.lib.units import cm
-from reportlab.platypus import (LongTable, PageBreak, Paragraph, Spacer, Table,
-                                TableStyle)
+from reportlab.platypus import LongTable, PageBreak, Paragraph, Spacer, Table, TableStyle
 
 from openslides.config.api import config
 from openslides.utils.pdf import stylesheet

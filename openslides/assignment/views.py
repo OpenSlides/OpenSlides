@@ -5,19 +5,17 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
 from reportlab.lib import colors
 from reportlab.lib.units import cm
-from reportlab.platypus import (PageBreak, Paragraph, SimpleDocTemplate, Spacer,
-                                LongTable, Table, TableStyle)
+from reportlab.platypus import LongTable, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 from openslides.agenda.views import CreateRelatedAgendaItemView as _CreateRelatedAgendaItemView
 from openslides.config.api import config
-from openslides.users.models import Group, User  # TODO: remove this
 from openslides.poll.views import PollFormView
+from openslides.users.models import Group, User  # TODO: remove this
 from openslides.utils.pdf import stylesheet
 from openslides.utils.utils import html_strong
-from openslides.utils.views import (CreateView, DeleteView, DetailView,
-                                    ListView, PDFView, PermissionMixin,
-                                    QuestionView, RedirectView,
-                                    SingleObjectMixin, UpdateView, View)
+from openslides.utils.views import (
+    CreateView, DeleteView, DetailView, ListView, PDFView, PermissionMixin, QuestionView, RedirectView,
+    SingleObjectMixin, UpdateView, View)
 
 from .forms import AssignmentForm, AssignmentRunForm
 from .models import Assignment, AssignmentPoll

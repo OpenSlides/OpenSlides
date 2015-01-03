@@ -1,8 +1,8 @@
 from imp import reload
 
+from django.core.urlresolvers import clear_url_caches
 from django.test.client import Client
 from django.test.utils import override_settings
-from django.core.urlresolvers import clear_url_caches
 
 from openslides.utils.test import TestCase
 

@@ -1,4 +1,4 @@
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 from django.contrib.auth.models import Permission
 from django.test.client import Client
@@ -6,8 +6,8 @@ from django.test.client import Client
 from openslides.agenda.models import Item, Speaker
 from openslides.agenda.signals import agenda_list_of_speakers
 from openslides.config.api import config
+from openslides.projector.api import register_slide_model, set_active_slide
 from openslides.users.models import User
-from openslides.projector.api import set_active_slide, register_slide_model
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.test import TestCase
 

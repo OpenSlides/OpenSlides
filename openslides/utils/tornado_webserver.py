@@ -4,16 +4,11 @@ from urllib.parse import unquote
 
 from django.conf import settings
 from django.core.wsgi import get_wsgi_application
-from sockjs.tornado import SockJSRouter, SockJSConnection
+from sockjs.tornado import SockJSConnection, SockJSRouter
 from tornado.httpserver import HTTPServer
 from tornado.ioloop import IOLoop
 from tornado.options import parse_command_line
-from tornado.web import (
-    Application,
-    FallbackHandler,
-    StaticFileHandler,
-    HTTPError
-)
+from tornado.web import Application, FallbackHandler, HTTPError, StaticFileHandler
 from tornado.wsgi import WSGIContainer
 
 

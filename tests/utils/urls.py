@@ -4,7 +4,6 @@ from openslides.urls import urlpatterns
 
 from . import views
 
-
 urlpatterns += patterns(
     '',
     url(r'^url_mixin/$',

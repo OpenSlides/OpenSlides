@@ -7,11 +7,11 @@ import threading
 import time
 import webbrowser
 
-from django.core.exceptions import ImproperlyConfigured
 from django.conf import ENVIRONMENT_VARIABLE
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.crypto import get_random_string
-from django.utils.translation import activate, check_for_language, get_language
 from django.utils.translation import ugettext as _
+from django.utils.translation import activate, check_for_language, get_language
 
 UNIX_VERSION = 'Unix Version'
 WINDOWS_VERSION = 'Windows Version'

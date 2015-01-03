@@ -7,7 +7,7 @@ from django.contrib import messages
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.urlresolvers import reverse
-from django.db import transaction, IntegrityError
+from django.db import IntegrityError, transaction
 from django.db.models import Model
 from django.template.loader import render_to_string
 from django.utils.datastructures import SortedDict
@@ -18,26 +18,13 @@ from reportlab.platypus import Paragraph
 
 from openslides.config.api import config
 from openslides.projector.api import (
-    get_active_object,
-    get_active_slide,
-    get_projector_overlays_js,
-    get_overlays,
-    update_projector)
+    get_active_object, get_active_slide, get_overlays, get_projector_overlays_js, update_projector)
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.pdf import stylesheet
 from openslides.utils.utils import html_strong
 from openslides.utils.views import (
-    AjaxMixin,
-    CreateView,
-    CSVImportView,
-    DeleteView,
-    FormView,
-    PDFView,
-    QuestionView,
-    RedirectView,
-    SingleObjectMixin,
-    TemplateView,
-    UpdateView)
+    AjaxMixin, CreateView, CSVImportView, DeleteView, FormView, PDFView, QuestionView, RedirectView, SingleObjectMixin,
+    TemplateView, UpdateView)
 
 from .csv_import import import_agenda_items
 from .forms import AppendSpeakerForm, ItemForm, ItemOrderForm, RelatedItemForm

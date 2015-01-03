@@ -1,8 +1,7 @@
+import commands  # noqa
 import sys
 
-import commands  # noqa
 from parser import parser
-
 
 if len(sys.argv) < 2:
     args = parser.parse_args(['--help'])

@@ -1,6 +1,6 @@
 import re
 
-from parser import command, argument, call
+from parser import argument, call, command
 
 
 @argument('module', nargs='?', default='')
@@ -82,3 +82,9 @@ def min_requirements(args=None):
             yield '%s==%s' % (line.req.key, line.req.specs[0][1])
 
     print('pip install %s' % ' '.join(get_lowest_versions(args.requirements)))
+
+
+@command('isort',
+         help='Sorts all imports in all python files.')
+def isort(args=None):
+    return call('isort --line-width 120 -rc -m 4  .')

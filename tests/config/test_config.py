@@ -7,9 +7,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.dispatch import receiver
 from django.test.client import Client
 
-
-from openslides.config.api import (config, ConfigCollection, ConfigGroup,
-                                   ConfigGroupedCollection, ConfigVariable)
+from openslides.config.api import ConfigCollection, ConfigGroup, ConfigGroupedCollection, ConfigVariable, config
 from openslides.config.exceptions import ConfigError, ConfigNotFound
 from openslides.config.signals import config_signal
 from openslides.users.models import User

@@ -1,13 +1,11 @@
+from ckeditor.widgets import CKEditorWidget
 from django import forms
 from django.utils.translation import ugettext_lazy
 
 from openslides.config.api import config
 from openslides.mediafile.models import Mediafile
-from openslides.utils.forms import (CleanHtmlFormMixin, CssClassMixin,
-                                    CSVImportForm, LocalizedModelChoiceField)
 from openslides.users.models import User
-
-from ckeditor.widgets import CKEditorWidget
+from openslides.utils.forms import CleanHtmlFormMixin, CssClassMixin, CSVImportForm, LocalizedModelChoiceField
 
 from .models import Category, Motion, Workflow
 

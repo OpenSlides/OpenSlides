@@ -3,6 +3,7 @@
 #
 
 import os
+
 from openslides.global_settings import *  # noqa
 
 # Path to the directory for user specific data files

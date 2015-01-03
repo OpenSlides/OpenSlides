@@ -1,7 +1,7 @@
 from django.utils.translation import ugettext_lazy
 
-from openslides.utils.widgets import Widget
 from openslides.projector.api import get_active_slide
+from openslides.utils.widgets import Widget
 
 from .models import Mediafile
 

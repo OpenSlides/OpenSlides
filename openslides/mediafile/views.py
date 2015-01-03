@@ -3,8 +3,7 @@ from django.http import HttpResponse
 from openslides.config.api import config
 from openslides.projector.api import get_active_slide
 from openslides.utils.tornado_webserver import ProjectorSocketHandler
-from openslides.utils.views import (AjaxView, CreateView, DeleteView, RedirectView, ListView,
-                                    UpdateView)
+from openslides.utils.views import AjaxView, CreateView, DeleteView, ListView, RedirectView, UpdateView
 
 from .forms import MediafileManagerForm, MediafileNormalUserForm
 from .models import Mediafile

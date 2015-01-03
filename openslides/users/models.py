@@ -1,10 +1,7 @@
 # TODO: Check every app, that they do not import Group or User from here.
 
-from django.contrib.auth.models import (PermissionsMixin, AbstractBaseUser,
-                                        BaseUserManager)
-
-# TODO: Do not import the Group in here, but in core.models (if necessary)
 from django.contrib.auth.models import Group  # noqa
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy, ugettext_noop

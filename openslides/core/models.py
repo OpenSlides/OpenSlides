@@ -1,11 +1,14 @@
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy, ugettext_noop
+
+from openslides.projector.models import SlideMixin
+from openslides.utils.models import AbsoluteUrlMixin
+
+
 # TODO: activate the following line after using the apploader
 # from django.contrib.auth import get_user_model
 
-from openslides.utils.models import AbsoluteUrlMixin
-from openslides.projector.models import SlideMixin
 
 # Imports the default user so that other apps can import it from here.
 # TODO: activate this with the new apploader

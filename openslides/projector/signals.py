@@ -6,7 +6,7 @@ from django.dispatch import Signal
 from django.template.loader import render_to_string
 from django.utils.datastructures import SortedDict
 
-from openslides.config.api import config, ConfigCollection, ConfigVariable
+from openslides.config.api import ConfigCollection, ConfigVariable, config
 
 from .projector import Overlay
 

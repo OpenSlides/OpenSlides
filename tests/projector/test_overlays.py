@@ -1,5 +1,4 @@
 import warnings
-
 from unittest.mock import MagicMock
 
 from openslides.projector.projector import Overlay
