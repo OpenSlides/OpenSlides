@@ -3,7 +3,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy
 
-from openslides.config.api import config
 from openslides.mediafile.models import Mediafile
 from openslides.utils.forms import (CleanHtmlFormMixin, CssClassMixin,
                                     CSVImportForm, LocalizedModelChoiceField)
@@ -66,8 +65,6 @@ class BaseMotionForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
             self.initial['text'] = last_version.text
             self.initial['reason'] = last_version.reason
             self.initial['attachments'] = self.motion.attachments.all()
-        else:
-            self.initial['text'] = config['motion_preamble']
         super(BaseMotionForm, self).__init__(*args, **kwargs)
 
 

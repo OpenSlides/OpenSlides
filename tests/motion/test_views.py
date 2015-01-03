@@ -2,12 +2,15 @@
 
 import os
 import tempfile
+from mock import MagicMock
 
 from django.conf import settings
+from django.test import RequestFactory
 from django.test.client import Client
 
 from openslides.config.api import config
 from openslides.mediafile.models import Mediafile
+from openslides.motion import views
 from openslides.motion.models import Category, Motion, MotionLog, State
 from openslides.participant.models import Group, User
 from openslides.utils.test import TestCase
@@ -242,6 +245,67 @@ class TestMotionCreateView(MotionViewTestCase):
                                           'text': 'motion text',
                                           'workflow': 1})
         self.assertEqual(MotionLog.objects.get(pk=1).message_list, ['Motion created'])
+
+
+class TestMotionCreateAmendmentView(MotionViewTestCase):
+    url = '/motion/1/new_amendment/'
+
+    def test_get_amendment_active(self):
+        config['motion_amendments_enabled'] = True
+        self.check_url(self.url, self.admin_client, 200)
+
+    def test_get_amendment_inactive(self):
+        config['motion_amendments_enabled'] = False
+        self.check_url(self.url, self.admin_client, 404)
+
+    def test_get_parent_motion(self):
+        motion = Motion.objects.create(title='Test Motion')
+        view = views.MotionCreateAmendmentView()
+        view.request = RequestFactory().get(self.url)
+        view.kwargs = {'pk': motion.pk}
+
+        self.assertEqual(view.get_parent_motion(), motion)
+
+    def test_manipulate_object(self):
+        motion = Motion.objects.create(title='Test Motion')
+        view = views.MotionCreateAmendmentView()
+        view.request = RequestFactory().get(self.url)
+        view.kwargs = {'pk': motion.pk}
+        view.object = MagicMock()
+
+        view.manipulate_object(MagicMock())
+
+        self.assertEqual(view.object.parent, motion)
+
+    def test_get_initial(self):
+        motion = Motion.objects.create(
+            title='Test Motion', text='Parent Motion text', reason='test reason')
+        view = views.MotionCreateAmendmentView()
+        view.request = MagicMock()
+        view.kwargs = {'pk': motion.pk}
+
+        self.assertEqual(view.get_initial(), {
+            'reason': u'test reason',
+            'text': u'Parent Motion text',
+            'title': u'Test Motion',
+            'category': None,
+            'workflow': '1'})
+
+    def test_get_initial_with_category(self):
+        category = Category.objects.create(name='test category')
+        motion = Motion.objects.create(
+            title='Test Motion', text='Parent Motion text', reason='test reason',
+            category=category)
+        view = views.MotionCreateAmendmentView()
+        view.request = MagicMock()
+        view.kwargs = {'pk': motion.pk}
+
+        self.assertEqual(view.get_initial(), {
+            'reason': u'test reason',
+            'text': u'Parent Motion text',
+            'title': u'Test Motion',
+            'category': category,
+            'workflow': '1'})
 
 
 class TestMotionUpdateView(MotionViewTestCase):

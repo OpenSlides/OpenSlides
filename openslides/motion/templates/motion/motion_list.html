@@ -33,7 +33,7 @@
         <small class="pull-right">
         {% if perms.motion.can_create_motion %}
             {% if not 'motion_stop_submitting'|get_config or perms.motion.can_manage_motion %}
-                <a href="{% url 'motion_new' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New motion' %}"><i class="icon-plus icon-white"></i> {% trans 'New' %}</a>
+                <a href="{% url 'motion_create' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New motion' %}"><i class="icon-plus icon-white"></i> {% trans 'New' %}</a>
             {% endif %}
         {% endif %}
         {% if perms.motion.can_manage_motion %}
@@ -64,7 +64,14 @@
     {% for motion in motion_list %}
         <tr class="{% if motion.is_active_slide %}activeline{% endif %}">
             <td class="nobr">{{ motion.identifier|default:'' }}</td>
-            <td><a href="{{ motion|absolute_url }}">{{ motion.title }}</a></td>
+            <td>
+                <a href="{{ motion|absolute_url }}">{{ motion.title }}</a>
+                {% if motion.is_amendment %}
+                    <a class="label label-success" data-original-title="Amendment" rel="tooltip">
+                        {{ 'motion_amendments_prefix'|get_config }}
+                    </a>
+                {% endif %}
+            </td>
             <td class="optional">{% if motion.category %}{{ motion.category }}{% else %}–{% endif %}</td>
             <td class="optional-small"><span class="label label-info">{% trans motion.state.name %}</span></td>
             <td class="optional">

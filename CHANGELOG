@@ -4,8 +4,16 @@
 
 http://openslides.org
 
-Version 1.6.2 (unreleased)
-==========================
+Version 1.7 (unreleased)
+========================
+[https://github.com/OpenSlides/OpenSlides/milestones/1.7]
+
+motion:
+- New Feature to create amendments, which are related to a parent motion.
+
+
+Version 1.6.2
+=============
 [https://github.com/OpenSlides/OpenSlides/milestones/1.6.2]
 Motions:
 - Added possibility to hide motions from non staff users in some states.

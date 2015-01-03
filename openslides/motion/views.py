@@ -57,8 +57,6 @@ class MotionListView(ListView):
                 motions.append(motion)
         return motions
 
-motion_list = MotionListView.as_view()
-
 
 class MotionDetailView(DetailView):
     """
@@ -95,8 +93,6 @@ class MotionDetailView(DetailView):
             'text': version.text,
             'reason': version.reason})
         return super(MotionDetailView, self).get_context_data(**kwargs)
-
-motion_detail = MotionDetailView.as_view()
 
 
 class MotionEditMixin(object):
@@ -205,17 +201,26 @@ class MotionCreateView(MotionEditMixin, CreateView):
 
     def form_valid(self, form):
         """
-        Write a log message if the form is valid.
+        Write a log message and set the submitter if necessary.
         """
+        # First, validate and process the form and create the motion
         response = super(MotionCreateView, self).form_valid(form)
+
+        # Write the log message
         self.object.write_log([ugettext_noop('Motion created')], self.request.user)
+
+        # Set submitter to request.user if no submitter is set yet
         if ('submitter' not in form.cleaned_data or
                 not form.cleaned_data['submitter']):
             self.object.add_submitter(self.request.user)
         return response
 
     def get_initial(self):
+        """
+        Sets the initial data for the MotionCreateForm.
+        """
         initial = super(MotionCreateView, self).get_initial()
+        initial['text'] = config['motion_preamble']
         if self.request.user.has_perm('motion.can_manage_motion'):
             initial['workflow'] = config['motion_workflow']
         return initial
@@ -229,7 +234,53 @@ class MotionCreateView(MotionEditMixin, CreateView):
         self.object.reset_state(workflow)
         self.version = self.object.get_new_version()
 
-motion_create = MotionCreateView.as_view()
+
+class MotionCreateAmendmentView(MotionCreateView):
+    """
+    Create an amendment.
+    """
+
+    def dispatch(self, *args, **kwargs):
+        if not config['motion_amendments_enabled']:
+            raise Http404('Amendments are disabled in the config.')
+        return super(MotionCreateAmendmentView, self).dispatch(*args, **kwargs)
+
+    def get_parent_motion(self):
+        """
+        Gets the parent motion from the url.
+
+        Caches the value.
+        """
+        try:
+            parent = self._object_parent
+        except AttributeError:
+            # self.get_object() is the django method, which does not cache the
+            # object. For now this is not a problem, because get_object() is only
+            # called once.
+            parent = self._object_parent = self.get_object()
+        return parent
+
+    def manipulate_object(self, form):
+        """
+        Sets the parent to the motion to which this amendment refers.
+        """
+        self.object.parent = self.get_parent_motion()
+        super(MotionCreateAmendmentView, self).manipulate_object(form)
+
+    def get_initial(self):
+        """
+        Sets the initial values to the form.
+
+        This are the values for title, text and reason which are set to the
+        values from the parent motion.
+        """
+        initial = super(MotionCreateAmendmentView, self).get_initial()
+        parent = self.get_parent_motion()
+        initial['title'] = parent.title
+        initial['text'] = parent.text
+        initial['reason'] = parent.reason
+        initial['category'] = parent.category
+        return initial
 
 
 class MotionUpdateView(MotionEditMixin, UpdateView):
@@ -297,8 +348,6 @@ class MotionUpdateView(MotionEditMixin, UpdateView):
             self.version = self.object.get_last_version()
             self.used_new_version = False
 
-motion_update = MotionUpdateView.as_view()
-
 
 class MotionDeleteView(DeleteView):
     """
@@ -315,8 +364,6 @@ class MotionDeleteView(DeleteView):
 
     def get_final_message(self):
         return _('%s was successfully deleted.') % _('Motion')
-
-motion_delete = MotionDeleteView.as_view()
 
 
 class VersionDeleteView(DeleteView):
@@ -348,8 +395,6 @@ class VersionDeleteView(DeleteView):
 
     def get_url_name_args(self):
         return (self.get_object().motion_id, )
-
-version_delete = VersionDeleteView.as_view()
 
 
 class VersionPermitView(SingleObjectMixin, QuestionView):
@@ -396,8 +441,6 @@ class VersionPermitView(SingleObjectMixin, QuestionView):
                           ugettext_noop('permitted')],
             person=self.request.user)
 
-version_permit = VersionPermitView.as_view()
-
 
 class VersionDiffView(DetailView):
     """
@@ -437,8 +480,6 @@ class VersionDiffView(DetailView):
             'diff_reason': diff_reason,
         })
         return context
-
-version_diff = VersionDiffView.as_view()
 
 
 class SupportView(SingleObjectMixin, QuestionView):
@@ -502,9 +543,6 @@ class SupportView(SingleObjectMixin, QuestionView):
         else:
             return _("You have unsupported this motion successfully.")
 
-motion_support = SupportView.as_view(support=True)
-motion_unsupport = SupportView.as_view(support=False)
-
 
 class PollCreateView(SingleObjectMixin, RedirectView):
     """
@@ -527,8 +565,6 @@ class PollCreateView(SingleObjectMixin, RedirectView):
         Return the URL to the UpdateView of the poll.
         """
         return reverse('motionpoll_update', args=[self.get_object().pk, self.poll.poll_number])
-
-poll_create = PollCreateView.as_view()
 
 
 class PollMixin(object):
@@ -595,8 +631,6 @@ class PollUpdateView(PollMixin, PollFormView):
         self.get_object().write_log([ugettext_noop('Poll updated')], self.request.user)
         return value
 
-poll_update = PollUpdateView.as_view()
-
 
 class PollDeleteView(PollMixin, DeleteView):
     """
@@ -617,8 +651,6 @@ class PollDeleteView(PollMixin, DeleteView):
         Return the URL to the DetailView of the motion.
         """
         return reverse('motion_detail', args=[self.get_object().motion.pk])
-
-poll_delete = PollDeleteView.as_view()
 
 
 class PollPDFView(PollMixin, PDFView):
@@ -648,8 +680,6 @@ class PollPDFView(PollMixin, PDFView):
         Append PDF objects.
         """
         motion_poll_to_pdf(pdf, self.get_object())
-
-poll_pdf = PollPDFView.as_view()
 
 
 class MotionSetStateView(SingleObjectMixin, RedirectView):
@@ -688,9 +718,6 @@ class MotionSetStateView(SingleObjectMixin, RedirectView):
                              _('The state of the motion was set to %s.')
                              % html_strong(_(self.get_object().state.name)))
 
-set_state = MotionSetStateView.as_view()
-reset_state = MotionSetStateView.as_view(reset=True)
-
 
 class CreateRelatedAgendaItemView(_CreateRelatedAgendaItemView):
     """
@@ -704,8 +731,6 @@ class CreateRelatedAgendaItemView(_CreateRelatedAgendaItemView):
         """
         super(CreateRelatedAgendaItemView, self).pre_redirect(request, *args, **kwargs)
         self.get_object().write_log([ugettext_noop('Agenda item created')], self.request.user)
-
-create_agenda_item = CreateRelatedAgendaItemView.as_view()
 
 
 class MotionPDFView(SingleObjectMixin, PDFView):
@@ -767,15 +792,10 @@ class MotionPDFView(SingleObjectMixin, PDFView):
         else:
             motion_to_pdf(pdf, self.get_object())
 
-motion_list_pdf = MotionPDFView.as_view(print_all_motions=True)
-motion_detail_pdf = MotionPDFView.as_view(print_all_motions=False)
-
 
 class CategoryListView(ListView):
     required_permission = 'motion.can_manage_motion'
     model = Category
-
-category_list = CategoryListView.as_view()
 
 
 class CategoryCreateView(CreateView):
@@ -784,16 +804,12 @@ class CategoryCreateView(CreateView):
     success_url_name = 'motion_category_list'
     url_name_args = []
 
-category_create = CategoryCreateView.as_view()
-
 
 class CategoryUpdateView(UpdateView):
     required_permission = 'motion.can_manage_motion'
     model = Category
     success_url_name = 'motion_category_list'
     url_name_args = []
-
-category_update = CategoryUpdateView.as_view()
 
 
 class CategoryDeleteView(DeleteView):
@@ -802,8 +818,6 @@ class CategoryDeleteView(DeleteView):
     question_url_name = 'motion_category_list'
     url_name_args = []
     success_url_name = 'motion_category_list'
-
-category_delete = CategoryDeleteView.as_view()
 
 
 class MotionCSVImportView(CSVImportView):
@@ -830,5 +844,3 @@ class MotionCSVImportView(CSVImportView):
         messages.error(self.request, error)
         # Overleap method of CSVImportView
         return super(CSVImportView, self).form_valid(form)
-
-motion_csv_import = MotionCSVImportView.as_view()

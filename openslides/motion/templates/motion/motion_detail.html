@@ -29,6 +29,9 @@
                 </span>
             {% endif %}
         {% endif %}
+        {% if motion.is_amendment %}
+            (Amendment of <a href="{{ motion.parent|absolute_url }}">{{ motion.parent.identifier|default:motion.parent }}</a>)
+        {% endif %}
     </small>
     <small class="pull-right">
         <a href="{% url 'motion_list' %}" class="btn btn-mini">
@@ -279,6 +282,23 @@
             {% endif %}
         </h5>
         {{ version.creation_time }}
+
+        {% if 'motion_amendments_enabled'|get_config %}
+            <h5>{% trans 'Amendments' %}:</h5>
+            {% with amendments=motion.amendments.all %}
+                {% if amendments %}
+                    <ul>
+                        {% for amendment in amendments %}
+                            <li><a href="{{ amendment|absolute_url }}">{{ amendment }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+            <a class="btn btn-mini btn-primary" href="{% url 'motion_create_amendment' motion.pk %}">
+                <i class="icon-plus icon-white"></i>
+                {% trans 'New amendment' %}
+            </a>
+        {% endif %}
 
         <!-- Support/Unsupport button -->
         {% if perms.motion.can_support_motion and 'motion_min_supporters'|get_config > 0 %}
