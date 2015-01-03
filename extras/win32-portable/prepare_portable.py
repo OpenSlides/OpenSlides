@@ -1,26 +1,29 @@
 #!/usr/bin/env python
 
+import distutils.ccompiler
+import distutils.sysconfig
 import errno
 import glob
 import os
 import re
 import shutil
 import sys
-import zlib
-zlib.Z_DEFAULT_COMPRESSION = zlib.Z_BEST_COMPRESSION
 import zipfile
-
-import distutils.ccompiler
-import distutils.sysconfig
+import zlib
 
 import pkg_resources
 
+import openslides
+import openslides_gui
 import wx
+
+zlib.Z_DEFAULT_COMPRESSION = zlib.Z_BEST_COMPRESSION
+
+
+
 
 sys.path.insert(0, os.getcwd())
 sys.path.insert(1, os.path.join(os.getcwd(), "extras"))
-import openslides
-import openslides_gui
 
 COMMON_EXCLUDE = [
     r".pyc$",

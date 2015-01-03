@@ -7,8 +7,8 @@ from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
-from openslides.config.api import config, ConfigCollection, ConfigVariable
-from openslides.projector.api import get_active_slide, get_active_object
+from openslides.config.api import ConfigCollection, ConfigVariable, config
+from openslides.projector.api import get_active_object, get_active_slide
 from openslides.projector.projector import Overlay
 
 from .models import Item

@@ -11,14 +11,13 @@ from django.utils.translation import ugettext_lazy, ugettext_noop
 from mptt.models import MPTTModel, TreeForeignKey
 
 from openslides.config.api import config
-from openslides.projector.api import (get_active_slide, reset_countdown,
-                                      start_countdown, stop_countdown,
-                                      update_projector, update_projector_overlay)
+from openslides.projector.api import (
+    get_active_slide, reset_countdown, start_countdown, stop_countdown, update_projector, update_projector_overlay)
 from openslides.projector.models import SlideMixin
+from openslides.users.models import User
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import AbsoluteUrlMixin
 from openslides.utils.utils import to_roman
-from openslides.users.models import User
 
 
 class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):

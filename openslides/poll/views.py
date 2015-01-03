@@ -2,7 +2,7 @@ from django.forms.models import modelform_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 
-from openslides.utils.views import TemplateView, FormMixin
+from openslides.utils.views import FormMixin, TemplateView
 
 
 class PollFormView(FormMixin, TemplateView):

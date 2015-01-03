@@ -1,6 +1,6 @@
 import difflib
-import roman
 
+import roman
 from django.contrib.auth.models import Permission
 from django.shortcuts import render_to_response
 from django.template import RequestContext

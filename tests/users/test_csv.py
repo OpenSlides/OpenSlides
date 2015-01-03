@@ -1,8 +1,8 @@
 from io import BytesIO
 from textwrap import dedent
 
-from openslides.utils.test import TestCase
 from openslides.users.csv_import import import_users
+from openslides.utils.test import TestCase
 
 
 class TestCSVImport(TestCase):

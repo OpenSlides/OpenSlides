@@ -10,17 +10,9 @@ from django.core.management import execute_from_command_line
 
 from openslides import get_version
 from openslides.utils.main import (
-    detect_openslides_type,
-    ensure_settings,
-    get_browser_url,
-    get_database_path_from_settings,
-    get_default_settings_path,
-    get_default_user_data_path,
-    get_port,
-    setup_django_settings_module,
-    start_browser,
-    translate_customizable_strings,
-    write_settings)
+    detect_openslides_type, ensure_settings, get_browser_url, get_database_path_from_settings,
+    get_default_settings_path, get_default_user_data_path, get_port, setup_django_settings_module, start_browser,
+    translate_customizable_strings, write_settings)
 
 
 def main():

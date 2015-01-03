@@ -1,8 +1,8 @@
 from django.contrib.auth.models import AnonymousUser
 from django.test.client import RequestFactory
 
-from openslides.utils.test import TestCase
 from openslides.utils.personal_info import PersonalInfo
+from openslides.utils.test import TestCase
 
 
 class PersonalInfoObject(TestCase):

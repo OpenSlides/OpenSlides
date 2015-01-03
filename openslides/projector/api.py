@@ -4,8 +4,8 @@ from time import time
 from django.template.loader import render_to_string
 
 from openslides.config.api import config
-from openslides.utils.tornado_webserver import ProjectorSocketHandler
 from openslides.utils.exceptions import OpenSlidesError
+from openslides.utils.tornado_webserver import ProjectorSocketHandler
 
 from .signals import projector_overlays
 

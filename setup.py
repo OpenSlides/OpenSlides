@@ -3,10 +3,9 @@
 import re
 import sys
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 from openslides import get_version
-
 
 with open('README.rst') as readme:
     long_description = readme.read()

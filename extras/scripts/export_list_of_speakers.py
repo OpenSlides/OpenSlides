@@ -1,14 +1,15 @@
-import sys
-import csv
 import argparse
+import csv
+import sys
+
+from openslides.agenda.models import Speaker
+from openslides.main import get_user_config_path, setup_django_environment
 
 # Import the openslide settings. Has has to be done before any other openslides
 # import.
-from openslides.main import get_user_config_path, setup_django_environment
 setup_django_environment(
     get_user_config_path('openslides', 'settings.py'))
 
-from openslides.agenda.models import Speaker
 
 
 def parse_args():

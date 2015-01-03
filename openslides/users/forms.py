@@ -1,14 +1,14 @@
 from django import forms
 from django.conf import settings
 from django.contrib.auth.models import Permission
-from django.utils.translation import ugettext as _, ugettext_lazy
+from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy
 
 from openslides.config.api import config
-from openslides.utils.forms import (CssClassMixin,
-                                    LocalizedModelMultipleChoiceField)
+from openslides.utils.forms import CssClassMixin, LocalizedModelMultipleChoiceField
 
-from .models import Group, User
 from .api import get_protected_perm
+from .models import Group, User
 
 
 class UserCreateForm(CssClassMixin, forms.ModelForm):

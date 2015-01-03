@@ -4,14 +4,14 @@ from django.db.models import Max
 from django.utils import formats
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
+from jsonfield import JSONField
 
 from openslides.config.api import config
 from openslides.mediafile.models import Mediafile
-from openslides.poll.models import (BaseOption, BasePoll, BaseVote, CollectDefaultVotesMixin)
+from openslides.poll.models import BaseOption, BasePoll, BaseVote, CollectDefaultVotesMixin
 from openslides.projector.models import RelatedModelMixin, SlideMixin
-from jsonfield import JSONField
-from openslides.utils.models import AbsoluteUrlMixin
 from openslides.users.models import User
+from openslides.utils.models import AbsoluteUrlMixin
 
 from .exceptions import WorkflowError
 

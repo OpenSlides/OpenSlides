@@ -3,22 +3,21 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.views import login as django_login
 from django.core.urlresolvers import reverse
-from django.utils.translation import ugettext as _, ugettext_lazy, activate
+from django.utils.translation import ugettext as _
+from django.utils.translation import activate, ugettext_lazy
 
 from openslides.config.api import config
+from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.utils import delete_default_permissions, html_strong
 from openslides.utils.views import (
-    CreateView, CSVImportView, DeleteView, DetailView, FormView, ListView,
-    PDFView, PermissionMixin, QuestionView, RedirectView, SingleObjectMixin,
-    UpdateView, LoginMixin)
-from openslides.utils.exceptions import OpenSlidesError
+    CreateView, CSVImportView, DeleteView, DetailView, FormView, ListView, LoginMixin, PDFView, PermissionMixin,
+    QuestionView, RedirectView, SingleObjectMixin, UpdateView)
 
 from .api import gen_password, gen_username, get_protected_perm
 from .csv_import import import_users
-from .forms import (GroupForm, UserCreateForm, UserMultipleCreateForm,
-                    UsersettingsForm, UserUpdateForm)
+from .forms import GroupForm, UserCreateForm, UserMultipleCreateForm, UsersettingsForm, UserUpdateForm
 from .models import Group, User
-from .pdf import users_to_pdf, users_passwords_to_pdf
+from .pdf import users_passwords_to_pdf, users_to_pdf
 
 
 class UserListView(ListView):

@@ -1,4 +1,5 @@
 from django.test.client import Client
+
 from openslides.motion.models import Motion
 from openslides.users.models import User
 from openslides.utils.test import TestCase

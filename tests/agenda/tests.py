@@ -1,5 +1,5 @@
-from unittest.mock import patch
 from unittest import skip
+from unittest.mock import patch
 
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
@@ -8,8 +8,8 @@ from django.test.client import Client
 
 from openslides.agenda.models import Item
 from openslides.agenda.slides import agenda_slide
-from openslides.users.models import User
 from openslides.projector.api import set_active_slide
+from openslides.users.models import User
 from openslides.utils.test import TestCase
 
 from .models import BadRelatedItem, RelatedItem

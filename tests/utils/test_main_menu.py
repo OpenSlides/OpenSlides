@@ -1,8 +1,8 @@
 from django.contrib.auth.models import AnonymousUser
 from django.test.client import RequestFactory
 
-from openslides.utils.test import TestCase
 from openslides.utils.main_menu import MainMenuEntry
+from openslides.utils.test import TestCase
 
 
 class MainMenuEntryObject(TestCase):

@@ -1,13 +1,14 @@
-from random import randint, choice
+from random import choice, randint
+
+from openslides.main import get_user_config_path, setup_django_environment
+from openslides.participant.api import gen_username
+from openslides.participant.models import User
 
 # Import the openslide settings. Has has to be done before any other openslides
 # import.
-from openslides.main import get_user_config_path, setup_django_environment
 setup_django_environment(
     get_user_config_path('openslides', 'settings.py'))
 
-from openslides.participant.api import gen_username
-from openslides.participant.models import User
 
 # From jinja2
 LOREM_IPSUM_WORDS = u'''\

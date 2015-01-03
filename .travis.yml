@@ -7,3 +7,4 @@ script:
   - "DJANGO_SETTINGS_MODULE='tests.settings' coverage run ./manage.py django test"
   - "coverage report -m --fail-under=80"
   - "flake8 --max-line-length=150 --statistics openslides tests"
+  - "isort --line-width 120 -rc -m 4  -c ."

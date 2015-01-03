@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
 
-import Queue
 import datetime
 import errno
 import gettext
@@ -8,23 +7,16 @@ import itertools
 import json
 import locale
 import os
+import Queue
 import subprocess
 import sys
 import threading
 
-import wx
-
 import openslides
-
+import wx
 from openslides.utils.main import (
-    detect_openslides_type,
-    filesystem2unicode,
-    unicode2filesystem,
-    get_default_user_data_path,
-    get_port,
-    PortableDirNotWritable,
-)
-
+    PortableDirNotWritable, detect_openslides_type, filesystem2unicode, get_default_user_data_path, get_port,
+    unicode2filesystem)
 
 # NOTE: djangos translation module can't be used here since it requires
 #       a defined settings module

@@ -5,8 +5,8 @@ from django import forms
 from django.utils.translation import ugettext_lazy
 from mptt.forms import TreeNodeChoiceField
 
-from openslides.utils.forms import CssClassMixin, CleanHtmlFormMixin
 from openslides.users.models import User
+from openslides.utils.forms import CleanHtmlFormMixin, CssClassMixin
 
 from .models import Item, Speaker
 

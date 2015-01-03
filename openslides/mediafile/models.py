@@ -6,8 +6,8 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.projector.models import SlideMixin
-from openslides.utils.models import AbsoluteUrlMixin
 from openslides.users.models import User
+from openslides.utils.models import AbsoluteUrlMixin
 
 
 class Mediafile(SlideMixin, AbsoluteUrlMixin, models.Model):

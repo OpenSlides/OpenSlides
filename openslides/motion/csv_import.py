@@ -8,8 +8,8 @@ from django.db import transaction
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_noop
 
-from openslides.utils import csv_ext
 from openslides.users.models import User
+from openslides.utils import csv_ext
 from openslides.utils.utils import html_strong
 
 from .models import Category, Motion

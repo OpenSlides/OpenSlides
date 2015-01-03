@@ -5,11 +5,7 @@ import sys
 from django.utils.importlib import import_module
 from pkg_resources import iter_entry_points
 
-from openslides.utils.main import (
-    detect_openslides_type,
-    WINDOWS_PORTABLE_VERSION,
-    get_win32_portable_user_data_path,
-)
+from openslides.utils.main import WINDOWS_PORTABLE_VERSION, detect_openslides_type, get_win32_portable_user_data_path
 
 plugins = {}
 
