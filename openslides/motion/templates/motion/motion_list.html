@@ -38,7 +38,7 @@
         {% endif %}
         {% if perms.core.can_manage_tags %}
             <a href="{% url 'core_tag_list' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Manage tags' %}">
-                <i class="icon-th"></i>
+                <i class="icon-tags"></i>
                 <span class="optional-small"> {% trans 'Tags' %}</span>
             </a>
         {% endif %}
@@ -72,14 +72,18 @@
     </thead>
     {% for motion in motion_list %}
         <tr class="{% if motion.is_active_slide %}activeline{% endif %}">
-            <td class="nobr">{{ motion.identifier|default:'' }}</td>
-            <td>
-                <a href="{{ motion|absolute_url }}">{{ motion.title }}</a>
+            <td class="nobr">{{ motion.identifier|default:'' }}
                 {% if motion.is_amendment %}
-                    <a class="label label-success" data-original-title="Amendment" rel="tooltip">
+                    <a class="badge badge-success" data-original-title="Amendment" rel="tooltip">
                         {{ 'motion_amendments_prefix'|get_config }}
                     </a>
                 {% endif %}
+            </td>
+            <td>
+                <a href="{{ motion|absolute_url }}">{{ motion.title }}</a>
+                {% for tag in motion.tags.all %}
+                    <span class="optional label">{{ tag }}</span>
+                {% endfor %}
             </td>
             <td class="optional">{% if motion.category %}{{ motion.category }}{% else %}–{% endif %}</td>
             <td class="optional-small"><span class="label label-info">{% trans motion.state.name %}</span></td>

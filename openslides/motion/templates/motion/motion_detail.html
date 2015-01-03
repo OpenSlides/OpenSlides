@@ -71,8 +71,6 @@
     </small>
 </h1>
 
-{{ motion.tags.all|join:', ' }}
-
 <div class="row-fluid">
 <div class="span8">
     {# TODO: show only for workflow with versioning #}
@@ -256,7 +254,9 @@
                     {% block meta_box_poll_extras %}{% endblock %}
                 </p>
         {% empty %}
+            {% if not allowed_actions.create_poll %}
             –
+            {% endif %}
         {% endfor %}
         {% if allowed_actions.create_poll %}
             <p>
@@ -268,12 +268,18 @@
         {% endwith %}
 
         <!-- Category -->
-        <h5>{% trans "Category" %}:</h5>
         {% if motion.category %}
+            <h5>{% trans "Category" %}:</h5>
             {{ motion.category }}
-        {% else %}
-            –
         {% endif %}
+
+        <!-- Tags -->
+        {% for tag in motion.tags.all %}
+            {% if forloop.first %}
+                <h5>{% trans "Tags" %}:</h5>
+            {% endif %}
+            <span class="optional label">{{ tag }}</span>
+        {% endfor %}
 
         <!-- Creation Time -->
         <h5>
