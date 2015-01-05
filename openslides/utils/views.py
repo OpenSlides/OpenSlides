@@ -292,7 +292,11 @@ class AjaxView(PermissionMixin, AjaxMixin, View):
     View for ajax requests.
     """
     def get(self, request, *args, **kwargs):
+        # TODO: Raise an error, if the request is not an ajax-request
         return self.ajax_get(request, *args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        return self.get(*args, **kwargs)
 
 
 class RedirectView(PermissionMixin, AjaxMixin, UrlMixin, django_views.RedirectView):

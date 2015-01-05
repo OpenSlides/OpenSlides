@@ -16,11 +16,14 @@ Other:
   template signals and slides.
 
 
-Version 1.7.0 (unreleased)
-==========================
+Version 1.7 (unreleased)
+========================
 [https://github.com/OpenSlides/OpenSlides/milestones/1.7]
 
-Motions:
+Core:
+- New feature to tag motions, agenda and assignments.
+Motion:
+- New Feature to create amendments, which are related to a parent motion.
 - Added possibility to hide motions from non staff users in some states.
 Other:
 - Cleaned up utils.views to increase performance when fetching single objects

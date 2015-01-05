@@ -7,25 +7,8 @@
 {% block header %}
     {{ block.super }}
     <link type="text/css" rel="stylesheet" media="all" href="{% static 'css/motion.css' %}" />
-    <link href="{% static 'css/jquery.bsmselect.css' %}" type="text/css" rel="stylesheet" />
 {% endblock %}
 
-{% block javascript %}
-    {{ block.super }}
-    <script type="text/javascript" src="{% static 'js/jquery/jquery.bsmselect.js' %}"></script>
-
-    <script type="text/javascript">
-        // use jquery-bsmselect for all <select multiple> form elements
-        $("select[multiple]").bsmSelect({
-          removeLabel: '<sup><b>X</b></sup>',
-          containerClass: 'bsmContainer',
-          listClass: 'bsmList-custom',
-          listItemClass: 'bsmListItem-custom',
-          listItemLabelClass: 'bsmListItemLabel-custom',
-          removeClass: 'bsmListItemRemove-custom'
-        });
-    </script>
-{% endblock %}
 
 {% block title %}
     {% if motion %}

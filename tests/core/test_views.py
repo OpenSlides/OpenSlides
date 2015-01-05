@@ -142,3 +142,24 @@ class CustomSlidesTest(TestCase):
         response = self.admin_client.post(url, {'yes': 'true'})
         self.assertRedirects(response, '/dashboard/')
         self.assertFalse(CustomSlide.objects.exists())
+
+
+class TagListViewTest(TestCase):
+    def test_get_tag_queryset(self):
+        view = views.TagListView()
+
+        with patch('openslides.core.views.Tag') as mock_tag:
+            view.get_tag_queryset('some_name_with_123', 15)
+
+        self.assertEqual(view.pk, 123)
+        mock_tag.objects.filter.assert_called_with(pk=123)
+
+    def test_get_tag_queryset_wrong_name(self):
+        view = views.TagListView()
+
+        with patch('openslides.core.views.Tag'):
+            with self.assertRaises(views.TagException) as context:
+                view.get_tag_queryset('some_name_with_', 15)
+
+        self.assertFalse(hasattr(view, 'pk'))
+        self.assertEqual(str(context.exception), 'Invalid name in request')

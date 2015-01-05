@@ -1,6 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy, ugettext_noop
+from django.utils.translation import ugettext_lazy, ugettext_noop, pgettext
 
 from openslides.config.api import ConfigGroup, ConfigGroupedCollection, ConfigVariable
 from openslides.poll.models import PERCENT_BASE_CHOICES
@@ -61,6 +61,25 @@ def setup_motion_config(sender, **kwargs):
             motion_preamble,
             motion_stop_submitting,
             motion_allow_disable_versioning))
+
+    # Amendments
+    motion_amendments_enabled = ConfigVariable(
+        name='motion_amendments_enabled',
+        default_value=False,
+        form_field=forms.BooleanField(
+            label=ugettext_lazy('Activate amendments'),
+            required=False))
+
+    motion_amendments_prefix = ConfigVariable(
+        name='motion_amendments_prefix',
+        default_value=pgettext('Prefix for amendment', 'A'),
+        form_field=forms.CharField(
+            required=False,
+            label=ugettext_lazy('Prefix for the identifier for amendments')))
+
+    group_amendments = ConfigGroup(
+        title=ugettext_lazy('Amendments'),
+        variables=(motion_amendments_enabled, motion_amendments_prefix))
 
     # Supporters
     motion_min_supporters = ConfigVariable(
@@ -143,7 +162,8 @@ def setup_motion_config(sender, **kwargs):
         title=ugettext_noop('Motion'),
         url='motion',
         weight=30,
-        groups=(group_general, group_supporters, group_ballot_papers, group_pdf))
+        groups=(group_general, group_amendments, group_supporters,
+                group_ballot_papers, group_pdf))
 
 
 def create_builtin_workflows(sender, **kwargs):

@@ -6,6 +6,7 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.agenda.models import Item, Speaker
+from openslides.core.models import Tag
 from openslides.config.api import config
 from openslides.poll.models import (BaseOption, BasePoll, BaseVote,
                                     CollectDefaultVotesMixin,
@@ -56,6 +57,7 @@ class Assignment(SlideMixin, AbsoluteUrlMixin, models.Model):
         max_length=79, null=True, blank=True,
         verbose_name=ugettext_lazy("Default comment on the ballot paper"))
     status = models.CharField(max_length=3, choices=STATUS, default='sea')
+    tags = models.ManyToManyField(Tag, blank=True)
 
     class Meta:
         permissions = (

@@ -1,7 +1,6 @@
 from django import forms
 from django.utils.translation import ugettext_lazy
 
-from openslides.config.api import config
 from openslides.mediafile.models import Mediafile
 from openslides.utils.forms import (CleanHtmlFormMixin, CssClassMixin,
                                     CSVImportForm, LocalizedModelChoiceField)
@@ -9,7 +8,7 @@ from openslides.users.models import User
 
 from ckeditor.widgets import CKEditorWidget
 
-from .models import Category, Motion, Workflow
+from .models import Category, Motion, Workflow, Tag
 
 
 class BaseMotionForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
@@ -47,6 +46,11 @@ class BaseMotionForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
     Attachments of the motion.
     """
 
+    tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.all(),
+        required=False,
+        label=ugettext_lazy('Tags'))
+
     class Meta:
         model = Motion
         fields = ()
@@ -54,7 +58,7 @@ class BaseMotionForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """
         Fill the FormFields related to the version data with initial data.
-        Fill also the initial data for attachments.
+        Fill also the initial data for attachments and tags.
         """
         self.motion = kwargs.get('instance', None)
         self.initial = kwargs.setdefault('initial', {})
@@ -64,8 +68,7 @@ class BaseMotionForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
             self.initial['text'] = last_version.text
             self.initial['reason'] = last_version.reason
             self.initial['attachments'] = self.motion.attachments.all()
-        else:
-            self.initial['text'] = config['motion_preamble']
+            self.initial['tags'] = self.motion.tags.all()
         super(BaseMotionForm, self).__init__(*args, **kwargs)
 
 

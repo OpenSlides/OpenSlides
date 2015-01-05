@@ -145,6 +145,64 @@ class ModelTest(TestCase):
         # motion.__unicode__() raised an AttributeError
         self.assertEqual(str(motion), 'test_identifier_VohT1hu9uhiSh6ooVBFS | test_title_Koowoh1ISheemeey1air')
 
+    def test_is_amendment(self):
+        config['motion_amendments_enabled'] = True
+        amendment = Motion.objects.create(title='amendment', parent=self.motion)
+
+        self.assertTrue(amendment.is_amendment())
+        self.assertFalse(self.motion.is_amendment())
+
+    def test_set_identifier_allready_set(self):
+        """
+        If the motion already has a identifier, the method does nothing.
+        """
+        motion = Motion(identifier='My test identifier')
+
+        motion.set_identifier()
+
+        self.assertEqual(motion.identifier, 'My test identifier')
+
+    def test_set_identifier_manually(self):
+        """
+        If the config is set to manually, the method does nothing.
+        """
+        config['motion_identifier'] = 'manually'
+        motion = Motion()
+
+        motion.set_identifier()
+
+        # If the identifier should be set manually, the method does nothing
+        self.assertIsNone(motion.identifier)
+
+    def test_set_identifier_amendment(self):
+        """
+        If the motion is an amendment, the identifier is the identifier from the
+        parent + a suffix.
+        """
+        config['motion_amendments_enabled'] = True
+        self.motion.identifier = 'Parent identifier'
+        self.motion.save()
+        motion = Motion(parent=self.motion)
+
+        motion.set_identifier()
+
+        self.assertEqual(motion.identifier, 'Parent identifier A 1')
+
+    def test_set_identifier_second_amendment(self):
+        """
+        If a motion has already an amendment, the second motion gets another
+        identifier.
+        """
+        config['motion_amendments_enabled'] = True
+        self.motion.identifier = 'Parent identifier'
+        self.motion.save()
+        Motion.objects.create(title='Amendment1', parent=self.motion)
+        motion = Motion(parent=self.motion)
+
+        motion.set_identifier()
+
+        self.assertEqual(motion.identifier, 'Parent identifier A 2')
+
 
 class ConfigTest(TestCase):
     def test_stop_submitting(self):

@@ -170,11 +170,14 @@ def create_builtin_groups_and_admin(sender, **kwargs):
     ct_config = ContentType.objects.get(app_label='config', model='configstore')
     perm_48 = Permission.objects.get(content_type=ct_config, codename='can_manage')
 
+    ct_tag = ContentType.objects.get(app_label='core', model='tag')
+    can_manage_tags = Permission.objects.get(content_type=ct_tag, codename='can_manage_tags')
+
     group_staff = Group.objects.create(name=ugettext_noop('Staff'), pk=4)
     # add delegate permissions (without can_support_motion)
     group_staff.permissions.add(perm_31, perm_33, perm_34, perm_35)
     # add staff permissions
-    group_staff.permissions.add(perm_41, perm_42, perm_43, perm_44, perm_45, perm_46, perm_47, perm_48)
+    group_staff.permissions.add(perm_41, perm_42, perm_43, perm_44, perm_45, perm_46, perm_47, perm_48, can_manage_tags)
     # add can_see_user permission
     group_staff.permissions.add(perm_17)  # TODO: Remove this redundancy after cleanup of the permission system
 

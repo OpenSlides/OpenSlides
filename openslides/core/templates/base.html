@@ -15,6 +15,7 @@
     <link href="{% static 'css/base.css' %}" type="text/css" rel="stylesheet" />
     <link href="{% static 'css/chatbox.css' %}" type="text/css" rel="stylesheet" />
     <link href="{% static 'img/favicon.png' %}" type="image/png" rel="shortcut icon" />
+    <link href="{% static 'css/jquery.bsmselect.css' %}" type="text/css" rel="stylesheet" />
     {% for stylefile in extra_stylefiles %}
         <link href="{% static stylefile %}" type="text/css" rel="stylesheet" />
     {% endfor %}
@@ -132,6 +133,18 @@
     <script src="{% static 'js/utils.js' %}" type="text/javascript"></script>
     <script src="{% static 'js/chatbox.js' %}" type="text/javascript"></script>
     <script src="{% url 'django.views.i18n.javascript_catalog' %}" type="text/javascript"></script>
+    <script type="text/javascript" src="{% static 'js/jquery/jquery.bsmselect.js' %}"></script>
+    <script type="text/javascript">
+        // use jquery-bsmselect for all <select multiple> form elements
+        $("select[multiple]").bsmSelect({
+          removeLabel: '<sup><b>X</b></sup>',
+          containerClass: 'bsmContainer',
+          listClass: 'bsmList-custom',
+          listItemClass: 'bsmListItem-custom',
+          listItemLabelClass: 'bsmListItemLabel-custom',
+          removeClass: 'bsmListItemRemove-custom'
+        });
+    </script>
     {% for javascript in extra_javascript %}
         <script src="{% static javascript %}" type="text/javascript"></script>
     {% endfor %}

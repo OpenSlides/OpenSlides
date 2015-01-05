@@ -152,6 +152,7 @@ class ConfigGroup(object):
     A simple object class representing a group of variables (tuple) with
     a special title.
     """
+
     def __init__(self, title, variables):
         self.title = title
         self.variables = variables
