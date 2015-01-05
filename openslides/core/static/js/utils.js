@@ -72,6 +72,21 @@ $(function () {
             }
         });
     });
+
+    // Set the csrftoken to send post-data via ajax. See:
+    // https://docs.djangoproject.com/en/dev/ref/csrf/#ajax
+    var csrftoken = $.cookie('csrftoken');
+    function csrfSafeMethod(method) {
+        // these HTTP methods do not require CSRF protection
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
 });
 
 
@@ -114,7 +129,7 @@ $(document).ready(function(){
     }
     // Sticky navigation
     $(window).scroll(function(){
-        var el = $('.leftmenu > ul'); 
+        var el = $('.leftmenu > ul');
         if($(window).width() > 479) {
             if ( ($(this).scrollTop() > 80) && ($(this).scrollLeft() < 10)) {
                 el.css({'position':'fixed','top':'10px','width':'14.15%'});
@@ -188,12 +203,12 @@ $(document).ready(function(){
         });
         $('#content').removeClass('span10').addClass('span11');
     }
-    
+
     function fullmenu(){
         $('.leftmenu').removeClass('span1').removeClass('lefticon').addClass('span2');
         $('.leftmenu > ul > li > a').each(function(){
             $(this).attr({'rel':'','title':''});
         });
-        $('#content').removeClass('span11').addClass('span10'); 
+        $('#content').removeClass('span11').addClass('span10');
     }
 });

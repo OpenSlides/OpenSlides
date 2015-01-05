@@ -21,6 +21,12 @@
         {% if perms.assignment.can_manage_assignment %}
             <a href="{% url 'assignment_create' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New election' %}"><i class="icon-plus icon-white"></i> {% trans "New" %}</a>
         {% endif %}
+        {% if perms.core.can_manage_tags %}
+            <a href="{% url 'core_tag_list' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Manage tags' %}">
+                <i class="icon-th"></i>
+                <span class="optional-small"> {% trans 'Tags' %}</span>
+            </a>
+        {% endif %}
         {% if perms.assignment.can_see_assignment %}
             <a href="{% url 'assignment_list_pdf' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print all elections as PDF' %}" target="_blank"><i class="icon-print"></i><span class="optional-small"> PDF</span></a>
         {% endif %}

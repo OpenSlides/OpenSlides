@@ -36,8 +36,17 @@
                 <a href="{% url 'motion_create' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New motion' %}"><i class="icon-plus icon-white"></i> {% trans 'New' %}</a>
             {% endif %}
         {% endif %}
+        {% if perms.core.can_manage_tags %}
+            <a href="{% url 'core_tag_list' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Manage tags' %}">
+                <i class="icon-th"></i>
+                <span class="optional-small"> {% trans 'Tags' %}</span>
+            </a>
+        {% endif %}
         {% if perms.motion.can_manage_motion %}
-            <a href="{% url 'motion_category_list' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Manage categories' %}"><i class="icon-th-large"></i><span class="optional-small"> {% trans 'Categories' %}</span></a>
+            <a href="{% url 'motion_category_list' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Manage categories' %}">
+                <i class="icon-th-large"></i>
+                <span class="optional-small"> {% trans 'Categories' %}</span>
+            </a>
             <a href="{% url 'motion_csv_import' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import motions' %}"><i class="icon-import"></i><span class="optional-small"> {% trans 'Import' %}</span></a>
         {% endif %}
         <a href="{% url 'motion_list_pdf' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print all motions as PDF' %}" target="_blank"><i class="icon-print"></i><span class="optional-small"> PDF</span></a>

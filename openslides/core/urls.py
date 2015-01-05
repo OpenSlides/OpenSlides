@@ -41,4 +41,8 @@ urlpatterns = patterns(
     url(r'^customslide/(?P<pk>\d+)/del/$',
         views.CustomSlideDeleteView.as_view(),
         name='customslide_delete'),
+
+    url(r'tags/$',
+        views.TagListView.as_view(),
+        name='core_tag_list'),
 )
