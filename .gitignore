@@ -7,12 +7,17 @@
 .virtualenv/*
 .venv/*
 
-# Development user data (settings, database, media, search index)
+# Node modules
+node_modules/*
+
+# Development user data (settings, database, media, search index, static files)
 settings.py
 !tests/settings.py
 database.sqlite
 media/*
 whoosh_index/*
+bower_components/*
+openslides/static/*
 
 # Package building
 docs/_build/*
