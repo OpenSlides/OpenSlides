@@ -5,3 +5,4 @@
 {{ object.submitters }}
 {{ object.supporters }}
 {{ object.category }}
+{{ object.tags.all }}

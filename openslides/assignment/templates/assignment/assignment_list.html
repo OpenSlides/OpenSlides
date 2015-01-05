@@ -23,7 +23,7 @@
         {% endif %}
         {% if perms.core.can_manage_tags %}
             <a href="{% url 'core_tag_list' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Manage tags' %}">
-                <i class="icon-th"></i>
+                <i class="icon-tags"></i>
                 <span class="optional-small"> {% trans 'Tags' %}</span>
             </a>
         {% endif %}
@@ -46,7 +46,11 @@
     </thead>
     {% for object in object_list %}
         <tr class="{% if object.is_active_slide %}activeline{% endif %}">
-            <td><a href="{{ object|absolute_url:'detail' }}">{{ object }}</a></td>
+            <td><a href="{{ object|absolute_url:'detail' }}">{{ object }}</a>
+                {% for tag in object.tags.all %}
+                    <span class="optional label">{{ tag }}</span>
+                {% endfor %}
+            </td>
             <td  class="optional">
                 <!-- posts -->
                 {% trans "Posts" context "Number of searched candidates for an election" %}:
