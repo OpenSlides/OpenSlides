@@ -12,14 +12,16 @@ from haystack.views import SearchView as _SearchView
 from openslides import get_version as get_openslides_version
 from openslides import get_git_commit_id, RELEASE
 from openslides.config.api import config
+from openslides.utils import rest_api
+from openslides.utils import views as utils_views
 from openslides.utils.plugins import get_plugin_description, get_plugin_verbose_name, get_plugin_version
 from openslides.utils.signals import template_manipulation
-from openslides.utils import views as utils_views
 from openslides.utils.widgets import Widget
 
 from .forms import SelectWidgetsForm
 from .models import CustomSlide, Tag
 from .exceptions import TagException
+from .serializers import CustomSlideSerializer
 
 
 class DashboardView(utils_views.AjaxMixin, utils_views.TemplateView):
@@ -291,3 +293,20 @@ class TagListView(utils_views.AjaxMixin, utils_views.ListView):
             action=getattr(self, 'action', None),
             error=getattr(self, 'error', None),
             **context)
+
+
+class CustomSlideViewSet(rest_api.viewsets.ModelViewSet):
+    """
+    API endpoint to view, edit and delete custom slides.
+    """
+    model = CustomSlide
+    queryset = CustomSlide.objects.all()
+    serializer_class = CustomSlideSerializer
+
+    def check_permissions(self, request):
+        """
+        Calls self.permission_denied() if the requesting user has not the
+        permission to manage.
+        """
+        if not request.user.has_perm('core.can_manage_projector'):
+            self.permission_denied(request)
