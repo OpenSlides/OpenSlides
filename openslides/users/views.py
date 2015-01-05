@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _, ugettext_lazy, activate
 
 from openslides.config.api import config
+from openslides.utils import rest_api
 from openslides.utils.utils import delete_default_permissions, html_strong
 from openslides.utils.views import (
     CreateView, CSVImportView, DeleteView, DetailView, FormView, ListView,
@@ -19,6 +20,7 @@ from .forms import (GroupForm, UserCreateForm, UserMultipleCreateForm,
                     UsersettingsForm, UserUpdateForm)
 from .models import Group, User
 from .pdf import users_to_pdf, users_passwords_to_pdf
+from .serializers import UserSerializer
 
 
 class UserListView(ListView):
@@ -257,6 +259,24 @@ class ResetPasswordView(SingleObjectMixin, QuestionView):
 
     def get_final_message(self):
         return _('The Password for %s was successfully reset.') % html_strong(self.get_object())
+
+
+class UserViewSet(rest_api.viewsets.ModelViewSet):
+    """
+    API endpoint to view, edit and delete users.
+    """
+    model = User
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+    def check_permissions(self, request):
+        """
+        Calls self.permission_denied() if the requesting user has not the
+        permission to manage.
+        """
+        # TODO: More work on this required.
+        if not request.user.has_perm('users.can_manage'):
+            self.permission_denied(request)
 
 
 class GroupListView(ListView):
