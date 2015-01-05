@@ -57,6 +57,12 @@ class UserViews(TestCase):
         response = self.client.get('/user/1/status/activate/')
         self.assertEqual(response.status_code, 302)
 
+    def test_reset_password(self):
+        self.admin.default_password = new_password = 'password_ohweleeh1Shee5wibo1I'
+        self.admin.save()
+        self.client.post('/user/1/reset_password/', {'yes': 'yes'})
+        self.assertTrue(self.client.login(username='admin', password=new_password))
+
 
 class GroupViews(TestCase):
     """

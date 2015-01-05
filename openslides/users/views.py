@@ -253,6 +253,7 @@ class ResetPasswordView(SingleObjectMixin, QuestionView):
 
     def on_clicked_yes(self):
         self.get_object().reset_password()
+        self.get_object().save()
 
     def get_final_message(self):
         return _('The Password for %s was successfully reset.') % html_strong(self.get_object())
