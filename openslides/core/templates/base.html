@@ -136,7 +136,7 @@
     <script type="text/javascript" src="{% static 'js/jquery/jquery.bsmselect.js' %}"></script>
     <script type="text/javascript">
         // use jquery-bsmselect for all <select multiple> form elements
-        $("select[multiple]").bsmSelect({
+        $("select[multiple]:not(.dont_use_bsmselect)").bsmSelect({
           removeLabel: '<sup><b>X</b></sup>',
           containerClass: 'bsmContainer',
           listClass: 'bsmList-custom',
