@@ -52,19 +52,25 @@ class LocalizedModelChoiceField(forms.ModelChoiceField):
 
 
 class LocalizedModelMultipleChoiceField(forms.ModelMultipleChoiceField):
+    """
+    FormField to translate models in many to many fields in forms.
+    """
+
     def __init__(self, *args, **kwargs):
         self.to_field_name = kwargs.get('to_field_name', None)
         super(LocalizedModelMultipleChoiceField, self).__init__(*args, **kwargs)
 
     def _localized_get_choices(self):
+        """
+        Generator which calles super() and yields the values.
+        """
         if hasattr(self, '_choices'):
             return self._choices
 
-        c = []
-        for (id, text) in super(LocalizedModelMultipleChoiceField, self)._get_choices():
+        for (id, text) in super()._get_choices():
+            # This line is only required to translate permission objects
             text = text.split(' | ')[-1]
-            c.append((id, ugettext_lazy(text)))
-        return c
+            yield (id, ugettext_lazy(text))
 
     choices = property(_localized_get_choices, forms.ChoiceField._set_choices)
 
