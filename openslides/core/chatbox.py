@@ -3,8 +3,9 @@
 from datetime import datetime
 
 from django.conf import settings
-from django.contrib.sessions.models import Session
 from django.utils.html import urlize
+from django.utils.importlib import import_module
+
 from sockjs.tornado import SockJSConnection
 
 
@@ -20,22 +21,25 @@ class ChatboxSocketHandler(SockJSConnection):
         """
         from openslides.participant.models import User
 
-        # TODO: Use the django way to get the session to be compatible with
-        # other auth-backends; see comment in pull request #1220:
-        # https://github.com/OpenSlides/OpenSlides/pull/1220#discussion_r11565705
-        session_key = info.get_cookie(settings.SESSION_COOKIE_NAME).value
-        session = Session.objects.get(session_key=session_key)
+        # get the session (compatible with other auth-backends)
+        engine = import_module(settings.SESSION_ENGINE)
         try:
-            self.user = User.objects.get(pk=session.get_decoded().get('_auth_user_id'))
+            session_key = info.get_cookie(settings.SESSION_COOKIE_NAME).value
+            session = engine.SessionStore(session_key)
+            pk = session.get_decoded().get('_auth_user_id')
+        except AttributeError:
+            return False
+
+        try:
+            self.user = User.objects.get(pk)
         except User.DoesNotExist:
-            return_value = False
+            return False
+
+        if self.user.has_perm('core.can_use_chat'):
+            self.clients.add(self)
+            return True
         else:
-            if self.user.has_perm('core.can_use_chat'):
-                self.clients.add(self)
-                return_value = True
-            else:
-                return_value = False
-        return return_value
+            return False
 
     def on_message(self, message):
         """

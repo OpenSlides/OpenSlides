@@ -5,34 +5,21 @@ How to create a new portable Windows distribution of OpenSlides:
    Follow the instructions in the README, section III (Windows installation), step 1.
 
 
-2. Install all required python packages (see requirements_production.txt):
+2. Install all required python packages from requirements_production.txt:
+   (Note: You have to use 'easy_install -Z $PACKAGENAME')
 
-       easy_install -Z "django<1.7" ^
-            backports.ssl_match_hostname ^
-            "beautifulsoup4<4.4" ^
-            "bleach<1.5" ^
-            "django-ckeditor-updated<4.3" ^
-            "django-haystack<2.2" ^
-            "django-mptt<0.7" ^
-            "jsonfield<0.10" ^
-            "natsort<3.3" ^
-            "reportlab<2.8" ^
-            "roman<2.1" ^
-            "sockjs_tornado<1.1" ^
-            "tornado<3.3" ^
-            "whoosh<2.6" ^
-            "setuptools<3.7"
+       python install-requirements.py
 
 
 3. Install pywin32 from binary installer:
-   http://sourceforge.net/projects/pywin32/files/pywin32/Build%20218/pywin32-218.win32-py2.7.exe/download
+   http://sourceforge.net/projects/pywin32/files/pywin32/Build%20219/pywin32-219.win32-py2.7.exe/download
 
    Pywin32 is used to update the version resource of the prebuild openslides.exe.
    It is not strictly required but at least for published releases it is highly advisable.
 
 
 4. Install wxPython from binary installer:
-   http://downloads.sourceforge.net/wxpython/wxPython2.8-win32-unicode-2.8.12.1-py27.exe
+   http://sourceforge.net/projects/wxpython/files/wxPython/2.8.12.1/wxPython2.8-win32-unicode-2.8.12.1-py27.exe/download
 
    WxPython is required to build the OpenSlides GUI frontend.
 

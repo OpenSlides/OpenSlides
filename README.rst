@@ -86,14 +86,14 @@ portable version you should observe the following install steps.*
    and Setuptools on your system.
 
    a. Download and run the `Python 32-bit MSI installer
-      <http://www.python.org/ftp/python/2.7.6/python-2.7.6.msi>`_. Note
+      <http://www.python.org/ftp/python/2.7.9/python-2.7.9.msi>`_. Note
       that the 32-bit MSI installer is required even on a 64-bit Windows
       system. If you use the 64-bit MSI installer, step 3 of this
       instruction will fail unless you installed the package reportlab
       manually.
 
    b. Add python directories to PATH (via Control Panel > System >
-      Advanced): ``";C:\\Python27;C:\\Python27\\Scripts"``. Note that the path
+      Advanced): ``";C:\Python27;C:\Python27\Scripts"``. Note that the path
       can differ if you customized the install of Python in the first step.
 
    c. Download and run (via double click) the last `install script
@@ -110,7 +110,7 @@ portable version you should observe the following install steps.*
    To install Virtual Python Environment builder, open command line (cmd)
    and run::
 
-       > easy_install https://pypi.python.org/packages/source/v/virtualenv/virtualenv-1.11.6.tar.gz
+       > easy_install https://pypi.python.org/packages/source/v/virtualenv/virtualenv-12.0.5.tar.gz
 
    Create your OpenSlides directory, change to it, setup and activate the
    virtual environment::
