@@ -70,7 +70,7 @@ class OpenSlidesSockJSConnection(SockJSConnection):
             waiter.send(data)
 
 
-def run_tornado(addr, port):
+def run_tornado(addr, port, *args, **kwargs):
     """
     Starts the tornado webserver as wsgi server for OpenSlides.
 
@@ -78,14 +78,6 @@ def run_tornado(addr, port):
     """
     # Don't try to read the command line args from openslides
     parse_command_line(args=[])
-
-    # Print listening address and port to command line
-    if addr == '0.0.0.0':
-        url_string = "the machine's local ip address"
-    else:
-        url_string = 'http://%s:%s' % (addr, port)
-    # TODO: don't use print, use django logging
-    print("Starting OpenSlides' tornado webserver listening to %(url_string)s" % {'url_string': url_string})
 
     # Setup WSGIContainer
     app = WSGIContainer(get_wsgi_application())
@@ -101,7 +93,7 @@ def run_tornado(addr, port):
 
     # Start the application
     debug = settings.DEBUG
-    tornado_app = Application(sock_js_router.urls + chatbox_socket_js_router.urls + other_urls, debug=debug)
+    tornado_app = Application(sock_js_router.urls + chatbox_socket_js_router.urls + other_urls, autoreload=debug, debug=debug)
     server = HTTPServer(tornado_app)
     server.listen(port=port, address=addr)
     IOLoop.instance().start()

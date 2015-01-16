@@ -2,8 +2,6 @@ from django.http import HttpResponse
 
 from openslides.utils import views
 
-from .models import DummyModel
-
 
 class GetAbsoluteUrl(object):
     """
@@ -47,15 +45,3 @@ class UrlMixinView(views.UrlMixin, views.View):
 
 class UrlMixinViewWithObject(views.UrlMixin, views.View):
     object = GetAbsoluteUrl()
-
-
-class DummyDetailView(views.DetailView):
-    model = DummyModel
-
-    def get_context_data(self, **context):
-        context = super(DummyDetailView, self).get_context_data(**context)
-        # Just call get_object() some times to test the cache
-        self.get_object()
-        self.get_object()
-        self.get_object()
-        return context

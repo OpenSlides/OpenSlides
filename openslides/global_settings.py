@@ -79,6 +79,7 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'openslides.urls'
 
 INSTALLED_APPS = (
+    'openslides.core',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -90,7 +91,6 @@ INSTALLED_APPS = (
     'ckeditor',
     'rest_framework',
     'openslides.poll',
-    'openslides.core',
     'openslides.account',
     'openslides.projector',
     'openslides.agenda',

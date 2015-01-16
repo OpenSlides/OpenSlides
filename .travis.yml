@@ -8,6 +8,6 @@ install:
   - "node_modules/.bin/bower install"
   - "node_modules/.bin/gulp --production"
 script:
-  - "DJANGO_SETTINGS_MODULE='tests.settings' coverage run ./manage.py django test"
+  - "DJANGO_SETTINGS_MODULE='tests.settings' coverage run ./manage.py test"
   - "coverage report -m --fail-under=80"
   - "flake8 --max-line-length=150 --statistics openslides tests"

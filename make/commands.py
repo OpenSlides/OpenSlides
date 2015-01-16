@@ -11,7 +11,7 @@ def test(args=None):
     """
     module = getattr(args, 'module', '')
     return call("DJANGO_SETTINGS_MODULE='tests.settings' coverage run "
-                "./manage.py django test %s" % module)
+                "./manage.py test %s" % module)
 
 
 @argument('--plain', action='store_true')
@@ -23,7 +23,6 @@ def coverage(args=None, plain=None):
     By default it creates a html report. With the argument --plain, it creates
     a plain report and fails under a certain amount of untested lines.
     """
-    test()
     if plain is None:
         plain = getattr(args, 'plain', False)
     if plain:

@@ -1,4 +1,5 @@
 from django.apps import AppConfig
+from django.db.models.signals import post_migrate
 
 
 class MotionAppConfig(AppConfig):
@@ -12,13 +13,12 @@ class MotionAppConfig(AppConfig):
 
         # Import all required stuff.
         from openslides.config.signals import config_signal
-        from openslides.core.signals import post_database_setup
         from openslides.projector.api import register_slide_model
         from .signals import create_builtin_workflows, setup_motion_config
 
         # Connect signals.
         config_signal.connect(setup_motion_config, dispatch_uid='setup_motion_config')
-        post_database_setup.connect(create_builtin_workflows, dispatch_uid='motion_create_builtin_workflows')
+        post_migrate.connect(create_builtin_workflows, dispatch_uid='motion_create_builtin_workflows')
 
         # Register slides.
         Motion = self.get_model('Motion')

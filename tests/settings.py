@@ -21,14 +21,6 @@ SECRET_KEY = 'secret'
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-
-# OpenSlides plugins
-# Add plugins to this list.
-
-INSTALLED_PLUGINS += (
-    'tests.utils',
-)
-
 INSTALLED_APPS += INSTALLED_PLUGINS
 
 

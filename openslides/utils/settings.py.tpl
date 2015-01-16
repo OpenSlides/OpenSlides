@@ -25,7 +25,7 @@ SECRET_KEY = %(secret_key)r
 # Use 'DEBUG = True' to get more details for server errors.
 # SECURITY WARNING: Don't run with debug turned on in production!
 
-DEBUG = True
+DEBUG = %(debug)s
 TEMPLATE_DEBUG = DEBUG
 
 
