@@ -78,7 +78,7 @@
     <small>
         {% trans "Motion" %} {{ motion.identifier|default:'' }}
         {% if motion.is_amendment %}
-            (Amendment of {{ motion.parent.identifier|default:motion.parent }})
+            ({% trans "Amendment of" %} {{ motion.parent.identifier|default:motion.parent }})
         {% endif %}
         {% if motion.get_active_version.version_number > 1 %} | {% trans 'Version' %} {{ motion.active_version.version_number }}{% endif %}
     </small>

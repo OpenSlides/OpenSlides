@@ -30,7 +30,7 @@
             {% endif %}
         {% endif %}
         {% if motion.is_amendment %}
-            (Amendment of <a href="{{ motion.parent|absolute_url }}">{{ motion.parent.identifier|default:motion.parent }}</a>)
+            ({% trans "Amendment of" %} <a href="{{ motion.parent|absolute_url }}">{{ motion.parent.identifier|default:motion.parent }}</a>)
         {% endif %}
     </small>
     <small class="pull-right">
