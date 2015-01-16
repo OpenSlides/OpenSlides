@@ -74,7 +74,7 @@
         <tr class="{% if motion.is_active_slide %}activeline{% endif %}">
             <td class="nobr">{{ motion.identifier|default:'' }}
                 {% if motion.is_amendment %}
-                    <a class="badge badge-success" data-original-title="Amendment" rel="tooltip">
+                    <a class="badge badge-success" data-original-title="{% trans 'Amendment' %}" rel="tooltip">
                         {{ 'motion_amendments_prefix'|get_config }}
                     </a>
                 {% endif %}

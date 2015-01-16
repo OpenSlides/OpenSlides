@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-01-11 19:03+0100\n"
+"POT-Creation-Date: 2015-01-16 14:24+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2195,6 +2195,11 @@ msgstr ""
 msgid "This version is not authorized."
 msgstr ""
 
+#: motion/templates/motion/motion_detail.html:33
+#: motion/templates/motion/slide.html:81
+msgid "Amendment of"
+msgstr ""
+
 #: motion/templates/motion/motion_detail.html:40
 msgid "Print motion as PDF"
 msgstr ""
@@ -2366,6 +2371,10 @@ msgstr ""
 
 #: motion/templates/motion/motion_list.html:60
 msgid "Motion title"
+msgstr ""
+
+#: motion/templates/motion/motion_list.html:77
+msgid "Amendment"
 msgstr ""
 
 #: motion/templates/motion/motion_list.html:99
