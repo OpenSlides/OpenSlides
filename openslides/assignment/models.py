@@ -33,6 +33,18 @@ class AssignmentCandidate(RelatedModelMixin, models.Model):
     class Meta:
         unique_together = ("assignment", "person")
 
+    # Will be removed in 2.0 (required for haystack fix)
+    def save(self, *args, **kwargs):
+        super(AssignmentCandidate, self).save(*args, **kwargs)
+        models.signals.m2m_changed.send(sender=self, action='post_add',
+                                        instance=self.assignment)
+
+    # Will be removed in 2.0 (required for haystack fix)
+    def delete(self, *args, **kwargs):
+        super(AssignmentCandidate, self).delete(*args, **kwargs)
+        models.signals.m2m_changed.send(sender=self, action='post_remove',
+                                        instance=self.assignment)
+
     def __unicode__(self):
         return unicode(self.person)
 
