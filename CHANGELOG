@@ -14,6 +14,8 @@ Other:
 - Refactoring of the participant app. Now called 'users'.
 - Added Django's application configuration. Refactored loading of signals,
   template signals and slides.
+- Used Bower and gulp to manage third party JavaScript and Cascading Style
+  Sheets libraries.
 
 
 Version 1.7 (unreleased)

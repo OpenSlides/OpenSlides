@@ -5,11 +5,11 @@
 <!DOCTYPE html>
 <html lang="{{LANGUAGE_CODE}}">
     <head>
-        <link href="{% static 'css/bootstrap.min.css' %}" type="text/css" rel="stylesheet">
+        <link href="{% static 'css/openslides-libs.css' %}" type="text/css" rel="stylesheet">
         <link href="{% static 'css/projector.css' %}" type="text/css" rel="stylesheet">
         <link  href="{% static 'img/favicon.png' %}" type="image/png" rel="shortcut icon">
         <title>{% block title %}{% trans 'Projector' %} – {{ 'event_name'|get_config }}{% endblock %}</title>
-        <script type="text/javascript" src="{% static 'js/jquery/jquery.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/openslides-libs.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/sockjs-0.3.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'js/projector.js' %}"></script>
         <script type="text/javascript">

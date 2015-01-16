@@ -179,31 +179,26 @@ Installation and start of the development version
 
 1. Check requirements
 
-   Follow step 1 in the correspondent instruction in section III.
+   You need to have `Python 3 (>=3.3) <https://www.python.org/>`_, `Node.js
+   (>=0.10) <https://nodejs.org/>`_ and `Git <http://git-scm.com/>`_
+   installed. See also step 1 in the correspondent instruction in section
+   III.
 
 2. Get OpenSlides source code
 
    Clone current master version from `OpenSlides' GitHub repository
-   <https://github.com/OpenSlides/OpenSlides>`_. This requires `Git
-   <http://git-scm.com/>`_.
+   <https://github.com/OpenSlides/OpenSlides/>`_::
 
-   For example for Ubuntu run::
+       cd ...  # Go to a nice place in your filesystem.
+       git clone https://github.com/OpenSlides/OpenSlides.git
+       cd OpenSlides
 
-       $ sudo apt-get install git
-       $ git clone git://github.com/OpenSlides/OpenSlides.git
-       $ cd OpenSlides
-
-   For Windows you can use GitBash::
-
-       > cd ...  # Go to a nice place in your filesystem.
-       > git clone git://github.com/OpenSlides/OpenSlides.git
-       > cd OpenSlides
-
-3. Setup a virtual environment with Virtual Python Environment builder (optional)
+3. Setup and activate a virtual environment with Virtual Python Environment
+   builder (optional)
 
    Follow step 2 in the correspondent instruction in section III.
 
-4. Install all required python packages
+4. Install all required Python packages
 
    For Unix and Mac OS X run::
 
@@ -213,15 +208,42 @@ Installation and start of the development version
 
        > easy_install  # Insert all packages from requirements.txt and requirements_production.txt here
 
-5. Start OpenSlides
+5. Install all npm and bower packages
 
-   To start OpenSlides use the command line script::
+   For Unix and Mac OS X run::
+
+       $ npm install
+       $ node_modules/.bin/bower install
+
+   For Windows run::
+
+       > npm install
+       > node_modules\.bin\bower install
+
+6. Concat and copy all third party JavaScript and Cascading Style Sheets
+   libraries
+
+   For Unix and Mac OS X run::
+
+       $ node_modules/.bin/gulp
+
+   For Windows run::
+
+       > node_modules\.bin\gulp
+
+7. Create a development settings file
+
+   Use the command-line interface::
 
        python manage.py create-dev-settings
 
+8. Start OpenSlides
+
+   Use the command-line interface::
+
        python manage.py start --settings settings.py
 
-   To get help on the command line options run::
+   To get help on the command-line options run::
 
        python manage.py --help
 
