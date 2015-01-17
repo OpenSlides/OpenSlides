@@ -11,4 +11,4 @@ class ConfigMainMenuEntry(MainMenuEntry):
     required_permission = 'config.can_manage'
     default_weight = 70
     pattern_name = 'config_first_config_collection_view'
-    icon_css_class = 'icon-cog'
+    icon_css_class = 'glyphicon-cog'

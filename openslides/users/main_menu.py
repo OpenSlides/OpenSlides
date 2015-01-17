@@ -11,4 +11,4 @@ class UserMainMenuEntry(MainMenuEntry):
     required_permission = 'users.can_see_extra_data'
     default_weight = 50
     pattern_name = 'user_list'
-    icon_css_class = 'icon-user'
+    icon_css_class = 'glyphicon-user'

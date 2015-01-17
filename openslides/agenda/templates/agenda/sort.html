@@ -12,44 +12,49 @@
 
 {% block javascript %}
     <script type="text/javascript" src="{% static 'js/agenda.js' %}"></script>
+    {% if perms.agenda.can_manage_agenda %}
+        <script type="text/javascript" src="{% static 'js/jquery/jquery-ui.custom.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery/jquery.once.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery/jquery.tmpl.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/jquery/jquery-ui-nestedSortable.js' %}"></script>
+    {% endif %}
 {% endblock %}
 
 {% block content %}
+    <form action="" method="post">{% csrf_token %}
+        {% if perms.agenda.can_manage_agenda %}
+            <div id="changed-order-message" style="display:none" class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                {% trans "Do you want to save the changed order of agenda items?" %}<br>
+                <button class="btn btn-mini" type="submit">{% trans 'Yes' %}</button>
+                <a href="{% url 'item_overview' %}" class="btn btn-mini">{% trans 'No' %}</a>
+            </div>
+        {% endif %}
+
         <h1>{% trans "Agenda" %}
             <small class="pull-right">
             {% if perms.agenda.can_manage_agenda %}
-                <a href="{% url 'item_new' %}" class="btn btn-sm btn-primary"
-                        rel="tooltip" data-original-title="{% trans 'New item' %}">
-                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                <a href="{% url 'item_new' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New item' %}">
+                    <i class="icon-plus icon-white"></i>
                     {% trans "New" %}
                 </a>
             {% endif %}
             {% if perms.core.can_manage_tags %}
-                <a href="{% url 'core_tag_list' %}" class="btn btn-default btn-sm"
-                            rel="tooltip" data-original-title="{% trans 'Manage tags' %}">
-                    <span class="glyphicon glyphicon-tags" aria-hidden="true"></span>
+                <a href="{% url 'core_tag_list' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Manage tags' %}">
+                    <i class="icon-th"></i>
                     <span class="optional-small"> {% trans 'Tags' %}</span>
                 </a>
             {% endif %}
             {% if perms.agenda.can_manage_agenda %}
-                <a href="{% url 'item_csv_import' %}" class="btn btn-default btn-sm"
-                        rel="tooltip" data-original-title="{% trans 'Import agenda items' %}">
-                    <span class="glyphicon glyphicon-import" aria-hidden="true"></span>
+                <a href="{% url 'item_csv_import' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Import agenda items' %}">
+                    <i class="icon-import"></i>
                     {% trans "Import" %}
                 </a>
             {% endif %}
-            <a href="{% url 'print_agenda' %}" class="btn btn-default btn-mini"
-                    rel="tooltip" data-original-title="{% trans 'Print agenda as PDF' %}" target="_blank">
-                <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
-                    PDF
-            </a>
+            <a href="{% url 'print_agenda' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print agenda as PDF' %}" target="_blank"><i class="icon-print"></i> PDF</a>
             {% if perms.core.can_see_projector %}
-                <a href="{% url 'agenda_current_list_of_speakers_projector' %}"
-                        class="btn btn-default btn-sm"
-                        rel="tooltip" data-original-title="{% trans 'Current list of speakers' %}">
-                    <span class="glyphicon glyphicon-bell" aria-hidden="true"></span>
-                    {% trans 'List of speakers' %}
-                </a>
+                <a href="{% url 'agenda_current_list_of_speakers_projector' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Current list of speakers' %}">
+                    <i class="icon-bell"></i> {% trans 'List of speakers' %}</a>
             {% endif %}
             </small>
         </h1>
@@ -57,10 +62,8 @@
         <div class="row-fluid">
             <div class="pull-left">
                 {% if perms.agenda.can_manage_agenda %}
-                    <p>
-                        <a href="{% url 'agenda_numbering' %}"
-                            class="btn btn-default btn-sm">{% trans 'Number agenda items' %}
-                        </a>
+                    <p><a href="{% url 'agenda_numbering' %}"
+                       class="btn btn-mini">{% trans 'Number agenda items' %}</a>
                     </p>
                 {% endif %}
                 <p>
@@ -85,9 +88,7 @@
                         </tr>
                     </table>
                 {% elif perms.config.can_manage %}
-                    <a href="{% url 'config_agenda' %}" class="btn btn-default btn-sm pull-right">
-                        {% trans 'Set start time of event' %}
-                    </a>
+                    <a href="{% url 'config_agenda' %}" class="btn btn-mini pull-right">{% trans 'Set start time of event' %}</a>
                 {% endif %}
             {% endif %}
         </div>
@@ -120,9 +121,9 @@
                 {% if perms.core.can_manage_projector %}
                     <span>
                     <a href="{% url 'projector_activate_slide' 'agenda' %}"
-                            class="activate_link btn btn-default {% if agenda_is_active %}btn-primary{% endif %} btn-sm"
-                            rel="tooltip" data-original-title="{% trans 'Show agenda' %}">
-                        <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>
+                        class="activate_link btn {% if agenda_is_active %}btn-primary{% endif %} btn-mini"
+                        rel="tooltip" data-original-title="{% trans 'Show agenda' %}">
+                        <i class="icon-facetime-video {% if agenda_is_active %}icon-white{% endif %}"></i>
                     </a>
                     </span>
                 {% endif %}
@@ -146,4 +147,5 @@
         {% else %}
         <div class="overview_no_items">{% trans "No items available." %}</div>
         {% endif %}
+    </form>
 {% endblock %}

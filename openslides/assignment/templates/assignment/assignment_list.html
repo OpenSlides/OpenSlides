@@ -6,29 +6,29 @@
 
 {% block title %}{% trans "Elections" %} – {{ block.super }}{% endblock %}
 
-{% block header %}
-    <link href="{% static 'css/dataTables/dataTables.bootstrap.css' %}" type="text/css" rel="stylesheet">
-{% endblock %}
-
-{% block javascript %}
-    <script src="{% static 'js/jquery/jquery.dataTables.min.js' %}" type="text/javascript"></script>
-    <script src="{% static 'js/jquery/dataTables.bootstrap.js' %}" type="text/javascript"></script>
-{% endblock %}
-
 {% block content %}
     <h1>{% trans "Elections" %}
         <small class="pull-right">
         {% if perms.assignment.can_manage_assignment %}
-            <a href="{% url 'assignment_create' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New election' %}"><i class="icon-plus icon-white"></i> {% trans "New" %}</a>
+            <a href="{% url 'assignment_create' %}" class="btn btn-primary btn-sm"
+                    rel="tooltip" data-original-title="{% trans 'New election' %}">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                {% trans 'New' %}
+            </a>
         {% endif %}
         {% if perms.core.can_manage_tags %}
-            <a href="{% url 'core_tag_list' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Manage tags' %}">
-                <i class="icon-tags"></i>
+            <a href="{% url 'core_tag_list' %}" class="btn btn-default btn-sm"
+                    rel="tooltip" data-original-title="{% trans 'Manage tags' %}">
+                <span class="glyphicon glyphicon-tags" aria-hidden="true"></span>
                 <span class="optional-small"> {% trans 'Tags' %}</span>
             </a>
         {% endif %}
         {% if perms.assignment.can_see_assignment %}
-            <a href="{% url 'assignment_list_pdf' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print all elections as PDF' %}" target="_blank"><i class="icon-print"></i><span class="optional-small"> PDF</span></a>
+            <a href="{% url 'assignment_list_pdf' %}" class="btn btn-default btn-sm"
+                    rel="tooltip" data-original-title="{% trans 'Print all elections as PDF' %}" target="_blank">
+                <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
+                <span class="optional-small"> PDF</span>
+            </a>
         {% endif %}
         </small>
     </h1>
@@ -68,19 +68,21 @@
                 <span style="width: 1px; white-space: nowrap;">
                 {% if perms.core.can_manage_projector %}
                     <a href="{{ object|absolute_url:'projector' }}"
-                        class="activate_link btn {% if object.is_active_slide %}btn-primary{% endif %} btn-mini"
-                        rel="tooltip" data-original-title="{% trans 'Show election' %}">
-                        <i class="icon-facetime-video {% if object.is_active_slide %}icon-white{% endif %}"></i>
+                            class="activate_link btn btn-default {% if object.is_active_slide %}btn-primary{% endif %} btn-sm"
+                            rel="tooltip" data-original-title="{% trans 'Show election' %}">
+                        <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>
                     </a>
                 {% endif %}
                 {% if perms.assignment.can_manage_assignment %}
                     <a href="{{ object|absolute_url:'update' }}"
-                        rel="tooltip" data-original-title="{% trans 'Edit' %}"
-                        class="btn btn-mini"><i class="icon-pencil"></i>
+                            rel="tooltip" data-original-title="{% trans 'Edit' %}"
+                            class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
                     </a>
                     <a href="{% url 'assignment_delete' object.id %}"
                         rel="tooltip" data-original-title="{% trans 'Delete' %}"
-                        class="btn btn-mini"><i class="icon-remove"></i>
+                            class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                     </a>
                 {% endif %}
                 </span>

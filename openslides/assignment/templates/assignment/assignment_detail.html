@@ -18,31 +18,53 @@
     <br>
     <small>{% trans "Election" %}</small>
     <small class="pull-right">
-    <a href="{% url 'assignment_list' %}" class="btn btn-mini"><i class="icon-chevron-left"></i><span class="optional-small"> {% trans "Back to overview" %}</span></a>
-    <a href="{% url 'assignment_pdf' assignment.id  %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Print election as PDF' %}" target="_blank"><i class="icon-print"></i><span class="optional-small"> PDF</span></a>
+    <a href="{% url 'assignment_list' %}" class="btn btn-default btn-sm">
+        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+        <span class="optional-small"> {% trans "Back to overview" %}</span>
+    </a>
+    <a href="{% url 'assignment_pdf' assignment.id  %}" class="btn btn-default btn-sm"
+            rel="tooltip" data-original-title="{% trans 'Print election as PDF' %}" target="_blank">
+        <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
+        <span class="optional-small"> PDF</span>
+    </a>
     <!-- activate projector -->
     {% if perms.core.can_manage_projector %}
         <a href="{{ assignment|absolute_url:'projector' }}"
-            class="activate_link btn {% if assignment.is_active_slide %}btn-primary{% endif %} btn-mini"
-            rel="tooltip" data-original-title="{% trans 'Show election' %}">
-            <i class="icon-facetime-video {% if assignment.is_active_slide %}icon-white{% endif %}"></i>
+                class="activate_link btn btn-default {% if assignment.is_active_slide %}btn-primary{% endif %} btn-sm"
+                rel="tooltip" data-original-title="{% trans 'Show election' %}">
+            <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>
         </a>
     {% endif %}
     {% if perms.assignment.can_manage_assignment or perms.agenda.can_manage_agenda %}
     <div class="btn-group">
-        <a data-toggle="dropdown" class="btn btn-mini dropdown-toggle">
+        <a data-toggle="dropdown" class="btn btn-default btn-sm dropdown-toggle">
             <span class="optional-small">{% trans 'More actions' %}</span> <span class="caret"></span>
         </a>
         <ul class="dropdown-menu pull-right">
             {% if perms.assignment.can_manage_assignment %}
                 <!-- edit -->
-                <li><a href="{{ assignment|absolute_url:'update' }}"><i class="icon-pencil"></i> {% trans 'Edit election' %}</a></li>
+                <li>
+                    <a href="{{ assignment|absolute_url:'update' }}">
+                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                        {% trans 'Edit election' %}
+                    </a>
+                </li>
                 <!-- delete -->
-                <li><a href="{{ assignment|absolute_url:'delete' }}"><i class="icon-remove"></i> {% trans 'Delete election' %}</a></li>
+                <li>
+                    <a href="{{ assignment|absolute_url:'delete' }}">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        {% trans 'Delete election' %}
+                    </a>
+                </li>
             {% endif %}
             <!-- create agenda item -->
             {% if perms.agenda.can_manage_agenda %}
-                <li><a href="{% url 'assignment_create_agenda' assignment.id  %}"><i class="icon-plus"></i> {% trans 'New agenda item' %}</a></li>
+                <li>
+                    <a href="{% url 'assignment_create_agenda' assignment.id  %}">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        {% trans 'New agenda item' %}
+                    </a>
+                </li>
             {% endif %}
         </ul>
     </div>
@@ -50,13 +72,13 @@
     </small>
 </h1>
 
-<!-- Tags -->
-{% for tag in assignment.tags.all %}
-    <span class="optional label">{{ tag }}</span>
-{% endfor %}
+<div class="row">
+<div class="col-md-9">
+    <!-- Tags -->
+    {% for tag in assignment.tags.all %}
+        <span class="optional label">{{ tag }}</span>
+    {% endfor %}
 
-<div class="row-fluid">
-<div class="span9">
     <!-- Description -->
     <h4>{% trans "Description" %}</h4>
     {% if assignment.description  %}
@@ -74,22 +96,30 @@
             <a href="{{ person|absolute_url }}">{{ person }}</a>
             {% if perms.assignment.can_manage_assignment %}
                 {% if assignment.status == "sea" or assignment.status == "vot" %}
-                    <a href="{% url 'assignment_delother' assignment.id person.pk %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'Remove candidate' %}"><i class="icon-remove"></i></a>
+                    <a href="{% url 'assignment_delother' assignment.id person.pk %}"
+                            class="btn btn-default btn-xs"
+                            rel="tooltip" data-original-title="{% trans 'Remove candidate' %}">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    </a>
                 {% endif %}
             {% endif %}
             {% if person in assignment.elected %}
                 | <b>{% trans "elected" %}</b>
                 {% if perms.assignment.can_manage_assignment %}
                     {% if assignment.status == "sea" or assignment.status == "vot" %}
-                        <a class="btn btn-mini" href="{% url 'assignment_user_not_elected' assignment.id person.pk %}" rel="tooltip" data-original-title="{% trans 'Mark candidate as not elected' %}">
-                            <i class="icon-ban-circle"></i>
+                        <a href="{% url 'assignment_user_not_elected' assignment.id person.pk %}"
+                                class="btn btn-default btn-xs"
+                                rel="tooltip" data-original-title="{% trans 'Mark candidate as not elected' %}">
+                            <span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span>
                         </a>
                     {% endif %}
                 {% endif %}
             {% endif %}
         </li>
     {% empty %}
-        <li style="list-style: none outside none; margin-left: -25px;"><i>{% trans "No candidates available." %}</i></li>
+        <li style="list-style: none outside none; margin-left: -25px;">
+            <i>{% trans "No candidates available." %}</i>
+        </li>
     {% endfor %}
     </ol>
     {% if assignment.status == "sea" or perms.assignment.can_manage_assignment and assignment.status == "vot" %}
@@ -98,12 +128,14 @@
         {% if perms.assignment.can_nominate_self %}
             <p>
             {% if user_is_candidate %}
-                <a href='{% url 'assignment_delrun' assignment.id %}' class="btn btn-mini">
-                    <i class="icon-remove"></i> {% trans 'Withdraw self candidature' %}
+                <a href='{% url 'assignment_delrun' assignment.id %}' class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                    {% trans 'Withdraw self candidature' %}
                 </a>
             {% else %}
-                <a href='{% url 'assignment_run' assignment.id %}' class="btn btn-mini">
-                    <i class="icon-plus"></i> {% trans 'Self candidature' %}
+                <a href='{% url 'assignment_run' assignment.id %}' class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    {% trans 'Self candidature' %}
                 </a>
             {% endif %}
             </p>
@@ -111,15 +143,17 @@
         {% if perms.assignment.can_nominate_other %}
             {% for field in form %}
                 <label>{{ field.label }}:</label>
-                <div class="input-append">
-                    {{ field }}
-                    <button class="btn btn-primary tooltip-bottom" type="submit"
-                        data-original-title="{% trans 'Apply' %}"><i class="icon-ok icon-white"></i></button>
-                    {% if perms.participant.can_see_participant and perms.participant.can_manage_participant %}
-                        <a href="{% url 'user_new' %}" target="_blank" class="btn"
-                            rel="tooltip" data-original-title="{% trans 'Add new participant' %}"><i class="icon-add-user"></i></a>
-                    {% endif %}
-                </div>
+                {{ field }}
+                <button class="btn btn-primary btn-sm tooltip-bottom" type="submit"
+                        data-original-title="{% trans 'Apply' %}">
+                    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                </button>
+                {% if perms.users.can_see and perms.users.can_manage %}
+                    <a href="{% url 'user_new' %}" target="_blank" class="btn btn-default"
+                            rel="tooltip" data-original-title="{% trans 'Add new participant' %}">
+                        <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                    </a>
+                {% endif %}
             {% endfor %}
         {% endif %}
     </form>
@@ -153,25 +187,26 @@
         <tr>
             <th>{% trans "Candidates" %}</th>
             {% for poll in polls %}
-                <th style="white-space:nowrap;" class="span1">
+                <th style="white-space: nowrap;" class="col-sm-1">
                     {% if perms.assignment.can_manage_assignment %}<p class="text-center">{% endif %}
                     {{ poll.get_ballot|ordinal|safe }} {% trans 'ballot' %}
                     {% if perms.assignment.can_manage_assignment %}
-                        <a class="publish_link btn btn-mini btn-danger {% if poll.published %}btn-primary{% endif %}"
-                        href="{% url 'assignmentpoll_publish_status' poll.id %}"
-                        rel="tooltip" data-original-title="{% trans 'Publish result' %}">
-                        {% if poll.published %}
-                            <i class="icon-checked-new_white"></i>
-                            {% else %}
-                            <i class="icon-unchecked-new"></i>
+                        <a class="publish_link btn btn-sm btn-danger {% if poll.published %}btn-primary{% endif %}"
+                                href="{% url 'assignmentpoll_publish_status' poll.id %}"
+                                rel="tooltip" data-original-title="{% trans 'Publish result' %}">
+                            {% if poll.published %}
+                                <i class="icon-checked-new_white"></i>
+                                {% else %}
+                                <i class="icon-unchecked-new"></i>
                             {% endif %}
                         </a>
                         </p>
                         <p class="text-center">
                         <a href="{{ poll|absolute_url:'projector' }}"
-                            class="btn btn-mini activate_link {% if poll.is_active_slide %}btn-primary{% endif %}"
-                            rel="tooltip" data-original-title="{% trans 'Show election result' %}">
-                            <i class="icon-facetime-video {% if poll.is_active_slide %}icon-white{% endif %}"></i></a>
+                                class="btn btn-default btn-sm activate_link {% if poll.is_active_slide %}btn-primary{% endif %}"
+                                rel="tooltip" data-original-title="{% trans 'Show election result' %}">
+                            <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>
+                        </a>
                         <a href="{% url 'assignmentpoll_pdf' poll.id %}" class="btn btn-mini" target="_blank"
                             rel="tooltip" data-original-title="{% trans 'Ballot paper as PDF' %}"><i class="icon-print"></i></a>
                         <a href="{% url 'assignmentpoll_update' poll.id %}" class="btn btn-mini"
@@ -183,9 +218,10 @@
                 </th>
             {% endfor %}
             {% if assignment.candidates and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
-                <th class="span1 nobr">
-                    <a href="{% url 'assignmentpoll_create' assignment.pk %}" class="btn btn-mini">
-                       <i class="icon-plus"></i> {% trans 'New ballot' %}
+                <th class="col-sm-1 nobr">
+                    <a href="{% url 'assignmentpoll_create' assignment.pk %}" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        {% trans 'New ballot' %}
                     </a>
                 </th>
             {% endif %}
@@ -283,16 +319,17 @@
         <i>{% trans "No ballots available." %}</i>
         {% if assignment.candidates and perms.assignment.can_manage_assignment and assignment.status == "vot" %}
             <p>
-            <a href='{% url 'assignmentpoll_create' assignment.id %}' class="btn">
-               <i class="icon-plus"></i> {% trans 'New ballot' %}
-            </a>
+                <a href='{% url 'assignmentpoll_create' assignment.id %}' class="btn btn-default">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                    {% trans 'New ballot' %}
+                </a>
             </p>
         {% endif %}
     {% endif %}
 {% endif %}
-</div> <!--/span-->
+</div>
 
-<div class="span3">
+<div class="col-sm-3">
     <div class="well">
         <!-- Text -->
         <h5>{% trans "Status" %}:</h5>
@@ -307,17 +344,17 @@
         <h4>{% trans "Change status" %}:</h4>
         <div class="btn-group btn-group-vertical" data-toggle="buttons-radio">
             <a href="{% url 'assignment_set_status' assignment.id 'sea' %}"
-                class="btn btn-small {% if 'sea' in assignment.status %}active{% endif %}">
+                class="btn btn-default btn-sm {% if 'sea' in assignment.status %}active{% endif %}">
                 {% trans 'Searching for candidates' %}</a>
             <a href="{% url 'assignment_set_status' assignment.id 'vot' %}"
-                class="btn btn-small {% if 'vot' in assignment.status %}active{% endif %}">
+                class="btn btn-default btn-sm {% if 'vot' in assignment.status %}active{% endif %}">
                 {% trans 'Voting' %}</a>
             <a href="{% url 'assignment_set_status' assignment.id 'fin' %}"
-                class="btn btn-small {% if 'fin' in assignment.status %}active{% endif %}">
+                class="btn btn-default btn-sm {% if 'fin' in assignment.status %}active{% endif %}">
                 {% trans 'Finished' %}</a>
         </div>
     </div> <!--/well-->
     {% endif %}
-</div> <!--/span-->
+</div> 
 </div> <!--/row-->
 {% endblock %}

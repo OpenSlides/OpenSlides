@@ -10,5 +10,5 @@ class DashboardMainMenuEntry(MainMenuEntry):
     verbose_name = ugettext_lazy('Dashboard')
     required_permission = 'core.can_see_dashboard'
     default_weight = 10
-    icon_css_class = 'icon-home'
+    icon_css_class = 'glyphicon-home'
     pattern_name = 'core_dashboard'

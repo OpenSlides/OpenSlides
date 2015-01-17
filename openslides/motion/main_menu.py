@@ -11,4 +11,4 @@ class MotionMainMenuEntry(MainMenuEntry):
     required_permission = 'motion.can_see_motion'
     default_weight = 30
     pattern_name = 'motion_list'
-    icon_css_class = 'icon-file'
+    icon_css_class = 'glyphicon-file'
