@@ -19,12 +19,13 @@ whoosh_index/*
 bower_components/*
 openslides/static/*
 
-# Package building
+# Package building/IDE
 docs/_build/*
 *.egg-info
 build/*
 dist/*
 .DS_Store
+.idea
 
 # Unit test and coverage reports
 .coverage
