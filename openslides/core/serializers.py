@@ -1,11 +1,19 @@
-from rest_framework import serializers
+from openslides.utils import rest_api
 
-from .models import CustomSlide
+from .models import CustomSlide, Tag
 
 
-class CustomSlideSerializer(serializers.ModelSerializer):
+class CustomSlideSerializer(rest_api.serializers.HyperlinkedModelSerializer):
     """
-    Serializer for a core.models.CustomSlide objects.
+    Serializer for core.models.CustomSlide objects.
     """
     class Meta:
         model = CustomSlide
+
+
+class TagSerializer(rest_api.serializers.HyperlinkedModelSerializer):
+    """
+    Serializer for core.models.Tag objects.
+    """
+    class Meta:
+        model = Tag

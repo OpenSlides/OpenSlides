@@ -1,11 +1,11 @@
-from rest_framework import serializers
+from openslides.utils import rest_api
 
 from .models import Item, Speaker
 
 
-class SpeakerSerializer(serializers.HyperlinkedModelSerializer):
+class SpeakerSerializer(rest_api.serializers.HyperlinkedModelSerializer):
     """
-    Serializer for a agenda.models.Speaker objects.
+    Serializer for agenda.models.Speaker objects.
     """
     class Meta:
         model = Speaker
@@ -17,18 +17,17 @@ class SpeakerSerializer(serializers.HyperlinkedModelSerializer):
             'weight')
 
 
-class ItemSerializer(serializers.ModelSerializer):
+class ItemSerializer(rest_api.serializers.HyperlinkedModelSerializer):
     """
     Serializer for a agenda.models.Item objects.
     """
-    get_title = serializers.CharField(read_only=True)
-    get_title_supplement = serializers.CharField(read_only=True)
-    item_no = serializers.CharField(read_only=True)
+    get_title = rest_api.serializers.CharField(read_only=True)
+    get_title_supplement = rest_api.serializers.CharField(read_only=True)
+    item_no = rest_api.serializers.CharField(read_only=True)
     speaker_set = SpeakerSerializer(many=True, read_only=True)
+    tags = rest_api.serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='tag-detail')
     # content_object = serializers.PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Item
         exclude = ('content_type', 'object_id')
-
-    # TODO: Problem: User can always see the time shedule. Filter fields with respect of permission.

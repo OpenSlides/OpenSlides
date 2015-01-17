@@ -4,15 +4,16 @@ from django.utils.translation import ugettext_lazy, ugettext_noop
 # TODO: activate the following line after using the apploader
 # from django.contrib.auth import get_user_model
 
-from openslides.utils.models import AbsoluteUrlMixin
 from openslides.projector.models import SlideMixin
+from openslides.utils.models import AbsoluteUrlMixin
+from openslides.utils.rest_api import RESTModelMixin
 
 # Imports the default user so that other apps can import it from here.
 # TODO: activate this with the new apploader
 # User = get_user_model()
 
 
-class CustomSlide(SlideMixin, AbsoluteUrlMixin, models.Model):
+class CustomSlide(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
     """
     Model for Slides, only for the projector.
     """
@@ -46,7 +47,7 @@ class CustomSlide(SlideMixin, AbsoluteUrlMixin, models.Model):
         return url
 
 
-class Tag(AbsoluteUrlMixin, models.Model):
+class Tag(RESTModelMixin, AbsoluteUrlMixin, models.Model):
     """
     Model to save tags.
     """

@@ -21,7 +21,7 @@ from openslides.utils.widgets import Widget
 from .forms import SelectWidgetsForm
 from .models import CustomSlide, Tag
 from .exceptions import TagException
-from .serializers import CustomSlideSerializer
+from .serializers import CustomSlideSerializer, TagSerializer
 
 
 class DashboardView(utils_views.AjaxMixin, utils_views.TemplateView):
@@ -217,6 +217,23 @@ class CustomSlideDeleteView(CustomSlideViewMixin, utils_views.DeleteView):
     pass
 
 
+class CustomSlideViewSet(rest_api.viewsets.ModelViewSet):
+    """
+    API endpoint to view, edit and delete custom slides.
+    """
+    model = CustomSlide
+    queryset = CustomSlide.objects.all()
+    serializer_class = CustomSlideSerializer
+
+    def check_permissions(self, request):
+        """
+        Calls self.permission_denied() if the requesting user has not the
+        permission to manage.
+        """
+        if not request.user.has_perm('core.can_manage_projector'):
+            self.permission_denied(request)
+
+
 class TagListView(utils_views.AjaxMixin, utils_views.ListView):
     """
     View to list and manipulate tags.
@@ -295,18 +312,19 @@ class TagListView(utils_views.AjaxMixin, utils_views.ListView):
             **context)
 
 
-class CustomSlideViewSet(rest_api.viewsets.ModelViewSet):
+class TagViewSet(rest_api.viewsets.ModelViewSet):
     """
-    API endpoint to view, edit and delete custom slides.
+    API endpoint to view, edit and delete tags.
     """
-    model = CustomSlide
-    queryset = CustomSlide.objects.all()
-    serializer_class = CustomSlideSerializer
+    model = Tag
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
 
     def check_permissions(self, request):
         """
         Calls self.permission_denied() if the requesting user has not the
-        permission to manage.
+        permission to manage and it's a create, update or detroy request.
         """
-        if not request.user.has_perm('core.can_manage_projector'):
+        if (self.action in ('create', 'update', 'destroy')
+                and not request.user.has_perm('core.can_manage_tags')):
             self.permission_denied(request)

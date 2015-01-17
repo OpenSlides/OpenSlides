@@ -783,13 +783,12 @@ class ItemViewSet(rest_api.viewsets.ModelViewSet):
         """
         Calls self.permission_denied() if the requesting user has not the
         permission to see and in case of create, update or destroy requests
-        the permission to manage.
+        the permission to manage and to see organizational items.
         """
-        if not request.user.has_perm('agenda.can_see_agenda'):
-            self.permission_denied(request)
-        elif (self.action in ('create', 'update', 'destroy')
-                and not request.user.has_perm('agenda.can_manage_agenda')):
-            # This is the same as self.action not in ('list', 'retrieve')
+        if (not request.user.has_perm('agenda.can_see_agenda') or
+                (self.action in ('create', 'update', 'destroy') and not
+                 (request.user.has_perm('agenda.can_manage_agenda') and
+                  request.user.has_perm('agenda.can_see_orga_items')))):
             self.permission_denied(request)
 
     def check_object_permissions(self, request, obj):
@@ -805,7 +804,6 @@ class ItemViewSet(rest_api.viewsets.ModelViewSet):
         Filters organizational items if the user has no permission to see it.
         """
         queryset = Item.objects.all()
-        if (not self.request.user.has_perm('agenda.can_see_orga_items') and
-                not self.request.user.has_perm('agenda.can_manage_agenda')):
+        if not self.request.user.has_perm('agenda.can_see_orga_items'):
             queryset = queryset.exclude(type__exact=Item.ORGANIZATIONAL_ITEM)
         return queryset

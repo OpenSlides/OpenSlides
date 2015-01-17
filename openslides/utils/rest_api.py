@@ -1,5 +1,5 @@
 from django.core.urlresolvers import reverse
-from rest_framework import permissions, routers, viewsets  # noqa
+from rest_framework import permissions, routers, serializers, viewsets  # noqa
 
 router = routers.DefaultRouter()
 

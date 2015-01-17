@@ -8,7 +8,7 @@ class UserMainMenuEntry(MainMenuEntry):
     Main menu entry for the participant app.
     """
     verbose_name = ugettext_lazy('Users')
-    required_permission = 'users.can_see'
+    required_permission = 'users.can_see_extra_data'
     default_weight = 50
     pattern_name = 'user_list'
     icon_css_class = 'icon-user'
