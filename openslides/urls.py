@@ -3,6 +3,7 @@ from django.conf.urls import include, patterns, url
 
 from openslides.core.views import ErrorView
 from openslides.utils.plugins import get_urlpatterns
+from openslides.utils.rest_api import router
 
 handler403 = ErrorView.as_view(status_code=403)
 handler404 = ErrorView.as_view(status_code=404)
@@ -29,6 +30,13 @@ urlpatterns += patterns(
     (r'^projector/', include('openslides.projector.urls')),
     (r'^i18n/', include('django.conf.urls.i18n')),
     (r'^ckeditor/', include('ckeditor.urls')),
+)
+
+urlpatterns += patterns(
+    '',
+    url(r'^api/', include(router.urls)),
+    # TODO: Remove the next line if you are sure.
+    # url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 )
 
 # TODO: move this patterns into core or the participant app

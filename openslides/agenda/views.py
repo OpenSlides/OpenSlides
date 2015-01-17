@@ -23,6 +23,7 @@ from openslides.projector.api import (
     get_projector_overlays_js,
     get_overlays,
     update_projector)
+from openslides.utils import rest_api
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.pdf import stylesheet
 from openslides.utils.utils import html_strong
@@ -42,6 +43,7 @@ from openslides.utils.views import (
 from .csv_import import import_agenda_items
 from .forms import AppendSpeakerForm, ItemForm, ItemOrderForm, RelatedItemForm
 from .models import Item, Speaker
+from .serializers import ItemSerializer
 
 
 class Overview(TemplateView):
@@ -773,3 +775,42 @@ class ItemCSVImportView(CSVImportView):
     required_permission = 'agenda.can_manage_agenda'
     success_url_name = 'item_overview'
     template_name = 'agenda/item_form_csv_import.html'
+
+
+class ItemViewSet(rest_api.viewsets.ModelViewSet):
+    """
+    API endpoint to view, edit and delete agenda items.
+    """
+    model = Item
+    serializer_class = ItemSerializer
+
+    def check_permissions(self, request):
+        """
+        Calls self.permission_denied() if the requesting user has not the
+        permission to see and in case of create, update or destroy requests
+        the permission to manage.
+        """
+        if not request.user.has_perm('agenda.can_see_agenda'):
+            self.permission_denied(request)
+        elif (self.action in ('create', 'update', 'destroy')
+                and not request.user.has_perm('agenda.can_manage_agenda')):
+            # This is the same as self.action not in ('list', 'retrieve')
+            self.permission_denied(request)
+
+    def check_object_permissions(self, request, obj):
+        """
+        Checks if the requesting user has permission to see also an
+        organizational item if it is one.
+        """
+        if obj.type == obj.ORGANIZATIONAL_ITEM and not request.user.has_perm('agenda.can_see_orga_items'):
+            self.permission_denied(request)
+
+    def get_queryset(self):
+        """
+        Filters organizational items if the user has no permission to see it.
+        """
+        queryset = Item.objects.all()
+        if (not self.request.user.has_perm('agenda.can_see_orga_items') and
+                not self.request.user.has_perm('agenda.can_manage_agenda')):
+            queryset = queryset.exclude(type__exact=Item.ORGANIZATIONAL_ITEM)
+        return queryset

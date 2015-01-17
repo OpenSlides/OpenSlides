@@ -15,7 +15,9 @@ class UsersAppConfig(AppConfig):
         from openslides.config.signals import config_signal
         from openslides.core.signals import post_database_setup
         from openslides.projector.api import register_slide_model
+        from openslides.utils.rest_api import router
         from .signals import create_builtin_groups_and_admin, setup_users_config, user_post_save
+        from .views import UserViewSet
 
         # Load User model.
         User = self.get_model('User')
@@ -27,3 +29,6 @@ class UsersAppConfig(AppConfig):
 
         # Register slides.
         register_slide_model(User, 'participant/user_slide.html')
+
+        # Register viewset.
+        router.register('users/user', UserViewSet)
