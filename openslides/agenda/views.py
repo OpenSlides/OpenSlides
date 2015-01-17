@@ -774,7 +774,7 @@ class ItemCSVImportView(CSVImportView):
 
 class ItemViewSet(rest_api.viewsets.ModelViewSet):
     """
-    API endpoint to view, edit and delete agenda items.
+    API endpoint to retrieve, create, edit and delete agenda items.
     """
     model = Item
     serializer_class = ItemSerializer
