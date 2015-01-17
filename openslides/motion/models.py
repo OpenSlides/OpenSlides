@@ -9,7 +9,7 @@ from openslides.config.api import config
 from openslides.core.models import Tag
 from openslides.mediafile.models import Mediafile
 from openslides.poll.models import (BaseOption, BasePoll, BaseVote, CollectDefaultVotesMixin)
-from openslides.projector.models import RelatedModelMixin, SlideMixin
+from openslides.projector.models import SlideMixin
 from jsonfield import JSONField
 from openslides.utils.models import AbsoluteUrlMixin
 from openslides.users.models import User
@@ -612,7 +612,7 @@ class MotionVersion(AbsoluteUrlMixin, models.Model):
         return self.active_version.exists()
 
 
-class MotionSubmitter(RelatedModelMixin, models.Model):
+class MotionSubmitter(models.Model):
     """Save the submitter of a Motion."""
 
     motion = models.ForeignKey('Motion', related_name="submitter")
@@ -624,9 +624,6 @@ class MotionSubmitter(RelatedModelMixin, models.Model):
     def __str__(self):
         """Return the name of the submitter as string."""
         return str(self.person)
-
-    def get_related_model(self):
-        return self.motion
 
 
 class MotionSupporter(models.Model):
@@ -723,7 +720,7 @@ class MotionOption(BaseOption):
     """The VoteClass, to witch this Class links."""
 
 
-class MotionPoll(SlideMixin, RelatedModelMixin, CollectDefaultVotesMixin,
+class MotionPoll(SlideMixin, CollectDefaultVotesMixin,
                  AbsoluteUrlMixin, BasePoll):
     """The Class to saves the vote result for a motion poll."""
 
@@ -774,9 +771,6 @@ class MotionPoll(SlideMixin, RelatedModelMixin, CollectDefaultVotesMixin,
         # TODO: maybe it is possible with .create() to call this without poll=self
         #       or call this in save()
         self.get_option_class()(poll=self).save()
-
-    def get_related_model(self):
-        return self.motion
 
     def get_percent_base_choice(self):
         return config['motion_poll_100_percent_base']

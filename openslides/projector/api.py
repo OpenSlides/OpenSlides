@@ -4,7 +4,6 @@ from time import time
 from django.template.loader import render_to_string
 
 from openslides.config.api import config
-from openslides.utils.tornado_webserver import ProjectorSocketHandler
 from openslides.utils.exceptions import OpenSlidesError
 
 from .signals import projector_overlays
@@ -28,41 +27,6 @@ class SlideError(OpenSlidesError):
     pass
 
 
-def update_projector():
-    """
-    Sends the data to the clients, who listen to the projector.
-    """
-    # TODO: only send necessary html
-    ProjectorSocketHandler.send_updates({'content': get_projector_content()})
-
-
-def update_projector_overlay(overlay):
-    """
-    Update one or all overlay on the projector.
-
-    Checks if the overlay is activated and updates it in this case.
-
-    The argument 'overlay' has to be an overlay object, the name of a
-    ovleray or None. If it is None, all overlays will be updated.
-    """
-    if overlay is None:
-        overlays = [item for item in get_overlays().values()]
-    elif isinstance(overlay, str):
-        overlays = [get_overlays()[overlay]]
-    else:
-        overlays = [overlay]
-
-    overlay_dict = {}
-    for overlay in overlays:
-        if overlay.is_active():
-            overlay_dict[overlay.name] = {
-                'html': overlay.get_projector_html(),
-                'javascript': overlay.get_javascript()}
-        else:
-            overlay_dict[overlay.name] = None
-    ProjectorSocketHandler.send_updates({'overlays': overlay_dict})
-
-
 def call_on_projector(calls):
     """
     Sends data to the projector.
@@ -70,10 +34,10 @@ def call_on_projector(calls):
     The argument call has to be a dictionary with the javascript function name
     as key and the argument for it as value.
     """
+    # TODO: remove this function
     projector_js_cache = config['projector_js_cache']
     projector_js_cache.update(calls)
     config['projector_js_cache'] = projector_js_cache
-    ProjectorSocketHandler.send_updates({'calls': calls})
 
 
 def get_projector_content(slide_dict=None):
@@ -181,8 +145,6 @@ def set_active_slide(callback, **kwargs):
     """
     kwargs.update(callback=callback)
     config['projector_active_slide'] = kwargs
-    update_projector()
-    update_projector_overlay(None)
 
 
 def get_active_slide():

@@ -233,7 +233,8 @@ def runserver(settings, args):
         start_browser(browser_url)
 
     # Now the settings is available and the function can be imported.
-    from openslides.utils.tornado_webserver import run_tornado
+    # TODO: only start tornado when it is used as wsgi server
+    from openslides.utils.autoupdate import run_tornado
     run_tornado(args.address, port)
 
 

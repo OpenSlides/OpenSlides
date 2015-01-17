@@ -1,12 +1,10 @@
 from openslides.config.api import config
-from openslides.mediafile.models import Mediafile
-from openslides.utils.tornado_webserver import ProjectorSocketHandler
 from openslides.utils.views import RedirectView, TemplateView
 
 from .api import (call_on_projector, get_active_slide,
                   get_overlays, get_projector_content,
                   get_projector_overlays_js, reset_countdown, set_active_slide,
-                  start_countdown, stop_countdown, update_projector_overlay)
+                  start_countdown, stop_countdown)
 
 
 class ProjectorView(TemplateView):
@@ -53,14 +51,13 @@ class ActivateView(RedirectView):
             # we dont have to use set_active_slide, because is causes a content
             # reload.
             kwargs.update({'page_num': 1, 'pk': request.GET.get('pk')})
-            url = Mediafile.objects.get(pk=kwargs['pk'], is_presentable=True).mediafile.url
+            # TODO: fix me
+            # url = Mediafile.objects.get(pk=kwargs['pk'], is_presentable=True).mediafile.url
             config['projector_active_slide'] = kwargs
-            ProjectorSocketHandler.send_updates(
-                {'calls': {'load_pdf': {'url': url, 'page_num': kwargs['page_num']}}})
+            # ProjectorSocketHandler.send_updates(
+            #     {'calls': {'load_pdf': {'url': url, 'page_num': kwargs['page_num']}}})
         else:
             set_active_slide(kwargs['callback'], **dict(request.GET.items()))
-        call_on_projector({'scroll': config['projector_scroll'],
-                           'scale': config['projector_scale']})
 
 
 class ProjectorControllView(RedirectView):
@@ -121,7 +118,7 @@ class CountdownControllView(RedirectView):
                 pass
             else:
                 reset_countdown()
-        update_projector_overlay('projector_countdown')
+        # TODO: send signal to update data
 
     def get_ajax_context(self, **kwargs):
         return {
@@ -143,7 +140,7 @@ class OverlayMessageView(RedirectView):
             config['projector_message'] = request.POST['message_text']
         elif 'message-clean' in request.POST:
             config['projector_message'] = ''
-        update_projector_overlay('projector_message')
+        # TODO: update data
 
     def get_ajax_context(self, **kwargs):
         return {
@@ -165,12 +162,12 @@ class ActivateOverlay(RedirectView):
         if kwargs['activate']:
             if not overlay.is_active():
                 overlay.set_active(True)
-                update_projector_overlay(overlay)
+                # Push new overlay to projector, somehow...
             self.active = True
         else:
             if overlay.is_active():
                 overlay.set_active(False)
-                update_projector_overlay(overlay)
+                # Push new overlay to projector, somehow...
             self.active = False
 
     def get_ajax_context(self, **kwargs):

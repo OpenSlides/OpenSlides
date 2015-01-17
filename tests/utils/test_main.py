@@ -7,7 +7,6 @@ from django.core.exceptions import ImproperlyConfigured
 from openslides.__main__ import (
     add_general_arguments,
     django_command_line_utility,
-    runserver,
     start,
     syncdb)
 from openslides.config.api import config
@@ -116,15 +115,6 @@ class TestOtherFunctions(TestCase):
         start(settings=None, args=mock_args)
         self.assertTrue(mock_syncdb.called)
         mock_runserver.assert_called_with(None, mock_args)
-
-    @patch('openslides.__main__.get_port')
-    @patch('openslides.utils.tornado_webserver.run_tornado')
-    @patch('openslides.__main__.start_browser')
-    def test_runserver(self, mock_start_browser, mock_run_tornado, mock_get_port):
-        mock_get_port.return_value = 8000
-        mock_args = MagicMock()
-        runserver(settings=None, args=mock_args)
-        self.assertTrue(mock_run_tornado.called)
 
     @patch('openslides.__main__.os.path.exists')
     @patch('openslides.__main__.os.makedirs')

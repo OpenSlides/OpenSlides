@@ -12,17 +12,17 @@ from mptt.models import MPTTModel, TreeForeignKey
 
 from openslides.config.api import config
 from openslides.core.models import Tag
-from openslides.projector.api import (get_active_slide, reset_countdown,
-                                      start_countdown, stop_countdown,
-                                      update_projector, update_projector_overlay)
+from openslides.projector.api import (reset_countdown,
+                                      start_countdown, stop_countdown)
 from openslides.projector.models import SlideMixin
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import AbsoluteUrlMixin
+from openslides.utils.rest_api import RESTModelMixin
 from openslides.utils.utils import to_roman
 from openslides.users.models import User
 
 
-class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
+class Item(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, MPTTModel):
     """
     An Agenda Item
 
@@ -122,11 +122,6 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
     class MPTTMeta:
         order_insertion_by = ['weight']
 
-    def save(self, *args, **kwargs):
-        super(Item, self).save(*args, **kwargs)
-        if self.parent and self.parent.is_active_slide():
-            update_projector()
-
     def clean(self):
         """
         Ensures that the children of orga items are only orga items.
@@ -135,7 +130,7 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
             raise ValidationError(_('Agenda items can not be child elements of an organizational item.'))
         if self.type == self.ORGANIZATIONAL_ITEM and self.get_descendants().filter(type=self.AGENDA_ITEM).exists():
             raise ValidationError(_('Organizational items can not have agenda items as child elements.'))
-        return super(Item, self).clean()
+        return super().clean()
 
     def __str__(self):
         return self.get_title()
@@ -153,14 +148,14 @@ class Item(SlideMixin, AbsoluteUrlMixin, MPTTModel):
         elif link == 'delete':
             url = reverse('item_delete', args=[str(self.id)])
         elif link == 'projector_list_of_speakers':
-            url = '%s&type=list_of_speakers' % super(Item, self).get_absolute_url('projector')
+            url = '%s&type=list_of_speakers' % super().get_absolute_url('projector')
         elif link == 'projector_summary':
-            url = '%s&type=summary' % super(Item, self).get_absolute_url('projector')
+            url = '%s&type=summary' % super().get_absolute_url('projector')
         elif (link in ('projector', 'projector_preview') and
                 self.content_object and isinstance(self.content_object, SlideMixin)):
             url = self.content_object.get_absolute_url(link)
         else:
-            url = super(Item, self).get_absolute_url(link)
+            url = super().get_absolute_url(link)
         return url
 
     def get_title(self):
@@ -359,7 +354,7 @@ class SpeakerManager(models.Manager):
         return self.create(item=item, user=user, weight=weight + 1)
 
 
-class Speaker(AbsoluteUrlMixin, models.Model):
+class Speaker(RESTModelMixin, AbsoluteUrlMixin, models.Model):
     """
     Model for the Speaker list.
     """
@@ -396,14 +391,6 @@ class Speaker(AbsoluteUrlMixin, models.Model):
             ('can_be_speaker', ugettext_noop('Can put oneself on the list of speakers')),
         )
 
-    def save(self, *args, **kwargs):
-        super(Speaker, self).save(*args, **kwargs)
-        self.check_and_update_projector()
-
-    def delete(self, *args, **kwargs):
-        super(Speaker, self).delete(*args, **kwargs)
-        self.check_and_update_projector()
-
     def __str__(self):
         return str(self.user)
 
@@ -416,17 +403,6 @@ class Speaker(AbsoluteUrlMixin, models.Model):
         else:
             url = super(Speaker, self).get_absolute_url(link)
         return url
-
-    def check_and_update_projector(self):
-        """
-        Checks, if the agenda item, or parts of it, is on the projector.
-        If yes, it updates the projector.
-        """
-        if self.item.is_active_slide():
-            if get_active_slide().get('type', None) == 'list_of_speakers':
-                update_projector()
-            else:
-                update_projector_overlay('agenda_speaker')
 
     def begin_speach(self):
         """
@@ -448,10 +424,6 @@ class Speaker(AbsoluteUrlMixin, models.Model):
         if config['agenda_couple_countdown_and_speakers']:
             reset_countdown()
             start_countdown()
-            if self.item.is_active_slide():
-                # TODO: only update the overlay if the overlay is active and
-                #       slide type is None.
-                update_projector_overlay('projector_countdown')
 
     def end_speach(self):
         """
@@ -462,7 +434,9 @@ class Speaker(AbsoluteUrlMixin, models.Model):
         # stop countdown
         if config['agenda_couple_countdown_and_speakers']:
             stop_countdown()
-            if self.item.is_active_slide():
-                # TODO: only update the overlay if the overlay is active and
-                #       slide type is None.
-                update_projector_overlay('projector_countdown')
+
+    def get_root_rest_element(self):
+        """
+        Returns the item to this instance, which is the root rest element.
+        """
+        return self.item

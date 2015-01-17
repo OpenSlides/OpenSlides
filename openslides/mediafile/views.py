@@ -2,7 +2,6 @@ from django.http import HttpResponse
 
 from openslides.config.api import config
 from openslides.projector.api import get_active_slide
-from openslides.utils.tornado_webserver import ProjectorSocketHandler
 from openslides.utils.views import (AjaxView, CreateView, DeleteView, RedirectView, ListView,
                                     UpdateView)
 
@@ -119,8 +118,6 @@ class PdfNavBaseView(AjaxView):
         Tell connected clients to load an other pdf page.
         """
         config['projector_active_slide'] = active_slide
-        ProjectorSocketHandler.send_updates(
-            {'calls': {'load_pdf_page': active_slide['page_num']}})
 
 
 class PdfNextView(PdfNavBaseView):
@@ -199,8 +196,4 @@ class PdfToggleFullscreenView(RedirectView):
 
     def get_ajax_context(self, *args, **kwargs):
         config['pdf_fullscreen'] = not config['pdf_fullscreen']
-        active_slide = get_active_slide()
-        if active_slide['callback'] == 'mediafile':
-            ProjectorSocketHandler.send_updates(
-                {'calls': {'toggle_fullscreen': config['pdf_fullscreen']}})
         return {'fullscreen': config['pdf_fullscreen']}
