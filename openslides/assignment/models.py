@@ -11,15 +11,14 @@ from openslides.config.api import config
 from openslides.poll.models import (BaseOption, BasePoll, BaseVote,
                                     CollectDefaultVotesMixin,
                                     PublishPollMixin)
-from openslides.projector.api import get_active_object, update_projector
-from openslides.projector.models import RelatedModelMixin, SlideMixin
+from openslides.projector.models import SlideMixin
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import AbsoluteUrlMixin
 from openslides.utils.utils import html_strong
 from openslides.users.models import User
 
 
-class AssignmentCandidate(RelatedModelMixin, models.Model):
+class AssignmentCandidate(models.Model):
     """
     Many2Many table between an assignment and the candidates.
     """
@@ -33,12 +32,6 @@ class AssignmentCandidate(RelatedModelMixin, models.Model):
 
     def __str__(self):
         return str(self.person)
-
-    def get_related_model(self):
-        """
-        Returns the assignment
-        """
-        return self.assignment
 
 
 class Assignment(SlideMixin, AbsoluteUrlMixin, models.Model):
@@ -190,11 +183,6 @@ class Assignment(SlideMixin, AbsoluteUrlMixin, models.Model):
         candidate = self.assignment_candidates.get(person=person)
         candidate.elected = value
         candidate.save()
-        # update projector if assignment or assignmentpoll slide is active
-        active_object = get_active_object()
-        if (type(active_object) is type(self) and active_object.pk == self.pk) or \
-           (type(active_object) is AssignmentPoll and active_object.assignment_id == self.pk):
-            update_projector()
 
     def is_elected(self, person):
         return person in self.elected
@@ -224,16 +212,13 @@ class Assignment(SlideMixin, AbsoluteUrlMixin, models.Model):
 
         items = Item.objects.filter(content_type=ContentType.objects.get_for_model(Assignment), object_id=self.pk)
         for item in items:
-            someone_added = None
             for candidate in self.candidates:
                 try:
-                    someone_added = Speaker.objects.add(candidate, item)
+                    Speaker.objects.add(candidate, item)
                 except OpenSlidesError:
                     # The Speaker is already on the list. Do nothing.
                     # TODO: Find a smart way not to catch the error concerning AnonymousUser.
                     pass
-            if someone_added is not None:
-                someone_added.check_and_update_projector()
 
         return poll
 
@@ -290,7 +275,7 @@ class AssignmentOption(BaseOption):
         return str(self.candidate)
 
 
-class AssignmentPoll(SlideMixin, RelatedModelMixin, CollectDefaultVotesMixin,
+class AssignmentPoll(SlideMixin, CollectDefaultVotesMixin,
                      PublishPollMixin, AbsoluteUrlMixin, BasePoll):
 
     slide_callback_name = 'assignmentpoll'
@@ -321,9 +306,6 @@ class AssignmentPoll(SlideMixin, RelatedModelMixin, CollectDefaultVotesMixin,
         return url
 
     def get_assignment(self):
-        return self.assignment
-
-    def get_related_model(self):
         return self.assignment
 
     def get_vote_values(self):

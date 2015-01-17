@@ -5,58 +5,6 @@ from openslides.utils.test import TestCase
 
 
 class ApiFunctions(TestCase):
-    @patch('openslides.projector.api.get_projector_content')
-    @patch('openslides.projector.api.ProjectorSocketHandler')
-    def test_update_projector(self, mock_ProjectorSocketHandler,
-                              mock_get_projector_content):
-        mock_get_projector_content.return_value = 'mock_string'
-        projector_api.update_projector()
-        mock_ProjectorSocketHandler.send_updates.assert_called_with(
-            {'content': 'mock_string'})
-
-    @patch('openslides.projector.api.get_overlays')
-    @patch('openslides.projector.api.ProjectorSocketHandler')
-    def test_update_projector_overlay(self, mock_ProjectorSocketHandler,
-                                      mock_get_overlays):
-        mock_overlay = MagicMock()
-        mock_overlay.name = 'mock_overlay_name'
-        mock_overlay.get_projector_html.return_value = 'mock_html_code'
-        mock_overlay.get_javascript.return_value = 'mock_javascript'
-        mock_get_overlays.return_value = {'mock_overlay': mock_overlay}
-
-        # Test with active overlay
-        mock_overlay.is_active.return_value = False
-        projector_api.update_projector_overlay(None)
-        mock_ProjectorSocketHandler.send_updates.assert_called_with(
-            {'overlays': {'mock_overlay_name': None}})
-
-        # Test with active overlay
-        mock_overlay.is_active.return_value = True
-        projector_api.update_projector_overlay(None)
-        expected_data = {'overlays': {'mock_overlay_name': {
-            'html': 'mock_html_code',
-            'javascript': 'mock_javascript'}}}
-        mock_ProjectorSocketHandler.send_updates.assert_called_with(expected_data)
-
-        # Test with overlay name as argument
-        projector_api.update_projector_overlay('mock_overlay')
-        mock_ProjectorSocketHandler.send_updates.assert_called_with(expected_data)
-
-        # Test with overlay object as argument
-        projector_api.update_projector_overlay(mock_overlay)
-        mock_ProjectorSocketHandler.send_updates.assert_called_with(expected_data)
-
-    @patch('openslides.projector.api.config')
-    @patch('openslides.projector.api.ProjectorSocketHandler')
-    def test_call_on_projector(self, mock_ProjectorSocketHandler, mock_config):
-        mock_config.__getitem__.return_value = {}
-        data = {'some_call': 'argument'}
-        projector_api.call_on_projector(data)
-        mock_ProjectorSocketHandler.send_updates.assert_called_with(
-            {'calls': data})
-        mock_config.__getitem__.assert_called_with('projector_js_cache')
-        mock_config.__setitem__.assert_called_with('projector_js_cache', data)
-
     @patch('openslides.projector.api.default_slide')
     def test_get_projector_content(self, mock_default_slide):
         mock_slide = MagicMock()
@@ -156,17 +104,13 @@ class ApiFunctions(TestCase):
         mock_SlideModel.objects.get.side_effect = Exception
         self.assertRaises(projector_api.SlideError, used_args[1], pk=1)
 
-    @patch('openslides.projector.api.update_projector_overlay')
-    @patch('openslides.projector.api.update_projector')
-    def test_set_active_slide(self, mock_update_projector, mock_update_projector_overlay):
+    def test_set_active_slide(self):
         mock_config = {}
         with patch('openslides.projector.api.config', mock_config):
             projector_api.set_active_slide('callback_name', some='kwargs')
         self.assertEqual(mock_config,
                          {'projector_active_slide': {'callback': 'callback_name',
                                                      'some': 'kwargs'}})
-        mock_update_projector.assert_called_with()
-        mock_update_projector_overlay.assert_called_with(None)
 
     def test_get_active_slide(self):
         mock_config = {'projector_active_slide': 'value'}

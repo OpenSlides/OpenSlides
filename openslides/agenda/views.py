@@ -21,8 +21,7 @@ from openslides.projector.api import (
     get_active_object,
     get_active_slide,
     get_projector_overlays_js,
-    get_overlays,
-    update_projector)
+    get_overlays)
 from openslides.utils import rest_api
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.pdf import stylesheet
@@ -158,10 +157,6 @@ class Overview(TemplateView):
             Item.objects.rebuild()
             # TODO: assure, that it is a valid tree
 
-        context = self.get_context_data(**kwargs)
-
-        if get_active_slide()['callback'] == 'agenda':
-            update_projector()
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
 

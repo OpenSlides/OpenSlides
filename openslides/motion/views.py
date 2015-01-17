@@ -10,7 +10,6 @@ from django.shortcuts import get_object_or_404
 from openslides.agenda.views import CreateRelatedAgendaItemView as _CreateRelatedAgendaItemView
 from openslides.config.api import config
 from openslides.poll.views import PollFormView
-from openslides.projector.api import get_active_slide, update_projector
 from openslides.utils.utils import html_strong, htmldiff
 from openslides.utils.views import (CreateView, CSVImportView, DeleteView, DetailView,
                                     ListView, PDFView, QuestionView,
@@ -141,14 +140,6 @@ class MotionEditMixin(object):
         # Save the tags
         self.object.tags.clear()
         self.object.tags.add(*form.cleaned_data['tags'])
-
-        # Update the projector if the motion is on it. This can not be done in
-        # the model, because bulk_create does not call the save method.
-        active_slide = get_active_slide()
-        active_slide_pk = active_slide.get('pk', None)
-        if (active_slide['callback'] == 'motion' and
-                str(self.object.pk) == str(active_slide_pk)):
-            update_projector()
 
         messages.success(self.request, self.get_success_message())
         return HttpResponseRedirect(self.get_success_url())
