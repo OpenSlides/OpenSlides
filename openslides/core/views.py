@@ -189,6 +189,8 @@ class CustomSlideViewMixin(object):
     """
     Mixin for for CustomSlide Views.
     """
+    fields = ('title', 'text', 'weight', )
+
     required_permission = 'core.can_manage_projector'
     template_name = 'core/customslide_update.html'
     model = CustomSlide

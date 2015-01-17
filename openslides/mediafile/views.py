@@ -38,6 +38,8 @@ class MediafileViewMixin(object):
 
     A manager can set the uploader manually, else the request user is set as uploader.
     """
+    fields = ('mediafile', 'title', 'uploader', 'is_presentable',)
+
     model = Mediafile
     success_url_name = 'mediafile_list'
     url_name_args = []
