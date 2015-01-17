@@ -83,5 +83,8 @@
         {% endwith %}
         <a href="{{ node|absolute_url }}">{% if node.type == node.ORGANIZATIONAL_ITEM %}<i>[{% endif %}{{ node }}{% if node.type == node.ORGANIZATIONAL_ITEM %}]</i>{% endif %}</a>
         {{ node.get_title_supplement|safe }}
+        {% for tag in node.tags.all %}
+            <span class="label">{{ tag }}</span>
+        {% endfor %}
     </div>
 </div>

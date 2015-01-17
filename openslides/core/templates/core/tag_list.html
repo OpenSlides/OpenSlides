@@ -5,17 +5,23 @@
 {% block title %}{% trans "Tags" %} – {{ block.super }}{% endblock %}
 
 {% block content %}
-    <h1>{% trans "Tags" %}</h1>
+    <h1>{% trans "Tags" %}
+        <small class="pull-right">
+            <a href="javascript:window.history.back()" class="btn btn-mini">
+                <i class="icon-chevron-left"></i><span class="optional-small"> {% trans "Back to overview" %}</span>
+            </a>
+        </small>
+    </h1>
 
     <div class="control-group">
-        <label for="tag-edit">Name:</label>
+        <label for="tag-edit">{% trans 'Enter new tag name' %}:</label>
         <input id="tag-edit" name="new">
         <a href="#" id="tag-save" class="btn btn-primary">{% trans 'Save' %}</a>
     </div>
 
     <table id="tag-table" class="table table-striped table-bordered">
         <tr>
-            <th>{% trans "Tag name" %}</th>
+            <th>{% trans "Tag" %}</th>
             <th class="mini_width">{% trans "Actions" %}</th>
         </tr>
         <tr id="dummy-tag" class="tag-row" style="display:none">
@@ -47,6 +53,7 @@
             </tr>
         {% endfor %}
     </table>
+    <p>{% trans "You can use these tags for agenda items, motions and elections." %}</p>
 {% endblock %}
 
 {% block javascript %}

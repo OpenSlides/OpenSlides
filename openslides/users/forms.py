@@ -75,10 +75,11 @@ class UserUpdateForm(UserCreateForm):
 
 class GroupForm(CssClassMixin, forms.ModelForm):
     permissions = LocalizedModelMultipleChoiceField(
-        queryset=Permission.objects.all(), label=ugettext_lazy('Permissions'),
-        required=False)
+        queryset=Permission.objects.all(), label=ugettext_lazy('Permissions'), required=False,
+        widget=forms.SelectMultiple(attrs={'class': 'dont_use_bsmselect'}))
     users = forms.ModelMultipleChoiceField(
-        queryset=User.objects.all(), label=ugettext_lazy('Users'), required=False)
+        queryset=User.objects.all(), label=ugettext_lazy('Participants'), required=False,
+        widget=forms.SelectMultiple(attrs={'class': 'dont_use_bsmselect'}))
 
     class Meta:
         model = Group

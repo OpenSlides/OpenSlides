@@ -50,6 +50,11 @@
     </small>
 </h1>
 
+<!-- Tags -->
+{% for tag in assignment.tags.all %}
+    <span class="optional label">{{ tag }}</span>
+{% endfor %}
+
 <div class="row-fluid">
 <div class="span9">
     <!-- Description -->

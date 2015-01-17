@@ -59,11 +59,16 @@ class SlideMixin(object):
 
     def delete(self, *args, **kwargs):
         """
-        Updates the projector, if the object is on the projector and is deleted.
+        Updates the projector if the object is on the projector and is deleted.
         """
         from openslides.projector.api import update_projector
+        # Checking active slide has to be done before calling super().delete()
+        # because super().delete() deletes the object and than we have no
+        # access to the former existing primary key any more. But updating
+        # projector has to be done after deleting the object of course.
+        update_required = self.is_active_slide()
         value = super(SlideMixin, self).delete(*args, **kwargs)
-        if self.is_active_slide():
+        if update_required:
             update_projector()
         return value
 

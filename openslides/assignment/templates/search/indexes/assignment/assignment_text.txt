@@ -1,3 +1,4 @@
 {{ object.name }}
 {{ object.description }}
 {{ object.candidates }}
+{{ object.tags.all }}

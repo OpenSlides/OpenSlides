@@ -72,7 +72,7 @@ def setup_motion_config(sender, **kwargs):
 
     motion_amendments_prefix = ConfigVariable(
         name='motion_amendments_prefix',
-        default_value=pgettext('Prefix for amendment', 'A'),
+        default_value=pgettext('Prefix for the identifier for amendments', 'A'),
         form_field=forms.CharField(
             required=False,
             label=ugettext_lazy('Prefix for the identifier for amendments')))

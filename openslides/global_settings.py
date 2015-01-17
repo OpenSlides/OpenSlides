@@ -131,7 +131,7 @@ HAYSTACK_CONNECTIONS = {
 }
 
 # Haystack updates search index after each save/delete action by apps
-HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+HAYSTACK_SIGNAL_PROCESSOR = 'openslides.utils.haystack_processor.OpenSlidesProcessor'
 
 # Adds all automaticly collected plugins
 INSTALLED_PLUGINS = collect_plugins()

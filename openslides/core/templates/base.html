@@ -113,7 +113,7 @@
             <hr />
             <footer>
                 <small>
-                    &copy; Copyright 2011–2014 | Powered by <a href="http://openslides.org" target="_blank">OpenSlides</a> | <a href="{% url 'core_version' %}">Version</a>
+                    &copy; Copyright 2011–2015 | Powered by <a href="http://openslides.org" target="_blank">OpenSlides</a> | <a href="{% url 'core_version' %}">Version</a>
                 </small>
             </footer>
         </div><!--/#content-->
@@ -134,7 +134,7 @@
     <script type="text/javascript" src="{% static 'js/jquery/jquery.bsmselect.js' %}"></script>
     <script type="text/javascript">
         // use jquery-bsmselect for all <select multiple> form elements
-        $("select[multiple]").bsmSelect({
+        $("select[multiple]:not(.dont_use_bsmselect)").bsmSelect({
           removeLabel: '<sup><b>X</b></sup>',
           containerClass: 'bsmContainer',
           listClass: 'bsmList-custom',

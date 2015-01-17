@@ -41,6 +41,13 @@
     </div>
     </small>
 </h1>
+
+<!-- Tags -->
+{% for tag in item.tags.all %}
+    <span class="label">{{ tag }}</span>
+{% endfor %}
+
+<!-- Title -->
 <p>
     {% if not item.content_object %}
         {{ item.text|safe }}
@@ -49,6 +56,7 @@
     {% endif %}
 </p>
 
+<!-- Comment -->
 {% if perms.agenda.can_manage_agenda %}
     {% if item.comment %}
         <h3>{% trans "Comment" %}</h3>
@@ -56,7 +64,7 @@
     {% endif %}
 {% endif %}
 
-{# List of Speakers #}
+<!-- List of Speakers -->
 <h3>{% trans "List of speakers" %} {% if item.speaker_list_closed %}<span class="label label-important">{% trans 'closed' %}</span>{% endif %}</h3>
 <p>
 {% if perms.agenda.can_manage_agenda %}

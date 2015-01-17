@@ -24,7 +24,9 @@ Version 1.7 (unreleased)
 
 Core:
 - New feature to tag motions, agenda and assignments.
-Motion:
+- Fixed search index problem to index contents of many-to-many table
+  (e.g. tags of a motion).
+Motions:
 - New Feature to create amendments, which are related to a parent motion.
 - Added possibility to hide motions from non staff users in some states.
 Other:
