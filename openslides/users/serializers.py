@@ -5,7 +5,9 @@ from .models import User
 
 class UserShortSerializer(rest_api.serializers.ModelSerializer):
     """
-    Serializer for a users.models.User objects.
+    Serializer for users.models.User objects.
+
+    Serializes only name fields.
     """
     class Meta:
         model = User
@@ -19,7 +21,9 @@ class UserShortSerializer(rest_api.serializers.ModelSerializer):
 
 class UserFullSerializer(rest_api.serializers.ModelSerializer):
     """
-    Serializer for a users.models.User objects.
+    Serializer for users.models.User objects.
+
+    Serializes all relevant fields.
     """
     class Meta:
         model = User

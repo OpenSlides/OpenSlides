@@ -30,5 +30,5 @@ class UsersAppConfig(AppConfig):
         # Register slides.
         register_slide_model(User, 'participant/user_slide.html')
 
-        # Register viewset.
+        # Register viewsets.
         router.register('users/user', UserViewSet)

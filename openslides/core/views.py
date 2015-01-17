@@ -219,7 +219,7 @@ class CustomSlideDeleteView(CustomSlideViewMixin, utils_views.DeleteView):
 
 class CustomSlideViewSet(rest_api.viewsets.ModelViewSet):
     """
-    API endpoint to view, edit and delete custom slides.
+    API endpoint to retrieve, create, update and delete custom slides.
     """
     model = CustomSlide
     queryset = CustomSlide.objects.all()
@@ -314,7 +314,7 @@ class TagListView(utils_views.AjaxMixin, utils_views.ListView):
 
 class TagViewSet(rest_api.viewsets.ModelViewSet):
     """
-    API endpoint to view, edit and delete tags.
+    API endpoint to retrieve, create, edit and delete tags.
     """
     model = Tag
     queryset = Tag.objects.all()

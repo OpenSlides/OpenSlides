@@ -12,6 +12,7 @@ from openslides.agenda.views import CreateRelatedAgendaItemView as _CreateRelate
 from openslides.config.api import config
 from openslides.users.models import Group, User  # TODO: remove this
 from openslides.poll.views import PollFormView
+from openslides.utils import rest_api
 from openslides.utils.pdf import stylesheet
 from openslides.utils.utils import html_strong
 from openslides.utils.views import (CreateView, DeleteView, DetailView,
@@ -21,6 +22,7 @@ from openslides.utils.views import (CreateView, DeleteView, DetailView,
 
 from .forms import AssignmentForm, AssignmentRunForm
 from .models import Assignment, AssignmentPoll
+from .serializers import AssignmentFullSerializer, AssignmentShortSerializer
 
 
 class AssignmentListView(ListView):
@@ -184,6 +186,35 @@ class AssignmentRunOtherDeleteView(SingleObjectMixin, QuestionView):
     def _get_person_information(self):
         self.person = User.objects.get(pk=self.kwargs.get('user_id'))
         self.is_blocked = self.get_object().is_blocked(self.person)
+
+
+class AssignmentViewSet(rest_api.viewsets.ModelViewSet):
+    """
+    API endpoint to retrieve, create, edit and delete assignments.
+    """
+    model = Assignment
+    queryset = Assignment.objects.all()
+
+    def check_permissions(self, request):
+        """
+        Calls self.permission_denied() if the requesting user has not the
+        permission to see and in case of create, update or destroy requests
+        the permission to manage and to see organizational items.
+        """
+        if (not request.user.has_perm('assignment.can_see_assignment') or
+                (self.action in ('create', 'update', 'destroy') and not
+                 request.user.has_perm('assignment.can_manage_assignment'))):
+            self.permission_denied(request)
+
+    def get_serializer_class(self):
+        """
+        Returns different serializer classes with respect to users permissions.
+        """
+        if self.request.user.has_perm('assignment.can_manage_assignment'):
+            serializer_class = AssignmentFullSerializer
+        else:
+            serializer_class = AssignmentShortSerializer
+        return serializer_class
 
 
 class PollCreateView(SingleObjectMixin, RedirectView):

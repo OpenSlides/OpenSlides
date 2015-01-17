@@ -26,7 +26,7 @@ class CoreAppConfig(AppConfig):
         CustomSlide = self.get_model('CustomSlide')
         register_slide_model(CustomSlide, 'core/customslide_slide.html')
 
-        # Register viewset.
+        # Register viewsets.
         router.register('core/customslide', CustomSlideViewSet)
         router.register('core/tag', TagViewSet)
 

@@ -437,6 +437,6 @@ class Speaker(RESTModelMixin, AbsoluteUrlMixin, models.Model):
 
     def get_root_rest_element(self):
         """
-        Returns the item to this instance, which is the root rest element.
+        Returns the item to this instance which is the root rest element.
         """
         return self.item

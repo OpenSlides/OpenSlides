@@ -13,9 +13,11 @@ class AssignmentAppConfig(AppConfig):
         # Import all required stuff.
         from openslides.config.signals import config_signal
         from openslides.projector.api import register_slide_model
+        from openslides.utils.rest_api import router
         from openslides.utils.signals import template_manipulation
         from .signals import setup_assignment_config
         from .template import add_assignment_stylesheets
+        from .views import AssignmentViewSet
 
         # Connect signals.
         config_signal.connect(setup_assignment_config, dispatch_uid='setup_assignment_config')
@@ -28,3 +30,6 @@ class AssignmentAppConfig(AppConfig):
         AssignmentPoll = self.get_model('AssignmentPoll')
         register_slide_model(Assignment, 'assignment/slide.html')
         register_slide_model(AssignmentPoll, 'assignment/assignmentpoll_slide.html')
+
+        # Register viewsets.
+        router.register('assignment/assignment', AssignmentViewSet)

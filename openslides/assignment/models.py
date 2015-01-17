@@ -14,11 +14,12 @@ from openslides.poll.models import (BaseOption, BasePoll, BaseVote,
 from openslides.projector.models import SlideMixin
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import AbsoluteUrlMixin
+from openslides.utils.rest_api import RESTModelMixin
 from openslides.utils.utils import html_strong
 from openslides.users.models import User
 
 
-class AssignmentCandidate(models.Model):
+class AssignmentCandidate(RESTModelMixin, models.Model):
     """
     Many2Many table between an assignment and the candidates.
     """
@@ -33,8 +34,14 @@ class AssignmentCandidate(models.Model):
     def __str__(self):
         return str(self.person)
 
+    def get_root_rest_element(self):
+        """
+        Returns the assignment to this instance which is the root rest element.
+        """
+        return self.assignment
 
-class Assignment(SlideMixin, AbsoluteUrlMixin, models.Model):
+
+class Assignment(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
     slide_callback_name = 'assignment'
 
     STATUS = (
@@ -262,11 +269,17 @@ class Assignment(SlideMixin, AbsoluteUrlMixin, models.Model):
         return '(%s)' % _('Assignment')
 
 
-class AssignmentVote(BaseVote):
+class AssignmentVote(RESTModelMixin, BaseVote):
     option = models.ForeignKey('AssignmentOption')
 
+    def get_root_rest_element(self):
+        """
+        Returns the assignment to this instance which is the root rest element.
+        """
+        return self.option.poll.assignment
 
-class AssignmentOption(BaseOption):
+
+class AssignmentOption(RESTModelMixin, BaseOption):
     poll = models.ForeignKey('AssignmentPoll')
     candidate = models.ForeignKey(User)
     vote_class = AssignmentVote
@@ -274,8 +287,14 @@ class AssignmentOption(BaseOption):
     def __str__(self):
         return str(self.candidate)
 
+    def get_root_rest_element(self):
+        """
+        Returns the assignment to this instance which is the root rest element.
+        """
+        return self.poll.assignment
 
-class AssignmentPoll(SlideMixin, CollectDefaultVotesMixin,
+
+class AssignmentPoll(RESTModelMixin, SlideMixin, CollectDefaultVotesMixin,
                      PublishPollMixin, AbsoluteUrlMixin, BasePoll):
 
     slide_callback_name = 'assignmentpoll'
@@ -326,3 +345,9 @@ class AssignmentPoll(SlideMixin, CollectDefaultVotesMixin,
 
     def get_slide_context(self, **context):
         return super(AssignmentPoll, self).get_slide_context(poll=self)
+
+    def get_root_rest_element(self):
+        """
+        Returns the assignment to this instance which is the root rest element.
+        """
+        return self.assignment

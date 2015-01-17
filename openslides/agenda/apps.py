@@ -29,5 +29,5 @@ class AgendaAppConfig(AppConfig):
         Item = self.get_model('Item')
         register_slide('agenda', agenda_slide, Item)
 
-        # Register viewset.
+        # Register viewsets.
         router.register('agenda/item', ItemViewSet)
