@@ -10,19 +10,11 @@ Version 1.7 (unreleased)
 
 Core:
 - New feature to tag motions, agenda and assignments.
-- Fixed search index problem to index contents of many-to-many table
-  (e.g. tags of a motion).
-
-motion:
-- New Feature to create amendments, which are related to a parent motion.
-
-
-Version 1.6.2
-=============
-[https://github.com/OpenSlides/OpenSlides/milestones/1.6.2]
+- Fixed search index problem to index contents of many-to-many tables
+  (e. g. tags of a motion).
 Motions:
+- New Feature to create amendments, which are related to a parent motion.
 - Added possibility to hide motions from non staff users in some states.
-
 Other:
 - Cleaned up utils.views to increase performance when fetching single objects
   from the database for a view (#1378).
