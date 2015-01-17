@@ -22,7 +22,7 @@ class AnonymousAuth(object):
 
     def get_group_permissions(self, user_obj, obj=None):
         """
-        Return the permissions a user is graneted by his group membership(s).
+        Return the permissions a user is granted by his group membership(s).
 
         - try to return the permissions for the 'Anonymous' group (pk=1).
         """
@@ -39,7 +39,7 @@ class AnonymousAuth(object):
 
     def get_all_permissions(self, user_obj, obj=None):
         """
-        Return all permissions a user is granted including goup permissions.
+        Return all permissions a user is granted including group permissions.
 
         - for anonymous it's identical to get_group_permissions
         """
