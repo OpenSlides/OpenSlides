@@ -11,6 +11,7 @@ from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.projector.models import SlideMixin
 from openslides.utils.models import AbsoluteUrlMixin
+from openslides.utils.rest_api import RESTModelMixin
 
 
 class UserManager(BaseUserManager):
@@ -21,7 +22,7 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(SlideMixin, AbsoluteUrlMixin, PermissionsMixin, AbstractBaseUser):
+class User(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, PermissionsMixin, AbstractBaseUser):
     USERNAME_FIELD = 'username'
     slide_callback_name = 'user'
 
@@ -72,7 +73,8 @@ class User(SlideMixin, AbsoluteUrlMixin, PermissionsMixin, AbstractBaseUser):
 
     class Meta:
         permissions = (
-            ('can_see', ugettext_noop('Can see users')),
+            ('can_see_name', ugettext_noop('Can see names of users')),
+            ('can_see_extra_data', ugettext_noop('Can see extra data of users')),
             ('can_manage', ugettext_noop('Can manage users')),
         )
         ordering = ('last_name',)

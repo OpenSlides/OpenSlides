@@ -189,16 +189,16 @@ class LockoutProtection(TestCase):
             field=None,
             errors='You can not remove the permission to manage users from the last group you are in.')
 
-    def test_remove_permission_can_see_user_from_registered(self):
-        self.assertTrue(self.user.has_perm('users.can_see'))
+    def test_remove_permission_user_can_see_name_from_registered(self):
+        self.assertTrue(self.user.has_perm('users.can_see_name'))
         # Remove perm from registered group
         can_see_perm = Permission.objects.get(
             content_type=ContentType.objects.get(app_label='users', model='user'),
-            codename='can_see')
+            codename='can_see_name')
         get_registered_group().permissions.remove(can_see_perm)
         # Reload user
         self.user = User.objects.get(pk=1)
-        self.assertTrue(self.user.has_perm('users.can_see'))
+        self.assertTrue(self.user.has_perm('users.can_see_name'))
 
 
 class TestUserSettings(TestCase):

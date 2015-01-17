@@ -16,6 +16,7 @@ Other:
   template signals and slides.
 - Used Bower and gulp to manage third party JavaScript and Cascading Style
   Sheets libraries.
+- Added Django REST Framework api.
 
 
 Version 1.7 (unreleased)

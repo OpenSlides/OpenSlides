@@ -138,15 +138,27 @@ def create_builtin_groups_and_admin(sender, **kwargs):
     perm_16 = Permission.objects.get(content_type=ct_assignment, codename='can_see_assignment')
 
     ct_users = ContentType.objects.get(app_label='users', model='user')
-    perm_17 = Permission.objects.get(content_type=ct_users, codename='can_see')
+    perm_users_can_see_name = Permission.objects.get(content_type=ct_users, codename='can_see_name')
+    perm_users_can_see_extra_data = Permission.objects.get(content_type=ct_users, codename='can_see_extra_data')
 
     ct_mediafile = ContentType.objects.get(app_label='mediafile', model='mediafile')
     perm_18 = Permission.objects.get(content_type=ct_mediafile, codename='can_see')
 
+    base_permission_list = (
+        perm_11,
+        perm_12,
+        perm_13,
+        perm_14,
+        perm_15,
+        perm_16,
+        perm_users_can_see_name,
+        perm_users_can_see_extra_data,
+        perm_18)
+
     group_anonymous = Group.objects.create(name=ugettext_noop('Anonymous'), pk=1)
-    group_anonymous.permissions.add(perm_11, perm_12, perm_13, perm_14, perm_15, perm_16, perm_17, perm_18)
+    group_anonymous.permissions.add(*base_permission_list)
     group_registered = Group.objects.create(name=ugettext_noop('Registered'), pk=2)
-    group_registered.permissions.add(perm_11, perm_12, perm_13, perm_14, perm_15, perm_16, perm_17, perm_18, can_speak)
+    group_registered.permissions.add(can_speak, *base_permission_list)
 
     # Delegates (pk 3)
     perm_31 = Permission.objects.get(content_type=ct_motion, codename='can_create_motion')
@@ -178,8 +190,9 @@ def create_builtin_groups_and_admin(sender, **kwargs):
     group_staff.permissions.add(perm_31, perm_33, perm_34, perm_35)
     # add staff permissions
     group_staff.permissions.add(perm_41, perm_42, perm_43, perm_44, perm_45, perm_46, perm_47, perm_48, can_manage_tags)
-    # add can_see_user permission
-    group_staff.permissions.add(perm_17)  # TODO: Remove this redundancy after cleanup of the permission system
+    # add can_see_name and can_see_extra_data permissions
+    # TODO: Remove this redundancy after cleanup of the permission system.
+    group_staff.permissions.add(perm_users_can_see_name, perm_users_can_see_extra_data)
 
     # Admin user
     create_or_reset_admin_user()

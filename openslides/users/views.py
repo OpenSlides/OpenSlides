@@ -20,14 +20,14 @@ from .forms import (GroupForm, UserCreateForm, UserMultipleCreateForm,
                     UsersettingsForm, UserUpdateForm)
 from .models import Group, User
 from .pdf import users_to_pdf, users_passwords_to_pdf
-from .serializers import UserSerializer
+from .serializers import UserFullSerializer, UserShortSerializer
 
 
 class UserListView(ListView):
     """
     Show all users.
     """
-    required_permission = 'users.can_see'
+    required_permission = 'users.can_see_extra_data'
     context_object_name = 'users'
 
     def get_queryset(self):
@@ -52,7 +52,7 @@ class UserDetailView(DetailView, PermissionMixin):
     """
     Classed based view to show a specific user in the interface.
     """
-    required_permission = 'users.can_see'
+    required_permission = 'users.can_see_extra_data'
     model = User
     context_object_name = 'shown_user'
 
@@ -202,7 +202,7 @@ class UsersListPDF(PDFView):
     """
     Generate the userliste as PDF.
     """
-    required_permission = 'users.can_see'
+    required_permission = 'users.can_see_extra_data'
     filename = ugettext_lazy("user-list")
     document_title = ugettext_lazy('List of Users')
 
@@ -263,20 +263,31 @@ class ResetPasswordView(SingleObjectMixin, QuestionView):
 
 class UserViewSet(rest_api.viewsets.ModelViewSet):
     """
-    API endpoint to view, edit and delete users.
+    API endpoint to create, view, edit and delete users.
     """
     model = User
     queryset = User.objects.all()
-    serializer_class = UserSerializer
 
     def check_permissions(self, request):
         """
-        Calls self.permission_denied() if the requesting user has not the
-        permission to manage.
+        Calls self.permission_denied() if the requesting user has not all
+        permissions to see users.
         """
-        # TODO: More work on this required.
-        if not request.user.has_perm('users.can_manage'):
+        if (not request.user.has_perm('users.can_see_name') or
+                (self.action in ('create', 'update', 'destroy') and not
+                 (request.user.has_perm('users.can_manage') and
+                  request.user.has_perm('users.can_see_extra_data')))):
             self.permission_denied(request)
+
+    def get_serializer_class(self):
+        """
+        Returns different serializer classes with respect to users permissions.
+        """
+        if self.request.user.has_perm('users.can_see_extra_data'):
+            serializer_class = UserFullSerializer
+        else:
+            serializer_class = UserShortSerializer
+        return serializer_class
 
 
 class GroupListView(ListView):

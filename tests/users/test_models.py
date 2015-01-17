@@ -55,7 +55,8 @@ class DefaultGroups(TestCase):
                          'agenda.can_see_orga_items',
                          'motion.can_see_motion',
                          'assignment.can_see_assignment',
-                         'users.can_see',
+                         'users.can_see_name',
+                         'users.can_see_extra_data',
                          'mediafile.can_see')
         for perm_string in default_perms:
             perm_string_list = []

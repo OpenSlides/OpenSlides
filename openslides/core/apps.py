@@ -17,7 +17,7 @@ class CoreAppConfig(AppConfig):
         from openslides.utils.autoupdate import inform_changed_data_receiver
         from openslides.utils.rest_api import router
         from .signals import setup_general_config
-        from .views import CustomSlideViewSet
+        from .views import CustomSlideViewSet, TagViewSet
 
         # Connect signals.
         config_signal.connect(setup_general_config, dispatch_uid='setup_general_config')
@@ -28,6 +28,7 @@ class CoreAppConfig(AppConfig):
 
         # Register viewset.
         router.register('core/customslide', CustomSlideViewSet)
+        router.register('core/tag', TagViewSet)
 
         # Update data when any model of any installed app is saved or deleted
         signals.post_save.connect(inform_changed_data_receiver, dispatch_uid='inform_changed_data_receiver')
