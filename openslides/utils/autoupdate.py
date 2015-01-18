@@ -6,6 +6,8 @@ from django.conf import settings
 from django.core.wsgi import get_wsgi_application
 from sockjs.tornado import SockJSRouter, SockJSConnection
 from tornado.httpserver import HTTPServer
+from tornado.httpclient import AsyncHTTPClient, HTTPRequest
+from tornado.httputil import HTTPHeaders
 from tornado.ioloop import IOLoop
 from tornado.options import parse_command_line
 from tornado.web import (
@@ -15,6 +17,9 @@ from tornado.web import (
     HTTPError
 )
 from tornado.wsgi import WSGIContainer
+
+REST_URL = 'http://localhost:8000'
+# TODO: this is propably in the config
 
 
 class DjangoStaticFileHandler(StaticFileHandler):
@@ -57,17 +62,52 @@ class OpenSlidesSockJSConnection(SockJSConnection):
     """
     waiters = set()
 
-    def on_open(self, info):
+    def on_open(self, request_info):
         OpenSlidesSockJSConnection.waiters.add(self)
+        self.request_info = request_info
 
     def on_close(self):
         OpenSlidesSockJSConnection.waiters.remove(self)
+
+    def handle_rest_request(self, response):
+        """
+        Handler that is called when the rest api responds.
+
+        Sends the response.body to the client.
+        """
+        # TODO: update cookies
+        if response.code == 200:
+            self.send(response.body)
 
     @classmethod
     def send_updates(cls, data):
         # TODO: use a bluk send
         for waiter in cls.waiters:
             waiter.send(data)
+
+    @classmethod
+    def send_object(cls, object_url):
+        """
+        Send OpenSlides objects to all connected clients.
+
+        First, receive the object from the OpenSlides ReST API.
+        """
+        for waiter in cls.waiters:
+            # Get the object from the ReST API
+            http_client = AsyncHTTPClient()
+            headers = HTTPHeaders()
+            # TODO: read to python Morselcookies and why "set-Cookie" does not work
+            request_cookies = waiter.request_info.cookies.values()
+            cookie_value = ';'.join("%s=%s" % (cookie.key, cookie.value)
+                                    for cookie in request_cookies)
+            headers.parse_line("Cookie: %s" % cookie_value)
+
+            request = HTTPRequest(
+                url=''.join((REST_URL, object_url)),
+                headers=headers,
+                decompress_response=False)
+            # TODO: use proxy_host as header from waiter.request_info
+            http_client.fetch(request, waiter.handle_rest_request)
 
 
 def run_tornado(addr, port, *args, **kwargs):
@@ -115,7 +155,7 @@ def inform_changed_data(*args):
 
     if settings.USE_TORNADO_AS_WSGI_SERVER:
         for url in rest_urls:
-            OpenSlidesSockJSConnection.send_updates(url)
+            OpenSlidesSockJSConnection.send_object(url)
     else:
         pass
         # TODO: fix me
