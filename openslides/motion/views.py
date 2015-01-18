@@ -792,6 +792,7 @@ class CategoryListView(ListView):
 
 
 class CategoryCreateView(CreateView):
+    fields = ("name", "prefix",)
     required_permission = 'motion.can_manage_motion'
     model = Category
     success_url_name = 'motion_category_list'
@@ -799,6 +800,7 @@ class CategoryCreateView(CreateView):
 
 
 class CategoryUpdateView(UpdateView):
+    fields = ("name", "prefix",)
     required_permission = 'motion.can_manage_motion'
     model = Category
     success_url_name = 'motion_category_list'

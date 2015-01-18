@@ -1,3 +1,5 @@
+import collections
+
 from django import forms
 from django.utils.translation import ugettext_lazy
 
@@ -51,6 +53,21 @@ class BaseMotionForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
         required=False,
         label=ugettext_lazy('Tags'))
 
+    key_order = ('identifier',
+                 'title',
+                 'text',
+                 'reason',
+                 'submitter',
+                 'supporter',
+                 'category',
+                 'tags',
+                 'attachments',
+                 'workflow',
+                 'disable_versioning',)
+    """
+    Order of fields, including optional fields from mixins (for example MotionSupporterMixin)
+    """
+
     class Meta:
         model = Motion
         fields = ()
@@ -70,6 +87,11 @@ class BaseMotionForm(CleanHtmlFormMixin, CssClassMixin, forms.ModelForm):
             self.initial['attachments'] = self.motion.attachments.all()
             self.initial['tags'] = self.motion.tags.all()
         super(BaseMotionForm, self).__init__(*args, **kwargs)
+
+        keys = self.fields.keys()
+        keys_order = [key for key in self.key_order if key in keys]
+        keys_order.extend(set(keys) - set(keys_order))
+        self.fields = collections.OrderedDict([(key, self.fields[key]) for key in keys_order])
 
 
 class MotionSubmitterMixin(forms.ModelForm):
