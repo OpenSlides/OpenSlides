@@ -20,6 +20,7 @@ Other:
 - Cleaned up utils.views to increase performance when fetching single objects
   from the database for a view (#1378).
 - Fixed bug on projector which was not updated when an object was deleted.
+- Fixed bug and show special characters in PDF like ampersand (#1415).
 - Updated pdf.js to 1.0.907.
 - Improve the usage of bsmselect jquery plugin.
 - Updated translations.
