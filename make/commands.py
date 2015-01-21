@@ -120,3 +120,9 @@ def po2json(args=None):
     lang = args.language
     call('node_modules/.bin/po2json openslides/locale/%s/javascript.po openslides/static/i18n/%s.json' %
          (lang, lang))
+
+
+@command('isort',
+         help='Sorts all imports in all python files.')
+def isort(args=None):
+    return call('isort --recursive openslides tests')
