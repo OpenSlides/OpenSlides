@@ -21,9 +21,15 @@
         {% endif %}
         <small class="pull-right">
         {% if assignment %}
-            <a href="{{ assignment|absolute_url }}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to election" %}</a>
+            <a href="{{ assignment|absolute_url }}" class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                <span class="optional-small"> {% trans "Back to election" %}</span>
+            </a>
         {% else %}
-            <a href="{% url 'assignment_list' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+            <a href="{% url 'assignment_list' %}" class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                <span class="optional-small"> {% trans "Back to overview" %}</span>
+            </a>
         {% endif %}
         </small>
     </h1>
@@ -31,10 +37,10 @@
     <form action="" method="post">{% csrf_token %}
         {% include "form.html" %}
         <p>
-        {% include "formbuttons_saveapply.html" %}
-        <a href='{% url 'assignment_list' %}' class="btn">
-            {% trans 'Cancel' %}
-        </a>
+            {% include "formbuttons_saveapply.html" %}
+            <a href='{% url 'assignment_list' %}' class="btn btn-default btn-sm">
+                {% trans 'Cancel' %}
+            </a>
         </p>
         <small>* {% trans "required" %}</small>
     </form>

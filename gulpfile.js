@@ -46,13 +46,13 @@ gulp.task('css', function() {
         .pipe(gulp.dest(path.join(output_directory, 'css')));
 });
 
-// Catches all PNG image files from all bower components.
-gulp.task('img', function() {
+// Catches all font files from all bower components.
+gulp.task('fonts', function() {
     return gulp.src(mainBowerFiles({
-            filter: /\.png$/
+            filter: /\.(eot)|(svg)|(ttf)|(woff)$/
         }))
-        .pipe(gulp.dest(path.join(output_directory, 'img')));
+        .pipe(gulp.dest(path.join(output_directory, 'fonts')));
 });
 
 // Gulp default task. Runs all other tasks before.
-gulp.task('default', ['js', 'css', 'img'], function() {});
+gulp.task('default', ['js', 'css', 'fonts'], function() {});

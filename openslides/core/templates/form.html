@@ -1,6 +1,6 @@
 {{ form.media }}
 {% if form.non_field_errors %}
-    <div class="alert alert-error">
+    <div class="alert alert-danger" role="alert">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         {% for msg in form.non_field_errors %}
             {{ msg }}
@@ -9,7 +9,7 @@
     </div>
 {% endif %}
 {% for field in form %}
-    <div class="control-group {% if field.errors %}error{% endif%}">
+    <div class="form-group {% if field.errors %}error{% endif%}">
         <label for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}:</label>
         {{ field }}
         {% if field.errors %}

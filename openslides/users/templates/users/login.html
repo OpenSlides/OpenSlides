@@ -13,7 +13,7 @@
     <h2><img src="{% static 'img/logo-login.png' %}"></h2>
 
     {% if form.errors %}
-        <div class="alert alert-error">
+        <div class="alert alert-danger" role="alert">
             {% for msg in form.non_field_errors %}
                 <em>{{ msg }}</em>
                 {% if not forloop.last %}<br />{% endif %}
@@ -29,25 +29,31 @@
     {% endif %}
     <form method="post" action="{% url 'user_login' %}{% if next %}?next={{ next }}{% endif %}" class="well">
         {% csrf_token %}
-        <div class="input-prepend">
-            <span class="add-on"><i class="icon-user"></i></span>
-            <input type="text" maxlength="30" name="username" id="id_username" placeholder="{% trans 'Username' %}">
+        {# username #}
+        <div class="form-group input-group">
+            <div class="input-group-addon">
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+            </div>
+            <input type="text" class="form-control input-lg" name="username" id="id_username" placeholder="{% trans 'Username' %}">
         </div>
-        <div class="input-prepend">
-            <span class="add-on"><i class="icon-lock"></i></span>
-            <input type="password" maxlength="30" name="password" id="id_password" placeholder="{% trans 'Password' %}">
+        {# password #}
+        <div class="form-group input-group">
+            <div class="input-group-addon">
+                <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+            </div>
+            <input type="password" class="form-control input-lg" name="password" id="id_password" placeholder="{% trans 'Password' %}">
         </div>
 
-        <p>
-        <button type="submit" class="btn btn-primary">
-            {% trans 'Login' %}
-        </button>
-        {% if os_enable_anonymous_login %}
-            <a id="anonymous_login" class="btn" href="{% url 'core_dashboard' %}">
-                {% trans 'Continue as guest' %}
-            </a>
-        {% endif %}
-        <input type="hidden" name="next" value="{{ next }}" />
-        </p>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">
+                {% trans 'Login' %}
+            </button>
+            {% if os_enable_anonymous_login %}
+                <a id="anonymous_login" class="btn btn-default" href="{% url 'core_dashboard' %}">
+                    {% trans 'Continue as guest' %}
+                </a>
+            {% endif %}
+            <input type="hidden" name="next" value="{{ next }}" />
+        </div>
     </form>
 {% endblock %}

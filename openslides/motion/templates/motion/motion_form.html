@@ -28,9 +28,13 @@
         {% endif %}
         <small class="pull-right">
         {% if motion %}
-            <a href="{{ motion|absolute_url }}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to motion" %}</a>
+            <a href="{{ motion|absolute_url }}" class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                {% trans "Back to motion" %}</a>
         {% else %}
-            <a href="{% url 'motion_list' %}" class="btn btn-mini"><i class="icon-chevron-left"></i> {% trans "Back to overview" %}</a>
+            <a href="{% url 'motion_list' %}" class="btn btn-default btn-sm">
+                <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                {% trans "Back to overview" %}</a>
         {% endif %}
         </small>
     </h1>
@@ -38,7 +42,7 @@
         {% include "form.html" %}
         <p>
         {% include "formbuttons_saveapply.html" %}
-        <a href='{% url 'motion_list' %}' class="btn">
+        <a href='{% url 'motion_list' %}' class="btn btn-default">
             {% trans 'Cancel' %}
         </a>
         </p>

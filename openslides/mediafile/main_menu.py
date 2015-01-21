@@ -10,7 +10,7 @@ class MediafileMainMenuEntry(MainMenuEntry):
     verbose_name = ugettext_lazy('Files')
     default_weight = 60
     pattern_name = 'mediafile_list'
-    icon_css_class = 'icon-paperclip'
+    icon_css_class = 'glyphicon-paperclip'
 
     def check_permission(self):
         return (

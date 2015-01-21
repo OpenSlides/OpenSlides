@@ -11,4 +11,4 @@ class AssignmentMainMenuEntry(MainMenuEntry):
     required_permission = 'assignment.can_see_assignment'
     default_weight = 40
     pattern_name = 'assignment_list'
-    icon_css_class = 'icon-charts'
+    icon_css_class = 'icon-assignment'

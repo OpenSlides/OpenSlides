@@ -11,4 +11,4 @@ class AgendaMainMenuEntry(MainMenuEntry):
     required_permission = 'agenda.can_see_agenda'
     default_weight = 20
     pattern_name = 'item_overview'
-    icon_css_class = 'icon-calendar'
+    icon_css_class = 'glyphicon-calendar'

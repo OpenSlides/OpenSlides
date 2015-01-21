@@ -10,7 +10,6 @@
     <title>{% block title %}{% get_config 'event_name' %}{% endblock %}</title>
     <!-- styles -->
     <link href="{% static 'css/openslides-libs.css' %}" type="text/css" rel="stylesheet" />
-    <link href="{% static 'css/bootstrap-responsive.min.css' %}" type="text/css" rel="stylesheet" />
     <link href="{% static 'css/jquery-ui/jquery-ui.custom.min.css'%}" type="text/css" rel="stylesheet" />
     <link href="{% static 'css/base.css' %}" type="text/css" rel="stylesheet" />
     <link href="{% static 'css/chatbox.css' %}" type="text/css" rel="stylesheet" />
@@ -22,69 +21,82 @@
     {% block header %}{% endblock %}
 </head>
 <body>
+
     <!-- Navbar -->
-    <div class="container-fluid nopadding">
-        <div class="row-fluid">
-            <div class="span12">
-                <div id="header">
-                    <a href="/" class="logo" title="{% trans 'Home' %}"><img src="{% static 'img/logo.png' %}" alt="{% trans 'Logo' %}" /></a>
-                    <span class="title optional">{% get_config 'event_name' %}</span>
-                    {% block loginbutton %}
-                    <div class="pull-right">
-                        <!-- Search field -->
-                        <form id="searchbutton" class="navbar-search" action="{% url 'core_search' %}" method="get">
-                            <div class="input-append">
-                                <input type="text" id="id_q" name="q" class="input-medium" placeholder="{% trans 'Search' %}">
-                                <button type="submit" class="btn"><i class="icon-search"></i></button>
-                            </div>
-                        </form> &nbsp;
+    <nav id="header" class="navbar">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a href="/" class="logo" title="{% trans 'Home' %}"><img src="{% static 'img/logo.png' %}" alt="{% trans 'Logo' %}" /></a>
+                <span class="title optional">{% get_config 'event_name' %}</span>
+            </div>
+            {% block loginbutton %} 
+                <div class="navbar-right">
+                    <!-- Chatbox button -->
+                    {% if chat_messages != None %}
+                        <button class="btn btn-default" id="chatboxbutton" data-toggle="button">
+                                <span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
+                                <span class="optional-small">{% trans 'Chat' %}</span>
+                                <span id="newchatmessage"></span>
+                        </button>
+                    {% endif %}
 
-                        <!-- Chatbox button -->
-                        {% if chat_messages != None %}
-                            <button class="btn" id="chatboxbutton" data-toggle="button">
-                                    <i class="icon-comments"></i>
-                                    <span class="optional-small">{% trans 'Chat' %}</span>
-                                    <span id="newchatmessage"></span>
-                            </button>
+                    <!-- login/logout button -->
+                    <div class="btn-group">
+                        {% if user.is_authenticated %}
+                        <a href="#" data-toggle="dropdown" class="btn btn-default dropdown-toggle">
+                              <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                              <span class="optional-small">{{ user.username }}</span>
+                              <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu pull-right">
+                            <li><a href="{% url 'user_settings' %}">
+                                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                                {% trans "Edit profile" %}</a></li>
+                            <li><a href="{% url 'password_change' %}">
+                                <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                                {% trans "Change password" %}</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{% url 'user_logout' %}">
+                                <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
+                                {% trans "Logout" %}</a></li>
+                        </ul>
+                        {% else %}
+                            <a href="{% url 'user_login' %}" class="btn btn-default">
+                                <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
+                                {% trans "Login" %}</a>
                         {% endif %}
-
-                        <!-- login/logout button -->
-                        <div class="btn-group">
-                            {% if user.is_authenticated %}
-                            <a href="#" data-toggle="dropdown" class="btn dropdown-toggle">
-                                  <i class="icon-user"></i>
-                                  <span class="optional-small">{{ user.username }}</span>
-                                  <span class="caret"></span>
-                            </a>
-                            <ul class="dropdown-menu pull-right">
-                                <li><a href="{% url 'user_settings' %}"><i class="icon-cog"></i> {% trans "Edit profile" %}</a></li>
-                                <li><a href="{% url 'password_change' %}"><i class="icon-lock"></i> {% trans "Change password" %}</a></li>
-                                <li class="divider"></li>
-                                <li><a href="{% url 'user_logout' %}"><i class="icon-off"></i> {% trans "Logout" %}</a></li>
-                            </ul>
-                            {% else %}
-                                <a href="{% url 'user_login' %}" class="btn"><i class="icon-login"></i> {% trans "Login" %}</a>
-                            {% endif %}
-                        </div>
                     </div>
-                    {% endblock %}
-                </div> <!--/#header-->
-            </div> <!--/.span12-->
+                </div>
+
+                <!-- Search field -->
+                <form id="searchform" class="navbar-form navbar-right" action="{% url 'core_search' %}" method="get">
+                    <div class="form-group input-group">
+                        <input type="text" id="id_q" name="q" class="form-control" placeholder="{% trans 'Search' %}">
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-default">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            {% endblock %}
         </div>
-    </div> <!--/.container-fluid-->
+    </nav>
+
 
     {% block body %}
     <!-- Container -->
     <div class="container-fluid" id="container">
-    <div class="row-fluid">
+    <div class="row">
 
         <!-- Sidebar navigation (main menu) -->
-        <div class="span2 leftmenu lefticon">
+        <div class="col-md-2 leftmenu lefticon">
             <ul>
                 {% for entry in main_menu_entries %}
                     <li{% if entry.is_active %} class="active"{% endif %}>
                         <a href="{{ entry.get_url }}" class="tooltip-right">
-                        <span class="ico"><i class="{{ entry.get_icon_css_class }}"></i></span>
+                        <!--TODO-->
+                        <span class="glyphicon {{ entry.get_icon_css_class }}" aria-hidden="true"></span>
                         <span class="text">{{ entry }}</span>
                         </a>
                     </li>
@@ -93,9 +105,9 @@
         </div>
 
         <!-- Content -->
-        <div id="content" class="span10">
-            <div class="row-fluid">
-                <div class="span12">
+        <div id="content" class="col-md-10">
+            <div class="row">
+                <div class="col-md-12">
                     <div id="notifications">
                         <div id="dummy-notification" class="notification" style="display:none">
                             <button type="button" class="close" data-dismiss="alert">×</button>
@@ -118,7 +130,7 @@
             </footer>
         </div><!--/#content-->
 
-    </div><!--/.row-fluid-->
+    </div><!--/.row-->
     </div><!--/#container-->
     {% endblock %}<!--/body-->
 
