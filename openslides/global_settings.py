@@ -7,10 +7,6 @@ from openslides.utils.plugins import collect_plugins
 
 SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-    'openslides.utils.auth.AnonymousAuth',)
-
 AUTH_USER_MODEL = 'users.User'
 
 LOGIN_URL = '/login/'
@@ -71,7 +67,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'openslides.users.auth.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'openslides.config.middleware.ConfigCacheMiddleware',
 )
@@ -102,12 +98,11 @@ INSTALLED_APPS = (
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
+    'openslides.users.auth.auth',
     'django.contrib.messages.context_processors.messages',
     'django.core.context_processors.request',
     'django.core.context_processors.i18n',
     'django.core.context_processors.static',
-    'openslides.utils.auth.anonymous_context_additions',
     'openslides.utils.main_menu.main_menu_entries',
     'openslides.core.chatbox.chat_messages_context_processor',
 )

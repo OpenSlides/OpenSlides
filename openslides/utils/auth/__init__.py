@@ -1,1 +1,0 @@
-from .AnonymousAuth import *  # noqa
