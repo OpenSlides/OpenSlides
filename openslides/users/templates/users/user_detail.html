@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load i18n %}
+{% load tags %}
 
 {% block title %}{{ shown_user }} – {{ block.super }}{% endblock %}
 
@@ -29,7 +30,7 @@
         <ul class="dropdown-menu pull-right">
             <!-- edit -->
             <li>
-                <a href="{% url 'user_edit' shown_user.id  %}">
+                <a href="{{ user|absolute_url:'update' }}">
                     <i class="icon-pencil"></i>
                     {% trans 'Edit user' %}
                 </a>

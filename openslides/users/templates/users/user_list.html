@@ -20,11 +20,11 @@
         {% trans "Users" %}
         <small class="pull-right">
         {% if perms.users.can_manage %}
-            <a href="{% url 'user_new' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New user' %}">
+            <a href="{% url 'user_create' %}" class="btn btn-mini btn-primary" rel="tooltip" data-original-title="{% trans 'New user' %}">
                 <i class="icon-plus icon-white"></i>
                 {% trans "New" %}
             </a>
-            <a href="{% url 'user_new_multiple' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New multiple users' %}">
+            <a href="{% url 'user_create_multiple' %}" class="btn btn-mini" rel="tooltip" data-original-title="{% trans 'New multiple users' %}">
                 <i class="icon-plus"></i>
                 {% trans 'New multiple' %}
             </a>
@@ -102,9 +102,9 @@
                 <td class="optional">{{ user.title }}</td>
                 <td>
                     {% if 'users_sort_users_by_first_name'|get_config %}
-                        <a href="{% url 'user_view' user.id %}">{{ user.first_name }} {{ user.last_name }}</a>
+                        <a href="{{ user|absolute_url }}">{{ user.first_name }} {{ user.last_name }}</a>
                     {% else %}
-                        <a href="{% url 'user_view' user.id %}">{{ user.last_name }}{% if user.last_name and user.first_name %},{% endif %} {{ user.first_name }}</a>
+                        <a href="{{ user|absolute_url }}">{{ user.last_name }}{% if user.last_name and user.first_name %},{% endif %} {{ user.first_name }}</a>
                     {% endif %}
                 </td>
                 <td class="optional">{{ user.structure_level }}</td>
@@ -138,7 +138,7 @@
                                     <i class="icon-facetime-video {% if user.is_active_slide %}icon-white{% endif %}"></i>
                                 </a>
                             {% endif %}
-                            <a href="{% url 'user_edit' user.id %}" rel="tooltip" data-original-title="{% trans 'Edit' %}"
+                            <a href="{{ user|absolute_url:'update' }}" rel="tooltip" data-original-title="{% trans 'Edit' %}"
                                 class="btn btn-mini">
                                 <i class="icon-pencil"></i>
                             </a>

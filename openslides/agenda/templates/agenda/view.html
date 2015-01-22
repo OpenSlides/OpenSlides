@@ -159,7 +159,7 @@
                     {{ field }}
                     <button class="btn btn-primary tooltip-bottom" type="submit" data-original-title="{% trans 'Apply' %}"><i class="icon-ok icon-white"></i></button>
                 {% if perms.users.can_see and perms.users.can_manage %}
-                    <a href="{% url 'user_new' %}" class="btn" rel="tooltip" data-original-title="{% trans 'Add new user' %}"><i class="icon-add-user"></i></a>
+                    <a href="{% url 'user_create' %}" class="btn" rel="tooltip" data-original-title="{% trans 'Add new user' %}"><i class="icon-add-user"></i></a>
                 {% endif %}
                 {% if field.errors %}
                     <span class="help-inline">{{ field.errors }}</span>

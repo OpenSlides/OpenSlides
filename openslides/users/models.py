@@ -9,12 +9,17 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
+from openslides.config.api import config
 from openslides.projector.models import SlideMixin
 from openslides.utils.models import AbsoluteUrlMixin
 from openslides.utils.rest_api import RESTModelMixin
 
 
 class UserManager(BaseUserManager):
+    """
+    UserManager that creates new users only with a password and a username.
+    """
+
     def create_user(self, username, password, **kwargs):
         user = self.model(username=username, **kwargs)
         user.set_password(password)
@@ -87,9 +92,9 @@ class User(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, PermissionsMixin, Abstr
         Returns the URL to the user.
         """
         if link == 'detail':
-            url = reverse('user_view', args=[str(self.pk)])
+            url = reverse('user_detail', args=[str(self.pk)])
         elif link == 'update':
-            url = reverse('user_edit', args=[str(self.pk)])
+            url = reverse('user_update', args=[str(self.pk)])
         elif link == 'delete':
             url = reverse('user_delete', args=[str(self.pk)])
         else:
@@ -111,10 +116,7 @@ class User(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, PermissionsMixin, Abstr
         E. g.: * Dr. Max Mustermann (Villingen)
                * Professor Dr. Enders, Christoph (Leipzig)
         """
-        if self.structure_level:
-            structure = '(%s)' % self.structure_level
-        else:
-            structure = ''
+        structure = '(%s)' % self.structure_level if self.structure_level else ''
 
         return ' '.join((self.title, self.get_short_name(), structure)).strip()
 
@@ -125,9 +127,21 @@ class User(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, PermissionsMixin, Abstr
         E. g.: * Max Mustermann
                * Enders, Christoph
         """
-        # TODO: Order of name. See config.
-        name = ('%s %s' % (self.first_name, self.last_name)).strip()
-        return name or self.username
+        # Strip white spaces from the name parts
+        first_name = self.first_name.strip()
+        last_name = self.last_name.strip()
+
+        # The user has a last_name and a first_name
+        if first_name and last_name:
+            if config['users_sort_users_by_first_name']:
+                name = ' '.join((first_name, last_name))
+            else:
+                name = ', '.join((last_name, first_name))
+
+        # The user has only a first_name or a last_name or no name
+        else:
+            name = first_name or last_name or self.username
+        return name
 
     def reset_password(self, password=None):
         """

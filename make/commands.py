@@ -2,6 +2,10 @@ import re
 
 from parser import command, argument, call
 
+FAIL = '\033[91m'
+SUCCESS = '\033[92m'
+RESET   = '\033[0m'
+
 
 @argument('module', nargs='?', default='')
 @command('test', help='runs the tests')
@@ -10,8 +14,8 @@ def test(args=None):
     Runs the tests.
     """
     module = getattr(args, 'module', '')
-    return call("DJANGO_SETTINGS_MODULE='tests.settings' coverage run "
-                "./manage.py test %s" % module)
+    return call("DJANGO_SETTINGS_MODULE='tests.integration.settings' coverage run "
+                "./manage.py test tests.%s" % module)
 
 
 @argument('--plain', action='store_true')
@@ -51,11 +55,17 @@ def travis(args=None):
             if line == 'script:':
                 script_lines = True
                 continue
-            if not script_lines:
+            if not script_lines or not line:
                 continue
 
             match = re.search(r'"(.*)"', line)
-            return_codes.append(call(match.group(1)))
+            print('Run: %s' % match.group(1))
+            return_code = call(match.group(1))
+            return_codes.append(return_code)
+            if return_code:
+                print(FAIL + 'fail!\n' + RESET)
+            else:
+                print(SUCCESS + 'success!\n' + RESET)
 
     # Retuns True if one command exited with a different statuscode then 1
     return bool(list(filter(bool, return_codes)))
@@ -81,3 +91,14 @@ def min_requirements(args=None):
             yield '%s==%s' % (line.req.key, line.req.specs[0][1])
 
     print('pip install %s' % ' '.join(get_lowest_versions(args.requirements)))
+
+
+@command('clear',
+         help='Deletes unneeded files and folders')
+def clear(args=None):
+    """
+    Deletes all .pyc and .orig files and empty folders.
+    """
+    call('find -name "*.pyc" -delete')
+    call('find -name "*.orig" -delete')
+    call('find -type d -empty -delete')

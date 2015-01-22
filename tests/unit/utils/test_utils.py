@@ -1,9 +1,10 @@
-from openslides.utils.test import TestCase
+from unittest import TestCase
+
 from openslides.utils.utils import html_strong, int_or_none
 
 
 class Test_functions(TestCase):
-    def test_string(self):
+    def test_html_strong(self):
         self.assertEqual(html_strong('some text'), '<strong>some text</strong>')
 
     def test_int_or_none(self):

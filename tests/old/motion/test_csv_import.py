@@ -5,6 +5,7 @@ from openslides.motion.csv_import import import_motions
 from openslides.motion.models import Category, Motion
 from openslides.users.models import User
 from openslides.utils.test import TestCase
+from openslides.config.api import config
 
 
 class CSVImport(TestCase):
@@ -20,6 +21,9 @@ class CSVImport(TestCase):
         Category.objects.create(name='Bildung', prefix='B2')
 
     def test_example_file_de(self):
+        # Set config to sort names by first_name because the example csv-file
+        # expect this.
+        config['users_sort_users_by_first_name'] = True
         special_user = User.objects.create_user(username='Harry_Holland',
                                                 password='iegheeChaje7guthie4a',
                                                 first_name='Harry',
@@ -31,7 +35,7 @@ class CSVImport(TestCase):
                                      first_name='John',
                                      last_name='Doe')
 
-        csv_dir = os.path.join(os.path.dirname(__file__), '..', '..', 'extras', 'csv-examples')
+        csv_dir = os.path.join(os.path.dirname(__file__), '..', '..', '..', 'extras', 'csv-examples')
         self.assertEqual(Motion.objects.count(), 0)
         with open(csv_dir + '/motions-demo_de.csv', 'rb') as f:
             success_message, warning_message, error_message = import_motions(

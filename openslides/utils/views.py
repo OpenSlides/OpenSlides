@@ -33,7 +33,7 @@ class LoginMixin(object):
         """
         Check if the user is loged in.
         """
-        return super(LoginMixin, self).dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
 
 class PermissionMixin(object):
@@ -68,7 +68,7 @@ class PermissionMixin(object):
                     "%s?next=%s" % (settings.LOGIN_URL, path))
             else:
                 raise PermissionDenied
-        return super(PermissionMixin, self).dispatch(request, *args, **kwargs)
+        return super().dispatch(request, *args, **kwargs)
 
 
 class AjaxMixin(object):
@@ -103,7 +103,7 @@ class ExtraContextMixin(object):
         """
         context = super(ExtraContextMixin, self).get_context_data(**kwargs)
         template_manipulation.send(
-            sender=self.__class__, request=self.request, context=context)
+            sender=type(self), request=self.request, context=context)
         return context
 
 
@@ -130,11 +130,13 @@ class UrlMixin(object):
         elif url:
             value = url
         else:
+            if use_absolute_url_link is None:
+                get_absolute_url_args = []
+            else:
+                get_absolute_url_args = [use_absolute_url_link]
+
             try:
-                if use_absolute_url_link is None:
-                    value = self.object.get_absolute_url()
-                else:
-                    value = self.object.get_absolute_url(use_absolute_url_link)
+                value = self.object.get_absolute_url(*get_absolute_url_args)
             except AttributeError:
                 raise ImproperlyConfigured(
                     'No url to redirect to. See openslides.utils.views.UrlMixin '
@@ -155,10 +157,7 @@ class UrlMixin(object):
             except AttributeError:
                 value = []
             else:
-                if pk:
-                    value = [pk]
-                else:
-                    value = []
+                value = [pk] if pk else []
         return value
 
 
