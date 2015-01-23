@@ -3,7 +3,6 @@ from unittest.mock import patch
 from django.contrib.auth.models import AnonymousUser
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import clear_url_caches
-from django.db import connection, reset_queries
 from django.test import RequestFactory
 from django.test.client import Client
 from django.test.utils import override_settings
@@ -13,7 +12,6 @@ from openslides.utils.signals import template_manipulation
 from openslides.utils.test import TestCase
 
 from . import views as test_views
-from .models import DummyModel
 
 
 @override_settings(ROOT_URLCONF='tests.utils.urls')
@@ -194,15 +192,22 @@ class QuestionViewTest(ViewTestCase):
         self.assertIn('the question', question)
 
 
-class DetailViewTest(ViewTestCase):
-    def test_get_object_cache(self):
-        with self.settings(DEBUG=True):
-            DummyModel.objects.create(title='title_ooth8she7yos1Oi8Boh3')
-            reset_queries()
-            client = Client()
-            response = client.get('/dummy_detail_view/1/')
-            self.assertContains(response, 'title_ooth8she7yos1Oi8Boh3')
-            self.assertEqual(len(connection.queries), 3)
+class SingleObjectMixinTest(TestCase):
+
+    @patch('openslides.utils.views.django_views.detail.SingleObjectMixin.get_object')
+    def test_get_object_cache(self, mock_super_class_get_object):
+        """
+        Test that the method get_object caches his result.
+
+        Tests that get_object from the django view is only called once, even if
+        get_object on our class is called twice.
+        """
+        view = views.SingleObjectMixin()
+
+        view.get_object()
+        view.get_object()
+
+        mock_super_class_get_object.assert_called_once_with()
 
 
 def set_context(sender, request, context, **kwargs):

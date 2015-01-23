@@ -1,11 +1,8 @@
 from django import forms
-from django.dispatch import Signal
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.config.api import ConfigGroup, ConfigGroupedCollection, ConfigVariable
-
-post_database_setup = Signal()
 
 
 def setup_general_config(sender, **kwargs):

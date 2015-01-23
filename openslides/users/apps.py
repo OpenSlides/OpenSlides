@@ -13,10 +13,9 @@ class UsersAppConfig(AppConfig):
         # Import all required stuff.
         from django.db.models.signals import post_save
         from openslides.config.signals import config_signal
-        from openslides.core.signals import post_database_setup
         from openslides.projector.api import register_slide_model
         from openslides.utils.rest_api import router
-        from .signals import create_builtin_groups_and_admin, setup_users_config, user_post_save
+        from .signals import setup_users_config, user_post_save
         from .views import UserViewSet
 
         # Load User model.
@@ -24,7 +23,6 @@ class UsersAppConfig(AppConfig):
 
         # Connect signals.
         config_signal.connect(setup_users_config, dispatch_uid='setup_users_config')
-        post_database_setup.connect(create_builtin_groups_and_admin, dispatch_uid='users_create_builtin_groups_and_admin')
         post_save.connect(user_post_save, sender=User, dispatch_uid='users_user_post_save')
 
         # Register slides.

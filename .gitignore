@@ -7,16 +7,12 @@
 .virtualenv/*
 .venv/*
 
-# Node modules
+# Javascript tools and libraries
 node_modules/*
+bower_components/*
 
 # Development user data (settings, database, media, search index, static files)
-settings.py
-!tests/settings.py
-database.sqlite
-media/*
-whoosh_index/*
-bower_components/*
+development/*
 openslides/static/*
 
 # Package building/IDE

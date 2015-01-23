@@ -1,11 +1,11 @@
 import ctypes
 import os
-import socket
 import sys
 import tempfile
 import threading
 import time
 import webbrowser
+import argparse
 
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import ENVIRONMENT_VARIABLE
@@ -13,6 +13,7 @@ from django.utils.crypto import get_random_string
 from django.utils.translation import activate, check_for_language, get_language
 from django.utils.translation import ugettext as _
 
+DEVELOPMENT_VERSION = 'Development Version'
 UNIX_VERSION = 'Unix Version'
 WINDOWS_VERSION = 'Windows Version'
 WINDOWS_PORTABLE_VERSION = 'Windows Portable Version'
@@ -28,6 +29,15 @@ class PortIsBlockedError(Exception):
 
 class DatabaseInSettingsError(Exception):
     pass
+
+
+class UnknownCommand(Exception):
+    pass
+
+
+class ExceptionArgumentParser(argparse.ArgumentParser):
+    def error(self, message):
+        raise UnknownCommand(message)
 
 
 def detect_openslides_type():
@@ -50,16 +60,19 @@ def detect_openslides_type():
     return openslides_type
 
 
-def get_default_settings_path(openslides_type):
+def get_default_settings_path(openslides_type=None):
     """
     Returns the default settings path according to the OpenSlides type.
 
     The argument 'openslides_type' has to be one of the three types mentioned in
     openslides.utils.main.
     """
+    if openslides_type is None:
+        openslides_type = detect_openslides_type()
+
     if openslides_type == UNIX_VERSION:
         parent_directory = os.environ.get(
-            'XDG_CONFIG_HOME', os.path.join(os.path.expanduser('~'), '.config'))
+            'XDG_CONFIG_HOME', os.path.expanduser('~/.config'))
     elif openslides_type == WINDOWS_VERSION:
         parent_directory = get_win32_app_data_path()
     elif openslides_type == WINDOWS_PORTABLE_VERSION:
@@ -69,31 +82,52 @@ def get_default_settings_path(openslides_type):
     return os.path.join(parent_directory, 'openslides', 'settings.py')
 
 
-def setup_django_settings_module(settings_path):
+def get_development_settings_path():
+    """
+    Returns the path to a local development settings.
+
+    On Unix systems: 'development/settings.py'
+    """
+    return os.path.join('development', 'settings.py')
+
+
+def setup_django_settings_module(settings_path=None, development=None):
     """
     Sets the environment variable ENVIRONMENT_VARIABLE, that means
     'DJANGO_SETTINGS_MODULE', to the given settings.
+
+    If no settings_path is given and the environment variable is already set,
+    then this function does nothing.
+
+    If the argument settings_path is set, then the environment variable is
+    always overwritten.
     """
+    if settings_path is None and os.environ.get(ENVIRONMENT_VARIABLE, None):
+        return
+
+    if settings_path is None:
+        if development:
+            settings_path = get_development_settings_path()
+        else:
+            settings_path = get_default_settings_path()
+
     settings_file = os.path.basename(settings_path)
     settings_module_name = ".".join(settings_file.split('.')[:-1])
     if '.' in settings_module_name:
         raise ImproperlyConfigured("'.' is not an allowed character in the settings-file")
-    settings_module_dir = os.path.dirname(settings_path)  # TODO: Use absolute path here or not?
+
+    # Change the python path. Also set the environment variable python path, so
+    # change of the python path also works after a reload
+    settings_module_dir = os.path.abspath(os.path.dirname(settings_path))
     sys.path.insert(0, settings_module_dir)
-    os.environ[ENVIRONMENT_VARIABLE] = '%s' % settings_module_name
+    try:
+        os.environ['PYTHONPATH'] = os.pathsep.join((settings_module_dir, os.environ['PYTHONPATH']))
+    except KeyError:
+        # The environment variable is empty
+        os.environ['PYTHONPATH'] = settings_module_dir
 
-
-def ensure_settings(settings, args):
-    """
-    Create settings if a settings path is given and this file still does not exist.
-    """
-    if settings and not os.path.exists(settings):
-        if not hasattr(args, 'user_data_path'):
-            context = get_default_settings_context()
-        else:
-            context = get_default_settings_context(args.user_data_path)
-        write_settings(settings, **context)
-        print('Settings file at %s successfully created.' % settings)
+    # Set the environment variable to the settings module
+    os.environ[ENVIRONMENT_VARIABLE] = settings_module_name
 
 
 def get_default_settings_context(user_data_path=None):
@@ -132,7 +166,7 @@ def get_default_user_data_path(openslides_type):
     """
     if openslides_type == UNIX_VERSION:
         default_user_data_path = os.environ.get(
-            'XDG_DATA_HOME', os.path.join(os.path.expanduser('~'), '.local', 'share'))
+            'XDG_DATA_HOME', os.path.expanduser('~/.local/share'))
     elif openslides_type == WINDOWS_VERSION:
         default_user_data_path = get_win32_app_data_path()
     elif openslides_type == WINDOWS_PORTABLE_VERSION:
@@ -192,11 +226,16 @@ def get_win32_portable_user_data_path():
     return os.path.join(get_win32_portable_path(), 'openslides')
 
 
-def write_settings(settings_path, template=None, **context):
+def write_settings(settings_path=None, template=None, **context):
     """
     Creates the settings file at the given path using the given values for the
     file template.
+
+    Retuns the path to the created settings.
     """
+    if settings_path is None:
+        settings_path = get_default_settings_path()
+
     if template is None:
         with open(os.path.join(os.path.dirname(__file__), 'settings.py.tpl')) as template_file:
             template = template_file.read()
@@ -205,56 +244,16 @@ def write_settings(settings_path, template=None, **context):
     # from django.core.management.commands.startproject
     chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
     context.setdefault('secret_key', get_random_string(50, chars))
+    for key, value in get_default_settings_context().items():
+        context.setdefault(key, value)
+
     content = template % context
     settings_module = os.path.realpath(os.path.dirname(settings_path))
     if not os.path.exists(settings_module):
         os.makedirs(settings_module)
     with open(settings_path, 'w') as settings_file:
         settings_file.write(content)
-
-
-def get_port(address, port):
-    """
-    Checks if the port for the server is available and returns it the port. If
-    it is port 80, try also port 8000.
-
-    The argument 'address' should be an IP address. The argument 'port' should
-    be an integer.
-    """
-    s = socket.socket()
-    try:
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        s.bind((address, port))
-        s.listen(-1)
-    except socket.error:
-        error = True
-    else:
-        error = False
-    finally:
-        s.close()
-    if error:
-        if port == 80:
-            port = get_port(address, 8000)
-        else:
-            raise PortIsBlockedError('Port %d is not available. Try another port using the --port option.' % port)
-    return port
-
-
-def get_browser_url(address, port):
-    """
-    Returns the url to open the web browser.
-
-    The argument 'address' should be an IP address. The argument 'port' should
-    be an integer.
-    """
-    browser_url = 'http://'
-    if address == '0.0.0.0':
-        browser_url += 'localhost'
-    else:
-        browser_url += address
-    if not port == 80:
-        browser_url += ":%d" % port
-    return browser_url
+    return os.path.realpath(settings_path)
 
 
 def start_browser(browser_url):
@@ -277,6 +276,8 @@ def get_database_path_from_settings():
     """
     Retrieves the database path out of the settings file. Returns None,
     if it is not a SQLite3 database.
+
+    Needed for the backupdb command.
     """
     from django.conf import settings as django_settings
     from django.db import DEFAULT_DB_ALIAS
@@ -304,3 +305,12 @@ def translate_customizable_strings(language_code):
         for name in config.get_all_translatable():
             config[name] = _(config[name])
         activate(current_language)
+
+
+def is_development():
+    """
+    Returns True if the command is called for development.
+
+    This is the case if manage.py is used, or when the --development flag is set.
+    """
+    return True if '--development' in sys.argv or 'manage.py' in sys.argv[0] else False
