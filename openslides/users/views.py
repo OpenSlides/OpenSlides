@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _, ugettext_lazy, activate
 
 from openslides.config.api import config
-from openslides.utils.rest_api import viewsets
+from openslides.utils.rest_api import ModelViewSet
 from openslides.utils.utils import delete_default_permissions, html_strong
 from openslides.utils.views import (
     CreateView, CSVImportView, DeleteView, DetailView, FormView, ListView,
@@ -261,7 +261,7 @@ class ResetPasswordView(SingleObjectMixin, QuestionView):
         return _('The Password for %s was successfully reset.') % html_strong(self.get_object())
 
 
-class UserViewSet(viewsets.ModelViewSet):
+class UserViewSet(ModelViewSet):
     """
     API endpoint to list, retrieve, create, update and delete users.
     """
@@ -291,7 +291,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return serializer_class
 
 
-class GroupViewSet(viewsets.ModelViewSet):
+class GroupViewSet(ModelViewSet):
     """
     API endpoint to list, retrieve, create, update and delete groups.
     """

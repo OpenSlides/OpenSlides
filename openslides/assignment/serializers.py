@@ -1,4 +1,4 @@
-from openslides.utils.rest_api import serializers
+from openslides.utils.rest_api import serializers, root_rest_for
 
 from .models import (
     models,
@@ -99,6 +99,7 @@ class AssignmentShortPollSerializer(AssignmentAllPollSerializer):
             'votescast',)
 
 
+@root_rest_for(Assignment)
 class AssignmentFullSerializer(serializers.ModelSerializer):
     """
     Serializer for assignment.models.Assignment objects. With all polls.
@@ -120,6 +121,7 @@ class AssignmentFullSerializer(serializers.ModelSerializer):
             'tags',)
 
 
+@root_rest_for(Assignment)
 class AssignmentShortSerializer(AssignmentFullSerializer):
     """
     Serializer for assignment.models.Assignment objects. Without unpublished poll.

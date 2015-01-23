@@ -25,7 +25,7 @@ from openslides.projector.api import (
     get_overlays)
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.pdf import stylesheet
-from openslides.utils.rest_api import viewsets
+from openslides.utils.rest_api import ModelViewSet
 from openslides.utils.utils import html_strong
 from openslides.utils.views import (
     AjaxMixin,
@@ -775,7 +775,7 @@ class ItemCSVImportView(CSVImportView):
     template_name = 'agenda/item_form_csv_import.html'
 
 
-class ItemViewSet(viewsets.ModelViewSet):
+class ItemViewSet(ModelViewSet):
     """
     API endpoint to list, retrieve, create, update and destroy agenda items.
     """

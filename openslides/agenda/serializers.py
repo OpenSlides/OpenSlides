@@ -1,6 +1,6 @@
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, NoReverseMatch
 
-from openslides.utils.rest_api import get_collection_and_id_from_url, serializers
+from openslides.utils.rest_api import get_collection_and_id_from_url, serializers, root_rest_for
 
 from .models import Item, Speaker
 
@@ -29,11 +29,16 @@ class RelatedItemRelatedField(serializers.RelatedField):
         of this object.
         """
         view_name = '%s-detail' % type(value)._meta.object_name.lower()
-        url = reverse(view_name, kwargs={'pk': value.pk})
-        collection, obj_id = get_collection_and_id_from_url(url)
+        try:
+            url = reverse(view_name, kwargs={'pk': value.pk})
+        except NoReverseMatch:
+            collection, obj_id = 'unknown', value.pk
+        else:
+            collection, obj_id = get_collection_and_id_from_url(url)
         return {'collection': collection, 'id': obj_id}
 
 
+@root_rest_for(Item)
 class ItemSerializer(serializers.ModelSerializer):
     """
     Serializer for agenda.models.Item objects.
