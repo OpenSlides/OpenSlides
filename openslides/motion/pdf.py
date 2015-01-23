@@ -1,3 +1,5 @@
+from cgi import escape
+
 from operator import attrgetter
 import random
 
@@ -36,7 +38,7 @@ def motion_to_pdf(pdf, motion):
     identifier = ''
     if motion.identifier:
         identifier = ' %s' % motion.identifier
-    pdf.append(Paragraph('%s%s: %s' % (_('Motion'), identifier, motion.title), stylesheet['Heading1']))
+    pdf.append(Paragraph('%s%s: %s' % (_('Motion'), identifier, escape(motion.title)), stylesheet['Heading1']))
 
     motion_data = []
 
@@ -138,7 +140,7 @@ def motion_to_pdf(pdf, motion):
     pdf.append(Spacer(0, 1 * cm))
 
     # motion title
-    pdf.append(Paragraph(motion.title, stylesheet['Heading3']))
+    pdf.append(Paragraph(escape(motion.title), stylesheet['Heading3']))
 
     # motion text
     convert_html_to_reportlab(pdf, motion.text)
@@ -230,9 +232,9 @@ def all_motion_cover(pdf, motions):
     """
     Create a coverpage for all motions.
     """
-    pdf.append(Paragraph(config["motion_pdf_title"], stylesheet['Heading1']))
+    pdf.append(Paragraph(escape(config["motion_pdf_title"]), stylesheet['Heading1']))
 
-    preamble = config["motion_pdf_preamble"]
+    preamble = escape(config["motion_pdf_preamble"])
     if preamble:
         pdf.append(Paragraph("%s" % preamble.replace('\r\n', '<br/>'), stylesheet['Paragraph']))
 
@@ -244,7 +246,7 @@ def all_motion_cover(pdf, motions):
         categories = True
         if i == 0:
             pdf.append(Paragraph(_("Categories"), stylesheet['Heading2']))
-        pdf.append(Paragraph("%s &nbsp;&nbsp; %s" % (category.prefix, category.name), stylesheet['Paragraph']))
+        pdf.append(Paragraph("%s &nbsp;&nbsp; %s" % (escape(category.prefix), escape(category.name)), stylesheet['Paragraph']))
     if categories:
         pdf.append(PageBreak())
 
@@ -256,7 +258,7 @@ def all_motion_cover(pdf, motions):
             identifier = ''
             if motion.identifier:
                 identifier = ' %s' % motion.identifier
-            pdf.append(Paragraph('%s%s: %s' % (_('Motion'), identifier, motion.title), stylesheet['Heading3']))
+            pdf.append(Paragraph('%s%s: %s' % (_('Motion'), identifier, escape(motion.title)), stylesheet['Heading3']))
 
 
 def motion_poll_to_pdf(pdf, poll):

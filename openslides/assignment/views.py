@@ -1,3 +1,5 @@
+from cgi import escape
+
 from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
@@ -338,9 +340,9 @@ class AssignmentPDF(PDFView):
         except KeyError:
             assignment_id = None
         if assignment_id is None:  # print all assignments
-            title = config["assignment_pdf_title"]
+            title = escape(config["assignment_pdf_title"])
             story.append(Paragraph(title, stylesheet['Heading1']))
-            preamble = config["assignment_pdf_preamble"]
+            preamble = escape(config["assignment_pdf_preamble"])
             if preamble:
                 story.append(Paragraph(
                     "%s" % preamble.replace('\r\n', '<br/>'),
@@ -354,7 +356,7 @@ class AssignmentPDF(PDFView):
                 # List of assignments
                 for assignment in assignments:
                     story.append(Paragraph(
-                        assignment.name, stylesheet['Heading3']))
+                        escape(assignment.name), stylesheet['Heading3']))
                 # Assignment details (each assignment on single page)
                 for assignment in assignments:
                     story.append(PageBreak())
@@ -368,7 +370,7 @@ class AssignmentPDF(PDFView):
     def get_assignment(self, assignment, story):
         # title
         story.append(Paragraph(
-            _("Election: %s") % assignment.name, stylesheet['Heading1']))
+            _("Election: %s") % escape(assignment.name), stylesheet['Heading1']))
         story.append(Spacer(0, 0.5 * cm))
 
         # Filling table rows...
@@ -503,7 +505,7 @@ class AssignmentPDF(PDFView):
 
         # election description
         story.append(
-            Paragraph("%s" % assignment.description.replace('\r\n', '<br/>'),
+            Paragraph("%s" % escape(assignment.description).replace('\r\n', '<br/>'),
                       stylesheet['Paragraph']))
 
 

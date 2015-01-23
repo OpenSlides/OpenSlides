@@ -23,13 +23,13 @@ class ChatboxSocketHandler(SockJSConnection):
         engine = import_module(settings.SESSION_ENGINE)
         try:
             session_key = info.get_cookie(settings.SESSION_COOKIE_NAME).value
-            session = engine.SessionStore(session_key)
-            pk = session.get_decoded().get('_auth_user_id')
+            session_store = engine.SessionStore(session_key)
+            pk = session_store.get('_auth_user_id')
         except AttributeError:
             return False
 
         try:
-            self.user = User.objects.get(pk)
+            self.user = User.objects.get(pk=pk)
         except User.DoesNotExist:
             return False
 

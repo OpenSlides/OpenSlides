@@ -1,5 +1,6 @@
 # TODO: Rename all views and template names
 
+from cgi import escape
 from datetime import datetime, timedelta
 from json import dumps
 
@@ -363,10 +364,10 @@ class AgendaPDF(PDFView):
             if ancestors:
                 space = "&nbsp;" * 6 * ancestors.count()
                 story.append(Paragraph(
-                    "%s%s" % (space, item.get_title()),
+                    "%s%s" % (space, escape(item.get_title())),
                     stylesheet['Subitem']))
             else:
-                story.append(Paragraph(item.get_title(), stylesheet['Item']))
+                story.append(Paragraph(escape(item.get_title()), stylesheet['Item']))
 
 
 class SpeakerAppendView(SingleObjectMixin, RedirectView):

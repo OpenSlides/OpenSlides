@@ -1,3 +1,5 @@
+from cgi import escape
+
 from django.utils.translation import ugettext as _
 from reportlab.graphics.barcode.qr import QrCodeWidget
 from reportlab.graphics.shapes import Drawing
@@ -28,13 +30,13 @@ def users_to_pdf(pdf):
         groups = ''
         for group in user.groups.all():
             if group.pk != 2:
-                groups += "%s<br/>" % _(group.name)
+                groups += "%s<br/>" % escape(_(group.name))
         data.append([
             counter,
             Paragraph(user.title, stylesheet['Tablecell']),
-            Paragraph(user.last_name, stylesheet['Tablecell']),
-            Paragraph(user.first_name, stylesheet['Tablecell']),
-            Paragraph(user.structure_level, stylesheet['Tablecell']),
+            Paragraph(escape(user.last_name), stylesheet['Tablecell']),
+            Paragraph(escape(user.first_name), stylesheet['Tablecell']),
+            Paragraph(escape(user.structure_level), stylesheet['Tablecell']),
             Paragraph(groups, stylesheet['Tablecell'])])
     t = LongTable(data, style=[
         ('VALIGN', (0, 0), (-1, -1), 'TOP'),
@@ -80,7 +82,7 @@ def users_passwords_to_pdf(pdf):
     qrcode_wlan_draw.add(qrcode_wlan)
 
     for user in User.objects.all().order_by(sort):
-        pdf.append(Paragraph(user, stylesheet['h1']))
+        pdf.append(Paragraph(escape(user), stylesheet['h1']))
         pdf.append(Spacer(0, 1 * cm))
         data = []
         # WLAN access data
@@ -89,15 +91,15 @@ def users_passwords_to_pdf(pdf):
                     stylesheet['h2']))
         cell.append(Paragraph("%s:" % _("WLAN name (SSID)"),
                     stylesheet['formfield']))
-        cell.append(Paragraph(users_pdf_wlan_ssid,
+        cell.append(Paragraph(escape(users_pdf_wlan_ssid),
                     stylesheet['formfield_value']))
         cell.append(Paragraph("%s:" % _("WLAN password"),
                     stylesheet['formfield']))
-        cell.append(Paragraph(users_pdf_wlan_password,
+        cell.append(Paragraph(escape(users_pdf_wlan_password),
                     stylesheet['formfield_value']))
         cell.append(Paragraph("%s:" % _("WLAN encryption"),
                     stylesheet['formfield']))
-        cell.append(Paragraph(users_pdf_wlan_encryption,
+        cell.append(Paragraph(escape(users_pdf_wlan_encryption),
                     stylesheet['formfield_value']))
         cell.append(Spacer(0, 0.5 * cm))
         # OpenSlides access data
@@ -106,15 +108,15 @@ def users_passwords_to_pdf(pdf):
                      stylesheet['h2']))
         cell2.append(Paragraph("%s:" % _("Username"),
                      stylesheet['formfield']))
-        cell2.append(Paragraph(user.username,
+        cell2.append(Paragraph(escape(user.username),
                      stylesheet['formfield_value']))
         cell2.append(Paragraph("%s:" % _("Password"),
                      stylesheet['formfield']))
-        cell2.append(Paragraph(user.default_password,
+        cell2.append(Paragraph(escape(user.default_password),
                      stylesheet['formfield_value']))
         cell2.append(Paragraph("URL:",
                      stylesheet['formfield']))
-        cell2.append(Paragraph(users_pdf_url,
+        cell2.append(Paragraph(escape(users_pdf_url),
                      stylesheet['formfield_value']))
         data.append([cell, cell2])
         # QRCodes
@@ -138,8 +140,8 @@ def users_passwords_to_pdf(pdf):
         pdf.append(Spacer(0, 2 * cm))
 
         # welcome title and text
-        pdf.append(Paragraph(users_pdf_welcometitle, stylesheet['h2']))
-        pdf.append(Paragraph(users_pdf_welcometext.replace('\r\n', '<br/>'),
+        pdf.append(Paragraph(escape(users_pdf_welcometitle), stylesheet['h2']))
+        pdf.append(Paragraph(escape(users_pdf_welcometext).replace('\r\n', '<br/>'),
                    stylesheet['Paragraph12']))
         pdf.append(PageBreak())
     return pdf
