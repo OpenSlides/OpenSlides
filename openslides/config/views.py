@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 
+from openslides.utils.rest_api import response, viewsets
 from openslides.utils.views import FormView
 
 from .api import config
@@ -100,3 +101,22 @@ class ConfigView(FormView):
             config[key] = form.cleaned_data[key]
         messages.success(self.request, _('%s settings successfully saved.') % _(self.config_collection.title))
         return super(ConfigView, self).form_valid(form)
+
+
+class ConfigViewSet(viewsets.ViewSet):
+    """
+    API endpoint to list and update the config.
+    """
+    def list(self, request):
+        """
+        Lists als config variables. Everybody can see this.
+        """
+        # TODO: Check if we need permission check here.
+        return response.Response(config.get_data_as_dict())
+
+    def update(self, request, pk=None):
+        if not request.user.has_perm('config.can_manage'):
+            self.permission_denied(request)
+        else:
+            # TODO: Implement update method
+            self.permission_denied(request)

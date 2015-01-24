@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 from openslides.agenda.views import CreateRelatedAgendaItemView as _CreateRelatedAgendaItemView
 from openslides.config.api import config
 from openslides.poll.views import PollFormView
+from openslides.utils.rest_api import viewsets
 from openslides.utils.utils import html_strong, htmldiff
 from openslides.utils.views import (CreateView, CSVImportView, DeleteView, DetailView,
                                     ListView, PDFView, QuestionView,
@@ -21,8 +22,9 @@ from .forms import (BaseMotionForm, MotionCategoryMixin,
                     MotionCSVImportForm, MotionSubmitterMixin,
                     MotionSupporterMixin, MotionWorkflowMixin)
 from .models import (Category, Motion, MotionPoll, MotionSubmitter,
-                     MotionSupporter, MotionVersion, State)
+                     MotionSupporter, MotionVersion, State, Workflow)
 from .pdf import motion_poll_to_pdf, motion_to_pdf, motions_to_pdf
+from .serializers import CategorySerializer, MotionSerializer, WorkflowSerializer
 
 
 class MotionListView(ListView):
@@ -537,6 +539,29 @@ class SupportView(SingleObjectMixin, QuestionView):
             return _("You have unsupported this motion successfully.")
 
 
+class MotionViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint to list, retrieve, create, update and destroy motions.
+    """
+    model = Motion
+    queryset = Motion.objects.all()
+    serializer_class = MotionSerializer
+
+    def check_permissions(self, request):
+        """
+        Calls self.permission_denied() if the requesting user has not the
+        permission to see motions and in case of create, update or
+        destroy requests the permission to manage motions.
+        """
+        # TODO: Use motion.can_create_motion permission and
+        #       motion.can_support_motion permission to create and update some
+        #       objects but restricted concerning the requesting user.
+        if (not request.user.has_perm('motion.can_see_motion') or
+                (self.action in ('create', 'update', 'destroy') and not
+                 request.user.has_perm('motion.can_manage_motion'))):
+            self.permission_denied(request)
+
+
 class PollCreateView(SingleObjectMixin, RedirectView):
     """
     View to create a poll for a motion.
@@ -815,6 +840,26 @@ class CategoryDeleteView(DeleteView):
     success_url_name = 'motion_category_list'
 
 
+class CategoryViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint to list, retrieve, create, update and destroy categories.
+    """
+    model = Category
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+    def check_permissions(self, request):
+        """
+        Calls self.permission_denied() if the requesting user has not the
+        permission to see motions and in case of create, update or destroy
+        requests the permission to manage motions.
+        """
+        if (not request.user.has_perm('motion.can_see_motion') or
+                (self.action in ('create', 'update', 'destroy') and not
+                 request.user.has_perm('motion.can_manage_motion'))):
+            self.permission_denied(request)
+
+
 class MotionCSVImportView(CSVImportView):
     """
     Imports motions from an uploaded csv file.
@@ -839,3 +884,23 @@ class MotionCSVImportView(CSVImportView):
         messages.error(self.request, error)
         # Overleap method of CSVImportView
         return super(CSVImportView, self).form_valid(form)
+
+
+class WorkflowViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint to list, retrieve, create, update and destroy workflows.
+    """
+    model = Workflow
+    queryset = Workflow.objects.all()
+    serializer_class = WorkflowSerializer
+
+    def check_permissions(self, request):
+        """
+        Calls self.permission_denied() if the requesting user has not the
+        permission to see motions and in case of create, update or destroy
+        requests the permission to manage motions.
+        """
+        if (not request.user.has_perm('motion.can_see_motion') or
+                (self.action in ('create', 'update', 'destroy') and not
+                 request.user.has_perm('motion.can_manage_motion'))):
+            self.permission_denied(request)

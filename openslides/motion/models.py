@@ -12,12 +12,13 @@ from openslides.poll.models import (BaseOption, BasePoll, BaseVote, CollectDefau
 from openslides.projector.models import SlideMixin
 from jsonfield import JSONField
 from openslides.utils.models import AbsoluteUrlMixin
+from openslides.utils.rest_api import RESTModelMixin
 from openslides.users.models import User
 
 from .exceptions import WorkflowError
 
 
-class Motion(SlideMixin, AbsoluteUrlMixin, models.Model):
+class Motion(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
     """
     The Motion Class.
 
@@ -57,7 +58,7 @@ class Motion(SlideMixin, AbsoluteUrlMixin, models.Model):
     """
     Counts the number of the motion in one category.
 
-    Needed to find the next free motion-identifier.
+    Needed to find the next free motion identifier.
     """
 
     category = models.ForeignKey('Category', null=True, blank=True)
@@ -553,7 +554,7 @@ class Motion(SlideMixin, AbsoluteUrlMixin, models.Model):
         return config['motion_amendments_enabled'] and self.parent is not None
 
 
-class MotionVersion(AbsoluteUrlMixin, models.Model):
+class MotionVersion(RESTModelMixin, AbsoluteUrlMixin, models.Model):
     """
     A MotionVersion object saves some date of the motion.
     """
@@ -611,8 +612,14 @@ class MotionVersion(AbsoluteUrlMixin, models.Model):
         """Return True, if the version is the active version of a motion. Else: False."""
         return self.active_version.exists()
 
+    def get_root_rest_element(self):
+        """
+        Returns the motion to this instance which is the root REST element.
+        """
+        return self.motion
 
-class MotionSubmitter(models.Model):
+
+class MotionSubmitter(RESTModelMixin, models.Model):
     """Save the submitter of a Motion."""
 
     motion = models.ForeignKey('Motion', related_name="submitter")
@@ -625,8 +632,14 @@ class MotionSubmitter(models.Model):
         """Return the name of the submitter as string."""
         return str(self.person)
 
+    def get_root_rest_element(self):
+        """
+        Returns the motion to this instance which is the root REST element.
+        """
+        return self.motion
 
-class MotionSupporter(models.Model):
+
+class MotionSupporter(RESTModelMixin, models.Model):
     """Save the submitter of a Motion."""
 
     motion = models.ForeignKey('Motion', related_name="supporter")
@@ -639,8 +652,14 @@ class MotionSupporter(models.Model):
         """Return the name of the supporter as string."""
         return str(self.person)
 
+    def get_root_rest_element(self):
+        """
+        Returns the motion to this instance which is the root REST element.
+        """
+        return self.motion
 
-class Category(AbsoluteUrlMixin, models.Model):
+
+class Category(RESTModelMixin, AbsoluteUrlMixin, models.Model):
     name = models.CharField(max_length=255, verbose_name=ugettext_lazy("Category name"))
     """Name of the category."""
 
@@ -666,7 +685,7 @@ class Category(AbsoluteUrlMixin, models.Model):
         ordering = ['prefix']
 
 
-class MotionLog(models.Model):
+class MotionLog(RESTModelMixin, models.Model):
     """Save a logmessage for a motion."""
 
     motion = models.ForeignKey(Motion, related_name='log_messages')
@@ -674,7 +693,7 @@ class MotionLog(models.Model):
 
     message_list = JSONField()
     """
-    The log message. It should be a list of strings in english.
+    The log message. It should be a list of strings in English.
     """
 
     person = models.ForeignKey(User, null=True)
@@ -697,8 +716,14 @@ class MotionLog(models.Model):
                                                                'person': self.person}
         return time_and_messages
 
+    def get_root_rest_element(self):
+        """
+        Returns the motion to this instance which is the root REST element.
+        """
+        return self.motion
 
-class MotionVote(BaseVote):
+
+class MotionVote(RESTModelMixin, BaseVote):
     """Saves the votes for a MotionPoll.
 
     There should allways be three MotionVote objects for each poll,
@@ -707,8 +732,14 @@ class MotionVote(BaseVote):
     option = models.ForeignKey('MotionOption')
     """The option object, to witch the vote belongs."""
 
+    def get_root_rest_element(self):
+        """
+        Returns the motion to this instance which is the root REST element.
+        """
+        return self.option.poll.motion
 
-class MotionOption(BaseOption):
+
+class MotionOption(RESTModelMixin, BaseOption):
     """Links between the MotionPollClass and the MotionVoteClass.
 
     There should be one MotionOption object for each poll."""
@@ -719,8 +750,14 @@ class MotionOption(BaseOption):
     vote_class = MotionVote
     """The VoteClass, to witch this Class links."""
 
+    def get_root_rest_element(self):
+        """
+        Returns the motion to this instance which is the root REST element.
+        """
+        return self.poll.motion
 
-class MotionPoll(SlideMixin, CollectDefaultVotesMixin,
+
+class MotionPoll(RESTModelMixin, SlideMixin, CollectDefaultVotesMixin,
                  AbsoluteUrlMixin, BasePoll):
     """The Class to saves the vote result for a motion poll."""
 
@@ -778,8 +815,14 @@ class MotionPoll(SlideMixin, CollectDefaultVotesMixin,
     def get_slide_context(self, **context):
         return super(MotionPoll, self).get_slide_context(poll=self)
 
+    def get_root_rest_element(self):
+        """
+        Returns the motion to this instance which is the root REST element.
+        """
+        return self.motion
 
-class State(models.Model):
+
+class State(RESTModelMixin, models.Model):
     """
     Defines a state for a motion.
 
@@ -867,8 +910,14 @@ class State(models.Model):
             if not state.workflow == self.workflow:
                 raise WorkflowError('%s can not be next state of %s because it does not belong to the same workflow.' % (state, self))
 
+    def get_root_rest_element(self):
+        """
+        Returns the workflow to this instance which is the root REST element.
+        """
+        return self.workflow
 
-class Workflow(models.Model):
+
+class Workflow(RESTModelMixin, models.Model):
     """Defines a workflow for a motion."""
 
     name = models.CharField(max_length=255)

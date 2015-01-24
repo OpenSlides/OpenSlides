@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _, ugettext_lazy, activate
 
 from openslides.config.api import config
-from openslides.utils import rest_api
+from openslides.utils.rest_api import viewsets
 from openslides.utils.utils import delete_default_permissions, html_strong
 from openslides.utils.views import (
     CreateView, CSVImportView, DeleteView, DetailView, FormView, ListView,
@@ -261,17 +261,18 @@ class ResetPasswordView(SingleObjectMixin, QuestionView):
         return _('The Password for %s was successfully reset.') % html_strong(self.get_object())
 
 
-class UserViewSet(rest_api.viewsets.ModelViewSet):
+class UserViewSet(viewsets.ModelViewSet):
     """
-    API endpoint to create, view, edit and delete users.
+    API endpoint to list, retrive, create, update and delete users.
     """
     model = User
     queryset = User.objects.all()
 
     def check_permissions(self, request):
         """
-        Calls self.permission_denied() if the requesting user has not all
-        permissions to see users.
+        Calls self.permission_denied() if the requesting user has not the
+        permission to see users and in case of create, update or destroy
+        requests the permission to see extra user data and to manage users.
         """
         if (not request.user.has_perm('users.can_see_name') or
                 (self.action in ('create', 'update', 'destroy') and not

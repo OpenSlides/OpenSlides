@@ -13,8 +13,10 @@ class MotionAppConfig(AppConfig):
 
         # Import all required stuff.
         from openslides.config.signals import config_signal
+        from openslides.utils.rest_api import router
         from openslides.projector.api import register_slide_model
         from .signals import create_builtin_workflows, setup_motion_config
+        from .views import CategoryViewSet, MotionViewSet, WorkflowViewSet
 
         # Connect signals.
         config_signal.connect(setup_motion_config, dispatch_uid='setup_motion_config')
@@ -25,3 +27,8 @@ class MotionAppConfig(AppConfig):
         MotionPoll = self.get_model('MotionPoll')
         register_slide_model(Motion, 'motion/slide.html')
         register_slide_model(MotionPoll, 'motion/motionpoll_slide.html')
+
+        # Register viewsets.
+        router.register('motion/category', CategoryViewSet)
+        router.register('motion/motion', MotionViewSet)
+        router.register('motion/workflow', WorkflowViewSet)

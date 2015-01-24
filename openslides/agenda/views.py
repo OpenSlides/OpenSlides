@@ -23,9 +23,9 @@ from openslides.projector.api import (
     get_active_slide,
     get_projector_overlays_js,
     get_overlays)
-from openslides.utils import rest_api
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.pdf import stylesheet
+from openslides.utils.rest_api import viewsets
 from openslides.utils.utils import html_strong
 from openslides.utils.views import (
     AjaxMixin,
@@ -773,9 +773,9 @@ class ItemCSVImportView(CSVImportView):
     template_name = 'agenda/item_form_csv_import.html'
 
 
-class ItemViewSet(rest_api.viewsets.ModelViewSet):
+class ItemViewSet(viewsets.ModelViewSet):
     """
-    API endpoint to retrieve, create, edit and delete agenda items.
+    API endpoint to list, retrieve, create, update and destroy agenda items.
     """
     model = Item
     serializer_class = ItemSerializer
@@ -783,8 +783,9 @@ class ItemViewSet(rest_api.viewsets.ModelViewSet):
     def check_permissions(self, request):
         """
         Calls self.permission_denied() if the requesting user has not the
-        permission to see and in case of create, update or destroy requests
-        the permission to manage and to see organizational items.
+        permission to see the agenda and in case of create, update or destroy
+        requests the permission to manage the agenda and to see organizational
+        items.
         """
         if (not request.user.has_perm('agenda.can_see_agenda') or
                 (self.action in ('create', 'update', 'destroy') and not
@@ -802,7 +803,7 @@ class ItemViewSet(rest_api.viewsets.ModelViewSet):
 
     def get_queryset(self):
         """
-        Filters organizational items if the user has no permission to see it.
+        Filters organizational items if the user has no permission to see them.
         """
         queryset = Item.objects.all()
         if not self.request.user.has_perm('agenda.can_see_orga_items'):

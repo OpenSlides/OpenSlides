@@ -1,9 +1,9 @@
-from openslides.utils import rest_api
+from openslides.utils.rest_api import serializers
 
 from .models import User
 
 
-class UserShortSerializer(rest_api.serializers.ModelSerializer):
+class UserShortSerializer(serializers.ModelSerializer):
     """
     Serializer for users.models.User objects.
 
@@ -12,6 +12,7 @@ class UserShortSerializer(rest_api.serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
+            'url',
             'username',
             'title',
             'first_name',
@@ -19,7 +20,7 @@ class UserShortSerializer(rest_api.serializers.ModelSerializer):
             'structure_level')
 
 
-class UserFullSerializer(rest_api.serializers.ModelSerializer):
+class UserFullSerializer(serializers.ModelSerializer):
     """
     Serializer for users.models.User objects.
 
@@ -28,6 +29,7 @@ class UserFullSerializer(rest_api.serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
+            'url',
             'is_present',
             'username',
             'title',
