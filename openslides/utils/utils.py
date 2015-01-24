@@ -2,44 +2,15 @@ import difflib
 import roman
 
 from django.contrib.auth.models import Permission
-from django.shortcuts import render_to_response
-from django.template import RequestContext
-
-from .signals import template_manipulation
-
-
-def template(template_name):
-    """
-    Decorator to set a template for a view.
-
-    Deprecated. Use class based views instead.
-    """
-    # TODO: Write the login page an the usersettings page with class based views
-    #       Remove this function afterwards
-    def renderer(func):
-        def wrapper(request, *args, **kwargs):
-            output = func(request, *args, **kwargs)
-            if not isinstance(output, dict):
-                return output
-            context = {}
-            template_manipulation.send(
-                sender='utils_template', request=request, context=context)
-            output.update(context)
-            response = render_to_response(
-                template_name, output, context_instance=RequestContext(request))
-            if 'cookie' in output:
-                response.set_cookie(output['cookie'][0], output['cookie'][1])
-            return response
-        return wrapper
-    return renderer
 
 
 def delete_default_permissions(**kwargs):
     """
     Deletes the permissions, django creates by default for the admin.
     """
-    # TODO: Create an participant app which does not create the permissions.
-    #       Delete this function afterwards
+    # TODO: Find a way not to create the permissions in the first place.
+    #       Meta.default_permissions does not work, because django will
+    #       nevertheless create permissions for its own models like "group"
     for p in Permission.objects.all():
         if (p.codename.startswith('add') or
                 p.codename.startswith('delete') or
@@ -51,7 +22,7 @@ def html_strong(string):
     """
     Returns the text wrapped in an HTML-Strong element.
     """
-    return u"<strong>%s</strong>" % string
+    return "<strong>%s</strong>" % string
 
 
 def htmldiff(text1, text2):

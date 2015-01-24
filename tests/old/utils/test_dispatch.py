@@ -27,12 +27,12 @@ class TestBaseTwo(object, metaclass=SignalConnectMetaClass):
 class TestSignalConnectMetaClass(TestCase):
     request_factory = RequestFactory()
 
-    @patch('tests.utils.test_dispatch.TestBaseOne.signal')
+    @patch('tests.old.utils.test_dispatch.TestBaseOne.signal')
     def test_call_signal_send(self, mock_signal):
         TestBaseOne.get_all(self.request_factory.request)
         self.assertTrue(mock_signal.send.called)
 
-    @patch('tests.utils.test_dispatch.TestBaseOne.signal')
+    @patch('tests.old.utils.test_dispatch.TestBaseOne.signal')
     def test_call_signal_connect(self, mock_signal):
         class TestChildOne(TestBaseOne):
             pass

@@ -173,3 +173,5 @@ CKEDITOR_CONFIGS = {
 # Use small alternative with tornado as frontend or big alternative with a
 # webserver as wsgi server.
 USE_TORNADO_AS_WSGI_SERVER = True
+
+TEST_RUNNER = 'openslides.utils.test.OpenSlidesDiscoverRunner'

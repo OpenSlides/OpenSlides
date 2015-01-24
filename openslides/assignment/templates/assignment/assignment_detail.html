@@ -149,7 +149,7 @@
                     <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
                 </button>
                 {% if perms.users.can_see and perms.users.can_manage %}
-                    <a href="{% url 'user_new' %}" target="_blank" class="btn btn-default"
+                    <a href="{% url 'user_create' %}" target="_blank" class="btn btn-default"
                             rel="tooltip" data-original-title="{% trans 'Add new participant' %}">
                         <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                     </a>

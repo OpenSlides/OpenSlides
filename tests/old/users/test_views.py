@@ -85,10 +85,10 @@ class GroupViews(TestCase):
 
     def test_detail(self):
         response = self.client.get('/user/group/3/')
-        pattern = r'admins_first_name Administrator|aWei4ien6Se0vie0xeiv uquahx3Wohtieph9baer'
+        pattern = r'Administrator, admins_first_name|uquahx3Wohtieph9baer, aWei4ien6Se0vie0xeiv'
         match = re.findall(pattern, response.content.decode('utf8'))
-        self.assertEqual(match[0], 'admins_first_name Administrator')
-        self.assertEqual(match[1], 'aWei4ien6Se0vie0xeiv uquahx3Wohtieph9baer')
+        self.assertEqual(match[0], 'Administrator, admins_first_name')
+        self.assertEqual(match[1], 'uquahx3Wohtieph9baer, aWei4ien6Se0vie0xeiv')
 
         config['users_sort_users_by_first_name'] = True
         self.assertTrue(config['users_sort_users_by_first_name'])

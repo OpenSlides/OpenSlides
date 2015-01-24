@@ -11,19 +11,19 @@ urlpatterns = patterns(
 
     url(r'^new/$',
         views.UserCreateView.as_view(),
-        name='user_new'),
+        name='user_create'),
 
     url(r'^new_multiple/$',
         views.UserMultipleCreateView.as_view(),
-        name='user_new_multiple'),
+        name='user_create_multiple'),
 
     url(r'^(?P<pk>\d+)/$',
         views.UserDetailView.as_view(),
-        name='user_view'),
+        name='user_detail'),
 
     url(r'^(?P<pk>\d+)/edit/$',
         views.UserUpdateView.as_view(),
-        name='user_edit'),
+        name='user_update'),
 
     url(r'^(?P<pk>\d+)/del/$',
         views.UserDeleteView.as_view(),

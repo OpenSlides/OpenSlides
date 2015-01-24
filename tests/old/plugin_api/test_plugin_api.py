@@ -7,7 +7,7 @@ from django.core.urlresolvers import clear_url_caches
 from openslides.utils.test import TestCase
 
 
-@override_settings(INSTALLED_PLUGINS=('tests.plugin_api.test_plugin_one',))
+@override_settings(INSTALLED_PLUGINS=('tests.old.plugin_api.test_plugin_one',))
 class TestPluginOne(TestCase):
     def setUp(self):
         self.admin_client = Client()
@@ -27,11 +27,11 @@ class TestPluginOne(TestCase):
         self.assertRedirects(response, '/version/')
 
 
-@override_settings(INSTALLED_PLUGINS=('tests.plugin_api.test_plugin_two',))
+@override_settings(INSTALLED_PLUGINS=('tests.old.plugin_api.test_plugin_two',))
 class TestPluginTwo(TestCase):
     def test_version_page(self):
         admin_client = Client()
         admin_client.login(username='admin', password='admin')
         response = admin_client.get('/version/')
-        self.assertContains(response, 'tests.plugin_api.test_plugin_two')
+        self.assertContains(response, 'tests.old.plugin_api.test_plugin_two')
         self.assertContains(response, '– Version unknown')

@@ -251,7 +251,7 @@ class ResetPasswordView(SingleObjectMixin, QuestionView):
     question_message = ugettext_lazy('Do you really want to reset the password?')
 
     def get_redirect_url(self, **kwargs):
-        return reverse('user_edit', args=[self.get_object().id])
+        return self.get_object().get_absolute_url('update')
 
     def on_clicked_yes(self):
         self.get_object().reset_password()
