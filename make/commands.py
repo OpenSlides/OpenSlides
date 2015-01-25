@@ -14,7 +14,7 @@ def test(args=None):
     Runs the tests.
     """
     module = getattr(args, 'module', '')
-    return call("DJANGO_SETTINGS_MODULE='tests.integration.settings' coverage run "
+    return call("DJANGO_SETTINGS_MODULE='tests.settings' coverage run "
                 "./manage.py test tests.%s" % module)
 
 

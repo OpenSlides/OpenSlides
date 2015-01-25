@@ -384,7 +384,7 @@ class Motion(SlideMixin, AbsoluteUrlMixin, models.Model):
 
     def is_submitter(self, person):
         """Return True, if person is a submitter of this motion. Else: False."""
-        return self.submitter.filter(person=person).exists()
+        return self.submitter.filter(person=person.pk).exists()
 
     @property
     def supporters(self):
@@ -400,7 +400,7 @@ class Motion(SlideMixin, AbsoluteUrlMixin, models.Model):
         """
         Return True, if person is a supporter of this motion. Else: False.
         """
-        return self.supporter.filter(person=person).exists()
+        return self.supporter.filter(person=person.pk).exists()
 
     def support(self, person):
         """
