@@ -175,3 +175,8 @@ CKEDITOR_CONFIGS = {
 USE_TORNADO_AS_WSGI_SERVER = True
 
 TEST_RUNNER = 'openslides.utils.test.OpenSlidesDiscoverRunner'
+
+# Config for the REST Framework
+REST_FRAMEWORK = {
+    'UNAUTHENTICATED_USER': 'openslides.users.auth.AnonymousUser',
+}
