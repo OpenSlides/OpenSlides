@@ -16,6 +16,8 @@ Core:
 Motions:
 - New Feature to create amendments, which are related to a parent motion.
 - Added possibility to hide motions from non staff users in some states.
+Assignments:
+- Fix permissions to alter assignment polls.
 Other:
 - Cleaned up utils.views to increase performance when fetching single objects
   from the database for a view (#1378).

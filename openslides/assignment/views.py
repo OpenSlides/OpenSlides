@@ -200,6 +200,7 @@ class PollCreateView(SingleObjectMixin, RedirectView):
 
 
 class PollUpdateView(PollFormView):
+    required_permission = 'assignment.can_manage_assignment'
     poll_class = AssignmentPoll
     template_name = 'assignment/assignmentpoll_form.html'
 
