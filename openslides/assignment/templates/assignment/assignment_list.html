@@ -9,7 +9,7 @@
 {% block content %}
     <h1>{% trans "Elections" %}
         <small class="pull-right">
-        {% if perms.assignment.can_manage_assignment %}
+        {% if perms.assignment.can_manage_assignments %}
             <a href="{% url 'assignment_create' %}" class="btn btn-primary btn-sm"
                     rel="tooltip" data-original-title="{% trans 'New election' %}">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
@@ -23,7 +23,7 @@
                 <span class="optional-small"> {% trans 'Tags' %}</span>
             </a>
         {% endif %}
-        {% if perms.assignment.can_see_assignment %}
+        {% if perms.assignment.can_see_assignments %}
             <a href="{% url 'assignment_list_pdf' %}" class="btn btn-default btn-sm"
                     rel="tooltip" data-original-title="{% trans 'Print all elections as PDF' %}" target="_blank">
                 <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
@@ -38,8 +38,8 @@
         <tr>
             <th>{% trans "Election" %}</th>
             <th class="optional">{% trans "Candidates" %}</th>
-            <th>{% trans "Status" %}</th>
-            {% if perms.assignment.can_manage_assignment or perms.core.can_manage_projector %}
+            <th>{% trans "Phase" %}</th>
+            {% if perms.assignment.can_manage_assignments or perms.core.can_manage_projector %}
                 <th class="mini_width">{% trans "Actions" %}</th>
             {% endif %}
         </tr>
@@ -54,16 +54,16 @@
             <td  class="optional">
                 <!-- posts -->
                 {% trans "Posts" context "Number of searched candidates for an election" %}:
-                <span class="badge badge-info">{{ object.posts }}</span>
+                <span class="badge badge-info">{{ object.open_posts }}</span>
                 <!-- candidates -->
-                {% if object.status != 'fin' %}
-                    | {% trans "Candidates" %}: <span class="badge badge-warning">{{ object.get_participants|length }}</span>
+                {% if object.phase != object.PHASE_FINISHED %}
+                    | {% trans "Candidates" %}: <span class="badge badge-warning">{{ object.candidates.count }}</span>
                 {% endif %}
                 <!-- elected candidates -->
-                | {% trans "Elected" %}: <span class="badge badge-success">{{ object.elected|length }}</span>
+                | {% trans "Elected" %}: <span class="badge badge-success">{{ object.elected.count }}</span>
             </td>
-            <td><span class="label label-info">{{ object.get_status_display }}</status></td>
-            {% if perms.assignment.can_manage_assignment or perms.core.can_manage_projector %}
+            <td><span class="label label-info">{{ object.get_phase_display }}</span></td>
+            {% if perms.assignment.can_manage_assignments or perms.core.can_manage_projector %}
             <td>
                 <span style="width: 1px; white-space: nowrap;">
                 {% if perms.core.can_manage_projector %}
@@ -73,7 +73,7 @@
                         <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>
                     </a>
                 {% endif %}
-                {% if perms.assignment.can_manage_assignment %}
+                {% if perms.assignment.can_manage_assignments %}
                     <a href="{{ object|absolute_url:'update' }}"
                             rel="tooltip" data-original-title="{% trans 'Edit' %}"
                             class="btn btn-default btn-sm">

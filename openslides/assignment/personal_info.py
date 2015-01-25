@@ -2,7 +2,7 @@ from django.utils.translation import ugettext_lazy
 
 from openslides.utils.personal_info import PersonalInfo
 
-from .models import Assignment
+from .models import Assignment, AssignmentRelatedUser
 
 
 class AssignmentPersonalInfo(PersonalInfo):
@@ -13,6 +13,5 @@ class AssignmentPersonalInfo(PersonalInfo):
     default_weight = 40
 
     def get_queryset(self):
-        return Assignment.objects.filter(
-            assignmentcandidate__person=self.request.user,
-            assignmentcandidate__blocked=False)
+        return (Assignment.objects.filter(assignment_related_users__user=self.request.user)
+                .exclude(assignment_related_users__status=AssignmentRelatedUser.STATUS_BLOCKED))

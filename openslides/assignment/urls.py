@@ -24,21 +24,21 @@ urlpatterns = patterns(
         views.AssignmentDeleteView.as_view(),
         name='assignment_delete'),
 
-    url(r'^(?P<pk>\d+)/setstatus/(?P<status>[a-z]{3})/$',
-        views.AssignmentSetStatusView.as_view(),
-        name='assignment_set_status'),
+    url(r'^(?P<pk>\d+)/set_phase/(?P<phase>\d+)/$',
+        views.AssignmentSetPhaseView.as_view(),
+        name='assignment_set_phase'),
 
-    url(r'^(?P<pk>\d+)/run/$',
-        views.AssignmentRunView.as_view(),
-        name='assignment_run'),
+    url(r'^(?P<pk>\d+)/candidate/$',
+        views.AssignmentCandidateView.as_view(),
+        name='assignment_candidate'),
 
-    url(r'^(?P<pk>\d+)/delrun/$',
-        views.AssignmentRunDeleteView.as_view(),
-        name='assignment_delrun'),
+    url(r'^(?P<pk>\d+)/delete_candidate/$',
+        views.AssignmentDeleteCandidateshipView.as_view(),
+        name='assignment_del_candidate'),
 
-    url(r'^(?P<pk>\d+)/delother/(?P<user_id>[^/]+)/$',
-        views.AssignmentRunOtherDeleteView.as_view(),
-        name='assignment_delother'),
+    url(r'^(?P<pk>\d+)/delother/(?P<user_pk>[^/]+)/$',
+        views.AssignmentDeleteCandidateshipOtherView.as_view(),
+        name='assignment_del_candidate_other'),
 
     url(r'^(?P<pk>\d+)/agenda/$',
         views.CreateRelatedAgendaItemView.as_view(),
@@ -52,7 +52,7 @@ urlpatterns = patterns(
         views.AssignmentPDF.as_view(),
         name='assignment_pdf'),
 
-    url(r'^(?P<pk>\d+)/gen_poll/$',
+    url(r'^(?P<pk>\d+)/create_poll/$',
         views.PollCreateView.as_view(),
         name='assignmentpoll_create'),
 
@@ -64,22 +64,26 @@ urlpatterns = patterns(
         views.AssignmentPollDeleteView.as_view(),
         name='assignmentpoll_delete'),
 
-    url(r'^poll/(?P<poll_id>\d+)/print/$',
+    url(r'^poll/(?P<poll_pk>\d+)/print/$',
         views.AssignmentPollPDF.as_view(),
         name='assignmentpoll_pdf'),
 
-    # TODO: use seperate urls to publish and unpublish the poll
-    #       see assignment_user_elected
     url(r'^poll/(?P<pk>\d+)/pub/$',
-        views.SetPublishStatusView.as_view(),
-        name='assignmentpoll_publish_status'),
+        views.SetPublishPollView.as_view(),
+        {'publish': True},
+        name='assignmentpoll_publish_poll'),
 
-    url(r'^(?P<pk>\d+)/elected/(?P<user_id>[^/]+)/$',
+    url(r'^poll/(?P<pk>\d+)/unpub/$',
+        views.SetPublishPollView.as_view(),
+        {'publish': False},
+        name='assignmentpoll_unpublish_poll'),
+
+    url(r'^(?P<pk>\d+)/elected/(?P<user_pk>[^/]+)/$',
         views.SetElectedView.as_view(),
         {'elected': True},
         name='assignment_user_elected'),
 
-    url(r'^(?P<pk>\d+)/notelected/(?P<user_id>[^/]+)/$',
+    url(r'^(?P<pk>\d+)/notelected/(?P<user_pk>[^/]+)/$',
         views.SetElectedView.as_view(),
         {'elected': False},
         name='assignment_user_not_elected')

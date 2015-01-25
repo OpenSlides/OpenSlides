@@ -8,12 +8,12 @@ from .models import Assignment
 
 
 class AssignmentForm(CssClassMixin, forms.ModelForm):
-    posts = forms.IntegerField(
+    open_posts = forms.IntegerField(
         min_value=1, initial=1, label=ugettext_lazy("Number of available posts"))
 
     class Meta:
         model = Assignment
-        exclude = ('status', 'elected')
+        fields = ('title', 'description', 'open_posts', 'poll_description_default')
 
 
 class AssignmentRunForm(CssClassMixin, forms.Form):

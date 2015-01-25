@@ -16,11 +16,11 @@ class AssignmentPDFTest(TestCase):
         self.admin_client.login(username='admin', password='admin')
 
     def test_render_pdf(self):
-        Assignment.objects.create(name='assignment_name_ith8qua1Eiferoqu5ju2', description="test", posts=1)
+        Assignment.objects.create(title='assignment_name_ith8qua1Eiferoqu5ju2', description="test", open_posts=1)
         response = self.admin_client.get('/assignment/print/')
         self.assertEqual(response.status_code, 200)
 
     def test_render_many_posts(self):
-        Assignment.objects.create(name='assignment_name_cohZ9shaipee3Phaing4', description="test", posts=20)
+        Assignment.objects.create(title='assignment_name_cohZ9shaipee3Phaing4', description="test", open_posts=20)
         response = self.admin_client.get('/assignment/print/')
         self.assertEqual(response.status_code, 200)

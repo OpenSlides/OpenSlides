@@ -34,7 +34,7 @@ class AssignmentViewTestCase(TestCase):
         self.registered_client = Client()
         self.registered_client.login(username='registered', password='registered')
 
-        self.assignment1 = Assignment.objects.create(name='test', posts=2)
+        self.assignment1 = Assignment.objects.create(title='test', open_posts=2)
 
     def check_url(self, url, test_client, response_cose):
         response = test_client.get(url)
@@ -45,7 +45,7 @@ class AssignmentViewTestCase(TestCase):
 class TestAssignmentPollDelete(AssignmentViewTestCase):
     def setUp(self):
         super(TestAssignmentPollDelete, self).setUp()
-        self.assignment1.gen_poll()
+        self.assignment1.create_poll()
 
     def test_get(self):
         response = self.check_url('/assignment/poll/1/del/', self.admin_client, 302)
@@ -65,7 +65,7 @@ class TestAssignmentDetailView(AssignmentViewTestCase):
         self.assertContains(response, 'No candidates available.')
         self.assertNotContains(response, 'Blocked Candidates')
 
-        response = self.delegate_client.get('/assignment/1/run/')
+        response = self.delegate_client.get('/assignment/1/candidate/')
         self.assertTrue(self.assignment1.is_candidate(self.delegate))
         self.assertFalse(self.assignment1.is_blocked(self.delegate))
 
@@ -73,7 +73,7 @@ class TestAssignmentDetailView(AssignmentViewTestCase):
         self.assertNotContains(response, 'No candidates available.')
         self.assertNotContains(response, 'Blocked Candidates')
 
-        response = self.delegate_client.get('/assignment/1/delrun/')
+        response = self.delegate_client.get('/assignment/1/delete_candidate/')
         self.assertFalse(self.assignment1.is_candidate(self.delegate))
         self.assertTrue(self.assignment1.is_blocked(self.delegate))
 
@@ -89,19 +89,19 @@ class TestAssignmentPollCreateView(TestCase):
     def test_assignment_add_candidate(self):
         admin = User.objects.get(pk=1)
         self.assignment = Assignment.objects.create(
-            name='test_assignment_oiL2heerookiegeirai0',
-            posts=1)
-        self.assignment.run(admin, admin)
+            title='test_assignment_oiL2heerookiegeirai0',
+            open_posts=1)
+        self.assignment.set_candidate(admin)
         self.assertEqual(len(Assignment.objects.get(pk=self.assignment.pk).candidates), 1)
 
     def test_assignment_poll_creation(self):
         self.test_assignment_add_candidate()
-        self.assignment.set_status('vot')
+        self.assignment.set_phase(self.assignment.PHASE_VOTING)
         admin_client = Client()
         admin_client.login(username='admin', password='admin')
         self.assertFalse(AssignmentPoll.objects.exists())
         self.assertEqual(config['assignment_poll_vote_values'], 'auto')
-        response = admin_client.get('/assignment/1/gen_poll/')
+        response = admin_client.get('/assignment/1/create_poll/')
         self.assertRedirects(response, '/assignment/1/')
         poll = AssignmentPoll.objects.get()
         self.assertEqual(poll.assignment, self.assignment)
@@ -117,10 +117,10 @@ class TestAssignmentPollPdfView(TestCase):
     def test_assignment_create_poll_pdf(self):
         # Create a assignment with a poll
         admin = User.objects.get(pk=1)
-        assignment = Assignment.objects.create(name='assignment1', posts=1)
-        assignment.run(admin, admin)
-        assignment.set_status('vot')
-        assignment.gen_poll()
+        assignment = Assignment.objects.create(title='assignment1', open_posts=1)
+        assignment.set_candidate(admin)
+        assignment.set_phase(assignment.PHASE_VOTING)
+        assignment.create_poll()
         client = Client()
         client.login(username='admin', password='admin')
 
@@ -140,7 +140,7 @@ class TestPollUpdateView(TestCase):
         """
         Tests that a 404 is returned, when a non existing poll is requested.
         """
-        Assignment.objects.create(name='test assignment', posts=1)
+        Assignment.objects.create(title='test assignment', open_posts=1)
         url = '/assignment/poll/1/edit/'
 
         response = self.admin_client.get(url)

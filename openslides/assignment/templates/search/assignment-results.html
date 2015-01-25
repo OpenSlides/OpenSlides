@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load highlight %}
 
-{% if perms.assignment.can_see_assignment %}
+{% if perms.assignment.can_see_assignments %}
     <li>
         <a href="{{ result.object.get_absolute_url }}">{{ result.object }}</a><br>
         <span class="app">{% trans "Election" %}</a></span><br>

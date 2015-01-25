@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.contrib.auth.models import AnonymousUser
-from django.contrib.contenttypes import generic
+from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
@@ -95,9 +95,8 @@ class Item(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, MPTTModel):
     """
     Field for generic relation to a related object. Id of the object.
     """
-    # TODO: rename it to object_pk
 
-    content_object = generic.GenericForeignKey()
+    content_object = GenericForeignKey()
     """
     Field for generic relation to a related object. General field to the related object.
     """
