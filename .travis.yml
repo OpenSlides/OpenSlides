@@ -1,9 +1,15 @@
 language: python
+sudo: false
+cache:
+  directories:
+    - node_modules
+    - $HOME/virtualenv/python$TRAVIS_PYTHON_VERSION/lib/python$TRAVIS_PYTHON_VERSION/site-packages/
+    - $HOME/virtualenv/python$TRAVIS_PYTHON_VERSION/bin/
 python:
   - "3.3"
   - "3.4"
 install:
-  - "pip install -r requirements.txt"
+  - "pip install --upgrade --requirement requirements.txt"
   - "npm install"
   - "node_modules/.bin/bower install"
   - "node_modules/.bin/gulp --production"
