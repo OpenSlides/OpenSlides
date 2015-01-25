@@ -11,12 +11,17 @@ Version 2.0.0 (unreleased)
 Other:
 - Changed supported Python version to >= 3.3.
 - Used Django 1.7 as lowest requirement.
+- Updated to Bootstrap 3.
 - Refactoring of the participant app. Now called 'users'.
+- Used new anonymous user object instead of an authentification backend.
 - Added Django's application configuration. Refactored loading of signals,
   template signals and slides.
+- Added Django REST Framework api.
+- Refactored start script and management commands.
+- Refactored tests.
 - Used Bower and gulp to manage third party JavaScript and Cascading Style
   Sheets libraries.
-- Added Django REST Framework api.
+- Fixed bug in LocalizedModelMultipleChoiceField.
 
 
 Version 1.7 (unreleased)
