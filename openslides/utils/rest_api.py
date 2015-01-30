@@ -45,7 +45,7 @@ def get_collection_and_id_from_url(url):
     Raises OpenSlidesError if the URL is invalid.
     """
     path = urlparse(url).path
-    match = re.match(r'^/api/(?P<name>[-\w]+/[-\w]+)/(?P<id>[-\w]+)/$', path)
+    match = re.match(r'^/rest/(?P<collection>[-\w]+/[-\w]+)/(?P<id>[-\w]+)/$', path)
     if not match:
         raise OpenSlidesError('Invalid REST api URL: %s' % url)
-    return match.group('name'), match.group('id')
+    return match.group('collection'), match.group('id')

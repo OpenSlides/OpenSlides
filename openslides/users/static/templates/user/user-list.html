@@ -1,0 +1,7 @@
+<ul>
+    <li ng-repeat="user in users">
+        <a ng-href="user/{{ user.id }}/">{{ user.get_short_name() }}</a>
+        <a ng-href="user/{{ user.id }}/edit/">{{ gettext('Edit') }}</a>
+    </li>
+</ul>
+<a ng-href="user/new/">{{ gettext('New') }}</a>
