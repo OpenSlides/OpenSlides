@@ -1,10 +1,11 @@
-from openslides.utils import rest_api
 from rest_framework.reverse import reverse
+
+from openslides.utils.rest_api import serializers
 
 from .models import Item, Speaker
 
 
-class SpeakerSerializer(rest_api.serializers.HyperlinkedModelSerializer):
+class SpeakerSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serializer for agenda.models.Speaker objects.
     """
@@ -18,7 +19,7 @@ class SpeakerSerializer(rest_api.serializers.HyperlinkedModelSerializer):
             'weight')
 
 
-class RelatedItemRelatedField(rest_api.serializers.RelatedField):
+class RelatedItemRelatedField(serializers.RelatedField):
     """
     A custom field to use for the `content_object` generic relationship.
     """
@@ -35,17 +36,37 @@ class RelatedItemRelatedField(rest_api.serializers.RelatedField):
         return reverse(view_name, kwargs={'pk': value.pk}, request=request)
 
 
-class ItemSerializer(rest_api.serializers.HyperlinkedModelSerializer):
+class ItemSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serializer for agenda.models.Item objects.
     """
-    get_title = rest_api.serializers.CharField(read_only=True)
-    get_title_supplement = rest_api.serializers.CharField(read_only=True)
-    item_no = rest_api.serializers.CharField(read_only=True)
-    speaker_set = SpeakerSerializer(many=True, read_only=True)
-    tags = rest_api.serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='tag-detail')
+    get_title = serializers.CharField(read_only=True)
+    get_title_supplement = serializers.CharField(read_only=True)
     content_object = RelatedItemRelatedField(read_only=True)
+    item_no = serializers.CharField(read_only=True)
+    speaker_set = SpeakerSerializer(many=True, read_only=True)
 
     class Meta:
         model = Item
-        exclude = ('content_type', 'object_id')
+        fields = (
+            'url',
+            'item_number',
+            'item_no',
+            'title',
+            'get_title',
+            'get_title_supplement',
+            'text',
+            'comment',
+            'closed',
+            'type',
+            'duration',
+            'speaker_set',
+            'speaker_list_closed',
+            'content_object',
+            'weight',
+            'lft',
+            'rght',
+            'tree_id',
+            'level',
+            'parent',
+            'tags',)

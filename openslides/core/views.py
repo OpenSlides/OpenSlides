@@ -12,9 +12,9 @@ from haystack.views import SearchView as _SearchView
 from openslides import get_version as get_openslides_version
 from openslides import get_git_commit_id, RELEASE
 from openslides.config.api import config
-from openslides.utils import rest_api
 from openslides.utils import views as utils_views
 from openslides.utils.plugins import get_plugin_description, get_plugin_verbose_name, get_plugin_version
+from openslides.utils.rest_api import viewsets
 from openslides.utils.signals import template_manipulation
 from openslides.utils.widgets import Widget
 
@@ -218,9 +218,9 @@ class CustomSlideDeleteView(CustomSlideViewMixin, utils_views.DeleteView):
     pass
 
 
-class CustomSlideViewSet(rest_api.viewsets.ModelViewSet):
+class CustomSlideViewSet(viewsets.ModelViewSet):
     """
-    API endpoint to retrieve, create, update and delete custom slides.
+    API endpoint to list, retrieve, create, update and destroy custom slides.
     """
     model = CustomSlide
     queryset = CustomSlide.objects.all()
@@ -229,7 +229,7 @@ class CustomSlideViewSet(rest_api.viewsets.ModelViewSet):
     def check_permissions(self, request):
         """
         Calls self.permission_denied() if the requesting user has not the
-        permission to manage.
+        permission to manage projector.
         """
         if not request.user.has_perm('core.can_manage_projector'):
             self.permission_denied(request)
@@ -313,9 +313,9 @@ class TagListView(utils_views.AjaxMixin, utils_views.ListView):
             **context)
 
 
-class TagViewSet(rest_api.viewsets.ModelViewSet):
+class TagViewSet(viewsets.ModelViewSet):
     """
-    API endpoint to retrieve, create, edit and delete tags.
+    API endpoint to list, retrieve, create, update and destroy tags.
     """
     model = Tag
     queryset = Tag.objects.all()
@@ -324,7 +324,7 @@ class TagViewSet(rest_api.viewsets.ModelViewSet):
     def check_permissions(self, request):
         """
         Calls self.permission_denied() if the requesting user has not the
-        permission to manage and it's a create, update or detroy request.
+        permission to manage tags and it is a create, update or detroy request.
         """
         if (self.action in ('create', 'update', 'destroy')
                 and not request.user.has_perm('core.can_manage_tags')):

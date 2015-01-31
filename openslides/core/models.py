@@ -43,7 +43,7 @@ class CustomSlide(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
         elif link == 'delete':
             url = reverse('customslide_delete', args=[str(self.pk)])
         else:
-            url = super(CustomSlide, self).get_absolute_url(link)
+            url = super().get_absolute_url(link)
         return url
 
 

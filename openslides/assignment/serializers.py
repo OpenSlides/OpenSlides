@@ -1,4 +1,4 @@
-from openslides.utils import rest_api
+from openslides.utils.rest_api import serializers
 
 from .models import (
     models,
@@ -9,7 +9,7 @@ from .models import (
     AssignmentVote)
 
 
-class AssignmentCandidateSerializer(rest_api.serializers.HyperlinkedModelSerializer):
+class AssignmentCandidateSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serializer for assignment.models.AssignmentCandidate objects.
     """
@@ -22,7 +22,7 @@ class AssignmentCandidateSerializer(rest_api.serializers.HyperlinkedModelSeriali
             'blocked')
 
 
-class AssignmentVoteSerializer(rest_api.serializers.HyperlinkedModelSerializer):
+class AssignmentVoteSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serializer for assignment.models.AssignmentVote objects.
     """
@@ -33,7 +33,7 @@ class AssignmentVoteSerializer(rest_api.serializers.HyperlinkedModelSerializer):
             'value')
 
 
-class AssignmentOptionSerializer(rest_api.serializers.HyperlinkedModelSerializer):
+class AssignmentOptionSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serializer for assignment.models.AssignmentOption objects.
     """
@@ -46,9 +46,9 @@ class AssignmentOptionSerializer(rest_api.serializers.HyperlinkedModelSerializer
             'assignmentvote_set')
 
 
-class FilterPollListSerializer(rest_api.serializers.ListSerializer):
+class FilterPollListSerializer(serializers.ListSerializer):
     """
-    Customized serilizer to filter polls and exclude unpublished ones.
+    Customized serializer to filter polls (exclude unpublished).
     """
     def to_representation(self, data):
         """
@@ -62,7 +62,7 @@ class FilterPollListSerializer(rest_api.serializers.ListSerializer):
         return [self.child.to_representation(item) for item in iterable]
 
 
-class AssignmentAllPollSerializer(rest_api.serializers.HyperlinkedModelSerializer):
+class AssignmentAllPollSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serializer for assignment.models.AssignmentPoll objects.
 
@@ -103,25 +103,25 @@ class AssignmentShortPollSerializer(AssignmentAllPollSerializer):
             'votescast')
 
 
-class AssignmentFullSerializer(rest_api.serializers.HyperlinkedModelSerializer):
+class AssignmentFullSerializer(serializers.HyperlinkedModelSerializer):
     """
     Serializer for assignment.models.Assignment objects. With all polls.
     """
     assignmentcandidate_set = AssignmentCandidateSerializer(many=True, read_only=True)
     poll_set = AssignmentAllPollSerializer(many=True, read_only=True)
-    tags = rest_api.serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name='tag-detail')
 
     class Meta:
         model = Assignment
         fields = (
+            'url',
             'name',
             'description',
             'posts',
-            'poll_description_default',
             'status',
             'assignmentcandidate_set',
+            'poll_description_default',
             'poll_set',
-            'tags')
+            'tags',)
 
 
 class AssignmentShortSerializer(AssignmentFullSerializer):
@@ -133,11 +133,12 @@ class AssignmentShortSerializer(AssignmentFullSerializer):
     class Meta:
         model = Assignment
         fields = (
+            'url',
             'name',
             'description',
             'posts',
-            'poll_description_default',
             'status',
             'assignmentcandidate_set',
+            'poll_description_default',
             'poll_set',
-            'tags')
+            'tags',)

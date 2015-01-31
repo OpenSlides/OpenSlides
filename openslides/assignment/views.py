@@ -14,8 +14,8 @@ from openslides.agenda.views import CreateRelatedAgendaItemView as _CreateRelate
 from openslides.config.api import config
 from openslides.users.models import Group, User  # TODO: remove this
 from openslides.poll.views import PollFormView
-from openslides.utils import rest_api
 from openslides.utils.pdf import stylesheet
+from openslides.utils.rest_api import viewsets
 from openslides.utils.utils import html_strong
 from openslides.utils.views import (CreateView, DeleteView, DetailView,
                                     ListView, PDFView, PermissionMixin,
@@ -190,9 +190,9 @@ class AssignmentRunOtherDeleteView(SingleObjectMixin, QuestionView):
         self.is_blocked = self.get_object().is_blocked(self.person)
 
 
-class AssignmentViewSet(rest_api.viewsets.ModelViewSet):
+class AssignmentViewSet(viewsets.ModelViewSet):
     """
-    API endpoint to retrieve, create, edit and delete assignments.
+    API endpoint to list, retrieve, create, update and destroy assignments.
     """
     model = Assignment
     queryset = Assignment.objects.all()
@@ -200,8 +200,8 @@ class AssignmentViewSet(rest_api.viewsets.ModelViewSet):
     def check_permissions(self, request):
         """
         Calls self.permission_denied() if the requesting user has not the
-        permission to see and in case of create, update or destroy requests
-        the permission to manage and to see organizational items.
+        permission to see assignments and in case of create, update or destroy
+        requests the permission to manage assignments.
         """
         if (not request.user.has_perm('assignment.can_see_assignment') or
                 (self.action in ('create', 'update', 'destroy') and not

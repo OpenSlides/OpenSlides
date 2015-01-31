@@ -7,10 +7,11 @@ from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.projector.models import SlideMixin
 from openslides.utils.models import AbsoluteUrlMixin
+from openslides.utils.rest_api import RESTModelMixin
 from openslides.users.models import User
 
 
-class Mediafile(SlideMixin, AbsoluteUrlMixin, models.Model):
+class Mediafile(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
     """
     Class for uploaded files which can be delivered under a certain url.
     """

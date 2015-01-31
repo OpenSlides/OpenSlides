@@ -36,7 +36,7 @@ class AssignmentCandidate(RESTModelMixin, models.Model):
 
     def get_root_rest_element(self):
         """
-        Returns the assignment to this instance which is the root rest element.
+        Returns the assignment to this instance which is the root REST element.
         """
         return self.assignment
 
@@ -274,7 +274,7 @@ class AssignmentVote(RESTModelMixin, BaseVote):
 
     def get_root_rest_element(self):
         """
-        Returns the assignment to this instance which is the root rest element.
+        Returns the assignment to this instance which is the root REST element.
         """
         return self.option.poll.assignment
 
@@ -289,7 +289,7 @@ class AssignmentOption(RESTModelMixin, BaseOption):
 
     def get_root_rest_element(self):
         """
-        Returns the assignment to this instance which is the root rest element.
+        Returns the assignment to this instance which is the root REST element.
         """
         return self.poll.assignment
 
@@ -348,6 +348,6 @@ class AssignmentPoll(RESTModelMixin, SlideMixin, CollectDefaultVotesMixin,
 
     def get_root_rest_element(self):
         """
-        Returns the assignment to this instance which is the root rest element.
+        Returns the assignment to this instance which is the root REST element.
         """
         return self.assignment

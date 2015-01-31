@@ -2,11 +2,13 @@ from django.http import HttpResponse
 
 from openslides.config.api import config
 from openslides.projector.api import get_active_slide
+from openslides.utils.rest_api import viewsets
 from openslides.utils.views import (AjaxView, CreateView, DeleteView, RedirectView, ListView,
                                     UpdateView)
 
 from .forms import MediafileManagerForm, MediafileNormalUserForm
 from .models import Mediafile
+from .serializers import MediafileSerializer
 
 
 class MediafileListView(ListView):
@@ -198,3 +200,26 @@ class PdfToggleFullscreenView(RedirectView):
     def get_ajax_context(self, *args, **kwargs):
         config['pdf_fullscreen'] = not config['pdf_fullscreen']
         return {'fullscreen': config['pdf_fullscreen']}
+
+
+class MediafileViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint to list, retrieve, create, update and destroy mediafile
+    objects.
+    """
+    model = Mediafile
+    queryset = Mediafile.objects.all()
+    serializer_class = MediafileSerializer
+
+    def check_permissions(self, request):
+        """
+        Calls self.permission_denied() if the requesting user has not the
+        permission to see mediafile objects and in case of create, update or
+        destroy requests the permission to manage mediafile objects.
+        """
+        # TODO: Use mediafile.can_upload permission to create and update some
+        #       objects but restricted concerning the uploader.
+        if (not request.user.has_perm('mediafile.can_see') or
+                (self.action in ('create', 'update', 'destroy') and not
+                 request.user.has_perm('mediafile.can_manage'))):
+            self.permission_denied(request)

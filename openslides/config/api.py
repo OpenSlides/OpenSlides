@@ -39,6 +39,14 @@ class ConfigHandler(object):
                     config_variable.on_change()
                     break
 
+    def get_data_as_dict(self):
+        """
+        Returns all config variables as dictionary retrieved from the config cache.
+        """
+        if not hasattr(self, '_cache'):
+            self.setup_cache()
+        return self._cache
+
     def get_default(self, key):
         """
         Returns the default value for 'key'.
