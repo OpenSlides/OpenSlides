@@ -1,6 +1,6 @@
 from openslides.utils.rest_api import serializers
 
-from .models import User
+from .models import Group, User  # TODO: Don't import Group from models but from core.models.
 
 
 class UserShortSerializer(serializers.ModelSerializer):
@@ -12,12 +12,13 @@ class UserShortSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-            'url',
+            'id',
             'username',
             'title',
             'first_name',
             'last_name',
-            'structure_level')
+            'structure_level',
+            'groups',)
 
 
 class UserFullSerializer(serializers.ModelSerializer):
@@ -29,7 +30,7 @@ class UserFullSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
-            'url',
+            'id',
             'is_present',
             'username',
             'title',
@@ -38,5 +39,19 @@ class UserFullSerializer(serializers.ModelSerializer):
             'structure_level',
             'about_me',
             'comment',
+            'groups',
             'default_password',
-            'is_active')
+            'last_login',
+            'is_active',)
+
+
+class GroupSerializer(serializers.ModelSerializer):
+    """
+    Serializer for django.contrib.auth.models.Group objects.
+    """
+    class Meta:
+        model = Group
+        fields = (
+            'id',
+            'name',
+            'permissions',)
