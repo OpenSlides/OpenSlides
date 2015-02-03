@@ -3,19 +3,19 @@ from openslides.utils.rest_api import serializers
 from .models import CustomSlide, Tag
 
 
-class CustomSlideSerializer(serializers.HyperlinkedModelSerializer):
+class CustomSlideSerializer(serializers.ModelSerializer):
     """
     Serializer for core.models.CustomSlide objects.
     """
     class Meta:
         model = CustomSlide
-        fields = ('url', 'title', 'text', 'weight',)
+        fields = ('id', 'title', 'text', 'weight',)
 
 
-class TagSerializer(serializers.HyperlinkedModelSerializer):
+class TagSerializer(serializers.ModelSerializer):
     """
     Serializer for core.models.Tag objects.
     """
     class Meta:
         model = Tag
-        fields = ('url', 'name',)
+        fields = ('id', 'name',)

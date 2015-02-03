@@ -1,5 +1,3 @@
-from rest_framework.reverse import reverse
-
 from openslides.utils.rest_api import serializers
 
 from .models import (
@@ -16,13 +14,13 @@ from .models import (
     Workflow,)
 
 
-class CategorySerializer(serializers.HyperlinkedModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     """
     Serializer for motion.models.Category objects.
     """
     class Meta:
         model = Category
-        fields = ('url', 'name', 'prefix',)
+        fields = ('id', 'name', 'prefix',)
 
 
 class StateSerializer(serializers.ModelSerializer):
@@ -46,7 +44,7 @@ class StateSerializer(serializers.ModelSerializer):
             'next_states',)
 
 
-class WorkflowSerializer(serializers.HyperlinkedModelSerializer):
+class WorkflowSerializer(serializers.ModelSerializer):
     """
     Serializer for motion.models.Workflow objects.
     """
@@ -55,10 +53,10 @@ class WorkflowSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Workflow
-        fields = ('url', 'name', 'state_set', 'first_state',)
+        fields = ('id', 'name', 'state_set', 'first_state',)
 
 
-class MotionSubmitterSerializer(serializers.HyperlinkedModelSerializer):
+class MotionSubmitterSerializer(serializers.ModelSerializer):
     """
     Serializer for motion.models.MotionSubmitter objects.
     """
@@ -67,7 +65,7 @@ class MotionSubmitterSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('person',)  # TODO: Rename this to 'user', see #1348
 
 
-class MotionSupporterSerializer(serializers.HyperlinkedModelSerializer):
+class MotionSupporterSerializer(serializers.ModelSerializer):
     """
     Serializer for motion.models.MotionSupporter objects.
     """
@@ -76,7 +74,7 @@ class MotionSupporterSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('person',)  # TODO: Rename this to 'user', see #1348
 
 
-class MotionLogSerializer(serializers.HyperlinkedModelSerializer):
+class MotionLogSerializer(serializers.ModelSerializer):
     """
     Serializer for motion.models.MotionLog objects.
     """
@@ -136,7 +134,7 @@ class MotionVersionSerializer(serializers.ModelSerializer):
             'reason',)
 
 
-class MotionSerializer(serializers.HyperlinkedModelSerializer):
+class MotionSerializer(serializers.ModelSerializer):
     """
     Serializer for motion.models.Motion objects.
     """
@@ -152,7 +150,7 @@ class MotionSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Motion
         fields = (
-            'url',
+            'id',
             'identifier',
             'identifier_number',
             'parent',
@@ -170,11 +168,6 @@ class MotionSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_workflow(self, motion):
         """
-        Returns the hyperlink to the workflow of the motion.
+        Returns the id of the workflow of the motion.
         """
-        request = self.context.get('request', None)
-        assert request is not None, (
-            "`%s` requires the request in the serializer"
-            " context. Add `context={'request': request}` when instantiating "
-            "the serializer." % self.__class__.__name__)
-        return reverse('workflow-detail', kwargs={'pk': motion.state.workflow.pk}, request=request)
+        return motion.state.workflow.pk
