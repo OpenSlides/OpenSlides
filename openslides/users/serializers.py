@@ -45,10 +45,23 @@ class UserFullSerializer(serializers.ModelSerializer):
             'is_active',)
 
 
+class PermissionRelatedField(serializers.RelatedField):
+    """
+    A custom field to use for the permission relationship.
+    """
+    def to_representation(self, value):
+        """
+        Returns the permission name (app_label.codename).
+        """
+        return '.'.join((value.content_type.app_label, value.codename,))
+
+
 class GroupSerializer(serializers.ModelSerializer):
     """
     Serializer for django.contrib.auth.models.Group objects.
     """
+    permissions = PermissionRelatedField(many=True, read_only=True)
+
     class Meta:
         model = Group
         fields = (

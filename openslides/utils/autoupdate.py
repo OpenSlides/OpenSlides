@@ -1,8 +1,7 @@
 import json
 import os
-import re
 import posixpath
-from urllib.parse import unquote, urlparse
+from urllib.parse import unquote
 
 from django.conf import settings
 from django.core.wsgi import get_wsgi_application
@@ -19,6 +18,8 @@ from tornado.web import (
     HTTPError
 )
 from tornado.wsgi import WSGIContainer
+
+from .rest_api import get_name_and_id_from_url
 
 
 class DjangoStaticFileHandler(StaticFileHandler):
@@ -76,17 +77,15 @@ class OpenSlidesSockJSConnection(SockJSConnection):
         See send_object().
         """
         # TODO: Update cookies of the client.
-        path = urlparse(response.request.url).path
-        match = re.match(r'^/api/(?P<name>[\w/]+)/(?P<id>\d+)/$', path)
-        if match:
-            name = match.group('name')
-            data = {
-                'url': response.request.url,
-                'name': name,
-                'data': json.loads(response.body.decode())}
-            # TODO: Check and handle other status codes.
-            if response.code == 200:
-                self.send(data)
+        name, obj_id = get_name_and_id_from_url(response.request.url)
+        data = {
+            'url': response.request.url,
+            'name': name,
+            'id': obj_id,
+            'data': json.loads(response.body.decode())}
+        # TODO: Check and handle other status codes.
+        if response.code == 200:
+            self.send(data)
 
     @classmethod
     def send_object(cls, object_url):
