@@ -1,7 +1,8 @@
 import json
 import os
+import re
 import posixpath
-from urllib.parse import unquote
+from urllib.parse import unquote, urlparse
 
 from django.conf import settings
 from django.core.wsgi import get_wsgi_application
@@ -75,14 +76,17 @@ class OpenSlidesSockJSConnection(SockJSConnection):
         See send_object().
         """
         # TODO: Update cookies of the client.
-        url_parts = response.request.url.split('/')
-        data = {
-            'url': response.request.url,
-            'name': '%s/%s' % (url_parts[-4], url_parts[-3]),
-            'data': json.loads(response.body.decode()),}
-        # TODO: Check and handle other status codes.
-        if response.code == 200:
-            self.send(data)
+        path = urlparse(response.request.url).path
+        match = re.match(r'^/api/(?P<name>[\w/]+)/(?P<id>\d+)/$', path)
+        if match:
+            name = match.group('name')
+            data = {
+                'url': response.request.url,
+                'name': name,
+                'data': json.loads(response.body.decode())}
+            # TODO: Check and handle other status codes.
+            if response.code == 200:
+                self.send(data)
 
     @classmethod
     def send_object(cls, object_url):
@@ -103,10 +107,10 @@ class OpenSlidesSockJSConnection(SockJSConnection):
             headers.parse_line("Cookie: %s" % cookie_value)
 
             # TODO: Use host and port as given in the start script
-            host_and_port = settings.OPENSLIDES_HOST_AND_PORT or 'localhost:8000'
+            wsgi_network_location = settings.OPENSLIDES_WSGI_NETWORK_LOCATION or 'http://localhost:8000'
 
             request = HTTPRequest(
-                url=''.join(('http://', host_and_port, object_url)),
+                url=''.join((wsgi_network_location, object_url)),
                 headers=headers,
                 decompress_response=False)
 

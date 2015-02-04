@@ -174,7 +174,7 @@ CKEDITOR_CONFIGS = {
 # other webserver like Apache or Nginx as wsgi server.
 USE_TORNADO_AS_WSGI_SERVER = True
 
-OPENSLIDES_HOST_AND_PORT = ''
+OPENSLIDES_WSGI_NETWORK_LOCATION = ''
 
 
 TEST_RUNNER = 'openslides.utils.test.OpenSlidesDiscoverRunner'
