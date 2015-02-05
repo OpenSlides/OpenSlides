@@ -1,3 +1,4 @@
+import json
 import os
 import posixpath
 from urllib.parse import unquote
@@ -18,8 +19,7 @@ from tornado.web import (
 )
 from tornado.wsgi import WSGIContainer
 
-REST_URL = 'http://localhost:8000'
-# TODO: this is propably in the config
+from .rest_api import get_name_and_id_from_url
 
 
 class DjangoStaticFileHandler(StaticFileHandler):
@@ -58,7 +58,7 @@ class DjangoStaticFileHandler(StaticFileHandler):
 
 class OpenSlidesSockJSConnection(SockJSConnection):
     """
-    Sockjs connections for OpenSlides.
+    SockJS connection for OpenSlides.
     """
     waiters = set()
 
@@ -71,41 +71,48 @@ class OpenSlidesSockJSConnection(SockJSConnection):
 
     def handle_rest_request(self, response):
         """
-        Handler that is called when the rest api responds.
+        Sends data to the client of the connection instance.
 
-        Sends the response.body to the client.
+        This method is called after succesful response of AsyncHTTPClient().
+        See send_object().
         """
-        # TODO: update cookies
+        # TODO: Update cookies of the client.
+        name, obj_id = get_name_and_id_from_url(response.request.url)
+        data = {
+            'url': response.request.url,
+            'name': name,
+            'id': obj_id,
+            'data': json.loads(response.body.decode())}
+        # TODO: Check and handle other status codes.
         if response.code == 200:
-            self.send(response.body)
-
-    @classmethod
-    def send_updates(cls, data):
-        # TODO: use a bluk send
-        for waiter in cls.waiters:
-            waiter.send(data)
+            self.send(data)
 
     @classmethod
     def send_object(cls, object_url):
         """
-        Send OpenSlides objects to all connected clients.
+        Sends an OpenSlides object to all connected clients.
 
-        First, receive the object from the OpenSlides ReST API.
+        First, receive the object from the OpenSlides REST api using the given
+        object_url.
         """
         for waiter in cls.waiters:
-            # Get the object from the ReST API
             http_client = AsyncHTTPClient()
-            headers = HTTPHeaders()
+
             # TODO: read to python Morselcookies and why "set-Cookie" does not work
+            headers = HTTPHeaders()
             request_cookies = waiter.request_info.cookies.values()
             cookie_value = ';'.join("%s=%s" % (cookie.key, cookie.value)
                                     for cookie in request_cookies)
             headers.parse_line("Cookie: %s" % cookie_value)
 
+            # TODO: Use host and port as given in the start script
+            wsgi_network_location = settings.OPENSLIDES_WSGI_NETWORK_LOCATION or 'http://localhost:8000'
+
             request = HTTPRequest(
-                url=''.join((REST_URL, object_url)),
+                url=''.join((wsgi_network_location, object_url)),
                 headers=headers,
                 decompress_response=False)
+
             # TODO: use proxy_host as header from waiter.request_info
             http_client.fetch(request, waiter.handle_rest_request)
 
@@ -150,7 +157,7 @@ def inform_changed_data(*args):
         try:
             rest_urls.add(instance.get_root_rest_url())
         except AttributeError:
-            # instance has no method get_root_rest_url
+            # Instance has no method get_root_rest_url. Just skip it.
             pass
 
     if settings.USE_TORNADO_AS_WSGI_SERVER:
@@ -158,7 +165,7 @@ def inform_changed_data(*args):
             OpenSlidesSockJSConnection.send_object(url)
     else:
         pass
-        # TODO: fix me
+        # TODO: Implement big varainte with Apache or Nginx as wsgi webserver.
 
 
 def inform_changed_data_receiver(sender, instance, **kwargs):

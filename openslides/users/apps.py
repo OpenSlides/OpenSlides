@@ -16,7 +16,7 @@ class UsersAppConfig(AppConfig):
         from openslides.projector.api import register_slide_model
         from openslides.utils.rest_api import router
         from .signals import setup_users_config, user_post_save
-        from .views import UserViewSet
+        from .views import GroupViewSet, UserViewSet
 
         # Load User model.
         User = self.get_model('User')
@@ -30,3 +30,4 @@ class UsersAppConfig(AppConfig):
 
         # Register viewsets.
         router.register('users/user', UserViewSet)
+        router.register('users/group', GroupViewSet)

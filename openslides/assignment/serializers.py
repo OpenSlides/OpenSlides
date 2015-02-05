@@ -9,7 +9,7 @@ from .models import (
     AssignmentVote)
 
 
-class AssignmentCandidateSerializer(serializers.HyperlinkedModelSerializer):
+class AssignmentCandidateSerializer(serializers.ModelSerializer):
     """
     Serializer for assignment.models.AssignmentCandidate objects.
     """
@@ -19,21 +19,19 @@ class AssignmentCandidateSerializer(serializers.HyperlinkedModelSerializer):
             'id',
             'person',
             'elected',
-            'blocked')
+            'blocked',)
 
 
-class AssignmentVoteSerializer(serializers.HyperlinkedModelSerializer):
+class AssignmentVoteSerializer(serializers.ModelSerializer):
     """
     Serializer for assignment.models.AssignmentVote objects.
     """
     class Meta:
         model = AssignmentVote
-        fields = (
-            'weight',
-            'value')
+        fields = ('weight', 'value',)
 
 
-class AssignmentOptionSerializer(serializers.HyperlinkedModelSerializer):
+class AssignmentOptionSerializer(serializers.ModelSerializer):
     """
     Serializer for assignment.models.AssignmentOption objects.
     """
@@ -41,9 +39,7 @@ class AssignmentOptionSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = AssignmentOption
-        fields = (
-            'candidate',
-            'assignmentvote_set')
+        fields = ('candidate', 'assignmentvote_set',)
 
 
 class FilterPollListSerializer(serializers.ListSerializer):
@@ -62,7 +58,7 @@ class FilterPollListSerializer(serializers.ListSerializer):
         return [self.child.to_representation(item) for item in iterable]
 
 
-class AssignmentAllPollSerializer(serializers.HyperlinkedModelSerializer):
+class AssignmentAllPollSerializer(serializers.ModelSerializer):
     """
     Serializer for assignment.models.AssignmentPoll objects.
 
@@ -80,7 +76,7 @@ class AssignmentAllPollSerializer(serializers.HyperlinkedModelSerializer):
             'assignmentoption_set',
             'votesvalid',
             'votesinvalid',
-            'votescast')
+            'votescast',)
 
 
 class AssignmentShortPollSerializer(AssignmentAllPollSerializer):
@@ -100,10 +96,10 @@ class AssignmentShortPollSerializer(AssignmentAllPollSerializer):
             'assignmentoption_set',
             'votesvalid',
             'votesinvalid',
-            'votescast')
+            'votescast',)
 
 
-class AssignmentFullSerializer(serializers.HyperlinkedModelSerializer):
+class AssignmentFullSerializer(serializers.ModelSerializer):
     """
     Serializer for assignment.models.Assignment objects. With all polls.
     """
@@ -113,7 +109,7 @@ class AssignmentFullSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Assignment
         fields = (
-            'url',
+            'id',
             'name',
             'description',
             'posts',
@@ -133,7 +129,7 @@ class AssignmentShortSerializer(AssignmentFullSerializer):
     class Meta:
         model = Assignment
         fields = (
-            'url',
+            'id',
             'name',
             'description',
             'posts',

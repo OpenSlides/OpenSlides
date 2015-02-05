@@ -20,7 +20,7 @@ from .forms import (GroupForm, UserCreateForm, UserMultipleCreateForm,
                     UsersettingsForm, UserUpdateForm)
 from .models import Group, User
 from .pdf import users_to_pdf, users_passwords_to_pdf
-from .serializers import UserFullSerializer, UserShortSerializer
+from .serializers import GroupSerializer, UserFullSerializer, UserShortSerializer
 
 
 class UserListView(ListView):
@@ -263,7 +263,7 @@ class ResetPasswordView(SingleObjectMixin, QuestionView):
 
 class UserViewSet(viewsets.ModelViewSet):
     """
-    API endpoint to list, retrive, create, update and delete users.
+    API endpoint to list, retrieve, create, update and delete users.
     """
     model = User
     queryset = User.objects.all()
@@ -289,6 +289,27 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             serializer_class = UserShortSerializer
         return serializer_class
+
+
+class GroupViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint to list, retrieve, create, update and delete groups.
+    """
+    model = Group
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+
+    def check_permissions(self, request):
+        """
+        Calls self.permission_denied() if the requesting user has not the
+        permission to see users and in case of create, update or destroy
+        requests the permission to see extra user data and to manage users.
+        """
+        if (not request.user.has_perm('users.can_see_name') or
+                (self.action in ('create', 'update', 'destroy') and not
+                 (request.user.has_perm('users.can_manage') and
+                  request.user.has_perm('users.can_see_extra_data')))):
+            self.permission_denied(request)
 
 
 class GroupListView(ListView):
