@@ -1,11 +1,11 @@
-from rest_framework.reverse import reverse
+from django.core.urlresolvers import reverse
 
-from openslides.utils.rest_api import serializers
+from openslides.utils.rest_api import get_collection_and_id_from_url, serializers
 
 from .models import Item, Speaker
 
 
-class SpeakerSerializer(serializers.HyperlinkedModelSerializer):
+class SpeakerSerializer(serializers.ModelSerializer):
     """
     Serializer for agenda.models.Speaker objects.
     """
@@ -21,22 +21,20 @@ class SpeakerSerializer(serializers.HyperlinkedModelSerializer):
 
 class RelatedItemRelatedField(serializers.RelatedField):
     """
-    A custom field to use for the `content_object` generic relationship.
+    A custom field to use for the content_object generic relationship.
     """
     def to_representation(self, value):
         """
-        Returns the url to the related object.
+        Returns info concerning the related object extracted from the api URL
+        of this object.
         """
-        request = self.context.get('request', None)
-        assert request is not None, (
-            "`%s` requires the request in the serializer"
-            " context. Add `context={'request': request}` when instantiating "
-            "the serializer." % self.__class__.__name__)
         view_name = '%s-detail' % type(value)._meta.object_name.lower()
-        return reverse(view_name, kwargs={'pk': value.pk}, request=request)
+        url = reverse(view_name, kwargs={'pk': value.pk})
+        collection, obj_id = get_collection_and_id_from_url(url)
+        return {'collection': collection, 'id': obj_id}
 
 
-class ItemSerializer(serializers.HyperlinkedModelSerializer):
+class ItemSerializer(serializers.ModelSerializer):
     """
     Serializer for agenda.models.Item objects.
     """
@@ -49,7 +47,7 @@ class ItemSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Item
         fields = (
-            'url',
+            'id',
             'item_number',
             'item_no',
             'title',
