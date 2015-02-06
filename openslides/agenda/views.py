@@ -224,7 +224,9 @@ class SetClosed(SingleObjectMixin, RedirectView):
 
     def pre_redirect(self, request, *args, **kwargs):
         closed = kwargs['closed']
-        self.get_object().set_closed(closed)
+        # TODO: use update here
+        self.get_object().closed = closed
+        self.get_object().save()
         return super(SetClosed, self).pre_redirect(request, *args, **kwargs)
 
     def get_url_name_args(self):

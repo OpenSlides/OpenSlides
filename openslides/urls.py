@@ -2,6 +2,7 @@ from django.conf.urls import include, patterns, url
 
 from openslides.core.views import IndexView, ErrorView
 from openslides.utils.rest_api import router
+from openslides.users.views import UserSettingsView, UserPasswordSettingsView
 
 handler403 = ErrorView.as_view(status_code=403)
 handler404 = ErrorView.as_view(status_code=404)
@@ -34,7 +35,6 @@ urlpatterns += patterns(
 )
 
 # TODO: move this patterns into core or the participant app
-from openslides.users.views import UserSettingsView, UserPasswordSettingsView
 urlpatterns += patterns(
     '',
     (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
