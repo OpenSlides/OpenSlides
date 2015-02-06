@@ -102,3 +102,21 @@ def clear(args=None):
     call('find -name "*.pyc" -delete')
     call('find -name "*.orig" -delete')
     call('find -type d -empty -delete')
+
+@command('po',
+         help="Generates the po-file for javascript")
+def po(args=None):
+    # TODO: in the value "" there has to be the entry:
+    #       "plural_forms: nplurals=2; plural=(n != 1);"
+    call('find openslides/ -iname "*.js" -or -iname "*.html" | '
+         'xargs xgettext --from-code=UTF-8 --language=JavaScript '
+         '--output=openslides/locale/en/javascript.po')
+
+
+@argument('-l', '--language')
+@command('po2json',
+         help="Generates json for a translated po file")
+def po2json(args=None):
+    lang = args.language
+    call('node_modules/.bin/po2json openslides/locale/%s/javascript.po openslides/static/i18n/%s.json' %
+         (lang, lang))

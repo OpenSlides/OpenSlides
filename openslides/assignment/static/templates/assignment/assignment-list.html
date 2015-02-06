@@ -1,0 +1,7 @@
+<ul>
+    <li ng-repeat="assignment in assignments">
+        <a ng-href="assignment/{{ assignment.id }}/">{{ assignment.name }}</a>
+        <a ng-href="assignment/{{ assignment.id }}/edit/">Bearbeiten</a>
+    </li>
+</ul>
+<a ng-href="assignment/new/">Neu</a>

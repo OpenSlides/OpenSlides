@@ -1,0 +1,8 @@
+<h1 ng-if="user.id">{{ user.get_short_name() }}</h1>
+<h1 ng-if="!user.id">{{ gettext("New User") }}</h1>
+
+<form>
+    firstname: <input type="text" ng-model="user.first_name"><br>
+    lastname: <input type="text" ng-model="user.last_name"><br>
+    <input type="submit" ng-click="save(user)" value="Save" />
+</form>

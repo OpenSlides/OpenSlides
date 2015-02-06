@@ -1,0 +1,9 @@
+<ul>
+    <li ng-repeat="item in items">
+        <a ng-href="agenda/{{ item.id }}/">{{ item.get_title }}</a>
+        <a ng-href="agenda/{{ item.id }}/edit/">Bearbeiten</a>
+    </li>
+</ul>
+<a ng-href="agenda/new/">{{ gettext('New') }}</a>
+{{ test_singular }}
+{{ test_plural }}

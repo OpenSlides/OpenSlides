@@ -1,0 +1,220 @@
+# Language file of OpenSlides used by transifex:
+# https://www.transifex.com/projects/p/openslides/
+
+msgid ""
+msgstr ""
+"Project-Id-Version: 2.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-02-01 11:55+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+"plural_forms: nplurals=2; plural=(n != 1);"
+
+#: openslides/agenda/static/js/agenda/agenda.js:51
+msgid "test"
+msgid_plural "tests"
+msgstr[0] ""
+msgstr[1] ""
+
+#: openslides/agenda/static/js/agenda.js:14
+#, javascript-format
+msgid ", of which %s are hidden."
+msgstr ""
+
+#: openslides/agenda/static/templates/agenda/item-list.html:7
+msgid "New"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:2
+#: openslides/core/static/js/jquery/datepicker-config.js:32
+msgid "en"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:3
+msgid "previous month"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:4
+msgid "next month"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:6
+msgid "January"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:6
+msgid "February"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:6
+msgid "March"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:7
+msgid "April"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:7
+#: openslides/core/static/js/jquery/datepicker-config.js:13
+msgid "May"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:7
+msgid "June"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:8
+msgid "July"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:8
+msgid "August"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:8
+msgid "September"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:9
+msgid "October"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:9
+msgid "November"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:9
+msgid "December"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:12
+msgid "Jan"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:12
+msgid "Feb"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:12
+msgid "Mar"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:13
+msgid "Apr"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:13
+msgid "Jun"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:14
+msgid "Jul"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:14
+msgid "Aug"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:14
+msgid "Sep"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:15
+msgid "Oct"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:15
+msgid "Nov"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:15
+msgid "Dec"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:18
+msgid "Sunday"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:18
+msgid "Monday"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:18
+msgid "Tuesday"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:18
+msgid "Wednesday"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:19
+msgid "Thursday"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:19
+msgid "Friday"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:19
+msgid "Saturday"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:22
+#: openslides/core/static/js/jquery/datepicker-config.js:26
+msgid "Su"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:22
+#: openslides/core/static/js/jquery/datepicker-config.js:26
+msgid "Mo"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:22
+#: openslides/core/static/js/jquery/datepicker-config.js:26
+msgid "Tu"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:22
+#: openslides/core/static/js/jquery/datepicker-config.js:26
+msgid "We"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:23
+#: openslides/core/static/js/jquery/datepicker-config.js:27
+msgid "Th"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:23
+#: openslides/core/static/js/jquery/datepicker-config.js:27
+msgid "Fr"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:23
+#: openslides/core/static/js/jquery/datepicker-config.js:27
+msgid "Sa"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:38
+msgid "Time"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:39
+msgid "Hour"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:40
+msgid "Minute"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:41
+msgid "Current time"
+msgstr ""
+
+#: openslides/core/static/js/jquery/datepicker-config.js:42
+msgid "Close"
+msgstr ""

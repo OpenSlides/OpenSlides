@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.staticfiles import finders
 from django.core.exceptions import PermissionDenied
 from django.core.urlresolvers import reverse
 from django.db import IntegrityError
@@ -8,6 +9,7 @@ from django.template import RequestContext
 from django.utils.importlib import import_module
 from django.utils.translation import ugettext as _
 from haystack.views import SearchView as _SearchView
+from django.http import HttpResponse
 
 from openslides import get_version as get_openslides_version
 from openslides import get_git_commit_id, RELEASE
@@ -22,6 +24,21 @@ from .forms import SelectWidgetsForm
 from .models import CustomSlide, Tag
 from .exceptions import TagException
 from .serializers import CustomSlideSerializer, TagSerializer
+
+
+class IndexView(utils_views.View):
+    """
+    The primary view for OpenSlides using AngularJS.
+
+    The default base template is 'openslides/core/static/templates/index.html'.
+    You can override it by simply adding a custom 'templates/index.html' file
+    to the custom staticfiles directory. See STATICFILES_DIRS in settings.py.
+    """
+
+    def get(self, *args, **kwargs):
+        with open(finders.find('templates/index.html')) as f:
+            content = f.read()
+        return HttpResponse(content)
 
 
 class DashboardView(utils_views.AjaxMixin, utils_views.TemplateView):

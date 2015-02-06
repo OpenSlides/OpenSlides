@@ -1,0 +1,8 @@
+<h1 ng-if="item.id">{{ item.title }}</h1>
+<h1 ng-if="!item.id">Neuer Eintrag</h1>
+
+<form>
+    Titel: <input type="text" ng-model="item.title"><br>
+    Text:<br> <textarea ng-model="item.text"></textarea><br>
+    <input type="submit" ng-click="save(item)" value="Save" />
+</form>

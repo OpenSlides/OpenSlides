@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" ng-app="OpenSlidesApp" class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <base href="/">
+  <title>OpenSlides</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="static/css/openslides-libs.css">
+  <link rel="stylesheet" href="static/css/app.css">
+  <script src="static/js/openslides-libs.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav id="header" class="navbar">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a href="/" class="logo"><img src="/static/img/logo.png" alt="OpenSlides" /></a>
+                <span class="title optional">{{ config('event_name') }}</span>
+            </div>
+            {% block loginbutton %}
+                <div class="navbar-right">
+                    <!-- login/logout button -->
+                    <div class="btn-group">
+                        {% if user.is_authenticated %}
+                        <a href="#" data-toggle="dropdown" class="btn btn-default dropdown-toggle">
+                              <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                              <span class="optional-small">{{ user.username }}</span>
+                              <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu pull-right">
+                            <li><a href="{% url 'user_settings' %}">
+                                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                                {{ gettext("Edit profile") }}</a></li>
+                            <li><a href="{% url 'password_change' %}">
+                                <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
+                                {% trans "Change password" %}</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{% url 'user_logout' %}">
+                                <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
+                                {% trans "Logout" %}</a></li>
+                        </ul>
+                        {% else %}
+                            <a href="{% url 'user_login' %}" class="btn btn-default">
+                                <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
+                                {{ gettext("Login") }}
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endblock %}
+        </div>
+    </nav>
+    <!-- Container -->
+    <div class="container-fluid" id="container">
+    <div class="row">
+
+        <!-- Sidebar navigation (main menu) -->
+        <div class="col-md-2 leftmenu lefticon">
+            <ul>
+                {% for entry in main_menu_entries %}
+                    <li{% if entry.is_active %} class="active"{% endif %}>
+                        <a href="{{ entry.get_url }}" class="tooltip-right">
+                        <!--TODO-->
+                        <span class="glyphicon {{ entry.get_icon_css_class }}" aria-hidden="true"></span>
+                        <span class="text">{{ entry }}</span>
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Content -->
+        <div id="content" class="col-md-10">
+            <div class="row">
+                <div class="col-md-12">
+                    <div ng-view></div>
+                </div>
+            </div>
+            <hr />
+            <footer>
+                <small>
+                    &copy; Copyright 2011–2015 | Powered by <a href="http://openslides.org" target="_blank">OpenSlides</a> | <a href="{% url 'core_version' %}">Version</a>
+                </small>
+            </footer>
+        </div><!--/#content-->
+
+    </div><!--/.row-->
+    </div><!--/#container-->
+
+
+  <script src="static/js/app.js"></script>
+  <script src="static/js/agenda/agenda.js"></script>
+  <script src="static/js/assignment/assignment.js"></script>
+  <script src="static/js/user/user.js"></script>
+</body>
+</html>
