@@ -23,18 +23,22 @@ class ModelViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         # Try to get the data from the cache
+        Serializer = self.get_serializer_class()
         cache_key = self.model.get_rest_cache_key(
             self.kwargs['pk'],
-            self.get_serializer_class())
+            Serializer)
         data = cache.get(cache_key)
 
         if data is None:
             # If the data is not in the cache then get it from the db and save it into the cache
             instance = self.get_object()
-            data = self.get_serializer(instance).data
+            data = Serializer(instance).data
             # To cache the data, it has to be converted to OrderedDict
             data = OrderedDict(data)
             cache.set(cache_key, data)
+        else:
+            instance = Serializer(data=data)
+            self.check_object_permissions(request, instance)
 
         return Response(data)
 
