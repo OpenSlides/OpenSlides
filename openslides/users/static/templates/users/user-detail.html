@@ -1,2 +1,31 @@
-<h1>Persönliche Daten</h1>
-{{ user.get_short_name() }}
+<h1>{{ user.get_short_name() }}</h1>
+
+<div id="submenu">
+  <a ui-sref="users.user.list" class="btn btn-sm btn-default">
+    <i class="fa fa-angle-double-left fa-lg"></i>
+    <translate>Back to overview</translate>
+  </a>
+</div>
+
+<div class="user_details form-group">
+  <fieldset>
+    <legend translate>Personal data</legend>
+    <label translate>Structure level</label>
+      {{ user.structure_level }}
+    <label translate>Groups</label>
+      {{ user.groups }}
+      <!-- TODO: print all groups -->
+    <label translate>About me</label>
+      {{ user.about_me }}
+  </fieldset>
+
+  <fieldset os-perms="users.can_manage">
+    <legend translate>Administrative data</legend>
+    <label translate>Username</label>
+      {{ user.username }}
+    <label translate>Comment</label>
+      {{ user.comment }}
+    <label translate>Last login</label>
+      {{ user.last_login }}
+  </fieldset>
+</div>

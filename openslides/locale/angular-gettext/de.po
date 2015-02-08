@@ -1,0 +1,50 @@
+# Language file of OpenSlides used by transifex:
+# https://www.transifex.com/projects/p/openslides/
+# Copyright (C) 2011–2013 by OpenSlides team, see AUTHORS.
+# This file is distributed under the same license as the OpenSlides package.
+# Translators:
+# emanuel <emanuel@intevation.de>, 2013
+# Emanuel Schütze <emanuel.schuetze@intevation.de>, 2013
+# Emanuel Schütze <emanuel.schuetze@intevation.de>, 2013
+# emanuel <emanuel@intevation.de>, 2013
+# Emanuel Schütze <emanuel.schuetze@intevation.de>, 2013
+# Emanuel Schütze <emanuel.schuetze@intevation.de>, 2013-2015
+# Oskar Hahn <mail@oshahn.de>, 2012
+# Norman Jäckel <transifex16062013@normanjaeckel.de>, 2013-2014
+# Norman Jäckel <transifex16062013@normanjaeckel.de>, 2013
+# Oskar Hahn <mail@oshahn.de>, 2012-2013
+# Oskar Hahn <mail@oshahn.de>, 2012
+msgid ""
+msgstr ""
+"Project-Id-Version: OpenSlides\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-01-16 14:24+0100\n"
+"PO-Revision-Date: 2015-01-20 08:09+0000\n"
+"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>\n"
+"Language-Team: German (http://www.transifex.com/projects/p/openslides/language/de/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: de\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: index.html:74
+msgid "English"
+msgstr "Englisch"
+
+#: index.html:86
+msgid "French"
+msgstr "Französisch"
+
+#: index.html:80
+msgid "German"
+msgstr "Deutsch"
+
+#: user-list.html:26
+msgid "Groups"
+msgstr "Gruppen"
+
+#: user-list.html:1
+msgid "Participants"
+msgstr "Teilnehmer"
+

@@ -1,8 +1,82 @@
-<h1 ng-if="user.id">{{ user.get_short_name() }}</h1>
-<h1 ng-if="!user.id">{{ gettext("New User") }}</h1>
+<h1 ng-if="user.id" translate>Edit participant</h1>
+<h1 ng-if="!user.id" translate>New participant</h1>
 
-<form>
-    firstname: <input type="text" ng-model="user.first_name"><br>
-    lastname: <input type="text" ng-model="user.last_name"><br>
-    <input type="submit" ng-click="save(user)" value="Save" />
+<div id="submenu">
+  <a ui-sref="users.user.list" class="btn btn-sm btn-default">
+    <i class="fa fa-angle-double-left fa-lg"></i>
+    <translate>Back to overview</translate>
+  </a>
+</div>
+
+<form name="userForm">
+  <div ng-if="user.id" ng-class="{'has-error has-feedback': userForm.inputUsername.$error.required}"
+      class="form-group">
+    <label for="inputUsername" translate>Username</label>
+    <input type="text" ng-model="user.username" ng-required="true" class="form-control"
+        name="inputUsername">
+    <i ng-if="userForm.inputUsername.$error.required"
+        class="fa fa-times fa-lg form-control-feedback"></i>
+    <p ng-show="userForm.inputUsername.$error.required"
+        class="error-message help-block" translate>
+      Username is required.
+  </div>
+  <div class="form-group row">
+    <div class="col-xs-2">
+      <label for="inputTitle"  translate-comment="academic degree" translate>Title</label>
+      <input type="text" ng-model="user.title" class="form-control" name="inputTitle">
+    </div>
+    <div class="col-xs-5">
+      <label for="inputFirstName" translate>First name</label>
+      <input type="text" ng-model="user.first_name" class="form-control" name="inputFirstName">
+    </div>
+    <div class="col-xs-5">
+      <label for="inputLastName" translate>Last name</label>
+      <input type="text" ng-model="user.last_name" class="form-control" name="inputLastName">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputStructureLevel" translate>Structure level</label>
+    <input type="text" ng-model="user.structure_level" class="form-control" name="inputStructureLevel">
+  </div>
+  <div class="form-group" ng-class="{'has-error has-feedback': userForm.selectGroups.$error.required}">
+    <label for="selectGroups" translate>Groups</label>
+    <select multiple ng-options="group.id as group.name for group in groups"
+      ng-required="true" ng-model="user.groups" class="form-control" name="selectGroups">
+    </select>
+    <p ng-show="userForm.selectGroups.$error.required" class="error-message help-block" translate>
+      Group is required.
+  </div>
+  <div class="form-group row">
+    <div class="col-xs-6">
+      <label for="inputDefaultPassword" translate>Default password</label>
+      <input type="text" ng-model="user.default_password" class="form-control" name="inputDefaultPassword">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="textComment" translate>Comment</label>
+    <textarea ng-model="user.comment" class="form-control" name="textComment" />
+  </div>
+  <div class="form-group">
+    <label for="textAbout" translate>About me</label>
+    <textarea ng-model="user.about_me" class="form-control" name="textAbout" />
+  </div>
+  <div class="form-group">
+    <label class="checkbox-inline">
+      <input type="checkbox" ng-model="user.is_present" ng-checked="user.is_present" name="checkboxActive">
+      <translate>Is present</translate>
+    </label>
+  </div>
+  <div class="form-group">
+    <label class="checkbox-inline">
+      <input type="checkbox" ng-model="user.is_active" ng-checked="user.is_active" name="checkboxActive">
+      <translate>Is active</translate>
+    </label>
+  </div>
+
+  <button type="submit" ng-click="save(user)" class="btn btn-primary" translate>
+    Save
+  </button>
+  <button ui-sref="users.user.list" class="btn btn-default" translate>
+    Cancel
+  </button>
 </form>

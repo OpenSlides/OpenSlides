@@ -1,6 +1,7 @@
 angular.module('OpenSlidesApp', [
     'ui.router',
     'js-data',
+    'gettext',
     'OpenSlidesApp.core',
     'OpenSlidesApp.agenda',
     'OpenSlidesApp.assignments',

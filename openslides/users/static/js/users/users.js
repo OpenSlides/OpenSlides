@@ -18,7 +18,13 @@ angular.module('OpenSlidesApp.users', [])
                 }
             }
         })
-        .state('users.user.create', {})
+        .state('users.user.create', {
+            resolve: {
+                groups: function(Group) {
+                    return Group.findAll();
+                }
+            }
+        })
         .state('users.user.detail', {
             resolve: {
                 user: function(User, $stateParams) {
@@ -29,6 +35,47 @@ angular.module('OpenSlidesApp.users', [])
         .state('users.user.detail.update', {
             views: {
                 '@users.user': {}
+            },
+            resolve: {
+                groups: function(Group) {
+                    return Group.findAll();
+                }
+            }
+        })
+        .state('users.user.csv-import', {
+            url: '/csv-import',
+            controller: 'UserCSVImportCtrl',
+        })
+        // groups
+        .state('users.group', {
+            url: '/groups',
+            abstract: true,
+            template: "<ui-view/>",
+        })
+        .state('users.group.list', {
+            resolve: {
+                groups: function(Group) {
+                    return Group.findAll();
+                }
+            }
+        })
+        .state('users.group.create', {
+            resolve: {
+                groups: function(Group) {
+                    return Group.findAll();
+                }
+            }
+        })
+        .state('users.group.detail', {
+            resolve: {
+                group: function(Group, $stateParams) {
+                    return Group.find($stateParams.id);
+                }
+            }
+        })
+        .state('users.group.detail.update', {
+            views: {
+                '@users.group': {}
             }
         });
 })
@@ -187,28 +234,97 @@ angular.module('OpenSlidesApp.users', [])
     };
 }])
 
-.controller('UserListCtrl', function($scope, User, i18n) {
+.controller('UserListCtrl', function($scope, User) {
     User.bindAll({}, $scope, 'users');
+    $scope.sortby = 'first_name';
+    $scope.reverse = false;
+    $scope.filterPresent = '';
+
+    $scope.togglePresent = function (user) {
+        //the value was changed by the template (checkbox)
+        User.save(user);
+    };
+
+    $scope.delete = function (user) {
+        //TODO: add confirm message
+        User.destroy(user.id).then(
+            function(success) {
+                //TODO: success message
+            }
+        );
+    };
 })
 
 .controller('UserDetailCtrl', function($scope, User, user) {
     User.bindOne(user.id, $scope, 'user');
 })
 
-.controller('UserCreateCtrl', function($scope, User) {
+.controller('UserCreateCtrl', function($scope, $state, User, Group) {
+    Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
     $scope.user = {};
     $scope.save = function (user) {
-        User.create(user);
-        // TODO: redirect to list-view
+        User.create(user).then(
+            function(success) {
+                $state.go('users.user.list');
+            }
+        );
     };
 })
 
-.controller('UserUpdateCtrl', function($scope, User, user) {
-    $scope.user = user;  // do not use Agenda.binOne(...) so autoupdate is not activated
-    $scope.save = function(user) {
-        User.save(user);
-        // TODO: redirect to list-view
+.controller('UserUpdateCtrl', function($scope, $state, User, user, Group) {
+    Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
+    $scope.user = user;  // autoupdate is not activated
+    $scope.save = function (user) {
+        User.save(user).then(
+            function(success) {
+                $state.go('users.user.list');
+            }
+        );
     };
+})
+
+.controller('UserCSVImportCtrl', function($scope, User) {
+    // TODO
+})
+
+.controller('GroupListCtrl', function($scope, Group) {
+    Group.bindAll({}, $scope, 'groups');
+
+    $scope.delete = function (group) {
+        //TODO: add confirm message
+        Group.destroy(group.id).then(
+            function(success) {
+                //TODO: success message
+            }
+        );
+    };
+})
+
+.controller('GroupCreateCtrl', function($scope, $state, Group) {
+    //TODO: permissions Group.bindAll({}, $scope, 'groups');
+    $scope.group = {};
+    $scope.save = function (group) {
+        Group.create(group).then(
+            function(success) {
+                $state.go('^');
+            }
+        );
+    };
+})
+
+.controller('GroupUpdateCtrl', function($scope, $state, Group, group) {
+    $scope.group = group;  // autoupdate is not activated
+    $scope.save = function (group) {
+        Group.save(group).then(
+            function(success) {
+                $state.go('users.group.list');
+            }
+        );
+    };
+})
+
+.controller('GroupDetailCtrl', function($scope, Group, group) {
+    Group.bindOne(group.id, $scope, 'group');
 })
 
 .controller('userMenu', function($scope, $http, DS, User, operator) {
@@ -225,8 +341,12 @@ angular.module('OpenSlidesApp.users', [])
             '/users/login/',
             {'username': username, 'password': password}
         ).success(function(data) {
-            operator.setUser(data.user_id);
-            $scope.showLoginForm = false;
+            if (data.success) {
+                operator.setUser(data.user_id);
+                $scope.loginFailed = false;
+            } else {
+                $scope.loginFailed = true;
+            }
         });
     };
 });

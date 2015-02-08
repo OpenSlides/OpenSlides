@@ -115,16 +115,6 @@ angular.module('OpenSlidesApp.core', [])
     });
 })
 
-.run(function($rootScope, i18n) {
-    // Puts the gettext methods into each scope.
-    // Uses the methods that are known by xgettext by default.
-    methods = ['gettext', 'dgettext', 'dcgettext', 'ngettext', 'dngettext',
-               'pgettext', 'dpgettext'];
-    _.forEach(methods, function(method) {
-        $rootScope[method] = _.bind(i18n[method], i18n);
-    });
-})
-
 .run(function($rootScope, Config) {
     // Puts the config object into each scope.
     // TODO: maybe rootscope.config has to set before findAll() is finished
@@ -164,25 +154,39 @@ angular.module('OpenSlidesApp.core', [])
     return Autoupdate;
 })
 
-.factory('i18n', function($http) {
-    // TODO: there is a bug(?) in jed. I had to call val_idx++; in line 285
-    // TODO: make the language variable and changeable at runtime
-    var i18n = new Jed({
-        'domain': 'de',
-        'locale_data': {'de': {"": {}}},
-    });  // TODO: use promise here
-    $http.get('/static/i18n/de.json')
-        .success(function(data) {
-            // TODO: check data.
-            i18n.options.locale_data['de'] = data;
-        });
-    return i18n;
-})
-
 .factory('Config', function(DS) {
     return DS.defineResource({
         name: 'config/config',
         idAttribute: 'key',
         endpoint: '/rest/config/config/'
     });
+})
+
+.controller("LanguageCtrl", function ($scope, gettextCatalog) {
+    // controller to switch app language
+    // TODO: detect browser language for default language
+    gettextCatalog.setCurrentLanguage('en');
+    //TODO: for debug only! (helps to find untranslated strings by adding "[MISSING]:")
+    gettextCatalog.debug = true;
+    $scope.switchLanguage = function (lang) {
+        gettextCatalog.setCurrentLanguage(lang);
+        if (lang != 'en') {
+            gettextCatalog.loadRemote("static/i18n/" + lang + ".json");
+        }
+    }
+})
+
+.directive('osFocusMe', function ($timeout) {
+    return {
+        link: function (scope, element, attrs, model) {
+            $timeout(function () {
+                element[0].focus();
+            });
+        }
+    };
+});
+
+// some general JavaScript functions used in all OpenSlides apps
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip({'placement': 'bottom'})
 });
