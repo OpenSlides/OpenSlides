@@ -1,39 +1,37 @@
-angular.module('OpenSlidesApp.user', [])
+angular.module('OpenSlidesApp.users', [])
 
-.config(['$routeProvider', function($routeProvider) {
-  $routeProvider
-        .when('/user', {
-            templateUrl: 'static/templates/user/user-list.html',
-            controller: 'UserListCtrl',
+.config(function($stateProvider) {
+    $stateProvider
+        .state('users', {
+            url: '/user',
+            abstract: true,
+            template: "<ui-view/>",
+        })
+        .state('users.user', {
+            abstract: true,
+            template: "<ui-view/>",
+        })
+        .state('users.user.list', {
             resolve: {
                 users: function(User) {
                     return User.findAll();
                 }
             }
         })
-        .when('/user/new', {
-            templateUrl: 'static/templates/user/user-form.html',
-            controller: 'UserCreateCtrl'
-        })
-        .when('/user/:id', {
-            templateUrl: 'static/templates/user/user-detail.html',
-            controller: 'UserDetailCtrl',
+        .state('users.user.create', {})
+        .state('users.user.detail', {
             resolve: {
-                user: function(User, $route) {
-                    return User.find($route.current.params.id);
+                user: function(User, $stateParams) {
+                    return User.find($stateParams.id);
                 }
             }
         })
-        .when('/user/:id/edit', {
-            templateUrl: 'static/templates/user/user-form.html',
-            controller: 'UserUpdateCtrl',
-            resolve: {
-                user: function(User, $route) {
-                    return User.find($route.current.params.id);
-                }
+        .state('users.user.detail.update', {
+            views: {
+                '@users.user': {}
             }
         });
-}])
+})
 
 .factory('User', function(DS) {
     return DS.defineResource({
@@ -59,7 +57,6 @@ angular.module('OpenSlidesApp.user', [])
 })
 
 .factory('Group', function(DS) {
-    // TODO: the rest api for group does not exist at the moment
     return DS.defineResource({
         name: 'users/group',
         endpoint: '/rest/users/group/'
@@ -70,8 +67,8 @@ angular.module('OpenSlidesApp.user', [])
     User.bindAll($scope, 'users');
 })
 
-.controller('UserDetailCtrl', function($scope, $routeParams, User) {
-    User.bindOne($scope, 'user', $routeParams.id);
+.controller('UserDetailCtrl', function($scope, User, user) {
+    User.bindOne($scope, 'user', user.id);
 })
 
 .controller('UserCreateCtrl', function($scope, User) {
@@ -82,9 +79,9 @@ angular.module('OpenSlidesApp.user', [])
     };
 })
 
-.controller('UserUpdateCtrl', function($scope, $routeParams, User, user) {
+.controller('UserUpdateCtrl', function($scope, User, user) {
     $scope.user = user;  // do not use Agenda.binOne(...) so autoupdate is not activated
-    $scope.save = function (user) {
+    $scope.save = function(user) {
         User.save(user);
         // TODO: redirect to list-view
     };

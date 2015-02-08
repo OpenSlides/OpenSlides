@@ -14,6 +14,11 @@ urlpatterns = patterns(
     # TODO: add "special" urls, for example pdf views etc.
 
     url(r'^user.*', IndexView.as_view()),
+
+    # activate next line go get more angular views
+    # url(r'^$', IndexView.as_view()),
+    # url(r'^assignment.*', IndexView.as_view()),
+    # url(r'^agenda.*', IndexView.as_view()),
 )
 
 
