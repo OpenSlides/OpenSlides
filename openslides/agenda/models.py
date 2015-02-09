@@ -162,14 +162,15 @@ class Item(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, MPTTModel):
         """
         Return the title of this item.
         """
-        item_no = self.item_no
         if not self.content_object:
-            return '%s %s' % (item_no, self.title) if item_no else self.title
-        try:
-            agenda_title = self.content_object.get_agenda_title()
-            return '%s %s' % (item_no, agenda_title) if item_no else agenda_title
-        except AttributeError:
-            raise NotImplementedError('You have to provide a get_agenda_title method on your related model.')
+            agenda_title = self.title
+        else:
+            try:
+                agenda_title = self.content_object.get_agenda_title()
+            except AttributeError:
+                raise NotImplementedError('You have to provide a get_agenda_title '
+                                          'method on your related model.')
+        return '%s %s' % (self.item_no, agenda_title) if self.item_no else agenda_title
 
     def get_title_supplement(self):
         """
@@ -181,13 +182,6 @@ class Item(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, MPTTModel):
             return self.content_object.get_agenda_title_supplement()
         except AttributeError:
             raise NotImplementedError('You have to provide a get_agenda_title_supplement method on your related model.')
-
-    def set_closed(self, closed=True):
-        """
-        Changes the closed-status of the item.
-        """
-        self.closed = closed
-        self.save()
 
     @property
     def weight_form(self):
@@ -209,12 +203,17 @@ class Item(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, MPTTModel):
     def delete(self, with_children=False):
         """
         Delete the Item.
+
+        If with_children is True, all children of the item will be deleted as
+        well. If with_children is False, all children will be children of the
+        parent of the item.
         """
         if not with_children:
             for child in self.get_children():
                 child.move_to(self.parent)
                 child.save()
-        super(Item, self).delete()
+        super().delete()
+        # TODO: Try to remove the rebuild call
         Item.objects.rebuild()
 
     def get_list_of_speakers(self, old_speakers_count=None, coming_speakers_count=None):
