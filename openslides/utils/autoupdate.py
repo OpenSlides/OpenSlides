@@ -19,8 +19,6 @@ from tornado.web import (
 )
 from tornado.wsgi import WSGIContainer
 
-from .rest_api import get_collection_and_id_from_url
-
 
 class DjangoStaticFileHandler(StaticFileHandler):
     """
@@ -76,6 +74,7 @@ class OpenSlidesSockJSConnection(SockJSConnection):
         This method is called after succesful response of AsyncHTTPClient().
         See send_object().
         """
+        from .rest_api import get_collection_and_id_from_url
         collection, obj_id = get_collection_and_id_from_url(response.request.url)
         data = {
             'url': response.request.url,
@@ -170,10 +169,3 @@ def inform_changed_data(*args):
     else:
         pass
         # TODO: Implement big varainte with Apache or Nginx as wsgi webserver.
-
-
-def inform_changed_data_receiver(sender, instance, **kwargs):
-    """
-    Receiver for the inform_changed_data function to use in a signal.
-    """
-    inform_changed_data(instance)

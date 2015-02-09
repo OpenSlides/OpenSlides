@@ -1,8 +1,9 @@
-from openslides.utils.rest_api import serializers
+from openslides.utils.rest_api import serializers, root_rest_for
 
 from .models import Group, User  # TODO: Don't import Group from models but from core.models.
 
 
+@root_rest_for(User)
 class UserShortSerializer(serializers.ModelSerializer):
     """
     Serializer for users.models.User objects.
@@ -21,6 +22,7 @@ class UserShortSerializer(serializers.ModelSerializer):
             'groups',)
 
 
+@root_rest_for(User)
 class UserFullSerializer(serializers.ModelSerializer):
     """
     Serializer for users.models.User objects.
