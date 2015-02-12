@@ -3,16 +3,15 @@ angular.module('OpenSlidesApp.core', [])
 .config(function($stateProvider) {
     // Use stateProvider.decorator to give default values to our states
     $stateProvider.decorator('views', function(state, parent) {
-
-
         var result = {},
             views = parent(state);
 
-        if (state.abstract) {
+        if (state.abstract || state.data && state.data.extern) {
             return views;
         }
 
         angular.forEach(views, function(config, name) {
+
             // Sets default values for templateUrl
             var patterns = state.name.split('.'),
                 templateUrl,
@@ -69,15 +68,12 @@ angular.module('OpenSlidesApp.core', [])
     });
 })
 
-.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
+.config(function($stateProvider, $locationProvider) {
     // Core urls
-    $urlRouterProvider.otherwise('/');
-
-    $stateProvider
-        .state('dashboard', {
-            url: '/',
-            templateUrl: 'static/templates/dashboard.html'
-        });
+    $stateProvider.state('dashboard', {
+        url: '/',
+        templateUrl: 'static/templates/dashboard.html'
+    });
 
     $locationProvider.html5Mode(true);
 })
@@ -98,6 +94,30 @@ angular.module('OpenSlidesApp.core', [])
     };
 })
 
+.provider('runtimeStates', function($stateProvider) {
+  this.$get = function($q, $timeout, $state) {
+    return {
+      addState: function(name, state) {
+        $stateProvider.state(name, state);
+      }
+    }
+  }
+})
+
+.run(function(runtimeStates, $http) {
+    $http.get('/core/url_patterns/').then(function(data) {
+        for (var pattern in data.data) {
+            runtimeStates.addState(pattern, {
+                'url': data.data[pattern],
+                data: {extern: true},
+                onEnter: function($window) {
+                    $window.location.href = this.url;
+                }
+            });
+        }
+    });
+})
+
 .run(function(DS, autoupdate) {
     autoupdate.on_message(function(data) {
         // TODO: when MODEL.find() is called after this
@@ -106,16 +126,6 @@ angular.module('OpenSlidesApp.core', [])
             DS.inject(data.collection, data.data)
         }
         // TODO: handle other statuscodes
-    });
-})
-
-.run(function($rootScope, i18n) {
-    // Puts the gettext methods into each scope.
-    // Uses the methods that are known by xgettext by default.
-    methods = ['gettext', 'dgettext', 'dcgettext', 'ngettext', 'dngettext',
-               'pgettext', 'dpgettext'];
-    _.forEach(methods, function(method) {
-        $rootScope[method] = _.bind(i18n[method], i18n);
     });
 })
 

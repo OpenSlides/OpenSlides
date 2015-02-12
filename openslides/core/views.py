@@ -1,28 +1,35 @@
+import re
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.staticfiles import finders
 from django.core.exceptions import PermissionDenied
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import get_resolver, reverse
 from django.db import IntegrityError
+from django.http import HttpResponse
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
 from django.utils.importlib import import_module
 from django.utils.translation import ugettext as _
+from django.views.decorators.csrf import ensure_csrf_cookie
 from haystack.views import SearchView as _SearchView
-from django.http import HttpResponse
 
 from openslides import get_version as get_openslides_version
-from openslides import get_git_commit_id, RELEASE
+from openslides import RELEASE, get_git_commit_id
 from openslides.config.api import config
 from openslides.utils import views as utils_views
-from openslides.utils.plugins import get_plugin_description, get_plugin_verbose_name, get_plugin_version
+from openslides.utils.plugins import (
+    get_plugin_description,
+    get_plugin_verbose_name,
+    get_plugin_version
+)
 from openslides.utils.rest_api import ModelViewSet
 from openslides.utils.signals import template_manipulation
 from openslides.utils.widgets import Widget
 
+from .exceptions import TagException
 from .forms import SelectWidgetsForm
 from .models import CustomSlide, Tag
-from .exceptions import TagException
 from .serializers import CustomSlideSerializer, TagSerializer
 
 
@@ -34,6 +41,14 @@ class IndexView(utils_views.View):
     You can override it by simply adding a custom 'templates/index.html' file
     to the custom staticfiles directory. See STATICFILES_DIRS in settings.py.
     """
+
+    @classmethod
+    def as_view(cls, *args, **kwargs):
+        """
+        Makes sure that the csrf cookie is send.
+        """
+        view = super().as_view(*args, **kwargs)
+        return ensure_csrf_cookie(view)
 
     def get(self, *args, **kwargs):
         with open(finders.find('templates/index.html')) as f:
@@ -344,3 +359,22 @@ class TagViewSet(ModelViewSet):
         if (self.action in ('create', 'update', 'destroy')
                 and not request.user.has_perm('core.can_manage_tags')):
             self.permission_denied(request)
+
+
+class UrlPatternsView(utils_views.AjaxView, utils_views.View):
+    """
+    Returns a dictonary with all url patterns as json.
+    """
+    URL_KWARGS_REGEX = re.compile(r'%\((\w*)\)s')
+
+    def get_ajax_context(self, **context):
+        result = {}
+        url_dict = get_resolver(None).reverse_dict
+        for url_pattern in filter(lambda key: isinstance(key, str), url_dict.keys()):
+            url = url_dict[url_pattern][0][0][0]
+            result[url_pattern] = self.URL_KWARGS_REGEX.sub(r':\1', url)
+
+        return result
+
+    def get(self, request, *args, **kwargs):
+        return self.ajax_response()
