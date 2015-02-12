@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404
 from openslides.agenda.views import CreateRelatedAgendaItemView as _CreateRelatedAgendaItemView
 from openslides.config.api import config
 from openslides.poll.views import PollFormView
-from openslides.utils.rest_api import viewsets
+from openslides.utils.rest_api import ModelViewSet
 from openslides.utils.utils import html_strong, htmldiff
 from openslides.utils.views import (CreateView, CSVImportView, DeleteView, DetailView,
                                     ListView, PDFView, QuestionView,
@@ -539,11 +539,10 @@ class SupportView(SingleObjectMixin, QuestionView):
             return _("You have unsupported this motion successfully.")
 
 
-class MotionViewSet(viewsets.ModelViewSet):
+class MotionViewSet(ModelViewSet):
     """
     API endpoint to list, retrieve, create, update and destroy motions.
     """
-    model = Motion
     queryset = Motion.objects.all()
     serializer_class = MotionSerializer
 
@@ -840,11 +839,10 @@ class CategoryDeleteView(DeleteView):
     success_url_name = 'motion_category_list'
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(ModelViewSet):
     """
     API endpoint to list, retrieve, create, update and destroy categories.
     """
-    model = Category
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
@@ -886,11 +884,10 @@ class MotionCSVImportView(CSVImportView):
         return super(CSVImportView, self).form_valid(form)
 
 
-class WorkflowViewSet(viewsets.ModelViewSet):
+class WorkflowViewSet(ModelViewSet):
     """
     API endpoint to list, retrieve, create, update and destroy workflows.
     """
-    model = Workflow
     queryset = Workflow.objects.all()
     serializer_class = WorkflowSerializer
 

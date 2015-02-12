@@ -3,11 +3,20 @@ import re
 from urllib.parse import urlparse
 
 from django.core.urlresolvers import reverse
-from rest_framework import response, routers, serializers, viewsets  # noqa
+from rest_framework.serializers import (  # noqa
+    CharField,
+    ListSerializer,
+    ModelSerializer,
+    PrimaryKeyRelatedField,
+    RelatedField,
+    SerializerMethodField)
+from rest_framework.response import Response  # noqa
+from rest_framework.routers import DefaultRouter
+from rest_framework.viewsets import ModelViewSet, ViewSet  # noqa
 
 from .exceptions import OpenSlidesError
 
-router = routers.DefaultRouter()
+router = DefaultRouter()
 
 
 class RESTModelMixin:

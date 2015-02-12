@@ -1,13 +1,13 @@
-from openslides.utils.rest_api import serializers
+from openslides.utils.rest_api import ModelSerializer, SerializerMethodField
 
 from .models import Mediafile
 
 
-class MediafileSerializer(serializers.ModelSerializer):
+class MediafileSerializer(ModelSerializer):
     """
     Serializer for mediafile.models.Mediafile objects.
     """
-    filesize = serializers.SerializerMethodField()
+    filesize = SerializerMethodField()
 
     class Meta:
         model = Mediafile

@@ -1,4 +1,4 @@
-from openslides.utils.rest_api import serializers
+from openslides.utils.rest_api import ListSerializer, ModelSerializer
 
 from .models import (
     models,
@@ -9,7 +9,7 @@ from .models import (
     AssignmentVote)
 
 
-class AssignmentRelatedUserSerializer(serializers.ModelSerializer):
+class AssignmentRelatedUserSerializer(ModelSerializer):
     """
     Serializer for assignment.models.AssignmentRelatedUser objects.
     """
@@ -21,7 +21,7 @@ class AssignmentRelatedUserSerializer(serializers.ModelSerializer):
             'status')
 
 
-class AssignmentVoteSerializer(serializers.ModelSerializer):
+class AssignmentVoteSerializer(ModelSerializer):
     """
     Serializer for assignment.models.AssignmentVote objects.
     """
@@ -30,7 +30,7 @@ class AssignmentVoteSerializer(serializers.ModelSerializer):
         fields = ('weight', 'value',)
 
 
-class AssignmentOptionSerializer(serializers.ModelSerializer):
+class AssignmentOptionSerializer(ModelSerializer):
     """
     Serializer for assignment.models.AssignmentOption objects.
     """
@@ -41,7 +41,7 @@ class AssignmentOptionSerializer(serializers.ModelSerializer):
         fields = ('candidate', 'assignmentvote_set',)
 
 
-class FilterPollListSerializer(serializers.ListSerializer):
+class FilterPollListSerializer(ListSerializer):
     """
     Customized serializer to filter polls (exclude unpublished).
     """
@@ -57,7 +57,7 @@ class FilterPollListSerializer(serializers.ListSerializer):
         return [self.child.to_representation(item) for item in iterable]
 
 
-class AssignmentAllPollSerializer(serializers.ModelSerializer):
+class AssignmentAllPollSerializer(ModelSerializer):
     """
     Serializer for assignment.models.AssignmentPoll objects.
 
@@ -98,7 +98,7 @@ class AssignmentShortPollSerializer(AssignmentAllPollSerializer):
             'votescast',)
 
 
-class AssignmentFullSerializer(serializers.ModelSerializer):
+class AssignmentFullSerializer(ModelSerializer):
     """
     Serializer for assignment.models.Assignment objects. With all polls.
     """

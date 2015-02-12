@@ -16,7 +16,7 @@ from openslides import get_git_commit_id, RELEASE
 from openslides.config.api import config
 from openslides.utils import views as utils_views
 from openslides.utils.plugins import get_plugin_description, get_plugin_verbose_name, get_plugin_version
-from openslides.utils.rest_api import viewsets
+from openslides.utils.rest_api import ModelViewSet
 from openslides.utils.signals import template_manipulation
 from openslides.utils.widgets import Widget
 
@@ -235,11 +235,10 @@ class CustomSlideDeleteView(CustomSlideViewMixin, utils_views.DeleteView):
     pass
 
 
-class CustomSlideViewSet(viewsets.ModelViewSet):
+class CustomSlideViewSet(ModelViewSet):
     """
     API endpoint to list, retrieve, create, update and destroy custom slides.
     """
-    model = CustomSlide
     queryset = CustomSlide.objects.all()
     serializer_class = CustomSlideSerializer
 
@@ -330,11 +329,10 @@ class TagListView(utils_views.AjaxMixin, utils_views.ListView):
             **context)
 
 
-class TagViewSet(viewsets.ModelViewSet):
+class TagViewSet(ModelViewSet):
     """
     API endpoint to list, retrieve, create, update and destroy tags.
     """
-    model = Tag
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 

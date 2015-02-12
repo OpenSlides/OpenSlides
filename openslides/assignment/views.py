@@ -14,7 +14,7 @@ from openslides.config.api import config
 from openslides.users.models import Group, User  # TODO: remove this
 from openslides.poll.views import PollFormView
 from openslides.utils.pdf import stylesheet
-from openslides.utils.rest_api import viewsets
+from openslides.utils.rest_api import ModelViewSet
 from openslides.utils.utils import html_strong
 from openslides.utils.views import (CreateView, DeleteView, DetailView,
                                     ListView, PDFView,
@@ -215,11 +215,10 @@ class AssignmentDeleteCandidateshipOtherView(SingleObjectMixin, QuestionView):
         return _("Candidate %s was withdrawn successfully.") % html_strong(self.user)
 
 
-class AssignmentViewSet(viewsets.ModelViewSet):
+class AssignmentViewSet(ModelViewSet):
     """
     API endpoint to list, retrieve, create, update and destroy assignments.
     """
-    model = Assignment
     queryset = Assignment.objects.all()
 
     def check_permissions(self, request):
