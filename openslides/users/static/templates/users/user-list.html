@@ -1,0 +1,7 @@
+<ul>
+    <li ng-repeat="user in users">
+        <a ui-sref="users.user.detail({id: user.id })">{{ user.get_short_name() }}</a>
+        <a ui-sref="users.user.detail.update({id: user.id })">{{ gettext('Edit') }}</a>
+    </li>
+</ul>
+<a ui-sref="users.user.create">{{ gettext('New') }}</a>
