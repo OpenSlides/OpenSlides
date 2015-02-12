@@ -246,7 +246,7 @@ class GlobalListOfSpeakersLinks(SpeakerViewTestCase):
         self.assertMessage(response, 'You were successfully added to the list of speakers.')
 
         perm = Permission.objects.filter(name='Can see agenda').get()
-        self.speaker2.groups.get(name='Registered').permissions.remove(perm)
+        self.speaker2.groups.model.objects.get(name='Registered').permissions.remove(perm)
         response = self.speaker2_client.get('/agenda/list_of_speakers/add/')
         self.assertMessage(response, 'You were successfully added to the list of speakers.')
 

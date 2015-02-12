@@ -6,7 +6,6 @@ from django.utils.translation import ugettext as _
 from openslides.utils import csv_ext
 from openslides.utils.utils import html_strong
 
-from .api import gen_password, gen_username
 from .models import Group, User
 
 
@@ -39,7 +38,7 @@ def import_users(csvfile):
                     user.title = title
                     user.last_name = last_name
                     user.first_name = first_name
-                    user.username = gen_username(first_name, last_name)
+                    user.username = User.objects.generate_username(first_name, last_name)
                     user.gender = gender
                     user.email = email
                     user.structure_level = structure_level
@@ -50,7 +49,7 @@ def import_users(csvfile):
                         user.is_active = True
                     else:
                         user.is_active = False
-                    user.default_password = gen_password()
+                    user.default_password = User.objects.generate_password()
                     user.save()
                     for groupid in groups.split(','):
                         try:
