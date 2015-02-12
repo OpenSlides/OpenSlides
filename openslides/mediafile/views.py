@@ -2,7 +2,7 @@ from django.http import HttpResponse
 
 from openslides.config.api import config
 from openslides.projector.api import get_active_slide
-from openslides.utils.rest_api import viewsets
+from openslides.utils.rest_api import ModelViewSet
 from openslides.utils.views import (AjaxView, CreateView, DeleteView, RedirectView, ListView,
                                     UpdateView)
 
@@ -202,12 +202,11 @@ class PdfToggleFullscreenView(RedirectView):
         return {'fullscreen': config['pdf_fullscreen']}
 
 
-class MediafileViewSet(viewsets.ModelViewSet):
+class MediafileViewSet(ModelViewSet):
     """
     API endpoint to list, retrieve, create, update and destroy mediafile
     objects.
     """
-    model = Mediafile
     queryset = Mediafile.objects.all()
     serializer_class = MediafileSerializer
 

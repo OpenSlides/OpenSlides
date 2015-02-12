@@ -4,7 +4,7 @@ from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.utils.translation import ugettext as _
 
-from openslides.utils.rest_api import response, viewsets
+from openslides.utils.rest_api import Response, ViewSet
 from openslides.utils.views import FormView
 
 from .api import config
@@ -105,7 +105,7 @@ class ConfigView(FormView):
         return super(ConfigView, self).form_valid(form)
 
 
-class ConfigViewSet(viewsets.ViewSet):
+class ConfigViewSet(ViewSet):
     """
     API endpoint to list, retrieve and update the config.
     """
@@ -115,7 +115,7 @@ class ConfigViewSet(viewsets.ViewSet):
         """
         # TODO: Check if we need permission check here.
         data = ({'key': key, 'value': value} for key, value in config.items())
-        return response.Response(data)
+        return Response(data)
 
     def retrieve(self, request, *args, **kwargs):
         """
@@ -127,7 +127,7 @@ class ConfigViewSet(viewsets.ViewSet):
             data = {'key': key, 'value': config[key]}
         except ConfigNotFound:
             raise Http404
-        return response.Response(data)
+        return Response(data)
 
     def update(self, request, pk=None):
         """

@@ -1,11 +1,11 @@
 from django.core.urlresolvers import reverse
 
-from openslides.utils.rest_api import get_collection_and_id_from_url, serializers
+from openslides.utils.rest_api import CharField, ModelSerializer, RelatedField, get_collection_and_id_from_url
 
 from .models import Item, Speaker
 
 
-class SpeakerSerializer(serializers.ModelSerializer):
+class SpeakerSerializer(ModelSerializer):
     """
     Serializer for agenda.models.Speaker objects.
     """
@@ -19,7 +19,7 @@ class SpeakerSerializer(serializers.ModelSerializer):
             'weight')
 
 
-class RelatedItemRelatedField(serializers.RelatedField):
+class RelatedItemRelatedField(RelatedField):
     """
     A custom field to use for the content_object generic relationship.
     """
@@ -34,14 +34,14 @@ class RelatedItemRelatedField(serializers.RelatedField):
         return {'collection': collection, 'id': obj_id}
 
 
-class ItemSerializer(serializers.ModelSerializer):
+class ItemSerializer(ModelSerializer):
     """
     Serializer for agenda.models.Item objects.
     """
-    get_title = serializers.CharField(read_only=True)
-    get_title_supplement = serializers.CharField(read_only=True)
+    get_title = CharField(read_only=True)
+    get_title_supplement = CharField(read_only=True)
     content_object = RelatedItemRelatedField(read_only=True)
-    item_no = serializers.CharField(read_only=True)
+    item_no = CharField(read_only=True)
     speaker_set = SpeakerSerializer(many=True, read_only=True)
 
     class Meta:

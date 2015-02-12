@@ -1,9 +1,9 @@
-from openslides.utils.rest_api import serializers
+from openslides.utils.rest_api import ModelSerializer
 
 from .models import CustomSlide, Tag
 
 
-class CustomSlideSerializer(serializers.ModelSerializer):
+class CustomSlideSerializer(ModelSerializer):
     """
     Serializer for core.models.CustomSlide objects.
     """
@@ -12,7 +12,7 @@ class CustomSlideSerializer(serializers.ModelSerializer):
         fields = ('id', 'title', 'text', 'weight',)
 
 
-class TagSerializer(serializers.ModelSerializer):
+class TagSerializer(ModelSerializer):
     """
     Serializer for core.models.Tag objects.
     """

@@ -1,9 +1,9 @@
-from openslides.utils.rest_api import serializers
+from openslides.utils.rest_api import ModelSerializer, RelatedField
 
 from .models import Group, User  # TODO: Don't import Group from models but from core.models.
 
 
-class UserShortSerializer(serializers.ModelSerializer):
+class UserShortSerializer(ModelSerializer):
     """
     Serializer for users.models.User objects.
 
@@ -21,7 +21,7 @@ class UserShortSerializer(serializers.ModelSerializer):
             'groups',)
 
 
-class UserFullSerializer(serializers.ModelSerializer):
+class UserFullSerializer(ModelSerializer):
     """
     Serializer for users.models.User objects.
 
@@ -45,7 +45,7 @@ class UserFullSerializer(serializers.ModelSerializer):
             'is_active',)
 
 
-class PermissionRelatedField(serializers.RelatedField):
+class PermissionRelatedField(RelatedField):
     """
     A custom field to use for the permission relationship.
     """
@@ -56,7 +56,7 @@ class PermissionRelatedField(serializers.RelatedField):
         return '.'.join((value.content_type.app_label, value.codename,))
 
 
-class GroupSerializer(serializers.ModelSerializer):
+class GroupSerializer(ModelSerializer):
     """
     Serializer for django.contrib.auth.models.Group objects.
     """

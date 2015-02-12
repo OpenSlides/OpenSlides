@@ -1,4 +1,4 @@
-from openslides.utils.rest_api import serializers
+from openslides.utils.rest_api import ModelSerializer, PrimaryKeyRelatedField, SerializerMethodField
 
 from .models import (
     Category,
@@ -14,7 +14,7 @@ from .models import (
     Workflow,)
 
 
-class CategorySerializer(serializers.ModelSerializer):
+class CategorySerializer(ModelSerializer):
     """
     Serializer for motion.models.Category objects.
     """
@@ -23,7 +23,7 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'prefix',)
 
 
-class StateSerializer(serializers.ModelSerializer):
+class StateSerializer(ModelSerializer):
     """
     Serializer for motion.models.State objects.
     """
@@ -44,19 +44,19 @@ class StateSerializer(serializers.ModelSerializer):
             'next_states',)
 
 
-class WorkflowSerializer(serializers.ModelSerializer):
+class WorkflowSerializer(ModelSerializer):
     """
     Serializer for motion.models.Workflow objects.
     """
     state_set = StateSerializer(many=True, read_only=True)
-    first_state = serializers.PrimaryKeyRelatedField(read_only=True)
+    first_state = PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Workflow
         fields = ('id', 'name', 'state_set', 'first_state',)
 
 
-class MotionSubmitterSerializer(serializers.ModelSerializer):
+class MotionSubmitterSerializer(ModelSerializer):
     """
     Serializer for motion.models.MotionSubmitter objects.
     """
@@ -65,7 +65,7 @@ class MotionSubmitterSerializer(serializers.ModelSerializer):
         fields = ('person',)  # TODO: Rename this to 'user', see #1348
 
 
-class MotionSupporterSerializer(serializers.ModelSerializer):
+class MotionSupporterSerializer(ModelSerializer):
     """
     Serializer for motion.models.MotionSupporter objects.
     """
@@ -74,7 +74,7 @@ class MotionSupporterSerializer(serializers.ModelSerializer):
         fields = ('person',)  # TODO: Rename this to 'user', see #1348
 
 
-class MotionLogSerializer(serializers.ModelSerializer):
+class MotionLogSerializer(ModelSerializer):
     """
     Serializer for motion.models.MotionLog objects.
     """
@@ -83,7 +83,7 @@ class MotionLogSerializer(serializers.ModelSerializer):
         fields = ('message_list', 'person', 'time',)
 
 
-class MotionVoteSerializer(serializers.ModelSerializer):
+class MotionVoteSerializer(ModelSerializer):
     """
     Serializer for motion.models.MotionVote objects.
     """
@@ -92,7 +92,7 @@ class MotionVoteSerializer(serializers.ModelSerializer):
         fields = ('value', 'weight',)
 
 
-class MotionOptionSerializer(serializers.ModelSerializer):
+class MotionOptionSerializer(ModelSerializer):
     """
     Serializer for motion.models.MotionOption objects.
     """
@@ -103,7 +103,7 @@ class MotionOptionSerializer(serializers.ModelSerializer):
         fields = ('motionvote_set',)
 
 
-class MotionPollSerializer(serializers.ModelSerializer):
+class MotionPollSerializer(ModelSerializer):
     """
     Serializer for motion.models.MotionPoll objects.
     """
@@ -119,7 +119,7 @@ class MotionPollSerializer(serializers.ModelSerializer):
             'votescast',)
 
 
-class MotionVersionSerializer(serializers.ModelSerializer):
+class MotionVersionSerializer(ModelSerializer):
     """
     Serializer for motion.models.MotionVersion objects.
     """
@@ -134,16 +134,16 @@ class MotionVersionSerializer(serializers.ModelSerializer):
             'reason',)
 
 
-class MotionSerializer(serializers.ModelSerializer):
+class MotionSerializer(ModelSerializer):
     """
     Serializer for motion.models.Motion objects.
     """
     versions = MotionVersionSerializer(many=True, read_only=True)
-    active_version = serializers.PrimaryKeyRelatedField(read_only=True)
+    active_version = PrimaryKeyRelatedField(read_only=True)
     submitter = MotionSubmitterSerializer(many=True, read_only=True)
     supporter = MotionSupporterSerializer(many=True, read_only=True)
     state = StateSerializer(read_only=True)
-    workflow = serializers.SerializerMethodField()
+    workflow = SerializerMethodField()
     polls = MotionPollSerializer(many=True, read_only=True)
     log_messages = MotionLogSerializer(many=True, read_only=True)
 
