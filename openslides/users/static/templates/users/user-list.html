@@ -4,4 +4,7 @@
         <a ui-sref="users.user.detail.update({id: user.id })">{{ gettext('Edit') }}</a>
     </li>
 </ul>
-<a ui-sref="users.user.create">{{ gettext('New') }}</a>
+
+<a os-perms="users.can_manage" ui-sref="users.user.create">{{ gettext('New') }}</a>
+<span os-perms="!users.can_manage">No Permission to create</span>
+<a href="/users/print/" target="_self">PDF</a>

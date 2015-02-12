@@ -3,8 +3,6 @@ angular.module('OpenSlidesApp.core', [])
 .config(function($stateProvider) {
     // Use stateProvider.decorator to give default values to our states
     $stateProvider.decorator('views', function(state, parent) {
-
-
         var result = {},
             views = parent(state);
 
@@ -69,12 +67,9 @@ angular.module('OpenSlidesApp.core', [])
     });
 })
 
-.config(function($stateProvider, $urlRouterProvider, $locationProvider) {
+.config(function($stateProvider, $locationProvider) {
     // Core urls
-    $urlRouterProvider.otherwise('/');
-
-    $stateProvider
-        .state('dashboard', {
+    $stateProvider.state('dashboard', {
             url: '/',
             templateUrl: 'static/templates/dashboard.html'
         });
@@ -106,16 +101,6 @@ angular.module('OpenSlidesApp.core', [])
             DS.inject(data.collection, data.data)
         }
         // TODO: handle other statuscodes
-    });
-})
-
-.run(function($rootScope, i18n) {
-    // Puts the gettext methods into each scope.
-    // Uses the methods that are known by xgettext by default.
-    methods = ['gettext', 'dgettext', 'dcgettext', 'ngettext', 'dngettext',
-               'pgettext', 'dpgettext'];
-    _.forEach(methods, function(method) {
-        $rootScope[method] = _.bind(i18n[method], i18n);
     });
 })
 
