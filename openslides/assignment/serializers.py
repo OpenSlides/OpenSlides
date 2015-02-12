@@ -3,23 +3,22 @@ from openslides.utils.rest_api import serializers
 from .models import (
     models,
     Assignment,
-    AssignmentCandidate,
+    AssignmentRelatedUser,
     AssignmentOption,
     AssignmentPoll,
     AssignmentVote)
 
 
-class AssignmentCandidateSerializer(serializers.ModelSerializer):
+class AssignmentRelatedUserSerializer(serializers.ModelSerializer):
     """
-    Serializer for assignment.models.AssignmentCandidate objects.
+    Serializer for assignment.models.AssignmentRelatedUser objects.
     """
     class Meta:
-        model = AssignmentCandidate
+        model = AssignmentRelatedUser
         fields = (
             'id',
-            'person',
-            'elected',
-            'blocked',)
+            'user',
+            'status')
 
 
 class AssignmentVoteSerializer(serializers.ModelSerializer):
@@ -103,8 +102,8 @@ class AssignmentFullSerializer(serializers.ModelSerializer):
     """
     Serializer for assignment.models.Assignment objects. With all polls.
     """
-    assignmentcandidate_set = AssignmentCandidateSerializer(many=True, read_only=True)
-    poll_set = AssignmentAllPollSerializer(many=True, read_only=True)
+    related_users = AssignmentRelatedUserSerializer(many=True, read_only=True)
+    polls = AssignmentAllPollSerializer(many=True, read_only=True)
 
     class Meta:
         model = Assignment
@@ -114,9 +113,9 @@ class AssignmentFullSerializer(serializers.ModelSerializer):
             'description',
             'posts',
             'status',
-            'assignmentcandidate_set',
+            'related_users',
             'poll_description_default',
-            'poll_set',
+            'polls',
             'tags',)
 
 
@@ -124,7 +123,8 @@ class AssignmentShortSerializer(AssignmentFullSerializer):
     """
     Serializer for assignment.models.Assignment objects. Without unpublished poll.
     """
-    poll_set = AssignmentShortPollSerializer(many=True, read_only=True)
+    related_users = AssignmentRelatedUserSerializer(many=True, read_only=True)
+    polls = AssignmentShortPollSerializer(many=True, read_only=True)
 
     class Meta:
         model = Assignment
@@ -134,7 +134,7 @@ class AssignmentShortSerializer(AssignmentFullSerializer):
             'description',
             'posts',
             'status',
-            'assignmentcandidate_set',
+            'related_users',
             'poll_description_default',
-            'poll_set',
+            'polls',
             'tags',)

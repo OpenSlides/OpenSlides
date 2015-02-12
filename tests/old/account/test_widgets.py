@@ -91,8 +91,8 @@ class PersonalInfoWidget(TestCase):
     def test_candidate_list(self):
         assignment = self.import_assignment()
         if assignment:
-            assignment_1 = assignment.models.Assignment.objects.create(name='Hausmeister ooKoh7roApoo3phe', posts=1)
-            assignment_1.run(candidate=self.user, person=self.user)
+            assignment_1 = assignment.models.Assignment.objects.create(title='Hausmeister ooKoh7roApoo3phe', open_posts=1)
+            assignment_1.set_candidate(self.user)
             response = self.client.get('/dashboard/')
             self.assertContains(response, 'I am candidate for the following elections:', status_code=200)
             self.assertContains(response, 'Hausmeister ooKoh7roApoo3phe', status_code=200)

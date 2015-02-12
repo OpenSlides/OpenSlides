@@ -1,4 +1,4 @@
-from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericRelation
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.datastructures import SortedDict
@@ -15,24 +15,36 @@ from openslides.projector.models import SlideMixin
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import AbsoluteUrlMixin
 from openslides.utils.rest_api import RESTModelMixin
-from openslides.utils.utils import html_strong
 from openslides.users.models import User
 
 
-class AssignmentCandidate(RESTModelMixin, models.Model):
+class AssignmentRelatedUser(RESTModelMixin, models.Model):
     """
-    Many2Many table between an assignment and the candidates.
+    Many to Many table between an assignment and user.
     """
-    assignment = models.ForeignKey("Assignment")
-    person = models.ForeignKey(User, db_index=True)
-    elected = models.BooleanField(default=False)
-    blocked = models.BooleanField(default=False)
+    STATUS_CANDIDATE = 1
+    STATUS_ELECTED = 2
+    STATUS_BLOCKED = 3
+    STATUSES = (
+        (STATUS_CANDIDATE, ugettext_lazy('candidate')),
+        (STATUS_ELECTED, ugettext_lazy('elected')),
+        (STATUS_BLOCKED, ugettext_lazy('blocked')),
+    )
+
+    assignment = models.ForeignKey(
+        'Assignment',
+        db_index=True,
+        related_name='assignment_related_users')
+    user = models.ForeignKey(User, db_index=True)
+    status = models.IntegerField(
+        choices=STATUSES,
+        default=STATUS_CANDIDATE)
 
     class Meta:
-        unique_together = ("assignment", "person")
+        unique_together = ('assignment', 'user')
 
     def __str__(self):
-        return str(self.person)
+        return "%s <-> %s" % (self.assignment, self.user)
 
     def get_root_rest_element(self):
         """
@@ -44,35 +56,87 @@ class AssignmentCandidate(RESTModelMixin, models.Model):
 class Assignment(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
     slide_callback_name = 'assignment'
 
-    STATUS = (
-        ('sea', ugettext_lazy('Searching for candidates')),
-        ('vot', ugettext_lazy('Voting')),
-        ('fin', ugettext_lazy('Finished')),
+    PHASE_SEARCH = 1
+    PHASE_VOTING = 2
+    PHASE_FINISHED = 3
+
+    PHASES = (
+        (PHASE_SEARCH, ugettext_lazy('Searching for candidates')),
+        (PHASE_VOTING, ugettext_lazy('Voting')),
+        (PHASE_FINISHED, ugettext_lazy('Finished')),
     )
 
-    name = models.CharField(max_length=100, verbose_name=ugettext_lazy("Name"))
-    description = models.TextField(null=True, blank=True, verbose_name=ugettext_lazy("Description"))
-    posts = models.PositiveSmallIntegerField(verbose_name=ugettext_lazy("Number of available posts"))
+    title = models.CharField(
+        max_length=100,
+        verbose_name=ugettext_lazy("Title"))
+    """
+    Title of the assignment.
+    """
+
+    description = models.TextField(
+        blank=True,
+        verbose_name=ugettext_lazy("Description"))
+    """
+    Text to describe the assignment.
+    """
+
+    open_posts = models.PositiveSmallIntegerField(
+        verbose_name=ugettext_lazy("Number of members to be elected"))
+    """
+    The number of members to be elected.
+    """
+
     poll_description_default = models.CharField(
-        max_length=79, null=True, blank=True,
+        max_length=79,
+        blank=True,
         verbose_name=ugettext_lazy("Default comment on the ballot paper"))
-    status = models.CharField(max_length=3, choices=STATUS, default='sea')
+    """
+    Default text for the poll description.
+    """
+
+    phase = models.IntegerField(
+        choices=PHASES,
+        default=PHASE_SEARCH)
+    """
+    Phase in which the assignment is.
+    """
+
+    related_users = models.ManyToManyField(
+        User,
+        through='AssignmentRelatedUser')
+    """
+    Users that a candidates, elected or blocked as candidate.
+
+    See AssignmentRelatedUser for more infos.
+    """
+
     tags = models.ManyToManyField(Tag, blank=True)
+    """
+    Tags for the assignment.
+    """
+
+    items = GenericRelation(Item)
+    """
+    Agenda items for this assignment.
+    """
 
     class Meta:
         permissions = (
-            ('can_see_assignment', ugettext_noop('Can see elections')),  # TODO: Add plural s to the codestring
-            ('can_nominate_other', ugettext_noop('Can nominate another person')),
+            ('can_see_assignments', ugettext_noop('Can see elections')),
+            ('can_nominate_other', ugettext_noop('Can nominate another participant')),
             ('can_nominate_self', ugettext_noop('Can nominate oneself')),
-            ('can_manage_assignment', ugettext_noop('Can manage elections')),  # TODO: Add plural s also to the codestring
+            ('can_manage_assignments', ugettext_noop('Can manage elections')),
         )
-        ordering = ('name',)
+        ordering = ('title', )
         verbose_name = ugettext_noop('Election')
 
     def __str__(self):
-        return self.name
+        return self.title
 
     def get_absolute_url(self, link='detail'):
+        """
+        Returns absolute url to the assignment instance.
+        """
         if link == 'detail':
             url = reverse('assignment_detail', args=[str(self.pk)])
         elif link == 'update':
@@ -80,125 +144,115 @@ class Assignment(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
         elif link == 'delete':
             url = reverse('assignment_delete', args=[str(self.pk)])
         else:
-            url = super(Assignment, self).get_absolute_url(link)
+            url = super().get_absolute_url(link)
         return url
 
     def get_slide_context(self, **context):
-        context.update({
-            'polls': self.poll_set.filter(published=True),
-            'vote_results': self.vote_results(only_published=True)})
-        return super(Assignment, self).get_slide_context(**context)
-
-    def set_status(self, status):
-        status_dict = dict(self.STATUS)
-        if status not in status_dict:
-            raise ValueError(_('%s is not a valid status.') % html_strong(status))
-        if self.status == status:
-            raise ValueError(
-                _('The election status is already %s.') % html_strong(status_dict[status]))
-        self.status = status
-        self.save()
-
-    def run(self, candidate, person=None):
         """
-        run for a vote
-        candidate: The user who will be a candidate
-        person: The user who chooses the candidate
+        Retuns the context to generate the assignment slide.
         """
-        # TODO: don't make any permission checks here.
-        #       Use other Exceptions
-        if self.is_candidate(candidate):
-            raise NameError(_('<b>%s</b> is already a candidate.') % candidate)
-        if not person.has_perm("assignment.can_manage_assignment") and self.status != 'sea':
-            raise NameError(_('The candidate list is already closed.'))
-        candidature = self.assignment_candidates.filter(person=candidate)
-        if candidature and candidate != person and \
-                not person.has_perm("assignment.can_manage_assignment"):
-            # if the candidature is blocked and anotherone tries to run the
-            # candidate
-            raise NameError(
-                _('%s does not want to be a candidate.') % candidate)
-        elif candidature:
-            candidature[0].blocked = False
-            candidature[0].save()
-        else:
-            AssignmentCandidate(assignment=self, person=candidate).save()
-
-    def delrun(self, candidate, blocked=True):
-        """
-        stop running for a vote
-        """
-        try:
-            candidature = self.assignment_candidates.get(person=candidate)
-        except AssignmentCandidate.DoesNotExist:
-            raise Exception(_('%s is no candidate') % candidate)
-
-        if not candidature.blocked:
-            if blocked:
-                candidature.blocked = True
-                candidature.save()
-            else:
-                candidature.delete()
-        else:
-            candidature.delete()
-
-    def is_candidate(self, person):
-        """
-        return True, if person is a candidate.
-        """
-        try:
-            return self.assignment_candidates.filter(person=person).exclude(blocked=True).exists()
-        except AttributeError:
-            return False
-
-    def is_blocked(self, person):
-        """
-        return True, if the person is blockt for candidature.
-        """
-        return self.assignment_candidates.filter(person=person).filter(blocked=True).exists()
-
-    @property
-    def assignment_candidates(self):
-        return AssignmentCandidate.objects.filter(assignment=self)
+        return super().get_slide_context(
+            polls=self.polls.filter(published=True),
+            vote_results=self.vote_results(only_published=True),
+            **context)
 
     @property
     def candidates(self):
-        return self.get_participants(only_candidate=True)
+        """
+        Queryset that represents the candidates for the assignment.
+        """
+        return self.related_users.filter(
+            assignmentrelateduser__status=AssignmentRelatedUser.STATUS_CANDIDATE)
 
     @property
     def elected(self):
-        return self.get_participants(only_elected=True)
+        """
+        Queryset that represents all elected users for the assignment.
+        """
+        return self.related_users.filter(
+            assignmentrelateduser__status=AssignmentRelatedUser.STATUS_ELECTED)
 
-    def get_participants(self, only_elected=False, only_candidate=False):
-        candidates = self.assignment_candidates.exclude(blocked=True)
+    @property
+    def blocked(self):
+        """
+        Queryset that represents all blocked users for the assignment.
+        """
+        return self.related_users.filter(
+            assignmentrelateduser__status=AssignmentRelatedUser.STATUS_BLOCKED)
 
-        assert not (only_elected and only_candidate)
+    def is_candidate(self, user):
+        """
+        Returns True if user is a candidate.
 
-        if only_elected:
-            candidates = candidates.filter(elected=True)
+        Costs one database query.
+        """
+        return self.candidates.filter(pk=user.pk).exists()
 
-        if only_candidate:
-            candidates = candidates.filter(elected=False)
+    def is_elected(self, user):
+        """
+        Returns True if the user is elected for this assignment.
 
-        # TODO: rewrite this with a queryset
-        participants = []
-        for candidate in candidates.all():
-            participants.append(candidate.person)
-        return participants
+        Costs one database query.
+        """
+        return self.elected.filter(pk=user.pk).exists()
 
-    def set_elected(self, person, value=True):
-        candidate = self.assignment_candidates.get(person=person)
-        candidate.elected = value
-        candidate.save()
+    def is_blocked(self, user):
+        """
+        Returns True if the user is blockt for candidature.
 
-    def is_elected(self, person):
-        return person in self.elected
+        Costs one database query.
+        """
+        return self.blocked.filter(pk=user.pk).exists()
 
-    def gen_poll(self):
+    def set_candidate(self, user):
+        """
+        Adds the user as candidate.
+        """
+        related_user, __ = self.assignment_related_users.update_or_create(
+            user=user,
+            defaults={'status': AssignmentRelatedUser.STATUS_CANDIDATE})
+
+    def set_elected(self, user):
+        """
+        Makes user an elected user for this assignment.
+        """
+        related_user, __ = self.assignment_related_users.update_or_create(
+            user=user,
+            defaults={'status': AssignmentRelatedUser.STATUS_ELECTED})
+
+    def set_blocked(self, user):
+        """
+        Block user from this assignment, so he can not get an candidate.
+        """
+        related_user, __ = self.assignment_related_users.update_or_create(
+            user=user,
+            defaults={'status': AssignmentRelatedUser.STATUS_BLOCKED})
+
+    def delete_related_user(self, user):
+        """
+        Delete the connection from the assignment to the user.
+        """
+        self.assignment_related_users.filter(user=user).delete()
+
+    def set_phase(self, phase):
+        """
+        Sets the phase attribute of the assignment.
+
+        Raises a ValueError if the phase is not valide.
+        """
+        if phase not in dict(self.PHASES):
+            raise ValueError("Invalid phase %s" % phase)
+
+        self.phase = phase
+
+    def create_poll(self):
         """
         Creates an new poll for the assignment and adds all candidates to all
         lists of speakers of related agenda items.
         """
+        candidates = self.candidates.all()
+
+        # Find out the method of the election
         if config['assignment_poll_vote_values'] == 'votes':
             yesnoabstain = False
         elif config['assignment_poll_vote_values'] == 'yesnoabstain':
@@ -206,19 +260,20 @@ class Assignment(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
         else:
             # config['assignment_poll_vote_values'] == 'auto'
             # candidates <= available posts -> yes/no/abstain
-            if len(self.candidates) <= (self.posts - len(self.elected)):
+            if len(candidates) <= (self.open_posts - self.elected.count()):
                 yesnoabstain = True
             else:
                 yesnoabstain = False
 
-        poll = AssignmentPoll.objects.create(
-            assignment=self,
+        # Create the poll with the candidates.
+        poll = self.polls.create(
             description=self.poll_description_default,
             yesnoabstain=yesnoabstain)
-        poll.set_options([{'candidate': person} for person in self.candidates])
+        poll.set_options({'candidate': user} for user in candidates)
 
-        items = Item.objects.filter(content_type=ContentType.objects.get_for_model(Assignment), object_id=self.pk)
-        for item in items:
+        # Add all candidates to all agenda items for this assignment
+        # TODO: Try to do this in a bulk create
+        for item in self.items.all():
             for candidate in self.candidates:
                 try:
                     Speaker.objects.add(candidate, item)
@@ -231,14 +286,15 @@ class Assignment(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
 
     def vote_results(self, only_published):
         """
-        returns a table represented as a list with all candidates from all
+        Returns a table represented as a list with all candidates from all
         related polls and their vote results.
         """
         vote_results_dict = SortedDict()
-        # All polls related to this assigment
-        polls = self.poll_set.all()
+
+        polls = self.polls.all()
         if only_published:
             polls = polls.filter(published=True)
+
         # All PollOption-Objects related to this assignment
         options = []
         for poll in polls:
@@ -263,7 +319,7 @@ class Assignment(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
         return vote_results_dict
 
     def get_agenda_title(self):
-        return self.name
+        return str(self)
 
     def get_agenda_title_supplement(self):
         return '(%s)' % _('Assignment')
@@ -296,15 +352,14 @@ class AssignmentOption(RESTModelMixin, BaseOption):
 
 class AssignmentPoll(RESTModelMixin, SlideMixin, CollectDefaultVotesMixin,
                      PublishPollMixin, AbsoluteUrlMixin, BasePoll):
-
     slide_callback_name = 'assignmentpoll'
-    """Name of the callback for the slide system."""
-
     option_class = AssignmentOption
-    assignment = models.ForeignKey(Assignment, related_name='poll_set')
+
+    assignment = models.ForeignKey(Assignment, related_name='polls')
     yesnoabstain = models.BooleanField(default=False)
     description = models.CharField(
-        max_length=79, null=True, blank=True,
+        max_length=79,
+        blank=True,
         verbose_name=ugettext_lazy("Comment on the ballot paper"))
 
     def __str__(self):
@@ -321,7 +376,7 @@ class AssignmentPoll(RESTModelMixin, SlideMixin, CollectDefaultVotesMixin,
         elif link == 'delete':
             url = reverse('assignmentpoll_delete', args=[str(self.pk)])
         else:
-            url = super(AssignmentPoll, self).get_absolute_url(link)
+            url = super().get_absolute_url(link)
         return url
 
     def get_assignment(self):
@@ -334,17 +389,17 @@ class AssignmentPoll(RESTModelMixin, SlideMixin, CollectDefaultVotesMixin,
             return [ugettext_noop('Votes')]
 
     def get_ballot(self):
-        return self.assignment.poll_set.filter(id__lte=self.id).count()
+        return self.assignment.polls.filter(id__lte=self.pk).count()
 
     def get_percent_base_choice(self):
         return config['assignment_poll_100_percent_base']
 
     def append_pollform_fields(self, fields):
         fields.append('description')
-        super(AssignmentPoll, self).append_pollform_fields(fields)
+        super().append_pollform_fields(fields)
 
     def get_slide_context(self, **context):
-        return super(AssignmentPoll, self).get_slide_context(poll=self)
+        return super().get_slide_context(poll=self)
 
     def get_root_rest_element(self):
         """

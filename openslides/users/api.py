@@ -76,7 +76,7 @@ def create_builtin_groups_and_admin():
     perm_15 = Permission.objects.get(content_type=ct_motion, codename='can_see_motion')
 
     ct_assignment = ContentType.objects.get(app_label='assignment', model='assignment')
-    perm_16 = Permission.objects.get(content_type=ct_assignment, codename='can_see_assignment')
+    perm_16 = Permission.objects.get(content_type=ct_assignment, codename='can_see_assignments')
 
     ct_users = ContentType.objects.get(app_label='users', model='user')
     perm_users_can_see_name = Permission.objects.get(content_type=ct_users, codename='can_see_name')
@@ -114,7 +114,7 @@ def create_builtin_groups_and_admin():
     # Staff (pk 4)
     perm_41 = Permission.objects.get(content_type=ct_agenda, codename='can_manage_agenda')
     perm_42 = Permission.objects.get(content_type=ct_motion, codename='can_manage_motion')
-    perm_43 = Permission.objects.get(content_type=ct_assignment, codename='can_manage_assignment')
+    perm_43 = Permission.objects.get(content_type=ct_assignment, codename='can_manage_assignments')
     perm_44 = Permission.objects.get(content_type=ct_users, codename='can_manage')
     perm_45 = Permission.objects.get(content_type=ct_core, codename='can_manage_projector')
     perm_46 = Permission.objects.get(content_type=ct_core, codename='can_use_chat')
