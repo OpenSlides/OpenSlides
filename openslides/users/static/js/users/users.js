@@ -64,11 +64,11 @@ angular.module('OpenSlidesApp.users', [])
 })
 
 .controller('UserListCtrl', function($scope, User, i18n) {
-    User.bindAll($scope, 'users');
+    User.bindAll({}, $scope, 'users');
 })
 
 .controller('UserDetailCtrl', function($scope, User, user) {
-    User.bindOne($scope, 'user', user.id);
+    User.bindOne(user.id, $scope, 'user');
 })
 
 .controller('UserCreateCtrl', function($scope, User) {
