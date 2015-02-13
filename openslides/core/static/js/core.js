@@ -82,6 +82,22 @@ angular.module('OpenSlidesApp.core', [])
     $locationProvider.html5Mode(true);
 })
 
+.config(function(DSProvider) {
+    // Reloads everything after 5 minutes.
+    // TODO: * find a way only to reload things that are still needed
+    DSProvider.defaults.maxAge = 5 * 60 * 1000;  // 5 minutes
+    DSProvider.defaults.reapAction = 'none';
+    DSProvider.defaults.afterReap = function(model, items) {
+        if (items.length > 5) {
+            model.findAll({}, {bypassCache: true});
+        } else {
+            _.forEach(items, function (item) {
+                model.refresh(item[model.idAttribute]);
+            });
+        }
+    };
+})
+
 .run(function(DS, autoupdate) {
     autoupdate.on_message(function(data) {
         // TODO: when MODEL.find() is called after this
