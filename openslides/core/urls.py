@@ -43,4 +43,9 @@ urlpatterns = patterns(
     url(r'tags/$',
         views.TagListView.as_view(),
         name='core_tag_list'),
+
+    # Ajax Urls
+    url(r'^core/url_patterns/$',
+        views.UrlPatternsView.as_view(),
+        name='core_url_patterns'),
 )

@@ -1,27 +1,33 @@
+import re
+
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.staticfiles import finders
 from django.core.exceptions import PermissionDenied
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import get_resolver, reverse
 from django.db import IntegrityError
+from django.http import HttpResponse
 from django.shortcuts import redirect, render_to_response
 from django.template import RequestContext
 from django.utils.importlib import import_module
 from django.utils.translation import ugettext as _
 from haystack.views import SearchView as _SearchView
-from django.http import HttpResponse
 
 from openslides import __version__ as openslides_version
 from openslides.config.api import config
 from openslides.utils import views as utils_views
-from openslides.utils.plugins import get_plugin_description, get_plugin_verbose_name, get_plugin_version
+from openslides.utils.plugins import (
+    get_plugin_description,
+    get_plugin_verbose_name,
+    get_plugin_version,
+)
 from openslides.utils.rest_api import ModelViewSet
 from openslides.utils.signals import template_manipulation
 from openslides.utils.widgets import Widget
 
+from .exceptions import TagException
 from .forms import SelectWidgetsForm
 from .models import CustomSlide, Tag
-from .exceptions import TagException
 from .serializers import CustomSlideSerializer, TagSerializer
 
 
@@ -338,3 +344,20 @@ class TagViewSet(ModelViewSet):
         if (self.action in ('create', 'update', 'destroy') and
                 not request.user.has_perm('core.can_manage_tags')):
             self.permission_denied(request)
+
+
+class UrlPatternsView(utils_views.APIView):
+    """
+    Returns a dictonary with all url patterns as json.
+    """
+    URL_KWARGS_REGEX = re.compile(r'%\((\w*)\)s')
+    http_method_names = ['get']
+
+    def get_context_data(self, **context):
+        result = {}
+        url_dict = get_resolver(None).reverse_dict
+        for pattern_name in filter(lambda key: isinstance(key, str), url_dict.keys()):
+            url = url_dict[pattern_name][0][0][0]
+            result[pattern_name] = self.URL_KWARGS_REGEX.sub(r':\1', url)
+
+        return result
