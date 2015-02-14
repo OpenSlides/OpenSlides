@@ -8,15 +8,23 @@ Version 2.0.0 (unreleased)
 ==========================
 [https://github.com/OpenSlides/OpenSlides/milestones/2.0]
 
+Agenda:
+- Updated the tests and changed only small internal parts of method of the
+  agenda model. No API changes.
+Assignments:
+- Massive refactoring and cleanup of assignments app.
+Users:
+- Massive refactoring of the participant app. Now called 'users'.
+- Used new anonymous user object instead of an authentification backend.
 Other:
 - Changed supported Python version to >= 3.3.
 - Used Django 1.7 as lowest requirement.
-- Updated to Bootstrap 3.
-- Refactoring of the participant app. Now called 'users'.
-- Used new anonymous user object instead of an authentification backend.
 - Added Django's application configuration. Refactored loading of signals,
   template signals and slides.
-- Added Django REST Framework api.
+- Added API using Django REST Framework 3.x.
+- Used AngularJS with additional libraries for single page frontend.
+- Updated to Bootstrap 3.
+- Used SockJS for automatic update of AngularJS driven single page frontend.
 - Refactored start script and management commands.
 - Refactored tests.
 - Used Bower and gulp to manage third party JavaScript and Cascading Style
