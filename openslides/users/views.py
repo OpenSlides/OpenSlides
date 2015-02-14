@@ -14,13 +14,13 @@ from openslides.utils.views import (
     UpdateView, LoginMixin)
 from openslides.utils.exceptions import OpenSlidesError
 
-from .api import gen_password, gen_username, get_protected_perm
+from .api import get_protected_perm
 from .csv_import import import_users
 from .forms import (GroupForm, UserCreateForm, UserMultipleCreateForm,
                     UsersettingsForm, UserUpdateForm)
 from .models import Group, User
 from .pdf import users_to_pdf, users_passwords_to_pdf
-from .serializers import GroupSerializer, UserFullSerializer, UserShortSerializer
+from .serializers import GroupSerializer, UserCreateUpdateSerializer, UserFullSerializer, UserShortSerializer
 
 
 class UserListView(ListView):
@@ -69,24 +69,13 @@ class UserCreateView(CreateView):
     url_name_args = []
 
     def manipulate_object(self, form):
-        self.object.username = gen_username(
+        self.object.username = User.objects.generate_username(
             form.cleaned_data['first_name'], form.cleaned_data['last_name'])
 
         if not self.object.default_password:
-            self.object.default_password = gen_password()
+            self.object.default_password = User.objects.generate_password()
 
         self.object.set_password(self.object.default_password)
-
-    def post_save(self, form):
-        super(UserCreateView, self).post_save(form)
-        # TODO: find a better solution that makes the following lines obsolete
-        # Background: motion.models.use_post_save adds already the registerd group
-        # to new user but super(..).post_save(form) removes it and sets only the
-        # groups selected in the form (without 'registered')
-        # workaround: add registered group again manually
-        from openslides.users.api import get_registered_group  # TODO: Test, if global import is possible
-        registered = get_registered_group()
-        self.object.groups.add(registered)
 
 
 class UserMultipleCreateView(FormView):
@@ -108,8 +97,8 @@ class UserMultipleCreateView(FormView):
             names_list = line.split()
             first_name = ' '.join(names_list[:-1])
             last_name = names_list[-1]
-            username = gen_username(first_name, last_name)
-            default_password = gen_password()
+            username = User.objects.generate_username(first_name, last_name)
+            default_password = User.objects.generate_password()
             User.objects.create(
                 username=username,
                 first_name=first_name,
@@ -135,17 +124,6 @@ class UserUpdateView(UpdateView):
         form_kwargs = super(UserUpdateView, self).get_form_kwargs(*args, **kwargs)
         form_kwargs.update({'request': self.request})
         return form_kwargs
-
-    def post_save(self, form):
-        super(UserUpdateView, self).post_save(form)
-        # TODO: Find a better solution that makes the following lines obsolete
-        # Background: motion.models.use_post_save adds already the registerd group
-        # to new user but super(..).post_save(form) removes it and sets only the
-        # groups selected in the form (without 'registered')
-        # workaround: add registered group again manually
-        from openslides.users.api import get_registered_group  # TODO: Test, if global import is possible
-        registered = get_registered_group()
-        self.object.groups.add(registered)
 
 
 class UserDeleteView(DeleteView):
@@ -281,9 +259,12 @@ class UserViewSet(ModelViewSet):
 
     def get_serializer_class(self):
         """
-        Returns different serializer classes with respect to users permissions.
+        Returns different serializer classes with respect to action and user's
+        permissions.
         """
-        if self.request.user.has_perm('users.can_see_extra_data'):
+        if self.action in ('create', 'update'):
+            serializer_class = UserCreateUpdateSerializer
+        elif self.request.user.has_perm('users.can_see_extra_data'):
             serializer_class = UserFullSerializer
         else:
             serializer_class = UserShortSerializer

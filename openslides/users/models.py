@@ -1,10 +1,13 @@
 # TODO: Check every app, that they do not import Group or User from here.
 
-from django.contrib.auth.models import (PermissionsMixin, AbstractBaseUser,
-                                        BaseUserManager)
+from random import choice
 
-# TODO: Do not import the Group in here, but in core.models (if necessary)
-from django.contrib.auth.models import Group  # noqa
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin)
+from django.contrib.auth.models import Group, Permission  # noqa
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy, ugettext_noop
@@ -14,20 +17,83 @@ from openslides.projector.models import SlideMixin
 from openslides.utils.models import AbsoluteUrlMixin
 from openslides.utils.rest_api import RESTModelMixin
 
+from .exceptions import UserError
+
 
 class UserManager(BaseUserManager):
     """
     UserManager that creates new users only with a password and a username.
     """
-
     def create_user(self, username, password, **kwargs):
         user = self.model(username=username, **kwargs)
         user.set_password(password)
         user.save(using=self._db)
         return user
 
+    def create_or_reset_admin_user(self):
+        """
+        Creates an user with the username admin. If such a user exists, resets
+        it. The password is (re)set to 'admin'. The user becomes member of the
+        group 'Staff' (pk=4).
+        """
+        try:
+            staff = Group.objects.get(pk=4)
+        except Group.DoesNotExist:
+            raise UserError("Admin user can not be created or reset because "
+                            "the group 'Staff' is not available.")
+        admin, created = self.get_or_create(
+            username='admin',
+            defaults={'last_name': 'Administrator'})
+        admin.default_password = 'admin'
+        admin.password = make_password(admin.default_password, '', 'md5')
+        admin.save()
+        admin.groups.add(staff)
+        return created
+
+    def generate_username(self, first_name, last_name):
+        """
+        Generates a username from first name and last name.
+        """
+        first_name = first_name.strip()
+        last_name = last_name.strip()
+
+        if first_name and last_name:
+            base_name = ' '.join((first_name, last_name))
+        else:
+            base_name = first_name or last_name
+            if not base_name:
+                raise ValueError("Either 'first_name' or 'last_name' must not be "
+                                 "empty")
+
+        if not self.filter(username=base_name).exists():
+            generated_username = base_name
+        else:
+            counter = 0
+            while True:
+                counter += 1
+                test_name = '%s %d' % (base_name, counter)
+                if not self.filter(username=test_name).exists():
+                    generated_username = test_name
+                    break
+
+        return generated_username
+
+    def generate_password(self):
+        """
+        Generates a random passwort.
+        """
+        chars = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789'
+        size = 8
+        return ''.join([choice(chars) for i in range(size)])
+
 
 class User(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, PermissionsMixin, AbstractBaseUser):
+    """
+    Model for users in OpenSlides. A client can login as a user with
+    credentials. A user can also just be used as representation for a person
+    in other OpenSlides app like motion submitter or (assignment) election
+    candidates.
+    """
     USERNAME_FIELD = 'username'
     slide_callback_name = 'user'
 

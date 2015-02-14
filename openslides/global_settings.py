@@ -9,6 +9,8 @@ SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 
 AUTH_USER_MODEL = 'users.User'
 
+AUTHENTICATION_BACKENDS = ('openslides.users.auth.CustomizedModelBackend',)
+
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 
@@ -76,6 +78,7 @@ ROOT_URLCONF = 'openslides.urls'
 
 INSTALLED_APPS = (
     'openslides.core',
+    'openslides.users',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -92,7 +95,6 @@ INSTALLED_APPS = (
     'openslides.agenda',
     'openslides.motion',
     'openslides.assignment',
-    'openslides.users',
     'openslides.mediafile',
     'openslides.config',
 )

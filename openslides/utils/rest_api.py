@@ -9,7 +9,8 @@ from rest_framework.serializers import (  # noqa
     ModelSerializer,
     PrimaryKeyRelatedField,
     RelatedField,
-    SerializerMethodField)
+    SerializerMethodField,
+    ValidationError)
 from rest_framework.response import Response  # noqa
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet, ViewSet  # noqa

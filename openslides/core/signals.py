@@ -1,8 +1,14 @@
 from django import forms
+from django.dispatch import Signal
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.config.api import ConfigGroup, ConfigGroupedCollection, ConfigVariable
+
+# This signal is sent when the migrate command is done. That means it is sent
+# after post_migrate sending and creating all Permission objects. Don't use it
+# for other things than dealing with Permission objects.
+post_permission_creation = Signal()
 
 
 def setup_general_config(sender, **kwargs):

@@ -1,9 +1,14 @@
-from django.contrib.auth.models import AnonymousUser as DjangoAnonymousUser, Permission
+from django.contrib.auth import get_user_model
+from django.contrib.auth.backends import ModelBackend
+from django.contrib.auth.models import AnonymousUser as DjangoAnonymousUser
 from django.contrib.auth.context_processors import auth as _auth
 from django.contrib.auth import get_user as _get_user
+from django.db.models import Q
 from django.utils.functional import SimpleLazyObject
 
 from openslides.config.api import config
+
+from .models import Permission
 
 
 class AnonymousUser(DjangoAnonymousUser):
@@ -39,6 +44,34 @@ class AnonymousUser(DjangoAnonymousUser):
             if perm[:perm.index('.')] == app_label:
                 return True
         return False
+
+
+class CustomizedModelBackend(ModelBackend):
+    """
+    Customized backend for authentication. Ensures that registered users have
+    all permission of the group 'Registered' (pk=2).
+    """
+    def get_group_permissions(self, user_obj, obj=None):
+        """
+        Returns a set of permission strings that this user has through his/her
+        groups.
+        """
+        # TODO: Refactor this after Django 1.8 release. Add also anonymous
+        #       permission check to this backend.
+        if user_obj.is_anonymous() or obj is not None:
+            return set()
+        if not hasattr(user_obj, '_group_perm_cache'):
+            if user_obj.is_superuser:
+                perms = Permission.objects.all()
+            else:
+                user_groups_field = get_user_model()._meta.get_field('groups')
+                user_groups_query = 'group__%s' % user_groups_field.related_query_name()
+                # The next two lines are the customization.
+                query = Q(**{user_groups_query: user_obj}) | Q(group__pk=2)
+                perms = Permission.objects.filter(query)
+            perms = perms.values_list('content_type__app_label', 'codename').order_by()
+            user_obj._group_perm_cache = set("%s.%s" % (ct, name) for ct, name in perms)
+        return user_obj._group_perm_cache
 
 
 class AuthenticationMiddleware(object):

@@ -208,7 +208,7 @@ class ViewTest(TestCase):
         orga_perm = Permission.objects.get(
             content_type=ContentType.objects.get_for_model(Item),
             codename='can_see_orga_items')
-        user.groups.get(name='Registered').permissions.remove(orga_perm)
+        user.groups.model.objects.get(name='Registered').permissions.remove(orga_perm)
         # Reload user
         user = User.objects.get(username=user.username)
         # Test view without permission
