@@ -125,4 +125,4 @@ def po2json(args=None):
 @command('isort',
          help='Sorts all imports in all python files.')
 def isort(args=None):
-    return call('isort --recursive openslides tests')
+    return call('isort --line-width 79 --multi_line 3 --recursive openslides tests')

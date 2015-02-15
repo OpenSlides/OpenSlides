@@ -23,3 +23,5 @@ script:
   - "coverage report --show-missing --fail-under=45"
 
   - "DJANGO_SETTINGS_MODULE='tests.old.settings' ./manage.py test tests.old"
+
+  - "isort --line-width 79 --multi_line 3 --check-only --recursive openslides tests"
