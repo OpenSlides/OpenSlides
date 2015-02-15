@@ -120,10 +120,6 @@ class ConfigFormTest(TestCase):
         response = self.client_manager.get('/config/')
         self.assertRedirects(response=response, expected_url='/config/general/',
                              status_code=302, target_status_code=200)
-        bad_client = Client()
-        response = bad_client.get('/config/', follow=True)
-        self.assertRedirects(response=response, expected_url='/login/?next=/config/general/',
-                             status_code=302, target_status_code=200)
 
     def test_get_config_form_testgroupedpage1_manager_client(self):
         response = self.client_manager.get('/config/testgroupedpage1/')
@@ -141,10 +137,6 @@ class ConfigFormTest(TestCase):
     def test_get_config_form_testgroupedpage1_other_clients(self):
         response = self.client_normal_user.get('/config/testgroupedpage1/')
         self.assertEqual(response.status_code, 403)
-        bad_client = Client()
-        response = bad_client.get('/config/testgroupedpage1/')
-        self.assertRedirects(response=response, expected_url='/login/?next=/config/testgroupedpage1/',
-                             status_code=302, target_status_code=200)
 
     def test_get_config_form_testsimplepage1_manager_client(self):
         response = self.client_manager.get('/config/testsimplepage1/')

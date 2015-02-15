@@ -64,9 +64,6 @@ class MediafileTest(TestCase):
             response = client.get('/mediafile/')
             self.assertEqual(response.status_code, 200)
             self.assertTemplateUsed(response, 'mediafile/mediafile_list.html')
-        bad_client = Client()
-        response = bad_client.get('/mediafile/')
-        self.assertRedirects(response, expected_url='/login/?next=/mediafile/', status_code=302, target_status_code=200)
 
     def test_upload_mediafile_get_request(self):
         clients = self.login_clients()
@@ -81,10 +78,6 @@ class MediafileTest(TestCase):
 
         response = clients['client_normal_user'].get('/mediafile/new/')
         self.assertEqual(response.status_code, 403)
-
-        bad_client = Client()
-        response = bad_client.get('/mediafile/new/')
-        self.assertRedirects(response, expected_url='/login/?next=/mediafile/new/', status_code=302, target_status_code=200)
 
     def test_upload_mediafile_post_request(self):
         # Test first user
@@ -138,10 +131,6 @@ class MediafileTest(TestCase):
 
         response = clients['client_normal_user'].get('/mediafile/1/edit/')
         self.assertEqual(response.status_code, 403)
-
-        bad_client = Client()
-        response = bad_client.get('/mediafile/1/edit/')
-        self.assertRedirects(response, expected_url='/login/?next=/mediafile/1/edit/', status_code=302, target_status_code=200)
 
     def test_edit_mediafile_get_request_own_file(self):
         clients = self.login_clients()
@@ -204,9 +193,6 @@ class MediafileTest(TestCase):
         self.assertEqual(response.status_code, 403)
         response = clients['client_normal_user'].get('/mediafile/1/del/')
         self.assertEqual(response.status_code, 403)
-        bad_client = Client()
-        response = bad_client.get('/mediafile/1/del/')
-        self.assertRedirects(response, expected_url='/login/?next=/mediafile/1/del/', status_code=302, target_status_code=200)
 
     def test_delete_mediafile_get_request_own_file(self):
         self.object.uploader = self.vip_user

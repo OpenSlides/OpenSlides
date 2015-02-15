@@ -3,12 +3,13 @@
 from random import choice
 
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.models import (
+from django.contrib.auth.models import (  # noqa
     AbstractBaseUser,
     BaseUserManager,
-    PermissionsMixin)
-from django.contrib.auth.models import Group, Permission  # noqa
-from django.core.urlresolvers import reverse
+    Group,
+    Permission,
+    PermissionsMixin
+)
 from django.db import models
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
@@ -158,11 +159,9 @@ class User(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, PermissionsMixin, Abstr
         Returns the URL to the user.
         """
         if link == 'detail':
-            url = reverse('user_detail', args=[str(self.pk)])
+            url = "/users/%s/" % self.pk
         elif link == 'update':
-            url = reverse('user_update', args=[str(self.pk)])
-        elif link == 'delete':
-            url = reverse('user_delete', args=[str(self.pk)])
+            url = "/users/%s/edit/" % self.pk
         else:
             url = super().get_absolute_url(link)
         return url

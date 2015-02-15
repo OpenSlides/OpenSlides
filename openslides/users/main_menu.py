@@ -10,5 +10,5 @@ class UserMainMenuEntry(MainMenuEntry):
     verbose_name = ugettext_lazy('Users')
     required_permission = 'users.can_see_extra_data'
     default_weight = 50
-    pattern_name = 'user_list'
+    pattern_name = 'core_dashboard'
     icon_css_class = 'glyphicon-user'
