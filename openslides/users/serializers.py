@@ -4,7 +4,7 @@ from django.utils.translation import ugettext as _, ugettext_lazy
 
 from openslides.utils.rest_api import ModelSerializer, PrimaryKeyRelatedField, RelatedField, ValidationError
 
-from .models import Group, User
+from .models import Group, Permission, User
 
 
 class UserShortSerializer(ModelSerializer):
@@ -122,18 +122,40 @@ class PermissionRelatedField(RelatedField):
     """
     A custom field to use for the permission relationship.
     """
+    default_error_messages = {
+        'incorrect_value': ugettext_lazy('Incorrect value "{value}". Expected app_label.codename string.'),
+        'does_not_exist': ugettext_lazy('Invalid permission "{value}". Object does not exist.')}
+
     def to_representation(self, value):
         """
-        Returns the permission name (app_label.codename).
+        Returns the permission code string (app_label.codename).
         """
         return '.'.join((value.content_type.app_label, value.codename,))
+
+    def to_internal_value(self, data):
+        """
+        Returns the permission object represented by data. The argument data is
+        what is sent by the client. This method expects permission code strings
+        (app_label.codename) like to_representation() returns.
+        """
+        try:
+            app_label, codename = data.split('.')
+        except ValueError:
+            self.fail('incorrect_value', value=data)
+        try:
+            permission = Permission.objects.get(content_type__app_label=app_label, codename=codename)
+        except Permission.DoesNotExist:
+            self.fail('does_not_exist', value=data)
+        return permission
 
 
 class GroupSerializer(ModelSerializer):
     """
     Serializer for django.contrib.auth.models.Group objects.
     """
-    permissions = PermissionRelatedField(many=True, read_only=True)
+    permissions = PermissionRelatedField(
+        many=True,
+        queryset=Permission.objects.all())
 
     class Meta:
         model = Group
