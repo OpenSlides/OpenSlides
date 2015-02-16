@@ -11,14 +11,15 @@ handler500 = ErrorView.as_view(status_code=500)
 urlpatterns = patterns(
     '',
     url(r'^rest/', include(router.urls)),
-    # TODO: add "special" urls, for example pdf views etc.
+    (r'^users/', include('openslides.users.urls')),
 
-    url(r'^user.*', IndexView.as_view()),
+    url(r'^users.*', IndexView.as_view()),
 
     # activate next line go get more angular views
     # url(r'^$', IndexView.as_view()),
     # url(r'^assignment.*', IndexView.as_view()),
     # url(r'^agenda.*', IndexView.as_view()),
+
 )
 
 
@@ -31,7 +32,6 @@ urlpatterns += patterns(
     (r'^agenda/', include('openslides.agenda.urls')),
     (r'^motion/', include('openslides.motion.urls')),
     (r'^assignment/', include('openslides.assignment.urls')),
-    (r'^user/', include('openslides.users.urls')),
     (r'^mediafile/', include('openslides.mediafile.urls')),
     (r'^config/', include('openslides.config.urls')),
     (r'^projector/', include('openslides.projector.urls')),
@@ -43,14 +43,6 @@ urlpatterns += patterns(
 urlpatterns += patterns(
     '',
     (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
-
-    url(r'^login/$',
-        'openslides.users.views.login',
-        name='user_login'),
-
-    url(r'^logout/$',
-        'django.contrib.auth.views.logout_then_login',
-        name='user_logout'),
 
     url(r'^myusersettings/$',
         UserSettingsView.as_view(),

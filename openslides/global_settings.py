@@ -11,7 +11,7 @@ AUTH_USER_MODEL = 'users.User'
 
 AUTHENTICATION_BACKENDS = ('openslides.users.auth.CustomizedModelBackend',)
 
-LOGIN_URL = '/login/'
+LOGIN_URL = '/users/'
 LOGIN_REDIRECT_URL = '/'
 
 SESSION_COOKIE_NAME = 'OpenSlidesSessionID'

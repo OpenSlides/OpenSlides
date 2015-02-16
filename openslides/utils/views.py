@@ -13,6 +13,8 @@ from django.utils.translation import ugettext as _, ugettext_lazy
 from django.views import generic as django_views
 from reportlab.lib.units import cm
 from reportlab.platypus import SimpleDocTemplate, Spacer
+from rest_framework.views import APIView as _APIView
+from rest_framework.response import Response
 
 from .exceptions import OpenSlidesError
 from .forms import CSVImportForm
@@ -76,13 +78,19 @@ class AjaxMixin(object):
     Mixin to response to an ajax request with an json object.
     """
 
-    def get_ajax_context(self, **kwargs):
+    def get_ajax_context(self, **context):
         """
         Returns a dictonary with the context for the ajax response.
         """
-        return kwargs
+        return context
 
     def ajax_get(self, request, *args, **kwargs):
+        """
+        Deprecated. Use ajax_response instead.
+        """
+        return self.ajax_response()
+
+    def ajax_response(self):
         """
         Returns the HttpResponse.
         """
@@ -289,13 +297,15 @@ class ListView(PermissionMixin, ExtraContextMixin, django_views.ListView):
 class AjaxView(PermissionMixin, AjaxMixin, View):
     """
     View for ajax requests.
+
+    Deprecated. Use APIView instead.
     """
     def get(self, request, *args, **kwargs):
         # TODO: Raise an error, if the request is not an ajax-request
-        return self.ajax_get(request, *args, **kwargs)
+        return self.ajax_response()
 
     def post(self, *args, **kwargs):
-        return self.get(*args, **kwargs)
+        return self.ajax_response()
 
 
 class RedirectView(PermissionMixin, AjaxMixin, UrlMixin, django_views.RedirectView):
@@ -640,3 +650,33 @@ class CSVImportView(FormView):
         messages.warning(self.request, warning)
         messages.error(self.request, error)
         return super(CSVImportView, self).form_valid(form)
+
+
+class APIView(_APIView):
+    """
+    The Django Rest framework APIView with improvements for OpenSlides.
+    """
+
+    http_method_names = []
+    """
+    The allowed actions have to be explicitly defined.
+
+    Django allowes the following:
+    http_method_names = ['get', 'post', 'put', 'patch', 'delete', 'head', 'options', 'trace']
+    """
+
+    def get_context_data(self, **context):
+        """
+        Returns the context for the response.
+        """
+        return context
+
+    def method_call(self, request, *args, **kwargs):
+        """
+        Http method that returns the response object with the context data.
+        """
+        return Response(self.get_context_data())
+
+    # Add the http-methods and delete the method "method_call"
+    get = post = put = patch = delete = head = options = trace = method_call
+    del method_call

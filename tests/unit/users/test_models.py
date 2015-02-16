@@ -41,15 +41,9 @@ class UserGetAbsoluteUrlTest(TestCase):
         """
         user = User(pk=5)
 
-        with patch('openslides.users.models.reverse') as mock_reverse:
-            mock_reverse.return_value = 'test url'
-            url = user.get_absolute_url()
-
         self.assertEqual(
-            url,
-            'test url',
-            "User.get_absolute_url() does not return the result of reverse.")
-        mock_reverse.assert_called_once_with('user_detail', args=['5'])
+            user.get_absolute_url(),
+            '/users/5/')
 
     def test_get_absolute_url_detail(self):
         """
@@ -57,15 +51,11 @@ class UserGetAbsoluteUrlTest(TestCase):
         """
         user = User(pk=5)
 
-        with patch('openslides.users.models.reverse') as mock_reverse:
-            mock_reverse.return_value = 'test url'
-            url = user.get_absolute_url('detail')
+        url = user.get_absolute_url('detail')
 
         self.assertEqual(
             url,
-            'test url',
-            "User.get_absolute_url('detail') does not return the result of reverse.")
-        mock_reverse.assert_called_once_with('user_detail', args=['5'])
+            '/users/5/')
 
     def test_get_absolute_url_update(self):
         """
@@ -73,31 +63,11 @@ class UserGetAbsoluteUrlTest(TestCase):
         """
         user = User(pk=5)
 
-        with patch('openslides.users.models.reverse') as mock_reverse:
-            mock_reverse.return_value = 'test url'
-            url = user.get_absolute_url('update')
+        url = user.get_absolute_url('update')
 
         self.assertEqual(
             url,
-            'test url',
-            "User.get_absolute_url('update') does not return the result of reverse.")
-        mock_reverse.assert_called_once_with('user_update', args=['5'])
-
-    def test_get_absolute_url_delete(self):
-        """
-        Tests get_absolute_url() with 'delete' as argument.
-        """
-        user = User(pk=5)
-
-        with patch('openslides.users.models.reverse') as mock_reverse:
-            mock_reverse.return_value = 'test url'
-            url = user.get_absolute_url('delete')
-
-        self.assertEqual(
-            url,
-            'test url',
-            "User.get_absolute_url('delete') does not return the result of reverse.")
-        mock_reverse.assert_called_once_with('user_delete', args=['5'])
+            '/users/5/edit/')
 
     def test_get_absolute_url_other(self):
         """
@@ -112,8 +82,7 @@ class UserGetAbsoluteUrlTest(TestCase):
 
         self.assertEqual(
             url,
-            'test url',
-            "User.get_absolute_url(OTHER) does not return the result of reverse.")
+            'test url')
         mock_super().get_absolute_url.assert_called_once_with(dummy_argument)
 
 

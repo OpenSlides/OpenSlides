@@ -17,7 +17,6 @@ class UserWidget(Widget):
     default_weight = 60
     default_active = False
     template_name = 'users/widget_user.html'
-    more_link_pattern_name = 'user_list'
 
     def get_context_data(self, **context):
         return super(UserWidget, self).get_context_data(

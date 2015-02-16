@@ -10,6 +10,7 @@ from django.utils.importlib import import_module
 from django.utils.translation import ugettext as _
 from haystack.views import SearchView as _SearchView
 from django.http import HttpResponse
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from openslides import get_version as get_openslides_version
 from openslides import get_git_commit_id, RELEASE
@@ -34,6 +35,14 @@ class IndexView(utils_views.View):
     You can override it by simply adding a custom 'templates/index.html' file
     to the custom staticfiles directory. See STATICFILES_DIRS in settings.py.
     """
+
+    @classmethod
+    def as_view(cls, *args, **kwargs):
+        """
+        Makes sure that the csrf cookie is send.
+        """
+        view = super().as_view(*args, **kwargs)
+        return ensure_csrf_cookie(view)
 
     def get(self, *args, **kwargs):
         with open(finders.find('templates/index.html')) as f:
@@ -341,6 +350,6 @@ class TagViewSet(ModelViewSet):
         Calls self.permission_denied() if the requesting user has not the
         permission to manage tags and it is a create, update or detroy request.
         """
-        if (self.action in ('create', 'update', 'destroy')
-                and not request.user.has_perm('core.can_manage_tags')):
+        if (self.action in ('create', 'update', 'destroy') and
+                not request.user.has_perm('core.can_manage_tags')):
             self.permission_denied(request)

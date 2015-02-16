@@ -29,7 +29,7 @@
                 <a href="/" class="logo" title="{% trans 'Home' %}"><img src="{% static 'img/logo.png' %}" alt="{% trans 'Logo' %}" /></a>
                 <span class="title optional">{% get_config 'event_name' %}</span>
             </div>
-            {% block loginbutton %} 
+            {% block loginbutton %}
                 <div class="navbar-right">
                     <!-- Chatbox button -->
                     {% if chat_messages != None %}
@@ -61,7 +61,7 @@
                                 {% trans "Logout" %}</a></li>
                         </ul>
                         {% else %}
-                            <a href="{% url 'user_login' %}" class="btn btn-default">
+                            <a href="" class="btn btn-default">
                                 <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
                                 {% trans "Login" %}</a>
                         {% endif %}
