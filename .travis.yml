@@ -14,13 +14,13 @@ install:
   - "node_modules/.bin/bower install"
   - "node_modules/.bin/gulp --production"
 script:
-  - "flake8 --max-line-length=150 --statistics openslides tests"
+  - "flake8 openslides tests"
   - "isort --check-only --recursive openslides tests"
 
   - "DJANGO_SETTINGS_MODULE='tests.settings' coverage run ./manage.py test tests.unit"
-  - "coverage report --show-missing --fail-under=35"
+  - "coverage report --fail-under=43"
 
   - "DJANGO_SETTINGS_MODULE='tests.settings' coverage run ./manage.py test tests.integration"
-  - "coverage report --show-missing --fail-under=45"
+  - "coverage report --fail-under=50"
 
   - "DJANGO_SETTINGS_MODULE='tests.old.settings' ./manage.py test tests.old"
