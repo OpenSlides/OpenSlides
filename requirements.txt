@@ -2,8 +2,9 @@
 -r requirements_production.txt
 
 # Requirements for development and tests in alphabetical order
-coverage==3.7.1
-flake8==2.2.4
+coverage
+flake8
+isort
 
 # Requirements for OpenSlides handbook/documentation in alphabetical order
 Sphinx==1.2.2

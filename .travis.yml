@@ -15,6 +15,7 @@ install:
   - "node_modules/.bin/gulp --production"
 script:
   - "flake8 --max-line-length=150 --statistics openslides tests"
+  - "isort --check-only --recursive openslides tests"
 
   - "DJANGO_SETTINGS_MODULE='tests.settings' coverage run ./manage.py test tests.unit"
   - "coverage report --show-missing --fail-under=35"
