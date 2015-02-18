@@ -11,33 +11,41 @@ Version 2.0.0 (unreleased)
 Agenda:
 - Updated the tests and changed only small internal parts of method of the
   agenda model. No API changes.
+- Deprecated mptt.
 Assignments:
-- Massive refactoring and cleanup of assignments app.
-- Renamed app from assignment to assignments
+- Renamed app from assignment to assignments.
+- Massive refactoring and cleanup of the app.
 Motions:
-- Renamed app from motion to motions
+- Renamed app from motion to motions.
 Mediafiles:
-- Renamed app from mediafile to mediafiles
+- Renamed app from mediafile to mediafiles.
 Users:
 - Massive refactoring of the participant app. Now called 'users'.
-- Used new anonymous user object instead of an authentification backend.
+- Used new anonymous user object instead of an authentification backend. Used
+  special authentication class for REST requests.
 - Used authentication frontend via AngularJS.
 Other:
 - New OpenSlides logo.
 - Changed supported Python version to >= 3.3.
 - Used Django 1.7 as lowest requirement.
 - Added Django's application configuration. Refactored loading of signals,
-  template signals and slides.
-- Added API using Django REST Framework 3.x. Added several views and mixins for
-  generic views in OpenSlides apps.
+  template signals and projector elements/slides.
+- Setup migrations.
+- Added API using Django REST Framework 3.x. Added several views and mixins
+  for generic views in OpenSlides apps.
+- Refactored projector API using metaclasses now.
+- Renamed SignalConnectMetaClass classmethod get_all_objects to get_all
+  (private API).
 - Used AngularJS with additional libraries for single page frontend.
-- Removed use of 'django.views.i18n.javascript_catalog'.
+- Removed use of 'django.views.i18n.javascript_catalog'. Used angular-gettext
+  now.
 - Updated to Bootstrap 3.
 - Used SockJS for automatic update of AngularJS driven single page frontend.
 - Refactored start script and management commands.
 - Refactored tests.
 - Used Bower and gulp to manage third party JavaScript and Cascading Style
   Sheets libraries.
+- Used setup.cfg for development tools.
 - Fixed bug in LocalizedModelMultipleChoiceField.
 
 

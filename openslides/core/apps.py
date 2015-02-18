@@ -6,27 +6,23 @@ class CoreAppConfig(AppConfig):
     verbose_name = 'OpenSlides Core'
 
     def ready(self):
-        # Load main menu entry and widgets.
+        # Load main menu entry, projector elements and widgets.
         # Do this by just importing all from these files.
-        from . import main_menu, widgets  # noqa
+        from . import main_menu, projector, widgets  # noqa
 
         # Import all required stuff.
         from django.db.models import signals
         from openslides.config.signals import config_signal
-        from openslides.projector.api import register_slide_model
         from openslides.utils.autoupdate import inform_changed_data_receiver
         from openslides.utils.rest_api import router
         from .signals import setup_general_config
-        from .views import CustomSlideViewSet, TagViewSet
+        from .views import CustomSlideViewSet, ProjectorViewSet, TagViewSet
 
         # Connect signals.
         config_signal.connect(setup_general_config, dispatch_uid='setup_general_config')
 
-        # Register slides.
-        CustomSlide = self.get_model('CustomSlide')
-        register_slide_model(CustomSlide, 'core/customslide_slide.html')
-
         # Register viewsets.
+        router.register('core/projector', ProjectorViewSet)
         router.register('core/customslide', CustomSlideViewSet)
         router.register('core/tag', TagViewSet)
 

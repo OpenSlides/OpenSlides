@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from rest_framework.decorators import detail_route  # noqa
 from rest_framework.serializers import (  # noqa
     CharField,
+    Field,
     IntegerField,
     ListSerializer,
     ModelSerializer,
@@ -15,7 +16,7 @@ from rest_framework.serializers import (  # noqa
     ValidationError)
 from rest_framework.response import Response  # noqa
 from rest_framework.routers import DefaultRouter
-from rest_framework.viewsets import ModelViewSet, ViewSet  # noqa
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet, ViewSet  # noqa
 from rest_framework.decorators import list_route  # noqa
 
 from .exceptions import OpenSlidesError

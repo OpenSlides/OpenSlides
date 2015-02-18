@@ -3,8 +3,6 @@ from django.template import Context, Template
 from openslides.config.api import config
 from openslides.utils.test import TestCase
 
-from .models import TestModel
-
 
 class ConfigTagAndFilter(TestCase):
     def test_config_tag(self):
@@ -29,32 +27,3 @@ class ConfigTagAndFilter(TestCase):
         template = Template(template_code)
         self.assertTrue('FdgfkR04jtg9f8bq' in template.render(Context({})))
         self.assertFalse('bad_e0fvkfHFD' in template.render(Context({})))
-
-
-class AbsoluteUrlFilter(TestCase):
-    def setUp(self):
-        self.model = TestModel.objects.create(name='test_model')
-
-    def test_default_argument(self):
-        """
-        Test to call absolute_url without an argument.
-        """
-        t = Template("{% load tags %}URL: {{ model|absolute_url }}")
-        html = t.render(Context({'model': self.model}))
-        self.assertEqual(html, 'URL: detail-url-here')
-
-    def test_with_argument(self):
-        """
-        Test to call absolute_url with an argument.
-        """
-        t = Template("{% load tags %}URL: {{ model|absolute_url:'delete' }}")
-        html = t.render(Context({'model': self.model}))
-        self.assertEqual(html, 'URL: delete-url-here')
-
-    def test_wrong_argument(self):
-        """
-        Test to call absolute_url with a non existing argument.
-        """
-        t = Template("{% load tags %}URL: {{ model|absolute_url:'wrong' }}")
-        html = t.render(Context({'model': self.model}))
-        self.assertEqual(html, 'URL: ')
