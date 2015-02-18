@@ -1,8 +1,8 @@
 from django.conf.urls import include, patterns, url
 
 from openslides.core.views import IndexView, ErrorView
-from openslides.utils.rest_api import router
 from openslides.users.views import UserSettingsView, UserPasswordSettingsView
+from openslides.utils.rest_api import router
 
 handler403 = ErrorView.as_view(status_code=403)
 handler404 = ErrorView.as_view(status_code=404)
@@ -11,22 +11,17 @@ handler500 = ErrorView.as_view(status_code=500)
 urlpatterns = patterns(
     '',
     url(r'^rest/', include(router.urls)),
-    (r'^users/', include('openslides.users.urls')),
+    url(r'^users/', include('openslides.users.urls')),
 
     url(r'^users.*', IndexView.as_view()),
 
-    # activate next line go get more angular views
+    # Activate next lines to get more AngularJS views
     # url(r'^$', IndexView.as_view()),
     # url(r'^assignment.*', IndexView.as_view()),
     # url(r'^agenda.*', IndexView.as_view()),
-
 )
 
-
-# Deprecated.
-js_info_dict = {'packages': []}
-
-
+# Deprecated urls. Move them up when the apps are refactored.
 urlpatterns += patterns(
     '',
     (r'^agenda/', include('openslides.agenda.urls')),
@@ -39,15 +34,12 @@ urlpatterns += patterns(
     (r'^ckeditor/', include('ckeditor.urls')),
 )
 
-# TODO: move this patterns into core or the participant app
+# TODO: Move these patterns into core or the users app.
 urlpatterns += patterns(
     '',
-    (r'^jsi18n/$', 'django.views.i18n.javascript_catalog', js_info_dict),
-
     url(r'^myusersettings/$',
         UserSettingsView.as_view(),
         name='user_settings'),
-
     url(r'^myusersettings/changepassword/$',
         UserPasswordSettingsView.as_view(),
         name='password_change'),
