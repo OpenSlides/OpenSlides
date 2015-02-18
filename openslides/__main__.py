@@ -5,7 +5,7 @@ import sys
 
 from django.core.management import execute_from_command_line
 
-from openslides import get_version
+from openslides import __version__ as openslides_version
 from openslides.utils.main import (
     get_default_settings_path,
     setup_django_settings_module,
@@ -61,7 +61,7 @@ def get_parser():
     parser.add_argument(
         '--version',
         action='version',
-        version=get_version(),
+        version=openslides_version,
         help='Show version number and exit.')
 
     # Init subparsers

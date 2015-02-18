@@ -2,7 +2,7 @@ from unittest.mock import MagicMock, patch
 
 from django.test.client import Client, RequestFactory
 
-from openslides import get_version
+from openslides import __version__ as openslides_version
 from openslides.agenda.models import Item
 from openslides.config.api import config
 from openslides.core import views
@@ -73,7 +73,7 @@ class VersionViewTest(TestCase):
 
     def test_get(self):
         response = self.client.get('/version/')
-        self.assertContains(response, get_version(), status_code=200)
+        self.assertContains(response, openslides_version, status_code=200)
 
     @patch('openslides.core.views.settings')
     def test_with_missing_plugin(self, mock_settings):

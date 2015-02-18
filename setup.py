@@ -1,39 +1,38 @@
 #!/usr/bin/env python
 
-import re
-import sys
+from setuptools import find_packages, setup
 
-from setuptools import setup, find_packages
-
-from openslides import get_version
-
+from openslides import __author__ as openslides_author
+from openslides import __description__ as openslides_description
+from openslides import __version__ as openslides_version
 
 with open('README.rst') as readme:
     long_description = readme.read()
 
-
 with open('requirements_production.txt') as requirements_production:
     install_requires = requirements_production.readlines()
 
-
 setup(
     name='openslides',
-    version=get_version(),
-    author='OpenSlides-Team',
+    author=openslides_author,
     author_email='support@openslides.org',
-    url='http://openslides.org',
-    description='Presentation and assembly system',
+    description=openslides_description,
+    license='MIT',
     long_description=long_description,
+    url='http://openslides.org',
+    version=openslides_version,
+
     classifiers=[
         # http://pypi.python.org/pypi?%3Aaction=list_classifiers
-        'Development Status :: 5 - Production/Stable',
+        'Development Status :: 3 - Alpha',
+        # 'Development Status :: 4 - Beta',
+        # 'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Django',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3',
-    ],
-    license='MIT',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4', ],
     packages=find_packages(exclude=['tests', 'tests.*']),
     include_package_data=True,
     install_requires=install_requires,
