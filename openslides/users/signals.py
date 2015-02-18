@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.contenttypes.models import ContentType
+from django.db.models import Q
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
@@ -113,79 +113,93 @@ def create_builtin_groups_and_admin(**kwargs):
         # Do completely nothing if there are already some of our groups in the database.
         return
 
+    permission_strings = (
+        'agenda.can_be_speaker',
+        'agenda.can_manage_agenda',
+        'agenda.can_see_agenda',
+        'agenda.can_see_orga_items',
+        'assignment.can_manage_assignments',
+        'assignment.can_nominate_other',
+        'assignment.can_nominate_self',
+        'assignment.can_see_assignments',
+        'config.can_manage',
+        'core.can_manage_projector',
+        'core.can_manage_tags',
+        'core.can_see_dashboard',
+        'core.can_see_projector',
+        'core.can_use_chat',
+        'mediafile.can_manage',
+        'mediafile.can_see',
+        'mediafile.can_upload',
+        'motion.can_create_motion',
+        'motion.can_manage_motion',
+        'motion.can_see_motion',
+        'motion.can_support_motion',
+        'users.can_manage',
+        'users.can_see_extra_data',
+        'users.can_see_name', )
+    permission_dict = {}
+    permission_query = Q()
+
+    for permission_string in permission_strings:
+        app_label, codename = permission_string.split('.')
+        query_part = Q(content_type__app_label=app_label) & Q(codename=codename)
+        permission_query = permission_query | query_part
+    for permission in Permission.objects.select_related('content_type').filter(permission_query):
+        permission_string = '.'.join((permission.content_type.app_label, permission.codename))
+        permission_dict[permission_string] = permission
+
     # Anonymous (pk 1) and Registered (pk 2)
-    ct_core = ContentType.objects.get(app_label='core', model='customslide')
-    perm_11 = Permission.objects.get(content_type=ct_core, codename='can_see_projector')
-    perm_12 = Permission.objects.get(content_type=ct_core, codename='can_see_dashboard')
-
-    ct_agenda = ContentType.objects.get(app_label='agenda', model='item')
-    ct_speaker = ContentType.objects.get(app_label='agenda', model='speaker')
-    perm_13 = Permission.objects.get(content_type=ct_agenda, codename='can_see_agenda')
-    perm_14 = Permission.objects.get(content_type=ct_agenda, codename='can_see_orga_items')
-    can_speak = Permission.objects.get(content_type=ct_speaker, codename='can_be_speaker')
-
-    ct_motion = ContentType.objects.get(app_label='motion', model='motion')
-    perm_15 = Permission.objects.get(content_type=ct_motion, codename='can_see_motion')
-
-    ct_assignment = ContentType.objects.get(app_label='assignment', model='assignment')
-    perm_16 = Permission.objects.get(content_type=ct_assignment, codename='can_see_assignments')
-
-    ct_users = ContentType.objects.get(app_label='users', model='user')
-    perm_users_can_see_name = Permission.objects.get(content_type=ct_users, codename='can_see_name')
-    perm_users_can_see_extra_data = Permission.objects.get(content_type=ct_users, codename='can_see_extra_data')
-
-    ct_mediafile = ContentType.objects.get(app_label='mediafile', model='mediafile')
-    perm_18 = Permission.objects.get(content_type=ct_mediafile, codename='can_see')
-
-    base_permission_list = (
-        perm_11,
-        perm_12,
-        perm_13,
-        perm_14,
-        perm_15,
-        perm_16,
-        perm_users_can_see_name,
-        perm_users_can_see_extra_data,
-        perm_18)
-
+    base_permissions = (
+        permission_dict['agenda.can_see_agenda'],
+        permission_dict['agenda.can_see_orga_items'],
+        permission_dict['assignment.can_see_assignments'],
+        permission_dict['core.can_see_dashboard'],
+        permission_dict['core.can_see_projector'],
+        permission_dict['mediafile.can_see'],
+        permission_dict['motion.can_see_motion'],
+        permission_dict['users.can_see_extra_data'],
+        permission_dict['users.can_see_name'], )
     group_anonymous = Group.objects.create(name=ugettext_noop('Anonymous'), pk=1)
-    group_anonymous.permissions.add(*base_permission_list)
+    group_anonymous.permissions.add(*base_permissions)
     group_registered = Group.objects.create(name=ugettext_noop('Registered'), pk=2)
-    group_registered.permissions.add(can_speak, *base_permission_list)
+    group_registered.permissions.add(
+        permission_dict['agenda.can_be_speaker'],
+        *base_permissions)
 
     # Delegates (pk 3)
-    perm_31 = Permission.objects.get(content_type=ct_motion, codename='can_create_motion')
-    perm_32 = Permission.objects.get(content_type=ct_motion, codename='can_support_motion')
-    perm_33 = Permission.objects.get(content_type=ct_assignment, codename='can_nominate_other')
-    perm_34 = Permission.objects.get(content_type=ct_assignment, codename='can_nominate_self')
-    perm_35 = Permission.objects.get(content_type=ct_mediafile, codename='can_upload')
-
+    delegates_permissions = (
+        permission_dict['assignment.can_nominate_other'],
+        permission_dict['assignment.can_nominate_self'],
+        permission_dict['mediafile.can_upload'],
+        permission_dict['motion.can_create_motion'],
+        permission_dict['motion.can_support_motion'], )
     group_delegates = Group.objects.create(name=ugettext_noop('Delegates'), pk=3)
-    group_delegates.permissions.add(perm_31, perm_32, perm_33, perm_34, perm_35)
+    group_delegates.permissions.add(*delegates_permissions)
 
     # Staff (pk 4)
-    perm_41 = Permission.objects.get(content_type=ct_agenda, codename='can_manage_agenda')
-    perm_42 = Permission.objects.get(content_type=ct_motion, codename='can_manage_motion')
-    perm_43 = Permission.objects.get(content_type=ct_assignment, codename='can_manage_assignments')
-    perm_44 = Permission.objects.get(content_type=ct_users, codename='can_manage')
-    perm_45 = Permission.objects.get(content_type=ct_core, codename='can_manage_projector')
-    perm_46 = Permission.objects.get(content_type=ct_core, codename='can_use_chat')
-    perm_47 = Permission.objects.get(content_type=ct_mediafile, codename='can_manage')
-
-    ct_config = ContentType.objects.get(app_label='config', model='configstore')
-    perm_48 = Permission.objects.get(content_type=ct_config, codename='can_manage')
-
-    ct_tag = ContentType.objects.get(app_label='core', model='tag')
-    can_manage_tags = Permission.objects.get(content_type=ct_tag, codename='can_manage_tags')
-
+    staff_permissions = (
+        permission_dict['agenda.can_manage_agenda'],
+        permission_dict['assignment.can_manage_assignments'],
+        permission_dict['assignment.can_nominate_other'],
+        permission_dict['assignment.can_nominate_self'],
+        permission_dict['config.can_manage'],
+        permission_dict['core.can_manage_projector'],
+        permission_dict['core.can_manage_tags'],
+        permission_dict['core.can_use_chat'],
+        permission_dict['mediafile.can_manage'],
+        permission_dict['mediafile.can_upload'],
+        permission_dict['motion.can_create_motion'],
+        permission_dict['motion.can_manage_motion'],
+        permission_dict['users.can_manage'], )
     group_staff = Group.objects.create(name=ugettext_noop('Staff'), pk=4)
-    # add delegate permissions (without can_support_motion)
-    group_staff.permissions.add(perm_31, perm_33, perm_34, perm_35)
-    # add staff permissions
-    group_staff.permissions.add(perm_41, perm_42, perm_43, perm_44, perm_45, perm_46, perm_47, perm_48, can_manage_tags)
-    # add can_see_name and can_see_extra_data permissions
+    group_staff.permissions.add(*staff_permissions)
+
+    # Add users.can_see_name and users.can_see_extra_data permissions
     # TODO: Remove this redundancy after cleanup of the permission system.
-    group_staff.permissions.add(perm_users_can_see_name, perm_users_can_see_extra_data)
+    group_staff.permissions.add(
+        permission_dict['users.can_see_extra_data'],
+        permission_dict['users.can_see_name'])
 
     # Admin user
     User.objects.create_or_reset_admin_user()
