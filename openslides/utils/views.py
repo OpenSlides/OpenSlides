@@ -7,14 +7,16 @@ from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
 from django.core.exceptions import ImproperlyConfigured, PermissionDenied
 from django.core.urlresolvers import reverse
-from django.http import (HttpResponse, HttpResponseRedirect)
+from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.decorators import method_decorator
-from django.utils.translation import ugettext as _, ugettext_lazy
+from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy
 from django.views import generic as django_views
+from django.views.decorators.csrf import ensure_csrf_cookie
 from reportlab.lib.units import cm
 from reportlab.platypus import SimpleDocTemplate, Spacer
-from rest_framework.views import APIView as _APIView
 from rest_framework.response import Response
+from rest_framework.views import APIView as _APIView
 
 from .exceptions import OpenSlidesError
 from .forms import CSVImportForm
@@ -25,7 +27,7 @@ from .utils import html_strong
 View = django_views.View
 
 
-class LoginMixin(object):
+class LoginMixin:
     """
     Mixin for Views, that only can be viseted from users how are logedin.
     """
@@ -38,7 +40,7 @@ class LoginMixin(object):
         return super().dispatch(request, *args, **kwargs)
 
 
-class PermissionMixin(object):
+class PermissionMixin:
     """
     Mixin for views, that only can be visited from users with special
     permissions.
@@ -73,7 +75,7 @@ class PermissionMixin(object):
         return super().dispatch(request, *args, **kwargs)
 
 
-class AjaxMixin(object):
+class AjaxMixin:
     """
     Mixin to response to an ajax request with an json object.
     """
@@ -97,7 +99,7 @@ class AjaxMixin(object):
         return HttpResponse(json.dumps(self.get_ajax_context()))
 
 
-class ExtraContextMixin(object):
+class ExtraContextMixin:
     """
     Mixin to send the signal 'template_manipulation' to add extra content to the
     context of the view.
@@ -115,7 +117,7 @@ class ExtraContextMixin(object):
         return context
 
 
-class UrlMixin(object):
+class UrlMixin:
     url_name_args = None
 
     def get_url(self, url_name=None, url=None, args=None, use_absolute_url_link=None):
@@ -278,6 +280,17 @@ class ModelFormMixin(FormMixin):
         Called after the object is saved into the database.
         """
         form.save_m2m()
+
+
+class CSRFMixin:
+    """
+    Adds the csrf cookie to the response.
+    """
+
+    @classmethod
+    def as_view(cls, *args, **kwargs):
+        view = super().as_view(*args, **kwargs)
+        return ensure_csrf_cookie(view)
 
 
 class TemplateView(PermissionMixin, ExtraContextMixin, django_views.TemplateView):
