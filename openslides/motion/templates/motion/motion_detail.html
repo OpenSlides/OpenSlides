@@ -291,7 +291,7 @@
         </h5>
         {{ version.creation_time }}
 
-        {% if 'motion_amendments_enabled'|get_config %}
+        {% if perms.motion.can_create_motion and 'motion_amendments_enabled'|get_config %}
             <h5>{% trans 'Amendments' %}:</h5>
             {% with amendments=motion.amendments.all %}
                 {% if amendments %}

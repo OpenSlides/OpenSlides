@@ -8,6 +8,10 @@ Version 1.7.1 (unreleased)
 ==========================
 [https://github.com/OpenSlides/OpenSlides/milestones/1.7.1]
 
+Motions:
+- Show amendment button for users with permission 'can_create_motion'
+  only.
+
 
 Version 1.7 (2015-02-16)
 ========================
