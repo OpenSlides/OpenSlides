@@ -67,6 +67,7 @@ class UserCreateUpdateSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = (
+            'id',
             'is_present',
             'username',
             'title',
