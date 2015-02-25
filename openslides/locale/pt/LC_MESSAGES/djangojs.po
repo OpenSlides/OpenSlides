@@ -3,14 +3,14 @@
 # Copyright (C) 2011–2013 by OpenSlides team, see AUTHORS.
 # This file is distributed under the same license as the OpenSlides package.
 # Translators:
-# marcoagpinto <marcoagpinto@mail.telepac.pt>, 2013
+# Marco A.G.Pinto <marcoagpinto@mail.telepac.pt>, 2013
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-05 20:29+0200\n"
+"POT-Creation-Date: 2015-02-15 20:37+0100\n"
 "PO-Revision-Date: 2013-11-20 12:42+0000\n"
-"Last-Translator: marcoagpinto <marcoagpinto@mail.telepac.pt>\n"
+"Last-Translator: Marco A.G.Pinto <marcoagpinto@mail.telepac.pt>\n"
 "Language-Team: Portuguese (Portugal) (http://www.transifex.com/projects/p/openslides/language/pt_PT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"

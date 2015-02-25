@@ -3,18 +3,18 @@
 # Copyright (C) 2011–2013 by OpenSlides team, see AUTHORS.
 # This file is distributed under the same license as the OpenSlides package.
 # Translators:
-# emanuelschuetze <emanuel.schuetze@intevation.de>, 2013
-# emanuelschuetze <emanuel.schuetze@intevation.de>, 2013
-# moosline <moosline@savvy.ch>, 2013
-# moosline <moosline@savvy.ch>, 2012-2013
-# moosline <moosline@savvy.ch>, 2012
+# Emanuel Schütze <emanuel.schuetze@intevation.de>, 2013
+# Emanuel Schütze <emanuel.schuetze@intevation.de>, 2013
+# Moira Brülisauer <moosline@savvy.ch>, 2013
+# Moira Brülisauer <moosline@savvy.ch>, 2012-2013
+# Moira Brülisauer <moosline@savvy.ch>, 2012
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-05-05 20:29+0200\n"
+"POT-Creation-Date: 2015-02-15 20:37+0100\n"
 "PO-Revision-Date: 2013-11-20 12:42+0000\n"
-"Last-Translator: emanuelschuetze <emanuel.schuetze@intevation.de>\n"
+"Last-Translator: Emanuel Schütze <emanuel.schuetze@intevation.de>\n"
 "Language-Team: French (http://www.transifex.com/projects/p/openslides/language/fr/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
