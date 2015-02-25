@@ -18,7 +18,8 @@ class UserCreate(TestCase):
             {'last_name': 'Test name keimeiShieX4Aekoe3do'})
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertTrue(User.objects.filter(username='Test name keimeiShieX4Aekoe3do').exists())
+        new_user = User.objects.get(username='Test name keimeiShieX4Aekoe3do')
+        self.assertEqual(response.data['id'], new_user.id)
 
     def test_creation_with_group(self):
         self.client.login(username='admin', password='admin')
