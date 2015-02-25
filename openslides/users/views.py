@@ -4,8 +4,9 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 from django.utils.translation import ugettext as _
 from django.utils.translation import activate, ugettext_lazy
+from rest_framework import status
 
-from openslides.utils.rest_api import ModelViewSet
+from openslides.utils.rest_api import ModelViewSet, Response
 from openslides.utils.views import (
     CSVImportView,
     FormView,
@@ -120,6 +121,19 @@ class GroupViewSet(ModelViewSet):
                  (request.user.has_perm('users.can_manage') and
                   request.user.has_perm('users.can_see_extra_data')))):
             self.permission_denied(request)
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        Protects builtin groups 'Anonymous' (pk=1) and 'Registered' (pk=2)
+        from being deleted.
+        """
+        instance = self.get_object()
+        if instance.pk in (1, 2,):
+            self.permission_denied(request)
+        else:
+            self.perform_destroy(instance)
+            response = Response(status=status.HTTP_204_NO_CONTENT)
+        return response
 
 
 class UserSettingsView(LoginMixin, UpdateView):
