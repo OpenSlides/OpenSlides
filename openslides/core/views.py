@@ -11,8 +11,7 @@ from django.utils.translation import ugettext as _
 from haystack.views import SearchView as _SearchView
 from django.http import HttpResponse
 
-from openslides import get_version as get_openslides_version
-from openslides import get_git_commit_id, RELEASE
+from openslides import __version__ as openslides_version
 from openslides.config.api import config
 from openslides.utils import views as utils_views
 from openslides.utils.plugins import get_plugin_description, get_plugin_verbose_name, get_plugin_version
@@ -115,14 +114,9 @@ class VersionView(utils_views.TemplateView):
         Adds version strings to the context.
         """
         context = super().get_context_data(**kwargs)
-        # OpenSlides version. During development the git commit id is added.
-        if RELEASE:
-            description = ''
-        else:
-            description = 'Commit %s' % get_git_commit_id()
         context['modules'] = [{'verbose_name': 'OpenSlides',
-                               'description': description,
-                               'version': get_openslides_version()}]
+                               'description': '',
+                               'version': openslides_version}]
         # Versions of plugins.
         for plugin in settings.INSTALLED_PLUGINS:
             context['modules'].append({'verbose_name': get_plugin_verbose_name(plugin),
