@@ -16,13 +16,16 @@ Assignments:
 Users:
 - Massive refactoring of the participant app. Now called 'users'.
 - Used new anonymous user object instead of an authentification backend.
+- Used authentication frontend via AngularJS.
 Other:
 - Changed supported Python version to >= 3.3.
 - Used Django 1.7 as lowest requirement.
 - Added Django's application configuration. Refactored loading of signals,
   template signals and slides.
-- Added API using Django REST Framework 3.x.
+- Added API using Django REST Framework 3.x. Added several views and mixins for
+  generic views in OpenSlides apps.
 - Used AngularJS with additional libraries for single page frontend.
+- Removed use of 'django.views.i18n.javascript_catalog'.
 - Updated to Bootstrap 3.
 - Used SockJS for automatic update of AngularJS driven single page frontend.
 - Refactored start script and management commands.
@@ -30,6 +33,7 @@ Other:
 - Used Bower and gulp to manage third party JavaScript and Cascading Style
   Sheets libraries.
 - Fixed bug in LocalizedModelMultipleChoiceField.
+
 
 Version 1.7 (2015-02-16)
 ========================
