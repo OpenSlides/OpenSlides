@@ -5,8 +5,14 @@ from reportlab.graphics.barcode.qr import QrCodeWidget
 from reportlab.graphics.shapes import Drawing
 from reportlab.lib import colors
 from reportlab.lib.units import cm
-from reportlab.platypus import (LongTable, PageBreak, Paragraph, Spacer, Table,
-                                TableStyle)
+from reportlab.platypus import (
+    LongTable,
+    PageBreak,
+    Paragraph,
+    Spacer,
+    Table,
+    TableStyle,
+)
 
 from openslides.config.api import config
 from openslides.utils.pdf import stylesheet
@@ -16,7 +22,7 @@ from .models import User
 
 def users_to_pdf(pdf):
     """
-    Create a list of all users as PDF
+    Create a list of all users as PDF.
     """
     data = [['#', _('Title'), _('Last Name'), _('First Name'),
              _('Structure level'), _('Group')]]
@@ -52,7 +58,7 @@ def users_to_pdf(pdf):
 
 def users_passwords_to_pdf(pdf):
     """
-    Create access data sheets for all users as PDF
+    Create access data sheets for all users as PDF.
     """
     users_pdf_wlan_ssid = config["users_pdf_wlan_ssid"] or "-"
     users_pdf_wlan_password = config["users_pdf_wlan_password"] or "-"
@@ -82,7 +88,7 @@ def users_passwords_to_pdf(pdf):
     qrcode_wlan_draw.add(qrcode_wlan)
 
     for user in User.objects.all().order_by(sort):
-        pdf.append(Paragraph(escape(user), stylesheet['h1']))
+        pdf.append(Paragraph(escape(user.get_full_name()), stylesheet['h1']))
         pdf.append(Spacer(0, 1 * cm))
         data = []
         # WLAN access data
