@@ -8,12 +8,12 @@ from rest_framework import status
 
 from openslides.utils.rest_api import ModelViewSet, Response
 from openslides.utils.views import (
+    APIView,
     CSVImportView,
     FormView,
     LoginMixin,
     PDFView,
     UpdateView,
-    APIView
 )
 
 from .csv_import import import_users
@@ -24,7 +24,7 @@ from .serializers import (
     GroupSerializer,
     UserCreateUpdateSerializer,
     UserFullSerializer,
-    UserShortSerializer
+    UserShortSerializer,
 )
 
 
