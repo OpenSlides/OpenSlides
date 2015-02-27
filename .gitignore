@@ -25,4 +25,3 @@ dist/*
 
 # Unit test and coverage reports
 .coverage
-htmlcov/*
