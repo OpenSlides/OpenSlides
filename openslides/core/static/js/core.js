@@ -1,6 +1,9 @@
 angular.module('OpenSlidesApp.core', [])
 
-.config(function($stateProvider) {
+.config(function($stateProvider, $urlMatcherFactoryProvider) {
+    // Make the trailing slash optional
+    $urlMatcherFactoryProvider.strictMode(false)
+
     // Use stateProvider.decorator to give default values to our states
     $stateProvider.decorator('views', function(state, parent) {
         var result = {},
@@ -56,7 +59,9 @@ angular.module('OpenSlidesApp.core', [])
                     create: '/new',
                     update: '/edit',
                     list: '',
-                    detail: '/:id',
+                    // The id is expected to be an integer, if not, the url has to
+                    // be defined manually
+                    detail: '/{id:int}',
                 };
 
             defaultUrl = defaultUrls[_.last(patterns)];
