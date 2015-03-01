@@ -41,7 +41,7 @@ angular.module('OpenSlidesApp.agenda', [])
 })
 
 .controller('ItemListCtrl', function($scope, Agenda, i18n) {
-    Agenda.bindAll($scope, 'items');
+    Agenda.bindAll({}, $scope, 'items');
     $scope.test_plural = i18n.ngettext('test', 'tests', 2);
     $scope.test_singular = i18n.ngettext('test', 'tests', 1);
 })

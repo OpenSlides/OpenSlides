@@ -109,10 +109,10 @@ class AssignmentFullSerializer(ModelSerializer):
         model = Assignment
         fields = (
             'id',
-            'name',
+            'title',
             'description',
-            'posts',
-            'status',
+            'open_posts',
+            'phase',
             'related_users',
             'poll_description_default',
             'polls',
@@ -130,10 +130,10 @@ class AssignmentShortSerializer(AssignmentFullSerializer):
         model = Assignment
         fields = (
             'id',
-            'name',
+            'title',
             'description',
-            'posts',
-            'status',
+            'open_posts',
+            'phase',
             'related_users',
             'poll_description_default',
             'polls',

@@ -42,17 +42,17 @@ angular.module('OpenSlidesApp.assignments', [])
 })
 
 .controller('AssignmentListCtrl', function($scope, Assignment) {
-    Assignment.bindAll($scope, 'assignments');
+    Assignment.bindAll({}, $scope, 'assignments');
 })
 
 .controller('AssignmentDetailCtrl', function($scope, Assignment, assignment) {
-    Assignment.bindOne($scope, 'assignment', assignment.id)
+    Assignment.bindOne(assignment.id, $scope, 'assignment')
 })
 
 .controller('AssignmentCreateCtrl', function($scope, Assignment) {
     $scope.assignment = {};
     $scope.save = function(assignment) {
-        assignment.posts = 1;
+        assignment.open_posts = 1;
         assignment.tags = []; // TODO: the rest_api should do this
         Assignment.create(assignment);
         // TODO: redirect to list-view

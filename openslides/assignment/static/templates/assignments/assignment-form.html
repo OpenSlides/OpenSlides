@@ -1,8 +1,8 @@
-<h1 ng-if="assignment.id">{{ assignment.name }}</h1>
+<h1 ng-if="assignment.id">{{ assignment.title }}</h1>
 <h1 ng-if="!assignment.id">Neue Assignment</h1>
 
 <form>
-    Titel: <input type="text" ng-model="assignment.name"><br>
+    Titel: <input type="text" ng-model="assignment.title"><br>
     Beschreibung:<br> <textarea ng-model="assignment.description"></textarea><br>
     <input type="submit" ng-click="save(assignment)" value="Save" />
 </form>

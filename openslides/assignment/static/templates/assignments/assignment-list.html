@@ -1,6 +1,6 @@
 <ul>
     <li ng-repeat="assignment in assignments">
-        <a ui-sref="assignments.assignment.detail({id: assignment.id })">{{ assignment.name }}</a>
+        <a ui-sref="assignments.assignment.detail({id: assignment.id })">{{ assignment.title }}</a>
         <a ui-sref="assignments.assignment.detail.update({id: assignment.id })">Bearbeiten</a>
     </li>
 </ul>
