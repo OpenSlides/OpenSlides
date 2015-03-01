@@ -97,8 +97,14 @@ angular.module('OpenSlidesApp.core', [])
     autoupdate.on_message(function(data) {
         // TODO: when MODEL.find() is called after this
         //       a new request is fired. This could be a bug in DS
+
+        // TODO: Do not send the status code to the client, but make the decission
+        //       on the server side. It is an implementation detail, that tornado
+        //       sends request to wsgi, which should not concern the client.
         if (data.status_code == 200) {
-            DS.inject(data.collection, data.data)
+            DS.inject(data.collection, data.data);
+        } else if (data.status_code == 404) {
+            DS.eject(data.collection, data.id);
         }
         // TODO: handle other statuscodes
     });
