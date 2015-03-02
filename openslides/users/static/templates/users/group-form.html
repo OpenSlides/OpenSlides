@@ -1,0 +1,29 @@
+<h1 ng-if="group.id">Edit group</h1>
+<h1 ng-if="!group.id">New group</h1>
+
+<div id="submenu">
+  <a ui-sref="users.group.list" class="btn btn-sm btn-default">
+    <i class="fa fa-angle-double-left fa-lg"></i>
+    <translate>Back to overview</translate>
+  </a>
+</div>
+
+<form name="userForm">
+  <div class="form-group">
+    <label for="inputName" translate>Name</label>
+    <input type="text" ng-model="group.name" class="form-control" name="inputName" ng-required="true">
+  </div>
+  <div class="form-group">
+    <label for="selectPermissions" translate>Permissions</label>
+    <select ng-options="group.permissions for group in groups"
+        ng-model="group.permissions" class="form-control" name="selectGroups">
+    </select>
+  </div>
+
+  <button type="submit" ng-click="save(group)" class="btn btn-primary" translate>
+    Save
+  </button>
+  <button ui-sref="users.group.list" class="btn btn-default" translate>
+    Cancel
+  </button>
+</form>

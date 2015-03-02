@@ -1,0 +1,446 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+
+#: users/static/templates/users/user-csv-import.html:15
+msgid ""
+"'title, first name, last name, gender, email, group id, structure level,\n"
+"        committee, about me, comment, is active'"
+msgstr ""
+
+#: users/static/templates/users/user-detail.html:18
+#: users/static/templates/users/user-form.html:60
+msgid "About me"
+msgstr ""
+
+#: users/static/templates/users/group-list.html:32
+#: users/static/templates/users/user-list.html:94
+msgid "Actions"
+msgstr ""
+
+#: users/static/templates/users/user-detail.html:23
+msgid "Administrative data"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:13
+msgid "Apr"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:7
+msgid "April"
+msgstr ""
+
+#: users/static/templates/users/user-csv-import.html:20
+msgid ""
+"At least first name or last name have to be filled in. All\n"
+"      other fields are optional and may be empty."
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:14
+msgid "Aug"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:8
+msgid "August"
+msgstr ""
+
+#: users/static/templates/users/group-detail.html:6
+#: users/static/templates/users/group-form.html:7
+#: users/static/templates/users/group-list.html:10
+#: users/static/templates/users/user-csv-import.html:6
+#: users/static/templates/users/user-detail.html:6
+#: users/static/templates/users/user-form.html:7
+msgid "Back to overview"
+msgstr ""
+
+#: users/static/templates/users/user-csv-import.html:32
+msgid "CSV file:"
+msgstr ""
+
+#: users/static/templates/users/group-form.html:26
+#: users/static/templates/users/user-csv-import.html:41
+#: users/static/templates/users/user-form.html:79
+msgid "Cancel"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:42
+msgid "Close"
+msgstr ""
+
+#: users/static/templates/users/user-detail.html:26
+#: users/static/templates/users/user-form.html:56
+#: users/static/templates/users/user-list.html:87
+msgid "Comment"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:41
+msgid "Current time"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:15
+msgid "Dec"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:9
+msgid "December"
+msgstr ""
+
+#: users/static/templates/users/user-csv-import.html:17
+msgid "Default groups"
+msgstr ""
+
+#: users/static/templates/users/user-form.html:51
+msgid "Default password"
+msgstr ""
+
+#: users/static/templates/users/user-csv-import.html:18
+msgid "Delegate"
+msgstr ""
+
+#: users/static/templates/users/group-list.html:51
+#: users/static/templates/users/user-list.html:118
+msgid "Delete"
+msgstr ""
+
+#: users/static/templates/users/group-list.html:46
+#: users/static/templates/users/user-list.html:113
+msgid "Edit"
+msgstr ""
+
+#: users/static/templates/users/user-form.html:1
+msgid "Edit participant"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:12
+msgid "Feb"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:6
+msgid "February"
+msgstr ""
+
+#: users/static/templates/users/group-list.html:17
+#: users/static/templates/users/user-list.html:63
+msgid "Filter"
+msgstr ""
+
+#: users/static/templates/users/user-form.html:29
+msgid "First name"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:23
+#: core/static/js/jquery/datepicker-config.js:27
+msgid "Fr"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:19
+msgid "Friday"
+msgstr ""
+
+#: users/static/templates/users/user-list.html:83
+msgid "Group"
+msgstr ""
+
+#: users/static/templates/users/user-form.html:46
+msgid "Group is required."
+msgstr ""
+
+#: users/static/templates/users/group-list.html:1
+#: users/static/templates/users/user-detail.html:15
+#: users/static/templates/users/user-form.html:42
+#: users/static/templates/users/user-list.html:25
+msgid "Groups"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:39
+msgid "Hour"
+msgstr ""
+
+#: users/static/templates/users/group-list.html:25
+msgid "ID"
+msgstr ""
+
+#: users/static/templates/users/user-csv-import.html:38
+#: users/static/templates/users/user-list.html:29
+msgid "Import"
+msgstr ""
+
+#: users/static/templates/users/user-csv-import.html:1
+msgid "Import participants"
+msgstr ""
+
+#: users/static/templates/users/user-form.html:72
+msgid "Is active"
+msgstr ""
+
+#: users/static/templates/users/user-form.html:66
+#: users/static/templates/users/user-list.html:59
+msgid "Is present"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:12
+msgid "Jan"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:6
+msgid "January"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:14
+msgid "Jul"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:8
+msgid "July"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:13
+msgid "Jun"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:7
+msgid "June"
+msgstr ""
+
+#: users/static/templates/users/user-list.html:91
+msgid "Last Login"
+msgstr ""
+
+#: users/static/templates/users/user-detail.html:28
+msgid "Last login"
+msgstr ""
+
+#: users/static/templates/users/user-form.html:33
+msgid "Last name"
+msgstr ""
+
+#: users/static/templates/users/user-list.html:50
+msgid "List of access data"
+msgstr ""
+
+#: users/static/templates/users/user-list.html:45
+msgid "List of participants"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:12
+msgid "Mar"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:6
+msgid "March"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:13
+#: core/static/js/jquery/datepicker-config.js:7
+msgid "May"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:40
+msgid "Minute"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:22
+#: core/static/js/jquery/datepicker-config.js:26
+msgid "Mo"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:18
+msgid "Monday"
+msgstr ""
+
+#: users/static/templates/users/user-list.html:19
+msgid "Multiple participants"
+msgstr ""
+
+#: users/static/templates/users/group-form.html:13
+#: users/static/templates/users/group-list.html:29
+#: users/static/templates/users/user-list.html:75
+msgid "Name"
+msgstr ""
+
+#: users/static/templates/users/group-list.html:6
+#: users/static/templates/users/user-list.html:7
+msgid "New"
+msgstr ""
+
+#: users/static/templates/users/user-form.html:2
+msgid "New participant"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:15
+msgid "Nov"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:9
+msgid "November"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:15
+msgid "Oct"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:9
+msgid "October"
+msgstr ""
+
+#: users/static/templates/users/user-list.html:35
+msgid "PDF"
+msgstr ""
+
+#: users/static/templates/users/user-list.html:1
+msgid "Participants"
+msgstr ""
+
+#: users/static/templates/users/group-form.html:17
+msgid "Permissions"
+msgstr ""
+
+#: users/static/templates/users/group-detail.html:11
+msgid "Permissions:"
+msgstr ""
+
+#: users/static/templates/users/user-detail.html:12
+msgid "Personal data"
+msgstr ""
+
+#: users/static/templates/users/user-csv-import.html:12
+msgid "Please note:"
+msgstr ""
+
+#: users/static/templates/users/user-list.html:71
+msgid "Present"
+msgstr ""
+
+#: users/static/templates/users/user-csv-import.html:23
+msgid "Required CSV file encoding is UTF-8."
+msgstr ""
+
+#: users/static/templates/users/user-csv-import.html:14
+msgid "Required comma separated values"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:23
+#: core/static/js/jquery/datepicker-config.js:27
+msgid "Sa"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:19
+msgid "Saturday"
+msgstr ""
+
+#: users/static/templates/users/group-form.html:23
+#: users/static/templates/users/user-form.html:76
+msgid "Save"
+msgstr ""
+
+#: users/static/templates/users/user-csv-import.html:10
+msgid "Select a CSV file to import users!"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:14
+msgid "Sep"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:8
+msgid "September"
+msgstr ""
+
+#: users/static/templates/users/group-list.html:40
+#: users/static/templates/users/user-list.html:107
+msgid "Show"
+msgstr ""
+
+#: users/static/templates/users/user-list.html:15
+msgid "Single participant"
+msgstr ""
+
+#: users/static/templates/users/user-csv-import.html:19
+msgid "Staff"
+msgstr ""
+
+#: users/static/templates/users/user-detail.html:13
+#: users/static/templates/users/user-form.html:38
+#: users/static/templates/users/user-list.html:79
+msgid "Structure level"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:22
+#: core/static/js/jquery/datepicker-config.js:26
+msgid "Su"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:18
+msgid "Sunday"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:23
+#: core/static/js/jquery/datepicker-config.js:27
+msgid "Th"
+msgstr ""
+
+#: users/static/templates/users/user-csv-import.html:34
+msgid "The file has to be encoded in UTF-8."
+msgstr ""
+
+#: users/static/templates/users/user-csv-import.html:22
+msgid "The first line (header) is ignored."
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:19
+msgid "Thursday"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:38
+msgid "Time"
+msgstr ""
+
+#. academic degree
+#: users/static/templates/users/user-form.html:25
+msgid "Title"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:22
+#: core/static/js/jquery/datepicker-config.js:26
+msgid "Tu"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:18
+msgid "Tuesday"
+msgstr ""
+
+#: users/static/templates/users/user-csv-import.html:24
+msgid "Use the CSV example file from OpenSlides Wiki."
+msgstr ""
+
+#: users/static/templates/users/user-detail.html:24
+#: users/static/templates/users/user-form.html:14
+msgid "Username"
+msgstr ""
+
+#: users/static/templates/users/user-form.html:19
+msgid "Username is required."
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:22
+#: core/static/js/jquery/datepicker-config.js:26
+msgid "We"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:18
+msgid "Wednesday"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:2
+#: core/static/js/jquery/datepicker-config.js:32
+msgid "en"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:4
+msgid "next month"
+msgstr ""
+
+#: core/static/js/jquery/datepicker-config.js:3
+msgid "previous month"
+msgstr ""

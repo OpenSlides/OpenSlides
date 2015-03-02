@@ -1,0 +1,14 @@
+<h1>{{ group.name }}</h1>
+
+<div id="submenu">
+  <a ui-sref="users.group.list" class="btn btn-sm btn-default">
+    <i class="fa fa-angle-double-left fa-lg"></i>
+    <translate>Back to overview</translate>
+  </a>
+</div>
+
+
+<b translate>Permissions:</b>
+<ul ng-repeat="perm in group.permissions">
+  <li>{{ perm }}
+</ul>

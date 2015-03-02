@@ -22,7 +22,14 @@ body {
     padding: 7px 20px 0;
     position: relative;
 }
-#header .logo img {
+.navbar-brand {
+    padding: 2px;
+    height: 40px;
+}
+.navbar-text {
+    margin-top: 9px;
+}
+#logo {
     height: 30px;
     padding-left: 3px;
 }
@@ -45,6 +52,13 @@ h1 {
     border-bottom: 1px solid #EEEEEE;
     margin: 0px 0 30px;
     padding-bottom: 9px;
+}
+#submenu {
+    float: right;
+    font-size: 85%;
+    position: absolute;
+    top: 0;
+    right: 15px;
 }
 a:hover {
     text-decoration: none;
@@ -118,6 +132,7 @@ tr.total td {
 .user_details label {
     font-weight: bold;
     margin: 10px 0 0 0;
+    display: block;
 }
 .user_details label:after {
     content: ":";
@@ -129,29 +144,11 @@ tr.total td {
 }
 
 /** Forms **/
-input, textarea {
-    width: 320px;
-}
-.small-form input {
-    width: 55px;
-}
-.normal-form input {
-    width: 320px;
-}
-textarea {
-    height: 100px;
-}
-.help-inline {
-    font-size: 11px;
-}
-.errorlist{
-    margin: 0;
-}
-.errorlist li {
-    list-style: none outside none;
-}
-form .required label:after {
-    content: " *";
+
+/* Fix the top position by using fa-icons
+ * in bootstrap's form elements with form-control-feedback */
+.has-feedback i.form-control-feedback {
+    top: 35px;
 }
 legend + .control-group {
     margin-top: 0px !important;

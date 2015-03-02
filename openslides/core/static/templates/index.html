@@ -3,109 +3,162 @@
 <!--[if IE 7]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html lang="en" ng-app="OpenSlidesApp" class="no-js"> <!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <base href="/">
-  <title>OpenSlides</title>
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="static/css/openslides-libs.css">
-  <link rel="stylesheet" href="static/css/app.css">
-  <script src="static/js/openslides-libs.js"></script>
-</head>
-<body>
-    <!-- Navbar -->
-    <nav id="header" class="navbar">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a href="/" class="logo"><img src="/static/img/logo.png" alt="OpenSlides" /></a>
-                <span class="title optional">{{ config('event_name') }}</span>
-            </div>
-            <div class="navbar-right" ng-controller="userMenu">
-                <!-- login/logout button -->
-                <div class="btn-group">
-                    <div ng-if="operator.isAuthenticated()">
-                        <a href="#" data-toggle="dropdown" class="btn btn-default dropdown-toggle">
-                              <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-                              <span class="optional-small">{{ operator.user.get_short_name() }}</span>
-                              <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu pull-right">
-                            <li><a href="{% url 'user_settings' %}">
-                                <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
-                                {{ gettext("Edit profile") }}</a></li>
-                            <li><a href="{% url 'password_change' %}">
-                                <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>
-                                {% trans "Change password" %}</a></li>
-                            <li class="divider"></li>
-                            <li>
-                                <a ng-click="logout()">
-                                    <span class="glyphicon glyphicon-log-out" aria-hidden="true"></span>
-                                    Logout
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <div ng-if="!operator.isAuthenticated()">
-                        <a href="#" ng-click="showLoginForm = true" class="btn btn-default">
-                            <span class="glyphicon glyphicon-log-in" aria-hidden="true"></span>
-                            {{ gettext("Login") }}
-                        </a>
-                        <div ng-if="showLoginForm">
-                            <form>
-                                username: <input type="text" ng-model="username"><br>
-                                password: <input type="password" ng-model="password"><br>
-                                <input type="submit" ng-click="login(username, password)" value="Save" />
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<base href="/">
+<title>OpenSlides</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="static/css/openslides-libs.css">
+<link rel="stylesheet" href="static/css/app.css">
+<script src="static/js/openslides-libs.js"></script>
+
+<!-- Navbar -->
+<nav id="header" class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a ui-sref="dashboard" class="navbar-brand">
+        <img id="logo" src="/static/img/logo.png" alt="OpenSlides" />
+      </a>
+      <span class="navbar-text optional">{{ config('event_name') }}</span>
+    </div>
+    <div class="navbar-right" ng-controller="userMenu">
+      <!-- login/logout button -->
+      <div class="btn-group">
+        <div ng-if="operator.isAuthenticated()">
+          <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
+            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+            <span class="optional-small">{{ operator.user.get_short_name() }}</span>
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu pull-right">
+            <li><a href="{% url 'user_settings' %}">
+                  <i class="fa fa-cog"></i>
+                  <translate>Edit profile</translate>
+                </a>
+            <li><a href="{% url 'password_change' %}">
+                  <i class="fa fa-key"></i>
+                  <translate>Change password</translate>
+                </a>
+            <li class="divider">
+            <li><a ng-click="logout()" href="">
+                  <i class="fa fa-sign-out"></i>
+                  <translate>Logout</translate>
+                </a>
+          </ul>
         </div>
-    </nav>
-    <!-- Container -->
-    <div class="container-fluid" id="container">
-    <div class="row">
-
-        <!-- Sidebar navigation (main menu) -->
-        <div class="col-md-2 leftmenu lefticon">
-            <ul>
-                {% for entry in main_menu_entries %}
-                    <li{% if entry.is_active %} class="active"{% endif %}>
-                        <a href="{{ entry.get_url }}" class="tooltip-right">
-                        <!--TODO-->
-                        <span class="glyphicon {{ entry.get_icon_css_class }}" aria-hidden="true"></span>
-                        <span class="text">{{ entry }}</span>
-                        </a>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-
-        <!-- Content -->
-        <div id="content" class="col-md-10">
-            <div class="row">
-                <div class="col-md-12">
-                    <div ui-view></div>
+        <div ng-if="!operator.isAuthenticated()">
+          <button class="btn btn-default" data-toggle="modal" data-target="#loginFormModal">
+            <i class="fa fa-sign-in"></i>
+            <translate>Login</translate>
+          </button>
+          <div class="modal" id="loginFormModal" tabindex="-1" role="dialog"
+              aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                  <h4 class="modal-title" id="myModalLabel" translate>Please sign in!</h4>
                 </div>
+                <div class="modal-body">
+                  <p ng-if='loginFailed' class="text-danger">
+                    <strong translate>Username or password is not correct.</strong>
+                  <form>
+                    <div class="input-group form-group">
+                      <div class="input-group-addon"><i class="fa fa-user"></i></div>
+                      <input type="text" ng-model="username" class="form-control input-lg"
+                          placeholder="{{'Username'|translate}}">
+                    </div>
+                    <div class="input-group form-group">
+                      <div class="input-group-addon"><i class="fa fa-key"></i></div>
+                      <input type="password" ng-model="password" class="form-control input-lg"
+                          placeholder="{{'Password'|translate}}">
+                    </div>
+                    <div class="form-group">
+                      <button type="submit" ng-click="login(username, password)"
+                          class="btn btn-primary btn-lg btn-block" translate>
+                        Login
+                      </button>
+                    </div>
+                    <div class="form-group">
+                      <!-- TODO: if anonymous user is activate -->
+                      <button type="submit" class="btn btn-default" translate>
+                        Continue as guest
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
             </div>
-            <hr />
-            <footer>
-                <small>
-                    &copy; Copyright 2011–2015 | Powered by <a href="http://openslides.org" target="_blank">OpenSlides</a> | <a href="{% url 'core_version' %}">Version</a>
-                </small>
-            </footer>
-        </div><!--/#content-->
+          </div>
+        </div>
+      </div>
+      <!-- language switcher -->
+      <div class="btn-group" ng-controller="LanguageCtrl">
+        <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+          <i class="fa fa-flag"></i>
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+          <li><a href="" ng-click="switchLanguage('en')">
+                <i class="fa fa-flag"></i>
+                <translate>English</translate> (EN)
+              </a>
+          <li><a href="" ng-click="switchLanguage('de')">
+                <i class="fa fa-flag"></i>
+                <translate>German</translate> (DE)
+              </a>
+          <li><a href="" ng-click="switchLanguage('fr')">
+                <i class="fa fa-flag"></i>
+                <translate>French</translate> (FR)
+              </a>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
 
-    </div><!--/.row-->
-    </div><!--/#container-->
+<!-- Container -->
+<div class="container-fluid" id="container">
+  <div class="row">
+    <!-- TODO: Sidebar navigation (main menu)
+    <div class="col-md-2 leftmenu lefticon">
+      <ul>
+        {% for entry in main_menu_entries %}
+            <li{% if entry.is_active %} class="active"{% endif %}>
+                <a href="{{ entry.get_url }}" class="tooltip-right">
+                <span class="glyphicon {{ entry.get_icon_css_class }}" aria-hidden="true"></span>
+                <span class="text">{{ entry }}</span>
+                </a>
+            </li>
+        {% endfor %}
+      </ul>
+    </div>
+    -->
 
+    <!-- Content -->
+    <div id="content" class="col-md-10">
+      <div class="row">
+        <div class="col-md-12">
+          <div ui-view></div>
+        </div>
+      </div>
+      <hr />
+      <footer>
+        <small>
+          &copy; Copyright 2011-2015 |
+          Powered by <a href="http://openslides.org" target="_blank">OpenSlides</a> |
+          <a href="{% url 'core_version' %}">Version</a>
+        </small>
+      </footer>
+    </div><!--/#content-->
+  </div><!--/.row-->
+</div><!--/#container-->
 
-  <script src="static/js/app.js"></script>
-  <script src="static/js/core.js"></script>
-  <script src="static/js/agenda/agenda.js"></script>
-  <script src="static/js/assignments/assignments.js"></script>
-  <script src="static/js/users/users.js"></script>
-</body>
-</html>
+<script src="static/js/app.js"></script>
+<script src="static/js/core.js"></script>
+<script src="static/js/agenda/agenda.js"></script>
+<script src="static/js/assignments/assignments.js"></script>
+<script src="static/js/users/users.js"></script>

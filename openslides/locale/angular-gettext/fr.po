@@ -1,0 +1,26 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Project-Id-Version: \n"
+"Language: fr\n"
+
+#: index.html:74
+msgid "English"
+msgstr "Anglais"
+
+#: index.html:86
+msgid "French"
+msgstr "Français"
+
+#: index.html:80
+msgid "German"
+msgstr "Allemand"
+
+#: user-list.html:26
+msgid "Groups"
+msgstr "Groupe"
+
+#: user-list.html:1
+msgid "Participants"
+msgstr "Participants"
