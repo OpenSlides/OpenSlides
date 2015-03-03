@@ -9,11 +9,12 @@ angular.module('OpenSlidesApp.core', [])
         var result = {},
             views = parent(state);
 
-        if (state.abstract) {
+        if (state.abstract || state.data && state.data.extern) {
             return views;
         }
 
         angular.forEach(views, function(config, name) {
+
             // Sets default values for templateUrl
             var patterns = state.name.split('.'),
                 templateUrl,
@@ -75,9 +76,9 @@ angular.module('OpenSlidesApp.core', [])
 .config(function($stateProvider, $locationProvider) {
     // Core urls
     $stateProvider.state('dashboard', {
-            url: '/',
-            templateUrl: 'static/templates/dashboard.html'
-        });
+        url: '/',
+        templateUrl: 'static/templates/dashboard.html'
+    });
 
     $locationProvider.html5Mode(true);
 })
@@ -96,6 +97,30 @@ angular.module('OpenSlidesApp.core', [])
             });
         }
     };
+})
+
+.provider('runtimeStates', function($stateProvider) {
+  this.$get = function($q, $timeout, $state) {
+    return {
+      addState: function(name, state) {
+        $stateProvider.state(name, state);
+      }
+    }
+  }
+})
+
+.run(function(runtimeStates, $http) {
+    $http.get('/core/url_patterns/').then(function(data) {
+        for (var pattern in data.data) {
+            runtimeStates.addState(pattern, {
+                'url': data.data[pattern],
+                data: {extern: true},
+                onEnter: function($window) {
+                    $window.location.href = this.url;
+                }
+            });
+        }
+    });
 })
 
 .run(function(DS, autoupdate) {

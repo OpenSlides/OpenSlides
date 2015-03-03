@@ -28,6 +28,8 @@ from .serializers import (
 )
 
 
+# Views to generate PDFs
+
 class UsersListPDF(PDFView):
     """
     Generate the userliste as PDF.
@@ -61,15 +63,7 @@ class UsersPasswordsPDF(PDFView):
         users_passwords_to_pdf(pdf)
 
 
-class UserCSVImportView(CSVImportView):
-    """
-    Import users via CSV.
-    """
-    required_permission = 'users.can_manage'
-    success_url_name = 'user_list'
-    template_name = 'users/user_form_csv_import.html'
-    import_function = staticmethod(import_users)
-
+# Viewsets for the rest api
 
 class UserViewSet(ModelViewSet):
     """
@@ -136,44 +130,7 @@ class GroupViewSet(ModelViewSet):
         return response
 
 
-class UserSettingsView(LoginMixin, UpdateView):
-    required_permission = None
-    template_name = 'users/settings.html'
-    success_url_name = 'user_settings'
-    model = User
-    form_class = UsersettingsForm
-    url_name_args = []
-
-    def get_initial(self):
-        initial = super().get_initial()
-        initial['language'] = self.request.session.get('django_language', self.request.LANGUAGE_CODE)
-        return initial
-
-    def form_valid(self, form):
-        self.request.LANGUAGE_CODE = self.request.session['django_language'] = form.cleaned_data['language']
-        activate(self.request.LANGUAGE_CODE)
-        return super().form_valid(form)
-
-    def get_object(self):
-        return self.request.user
-
-
-class UserPasswordSettingsView(LoginMixin, FormView):
-    required_permission = None
-    template_name = 'users/password_change.html'
-    success_url_name = 'core_dashboard'
-    form_class = PasswordChangeForm
-
-    def form_valid(self, form):
-        form.save()
-        messages.success(self.request, _('Password successfully changed.'))
-        return super().form_valid(form)
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
-
+# API Views
 
 class UserLoginView(APIView):
     """
@@ -224,3 +181,54 @@ class WhoAmIView(APIView):
         return super().get_context_data(
             user_id=self.request.user.pk,
             **context)
+
+
+# Deprecated views. Will be removed after the implementation in angularjs
+
+class UserCSVImportView(CSVImportView):
+    """
+    Import users via CSV.
+    """
+    required_permission = 'users.can_manage'
+    success_url_name = 'user_list'
+    template_name = 'users/user_form_csv_import.html'
+    import_function = staticmethod(import_users)
+
+
+class UserSettingsView(LoginMixin, UpdateView):
+    required_permission = None
+    template_name = 'users/settings.html'
+    success_url_name = 'user_settings'
+    model = User
+    form_class = UsersettingsForm
+    url_name_args = []
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial['language'] = self.request.session.get('django_language', self.request.LANGUAGE_CODE)
+        return initial
+
+    def form_valid(self, form):
+        self.request.LANGUAGE_CODE = self.request.session['django_language'] = form.cleaned_data['language']
+        activate(self.request.LANGUAGE_CODE)
+        return super().form_valid(form)
+
+    def get_object(self):
+        return self.request.user
+
+
+class UserPasswordSettingsView(LoginMixin, FormView):
+    required_permission = None
+    template_name = 'users/password_change.html'
+    success_url_name = 'core_dashboard'
+    form_class = PasswordChangeForm
+
+    def form_valid(self, form):
+        form.save()
+        messages.success(self.request, _('Password successfully changed.'))
+        return super().form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs

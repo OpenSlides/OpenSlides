@@ -2,82 +2,82 @@ angular.module('OpenSlidesApp.users', [])
 
 .config(function($stateProvider) {
     $stateProvider
-        .state('users', {
-            url: '/users',
-            abstract: true,
-            template: "<ui-view/>",
-        })
-        .state('users.user', {
-            abstract: true,
-            template: "<ui-view/>",
-        })
-        .state('users.user.list', {
-            resolve: {
-                users: function(User) {
-                    return User.findAll();
-                }
+    .state('users', {
+        url: '/users',
+        abstract: true,
+        template: "<ui-view/>",
+    })
+    .state('users.user', {
+        abstract: true,
+        template: "<ui-view/>",
+    })
+    .state('users.user.list', {
+        resolve: {
+            users: function(User) {
+                return User.findAll();
             }
-        })
-        .state('users.user.create', {
-            resolve: {
-                groups: function(Group) {
-                    return Group.findAll();
-                }
+        }
+    })
+    .state('users.user.create', {
+        resolve: {
+            groups: function(Group) {
+                return Group.findAll();
             }
-        })
-        .state('users.user.detail', {
-            resolve: {
-                user: function(User, $stateParams) {
-                    return User.find($stateParams.id);
-                }
+        }
+    })
+    .state('users.user.detail', {
+        resolve: {
+            user: function(User, $stateParams) {
+                return User.find($stateParams.id);
             }
-        })
-        .state('users.user.detail.update', {
-            views: {
-                '@users.user': {}
-            },
-            resolve: {
-                groups: function(Group) {
-                    return Group.findAll();
-                }
+        }
+    })
+    .state('users.user.detail.update', {
+        views: {
+            '@users.user': {}
+        },
+        resolve: {
+            groups: function(Group) {
+                return Group.findAll();
             }
-        })
-        .state('users.user.csv-import', {
-            url: '/csv-import',
-            controller: 'UserCSVImportCtrl',
-        })
-        // groups
-        .state('users.group', {
-            url: '/groups',
-            abstract: true,
-            template: "<ui-view/>",
-        })
-        .state('users.group.list', {
-            resolve: {
-                groups: function(Group) {
-                    return Group.findAll();
-                }
+        }
+    })
+    .state('users.user.csv-import', {
+        url: '/csv-import',
+        controller: 'UserCSVImportCtrl',
+    })
+    // groups
+    .state('users.group', {
+        url: '/groups',
+        abstract: true,
+        template: "<ui-view/>",
+    })
+    .state('users.group.list', {
+        resolve: {
+            groups: function(Group) {
+                return Group.findAll();
             }
-        })
-        .state('users.group.create', {
-            resolve: {
-                groups: function(Group) {
-                    return Group.findAll();
-                }
+        }
+    })
+    .state('users.group.create', {
+        resolve: {
+            groups: function(Group) {
+                return Group.findAll();
             }
-        })
-        .state('users.group.detail', {
-            resolve: {
-                group: function(Group, $stateParams) {
-                    return Group.find($stateParams.id);
-                }
+        }
+    })
+    .state('users.group.detail', {
+        resolve: {
+            group: function(Group, $stateParams) {
+                return Group.find($stateParams.id);
             }
-        })
-        .state('users.group.detail.update', {
-            views: {
-                '@users.group': {}
-            }
-        });
+        }
+    })
+    .state('users.group.detail.update', {
+        views: {
+            '@users.group': {}
+        }
+    });
 })
 
 .factory('operator', function(User, Group) {
