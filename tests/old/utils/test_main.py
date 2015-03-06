@@ -56,7 +56,7 @@ class TestFunctions(TestCase):
                          'portable/openslides/settings.py')
 
     def test_get_development_settings_path(self):
-        self.assertEqual(main.get_development_settings_path(), os.sep.join(('development', 'settings.py')))
+        self.assertEqual(main.get_development_settings_path(), os.sep.join(('development', 'var', 'settings.py')))
 
     def test_setup_django_settings_module(self):
         main.setup_django_settings_module('test_dir_dhvnghfjdh456fzheg2f/test_path_bngjdhc756dzwncshdfnx.py')
