@@ -1,0 +1,35 @@
+<h1 ng-if="mediafile.id" translate>Edit file</h1>
+<h1 ng-if="!mediafile.id" translate>New file</h1>
+
+<div id="submenu">
+  <a ui-sref="mediafiles.mediafile.list" class="btn btn-sm btn-default">
+    <i class="fa fa-angle-double-left fa-lg"></i>
+    <translate>Back to overview</translate>
+  </a>
+</div>
+
+<form name="mediafileForm">
+  <div class="form-group">
+    <label for="inputTitle" translate>Title</label>
+    <input type="text" ng-model="mediafile.title" class="form-control" name="inputTitle">
+  </div>
+
+  <div class="form-group" ng-class="{'has-error has-feedback': mediafileForm.inputFile.$error.required}">
+    <input type="file" ng-model="mediafile.mediafile"/>
+  </div>
+
+  <div class="form-group">
+    <label class="checkbox-inline">
+      <input type="checkbox" ng-model="mediafile.is_presentable" ng-checked="mediafile.is_presentable" name="checkboxPresentable">
+      <translate>Is presentable</translate>
+      <p class="help-block" translate>If checked, this file can be presented on the projector. Currently, this is only possible for PDFs.</p>
+    </label>
+  </div>
+
+  <button type="submit" ng-click="save(mediafile)" class="btn btn-primary" translate>
+    Save
+  </button>
+  <button ui-sref="mediafiles.mediafile.list" class="btn btn-default" translate>
+    Cancel
+  </button>
+</form>

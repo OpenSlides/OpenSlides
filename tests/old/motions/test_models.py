@@ -1,3 +1,5 @@
+from unittest import skip
+
 from openslides.config.api import config
 from openslides.motions.exceptions import WorkflowError
 from openslides.motions.models import Motion, State, Workflow
@@ -54,6 +56,7 @@ class ModelTest(TestCase):
             self._title
         self.assertEqual(motion.title, 'v3')
 
+    @skip
     def test_absolute_url(self):
         motion_id = self.motion.id
 

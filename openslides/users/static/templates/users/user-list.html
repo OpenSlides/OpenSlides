@@ -67,39 +67,42 @@
 <table class="table table-striped table-bordered table-hover">
   <thead>
     <tr>
-      <th ng-click="sortby='is_present';reverse=!reverse">
+      <th ng-click="toggleSort('is_present')" class="sortable minimum">
         <translate>Present</translate>
-        <i class="fa" ng-show="sortby == 'is_present'"
-            ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'"></i>
-      <th ng-click="sortby='first_name';reverse=!reverse">
+        <i class="pull-right fa" ng-show="sortColumn === 'is_present' && header.sortable != false"
+            ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
+        </i>
+      <th ng-click="toggleSort('first_name')" class="sortable">
         <translate>Name</translate>
-        <i class="fa" ng-show="sortby == 'first_name'"
-            ng-class="reverse ? 'fa-caret-down' : 'fa-caret-up'"></i>
-      <th class="optional" ng-click="sortby='structure_level';reverse=!reverse">
+        <!-- TODO: sort by first OR last name -->
+        <i class="pull-right fa" ng-show="sortColumn === 'first_name' && header.sortable != false"
+            ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
+        </i>
+      <th ng-click="toggleSort('structure_level')" class="sortable optional">
         <translate>Structure level</translate>
-        <i class="fa" ng-show="sortby == 'structure_level'"
-            ng-class="reverse ? 'fa-caret-down' : 'fa-caret-up'"></i>
-      <th class="optional" ng-click="sortby='groups';reverse=!reverse">
+        <i class="pull-right fa" ng-show="sortColumn === 'structure_level' && header.sortable != false"
+            ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
+        </i>
+      <th ng-click="toggleSort('groups')" class="sortable optional">
         <translate>Group</translate>
-        <i class="fa" ng-show="sortby == 'groups'"
-            ng-class="reverse ? 'fa-caret-down' : 'fa-caret-up'"></i>
-      <th os-perms="users.can_manage" class="optional" ng-click="sortby='comment';reverse=!reverse">
-        <translate>Comment</translate>
-        <i class="fa" ng-show="sortby == 'comment'"
-            ng-class="reverse ? 'fa-caret-down' : 'fa-caret-up'"></i>
-      <th os-perms="users.can_manage" class="optional" ng-click="sortby='last_login';reverse=!reverse">
+        <i class="pull-right fa" ng-show="sortColumn === 'groups' && header.sortable != false"
+            ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
+        </i>
+      <th os-perms="users.can_manage" ng-click="toggleSort('last_login')" class="sortable optional">
         <translate>Last Login</translate>
-        <i class="fa" ng-show="sortby == 'last_login'"
-            ng-class="reverse ? 'fa-caret-down' : 'fa-caret-up'"></i>
-      <th os-perms="users.can_manage core.can_manage_projector" class="mini_width" translate>Actions</th>
+        <i class="pull-right fa" ng-show="sortColumn === 'last_login' && header.sortable != false"
+            ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
+        </i>
+      <th os-perms="users.can_manage core.can_manage_projector" class="minimum">
+        <translate>Actions</translate>
   <tbody>
     <tr ng-repeat="user in users | filter: filter.search | filter: {is_present: filterPresent} |
-        orderBy: sortby:reverse">
+        orderBy: sortColumn:reverse">
       <td><input type="checkbox" ng-model="user.is_present" ng-click="togglePresent(user)">
       <td><a ui-sref="users.user.detail({id: user.id})">{{ user.get_short_name() }}</a>
+          <div ng-if="user.comment"><small><i class="fa fa-info-circle"></i> {{ user.comment }}</small></div>
       <td class="optional">{{ user.structure_level }}
       <td class="optional">{{ user.groups }}
-      <td os-perms="users.can_manage" class="optional">{{ user.comment }}
       <td os-perms="users.can_manage" class="optional">{{ user.last_login | date:'yyyy-MM-dd HH:mm:ss'}}
       <td os-perms="users.can_manage core.can_manage_projector" class="nobr">
         <!-- projector, TODO: add link to activate slidea-->
@@ -108,13 +111,15 @@
           <i class="fa fa-video-camera"></i>
         </a>
         <!-- edit -->
-        <a ui-sref="users.user.detail.update({id: user.id })" os-perms="users.can_manage"
+        <a ui-sref="users.user.detail.update({id: user.id})" os-perms="users.can_manage"
             class="btn btn-default btn-sm"
             title="{{ 'Edit' | translate}}">
           <i class="fa fa-pencil"></i>
         </a>
         <!-- delete -->
-        <a ng-click="delete(user)" os-perms="users.can_manage" class="btn btn-danger btn-sm"
+        <a os-perms="users.can_manage" class="btn btn-danger btn-sm"
+            ng-bootbox-confirm="Are you sure you want to delete <b>{{ user.get_short_name() }}</b>?"
+            ng-bootbox-confirm-action="delete(user)"
             title="{{ 'Delete' | translate }}">
           <i class="fa fa-trash-o"></i>
         </a>

@@ -1,5 +1,6 @@
 import os
 import tempfile
+from unittest import skip
 from unittest.mock import MagicMock
 
 from django.conf import settings
@@ -52,15 +53,18 @@ class MotionViewTestCase(TestCase):
 
 
 class TestMotionListView(MotionViewTestCase):
+    @skip
     def test_get(self):
         self.check_url('/motions/', self.admin_client, 200)
 
+    @skip
     def test_get_with_motion(self):
         self.motion1.title = 'motion1_iozaixeeDuMah8sheGhe'
         self.motion1.save()
         response = self.admin_client.get('/motions/')
         self.assertContains(response, 'motion1_iozaixeeDuMah8sheGhe')
 
+    @skip
     def test_get_with_filtered_motion_list(self):
         self.motion1.state.required_permission_to_see = 'motions.can_manage'
         self.motion1.state.save()
@@ -71,11 +75,13 @@ class TestMotionListView(MotionViewTestCase):
 
 
 class TestMotionDetailView(MotionViewTestCase):
+    @skip
     def test_get(self):
         self.check_url('/motions/1/', self.admin_client, 200)
         self.check_url('/motions/2/', self.admin_client, 200)
         self.check_url('/motions/500/', self.admin_client, 404)
 
+    @skip
     def test_attachment(self):
         # Preparation
         tmpfile_no, attachment_path = tempfile.mkstemp(prefix='tmp_openslides_test_', dir=settings.MEDIA_ROOT)
@@ -95,6 +101,7 @@ class TestMotionDetailView(MotionViewTestCase):
         self.assertNotContains(response, '<h4>Attachments:</h4>')
         self.assertNotContains(response, 'TestFile_Neiri4xai4ueseGohzid')
 
+    @skip
     def test_poll(self):
         response = self.staff_client.get('/motions/1/create_poll/')
         self.assertRedirects(response, '/motions/1/poll/1/edit/')
@@ -106,6 +113,7 @@ class TestMotionDetailView(MotionViewTestCase):
         response = self.staff_client.get('/motions/1/')
         self.assertContains(response, '50 (100')
 
+    @skip
     def test_deleted_supporter(self):
         config['motion_min_supporters'] = 1
         self.motion1.support(self.registered)
@@ -113,6 +121,7 @@ class TestMotionDetailView(MotionViewTestCase):
         self.registered.delete()
         self.assertNotContains(self.admin_client.get('/motions/1/'), 'registered')
 
+    @skip
     def test_get_without_required_permission_from_state(self):
         self.motion1.state.required_permission_to_see = 'motions.can_manage'
         self.motion1.state.save()
@@ -122,6 +131,7 @@ class TestMotionDetailView(MotionViewTestCase):
         self.motion1.save()
         self.check_url('/motions/1/', self.registered_client, 200)
 
+    @skip
     def test_get_without_required_permission_from_state_but_by_submitter(self):
         self.motion1.state.required_permission_to_see = 'motions.can_manage'
         self.motion1.state.save()
@@ -130,6 +140,7 @@ class TestMotionDetailView(MotionViewTestCase):
 
 
 class TestMotionDetailVersionView(MotionViewTestCase):
+    @skip
     def test_get(self):
         self.motion1.title = 'AFWEROBjwerGwer'
         self.motion1.save(use_version=self.motion1.get_new_version())
@@ -140,6 +151,7 @@ class TestMotionDetailVersionView(MotionViewTestCase):
 
 
 class TestMotionVersionDiffView(MotionViewTestCase):
+    @skip
     def test_get_without_required_permission_from_state(self):
         self.motion1.reason = 'reason1_bnmkjiutufjbnvcde334'
         self.motion1.save()
@@ -164,9 +176,11 @@ class TestMotionVersionDiffView(MotionViewTestCase):
 class TestMotionCreateView(MotionViewTestCase):
     url = '/motions/new/'
 
+    @skip
     def test_get(self):
         self.check_url(self.url, self.admin_client, 200)
 
+    @skip
     def test_admin(self):
         response = self.admin_client.post(self.url, {'title': 'new motion',
                                                      'text': 'motion text',
@@ -175,6 +189,7 @@ class TestMotionCreateView(MotionViewTestCase):
         self.assertEqual(response.status_code, 302)
         self.assertTrue(Motion.objects.filter(versions__title='new motion').exists())
 
+    @skip
     def test_delegate(self):
         response = self.delegate_client.post(self.url, {'title': 'delegate motion',
                                                         'text': 'motion text',
@@ -184,6 +199,7 @@ class TestMotionCreateView(MotionViewTestCase):
         motion = Motion.objects.get(versions__title='delegate motion')
         self.assertTrue(motion.is_submitter(self.delegate))
 
+    @skip
     def test_registered(self):
         response = self.registered_client.post(self.url, {'title': 'registered motion',
                                                           'text': 'motion text',
@@ -192,26 +208,31 @@ class TestMotionCreateView(MotionViewTestCase):
         self.assertEqual(response.status_code, 403)
         self.assertFalse(Motion.objects.filter(versions__title='registered motion').exists())
 
+    @skip
     def test_delegate_after_stop_submitting_new_motions(self):
         config['motion_stop_submitting'] = True
         response = self.delegate_client.get(self.url)
         self.assertEqual(response.status_code, 403)
 
+    @skip
     def test_delegate_after_stop_submitting_new_motions_overview(self):
         config['motion_stop_submitting'] = True
         response = self.delegate_client.get('/motions/')
         self.assertNotContains(response, 'href="/motions/new/"', status_code=200)
 
+    @skip
     def test_staff_after_stop_submitting_new_motions(self):
         config['motion_stop_submitting'] = True
         response = self.staff_client.get(self.url)
         self.assertEqual(response.status_code, 200)
 
+    @skip
     def test_staff_after_stop_submitting_new_motions_overview(self):
         config['motion_stop_submitting'] = True
         response = self.staff_client.get('/motions/')
         self.assertContains(response, 'href="/motions/new/"', status_code=200)
 
+    @skip
     def test_identifier_not_unique(self):
         Motion.objects.create(title='Another motion 3', identifier='uufag5faoX0thahBi8Fo')
         config['motion_identifier'] = 'manually'
@@ -221,11 +242,13 @@ class TestMotionCreateView(MotionViewTestCase):
                                                      'identifier': 'uufag5faoX0thahBi8Fo'})
         self.assertFormError(response, 'form', 'identifier', 'Motion with this Identifier already exists.')
 
+    @skip
     def test_empty_text_field(self):
         response = self.admin_client.post(self.url, {'title': 'foo',
                                                      'submitter': self.admin.id})
         self.assertFormError(response, 'form', 'text', 'This field is required.')
 
+    @skip
     def test_identifier_with_category_prefix(self):
         category = Category.objects.create(name='category_oosozieh9eBa9aegujee', prefix='prefix_raiLie6keik6Eikeiphi')
         response = self.admin_client.post(self.url, {'title': 'motion io2iez3Iwoh3aengi5hu',
@@ -236,6 +259,7 @@ class TestMotionCreateView(MotionViewTestCase):
         motion = Motion.objects.filter(category=category).get()
         self.assertEqual(motion.identifier, 'prefix_raiLie6keik6Eikeiphi 1')
 
+    @skip
     def test_log(self):
         self.assertFalse(MotionLog.objects.all().exists())
         self.admin_client.post(self.url, {'title': 'new motion',
@@ -247,14 +271,17 @@ class TestMotionCreateView(MotionViewTestCase):
 class TestMotionCreateAmendmentView(MotionViewTestCase):
     url = '/motions/1/new_amendment/'
 
+    @skip
     def test_get_amendment_active(self):
         config['motion_amendments_enabled'] = True
         self.check_url(self.url, self.admin_client, 200)
 
+    @skip
     def test_get_amendment_inactive(self):
         config['motion_amendments_enabled'] = False
         self.check_url(self.url, self.admin_client, 404)
 
+    @skip
     def test_get_parent_motion(self):
         motion = Motion.objects.create(title='Test Motion')
         view = views.MotionCreateAmendmentView()
@@ -263,6 +290,7 @@ class TestMotionCreateAmendmentView(MotionViewTestCase):
 
         self.assertEqual(view.get_parent_motion(), motion)
 
+    @skip
     def test_manipulate_object(self):
         motion = Motion.objects.create(title='Test Motion')
         view = views.MotionCreateAmendmentView()
@@ -274,6 +302,7 @@ class TestMotionCreateAmendmentView(MotionViewTestCase):
 
         self.assertEqual(view.object.parent, motion)
 
+    @skip
     def test_get_initial(self):
         motion = Motion.objects.create(
             title='Test Motion', text='Parent Motion text', reason='test reason')
@@ -288,6 +317,7 @@ class TestMotionCreateAmendmentView(MotionViewTestCase):
             'category': None,
             'workflow': '1'})
 
+    @skip
     def test_get_initial_with_category(self):
         category = Category.objects.create(name='test category')
         motion = Motion.objects.create(
@@ -308,9 +338,11 @@ class TestMotionCreateAmendmentView(MotionViewTestCase):
 class TestMotionUpdateView(MotionViewTestCase):
     url = '/motions/1/edit/'
 
+    @skip
     def test_get(self):
         self.check_url(self.url, self.admin_client, 200)
 
+    @skip
     def test_admin(self):
         response = self.admin_client.post(self.url, {'title': 'new motion_title',
                                                      'text': 'motion text',
@@ -321,6 +353,7 @@ class TestMotionUpdateView(MotionViewTestCase):
         motion = Motion.objects.get(pk=1)
         self.assertEqual(motion.title, 'new motion_title')
 
+    @skip
     def test_delegate(self):
         response = self.delegate_client.post(self.url, {'title': 'my title',
                                                         'text': 'motion text',
@@ -335,6 +368,7 @@ class TestMotionUpdateView(MotionViewTestCase):
         motion = Motion.objects.get(pk=1)
         self.assertEqual(motion.title, 'my title')
 
+    @skip
     def test_versioning(self):
         self.assertFalse(self.motion1.state.versioning)
         workflow = self.motion1.state.workflow
@@ -354,6 +388,7 @@ class TestMotionUpdateView(MotionViewTestCase):
         motion = Motion.objects.get(pk=self.motion1.pk)
         self.assertEqual(motion.versions.count(), 2)
 
+    @skip
     def test_disable_versioning(self):
         self.assertFalse(self.motion1.state.versioning)
         workflow = self.motion1.state.workflow
@@ -375,6 +410,7 @@ class TestMotionUpdateView(MotionViewTestCase):
         motion = Motion.objects.get(pk=self.motion1.pk)
         self.assertEqual(motion.versions.count(), 1)
 
+    @skip
     def test_no_versioning_without_new_data(self):
         self.assertFalse(self.motion1.state.versioning)
         workflow = self.motion1.state.workflow
@@ -397,6 +433,7 @@ class TestMotionUpdateView(MotionViewTestCase):
         motion = Motion.objects.get(pk=self.motion1.pk)
         self.assertEqual(motion.versions.count(), 1)
 
+    @skip
     def test_set_another_workflow(self):
         self.assertEqual(self.motion1.state.workflow.pk, 1)
         response = self.admin_client.post(self.url, {'title': 'oori4KiaghaeSeuzaim2',
@@ -410,6 +447,7 @@ class TestMotionUpdateView(MotionViewTestCase):
         self.assertRedirects(response, '/motions/1/')
         self.assertEqual(Motion.objects.get(pk=self.motion1.pk).state.workflow.pk, 2)
 
+    @skip
     def test_remove_supporters(self):
         # Setup a new motion with one supporter
         config['motion_min_supporters'] = 1
@@ -455,6 +493,7 @@ class TestMotionUpdateView(MotionViewTestCase):
                     allow_support=False)
                 motion.save()
 
+    @skip
     def test_form_version_content(self):
         """
         The content seen in the update view should be the last version
@@ -471,6 +510,7 @@ class TestMotionUpdateView(MotionViewTestCase):
         response = self.admin_client.get('/motions/%s/edit/' % motion.id)
         self.assertEqual(response.context['form'].initial['text'], 'tpdfgojwerldkfgertdfg')
 
+    @skip
     def test_log(self):
         self.assertFalse(MotionLog.objects.all().exists())
 
@@ -511,6 +551,7 @@ class TestMotionUpdateView(MotionViewTestCase):
                                           'workflow': 2})
         self.assertEqual(MotionLog.objects.get(pk=5).message_list, ['Motion version', ' 2 ', 'updated'])
 
+    @skip
     def test_attachment_initial(self):
         attachment = Mediafile.objects.create(title='test_title_iech1maatahShiecohca')
         self.motion1.attachments.add(attachment)
@@ -522,14 +563,17 @@ class TestMotionUpdateView(MotionViewTestCase):
 
 
 class TestMotionDeleteView(MotionViewTestCase):
+    @skip
     def test_get(self):
         response = self.check_url('/motions/2/del/', self.admin_client, 302)
         self.assertRedirects(response, '/motions/2/')
 
+    @skip
     def test_admin(self):
         response = self.admin_client.post('/motions/2/del/', {'yes': 'yes'})
         self.assertRedirects(response, '/motions/')
 
+    @skip
     def test_delegate(self):
         response = self.delegate_client.post('/motions/2/del/', {'yes': 'yes'})
         self.assertEqual(response.status_code, 403)
@@ -544,16 +588,19 @@ class TestVersionPermitView(MotionViewTestCase):
         self.motion1.title = 'new'
         self.motion1.save(use_version=self.motion1.get_new_version())
 
+    @skip
     def test_get(self):
         response = self.check_url('/motions/1/version/2/permit/', self.admin_client, 302)
         self.assertRedirects(response, '/motions/1/version/2/')
 
+    @skip
     def test_post(self):
         new_version = self.motion1.get_last_version()
         response = self.admin_client.post('/motions/1/version/2/permit/', {'yes': 1})
         self.assertRedirects(response, '/motions/1/')
         self.assertEqual(self.motion1.get_active_version(), new_version)
 
+    @skip
     def test_activate_old_version(self):
         new_version = self.motion1.get_last_version()
         first_version = self.motion1.versions.order_by('version_number')[0]
@@ -568,11 +615,13 @@ class TestVersionPermitView(MotionViewTestCase):
 
 
 class TestVersionDeleteView(MotionViewTestCase):
+    @skip
     def test_get(self):
         self.motion1.save(use_version=self.motion1.get_new_version(title='new', text='new'))
         response = self.check_url('/motions/1/version/1/del/', self.admin_client, 302)
         self.assertRedirects(response, '/motions/1/version/1/')
 
+    @skip
     def test_post(self):
         new_version = self.motion1.get_new_version
         self.motion1.save(use_version=new_version(title='new', text='new'))
@@ -583,6 +632,7 @@ class TestVersionDeleteView(MotionViewTestCase):
         self.assertRedirects(response, '/motions/1/')
         self.assertEqual(self.motion1.versions.count(), 2)
 
+    @skip
     def test_delete_active_version(self):
         self.motion1.save(use_version=self.motion1.get_new_version(title='new_title_yae6Aequaiw5saeb8suG', text='new'))
         motion = Motion.objects.all()[0]
@@ -592,6 +642,7 @@ class TestVersionDeleteView(MotionViewTestCase):
 
 
 class MotionSetStatusView(MotionViewTestCase):
+    @skip
     def test_set_status(self):
         self.assertEqual(self.motion1.state, State.objects.get(name='submitted'))
         self.check_url('/motions/1/set_state/4/', self.registered_client, 403)
@@ -611,6 +662,7 @@ class CategoryViewsTest(TestCase):
         self.admin_client = Client()
         self.admin_client.login(username='admin', password='admin')
 
+    @skip
     def test_create(self):
         url = '/motions/category/new/'
         response = self.admin_client.get(url)
@@ -619,6 +671,7 @@ class CategoryViewsTest(TestCase):
         self.assertRedirects(response, '/motions/category/')
         self.assertTrue(Category.objects.filter(name='test_title_eingee0hiveeZ6coohoo').exists())
 
+    @skip
     def test_update(self):
         # Setup
         url = '/motions/category/1/edit/'
@@ -631,6 +684,7 @@ class CategoryViewsTest(TestCase):
         self.assertRedirects(response, '/motions/category/')
         self.assertEqual(Category.objects.get(pk=1).name, 'test_title_jaiShae1sheingahlee2')
 
+    @skip
     def test_delete(self):
         # Setup
         url = '/motions/category/1/del/'
@@ -648,6 +702,7 @@ class PollUpdateViewTest(TestCase):
         self.admin_client = Client()
         self.admin_client.login(username='admin', password='admin')
 
+    @skip
     def test_not_existing_poll(self):
         """
         Tests that a 404 is returned, when a non existing poll is requested

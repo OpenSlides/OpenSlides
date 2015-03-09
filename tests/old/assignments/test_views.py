@@ -1,3 +1,5 @@
+from unittest import skip
+
 from django.test.client import Client
 
 from openslides.assignments.models import Assignment, AssignmentPoll
@@ -47,16 +49,19 @@ class TestAssignmentPollDelete(AssignmentViewTestCase):
         super(TestAssignmentPollDelete, self).setUp()
         self.assignment1.create_poll()
 
+    @skip
     def test_get(self):
         response = self.check_url('/assignments/poll/1/del/', self.admin_client, 302)
         self.assertRedirects(response, 'assignments/1/')
 
+    @skip
     def test_post(self):
         response = self.admin_client.post('/assignments/poll/1/del/', {'yes': 1})
         self.assertRedirects(response, '/assignments/1/')
 
 
 class TestAssignmentDetailView(AssignmentViewTestCase):
+    @skip
     def test_blocked_candidates_view(self):
         """
         Tests that a delegate runs for a vote and then withdraws himself.
@@ -94,6 +99,7 @@ class TestAssignmentPollCreateView(TestCase):
         self.assignment.set_candidate(admin)
         self.assertEqual(len(Assignment.objects.get(pk=self.assignment.pk).candidates), 1)
 
+    @skip
     def test_assignment_poll_creation(self):
         self.test_assignment_add_candidate()
         self.assignment.set_phase(self.assignment.PHASE_VOTING)

@@ -11,4 +11,4 @@ class DashboardMainMenuEntry(MainMenuEntry):
     required_permission = 'core.can_see_dashboard'
     default_weight = 10
     icon_css_class = 'glyphicon-home'
-    pattern_name = 'core_dashboard'
+    pattern_name = '/'  # TODO: use generic solution, see issue #1469

@@ -1,2 +1,31 @@
 <h1>{{ assignment.title }}</h1>
+
+<div id="submenu">
+  <a ui-sref="assignments.assignment.list" class="btn btn-sm btn-default">
+    <i class="fa fa-angle-double-left fa-lg"></i>
+    <translate>Back to overview</translate>
+  </a>
+  <a ui-sref="assignments_single_pdf({pk: assignment.id})" target="_blank" class="btn btn-default btn-sm">
+    <i class="fa fa-file-pdf-o fa-lg"></i>
+    <translate>PDF</translate>
+  </a>
+  <a href="#TODO" os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
+      title="{{ 'Show' | translate }}">
+    <i class="fa fa-video-camera"></i>
+  </a>
+  <!-- edit -->
+  <a ui-sref="assignments.assignment.detail.update({id: assignment.id })" os-perms="assignments.can_manage"
+      class="btn btn-default btn-sm"
+      title="{{ 'Edit' | translate}}">
+    <i class="fa fa-pencil"></i>
+  </a>
+</div>
+
+<h3 translate>Description</h3>
 {{ assignment.description }}
+
+<h3 translate>Candidates</h3>
+<!-- TODO -->
+
+<h3 translate>Election result</h3>
+<!-- TODO -->

@@ -61,8 +61,8 @@ angular.module('OpenSlidesApp.users', [])
     })
     .state('users.group.create', {
         resolve: {
-            groups: function(Group) {
-                return Group.findAll();
+            permissions: function($http) {
+                return $http({ 'method': 'OPTIONS', 'url': '/rest/users/group/' })
             }
         }
     })
@@ -76,6 +76,11 @@ angular.module('OpenSlidesApp.users', [])
     .state('users.group.detail.update', {
         views: {
             '@users.group': {}
+        },
+        resolve: {
+            permissions: function($http) {
+                return $http({ 'method': 'OPTIONS', 'url': '/rest/users/group/' })
+            }
         }
     });
 })
@@ -236,22 +241,28 @@ angular.module('OpenSlidesApp.users', [])
 
 .controller('UserListCtrl', function($scope, User) {
     User.bindAll({}, $scope, 'users');
-    $scope.sortby = 'first_name';
-    $scope.reverse = false;
-    $scope.filterPresent = '';
 
+    // setup table sorting
+    $scope.sortColumn = 'first_name'; //TODO: sort by first OR last name
+    $scope.filterPresent = '';
+    $scope.reverse = false;
+    // function to sort by clicked column
+    $scope.toggleSort = function ( column ) {
+        if ( $scope.sortColumn === column ) {
+            $scope.reverse = !$scope.reverse;
+        }
+        $scope.sortColumn = column;
+    };
+
+    // save changed user
     $scope.togglePresent = function (user) {
         //the value was changed by the template (checkbox)
         User.save(user);
     };
 
+    // delete user
     $scope.delete = function (user) {
-        //TODO: add confirm message
-        User.destroy(user.id).then(
-            function(success) {
-                //TODO: success message
-            }
-        );
+        User.destroy(user.id);
     };
 })
 
@@ -283,36 +294,60 @@ angular.module('OpenSlidesApp.users', [])
     };
 })
 
-.controller('UserCSVImportCtrl', function($scope, User) {
-    // TODO
+.controller('UserCSVImportCtrl', function($scope, $state, User) {
+    $scope.csv = {
+        content: null,
+        header: true,
+        separator: ',',
+        result: null
+    };
+
+    $scope.import = function (result) {
+        console.log(result);
+        var obj = JSON.parse(result);
+        console.log(obj);
+        var imported_users = 0;
+        for (var i = 0; i < obj.length; i++) {
+            var user = {};
+            // TODO: use generic solution to get csv column values
+            user.title = obj[i].Titel;
+            user.first_name = obj[i].Vorname;
+            user.last_name = obj[i].Nachname;
+            user.groups = "3";
+            User.create(user).then(
+                function(success) {
+                    imported_users++;
+                }
+            );
+        }
+        $state.go('users.user.list');
+    }
 })
 
 .controller('GroupListCtrl', function($scope, Group) {
     Group.bindAll({}, $scope, 'groups');
 
     $scope.delete = function (group) {
-        //TODO: add confirm message
-        Group.destroy(group.id).then(
-            function(success) {
-                //TODO: success message
-            }
-        );
+        Group.destroy(group.id);
     };
 })
 
-.controller('GroupCreateCtrl', function($scope, $state, Group) {
-    //TODO: permissions Group.bindAll({}, $scope, 'groups');
+.controller('GroupCreateCtrl', function($scope, $state, Group, permissions) {
+    // get all permissions
+    $scope.permissions = permissions.data.actions.POST.permissions.choices;
     $scope.group = {};
     $scope.save = function (group) {
         Group.create(group).then(
             function(success) {
-                $state.go('^');
+                $state.go('users.group.list');
             }
         );
     };
 })
 
-.controller('GroupUpdateCtrl', function($scope, $state, Group, group) {
+.controller('GroupUpdateCtrl', function($scope, $state, Group, permissions, group) {
+    // get all permissions
+    $scope.permissions = permissions.data.actions.POST.permissions.choices;
     $scope.group = group;  // autoupdate is not activated
     $scope.save = function (group) {
         Group.save(group).then(
@@ -335,21 +370,8 @@ angular.module('OpenSlidesApp.users', [])
             // DS.flush();
         });
     };
+})
 
-    $scope.login = function(username, password) {
-        $http.post(
-            '/users/login/',
-            {'username': username, 'password': password}
-        ).success(function(data) {
-            if (data.success) {
-                operator.setUser(data.user_id);
-                $scope.loginFailed = false;
-            } else {
-                $scope.loginFailed = true;
-            }
-        });
-    };
-});
 
 
 // this is code from angular.js. Find a way to call this function from this file

@@ -22,7 +22,7 @@
         <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
         <span class="optional-small"> {% trans "Back to overview" %}</span>
     </a>
-    <a href="{% url 'assignment_pdf' assignment.id  %}" class="btn btn-default btn-sm"
+    <a href="{% url 'assignments_single_pdf' assignment.id  %}" class="btn btn-default btn-sm"
             rel="tooltip" data-original-title="{% trans 'Print election as PDF' %}" target="_blank">
         <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
         <span class="optional-small"> PDF</span>

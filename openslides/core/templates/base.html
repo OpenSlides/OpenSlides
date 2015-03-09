@@ -89,13 +89,14 @@
     <div class="container-fluid" id="container">
     <div class="row">
 
-        <!-- Sidebar navigation (main menu) -->
+        <!-- Sidebar navigation (main menu)
+             TODO: this menu is a temporary solution only! We will use angular base template
+             for building main menu, see issue #1469 -->
         <div class="col-md-2 leftmenu lefticon">
             <ul>
                 {% for entry in main_menu_entries %}
-                    <li{% if entry.is_active %} class="active"{% endif %}>
-                        <a href="{{ entry.get_url }}" class="tooltip-right">
-                        <!--TODO-->
+                    <li>
+                        <a href="{{ entry.pattern_name }}" class="tooltip-right">
                         <span class="glyphicon {{ entry.get_icon_css_class }}" aria-hidden="true"></span>
                         <span class="text">{{ entry }}</span>
                         </a>

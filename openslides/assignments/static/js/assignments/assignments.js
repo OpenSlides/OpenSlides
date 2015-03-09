@@ -3,7 +3,7 @@ angular.module('OpenSlidesApp.assignments', [])
 .config(function($stateProvider) {
     $stateProvider
         .state('assignments', {
-            url: '/assignment',
+            url: '/assignments',
             abstract: true,
             template: "<ui-view/>",
         })
@@ -15,6 +15,9 @@ angular.module('OpenSlidesApp.assignments', [])
             resolve: {
                 assignments: function(Assignment) {
                     return Assignment.findAll();
+                },
+                phases: function($http) {
+                    return $http({ 'method': 'OPTIONS', 'url': '/rest/assignments/assignment/' });
                 }
             }
         })
@@ -41,29 +44,58 @@ angular.module('OpenSlidesApp.assignments', [])
     });
 })
 
-.controller('AssignmentListCtrl', function($scope, Assignment) {
+.controller('AssignmentListCtrl', function($scope, Assignment, phases) {
     Assignment.bindAll({}, $scope, 'assignments');
+    // get all item types via OPTIONS request
+    $scope.phases = phases.data.actions.POST.phase.choices;
+
+    // setup table sorting
+    $scope.sortColumn = 'title';
+    $scope.filterPresent = '';
+    $scope.reverse = false;
+    // function to sort by clicked column
+    $scope.toggleSort = function ( column ) {
+        if ( $scope.sortColumn === column ) {
+            $scope.reverse = !$scope.reverse;
+        }
+        $scope.sortColumn = column;
+    };
+
+    // delete assignment
+    $scope.delete = function (assignment) {
+        //TODO: add confirm message
+        Assignment.destroy(assignment.id).then(
+            function(success) {
+                //TODO: success message
+            }
+        );
+    };
 })
 
 .controller('AssignmentDetailCtrl', function($scope, Assignment, assignment) {
     Assignment.bindOne(assignment.id, $scope, 'assignment')
 })
 
-.controller('AssignmentCreateCtrl', function($scope, Assignment) {
+.controller('AssignmentCreateCtrl', function($scope, $state, Assignment) {
     $scope.assignment = {};
     $scope.save = function(assignment) {
-        assignment.open_posts = 1;
         assignment.tags = []; // TODO: the rest_api should do this
-        Assignment.create(assignment);
-        // TODO: redirect to list-view
+        Assignment.create(assignment).then(
+            function(success) {
+                $state.go('assignments.assignment.list');
+            }
+        );
     };
 })
 
-.controller('AssignmentUpdateCtrl', function($scope, Assignment, assignment) {
+.controller('AssignmentUpdateCtrl', function($scope, $state, Assignment, assignment) {
     $scope.assignment = assignment;  // do not use .binOne(...) so autoupdate is not activated
     $scope.save = function (assignment) {
-        Assignment.save(assignment);
-        // TODO: redirect to list-view
+        Assignment.save(assignment).then(
+            function(success) {
+                $state.go('assignments.assignment.list');
+            }
+        );
     };
 });
 

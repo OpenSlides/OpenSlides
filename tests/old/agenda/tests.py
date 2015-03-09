@@ -35,6 +35,7 @@ class ViewTest(TestCase):
     def anonymClient(self):
         return Client()
 
+    @skip
     def testOverview(self):
         c = self.adminClient
 
@@ -42,6 +43,7 @@ class ViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['items']), len(Item.objects.all()))
 
+    @skip
     def testClose(self):
         c = self.adminClient
 
@@ -67,6 +69,7 @@ class ViewTest(TestCase):
                          HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertEqual(response.status_code, 200)
 
+    @skip
     def testEdit(self):
         c = self.adminClient
 
@@ -90,6 +93,7 @@ class ViewTest(TestCase):
         self.refreshItems()
         self.assertEqual(self.item1.title, 'newitem1')
 
+    @skip
     def test_view(self):
         item = Item.objects.create(title='quai5OTeephaequ0xei0')
         c = self.adminClient
@@ -100,6 +104,7 @@ class ViewTest(TestCase):
         response = c.get('/agenda/%s/' % item.id)
         self.assertContains(response, 'quai5OTeephaequ0xei0')
 
+    @skip
     def test_change_item_order(self):
         data = {
             'i1-self': 1,
@@ -119,6 +124,7 @@ class ViewTest(TestCase):
         self.assertIsNone(Item.objects.get(pk=1).parent)
         self.assertEqual(Item.objects.get(pk=2).parent_id, 1)
 
+    @skip
     def test_change_item_order_with_orga_item(self):
         self.item1.type = 2
         self.item1.save()
@@ -172,6 +178,7 @@ class ViewTest(TestCase):
         self.assertEqual(Item.objects.get(pk=1).parent_id, 0)
         self.assertEqual(Item.objects.get(pk=2).parent_id, 0)
 
+    @skip
     def test_delete(self):
         response = self.adminClient.get('/agenda/%s/del/' % self.item1.pk)
         self.assertRedirects(response, '/agenda/')
@@ -179,6 +186,7 @@ class ViewTest(TestCase):
         self.assertRedirects(response, '/agenda/')
         self.assertFalse(Item.objects.filter(pk=1).exists())
 
+    @skip
     def test_delete_item_with_children(self):
         item1 = Item.objects.create(title='item1')
         item2 = Item.objects.create(title='item2', parent=item1)
@@ -187,6 +195,7 @@ class ViewTest(TestCase):
         query = Item.objects.filter(pk__in=[item1.pk, item2.pk])
         self.assertFalse(query)
 
+    @skip
     def test_delete_item_with_wrong_answer(self):
         response = self.adminClient.post(
             '/agenda/%s/del/' % self.item1.pk,
@@ -194,6 +203,7 @@ class ViewTest(TestCase):
         self.assertRedirects(response, '/agenda/')
         self.assertTrue(Item.objects.filter(pk=self.item1.pk).exists())
 
+    @skip
     def test_orga_item_permission(self):
         # Prepare
         self.item1.type = Item.ORGANIZATIONAL_ITEM
@@ -218,6 +228,7 @@ class ViewTest(TestCase):
         response = client.get('/agenda/2/')
         self.assertEqual(response.status_code, 200)
 
+    @skip
     def test_orga_item_with_orga_parent_one(self):
         item1 = Item.objects.create(title='item1_Taeboog1de1sahSeiM8y', type=2)
         response = self.adminClient.post(
@@ -231,6 +242,7 @@ class ViewTest(TestCase):
             None,
             'Agenda items can not be child elements of an organizational item.')
 
+    @skip
     def test_orga_item_with_orga_parent_two(self):
         item1 = Item.objects.create(title='item1_aeNg4Heibee8ULooneep')
         Item.objects.create(title='item2_fooshaeroo7Ohvoow0hoo', parent=item1)
@@ -244,6 +256,7 @@ class ViewTest(TestCase):
             None,
             'Organizational items can not have agenda items as child elements.')
 
+    @skip
     def test_csv_import(self):
         """
         Test to upload a csv file.

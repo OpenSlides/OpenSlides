@@ -1,8 +1,31 @@
-<h1 ng-if="assignment.id">{{ assignment.title }}</h1>
-<h1 ng-if="!assignment.id">Neue Assignment</h1>
+<h1 ng-if="assignment.id" translate>Edit election</h1>
+<h1 ng-if="!assignment.id" translate>New election</h1>
 
-<form>
-    Titel: <input type="text" ng-model="assignment.title"><br>
-    Beschreibung:<br> <textarea ng-model="assignment.description"></textarea><br>
-    <input type="submit" ng-click="save(assignment)" value="Save" />
+<div id="submenu">
+  <a ui-sref="assignments.assignment.list" class="btn btn-sm btn-default">
+    <i class="fa fa-angle-double-left fa-lg"></i>
+    <translate>Back to overview</translate>
+  </a>
+</div>
+
+<form name="assignmentForm">
+  <div class="form-group">
+    <label for="inputTitle" translate>Title</label>
+    <input type="text" ng-model="assignment.title" class="form-control" name="inputTitle" required>
+  </div>
+  <div class="form-group">
+    <label for="textareaDesciption" translate>Description</label>
+    <textarea ng-model="assignment.description" class="form-control" name="textareaDescription" />
+  </div>
+  <div class="form-group">
+    <label for="inputPosts" translate>Number of members to be elected</label>
+    <input type="number" ng-model="assignment.open_posts" class="form-control" name="inputPosts" required>
+  </div>
+
+  <button type="submit" ng-click="save(assignment)" class="btn btn-primary" translate>
+    Save
+  </button>
+  <button ui-sref="assignments.assignment.list" class="btn btn-default" translate>
+    Cancel
+  </button>
 </form>

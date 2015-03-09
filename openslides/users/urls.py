@@ -4,9 +4,6 @@ from . import views
 
 urlpatterns = patterns(
     '',
-    url(r'^csv_import/$',
-        views.UserCSVImportView.as_view(),
-        name='user_csv_import'),
 
     # PDF
     url(r'^print/$',

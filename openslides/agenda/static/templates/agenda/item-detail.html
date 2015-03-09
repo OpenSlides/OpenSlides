@@ -1,2 +1,56 @@
 <h1>{{ item.get_title }}</h1>
+
+<div id="submenu">
+  <a ui-sref="agenda.item.list" class="btn btn-sm btn-default">
+    <i class="fa fa-angle-double-left fa-lg"></i>
+    <translate>Back to overview</translate>
+  </a>
+  <!-- projector, TODO: add link to activate slidea-->
+  <a href="#TODO" os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
+      title="{{ 'Show' | translate }}">
+    <i class="fa fa-video-camera"></i>
+  </a>
+  <!-- edit -->
+  <a ui-sref="agenda.item.detail.update({id: item.id })" os-perms="agenda.can_manage"
+      class="btn btn-default btn-sm"
+      title="{{ 'Edit' | translate}}">
+    <i class="fa fa-pencil"></i>
+  </a>
+</div>
+
 {{ item.text }}
+
+<div os-perm="agenda.can_manage">
+  <h3 os-perm="agenda.can_manage" translate>Duration</h3>
+  {{ item.duration }}
+</div>
+
+<div os-perm="agenda.can_manage">
+  <h3 os-perm="agenda.can_manage" translate>Comment</h3>
+  {{ item.comment }}
+</div>
+
+
+<h3 translate>List of speakers</h3>
+<!-- TODO:
+   * open/close list
+   * add/remove speakers
+   * project list
+   * show old/current/next speakers
+   * button 'put/remove me on/from the list'
+   * check permissions
+-->
+<div class="form-group row">
+  <div class="col-sm-6">
+    <ui-select ng-model="speaker.selected" theme="bootstrap">
+      <ui-select-match placeholder="{{ 'Select or search a participant...' | translate }}">
+        {{ $select.selected.get_short_name() }}
+      </ui-select-match>
+      <ui-select-choices repeat="user.id as user in users | filter: $select.search">
+        <div ng-bind-html="user.get_short_name() | highlight: $select.search"></div>
+        <small ng-bind-html="user.structure_level | highlight: $select.search"></small>
+      </ui-select-choices>
+    </ui-select>
+  </div>
+</div>
+

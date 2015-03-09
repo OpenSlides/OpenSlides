@@ -26,75 +26,76 @@
       <!-- login/logout button -->
       <div class="btn-group">
         <div ng-if="operator.isAuthenticated()">
-          <button data-toggle="dropdown" class="btn btn-default dropdown-toggle">
-            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-            <span class="optional-small">{{ operator.user.get_short_name() }}</span>
-            <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu pull-right">
-            <li><a href="{% url 'user_settings' %}">
-                  <i class="fa fa-cog"></i>
-                  <translate>Edit profile</translate>
-                </a>
-            <li><a href="{% url 'password_change' %}">
-                  <i class="fa fa-key"></i>
-                  <translate>Change password</translate>
-                </a>
-            <li class="divider">
-            <li><a ng-click="logout()" href="">
-                  <i class="fa fa-sign-out"></i>
-                  <translate>Logout</translate>
-                </a>
-          </ul>
+
+          <div class="btn-group" dropdown is-open="status.isopen">
+            <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
+              <i class="fa fa-user"></i>
+              <span class="optional-small">{{ operator.user.get_short_name() }}</span>
+              <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu pull-right" role="menu">
+              <li><a href="{% url 'user_settings' %}">
+                    <i class="fa fa-cog"></i>
+                    <translate>Edit profile</translate>
+                  </a>
+              <li><a href="{% url 'password_change' %}">
+                    <i class="fa fa-key"></i>
+                    <translate>Change password</translate>
+                  </a>
+              <li class="divider">
+              <li><a ng-click="logout()" href="">
+                    <i class="fa fa-sign-out"></i>
+                    <translate>Logout</translate>
+                  </a>
+            </ul>
+          </div>
         </div>
-        <div ng-if="!operator.isAuthenticated()">
-          <button class="btn btn-default" data-toggle="modal" data-target="#loginFormModal">
+
+        <!-- Login dialog (modal) -->
+        <div ng-controller="LoginFormCtrl" ng-if="!operator.isAuthenticated()">
+          <script type="text/ng-template" id="LoginForm.html">
+            <div class="modal-header">
+              <h3 class="modal-title" translate>Please sign in!</h3>
+            </div>
+            <div class="modal-body">
+              <p ng-if='loginFailed' class="text-danger">
+                <strong translate>Username or password is not correct.</strong>
+              <div class="input-group form-group">
+                <div class="input-group-addon"><i class="fa fa-user"></i></div>
+                <input type="text" ng-model="username" class="form-control input-lg"
+                    placeholder="{{ 'Username' | translate }}">
+              </div>
+              <div class="input-group form-group">
+                <div class="input-group-addon"><i class="fa fa-key"></i></div>
+                <input type="password" ng-model="password" class="form-control input-lg"
+                    placeholder="{{ 'Password' | translate }}">
+              </div>
+            </div>
+            <div class="modal-footer">
+              <div class="form-group">
+                <button type="submit" ng-click="login(username, password)"
+                    class="btn btn-primary btn-lg btn-block" translate>
+                  Login
+                </button>
+              </div>
+              <div class="form-group">
+                <!-- TODO: show only if anonymous user is activate -->
+                <button ng-click="guest()" class="btn btn-default" translate>
+                  Continue as guest
+                </button>
+                <button ng-click="cancel()" class="btn btn-default" translate>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </script>
+          <button class="btn btn-default" ng-click="open()">
             <i class="fa fa-sign-in"></i>
             <translate>Login</translate>
           </button>
-          <div class="modal" id="loginFormModal" tabindex="-1" role="dialog"
-              aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-sm">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                  <h4 class="modal-title" id="myModalLabel" translate>Please sign in!</h4>
-                </div>
-                <div class="modal-body">
-                  <p ng-if='loginFailed' class="text-danger">
-                    <strong translate>Username or password is not correct.</strong>
-                  <form>
-                    <div class="input-group form-group">
-                      <div class="input-group-addon"><i class="fa fa-user"></i></div>
-                      <input type="text" ng-model="username" class="form-control input-lg"
-                          placeholder="{{'Username'|translate}}">
-                    </div>
-                    <div class="input-group form-group">
-                      <div class="input-group-addon"><i class="fa fa-key"></i></div>
-                      <input type="password" ng-model="password" class="form-control input-lg"
-                          placeholder="{{'Password'|translate}}">
-                    </div>
-                    <div class="form-group">
-                      <button type="submit" ng-click="login(username, password)"
-                          class="btn btn-primary btn-lg btn-block" translate>
-                        Login
-                      </button>
-                    </div>
-                    <div class="form-group">
-                      <!-- TODO: if anonymous user is activate -->
-                      <button type="submit" class="btn btn-default" translate>
-                        Continue as guest
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
+
       <!-- language switcher -->
       <div class="btn-group" ng-controller="LanguageCtrl">
         <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -123,20 +124,51 @@
 <!-- Container -->
 <div class="container-fluid" id="container">
   <div class="row">
-    <!-- TODO: Sidebar navigation (main menu)
+    <!-- TODO: Build main menu automatically from installed apps, see issue #1469 -->
     <div class="col-md-2 leftmenu lefticon">
       <ul>
-        {% for entry in main_menu_entries %}
-            <li{% if entry.is_active %} class="active"{% endif %}>
-                <a href="{{ entry.get_url }}" class="tooltip-right">
-                <span class="glyphicon {{ entry.get_icon_css_class }}" aria-hidden="true"></span>
-                <span class="text">{{ entry }}</span>
-                </a>
-            </li>
-        {% endfor %}
+        <li>
+          <a ui-sref="dashboard">
+            <span class="ico"><i class="fa fa-home fa-lg"></i></span>
+            <span class="text" translate>Home</span>
+          </a>
+        <li>
+          <a href="#TODO">
+            <span class="ico"><i class="fa fa-video-camera fa-lg"></i></span>
+            <span class="text" translate>Projector</span>
+          </a>
+        <li>
+          <a ui-sref="agenda.item.list">
+            <span class="ico"><i class="fa fa-calendar-o fa-lg"></i></span>
+            <span class="text" translate>Agenda</span>
+          </a>
+        <li>
+          <a ui-sref="motions.motion.list">
+            <span class="ico"><i class="fa fa-file-text fa-lg"></i></span>
+            <span class="text" translate>Motions</span>
+          </a>
+        <li>
+          <a ui-sref="assignments.assignment.list">
+            <span class="ico"><i class="fa fa-pie-chart fa-lg"></i></span>
+            <span class="text" translate>Elections</span>
+          </a>
+        <li>
+          <a ui-sref="users.user.list">
+            <span class="ico"><i class="fa fa-user fa-lg"></i></span>
+            <span class="text" translate>Participants</span>
+          </a>
+        <li>
+          <a ui-sref="mediafiles.mediafile.list">
+            <span class="ico"><i class="fa fa-paperclip fa-lg"></i></span>
+            <span class="text" translate>Files</span>
+          </a>
+        <li>
+          <a href="#TODO">
+            <span class="ico"><i class="fa fa-cog fa-lg"></i></span>
+            <span class="text" translate>Settings</span>
+          </a>
       </ul>
     </div>
-    -->
 
     <!-- Content -->
     <div id="content" class="col-md-10">
@@ -160,5 +192,7 @@
 <script src="static/js/app.js"></script>
 <script src="static/js/core.js"></script>
 <script src="static/js/agenda/agenda.js"></script>
+<script src="static/js/motions/motions.js"></script>
 <script src="static/js/assignments/assignments.js"></script>
 <script src="static/js/users/users.js"></script>
+<script src="static/js/mediafiles/mediafiles.js"></script>

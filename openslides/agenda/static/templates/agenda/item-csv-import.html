@@ -1,0 +1,39 @@
+ <h1 translate>Import agenda items</h1>
+
+<div id="submenu">
+  <a ui-sref="agenda.item.list" class="btn btn-sm btn-default">
+    <i class="fa fa-angle-double-left fa-lg"></i>
+    <translate>Back to overview</translate>
+  </a>
+</div>
+
+<p translate>Select a CSV file to import agenda items!
+
+<p translate>Please note:</p>
+<ul><!--TODO: utf-8 encoding still required with agnular-csv? -->
+    <li><translate>Required comma separated values</translate>:<br>
+        <code translate>'title, text, duration'</code>
+    <li translate>Text and duration are optional and may be empty.
+    <li translate>The first line (header) is ignored.
+    <li translate>Required CSV file encoding is UTF-8.
+    <li><a href="https://github.com/OpenSlides/OpenSlides/wiki/CSV-Import" translate>
+          Use the CSV example file from OpenSlides Wiki.
+        </a>
+</ul>
+
+<!-- TODO: add post url to form-->
+<form>
+  <div class="form-group">
+    <label for="InputFile" translate>CSV file:</label>
+    <input type="file" id="InputFile">
+    <p class="help-block" translate>The file has to be encoded in UTF-8.
+  </div>
+
+  <!--TODO-->
+  <button type="submit" ng-click="" class="btn btn-primary" translate>
+    Import
+  </button>
+  <button ui-sref="agenda.item.list" class="btn btn-default" translate>
+    Cancel
+  </button>
+</form>

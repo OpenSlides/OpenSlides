@@ -1,11 +1,24 @@
 angular.module('OpenSlidesApp', [
     'ui.router',
+    'angular-loading-bar',
     'js-data',
     'gettext',
+    'ngBootbox',
+    'ngFabForm',
+    'ngMessages',
+    'ngAnimate',
+    'ngCsvImport',
+    'ngSanitize',
+    'ui.bootstrap',
+    'ui.select',
+    'ui.tree',
+    'xeditable',
     'OpenSlidesApp.core',
     'OpenSlidesApp.agenda',
+    'OpenSlidesApp.motions',
     'OpenSlidesApp.assignments',
     'OpenSlidesApp.users',
+    'OpenSlidesApp.mediafiles',
 ])
 
 .config(function($urlRouterProvider, $locationProvider) {

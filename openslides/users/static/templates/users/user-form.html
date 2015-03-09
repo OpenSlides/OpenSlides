@@ -8,17 +8,14 @@
   </a>
 </div>
 
-<form name="userForm">
-  <div ng-if="user.id" ng-class="{'has-error has-feedback': userForm.inputUsername.$error.required}"
-      class="form-group">
+<form name="userForm" >
+  <div ng-if="user.id" class="form-group">
     <label for="inputUsername" translate>Username</label>
-    <input type="text" ng-model="user.username" ng-required="true" class="form-control"
-        name="inputUsername">
-    <i ng-if="userForm.inputUsername.$error.required"
-        class="fa fa-times fa-lg form-control-feedback"></i>
-    <p ng-show="userForm.inputUsername.$error.required"
-        class="error-message help-block" translate>
-      Username is required.
+    <input type="text"
+           ng-model="user.username"
+           class="form-control"
+           name="inputUsername"
+           required>
   </div>
   <div class="form-group row">
     <div class="col-xs-2">
@@ -38,13 +35,11 @@
     <label for="inputStructureLevel" translate>Structure level</label>
     <input type="text" ng-model="user.structure_level" class="form-control" name="inputStructureLevel">
   </div>
-  <div class="form-group" ng-class="{'has-error has-feedback': userForm.selectGroups.$error.required}">
+  <div class="form-group">
     <label for="selectGroups" translate>Groups</label>
     <select multiple ng-options="group.id as group.name for group in groups"
-      ng-required="true" ng-model="user.groups" class="form-control" name="selectGroups">
+      ng-model="user.groups" class="form-control" name="selectGroups" required>
     </select>
-    <p ng-show="userForm.selectGroups.$error.required" class="error-message help-block" translate>
-      Group is required.
   </div>
   <div class="form-group row">
     <div class="col-xs-6">

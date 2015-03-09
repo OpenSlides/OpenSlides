@@ -26,19 +26,28 @@
         </a>
 </ul>
 
-<!-- TODO: add post url to form-->
-<form>
-  <div class="form-group">
-    <label for="InputFile" translate>CSV file:</label>
-    <input type="file" id="InputFile">
-    <p class="help-block" translate>The file has to be encoded in UTF-8.
-  </div>
+<ng-csv-import
+  content="csv.content"
+  class="import"
+  header="csv.header"
+  separator="csv.separator"
+  result="csv.result"></ng-csv-import>
 
-  <!--TODO-->
-  <button type="submit" ng-click="" class="btn btn-primary" translate>
+<div ng-if="csv.content">
+  <h2>CSV</h2>
+  <div class="content"><pre>{{ csv.content }}</pre></div>
+</div>
+
+<div ng-if="csv.result">
+  <h2>JSON</h2>
+  <div class="content"><pre>{{ csv.result }}</pre></div>
+</div>
+
+<div class="form-group">
+  <button ng-click="import(csv.result)" class="btn btn-primary" translate>
     Import
   </button>
   <button ui-sref="users.user.list" class="btn btn-default" translate>
     Cancel
   </button>
-</form>
+</div>

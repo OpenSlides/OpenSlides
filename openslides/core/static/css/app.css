@@ -6,6 +6,103 @@ body {
    background-color: #FBFBFB;
 }
 
+/* TODO: Move only used custom style for angular templates in new css file */
+.angular-ui-tree-handle {
+    background: none repeat scroll 0 0 #f8faff;
+    border: 1px solid #dae2ea;
+    color: #7c9eb2;
+    padding: 10px;
+}
+.angular-ui-tree-handle:hover {
+    background: none repeat scroll 0 0 #f4f6f7;
+    border-color: #dce2e8;
+    color: #438eb9;
+}
+.angular-ui-tree-placeholder {
+    background: none repeat scroll 0 0 #f0f9ff;
+    border: 2px dashed #bed2db;
+    box-sizing: border-box;
+}
+
+/* TODO: used by ng-fab-forms */
+.validation-success {
+  opacity: 1;
+  display: block;
+  position: absolute;
+  right: -7.2px;
+  bottom: -7.2px;
+  font-size: 28.8px;
+  width: 36px;
+  height: 36px;
+  line-height: 36px;
+  text-align: center;
+  border-radius: 36px;
+  color: #62b14c;
+  transition: all ease-out 0.32s; }
+  .validation-success:after {
+    display: block;
+    content: '\e013';
+    font-family: 'Glyphicons Halflings'; }
+  .validation-success.ng-hide {
+    transition-delay: 0s;
+    transition: all ease-out 0.12s;
+    opacity: 0;
+    transform: rotate(360deg); }
+
+.ng-hide-remove li {
+  opacity: 0; }
+
+.validation {
+  color: #fff;
+  margin: 0;
+  position: relative;
+  font-size: 14px;
+  overflow: visible;
+  background: #c00640; }
+  .validation ul {
+    display: block;
+    overflow: hidden; }
+  .validation li {
+    display: block;
+    line-height: 1;
+    background: #c00640;
+    position: absolute;
+    right: -4px;
+    top: -10px;
+    text-align: center;
+    font-weight: bold;
+    padding: 2px 10px;
+    color: #fff;
+    transform: rotate(0deg);
+    transition: all ease-in 0.2s;
+    opacity: 1;
+    transition-delay: 0s; }
+    .validation li.ng-enter {
+      opacity: 0;
+      top: 0; }
+    .validation li.ng-leave {
+      transition: all ease-in 0s;
+      opacity: 0; }
+  *:focus + .validation li {
+    background-color: #63bff8 !important; }
+
+input.ng-touched.ng-invalid:not(.ng-valid), textarea.ng-touched.ng-invalid:not(.ng-valid), select.ng-touched.ng-invalid:not(.ng-valid) {
+  border-color: #c00640; }
+input:focus, input:focus.ng-touched.ng-invalid:not(.ng-valid), textarea:focus, textarea:focus.ng-touched.ng-invalid:not(.ng-valid), select:focus, select:focus.ng-touched.ng-invalid:not(.ng-valid) {
+  border-color: #63bff8; }
+input.ng-valid-required.ng-valid:not(.ng-invalid), textarea.ng-valid-required.ng-valid:not(.ng-invalid), select.ng-valid-required.ng-valid:not(.ng-invalid) {
+  border-color: #62b14c; }
+
+form[class*="ng-invalid"] button.btn[type=submit] {
+  background: #63bff8;
+  transition: none; }
+
+form button.btn[type=submit] {
+  transition: all ease-in 0.5s;
+  background: #62b14c; }
+
+
+
 /* Header */
 #header {
     background-color: #333333;
@@ -86,12 +183,28 @@ a:hover {
     line-height: 45px;
 }
 
+/* List tables */
+th.sortable:hover {
+    cursor: pointer;
+}
+
+
 /* Log */
 #log {
     padding-left: 14px;
 }
 
 /** Utils **/
+div.import .label {
+    color: #333 !important;
+    font-size: 100%;
+    font-weight: normal;
+}
+div.import > div > input[type="text"] {
+    width: 30px;
+}
+
+
 tr.offline td, li.offline {
     background-color: #EAEAEA !important;
 }
@@ -116,7 +229,7 @@ tr.total td {
 .indentation {
     margin-left: 12px;
 }
-.mini_width {
+.minimum, .mini_width {
     width: 1px;
 }
 /* show optional column */
@@ -201,7 +314,7 @@ table.cke_dialog_contents textarea {
 .leftmenu ul li {
     display: block;
     width: 100%;
-    line-height: 30px;
+    line-height: 22px;
 }
 .leftmenu ul li a {
     border-style: none solid solid;
@@ -216,14 +329,15 @@ table.cke_dialog_contents textarea {
 .leftmenu ul li:first-child a {
     border-top: 1px solid #DDDDDD;
 }
-.leftmenu ul li a .glyphicon {
+.leftmenu ul li a span.ico {
     display: inline-block;
     background: #f9f9f9;
     padding: 8px 10px 6px;
     margin: 0 5px 0 0;
     border-right: 1px solid #dddddd;
+    width: 35px;
 }
-.leftmenu ul li a, .leftmenu ul li a .glyphicon {
+.leftmenu ul li a, .leftmenu ul li a span.ico {
     -webkit-transition: background 0.2s ease-in-out;
     -moz-transition: background 0.2s ease-in-out;
     -ms-transition: background 0.2s ease-in-out;
@@ -234,14 +348,14 @@ table.cke_dialog_contents textarea {
     background-color: #f5f5f5;
     color: #000000;
 }
-.leftmenu ul li a:hover .glyphicon {
+.leftmenu ul li a:hover span.ico {
     background-color: #efefef;
 }
 .leftmenu ul li.active a {
     background-color: #333333;
     color: #ffffff;
 }
-.leftmenu ul li.active a .glyphicon {
+.leftmenu ul li.active a span.ico {
     background-color: #333333;
     border-right: 1px solid #444444;
 }
@@ -258,10 +372,10 @@ table.cke_dialog_contents textarea {
     margin-top: -34px;
 }
 .leftmenu.lefticon > ul > li > a > span.text {
-    display: none;
+    /*display: none;*/
 }
-.leftmenu.lefticon ul ul > li > a {
-    min-width: 200px !important;
+.leftmenu.lefticon ul > li > a {
+    min-width: 150px !important;
 }
 .leftmenu.lefticon span.text {
     padding-right: 15px;
@@ -269,14 +383,6 @@ table.cke_dialog_contents textarea {
 
 /** Icons **/
 /* TODO: Move some of them to the respective apps. */
-.icon-assignment {
-    background: url("../img/glyphicons_041_charts.png") no-repeat !important;
-    width: 25px;
-    margin-left: 10px !important;
-}
-.leftmenu ul li.active a .glyphicon.icon-assignment {
-    background-image: url("../img/glyphicons_041_charts_white.png") !important;
-}
 .status_link .icon-on, .icon-checked-new {
     background-image: url("../img/glyphicons_152_check.png");
     background-position: 0;

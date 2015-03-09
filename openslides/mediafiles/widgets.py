@@ -17,7 +17,6 @@ class PDFPresentationWidget(Widget):
     default_weight = 75
     template_name = 'mediafiles/widget_pdfpresentation.html'
     icon_css_class = 'icon-align-left'
-    more_link_pattern_name = 'mediafile_list'
     # javascript_files = None  # TODO: Add pdf.js stuff here.
 
     def get_context_data(self, **context):

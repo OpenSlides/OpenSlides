@@ -1,3 +1,5 @@
+from unittest import skip
+
 from django.test.client import Client
 
 from openslides.config.api import config
@@ -51,6 +53,7 @@ class PersonalInfoWidget(TestCase):
         response = self.client.get('/dashboard/')
         self.assertContains(response, 'My personal info', status_code=200)
 
+    @skip
     def test_item_list(self):
         agenda = self.import_agenda()
         if agenda:

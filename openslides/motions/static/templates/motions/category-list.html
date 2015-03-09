@@ -1,0 +1,54 @@
+<h1 translate>Categories</h1>
+
+<div id="submenu">
+  <a ui-sref="motions.category.create" os-perms="users.can_manage" class="btn btn-primary btn-sm">
+    <i class="fa fa-plus fa-lg"></i>
+    <translate>New</translate>
+  </a>
+  <a ui-sref="motions.motion.list" class="btn btn-sm btn-default">
+    <i class="fa fa-angle-double-left fa-lg"></i>
+    <translate>Back to overview</translate>
+  </a>
+</div>
+
+<div class="row form-group">
+  <div class="col-sm-4 right">
+    <input type="text" os-focus-me ng-model="filter.search" class="form-control"
+        placeholder="{{ 'Filter' | translate }}">
+  </div>
+</div>
+
+<table class="table table-striped table-bordered table-hover">
+  <thead>
+    <tr>
+      <th ng-click="sortby='prefix';reverse=!reverse">
+        <translate>Prefix</translate>
+        <i class="fa" ng-show="sortby == 'prefix'"
+            ng-class="reverse ? 'fa-caret-down' : 'fa-caret-up'"></i>
+      <th ng-click="sortby='name';reverse=!reverse">
+        <translate>Name</translate>
+        <i class="fa" ng-show="sortby == 'name'"
+            ng-class="reverse ? 'fa-caret-down' : 'fa-caret-up'"></i>
+      <th os-perms="motions.can_manage core.can_manage_projector" class="mini_width" translate>Actions</th>
+  <tbody>
+    <tr ng-repeat="category in categories | filter: filter.search | orderBy:sortby:reverse">
+      <td>{{ category.prefix }}
+      <td><a ui-sref="motions.category.detail({id: category.id})">{{ category.name }}</a>
+      <td os-perms="motions.can_manage core.can_manage_projector" class="nobr">
+        <!-- projector, TODO: add link to activate slidea-->
+        <a href="#TODO" os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
+            title="{{ 'Show' | translate }}">
+          <i class="fa fa-video-camera"></i>
+        </a>
+        <!-- edit -->
+        <a ui-sref="motions.category.detail.update({id: category.id})" os-perms="motions.can_manage"
+            class="btn btn-default btn-sm"
+            title="{{ 'Edit' | translate }}">
+          <i class="fa fa-pencil"></i>
+        </a>
+        <!-- delete -->
+        <a ng-click="delete(category)" os-perms="motions.can_manage" class="btn btn-danger btn-sm"
+            title="{{ 'Delete' | translate }}">
+          <i class="fa fa-trash-o"></i>
+        </a>
+</table>
