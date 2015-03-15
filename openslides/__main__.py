@@ -153,7 +153,7 @@ def createsettings(args):
         if settings_path is None:
             settings_path = get_development_settings_path()
         context = {
-            'openslides_user_data_path': repr(os.path.join(os.getcwd(), 'development')),
+            'openslides_user_data_path': repr(os.path.join(os.getcwd(), 'development', 'var')),
             'debug': 'True'}
 
     settings_path = write_settings(settings_path, **context)

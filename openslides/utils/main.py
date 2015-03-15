@@ -86,9 +86,9 @@ def get_development_settings_path():
     """
     Returns the path to a local development settings.
 
-    On Unix systems: 'development/settings.py'
+    On Unix systems: 'development/var/settings.py'
     """
-    return os.path.join('development', 'settings.py')
+    return os.path.join('development', 'var', 'settings.py')
 
 
 def setup_django_settings_module(settings_path=None, development=None):
