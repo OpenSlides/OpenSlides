@@ -6,7 +6,7 @@
 {% if perms.agenda.can_be_speaker %}
     <p><a href="{% url 'agenda_add_to_current_list_of_speakers' %}" class="btn"><i class="icon icon-speaker"></i> {% trans 'Put me on the current list of speakers' %}</a></p>
 {% endif %}
-{% if perms.agenda.can_manage_agenda %}
+{% if perms.agenda.can_manage %}
     <p>
         <a href="{% url 'agenda_next_on_current_list_of_speakers' %}" class="btn btn-mini"><i class="icon icon-bell"></i> {% trans 'Next speaker' %}</a>
         <a href="{% url 'agenda_end_speach_on_current_list_of_speakers' %}" class="btn btn-mini"><i class="icon icon-bell"></i> {% trans 'End speach' %}</a>

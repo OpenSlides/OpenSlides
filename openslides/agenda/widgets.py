@@ -46,5 +46,5 @@ class ListOfSpeakersWidget(Widget):
     icon_css_class = 'icon-bell'
 
     def check_permission(self):
-        return (self.request.user.has_perm('agenda.can_manage_agenda') or
+        return (self.request.user.has_perm('agenda.can_manage') or
                 self.request.user.has_perm('agenda.can_be_speaker'))

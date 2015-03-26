@@ -50,7 +50,7 @@ class Overview(TemplateView):
     """
     Show all agenda items, and update their range via post.
     """
-    required_permission = 'agenda.can_see_agenda'
+    required_permission = 'agenda.can_see'
     template_name = 'agenda/overview.html'
 
     def get_context_data(self, **kwargs):
@@ -120,7 +120,7 @@ class Overview(TemplateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        if not request.user.has_perm('agenda.can_manage_agenda'):
+        if not request.user.has_perm('agenda.can_manage'):
             messages.error(
                 request,
                 _('You are not authorized to manage the agenda.'))
@@ -179,7 +179,7 @@ class AgendaItemView(SingleObjectMixin, FormView):
         if self.get_object().type == Item.ORGANIZATIONAL_ITEM:
             check_permission = request.user.has_perm('agenda.can_see_orga_items')
         else:
-            check_permission = request.user.has_perm('agenda.can_see_agenda')
+            check_permission = request.user.has_perm('agenda.can_see')
         return check_permission
 
     def get_context_data(self, **kwargs):
@@ -209,7 +209,7 @@ class SetClosed(SingleObjectMixin, RedirectView):
     """
     Close or open an item.
     """
-    required_permission = 'agenda.can_manage_agenda'
+    required_permission = 'agenda.can_manage'
     allow_ajax = True
     url_name = 'item_overview'
     model = Item
@@ -237,7 +237,7 @@ class ItemUpdate(UpdateView):
     """
     Update an existing item.
     """
-    required_permission = 'agenda.can_manage_agenda'
+    required_permission = 'agenda.can_manage'
     template_name = 'agenda/edit.html'
     model = Item
     context_object_name = 'item'
@@ -256,7 +256,7 @@ class ItemCreate(CreateView):
     """
     Create a new item.
     """
-    required_permission = 'agenda.can_manage_agenda'
+    required_permission = 'agenda.can_manage'
     template_name = 'agenda/edit.html'
     model = Item
     context_object_name = 'item'
@@ -269,7 +269,7 @@ class ItemDelete(DeleteView):
     """
     Delete an item.
     """
-    required_permission = 'agenda.can_manage_agenda'
+    required_permission = 'agenda.can_manage'
     model = Item
     question_url_name = 'item_overview'
     success_url_name = 'item_overview'
@@ -325,7 +325,7 @@ class CreateRelatedAgendaItemView(SingleObjectMixin, RedirectView):
     This view is only for subclassing in views of related apps. You
     have to define 'model = ....'
     """
-    required_permission = 'agenda.can_manage_agenda'
+    required_permission = 'agenda.can_manage'
     url_name = 'item_overview'
     url_name_args = []
 
@@ -337,7 +337,7 @@ class CreateRelatedAgendaItemView(SingleObjectMixin, RedirectView):
 
 
 class AgendaNumberingView(QuestionView):
-    required_permission = 'agenda.can_manage_agenda'
+    required_permission = 'agenda.can_manage'
     question_url_name = 'item_overview'
     url_name = 'item_overview'
     question_message = ugettext_lazy('Do you really want to generate agenda numbering? Manually added item numbers will be overwritten!')
@@ -356,7 +356,7 @@ class AgendaPDF(PDFView):
     """
     Create a full agenda-PDF.
     """
-    required_permission = 'agenda.can_see_agenda'
+    required_permission = 'agenda.can_see'
     filename = ugettext_lazy('Agenda')
     document_title = ugettext_lazy('Agenda')
 
@@ -404,7 +404,7 @@ class SpeakerDeleteView(DeleteView):
         Check the permission to delete a speaker.
         """
         if 'speaker' in kwargs:
-            return request.user.has_perm('agenda.can_manage_agenda')
+            return request.user.has_perm('agenda.can_manage')
         else:
             # Any user who is on the list of speakers can delete himself from the list.
             return True
@@ -454,7 +454,7 @@ class SpeakerSpeakView(SingleObjectMixin, RedirectView):
     """
     Mark the speaking user.
     """
-    required_permission = 'agenda.can_manage_agenda'
+    required_permission = 'agenda.can_manage'
     url_name = 'item_view'
     model = Item
 
@@ -480,7 +480,7 @@ class SpeakerEndSpeachView(SingleObjectMixin, RedirectView):
     """
     The speach of the actual speaker is finished.
     """
-    required_permission = 'agenda.can_manage_agenda'
+    required_permission = 'agenda.can_manage'
     url_name = 'item_view'
     model = Item
 
@@ -505,7 +505,7 @@ class SpeakerListCloseView(SingleObjectMixin, RedirectView):
     """
     View to close and reopen a list of speakers.
     """
-    required_permission = 'agenda.can_manage_agenda'
+    required_permission = 'agenda.can_manage'
     model = Item
     reopen = False
     url_name = 'item_view'
@@ -524,7 +524,7 @@ class SpeakerChangeOrderView(SingleObjectMixin, RedirectView):
 
     Has to be called as post-request with the new order of the speaker ids.
     """
-    required_permission = 'agenda.can_manage_agenda'
+    required_permission = 'agenda.can_manage'
     model = Item
     url_name = 'item_view'
 
@@ -657,7 +657,7 @@ class CurrentListOfSpeakersView(RedirectView):
             else:
                 return reverse('item_view', args=[item.pk])
         else:
-            if reverse_to_dashboard or not self.request.user.has_perm('agenda.can_see_agenda'):
+            if reverse_to_dashboard or not self.request.user.has_perm('agenda.can_see'):
                 return reverse('core_dashboard')
             else:
                 return reverse('item_view', args=[item.pk])
@@ -770,7 +770,7 @@ class ItemCSVImportView(CSVImportView):
     Imports agenda items from an uploaded csv file.
     """
     import_function = staticmethod(import_agenda_items)
-    required_permission = 'agenda.can_manage_agenda'
+    required_permission = 'agenda.can_manage'
     success_url_name = 'item_overview'
     template_name = 'agenda/item_form_csv_import.html'
 
@@ -789,9 +789,9 @@ class ItemViewSet(ModelViewSet):
         requests the permission to manage the agenda and to see organizational
         items.
         """
-        if (not request.user.has_perm('agenda.can_see_agenda') or
+        if (not request.user.has_perm('agenda.can_see') or
                 (self.action in ('create', 'update', 'destroy') and not
-                 (request.user.has_perm('agenda.can_manage_agenda') and
+                 (request.user.has_perm('agenda.can_manage') and
                   request.user.has_perm('agenda.can_see_orga_items')))):
             self.permission_denied(request)
 

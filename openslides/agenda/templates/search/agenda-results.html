@@ -1,7 +1,7 @@
 {% load i18n %}
 {% load highlight %}
 
-{% if perms.agenda.can_see_agenda and result.object.type == result.object.AGENDA_ITEM %}
+{% if perms.agenda.can_see and result.object.type == result.object.AGENDA_ITEM %}
     <li>
         <a href="{{ result.object.get_absolute_url }}">{{ result.object }}</a><br>
         <span class="app">{% trans "Agenda" %}</a></span><br>

@@ -17,7 +17,7 @@ urlpatterns = patterns(
 
     # Activate next lines to get more AngularJS views
     # url(r'^$', IndexView.as_view()),
-    # url(r'^assignment.*', IndexView.as_view()),
+    # url(r'^assignments.*', IndexView.as_view()),
     # url(r'^agenda.*', IndexView.as_view()),
 )
 
@@ -25,9 +25,9 @@ urlpatterns = patterns(
 urlpatterns += patterns(
     '',
     (r'^agenda/', include('openslides.agenda.urls')),
-    (r'^motion/', include('openslides.motion.urls')),
-    (r'^assignment/', include('openslides.assignment.urls')),
-    (r'^mediafile/', include('openslides.mediafile.urls')),
+    (r'^motions/', include('openslides.motions.urls')),
+    (r'^assignments/', include('openslides.assignments.urls')),
+    (r'^mediafiles/', include('openslides.mediafiles.urls')),
     (r'^config/', include('openslides.config.urls')),
     (r'^projector/', include('openslides.projector.urls')),
     (r'^i18n/', include('django.conf.urls.i18n')),

@@ -2,7 +2,7 @@
 {% load tags %}
 
 <div class="{% if node.is_active_slide %}activeline{% endif %}">
-    {% if perms.agenda.can_manage_agenda or perms.core.can_manage_projector %}
+    {% if perms.agenda.can_manage or perms.core.can_manage_projector %}
     <div class="manage">
         <span style="width: 1px; white-space: nowrap;">
         {% if perms.core.can_manage_projector %}
@@ -17,7 +17,7 @@
                 <i class="icon icon-bell {% if node.is_active_slide and active_type == 'list_of_speakers' %}icon-white{% endif %}"></i>
             </a>
         {% endif %}
-        {% if perms.agenda.can_manage_agenda %}
+        {% if perms.agenda.can_manage %}
             <span class="optional-small">
             <a href="{{ node|absolute_url:'update' }}" rel="tooltip" data-original-title="{% trans 'Edit' %}" class="btn btn-mini">
                 <i class="icon-pencil"></i>
@@ -56,7 +56,7 @@
     </div>
     {% endif %}
 
-    {% if perms.agenda.can_manage_agenda %}
+    {% if perms.agenda.can_manage %}
     <div class="optional">
         {% if node.comment %}
             {{ node.comment|first_line }}

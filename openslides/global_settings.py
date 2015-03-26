@@ -93,9 +93,9 @@ INSTALLED_APPS = (
     'openslides.account',
     'openslides.projector',
     'openslides.agenda',
-    'openslides.motion',
-    'openslides.assignment',
-    'openslides.mediafile',
+    'openslides.motions',
+    'openslides.assignments',
+    'openslides.mediafiles',
     'openslides.config',
 )
 
