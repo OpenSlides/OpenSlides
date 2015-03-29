@@ -56,9 +56,9 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
 class Assignment(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
     slide_callback_name = 'assignment'
 
-    PHASE_SEARCH = 1
-    PHASE_VOTING = 2
-    PHASE_FINISHED = 3
+    PHASE_SEARCH = 0
+    PHASE_VOTING = 1
+    PHASE_FINISHED = 2
 
     PHASES = (
         (PHASE_SEARCH, ugettext_lazy('Searching for candidates')),
