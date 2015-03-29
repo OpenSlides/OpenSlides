@@ -61,10 +61,4 @@ class ItemSerializer(ModelSerializer):
             'speaker_set',
             'speaker_list_closed',
             'content_object',
-            'weight',
-            'lft',
-            'rght',
-            'tree_id',
-            'level',
-            'parent',
             'tags',)

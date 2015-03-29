@@ -14,6 +14,7 @@ from rest_framework.serializers import (  # noqa
 from rest_framework.response import Response  # noqa
 from rest_framework.routers import DefaultRouter
 from rest_framework.viewsets import ModelViewSet, ViewSet  # noqa
+from rest_framework.decorators import list_route  # noqa
 
 from .exceptions import OpenSlidesError
 
