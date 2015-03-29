@@ -1,0 +1,373 @@
+{% extends "base.html" %}
+
+{% load tags %}
+{% load i18n %}
+{% load staticfiles %}
+{% load humanize %}
+
+{% block title %}{% trans "Motion" %} {{ motion.identifier|default:'' }} – {{ block.super }}{% endblock %}
+
+{% block header %}
+    {{ block.super }}
+    <link type="text/css" rel="stylesheet" media="all" href="{% static 'css/motion.css' %}" />
+{% endblock %}
+
+{% block content %}
+<h1>
+    {{ title }}
+    <br>
+    <small>
+        {% trans "Motion" %} {{ motion.identifier|default:'' }}
+        {% if motion.versions.count > 1 %}
+            | {% trans "Version" %} {{ version.version_number }}
+            {% if version == motion.active_version %}
+                <span class="badge badge-success"> {% trans 'This version is authorized' %}</span>
+            {% endif %}
+            {% if version.version_number != motion.active_version.version_number %}
+                <span class="label label-warning">
+                    <i class="icon-warning-sign icon-white"></i> {% trans "This version is not authorized." %}
+                </span>
+            {% endif %}
+        {% endif %}
+        {% if motion.is_amendment %}
+            ({% trans "Amendment of" %} <a href="{{ motion.parent|absolute_url }}">{{ motion.parent.identifier|default:motion.parent }}</a>)
+        {% endif %}
+    </small>
+    <small class="pull-right">
+        <a href="{% url 'motion_list' %}" class="btn btn-default btn-sm">
+            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+            <span class="optional-small"> {% trans "Back to overview" %}</span>
+        </a>
+        <a href="{% url 'motion_detail_pdf' motion.id  %}" class="btn btn-primary btn-sm"
+                rel="tooltip" data-original-title="{% trans 'Print motion as PDF' %}" target="_blank">
+            <span class="glyphicon glyphicon-print" aria-hidden="true"></span>
+            <span class="optional-small"> PDF</span>
+        </a>
+        <!-- activate projector -->
+        {% if perms.core.can_manage_projector %}
+            <a href="{{ motion|absolute_url:'projector' }}"
+                    class="activate_link btn btn-default {% if motion.is_active_slide %}btn-primary{% endif %} btn-sm"
+                    rel="tooltip" data-original-title="{% trans 'Show motion' %}">
+                <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span>
+            </a>
+        {% endif %}
+        {% if perms.motions.can_manage or perms.agenda.can_manage or allowed_actions.edit %}
+        <div class="btn-group">
+            <a data-toggle="dropdown" class="btn btn-sm btn-default dropdown-toggle">
+                <span class="optional-small">{% trans 'More actions' %}</span> <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu pull-right">
+                <!-- edit -->
+                {% if allowed_actions.edit %}
+                    <li><a href="{{ motion|absolute_url:'update' }}">
+                        <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+                        {% trans 'Edit motion' %}</a></li>
+                {% endif %}
+                {% if perms.motions.can_manage %}
+                    <!-- delete -->
+                    {% if allowed_actions.delete %}
+                        <li><a href="{{ motion|absolute_url:'delete' }}">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                            {% trans 'Delete motion' %}</a></li>
+                    {% endif %}
+                {% endif %}
+                <!-- create agenda item -->
+                {% if perms.agenda.can_manage %}
+                    <li><a href="{% url 'motion_create_agenda' motion.id  %}">
+                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                        {% trans 'New agenda item' %}</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        {% endif %}
+    </small>
+</h1>
+
+<div class="row">
+<div class="col-sm-8">
+    {# TODO: show only for workflow with versioning #}
+    {% with last_version=motion.get_last_version %}
+        {% if version.version_number != motion.active_version.version_number %}
+            <p>
+            <a href="{{ motion.active_version|absolute_url }}" class="btn btn-default btn-sm">{% trans "Go to the authorized version" %}
+            (# {{ motion.active_version.version_number }})</a>
+            </p>
+        {% elif version.version_number != last_version.version_number %}
+            <p>
+            <a href="{{ last_version|absolute_url }}" class="btn btn-default btn-sm">{% trans "Go to the newest version" %}
+            (# {{ last_version.version_number }})</a>
+            </p>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Text -->
+    <h4>{% trans "Motion text" %}:</h4>
+    {{ text|safe }}
+    <br>
+
+    <!-- Reason -->
+    <h4>{% trans "Reason" %}:</h4>
+    {{ reason|safe|default:'–' }}
+    <br>
+
+    <!-- Attachments -->
+    {% with attachments=motion.attachments.all %}
+        {% if attachments %}
+            <h4>{% trans "Attachments" %}:</h4>
+            {% for attachment in attachments %}
+                <p><a href="{{ attachment.mediafile.url }}">{{ attachment }}</a></p>
+            {% endfor %}
+            <br>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Version history -->
+    {% with versions=motion.versions.all %}
+        {% if versions|length > 1 %}
+            {% for version in versions %}
+            {% if forloop.first %}
+                <h4>{% trans "Version history" %}:</h4>
+                <form action="{% url 'motion_version_diff' motion.pk %}" method="get">
+                <table class="table table-striped table-bordered">
+                <tr>
+                    <th></th>
+                    <th>#</th>
+                    <th>{% trans "Time" %}</th>
+                    <th><button class="btn btn-default btn-sm" type="submit">{% trans 'Difference' %}</button></th>
+                    <th>{% trans "Actions" %}</th>
+                </tr>
+            {% endif %}
+                <tr {% if version == motion.use_version %}class="offline"{%endif %}>
+                    <td class="nobr">
+                    {% if version == motion.active_version %}
+                         <span class="badge badge-success" title="{% trans 'This version is authorized' %}"><i class="icon-ok icon-white"></i></span>
+                    {% else %}
+                         {% if perms.motions.can_manage %}
+                             <a class="btn btn-default btn-sm" href="{% url 'motion_version_permit' motion.id version.version_number %}" title="{% trans 'Permit this version' %}"><i class="icon-ok"></i></a>
+                         {% endif %}
+                    {% endif %}
+                    </td>
+                    <td>{{ version.version_number }}</td>
+                    <td><i>{{ version.creation_time }}</i></td>
+                    <td>
+                        <input type="radio" value="{{ version.version_number }}" name="rev1">
+                        <input type="radio" value="{{ version.version_number }}" name="rev2">
+                    </td>
+                    <td>
+                        <a href="{{ version|absolute_url }}" title="{% trans 'Show' %}" class="btn btn-default btn-xs">
+                            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                        </a>
+                        {% if perms.motions.can_manage and version != motion.active_version %}
+                            <a href="{{ version|absolute_url:'delete' }}" title="{% trans 'Delete' %}" class="btn btn-default btn-xs">
+                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% if forloop.last %}
+                </table>
+                </form>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Log -->
+    {% if perms.motions.can_manage %}
+        <p>
+        <div class="btn-group" data-toggle="buttons-checkbox">
+        <button type="button" class="btn btn-default btn-sm" data-toggle="collapse" data-target="#log">
+            {% trans "Show log" %}
+        </button>
+        </div>
+        <div id="log" class="collapse out">
+            <ul class="unstyled">
+                {% for message in motion.log_messages.all %}
+                <li><small>{{ message }}</small></li>
+                {% endfor %}
+            </ul>
+        </div>
+        </p>
+    {% endif %}
+</div>
+
+<!-- Box with meta information -->
+<div class="col-md-4">
+    <div class="well">
+        <!-- Submitter -->
+        <h5>{% trans "Submitter" %}:</h5>
+        {% for submitter in motion.submitter.all %}
+            <a href="{{ submitter.person|absolute_url }}">{{ submitter }}</a>{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+
+        <!-- Supporters -->
+        {% if 'motion_min_supporters'|get_config > 0 %}
+            <h5>{% trans "Supporters" %}: *</h5>
+            {% if not motion.supporters %}
+                -
+            {% else %}
+                <ol>
+                {% for supporter in motion.supporter.all %}
+                    <li><a href="{{ supporter.person|absolute_url }}">{{ supporter }}</a></li>
+                {% endfor %}
+                </ol>
+            {% endif %}
+        {% endif %}
+
+        <!-- Status -->
+        <h5>{% trans "Status" %}:</h5>
+        <span class="label label-info">{% trans motion.state.name %}</span>
+        <br>
+
+        <!-- Vote result -->
+        <h5>{% trans "Vote result" %}:</h5>
+        {% with motion.polls.all as polls %}
+        {% for poll in polls %}
+                <p>
+                    {% if polls.count > 1 %}
+                        {{ poll.poll_number|ordinal|safe }} {% trans "vote" %}:
+                    {% endif %}
+                    {% if perms.motions.can_manage %}
+                        {% if polls.count > 1 %}<br>{% endif %}
+                        <a class="btn btn-default btn-sm activate_link {% if poll.is_active_slide %}btn-primary{% endif %}"
+                                href="{{ poll|absolute_url:'projector' }}"
+                                rel="tooltip" data-original-title="{% trans 'Show vote result' %}">
+                            <span class="glyphicon glyphicon-facetime-video" aria-hidden="true"></span></a>
+                        <a href="{% url 'motionpoll_pdf' motion.id poll.poll_number %}" class="btn btn-default btn-sm" target="_blank"
+                            rel="tooltip" data-original-title="{% trans 'Ballot paper as PDF' %}">
+                            <span class="glyphicon glyphicon-print" aria-hidden="true"></span></a>
+                        <a class="btn btn-default btn-sm" href="{{ poll|absolute_url:'update' }}"
+                            rel="tooltip" data-original-title="{% trans 'Edit Vote' %}">
+                            <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+                        <a class="btn btn-default btn-sm" href="{{ poll|absolute_url:'delete' }}"
+                            rel="tooltip" data-original-title="{% trans 'Delete Vote' %}">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span></a>
+                    {% endif %}
+                    {% if poll.has_votes %}
+                        <div class="result">
+                        {% with poll.get_options.0 as option %}
+                            <img src="{% static 'img/voting-yes.png' %}" title="{% trans 'Yes' %}"> {{ option.Yes }}<br>
+                            <img src="{% static 'img/voting-no.png' %}" title="{% trans 'No' %}"> {{ option.No }}<br>
+                            <img src="{% static 'img/voting-abstention.png' %}" title="{% trans 'Abstention' %}"> {{ option.Abstain }}<br>
+                            {% if poll.votesvalid != None or poll.votesinvalid != None %}
+                                <hr>
+                                {% if poll.votesvalid != None %}
+                                    <img src="{% static 'img/voting-yes-grey.png' %}" title="{% trans 'Valid votes' %}"> {{ poll.print_votesvalid }}<br>
+                                {% endif %}
+                                {% if poll.votesinvalid != None %}
+                                    <img src="{% static 'img/voting-invalid.png' %}" title="{% trans 'Invalid votes' %}"> {{ poll.print_votesinvalid }}<br>
+                                {% endif %}
+                            {% endif %}
+                            {% if poll.votescast != None %}
+                                <hr>
+                                <img src="{% static 'img/voting-total.png' %}" title="{% trans 'Votes cast' %}"> {{ poll.print_votescast }}
+                            {% endif %}
+                        {% endwith %}
+                        </div>
+                    {% else %}
+                        <p><span class="label label-info">{% trans 'No result' %}</span></p>
+                    {% endif %}
+                    {% block meta_box_poll_extras %}{% endblock %}
+                </p>
+        {% empty %}
+            {% if not allowed_actions.create_poll %}
+            –
+            {% endif %}
+        {% endfor %}
+        {% if allowed_actions.create_poll %}
+            <p>
+                <a href="{% url 'motionpoll_create' motion.id %}" class="btn btn-default btn-sm">
+                    <span class="glyphicon glyphicon-signal" aria-hidden="true"></span>
+                    {% trans 'New vote' %}
+                </a>
+            </p>
+        {% endif %}
+        {% endwith %}
+
+        <!-- Category -->
+        {% if motion.category %}
+            <h5>{% trans "Category" %}:</h5>
+            {{ motion.category }}
+        {% endif %}
+
+        <!-- Tags -->
+        {% for tag in motion.tags.all %}
+            {% if forloop.first %}
+                <h5>{% trans "Tags" %}:</h5>
+            {% endif %}
+            <span class="optional label">{{ tag }}</span>
+        {% endfor %}
+
+        <!-- Creation Time -->
+        <h5>
+            {% if motion.versions.count > 1 %}
+                {% trans "Last changes (of this version)" %}:
+            {% else %}
+                {% trans "Last changes" %}:
+            {% endif %}
+        </h5>
+        {{ version.creation_time }}
+
+        {% if 'motion_amendments_enabled'|get_config %}
+            <h5>{% trans 'Amendments' %}:</h5>
+            {% with amendments=motion.amendments.all %}
+                {% if amendments %}
+                    <ul>
+                        {% for amendment in amendments %}
+                            <li><a href="{{ amendment|absolute_url }}">{{ amendment }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endwith %}
+            <a class="btn btn-sm btn-primary" href="{% url 'motion_create_amendment' motion.pk %}">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                {% trans 'New amendment' %}
+            </a>
+        {% endif %}
+
+        <!-- Support/Unsupport button -->
+        {% if perms.motions.can_support and 'motion_min_supporters'|get_config > 0 %}
+            {% if allowed_actions.unsupport %}
+                <br><br>
+                <a href="{% url 'motion_unsupport' motion.id %}" class="btn btn-default btn-sm">
+                    {% trans 'Unsupport' %}
+                </a>
+            {% endif %}
+            {% if allowed_actions.support %}
+                <br><br>
+                <a href="{% url 'motion_support' motion.id %}" class="btn btn-default">
+                    {% trans 'Support' %}
+                </a>
+            {% endif %}
+        {% endif %}
+
+        <!-- Footnote: requried supporters -->
+        {% if 'motion_min_supporters'|get_config > 0 %}
+            <br><br>
+            <small>* {% trans "minimum required supporters" %}: {{ 'motion_min_supporters'|get_config }}</small>
+        {% endif %}
+    </div> <!--/well-->
+
+    {% if perms.motions.can_manage %}
+    <!-- Manage motion box -->
+    <div class="well">
+    <h4>{% trans "Manage motion" %}</h4>
+        {% for state in motion.state.next_states.all %}
+            {% if forloop.first %}
+                <div class="btn-group btn-group-vertical">
+            {% endif %}
+            <a href="{% url 'motion_set_state' motion.pk state.pk %}" class="btn btn-default btn-sm">{% trans state.get_action_word %}</a>
+            {% if forloop.last %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    <h5>{% trans "For administration only:" %}</h5>
+    <a href="{% url 'motion_reset_state' motion.id %}" class="btn btn-default btn-sm btn-danger">
+        <i class="icon-exclamation-sign icon-white"></i> {% trans 'Reset state' %}
+    </a>
+    </div> <!--/well-->
+    {% endif %}
+  </div>
+</div> <!--/row-->
+
+{% endblock %}

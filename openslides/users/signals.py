@@ -115,26 +115,26 @@ def create_builtin_groups_and_admin(**kwargs):
 
     permission_strings = (
         'agenda.can_be_speaker',
-        'agenda.can_manage_agenda',
-        'agenda.can_see_agenda',
+        'agenda.can_manage',
+        'agenda.can_see',
         'agenda.can_see_orga_items',
-        'assignment.can_manage_assignments',
-        'assignment.can_nominate_other',
-        'assignment.can_nominate_self',
-        'assignment.can_see_assignments',
+        'assignments.can_manage',
+        'assignments.can_nominate_other',
+        'assignments.can_nominate_self',
+        'assignments.can_see',
         'config.can_manage',
         'core.can_manage_projector',
         'core.can_manage_tags',
         'core.can_see_dashboard',
         'core.can_see_projector',
         'core.can_use_chat',
-        'mediafile.can_manage',
-        'mediafile.can_see',
-        'mediafile.can_upload',
-        'motion.can_create_motion',
-        'motion.can_manage_motion',
-        'motion.can_see_motion',
-        'motion.can_support_motion',
+        'mediafiles.can_manage',
+        'mediafiles.can_see',
+        'mediafiles.can_upload',
+        'motions.can_create',
+        'motions.can_manage',
+        'motions.can_see',
+        'motions.can_support',
         'users.can_manage',
         'users.can_see_extra_data',
         'users.can_see_name', )
@@ -151,13 +151,13 @@ def create_builtin_groups_and_admin(**kwargs):
 
     # Anonymous (pk 1) and Registered (pk 2)
     base_permissions = (
-        permission_dict['agenda.can_see_agenda'],
+        permission_dict['agenda.can_see'],
         permission_dict['agenda.can_see_orga_items'],
-        permission_dict['assignment.can_see_assignments'],
+        permission_dict['assignments.can_see'],
         permission_dict['core.can_see_dashboard'],
         permission_dict['core.can_see_projector'],
-        permission_dict['mediafile.can_see'],
-        permission_dict['motion.can_see_motion'],
+        permission_dict['mediafiles.can_see'],
+        permission_dict['motions.can_see'],
         permission_dict['users.can_see_extra_data'],
         permission_dict['users.can_see_name'], )
     group_anonymous = Group.objects.create(name=ugettext_noop('Anonymous'), pk=1)
@@ -169,28 +169,28 @@ def create_builtin_groups_and_admin(**kwargs):
 
     # Delegates (pk 3)
     delegates_permissions = (
-        permission_dict['assignment.can_nominate_other'],
-        permission_dict['assignment.can_nominate_self'],
-        permission_dict['mediafile.can_upload'],
-        permission_dict['motion.can_create_motion'],
-        permission_dict['motion.can_support_motion'], )
+        permission_dict['assignments.can_nominate_other'],
+        permission_dict['assignments.can_nominate_self'],
+        permission_dict['mediafiles.can_upload'],
+        permission_dict['motions.can_create'],
+        permission_dict['motions.can_support'], )
     group_delegates = Group.objects.create(name=ugettext_noop('Delegates'), pk=3)
     group_delegates.permissions.add(*delegates_permissions)
 
     # Staff (pk 4)
     staff_permissions = (
-        permission_dict['agenda.can_manage_agenda'],
-        permission_dict['assignment.can_manage_assignments'],
-        permission_dict['assignment.can_nominate_other'],
-        permission_dict['assignment.can_nominate_self'],
+        permission_dict['agenda.can_manage'],
+        permission_dict['assignments.can_manage'],
+        permission_dict['assignments.can_nominate_other'],
+        permission_dict['assignments.can_nominate_self'],
         permission_dict['config.can_manage'],
         permission_dict['core.can_manage_projector'],
         permission_dict['core.can_manage_tags'],
         permission_dict['core.can_use_chat'],
-        permission_dict['mediafile.can_manage'],
-        permission_dict['mediafile.can_upload'],
-        permission_dict['motion.can_create_motion'],
-        permission_dict['motion.can_manage_motion'],
+        permission_dict['mediafiles.can_manage'],
+        permission_dict['mediafiles.can_upload'],
+        permission_dict['motions.can_create'],
+        permission_dict['motions.can_manage'],
         permission_dict['users.can_manage'], )
     group_staff = Group.objects.create(name=ugettext_noop('Staff'), pk=4)
     group_staff.permissions.add(*staff_permissions)

@@ -13,6 +13,11 @@ Agenda:
   agenda model. No API changes.
 Assignments:
 - Massive refactoring and cleanup of assignments app.
+- Renamed app from assignment to assignments
+Motions:
+- Renamed app from motion to motions
+Mediafiles:
+- Renamed app from mediafile to mediafiles
 Users:
 - Massive refactoring of the participant app. Now called 'users'.
 - Used new anonymous user object instead of an authentification backend.

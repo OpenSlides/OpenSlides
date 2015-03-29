@@ -27,7 +27,7 @@
             <i class="icon icon-facetime-video {% if item.is_active_slide and active_type != 'list_of_speakers' %}icon-white{% endif %}"></i>
         </a>
     {% endif %}
-    {% if perms.agenda.can_manage_agenda %}
+    {% if perms.agenda.can_manage %}
     <div class="btn-group">
         <a data-toggle="dropdown" href="#" class="btn btn-mini dropdown-toggle">
             {% trans 'More actions' %}
@@ -57,7 +57,7 @@
 </p>
 
 <!-- Comment -->
-{% if perms.agenda.can_manage_agenda %}
+{% if perms.agenda.can_manage %}
     {% if item.comment %}
         <h3>{% trans "Comment" %}</h3>
         <p>{{ item.comment|linebreaks }}</p>
@@ -67,7 +67,7 @@
 <!-- List of Speakers -->
 <h3>{% trans "List of speakers" %} {% if item.speaker_list_closed %}<span class="label label-important">{% trans 'closed' %}</span>{% endif %}</h3>
 <p>
-{% if perms.agenda.can_manage_agenda %}
+{% if perms.agenda.can_manage %}
     {% if item.speaker_list_closed %}
         <a href="{% url 'agenda_speaker_reopen' item.pk %}" class="btn btn-mini btn-danger">{% trans 'Open list' %}</a>
     {% else %}
@@ -84,7 +84,7 @@
 {% endif %}
 </p>
 
-{% if perms.agenda.can_manage_agenda %}
+{% if perms.agenda.can_manage %}
     <form id="coming_speakers_changed_form" action="{% url 'agenda_speaker_change_order' item.pk %}" method="post" style="display:none" class="alert alert-warning">{% csrf_token %}
         <button type="button" class="close" data-dismiss="alert">×</button>
         {% trans "Do you want to save the changed order of speakers?" %}<br>
@@ -119,13 +119,13 @@
         {% endif %}
         <li id="speaker_{{ speaker_dict.speaker.pk }}">
             {% if speaker_dict.type == 'coming_speaker' %}
-                <span {% if perms.agenda.can_manage_agenda %}class="ui-icon ui-icon-arrowthick-2-n-s"{% endif %}></span>
+                <span {% if perms.agenda.can_manage %}class="ui-icon ui-icon-arrowthick-2-n-s"{% endif %}></span>
                 {{ speaker_dict.prefix }}.
             {% else %}
                 <small class="grey">[{{ speaker_dict.speaker.begin_time }}{% if speaker_dict.type == 'old_speaker' %} – {{ speaker_dict.speaker.end_time }}{% endif %}]</small>
             {% endif %}
             <a href="{{ speaker_dict.speaker|absolute_url }}">{{ speaker_dict.speaker }}</a>
-            {% if perms.agenda.can_manage_agenda %}
+            {% if perms.agenda.can_manage %}
                 {% if speaker_dict.type == 'actual_speaker' %}
                     <a href="{% url 'agenda_speaker_end_speach' item.pk %}" class="btn btn-mini btn-danger"><i class="icon-bell icon-white"></i> {% trans 'End speach' %}</a>
                 {% elif speaker_dict.type == 'coming_speaker' %}
@@ -151,7 +151,7 @@
         {% endif %}
     </p>
 
-    {% if perms.agenda.can_manage_agenda %}
+    {% if perms.agenda.can_manage %}
         <form action="" method="post">{% csrf_token %}
             {% for field in form %}
                 <label>{{ field.label }}:</label>
