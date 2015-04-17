@@ -22,6 +22,7 @@ from openslides.utils.utils import to_roman
 from openslides.users.models import User
 
 
+# TODO: remove mptt after removing the django views and forms
 class Item(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, MPTTModel):
     """
     An Agenda Item

@@ -1,6 +1,7 @@
 # TODO: Rename all views and template names
 
 from cgi import escape
+from collections import defaultdict
 from datetime import datetime, timedelta
 from json import dumps
 
@@ -25,7 +26,7 @@ from openslides.projector.api import (
     get_overlays)
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.pdf import stylesheet
-from openslides.utils.rest_api import ModelViewSet
+from openslides.utils.rest_api import ModelViewSet, list_route, Response
 from openslides.utils.utils import html_strong
 from openslides.utils.views import (
     AjaxMixin,
@@ -811,3 +812,74 @@ class ItemViewSet(ModelViewSet):
         if not self.request.user.has_perm('agenda.can_see_orga_items'):
             queryset = queryset.exclude(type__exact=Item.ORGANIZATIONAL_ITEM)
         return queryset
+
+    @list_route(methods=['get', 'put'])
+    def tree(self, request):
+        """
+        Returns or sets the agenda tree.
+        """
+        if request.method == 'PUT':
+            if not (request.user.has_perm('agenda.can_manage') and
+                    request.user.has_perm('agenda.can_see_orga_items')):
+                self.permission_denied(request)
+            return self.set_tree(request.data['tree'])
+        return self.get_tree()
+
+    def get_tree(self):
+        """
+        Returns the agenda tree.
+        """
+        item_list = Item.objects.order_by('weight')
+
+        # Index the items to get the children for each item
+        item_children = defaultdict(list)
+        for item in item_list:
+            if item.parent:
+                item_children[item.parent_id].append(item)
+
+        def get_children(item):
+            """
+            Returns a list with all the children for item.
+
+            Returns an empty list if item has no children.
+            """
+            return [dict(id=child.pk, children=get_children(child))
+                    for child in item_children[item.pk]]
+
+        return Response(dict(id=item.pk, children=get_children(item))
+                        for item in item_list if not item.parent)
+
+    def set_tree(self, tree):
+        """
+        Sets the agenda tree.
+
+        The tree has to be a nested object. For example:
+        [{"id": 1}, {"id": 2, "children": [{"id": 3}]}]
+        """
+
+        def walk_items(tree, parent=None):
+            """
+            Generator that returns each item in the tree as tuple.
+
+            This tuples have tree values. The item id, the item parent and the
+            weight of the item.
+            """
+            for weight, element in enumerate(tree):
+                yield (element['id'], parent, weight)
+                yield from walk_items(element.get('children', []), element['id'])
+
+        touched_items = set()
+        for item_pk, parent_pk, weight in walk_items(tree):
+            # Check that the item is only once in the tree to prevent invalid trees
+            if item_pk in touched_items:
+                detail = "Item %d is more then once in the tree" % item_pk
+                break
+            touched_items.add(item_pk)
+
+            Item.objects.filter(pk=item_pk).update(
+                parent_id=parent_pk,
+                weight=weight)
+        else:
+            # Everithing is fine. Return a response with status_code 200 an no content
+            return Response()
+        return Response({'detail': detail}, status=400)
