@@ -102,7 +102,7 @@ class AssignmentFullSerializer(ModelSerializer):
     """
     Serializer for assignment.models.Assignment objects. With all polls.
     """
-    related_users = AssignmentRelatedUserSerializer(many=True, read_only=True)
+    assignment_related_users = AssignmentRelatedUserSerializer(many=True, read_only=True)
     polls = AssignmentAllPollSerializer(many=True, read_only=True)
 
     class Meta:
@@ -113,7 +113,7 @@ class AssignmentFullSerializer(ModelSerializer):
             'description',
             'open_posts',
             'phase',
-            'related_users',
+            'assignment_related_users',
             'poll_description_default',
             'polls',
             'tags',)
@@ -123,7 +123,7 @@ class AssignmentShortSerializer(AssignmentFullSerializer):
     """
     Serializer for assignment.models.Assignment objects. Without unpublished poll.
     """
-    related_users = AssignmentRelatedUserSerializer(many=True, read_only=True)
+    assignment_related_users = AssignmentRelatedUserSerializer(many=True, read_only=True)
     polls = AssignmentShortPollSerializer(many=True, read_only=True)
 
     class Meta:
@@ -134,7 +134,7 @@ class AssignmentShortSerializer(AssignmentFullSerializer):
             'description',
             'open_posts',
             'phase',
-            'related_users',
+            'assignment_related_users',
             'poll_description_default',
             'polls',
             'tags',)
