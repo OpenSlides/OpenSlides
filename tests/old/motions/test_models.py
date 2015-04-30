@@ -66,11 +66,10 @@ class ModelTest(TestCase):
 
     def test_supporter(self):
         self.assertFalse(self.motion.is_supporter(self.test_user))
-        self.motion.support(self.test_user)
+        self.motion.supporters.add(self.test_user)
         self.assertTrue(self.motion.is_supporter(self.test_user))
-        self.motion.unsupport(self.test_user)
+        self.motion.supporters.remove(self.test_user)
         self.assertFalse(self.motion.is_supporter(self.test_user))
-        self.motion.unsupport(self.test_user)
 
     def test_poll(self):
         self.motion.state = State.objects.get(pk=1)
@@ -89,10 +88,8 @@ class ModelTest(TestCase):
         self.motion.state = State.objects.get(pk=6)
         self.assertEqual(self.motion.state.name, 'permitted')
         self.assertEqual(self.motion.state.get_action_word(), 'Permit')
-        with self.assertRaises(WorkflowError):
-            self.motion.support(self.test_user)
-        with self.assertRaises(WorkflowError):
-            self.motion.unsupport(self.test_user)
+        self.assertFalse(self.motion.get_allowed_actions(self.test_user)['support'])
+        self.assertFalse(self.motion.get_allowed_actions(self.test_user)['unsupport'])
 
     def test_new_states_or_workflows(self):
         workflow_1 = Workflow.objects.create(name='W1')

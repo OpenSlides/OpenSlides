@@ -135,7 +135,7 @@ class TestMotionDetailView(MotionViewTestCase):
     def test_get_without_required_permission_from_state_but_by_submitter(self):
         self.motion1.state.required_permission_to_see = 'motions.can_manage'
         self.motion1.state.save()
-        self.motion1.add_submitter(self.registered)
+        self.motion1.submitters.add(self.registered)
         self.check_url('/motions/1/', self.registered_client, 200)
 
 
@@ -360,7 +360,7 @@ class TestMotionUpdateView(MotionViewTestCase):
                                                         'reason': 'motion reason'})
         self.assertEqual(response.status_code, 403)
         motion = Motion.objects.get(pk=1)
-        motion.add_submitter(self.delegate)
+        motion.submitters.add(self.delegate)
         response = self.delegate_client.post(self.url, {'title': 'my title',
                                                         'text': 'motion text',
                                                         'reason': 'motion reason'})
@@ -468,7 +468,7 @@ class TestMotionUpdateView(MotionViewTestCase):
              'text': 'eequei1Tee1aegeNgee0',
              'submitter': self.delegate.id})
         self.assertEqual(response.status_code, 403)
-        motion.add_submitter(self.delegate)
+        motion.submitters.add(self.delegate)
 
         # Edit three times, without removal of supporters, with removal and in another state
         for i in range(3):
@@ -480,9 +480,9 @@ class TestMotionUpdateView(MotionViewTestCase):
                  'text': 'Lohjuu1aebewiu2or3oh'})
             self.assertRedirects(response, '/motions/%s/' % motion.id)
             if i == 0 or i == 2:
-                self.assertTrue(self.registered in Motion.objects.get(pk=motion.pk).supporters)
+                self.assertTrue(self.registered in Motion.objects.get(pk=motion.pk).supporters.all())
             else:
-                self.assertFalse(self.registered in Motion.objects.get(pk=motion.pk).supporters)
+                self.assertFalse(self.registered in Motion.objects.get(pk=motion.pk).supporters.all())
                 # Preparing the comming (third) run
                 motion = Motion.objects.get(pk=motion.pk)
                 motion.support(self.registered)
@@ -577,7 +577,7 @@ class TestMotionDeleteView(MotionViewTestCase):
     def test_delegate(self):
         response = self.delegate_client.post('/motions/2/del/', {'yes': 'yes'})
         self.assertEqual(response.status_code, 403)
-        Motion.objects.get(pk=2).add_submitter(self.delegate)
+        Motion.objects.get(pk=2).submitters.add(self.delegate)
         response = self.delegate_client.post('/motions/2/del/', {'yes': 'yes'})
         self.assertEqual(response.status_code, 403)
 

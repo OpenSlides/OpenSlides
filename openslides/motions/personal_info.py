@@ -3,8 +3,6 @@ from django.utils.translation import ugettext_lazy
 from openslides.config.api import config
 from openslides.utils.personal_info import PersonalInfo
 
-from .models import Motion
-
 
 class MotionSubmitterPersonalInfo(PersonalInfo):
     """
@@ -14,7 +12,7 @@ class MotionSubmitterPersonalInfo(PersonalInfo):
     default_weight = 20
 
     def get_queryset(self):
-        return Motion.objects.filter(submitter__person=self.request.user)
+        return None  # TODO: Fix this after transforming everything using AngularJS.
 
 
 class MotionSupporterPersonalInfo(PersonalInfo):
@@ -26,7 +24,7 @@ class MotionSupporterPersonalInfo(PersonalInfo):
 
     def get_queryset(self):
         if config['motion_min_supporters']:
-            return_value = Motion.objects.filter(supporter__person=self.request.user)
+            return_value = None  # TODO: Fix this after transforming everything using AngularJS.
         else:
             return_value = None
         return return_value
