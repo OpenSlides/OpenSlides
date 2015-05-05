@@ -22,7 +22,6 @@ from .models import Group, User
 from .pdf import users_passwords_to_pdf, users_to_pdf
 from .serializers import (
     GroupSerializer,
-    UserCreateUpdateSerializer,
     UserFullSerializer,
     UserShortSerializer,
 )
@@ -88,9 +87,8 @@ class UserViewSet(ModelViewSet):
         Returns different serializer classes with respect to action and user's
         permissions.
         """
-        if self.action in ('create', 'update'):
-            serializer_class = UserCreateUpdateSerializer
-        elif self.request.user.has_perm('users.can_see_extra_data'):
+        if (self.action in ('create', 'update') or
+                self.request.user.has_perm('users.can_see_extra_data')):
             serializer_class = UserFullSerializer
         else:
             serializer_class = UserShortSerializer

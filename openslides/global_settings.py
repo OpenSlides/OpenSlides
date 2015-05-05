@@ -183,5 +183,8 @@ TEST_RUNNER = 'openslides.utils.test.OpenSlidesDiscoverRunner'
 
 # Config for the REST Framework
 REST_FRAMEWORK = {
-    'UNAUTHENTICATED_USER': 'openslides.users.auth.AnonymousUser',
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
+        'openslides.users.auth.AnonymousAuthentication',
+    )
 }
