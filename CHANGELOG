@@ -23,6 +23,7 @@ Users:
 - Used new anonymous user object instead of an authentification backend.
 - Used authentication frontend via AngularJS.
 Other:
+- New OpenSlides logo.
 - Changed supported Python version to >= 3.3.
 - Used Django 1.7 as lowest requirement.
 - Added Django's application configuration. Refactored loading of signals,
