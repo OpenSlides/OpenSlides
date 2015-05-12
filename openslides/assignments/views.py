@@ -1,7 +1,5 @@
 from cgi import escape
 
-from django.contrib import messages
-from django.core.urlresolvers import reverse
 from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
 from reportlab.lib import colors
@@ -9,210 +7,14 @@ from reportlab.lib.units import cm
 from reportlab.platypus import (PageBreak, Paragraph, SimpleDocTemplate, Spacer,
                                 LongTable, Table, TableStyle)
 
-from openslides.agenda.views import CreateRelatedAgendaItemView as _CreateRelatedAgendaItemView
 from openslides.config.api import config
 from openslides.users.models import Group, User  # TODO: remove this
-from openslides.poll.views import PollFormView
 from openslides.utils.pdf import stylesheet
 from openslides.utils.rest_api import ModelViewSet, Response, ValidationError, detail_route
-from openslides.utils.utils import html_strong
-from openslides.utils.views import (CreateView, DeleteView, DetailView,
-                                    ListView, PDFView,
-                                    QuestionView, RedirectView,
-                                    SingleObjectMixin, UpdateView)
+from openslides.utils.views import PDFView
 
-from .forms import AssignmentForm, AssignmentRunForm
 from .models import Assignment, AssignmentPoll
 from .serializers import AssignmentFullSerializer, AssignmentShortSerializer
-
-
-class AssignmentListView(ListView):
-    """
-    Lists all assignments.
-    """
-    required_permission = 'assignments.can_see'
-    model = Assignment
-
-
-class AssignmentDetail(DetailView):
-    """
-    Shows one assignment.
-    """
-    # TODO: use another view as 'run form' when updating this to angular
-    required_permission = 'assignments.can_see'
-    model = Assignment
-    form_class = AssignmentRunForm
-
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        assignment = self.get_object()
-        if self.request.method == 'POST':
-            context['form'] = self.form_class(self.request.POST)
-        else:
-            context['form'] = self.form_class()
-
-        polls = assignment.polls.all()
-        if not self.request.user.has_perm('assignments.can_manage'):
-            polls = polls.filter(published=True)
-            vote_results = assignment.vote_results(only_published=True)
-        else:
-            polls = self.get_object().polls.all()
-            vote_results = assignment.vote_results(only_published=False)
-
-        context['polls'] = polls
-        context['vote_results'] = vote_results
-        context['blocked_candidates'] = assignment.blocked
-        context['user_is_candidate'] = assignment.is_candidate(self.request.user)
-        return context
-
-    def post(self, *args, **kwargs):
-        if self.request.user.has_perm('assignments.can_nominate_other'):
-            assignment = self.get_object()
-            form = self.form_class(self.request.POST)
-            if form.is_valid():
-                user = form.cleaned_data['candidate']
-                if (assignment.phase == assignment.PHASE_SEARCH or
-                        self.request.user.has_perm('assignments.can_manage')):
-                    if (assignment.is_blocked(user) and
-                            not self.request.user.has_perm('assignments.can_manage')):
-                        messages.error(
-                            self.request,
-                            _("User %s does not want to be an candidate") % user)
-                    elif assignment.is_elected(user):
-                        messages.error(
-                            self.request,
-                            _("User %s is already elected") % html_strong(user))
-                    elif assignment.is_candidate(user):
-                        messages.error(
-                            self.request,
-                            _("User %s is already an candidate") % html_strong(user))
-                    else:
-                        assignment.set_candidate(user)
-                        messages.success(
-                            self.request,
-                            _("User %s was nominated successfully.") % html_strong(user))
-                else:
-                    messages.error(
-                        self.request,
-                        _("You can not add candidates to this assignment"))
-        return super(AssignmentDetail, self).get(*args, **kwargs)
-
-
-class AssignmentCreateView(CreateView):
-    required_permission = 'assignments.can_manage'
-    model = Assignment
-    form_class = AssignmentForm
-
-
-class AssignmentUpdateView(UpdateView):
-    required_permission = 'assignments.can_manage'
-    model = Assignment
-    form_class = AssignmentForm
-
-
-class AssignmentDeleteView(DeleteView):
-    required_permission = 'assignments.can_manage'
-    model = Assignment
-    success_url_name = 'assignment_list'
-
-
-class AssignmentSetPhaseView(SingleObjectMixin, RedirectView):
-    required_permission = 'assignments.can_manage'
-    model = Assignment
-    url_name = 'assignment_detail'
-
-    def pre_redirect(self, *args, **kwargs):
-        phase = int(kwargs.get('phase'))
-        assignment = self.get_object()
-        try:
-            assignment.set_phase(phase)
-        except ValueError as e:
-            messages.error(self.request, e)
-        else:
-            assignment.save()
-            messages.success(
-                self.request,
-                _('Election status was set to: %s.') %
-                html_strong(assignment.get_phase_display()))
-
-
-class AssignmentCandidateView(SingleObjectMixin, RedirectView):
-    required_permission = 'assignments.can_nominate_self'
-    model = Assignment
-    url_name = 'assignment_detail'
-
-    def pre_redirect(self, *args, **kwargs):
-        assignment = self.get_object()
-        if (assignment.phase == assignment.PHASE_SEARCH or
-                self.request.user.has_perm('assignments.can_manage')):
-            user = self.request.user
-            if assignment.is_elected(user):
-                messages.error(
-                    self.request,
-                    _("You are already elected"))
-            elif assignment.is_candidate(user):
-                messages.error(
-                    self.request,
-                    _("You are already an candidate"))
-            else:
-                assignment.set_candidate(user)
-                messages.success(
-                    self.request,
-                    _("You were nominated successfully."))
-        else:
-            messages.error(
-                self.request,
-                _("You can not candidate to this assignment"))
-
-
-class AssignmentDeleteCandidateshipView(SingleObjectMixin, RedirectView):
-    required_permission = None  # Any user can withdraw his candidature
-    model = Assignment
-    url_name = 'assignment_detail'
-
-    def pre_redirect(self, *args, **kwargs):
-        assignment = self.get_object()
-        if (assignment.phase == assignment.PHASE_SEARCH or
-                self.request.user.has_perm('assignments.can_manage')):
-            user = self.request.user
-            assignment.set_blocked(user)
-            messages.success(self.request, _(
-                'You have withdrawn your candidature successfully. '
-                'You can not be nominated by other participants anymore.'))
-        else:
-            messages.error(self.request, _('The candidate list is already closed.'))
-
-
-class AssignmentDeleteCandidateshipOtherView(SingleObjectMixin, QuestionView):
-    required_permission = 'assignments.can_manage'
-    model = Assignment
-
-    def get_question_message(self):
-        self.user = User.objects.get(pk=self.kwargs.get('user_pk'))
-        assignment = self.get_object()
-        if assignment.is_blocked:
-            question = _("Do you really want to unblock %s for the election?") % html_strong(self.user)
-        else:
-            question = _("Do you really want to withdraw %s from the election?") % html_strong(self.user)
-        return question
-
-    def on_clicked_yes(self):
-        self.user = User.objects.get(pk=self.kwargs.get('user_pk'))
-        assignment = self.get_object()
-        if not assignment.is_elected(self.user):
-            assignment.delete_related_user(self.user)
-            self.error = False
-        else:
-            self.error = _("User %s is already elected") % html_strong(self.user)
-
-    def create_final_message(self):
-        if self.error:
-            messages.error(self.request, self.error)
-        else:
-            messages.success(self.request, self.get_final_message())
-
-    def get_final_message(self):
-        return _("Candidate %s was withdrawn successfully.") % html_strong(self.user)
 
 
 class AssignmentViewSet(ModelViewSet):
@@ -375,104 +177,6 @@ class AssignmentViewSet(ModelViewSet):
             assignment.set_candidate(user)
             message = _('User %s was successfully unelected.') % user
         return Response({'detail': message})
-
-
-class PollCreateView(SingleObjectMixin, RedirectView):
-    required_permission = 'assignments.can_manage'
-    model = Assignment
-    url_name = 'assignment_detail'
-
-    def pre_redirect(self, *args, **kwargs):
-        self.get_object().create_poll()
-        messages.success(self.request, _("New ballot was successfully created."))
-
-
-class PollUpdateView(PollFormView):
-    required_permission = 'assignments.can_manage'
-    poll_class = AssignmentPoll
-    template_name = 'assignments/assignmentpoll_form.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(PollUpdateView, self).get_context_data(**kwargs)
-        self.assignment = self.poll.get_assignment()
-        context['assignment'] = self.assignment
-        context['poll'] = self.poll
-        context['polls'] = self.assignment.polls.all()
-        context['ballotnumber'] = self.poll.get_ballot()
-        return context
-
-    def get_success_url(self):
-        if 'apply' not in self.request.POST:
-            return_url = reverse('assignment_detail', args=[self.poll.assignment.id])
-        else:
-            return_url = ''
-        return return_url
-
-
-class SetPublishPollView(SingleObjectMixin, RedirectView):
-    required_permission = 'assignments.can_manage'
-    model = AssignmentPoll
-    url_name = 'assignment_detail'
-    allow_ajax = True
-    publish = False
-
-    def get_ajax_context(self, **context):
-        return super().get_ajax_context(
-            published=self.object.published,
-            **context)
-
-    def pre_redirect(self, *args, **kwargs):
-        poll = self.get_object()
-        poll.set_published(kwargs['publish'])
-
-
-class SetElectedView(SingleObjectMixin, RedirectView):
-    required_permission = 'assignments.can_manage'
-    model = Assignment
-    url_name = 'assignment_detail'
-    allow_ajax = True
-
-    def pre_redirect(self, *args, **kwargs):
-        self.person = User.objects.get(pk=kwargs['user_id'])
-        self.elected = kwargs['elected']
-        # TODO: un-elect users if self.elected is False
-        self.get_object().set_elected(self.person)
-
-    def get_ajax_context(self, **kwargs):
-        if self.elected:
-            link = reverse('assignment_user_not_elected',
-                           args=[self.get_object().id, self.person.person_id])
-            text = _('not elected')
-        else:
-            link = reverse('assignment_user_elected',
-                           args=[self.get_object().id, self.person.person_id])
-            text = _('elected')
-        return {'elected': self.elected, 'link': link, 'text': text}
-
-
-class AssignmentPollDeleteView(DeleteView):
-    """
-    Delete an assignment poll object.
-    """
-    required_permission = 'assignments.can_manage'
-    model = AssignmentPoll
-
-    def pre_redirect(self, request, *args, **kwargs):
-        self.set_assignment()
-        super().pre_redirect(request, *args, **kwargs)
-
-    def pre_post_redirect(self, request, *args, **kwargs):
-        self.set_assignment()
-        super().pre_post_redirect(request, *args, **kwargs)
-
-    def set_assignment(self):
-        self.assignment = self.get_object().assignment
-
-    def get_redirect_url(self, **kwargs):
-        return reverse('assignment_detail', args=[self.assignment.id])
-
-    def get_final_message(self):
-        return _('Ballot was successfully deleted.')
 
 
 class AssignmentPDF(PDFView):
@@ -663,13 +367,6 @@ class AssignmentPDF(PDFView):
         story.append(
             Paragraph("%s" % escape(assignment.description).replace('\r\n', '<br/>'),
                       stylesheet['Paragraph']))
-
-
-class CreateRelatedAgendaItemView(_CreateRelatedAgendaItemView):
-    """
-    View to create and agenda item for an assignment.
-    """
-    model = Assignment
 
 
 class AssignmentPollPDF(PDFView):

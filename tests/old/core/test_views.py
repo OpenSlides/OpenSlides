@@ -1,3 +1,4 @@
+from unittest import skip
 from unittest.mock import MagicMock, patch
 
 from django.test.client import Client, RequestFactory
@@ -85,6 +86,7 @@ class VersionViewTest(TestCase):
 
 
 class SearchViewTest(TestCase):
+    @skip
     def test_simple_search(self):
         Item.objects.create(title='agenda_item_bnghfdjkgndkjdfg')
         User.objects.create_user('CoreMaximilian', 'default')

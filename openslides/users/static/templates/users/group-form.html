@@ -1,5 +1,5 @@
-<h1 ng-if="group.id">Edit group</h1>
-<h1 ng-if="!group.id">New group</h1>
+<h1 ng-if="group.id" translate>Edit group</h1>
+<h1 ng-if="!group.id" translate>New group</h1>
 
 <div id="submenu">
   <a ui-sref="users.group.list" class="btn btn-sm btn-default">
@@ -8,15 +8,15 @@
   </a>
 </div>
 
-<form name="userForm">
+<form name="groupForm">
   <div class="form-group">
     <label for="inputName" translate>Name</label>
     <input type="text" ng-model="group.name" class="form-control" name="inputName" ng-required="true">
   </div>
   <div class="form-group">
     <label for="selectPermissions" translate>Permissions</label>
-    <select ng-options="group.permissions for group in groups"
-        ng-model="group.permissions" class="form-control" name="selectGroups">
+    <select multiple size="15" ng-options="permission.value as permission.display_name for permission in permissions"
+        ng-model="group.permissions" class="form-control" name="selectPermissions">
     </select>
   </div>
 

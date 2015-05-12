@@ -1,0 +1,91 @@
+<h1 ng-if="motion.id" translate>Edit motion</h1>
+<h1 ng-if="!motion.id" translate>New motion</h1>
+
+<div id="submenu">
+  <a ui-sref="motions.motion.list" class="btn btn-sm btn-default">
+    <i class="fa fa-angle-double-left fa-lg"></i>
+    <translate>Back to overview</translate>
+  </a>
+</div>
+
+<form name="motionForm">
+  <div ng-if="motion.id" class="form-group">
+    <label for="inputIdentifier" translate>Identifier</label>
+    <input type="text" ng-model="motion.identifier" class="form-control" name="inputIdentifier">
+  </div>
+  <div class="form-group">
+    <label for="selectItem" translate>Agenda item</label>
+    <select ng-options="item.id as item.get_title for item in items"
+        ng-model="motion.item" class="form-control" name="selectItem">
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="selectSubmitter" translate>Submitter</label>
+    <ui-select ng-model="motion.submitter" theme="bootstrap" name="selectSubmitter">
+      <ui-select-match placeholder="{{ 'Select or search a participant...' | translate }}">
+        {{ $select.selected.get_short_name() }}
+      </ui-select-match>
+      <ui-select-choices repeat="user.id as user in users | filter: $select.search">
+        <div ng-bind-html="user.get_short_name() | highlight: $select.search"></div>
+        <small ng-bind-html="user.structure_level | highlight: $select.search"></small>
+      </ui-select-choices>
+    </ui-select>
+  </div>
+  <div class="form-group" ng-class="{'has-error has-feedback': motionForm.inputTitle.$error.required}">
+    <label for="inputName" translate>Title</label>
+    <input type="text" ng-model="motion.title" class="form-control" name="inputTitle" ng-required="true">
+  </div>
+  <div class="form-group">
+    <label for="textText" translate>Text</label>
+    <textarea ng-model="motion.text" class="form-control" name="textText" />
+  </div>
+  <div class="form-group">
+    <label for="textReason" translate>Reason</label>
+    <textarea ng-model="motion.reason" class="form-control" name="textReason" />
+  </div>
+  <div class="form-group">
+    <label for="selectCategory" translate>Category</label>
+    <select ng-options="category.id as category.name for category in categories"
+        ng-model="motion.category" class="form-control" name="selectCategory">
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="selectTags" translate>Tags</label>
+    <select ng-options="tag.id as tag.name for tag in tags"
+        ng-model="motion.tags" class="form-control" name="selectTags">
+    </select>
+  </div>
+  <div class="form-group">
+    <label for="selectAttachments" translate>Attachments</label>
+    <select ng-options="file.id as file.title for file in mediafiles"
+        ng-model="motion.attachments" class="form-control" name="selectAttachments">
+    </select>
+  </div>
+  <!-- TODO: show only if supporters is enabled -->
+  <div class="form-group">
+    <label for="selectSupporter" translate>Supporters</label>
+    <ui-select ng-model="motion.supporter" theme="bootstrap" name="selectSupporter">
+      <ui-select-match placeholder="{{ 'Select or search a participant...' | translate }}">
+        {{ $select.selected.get_short_name() }}
+      </ui-select-match>
+      <ui-select-choices repeat="user.id as user in users | filter: $select.search">
+        <div ng-bind-html="user.get_short_name() | highlight: $select.search"></div>
+        <small ng-bind-html="user.structure_level | highlight: $select.search"></small>
+      </ui-select-choices>
+    </ui-select>
+  </div>
+  <!-- TODO: preselect default workflow -->
+  <div class="form-group">
+    <label for="selectWorkflow" translate>Workflow</label>
+    <select ng-options="workflow.id as workflow.name for workflow in workflows"
+        ng-model="motion.workflow" class="form-control" name="selectWorkflow">
+    </select>
+  </div>
+
+  <button type="submit" ng-click="save(motion)" class="btn btn-primary" translate>
+    Save
+  </button>
+  <button ui-sref="motions.motion.list" class="btn btn-default" translate>
+    Cancel
+  </button>
+</form>

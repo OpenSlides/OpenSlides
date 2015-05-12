@@ -10,5 +10,5 @@ class AgendaMainMenuEntry(MainMenuEntry):
     verbose_name = ugettext_lazy('Agenda')
     required_permission = 'agenda.can_see'
     default_weight = 20
-    pattern_name = 'item_overview'
+    pattern_name = '/agenda'  # TODO: use generic solution, see issue #1469
     icon_css_class = 'glyphicon-calendar'

@@ -1,0 +1,29 @@
+<h1>{{ motion.identifier }}</h1>
+
+<div id="submenu">
+  <a ui-sref="motions.motion.list" class="btn btn-sm btn-default">
+    <i class="fa fa-angle-double-left fa-lg"></i>
+    <translate>Back to overview</translate>
+  </a>
+  <a ui-sref="motions_single_pdf({pk: motion.id})" target="_blank" class="btn btn-default btn-sm">
+    <i class="fa fa-file-pdf-o fa-lg"></i>
+    <translate>PDF</translate>
+  </a>
+  <a href="#TODO" os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
+      title="{{ 'Show' | translate }}">
+    <i class="fa fa-video-camera"></i>
+  </a>
+  <!-- edit -->
+  <a ui-sref="motion.detail.update({id: motion.id })" os-perms="motions.can_manage"
+      class="btn btn-default btn-sm"
+      title="{{ 'Edit' | translate}}">
+    <i class="fa fa-pencil"></i>
+  </a>
+</div>
+
+
+<h3 translate>Category</h3>
+{{ motion.category }}
+
+<h3 translate>Submitters</h3>
+<!-- TODO -->

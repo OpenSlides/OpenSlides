@@ -10,5 +10,5 @@ class MotionMainMenuEntry(MainMenuEntry):
     verbose_name = ugettext_lazy('Motions')
     required_permission = 'motions.can_see'
     default_weight = 30
-    pattern_name = 'motion_list'
+    pattern_name = '/motions'  # TODO: use generic solution, see issue #1469
     icon_css_class = 'glyphicon-file'

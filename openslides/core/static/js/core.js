@@ -75,10 +75,35 @@ angular.module('OpenSlidesApp.core', [])
 
 .config(function($stateProvider, $locationProvider) {
     // Core urls
-    $stateProvider.state('dashboard', {
-        url: '/',
-        templateUrl: 'static/templates/dashboard.html'
-    });
+    $stateProvider
+        .state('dashboard', {
+            url: '/',
+            templateUrl: 'static/templates/dashboard.html'
+        })
+        .state('core', {
+            url: '/core',
+            abstract: true,
+            template: "<ui-view/>",
+        })
+        // tag
+        .state('core.tag', {
+            url: '/tag',
+            abstract: true,
+            template: "<ui-view/>",
+        })
+        .state('core.tag.list', {
+            resolve: {
+                tags: function(Tag) {
+                    return Tag.findAll();
+                }
+            }
+        })
+        .state('core.tag.create', {})
+        .state('core.tag.detail.update', {
+            views: {
+                '@core.tag': {}
+            }
+        });
 
     $locationProvider.html5Mode(true);
 })
@@ -97,6 +122,13 @@ angular.module('OpenSlidesApp.core', [])
             });
         }
     };
+})
+
+// config for ng-fab-form
+.config(function(ngFabFormProvider) {
+    ngFabFormProvider.extendConfig({
+        setAsteriskForRequiredLabel: true
+    });
 })
 
 .provider('runtimeStates', function($stateProvider) {
@@ -150,6 +182,11 @@ angular.module('OpenSlidesApp.core', [])
     });
 })
 
+//options for angular-xeditable
+.run(function(editableOptions) {
+    editableOptions.theme = 'bs3';
+})
+
 .factory('autoupdate', function() {
     //TODO: use config here
     var url = "http://" + location.host + "/sockjs";
@@ -179,6 +216,20 @@ angular.module('OpenSlidesApp.core', [])
     return Autoupdate;
 })
 
+.factory('Customslide', function(DS) {
+    return DS.defineResource({
+        name: 'core/customslide',
+        endpoint: '/rest/core/customslide/'
+    });
+})
+
+.factory('Tag', function(DS) {
+    return DS.defineResource({
+        name: 'core/tag',
+        endpoint: '/rest/core/tag/'
+    });
+})
+
 .factory('Config', function(DS) {
     return DS.defineResource({
         name: 'config/config',
@@ -201,6 +252,91 @@ angular.module('OpenSlidesApp.core', [])
     }
 })
 
+.controller("LoginFormCtrl", function ($scope, $modal) {
+    $scope.open = function () {
+        var modalInstance = $modal.open({
+            animation: true,
+            templateUrl: 'LoginForm.html',
+            controller: 'LoginFormModalCtrl',
+            size: 'sm',
+        });
+    }
+})
+
+.controller('LoginFormModalCtrl', function ($scope, $modalInstance, $http, operator) {
+    $scope.login = function () {
+        $http.post(
+            '/users/login/',
+            {'username': $scope.username, 'password': $scope.password}
+        ).success(function(data) {
+            if (data.success) {
+                operator.setUser(data.user_id);
+                $scope.loginFailed = false;
+                $modalInstance.close();
+            } else {
+                $scope.loginFailed = true;
+            }
+        });
+    };
+    $scope.guest = function () {
+        $modalInstance.dismiss('cancel');
+    };
+    $scope.cancel = function () {
+        $modalInstance.dismiss('cancel');
+    };
+})
+
+.controller('TagListCtrl', function($scope, Tag) {
+    Tag.bindAll({}, $scope, 'tags');
+
+    // setup table sorting
+    $scope.sortColumn = 'name';
+    $scope.filterPresent = '';
+    $scope.reverse = false;
+    // function to sort by clicked column
+    $scope.toggleSort = function ( column ) {
+        if ( $scope.sortColumn === column ) {
+            $scope.reverse = !$scope.reverse;
+        }
+        $scope.sortColumn = column;
+    };
+
+    // save changed tag
+    $scope.save = function (tag) {
+        Tag.save(tag);
+    };
+    $scope.delete = function (tag) {
+        //TODO: add confirm message
+        Tag.destroy(tag.id).then(
+            function(success) {
+                //TODO: success message
+            }
+        );
+    };
+})
+
+.controller('TagCreateCtrl', function($scope, $state, Tag) {
+    $scope.tag = {};
+    $scope.save = function (tag) {
+        Tag.create(tag).then(
+            function(success) {
+                $state.go('core.tag.list');
+            }
+        );
+    };
+})
+
+.controller('TagUpdateCtrl', function($scope, $state, Tag, tag) {
+    $scope.tag = tag;
+    $scope.save = function (tag) {
+        Tag.save(tag).then(
+            function(success) {
+                $state.go('core.tag.list');
+            }
+        );
+    };
+})
+
 .directive('osFocusMe', function ($timeout) {
     return {
         link: function (scope, element, attrs, model) {
@@ -209,9 +345,4 @@ angular.module('OpenSlidesApp.core', [])
             });
         }
     };
-});
-
-// some general JavaScript functions used in all OpenSlides apps
-$(function () {
-  $('[data-toggle="tooltip"]').tooltip({'placement': 'bottom'})
 });

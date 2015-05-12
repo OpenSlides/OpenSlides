@@ -33,7 +33,7 @@
   <tbody>
     <tr ng-repeat="group in groups | filter: filter.search | orderBy:sortby:reverse">
       <td>{{ group.id }}
-      <td><a ui-sref="users.group.detail({id: group.id })">{{ group.name }}</a>
+      <td><a ui-sref="users.group.detail({id: group.id})">{{ group.name }}</a>
       <td os-perms="users.can_manage core.can_manage_projector" class="nobr">
         <!-- projector, TODO: add link to activate slidea-->
         <a href="#TODO" os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
@@ -41,13 +41,15 @@
           <i class="fa fa-video-camera"></i>
         </a>
         <!-- edit -->
-        <a ui-sref="users.group.detail.update({id: group.id })" os-perms="users.can_manage"
+        <a ui-sref="users.group.detail.update({id: group.id})" os-perms="users.can_manage"
             class="btn btn-default btn-sm"
             title="{{ 'Edit' | translate }}">
           <i class="fa fa-pencil"></i>
         </a>
         <!-- delete -->
         <a ng-click="delete(group)" os-perms="users.can_manage" class="btn btn-danger btn-sm"
+            ng-bootbox-confirm="Are you sure you want to delete <b>{{ group.name }}</b>?"
+            ng-bootbox-confirm-action="delete(group)"
             title="{{ 'Delete' | translate }}">
           <i class="fa fa-trash-o"></i>
         </a>

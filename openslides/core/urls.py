@@ -40,10 +40,6 @@ urlpatterns = patterns(
         views.CustomSlideDeleteView.as_view(),
         name='customslide_delete'),
 
-    url(r'tags/$',
-        views.TagListView.as_view(),
-        name='core_tag_list'),
-
     # Ajax Urls
     url(r'^core/url_patterns/$',
         views.UrlPatternsView.as_view(),
