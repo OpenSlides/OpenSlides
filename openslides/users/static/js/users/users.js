@@ -303,7 +303,6 @@ angular.module('OpenSlidesApp.users', [])
     };
 
     $scope.import = function (result) {
-        console.log(result);
         var obj = JSON.parse(result);
         console.log(obj);
         var imported_users = 0;

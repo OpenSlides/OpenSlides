@@ -62,9 +62,9 @@ angular.module('OpenSlidesApp.agenda', [])
             url: '/sort',
             controller: 'AgendaSortCtrl',
         })
-        .state('agenda.item.csv-import', {
-            url: '/csv-import',
-            controller: 'AgendaCSVImportCtrl',
+        .state('agenda.item.import', {
+            url: '/import',
+            controller: 'AgendaImportCtrl',
         });
 })
 
@@ -153,6 +153,54 @@ angular.module('OpenSlidesApp.agenda', [])
       };
 })
 
-.controller('AgendaCSVImportCtrl', function($scope, Agenda) {
-    // TODO
+.controller('AgendaImportCtrl', function($scope, $state, Agenda) {
+    // import from textarea
+    $scope.importByLine = function () {
+        $scope.items = $scope.itemlist[0].split("\n");
+        $scope.importcounter = 0;
+        $scope.items.forEach(function(title) {
+            var item = {title: title};
+            item.weight = 0;  // TODO: the rest_api should do this
+            item.tags = [];   // TODO: the rest_api should do this
+            // TODO: create all items in bulk mode
+            Agenda.create(item).then(
+                function(success) {
+                    $scope.importcounter++;
+                }
+            );
+        });
+    }
+
+    // import from csv file
+    $scope.csv = {
+        content: null,
+        header: true,
+        separator: ',',
+        result: null
+    };
+    $scope.importByCSV = function (result) {
+        var obj = JSON.parse(JSON.stringify(result));
+        $scope.csvimporting = true;
+        $scope.csvlines = Object.keys(obj).length;
+        $scope.csvimportcounter = 0;
+        for (var i = 0; i < obj.length; i++) {
+            var item = {};
+            item.title = obj[i].titel;
+            item.text = obj[i].text;
+            item.duration = obj[i].duration;
+            item.weight = 0;  // TODO: the rest_api should do this
+            item.tags = [];   // TODO: the rest_api should do this
+            Agenda.create(item).then(
+                function(success) {
+                    $scope.csvimportcounter++;
+                }
+            );
+        }
+        $scope.csvimported = true;
+    }
+
+    $scope.clear = function () {
+        $scope.csv.result = null;
+    };
+
 });

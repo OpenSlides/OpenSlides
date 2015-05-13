@@ -6,10 +6,10 @@
     <translate>New</translate>
   </a>
   <a ui-sref="agenda.item.sort" os-perms="agenda.can_manage" class="btn btn-default btn-sm">
-    <i class="fa fa-download fa-lg"></i>
+    <i class="fa fa-sitemap fa-lg"></i>
     <translate>Sort agenda</translate>
   </a>
-  <a ui-sref="agenda.item.csv-import" os-perms="agenda.can_manage" class="btn btn-default btn-sm">
+  <a ui-sref="agenda.item.import" os-perms="agenda.can_manage" class="btn btn-default btn-sm">
     <i class="fa fa-download fa-lg"></i>
     <translate>Import</translate>
   </a>
@@ -32,6 +32,7 @@
   </div>
 </div>
 
+<i>{{ items.length }} {{ "items" | translate }}</i>
 <table class="table table-striped table-bordered table-hover">
   <thead>
     <tr>
