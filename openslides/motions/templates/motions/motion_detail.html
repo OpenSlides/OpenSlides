@@ -196,8 +196,8 @@
     <div class="well">
         <!-- Submitter -->
         <h5>{% trans "Submitter" %}:</h5>
-        {% for submitter in motion.submitter.all %}
-            <a href="{{ submitter.person|absolute_url }}">{{ submitter }}</a>{% if not forloop.last %}, {% endif %}
+        {% for submitter in motion.submitters.all %}
+            <a href="{{ submitter|absolute_url }}">{{ submitter }}</a>{% if not forloop.last %}, {% endif %}
         {% endfor %}
 
         <!-- Supporters -->
@@ -207,8 +207,8 @@
                 -
             {% else %}
                 <ol>
-                {% for supporter in motion.supporter.all %}
-                    <li><a href="{{ supporter.person|absolute_url }}">{{ supporter }}</a></li>
+                {% for supporter in motion.supporters.all %}
+                    <li><a href="{{ supporter|absolute_url }}">{{ supporter }}</a></li>
                 {% endfor %}
                 </ol>
             {% endif %}

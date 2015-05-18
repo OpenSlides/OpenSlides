@@ -2,7 +2,7 @@
 {{ object.title }}
 {{ object.text }}
 {{ object.reason }}
-{{ object.submitters }}
-{{ object.supporters }}
+{{ object.submitters.all }}
+{{ object.supporters.all }}
 {{ object.category }}
 {{ object.tags.all }}

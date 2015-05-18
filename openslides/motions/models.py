@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Max
@@ -81,6 +82,16 @@ class Motion(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
     tags = models.ManyToManyField(Tag)
     """
     Tags to categorise motions.
+    """
+
+    submitters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='motion_submitters')
+    """
+    Users who submit this motion.
+    """
+
+    supporters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='motion_supporters')
+    """
+    Users who support this motion.
     """
 
     class Meta:
@@ -378,55 +389,17 @@ class Motion(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
         except IndexError:
             return self.get_new_version()
 
-    @property
-    def submitters(self):
-        return sorted([object.person for object in self.submitter.all()],
-                      key=lambda person: person.sort_name)
-
-    def is_submitter(self, person):
-        """Return True, if person is a submitter of this motion. Else: False."""
-        return self.submitter.filter(person=person.pk).exists()
-
-    @property
-    def supporters(self):
-        return [supporter.person for supporter in self.supporter.all()]
-
-    def add_submitter(self, person):
-        MotionSubmitter.objects.create(motion=self, person=person)
-
-    def clear_submitters(self):
-        MotionSubmitter.objects.filter(motion=self).delete()
-
-    def is_supporter(self, person):
+    def is_submitter(self, user):
         """
-        Return True, if person is a supporter of this motion. Else: False.
+        Returns True if user is a submitter of this motion, else False.
         """
-        return self.supporter.filter(person=person.pk).exists()
+        return user in self.submitters.all()
 
-    def support(self, person):
+    def is_supporter(self, user):
         """
-        Add 'person' as a supporter of this motion.
+        Returns True if user is a supporter of this motion, else False.
         """
-        if self.state.allow_support:
-            if not self.is_supporter(person):
-                MotionSupporter(motion=self, person=person).save()
-        else:
-            raise WorkflowError('You can not support a motion in state %s.' % self.state.name)
-
-    def unsupport(self, person):
-        """
-        Remove 'person' as supporter from this motion.
-        """
-        if self.state.allow_support:
-            self.supporter.filter(person=person).delete()
-        else:
-            raise WorkflowError('You can not unsupport a motion in state %s.' % self.state.name)
-
-    def clear_supporters(self):
-        """
-        Deletes all supporters of this motion.
-        """
-        MotionSupporter.objects.filter(motion=self).delete()
+        return user in self.supporters.all()
 
     def create_poll(self):
         """
@@ -442,6 +415,13 @@ class Motion(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
             return poll
         else:
             raise WorkflowError('You can not create a poll in state %s.' % self.state.name)
+
+    @property
+    def workflow(self):
+        """
+        Returns the id of the workflow of the motion.
+        """
+        return self.state.workflow.pk
 
     def set_state(self, state):
         """
@@ -504,6 +484,7 @@ class Motion(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
         * change_state
         * reset_state
         """
+        # TODO: Remove this method and implement these things in the views.
         actions = {
             'see': (person.has_perm('motions.can_see') and
                     (not self.state.required_permission_to_see or
@@ -611,46 +592,6 @@ class MotionVersion(RESTModelMixin, AbsoluteUrlMixin, models.Model):
     def active(self):
         """Return True, if the version is the active version of a motion. Else: False."""
         return self.active_version.exists()
-
-    def get_root_rest_element(self):
-        """
-        Returns the motion to this instance which is the root REST element.
-        """
-        return self.motion
-
-
-class MotionSubmitter(RESTModelMixin, models.Model):
-    """Save the submitter of a Motion."""
-
-    motion = models.ForeignKey('Motion', related_name="submitter")
-    """The motion to witch the object belongs."""
-
-    person = models.ForeignKey(User)
-    """The user, who is the submitter."""
-
-    def __str__(self):
-        """Return the name of the submitter as string."""
-        return str(self.person)
-
-    def get_root_rest_element(self):
-        """
-        Returns the motion to this instance which is the root REST element.
-        """
-        return self.motion
-
-
-class MotionSupporter(RESTModelMixin, models.Model):
-    """Save the submitter of a Motion."""
-
-    motion = models.ForeignKey('Motion', related_name="supporter")
-    """The motion to witch the object belongs."""
-
-    person = models.ForeignKey(User)
-    """The person, who is the supporter."""
-
-    def __str__(self):
-        """Return the name of the supporter as string."""
-        return str(self.person)
 
     def get_root_rest_element(self):
         """

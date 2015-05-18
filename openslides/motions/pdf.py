@@ -49,7 +49,7 @@ def motion_to_pdf(pdf, motion):
                             stylesheet['Heading4']))
     cell1b = []
     cell1b.append(Spacer(0, 0.2 * cm))
-    for submitter in motion.submitter.all():
+    for submitter in motion.submitters.all():
         cell1b.append(Paragraph(str(submitter), stylesheet['Normal']))
     motion_data.append([cell1a, cell1b])
 
@@ -71,7 +71,7 @@ def motion_to_pdf(pdf, motion):
         cell3b = []
         cell3a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font><seqreset id='counter'>"
                                 % _("Supporters"), stylesheet['Heading4']))
-        supporters = motion.supporter.all()
+        supporters = motion.supporters.all()
         for supporter in supporters:
             cell3b.append(Paragraph("<seq id='counter'/>.&nbsp; %s" % str(supporter),
                                     stylesheet['Normal']))

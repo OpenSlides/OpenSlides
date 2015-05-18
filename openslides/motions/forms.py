@@ -104,7 +104,7 @@ class MotionSubmitterMixin(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Fill in the submitter of the motion as default value."""
         if self.motion is not None:
-            submitter = [submitter.person.id for submitter in self.motion.submitter.all()]
+            submitter = self.motion.submitters.all()
             self.initial['submitter'] = submitter
         super(MotionSubmitterMixin, self).__init__(*args, **kwargs)
 
@@ -119,7 +119,7 @@ class MotionSupporterMixin(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         """Fill in the supporter of the motions as default value."""
         if self.motion is not None:
-            supporter = [supporter.person.id for supporter in self.motion.supporter.all()]
+            supporter = self.motion.supporters.all()
             self.initial['supporter'] = supporter
         super(MotionSupporterMixin, self).__init__(*args, **kwargs)
 

@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from rest_framework.decorators import detail_route  # noqa
 from rest_framework.serializers import (  # noqa
     CharField,
+    IntegerField,
     ListSerializer,
     ModelSerializer,
     PrimaryKeyRelatedField,

@@ -49,8 +49,8 @@ class CSVImport(TestCase):
         self.assertEqual(motion1.title, u'Entlastung des Vorstandes')
         self.assertEqual(motion1.text, u'Die Versammlung möge beschließen, den Vorstand für seine letzte Legislaturperiode zu entlasten.')
         self.assertEqual(motion1.reason, u'Bericht erfolgt mündlich.')
-        self.assertEqual(len(motion1.submitter.all()), 1)
-        self.assertEqual(motion1.submitter.all()[0].person, self.normal_user)
+        self.assertEqual(len(motion1.submitters.all()), 1)
+        self.assertEqual(motion1.submitters.all()[0], self.normal_user)
         self.assertTrue(motion1.category is None)
         self.assertTrue('Submitter unknown.' in warning_message)
         self.assertTrue('Category unknown.' in warning_message)
@@ -61,8 +61,8 @@ class CSVImport(TestCase):
         self.assertHTMLEqual(motion2.text, u'''<p>Die Versammlung möge beschließen, die Satzung in § 2 Abs. 3 wie folgt zu ändern:</p>
                                                <p>Es wird vor dem Wort "Zweck" das Wort "gemeinnütziger" eingefügt.</p>''')
         self.assertEqual(motion2.reason, u'Die Änderung der Satzung ist aufgrund der letzten Erfahrungen eine sinnvolle Maßnahme, weil ...')
-        self.assertEqual(len(motion2.submitter.all()), 1)
-        self.assertEqual(motion2.submitter.all()[0].person, special_user)
+        self.assertEqual(len(motion2.submitters.all()), 1)
+        self.assertEqual(motion2.submitters.all()[0], special_user)
         self.assertEqual(motion2.category.name, u"Satzungsanträge")  # category is created automatically
 
         # check user 'John Doe'

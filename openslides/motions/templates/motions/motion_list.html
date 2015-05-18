@@ -98,12 +98,12 @@
             <td class="optional">{% if motion.category %}{{ motion.category }}{% else %}–{% endif %}</td>
             <td class="optional-small"><span class="label label-info">{% trans motion.state.name %}</span></td>
             <td class="optional">
-                {% for submitter in motion.submitter.all %}
+                {% for submitter in motion.submitters.all %}
                     {{ submitter.person }}{% if not forloop.last %}, {% endif %}
                 {% endfor %}
             </td>
             {% if 'motion_min_supporters'|get_config > 0 %}
-                {% with supporters=motion.supporters|length %}
+                {% with supporters=motion.supporters.all|length %}
                     <td class="optional">
                     {% if supporters >= 'motion_min_supporters'|get_config %}
                         <a class="badge badge-success" rel="tooltip" data-original-title="{% trans 'Enough supporters' %}">{{ supporters }}</a>

@@ -49,14 +49,14 @@
 
     <!-- Submitter -->
     <h4>{% trans "Submitter" %}:</h4>
-    {% for submitter in motion.submitter.all %}
+    {% for submitter in motion.submitters.all %}
         {{ submitter.person }}{% if not forloop.last %},<br>{% endif %}
     {% empty %}
         -
     {% endfor %}
 
     <!-- Supporters -->
-    {% with motion.supporter.all as supporters %}
+    {% with motion.supporters.all as supporters %}
     {% if supporters|length > 0 %}
         <h4>{% trans "Supporters" %}:</h4>
         {% for supporter in supporters %}

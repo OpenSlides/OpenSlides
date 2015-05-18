@@ -1,4 +1,13 @@
-from openslides.utils.rest_api import ModelSerializer, PrimaryKeyRelatedField, SerializerMethodField
+from django.db import transaction
+from django.utils.translation import ugettext as _
+
+from openslides.config.api import config
+from openslides.utils.rest_api import (
+    CharField,
+    IntegerField,
+    ModelSerializer,
+    PrimaryKeyRelatedField,
+    ValidationError,)
 
 from .models import (
     Category,
@@ -6,12 +15,18 @@ from .models import (
     MotionLog,
     MotionOption,
     MotionPoll,
-    MotionSubmitter,
-    MotionSupporter,
     MotionVersion,
     MotionVote,
     State,
     Workflow,)
+
+
+def validate_workflow_field(value):
+    """
+    Validator to ensure that the workflow with the given id exists.
+    """
+    if not Workflow.objects.filter(pk=value).exists():
+        raise ValidationError(_('Workflow %(pk)d does not exist.') % {'pk': value})
 
 
 class CategorySerializer(ModelSerializer):
@@ -54,24 +69,6 @@ class WorkflowSerializer(ModelSerializer):
     class Meta:
         model = Workflow
         fields = ('id', 'name', 'state_set', 'first_state',)
-
-
-class MotionSubmitterSerializer(ModelSerializer):
-    """
-    Serializer for motion.models.MotionSubmitter objects.
-    """
-    class Meta:
-        model = MotionSubmitter
-        fields = ('person',)  # TODO: Rename this to 'user', see #1348
-
-
-class MotionSupporterSerializer(ModelSerializer):
-    """
-    Serializer for motion.models.MotionSupporter objects.
-    """
-    class Meta:
-        model = MotionSupporter
-        fields = ('person',)  # TODO: Rename this to 'user', see #1348
 
 
 class MotionLogSerializer(ModelSerializer):
@@ -138,36 +135,94 @@ class MotionSerializer(ModelSerializer):
     """
     Serializer for motion.models.Motion objects.
     """
-    versions = MotionVersionSerializer(many=True, read_only=True)
     active_version = PrimaryKeyRelatedField(read_only=True)
-    submitter = MotionSubmitterSerializer(many=True, read_only=True)
-    supporter = MotionSupporterSerializer(many=True, read_only=True)
-    state = StateSerializer(read_only=True)
-    workflow = SerializerMethodField()
-    polls = MotionPollSerializer(many=True, read_only=True)
     log_messages = MotionLogSerializer(many=True, read_only=True)
+    polls = MotionPollSerializer(many=True, read_only=True)
+    reason = CharField(allow_blank=True, required=False, write_only=True)
+    state = StateSerializer(read_only=True)
+    text = CharField(write_only=True)
+    title = CharField(max_length=255, write_only=True)
+    versions = MotionVersionSerializer(many=True, read_only=True)
+    workflow = IntegerField(min_value=1, required=False, validators=[validate_workflow_field])
 
     class Meta:
         model = Motion
         fields = (
             'id',
             'identifier',
-            'identifier_number',
-            'parent',
-            'category',
-            'tags',
+            'title',
+            'text',
+            'reason',
             'versions',
             'active_version',
-            'submitter',
-            'supporter',
+            'parent',
+            'category',
+            'submitters',
+            'supporters',
             'state',
             'workflow',
+            'tags',
             'attachments',
             'polls',
             'log_messages',)
+        read_only_fields = ('parent',)  # Some other fields are also read_only. See definitions above.
 
-    def get_workflow(self, motion):
+    @transaction.atomic
+    def create(self, validated_data):
         """
-        Returns the id of the workflow of the motion.
+        Customized method to create a new motion from some data.
         """
-        return motion.state.workflow.pk
+        motion = Motion()
+        motion.title = validated_data['title']
+        motion.text = validated_data['text']
+        motion.reason = validated_data.get('reason', '')
+        motion.identifier = validated_data.get('identifier')
+        motion.category = validated_data.get('category')
+        motion.reset_state(validated_data.get('workflow', int(config['motion_workflow'])))
+        motion.save()
+        if validated_data['submitters']:
+            motion.submitters.add(*validated_data['submitters'])
+        else:
+            motion.submitters.add(validated_data['request_user'])
+        motion.supporters.add(*validated_data['supporters'])
+        motion.attachments.add(*validated_data['attachments'])
+        motion.tags.add(*validated_data['tags'])
+        return motion
+
+    @transaction.atomic
+    def update(self, motion, validated_data):
+        """
+        Customized method to update a motion.
+        """
+        # Identifier and category.
+        for key in ('identifier', 'category'):
+            if key in validated_data.keys():
+                setattr(motion, key, validated_data[key])
+
+        # Workflow.
+        workflow = validated_data.get('workflow')
+        if workflow is not None and workflow != motion.workflow:
+            motion.reset_state(workflow)
+
+        # Decide if a new version is saved to the database.
+        if (motion.state.versioning and
+                not validated_data.get('disable_versioning', False)):  # TODO
+            version = motion.get_new_version()
+        else:
+            version = motion.get_last_version()
+
+        # Title, text, reason.
+        for key in ('title', 'text', 'reason'):
+            if key in validated_data.keys():
+                setattr(version, key, validated_data[key])
+
+        motion.save(use_version=version)
+
+        # Submitters, supporters, attachments and tags
+        for key in ('submitters', 'supporters', 'attachments', 'tags'):
+            if key in validated_data.keys():
+                attr = getattr(motion, key)
+                attr.clear()
+                attr.add(*validated_data[key])
+
+        return motion
