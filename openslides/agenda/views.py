@@ -262,7 +262,7 @@ class ItemViewSet(ModelViewSet):
                 Speaker.objects.add(user, item)
             except OpenSlidesError as e:
                 raise ValidationError({'detail': e})
-            message = _('User was successfully added to the list of speakers.')
+            message = _('User %s was successfully added to the list of speakers.') % user
 
         else:
             # request.method == 'DELETE'
@@ -286,13 +286,63 @@ class ItemViewSet(ModelViewSet):
                 if not self.request.user.has_perm('agenda.can_manage'):
                     self.permission_denied(request)
                 try:
-                    speaker = Speaker.objects.get(pk=speaker_id)
-                except Speaker.DoesNotExist:
+                    speaker = Speaker.objects.get(pk=int(speaker_id))
+                except (ValueError, Speaker.DoesNotExist):
                     raise ValidationError({'detail': _('Speaker does not exist.')})
 
             # Delete the speaker.
             speaker.delete()
-            message = _('Speaker was successfully removed from the list of speakers.')
+            message = _('Speaker %s was successfully removed from the list of speakers.') % speaker
+
+        # Initiate response.
+        return Response({'detail': message})
+
+    @detail_route(methods=['PUT', 'DELETE'])
+    def speak(self, request, pk=None):
+        """
+        Special view endpoint to begin and end speach of speakers. Send PUT
+        {'speaker': <speaker_id>} to begin speach. Omit data to begin speach of
+        the next speaker. Send DELETE to end speach of current speaker.
+
+        Checks also whether the requesting user can do this. He needs at
+        least the permissions 'agenda.can_see' (see
+        self.check_permission()). Also the permission 'agenda.can_manage'
+        is required.
+        """
+        # Check permission.
+        if not self.request.user.has_perm('agenda.can_manage'):
+            self.permission_denied(request)
+
+        # Retrieve item.
+        item = self.get_object()
+
+        if request.method == 'PUT':
+            # Retrieve speaker_id
+            speaker_id = request.data.get('speaker')
+            if speaker_id is None:
+                speaker = item.get_next_speaker()
+                if speaker is None:
+                    raise ValidationError({'detail': _('The list of speakers is empty.')})
+            else:
+                try:
+                    speaker = Speaker.objects.get(pk=int(speaker_id))
+                except (ValueError, Speaker.DoesNotExist):
+                    raise ValidationError({'detail': _('Speaker does not exist.')})
+            speaker.begin_speach()
+            message = _('User is now speaking.')
+
+        else:
+            # request.method == 'DELETE'
+            try:
+                # We assume that there aren't multiple entries because this
+                # is forbidden by the Model's begin_speach method. We assume that
+                # there is only one speaker instance or none.
+                current_speaker = Speaker.objects.filter(item=item, end_time=None).exclude(begin_time=None).get()
+            except Speaker.DoesNotExist:
+                raise ValidationError(
+                    {'detail': _('There is no one speaking at the moment according to %(item)s.') % {'item': item}})
+            current_speaker.end_speach()
+            message = _('The speach is finished now.')
 
         # Initiate response.
         return Response({'detail': message})

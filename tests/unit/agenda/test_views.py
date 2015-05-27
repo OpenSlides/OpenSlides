@@ -50,5 +50,42 @@ class ItemViewSetManageSpeaker(TestCase):
         self.request.user.has_perm.return_value = True
         self.request.data = {'speaker': '1'}
         self.view_instance.manage_speaker(self.request)
-        mock_speaker.objects.get.assert_called_with(pk='1')
+        mock_speaker.objects.get.assert_called_with(pk=1)
         mock_speaker.objects.get.return_value.delete.assert_called_with()
+
+
+class ItemViewSetSpeak(TestCase):
+    """
+    Tests views of ItemViewSet to begin and end speach.
+    """
+    def setUp(self):
+        self.request = MagicMock()
+        self.view_instance = ItemViewSet()
+        self.view_instance.request = self.request
+        self.view_instance.get_object = get_object_mock = MagicMock()
+        get_object_mock.return_value = self.mock_item = MagicMock()
+
+    def test_begin_speach(self):
+        self.request.method = 'PUT'
+        self.request.user.has_perm.return_value = True
+        self.request.data = {}
+        self.mock_item.get_next_speaker.return_value = mock_next_speaker = MagicMock()
+        self.view_instance.speak(self.request)
+        mock_next_speaker.begin_speach.assert_called_with()
+
+    @patch('openslides.agenda.views.Speaker')
+    def test_begin_speach_specific_speaker(self, mock_speaker):
+        self.request.method = 'PUT'
+        self.request.user.has_perm.return_value = True
+        self.request.data = {'speaker': '1'}
+        mock_speaker.objects.get.return_value = mock_next_speaker = MagicMock()
+        self.view_instance.speak(self.request)
+        mock_next_speaker.begin_speach.assert_called_with()
+
+    @patch('openslides.agenda.views.Speaker')
+    def test_end_speach(self, mock_speaker):
+        self.request.method = 'DELETE'
+        self.request.user.has_perm.return_value = True
+        mock_speaker.objects.filter.return_value.exclude.return_value.get.return_value = mock_speaker = MagicMock()
+        self.view_instance.speak(self.request)
+        mock_speaker.end_speach.assert_called_with()
