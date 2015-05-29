@@ -8,10 +8,9 @@ class SignalConnectMetaClass(type):
     value for each child class and None for base classes because they will
     not be connected to the signal.
 
-    The classmethod get_all_objects is added as get_all classmethod to every
-    class using this metaclass. Calling this on a base class or on child
-    classes will retrieve all connected children, one instance for each
-    child class.
+    The classmethod get_all is added to every class using this metaclass.
+    Calling this on a base class or on child classes will retrieve all
+    connected children, one instance for each child class.
 
     These instances will have a check_permission method which returns True
     by default. You can override this method to return False on runtime if
@@ -29,14 +28,17 @@ class SignalConnectMetaClass(type):
 
     class Base(object, metaclass=SignalConnectMetaClass):
         signal = django.dispatch.Signal()
+
+        def __init__(self, **kwargs):
+            pass
+
         @classmethod
         def get_dispatch_uid(cls):
             if not cls.__name__ == 'Base':
                 return cls.__name__
 
     class Child(Base):
-        def __init__(self, **kwargs):
-            pass
+        pass
 
     child = Base.get_all(request)[0]
     assert Child == type(child)
@@ -46,7 +48,7 @@ class SignalConnectMetaClass(type):
         Creates the class and connects it to the signal if so. Adds all
         default attributes and methods.
         """
-        class_attributes['get_all'] = get_all_objects
+        class_attributes['get_all'] = get_all
         new_class = super(SignalConnectMetaClass, metaclass).__new__(
             metaclass, class_name, class_parents, class_attributes)
         try:
@@ -70,18 +72,21 @@ class SignalConnectMetaClass(type):
 
 
 @classmethod
-def get_all_objects(cls, request):
+def get_all(cls, request=None):
     """
     Collects all objects of the class created by the SignalConnectMetaClass
     from all apps via signal. They are sorted using the get_default_weight
     method. Does not return objects where check_permission returns False.
 
-    Expects a django.http.HttpRequest object.
+    A django.http.HttpRequest object can optionally be given.
 
     This classmethod is added as get_all classmethod to every class using
     the SignalConnectMetaClass.
     """
-    all_objects = [obj for __, obj in cls.signal.send(sender=cls, request=request) if obj.check_permission()]
+    kwargs = {'sender': cls}
+    if request is not None:
+        kwargs['request'] = request
+    all_objects = [obj for __, obj in cls.signal.send(**kwargs) if obj.check_permission()]
     all_objects.sort(key=lambda obj: obj.get_default_weight())
     return all_objects
 

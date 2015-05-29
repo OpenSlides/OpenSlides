@@ -121,8 +121,8 @@ class CustomSlidesTest(TestCase):
 
     def test_update(self):
         # Setup
-        url = '/customslide/1/edit/'
-        CustomSlide.objects.create(title='test_title_jeeDeB3aedei8ahceeso')
+        custom_slide = CustomSlide.objects.create(title='test_title_jeeDeB3aedei8ahceeso')
+        url = '/customslide/%d/edit/' % custom_slide.pk
         # Test
         response = self.admin_client.get(url)
         self.assertTemplateUsed(response, 'core/customslide_update.html')
@@ -131,19 +131,8 @@ class CustomSlidesTest(TestCase):
             url,
             {'title': 'test_title_ai8Ooboh5bahr6Ee7goo', 'weight': '0'})
         self.assertRedirects(response, '/dashboard/')
-        self.assertEqual(CustomSlide.objects.get(pk=1).title,
+        self.assertEqual(CustomSlide.objects.get(pk=custom_slide.pk).title,
                          'test_title_ai8Ooboh5bahr6Ee7goo')
-
-    def test_delete(self):
-        # Setup
-        url = '/customslide/1/del/'
-        CustomSlide.objects.create(title='test_title_oyie0em1chieM7YohX4H')
-        # Test
-        response = self.admin_client.get(url)
-        self.assertRedirects(response, '/customslide/1/edit/')
-        response = self.admin_client.post(url, {'yes': 'true'})
-        self.assertRedirects(response, '/dashboard/')
-        self.assertFalse(CustomSlide.objects.exists())
 
 
 class TagListViewTest(TestCase):

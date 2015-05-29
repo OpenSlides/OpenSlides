@@ -1,62 +1,105 @@
-from django.core.urlresolvers import reverse
 from django.db import models
+from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
-# TODO: activate the following line after using the apploader
-# from django.contrib.auth import get_user_model
+from jsonfield import JSONField
 
-from openslides.projector.models import SlideMixin
 from openslides.utils.models import AbsoluteUrlMixin
+from openslides.utils.projector import ProjectorElement
 from openslides.utils.rest_api import RESTModelMixin
 
-# Imports the default user so that other apps can import it from here.
-# TODO: activate this with the new apploader
-# User = get_user_model()
+from .exceptions import ProjectorException
 
 
-class CustomSlide(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
+class Projector(RESTModelMixin, models.Model):
     """
-    Model for Slides, only for the projector.
-    """
-    slide_callback_name = 'customslide'
+    Model for all projectors. At the moment we support only one projector,
+    the default projector (pk=1).
 
-    title = models.CharField(max_length=256, verbose_name=ugettext_lazy('Title'))
-    text = models.TextField(null=True, blank=True, verbose_name=ugettext_lazy('Text'))
-    weight = models.IntegerField(default=0, verbose_name=ugettext_lazy('Weight'))
+    If the config field is empty or invalid the projector shows a default
+    slide. To activate a slide and extra projector elements, save valid
+    JSON to the config field.
+
+    Example: [{"name": "core/customslide", "id": 2},
+              {"name": "core/countdown", "countdown_time": 20, "status": "stop"},
+              {"name": "core/clock", "stable": true}]
+
+    This can be done using the REST API with POST requests on e. g. the URL
+    /rest/core/projector/1/activate_projector_elements/. The data have to be
+    a list of dictionaries. Every dictionary must have at least the
+    property "name". The property "stable" is to set whether this element
+    should disappear on prune or clear requests.
+    """
+    config = JSONField()
 
     class Meta:
         """
-        General permissions that can not be placed at a specific app.
+        Contains general permissions that can not be placed in a specific app.
         """
         permissions = (
-            ('can_manage_projector', ugettext_noop('Can manage the projector')),
             ('can_see_projector', ugettext_noop('Can see the projector')),
+            ('can_manage_projector', ugettext_noop('Can manage the projector')),
             ('can_see_dashboard', ugettext_noop('Can see the dashboard')),
-            ('can_use_chat', ugettext_noop('Can use the chat')),
-        )
+            ('can_use_chat', ugettext_noop('Can use the chat')))
+
+    @property
+    def projector_elements(self):
+        """
+        A generator to retrieve all projector elements given in the config
+        field. For every element the method get_data() is called and its
+        result returned.
+        """
+        elements = {}
+        for element in ProjectorElement.get_all():
+            elements[element.name] = element
+        for config_entry in self.config:
+            name = config_entry.get('name')
+            element = elements.get(name)
+            data = {'name': name}
+            if element is None:
+                data['error'] = _('Projector element does not exist.')
+            else:
+                try:
+                    data.update(element.get_data(
+                        projector_object=self,
+                        config_entry=config_entry))
+                except ProjectorException as e:
+                    data['error'] = str(e)
+            yield data
+
+
+class CustomSlide(RESTModelMixin, AbsoluteUrlMixin, models.Model):
+    """
+    Model for slides with custom content.
+    """
+    title = models.CharField(
+        verbose_name=ugettext_lazy('Title'),
+        max_length=256)
+    text = models.TextField(
+        verbose_name=ugettext_lazy('Text'),
+        blank=True)
+    weight = models.IntegerField(
+        verbose_name=ugettext_lazy('Weight'),
+        default=0)
+
+    class Meta:
+        ordering = ('weight', 'title', )
 
     def __str__(self):
         return self.title
 
-    def get_absolute_url(self, link='update'):
-        if link == 'update':
-            url = reverse('customslide_update', args=[str(self.pk)])
-        elif link == 'delete':
-            url = reverse('customslide_delete', args=[str(self.pk)])
-        else:
-            url = super().get_absolute_url(link)
-        return url
-
 
 class Tag(RESTModelMixin, AbsoluteUrlMixin, models.Model):
     """
-    Model to save tags.
+    Model for tags. This tags can be used for other models like agenda items,
+    motions or assignments.
     """
-
-    name = models.CharField(max_length=255, unique=True,
-                            verbose_name=ugettext_lazy('Tag'))
+    name = models.CharField(
+        verbose_name=ugettext_lazy('Tag'),
+        max_length=255,
+        unique=True)
 
     class Meta:
-        ordering = ['name']
+        ordering = ('name',)
         permissions = (
             ('can_manage_tags', ugettext_noop('Can manage tags')), )
 
