@@ -4,6 +4,7 @@ from cgi import escape
 from collections import defaultdict
 from json import dumps
 
+from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.template.loader import render_to_string
@@ -18,8 +19,15 @@ from openslides.projector.api import (
     get_active_object,
     get_projector_overlays_js,
     get_overlays)
+from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.pdf import stylesheet
-from openslides.utils.rest_api import ModelViewSet, list_route, Response
+from openslides.utils.rest_api import (
+    ModelViewSet,
+    Response,
+    ValidationError,
+    detail_route,
+    list_route,
+)
 from openslides.utils.views import (
     AjaxMixin,
     PDFView,
@@ -27,7 +35,7 @@ from openslides.utils.views import (
     SingleObjectMixin,
     TemplateView)
 
-from .models import Item
+from .models import Item, Speaker
 from .serializers import ItemSerializer
 
 
@@ -207,6 +215,137 @@ class ItemViewSet(ModelViewSet):
         if not self.request.user.has_perm('agenda.can_see_orga_items'):
             queryset = queryset.exclude(type__exact=Item.ORGANIZATIONAL_ITEM)
         return queryset
+
+    @detail_route(methods=['POST', 'DELETE'])
+    def manage_speaker(self, request, pk=None):
+        """
+        Special view endpoint to add users to the list of speakers or remove
+        them. Send POST {'user': <user_id>} to add a new speaker. Omit
+        data to add yourself. Send DELETE {'speaker': <speaker_id>} to remove
+        someone from the list of speakers. Omit data to remove yourself.
+
+        Checks also whether the requesting user can do this. He needs at
+        least the permissions 'agenda.can_see' (see
+        self.check_permission()). In case of adding himself the permission
+        'agenda.can_be_speaker' is required. In case of adding someone else
+        the permission 'agenda.can_manage' is required. In case of removing
+        someone else 'agenda.can_manage' is required. In case of removing
+        himself no other permission is required.
+        """
+        # Retrieve item.
+        item = self.get_object()
+
+        if request.method == 'POST':
+            # Retrieve user_id
+            user_id = request.data.get('user')
+
+            # Check permissions and other conditions. Get user instance.
+            if user_id is None:
+                # Add oneself
+                if not self.request.user.has_perm('agenda.can_be_speaker'):
+                    self.permission_denied(request)
+                if item.speaker_list_closed:
+                    raise ValidationError({'detail': _('The list of speakers is closed.')})
+                user = self.request.user
+            else:
+                # Add someone else.
+                if not self.request.user.has_perm('agenda.can_manage'):
+                    self.permission_denied(request)
+                try:
+                    user = get_user_model().objects.get(pk=int(user_id))
+                except (ValueError, get_user_model().DoesNotExist):
+                    raise ValidationError({'detail': _('User does not exist.')})
+
+            # Try to add the user. This ensurse that a user is not twice in the
+            # list of coming speakers.
+            try:
+                Speaker.objects.add(user, item)
+            except OpenSlidesError as e:
+                raise ValidationError({'detail': e})
+            message = _('User %s was successfully added to the list of speakers.') % user
+
+        else:
+            # request.method == 'DELETE'
+            # Retrieve speaker_id
+            speaker_id = request.data.get('speaker')
+
+            # Check permissions and other conditions. Get speaker instance.
+            if speaker_id is None:
+                # Remove oneself
+                queryset = Speaker.objects.filter(
+                    item=item, user=self.request.user).exclude(weight=None)
+                try:
+                    # We assume that there aren't multiple entries because this
+                    # is forbidden by the Manager's add method. We assume that
+                    # there is only one speaker instance or none.
+                    speaker = queryset.get()
+                except Speaker.DoesNotExist:
+                    raise ValidationError({'detail': _('You are not on the list of speakers.')})
+            else:
+                # Remove someone else.
+                if not self.request.user.has_perm('agenda.can_manage'):
+                    self.permission_denied(request)
+                try:
+                    speaker = Speaker.objects.get(pk=int(speaker_id))
+                except (ValueError, Speaker.DoesNotExist):
+                    raise ValidationError({'detail': _('Speaker does not exist.')})
+
+            # Delete the speaker.
+            speaker.delete()
+            message = _('Speaker %s was successfully removed from the list of speakers.') % speaker
+
+        # Initiate response.
+        return Response({'detail': message})
+
+    @detail_route(methods=['PUT', 'DELETE'])
+    def speak(self, request, pk=None):
+        """
+        Special view endpoint to begin and end speach of speakers. Send PUT
+        {'speaker': <speaker_id>} to begin speach. Omit data to begin speach of
+        the next speaker. Send DELETE to end speach of current speaker.
+
+        Checks also whether the requesting user can do this. He needs at
+        least the permissions 'agenda.can_see' (see
+        self.check_permission()). Also the permission 'agenda.can_manage'
+        is required.
+        """
+        # Check permission.
+        if not self.request.user.has_perm('agenda.can_manage'):
+            self.permission_denied(request)
+
+        # Retrieve item.
+        item = self.get_object()
+
+        if request.method == 'PUT':
+            # Retrieve speaker_id
+            speaker_id = request.data.get('speaker')
+            if speaker_id is None:
+                speaker = item.get_next_speaker()
+                if speaker is None:
+                    raise ValidationError({'detail': _('The list of speakers is empty.')})
+            else:
+                try:
+                    speaker = Speaker.objects.get(pk=int(speaker_id))
+                except (ValueError, Speaker.DoesNotExist):
+                    raise ValidationError({'detail': _('Speaker does not exist.')})
+            speaker.begin_speach()
+            message = _('User is now speaking.')
+
+        else:
+            # request.method == 'DELETE'
+            try:
+                # We assume that there aren't multiple entries because this
+                # is forbidden by the Model's begin_speach method. We assume that
+                # there is only one speaker instance or none.
+                current_speaker = Speaker.objects.filter(item=item, end_time=None).exclude(begin_time=None).get()
+            except Speaker.DoesNotExist:
+                raise ValidationError(
+                    {'detail': _('There is no one speaking at the moment according to %(item)s.') % {'item': item}})
+            current_speaker.end_speach()
+            message = _('The speach is finished now.')
+
+        # Initiate response.
+        return Response({'detail': message})
 
     @list_route(methods=['get', 'put'])
     def tree(self, request):
