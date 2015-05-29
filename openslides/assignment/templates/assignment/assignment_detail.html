@@ -196,7 +196,7 @@
                 {% if candidate in assignment.elected %}
                     {% if perms.assignment.can_manage_assignment %}
                         <a class="election_link elected tooltip-bottom" href="{% url 'assignment_user_not_elected' assignment.id candidate.person_id %}"
-                            data-original-title="{% trans 'Mark candidate as elected' %}"></a>
+                            data-original-title="{% trans 'Mark candidate as not elected' %}"></a>
                     {% else %}
                         <a class="elected">
                             <img src="{% static 'img/voting-yes.png' %}" class="tooltip-bottom" data-original-title="{% trans 'Candidate is elected' %}">
