@@ -119,7 +119,7 @@ class ConfigViewSet(ViewSet):
 
     def retrieve(self, request, *args, **kwargs):
         """
-        Retrieves one config variable.
+        Retrieves one config variable. Everybody can see it.
         """
         # TODO: Check if we need permission check here.
         key = kwargs['pk']
@@ -129,12 +129,17 @@ class ConfigViewSet(ViewSet):
             raise Http404
         return Response(data)
 
-    def update(self, request, pk=None):
+    def update(self, request, *args, **kwargs):
         """
-        TODO
+        Updates one config variable. Only managers can do this.
         """
         if not request.user.has_perm('config.can_manage'):
             self.permission_denied(request)
-        else:
-            # TODO: Implement update method
-            self.permission_denied(request)
+        key = kwargs['pk']
+        # Check if pk is a valid config variable key.
+        if key not in config:
+            raise Http404
+        # Change value.
+        config[key] = request.data
+        # Return response.
+        return Response({'key': key, 'value': request.data})
