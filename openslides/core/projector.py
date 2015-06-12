@@ -1,10 +1,11 @@
 from django.utils.timezone import now
 from django.utils.translation import ugettext as _
 
-from openslides.utils.projector import ProjectorElement
+from openslides.utils.projector import ProjectorElement, ProjectorRequirement
 
 from .exceptions import ProjectorException
 from .models import CustomSlide
+from .views import CustomSlideViewSet
 
 
 class CustomSlideSlide(ProjectorElement):
@@ -21,6 +22,19 @@ class CustomSlideSlide(ProjectorElement):
         return [{
             'collection': 'core/customslide',
             'id': pk}]
+
+    def get_requirements(self, config_entry):
+        self.config_entry = config_entry
+        try:
+            pk = self.get_context()[0]['id']
+        except ProjectorException:
+            # Custom slide does not exist so just do nothing.
+            pass
+        else:
+            yield ProjectorRequirement(
+                view_class=CustomSlideViewSet,
+                view_action='retrieve',
+                pk=str(pk))
 
 
 class Clock(ProjectorElement):

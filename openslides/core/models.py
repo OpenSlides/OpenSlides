@@ -52,7 +52,7 @@ class Projector(RESTModelMixin, models.Model):
         for element in ProjectorElement.get_all():
             elements[element.name] = element
         for config_entry in self.config:
-            name = config_entry.get('name')
+            name = config_entry['name']
             element = elements.get(name)
             data = {'name': name}
             if element is None:
@@ -65,6 +65,22 @@ class Projector(RESTModelMixin, models.Model):
                 except ProjectorException as e:
                     data['error'] = str(e)
             yield data
+
+    @classmethod
+    def get_all_requirements(cls):
+        """
+        Generator which returns all ProjectorRequirement instances of all
+        active projector elements.
+        """
+        elements = {}
+        for element in ProjectorElement.get_all():
+            elements[element.name] = element
+        for projector in cls.objects.all():
+            for config_entry in projector.config:
+                element = elements.get(config_entry['name'])
+                if element is not None:
+                    for requirement in element.get_requirements(config_entry):
+                        yield requirement
 
 
 class CustomSlide(RESTModelMixin, AbsoluteUrlMixin, models.Model):

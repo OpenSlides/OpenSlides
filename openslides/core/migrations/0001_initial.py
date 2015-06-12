@@ -18,7 +18,7 @@ def add_default_projector(apps, schema_editor):
         weight=-500)
     Projector = apps.get_model('core', 'Projector')
     projector_config = [
-        {'name': 'core/clock'},
+        {'name': 'core/clock', 'stable': True},
         {'name': 'core/customslide', 'id': custom_slide.id}]
     Projector.objects.create(config=projector_config)
 
