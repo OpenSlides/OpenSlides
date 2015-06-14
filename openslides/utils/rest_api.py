@@ -6,17 +6,20 @@ from django.core.urlresolvers import reverse
 from rest_framework.decorators import detail_route  # noqa
 from rest_framework.serializers import (  # noqa
     CharField,
+    DictField,
     Field,
     IntegerField,
+    ListField,
     ListSerializer,
     ModelSerializer,
     PrimaryKeyRelatedField,
     RelatedField,
     SerializerMethodField,
     ValidationError)
+from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin  # noqa
 from rest_framework.response import Response  # noqa
 from rest_framework.routers import DefaultRouter
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet, ViewSet  # noqa
+from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelViewSet, ViewSet  # noqa
 from rest_framework.decorators import list_route  # noqa
 
 from .exceptions import OpenSlidesError

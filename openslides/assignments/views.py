@@ -1,5 +1,6 @@
 from cgi import escape
 
+from django.db import transaction
 from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
 from reportlab.lib import colors
@@ -10,34 +11,46 @@ from reportlab.platypus import (PageBreak, Paragraph, SimpleDocTemplate, Spacer,
 from openslides.config.api import config
 from openslides.users.models import Group, User  # TODO: remove this
 from openslides.utils.pdf import stylesheet
-from openslides.utils.rest_api import ModelViewSet, Response, ValidationError, detail_route
+from openslides.utils.rest_api import (
+    DestroyModelMixin,
+    GenericViewSet,
+    ModelViewSet,
+    Response,
+    UpdateModelMixin,
+    ValidationError,
+    detail_route)
 from openslides.utils.views import PDFView
 
 from .models import Assignment, AssignmentPoll
-from .serializers import AssignmentFullSerializer, AssignmentShortSerializer
+from .serializers import (
+    AssignmentAllPollSerializer,
+    AssignmentFullSerializer,
+    AssignmentShortSerializer
+)
 
 
 class AssignmentViewSet(ModelViewSet):
     """
-    API endpoint to list, retrieve, create, update and destroy assignments and
-    to manage candidatures.
+    API endpoint to list, retrieve, create, update and destroy assignments
+    and to manage candidatures.
     """
     queryset = Assignment.objects.all()
 
     def check_permissions(self, request):
         """
         Calls self.permission_denied() if the requesting user has not the
-        permission to see assignments and in case of create, update or destroy
-        requests the permission to manage assignments.
+        permission to see assignments and in case of create, update,
+        partial_update or destroy requests the permission to manage
+        assignments.
         """
         if (not request.user.has_perm('assignments.can_see') or
-                (self.action in ('create', 'update', 'destroy') and not
-                 request.user.has_perm('assignments.can_manage'))):
+                (self.action in ('create', 'update', 'partial_update', 'destroy') and
+                 not request.user.has_perm('assignments.can_manage'))):
             self.permission_denied(request)
 
     def get_serializer_class(self):
         """
-        Returns different serializer classes with respect to users permissions.
+        Returns different serializer classes according to users permissions.
         """
         if self.request.user.has_perm('assignments.can_manage'):
             serializer_class = AssignmentFullSerializer
@@ -48,8 +61,8 @@ class AssignmentViewSet(ModelViewSet):
     @detail_route(methods=['post', 'delete'])
     def candidature_self(self, request, pk=None):
         """
-        View to nominate self as candidate (POST) or withdraw own candidature
-        (DELETE).
+        View to nominate self as candidate (POST) or withdraw own
+        candidature (DELETE).
         """
         if not request.user.has_perm('assignments.can_nominate_self'):
             self.permission_denied(request)
@@ -157,8 +170,8 @@ class AssignmentViewSet(ModelViewSet):
     @detail_route(methods=['post', 'delete'])
     def mark_elected(self, request, pk=None):
         """
-        View to mark other users as elected (POST) undo this (DELETE). The
-        client has to send {'user': <id>}.
+        View to mark other users as elected (POST) or undo this (DELETE).
+        The client has to send {'user': <id>}.
         """
         if not request.user.has_perm('assignments.can_manage'):
             self.permission_denied(request)
@@ -177,6 +190,37 @@ class AssignmentViewSet(ModelViewSet):
             assignment.set_candidate(user)
             message = _('User %s was successfully unelected.') % user
         return Response({'detail': message})
+
+    @detail_route(methods=['post'])
+    def create_poll(self, request, pk=None):
+        """
+        View to create a poll. It is a POST request without any data.
+        """
+        if not request.user.has_perm('assignments.can_manage'):
+            self.permission_denied(request)
+        assignment = self.get_object()
+        if not assignment.candidates.exists():
+            raise ValidationError({'detail': _('Can not create poll because there are no candidates.')})
+        with transaction.atomic():
+            assignment.create_poll()
+        return Response({'detail': _(' Poll created successfully.')})
+
+
+class AssignmentPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
+    """
+    API endpoint to update and destroy assignment polls.
+    """
+    queryset = AssignmentPoll.objects.all()
+    serializer_class = AssignmentAllPollSerializer
+
+    def check_permissions(self, request):
+        """
+        Calls self.permission_denied() if the requesting user has not the
+        permission to see assignments and to manage assignments.
+        """
+        if (not request.user.has_perm('assignments.can_see') or
+                not request.user.has_perm('assignments.can_manage')):
+            self.permission_denied(request)
 
 
 class AssignmentPDF(PDFView):
