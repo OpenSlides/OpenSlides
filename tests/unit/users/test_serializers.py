@@ -1,83 +1,42 @@
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
-from django.core.exceptions import ImproperlyConfigured
-from rest_framework import status
-from rest_framework.viewsets import ModelViewSet
-from rest_framework.test import APIRequestFactory
+from openslides.users.serializers import UserFullSerializer
+from openslides.utils.rest_api import ValidationError
 
 
-class UserCreateUpdateSerializer(TestCase):
-    def test_improperly_configured_exception_list_request(self):
+class UserCreateUpdateSerializerTest(TestCase):
+    def test_validate_no_data(self):
         """
-        Tests that ImproperlyConfigured is raised if one tries to use the
-        UserCreateUpdateSerializer with a list request.
+        Tests, that the validator raises a ValidationError, if not data is given.
         """
-        # Global import is not possible for some unknown magic.
-        from openslides.users.serializers import UserCreateUpdateSerializer
-        factory = APIRequestFactory()
-        request = factory.get('/')
-        view_class = ModelViewSet
-        view_class.queryset = MagicMock()
-        view_class.serializer_class = UserCreateUpdateSerializer
-        view = view_class.as_view({'get': 'list'})
+        serializer = UserFullSerializer()
+        data = {}
 
-        with self.assertRaises(ImproperlyConfigured):
-            view(request)
+        with self.assertRaises(ValidationError):
+            serializer.validate(data)
 
-    @patch('rest_framework.generics.get_object_or_404')
-    def test_improperly_configured_exception_retrieve_request(self, mock_get_object_or_404):
+    @patch('openslides.users.serializers.User.objects.generate_username')
+    def test_validate_no_username(self, generate_username):
         """
-        Tests that ImproperlyConfigured is raised if one tries to use the
-        UserCreateUpdateSerializer with a retrieve request.
+        Tests, that an empty username is generated.
         """
-        # Global import is not possible for some unknown magic.
-        from openslides.users.serializers import UserCreateUpdateSerializer
-        factory = APIRequestFactory()
-        request = factory.get('/')
-        view_class = ModelViewSet
-        view_class.queryset = MagicMock()
-        view_class.serializer_class = UserCreateUpdateSerializer
-        view = view_class.as_view({'get': 'retrieve'})
-        mock_get_object_or_404.return_value = MagicMock()
+        generate_username.return_value = 'test_value'
+        serializer = UserFullSerializer()
+        data = {'first_name': 'TestName'}
 
-        with self.assertRaises(ImproperlyConfigured):
-            view(request, pk='1')
+        new_data = serializer.validate(data)
 
-    def test_no_improperly_configured_exception_create_request(self):
+        self.assertEqual(new_data['username'], 'test_value')
+
+    def test_validate_no_username_in_patch_request(self):
         """
-        Tests that ImproperlyConfigured is not raised if one tries to use the
-        UserCreateUpdateSerializer with a create request.
+        Tests, that an empty username is not set in a patch request context.
         """
-        # Global import is not possible for some unknown magic.
-        from openslides.users.serializers import UserCreateUpdateSerializer
-        factory = APIRequestFactory()
-        request = factory.get('/')
-        view_class = ModelViewSet
-        view_class.queryset = MagicMock()
-        view_class.serializer_class = UserCreateUpdateSerializer
-        view = view_class.as_view({'get': 'create'})
+        view = MagicMock(action='partial_update')
+        serializer = UserFullSerializer(context={'view': view})
+        data = {'first_name': 'TestName'}
 
-        response = view(request)
+        new_data = serializer.validate(data)
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-
-    @patch('rest_framework.generics.get_object_or_404')
-    def test_no_improperly_configured_exception_update_request(self, mock_get_object_or_404):
-        """
-        Tests that ImproperlyConfigured is not raised if one tries to use the
-        UserCreateUpdateSerializer with a update request.
-        """
-        # Global import is not possible for some unknown magic.
-        from openslides.users.serializers import UserCreateUpdateSerializer
-        factory = APIRequestFactory()
-        request = factory.get('/')
-        view_class = ModelViewSet
-        view_class.queryset = MagicMock()
-        view_class.serializer_class = UserCreateUpdateSerializer
-        view = view_class.as_view({'get': 'update'})
-        mock_get_object_or_404.return_value = MagicMock()
-
-        response = view(request, pk='1')
-
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIsNone(new_data.get('username'))

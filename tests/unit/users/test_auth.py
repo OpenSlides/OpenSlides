@@ -1,7 +1,7 @@
 from unittest import TestCase
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
-from openslides.users.auth import AnonymousUser, get_user, auth
+from openslides.users.auth import AnonymousUser, auth, get_user
 
 
 class TestAnonymousUser(TestCase):

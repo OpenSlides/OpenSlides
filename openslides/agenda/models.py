@@ -163,7 +163,7 @@ class Item(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, MPTTModel):
         Return the title of this item.
         """
         if not self.content_object:
-            agenda_title = self.title
+            agenda_title = self.title or ""
         else:
             try:
                 agenda_title = self.content_object.get_agenda_title()

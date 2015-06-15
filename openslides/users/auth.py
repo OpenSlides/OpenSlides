@@ -1,14 +1,14 @@
+from django.contrib.auth import get_user as _get_user
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
-from django.contrib.auth.models import AnonymousUser as DjangoAnonymousUser
 from django.contrib.auth.context_processors import auth as _auth
-from django.contrib.auth import get_user as _get_user
+from django.contrib.auth.models import AnonymousUser as DjangoAnonymousUser
+from django.contrib.auth.models import Permission
 from django.db.models import Q
 from django.utils.functional import SimpleLazyObject
+from rest_framework.authentication import BaseAuthentication
 
 from openslides.config.api import config
-
-from .models import Permission
 
 
 class AnonymousUser(DjangoAnonymousUser):
@@ -92,6 +92,20 @@ class AuthenticationMiddleware(object):
             "'openslides.users.auth.AuthenticationMiddleware'."
         )
         request.user = SimpleLazyObject(lambda: get_user(request))
+
+
+class AnonymousAuthentication(BaseAuthentication):
+    """
+    Authentication class for the Django REST framework.
+
+    Sets the user to the our AnonymousUser but only if system_enable_anonymous
+    is set to True in the config.
+    """
+
+    def authenticate(self, request):
+        if config['system_enable_anonymous']:
+            return (AnonymousUser(), None)
+        return None
 
 
 def get_user(request):

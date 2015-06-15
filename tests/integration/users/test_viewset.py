@@ -6,6 +6,25 @@ from openslides.users.models import Group, User
 from openslides.utils.test import TestCase
 
 
+class UserGetTest(TestCase):
+    """
+    Tests to receive a users via REST API.
+    """
+    def test_get_with_user_who_is_in_group_with_pk_1(self):
+        """
+        It is invalid, that a user is in the group with the pk 1. But if the
+        database is invalid, the user should nevertheless be received.
+        """
+        admin = User.objects.get(pk=1)
+        group1 = Group.objects.get(pk=1)
+        admin.groups.add(group1)
+        self.client.login(username='admin', password='admin')
+
+        response = self.client.get('/rest/users/user/1/')
+
+        self.assertEqual(response.status_code, 200)
+
+
 class UserCreate(TestCase):
     """
     Tests creation of users via REST API.
@@ -47,7 +66,7 @@ class UserCreate(TestCase):
              'groups': group_pks})
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data, {'groups': ["Invalid pk '%d' - object does not exist." % group_pks[0]]})
+        self.assertEqual(response.data, {'groups': ["Invalid pk \"%d\" - object does not exist." % group_pks[0]]})
 
 
 class UserUpdate(TestCase):
@@ -55,6 +74,11 @@ class UserUpdate(TestCase):
     Tests update of users via REST API.
     """
     def test_simple_update_via_patch(self):
+        """
+        Test to only update the last_name with a patch request.
+
+        The field username *should not* be changed by the request.
+        """
         admin_client = APIClient()
         admin_client.login(username='admin', password='admin')
         # This is the builtin user 'Administrator' with username 'admin'. The pk is valid.
@@ -70,6 +94,11 @@ class UserUpdate(TestCase):
         self.assertEqual(user.username, 'admin')
 
     def test_simple_update_via_put(self):
+        """
+        Test to only update the last_name with a put request.
+
+        The field username *should* be changed by the request.
+        """
         admin_client = APIClient()
         admin_client.login(username='admin', password='admin')
         # This is the builtin user 'Administrator'. The pk is valid.
@@ -77,10 +106,10 @@ class UserUpdate(TestCase):
 
         response = admin_client.put(
             reverse('user-detail', args=[user_pk]),
-            {'last_name': 'New name Ohy4eeyei5Sahzah0Os2'})
+            {'last_name': 'New name Ohy4eeyei5'})
 
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.data, {'username': ['This field is required.']})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(User.objects.get(pk=1).username, 'New name Ohy4eeyei5')
 
 
 class UserDelete(TestCase):

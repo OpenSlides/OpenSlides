@@ -99,7 +99,7 @@ class User(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, PermissionsMixin, Abstr
     slide_callback_name = 'user'
 
     username = models.CharField(
-        ugettext_lazy('Username'), max_length=255, unique=True)
+        ugettext_lazy('Username'), max_length=255, unique=True, blank=True)
 
     first_name = models.CharField(
         ugettext_lazy('First name'), max_length=255, blank=True)
