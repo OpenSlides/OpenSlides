@@ -1,0 +1,15 @@
+<div class="form-group">
+  <label>{{ label }}</label>
+
+  <div class="input-group">
+    <input ng-model="value" ng-change="save(configOption.key, value, type)" id="{{ id }}" type="{{ type }}"
+        class="form-control">
+    <span class="input-group-btn">
+      <button ng-click="value=configOption.default_value; save(configOption.key, configOption.default_value, type)" class="btn btn-default" translate>
+        <i class="fa fa-undo"></i>
+        <translate>Reset</translate>
+      </button>
+    </span>
+  </div>
+  <p ng-if="help_text" class="help-block">{{ help_text }}</p>
+</div>
