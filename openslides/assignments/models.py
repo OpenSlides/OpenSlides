@@ -247,7 +247,7 @@ class Assignment(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
 
     def create_poll(self):
         """
-        Creates an new poll for the assignment and adds all candidates to all
+        Creates a new poll for the assignment and adds all candidates to all
         lists of speakers of related agenda items.
         """
         candidates = self.candidates.all()

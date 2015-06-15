@@ -1,4 +1,13 @@
-from openslides.utils.rest_api import ListSerializer, ModelSerializer
+from django.db import transaction
+from django.utils.translation import ugettext as _
+
+from openslides.utils.rest_api import (
+    DictField,
+    IntegerField,
+    ListField,
+    ListSerializer,
+    ModelSerializer,
+    ValidationError)
 
 from .models import (
     models,
@@ -64,6 +73,10 @@ class AssignmentAllPollSerializer(ModelSerializer):
     Serializes all polls.
     """
     assignmentoption_set = AssignmentOptionSerializer(many=True, read_only=True)
+    votes = ListField(
+        child=DictField(
+            child=IntegerField(min_value=-2)),
+        write_only=True)
 
     class Meta:
         model = AssignmentPoll
@@ -75,7 +88,46 @@ class AssignmentAllPollSerializer(ModelSerializer):
             'assignmentoption_set',
             'votesvalid',
             'votesinvalid',
-            'votescast',)
+            'votescast',
+            'votes',)
+        read_only_fields = ('yesnoabstain',)
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        """
+        Customized update method for polls. To update votes use the write
+        only field 'votes'.
+
+        Example data for a 'yesnoabstain' poll with two candidates:
+
+            "votes": [{"Yes": 10, "No": 4, "Abstain": -2},
+                      {"Yes": -1, "No": 0, "Abstain": -2}]
+        """
+        # Update votes.
+        votes = validated_data.get('votes')
+        if votes:
+            options = list(instance.get_options())
+            if len(votes) != len(options):
+                raise ValidationError({
+                    'detail': _('You have to submit data for %d candidates.') % len(options)})
+            for index, option in enumerate(options):
+                if len(votes[index]) != len(instance.get_vote_values()):
+                    raise ValidationError({
+                        'detail': _('You have to submit data for %d vote values.') % len(instance.get_vote_values())})
+                for vote_value, vote_weight in votes[index].items():
+                    if vote_value not in instance.get_vote_values():
+                        raise ValidationError({
+                            'detail': _('Vote value %s is invalid.') % vote_value})
+                instance.set_vote_objects_with_values(option, votes[index])
+
+        # Update remaining writeable fields.
+        instance.description = validated_data.get('description', instance.description)
+        instance.published = validated_data.get('published', instance.published)
+        instance.votesvalid = validated_data.get('votesvalid', instance.votesvalid)
+        instance.votesinvalid = validated_data.get('votesinvalid', instance.votesinvalid)
+        instance.votescast = validated_data.get('votescast', instance.votescast)
+        instance.save()
+        return instance
 
 
 class AssignmentShortPollSerializer(AssignmentAllPollSerializer):
