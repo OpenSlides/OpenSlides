@@ -45,4 +45,8 @@ angular.module('OpenSlidesApp.site', [
     // Combine the django csrf system with the angular csrf system
     $httpProvider.defaults.xsrfCookieName = 'csrftoken';
     $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+})
+
+.config(function(uiSelectConfig) {
+  uiSelectConfig.theme = 'bootstrap';
 });
