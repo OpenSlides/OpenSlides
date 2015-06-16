@@ -1,9 +1,0 @@
-{% load i18n %}
-
-<h1 {% if not slide.text %}class="title_only"{% endif %}>
-    {{ slide.title }}
-</h1>
-
-{% if slide.text %}
-    <span>{{ slide.text|safe|linebreaks }}</span>
-{% endif %}

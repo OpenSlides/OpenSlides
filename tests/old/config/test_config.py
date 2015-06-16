@@ -1,15 +1,16 @@
-import re
-from unittest.mock import patch
-
 from django import forms
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 from django.dispatch import receiver
 from django.test.client import Client
 
-
-from openslides.config.api import (config, ConfigCollection, ConfigGroup,
-                                   ConfigGroupedCollection, ConfigVariable)
+from openslides.config.api import (
+    ConfigCollection,
+    ConfigGroup,
+    ConfigGroupedCollection,
+    ConfigVariable,
+    config,
+)
 from openslides.config.exceptions import ConfigError, ConfigNotFound
 from openslides.config.signals import config_signal
 from openslides.users.models import User
@@ -97,145 +98,6 @@ class HandleConfigTest(TestCase):
             'unknown_var')
 
 
-class ConfigFormTest(TestCase):
-
-    def setUp(self):
-        # Setup the permission
-        ct = ContentType.objects.get(app_label='config', model='configstore')
-        perm = Permission.objects.get(content_type=ct, codename='can_manage')
-
-        # Setup two users
-        self.manager = User.objects.create_user('config_test_manager', 'default')
-        self.manager.user_permissions.add(perm)
-
-        self.normal_user = User.objects.create_user('config_test_normal_user', 'default')
-
-        # Login
-        self.client_manager = Client()
-        self.client_manager.login(username='config_test_manager', password='default')
-        self.client_normal_user = Client()
-        self.client_normal_user.login(username='config_test_normal_user', password='default')
-
-    def test_get_config_form_overview(self):
-        response = self.client_manager.get('/config/')
-        self.assertRedirects(response=response, expected_url='/config/general/',
-                             status_code=302, target_status_code=200)
-
-    def test_get_config_form_testgroupedpage1_manager_client(self):
-        response = self.client_manager.get('/config/testgroupedpage1/')
-        self.assertContains(response=response, text='default_string_rien4ooCZieng6ah', status_code=200)
-        self.assertTemplateUsed(response=response, template_name='base.html')
-        self.assertTemplateUsed(response=response, template_name='config/config_form.html')
-        self.assertTemplateNotUsed(response=response, template_name='form.html')
-        self.assertTemplateUsed(response=response, template_name='formbuttons_save.html')
-
-    def test_get_config_form_testgroupedpage1_grouping(self):
-        response = self.client_manager.get('/config/testgroupedpage1/')
-        self.assertContains(response=response, text='Group 1 aiYeix2mCieQuae3', status_code=200)
-        self.assertContains(response=response, text='Group 2 Toongai7ahyahy7B', status_code=200)
-
-    def test_get_config_form_testgroupedpage1_other_clients(self):
-        response = self.client_normal_user.get('/config/testgroupedpage1/')
-        self.assertEqual(response.status_code, 403)
-
-    def test_get_config_form_testsimplepage1_manager_client(self):
-        response = self.client_manager.get('/config/testsimplepage1/')
-        self.assertNotContains(response=response, text='BaeB0ahcMae3feem', status_code=200)
-        self.assertTemplateUsed(response=response, template_name='base.html')
-        self.assertTemplateUsed(response=response, template_name='config/config_form.html')
-        self.assertTemplateUsed(response=response, template_name='form.html')
-        self.assertTemplateUsed(response=response, template_name='formbuttons_save.html')
-
-    def test_get_config_form_testgroupedpage1_initial(self):
-        config['string_var'] = 'something unique AChie6eeiDie3Ieciy1bah4I'
-        response = self.client_manager.get('/config/testgroupedpage1/')
-        self.assertContains(response=response, text='AChie6eeiDie3Ieciy1bah4I', status_code=200)
-
-    def test_get_config_form_testgroupedpage1_choices(self):
-        response = self.client_manager.get('/config/testgroupedpage1/')
-        self.assertContains(response=response, text='Ughoch4ocoche6Ee', status_code=200)
-        self.assertContains(response=response, text='Vahnoh5yalohv5Eb', status_code=200)
-
-    def test_post_config_form_configtest1(self):
-        response = self.client_manager.post(
-            '/config/testgroupedpage1/',
-            {'string_var': 'other_special_unique_string faiPaid4utie6eeL',
-             'integer_var': 3,
-             'choices_var': 2})
-        self.assertRedirects(response=response, expected_url='/config/testgroupedpage1/',
-                             status_code=302, target_status_code=200)
-        self.assertEqual(config['string_var'], 'other_special_unique_string faiPaid4utie6eeL')
-        self.assertFalse(config['bool_var'])
-        self.assertEqual(config['integer_var'], 3)
-        self.assertEqual(config['choices_var'], '2')
-
-    def test_post_config_form_error(self):
-        response = self.client_manager.post(
-            '/config/testgroupedpage1/',
-            {'integer_var': 'bad_string_value'})
-        self.assertContains(response=response, text='errorlist', status_code=200)
-
-    def test_disabled_config_view(self):
-        response = self.client_manager.get('/config/testsimplepage3/')
-        self.assertEqual(response.status_code, 404)
-        response = self.client_manager.get('/config/testgroupedpage1/')
-        self.assertNotContains(response=response, text='Ho5iengaoon5Hoht', status_code=200)
-
-    def test_improperly_configured_config_view(self):
-        """
-        Tests that a ConfigCollection object without an url raises ConfigError
-        when is_shown() is called.
-        """
-        collection = ConfigCollection(
-            title='Only a small title but no url ci6xahb8Chula0Thesho',
-            variables=(ConfigVariable(name='some_var_paiji9theiW8ooXivae6',
-                                      default_value='',
-                                      form_field=forms.CharField()),))
-
-        self.assertRaisesMessage(
-            ConfigError,
-            'The config collection %s must have a title and an url attribute.' % repr(collection),
-            collection.is_shown)
-
-    def test_improperly_configured_config_view_two(self):
-        """
-        Tests that a ConfigCollection object without a title raises ConfigError
-        when is_shown() is called.
-        """
-        collection = ConfigCollection(
-            url='only_url_ureiraeY1Oochuad7xei',
-            variables=(ConfigVariable(name='some_var_vuuC6eiXeiyae3ik4gie',
-                                      default_value='',
-                                      form_field=forms.CharField()),))
-
-        self.assertRaisesMessage(
-            ConfigError,
-            'The config collection %s must have a title and an url attribute.' % repr(collection),
-            collection.is_shown)
-
-    def test_extra_stylefiles(self):
-        response = self.client_manager.get('/config/testgroupedpage1/')
-        text = '<link href="/static/styles/test-config-sjNN56dFGDrg2.css" type="text/css" rel="stylesheet" />'
-        self.assertContains(response=response, text=text, status_code=200)
-
-    def test_extra_javascript(self):
-        response = self.client_manager.get('/config/testgroupedpage1/')
-        text = '<script src="/static/javascript/test-config-djg4dFGVslk4209f.js" type="text/javascript"></script>'
-        self.assertContains(response=response, text=text, status_code=200)
-
-    @patch('openslides.config.views.FormView.get_context_data')
-    def test_extra_stylefiles_other_context(self, mock_get_context_data):
-        """
-        Tests the view with empty context data at the beginning.
-        """
-        mock_get_context_data.return_value = {}
-        response = self.client_manager.get('/config/testgroupedpage1/')
-        text1 = '<link href="/static/styles/test-config-sjNN56dFGDrg2.css" type="text/css" rel="stylesheet" />'
-        text2 = '<script src="/static/javascript/test-config-djg4dFGVslk4209f.js" type="text/javascript"></script>'
-        self.assertContains(response=response, text=text1, status_code=200)
-        self.assertContains(response=response, text=text2, status_code=200)
-
-
 class ConfigWeightTest(TestCase):
 
     def setUp(self):
@@ -256,13 +118,6 @@ class ConfigWeightTest(TestCase):
         for signal_receiver, config_collection in config_signal.send(sender=self):
             config_collection_dict[signal_receiver.__name__] = config_collection
         self.assertGreater(config_collection_dict['set_grouped_config_view'].weight, config_collection_dict['set_simple_config_view'].weight)
-
-    def test_order_of_config_collections_on_view(self):
-        response = self.client_manager.get('/config/testgroupedpage1/')
-        content = response.content.decode('utf-8')
-        m1 = re.search('<a href="/config/testgroupedpage1/" class="btn btn-mini active">\s*Config vars for testing 1\s*</a>', content)
-        m2 = re.search('<a href="/config/testsimplepage1/" class="btn btn-mini ">\s*Config vars for testing 2\s*</a>', content)
-        self.assertGreater(m1.start(), m2.start())
 
 
 @receiver(config_signal, dispatch_uid='set_grouped_config_view_for_testing')

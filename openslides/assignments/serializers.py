@@ -7,15 +7,17 @@ from openslides.utils.rest_api import (
     ListField,
     ListSerializer,
     ModelSerializer,
-    ValidationError)
+    ValidationError,
+)
 
 from .models import (
-    models,
     Assignment,
-    AssignmentRelatedUser,
     AssignmentOption,
     AssignmentPoll,
-    AssignmentVote)
+    AssignmentRelatedUser,
+    AssignmentVote,
+    models,
+)
 
 
 class AssignmentRelatedUserSerializer(ModelSerializer):

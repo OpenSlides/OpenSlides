@@ -5,8 +5,15 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
 from reportlab.lib import colors
 from reportlab.lib.units import cm
-from reportlab.platypus import (PageBreak, Paragraph, SimpleDocTemplate, Spacer,
-                                LongTable, Table, TableStyle)
+from reportlab.platypus import (
+    LongTable,
+    PageBreak,
+    Paragraph,
+    SimpleDocTemplate,
+    Spacer,
+    Table,
+    TableStyle,
+)
 
 from openslides.config.api import config
 from openslides.users.models import Group, User  # TODO: remove this
@@ -18,14 +25,15 @@ from openslides.utils.rest_api import (
     Response,
     UpdateModelMixin,
     ValidationError,
-    detail_route)
+    detail_route,
+)
 from openslides.utils.views import PDFView
 
 from .models import Assignment, AssignmentPoll
 from .serializers import (
     AssignmentAllPollSerializer,
     AssignmentFullSerializer,
-    AssignmentShortSerializer
+    AssignmentShortSerializer,
 )
 
 

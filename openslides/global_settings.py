@@ -1,5 +1,5 @@
-import os
 import copy
+import os
 
 from django.utils.translation import ugettext_lazy
 
@@ -10,9 +10,6 @@ SITE_ROOT = os.path.realpath(os.path.dirname(__file__))
 AUTH_USER_MODEL = 'users.User'
 
 AUTHENTICATION_BACKENDS = ('openslides.users.auth.CustomizedModelBackend',)
-
-LOGIN_URL = '/users/'
-LOGIN_REDIRECT_URL = '/'
 
 SESSION_COOKIE_NAME = 'OpenSlidesSessionID'
 
@@ -89,9 +86,7 @@ INSTALLED_APPS = (
     'haystack',  # full-text-search
     'ckeditor',
     'rest_framework',
-    'openslides.poll',
-    'openslides.account',
-    'openslides.projector',
+    'openslides.poll',  # TODO: try to remove this line
     'openslides.agenda',
     'openslides.motions',
     'openslides.assignments',

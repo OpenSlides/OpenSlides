@@ -1,6 +1,11 @@
 from django.core.urlresolvers import reverse
 
-from openslides.utils.rest_api import CharField, ModelSerializer, RelatedField, get_collection_and_id_from_url
+from openslides.utils.rest_api import (
+    CharField,
+    ModelSerializer,
+    RelatedField,
+    get_collection_and_id_from_url,
+)
 
 from .models import Item, Speaker
 

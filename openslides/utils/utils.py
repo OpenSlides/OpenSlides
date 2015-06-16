@@ -1,6 +1,4 @@
-import difflib
 import roman
-
 from django.contrib.auth.models import Permission
 
 
@@ -16,31 +14,6 @@ def delete_default_permissions(**kwargs):
                 p.codename.startswith('delete') or
                 p.codename.startswith('change')):
             p.delete()
-
-
-def html_strong(string):
-    """
-    Returns the text wrapped in an HTML-Strong element.
-    """
-    return "<strong>%s</strong>" % string
-
-
-def htmldiff(text1, text2):
-    """
-    Return string of html diff between two strings (text1 and text2)
-    """
-    diff = difflib.HtmlDiff(wrapcolumn=60)
-    return diff.make_table(text1.splitlines(), text2.splitlines())
-
-
-def int_or_none(var):
-    """
-    Trys to convert 'var' into an integer. Returns None if an TypeError occures.
-    """
-    try:
-        return int(var)
-    except (TypeError, ValueError):
-        return None
 
 
 def to_roman(number):

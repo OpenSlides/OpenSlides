@@ -1,7 +1,13 @@
 from django.contrib.auth.hashers import make_password
-from django.utils.translation import ugettext as _, ugettext_lazy
+from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext_lazy
 
-from openslides.utils.rest_api import ModelSerializer, PrimaryKeyRelatedField, RelatedField, ValidationError
+from openslides.utils.rest_api import (
+    ModelSerializer,
+    PrimaryKeyRelatedField,
+    RelatedField,
+    ValidationError,
+)
 
 from .models import Group, Permission, User
 

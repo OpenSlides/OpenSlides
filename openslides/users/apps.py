@@ -6,9 +6,9 @@ class UsersAppConfig(AppConfig):
     verbose_name = 'OpenSlides Users'
 
     def ready(self):
-        # Load main menu entry and widgets.
+        # Load projector elements.
         # Do this by just importing all from these files.
-        from . import main_menu, projector, widgets  # noqa
+        from . import projector  # noqa
 
         # Import all required stuff.
         from openslides.config.signals import config_signal

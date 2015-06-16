@@ -1,5 +1,5 @@
 from unittest import TestCase
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
 from openslides.agenda.models import Item
 
@@ -58,32 +58,3 @@ class ItemTitle(TestCase):
 
         with self.assertRaises(NotImplementedError):
             item.get_title_supplement()
-
-
-@patch('openslides.agenda.models.Item.objects.rebuild')
-@patch('openslides.agenda.models.Item.get_children')
-class ItemDelete(TestCase):
-    def test_delete_with_children_is_true(self, get_children, rebuild):
-        item = Item()
-
-        with patch('builtins.super') as mock_super:
-            item.delete(with_children=True)
-
-        self.assertFalse(get_children.called)
-        rebuild.assert_called_once_with()
-        mock_super().delete.assert_called_once_with()
-
-    def test_delete_with_children_is_false(self, get_children, rebuild):
-        parent = Item()
-        item = Item()
-        item.parent = parent
-        child_item = MagicMock()
-        get_children.return_value = [child_item]
-
-        with patch('builtins.super') as mock_super:
-            item.delete(with_children=False)
-
-        child_item.move_to.assert_called_once_with(item.parent)
-        child_item.save_assert_called_once_with()
-        rebuild.assert_called_once_with()
-        mock_super().delete.assert_called_once_with()

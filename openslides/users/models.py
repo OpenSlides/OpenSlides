@@ -8,14 +8,13 @@ from django.contrib.auth.models import (  # noqa
     BaseUserManager,
     Group,
     Permission,
-    PermissionsMixin
+    PermissionsMixin,
 )
 from django.db import models
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.config.api import config
 from openslides.projector.models import SlideMixin
-from openslides.utils.models import AbsoluteUrlMixin
 from openslides.utils.rest_api import RESTModelMixin
 
 from .exceptions import UserError
@@ -88,7 +87,7 @@ class UserManager(BaseUserManager):
         return ''.join([choice(chars) for i in range(size)])
 
 
-class User(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, PermissionsMixin, AbstractBaseUser):
+class User(RESTModelMixin, SlideMixin, PermissionsMixin, AbstractBaseUser):
     """
     Model for users in OpenSlides. A client can login as a user with
     credentials. A user can also just be used as representation for a person
@@ -153,18 +152,6 @@ class User(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, PermissionsMixin, Abstr
 
     def __str__(self):
         return self.get_full_name()
-
-    def get_absolute_url(self, link='detail'):
-        """
-        Returns the URL to the user.
-        """
-        if link == 'detail':
-            url = "/users/%s/" % self.pk
-        elif link == 'update':
-            url = "/users/%s/edit/" % self.pk
-        else:
-            url = super().get_absolute_url(link)
-        return url
 
     def get_slide_context(self, **context):
         """

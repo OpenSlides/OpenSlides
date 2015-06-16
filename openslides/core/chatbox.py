@@ -3,7 +3,6 @@ from datetime import datetime
 from django.conf import settings
 from django.utils.html import urlize
 from django.utils.importlib import import_module
-
 from sockjs.tornado import SockJSConnection
 
 

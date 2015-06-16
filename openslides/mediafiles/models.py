@@ -1,17 +1,15 @@
 import mimetypes
 
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.projector.models import SlideMixin
-from openslides.utils.models import AbsoluteUrlMixin
-from openslides.utils.rest_api import RESTModelMixin
 from openslides.users.models import User
+from openslides.utils.rest_api import RESTModelMixin
 
 
-class Mediafile(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
+class Mediafile(RESTModelMixin, SlideMixin, models.Model):
     """
     Class for uploaded files which can be delivered under a certain url.
     """
@@ -67,19 +65,6 @@ class Mediafile(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
         else:
             self.filetype = ugettext_noop('unknown')
         return super(Mediafile, self).save(*args, **kwargs)
-
-    def get_absolute_url(self, link='update'):
-        """
-        Returns the URL to a mediafile. The link can be 'projector',
-        'update' or 'delete'.
-        """
-        if link == 'update':
-            url = reverse('mediafile_update', kwargs={'pk': str(self.pk)})
-        elif link == 'delete':
-            url = reverse('mediafile_delete', kwargs={'pk': str(self.pk)})
-        else:
-            url = super(Mediafile, self).get_absolute_url(link)
-        return url
 
     def get_filesize(self):
         """

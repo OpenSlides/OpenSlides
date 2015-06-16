@@ -1,23 +1,12 @@
-from django.contrib import messages
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
-from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
-from django.utils.translation import ugettext as _
-from django.utils.translation import activate, ugettext_lazy
+from django.contrib.auth.forms import AuthenticationForm
+from django.utils.translation import ugettext_lazy
 from rest_framework import status
 
 from openslides.utils.rest_api import ModelViewSet, Response
-from openslides.utils.views import (
-    APIView,
-    CSVImportView,
-    FormView,
-    LoginMixin,
-    PDFView,
-    UpdateView,
-)
+from openslides.utils.views import APIView, PDFView
 
-from .csv_import import import_users
-from .forms import UsersettingsForm
 from .models import Group, User
 from .pdf import users_passwords_to_pdf, users_to_pdf
 from .serializers import (
@@ -179,54 +168,3 @@ class WhoAmIView(APIView):
         return super().get_context_data(
             user_id=self.request.user.pk,
             **context)
-
-
-# Deprecated views. Will be removed after the implementation in angularjs
-
-class UserCSVImportView(CSVImportView):
-    """
-    Import users via CSV.
-    """
-    required_permission = 'users.can_manage'
-    success_url_name = 'user_list'
-    template_name = 'users/user_form_csv_import.html'
-    import_function = staticmethod(import_users)
-
-
-class UserSettingsView(LoginMixin, UpdateView):
-    required_permission = None
-    template_name = 'users/settings.html'
-    success_url_name = 'user_settings'
-    model = User
-    form_class = UsersettingsForm
-    url_name_args = []
-
-    def get_initial(self):
-        initial = super().get_initial()
-        initial['language'] = self.request.session.get('django_language', self.request.LANGUAGE_CODE)
-        return initial
-
-    def form_valid(self, form):
-        self.request.LANGUAGE_CODE = self.request.session['django_language'] = form.cleaned_data['language']
-        activate(self.request.LANGUAGE_CODE)
-        return super().form_valid(form)
-
-    def get_object(self):
-        return self.request.user
-
-
-class UserPasswordSettingsView(LoginMixin, FormView):
-    required_permission = None
-    template_name = 'users/password_change.html'
-    success_url_name = 'core_dashboard'
-    form_class = PasswordChangeForm
-
-    def form_valid(self, form):
-        form.save()
-        messages.success(self.request, _('Password successfully changed.'))
-        return super().form_valid(form)
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs

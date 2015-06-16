@@ -1,10 +1,10 @@
 from django import forms
-from django.dispatch import receiver
 from django.core.urlresolvers import reverse
+from django.dispatch import receiver
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from openslides.config.api import config, ConfigCollection, ConfigVariable
+from openslides.config.api import ConfigCollection, ConfigVariable, config
 from openslides.config.signals import config_signal
 from openslides.utils.test import TestCase
 

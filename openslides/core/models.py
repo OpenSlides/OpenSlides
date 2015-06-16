@@ -3,7 +3,6 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 from jsonfield import JSONField
 
-from openslides.utils.models import AbsoluteUrlMixin
 from openslides.utils.projector import ProjectorElement
 from openslides.utils.rest_api import RESTModelMixin
 
@@ -83,7 +82,7 @@ class Projector(RESTModelMixin, models.Model):
                         yield requirement
 
 
-class CustomSlide(RESTModelMixin, AbsoluteUrlMixin, models.Model):
+class CustomSlide(RESTModelMixin, models.Model):
     """
     Model for slides with custom content.
     """
@@ -104,7 +103,7 @@ class CustomSlide(RESTModelMixin, AbsoluteUrlMixin, models.Model):
         return self.title
 
 
-class Tag(RESTModelMixin, AbsoluteUrlMixin, models.Model):
+class Tag(RESTModelMixin, models.Model):
     """
     Model for tags. This tags can be used for other models like agenda items,
     motions or assignments.

@@ -3,13 +3,10 @@ from datetime import datetime
 from django import forms
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
-from django.template.loader import render_to_string
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
-from openslides.config.api import config, ConfigCollection, ConfigVariable
-from openslides.projector.api import get_active_slide, get_active_object
-from openslides.projector.projector import Overlay
+from openslides.config.api import ConfigCollection, ConfigVariable
 
 from .models import Item
 
@@ -88,54 +85,6 @@ def setup_agenda_config(sender, **kwargs):
                                        agenda_numeral_system),
                             extra_context={'extra_stylefiles': extra_stylefiles,
                                            'extra_javascript': extra_javascript})
-
-
-def agenda_list_of_speakers(sender, **kwargs):
-    """
-    Receiver function to setup the list of speaker overlay. It is connected
-    to the signal openslides.projector.signals.projector_overlays during
-    app loading.
-    """
-    name = 'agenda_speaker'
-
-    def get_widget_html():
-        """
-        Returns the the html-code to show in the overly-widget.
-        """
-        return render_to_string('agenda/overlay_speaker_widget.html')
-
-    def get_projector_html():
-        """
-        Returns an html-code to show on the projector.
-
-        The overlay is only shown on agenda-items and not on the
-        list-of-speakers slide.
-        """
-        slide = get_active_object()
-        if slide is None or isinstance(slide, Item):
-            item = slide
-        else:
-            # TODO: If there is more than one item, use the first one in the
-            #       mptt tree that is not closed.
-            try:
-                item = Item.objects.filter(
-                    content_type=ContentType.objects.get_for_model(slide),
-                    object_id=slide.pk)[0]
-            except IndexError:
-                item = None
-        if item and get_active_slide().get('type', None) != 'list_of_speakers':
-            list_of_speakers = item.get_list_of_speakers(
-                old_speakers_count=config['agenda_show_last_speakers'],
-                coming_speakers_count=5)
-
-            value = render_to_string('agenda/overlay_speaker_projector.html', {
-                'list_of_speakers': list_of_speakers,
-                'closed': item.speaker_list_closed})
-        else:
-            value = None
-        return value
-
-    return Overlay(name, get_widget_html, get_projector_html)
 
 
 def listen_to_related_object_delete_signal(sender, instance, **kwargs):

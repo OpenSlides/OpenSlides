@@ -11,7 +11,7 @@ Version 2.0.0 (unreleased)
 Agenda:
 - Updated the tests and changed only small internal parts of method of the
   agenda model. No API changes.
-- Deprecated mptt.
+- Removed mptt.
 Assignments:
 - Renamed app from assignment to assignments.
 - Massive refactoring and cleanup of the app.
@@ -48,6 +48,7 @@ Other:
   Sheets libraries.
 - Used setup.cfg for development tools.
 - Fixed bug in LocalizedModelMultipleChoiceField.
+- Removed the django error pages
 
 
 Version 1.7 (2015-02-16)

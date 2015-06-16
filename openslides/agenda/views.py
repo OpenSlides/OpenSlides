@@ -1,24 +1,11 @@
-# TODO: Rename all views and template names
-
 from cgi import escape
 from collections import defaultdict
-from json import dumps
 
 from django.contrib.auth import get_user_model
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.staticfiles.templatetags.staticfiles import static
-from django.template.loader import render_to_string
-from django.utils.datastructures import SortedDict
-from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 from reportlab.platypus import Paragraph
 
-from openslides.config.api import config
-from openslides.projector.api import (
-    get_active_object,
-    get_projector_overlays_js,
-    get_overlays)
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.pdf import stylesheet
 from openslides.utils.rest_api import (
@@ -28,33 +15,10 @@ from openslides.utils.rest_api import (
     detail_route,
     list_route,
 )
-from openslides.utils.views import (
-    AjaxMixin,
-    PDFView,
-    RedirectView,
-    SingleObjectMixin,
-    TemplateView)
+from openslides.utils.views import PDFView
 
 from .models import Item, Speaker
 from .serializers import ItemSerializer
-
-
-class CreateRelatedAgendaItemView(SingleObjectMixin, RedirectView):
-    """
-    View to create and agenda item for a related object.
-
-    This view is only for subclassing in views of related apps. You
-    have to define 'model = ....'
-    """
-    required_permission = 'agenda.can_manage'
-    url_name = 'item_overview'
-    url_name_args = []
-
-    def pre_redirect(self, request, *args, **kwargs):
-        """
-        Create the agenda item.
-        """
-        self.item = Item.objects.create(content_object=self.get_object())
 
 
 class AgendaPDF(PDFView):
@@ -75,108 +39,6 @@ class AgendaPDF(PDFView):
                     stylesheet['Subitem']))
             else:
                 story.append(Paragraph(escape(item.get_title()), stylesheet['Item']))
-
-
-class CurrentListOfSpeakersProjectorView(AjaxMixin, TemplateView):
-    """
-    View with the current list of speakers depending on the active slide.
-    Usefule for the projector.
-    """
-    template_name = 'agenda/current_list_of_speakers_projector.html'
-
-    def get(self, request, *args, **kwargs):
-        """
-        Returns response object depending on request type (ajax or normal).
-        """
-        if request.is_ajax():
-            value = self.ajax_get(request, *args, **kwargs)
-        else:
-            value = super(CurrentListOfSpeakersProjectorView, self).get(request, *args, **kwargs)
-        return value
-
-    def get_item(self):
-        """
-        Returns the item of the current slide is an agenda item slide or a
-        slide of a related model else returns None.
-        """
-        slide_object = get_active_object()
-        if slide_object is None or isinstance(slide_object, Item):
-            item = slide_object
-        else:
-            # TODO: If there is more than one item, use the first one in the
-            #       mptt tree that is not closed.
-            try:
-                item = Item.objects.filter(
-                    content_type=ContentType.objects.get_for_model(slide_object),
-                    object_id=slide_object.pk)[0]
-            except IndexError:
-                item = None
-        return item
-
-    def get_content(self):
-        """
-        Returns the content of this slide.
-        """
-        item = self.get_item()
-        if item is None:
-            content = mark_safe('<h1>%s</h1><i>%s</i>\n' % (_('List of speakers'), _('Not available.')))
-        else:
-            content_dict = {
-                'title': item.get_title(),
-                'item': item,
-                'list_of_speakers': item.get_list_of_speakers(
-                    old_speakers_count=config['agenda_show_last_speakers'])}
-            content = render_to_string('agenda/item_slide_list_of_speaker.html', content_dict)
-        return content
-
-    def get_overlays_and_overlay_js(self):
-        """
-        Returns the overlays and their JavaScript for this slide as a
-        two-tuple. The overlay 'agenda_speaker' is always excluded.
-
-        The required JavaScript fot this view is inserted.
-        """
-        overlays = get_overlays(only_active=True)
-        overlays.pop('agenda_speaker', None)
-        overlay_js = get_projector_overlays_js(as_json=True)
-        # Note: The JavaScript content of overlay 'agenda_speaker' is not
-        #       excluded because this overlay has no such content at the moment.
-        extra_js = SortedDict()
-        extra_js['load_file'] = static('js/agenda_current_list_of_speakers_projector.js')
-        extra_js['call'] = 'reloadListOfSpeakers();'
-        extra_js = dumps(extra_js)
-        overlay_js.append(extra_js)
-        return overlays, overlay_js
-
-    def get_context_data(self, **context):
-        """
-        Returns the context for the projector template. Contains the content
-        of this slide.
-        """
-        overlays, overlay_js = self.get_overlays_and_overlay_js()
-        return super(CurrentListOfSpeakersProjectorView, self).get_context_data(
-            content=self.get_content(),
-            overlays=overlays,
-            overlay_js=overlay_js,
-            **context)
-
-    def get_ajax_context(self, **context):
-        """
-        Returns the context including the slide content for ajax response. The
-        overlay 'agenda_speaker' is always excluded.
-        """
-        overlay_dict = {}
-        for overlay in get_overlays().values():
-            if overlay.is_active() and overlay.name != 'agenda_speaker':
-                overlay_dict[overlay.name] = {
-                    'html': overlay.get_projector_html(),
-                    'javascript': overlay.get_javascript()}
-            else:
-                overlay_dict[overlay.name] = None
-        return super(CurrentListOfSpeakersProjectorView, self).get_ajax_context(
-            content=self.get_content(),
-            overlays=overlay_dict,
-            **context)
 
 
 class ItemViewSet(ModelViewSet):

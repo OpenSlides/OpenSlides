@@ -7,14 +7,15 @@ from django.core.management import execute_from_command_line
 
 from openslides import __version__ as openslides_version
 from openslides.utils.main import (
-    get_default_settings_path,
-    setup_django_settings_module,
-    write_settings,
-    UnknownCommand,
     ExceptionArgumentParser,
+    UnknownCommand,
+    get_default_settings_path,
     get_development_settings_path,
+    is_development,
+    setup_django_settings_module,
     start_browser,
-    is_development)
+    write_settings,
+)
 
 
 def main():

@@ -32,60 +32,6 @@ class UserTest(TestCase):
             "User.get_slide_context returns a wrong context.")
 
 
-class UserGetAbsoluteUrlTest(TestCase):
-    def test_get_absolute_url_default(self):
-        """
-        Tests get_absolute_url() with no argument.
-
-        It should return the url for the url-pattern of user_detail.
-        """
-        user = User(pk=5)
-
-        self.assertEqual(
-            user.get_absolute_url(),
-            '/users/5/')
-
-    def test_get_absolute_url_detail(self):
-        """
-        Tests get_absolute_url() with 'detail' as argument.
-        """
-        user = User(pk=5)
-
-        url = user.get_absolute_url('detail')
-
-        self.assertEqual(
-            url,
-            '/users/5/')
-
-    def test_get_absolute_url_update(self):
-        """
-        Tests get_absolute_url() with 'update' as argument.
-        """
-        user = User(pk=5)
-
-        url = user.get_absolute_url('update')
-
-        self.assertEqual(
-            url,
-            '/users/5/edit/')
-
-    def test_get_absolute_url_other(self):
-        """
-        Tests get_absolute_url() with any other argument.
-        """
-        user = User(pk=5)
-        dummy_argument = MagicMock()
-
-        with patch('builtins.super') as mock_super:
-            mock_super().get_absolute_url.return_value = 'test url'
-            url = user.get_absolute_url(dummy_argument)
-
-        self.assertEqual(
-            url,
-            'test url')
-        mock_super().get_absolute_url.assert_called_once_with(dummy_argument)
-
-
 class UserGetFullName(TestCase):
     def test_get_full_name_with_structure_level_and_title(self):
         """
