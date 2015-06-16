@@ -4,30 +4,22 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
-from mptt.models import MPTTModel, TreeForeignKey
 
 from openslides.config.api import config
 from openslides.core.models import Tag
-from openslides.projector.api import (reset_countdown,
-                                      start_countdown, stop_countdown)
 from openslides.projector.models import SlideMixin
+from openslides.users.models import User
 from openslides.utils.exceptions import OpenSlidesError
-from openslides.utils.models import AbsoluteUrlMixin
 from openslides.utils.rest_api import RESTModelMixin
 from openslides.utils.utils import to_roman
-from openslides.users.models import User
 
 
-# TODO: remove mptt after removing the django views and forms
-class Item(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, MPTTModel):
+class Item(RESTModelMixin, SlideMixin, models.Model):
     """
     An Agenda Item
-
-    MPTT-model. See http://django-mptt.github.com/django-mptt/
     """
     slide_callback_name = 'agenda'
 
@@ -76,8 +68,7 @@ class Item(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, MPTTModel):
     The intended duration for the topic.
     """
 
-    parent = TreeForeignKey('self', null=True, blank=True,
-                            related_name='children')
+    parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
     """
     The parent item in the agenda tree.
     """
@@ -119,44 +110,35 @@ class Item(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, MPTTModel):
             ('can_manage', ugettext_noop("Can manage agenda")),
             ('can_see_orga_items', ugettext_noop("Can see orga items and time scheduling of agenda")))
 
-    class MPTTMeta:
-        order_insertion_by = ['weight']
+    def __str__(self):
+        return self.get_title()
 
     def clean(self):
         """
         Ensures that the children of orga items are only orga items.
         """
-        if self.type == self.AGENDA_ITEM and self.parent is not None and self.parent.type == self.ORGANIZATIONAL_ITEM:
+        if (self.type == self.AGENDA_ITEM and
+                self.parent is not None and
+                self.parent.type == self.ORGANIZATIONAL_ITEM):
             raise ValidationError(_('Agenda items can not be child elements of an organizational item.'))
-        if self.type == self.ORGANIZATIONAL_ITEM and self.get_descendants().filter(type=self.AGENDA_ITEM).exists():
+        if (self.type == self.ORGANIZATIONAL_ITEM and
+                self.children.filter(type=self.AGENDA_ITEM).exists()):
             raise ValidationError(_('Organizational items can not have agenda items as child elements.'))
         return super().clean()
 
-    def __str__(self):
-        return self.get_title()
-
-    def get_absolute_url(self, link='detail'):
+    def delete(self, with_children=False):
         """
-        Return the URL to this item.
+        Delete the Item.
 
-        The link can be detail, update or delete.
+        If with_children is True, all children of the item will be deleted as
+        well. If with_children is False, all children will be children of the
+        parent of the item.
         """
-        if link == 'detail':
-            url = reverse('item_view', args=[str(self.id)])
-        elif link == 'update':
-            url = reverse('item_edit', args=[str(self.id)])
-        elif link == 'delete':
-            url = reverse('item_delete', args=[str(self.id)])
-        elif link == 'projector_list_of_speakers':
-            url = '%s&type=list_of_speakers' % super().get_absolute_url('projector')
-        elif link == 'projector_summary':
-            url = '%s&type=summary' % super().get_absolute_url('projector')
-        elif (link in ('projector', 'projector_preview') and
-                self.content_object and isinstance(self.content_object, SlideMixin)):
-            url = self.content_object.get_absolute_url(link)
-        else:
-            url = super().get_absolute_url(link)
-        return url
+        if not with_children:
+            for child in self.children.all():
+                child.parent = self.parent
+                child.save()
+        super().delete()
 
     def get_title(self):
         """
@@ -182,39 +164,6 @@ class Item(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, MPTTModel):
             return self.content_object.get_agenda_title_supplement()
         except AttributeError:
             raise NotImplementedError('You have to provide a get_agenda_title_supplement method on your related model.')
-
-    @property
-    def weight_form(self):
-        """
-        Return the WeightForm for this item.
-        """
-        from openslides.agenda.forms import ItemOrderForm
-        try:
-            parent = self.parent.id
-        except AttributeError:
-            parent = 0
-        initial = {
-            'weight': self.weight,
-            'self': self.id,
-            'parent': parent,
-        }
-        return ItemOrderForm(initial=initial, prefix="i%d" % self.id)
-
-    def delete(self, with_children=False):
-        """
-        Delete the Item.
-
-        If with_children is True, all children of the item will be deleted as
-        well. If with_children is False, all children will be children of the
-        parent of the item.
-        """
-        if not with_children:
-            for child in self.get_children():
-                child.move_to(self.parent)
-                child.save()
-        super().delete()
-        # TODO: Try to remove the rebuild call
-        Item.objects.rebuild()
 
     def get_list_of_speakers(self, old_speakers_count=None, coming_speakers_count=None):
         """
@@ -316,27 +265,28 @@ class Item(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, MPTTModel):
         Returns the number of this agenda item.
         """
         if self.type == self.AGENDA_ITEM:
-            if self.is_root_node():
+            if self.parent is None:
+                sibling_no = self.sibling_no()
                 if config['agenda_numeral_system'] == 'arabic':
-                    return str(self._calc_sibling_no())
+                    return str(sibling_no)
                 else:  # config['agenda_numeral_system'] == 'roman'
-                    return to_roman(self._calc_sibling_no())
+                    return to_roman(sibling_no)
             else:
-                return '%s.%s' % (self.parent.calc_item_no(), self._calc_sibling_no())
+                return '%s.%s' % (self.parent.calc_item_no(), self.sibling_no())
         else:
             return ''
 
-    def _calc_sibling_no(self):
+    def sibling_no(self):
         """
-        Counts all siblings on the same level which are AGENDA_ITEMs.
+        Counts how many AGENDA_ITEMS with the same parent (siblings) have a
+        smaller weight then this item.
+
+        Returns this number + 1 or 0 when self is not an AGENDA_ITEM.
         """
-        sibling_no = 0
-        prev_sibling = self.get_previous_sibling()
-        while prev_sibling is not None:
-            if prev_sibling.type == self.AGENDA_ITEM:
-                sibling_no += 1
-            prev_sibling = prev_sibling.get_previous_sibling()
-        return sibling_no + 1
+        return Item.objects.filter(
+            parent=self.parent,
+            type=self.AGENDA_ITEM,
+            weight__lte=self.weight).count()
 
 
 class SpeakerManager(models.Manager):
@@ -353,7 +303,7 @@ class SpeakerManager(models.Manager):
         return self.create(item=item, user=user, weight=weight + 1)
 
 
-class Speaker(RESTModelMixin, AbsoluteUrlMixin, models.Model):
+class Speaker(RESTModelMixin, models.Model):
     """
     Model for the Speaker list.
     """
@@ -393,16 +343,6 @@ class Speaker(RESTModelMixin, AbsoluteUrlMixin, models.Model):
     def __str__(self):
         return str(self.user)
 
-    def get_absolute_url(self, link='detail'):
-        if link == 'detail':
-            url = self.user.get_absolute_url('detail')
-        elif link == 'delete':
-            url = reverse('agenda_speaker_delete',
-                          args=[self.item.pk, self.pk])
-        else:
-            url = super(Speaker, self).get_absolute_url(link)
-        return url
-
     def begin_speach(self):
         """
         Let the user speak.
@@ -421,8 +361,10 @@ class Speaker(RESTModelMixin, AbsoluteUrlMixin, models.Model):
         self.save()
         # start countdown
         if config['agenda_couple_countdown_and_speakers']:
-            reset_countdown()
-            start_countdown()
+            # TODO: Fix me with the new countdown api
+            # reset_countdown()
+            # start_countdown()
+            pass
 
     def end_speach(self):
         """
@@ -432,7 +374,9 @@ class Speaker(RESTModelMixin, AbsoluteUrlMixin, models.Model):
         self.save()
         # stop countdown
         if config['agenda_couple_countdown_and_speakers']:
-            stop_countdown()
+            # TODO: Fix me with the new countdown api
+            # stop_countdown()
+            pass
 
     def get_root_rest_element(self):
         """

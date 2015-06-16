@@ -1,7 +1,6 @@
-from cgi import escape
-
-from operator import attrgetter
 import random
+from cgi import escape
+from operator import attrgetter
 
 from bs4 import BeautifulSoup
 from django.utils.translation import ugettext as _
@@ -15,9 +14,6 @@ from openslides.users.models import Group, User  # TODO: remove this line
 from openslides.utils.pdf import stylesheet
 
 from .models import Category
-
-# Needed to count the delegates
-# TODO: find another way to do this.
 
 
 def motions_to_pdf(pdf, motions):

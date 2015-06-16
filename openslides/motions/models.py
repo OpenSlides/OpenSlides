@@ -1,25 +1,28 @@
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.db.models import Max
 from django.utils import formats
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
+from jsonfield import JSONField
 
 from openslides.config.api import config
 from openslides.core.models import Tag
 from openslides.mediafiles.models import Mediafile
-from openslides.poll.models import (BaseOption, BasePoll, BaseVote, CollectDefaultVotesMixin)
+from openslides.poll.models import (
+    BaseOption,
+    BasePoll,
+    BaseVote,
+    CollectDefaultVotesMixin,
+)
 from openslides.projector.models import SlideMixin
-from jsonfield import JSONField
-from openslides.utils.models import AbsoluteUrlMixin
-from openslides.utils.rest_api import RESTModelMixin
 from openslides.users.models import User
+from openslides.utils.rest_api import RESTModelMixin
 
 from .exceptions import WorkflowError
 
 
-class Motion(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
+class Motion(RESTModelMixin, SlideMixin, models.Model):
     """
     The Motion Class.
 
@@ -190,22 +193,6 @@ class Motion(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
             # TODO: Don't call this if it was not a new version
             self.active_version = use_version
             self.save(update_fields=['active_version'])
-
-    def get_absolute_url(self, link='detail'):
-        """
-        Return an URL for this version.
-
-        The keyword argument 'link' can be 'detail', 'update' or 'delete'.
-        """
-        if link == 'detail':
-            url = reverse('motion_detail', args=[str(self.pk)])
-        elif link == 'update':
-            url = reverse('motion_update', args=[str(self.pk)])
-        elif link == 'delete':
-            url = reverse('motion_delete', args=[str(self.pk)])
-        else:
-            url = super(Motion, self).get_absolute_url(link)
-        return url
 
     def version_data_changed(self, version):
         """
@@ -535,7 +522,7 @@ class Motion(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
         return config['motion_amendments_enabled'] and self.parent is not None
 
 
-class MotionVersion(RESTModelMixin, AbsoluteUrlMixin, models.Model):
+class MotionVersion(RESTModelMixin, models.Model):
     """
     A MotionVersion object saves some date of the motion.
     """
@@ -572,22 +559,6 @@ class MotionVersion(RESTModelMixin, AbsoluteUrlMixin, models.Model):
         counter = self.version_number or ugettext_lazy('new')
         return "Motion %s, Version %s" % (self.motion_id, counter)
 
-    def get_absolute_url(self, link='detail'):
-        """
-        Return the URL of this Version.
-
-        The keyargument link can be 'detail' or 'delete'.
-        """
-        if link == 'detail':
-            url = reverse('motion_version_detail', args=[str(self.motion.pk),
-                                                         str(self.version_number)])
-        elif link == 'delete':
-            url = reverse('motion_version_delete', args=[str(self.motion.pk),
-                                                         str(self.version_number)])
-        else:
-            url = super(MotionVersion, self).get_absolute_url(link)
-        return url
-
     @property
     def active(self):
         """Return True, if the version is the active version of a motion. Else: False."""
@@ -600,7 +571,7 @@ class MotionVersion(RESTModelMixin, AbsoluteUrlMixin, models.Model):
         return self.motion
 
 
-class Category(RESTModelMixin, AbsoluteUrlMixin, models.Model):
+class Category(RESTModelMixin, models.Model):
     name = models.CharField(max_length=255, verbose_name=ugettext_lazy("Category name"))
     """Name of the category."""
 
@@ -612,15 +583,6 @@ class Category(RESTModelMixin, AbsoluteUrlMixin, models.Model):
 
     def __str__(self):
         return self.name
-
-    def get_absolute_url(self, link='update'):
-        if link == 'update':
-            url = reverse('motion_category_update', args=[str(self.pk)])
-        elif link == 'delete':
-            url = reverse('motion_category_delete', args=[str(self.pk)])
-        else:
-            url = super(Category, self).get_absolute_url(link)
-        return url
 
     class Meta:
         ordering = ['prefix']
@@ -699,7 +661,7 @@ class MotionOption(RESTModelMixin, BaseOption):
 
 
 class MotionPoll(RESTModelMixin, SlideMixin, CollectDefaultVotesMixin,
-                 AbsoluteUrlMixin, BasePoll):
+                 BasePoll):
     """The Class to saves the vote result for a motion poll."""
 
     slide_callback_name = 'motionpoll'
@@ -727,22 +689,6 @@ class MotionPoll(RESTModelMixin, SlideMixin, CollectDefaultVotesMixin,
     def __str__(self):
         """Return a string, representing the poll."""
         return _('Vote %d') % self.poll_number
-
-    def get_absolute_url(self, link='update'):
-        """
-        Return an URL for the poll.
-
-        The keyargument 'link' can be 'update' or 'delete'.
-        """
-        if link == 'update':
-            url = reverse('motionpoll_update', args=[str(self.motion.pk),
-                                                     str(self.poll_number)])
-        elif link == 'delete':
-            url = reverse('motionpoll_delete', args=[str(self.motion.pk),
-                                                     str(self.poll_number)])
-        else:
-            url = super(MotionPoll, self).get_absolute_url(link)
-        return url
 
     def set_options(self):
         """Create the option class for this poll."""

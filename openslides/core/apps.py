@@ -6,9 +6,9 @@ class CoreAppConfig(AppConfig):
     verbose_name = 'OpenSlides Core'
 
     def ready(self):
-        # Load main menu entry, projector elements and widgets.
+        # Load projector elements.
         # Do this by just importing all from these files.
-        from . import main_menu, projector, widgets  # noqa
+        from . import projector  # noqa
 
         # Import all required stuff.
         from django.db.models import signals

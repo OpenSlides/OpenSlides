@@ -2,7 +2,11 @@ from django import forms
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
-from openslides.config.api import ConfigGroup, ConfigGroupedCollection, ConfigVariable
+from openslides.config.api import (
+    ConfigGroup,
+    ConfigGroupedCollection,
+    ConfigVariable,
+)
 from openslides.poll.models import PERCENT_BASE_CHOICES
 
 

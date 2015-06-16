@@ -5,17 +5,17 @@ from urllib.parse import unquote
 
 from django.conf import settings
 from django.core.wsgi import get_wsgi_application
-from sockjs.tornado import SockJSRouter, SockJSConnection
-from tornado.httpserver import HTTPServer
+from sockjs.tornado import SockJSConnection, SockJSRouter
 from tornado.httpclient import AsyncHTTPClient, HTTPRequest
+from tornado.httpserver import HTTPServer
 from tornado.httputil import HTTPHeaders
 from tornado.ioloop import IOLoop
 from tornado.options import parse_command_line
 from tornado.web import (
     Application,
     FallbackHandler,
+    HTTPError,
     StaticFileHandler,
-    HTTPError
 )
 from tornado.wsgi import WSGIContainer
 

@@ -1,18 +1,27 @@
 from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.utils.text import slugify
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_noop
-from django.shortcuts import get_object_or_404
 from reportlab.platypus import SimpleDocTemplate
 from rest_framework import status
 
 from openslides.config.api import config
-from openslides.utils.rest_api import ModelViewSet, Response, ValidationError, detail_route
-from openslides.utils.views import (PDFView, SingleObjectMixin)
+from openslides.utils.rest_api import (
+    ModelViewSet,
+    Response,
+    ValidationError,
+    detail_route,
+)
+from openslides.utils.views import PDFView, SingleObjectMixin
 
-from .models import (Category, Motion, MotionPoll, MotionVersion, Workflow)
+from .models import Category, Motion, MotionPoll, MotionVersion, Workflow
 from .pdf import motion_poll_to_pdf, motion_to_pdf, motions_to_pdf
-from .serializers import CategorySerializer, MotionSerializer, WorkflowSerializer
+from .serializers import (
+    CategorySerializer,
+    MotionSerializer,
+    WorkflowSerializer,
+)
 
 
 class MotionViewSet(ModelViewSet):
@@ -236,13 +245,13 @@ class MotionViewSet(ModelViewSet):
         return Response({'detail': message})
 
 
-class PollMixin(object):
+class PollPDFView(PDFView):
     """
-    Mixin for the PollUpdateView and the PollDeleteView.
+    Generates a ballotpaper.
     """
 
     required_permission = 'motions.can_manage'
-    success_url_name = 'motion_detail'
+    top_space = 0
 
     def get_object(self):
         """
@@ -260,21 +269,6 @@ class PollMixin(object):
             obj = get_object_or_404(queryset)
             self._object = obj
         return obj
-
-    def get_url_name_args(self):
-        """
-        Return the arguments to create the url to the success_url.
-        """
-        return [self.get_object().motion.pk]
-
-
-class PollPDFView(PollMixin, PDFView):
-    """
-    Generates a ballotpaper.
-    """
-
-    required_permission = 'motions.can_manage'
-    top_space = 0
 
     def get_filename(self):
         """

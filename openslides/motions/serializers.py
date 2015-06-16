@@ -7,7 +7,8 @@ from openslides.utils.rest_api import (
     IntegerField,
     ModelSerializer,
     PrimaryKeyRelatedField,
-    ValidationError,)
+    ValidationError,
+)
 
 from .models import (
     Category,
@@ -18,7 +19,8 @@ from .models import (
     MotionVersion,
     MotionVote,
     State,
-    Workflow,)
+    Workflow,
+)
 
 
 def validate_workflow_field(value):

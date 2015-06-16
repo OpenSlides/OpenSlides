@@ -4,7 +4,6 @@ from . import views
 
 urlpatterns = patterns(
     '',
-
     url(r'^pdf/$',
         views.MotionPDFView.as_view(print_all_motions=True),
         name='motions_pdf'),

@@ -40,7 +40,7 @@ class Migration(migrations.Migration):
             options={
                 'ordering': ('weight', 'title'),
             },
-            bases=(openslides.utils.rest_api.RESTModelMixin, openslides.utils.models.AbsoluteUrlMixin, models.Model),
+            bases=(openslides.utils.rest_api.RESTModelMixin, models.Model),
         ),
         migrations.CreateModel(
             name='Projector',
@@ -67,7 +67,7 @@ class Migration(migrations.Migration):
                 'permissions': (('can_manage_tags', 'Can manage tags'),),
                 'ordering': ('name',),
             },
-            bases=(openslides.utils.rest_api.RESTModelMixin, openslides.utils.models.AbsoluteUrlMixin, models.Model),
+            bases=(openslides.utils.rest_api.RESTModelMixin, models.Model),
         ),
         migrations.RunPython(
             add_default_projector,

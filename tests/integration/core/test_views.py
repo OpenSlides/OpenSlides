@@ -3,8 +3,8 @@ import json
 from django.core.urlresolvers import reverse
 from rest_framework import status
 
-from openslides.utils.test import TestCase
 from openslides.core.models import CustomSlide, Projector
+from openslides.utils.test import TestCase
 
 
 class ProjectorAPI(TestCase):

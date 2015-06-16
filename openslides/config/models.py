@@ -1,6 +1,5 @@
 from django.db import models
 from django.utils.translation import ugettext_noop
-
 from jsonfield import JSONField
 
 

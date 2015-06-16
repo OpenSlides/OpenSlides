@@ -4,8 +4,6 @@ from . import views
 
 urlpatterns = patterns(
     '',
-
-    # PDF
     url(r'^print/$',
         views.AssignmentPDF.as_view(),
         name='assignments_pdf'),

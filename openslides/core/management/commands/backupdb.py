@@ -1,7 +1,7 @@
-from optparse import make_option  # TODO: Use argpase in Django 1.8
 import shutil
+from optparse import make_option  # TODO: Use argpase in Django 1.8
 
-from django.core.management.base import NoArgsCommand, CommandError
+from django.core.management.base import CommandError, NoArgsCommand
 from django.db import connection, transaction
 
 from openslides.utils.main import get_database_path_from_settings

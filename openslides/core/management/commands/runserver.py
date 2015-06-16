@@ -1,10 +1,10 @@
-from datetime import datetime
-import sys
-import socket
 import errno
+import socket
+import sys
+from datetime import datetime
 
-from django.core.management.commands.runserver import Command as _Command
 from django.core.exceptions import ImproperlyConfigured
+from django.core.management.commands.runserver import Command as _Command
 from django.utils import translation
 from django.utils.encoding import force_text
 

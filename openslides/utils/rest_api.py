@@ -1,9 +1,12 @@
 import re
-
 from urllib.parse import urlparse
 
 from django.core.urlresolvers import reverse
 from rest_framework.decorators import detail_route  # noqa
+from rest_framework.decorators import list_route  # noqa
+from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin  # noqa
+from rest_framework.response import Response  # noqa
+from rest_framework.routers import DefaultRouter
 from rest_framework.serializers import (  # noqa
     CharField,
     DictField,
@@ -15,13 +18,14 @@ from rest_framework.serializers import (  # noqa
     PrimaryKeyRelatedField,
     RelatedField,
     SerializerMethodField,
-    ValidationError)
-from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin  # noqa
-from rest_framework.response import Response  # noqa
-from rest_framework.routers import DefaultRouter
-from rest_framework.viewsets import ModelViewSet as _ModelViewSet
-from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet, ViewSet  # noqa
-from rest_framework.decorators import list_route  # noqa
+    ValidationError,
+)
+from rest_framework.viewsets import ModelViewSet as _ModelViewSet  # noqa
+from rest_framework.viewsets import (  # noqa
+    GenericViewSet,
+    ReadOnlyModelViewSet,
+    ViewSet,
+)
 
 from .exceptions import OpenSlidesError
 

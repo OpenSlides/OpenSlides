@@ -1,8 +1,9 @@
 import json
+
 from rest_framework.test import APIClient
 
-from openslides.utils.test import TestCase
 from openslides.agenda.models import Item
+from openslides.utils.test import TestCase
 
 
 class AgendaTreeTest(TestCase):

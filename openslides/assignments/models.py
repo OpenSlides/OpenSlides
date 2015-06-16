@@ -1,21 +1,23 @@
 from django.contrib.contenttypes.fields import GenericRelation
-from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.agenda.models import Item, Speaker
-from openslides.core.models import Tag
 from openslides.config.api import config
-from openslides.poll.models import (BaseOption, BasePoll, BaseVote,
-                                    CollectDefaultVotesMixin,
-                                    PublishPollMixin)
+from openslides.core.models import Tag
+from openslides.poll.models import (
+    BaseOption,
+    BasePoll,
+    BaseVote,
+    CollectDefaultVotesMixin,
+    PublishPollMixin,
+)
 from openslides.projector.models import SlideMixin
-from openslides.utils.exceptions import OpenSlidesError
-from openslides.utils.models import AbsoluteUrlMixin
-from openslides.utils.rest_api import RESTModelMixin
 from openslides.users.models import User
+from openslides.utils.exceptions import OpenSlidesError
+from openslides.utils.rest_api import RESTModelMixin
 
 
 class AssignmentRelatedUser(RESTModelMixin, models.Model):
@@ -53,7 +55,7 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
         return self.assignment
 
 
-class Assignment(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
+class Assignment(RESTModelMixin, SlideMixin, models.Model):
     slide_callback_name = 'assignment'
 
     PHASE_SEARCH = 0
@@ -132,20 +134,6 @@ class Assignment(RESTModelMixin, SlideMixin, AbsoluteUrlMixin, models.Model):
 
     def __str__(self):
         return self.title
-
-    def get_absolute_url(self, link='detail'):
-        """
-        Returns absolute url to the assignment instance.
-        """
-        if link == 'detail':
-            url = reverse('assignment_detail', args=[str(self.pk)])
-        elif link == 'update':
-            url = reverse('assignment_update', args=[str(self.pk)])
-        elif link == 'delete':
-            url = reverse('assignment_delete', args=[str(self.pk)])
-        else:
-            url = super().get_absolute_url(link)
-        return url
 
     def get_slide_context(self, **context):
         """
@@ -351,7 +339,7 @@ class AssignmentOption(RESTModelMixin, BaseOption):
 
 
 class AssignmentPoll(RESTModelMixin, SlideMixin, CollectDefaultVotesMixin,
-                     PublishPollMixin, AbsoluteUrlMixin, BasePoll):
+                     PublishPollMixin, BasePoll):
     slide_callback_name = 'assignmentpoll'
     option_class = AssignmentOption
 
@@ -364,20 +352,6 @@ class AssignmentPoll(RESTModelMixin, SlideMixin, CollectDefaultVotesMixin,
 
     def __str__(self):
         return _("Ballot %d") % self.get_ballot()
-
-    def get_absolute_url(self, link='update'):
-        """
-        Return an URL for the poll.
-
-        The keyargument 'link' can be 'update' or 'delete'.
-        """
-        if link == 'update':
-            url = reverse('assignmentpoll_update', args=[str(self.pk)])
-        elif link == 'delete':
-            url = reverse('assignmentpoll_delete', args=[str(self.pk)])
-        else:
-            url = super().get_absolute_url(link)
-        return url
 
     def get_assignment(self):
         return self.assignment
