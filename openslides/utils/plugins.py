@@ -28,8 +28,7 @@ def get_plugins_from_path(path):
     Collects all modules/packages in the given `path`
     and returns a tuple of their names
     """
-    importer = pkgutil.get_importer(path)
-    return tuple(x[0] for x in importer.iter_modules())
+    return tuple(x[1] for x in pkgutil.iter_modules([path]))
 
 
 def collect_plugins():
