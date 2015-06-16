@@ -19,7 +19,8 @@ from rest_framework.serializers import (  # noqa
 from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin  # noqa
 from rest_framework.response import Response  # noqa
 from rest_framework.routers import DefaultRouter
-from rest_framework.viewsets import GenericViewSet, ModelViewSet, ReadOnlyModelViewSet, ViewSet  # noqa
+from rest_framework.viewsets import ModelViewSet as _ModelViewSet
+from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet, ViewSet  # noqa
 from rest_framework.decorators import list_route  # noqa
 
 from .exceptions import OpenSlidesError
@@ -49,6 +50,44 @@ class RESTModelMixin:
         root_instance = self.get_root_rest_element()
         rest_url = '%s-detail' % type(root_instance)._meta.object_name.lower()
         return reverse(rest_url, args=[str(root_instance.pk)])
+
+
+class ModelViewSet(_ModelViewSet):
+    """
+    Viewset for models. Before the method check_permission is called we
+    check projector requirements. If access for projector client users is
+    not currently required, check_permission is called, else not.
+    """
+    def initial(self, request, *args, **kwargs):
+        """
+        Runs anything that needs to occur prior to calling the method handler.
+        """
+        self.format_kwarg = self.get_format_suffix(**kwargs)
+
+        # Ensure that the incoming request is permitted
+        self.perform_authentication(request)
+        if not self.check_projector_requirements():
+            self.check_permissions(request)
+        self.check_throttles(request)
+
+        # Perform content negotiation and store the accepted info on the request
+        neg = self.perform_content_negotiation(request)
+        request.accepted_renderer, request.accepted_media_type = neg
+
+    def check_projector_requirements(self):
+        """
+        Helper method which returns True if the current request (on this
+        view instance) is required for at least one active projector element.
+        """
+        from openslides.core.models import Projector
+
+        result = False
+        if self.request.user.has_perm('core.can_see_projector'):
+            for requirement in Projector.get_all_requirements():
+                if requirement.is_currently_required(view_instance=self):
+                    result = True
+                    break
+        return result
 
 
 def get_collection_and_id_from_url(url):
