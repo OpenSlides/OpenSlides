@@ -19,25 +19,21 @@ class ConfigHandler(object):
             return self[key]
 
     def __setitem__(self, key, value):
-        # Save the new value to the database
+        # Check if the variable is defined.
+        if key not in self:
+            raise ConfigNotFound('The config variable %s was not found.' % key)
+
+        # Save the new value to the database.
         updated_rows = ConfigStore.objects.filter(key=key).update(value=value)
         if not updated_rows:
             ConfigStore.objects.create(key=key, value=value)
 
-        # Update cache
-        try:
-            self._cache[key] = value
-        except AttributeError:
-            # This happens, when a config-var is set, before __getitem__ was
-            # called. In this case nothing should happen.
-            pass
+        # Update cache.
+        self._cache[key] = value
 
-        # Call on_change callback
-        for receiver, config_collection in config_signal.send(sender='set_value'):
-            for config_variable in config_collection.variables:
-                if config_variable.name == key and config_variable.on_change:
-                    config_variable.on_change()
-                    break
+        # Call on_change callback.
+        if self.get_config_variables()[key].on_change:
+            self.get_config_variables()[key].on_change()
 
     def items(self):
         """
@@ -47,15 +43,27 @@ class ConfigHandler(object):
             self.setup_cache()
         return self._cache.items()
 
+    def get_config_variables(self):
+        """
+        Returns a dictionary with all ConfigVariable instances of all
+        collections. The key is the name of the config variables.
+        """
+        result = {}
+        for receiver, config_collection in config_signal.send(sender='get_config_variables'):
+            for config_variable in config_collection.variables:
+                if config_variable.name in result:
+                    raise ConfigError('Too many values for config variable %s found.' % config_variable.name)
+                result[config_variable.name] = config_variable
+        return result
+
     def get_default(self, key):
         """
         Returns the default value for 'key'.
         """
-        for receiver, config_collection in config_signal.send(sender='get_default'):
-            for config_variable in config_collection.variables:
-                if config_variable.name == key:
-                    return config_variable.default_value
-        raise ConfigNotFound('The config variable %s was not found.' % key)
+        try:
+            return self.get_config_variables()[key].default_value
+        except KeyError:
+            raise ConfigNotFound('The config variable %s was not found.' % key)
 
     def setup_cache(self):
         """
@@ -63,11 +71,8 @@ class ConfigHandler(object):
         save the default to the cache.
         """
         self._cache = {}
-        for receiver, config_collection in config_signal.send(sender='setup_cache'):
-            for config_variable in config_collection.variables:
-                if config_variable.name in self._cache:
-                    raise ConfigError('Too many values for config variable %s found.' % config_variable.name)
-                self._cache[config_variable.name] = config_variable.default_value
+        for key, config_variable in self.get_config_variables().items():
+            self._cache[key] = config_variable.default_value
         for config_object in ConfigStore.objects.all():
             self._cache[config_object.key] = config_object.value
 
@@ -84,10 +89,9 @@ class ConfigHandler(object):
         Generator to get all config variables as strings when their values are
         intended to be translated.
         """
-        for receiver, config_collection in config_signal.send(sender='get_all_translatable'):
-            for config_variable in config_collection.variables:
-                if config_variable.translatable:
-                    yield config_variable.name
+        for config_variable in self.get_config_variables().values():
+            if config_variable.translatable:
+                yield config_variable.name
 
 config = ConfigHandler()
 """

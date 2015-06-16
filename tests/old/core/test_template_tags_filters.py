@@ -1,6 +1,8 @@
+from django.dispatch import receiver
 from django.template import Context, Template
 
-from openslides.config.api import config
+from openslides.config.api import ConfigCollection, ConfigVariable, config
+from openslides.config.signals import config_signal
 from openslides.utils.test import TestCase
 
 
@@ -27,3 +29,18 @@ class ConfigTagAndFilter(TestCase):
         template = Template(template_code)
         self.assertTrue('FdgfkR04jtg9f8bq' in template.render(Context({})))
         self.assertFalse('bad_e0fvkfHFD' in template.render(Context({})))
+
+
+@receiver(config_signal, dispatch_uid='set_simple_config_view_template_tag_test')
+def set_simple_config_view_template_tag_test(sender, **kwargs):
+    """
+    Sets a simple config view with some config variables but without
+    grouping.
+    """
+    return ConfigCollection(
+        title='Config vars for testing with template tag',
+        url='testsimplepagetemplatetag',
+        variables=(ConfigVariable(name='taiNg3reQuooGha4', default_value=None),
+                   ConfigVariable(name='fkjTze56ncuejWqs', default_value=None),
+                   ConfigVariable(name='jfhsnezfh452w6Fg', default_value=None),
+                   ConfigVariable(name='sdmvldkfgj4534gk', default_value=None)))
