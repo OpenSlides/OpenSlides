@@ -99,7 +99,7 @@ class CreateMotion(TestCase):
         self.assertEqual(motion.tags.get().name, 'test_tag_iRee3kiecoos4rorohth')
 
     def test_with_workflow(self):
-        self.assertEqual(config['motion_workflow'], '1')
+        self.assertEqual(config['motions_workflow'], '1')
         response = self.client.post(
             reverse('motion-list'),
             {'title': 'test_title_eemuR5hoo4ru2ahgh5EJ',
@@ -132,7 +132,7 @@ class UpdateMotion(TestCase):
         self.assertEqual(motion.identifier, 'test_identifier_jieseghohj7OoSah1Ko9')
 
     def test_patch_workflow(self):
-        self.assertEqual(config['motion_workflow'], '1')
+        self.assertEqual(config['motions_workflow'], '1')
         response = self.client.patch(
             reverse('motion-detail', args=[self.motion.pk]),
             {'workflow': '2'})
@@ -162,7 +162,7 @@ class UpdateMotion(TestCase):
             username='test_username_ahshi4oZin0OoSh9chee',
             password='test_password_Sia8ahgeenixu5cei2Ib')
         self.motion.supporters.add(supporter)
-        config['motion_remove_supporters'] = True
+        config['motions_remove_supporters'] = True
         self.assertEqual(self.motion.supporters.count(), 1)
 
         response = self.client.patch(
@@ -234,13 +234,13 @@ class SupportMotion(TestCase):
         self.motion.save()
 
     def test_support(self):
-        config['motion_min_supporters'] = 1
+        config['motions_min_supporters'] = 1
         response = self.client.post(reverse('motion-support', args=[self.motion.pk]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data, {'detail': 'You have supported this motion successfully.'})
 
     def test_unsupport(self):
-        config['motion_min_supporters'] = 1
+        config['motions_min_supporters'] = 1
         self.motion.supporters.add(self.admin)
         response = self.client.delete(reverse('motion-support', args=[self.motion.pk]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)

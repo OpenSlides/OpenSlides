@@ -112,8 +112,7 @@ class TestAuth(TestCase):
 
         self.assertEqual(
             context,
-            {'user': AnonymousUser(),
-             'os_enable_anonymous_login': True})
+            {'user': AnonymousUser()})
 
     def test_anonymous_disabled(self, mock_auth, mock_config):
         mock_config.__getitem__.return_value = False
@@ -124,8 +123,7 @@ class TestAuth(TestCase):
 
         self.assertEqual(
             context,
-            {'user': AnonymousUser(),
-             'os_enable_anonymous_login': False})
+            {'user': AnonymousUser()})
 
     def test_logged_in_user_in_request(self, mock_auth, mock_config):
         mock_config.__getitem__.return_value = True
@@ -136,5 +134,4 @@ class TestAuth(TestCase):
 
         self.assertEqual(
             context,
-            {'user': 'logged_in_user',
-             'os_enable_anonymous_login': True})
+            {'user': 'logged_in_user'})

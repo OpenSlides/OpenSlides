@@ -18,16 +18,16 @@ def setup_motion_config(sender, **kwargs):
     the signal openslides.config.signals.config_signal during app loading.
     """
     # General
-    motion_workflow = ConfigVariable(
-        name='motion_workflow',
+    motions_workflow = ConfigVariable(
+        name='motions_workflow',
         default_value='1',
         form_field=forms.ChoiceField(
             widget=forms.Select(),
             label=ugettext_lazy('Workflow of new motions'),
             required=True,
             choices=[(str(workflow.pk), ugettext_lazy(workflow.name)) for workflow in Workflow.objects.all()]))
-    motion_identifier = ConfigVariable(
-        name='motion_identifier',
+    motions_identifier = ConfigVariable(
+        name='motions_identifier',
         default_value='per_category',
         form_field=forms.ChoiceField(
             widget=forms.Select(),
@@ -37,22 +37,22 @@ def setup_motion_config(sender, **kwargs):
                 ('per_category', ugettext_lazy('Numbered per category')),
                 ('serially_numbered', ugettext_lazy('Serially numbered')),
                 ('manually', ugettext_lazy('Set it manually'))]))
-    motion_preamble = ConfigVariable(
-        name='motion_preamble',
+    motions_preamble = ConfigVariable(
+        name='motions_preamble',
         default_value=_('The assembly may decide,'),
         translatable=True,
         form_field=forms.CharField(
             widget=forms.TextInput(),
             required=False,
             label=ugettext_lazy('Motion preamble')))
-    motion_stop_submitting = ConfigVariable(
-        name='motion_stop_submitting',
+    motions_stop_submitting = ConfigVariable(
+        name='motions_stop_submitting',
         default_value=False,
         form_field=forms.BooleanField(
             label=ugettext_lazy('Stop submitting new motions by non-staff users'),
             required=False))
-    motion_allow_disable_versioning = ConfigVariable(
-        name='motion_allow_disable_versioning',
+    motions_allow_disable_versioning = ConfigVariable(
+        name='motions_allow_disable_versioning',
         default_value=False,
         form_field=forms.BooleanField(
             label=ugettext_lazy('Allow to disable versioning'),
@@ -60,22 +60,22 @@ def setup_motion_config(sender, **kwargs):
     group_general = ConfigGroup(
         title=ugettext_lazy('General'),
         variables=(
-            motion_workflow,
-            motion_identifier,
-            motion_preamble,
-            motion_stop_submitting,
-            motion_allow_disable_versioning))
+            motions_workflow,
+            motions_identifier,
+            motions_preamble,
+            motions_stop_submitting,
+            motions_allow_disable_versioning))
 
     # Amendments
-    motion_amendments_enabled = ConfigVariable(
-        name='motion_amendments_enabled',
+    motions_amendments_enabled = ConfigVariable(
+        name='motions_amendments_enabled',
         default_value=False,
         form_field=forms.BooleanField(
             label=ugettext_lazy('Activate amendments'),
             required=False))
 
-    motion_amendments_prefix = ConfigVariable(
-        name='motion_amendments_prefix',
+    motions_amendments_prefix = ConfigVariable(
+        name='motions_amendments_prefix',
         default_value=pgettext('Prefix for the identifier for amendments', 'A'),
         form_field=forms.CharField(
             required=False,
@@ -83,38 +83,38 @@ def setup_motion_config(sender, **kwargs):
 
     group_amendments = ConfigGroup(
         title=ugettext_lazy('Amendments'),
-        variables=(motion_amendments_enabled, motion_amendments_prefix))
+        variables=(motions_amendments_enabled, motions_amendments_prefix))
 
     # Supporters
-    motion_min_supporters = ConfigVariable(
-        name='motion_min_supporters',
+    motions_min_supporters = ConfigVariable(
+        name='motions_min_supporters',
         default_value=0,
         form_field=forms.IntegerField(
             widget=forms.TextInput(attrs={'class': 'small-input'}),
             label=ugettext_lazy('Number of (minimum) required supporters for a motion'),
             min_value=0,
             help_text=ugettext_lazy('Choose 0 to disable the supporting system.')))
-    motion_remove_supporters = ConfigVariable(
-        name='motion_remove_supporters',
+    motions_remove_supporters = ConfigVariable(
+        name='motions_remove_supporters',
         default_value=False,
         form_field=forms.BooleanField(
             label=ugettext_lazy('Remove all supporters of a motion if a submitter edits his motion in early state'),
             required=False))
     group_supporters = ConfigGroup(
         title=ugettext_lazy('Supporters'),
-        variables=(motion_min_supporters, motion_remove_supporters))
+        variables=(motions_min_supporters, motions_remove_supporters))
 
     # Voting and ballot papers
-    motion_poll_100_percent_base = ConfigVariable(
-        name='motion_poll_100_percent_base',
+    motions_poll_100_percent_base = ConfigVariable(
+        name='motions_poll_100_percent_base',
         default_value='WITHOUT_INVALID',
         form_field=forms.ChoiceField(
             widget=forms.Select(),
             required=False,
             label=ugettext_lazy('The 100 % base of a voting result consists of'),
             choices=PERCENT_BASE_CHOICES))
-    motion_pdf_ballot_papers_selection = ConfigVariable(
-        name='motion_pdf_ballot_papers_selection',
+    motions_pdf_ballot_papers_selection = ConfigVariable(
+        name='motions_pdf_ballot_papers_selection',
         default_value='CUSTOM_NUMBER',
         form_field=forms.ChoiceField(
             widget=forms.Select(),
@@ -124,8 +124,8 @@ def setup_motion_config(sender, **kwargs):
                 ('NUMBER_OF_DELEGATES', ugettext_lazy('Number of all delegates')),
                 ('NUMBER_OF_ALL_PARTICIPANTS', ugettext_lazy('Number of all participants')),
                 ('CUSTOM_NUMBER', ugettext_lazy("Use the following custom number"))]))
-    motion_pdf_ballot_papers_number = ConfigVariable(
-        name='motion_pdf_ballot_papers_number',
+    motions_pdf_ballot_papers_number = ConfigVariable(
+        name='motions_pdf_ballot_papers_number',
         default_value=8,
         form_field=forms.IntegerField(
             widget=forms.TextInput(attrs={'class': 'small-input'}),
@@ -134,33 +134,39 @@ def setup_motion_config(sender, **kwargs):
             label=ugettext_lazy('Custom number of ballot papers')))
     group_ballot_papers = ConfigGroup(
         title=ugettext_lazy('Voting and ballot papers'),
-        variables=(motion_poll_100_percent_base, motion_pdf_ballot_papers_selection, motion_pdf_ballot_papers_number))
+        variables=(
+            motions_poll_100_percent_base,
+            motions_pdf_ballot_papers_selection,
+            motions_pdf_ballot_papers_number))
 
     # PDF
-    motion_pdf_title = ConfigVariable(
-        name='motion_pdf_title',
+    motions_pdf_title = ConfigVariable(
+        name='motions_pdf_title',
         default_value=_('Motions'),
         translatable=True,
         form_field=forms.CharField(
             widget=forms.TextInput(),
             required=False,
             label=ugettext_lazy('Title for PDF document (all motions)')))
-    motion_pdf_preamble = ConfigVariable(
-        name='motion_pdf_preamble',
+    motions_pdf_preamble = ConfigVariable(
+        name='motions_pdf_preamble',
         default_value='',
         form_field=forms.CharField(
             widget=forms.Textarea(),
             required=False,
             label=ugettext_lazy('Preamble text for PDF document (all motions)')))
-    motion_pdf_paragraph_numbering = ConfigVariable(
-        name='motion_pdf_paragraph_numbering',
+    motions_pdf_paragraph_numbering = ConfigVariable(
+        name='motions_pdf_paragraph_numbering',
         default_value=False,
         form_field=forms.BooleanField(
             label=ugettext_lazy('Show paragraph numbering (only in PDF)'),
             required=False))
     group_pdf = ConfigGroup(
         title=ugettext_lazy('PDF'),
-        variables=(motion_pdf_title, motion_pdf_preamble, motion_pdf_paragraph_numbering))
+        variables=(
+            motions_pdf_title,
+            motions_pdf_preamble,
+            motions_pdf_paragraph_numbering))
 
     return ConfigGroupedCollection(
         title=ugettext_noop('Motion'),

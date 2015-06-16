@@ -11,7 +11,7 @@ class AnonymousRequests(TestCase):
     """
     def setUp(self):
         self.client = Client()
-        config['system_enable_anonymous'] = True
+        config['general_system_enable_anonymous'] = True
 
     def test_motion_detail(self):
         Motion.objects.create(title='test_motion')

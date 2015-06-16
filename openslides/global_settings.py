@@ -100,7 +100,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'django.core.context_processors.request',
     'django.core.context_processors.i18n',
     'django.core.context_processors.static',
-    'openslides.utils.main_menu.main_menu_entries',
     'openslides.core.chatbox.chat_messages_context_processor',
 )
 

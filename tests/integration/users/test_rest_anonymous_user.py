@@ -12,13 +12,13 @@ class TestAnonymousRequests(TestCase):
     anonymous user has this permission.
     """
 
-    @patch('openslides.users.auth.config', {'system_enable_anonymous': True})
+    @patch('openslides.users.auth.config', {'general_system_enable_anonymous': True})
     def test_with_anonymous_user(self):
         response = self.client.get('/rest/users/user/')
 
         self.assertEqual(response.status_code, 200)
 
-    @patch('openslides.users.auth.config', {'system_enable_anonymous': False})
+    @patch('openslides.users.auth.config', {'general_system_enable_anonymous': False})
     def test_without_anonymous_user(self):
         response = self.client.get('/rest/users/user/')
 

@@ -62,7 +62,7 @@ def motion_to_pdf(pdf, motion):
         motion_data.append([cell2a, cell2b])
 
     # supporters
-    if config['motion_min_supporters']:
+    if config['motions_min_supporters']:
         cell3a = []
         cell3b = []
         cell3a.append(Paragraph("<font name='Ubuntu-Bold'>%s:</font><seqreset id='counter'>"
@@ -201,7 +201,7 @@ def convert_html_to_reportlab(pdf, text):
             continue
         if "<pre>" in paragraph:
             txt = paragraph.replace('\n', '<br/>').replace(' ', '&nbsp;')
-            if config["motion_pdf_paragraph_numbering"]:
+            if config["motions_pdf_paragraph_numbering"]:
                 pdf.append(Paragraph(txt, stylesheet['InnerMonotypeParagraph'], str(paragraph_number)))
                 paragraph_number += 1
             else:
@@ -217,7 +217,7 @@ def convert_html_to_reportlab(pdf, text):
         elif "<h3>" in paragraph:
             pdf.append(Paragraph(paragraph, stylesheet['InnerH3Paragraph']))
         else:
-            if config["motion_pdf_paragraph_numbering"]:
+            if config["motions_pdf_paragraph_numbering"]:
                 pdf.append(Paragraph(paragraph, stylesheet['InnerParagraph'], str(paragraph_number)))
                 paragraph_number += 1
             else:
@@ -228,9 +228,9 @@ def all_motion_cover(pdf, motions):
     """
     Create a coverpage for all motions.
     """
-    pdf.append(Paragraph(escape(config["motion_pdf_title"]), stylesheet['Heading1']))
+    pdf.append(Paragraph(escape(config["motions_pdf_title"]), stylesheet['Heading1']))
 
-    preamble = escape(config["motion_pdf_preamble"])
+    preamble = escape(config["motions_pdf_preamble"])
     if preamble:
         pdf.append(Paragraph("%s" % preamble.replace('\r\n', '<br/>'), stylesheet['Paragraph']))
 
@@ -273,8 +273,8 @@ def motion_poll_to_pdf(pdf, poll):
                 % (circle, _("Abstention")), stylesheet['Ballot_option']))
     data = []
     # get ballot papers config values
-    ballot_papers_selection = config["motion_pdf_ballot_papers_selection"]
-    ballot_papers_number = config["motion_pdf_ballot_papers_number"]
+    ballot_papers_selection = config["motions_pdf_ballot_papers_selection"]
+    ballot_papers_number = config["motions_pdf_ballot_papers_number"]
 
     # set number of ballot papers
     if ballot_papers_selection == "NUMBER_OF_DELEGATES":

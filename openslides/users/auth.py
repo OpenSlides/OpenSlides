@@ -98,12 +98,12 @@ class AnonymousAuthentication(BaseAuthentication):
     """
     Authentication class for the Django REST framework.
 
-    Sets the user to the our AnonymousUser but only if system_enable_anonymous
-    is set to True in the config.
+    Sets the user to the our AnonymousUser but only if
+    general_system_enable_anonymous is set to True in the config.
     """
 
     def authenticate(self, request):
-        if config['system_enable_anonymous']:
+        if config['general_system_enable_anonymous']:
             return (AnonymousUser(), None)
         return None
 
@@ -120,7 +120,7 @@ def get_user(request):
     except AttributeError:
         # Get the user. If it is a DjangoAnonymousUser, then use our AnonymousUser
         return_user = _get_user(request)
-        if config['system_enable_anonymous'] and isinstance(return_user, DjangoAnonymousUser):
+        if config['general_system_enable_anonymous'] and isinstance(return_user, DjangoAnonymousUser):
             return_user = AnonymousUser()
         request._cached_user = return_user
     return return_user
@@ -139,10 +139,7 @@ def auth(request):
 
     # Change the django anonymous user with our anonymous user if anonymous auth
     # is enabled
-    if config['system_enable_anonymous'] and isinstance(context['user'], DjangoAnonymousUser):
+    if config['general_system_enable_anonymous'] and isinstance(context['user'], DjangoAnonymousUser):
         context['user'] = AnonymousUser()
-
-    # Set a context variable that will indicate if anonymous login is possible
-    context['os_enable_anonymous_login'] = config['system_enable_anonymous']
 
     return context

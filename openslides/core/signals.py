@@ -18,20 +18,20 @@ post_permission_creation = Signal()
 def setup_general_config(sender, **kwargs):
     """
     Receiver function to setup general config variables for OpenSlides.
-    They are grouped in 'Event', 'Welcome Widget' and 'System'. The
-    function is connected to the signal
-    openslides.config.signals.config_signal during app loading.
+    They are grouped in 'Event', 'Projector' and 'System'. This function is
+    connected to the signal openslides.config.signals.config_signal during
+    app loading.
     """
-    event_name = ConfigVariable(
-        name='event_name',
+    general_event_name = ConfigVariable(
+        name='general_event_name',
         default_value='OpenSlides',
         form_field=forms.CharField(
             widget=forms.TextInput(),
             label=ugettext_lazy('Event name'),
             max_length=50))
 
-    event_description = ConfigVariable(
-        name='event_description',
+    general_event_description = ConfigVariable(
+        name='general_event_description',
         default_value=_('Presentation and assembly system'),
         translatable=True,
         form_field=forms.CharField(
@@ -40,28 +40,36 @@ def setup_general_config(sender, **kwargs):
             required=False,
             max_length=100))
 
-    event_date = ConfigVariable(
-        name='event_date',
+    general_event_date = ConfigVariable(
+        name='general_event_date',
         default_value='',
         form_field=forms.CharField(
             widget=forms.TextInput(),
             label=ugettext_lazy('Event date'),
             required=False))
 
-    event_location = ConfigVariable(
-        name='event_location',
+    general_event_location = ConfigVariable(
+        name='general_event_location',
         default_value='',
         form_field=forms.CharField(
             widget=forms.TextInput(),
             label=ugettext_lazy('Event location'),
             required=False))
 
-    event_organizer = ConfigVariable(
-        name='event_organizer',
+    # TODO: Check whether this variable is ever used.
+    general_event_organizer = ConfigVariable(
+        name='general_event_organizer',
         default_value='',
         form_field=forms.CharField(
             widget=forms.TextInput(),
             label=ugettext_lazy('Event organizer'),
+            required=False))
+
+    general_system_enable_anonymous = ConfigVariable(
+        name='general_system_enable_anonymous',
+        default_value=False,
+        form_field=forms.BooleanField(
+            label=ugettext_lazy('Allow access for anonymous guest users'),
             required=False))
 
     projector_enable_logo = ConfigVariable(
@@ -106,8 +114,8 @@ def setup_general_config(sender, **kwargs):
             help_text=ugettext_lazy('Use web color names like "red" or hex numbers like "#ff0000".'),
             required=True))
 
-    welcome_title = ConfigVariable(
-        name='welcome_title',
+    projector_welcome_title = ConfigVariable(
+        name='projector_welcome_title',
         default_value=_('Welcome to OpenSlides'),
         translatable=True,
         form_field=forms.CharField(
@@ -116,8 +124,8 @@ def setup_general_config(sender, **kwargs):
             help_text=ugettext_lazy('Also used for the default welcome slide.'),
             required=False))
 
-    welcome_text = ConfigVariable(
-        name='welcome_text',
+    projector_welcome_text = ConfigVariable(
+        name='projector_welcome_text',
         default_value=_('[Place for your welcome text.]'),
         translatable=True,
         form_field=forms.CharField(
@@ -125,31 +133,32 @@ def setup_general_config(sender, **kwargs):
             label=ugettext_lazy('Welcome text'),
             required=False))
 
-    system_enable_anonymous = ConfigVariable(
-        name='system_enable_anonymous',
-        default_value=False,
-        form_field=forms.BooleanField(
-            label=ugettext_lazy('Allow access for anonymous guest users'),
-            required=False))
-
     group_event = ConfigGroup(
         title=ugettext_lazy('Event'),
-        variables=(event_name, event_description, event_date, event_location, event_organizer))
-
-    group_projector = ConfigGroup(
-        title=ugettext_lazy('Projector'),
-        variables=(projector_enable_logo, projector_enable_title, projector_backgroundcolor1, projector_backgroundcolor2, projector_fontcolor))
-
-    group_welcome_widget = ConfigGroup(
-        title=ugettext_lazy('Welcome Widget'),
-        variables=(welcome_title, welcome_text))
+        variables=(
+            general_event_name,
+            general_event_description,
+            general_event_date,
+            general_event_location,
+            general_event_organizer))
 
     group_system = ConfigGroup(
         title=ugettext_lazy('System'),
-        variables=(system_enable_anonymous,))
+        variables=(general_system_enable_anonymous,))
+
+    group_projector = ConfigGroup(
+        title=ugettext_lazy('Projector'),
+        variables=(
+            projector_enable_logo,
+            projector_enable_title,
+            projector_backgroundcolor1,
+            projector_backgroundcolor2,
+            projector_fontcolor,
+            projector_welcome_title,
+            projector_welcome_text))
 
     return ConfigGroupedCollection(
         title=ugettext_noop('General'),
         url='general',
         weight=10,
-        groups=(group_event, group_projector, group_welcome_widget, group_system))
+        groups=(group_event, group_system, group_projector))
