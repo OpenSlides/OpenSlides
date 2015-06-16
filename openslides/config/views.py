@@ -1,10 +1,11 @@
 from django import forms
 from django.contrib import messages
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.http import Http404
 from django.utils.translation import ugettext as _
 
-from openslides.utils.rest_api import Response, ViewSet
+from openslides.utils.rest_api import Response, ValidationError, ViewSet
 from openslides.utils.views import FormView
 
 from .api import config
@@ -132,14 +133,29 @@ class ConfigViewSet(ViewSet):
     def update(self, request, *args, **kwargs):
         """
         Updates one config variable. Only managers can do this.
+
+        Example: {"value": 42}
         """
+        # Check permission.
         if not request.user.has_perm('config.can_manage'):
             self.permission_denied(request)
-        key = kwargs['pk']
+
         # Check if pk is a valid config variable key.
+        key = kwargs['pk']
         if key not in config:
             raise Http404
+
+        # Validate value.
+        form_field = config.get_config_variables()[key].form_field
+        value = request.data['value']
+        if form_field:
+            try:
+                form_field.clean(value)
+            except DjangoValidationError as e:
+                raise ValidationError({'detail': e.messages[0]})
+
         # Change value.
-        config[key] = request.data
+        config[key] = value
+
         # Return response.
-        return Response({'key': key, 'value': request.data})
+        return Response({'key': key, 'value': value})

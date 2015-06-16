@@ -67,9 +67,9 @@ class HandleConfigTest(TestCase):
 
     def test_set_value_before_getting_it(self):
         """
-        Try to call __setitem__ before __getitem.
+        Try to call __setitem__ before __getitem__.
         """
-        config['my_config_var'] = 'value'
+        config['additional_config_var'] = 'value'
 
     def test_on_change(self):
         """
