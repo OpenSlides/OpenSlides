@@ -9,8 +9,7 @@ Version 2.0.0 (unreleased)
 [https://github.com/OpenSlides/OpenSlides/milestones/2.0]
 
 Agenda:
-- Updated the tests and changed only small internal parts of method of the
-  agenda model. No API changes.
+- Updated the tests and changed internal parts of method of the agenda model.
 - Removed mptt.
 Assignments:
 - Renamed app from assignment to assignments.
@@ -28,15 +27,18 @@ Other:
 - New OpenSlides logo.
 - Changed supported Python version to >= 3.3.
 - Used Django 1.7 as lowest requirement.
-- Added Django's application configuration. Refactored loading of signals,
-  template signals and projector elements/slides.
+- Added Django's application configuration. Refactored loading of signals
+  and projector elements/slides.
 - Setup migrations.
 - Added API using Django REST Framework 3.x. Added several views and mixins
-  for generic views in OpenSlides apps.
+  for generic Django REST Framework views in OpenSlides apps.
+- Removed most of the Django views and templates.
+- Removed Django error pages.
 - Refactored projector API using metaclasses now.
 - Renamed SignalConnectMetaClass classmethod get_all_objects to get_all
   (private API).
 - Refactored config API.
+- Removed old style personal info page, main menu entries and widget API.
 - Used AngularJS with additional libraries for single page frontend.
 - Removed use of 'django.views.i18n.javascript_catalog'. Used angular-gettext
   now.
@@ -47,8 +49,8 @@ Other:
 - Used Bower and gulp to manage third party JavaScript and Cascading Style
   Sheets libraries.
 - Used setup.cfg for development tools.
-- Fixed bug in LocalizedModelMultipleChoiceField.
-- Removed the django error pages
+- Removed code for Windows portable version with GUI. Used new repository for
+  this.
 
 
 Version 1.7 (2015-02-16)
