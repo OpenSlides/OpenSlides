@@ -217,7 +217,7 @@ class Motion(RESTModelMixin, SlideMixin, models.Model):
         it is not set yet.
         """
         # The identifier is already set or should be set manually
-        if config['motion_identifier'] == 'manually' or self.identifier:
+        if config['motions_identifier'] == 'manually' or self.identifier:
             # Do not set an identifier.
             return
 
@@ -226,7 +226,7 @@ class Motion(RESTModelMixin, SlideMixin, models.Model):
             motions = self.parent.amendments.all()
 
         # The motions should be counted per category
-        elif config['motion_identifier'] == 'per_category':
+        elif config['motions_identifier'] == 'per_category':
             motions = Motion.objects.filter(category=self.category)
 
         # The motions should be counted over all.
@@ -236,7 +236,7 @@ class Motion(RESTModelMixin, SlideMixin, models.Model):
         number = motions.aggregate(Max('identifier_number'))['identifier_number__max'] or 0
         if self.is_amendment():
             parent_identifier = self.parent.identifier or ''
-            prefix = '%s %s ' % (parent_identifier, config['motion_amendments_prefix'])
+            prefix = '%s %s ' % (parent_identifier, config['motions_amendments_prefix'])
         elif self.category is None or not self.category.prefix:
             prefix = ''
         else:
@@ -440,8 +440,8 @@ class Motion(RESTModelMixin, SlideMixin, models.Model):
         elif self.state:
             new_state = self.state.workflow.first_state
         else:
-            new_state = (Workflow.objects.get(pk=config['motion_workflow']).first_state or
-                         Workflow.objects.get(pk=config['motion_workflow']).state_set.all()[0])
+            new_state = (Workflow.objects.get(pk=config['motions_workflow']).first_state or
+                         Workflow.objects.get(pk=config['motions_workflow']).state_set.all()[0])
         self.set_state(new_state)
 
     def get_agenda_title(self):
@@ -488,7 +488,7 @@ class Motion(RESTModelMixin, SlideMixin, models.Model):
                             self.state.allow_create_poll),
 
             'support': (self.state.allow_support and
-                        config['motion_min_supporters'] > 0 and
+                        config['motions_min_supporters'] > 0 and
                         not self.is_submitter(person) and
                         not self.is_supporter(person)),
 
@@ -519,7 +519,7 @@ class Motion(RESTModelMixin, SlideMixin, models.Model):
         A motion is a amendment if amendments are activated in the config and
         the motion has a parent.
         """
-        return config['motion_amendments_enabled'] and self.parent is not None
+        return config['motions_amendments_enabled'] and self.parent is not None
 
 
 class MotionVersion(RESTModelMixin, models.Model):
@@ -697,7 +697,7 @@ class MotionPoll(RESTModelMixin, SlideMixin, CollectDefaultVotesMixin,
         self.get_option_class()(poll=self).save()
 
     def get_percent_base_choice(self):
-        return config['motion_poll_100_percent_base']
+        return config['motions_poll_100_percent_base']
 
     def get_slide_context(self, **context):
         return super(MotionPoll, self).get_slide_context(poll=self)

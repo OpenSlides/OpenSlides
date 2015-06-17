@@ -49,12 +49,12 @@ class MotionViewSet(ModelViewSet):
         needs at least the permissions 'motions.can_see' (see
         self.check_permission()) and 'motions.can_create'. If the
         submitting of new motions by non-staff users is stopped via config
-        variable 'motion_stop_submitting', the requesting user needs also
+        variable 'motions_stop_submitting', the requesting user needs also
         to have the permission 'motions.can_manage'.
         """
         # Check permissions.
         if (not request.user.has_perm('motions.can_create') or
-                (not config['motion_stop_submitting'] and
+                (not config['motions_stop_submitting'] and
                  not request.user.has_perm('motions.can_manage'))):
             self.permission_denied(request)
 
@@ -107,7 +107,7 @@ class MotionViewSet(ModelViewSet):
         # Write the log message, check removal of supporters and initiate response.
         # TODO: Log if a version was updated.
         updated_motion.write_log([ugettext_noop('Motion updated')], request.user)
-        if (config['motion_remove_supporters'] and updated_motion.state.allow_support and
+        if (config['motions_remove_supporters'] and updated_motion.state.allow_support and
                 not request.user.has_perm('motions.can_manage')):
             updated_motion.supporters.clear()
             updated_motion.write_log([ugettext_noop('All supporters removed')], request.user)

@@ -237,14 +237,14 @@ def firstPage(canvas, doc):
     canvas.setFont('Ubuntu', 10)
     canvas.setFillGray(0.4)
 
-    title_line = u"%s | %s" % (config["event_name"],
-                               config["event_description"])
+    title_line = u"%s | %s" % (config["general_event_name"],
+                               config["general_event_description"])
     if len(title_line) > 75:
         title_line = "%s ..." % title_line[:70]
     canvas.drawString(2.75 * cm, 28 * cm, title_line)
-    if config["event_date"] and config["event_location"]:
+    if config["general_event_date"] and config["general_event_location"]:
         canvas.drawString(2.75 * cm, 27.6 * cm, u"%s, %s"
-                          % (config["event_date"], config["event_location"]))
+                          % (config["general_event_date"], config["general_event_location"]))
 
     # time
     canvas.setFont('Ubuntu', 7)

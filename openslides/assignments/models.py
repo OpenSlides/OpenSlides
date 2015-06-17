@@ -241,12 +241,12 @@ class Assignment(RESTModelMixin, SlideMixin, models.Model):
         candidates = self.candidates.all()
 
         # Find out the method of the election
-        if config['assignment_poll_vote_values'] == 'votes':
+        if config['assignments_poll_vote_values'] == 'votes':
             yesnoabstain = False
-        elif config['assignment_poll_vote_values'] == 'yesnoabstain':
+        elif config['assignments_poll_vote_values'] == 'yesnoabstain':
             yesnoabstain = True
         else:
-            # config['assignment_poll_vote_values'] == 'auto'
+            # config['assignments_poll_vote_values'] == 'auto'
             # candidates <= available posts -> yes/no/abstain
             if len(candidates) <= (self.open_posts - self.elected.count()):
                 yesnoabstain = True
@@ -366,7 +366,7 @@ class AssignmentPoll(RESTModelMixin, SlideMixin, CollectDefaultVotesMixin,
         return self.assignment.polls.filter(id__lte=self.pk).count()
 
     def get_percent_base_choice(self):
-        return config['assignment_poll_100_percent_base']
+        return config['assignments_poll_100_percent_base']
 
     def append_pollform_fields(self, fields):
         fields.append('description')

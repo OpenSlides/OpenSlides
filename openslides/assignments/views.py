@@ -252,9 +252,9 @@ class AssignmentPDF(PDFView):
             assignment_pk = None
 
         if assignment_pk is None:  # print all assignments
-            title = escape(config["assignment_pdf_title"])
+            title = escape(config["assignments_pdf_title"])
             story.append(Paragraph(title, stylesheet['Heading1']))
-            preamble = escape(config["assignment_pdf_preamble"])
+            preamble = escape(config["assignments_pdf_preamble"])
             if preamble:
                 story.append(Paragraph(
                     "%s" % preamble.replace('\r\n', '<br/>'),
@@ -468,8 +468,8 @@ class AssignmentPollPDF(PDFView):
 
         data = []
         # get ballot papers config values
-        ballot_papers_selection = config["assignment_pdf_ballot_papers_selection"]
-        ballot_papers_number = config["assignment_pdf_ballot_papers_number"]
+        ballot_papers_selection = config["assignments_pdf_ballot_papers_selection"]
+        ballot_papers_number = config["assignments_pdf_ballot_papers_number"]
 
         # set number of ballot papers
         if ballot_papers_selection == "NUMBER_OF_DELEGATES":

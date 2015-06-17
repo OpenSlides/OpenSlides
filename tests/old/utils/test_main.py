@@ -91,6 +91,6 @@ class TestFunctions(TestCase):
         self.assertEqual(main.get_database_path_from_settings(), ':memory:')
 
     def test_translate_customizable_strings(self):
-        self.assertEqual(config['event_description'], 'Presentation and assembly system')
+        self.assertEqual(config['general_event_description'], 'Presentation and assembly system')
         main.translate_customizable_strings('de')
-        self.assertEqual(config['event_description'], u'Präsentations- und Versammlungssystem')
+        self.assertEqual(config['general_event_description'], u'Präsentations- und Versammlungssystem')

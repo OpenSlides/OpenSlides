@@ -180,7 +180,7 @@ class MotionSerializer(ModelSerializer):
         motion.reason = validated_data.get('reason', '')
         motion.identifier = validated_data.get('identifier')
         motion.category = validated_data.get('category')
-        motion.reset_state(validated_data.get('workflow', int(config['motion_workflow'])))
+        motion.reset_state(validated_data.get('workflow', int(config['motions_workflow'])))
         motion.save()
         if validated_data['submitters']:
             motion.submitters.add(*validated_data['submitters'])
