@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 from django.core.urlresolvers import reverse
 from rest_framework.decorators import detail_route  # noqa
 from rest_framework.decorators import list_route  # noqa
+from rest_framework.metadata import SimpleMetadata  # noqa
 from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin  # noqa
 from rest_framework.response import Response  # noqa
 from rest_framework.routers import DefaultRouter
