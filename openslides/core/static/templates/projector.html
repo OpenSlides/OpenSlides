@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="OpenSlidesApp.projector" class="no-js">
+<meta charset="utf-8">
+<base href="/">
+<title>OpenSlides – Projector</title>
+<link rel="stylesheet" href="static/css/openslides-libs.css">
+<link rel="stylesheet" href="static/css/projector.css">
+<script src="static/js/openslides-libs.js"></script>
+
+<div id="header">
+    <img id="logo" src="/static/img/logo.png" alt="OpenSlides" />
+    <span class="navbar-text optional">{{ config('general_event_name') }}</span>
+</div>
+
+<div id="content" ng-controller="ProjectorCtrl">
+    <div ng-repeat="element in elements"><div ng-include="element.template"></div></div>
+</div>
+
+<script src="static/js/app.js"></script>
+<script src="static/js/core.js"></script>
+<script src="static/js/agenda/agenda.js"></script>
+<script src="static/js/motions/motions.js"></script>
+<script src="static/js/assignments/assignments.js"></script>
+<script src="static/js/users/users.js"></script>
+<script src="static/js/mediafiles/mediafiles.js"></script>

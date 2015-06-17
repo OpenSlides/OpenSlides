@@ -1,5 +1,18 @@
 angular.module('OpenSlidesApp.agenda', [])
 
+.factory('Agenda', function(DS) {
+    return DS.defineResource({
+        name: 'agenda/item',
+        endpoint: '/rest/agenda/item/'
+    });
+})
+
+// Make sure that the Agenda resource is loaded.
+.run(function(Agenda) {});
+
+
+angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
+
 .config(function($stateProvider) {
     $stateProvider
         .state('agenda', {
@@ -66,13 +79,6 @@ angular.module('OpenSlidesApp.agenda', [])
             url: '/import',
             controller: 'AgendaImportCtrl',
         });
-})
-
-.factory('Agenda', function(DS) {
-    return DS.defineResource({
-        name: 'agenda/item',
-        endpoint: '/rest/agenda/item/'
-    });
 })
 
 .controller('ItemListCtrl', function($scope, Agenda, tree) {

@@ -43,6 +43,17 @@ class IndexView(utils_views.CSRFMixin, utils_views.View):
         return HttpResponse(content)
 
 
+class ProjectorView(utils_views.View):
+    """
+    Access the projector.
+    """
+
+    def get(self, *args, **kwargs):
+        with open(finders.find('templates/projector.html')) as f:
+            content = f.read()
+        return HttpResponse(content)
+
+
 class ProjectorViewSet(ReadOnlyModelViewSet):
     """
     API endpoint to list, retrieve and update the projector slide info.

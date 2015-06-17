@@ -41,7 +41,7 @@ class Projector(RESTModelMixin, models.Model):
             ('can_use_chat', ugettext_noop('Can use the chat')))
 
     @property
-    def projector_elements(self):
+    def elements(self):
         """
         A generator to retrieve all projector elements given in the config
         field. For every element the method get_data() is called and its

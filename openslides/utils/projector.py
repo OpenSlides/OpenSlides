@@ -8,13 +8,12 @@ class ProjectorElement(object, metaclass=SignalConnectMetaClass):
     Base class for an element on the projector.
 
     Every app which wants to add projector elements has to create classes
-    subclassing from this base class with different names. The name and
-    scripts attributes have to be set. The metaclass
-    (SignalConnectMetaClass) does the rest of the magic.
+    subclassing from this base class with different names. The name attribute
+    has to be set. The metaclass (SignalConnectMetaClass) does the rest of the
+    magic.
     """
     signal = Signal()
     name = None
-    scripts = None
 
     def __init__(self, **kwargs):
         """
@@ -45,19 +44,7 @@ class ProjectorElement(object, metaclass=SignalConnectMetaClass):
         assert self.config_entry.get('name') == self.name, (
             'To get data of a projector element, the correct config entry has to be given.')
         return {
-            'scripts': self.get_scripts(),
             'context': self.get_context()}
-
-    def get_scripts(self):
-        """
-        Returns ...?
-        """
-        # TODO: Write docstring
-        if self.scripts is None:
-            raise NotImplementedError(
-                'A projector element class must define either a '
-                'get_scripts method or have a scripts argument.')
-        return self.scripts
 
     def get_context(self):
         """

@@ -1,5 +1,56 @@
 angular.module('OpenSlidesApp.users', [])
 
+.factory('User', function(DS, Group) {
+    return DS.defineResource({
+        name: 'users/user',
+        endpoint: '/rest/users/user/',
+        methods: {
+            get_short_name: function() {
+                // should be the same as in the python user model.
+                var firstName = _.trim(this.first_name),
+                    lastName = _.trim(this.last_name),
+                    name;
+
+                if (firstName && lastName) {
+                    // TODO: check config
+                    name = [firstName, lastName].join(' ');
+                } else {
+                    name = firstName || lastName || this.username;
+                }
+                return name;
+            },
+            getPerms: function() {
+                var allPerms = [];
+                _.forEach(this.groups, function(groupId) {
+                    // Get group from server
+                    Group.find(groupId);
+                    // But do not work with the returned promise, because in
+                    // this case this method can not be called in $watch
+                    group = Group.get(groupId);
+                    if (group) {
+                        _.forEach(group.permissions, function(perm) {
+                            allPerms.push(perm);
+                        });
+                    }
+                });
+                return _.uniq(allPerms);
+            },
+        },
+    });
+})
+
+.factory('Group', function(DS) {
+    return DS.defineResource({
+        name: 'users/group',
+        endpoint: '/rest/users/group/'
+    });
+})
+
+.run(function(User, Group) {});
+
+
+angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
+
 .config(function($stateProvider) {
     $stateProvider
     .state('users', {
@@ -126,52 +177,6 @@ angular.module('OpenSlidesApp.users', [])
     $rootScope.operator = operator;
 })
 
-.factory('User', function(DS, Group) {
-    return DS.defineResource({
-        name: 'users/user',
-        endpoint: '/rest/users/user/',
-        methods: {
-            get_short_name: function() {
-                // should be the same as in the python user model.
-                var firstName = _.trim(this.first_name),
-                    lastName = _.trim(this.last_name),
-                    name;
-
-                if (firstName && lastName) {
-                    // TODO: check config
-                    name = [firstName, lastName].join(' ');
-                } else {
-                    name = firstName || lastName || this.username;
-                }
-                return name;
-            },
-            getPerms: function() {
-                var allPerms = [];
-                _.forEach(this.groups, function(groupId) {
-                    // Get group from server
-                    Group.find(groupId);
-                    // But do not work with the returned promise, because in
-                    // this case this method can not be called in $watch
-                    group = Group.get(groupId);
-                    if (group) {
-                        _.forEach(group.permissions, function(perm) {
-                            allPerms.push(perm);
-                        });
-                    }
-                });
-                return _.uniq(allPerms);
-            },
-        },
-    });
-})
-
-.factory('Group', function(DS) {
-    return DS.defineResource({
-        name: 'users/group',
-        endpoint: '/rest/users/group/'
-    });
-})
-
 /*
  * Directive to check for permissions
  *
@@ -239,7 +244,7 @@ angular.module('OpenSlidesApp.users', [])
     };
 }])
 
-.controller('UserListCtrl', function($scope, User) {
+.controller('UserListCtrl', function($scope, User, projectorActivate) {
     User.bindAll({}, $scope, 'users');
 
     // setup table sorting
@@ -263,6 +268,10 @@ angular.module('OpenSlidesApp.users', [])
     // delete user
     $scope.delete = function (user) {
         User.destroy(user.id);
+    };
+
+    $scope.project = function(user) {
+        projectorActivate(User, user.id).error(function() {console.log('success')});
     };
 })
 
@@ -369,9 +378,25 @@ angular.module('OpenSlidesApp.users', [])
             // DS.flush();
         });
     };
+});
+
+
+angular.module('OpenSlidesApp.users.projector', ['OpenSlidesApp.users'])
+
+.config(function(slidesProvider) {
+    slidesProvider.registerSlide('users/user', {
+        template: 'static/templates/users/slide_user.html',
+    });
 })
 
-
+.controller('SlideUserCtr', function($scope, User) {
+    // Attention! Each object that is used here has to be dealt on server side.
+    // Add it to the coresponding get_requirements method of the ProjectorElement
+    // class.
+    var id = $scope.element.context.id;
+    User.find(id);
+    User.bindOne(id, $scope, 'user');
+});
 
 // this is code from angular.js. Find a way to call this function from this file
 function getBlockNodes(nodes) {

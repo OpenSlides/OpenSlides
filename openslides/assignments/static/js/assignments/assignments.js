@@ -1,5 +1,17 @@
 angular.module('OpenSlidesApp.assignments', [])
 
+.factory('Assignment', function(DS) {
+    return DS.defineResource({
+        name: 'assignments/assignment',
+        endpoint: '/rest/assignments/assignment/'
+    });
+})
+
+.run(function(Assignment) {});
+
+
+angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
+
 .config(function($stateProvider) {
     $stateProvider
         .state('assignments', {
@@ -35,13 +47,6 @@ angular.module('OpenSlidesApp.assignments', [])
                 '@assignments.assignment': {}
             }
         });
-})
-
-.factory('Assignment', function(DS) {
-    return DS.defineResource({
-        name: 'assignments/assignment',
-        endpoint: '/rest/assignments/assignment/'
-    });
 })
 
 .controller('AssignmentListCtrl', function($scope, Assignment, phases) {

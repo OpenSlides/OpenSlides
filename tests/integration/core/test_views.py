@@ -23,13 +23,11 @@ class ProjectorAPI(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(json.loads(response.content.decode()), {
+            'id': 1,
             'config': [{'name': 'core/customslide', 'id': customslide.id}],
-            'projector_elements': [
+            'elements': [
                 {'name': 'core/customslide',
-                 'scripts': 'core/customslide_slide.js',
-                 'context': [
-                     {'collection': 'core/customslide',
-                      'id': customslide.id}]}]})
+                 'context': {'id': customslide.id}}]})
 
     def test_invalid_slide_on_default_projector(self):
         self.client.login(username='admin', password='admin')
@@ -41,8 +39,9 @@ class ProjectorAPI(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(json.loads(response.content.decode()), {
+            'id': 1,
             'config': [{'name': 'invalid_slide'}],
-            'projector_elements': [
+            'elements': [
                 {'name': 'invalid_slide',
                  'error': 'Projector element does not exist.'}]})
 

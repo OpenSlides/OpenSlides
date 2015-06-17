@@ -1,4 +1,118 @@
+// The core module used for the OpenSlides site and the projector
 angular.module('OpenSlidesApp.core', [])
+
+.config(function(DSProvider) {
+    // Reloads everything after 5 minutes.
+    // TODO: * find a way only to reload things that are still needed
+    DSProvider.defaults.maxAge = 5 * 60 * 1000;  // 5 minutes
+    DSProvider.defaults.reapAction = 'none';
+    DSProvider.defaults.afterReap = function(model, items) {
+        if (items.length > 5) {
+            model.findAll({}, {bypassCache: true});
+        } else {
+            _.forEach(items, function (item) {
+                model.refresh(item[model.idAttribute]);
+            });
+        }
+    };
+})
+
+.run(function(DS, autoupdate) {
+    autoupdate.on_message(function(data) {
+        // TODO: when MODEL.find() is called after this
+        //       a new request is fired. This could be a bug in DS
+
+        // TODO: Do not send the status code to the client, but make the decission
+        //       on the server side. It is an implementation detail, that tornado
+        //       sends request to wsgi, which should not concern the client.
+        console.log("Received object: " + data.collection + ", " + data.id);
+        if (data.status_code == 200) {
+            DS.inject(data.collection, data.data);
+        } else if (data.status_code == 404) {
+            DS.eject(data.collection, data.id);
+        }
+        // TODO: handle other statuscodes
+    });
+})
+
+.run(function($rootScope, Config) {
+    // Puts the config object into each scope.
+    // TODO: maybe rootscope.config has to set before findAll() is finished
+    Config.findAll().then(function() {
+        $rootScope.config = function(key) {
+            try {
+                return Config.get(key).value;
+            }
+            catch(err) {
+                console.log("Unkown config key: " + key);
+                return ''
+            }
+        }
+    });
+})
+
+.factory('autoupdate', function() {
+    var url = location.origin + "/sockjs";
+
+    var Autoupdate = {
+        socket: null,
+        message_receivers: [],
+        connect: function() {
+            var autoupdate = this;
+            this.socket = new SockJS(url);
+
+            this.socket.onmessage = function(event) {
+                _.forEach(autoupdate.message_receivers, function(receiver) {
+                    receiver(event.data);
+                });
+            }
+
+            this.socket.onclose = function() {
+                setTimeout(autoupdate.connect, 5000);
+            }
+        },
+        on_message: function(receiver) {
+            this.message_receivers.push(receiver);
+        }
+    };
+    Autoupdate.connect();
+    return Autoupdate;
+})
+
+.factory('Customslide', function(DS) {
+    return DS.defineResource({
+        name: 'core/customslide',
+        endpoint: '/rest/core/customslide/'
+    });
+})
+
+.factory('Tag', function(DS) {
+    return DS.defineResource({
+        name: 'core/tag',
+        endpoint: '/rest/core/tag/'
+    });
+})
+
+.factory('Config', function(DS) {
+    return DS.defineResource({
+        name: 'config/config',
+        idAttribute: 'key',
+        endpoint: '/rest/config/config/'
+    });
+})
+
+.factory('Projector', function(DS) {
+    return DS.defineResource({
+        name: 'core/projector',
+        endpoint: '/rest/core/projector/',
+    });
+})
+
+.run(function(Projector, Config, Tag, Customslide){});
+
+
+// The core module for the OpenSlides site
+angular.module('OpenSlidesApp.core.site', ['OpenSlidesApp.core'])
 
 .config(function($stateProvider, $urlMatcherFactoryProvider) {
     // Make the trailing slash optional
@@ -80,6 +194,13 @@ angular.module('OpenSlidesApp.core', [])
             url: '/',
             templateUrl: 'static/templates/dashboard.html'
         })
+        .state('projector', {
+            url: '/projector',
+            data: {extern: true},
+            onEnter: function($window) {
+                $window.location.href = this.url;
+            }
+        })
         .state('core', {
             url: '/core',
             abstract: true,
@@ -108,22 +229,6 @@ angular.module('OpenSlidesApp.core', [])
     $locationProvider.html5Mode(true);
 })
 
-.config(function(DSProvider) {
-    // Reloads everything after 5 minutes.
-    // TODO: * find a way only to reload things that are still needed
-    DSProvider.defaults.maxAge = 5 * 60 * 1000;  // 5 minutes
-    DSProvider.defaults.reapAction = 'none';
-    DSProvider.defaults.afterReap = function(model, items) {
-        if (items.length > 5) {
-            model.findAll({}, {bypassCache: true});
-        } else {
-            _.forEach(items, function (item) {
-                model.refresh(item[model.idAttribute]);
-            });
-        }
-    };
-})
-
 // config for ng-fab-form
 .config(function(ngFabFormProvider) {
     ngFabFormProvider.extendConfig({
@@ -131,6 +236,8 @@ angular.module('OpenSlidesApp.core', [])
     });
 })
 
+// Helper to add ui.router states at runtime.
+// Needed for the django url_patterns.
 .provider('runtimeStates', function($stateProvider) {
   this.$get = function($q, $timeout, $state) {
     return {
@@ -141,6 +248,7 @@ angular.module('OpenSlidesApp.core', [])
   }
 })
 
+// Load the django url patterns
 .run(function(runtimeStates, $http) {
     $http.get('/core/url_patterns/').then(function(data) {
         for (var pattern in data.data) {
@@ -155,87 +263,20 @@ angular.module('OpenSlidesApp.core', [])
     });
 })
 
-.run(function(DS, autoupdate) {
-    autoupdate.on_message(function(data) {
-        // TODO: when MODEL.find() is called after this
-        //       a new request is fired. This could be a bug in DS
-
-        // TODO: Do not send the status code to the client, but make the decission
-        //       on the server side. It is an implementation detail, that tornado
-        //       sends request to wsgi, which should not concern the client.
-        if (data.status_code == 200) {
-            DS.inject(data.collection, data.data);
-        } else if (data.status_code == 404) {
-            DS.eject(data.collection, data.id);
-        }
-        // TODO: handle other statuscodes
-    });
-})
-
-.run(function($rootScope, Config) {
-    // Puts the config object into each scope.
-    // TODO: maybe rootscope.config has to set before findAll() is finished
-    Config.findAll().then(function() {;
-        $rootScope.config = function(key) {
-            return Config.get(key).value;
-        }
-    });
-})
-
-//options for angular-xeditable
+// options for angular-xeditable
 .run(function(editableOptions) {
     editableOptions.theme = 'bs3';
 })
 
-.factory('autoupdate', function() {
-    //TODO: use config here
-    var url = "http://" + location.host + "/sockjs";
-
-    var Autoupdate = {
-        socket: null,
-        message_receivers: [],
-        connect: function() {
-            var autoupdate = this;
-            this.socket = new SockJS(url);
-
-            this.socket.onmessage = function(event) {
-                _.forEach(autoupdate.message_receivers, function(receiver) {
-                    receiver(event.data);
-                });
-            }
-
-            this.socket.onclose = function() {
-                setTimeout(autoupdate.connect, 5000);
-            }
-        },
-        on_message: function(receiver) {
-            this.message_receivers.push(receiver);
-        }
+// Activate an Element from the Rest-API on the projector
+// At the moment it only activates item on projector 1
+.factory('projectorActivate', function($http) {
+    return function(model, id) {
+        return $http.post(
+            '/rest/core/projector/1/prune_elements/',
+            [{name: model.name, id: id}]
+        );
     };
-    Autoupdate.connect();
-    return Autoupdate;
-})
-
-.factory('Customslide', function(DS) {
-    return DS.defineResource({
-        name: 'core/customslide',
-        endpoint: '/rest/core/customslide/'
-    });
-})
-
-.factory('Tag', function(DS) {
-    return DS.defineResource({
-        name: 'core/tag',
-        endpoint: '/rest/core/tag/'
-    });
-})
-
-.factory('Config', function(DS) {
-    return DS.defineResource({
-        name: 'config/config',
-        idAttribute: 'key',
-        endpoint: '/rest/config/config/'
-    });
 })
 
 .controller("LanguageCtrl", function ($scope, gettextCatalog) {
@@ -345,4 +386,83 @@ angular.module('OpenSlidesApp.core', [])
             });
         }
     };
+});
+
+
+// The core module for the OpenSlides projector
+angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
+
+// Provider to register slides in a .config() statement.
+.provider('slides', function() {
+    var slidesMap = {};
+
+    this.registerSlide = function(name, config) {
+        slidesMap[name] = config;
+        return this;
+    };
+
+    this.$get = function($templateRequest, $q) {
+        var self = this;
+        return {
+            getElements: function(projector) {
+                var elements = [];
+                var factory = this;
+                _.forEach(projector.elements, function(element) {
+                    if (element.name in slidesMap) {
+                        element.template = slidesMap[element.name].template;
+                        elements.push(element);
+                    } else {
+                        console.log("Unknown slide: " + element.name);
+                    }
+                });
+                return elements;
+            }
+        }
+    };
+})
+
+.config(function(slidesProvider) {
+    slidesProvider.registerSlide('core/customslide', {
+        template: 'static/templates/core/slide_customslide.html',
+    });
+
+    slidesProvider.registerSlide('core/clock', {
+        template: 'static/templates/core/slide_clock.html',
+    });
+})
+
+.filter('osServertime',function() {
+    return function(serverOffset) {
+        var date = new Date();
+        return date.setTime(date.getTime() - serverOffset);
+    };
+})
+
+.controller('ProjectorCtrl', function($scope, Projector, slides) {
+    Projector.find(1).then(function() {
+        $scope.$watch(function () {
+            return Projector.lastModified(1);
+        }, function () {
+            $scope.elements = [];
+            _.forEach(slides.getElements(Projector.get(1)), function(element) {
+                $scope.elements.push(element);
+            });
+        });
+    });
+})
+
+.controller('SlideCustomSlideCtr', function($scope, Customslide) {
+    // Attention! Each object that is used here has to be dealt on server side.
+    // Add it to the coresponding get_requirements method of the ProjectorElement
+    // class.
+    var id = $scope.element.context.id;
+    Customslide.find(id);
+    Customslide.bindOne(id, $scope, 'customslide');
+})
+
+.controller('SlideClockCtr', function($scope) {
+    // Attention! Each object that is used here has to be dealt on server side.
+    // Add it to the coresponding get_requirements method of the ProjectorElement
+    // class.
+    $scope.serverOffset = Date.parse(new Date().toUTCString()) - $scope.element.context.server_time;
 });
