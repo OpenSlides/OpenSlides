@@ -21,7 +21,11 @@
   </div>
   <div class="form-group">
     <label for="selectSubmitter" translate>Submitter</label>
-    <ui-select ng-model="motion.submitter" theme="bootstrap" name="selectSubmitter">
+    <select multiple size="3" ng-options="user.id as user.get_short_name() for user in users"
+        ng-model="motion.submitters" class="form-control" name="selectSubmitter" required>
+    </select>
+<!-- TODO: use modern ui-select component with more information per user
+    <ui-select multipe ng-model="motion.submitter" theme="bootstrap" name="selectSubmitter">
       <ui-select-match placeholder="{{ 'Select or search a participant...' | translate }}">
         {{ $select.selected.get_short_name() }}
       </ui-select-match>
@@ -29,15 +33,15 @@
         <div ng-bind-html="user.get_short_name() | highlight: $select.search"></div>
         <small ng-bind-html="user.structure_level | highlight: $select.search"></small>
       </ui-select-choices>
-    </ui-select>
+    </ui-select>-->
   </div>
-  <div class="form-group" ng-class="{'has-error has-feedback': motionForm.inputTitle.$error.required}">
+  <div class="form-group">
     <label for="inputName" translate>Title</label>
-    <input type="text" ng-model="motion.title" class="form-control" name="inputTitle" ng-required="true">
+    <input type="text" ng-model="motion.title" class="form-control" name="inputTitle" required>
   </div>
   <div class="form-group">
     <label for="textText" translate>Text</label>
-    <textarea ng-model="motion.text" class="form-control" name="textText" />
+    <textarea ng-model="motion.text" class="form-control" name="textText" required />
   </div>
   <div class="form-group">
     <label for="textReason" translate>Reason</label>
