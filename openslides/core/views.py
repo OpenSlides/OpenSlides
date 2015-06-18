@@ -1,10 +1,17 @@
 import re
 
+from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.core.urlresolvers import get_resolver
 from django.http import HttpResponse
 
+from openslides import __version__ as version
 from openslides.utils import views as utils_views
+from openslides.utils.plugins import (
+    get_plugin_description,
+    get_plugin_verbose_name,
+    get_plugin_version,
+)
 from openslides.utils.rest_api import (
     ModelViewSet,
     ReadOnlyModelViewSet,
@@ -190,4 +197,22 @@ class UrlPatternsView(utils_views.APIView):
             normalized_regex_bits, p_pattern, pattern_default_args = url_dict[pattern_name]
             url, url_kwargs = normalized_regex_bits[0]
             result[pattern_name] = self.URL_KWARGS_REGEX.sub(r':\1', url)
+        return result
+
+
+class VersionView(utils_views.APIView):
+    """
+    Returns a dictionary with the OpenSlides version and the version of all
+    plugins.
+    """
+    http_method_names = ['get']
+
+    def get_context_data(self, **context):
+        result = dict(openslides_version=version, plugins=[])
+        # Versions of plugins.
+        for plugin in settings.INSTALLED_PLUGINS:
+            result['plugins'].append({
+                'verbose_name': get_plugin_verbose_name(plugin),
+                'description': get_plugin_description(plugin),
+                'version': get_plugin_version(plugin)})
         return result
