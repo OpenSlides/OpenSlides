@@ -3,6 +3,7 @@ import json
 from django.core.urlresolvers import reverse
 from rest_framework import status
 
+from openslides import __version__ as version
 from openslides.core.models import CustomSlide, Projector
 from openslides.utils.test import TestCase
 
@@ -44,3 +45,18 @@ class ProjectorAPI(TestCase):
             'projector_elements': [
                 {'name': 'invalid_slide',
                  'error': 'Projector element does not exist.'}]})
+
+
+class VersionView(TestCase):
+    """
+    Tests the version info view.
+    """
+    def test_get(self):
+        self.client.login(username='admin', password='admin')
+        response = self.client.get(reverse('core_version'))
+        self.assertEqual(json.loads(response.content.decode()), {
+            'openslides_version': version,
+            'plugins': [
+                {'verbose_name': 'Plugin tests.old.utils',
+                 'description': 'Description of plugin tests.old.utils',
+                 'version': 'unknown'}]})
