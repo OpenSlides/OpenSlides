@@ -1,10 +1,11 @@
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
+from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 from rest_framework import status
 
-from openslides.utils.rest_api import ModelViewSet, Response
+from openslides.utils.rest_api import ModelViewSet, Response, detail_route
 from openslides.utils.views import APIView, PDFView
 
 from .models import Group, User
@@ -82,6 +83,18 @@ class UserViewSet(ModelViewSet):
         else:
             serializer_class = UserShortSerializer
         return serializer_class
+
+    @detail_route(methods=['post'])
+    def reset_password(self, request, pk=None):
+        """
+        View to reset the password (using the default password).
+        """
+        if not request.user.has_perm('users.can_manage'):
+            self.permission_denied(request)
+        user = self.get_object()
+        user.set_password(user.default_password)
+        user.save()
+        return Response({'detail': _('Password successfully reset.')})
 
 
 class GroupViewSet(ModelViewSet):
