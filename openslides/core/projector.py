@@ -13,24 +13,16 @@ class CustomSlideSlide(ProjectorElement):
     Slide definitions for custom slide model.
     """
     name = 'core/customslide'
-    scripts = 'core/customslide_slide.js'
 
     def get_context(self):
         pk = self.config_entry.get('id')
         if not CustomSlide.objects.filter(pk=pk).exists():
             raise ProjectorException(_('Custom slide does not exist.'))
-        return [{
-            'collection': 'core/customslide',
-            'id': pk}]
+        return {'id': pk}
 
     def get_requirements(self, config_entry):
-        self.config_entry = config_entry
-        try:
-            pk = self.get_context()[0]['id']
-        except ProjectorException:
-            # Custom slide does not exist so just do nothing.
-            pass
-        else:
+        pk = config_entry.get('id')
+        if pk is not None:
             yield ProjectorRequirement(
                 view_class=CustomSlideViewSet,
                 view_action='retrieve',
@@ -42,7 +34,6 @@ class Clock(ProjectorElement):
     Clock on the projector.
     """
     name = 'core/clock'
-    scripts = 'core/clock.js'
 
     def get_context(self):
         return {'server_time': now().timestamp()}
@@ -73,7 +64,6 @@ class Countdown(ProjectorElement):
     To hide a running countdown add {"hidden": true}.
     """
     name = 'core/countdown'
-    scripts = 'core/countdown.js'
 
     def get_context(self):
         if self.config_entry.get('countdown_time') is None:
@@ -88,7 +78,6 @@ class Message(ProjectorElement):
     Short message on the projector. Rendered as overlay.
     """
     name = 'core/message'
-    scripts = 'core/message.js'
 
     def get_context(self):
         if self.config_entry.get('message') is None:

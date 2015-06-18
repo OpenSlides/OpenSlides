@@ -1,5 +1,29 @@
 angular.module('OpenSlidesApp.motions', [])
 
+.factory('Motion', function(DS) {
+    return DS.defineResource({
+        name: 'motions/motion',
+        endpoint: '/rest/motions/motion/'
+    });
+})
+.factory('Category', function(DS) {
+    return DS.defineResource({
+        name: 'motions/category',
+        endpoint: '/rest/motions/category/'
+    });
+})
+.factory('Workflow', function(DS) {
+    return DS.defineResource({
+        name: 'motions/workflow',
+        endpoint: '/rest/motions/workflow/'
+    });
+})
+
+.run(function(Motion, Category, Workflow) {});
+
+
+angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
+
 .config(function($stateProvider) {
     $stateProvider
         .state('motions', {
@@ -102,25 +126,6 @@ angular.module('OpenSlidesApp.motions', [])
                 '@motions.category': {}
             }
         })
-})
-
-.factory('Motion', function(DS) {
-    return DS.defineResource({
-        name: 'motions/motion',
-        endpoint: '/rest/motions/motion/'
-    });
-})
-.factory('Category', function(DS) {
-    return DS.defineResource({
-        name: 'motions/category',
-        endpoint: '/rest/motions/category/'
-    });
-})
-.factory('Workflow', function(DS) {
-    return DS.defineResource({
-        name: 'motions/workflow',
-        endpoint: '/rest/motions/workflow/'
-    });
 })
 
 .controller('MotionListCtrl', function($scope, Motion) {

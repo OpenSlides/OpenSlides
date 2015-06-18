@@ -1,5 +1,17 @@
 angular.module('OpenSlidesApp.mediafiles', [])
 
+.factory('Mediafile', function(DS) {
+    return DS.defineResource({
+        name: 'mediafiles/mediafile',
+        endpoint: '/rest/mediafiles/mediafile/'
+    });
+})
+
+.run(function(Mediafile) {});
+
+
+angular.module('OpenSlidesApp.mediafiles.site', ['OpenSlidesApp.mediafiles'])
+
 .config(function($stateProvider) {
     $stateProvider
         .state('mediafiles', {
@@ -24,13 +36,6 @@ angular.module('OpenSlidesApp.mediafiles', [])
                 '@mediafiles.mediafile': {}
             }
         });
-})
-
-.factory('Mediafile', function(DS) {
-    return DS.defineResource({
-        name: 'mediafiles/mediafile',
-        endpoint: '/rest/mediafiles/mediafile/'
-    });
 })
 
 .controller('MediafileListCtrl', function($scope, $http, Mediafile) {
@@ -80,4 +85,3 @@ angular.module('OpenSlidesApp.mediafiles', [])
         );
     };
 });
-

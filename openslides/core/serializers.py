@@ -33,7 +33,7 @@ class ProjectorSerializer(ModelSerializer):
 
     class Meta:
         model = Projector
-        fields = ('config', 'projector_elements', )
+        fields = ('id', 'config', 'elements', )
 
 
 class CustomSlideSerializer(ModelSerializer):

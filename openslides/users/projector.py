@@ -12,33 +12,23 @@ class UserSlide(ProjectorElement):
     Slide definitions for user model.
     """
     name = 'users/user'
-    scripts = 'users/user_slide.js'
 
     def get_context(self):
         pk = self.config_entry.get('id')
-        try:
-            user = User.objects.get(pk=pk)
-        except User.DoesNotExist:
+        if not User.objects.filter(pk=pk).exists():
             raise ProjectorException(_('User does not exist.'))
-        result = [{
-            'collection': 'users/user',
-            'id': pk}]
-        for group in user.groups.all():
-            result.append({
-                'collection': 'users/group',
-                'id': group.pk})
-        return result
+        return {'id': pk}
 
     def get_requirements(self, config_entry):
-        self.config_entry = config_entry
-        try:
-            context = self.get_context()
-        except ProjectorException:
-            # User does not exist so just do nothing.
-            pass
-        else:
-            for item in context:
+        pk = config_entry.get('id')
+        if pk is not None:
+            yield ProjectorRequirement(
+                view_class=UserViewSet,
+                view_action='retrive',
+                pk=pk)
+
+            for group in User.objects.get(pk=pk).groups.all():
                 yield ProjectorRequirement(
-                    view_class=UserViewSet if item['collection'] == 'users/user' else GroupViewSet,
+                    view_class=GroupViewSet,
                     view_action='retrieve',
-                    pk=str(item['id']))
+                    pk=str(group.pk))

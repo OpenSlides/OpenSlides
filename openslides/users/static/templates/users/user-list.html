@@ -106,7 +106,8 @@
       <td os-perms="users.can_manage" class="optional">{{ user.last_login | date:'yyyy-MM-dd HH:mm:ss'}}
       <td os-perms="users.can_manage core.can_manage_projector" class="nobr">
         <!-- projector, TODO: add link to activate slidea-->
-        <a href="#TODO" os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
+        <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
+            ng-click="project(user)"
             title="{{ 'Show' | translate }}">
           <i class="fa fa-video-camera"></i>
         </a>
