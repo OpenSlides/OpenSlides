@@ -1,109 +1,93 @@
-from django import forms
 from django.db.models import Q
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
-from openslides.config.api import (
-    ConfigGroup,
-    ConfigGroupedCollection,
-    ConfigVariable,
-)
+from openslides.config.api import ConfigVariable
 
 from .models import Group, Permission, User
 
 
 def setup_users_config(sender, **kwargs):
     """
-    Receiver function to setup all users config variables. It is connected
-    to the signal openslides.config.signals.config_signal during app loading.
+    Receiver function to setup all users config variables. They are grouped
+    in 'Sorting' and 'PDF'. This function is connected to the signal
+    openslides.config.signals.config_signal during app loading.
     """
-    # General
-    users_sort_users_by_first_name = ConfigVariable(
+
+    # Sorting
+
+    yield ConfigVariable(
         name='users_sort_users_by_first_name',
         default_value=False,
-        form_field=forms.BooleanField(
-            required=False,
-            label=ugettext_lazy('Sort users by first name'),
-            help_text=ugettext_lazy('Disable for sorting by last name')))
-
-    group_general = ConfigGroup(
-        title=ugettext_lazy('Sorting'),
-        variables=(users_sort_users_by_first_name,))
+        input_type='boolean',
+        label=ugettext_lazy('Sort users by first name'),
+        help_text=ugettext_lazy('Disable for sorting by last name'),
+        weight=510,
+        group=ugettext_lazy('Users'),
+        subgroup=ugettext_lazy('Sorting'))
 
     # PDF
-    users_pdf_welcometitle = ConfigVariable(
+
+    yield ConfigVariable(
         name='users_pdf_welcometitle',
         default_value=_('Welcome to OpenSlides!'),
-        translatable=True,
-        form_field=forms.CharField(
-            widget=forms.Textarea(),
-            required=False,
-            label=ugettext_lazy('Title for access data and welcome PDF')))
+        label=ugettext_lazy('Title for access data and welcome PDF'),
+        weight=520,
+        group=ugettext_lazy('Users'),
+        subgroup=ugettext_lazy('PDF'),
+        translatable=True)
 
-    users_pdf_welcometext = ConfigVariable(
+    yield ConfigVariable(
         name='users_pdf_welcometext',
         default_value=_('[Place for your welcome and help text.]'),
-        translatable=True,
-        form_field=forms.CharField(
-            widget=forms.Textarea(),
-            required=False,
-            label=ugettext_lazy('Help text for access data and welcome PDF')))
+        label=ugettext_lazy('Help text for access data and welcome PDF'),
+        weight=530,
+        group=ugettext_lazy('Users'),
+        subgroup=ugettext_lazy('PDF'),
+        translatable=True)
 
-    users_pdf_url = ConfigVariable(
+    # TODO: Use Django's URLValidator here.
+    yield ConfigVariable(
         name='users_pdf_url',
         default_value='http://example.com:8000',
-        form_field=forms.CharField(
-            widget=forms.TextInput(),
-            required=False,
-            label=ugettext_lazy('System URL'),
-            help_text=ugettext_lazy('Used for QRCode in PDF of access data.')))
+        label=ugettext_lazy('System URL'),
+        help_text=ugettext_lazy('Used for QRCode in PDF of access data.'),
+        weight=540,
+        group=ugettext_lazy('Users'),
+        subgroup=ugettext_lazy('PDF'))
 
-    users_pdf_wlan_ssid = ConfigVariable(
+    yield ConfigVariable(
         name='users_pdf_wlan_ssid',
         default_value='',
-        form_field=forms.CharField(
-            widget=forms.TextInput(),
-            required=False,
-            label=ugettext_lazy('WLAN name (SSID)'),
-            help_text=ugettext_lazy('Used for WLAN QRCode in PDF of access data.')))
+        label=ugettext_lazy('WLAN name (SSID)'),
+        help_text=ugettext_lazy('Used for WLAN QRCode in PDF of access data.'),
+        weight=550,
+        group=ugettext_lazy('Users'),
+        subgroup=ugettext_lazy('PDF'))
 
-    users_pdf_wlan_password = ConfigVariable(
+    yield ConfigVariable(
         name='users_pdf_wlan_password',
         default_value='',
-        form_field=forms.CharField(
-            widget=forms.TextInput(),
-            required=False,
-            label=ugettext_lazy('WLAN password'),
-            help_text=ugettext_lazy('Used for WLAN QRCode in PDF of access data.')))
+        label=ugettext_lazy('WLAN password'),
+        help_text=ugettext_lazy('Used for WLAN QRCode in PDF of access data.'),
+        weight=560,
+        group=ugettext_lazy('Users'),
+        subgroup=ugettext_lazy('PDF'))
 
-    users_pdf_wlan_encryption = ConfigVariable(
+    yield ConfigVariable(
         name='users_pdf_wlan_encryption',
         default_value='',
-        form_field=forms.ChoiceField(
-            widget=forms.Select(),
-            required=False,
-            label=ugettext_lazy('WLAN encryption'),
-            help_text=ugettext_lazy('Used for WLAN QRCode in PDF of access data.'),
-            choices=(
-                ('', '---------'),
-                ('WEP', 'WEP'),
-                ('WPA', 'WPA/WPA2'),
-                ('nopass', ugettext_lazy('No encryption')))))
-
-    group_pdf = ConfigGroup(
-        title=ugettext_lazy('PDF'),
-        variables=(users_pdf_welcometitle,
-                   users_pdf_welcometext,
-                   users_pdf_url,
-                   users_pdf_wlan_ssid,
-                   users_pdf_wlan_password,
-                   users_pdf_wlan_encryption))
-
-    return ConfigGroupedCollection(
-        title=ugettext_noop('Users'),
-        url='users',
-        weight=50,
-        groups=(group_general, group_pdf))
+        input_type='choice',
+        label=ugettext_lazy('WLAN encryption'),
+        help_text=ugettext_lazy('Used for WLAN QRCode in PDF of access data.'),
+        choices=(
+            {'value': '', 'display_name': '---------'},
+            {'value': 'WEP', 'display_name': ugettext_lazy('WEP')},
+            {'value': 'WPA', 'display_name': ugettext_lazy('WPA/WPA2')},
+            {'value': 'nopass', 'display_name': ugettext_lazy('No encryption')}),
+        weight=570,
+        group=ugettext_lazy('Users'),
+        subgroup=ugettext_lazy('PDF'))
 
 
 def create_builtin_groups_and_admin(**kwargs):

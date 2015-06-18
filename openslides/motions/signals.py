@@ -1,12 +1,8 @@
-from django import forms
+from django.core.validators import MinValueValidator
 from django.utils.translation import ugettext as _
 from django.utils.translation import pgettext, ugettext_lazy, ugettext_noop
 
-from openslides.config.api import (
-    ConfigGroup,
-    ConfigGroupedCollection,
-    ConfigVariable,
-)
+from openslides.config.api import ConfigVariable
 from openslides.poll.models import PERCENT_BASE_CHOICES
 
 from .models import State, Workflow
@@ -14,166 +10,165 @@ from .models import State, Workflow
 
 def setup_motion_config(sender, **kwargs):
     """
-    Receiver function to setup all motion config variables. It is connected to
-    the signal openslides.config.signals.config_signal during app loading.
+    Receiver function to setup all motion config variables. They are
+    grouped in 'General', 'Amendments', 'Supporters', 'Voting and ballot
+    papers' and 'PDF'. This function connected to the signal
+    openslides.config.signals.config_signal during app loading.
     """
     # General
-    motions_workflow = ConfigVariable(
+
+    yield ConfigVariable(
         name='motions_workflow',
         default_value='1',
-        form_field=forms.ChoiceField(
-            widget=forms.Select(),
-            label=ugettext_lazy('Workflow of new motions'),
-            required=True,
-            choices=[(str(workflow.pk), ugettext_lazy(workflow.name)) for workflow in Workflow.objects.all()]))
-    motions_identifier = ConfigVariable(
+        input_type='choice',
+        label=ugettext_lazy('Workflow of new motions'),
+        choices=({'value': str(workflow.pk), 'display_name': ugettext_lazy(workflow.name)} for workflow in Workflow.objects.all()),
+        weight=310,
+        group=ugettext_lazy('Motion'),
+        subgroup=ugettext_lazy('General'))
+
+    yield ConfigVariable(
         name='motions_identifier',
         default_value='per_category',
-        form_field=forms.ChoiceField(
-            widget=forms.Select(),
-            required=True,
-            label=ugettext_lazy('Identifier'),
-            choices=[
-                ('per_category', ugettext_lazy('Numbered per category')),
-                ('serially_numbered', ugettext_lazy('Serially numbered')),
-                ('manually', ugettext_lazy('Set it manually'))]))
-    motions_preamble = ConfigVariable(
+        input_type='choice',
+        label=ugettext_lazy('Identifier'),
+        choices=(
+            {'value': 'per_category', 'display_name': ugettext_lazy('Numbered per category')},
+            {'value': 'serially_numbered', 'display_name': ugettext_lazy('Serially numbered')},
+            {'value': 'manually', 'display_name': ugettext_lazy('Set it manually')}),
+        weight=315,
+        group=ugettext_lazy('Motion'),
+        subgroup=ugettext_lazy('General'))
+
+    yield ConfigVariable(
         name='motions_preamble',
         default_value=_('The assembly may decide,'),
-        translatable=True,
-        form_field=forms.CharField(
-            widget=forms.TextInput(),
-            required=False,
-            label=ugettext_lazy('Motion preamble')))
-    motions_stop_submitting = ConfigVariable(
+        label=ugettext_lazy('Motion preamble'),
+        weight=320,
+        group=ugettext_lazy('Motion'),
+        subgroup=ugettext_lazy('General'),
+        translatable=True)
+
+    yield ConfigVariable(
         name='motions_stop_submitting',
         default_value=False,
-        form_field=forms.BooleanField(
-            label=ugettext_lazy('Stop submitting new motions by non-staff users'),
-            required=False))
-    motions_allow_disable_versioning = ConfigVariable(
+        input_type='boolean',
+        label=ugettext_lazy('Stop submitting new motions by non-staff users'),
+        weight=325,
+        group=ugettext_lazy('Motion'),
+        subgroup=ugettext_lazy('General'))
+
+    yield ConfigVariable(
         name='motions_allow_disable_versioning',
         default_value=False,
-        form_field=forms.BooleanField(
-            label=ugettext_lazy('Allow to disable versioning'),
-            required=False))
-    group_general = ConfigGroup(
-        title=ugettext_lazy('General'),
-        variables=(
-            motions_workflow,
-            motions_identifier,
-            motions_preamble,
-            motions_stop_submitting,
-            motions_allow_disable_versioning))
+        input_type='boolean',
+        label=ugettext_lazy('Allow to disable versioning'),
+        weight=330,
+        group=ugettext_lazy('Motion'),
+        subgroup=ugettext_lazy('General'))
 
     # Amendments
-    motions_amendments_enabled = ConfigVariable(
+
+    yield ConfigVariable(
         name='motions_amendments_enabled',
         default_value=False,
-        form_field=forms.BooleanField(
-            label=ugettext_lazy('Activate amendments'),
-            required=False))
+        input_type='boolean',
+        label=ugettext_lazy('Activate amendments'),
+        weight=335,
+        group=ugettext_lazy('Motion'),
+        subgroup=ugettext_lazy('Amendments'))
 
-    motions_amendments_prefix = ConfigVariable(
+    yield ConfigVariable(
         name='motions_amendments_prefix',
         default_value=pgettext('Prefix for the identifier for amendments', 'A'),
-        form_field=forms.CharField(
-            required=False,
-            label=ugettext_lazy('Prefix for the identifier for amendments')))
-
-    group_amendments = ConfigGroup(
-        title=ugettext_lazy('Amendments'),
-        variables=(motions_amendments_enabled, motions_amendments_prefix))
+        label=ugettext_lazy('Prefix for the identifier for amendments'),
+        weight=340,
+        group=ugettext_lazy('Motion'),
+        subgroup=ugettext_lazy('Amendments'))
 
     # Supporters
-    motions_min_supporters = ConfigVariable(
+
+    yield ConfigVariable(
         name='motions_min_supporters',
         default_value=0,
-        form_field=forms.IntegerField(
-            widget=forms.TextInput(attrs={'class': 'small-input'}),
-            label=ugettext_lazy('Number of (minimum) required supporters for a motion'),
-            min_value=0,
-            help_text=ugettext_lazy('Choose 0 to disable the supporting system.')))
-    motions_remove_supporters = ConfigVariable(
+        input_type='integer',
+        label=ugettext_lazy('Number of (minimum) required supporters for a motion'),
+        help_text=ugettext_lazy('Choose 0 to disable the supporting system.'),
+        weight=345,
+        group=ugettext_lazy('Motion'),
+        subgroup=ugettext_lazy('Supporters'),
+        validators=(MinValueValidator(0),))
+
+    yield ConfigVariable(
         name='motions_remove_supporters',
         default_value=False,
-        form_field=forms.BooleanField(
-            label=ugettext_lazy('Remove all supporters of a motion if a submitter edits his motion in early state'),
-            required=False))
-    group_supporters = ConfigGroup(
-        title=ugettext_lazy('Supporters'),
-        variables=(motions_min_supporters, motions_remove_supporters))
+        input_type='boolean',
+        label=ugettext_lazy('Remove all supporters of a motion if a submitter edits his motion in early state'),
+        weight=350,
+        group=ugettext_lazy('Motion'),
+        subgroup=ugettext_lazy('Supporters'))
 
     # Voting and ballot papers
-    motions_poll_100_percent_base = ConfigVariable(
+
+    yield ConfigVariable(
         name='motions_poll_100_percent_base',
         default_value='WITHOUT_INVALID',
-        form_field=forms.ChoiceField(
-            widget=forms.Select(),
-            required=False,
-            label=ugettext_lazy('The 100 % base of a voting result consists of'),
-            choices=PERCENT_BASE_CHOICES))
-    motions_pdf_ballot_papers_selection = ConfigVariable(
+        input_type='choice',
+        label=ugettext_lazy('The 100 % base of a voting result consists of'),
+        choices=PERCENT_BASE_CHOICES,
+        weight=355,
+        group=ugettext_lazy('Motion'),
+        subgroup=ugettext_lazy('Voting and ballot papers'))
+
+    yield ConfigVariable(
         name='motions_pdf_ballot_papers_selection',
         default_value='CUSTOM_NUMBER',
-        form_field=forms.ChoiceField(
-            widget=forms.Select(),
-            required=False,
-            label=ugettext_lazy('Number of ballot papers (selection)'),
-            choices=[
-                ('NUMBER_OF_DELEGATES', ugettext_lazy('Number of all delegates')),
-                ('NUMBER_OF_ALL_PARTICIPANTS', ugettext_lazy('Number of all participants')),
-                ('CUSTOM_NUMBER', ugettext_lazy("Use the following custom number"))]))
-    motions_pdf_ballot_papers_number = ConfigVariable(
+        input_type='choice',
+        label=ugettext_lazy('Number of ballot papers (selection)'),
+        choices=(
+            {'value': 'NUMBER_OF_DELEGATES', 'display_name': ugettext_lazy('Number of all delegates')},
+            {'value': 'NUMBER_OF_ALL_PARTICIPANTS', 'display_name': ugettext_lazy('Number of all participants')},
+            {'value': 'CUSTOM_NUMBER', 'display_name': ugettext_lazy('Use the following custom number')}),
+        weight=360,
+        group=ugettext_lazy('Motion'),
+        subgroup=ugettext_lazy('Voting and ballot papers'))
+
+    yield ConfigVariable(
         name='motions_pdf_ballot_papers_number',
         default_value=8,
-        form_field=forms.IntegerField(
-            widget=forms.TextInput(attrs={'class': 'small-input'}),
-            required=False,
-            min_value=1,
-            label=ugettext_lazy('Custom number of ballot papers')))
-    group_ballot_papers = ConfigGroup(
-        title=ugettext_lazy('Voting and ballot papers'),
-        variables=(
-            motions_poll_100_percent_base,
-            motions_pdf_ballot_papers_selection,
-            motions_pdf_ballot_papers_number))
+        input_type='integer',
+        label=ugettext_lazy('Custom number of ballot papers'),
+        weight=365,
+        group=ugettext_lazy('Motion'),
+        subgroup=ugettext_lazy('Voting and ballot papers'),
+        validators=(MinValueValidator(1),))
 
     # PDF
-    motions_pdf_title = ConfigVariable(
+
+    yield ConfigVariable(
         name='motions_pdf_title',
         default_value=_('Motions'),
-        translatable=True,
-        form_field=forms.CharField(
-            widget=forms.TextInput(),
-            required=False,
-            label=ugettext_lazy('Title for PDF document (all motions)')))
-    motions_pdf_preamble = ConfigVariable(
+        label=ugettext_lazy('Title for PDF document (all motions)'),
+        weight=370,
+        group=ugettext_lazy('Motion'),
+        subgroup=ugettext_lazy('PDF'),
+        translatable=True)
+
+    yield ConfigVariable(
         name='motions_pdf_preamble',
         default_value='',
-        form_field=forms.CharField(
-            widget=forms.Textarea(),
-            required=False,
-            label=ugettext_lazy('Preamble text for PDF document (all motions)')))
-    motions_pdf_paragraph_numbering = ConfigVariable(
+        label=ugettext_lazy('Preamble text for PDF document (all motions)'),
+        weight=375,
+        group=ugettext_lazy('Motion'),
+        subgroup=ugettext_lazy('PDF'))
+
+    yield ConfigVariable(
         name='motions_pdf_paragraph_numbering',
         default_value=False,
-        form_field=forms.BooleanField(
-            label=ugettext_lazy('Show paragraph numbering (only in PDF)'),
-            required=False))
-    group_pdf = ConfigGroup(
-        title=ugettext_lazy('PDF'),
-        variables=(
-            motions_pdf_title,
-            motions_pdf_preamble,
-            motions_pdf_paragraph_numbering))
-
-    return ConfigGroupedCollection(
-        title=ugettext_noop('Motion'),
-        url='motion',
-        weight=30,
-        groups=(group_general, group_amendments, group_supporters,
-                group_ballot_papers, group_pdf))
+        label=ugettext_lazy('Show paragraph numbering (only in PDF)'),
+        weight=380,
+        group=ugettext_lazy('Motion'),
+        subgroup=ugettext_lazy('PDF'))
 
 
 def create_builtin_workflows(sender, **kwargs):
