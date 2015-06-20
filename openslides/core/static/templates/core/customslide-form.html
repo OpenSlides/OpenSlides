@@ -1,0 +1,27 @@
+<h1 ng-if="customslide.id" translate>Edit custom slide</h1>
+<h1 ng-if="!customslide.id" translate>New custom slide</h1>
+
+<div id="submenu">
+  <a ui-sref="core.customslide.list" class="btn btn-sm btn-default">
+    <i class="fa fa-angle-double-left fa-lg"></i>
+    <translate>Back to overview</translate>
+  </a>
+</div>
+
+<form name="customslideForm">
+  <div class="form-group" >
+    <label for="inputTitle" translate>Title</label>
+    <input type="text" ng-model="customslide.title" class="form-control" name="inputTitle" required>
+  </div>
+  <div class="form-group">
+    <label for="textareaDesciption" translate>Text</label>
+    <textarea ng-model="customslide.text" class="form-control" name="textareaText" />
+  </div>
+
+  <button type="submit" ng-click="save(customslide)" class="btn btn-primary" translate>
+    Save
+  </button>
+  <button ui-sref="core.customslide.list" class="btn btn-default" translate>
+    Cancel
+  </button>
+</form>

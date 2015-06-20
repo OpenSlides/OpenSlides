@@ -9,9 +9,9 @@
 </div>
 
 <form name="tagForm">
-  <div class="form-group" ng-class="{'has-error has-feedback': tagForm.inputName.$error.required}">
+  <div class="form-group">
     <label for="inputName" translate>Name</label>
-    <input type="text" ng-model="tag.name" class="form-control" name="inputName" ng-required="true">
+    <input type="text" ng-model="tag.name" class="form-control" name="inputName" required>
   </div>
 
   <button type="submit" ng-click="save(tag)" class="btn btn-primary" translate>

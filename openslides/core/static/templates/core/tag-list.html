@@ -31,13 +31,13 @@
       <td>{{ tag.name }}
       <td os-perms="core.can_manage_tags" class="nobr">
         <!-- edit -->
-        <a ui-sref="core.tag.detail.update({id: tag.id })" os-perms="core.can_manage_tags"
+        <a ui-sref="core.tag.detail.update({id: tag.id })"
             class="btn btn-default btn-sm"
             title="{{ 'Edit' | translate}}">
           <i class="fa fa-pencil"></i>
         </a>
         <!-- delete -->
-        <a ng-click="delete(tag)" os-perms="core.can_manage_tags" class="btn btn-danger btn-sm"
+        <a ng-click="delete(tag)"class="btn btn-danger btn-sm"
             title="{{ 'Delete' | translate }}">
           <i class="fa fa-trash-o"></i>
         </a>

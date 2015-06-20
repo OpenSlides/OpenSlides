@@ -1,0 +1,22 @@
+<h1>{{ customslide.title }}</h1>
+
+<div id="submenu">
+  <a ui-sref="core.customslide.list" class="btn btn-sm btn-default">
+    <i class="fa fa-angle-double-left fa-lg"></i>
+    <translate>Back to overview</translate>
+  </a>
+  <!-- projector, TODO: add link to activate slide-->
+  <a href="#TODO" os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
+      title="{{ 'Show' | translate }}">
+    <i class="fa fa-video-camera"></i>
+  </a>
+  <!-- edit -->
+  <a ui-sref="core.customslide.detail.update({id: customslide.id })" os-perms="core.can_mange_projector"
+      class="btn btn-default btn-sm"
+      title="{{ 'Edit' | translate}}">
+    <i class="fa fa-pencil"></i>
+  </a>
+</div>
+
+<div class="white-space-pre-line">{{ customslide.text }}</div>
+
