@@ -50,7 +50,7 @@ gulp.task('css', function() {
 // Catches all font files from all bower components.
 gulp.task('fonts', function() {
     return gulp.src(mainBowerFiles({
-            filter: /\.(eot)|(svg)|(ttf)|(woff)$/
+            filter: /\.(eot)|(svg)|(ttf)|(woff)|(woff2)$/
         }))
         .pipe(gulp.dest(path.join(output_directory, 'fonts')));
 });
