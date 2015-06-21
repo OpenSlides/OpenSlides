@@ -24,8 +24,8 @@ class UserSlide(ProjectorElement):
         if pk is not None:
             yield ProjectorRequirement(
                 view_class=UserViewSet,
-                view_action='retrive',
-                pk=pk)
+                view_action='retrieve',
+                pk=str(pk))
 
             for group in User.objects.get(pk=pk).groups.all():
                 yield ProjectorRequirement(
