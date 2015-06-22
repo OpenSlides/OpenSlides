@@ -6,7 +6,6 @@ from django.utils.translation import ugettext_noop
 from reportlab.platypus import SimpleDocTemplate
 from rest_framework import status
 
-from openslides.agenda.models import Item
 from openslides.config.api import config
 from openslides.utils.rest_api import (
     ModelViewSet,
@@ -244,28 +243,6 @@ class MotionViewSet(ModelViewSet):
             message_list=[ugettext_noop('State set to'), ' ', motion.state.name],
             person=request.user)
         return Response({'detail': message})
-
-    @detail_route(methods=['post'])
-    def create_agenda_item(self, request, pk=None):
-        """
-        Speacial view endpoint to create an agenda item that is related to
-        this motion.
-        """
-        # Check permission.
-        if not request.user.has_perm('motions.can_manage'):
-            self.permission_denied(request)
-
-        # Retrieve motion.
-        motion = self.get_object()
-
-        # Create agenda item.
-        Item.objects.create(content_object=motion)
-
-        # Write the log message and initiate response.
-        motion.write_log(
-            message_list=[ugettext_noop('Agenda item created')],
-            person=request.user)
-        return Response({'detail': _('Agenda item successfully created.')})
 
 
 class PollPDFView(PDFView):
