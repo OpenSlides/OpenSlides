@@ -116,9 +116,33 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     };
 })
 
-.controller('ItemDetailCtrl', function($scope, Agenda, User, item) {
+.controller('ItemDetailCtrl', function($scope, $http, Agenda, User, item) {
     Agenda.bindOne(item.id, $scope, 'item');
     User.bindAll({}, $scope, 'users');
+    $scope.speaker = {};
+    $scope.alert = {};
+
+    // close/open list of speakers of current item
+    $scope.closeList = function (listClosed) {
+        item.speakerListClosed = listClosed;
+        Agenda.save(item);
+    };
+    // add user to list of speakers
+    $scope.addSpeaker = function (userId) {
+        $http.post('/rest/agenda/item/' + item.id + '/manage_speaker/', {'user': userId})
+            .success(function(data){
+                $scope.alert.show = false;
+            })
+            .error(function(data){
+                $scope.alert = { type: 'danger', msg: data.detail, show: true };
+            });
+    };
+    // delete speaker(!) from list of speakers
+    $scope.removeSpeaker = function (speakerId) {
+        $http.delete('/rest/agenda/item/' + item.id + '/manage_speaker/',
+                {headers: {'Content-Type': 'application/json'},
+                 data: JSON.stringify({speaker: speakerId})});
+    };
 })
 
 .controller('ItemCreateCtrl', function($scope, $state, Agenda, types) {

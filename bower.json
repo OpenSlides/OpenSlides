@@ -13,7 +13,7 @@
     "angular-csv-import": "~0.0.15",
     "angular-loading-bar": "~0.7.1",
     "angular-ui-router": "~0.2.13",
-    "angular-ui-select": "~0.11.2",
+    "angular-ui-select": "~0.12",
     "angular-ui-tree": "~2.2.0",
     "angular-gettext": "~2.0.2",
     "angular-sanitize": "~1.3.15",

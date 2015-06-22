@@ -31,26 +31,52 @@
 </div>
 
 
-<h3 translate>List of speakers</h3>
+<h3 translate>List of speakers
+  <span ng-if="item.speakerListClosed" class="label label-danger" translate>closed</span>
+  <span os-perms="agenda.can_manage">
+    <button ng-if="item.speakerListClosed" ng-click="closeList(false)"
+        class="btn btn-sm btn-default" translate>
+      Open list
+    </button>
+    <button ng-if="!item.speakerListClosed" ng-click="closeList(true)"
+        class="btn btn-sm btn-default" translate>
+      Close list
+    </button>
+  </span>
+</h3>
+
 <!-- TODO:
-   * open/close list
-   * add/remove speakers
    * project list
    * show old/current/next speakers
+   * start/stop speech
    * button 'put/remove me on/from the list'
    * check permissions
 -->
-<div class="form-group row">
-  <div class="col-sm-6">
-    <ui-select ng-model="speaker.selected" theme="bootstrap">
+<ol>
+  <li ng-repeat="speaker in item.speaker_set">
+    {{ (users | filter: {id: speaker.user})[0].get_full_name() }}
+    <button os-perms="agenda.can_manage" ng-click="removeSpeaker(speaker.id)"
+        class="btn btn-default btn-xs">
+      <i class="fa fa-times"></i>
+    </button>
+  </li>
+</ol>
+
+<div os-perms="agenda.can_manage" class="form-group col-sm-6">
+  <alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">{{alert.msg}}</alert>
+  <div class="input-group">
+    <ui-select ng-model="speaker.selected" ng-change="addSpeaker(speaker.selected.id)">
       <ui-select-match placeholder="{{ 'Select or search a participant...' | translate }}">
-        {{ $select.selected.get_short_name() }}
+        {{ $select.selected.get_full_name() }}
       </ui-select-match>
-      <ui-select-choices repeat="user.id as user in users | filter: $select.search">
-        <div ng-bind-html="user.get_short_name() | highlight: $select.search"></div>
-        <small ng-bind-html="user.structure_level | highlight: $select.search"></small>
+      <ui-select-choices repeat="user in users | filter: $select.search">
+        <div ng-bind-html="user.get_full_name() | highlight: $select.search"></div>
       </ui-select-choices>
     </ui-select>
+    <span class="input-group-btn">
+      <a ng-click="speaker={}" class="btn btn-default">
+        <i class="fa fa-times-circle"></i>
+      </a>
+    </span>
   </div>
 </div>
-
