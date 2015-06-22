@@ -1,12 +1,15 @@
+from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.utils.translation import ugettext as _
 
+from openslides.agenda.models import Item
 from openslides.utils.rest_api import (
     DictField,
     IntegerField,
     ListField,
     ListSerializer,
     ModelSerializer,
+    SerializerMethodField,
     ValidationError,
 )
 
@@ -156,6 +159,7 @@ class AssignmentFullSerializer(ModelSerializer):
     """
     Serializer for assignment.models.Assignment objects. With all polls.
     """
+    agenda_items = SerializerMethodField()
     assignment_related_users = AssignmentRelatedUserSerializer(many=True, read_only=True)
     polls = AssignmentAllPollSerializer(many=True, read_only=True)
 
@@ -170,14 +174,22 @@ class AssignmentFullSerializer(ModelSerializer):
             'assignment_related_users',
             'poll_description_default',
             'polls',
-            'tags',)
+            'tags',
+            'agenda_items',)
+
+    def get_agenda_items(self, obj):
+        """
+        Returns a list of ids of all agenda items that are related to this
+        assignment.
+        """
+        assignment_content_type = ContentType.objects.get_for_model(obj)
+        return (item.pk for item in Item.objects.filter(content_type=assignment_content_type, object_id=obj.pk))
 
 
 class AssignmentShortSerializer(AssignmentFullSerializer):
     """
     Serializer for assignment.models.Assignment objects. Without unpublished poll.
     """
-    assignment_related_users = AssignmentRelatedUserSerializer(many=True, read_only=True)
     polls = AssignmentShortPollSerializer(many=True, read_only=True)
 
     class Meta:
@@ -191,4 +203,5 @@ class AssignmentShortSerializer(AssignmentFullSerializer):
             'assignment_related_users',
             'poll_description_default',
             'polls',
-            'tags',)
+            'tags',
+            'agenda_items',)
