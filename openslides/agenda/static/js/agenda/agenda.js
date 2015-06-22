@@ -86,7 +86,8 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
 
     // get a 'flat' (ordered) array of agenda tree to display in table
     $scope.flattenedTree = buildTree(tree.data);
-    function buildTree(tree, level = 0) {
+    function buildTree(tree, level) {
+        var level = level || 0
         var nodes = [];
         var defaultlevel = level;
         _.each(tree, function(node) {
