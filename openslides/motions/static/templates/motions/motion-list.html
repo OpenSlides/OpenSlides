@@ -32,9 +32,25 @@
 <table class="table table-striped table-bordered table-hover">
   <thead>
     <tr>
-      <th ng-click="toggleSort('identifier')" class="sortable">
+      <!-- TODO: Add motion.agenda_item to rest api -->
+      <th ng-click="toggleSort('agenda_item')" class="sortable minimum">
+        <translate>Agenda item</translate>
+        <i class="pull-right fa" ng-show="sortColumn === 'agenda_item' && header.sortable != false"
+            ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
+        </i>
+      <th ng-click="toggleSort('identifier')" class="sortable minimum">
         <translate>Identifier</translate>
         <i class="pull-right fa" ng-show="sortColumn === 'identifier' && header.sortable != false"
+            ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
+        </i>
+      <th ng-click="toggleSort('title')" class="sortable">
+        <translate>Title</translate>
+        <i class="pull-right fa" ng-show="sortColumn === 'title' && header.sortable != false"
+            ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
+        </i>
+      <th ng-click="toggleSort('submitters')" class="sortable">
+        <translate>Submitters</translate>
+        <i class="pull-right fa" ng-show="sortColumn === 'submitters' && header.sortable != false"
             ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
         </i>
       <th ng-click="toggleSort('category')" class="sortable">
@@ -47,8 +63,17 @@
   <tbody>
     <tr ng-repeat="motion in motions | filter: filter.search |
         orderBy: sortColumn:reverse">
+      <td> <!--TOOD: add agenda item reference -->
       <td><a ui-sref="motions.motion.detail({id: motion.id})">{{ motion.identifier }}</a>
-      <td class="optional">{{ motion.category }}
+      <td><a ui-sref="motions.motion.detail({id: motion.id})">
+        <!-- TODO: make it easier to get active version -->
+        {{ (motion.versions | filter: {id: motion.active_version})[0].title }}</a>
+      <td class="optional">
+        <div ng-repeat="submitter in motion.submitters">
+          {{ (users | filter: {id: submitter})[0].get_full_name() }}<br>
+        </div>
+      <td class="optional">
+        {{ (categories | filter: {id: motion.category})[0].name }}</a>
       <td os-perms="motions.can_manage core.can_manage_projector" class="nobr">
         <!-- projector, TODO: add link to activate slide -->
         <a href="#TODO" os-perms="core.can_manage_projector" class="btn btn-default btn-sm"

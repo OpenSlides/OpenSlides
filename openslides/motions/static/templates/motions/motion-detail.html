@@ -1,4 +1,10 @@
-<h1>{{ motion.identifier }}</h1>
+<h1>
+  {{ motion.getTitle() }}
+  <small>
+    <translate>Motion</translate> {{ motion.identifier }}
+    <span ng-if="motion.versions.length > 1" >| Version {{ (motion.versions | filter: {id: motion.active_version})[0].version_number }}</span>
+  </small>
+</h1>
 
 <div id="submenu">
   <a ui-sref="motions.motion.list" class="btn btn-sm btn-default">
@@ -14,16 +20,34 @@
     <i class="fa fa-video-camera"></i>
   </a>
   <!-- edit -->
-  <a ui-sref="motion.detail.update({id: motion.id })" os-perms="motions.can_manage"
+  <a ui-sref="motions.motion.detail.update({id: motion.id })" os-perms="motions.can_manage"
       class="btn btn-default btn-sm"
       title="{{ 'Edit' | translate}}">
     <i class="fa fa-pencil"></i>
   </a>
 </div>
 
+<div class="row">
+  <div class="col-sm-8">
+    <h3 translate>Text</h3>
+    {{ motion.getText() }}
 
-<h3 translate>Category</h3>
-{{ motion.category }}
+    <h3 translate>Reason</h3>
+    {{ motion.getReason() }}
+  </div>
 
-<h3 translate>Submitters</h3>
-<!-- TODO -->
+  <div class="col-sm-4">
+    <div class="well">
+      <h3 translate>Submitters</h3>
+      <div ng-repeat="submitter in motion.submitters">
+        {{ (users | filter: {id: submitter})[0].get_full_name() }}<br>
+      </div>
+
+      <h3 translate>Category</h3>
+      {{ (categories | filter: {id: motion.category})[0].name }}</a>
+
+      <h3 translate>Voting result</h3>
+      -
+    </div>
+  </div>
+</div>

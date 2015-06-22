@@ -3,7 +3,29 @@ angular.module('OpenSlidesApp.motions', [])
 .factory('Motion', function(DS) {
     return DS.defineResource({
         name: 'motions/motion',
-        endpoint: '/rest/motions/motion/'
+        endpoint: '/rest/motions/motion/',
+        methods: {
+            getVersion: function(versionId) {
+                versionId = versionId || this.active_version;
+                if (versionId == -1) {
+                    index = this.versions.length - 1;
+                } else {
+                    index = _.findIndex(this.versions, function(element) {
+                        return element.id == versionId
+                    });
+                }
+                return this.versions[index];
+            },
+            getTitle: function(versionId) {
+                return this.getVersion(versionId).title;
+            },
+            getText: function(versionId) {
+                return this.getVersion(versionId).text;
+            },
+            getReason: function(versionId) {
+                return this.getVersion(versionId).reason;
+            }
+        }
     });
 })
 .factory('Category', function(DS) {
@@ -39,6 +61,12 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             resolve: {
                 motions: function(Motion) {
                     return Motion.findAll();
+                },
+                categories: function(Category) {
+                    return Category.findAll();
+                },
+                users: function(User) {
+                    return User.findAll();
                 }
             }
         })
@@ -68,6 +96,12 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             resolve: {
                 motion: function(Motion, $stateParams) {
                     return Motion.find($stateParams.id);
+                },
+                categories: function(Category) {
+                    return Category.findAll();
+                },
+                users: function(User) {
+                    return User.findAll();
                 }
             }
         })
@@ -128,8 +162,10 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         })
 })
 
-.controller('MotionListCtrl', function($scope, Motion) {
+.controller('MotionListCtrl', function($scope, Motion, Category, User) {
     Motion.bindAll({}, $scope, 'motions');
+    Category.bindAll({}, $scope, 'categories');
+    User.bindAll({}, $scope, 'users');
 
     // setup table sorting
     $scope.sortColumn = 'identifier';
@@ -157,8 +193,10 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     };
 })
 
-.controller('MotionDetailCtrl', function($scope, Motion, motion) {
+.controller('MotionDetailCtrl', function($scope, Motion, Category, User, motion) {
     Motion.bindOne(motion.id, $scope, 'motion');
+    Category.bindAll({}, $scope, 'categories');
+    User.bindAll({}, $scope, 'users');
 })
 
 .controller('MotionCreateCtrl',
@@ -174,6 +212,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     $scope.save = function (motion) {
         motion.tags = [];   // TODO: REST API should do it! (Bug in Django REST framework)
         motion.attachments = [];  // TODO: REST API should do it! (Bug in Django REST framework)
+        if (!motion.supporters) {
+            motion.supporters = [];  // TODO: REST API should do it! (Bug in Django REST framework)
+        }
         Motion.create(motion).then(
             function(success) {
                 $state.go('motions.motion.list');
@@ -192,6 +233,11 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     Mediafile.bindAll({}, $scope, 'mediafiles');
 
     $scope.motion = motion;
+    // get latest version for edit
+    $scope.motion.title = $scope.motion.getTitle(-1);
+    $scope.motion.text = $scope.motion.getText(-1);
+    $scope.motion.reason = $scope.motion.getReason(-1);
+
     $scope.save = function (motion) {
         motion.tags = [];   // TODO: REST API should do it! (Bug in Django REST framework)
         motion.attachments = [];  // TODO: REST API should do it! (Bug in Django REST framework)
