@@ -189,6 +189,40 @@ th.sortable:hover {
 }
 
 
+/* iframe for live view */
+#iframe {
+    width: 1024px;
+    height: 768px;
+    -moz-transform-origin: 0 0;
+    -webkit-transform-origin: 0 0;
+    -o-transform-origin: 0 0;
+    transform-origin: 0 0 0;
+    -moz-transform: scale(0.25);
+    -webkit-transform: scale(0.25);
+    -o-transform: scale(0.25);
+    transform: scale(0.25);
+    /* IE8+ - must be on one line, unfortunately */
+    -ms-filter: "progid:DXImageTransform.Microsoft.Matrix(M11=0.25, M12=0, M21=0, M22=0.25, SizingMethod='auto expand')";
+}
+#iframewrapper {
+    width: 256px;
+    height: 192px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #D5D5D5;
+    margin-bottom: 10px;
+}
+#iframeoverlay {
+    width: 256px;
+    height: 192px;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: block;
+    z-index: 1;
+}
+
+
 /* Log */
 #log {
     padding-left: 14px;
@@ -202,6 +236,9 @@ div.import .label {
 }
 div.import > div > input[type="text"] {
     width: 30px;
+}
+.white-space-pre-line {
+    white-space: pre-line;
 }
 
 

@@ -206,6 +206,32 @@ angular.module('OpenSlidesApp.core.site', ['OpenSlidesApp.core'])
             abstract: true,
             template: "<ui-view/>",
         })
+        // customslide
+        .state('core.customslide', {
+            url: '/customslide',
+            abstract: true,
+            template: "<ui-view/>",
+        })
+        .state('core.customslide.list', {
+            resolve: {
+                customslides: function(Customslide) {
+                    return Customslide.findAll();
+                }
+            }
+        })
+        .state('core.customslide.create', {})
+        .state('core.customslide.detail', {
+            resolve: {
+                customslide: function(Customslide, $stateParams) {
+                    return Customslide.find($stateParams.id);
+                }
+            }
+        })
+        .state('core.customslide.detail.update', {
+            views: {
+                '@core.customslide': {}
+            }
+        })
         // tag
         .state('core.tag', {
             url: '/tag',
@@ -327,12 +353,67 @@ angular.module('OpenSlidesApp.core.site', ['OpenSlidesApp.core'])
     };
 })
 
+// Customslide Controller
+.controller('CustomslideListCtrl', function($scope, Customslide) {
+    Customslide.bindAll({}, $scope, 'customslides');
+
+    // setup table sorting
+    $scope.sortColumn = 'title';
+    $scope.reverse = false;
+    // function to sort by clicked column
+    $scope.toggleSort = function ( column ) {
+        if ( $scope.sortColumn === column ) {
+            $scope.reverse = !$scope.reverse;
+        }
+        $scope.sortColumn = column;
+    };
+
+    // save changed customslide
+    $scope.save = function (customslide) {
+        Customslide.save(customslide);
+    };
+    $scope.delete = function (customslide) {
+        //TODO: add confirm message
+        Customslide.destroy(customslide.id).then(
+            function(success) {
+                //TODO: success message
+            }
+        );
+    };
+})
+
+.controller('CustomslideDetailCtrl', function($scope, Customslide, customslide) {
+    Customslide.bindOne(customslide.id, $scope, 'customslide');
+})
+
+.controller('CustomslideCreateCtrl', function($scope, $state, Customslide) {
+    $scope.customslide = {};
+    $scope.save = function (customslide) {
+        Customslide.create(customslide).then(
+            function(success) {
+                $state.go('core.customslide.list');
+            }
+        );
+    };
+})
+
+.controller('CustomslideUpdateCtrl', function($scope, $state, Customslide, customslide) {
+    $scope.customslide = customslide;
+    $scope.save = function (customslide) {
+        Customslide.save(customslide).then(
+            function(success) {
+                $state.go('core.customslide.list');
+            }
+        );
+    };
+})
+
+// Tag Controller
 .controller('TagListCtrl', function($scope, Tag) {
     Tag.bindAll({}, $scope, 'tags');
 
     // setup table sorting
     $scope.sortColumn = 'name';
-    $scope.filterPresent = '';
     $scope.reverse = false;
     // function to sort by clicked column
     $scope.toggleSort = function ( column ) {

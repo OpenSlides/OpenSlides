@@ -1,3 +1,4 @@
-<div ng-controller="SlideClockCtr">
-    {{ serverOffset | osServertime | date:'HH:mm' }} Uhr
+<div ng-controller="SlideClockCtr" id="currentTime">
+  <i class="fa fa-clock-o"></i>
+  {{ serverOffset | osServertime | date:'HH:mm' }}
 </div>
