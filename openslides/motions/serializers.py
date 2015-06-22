@@ -1,15 +1,12 @@
-from django.contrib.contenttypes.models import ContentType
 from django.db import transaction
 from django.utils.translation import ugettext as _
 
-from openslides.agenda.models import Item
 from openslides.config.api import config
 from openslides.utils.rest_api import (
     CharField,
     IntegerField,
     ModelSerializer,
     PrimaryKeyRelatedField,
-    SerializerMethodField,
     ValidationError,
 )
 
@@ -141,7 +138,6 @@ class MotionSerializer(ModelSerializer):
     Serializer for motion.models.Motion objects.
     """
     active_version = PrimaryKeyRelatedField(read_only=True)
-    agenda_items = SerializerMethodField()
     log_messages = MotionLogSerializer(many=True, read_only=True)
     polls = MotionPollSerializer(many=True, read_only=True)
     reason = CharField(allow_blank=True, required=False, write_only=True)
@@ -169,7 +165,6 @@ class MotionSerializer(ModelSerializer):
             'workflow',
             'tags',
             'attachments',
-            'agenda_items',
             'polls',
             'log_messages',)
         read_only_fields = ('parent',)  # Some other fields are also read_only. See definitions above.
@@ -233,11 +228,3 @@ class MotionSerializer(ModelSerializer):
                 attr.add(*validated_data[key])
 
         return motion
-
-    def get_agenda_items(self, obj):
-        """
-        Returns a list of ids of all agenda items that are related to this
-        motion.
-        """
-        motion_content_type = ContentType.objects.get_for_model(obj)
-        return (item.pk for item in Item.objects.filter(content_type=motion_content_type, object_id=obj.pk))

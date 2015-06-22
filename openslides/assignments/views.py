@@ -15,7 +15,6 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from openslides.agenda.models import Item
 from openslides.config.api import config
 from openslides.users.models import Group, User  # TODO: remove this
 from openslides.utils.pdf import stylesheet
@@ -213,25 +212,6 @@ class AssignmentViewSet(ModelViewSet):
         with transaction.atomic():
             assignment.create_poll()
         return Response({'detail': _(' Poll created successfully.')})
-
-    @detail_route(methods=['post'])
-    def create_agenda_item(self, request, pk=None):
-        """
-        Speacial view endpoint to create an agenda item that is related to
-        this assignment.
-        """
-        # Check permission.
-        if not request.user.has_perm('assignments.can_manage'):
-            self.permission_denied(request)
-
-        # Retrieve motion.
-        assignment = self.get_object()
-
-        # Create agenda item.
-        Item.objects.create(content_object=assignment)
-
-        # Initiate response.
-        return Response({'detail': _('Agenda item successfully created.')})
 
 
 class AssignmentPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
