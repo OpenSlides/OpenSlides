@@ -43,7 +43,7 @@ class AssignmentDetailSlide(ProjectorElement):
                         yield ProjectorRequirement(
                             view_class=option.candidate.get_view_class(),
                             view_action='retrieve',
-                            pk=str(option.candidate.pk))
+                            pk=str(option.candidate_id))
                 for tag in assignment.tags.all():
                     yield ProjectorRequirement(
                         view_class=TagViewSet,

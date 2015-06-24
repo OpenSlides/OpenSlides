@@ -6,6 +6,10 @@ class AgendaAppConfig(AppConfig):
     verbose_name = 'OpenSlides Agenda'
 
     def ready(self):
+        # Load projector elements.
+        # Do this by just importing all from these files.
+        from . import projector  # noqa
+
         # Import all required stuff.
         from django.db.models.signals import pre_delete
         from openslides.config.signals import config_signal
