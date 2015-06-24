@@ -202,3 +202,11 @@ class User(RESTModelMixin, SlideMixin, PermissionsMixin, AbstractBaseUser):
         if password is None:
             password = self.default_password
         self.set_password(password)
+
+    def get_view_class(self):
+        """
+        Returns the main view class (viewset class) that should be unlocked
+        if the user (means its name) appears on a slide.
+        """
+        from .views import UserViewSet
+        return UserViewSet

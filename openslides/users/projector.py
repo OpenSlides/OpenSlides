@@ -22,13 +22,18 @@ class UserSlide(ProjectorElement):
     def get_requirements(self, config_entry):
         pk = config_entry.get('id')
         if pk is not None:
-            yield ProjectorRequirement(
-                view_class=UserViewSet,
-                view_action='retrieve',
-                pk=str(pk))
-
-            for group in User.objects.get(pk=pk).groups.all():
+            try:
+                user = User.objects.get(pk=pk)
+            except User.DoesNotExist:
+                # User does not exist. Just do nothing.
+                pass
+            else:
                 yield ProjectorRequirement(
-                    view_class=GroupViewSet,
+                    view_class=UserViewSet,
                     view_action='retrieve',
-                    pk=str(group.pk))
+                    pk=str(user.pk))
+                for group in user.groups.all():
+                    yield ProjectorRequirement(
+                        view_class=GroupViewSet,
+                        view_action='retrieve',
+                        pk=str(group.pk))
