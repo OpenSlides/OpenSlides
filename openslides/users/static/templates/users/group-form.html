@@ -11,12 +11,12 @@
 <form name="groupForm">
   <div class="form-group">
     <label for="inputName" translate>Name</label>
-    <input type="text" ng-model="group.name" class="form-control" name="inputName" ng-required="true">
+    <input type="text" ng-model="group.name" class="form-control" name="inputName" required>
   </div>
   <div class="form-group">
     <label for="selectPermissions" translate>Permissions</label>
     <select multiple size="15" ng-options="permission.value as permission.display_name for permission in permissions"
-        ng-model="group.permissions" class="form-control" name="selectPermissions">
+        ng-model="group.permissions" class="form-control" name="selectPermissions" required>
     </select>
   </div>
 

@@ -11,8 +11,8 @@ angular.module('OpenSlidesApp.projector', [
     'OpenSlidesApp',
     'OpenSlidesApp.core.projector',
     'OpenSlidesApp.agenda',
-    'OpenSlidesApp.motions',
-    'OpenSlidesApp.assignments',
+    'OpenSlidesApp.motions.projector',
+    'OpenSlidesApp.assignments.projector',
     'OpenSlidesApp.users.projector',
     'OpenSlidesApp.mediafiles',
 ]);

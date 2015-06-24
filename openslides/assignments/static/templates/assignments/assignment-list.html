@@ -47,7 +47,7 @@
         <translate>Actions</translate>
   <tbody>
     <tr ng-repeat="assignment in assignments | filter: filter.search |
-        orderBy: sortColumn:reverse">
+        orderBy: sortColumn:reverse" ng-class="{ 'activeline': assignment.isProjected() }">
       <td><a ui-sref="assignments.assignment.detail({id: assignment.id})">{{ assignment.title }}</a>
       <td class="optional">{{ assignment.open_posts }}
       <td class="optional">
@@ -57,9 +57,11 @@
           {{ phases[assignment.phase].display_name }}
         </span>
       <td os-perms="assignments.can_manage core.can_manage_projector" class="nobr">
-        <!-- projector, TODO: add link to activate slide -->
-        <a href="#TODO" os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-            title="{{ 'Show' | translate }}">
+        <!-- project -->
+        <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
+            ng-class="{ 'btn-primary': assignment.isProjected() }"
+            ng-click="assignment.project()"
+            title="{{ 'Project election' | translate }}">
           <i class="fa fa-video-camera"></i>
         </a>
         <!-- edit -->
@@ -69,7 +71,9 @@
           <i class="fa fa-pencil"></i>
         </a>
         <!-- delete -->
-        <a ng-click="delete(assignment)" os-perms="assignments.can_manage" class="btn btn-danger btn-sm"
+        <a os-perms="assignments.can_manage" class="btn btn-danger btn-sm"
+            ng-bootbox-confirm="Are you sure you want to delete <b>{{ assignment.title }}</b>?"
+            ng-bootbox-confirm-action="delete(assignment)"
             title="{{ 'Delete' | translate }}">
           <i class="fa fa-trash-o"></i>
         </a>

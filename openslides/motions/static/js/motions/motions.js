@@ -1,10 +1,15 @@
 angular.module('OpenSlidesApp.motions', [])
 
-.factory('Motion', function(DS) {
+.factory('Motion', function(DS, jsDataModel) {
+    var name = 'motions/motion'
     return DS.defineResource({
-        name: 'motions/motion',
+        name: name,
         endpoint: '/rest/motions/motion/',
+        useClass: jsDataModel,
         methods: {
+            getResourceName: function () {
+                return name;
+            },
             getVersion: function(versionId) {
                 versionId = versionId || this.active_version;
                 if (versionId == -1) {
@@ -183,13 +188,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     $scope.save = function (motion) {
         Motion.save(motion);
     };
+    // delete selected motion
     $scope.delete = function (motion) {
-        //TODO: add confirm message
-        Motion.destroy(motion.id).then(
-            function(success) {
-                //TODO: success message
-            }
-        );
+        Motion.destroy(motion.id);
     };
 })
 
@@ -256,13 +257,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
 .controller('CategoryListCtrl', function($scope, Category) {
     Category.bindAll({}, $scope, 'categories');
 
+    // delete selected category
     $scope.delete = function (category) {
-        //TODO: add confirm message
-        Category.destroy(category.id).then(
-            function(success) {
-                //TODO: success message
-            }
-        );
+        Category.destroy(category.id);
     };
 })
 
@@ -290,4 +287,21 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             }
         );
     };
+});
+
+angular.module('OpenSlidesApp.motions.projector', ['OpenSlidesApp.motions'])
+
+.config(function(slidesProvider) {
+    slidesProvider.registerSlide('motions/motion', {
+        template: 'static/templates/motions/slide_motion.html',
+    });
+})
+
+.controller('SlideMotionCtrl', function($scope, Motion) {
+    // Attention! Each object that is used here has to be dealt on server side.
+    // Add it to the coresponding get_requirements method of the ProjectorElement
+    // class.
+    var id = $scope.element.context.id;
+    Motion.find(id);
+    Motion.bindOne(id, $scope, 'motion');
 });

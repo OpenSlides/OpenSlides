@@ -33,14 +33,15 @@ class MotionDetailSlide(ProjectorElement):
                     view_class=MotionViewSet,
                     view_action='retrieve',
                     pk=str(motion.pk))
-                yield ProjectorRequirement(
-                    view_class=CategoryViewSet,
-                    view_action='retrieve',
-                    pk=str(motion.category.pk))
+                if motion.category:
+                    yield ProjectorRequirement(
+                        view_class=CategoryViewSet,
+                        view_action='retrieve',
+                        pk=str(motion.category.pk))
                 yield ProjectorRequirement(
                     view_class=WorkflowViewSet,
                     view_action='retrieve',
-                    pk=str(motion.workflow.pk))
+                    pk=str(motion.workflow))
                 for submitter in motion.submitters.all():
                     yield ProjectorRequirement(
                         view_class=submitter.get_view_class(),

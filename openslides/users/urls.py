@@ -8,11 +8,11 @@ urlpatterns = patterns(
     # PDF
     url(r'^print/$',
         views.UsersListPDF.as_view(),
-        name='user_print'),
+        name='user_listpdf'),
 
     url(r'^passwords/print/$',
         views.UsersPasswordsPDF.as_view(),
-        name='print_passwords'),
+        name='user_passwordspdf'),
 
     # auth
     url(r'^login/$',

@@ -25,9 +25,15 @@
             <translate>Actions</translate>
       <tbody>
         <tr ng-repeat="customslide in customslides | filter: filter.search |
-            orderBy: sortColumn:reverse">
+            orderBy: sortColumn:reverse" ng-class="{ 'activeline': customslide.isProjected() }">
           <td><a ui-sref="core.customslide.detail({id: customslide.id})">{{ customslide.title }}</a>
           <td os-perms="core.can_manage_projector" class="nobr">
+            <!-- project -->
+            <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm" ng-class="{ 'btn-primary': customslide.isProjected() }"
+                ng-click="customslide.project()"
+                title="{{ 'Project user' | translate }}">
+              <i class="fa fa-video-camera"></i>
+            </a>
             <!-- edit -->
             <a ui-sref="core.customslide.detail.update({id: customslide.id })"
                 class="btn btn-default btn-sm"

@@ -2,7 +2,7 @@
 
 <div id="submenu">
   <a ui-sref="users.group.create" os-perms="users.can_manage" class="btn btn-primary btn-sm">
-    <i class="fa fa-user-plus fa-lg"></i>
+    <i class="fa fa-plus fa-lg"></i>
     <translate>New</translate>
   </a>
   <a ui-sref="users.user.list" class="btn btn-sm btn-default">
@@ -47,7 +47,7 @@
           <i class="fa fa-pencil"></i>
         </a>
         <!-- delete -->
-        <a ng-click="delete(group)" os-perms="users.can_manage" class="btn btn-danger btn-sm"
+        <a os-perms="users.can_manage" class="btn btn-danger btn-sm"
             ng-bootbox-confirm="Are you sure you want to delete <b>{{ group.name }}</b>?"
             ng-bootbox-confirm-action="delete(group)"
             title="{{ 'Delete' | translate }}">
