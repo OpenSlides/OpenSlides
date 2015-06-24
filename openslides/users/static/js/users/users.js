@@ -1,10 +1,15 @@
 angular.module('OpenSlidesApp.users', [])
 
-.factory('User', function(DS, Group) {
+.factory('User', function(DS, Group, jsDataModel) {
+    var name = 'users/user'
     return DS.defineResource({
-        name: 'users/user',
+        name: name,
         endpoint: '/rest/users/user/',
+        useClass: jsDataModel,
         methods: {
+            getResourceName: function () {
+                return name;
+            },
             get_short_name: function() {
                 // should be the same as in the python user model.
                 var firstName = _.trim(this.first_name),
@@ -280,7 +285,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     };
 }])
 
-.controller('UserListCtrl', function($scope, User, projectorActivate) {
+.controller('UserListCtrl', function($scope, User) {
     User.bindAll({}, $scope, 'users');
 
     // setup table sorting
@@ -304,10 +309,6 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     // delete user
     $scope.delete = function (user) {
         User.destroy(user.id);
-    };
-
-    $scope.project = function(user) {
-        projectorActivate(User, user.id).error(function() {console.log('success')});
     };
 })
 

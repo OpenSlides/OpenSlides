@@ -35,7 +35,7 @@ angular.module('OpenSlidesApp.core', [])
     });
 })
 
-.run(function($rootScope, Config) {
+.run(function($rootScope, Config, Projector) {
     // Puts the config object into each scope.
     // TODO: maybe rootscope.config has to set before findAll() is finished
     Config.findAll().then(function() {
@@ -49,6 +49,9 @@ angular.module('OpenSlidesApp.core', [])
             }
         }
     });
+
+    // Loads all projector data
+    Projector.findAll();
 })
 
 .factory('autoupdate', function() {
@@ -79,10 +82,38 @@ angular.module('OpenSlidesApp.core', [])
     return Autoupdate;
 })
 
-.factory('Customslide', function(DS) {
+.factory('jsDataModel', function($http, Projector) {
+    var BaseModel = function() {};
+    BaseModel.prototype.project = function() {
+        return $http.post(
+            '/rest/core/projector/1/prune_elements/',
+            [{name: this.getResourceName(), id: this.id}]
+        );
+    }
+    BaseModel.prototype.isProjected = function() {
+        // Returns true if there is a projector element with the same
+        // name and the same id.
+        var projector = Projector.get(id=1);
+        var self = this;
+        return _.findIndex(projector.elements, function(element) {
+            return element.name == self.getResourceName() &&
+                   typeof(element.context.id) !== 'undefined' &&
+                   element.context.id == self.id;
+        }) > -1;
+    }
+    return BaseModel;
+})
+
+.factory('Customslide', function(DS, jsDataModel) {
+    var name = 'core/customslide'
     return DS.defineResource({
-        name: 'core/customslide',
-        endpoint: '/rest/core/customslide/'
+        name: name,
+        endpoint: '/rest/core/customslide/',
+        methods: {
+            getResourceName: function () {
+                return name;
+            },
+        },
     });
 })
 
@@ -292,17 +323,6 @@ angular.module('OpenSlidesApp.core.site', ['OpenSlidesApp.core'])
 // options for angular-xeditable
 .run(function(editableOptions) {
     editableOptions.theme = 'bs3';
-})
-
-// Activate an Element from the Rest-API on the projector
-// At the moment it only activates item on projector 1
-.factory('projectorActivate', function($http) {
-    return function(model, id) {
-        return $http.post(
-            '/rest/core/projector/1/prune_elements/',
-            [{name: model.name, id: id}]
-        );
-    };
 })
 
 .controller("LanguageCtrl", function ($scope, gettextCatalog) {

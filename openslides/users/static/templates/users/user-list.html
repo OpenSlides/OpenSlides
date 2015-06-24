@@ -105,11 +105,10 @@
       <td class="optional">{{ user.groups }}
       <td os-perms="users.can_manage" class="optional">{{ user.last_login | date:'yyyy-MM-dd HH:mm:ss'}}
       <td os-perms="users.can_manage core.can_manage_projector" class="nobr">
-        <!-- projector, TODO: add link to activate slidea-->
         <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-            ng-click="project(user)"
+            ng-click="user.project()"
             title="{{ 'Show' | translate }}">
-          <i class="fa fa-video-camera"></i>
+          <i class="fa fa-video-camera"><span ng-if="user.isProjected()">projected</span></i>
         </a>
         <!-- edit -->
         <a ui-sref="users.user.detail.update({id: user.id})" os-perms="users.can_manage"
