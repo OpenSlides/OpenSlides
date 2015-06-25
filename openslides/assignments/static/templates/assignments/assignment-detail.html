@@ -9,8 +9,11 @@
     <i class="fa fa-file-pdf-o fa-lg"></i>
     <translate>PDF</translate>
   </a>
-  <a href="#TODO" os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-      title="{{ 'Show' | translate }}">
+  <!-- project -->
+  <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
+      ng-class="{ 'btn-primary': assignment.isProjected() }"
+      ng-click="assignment.project()"
+      title="{{ 'Project election' | translate }}">
     <i class="fa fa-video-camera"></i>
   </a>
   <!-- edit -->
@@ -22,7 +25,7 @@
 </div>
 
 <h3 translate>Description</h3>
-{{ assignment.description }}
+<div class="white-space-pre-line">{{ assignment.description }}</div>
 
 <h3 translate>Candidates</h3>
 <!-- TODO -->

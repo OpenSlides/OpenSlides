@@ -19,8 +19,8 @@ Keep each person in a single line.</p>
 
 <div class="clearfix">
   <button ng-click="importByLine()" class="btn btn-primary pull-left" translate>Import</button>
-  <div class="col-xs-5" ng-if="items">
-    <progressbar animate="false" type="success" max="items.length" value="importcounter">
+  <div class="col-xs-5" ng-if="users">
+    <progressbar animate="false" type="success" max="users.length" value="importcounter">
       <i>{{ importcounter }} / {{ users.length }} {{ "imported" | translate }}</i>
     </progressbar>
   </div>

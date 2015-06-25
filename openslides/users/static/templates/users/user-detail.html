@@ -5,6 +5,19 @@
     <i class="fa fa-angle-double-left fa-lg"></i>
     <translate>Back to overview</translate>
   </a>
+  <!-- project -->
+  <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
+      ng-class="{ 'btn-primary': user.isProjected() }"
+      ng-click="user.project()"
+      title="{{ 'Project user' | translate }}">
+    <i class="fa fa-video-camera"></i>
+  </a>
+  <!-- edit -->
+  <a ui-sref="users.user.detail.update({id: user.id })" os-perms="users.can_manage"
+      class="btn btn-default btn-sm"
+      title="{{ 'Edit' | translate}}">
+    <i class="fa fa-pencil"></i>
+  </a>
 </div>
 
 <div class="user_details form-group">
@@ -13,10 +26,11 @@
     <label translate>Structure level</label>
       {{ user.structure_level }}
     <label translate>Groups</label>
-      {{ user.groups }}
-      <!-- TODO: print all groups -->
+      <div ng-repeat="group in user.groups">
+        {{ (groups | filter: {id: group})[0].name }}
+      </div>
     <label translate>About me</label>
-      {{ user.about_me }}
+      <div class="white-space-pre-line">{{ user.about_me }}</div>
   </fieldset>
 
   <fieldset os-perms="users.can_manage">
@@ -24,8 +38,6 @@
     <label translate>Username</label>
       {{ user.username }}
     <label translate>Comment</label>
-      {{ user.comment }}
-    <label translate>Last login</label>
-      {{ user.last_login }}
+      <div class="white-space-pre-line">{{ user.comment }}</div>
   </fieldset>
 </div>

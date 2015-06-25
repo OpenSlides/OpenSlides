@@ -15,8 +15,11 @@
     <i class="fa fa-file-pdf-o fa-lg"></i>
     <translate>PDF</translate>
   </a>
-  <a href="#TODO" os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-      title="{{ 'Show' | translate }}">
+  <!-- project -->
+  <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm" 
+      ng-class="{ 'btn-primary': motion.isProjected() }"
+      ng-click="motion.project()"
+      title="{{ 'Project motion' | translate }}">
     <i class="fa fa-video-camera"></i>
   </a>
   <!-- edit -->
@@ -30,10 +33,10 @@
 <div class="row">
   <div class="col-sm-8">
     <h3 translate>Text</h3>
-    {{ motion.getText() }}
+    <div class="white-space-pre-line">{{ motion.getText() }}</div>
 
     <h3 translate>Reason</h3>
-    {{ motion.getReason() }}
+    <div class="white-space-pre-line">{{ motion.getReason() }}</div>
   </div>
 
   <div class="col-sm-4">
