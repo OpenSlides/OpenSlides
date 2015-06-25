@@ -8,21 +8,35 @@ from .models import Motion
 from .views import CategoryViewSet, MotionViewSet, WorkflowViewSet
 
 
-class MotionDetailSlide(ProjectorElement):
+class MotionSlide(ProjectorElement):
     """
-    Slide definitions for motion model.
+    Slide definitions for Motion model.
+
+    Set 'id' to get a detail slide. Omit it to get a list slide.
     """
     name = 'motions/motion'
 
     def get_context(self):
         pk = self.config_entry.get('id')
-        if not Motion.objects.filter(pk=pk).exists():
-            raise ProjectorException(_('Motion does not exist.'))
-        return {'id': pk}
+        if pk is None:
+            # List slide.
+            context = None
+        else:
+            # Detail slide.
+            if not Motion.objects.filter(pk=pk).exists():
+                raise ProjectorException(_('Motion does not exist.'))
+            context = {'id': pk}
+        return context
 
     def get_requirements(self, config_entry):
         pk = config_entry.get('id')
-        if pk is not None:
+        if pk is None:
+            # List slide. Related objects like users and tags are not unlocked.
+            yield ProjectorRequirement(
+                view_class=MotionViewSet,
+                view_action='list')
+        else:
+            # Detail slide.
             try:
                 motion = Motion.objects.get(pk=pk)
             except Motion.DoesNotExist:
