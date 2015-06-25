@@ -94,6 +94,7 @@ angular.module('OpenSlidesApp.core', [])
         // Returns true if there is a projector element with the same
         // name and the same id.
         var projector = Projector.get(id=1);
+        if (typeof projector === 'undefined') return false;
         var self = this;
         return _.findIndex(projector.elements, function(element) {
             return element.name == self.getResourceName() &&
@@ -109,6 +110,7 @@ angular.module('OpenSlidesApp.core', [])
     return DS.defineResource({
         name: name,
         endpoint: '/rest/core/customslide/',
+        useClass: jsDataModel,
         methods: {
             getResourceName: function () {
                 return name;
@@ -236,6 +238,10 @@ angular.module('OpenSlidesApp.core.site', ['OpenSlidesApp.core'])
             url: '/core',
             abstract: true,
             template: "<ui-view/>",
+        })
+        .state('version', {
+            url: '/version',
+            controller: 'VersionCtrl',
         })
         // customslide
         .state('core.customslide', {
@@ -371,6 +377,14 @@ angular.module('OpenSlidesApp.core.site', ['OpenSlidesApp.core'])
     $scope.cancel = function () {
         $modalInstance.dismiss('cancel');
     };
+})
+
+// Version Controller
+.controller('VersionCtrl', function($scope, $http) {
+    $http.get('/core/version/').success(function(data) {
+        $scope.core_version = data.openslides_version;
+        $scope.plugins = data.plugins;
+    });
 })
 
 // Customslide Controller
@@ -552,7 +566,7 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
     });
 })
 
-.controller('SlideCustomSlideCtr', function($scope, Customslide) {
+.controller('SlideCustomSlideCtrl', function($scope, Customslide) {
     // Attention! Each object that is used here has to be dealt on server side.
     // Add it to the coresponding get_requirements method of the ProjectorElement
     // class.
@@ -561,7 +575,7 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
     Customslide.bindOne(id, $scope, 'customslide');
 })
 
-.controller('SlideClockCtr', function($scope) {
+.controller('SlideClockCtrl', function($scope) {
     // Attention! Each object that is used here has to be dealt on server side.
     // Add it to the coresponding get_requirements method of the ProjectorElement
     // class.

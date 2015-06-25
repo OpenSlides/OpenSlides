@@ -134,9 +134,9 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             }
         }
     })
-    .state('users.user.csv-import', {
-        url: '/csv-import',
-        controller: 'UserCSVImportCtrl',
+    .state('users.user.import', {
+        url: '/import',
+        controller: 'UserImportCtrl',
     })
     // groups
     .state('users.group', {
@@ -285,8 +285,9 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     };
 }])
 
-.controller('UserListCtrl', function($scope, User) {
+.controller('UserListCtrl', function($scope, User, Group) {
     User.bindAll({}, $scope, 'users');
+    Group.bindAll({}, $scope, 'groups');
 
     // setup table sorting
     $scope.sortColumn = 'first_name'; //TODO: sort by first OR last name
@@ -306,7 +307,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         User.save(user);
     };
 
-    // delete user
+    // delete selected user
     $scope.delete = function (user) {
         User.destroy(user.id);
     };
@@ -320,6 +321,9 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
     $scope.user = {};
     $scope.save = function (user) {
+        if (!user.groups) {
+            user.groups = [];
+        }
         User.create(user).then(
             function(success) {
                 $state.go('users.user.list');
@@ -332,6 +336,9 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
     $scope.user = user;  // autoupdate is not activated
     $scope.save = function (user) {
+        if (!user.groups) {
+            user.groups = [];
+        }
         User.save(user).then(
             function(success) {
                 $state.go('users.user.list');
@@ -340,7 +347,22 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     };
 })
 
-.controller('UserCSVImportCtrl', function($scope, $state, User) {
+.controller('UserImportCtrl', function($scope, $state, User) {
+    // import from textarea
+    $scope.importByLine = function () {
+        $scope.users = $scope.userlist[0].split("\n");
+        $scope.importcounter = 0;
+        $scope.users.forEach(function(name) {
+            var user = {last_name: name, groups: []}; // use default group 'Registered' (#2)
+            User.create(user).then(
+                function(success) {
+                    $scope.importcounter++;
+                }
+            );
+        });
+    }
+
+    // import from csv file
     $scope.csv = {
         content: null,
         header: true,
@@ -348,30 +370,37 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         result: null
     };
 
-    $scope.import = function (result) {
-        var obj = JSON.parse(result);
-        console.log(obj);
-        var imported_users = 0;
+    $scope.importByCSV = function (result) {
+        var obj = JSON.parse(JSON.stringify(result));
+        $scope.csvimporting = true;
+        $scope.csvlines = Object.keys(obj).length;
+        $scope.csvimportcounter = 0;
         for (var i = 0; i < obj.length; i++) {
             var user = {};
-            // TODO: use generic solution to get csv column values
-            user.title = obj[i].Titel;
-            user.first_name = obj[i].Vorname;
-            user.last_name = obj[i].Nachname;
-            user.groups = "3";
+            user.title = obj[i].titel;
+            user.first_name = obj[i].first_name;
+            user.last_name = obj[i].last_name;
+            user.structure_level = obj[i].structure_level;
+            user.groups = obj[i].groups;
+            user.comment = obj[i].comment;
             User.create(user).then(
                 function(success) {
-                    imported_users++;
+                    $scope.csvimportcounter++;
                 }
             );
         }
-        $state.go('users.user.list');
+        $scope.csvimported = true;
     }
+
+    $scope.clear = function () {
+        $scope.csv.result = null;
+    };
 })
 
 .controller('GroupListCtrl', function($scope, Group) {
     Group.bindAll({}, $scope, 'groups');
 
+    // delete selected group
     $scope.delete = function (group) {
         Group.destroy(group.id);
     };
@@ -426,7 +455,7 @@ angular.module('OpenSlidesApp.users.projector', ['OpenSlidesApp.users'])
     });
 })
 
-.controller('SlideUserCtr', function($scope, User) {
+.controller('SlideUserCtrl', function($scope, User) {
     // Attention! Each object that is used here has to be dealt on server side.
     // Add it to the coresponding get_requirements method of the ProjectorElement
     // class.

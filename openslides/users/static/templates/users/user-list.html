@@ -1,36 +1,20 @@
 <h1 translate>Participants</h1>
 
 <div id="submenu">
-  <div os-perms="users.can_manage" class="btn-group">
-    <a ui-sref="users.user.create" class="btn btn-primary btn-sm">
-      <i class="fa fa-user-plus fa-lg"></i>
-      <translate>New</translate>
-    </a>
-    <button class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">
-      <span class="fa fa-caret-down"></span>
-    </button>
-    <ul class="dropdown-menu">
-      <li><a ui-sref="users.user.create">
-            <i class="fa fa-user fa-fw"></i>
-            <translate>Single participant</translate>
-          </a>
-      <li><a href="#TODO">
-            <i class="fa fa-group fa-fw"></i>
-            <translate>Multiple participants</translate>
-          </a>
-    </ul>
-  </div>
+  <a ui-sref="users.user.create" os-perms="users.can_manage" class="btn btn-primary btn-sm">
+    <i class="fa fa-user-plus fa-lg"></i>
+    <translate>New</translate>
+  </a>
   <a ui-sref="users.group.list" os-perms="users.can_manage" class="btn btn-default btn-sm">
     <i class="fa fa-group fa-lg"></i>
     <translate>Groups</translate>
   </a>
-  <a ui-sref="users.user.csv-import" os-perms="users.can_manage" class="btn btn-default btn-sm">
+  <a ui-sref="users.user.import" os-perms="users.can_manage" class="btn btn-default btn-sm">
     <i class="fa fa-download fa-lg"></i>
     <translate>Import</translate>
   </a>
   <div class="btn-group">
-    <!-- TODO: use ui-sref -->
-    <a href="/users/print/" class="btn btn-default btn-sm" target="_blank">
+    <a ui-sref="user_print" class="btn btn-default btn-sm" target="_blank">
       <i class="fa fa-file-pdf-o fa-lg"></i>
       <translate>PDF</translate>
     </a>
@@ -39,13 +23,12 @@
       <i class="fa fa-caret-down"></i>
     </button>
     <ul class="dropdown-menu dropdown-menu-right">
-      <!-- TODO: use ui-sref -->
-      <li><a href="/users/print/" target="_blank">
+      <li><a ui-sref="user_listpdf" target="_blank">
             <i class="fa fa-list fa-fw"></i>
             <translate>List of participants</translate>
           </a>
       <li os-perms="users.can_manage">
-          <a href="/users/passwords/print/" target="_blank">
+          <a ui-sref="user_passwordspdf" target="_blank">
             <i class="fa fa-qrcode fa-fw"></i>
             <translate>List of access data</translate>
           </a>
@@ -84,31 +67,29 @@
             ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
         </i>
       <th ng-click="toggleSort('groups')" class="sortable optional">
-        <translate>Group</translate>
+        <translate>Groups</translate>
         <i class="pull-right fa" ng-show="sortColumn === 'groups' && header.sortable != false"
-            ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
-        </i>
-      <th os-perms="users.can_manage" ng-click="toggleSort('last_login')" class="sortable optional">
-        <translate>Last Login</translate>
-        <i class="pull-right fa" ng-show="sortColumn === 'last_login' && header.sortable != false"
             ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
         </i>
       <th os-perms="users.can_manage core.can_manage_projector" class="minimum">
         <translate>Actions</translate>
   <tbody>
     <tr ng-repeat="user in users | filter: filter.search | filter: {is_present: filterPresent} |
-        orderBy: sortColumn:reverse">
+        orderBy: sortColumn:reverse" ng-class="{ 'activeline': user.isProjected() }">
       <td><input type="checkbox" ng-model="user.is_present" ng-click="togglePresent(user)">
       <td><a ui-sref="users.user.detail({id: user.id})">{{ user.get_short_name() }}</a>
           <div ng-if="user.comment"><small><i class="fa fa-info-circle"></i> {{ user.comment }}</small></div>
       <td class="optional">{{ user.structure_level }}
-      <td class="optional">{{ user.groups }}
-      <td os-perms="users.can_manage" class="optional">{{ user.last_login | date:'yyyy-MM-dd HH:mm:ss'}}
+      <td class="optional">
+        <div ng-repeat="group in user.groups">
+          {{ (groups | filter: {id: group})[0].name }}
+        </div>
       <td os-perms="users.can_manage core.can_manage_projector" class="nobr">
-        <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
+        <!-- project -->
+        <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm" ng-class="{ 'btn-primary': user.isProjected() }"
             ng-click="user.project()"
-            title="{{ 'Show' | translate }}">
-          <i class="fa fa-video-camera"><span ng-if="user.isProjected()">projected</span></i>
+            title="{{ 'Project user' | translate }}">
+          <i class="fa fa-video-camera"></i>
         </a>
         <!-- edit -->
         <a ui-sref="users.user.detail.update({id: user.id})" os-perms="users.can_manage"

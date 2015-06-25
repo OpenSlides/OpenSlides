@@ -1,44 +1,43 @@
-"Title";"First Name";"Last Name";"Gender";"Email";"Group id";"Structure Level";"Committee";"About me";"Comment";"Is active"
-;"Fred";"Nurk";"male";;3;"Australia";;;;1
-;"Jan";"Jansen";"male";;3;"Belgium";;;;1
-;"Juan";"Pérez";"male";;3;"Chile";;;;1
-"Dr.";"Max";"Mustermann";"male";"max@example.com";4;"Germany";"Leadership of the assembly";"Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
-Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.";"Demo account
+title,first_name,last_name,structure_level,groups,comment,is_active
+,Fred,Nurk,Australia,3,,1
+,Jan,Jansen,Belgium,3,,1
+,Juan,Pérez,Chile,3,,1
+Dr.,Max,Mustermann,Germany,4,"Demo account
 
-Names from http:///en.wikipedia.org/wiki/Otto_Normalverbraucher";1
-;"Otto";"Normalverbraucher";"male";"otto@example.com";3;"Germany";"Budget committee";;"Demo account";1
-;"Erika";"Mustermann";"female";"erika@example.com";;"Germany";;;;0
-;"Morten";"Meinigmand";"male";;3;"Denmark";;;;1
-;"Juan";"Piguabe";"male";;3;"Ecuador";;;;1
-;"Tädi";"Maali";"female";;3;"Estonia";;;;1
-;"Maija";"Maikäläinen";"female";;3;"Finland";;;;1
-;"Jean";"Dupont";"male";;3;"France";;;;1
-;"Paul";"Martin";"female";;4;"France";"Leadership of the assembly";;;1
-;"Fred";"Bloggs";"male";;3;"United Kingdom";;;;0
-;"John";"Smith";"male";;4;"United Kingdom";"Leadership of the assembly";;;1
-;"Ashok";"Kumar";"male";;3;"India";;;;1
-;"Si";"Polan";"male";;;"Indonesia";;;;1
-;"Seán";"Citizen";"male";;3;"Ireland";;;;1
-;"Jóna";"Jónsson";"female";;3;"Ireland";;;;1
-;"Israel";"Israeli";"male";;3;"Israel";;;;1
-;"Mario";"Rossi";"male";;3;"Italy";;;;1
-;"Jos";"Bleau";"male";;3;"Canada";;;;1
-;"Fulano";"de Tal";"male";;3;"Colombia";;;;1
-;"Jenni";"a Menni";"female";;3;"Luxembourg";;;;1
-;"Joe";"Borg";"male";;3;"Malta";;;;1
-;"Bob";"Smith";"male";;;"New Zealand";;;;1
-;"Harry";"Holland";"male";;3;"Netherlands";;;;1
-"Prof.";"Hans";"Maier";"male";;3;"Austria";;;;1
-;"Jan";"Kowalski";"male";;3;"Poland";;;;1
-;"Manuel";"Dos Santos";"male";;3;"Portugal";;;;1
-;"Cutare";"Cutărică";"male";;3;"Rumania";;;;1
-;"Nils";"Holgersson";"male";;3;"Sweden";;;;1
-;"Max";"Schweizer";"male";;;"Switzerland";;;;1
-;"Janez";"Novak";"male";;3;"Slovenia";;;;1
-;"Koos";"van der Merwe";"male";;3;"South Africa";;;;1
-;"Jan";"Novák";"male";;3;"Czech Republic";;;;1
-;"Sade";"Vatandaş";"male";;3;"Turkey";;;;1
-;"Gipsz";"Jakab";"male";;3;"Hungary";;;;1
-;"John";"Doe";"male";"john@example.com";3;"USA";;;;1
-;"Jane";"Doe";"female";;;"USA";;;;0
-;"Nguoi";"La";"male";;3;"Vietnam";;;;0
+Names from http:///en.wikipedia.org/wiki/Otto_Normalverbraucher",1
+,Otto,Normalverbraucher,Germany,3,Demo account,1
+,Erika,Mustermann,Germany,,,0
+,Morten,Meinigmand,Denmark,3,,1
+,Juan,Piguabe,Ecuador,3,,1
+,Tädi,Maali,Estonia,3,,1
+,Maija,Maikäläinen,Finland,3,,1
+,Jean,Dupont,France,3,,1
+,Paul,Martin,France,4,,1
+,Fred,Bloggs,United Kingdom,3,,0
+,John,Smith,United Kingdom,4,,1
+,Ashok,Kumar,India,3,,1
+,Si,Polan,Indonesia,,,1
+,Seán,Citizen,Ireland,3,,1
+,Jóna,Jónsson,Ireland,3,,1
+,Israel,Israeli,Israel,3,,1
+,Mario,Rossi,Italy,3,,1
+,Jos,Bleau,Canada,3,,1
+,Fulano,de Tal,Colombia,3,,1
+,Jenni,a Menni,Luxembourg,3,,1
+,Joe,Borg,Malta,3,,1
+,Bob,Smith,New Zealand,,,1
+,Harry,Holland,Netherlands,3,,1
+Prof.,Hans,Maier,Austria,3,,1
+,Jan,Kowalski,Poland,3,,1
+,Manuel,Dos Santos,Portugal,3,,1
+,Cutare,Cutărică,Rumania,3,,1
+,Nils,Holgersson,Sweden,3,,1
+,Max,Schweizer,Switzerland,,,1
+,Janez,Novak,Slovenia,3,,1
+,Koos,van der Merwe,South Africa,3,,1
+,Jan,Novák,Czech Republic,3,,1
+,Sade,Vatandaş,Turkey,3,,1
+,Gipsz,Jakab,Hungary,3,,1
+,John,Doe,USA,3,,1
+,Jane,Doe,USA,,,0
+,Nguoi,La,Vietnam,3,,0
