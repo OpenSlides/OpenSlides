@@ -239,9 +239,20 @@ angular.module('OpenSlidesApp.core.site', ['OpenSlidesApp.core'])
             abstract: true,
             template: "<ui-view/>",
         })
+        // version
         .state('version', {
             url: '/version',
             controller: 'VersionCtrl',
+        })
+        //config
+        .state('config', {
+            url: '/config',
+            controller: 'ConfigCtrl',
+            resolve: {
+                configOption: function($http) {
+                    return $http({ 'method': 'OPTIONS', 'url': '/rest/config/config/' });
+                }
+            }
         })
         // customslide
         .state('core.customslide', {
@@ -331,6 +342,35 @@ angular.module('OpenSlidesApp.core.site', ['OpenSlidesApp.core'])
     editableOptions.theme = 'bs3';
 })
 
+
+// html-tag os-form-field to generate generic from fields
+// TODO: make it possible to use other fields then config fields
+.directive('osFormField', function($parse, Config) {
+    function getHtmlType(type) {
+        return {
+            string: 'text',
+            integer: 'number',
+            boolean: 'checkbox',
+            choice: 'radio',
+        }[type];
+    }
+
+    return {
+        restrict: 'E',
+        scope: true,
+        templateUrl: '/static/templates/config-form-field.html',
+        link: function ($scope, iElement, iAttrs, controller, transcludeFn) {
+            var field = $parse(iAttrs.field)($scope);
+            var config = Config.get(field.key);
+            $scope.type = getHtmlType(field.input_type);
+            $scope.label = field.label;
+            $scope.id = 'field-' + field.id;
+            $scope.value = config.value;
+            $scope.help_text = field.help_text;
+        }
+    }
+})
+
 .controller("LanguageCtrl", function ($scope, gettextCatalog) {
     // controller to switch app language
     // TODO: detect browser language for default language
@@ -385,6 +425,23 @@ angular.module('OpenSlidesApp.core.site', ['OpenSlidesApp.core'])
         $scope.core_version = data.openslides_version;
         $scope.plugins = data.plugins;
     });
+})
+
+// Config Controller
+.controller('ConfigCtrl', function($scope, Config, configOption) {
+    Config.bindAll({}, $scope, 'configs');
+    $scope.configGroups = configOption.data.config_groups;
+
+    // save changed config value
+    $scope.save = function(key, value, type) {
+        // TODO: find a better way to check the type without using of
+        // the extra parameter 'type' from template
+        if (type == 'number') {
+            value = parseInt(value);
+        }
+        Config.get(key).value = value;
+        Config.save(key);
+    }
 })
 
 // Customslide Controller

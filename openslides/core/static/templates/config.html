@@ -1,0 +1,27 @@
+<h1 translate>Settings</h1>
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+  <!-- generate config groups -->
+  <div ng-repeat="group in configGroups">
+    <div class="panel panel-default">
+      <div class="panel-heading" role="tab" id="heading-{{ group.name }}">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" data-parent="#accordion" href="#{{ group.name }}"
+              aria-expanded="false" aria-controls="{{ group.name }}" translate>
+            {{ group.name }}
+          </a>
+        </h4>
+      </div>
+      <div id="{{ group.name }}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading-{{ group.name }}">
+        <div class="panel-body">
+          <div ng-repeat="subgroup in group.subgroups">
+            <h3>{{ subgroup.name }}</h3>
+            <div ng-repeat="configOption in subgroup.items">
+              <os-form-field field="configOption"></os-form-field>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
