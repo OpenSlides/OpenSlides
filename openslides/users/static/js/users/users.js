@@ -121,6 +121,9 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         resolve: {
             user: function(User, $stateParams) {
                 return User.find($stateParams.id);
+            },
+            groups: function(Group) {
+                return Group.findAll();
             }
         }
     })
@@ -313,8 +316,9 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     };
 })
 
-.controller('UserDetailCtrl', function($scope, User, user) {
+.controller('UserDetailCtrl', function($scope, User, user, Group) {
     User.bindOne(user.id, $scope, 'user');
+    Group.bindAll({}, $scope, 'groups');
 })
 
 .controller('UserCreateCtrl', function($scope, $state, User, Group) {
@@ -353,7 +357,17 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         $scope.users = $scope.userlist[0].split("\n");
         $scope.importcounter = 0;
         $scope.users.forEach(function(name) {
-            var user = {last_name: name, groups: []}; // use default group 'Registered' (#2)
+            // Split each full name in first and last name.
+            // The last word is set as last name, rest is the first name(s).
+            // (e.g.: "Max Martin Mustermann" -> last_name = "Mustermann")
+            var names = name.split(" ");
+            var last_name = names.slice(-1)[0];
+            var first_name = names.slice(0, -1).join(" ");
+            var user = {
+                first_name: first_name,
+                last_name: last_name,
+                groups: []
+            };
             User.create(user).then(
                 function(success) {
                     $scope.importcounter++;

@@ -25,6 +25,13 @@
 
 <div class="row form-group">
   <div class="col-sm-8">
+    <!-- project agenda -->
+    <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
+        ng-click="projectAgenda()"
+        ng-class="{ 'btn-primary': isAgendaProjected() }">
+      <i class="fa fa-video-camera"></i>
+      <translate>Project agenda</translate>
+    </a>
   </div>
   <div class="col-sm-4">
     <input type="text" os-focus-me ng-model="filter.search" class="form-control"
@@ -45,7 +52,8 @@
       <th os-perms="agenda.can_manage core.can_manage_projector" class="minimum">
         <translate>Actions</translate>
   <tbody>
-    <tr ng-repeat="node in flattenedTree | filter: filter.search">
+    <tr ng-repeat="node in flattenedTree | filter: filter.search"
+        ng-class="{ 'activeline': (items | filter: {id: node.id})[0].isProjected() }">
       <td><input type="checkbox" ng-model="(items | filter: {id: node.id})[0].closed" ng-click="save(node.id)">
       <td>
         <span ng-repeat="n in [].constructor(node.level) track by $index">&ndash;</span>
@@ -53,20 +61,20 @@
           {{ (items | filter: {id: node.id})[0].item_number }}
           {{ (items | filter: {id: node.id})[0].title }}
         </a>
-        <button ng-if="(items | filter: {id: node.id})[0].comment"
-            class="btn btn-default btn-xs" popover="{{(items | filter: {id: node.id})[0].comment}}"
-            popover-title="{{ 'Comment' | translate }}">
-          <i class="fa fa-comment-o"></i>
-        </button>
+        <div ng-if="(items | filter: {id: node.id})[0].comment">
+          <small><i class="fa fa-info-circle"></i> {{ (items | filter: {id: node.id})[0].comment }}</small>
+        </div>
       <td os-perms="agenda.can_manage" class="optional">
         <a href="#" editable-number="(items | filter: {id: node.id})[0].duration" e-min="1" onaftersave="save(node.id)">
           {{ (items | filter: {id: node.id})[0].duration }}
         </a>
         <span ng-if="(items | filter: {id: node.id})[0].duration" translate>min</span>
       <td os-perms="agenda.can_manage core.can_manage_projector" class="nobr">
-        <!-- projector, TODO: add link to activate slide-->
-        <a href="#TODO" os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-            title="{{ 'Show' | translate }}">
+        <!-- project -->
+        <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
+            ng-class="{ 'btn-primary': (items | filter: {id: node.id})[0].isProjected() }"
+            ng-click="(items | filter: {id: node.id})[0].project()"
+            title="{{ 'Project item' | translate }}">
           <i class="fa fa-video-camera"></i>
         </a>
         <!-- edit -->

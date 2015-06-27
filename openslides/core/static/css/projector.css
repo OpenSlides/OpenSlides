@@ -124,6 +124,9 @@ hr {
 .nobr {
     white-space: nowrap;
 }
+.white-space-pre-line {
+    white-space: pre-line;
+}
 
 
 /*** Overlay ***/
@@ -166,7 +169,7 @@ hr {
 
 
 /*** Table style ***/
-table {
+.table {
     border-collapse:collapse;
     border-color:#CCCCCC -moz-use-text-color #CCCCCC #CCCCCC;
     border-style:solid none solid solid;
@@ -174,7 +177,7 @@ table {
     margin:0;
     border-spacing:0px;
 }
-table th {
+.table th {
     border-right:1px solid #CCCCCC;
     color:#333333;
     font-weight:normal;
@@ -182,10 +185,10 @@ table th {
     text-align:left;
     text-transform:uppercase;
 }
-table tr.odd td {
+.table tr.odd td {
     background:none repeat scroll 0 0 #F1F1F1;
 }
-table td {
+.table td {
     background:none repeat scroll 0 0 #F7F7F7;
     border-right:1px solid #CCCCCC;
     line-height:120%;
@@ -198,4 +201,19 @@ tr.total td {
 }
 tr.elected td {
     background-color: #BED4DE !important;
+}
+
+/*** Table list ***/
+.tablelist {
+    font-size: 130%;
+}
+.tablelist td {
+    padding: 5px;
+}
+.tablelist .leftcolumn {
+    padding-right: 15px;
+    vertical-align: top;
+}
+.tablelist td.closed {
+    text-decoration: line-through;
 }

@@ -5,9 +5,11 @@
     <i class="fa fa-angle-double-left fa-lg"></i>
     <translate>Back to overview</translate>
   </a>
-  <!-- projector, TODO: add link to activate slidea-->
-  <a href="#TODO" os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-      title="{{ 'Show' | translate }}">
+  <!-- project -->
+  <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
+      ng-class="{ 'btn-primary': item.isProjected() }"
+      ng-click="item.project()"
+      title="{{ 'Project item' | translate }}">
     <i class="fa fa-video-camera"></i>
   </a>
   <!-- edit -->
@@ -18,7 +20,7 @@
   </a>
 </div>
 
-{{ item.text }}
+<div class="white-space-pre-line">{{ item.text }}</div>
 
 <div os-perm="agenda.can_manage">
   <h3 os-perm="agenda.can_manage" translate>Duration</h3>
@@ -27,7 +29,7 @@
 
 <div os-perm="agenda.can_manage">
   <h3 os-perm="agenda.can_manage" translate>Comment</h3>
-  {{ item.comment }}
+  <div class="white-space-pre-line">{{ item.comment }}</div>
 </div>
 
 

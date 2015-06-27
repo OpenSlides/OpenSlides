@@ -1,9 +1,16 @@
 angular.module('OpenSlidesApp.agenda', [])
 
-.factory('Agenda', function(DS) {
+.factory('Agenda', function(DS, jsDataModel) {
+    var name = 'agenda/item'
     return DS.defineResource({
-        name: 'agenda/item',
-        endpoint: '/rest/agenda/item/'
+        name: name,
+        endpoint: '/rest/agenda/item/',
+        useClass: jsDataModel,
+        methods: {
+            getResourceName: function () {
+                return name;
+            }
+        }
     });
 })
 
@@ -81,7 +88,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         });
 })
 
-.controller('ItemListCtrl', function($scope, Agenda, tree) {
+.controller('ItemListCtrl', function($scope, $http, Agenda, tree, Projector) {
     Agenda.bindAll({}, $scope, 'items');
 
     // get a 'flat' (ordered) array of agenda tree to display in table
@@ -113,6 +120,23 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     // delete selected item
     $scope.delete = function (id) {
         Agenda.destroy(id);
+    };
+    // project agenda
+    $scope.projectAgenda = function () {
+        $http.post('/rest/core/projector/1/prune_elements/',
+                [{name: 'agenda/agenda'}]);
+    };
+    // check if agenda is projected
+    $scope.isAgendaProjected = function () {
+        // Returns true if there is a projector element with the same
+        // name and agenda is active.
+        var projector = Projector.get(id=1);
+        if (typeof projector === 'undefined') return false;
+        var self = this;
+        return _.findIndex(projector.elements, function(element) {
+            return element.name == 'agenda/agenda'
+        }) > -1;
+
     };
 })
 
@@ -234,4 +258,41 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         $scope.csv.result = null;
     };
 
+});
+
+
+angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
+
+.config(function(slidesProvider) {
+    slidesProvider.registerSlide('agenda/item', {
+        template: 'static/templates/agenda/slide_item.html',
+    });
+    slidesProvider.registerSlide('agenda/agenda', {
+        template: 'static/templates/agenda/slide_agenda.html',
+    });
+})
+
+.controller('SlideItemCtrl', function($scope, Agenda) {
+    // Attention! Each object that is used here has to be dealt on server side.
+    // Add it to the coresponding get_requirements method of the ProjectorElement
+    // class.
+    var id = $scope.element.context.id;
+    Agenda.find(id);
+    Agenda.bindOne(id, $scope, 'item');
+})
+
+.controller('SlideAgendaCtrl', function($scope, $http, Agenda) {
+    // Attention! Each object that is used here has to be dealt on server side.
+    // Add it to the coresponding get_requirements method of the ProjectorElement
+    // class.
+    Agenda.findAll();
+    Agenda.bindAll({}, $scope, 'items');
+    $scope.ids = [];
+    var tree = $http.get('/rest/agenda/item/tree/').success(function(data) {
+        var ids = [];
+        angular.forEach(data,function(element) {
+            ids.push(element.id)
+        });
+        $scope.ids = ids;
+    })
 });
