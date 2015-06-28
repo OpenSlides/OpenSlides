@@ -278,8 +278,6 @@ OpenSlides uses the following projects or parts of them:
 * `django-jsonfield <https://github.com/bradjasper/django-jsonfield>`_,
   License: MIT
 
-* `Django mptt <https://github.com/django-mptt/django-mptt/>`_, License: BSD
-
 * `Django haystack <http://haystacksearch.org>`_, License: BSD
 
 * `insertpre CKEditor plugin <http://ckeditor.com/addon/insertpre>`_,
