@@ -69,3 +69,26 @@ class AgendaTreeTest(TestCase):
         response = self.client.put('/rest/agenda/item/tree/', {'tree': tree}, format='json')
 
         self.assertEqual(response.status_code, 200)
+
+    def test_tree_with_unknown_item(self):
+        """
+        Tests that unknown items are ignored.
+        """
+        tree = [{'id': 500}]
+
+        response = self.client.put('/rest/agenda/item/tree/', {'tree': tree}, format='json')
+
+        self.assertEqual(response.status_code, 200)
+
+
+class TestAgendaPDF(TestCase):
+    def test_get(self):
+        """
+        Tests that a requst on the pdf-page returns with statuscode 200.
+        """
+        Item.objects.create(title='item1')
+        self.client.login(username='admin', password='admin')
+
+        response = self.client.get('/agenda/print/')
+
+        self.assertEqual(response.status_code, 200)

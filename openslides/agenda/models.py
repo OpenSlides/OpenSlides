@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import datetime
 
 from django.contrib.auth.models import AnonymousUser
@@ -17,10 +18,75 @@ from openslides.utils.rest_api import RESTModelMixin
 from openslides.utils.utils import to_roman
 
 
+class ItemManager(models.Manager):
+    def get_tree(self, only_agenda_items=False, include_content=False):
+        """
+        Generator that yields dictonaries. Each dictonary has two keys, id
+        and children, where id is the id of one agenda item and children is a
+        generator that yields dictonaries like the one discribed.
+
+        If only_agenda_items is True, the tree hides ORGANIZATIONAL_ITEMs.
+
+        If include_content is True, the yielded dictonaries have no key 'id'
+        but a key 'item' with the entire object.
+        """
+        item_queryset = self.order_by('weight')
+        if only_agenda_items:
+            item_queryset = item_queryset.filter(type__exact=Item.AGENDA_ITEM)
+
+        # Index the items to get the children for each item
+        item_children = defaultdict(list)
+        for item in item_queryset:
+            if item.parent:
+                item_children[item.parent_id].append(item)
+
+        def get_children(items):
+            """
+            Generator that yields the descibed diconaries.
+            """
+            for item in items:
+                if include_content:
+                    yield dict(item=item, children=get_children(item_children[item.pk]))
+                else:
+                    yield dict(id=item.pk, children=get_children(item_children[item.pk]))
+
+        yield from get_children(filter(lambda item: item.parent is None, item_queryset))
+
+    def set_tree(self, tree):
+        """
+        Sets the agenda tree.
+
+        The tree has to be a nested object. For example:
+        [{"id": 1}, {"id": 2, "children": [{"id": 3}]}]
+        """
+        def walk_items(tree, parent=None):
+            """
+            Generator that returns each item in the tree as tuple.
+
+            This tuples have tree values. The item id, the item parent and the
+            weight of the item.
+            """
+            for weight, element in enumerate(tree):
+                yield (element['id'], parent, weight)
+                yield from walk_items(element.get('children', []), element['id'])
+
+        touched_items = set()
+        for item_pk, parent_pk, weight in walk_items(tree):
+            # Check that the item is only once in the tree to prevent invalid trees
+            if item_pk in touched_items:
+                raise ValueError("Item %d is more then once in the tree" % item_pk)
+            touched_items.add(item_pk)
+
+            Item.objects.filter(pk=item_pk).update(
+                parent_id=parent_pk,
+                weight=weight)
+
+
 class Item(RESTModelMixin, SlideMixin, models.Model):
     """
     An Agenda Item
     """
+    objects = ItemManager()
     slide_callback_name = 'agenda'
 
     AGENDA_ITEM = 1
