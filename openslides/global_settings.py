@@ -82,7 +82,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'mptt',
     'haystack',  # full-text-search
     'ckeditor',
     'rest_framework',
