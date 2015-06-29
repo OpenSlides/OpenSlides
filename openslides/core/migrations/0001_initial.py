@@ -2,7 +2,6 @@ import jsonfield.fields
 from django.db import migrations, models
 
 import openslides.utils.models
-import openslides.utils.rest_api
 
 
 def add_default_projector(apps, schema_editor):
@@ -32,20 +31,20 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CustomSlide',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
-                ('title', models.CharField(verbose_name='Title', max_length=256)),
-                ('text', models.TextField(verbose_name='Text', blank=True)),
+                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
+                ('title', models.CharField(max_length=256, verbose_name='Title')),
+                ('text', models.TextField(blank=True, verbose_name='Text')),
                 ('weight', models.IntegerField(verbose_name='Weight', default=0)),
             ],
             options={
                 'ordering': ('weight', 'title'),
             },
-            bases=(openslides.utils.rest_api.RESTModelMixin, models.Model),
+            bases=(openslides.utils.models.RESTModelMixin, models.Model),
         ),
         migrations.CreateModel(
             name='Projector',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
                 ('config', jsonfield.fields.JSONField()),
             ],
             options={
@@ -55,21 +54,35 @@ class Migration(migrations.Migration):
                     ('can_see_dashboard', 'Can see the dashboard'),
                     ('can_use_chat', 'Can use the chat')),
             },
-            bases=(openslides.utils.rest_api.RESTModelMixin, models.Model),
+            bases=(openslides.utils.models.RESTModelMixin, models.Model),
         ),
         migrations.CreateModel(
             name='Tag',
             fields=[
-                ('id', models.AutoField(serialize=False, primary_key=True, auto_created=True, verbose_name='ID')),
-                ('name', models.CharField(verbose_name='Tag', unique=True, max_length=255)),
+                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
+                ('name', models.CharField(max_length=255, verbose_name='Tag', unique=True)),
             ],
             options={
-                'permissions': (('can_manage_tags', 'Can manage tags'),),
                 'ordering': ('name',),
+                'permissions': (('can_manage_tags', 'Can manage tags'),),
             },
-            bases=(openslides.utils.rest_api.RESTModelMixin, models.Model),
+            bases=(openslides.utils.models.RESTModelMixin, models.Model),
+        ),
+        migrations.CreateModel(
+            name='ConfigStore',
+            fields=[
+                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
+                ('key', models.CharField(max_length=255, db_index=True, unique=True)),
+                ('value', jsonfield.fields.JSONField()),
+            ],
+            options={
+                'permissions': (('can_manage_config', 'Can manage configuration'),),
+            },
+            bases=(models.Model,),
         ),
         migrations.RunPython(
-            add_default_projector,
+            code=add_default_projector,
+            reverse_code=None,
+            atomic=True,
         ),
     ]

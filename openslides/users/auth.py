@@ -8,7 +8,7 @@ from django.db.models import Q
 from django.utils.functional import SimpleLazyObject
 from rest_framework.authentication import BaseAuthentication
 
-from openslides.config.api import config
+from openslides.core.config import config
 
 
 class AnonymousUser(DjangoAnonymousUser):

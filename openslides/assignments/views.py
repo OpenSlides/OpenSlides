@@ -15,7 +15,7 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from openslides.config.api import config
+from openslides.core.config import config
 from openslides.users.models import Group, User  # TODO: remove this
 from openslides.utils.pdf import stylesheet
 from openslides.utils.rest_api import (

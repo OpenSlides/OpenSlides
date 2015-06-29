@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_noop
 from reportlab.platypus import SimpleDocTemplate
 from rest_framework import status
 
-from openslides.config.api import config
+from openslides.core.config import config
 from openslides.utils.rest_api import (
     ModelViewSet,
     Response,

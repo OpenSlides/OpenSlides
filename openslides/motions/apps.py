@@ -12,7 +12,7 @@ class MotionAppConfig(AppConfig):
         from . import projector  # noqa
 
         # Import all required stuff.
-        from openslides.config.signals import config_signal
+        from openslides.core.signals import config_signal
         from openslides.utils.rest_api import router
         from .signals import create_builtin_workflows, setup_motion_config
         from .views import CategoryViewSet, MotionViewSet, WorkflowViewSet

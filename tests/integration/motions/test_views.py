@@ -1,6 +1,6 @@
 from django.test.client import Client
 
-from openslides.config.api import config
+from openslides.core.config import config
 from openslides.motions.models import Motion
 from openslides.utils.test import TestCase
 

@@ -2,7 +2,7 @@ from django.core.validators import MinValueValidator
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 
-from openslides.config.api import ConfigVariable
+from openslides.core.config import ConfigVariable
 from openslides.poll.models import PERCENT_BASE_CHOICES
 
 
@@ -10,7 +10,7 @@ def setup_assignment_config(sender, **kwargs):
     """
     Receiver function to setup all assignment config variables. They are
     grouped in 'Ballot and ballot papers' and 'PDF'. This function is
-    connected to the signal openslides.config.signals.config_signal during
+    connected to the signal openslides.core.signals.config_signal during
     app loading.
     """
     # Ballot and ballot papers

@@ -13,9 +13,9 @@ from django.contrib.auth.models import (  # noqa
 from django.db import models
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
-from openslides.config.api import config
+from openslides.core.config import config
 from openslides.projector.models import SlideMixin
-from openslides.utils.rest_api import RESTModelMixin
+from openslides.utils.models import RESTModelMixin
 
 from .exceptions import UserError
 

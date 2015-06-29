@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-from openslides.config.api import config
+from openslides.core.config import config
 from openslides.core.models import Tag
 from openslides.motions.models import Category, Motion
 from openslides.utils.test import TestCase

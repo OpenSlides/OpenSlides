@@ -1,8 +1,8 @@
 from django.dispatch import receiver
 
-from openslides.config.api import ConfigVariable, config
-from openslides.config.exceptions import ConfigError, ConfigNotFound
-from openslides.config.signals import config_signal
+from openslides.core.config import ConfigVariable, config
+from openslides.core.exceptions import ConfigError, ConfigNotFound
+from openslides.core.signals import config_signal
 from openslides.utils.test import TestCase
 
 

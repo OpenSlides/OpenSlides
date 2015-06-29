@@ -2,7 +2,7 @@ import os
 import sys
 from unittest.mock import MagicMock, patch
 
-from openslides.config.api import config
+from openslides.core.config import config
 from openslides.utils import main
 from openslides.utils.test import TestCase
 

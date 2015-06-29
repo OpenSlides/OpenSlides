@@ -3,8 +3,8 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 from jsonfield import JSONField
 
+from openslides.utils.models import RESTModelMixin
 from openslides.utils.projector import ProjectorElement
-from openslides.utils.rest_api import RESTModelMixin
 
 from .exceptions import ProjectorException
 
@@ -120,3 +120,18 @@ class Tag(RESTModelMixin, models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ConfigStore(models.Model):
+    """
+    A model class to store all config variables in the database.
+    """
+
+    key = models.CharField(max_length=255, unique=True, db_index=True)
+    """A string, the key of the config variable."""
+
+    value = JSONField()
+    """The value of the config variable. """
+
+    class Meta:
+        permissions = (('can_manage_config', ugettext_noop('Can manage configuration')),)

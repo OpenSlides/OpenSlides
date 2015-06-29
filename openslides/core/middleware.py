@@ -1,4 +1,4 @@
-from openslides.config.api import config
+from .config import config
 
 
 class ConfigCacheMiddleware(object):

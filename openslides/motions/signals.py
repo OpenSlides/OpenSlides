@@ -2,7 +2,7 @@ from django.core.validators import MinValueValidator
 from django.utils.translation import ugettext as _
 from django.utils.translation import pgettext, ugettext_lazy, ugettext_noop
 
-from openslides.config.api import ConfigVariable
+from openslides.core.config import ConfigVariable
 from openslides.poll.models import PERCENT_BASE_CHOICES
 
 from .models import State, Workflow
@@ -13,7 +13,7 @@ def setup_motion_config(sender, **kwargs):
     Receiver function to setup all motion config variables. They are
     grouped in 'General', 'Amendments', 'Supporters', 'Voting and ballot
     papers' and 'PDF'. This function connected to the signal
-    openslides.config.signals.config_signal during app loading.
+    openslides.core.signals.config_signal during app loading.
     """
     # General
 

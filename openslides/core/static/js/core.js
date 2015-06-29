@@ -128,9 +128,9 @@ angular.module('OpenSlidesApp.core', [])
 
 .factory('Config', function(DS) {
     return DS.defineResource({
-        name: 'config/config',
+        name: 'core/config',
         idAttribute: 'key',
-        endpoint: '/rest/config/config/'
+        endpoint: '/rest/core/config/'
     });
 })
 
