@@ -4,12 +4,11 @@ from django.db import models
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
-from openslides.projector.models import SlideMixin
 from openslides.users.models import User
 from openslides.utils.models import RESTModelMixin
 
 
-class Mediafile(RESTModelMixin, SlideMixin, models.Model):
+class Mediafile(RESTModelMixin, models.Model):
     """
     Class for uploaded files which can be delivered under a certain url.
     """

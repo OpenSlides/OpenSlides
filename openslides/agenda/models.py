@@ -11,7 +11,6 @@ from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.core.config import config
 from openslides.core.models import Tag
-from openslides.projector.models import SlideMixin
 from openslides.users.models import User
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
@@ -82,7 +81,7 @@ class ItemManager(models.Manager):
                 weight=weight)
 
 
-class Item(RESTModelMixin, SlideMixin, models.Model):
+class Item(RESTModelMixin, models.Model):
     """
     An Agenda Item
     """
@@ -302,19 +301,6 @@ class Item(RESTModelMixin, SlideMixin, models.Model):
         except IndexError:
             # The list of speakers is empty.
             return None
-
-    def is_active_slide(self):
-        """
-        Returns True if the slide is active. If the slide is a related item,
-        Returns True if the related object is active.
-        """
-        if super(Item, self).is_active_slide():
-            value = True
-        elif self.content_object and isinstance(self.content_object, SlideMixin):
-            value = self.content_object.is_active_slide()
-        else:
-            value = False
-        return value
 
     @property
     def item_no(self):

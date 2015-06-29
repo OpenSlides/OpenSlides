@@ -14,7 +14,6 @@ from django.db import models
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.core.config import config
-from openslides.projector.models import SlideMixin
 from openslides.utils.models import RESTModelMixin
 
 from .exceptions import UserError
@@ -87,7 +86,7 @@ class UserManager(BaseUserManager):
         return ''.join([choice(chars) for i in range(size)])
 
 
-class User(RESTModelMixin, SlideMixin, PermissionsMixin, AbstractBaseUser):
+class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
     """
     Model for users in OpenSlides. A client can login as a user with
     credentials. A user can also just be used as representation for a person

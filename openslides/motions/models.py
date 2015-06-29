@@ -15,14 +15,13 @@ from openslides.poll.models import (
     BaseVote,
     CollectDefaultVotesMixin,
 )
-from openslides.projector.models import SlideMixin
 from openslides.users.models import User
 from openslides.utils.models import RESTModelMixin
 
 from .exceptions import WorkflowError
 
 
-class Motion(RESTModelMixin, SlideMixin, models.Model):
+class Motion(RESTModelMixin, models.Model):
     """
     The Motion Class.
 
@@ -660,8 +659,7 @@ class MotionOption(RESTModelMixin, BaseOption):
         return self.poll.motion
 
 
-class MotionPoll(RESTModelMixin, SlideMixin, CollectDefaultVotesMixin,
-                 BasePoll):
+class MotionPoll(RESTModelMixin, CollectDefaultVotesMixin, BasePoll):
     """The Class to saves the vote result for a motion poll."""
 
     slide_callback_name = 'motionpoll'
