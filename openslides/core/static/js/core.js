@@ -250,7 +250,7 @@ angular.module('OpenSlidesApp.core.site', ['OpenSlidesApp.core'])
             controller: 'ConfigCtrl',
             resolve: {
                 configOption: function($http) {
-                    return $http({ 'method': 'OPTIONS', 'url': '/rest/config/config/' });
+                    return $http({ 'method': 'OPTIONS', 'url': '/rest/core/config/' });
                 }
             }
         })
@@ -351,7 +351,7 @@ angular.module('OpenSlidesApp.core.site', ['OpenSlidesApp.core'])
             string: 'text',
             integer: 'number',
             boolean: 'checkbox',
-            choice: 'radio',
+            choice: 'choice',
         }[type];
     }
 
@@ -363,8 +363,11 @@ angular.module('OpenSlidesApp.core.site', ['OpenSlidesApp.core'])
             var field = $parse(iAttrs.field)($scope);
             var config = Config.get(field.key);
             $scope.type = getHtmlType(field.input_type);
+            if ($scope.type == 'choice') {
+                $scope.choices = field.choices;
+            }
             $scope.label = field.label;
-            $scope.id = 'field-' + field.id;
+            $scope.key = 'field-' + field.key;
             $scope.value = config.value;
             $scope.help_text = field.help_text;
         }
@@ -433,12 +436,7 @@ angular.module('OpenSlidesApp.core.site', ['OpenSlidesApp.core'])
     $scope.configGroups = configOption.data.config_groups;
 
     // save changed config value
-    $scope.save = function(key, value, type) {
-        // TODO: find a better way to check the type without using of
-        // the extra parameter 'type' from template
-        if (type == 'number') {
-            value = parseInt(value);
-        }
+    $scope.save = function(key, value) {
         Config.get(key).value = value;
         Config.save(key);
     }
