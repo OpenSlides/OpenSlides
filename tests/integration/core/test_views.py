@@ -97,6 +97,18 @@ class ConfigViewSet(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data, {'detail': "Wrong datatype. Expected <class 'int'>, got <class 'str'>."})
 
+    def test_update_wrong_datatype_that_can_be_converted(self):
+        """
+        Try to send a string that can be converted to an integer to an integer
+        field.
+        """
+        self.client = APIClient()
+        self.client.login(username='admin', password='admin')
+        response = self.client.put(
+            reverse('config-detail', args=['test_var_ohhii4iavoh5Phoh5ahg']),
+            {'value': '12345'})
+        self.assertEqual(response.status_code, 200)
+
     def test_update_good_choice(self):
         self.client = APIClient()
         self.client.login(username='admin', password='admin')

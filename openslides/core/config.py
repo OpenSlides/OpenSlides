@@ -60,7 +60,11 @@ class ConfigHandler:
 
         # Validate datatype and run validators.
         expected_type = INPUT_TYPE_MAPPING[config_variable.input_type]
-        if not isinstance(value, expected_type):
+
+        # Try to convert value into the expected datatype
+        try:
+            value = expected_type(value)
+        except ValueError:
             raise ConfigError(_('Wrong datatype. Expected %s, got %s.') % (expected_type, type(value)))
         if config_variable.input_type == 'choice' and value not in map(lambda choice: choice['value'], config_variable.choices):
             raise ConfigError(_('Invalid input. Choice does not match.'))
