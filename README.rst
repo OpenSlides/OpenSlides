@@ -54,11 +54,7 @@ Installation on GNU/Linux or Mac OS X
 
 3. Install OpenSlides
 
-   To use the Python Package Index (PyPI) simply run::
-
-       $ pip install openslides
-
-   You can also use the package from the `OpenSlides Website
+   You can use the package from the `OpenSlides Website
    <http://openslides.org/download/>`_. Download latest OpenSlides release
    as compressed tar archive and run::
 
@@ -80,8 +76,8 @@ portable version you should observe the following install steps.*
    Make sure that you have installed Python Programming Language 3 (>= 3.3)
    and Setuptools on your system.
 
-   a. Download and run the `Python 32-bit MSI installer
-      <https://www.python.org/ftp/python/3.4.1/python-3.4.1.msi>`_. Note
+   a. Download and run the latest `Python 3.4 32-bit MSI installer
+      <https://www.python.org/downloads/windows/>`_. Note
       that the 32-bit MSI installer is required even on a 64-bit Windows
       system. If you use the 64-bit MSI installer, step 3 of this
       instruction will fail unless you installed the package reportlab
@@ -117,11 +113,7 @@ portable version you should observe the following install steps.*
 
 3. Install OpenSlides
 
-   To use the Python Package Index (PyPI) simply run on command line (cmd)::
-
-       > easy_install openslides
-
-   You can also use the package from the `OpenSlides Website
+   You can use the package from the `OpenSlides Website
    <http://openslides.org/download/>`_. Download latest OpenSlides release
    as compressed tar archive and run::
 
@@ -198,15 +190,9 @@ Installation and start of the development version
 
    Follow step 2 in the correspondent instruction in section III.
 
-4. Install all required Python packages
-
-   For Unix and Mac OS X run::
+4. Install all required Python packages::
 
        $ pip install -r requirements.txt
-
-   For Windows run::
-
-       > easy_install  # Insert all packages from requirements.txt and requirements_production.txt here
 
 5. Install all npm and bower packages
 
@@ -231,17 +217,13 @@ Installation and start of the development version
 
        > node_modules\.bin\gulp
 
-7. Create a development settings file
+7. Start OpenSlides
 
    Use the command-line interface::
 
-       python manage.py create-dev-settings
+       python manage.py start
 
-8. Start OpenSlides
-
-   Use the command-line interface::
-
-       python manage.py start --settings settings.py
+   This will create a new development directoy with settings.py and database.
 
    To get help on the command-line options run::
 
@@ -275,15 +257,7 @@ OpenSlides uses the following projects or parts of them:
 
 * `Django CKEditor <https://github.com/riklaunim/django-ckeditor>`_, License: BSD
 
-* `django-jsonfield <https://github.com/bradjasper/django-jsonfield>`_,
-  License: MIT
-
 * `Django haystack <http://haystacksearch.org>`_, License: BSD
-
-* `insertpre CKEditor plugin <http://ckeditor.com/addon/insertpre>`_,
-  License: GPL/LGPL/MPL
-
-* `natsort <https://pypi.python.org/pypi/natsort>`_, License: MIT
 
 * `pdf.js <http://mozilla.github.io/pdf.js/>`_, License: Apache License v2.0
 
@@ -294,9 +268,6 @@ OpenSlides uses the following projects or parts of them:
 
 * `setuptools <https://pypi.python.org/pypi/setuptools>`_,
   License: Python Software Foundation License
-
-* `sockjs-client <https://github.com/sockjs/sockjs-client>`_,
-  License: MIT
 
 * `sockjs-tornado <https://github.com/mrjoes/sockjs-tornado>`_,
   License: MIT
@@ -317,44 +288,7 @@ OpenSlides uses the following projects or parts of them:
 
 * `Whoosh <https://bitbucket.org/mchaput/whoosh/wiki/Home/>`_, License: BSD
 
-* `jQuery <http://www.jquery.com>`_, License: MIT
-
-* jQuery Plugins:
-
-  - `jQuery DataTables Plugin <http://www.datatables.net>`_, License:
-    BSD/GPLv2
-
-  - `DataTables Natural Sort Plugin <http://datatables.net/plug-ins/sorting#natrual>`_,
-    License: MIT
-
-  - `jQuery Cookie Plugin <https://github.com/carhartl/jquery-cookie/>`_,
-    License: MIT
-
-  - `jQuery Form Plugin <http://malsup.com/jquery/form/>`_, License: MIT/GPLv2
-
-  - `jQuery Once Plugin <http://plugins.jquery.com/once/>`_, License: MIT/GPL
-
-  - `jQuery Templating Plugin
-    <https://github.com/BorisMoore/jquery-tmpl/>`_, License: MIT/GPLv2
-
-  - `jQuery bsmSelect <https://github.com/vicb/bsmSelect/>`_, License:
-    MIT/GPLv2
-
-* `jQuery UI <http://jqueryui.com>`_ with custom ui components: core,
-  widget, mouse, resizable, sortable, datepicker, slider and css theme 'smoothness',
-  License: MIT
-
-* jQuery UI AddOns:
-
-  - `jQuery UI Nested Sortable
-    <https://github.com/mjsarfatti/nestedSortable/>`_, License: MIT
-
-  - `jQuery UI Slider Access
-    <http://trentrichardson.com/examples/jQuery-SliderAccess/>`_, License:
-    MIT/GPLv2
-
-  - `jQuery UI Timepicker
-    <http://trentrichardson.com/examples/timepicker/>`_, License: MIT/GPLv2
+* Several JavaScript packages (see bower.json)
 
 
 VII. License and authors
