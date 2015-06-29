@@ -14,7 +14,6 @@ from openslides.poll.models import (
     CollectDefaultVotesMixin,
     PublishPollMixin,
 )
-from openslides.projector.models import SlideMixin
 from openslides.users.models import User
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
@@ -55,7 +54,7 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
         return self.assignment
 
 
-class Assignment(RESTModelMixin, SlideMixin, models.Model):
+class Assignment(RESTModelMixin, models.Model):
     slide_callback_name = 'assignment'
 
     PHASE_SEARCH = 0
@@ -338,7 +337,7 @@ class AssignmentOption(RESTModelMixin, BaseOption):
         return self.poll.assignment
 
 
-class AssignmentPoll(RESTModelMixin, SlideMixin, CollectDefaultVotesMixin,
+class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,
                      PublishPollMixin, BasePoll):
     slide_callback_name = 'assignmentpoll'
     option_class = AssignmentOption
