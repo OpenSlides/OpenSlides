@@ -35,7 +35,7 @@ class ItemListSlide(ProjectorElement):
 
     def get_requirements(self, config_entry):
         pk = config_entry.get('id', 'tree')
-        if pk is None or self.config_entry.get('tree', False):
+        if pk is None or config_entry.get('tree', False):
             # Root list slide or slide with tree.
             yield ProjectorRequirement(
                 view_class=ItemViewSet,
@@ -57,7 +57,7 @@ class ItemDetailSlide(ProjectorElement):
     To activate a detail slide as list of speakers slide, set 'id' and set
     'list_of_speakers' true.
     """
-    name = 'agenda/item-detail'
+    name = 'agenda/item'
 
     def get_context(self):
         pk = self.config_entry.get('id')

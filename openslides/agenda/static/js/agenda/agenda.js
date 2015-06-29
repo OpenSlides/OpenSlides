@@ -124,7 +124,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     // project agenda
     $scope.projectAgenda = function () {
         $http.post('/rest/core/projector/1/prune_elements/',
-                [{name: 'agenda/agenda'}]);
+                [{name: 'agenda/item-list'}]);
     };
     // check if agenda is projected
     $scope.isAgendaProjected = function () {
@@ -134,7 +134,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         if (typeof projector === 'undefined') return false;
         var self = this;
         return _.findIndex(projector.elements, function(element) {
-            return element.name == 'agenda/agenda'
+            return element.name == 'agenda/item-list'
         }) > -1;
 
     };
@@ -265,14 +265,14 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
 
 .config(function(slidesProvider) {
     slidesProvider.registerSlide('agenda/item', {
-        template: 'static/templates/agenda/slide_item.html',
+        template: 'static/templates/agenda/slide-item-detail.html',
     });
-    slidesProvider.registerSlide('agenda/agenda', {
-        template: 'static/templates/agenda/slide_agenda.html',
+    slidesProvider.registerSlide('agenda/item-list', {
+        template: 'static/templates/agenda/slide-item-list.html',
     });
 })
 
-.controller('SlideItemCtrl', function($scope, Agenda) {
+.controller('SlideItemDetailCtrl', function($scope, Agenda) {
     // Attention! Each object that is used here has to be dealt on server side.
     // Add it to the coresponding get_requirements method of the ProjectorElement
     // class.
@@ -281,7 +281,7 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
     Agenda.bindOne(id, $scope, 'item');
 })
 
-.controller('SlideAgendaCtrl', function($scope, $http, Agenda) {
+.controller('SlideItemListCtrl', function($scope, $http, Agenda) {
     // Attention! Each object that is used here has to be dealt on server side.
     // Add it to the coresponding get_requirements method of the ProjectorElement
     // class.

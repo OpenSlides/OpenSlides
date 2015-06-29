@@ -98,6 +98,7 @@ angular.module('OpenSlidesApp.core', [])
         var self = this;
         return _.findIndex(projector.elements, function(element) {
             return element.name == self.getResourceName() &&
+                   typeof(element.context) !== 'undefined' &&
                    typeof(element.context.id) !== 'undefined' &&
                    element.context.id == self.id;
         }) > -1;
@@ -615,7 +616,11 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
         }, function () {
             $scope.elements = [];
             _.forEach(slides.getElements(Projector.get(1)), function(element) {
-                $scope.elements.push(element);
+                if (!element.error) {
+                    $scope.elements.push(element);
+                } else {
+                    console.error("Error for slide " + element.name + ": " + element.error)
+                }
             });
         });
     });
