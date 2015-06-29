@@ -240,7 +240,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         $scope.csvimportcounter = 0;
         for (var i = 0; i < obj.length; i++) {
             var item = {};
-            item.title = obj[i].titel;
+            item.title = obj[i].title;
             item.text = obj[i].text;
             item.duration = obj[i].duration;
             item.weight = 0;  // TODO: the rest_api should do this
