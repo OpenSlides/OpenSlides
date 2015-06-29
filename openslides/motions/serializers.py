@@ -1,7 +1,7 @@
 from django.db import transaction
 from django.utils.translation import ugettext as _
 
-from openslides.config.api import config
+from openslides.core.config import config
 from openslides.utils.rest_api import (
     CharField,
     IntegerField,

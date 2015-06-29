@@ -3,7 +3,6 @@ from django.utils.translation import ugettext as _
 
 from .exceptions import ConfigError, ConfigNotFound
 from .models import ConfigStore
-from .signals import config_signal
 
 INPUT_TYPE_MAPPING = {
     'string': str,
@@ -97,6 +96,10 @@ class ConfigHandler:
         Returns a dictionary with all ConfigVariable instances of all
         signal receivers. The key is the name of the config variable.
         """
+        # config_signal can not be imported at global space, because
+        # core.signals imports this file
+        from .signals import config_signal
+
         result = {}
         for receiver, config_collection in config_signal.send(sender='get_config_variables'):
             for config_variable in config_collection:

@@ -5,7 +5,7 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.agenda.models import Item, Speaker
-from openslides.config.api import config
+from openslides.core.config import config
 from openslides.core.models import Tag
 from openslides.poll.models import (
     BaseOption,
@@ -17,7 +17,7 @@ from openslides.poll.models import (
 from openslides.projector.models import SlideMixin
 from openslides.users.models import User
 from openslides.utils.exceptions import OpenSlidesError
-from openslides.utils.rest_api import RESTModelMixin
+from openslides.utils.models import RESTModelMixin
 
 
 class AssignmentRelatedUser(RESTModelMixin, models.Model):

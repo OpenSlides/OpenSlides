@@ -6,7 +6,7 @@ from django.core.validators import MaxLengthValidator, MinValueValidator
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 
-from openslides.config.api import ConfigVariable
+from openslides.core.config import ConfigVariable
 
 from .models import Item
 
@@ -22,7 +22,7 @@ def setup_agenda_config(sender, **kwargs):
     """
     Receiver function to setup all agenda config variables. They are not
     grouped. This function connected to the signal
-    openslides.config.signals.config_signal during app loading.
+    openslides.core.signals.config_signal during app loading.
     """
     # TODO: Use an input type with generic datetime support.
     yield ConfigVariable(

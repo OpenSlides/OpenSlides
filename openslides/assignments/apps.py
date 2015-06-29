@@ -11,7 +11,7 @@ class AssignmentAppConfig(AppConfig):
         from . import projector  # noqa
 
         # Import all required stuff.
-        from openslides.config.signals import config_signal
+        from openslides.core.signals import config_signal
         from openslides.utils.rest_api import router
         from .signals import setup_assignment_config
         from .views import AssignmentViewSet, AssignmentPollViewSet

@@ -68,7 +68,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'openslides.users.auth.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'openslides.config.middleware.ConfigCacheMiddleware',
+    'openslides.core.middleware.ConfigCacheMiddleware',
 )
 
 ROOT_URLCONF = 'openslides.urls'
@@ -90,7 +90,6 @@ INSTALLED_APPS = (
     'openslides.motions',
     'openslides.assignments',
     'openslides.mediafiles',
-    'openslides.config',
 )
 
 TEMPLATE_CONTEXT_PROCESSORS = (

@@ -9,12 +9,12 @@ from django.db import models
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
-from openslides.config.api import config
+from openslides.core.config import config
 from openslides.core.models import Tag
 from openslides.projector.models import SlideMixin
 from openslides.users.models import User
 from openslides.utils.exceptions import OpenSlidesError
-from openslides.utils.rest_api import RESTModelMixin
+from openslides.utils.models import RESTModelMixin
 from openslides.utils.utils import to_roman
 
 

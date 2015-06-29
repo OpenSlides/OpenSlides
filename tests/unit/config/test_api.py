@@ -1,11 +1,11 @@
 from unittest import TestCase
 from unittest.mock import patch
 
-from openslides.config.api import ConfigVariable
+from openslides.core.config import ConfigVariable
 
 
 class TestConfigVariable(TestCase):
-    @patch('openslides.config.api.config', {'test_variable': None})
+    @patch('openslides.core.config.config', {'test_variable': None})
     def test_default_value_in_data(self):
         """
         Tests, that the default_value attribute is in the 'data' property of

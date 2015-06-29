@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.projector.models import SlideMixin
 from openslides.users.models import User
-from openslides.utils.rest_api import RESTModelMixin
+from openslides.utils.models import RESTModelMixin
 
 
 class Mediafile(RESTModelMixin, SlideMixin, models.Model):

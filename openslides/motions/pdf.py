@@ -9,7 +9,7 @@ from reportlab.lib import colors
 from reportlab.lib.units import cm
 from reportlab.platypus import PageBreak, Paragraph, Spacer, Table, TableStyle
 
-from openslides.config.api import config
+from openslides.core.config import config
 from openslides.users.models import Group, User  # TODO: remove this line
 from openslides.utils.pdf import stylesheet
 

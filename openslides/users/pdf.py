@@ -14,7 +14,7 @@ from reportlab.platypus import (
     TableStyle,
 )
 
-from openslides.config.api import config
+from openslides.core.config import config
 from openslides.utils.pdf import stylesheet
 
 from .models import User

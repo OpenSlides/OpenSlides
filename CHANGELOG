@@ -37,7 +37,7 @@ Other:
 - Refactored projector API using metaclasses now.
 - Renamed SignalConnectMetaClass classmethod get_all_objects to get_all
   (private API).
-- Refactored config API.
+- Refactored config API and moved it into the core app.
 - Removed old style personal info page, main menu entries and widget API.
 - Used AngularJS with additional libraries for single page frontend.
 - Removed use of 'django.views.i18n.javascript_catalog'. Used angular-gettext

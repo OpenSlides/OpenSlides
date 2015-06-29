@@ -11,7 +11,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.rl_config import defaultPageSize
 
-from openslides.config.api import config
+from openslides.core.config import config
 
 # register new truetype fonts
 pdfmetrics.registerFont(TTFont(

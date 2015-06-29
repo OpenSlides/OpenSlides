@@ -299,7 +299,7 @@ def translate_customizable_strings(language_code):
     Translates all translatable config values and saves them into database.
     """
     if check_for_language(language_code):
-        from openslides.config.api import config
+        from openslides.core.config import config
         current_language = get_language()
         activate(language_code)
         for name in config.get_all_translatable():

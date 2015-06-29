@@ -2,7 +2,7 @@ from django.db.models import Q
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
-from openslides.config.api import ConfigVariable
+from openslides.core.config import ConfigVariable
 
 from .models import Group, Permission, User
 
@@ -11,7 +11,7 @@ def setup_users_config(sender, **kwargs):
     """
     Receiver function to setup all users config variables. They are grouped
     in 'Sorting' and 'PDF'. This function is connected to the signal
-    openslides.config.signals.config_signal during app loading.
+    openslides.core.signals.config_signal during app loading.
     """
 
     # Sorting
@@ -110,7 +110,7 @@ def create_builtin_groups_and_admin(**kwargs):
         'assignments.can_nominate_other',
         'assignments.can_nominate_self',
         'assignments.can_see',
-        'config.can_manage',
+        'core.can_manage_config',
         'core.can_manage_projector',
         'core.can_manage_tags',
         'core.can_see_dashboard',
@@ -171,7 +171,7 @@ def create_builtin_groups_and_admin(**kwargs):
         permission_dict['assignments.can_manage'],
         permission_dict['assignments.can_nominate_other'],
         permission_dict['assignments.can_nominate_self'],
-        permission_dict['config.can_manage'],
+        permission_dict['core.can_manage_config'],
         permission_dict['core.can_manage_projector'],
         permission_dict['core.can_manage_tags'],
         permission_dict['core.can_use_chat'],

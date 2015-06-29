@@ -7,3 +7,11 @@ class ProjectorException(OpenSlidesError):
 
 class TagException(OpenSlidesError):
     pass
+
+
+class ConfigError(OpenSlidesError):
+    pass
+
+
+class ConfigNotFound(ConfigError):
+    pass

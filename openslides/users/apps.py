@@ -11,8 +11,7 @@ class UsersAppConfig(AppConfig):
         from . import projector  # noqa
 
         # Import all required stuff.
-        from openslides.config.signals import config_signal
-        from openslides.core.signals import post_permission_creation
+        from openslides.core.signals import config_signal, post_permission_creation
         from openslides.utils.rest_api import router
         from .signals import create_builtin_groups_and_admin, setup_users_config
         from .views import GroupViewSet, UserViewSet

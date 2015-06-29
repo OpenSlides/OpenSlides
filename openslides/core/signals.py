@@ -3,7 +3,7 @@ from django.dispatch import Signal
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 
-from openslides.config.api import ConfigVariable
+from openslides.core.config import ConfigVariable
 
 # This signal is sent when the migrate command is done. That means it is sent
 # after post_migrate sending and creating all Permission objects. Don't use it
@@ -16,7 +16,7 @@ def setup_general_config(sender, **kwargs):
     Receiver function to setup general config variables for OpenSlides.
     There are two main groups: 'General' and 'Projector'. The group
     'General' has subgroups. This function is connected to the signal
-    openslides.config.signals.config_signal during app loading.
+    openslides.core.signals.config_signal during app loading.
     """
     # General Event
 
@@ -134,3 +134,7 @@ def setup_general_config(sender, **kwargs):
         weight=180,
         group=ugettext_lazy('Projector'),
         translatable=True)
+
+
+config_signal = Signal(providing_args=[])
+"""Signal to get all config tabs from all apps."""

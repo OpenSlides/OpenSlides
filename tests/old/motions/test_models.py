@@ -1,6 +1,6 @@
 from unittest import skip
 
-from openslides.config.api import config
+from openslides.core.config import config
 from openslides.motions.exceptions import WorkflowError
 from openslides.motions.models import Motion, State, Workflow
 from openslides.users.models import User

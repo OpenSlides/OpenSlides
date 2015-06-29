@@ -2,7 +2,7 @@ from django.core.management import call_command
 from django.test import TestCase as _TestCase
 from django.test.runner import DiscoverRunner
 
-from openslides.config.api import config
+from openslides.core.config import config
 
 
 class OpenSlidesDiscoverRunner(DiscoverRunner):
