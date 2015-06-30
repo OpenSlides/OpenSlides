@@ -42,27 +42,12 @@ angular.module('OpenSlidesApp.users', [])
                 }
                 return name;
             },
-            get_full_name: function() {
-                // should be the same as in the python user model.
-                var firstName = _.trim(this.first_name),
-                    lastName = _.trim(this.last_name),
-                    structure_level = _.trim(this.structure_level),
-                    name;
-
-                if (firstName && lastName) {
-                    // TODO: check config
-                    name = [firstName, lastName].join(' ');
-                } else {
-                    name = firstName || lastName || this.username;
-                }
-                if (structure_level) {
-                    name = name + " (" + structure_level + ")";
-                }
-                return name;
-            },
             getPerms: function() {
                 var allPerms = [];
-                _.forEach(this.groups, function(groupId) {
+                var allGroups = this.groups;
+                // Add registered group
+                allGroups.push(2);
+                _.forEach(allGroups, function(groupId) {
                     // Get group from server
                     Group.find(groupId);
                     // But do not work with the returned promise, because in

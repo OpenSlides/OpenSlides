@@ -2,6 +2,7 @@ from django.core.urlresolvers import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from openslides.core.config import config
 from openslides.users.models import Group, User
 from openslides.utils.test import TestCase
 
@@ -140,6 +141,41 @@ class UserResetPassword(TestCase):
         response = admin_client.post(reverse('user-reset-password', args=[user.pk]))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(User.objects.get(pk=user.pk).check_password('new_password_Yuuh8OoQueePahngohy3'))
+
+
+class GroupReceive(TestCase):
+    def test_get_groups_as_anonymous_deactivated(self):
+        """
+        Test to get the groups with an anonymous user, when they are deactivated.
+        """
+        response = self.client.get('/rest/users/group/')
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_get_groups_as_anonymous_user_activated(self):
+        """
+        Test to get the groups with an anonymous user, when they are activated.
+        """
+        config['general_system_enable_anonymous'] = True
+
+        response = self.client.get('/rest/users/group/')
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_logged_in_user_with_no_permission(self):
+        """
+        Test to get the groups with an logged in user with no permissions.
+        """
+        user = User(username='test')
+        user.set_password('test')
+        user.save()
+        registered_group = Group.objects.get(pk=2)
+        registered_group.permissions.all().delete()
+        self.client.login(username='test', password='test')
+
+        response = self.client.get('/rest/users/group/')
+
+        self.assertEqual(response.status_code, 200)
 
 
 class GroupCreate(TestCase):
