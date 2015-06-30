@@ -5,6 +5,7 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 from rest_framework import status
 
+from openslides.core.config import config
 from openslides.utils.rest_api import ModelViewSet, Response, detail_route
 from openslides.utils.views import APIView, PDFView
 
@@ -110,11 +111,23 @@ class GroupViewSet(ModelViewSet):
         permission to see users and in case of create, update or destroy
         requests the permission to see extra user data and to manage users.
         """
-        if (not request.user.has_perm('users.can_see_name') or
-                (self.action in ('create', 'update', 'destroy') and not
-                 (request.user.has_perm('users.can_manage') and
-                  request.user.has_perm('users.can_see_extra_data')))):
-            self.permission_denied(request)
+        # Any logged in user can retrive groups.
+        # Anonymous user can retrive groups when they are activated.
+        if (self.action in ('retrieve', 'list') and
+                (config['general_system_enable_anonymous'] or
+                 self.request.user.is_authenticated())):
+            return
+
+        # Users with the permissions 'can_manage' and 'can_see_extra_data' can
+        # edit groups.
+        if (self.action in ('create', 'update', 'destroy', 'partial_update') and
+                request.user.has_perm('users.can_see_name') and
+                request.user.has_perm('users.can_manage') and
+                request.user.has_perm('users.can_see_extra_data')):
+            return
+
+        # Raise permission_denied in any other case.
+        self.permission_denied(request)
 
     def destroy(self, request, *args, **kwargs):
         """
