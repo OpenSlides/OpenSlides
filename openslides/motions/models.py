@@ -179,7 +179,6 @@ class Motion(RESTModelMixin, models.Model):
             use_version.version_number = version_number + 1
 
         # Necessary line if the version was set before the motion got an id.
-        # This is probably a Django bug.
         use_version.motion = use_version.motion
 
         use_version.save()
@@ -339,7 +338,11 @@ class Motion(RESTModelMixin, models.Model):
         attributes, it is populated with the data from the last version
         object if such object exists.
         """
-        new_version = MotionVersion(motion=self, **kwargs)
+        if self.pk is None:
+            # Do not reference the MotionVersion object to an unsaved motion
+            new_version = MotionVersion(**kwargs)
+        else:
+            new_version = MotionVersion(motion=self, **kwargs)
         if self.versions.exists():
             last_version = self.get_last_version()
         else:

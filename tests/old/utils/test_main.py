@@ -87,9 +87,6 @@ class TestFunctions(TestCase):
         inner_function()
         browser_mock.open.assert_called_with('http://localhost:8234')
 
-    def test_get_database_path_from_settings_memory(self):
-        self.assertEqual(main.get_database_path_from_settings(), ':memory:')
-
     def test_translate_customizable_strings(self):
         self.assertEqual(config['general_event_description'], 'Presentation and assembly system')
         main.translate_customizable_strings('de')

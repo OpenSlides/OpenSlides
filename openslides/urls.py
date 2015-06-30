@@ -5,7 +5,7 @@ from openslides.utils.rest_api import router
 
 urlpatterns = patterns(
     '',
-    url(r'^(?P<url>.*[^/])$', RedirectView.as_view(url='/%(url)s/')),
+    url(r'^(?P<url>.*[^/])$', RedirectView.as_view(url='/%(url)s/', permanent=True)),
     url(r'^rest/', include(router.urls)),
     url(r'^agenda/', include('openslides.agenda.urls')),
     url(r'^assignments/', include('openslides.assignments.urls')),

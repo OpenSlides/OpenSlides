@@ -1,5 +1,3 @@
-from unittest import skip
-
 from openslides.core.config import config
 from openslides.motions.exceptions import WorkflowError
 from openslides.motions.models import Motion, State, Workflow
@@ -55,14 +53,6 @@ class ModelTest(TestCase):
         with self.assertRaises(AttributeError):
             self._title
         self.assertEqual(motion.title, 'v3')
-
-    @skip
-    def test_absolute_url(self):
-        motion_id = self.motion.id
-
-        self.assertEqual(self.motion.get_absolute_url('detail'), '/motions/%d/' % motion_id)
-        self.assertEqual(self.motion.get_absolute_url('update'), '/motions/%d/edit/' % motion_id)
-        self.assertEqual(self.motion.get_absolute_url('delete'), '/motions/%d/del/' % motion_id)
 
     def test_supporter(self):
         self.assertFalse(self.motion.is_supporter(self.test_user))
