@@ -1,8 +1,7 @@
 import re
 from urllib.parse import urlparse
 
-from rest_framework.decorators import detail_route  # noqa
-from rest_framework.decorators import list_route  # noqa
+from rest_framework.decorators import detail_route, list_route  # noqa
 from rest_framework.metadata import SimpleMetadata  # noqa
 from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin  # noqa
 from rest_framework.response import Response  # noqa
@@ -20,39 +19,43 @@ from rest_framework.serializers import (  # noqa
     SerializerMethodField,
     ValidationError,
 )
+from rest_framework.viewsets import GenericViewSet as _GenericViewSet  # noqa
 from rest_framework.viewsets import ModelViewSet as _ModelViewSet  # noqa
-from rest_framework.viewsets import (  # noqa
-    GenericViewSet,
-    ReadOnlyModelViewSet,
-    ViewSet,
-)
+from rest_framework.viewsets import \
+    ReadOnlyModelViewSet as _ReadOnlyModelViewSet  # noqa
+from rest_framework.viewsets import ViewSet as _ViewSet  # noqa
 
 from .exceptions import OpenSlidesError
 
 router = DefaultRouter()
 
 
-class ModelViewSet(_ModelViewSet):
+class PermissionMixin:
     """
-    Viewset for models. Before the method check_permission is called we
-    check projector requirements. If access for projector client users is
-    not currently required, check_permission is called, else not.
+    Mixin for subclasses of APIView like GenericViewSet and ModelViewSet.
+
+    The methods check_view_permissions or check_projector_requirements are
+    evaluated. If both return False self.permission_denied() is called.
+    Django REST framework's permission system is disabled.
     """
-    def initial(self, request, *args, **kwargs):
-        """
-        Runs anything that needs to occur prior to calling the method handler.
-        """
-        self.format_kwarg = self.get_format_suffix(**kwargs)
 
-        # Ensure that the incoming request is permitted
-        self.perform_authentication(request)
-        if not self.check_projector_requirements():
-            self.check_permissions(request)
-        self.check_throttles(request)
+    def get_permissions(self):
+        """
+        Overriden method to check view and projector permissions. Returns an
+        empty interable so Django REST framework won't do any other
+        permission checks by evaluating Django REST framework style permission
+        classes  and the request passes.
+        """
+        if not self.check_view_permissions() and not self.check_projector_requirements():
+            self.permission_denied(self.request)
+        return ()
 
-        # Perform content negotiation and store the accepted info on the request
-        neg = self.perform_content_negotiation(request)
-        request.accepted_renderer, request.accepted_media_type = neg
+    def check_view_permissions(self):
+        """
+        Override this and return True if the requesting user should be able to
+        get access to your view.
+        """
+        return False
 
     def check_projector_requirements(self):
         """
@@ -68,6 +71,22 @@ class ModelViewSet(_ModelViewSet):
                     result = True
                     break
         return result
+
+
+class GenericViewSet(PermissionMixin, _GenericViewSet):
+    pass
+
+
+class ModelViewSet(PermissionMixin, _ModelViewSet):
+    pass
+
+
+class ReadOnlyModelViewSet(PermissionMixin, _ReadOnlyModelViewSet):
+    pass
+
+
+class ViewSet(PermissionMixin, _ViewSet):
+    pass
 
 
 def get_collection_and_id_from_url(url):

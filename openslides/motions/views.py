@@ -24,40 +24,45 @@ from .serializers import (
 )
 
 
+# Viewsets for the REST API
+
 class MotionViewSet(ModelViewSet):
     """
-    API endpoint to list, retrieve, create, update and destroy motions.
+    API endpoint for motions.
+
+    There are the following views: list, retrieve, create, partial_update,
+    update, destroy, manage_version, support and set_state.
     """
     queryset = Motion.objects.all()
     serializer_class = MotionSerializer
 
-    def check_permissions(self, request):
+    def check_view_permissions(self):
         """
-        Calls self.permission_denied() if the requesting user has not the
-        permission to see motions and in case of destroy requests the
-        permission to manage motions.
+        Returns True if the user has required permissions.
         """
-        if (not request.user.has_perm('motions.can_see') or
-                (self.action == 'destroy' and not request.user.has_perm('motions.can_manage'))):
-            self.permission_denied(request)
+        if self.action in ('list', 'retrieve', 'partial_update', 'update'):
+            result = self.request.user.has_perm('motions.can_see')
+            # For partial_update and update requests the rest of the check is
+            # done in the update method. See below.
+        elif self.action == 'create':
+            result = (self.request.user.has_perm('motions.can_see') and
+                      self.request.user.has_perm('motions.can_create') and
+                      (not config['motions_stop_submitting'] or
+                       self.request.user.has_perm('motions.can_manage')))
+        elif self.action in ('destroy', 'manage_version', 'set_state'):
+            result = (self.request.user.has_perm('motions.can_see') and
+                      self.request.user.has_perm('motions.can_manage'))
+        elif self.action == 'support':
+            result = (self.request.user.has_perm('motions.can_see') and
+                      self.request.user.has_perm('motions.can_support'))
+        else:
+            result = False
+        return result
 
     def create(self, request, *args, **kwargs):
         """
         Customized view endpoint to create a new motion.
-
-        Checks also whether the requesting user can submit a new motion. He
-        needs at least the permissions 'motions.can_see' (see
-        self.check_permission()) and 'motions.can_create'. If the
-        submitting of new motions by non-staff users is stopped via config
-        variable 'motions_stop_submitting', the requesting user needs also
-        to have the permission 'motions.can_manage'.
         """
-        # Check permissions.
-        if (not request.user.has_perm('motions.can_create') or
-                (not config['motions_stop_submitting'] and
-                 not request.user.has_perm('motions.can_manage'))):
-            self.permission_denied(request)
-
         # Check permission to send submitter and supporter data.
         if (not request.user.has_perm('motions.can_manage') and
                 (request.data.getlist('submitters') or request.data.getlist('supporters'))):
@@ -80,7 +85,7 @@ class MotionViewSet(ModelViewSet):
 
         Checks also whether the requesting user can update the motion. He
         needs at least the permissions 'motions.can_see' (see
-        self.check_permission()). Also the instance method
+        self.check_view_permissions()). Also the instance method
         get_allowed_actions() is evaluated.
         """
         # Get motion.
@@ -122,10 +127,6 @@ class MotionViewSet(ModelViewSet):
         {'version_number': <number>} to delete a version. Deleting the
         active version is not allowed. Only managers can use this view.
         """
-        # Check permission.
-        if not request.user.has_perm('motions.can_manage'):
-            self.permission_denied(request)
-
         # Retrieve motion and version.
         motion = self.get_object()
         version_number = request.data.get('version_number')
@@ -168,17 +169,7 @@ class MotionViewSet(ModelViewSet):
         (unsupport).
 
         Send POST to support and DELETE to unsupport.
-
-        Checks also whether the requesting user can do this. He needs at
-        least the permissions 'motions.can_see' (see
-        self.check_permission()). Also the the permission
-        'motions.can_support' is required and the instance method
-        get_allowed_actions() is evaluated.
         """
-        # Check permission.
-        if not request.user.has_perm('motions.can_support'):
-            self.permission_denied(request)
-
         # Retrieve motion and allowed actions.
         motion = self.get_object()
         allowed_actions = motion.get_allowed_actions(request.user)
@@ -211,10 +202,6 @@ class MotionViewSet(ModelViewSet):
         Send PUT {'state': <state_id>} to set and just PUT {} to reset the
         state. Only managers can use this view.
         """
-        # Check permission.
-        if not request.user.has_perm('motions.can_manage'):
-            self.permission_denied(request)
-
         # Retrieve motion and state.
         motion = self.get_object()
         state = request.data.get('state')
@@ -244,6 +231,56 @@ class MotionViewSet(ModelViewSet):
             person=request.user)
         return Response({'detail': message})
 
+
+class CategoryViewSet(ModelViewSet):
+    """
+    API endpoint for categories.
+
+    There are the following views: list, retrieve, create, partial_update,
+    update and destroy.
+    """
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+
+    def check_view_permissions(self):
+        """
+        Returns True if the user has required permissions.
+        """
+        if self.action in ('list', 'retrieve'):
+            result = self.request.user.has_perm('motions.can_see')
+        elif self.action in ('create', 'partial_update', 'update', 'destroy'):
+            result = (self.request.user.has_perm('motions.can_see') and
+                      self.request.user.has_perm('motions.can_manage'))
+        else:
+            result = False
+        return result
+
+
+class WorkflowViewSet(ModelViewSet):
+    """
+    API endpoint for workflows.
+
+    There are the following views: list, retrieve, create, partial_update,
+    update and destroy.
+    """
+    queryset = Workflow.objects.all()
+    serializer_class = WorkflowSerializer
+
+    def check_view_permissions(self):
+        """
+        Returns True if the user has required permissions.
+        """
+        if self.action in ('list', 'retrieve'):
+            result = self.request.user.has_perm('motions.can_see')
+        elif self.action in ('create', 'partial_update', 'update', 'destroy'):
+            result = (self.request.user.has_perm('motions.can_see') and
+                      self.request.user.has_perm('motions.can_manage'))
+        else:
+            result = False
+        return result
+
+
+# Views to generate PDFs
 
 class PollPDFView(PDFView):
     """
@@ -349,41 +386,3 @@ class MotionPDFView(SingleObjectMixin, PDFView):
             motions_to_pdf(pdf, motions)
         else:
             motion_to_pdf(pdf, self.get_object())
-
-
-class CategoryViewSet(ModelViewSet):
-    """
-    API endpoint to list, retrieve, create, update and destroy categories.
-    """
-    queryset = Category.objects.all()
-    serializer_class = CategorySerializer
-
-    def check_permissions(self, request):
-        """
-        Calls self.permission_denied() if the requesting user has not the
-        permission to see motions and in case of create, update or destroy
-        requests the permission to manage motions.
-        """
-        if (not request.user.has_perm('motions.can_see') or
-                (self.action in ('create', 'update', 'destroy') and not
-                 request.user.has_perm('motions.can_manage'))):
-            self.permission_denied(request)
-
-
-class WorkflowViewSet(ModelViewSet):
-    """
-    API endpoint to list, retrieve, create, update and destroy workflows.
-    """
-    queryset = Workflow.objects.all()
-    serializer_class = WorkflowSerializer
-
-    def check_permissions(self, request):
-        """
-        Calls self.permission_denied() if the requesting user has not the
-        permission to see motions and in case of create, update or destroy
-        requests the permission to manage motions.
-        """
-        if (not request.user.has_perm('motions.can_see') or
-                (self.action in ('create', 'update', 'destroy') and not
-                 request.user.has_perm('motions.can_manage'))):
-            self.permission_denied(request)

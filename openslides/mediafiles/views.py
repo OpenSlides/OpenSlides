@@ -4,23 +4,33 @@ from .models import Mediafile
 from .serializers import MediafileSerializer
 
 
+# Viewsets for the REST API
+
 class MediafileViewSet(ModelViewSet):
     """
-    API endpoint to list, retrieve, create, update and destroy mediafile
-    objects.
+    API endpoint for mediafile objects.
+
+    There are the following views: list, retrieve, create, partial_update,
+    update and destroy.
     """
     queryset = Mediafile.objects.all()
     serializer_class = MediafileSerializer
 
-    def check_permissions(self, request):
+    def check_view_permissions(self):
         """
-        Calls self.permission_denied() if the requesting user has not the
-        permission to see mediafile objects and in case of create, update or
-        destroy requests the permission to manage mediafile objects.
+        Returns True if the user has required permissions.
         """
         # TODO: Use mediafiles.can_upload permission to create and update some
         #       objects but restricted concerning the uploader.
-        if (not request.user.has_perm('mediafiles.can_see') or
-                (self.action in ('create', 'update', 'destroy') and not
-                 request.user.has_perm('mediafiles.can_manage'))):
-            self.permission_denied(request)
+        if self.action in ('list', 'retrieve'):
+            result = self.request.user.has_perm('mediafiles.can_see')
+        elif self.action in ('create', 'partial_update', 'update'):
+            result = (self.request.user.has_perm('mediafiles.can_see') and
+                      self.request.user.has_perm('mediafiles.can_upload') and
+                      self.request.user.has_perm('mediafiles.can_manage'))
+        elif self.action == 'destroy':
+            result = (self.request.user.has_perm('mediafiles.can_see') and
+                      self.request.user.has_perm('mediafiles.can_manage'))
+        else:
+            result = False
+        return result

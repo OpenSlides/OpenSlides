@@ -20,55 +20,36 @@ from .models import Item, Speaker
 from .serializers import ItemSerializer
 
 
-class AgendaPDF(PDFView):
-    """
-    Create a full agenda-PDF.
-    """
-    required_permission = 'agenda.can_see'
-    filename = ugettext_lazy('Agenda')
-    document_title = ugettext_lazy('Agenda')
-
-    def append_to_pdf(self, story):
-        tree = Item.objects.get_tree(only_agenda_items=True, include_content=True)
-
-        def walk_tree(tree, ancestors=0):
-            """
-            Generator that yields a two-element-tuple. The first element is an
-            agenda-item and the second a number for steps to the root element.
-            """
-            for element in tree:
-                yield element['item'], ancestors
-                yield from walk_tree(element['children'], ancestors + 1)
-
-        for item, ancestors in walk_tree(tree):
-            if ancestors:
-                space = "&nbsp;" * 6 * ancestors
-                story.append(Paragraph(
-                    "%s%s" % (space, escape(item.get_title())),
-                    stylesheet['Subitem']))
-            else:
-                story.append(Paragraph(escape(item.get_title()), stylesheet['Item']))
-
+# Viewsets for the REST API
 
 class ItemViewSet(ModelViewSet):
     """
-    API endpoint to list, retrieve, create, update and destroy agenda items.
+    API endpoint for agenda items.
+
+    There are the following views: list, retrieve, create, partial_update,
+    update, destroy, manage_speaker, speak and tree.
     """
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
 
-    def check_permissions(self, request):
+    def check_view_permissions(self):
         """
-        Calls self.permission_denied() if the requesting user has not the
-        permission to see the agenda and in case of create, update or destroy
-        requests the permission to manage the agenda and to see organizational
-        items.
+        Returns True if the user has required permissions.
         """
-        if (not request.user.has_perm('agenda.can_see') or
-                (self.action in ('create', 'update', 'destroy') and not
-                 (request.user.has_perm('agenda.can_manage') and
-                  request.user.has_perm('agenda.can_see_orga_items')))):
-            self.permission_denied(request)
+        if self.action in ('list', 'retrieve', 'manage_speaker', 'tree'):
+            result = self.request.user.has_perm('agenda.can_see')
+            # For manage_speaker and tree requests the rest of the check is
+            # done in the specific method. See below.
+        elif self.action in ('create', 'partial_update', 'update', 'destroy'):
+            result = (self.request.user.has_perm('agenda.can_see') and
+                      self.request.user.has_perm('agenda.can_see_orga_items') and
+                      self.request.user.has_perm('agenda.can_manage'))
+        elif self.action == 'speak':
+            result = (self.request.user.has_perm('agenda.can_see') and
+                      self.request.user.has_perm('agenda.can_manage'))
+        else:
+            result = False
+        return result
 
     def check_object_permissions(self, request, obj):
         """
@@ -97,11 +78,11 @@ class ItemViewSet(ModelViewSet):
 
         Checks also whether the requesting user can do this. He needs at
         least the permissions 'agenda.can_see' (see
-        self.check_permission()). In case of adding himself the permission
-        'agenda.can_be_speaker' is required. In case of adding someone else
-        the permission 'agenda.can_manage' is required. In case of removing
-        someone else 'agenda.can_manage' is required. In case of removing
-        himself no other permission is required.
+        self.check_view_permissions()). In case of adding himself the
+        permission 'agenda.can_be_speaker' is required. In case of adding
+        someone else the permission 'agenda.can_manage' is required. In
+        case of removing someone else 'agenda.can_manage' is required. In
+        case of removing himself no other permission is required.
         """
         # Retrieve item.
         item = self.get_object()
@@ -174,16 +155,7 @@ class ItemViewSet(ModelViewSet):
         Special view endpoint to begin and end speach of speakers. Send PUT
         {'speaker': <speaker_id>} to begin speach. Omit data to begin speach of
         the next speaker. Send DELETE to end speach of current speaker.
-
-        Checks also whether the requesting user can do this. He needs at
-        least the permissions 'agenda.can_see' (see
-        self.check_permission()). Also the permission 'agenda.can_manage'
-        is required.
         """
-        # Check permission.
-        if not self.request.user.has_perm('agenda.can_manage'):
-            self.permission_denied(request)
-
         # Retrieve item.
         item = self.get_object()
 
@@ -234,3 +206,35 @@ class ItemViewSet(ModelViewSet):
             else:
                 return Response({'detail': 'Agenda tree successfully updated.'})
         return Response(Item.objects.get_tree())
+
+
+# Views to generate PDFs
+
+class AgendaPDF(PDFView):
+    """
+    Create a full agenda-PDF.
+    """
+    required_permission = 'agenda.can_see'
+    filename = ugettext_lazy('Agenda')
+    document_title = ugettext_lazy('Agenda')
+
+    def append_to_pdf(self, story):
+        tree = Item.objects.get_tree(only_agenda_items=True, include_content=True)
+
+        def walk_tree(tree, ancestors=0):
+            """
+            Generator that yields a two-element-tuple. The first element is an
+            agenda-item and the second a number for steps to the root element.
+            """
+            for element in tree:
+                yield element['item'], ancestors
+                yield from walk_tree(element['children'], ancestors + 1)
+
+        for item, ancestors in walk_tree(tree):
+            if ancestors:
+                space = "&nbsp;" * 6 * ancestors
+                story.append(Paragraph(
+                    "%s%s" % (space, escape(item.get_title())),
+                    stylesheet['Subitem']))
+            else:
+                story.append(Paragraph(escape(item.get_title()), stylesheet['Item']))

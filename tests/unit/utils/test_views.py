@@ -1,65 +1,7 @@
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
-from django.core.exceptions import PermissionDenied
-
 from openslides.utils import views
-
-
-class PermissionMixinTest(TestCase):
-    def test_check_permission_non_required_permission(self):
-        view = views.PermissionMixin()
-        view.required_permission = None
-        request = MagicMock()
-
-        self.assertTrue(view.check_permission(request))
-
-    def test_check_permission_with_required_permission(self):
-        view = views.PermissionMixin()
-        view.required_permission = 'required_permission'
-        request = MagicMock()
-
-        view.check_permission(request)
-
-        request.user.has_perm.assert_called_once_with('required_permission')
-
-    @patch('builtins.super')
-    def test_dispatch_with_perm(self, mock_super):
-        view = views.PermissionMixin()
-        view.check_permission = MagicMock(return_value=True)
-        request = MagicMock()
-
-        view.dispatch(request)
-
-        mock_super().dispatch.called_once_with(request)
-
-    @patch('openslides.utils.views.settings')
-    @patch('openslides.utils.views.HttpResponseRedirect')
-    @patch('builtins.super')
-    def test_dispatch_without_perm_logged_out(self, mock_super, mock_response, mock_settings):
-        view = views.PermissionMixin()
-        view.check_permission = MagicMock(return_value=False)
-        request = MagicMock()
-        request.user.is_authenticated.return_value = False
-        request.get_full_path.return_value = '/requested/path/'
-        mock_settings.LOGIN_URL = 'my_login_url'
-
-        value = view.dispatch(request)
-
-        mock_response.assert_called_once_with('my_login_url?next=/requested/path/')
-        self.assertEqual(value, mock_response())
-
-    @patch('openslides.utils.views.settings')
-    @patch('openslides.utils.views.HttpResponseRedirect')
-    @patch('builtins.super')
-    def test_dispatch_without_perm_logged_in(self, mock_super, mock_response, mock_settings):
-        view = views.PermissionMixin()
-        view.check_permission = MagicMock(return_value=False)
-        request = MagicMock()
-        request.user.is_authenticated.return_value = True
-
-        with self.assertRaises(PermissionDenied):
-            view.dispatch(request)
 
 
 @patch('builtins.super')
