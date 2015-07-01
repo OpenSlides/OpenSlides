@@ -2,6 +2,7 @@ import re
 from collections import OrderedDict
 from operator import attrgetter
 
+from django.apps import apps
 from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.core.urlresolvers import get_resolver
@@ -308,3 +309,46 @@ class ConfigViewSet(ViewSet):
 
         # Return response.
         return Response({'key': key, 'value': value})
+
+
+class AppsJsView(utils_views.View):
+    """
+    Returns javascript code to be called in the angular app.
+
+    The javascript code loads all js-files defined by the installed (django)
+    apps and creates the angular modules for each angular app.
+    """
+    def get(self, *args, **kwargs):
+        angular_modules = []
+        js_files = []
+        for app_config in apps.get_app_configs():
+            # Add the angular app, if the module has one.
+            if getattr(app_config,
+                       'angular_{}_module'.format(kwargs.get('openslides_app')),
+                       False):
+                angular_modules.append('OpenSlidesApp.{app_name}.{app}'.format(
+                    app=kwargs.get('openslides_app'),
+                    app_name=app_config.label))
+
+            # Add all js files that the module needs
+            try:
+                app_js_files = app_config.js_files
+            except AttributeError:
+                # The app needs no js-files
+                pass
+            else:
+                js_files += [
+                    '{static}{path}'.format(
+                        static=settings.STATIC_URL,
+                        path=path)
+                    for path in app_js_files]
+
+        return HttpResponse(
+            "angular.module('OpenSlidesApp.{app}', {angular_modules});"
+            "var deferres = [];"
+            "{js_files}.forEach(function(js_file)deferres.push($.getScript(js_file)));"
+            "$.when.apply(this, deferres).done(function() angular.bootstrap(document,['OpenSlidesApp.{app}']));"
+            .format(
+                app=kwargs.get('openslides_app'),
+                angular_modules=angular_modules,
+                js_files=js_files))

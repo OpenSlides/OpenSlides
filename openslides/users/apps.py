@@ -4,6 +4,9 @@ from django.apps import AppConfig
 class UsersAppConfig(AppConfig):
     name = 'openslides.users'
     verbose_name = 'OpenSlides Users'
+    angular_site_module = True
+    angular_projector_module = True
+    js_files = ['js/users/users.js']
 
     def ready(self):
         # Load projector elements.

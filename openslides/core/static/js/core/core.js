@@ -1,5 +1,12 @@
 // The core module used for the OpenSlides site and the projector
-angular.module('OpenSlidesApp.core', [])
+angular.module('OpenSlidesApp.core', [
+    'angular-loading-bar',
+    'js-data',
+    'gettext',
+    'ngAnimate',
+    'ui.bootstrap',
+    'ui.tree',
+])
 
 .config(function(DSProvider) {
     // Reloads everything after 5 minutes.
@@ -146,7 +153,33 @@ angular.module('OpenSlidesApp.core', [])
 
 
 // The core module for the OpenSlides site
-angular.module('OpenSlidesApp.core.site', ['OpenSlidesApp.core'])
+angular.module('OpenSlidesApp.core.site', [
+    'OpenSlidesApp.core',
+    'ui.router',
+    'ngBootbox',
+    'ngFabForm',
+    'ngMessages',
+    'ngCsvImport',
+    'ngSanitize',  // TODO: only use this in functions that need it.
+    'ui.select',
+    'xeditable',
+])
+
+.config(function($urlRouterProvider, $locationProvider) {
+    // define fallback url and html5Mode
+    $urlRouterProvider.otherwise('/');
+    $locationProvider.html5Mode(true);
+})
+
+.config(function($httpProvider) {
+    // Combine the django csrf system with the angular csrf system
+    $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+    $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';
+})
+
+.config(function(uiSelectConfig) {
+  uiSelectConfig.theme = 'bootstrap';
+})
 
 .config(function($stateProvider, $urlMatcherFactoryProvider) {
     // Make the trailing slash optional
