@@ -2,7 +2,7 @@
 -r requirements_production.txt
 
 # Requirements for development and tests in alphabetical order
-coverage>=4.0a5,<4.1.0
+coverage==4.0a5
 flake8
 isort
 

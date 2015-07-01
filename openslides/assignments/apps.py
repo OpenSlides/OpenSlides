@@ -1,9 +1,12 @@
 from django.apps import AppConfig
 
 
-class AssignmentAppConfig(AppConfig):
+class AssignmentsAppConfig(AppConfig):
     name = 'openslides.assignments'
     verbose_name = 'OpenSlides Assignments'
+    angular_site_module = True
+    angular_projector_module = True
+    js_files = ['js/assignments/assignments.js']
 
     def ready(self):
         # Load projector elements.

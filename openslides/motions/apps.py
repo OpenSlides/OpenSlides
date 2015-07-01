@@ -2,9 +2,12 @@ from django.apps import AppConfig
 from django.db.models.signals import post_migrate
 
 
-class MotionAppConfig(AppConfig):
+class MotionsAppConfig(AppConfig):
     name = 'openslides.motions'
     verbose_name = 'OpenSlides Motion'
+    angular_site_module = True
+    angular_projector_module = True
+    js_files = ['js/motions/motions.js']
 
     def ready(self):
         # Load projector elements.

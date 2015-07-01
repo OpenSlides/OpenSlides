@@ -1,9 +1,12 @@
 from django.apps import AppConfig
 
 
-class MediafileAppConfig(AppConfig):
+class MediafilesAppConfig(AppConfig):
     name = 'openslides.mediafiles'
     verbose_name = 'OpenSlides Mediafiles'
+    angular_site_module = True
+    angular_projector_module = True
+    js_files = ['js/mediafiles/mediafiles.js']
 
     def ready(self):
         # Load projector elements.

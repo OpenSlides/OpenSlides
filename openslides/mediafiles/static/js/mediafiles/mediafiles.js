@@ -85,3 +85,6 @@ angular.module('OpenSlidesApp.mediafiles.site', ['OpenSlidesApp.mediafiles'])
         );
     };
 });
+
+
+angular.module('OpenSlidesApp.mediafiles.projector', ['OpenSlidesApp.mediafiles']);

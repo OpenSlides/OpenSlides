@@ -4,6 +4,9 @@ from django.apps import AppConfig
 class AgendaAppConfig(AppConfig):
     name = 'openslides.agenda'
     verbose_name = 'OpenSlides Agenda'
+    angular_site_module = True
+    angular_projector_module = True
+    js_files = ['js/agenda/agenda.js']
 
     def ready(self):
         # Load projector elements.
