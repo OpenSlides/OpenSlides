@@ -268,7 +268,8 @@ class MarkElectedOtherUser(TestCase):
         self.assertTrue(Assignment.objects.get(pk=self.assignment.pk).elected.filter(username='test_user_Oonei3rahji5jugh1eev').exists())
 
     def test_mark_unelected(self):
-        self.assignment.set_elected(get_user_model().objects.get(username='test_user_Oonei3rahji5jugh1eev'))
+        user = get_user_model().objects.get(username='test_user_Oonei3rahji5jugh1eev')
+        self.assignment.set_elected(user)
         response = self.client.delete(
             reverse('assignment-mark-elected', args=[self.assignment.pk]),
             {'user': self.user.pk})

@@ -120,8 +120,7 @@ class Item(RESTModelMixin, models.Model):
     Flag, if the item is finished.
     """
 
-    type = models.IntegerField(max_length=1, choices=ITEM_TYPE,
-                               default=AGENDA_ITEM, verbose_name=ugettext_lazy("Type"))
+    type = models.IntegerField(choices=ITEM_TYPE, default=AGENDA_ITEM, verbose_name=ugettext_lazy("Type"))
     """
     Type of the agenda item.
 

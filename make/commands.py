@@ -14,8 +14,12 @@ def test(args=None):
     Runs the tests.
     """
     module = getattr(args, 'module', '')
+    if module == '':
+        module = 'tests'
+    else:
+        module = 'tests.{}'.format(module)
     return call("DJANGO_SETTINGS_MODULE='tests.settings' coverage run "
-                "./manage.py test tests.%s" % module)
+                "./manage.py test {}".format(module))
 
 
 @argument('--plain', action='store_true')
@@ -84,10 +88,10 @@ def min_requirements(args=None):
     Uses requirements_production.txt by default.
     """
 
-    from pip.req import parse_requirements
+    import pip
 
     def get_lowest_versions(requirements_file):
-        for line in parse_requirements(requirements_file):
+        for line in pip.req.parse_requirements(requirements_file, session=pip.download.PipSession()):
             yield '%s==%s' % (line.req.key, line.req.specs[0][1])
 
     print('pip install %s' % ' '.join(get_lowest_versions(args.requirements)))
@@ -95,31 +99,13 @@ def min_requirements(args=None):
 
 @command('clear',
          help='Deletes unneeded files and folders')
-def clear(args=None):
+def clean(args=None):
     """
     Deletes all .pyc and .orig files and empty folders.
     """
     call('find -name "*.pyc" -delete')
     call('find -name "*.orig" -delete')
     call('find -type d -empty -delete')
-
-@command('po',
-         help="Generates the po-file for javascript")
-def po(args=None):
-    # TODO: in the value "" there has to be the entry:
-    #       "plural_forms: nplurals=2; plural=(n != 1);"
-    call('find openslides/ -iname "*.js" -or -iname "*.html" | '
-         'xargs xgettext --from-code=UTF-8 --language=JavaScript '
-         '--output=openslides/locale/en/javascript.po')
-
-
-@argument('-l', '--language')
-@command('po2json',
-         help="Generates json for a translated po file")
-def po2json(args=None):
-    lang = args.language
-    call('node_modules/.bin/po2json openslides/locale/%s/javascript.po openslides/static/i18n/%s.json' %
-         (lang, lang))
 
 
 @command('isort',
