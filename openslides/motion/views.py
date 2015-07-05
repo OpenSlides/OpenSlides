@@ -499,7 +499,7 @@ class SupportView(SingleObjectMixin, QuestionView):
     model = Motion
     support = True
 
-    def check_permission(self, request):
+    def check_permission(self, request, *args, **kwargs):
         """
         Return True if the user can support or unsupport the motion. Else: False.
         """
