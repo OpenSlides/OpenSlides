@@ -12,19 +12,12 @@ class MotionsAppConfig(AppConfig):
     def ready(self):
         # Load projector elements.
         # Do this by just importing all from these files.
-        from . import projector  # noqa
+        from . import projector, rest_api  # noqa
 
         # Import all required stuff.
         from openslides.core.signals import config_signal
-        from openslides.utils.rest_api import router
         from .signals import create_builtin_workflows, setup_motion_config
-        from .views import CategoryViewSet, MotionViewSet, WorkflowViewSet
 
         # Connect signals.
         config_signal.connect(setup_motion_config, dispatch_uid='setup_motion_config')
         post_migrate.connect(create_builtin_workflows, dispatch_uid='motion_create_builtin_workflows')
-
-        # Register viewsets.
-        router.register('motions/category', CategoryViewSet)
-        router.register('motions/motion', MotionViewSet)
-        router.register('motions/workflow', WorkflowViewSet)
