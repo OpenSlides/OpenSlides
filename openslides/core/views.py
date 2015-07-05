@@ -35,6 +35,8 @@ from .serializers import (
 )
 
 
+# Special Django views
+
 class IndexView(utils_views.CSRFMixin, utils_views.View):
     """
     The primary view for OpenSlides using AngularJS.
@@ -61,28 +63,74 @@ class ProjectorView(utils_views.View):
         return HttpResponse(content)
 
 
+class AppsJsView(utils_views.View):
+    """
+    Returns javascript code to be called in the angular app.
+
+    The javascript code loads all js-files defined by the installed (django)
+    apps and creates the angular modules for each angular app.
+    """
+    def get(self, *args, **kwargs):
+        angular_modules = []
+        js_files = []
+        for app_config in apps.get_app_configs():
+            # Add the angular app, if the module has one.
+            if getattr(app_config,
+                       'angular_{}_module'.format(kwargs.get('openslides_app')),
+                       False):
+                angular_modules.append('OpenSlidesApp.{app_name}.{app}'.format(
+                    app=kwargs.get('openslides_app'),
+                    app_name=app_config.label))
+
+            # Add all js files that the module needs
+            try:
+                app_js_files = app_config.js_files
+            except AttributeError:
+                # The app needs no js-files
+                pass
+            else:
+                js_files += [
+                    '{static}{path}'.format(
+                        static=settings.STATIC_URL,
+                        path=path)
+                    for path in app_js_files]
+
+        return HttpResponse(
+            "angular.module('OpenSlidesApp.{app}', {angular_modules});"
+            "var deferres = [];"
+            "{js_files}.forEach(function(js_file)deferres.push($.getScript(js_file)));"
+            "$.when.apply(this, deferres).done(function() angular.bootstrap(document,['OpenSlidesApp.{app}']));"
+            .format(
+                app=kwargs.get('openslides_app'),
+                angular_modules=angular_modules,
+                js_files=js_files))
+
+
+# Viewsets for the REST API
+
 class ProjectorViewSet(ReadOnlyModelViewSet):
     """
-    API endpoint to list, retrieve and update the projector slide info.
+    API endpoint for the projector slide info.
+
+    There are the following views: list, retrieve, activate_elements,
+    prune_elements, deactivate_elements and clear_elements
     """
     queryset = Projector.objects.all()
     serializer_class = ProjectorSerializer
 
-    def check_permissions(self, request):
+    def check_view_permissions(self):
         """
-        Calls self.permission_denied() if the requesting user has not the
-        permission to see the projector and in case of an update request the
-        permission to manage the projector.
+        Returns True if the user has required permissions.
         """
-        manage_methods = (
-            'activate_elements',
-            'prune_elements',
-            'deactivate_elements',
-            'clear_elements')
-        if (not request.user.has_perm('core.can_see_projector') or
-                (self.action in manage_methods and
-                 not request.user.has_perm('core.can_manage_projector'))):
-            self.permission_denied(request)
+        if self.action in ('list', 'retrieve'):
+            result = self.request.user.has_perm('core.can_see_projector')
+        elif self.action in ('activate_elements', 'prune_elements',
+                             'deactivate_elements', 'clear_elements'):
+            result = (self.request.user.has_perm('core.can_see_projector') and
+                      self.request.user.has_perm('core.can_manage_projector'))
+        else:
+            result = False
+        return result
 
     @detail_route(methods=['post'])
     def activate_elements(self, request, pk):
@@ -168,37 +216,134 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
 
 class CustomSlideViewSet(ModelViewSet):
     """
-    API endpoint to list, retrieve, create, update and destroy custom slides.
+    API endpoint for custom slides.
+
+    There are the following views: list, retrieve, create, partial_update,
+    update and destroy.
     """
     queryset = CustomSlide.objects.all()
     serializer_class = CustomSlideSerializer
 
-    def check_permissions(self, request):
+    def check_view_permissions(self):
         """
-        Calls self.permission_denied() if the requesting user has not the
-        permission to manage projector.
+        Returns True if the user has required permissions.
         """
-        if not request.user.has_perm('core.can_manage_projector'):
-            self.permission_denied(request)
+        return self.request.user.has_perm('core.can_manage_projector')
 
 
 class TagViewSet(ModelViewSet):
     """
-    API endpoint to list, retrieve, create, update and destroy tags.
+    API endpoint for tags.
+
+    There are the following views: list, retrieve, create, partial_update,
+    update and destroy.
     """
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
 
-    def check_permissions(self, request):
+    def check_view_permissions(self):
         """
-        Calls self.permission_denied() if the requesting user has not the
-        permission to manage tags and it is a create, update or detroy request.
-        Users without permissions are able to list and retrieve tags.
+        Returns True if the user has required permissions.
         """
-        if (self.action in ('create', 'update', 'destroy') and
-                not request.user.has_perm('core.can_manage_tags')):
-            self.permission_denied(request)
+        if self.action in ('list', 'retrieve'):
+            # Every authenticated user can list or retrieve tags.
+            # Anonymous users can do so if they are enabled.
+            result = self.request.user.is_authenticated() or config['general_system_enable_anonymous']
+        elif self.action in ('create', 'update', 'destroy'):
+            result = self.request.user.has_perm('core.can_manage_tags')
+        else:
+            result = False
+        return result
 
+
+class ConfigMetadata(SimpleMetadata):
+    """
+    Custom metadata class to add config info to responses on OPTIONS requests.
+    """
+    def determine_metadata(self, request, view):
+        # Sort config variables by weight.
+        config_variables = sorted(config.get_config_variables().values(), key=attrgetter('weight'))
+
+        # Build tree.
+        config_groups = []
+        for config_variable in config_variables:
+            if not config_groups or config_groups[-1]['name'] != config_variable.group:
+                config_groups.append(OrderedDict(
+                    name=config_variable.group,
+                    subgroups=[]))
+            if not config_groups[-1]['subgroups'] or config_groups[-1]['subgroups'][-1]['name'] != config_variable.subgroup:
+                config_groups[-1]['subgroups'].append(OrderedDict(
+                    name=config_variable.subgroup,
+                    items=[]))
+            config_groups[-1]['subgroups'][-1]['items'].append(config_variable.data)
+
+        # Add tree to metadata.
+        metadata = super().determine_metadata(request, view)
+        metadata['config_groups'] = config_groups
+        return metadata
+
+
+class ConfigViewSet(ViewSet):
+    """
+    API endpoint for the config.
+
+    There are the following views: list, retrieve and update.
+    """
+    metadata_class = ConfigMetadata
+
+    def check_view_permissions(self):
+        """
+        Returns True if the user has required permissions.
+        """
+        if self.action in ('list', 'retrieve'):
+            # Every authenticated user can list or retrieve the config.
+            # Anonymous users can do so if they are enabled.
+            result = self.request.user.is_authenticated() or config['general_system_enable_anonymous']
+        elif self.action == 'update':
+            result = self.request.user.has_perm('core.can_manage_config')
+        else:
+            result = False
+        return result
+
+    def list(self, request):
+        """
+        Lists all config variables. Everybody can see them.
+        """
+        return Response([{'key': key, 'value': value} for key, value in config.items()])
+
+    def retrieve(self, request, *args, **kwargs):
+        """
+        Retrieves a config variable. Everybody can see it.
+        """
+        key = kwargs['pk']
+        try:
+            value = config[key]
+        except ConfigNotFound:
+            raise Http404
+        return Response({'key': key, 'value': value})
+
+    def update(self, request, *args, **kwargs):
+        """
+        Updates a config variable. Only managers can do this.
+
+        Example: {"value": 42}
+        """
+        key = kwargs['pk']
+        value = request.data['value']
+
+        # Validate and change value.
+        try:
+            config[key] = value
+        except ConfigNotFound:
+            raise Http404
+        except ConfigError as e:
+            raise ValidationError({'detail': e})
+
+        # Return response.
+        return Response({'key': key, 'value': value})
+
+
+# Special API views
 
 class UrlPatternsView(utils_views.APIView):
     """
@@ -234,121 +379,3 @@ class VersionView(utils_views.APIView):
                 'description': get_plugin_description(plugin),
                 'version': get_plugin_version(plugin)})
         return result
-
-
-class ConfigMetadata(SimpleMetadata):
-    """
-    Custom metadata class to add config info to responses on OPTIONS requests.
-    """
-    def determine_metadata(self, request, view):
-        # Sort config variables by weight.
-        config_variables = sorted(config.get_config_variables().values(), key=attrgetter('weight'))
-
-        # Build tree.
-        config_groups = []
-        for config_variable in config_variables:
-            if not config_groups or config_groups[-1]['name'] != config_variable.group:
-                config_groups.append(OrderedDict(
-                    name=config_variable.group,
-                    subgroups=[]))
-            if not config_groups[-1]['subgroups'] or config_groups[-1]['subgroups'][-1]['name'] != config_variable.subgroup:
-                config_groups[-1]['subgroups'].append(OrderedDict(
-                    name=config_variable.subgroup,
-                    items=[]))
-            config_groups[-1]['subgroups'][-1]['items'].append(config_variable.data)
-
-        # Add tree to metadata.
-        metadata = super().determine_metadata(request, view)
-        metadata['config_groups'] = config_groups
-        return metadata
-
-
-class ConfigViewSet(ViewSet):
-    """
-    API endpoint to list, retrieve and update the config.
-    """
-    metadata_class = ConfigMetadata
-
-    def list(self, request):
-        """
-        Lists all config variables. Everybody can see them.
-        """
-        return Response([{'key': key, 'value': value} for key, value in config.items()])
-
-    def retrieve(self, request, *args, **kwargs):
-        """
-        Retrieves a config variable. Everybody can see it.
-        """
-        key = kwargs['pk']
-        try:
-            value = config[key]
-        except ConfigNotFound:
-            raise Http404
-        return Response({'key': key, 'value': value})
-
-    def update(self, request, *args, **kwargs):
-        """
-        Updates a config variable. Only managers can do this.
-
-        Example: {"value": 42}
-        """
-        # Check permission.
-        if not request.user.has_perm('core.can_manage_config'):
-            self.permission_denied(request)
-
-        key = kwargs['pk']
-        value = request.data['value']
-
-        # Validate and change value.
-        try:
-            config[key] = value
-        except ConfigNotFound:
-            raise Http404
-        except ConfigError as e:
-            raise ValidationError({'detail': e})
-
-        # Return response.
-        return Response({'key': key, 'value': value})
-
-
-class AppsJsView(utils_views.View):
-    """
-    Returns javascript code to be called in the angular app.
-
-    The javascript code loads all js-files defined by the installed (django)
-    apps and creates the angular modules for each angular app.
-    """
-    def get(self, *args, **kwargs):
-        angular_modules = []
-        js_files = []
-        for app_config in apps.get_app_configs():
-            # Add the angular app, if the module has one.
-            if getattr(app_config,
-                       'angular_{}_module'.format(kwargs.get('openslides_app')),
-                       False):
-                angular_modules.append('OpenSlidesApp.{app_name}.{app}'.format(
-                    app=kwargs.get('openslides_app'),
-                    app_name=app_config.label))
-
-            # Add all js files that the module needs
-            try:
-                app_js_files = app_config.js_files
-            except AttributeError:
-                # The app needs no js-files
-                pass
-            else:
-                js_files += [
-                    '{static}{path}'.format(
-                        static=settings.STATIC_URL,
-                        path=path)
-                    for path in app_js_files]
-
-        return HttpResponse(
-            "angular.module('OpenSlidesApp.{app}', {angular_modules});"
-            "var deferres = [];"
-            "{js_files}.forEach(function(js_file)deferres.push($.getScript(js_file)));"
-            "$.when.apply(this, deferres).done(function() angular.bootstrap(document,['OpenSlidesApp.{app}']));"
-            .format(
-                app=kwargs.get('openslides_app'),
-                angular_modules=angular_modules,
-                js_files=js_files))

@@ -1,8 +1,7 @@
 from io import BytesIO
 
-from django.conf import settings
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.utils.translation import ugettext_lazy
 from django.views import generic as django_views
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -14,41 +13,6 @@ from rest_framework.views import APIView as _APIView
 from .pdf import firstPage, laterPages
 
 View = django_views.View
-
-
-class PermissionMixin:
-    """
-    Mixin for views, that only can be visited from users with special
-    permissions.
-
-    Set the attribute 'required_permission' to the required permission
-    string or override the method 'check_permission'.
-    """
-    required_permission = None
-
-    def check_permission(self, request, *args, **kwargs):
-        """
-        Checks if the user has the required permission.
-        """
-        if self.required_permission is None:
-            return True
-        else:
-            return request.user.has_perm(self.required_permission)
-
-    def dispatch(self, request, *args, **kwargs):
-        """
-        Check if the user has the permission.
-
-        If the user is not logged in, redirect the user to the login page.
-        """
-        if not self.check_permission(request, *args, **kwargs):
-            if not request.user.is_authenticated():
-                path = request.get_full_path()
-                return HttpResponseRedirect(
-                    "%s?next=%s" % (settings.LOGIN_URL, path))
-            else:
-                raise PermissionDenied
-        return super().dispatch(request, *args, **kwargs)
 
 
 class SingleObjectMixin(django_views.detail.SingleObjectMixin):
@@ -88,14 +52,33 @@ class CSRFMixin:
         return ensure_csrf_cookie(view)
 
 
-class PDFView(PermissionMixin, View):
+class PDFView(View):
     """
     View to generate an PDF.
     """
-
     filename = ugettext_lazy('undefined-filename')
     top_space = 3
     document_title = None
+    required_permission = None
+
+    def check_permission(self, request, *args, **kwargs):
+        """
+        Checks if the user has the required permission.
+        """
+        if self.required_permission is None:
+            return True
+        else:
+            return request.user.has_perm(self.required_permission)
+
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Check if the user has the permission.
+
+        If the user is not logged in, redirect the user to the login page.
+        """
+        if not self.check_permission(request, *args, **kwargs):
+            raise PermissionDenied
+        return super().dispatch(request, *args, **kwargs)
 
     def get_top_space(self):
         return self.top_space

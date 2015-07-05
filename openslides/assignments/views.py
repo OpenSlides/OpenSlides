@@ -37,24 +37,37 @@ from .serializers import (
 )
 
 
+# Viewsets for the REST API
+
 class AssignmentViewSet(ModelViewSet):
     """
-    API endpoint to list, retrieve, create, update and destroy assignments
-    and to manage candidatures.
+    API endpoint for assignments.
+
+    There are the following views: list, retrieve, create, partial_update,
+    update, destroy, candidature_self, candidature_other, mark_elected and
+    create_poll.
     """
     queryset = Assignment.objects.all()
 
-    def check_permissions(self, request):
+    def check_view_permissions(self):
         """
-        Calls self.permission_denied() if the requesting user has not the
-        permission to see assignments and in case of create, update,
-        partial_update or destroy requests the permission to manage
-        assignments.
+        Returns True if the user has required permissions.
         """
-        if (not request.user.has_perm('assignments.can_see') or
-                (self.action in ('create', 'update', 'partial_update', 'destroy') and
-                 not request.user.has_perm('assignments.can_manage'))):
-            self.permission_denied(request)
+        if self.action in ('list', 'retrieve'):
+            result = self.request.user.has_perm('assignments.can_see')
+        elif self.action in ('create', 'partial_update', 'update', 'destroy',
+                             'mark_elected', 'create_poll'):
+            result = (self.request.user.has_perm('assignments.can_see') and
+                      self.request.user.has_perm('assignments.can_manage'))
+        elif self.action == 'candidature_self':
+            result = (self.request.user.has_perm('assignments.can_see') and
+                      self.request.user.has_perm('assignments.can_nominate_self'))
+        elif self.action == 'candidature_other':
+            result = (self.request.user.has_perm('assignments.can_see') and
+                      self.request.user.has_perm('assignments.can_nominate_other'))
+        else:
+            result = False
+        return result
 
     def get_serializer_class(self):
         """
@@ -72,8 +85,6 @@ class AssignmentViewSet(ModelViewSet):
         View to nominate self as candidate (POST) or withdraw own
         candidature (DELETE).
         """
-        if not request.user.has_perm('assignments.can_nominate_self'):
-            self.permission_denied(request)
         assignment = self.get_object()
         if assignment.is_elected(request.user):
             raise ValidationError({'detail': _('You are already elected.')})
@@ -134,8 +145,6 @@ class AssignmentViewSet(ModelViewSet):
         View to nominate other users (POST) or delete their candidature
         status (DELETE). The client has to send {'user': <id>}.
         """
-        if not request.user.has_perm('assignments.can_nominate_other'):
-            self.permission_denied(request)
         user = self.get_user_from_request_data(request)
         assignment = self.get_object()
         if assignment.is_elected(user):
@@ -181,8 +190,6 @@ class AssignmentViewSet(ModelViewSet):
         View to mark other users as elected (POST) or undo this (DELETE).
         The client has to send {'user': <id>}.
         """
-        if not request.user.has_perm('assignments.can_manage'):
-            self.permission_denied(request)
         user = self.get_user_from_request_data(request)
         assignment = self.get_object()
         if request.method == 'POST':
@@ -204,8 +211,6 @@ class AssignmentViewSet(ModelViewSet):
         """
         View to create a poll. It is a POST request without any data.
         """
-        if not request.user.has_perm('assignments.can_manage'):
-            self.permission_denied(request)
         assignment = self.get_object()
         if not assignment.candidates.exists():
             raise ValidationError({'detail': _('Can not create poll because there are no candidates.')})
@@ -216,20 +221,22 @@ class AssignmentViewSet(ModelViewSet):
 
 class AssignmentPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
     """
-    API endpoint to update and destroy assignment polls.
+    API endpoint for assignment polls.
+
+    There are the following views: update and destroy.
     """
     queryset = AssignmentPoll.objects.all()
     serializer_class = AssignmentAllPollSerializer
 
-    def check_permissions(self, request):
+    def check_view_permissions(self):
         """
-        Calls self.permission_denied() if the requesting user has not the
-        permission to see assignments and to manage assignments.
+        Returns True if the user has required permissions.
         """
-        if (not request.user.has_perm('assignments.can_see') or
-                not request.user.has_perm('assignments.can_manage')):
-            self.permission_denied(request)
+        return (self.request.user.has_perm('assignments.can_see') and
+                self.request.user.has_perm('assignments.can_manage'))
 
+
+# Views to generate PDFs
 
 class AssignmentPDF(PDFView):
     required_permission = 'assignments.can_see'
