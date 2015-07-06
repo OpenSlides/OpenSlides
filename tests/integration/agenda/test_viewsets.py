@@ -148,8 +148,9 @@ class Speak(TestCase):
     def test_begin_speach_next_speaker(self):
         speaker = Speaker.objects.add(self.user, self.item)
         Speaker.objects.add(get_user_model().objects.get(username='admin'), self.item)
-        self.assertTrue(Speaker.objects.get(pk=speaker.pk).begin_time is None)
+
         response = self.client.put(reverse('item-speak', args=[self.item.pk]))
+
         self.assertEqual(response.status_code, 200)
         self.assertFalse(Speaker.objects.get(pk=speaker.pk).begin_time is None)
 

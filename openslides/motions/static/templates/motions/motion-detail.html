@@ -2,9 +2,10 @@
   {{ motion.getTitle() }}
   <small>
     <translate>Motion</translate> {{ motion.identifier }}
-    <span ng-if="motion.versions.length > 1" >| Version {{ (motion.versions | filter: {id: motion.active_version})[0].version_number }}</span>
+    <span ng-if="motion.versions.length > 1" >| Version {{ motion.active_version }}</span>
   </small>
 </h1>
+{{ motion.tags }}
 
 <div id="submenu">
   <a ui-sref="motions.motion.list" class="btn btn-sm btn-default">
@@ -16,7 +17,7 @@
     <translate>PDF</translate>
   </a>
   <!-- project -->
-  <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm" 
+  <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
       ng-class="{ 'btn-primary': motion.isProjected() }"
       ng-click="motion.project()"
       title="{{ 'Project motion' | translate }}">
@@ -43,11 +44,11 @@
     <div class="well">
       <h3 translate>Submitters</h3>
       <div ng-repeat="submitter in motion.submitters">
-        {{ (users | filter: {id: submitter})[0].get_full_name() }}<br>
+        {{ submitter.get_full_name() }}<br>
       </div>
 
       <h3 translate>Category</h3>
-      {{ (categories | filter: {id: motion.category})[0].name }}</a>
+      {{ motion.category.name }}</a>
 
       <h3 translate>Voting result</h3>
       -

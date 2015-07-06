@@ -1,13 +1,14 @@
+"use strict";
+
 angular.module('OpenSlidesApp.mediafiles', [])
 
-.factory('Mediafile', function(DS) {
+.factory('Mediafile', ['DS', function(DS) {
     return DS.defineResource({
         name: 'mediafiles/mediafile',
-        endpoint: '/rest/mediafiles/mediafile/'
     });
-})
+}])
 
-.run(function(Mediafile) {});
+.run(['Mediafile', function(Mediafile) {}]);
 
 
 angular.module('OpenSlidesApp.mediafiles.site', ['OpenSlidesApp.mediafiles'])

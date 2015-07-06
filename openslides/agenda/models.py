@@ -235,11 +235,10 @@ class Item(RESTModelMixin, models.Model):
         dictionary contains a prefix, the speaker and its type. Types
         are old_speaker, actual_speaker and coming_speaker.
         """
-        speaker_query = Speaker.objects.filter(item=self)  # TODO: Why not self.speaker_set?
         list_of_speakers = []
 
         # Parse old speakers
-        old_speakers = speaker_query.exclude(begin_time=None).exclude(end_time=None).order_by('end_time')
+        old_speakers = self.speakers.exclude(begin_time=None).exclude(end_time=None).order_by('end_time')
         if old_speakers_count is None:
             old_speakers_count = old_speakers.count()
         last_old_speakers_count = max(0, old_speakers.count() - old_speakers_count)
@@ -260,7 +259,7 @@ class Item(RESTModelMixin, models.Model):
 
         # Parse actual speaker
         try:
-            actual_speaker = speaker_query.filter(end_time=None).exclude(begin_time=None).get()
+            actual_speaker = self.speakers.filter(end_time=None).exclude(begin_time=None).get()
         except Speaker.DoesNotExist:
             pass
         else:
@@ -272,7 +271,7 @@ class Item(RESTModelMixin, models.Model):
                 'last_in_group': True})
 
         # Parse coming speakers
-        coming_speakers = speaker_query.filter(begin_time=None).order_by('weight')
+        coming_speakers = self.speakers.filter(begin_time=None).order_by('weight')
         if coming_speakers_count is None:
             coming_speakers_count = coming_speakers.count()
         coming_speakers = coming_speakers[:max(0, coming_speakers_count)]
@@ -296,7 +295,7 @@ class Item(RESTModelMixin, models.Model):
         Returns the speaker object of the user who is next.
         """
         try:
-            return self.speaker_set.filter(begin_time=None).order_by('weight')[0]
+            return self.speakers.filter(begin_time=None).order_by('weight')[0]
         except IndexError:
             # The list of speakers is empty.
             return None
@@ -366,7 +365,7 @@ class Speaker(RESTModelMixin, models.Model):
     ForeinKey to the user who speaks.
     """
 
-    item = models.ForeignKey(Item)
+    item = models.ForeignKey(Item, related_name='speakers')
     """
     ForeinKey to the AgendaItem to which the user want to speak.
     """

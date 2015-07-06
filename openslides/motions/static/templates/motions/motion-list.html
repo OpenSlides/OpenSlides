@@ -66,18 +66,17 @@
       <td> <!--TOOD: add agenda item reference -->
       <td><a ui-sref="motions.motion.detail({id: motion.id})">{{ motion.identifier }}</a>
       <td><a ui-sref="motions.motion.detail({id: motion.id})">
-            <!-- TODO: make it easier to get active version -->
-            {{ (motion.versions | filter: {id: motion.active_version})[0].title }}
+            {{ motion.getTitle() }}
           </a>
       <td class="optional">
         <div ng-repeat="submitter in motion.submitters">
-          {{ (users | filter: {id: submitter})[0].get_full_name() }}<br>
+          {{ submitter.get_full_name() }}<br>
         </div>
       <td class="optional">
-        {{ (categories | filter: {id: motion.category})[0].name }}
+        {{ motion.category.name }}
       <td os-perms="motions.can_manage core.can_manage_projector" class="nobr">
         <!-- project -->
-        <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm" 
+        <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
             ng-class="{ 'btn-primary': motion.isProjected() }"
             ng-click="motion.project()"
             title="{{ 'Project motion' | translate }}">

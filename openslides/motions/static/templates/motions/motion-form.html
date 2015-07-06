@@ -22,7 +22,7 @@
   <div class="form-group">
     <label for="selectSubmitter" translate>Submitter</label>
     <select multiple size="3" ng-options="user.id as user.get_short_name() for user in users"
-        ng-model="motion.submitters" class="form-control" name="selectSubmitter" required>
+        ng-model="motion.submitters_id" class="form-control" name="selectSubmitter" required>
     </select>
 <!-- TODO: use modern ui-select component with more information per user
     <ui-select multipe ng-model="motion.submitter" theme="bootstrap" name="selectSubmitter">
@@ -50,25 +50,25 @@
   <div class="form-group">
     <label for="selectCategory" translate>Category</label>
     <select ng-options="category.id as category.name for category in categories"
-        ng-model="motion.category" class="form-control" name="selectCategory">
+        ng-model="motion.category_id" class="form-control" name="selectCategory">
     </select>
   </div>
   <div class="form-group">
     <label for="selectTags" translate>Tags</label>
-    <select ng-options="tag.id as tag.name for tag in tags"
-        ng-model="motion.tags" class="form-control" name="selectTags">
+    <select multiple ng-options="tag.id as tag.name for tag in tags"
+        ng-model="motion.tags_id" class="form-control" name="selectTags">
     </select>
   </div>
   <div class="form-group">
     <label for="selectAttachments" translate>Attachments</label>
     <select ng-options="file.id as file.title for file in mediafiles"
-        ng-model="motion.attachments" class="form-control" name="selectAttachments">
+        ng-model="motion.attachments_id" class="form-control" name="selectAttachments">
     </select>
   </div>
   <!-- TODO: show only if supporters is enabled -->
   <div class="form-group">
     <label for="selectSupporter" translate>Supporters</label>
-    <ui-select ng-model="motion.supporter" theme="bootstrap" name="selectSupporter">
+    <ui-select multiple ng-model="motion.supporters_id" theme="bootstrap" name="selectSupporter">
       <ui-select-match placeholder="{{ 'Select or search a participant...' | translate }}">
         {{ $select.selected.get_short_name() }}
       </ui-select-match>

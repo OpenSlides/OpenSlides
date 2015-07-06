@@ -1,10 +1,11 @@
+"use strict";
+
 angular.module('OpenSlidesApp.assignments', [])
 
-.factory('Assignment', function(DS, jsDataModel) {
+.factory('Assignment', ['DS', 'jsDataModel', function(DS, jsDataModel) {
     var name = 'assignments/assignment'
     return DS.defineResource({
         name: name,
-        endpoint: '/rest/assignments/assignment/',
         useClass: jsDataModel,
         methods: {
             getResourceName: function () {
@@ -12,9 +13,9 @@ angular.module('OpenSlidesApp.assignments', [])
             }
         }
     });
-})
+}])
 
-.run(function(Assignment) {});
+.run(['Assignment', function(Assignment) {}]);
 
 
 angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
