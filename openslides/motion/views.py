@@ -615,6 +615,11 @@ class PollUpdateView(PollMixin, PollFormView):
 
     template_name = 'motion/motionpoll_form.html'
 
+    def get_apply_url(self):
+        return reverse(
+            'motionpoll_update',
+            kwargs={'pk': self.kwargs['pk'], 'poll_number': self.kwargs['poll_number']})
+
     def get_context_data(self, **kwargs):
         """
         Return the template context.
