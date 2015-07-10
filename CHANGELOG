@@ -44,6 +44,7 @@ Other:
   now.
 - Updated to Bootstrap 3.
 - Used SockJS for automatic update of AngularJS driven single page frontend.
+- Refactored plugin API.
 - Refactored start script and management commands.
 - Refactored tests.
 - Used Bower and gulp to manage third party JavaScript and Cascading Style
