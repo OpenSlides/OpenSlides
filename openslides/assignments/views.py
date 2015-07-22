@@ -216,7 +216,7 @@ class AssignmentViewSet(ModelViewSet):
             raise ValidationError({'detail': _('Can not create poll because there are no candidates.')})
         with transaction.atomic():
             assignment.create_poll()
-        return Response({'detail': _(' Poll created successfully.')})
+        return Response({'detail': _('Poll created successfully.')})
 
 
 class AssignmentPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):

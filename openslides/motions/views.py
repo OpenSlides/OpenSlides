@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.text import slugify
@@ -8,17 +9,22 @@ from rest_framework import status
 
 from openslides.core.config import config
 from openslides.utils.rest_api import (
+    DestroyModelMixin,
+    GenericViewSet,
     ModelViewSet,
     Response,
+    UpdateModelMixin,
     ValidationError,
     detail_route,
 )
 from openslides.utils.views import PDFView, SingleObjectMixin
 
+from .exceptions import WorkflowError
 from .models import Category, Motion, MotionPoll, MotionVersion, Workflow
 from .pdf import motion_poll_to_pdf, motion_to_pdf, motions_to_pdf
 from .serializers import (
     CategorySerializer,
+    MotionPollSerializer,
     MotionSerializer,
     WorkflowSerializer,
 )
@@ -31,7 +37,8 @@ class MotionViewSet(ModelViewSet):
     API endpoint for motions.
 
     There are the following views: metadata, list, retrieve, create,
-    partial_update, update, destroy, manage_version, support and set_state.
+    partial_update, update, destroy, manage_version, support, set_state and
+    create_poll.
     """
     queryset = Motion.objects.all()
     serializer_class = MotionSerializer
@@ -49,7 +56,7 @@ class MotionViewSet(ModelViewSet):
                       self.request.user.has_perm('motions.can_create') and
                       (not config['motions_stop_submitting'] or
                        self.request.user.has_perm('motions.can_manage')))
-        elif self.action in ('destroy', 'manage_version', 'set_state'):
+        elif self.action in ('destroy', 'manage_version', 'set_state', 'create_poll'):
             result = (self.request.user.has_perm('motions.can_see') and
                       self.request.user.has_perm('motions.can_manage'))
         elif self.action == 'support':
@@ -230,6 +237,36 @@ class MotionViewSet(ModelViewSet):
             message_list=[ugettext_noop('State set to'), ' ', motion.state.name],
             person=request.user)
         return Response({'detail': message})
+
+    @detail_route(methods=['post'])
+    def create_poll(self, request, pk=None):
+        """
+        View to create a poll. It is a POST request without any data.
+        """
+        motion = self.get_object()
+        try:
+            with transaction.atomic():
+                motion.create_poll()
+        except WorkflowError as e:
+            raise ValidationError({'detail': e})
+        return Response({'detail': _('Poll created successfully.')})
+
+
+class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
+    """
+    API endpoint for motion polls.
+
+    There are the following views: update and destroy.
+    """
+    queryset = MotionPoll.objects.all()
+    serializer_class = MotionPollSerializer
+
+    def check_view_permissions(self):
+        """
+        Returns True if the user has required permissions.
+        """
+        return (self.request.user.has_perm('motions.can_see') and
+                self.request.user.has_perm('motions.can_manage'))
 
 
 class CategoryViewSet(ModelViewSet):
