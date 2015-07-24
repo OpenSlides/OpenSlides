@@ -11,6 +11,13 @@ Version 1.7.1 (unreleased)
 Motions:
 - Show amendment button for users with permission 'can_create_motion'
   only.
+- Fixed check_permission in motion support view.
+- Fixed apply url for motion poll update view.
+Assignments:
+- Fixed tooltip to set a candidate as not elected.
+Other:
+- Fixed error when starting webbrowser.
+- Added info on port to general start script message.
 
 
 Version 1.7 (2015-02-16)
