@@ -74,7 +74,7 @@ def run_tornado(addr, port):
 
     # Print listening address and port to command line
     if addr == '0.0.0.0':
-        url_string = _("the machine's local ip address")
+        url_string = _("the machine's local ip address (port %s)") % port
     else:
         url_string = 'http://%s:%s' % (addr, port)
     print _("Starting OpenSlides' tornado webserver listening to %(url_string)s") % {'url_string': url_string}
