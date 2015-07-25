@@ -52,7 +52,7 @@ class CreateMotion(TestCase):
             reverse('motion-list'),
             {'title': 'test_title_Air0bahchaiph1ietoo2',
              'text': 'test_text_chaeF9wosh8OowazaiVu',
-             'category': category.pk})
+             'category_id': category.pk})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         motion = Motion.objects.get()
         self.assertEqual(motion.category, category)
@@ -69,7 +69,7 @@ class CreateMotion(TestCase):
             reverse('motion-list'),
             {'title': 'test_title_pha7moPh7quoth4paina',
              'text': 'test_text_YooGhae6tiangung5Rie',
-             'submitters': [submitter_1.pk, submitter_2.pk]})
+             'submitters_id': [submitter_1.pk, submitter_2.pk]})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         motion = Motion.objects.get()
         self.assertEqual(motion.submitters.count(), 2)
@@ -82,7 +82,7 @@ class CreateMotion(TestCase):
             reverse('motion-list'),
             {'title': 'test_title_Oecee4Da2Mu9EY6Ui4mu',
              'text': 'test_text_FbhgnTFgkbjdmvcjbffg',
-             'supporters': [supporter.pk]})
+             'supporters_id': [supporter.pk]})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         motion = Motion.objects.get()
         self.assertEqual(motion.supporters.get().username, 'test_username_ahGhi4Quohyee7ohngie')
@@ -93,7 +93,7 @@ class CreateMotion(TestCase):
             reverse('motion-list'),
             {'title': 'test_title_Hahke4loos4eiduNiid9',
              'text': 'test_text_johcho0Ucaibiehieghe',
-             'tags': [tag.pk]})
+             'tags_id': [tag.pk]})
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         motion = Motion.objects.get()
         self.assertEqual(motion.tags.get().name, 'test_tag_iRee3kiecoos4rorohth')
@@ -147,7 +147,7 @@ class UpdateMotion(TestCase):
             password='test_password_XaeTe3aesh8ohg6Cohwo')
         response = self.client.patch(
             reverse('motion-detail', args=[self.motion.pk]),
-            {'supporters': [supporter.pk]})
+            {'supporters_id': [supporter.pk]})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         motion = Motion.objects.get()
         self.assertEqual(motion.title, 'test_title_aeng7ahChie3waiR8xoh')
