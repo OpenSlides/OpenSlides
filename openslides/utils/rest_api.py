@@ -22,12 +22,14 @@ from rest_framework.serializers import (  # noqa
     SerializerMethodField,
     ValidationError,
 )
-from rest_framework.viewsets import GenericViewSet as _GenericViewSet  # noqa
-from rest_framework.viewsets import ModelViewSet as _ModelViewSet  # noqa
+from rest_framework.viewsets import GenericViewSet as _GenericViewSet
+from rest_framework.viewsets import ModelViewSet as _ModelViewSet
 from rest_framework.viewsets import \
-    ReadOnlyModelViewSet as _ReadOnlyModelViewSet  # noqa
-from rest_framework.viewsets import ViewSet as _ViewSet  # noqa
+    ReadOnlyModelViewSet as _ReadOnlyModelViewSet
+from rest_framework.viewsets import ViewSet as _ViewSet
+from rest_framework.viewsets import ViewSetMixin
 
+from .class_register import RegisterSubclasses
 from .exceptions import OpenSlidesError
 
 router = DefaultRouter()
@@ -167,6 +169,95 @@ class ReadOnlyModelViewSet(PermissionMixin, _ReadOnlyModelViewSet):
 
 class ViewSet(PermissionMixin, _ViewSet):
     pass
+
+
+class RESTElement(metaclass=RegisterSubclasses):
+    """
+    Element of our REST api.
+
+    Each element bundels a viewset, a route and optionally a model together.
+    """
+
+    viewset = None
+    """
+    A django REST framework viewset class used in the router.
+    """
+
+    router_prefix = None
+    """
+    This attribute has to be set if the defined viewset has no queryset. It is
+    used as prefix for the django REST framework router. See:
+
+    http://www.django-rest-framework.org/api-guide/routers/#usage
+
+    It is also used as second part of the collection_name if the specified
+    viewset has no queryset attribute.
+    """
+
+    app_label = None
+    """
+    This attribute has to be set if the defined viewset has no queryset. It is
+    used to generate the collection name.
+    """
+
+    @classmethod
+    def get_model(cls):
+        """
+        Returns the model used in the viewset.
+        """
+        viewset = cls.viewset
+        try:
+            queryset = viewset.queryset
+        except AttributeError:
+            # If there is no queryset in the viewset, then there is no model to use
+            return None
+        else:
+            return queryset.model
+
+    @classmethod
+    def on_subclass_created(cls):
+        """
+        Register a router when a new RESTElement is created.
+        """
+        # Make sure that the class has the attribute viewset. Fail early in other respects
+        if not isinstance(cls.viewset, type) or not issubclass(cls.viewset, ViewSetMixin):
+            raise NotImplementedError(
+                "{}.viewset is {}. It has to be a subclass of ViewSetMixin."
+                .format(cls, cls.viewset))
+
+        cls.register_router()
+
+    @classmethod
+    def get_collection_name(cls):
+        """
+        Returns the name of the collection.
+
+        Returns the collection_name of model class attribute as default.
+        """
+        model = cls.get_model()
+        try:
+            collection_name = model.get_collection_name()
+        except AttributeError:
+            # This error is raised if the viewset has no model or if the model does
+            # not have the method get_collection_name().
+            if cls.router_prefix is None or cls.app_label is None:
+                raise NotImplementedError(
+                    "The used viewset does not use a RESTModelMixin as model. "
+                    "You have to set the Attributes app_label and router_prefix.")
+            collection_name = "{app_label}/{router_prefix}".format(
+                app_label=cls.app_label,
+                router_prefix=cls.router_prefix)
+        return collection_name
+
+    @classmethod
+    def register_router(cls):
+        """
+        Register a django REST framework router for this REST element.
+        """
+        if cls.get_model() is None:
+            router.register(cls.get_collection_name(), cls.viewset, cls.router_prefix)
+        else:
+            router.register(cls.get_collection_name(), cls.viewset)
 
 
 def get_collection_and_id_from_url(url):
