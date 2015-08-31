@@ -24,8 +24,8 @@ class UserViewSet(ModelViewSet):
     """
     API endpoint for users.
 
-    There are the following views: list, retrieve, create, partial_update,
-    update, destroy and reset_password.
+    There are the following views: metadata, list, retrieve, create,
+    partial_update, update, destroy and reset_password.
     """
     queryset = User.objects.all()
 
@@ -33,7 +33,7 @@ class UserViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('list', 'retrieve'):
+        if self.action in ('metadata', 'list', 'retrieve'):
             result = self.request.user.has_perm('users.can_see_name')
         elif self.action in ('create', 'partial_update', 'update', 'destroy', 'reset_password'):
             result = (self.request.user.has_perm('users.can_see_name') and
@@ -72,8 +72,8 @@ class GroupViewSet(ModelViewSet):
     """
     API endpoint for groups.
 
-    There are the following views: list, retrieve, create, partial_update,
-    update and destroy.
+    There are the following views: metadata, list, retrieve, create,
+    partial_update, update and destroy.
     """
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
@@ -82,9 +82,9 @@ class GroupViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('list', 'retrieve'):
-            # Every authenticated user can list or retrieve groups.
-            # Anonymous users can do so if they are enabled.
+        if self.action in ('metadata', 'list', 'retrieve'):
+            # Every authenticated user can see the metadata and list or
+            # retrieve groups. Anonymous users can do so if they are enabled.
             result = self.request.user.is_authenticated() or config['general_system_enable_anonymous']
         elif self.action in ('create', 'partial_update', 'update', 'destroy'):
             # Users with all app permissions can edit groups.

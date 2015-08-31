@@ -43,9 +43,9 @@ class AssignmentViewSet(ModelViewSet):
     """
     API endpoint for assignments.
 
-    There are the following views: list, retrieve, create, partial_update,
-    update, destroy, candidature_self, candidature_other, mark_elected and
-    create_poll.
+    There are the following views: metadata, list, retrieve, create,
+    partial_update, update, destroy, candidature_self, candidature_other,
+    mark_elected and create_poll.
     """
     queryset = Assignment.objects.all()
 
@@ -53,7 +53,7 @@ class AssignmentViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('list', 'retrieve'):
+        if self.action in ('metadata', 'list', 'retrieve'):
             result = self.request.user.has_perm('assignments.can_see')
         elif self.action in ('create', 'partial_update', 'update', 'destroy',
                              'mark_elected', 'create_poll'):

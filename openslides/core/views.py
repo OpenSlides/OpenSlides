@@ -99,7 +99,7 @@ class AppsJsView(utils_views.View):
             "angular.module('OpenSlidesApp.{app}', {angular_modules});"
             "var deferres = [];"
             "{js_files}.forEach(function(js_file)deferres.push($.getScript(js_file)));"
-            "$.when.apply(this, deferres).done(function() angular.bootstrap(document,['OpenSlidesApp.{app}']));"
+            "$.when.apply(this, deferres).done(function()angular.bootstrap(document,['OpenSlidesApp.{app}']));"
             .format(
                 app=kwargs.get('openslides_app'),
                 angular_modules=angular_modules,
@@ -218,8 +218,8 @@ class CustomSlideViewSet(ModelViewSet):
     """
     API endpoint for custom slides.
 
-    There are the following views: list, retrieve, create, partial_update,
-    update and destroy.
+    There are the following views: metadata, list, retrieve, create,
+    partial_update, update and destroy.
     """
     queryset = CustomSlide.objects.all()
     serializer_class = CustomSlideSerializer
@@ -235,8 +235,8 @@ class TagViewSet(ModelViewSet):
     """
     API endpoint for tags.
 
-    There are the following views: list, retrieve, create, partial_update,
-    update and destroy.
+    There are the following views: metadata, list, retrieve, create,
+    partial_update, update and destroy.
     """
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
@@ -245,9 +245,9 @@ class TagViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('list', 'retrieve'):
-            # Every authenticated user can list or retrieve tags.
-            # Anonymous users can do so if they are enabled.
+        if self.action in ('metadata', 'list', 'retrieve'):
+            # Every authenticated user can see the metadata and list or
+            # retrieve tags. Anonymous users can do so if they are enabled.
             result = self.request.user.is_authenticated() or config['general_system_enable_anonymous']
         elif self.action in ('create', 'update', 'destroy'):
             result = self.request.user.has_perm('core.can_manage_tags')
@@ -287,7 +287,7 @@ class ConfigViewSet(ViewSet):
     """
     API endpoint for the config.
 
-    There are the following views: list, retrieve and update.
+    There are the following views: metadata, list, retrieve and update.
     """
     metadata_class = ConfigMetadata
 
@@ -295,9 +295,10 @@ class ConfigViewSet(ViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('list', 'retrieve'):
-            # Every authenticated user can list or retrieve the config.
-            # Anonymous users can do so if they are enabled.
+        if self.action in ('metadata', 'list', 'retrieve'):
+            # Every authenticated user can see the metadata and list or
+            # retrieve the config. Anonymous users can do so if they are
+            # enabled.
             result = self.request.user.is_authenticated() or config['general_system_enable_anonymous']
         elif self.action == 'update':
             result = self.request.user.has_perm('core.can_manage_config')
@@ -337,7 +338,7 @@ class ConfigViewSet(ViewSet):
         except ConfigNotFound:
             raise Http404
         except ConfigError as e:
-            raise ValidationError({'detail': e})
+            raise ValidationError({'detail': str(e)})
 
         # Return response.
         return Response({'key': key, 'value': value})

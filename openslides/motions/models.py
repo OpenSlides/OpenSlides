@@ -69,7 +69,7 @@ class Motion(RESTModelMixin, models.Model):
     ForeignKey to one category of motions.
     """
 
-    attachments = models.ManyToManyField(Mediafile)
+    attachments = models.ManyToManyField(Mediafile, blank=True)
     """
     Many to many relation to mediafile objects.
     """
@@ -81,17 +81,17 @@ class Motion(RESTModelMixin, models.Model):
     Null if the motion is not an amendment.
     """
 
-    tags = models.ManyToManyField(Tag)
+    tags = models.ManyToManyField(Tag, blank=True)
     """
     Tags to categorise motions.
     """
 
-    submitters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='motion_submitters')
+    submitters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='motion_submitters', blank=True)
     """
     Users who submit this motion.
     """
 
-    supporters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='motion_supporters')
+    supporters = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='motion_supporters', blank=True)
     """
     Users who support this motion.
     """
