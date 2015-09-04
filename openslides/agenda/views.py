@@ -26,8 +26,8 @@ class ItemViewSet(ModelViewSet):
     """
     API endpoint for agenda items.
 
-    There are the following views: list, retrieve, create, partial_update,
-    update, destroy, manage_speaker, speak and tree.
+    There are the following views: metadata, list, retrieve, create,
+    partial_update, update, destroy, manage_speaker, speak and tree.
     """
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
@@ -36,7 +36,7 @@ class ItemViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('list', 'retrieve', 'manage_speaker', 'tree'):
+        if self.action in ('metadata', 'list', 'retrieve', 'manage_speaker', 'tree'):
             result = self.request.user.has_perm('agenda.can_see')
             # For manage_speaker and tree requests the rest of the check is
             # done in the specific method. See below.
@@ -113,7 +113,7 @@ class ItemViewSet(ModelViewSet):
             try:
                 Speaker.objects.add(user, item)
             except OpenSlidesError as e:
-                raise ValidationError({'detail': e})
+                raise ValidationError({'detail': str(e)})
             message = _('User %s was successfully added to the list of speakers.') % user
 
         else:

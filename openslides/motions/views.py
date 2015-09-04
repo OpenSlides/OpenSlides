@@ -30,8 +30,8 @@ class MotionViewSet(ModelViewSet):
     """
     API endpoint for motions.
 
-    There are the following views: list, retrieve, create, partial_update,
-    update, destroy, manage_version, support and set_state.
+    There are the following views: metadata, list, retrieve, create,
+    partial_update, update, destroy, manage_version, support and set_state.
     """
     queryset = Motion.objects.all()
     serializer_class = MotionSerializer
@@ -40,7 +40,7 @@ class MotionViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('list', 'retrieve', 'partial_update', 'update'):
+        if self.action in ('metadata', 'list', 'retrieve', 'partial_update', 'update'):
             result = self.request.user.has_perm('motions.can_see')
             # For partial_update and update requests the rest of the check is
             # done in the update method. See below.
@@ -236,8 +236,8 @@ class CategoryViewSet(ModelViewSet):
     """
     API endpoint for categories.
 
-    There are the following views: list, retrieve, create, partial_update,
-    update and destroy.
+    There are the following views: metadata, list, retrieve, create,
+    partial_update, update and destroy.
     """
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -246,7 +246,7 @@ class CategoryViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('list', 'retrieve'):
+        if self.action in ('metadata', 'list', 'retrieve'):
             result = self.request.user.has_perm('motions.can_see')
         elif self.action in ('create', 'partial_update', 'update', 'destroy'):
             result = (self.request.user.has_perm('motions.can_see') and
@@ -260,8 +260,8 @@ class WorkflowViewSet(ModelViewSet):
     """
     API endpoint for workflows.
 
-    There are the following views: list, retrieve, create, partial_update,
-    update and destroy.
+    There are the following views: metadata, list, retrieve, create,
+    partial_update, update and destroy.
     """
     queryset = Workflow.objects.all()
     serializer_class = WorkflowSerializer
@@ -270,7 +270,7 @@ class WorkflowViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('list', 'retrieve'):
+        if self.action in ('metadata', 'list', 'retrieve'):
             result = self.request.user.has_perm('motions.can_see')
         elif self.action in ('create', 'partial_update', 'update', 'destroy'):
             result = (self.request.user.has_perm('motions.can_see') and
