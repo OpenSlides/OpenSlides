@@ -18,7 +18,7 @@ class MotionsAppConfig(AppConfig):
         from openslides.core.signals import config_signal
         from openslides.utils.rest_api import router
         from .signals import create_builtin_workflows, setup_motion_config
-        from .views import CategoryViewSet, MotionViewSet, WorkflowViewSet
+        from .views import CategoryViewSet, MotionViewSet, MotionPollViewSet, WorkflowViewSet
 
         # Connect signals.
         config_signal.connect(setup_motion_config, dispatch_uid='setup_motion_config')
@@ -27,4 +27,5 @@ class MotionsAppConfig(AppConfig):
         # Register viewsets.
         router.register('motions/category', CategoryViewSet)
         router.register('motions/motion', MotionViewSet)
+        router.register('motions/motionpoll', MotionPollViewSet)
         router.register('motions/workflow', WorkflowViewSet)

@@ -4,6 +4,7 @@ from django.utils.translation import ugettext as _
 from openslides.core.config import config
 from openslides.utils.rest_api import (
     CharField,
+    DictField,
     IntegerField,
     ModelSerializer,
     PrimaryKeyRelatedField,
@@ -107,15 +108,50 @@ class MotionPollSerializer(ModelSerializer):
     Serializer for motion.models.MotionPoll objects.
     """
     motionoption_set = MotionOptionSerializer(many=True, read_only=True)
+    votes = DictField(
+        child=IntegerField(min_value=-2),
+        write_only=True)
 
     class Meta:
         model = MotionPoll
         fields = (
+            'id',
             'poll_number',
             'motionoption_set',
             'votesvalid',
             'votesinvalid',
-            'votescast',)
+            'votescast',
+            'votes',)
+        read_only_fields = ('poll_number',)
+
+    @transaction.atomic
+    def update(self, instance, validated_data):
+        """
+        Customized update method for polls. To update votes use the write
+        only field 'votes'.
+
+        Example data:
+
+            "votes": {"Yes": 10, "No": 4, "Abstain": -2}
+        """
+        # Update votes.
+        votes = validated_data.get('votes')
+        if votes:
+            if len(votes) != len(instance.get_vote_values()):
+                raise ValidationError({
+                    'detail': _('You have to submit data for %d vote values.') % len(instance.get_vote_values())})
+            for vote_value, vote_weight in votes.items():
+                if vote_value not in instance.get_vote_values():
+                    raise ValidationError({
+                        'detail': _('Vote value %s is invalid.') % vote_value})
+            instance.set_vote_objects_with_values(instance.get_options().get(), votes)
+
+        # Update remaining writeable fields.
+        instance.votesvalid = validated_data.get('votesvalid', instance.votesvalid)
+        instance.votesinvalid = validated_data.get('votesinvalid', instance.votesinvalid)
+        instance.votescast = validated_data.get('votescast', instance.votescast)
+        instance.save()
+        return instance
 
 
 class MotionVersionSerializer(ModelSerializer):
