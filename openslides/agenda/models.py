@@ -377,7 +377,7 @@ class Speaker(RESTModelMixin, models.Model):
 
     end_time = models.DateTimeField(null=True)
     """
-    Saves the time, when the speaker ends his speach. None, if he is not finished yet.
+    Saves the time, when the speaker ends his speech. None, if he is not finished yet.
     """
 
     weight = models.IntegerField(null=True)
@@ -393,19 +393,19 @@ class Speaker(RESTModelMixin, models.Model):
     def __str__(self):
         return str(self.user)
 
-    def begin_speach(self):
+    def begin_speech(self):
         """
         Let the user speak.
 
         Set the weight to None and the time to now. If anyone is still
-        speaking, end his speach.
+        speaking, end his speech.
         """
         try:
             actual_speaker = Speaker.objects.filter(item=self.item, end_time=None).exclude(begin_time=None).get()
         except Speaker.DoesNotExist:
             pass
         else:
-            actual_speaker.end_speach()
+            actual_speaker.end_speech()
         self.weight = None
         self.begin_time = datetime.now()
         self.save()
@@ -416,9 +416,9 @@ class Speaker(RESTModelMixin, models.Model):
             # start_countdown()
             pass
 
-    def end_speach(self):
+    def end_speech(self):
         """
-        The speach is finished. Set the time to now.
+        The speech is finished. Set the time to now.
         """
         self.end_time = datetime.now()
         self.save()

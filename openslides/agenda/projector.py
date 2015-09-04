@@ -81,7 +81,7 @@ class ItemDetailSlide(ProjectorElement):
                     view_class=ItemViewSet,
                     view_action='retrieve',
                     pk=str(item.pk))
-                for speaker in item.speaker_set.all():
+                for speaker in item.speakers.all():
                     yield ProjectorRequirement(
                         view_class=speaker.user.get_view_class(),
                         view_action='retrieve',

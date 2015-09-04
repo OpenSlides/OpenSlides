@@ -152,9 +152,9 @@ class ItemViewSet(ModelViewSet):
     @detail_route(methods=['PUT', 'DELETE'])
     def speak(self, request, pk=None):
         """
-        Special view endpoint to begin and end speach of speakers. Send PUT
-        {'speaker': <speaker_id>} to begin speach. Omit data to begin speach of
-        the next speaker. Send DELETE to end speach of current speaker.
+        Special view endpoint to begin and end speech of speakers. Send PUT
+        {'speaker': <speaker_id>} to begin speech. Omit data to begin speech of
+        the next speaker. Send DELETE to end speech of current speaker.
         """
         # Retrieve item.
         item = self.get_object()
@@ -171,21 +171,21 @@ class ItemViewSet(ModelViewSet):
                     speaker = Speaker.objects.get(pk=int(speaker_id))
                 except (ValueError, Speaker.DoesNotExist):
                     raise ValidationError({'detail': _('Speaker does not exist.')})
-            speaker.begin_speach()
+            speaker.begin_speech()
             message = _('User is now speaking.')
 
         else:
             # request.method == 'DELETE'
             try:
                 # We assume that there aren't multiple entries because this
-                # is forbidden by the Model's begin_speach method. We assume that
+                # is forbidden by the Model's begin_speech method. We assume that
                 # there is only one speaker instance or none.
                 current_speaker = Speaker.objects.filter(item=item, end_time=None).exclude(begin_time=None).get()
             except Speaker.DoesNotExist:
                 raise ValidationError(
                     {'detail': _('There is no one speaking at the moment according to %(item)s.') % {'item': item}})
-            current_speaker.end_speach()
-            message = _('The speach is finished now.')
+            current_speaker.end_speech()
+            message = _('The speech is finished now.')
 
         # Initiate response.
         return Response({'detail': message})

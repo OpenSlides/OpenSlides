@@ -181,7 +181,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
 
     // close/open list of speakers of current item
     $scope.closeList = function (listClosed) {
-        item.speakerListClosed = listClosed;
+        item.speaker_list_closed = listClosed;
         Agenda.save(item);
     };
     // add user to list of speakers
@@ -198,7 +198,34 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     $scope.removeSpeaker = function (speakerId) {
         $http.delete('/rest/agenda/item/' + item.id + '/manage_speaker/',
                 {headers: {'Content-Type': 'application/json'},
-                 data: JSON.stringify({speaker: speakerId})});
+                 data: JSON.stringify({speaker: speakerId})})
+            .error(function(data){
+                $scope.alert = { type: 'danger', msg: data.detail, show: true };
+            });
+    };
+    // begin speech of selected/next speaker
+    $scope.beginSpeech = function (speakerId) {
+        $http.put('/rest/agenda/item/' + item.id + '/speak/', {'speaker': speakerId})
+            .success(function(data){
+                $scope.alert.show = false;
+            })
+            .error(function(data){
+                $scope.alert = { type: 'danger', msg: data.detail, show: true };
+            });
+    };
+    // end speech of current speaker
+    $scope.endSpeech = function () {
+        $http.delete('/rest/agenda/item/' + item.id + '/speak/',
+                {headers: {'Content-Type': 'application/json'},
+                 data: JSON.stringify()})
+            .error(function(data){
+                $scope.alert = { type: 'danger', msg: data.detail, show: true };
+            });
+    };
+    // project list of speakers
+    $scope.projectListOfSpeakers = function () {
+        $http.post('/rest/core/projector/1/prune_elements/',
+                [{name: 'agenda/item', id: item.id, list_of_speakers: true}]);
     };
 })
 
@@ -301,15 +328,22 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
     });
 })
 
-.controller('SlideItemDetailCtrl', function($scope, Agenda) {
-    // Attention! Each object that is used here has to be dealt on server side.
-    // Add it to the coresponding get_requirements method of the ProjectorElement
-    // class.
-    var id = $scope.element.context.id;
-    Agenda.find(id);
-    Agenda.bindOne(id, $scope, 'item');
-
-})
+.controller('SlideItemDetailCtrl', [
+    '$scope',
+    'Agenda',
+    'User',
+    function($scope, Agenda, User) {
+        // Attention! Each object that is used here has to be dealt on server side.
+        // Add it to the coresponding get_requirements method of the ProjectorElement
+        // class.
+        var id = $scope.element.context.id;
+        Agenda.find(id);
+        User.findAll();
+        Agenda.bindOne(id, $scope, 'item');
+        // get flag for list-of-speakers-slide (true/false)
+        $scope.is_list_of_speakers = $scope.element.context.list_of_speakers;
+    }
+])
 
 .controller('SlideItemListCtrl', function($scope, $http, Agenda) {
     // Attention! Each object that is used here has to be dealt on server side.

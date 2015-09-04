@@ -1,4 +1,27 @@
 <div ng-controller="SlideItemDetailCtrl" class="content">
-  <h1>{{ item.title }}</h1>
-  <div class="white-space-pre-line">{{ item.text }}</div>
+  <h1>
+    {{ item.title }}
+    <small ng-if="is_list_of_speakers">
+      <span translate>List of speakers</span>
+      <span ng-if="item.speaker_list_closed" class="label label-danger" translate>Closed</span>
+    </small>
+  </h1>
+  <!-- Item text -->
+  <div ng-if="!is_list_of_speakers" class="white-space-pre-line">{{ item.text }}</div>
+
+  <!-- List of speakers -->
+  <div ng-if="is_list_of_speakers">
+    <!-- TODO: show last old speakers -->
+
+    <!-- current speaker -->
+    <p>
+      <strong ng-repeat="speaker in item.speakers | filter: {end_time: null, begin_time: '!!'}">
+        {{ speaker.user.get_full_name() }}
+      </strong>
+    <!-- next speakers -->
+    <ol id="list_of_speakers">
+      <li ng-repeat="speaker in item.speakers | filter: {begin_time: null}">
+        {{ speaker.user.get_full_name() }}
+    </ol>
+  </div>
 </div>
