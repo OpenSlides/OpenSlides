@@ -94,12 +94,33 @@ class AppsJsView(utils_views.View):
                         static=settings.STATIC_URL,
                         path=path)
                     for path in app_js_files]
-
+        # Use javascript loadScript function from
+        # http://balpha.de/2011/10/jquery-script-insertion-and-its-consequences-for-debugging/
         return HttpResponse(
+            """
+            var loadScript = function (path) {
+                var result = $.Deferred(),
+                    script = document.createElement("script");
+                script.async = "async";
+                script.type = "text/javascript";
+                script.src = path;
+                script.onload = script.onreadystatechange = function(_, isAbort) {
+                    if (!script.readyState || /loaded|complete/.test(script.readyState)) {
+                        if (isAbort)
+                            result.reject();
+                        else
+                            result.resolve();
+                    }
+                };
+                script.onerror = function () { result.reject(); };
+                $("head")[0].appendChild(script);
+                return result.promise();
+            };
+            """ +
             "angular.module('OpenSlidesApp.{app}', {angular_modules});"
             "var deferres = [];"
-            "{js_files}.forEach(function(js_file)deferres.push($.getScript(js_file)));"
-            "$.when.apply(this, deferres).done(function()angular.bootstrap(document,['OpenSlidesApp.{app}']));"
+            "{js_files}.forEach(function(js_file)deferres.push(loadScript(js_file)));"
+            "$.when.apply(this,deferres).done(function()angular.bootstrap(document,['OpenSlidesApp.{app}']));"
             .format(
                 app=kwargs.get('openslides_app'),
                 angular_modules=angular_modules,

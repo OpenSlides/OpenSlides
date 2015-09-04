@@ -1,10 +1,11 @@
+"use strict";
+
 angular.module('OpenSlidesApp.users', [])
 
-.factory('User', function(DS, Group, jsDataModel) {
+.factory('User', ['DS', 'Group', 'jsDataModel', function(DS, Group, jsDataModel) {
     var name = 'users/user'
     return DS.defineResource({
         name: name,
-        endpoint: '/rest/users/user/',
         useClass: jsDataModel,
         methods: {
             getResourceName: function () {
@@ -52,7 +53,7 @@ angular.module('OpenSlidesApp.users', [])
                     Group.find(groupId);
                     // But do not work with the returned promise, because in
                     // this case this method can not be called in $watch
-                    group = Group.get(groupId);
+                    var group = Group.get(groupId);
                     if (group) {
                         _.forEach(group.permissions, function(perm) {
                             allPerms.push(perm);
@@ -63,16 +64,15 @@ angular.module('OpenSlidesApp.users', [])
             },
         },
     });
-})
+}])
 
-.factory('Group', function(DS) {
+.factory('Group', ['DS', function(DS) {
     return DS.defineResource({
         name: 'users/group',
-        endpoint: '/rest/users/group/'
     });
-})
+}])
 
-.run(function(User, Group) {});
+.run(['User', 'Group', function(User, Group) {}]);
 
 
 angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])

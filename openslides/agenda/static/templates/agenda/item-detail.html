@@ -55,8 +55,8 @@
    * check permissions
 -->
 <ol>
-  <li ng-repeat="speaker in item.speaker_set">
-    {{ (users | filter: {id: speaker.user})[0].get_full_name() }}
+  <li ng-repeat="speaker in item.speakers">
+    {{ speaker.user.get_full_name() }}
     <button os-perms="agenda.can_manage" ng-click="removeSpeaker(speaker.id)"
         class="btn btn-default btn-xs">
       <i class="fa fa-times"></i>
@@ -65,7 +65,7 @@
 </ol>
 
 <div os-perms="agenda.can_manage" class="form-group col-sm-6">
-  <alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">{{alert.msg}}</alert>
+  <alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">{{ alert.msg }}</alert>
   <div class="input-group">
     <ui-select ng-model="speaker.selected" ng-change="addSpeaker(speaker.selected.id)">
       <ui-select-match placeholder="{{ 'Select or search a participant...' | translate }}">

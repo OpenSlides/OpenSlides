@@ -17,12 +17,19 @@ class CreateMotion(TestCase):
         self.client.login(username='admin', password='admin')
 
     def test_simple(self):
+        """
+        Tests that a motion is created with a specific title and text.
+
+        The created motion should have an identifier and the admin user should
+        be the submitter.
+        """
         response = self.client.post(
             reverse('motion-list'),
             {'title': 'test_title_OoCoo3MeiT9li5Iengu9',
              'text': 'test_text_thuoz0iecheiheereiCi'})
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
         motion = Motion.objects.get()
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(motion.title, 'test_title_OoCoo3MeiT9li5Iengu9')
         self.assertEqual(motion.identifier, '1')
         self.assertTrue(motion.submitters.exists())

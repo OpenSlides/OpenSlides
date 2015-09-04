@@ -1,3 +1,5 @@
+"use strict";
+
 // The core module used for the OpenSlides site and the projector
 angular.module('OpenSlidesApp.core', [
     'angular-loading-bar',
@@ -8,11 +10,12 @@ angular.module('OpenSlidesApp.core', [
     'ui.tree',
 ])
 
-.config(function(DSProvider) {
+.config(['DSProvider', 'DSHttpAdapterProvider', function(DSProvider, DSHttpAdapterProvider) {
     // Reloads everything after 5 minutes.
     // TODO: * find a way only to reload things that are still needed
     DSProvider.defaults.maxAge = 5 * 60 * 1000;  // 5 minutes
     DSProvider.defaults.reapAction = 'none';
+    DSProvider.defaults.basePath = '/rest';
     DSProvider.defaults.afterReap = function(model, items) {
         if (items.length > 5) {
             model.findAll({}, {bypassCache: true});
@@ -22,44 +25,8 @@ angular.module('OpenSlidesApp.core', [
             });
         }
     };
-})
-
-.run(function(DS, autoupdate) {
-    autoupdate.on_message(function(data) {
-        // TODO: when MODEL.find() is called after this
-        //       a new request is fired. This could be a bug in DS
-
-        // TODO: Do not send the status code to the client, but make the decission
-        //       on the server side. It is an implementation detail, that tornado
-        //       sends request to wsgi, which should not concern the client.
-        console.log("Received object: " + data.collection + ", " + data.id);
-        if (data.status_code == 200) {
-            DS.inject(data.collection, data.data);
-        } else if (data.status_code == 404) {
-            DS.eject(data.collection, data.id);
-        }
-        // TODO: handle other statuscodes
-    });
-})
-
-.run(function($rootScope, Config, Projector) {
-    // Puts the config object into each scope.
-    // TODO: maybe rootscope.config has to set before findAll() is finished
-    Config.findAll().then(function() {
-        $rootScope.config = function(key) {
-            try {
-                return Config.get(key).value;
-            }
-            catch(err) {
-                console.log("Unkown config key: " + key);
-                return ''
-            }
-        }
-    });
-
-    // Loads all projector data
-    Projector.findAll();
-})
+    DSHttpAdapterProvider.defaults.forceTrailingSlash = true;
+}])
 
 .factory('autoupdate', function() {
     var url = location.origin + "/sockjs";
@@ -89,7 +56,43 @@ angular.module('OpenSlidesApp.core', [
     return Autoupdate;
 })
 
-.factory('jsDataModel', function($http, Projector) {
+.run(['DS', 'autoupdate', function(DS, autoupdate) {
+    autoupdate.on_message(function(data) {
+        // TODO: when MODEL.find() is called after this
+        //       a new request is fired. This could be a bug in DS
+
+        // TODO: Do not send the status code to the client, but make the decission
+        //       on the server side. It is an implementation detail, that tornado
+        //       sends request to wsgi, which should not concern the client.
+        console.log("Received object: " + data.collection + ", " + data.id);
+        if (data.status_code == 200) {
+            DS.inject(data.collection, data.data);
+        } else if (data.status_code == 404) {
+            DS.eject(data.collection, data.id);
+        }
+        // TODO: handle other statuscodes
+    });
+}])
+
+.run(['$rootScope', 'Config', 'Projector', function($rootScope, Config, Projector) {
+    // Puts the config object into each scope.
+    Config.findAll().then(function() {
+        $rootScope.config = function(key) {
+            try {
+                return Config.get(key).value;
+            }
+            catch(err) {
+                console.log("Unkown config key: " + key);
+                return ''
+            }
+        }
+    });
+
+    // Loads all projector data
+    Projector.findAll();
+}])
+
+.factory('jsDataModel', ['$http', 'Projector', function($http, Projector) {
     var BaseModel = function() {};
     BaseModel.prototype.project = function() {
         return $http.post(
@@ -100,7 +103,7 @@ angular.module('OpenSlidesApp.core', [
     BaseModel.prototype.isProjected = function() {
         // Returns true if there is a projector element with the same
         // name and the same id.
-        var projector = Projector.get(id=1);
+        var projector = Projector.get(1);
         if (typeof projector === 'undefined') return false;
         var self = this;
         return _.findIndex(projector.elements, function(element) {
@@ -111,13 +114,12 @@ angular.module('OpenSlidesApp.core', [
         }) > -1;
     }
     return BaseModel;
-})
+}])
 
-.factory('Customslide', function(DS, jsDataModel) {
+.factory('Customslide', ['DS', 'jsDataModel', function(DS, jsDataModel) {
     var name = 'core/customslide'
     return DS.defineResource({
         name: name,
-        endpoint: '/rest/core/customslide/',
         useClass: jsDataModel,
         methods: {
             getResourceName: function () {
@@ -125,31 +127,29 @@ angular.module('OpenSlidesApp.core', [
             },
         },
     });
-})
+}])
 
-.factory('Tag', function(DS) {
+.factory('Tag', ['DS', function(DS) {
     return DS.defineResource({
         name: 'core/tag',
-        endpoint: '/rest/core/tag/'
     });
-})
+}])
 
-.factory('Config', function(DS) {
+.factory('Config', ['DS', function(DS) {
     return DS.defineResource({
         name: 'core/config',
         idAttribute: 'key',
-        endpoint: '/rest/core/config/'
     });
-})
+}])
 
-.factory('Projector', function(DS) {
+.factory('Projector', ['DS', function(DS) {
     return DS.defineResource({
         name: 'core/projector',
-        endpoint: '/rest/core/projector/',
     });
-})
+}])
 
-.run(function(Projector, Config, Tag, Customslide){});
+// Make sure that the DS factories are loaded by making them a dependency
+.run(['Projector', 'Config', 'Tag', 'Customslide', function(Projector, Config, Tag, Customslide){}]);
 
 
 // The core module for the OpenSlides site

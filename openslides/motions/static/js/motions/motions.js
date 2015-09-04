@@ -1,10 +1,11 @@
+"use strict";
+
 angular.module('OpenSlidesApp.motions', [])
 
-.factory('Motion', function(DS, jsDataModel) {
+.factory('Motion', ['DS', 'jsDataModel', function(DS, jsDataModel) {
     var name = 'motions/motion'
     return DS.defineResource({
         name: name,
-        endpoint: '/rest/motions/motion/',
         useClass: jsDataModel,
         methods: {
             getResourceName: function () {
@@ -12,6 +13,7 @@ angular.module('OpenSlidesApp.motions', [])
             },
             getVersion: function(versionId) {
                 versionId = versionId || this.active_version;
+                var index;
                 if (versionId == -1) {
                     index = this.versions.length - 1;
                 } else {
@@ -30,23 +32,47 @@ angular.module('OpenSlidesApp.motions', [])
             getReason: function(versionId) {
                 return this.getVersion(versionId).reason;
             }
+        },
+        relations: {
+            belongsTo: {
+                'motions/category': {
+                    localField: 'category',
+                    localKey: 'category_id',
+                },
+            },
+            hasMany: {
+                'core/tag': {
+                    localField: 'tags',
+                    localKeys: 'tags_id',
+                },
+                'users/user': [
+                    {
+                        localField: 'submitters',
+                        localKeys: 'submitters_id',
+                    },
+                    'supporters': {
+                        localField: 'supporters',
+                        localKeys: 'supporters_id',
+                    }
+                ],
+            }
         }
     });
-})
-.factory('Category', function(DS) {
+}])
+
+.factory('Category', ['DS', function(DS) {
     return DS.defineResource({
         name: 'motions/category',
-        endpoint: '/rest/motions/category/'
     });
-})
-.factory('Workflow', function(DS) {
+}])
+
+.factory('Workflow', ['DS', function(DS) {
     return DS.defineResource({
         name: 'motions/workflow',
-        endpoint: '/rest/motions/workflow/'
     });
-})
+}])
 
-.run(function(Motion, Category, Workflow) {});
+.run(['Motion', 'Category', 'Workflow', function(Motion, Category, Workflow) {}]);
 
 
 angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
@@ -107,7 +133,10 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 },
                 users: function(User) {
                     return User.findAll();
-                }
+                },
+                tags: function(Tag) {
+                    return Tag.findAll();
+                },
             }
         })
         .state('motions.motion.detail.update', {
@@ -211,11 +240,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
 
     $scope.motion = {};
     $scope.save = function (motion) {
-        motion.tags = [];   // TODO: REST API should do it! (Bug in Django REST framework)
-        motion.attachments = [];  // TODO: REST API should do it! (Bug in Django REST framework)
-        if (!motion.supporters) {
-            motion.supporters = [];  // TODO: REST API should do it! (Bug in Django REST framework)
-        }
         Motion.create(motion).then(
             function(success) {
                 $state.go('motions.motion.list');

@@ -1,21 +1,48 @@
-angular.module('OpenSlidesApp.agenda', [])
+"use strict";
 
-.factory('Agenda', function(DS, jsDataModel) {
+angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
+
+.factory('Speaker', ['DS', function(DS) {
+    return DS.defineResource({
+        name: 'agenda/speaker',
+        relations: {
+            belongsTo: {
+                'users/user': {
+                    localField: 'user',
+                    localKey: 'user_id',
+                }
+            }
+        }
+    });
+}])
+
+.factory('Agenda', ['DS', 'Speaker', 'jsDataModel', function(DS, Speaker, jsDataModel) {
     var name = 'agenda/item'
     return DS.defineResource({
         name: name,
-        endpoint: '/rest/agenda/item/',
         useClass: jsDataModel,
         methods: {
             getResourceName: function () {
                 return name;
             }
+        },
+        relations: {
+            hasMany: {
+                'core/tag': {
+                    localField: 'tags',
+                    localKeys: 'tags_id',
+                },
+                'agenda/speaker': {
+                    localField: 'speakers',
+                    foreignKey: 'item_id',
+                }
+            }
         }
     });
-})
+}])
 
 // Make sure that the Agenda resource is loaded.
-.run(function(Agenda) {});
+.run(['Agenda', function(Agenda) {}]);
 
 
 angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
@@ -130,7 +157,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     $scope.isAgendaProjected = function () {
         // Returns true if there is a projector element with the same
         // name and agenda is active.
-        var projector = Projector.get(id=1);
+        var projector = Projector.get(1);
         if (typeof projector === 'undefined') return false;
         var self = this;
         return _.findIndex(projector.elements, function(element) {

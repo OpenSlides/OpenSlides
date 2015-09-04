@@ -218,13 +218,13 @@ class MotionSerializer(ModelSerializer):
         motion.category = validated_data.get('category')
         motion.reset_state(validated_data.get('workflow', int(config['motions_workflow'])))
         motion.save()
-        if validated_data['submitters']:
+        if validated_data.get('submitters'):
             motion.submitters.add(*validated_data['submitters'])
         else:
             motion.submitters.add(validated_data['request_user'])
-        motion.supporters.add(*validated_data['supporters'])
-        motion.attachments.add(*validated_data['attachments'])
-        motion.tags.add(*validated_data['tags'])
+        motion.supporters.add(*validated_data.get('supporters', []))
+        motion.attachments.add(*validated_data.get('attachments', []))
+        motion.tags.add(*validated_data.get('tags', []))
         return motion
 
     @transaction.atomic

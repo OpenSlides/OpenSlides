@@ -21,7 +21,9 @@ class SpeakerSerializer(ModelSerializer):
             'user',
             'begin_time',
             'end_time',
-            'weight')
+            'weight',
+            'item',  # js-data needs the item-id in the nested object to define relations.
+        )
 
 
 class RelatedItemRelatedField(RelatedField):
@@ -47,7 +49,7 @@ class ItemSerializer(ModelSerializer):
     get_title_supplement = CharField(read_only=True)
     content_object = RelatedItemRelatedField(read_only=True)
     item_no = CharField(read_only=True)
-    speaker_set = SpeakerSerializer(many=True, read_only=True)
+    speakers = SpeakerSerializer(many=True, read_only=True)
 
     class Meta:
         model = Item
@@ -63,7 +65,7 @@ class ItemSerializer(ModelSerializer):
             'closed',
             'type',
             'duration',
-            'speaker_set',
+            'speakers',
             'speaker_list_closed',
             'content_object',
             'tags',)
