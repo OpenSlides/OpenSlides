@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<html lang="en" class="no-js">  <!-- TODO: make lang dynamic -->
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <base href="/">
@@ -34,19 +31,22 @@
               <span class="caret"></span>
             </button>
             <ul class="dropdown-menu pull-right" role="menu">
-              <li><a href="{% url 'user_settings' %}">
-                    <i class="fa fa-cog"></i>
-                    <translate>Edit profile</translate>
-                  </a>
-              <li><a href="{% url 'password_change' %}">
-                    <i class="fa fa-key"></i>
-                    <translate>Change password</translate>
-                  </a>
+              <li>
+                <a ui-sref="users.user.detail.profile({ id: operator.user.id })">
+                  <i class="fa fa-cog"></i>
+                  <translate>Edit profile</translate>
+                </a>
+              <li>
+                <a href="#TODO">
+                  <i class="fa fa-key"></i>
+                  <translate>Change password</translate>
+                </a>
               <li class="divider">
-              <li><a ng-click="logout()" href="">
-                    <i class="fa fa-sign-out"></i>
-                    <translate>Logout</translate>
-                  </a>
+              <li>
+                <a ng-click="logout()" href="">
+                  <i class="fa fa-sign-out"></i>
+                  <translate>Logout</translate>
+                </a>
             </ul>
           </div>
         </div>

@@ -229,12 +229,12 @@ angular.module('OpenSlidesApp.core.site', [
                 // Replaces any folowing points though a -
                 templateUrl = 'static/templates/' + appName.replace(/\./g, '-') + '.html';
             }
-            config.templateUrl = config.templateUrl || templateUrl;
+            config.templateUrl = state.templateUrl || templateUrl;
 
             // controller
             if (patterns.length >= 3) {
                 controller = _.capitalize(patterns[1]) + defaultControllers[_.last(patterns)];
-                config.controller = config.controller || controller;
+                config.controller = state.controller || controller;
             }
             result[name] = config;
         });
