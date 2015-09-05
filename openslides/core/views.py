@@ -247,7 +247,7 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         for key, value in request.data.items():
             if key not in projector_config:
                 raise ValidationError({'data': 'Invalid projector element. Wrong UUID.'})
-        projector_config.update(request.data)
+            projector_config[key].update(request.data[key])
 
         serializer = self.get_serializer(projector_instance, data={'config': projector_config}, partial=False)
         serializer.is_valid(raise_exception=True)

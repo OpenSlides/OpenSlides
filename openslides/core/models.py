@@ -82,6 +82,7 @@ class Projector(RESTModelMixin, models.Model):
         for key, value in self.config.items():
             # Use a copy here not to change the origin value in the config field.
             result[key] = value.copy()
+            result[key]['uuid'] = key
             element = elements.get(value['name'])
             if element is None:
                 result[key]['error'] = _('Projector element does not exist.')

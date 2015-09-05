@@ -33,6 +33,7 @@ class ProjectorAPI(TestCase):
             'elements': {
                 'aae4a07b26534cfb9af4232f361dce73':
                     {'id': customslide.id,
+                     'uuid': 'aae4a07b26534cfb9af4232f361dce73',
                      'name': 'core/customslide',
                      'context': None}},
             'scale': 0,
@@ -53,6 +54,7 @@ class ProjectorAPI(TestCase):
             'elements': {
                 'fc6ef43b624043068c8e6e7a86c5a1b0':
                     {'name': 'invalid_slide',
+                     'uuid': 'fc6ef43b624043068c8e6e7a86c5a1b0',
                      'error': 'Projector element does not exist.'}},
             'scale': 0,
             'scroll': 0})

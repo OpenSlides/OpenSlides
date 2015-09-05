@@ -48,15 +48,8 @@
     </table>
   </div>
   <div class="col-sm-4">
-    <!-- projector live view -->
     <div class="well">
-      <h4 translate>Projector live view</h4>
-      <a ui-sref="projector" target="_blank">
-        <div id="iframewrapper">
-          <iframe id="iframe" src="/projector" frameborder="0"></iframe>
-          <div id="iframeoverlay"></div>
-        </div>
-      </a>
+      <div ng-include src="'static/templates/core/projector-controls.html'"></div>
     </div>
   </div>
 </div>
