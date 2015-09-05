@@ -13,6 +13,19 @@ angular.module('OpenSlidesApp.mediafiles', [])
 
 angular.module('OpenSlidesApp.mediafiles.site', ['OpenSlidesApp.mediafiles'])
 
+.config([
+    'mainMenuProvider',
+    function (mainMenuProvider) {
+        mainMenuProvider.register({
+            'ui_sref': 'mediafiles.mediafile.list',
+            'img_class': 'paperclip',
+            'title': 'Files',
+            'weight': 600,
+            'perm': 'mediafiles.can_see',
+        });
+    }
+])
+
 .config(function($stateProvider) {
     $stateProvider
         .state('mediafiles', {

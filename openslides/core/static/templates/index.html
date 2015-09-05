@@ -103,18 +103,21 @@
           <span class="caret"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right" role="menu">
-          <li><a href="" ng-click="switchLanguage('en')">
-                <i class="fa fa-flag"></i>
-                <translate>English</translate> (EN)
-              </a>
-          <li><a href="" ng-click="switchLanguage('de')">
-                <i class="fa fa-flag"></i>
-                <translate>German</translate> (DE)
-              </a>
-          <li><a href="" ng-click="switchLanguage('fr')">
-                <i class="fa fa-flag"></i>
-                <translate>French</translate> (FR)
-              </a>
+          <li>
+            <a href="" ng-click="switchLanguage('en')">
+              <i class="fa fa-flag"></i>
+              <translate>English</translate> (EN)
+            </a>
+          <li>
+            <a href="" ng-click="switchLanguage('de')">
+              <i class="fa fa-flag"></i>
+              <translate>German</translate> (DE)
+            </a>
+          <li>
+            <a href="" ng-click="switchLanguage('fr')">
+              <i class="fa fa-flag"></i>
+              <translate>French</translate> (FR)
+            </a>
         </ul>
       </div>
     </div>
@@ -124,48 +127,12 @@
 <!-- Container -->
 <div class="container-fluid" id="container">
   <div class="row">
-    <!-- TODO: Build main menu automatically from installed apps, see issue #1469 -->
     <div class="col-md-2 leftmenu lefticon">
-      <ul>
-        <li>
-          <a ui-sref="dashboard">
-            <span class="ico"><i class="fa fa-home fa-lg"></i></span>
-            <span class="text" translate>Home</span>
-          </a>
-        <li>
-          <a ui-sref="core.customslide.list">
-            <span class="ico"><i class="fa fa-video-camera fa-lg"></i></span>
-            <span class="text" translate>Projector</span>
-          </a>
-        <li>
-          <a ui-sref="agenda.item.list">
-            <span class="ico"><i class="fa fa-calendar-o fa-lg"></i></span>
-            <span class="text" translate>Agenda</span>
-          </a>
-        <li>
-          <a ui-sref="motions.motion.list">
-            <span class="ico"><i class="fa fa-file-text fa-lg"></i></span>
-            <span class="text" translate>Motions</span>
-          </a>
-        <li>
-          <a ui-sref="assignments.assignment.list">
-            <span class="ico"><i class="fa fa-pie-chart fa-lg"></i></span>
-            <span class="text" translate>Elections</span>
-          </a>
-        <li>
-          <a ui-sref="users.user.list">
-            <span class="ico"><i class="fa fa-user fa-lg"></i></span>
-            <span class="text" translate>Participants</span>
-          </a>
-        <li>
-          <a ui-sref="mediafiles.mediafile.list">
-            <span class="ico"><i class="fa fa-paperclip fa-lg"></i></span>
-            <span class="text" translate>Files</span>
-          </a>
-        <li>
-          <a ui-sref="config">
-            <span class="ico"><i class="fa fa-cog fa-lg"></i></span>
-            <span class="text" translate>Settings</span>
+      <ul ng-controller="MainMenuCtrl">
+        <li ng-repeat="element in elements">
+          <a ui-sref="{{ element.ui_sref }}">
+            <span class="ico"><i class="fa fa-{{ element.img_class }} fa-lg"></i></span>
+            <span class="text" translate>{{ element.title }}</span>
           </a>
       </ul>
     </div>

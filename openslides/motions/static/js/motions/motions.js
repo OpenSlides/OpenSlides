@@ -77,6 +77,19 @@ angular.module('OpenSlidesApp.motions', [])
 
 angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
 
+.config([
+    'mainMenuProvider',
+    function (mainMenuProvider) {
+        mainMenuProvider.register({
+            'ui_sref': 'motions.motion.list',
+            'img_class': 'file-text',
+            'title': 'Motions',
+            'weight': 300,
+            'perm': 'motions.can_see',
+        });
+    }
+])
+
 .config(function($stateProvider) {
     $stateProvider
         .state('motions', {
