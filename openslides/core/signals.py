@@ -135,6 +135,13 @@ def setup_general_config(sender, **kwargs):
         group=ugettext_lazy('Projector'),
         translatable=True)
 
+    yield ConfigVariable(
+        name='projector_default_countdown',
+        default_value=60,
+        label=ugettext_lazy('Default countdown'),
+        weight=185,
+        group=ugettext_lazy('Projector'))
+
 
 config_signal = Signal(providing_args=[])
 """Signal to get all config tabs from all apps."""

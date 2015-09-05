@@ -3,6 +3,8 @@ from django.core.urlresolvers import reverse
 from rest_framework.test import APIClient
 
 from openslides.agenda.models import Item, Speaker
+from openslides.core.config import config
+from openslides.core.models import Projector
 from openslides.utils.test import TestCase
 
 
@@ -178,3 +180,21 @@ class Speak(TestCase):
     def test_end_speech_no_current_speaker(self):
         response = self.client.delete(reverse('item-speak', args=[self.item.pk]))
         self.assertEqual(response.status_code, 400)
+
+    def test_begin_speech_with_countdown(self):
+        config['agenda_couple_countdown_and_speakers'] = True
+        Speaker.objects.add(self.user, self.item)
+        speaker = Speaker.objects.add(get_user_model().objects.get(username='admin'), self.item)
+        self.assertEqual(Projector.objects.get().config[2]['name'], 'core/countdown')
+        self.client.put(
+            reverse('item-speak', args=[self.item.pk]),
+            {'speaker': speaker.pk})
+        self.assertEqual(Projector.objects.get().config[2]['status'], 'running')
+
+    def test_end_speech_with_countdown(self):
+        config['agenda_couple_countdown_and_speakers'] = True
+        speaker = Speaker.objects.add(get_user_model().objects.get(username='admin'), self.item)
+        speaker.begin_speech()
+        self.assertEqual(Projector.objects.get().config[2]['name'], 'core/countdown')
+        self.client.delete(reverse('item-speak', args=[self.item.pk]))
+        self.assertEqual(Projector.objects.get().config[2]['status'], 'stop')
