@@ -248,31 +248,41 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     };
 })
 
-.controller('MotionUpdateCtrl',
-        function($scope, $state, $http, Motion, Agenda, User, Category, Workflow, Tag, Mediafile, motion) {
-    Agenda.bindAll({}, $scope, 'items');
-    User.bindAll({}, $scope, 'users');
-    Category.bindAll({}, $scope, 'categories');
-    Workflow.bindAll({}, $scope, 'workflows');
-    Tag.bindAll({}, $scope, 'tags');
-    Mediafile.bindAll({}, $scope, 'mediafiles');
+.controller('MotionUpdateCtrl', [
+    '$scope',
+    '$state',
+    '$http',
+    'Motion',
+    'Agenda',
+    'User',
+    'Category',
+    'Workflow',
+    'Tag',
+    'Mediafile',
+    'motion',
+    function ($scope, $state, $http, Motion, Agenda, User, Category, Workflow, Tag, Mediafile, motion) {
+        Agenda.bindAll({}, $scope, 'items');
+        User.bindAll({}, $scope, 'users');
+        Category.bindAll({}, $scope, 'categories');
+        Workflow.bindAll({}, $scope, 'workflows');
+        Tag.bindAll({}, $scope, 'tags');
+        Mediafile.bindAll({}, $scope, 'mediafiles');
 
-    $scope.motion = motion;
-    // get latest version for edit
-    $scope.motion.title = $scope.motion.getTitle(-1);
-    $scope.motion.text = $scope.motion.getText(-1);
-    $scope.motion.reason = $scope.motion.getReason(-1);
+        $scope.motion = motion;
+        // get latest version for edit
+        $scope.motion.title = $scope.motion.getTitle(-1);
+        $scope.motion.text = $scope.motion.getText(-1);
+        $scope.motion.reason = $scope.motion.getReason(-1);
 
-    $scope.save = function (motion) {
-        motion.tags = [];   // TODO: REST API should do it! (Bug in Django REST framework)
-        motion.attachments = [];  // TODO: REST API should do it! (Bug in Django REST framework)
-        Motion.save(motion).then(
-            function(success) {
-                $state.go('motions.motion.list');
-            }
-        );
-    };
-})
+        $scope.save = function (motion) {
+            Motion.save(motion).then(
+                function(success) {
+                    $state.go('motions.motion.list');
+                }
+            );
+        };
+    }
+])
 
 .controller('MotionCSVImportCtrl', function($scope, Motion) {
     // TODO

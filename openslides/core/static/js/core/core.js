@@ -74,22 +74,33 @@ angular.module('OpenSlidesApp.core', [
     });
 }])
 
-.run(['$rootScope', 'Config', 'Projector', function($rootScope, Config, Projector) {
-    // Puts the config object into each scope.
-    Config.findAll().then(function() {
-        $rootScope.config = function(key) {
-            try {
-                return Config.get(key).value;
-            }
-            catch(err) {
-                console.log("Unkown config key: " + key);
-                return ''
-            }
-        }
-    });
+.factory('loadGlobalData', [
+    '$rootScope',
+    'Config',
+    'Projector',
+    function ($rootScope, Config, Projector) {
+        return function () {
+            // Puts the config object into each scope.
+            Config.findAll().then(function() {
+                $rootScope.config = function(key) {
+                    try {
+                        return Config.get(key).value;
+                    }
+                    catch(err) {
+                        console.log("Unkown config key: " + key);
+                        return ''
+                    }
+                }
+            });
 
-    // Loads all projector data
-    Projector.findAll();
+            // Loads all projector data
+            Projector.findAll();
+        }
+    }
+])
+
+.run(['loadGlobalData', function(loadGlobalData) {
+    loadGlobalData();
 }])
 
 .factory('jsDataModel', ['$http', 'Projector', function($http, Projector) {
@@ -433,31 +444,39 @@ angular.module('OpenSlidesApp.core.site', [
     }
 })
 
-.controller('LoginFormModalCtrl', function ($scope, $modalInstance, $http, operator) {
-    $scope.login = function () {
-        $http.post(
-            '/users/login/',
-            {'username': $scope.username, 'password': $scope.password}
-        ).success(function(data) {
-            if (data.success) {
-                operator.setUser(data.user_id);
-                $scope.loginFailed = false;
-                $modalInstance.close();
-            } else {
-                $scope.loginFailed = true;
-            }
-        });
-    };
-    $scope.guest = function () {
-        $modalInstance.dismiss('cancel');
-    };
-    $scope.cancel = function () {
-        $modalInstance.dismiss('cancel');
-    };
-})
+.controller('LoginFormModalCtrl', [
+    '$scope',
+    '$modalInstance',
+    '$http',
+    'operator',
+    'loadGlobalData',
+    function ($scope, $modalInstance, $http, operator, loadGlobalData) {
+        $scope.login = function () {
+            $http.post(
+                '/users/login/',
+                {'username': $scope.username, 'password': $scope.password}
+            ).success(function(data) {
+                if (data.success) {
+                    operator.setUser(data.user_id);
+                    loadGlobalData();
+                    $scope.loginFailed = false;
+                    $modalInstance.close();
+                } else {
+                    $scope.loginFailed = true;
+                }
+            });
+        };
+        $scope.guest = function () {
+            $modalInstance.dismiss('cancel');
+        };
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+    }
+])
 
 // Version Controller
-.controller('VersionCtrl', function($scope, $http) {
+.controller('VersionCtrl', function ($scope, $http) {
     $http.get('/core/version/').success(function(data) {
         $scope.core_version = data.openslides_version;
         $scope.plugins = data.plugins;
