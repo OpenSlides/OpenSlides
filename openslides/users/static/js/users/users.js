@@ -309,6 +309,47 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     };
 }])
 
+/*
+ * Like osPermsLite but does only hide the DOM-Elements
+ *
+ * This is the Code from angular.js ngShow.
+*/
+.directive('osPermsLite', [
+    '$animate',
+    function($animate) {
+        var NG_HIDE_CLASS = 'ng-hide';
+        var NG_HIDE_IN_PROGRESS_CLASS = 'ng-hide-animate';
+        return {
+            restrict: 'A',
+            multiElement: true,
+            link: function(scope, element, $attr) {
+                var perms;
+                if ($attr.osPermsLite[0] === '!') {
+                    perms = _.trimLeft($attr.osPermsLite, '!')
+                } else {
+                    perms = $attr.osPermsLite;
+                }
+                scope.$watch(
+                    function (scope) {
+                        return scope.operator.hasPerms(perms);
+                    }, function ngShowWatchAction(value) {
+                        if ($attr.osPermsLite[0] === '!') {
+                            value = !value;
+                        }
+                        // we're adding a temporary, animation-specific class for ng-hide since this way
+                        // we can control when the element is actually displayed on screen without having
+                        // to have a global/greedy CSS selector that breaks when other animations are run.
+                        // Read: https://github.com/angular/angular.js/issues/9103#issuecomment-58335845
+                        $animate[value ? 'removeClass' : 'addClass'](element, NG_HIDE_CLASS, {
+                            tempClasses: NG_HIDE_IN_PROGRESS_CLASS
+                        });
+                    }
+                );
+            }
+        }
+    }
+])
+
 .controller('UserListCtrl', function($scope, User, Group) {
     User.bindAll({}, $scope, 'users');
     Group.bindAll({}, $scope, 'groups');
