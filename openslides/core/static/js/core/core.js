@@ -8,6 +8,7 @@ angular.module('OpenSlidesApp.core', [
     'ngAnimate',
     'ui.bootstrap',
     'ui.tree',
+    'uiSwitch',
 ])
 
 .config(['DSProvider', 'DSHttpAdapterProvider', function(DSProvider, DSHttpAdapterProvider) {

@@ -2,10 +2,10 @@
   <h1 translate>Agenda</h1>
 
   <table class="tablelist">
-    <tr ng-repeat="id in ids">
-      <td class="leftcolumn nobr" ng-class="{ 'closed': (items | filter: {id: id})[0].closed }">
-        {{ (items | filter: {id: id})[0].item_number }}
-      <td class="rightcolumn" ng-class="{ 'closed': (items | filter: {id: id})[0].closed }">
-        {{ (items | filter: {id: id})[0].title }}
+    <tr ng-repeat="item in items">
+      <td class="leftcolumn nobr" ng-class="{ 'closed': item.closed }">
+        {{ item.item_number }}
+      <td class="rightcolumn" ng-class="{ 'closed': item.closed }">
+        {{ item.title }}
   </table>
 </div>
