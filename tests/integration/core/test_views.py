@@ -23,13 +23,14 @@ class ProjectorAPI(TestCase):
         default_projector = Projector.objects.get(pk=1)
         default_projector.config = [{'name': 'core/customslide', 'id': customslide.id}]
         default_projector.save()
+        element_uuid = Projector.objects.get(pk=1).config[0]['uuid']
 
         response = self.client.get(reverse('projector-detail', args=['1']))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(json.loads(response.content.decode()), {
             'id': 1,
-            'config': [{'name': 'core/customslide', 'id': customslide.id}],
+            'config': [{'name': 'core/customslide', 'id': customslide.id, 'uuid': element_uuid}],
             'elements': [
                 {'name': 'core/customslide',
                  'context': {'id': customslide.id}}]})
@@ -39,13 +40,14 @@ class ProjectorAPI(TestCase):
         default_projector = Projector.objects.get(pk=1)
         default_projector.config = [{'name': 'invalid_slide'}]
         default_projector.save()
+        element_uuid = Projector.objects.get(pk=1).config[0]['uuid']
 
         response = self.client.get(reverse('projector-detail', args=['1']))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(json.loads(response.content.decode()), {
             'id': 1,
-            'config': [{'name': 'invalid_slide'}],
+            'config': [{'name': 'invalid_slide', 'uuid': element_uuid}],
             'elements': [
                 {'name': 'invalid_slide',
                  'error': 'Projector element does not exist.'}]})
