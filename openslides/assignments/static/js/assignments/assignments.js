@@ -87,7 +87,6 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 .controller('AssignmentCreateCtrl', function($scope, $state, Assignment) {
     $scope.assignment = {};
     $scope.save = function(assignment) {
-        assignment.tags = []; // TODO: the rest_api should do this
         Assignment.create(assignment).then(
             function(success) {
                 $state.go('assignments.assignment.list');
