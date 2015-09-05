@@ -11,6 +11,7 @@ from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.core.config import config
 from openslides.core.models import Tag
+from openslides.core.projector import Countdown
 from openslides.users.models import User
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
@@ -409,12 +410,9 @@ class Speaker(RESTModelMixin, models.Model):
         self.weight = None
         self.begin_time = datetime.now()
         self.save()
-        # start countdown
         if config['agenda_couple_countdown_and_speakers']:
-            # TODO: Fix me with the new countdown api
-            # reset_countdown()
-            # start_countdown()
-            pass
+            Countdown.control(action='reset')
+            Countdown.control(action='start')
 
     def end_speech(self):
         """
@@ -422,11 +420,8 @@ class Speaker(RESTModelMixin, models.Model):
         """
         self.end_time = datetime.now()
         self.save()
-        # stop countdown
         if config['agenda_couple_countdown_and_speakers']:
-            # TODO: Fix me with the new countdown api
-            # stop_countdown()
-            pass
+            Countdown.control(action='stop')
 
     def get_root_rest_element(self):
         """

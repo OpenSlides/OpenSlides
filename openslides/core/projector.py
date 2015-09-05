@@ -3,8 +3,9 @@ from django.utils.translation import ugettext as _
 
 from openslides.utils.projector import ProjectorElement, ProjectorRequirement
 
+from .config import config
 from .exceptions import ProjectorException
-from .models import CustomSlide
+from .models import CustomSlide, Projector
 from .views import CustomSlideViewSet
 
 
@@ -47,30 +48,83 @@ class Countdown(ProjectorElement):
 
         {
             "countdown_time": <timestamp>,
-            "status": "go"
+            "status": "running"
         }
 
     The timestamp is a POSIX timestamp (seconds) calculated from server
     time, server time offset and countdown duration (countdown_time = now -
     serverTimeOffset + duration).
 
-    To stop the countdown set the countdown time to the actual value of the
+    To stop the countdown set the countdown time to the current value of the
     countdown (countdown_time = countdown_time - now + serverTimeOffset)
     and set status to "stop".
 
     To reset the countdown (it is not a reset in a functional way) just
-    change the countdown_time. The status value remain 'stop'.
+    change the countdown_time. The status value remains "stop".
 
-    To hide a running countdown add {"hidden": true}.
+    There might be an additional value for the "default" countdown time
+    which is used for the internal reset method if the countdown is coupled
+    with the list of speakers.
+
+    To hide a countdown add {"hidden": true}.
     """
     name = 'core/countdown'
 
     def get_context(self):
-        if self.config_entry.get('countdown_time') is None:
-            raise ProjectorException(_('No countdown time given.'))
-        if self.config_entry.get('status') is None:
-            raise ProjectorException(_('No status given.'))
+        self.validate_config(self.config_entry)
         return {'server_time': now().timestamp()}
+
+    @classmethod
+    def validate_config(cls, config_data):
+        """
+        Raises ProjectorException if the given data are invalid.
+        """
+        if not isinstance(config_data.get('countdown_time'), (int, float)):
+            raise ProjectorException(_('Invalid countdown time. Use integer or float.'))
+        if config_data.get('status') not in ('running', 'stop'):
+            raise ProjectorException(_("Invalid status. Use 'running' or 'stop'."))
+        if config_data.get('default') is not None and not isinstance(config_data.get('default'), int):
+            raise ProjectorException(_('Invalid default value. Use integer.'))
+
+    @classmethod
+    def control(cls, action, projector_id=1, index=0):
+        """
+        Starts, stops or resets the countdown with the given index on the
+        given projector.
+
+        Action must be 'start', 'stop' or 'reset'.
+        """
+        if action not in ('start', 'stop', 'reset'):
+            raise ValueError("Action must be 'start', 'stop' or 'reset', not {}.".format(action))
+
+        projector_instance = Projector.objects.get(pk=projector_id)
+        projector_config = []
+        found = False
+        for element in projector_instance.config:
+            if element['name'] == cls.name:
+                if index == 0:
+                    try:
+                        cls.validate_config(element)
+                    except ProjectorException:
+                        # Do not proceed if the specific procjector config data is invalid.
+                        # The variable found remains False.
+                        break
+                    found = True
+                    if action == 'start' and element['status'] == 'stop':
+                        element['status'] = 'running'
+                        element['countdown_time'] = now().timestamp() + element['countdown_time']
+                    elif action == 'stop' and element['status'] == 'running':
+                        element['status'] = 'stop'
+                        element['countdown_time'] = element['countdown_time'] - now().timestamp()
+                    elif action == 'reset':
+                        element['status'] = 'stop'
+                        element['countdown_time'] = element.get('default', config['projector_default_countdown'])
+                else:
+                    index += -1
+            projector_config.append(element)
+        if found:
+            projector_instance.config = projector_config
+            projector_instance.save()
 
 
 class Message(ProjectorElement):
