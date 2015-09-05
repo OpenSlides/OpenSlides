@@ -397,9 +397,7 @@ class Motion(RESTModelMixin, models.Model):
         Return the new poll object.
         """
         if self.state.allow_create_poll:
-            # TODO: auto increment the poll_number in the database
-            poll_number = self.polls.aggregate(Max('poll_number'))['poll_number__max'] or 0
-            poll = MotionPoll.objects.create(motion=self, poll_number=poll_number + 1)
+            poll = MotionPoll.objects.create(motion=self)
             poll.set_options()
             return poll
         else:
@@ -678,18 +676,11 @@ class MotionPoll(RESTModelMixin, CollectDefaultVotesMixin, BasePoll):
         ugettext_noop('Yes'), ugettext_noop('No'), ugettext_noop('Abstain')]
     """The possible anwers for the poll. 'Yes, 'No' and 'Abstain'."""
 
-    poll_number = models.PositiveIntegerField(default=1)
-    """An id for this poll in realation to a motion.
-
-    Is unique for each motion.
-    """
-
-    class Meta:
-        unique_together = ("motion", "poll_number")
-
     def __str__(self):
-        """Return a string, representing the poll."""
-        return _('Vote %d') % self.poll_number
+        """
+        Representation method only for debugging purposes.
+        """
+        return 'MotionPoll for motion %s' % self.motion
 
     def set_options(self):
         """Create the option class for this poll."""

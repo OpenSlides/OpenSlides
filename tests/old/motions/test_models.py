@@ -61,11 +61,6 @@ class ModelTest(TestCase):
         self.motion.supporters.remove(self.test_user)
         self.assertFalse(self.motion.is_supporter(self.test_user))
 
-    def test_poll(self):
-        self.motion.state = State.objects.get(pk=1)
-        poll = self.motion.create_poll()
-        self.assertEqual(poll.poll_number, 1)
-
     def test_state(self):
         self.motion.reset_state()
         self.assertEqual(self.motion.state.name, 'submitted')
