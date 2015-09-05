@@ -48,7 +48,7 @@ def setup_agenda_config(sender, **kwargs):
         default_value=False,
         input_type='boolean',
         label=ugettext_lazy('Couple countdown with the list of speakers'),
-        help_text=ugettext_lazy('[Begin speach] starts the countdown, [End speach] stops the countdown.'),
+        help_text=ugettext_lazy('[Begin speech] starts the countdown, [End speech] stops the countdown.'),
         weight=230,
         group=ugettext_lazy('Agenda'))
 
