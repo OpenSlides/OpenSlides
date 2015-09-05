@@ -37,8 +37,8 @@
   </div>
   <div class="form-group">
     <label for="selectTags" translate>Tags</label>
-    <!-- TODO: get types automatically, provide multiple select field -->
-    <select ng-options="" ng-model="item.tags" class="form-control" name="selectTags">
+    <select multiple ng-options="tag.id as tag.name for tag in tags"
+        ng-model="item.tags_id" class="form-control" name="selectTags">
     </select>
   </div>
 

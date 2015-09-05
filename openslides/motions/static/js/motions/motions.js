@@ -50,7 +50,7 @@ angular.module('OpenSlidesApp.motions', [])
                         localField: 'submitters',
                         localKeys: 'submitters_id',
                     },
-                    'supporters': {
+                    {
                         localField: 'supporters',
                         localKeys: 'supporters_id',
                     }

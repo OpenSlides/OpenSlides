@@ -73,6 +73,9 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
                 types: function($http) {
                     // get all item types
                     return $http({ 'method': 'OPTIONS', 'url': '/rest/agenda/item/' });
+                },
+                tags: function(Tag) {
+                    return Tag.findAll();
                 }
             }
         })
@@ -83,6 +86,9 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
                 },
                 users: function(User) {
                     return User.findAll();
+                },
+                tags: function(Tag) {
+                    return Tag.findAll();
                 }
             }
         })
@@ -196,13 +202,12 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     };
 })
 
-.controller('ItemCreateCtrl', function($scope, $state, Agenda, types) {
+.controller('ItemCreateCtrl', function($scope, $state, Agenda, Tag, types) {
     $scope.types = types.data.actions.POST.type.choices;  // get all item types
+    Tag.bindAll({}, $scope, 'tags');
     $scope.save = function (item) {
         if (!item)
             return null;
-        item.weight = 0;  // TODO: the rest_api should do this
-        item.tags = [];   // TODO: the rest_api should do this
         Agenda.create(item).then(
             function(success) {
                 $state.go('agenda.item.list');
@@ -211,8 +216,9 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     };
 })
 
-.controller('ItemUpdateCtrl', function($scope, $state, Agenda, types, item) {
+.controller('ItemUpdateCtrl', function($scope, $state, Agenda, Tag, types, item) {
     $scope.types = types.data.actions.POST.type.choices;  // get all item types
+    Tag.bindAll({}, $scope, 'tags');
     $scope.item = item;
     $scope.save = function (item) {
         Agenda.save(item).then(
@@ -242,8 +248,6 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         $scope.importcounter = 0;
         $scope.items.forEach(function(title) {
             var item = {title: title};
-            item.weight = 0;  // TODO: the rest_api should do this
-            item.tags = [];   // TODO: the rest_api should do this
             // TODO: create all items in bulk mode
             Agenda.create(item).then(
                 function(success) {
@@ -270,8 +274,6 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             item.title = obj[i].title;
             item.text = obj[i].text;
             item.duration = obj[i].duration;
-            item.weight = 0;  // TODO: the rest_api should do this
-            item.tags = [];   // TODO: the rest_api should do this
             Agenda.create(item).then(
                 function(success) {
                     $scope.csvimportcounter++;
@@ -306,6 +308,7 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
     var id = $scope.element.context.id;
     Agenda.find(id);
     Agenda.bindOne(id, $scope, 'item');
+
 })
 
 .controller('SlideItemListCtrl', function($scope, $http, Agenda) {
