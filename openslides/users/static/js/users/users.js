@@ -122,6 +122,13 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             }
         }
     })
+    .state('users.user.detail.profile', {
+        views: {
+            '@users.user': {},
+        },
+        url: '/profile',
+        controller: 'UserProfileCtrl',
+    })
     .state('users.user.import', {
         url: '/import',
         controller: 'UserImportCtrl',
@@ -331,6 +338,18 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         User.save(user).then(
             function(success) {
                 $state.go('users.user.list');
+            }
+        );
+    };
+})
+
+.controller('UserProfileCtrl', function($scope, $state, User, user) {
+    $scope.user = user;  // autoupdate is not activated
+    $scope.save = function (user) {
+        User.save(user).then(
+            function(success) {
+                // TODO: show success message
+                console.log("profile saved");
             }
         );
     };
