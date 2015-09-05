@@ -136,7 +136,7 @@ def start(args):
     execute_from_command_line(['manage.py', 'migrate'])
 
     if not args.no_browser:
-        start_browser('http://127.0.0.1:8000')
+        start_browser('http://localhost:8000')
 
     # Start the webserver
     execute_from_command_line(['manage.py', 'runserver', '0.0.0.0:8000'])
