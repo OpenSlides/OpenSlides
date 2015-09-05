@@ -117,10 +117,14 @@ class AppsJsView(utils_views.View):
                 return result.promise();
             };
             """ +
-            "angular.module('OpenSlidesApp.{app}', {angular_modules});"
-            "var deferres = [];"
-            "{js_files}.forEach(function(js_file)deferres.push(loadScript(js_file)));"
-            "$.when.apply(this,deferres).done(function()angular.bootstrap(document,['OpenSlidesApp.{app}']));"
+            """
+            angular.module('OpenSlidesApp.{app}', {angular_modules});
+            var deferres = [];
+            {js_files}.forEach( function(js_file) {{ deferres.push(loadScript(js_file)); }} );
+            $.when.apply(this,deferres).done(function() {{
+                angular.bootstrap(document,['OpenSlidesApp.{app}']);
+            }} );
+            """
             .format(
                 app=kwargs.get('openslides_app'),
                 angular_modules=angular_modules,
