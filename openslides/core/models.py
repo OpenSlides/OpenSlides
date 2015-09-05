@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
@@ -39,6 +41,22 @@ class Projector(RESTModelMixin, models.Model):
             ('can_manage_projector', ugettext_noop('Can manage the projector')),
             ('can_see_dashboard', ugettext_noop('Can see the dashboard')),
             ('can_use_chat', ugettext_noop('Can use the chat')))
+
+    def save(self, *args, **kwargs):
+        """
+        Saves the projector. Ensures that every projector element in config
+        has an UUID.
+        """
+        self.add_uuid()
+        return super().save(*args, **kwargs)
+
+    def add_uuid(self):
+        """
+        Adds an UUID to every element.
+        """
+        for element in self.config:
+            if element.get('uuid') is None:
+                element['uuid'] = uuid.uuid4().hex
 
     @property
     def elements(self):

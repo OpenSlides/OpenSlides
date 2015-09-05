@@ -83,14 +83,43 @@ class ProjectorAPI(TestCase):
         self.viewset.prune_elements(request=request, pk=MagicMock())
         self.assertEqual(len(mock_object.return_value.config), 2)
 
+    def test_update_elements(self, mock_object):
+        mock_object.return_value.config = [{
+            'name': 'test_projector_element_jbmgfnf657djcnsjdfkm',
+            'test_key_7mibir1Uoee7uhilohB1': 'test_value_mbhfn5zwhakbigjrns88',
+            'uuid': 'aacbb64acafc4ccc957240c871d4e77d'}]
+        request = MagicMock()
+        request.data = [{
+            'uuid': 'aacbb64acafc4ccc957240c871d4e77d',
+            'data': {
+                'name': 'test_projector_element_wdsexrvhgn67ezfjnfje'}}]
+        self.viewset.request = request
+        self.viewset.update_elements(request=request, pk=MagicMock())
+        self.assertEqual(len(mock_object.return_value.config), 1)
+        self.assertEqual(mock_object.return_value.config[0]['name'], 'test_projector_element_wdsexrvhgn67ezfjnfje')
+
+    def test_update_elements_wrong_element(self, mock_object):
+        mock_object.return_value.config = [{
+            'name': 'test_projector_element_njb657djcsjdmgfnffkm',
+            'test_key_uhilo7mir1Uoee7ibhB1': 'test_value_hjrnsmbhfn5zwakbig88',
+            'uuid': '5b5e5d3b35de4fff873925296c3093fc'}]
+        request = MagicMock()
+        request.data = [{
+            'uuid': '255fda68ca6f4f3f803b98405abfb710',
+            'data': {
+                'name': 'test_projector_element_wxrvhn67eebmfjjnkvds'}}]
+        self.viewset.request = request
+        self.viewset.update_elements(request=request, pk=MagicMock())
+        self.assertEqual(len(mock_object.return_value.config), 1)
+        self.assertNotEqual(mock_object.return_value.config[0]['name'], 'test_projector_element_wxrvhn67eebmfjjnkvds')
+
     def test_deactivate_elements(self, mock_object):
         mock_object.return_value.config = [{
             'name': 'test_projector_element_c6oohooxugiphuuM6Wee',
-            'test_key_eehiloh7mibi7ur1UoB1': 'test_value_o8eig1AeSajieTh6aiwo'}]
+            'test_key_eehiloh7mibi7ur1UoB1': 'test_value_o8eig1AeSajieTh6aiwo',
+            'uuid': '874aaf279be346ff85a9b456ce1d1128'}]
         request = MagicMock()
-        request.data = [{
-            'name': 'test_projector_element_c6oohooxugiphuuM6Wee',
-            'test_key_eehiloh7mibi7ur1UoB1': 'test_value_o8eig1AeSajieTh6aiwo'}]
+        request.data = ['874aaf279be346ff85a9b456ce1d1128']
         self.viewset.request = request
         self.viewset.deactivate_elements(request=request, pk=MagicMock())
         self.assertEqual(len(mock_object.return_value.config), 0)
@@ -98,9 +127,10 @@ class ProjectorAPI(TestCase):
     def test_deactivate_elements_wrong_element(self, mock_object):
         mock_object.return_value.config = [{
             'name': 'test_projector_element_c6oohooxugiphuuM6Wee',
-            'test_key_eehiloh7mibi7ur1UoB1': 'test_value_o8eig1AeSajieTh6aiwo'}]
+            'test_key_eehiloh7mibi7ur1UoB1': 'test_value_o8eig1AeSajieTh6aiwo',
+            'uuid': 'd867b2557ad041b8848e95981c5671b7'}]
         request = MagicMock()
-        request.data = [{'name': 'wrong name'}]
+        request.data = ['1179ea09ba2b4559a41272efb1346c86']  # Wrong UUID.
         self.viewset.request = request
         self.viewset.deactivate_elements(request=request, pk=MagicMock())
         self.assertEqual(len(mock_object.return_value.config), 1)
@@ -108,7 +138,8 @@ class ProjectorAPI(TestCase):
     def test_deactivate_elements_no_list(self, mock_object):
         mock_object.return_value.config = [{
             'name': 'test_projector_element_Au1ce9nevaeX7zo4ye2w',
-            'test_key_we9biiZ7bah4Sha2haS5': 'test_value_eehoipheik6aiNgeegor'}]
+            'test_key_we9biiZ7bah4Sha2haS5': 'test_value_eehoipheik6aiNgeegor',
+            'uuid': '0f3b8f8df38b4bbc90f4beba9393d2db'}]
         request = MagicMock()
         request.data = 'bad_value_no_list_ohchohWee1fie0SieTha'
         self.viewset.request = request
@@ -118,7 +149,8 @@ class ProjectorAPI(TestCase):
     def test_deactivate_elements_bad_list(self, mock_object):
         mock_object.return_value.config = [{
             'name': 'test_projector_element_teibaeRaim1heiCh6Ohv',
-            'test_key_uk7wai7eiZieQu0ief3': 'test_value_eeghisei3ieGh3ieb6ae'}]
+            'test_key_uk7wai7eiZieQu0ief3': 'test_value_eeghisei3ieGh3ieb6ae',
+            'uuid': '8ae42a09f585480e8b4a53194d4d1fba'}]
         request = MagicMock()
         # Value 1 is not an dictionary so we expect ValidationError.
         request.data = [1]
