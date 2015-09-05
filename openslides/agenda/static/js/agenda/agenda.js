@@ -47,6 +47,19 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
 
 angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
 
+.config([
+    'mainMenuProvider',
+    function (mainMenuProvider) {
+        mainMenuProvider.register({
+            'ui_sref': 'agenda.item.list',
+            'img_class': 'calendar-o',
+            'title': 'Agenda',
+            'weight': 200,
+            'perm': 'agenda.can_see',
+        });
+    }
+])
+
 .config(function($stateProvider) {
     $stateProvider
         .state('agenda', {

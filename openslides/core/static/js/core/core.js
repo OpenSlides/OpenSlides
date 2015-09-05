@@ -99,9 +99,15 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
-.run(['loadGlobalData', function(loadGlobalData) {
-    loadGlobalData();
-}])
+// Load the global data on startup and when the operator changes
+.run([
+    'loadGlobalData',
+    'operator',
+    function(loadGlobalData, operator) {
+        loadGlobalData();
+        operator.onOperatorChange(loadGlobalData);
+    }
+])
 
 .factory('jsDataModel', ['$http', 'Projector', function($http, Projector) {
     var BaseModel = function() {};
@@ -174,6 +180,70 @@ angular.module('OpenSlidesApp.core.site', [
     'ngSanitize',  // TODO: only use this in functions that need it.
     'ui.select',
     'xeditable',
+])
+
+// Provider to register entries for the main menu.
+.provider('mainMenu', [
+    function() {
+        var mainMenuList = [];
+        var scope;
+
+        this.register = function(config) {
+            mainMenuList.push(config);
+        };
+
+        this.$get = ['operator', function(operator) {
+            return {
+                registerScope: function (scope) {
+                    var that = this;
+                    this.scope = scope;
+                    this.updateMainMenu();
+                    operator.onOperatorChange(function () {that.updateMainMenu()});
+                },
+                updateMainMenu: function () {
+                    this.scope.elements = this.getElements();
+                },
+                getElements: function() {
+                    var elements = mainMenuList.filter(function (element) {
+                        return typeof element.perm === "undefined" || operator.hasPerms(element.perm);
+                    });
+
+                    elements.sort(function (a, b) {
+                        return a.weight - b.weight;
+                    });
+                    return elements;
+                }
+            }
+        }];
+    }
+])
+
+.config([
+    'mainMenuProvider',
+    function (mainMenuProvider) {
+        mainMenuProvider.register({
+            'ui_sref': 'dashboard',
+            'img_class': 'home',
+            'title': 'Home',
+            'weight': 100,
+        });
+
+        mainMenuProvider.register({
+            'ui_sref': 'core.customslide.list',
+            'img_class': 'video-camera',
+            'title': 'Projector',
+            'weight': 110,
+            'perm': 'core.can_see_projector',
+        });
+
+        mainMenuProvider.register({
+            'ui_sref': 'config',
+            'img_class': 'cog',
+            'title': 'Settings',
+            'weight': 1000,
+            'perm': 'core.can_manage_config',
+        });
+    }
 ])
 
 .config(function($urlRouterProvider, $locationProvider) {
@@ -419,6 +489,14 @@ angular.module('OpenSlidesApp.core.site', [
     }
 })
 
+.controller("MainMenuCtrl", [
+    '$scope',
+    'mainMenu',
+    function ($scope, mainMenu) {
+        mainMenu.registerScope($scope);
+    }
+])
+
 .controller("LanguageCtrl", function ($scope, gettextCatalog) {
     // controller to switch app language
     // TODO: detect browser language for default language
@@ -449,8 +527,7 @@ angular.module('OpenSlidesApp.core.site', [
     '$modalInstance',
     '$http',
     'operator',
-    'loadGlobalData',
-    function ($scope, $modalInstance, $http, operator, loadGlobalData) {
+    function ($scope, $modalInstance, $http, operator) {
         $scope.login = function () {
             $http.post(
                 '/users/login/',
@@ -458,7 +535,6 @@ angular.module('OpenSlidesApp.core.site', [
             ).success(function(data) {
                 if (data.success) {
                     operator.setUser(data.user_id);
-                    loadGlobalData();
                     $scope.loginFailed = false;
                     $modalInstance.close();
                 } else {

@@ -20,6 +20,19 @@ angular.module('OpenSlidesApp.assignments', [])
 
 angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 
+.config([
+    'mainMenuProvider',
+    function (mainMenuProvider) {
+        mainMenuProvider.register({
+            'ui_sref': 'assignments.assignment.list',
+            'img_class': 'pie-chart',
+            'title': 'Elections',
+            'weight': 400,
+            'perm': 'assignments.can_see'
+        });
+    }
+])
+
 .config(function($stateProvider) {
     $stateProvider
         .state('assignments', {
