@@ -58,7 +58,7 @@ class AgendaTreeTest(TestCase):
         response = self.client.put('/rest/agenda/item/tree/', {'tree': tree}, format='json')
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.data, {'detail': "Item 1 is more then once in the tree"})
+        self.assertEqual(response.data, {'detail': "Item 1 is more then once in the tree."})
 
     def test_tree_with_empty_children(self):
         """
@@ -72,13 +72,14 @@ class AgendaTreeTest(TestCase):
 
     def test_tree_with_unknown_item(self):
         """
-        Tests that unknown items are ignored.
+        Tests that unknown items lead to an error.
         """
         tree = [{'id': 500}]
 
         response = self.client.put('/rest/agenda/item/tree/', {'tree': tree}, format='json')
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, {'detail': "Item 500 is not in the database."})
 
 
 class TestAgendaPDF(TestCase):

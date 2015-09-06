@@ -5,7 +5,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
-from django.db import models
+from django.db import models, transaction
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
@@ -52,6 +52,7 @@ class ItemManager(models.Manager):
 
         yield from get_children(filter(lambda item: item.parent is None, item_queryset))
 
+    @transaction.atomic
     def set_tree(self, tree):
         """
         Sets the agenda tree.
@@ -71,15 +72,25 @@ class ItemManager(models.Manager):
                 yield from walk_items(element.get('children', []), element['id'])
 
         touched_items = set()
-        for item_pk, parent_pk, weight in walk_items(tree):
+        db_items = dict((item.pk, item) for item in Item.objects.all())
+        for item_id, parent_id, weight in walk_items(tree):
             # Check that the item is only once in the tree to prevent invalid trees
-            if item_pk in touched_items:
-                raise ValueError("Item %d is more then once in the tree" % item_pk)
-            touched_items.add(item_pk)
+            if item_id in touched_items:
+                raise ValueError("Item {} is more then once in the tree.".format(item_id))
+            touched_items.add(item_id)
 
-            Item.objects.filter(pk=item_pk).update(
-                parent_id=parent_pk,
-                weight=weight)
+            try:
+                db_item = db_items[item_id]
+            except KeyError:
+                raise ValueError("Item {} is not in the database.".format(item_id))
+
+            # Check if the item has changed and update it
+            # Note: Do not use Item.objects.update, so that the items are sent
+            #       to the clients via autoupdate
+            if db_item.parent_id != parent_id or db_item.weight != weight:
+                db_item.parent_id = parent_id
+                db_item.weight = weight
+                db_item.save()
 
 
 class Item(RESTModelMixin, models.Model):

@@ -9,19 +9,21 @@
 
 <p translate>Drag and drop items to change the order of the agenda. Your modification will be saved directly.</p>
 
+<div ui-tree callbacks="treeOptions">
+  <ol ui-tree-nodes="" ng-model="items" id="tree-root">
+    <li ng-repeat="item in items" ui-tree-node ng-include="'nodes_renderer.html'">
+  </ol>
+</div>
+
+
 <!-- Nested node template -->
 <script type="text/ng-template" id="nodes_renderer.html">
   <div ui-tree-handle>
-    {{ (items | filter: {id: node.id})[0].item_number }}
-    {{ (items | filter: {id: node.id})[0].title }}
+    {{ item.item.item_number }}
+    {{ item.item.title }}
   </div>
-  <ol ui-tree-nodes="" ng-model="node.children">
-    <li ng-repeat="node in node.children" ui-tree-node ng-include="'nodes_renderer.html'">
+  <ol ui-tree-nodes="" ng-model="item.children">
+    <li ng-repeat="item in item.children" ui-tree-node ng-include="'nodes_renderer.html'">
   </ol>
 </script>
 
-<div ui-tree callbacks="treeOptions">
-  <ol ui-tree-nodes="" ng-model="tree" id="tree-root">
-    <li ng-repeat="node in tree" ui-tree-node ng-include="'nodes_renderer.html'">
-  </ol>
-</div>

@@ -52,42 +52,44 @@
       <th os-perms="agenda.can_manage core.can_manage_projector" class="minimum">
         <translate>Actions</translate>
   <tbody>
-    <tr ng-repeat="node in flattenedTree | filter: filter.search"
-        ng-class="{ 'activeline': (items | filter: {id: node.id})[0].isProjected() }">
-      <td><input type="checkbox" ng-model="(items | filter: {id: node.id})[0].closed" ng-click="save(node.id)">
+    <tr ng-repeat="item in items"
+        ng-class="{ 'activeline': item.isProjected() }">
       <td>
-        <span ng-repeat="n in [].constructor(node.level) track by $index">&ndash;</span>
-        <a ui-sref="agenda.item.detail({id: node.id})">
-          {{ (items | filter: {id: node.id})[0].item_number }}
-          {{ (items | filter: {id: node.id})[0].title }}
+        <!-- Please do not use ng-click, but ng-change -->
+        <input type="checkbox" ng-model="item.closed" ng-click="save(item.id)">
+      <td>
+        <span ng-repeat="n in [].constructor(item.parentCount) track by $index">&ndash;</span>
+        <a ui-sref="agenda.item.detail({id: item.id})">
+          {{ item.item_number }}
+          {{ item.title }}
         </a>
-        <div ng-if="(items | filter: {id: node.id})[0].comment">
-          <small><i class="fa fa-info-circle"></i> {{ (items | filter: {id: node.id})[0].comment }}</small>
+        <div ng-if="item.comment">
+          <small><i class="fa fa-info-circle"></i> {{ item.comment }}</small>
         </div>
       <td os-perms="agenda.can_manage" class="optional">
-        <a href="#" editable-number="(items | filter: {id: node.id})[0].duration" e-min="1" onaftersave="save(node.id)">
-          {{ (items | filter: {id: node.id})[0].duration }}
+        <a href="#" editable-number="item.duration" e-min="1" onaftersave="save(item.id)">
+          {{ item.duration }}
         </a>
-        <span ng-if="(items | filter: {id: node.id})[0].duration" translate>min</span>
+        <span ng-if="item.duration" translate>min</span>
       <td os-perms="agenda.can_manage core.can_manage_projector" class="nobr">
         <!-- project -->
         <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-            ng-class="{ 'btn-primary': (items | filter: {id: node.id})[0].isProjected() }"
-            ng-click="(items | filter: {id: node.id})[0].project()"
+            ng-class="{ 'btn-primary': item.isProjected() }"
+            ng-click="item.project()"
             title="{{ 'Project item' | translate }}">
           <i class="fa fa-video-camera"></i>
         </a>
         <!-- edit -->
-        <a ui-sref="agenda.item.detail.update({id: node.id })" os-perms="agenda.can_manage"
+        <a ui-sref="agenda.item.detail.update({id: item.id })" os-perms="agenda.can_manage"
             class="btn btn-default btn-sm"
-            title="{{ 'Edit' | translate}}">
+            title="{{ 'Edit' | translate }}">
           <i class="fa fa-pencil"></i>
         </a>
         <!-- delete -->
         <a os-perms="agenda.can_manage" class="btn btn-danger btn-sm"
             ng-bootbox-confirm="Are you sure you want to delete
-              <b>{{ (items | filter: {id: node.id})[0].title }}</b>?"
-            ng-bootbox-confirm-action="delete(node.id)"
+              <b>{{ item.title }}</b>?"
+            ng-bootbox-confirm-action="delete(item.id)"
             title="{{ 'Delete' | translate }}">
           <i class="fa fa-trash-o"></i>
         </a>
