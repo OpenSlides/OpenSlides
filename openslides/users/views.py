@@ -61,7 +61,7 @@ class UserViewSet(ModelViewSet):
         """
         Customized view endpoint to list all user.
 
-        Does only the default_password check.
+        Hides the default_password for non admins.
         """
         response = super().list(request, *args, **kwargs)
         self.extract_default_password(response)
@@ -71,7 +71,7 @@ class UserViewSet(ModelViewSet):
         """
         Customized view endpoint to retrieve a user.
 
-        Does only the default_password check.
+        Hides the default_password for non admins.
         """
         response = super().retrieve(request, *args, **kwargs)
         self.extract_default_password(response)
