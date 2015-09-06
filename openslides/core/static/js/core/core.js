@@ -99,13 +99,11 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
-// Load the global data on startup and when the operator changes
+// Load the global data on startup
 .run([
     'loadGlobalData',
-    'operator',
     function(loadGlobalData, operator) {
         loadGlobalData();
-        operator.onOperatorChange(loadGlobalData);
     }
 ])
 
@@ -215,6 +213,15 @@ angular.module('OpenSlidesApp.core.site', [
                 }
             }
         }];
+    }
+])
+
+// Load the global data when the operator changes
+.run([
+    'loadGlobalData',
+    'operator',
+    function(loadGlobalData, operator) {
+        operator.onOperatorChange(loadGlobalData);
     }
 ])
 
