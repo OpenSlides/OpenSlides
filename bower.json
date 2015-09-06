@@ -24,6 +24,7 @@
     "sockjs": "~0.3.4",
     "font-awesome-bower": "4.3.0",
     "js-data": "~2.3.0",
-    "js-data-angular": "~3.0.0"
+    "js-data-angular": "~3.0.0",
+    "ng-file-upload": "~7.0.17"
   }
 }
