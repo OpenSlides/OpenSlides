@@ -185,16 +185,28 @@ class Speak(TestCase):
         config['agenda_couple_countdown_and_speakers'] = True
         Speaker.objects.add(self.user, self.item)
         speaker = Speaker.objects.add(get_user_model().objects.get(username='admin'), self.item)
-        self.assertEqual(Projector.objects.get().config[2]['name'], 'core/countdown')
         self.client.put(
             reverse('item-speak', args=[self.item.pk]),
             {'speaker': speaker.pk})
-        self.assertEqual(Projector.objects.get().config[2]['status'], 'running')
+        for key, value in Projector.objects.get().config.items():
+            if value['name'] == 'core/countdown':
+                self.assertEqual(value['status'], 'running')
+                success = True
+                break
+        else:
+            success = False
+        self.assertTrue(success)
 
     def test_end_speech_with_countdown(self):
         config['agenda_couple_countdown_and_speakers'] = True
         speaker = Speaker.objects.add(get_user_model().objects.get(username='admin'), self.item)
         speaker.begin_speech()
-        self.assertEqual(Projector.objects.get().config[2]['name'], 'core/countdown')
         self.client.delete(reverse('item-speak', args=[self.item.pk]))
-        self.assertEqual(Projector.objects.get().config[2]['status'], 'stop')
+        for key, value in Projector.objects.get().config.items():
+            if value['name'] == 'core/countdown':
+                self.assertEqual(value['status'], 'stop')
+                success = True
+                break
+        else:
+            success = False
+        self.assertTrue(success)

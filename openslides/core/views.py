@@ -138,8 +138,8 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
     """
     API endpoint for the projector slide info.
 
-    There are the following views: list, retrieve, activate_elements,
-    prune_elements, deactivate_elements and clear_elements
+    There are the following views: metadata, list, retrieve, activate_elements,
+    prune_elements, update_elements, deactivate_elements and clear_elements.
     """
     queryset = Projector.objects.all()
     serializer_class = ProjectorSerializer
@@ -148,9 +148,9 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('list', 'retrieve'):
+        if self.action in ('metadata', 'list', 'retrieve'):
             result = self.request.user.has_perm('core.can_see_projector')
-        elif self.action in ('activate_elements', 'prune_elements',
+        elif self.action in ('activate_elements', 'prune_elements', 'update_elements',
                              'deactivate_elements', 'clear_elements'):
             result = (self.request.user.has_perm('core.can_see_projector') and
                       self.request.user.has_perm('core.can_manage_projector'))
@@ -163,14 +163,18 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         """
         REST API operation to activate projector elements. It expects a POST
         request to /rest/core/projector/<pk>/activate_elements/ with a list
-        of dictionaries to append to the projector config entry.
+        of dictionaries to be appended to the projector config entry.
         """
-        # Get config entry from projector model, add new elements and try to
-        # serialize. This raises ValidationErrors if the data is invalid.
+        if not isinstance(request.data, list):
+            raise ValidationError({'data': 'Data must be a list.'})
+
         projector_instance = self.get_object()
         projector_config = projector_instance.config
-        for projector_element in request.data:
-            projector_config.append(projector_element)
+        for element in request.data:
+            if element.get('name') is None:
+                raise ValidationError({'data': 'Invalid projector element. Name is missing.'})
+            projector_config[uuid.uuid4().hex] = element
+
         serializer = self.get_serializer(projector_instance, data={'config': projector_config}, partial=False)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -184,12 +188,19 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         dictionaries to write them to the projector config entry. All old
         entries are deleted but not entries with stable == True.
         """
-        # Get config entry from projector model, delete old and add new
-        # elements and try to serialize. This raises ValidationErrors if the
-        # data is invalid. Do not filter 'stable' elements.
+        if not isinstance(request.data, list):
+            raise ValidationError({'data': 'Data must be a list.'})
+
         projector_instance = self.get_object()
-        projector_config = [element for element in projector_instance.config if element.get('stable')]
-        projector_config.extend(request.data)
+        projector_config = {}
+        for key, value in projector_instance.config.items():
+            if value.get('stable'):
+                projector_config[key] = value
+        for element in request.data:
+            if element.get('name') is None:
+                raise ValidationError({'data': 'Invalid projector element. Name is missing.'})
+            projector_config[uuid.uuid4().hex] = element
+
         serializer = self.get_serializer(projector_instance, data={'config': projector_config}, partial=False)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -200,30 +211,26 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         """
         REST API operation to update projector elements. It expects a POST
         request to /rest/core/projector/<pk>/deactivate_elements/ with a
-        list of dictonaries. Every dictonary contains the hex UUID (key
-        'uuid') and the new element data (key 'data').
+        dictonary to update the projector config.
         """
-        # Check the data. It must be a list of dictionaries. Get config
-        # entry from projector model. Change the entries that should be
-        # changed and try to serialize. This raises ValidationError if the
-        # data is invalid.
-        if not isinstance(request.data, list):
-            raise ValidationError({'config': ['Data must be a list of dictionaries.']})
-        error = {'config': ['Data must be a list of dictionaries with special keys and values. See docstring.']}
-        for item in request.data:
+        if not isinstance(request.data, dict):
+            raise ValidationError({'data': 'Data must be a dictionary.'})
+        error = {'data': 'Data must be a dictionary with UUIDs as keys and dictionaries as values.'}
+        for key, value in request.data.items():
             try:
-                uuid.UUID(hex=str(item.get('uuid')))
+                uuid.UUID(hex=str(key))
             except ValueError:
                 raise ValidationError(error)
-            if not isinstance(item['data'], dict):
+            if not isinstance(value, dict):
                 raise ValidationError(error)
 
         projector_instance = self.get_object()
         projector_config = projector_instance.config
-        for entry_to_be_changed in request.data:
-            for index, element in enumerate(projector_config):
-                if element['uuid'] == entry_to_be_changed['uuid']:
-                    projector_config[index] = entry_to_be_changed['data']
+        for key, value in request.data.items():
+            if key not in projector_config:
+                raise ValidationError({'data': 'Invalid projector element. Wrong UUID.'})
+        projector_config.update(request.data)
+
         serializer = self.get_serializer(projector_instance, data={'config': projector_config}, partial=False)
         serializer.is_valid(raise_exception=True)
         serializer.save()
@@ -237,24 +244,23 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         a list of hex UUIDs. These are the projector_elements in the config
         that should be deleted.
         """
-        # Check the data. It must be a list of hex UUIDs. Get config
-        # entry from projector model. Pop out the entries that should be
-        # deleted and try to serialize. This raises ValidationError if the
-        # data is invalid.
         if not isinstance(request.data, list):
-            raise ValidationError({'config': ['Data must be a list of hex UUIDs.']})
+            raise ValidationError({'data': 'Data must be a list of hex UUIDs.'})
         for item in request.data:
             try:
                 uuid.UUID(hex=str(item))
             except ValueError:
-                raise ValidationError({'config': ['Data must be a list of hex UUIDs.']})
+                raise ValidationError({'data': 'Data must be a list of hex UUIDs.'})
 
         projector_instance = self.get_object()
-        elements = []
-        for element in projector_instance.config:
-            if not element['uuid'] in request.data:
-                elements.append(element)
-        serializer = self.get_serializer(projector_instance, data={'config': elements}, partial=False)
+        projector_config = projector_instance.config
+        for key in request.data:
+            try:
+                del projector_config[key]
+            except KeyError:
+                raise ValidationError({'data': 'Invalid UUID.'})
+
+        serializer = self.get_serializer(projector_instance, data={'config': projector_config}, partial=False)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
@@ -266,10 +272,12 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         entries with stable == True. It expects a POST request to
         /rest/core/projector/<pk>/clear_elements/.
         """
-        # Get config entry from projector model. Then clear the config field
-        # and try to serialize. Do not remove 'stable' elements.
         projector_instance = self.get_object()
-        projector_config = [element for element in projector_instance.config if element.get('stable')]
+        projector_config = {}
+        for key, value in projector_instance.config.items():
+            if value.get('stable'):
+                projector_config[key] = value
+
         serializer = self.get_serializer(projector_instance, data={'config': projector_config}, partial=False)
         serializer.is_valid(raise_exception=True)
         serializer.save()

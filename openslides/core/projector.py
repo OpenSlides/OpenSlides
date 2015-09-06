@@ -98,30 +98,30 @@ class Countdown(ProjectorElement):
             raise ValueError("Action must be 'start', 'stop' or 'reset', not {}.".format(action))
 
         projector_instance = Projector.objects.get(pk=projector_id)
-        projector_config = []
+        projector_config = {}
         found = False
-        for element in projector_instance.config:
-            if element['name'] == cls.name:
+        for key, value in projector_instance.config.items():
+            if value['name'] == cls.name:
                 if index == 0:
                     try:
-                        cls.validate_config(element)
+                        cls.validate_config(value)
                     except ProjectorException:
                         # Do not proceed if the specific procjector config data is invalid.
                         # The variable found remains False.
                         break
                     found = True
-                    if action == 'start' and element['status'] == 'stop':
-                        element['status'] = 'running'
-                        element['countdown_time'] = now().timestamp() + element['countdown_time']
-                    elif action == 'stop' and element['status'] == 'running':
-                        element['status'] = 'stop'
-                        element['countdown_time'] = element['countdown_time'] - now().timestamp()
+                    if action == 'start' and value['status'] == 'stop':
+                        value['status'] = 'running'
+                        value['countdown_time'] = now().timestamp() + value['countdown_time']
+                    elif action == 'stop' and value['status'] == 'running':
+                        value['status'] = 'stop'
+                        value['countdown_time'] = value['countdown_time'] - now().timestamp()
                     elif action == 'reset':
-                        element['status'] = 'stop'
-                        element['countdown_time'] = element.get('default', config['projector_default_countdown'])
+                        value['status'] = 'stop'
+                        value['countdown_time'] = value.get('default', config['projector_default_countdown'])
                 else:
                     index += -1
-            projector_config.append(element)
+            projector_config[key] = value
         if found:
             projector_instance.config = projector_config
             projector_instance.save()

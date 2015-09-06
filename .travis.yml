@@ -18,7 +18,7 @@ script:
   - "isort --check-only --recursive openslides tests"
 
   - "DJANGO_SETTINGS_MODULE='tests.settings' coverage run ./manage.py test tests.unit"
-  - "coverage report --fail-under=43"
+  - "coverage report --fail-under=42"
 
   - "DJANGO_SETTINGS_MODULE='tests.settings' coverage run ./manage.py test tests.integration"
   - "coverage report --fail-under=50"

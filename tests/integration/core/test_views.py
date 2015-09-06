@@ -21,36 +21,37 @@ class ProjectorAPI(TestCase):
         self.client.login(username='admin', password='admin')
         customslide = CustomSlide.objects.create(title='title_que1olaish5Wei7que6i', text='text_aishah8Eh7eQuie5ooji')
         default_projector = Projector.objects.get(pk=1)
-        default_projector.config = [{'name': 'core/customslide', 'id': customslide.id}]
+        default_projector.config = {
+            'aae4a07b26534cfb9af4232f361dce73': {'name': 'core/customslide', 'id': customslide.id}}
         default_projector.save()
-        element_uuid = Projector.objects.get(pk=1).config[0]['uuid']
 
         response = self.client.get(reverse('projector-detail', args=['1']))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(json.loads(response.content.decode()), {
             'id': 1,
-            'config': [{'name': 'core/customslide', 'id': customslide.id, 'uuid': element_uuid}],
-            'elements': [
-                {'name': 'core/customslide',
-                 'context': {'id': customslide.id}}]})
+            'elements': {
+                'aae4a07b26534cfb9af4232f361dce73':
+                    {'id': customslide.id,
+                     'name': 'core/customslide',
+                     'context': {'id': customslide.id}}}})
 
     def test_invalid_slide_on_default_projector(self):
         self.client.login(username='admin', password='admin')
         default_projector = Projector.objects.get(pk=1)
-        default_projector.config = [{'name': 'invalid_slide'}]
+        default_projector.config = {
+            'fc6ef43b624043068c8e6e7a86c5a1b0': {'name': 'invalid_slide'}}
         default_projector.save()
-        element_uuid = Projector.objects.get(pk=1).config[0]['uuid']
 
         response = self.client.get(reverse('projector-detail', args=['1']))
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(json.loads(response.content.decode()), {
             'id': 1,
-            'config': [{'name': 'invalid_slide', 'uuid': element_uuid}],
-            'elements': [
-                {'name': 'invalid_slide',
-                 'error': 'Projector element does not exist.'}]})
+            'elements': {
+                'fc6ef43b624043068c8e6e7a86c5a1b0':
+                    {'name': 'invalid_slide',
+                     'error': 'Projector element does not exist.'}}})
 
 
 class VersionView(TestCase):
