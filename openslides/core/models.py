@@ -1,5 +1,3 @@
-import uuid
-
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
@@ -16,19 +14,32 @@ class Projector(RESTModelMixin, models.Model):
     Model for all projectors. At the moment we support only one projector,
     the default projector (pk=1).
 
+    The config field contains a dictionary which uses UUIDs as keys. Every
+    element must have at least the property "name". The property "stable"
+    is to set whether this element should disappear on prune or clear
+    requests.
+
+    Example:
+
+    {
+        "881d875cf01741718ca926279ac9c99c": {
+            "name": "core/customslide",
+            "id": 1},
+        "191c0878cdc04abfbd64f3177a21891a": {
+            "name": "core/countdown",
+            "stable": true,
+            "countdown_time": 20,
+            "status": "stop"},
+        "db670aa8d3ed4aabb348e752c75aeaaf": {
+            "name": "core/clock",
+            "stable": true}
+    }
+
     If the config field is empty or invalid the projector shows a default
-    slide. To activate a slide and extra projector elements, save valid
-    JSON to the config field.
+    slide.
 
-    Example: [{"name": "core/customslide", "id": 2},
-              {"name": "core/countdown", "countdown_time": 20, "status": "stop"},
-              {"name": "core/clock", "stable": true}]
-
-    This can be done using the REST API with POST requests on e. g. the URL
-    /rest/core/projector/1/activate_projector_elements/. The data have to be
-    a list of dictionaries. Every dictionary must have at least the
-    property "name". The property "stable" is to set whether this element
-    should disappear on prune or clear requests.
+    The projector can be controlled using the REST API with POST requests
+    on e. g. the URL /rest/core/projector/1/activate_elements/.
     """
     config = JSONField()
 
@@ -42,46 +53,33 @@ class Projector(RESTModelMixin, models.Model):
             ('can_see_dashboard', ugettext_noop('Can see the dashboard')),
             ('can_use_chat', ugettext_noop('Can use the chat')))
 
-    def save(self, *args, **kwargs):
-        """
-        Saves the projector. Ensures that every projector element in config
-        has an UUID.
-        """
-        self.add_uuid()
-        return super().save(*args, **kwargs)
-
-    def add_uuid(self):
-        """
-        Adds an UUID to every element.
-        """
-        for element in self.config:
-            if element.get('uuid') is None:
-                element['uuid'] = uuid.uuid4().hex
-
     @property
     def elements(self):
         """
-        A generator to retrieve all projector elements given in the config
+        Retrieve all projector elements given in the config
         field. For every element the method get_data() is called and its
-        result returned.
+        result is also used.
         """
+        # Get all elements from all apps.
         elements = {}
         for element in ProjectorElement.get_all():
             elements[element.name] = element
-        for config_entry in self.config:
-            name = config_entry['name']
-            element = elements.get(name)
-            data = {'name': name}
+
+        # Parse result
+        result = {}
+        for key, value in self.config.items():
+            result[key] = value
+            element = elements.get(value['name'])
             if element is None:
-                data['error'] = _('Projector element does not exist.')
+                result[key]['error'] = _('Projector element does not exist.')
             else:
                 try:
-                    data.update(element.get_data(
+                    result[key].update(element.get_data(
                         projector_object=self,
-                        config_entry=config_entry))
+                        config_entry=value))
                 except ProjectorException as e:
-                    data['error'] = str(e)
-            yield data
+                    result[key]['error'] = str(e)
+        return result
 
     @classmethod
     def get_all_requirements(cls):
@@ -89,14 +87,17 @@ class Projector(RESTModelMixin, models.Model):
         Generator which returns all ProjectorRequirement instances of all
         active projector elements.
         """
+        # Get all elements from all apps.
         elements = {}
         for element in ProjectorElement.get_all():
             elements[element.name] = element
+
+        # Generator
         for projector in cls.objects.all():
-            for config_entry in projector.config:
-                element = elements.get(config_entry['name'])
+            for key, value in projector.config.items():
+                element = elements.get(value['name'])
                 if element is not None:
-                    for requirement in element.get_requirements(config_entry):
+                    for requirement in element.get_requirements(value):
                         yield requirement
 
 

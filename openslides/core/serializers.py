@@ -29,11 +29,10 @@ class ProjectorSerializer(ModelSerializer):
     """
     Serializer for core.models.Projector objects.
     """
-    config = JSONSerializerField()
 
     class Meta:
         model = Projector
-        fields = ('id', 'config', 'elements', )
+        fields = ('id', 'elements', )
 
 
 class CustomSlideSerializer(ModelSerializer):
