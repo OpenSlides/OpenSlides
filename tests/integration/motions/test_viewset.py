@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from rest_framework import status
@@ -154,11 +156,28 @@ class UpdateMotion(TestCase):
             password='test_password_XaeTe3aesh8ohg6Cohwo')
         response = self.client.patch(
             reverse('motion-detail', args=[self.motion.pk]),
-            {'supporters_id': [supporter.pk]})
+            json.dumps({'supporters_id': [supporter.pk]}),
+            content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         motion = Motion.objects.get()
         self.assertEqual(motion.title, 'test_title_aeng7ahChie3waiR8xoh')
         self.assertEqual(motion.supporters.get().username, 'test_username_ieB9eicah0uqu6Phoovo')
+
+    def test_patch_supporters_non_manager(self):
+        non_admin = get_user_model().objects.create_user(
+            username='test_username_uqu6PhoovieB9eicah0o',
+            password='test_password_Xaesh8ohg6CoheTe3awo')
+        self.client.login(
+            username='test_username_uqu6PhoovieB9eicah0o',
+            password='test_password_Xaesh8ohg6CoheTe3awo')
+        motion = Motion.objects.get()
+        motion.submitters.add(non_admin)
+        motion.supporters.clear()
+        response = self.client.patch(
+            reverse('motion-detail', args=[self.motion.pk]),
+            json.dumps({'supporters_id': [1]}),
+            content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_removal_of_supporters(self):
         admin = get_user_model().objects.get(username='admin')

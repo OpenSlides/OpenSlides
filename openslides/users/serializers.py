@@ -16,7 +16,7 @@ class UserShortSerializer(ModelSerializer):
     """
     Serializer for users.models.User objects.
 
-    Serializes only name fields.
+    Serializes only name fields and about me field.
     """
     class Meta:
         model = User
@@ -27,6 +27,7 @@ class UserShortSerializer(ModelSerializer):
             'first_name',
             'last_name',
             'structure_level',
+            'about_me',
             'groups',)
 
 
