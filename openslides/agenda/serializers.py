@@ -68,4 +68,6 @@ class ItemSerializer(ModelSerializer):
             'speakers',
             'speaker_list_closed',
             'content_object',
-            'tags',)
+            'tags',
+            'weight',
+            'parent',)

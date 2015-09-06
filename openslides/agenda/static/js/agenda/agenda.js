@@ -75,9 +75,6 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             resolve: {
                 items: function(Agenda) {
                     return Agenda.findAll();
-                },
-                tree: function($http) {
-                    return $http.get('/rest/agenda/item/tree/');
                 }
             }
         })
@@ -120,9 +117,6 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             resolve: {
                 items: function(Agenda) {
                     return Agenda.findAll();
-                },
-                tree: function($http) {
-                    return $http.get('/rest/agenda/item/tree/');
                 }
             },
             url: '/sort',
@@ -134,30 +128,75 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         });
 })
 
-.controller('ItemListCtrl', function($scope, $http, Agenda, tree, Projector) {
-    Agenda.bindAll({}, $scope, 'items');
+.factory('AgendaTree', [
+    function () {
+        return {
+            getTree: function (items) {
+                // sortieren nach weight???
 
-    // get a 'flat' (ordered) array of agenda tree to display in table
-    $scope.flattenedTree = buildTree(tree.data);
-    function buildTree(tree, level) {
-        var level = level || 0
-        var nodes = [];
-        var defaultlevel = level;
-        _.each(tree, function(node) {
-            level = defaultlevel;
-            if (node.id) {
-                nodes.push({ id: node.id, level: level });
-            }
-            if (node.children) {
-                level++;
-                var child = buildTree(node.children, level);
-                if (child.length) {
-                    nodes = nodes.concat(child);
+                // Build a dict with all children (dict-value) to a specific
+                // item id (dict-key).
+                var itemChildren = {};
+
+                _.each(items, function (item) {
+                    if (item.parent_id) {
+                        // Add item to his parent. If it is the first child, then
+                        // create a new list.
+                        try {
+                            itemChildren[item.parent_id].push(item);
+                        } catch (error) {
+                            itemChildren[item.parent_id] = [item];
+                        }
+                    }
+
+                });
+
+                // Recursive function that generates a nested list with all
+                // items with there children
+                function getChildren(items) {
+                    var returnItems = [];
+                    _.each(items, function (item) {
+                        returnItems.push({
+                            item: item,
+                            children: getChildren(itemChildren[item.id]),
+                            id: item.id,
+                        });
+                    });
+                    return returnItems;
                 }
-            }
-        });
-        return nodes;
+
+                // Generates the list of root items (with no parents)
+                var parentItems = items.filter(function (item) {
+                    return !item.parent_id;
+                });
+                return getChildren(parentItems);
+            },
+            // Returns a list of all items as a flat tree the attribute parentCount
+            getFlatTree: function(items) {
+                var tree = this.getTree(items);
+                var flatItems = [];
+
+                function generateFatTree(tree, parentCount) {
+                    _.each(tree, function (item) {
+                        item.item.parentCount = parentCount;
+                        flatItems.push(item.item);
+                        generateFatTree(item.children, parentCount + 1);
+                    });
+                }
+                generateFatTree(tree, 0);
+                return flatItems;
+            },
+        }
     }
+])
+
+.controller('ItemListCtrl', function($scope, $http, Agenda, Projector, AgendaTree) {
+    // Bind agenda tree to the scope
+    $scope.$watch(function () {
+        return Agenda.lastModified();
+    }, function () {
+        $scope.items = AgendaTree.getFlatTree(Agenda.getAll());
+    });
 
     // save changed item
     $scope.save = function (item) {
@@ -269,16 +308,20 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     };
 })
 
-.controller('AgendaSortCtrl', function($scope, $http, Agenda, tree) {
-    Agenda.bindAll({}, $scope, 'items');
-    $scope.tree = tree.data;
+.controller('AgendaSortCtrl', function($scope, $http, Agenda, AgendaTree) {
+    // Bind agenda tree to the scope
+    $scope.$watch(function () {
+        return Agenda.lastModified();
+    }, function () {
+        $scope.items = AgendaTree.getTree(Agenda.getAll());
+    });
 
     // set changed agenda tree
     $scope.treeOptions = {
-        dropped: function(e) {
-            $http.put('/rest/agenda/item/tree/', {tree: $scope.tree});
+        dropped: function() {
+            $http.put('/rest/agenda/item/tree/', {tree: $scope.items});
         }
-      };
+    };
 })
 
 .controller('AgendaImportCtrl', function($scope, $state, Agenda) {
