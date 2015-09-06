@@ -33,9 +33,9 @@ class UserViewSet(ModelViewSet):
         """
         Returns True if the user has required permissions.
         """
-        if self.action in ('metadata', 'list', 'retrieve'):
+        if self.action in ('metadata', 'list', 'retrieve', 'partial_update'):
             result = self.request.user.has_perm('users.can_see_name')
-        elif self.action in ('create', 'partial_update', 'update', 'destroy', 'reset_password'):
+        elif self.action in ('create', 'update', 'destroy', 'reset_password'):
             result = (self.request.user.has_perm('users.can_see_name') and
                       self.request.user.has_perm('users.can_see_extra_data') and
                       self.request.user.has_perm('users.can_manage'))
@@ -56,6 +56,79 @@ class UserViewSet(ModelViewSet):
         else:
             serializer_class = UserShortSerializer
         return serializer_class
+
+    def list(self, request, *args, **kwargs):
+        """
+        Customized view endpoint to list all user.
+
+        Does only the default_password check.
+        """
+        response = super().list(request, *args, **kwargs)
+        self.extract_default_password(response)
+        return response
+
+    def retrieve(self, request, *args, **kwargs):
+        """
+        Customized view endpoint to retrieve a user.
+
+        Does only the default_password check.
+        """
+        response = super().retrieve(request, *args, **kwargs)
+        self.extract_default_password(response)
+        return response
+
+    def extract_default_password(self, response):
+        """
+        Checks if a user is not a manager. If yes, the default password is
+        extracted from the response.
+        """
+        if not self.request.user.has_perm('users.can_manage'):
+            if isinstance(response.data, dict):
+                del response.data['default_password']
+            elif isinstance(response.data, list):
+                for user in response.data:
+                    del user['default_password']
+
+    def update(self, request, *args, **kwargs):
+        """
+        Customized view endpoint to update an user.
+
+        Checks also whether the requesting user can update the user. He
+        needs at least the permissions 'users.can_see_name' (see
+        self.check_view_permissions()). Also it is evaluated whether he
+        wants to update himself or is manager.
+        """
+        # Check manager perms
+        if (request.user.has_perm('users.can_see_extra_data') and
+                request.user.has_perm('users.can_manage')):
+            response = super().update(request, *args, **kwargs)
+        else:
+            # Get user.
+            user = self.get_object()
+            # Check permissions only to update yourself.
+            if request.user != user:
+                self.permission_denied(request)
+            # Check permission to send only some data.
+            whitelist = (
+                'username',
+                'title',
+                'first_name',
+                'last_name',
+                'structure_level'
+                'about_me',)
+            for data in request.data.keys():
+                if data not in whitelist:
+                    # Non-staff users are allowed to send only some data.
+                    self.permission_denied(request)
+            # Validate data and update user.
+            serializer = self.get_serializer(
+                user,
+                data=request.data,
+                partial=kwargs.get('partial', False))
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            response = Response(serializer.data)
+        return response
 
     @detail_route(methods=['post'])
     def reset_password(self, request, pk=None):

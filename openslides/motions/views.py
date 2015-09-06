@@ -104,7 +104,7 @@ class MotionViewSet(ModelViewSet):
 
         # Check permission to send submitter and supporter data.
         if (not request.user.has_perm('motions.can_manage') and
-                (request.data.getlist('submitters') or request.data.getlist('supporters'))):
+                (request.data.get('submitters_id') or request.data.get('supporters_id'))):
             # Non-staff users are not allowed to send submitter or supporter data.
             self.permission_denied(request)
 
