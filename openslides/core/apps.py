@@ -20,6 +20,7 @@ class CoreAppConfig(AppConfig):
         from openslides.utils.rest_api import router
         from .signals import setup_general_config
         from .views import (
+            ChatMessageViewSet,
             ConfigViewSet,
             CustomSlideViewSet,
             ProjectorViewSet,
@@ -31,6 +32,7 @@ class CoreAppConfig(AppConfig):
 
         # Register viewsets.
         router.register('core/projector', ProjectorViewSet)
+        router.register('core/chatmessage', ChatMessageViewSet)
         router.register('core/customslide', CustomSlideViewSet)
         router.register('core/tag', TagViewSet)
         router.register('core/config', ConfigViewSet, 'config')

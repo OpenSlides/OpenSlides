@@ -28,8 +28,9 @@ from openslides.utils.rest_api import (
 
 from .config import config
 from .exceptions import ConfigError, ConfigNotFound
-from .models import CustomSlide, Projector, Tag
+from .models import ChatMessage, CustomSlide, Projector, Tag
 from .serializers import (
+    ChatMessageSerializer,
     CustomSlideSerializer,
     ProjectorSerializer,
     TagSerializer,
@@ -412,6 +413,34 @@ class ConfigViewSet(ViewSet):
 
         # Return response.
         return Response({'key': key, 'value': value})
+
+
+class ChatMessageViewSet(ModelViewSet):
+    """
+    API endpoint for chat messages.
+
+    There are the following views: metadata, list, retrieve and create.
+    The views partial_update, update and destroy are disabled.
+    """
+    queryset = ChatMessage.objects.all()
+    serializer_class = ChatMessageSerializer
+
+    def check_view_permissions(self):
+        """
+        Returns True if the user has required permissions.
+        """
+        # We do not want anonymous users to use the chat even the anonymous
+        # group has the permission core.can_use_chat.
+        return (self.action in ('metadata', 'list', 'retrieve', 'create') and
+                self.request.user.is_authenticated() and
+                self.request.user.has_perm('core.can_use_chat'))
+
+    def perform_create(self, serializer):
+        """
+        Customized method to inject the request.user into serializer's save
+        method so that the request.user can be saved into the model field.
+        """
+        serializer.save(user=self.request.user)
 
 
 # Special API views
