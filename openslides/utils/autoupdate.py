@@ -134,8 +134,6 @@ def run_tornado(addr, port, *args, **kwargs):
     app = WSGIContainer(get_wsgi_application())
 
     # Collect urls
-    from openslides.core.chatbox import ChatboxSocketHandler
-    chatbox_socket_js_router = SockJSRouter(ChatboxSocketHandler, '/core/chatbox')
     sock_js_router = SockJSRouter(OpenSlidesSockJSConnection, '/sockjs')
     other_urls = [
         (r"%s(.*)" % settings.STATIC_URL, DjangoStaticFileHandler),
@@ -144,7 +142,7 @@ def run_tornado(addr, port, *args, **kwargs):
 
     # Start the application
     debug = settings.DEBUG
-    tornado_app = Application(sock_js_router.urls + chatbox_socket_js_router.urls + other_urls, autoreload=debug, debug=debug)
+    tornado_app = Application(sock_js_router.urls + other_urls, autoreload=debug, debug=debug)
     server = HTTPServer(tornado_app)
     server.listen(port=port, address=addr)
     IOLoop.instance().start()

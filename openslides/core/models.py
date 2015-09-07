@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
@@ -50,8 +51,7 @@ class Projector(RESTModelMixin, models.Model):
         permissions = (
             ('can_see_projector', ugettext_noop('Can see the projector')),
             ('can_manage_projector', ugettext_noop('Can manage the projector')),
-            ('can_see_dashboard', ugettext_noop('Can see the dashboard')),
-            ('can_use_chat', ugettext_noop('Can use the chat')))
+            ('can_see_dashboard', ugettext_noop('Can see the dashboard')))
 
     @property
     def elements(self):
@@ -154,3 +154,26 @@ class ConfigStore(models.Model):
 
     class Meta:
         permissions = (('can_manage_config', ugettext_noop('Can manage configuration')),)
+
+
+class ChatMessage(RESTModelMixin, models.Model):
+    """
+    Model for chat messages.
+
+    At the moment we only have one global chat room for managers.
+    """
+    message = models.TextField(
+        verbose_name=ugettext_lazy('Message'))
+
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        verbose_name=ugettext_lazy('User'))
+
+    class Meta:
+        permissions = (
+            ('can_use_chat', ugettext_noop('Can use the chat')),)
+
+    def __str__(self):
+        return 'Message {}'.format(self.timestamp)
