@@ -1,6 +1,7 @@
 from collections import defaultdict
 from datetime import datetime
 
+from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -12,7 +13,6 @@ from django.utils.translation import ugettext_lazy, ugettext_noop
 from openslides.core.config import config
 from openslides.core.models import Tag
 from openslides.core.projector import Countdown
-from openslides.users.models import User
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
 from openslides.utils.utils import to_roman
@@ -304,7 +304,7 @@ class Item(RESTModelMixin, models.Model):
 
     def get_next_speaker(self):
         """
-        Returns the speaker object of the user who is next.
+        Returns the speaker object of the speaker who is next.
         """
         try:
             return self.speakers.filter(begin_time=None).order_by('weight')[0]
@@ -352,10 +352,18 @@ class Item(RESTModelMixin, models.Model):
 
 
 class SpeakerManager(models.Manager):
+    """
+    Manager for Speaker model. Provides a customized add method.
+    """
     def add(self, user, item):
+        """
+        Customized manager method to prevent anonymous users to be on the
+        list of speakers and that someone is twice on one list (off coming
+        speakers). Cares also initial sorting of the coming speakers.
+        """
         if self.filter(user=user, item=item, begin_time=None).exists():
-            raise OpenSlidesError(_(
-                '%(user)s is already on the list of speakers of item %(id)s.')
+            raise OpenSlidesError(
+                _('%(user)s is already on the list of speakers of item %(id)s.')
                 % {'user': user, 'id': item.id})
         if isinstance(user, AnonymousUser):
             raise OpenSlidesError(
@@ -372,14 +380,14 @@ class Speaker(RESTModelMixin, models.Model):
 
     objects = SpeakerManager()
 
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
     """
     ForeinKey to the user who speaks.
     """
 
     item = models.ForeignKey(Item, related_name='speakers')
     """
-    ForeinKey to the AgendaItem to which the user want to speak.
+    ForeinKey to the agenda item to which the user want to speak.
     """
 
     begin_time = models.DateTimeField(null=True)
