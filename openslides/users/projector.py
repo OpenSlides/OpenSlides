@@ -14,10 +14,8 @@ class UserSlide(ProjectorElement):
     name = 'users/user'
 
     def get_context(self):
-        pk = self.config_entry.get('id')
-        if not User.objects.filter(pk=pk).exists():
+        if not User.objects.filter(pk=self.config_entry.get('id')).exists():
             raise ProjectorException(_('User does not exist.'))
-        return {'id': pk}
 
     def get_requirements(self, config_entry):
         pk = config_entry.get('id')

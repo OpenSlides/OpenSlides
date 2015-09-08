@@ -9,30 +9,28 @@ class JSONSerializerField(Field):
     """
     def to_internal_value(self, data):
         """
-        Checks that data is a list of dictionaries. Every dictionary must have
-        a key 'name'.
+        Checks that data is a dictionary. The key is a hex UUID and the
+        value is a dictionary with must have a key 'name'.
         """
-        if type(data) is not list:
-            raise ValidationError('Data must be a list of dictionaries.')
-        for element in data:
+        if type(data) is not dict:
+            raise ValidationError('Data must be a dictionary.')
+        for element in data.values():
             if type(element) is not dict:
-                raise ValidationError('Data must be a list of dictionaries.')
+                raise ValidationError('Data must be a dictionary.')
             elif element.get('name') is None:
                 raise ValidationError("Every dictionary must have a key 'name'.")
         return data
-
-    def to_representation(self, value):
-        return value
 
 
 class ProjectorSerializer(ModelSerializer):
     """
     Serializer for core.models.Projector objects.
     """
+    config = JSONSerializerField(write_only=True)
 
     class Meta:
         model = Projector
-        fields = ('id', 'elements', )
+        fields = ('id', 'config', 'elements', )
 
 
 class CustomSlideSerializer(ModelSerializer):
