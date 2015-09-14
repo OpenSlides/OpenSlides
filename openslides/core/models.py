@@ -68,7 +68,8 @@ class Projector(RESTModelMixin, models.Model):
         # Parse result
         result = {}
         for key, value in self.config.items():
-            result[key] = value
+            # Use a copy here not to change the origin value in the config field.
+            result[key] = value.copy()
             element = elements.get(value['name'])
             if element is None:
                 result[key]['error'] = _('Projector element does not exist.')

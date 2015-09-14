@@ -547,7 +547,7 @@ angular.module('OpenSlidesApp.users.projector', ['OpenSlidesApp.users'])
     // Attention! Each object that is used here has to be dealt on server side.
     // Add it to the coresponding get_requirements method of the ProjectorElement
     // class.
-    var id = $scope.element.context.id;
+    var id = $scope.element.id;
     User.find(id);
     User.bindOne(id, $scope, 'user');
 });

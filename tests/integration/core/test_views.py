@@ -34,7 +34,7 @@ class ProjectorAPI(TestCase):
                 'aae4a07b26534cfb9af4232f361dce73':
                     {'id': customslide.id,
                      'name': 'core/customslide',
-                     'context': {'id': customslide.id}}}})
+                     'context': None}}})
 
     def test_invalid_slide_on_default_projector(self):
         self.client.login(username='admin', password='admin')

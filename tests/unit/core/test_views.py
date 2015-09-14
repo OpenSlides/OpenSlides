@@ -86,8 +86,7 @@ class ProjectorAPI(TestCase):
             'test_key_mud1shoo8moh6eiXoong': 'test_value_shugieJier6agh1Ehie3'}]
         self.viewset.request = request
         self.viewset.prune_elements(request=request, pk=MagicMock())
-        # TODO: Do not know how to test this.
-        # self.assertEqual(len(mock_object.return_value.config), 2)
+        self.assertEqual(len(mock_object.return_value.config), 2)
 
     def test_update_elements(self, mock_object):
         mock_object.return_value.config = {
@@ -170,8 +169,7 @@ class ProjectorAPI(TestCase):
         request = MagicMock()
         self.viewset.request = request
         self.viewset.clear_elements(request=request, pk=MagicMock())
-        # TODO: Do not know how to test this.
-        # self.assertEqual(len(mock_object.return_value.config), 0)
+        self.assertEqual(len(mock_object.return_value.config), 0)
 
     def test_clear_elements_with_stable(self, mock_object):
         mock_object.return_value.config = {

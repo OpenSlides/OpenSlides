@@ -765,7 +765,7 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
     // Attention! Each object that is used here has to be dealt on server side.
     // Add it to the coresponding get_requirements method of the ProjectorElement
     // class.
-    var id = $scope.element.context.id;
+    var id = $scope.element.id;
     Customslide.find(id);
     Customslide.bindOne(id, $scope, 'customslide');
 })

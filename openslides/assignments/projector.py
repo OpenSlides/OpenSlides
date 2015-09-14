@@ -18,15 +18,10 @@ class AssignmentSlide(ProjectorElement):
 
     def get_context(self):
         pk = self.config_entry.get('id')
-        if pk is None:
-            # List slide.
-            context = None
-        else:
+        if pk is not None:
             # Detail slide.
             if not Assignment.objects.filter(pk=pk).exists():
                 raise ProjectorException(_('Assignment does not exist.'))
-            context = {'id': pk}
-        return context
 
     def get_requirements(self, config_entry):
         pk = config_entry.get('id')

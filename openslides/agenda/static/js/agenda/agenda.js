@@ -392,12 +392,12 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
-        var id = $scope.element.context.id;
+        var id = $scope.element.id;
         Agenda.find(id);
         User.findAll();
         Agenda.bindOne(id, $scope, 'item');
         // get flag for list-of-speakers-slide (true/false)
-        $scope.is_list_of_speakers = $scope.element.context.list_of_speakers;
+        $scope.is_list_of_speakers = $scope.element.list_of_speakers;
     }
 ])
 

@@ -23,15 +23,10 @@ class ItemListSlide(ProjectorElement):
 
     def get_context(self):
         pk = self.config_entry.get('id')
-        if pk is None:
-            # Root list slide.
-            context = {'tree':  self.config_entry.get('tree', False)}
-        else:
+        if pk is not None:
             # Children slide.
             if not Item.objects.filter(pk=pk).exists():
                 raise ProjectorException(_('Item does not exist.'))
-            context = {'id': pk, 'tree':  self.config_entry.get('tree', False)}
-        return context
 
     def get_requirements(self, config_entry):
         pk = config_entry.get('id', 'tree')
@@ -65,7 +60,6 @@ class ItemDetailSlide(ProjectorElement):
             raise ProjectorException(_('Id must not be None.'))
         if not Item.objects.filter(pk=pk).exists():
             raise ProjectorException(_('Item does not exist.'))
-        return {'id': pk, 'list_of_speakers': self.config_entry.get('list_of_speakers', False)}
 
     def get_requirements(self, config_entry):
         pk = config_entry.get('id')
