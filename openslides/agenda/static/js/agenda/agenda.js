@@ -394,7 +394,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         // set changed agenda tree
         $scope.treeOptions = {
             dropped: function() {
-                $http.put('/rest/agenda/item/tree/', {tree: $scope.tree});
+                $http.put('/rest/agenda/item/tree/', {tree: $scope.items});
             }
         };
     }
