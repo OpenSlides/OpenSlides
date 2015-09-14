@@ -45,11 +45,11 @@ class Countdown(ProjectorElement):
     To start the countdown write into the config field:
 
         {
+            "status": "running",
             "countdown_time": <timestamp>,
-            "status": "running"
         }
 
-    The timestamp is a POSIX timestamp (seconds) calculated from server
+    The timestamp is a POSIX timestamp (seconds) calculated from client
     time, server time offset and countdown duration (countdown_time = now -
     serverTimeOffset + duration).
 
@@ -58,13 +58,23 @@ class Countdown(ProjectorElement):
     and set status to "stop".
 
     To reset the countdown (it is not a reset in a functional way) just
-    change the countdown_time. The status value remains "stop".
+    change the countdown time. The status value remains "stop".
 
-    There might be an additional value for the "default" countdown time
-    which is used for the internal reset method if the countdown is coupled
-    with the list of speakers.
+    Do not forget to send values for additional keywords like "stable" if
+    you do not want to use the default.
 
-    To hide a countdown add {"hidden": true}.
+    The countdown backend supports an extra keyword "default".
+
+        {
+            "default": <seconds>
+        }
+
+    This is used for the internal reset method if the countdown is coupled
+    with the list of speakers. The default of this default value can be
+    customized in OpenSlides config 'projector_default_countdown'.
+
+    Use additional keywords to control view behavior like "visable" and
+    "label". These keywords are not handles by the backend.
     """
     name = 'core/countdown'
 

@@ -25,24 +25,36 @@ class Projector(RESTModelMixin, models.Model):
     {
         "881d875cf01741718ca926279ac9c99c": {
             "name": "core/customslide",
-            "id": 1},
+            "id": 1
+        },
         "191c0878cdc04abfbd64f3177a21891a": {
             "name": "core/countdown",
             "stable": true,
+            "status": "stop",
             "countdown_time": 20,
-            "status": "stop"},
+            "visable": true,
+            "default": 42
+        },
         "db670aa8d3ed4aabb348e752c75aeaaf": {
             "name": "core/clock",
-            "stable": true}
+            "stable": true
+        }
     }
 
     If the config field is empty or invalid the projector shows a default
     slide.
 
+    There are two additional fields to control the behavior of the projector
+    view itself: scale and scroll.
+
     The projector can be controlled using the REST API with POST requests
     on e. g. the URL /rest/core/projector/1/activate_elements/.
     """
     config = JSONField()
+
+    scale = models.IntegerField(default=0)
+
+    scroll = models.IntegerField(default=0)
 
     class Meta:
         """

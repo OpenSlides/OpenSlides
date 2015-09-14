@@ -7,6 +7,7 @@ from django.apps import apps
 from django.conf import settings
 from django.contrib.staticfiles import finders
 from django.core.urlresolvers import get_resolver
+from django.db.models import F
 from django.http import Http404, HttpResponse
 
 from openslides import __version__ as version
@@ -139,8 +140,9 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
     """
     API endpoint for the projector slide info.
 
-    There are the following views: metadata, list, retrieve, activate_elements,
-    prune_elements, update_elements, deactivate_elements and clear_elements.
+    There are the following views: metadata, list, retrieve,
+    activate_elements, prune_elements, update_elements,
+    deactivate_elements, clear_elements and control_view.
     """
     queryset = Projector.objects.all()
     serializer_class = ProjectorSerializer
@@ -152,7 +154,7 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         if self.action in ('metadata', 'list', 'retrieve'):
             result = self.request.user.has_perm('core.can_see_projector')
         elif self.action in ('activate_elements', 'prune_elements', 'update_elements',
-                             'deactivate_elements', 'clear_elements'):
+                             'deactivate_elements', 'clear_elements', 'control_view'):
             result = (self.request.user.has_perm('core.can_see_projector') and
                       self.request.user.has_perm('core.can_manage_projector'))
         else:
@@ -211,8 +213,22 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
     def update_elements(self, request, pk):
         """
         REST API operation to update projector elements. It expects a POST
-        request to /rest/core/projector/<pk>/deactivate_elements/ with a
-        dictonary to update the projector config.
+        request to /rest/core/projector/<pk>/update_elements/ with a
+        dictonary to update the projector config. This must be a dictionary
+        with UUIDs as keys and projector element dictionaries as values.
+
+        Example:
+
+        {
+            "191c0878cdc04abfbd64f3177a21891a": {
+                "name": "core/countdown",
+                "stable": true,
+                "status": "running",
+                "countdown_time": 1374321600.0,
+                "visable": true,
+                "default": 42
+            }
+        }
         """
         if not isinstance(request.data, dict):
             raise ValidationError({'data': 'Data must be a dictionary.'})
@@ -283,6 +299,56 @@ class ProjectorViewSet(ReadOnlyModelViewSet):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+    @detail_route(methods=['post'])
+    def control_view(self, request, pk):
+        """
+        REST API operation to control the projector view, i. e. scale and
+        scroll the projector.
+
+        It expects a POST request to
+        /rest/core/projector/<pk>/control_view/ with a dictionary with an
+        action ('scale' or 'scroll') and a direction ('up', 'down' or
+        'reset').
+
+        Example:
+
+        {
+            "action": "scale",
+            "direction": "up"
+        }
+        """
+        if not isinstance(request.data, dict):
+            raise ValidationError({'data': 'Data must be a dictionary.'})
+        if (request.data.get('action') not in ('scale', 'scroll') or
+                request.data.get('direction') not in ('up', 'down', 'reset')):
+            raise ValidationError({'data': "Data must be a dictionary with an action ('scale' or 'scroll') "
+                                           "and a direction ('up', 'down' or 'reset')."})
+
+        projector_instance = self.get_object()
+        if request.data['action'] == 'scale':
+            if request.data['direction'] == 'up':
+                projector_instance.scale = F('scale') + 1
+            elif request.data['direction'] == 'down':
+                projector_instance.scale = F('scale') - 1
+            else:
+                # request.data['direction'] == 'reset'
+                projector_instance.scale = 0
+        else:
+            # request.data['action'] == 'scroll'
+            if request.data['direction'] == 'up':
+                projector_instance.scroll = F('scroll') + 1
+            elif request.data['direction'] == 'down':
+                projector_instance.scroll = F('scroll') - 1
+            else:
+                # request.data['direction'] == 'reset'
+                projector_instance.scroll = 0
+
+        projector_instance.save()
+        message = '{action} {direction} was successful.'.format(
+            action=request.data['action'].capitalize(),
+            direction=request.data['direction'])
+        return Response({'detail': message})
 
 
 class CustomSlideViewSet(ModelViewSet):
