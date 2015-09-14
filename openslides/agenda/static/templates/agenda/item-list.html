@@ -23,74 +23,93 @@
   </a>
 </div>
 
-<div class="row form-group">
+
+<div class="row">
   <div class="col-sm-8">
-    <!-- project agenda -->
-    <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-        ng-click="projectAgenda()"
-        ng-class="{ 'btn-primary': isAgendaProjected() }">
-      <i class="fa fa-video-camera"></i>
-      <translate>Project agenda</translate>
-    </a>
+    <form class="form-inline">
+      <!-- delete mode -->
+      <div os-perms-lite="agenda.can_manage" class="form-group">
+        <label for="deleteSwitcher" translate>Delete mode</label>
+        <switch id="deleteSwitcher" ng-model="isDeleteMode" ng-change="uncheckAll()"
+            on="{{'On'|translate}}" off="{{'Off'|translate}}"
+            class="green wide form-control">
+        </switch>
+      </div>
+      <div class="form-group">
+        <!-- project agenda button -->
+        <a ng-show="!isDeleteMode" os-perms="core.can_manage_projector"
+            class="btn btn-default btn-sm form-control"
+            ng-click="projectAgenda()"
+            ng-class="{ 'btn-primary': isAgendaProjected() }">
+          <i class="fa fa-video-camera"></i>
+          <translate>Project agenda</translate>
+        </a>
+        <!-- delete button -->
+        <a ng-show="isDeleteMode && (items|filter:{selected:true}).length > 0"
+            os-perms="agenda.can_manage" ng-click="delete()"
+            class="btn btn-primary btn-sm form-control">
+          <i class="fa fa-trash fa-lg"></i>
+          <translate>Delete selected items</translate>
+        </a>
+      </div>
+    </form>
   </div>
   <div class="col-sm-4">
-    <input type="text" os-focus-me ng-model="filter.search" class="form-control"
-        placeholder="{{ 'Filter' | translate}}">
+    <div class="input-group">
+      <div class="input-group-addon"><i class="fa fa-filter"></i></div>
+      <input type="text" os-focus-me ng-model="filter.search" class="form-control"
+         placeholder="{{ 'Filter' | translate}}">
+    </div>
   </div>
 </div>
 
-<i>{{ items.length }} {{ "items" | translate }}</i>
+<i>
+  {{ items.length }} {{ "items" | translate }}<span ng-if="(items|filter:{selected:true}).length > 0">,
+  {{(items|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
+</i>
 <table class="table table-striped table-bordered table-hover">
   <thead>
     <tr>
-      <th class="minimum">
-        <translate>Closed</translate>
+      <!-- projector column -->
+      <th ng-show="!isDeleteMode" os-perms="core.can_manage_projector" class="firstColumn">
+      <!-- delete selection column -->
+      <th ng-show="isDeleteMode" os-perms-lite="agenda.can_manage" class="firstColumn deleteColumn"
+          ng-click="$event.stopPropagation();">
+        <input type="checkbox" ng-model="selectedAll" ng-change="checkAll()">
+      <!-- agenda item column -->
       <th>
         <translate>Agenda item</translate>
       <th os-perms="agenda.can_manage">
         <translate>Duration</translate>
-      <th os-perms="agenda.can_manage core.can_manage_projector" class="minimum">
-        <translate>Actions</translate>
+      <th class="minimum">
+        <translate>Done</translate>
   <tbody>
-    <tr ng-repeat="item in items"
-        ng-class="{ 'activeline': item.isProjected() }">
-      <td>
-        <!-- Please do not use ng-click, but ng-change -->
-        <input type="checkbox" ng-model="item.closed" ng-click="save(item.id)">
+    <tr ng-repeat="item in items | filter: filter.search"
+        ng-click="openDetail(item.id)"
+        ng-class="{ 'activeline': item.isProjected() }"
+        class="pointer">
+      <!-- projector column -->
+      <td ng-show="!isDeleteMode" os-perms="core.can_manage_projector">
+        <a class="btn btn-default btn-sm"
+            ng-class="{ 'btn-primary': item.isProjected() }"
+            ng-click="item.project(); $event.stopPropagation();"
+            title="{{ 'Project item' | translate }}">
+          <i class="fa fa-video-camera"></i>
+        </a>
+      <!-- delete selection column -->
+      <td ng-show="isDeleteMode" os-perms="agenda.can_manage" class="deleteColumn"
+          ng-click="$event.stopPropagation();">
+        <input type="checkbox" ng-model="item.selected">
+      <!-- agenda item column -->
       <td>
         <span ng-repeat="n in [].constructor(item.parentCount) track by $index">&ndash;</span>
-        <a ui-sref="agenda.item.detail({id: item.id})">
-          {{ item.item_number }}
-          {{ item.title }}
-        </a>
+          {{ item.item_number }} {{ item.title }}
         <div ng-if="item.comment">
           <small><i class="fa fa-info-circle"></i> {{ item.comment }}</small>
         </div>
       <td os-perms="agenda.can_manage" class="optional">
-        <a href="#" editable-number="item.duration" e-min="1" onaftersave="save(item.id)">
-          {{ item.duration }}
-        </a>
-        <span ng-if="item.duration" translate>min</span>
-      <td os-perms="agenda.can_manage core.can_manage_projector" class="nobr">
-        <!-- project -->
-        <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-            ng-class="{ 'btn-primary': item.isProjected() }"
-            ng-click="item.project()"
-            title="{{ 'Project item' | translate }}">
-          <i class="fa fa-video-camera"></i>
-        </a>
-        <!-- edit -->
-        <a ui-sref="agenda.item.detail.update({id: item.id })" os-perms="agenda.can_manage"
-            class="btn btn-default btn-sm"
-            title="{{ 'Edit' | translate }}">
-          <i class="fa fa-pencil"></i>
-        </a>
-        <!-- delete -->
-        <a os-perms="agenda.can_manage" class="btn btn-danger btn-sm"
-            ng-bootbox-confirm="Are you sure you want to delete
-              <b>{{ item.title }}</b>?"
-            ng-bootbox-confirm-action="delete(item.id)"
-            title="{{ 'Delete' | translate }}">
-          <i class="fa fa-trash-o"></i>
-        </a>
+        {{ item.duration }}
+        <span ng-if="item.duration" translate>h</span>
+      <td ng-click="$event.stopPropagation();">
+        <input type="checkbox" ng-model="item.closed" ng-change="save(item.id);">
 </table>

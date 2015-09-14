@@ -184,7 +184,7 @@ a:hover {
 }
 
 /* List tables */
-th.sortable:hover {
+th.sortable:hover, tr.pointer:hover {
     cursor: pointer;
 }
 
@@ -246,7 +246,7 @@ tr.offline td, li.offline {
     background-color: #EAEAEA !important;
 }
 tr.activeline td, li.activeline {
-    background-color: #bed4de !important;
+    background-color: #bed4de;
 }
 .nopadding {
     padding: 0;
@@ -266,6 +266,19 @@ tr.total td {
 .indentation {
     margin-left: 12px;
 }
+.firstColumn {
+    width: 55px;
+}
+.deleteColumn {
+    text-align: center;
+    background-color: #ff9999 !important;
+}
+.switch.checked {
+    background-color: #ff9999 !important;
+    border-color: #ff9999;
+}
+
+
 .minimum, .mini_width {
     width: 1px;
 }
