@@ -15,7 +15,6 @@ from openslides.poll.models import (
     BaseVote,
     CollectDefaultVotesMixin,
 )
-from openslides.users.models import User
 from openslides.utils.models import RESTModelMixin
 
 from .exceptions import WorkflowError
@@ -599,8 +598,8 @@ class MotionLog(RESTModelMixin, models.Model):
     The log message. It should be a list of strings in English.
     """
 
-    person = models.ForeignKey(User, null=True)
-    """A person object, who created the log message. Optional."""
+    person = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
+    """A user object, who created the log message. Optional."""
 
     time = models.DateTimeField(auto_now=True)
     """The Time, when the loged action was performed."""

@@ -3,6 +3,8 @@ from cgi import escape
 from operator import attrgetter
 
 from bs4 import BeautifulSoup
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext as _
 from natsort import natsorted
 from reportlab.lib import colors
@@ -10,7 +12,6 @@ from reportlab.lib.units import cm
 from reportlab.platypus import PageBreak, Paragraph, Spacer, Table, TableStyle
 
 from openslides.core.config import config
-from openslides.users.models import Group, User  # TODO: remove this line
 from openslides.utils.pdf import stylesheet
 
 from .models import Category
@@ -278,15 +279,17 @@ def motion_poll_to_pdf(pdf, poll):
 
     # set number of ballot papers
     if ballot_papers_selection == "NUMBER_OF_DELEGATES":
-        # TODO: get this number from users
-        try:
-            if Group.objects.get(pk=3):  # TODO: Find a better way
-                number = User.objects.filter(groups__pk=3).count()
-        except Group.DoesNotExist:
+        if 'openslides.users' in settings.INSTALLED_APPS:
+            from openslides.users.models import Group
+            try:
+                if Group.objects.get(pk=3):
+                    number = get_user_model().objects.filter(groups__pk=3).count()
+            except Group.DoesNotExist:
+                number = 0
+        else:
             number = 0
     elif ballot_papers_selection == "NUMBER_OF_ALL_PARTICIPANTS":
-        # TODO: get the number from the persons
-        number = int(User.objects.count())
+        number = int(get_user_model().objects.count())
     else:  # ballot_papers_selection == "CUSTOM_NUMBER"
         number = int(ballot_papers_number)
     number = max(1, number)

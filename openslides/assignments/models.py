@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from django.utils.datastructures import SortedDict
@@ -14,7 +15,6 @@ from openslides.poll.models import (
     CollectDefaultVotesMixin,
     PublishPollMixin,
 )
-from openslides.users.models import User
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
 
@@ -36,7 +36,7 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
         'Assignment',
         db_index=True,
         related_name='assignment_related_users')
-    user = models.ForeignKey(User, db_index=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, db_index=True)
     status = models.IntegerField(
         choices=STATUSES,
         default=STATUS_CANDIDATE)
@@ -103,7 +103,7 @@ class Assignment(RESTModelMixin, models.Model):
     """
 
     related_users = models.ManyToManyField(
-        User,
+        settings.AUTH_USER_MODEL,
         through='AssignmentRelatedUser')
     """
     Users that a candidates, elected or blocked as candidate.
@@ -324,7 +324,7 @@ class AssignmentVote(RESTModelMixin, BaseVote):
 
 class AssignmentOption(RESTModelMixin, BaseOption):
     poll = models.ForeignKey('AssignmentPoll')
-    candidate = models.ForeignKey(User)
+    candidate = models.ForeignKey(settings.AUTH_USER_MODEL)
     vote_class = AssignmentVote
 
     def __str__(self):

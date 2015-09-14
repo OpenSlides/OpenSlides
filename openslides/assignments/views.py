@@ -1,5 +1,7 @@
 from cgi import escape
 
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.utils.translation import ugettext as _
 from django.utils.translation import ungettext
@@ -16,7 +18,6 @@ from reportlab.platypus import (
 )
 
 from openslides.core.config import config
-from openslides.users.models import Group, User  # TODO: remove this
 from openslides.utils.pdf import stylesheet
 from openslides.utils.rest_api import (
     DestroyModelMixin,
@@ -134,8 +135,8 @@ class AssignmentViewSet(ModelViewSet):
         except ValueError:
             raise ValidationError({'detail': _('Invalid data. Expected something like {"user": <id>}.')})
         try:
-            user = User.objects.get(pk=user_pk)
-        except User.DoesNotExist:
+            user = get_user_model().objects.get(pk=user_pk)
+        except get_user_model().DoesNotExist:
             raise ValidationError({'detail': _('Invalid data. User %d does not exist.') % user_pk})
         return user
 
@@ -480,13 +481,17 @@ class AssignmentPollPDF(PDFView):
 
         # set number of ballot papers
         if ballot_papers_selection == "NUMBER_OF_DELEGATES":
-            try:
-                if Group.objects.get(pk=3):
-                    number = User.objects.filter(groups__pk=3).count()
-            except Group.DoesNotExist:
+            if 'openslides.users' in settings.INSTALLED_APPS:
+                from openslides.users.models import Group
+                try:
+                    if Group.objects.get(pk=3):
+                        number = get_user_model().objects.filter(groups__pk=3).count()
+                except Group.DoesNotExist:
+                    number = 0
+            else:
                 number = 0
         elif ballot_papers_selection == "NUMBER_OF_ALL_PARTICIPANTS":
-            number = int(User.objects.count())
+            number = int(get_user_model().objects.count())
         else:  # ballot_papers_selection == "CUSTOM_NUMBER"
             number = int(ballot_papers_number)
         number = max(1, number)

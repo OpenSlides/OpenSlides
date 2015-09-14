@@ -1,5 +1,3 @@
-# TODO: Check every app, that they do not import Group or User from here.
-
 from random import choice
 
 from django.contrib.auth.hashers import make_password
