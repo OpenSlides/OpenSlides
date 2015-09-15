@@ -2,6 +2,7 @@ import re
 from collections import OrderedDict
 from urllib.parse import urlparse
 
+from rest_framework import status  # noqa
 from rest_framework.decorators import detail_route, list_route  # noqa
 from rest_framework.metadata import SimpleMetadata  # noqa
 from rest_framework.mixins import DestroyModelMixin, UpdateModelMixin  # noqa

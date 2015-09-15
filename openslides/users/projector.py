@@ -1,8 +1,7 @@
 from django.utils.translation import ugettext as _
 
-from openslides.core.exceptions import ProjectorException
-from openslides.utils.projector import ProjectorElement, ProjectorRequirement
-
+from ..core.exceptions import ProjectorException
+from ..utils.projector import ProjectorElement, ProjectorRequirement
 from .models import User
 from .views import GroupViewSet, UserViewSet
 

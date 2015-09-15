@@ -1,6 +1,6 @@
 from django.core.management.base import NoArgsCommand
 
-from openslides.users.models import User
+from ...models import User
 
 
 class Command(NoArgsCommand):
