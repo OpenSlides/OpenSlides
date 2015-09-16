@@ -158,9 +158,21 @@ angular.module('OpenSlidesApp.core', [
     });
 }])
 
+/* Model for a projector.
+ *
+ * At the moment we use only one projector, so there will be only one object
+ * in this model. It has the id 1. For later releases there will be multiple
+ * projector objects.
+ *
+ * This model uses onConfilict: 'replace' instead of 'merge'. This is necessary
+ * because the keys of the projector objects can change and old keys have to
+ * be removed. See http://www.js-data.io/docs/dsdefaults#onconflict for
+ * more information.
+ */
 .factory('Projector', ['DS', function(DS) {
     return DS.defineResource({
         name: 'core/projector',
+        onConflict: 'replace',
     });
 }])
 
