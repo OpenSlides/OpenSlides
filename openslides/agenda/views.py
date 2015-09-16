@@ -200,12 +200,20 @@ class ItemViewSet(ModelViewSet):
                     request.user.has_perm('agenda.can_see_orga_items')):
                 self.permission_denied(request)
             try:
-                Item.objects.set_tree(request.data['tree'])
-            except ValueError as error:
-                return Response({'detail': str(error)}, status=400)
+                tree = request.data['tree']
+            except KeyError as error:
+                response = Response({'detail': 'Agenda tree is missing.'}, status=400)
             else:
-                return Response({'detail': 'Agenda tree successfully updated.'})
-        return Response(Item.objects.get_tree())
+                try:
+                    Item.objects.set_tree(tree)
+                except ValueError as error:
+                    response = Response({'detail': str(error)}, status=400)
+                else:
+                    response = Response({'detail': 'Agenda tree successfully updated.'})
+        else:
+            # request.method == 'GET'
+            response = Response(Item.objects.get_tree())
+        return response
 
 
 # Views to generate PDFs
