@@ -115,20 +115,20 @@ angular.module('OpenSlidesApp.core', [
             '/rest/core/projector/1/prune_elements/',
             [{name: this.getResourceName(), id: this.id}]
         );
-    }
+    };
     BaseModel.prototype.isProjected = function() {
         // Returns true if there is a projector element with the same
         // name and the same id.
         var projector = Projector.get(1);
         if (typeof projector === 'undefined') return false;
         var self = this;
-        return _.findIndex(projector.elements, function(element) {
+        var predicate = function (element) {
             return element.name == self.getResourceName() &&
-                   typeof(element.context) !== 'undefined' &&
-                   typeof(element.context.id) !== 'undefined' &&
-                   element.context.id == self.id;
-        }) > -1;
-    }
+                   typeof element.id !== 'undefined' &&
+                   element.id == self.id;
+        };
+        return typeof _.findKey(projector.elements, predicate) === 'string';
+    };
     return BaseModel;
 }])
 
