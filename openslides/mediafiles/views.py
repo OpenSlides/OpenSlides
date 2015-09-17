@@ -1,5 +1,4 @@
-from openslides.utils.rest_api import ModelViewSet
-
+from ..utils.rest_api import ModelViewSet
 from .models import Mediafile
 from .serializers import MediafileSerializer
 

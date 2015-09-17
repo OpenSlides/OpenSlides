@@ -16,11 +16,9 @@ class MediafileSlide(ProjectorElement):
     def get_context(self):
         pk = self.config_entry.get('id')
         try:
-            mediafile = Mediafile.objects.get(pk=pk)
+            Mediafile.objects.get(pk=pk)
         except Mediafile.DoesNotExist:
             raise ProjectorException(_('File does not exist.'))
-        if not (mediafile.is_presentable and mediafile.filetype == 'application/pdf'):
-            raise ProjectorException(_('File is not presentable.'))
         return {'id': pk}
 
     def get_requirements(self, config_entry):

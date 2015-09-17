@@ -9,22 +9,25 @@
 </div>
 
 <form name="mediafileForm">
+
+  <div class="form-group">
+    <div ng-if="mediafile.id">
+      <span translate>Current value: </span>{{ mediafile.filename }}
+    </div>
+    <input type="file" ngf-select ng-model="mediafile.mediafile" required/>
+  </div>
+
   <div class="form-group">
     <label for="inputTitle" translate>Title</label>
     <input type="text" ng-model="mediafile.title" class="form-control" name="inputTitle">
   </div>
 
-  <div class="form-group">
-    <input type="file" ng-model="mediafile.mediafile"/>
-  </div>
+  <span ng-show="mediafile.mediafile.result">Upload Successful</span>
+  <span class="err" ng-show="errorMsg">{{ errorMsg }}</span>
 
-  <div class="form-group">
-    <label class="checkbox-inline">
-      <input type="checkbox" ng-model="mediafile.is_presentable" ng-checked="mediafile.is_presentable" name="checkboxPresentable">
-      <translate>Is presentable</translate>
-      <p class="help-block" translate>If checked, this file can be presented on the projector. Currently, this is only possible for PDFs.</p>
-    </label>
-  </div>
+  <i ng-show="mediafile.file.$error.required">*required</i><br>
+  <i ng-show="mediafile.file.$error.maxSize">File too large
+    {{ picFile.size / 1000000|number:1}}MB: max {{ mediafile.mediafile.$errorParam}}</i>
 
   <button type="submit" ng-click="save(mediafile)" class="btn btn-primary" translate>
     Save

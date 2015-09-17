@@ -13,6 +13,7 @@ from rest_framework.serializers import (  # noqa
     CharField,
     DictField,
     Field,
+    FileField,
     IntegerField,
     ListField,
     ListSerializer,
