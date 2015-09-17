@@ -1,17 +1,15 @@
+from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
-from openslides.users.models import User
-from openslides.utils.models import RESTModelMixin
+from ..utils.models import RESTModelMixin
 
 
 class Mediafile(RESTModelMixin, models.Model):
     """
     Class for uploaded files which can be delivered under a certain url.
     """
-    slide_callback_name = 'mediafile'
-
     mediafile = models.FileField(upload_to='file', verbose_name=ugettext_lazy('File'))
     """
     See https://docs.djangoproject.com/en/dev/ref/models/fields/#filefield
@@ -21,7 +19,7 @@ class Mediafile(RESTModelMixin, models.Model):
     title = models.CharField(max_length=255, unique=True, blank=True, verbose_name=ugettext_lazy('Title'))
     """A string representing the title of the file."""
 
-    uploader = models.ForeignKey(User, null=True, blank=True, verbose_name=ugettext_lazy('Uploaded by'))
+    uploader = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, verbose_name=ugettext_lazy('Uploaded by'))
     """A user – the uploader of a file."""
 
     timestamp = models.DateTimeField(auto_now_add=True)
