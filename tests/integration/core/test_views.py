@@ -34,7 +34,9 @@ class ProjectorAPI(TestCase):
                 'aae4a07b26534cfb9af4232f361dce73':
                     {'id': customslide.id,
                      'name': 'core/customslide',
-                     'context': None}}})
+                     'context': None}},
+            'scale': 0,
+            'scroll': 0})
 
     def test_invalid_slide_on_default_projector(self):
         self.client.login(username='admin', password='admin')
@@ -51,7 +53,9 @@ class ProjectorAPI(TestCase):
             'elements': {
                 'fc6ef43b624043068c8e6e7a86c5a1b0':
                     {'name': 'invalid_slide',
-                     'error': 'Projector element does not exist.'}}})
+                     'error': 'Projector element does not exist.'}},
+            'scale': 0,
+            'scroll': 0})
 
 
 class VersionView(TestCase):
