@@ -14,12 +14,10 @@ class MediafileSlide(ProjectorElement):
     name = 'mediafiles/mediafile'
 
     def get_context(self):
-        pk = self.config_entry.get('id')
         try:
-            Mediafile.objects.get(pk=pk)
+            Mediafile.objects.get(pk=self.config_entry.get('id'))
         except Mediafile.DoesNotExist:
             raise ProjectorException(_('File does not exist.'))
-        return {'id': pk}
 
     def get_requirements(self, config_entry):
         pk = config_entry.get('id')
