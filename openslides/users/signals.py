@@ -1,10 +1,10 @@
+from django.contrib.auth.models import Permission
 from django.db.models import Q
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
-from openslides.core.config import ConfigVariable
-
-from .models import Group, Permission, User
+from ..core.config import ConfigVariable
+from .models import Group, User
 
 
 def setup_users_config(sender, **kwargs):
@@ -126,9 +126,10 @@ def create_builtin_groups_and_admin(**kwargs):
         'users.can_manage',
         'users.can_see_extra_data',
         'users.can_see_name', )
-    permission_dict = {}
     permission_query = Q()
+    permission_dict = {}
 
+    # Load all permissions
     for permission_string in permission_strings:
         app_label, codename = permission_string.split('.')
         query_part = Q(content_type__app_label=app_label) & Q(codename=codename)
@@ -183,11 +184,12 @@ def create_builtin_groups_and_admin(**kwargs):
     group_staff = Group.objects.create(name=ugettext_noop('Staff'), pk=4)
     group_staff.permissions.add(*staff_permissions)
 
-    # Add users.can_see_name and users.can_see_extra_data permissions
+    # Add users.can_see_name and users.can_see_extra_data permissions to staff
+    # group to ensure proper management possibilities
     # TODO: Remove this redundancy after cleanup of the permission system.
     group_staff.permissions.add(
         permission_dict['users.can_see_extra_data'],
         permission_dict['users.can_see_name'])
 
-    # Admin user
+    # Create or reset admin user
     User.objects.create_or_reset_admin_user()

@@ -10,12 +10,12 @@ class UsersAppConfig(AppConfig):
 
     def ready(self):
         # Load projector elements.
-        # Do this by just importing all from these files.
+        # Just import this file.
         from . import projector  # noqa
 
         # Import all required stuff.
-        from openslides.core.signals import config_signal, post_permission_creation
-        from openslides.utils.rest_api import router
+        from ..core.signals import config_signal, post_permission_creation
+        from ..utils.rest_api import router
         from .signals import create_builtin_groups_and_admin, setup_users_config
         from .views import GroupViewSet, UserViewSet
 

@@ -3,12 +3,10 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
-from rest_framework import status
 
-from openslides.core.config import config
-from openslides.utils.rest_api import ModelViewSet, Response, detail_route
-from openslides.utils.views import APIView, PDFView
-
+from ..core.config import config
+from ..utils.rest_api import ModelViewSet, Response, detail_route, status
+from ..utils.views import APIView, PDFView
 from .models import Group, User
 from .pdf import users_passwords_to_pdf, users_to_pdf
 from .serializers import (
@@ -185,7 +183,7 @@ class GroupViewSet(ModelViewSet):
 
 class UserLoginView(APIView):
     """
-    Login the user via Ajax.
+    Login the user.
     """
     http_method_names = ['post']
 
@@ -208,7 +206,7 @@ class UserLoginView(APIView):
 
 class UserLogoutView(APIView):
     """
-    Logout the user via Ajax.
+    Logout the user.
     """
     http_method_names = ['post']
 
@@ -225,7 +223,7 @@ class WhoAmIView(APIView):
 
     def get_context_data(self, **context):
         """
-        Appends the user id into the context.
+        Appends the user id to the context.
 
         Uses None for the anonymous user.
         """
@@ -238,11 +236,11 @@ class WhoAmIView(APIView):
 
 class UsersListPDF(PDFView):
     """
-    Generate the userliste as PDF.
+    Generate a list of all users as PDF.
     """
     required_permission = 'users.can_see_extra_data'
-    filename = ugettext_lazy("user-list")
-    document_title = ugettext_lazy('List of Users')
+    filename = ugettext_lazy('user-list')
+    document_title = ugettext_lazy('List of users')
 
     def append_to_pdf(self, pdf):
         """
@@ -256,7 +254,7 @@ class UsersPasswordsPDF(PDFView):
     Generate the access data welcome paper for all users as PDF.
     """
     required_permission = 'users.can_manage'
-    filename = ugettext_lazy("User-access-data")
+    filename = ugettext_lazy('user-access-data')
     top_space = 0
 
     def build_document(self, pdf_document, story):

@@ -1,63 +1,30 @@
 from django.contrib.auth import get_user as _get_user
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
-from django.contrib.auth.context_processors import auth as _auth
 from django.contrib.auth.models import AnonymousUser as DjangoAnonymousUser
 from django.contrib.auth.models import Permission
 from django.db.models import Q
 from django.utils.functional import SimpleLazyObject
 from rest_framework.authentication import BaseAuthentication
 
-from openslides.core.config import config
+from ..core.config import config
 
 
-class AnonymousUser(DjangoAnonymousUser):
-    """
-    Class for anonymous user instances, which have the permissions from the
-    Group 'Anonymous' (pk=1).
-    """
-
-    def get_all_permissions(self, obj=None):
-        """
-        Return the permissions a user is granted by his group membership(s).
-
-        Try to return the permissions for the 'Anonymous' group (pk=1).
-        """
-        perms = Permission.objects.filter(group__pk=1)
-        if perms is None:
-            return set()
-        # TODO: test without order_by()
-        perms = perms.values_list('content_type__app_label', 'codename').order_by()
-        return set(['%s.%s' % (content_type, codename) for content_type, codename in perms])
-
-    def has_perm(self, perm, obj=None):
-        """
-        Check if the user has a specific permission
-        """
-        return (perm in self.get_all_permissions())
-
-    def has_module_perms(self, app_label):
-        """
-        Check if the user has permissions on the module app_label
-        """
-        for perm in self.get_all_permissions():
-            if perm[:perm.index('.')] == app_label:
-                return True
-        return False
-
+# Registered users
 
 class CustomizedModelBackend(ModelBackend):
     """
-    Customized backend for authentication. Ensures that registered users have
-    all permission of the group 'Registered' (pk=2).
+    Customized backend for authentication. Ensures that registered users
+    have all permissions of the group 'Registered' (pk=2). See
+    AUTHENTICATION_BACKENDS settings.
     """
     def get_group_permissions(self, user_obj, obj=None):
         """
         Returns a set of permission strings that this user has through his/her
         groups.
         """
-        # TODO: Refactor this after Django 1.8 release. Add also anonymous
-        #       permission check to this backend.
+        # TODO: Refactor this after Django 1.8 is minimum requirement. Add
+        #       also anonymous permission check to this backend.
         if user_obj.is_anonymous() or obj is not None:
             return set()
         if not hasattr(user_obj, '_group_perm_cache'):
@@ -74,11 +41,61 @@ class CustomizedModelBackend(ModelBackend):
         return user_obj._group_perm_cache
 
 
-class AuthenticationMiddleware(object):
+# Anonymous users
+
+class AnonymousUser(DjangoAnonymousUser):
+    """
+    Class for anonymous user instances which have the permissions from the
+    group 'Anonymous' (pk=1).
+    """
+    def get_all_permissions(self, obj=None):
+        """
+        Returns the permissions a user is granted by his group membership(s).
+
+        Try to return the permissions for the 'Anonymous' group (pk=1).
+        """
+        perms = Permission.objects.filter(group__pk=1)
+        if perms is None:
+            return set()
+        # TODO: Test without order_by()
+        perms = perms.values_list('content_type__app_label', 'codename').order_by()
+        return set(['%s.%s' % (content_type, codename) for content_type, codename in perms])
+
+    def has_perm(self, perm, obj=None):
+        """
+        Checks if the user has a specific permission.
+        """
+        return (perm in self.get_all_permissions())
+
+    def has_module_perms(self, app_label):
+        """
+        Checks if the user has permissions on the module app_label.
+        """
+        for perm in self.get_all_permissions():
+            if perm[:perm.index('.')] == app_label:
+                return True
+        return False
+
+
+class RESTFrameworkAnonymousAuthentication(BaseAuthentication):
+    """
+    Authentication class for the Django REST framework.
+
+    Sets the user to the our AnonymousUser but only if
+    general_system_enable_anonymous is set to True in the config.
+    """
+
+    def authenticate(self, request):
+        if config['general_system_enable_anonymous']:
+            return (AnonymousUser(), None)
+        return None
+
+
+class AuthenticationMiddleware:
     """
     Middleware to get the logged in user in users.
 
-    Uses AnonymousUser instead of the django anonymous user.
+    Uses AnonymousUser instead of Django's anonymous user.
     """
     def process_request(self, request):
         """
@@ -92,20 +109,6 @@ class AuthenticationMiddleware(object):
             "'openslides.users.auth.AuthenticationMiddleware'."
         )
         request.user = SimpleLazyObject(lambda: get_user(request))
-
-
-class AnonymousAuthentication(BaseAuthentication):
-    """
-    Authentication class for the Django REST framework.
-
-    Sets the user to the our AnonymousUser but only if
-    general_system_enable_anonymous is set to True in the config.
-    """
-
-    def authenticate(self, request):
-        if config['general_system_enable_anonymous']:
-            return (AnonymousUser(), None)
-        return None
 
 
 def get_user(request):
@@ -124,22 +127,3 @@ def get_user(request):
             return_user = AnonymousUser()
         request._cached_user = return_user
     return return_user
-
-
-def auth(request):
-    """
-    Contextmanager to handle auth.
-
-    Uses the django auth context manager to fill the context.
-
-    Alters the attribute user if the user is not authenticated.
-    """
-    # Call the django standard auth function, like 'super()'
-    context = _auth(request)
-
-    # Change the django anonymous user with our anonymous user if anonymous auth
-    # is enabled
-    if config['general_system_enable_anonymous'] and isinstance(context['user'], DjangoAnonymousUser):
-        context['user'] = AnonymousUser()
-
-    return context

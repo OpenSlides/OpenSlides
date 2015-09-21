@@ -18,19 +18,6 @@ class UserTest(TestCase):
             'Test Value IJee1yoet1ooGhesh5li',
             "The str representation of User is not user.get_full_name().")
 
-    def test_get_slide_context(self):
-        """
-        Tests, that get_slide_context returns:
-
-        {'shown_user': self}
-        """
-        user = User()
-
-        self.assertEqual(
-            user.get_slide_context(),
-            {'shown_user': user},
-            "User.get_slide_context returns a wrong context.")
-
 
 class UserGetFullName(TestCase):
     def test_get_full_name_with_structure_level_and_title(self):
@@ -183,30 +170,6 @@ class UserGetShortName(TestCase):
             short_name,
             'test_first_name test_last_name',
             "User.get_short_name() has to strip whitespaces from the name parts.")
-
-
-class UserResetPassword(TestCase):
-    def test_reset_password_no_attribute(self):
-        """
-        Tests reset_password with no attribute.
-        """
-        user = User(default_password='test_default_password')
-        user.set_password = MagicMock()
-
-        user.reset_password()
-
-        user.set_password.assert_called_once_with('test_default_password')
-
-    def test_reset_password_with_attribute(self):
-        """
-        Tests reset_password with no attribute.
-        """
-        user = User(default_password='test_default_password')
-        user.set_password = MagicMock()
-
-        user.reset_password('test_password')
-
-        user.set_password.assert_called_once_with('test_password')
 
 
 class UserManagerTest(TestCase):

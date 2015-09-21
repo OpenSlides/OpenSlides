@@ -5,16 +5,7 @@ from . import views
 urlpatterns = patterns(
     '',
 
-    # PDF
-    url(r'^print/$',
-        views.UsersListPDF.as_view(),
-        name='user_listpdf'),
-
-    url(r'^passwords/print/$',
-        views.UsersPasswordsPDF.as_view(),
-        name='user_passwordspdf'),
-
-    # auth
+    # Auth
     url(r'^login/$',
         views.UserLoginView.as_view(),
         name='user_login'),
@@ -26,4 +17,13 @@ urlpatterns = patterns(
     url(r'^whoami/$',
         views.WhoAmIView.as_view(),
         name='user_whoami'),
+
+    # PDF
+    url(r'^print/$',
+        views.UsersListPDF.as_view(),
+        name='user_listpdf'),
+
+    url(r'^passwords/print/$',
+        views.UsersPasswordsPDF.as_view(),
+        name='user_passwordspdf'),
 )

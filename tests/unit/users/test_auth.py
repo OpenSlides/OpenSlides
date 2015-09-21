@@ -1,7 +1,7 @@
 from unittest import TestCase
 from unittest.mock import MagicMock, patch
 
-from openslides.users.auth import AnonymousUser, auth, get_user
+from openslides.users.auth import AnonymousUser, get_user
 
 
 class TestAnonymousUser(TestCase):
@@ -98,40 +98,3 @@ class TestGetUser(TestCase):
             request._cached_user,
             'django_anonymous_user',
             "The django user should be cached")
-
-
-@patch('openslides.users.auth.config')
-@patch('openslides.users.auth._auth')
-class TestAuth(TestCase):
-    def test_anonymous_enabled(self, mock_auth, mock_config):
-        mock_config.__getitem__.return_value = True
-        request = MagicMock()
-        mock_auth.return_value = {'user': AnonymousUser()}
-
-        context = auth(request)
-
-        self.assertEqual(
-            context,
-            {'user': AnonymousUser()})
-
-    def test_anonymous_disabled(self, mock_auth, mock_config):
-        mock_config.__getitem__.return_value = False
-        request = MagicMock()
-        mock_auth.return_value = {'user': AnonymousUser()}
-
-        context = auth(request)
-
-        self.assertEqual(
-            context,
-            {'user': AnonymousUser()})
-
-    def test_logged_in_user_in_request(self, mock_auth, mock_config):
-        mock_config.__getitem__.return_value = True
-        request = MagicMock()
-        mock_auth.return_value = {'user': 'logged_in_user'}
-
-        context = auth(request)
-
-        self.assertEqual(
-            context,
-            {'user': 'logged_in_user'})

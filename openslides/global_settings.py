@@ -91,13 +91,6 @@ INSTALLED_APPS = (
     'openslides.mediafiles',
 )
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'openslides.users.auth.auth',
-    'django.contrib.messages.context_processors.messages',
-    'django.core.context_processors.request',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.static',
-)
 
 CACHES = {
     'default': {
@@ -175,6 +168,6 @@ TEST_RUNNER = 'openslides.utils.test.OpenSlidesDiscoverRunner'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',
-        'openslides.users.auth.AnonymousAuthentication',
+        'openslides.users.auth.RESTFrameworkAnonymousAuthentication',
     )
 }

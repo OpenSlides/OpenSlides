@@ -1,5 +1,5 @@
-from openslides.utils.exceptions import OpenSlidesError
+from ..utils.exceptions import OpenSlidesError
 
 
-class UserError(OpenSlidesError):
+class UsersError(OpenSlidesError):
     pass

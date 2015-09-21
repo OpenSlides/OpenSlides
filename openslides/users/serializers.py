@@ -1,15 +1,15 @@
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import Permission
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 
-from openslides.utils.rest_api import (
+from ..utils.rest_api import (
     ModelSerializer,
     PrimaryKeyRelatedField,
     RelatedField,
     ValidationError,
 )
-
-from .models import Group, Permission, User
+from .models import Group, User
 
 
 class UserShortSerializer(ModelSerializer):
@@ -28,7 +28,8 @@ class UserShortSerializer(ModelSerializer):
             'last_name',
             'structure_level',
             'about_me',
-            'groups',)
+            'groups',
+        )
 
 
 class UserFullSerializer(ModelSerializer):
@@ -58,7 +59,8 @@ class UserFullSerializer(ModelSerializer):
             'comment',
             'groups',
             'default_password',
-            'is_active',)
+            'is_active',
+        )
 
     def validate(self, data):
         """
@@ -70,7 +72,7 @@ class UserFullSerializer(ModelSerializer):
             raise ValidationError(_('Username, first name and last name can not all be empty.'))
 
         # Generate username. But only if it is not set and the serializer is not
-        # called in a patch-context.
+        # called in a PATCH context (partial_update).
         try:
             action = self.context['view'].action
         except (KeyError, AttributeError):
@@ -84,7 +86,7 @@ class UserFullSerializer(ModelSerializer):
 
     def create(self, validated_data):
         """
-        Creates the user. Sets the default_password. Adds the new user to the
+        Creates the user. Sets the default password. Adds the new user to the
         registered group.
         """
         # Prepare setup password.
@@ -139,4 +141,5 @@ class GroupSerializer(ModelSerializer):
         fields = (
             'id',
             'name',
-            'permissions',)
+            'permissions',
+        )
