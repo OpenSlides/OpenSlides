@@ -752,6 +752,25 @@ angular.module('OpenSlidesApp.core.site', [
     };
 })
 
+// ChatMessage Controller
+.controller('ChatMessageCtrl', [
+    '$scope',
+    '$http',
+    'ChatMessage',
+    function ($scope, $http, ChatMessage) {
+        ChatMessage.bindAll({}, $scope, 'chatmessages');
+        $scope.sendMessage = function () {
+            $http.post(
+                '/rest/core/chatmessage/',
+                {message: $scope.newMessage}
+            )
+            .success(function () {
+                $scope.newMessage = '';
+            });
+        };
+    }
+])
+
 .directive('osFocusMe', function ($timeout) {
     return {
         link: function (scope, element, attrs, model) {

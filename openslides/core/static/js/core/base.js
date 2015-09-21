@@ -80,9 +80,10 @@ angular.module('OpenSlidesApp.core', [
 .factory('loadGlobalData', [
     '$rootScope',
     '$http',
+    'ChatMessage',
     'Config',
     'Projector',
-    function ($rootScope, $http, Config, Projector) {
+    function ($rootScope, $http, ChatMessage, Config, Projector) {
         return function () {
             // Puts the config object into each scope.
             Config.findAll().then(function() {
@@ -99,6 +100,9 @@ angular.module('OpenSlidesApp.core', [
 
             // Loads all projector data
             Projector.findAll();
+
+            // Loads all chat messages data
+            ChatMessage.findAll();
 
             // Loads server time and calculates server offset
             $http.get('/core/servertime/').then(function(data) {
@@ -181,6 +185,20 @@ angular.module('OpenSlidesApp.core', [
     });
 }])
 
+.factory('ChatMessage', ['DS', function(DS) {
+    return DS.defineResource({
+        name: 'core/chatmessage',
+        relations: {
+            belongsTo: {
+                'users/user': {
+                    localField: 'user',
+                    localKey: 'user_id',
+                }
+            }
+        }
+    });
+}])
+
 /* Model for a projector.
  *
  * At the moment we use only one projector, so there will be only one object
@@ -258,6 +276,13 @@ angular.module('OpenSlidesApp.core', [
 })
 
 // Make sure that the DS factories are loaded by making them a dependency
-.run(['Projector', 'Config', 'Tag', 'Customslide', function(Projector, Config, Tag, Customslide){}]);
+.run([
+    'ChatMessage',
+    'Config',
+    'Customslide',
+    'Projector',
+    'Tag',
+    function (ChatMessage, Config, Customslide, Projector, Tag) {}
+]);
 
 }());

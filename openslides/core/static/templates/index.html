@@ -127,9 +127,10 @@
 </nav>
 
 <!-- Container -->
-<div class="container-fluid" id="container">
+<div id="container" class="container-fluid">
   <div class="row">
-    <div class="col-md-2 leftmenu lefticon">
+    <!-- Main menu -->
+    <div id="main-menu" class="col-md-2 leftmenu lefticon">
       <ul ng-controller="MainMenuCtrl">
         <li ng-repeat="element in elements">
           <a ui-sref="{{ element.ui_sref }}">
@@ -137,8 +138,7 @@
             <span class="text" translate>{{ element.title }}</span>
           </a>
       </ul>
-    </div>
-
+    </div><!--/#main-menu-->
     <!-- Content -->
     <div id="content" class="col-md-10">
       <div class="row">
@@ -146,16 +146,28 @@
           <div ui-view></div>
         </div>
       </div>
-      <hr />
-      <footer>
-        <small>
-          &copy; Copyright 2011-2015 |
-          Powered by <a href="http://openslides.org" target="_blank">OpenSlides</a> |
-          <a ui-sref="version">Version</a>
-        </small>
-      </footer>
     </div><!--/#content-->
   </div><!--/.row-->
+
+  <div ng-controller="ChatMessageCtrl">
+    <ul>
+        <li ng-repeat="chatmessage in chatmessages">
+            {{ chatmessage.user.get_full_name() }} says {{ chatmessage.message }} on {{ chatmessage.timestamp }}
+    </ul>
+    <input ng-model="newMessage">
+    <button ng-click="sendMessage()" class="btn btn-primary" translate>
+        Chat
+     </button>
+  </div>
+
+  <hr>
+  <footer>
+    <small>
+      &copy; Copyright 2011-2015 |
+      Powered by <a href="http://openslides.org" target="_blank">OpenSlides</a> |
+      <a ui-sref="version">Version</a>
+    </small>
+  </footer>
 </div><!--/#container-->
 
 <script src="/angular_js/site/"></script>
