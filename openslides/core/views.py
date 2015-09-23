@@ -2,6 +2,7 @@ import re
 import uuid
 from collections import OrderedDict
 from operator import attrgetter
+from textwrap import dedent
 
 from django.apps import apps
 from django.conf import settings
@@ -29,7 +30,7 @@ from openslides.utils.rest_api import (
 )
 
 from .config import config
-from .exceptions import ConfigError, ConfigNotFound
+from .exceptions import ConfigError, ConfigNotFound, ViewException
 from .models import ChatMessage, CustomSlide, Projector, Tag
 from .serializers import (
     ChatMessageSerializer,
@@ -49,7 +50,6 @@ class IndexView(utils_views.CSRFMixin, utils_views.View):
     You can override it by simply adding a custom 'templates/index.html' file
     to the custom staticfiles directory. See STATICFILES_DIRS in settings.py.
     """
-
     def get(self, *args, **kwargs):
         with open(finders.find('templates/index.html')) as f:
             content = f.read()
@@ -58,81 +58,66 @@ class IndexView(utils_views.CSRFMixin, utils_views.View):
 
 class ProjectorView(utils_views.View):
     """
-    Access the projector.
-    """
+    The primary view for OpenSlides projector using AngularJS.
 
+    The default base template is 'openslides/core/static/templates/projector.html'.
+    You can override it by simply adding a custom 'templates/projector.html'
+    file to the custom staticfiles directory. See STATICFILES_DIRS in
+    settings.py.
+    """
     def get(self, *args, **kwargs):
         with open(finders.find('templates/projector.html')) as f:
             content = f.read()
         return HttpResponse(content)
 
 
-class AppsJsView(utils_views.View):
+class OpenSlidesJavaScriptView(utils_views.View):
     """
-    Returns javascript code to be called in the angular app.
-
-    The javascript code loads all js-files defined by the installed (django)
-    apps and creates the angular modules for each angular app.
+    This view returns a bundle of all JavaScript files needed for the
+    requested realm (site or projector). The result is not uglified.
     """
     def get(self, *args, **kwargs):
         angular_modules = []
-        js_files = []
+        js_files = ['js/openslides-libs.js']
+        realm = kwargs.get('realm')  # Result is 'site' or 'projector'
         for app_config in apps.get_app_configs():
-            # Add the angular app, if the module has one.
-            if getattr(app_config,
-                       'angular_{}_module'.format(kwargs.get('openslides_app')),
-                       False):
-                angular_modules.append('OpenSlidesApp.{app_name}.{app}'.format(
-                    app=kwargs.get('openslides_app'),
-                    app_name=app_config.label))
-
-            # Add all js files that the module needs
+            # Add the angular app if the module has one.
+            if getattr(app_config, 'angular_{}_module'.format(realm), False):
+                angular_modules.append('OpenSlidesApp.{app_name}.{realm}'.format(
+                    app_name=app_config.label,
+                    realm=realm))
+            # Add all JavaScript files that the module needs.
             try:
                 app_js_files = app_config.js_files
             except AttributeError:
-                # The app needs no js-files
+                # The app needs no JavaScript files.
                 pass
             else:
-                js_files += [
-                    '{static}{path}'.format(
-                        static=settings.STATIC_URL,
-                        path=path)
-                    for path in app_js_files]
-        # Use javascript loadScript function from
-        # http://balpha.de/2011/10/jquery-script-insertion-and-its-consequences-for-debugging/
-        return HttpResponse(
+                js_files.extend(app_js_files)
+
+        content = ''
+        for js_file in js_files:
+            try:
+                with open(finders.find(js_file)) as f:
+                    content += f.read()
+            except TypeError:
+                raise ViewException(
+                    'Required JavaScript file {} missing. May be you forgot to '
+                    'create it via gulp or one of your AppConfig class is not correct.'.format(js_file))
+
+        content += dedent(
             """
-            var loadScript = function (path) {
-                var result = $.Deferred(),
-                    script = document.createElement("script");
-                script.async = "async";
-                script.type = "text/javascript";
-                script.src = path;
-                script.onload = script.onreadystatechange = function(_, isAbort) {
-                    if (!script.readyState || /loaded|complete/.test(script.readyState)) {
-                        if (isAbort)
-                            result.reject();
-                        else
-                            result.resolve();
-                    }
-                };
-                script.onerror = function () { result.reject(); };
-                $("head")[0].appendChild(script);
-                return result.promise();
-            };
+            (function () {
             """ +
             """
-            angular.module('OpenSlidesApp.{app}', {angular_modules});
-            var deferres = [];
-            {js_files}.forEach( function(js_file) {{ deferres.push(loadScript(js_file)); }} );
-            $.when.apply(this,deferres).done(function() {{
-                angular.bootstrap(document,['OpenSlidesApp.{app}']);
-            }} );
+            angular.module('OpenSlidesApp.{realm}', {angular_modules});
+            angular.bootstrap(document,['OpenSlidesApp.{realm}']);
+            """.format(realm=realm, angular_modules=angular_modules) +
             """
-            .format(
-                app=kwargs.get('openslides_app'),
-                angular_modules=angular_modules,
-                js_files=js_files))
+            }());
+            """)
+
+        return HttpResponse(content, content_type='application/javascript')
 
 
 # Viewsets for the REST API

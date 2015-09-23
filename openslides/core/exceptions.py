@@ -15,3 +15,7 @@ class ConfigError(OpenSlidesError):
 
 class ConfigNotFound(ConfigError):
     pass
+
+
+class ViewException(OpenSlidesError):
+    pass
