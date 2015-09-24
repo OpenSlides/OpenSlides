@@ -49,6 +49,71 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
     }
 ])
 
+.factory('AgendaTree', [
+    function () {
+        return {
+            getTree: function (items) {
+                // Sort items after there weight
+                items.sort(function(itemA, itemB) {
+                    return itemA.weight - itemB.weight;
+                });
+
+                // Build a dict with all children (dict-value) to a specific
+                // item id (dict-key).
+                var itemChildren = {};
+
+                _.each(items, function (item) {
+                    if (item.parent_id) {
+                        // Add item to his parent. If it is the first child, then
+                        // create a new list.
+                        try {
+                            itemChildren[item.parent_id].push(item);
+                        } catch (error) {
+                            itemChildren[item.parent_id] = [item];
+                        }
+                    }
+
+                });
+
+                // Recursive function that generates a nested list with all
+                // items with there children
+                function getChildren(items) {
+                    var returnItems = [];
+                    _.each(items, function (item) {
+                        returnItems.push({
+                            item: item,
+                            children: getChildren(itemChildren[item.id]),
+                            id: item.id,
+                        });
+                    });
+                    return returnItems;
+                }
+
+                // Generates the list of root items (with no parents)
+                var parentItems = items.filter(function (item) {
+                    return !item.parent_id;
+                });
+                return getChildren(parentItems);
+            },
+            // Returns a list of all items as a flat tree the attribute parentCount
+            getFlatTree: function(items) {
+                var tree = this.getTree(items);
+                var flatItems = [];
+
+                function generateFatTree(tree, parentCount) {
+                    _.each(tree, function (item) {
+                        item.item.parentCount = parentCount;
+                        flatItems.push(item.item);
+                        generateFatTree(item.children, parentCount + 1);
+                    });
+                }
+                generateFatTree(tree, 0);
+                return flatItems;
+            },
+        }
+    }
+])
+
 // Make sure that the Agenda resource is loaded.
 .run(['Agenda', function(Agenda) {}]);
 
@@ -139,68 +204,6 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     }
 ])
 
-.factory('AgendaTree', [
-    function () {
-        return {
-            getTree: function (items) {
-                // TODO: sortieren nach weight???
-
-                // Build a dict with all children (dict-value) to a specific
-                // item id (dict-key).
-                var itemChildren = {};
-
-                _.each(items, function (item) {
-                    if (item.parent_id) {
-                        // Add item to his parent. If it is the first child, then
-                        // create a new list.
-                        try {
-                            itemChildren[item.parent_id].push(item);
-                        } catch (error) {
-                            itemChildren[item.parent_id] = [item];
-                        }
-                    }
-
-                });
-
-                // Recursive function that generates a nested list with all
-                // items with there children
-                function getChildren(items) {
-                    var returnItems = [];
-                    _.each(items, function (item) {
-                        returnItems.push({
-                            item: item,
-                            children: getChildren(itemChildren[item.id]),
-                            id: item.id,
-                        });
-                    });
-                    return returnItems;
-                }
-
-                // Generates the list of root items (with no parents)
-                var parentItems = items.filter(function (item) {
-                    return !item.parent_id;
-                });
-                return getChildren(parentItems);
-            },
-            // Returns a list of all items as a flat tree the attribute parentCount
-            getFlatTree: function(items) {
-                var tree = this.getTree(items);
-                var flatItems = [];
-
-                function generateFatTree(tree, parentCount) {
-                    _.each(tree, function (item) {
-                        item.item.parentCount = parentCount;
-                        flatItems.push(item.item);
-                        generateFatTree(item.children, parentCount + 1);
-                    });
-                }
-                generateFatTree(tree, 0);
-                return flatItems;
-            },
-        }
-    }
-])
-
 .controller('ItemListCtrl', [
     '$scope',
     '$http',
@@ -265,10 +268,10 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             var projector = Projector.get(1);
             if (typeof projector === 'undefined') return false;
             var self = this;
-            return _.findIndex(projector.elements, function(element) {
-                return element.name == 'agenda/item-list'
-            }) > -1;
-
+            var predicate = function (element) {
+                return element.name == 'agenda/item-list';
+            };
+            return typeof _.findKey(projector.elements, predicate) === 'string';
         };
     }
 ])
@@ -492,7 +495,7 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
         // Attention! Each object that is used here has to be dealt on server side.
         // Add it to the coresponding get_requirements method of the ProjectorElement
         // class.
-
+        Agenda.findAll();
         // Bind agenda tree to the scope
         $scope.$watch(function () {
             return Agenda.lastModified();
