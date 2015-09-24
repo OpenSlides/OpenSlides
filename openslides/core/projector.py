@@ -34,9 +34,6 @@ class Clock(ProjectorElement):
     """
     name = 'core/clock'
 
-    def get_context(self):
-        return {'server_time': now().timestamp()}
-
 
 class Countdown(ProjectorElement):
     """
@@ -80,7 +77,6 @@ class Countdown(ProjectorElement):
 
     def get_context(self):
         self.validate_config(self.config_entry)
-        return {'server_time': now().timestamp()}
 
     @classmethod
     def validate_config(cls, config_data):
