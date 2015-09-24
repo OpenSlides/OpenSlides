@@ -9,6 +9,7 @@ from django.contrib.staticfiles import finders
 from django.core.urlresolvers import get_resolver
 from django.db.models import F
 from django.http import Http404, HttpResponse
+from django.utils.timezone import now
 
 from openslides import __version__ as version
 from openslides.utils import views as utils_views
@@ -527,6 +528,16 @@ class UrlPatternsView(utils_views.APIView):
             url, url_kwargs = normalized_regex_bits[0]
             result[pattern_name] = self.URL_KWARGS_REGEX.sub(r':\1', url)
         return result
+
+
+class ServerTime(utils_views.APIView):
+    """
+    Returns the server time as UNIX timestamp.
+    """
+    http_method_names = ['get']
+
+    def get_context_data(self, **context):
+        return now().timestamp()
 
 
 class VersionView(utils_views.APIView):
