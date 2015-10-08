@@ -23,6 +23,32 @@ body {
     border: 2px dashed #bed2db;
     box-sizing: border-box;
 }
+.countdown.panel, .message.panel {
+    margin-bottom: 7px;
+}
+.countdown .panel-heading {
+    padding: 3px 15px;
+}
+.countdown .panel-body {
+    padding: 5px 15px;
+}
+.message .panel-body {
+    padding: 10px 15px;
+}
+.countdown_timer {
+    font-size: 2.2em;
+    font-weight: bold;
+}
+.countdown .editicon, .message .editicon {
+    padding-right: 10px;
+}
+.vcenter {
+    vertical-align: middle;
+}
+.notNull {
+    color: red;
+    font-weight: bold;
+}
 
 /* TODO: used by ng-fab-forms */
 .validation-success {
@@ -184,7 +210,7 @@ a:hover {
 }
 
 /* List tables */
-th.sortable:hover, tr.pointer:hover {
+th.sortable:hover, tr.pointer:hover, .pointer {
     cursor: pointer;
 }
 
@@ -245,7 +271,7 @@ div.import > div > input[type="text"] {
 tr.offline td, li.offline {
     background-color: #EAEAEA !important;
 }
-tr.activeline td, li.activeline {
+tr.activeline td, li.activeline, .projected {
     background-color: #bed4de;
 }
 .nopadding {

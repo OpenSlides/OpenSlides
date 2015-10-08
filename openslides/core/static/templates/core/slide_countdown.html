@@ -1,0 +1,8 @@
+<div ng-controller="SlideCountdownCtrl">
+  <div ng-if="visible">
+    <div class="countdown well" style="margin-top: calc({{index}}*100px);">
+      {{ seconds | osSecondsToTime}}
+      <div class="description">{{ description }}</div>
+    </div>
+  </div>
+</div>

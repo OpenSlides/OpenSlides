@@ -54,6 +54,7 @@
         <!-- Login dialog (modal) -->
         <div ng-controller="LoginFormCtrl" ng-if="!operator.isAuthenticated()">
           <script type="text/ng-template" id="LoginForm.html">
+          <form ng-submit="login(username, password)">
             <div class="modal-header">
               <h3 class="modal-title" translate>Please sign in!</h3>
             </div>
@@ -62,7 +63,7 @@
                 <strong translate>Username or password is not correct.</strong>
               <div class="input-group form-group">
                 <div class="input-group-addon"><i class="fa fa-user"></i></div>
-                <input type="text" ng-model="username" class="form-control input-lg"
+                <input os-focus-me type="text" ng-model="username" class="form-control input-lg"
                     placeholder="{{ 'Username' | translate }}">
               </div>
               <div class="input-group form-group">
@@ -73,8 +74,7 @@
             </div>
             <div class="modal-footer">
               <div class="form-group">
-                <button type="submit" ng-click="login(username, password)"
-                    class="btn btn-primary btn-lg btn-block" translate>
+                <button type="submit" class="btn btn-primary btn-lg btn-block" translate>
                   Login
                 </button>
               </div>
@@ -88,6 +88,7 @@
                 </button>
               </div>
             </div>
+          </form>
           </script>
           <button class="btn btn-default" ng-click="open()">
             <i class="fa fa-sign-in"></i>

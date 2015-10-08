@@ -43,6 +43,12 @@
 </div>
 
 <div ng-controller="ProjectorCtrl">
+  <style type="text/css">
+    .scrollcontent {
+      margin-top: {{scroll}}em;
+      font-size: {{scale}}%;
+    }
+  </style>
   <div ng-repeat="element in elements">
     <div ng-include="element.template"></div>
   </div>

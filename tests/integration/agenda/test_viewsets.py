@@ -183,6 +183,17 @@ class Speak(TestCase):
 
     def test_begin_speech_with_countdown(self):
         config['agenda_couple_countdown_and_speakers'] = True
+        projector = Projector.objects.get(pk=1)
+        projector.config['03e87dea9c3f43c88b756c06a4c044fb'] = {
+            'name': 'core/countdown',
+            'status': 'stop',
+            'visible': True,
+            'default': 60,
+            'countdown_time': 60,
+            'stable': True,
+            'index': 0
+        }
+        projector.save()
         Speaker.objects.add(self.user, self.item)
         speaker = Speaker.objects.add(get_user_model().objects.get(username='admin'), self.item)
         self.client.put(
@@ -199,6 +210,17 @@ class Speak(TestCase):
 
     def test_end_speech_with_countdown(self):
         config['agenda_couple_countdown_and_speakers'] = True
+        projector = Projector.objects.get(pk=1)
+        projector.config['03e87dea9c3f43c88b756c06a4c044fb'] = {
+            'name': 'core/countdown',
+            'status': 'stop',
+            'visible': True,
+            'default': 60,
+            'countdown_time': 60,
+            'stable': True,
+            'index': 0
+        }
+        projector.save()
         speaker = Speaker.objects.add(get_user_model().objects.get(username='admin'), self.item)
         speaker.begin_speech()
         self.client.delete(reverse('item-speak', args=[self.item.pk]))

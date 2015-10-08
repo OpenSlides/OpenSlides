@@ -77,9 +77,10 @@ angular.module('OpenSlidesApp.core', [
 
 .factory('loadGlobalData', [
     '$rootScope',
+    '$http',
     'Config',
     'Projector',
-    function ($rootScope, Config, Projector) {
+    function ($rootScope, $http, Config, Projector) {
         return function () {
             // Puts the config object into each scope.
             Config.findAll().then(function() {
@@ -96,6 +97,11 @@ angular.module('OpenSlidesApp.core', [
 
             // Loads all projector data
             Projector.findAll();
+
+            // Loads server time and calculates server offset
+            $http.get('/core/servertime/').then(function(data) {
+                $rootScope.serverOffset = Math.floor( Date.now() / 1000 - data.data );
+            });
         }
     }
 ])
@@ -176,6 +182,34 @@ angular.module('OpenSlidesApp.core', [
     });
 }])
 
+/* Converts number of seconds into string "hh:mm:ss" or "mm:ss" */
+.filter('osSecondsToTime', [
+    function () {
+        return function (totalseconds) {
+            var time;
+            var total = Math.abs(totalseconds);
+            if (parseInt(totalseconds)) {
+                var hh = Math.floor(total / 3600);
+                var mm = Math.floor(total % 3600 / 60);
+                var ss = Math.floor(total % 60);
+                var zero = "0";
+                // Add leading "0" for double digit values
+                hh = (zero+hh).slice(-2);
+                mm = (zero+mm).slice(-2);
+                ss = (zero+ss).slice(-2);
+                if (hh == "00")
+                    time =  mm + ':' + ss;
+                else
+                    time = hh + ":" + mm + ":" + ss;
+                if (totalseconds < 0)
+                    time = "-"+time;
+            } else {
+                time = "--:--";
+            }
+            return time;
+        };
+    }
+])
 // Make sure that the DS factories are loaded by making them a dependency
 .run(['Projector', 'Config', 'Tag', 'Customslide', function(Projector, Config, Tag, Customslide){}]);
 
@@ -572,12 +606,16 @@ angular.module('OpenSlidesApp.core.site', [
 ])
 
 // Version Controller
-.controller('VersionCtrl', function ($scope, $http) {
-    $http.get('/core/version/').success(function(data) {
-        $scope.core_version = data.openslides_version;
-        $scope.plugins = data.plugins;
-    });
-})
+.controller('VersionCtrl', [
+    '$scope',
+    '$http',
+    function ($scope, $http) {
+        $http.get('/core/version/').success(function(data) {
+            $scope.core_version = data.openslides_version;
+            $scope.plugins = data.plugins;
+        });
+    }
+])
 
 // Config Controller
 .controller('ConfigCtrl', function($scope, Config, configOption) {
@@ -592,33 +630,231 @@ angular.module('OpenSlidesApp.core.site', [
 })
 
 // Customslide Controller
-.controller('CustomslideListCtrl', function($scope, Customslide) {
-    Customslide.bindAll({}, $scope, 'customslides');
+.controller('CustomslideListCtrl', [
+    '$scope',
+    '$http',
+    'Customslide',
+    function($scope, $http, Customslide) {
+        Customslide.bindAll({}, $scope, 'customslides');
 
-    // setup table sorting
-    $scope.sortColumn = 'title';
-    $scope.reverse = false;
-    // function to sort by clicked column
-    $scope.toggleSort = function ( column ) {
-        if ( $scope.sortColumn === column ) {
-            $scope.reverse = !$scope.reverse;
-        }
-        $scope.sortColumn = column;
-    };
-
-    // save changed customslide
-    $scope.save = function (customslide) {
-        Customslide.save(customslide);
-    };
-    $scope.delete = function (customslide) {
-        //TODO: add confirm message
-        Customslide.destroy(customslide.id).then(
-            function(success) {
-                //TODO: success message
+        // setup table sorting
+        $scope.sortColumn = 'title';
+        $scope.reverse = false;
+        // function to sort by clicked column
+        $scope.toggleSort = function ( column ) {
+            if ( $scope.sortColumn === column ) {
+                $scope.reverse = !$scope.reverse;
             }
-        );
-    };
-})
+            $scope.sortColumn = column;
+        };
+
+        // save changed customslide
+        $scope.save = function (customslide) {
+            Customslide.save(customslide);
+        };
+        $scope.delete = function (customslide) {
+            //TODO: add confirm message
+            Customslide.destroy(customslide.id).then(
+                function(success) {
+                    //TODO: success message
+                }
+            );
+        };
+    }
+])
+
+// Projector Control Controller
+.controller('ProjectorControlCtrl', [
+    '$scope',
+    '$http',
+    '$interval',
+    '$state',
+    'Config',
+    'Projector',
+    function($scope, $http, $interval, $state, Config, Projector) {
+         // bind projector elements to the scope, update after projector changed
+        $scope.$watch(function () {
+            return Projector.lastModified(1);
+        }, function () {
+            // stop ALL interval timer
+            for (var i=0; i<$scope.countdowns.length; i++) {
+                if ( $scope.countdowns[i].interval ) {
+                    $interval.cancel($scope.countdowns[i].interval);
+                }
+            }
+            // rebuild all variables after projector update
+            $scope.rebuildAllElements();
+        });
+        $scope.$on('$destroy', function() {
+            // Cancel all intervals if the controller is destroyed
+            for (var i=0; i<$scope.countdowns.length; i++) {
+                if ( $scope.countdowns[i].interval ) {
+                    $interval.cancel($scope.countdowns[i].interval);
+                }
+            }
+
+        });
+
+        // *** countdown functions ***
+        $scope.calculateCountdownTime = function (countdown) {
+            countdown.seconds = Math.floor( countdown.countdown_time - Date.now() / 1000 + $scope.serverOffset );
+        }
+        $scope.rebuildAllElements = function () {
+            $scope.countdowns = [];
+            $scope.messages = [];
+            // iterate via all projector elements and catch all countdowns and messages
+            $.each(Projector.get(1).elements, function(key, value) {
+                if (value.name == 'core/countdown') {
+                    $scope.countdowns.push(value);
+                    if (value.status == "running") {
+                        // calculate remaining seconds directly because interval starts with 1 second delay
+                        $scope.calculateCountdownTime(value);
+                        // start interval timer (every second)
+                        value.interval = $interval( function() { $scope.calculateCountdownTime(value); }, 1000);
+                    } else {
+                        value.seconds = value.countdown_time;
+                    }
+                }
+                if (value.name == 'core/message') {
+                    $scope.messages.push(value);
+                }
+            });
+            $scope.scrollLevel = Projector.get(1).scroll;
+            $scope.scaleLevel = Projector.get(1).scale;
+        }
+
+        // get initial values for $scope.countdowns, $scope.messages, $scope.scrollLevel
+        // and $scope.scaleLevel (after page reload)
+        $scope.rebuildAllElements();
+
+        $scope.addCountdown = function () {
+            var defaultvalue = parseInt(Config.get('projector_default_countdown').value);
+            $http.post('/rest/core/projector/1/activate_elements/', [{
+                    name: 'core/countdown',
+                    status: 'stop',
+                    visible: false,
+                    index: $scope.countdowns.length,
+                    countdown_time: defaultvalue,
+                    default: defaultvalue,
+                    stable: true
+            }]);
+        };
+        $scope.removeCountdown = function (countdown) {
+            var data = {};
+            var delta = 0;
+            // rebuild index for all countdowns after the selected (deleted) countdown
+            for (var i=0; i<$scope.countdowns.length; i++) {
+                if ( $scope.countdowns[i].uuid == countdown.uuid ) {
+                    delta = 1;
+                } else if (delta > 0) {
+                        data[$scope.countdowns[i].uuid] = { "index": i - delta };
+                }
+            }
+            $http.post('/rest/core/projector/1/deactivate_elements/', [countdown.uuid]);
+            if (Object.keys(data).length > 0) {
+                $http.post('/rest/core/projector/1/update_elements/', data);
+            }
+        };
+        $scope.showCountdown = function (countdown) {
+            var data = {};
+            data[countdown.uuid] = { "visible": !countdown.visible };
+            $http.post('/rest/core/projector/1/update_elements/', data);
+        };
+        $scope.editCountdown = function (countdown) {
+            var data = {};
+            data[countdown.uuid] = { 
+                "description": countdown.description,
+                "default": parseInt(countdown.default)
+            };
+            if (countdown.status == "stop") {
+                data[countdown.uuid].countdown_time = parseInt(countdown.default);
+            }
+            $http.post('/rest/core/projector/1/update_elements/', data);
+        };
+        $scope.startCountdown = function (countdown) {
+            var data = {};
+            // calculate end point of countdown (in seconds!)
+            var endTimestamp = Date.now() / 1000 - $scope.serverOffset + countdown.countdown_time;
+            data[countdown.uuid] = {
+                "status": "running",
+                "countdown_time": endTimestamp
+            };
+            $http.post('/rest/core/projector/1/update_elements/', data);
+        };
+        $scope.stopCountdown = function (countdown) {
+            var data = {};
+            // calculate rest duration of countdown (in seconds!)
+            var newDuration = Math.floor( countdown.countdown_time - Date.now() / 1000 + $scope.serverOffset );
+            data[countdown.uuid] = {
+                "status": "stop",
+                "countdown_time": newDuration
+            };
+            $http.post('/rest/core/projector/1/update_elements/', data);
+        };
+        $scope.resetCountdown = function (countdown) {
+            var data = {};
+            data[countdown.uuid] = {
+                "status": "stop",
+                "countdown_time": countdown.default,
+            };
+            $http.post('/rest/core/projector/1/update_elements/', data);
+        };
+
+        // *** message functions ***
+        $scope.addMessage = function () {
+            $http.post('/rest/core/projector/1/activate_elements/', [{
+                    name: 'core/message',
+                    visible: false,
+                    index: $scope.messages.length,
+                    message: '',
+                    stable: true
+            }]);
+        };
+        $scope.removeMessage = function (message) {
+            $http.post('/rest/core/projector/1/deactivate_elements/', [message.uuid]);
+        };
+        $scope.showMessage = function (message) {
+            var data = {};
+            // if current message is activated, deactivate all other messages
+            if ( !message.visible ) {
+                for (var i=0; i<$scope.messages.length; i++) {
+                    if ( $scope.messages[i].uuid == message.uuid ) {
+                        data[$scope.messages[i].uuid] = { "visible": true };
+                    } else {
+                        data[$scope.messages[i].uuid] = { "visible": false };
+                    }
+                }
+            } else {
+                data[message.uuid] = { "visible": false };
+            }
+            $http.post('/rest/core/projector/1/update_elements/', data);
+        };
+        $scope.editMessage = function (message) {
+            var data = {};
+            data[message.uuid] = {
+                "message": message.message,
+            };
+            $http.post('/rest/core/projector/1/update_elements/', data);
+            message.editMessageFlag = false;
+        };
+
+        // *** projector controls ***
+        $scope.scrollLevel = Projector.get(1).scroll;
+        $scope.scaleLevel = Projector.get(1).scale;
+        $scope.controlProjector = function (action, direction) {
+            $http.post('/rest/core/projector/1/control_view/', {"action": action, "direction": direction});
+        };
+        $scope.editCurrentSlide = function () {
+            $.each(Projector.get(1).elements, function(key, value) {
+                if (value.name != 'core/clock' &&
+                    value.name != 'core/countdown' &&
+                    value.name != 'core/message' ) {
+                    $state.go(value.name.replace('/', '.')+'.detail.update', {id: value.id });
+                }
+            });
+        };
+    }
+])
 
 .controller('CustomslideDetailCtrl', function($scope, Customslide, customslide) {
     Customslide.bindOne(customslide.id, $scope, 'customslide');
@@ -748,13 +984,14 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
     slidesProvider.registerSlide('core/clock', {
         template: 'static/templates/core/slide_clock.html',
     });
-})
 
-.filter('osServertime',function() {
-    return function(serverOffset) {
-        var date = new Date();
-        return date.setTime(date.getTime() - serverOffset);
-    };
+    slidesProvider.registerSlide('core/countdown', {
+        template: 'static/templates/core/slide_countdown.html',
+    });
+
+    slidesProvider.registerSlide('core/message', {
+        template: 'static/templates/core/slide_message.html',
+    });
 })
 
 .controller('ProjectorCtrl', function($scope, Projector, slides) {
@@ -770,22 +1007,70 @@ angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
                     console.error("Error for slide " + element.name + ": " + element.error)
                 }
             });
+            $scope.scroll = -10 * Projector.get(1).scroll;
+            $scope.scale = 100 + 20 * Projector.get(1).scale;
         });
     });
 })
 
-.controller('SlideCustomSlideCtrl', function($scope, Customslide) {
-    // Attention! Each object that is used here has to be dealt on server side.
-    // Add it to the coresponding get_requirements method of the ProjectorElement
-    // class.
-    var id = $scope.element.id;
-    Customslide.find(id);
-    Customslide.bindOne(id, $scope, 'customslide');
-})
+.controller('SlideCustomSlideCtrl', [
+    '$scope',
+    'Customslide',
+    function($scope, Customslide) {
+        // Attention! Each object that is used here has to be dealt on server side.
+        // Add it to the coresponding get_requirements method of the ProjectorElement
+        // class.
+        var id = $scope.element.id;
+        Customslide.find(id);
+        Customslide.bindOne(id, $scope, 'customslide');
+    }
+])
 
-.controller('SlideClockCtrl', function($scope) {
-    // Attention! Each object that is used here has to be dealt on server side.
-    // Add it to the coresponding get_requirements method of the ProjectorElement
-    // class.
-    $scope.serverOffset = Date.parse(new Date().toUTCString()) - $scope.element.context.server_time;
-});
+.controller('SlideClockCtrl', [
+    '$scope',
+    function($scope) {
+        // Attention! Each object that is used here has to be dealt on server side.
+        // Add it to the coresponding get_requirements method of the ProjectorElement
+        // class.
+        $scope.servertime = ( Date.now() / 1000 - $scope.serverOffset ) * 1000;
+    }
+])
+
+.controller('SlideCountdownCtrl', [
+    '$scope',
+    '$interval',
+    function($scope, $interval) {
+        // Attention! Each object that is used here has to be dealt on server side.
+        // Add it to the coresponding get_requirements method of the ProjectorElement
+        // class.
+        $scope.seconds = Math.floor( $scope.element.countdown_time - Date.now() / 1000 + $scope.serverOffset );
+        $scope.status = $scope.element.status;
+        $scope.visible = $scope.element.visible;
+        $scope.index = $scope.element.index;
+        $scope.description = $scope.element.description;
+        // start interval timer if countdown status is running
+        var interval;
+        if ($scope.status == "running") {
+            interval = $interval( function() {
+                $scope.seconds = Math.floor( $scope.element.countdown_time - Date.now() / 1000 + $scope.serverOffset );
+            }, 1000);
+        } else {
+             $scope.seconds = $scope.element.countdown_time;
+        }
+        $scope.$on('$destroy', function() {
+            // Cancel the interval if the controller is destroyed
+            $interval.cancel(interval);
+        });
+    }
+])
+
+.controller('SlideMessageCtrl', [
+    '$scope',
+    function($scope) {
+        // Attention! Each object that is used here has to be dealt on server side.
+        // Add it to the coresponding get_requirements method of the ProjectorElement
+        // class.
+        $scope.message = $scope.element.message;
+        $scope.visible = $scope.element.visible;
+    }
+]);

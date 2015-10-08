@@ -1,0 +1,177 @@
+<!-- projector live view -->
+<h3 translate>Projector</h4>
+<a ui-sref="projector" target="_blank">
+  <div id="iframewrapper">
+    <iframe id="iframe" src="/projector" frameborder="0"></iframe>
+    <div id="iframeoverlay"></div>
+  </div>
+</a>
+
+<div ng-controller="ProjectorControlCtrl">
+  <!-- projector control buttons -->
+  <p os-perms="core.can_manage_projector">
+    <a ng-click="editCurrentSlide()"
+        class="btn btn-default btn-sm"
+        title="{{ 'Edit current slide' | translate}}">
+      <i class="fa fa-pencil"></i>
+    </a>
+    &nbsp;
+    <a ng-click="controlProjector('scale', 'down')"
+        class="btn btn-default btn-sm"
+        title="{{ 'Smaller' | translate}}">
+      <i class="fa fa-search-minus"></i>
+    </a>
+    <a ng-click="controlProjector('scale', 'up')"
+        class="btn btn-default btn-sm"
+        title="{{ 'Bigger' | translate}}">
+      <i class="fa fa-search-plus"></i>
+    </a>
+    <span ng-class="{ 'notNull': scaleLevel != 0 }">{{ scaleLevel }}</span>
+    &nbsp;
+    <a ng-click="controlProjector('scroll', 'down')"
+        class="btn btn-default btn-sm"
+        title="{{ 'Scroll up' | translate}}">
+      <i class="fa fa-arrow-up"></i>
+    </a>
+    <a ng-click="controlProjector('scroll', 'up')"
+        class="btn btn-default btn-sm"
+        title="{{ 'Scroll down' | translate}}">
+      <i class="fa fa-arrow-down"></i>
+    </a>
+    <a ng-click="controlProjector('scroll', 'reset')"
+        class="btn btn-default btn-sm"
+        title="{{ 'Reset scrolling' | translate}}">
+      <i class="fa fa-undo"></i>
+    </a>
+    <span ng-class="{ 'notNull': scrollLevel != 0 }">{{ scrollLevel }}</span>
+  </p>
+
+  <!-- countdowns -->
+  <div os-perms-lite="core.can_manage_projector">
+    <div ng-repeat="countdown in countdowns | orderBy: 'index'" id="{{countdown.uuid}}" class="countdown panel panel-default">
+      <div class="panel-heading">
+        <span ng-if="countdown.description">{{ countdown.description }}</span>
+        <span ng-if="!countdown.description">Countdown {{ countdown.index +1 }}</span>
+        <!-- remove countdown button -->
+        <button type="button" class="close"
+            ng-click="removeCountdown(countdown)"
+            title="{{ 'Remove countdown' | translate}}">
+            <i class="fa fa-times"></i>
+        </button>
+        <!-- edit countdown button -->
+        <button ng-show="countdown.status=='stop'"
+            type="button" class="close editicon"
+            ng-click="editCountdownFlag=true;"
+            title="{{ 'Edit countdown' | translate}}">
+            <i class="fa fa-pencil"></i>
+        </button>
+      </div>
+      <div class="panel-body"
+          ng-class="{ 'projected': countdown.visible }">
+        <!-- project countdown button -->
+        <a class="btn btn-default btn-sm"
+            ng-model="countdown.visible"
+            ng-click="showCountdown(countdown)"
+            ng-class="{ 'btn-primary': countdown.visible }"
+            title="{{ 'Project countdown' | translate }}">
+          <i class="fa fa-video-camera"></i>
+        </a>
+        &nbsp;&nbsp;
+        <!-- countdown controls -->
+        <a class="btn btn-default vcenter"
+            ng-click="resetCountdown(countdown)"
+            ng-class="{ 'disabled': countdown.status == 'stop' && countdown.default == countdown.countdown_time }"
+            title="{{ 'Reset countdown' | translate}}">
+          <i class="fa fa-stop"></i>
+        </a>
+        <a ng-if="countdown.status=='stop'" class="btn btn-default vcenter"
+            ng-click="startCountdown(countdown)"
+            title="{{ 'Start' | translate}}">
+          <i  class="fa fa-play"></i>
+          <i ng-if="countdown.status=='running'" class="fa fa-pause"></i>
+        </a>
+        <a ng-if="countdown.status=='running'" class="btn btn-default vcenter"
+            ng-click="stopCountdown(countdown)"
+            title="{{ 'Pause' | translate}}">
+          <i  class="fa fa-pause"></i>
+        </a>
+        <span ng-if="!editTime" class="countdown_timer vcenter"
+              ng-class="{ 'negative': countdown.seconds < 0 }">
+            {{ countdown.seconds | osSecondsToTime }}
+        </span>
+        <!-- edit countdown form -->
+        <form ng-show="editCountdownFlag" ng-submit="editCountdown(countdown)">
+          <div class="form-group">
+            <label translate>Description</label>
+            <input ng-model="countdown.description" type="text" class="form-control input-sm">
+          </div>
+          <div class="form-group">
+            <label translate>Start time</label>
+            <input ng-model="countdown.default" type="number" class="form-control input-sm">
+          </div>
+          <button type="submit"
+              title="{{ 'Save' | translate}}"
+              class="btn btn-sm btn-primary">
+            <i class="fa fa-check"></i>
+          </button>
+          <button ng-click="editCountdownFlag=false;"
+              title="{{ 'Cancel' | translate}}"
+              class="btn btn-default btn-sm">
+            <i class="fa fa-times"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+    <!-- Add countdown button -->
+    <a ng-click="addCountdown()"
+        class="btn btn-default btn-sm"
+        title="{{ 'Add countdown' | translate}}">
+      <i class="fa fa-plus"></i> <translate>Add new countdown</translate>
+    </a>
+  </div>
+
+  <!-- messages -->
+  <div os-perms-lite="core.can_manage_projector">
+    <h3 translate>Messages</h3>
+    <div ng-repeat="message in messages | orderBy: 'index'" id="{{message.uuid}}" class="message panel panel-default">
+      <div class="panel-body"
+          ng-class="{ 'projected': message.visible }">
+        <!-- project message button -->
+        <a class="btn btn-default btn-sm"
+            ng-model="message.visible"
+            ng-click="showMessage(message)"
+            ng-class="{ 'btn-primary': message.visible }"
+            title="{{ 'Project message' | translate }}">
+          <i class="fa fa-video-camera"></i>
+        </a>
+        &nbsp;&nbsp;
+        {{ message.message }}
+        <!-- remove message button -->
+        <button type="button" class="close"
+            ng-click="removeMessage(message)"
+            title="{{ 'Remove message' | translate}}">
+            <i class="fa fa-times"></i>
+        </button>
+        <button type="button" class="close editicon"
+            ng-click="editMessageFlag=true;"
+            title="{{ 'Edit message' | translate}}">
+            <i class="fa fa-pencil"></i>
+        </button>
+        <div ng-if="editMessageFlag" class="input-group">
+          <input ng-model="message.message" type="text" class="form-control input-sm">
+          <a ng-click="editMessage(message)"
+              title="{{ 'Save' | translate}}"
+             class="btn btn-sm btn-primary input-group-addon">
+            <i class="fa fa-check"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    <!-- Add message button -->
+    <a ng-click="addMessage()"
+        class="btn btn-default btn-sm"
+        title="{{ 'Add message' | translate}}">
+      <i class="fa fa-plus"></i> <translate>Add new message</translate>
+    </a>
+  </div>
+</div>
