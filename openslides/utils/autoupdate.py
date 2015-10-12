@@ -136,7 +136,7 @@ def run_tornado(addr, port, *args, **kwargs):
     # Collect urls
     sock_js_router = SockJSRouter(OpenSlidesSockJSConnection, '/sockjs')
     other_urls = [
-        (r"%s(.*)" % settings.STATIC_URL, DjangoStaticFileHandler),
+        (r'%s(.*)' % settings.STATIC_URL, DjangoStaticFileHandler),
         (r'%s(.*)' % settings.MEDIA_URL, StaticFileHandler, {'path': settings.MEDIA_ROOT}),
         ('.*', FallbackHandler, dict(fallback=app))]
 
