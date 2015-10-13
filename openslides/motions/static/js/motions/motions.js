@@ -2,10 +2,20 @@
 
 angular.module('OpenSlidesApp.motions', [])
 
+.factory('MotionPoll', [
+    'DS',
+    function(DS) {
+        return DS.defineResource({
+            name: 'motions/motionpoll',
+        });
+    }
+])
+
 .factory('Motion', [
     'DS',
+    'MotionPoll',
     'jsDataModel',
-    function(DS, jsDataModel) {
+    function(DS, MotionPoll, jsDataModel) {
         var name = 'motions/motion'
         return DS.defineResource({
             name: name,
@@ -70,6 +80,10 @@ angular.module('OpenSlidesApp.motions', [])
                             localKeys: 'supporters_id',
                         }
                     ],
+                    'motions/motionpoll': {
+                        localField: 'polls',
+                        foreignKey: 'motion_id',
+                    }
                 }
             }
         });
@@ -252,12 +266,34 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     };
 })
 
-.controller('MotionDetailCtrl', function($scope, Motion, Category, User, motion) {
-    Motion.bindOne(motion.id, $scope, 'motion');
-    Category.bindAll({}, $scope, 'categories');
-    User.bindAll({}, $scope, 'users');
-    Motion.loadRelations(motion);
-})
+.controller('MotionDetailCtrl', [
+    '$scope',
+    'Motion',
+    'Category',
+    'User',
+    'motion',
+    '$http',
+    function($scope, Motion, Category, User, motion, $http) {
+        Motion.bindOne(motion.id, $scope, 'motion');
+        Category.bindAll({}, $scope, 'categories');
+        User.bindAll({}, $scope, 'users');
+        Motion.loadRelations(motion);
+
+        $scope.create_poll = function () {
+            $http.post('/rest/motions/motion/' + motion.id + '/create_poll/', {})
+            .success(function(data){
+                $scope.alert.show = false;
+            })
+            .error(function(data){
+                $scope.alert = { type: 'danger', msg: data.detail, show: true };
+            });
+        }
+
+        $scope.delete_poll = function (poll) {
+            poll.DSDestroy();
+        }
+    }
+])
 
 .controller('MotionCreateCtrl',
         function($scope, $state, $http, Motion, Agenda, User, Category, Workflow, Tag, Mediafile) {

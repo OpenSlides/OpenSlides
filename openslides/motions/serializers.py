@@ -97,6 +97,7 @@ class MotionPollSerializer(ModelSerializer):
         model = MotionPoll
         fields = (
             'id',
+            'motion',
             'yes',
             'no',
             'abstain',

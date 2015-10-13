@@ -39,6 +39,12 @@
   </a>
 </div>
 
+<a href="#" ng-click="create_poll()">Create Poll</a>
+<div ng-repeat="poll in motion.polls">
+    {{ poll.id }}
+    <a href="#" ng-click="delete_poll(poll)">delete</a>
+</div>
+
 <div class="row">
   <div class="col-sm-8">
     <h3 translate>Text</h3>
