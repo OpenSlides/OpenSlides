@@ -5,7 +5,13 @@
     <span ng-if="motion.versions.length > 1" >| Version {{ motion.active_version }}</span>
   </small>
 </h1>
-{{ motion.tags }}
+
+<span ng-repeat="tag in motion.tags">
+  <span  class="label label-default">
+    {{ tag.name }}
+  </span>
+  &nbsp;
+</span>
 
 {{ motion.agenda_item }}
 

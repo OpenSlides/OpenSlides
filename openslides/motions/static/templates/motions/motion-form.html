@@ -21,19 +21,14 @@
   </div>
   <div class="form-group">
     <label for="selectSubmitter" translate>Submitter</label>
-    <select multiple size="3" ng-options="user.id as user.get_short_name() for user in users"
-        ng-model="motion.submitters_id" class="form-control" name="selectSubmitter" required>
-    </select>
-<!-- TODO: use modern ui-select component with more information per user
-    <ui-select multipe ng-model="motion.submitter" theme="bootstrap" name="selectSubmitter">
-      <ui-select-match placeholder="{{ 'Select or search a participant...' | translate }}">
-        {{ $select.selected.get_short_name() }}
+    <ui-select multiple ng-model="motion.submitters_id" name="selectSubmitter">
+      <ui-select-match placeholder="{{ 'Select or search a submitter...' | translate }}">
+        {{ $item.get_full_name() }}
       </ui-select-match>
       <ui-select-choices repeat="user.id as user in users | filter: $select.search">
-        <div ng-bind-html="user.get_short_name() | highlight: $select.search"></div>
-        <small ng-bind-html="user.structure_level | highlight: $select.search"></small>
+        <div ng-bind-html="user.get_full_name() | highlight: $select.search"></div>
       </ui-select-choices>
-    </ui-select>-->
+    </ui-select>
   </div>
   <div class="form-group">
     <label for="inputName" translate>Title</label>
@@ -55,34 +50,48 @@
   </div>
   <div class="form-group">
     <label for="selectTags" translate>Tags</label>
-    <select multiple ng-options="tag.id as tag.name for tag in tags"
-        ng-model="motion.tags_id" class="form-control" name="selectTags">
-    </select>
+    <ui-select multiple ng-model="motion.tags_id">
+      <ui-select-match placeholder="{{ 'Select or search a tag...' | translate }}">
+        {{ $item.name }}
+      </ui-select-match>
+      <ui-select-choices repeat="tag.id as tag in tags | filter: $select.search">
+        {{ tag.name }}
+      </ui-select-choices>
+    </ui-select>
   </div>
   <div class="form-group">
     <label for="selectAttachments" translate>Attachments</label>
+    <ui-select multiple ng-model="motion.attachments_id">
+      <ui-select-match placeholder="{{ 'Select or search an attachment...' | translate }}">
+        {{ $item.name }}
+      </ui-select-match>
+      <ui-select-choices repeat="file.id as file in mediafiles | filter: $select.search">
+        {{ file.title }}
+      </ui-select-choices>
+    </ui-select>
     <select ng-options="file.id as file.title for file in mediafiles"
         ng-model="motion.attachments_id" class="form-control" name="selectAttachments">
     </select>
   </div>
-  <!-- TODO: show only if supporters is enabled -->
-  <div class="form-group">
-    <label for="selectSupporter" translate>Supporters</label>
-    <ui-select multiple ng-model="motion.supporters_id" theme="bootstrap" name="selectSupporter">
-      <ui-select-match placeholder="{{ 'Select or search a participant...' | translate }}">
-        {{ $select.selected.get_short_name() }}
+  <!-- show supporters if enabled -->
+  <div class="form-group" ng-if="config('motions_min_supporters') > 0">
+    <label for="selectSupporter"  translate>Supporters</label>
+    <ui-select multiple ng-model="motion.supporters_id">
+      <ui-select-match placeholder="{{ 'Select or search a supporter...' | translate }}">
+        {{ $item.get_full_name() }}
       </ui-select-match>
       <ui-select-choices repeat="user.id as user in users | filter: $select.search">
-        <div ng-bind-html="user.get_short_name() | highlight: $select.search"></div>
-        <small ng-bind-html="user.structure_level | highlight: $select.search"></small>
+        <div ng-bind-html="user.get_full_name() | highlight: $select.search"></div>
       </ui-select-choices>
     </ui-select>
   </div>
-  <!-- TODO: preselect default workflow -->
+  <!-- TODO: preselect default workflow
+  does not work: ng-init="motion.workflow = config('motions_workflow')"-->
   <div class="form-group">
     <label for="selectWorkflow" translate>Workflow</label>
     <select ng-options="workflow.id as workflow.name for workflow in workflows"
-        ng-model="motion.workflow" class="form-control" name="selectWorkflow">
+        ng-model="motion.workflow"
+        class="form-control" name="selectWorkflow">
     </select>
   </div>
 
