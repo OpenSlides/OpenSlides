@@ -350,33 +350,66 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     }
 ])
 
-.controller('UserListCtrl', function($scope, User, Group) {
-    User.bindAll({}, $scope, 'users');
-    Group.bindAll({}, $scope, 'groups');
+.controller('UserListCtrl', [
+    '$scope',
+    '$state',
+    'User',
+    'Group',
+    function($scope, $state, User, Group) {
+        User.bindAll({}, $scope, 'users');
+        Group.bindAll({}, $scope, 'groups');
 
-    // setup table sorting
-    $scope.sortColumn = 'first_name'; //TODO: sort by first OR last name
-    $scope.filterPresent = '';
-    $scope.reverse = false;
-    // function to sort by clicked column
-    $scope.toggleSort = function ( column ) {
-        if ( $scope.sortColumn === column ) {
-            $scope.reverse = !$scope.reverse;
-        }
-        $scope.sortColumn = column;
-    };
+        // setup table sorting
+        $scope.sortColumn = 'first_name'; //TODO: sort by first OR last name
+        $scope.filterPresent = '';
+        $scope.reverse = false;
+        // function to sort by clicked column
+        $scope.toggleSort = function ( column ) {
+            if ( $scope.sortColumn === column ) {
+                $scope.reverse = !$scope.reverse;
+            }
+            $scope.sortColumn = column;
+        };
 
-    // save changed user
-    $scope.togglePresent = function (user) {
-        //the value was changed by the template (checkbox)
-        User.save(user);
-    };
+        // open detail view link
+        $scope.openDetail = function (id) {
+            $state.go('users.user.detail', {id: id});
+        };
 
-    // delete selected user
-    $scope.delete = function (user) {
-        User.destroy(user.id);
-    };
-})
+        // save changed user
+        $scope.togglePresent = function (user) {
+            //the value was changed by the template (checkbox)
+            User.save(user);
+        };
+
+        // *** delete mode functions ***
+        $scope.isDeleteMode = false;
+        // check all checkboxes
+        $scope.checkAll = function () {
+            angular.forEach($scope.users, function (user) {
+                user.selected = $scope.selectedAll;
+            });
+        };
+        // uncheck all checkboxes if isDeleteMode is closed
+        $scope.uncheckAll = function () {
+            if (!$scope.isDeleteMode) {
+                $scope.selectedAll = false;
+                angular.forEach($scope.users, function (user) {
+                    user.selected = false;
+                });
+            }
+        };
+        // delete selected user
+        $scope.delete = function () {
+            angular.forEach($scope.users, function (user) {
+                if (user.selected)
+                    User.destroy(user.id);
+            });
+            $scope.isDeleteMode = false;
+            $scope.uncheckAll();
+        };
+    }
+])
 
 .controller('UserDetailCtrl', function($scope, User, user, Group) {
     User.bindOne(user.id, $scope, 'user');
@@ -469,7 +502,14 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             user.first_name = obj[i].first_name;
             user.last_name = obj[i].last_name;
             user.structure_level = obj[i].structure_level;
-            user.groups = obj[i].groups;
+            user.groups = [];
+            if (obj[i].groups != '') {
+                var groups = obj[i].groups.replace('"','').split(",");
+                groups.forEach(function(group) {
+                    user.groups.push(group);
+                    console.log(group);
+                });
+            }
             user.comment = obj[i].comment;
             User.create(user).then(
                 function(success) {
