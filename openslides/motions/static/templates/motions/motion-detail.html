@@ -6,13 +6,6 @@
   </small>
 </h1>
 
-<span ng-repeat="tag in motion.tags">
-  <span  class="label label-default">
-    {{ tag.name }}
-  </span>
-  &nbsp;
-</span>
-
 {{ motion.agenda_item }}
 
 <div id="submenu">
@@ -39,19 +32,13 @@
   </a>
 </div>
 
-<a href="#" ng-click="create_poll()">Create Poll</a>
-<div ng-repeat="poll in motion.polls">
-    {{ poll.id }}
-    <a href="#" ng-click="delete_poll(poll)">delete</a>
-</div>
-
 <div class="row">
   <div class="col-sm-8">
     <h3 translate>Text</h3>
-    <div class="white-space-pre-line">{{ motion.getText() }}</div>
+    <div class="white-space-pre-line" ng-bind-html="motion.getText()"></div>
 
     <h3 translate>Reason</h3>
-    <div class="white-space-pre-line">{{ motion.getReason() }}</div>
+    <div class="white-space-pre-line" ng-bind-html="motion.getReason()"></div>
   </div>
 
   <div class="col-sm-4">
@@ -61,11 +48,151 @@
         {{ submitter.get_full_name() }}<br>
       </div>
 
+      <div ng-if="config('motions_min_supporters') > 0">
+        <h3 translate>Supporters</h3>
+        <ol>
+          <li ng-repeat="supporters in motion.supporters">
+          {{ supporters.get_full_name() }}
+        </ol>
+      </div>
+
+      <h3 translate>State</h3>
+      <span class="label label-primary">{{ motion.state.name | translate }}</span>
+      <button os-perms-lite="motions.can_manage" ng-click="motion.isStatusEditMode=true"
+          class="btn btn-default btn-xs">
+        <i class="fa fa-pencil"></i>
+      </button>
+      <div ng-if="motion.isStatusEditMode" os-perms-lite="motions.can_manage">
+        <div class="btn-group-vertical spacer" role="group">
+          <button ng-repeat="state_id in motion.state.next_states_id" class="btn btn-default btn-sm"
+            ng-click="update_state(state_id)">
+            State #{{state_id}}
+          </button>
+        </div>
+        <div>
+        <button ng-click="reset_state()"
+            class="btn btn-danger btn-xs spacer">
+          <i class="fa fa-exclamation-triangle"></i> Reset
+        </button>
+        </div>
+      </div>
+
+      <h3 translate>Voting result</h3>
+      <ol class="slimlist">
+        <li ng-repeat="poll in motion.polls" class="spacer">
+          <translate>Vote</translate>
+          <button os-perms-lite="motions.can_manage" ng-click="poll.isEditMode=true;"
+              class="btn btn-default btn-xs">
+            <i class="fa fa-pencil"></i>
+          </button>
+          <button os-perms="motions.can_manage" ng-click="delete_poll(poll)"
+              class="btn btn-default btn-xs">
+            <i class="fa fa-times"></i>
+          </button>
+          <br>
+          <form ng-show="poll.isEditMode">
+            <!-- yes -->
+            <div class="input-group col-sm-8 spacer">
+              <div class="input-group-addon" title="{{ 'Yes' | translate }}"><i class="fa fa-thumbs-up"></i></div>
+              <input type="number" ng-model="poll.yes" class="form-control input-sm" placeholder="{{ 'Yes' | translate }}">
+            </div>
+            <!-- no -->
+            <div class="input-group col-sm-8">
+              <div class="input-group-addon" title="{{ 'No' | translate }}"><i class="fa fa-thumbs-down"></i></div>
+              <input type="number" ng-model="poll.no" class="form-control input-sm" placeholder="{{ 'No' | translate }}">
+            </div>
+            <!-- abstain -->
+            <div class="input-group col-sm-8">
+              <div class="input-group-addon" title="{{ 'Abstain' | translate }}"><b>&empty;</b></div>
+              <input type="number" ng-model="poll.abstain" class="form-control input-sm" placeholder="{{ 'Abstain' | translate }}">
+            </div>
+            <!-- valid votes -->
+            <div class="input-group col-sm-8 spacer">
+              <div class="input-group-addon" title="{{ 'Valid votes' | translate }}"><i class="fa fa-check"></i></div>
+              <input type="number" ng-model="poll.votesvalid" class="form-control input-sm" placeholder="{{ 'Valid votes' | translate }}">
+            </div>
+            <!-- invalid votes -->
+            <div class="input-group col-sm-8">
+              <div class="input-group-addon" title="{{ 'Invalid votes' | translate }}"><i class="fa fa-ban"></i></div>
+              <input type="number" ng-model="poll.votesinvalid" class="form-control input-sm" placeholder="{{ 'Invalid votes' | translate }}">
+            </div>
+            <!-- votes cast -->
+            <div class="input-group col-sm-8 spacer">
+              <div class="input-group-addon" title="{{ 'Votes cast' | translate }}"><b>&sum;</b></div>
+              <input type="number" ng-model="poll.votescast" class="form-control input-sm" placeholder="{{ 'Votes cast' | translate }}">
+            </div>
+            <!-- buttons -->
+            <div class="spacer">
+              <button type="submit" ng-click="update_poll(poll)" class="btn btn-primary" translate>
+                Save
+              </button>
+              <button ng-click="poll.isEditMode=false;" class="btn btn-default" translate>
+                Cancel
+              </button>
+            </div>
+          </form>
+          <div ng-show="!poll.isEditMode && poll.yes">
+            <!-- yes -->
+            <div class="result_label">
+              <i class="fa fa-thumbs-up"></i>
+              <translate>Yes</translate>:
+            </div>
+            <div class="result_value">{{ poll.yes }} {{poll.getYesPercent()}}</div>
+            <!-- no -->
+            <div class="result_label">
+              <i class="fa fa-thumbs-down"></i>
+              <translate>No</translate>:
+            </div>
+            <div class="result_value">{{ poll.no }} {{poll.getNoPercent()}}</div>
+            <!-- abstain -->
+            <div class="resutl_label">
+              <b>&empty;</b>
+              <translate>Abstain</translate>:
+            </div>
+            <div class="result_value">{{ poll.abstain }} {{poll.getAbstainPercent()}}</div>
+            <hr class="smallhr" ng-if="poll.votesvalid || poll.votesinvalid">
+            <!-- valid votes -->
+            <div ng-if="poll.votesvalid">
+              <div class="result_label">
+                <i class="fa fa-check"></i>
+                <translate>Valid votes</translate>:
+              </div>
+              <div class="result_value">{{ poll.votesvalid }} {{poll.getVotesValidPercent()}}</div>
+            </div>
+            <!-- invalid votes -->
+            <div ng-if="poll.votesinvalid">
+              <div class="result_label">
+                <i class="fa fa-ban"></i>
+                <translate>Invalid votes</translate>:
+              </div>
+              <div class="result_value">{{ poll.votesinvalid }} {{poll.getVotesInvalidPercent()}}</div>
+            </div>
+            <hr class="smallhr" ng-if="poll.votescast">
+            <!-- votes cast -->
+            <div ng-if="poll.votescast">
+              <div class="resutl_label">
+                <b>&sum;</b>
+                <translate>Votes cast</translate>:
+              </div>
+              <div class="result_value">{{ poll.votescast }} {{poll.getVotesCastPercent()}}</div>
+            </div>
+          </div>
+      </ol>
+      <button ng-click="create_poll()" class="btn btn-default btn-sm">
+        <i class="fa fa-bar-chart fa-lg"></i>
+        <translate>New poll</translate>
+      </button>
+
       <h3 translate>Category</h3>
       {{ motion.category.name }}</a>
 
-      <h3 translate>Voting result</h3>
-      -
+      <h3 translate>Tags</h3>
+      <span ng-repeat="tag in motion.tags">
+        <span class="label label-default">
+          {{ tag.name }}
+        </span>
+        &nbsp;
+      </span>
     </div>
   </div>
 </div>

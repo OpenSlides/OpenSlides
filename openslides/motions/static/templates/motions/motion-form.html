@@ -20,7 +20,7 @@
     </select>
   </div>
   <div class="form-group">
-    <label for="selectSubmitter" translate>Submitter</label>
+    <label for="selectSubmitter" translate>Submitters</label>
     <ui-select multiple ng-model="motion.submitters_id" name="selectSubmitter">
       <ui-select-match placeholder="{{ 'Select or search a submitter...' | translate }}">
         {{ $item.get_full_name() }}
@@ -31,7 +31,7 @@
     </ui-select>
   </div>
   <div class="form-group">
-    <label for="inputName" translate>Title</label>
+    <label for="inputTitle" translate>Title</label>
     <input type="text" ng-model="motion.title" class="form-control" name="inputTitle" required>
   </div>
   <div class="form-group">
@@ -69,13 +69,10 @@
         {{ file.title }}
       </ui-select-choices>
     </ui-select>
-    <select ng-options="file.id as file.title for file in mediafiles"
-        ng-model="motion.attachments_id" class="form-control" name="selectAttachments">
-    </select>
   </div>
   <!-- show supporters if enabled -->
   <div class="form-group" ng-if="config('motions_min_supporters') > 0">
-    <label for="selectSupporter"  translate>Supporters</label>
+    <label for="selectSupporter" translate>Supporters</label>
     <ui-select multiple ng-model="motion.supporters_id">
       <ui-select-match placeholder="{{ 'Select or search a supporter...' | translate }}">
         {{ $item.get_full_name() }}

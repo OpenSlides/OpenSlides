@@ -49,6 +49,15 @@ body {
     color: red;
     font-weight: bold;
 }
+.spacer {
+    margin-top: 7px;
+}
+.hoverActions {
+    font-size: 85%;
+}
+.hiddenDiv {
+    visibility: hidden;
+}
 
 /* TODO: used by ng-fab-forms */
 .validation-success {
@@ -274,14 +283,25 @@ tr.offline td, li.offline {
 tr.activeline td, li.activeline, .projected {
     background-color: #bed4de;
 }
+tr.selected td {
+    background-color: #ff9999;
+}
 .nopadding {
     padding: 0;
 }
 .alert form {
     margin-bottom: 0;
 }
-tr.total td {
-    border-top: 1px solid #333333;
+.slimlist {
+    padding-left: 20px;
+}
+.smallhr {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    border-color: #333333;
+}
+.resultcolumn {
+    font-weight: bold;
 }
 .nobr {
     white-space: nowrap;

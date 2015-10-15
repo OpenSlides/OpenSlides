@@ -763,6 +763,7 @@ class State(RESTModelMixin, models.Model):
     This behavior can be changed by the form and view, e. g. via the
     MotionDisableVersioningMixin.
     """
+    # TODO: preferred_for = ChoiceField
 
     leave_old_version_active = models.BooleanField(default=False)
     """If true, new versions are not automaticly set active."""
