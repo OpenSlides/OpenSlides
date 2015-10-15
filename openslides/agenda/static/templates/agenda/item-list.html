@@ -73,7 +73,7 @@
       <!-- projector column -->
       <th ng-show="!isDeleteMode" os-perms="core.can_manage_projector" class="firstColumn">
       <!-- delete selection column -->
-      <th ng-show="isDeleteMode" os-perms="agenda.can_manage" class="firstColumn deleteColumn"
+      <th ng-show="isDeleteMode" os-perms-lite="agenda.can_manage" class="firstColumn deleteColumn"
           ng-click="$event.stopPropagation();">
         <input type="checkbox" ng-model="selectedAll" ng-change="checkAll()">
       <!-- agenda item column -->
@@ -100,10 +100,10 @@
       <td ng-show="isDeleteMode" os-perms="agenda.can_manage" class="deleteColumn"
           ng-click="$event.stopPropagation();">
         <input type="checkbox" ng-model="item.selected">
-      <!-- agenda item column -->
+      <!-- agenda data columns -->
       <td>
         <span ng-repeat="n in [].constructor(item.parentCount) track by $index">&ndash;</span>
-          {{ item.item_number }} {{ item.title }}
+        {{ item.item_number }} {{ item.title }}
         <div ng-if="item.comment">
           <small><i class="fa fa-info-circle"></i> {{ item.comment }}</small>
         </div>

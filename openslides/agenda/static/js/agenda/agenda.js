@@ -222,7 +222,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         // open detail view link
         $scope.openDetail = function (id) {
             $state.go('agenda.item.detail', {id: id});
-        }
+        };
 
         // save changed item
         $scope.save = function (item) {
