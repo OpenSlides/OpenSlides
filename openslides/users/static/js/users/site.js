@@ -1,79 +1,6 @@
-"use strict";
+(function () {
 
-angular.module('OpenSlidesApp.users', [])
-
-.factory('User', ['DS', 'Group', 'jsDataModel', function(DS, Group, jsDataModel) {
-    var name = 'users/user'
-    return DS.defineResource({
-        name: name,
-        useClass: jsDataModel,
-        methods: {
-            getResourceName: function () {
-                return name;
-            },
-            get_short_name: function() {
-                // should be the same as in the python user model.
-                var firstName = _.trim(this.first_name),
-                    lastName = _.trim(this.last_name),
-                    name;
-
-                if (firstName && lastName) {
-                    // TODO: check config
-                    name = [firstName, lastName].join(' ');
-                } else {
-                    name = firstName || lastName || this.username;
-                }
-                return name;
-            },
-            get_full_name: function() {
-                // should be the same as in the python user model.
-                var firstName = _.trim(this.first_name),
-                    lastName = _.trim(this.last_name),
-                    structure_level = _.trim(this.structure_level),
-                    name;
-
-                if (firstName && lastName) {
-                    // TODO: check config
-                    name = [firstName, lastName].join(' ');
-                } else {
-                    name = firstName || lastName || this.username;
-                }
-                if (structure_level) {
-                    name = name + " (" + structure_level + ")";
-                }
-                return name;
-            },
-            getPerms: function() {
-                var allPerms = [];
-                var allGroups = this.groups;
-                // Add registered group
-                allGroups.push(2);
-                _.forEach(allGroups, function(groupId) {
-                    // Get group from server
-                    Group.find(groupId);
-                    // But do not work with the returned promise, because in
-                    // this case this method can not be called in $watch
-                    var group = Group.get(groupId);
-                    if (group) {
-                        _.forEach(group.permissions, function(perm) {
-                            allPerms.push(perm);
-                        });
-                    }
-                });
-                return _.uniq(allPerms);
-            },
-        },
-    });
-}])
-
-.factory('Group', ['DS', function(DS) {
-    return DS.defineResource({
-        name: 'users/group',
-    });
-}])
-
-.run(['User', 'Group', function(User, Group) {}]);
-
+'use strict';
 
 angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
 
@@ -162,7 +89,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     .state('users.group.create', {
         resolve: {
             permissions: function($http) {
-                return $http({ 'method': 'OPTIONS', 'url': '/rest/users/group/' })
+                return $http({ 'method': 'OPTIONS', 'url': '/rest/users/group/' });
             }
         }
     })
@@ -179,7 +106,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         },
         resolve: {
             permissions: function($http) {
-                return $http({ 'method': 'OPTIONS', 'url': '/rest/users/group/' })
+                return $http({ 'method': 'OPTIONS', 'url': '/rest/users/group/' });
             }
         }
     });
@@ -229,7 +156,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                 }
                 return _.intersection(perms, operator.perms).length > 0;
             },
-        }
+        };
         return operator;
     }
 ])
@@ -260,7 +187,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         link: function($scope, $element, $attr, ctrl, $transclude) {
             var block, childScope, previousElements, perms;
             if ($attr.osPerms[0] === '!') {
-                perms = _.trimLeft($attr.osPerms, '!')
+                perms = _.trimLeft($attr.osPerms, '!');
             } else {
                 perms = $attr.osPerms;
             }
@@ -325,7 +252,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             link: function(scope, element, $attr) {
                 var perms;
                 if ($attr.osPermsLite[0] === '!') {
-                    perms = _.trimLeft($attr.osPermsLite, '!')
+                    perms = _.trimLeft($attr.osPermsLite, '!');
                 } else {
                     perms = $attr.osPermsLite;
                 }
@@ -346,7 +273,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     }
                 );
             }
-        }
+        };
     }
 ])
 
@@ -481,7 +408,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                 }
             );
         });
-    }
+    };
 
     // import from csv file
     $scope.csv = {
@@ -503,7 +430,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             user.last_name = obj[i].last_name;
             user.structure_level = obj[i].structure_level;
             user.groups = [];
-            if (obj[i].groups != '') {
+            if (obj[i].groups !== '') {
                 var groups = obj[i].groups.replace('"','').split(",");
                 groups.forEach(function(group) {
                     user.groups.push(group);
@@ -518,7 +445,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             );
         }
         $scope.csvimported = true;
-    }
+    };
 
     $scope.clear = function () {
         $scope.csv.result = null;
@@ -574,24 +501,6 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     };
 });
 
-
-angular.module('OpenSlidesApp.users.projector', ['OpenSlidesApp.users'])
-
-.config(function(slidesProvider) {
-    slidesProvider.registerSlide('users/user', {
-        template: 'static/templates/users/slide_user.html',
-    });
-})
-
-.controller('SlideUserCtrl', function($scope, User) {
-    // Attention! Each object that is used here has to be dealt on server side.
-    // Add it to the coresponding get_requirements method of the ProjectorElement
-    // class.
-    var id = $scope.element.id;
-    User.find(id);
-    User.bindOne(id, $scope, 'user');
-});
-
 // this is code from angular.js. Find a way to call this function from this file
 function getBlockNodes(nodes) {
   // TODO(perf): just check if all items in `nodes` are siblings and if they are return the original
@@ -608,3 +517,5 @@ function getBlockNodes(nodes) {
 
   return $(blockNodes);
 }
+
+}());

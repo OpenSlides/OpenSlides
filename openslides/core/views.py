@@ -58,7 +58,12 @@ class IndexView(utils_views.CSRFMixin, utils_views.View):
 
 class ProjectorView(utils_views.View):
     """
-    Access the projector.
+    The primary view for OpenSlides projector using AngularJS.
+
+    The default base template is 'openslides/core/static/templates/projector.html'.
+    You can override it by simply adding a custom 'templates/projector.html'
+    file to the custom staticfiles directory. See STATICFILES_DIRS in
+    settings.py.
     """
 
     def get(self, *args, **kwargs):
