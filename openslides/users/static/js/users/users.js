@@ -310,15 +310,15 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
 }])
 
 /*
- * Like osPermsLite but does only hide the DOM-Elements
+ * Like osPerms but does only hide the DOM-Elements
  *
  * This is the Code from angular.js ngShow.
 */
 .directive('osPermsLite', [
     '$animate',
     function($animate) {
-        var NG_HIDE_CLASS = 'ng-hide';
-        var NG_HIDE_IN_PROGRESS_CLASS = 'ng-hide-animate';
+        var NG_HIDE_CLASS = 'os-perms-lite';
+        var NG_HIDE_IN_PROGRESS_CLASS = 'os-perms-lite-animate';
         return {
             restrict: 'A',
             multiElement: true,
