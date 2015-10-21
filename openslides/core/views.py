@@ -50,6 +50,7 @@ class IndexView(utils_views.CSRFMixin, utils_views.View):
     You can override it by simply adding a custom 'templates/index.html' file
     to the custom staticfiles directory. See STATICFILES_DIRS in settings.py.
     """
+
     def get(self, *args, **kwargs):
         with open(finders.find('templates/index.html')) as f:
             content = f.read()
@@ -71,7 +72,7 @@ class ProjectorView(utils_views.View):
         return HttpResponse(content)
 
 
-class OpenSlidesJavaScriptView(utils_views.View):
+class WebclientJavaScriptView(utils_views.View):
     """
     This view returns a bundle of all JavaScript files needed for the
     requested realm (site or projector). The result is not uglified.

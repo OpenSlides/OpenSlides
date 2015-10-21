@@ -16,9 +16,9 @@ urlpatterns = patterns(
         views.VersionView.as_view(),
         name='core_version'),
 
-    url(r'^openslides_javascript/(?P<realm>site|projector)/$',
-        views.OpenSlidesJavaScriptView.as_view(),
-        name='core_openslides_javascript'),
+    url(r'^webclient/(?P<realm>site|projector)/$',
+        views.WebclientJavaScriptView.as_view(),
+        name='core_webclient_javascript'),
 
     # View for the projectors are handelt by angular.
     url(r'^projector.*$', views.ProjectorView.as_view()),
