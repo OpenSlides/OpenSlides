@@ -8,6 +8,7 @@ from openslides.utils.rest_api import (
     IntegerField,
     ModelSerializer,
     PrimaryKeyRelatedField,
+    SerializerMethodField,
     ValidationError,
 )
 
@@ -15,10 +16,8 @@ from .models import (
     Category,
     Motion,
     MotionLog,
-    MotionOption,
     MotionPoll,
     MotionVersion,
-    MotionVote,
     State,
     Workflow,
 )
@@ -83,31 +82,13 @@ class MotionLogSerializer(ModelSerializer):
         fields = ('message_list', 'person', 'time',)
 
 
-class MotionVoteSerializer(ModelSerializer):
-    """
-    Serializer for motion.models.MotionVote objects.
-    """
-    class Meta:
-        model = MotionVote
-        fields = ('value', 'weight',)
-
-
-class MotionOptionSerializer(ModelSerializer):
-    """
-    Serializer for motion.models.MotionOption objects.
-    """
-    motionvote_set = MotionVoteSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = MotionOption
-        fields = ('motionvote_set',)
-
-
 class MotionPollSerializer(ModelSerializer):
     """
     Serializer for motion.models.MotionPoll objects.
     """
-    motionoption_set = MotionOptionSerializer(many=True, read_only=True)
+    yes = SerializerMethodField()
+    no = SerializerMethodField()
+    abstain = SerializerMethodField()
     votes = DictField(
         child=IntegerField(min_value=-2),
         write_only=True)
@@ -116,13 +97,22 @@ class MotionPollSerializer(ModelSerializer):
         model = MotionPoll
         fields = (
             'id',
-            'poll_number',
-            'motionoption_set',
+            'yes',
+            'no',
+            'abstain',
             'votesvalid',
             'votesinvalid',
             'votescast',
             'votes',)
-        read_only_fields = ('poll_number',)
+
+    def get_yes(self, obj):
+        return obj.get_votes().get(value='Yes').weight
+
+    def get_no(self, obj):
+        return obj.get_votes().get(value='No').weight
+
+    def get_abstain(self, obj):
+        return obj.get_votes().get(value='Abstain').weight
 
     @transaction.atomic
     def update(self, instance, validated_data):
