@@ -106,13 +106,25 @@ class MotionPollSerializer(ModelSerializer):
             'votes',)
 
     def get_yes(self, obj):
-        return obj.get_votes().get(value='Yes').weight
+        try:
+            result = obj.get_votes().get(value='Yes').weight
+        except obj.get_vote_class().DoesNotExist:
+            result = None
+        return result
 
     def get_no(self, obj):
-        return obj.get_votes().get(value='No').weight
+        try:
+            result = obj.get_votes().get(value='No').weight
+        except obj.get_vote_class().DoesNotExist:
+            result = None
+        return result
 
     def get_abstain(self, obj):
-        return obj.get_votes().get(value='Abstain').weight
+        try:
+            result = obj.get_votes().get(value='Abstain').weight
+        except obj.get_vote_class().DoesNotExist:
+            result = None
+        return result
 
     @transaction.atomic
     def update(self, instance, validated_data):
