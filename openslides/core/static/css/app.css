@@ -553,3 +553,8 @@ table.cke_dialog_contents textarea {
         width: 50px !important;
     }
 }
+
+/* Hide elements with os-perms-lite */
+.os-perms-lite {
+  display: none !important;
+}
