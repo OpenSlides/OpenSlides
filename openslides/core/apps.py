@@ -6,7 +6,7 @@ class CoreAppConfig(AppConfig):
     verbose_name = 'OpenSlides Core'
     angular_site_module = True
     angular_projector_module = True
-    js_files = ['js/core/core.js']
+    js_files = ['js/core/base.js', 'js/core/site.js', 'js/core/projector.js']
 
     def ready(self):
         # Load projector elements.

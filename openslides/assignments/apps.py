@@ -6,7 +6,7 @@ class AssignmentsAppConfig(AppConfig):
     verbose_name = 'OpenSlides Assignments'
     angular_site_module = True
     angular_projector_module = True
-    js_files = ['js/assignments/assignments.js']
+    js_files = ['js/assignments/base.js', 'js/assignments/site.js', 'js/assignments/projector.js']
 
     def ready(self):
         # Load projector elements.

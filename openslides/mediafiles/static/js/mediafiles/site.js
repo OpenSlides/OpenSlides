@@ -1,49 +1,6 @@
-"use strict";
+(function () {
 
-angular.module('OpenSlidesApp.mediafiles', [])
-
-.factory('Mediafile', ['DS', function(DS) {
-    return DS.defineResource({
-        name: 'mediafiles/mediafile',
-        computed: {
-            is_presentable: ['filetype', function (filetype) {
-                var PRESENTABLE_FILE_TYPES = ['application/pdf']
-                return _.contains(PRESENTABLE_FILE_TYPES, filetype);
-            }],
-            filename: [function () {
-                var filename = this.mediafile.name;
-                return /\/(.+?)$/.exec(filename)[1];
-            }],
-            title_or_filename: ['title', 'mediafile', function (title) {
-                return title || this.filename;
-            }]
-        }
-    });
-}])
-
-.run(['Mediafile', function(Mediafile) {}]);
-
-function uploadFile($timeout, $scope, $state, Upload, mediafile) {
-    return function(file) {
-        file.upload = Upload.upload({
-            url: '/rest/mediafiles/mediafile/' + (mediafile ? mediafile.id : ''),
-            method: mediafile ? 'PUT' : 'POST',
-            fields: {title: file.title},
-            file: file.mediafile,
-            fileFormDataName: 'mediafile'
-        });
-
-        file.upload.then(function (response) {
-            $timeout(function () {
-                file.result = response.data;
-                $state.go('mediafiles.mediafile.list');
-            });
-        }, function (response) {
-            if (response.status > 0)
-                $scope.errorMsg = response.status + ': ' + response.data;
-        });
-    }
-}
+'use strict';
 
 angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.mediafiles'])
 
@@ -134,5 +91,26 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
     $scope.save = uploadFile($timeout, $scope, $state, Upload, mediafile);
 });
 
+function uploadFile($timeout, $scope, $state, Upload, mediafile) {
+    return function(file) {
+        file.upload = Upload.upload({
+            url: '/rest/mediafiles/mediafile/' + (mediafile ? mediafile.id : ''),
+            method: mediafile ? 'PUT' : 'POST',
+            fields: {title: file.title},
+            file: file.mediafile,
+            fileFormDataName: 'mediafile'
+        });
 
-angular.module('OpenSlidesApp.mediafiles.projector', ['OpenSlidesApp.mediafiles']);
+        file.upload.then(function (response) {
+            $timeout(function () {
+                file.result = response.data;
+                $state.go('mediafiles.mediafile.list');
+            });
+        }, function (response) {
+            if (response.status > 0)
+                $scope.errorMsg = response.status + ': ' + response.data;
+        });
+    };
+}
+
+}());
