@@ -105,7 +105,7 @@ def create_builtin_groups_and_admin(**kwargs):
         'agenda.can_be_speaker',
         'agenda.can_manage',
         'agenda.can_see',
-        'agenda.can_see_orga_items',
+        'agenda.can_see_hidden_items',
         'assignments.can_manage',
         'assignments.can_nominate_other',
         'assignments.can_nominate_self',
@@ -141,7 +141,7 @@ def create_builtin_groups_and_admin(**kwargs):
     # Anonymous (pk 1) and Registered (pk 2)
     base_permissions = (
         permission_dict['agenda.can_see'],
-        permission_dict['agenda.can_see_orga_items'],
+        permission_dict['agenda.can_see_hidden_items'],
         permission_dict['assignments.can_see'],
         permission_dict['core.can_see_dashboard'],
         permission_dict['core.can_see_projector'],

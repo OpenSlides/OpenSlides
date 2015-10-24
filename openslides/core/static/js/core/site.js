@@ -646,6 +646,7 @@ angular.module('OpenSlidesApp.core.site', [
 
 .controller('CustomslideDetailCtrl', function($scope, Customslide, customslide) {
     Customslide.bindOne(customslide.id, $scope, 'customslide');
+    Customslide.loadRelations(customslide);
 })
 
 .controller('CustomslideCreateCtrl', function($scope, $state, Customslide) {

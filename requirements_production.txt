@@ -3,11 +3,11 @@ Django>=1.7.1,<1.9
 beautifulsoup4>=4.1,<4.5
 django-haystack>=2.1,<2.5
 djangorestframework>=3.2.0,<3.3.0
+html5lib>=0.9,<1.0
 jsonfield>=0.9.19,<1.1
 natsort>=3.2,<4.1
 reportlab>=3.0,<3.3
 roman>=2.0,<2.1
 setuptools>=2.2,<19.0
 sockjs-tornado>=1.0,<1.1
-whoosh>=2.5.6,<2.8
 

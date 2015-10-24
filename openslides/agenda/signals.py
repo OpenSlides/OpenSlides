@@ -72,15 +72,24 @@ def setup_agenda_config(sender, **kwargs):
         group=ugettext_lazy('Agenda'))
 
 
-def listen_to_related_object_delete_signal(sender, instance, **kwargs):
+def listen_to_related_object_post_save(sender, instance, created, **kwargs):
     """
-    Receiver function to change agenda items of a related item that is to
-    be deleted. It is connected to the signal
-    django.db.models.signals.pre_delete during app loading.
+    Receiver function to create agenda items. It is connected to the signal
+    django.db.models.signals.post_save during app loading.
+    """
+    if created and hasattr(instance, 'get_agenda_title'):
+        Item.objects.create(content_object=instance)
+
+
+def listen_to_related_object_post_delete(sender, instance, **kwargs):
+    """
+    Receiver function to delete agenda items. It is connected to the signal
+    django.db.models.signals.post_delete during app loading.
     """
     if hasattr(instance, 'get_agenda_title'):
-        for item in Item.objects.filter(content_type=ContentType.objects.get_for_model(sender), object_id=instance.pk):
-            item.title = '< Item for deleted (%s) >' % instance.get_agenda_title()
-            item.content_type = None
-            item.object_id = None
-            item.save()
+        content_type = ContentType.objects.get_for_model(instance)
+        try:
+            Item.objects.get(object_id=instance.pk, content_type=content_type).delete()
+        except Item.DoesNotExist:
+            # Item does not exist so we do not have to delete it.
+            pass

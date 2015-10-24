@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
@@ -133,6 +134,26 @@ class CustomSlide(RESTModelMixin, models.Model):
         ordering = ('weight', 'title', )
 
     def __str__(self):
+        return self.title
+
+    @property
+    def agenda_item(self):
+        """
+        Returns the related agenda item.
+        """
+        # TODO: Move the agenda app in the core app to fix circular dependencies
+        from openslides.agenda.models import Item
+        content_type = ContentType.objects.get_for_model(self)
+        return Item.objects.get(object_id=self.pk, content_type=content_type)
+
+    @property
+    def agenda_item_id(self):
+        """
+        Returns the id of the agenda item object related to this object.
+        """
+        return self.agenda_item.pk
+
+    def get_agenda_title(self):
         return self.title
 
 

@@ -1,7 +1,6 @@
 from django.utils.translation import ugettext as _
 
 from openslides.core.exceptions import ProjectorException
-from openslides.core.views import TagViewSet
 from openslides.utils.projector import ProjectorElement, ProjectorRequirement
 
 from .models import Item
@@ -80,8 +79,3 @@ class ItemDetailSlide(ProjectorElement):
                         view_class=speaker.user.get_view_class(),
                         view_action='retrieve',
                         pk=str(speaker.user_id))
-                for tag in item.tags.all():
-                    yield ProjectorRequirement(
-                        view_class=TagViewSet,
-                        view_action='retrieve',
-                        pk=str(tag.pk))

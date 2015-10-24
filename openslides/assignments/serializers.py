@@ -170,6 +170,7 @@ class AssignmentFullSerializer(ModelSerializer):
             'assignment_related_users',
             'poll_description_default',
             'polls',
+            'agenda_item_id',
             'tags',)
 
 
@@ -191,4 +192,5 @@ class AssignmentShortSerializer(AssignmentFullSerializer):
             'assignment_related_users',
             'poll_description_default',
             'polls',
+            'agenda_item_id',
             'tags',)

@@ -308,8 +308,8 @@ class UserManagerCreateOrResetAdminUser(TestCase):
 
         manager.create_or_reset_admin_user()
 
-        mock_group.objects.get.assert_called_once(pk=2)
-        admin_user.groups.add.assert_called_once('mock_staff')
+        mock_group.objects.get.assert_called_once_with(pk=4)
+        admin_user.groups.add.assert_called_once_with('mock_staff')
 
     def test_password_set_to_admin(self, mock_group):
         """

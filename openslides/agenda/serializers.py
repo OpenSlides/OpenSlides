@@ -1,7 +1,6 @@
 from django.core.urlresolvers import reverse
 
 from openslides.utils.rest_api import (
-    CharField,
     ModelSerializer,
     RelatedField,
     get_collection_and_id_from_url,
@@ -45,10 +44,7 @@ class ItemSerializer(ModelSerializer):
     """
     Serializer for agenda.models.Item objects.
     """
-    get_title = CharField(read_only=True)
-    get_title_supplement = CharField(read_only=True)
     content_object = RelatedItemRelatedField(read_only=True)
-    item_no = CharField(read_only=True)
     speakers = SpeakerSerializer(many=True, read_only=True)
 
     class Meta:
@@ -56,11 +52,7 @@ class ItemSerializer(ModelSerializer):
         fields = (
             'id',
             'item_number',
-            'item_no',
             'title',
-            'get_title',
-            'get_title_supplement',
-            'text',
             'comment',
             'closed',
             'type',
@@ -68,6 +60,5 @@ class ItemSerializer(ModelSerializer):
             'speakers',
             'speaker_list_closed',
             'content_object',
-            'tags',
             'weight',
             'parent',)

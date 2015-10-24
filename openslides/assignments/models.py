@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.contenttypes.fields import GenericRelation
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.datastructures import SortedDict
 from django.utils.translation import ugettext as _
@@ -114,11 +114,6 @@ class Assignment(RESTModelMixin, models.Model):
     tags = models.ManyToManyField(Tag, blank=True)
     """
     Tags for the assignment.
-    """
-
-    items = GenericRelation(Item)
-    """
-    Agenda items for this assignment.
     """
 
     class Meta:
@@ -308,8 +303,20 @@ class Assignment(RESTModelMixin, models.Model):
     def get_agenda_title(self):
         return str(self)
 
-    def get_agenda_title_supplement(self):
-        return '(%s)' % _('Assignment')
+    @property
+    def agenda_item(self):
+        """
+        Returns the related agenda item.
+        """
+        content_type = ContentType.objects.get_for_model(self)
+        return Item.objects.get(object_id=self.pk, content_type=content_type)
+
+    @property
+    def agenda_item_id(self):
+        """
+        Returns the id of the agenda item object related to this object.
+        """
+        return self.agenda_item.pk
 
 
 class AssignmentVote(RESTModelMixin, BaseVote):

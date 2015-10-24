@@ -2,9 +2,9 @@ from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from rest_framework.test import APIClient
 
-from openslides.agenda.models import Item, Speaker
+from openslides.agenda.models import Speaker
 from openslides.core.config import config
-from openslides.core.models import Projector
+from openslides.core.models import CustomSlide, Projector
 from openslides.utils.test import TestCase
 
 
@@ -15,7 +15,8 @@ class ManageSpeaker(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.client.login(username='admin', password='admin')
-        self.item = Item.objects.create(title='test_title_aZaedij4gohn5eeQu8fe')
+
+        self.item = CustomSlide.objects.create(title='test_title_aZaedij4gohn5eeQu8fe').agenda_item
         self.user = get_user_model().objects.create_user(
             username='test_user_jooSaex1bo5ooPhuphae',
             password='test_password_e6paev4zeeh9n')
@@ -132,7 +133,7 @@ class Speak(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.client.login(username='admin', password='admin')
-        self.item = Item.objects.create(title='test_title_KooDueco3zaiGhiraiho')
+        self.item = CustomSlide.objects.create(title='test_title_KooDueco3zaiGhiraiho').agenda_item
         self.user = get_user_model().objects.create_user(
             username='test_user_Aigh4vohb3seecha4aa4',
             password='test_password_eneupeeVo5deilixoo8j')

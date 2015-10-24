@@ -140,18 +140,33 @@ angular.module('OpenSlidesApp.core', [
     return BaseModel;
 }])
 
-.factory('Customslide', ['DS', 'jsDataModel', function(DS, jsDataModel) {
-    var name = 'core/customslide';
-    return DS.defineResource({
-        name: name,
-        useClass: jsDataModel,
-        methods: {
-            getResourceName: function () {
-                return name;
+.factory('Customslide', [
+    'DS',
+    'jsDataModel',
+    function(DS, jsDataModel) {
+        var name = 'core/customslide';
+        return DS.defineResource({
+            name: name,
+            useClass: jsDataModel,
+            methods: {
+                getResourceName: function () {
+                    return name;
+                },
+                getAgendaTitle: function () {
+                    return this.title;
+                }
             },
-        },
-    });
-}])
+            relations: {
+                belongsTo: {
+                    'agenda/item': {
+                        localKey: 'agenda_item_id',
+                        localField: 'agenda_item',
+                    }
+                }
+            }
+        });
+    }
+])
 
 .factory('Tag', ['DS', function(DS) {
     return DS.defineResource({

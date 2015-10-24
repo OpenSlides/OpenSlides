@@ -39,7 +39,7 @@ class CustomSlideSerializer(ModelSerializer):
     """
     class Meta:
         model = CustomSlide
-        fields = ('id', 'title', 'text', 'weight', )
+        fields = ('id', 'title', 'text', 'weight', 'agenda_item_id')
 
 
 class TagSerializer(ModelSerializer):

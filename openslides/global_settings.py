@@ -82,7 +82,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
-    'haystack',  # full-text-search
     'rest_framework',
     'openslides.poll',  # TODO: try to remove this line
     'openslides.agenda',

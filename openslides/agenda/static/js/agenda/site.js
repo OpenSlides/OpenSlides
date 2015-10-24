@@ -99,6 +99,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         // Bind agenda tree to the scope
         $scope.$watch(function () {
             return Agenda.lastModified();
+
         }, function () {
             $scope.items = AgendaTree.getFlatTree(Agenda.getAll());
         });

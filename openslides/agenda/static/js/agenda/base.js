@@ -33,6 +33,27 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
             methods: {
                 getResourceName: function () {
                     return name;
+                },
+                getContentObject: function () {
+                    return DS.get(this.content_object.collection, this.content_object.id);
+                },
+                getContentResource: function () {
+                    return DS.definitions[this.content_object.collection];
+                },
+                getTitle: function () {
+                    var title;
+                    try {
+                        title =  this.getContentObject().getAgendaTitle();
+                    } catch (e) {
+                        // Only use this.title when the content object is not
+                        // in the DS store.
+                        title = this.title;
+                    }
+                    return _.trim(
+                        title + ' ' + (
+                            this.getContentResource().agendaSupplement || ''
+                        )
+                    );
                 }
             },
             relations: {
@@ -97,6 +118,7 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                 });
                 return getChildren(parentItems);
             },
+
             // Returns a list of all items as a flat tree the attribute parentCount
             getFlatTree: function(items) {
                 var tree = this.getTree(items);

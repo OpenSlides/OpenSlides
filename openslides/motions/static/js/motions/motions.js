@@ -2,63 +2,79 @@
 
 angular.module('OpenSlidesApp.motions', [])
 
-.factory('Motion', ['DS', 'jsDataModel', function(DS, jsDataModel) {
-    var name = 'motions/motion'
-    return DS.defineResource({
-        name: name,
-        useClass: jsDataModel,
-        methods: {
-            getResourceName: function () {
-                return name;
-            },
-            getVersion: function(versionId) {
-                versionId = versionId || this.active_version;
-                var index;
-                if (versionId == -1) {
-                    index = this.versions.length - 1;
-                } else {
-                    index = _.findIndex(this.versions, function(element) {
-                        return element.id == versionId
-                    });
-                }
-                return this.versions[index];
-            },
-            getTitle: function(versionId) {
-                return this.getVersion(versionId).title;
-            },
-            getText: function(versionId) {
-                return this.getVersion(versionId).text;
-            },
-            getReason: function(versionId) {
-                return this.getVersion(versionId).reason;
-            }
-        },
-        relations: {
-            belongsTo: {
-                'motions/category': {
-                    localField: 'category',
-                    localKey: 'category_id',
+.factory('Motion', [
+    'DS',
+    'jsDataModel',
+    function(DS, jsDataModel) {
+        var name = 'motions/motion'
+        return DS.defineResource({
+            name: name,
+            useClass: jsDataModel,
+            agendaSupplement: '(Motion)',
+            methods: {
+                getResourceName: function () {
+                    return name;
                 },
-            },
-            hasMany: {
-                'core/tag': {
-                    localField: 'tags',
-                    localKeys: 'tags_id',
-                },
-                'users/user': [
-                    {
-                        localField: 'submitters',
-                        localKeys: 'submitters_id',
-                    },
-                    {
-                        localField: 'supporters',
-                        localKeys: 'supporters_id',
+                getVersion: function (versionId) {
+                    versionId = versionId || this.active_version;
+                    var index;
+                    if (versionId == -1) {
+                        index = this.versions.length - 1;
+                    } else {
+                        index = _.findIndex(this.versions, function (element) {
+                            return element.id == versionId
+                        });
                     }
-                ],
+                    return this.versions[index];
+                },
+                getTitle: function (versionId) {
+                    return this.getVersion(versionId).title;
+                },
+                getText: function (versionId) {
+                    return this.getVersion(versionId).text;
+                },
+                getReason: function (versionId) {
+                    return this.getVersion(versionId).reason;
+                },
+                getAgendaTitle: function () {
+                    var value = '';
+                    if (this.identifier) {
+                        value = this.identifier + ' | ';
+                    }
+                    return value + this.getTitle();
+                }
+            },
+            relations: {
+                belongsTo: {
+                    'motions/category': {
+                        localField: 'category',
+                        localKey: 'category_id',
+                    },
+                    'agenda/item': {
+                        localKey: 'agenda_item_id',
+                        localField: 'agenda_item',
+                    }
+                },
+                hasMany: {
+                    'core/tag': {
+                        localField: 'tags',
+                        localKeys: 'tags_id',
+                    },
+                    'users/user': [
+                        {
+                            localField: 'submitters',
+                            localKeys: 'submitters_id',
+                        },
+                        {
+                            localField: 'supporters',
+                            localKeys: 'supporters_id',
+                        }
+                    ],
+                }
             }
-        }
-    });
-}])
+        });
+    }
+])
 
 .factory('Category', ['DS', function(DS) {
     return DS.defineResource({
@@ -240,6 +256,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     Motion.bindOne(motion.id, $scope, 'motion');
     Category.bindAll({}, $scope, 'categories');
     User.bindAll({}, $scope, 'users');
+    Motion.loadRelations(motion);
 })
 
 .controller('MotionCreateCtrl',
