@@ -1,22 +1,6 @@
-"use strict";
+(function () {
 
-angular.module('OpenSlidesApp.assignments', [])
-
-.factory('Assignment', ['DS', 'jsDataModel', function(DS, jsDataModel) {
-    var name = 'assignments/assignment'
-    return DS.defineResource({
-        name: name,
-        useClass: jsDataModel,
-        methods: {
-            getResourceName: function () {
-                return name;
-            }
-        }
-    });
-}])
-
-.run(['Assignment', function(Assignment) {}]);
-
+'use strict';
 
 angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 
@@ -94,7 +78,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 })
 
 .controller('AssignmentDetailCtrl', function($scope, Assignment, assignment) {
-    Assignment.bindOne(assignment.id, $scope, 'assignment')
+    Assignment.bindOne(assignment.id, $scope, 'assignment');
 })
 
 .controller('AssignmentCreateCtrl', function($scope, $state, Assignment) {
@@ -119,19 +103,4 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     };
 });
 
-angular.module('OpenSlidesApp.assignments.projector', ['OpenSlidesApp.assignments'])
-
-.config(function(slidesProvider) {
-    slidesProvider.registerSlide('assignments/assignment', {
-        template: 'static/templates/assignments/slide_assignment.html',
-    });
-})
-
-.controller('SlideAssignmentCtrl', function($scope, Assignment) {
-    // Attention! Each object that is used here has to be dealt on server side.
-    // Add it to the coresponding get_requirements method of the ProjectorElement
-    // class.
-    var id = $scope.element.id;
-    Assignment.find(id);
-    Assignment.bindOne(id, $scope, 'assignment');
-});
+}());

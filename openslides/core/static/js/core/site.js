@@ -1,218 +1,6 @@
-"use strict";
+(function () {
 
-// The core module used for the OpenSlides site and the projector
-angular.module('OpenSlidesApp.core', [
-    'angular-loading-bar',
-    'js-data',
-    'gettext',
-    'ngAnimate',
-    'ui.bootstrap',
-    'ui.tree',
-    'uiSwitch',
-])
-
-.config(['DSProvider', 'DSHttpAdapterProvider', function(DSProvider, DSHttpAdapterProvider) {
-    // Reloads everything after 5 minutes.
-    // TODO: * find a way only to reload things that are still needed
-    DSProvider.defaults.maxAge = 5 * 60 * 1000;  // 5 minutes
-    DSProvider.defaults.reapAction = 'none';
-    DSProvider.defaults.basePath = '/rest';
-    DSProvider.defaults.afterReap = function(model, items) {
-        if (items.length > 5) {
-            model.findAll({}, {bypassCache: true});
-        } else {
-            _.forEach(items, function (item) {
-                model.refresh(item[model.idAttribute]);
-            });
-        }
-    };
-    DSHttpAdapterProvider.defaults.forceTrailingSlash = true;
-}])
-
-.factory('autoupdate', function() {
-    var url = location.origin + "/sockjs";
-
-    var Autoupdate = {
-        socket: null,
-        message_receivers: [],
-        connect: function() {
-            var autoupdate = this;
-            this.socket = new SockJS(url);
-
-            this.socket.onmessage = function(event) {
-                _.forEach(autoupdate.message_receivers, function(receiver) {
-                    receiver(event.data);
-                });
-            }
-
-            this.socket.onclose = function() {
-                setTimeout(autoupdate.connect, 5000);
-            }
-        },
-        on_message: function(receiver) {
-            this.message_receivers.push(receiver);
-        }
-    };
-    Autoupdate.connect();
-    return Autoupdate;
-})
-
-.run(['DS', 'autoupdate', function(DS, autoupdate) {
-    autoupdate.on_message(function(data) {
-        // TODO: when MODEL.find() is called after this
-        //       a new request is fired. This could be a bug in DS
-
-        // TODO: Do not send the status code to the client, but make the decission
-        //       on the server side. It is an implementation detail, that tornado
-        //       sends request to wsgi, which should not concern the client.
-        console.log("Received object: " + data.collection + ", " + data.id);
-        if (data.status_code == 200) {
-            DS.inject(data.collection, data.data);
-        } else if (data.status_code == 404) {
-            DS.eject(data.collection, data.id);
-        }
-        // TODO: handle other statuscodes
-    });
-}])
-
-.factory('loadGlobalData', [
-    '$rootScope',
-    '$http',
-    'Config',
-    'Projector',
-    function ($rootScope, $http, Config, Projector) {
-        return function () {
-            // Puts the config object into each scope.
-            Config.findAll().then(function() {
-                $rootScope.config = function(key) {
-                    try {
-                        return Config.get(key).value;
-                    }
-                    catch(err) {
-                        console.log("Unkown config key: " + key);
-                        return ''
-                    }
-                }
-            });
-
-            // Loads all projector data
-            Projector.findAll();
-
-            // Loads server time and calculates server offset
-            $http.get('/core/servertime/').then(function(data) {
-                $rootScope.serverOffset = Math.floor( Date.now() / 1000 - data.data );
-            });
-        }
-    }
-])
-
-// Load the global data on startup
-.run([
-    'loadGlobalData',
-    function(loadGlobalData, operator) {
-        loadGlobalData();
-    }
-])
-
-.factory('jsDataModel', ['$http', 'Projector', function($http, Projector) {
-    var BaseModel = function() {};
-    BaseModel.prototype.project = function() {
-        return $http.post(
-            '/rest/core/projector/1/prune_elements/',
-            [{name: this.getResourceName(), id: this.id}]
-        );
-    };
-    BaseModel.prototype.isProjected = function() {
-        // Returns true if there is a projector element with the same
-        // name and the same id.
-        var projector = Projector.get(1);
-        if (typeof projector === 'undefined') return false;
-        var self = this;
-        var predicate = function (element) {
-            return element.name == self.getResourceName() &&
-                   typeof element.id !== 'undefined' &&
-                   element.id == self.id;
-        };
-        return typeof _.findKey(projector.elements, predicate) === 'string';
-    };
-    return BaseModel;
-}])
-
-.factory('Customslide', ['DS', 'jsDataModel', function(DS, jsDataModel) {
-    var name = 'core/customslide'
-    return DS.defineResource({
-        name: name,
-        useClass: jsDataModel,
-        methods: {
-            getResourceName: function () {
-                return name;
-            },
-        },
-    });
-}])
-
-.factory('Tag', ['DS', function(DS) {
-    return DS.defineResource({
-        name: 'core/tag',
-    });
-}])
-
-.factory('Config', ['DS', function(DS) {
-    return DS.defineResource({
-        name: 'core/config',
-        idAttribute: 'key',
-    });
-}])
-
-/* Model for a projector.
- *
- * At the moment we use only one projector, so there will be only one object
- * in this model. It has the id 1. For later releases there will be multiple
- * projector objects.
- *
- * This model uses onConfilict: 'replace' instead of 'merge'. This is necessary
- * because the keys of the projector objects can change and old keys have to
- * be removed. See http://www.js-data.io/docs/dsdefaults#onconflict for
- * more information.
- */
-.factory('Projector', ['DS', function(DS) {
-    return DS.defineResource({
-        name: 'core/projector',
-        onConflict: 'replace',
-    });
-}])
-
-/* Converts number of seconds into string "hh:mm:ss" or "mm:ss" */
-.filter('osSecondsToTime', [
-    function () {
-        return function (totalseconds) {
-            var time;
-            var total = Math.abs(totalseconds);
-            if (parseInt(totalseconds)) {
-                var hh = Math.floor(total / 3600);
-                var mm = Math.floor(total % 3600 / 60);
-                var ss = Math.floor(total % 60);
-                var zero = "0";
-                // Add leading "0" for double digit values
-                hh = (zero+hh).slice(-2);
-                mm = (zero+mm).slice(-2);
-                ss = (zero+ss).slice(-2);
-                if (hh == "00")
-                    time =  mm + ':' + ss;
-                else
-                    time = hh + ":" + mm + ":" + ss;
-                if (totalseconds < 0)
-                    time = "-"+time;
-            } else {
-                time = "--:--";
-            }
-            return time;
-        };
-    }
-])
-// Make sure that the DS factories are loaded by making them a dependency
-.run(['Projector', 'Config', 'Tag', 'Customslide', function(Projector, Config, Tag, Customslide){}]);
-
+'use strict';
 
 // The core module for the OpenSlides site
 angular.module('OpenSlidesApp.core.site', [
@@ -243,7 +31,7 @@ angular.module('OpenSlidesApp.core.site', [
                     var that = this;
                     this.scope = scope;
                     this.updateMainMenu();
-                    operator.onOperatorChange(function () {that.updateMainMenu()});
+                    operator.onOperatorChange(function () {that.updateMainMenu();});
                 },
                 updateMainMenu: function () {
                     this.scope.elements = this.getElements();
@@ -258,7 +46,7 @@ angular.module('OpenSlidesApp.core.site', [
                     });
                     return elements;
                 }
-            }
+            };
         }];
     }
 ])
@@ -318,7 +106,7 @@ angular.module('OpenSlidesApp.core.site', [
 
 .config(function($stateProvider, $urlMatcherFactoryProvider) {
     // Make the trailing slash optional
-    $urlMatcherFactoryProvider.strictMode(false)
+    $urlMatcherFactoryProvider.strictMode(false);
 
     // Use stateProvider.decorator to give default values to our states
     $stateProvider.decorator('views', function(state, parent) {
@@ -346,7 +134,7 @@ angular.module('OpenSlidesApp.core.site', [
             if (_.last(patterns).match(/(create|update)/)) {
                 // When state_patterns is in the form "app.module.create" or
                 // "app.module.update", use the form template.
-                templateUrl = 'static/templates/' + patterns[0] + '/' + patterns[1] + '-form.html'
+                templateUrl = 'static/templates/' + patterns[0] + '/' + patterns[1] + '-form.html';
             } else {
                 // Replaces the first point through a slash (the app name)
                 var appName = state.name.replace('.', '/');
@@ -385,7 +173,7 @@ angular.module('OpenSlidesApp.core.site', [
         }
 
         state.url = state.url || defaultUrl;
-        return parent(state)
+        return parent(state);
     });
 })
 
@@ -487,8 +275,8 @@ angular.module('OpenSlidesApp.core.site', [
       addState: function(name, state) {
         $stateProvider.state(name, state);
       }
-    }
-  }
+    };
+  };
 })
 
 // Load the django url patterns
@@ -540,7 +328,7 @@ angular.module('OpenSlidesApp.core.site', [
             $scope.value = config.value;
             $scope.help_text = field.help_text;
         }
-    }
+    };
 })
 
 .controller("MainMenuCtrl", [
@@ -562,7 +350,7 @@ angular.module('OpenSlidesApp.core.site', [
         if (lang != 'en') {
             gettextCatalog.loadRemote("static/i18n/" + lang + ".json");
         }
-    }
+    };
 })
 
 .controller("LoginFormCtrl", function ($scope, $modal) {
@@ -573,7 +361,7 @@ angular.module('OpenSlidesApp.core.site', [
             controller: 'LoginFormModalCtrl',
             size: 'sm',
         });
-    }
+    };
 })
 
 .controller('LoginFormModalCtrl', [
@@ -626,7 +414,7 @@ angular.module('OpenSlidesApp.core.site', [
     $scope.save = function(key, value) {
         Config.get(key).value = value;
         Config.save(key);
-    }
+    };
 })
 
 // Customslide Controller
@@ -698,7 +486,7 @@ angular.module('OpenSlidesApp.core.site', [
         // *** countdown functions ***
         $scope.calculateCountdownTime = function (countdown) {
             countdown.seconds = Math.floor( countdown.countdown_time - Date.now() / 1000 + $scope.serverOffset );
-        }
+        };
         $scope.rebuildAllElements = function () {
             $scope.countdowns = [];
             $scope.messages = [];
@@ -721,7 +509,7 @@ angular.module('OpenSlidesApp.core.site', [
             });
             $scope.scrollLevel = Projector.get(1).scroll;
             $scope.scaleLevel = Projector.get(1).scale;
-        }
+        };
 
         // get initial values for $scope.countdowns, $scope.messages, $scope.scrollLevel
         // and $scope.scaleLevel (after page reload)
@@ -762,7 +550,7 @@ angular.module('OpenSlidesApp.core.site', [
         };
         $scope.editCountdown = function (countdown) {
             var data = {};
-            data[countdown.uuid] = { 
+            data[countdown.uuid] = {
                 "description": countdown.description,
                 "default": parseInt(countdown.default)
             };
@@ -943,134 +731,4 @@ angular.module('OpenSlidesApp.core.site', [
     };
 });
 
-
-// The core module for the OpenSlides projector
-angular.module('OpenSlidesApp.core.projector', ['OpenSlidesApp.core'])
-
-// Provider to register slides in a .config() statement.
-.provider('slides', function() {
-    var slidesMap = {};
-
-    this.registerSlide = function(name, config) {
-        slidesMap[name] = config;
-        return this;
-    };
-
-    this.$get = function($templateRequest, $q) {
-        var self = this;
-        return {
-            getElements: function(projector) {
-                var elements = [];
-                var factory = this;
-                _.forEach(projector.elements, function(element) {
-                    if (element.name in slidesMap) {
-                        element.template = slidesMap[element.name].template;
-                        elements.push(element);
-                    } else {
-                        console.log("Unknown slide: " + element.name);
-                    }
-                });
-                return elements;
-            }
-        }
-    };
-})
-
-.config(function(slidesProvider) {
-    slidesProvider.registerSlide('core/customslide', {
-        template: 'static/templates/core/slide_customslide.html',
-    });
-
-    slidesProvider.registerSlide('core/clock', {
-        template: 'static/templates/core/slide_clock.html',
-    });
-
-    slidesProvider.registerSlide('core/countdown', {
-        template: 'static/templates/core/slide_countdown.html',
-    });
-
-    slidesProvider.registerSlide('core/message', {
-        template: 'static/templates/core/slide_message.html',
-    });
-})
-
-.controller('ProjectorCtrl', function($scope, Projector, slides) {
-    Projector.find(1).then(function() {
-        $scope.$watch(function () {
-            return Projector.lastModified(1);
-        }, function () {
-            $scope.elements = [];
-            _.forEach(slides.getElements(Projector.get(1)), function(element) {
-                if (!element.error) {
-                    $scope.elements.push(element);
-                } else {
-                    console.error("Error for slide " + element.name + ": " + element.error)
-                }
-            });
-            $scope.scroll = -10 * Projector.get(1).scroll;
-            $scope.scale = 100 + 20 * Projector.get(1).scale;
-        });
-    });
-})
-
-.controller('SlideCustomSlideCtrl', [
-    '$scope',
-    'Customslide',
-    function($scope, Customslide) {
-        // Attention! Each object that is used here has to be dealt on server side.
-        // Add it to the coresponding get_requirements method of the ProjectorElement
-        // class.
-        var id = $scope.element.id;
-        Customslide.find(id);
-        Customslide.bindOne(id, $scope, 'customslide');
-    }
-])
-
-.controller('SlideClockCtrl', [
-    '$scope',
-    function($scope) {
-        // Attention! Each object that is used here has to be dealt on server side.
-        // Add it to the coresponding get_requirements method of the ProjectorElement
-        // class.
-        $scope.servertime = ( Date.now() / 1000 - $scope.serverOffset ) * 1000;
-    }
-])
-
-.controller('SlideCountdownCtrl', [
-    '$scope',
-    '$interval',
-    function($scope, $interval) {
-        // Attention! Each object that is used here has to be dealt on server side.
-        // Add it to the coresponding get_requirements method of the ProjectorElement
-        // class.
-        $scope.seconds = Math.floor( $scope.element.countdown_time - Date.now() / 1000 + $scope.serverOffset );
-        $scope.status = $scope.element.status;
-        $scope.visible = $scope.element.visible;
-        $scope.index = $scope.element.index;
-        $scope.description = $scope.element.description;
-        // start interval timer if countdown status is running
-        var interval;
-        if ($scope.status == "running") {
-            interval = $interval( function() {
-                $scope.seconds = Math.floor( $scope.element.countdown_time - Date.now() / 1000 + $scope.serverOffset );
-            }, 1000);
-        } else {
-             $scope.seconds = $scope.element.countdown_time;
-        }
-        $scope.$on('$destroy', function() {
-            // Cancel the interval if the controller is destroyed
-            $interval.cancel(interval);
-        });
-    }
-])
-
-.controller('SlideMessageCtrl', [
-    '$scope',
-    function($scope) {
-        // Attention! Each object that is used here has to be dealt on server side.
-        // Add it to the coresponding get_requirements method of the ProjectorElement
-        // class.
-        $scope.message = $scope.element.message;
-        $scope.visible = $scope.element.visible;
-    }
-]);
+}());

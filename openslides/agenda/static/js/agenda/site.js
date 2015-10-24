@@ -1,122 +1,6 @@
-"use strict";
+(function () {
 
-angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
-
-.factory('Speaker', [
-    'DS',
-    function(DS) {
-        return DS.defineResource({
-            name: 'agenda/speaker',
-            relations: {
-                belongsTo: {
-                    'users/user': {
-                        localField: 'user',
-                        localKey: 'user_id',
-                    }
-                }
-            }
-        });
-    }
-])
-
-.factory('Agenda', [
-    'DS',
-    'Speaker',
-    'jsDataModel',
-    function(DS, Speaker, jsDataModel) {
-        var name = 'agenda/item'
-        return DS.defineResource({
-            name: name,
-            useClass: jsDataModel,
-            methods: {
-                getResourceName: function () {
-                    return name;
-                }
-            },
-            relations: {
-                hasMany: {
-                    'core/tag': {
-                        localField: 'tags',
-                        localKeys: 'tags_id',
-                    },
-                    'agenda/speaker': {
-                        localField: 'speakers',
-                        foreignKey: 'item_id',
-                    }
-                }
-            }
-        });
-    }
-])
-
-.factory('AgendaTree', [
-    function () {
-        return {
-            getTree: function (items) {
-                // Sort items after there weight
-                items.sort(function(itemA, itemB) {
-                    return itemA.weight - itemB.weight;
-                });
-
-                // Build a dict with all children (dict-value) to a specific
-                // item id (dict-key).
-                var itemChildren = {};
-
-                _.each(items, function (item) {
-                    if (item.parent_id) {
-                        // Add item to his parent. If it is the first child, then
-                        // create a new list.
-                        try {
-                            itemChildren[item.parent_id].push(item);
-                        } catch (error) {
-                            itemChildren[item.parent_id] = [item];
-                        }
-                    }
-
-                });
-
-                // Recursive function that generates a nested list with all
-                // items with there children
-                function getChildren(items) {
-                    var returnItems = [];
-                    _.each(items, function (item) {
-                        returnItems.push({
-                            item: item,
-                            children: getChildren(itemChildren[item.id]),
-                            id: item.id,
-                        });
-                    });
-                    return returnItems;
-                }
-
-                // Generates the list of root items (with no parents)
-                var parentItems = items.filter(function (item) {
-                    return !item.parent_id;
-                });
-                return getChildren(parentItems);
-            },
-            // Returns a list of all items as a flat tree the attribute parentCount
-            getFlatTree: function(items) {
-                var tree = this.getTree(items);
-                var flatItems = [];
-
-                function generateFatTree(tree, parentCount) {
-                    _.each(tree, function (item) {
-                        item.item.parentCount = parentCount;
-                        flatItems.push(item.item);
-                        generateFatTree(item.children, parentCount + 1);
-                    });
-                }
-                generateFatTree(tree, 0);
-                return flatItems;
-            },
-        }
-    }
-])
-
-// Make sure that the Agenda resource is loaded.
-.run(['Agenda', function(Agenda) {}]);
-
+'use strict';
 
 angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
 
@@ -421,7 +305,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
                     }
                 );
             });
-        }
+        };
 
         // import from csv file
         $scope.csv = {
@@ -447,60 +331,11 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
                 );
             }
             $scope.csvimported = true;
-        }
+        };
         $scope.clear = function () {
             $scope.csv.result = null;
         };
      }
 ]);
 
-
-angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
-
-.config([
-    'slidesProvider',
-    function(slidesProvider) {
-        slidesProvider.registerSlide('agenda/item', {
-            template: 'static/templates/agenda/slide-item-detail.html',
-        });
-        slidesProvider.registerSlide('agenda/item-list', {
-            template: 'static/templates/agenda/slide-item-list.html',
-        });
-    }
-])
-
-.controller('SlideItemDetailCtrl', [
-    '$scope',
-    'Agenda',
-    'User',
-    function($scope, Agenda, User) {
-        // Attention! Each object that is used here has to be dealt on server side.
-        // Add it to the coresponding get_requirements method of the ProjectorElement
-        // class.
-        var id = $scope.element.id;
-        Agenda.find(id);
-        User.findAll();
-        Agenda.bindOne(id, $scope, 'item');
-        // get flag for list-of-speakers-slide (true/false)
-        $scope.is_list_of_speakers = $scope.element.list_of_speakers;
-    }
-])
-
-.controller('SlideItemListCtrl', [
-    '$scope',
-    '$http',
-    'Agenda',
-    'AgendaTree',
-    function($scope, $http, Agenda, AgendaTree) {
-        // Attention! Each object that is used here has to be dealt on server side.
-        // Add it to the coresponding get_requirements method of the ProjectorElement
-        // class.
-        Agenda.findAll();
-        // Bind agenda tree to the scope
-        $scope.$watch(function () {
-            return Agenda.lastModified();
-        }, function () {
-            $scope.items = AgendaTree.getFlatTree(Agenda.getAll());
-        });
-    }
-]);
+}());
