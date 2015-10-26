@@ -248,8 +248,6 @@ OpenSlides uses the following projects or parts of them:
 * `Beautiful Soup <http://www.crummy.com/software/BeautifulSoup/>`_,
   License: MIT
 
-* `Bleach <https://github.com/jsocol/bleach/>`_, License: BSD
-
 * `Bootstrap <http://getbootstrap.com/2.3.2/>`_, License: Apache
   License v2.0
 

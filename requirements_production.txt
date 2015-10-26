@@ -1,7 +1,6 @@
 # Requirements for OpenSlides in production in alphabetical order
 Django>=1.7.1,<1.9
 beautifulsoup4>=4.1,<4.5
-bleach>=1.4,<1.5
 django-haystack>=2.1,<2.5
 djangorestframework>=3.2.0,<3.3.0
 jsonfield>=0.9.19,<1.1
