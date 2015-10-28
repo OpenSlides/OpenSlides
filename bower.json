@@ -26,6 +26,8 @@
     "font-awesome-bower": "~4.4.0",
     "js-data": "~2.8.1",
     "js-data-angular": "~3.1.0",
-    "ng-file-upload": "~9.1.2"
+    "ng-file-upload": "~9.1.2",
+    "ckeditor": "~4.5.4",
+    "angular-ckeditor": "~1.0.0"
   }
 }

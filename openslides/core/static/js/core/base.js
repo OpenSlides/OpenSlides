@@ -227,6 +227,26 @@ angular.module('OpenSlidesApp.core', [
         };
     }
 ])
+
+/* Options for CKEditor used in various create and edit views. */
+.value('CKEditorOptions', {
+    allowedContent: 'h1 h2 h3 p pre b i u strike strong em; a[!href]; ol ul{list-style}; li; span{color,background-color}; img;',
+    removePlugins: 'save, print, preview, pagebreak, templates, showblocks, magicline',
+    // TODO extraPlugins: 'insertpre',  // see http://ckeditor.com/addon/insertpre
+    toolbar: 'Full',
+    toolbar_Full: [
+        {'name': 'document',    'items': ['Source', '-', 'Save', 'DocProps', 'Preview', 'Print', '-', 'Templates']},
+        {'name': 'clipboard',   'items': ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
+        {'name': 'editing',     'items': ['Find', 'Replace', '-', 'SpellChecker', 'Scayt']},
+        {'name': 'basicstyles', 'items': ['Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat']},
+        {'name': 'paragraph',   'items': ['NumberedList', 'BulletedList', '-', 'InsertPre']},
+        {'name': 'links',       'items': ['Link', 'Unlink']},
+        {'name': 'styles',      'items': ['Format', 'TextColor', 'BGColor']},
+        {'name': 'tools',       'items': ['Maximize', 'ShowBlocks', '-', 'About']},
+        {'name': 'images',      'items': ['Image']}
+    ]
+})
+
 // Make sure that the DS factories are loaded by making them a dependency
 .run(['Projector', 'Config', 'Tag', 'Customslide', function(Projector, Config, Tag, Customslide){}]);
 

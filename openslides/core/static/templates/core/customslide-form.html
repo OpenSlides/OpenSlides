@@ -14,8 +14,8 @@
     <input type="text" ng-model="customslide.title" class="form-control" name="inputTitle" required>
   </div>
   <div class="form-group">
-    <label for="textareaDesciption" translate>Text</label>
-    <textarea ng-model="customslide.text" class="form-control" name="textareaText" />
+    <label for="customSlideTextCKEditor" translate>Text</label>
+    <div id="customSlideTextCKEditor" ckeditor="CKEditorOptions" ng-model="customslide.text"></div>
   </div>
 
   <button type="submit" ng-click="save(customslide)" class="btn btn-primary" translate>
