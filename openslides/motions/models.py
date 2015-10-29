@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.db.models import Max
 from django.utils import formats
@@ -6,6 +7,7 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 from jsonfield import JSONField
 
+from openslides.agenda.models import Item
 from openslides.core.config import config
 from openslides.core.models import Tag
 from openslides.mediafiles.models import Mediafile
@@ -447,13 +449,23 @@ class Motion(RESTModelMixin, models.Model):
         """
         Return a title for the agenda.
         """
+        # There has to be a function with the same return value in javascript.
         return str(self)
 
-    def get_agenda_title_supplement(self):
+    @property
+    def agenda_item(self):
         """
-        Returns the supplement to the title for the agenda item.
+        Returns the related agenda item.
         """
-        return '(%s)' % _('Motion')
+        content_type = ContentType.objects.get_for_model(self)
+        return Item.objects.get(object_id=self.pk, content_type=content_type)
+
+    @property
+    def agenda_item_id(self):
+        """
+        Returns the id of the agenda item object related to this object.
+        """
+        return self.agenda_item.pk
 
     def get_allowed_actions(self, person):
         """

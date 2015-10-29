@@ -103,7 +103,7 @@
       <!-- agenda data columns -->
       <td>
         <span ng-repeat="n in [].constructor(item.parentCount) track by $index">&ndash;</span>
-        {{ item.item_number }} {{ item.title }}
+        {{ item.item_number }} {{ item.getTitle() }}
         <div ng-if="item.comment">
           <small><i class="fa fa-info-circle"></i> {{ item.comment }}</small>
         </div>

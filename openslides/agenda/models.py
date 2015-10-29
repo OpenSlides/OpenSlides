@@ -5,13 +5,11 @@ from django.conf import settings
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from django.core.exceptions import ValidationError
 from django.db import models, transaction
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.core.config import config
-from openslides.core.models import Tag
 from openslides.core.projector import Countdown
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.models import RESTModelMixin
@@ -19,6 +17,45 @@ from openslides.utils.utils import to_roman
 
 
 class ItemManager(models.Manager):
+    def get_only_agenda_items(self, queryset=None):
+        """
+        Generator, which yields only agenda items. Skips hidden items.
+        """
+        if queryset is None:
+            queryset = self.all()
+
+        # Do not execute item.is_hidden() because this would create a lot of db queries
+        root_items, item_children = self.get_root_and_children(only_agenda_items=True)
+
+        def yield_items(items):
+            """
+            Generator that yields a list of items and their children.
+            """
+            for item in items:
+                yield item
+                yield from yield_items(item_children[item.pk])
+        yield from yield_items(root_items)
+
+    def get_root_and_children(self, queryset=None, only_agenda_items=False):
+        """
+        Returns a list with all root items and a dictonary where the key is an
+        item pk and the value is a list with all children of the item.
+        """
+        if queryset is None:
+            queryset = self.order_by('weight')
+
+        item_children = defaultdict(list)
+        root_items = []
+        for item in queryset:
+            if only_agenda_items and item.type == item.HIDDEN_ITEM:
+                continue
+            if item.parent_id is not None:
+                item_children[item.parent_id].append(item)
+            else:
+                root_items.append(item)
+
+        return root_items, item_children
+
     def get_tree(self, only_agenda_items=False, include_content=False):
         """
         Generator that yields dictonaries. Each dictonary has two keys, id
@@ -30,15 +67,7 @@ class ItemManager(models.Manager):
         If include_content is True, the yielded dictonaries have no key 'id'
         but a key 'item' with the entire object.
         """
-        item_queryset = self.order_by('weight')
-        if only_agenda_items:
-            item_queryset = item_queryset.filter(type__exact=Item.AGENDA_ITEM)
-
-        # Index the items to get the children for each item
-        item_children = defaultdict(list)
-        for item in item_queryset:
-            if item.parent:
-                item_children[item.parent_id].append(item)
+        root_items, item_children = self.get_root_and_children(only_agenda_items=only_agenda_items)
 
         def get_children(items):
             """
@@ -50,7 +79,7 @@ class ItemManager(models.Manager):
                 else:
                     yield dict(id=item.pk, children=get_children(item_children[item.pk]))
 
-        yield from get_children(filter(lambda item: item.parent is None, item_queryset))
+        yield from get_children(root_items)
 
     @transaction.atomic
     def set_tree(self, tree):
@@ -101,25 +130,15 @@ class Item(RESTModelMixin, models.Model):
     slide_callback_name = 'agenda'
 
     AGENDA_ITEM = 1
-    ORGANIZATIONAL_ITEM = 2
+    HIDDEN_ITEM = 2
 
     ITEM_TYPE = (
         (AGENDA_ITEM, ugettext_lazy('Agenda item')),
-        (ORGANIZATIONAL_ITEM, ugettext_lazy('Organizational item')))
+        (HIDDEN_ITEM, ugettext_lazy('Hidden item')))
 
     item_number = models.CharField(blank=True, max_length=255, verbose_name=ugettext_lazy("Number"))
     """
     Number of agenda item.
-    """
-
-    title = models.CharField(null=True, max_length=255, verbose_name=ugettext_lazy("Title"))
-    """
-    Title of the agenda item.
-    """
-
-    text = models.TextField(null=True, blank=True, verbose_name=ugettext_lazy("Text"))
-    """
-    The optional text of the agenda item.
     """
 
     comment = models.TextField(null=True, blank=True, verbose_name=ugettext_lazy("Comment"))
@@ -132,7 +151,10 @@ class Item(RESTModelMixin, models.Model):
     Flag, if the item is finished.
     """
 
-    type = models.IntegerField(choices=ITEM_TYPE, default=AGENDA_ITEM, verbose_name=ugettext_lazy("Type"))
+    type = models.IntegerField(
+        choices=ITEM_TYPE,
+        default=AGENDA_ITEM,
+        verbose_name=ugettext_lazy("Type"))
     """
     Type of the agenda item.
 
@@ -175,32 +197,15 @@ class Item(RESTModelMixin, models.Model):
     True, if the list of speakers is closed.
     """
 
-    tags = models.ManyToManyField(Tag, blank=True)
-    """
-    Tags to categorise agenda items.
-    """
-
     class Meta:
         permissions = (
             ('can_see', ugettext_noop("Can see agenda")),
             ('can_manage', ugettext_noop("Can manage agenda")),
-            ('can_see_orga_items', ugettext_noop("Can see orga items and time scheduling of agenda")))
+            ('can_see_hidden_items', ugettext_noop("Can see hidden items and time scheduling of agenda")))
+        unique_together = ('content_type', 'object_id')
 
     def __str__(self):
-        return self.get_title()
-
-    def clean(self):
-        """
-        Ensures that the children of orga items are only orga items.
-        """
-        if (self.type == self.AGENDA_ITEM and
-                self.parent is not None and
-                self.parent.type == self.ORGANIZATIONAL_ITEM):
-            raise ValidationError(_('Agenda items can not be child elements of an organizational item.'))
-        if (self.type == self.ORGANIZATIONAL_ITEM and
-                self.children.filter(type=self.AGENDA_ITEM).exists()):
-            raise ValidationError(_('Organizational items can not have agenda items as child elements.'))
-        return super().clean()
+        return self.title
 
     def delete(self, with_children=False):
         """
@@ -216,91 +221,27 @@ class Item(RESTModelMixin, models.Model):
                 child.save()
         super().delete()
 
-    def get_title(self):
+    @property
+    def title(self):
         """
-        Return the title of this item.
+        Return get_agenda_title() from the content_object.
         """
-        if not self.content_object:
-            agenda_title = self.title or ""
-        else:
-            try:
-                agenda_title = self.content_object.get_agenda_title()
-            except AttributeError:
-                raise NotImplementedError('You have to provide a get_agenda_title '
-                                          'method on your related model.')
-        return '%s %s' % (self.item_no, agenda_title) if self.item_no else agenda_title
-
-    def get_title_supplement(self):
-        """
-        Return a supplement for the title.
-        """
-        if not self.content_object:
-            return ''
         try:
-            return self.content_object.get_agenda_title_supplement()
+            title = self.content_object.get_agenda_title()
         except AttributeError:
-            raise NotImplementedError('You have to provide a get_agenda_title_supplement method on your related model.')
+            raise NotImplementedError('You have to provide a get_agenda_title '
+                                      'method on your related model.')
+        return '%s %s' % (self.item_no, title) if self.item_no else title
 
-    def get_list_of_speakers(self, old_speakers_count=None, coming_speakers_count=None):
+    def is_hidden(self):
         """
-        Returns the list of speakers as a list of dictionaries. Each
-        dictionary contains a prefix, the speaker and its type. Types
-        are old_speaker, actual_speaker and coming_speaker.
+        Returns True if the type of this object itself is a hidden item or any
+        of its ancestors has such a type.
+
+        Attention! This executes one query for each ancestor of the item.
         """
-        list_of_speakers = []
-
-        # Parse old speakers
-        old_speakers = self.speakers.exclude(begin_time=None).exclude(end_time=None).order_by('end_time')
-        if old_speakers_count is None:
-            old_speakers_count = old_speakers.count()
-        last_old_speakers_count = max(0, old_speakers.count() - old_speakers_count)
-        old_speakers = old_speakers[last_old_speakers_count:]
-        for number, speaker in enumerate(old_speakers):
-            prefix = old_speakers_count - number
-            speaker_dict = {
-                'prefix': '-%d' % prefix,
-                'speaker': speaker,
-                'type': 'old_speaker',
-                'first_in_group': False,
-                'last_in_group': False}
-            if number == 0:
-                speaker_dict['first_in_group'] = True
-            if number == old_speakers_count - 1:
-                speaker_dict['last_in_group'] = True
-            list_of_speakers.append(speaker_dict)
-
-        # Parse actual speaker
-        try:
-            actual_speaker = self.speakers.filter(end_time=None).exclude(begin_time=None).get()
-        except Speaker.DoesNotExist:
-            pass
-        else:
-            list_of_speakers.append({
-                'prefix': '0',
-                'speaker': actual_speaker,
-                'type': 'actual_speaker',
-                'first_in_group': True,
-                'last_in_group': True})
-
-        # Parse coming speakers
-        coming_speakers = self.speakers.filter(begin_time=None).order_by('weight')
-        if coming_speakers_count is None:
-            coming_speakers_count = coming_speakers.count()
-        coming_speakers = coming_speakers[:max(0, coming_speakers_count)]
-        for number, speaker in enumerate(coming_speakers):
-            speaker_dict = {
-                'prefix': number + 1,
-                'speaker': speaker,
-                'type': 'coming_speaker',
-                'first_in_group': False,
-                'last_in_group': False}
-            if number == 0:
-                speaker_dict['first_in_group'] = True
-            if number == coming_speakers_count - 1:
-                speaker_dict['last_in_group'] = True
-            list_of_speakers.append(speaker_dict)
-
-        return list_of_speakers
+        return (self.type == self.HIDDEN_ITEM or
+                (self.parent is not None and self.parent.is_hidden()))
 
     def get_next_speaker(self):
         """
@@ -421,11 +362,12 @@ class Speaker(RESTModelMixin, models.Model):
         speaking, end his speech.
         """
         try:
-            actual_speaker = Speaker.objects.filter(item=self.item, end_time=None).exclude(begin_time=None).get()
+            current_speaker = (Speaker.objects.filter(item=self.item, end_time=None)
+                                              .exclude(begin_time=None).get())
         except Speaker.DoesNotExist:
             pass
         else:
-            actual_speaker.end_speech()
+            current_speaker.end_speech()
         self.weight = None
         self.begin_time = datetime.now()
         self.save()

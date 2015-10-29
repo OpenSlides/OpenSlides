@@ -8,8 +8,11 @@ from reportlab.platypus import Paragraph
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.pdf import stylesheet
 from openslides.utils.rest_api import (
-    ModelViewSet,
+    GenericViewSet,
+    ListModelMixin,
     Response,
+    RetrieveModelMixin,
+    UpdateModelMixin,
     ValidationError,
     detail_route,
     list_route,
@@ -22,7 +25,7 @@ from .serializers import ItemSerializer
 
 # Viewsets for the REST API
 
-class ItemViewSet(ModelViewSet):
+class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     """
     API endpoint for agenda items.
 
@@ -40,9 +43,9 @@ class ItemViewSet(ModelViewSet):
             result = self.request.user.has_perm('agenda.can_see')
             # For manage_speaker and tree requests the rest of the check is
             # done in the specific method. See below.
-        elif self.action in ('create', 'partial_update', 'update', 'destroy'):
+        elif self.action in ('partial_update', 'update'):
             result = (self.request.user.has_perm('agenda.can_see') and
-                      self.request.user.has_perm('agenda.can_see_orga_items') and
+                      self.request.user.has_perm('agenda.can_see_hidden_items') and
                       self.request.user.has_perm('agenda.can_manage'))
         elif self.action == 'speak':
             result = (self.request.user.has_perm('agenda.can_see') and
@@ -56,7 +59,7 @@ class ItemViewSet(ModelViewSet):
         Checks if the requesting user has permission to see also an
         organizational item if it is one.
         """
-        if obj.type == obj.ORGANIZATIONAL_ITEM and not request.user.has_perm('agenda.can_see_orga_items'):
+        if obj.is_hidden() and not request.user.has_perm('agenda.can_see_hidden_items'):
             self.permission_denied(request)
 
     def get_queryset(self):
@@ -64,9 +67,10 @@ class ItemViewSet(ModelViewSet):
         Filters organizational items if the user has no permission to see them.
         """
         queryset = super().get_queryset()
-        if not self.request.user.has_perm('agenda.can_see_orga_items'):
-            queryset = queryset.exclude(type__exact=Item.ORGANIZATIONAL_ITEM)
-        return queryset
+        if self.request.user.has_perm('agenda.can_see_hidden_items'):
+            return queryset
+        else:
+            return Item.objects.get_only_agenda_items(queryset)
 
     @detail_route(methods=['POST', 'DELETE'])
     def manage_speaker(self, request, pk=None):
@@ -197,7 +201,7 @@ class ItemViewSet(ModelViewSet):
         """
         if request.method == 'PUT':
             if not (request.user.has_perm('agenda.can_manage') and
-                    request.user.has_perm('agenda.can_see_orga_items')):
+                    request.user.has_perm('agenda.can_see_hidden_items')):
                 self.permission_denied(request)
             try:
                 tree = request.data['tree']
@@ -242,7 +246,7 @@ class AgendaPDF(PDFView):
             if ancestors:
                 space = "&nbsp;" * 6 * ancestors
                 story.append(Paragraph(
-                    "%s%s" % (space, escape(item.get_title())),
+                    "%s%s" % (space, escape(item.title)),
                     stylesheet['Subitem']))
             else:
-                story.append(Paragraph(escape(item.get_title()), stylesheet['Item']))
+                story.append(Paragraph(escape(item.title), stylesheet['Item']))

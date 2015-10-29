@@ -152,7 +152,7 @@ def motion_to_pdf(pdf, motion):
 
 def convert_html_to_reportlab(pdf, text):
     # parsing and replacing not supported html tags for reportlab...
-    soup = BeautifulSoup(text)
+    soup = BeautifulSoup(text, "html5lib")
     # read all list elements...
     for element in soup.find_all('li'):
         # ... and replace ul list elements with <para><bullet>&bull;</bullet>...<para>

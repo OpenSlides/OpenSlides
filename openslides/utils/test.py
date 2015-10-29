@@ -1,4 +1,3 @@
-from django.core.management import call_command
 from django.test import TestCase as _TestCase
 from django.test.runner import DiscoverRunner
 
@@ -40,6 +39,4 @@ class TestCase(_TestCase):
         except AttributeError:
             # The cache has only to be deleted if it exists.
             pass
-        # Clear the whoosh search index
-        call_command('clear_index', interactive=False, verbosity=0)
         return return_value

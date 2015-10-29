@@ -204,6 +204,7 @@ class MotionSerializer(ModelSerializer):
             'tags',
             'attachments',
             'polls',
+            'agenda_item_id',
             'log_messages',)
         read_only_fields = ('parent',)  # Some other fields are also read_only. See definitions above.
 

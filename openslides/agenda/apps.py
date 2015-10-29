@@ -14,15 +14,23 @@ class AgendaAppConfig(AppConfig):
         from . import projector  # noqa
 
         # Import all required stuff.
-        from django.db.models.signals import pre_delete
+        from django.db.models.signals import pre_delete, post_save
         from openslides.core.signals import config_signal
         from openslides.utils.rest_api import router
-        from .signals import setup_agenda_config, listen_to_related_object_delete_signal
+        from .signals import (
+            setup_agenda_config,
+            listen_to_related_object_post_delete,
+            listen_to_related_object_post_save)
         from .views import ItemViewSet
 
         # Connect signals.
         config_signal.connect(setup_agenda_config, dispatch_uid='setup_agenda_config')
-        pre_delete.connect(listen_to_related_object_delete_signal, dispatch_uid='agenda_listen_to_related_object_delete_signal')
+        post_save.connect(
+            listen_to_related_object_post_save,
+            dispatch_uid='listen_to_related_object_post_save')
+        pre_delete.connect(
+            listen_to_related_object_post_delete,
+            dispatch_uid='listen_to_related_object_post_delete')
 
         # Register viewsets.
         router.register('agenda/item', ItemViewSet)
