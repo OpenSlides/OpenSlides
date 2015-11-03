@@ -8,94 +8,14 @@
   </a>
 </div>
 
-<form name="motionForm">
-  <div ng-if="motion.id" class="form-group">
-    <label for="inputIdentifier" translate>Identifier</label>
-    <input type="text" ng-model="motion.identifier" class="form-control" name="inputIdentifier">
-  </div>
-  <div class="form-group">
-    <label for="selectItem" translate>Agenda item</label>
-    <select ng-options="item.id as item.get_title for item in items"
-        ng-model="motion.item" class="form-control" name="selectItem">
-    </select>
-  </div>
-  <div class="form-group">
-    <label for="selectSubmitter" translate>Submitters</label>
-    <ui-select multiple ng-model="motion.submitters_id" name="selectSubmitter">
-      <ui-select-match placeholder="{{ 'Select or search a submitter...' | translate }}">
-        {{ $item.get_full_name() }}
-      </ui-select-match>
-      <ui-select-choices repeat="user.id as user in users | filter: $select.search">
-        <div ng-bind-html="user.get_full_name() | highlight: $select.search"></div>
-      </ui-select-choices>
-    </ui-select>
-  </div>
-  <div class="form-group">
-    <label for="inputTitle" translate>Title</label>
-    <input type="text" ng-model="motion.title" class="form-control" name="inputTitle" required>
-  </div>
-  <div class="form-group">
-    <label for="textText" translate>Text</label>
-    <textarea ng-model="motion.text" class="form-control" name="textText" required />
-  </div>
-  <div class="form-group">
-    <label for="textReason" translate>Reason</label>
-    <textarea ng-model="motion.reason" class="form-control" name="textReason" />
-  </div>
-  <div class="form-group">
-    <label for="selectCategory" translate>Category</label>
-    <select ng-options="category.id as category.name for category in categories"
-        ng-model="motion.category_id" class="form-control" name="selectCategory">
-    </select>
-  </div>
-  <div class="form-group">
-    <label for="selectTags" translate>Tags</label>
-    <ui-select multiple ng-model="motion.tags_id">
-      <ui-select-match placeholder="{{ 'Select or search a tag...' | translate }}">
-        {{ $item.name }}
-      </ui-select-match>
-      <ui-select-choices repeat="tag.id as tag in tags | filter: $select.search">
-        {{ tag.name }}
-      </ui-select-choices>
-    </ui-select>
-  </div>
-  <div class="form-group">
-    <label for="selectAttachments" translate>Attachments</label>
-    <ui-select multiple ng-model="motion.attachments_id">
-      <ui-select-match placeholder="{{ 'Select or search an attachment...' | translate }}">
-        {{ $item.name }}
-      </ui-select-match>
-      <ui-select-choices repeat="file.id as file in mediafiles | filter: $select.search">
-        {{ file.title }}
-      </ui-select-choices>
-    </ui-select>
-  </div>
-  <!-- show supporters if enabled -->
-  <div class="form-group" ng-if="config('motions_min_supporters') > 0">
-    <label for="selectSupporter" translate>Supporters</label>
-    <ui-select multiple ng-model="motion.supporters_id">
-      <ui-select-match placeholder="{{ 'Select or search a supporter...' | translate }}">
-        {{ $item.get_full_name() }}
-      </ui-select-match>
-      <ui-select-choices repeat="user.id as user in users | filter: $select.search">
-        <div ng-bind-html="user.get_full_name() | highlight: $select.search"></div>
-      </ui-select-choices>
-    </ui-select>
-  </div>
-  <!-- TODO: preselect default workflow
-  does not work: ng-init="motion.workflow = config('motions_workflow')"-->
-  <div class="form-group">
-    <label for="selectWorkflow" translate>Workflow</label>
-    <select ng-options="workflow.id as workflow.name for workflow in workflows"
-        ng-model="motion.workflow"
-        class="form-control" name="selectWorkflow">
-    </select>
-  </div>
-
-  <button type="submit" ng-click="save(motion)" class="btn btn-primary" translate>
-    Save
-  </button>
-  <button ui-sref="motions.motion.list" class="btn btn-default" translate>
-    Cancel
-  </button>
+<form name="motionForm" ng-submit="save(model)">
+  <formly-form model="model" fields="formFields">
+    <button type="submit" ng-disabled="motionForm.$invalid" class="btn btn-primary" translate>
+      Submit
+    </button>
+    <button ui-sref="motions.motion.list" class="btn btn-default" translate>
+      Cancel
+    </button>
+  </formly-form>
 </form>
+

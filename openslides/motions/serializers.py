@@ -49,7 +49,7 @@ class StateSerializer(ModelSerializer):
             'id',
             'name',
             'action_word',
-            'icon',
+            'css_class',
             'required_permission_to_see',
             'allow_support',
             'allow_create_poll',
@@ -77,9 +77,17 @@ class MotionLogSerializer(ModelSerializer):
     """
     Serializer for motion.models.MotionLog objects.
     """
+    message = SerializerMethodField()
+
     class Meta:
         model = MotionLog
-        fields = ('message_list', 'person', 'time',)
+        fields = ('message_list', 'person', 'time', 'message',)
+
+    def get_message(self, obj):
+        """
+        Concats the message parts to one string. Useful for smart template code.
+        """
+        return str(obj)
 
 
 class MotionPollSerializer(ModelSerializer):

@@ -736,8 +736,12 @@ class State(RESTModelMixin, models.Model):
     next_states = models.ManyToManyField('self', symmetrical=False)
     """A many-to-many relation to all states, that can be choosen from this state."""
 
-    icon = models.CharField(max_length=255)
-    """A string representing the url to the icon-image."""
+    css_class = models.CharField(max_length=255, default='primary')
+    """
+    A css class string for showing the state name in a coloured label based on bootstrap,
+    e.g. 'danger' (red), 'success' (green), 'warning' (yellow), 'default' (grey).
+    Default value is 'primary' (blue).
+    """
 
     required_permission_to_see = models.CharField(max_length=255, blank=True)
     """
@@ -764,7 +768,6 @@ class State(RESTModelMixin, models.Model):
     This behavior can be changed by the form and view, e. g. via the
     MotionDisableVersioningMixin.
     """
-    # TODO: preferred_for = ChoiceField
 
     leave_old_version_active = models.BooleanField(default=False)
     """If true, new versions are not automaticly set active."""

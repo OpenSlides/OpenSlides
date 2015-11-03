@@ -9,6 +9,14 @@ angular.module('OpenSlidesApp.users', [])
     return DS.defineResource({
         name: name,
         useClass: jsDataModel,
+        computed: {
+            full_name: function () {
+                return this.get_full_name();
+            },
+            short_name: function () {
+                return this.get_short_name();
+            },
+        },
         methods: {
             getResourceName: function () {
                 return name;

@@ -49,8 +49,11 @@ body {
     color: red;
     font-weight: bold;
 }
-.spacer {
+.spacer, .spacer-top {
     margin-top: 7px;
+}
+.spacer-right {
+    margin-right: 5px;
 }
 .hoverActions {
     font-size: 85%;
@@ -58,83 +61,37 @@ body {
 .hiddenDiv {
     visibility: hidden;
 }
+/* override bootstraps's progress bar for poll results*/
+.progress {
+    height: 12px;
+    margin-bottom: 0;
+}
+/* voting results */
+.result_label {
+    margin-top: 5px;
+}
 
-/* TODO: used by ng-fab-forms */
-.validation-success {
-  opacity: 1;
-  display: block;
-  position: absolute;
-  right: -7.2px;
-  bottom: -7.2px;
-  font-size: 28.8px;
-  width: 36px;
-  height: 36px;
-  line-height: 36px;
-  text-align: center;
-  border-radius: 36px;
-  color: #62b14c;
-  transition: all ease-out 0.32s; }
-  .validation-success:after {
-    display: block;
-    content: '\e013';
-    font-family: 'Glyphicons Halflings'; }
-  .validation-success.ng-hide {
-    transition-delay: 0s;
-    transition: all ease-out 0.12s;
-    opacity: 0;
-    transform: rotate(360deg); }
 
-.ng-hide-remove li {
-  opacity: 0; }
+/* ngAnimate classes */
+.animate-item.ng-enter {
+    -webkit-animation: fade-in 1s linear;
+    animation: fade-in 1.5s linear;
+}
+.animate-item.ng-leave {
+    -webkit-animation: fade-out 1s linear;
+    animation: fade-out 1.5s linear;
+}
 
-.validation {
-  color: #fff;
-  margin: 0;
-  position: relative;
-  font-size: 14px;
-  overflow: visible;
-  background: #c00640; }
-  .validation ul {
-    display: block;
-    overflow: hidden; }
-  .validation li {
-    display: block;
-    line-height: 1;
-    background: #c00640;
-    position: absolute;
-    right: -4px;
-    top: -10px;
-    text-align: center;
-    font-weight: bold;
-    padding: 2px 10px;
-    color: #fff;
-    transform: rotate(0deg);
-    transition: all ease-in 0.2s;
-    opacity: 1;
-    transition-delay: 0s; }
-    .validation li.ng-enter {
-      opacity: 0;
-      top: 0; }
-    .validation li.ng-leave {
-      transition: all ease-in 0s;
-      opacity: 0; }
-  *:focus + .validation li {
-    background-color: #63bff8 !important; }
-
-input.ng-touched.ng-invalid:not(.ng-valid), textarea.ng-touched.ng-invalid:not(.ng-valid), select.ng-touched.ng-invalid:not(.ng-valid) {
-  border-color: #c00640; }
-input:focus, input:focus.ng-touched.ng-invalid:not(.ng-valid), textarea:focus, textarea:focus.ng-touched.ng-invalid:not(.ng-valid), select:focus, select:focus.ng-touched.ng-invalid:not(.ng-valid) {
-  border-color: #63bff8; }
-input.ng-valid-required.ng-valid:not(.ng-invalid), textarea.ng-valid-required.ng-valid:not(.ng-invalid), select.ng-valid-required.ng-valid:not(.ng-invalid) {
-  border-color: #62b14c; }
-
-form[class*="ng-invalid"] button.btn[type=submit] {
-  background: #63bff8;
-  transition: none; }
-
-form button.btn[type=submit] {
-  transition: all ease-in 0.5s;
-  background: #62b14c; }
+@keyframes fade-out {
+    0% { opacity: 1; background: none; }
+    25% { opacity: 1; background: #f8efc0; }
+    100% { opacity: 0; background: none; }
+}
+@keyframes fade-in {
+    0% { opacity: 0; background: none; }
+    25% { opacity: 1; background: #dff0d8; }
+    100% { opacity: 1; background: none; }
+}
 
 
 
@@ -296,9 +253,9 @@ tr.selected td {
     padding-left: 20px;
 }
 .smallhr {
-    margin-top: 2px;
-    margin-bottom: 2px;
-    border-color: #333333;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-color: #cccccc;
 }
 .resultcolumn {
     font-weight: bold;

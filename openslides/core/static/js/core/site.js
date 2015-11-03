@@ -6,8 +6,9 @@
 angular.module('OpenSlidesApp.core.site', [
     'OpenSlidesApp.core',
     'ui.router',
+    'formly',
+    'formlyBootstrap',
     'ngBootbox',
-    'ngFabForm',
     'ngMessages',
     'ngCsvImport',
     'ngSanitize',  // TODO: only use this in functions that need it.
@@ -260,13 +261,6 @@ angular.module('OpenSlidesApp.core.site', [
     $locationProvider.html5Mode(true);
 })
 
-// config for ng-fab-form
-.config(function(ngFabFormProvider) {
-    ngFabFormProvider.extendConfig({
-        setAsteriskForRequiredLabel: true
-    });
-})
-
 // Helper to add ui.router states at runtime.
 // Needed for the django url_patterns.
 .provider('runtimeStates', function($stateProvider) {
@@ -299,6 +293,26 @@ angular.module('OpenSlidesApp.core.site', [
     editableOptions.theme = 'bs3';
 })
 
+// angular formly config options
+.run([
+    'formlyConfig',
+    function (formlyConfig) {
+        // NOTE: This next line is highly recommended. Otherwise Chrome's autocomplete will appear over your options!
+        formlyConfig.extras.removeChromeAutoComplete = true;
+
+        // Configure custom types
+        formlyConfig.setType({
+          name: 'ui-select-single',
+          extends: 'select',
+          templateUrl: 'static/templates/core/ui-select-single.html'
+        });
+        formlyConfig.setType({
+          name: 'ui-select-multiple',
+          extends: 'select',
+          templateUrl: 'static/templates/core/ui-select-multiple.html'
+        });
+    }
+])
 
 // html-tag os-form-field to generate generic from fields
 // TODO: make it possible to use other fields then config fields
