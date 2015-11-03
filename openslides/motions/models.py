@@ -409,6 +409,7 @@ class Motion(RESTModelMixin, models.Model):
         """
         Returns the id of the workflow of the motion.
         """
+        # TODO: Rename to workflow_id
         return self.state.workflow.pk
 
     def set_state(self, state):
@@ -442,7 +443,7 @@ class Motion(RESTModelMixin, models.Model):
             new_state = self.state.workflow.first_state
         else:
             new_state = (Workflow.objects.get(pk=config['motions_workflow']).first_state or
-                         Workflow.objects.get(pk=config['motions_workflow']).state_set.all()[0])
+                         Workflow.objects.get(pk=config['motions_workflow']).states.all()[0])
         self.set_state(new_state)
 
     def get_agenda_title(self):
@@ -729,7 +730,7 @@ class State(RESTModelMixin, models.Model):
     action_word = models.CharField(max_length=255)
     """An alternative string to be used for a button to switch to this state."""
 
-    workflow = models.ForeignKey('Workflow')
+    workflow = models.ForeignKey('Workflow', related_name='states')
     """A many-to-one relation to a workflow."""
 
     next_states = models.ManyToManyField('self', symmetrical=False)

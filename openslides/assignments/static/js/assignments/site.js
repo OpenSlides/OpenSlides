@@ -79,7 +79,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 
 .controller('AssignmentDetailCtrl', function($scope, Assignment, assignment) {
     Assignment.bindOne(assignment.id, $scope, 'assignment');
-    Assignment.loadRelations(assignment);
+    Assignment.loadRelations(assignment, 'agenda_item');
 })
 
 .controller('AssignmentCreateCtrl', function($scope, $state, Assignment) {

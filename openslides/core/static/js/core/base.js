@@ -111,7 +111,7 @@ angular.module('OpenSlidesApp.core', [
 // Load the global data on startup
 .run([
     'loadGlobalData',
-    function(loadGlobalData, operator) {
+    function(loadGlobalData) {
         loadGlobalData();
     }
 ])

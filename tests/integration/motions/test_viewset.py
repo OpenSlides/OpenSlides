@@ -108,15 +108,17 @@ class CreateMotion(TestCase):
         self.assertEqual(motion.tags.get().name, 'test_tag_iRee3kiecoos4rorohth')
 
     def test_with_workflow(self):
-        self.assertEqual(config['motions_workflow'], '1')
+        """
+        Test to create a motion with a specific workflow.
+        """
         response = self.client.post(
             reverse('motion-list'),
             {'title': 'test_title_eemuR5hoo4ru2ahgh5EJ',
              'text': 'test_text_ohviePopahPhoili7yee',
-             'workflow': '2'})
+             'workflow_id': '2'})
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        motion = Motion.objects.get()
-        self.assertEqual(motion.state.workflow.pk, 2)
+        self.assertEqual(Motion.objects.get().state.workflow_id, 2)
 
 
 class UpdateMotion(TestCase):
@@ -141,12 +143,15 @@ class UpdateMotion(TestCase):
         self.assertEqual(motion.identifier, 'test_identifier_jieseghohj7OoSah1Ko9')
 
     def test_patch_workflow(self):
-        self.assertEqual(config['motions_workflow'], '1')
+        """
+        Tests to only update the workflow of a motion.
+        """
         response = self.client.patch(
             reverse('motion-detail', args=[self.motion.pk]),
-            {'workflow': '2'})
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+            {'workflow_id': '2'})
+
         motion = Motion.objects.get()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(motion.title, 'test_title_aeng7ahChie3waiR8xoh')
         self.assertEqual(motion.workflow, 2)
 

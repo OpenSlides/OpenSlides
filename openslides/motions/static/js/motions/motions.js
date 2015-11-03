@@ -2,14 +2,58 @@
 
 angular.module('OpenSlidesApp.motions', [])
 
+.factory('WorkflowState', [
+    'DS',
+    function (DS) {
+        return DS.defineResource({
+            name: 'motions/workflowstate',
+            methods: {
+                getNextStates: function () {
+                    var states = [];
+                    _.forEach(this.next_states_id, function (stateId) {
+                        states.push(DS.get('motions/workflowstate', stateId));
+                    })
+                    return states;
+                }
+            }
+        })
+    }
+])
+
+.factory('Workflow', [
+    'DS',
+    'jsDataModel',
+    'WorkflowState',
+    function (DS, jsDataModel, WorkflowState) {
+        return DS.defineResource({
+            name: 'motions/workflow',
+            useClass: jsDataModel,
+            relations: {
+                hasMany: {
+                    'motions/workflowstate': {
+                        localField: 'states',
+                        foreignKey: 'workflow_id',
+                    }
+                }
+            }
+        })
+    }
+])
+
+// Load all MotionWorkflows at stateup
+.run([
+    'Workflow',
+    function (Workflow) {
+        Workflow.findAll();
+    }
+])
+
 .factory('MotionPoll', [
     'DS',
     'Config',
-    'jsDataModel',
-    function(DS, Config, jsDataModel) {
+    function (DS, Config) {
         return DS.defineResource({
-            name: 'motions/motionpoll',
-            useClass: jsDataModel,
+            name: 'motions/poll',
             relations: {
                 belongsTo: {
                     'motions/motion': {
@@ -149,9 +193,15 @@ angular.module('OpenSlidesApp.motions', [])
                             localKeys: 'supporters_id',
                         }
                     ],
-                    'motions/motionpoll': {
+                    'motions/poll': {
                         localField: 'polls',
                         foreignKey: 'motion_id',
+                    }
+                },
+                hasOne: {
+                    'motions/workflowstate': {
+                        localField: 'state',
+                        localKey: 'state_id',
                     }
                 }
             }
@@ -165,13 +215,7 @@ angular.module('OpenSlidesApp.motions', [])
     });
 }])
 
-.factory('Workflow', ['DS', function(DS) {
-    return DS.defineResource({
-        name: 'motions/workflow',
-    });
-}])
-
-.run(['Motion', 'Category', 'Workflow', function(Motion, Category, Workflow) {}]);
+.run(['Motion', 'Category', function(Motion, Category) {}]);
 
 
 angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
@@ -221,9 +265,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 categories: function(Category) {
                     return Category.findAll();
                 },
-                workflows: function(Workflow) {
-                    return Workflow.findAll();
-                },
                 tags: function(Tag) {
                     return Tag.findAll();
                 },
@@ -261,9 +302,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 },
                 categories: function(Category) {
                     return Category.findAll();
-                },
-                workflows: function(Workflow) {
-                    return Workflow.findAll();
                 },
                 tags: function(Tag) {
                     return Tag.findAll();
@@ -405,7 +443,9 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         Category.bindAll({}, $scope, 'categories');
         Workflow.bindAll({}, $scope, 'workflows');
         User.bindAll({}, $scope, 'users');
-        Motion.loadRelations(motion);
+        Motion.loadRelations(motion, 'agenda_item');
+        var state = motion.state;
+        state.getNextStates()
         $scope.alert = {}; // TODO: show alert in template
 
         $scope.update_state = function (state_id) {

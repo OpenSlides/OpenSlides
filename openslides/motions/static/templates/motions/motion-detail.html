@@ -6,7 +6,11 @@
   </small>
 </h1>
 
-{{ motion.agenda_item }}
+agenda_id: {{ motion.agenda_item }}
+
+<br><br>state: {{ motion.state }}
+
+<br><br>next states: {{ motion.state.getNextStates() }}
 
 <div id="submenu">
   <a ui-sref="motions.motion.list" class="btn btn-sm btn-default">
