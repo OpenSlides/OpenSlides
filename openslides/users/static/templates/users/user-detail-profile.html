@@ -1,5 +1,8 @@
 <h1>Edit profil</h1>
 
+<p ng-if='formError' class="text-danger">
+  <strong>{{ formError }}</strong>
+</p>
 <form name="userForm" >
   <div class="form-group">
     <label for="inputUsername" translate>Username</label>
