@@ -96,9 +96,7 @@ function uploadFile($timeout, $scope, $state, Upload, mediafile) {
         file.upload = Upload.upload({
             url: '/rest/mediafiles/mediafile/' + (mediafile ? mediafile.id : ''),
             method: mediafile ? 'PUT' : 'POST',
-            fields: {title: file.title},
-            file: file.mediafile,
-            fileFormDataName: 'mediafile'
+            data: {mediafile: file.newFile, title: file.title}
         });
 
         file.upload.then(function (response) {

@@ -50,8 +50,8 @@
   <tbody>
     <tr ng-repeat="mediafile in mediafiles | filter: filter.search |
         orderBy: sortColumn:reverse">
-      <td><a ng-href="{{ mediafile.mediafile }}" target="_self">{{ mediafile.title_or_filename }}</a>
-      <td class="optional">{{ mediafile.filetype }}
+      <td><a ng-href="/media/{{ mediafile.mediafile.name }}" target="_self">{{ mediafile.title_or_filename }}</a>
+      <td class="optional">{{ mediafile.mediafile.type }}
       <td>{{ mediafile.filesize }}
       <td>{{ mediafile.timestamp }}
       <td>{{ mediafile.uploader }}

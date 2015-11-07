@@ -44,7 +44,6 @@ class MediafileSerializer(ModelSerializer):
             'mediafile',
             'uploader',
             'filesize',
-            'filetype',
             'timestamp',)
 
     def get_filesize(self, mediafile):
