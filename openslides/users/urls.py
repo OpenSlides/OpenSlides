@@ -18,6 +18,10 @@ urlpatterns = patterns(
         views.WhoAmIView.as_view(),
         name='user_whoami'),
 
+    url(r'^setpassword/$',
+        views.SetPasswordView.as_view(),
+        name='user_setpassword'),
+
     # PDF
     url(r'^print/$',
         views.UsersListPDF.as_view(),

@@ -5,7 +5,13 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 
 from ..core.config import config
-from ..utils.rest_api import ModelViewSet, Response, detail_route, status
+from ..utils.rest_api import (
+    ModelViewSet,
+    Response,
+    ValidationError,
+    detail_route,
+    status,
+)
 from ..utils.views import APIView, PDFView
 from .models import Group, User
 from .pdf import users_passwords_to_pdf, users_to_pdf
@@ -230,6 +236,22 @@ class WhoAmIView(APIView):
         return super().get_context_data(
             user_id=self.request.user.pk,
             **context)
+
+
+class SetPasswordView(APIView):
+    """
+    Users can set a new password for themselves.
+    """
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        if user.check_password(request.data['old_password']):
+            user.set_password(request.data['new_password'])
+            user.save()
+        else:
+            raise ValidationError(_('Password does not match.'))
+        return super().post(request, *args, **kwargs)
 
 
 # Views to generate PDFs
