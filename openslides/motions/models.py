@@ -409,6 +409,7 @@ class Motion(RESTModelMixin, models.Model):
         """
         Returns the id of the workflow of the motion.
         """
+        # TODO: Rename to workflow_id
         return self.state.workflow.pk
 
     def set_state(self, state):
@@ -442,7 +443,7 @@ class Motion(RESTModelMixin, models.Model):
             new_state = self.state.workflow.first_state
         else:
             new_state = (Workflow.objects.get(pk=config['motions_workflow']).first_state or
-                         Workflow.objects.get(pk=config['motions_workflow']).state_set.all()[0])
+                         Workflow.objects.get(pk=config['motions_workflow']).states.all()[0])
         self.set_state(new_state)
 
     def get_agenda_title(self):
@@ -729,14 +730,18 @@ class State(RESTModelMixin, models.Model):
     action_word = models.CharField(max_length=255)
     """An alternative string to be used for a button to switch to this state."""
 
-    workflow = models.ForeignKey('Workflow')
+    workflow = models.ForeignKey('Workflow', related_name='states')
     """A many-to-one relation to a workflow."""
 
     next_states = models.ManyToManyField('self', symmetrical=False)
     """A many-to-many relation to all states, that can be choosen from this state."""
 
-    icon = models.CharField(max_length=255)
-    """A string representing the url to the icon-image."""
+    css_class = models.CharField(max_length=255, default='primary')
+    """
+    A css class string for showing the state name in a coloured label based on bootstrap,
+    e.g. 'danger' (red), 'success' (green), 'warning' (yellow), 'default' (grey).
+    Default value is 'primary' (blue).
+    """
 
     required_permission_to_see = models.CharField(max_length=255, blank=True)
     """

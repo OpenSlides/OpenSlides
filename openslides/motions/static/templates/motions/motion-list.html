@@ -1,7 +1,7 @@
 <h1 translate>Motions</h1>
 
 <div id="submenu">
-  <a ui-sref="motions.motion.create" os-perms="motions.can_manage" class="btn btn-primary btn-sm">
+  <a ui-sref="motions.motion.create" os-perms="motions.can_create" class="btn btn-primary btn-sm">
     <i class="fa fa-plus fa-lg"></i>
     <translate>New</translate>
   </a>
@@ -21,78 +21,182 @@
 
 <div class="row form-group">
   <div class="col-sm-8">
-    <!-- TODO: add filters -->
+    <form class="form-inline">
+      <!-- delete mode -->
+      <div os-perms-lite="motions.can_manage" class="form-group">
+        <label for="deleteSwitcher" translate>Delete mode</label>
+        <switch id="deleteSwitcher" ng-model="isDeleteMode" ng-change="uncheckAll()"
+            on="{{'On'|translate}}" off="{{'Off'|translate}}"
+            class="green wide form-control">
+        </switch>
+      </div>
+      <!-- delete button -->
+      <a ng-show="isDeleteMode && (motions|filter:{selected:true}).length > 0"
+          os-perms="motions.can_manage" ng-click="delete()"
+          class="btn btn-primary btn-sm form-control">
+        <i class="fa fa-trash fa-lg"></i>
+        <translate>Delete selected motions</translate>
+      </a>
+      <!-- state filter -->
+      &nbsp;
+      <select ng-model="stateFilter" class="form-control" id="stateFilter">
+        <option value="" translate>--- Select state ---</option>
+        <option ng-repeat="state in states" value="{{ state.id }}">{{ state.name }}</option>
+      </select>
+    </form>
   </div>
   <div class="col-sm-4">
-    <input type="text" os-focus-me ng-model="filter.search" class="form-control"
-        placeholder="{{ 'Filter' | translate}}">
+    <div class="input-group">
+      <div class="input-group-addon"><i class="fa fa-filter"></i></div>
+      <input type="text" os-focus-me ng-model="filter.search" class="form-control"
+         placeholder="{{ 'Filter' | translate}}">
+    </div>
   </div>
 </div>
 
 <table class="table table-striped table-bordered table-hover">
   <thead>
     <tr>
-      <!-- TODO: Add motion.agenda_item to rest api -->
-      <th ng-click="toggleSort('agenda_item')" class="sortable minimum">
-        <translate>Agenda item</translate>
-        <i class="pull-right fa" ng-show="sortColumn === 'agenda_item' && header.sortable != false"
-            ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
-        </i>
+      <!-- projector column -->
+      <th ng-show="!isDeleteMode" os-perms="core.can_manage_projector" class="firstColumn">
+      <!-- delete selection column -->
+      <th ng-show="isDeleteMode" os-perms-lite="motions.can_manage" class="firstColumn deleteColumn">
+        <input type="checkbox" ng-model="selectedAll" ng-change="checkAll()">
       <th ng-click="toggleSort('identifier')" class="sortable minimum">
         <translate>Identifier</translate>
         <i class="pull-right fa" ng-show="sortColumn === 'identifier' && header.sortable != false"
             ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
         </i>
-      <th ng-click="toggleSort('title')" class="sortable">
+      <th ng-click="toggleSort('getTitle()')" class="sortable">
         <translate>Title</translate>
-        <i class="pull-right fa" ng-show="sortColumn === 'title' && header.sortable != false"
+        <i class="pull-right fa" ng-show="sortColumn === 'getTitle()' && header.sortable != false"
             ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
         </i>
-      <th ng-click="toggleSort('submitters')" class="sortable">
+      <th ng-click="toggleSort('submitters')" class="sortable optional">
         <translate>Submitters</translate>
         <i class="pull-right fa" ng-show="sortColumn === 'submitters' && header.sortable != false"
             ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
         </i>
-      <th ng-click="toggleSort('category')" class="sortable">
+      <th ng-click="toggleSort('category')" class="sortable optional">
         <translate>Category</translate>
         <i class="pull-right fa" ng-show="sortColumn === 'category' && header.sortable != false"
             ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
         </i>
-      <th os-perms="motions.can_manage core.can_manage_projector" class="minimum">
-        <translate>Actions</translate>
+      <th ng-click="toggleSort('state.name')" class="sortable optional">
+        <translate>State</translate>
+        <i class="pull-right fa" ng-show="sortColumn === 'state.name' && header.sortable != false"
+            ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
+        </i>
   <tbody>
-    <tr ng-repeat="motion in motions | filter: filter.search |
-        orderBy: sortColumn:reverse" ng-class="{ 'activeline': motion.isProjected() }">
-      <td> <!--TOOD: add agenda item reference -->
-      <td><a ui-sref="motions.motion.detail({id: motion.id})">{{ motion.identifier }}</a>
-      <td><a ui-sref="motions.motion.detail({id: motion.id})">
-            {{ motion.getTitle() }}
-          </a>
-      <td class="optional">
-        <div ng-repeat="submitter in motion.submitters">
-          {{ submitter.get_full_name() }}<br>
-        </div>
-      <td class="optional">
-        {{ motion.category.name }}
-      <td os-perms="motions.can_manage core.can_manage_projector" class="nobr">
-        <!-- project -->
-        <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
+    <tr ng-repeat="motion in motions | filter: filter.search | filter: {state_id: stateFilter} |
+        orderBy: sortColumn:reverse"
+        class="animate-item"
+        ng-class="{ 'activeline': motion.isProjected(), 'selected': motion.selected }">
+      <!-- projector column -->
+      <td ng-show="!isDeleteMode" os-perms-lite="core.can_manage_projector">
+        <a class="btn btn-default btn-sm"
             ng-class="{ 'btn-primary': motion.isProjected() }"
             ng-click="motion.project()"
             title="{{ 'Project motion' | translate }}">
           <i class="fa fa-video-camera"></i>
         </a>
-        <!-- edit -->
-        <a ui-sref="motions.motion.detail.update({id: motion.id })" os-perms="motions.can_manage"
-            class="btn btn-default btn-sm"
-            title="{{ 'Edit' | translate}}">
-          <i class="fa fa-pencil"></i>
-        </a>
-        <!-- delete -->
-        <a os-perms="motions.can_manage" class="btn btn-danger btn-sm"
-            ng-bootbox-confirm="Are you sure you want to delete <b>{{ motion.getTitle() }}</b>?"
-            ng-bootbox-confirm-action="delete(motion)"
-            title="{{ 'Delete' | translate }}">
-          <i class="fa fa-trash-o"></i>
-        </a>
+      <!-- delete selection column -->
+      <td ng-show="isDeleteMode" os-perms="motions.can_manage" class="deleteColumn">
+        <input type="checkbox" ng-model="motion.selected">
+      <!-- motion data colums -->
+      <td ng-if="!motion.quickEdit">{{ motion.identifier }}
+      <td ng-if="!motion.quickEdit" ng-mouseover="motion.hover=true" ng-mouseleave="motion.hover=false">
+          <strong><a ui-sref="motions.motion.detail({id: motion.id})">{{ motion.getTitle() }}</a></strong>
+          <div class="hoverActions" ng-class="{'hiddenDiv': !motion.hover}">
+            <span ng-if="motion.allowed_actions.update">
+              <a ui-sref="motions.motion.detail.update({ id: motion.id })" translate>Edit</a> |
+            </span>
+            <span ng-if="motion.allowed_actions.update">
+              <a href="" os-perms="motions.can_manage" ng-click="motion.quickEdit=true" translate>QuickEdit</a> |
+            </span>
+            <span ng-if="motion.allowed_actions.delete">
+              <!-- TODO: translate confirm message -->
+              <a href="" class="text-danger"
+                ng-bootbox-confirm="Are you sure you want to delete <b>{{ motion.getTitle() }}</b>?"
+                ng-bootbox-confirm-action="deleteSingleMotion(motion)" translate>Delete</a>
+            </span>
+          </div>
+      <td ng-if="!motion.quickEdit" class="optional">
+        <div ng-repeat="submitter in motion.submitters">
+          {{ submitter.get_full_name() }}<br>
+        </div>
+      <td ng-if="!motion.quickEdit" class="optional">
+        {{ motion.category.name }}
+      <td ng-if="!motion.quickEdit" class="optional">
+        <span class="label" ng-class="'label-'+motion.state.css_class">
+          {{ motion.state.name | translate }}
+        </span>
+      <!-- quickEdit columns -->
+      <td ng-if="motion.quickEdit && motion.allowed_actions.update" colspan="5">
+        <h4>{{ motion.getTitle() }} <span class="text-muted">&ndash; Quick Edit</span></h4>
+          <alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+            {{alert.msg}}
+          </alert>
+          <div class="row">
+            <div class="col-xs-6">
+              <label for="inputIdentifier" translate>Identifier</label>
+              <input type="text" ng-model="motion.identifier" class="form-control input-sm"
+                  name="inputIdentifier">
+            </div>
+            <div class="col-xs-6">
+              <label for="selectCategory" translate>Category</label>
+              <select ng-options="category.id as category.name for category in categories"
+                  ng-model="motion.category_id" class="form-control" name="selectCategory">
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-6">
+              <label for="selectSubmitter" translate>Submitters</label>
+              <ui-select multiple ng-model="motion.submitters_id" name="selectSubmitter">
+                <ui-select-match placeholder="{{ 'Select or search a submitter...' | translate }}">
+                  {{ $item.get_full_name() }}
+                </ui-select-match>
+                <ui-select-choices repeat="user.id as user in users | filter: $select.search">
+                  <div ng-bind-html="user.get_full_name() | highlight: $select.search"></div>
+                </ui-select-choices>
+              </ui-select>
+            </div>
+            <div class="col-xs-6">
+              <label for="selectTags" translate>Tags</label>
+              <ui-select multiple ng-model="motion.tags_id">
+                <ui-select-match placeholder="{{ 'Select or search a tag...' | translate }}">
+                  {{ $item.name }}
+                </ui-select-match>
+                <ui-select-choices repeat="tag.id as tag in tags | filter: $select.search">
+                  {{ tag.name }}
+                </ui-select-choices>
+              </ui-select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-6">
+              <div ng-if="config('motions_min_supporters') > 0">
+                <label for="selectSubmitter" translate>Supporters</label>
+                <ui-select multiple ng-model="motion.supporters_id">
+                  <ui-select-match placeholder="{{ 'Select or search a supporter...' | translate }}">
+                    {{ $item.get_full_name() }}
+                  </ui-select-match>
+                  <ui-select-choices repeat="user.id as user in users | filter: $select.search">
+                    <div ng-bind-html="user.get_full_name() | highlight: $select.search"></div>
+                  </ui-select-choices>
+                </ui-select>
+              </div>
+            </div>
+          </div>
+          <div class="spacer">
+            <button ng-click="motion.quickEdit=false" class="btn btn-default pull-left" translate>
+              Cancel
+            </button> &nbsp;
+            <button ng-if="motion.allowed_actions.update" ng-click="update(motion)" class="btn btn-primary" translate>
+              Update
+            </button>
+            <a ng-if="motion.allowed_actions.update" ui-sref="motions.motion.detail.update({id: motion.id })"
+                class="pull-right" translate>Edit motion...</a>
+          </div>
 </table>

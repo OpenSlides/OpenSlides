@@ -1,7 +1,6 @@
 from django.db import transaction
 from django.utils.translation import ugettext as _
 
-from openslides.core.config import config
 from openslides.utils.rest_api import (
     CharField,
     DictField,
@@ -50,7 +49,7 @@ class StateSerializer(ModelSerializer):
             'id',
             'name',
             'action_word',
-            'icon',
+            'css_class',
             'required_permission_to_see',
             'allow_support',
             'allow_create_poll',
@@ -58,28 +57,37 @@ class StateSerializer(ModelSerializer):
             'versioning',
             'leave_old_version_active',
             'dont_set_identifier',
-            'next_states',)
+            'next_states',
+            'workflow')
 
 
 class WorkflowSerializer(ModelSerializer):
     """
     Serializer for motion.models.Workflow objects.
     """
-    state_set = StateSerializer(many=True, read_only=True)
+    states = StateSerializer(many=True, read_only=True)
     first_state = PrimaryKeyRelatedField(read_only=True)
 
     class Meta:
         model = Workflow
-        fields = ('id', 'name', 'state_set', 'first_state',)
+        fields = ('id', 'name', 'states', 'first_state',)
 
 
 class MotionLogSerializer(ModelSerializer):
     """
     Serializer for motion.models.MotionLog objects.
     """
+    message = SerializerMethodField()
+
     class Meta:
         model = MotionLog
-        fields = ('message_list', 'person', 'time',)
+        fields = ('message_list', 'person', 'time', 'message',)
+
+    def get_message(self, obj):
+        """
+        Concats the message parts to one string. Useful for smart template code.
+        """
+        return str(obj)
 
 
 class MotionPollSerializer(ModelSerializer):
@@ -97,6 +105,7 @@ class MotionPollSerializer(ModelSerializer):
         model = MotionPoll
         fields = (
             'id',
+            'motion',
             'yes',
             'no',
             'abstain',
@@ -179,11 +188,14 @@ class MotionSerializer(ModelSerializer):
     log_messages = MotionLogSerializer(many=True, read_only=True)
     polls = MotionPollSerializer(many=True, read_only=True)
     reason = CharField(allow_blank=True, required=False, write_only=True)
-    state = StateSerializer(read_only=True)
     text = CharField(write_only=True)
     title = CharField(max_length=255, write_only=True)
     versions = MotionVersionSerializer(many=True, read_only=True)
-    workflow = IntegerField(min_value=1, required=False, validators=[validate_workflow_field])
+    workflow_id = IntegerField(
+        min_value=1,
+        required=False,
+        validators=[validate_workflow_field],
+        write_only=True)
 
     class Meta:
         model = Motion
@@ -200,13 +212,13 @@ class MotionSerializer(ModelSerializer):
             'submitters',
             'supporters',
             'state',
-            'workflow',
+            'workflow_id',
             'tags',
             'attachments',
             'polls',
             'agenda_item_id',
             'log_messages',)
-        read_only_fields = ('parent',)  # Some other fields are also read_only. See definitions above.
+        read_only_fields = ('parent', 'state')  # Some other fields are also read_only. See definitions above.
 
     @transaction.atomic
     def create(self, validated_data):
@@ -219,7 +231,7 @@ class MotionSerializer(ModelSerializer):
         motion.reason = validated_data.get('reason', '')
         motion.identifier = validated_data.get('identifier')
         motion.category = validated_data.get('category')
-        motion.reset_state(validated_data.get('workflow', int(config['motions_workflow'])))
+        motion.reset_state(validated_data.get('workflow_id'))
         motion.save()
         if validated_data.get('submitters'):
             motion.submitters.add(*validated_data['submitters'])
@@ -241,9 +253,9 @@ class MotionSerializer(ModelSerializer):
                 setattr(motion, key, validated_data[key])
 
         # Workflow.
-        workflow = validated_data.get('workflow')
-        if workflow is not None and workflow != motion.workflow:
-            motion.reset_state(workflow)
+        workflow_id = validated_data.get('workflow_id')
+        if workflow_id is not None and workflow_id != motion.workflow:
+            motion.reset_state(workflow_id)
 
         # Decide if a new version is saved to the database.
         if (motion.state.versioning and

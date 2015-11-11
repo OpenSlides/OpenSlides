@@ -66,6 +66,16 @@ class MotionViewSet(ModelViewSet):
             result = False
         return result
 
+    def retrieve(self, request, *args, **kwargs):
+        """
+        Customized view endpoint to retrieve a motion.
+
+        Adds the allowed actions for the motion.
+        """
+        response = super().retrieve(request, *args, **kwargs)
+        response.data['allowed_actions'] = self.get_object().get_allowed_actions(request.user)
+        return response
+
     def create(self, request, *args, **kwargs):
         """
         Customized view endpoint to create a new motion.
