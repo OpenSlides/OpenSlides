@@ -230,21 +230,31 @@ angular.module('OpenSlidesApp.core', [
 
 /* Options for CKEditor used in various create and edit views. */
 .value('CKEditorOptions', {
-    allowedContent: 'h1 h2 h3 p pre b i u strike strong em; a[!href]; ol ul{list-style}; li; span{color,background-color}; img;',
-    removePlugins: 'save, print, preview, pagebreak, templates, showblocks, magicline',
-    // TODO extraPlugins: 'insertpre',  // see http://ckeditor.com/addon/insertpre
-    toolbar: 'Full',
-    toolbar_Full: [
-        {'name': 'document',    'items': ['Source', '-', 'Save', 'DocProps', 'Preview', 'Print', '-', 'Templates']},
-        {'name': 'clipboard',   'items': ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
-        {'name': 'editing',     'items': ['Find', 'Replace', '-', 'SpellChecker', 'Scayt']},
-        {'name': 'basicstyles', 'items': ['Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat']},
-        {'name': 'paragraph',   'items': ['NumberedList', 'BulletedList', '-', 'InsertPre']},
-        {'name': 'links',       'items': ['Link', 'Unlink']},
-        {'name': 'styles',      'items': ['Format', 'TextColor', 'BGColor']},
-        {'name': 'tools',       'items': ['Maximize', 'ShowBlocks', '-', 'About']},
-        {'name': 'images',      'items': ['Image']}
-    ]
+    allowedContent:
+        'h1 h2 h3 p pre b i u strike strong em blockquote;' +
+        'a[!href];' +
+        'img[!src,alt]{width,height,float};' +
+        'table tr th td caption;' +
+        'li ol ul{list-style};' +
+        'span{color,background-color};',
+    extraPlugins: 'colorbutton',
+    toolbarGroups: [
+        { name: 'clipboard', groups: [ 'clipboard', 'undo' ] },
+        { name: 'editing', groups: [ 'find', 'selection', 'spellchecker', 'editing' ] },
+        { name: 'forms', groups: [ 'forms' ] },
+        { name: 'tools', groups: [ 'tools' ] },
+        { name: 'about', groups: [ 'about' ] },
+        { name: 'document', groups: [ 'mode', 'document', 'doctools' ] },
+        { name: 'others', groups: [ 'others' ] },
+        '/',
+        { name: 'styles', groups: [ 'styles' ] },
+        { name: 'basicstyles', groups: [ 'basicstyles', 'cleanup' ] },
+        { name: 'paragraph', groups: [ 'list', 'indent', 'blocks', 'align', 'bidi', 'paragraph' ] },
+        { name: 'links', groups: [ 'links' ] },
+        { name: 'insert', groups: [ 'insert' ] },
+        { name: 'colors', groups: [ 'colors' ] }
+    ],
+    removeButtons: 'Anchor,SpecialChar,Subscript,Superscript,Styles,RemoveFormat,HorizontalRule'
 })
 
 // Make sure that the DS factories are loaded by making them a dependency
