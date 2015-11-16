@@ -13,6 +13,7 @@ angular.module('OpenSlidesApp.core.site', [
     'ngCsvImport',
     'ngSanitize',  // TODO: only use this in functions that need it.
     'ui.select',
+    'luegg.directives',
     'xeditable',
     'ckeditor',
 ])
@@ -752,22 +753,50 @@ angular.module('OpenSlidesApp.core.site', [
     };
 })
 
+// counter of new (unread) chat messages
+.value('NewChatMessages', [])
+
 // ChatMessage Controller
 .controller('ChatMessageCtrl', [
     '$scope',
     '$http',
     'ChatMessage',
-    function ($scope, $http, ChatMessage) {
+    'NewChatMessages',
+    function ($scope, $http, ChatMessage, NewChatMessages) {
         ChatMessage.bindAll({}, $scope, 'chatmessages');
+        $scope.unreadMessages = NewChatMessages.length;
+        $scope.chatboxIsCollapsed = true;
+        $scope.openChatbox = function () {
+            $scope.chatboxIsCollapsed = !$scope.chatboxIsCollapsed;
+            NewChatMessages = [];
+            $scope.unreadMessages = NewChatMessages.length;
+        }
         $scope.sendMessage = function () {
+            angular.element('#messageSendButton').addClass('disabled');
+            angular.element('#messageInput').attr('disabled', '');
             $http.post(
                 '/rest/core/chatmessage/',
                 {message: $scope.newMessage}
             )
             .success(function () {
                 $scope.newMessage = '';
+                angular.element('#messageSendButton').removeClass('disabled');
+                angular.element('#messageInput').removeAttr('disabled');
+            })
+            .error(function () {
+                angular.element('#messageSendButton').removeClass('disabled');
+                angular.element('#messageInput').removeAttr('disabled');
             });
         };
+        // increment unread messages counter for each new message
+        $scope.$watch('chatmessages', function (newVal, oldVal) {
+            // add new message id if there is really a new message which is not yet tracked
+            if ((oldVal[oldVal.length-1].id != newVal[newVal.length-1].id) &&
+                ($.inArray(newVal[newVal.length-1].id, NewChatMessages) == -1)) {
+                NewChatMessages.push(newVal[newVal.length-1].id);
+                $scope.unreadMessages = NewChatMessages.length;
+            }
+        })
     }
 ])
 

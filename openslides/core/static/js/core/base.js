@@ -101,8 +101,17 @@ angular.module('OpenSlidesApp.core', [
             // Loads all projector data
             Projector.findAll();
 
-            // Loads all chat messages data
-            ChatMessage.findAll();
+            // Loads all chat messages data and their user_ids
+            // TODO: add permission check if user has required chat permission
+            // error if include 'operator' here:
+            // "Circular dependency found: loadGlobalData <- operator <- loadGlobalData"
+            //if (operator.hasPerms("core.can_use_chat")) {
+                ChatMessage.findAll().then( function(chatmessages) {
+                    angular.forEach(chatmessages, function (chatmessage) {
+                        ChatMessage.loadRelations(chatmessage, 'user');
+                    });
+                });
+            //}
 
             // Loads server time and calculates server offset
             $http.get('/core/servertime/').then(function(data) {
@@ -172,32 +181,41 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
-.factory('Tag', ['DS', function(DS) {
-    return DS.defineResource({
-        name: 'core/tag',
-    });
-}])
+.factory('Tag', [
+    'DS',
+    function(DS) {
+        return DS.defineResource({
+            name: 'core/tag',
+        });
+    }
+])
 
-.factory('Config', ['DS', function(DS) {
-    return DS.defineResource({
-        name: 'core/config',
-        idAttribute: 'key',
-    });
-}])
+.factory('Config', [
+    'DS',
+    function(DS) {
+        return DS.defineResource({
+            name: 'core/config',
+            idAttribute: 'key',
+        });
+    }
+])
 
-.factory('ChatMessage', ['DS', function(DS) {
-    return DS.defineResource({
-        name: 'core/chatmessage',
-        relations: {
-            belongsTo: {
-                'users/user': {
-                    localField: 'user',
-                    localKey: 'user_id',
+.factory('ChatMessage', [
+    'DS',
+    function(DS) {
+        return DS.defineResource({
+            name: 'core/chatmessage',
+            relations: {
+                belongsTo: {
+                    'users/user': {
+                        localField: 'user',
+                        localKey: 'user_id',
+                    }
                 }
             }
-        }
-    });
-}])
+        });
+    }
+])
 
 /* Model for a projector.
  *

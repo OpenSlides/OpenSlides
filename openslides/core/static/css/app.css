@@ -71,6 +71,10 @@ body {
     margin-top: 5px;
 }
 
+.inline {
+   display: inline;
+}
+
 
 /* ngAnimate classes */
 .animate-item.ng-enter {
@@ -93,8 +97,23 @@ body {
     100% { opacity: 1; background: none; }
 }
 
-
-
+/* Chatbox */
+#chatbox {
+    position: fixed;
+    top: 50px;
+    right: 0;
+    width: 40%;
+    border-color: #dddddd;
+    border-width: 1px;
+    box-shadow: -5px 5px 5px rgba(0, 0, 0, 0.2);
+    height: 200px;
+    padding: 0 10px 10px 10px;
+    z-index: 99;
+}
+#chatbox-text {
+    overflow-y: scroll;
+    height: 190px;
+}
 /* Header */
 #header {
     background-color: #333333;
