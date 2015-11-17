@@ -65,7 +65,8 @@ class ConfigHandler:
         try:
             value = expected_type(value)
         except ValueError:
-            raise ConfigError(_('Wrong datatype. Expected %s, got %s.') % (expected_type, type(value)))
+            raise ConfigError(_('Wrong datatype. Expected %(expected_type)s, got %(got_type)s.') % {
+                'expected_type': expected_type, 'got_type': type(value)})
         if config_variable.input_type == 'choice' and value not in map(lambda choice: choice['value'], config_variable.choices):
             raise ConfigError(_('Invalid input. Choice does not match.'))
         for validator in config_variable.validators:
