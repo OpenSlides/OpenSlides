@@ -120,6 +120,21 @@ class CreateMotion(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Motion.objects.get().state.workflow_id, 2)
 
+    def test_non_admin(self):
+        """
+        Test to create a motion by a delegate, non staff user.
+        """
+        self.admin = get_user_model().objects.get(username='admin')
+        self.admin.groups.add(3)
+        self.admin.groups.remove(4)
+
+        response = self.client.post(
+            reverse('motion-list'),
+            {'title': 'test_title_peiJozae0luew9EeL8bo',
+             'text': 'test_text_eHohS8ohr5ahshoah8Oh'})
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
 
 class UpdateMotion(TestCase):
     """
