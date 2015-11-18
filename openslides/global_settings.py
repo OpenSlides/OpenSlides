@@ -1,4 +1,3 @@
-import copy
 import os
 
 from django.utils.translation import ugettext_lazy
@@ -114,45 +113,6 @@ HAYSTACK_SIGNAL_PROCESSOR = 'openslides.utils.haystack_processor.OpenSlidesProce
 
 # Adds all automaticly collected plugins
 INSTALLED_PLUGINS = collect_plugins()
-
-# CKeditor settings
-CKEDITOR_DEFAULT_CONFIG = {'toolbar': 'Full',
-                           'bodyClass': 'ckeditor_html',
-                           'allowedContent':
-                               'h1 h2 h3 pre b i u strike em; '
-
-                               # A workaround for the problem described in http://dev.ckeditor.com/ticket/10192
-                               # Hopefully, the problem will be solved in the final version of CKEditor 4.1
-                               # If so, then {margin-left} can be removed
-                               'p{margin-left}; '
-
-                               'a[!href]; '
-                               'ol ul{list-style}; '
-                               'li; '
-                               'pre; '
-                               'span{color,background-color}; ',
-                           'removePlugins': 'save, print, preview, pagebreak, templates, showblocks, magicline',
-                           'extraPlugins': 'insertpre',  # see http://ckeditor.com/addon/insertpre
-                           'toolbar_Full': [
-                               {'name': 'document',    'items': ['Source', '-', 'Save', 'DocProps', 'Preview', 'Print', '-', 'Templates']},
-                               {'name': 'clipboard',   'items': ['Cut', 'Copy', 'Paste', 'PasteText', 'PasteFromWord', '-', 'Undo', 'Redo']},
-                               {'name': 'editing',     'items': ['Find', 'Replace', '-', 'SpellChecker', 'Scayt']},
-                               {'name': 'basicstyles', 'items': ['Bold', 'Italic', 'Underline', 'Strike', '-', 'RemoveFormat']},
-                               {'name': 'paragraph',   'items': ['NumberedList', 'BulletedList', '-', 'InsertPre']},
-                               {'name': 'links',       'items': ['Link', 'Unlink']},
-                               {'name': 'styles',      'items': ['Format', 'TextColor', 'BGColor']},
-                               {'name': 'tools',       'items': ['Maximize', 'ShowBlocks', '-', 'About']}
-                           ]}
-CKEDITOR_IMG_CONFIG = copy.deepcopy(CKEDITOR_DEFAULT_CONFIG)
-CKEDITOR_IMG_CONFIG['allowedContent'] += 'img; '
-CKEDITOR_IMG_CONFIG['toolbar_Full'].append({'name': 'images', 'items': ['Image']})
-
-CKEDITOR_UPLOAD_PATH = 'ckeditor'
-CKEDITOR_CONFIGS = {
-    'default': CKEDITOR_DEFAULT_CONFIG,
-    'images': CKEDITOR_IMG_CONFIG,
-}
-
 
 # Set this True to use tornado as single wsgi server. Set this False to use
 # other webserver like Apache or Nginx as wsgi server.

@@ -14,6 +14,7 @@ angular.module('OpenSlidesApp.core.site', [
     'ngSanitize',  // TODO: only use this in functions that need it.
     'ui.select',
     'xeditable',
+    'ckeditor',
 ])
 
 // Provider to register entries for the main menu.
@@ -663,27 +664,42 @@ angular.module('OpenSlidesApp.core.site', [
     Customslide.loadRelations(customslide, 'agenda_item');
 })
 
-.controller('CustomslideCreateCtrl', function($scope, $state, Customslide) {
-    $scope.customslide = {};
-    $scope.save = function (customslide) {
-        Customslide.create(customslide).then(
-            function(success) {
-                $state.go('core.customslide.list');
-            }
-        );
-    };
-})
+.controller('CustomslideCreateCtrl', [
+    '$scope',
+    '$state',
+    'CKEditorOptions',
+    'Customslide',
+    function($scope, $state, CKEditorOptions, Customslide) {
+        $scope.customslide = {};
+        $scope.CKEditorOptions = CKEditorOptions;
+        $scope.save = function (customslide) {
+            Customslide.create(customslide).then(
+                function(success) {
+                    $state.go('core.customslide.list');
+                }
+            );
+        };
+    }
+])
 
-.controller('CustomslideUpdateCtrl', function($scope, $state, Customslide, customslide) {
-    $scope.customslide = customslide;
-    $scope.save = function (customslide) {
-        Customslide.save(customslide).then(
-            function(success) {
-                $state.go('core.customslide.list');
-            }
-        );
-    };
-})
+.controller('CustomslideUpdateCtrl', [
+    '$scope',
+    '$state',
+    'CKEditorOptions',
+    'Customslide',
+    'customslide',
+    function($scope, $state, CKEditorOptions, Customslide, customslide) {
+        $scope.customslide = customslide;
+        $scope.CKEditorOptions = CKEditorOptions;
+        $scope.save = function (customslide) {
+            Customslide.save(customslide).then(
+                function(success) {
+                    $state.go('core.customslide.list');
+                }
+            );
+        };
+    }
+])
 
 // Tag Controller
 .controller('TagListCtrl', function($scope, Tag) {

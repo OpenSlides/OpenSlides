@@ -33,7 +33,7 @@ var output_directory = path.join('openslides', 'static');
 
 // Catches all JavaScript files from all bower components and concats them to
 // one file js/openslides-libs.js. In production mode the file is uglified.
-gulp.task('js-libs', function() {
+gulp.task('js-libs', function () {
     return gulp.src(mainBowerFiles({
             filter: /\.js$/
         }))
@@ -44,7 +44,7 @@ gulp.task('js-libs', function() {
 
 // Catches all CSS files from all bower components and concats them to one file
 // css/openslides-libs.css. In production mode the file is uglified.
-gulp.task('css-libs', function() {
+gulp.task('css-libs', function () {
     return gulp.src(mainBowerFiles({
             filter: /\.css$/
         }))
@@ -61,8 +61,14 @@ gulp.task('fonts-libs', function() {
         .pipe(gulp.dest(path.join(output_directory, 'fonts')));
 });
 
+// Extra task only for CKEditor
+gulp.task('ckeditor', function () {
+    return gulp.src(path.join('bower_components', 'ckeditor', '**'))
+        .pipe(gulp.dest(path.join(output_directory, 'ckeditor')));
+});
+
 // Gulp default task. Runs all other tasks before.
-gulp.task('default', ['js-libs', 'css-libs', 'fonts-libs'], function() {});
+gulp.task('default', ['js-libs', 'css-libs', 'fonts-libs', 'ckeditor'], function () {});
 
 
 /**
@@ -90,7 +96,7 @@ gulp.task('translations', function () {
 });
 
 // Checks JavaScript using JSHint
-gulp.task( 'jshint', function() {
+gulp.task( 'jshint', function () {
     return gulp.src([ 'gulpfile.js', path.join( 'openslides', '*', 'static', '**', '*.js' ) ])
         .pipe(jshint())
         .pipe(jshint.reporter('default'));
