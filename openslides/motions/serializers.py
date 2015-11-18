@@ -114,6 +114,21 @@ class MotionPollSerializer(ModelSerializer):
             'votescast',
             'votes',)
 
+    def to_representation(self, obj):
+        """
+        Overrides the output of this serializer. Replaces vote values -1
+        through the translated string 'majority' and -2 or None through the
+        translated string 'undocumented'.
+        """
+        result = super().to_representation(obj)
+        for key in result:
+            if key in ('yes', 'no', 'abstain', 'votesvalid', 'votesinvalid', 'votescast'):
+                if result[key] == -1:
+                    result[key] = _('majority')
+                elif result[key] == -2 or result[key] is None:
+                    result[key] = _('undocumented')
+        return result
+
     def get_yes(self, obj):
         try:
             result = obj.get_votes().get(value='Yes').weight
