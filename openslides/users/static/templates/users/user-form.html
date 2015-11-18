@@ -44,7 +44,15 @@
   <div class="form-group row">
     <div class="col-xs-6">
       <label for="inputDefaultPassword" translate>Default password</label>
-      <input type="text" ng-model="user.default_password" class="form-control" name="inputDefaultPassword">
+      <div class="input-group">
+        <input type="text" ng-model="user.default_password" class="form-control" name="inputDefaultPassword">
+        <span class="input-group-btn">
+          <button ng-click="reset_password(user)" class="btn btn-default">
+            <i class="fa fa-undo"></i>
+            <translate>Reset</translate>
+          </button>
+        </span>
+      </div>
     </div>
   </div>
   <div class="form-group">

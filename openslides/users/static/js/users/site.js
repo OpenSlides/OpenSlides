@@ -388,10 +388,11 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
 .controller('UserUpdateCtrl', [
     '$scope',
     '$state',
+    '$http',
     'User',
     'user',
     'Group',
-    function($scope, $state, User, user, Group) {
+    function($scope, $state, $http, User, user, Group) {
         Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
         $scope.user = user;  // autoupdate is not activated
         $scope.save = function (user) {
@@ -404,6 +405,17 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                 }
             );
         };
+        $scope.reset_password = function (user) {
+            $http.post('/rest/users/user/2/reset_password/', {})
+                .then(
+                    function(data) {
+                        // TODO: Success message
+                    },
+                    function(data) {
+                        // TODO: error message
+                    }
+                );
+        }
     }
 ])
 
