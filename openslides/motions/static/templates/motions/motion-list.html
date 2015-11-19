@@ -107,14 +107,14 @@
       <td ng-if="!motion.quickEdit">{{ motion.identifier }}
       <td ng-if="!motion.quickEdit" ng-mouseover="motion.hover=true" ng-mouseleave="motion.hover=false">
           <strong><a ui-sref="motions.motion.detail({id: motion.id})">{{ motion.getTitle() }}</a></strong>
-          <div class="hoverActions" ng-class="{'hiddenDiv': !motion.hover}">
-            <span ng-if="motion.allowed_actions.update">
-              <a ui-sref="motions.motion.detail.update({ id: motion.id })" translate>Edit</a> |
+          <div ng-if="motion.isAllowed('update')" class="hoverActions" ng-class="{'hiddenDiv': !motion.hover}">
+            <span ng-if="motion.isAllowed('update')">
+              <a ui-sref="motions.motion.detail.update({ id: motion.id })" translate>Edit</a>
             </span>
-            <span ng-if="motion.allowed_actions.update">
-              <a href="" os-perms="motions.can_manage" ng-click="motion.quickEdit=true" translate>QuickEdit</a> |
+            <span ng-if="motion.isAllowed('quickedit')">
+              | <a href="" ng-click="motion.quickEdit=true" translate>QuickEdit</a> |
             </span>
-            <span ng-if="motion.allowed_actions.delete">
+            <span ng-if="motion.isAllowed('delete')">
               <!-- TODO: translate confirm message -->
               <a href="" class="text-danger"
                 ng-bootbox-confirm="Are you sure you want to delete <b>{{ motion.getTitle() }}</b>?"
@@ -132,7 +132,7 @@
           {{ motion.state.name | translate }}
         </span>
       <!-- quickEdit columns -->
-      <td ng-if="motion.quickEdit && motion.allowed_actions.update" colspan="5">
+      <td ng-if="motion.quickEdit && motion.isAllowed('quickedit')" colspan="5">
         <h4>{{ motion.getTitle() }} <span class="text-muted">&ndash; Quick Edit</span></h4>
           <alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
             {{alert.msg}}
@@ -193,10 +193,10 @@
             <button ng-click="motion.quickEdit=false" class="btn btn-default pull-left" translate>
               Cancel
             </button> &nbsp;
-            <button ng-if="motion.allowed_actions.update" ng-click="update(motion)" class="btn btn-primary" translate>
+            <button ng-if="motion.isAllowed('update')" ng-click="update(motion)" class="btn btn-primary" translate>
               Update
             </button>
-            <a ng-if="motion.allowed_actions.update" ui-sref="motions.motion.detail.update({id: motion.id })"
+            <a ng-if="motion.isAllowed('update')" ui-sref="motions.motion.detail.update({id: motion.id })"
                 class="pull-right" translate>Edit motion...</a>
           </div>
 </table>

@@ -482,6 +482,9 @@ class Motion(RESTModelMixin, models.Model):
         * unsupport
         * change_state
         * reset_state
+
+        NOTE: If you update this function please also update the
+        'isAllowed' function on client side in motions/site.js.
         """
         # TODO: Remove this method and implement these things in the views.
         actions = {
