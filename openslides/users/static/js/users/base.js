@@ -59,10 +59,6 @@ angular.module('OpenSlidesApp.users', [])
                 // Add registered group
                 allGroups.push(2);
                 _.forEach(allGroups, function(groupId) {
-                    // Get group from server
-                    Group.find(groupId);
-                    // But do not work with the returned promise, because in
-                    // this case this method can not be called in $watch
                     var group = Group.get(groupId);
                     if (group) {
                         _.forEach(group.permissions, function(perm) {

@@ -178,6 +178,8 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             operator.setUser(data.user_id);
         });
         $rootScope.operator = operator;
+        // Load all Groups. They are needed later
+        Group.findAll();
     }
 ])
 
