@@ -21,7 +21,7 @@ class AssignmentSlide(ProjectorElement):
         if pk is not None:
             # Detail slide.
             if not Assignment.objects.filter(pk=pk).exists():
-                raise ProjectorException(_('Assignment does not exist.'))
+                raise ProjectorException(_('Election does not exist.'))
 
     def get_requirements(self, config_entry):
         pk = config_entry.get('id')
