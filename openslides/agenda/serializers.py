@@ -37,7 +37,10 @@ class RelatedItemRelatedField(RelatedField):
         view_name = '%s-detail' % type(value)._meta.object_name.lower()
         url = reverse(view_name, kwargs={'pk': value.pk})
         collection, obj_id = get_collection_and_id_from_url(url)
-        return {'collection': collection, 'id': obj_id}
+        return {
+            'collection': collection,
+            'id': obj_id,
+            'display_name': type(value)._meta.object_name}
 
 
 class ItemSerializer(ModelSerializer):
