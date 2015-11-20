@@ -158,12 +158,15 @@ angular.module('OpenSlidesApp.motions', [])
     'DS',
     'MotionPoll',
     'jsDataModel',
-    function(DS, MotionPoll, jsDataModel) {
+    'gettext',
+    'operator',
+    'Config',
+    function(DS, MotionPoll, jsDataModel, gettext, operator, Config) {
         var name = 'motions/motion'
         return DS.defineResource({
             name: name,
             useClass: jsDataModel,
-            agendaSupplement: '(Motion)',
+            agendaSupplement: '(' + gettext('Motion') + ')',
             methods: {
                 getResourceName: function () {
                     return name;
@@ -195,6 +198,56 @@ angular.module('OpenSlidesApp.motions', [])
                         value = this.identifier + ' | ';
                     }
                     return value + this.getTitle();
+                },
+                isAllowed: function (action) {
+                    /*
+                     * Return true if the requested user is allowed to do the specific action.
+                     * There are the following possible actions.
+                     * - see
+                     * - update
+                     * - delete
+                     * - create_poll
+                     * - support
+                     * - unsupport
+                     * - change_state
+                     * - reset_state
+                     *
+                     *  NOTE: If you update this function please also update the
+                     *  'get_allowed_actions' function on server side in motions/models.py.
+                     */
+                    switch (action) {
+                        case 'see':
+                            return (operator.hasPerms('motions.can_see') &&
+                                (!this.state.required_permission_to_see ||
+                                 operator.hasPerms(this.state.required_permission_to_see) ||
+                                 (operator.user in this.submitters)));
+                        case 'update':
+                            return (operator.hasPerms('motions.can_manage') ||
+                                (($.inArray(operator.user, this.submitters) != -1) &&
+                                this.state.allow_submitter_edit));
+                        case 'quickedit':
+                            return operator.hasPerms('motions.can_manage');
+                        case 'delete':
+                            return operator.hasPerms('motions.can_manage');
+                        case 'create_poll':
+                            return (operator.hasPerms('motions.can_manage') &&
+                                this.state.allow_create_poll);
+                        case 'support':
+                            return (operator.hasPerms('motions.can_support') &&
+                                    this.state.allow_support &&
+                                    Config.get('motions_min_supporters').value > 0 &&
+                                    !($.inArray(operator.user, this.submitters) != -1) &&
+                                    !($.inArray(operator.user, this.supporters) != -1));
+                        case 'unsupport':
+                            return (this.state.allow_support &&
+                                   ($.inArray(operator.user, this.supporters) != -1));
+                        case 'change_state':
+                            return operator.hasPerms('motions.can_manage');
+                        case 'reset_state':
+                            return operator.hasPerms('motions.can_manage');
+                        default:
+                            return false;
+                    }
                 }
             },
             relations: {
@@ -246,13 +299,14 @@ angular.module('OpenSlidesApp.motions', [])
 // Provide generic motion form fields for create and update view
 .factory('MotionFormFieldFactory', [
     'gettext',
+    'operator',
     'Category',
     'Config',
     'Mediafile',
     'Tag',
     'User',
     'Workflow',
-    function (gettext, Category, Config, Mediafile, Tag, User, Workflow) {
+    function (gettext, operator, Category, Config, Mediafile, Tag, User, Workflow) {
         return {
             getFormFields: function () {
                 return [
@@ -275,7 +329,8 @@ angular.module('OpenSlidesApp.motions', [])
                         valueProp: 'id',
                         labelProp: 'full_name',
                         placeholder: gettext('Select or search a submitter...')
-                    }
+                    },
+                    hide: !operator.hasPerms('motions.can_manage')
                 },
                 {
                     key: 'title',
@@ -305,7 +360,8 @@ angular.module('OpenSlidesApp.motions', [])
                     type: 'checkbox',
                     templateOptions: {
                         label: gettext('Show extended fields')
-                    }
+                    },
+                    hide: !operator.hasPerms('motions.can_manage')
                 },
                 {
                     key: 'attachments_id',
@@ -394,11 +450,12 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
 
 .config([
     'mainMenuProvider',
-    function (mainMenuProvider) {
+    'gettext',
+    function (mainMenuProvider, gettext) {
         mainMenuProvider.register({
             'ui_sref': 'motions.motion.list',
             'img_class': 'file-text',
-            'title': 'Motions',
+            'title': gettext('Motions'),
             'weight': 300,
             'perm': 'motions.can_see',
         });
@@ -657,7 +714,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         }
         $scope.unsupport = function () {
             $http.delete('/rest/motions/motion/' + motion.id + '/support/');
-            console.log(motion);
         }
         $scope.update_state = function (state) {
             $http.put('/rest/motions/motion/' + motion.id + '/set_state/', {'state': state.id});
@@ -704,6 +760,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     '$scope',
     '$state',
     'gettext',
+    'operator',
     'Motion',
     'MotionFormFieldFactory',
     'Category',
@@ -712,7 +769,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     'Tag',
     'User',
     'Workflow',
-    function($scope, $state, gettext, Motion, MotionFormFieldFactory, Category, Config, Mediafile, Tag, User, Workflow) {
+    function($scope, $state, gettext, operator, Motion, MotionFormFieldFactory, Category, Config, Mediafile, Tag, User, Workflow) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
@@ -726,6 +783,10 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             if ($scope.formFields[i].key == "identifier") {
                $scope.formFields[i].hide = true;
             }
+            if ($scope.formFields[i].key == "text") {
+               // set  preamble config value as default text
+               $scope.formFields[i].defaultValue = Config.get('motions_preamble').value;
+            }
             if ($scope.formFields[i].key == "workflow_id") {
                // preselect default workflow
                $scope.formFields[i].defaultValue = Config.get('motions_workflow').value;
@@ -738,7 +799,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 }
             );
         };
-
     }
 ])
 
@@ -798,6 +858,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                     $state.go('motions.motion.detail', {id: motion.id});
                 })
                 .catch(function(fallback) {
+                    //TODO: show error in GUI
                     console.log(fallback);
                 });
         };

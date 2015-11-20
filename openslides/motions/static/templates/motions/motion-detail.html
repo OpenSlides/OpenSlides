@@ -25,7 +25,7 @@
     <i class="fa fa-video-camera"></i>
   </a>
   <!-- edit -->
-  <a ng-if="motion.allowed_actions.update" ui-sref="motions.motion.detail.update({id: motion.id })"
+  <a ng-if="motion.isAllowed('update')" ui-sref="motions.motion.detail.update({id: motion.id })"
       class="btn btn-default btn-sm"
       title="{{ 'Edit' | translate}}">
     <i class="fa fa-pencil"></i>
@@ -79,12 +79,12 @@
             {{ supporters.get_full_name() }}
         </ol>
         <!-- support button -->
-        <button ng-if="motion.allowed_actions.support" ng-click="support()" class="btn btn-primary btn-sm">
+        <button ng-if="motion.isAllowed('support')" ng-click="support()" class="btn btn-default btn-sm">
           <i class="fa fa-heart"></i>
           <translate>Support motion</translate>
         </button>
         <!-- unsupport button -->
-        <button ng-if="motion.allowed_actions.unsupport" ng-click="unsupport()" class="btn btn-default btn-sm">
+        <button ng-if="motion.isAllowed('unsupport')" ng-click="unsupport()" class="btn btn-default btn-sm">
           <i class="fa fa-heart-o"></i>
           <translate>Unsupport motion</translate>
         </button>
@@ -94,13 +94,13 @@
       <span class="label" ng-class="'label-'+motion.state.css_class">
         {{ motion.state.name | translate }}
       </span>
-      <div ng-if="motion.allowed_actions.change_state" class="spacer">
+      <div ng-if="motion.isAllowed('change_state')" class="spacer">
         <div class="btn-group-vertical spacer" role="group">
           <button ng-repeat="state in motion.state.getNextStates()" ng-click="update_state(state)"
               class="btn btn-default btn-sm">
             {{state.action_word}}
           </button>
-          <button ng-if="motion.allowed_actions.reset_state" ng-click="reset_state()"
+          <button ng-if="motion.isAllowed('reset_state')" ng-click="reset_state()"
               class="btn btn-danger btn-xs">
             <i class="fa fa-exclamation-triangle"></i>
             <translate>Reset state</translate>
@@ -227,7 +227,7 @@
             </div>
           </div>
       </ol>
-      <button ng-if="motion.allowed_actions.create_poll" ng-click="create_poll()" class="btn btn-default btn-sm">
+      <button ng-if="motion.isAllowed('create_poll')" ng-click="create_poll()" class="btn btn-default btn-sm">
         <i class="fa fa-bar-chart fa-lg"></i>
         <translate>New poll</translate>
       </button>

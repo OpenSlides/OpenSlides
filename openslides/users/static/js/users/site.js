@@ -172,7 +172,8 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     'operator',
     '$rootScope',
     '$http',
-    function(operator, $rootScope, $http) {
+    'Group',
+    function(operator, $rootScope, $http, Group) {
         // Put the operator into the root scope
         $http.get('/users/whoami/').success(function(data) {
             operator.setUser(data.user_id);
