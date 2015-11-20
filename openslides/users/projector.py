@@ -1,5 +1,3 @@
-from django.utils.translation import ugettext as _
-
 from ..core.exceptions import ProjectorException
 from ..utils.projector import ProjectorElement, ProjectorRequirement
 from .models import User
@@ -14,7 +12,7 @@ class UserSlide(ProjectorElement):
 
     def get_context(self):
         if not User.objects.filter(pk=self.config_entry.get('id')).exists():
-            raise ProjectorException(_('User does not exist.'))
+            raise ProjectorException('User does not exist.')
 
     def get_requirements(self, config_entry):
         pk = config_entry.get('id')

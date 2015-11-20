@@ -1,5 +1,3 @@
-from django.utils.translation import ugettext as _
-
 from openslides.core.exceptions import ProjectorException
 from openslides.utils.projector import ProjectorElement, ProjectorRequirement
 
@@ -17,7 +15,7 @@ class MediafileSlide(ProjectorElement):
         try:
             Mediafile.objects.get(pk=self.config_entry.get('id'))
         except Mediafile.DoesNotExist:
-            raise ProjectorException(_('File does not exist.'))
+            raise ProjectorException('File does not exist.')
 
     def get_requirements(self, config_entry):
         pk = config_entry.get('id')

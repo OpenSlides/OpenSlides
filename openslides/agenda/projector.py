@@ -1,5 +1,3 @@
-from django.utils.translation import ugettext as _
-
 from openslides.core.exceptions import ProjectorException
 from openslides.utils.projector import ProjectorElement, ProjectorRequirement
 
@@ -25,7 +23,7 @@ class ItemListSlide(ProjectorElement):
         if pk is not None:
             # Children slide.
             if not Item.objects.filter(pk=pk).exists():
-                raise ProjectorException(_('Item does not exist.'))
+                raise ProjectorException('Item does not exist.')
 
     def get_requirements(self, config_entry):
         pk = config_entry.get('id', 'tree')
@@ -56,9 +54,9 @@ class ItemDetailSlide(ProjectorElement):
     def get_context(self):
         pk = self.config_entry.get('id')
         if pk is None:
-            raise ProjectorException(_('Id must not be None.'))
+            raise ProjectorException('Id must not be None.')
         if not Item.objects.filter(pk=pk).exists():
-            raise ProjectorException(_('Item does not exist.'))
+            raise ProjectorException('Item does not exist.')
 
     def get_requirements(self, config_entry):
         pk = config_entry.get('id')
