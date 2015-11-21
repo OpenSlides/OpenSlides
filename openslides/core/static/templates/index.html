@@ -22,6 +22,7 @@
     </div>
     <div class="navbar-right" ng-controller="userMenu">
       <div class="btn-group">
+        <!-- Logout / user setttings button -->
         <div ng-if="operator.isAuthenticated()">
 
           <!-- chatbox -->
@@ -84,47 +85,9 @@
             </ul>
           </div>
         </div>
-
-        <!-- Login dialog (modal) -->
-        <div ng-controller="LoginFormCtrl" ng-if="!operator.isAuthenticated()">
-          <script type="text/ng-template" id="LoginForm.html">
-          <form ng-submit="login(username, password)">
-            <div class="modal-header">
-              <h3 class="modal-title" translate>Please sign in!</h3>
-            </div>
-            <div class="modal-body">
-              <p ng-if='loginFailed' class="text-danger">
-                <strong translate>Username or password is not correct.</strong>
-              <div class="input-group form-group">
-                <div class="input-group-addon"><i class="fa fa-user"></i></div>
-                <input os-focus-me type="text" ng-model="username" class="form-control input-lg"
-                    placeholder="{{ 'Username' | translate }}">
-              </div>
-              <div class="input-group form-group">
-                <div class="input-group-addon"><i class="fa fa-key"></i></div>
-                <input type="password" ng-model="password" class="form-control input-lg"
-                    placeholder="{{ 'Password' | translate }}">
-              </div>
-            </div>
-            <div class="modal-footer">
-              <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-lg btn-block" translate>
-                  Login
-                </button>
-              </div>
-              <div class="form-group">
-                <!-- TODO: show only if anonymous user is activate -->
-                <button ng-click="guest()" class="btn btn-default" translate>
-                  Continue as guest
-                </button>
-                <button ng-click="cancel()" class="btn btn-default" translate>
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </form>
-          </script>
-          <button class="btn btn-default" ng-click="open()">
+        <!-- Login button -->
+        <div ng-if="!operator.isAuthenticated()">
+          <button class="btn btn-default" ng-click="openLoginForm()">
             <i class="fa fa-sign-in"></i>
             <translate>Login</translate>
           </button>
@@ -173,13 +136,18 @@
       </ul>
     </div><!--/#main-menu-->
     <!-- Content -->
-    <div id="content" class="col-md-10">
+    <div id="content" class="col-md-7">
       <div class="row">
         <div class="col-md-12">
           <div ui-view></div>
         </div>
       </div>
     </div><!--/#content-->
+    <div class="col-sm-3" os-perms="core.can_see_projector">
+      <div class="well">
+        <div ng-include src="'static/templates/core/projector-controls.html'"></div>
+      </div>
+    </div>
   </div><!--/.row-->
 
   <hr>

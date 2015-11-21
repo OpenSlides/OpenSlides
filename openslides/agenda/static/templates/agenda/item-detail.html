@@ -1,9 +1,9 @@
-<h1>{{ item.get_title }}</h1>
+<h1>{{ item.title }}</h1>
 
 <div id="submenu">
   <a ui-sref="agenda.item.list" class="btn btn-sm btn-default">
     <i class="fa fa-angle-double-left fa-lg"></i>
-    <translate>Back to overview</translate>
+    <translate>Back to agenda</translate>
   </a>
   <!-- project -->
   <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
@@ -12,28 +12,11 @@
       title="{{ 'Project item' | translate }}">
     <i class="fa fa-video-camera"></i>
   </a>
-  <!-- edit -->
-  <a ui-sref="agenda.item.detail.update({id: item.id })" os-perms="agenda.can_manage"
-      class="btn btn-default btn-sm"
-      title="{{ 'Edit' | translate}}">
-    <i class="fa fa-pencil"></i>
-  </a>
-</div>
-
-<div class="white-space-pre-line">{{ item.text }}</div>
-
-<div os-perm="agenda.can_manage">
-  <h2 os-perm="agenda.can_manage" translate>Duration</h2>
-  {{ item.duration }}
-</div>
-
-<div os-perm="agenda.can_manage">
-  <h2 os-perm="agenda.can_manage" translate>Comment</h2>
-  <div class="white-space-pre-line">{{ item.comment }}</div>
 </div>
 
 
-<h2 translate>List of speakers</h2>
+<h2>
+  <translate>List of speakers</translate>
   <span os-perms="agenda.can_manage">
     <button ng-if="item.speaker_list_closed" ng-click="closeList(false)"
         class="btn btn-sm btn-danger" translate>
@@ -44,18 +27,18 @@
       Opened
     </button>
   </span>
-  <!-- project list -->
+  <!-- TODO: project list
+       ng-class="{ 'btn-primary': item.isListOfSpeakersProjected() }"-->
   <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-      ng-class="{ 'btn-primary': item.isProjected() }"
       ng-click="projectListOfSpeakers()">
-    <i class="fa fa-video-camera"></i> Project list
+    <i class="fa fa-video-camera"></i>
+    <translate>List of speakers</translate>
   </a>
 </h2>
 
 <!-- TODO:
    * show only 'add me' OR 'remove me' button
 -->
-<div class="well">
   <button class="btn btn-default btn-xs" type="button"
       data-toggle="collapse" data-target="#old_speakers"
       aria-expanded="false" aria-controls="collapseExample">
@@ -133,4 +116,3 @@
         <translate>Stop current speaker</translate>
       </button>
   </div>
-</div>

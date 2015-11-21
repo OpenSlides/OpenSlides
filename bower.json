@@ -23,6 +23,7 @@
     "angular-xeditable": "~0.1.9",
     "angular-scroll-glue": "~2.0.6",
     "ngBootbox": "~0.1.2",
+    "ng-dialog": "~0.5.6",
     "sockjs": "~0.3.4",
     "font-awesome-bower": "~4.4.0",
     "js-data": "~2.8.1",

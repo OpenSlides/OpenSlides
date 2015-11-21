@@ -17,6 +17,11 @@
     <i class="fa fa-file-pdf-o fa-lg"></i>
     <translate>PDF</translate>
   </a>
+  <!-- List of speakers -->
+  <a ui-sref="agenda.item.detail({id: motion.agenda_item_id})" class="btn btn-sm btn-default">
+    <i class="fa fa-microphone fa-lg"></i>
+    <translate>List of speakers</translate>
+  </a>
   <!-- project -->
   <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
       ng-class="{ 'btn-primary': motion.isProjected() }"
@@ -171,7 +176,7 @@
               </div>
             </form>
           </div>
-          <div ng-show="!poll.isEditMode && poll.yes >= -2">
+          <div ng-show="!poll.isEditMode && poll.yes >= -2" class="pollresults">
             <!-- yes -->
             <div class="result_label">
               <i class="fa fa-thumbs-up"></i>
