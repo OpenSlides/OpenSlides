@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-20 23:22+0100\n"
+"POT-Creation-Date: 2015-11-21 00:01+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -68,14 +68,6 @@ msgstr ""
 msgid "Can put oneself on the list of speakers"
 msgstr ""
 
-#: agenda/projector.py:28 agenda/projector.py:61
-msgid "Item does not exist."
-msgstr ""
-
-#: agenda/projector.py:59
-msgid "Id must not be None."
-msgstr ""
-
 #: agenda/signals.py:18
 msgid "Invalid input."
 msgstr ""
@@ -126,7 +118,7 @@ msgstr ""
 msgid "The list of speakers is closed."
 msgstr ""
 
-#: agenda/views.py:113 users/projector.py:17
+#: agenda/views.py:113
 msgid "User does not exist."
 msgstr ""
 
@@ -252,10 +244,6 @@ msgstr ""
 
 #: assignments/models.py:369
 msgid "Votes"
-msgstr ""
-
-#: assignments/projector.py:24
-msgid "Election does not exist."
 msgstr ""
 
 #: assignments/serializers.py:114
@@ -605,26 +593,6 @@ msgstr ""
 msgid "Can use the chat"
 msgstr ""
 
-#: core/projector.py:20
-msgid "Custom slide does not exist."
-msgstr ""
-
-#: core/projector.py:87
-msgid "Invalid countdown time. Use integer or float."
-msgstr ""
-
-#: core/projector.py:89
-msgid "Invalid status. Use 'running' or 'stop'."
-msgstr ""
-
-#: core/projector.py:91
-msgid "Invalid default value. Use integer."
-msgstr ""
-
-#: core/projector.py:142
-msgid "No message given."
-msgstr ""
-
 #: core/signals.py:26
 msgid "Event name"
 msgstr ""
@@ -763,10 +731,6 @@ msgstr ""
 msgid "unknown"
 msgstr ""
 
-#: mediafiles/projector.py:20
-msgid "File does not exist."
-msgstr ""
-
 #: motions/models.py:102
 msgid "Can see motions"
 msgstr ""
@@ -858,10 +822,6 @@ msgstr ""
 #: motions/pdf.py:267
 #, python-format
 msgid "%d. Vote"
-msgstr ""
-
-#: motions/projector.py:24
-msgid "Motion does not exist."
 msgstr ""
 
 #: motions/serializers.py:30

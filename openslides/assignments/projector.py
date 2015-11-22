@@ -1,5 +1,3 @@
-from django.utils.translation import ugettext as _
-
 from openslides.core.exceptions import ProjectorException
 from openslides.core.views import TagViewSet
 from openslides.utils.projector import ProjectorElement, ProjectorRequirement
@@ -21,7 +19,7 @@ class AssignmentSlide(ProjectorElement):
         if pk is not None:
             # Detail slide.
             if not Assignment.objects.filter(pk=pk).exists():
-                raise ProjectorException(_('Election does not exist.'))
+                raise ProjectorException('Election does not exist.')
 
     def get_requirements(self, config_entry):
         pk = config_entry.get('id')

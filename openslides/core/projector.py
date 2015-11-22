@@ -1,5 +1,4 @@
 from django.utils.timezone import now
-from django.utils.translation import ugettext as _
 
 from openslides.utils.projector import ProjectorElement, ProjectorRequirement
 
@@ -17,7 +16,7 @@ class CustomSlideSlide(ProjectorElement):
 
     def get_context(self):
         if not CustomSlide.objects.filter(pk=self.config_entry.get('id')).exists():
-            raise ProjectorException(_('Custom slide does not exist.'))
+            raise ProjectorException('Custom slide does not exist.')
 
     def get_requirements(self, config_entry):
         pk = config_entry.get('id')
@@ -84,11 +83,11 @@ class Countdown(ProjectorElement):
         Raises ProjectorException if the given data are invalid.
         """
         if not isinstance(config_data.get('countdown_time'), (int, float)):
-            raise ProjectorException(_('Invalid countdown time. Use integer or float.'))
+            raise ProjectorException('Invalid countdown time. Use integer or float.')
         if config_data.get('status') not in ('running', 'stop'):
-            raise ProjectorException(_("Invalid status. Use 'running' or 'stop'."))
+            raise ProjectorException("Invalid status. Use 'running' or 'stop'.")
         if config_data.get('default') is not None and not isinstance(config_data.get('default'), int):
-            raise ProjectorException(_('Invalid default value. Use integer.'))
+            raise ProjectorException('Invalid default value. Use integer.')
 
     @classmethod
     def control(cls, action, projector_id=1, index=0):
@@ -139,4 +138,4 @@ class Message(ProjectorElement):
 
     def get_context(self):
         if self.config_entry.get('message') is None:
-            raise ProjectorException(_('No message given.'))
+            raise ProjectorException('No message given.')

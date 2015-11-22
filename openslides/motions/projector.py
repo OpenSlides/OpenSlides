@@ -1,5 +1,3 @@
-from django.utils.translation import ugettext as _
-
 from openslides.core.exceptions import ProjectorException
 from openslides.core.views import TagViewSet
 from openslides.utils.projector import ProjectorElement, ProjectorRequirement
@@ -21,7 +19,7 @@ class MotionSlide(ProjectorElement):
         if pk is not None:
             # Detail slide.
             if not Motion.objects.filter(pk=pk).exists():
-                raise ProjectorException(_('Motion does not exist.'))
+                raise ProjectorException('Motion does not exist.')
 
     def get_requirements(self, config_entry):
         pk = config_entry.get('id')
