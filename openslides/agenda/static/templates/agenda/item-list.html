@@ -44,6 +44,13 @@
           <i class="fa fa-video-camera"></i>
           <translate>Project agenda</translate>
         </a>
+        <!-- auto numbering button -->
+        <a ng-show="!isDeleteMode" os-perms="core.can_manage_projector"
+            class="btn btn-default btn-sm form-control"
+            ng-click="autoNumbering()">
+          <i class="fa fa-list-ol"></i>
+          <translate>Number agenda items</translate>
+        </a>
         <!-- delete button -->
         <a ng-show="isDeleteMode && (items|filter:{selected:true}).length > 0"
             os-perms="agenda.can_manage" ng-click="delete()"

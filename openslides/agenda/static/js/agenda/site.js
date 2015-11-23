@@ -217,6 +217,10 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             };
             return typeof _.findKey(projector.elements, predicate) === 'string';
         };
+        // auto numbering of agenda items
+        $scope.autoNumbering = function() {
+            $http.post('/rest/agenda/item/numbering/', {});
+        };
     }
 ])
 
