@@ -21,10 +21,43 @@
       <span class="navbar-text optional">{{ config('general_event_name') }}</span>
     </div>
     <div class="navbar-right" ng-controller="userMenu">
-      <!-- login/logout button -->
       <div class="btn-group">
         <div ng-if="operator.isAuthenticated()">
 
+          <!-- chatbox -->
+          <div ng-controller="ChatMessageCtrl" os-perms="core.can_use_chat" class="inline">
+            <button ng-click="openChatbox()" class="btn btn-default">
+              <i class="fa fa-comment"></i>
+              <translate>Chat</translate>
+              <span ng-if="unreadMessages > 0 && chatboxIsCollapsed" class="badge">
+                {{ unreadMessages }}
+              </span>
+            </button>
+            <div id="chatbox" class="well" uib-collapse="chatboxIsCollapsed">
+              <div id="chatbox-text" scroll-glue>
+                <ul class="list-unstyled">
+                  <li ng-repeat="chatmessage in chatmessages">
+                    <small class="grey">{{ chatmessage.timestamp | date:'HH:mm:ss' }}</small>
+                    <small>{{ chatmessage.user.short_name }}:</small>
+                    {{ chatmessage.message }}
+                </ul>
+              </div>
+              <div id="chatbox-form">
+                <form ng-submit="sendMessage()">
+                  <div class="input-group">
+                    <input ng-model="newMessage" id="messageInput" class="form-control" type="text">
+                    <span class="input-group-btn">
+                      <button type="submit" class="btn btn-default" id="messageSendButton">
+                        <i class="fa fa-comment"></i>
+                      </button>
+                    </span>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- user settings / logout button -->
           <div class="btn-group" dropdown is-open="status.isopen">
             <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
               <i class="fa fa-user"></i>
@@ -127,9 +160,10 @@
 </nav>
 
 <!-- Container -->
-<div class="container-fluid" id="container">
+<div id="container" class="container-fluid">
   <div class="row">
-    <div class="col-md-2 leftmenu lefticon">
+    <!-- Main menu -->
+    <div id="main-menu" class="col-md-2 leftmenu lefticon">
       <ul ng-controller="MainMenuCtrl">
         <li ng-repeat="element in elements">
           <a ui-sref="{{ element.ui_sref }}">
@@ -137,8 +171,7 @@
             <span class="text" translate>{{ element.title }}</span>
           </a>
       </ul>
-    </div>
-
+    </div><!--/#main-menu-->
     <!-- Content -->
     <div id="content" class="col-md-10">
       <div class="row">
@@ -146,16 +179,16 @@
           <div ui-view></div>
         </div>
       </div>
-      <hr />
-      <footer>
-        <small>
-          &copy; Copyright 2011-2015 |
-          Powered by <a href="http://openslides.org" target="_blank">OpenSlides</a> |
-          <a ui-sref="version">Version</a>
-        </small>
-      </footer>
     </div><!--/#content-->
   </div><!--/.row-->
+
+  <hr>
+  <footer>
+    <small>
+      &copy; Copyright by <a href="http://www.openslides.org" target="_blank">OpenSlides</a> |
+      <a ui-sref="version">Version</a>
+    </small>
+  </footer>
 </div><!--/#container-->
 
 <script src="/angular_js/site/"></script>

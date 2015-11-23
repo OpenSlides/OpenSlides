@@ -21,6 +21,7 @@
     "angular-ui-tree": "~2.10.0",
     "angular-gettext": "~2.1.2",
     "angular-xeditable": "~0.1.9",
+    "angular-scroll-glue": "~2.0.6",
     "ngBootbox": "~0.1.2",
     "sockjs": "~0.3.4",
     "font-awesome-bower": "~4.4.0",
