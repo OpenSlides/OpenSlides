@@ -2,7 +2,7 @@
 
 "use strict";
 
-angular.module('OpenSlidesApp.motions', [])
+angular.module('OpenSlidesApp.motions', ['OpenSlidesApp.users'])
 
 .factory('WorkflowState', [
     'DS',

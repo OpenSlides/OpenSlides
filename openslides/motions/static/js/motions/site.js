@@ -316,7 +316,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     '$scope',
     '$state',
     'gettext',
-    'operator',
     'Motion',
     'MotionFormFieldFactory',
     'Category',
@@ -325,7 +324,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     'Tag',
     'User',
     'Workflow',
-    function($scope, $state, gettext, operator, Motion, MotionFormFieldFactory, Category, Config, Mediafile, Tag, User, Workflow) {
+    function($scope, $state, gettext, Motion, MotionFormFieldFactory, Category, Config, Mediafile, Tag, User, Workflow) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');
