@@ -267,7 +267,7 @@ class Item(RESTModelMixin, models.Model):
         """
         Returns the number of this agenda item.
         """
-        if self.type == self.AGENDA_ITEM:
+        if not self.is_hidden():
             if self.parent is None:
                 sibling_no = self.sibling_no()
                 if config['agenda_numeral_system'] == 'arabic':
@@ -281,15 +281,16 @@ class Item(RESTModelMixin, models.Model):
 
     def sibling_no(self):
         """
-        Counts how many AGENDA_ITEMS with the same parent (siblings) have a
+        Counts how many agenda items with the same parent (siblings) have a
         smaller weight then this item.
 
-        Returns this number + 1 or 0 when self is not an AGENDA_ITEM.
+        Returns this number + 1.
         """
-        return Item.objects.filter(
-            parent=self.parent,
-            type=self.AGENDA_ITEM,
-            weight__lte=self.weight).count()
+        result = 0
+        for item in Item.objects.filter(parent=self.parent, weight__lte=self.weight):
+            if not item.is_hidden():
+                result += 1
+        return result
 
 
 class SpeakerManager(models.Manager):

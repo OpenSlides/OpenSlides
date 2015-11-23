@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from rest_framework.test import APIClient
 
-from openslides.agenda.models import Speaker
+from openslides.agenda.models import Item, Speaker
 from openslides.core.config import config
 from openslides.core.models import CustomSlide, Projector
 from openslides.utils.test import TestCase
@@ -233,3 +233,53 @@ class Speak(TestCase):
         else:
             success = False
         self.assertTrue(success)
+
+
+class Numbering(TestCase):
+    """
+    Tests view to number the agenda
+    """
+    def setUp(self):
+        self.client = APIClient()
+        self.client.login(username='admin', password='admin')
+        self.item_1 = CustomSlide.objects.create(title='test_title_thuha8eef7ohXar3eech').agenda_item
+        self.item_2 = CustomSlide.objects.create(title='test_title_eisah7thuxa1eingaeLo').agenda_item
+        self.item_2.weight = 2
+        self.item_2.save()
+        self.item_2_1 = CustomSlide.objects.create(title='test_title_Qui0audoaz5gie1phish').agenda_item
+        self.item_2_1.parent = self.item_2
+        self.item_2_1.save()
+        self.item_3 = CustomSlide.objects.create(title='test_title_ah7tphisheineisgaeLo').agenda_item
+        self.item_3.weight = 3
+        self.item_3.save()
+
+    def test_numbering(self):
+        response = self.client.post(reverse('item-numbering'))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Item.objects.get(pk=self.item_1.pk).item_number, '1')
+        self.assertEqual(Item.objects.get(pk=self.item_2.pk).item_number, '2')
+        self.assertEqual(Item.objects.get(pk=self.item_2_1.pk).item_number, '2.1')
+        self.assertEqual(Item.objects.get(pk=self.item_3.pk).item_number, '3')
+
+    def test_roman_numbering(self):
+        config['agenda_numeral_system'] = 'roman'
+
+        response = self.client.post(reverse('item-numbering'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Item.objects.get(pk=self.item_1.pk).item_number, 'I')
+        self.assertEqual(Item.objects.get(pk=self.item_2.pk).item_number, 'II')
+        self.assertEqual(Item.objects.get(pk=self.item_2_1.pk).item_number, 'II.1')
+        self.assertEqual(Item.objects.get(pk=self.item_3.pk).item_number, 'III')
+
+    def test_with_hidden_item(self):
+        self.item_2.type = Item.HIDDEN_ITEM
+        self.item_2.save()
+
+        response = self.client.post(reverse('item-numbering'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Item.objects.get(pk=self.item_1.pk).item_number, '1')
+        self.assertEqual(Item.objects.get(pk=self.item_2.pk).item_number, '')
+        self.assertEqual(Item.objects.get(pk=self.item_2_1.pk).item_number, '')
+        self.assertEqual(Item.objects.get(pk=self.item_3.pk).item_number, '2')
