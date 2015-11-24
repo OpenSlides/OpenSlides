@@ -119,55 +119,6 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     });
 })
 
-.factory('operator', [
-    'User',
-    'Group',
-    'loadGlobalData',
-    function(User, Group, loadGlobalData) {
-        var operatorChangeCallbacks = [];
-        var operator = {
-            user: null,
-            perms: [],
-            isAuthenticated: function () {
-                return !!this.user;
-            },
-            onOperatorChange: function (func) {
-                operatorChangeCallbacks.push(func);
-            },
-            setUser: function(user_id) {
-                if (user_id) {
-                    User.find(user_id).then(function(user) {
-                        operator.user = user;
-                        // TODO: load only the needed groups
-                        Group.findAll().then(function() {
-                            operator.perms = user.getPerms();
-                            _.forEach(operatorChangeCallbacks, function (callback) {
-                                callback();
-                            });
-                        });
-                    });
-                } else {
-                    operator.user = null;
-                    Group.find(1).then(function(group) {
-                        operator.perms = group.permissions;
-                        _.forEach(operatorChangeCallbacks, function (callback) {
-                            callback();
-                        });
-                    });
-                }
-            },
-            // Returns true if the operator has at least one perm of the perms-list.
-            hasPerms: function(perms) {
-                if (typeof perms == 'string') {
-                    perms = perms.split(' ');
-                }
-                return _.intersection(perms, operator.perms).length > 0;
-            },
-        };
-        return operator;
-    }
-])
-
 .run([
     'operator',
     '$rootScope',
