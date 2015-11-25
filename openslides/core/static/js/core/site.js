@@ -381,7 +381,7 @@ angular.module('OpenSlidesApp.core.site', [
 })
 
 
-// Provide generic motion form fields for create and update view
+// Provide generic customslide form fields for create and update view
 .factory('CustomslideFormFieldFactory', [
     'gettext',
     'CKEditorOptions',

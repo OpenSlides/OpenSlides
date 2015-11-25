@@ -161,7 +161,6 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
                     }
                     $scope.alert = { type: 'danger', msg: message, show: true };
                 });
-;
         };
         // delete related item
         $scope.deleteRelatedItem = function (item) {

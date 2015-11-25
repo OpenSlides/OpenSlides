@@ -166,7 +166,7 @@ class AssignmentViewSet(ModelViewSet):
             self.permission_denied(request)
         if not request.user.has_perm('assignments.can_manage'):
             if assignment.is_blocked(user):
-                raise ValidationError({'detail': _('User %s does not want to be an candidate.') % user})
+                raise ValidationError({'detail': _('User %s does not want to be a candidate. Only a manager can do this.') % user})
             if assignment.is_elected(user):
                 raise ValidationError({'detail': _('User %s is already elected.') % user})
         # If the user is already a candidate he can be nominated nevertheless.
@@ -344,7 +344,7 @@ class AssignmentPDF(PDFView):
             length = len(vote_results)
             for candidate, poll_list in vote_results.iteritems():
                 row = []
-                candidate_string = candidate.clean_name
+                candidate_string = candidate.get_short_name()
                 if candidate in elected_candidates:
                     candidate_string = "* " + candidate_string
                 if candidate.name_suffix and length < 20:
@@ -549,7 +549,7 @@ class AssignmentPollPDF(PDFView):
                 candidate = option.candidate
                 cell.append(Paragraph("<font name='circlefont' size='15'>%s</font> \
                             <font name='Ubuntu'>%s</font>" %
-                            (circle, candidate.clean_name), stylesheet['Ballot_option_name']))
+                            (circle, candidate.get_short_name()), stylesheet['Ballot_option_name']))
                 if candidate.structure_level:
                     cell.append(Paragraph(
                         "(%s)" % candidate.structure_level,

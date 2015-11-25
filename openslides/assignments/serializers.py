@@ -46,11 +46,11 @@ class AssignmentOptionSerializer(ModelSerializer):
     """
     Serializer for assignment.models.AssignmentOption objects.
     """
-    assignmentvote_set = AssignmentVoteSerializer(many=True, read_only=True)
+    votes = AssignmentVoteSerializer(many=True, read_only=True)
 
     class Meta:
         model = AssignmentOption
-        fields = ('candidate', 'assignmentvote_set',)
+        fields = ('candidate', 'votes',)
 
 
 class FilterPollListSerializer(ListSerializer):
@@ -75,7 +75,7 @@ class AssignmentAllPollSerializer(ModelSerializer):
 
     Serializes all polls.
     """
-    assignmentoption_set = AssignmentOptionSerializer(many=True, read_only=True)
+    options = AssignmentOptionSerializer(many=True, read_only=True)
     votes = ListField(
         child=DictField(
             child=IntegerField(min_value=-2)),
@@ -88,7 +88,7 @@ class AssignmentAllPollSerializer(ModelSerializer):
             'yesnoabstain',
             'description',
             'published',
-            'assignmentoption_set',
+            'options',
             'votesvalid',
             'votesinvalid',
             'votescast',
@@ -148,7 +148,7 @@ class AssignmentShortPollSerializer(AssignmentAllPollSerializer):
             'yesnoabstain',
             'description',
             'published',
-            'assignmentoption_set',
+            'options',
             'votesvalid',
             'votesinvalid',
             'votescast',)
