@@ -29,7 +29,8 @@ class AssignmentRelatedUserSerializer(ModelSerializer):
         fields = (
             'id',
             'user',
-            'status')
+            'status',
+            'assignment')  # js-data needs the assignment-id in the nested object to define relations.
 
 
 class AssignmentVoteSerializer(ModelSerializer):
@@ -91,7 +92,8 @@ class AssignmentAllPollSerializer(ModelSerializer):
             'votesvalid',
             'votesinvalid',
             'votescast',
-            'votes',)
+            'votes',
+            'assignment')  # js-data needs the assignment-id in the nested object to define relations.
         read_only_fields = ('yesnoabstain',)
 
     @transaction.atomic
