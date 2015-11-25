@@ -61,14 +61,39 @@ body {
 .hiddenDiv {
     visibility: hidden;
 }
-/* override bootstraps's progress bar for poll results*/
-.progress {
+/* override bootstraps's progress bar for poll results */
+.pollresults .progress {
     height: 12px;
     margin-bottom: 0;
 }
 /* voting results */
 .result_label {
     margin-top: 5px;
+}
+/* background colors for table rows */
+tr.offline td, li.offline {
+    background-color: #EAEAEA !important;
+}
+tr.hiddenrow td {
+    background-color: #e5e5e5;
+}
+tr.activeline td, li.activeline, .projected {
+    background-color: #bed4de;
+}
+tr.selected td {
+    background-color: #ff9999;
+}
+
+/* override ngdialog-theme-default */
+.ngdialog.ngdialog-theme-default {
+    padding-top: 50px;
+}
+.ngdialog.ngdialog-theme-default.wide-form .ngdialog-content {
+    width: 650px;
+}
+.ngdialog h2 {
+    margin-top: 5px;
+    margin-bottom: 20px;
 }
 
 .inline {
@@ -253,15 +278,7 @@ div.import > div > input[type="text"] {
 }
 
 
-tr.offline td, li.offline {
-    background-color: #EAEAEA !important;
-}
-tr.activeline td, li.activeline, .projected {
-    background-color: #bed4de;
-}
-tr.selected td {
-    background-color: #ff9999;
-}
+
 .nopadding {
     padding: 0;
 }

@@ -9,9 +9,9 @@ angular.module('OpenSlidesApp.core.site', [
     'formly',
     'formlyBootstrap',
     'ngBootbox',
+    'ngDialog',
     'ngMessages',
     'ngCsvImport',
-    'ngSanitize',  // TODO: only use this in functions that need it.
     'ui.select',
     'luegg.directives',
     'xeditable',
@@ -220,24 +220,11 @@ angular.module('OpenSlidesApp.core.site', [
             abstract: true,
             template: "<ui-view/>",
         })
-        .state('core.customslide.list', {
-            resolve: {
-                customslides: function(Customslide) {
-                    return Customslide.findAll();
-                }
-            }
-        })
-        .state('core.customslide.create', {})
         .state('core.customslide.detail', {
             resolve: {
                 customslide: function(Customslide, $stateParams) {
                     return Customslide.find($stateParams.id);
                 }
-            }
-        })
-        .state('core.customslide.detail.update', {
-            views: {
-                '@core.customslide': {}
             }
         })
         // tag
@@ -369,46 +356,6 @@ angular.module('OpenSlidesApp.core.site', [
     };
 })
 
-.controller("LoginFormCtrl", function ($scope, $modal) {
-    $scope.open = function () {
-        var modalInstance = $modal.open({
-            animation: true,
-            templateUrl: 'LoginForm.html',
-            controller: 'LoginFormModalCtrl',
-            size: 'sm',
-        });
-    };
-})
-
-.controller('LoginFormModalCtrl', [
-    '$scope',
-    '$modalInstance',
-    '$http',
-    'operator',
-    function ($scope, $modalInstance, $http, operator) {
-        $scope.login = function () {
-            $http.post(
-                '/users/login/',
-                {'username': $scope.username, 'password': $scope.password}
-            ).success(function(data) {
-                if (data.success) {
-                    operator.setUser(data.user_id);
-                    $scope.loginFailed = false;
-                    $modalInstance.close();
-                } else {
-                    $scope.loginFailed = true;
-                }
-            });
-        };
-        $scope.guest = function () {
-            $modalInstance.dismiss('cancel');
-        };
-        $scope.cancel = function () {
-            $modalInstance.dismiss('cancel');
-        };
-    }
-])
-
 // Version Controller
 .controller('VersionCtrl', [
     '$scope',
@@ -433,37 +380,33 @@ angular.module('OpenSlidesApp.core.site', [
     };
 })
 
-// Customslide Controller
-.controller('CustomslideListCtrl', [
-    '$scope',
-    '$http',
-    'Customslide',
-    function($scope, $http, Customslide) {
-        Customslide.bindAll({}, $scope, 'customslides');
 
-        // setup table sorting
-        $scope.sortColumn = 'title';
-        $scope.reverse = false;
-        // function to sort by clicked column
-        $scope.toggleSort = function ( column ) {
-            if ( $scope.sortColumn === column ) {
-                $scope.reverse = !$scope.reverse;
+// Provide generic motion form fields for create and update view
+.factory('CustomslideFormFieldFactory', [
+    'gettext',
+    'CKEditorOptions',
+    function (gettext, CKEditorOptions) {
+        return {
+            getFormFields: function () {
+                return [
+                {
+                    key: 'title',
+                    type: 'input',
+                    templateOptions: {
+                        label: gettext('Title'),
+                        required: true
+                    }
+                },
+                {
+                    key: 'text',
+                    type: 'textarea',
+                    templateOptions: {
+                        label: gettext('Text')
+                    },
+                    ngModelElAttrs: {'ckeditor': 'CKEditorOptions'}
+                }];
             }
-            $scope.sortColumn = column;
-        };
-
-        // save changed customslide
-        $scope.save = function (customslide) {
-            Customslide.save(customslide);
-        };
-        $scope.delete = function (customslide) {
-            //TODO: add confirm message
-            Customslide.destroy(customslide.id).then(
-                function(success) {
-                    //TODO: success message
-                }
-            );
-        };
+        }
     }
 ])
 
@@ -660,6 +603,7 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
+// Customslide Controllers
 .controller('CustomslideDetailCtrl', function($scope, Customslide, customslide) {
     Customslide.bindOne(customslide.id, $scope, 'customslide');
     Customslide.loadRelations(customslide, 'agenda_item');
@@ -668,15 +612,18 @@ angular.module('OpenSlidesApp.core.site', [
 .controller('CustomslideCreateCtrl', [
     '$scope',
     '$state',
-    'CKEditorOptions',
     'Customslide',
-    function($scope, $state, CKEditorOptions, Customslide) {
+    'CustomslideFormFieldFactory',
+    function($scope, $state, Customslide, CustomslideFormFieldFactory) {
         $scope.customslide = {};
-        $scope.CKEditorOptions = CKEditorOptions;
+        // get all form fields
+        $scope.formFields = CustomslideFormFieldFactory.getFormFields();
+
+        // save form
         $scope.save = function (customslide) {
             Customslide.create(customslide).then(
                 function(success) {
-                    $state.go('core.customslide.list');
+                    $scope.closeThisDialog();
                 }
             );
         };
@@ -686,16 +633,20 @@ angular.module('OpenSlidesApp.core.site', [
 .controller('CustomslideUpdateCtrl', [
     '$scope',
     '$state',
-    'CKEditorOptions',
     'Customslide',
+    'CustomslideFormFieldFactory',
     'customslide',
-    function($scope, $state, CKEditorOptions, Customslide, customslide) {
-        $scope.customslide = customslide;
-        $scope.CKEditorOptions = CKEditorOptions;
+    function($scope, $state, Customslide, CustomslideFormFieldFactory, customslide) {
+        // set initial values for form model
+        $scope.model = customslide;
+        // get all form fields
+        $scope.formFields = CustomslideFormFieldFactory.getFormFields();
+
+        // save form
         $scope.save = function (customslide) {
             Customslide.save(customslide).then(
                 function(success) {
-                    $state.go('core.customslide.list');
+                    $scope.closeThisDialog();
                 }
             );
         };
@@ -791,10 +742,12 @@ angular.module('OpenSlidesApp.core.site', [
         // increment unread messages counter for each new message
         $scope.$watch('chatmessages', function (newVal, oldVal) {
             // add new message id if there is really a new message which is not yet tracked
-            if ((oldVal[oldVal.length-1].id != newVal[newVal.length-1].id) &&
-                ($.inArray(newVal[newVal.length-1].id, NewChatMessages) == -1)) {
-                NewChatMessages.push(newVal[newVal.length-1].id);
-                $scope.unreadMessages = NewChatMessages.length;
+            if (oldVal.length > 0) {
+                if ((oldVal[oldVal.length-1].id != newVal[newVal.length-1].id) &&
+                    ($.inArray(newVal[newVal.length-1].id, NewChatMessages) == -1)) {
+                    NewChatMessages.push(newVal[newVal.length-1].id);
+                    $scope.unreadMessages = NewChatMessages.length;
+                }
             }
         })
     }

@@ -8,6 +8,7 @@ angular.module('OpenSlidesApp.core', [
     'js-data',
     'gettext',
     'ngAnimate',
+    'ngSanitize',  // TODO: only use this in functions that need it.
     'ui.bootstrap',
     'ui.tree',
     'uiSwitch',

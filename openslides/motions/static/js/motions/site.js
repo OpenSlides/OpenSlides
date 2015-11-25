@@ -180,14 +180,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             });
         });
 
-        // hover edit actions
-        $scope.hoverIn = function () {
-            $scope.showEditActions = true;
-        };
-        $scope.hoverOut = function () {
-            $scope.showEditActions = false;
-        };
-
         // save changed motion
         $scope.update = function (motion) {
             // get (unchanged) values from latest version for update method

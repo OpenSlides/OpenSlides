@@ -563,13 +563,67 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     'DS',
     'User',
     'operator',
-    function($scope, $http, DS, User, operator) {
+    'ngDialog',
+    function($scope, $http, DS, User, operator, ngDialog) {
         $scope.logout = function() {
             $http.post('/users/logout/').success(function(data) {
                 operator.setUser(null);
                 // TODO: remove all data from cache and reload page
                 // DS.flush();
             });
+        };
+        $scope.openLoginForm = function () {
+            ngDialog.open({
+                template: 'static/templates/core/login-form.html',
+                controller: 'LoginFormCtrl',
+            });
+        };
+    }
+])
+
+.controller('LoginFormCtrl', [
+    '$scope',
+    '$http',
+    'operator',
+    'gettext',
+    'Config',
+    function ($scope, $http, operator, gettext, Config) {
+        $scope.alerts = [];
+
+        // TODO: add welcome message only on first time (or if admin password not changed)
+        $scope.alerts.push({
+            type: 'success',
+            msg: gettext("Installation was successfully.") + "<br>" +
+                 gettext("Use <strong>admin</strong> and <strong>admin</strong> for first login.") + "<p>" +
+                 gettext("Important: Please change your password!")
+        });
+        // close alert function
+        $scope.closeAlert = function(index) {
+            $scope.alerts.splice(index, 1);
+        };
+        // check if guest login is allowed
+        $scope.guestAllowed = true; //TODO Config.get('general_system_enable_anonymous').value;
+        // login
+        $scope.login = function () {
+            $http.post(
+                '/users/login/',
+                {'username': $scope.username, 'password': $scope.password}
+            ).success(function(data) {
+                if (data.success) {
+                    operator.setUser(data.user_id);
+                    $scope.closeThisDialog();
+                } else {
+                    $scope.alerts.push({
+                        type: 'danger',
+                        msg: gettext('Username or password was not correct.')
+                    });
+                    //Username or password is not correct.
+                }
+            });
+        };
+        // guest login
+        $scope.guestLogin = function () {
+            $scope.closeThisDialog();
         };
     }
 ]);

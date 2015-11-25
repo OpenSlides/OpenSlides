@@ -92,26 +92,82 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     '$scope',
     '$http',
     '$state',
+    'ngDialog',
     'Agenda',
     'AgendaTree',
+    'Customslide',
     'Projector',
-    function($scope, $http, $state, Agenda, AgendaTree, Projector) {
+    function($scope, $http, $state, ngDialog, Agenda, AgendaTree, Customslide, Projector) {
         // Bind agenda tree to the scope
         $scope.$watch(function () {
             return Agenda.lastModified();
-
         }, function () {
             $scope.items = AgendaTree.getFlatTree(Agenda.getAll());
         });
+        $scope.alert = {};
 
-        // open detail view link
-        $scope.openDetail = function (id) {
-            $state.go('agenda.item.detail', {id: id});
+        // project related item (content object)
+        $scope.project = function (item) {
+            item.getContentResource().find(item.content_object.id).then(
+                function(object) {
+                    object.project();
+                }
+            );
         };
 
-        // save changed item
-        $scope.save = function (item) {
-            Agenda.save(item);
+        // open new customslide dialog
+        $scope.newDialog = function () {
+            ngDialog.open({
+                template: 'static/templates/core/customslide-form.html',
+                controller: 'CustomslideCreateCtrl',
+                className: 'ngdialog-theme-default wide-form'
+            });
+        };
+        // detail view of related item (content object)
+        $scope.open = function (item) {
+            $state.go(item.content_object.collection.replace('/','.')+'.detail',
+                    {id: item.content_object.id});
+        };
+        // edit view of related item (content object)
+        $scope.edit = function (item) {
+            if (item.content_object.collection == "core/customslide") {
+                ngDialog.open({
+                    template: 'static/templates/core/customslide-form.html',
+                    controller: 'CustomslideUpdateCtrl',
+                    className: 'ngdialog-theme-default wide-form',
+                    resolve: {
+                        customslide: function(Customslide) {
+                            return Customslide.find(item.content_object.id);
+                        }
+                    }
+                });
+            }
+            else {
+                $state.go(item.content_object.collection.replace('/','.')+'.detail.update',
+                        {id: item.content_object.id});
+            }
+        };
+        // update changed item
+        $scope.update = function (item) {
+            Agenda.save(item).then(
+                function(success) {
+                    item.quickEdit = false;
+                    $scope.alert.show = false;
+                },
+                function(error){
+                    var message = '';
+                    for (var e in error.data) {
+                        message += e + ': ' + error.data[e] + ' ';
+                    }
+                    $scope.alert = { type: 'danger', msg: message, show: true };
+                });
+;
+        };
+        // delete related item
+        $scope.deleteRelatedItem = function (item) {
+            if (item.content_object.collection == 'core/customslide') {
+                Customslide.destroy(item.content_object.id);
+            }
         };
 
         // *** delete mode functions ***
@@ -131,11 +187,14 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
                 });
             }
         };
-        // delete selected item
+        // delete selected items only if items are customslides
         $scope.delete = function () {
             angular.forEach($scope.items, function (item) {
-                if (item.selected)
-                    Agenda.destroy(item.id);
+                if (item.selected) {
+                    if (item.content_object.collection == 'core/customslide') {
+                        Customslide.destroy(item.content_object.id);
+                    }
+                }
             });
             $scope.isDeleteMode = false;
             $scope.uncheckAll();
@@ -292,7 +351,8 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
     '$scope',
     '$state',
     'Agenda',
-    function($scope, $state, Agenda) {
+    'Customslide',
+    function($scope, $state, Agenda, Customslide) {
         // import from textarea
         $scope.importByLine = function () {
             $scope.items = $scope.itemlist[0].split("\n");
@@ -300,7 +360,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             $scope.items.forEach(function(title) {
                 var item = {title: title};
                 // TODO: create all items in bulk mode
-                Agenda.create(item).then(
+                Customslide.create(item).then(
                     function(success) {
                         $scope.importcounter++;
                     }
@@ -324,8 +384,8 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
                 var item = {};
                 item.title = obj[i].title;
                 item.text = obj[i].text;
-                item.duration = obj[i].duration;
-                Agenda.create(item).then(
+                // TODO: save also 'duration' in related agenda item
+                Customslide.create(item).then(
                     function(success) {
                         $scope.csvimportcounter++;
                     }
