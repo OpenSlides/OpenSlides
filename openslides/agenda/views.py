@@ -5,6 +5,7 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 from reportlab.platypus import Paragraph
 
+from openslides.core.config import config
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.pdf import stylesheet
 from openslides.utils.rest_api import (
@@ -225,9 +226,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         Auto numbering of the agenda according to the config. Manually added
         item numbers will be overwritten.
         """
-        for item in Item.objects.all():
-            item.item_number = item.calc_item_no()
-            item.save()
+        Item.objects.number_all(numeral_system=config['agenda_numeral_system'])
         return Response({'detail': _('The agenda has been numbered.')})
 
 
