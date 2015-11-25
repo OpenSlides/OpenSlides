@@ -5,6 +5,7 @@ from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 from reportlab.platypus import Paragraph
 
+from openslides.core.config import config
 from openslides.utils.exceptions import OpenSlidesError
 from openslides.utils.pdf import stylesheet
 from openslides.utils.rest_api import (
@@ -47,7 +48,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             result = (self.request.user.has_perm('agenda.can_see') and
                       self.request.user.has_perm('agenda.can_see_hidden_items') and
                       self.request.user.has_perm('agenda.can_manage'))
-        elif self.action == 'speak':
+        elif self.action in ('speak', 'numbering'):
             result = (self.request.user.has_perm('agenda.can_see') and
                       self.request.user.has_perm('agenda.can_manage'))
         else:
@@ -218,6 +219,15 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             # request.method == 'GET'
             response = Response(Item.objects.get_tree())
         return response
+
+    @list_route(methods=['post'])
+    def numbering(self, request):
+        """
+        Auto numbering of the agenda according to the config. Manually added
+        item numbers will be overwritten.
+        """
+        Item.objects.number_all(numeral_system=config['agenda_numeral_system'])
+        return Response({'detail': _('The agenda has been numbered.')})
 
 
 # Views to generate PDFs

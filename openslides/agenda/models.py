@@ -17,6 +17,10 @@ from openslides.utils.utils import to_roman
 
 
 class ItemManager(models.Manager):
+    """
+    Customized model manager with special methods for agenda tree and
+    numbering.
+    """
     def get_only_agenda_items(self, queryset=None):
         """
         Generator, which yields only agenda items. Skips hidden items.
@@ -36,14 +40,14 @@ class ItemManager(models.Manager):
                 yield from yield_items(item_children[item.pk])
         yield from yield_items(root_items)
 
-    def get_root_and_children(self, queryset=None, only_agenda_items=False):
+    def get_root_and_children(self, only_agenda_items=False):
         """
         Returns a list with all root items and a dictonary where the key is an
         item pk and the value is a list with all children of the item.
-        """
-        if queryset is None:
-            queryset = self.order_by('weight')
 
+        If only_agenda_items is True, the tree hides HIDDEN_ITEM.
+        """
+        queryset = self.order_by('weight')
         item_children = defaultdict(list)
         root_items = []
         for item in queryset:
@@ -62,7 +66,7 @@ class ItemManager(models.Manager):
         and children, where id is the id of one agenda item and children is a
         generator that yields dictonaries like the one discribed.
 
-        If only_agenda_items is True, the tree hides ORGANIZATIONAL_ITEMs.
+        If only_agenda_items is True, the tree hides HIDDEN_ITEM.
 
         If include_content is True, the yielded dictonaries have no key 'id'
         but a key 'item' with the entire object.
@@ -120,6 +124,26 @@ class ItemManager(models.Manager):
                 db_item.parent_id = parent_id
                 db_item.weight = weight
                 db_item.save()
+
+    @transaction.atomic
+    def number_all(self, numeral_system='arabic'):
+        """
+        Auto numbering of the agenda according to the numeral_system. Manually
+        added item numbers will be overwritten.
+        """
+        def walk_tree(tree, number=None):
+            for index, tree_element in enumerate(tree):
+                if numeral_system == 'roman' and number is None:
+                    item_number = to_roman(index + 1)
+                else:
+                    item_number = str(index + 1)
+                    if number is not None:
+                        item_number = '.'.join((number, item_number))
+                tree_element['item'].item_number = item_number
+                tree_element['item'].save()
+                walk_tree(tree_element['children'], item_number)
+
+        walk_tree(self.get_tree(only_agenda_items=True, include_content=True))
 
 
 class Item(RESTModelMixin, models.Model):
@@ -262,34 +286,6 @@ class Item(RESTModelMixin, models.Model):
             else:
                 item_no = str(self.item_number)
         return item_no
-
-    def calc_item_no(self):
-        """
-        Returns the number of this agenda item.
-        """
-        if self.type == self.AGENDA_ITEM:
-            if self.parent is None:
-                sibling_no = self.sibling_no()
-                if config['agenda_numeral_system'] == 'arabic':
-                    return str(sibling_no)
-                else:  # config['agenda_numeral_system'] == 'roman'
-                    return to_roman(sibling_no)
-            else:
-                return '%s.%s' % (self.parent.calc_item_no(), self.sibling_no())
-        else:
-            return ''
-
-    def sibling_no(self):
-        """
-        Counts how many AGENDA_ITEMS with the same parent (siblings) have a
-        smaller weight then this item.
-
-        Returns this number + 1 or 0 when self is not an AGENDA_ITEM.
-        """
-        return Item.objects.filter(
-            parent=self.parent,
-            type=self.AGENDA_ITEM,
-            weight__lte=self.weight).count()
 
 
 class SpeakerManager(models.Manager):
