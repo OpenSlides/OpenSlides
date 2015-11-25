@@ -25,7 +25,8 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
     'DS',
     'Speaker',
     'jsDataModel',
-    function(DS, Speaker, jsDataModel) {
+    'Projector',
+    function(DS, Speaker, jsDataModel, Projector) {
         var name = 'agenda/item';
         return DS.defineResource({
             name: name,
@@ -54,6 +55,17 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                             this.getContentResource().agendaSupplement || ''
                         )
                     );
+                },
+                isProjected: function () {
+                    var projector = Projector.get(1);
+                    if (typeof projector === 'undefined') return false;
+                    var self = this;
+                    var predicate = function (element) {
+                        return element.name == self.content_object.collection &&
+                               typeof element.id !== 'undefined' &&
+                               element.id == self.content_object.id;
+                    };
+                    return typeof _.findKey(projector.elements, predicate) === 'string';
                 }
             },
             relations: {
