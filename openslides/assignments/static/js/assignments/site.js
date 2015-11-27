@@ -382,7 +382,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
             $scope.formFields.push(
                     {
                         noFormControl: true,
-                        template: '<strong>User#' + option.candidate_id + '</strong>'
+                        template: '<strong>' + option.candidate.get_full_name() + '</strong>'
                     },
                     {
                         key: 'yes_' + option.candidate_id,

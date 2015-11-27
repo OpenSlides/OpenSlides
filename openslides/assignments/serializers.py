@@ -50,7 +50,7 @@ class AssignmentOptionSerializer(ModelSerializer):
 
     class Meta:
         model = AssignmentOption
-        fields = ('candidate', 'votes',)
+        fields = ('id', 'candidate', 'votes', 'poll')
 
 
 class FilterPollListSerializer(ListSerializer):

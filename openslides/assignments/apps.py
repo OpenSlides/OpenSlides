@@ -24,4 +24,4 @@ class AssignmentsAppConfig(AppConfig):
 
         # Register viewsets.
         router.register('assignments/assignment', AssignmentViewSet)
-        router.register('assignments/assignmentpoll', AssignmentPollViewSet)
+        router.register('assignments/poll', AssignmentPollViewSet)
