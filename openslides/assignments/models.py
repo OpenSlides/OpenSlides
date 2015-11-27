@@ -106,7 +106,7 @@ class Assignment(RESTModelMixin, models.Model):
         settings.AUTH_USER_MODEL,
         through='AssignmentRelatedUser')
     """
-    Users that a candidates, elected or blocked as candidate.
+    Users that are candidates, elected or blocked as candidate.
 
     See AssignmentRelatedUser for more infos.
     """
@@ -180,7 +180,7 @@ class Assignment(RESTModelMixin, models.Model):
 
     def is_blocked(self, user):
         """
-        Returns True if the user is blockt for candidature.
+        Returns True if the user is blocked for candidature.
 
         Costs one database query.
         """
@@ -253,16 +253,15 @@ class Assignment(RESTModelMixin, models.Model):
             yesnoabstain=yesnoabstain)
         poll.set_options({'candidate': user} for user in candidates)
 
-        # Add all candidates to all agenda items for this assignment
+        # Add all candidates to list of speakers of related agenda item
         # TODO: Try to do this in a bulk create
-        for item in self.items.all():
-            for candidate in self.candidates:
-                try:
-                    Speaker.objects.add(candidate, item)
-                except OpenSlidesError:
-                    # The Speaker is already on the list. Do nothing.
-                    # TODO: Find a smart way not to catch the error concerning AnonymousUser.
-                    pass
+        for candidate in self.candidates:
+            try:
+                Speaker.objects.add(candidate, self.agenda_item)
+            except OpenSlidesError:
+                # The Speaker is already on the list. Do nothing.
+                # TODO: Find a smart way not to catch the error concerning AnonymousUser.
+                pass
 
         return poll
 
@@ -320,7 +319,7 @@ class Assignment(RESTModelMixin, models.Model):
 
 
 class AssignmentVote(RESTModelMixin, BaseVote):
-    option = models.ForeignKey('AssignmentOption')
+    option = models.ForeignKey('AssignmentOption', related_name='votes')
 
     def get_root_rest_element(self):
         """
@@ -330,7 +329,7 @@ class AssignmentVote(RESTModelMixin, BaseVote):
 
 
 class AssignmentOption(RESTModelMixin, BaseOption):
-    poll = models.ForeignKey('AssignmentPoll')
+    poll = models.ForeignKey('AssignmentPoll', related_name='options')
     candidate = models.ForeignKey(settings.AUTH_USER_MODEL)
     vote_class = AssignmentVote
 

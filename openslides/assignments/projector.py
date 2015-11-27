@@ -45,8 +45,8 @@ class AssignmentSlide(ProjectorElement):
                         view_class=user.get_view_class(),
                         view_action='retrieve',
                         pk=str(user.pk))
-                for poll in assignment.polls.all().prefetch_related('assignmentoption_set'):
-                    for option in poll.assignmentoption_set.all():
+                for poll in assignment.polls.all().prefetch_related('options'):
+                    for option in poll.options.all():
                         yield ProjectorRequirement(
                             view_class=option.candidate.get_view_class(),
                             view_action='retrieve',

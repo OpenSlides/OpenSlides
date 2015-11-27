@@ -9,7 +9,7 @@ angular.module('OpenSlidesApp.assignments', [])
     'Config',
     function (DS, Config) {
         return DS.defineResource({
-            name: 'assignments/poll',
+            name: 'assignments/assignmentpoll',
             relations: {
                 belongsTo: {
                     'assignments/assignment': {
@@ -44,12 +44,13 @@ angular.module('OpenSlidesApp.assignments', [])
     'AssignmentRelatedUser',
     'AssignmentPoll',
     'jsDataModel',
-    function (DS, AssignmentRelatedUser, AssignmentPoll, jsDataModel) {
+    'gettext',
+    function (DS, AssignmentRelatedUser, AssignmentPoll, jsDataModel, gettext) {
         var name = 'assignments/assignment';
         return DS.defineResource({
             name: name,
             useClass: jsDataModel,
-            agendaSupplement: '(Assignment)',
+            agendaSupplement: '(' + gettext('Election') + ')',
             methods: {
                 getResourceName: function () {
                     return name;
@@ -72,6 +73,10 @@ angular.module('OpenSlidesApp.assignments', [])
                     },
                     'assignments/relateduser': {
                         localField: 'assignment_related_users',
+                        foreignKey: 'assignment_id',
+                    },
+                    'assignments/assignmentpoll': {
+                        localField: 'polls',
                         foreignKey: 'assignment_id',
                     }
                 }
