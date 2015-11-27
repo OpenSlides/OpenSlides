@@ -30,7 +30,7 @@
     <i class="fa fa-video-camera"></i>
   </a>
   <!-- edit -->
-  <a ng-if="motion.isAllowed('update')" ui-sref="motions.motion.detail.update({id: motion.id })"
+  <a ng-if="motion.isAllowed('update')" ng-click="editDialog(motion)"
       class="btn btn-default btn-sm"
       title="{{ 'Edit' | translate}}">
     <i class="fa fa-pencil"></i>

@@ -59,13 +59,13 @@
           </div>
 
           <!-- user settings / logout button -->
-          <div class="btn-group" dropdown is-open="status.isopen">
-            <button type="button" class="btn btn-default dropdown-toggle" dropdown-toggle>
+          <div class="btn-group" uib-dropdown>
+            <button type="button" class="btn btn-default" uib-dropdown-toggle>
               <i class="fa fa-user"></i>
               <span class="optional-small">{{ operator.user.get_short_name() }}</span>
               <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu pull-right" role="menu">
+            <ul class="uib-dropdown-menu pull-right" role="menu" aria-labelledby="single-button">
               <li>
                 <a ui-sref="users.user.detail.profile({ id: operator.user.id })">
                   <i class="fa fa-cog"></i>
@@ -95,12 +95,12 @@
       </div>
 
       <!-- language switcher -->
-      <div class="btn-group" ng-controller="LanguageCtrl">
-        <button class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+      <div class="btn-group" ng-controller="LanguageCtrl" uib-dropdown>
+        <button class="btn btn-default" uib-dropdown-toggle>
           <i class="fa fa-flag"></i>
           <span class="caret"></span>
         </button>
-        <ul class="dropdown-menu dropdown-menu-right" role="menu">
+        <ul class="uib-dropdown-menu uib-dropdown-menu-right" role="menu" aria-labelledby="single-button">
           <li>
             <a href="" ng-click="switchLanguage('en')">
               <i class="fa fa-flag"></i>

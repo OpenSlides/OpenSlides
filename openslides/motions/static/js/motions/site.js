@@ -45,25 +45,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 }
             }
         })
-        .state('motions.motion.create', {
-            resolve: {
-                categories: function(Category) {
-                    return Category.findAll();
-                },
-                tags: function(Tag) {
-                    return Tag.findAll();
-                },
-                users: function(User) {
-                    return User.findAll();
-                },
-                mediafiles: function(Mediafile) {
-                    return Mediafile.findAll();
-                },
-                workflows: function(Workflow) {
-                    return Workflow.findAll();
-                }
-            }
-        })
         .state('motions.motion.detail', {
             resolve: {
                 motion: function(Motion, $stateParams) {
@@ -84,26 +65,15 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             }
         })
         .state('motions.motion.detail.update', {
-            views: {
-                '@motions.motion': {}
-            },
-            resolve: {
-                categories: function(Category) {
-                    return Category.findAll();
-                },
-                tags: function(Tag) {
-                    return Tag.findAll();
-                },
-                users: function(User) {
-                    return User.findAll();
-                },
-                mediafiles: function(Mediafile) {
-                    return Mediafile.findAll();
-                },
-                workflows: function(Workflow) {
-                    return Workflow.findAll();
-                }
-            }
+            onEnter: ['$stateParams', 'ngDialog', 'Motion', function($stateParams, ngDialog, Motion) {
+                ngDialog.open({
+                    template: 'static/templates/motions/motion-form.html',
+                    controller: 'MotionUpdateCtrl',
+                    className: 'ngdialog-theme-default wide-form',
+                    resolve: { motion: function() {
+                        return Motion.find($stateParams.id) }}
+                });
+            }]
         })
         .state('motions.motion.csv-import', {
             url: '/csv-import',
@@ -134,18 +104,163 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             views: {
                 '@motions.category': {}
             }
-        })
+        });
 })
+
+// Provide generic motion form fields for create and update view
+.factory('MotionFormFieldFactory', [
+    'gettext',
+    'operator',
+    'Category',
+    'Config',
+    'Mediafile',
+    'Tag',
+    'User',
+    'Workflow',
+    function (gettext, operator, Category, Config, Mediafile, Tag, User, Workflow) {
+        return {
+            getFormFields: function () {
+                return [
+                {
+                    key: 'identifier',
+                    type: 'input',
+                    templateOptions: {
+                        label: gettext('Identifier')
+                    },
+                    hide: true
+                },
+                {
+                    key: 'submitters_id',
+                    type: 'ui-select-multiple',
+                    templateOptions: {
+                        label: gettext('Submitters'),
+                        optionsAttr: 'bs-options',
+                        options: User.getAll(),
+                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
+                        valueProp: 'id',
+                        labelProp: 'full_name',
+                        placeholder: gettext('Select or search a submitter...')
+                    },
+                    hide: !operator.hasPerms('motions.can_manage')
+                },
+                {
+                    key: 'title',
+                    type: 'input',
+                    templateOptions: {
+                        label: gettext('Title'),
+                        required: true
+                    }
+                },
+                {
+                    key: 'text',
+                    type: 'textarea',
+                    templateOptions: {
+                        label: gettext('Text'),
+                        required: true
+                    },
+                    ngModelElAttrs: {'ckeditor': 'CKEditorOptions'}
+                },
+                {
+                    key: 'reason',
+                    type: 'textarea',
+                    templateOptions: {
+                        label: gettext('Reason')
+                    },
+                    ngModelElAttrs: {'ckeditor': 'CKEditorOptions'}
+                },
+                {
+                    key: 'more',
+                    type: 'checkbox',
+                    templateOptions: {
+                        label: gettext('Show extended fields')
+                    },
+                    hide: !operator.hasPerms('motions.can_manage')
+                },
+                {
+                    key: 'attachments_id',
+                    type: 'ui-select-multiple',
+                    templateOptions: {
+                        label: gettext('Attachment'),
+                        optionsAttr: 'bs-options',
+                        options: Mediafile.getAll(),
+                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
+                        valueProp: 'id',
+                        labelProp: 'title_or_filename',
+                        placeholder: gettext('Select or search an attachment...')
+                    },
+                    hideExpression: '!model.more'
+                },
+                {
+                    key: 'category_id',
+                    type: 'ui-select-single',
+                    templateOptions: {
+                        label: gettext('Category'),
+                        optionsAttr: 'bs-options',
+                        options: Category.getAll(),
+                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
+                        valueProp: 'id',
+                        labelProp: 'name',
+                        placeholder: gettext('Select or search a category...')
+                    },
+                    hideExpression: '!model.more'
+                },
+                {
+                    key: 'tags_id',
+                    type: 'ui-select-multiple',
+                    templateOptions: {
+                        label: gettext('Tags'),
+                        optionsAttr: 'bs-options',
+                        options: Tag.getAll(),
+                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
+                        valueProp: 'id',
+                        labelProp: 'name',
+                        placeholder: gettext('Select or search a tag...')
+                    },
+                    hideExpression: '!model.more'
+                },
+                {
+                    key: 'supporters_id',
+                    type: 'ui-select-multiple',
+                    templateOptions: {
+                        label: gettext('Supporters'),
+                        optionsAttr: 'bs-options',
+                        options: User.getAll(),
+                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
+                        valueProp: 'id',
+                        labelProp: 'full_name',
+                        placeholder: gettext('Select or search a supporter...')
+                    },
+                    hideExpression: '!model.more'
+                },
+                {
+                    key: 'workflow_id',
+                    type: 'ui-select-single',
+                    templateOptions: {
+                        label: gettext('Workflow'),
+                        optionsAttr: 'bs-options',
+                        options: Workflow.getAll(),
+                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
+                        valueProp: 'id',
+                        labelProp: 'name',
+                        placeholder: gettext('Select or search a workflow...')
+                    },
+                    hideExpression: '!model.more',
+                }];
+            }
+        }
+    }
+])
 
 .controller('MotionListCtrl', [
     '$scope',
     '$state',
+    'ngDialog',
     'Motion',
     'Category',
     'Tag',
     'Workflow',
     'User',
-    function($scope, $state, Motion, Category, Tag, Workflow, User) {
+    function($scope, $state, ngDialog, Motion, Category, Tag, Workflow, User) {
         Motion.bindAll({}, $scope, 'motions');
         Category.bindAll({}, $scope, 'categories');
         Tag.bindAll({}, $scope, 'tags');
@@ -180,8 +295,29 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             });
         });
 
+        // open new dialog
+        $scope.newDialog = function () {
+            ngDialog.open({
+                template: 'static/templates/motions/motion-form.html',
+                controller: 'MotionCreateCtrl',
+                className: 'ngdialog-theme-default wide-form'
+            });
+        };
+        // open edit dialog
+        $scope.editDialog = function (motion) {
+            ngDialog.open({
+                template: 'static/templates/motions/motion-form.html',
+                controller: 'MotionUpdateCtrl',
+                className: 'ngdialog-theme-default wide-form',
+                resolve: {
+                    motion: function(Motion) {
+                        return Motion.find(motion.id);
+                    }
+                }
+            });
+        };
         // save changed motion
-        $scope.update = function (motion) {
+        $scope.save = function (motion) {
             // get (unchanged) values from latest version for update method
             motion.title = motion.getTitle(-1);
             motion.text = motion.getText(-1);
@@ -218,7 +354,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             }
         };
         // delete selected motions
-        $scope.delete = function () {
+        $scope.deleteMultiple = function () {
             angular.forEach($scope.motions, function (motion) {
                 if (motion.selected)
                     Motion.destroy(motion.id);
@@ -227,7 +363,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             $scope.uncheckAll();
         };
         // delete single motion
-        $scope.deleteSingleMotion = function (motion) {
+        $scope.delete = function (motion) {
             Motion.destroy(motion.id);
         };
     }
@@ -236,6 +372,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
 .controller('MotionDetailCtrl', [
     '$scope',
     '$http',
+    'ngDialog',
     'Motion',
     'Category',
     'Mediafile',
@@ -243,7 +380,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     'User',
     'Workflow',
     'motion',
-    function($scope, $http, Motion, Category, Mediafile, Tag, User, Workflow, motion) {
+    function($scope, $http, ngDialog, Motion, Category, Mediafile, Tag, User, Workflow, motion) {
         Motion.bindOne(motion.id, $scope, 'motion');
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
@@ -256,6 +393,20 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
 
         $scope.alert = {};
         $scope.isCollapsed = true;
+
+        // open edit dialog
+        $scope.editDialog = function (motion) {
+            ngDialog.open({
+                template: 'static/templates/motions/motion-form.html',
+                controller: 'MotionUpdateCtrl',
+                className: 'ngdialog-theme-default wide-form',
+                resolve: {
+                    motion: function(Motion) {
+                        return Motion.find(motion.id);
+                    }
+                }
+            });
+        };
 
         $scope.support = function () {
             $http.post('/rest/motions/motion/' + motion.id + '/support/');
@@ -339,10 +490,11 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                $scope.formFields[i].defaultValue = Config.get('motions_workflow').value;
             }
         }
+        // save motion
         $scope.save = function (motion) {
             Motion.create(motion).then(
                 function(success) {
-                    $state.go('motions.motion.list');
+                    $scope.closeThisDialog();
                 }
             );
         };
@@ -398,16 +550,13 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
             }
        }
 
-        // save form
-        $scope.save = function (model) {
-            Motion.save(model)
-                .then(function(success) {
-                    $state.go('motions.motion.detail', {id: motion.id});
-                })
-                .catch(function(fallback) {
-                    //TODO: show error in GUI
-                    console.log(fallback);
-                });
+        // save motion
+        $scope.save = function (motion) {
+            Motion.save(motion).then(
+                function(success) {
+                    $scope.closeThisDialog();
+                }
+            );
         };
     }
 ])

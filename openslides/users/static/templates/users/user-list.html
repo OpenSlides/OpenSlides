@@ -1,7 +1,7 @@
 <h1 translate>Participants</h1>
 
 <div id="submenu">
-  <a ui-sref="users.user.create" os-perms="users.can_manage" class="btn btn-primary btn-sm">
+  <a ng-click="newDialog()" os-perms="users.can_manage" class="btn btn-primary btn-sm">
     <i class="fa fa-user-plus fa-lg"></i>
     <translate>New</translate>
   </a>
@@ -13,16 +13,13 @@
     <i class="fa fa-download fa-lg"></i>
     <translate>Import</translate>
   </a>
-  <div class="btn-group">
-    <a ui-sref="user_print" class="btn btn-default btn-sm" target="_blank">
+  <div class="btn-group" uib-dropdown>
+    <button os-perms="users.can_manage" class="btn btn-default btn-sm" uib-dropdown-toggle>
       <i class="fa fa-file-pdf-o fa-lg"></i>
       <translate>PDF</translate>
-    </a>
-    <button os-perms="users.can_manage" class="btn btn-default btn-sm dropdown-toggle"
-        data-toggle="dropdown">
-      <i class="fa fa-caret-down"></i>
+      <span class="caret"></span>
     </button>
-    <ul class="dropdown-menu dropdown-menu-right">
+    <ul class="uib-dropdown-menu uib-dropdown-menu-right">
       <li><a ui-sref="user_listpdf" target="_blank">
             <i class="fa fa-list fa-fw"></i>
             <translate>List of participants</translate>
@@ -49,7 +46,7 @@
       </div>
       <!-- delete button -->
       <a ng-show="isDeleteMode && (users|filter:{selected:true}).length > 0"
-          os-perms="users.can_manage" ng-click="delete()"
+          os-perms="users.can_manage" ng-click="deleteMultiple()"
           class="btn btn-primary btn-sm form-control">
         <i class="fa fa-trash fa-lg"></i>
         <translate>Delete selected users</translate>
@@ -74,8 +71,7 @@
       <!-- projector column -->
       <th ng-show="!isDeleteMode" os-perms="core.can_manage_projector" class="firstColumn">
       <!-- delete selection column -->
-      <th ng-show="isDeleteMode" os-perms-lite="users.can_manage" class="firstColumn deleteColumn"
-          ng-click="$event.stopPropagation();">
+      <th ng-show="isDeleteMode" os-perms-lite="users.can_manage" class="firstColumn deleteColumn">
         <input type="checkbox" ng-model="selectedAll" ng-change="checkAll()">
       <th ng-click="toggleSort('first_name')" class="sortable">
         <translate>Name</translate>
@@ -101,30 +97,35 @@
   <tbody>
     <tr ng-repeat="user in users | filter: filter.search | filter: {is_present: filterPresent} |
         orderBy: sortColumn:reverse"
-        ng-click="openDetail(user.id)"
-        ng-class="{ 'activeline': user.isProjected() }"
-        class="pointer">
+        ng-class="{ 'activeline': user.isProjected(), 'selected': assignment.selected  }">
       <!-- projector column -->
       <td ng-show="!isDeleteMode" os-perms="core.can_manage_projector">
         <a class="btn btn-default btn-sm"
             ng-class="{ 'btn-primary': user.isProjected() }"
-            ng-click="user.project(); $event.stopPropagation();"
+            ng-click="user.project()"
             title="{{ 'Project user' | translate }}">
           <i class="fa fa-video-camera"></i>
         </a>
       <!-- delete selection column -->
-      <td ng-show="isDeleteMode" os-perms="users.can_manage" class="deleteColumn"
-          ng-click="$event.stopPropagation();">
+      <td ng-show="isDeleteMode" os-perms="users.can_manage" class="deleteColumn">
         <input type="checkbox" ng-model="user.selected">
       <!-- user data colums -->
-      <td>{{ user.get_short_name() }}
-          <div ng-if="user.comment">
-            <small><i class="fa fa-info-circle"></i> {{ user.comment }}</small>
-          </div>
+      <td ng-mouseover="user.hover=true" ng-mouseleave="user.hover=false">
+        <strong><a ui-sref="users.user.detail({id: user.id})">{{ user.get_short_name() }}</a></strong>
+        <div ng-if="user.comment">
+          <small><i class="fa fa-info-circle"></i> {{ user.comment }}</small>
+        </div>
+        <div os-perms="users.can_manage" class="hoverActions" ng-class="{'hiddenDiv': !user.hover}">
+          <a href="" ng-click="editDialog(user)" translate>Edit</a> |
+          <!-- TODO: translate confirm message -->
+          <a href="" class="text-danger"
+              ng-bootbox-confirm="Are you sure you want to delete <b>{{ user.get_short_name() }}</b>?"
+              ng-bootbox-confirm-action="delete(user)" translate>Delete</a>
+        </div>
       <td class="optional">{{ user.structure_level }}
       <td class="optional">
         <div ng-repeat="group in user.groups">
           {{ (groups | filter: {id: group})[0].name }}
         </div>
-      <td><input type="checkbox" ng-model="user.is_present" ng-click="togglePresent(user)">
+      <td><input type="checkbox" ng-model="user.is_present" ng-click="save(user)">
 </table>
