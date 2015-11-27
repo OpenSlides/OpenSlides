@@ -67,6 +67,9 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                         foreignKey: 'item_id',
                     }
                 }
+            },
+            beforeInject: function (resource, instance) {
+                Speaker.ejectAll({where: {item_id: {'==': instance.id}}});
             }
         });
     }
