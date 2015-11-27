@@ -80,6 +80,9 @@ angular.module('OpenSlidesApp.assignments', [])
                         foreignKey: 'assignment_id',
                     }
                 }
+            },
+            beforeInject: function (resource, instance) {
+                AssignmentRelatedUser.ejectAll({where: {assignment_id: {'==': instance.id}}});
             }
         });
     }

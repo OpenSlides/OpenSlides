@@ -130,29 +130,33 @@ angular.module('OpenSlidesApp.core', [
     }
 ])
 
-.factory('jsDataModel', ['$http', 'Projector', function($http, Projector) {
-    var BaseModel = function() {};
-    BaseModel.prototype.project = function() {
-        return $http.post(
-            '/rest/core/projector/1/prune_elements/',
-            [{name: this.getResourceName(), id: this.id}]
-        );
-    };
-    BaseModel.prototype.isProjected = function() {
-        // Returns true if there is a projector element with the same
-        // name and the same id.
-        var projector = Projector.get(1);
-        if (typeof projector === 'undefined') return false;
-        var self = this;
-        var predicate = function (element) {
-            return element.name == self.getResourceName() &&
-                   typeof element.id !== 'undefined' &&
-                   element.id == self.id;
+.factory('jsDataModel', [
+    '$http',
+    'Projector',
+    function($http, Projector) {
+        var BaseModel = function() {};
+        BaseModel.prototype.project = function() {
+            return $http.post(
+                '/rest/core/projector/1/prune_elements/',
+                [{name: this.getResourceName(), id: this.id}]
+            );
         };
-        return typeof _.findKey(projector.elements, predicate) === 'string';
-    };
-    return BaseModel;
-}])
+        BaseModel.prototype.isProjected = function() {
+            // Returns true if there is a projector element with the same
+            // name and the same id.
+            var projector = Projector.get(1);
+            if (typeof projector === 'undefined') return false;
+            var self = this;
+            var predicate = function (element) {
+                return element.name == self.getResourceName() &&
+                       typeof element.id !== 'undefined' &&
+                       element.id == self.id;
+            };
+            return typeof _.findKey(projector.elements, predicate) === 'string';
+        };
+        return BaseModel;
+    }
+])
 
 .factory('Customslide', [
     'DS',
