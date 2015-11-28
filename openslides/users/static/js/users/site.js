@@ -552,9 +552,8 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
 
 .controller('UserImportCtrl', [
     '$scope',
-    '$state',
     'User',
-    function($scope, $state, User) {
+    function($scope, User) {
         // import from textarea
         $scope.importByLine = function () {
             $scope.users = $scope.userlist[0].split("\n");

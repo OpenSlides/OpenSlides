@@ -47,6 +47,11 @@ h3 {
     padding-bottom: 14px;
 }
 
+h4 {
+    font-size: 18px;
+    color: #222;
+}
+
 
 p {
     padding-bottom: 14px;
@@ -621,6 +626,24 @@ img {
     margin-bottom: 0;
 }
 
+/* for angular-csv-import form */
+.import {
+    margin-left: 15px;
+}
+
+.import .label {
+    color: #333 !important;
+    font-size: 100%;
+    font-weight: normal;
+    width: 100px;
+    text-align: left;
+    display: inline-block;
+}
+
+.import .label::after {
+    content: ': ';
+}
+
 /* voting results */
 .result_label {
     margin-top: 5px;
@@ -639,6 +662,7 @@ img {
     padding: 0 10px 10px 10px;
     z-index: 99;
 }
+
 #chatbox-text {
     overflow-y: scroll;
     height: 190px;
