@@ -162,14 +162,15 @@ class AssignmentViewSet(ModelViewSet):
             detail = _('You can not nominate someone to this election because it is finished.')
             raise ValidationError({'detail': detail})
         if assignment.phase == assignment.PHASE_VOTING and not request.user.has_perm('assignments.can_manage'):
-            # To nominate other during voting you have to be a manager.
+            # To nominate another user during voting you have to be a manager.
             self.permission_denied(request)
         if not request.user.has_perm('assignments.can_manage'):
             if assignment.is_blocked(user):
                 raise ValidationError({'detail': _('User %s does not want to be a candidate. Only a manager can do this.') % user})
             if assignment.is_elected(user):
                 raise ValidationError({'detail': _('User %s is already elected.') % user})
-        # If the user is already a candidate he can be nominated nevertheless.
+        if assignment.is_candidate(user):
+            raise ValidationError({'detail': _('User %s is already nominated.') % user})
         assignment.set_candidate(user)
         return _('User %s was nominated successfully.') % user
 
