@@ -4,17 +4,44 @@
 
 angular.module('OpenSlidesApp.assignments', [])
 
+.factory('AssignmentPollOption', [
+    'DS',
+    function (DS) {
+        return DS.defineResource({
+            name: 'assignments/polloption',
+            relations: {
+                belongsTo: {
+                    'assignments/poll': {
+                        localField: 'poll',
+                        localKey: 'poll_id',
+                    },
+                    'users/user': {
+                        localField: 'candidate',
+                        localKey: 'candidate_id',
+                    }
+                }
+            },
+        })
+    }
+])
+
 .factory('AssignmentPoll', [
     'DS',
-    'Config',
-    function (DS, Config) {
+    'AssignmentPollOption',
+    function (DS, AssignmentPollOption) {
         return DS.defineResource({
-            name: 'assignments/assignmentpoll',
+            name: 'assignments/poll',
             relations: {
                 belongsTo: {
                     'assignments/assignment': {
                         localField: 'assignment',
                         localKey: 'assignment_id',
+                    }
+                },
+                hasMany: {
+                    'assignments/polloption': {
+                        localField: 'options',
+                        foreignKey: 'poll_id',
                     }
                 }
             },
@@ -75,7 +102,7 @@ angular.module('OpenSlidesApp.assignments', [])
                         localField: 'assignment_related_users',
                         foreignKey: 'assignment_id',
                     },
-                    'assignments/assignmentpoll': {
+                    'assignments/poll': {
                         localField: 'polls',
                         foreignKey: 'assignment_id',
                     }
