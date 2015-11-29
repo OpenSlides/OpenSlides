@@ -151,8 +151,7 @@ class CandidatureOther(TestCase):
             reverse('assignment-candidature-other', args=[self.assignment.pk]),
             {'user': self.user.pk})
 
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue(Assignment.objects.get(pk=self.assignment.pk).candidates.filter(username='test_user_eeheekai4Phue6cahtho').exists())
+        self.assertEqual(response.status_code, 400)
 
     def test_nominate_other_when_finished(self):
         self.assignment.set_phase(Assignment.PHASE_FINISHED)
