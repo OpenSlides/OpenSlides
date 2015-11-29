@@ -20,7 +20,6 @@
     "angular-ui-switch": "~0.1.1",
     "angular-ui-tree": "~2.2.0",
     "angular-gettext": "~2.1.2",
-    "angular-xeditable": "~0.1.9",
     "angular-scroll-glue": "~2.0.6",
     "ngBootbox": "~0.1.2",
     "ng-dialog": "~0.5.6",
@@ -30,6 +29,8 @@
     "js-data-angular": "~3.1.0",
     "ng-file-upload": "~9.1.2",
     "ckeditor": "~4.5.4",
-    "angular-ckeditor": "~1.0.0"
+    "angular-ckeditor": "~1.0.0",
+    "roboto-condensed": "~0.3.0",
+    "opensans-webfont-for-bower": "a4b3b75afa"
   }
 }

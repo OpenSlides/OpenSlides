@@ -1,23 +1,28 @@
-<h1>{{ customslide.title }}</h1>
-
-<div id="submenu">
-  <a ui-sref="agenda.item.list" class="btn btn-sm btn-default">
-    <i class="fa fa-angle-double-left fa-lg"></i>
-    <translate>Back to overview</translate>
-  </a>
-  <!-- List of speakers -->
-  <a ui-sref="agenda.item.detail({id: customslide.agenda_item_id})" class="btn btn-sm btn-default">
-    <i class="fa fa-microphone fa-lg"></i>
-    <translate>List of speakers</translate>
-  </a>
-  <!-- project -->
-  <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-      ng-class="{ 'btn-primary': customslide.isProjected() }"
-      ng-click="customslide.project()"
-      title="{{ 'Project agenda item' | translate }}">
-    <i class="fa fa-video-camera"></i>
-  </a>
+<div class="header">
+  <div class="title">
+    <div class="submenu">
+      <a ui-sref="agenda.item.list" class="btn btn-sm btn-default">
+        <i class="fa fa-angle-double-left fa-lg"></i>
+        <translate>Back to overview</translate>
+      </a>
+      <!-- List of speakers -->
+      <a ui-sref="agenda.item.detail({id: customslide.agenda_item_id})" class="btn btn-sm btn-default">
+        <i class="fa fa-microphone fa-lg"></i>
+        <translate>List of speakers</translate>
+      </a>
+      <!-- project -->
+      <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
+          ng-class="{ 'btn-primary': customslide.isProjected() }"
+          ng-click="customslide.project()"
+          title="{{ 'Project agenda item' | translate }}">
+        <i class="fa fa-video-camera"></i>
+      </a>
+    </div>
+    <h1>{{ customslide.title }}</h1>
+    <h2 translate>Agenda item</h2>
+  </div>
 </div>
 
-<div ng-bind-html="customslide.text"></div>
-
+<div class="details">
+  <div ng-bind-html="customslide.text"></div>
+</div>

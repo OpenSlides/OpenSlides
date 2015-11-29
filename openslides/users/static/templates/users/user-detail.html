@@ -1,43 +1,49 @@
-<h1>{{ user.get_short_name() }}</h1>
-
-<div id="submenu">
-  <a ui-sref="users.user.list" class="btn btn-sm btn-default">
-    <i class="fa fa-angle-double-left fa-lg"></i>
-    <translate>Back to overview</translate>
-  </a>
-  <!-- project -->
-  <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-      ng-class="{ 'btn-primary': user.isProjected() }"
-      ng-click="user.project()"
-      title="{{ 'Project user' | translate }}">
-    <i class="fa fa-video-camera"></i>
-  </a>
-  <!-- edit -->
-  <a ui-sref="users.user.detail.update({id: user.id })" os-perms="users.can_manage"
-      class="btn btn-default btn-sm"
-      title="{{ 'Edit' | translate}}">
-    <i class="fa fa-pencil"></i>
-  </a>
+<div class="header">
+  <div class="title">
+    <div class="submenu">
+      <a ui-sref="users.user.list" class="btn btn-sm btn-default">
+        <i class="fa fa-angle-double-left fa-lg"></i>
+        <translate>Back to overview</translate>
+      </a>
+      <!-- project -->
+      <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
+          ng-class="{ 'btn-primary': user.isProjected() }"
+          ng-click="user.project()"
+          title="{{ 'Project user' | translate }}">
+        <i class="fa fa-video-camera"></i>
+      </a>
+      <!-- edit -->
+      <a ui-sref="users.user.detail.update({id: user.id })" os-perms="users.can_manage"
+          class="btn btn-default btn-sm"
+          title="{{ 'Edit' | translate}}">
+        <i class="fa fa-pencil"></i>
+      </a>
+    </div>
+    <h1>{{ user.get_short_name() }}</h1>
+    <h2 translate>Participant</h2>
+  </div>
 </div>
 
-<div class="user_details form-group">
-  <fieldset>
-    <legend translate>Personal data</legend>
-    <label translate>Structure level</label>
-      {{ user.structure_level }}
-    <label translate>Groups</label>
-      <div ng-repeat="group in user.groups">
-        {{ (groups | filter: {id: group})[0].name }}
-      </div>
-    <label translate>About me</label>
-      <div class="white-space-pre-line">{{ user.about_me }}</div>
-  </fieldset>
+<div class="details">
+  <div class="user_details form-group">
+    <fieldset>
+      <legend translate>Personal data</legend>
+      <label translate>Structure level</label>
+        {{ user.structure_level }}
+      <label translate>Groups</label>
+        <div ng-repeat="group in user.groups">
+          {{ (groups | filter: {id: group})[0].name }}
+        </div>
+      <label translate>About me</label>
+        <div class="white-space-pre-line">{{ user.about_me }}</div>
+    </fieldset>
 
-  <fieldset os-perms="users.can_manage">
-    <legend translate>Administrative data</legend>
-    <label translate>Username</label>
-      {{ user.username }}
-    <label translate>Comment</label>
-      <div class="white-space-pre-line">{{ user.comment }}</div>
-  </fieldset>
+    <fieldset os-perms="users.can_manage">
+      <legend translate>Administrative data</legend>
+      <label translate>Username</label>
+        {{ user.username }}
+      <label translate>Comment</label>
+        <div class="white-space-pre-line">{{ user.comment }}</div>
+    </fieldset>
+  </div>
 </div>

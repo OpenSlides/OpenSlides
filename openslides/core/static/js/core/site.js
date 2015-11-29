@@ -6,6 +6,7 @@
 angular.module('OpenSlidesApp.core.site', [
     'OpenSlidesApp.core',
     'ui.router',
+    'angular-loading-bar',
     'formly',
     'formlyBootstrap',
     'ngBootbox',
@@ -14,7 +15,6 @@ angular.module('OpenSlidesApp.core.site', [
     'ngCsvImport',
     'ui.select',
     'luegg.directives',
-    'xeditable',
     'ckeditor',
 ])
 
@@ -71,14 +71,6 @@ angular.module('OpenSlidesApp.core.site', [
             'img_class': 'home',
             'title': 'Home',
             'weight': 100,
-        });
-
-        mainMenuProvider.register({
-            'ui_sref': 'core.customslide.list',
-            'img_class': 'video-camera',
-            'title': 'Projector',
-            'weight': 110,
-            'perm': 'core.can_see_projector',
         });
 
         mainMenuProvider.register({
@@ -288,11 +280,6 @@ angular.module('OpenSlidesApp.core.site', [
     });
 })
 
-// options for angular-xeditable
-.run(function(editableOptions) {
-    editableOptions.theme = 'bs3';
-})
-
 // angular formly config options
 .run([
     'formlyConfig',
@@ -366,6 +353,17 @@ angular.module('OpenSlidesApp.core.site', [
         }
     };
 })
+
+// Projector Sidebar Controller
+.controller('ProjectorSidebarCtrl', [
+    '$scope',
+    function ($scope) {
+        $scope.isProjectorSidebar = false;
+        $scope.showProjectorSidebar = function (show) {
+            $scope.isProjectorSidebar = show;
+        };
+    }
+])
 
 // Version Controller
 .controller('VersionCtrl', [

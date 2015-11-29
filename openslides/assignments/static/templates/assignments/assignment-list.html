@@ -1,145 +1,168 @@
-<h1 translate>Elections</h1>
-
-<div id="submenu">
-  <a ng-click="newDialog()" os-perms="assignments.can_manage" class="btn btn-primary btn-sm">
-    <i class="fa fa-plus fa-lg"></i>
-    <translate>New</translate>
-  </a>
-  <a ui-sref="core.tag.list" os-perms="core.can_manage_tags" class="btn btn-default btn-sm">
-    <i class="fa fa-tags fa-lg"></i>
-    <translate>Tags</translate>
-  </a>
-  <a ui-sref="assignments_pdf" target="_blank" class="btn btn-default btn-sm">
-    <i class="fa fa-file-pdf-o fa-lg"></i>
-    <translate>PDF</translate>
-  </a>
+<div class="header">
+  <div class="title">
+    <div class="submenu">
+      <a ng-click="newDialog()" os-perms="assignments.can_manage" class="btn btn-primary btn-sm">
+        <i class="fa fa-plus fa-lg"></i>
+        <translate>New</translate>
+      </a>
+      <a ui-sref="core.tag.list" os-perms="core.can_manage_tags" class="btn btn-default btn-sm">
+        <i class="fa fa-tags fa-lg"></i>
+        <translate>Tags</translate>
+      </a>
+      <a ui-sref="assignments_pdf" target="_blank" class="btn btn-default btn-sm">
+        <i class="fa fa-file-pdf-o fa-lg"></i>
+        <translate>PDF</translate>
+      </a>
+    </div>
+    <h1 translate>Elections</h1>
+  </div>
 </div>
 
-<div class="row form-group">
-  <div class="col-sm-8">
-    <form class="form-inline">
-      <!-- delete mode -->
-      <div os-perms-lite="assignments.can_manage" class="form-group">
-        <label for="deleteSwitcher" translate>Delete mode</label>
-        <switch id="deleteSwitcher" ng-model="isDeleteMode" ng-change="uncheckAll()"
-            on="{{'On'|translate}}" off="{{'Off'|translate}}"
-            class="green wide form-control">
-        </switch>
+<div class="details">
+  <div class="row form-group">
+    <div class="col-sm-6">
+      <form class="form-inline">
+        <!-- delete mode -->
+        <button os-perms-lite="assignments.can_manage" class="btn btn-default"
+            ng-click="isDeleteMode = !isDeleteMode; uncheckAll()">
+          <i class="fa fa-check-square-o"></i>
+          <translate>Select</translate>...
+        </button>
+      </form>
+    </div>
+    <div class="col-sm-6">
+      <div class="form-inline text-right">
+        <div class="form-group">
+          <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-search"></i></div>
+            <input type="text" os-focus-me ng-model="filter.search" class="form-control"
+               placeholder="{{ 'Search' | translate}}">
+          </div>
+        </div>
+        <button class="btn btn-default" ng-click="isFilter = !isFilter">
+          <i class="fa fa-filter"></i>
+          <translate>Filter</translate>...
+        </button>
       </div>
-      <!-- delete button -->
-      <a ng-show="isDeleteMode && (assignments|filter:{selected:true}).length > 0"
-          os-perms="assignments.can_manage" ng-click="deleteMultiple()"
-          class="btn btn-primary btn-sm form-control">
-        <i class="fa fa-trash fa-lg"></i>
-        <translate>Delete selected elections</translate>
-      </a>
+    </div>
+  </div>
+  <div uib-collapse="!isFilter" class="row">
+    <div class="col-sm-6 text-right"></div>
+    <div class="col-sm-6 text-right">
       <!-- phase filter -->
-      &nbsp;
       <select ng-model="phaseFilter" class="form-control" id="phaseFilter">
         <option value="" translate>--- Select phase ---</option>
         <option ng-repeat="phase in phases" value="{{ phase.value }}">{{ phase.display_name }}</option>
       </select>
-    </form>
-  </div>
-  <div class="col-sm-4">
-    <div class="input-group">
-      <div class="input-group-addon"><i class="fa fa-filter"></i></div>
-      <input type="text" os-focus-me ng-model="filter.search" class="form-control"
-         placeholder="{{ 'Filter' | translate}}">
     </div>
   </div>
-</div>
+  <div uib-collapse="!isDeleteMode" class="row spacer">
+    <div class="col-sm-12 text-left">
+      <!-- delete button -->
+      <a ng-show="isDeleteMode"
+          os-perms="assignments.can_manage" ng-click="deleteMultiple()"
+          class="btn btn-primary">
+        <i class="fa fa-trash fa-lg"></i>
+        <translate>Delete selected elections</translate>
+      </a>
+    </div>
+  </div>
 
-<table class="table table-striped table-bordered table-hover">
-  <thead>
-    <tr>
-      <!-- projector column -->
-      <th ng-show="!isDeleteMode" os-perms="core.can_manage_projector" class="firstColumn">
-      <!-- delete selection column -->
-      <th ng-show="isDeleteMode" os-perms-lite="assignments.can_manage" class="firstColumn deleteColumn">
-        <input type="checkbox" ng-model="selectedAll" ng-change="checkAll()">
-      <th ng-click="toggleSort('title')" class="sortable">
-        <translate>Title</translate>
-        <i class="pull-right fa" ng-show="sortColumn === 'title' && header.sortable != false"
-            ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
-        </i>
-      <th ng-click="toggleSort('open_posts')" class="sortable optional">
-        <translate>Candidates</translate> / <translate>Posts</translate>
-        <i class="pull-right fa" ng-show="sortColumn === 'open_posts' && header.sortable != false"
-            ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
-        </i>
-      <th ng-click="toggleSort('phase')" class="sortable optional">
-        <translate>Phase</translate>
-        <i class="pull-right fa" ng-show="sortColumn === 'phase' && header.sortable != false"
-            ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
-        </i>
-  <tbody>
-    <tr ng-repeat="assignment in assignments | filter: filter.search | filter: {phase: phaseFilter} |
-        orderBy: sortColumn:reverse"
-        class="animate-item"
-        ng-class="{ 'activeline': assignment.isProjected(), 'selected': assignment.selected }">
-      <!-- projector column -->
-      <td ng-show="!isDeleteMode" os-perms-lite="core.can_manage_projector">
-        <a class="btn btn-default btn-sm"
-            ng-class="{ 'btn-primary': assignment.isProjected() }"
-            ng-click="assignment.project()"
-            title="{{ 'Project assignment' | translate }}">
-          <i class="fa fa-video-camera"></i>
-        </a>
-      <!-- delete selection column -->
-      <td ng-show="isDeleteMode" os-perms="assignments.can_manage" class="deleteColumn">
-        <input type="checkbox" ng-model="assignment.selected">
-      <!-- assignment data colums -->
-      <td ng-if="!assignment.quickEdit" ng-mouseover="assignment.hover=true" ng-mouseleave="assignment.hover=false">
-        <strong><a ui-sref="assignments.assignment.detail({id: assignment.id})">{{ assignment.title }}</a></strong>
-        <div os-perms="assignments.can_manage" class="hoverActions" ng-class="{'hiddenDiv': !assignment.hover}">
-          <a href="" ng-click="editDialog(assignment)" translate>Edit</a> |
-          <a href="" ng-click="assignment.quickEdit=true" translate>QuickEdit</a> |
-          <!-- TODO: translate confirm message -->
-          <a href="" class="text-danger"
-              ng-bootbox-confirm="Are you sure you want to delete <b>{{ assignment.title }}</b>?"
-              ng-bootbox-confirm-action="delete(assignment)" translate>Delete</a>
-        </div>
-      <td ng-if="!assignment.quickEdit" class="optional"><span class="badge">{{ assignment.open_posts }}</span>
-      <td ng-if="!assignment.quickEdit" class="optional">
-        <span class="label" ng-class="{'label-primary': assignment.phase == 0,
-                                       'label-warning': assignment.phase == 1,
-                                       'label-success': assignment.phase == 2 }">
-          {{ phases[assignment.phase].display_name }}
-        </span>
-      <!-- quickEdit columns -->
-      <td ng-if="assignment.quickEdit" colspan="3">
-        <h4>{{ assignment.title }} <span class="text-muted">&ndash; Quick Edit</span></h4>
-          <alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
-            {{alert.msg}}
-          </alert>
-          <div class="row">
-            <div class="col-xs-6">
-              <label for="inputTitle" translate>Title</label>
-              <input type="text" ng-model="assignment.title" class="form-control input-sm" id="inputTitle">
-            </div>
-            <div class="col-xs-6">
-              <label for="inputPosts" translate>Number of members to be elected</label>
-              <input type="number" ng-model="assignment.open_posts" class="form-control input-sm" id="inputPosts">
-            </div>
+  <i class="spacer">
+    {{ assignments.length }} {{ "elections" | translate }}<span ng-if="(assignments|filter:{selected:true}).length > 0">,
+    {{(assignments|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
+  </i>
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+        <!-- projector column -->
+        <th ng-show="!isDeleteMode" os-perms="core.can_manage_projector" class="minimum">
+        <!-- delete selection column -->
+        <th ng-show="isDeleteMode" os-perms-lite="assignments.can_manage" class="minimum deleteColumn">
+          <input type="checkbox" ng-model="selectedAll" ng-change="checkAll()">
+        <th ng-click="toggleSort('title')" class="sortable">
+          <translate>Title</translate>
+          <i class="pull-right fa" ng-show="sortColumn === 'title' && header.sortable != false"
+              ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
+          </i>
+        <th ng-click="toggleSort('open_posts')" class="sortable optional">
+          <translate>Candidates</translate> / <translate>Posts</translate>
+          <i class="pull-right fa" ng-show="sortColumn === 'open_posts' && header.sortable != false"
+              ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
+          </i>
+        <th ng-click="toggleSort('phase')" class="sortable optional">
+          <translate>Phase</translate>
+          <i class="pull-right fa" ng-show="sortColumn === 'phase' && header.sortable != false"
+              ng-class="reverse ? 'fa-sort-desc' : 'fa-sort-asc'">
+          </i>
+    <tbody>
+      <tr ng-repeat="assignment in assignments | filter: filter.search | filter: {phase: phaseFilter} |
+          orderBy: sortColumn:reverse"
+          class="animate-item"
+          ng-class="{ 'activeline': assignment.isProjected(), 'selected': assignment.selected }">
+        <!-- projector column -->
+        <td ng-show="!isDeleteMode" os-perms-lite="core.can_manage_projector">
+          <a class="btn btn-default btn-sm"
+              ng-class="{ 'btn-primary': assignment.isProjected() }"
+              ng-click="assignment.project()"
+              title="{{ 'Project assignment' | translate }}">
+            <i class="fa fa-video-camera"></i>
+          </a>
+        <!-- delete selection column -->
+        <td ng-show="isDeleteMode" os-perms="assignments.can_manage" class="deleteColumn">
+          <input type="checkbox" ng-model="assignment.selected">
+        <!-- assignment data colums -->
+        <td ng-if="!assignment.quickEdit" ng-mouseover="assignment.hover=true" ng-mouseleave="assignment.hover=false">
+          <strong><a ui-sref="assignments.assignment.detail({id: assignment.id})">{{ assignment.title }}</a></strong>
+          <div os-perms="assignments.can_manage" class="hoverActions" ng-class="{'hiddenDiv': !assignment.hover}">
+            <a href="" ng-click="editDialog(assignment)" translate>Edit</a> |
+            <a href="" ng-click="assignment.quickEdit=true" translate>QuickEdit</a> |
+            <!-- TODO: translate confirm message -->
+            <a href="" class="text-danger"
+                ng-bootbox-confirm="Are you sure you want to delete <b>{{ assignment.title }}</b>?"
+                ng-bootbox-confirm-action="delete(assignment)" translate>Delete</a>
           </div>
-          <div class="row">
-            <div class="col-xs-6">
-              <label for="selectPhase" translate>Phase</label>
-              <select ng-options="phase.value as phase.display_name for phase in phases"
-                  ng-model="assignment.phase" class="form-control" id="selectPhase">
-              </select>
+        <td ng-if="!assignment.quickEdit" class="optional"><span class="badge">{{ assignment.open_posts }}</span>
+        <td ng-if="!assignment.quickEdit" class="optional">
+          <span class="label" ng-class="{'label-primary': assignment.phase == 0,
+                                         'label-warning': assignment.phase == 1,
+                                         'label-success': assignment.phase == 2 }">
+            {{ phases[assignment.phase].display_name }}
+          </span>
+        <!-- quickEdit columns -->
+        <td ng-if="assignment.quickEdit" colspan="3">
+          <h4>{{ assignment.title }} <span class="text-muted">&ndash; Quick Edit</span></h4>
+            <alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+              {{alert.msg}}
+            </alert>
+            <div class="row">
+              <div class="col-xs-6">
+                <label for="inputTitle" translate>Title</label>
+                <input type="text" ng-model="assignment.title" class="form-control input-sm" id="inputTitle">
+              </div>
+              <div class="col-xs-6">
+                <label for="inputPosts" translate>Number of members to be elected</label>
+                <input type="number" ng-model="assignment.open_posts" class="form-control input-sm" id="inputPosts">
+              </div>
             </div>
-            <div class="col-xs-6"></div>
-          </div>
-          <div class="spacer">
-            <button ng-click="assignment.quickEdit=false" class="btn btn-default pull-left" translate>
-              Cancel
-            </button> &nbsp;
-            <button ng-click="save(assignment)" class="btn btn-primary" translate>
-              Update
-            </button>
-            <a href="" ng-click="editDialog(assignment)"
-                class="pull-right" translate>Edit election...</a>
-          </div>
-</table>
+            <div class="row">
+              <div class="col-xs-6">
+                <label for="selectPhase" translate>Phase</label>
+                <select ng-options="phase.value as phase.display_name for phase in phases"
+                    ng-model="assignment.phase" class="form-control" id="selectPhase">
+                </select>
+              </div>
+              <div class="col-xs-6"></div>
+            </div>
+            <div class="spacer">
+              <button ng-click="assignment.quickEdit=false" class="btn btn-default pull-left" translate>
+                Cancel
+              </button> &nbsp;
+              <button ng-click="save(assignment)" class="btn btn-primary" translate>
+                Update
+              </button>
+              <a href="" ng-click="editDialog(assignment)"
+                  class="pull-right" translate>Edit election...</a>
+            </div>
+  </table>
+</div>

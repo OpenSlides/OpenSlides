@@ -319,14 +319,17 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
             poll.DSDestroy();
         }
         // edit poll dialog
-        $scope.editPollDialog = function (poll) {
+        $scope.editPollDialog = function (poll, ballot) {
             ngDialog.open({
                 template: 'static/templates/assignments/assignmentpoll-form.html',
                 controller: 'AssignmentPollUpdateCtrl',
                 className: 'ngdialog-theme-default',
                 resolve: {
-                    assignmentpoll: function(AssignmentPoll) {
+                    assignmentpoll: function (AssignmentPoll) {
                         return AssignmentPoll.find(poll.id);
+                    },
+                    ballot: function () {
+                        return ballot;
                     }
                 }
             });
@@ -394,9 +397,11 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     'gettext',
     'AssignmentPoll',
     'assignmentpoll',
-    function($scope, $state, gettext, AssignmentPoll, assignmentpoll) {
+    'ballot',
+    function($scope, $state, gettext, AssignmentPoll, assignmentpoll, ballot) {
         // set initial values for form model
         $scope.model = assignmentpoll;
+        $scope.ballot = ballot;
         $scope.formFields = [];
         // add dynamic form fields
         assignmentpoll.options.forEach(function(option) {
