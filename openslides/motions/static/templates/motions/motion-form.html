@@ -1,19 +1,12 @@
-<h1 ng-if="motion.id" translate>Edit motion</h1>
-<h1 ng-if="!motion.id" translate>New motion</h1>
-
-<div id="submenu">
-  <a ui-sref="motions.motion.list" class="btn btn-sm btn-default">
-    <i class="fa fa-angle-double-left fa-lg"></i>
-    <translate>Back to overview</translate>
-  </a>
-</div>
+<h1 ng-if="model.id" translate>Edit motion</h1>
+<h1 ng-if="!model.id" translate>New motion</h1>
 
 <form name="motionForm" ng-submit="save(model)">
   <formly-form model="model" fields="formFields">
     <button type="submit" ng-disabled="motionForm.$invalid" class="btn btn-primary" translate>
       Submit
     </button>
-    <button ui-sref="motions.motion.list" class="btn btn-default" translate>
+    <button ng-click="closeThisDialog()" class="btn btn-default" translate>
       Cancel
     </button>
   </formly-form>

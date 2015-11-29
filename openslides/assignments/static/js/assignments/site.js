@@ -38,7 +38,6 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                 }
             }
         })
-        .state('assignments.assignment.create', {})
         .state('assignments.assignment.detail', {
             controller: 'AssignmentDetailCtrl',
             resolve: {
@@ -51,9 +50,15 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
             }
         })
         .state('assignments.assignment.detail.update', {
-            views: {
-                '@assignments.assignment': {}
-            }
+            onEnter: ['$stateParams', 'ngDialog', 'Assignment', function($stateParams, ngDialog, Assignment) {
+                ngDialog.open({
+                    template: 'static/templates/assignments/assignment-form.html',
+                    controller: 'AssignmentUpdateCtrl',
+                    className: 'ngdialog-theme-default wide-form',
+                    resolve: { assignment: function() {
+                        return Assignment.find($stateParams.id) }}
+                });
+            }]
         });
 })
 
@@ -157,7 +162,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
             $scope.sortColumn = column;
         };
 
-        // open new customslide dialog
+        // open new dialog
         $scope.newDialog = function () {
             ngDialog.open({
                 template: 'static/templates/assignments/assignment-form.html',
@@ -165,7 +170,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                 className: 'ngdialog-theme-default wide-form'
             });
         };
-        // edit view of related item (content object)
+        // open edit dialog
         $scope.editDialog = function (assignment) {
             ngDialog.open({
                 template: 'static/templates/assignments/assignment-form.html',
@@ -178,7 +183,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                 }
             });
         };
-        // save changed item
+        // save changed assignment
         $scope.save = function (assignment) {
             Assignment.save(assignment).then(
                 function(success) {
@@ -192,6 +197,23 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     }
                     $scope.alert = { type: 'danger', msg: message, show: true };
                 });
+        };
+        // *** delete mode functions ***
+        $scope.isDeleteMode = false;
+        // check all checkboxes
+        $scope.checkAll = function () {
+            angular.forEach($scope.assignments, function (assignment) {
+                assignment.selected = $scope.selectedAll;
+            });
+        };
+        // uncheck all checkboxes if isDeleteMode is closed
+        $scope.uncheckAll = function () {
+            if (!$scope.isDeleteMode) {
+                $scope.selectedAll = false;
+                angular.forEach($scope.assignments, function (assignment) {
+                    assignment.selected = false;
+                });
+            }
         };
         // delete all selected assignments
         $scope.deleteMultiple = function () {
@@ -329,7 +351,6 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     'Assignment',
     'AssignmentFormFieldFactory',
     function($scope, $state, Assignment, AssignmentFormFieldFactory) {
-        $scope.assignment = {};
         // get all form fields
         $scope.formFields = AssignmentFormFieldFactory.getFormFields();
 
@@ -379,7 +400,8 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         $scope.formFields = [];
         // add dynamic form fields
         assignmentpoll.options.forEach(function(option) {
-            $scope.formFields.push(
+            if (assignmentpoll.yesnoabstain) {
+                $scope.formFields.push(
                     {
                         noFormControl: true,
                         template: '<strong>' + option.candidate.get_full_name() + '</strong>'
@@ -410,8 +432,19 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                             type: 'number',
                             required: true
                         }
-                    }
-            );
+                    });
+            } else {
+                $scope.formFields.push(
+                    {
+                        key: 'vote_' + option.candidate_id,
+                        type: 'input',
+                        templateOptions: {
+                            label: option.candidate.get_full_name(),
+                            type: 'number',
+                            required: true
+                        }
+                    });
+            }
         });
         // add general form fields
         $scope.formFields.push(
@@ -455,13 +488,21 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
         // save assignment
         $scope.save = function (poll) {
             var votes = [];
-            assignmentpoll.options.forEach(function(option) {
-                votes.push({
-                    "Yes": poll['yes_' + option.candidate_id],
-                    "No": poll['no_' + option.candidate_id],
-                    "Abstain": poll['abstain_' + option.candidate_id]
+            if (assignmentpoll.yesnoabstain) {
+                assignmentpoll.options.forEach(function(option) {
+                    votes.push({
+                        "Yes": poll['yes_' + option.candidate_id],
+                        "No": poll['no_' + option.candidate_id],
+                        "Abstain": poll['abstain_' + option.candidate_id]
+                    });
                 });
-            });
+            } else {
+                assignmentpoll.options.forEach(function(option) {
+                    votes.push({
+                        "Votes": poll['vote_' + option.candidate_id],
+                    });
+                });
+            }
             poll.DSUpdate({
                     assignment_id: poll.assignment_id,
                     votes: votes,

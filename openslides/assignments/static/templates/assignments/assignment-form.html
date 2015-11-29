@@ -1,5 +1,5 @@
-<h1 ng-if="assignment.id" translate>Edit election</h1>
-<h1 ng-if="!assignment.id" translate>New election</h1>
+<h1 ng-if="model.id" translate>Edit election</h1>
+<h1 ng-if="!model.id" translate>New election</h1>
 
 <form name="assignmentForm" ng-submit="save(model)">
   <formly-form model="model" fields="formFields">

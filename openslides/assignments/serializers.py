@@ -102,10 +102,13 @@ class AssignmentAllPollSerializer(ModelSerializer):
         Customized update method for polls. To update votes use the write
         only field 'votes'.
 
-        Example data for a 'yesnoabstain' poll with two candidates:
+        Example data for a 'yesnoabstain'=true poll with two candidates:
 
             "votes": [{"Yes": 10, "No": 4, "Abstain": -2},
                       {"Yes": -1, "No": 0, "Abstain": -2}]
+
+        Example data for a 'yesnoabstain'=false poll with two candidates:
+            "votes": [{"Votes": 10}, {"Votes": 0}]
         """
         # Update votes.
         votes = validated_data.get('votes')

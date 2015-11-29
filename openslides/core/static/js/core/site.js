@@ -227,6 +227,17 @@ angular.module('OpenSlidesApp.core.site', [
                 }
             }
         })
+        .state('core.customslide.detail.update', {
+            onEnter: ['$stateParams', 'ngDialog', 'Customslide', function($stateParams, ngDialog, Customslide) {
+                ngDialog.open({
+                    template: 'static/templates/core/customslide-form.html',
+                    controller: 'CustomslideUpdateCtrl',
+                    className: 'ngdialog-theme-default wide-form',
+                    resolve: { customslide: function() {
+                        return Customslide.find($stateParams.id) }}
+                });
+            }]
+        })
         // tag
         .state('core.tag', {
             url: '/tag',

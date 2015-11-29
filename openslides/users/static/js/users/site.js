@@ -246,12 +246,109 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     }
 ])
 
+// Provide generic user form fields for create and update view
+.factory('UserFormFieldFactory', [
+    '$http',
+    'gettext',
+    'Group',
+    function ($http, gettext, Group) {
+        return {
+            getFormFields: function () {
+                return [
+                {
+                    key: 'title',
+                    type: 'input',
+                    templateOptions: {
+                        label: gettext('Title'),
+                    }
+                },
+                {
+                    key: 'first_name',
+                    type: 'input',
+                    templateOptions: {
+                        label: gettext('First name')
+                    }
+                },
+                {
+                    key: 'last_name',
+                    type: 'input',
+                    templateOptions: {
+                        label: gettext('Last name')
+                    }
+                },
+                {
+                    key: 'structure_level',
+                    type: 'input',
+                    templateOptions: {
+                        label: gettext('Structure level')
+                    }
+                },
+                {
+                    key: 'groups',
+                    type: 'ui-select-multiple',
+                    templateOptions: {
+                        label: gettext('Groups'),
+                        optionsAttr: 'bs-options',
+                        options: Group.getAll(),
+                        ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
+                        valueProp: 'id',
+                        labelProp: 'name',
+                        placeholder: gettext('Select or search a group...')
+                    }
+                },
+                {
+                    key: 'default_password',
+                    type: 'input',
+                    templateOptions: {
+                        label: gettext('Default password'),
+                        addonRight: { text: 'Reset', class: 'fa fa-undo', onClick: function () {
+                            // TODO: find a way to get user.id
+                            //$http.post('/rest/users/user/' + model.id + '/reset_password/', {})
+                            }
+                        }
+                    }
+                },
+                {
+                    key: 'comment',
+                    type: 'input',
+                    templateOptions: {
+                        label: gettext('Comment')
+                    }
+                },
+                {
+                    key: 'about_me',
+                    type: 'textarea',
+                    templateOptions: {
+                        label: gettext('About me')
+                    },
+                    ngModelElAttrs: {'ckeditor': 'CKEditorOptions'}
+                },
+                {
+                    key: 'is_present',
+                    type: 'checkbox',
+                    templateOptions: {
+                        label: gettext('Is present')
+                    }
+                },
+                {
+                    key: 'is_active',
+                    type: 'checkbox',
+                    templateOptions: {
+                        label: gettext('Is active')
+                    }
+                }];
+            }
+        }
+    }
+])
+
 .controller('UserListCtrl', [
     '$scope',
     '$state',
+    'ngDialog',
     'User',
     'Group',
-    function($scope, $state, User, Group) {
+    function($scope, $state, ngDialog, User, Group) {
         User.bindAll({}, $scope, 'users');
         Group.bindAll({}, $scope, 'groups');
 
@@ -267,17 +364,42 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             $scope.sortColumn = column;
         };
 
-        // open detail view link
-        $scope.openDetail = function (id) {
-            $state.go('users.user.detail', {id: id});
+        // open new dialog
+        $scope.newDialog = function () {
+            ngDialog.open({
+                template: 'static/templates/users/user-form.html',
+                controller: 'UserCreateCtrl',
+                className: 'ngdialog-theme-default wide-form'
+            });
         };
-
+        // open edit dialog
+        $scope.editDialog = function (user) {
+            ngDialog.open({
+                template: 'static/templates/users/user-form.html',
+                controller: 'UserUpdateCtrl',
+                className: 'ngdialog-theme-default wide-form',
+                resolve: {
+                    user: function(User) {
+                        return User.find(user.id);
+                    }
+                }
+            });
+        };
         // save changed user
-        $scope.togglePresent = function (user) {
-            //the value was changed by the template (checkbox)
-            User.save(user);
+        $scope.save = function (user) {
+            Assignment.save(user).then(
+                function(success) {
+                    //user.quickEdit = false;
+                    $scope.alert.show = false;
+                },
+                function(error){
+                    var message = '';
+                    for (var e in error.data) {
+                        message += e + ': ' + error.data[e] + ' ';
+                    }
+                    $scope.alert = { type: 'danger', msg: message, show: true };
+                });
         };
-
         // *** delete mode functions ***
         $scope.isDeleteMode = false;
         // check all checkboxes
@@ -295,14 +417,18 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                 });
             }
         };
-        // delete selected user
-        $scope.delete = function () {
+        // delete all selected users
+        $scope.deleteMultiple = function () {
             angular.forEach($scope.users, function (user) {
                 if (user.selected)
                     User.destroy(user.id);
             });
             $scope.isDeleteMode = false;
             $scope.uncheckAll();
+        };
+        // delete single user
+        $scope.delete = function (user) {
+            User.destroy(user.id);
         };
     }
 ])
@@ -322,17 +448,21 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     '$scope',
     '$state',
     'User',
+    'UserFormFieldFactory',
     'Group',
-    function($scope, $state, User, Group) {
+    function($scope, $state, User, UserFormFieldFactory, Group) {
         Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
-        $scope.user = {};
+        // get all form fields
+        $scope.formFields = UserFormFieldFactory.getFormFields();
+
+        // save user
         $scope.save = function (user) {
             if (!user.groups) {
                 user.groups = [];
             }
             User.create(user).then(
                 function(success) {
-                    $state.go('users.user.list');
+                    $scope.closeThisDialog();
                 }
             );
         };
@@ -344,32 +474,27 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     '$state',
     '$http',
     'User',
-    'user',
+    'UserFormFieldFactory',
     'Group',
-    function($scope, $state, $http, User, user, Group) {
+    'user',
+    function($scope, $state, $http, User, UserFormFieldFactory, Group, user) {
         Group.bindAll({where: {id: {'>': 2}}}, $scope, 'groups');
-        $scope.user = user;  // autoupdate is not activated
+        // set initial values for form model
+        $scope.model = user;
+        // get all form fields
+        $scope.formFields = UserFormFieldFactory.getFormFields();
+
+        // save user
         $scope.save = function (user) {
             if (!user.groups) {
                 user.groups = [];
             }
             User.save(user).then(
                 function(success) {
-                    $state.go('users.user.list');
+                    $scope.closeThisDialog();
                 }
             );
         };
-        $scope.reset_password = function (user) {
-            $http.post('/rest/users/user/2/reset_password/', {})
-                .then(
-                    function(data) {
-                        // TODO: Success message
-                    },
-                    function(data) {
-                        // TODO: error message
-                    }
-                );
-        }
     }
 ])
 
@@ -477,7 +602,6 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     var groups = obj[i].groups.replace('"','').split(",");
                     groups.forEach(function(group) {
                         user.groups.push(group);
-                        console.log(group);
                     });
                 }
                 user.comment = obj[i].comment;

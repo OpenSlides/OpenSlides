@@ -131,7 +131,7 @@
         <div os-perms="agenda.can_manage" class="hoverActions" ng-class="{'hiddenDiv': !item.hover}">
           <a ui-sref="agenda.item.detail({id: item.id})" translate>List of speakers</a> |
           <a href="" ng-click="item.quickEdit=true" translate>QuickEdit</a> |
-          <a href="" ng-click="edit(item)" translate>Edit</a>
+          <a href="" ng-click="editDialog(item)" translate>Edit</a>
           <!-- TODO: translate confirm message -->
           <span ng-if="item.content_object.collection == 'core/customslide'"> |
             <a href="" class="text-danger"
@@ -143,10 +143,10 @@
         {{ item.duration }}
         <span ng-if="item.duration" translate>h</span>
       <td ng-if="!item.quickEdit">
-        <input type="checkbox" ng-model="item.closed" ng-change="update(item.id);">
+        <input type="checkbox" ng-model="item.closed" ng-change="save(item.id);">
       <!-- quickEdit columns -->
       <td ng-if="item.quickEdit" os-perms-lite="agenda.can_manage" colspan="3">
-        <form ng-submit="update(item)">
+        <form ng-submit="save(item)">
         <h4>{{ item.getTitle() }} <span class="text-muted">&ndash; QuickEdit</span></h4>
           <alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
             {{alert.msg}}

@@ -37,17 +37,6 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
                     }
                 }
             })
-            .state('agenda.item.create', {
-                resolve: {
-                    types: function($http) {
-                        // get all item types
-                        return $http({ 'method': 'OPTIONS', 'url': '/rest/agenda/item/' });
-                    },
-                    tags: function(Tag) {
-                        return Tag.findAll();
-                    }
-                }
-            })
             .state('agenda.item.detail', {
                 resolve: {
                     item: function(Agenda, $stateParams) {
@@ -58,17 +47,6 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
                     },
                     tags: function(Tag) {
                         return Tag.findAll();
-                    }
-                }
-            })
-            .state('agenda.item.detail.update', {
-                views: {
-                    '@agenda.item': {}
-                },
-                resolve: {
-                    types: function($http) {
-                        // get all item types
-                        return $http({ 'method': 'OPTIONS', 'url': '/rest/agenda/item/' });
                     }
                 }
             })
@@ -115,7 +93,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             );
         };
 
-        // open new customslide dialog
+        // open new dialog
         $scope.newDialog = function () {
             ngDialog.open({
                 template: 'static/templates/core/customslide-form.html',
@@ -123,32 +101,18 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
                 className: 'ngdialog-theme-default wide-form'
             });
         };
+        // open edit dialog
+        $scope.editDialog = function (item) {
+            $state.go(item.content_object.collection.replace('/','.')+'.detail.update',
+                        {id: item.content_object.id});
+        };
         // detail view of related item (content object)
         $scope.open = function (item) {
             $state.go(item.content_object.collection.replace('/','.')+'.detail',
                     {id: item.content_object.id});
         };
-        // edit view of related item (content object)
-        $scope.edit = function (item) {
-            if (item.content_object.collection == "core/customslide") {
-                ngDialog.open({
-                    template: 'static/templates/core/customslide-form.html',
-                    controller: 'CustomslideUpdateCtrl',
-                    className: 'ngdialog-theme-default wide-form',
-                    resolve: {
-                        customslide: function(Customslide) {
-                            return Customslide.find(item.content_object.id);
-                        }
-                    }
-                });
-            }
-            else {
-                $state.go(item.content_object.collection.replace('/','.')+'.detail.update',
-                        {id: item.content_object.id});
-            }
-        };
-        // update changed item
-        $scope.update = function (item) {
+        // save changed item
+        $scope.save = function (item) {
             Agenda.save(item).then(
                 function(success) {
                     item.quickEdit = false;
@@ -282,48 +246,6 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         $scope.projectListOfSpeakers = function () {
             $http.post('/rest/core/projector/1/prune_elements/',
                     [{name: 'agenda/item', id: item.id, list_of_speakers: true}]);
-        };
-    }
-])
-
-.controller('ItemCreateCtrl', [
-    '$scope',
-    '$state',
-    'Agenda',
-    'Tag',
-    'types',
-    function($scope, $state, Agenda, Tag, types) {
-        $scope.types = types.data.actions.POST.type.choices;  // get all item types
-        Tag.bindAll({}, $scope, 'tags');
-        $scope.save = function (item) {
-            if (!item)
-                return null;
-            Agenda.create(item).then(
-                function(success) {
-                    $state.go('agenda.item.list');
-                }
-            );
-        };
-    }
-])
-
-.controller('ItemUpdateCtrl', [
-    '$scope',
-    '$state',
-    'Agenda',
-    'Tag',
-    'types',
-    'item',
-    function($scope, $state, Agenda, Tag, types, item) {
-        $scope.types = types.data.actions.POST.type.choices;  // get all item types
-        Tag.bindAll({}, $scope, 'tags');
-        $scope.item = item;
-        $scope.save = function (item) {
-            Agenda.save(item).then(
-                function(success) {
-                    $state.go('agenda.item.list');
-                }
-            );
         };
     }
 ])
