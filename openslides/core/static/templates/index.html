@@ -137,7 +137,7 @@
         <li ng-repeat="element in elements" ui-sref-active="active">
           <a ui-sref="{{ element.ui_sref }}">
             <i class="fa fa-{{ element.img_class }}"></i>
-            <translate>{{ element.title }}</translate>
+            {{ element.title | translate }}
           </a>
       </ul>
     </div>

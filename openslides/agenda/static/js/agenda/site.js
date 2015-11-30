@@ -6,11 +6,12 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
 
 .config([
     'mainMenuProvider',
-    function (mainMenuProvider) {
+    'gettext',
+    function (mainMenuProvider, gettext) {
         mainMenuProvider.register({
             'ui_sref': 'agenda.item.list',
             'img_class': 'calendar-o',
-            'title': 'Agenda',
+            'title': gettext('Agenda'),
             'weight': 200,
             'perm': 'agenda.can_see',
         });

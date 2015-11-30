@@ -63,20 +63,41 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
+// set browser language as default language for OpenSlides
+.run([
+    'gettextCatalog',
+    function(gettextCatalog) {
+        // detect browser language
+        var lang = navigator.language || navigator.userLanguage;
+        if (lang.indexOf('-') !== -1)
+            lang = lang.split('-')[0];
+        if (lang.indexOf('_') !== -1)
+            lang = lang.split('_')[0];
+        // set default language
+        gettextCatalog.setCurrentLanguage(lang);
+        // load language file
+        if (lang != 'en') {
+            gettextCatalog.loadRemote("static/i18n/" + lang + ".json");
+        }
+        //TODO: for debug only! (helps to find untranslated strings by adding "[MISSING]:")
+        gettextCatalog.debug = false;
+    }
+])
 .config([
     'mainMenuProvider',
-    function (mainMenuProvider) {
+    'gettext',
+    function (mainMenuProvider, gettext) {
         mainMenuProvider.register({
             'ui_sref': 'dashboard',
             'img_class': 'home',
-            'title': 'Home',
+            'title': gettext('Home'),
             'weight': 100,
         });
 
         mainMenuProvider.register({
             'ui_sref': 'config',
             'img_class': 'cog',
-            'title': 'Settings',
+            'title': gettext('Settings'),
             'weight': 1000,
             'perm': 'core.can_manage_config',
         });
@@ -342,10 +363,6 @@ angular.module('OpenSlidesApp.core.site', [
 
 .controller("LanguageCtrl", function ($scope, gettextCatalog) {
     // controller to switch app language
-    // TODO: detect browser language for default language
-    gettextCatalog.setCurrentLanguage('en');
-    //TODO: for debug only! (helps to find untranslated strings by adding "[MISSING]:")
-    gettextCatalog.debug = true;
     $scope.switchLanguage = function (lang) {
         gettextCatalog.setCurrentLanguage(lang);
         if (lang != 'en') {

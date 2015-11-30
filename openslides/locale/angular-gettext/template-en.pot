@@ -20,13 +20,13 @@ msgstr ""
 msgid "--- Select state ---"
 msgstr ""
 
-#: users/static/js/users/site.js:322
+#: users/static/js/users/site.js:323
 #: users/static/templates/users/user-detail-profile.html:39
 #: users/static/templates/users/user-detail.html:37
 msgid "About me"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:436
+#: assignments/static/js/assignments/site.js:437
 #: motions/static/templates/motions/motion-detail.html:135
 #: motions/static/templates/motions/motion-detail.html:136
 #: motions/static/templates/motions/motion-detail.html:186
@@ -64,6 +64,7 @@ msgstr ""
 msgid "Administrative data"
 msgstr ""
 
+#: agenda/static/js/agenda/site.js:14
 #: agenda/static/templates/agenda/item-list.html:25
 #: agenda/static/templates/agenda/item-list.html:47
 #: agenda/static/templates/agenda/slide-item-list.html:2
@@ -177,14 +178,14 @@ msgid "Closed"
 msgstr ""
 
 #: agenda/static/templates/agenda/item-list.html:174
-#: users/static/js/users/site.js:315
+#: users/static/js/users/site.js:316
 #: users/static/templates/users/user-detail.html:45
 #: users/static/templates/users/user-import.html:72
 msgid "Comment"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:119
-#: assignments/static/js/assignments/site.js:486
+#: assignments/static/js/assignments/site.js:120
+#: assignments/static/js/assignments/site.js:487
 msgid "Comment on the ballot paper"
 msgstr ""
 
@@ -220,8 +221,8 @@ msgstr ""
 msgid "Current value:"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:100
-#: assignments/static/js/assignments/site.js:135
+#: assignments/static/js/assignments/site.js:101
+#: assignments/static/js/assignments/site.js:136
 msgid "Default comment on the ballot paper"
 msgstr ""
 
@@ -229,7 +230,7 @@ msgstr ""
 msgid "Default groups"
 msgstr ""
 
-#: users/static/js/users/site.js:303
+#: users/static/js/users/site.js:304
 msgid "Default password"
 msgstr ""
 
@@ -259,7 +260,7 @@ msgstr ""
 msgid "Delete selected items"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:84
+#: assignments/static/js/assignments/site.js:85
 #: assignments/static/templates/assignments/assignment-detail.html:37
 #: core/static/templates/core/projector-controls.html:120
 msgid "Description"
@@ -360,10 +361,12 @@ msgstr ""
 msgid "Election result"
 msgstr ""
 
+#: assignments/static/js/assignments/site.js:14
 #: assignments/static/templates/assignments/assignment-list.html:17
 msgid "Elections"
 msgstr ""
 
+#: mediafiles/static/js/mediafiles/site.js:14
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:9
 msgid "Files"
 msgstr ""
@@ -386,7 +389,7 @@ msgstr ""
 msgid "Filter"
 msgstr ""
 
-#: users/static/js/users/site.js:269
+#: users/static/js/users/site.js:270
 #: users/static/templates/users/user-detail-profile.html:26
 #: users/static/templates/users/user-import.html:68
 msgid "First name"
@@ -396,7 +399,7 @@ msgstr ""
 msgid "Group"
 msgstr ""
 
-#: users/static/js/users/site.js:290
+#: users/static/js/users/site.js:291
 #: users/static/templates/users/group-list.html:13
 #: users/static/templates/users/user-detail.html:33
 #: users/static/templates/users/user-import.html:71
@@ -416,6 +419,10 @@ msgstr ""
 
 #: agenda/static/templates/agenda/item-list.html:79
 msgid "Hide internal agenda items"
+msgstr ""
+
+#: core/static/js/core/site.js:93
+msgid "Home"
 msgstr ""
 
 #: users/static/templates/users/group-list.html:34
@@ -455,11 +462,11 @@ msgstr ""
 msgid "Import participants"
 msgstr ""
 
-#: users/static/js/users/site.js:722
+#: users/static/js/users/site.js:723
 msgid "Important: Please change your password!"
 msgstr ""
 
-#: users/static/js/users/site.js:720
+#: users/static/js/users/site.js:721
 msgid "Installation was successfully."
 msgstr ""
 
@@ -469,11 +476,11 @@ msgstr ""
 msgid "Invalid votes"
 msgstr ""
 
-#: users/static/js/users/site.js:337
+#: users/static/js/users/site.js:338
 msgid "Is active"
 msgstr ""
 
-#: users/static/js/users/site.js:330
+#: users/static/js/users/site.js:331
 #: users/static/templates/users/user-list.html:70
 msgid "Is present"
 msgstr ""
@@ -482,7 +489,7 @@ msgstr ""
 msgid "Item number"
 msgstr ""
 
-#: users/static/js/users/site.js:276
+#: users/static/js/users/site.js:277
 #: users/static/templates/users/user-detail-profile.html:30
 #: users/static/templates/users/user-import.html:69
 msgid "Last name"
@@ -597,14 +604,14 @@ msgstr ""
 msgid "Next speakers:"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:427
+#: assignments/static/js/assignments/site.js:428
 #: motions/static/templates/motions/motion-detail.html:130
 #: motions/static/templates/motions/motion-detail.html:131
 #: motions/static/templates/motions/motion-detail.html:177
 msgid "No"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:91
+#: assignments/static/js/assignments/site.js:92
 #: assignments/static/templates/assignments/assignment-list.html:144
 msgid "Number of members to be elected"
 msgstr ""
@@ -634,6 +641,7 @@ msgstr ""
 msgid "Participant"
 msgstr ""
 
+#: users/static/js/users/site.js:14
 #: users/static/templates/users/user-list.html:35
 msgid "Participants"
 msgstr ""
@@ -826,7 +834,7 @@ msgstr ""
 msgid "Select or search a category..."
 msgstr ""
 
-#: users/static/js/users/site.js:296
+#: users/static/js/users/site.js:297
 msgid "Select or search a group..."
 msgstr ""
 
@@ -856,6 +864,10 @@ msgstr ""
 
 #: motions/static/js/motions/site.js:189
 msgid "Select or search an attachment..."
+msgstr ""
+
+#: core/static/js/core/site.js:100
+msgid "Settings"
 msgstr ""
 
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:65
@@ -909,7 +921,7 @@ msgstr ""
 msgid "Stop current speaker"
 msgstr ""
 
-#: users/static/js/users/site.js:283
+#: users/static/js/users/site.js:284
 #: users/static/templates/users/user-detail-profile.html:35
 #: users/static/templates/users/user-detail.html:31
 #: users/static/templates/users/user-import.html:70
@@ -953,7 +965,7 @@ msgid "Tags"
 msgstr ""
 
 #: agenda/static/templates/agenda/item-import.html:64
-#: core/static/js/core/site.js:413
+#: core/static/js/core/site.js:430
 #: motions/static/js/motions/site.js:158
 #: motions/static/templates/motions/motion-detail.html:232
 msgid "Text"
@@ -971,15 +983,15 @@ msgstr ""
 #. academic degree
 #: agenda/static/templates/agenda/item-import.html:63
 #: agenda/static/templates/agenda/item-list.html:170
-#: assignments/static/js/assignments/site.js:76
+#: assignments/static/js/assignments/site.js:77
 #: assignments/static/templates/assignments/assignment-list.html:140
 #: assignments/static/templates/assignments/assignment-list.html:84
-#: core/static/js/core/site.js:405
+#: core/static/js/core/site.js:422
 #: mediafiles/static/templates/mediafiles/mediafile-form.html:25
 #: mediafiles/static/templates/mediafiles/mediafile-list.html:25
 #: motions/static/js/motions/site.js:150
 #: motions/static/templates/motions/motion-list.html:91
-#: users/static/js/users/site.js:262
+#: users/static/js/users/site.js:263
 #: users/static/templates/users/user-detail-profile.html:22
 #: users/static/templates/users/user-import.html:67
 msgid "Title"
@@ -1007,7 +1019,7 @@ msgstr ""
 msgid "Uploaded by"
 msgstr ""
 
-#: users/static/js/users/site.js:721
+#: users/static/js/users/site.js:722
 msgid "Use <strong>admin</strong> and <strong>admin</strong> for first login."
 msgstr ""
 
@@ -1022,7 +1034,7 @@ msgstr ""
 msgid "Username"
 msgstr ""
 
-#: users/static/js/users/site.js:742
+#: users/static/js/users/site.js:743
 msgid "Username or password was not correct."
 msgstr ""
 
@@ -1036,18 +1048,18 @@ msgstr ""
 msgid "Vote"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:476
+#: assignments/static/js/assignments/site.js:477
 #: motions/static/templates/motions/motion-detail.html:150
 #: motions/static/templates/motions/motion-detail.html:151
 #: motions/static/templates/motions/motion-detail.html:214
 msgid "Votes cast"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:468
+#: assignments/static/js/assignments/site.js:469
 msgid "Votes invalid"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:460
+#: assignments/static/js/assignments/site.js:461
 msgid "Votes valid"
 msgstr ""
 
@@ -1059,8 +1071,8 @@ msgstr ""
 msgid "Workflow"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:126
-#: assignments/static/js/assignments/site.js:418
+#: assignments/static/js/assignments/site.js:127
+#: assignments/static/js/assignments/site.js:419
 #: motions/static/templates/motions/motion-detail.html:125
 #: motions/static/templates/motions/motion-detail.html:126
 #: motions/static/templates/motions/motion-detail.html:168

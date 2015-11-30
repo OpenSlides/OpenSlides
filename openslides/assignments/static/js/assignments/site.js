@@ -6,11 +6,12 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 
 .config([
     'mainMenuProvider',
-    function (mainMenuProvider) {
+    'gettext',
+    function (mainMenuProvider, gettext) {
         mainMenuProvider.register({
             'ui_sref': 'assignments.assignment.list',
             'img_class': 'pie-chart',
-            'title': 'Elections',
+            'title': gettext('Elections'),
             'weight': 400,
             'perm': 'assignments.can_see'
         });
@@ -64,8 +65,8 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 
 // Provide generic assignment form fields for create and update view
 .factory('AssignmentFormFieldFactory', [
-    'gettext',
-    function (gettext) {
+    'gettextCatalog',
+    function (gettextCatalog) {
         return {
             getFormFields: function () {
                 return [
@@ -73,7 +74,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     key: 'title',
                     type: 'input',
                     templateOptions: {
-                        label: gettext('Title'),
+                        label: gettextCatalog.getString('Title'),
                         required: true
                     }
                 },
@@ -81,14 +82,14 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     key: 'description',
                     type: 'textarea',
                     templateOptions: {
-                        label: gettext('Description')
+                        label: gettextCatalog.getString('Description')
                     }
                 },
                 {
                     key: 'open_posts',
                     type: 'input',
                     templateOptions: {
-                        label: gettext('Number of members to be elected'),
+                        label: gettextCatalog.getString('Number of members to be elected'),
                         type: 'number',
                         required: true
                     }
@@ -97,7 +98,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     key: 'poll_description_default',
                     type: 'input',
                     templateOptions: {
-                        label: gettext('Default comment on the ballot paper')
+                        label: gettextCatalog.getString('Default comment on the ballot paper')
                     }
                 }];
             }
@@ -107,8 +108,8 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 
 // Provide generic assignmentpoll form fields for create and update view
 .factory('AssignmentPollFormFieldFactory', [
-    'gettext',
-    function (gettext) {
+    'gettextCatalog',
+    function (gettextCatalog) {
         return {
             getFormFields: function () {
                 return [
@@ -116,14 +117,14 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     key: 'description',
                     type: 'input',
                     templateOptions: {
-                        label: gettext('Comment on the ballot paper')
+                        label: gettextCatalog.getString('Comment on the ballot paper')
                     }
                 },
                 {
                     key: 'yes',
                     type: 'input',
                     templateOptions: {
-                        label: gettext('Yes'),
+                        label: gettextCatalog.getString('Yes'),
                         type: 'number',
                         required: true
                     }
@@ -132,7 +133,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     key: 'poll_description_default',
                     type: 'input',
                     templateOptions: {
-                        label: gettext('Default comment on the ballot paper')
+                        label: gettextCatalog.getString('Default comment on the ballot paper')
                     }
                 }];
             }
@@ -394,11 +395,11 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 .controller('AssignmentPollUpdateCtrl', [
     '$scope',
     '$state',
-    'gettext',
+    'gettextCatalog',
     'AssignmentPoll',
     'assignmentpoll',
     'ballot',
-    function($scope, $state, gettext, AssignmentPoll, assignmentpoll, ballot) {
+    function($scope, $state, gettextCatalog, AssignmentPoll, assignmentpoll, ballot) {
         // set initial values for form model
         $scope.model = assignmentpoll;
         $scope.ballot = ballot;
@@ -415,7 +416,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                         key: 'yes_' + option.candidate_id,
                         type: 'input',
                         templateOptions: {
-                            label: gettext('Yes'),
+                            label: gettextCatalog.getString('Yes'),
                             type: 'number',
                             required: true
                         }
@@ -424,7 +425,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                         key: 'no_' + option.candidate_id,
                         type: 'input',
                         templateOptions: {
-                            label: gettext('No'),
+                            label: gettextCatalog.getString('No'),
                             type: 'number',
                             required: true
                         }
@@ -433,7 +434,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                         key:'abstain_' + option.candidate_id,
                         type: 'input',
                         templateOptions: {
-                            label: gettext('Abstain'),
+                            label: gettextCatalog.getString('Abstain'),
                             type: 'number',
                             required: true
                         }
@@ -457,7 +458,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     key: 'votesvalid',
                     type: 'input',
                     templateOptions: {
-                        label: gettext('Votes valid'),
+                        label: gettextCatalog.getString('Votes valid'),
                         type: 'number'
                     }
                 },
@@ -465,7 +466,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     key: 'votesinvalid',
                     type: 'input',
                     templateOptions: {
-                        label: gettext('Votes invalid'),
+                        label: gettextCatalog.getString('Votes invalid'),
                         type: 'number'
                     }
                 },
@@ -473,7 +474,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     key: 'votescast',
                     type: 'input',
                     templateOptions: {
-                        label: gettext('Votes cast'),
+                        label: gettextCatalog.getString('Votes cast'),
                         type: 'number'
                     }
                 },
@@ -483,7 +484,7 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     key: 'description',
                     type: 'input',
                     templateOptions: {
-                        label: gettext('Comment on the ballot paper')
+                        label: gettextCatalog.getString('Comment on the ballot paper')
                     }
                 }
         );
