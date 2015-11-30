@@ -29,14 +29,14 @@
   <div class="pull-right">
     <span os-perms="agenda.can_manage">
       <button ng-if="item.speaker_list_closed" ng-click="closeList(false)"
-          class="btn btn-sm btn-default" translate>
+          class="btn btn-sm btn-default">
         <i class="fa fa-toggle-off"></i>
-        Close
+        <translate>Close</translate>
       </button>
       <button ng-if="!item.speaker_list_closed" ng-click="closeList(true)"
-          class="btn btn-sm btn-default" translate>
+          class="btn btn-sm btn-default">
         <i class="fa fa-toggle-on"></i>
-        Open
+        <translate>Open</translate>
       </button>
     </span>
   </div>
