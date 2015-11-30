@@ -2,7 +2,6 @@ from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.datastructures import SortedDict
-from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy, ugettext_noop
 
 from openslides.agenda.models import Item, Speaker
@@ -354,9 +353,6 @@ class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,
         max_length=79,
         blank=True,
         verbose_name=ugettext_lazy("Comment on the ballot paper"))
-
-    def __str__(self):
-        return _("Ballot %d") % self.get_ballot()
 
     def get_assignment(self):
         return self.assignment
