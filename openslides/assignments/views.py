@@ -248,7 +248,7 @@ class AssignmentPDF(PDFView):
         try:
             assignment = Assignment.objects.get(pk=self.kwargs['pk'])
             filename = u'%s-%s' % (
-                _("Assignment"),
+                _("Election"),
                 assignment.title.replace(' ', '_'))
         except:
             filename = _("Elections")
@@ -272,7 +272,7 @@ class AssignmentPDF(PDFView):
             assignments = Assignment.objects.all()
             if not assignments:  # No assignments existing
                 story.append(Paragraph(
-                    _("No assignments available."), stylesheet['Heading3']))
+                    _("No elections available."), stylesheet['Heading3']))
             else:  # Print all assignments
                 # List of assignments
                 for assignment in assignments:

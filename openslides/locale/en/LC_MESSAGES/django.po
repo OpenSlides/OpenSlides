@@ -5,66 +5,66 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-21 00:01+0100\n"
+"POT-Creation-Date: 2015-11-30 20:59+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: agenda/models.py:136
+#: agenda/models.py:160
 msgid "Agenda item"
 msgstr ""
 
-#: agenda/models.py:137
+#: agenda/models.py:161
 msgid "Hidden item"
 msgstr ""
 
-#: agenda/models.py:139
+#: agenda/models.py:163
 msgid "Number"
 msgstr ""
 
-#: agenda/models.py:144 users/models.py:137
+#: agenda/models.py:168 users/models.py:137
 msgid "Comment"
 msgstr ""
 
-#: agenda/models.py:149
+#: agenda/models.py:173
 msgid "Closed"
 msgstr ""
 
-#: agenda/models.py:157
+#: agenda/models.py:181
 msgid "Type"
 msgstr ""
 
-#: agenda/models.py:174 core/models.py:130
+#: agenda/models.py:198 core/models.py:130
 msgid "Weight"
 msgstr ""
 
-#: agenda/models.py:195
+#: agenda/models.py:219
 msgid "List of speakers is closed"
 msgstr ""
 
-#: agenda/models.py:202
+#: agenda/models.py:226
 msgid "Can see agenda"
 msgstr ""
 
-#: agenda/models.py:203
+#: agenda/models.py:227
 msgid "Can manage agenda"
 msgstr ""
 
-#: agenda/models.py:204
+#: agenda/models.py:228
 msgid "Can see hidden items and time scheduling of agenda"
 msgstr ""
 
-#: agenda/models.py:307
+#: agenda/models.py:303
 #, python-format
 msgid "%(user)s is already on the list of speakers of item %(id)s."
 msgstr ""
 
-#: agenda/models.py:311
+#: agenda/models.py:307
 msgid "An anonymous user can not be on lists of speakers."
 msgstr ""
 
-#: agenda/models.py:351
+#: agenda/models.py:347
 msgid "Can put oneself on the list of speakers"
 msgstr ""
 
@@ -81,8 +81,8 @@ msgid "Input format: DD.MM.YYYY HH:MM"
 msgstr ""
 
 #: agenda/signals.py:34 agenda/signals.py:43 agenda/signals.py:53
-#: agenda/signals.py:60 agenda/signals.py:72 agenda/views.py:230
-#: agenda/views.py:231
+#: agenda/signals.py:60 agenda/signals.py:72 agenda/views.py:240
+#: agenda/views.py:241
 msgid "Agenda"
 msgstr ""
 
@@ -114,149 +114,149 @@ msgstr ""
 msgid "Roman"
 msgstr ""
 
-#: agenda/views.py:104
+#: agenda/views.py:105
 msgid "The list of speakers is closed."
 msgstr ""
 
-#: agenda/views.py:113
+#: agenda/views.py:114
 msgid "User does not exist."
 msgstr ""
 
-#: agenda/views.py:121
+#: agenda/views.py:122
 #, python-format
 msgid "User %s was successfully added to the list of speakers."
 msgstr ""
 
-#: agenda/views.py:139
+#: agenda/views.py:140
 msgid "You are not on the list of speakers."
 msgstr ""
 
-#: agenda/views.py:147 agenda/views.py:177
+#: agenda/views.py:148 agenda/views.py:178
 msgid "Speaker does not exist."
 msgstr ""
 
-#: agenda/views.py:151
+#: agenda/views.py:152
 #, python-format
 msgid "Speaker %s was successfully removed from the list of speakers."
 msgstr ""
 
-#: agenda/views.py:172
+#: agenda/views.py:173
 msgid "The list of speakers is empty."
 msgstr ""
 
-#: agenda/views.py:179
+#: agenda/views.py:180
 msgid "User is now speaking."
 msgstr ""
 
-#: agenda/views.py:190
+#: agenda/views.py:191
 #, python-format
 msgid "There is no one speaking at the moment according to %(item)s."
 msgstr ""
 
-#: agenda/views.py:192
+#: agenda/views.py:193
 msgid "The speech is finished now."
 msgstr ""
 
-#: assignments/models.py:30
+#: agenda/views.py:230
+msgid "The agenda has been numbered."
+msgstr ""
+
+#: assignments/models.py:29
 msgid "candidate"
 msgstr ""
 
-#: assignments/models.py:31 assignments/views.py:413
+#: assignments/models.py:30 assignments/views.py:414
 msgid "elected"
 msgstr ""
 
-#: assignments/models.py:32
+#: assignments/models.py:31
 msgid "blocked"
 msgstr ""
 
-#: assignments/models.py:65
+#: assignments/models.py:64
 msgid "Searching for candidates"
 msgstr ""
 
-#: assignments/models.py:66
+#: assignments/models.py:65
 msgid "Voting"
 msgstr ""
 
-#: assignments/models.py:67
+#: assignments/models.py:66
 msgid "Finished"
 msgstr ""
 
-#: assignments/models.py:72 core/models.py:124 core/signals.py:126
+#: assignments/models.py:71 core/models.py:124 core/signals.py:126
 #: mediafiles/models.py:19 motions/models.py:554 users/models.py:124
 #: users/pdf.py:26
 msgid "Title"
 msgstr ""
 
-#: assignments/models.py:79
+#: assignments/models.py:78
 msgid "Description"
 msgstr ""
 
-#: assignments/models.py:85 assignments/views.py:302
+#: assignments/models.py:84 assignments/views.py:303
 msgid "Number of members to be elected"
 msgstr ""
 
-#: assignments/models.py:93
+#: assignments/models.py:92
 msgid "Default comment on the ballot paper"
 msgstr ""
 
-#: assignments/models.py:121
+#: assignments/models.py:120
 msgid "Can see elections"
 msgstr ""
 
-#: assignments/models.py:122
+#: assignments/models.py:121
 msgid "Can nominate another participant"
 msgstr ""
 
-#: assignments/models.py:123
+#: assignments/models.py:122
 msgid "Can nominate oneself"
 msgstr ""
 
-#: assignments/models.py:124
+#: assignments/models.py:123
 msgid "Can manage elections"
 msgstr ""
 
-#: assignments/models.py:127 assignments/views.py:442 assignments/views.py:459
+#: assignments/models.py:126 assignments/views.py:251 assignments/views.py:443
+#: assignments/views.py:460
 msgid "Election"
 msgstr ""
 
-#: assignments/models.py:357
+#: assignments/models.py:355
 msgid "Comment on the ballot paper"
 msgstr ""
 
-#: assignments/models.py:360
-#, python-format
-msgid "Ballot %d"
-msgstr ""
-
-#: assignments/models.py:367 assignments/views.py:522 motions/models.py:691
+#: assignments/models.py:362 assignments/views.py:523 motions/models.py:691
 #: motions/pdf.py:125 motions/pdf.py:270
 msgid "Yes"
 msgstr ""
 
-#: assignments/models.py:367 assignments/views.py:523 motions/models.py:691
+#: assignments/models.py:362 assignments/views.py:524 motions/models.py:691
 #: motions/pdf.py:125 motions/pdf.py:272
 msgid "No"
 msgstr ""
 
-#: assignments/models.py:367 motions/models.py:691
+#: assignments/models.py:362 motions/models.py:691
 msgid "Abstain"
 msgstr ""
 
-#: assignments/models.py:369
+#: assignments/models.py:364
 msgid "Votes"
 msgstr ""
 
-#: assignments/serializers.py:114
+#: assignments/serializers.py:119
 #, python-format
 msgid "You have to submit data for %d candidates."
 msgstr ""
 
-#: assignments/serializers.py:118 motions/serializers.py:168
+#: assignments/serializers.py:123 motions/serializers.py:168
 #, python-format
 msgid "You have to submit data for %d vote values."
 msgstr ""
 
-#: assignments/serializers.py:122 motions/serializers.py:172
+#: assignments/serializers.py:127 motions/serializers.py:172
 #, python-format
 msgid "Vote value %s is invalid."
 msgstr ""
@@ -281,7 +281,7 @@ msgstr ""
 #: assignments/signals.py:51 assignments/signals.py:60
 #: assignments/signals.py:71 assignments/signals.py:78
 #: assignments/signals.py:81 assignments/signals.py:90
-#: assignments/views.py:253
+#: assignments/views.py:254
 msgid "Elections"
 msgstr ""
 
@@ -387,84 +387,85 @@ msgstr ""
 
 #: assignments/views.py:169
 #, python-format
-msgid "User %s does not want to be an candidate."
+msgid "User %s does not want to be a candidate. Only a manager can do this."
 msgstr ""
 
-#: assignments/views.py:174
+#: assignments/views.py:173
+#, python-format
+msgid "User %s is already nominated."
+msgstr ""
+
+#: assignments/views.py:175
 #, python-format
 msgid "User %s was nominated successfully."
 msgstr ""
 
-#: assignments/views.py:181
+#: assignments/views.py:182
 msgid ""
 "You can not delete someones candidature to this election because it is "
 "finished."
 msgstr ""
 
-#: assignments/views.py:184
+#: assignments/views.py:185
 #, python-format
 msgid "User %s has no status in this election."
 msgstr ""
 
-#: assignments/views.py:186
+#: assignments/views.py:187
 #, python-format
 msgid "Candidate %s was withdrawn/unblocked successfully."
 msgstr ""
 
-#: assignments/views.py:198
+#: assignments/views.py:199
 #, python-format
 msgid "User %s is not a candidate of this election."
 msgstr ""
 
-#: assignments/views.py:200
+#: assignments/views.py:201
 #, python-format
 msgid "User %s was successfully elected."
 msgstr ""
 
-#: assignments/views.py:204
+#: assignments/views.py:205
 #, python-format
 msgid "User %s is not an elected candidate of this election."
 msgstr ""
 
-#: assignments/views.py:207
+#: assignments/views.py:208
 #, python-format
 msgid "User %s was successfully unelected."
 msgstr ""
 
-#: assignments/views.py:217
+#: assignments/views.py:218
 msgid "Can not create poll because there are no candidates."
 msgstr ""
 
-#: assignments/views.py:220 motions/views.py:252
+#: assignments/views.py:221 motions/views.py:252
 msgid "Poll created successfully."
 msgstr ""
 
-#: assignments/views.py:250
-msgid "Assignment"
+#: assignments/views.py:275
+msgid "No elections available."
 msgstr ""
 
-#: assignments/views.py:274
-msgid "No assignments available."
-msgstr ""
-
-#: assignments/views.py:293
+#: assignments/views.py:294
 #, python-format
 msgid "Election: %s"
 msgstr ""
 
-#: assignments/views.py:309 assignments/views.py:337
+#: assignments/views.py:310 assignments/views.py:338
 msgid "Candidates"
 msgstr ""
 
-#: assignments/views.py:333
+#: assignments/views.py:334
 msgid "Election result"
 msgstr ""
 
-#: assignments/views.py:339
+#: assignments/views.py:340
 msgid "ballot"
 msgstr ""
 
-#: assignments/views.py:358
+#: assignments/views.py:359
 #, python-format
 msgid ""
 "Y: %(YES)s\n"
@@ -472,38 +473,38 @@ msgid ""
 "A: %(ABSTAIN)s"
 msgstr ""
 
-#: assignments/views.py:369 motions/pdf.py:115 poll/models.py:82
+#: assignments/views.py:370 motions/pdf.py:115 poll/models.py:82
 msgid "Valid votes"
 msgstr ""
 
-#: assignments/views.py:380 motions/pdf.py:117 poll/models.py:84
+#: assignments/views.py:381 motions/pdf.py:117 poll/models.py:84
 msgid "Invalid votes"
 msgstr ""
 
-#: assignments/views.py:391 motions/pdf.py:119 poll/models.py:86
+#: assignments/views.py:392 motions/pdf.py:119 poll/models.py:86
 msgid "Votes cast"
 msgstr ""
 
-#: assignments/views.py:466
+#: assignments/views.py:467
 #, python-format
 msgid "%d. ballot"
 msgstr ""
 
-#: assignments/views.py:468
+#: assignments/views.py:469
 #, python-format
 msgid "%d candidate"
 msgid_plural "%d candidates"
 msgstr[0] ""
 msgstr[1] ""
 
-#: assignments/views.py:470
+#: assignments/views.py:471
 #, python-format
 msgid "%d available post"
 msgid_plural "%d available posts"
 msgstr[0] ""
 msgstr[1] ""
 
-#: assignments/views.py:524 motions/pdf.py:125 motions/pdf.py:274
+#: assignments/views.py:525 motions/pdf.py:125 motions/pdf.py:274
 msgid "Abstention"
 msgstr ""
 
@@ -636,8 +637,8 @@ msgstr ""
 
 #: core/signals.py:86
 msgid ""
-"You can replace the logo. Just copy a file to \"static/img/logo.png\" in "
-"your OpenSlides data path."
+"You can replace the logo. Just copy a file to \"static/img/logo-projector.png"
+"\" in your OpenSlides data path."
 msgstr ""
 
 #: core/signals.py:89 core/signals.py:97 core/signals.py:105
