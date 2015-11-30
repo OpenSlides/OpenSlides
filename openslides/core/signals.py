@@ -84,7 +84,7 @@ def setup_general_config(sender, **kwargs):
         label=ugettext_lazy('Show logo on projector'),
         help_text=ugettext_lazy(
             'You can replace the logo. Just copy a file to '
-            '"static/img/logo.png" in your OpenSlides data path.'),
+            '"static/img/logo-projector.png" in your OpenSlides data path.'),
         weight=150,
         group=ugettext_lazy('Projector'))
 

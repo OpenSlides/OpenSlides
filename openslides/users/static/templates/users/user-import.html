@@ -1,98 +1,103 @@
- <h1 translate>Import participants</h1>
-
-<div id="submenu">
-  <a ui-sref="users.user.list" class="btn btn-sm btn-default">
-    <i class="fa fa-angle-double-left fa-lg"></i>
-    <translate>Back to overview</translate>
-  </a>
-</div>
-
-<h2 translate>Import by copy/paste</h2>
-<p translate>Copy and paste your participant names in this textbox.
-Keep each person in a single line.</p>
-
-<div class="row">
-  <div class="form-group col-sm-6">
-    <textarea ng-model="userlist" rows="5" class="form-control" ng-list="/\n/"></textarea>
-  </div>
-</div>
-
-<div class="clearfix">
-  <button ng-click="importByLine()" class="btn btn-primary pull-left" translate>Import</button>
-  <div class="col-xs-5" ng-if="users">
-    <progressbar animate="false" type="success" max="users.length" value="importcounter">
-      <i>{{ importcounter }} / {{ users.length }} {{ "imported" | translate }}</i>
-    </progressbar>
-  </div>
-</div>
-
-<hr>
-
-<h2 translate>Import by CSV file</h2>
-<p translate>Select a CSV file to import users!
-
-<p translate>Please note:</p>
-<ul>
-    <li><translate>Required comma separated values</translate>:<br>
-        <code translate>'title, first_name, last_name, structure level, groups, comment, is active'</code>
-    <li><translate>Default groups</translate>:
-        <translate>Delegate</translate> <code>3</code>,
-        <translate>Staff</translate> <code>4</code>
-    <li translate>At least first name or lastname have to be filled in. All
-      other fields are optional and may be empty.
-    <li translate>The header in first line is required.
-    <li translate>Required CSV file encoding is UTF-8.
-    <li><a href="https://github.com/OpenSlides/OpenSlides/wiki/CSV-Import" translate>
-          Use the CSV example file from OpenSlides Wiki.
-        </a>
-</ul>
-
-<ng-csv-import
-  content="csv.content"
-  class="import"
-  header="csv.header"
-  separator="csv.separator"
-  result="csv.result"></ng-csv-import>
-
-<div ng-if="csv.result" class="col-sm-10 well">
-  <h3 translate>Preview</h3>
-  <table class="table table-striped table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>#
-        <th translate>Title
-        <th translate>First name
-        <th translate>Last name
-        <th translate>Structure level
-        <th translate>Groups
-        <th translate>Comment</th>
-    <tbody ng-repeat="user in csv.result">
-      <tr>
-        <td>{{ $index+1 }}
-        <td>{{ user.title }}
-        <td>{{ user.first_name }}
-        <td>{{ user.last_name }}
-        <td>{{ user.structure_level }}
-        <td>{{ user.groups }}
-        <td>{{ user.comment }}
-  </table>
-
-<div class="clearfix">
-  <button ng-if="!csvimporting" ng-click="importByCSV(csv.result)" class="btn btn-primary pull-left" translate>Import</button>
-  <div ng-if="csvimporting">
-    <progressbar animate="false"  type="success" max="csvlines" value="csvimportcounter">
-      <i>{{ csvimportcounter }} / {{ csvlines }} {{ "imported" | translate }}</i>
-    </progressbar>
-  </div>
-  <a ng-if="csvimported" ui-sref="users.user.list" class="btn btn-sm btn-default">
-    <i class="fa fa-angle-double-left fa-lg"></i>
-    <translate>Back to users overview</translate>
-  </a>
-</div>
-  <p>
-    <div class="form-group">
-      <button ng-if="!csvimporting" ng-click="clear()" class="btn btn-default" translate>
-        Clear
-      </button>
+<div class="header">
+  <div class="title">
+    <div class="submenu">
+      <a ui-sref="users.user.list" class="btn btn-sm btn-default">
+        <i class="fa fa-angle-double-left fa-lg"></i>
+        <translate>Back to overview</translate>
+      </a>
     </div>
+    <h1 translate>Import participants</h1>
+  </div>
+</div>
+
+<div class="details">
+  <h3 translate>Import by copy/paste</h3>
+  <p translate>Copy and paste your participant names in this textbox.
+  Keep each person in a single line.</p>
+
+  <div class="row">
+    <div class="form-group col-sm-6">
+      <textarea ng-model="userlist" rows="5" class="form-control" ng-list="/\n/"></textarea>
+    </div>
+  </div>
+
+  <div class="clearfix">
+    <button ng-click="importByLine()" class="btn btn-primary pull-left" translate>Import</button>
+    <div class="col-xs-5" ng-if="users">
+      <progressbar animate="false" type="success" max="users.length" value="importcounter">
+        <i>{{ importcounter }} / {{ users.length }} {{ "imported" | translate }}</i>
+      </progressbar>
+    </div>
+  </div>
+
+  <hr>
+
+  <h3 translate>Import by CSV file</h3>
+  <p translate>Select a CSV file to import users!
+
+  <p translate>Please note:</p>
+  <ul>
+      <li><translate>Required comma separated values</translate>:<br>
+          <code translate>'title, first_name, last_name, structure level, groups, comment, is active'</code>
+      <li><translate>Default groups</translate>:
+          <translate>Delegate</translate> <code>3</code>,
+          <translate>Staff</translate> <code>4</code>
+      <li translate>At least first name or lastname have to be filled in. All
+        other fields are optional and may be empty.
+      <li translate>The header in first line is required.
+      <li translate>Required CSV file encoding is UTF-8.
+      <li><a href="https://github.com/OpenSlides/OpenSlides/wiki/CSV-Import" translate>
+            Use the CSV example file from OpenSlides Wiki.
+          </a>
+  </ul>
+
+  <ng-csv-import
+    content="csv.content"
+    class="import"
+    header="csv.header"
+    separator="csv.separator"
+    result="csv.result"></ng-csv-import>
+
+  <div ng-if="csv.result" class="col-sm-10 well">
+    <h3 translate>Preview</h3>
+    <table class="table table-striped table-bordered table-condensed">
+      <thead>
+        <tr>
+          <th>#
+          <th translate>Title
+          <th translate>First name
+          <th translate>Last name
+          <th translate>Structure level
+          <th translate>Groups
+          <th translate>Comment</th>
+      <tbody ng-repeat="user in csv.result">
+        <tr>
+          <td>{{ $index+1 }}
+          <td>{{ user.title }}
+          <td>{{ user.first_name }}
+          <td>{{ user.last_name }}
+          <td>{{ user.structure_level }}
+          <td>{{ user.groups }}
+          <td>{{ user.comment }}
+    </table>
+
+  <div class="clearfix">
+    <button ng-if="!csvimporting" ng-click="importByCSV(csv.result)" class="btn btn-primary pull-left" translate>Import</button>
+    <div ng-if="csvimporting">
+      <progressbar animate="false"  type="success" max="csvlines" value="csvimportcounter">
+        <i>{{ csvimportcounter }} / {{ csvlines }} {{ "imported" | translate }}</i>
+      </progressbar>
+    </div>
+    <a ng-if="csvimported" ui-sref="users.user.list" class="btn btn-sm btn-default">
+      <i class="fa fa-angle-double-left fa-lg"></i>
+      <translate>Back to users overview</translate>
+    </a>
+  </div>
+    <p>
+      <div class="form-group">
+        <button ng-if="!csvimporting" ng-click="clear()" class="btn btn-default" translate>
+          Clear
+        </button>
+      </div>
+  </div>
 </div>

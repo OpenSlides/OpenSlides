@@ -1,12 +1,17 @@
-<h1 translate>Version</h1>
-
-<p>OpenSlides Version {{ core_version }}
-
-<div ng-show="plugins.length">
-  <p translate>Installed plugins:</p>
-  <ol>
-    <li ng-repeat="plugin in plugins">
-      {{ plugin.verbose_name }}: {{ plugin.version }}
-  </ol>
+<div class="header">
+  <div class="title">
+    <h1 translate>Version</h1>
+  </div>
 </div>
 
+<div class="details">
+  <p class="lead">OpenSlides {{ core_version }}
+
+  <div ng-show="plugins.length">
+    <p translate>Installed plugins:</p>
+    <ol>
+      <li ng-repeat="plugin in plugins">
+        {{ plugin.verbose_name }}: {{ plugin.version }}
+    </ol>
+  </div>
+</div>

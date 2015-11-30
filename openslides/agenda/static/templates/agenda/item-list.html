@@ -1,195 +1,210 @@
-<h1 translate>Agenda</h1>
-
-<div id="submenu">
-  <a ng-click="newDialog()" os-perms="agenda.can_manage" class="btn btn-primary btn-sm">
-    <i class="fa fa-plus fa-lg"></i>
-    <translate>New</translate>
-  </a>
-  <a ui-sref="agenda.item.sort" os-perms="agenda.can_manage" class="btn btn-default btn-sm">
-    <i class="fa fa-sitemap fa-lg"></i>
-    <translate>Sort agenda</translate>
-  </a>
-  <a ui-sref="agenda.item.import" os-perms="agenda.can_manage" class="btn btn-default btn-sm">
-    <i class="fa fa-download fa-lg"></i>
-    <translate>Import</translate>
-  </a>
-  <a ui-sref="core.tag.list" os-perms="core.can_manage_tags" class="btn btn-default btn-sm">
-    <i class="fa fa-tags fa-lg"></i>
-    <translate>Tags</translate>
-  </a>
-  <a ui-sref="agenda_pdf" target="_blank" class="btn btn-default btn-sm">
-    <i class="fa fa-file-pdf-o fa-lg"></i>
-    <translate>PDF</translate>
-  </a>
+<div class="header">
+  <div class="title">
+    <div class="submenu">
+      <a ng-click="newDialog()" os-perms="agenda.can_manage" class="btn btn-primary btn-sm">
+        <i class="fa fa-plus fa-lg"></i>
+        <translate>New</translate>
+      </a>
+      <a ui-sref="agenda.item.sort" os-perms="agenda.can_manage" class="btn btn-default btn-sm">
+        <i class="fa fa-sitemap fa-lg"></i>
+        <translate>Sort agenda</translate>
+      </a>
+      <a ui-sref="agenda.item.import" os-perms="agenda.can_manage" class="btn btn-default btn-sm">
+        <i class="fa fa-download fa-lg"></i>
+        <translate>Import</translate>
+      </a>
+      <a ui-sref="core.tag.list" os-perms="core.can_manage_tags" class="btn btn-default btn-sm">
+        <i class="fa fa-tags fa-lg"></i>
+        <translate>Tags</translate>
+      </a>
+      <a ui-sref="agenda_pdf" target="_blank" class="btn btn-default btn-sm">
+        <i class="fa fa-file-pdf-o fa-lg"></i>
+        <translate>PDF</translate>
+      </a>
+    </div>
+    <h1 translate>Agenda</h1>
+  </div>
 </div>
 
-
-<div class="row">
-  <div class="col-sm-8">
-    <form class="form-inline">
-      <!-- delete mode -->
-      <div os-perms-lite="agenda.can_manage" class="form-group">
-        <label for="deleteSwitcher" translate>Delete mode</label>
-        <switch id="deleteSwitcher" ng-model="isDeleteMode" ng-change="uncheckAll()"
-            on="{{'On'|translate}}" off="{{'Off'|translate}}"
-            class="green wide form-control">
-        </switch>
+<div class="details">
+  <div class="row">
+    <div class="col-sm-6">
+      <form class="form-inline">
+        <!-- delete mode -->
+        <button os-perms-lite="agenda.can_manage" class="btn btn-default"
+            ng-click="isDeleteMode = !isDeleteMode; uncheckAll()">
+          <i class="fa fa-check-square-o"></i>
+          <translate>Select</translate>...
+        </button>
+        <div class="form-group">
+          <!-- project agenda button -->
+          <a os-perms="core.can_manage_projector"
+              class="btn btn-default form-control"
+              title="'Project agenda'|translate"
+              ng-click="projectAgenda()"
+              ng-class="{ 'btn-primary': isAgendaProjected() }">
+            <i class="fa fa-video-camera"></i>
+            <translate>Agenda</translate>
+          </a>
+          <!-- auto numbering button -->
+          <a os-perms="core.can_manage_projector"
+              class="btn btn-default form-control"
+              ng-click="autoNumbering()">
+            <i class="fa fa-sort-numeric-asc"></i>
+            <translate>Auto numbering</translate>
+          </a>
+        </div>
+      </form>
+    </div>
+    <div class="col-sm-6">
+      <div class="form-inline text-right">
+        <div class="form-group">
+          <div class="input-group">
+            <div class="input-group-addon"><i class="fa fa-search"></i></div>
+            <input type="text" os-focus-me ng-model="filter.search" class="form-control"
+               placeholder="{{ 'Search' | translate}}">
+          </div>
+        </div>
+        <button class="btn btn-default" ng-click="isFilter = !isFilter">
+          <i class="fa fa-filter"></i>
+          <translate>Filter</translate>...
+        </button>
       </div>
-      <div class="form-group">
-        <!-- project agenda button -->
-        <a ng-show="!isDeleteMode" os-perms="core.can_manage_projector"
-            class="btn btn-default btn-sm form-control"
-            ng-click="projectAgenda()"
-            ng-class="{ 'btn-primary': isAgendaProjected() }">
-          <i class="fa fa-video-camera"></i>
-          <translate>Project agenda</translate>
-        </a>
-        <!-- auto numbering button -->
-        <a ng-show="!isDeleteMode" os-perms="core.can_manage_projector"
-            class="btn btn-default btn-sm form-control"
-            ng-click="autoNumbering()">
-          <i class="fa fa-list-ol"></i>
-          <translate>Number agenda items</translate>
-        </a>
-        <!-- delete button -->
-        <a ng-show="isDeleteMode && (items|filter:{selected:true}).length > 0"
-            os-perms="agenda.can_manage" ng-click="delete()"
-            class="btn btn-primary btn-sm form-control">
-          <i class="fa fa-trash fa-lg"></i>
-          <translate>Delete selected items</translate>
-        </a>
-        <!-- hidden item filter -->
-        <label>
-          <input type="checkbox" ng-model="filter.noHiddenItems" ng-true-value="1" ng-false-value="">
-          <translate> Hide internal agenda items</translate>
-        </label>
-        <!-- closed filter -->
-        <label>
-          <input type="checkbox" ng-model="filter.noClosedItems" ng-true-value="false" ng-false-value="">
-          <translate> Hide closed items</translate>
-        </label>
-      </div>
-    </form>
-  </div>
-  <div class="col-sm-4">
-    <div class="input-group">
-      <div class="input-group-addon"><i class="fa fa-filter"></i></div>
-      <input type="text" os-focus-me ng-model="filter.search" class="form-control"
-         placeholder="{{ 'Filter' | translate}}">
     </div>
   </div>
-</div>
+  <div uib-collapse="isFilter" class="row">
+    <div class="col-sm-12 text-right">
+      <!-- hidden item filter -->
+      <input type="checkbox" ng-model="filter.noHiddenItems" ng-true-value="1" ng-false-value="">
+      <translate> Hide internal agenda items</translate>
+      <!-- closed filter -->
+      <input type="checkbox" ng-model="filter.noClosedItems" ng-true-value="false" ng-false-value="">
+      <translate> Hide closed items</translate>
+    </div>
+  </div>
+  <div uib-collapse="!isDeleteMode" class="row spacer">
+    <div class="col-sm-12 text-left">
+      <!-- delete button -->
+      <a ng-show="isDeleteMode"
+          os-perms="agenda.can_manage" ng-click="delete()"
+          class="btn btn-primary">
+        <i class="fa fa-trash fa-lg"></i>
+        <translate>Delete selected items</translate>
+      </a>
+    </div>
+  </div>
 
-<i>
-  {{ items.length }} {{ "items" | translate }}<span ng-if="(items|filter:{selected:true}).length > 0">,
-  {{(items|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
-</i>
-<table class="table table-striped table-bordered table-hover">
-  <thead>
-    <tr>
-      <!-- projector column -->
-      <th ng-show="!isDeleteMode" os-perms="core.can_manage_projector" class="firstColumn"></th>
-      <!-- delete selection column -->
-      <th ng-show="isDeleteMode" os-perms-lite="agenda.can_manage" class="firstColumn deleteColumn"
-          ng-click="$event.stopPropagation();">
-        <input type="checkbox" ng-model="selectedAll" ng-change="checkAll()">
-      <!-- agenda item column -->
-      <th>
-        <translate>Agenda item</translate>
-      <th os-perms="agenda.can_manage">
-        <translate>Duration</translate>
-      <th class="minimum">
-        <translate>Done</translate>
-  <tbody>
-    <tr ng-repeat="item in items | filter: filter.search |  filter: {type: filter.noHiddenItems}
-        |  filter: {closed: filter.noClosedItems}"
-        class="animate-item"
-        ng-class="{ 'activeline': item.isProjected(), 'selected': item.selected, 'hiddenrow': item.type == 2}">
-      <!-- projector column -->
-      <td ng-show="!isDeleteMode" os-perms="core.can_manage_projector">
-        <a class="btn btn-default btn-sm"
-            ng-class="{ 'btn-primary': item.isProjected() }"
-            ng-click="project(item)"
-            title="{{ 'Project item' | translate }}">
-          <i class="fa fa-video-camera"></i>
-        </a>
-      <!-- delete selection column -->
-      <td ng-show="isDeleteMode" os-perms="agenda.can_manage" class="deleteColumn">
-        <input type="checkbox" ng-model="item.selected">
-      <!-- agenda data columns -->
-      <td ng-if="!item.quickEdit" ng-mouseover="item.hover=true" ng-mouseleave="item.hover=false">
-        <span ng-if="item.type == 2" title="'Hidden agenda item'|translate"><i class="fa fa-ban"></i></span>
-        <strong>
-          <a href="" ng-click="open(item)">
-            <span ng-repeat="n in [].constructor(item.parentCount) track by $index">&ndash;</span>
-            {{ item.getTitle() }}
+  <i class="spacer">
+    {{ items.length }} {{ "items" | translate }}<span ng-if="(items|filter:{selected:true}).length > 0">,
+    {{(items|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
+  </i>
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+        <!-- projector column -->
+        <th ng-show="!isDeleteMode" os-perms="core.can_manage_projector" class="minimum"></th>
+        <!-- delete selection column -->
+        <th ng-show="isDeleteMode" os-perms-lite="agenda.can_manage" class="minimum deleteColumn"
+            ng-click="$event.stopPropagation();">
+          <input type="checkbox" ng-model="selectedAll" ng-change="checkAll()">
+        <!-- agenda item column -->
+        <th>
+          <translate>Agenda item</translate>
+        <th os-perms="agenda.can_manage">
+          <translate>Duration</translate>
+        <th class="minimum">
+          <translate>Done</translate>
+    <tbody>
+      <tr ng-repeat="item in items | filter: filter.search |  filter: {type: filter.noHiddenItems}
+          |  filter: {closed: filter.noClosedItems}"
+          class="animate-item"
+          ng-class="{ 'activeline': item.isProjected(), 'selected': item.selected, 'hiddenrow': item.type == 2}">
+        <!-- projector column -->
+        <td ng-show="!isDeleteMode" os-perms="core.can_manage_projector">
+          <a class="btn btn-default btn-sm"
+              ng-class="{ 'btn-primary': item.isProjected() }"
+              ng-click="project(item)"
+              title="{{ 'Project item' | translate }}">
+            <i class="fa fa-video-camera"></i>
           </a>
-        </strong>
-        <div ng-if="item.comment">
-          <small><i class="fa fa-info-circle"></i> {{ item.comment }}</small>
-        </div>
-        <div os-perms="agenda.can_manage" class="hoverActions" ng-class="{'hiddenDiv': !item.hover}">
-          <a ui-sref="agenda.item.detail({id: item.id})" translate>List of speakers</a> |
-          <a href="" ng-click="item.quickEdit=true" translate>QuickEdit</a> |
-          <a href="" ng-click="editDialog(item)" translate>Edit</a>
-          <!-- TODO: translate confirm message -->
-          <span ng-if="item.content_object.collection == 'core/customslide'"> |
-            <a href="" class="text-danger"
-              ng-bootbox-confirm="Are you sure you want to delete <b>{{ item.getTitle() }}</b>?"
-              ng-bootbox-confirm-action="deleteRelatedItem(item)" translate>Delete</a>
-          </span>
-        </div>
-      <td ng-if="!item.quickEdit" class="optional">
-        {{ item.duration }}
-        <span ng-if="item.duration" translate>h</span>
-      <td ng-if="!item.quickEdit">
-        <input type="checkbox" ng-model="item.closed" ng-change="save(item.id);">
-      <!-- quickEdit columns -->
-      <td ng-if="item.quickEdit" os-perms-lite="agenda.can_manage" colspan="3">
-        <form ng-submit="save(item)">
-        <h4>{{ item.getTitle() }} <span class="text-muted">&ndash; QuickEdit</span></h4>
-          <alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
-            {{alert.msg}}
-          </alert>
-          <div class="row">
-            <div class="col-xs-6">
-              <label for="inputTitle" translate>Title</label>
-              <input type="text" ng-model="item.title" class="form-control input-sm" id="inputTitle">
-            </div>
-            <div class="col-xs-6">
-              <label for="inputComment" translate>Comment</label>
-              <input type="text" ng-model="item.comment" class="form-control input-sm" id="inputComment">
-            </div>
+        <!-- delete selection column -->
+        <td ng-show="isDeleteMode" os-perms="agenda.can_manage" class="deleteColumn">
+          <input type="checkbox" ng-model="item.selected">
+        <!-- agenda data columns -->
+        <td ng-if="!item.quickEdit" ng-mouseover="item.hover=true" ng-mouseleave="item.hover=false">
+          <span ng-if="item.type == 2" title="'Hidden agenda item'|translate"><i class="fa fa-ban"></i></span>
+          <strong>
+            <a href="" ng-click="open(item)">
+              <span ng-repeat="n in [].constructor(item.parentCount) track by $index">&ndash;</span>
+              {{ item.getTitle() }}
+            </a>
+          </strong>
+          <div ng-if="item.comment">
+            <small><i class="fa fa-info-circle"></i> {{ item.comment }}</small>
           </div>
-          <div class="row">
-            <div class="col-xs-6">
-              <label for="inputItemNumber" translate>Item number</label>
-              <input type="text" ng-model="item.item_number" class="form-control input-sm" id="inputItemNumber">
-            </div>
-            <div class="col-xs-6">
-              <label for="inputDuration" translate>Duration</label>
-              <input type="text" ng-model="item.duration" class="form-control input-sm" id="inputDuration">
-            </div>
+          <div os-perms="agenda.can_manage" class="hoverActions" ng-class="{'hiddenDiv': !item.hover}">
+            <a ui-sref="agenda.item.detail({id: item.id})" translate>List of speakers</a> |
+            <a href="" ng-click="item.quickEdit=true" translate>QuickEdit</a> |
+            <a href="" ng-click="editDialog(item)" translate>Edit</a>
+            <!-- TODO: translate confirm message -->
+            <span ng-if="item.content_object.collection == 'core/customslide'"> |
+              <a href="" class="text-danger"
+                ng-bootbox-confirm="Are you sure you want to delete <b>{{ item.getTitle() }}</b>?"
+                ng-bootbox-confirm-action="deleteRelatedItem(item)" translate>Delete</a>
+            </span>
           </div>
-          <div class="row">
-            <div class="col-xs-6">
-              <label>
-                <!-- item type: AGENDA_ITEM = 1, HIDDEN_ITEM = 2 -->
-                <input type="checkbox" ng-model="item.type" ng-true-value="2" ng-false-value="1">
-                <translate> Hidden agenda item</translate>
-              </label>
+        <td ng-if="!item.quickEdit" class="optional">
+          {{ item.duration }}
+          <span ng-if="item.duration" translate>h</span>
+        <td ng-if="!item.quickEdit">
+          <input type="checkbox" ng-model="item.closed" ng-change="save(item.id);">
+        <!-- quickEdit columns -->
+        <td ng-if="item.quickEdit" os-perms-lite="agenda.can_manage" colspan="3">
+          <form ng-submit="save(item)">
+          <h4>{{ item.getTitle() }} <span class="text-muted">&ndash; QuickEdit</span></h4>
+            <alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+              {{alert.msg}}
+            </alert>
+            <div class="row">
+              <div class="col-xs-6">
+                <label for="inputTitle" translate>Title</label>
+                <input type="text" ng-model="item.title" class="form-control input-sm" id="inputTitle">
+              </div>
+              <div class="col-xs-6">
+                <label for="inputComment" translate>Comment</label>
+                <input type="text" ng-model="item.comment" class="form-control input-sm" id="inputComment">
+              </div>
             </div>
-            <div class="col-xs-6">
+            <div class="row">
+              <div class="col-xs-6">
+                <label for="inputItemNumber" translate>Item number</label>
+                <input type="text" ng-model="item.item_number" class="form-control input-sm" id="inputItemNumber">
+              </div>
+              <div class="col-xs-6">
+                <label for="inputDuration" translate>Duration</label>
+                <input type="text" ng-model="item.duration" class="form-control input-sm" id="inputDuration">
+              </div>
             </div>
-          </div>
-          <div class="spacer">
-            <button ng-click="item.quickEdit=false" class="btn btn-default pull-left" translate>
-              Cancel
-            </button> &nbsp;
-            <button type="submit" class="btn btn-primary" translate>
-              Update
-            </button>
-            <a href="" ng-click="edit(item)" class="pull-right"><translate>Edit</translate>...</a>
-          </div>
-        </form>
-</table>
+            <div class="row">
+              <div class="col-xs-6">
+                <label>
+                  <!-- item type: AGENDA_ITEM = 1, HIDDEN_ITEM = 2 -->
+                  <input type="checkbox" ng-model="item.type" ng-true-value="2" ng-false-value="1">
+                  <translate> Hidden agenda item</translate>
+                </label>
+              </div>
+              <div class="col-xs-6">
+              </div>
+            </div>
+            <div class="spacer">
+              <button ng-click="item.quickEdit=false" class="btn btn-default pull-left" translate>
+                Cancel
+              </button> &nbsp;
+              <button type="submit" class="btn btn-primary" translate>
+                Update
+              </button>
+              <a href="" ng-click="edit(item)" class="pull-right"><translate>Edit</translate>...</a>
+            </div>
+          </form>
+  </table>
+</div>

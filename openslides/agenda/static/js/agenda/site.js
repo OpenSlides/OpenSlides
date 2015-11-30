@@ -83,6 +83,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             $scope.items = AgendaTree.getFlatTree(Agenda.getAll());
         });
         $scope.alert = {};
+        $scope.isFilter = true;
 
         // project related item (content object)
         $scope.project = function (item) {

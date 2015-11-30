@@ -5,29 +5,33 @@
 <base href="/">
 <title>OpenSlides</title>
 <meta name="description" content="">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;">
 <link rel="stylesheet" href="static/css/openslides-libs.css">
 <link rel="stylesheet" href="static/css/app.css">
+<link rel="icon" href="/static/img/favicon.png">
 <script src="static/js/openslides-libs.js"></script>
 <script src="static/ckeditor/ckeditor.js"></script>
+<div id="wrapper">
 
-<!-- Navbar -->
-<nav id="header" class="navbar navbar-inverse">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a ui-sref="dashboard" class="navbar-brand">
-        <img id="logo" src="/static/img/logo.png" alt="OpenSlides" />
+<!-- Header -->
+<div id="header">
+  <div class="containerOS">
+    <!-- Logo -->
+    <div class="title">
+      <a ui-sref="dashboard">
+        <img src="/static/img/openslides-logo-dark.png" alt="Logo" height="35">
       </a>
-      <span class="navbar-text optional">{{ config('general_event_name') }}</span>
+      <!-- TODO: <span class="navbar-text optional">{{ config('general_event_name') }}</span>-->
     </div>
-    <div class="navbar-right" ng-controller="userMenu">
+
+    <!-- user specific header (chat, user settings / login, language)-->
+    <div class="user" ng-controller="userMenu">
       <div class="btn-group">
-        <!-- Logout / user setttings button -->
         <div ng-if="operator.isAuthenticated()">
 
           <!-- chatbox -->
           <div ng-controller="ChatMessageCtrl" os-perms="core.can_use_chat" class="inline">
-            <button ng-click="openChatbox()" class="btn btn-default">
+            <button ng-click="openChatbox()" class="btn btn-sm btn-default">
               <i class="fa fa-comment"></i>
               <translate>Chat</translate>
               <span ng-if="unreadMessages > 0 && chatboxIsCollapsed" class="badge">
@@ -60,7 +64,7 @@
 
           <!-- user settings / logout button -->
           <div class="btn-group" uib-dropdown>
-            <button type="button" class="btn btn-default" uib-dropdown-toggle>
+            <button type="button" class="btn btn-sm btn-default" uib-dropdown-toggle>
               <i class="fa fa-user"></i>
               <span class="optional-small">{{ operator.user.get_short_name() }}</span>
               <span class="caret"></span>
@@ -87,7 +91,7 @@
         </div>
         <!-- Login button -->
         <div ng-if="!operator.isAuthenticated()">
-          <button class="btn btn-default" ng-click="openLoginForm()">
+          <button class="btn btn-sm btn-default" ng-click="openLoginForm()">
             <i class="fa fa-sign-in"></i>
             <translate>Login</translate>
           </button>
@@ -96,11 +100,11 @@
 
       <!-- language switcher -->
       <div class="btn-group" ng-controller="LanguageCtrl" uib-dropdown>
-        <button class="btn btn-default" uib-dropdown-toggle>
+        <button class="btn btn-sm btn-default" uib-dropdown-toggle>
           <i class="fa fa-flag"></i>
           <span class="caret"></span>
         </button>
-        <ul class="uib-dropdown-menu uib-dropdown-menu-right" role="menu" aria-labelledby="single-button">
+        <ul class="uib-dropdown-menu pull-right" role="menu" aria-labelledby="single-button">
           <li>
             <a href="" ng-click="switchLanguage('en')">
               <i class="fa fa-flag"></i>
@@ -118,45 +122,70 @@
             </a>
         </ul>
       </div>
+
     </div>
   </div>
-</nav>
+</div><!--end header-->
 
-<!-- Container -->
-<div id="container" class="container-fluid">
-  <div class="row">
-    <!-- Main menu -->
-    <div id="main-menu" class="col-md-2 leftmenu lefticon">
+<!-- Navbar -->
+<div id="nav">
+  <div class="containerOS">
+    <div class="navbar">
+      <div class="button"><a href="#"><i class="fa fa-bars"></i></a></div>
+      <!-- Main menu -->
       <ul ng-controller="MainMenuCtrl">
-        <li ng-repeat="element in elements">
+        <li ng-repeat="element in elements" ui-sref-active="active">
           <a ui-sref="{{ element.ui_sref }}">
-            <span class="ico"><i class="fa fa-{{ element.img_class }} fa-lg"></i></span>
-            <span class="text" translate>{{ element.title }}</span>
+            <i class="fa fa-{{ element.img_class }}"></i>
+            <translate>{{ element.title }}</translate>
           </a>
       </ul>
-    </div><!--/#main-menu-->
-    <!-- Content -->
-    <div id="content" class="col-md-7">
-      <div class="row">
-        <div class="col-md-12">
-          <div ui-view></div>
+    </div>
+   </div>
+</div><!--end nav-->
+
+
+<!-- Content -->
+<div id="content" ng-controller="ProjectorSidebarCtrl">
+  <div class="containerOS">
+    <div class="col1" ng-class="isProjectorSidebar ? 'min' : 'max'">
+        <!-- dynamic views -->
+        <div ui-view></div>
+        <!-- footer -->
+        <div id="footer">
+          &copy; Copyright by <a href="http://www.openslides.org" target="_blank">OpenSlides</a> |
+          <a ui-sref="version">Version</a>
+        </div><!--end footer-->
+    </div>
+    <div class="col2" os-perms="core.can_see_projector"
+        ng-class="isProjectorSidebar ? 'max' : 'min'">
+      <!-- sidebar maximized -->
+      <div class="projector_full" ng-if="isProjectorSidebar">
+        <div class="title" ng-click="showProjectorSidebar(false)">
+          <div class="name">
+            <i class="fa fa-caret-square-o-right"></i>
+            <translate>Projector</translate>
+          </div>
+          <div class="icon">
+            <i class="fa fa-video-camera"></i>
+          </div>
         </div>
-      </div>
-    </div><!--/#content-->
-    <div class="col-sm-3" os-perms="core.can_see_projector">
-      <div class="well">
         <div ng-include src="'static/templates/core/projector-controls.html'"></div>
       </div>
-    </div>
-  </div><!--/.row-->
+      <!-- sidebar minimized -->
+      <div class="projector_min" ng-if="!isProjectorSidebar">
+        <div class="icon">
+          <a href="" ng-click="showProjectorSidebar(true)">
+            <i class="fa fa-video-camera"></i>
+          </a>
+        </div>
+      </div>
+    </div><!--end col2-->
 
-  <hr>
-  <footer>
-    <small>
-      &copy; Copyright by <a href="http://www.openslides.org" target="_blank">OpenSlides</a> |
-      <a ui-sref="version">Version</a>
-    </small>
-  </footer>
-</div><!--/#container-->
+  </div><!--end content-container--> 
+</div><!--end content--> 
+
+</div><!--end wrapper-->
+
 
 <script src="/angular_js/site/"></script>

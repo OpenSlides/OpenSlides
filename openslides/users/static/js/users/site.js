@@ -718,7 +718,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         $scope.alerts.push({
             type: 'success',
             msg: gettext("Installation was successfully.") + "<br>" +
-                 gettext("Use <strong>admin</strong> and <strong>admin</strong> for first login.") + "<p>" +
+                 gettext("Use <strong>admin</strong> and <strong>admin</strong> for first login.") + "<br>" +
                  gettext("Important: Please change your password!")
         });
         // close alert function

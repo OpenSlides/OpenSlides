@@ -1,126 +1,131 @@
-<h1>{{ assignment.title }}</h1>
-
-<div id="submenu">
-  <a ui-sref="assignments.assignment.list" class="btn btn-sm btn-default">
-    <i class="fa fa-angle-double-left fa-lg"></i>
-    <translate>Back to overview</translate>
-  </a>
-  <a ui-sref="assignments_single_pdf({pk: assignment.id})" target="_blank" class="btn btn-default btn-sm">
-    <i class="fa fa-file-pdf-o fa-lg"></i>
-    <translate>PDF</translate>
-  </a>
-  <!-- List of speakers -->
-  <a ui-sref="agenda.item.detail({id: assignment.agenda_item_id})" class="btn btn-sm btn-default">
-    <i class="fa fa-microphone fa-lg"></i>
-    <translate>List of speakers</translate>
-  </a>
-  <!-- project -->
-  <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-      ng-class="{ 'btn-primary': assignment.isProjected() }"
-      ng-click="assignment.project()"
-      title="{{ 'Project election' | translate }}">
-    <i class="fa fa-video-camera"></i>
-  </a>
-  <!-- edit -->
-  <a ui-sref="assignments.assignment.detail.update({id: assignment.id })" os-perms="assignments.can_manage"
-      class="btn btn-default btn-sm"
-      title="{{ 'Edit' | translate}}">
-    <i class="fa fa-pencil"></i>
-  </a>
-</div>
-
-
-<h3 translate>Description</h3>
-<div class="white-space-pre-line">{{ assignment.description }}</div>
-
-<h3 translate>Candidates</h3>
-<ol>
-  <li ng-repeat="related_user in assignment.assignment_related_users" ng-if="related_user.status == 1">
-    <a ui-sref="users.user.detail({id: related_user.user_id})">{{ related_user.user.get_full_name() }}</a>
-    <button os-perms="assignments.can_manage" ng-click="removeCandidate(related_user.user_id)"
-        class="btn btn-default btn-xs">
-      <i class="fa fa-times"></i>
-    </button>
-</ol>
-
-<div class="form-group">
-  <alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
-    {{alert.msg}}
-  </alert>
-  <div os-perms="assignments.can_nominate_other" class="input-group">
-    <ui-select ng-model="candidate.selected" ng-change="addCandidate(candidate.selected.id)">
-      <ui-select-match placeholder="{{ 'Select or search a participant...' | translate }}">
-        {{ $select.selected.get_full_name() }}
-      </ui-select-match>
-      <ui-select-choices repeat="user in users | filter: $select.search">
-        <div ng-bind-html="user.get_full_name() | highlight: $select.search"></div>
-      </ui-select-choices>
-    </ui-select>
-    <span class="input-group-btn">
-      <a ng-click="candidate={}" class="btn btn-default">
-        <i class="fa fa-times-circle"></i>
+<div class="header">
+  <div class="title">
+    <div class="submenu">
+      <a ui-sref="assignments.assignment.list" class="btn btn-sm btn-default">
+        <i class="fa fa-angle-double-left fa-lg"></i>
+        <translate>Back to overview</translate>
       </a>
-    </span>
-  </div>
-  <p os-perm="assignments.can_nominate_self">
-    <button ng-if="!isCandidate()" ng-click="addMe()" class="btn btn-default">
-      <i class="fa fa-plus"></i>
-      <translate>Add me</translate>
-    </button>
-    <button ng-if="isCandidate()" ng-click="removeMe()" class="btn btn-default">
-      <i class="fa fa-minus"></i>
-      <translate>Remove me</translate>
-    </button>
-</div>
-
-<h3 translate>Election result</h3>
-<button os-perms="assignments.can_manage" ng-click="createBallot()" class="btn btn-default btn-sm">
-  <i class="fa fa-bar-chart fa-lg"></i>
-  <translate>New ballot</translate>
-</button>
-
-<uib-tabset class="spacer">
-  <uib-tab ng-repeat="poll in assignment.polls" heading="Ballot {{$index+1}}">
-    <div os-perms="assignments.can_manage" class="spacer">
-      <button ng-click="editPollDialog(poll)"
-          class="btn btn-default btn-sm">
+      <a ui-sref="assignments_single_pdf({pk: assignment.id})" target="_blank" class="btn btn-default btn-sm">
+        <i class="fa fa-file-pdf-o fa-lg"></i>
+        <translate>PDF</translate>
+      </a>
+      <!-- List of speakers -->
+      <a ui-sref="agenda.item.detail({id: assignment.agenda_item_id})" class="btn btn-sm btn-default">
+        <i class="fa fa-microphone fa-lg"></i>
+        <translate>List of speakers</translate>
+      </a>
+      <!-- project -->
+      <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
+          ng-class="{ 'btn-primary': assignment.isProjected() }"
+          ng-click="assignment.project()"
+          title="{{ 'Project election' | translate }}">
+        <i class="fa fa-video-camera"></i>
+      </a>
+      <!-- edit -->
+      <a ui-sref="assignments.assignment.detail.update({id: assignment.id })" os-perms="assignments.can_manage"
+          class="btn btn-default btn-sm"
+          title="{{ 'Edit' | translate}}">
         <i class="fa fa-pencil"></i>
-        <translate>Edit</translate>
-      </button>
-      <!-- angular requires to open the link in new tab with "target='_blank'".
-      Otherwise the pdf url can't be open in same window; angular redirects to "/". -->
-      <a ui-sref="assignmentpoll_pdf({poll_pk: poll.id})" target="_blank"
-          class="btn btn-default btn-sm">
-        <i class="fa fa-file-pdf-o"></i> Ballot paper
-      </a>
-      <button os-perms-lite="assignments.can_manage" ng-if="!poll.published" ng-click="publishBallot(poll)"
-          class="btn btn-primary btn-sm">
-        <i class="fa fa-globe"></i>
-        <translate>Publish result</translate>
-      </button>
-      <button os-perms-lite="assignments.can_manage" ng-if="poll.published" ng-click="unpublishBallot(poll)"
-          class="btn btn-default btn-sm">
-        <i class="fa fa-globe"></i>
-        <translate>Unpublish result</translate>
-      </button>
-      <a ng-click="deleteBallot(poll)" class="btn btn-default btn-sm">
-        <i class="fa fa-times"></i>
-        <translate>Delete</translate>
       </a>
     </div>
-    <div class="results">
-      <div ng-repeat="option in poll.options">
-        <strong>{{ option.candidate.get_full_name() }}</strong>
-        <div ng-if="option.votes.length > 0">
-          <div ng-repeat="vote in option.votes">
-            {{ vote.value}}: {{ vote.weight}}
+    <h1>{{ assignment.title }}</h1>
+    <h2 translate>Election</h2>
+  </div>
+</div>
+
+<div class="details">
+  <h3 translate>Description</h3>
+  <div class="white-space-pre-line">{{ assignment.description }}</div>
+
+  <h3 translate>Candidates</h3>
+  <ol>
+    <li ng-repeat="related_user in assignment.assignment_related_users" ng-if="related_user.status == 1">
+      <a ui-sref="users.user.detail({id: related_user.user_id})">{{ related_user.user.get_full_name() }}</a>
+      <button os-perms="assignments.can_manage" ng-click="removeCandidate(related_user.user_id)"
+          class="btn btn-default btn-xs">
+        <i class="fa fa-times"></i>
+      </button>
+  </ol>
+
+  <div class="form-group">
+    <alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
+      {{alert.msg}}
+    </alert>
+    <div os-perms="assignments.can_nominate_other" class="input-group">
+      <ui-select ng-model="candidate.selected" ng-change="addCandidate(candidate.selected.id)">
+        <ui-select-match placeholder="{{ 'Select or search a participant...' | translate }}">
+          {{ $select.selected.get_full_name() }}
+        </ui-select-match>
+        <ui-select-choices repeat="user in users | filter: $select.search">
+          <div ng-bind-html="user.get_full_name() | highlight: $select.search"></div>
+        </ui-select-choices>
+      </ui-select>
+      <span class="input-group-btn">
+        <a ng-click="candidate={}" class="btn btn-default">
+          <i class="fa fa-times-circle"></i>
+        </a>
+      </span>
+    </div>
+    <p os-perm="assignments.can_nominate_self">
+      <button ng-if="!isCandidate()" ng-click="addMe()" class="btn btn-default">
+        <i class="fa fa-plus"></i>
+        <translate>Add me</translate>
+      </button>
+      <button ng-if="isCandidate()" ng-click="removeMe()" class="btn btn-default">
+        <i class="fa fa-minus"></i>
+        <translate>Remove me</translate>
+      </button>
+  </div>
+
+  <h3 translate>Election result</h3>
+  <button os-perms="assignments.can_manage" ng-click="createBallot()" class="btn btn-default btn-sm">
+    <i class="fa fa-bar-chart fa-lg"></i>
+    <translate>New ballot</translate>
+  </button>
+
+  <uib-tabset class="spacer">
+    <uib-tab ng-repeat="poll in assignment.polls" heading="Ballot {{$index+1}}">
+      <div os-perms="assignments.can_manage" class="spacer">
+        <button ng-click="editPollDialog(poll, $index+1)"
+            class="btn btn-default btn-sm">
+          <i class="fa fa-pencil"></i>
+          <translate>Edit</translate>
+        </button>
+        <!-- angular requires to open the link in new tab with "target='_blank'".
+        Otherwise the pdf url can't be open in same window; angular redirects to "/". -->
+        <a ui-sref="assignmentpoll_pdf({poll_pk: poll.id})" target="_blank"
+            class="btn btn-default btn-sm">
+          <i class="fa fa-file-pdf-o"></i> Ballot paper
+        </a>
+        <button os-perms-lite="assignments.can_manage" ng-if="!poll.published" ng-click="publishBallot(poll)"
+            class="btn btn-primary btn-sm">
+          <i class="fa fa-globe"></i>
+          <translate>Publish result</translate>
+        </button>
+        <button os-perms-lite="assignments.can_manage" ng-if="poll.published" ng-click="unpublishBallot(poll)"
+            class="btn btn-default btn-sm">
+          <i class="fa fa-globe"></i>
+          <translate>Unpublish result</translate>
+        </button>
+        <a ng-click="deleteBallot(poll)" class="btn btn-default btn-sm">
+          <i class="fa fa-times"></i>
+          <translate>Delete</translate>
+        </a>
+      </div>
+      <div class="results">
+        <div ng-repeat="option in poll.options">
+          <strong>{{ option.candidate.get_full_name() }}</strong>
+          <div ng-if="option.votes.length > 0">
+            <div ng-repeat="vote in option.votes">
+              {{ vote.value}}: {{ vote.weight}}
+            </div>
           </div>
         </div>
+        <hr>
+        Valid votes: {{ poll.votesvalid }}<br>
+        Invalid votes: {{ poll.votesinvalid }}<br>
+        Votes cast:  {{ poll.votescast }}
       </div>
-      <hr>
-      Valid votes: {{ poll.votesvalid }}<br>
-      Invalid votes: {{ poll.votesinvalid }}<br>
-      Votes cast:  {{ poll.votescast }}
-    </div>
-  </uib-tab>
-</uib-tabset>
+    </uib-tab>
+  </uib-tabset>
+</div>

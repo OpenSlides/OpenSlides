@@ -1,5 +1,5 @@
 <h1 ng-if="model.id" translate>Edit agenda item</h1>
-<h2 ng-if="!model.id" translate>New agenda item</h2>
+<h1 ng-if="!model.id" translate>New agenda item</h1>
 
 <form name="customslideForm" ng-submit="save(model)">
   <formly-form model="model" fields="formFields">

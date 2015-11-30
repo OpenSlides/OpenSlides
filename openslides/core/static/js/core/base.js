@@ -4,14 +4,12 @@
 
 // The core module used for the OpenSlides site and the projector
 angular.module('OpenSlidesApp.core', [
-    'angular-loading-bar',
     'js-data',
     'gettext',
     'ngAnimate',
     'ngSanitize',  // TODO: only use this in functions that need it.
     'ui.bootstrap',
     'ui.tree',
-    'uiSwitch',
 ])
 
 .config(['DSProvider', 'DSHttpAdapterProvider', function(DSProvider, DSHttpAdapterProvider) {
