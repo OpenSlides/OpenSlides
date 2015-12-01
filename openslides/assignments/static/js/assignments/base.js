@@ -77,7 +77,7 @@ angular.module('OpenSlidesApp.assignments', [])
         return DS.defineResource({
             name: name,
             useClass: jsDataModel,
-            agendaSupplement: '(' + gettext('Election') + ')',
+            agendaSupplement: gettext('Election'),
             methods: {
                 getResourceName: function () {
                     return name;
