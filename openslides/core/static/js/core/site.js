@@ -66,19 +66,11 @@ angular.module('OpenSlidesApp.core.site', [
 // set browser language as default language for OpenSlides
 .run([
     'gettextCatalog',
-    function(gettextCatalog) {
-        // detect browser language
-        var lang = navigator.language || navigator.userLanguage;
-        if (lang.indexOf('-') !== -1)
-            lang = lang.split('-')[0];
-        if (lang.indexOf('_') !== -1)
-            lang = lang.split('_')[0];
-        // set default language
-        gettextCatalog.setCurrentLanguage(lang);
-        // load language file
-        if (lang != 'en') {
-            gettextCatalog.loadRemote("static/i18n/" + lang + ".json");
-        }
+    'Languages',
+    function(gettextCatalog, Languages) {
+        // set detected browser language as default language (fallback: 'en')
+        Languages.setCurrentLanguage(Languages.getBrowserLanguage());
+
         //TODO: for debug only! (helps to find untranslated strings by adding "[MISSING]:")
         gettextCatalog.debug = false;
     }
@@ -361,13 +353,62 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
-.controller("LanguageCtrl", function ($scope, gettextCatalog) {
+// gets all in OpenSlides available languages
+.factory('Languages', [
+    'gettext',
+    'gettextCatalog',
+    function (gettext, gettextCatalog) {
+        return {
+            // get all available languages
+            getLanguages: function () {
+                var current = gettextCatalog.getCurrentLanguage();
+                // Define here new languages...
+                var languages = [
+                    { code: 'en', name: gettext('English') },
+                    { code: 'de', name: gettext('German') },
+                    { code: 'fr', name: gettext('French') }
+                ];
+                angular.forEach(languages, function (language) {
+                    if (language.code == current)
+                        language.selected = true;
+                });
+                return languages
+            },
+            // get detected browser language code
+            getBrowserLanguage: function () {
+                var lang = navigator.language || navigator.userLanguage;
+                if (lang.indexOf('-') !== -1)
+                    lang = lang.split('-')[0];
+                if (lang.indexOf('_') !== -1)
+                    lang = lang.split('_')[0];
+                return lang;
+            },
+            // set current language and return updated languages object array
+            setCurrentLanguage: function (lang) {
+                var languages = this.getLanguages();
+                angular.forEach(languages, function (language) {
+                    language.selected = false;
+                    if (language.code == lang) {
+                        language.selected = true;
+                        gettextCatalog.setCurrentLanguage(lang);
+                        if (lang != 'en') {
+                            gettextCatalog.loadRemote("static/i18n/" + lang + ".json");
+                        }
+                    }
+                });
+                return languages;
+            }
+        }
+    }
+])
+
+.controller("LanguageCtrl", function ($scope, gettextCatalog, Languages, filterFilter) {
+    $scope.languages = Languages.getLanguages();
+    $scope.selectedLanguage = filterFilter($scope.languages, {selected: true});
     // controller to switch app language
     $scope.switchLanguage = function (lang) {
-        gettextCatalog.setCurrentLanguage(lang);
-        if (lang != 'en') {
-            gettextCatalog.loadRemote("static/i18n/" + lang + ".json");
-        }
+        $scope.languages = Languages.setCurrentLanguage(lang);
+        $scope.selectedLanguage = filterFilter($scope.languages, {selected: true});
     };
 })
 
