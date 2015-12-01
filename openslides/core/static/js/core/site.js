@@ -63,20 +63,33 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
+// set browser language as default language for OpenSlides
+.run([
+    'gettextCatalog',
+    'Languages',
+    function(gettextCatalog, Languages) {
+        // set detected browser language as default language (fallback: 'en')
+        Languages.setCurrentLanguage(Languages.getBrowserLanguage());
+
+        //TODO: for debug only! (helps to find untranslated strings by adding "[MISSING]:")
+        gettextCatalog.debug = false;
+    }
+])
 .config([
     'mainMenuProvider',
-    function (mainMenuProvider) {
+    'gettext',
+    function (mainMenuProvider, gettext) {
         mainMenuProvider.register({
             'ui_sref': 'dashboard',
             'img_class': 'home',
-            'title': 'Home',
+            'title': gettext('Home'),
             'weight': 100,
         });
 
         mainMenuProvider.register({
             'ui_sref': 'config',
             'img_class': 'cog',
-            'title': 'Settings',
+            'title': gettext('Settings'),
             'weight': 1000,
             'perm': 'core.can_manage_config',
         });
@@ -340,17 +353,62 @@ angular.module('OpenSlidesApp.core.site', [
     }
 ])
 
-.controller("LanguageCtrl", function ($scope, gettextCatalog) {
-    // controller to switch app language
-    // TODO: detect browser language for default language
-    gettextCatalog.setCurrentLanguage('en');
-    //TODO: for debug only! (helps to find untranslated strings by adding "[MISSING]:")
-    gettextCatalog.debug = true;
-    $scope.switchLanguage = function (lang) {
-        gettextCatalog.setCurrentLanguage(lang);
-        if (lang != 'en') {
-            gettextCatalog.loadRemote("static/i18n/" + lang + ".json");
+// gets all in OpenSlides available languages
+.factory('Languages', [
+    'gettext',
+    'gettextCatalog',
+    function (gettext, gettextCatalog) {
+        return {
+            // get all available languages
+            getLanguages: function () {
+                var current = gettextCatalog.getCurrentLanguage();
+                // Define here new languages...
+                var languages = [
+                    { code: 'en', name: gettext('English') },
+                    { code: 'de', name: gettext('German') },
+                    { code: 'fr', name: gettext('French') }
+                ];
+                angular.forEach(languages, function (language) {
+                    if (language.code == current)
+                        language.selected = true;
+                });
+                return languages
+            },
+            // get detected browser language code
+            getBrowserLanguage: function () {
+                var lang = navigator.language || navigator.userLanguage;
+                if (lang.indexOf('-') !== -1)
+                    lang = lang.split('-')[0];
+                if (lang.indexOf('_') !== -1)
+                    lang = lang.split('_')[0];
+                return lang;
+            },
+            // set current language and return updated languages object array
+            setCurrentLanguage: function (lang) {
+                var languages = this.getLanguages();
+                angular.forEach(languages, function (language) {
+                    language.selected = false;
+                    if (language.code == lang) {
+                        language.selected = true;
+                        gettextCatalog.setCurrentLanguage(lang);
+                        if (lang != 'en') {
+                            gettextCatalog.loadRemote("static/i18n/" + lang + ".json");
+                        }
+                    }
+                });
+                return languages;
+            }
         }
+    }
+])
+
+.controller("LanguageCtrl", function ($scope, gettextCatalog, Languages, filterFilter) {
+    $scope.languages = Languages.getLanguages();
+    $scope.selectedLanguage = filterFilter($scope.languages, {selected: true});
+    // controller to switch app language
+    $scope.switchLanguage = function (lang) {
+        $scope.languages = Languages.setCurrentLanguage(lang);
+        $scope.selectedLanguage = filterFilter($scope.languages, {selected: true});
     };
 })
 

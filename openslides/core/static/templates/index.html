@@ -31,13 +31,14 @@
 
           <!-- chatbox -->
           <div ng-controller="ChatMessageCtrl" os-perms="core.can_use_chat" class="inline">
-            <button ng-click="openChatbox()" class="btn btn-sm btn-default">
+            <a href ng-click="openChatbox()" class="headerlink"
+                ng-class="{ 'active': !chatboxIsCollapsed }" uib-dropdown-toggle>
               <i class="fa fa-comment"></i>
               <translate>Chat</translate>
               <span ng-if="unreadMessages > 0 && chatboxIsCollapsed" class="badge">
                 {{ unreadMessages }}
               </span>
-            </button>
+            </a> |
             <div id="chatbox" class="well" uib-collapse="chatboxIsCollapsed">
               <div id="chatbox-text" scroll-glue>
                 <ul class="list-unstyled">
@@ -63,13 +64,12 @@
           </div>
 
           <!-- user settings / logout button -->
-          <div class="btn-group" uib-dropdown>
-            <button type="button" class="btn btn-sm btn-default" uib-dropdown-toggle>
+          <span uib-dropdown>
+            <a href class="headerlink" uib-dropdown-toggle>
               <i class="fa fa-user"></i>
-              <span class="optional-small">{{ operator.user.get_short_name() }}</span>
-              <span class="caret"></span>
-            </button>
-            <ul class="uib-dropdown-menu pull-right" role="menu" aria-labelledby="single-button">
+              <span>{{ operator.user.get_short_name() }}</span>
+            </a>
+            <ul class="uib-dropdown-menu pull-right" role="menu" aria-labelledby="simple-dropdown">
               <li>
                 <a ui-sref="users.user.detail.profile({ id: operator.user.id })">
                   <i class="fa fa-cog"></i>
@@ -87,41 +87,30 @@
                   <translate>Logout</translate>
                 </a>
             </ul>
-          </div>
+          </span>
         </div>
         <!-- Login button -->
         <div ng-if="!operator.isAuthenticated()">
-          <button class="btn btn-sm btn-default" ng-click="openLoginForm()">
+          <a href  ng-click="openLoginForm()" class="headerlink" uib-dropdown-toggle>
             <i class="fa fa-sign-in"></i>
             <translate>Login</translate>
-          </button>
+          </a>
         </div>
       </div>
 
       <!-- language switcher -->
-      <div class="btn-group" ng-controller="LanguageCtrl" uib-dropdown>
-        <button class="btn btn-sm btn-default" uib-dropdown-toggle>
+      <span ng-controller="LanguageCtrl" uib-dropdown>
+        | <a href class="headerlink" uib-dropdown-toggle>
           <i class="fa fa-flag"></i>
-          <span class="caret"></span>
-        </button>
-        <ul class="uib-dropdown-menu pull-right" role="menu" aria-labelledby="single-button">
-          <li>
-            <a href="" ng-click="switchLanguage('en')">
-              <i class="fa fa-flag"></i>
-              <translate>English</translate> (EN)
+          {{ selectedLanguage[0].name | translate }}
+        </a>
+        <ul class="uib-dropdown-menu pull-right" role="menu" aria-labelledby="simple-dropdown">
+          <li ng-repeat="language in languages">
+            <a href="" ng-click="switchLanguage(language.code)">
+              <i ng-if="language.selected" class="fa fa-check"></i>
+              {{ language.name | translate }}
             </a>
-          <li>
-            <a href="" ng-click="switchLanguage('de')">
-              <i class="fa fa-flag"></i>
-              <translate>German</translate> (DE)
-            </a>
-          <li>
-            <a href="" ng-click="switchLanguage('fr')">
-              <i class="fa fa-flag"></i>
-              <translate>French</translate> (FR)
-            </a>
-        </ul>
-      </div>
+      </span>
 
     </div>
   </div>
@@ -137,7 +126,7 @@
         <li ng-repeat="element in elements" ui-sref-active="active">
           <a ui-sref="{{ element.ui_sref }}">
             <i class="fa fa-{{ element.img_class }}"></i>
-            <translate>{{ element.title }}</translate>
+            {{ element.title | translate }}
           </a>
       </ul>
     </div>

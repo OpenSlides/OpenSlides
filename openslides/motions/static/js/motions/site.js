@@ -109,7 +109,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
 
 // Provide generic motion form fields for create and update view
 .factory('MotionFormFieldFactory', [
-    'gettext',
+    'gettextCatalog',
     'operator',
     'Category',
     'Config',
@@ -117,7 +117,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     'Tag',
     'User',
     'Workflow',
-    function (gettext, operator, Category, Config, Mediafile, Tag, User, Workflow) {
+    function (gettextCatalog, operator, Category, Config, Mediafile, Tag, User, Workflow) {
         return {
             getFormFields: function () {
                 return [
@@ -125,7 +125,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                     key: 'identifier',
                     type: 'input',
                     templateOptions: {
-                        label: gettext('Identifier')
+                        label: gettextCatalog.getString('Identifier')
                     },
                     hide: true
                 },
@@ -133,13 +133,13 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                     key: 'submitters_id',
                     type: 'ui-select-multiple',
                     templateOptions: {
-                        label: gettext('Submitters'),
+                        label: gettextCatalog.getString('Submitters'),
                         optionsAttr: 'bs-options',
                         options: User.getAll(),
                         ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
                         valueProp: 'id',
                         labelProp: 'full_name',
-                        placeholder: gettext('Select or search a submitter...')
+                        placeholder: gettextCatalog.getString('Select or search a submitter...')
                     },
                     hide: !operator.hasPerms('motions.can_manage')
                 },
@@ -147,7 +147,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                     key: 'title',
                     type: 'input',
                     templateOptions: {
-                        label: gettext('Title'),
+                        label: gettextCatalog.getString('Title'),
                         required: true
                     }
                 },
@@ -155,7 +155,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                     key: 'text',
                     type: 'textarea',
                     templateOptions: {
-                        label: gettext('Text'),
+                        label: gettextCatalog.getString('Text'),
                         required: true
                     },
                     ngModelElAttrs: {'ckeditor': 'CKEditorOptions'}
@@ -164,7 +164,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                     key: 'reason',
                     type: 'textarea',
                     templateOptions: {
-                        label: gettext('Reason')
+                        label: gettextCatalog.getString('Reason')
                     },
                     ngModelElAttrs: {'ckeditor': 'CKEditorOptions'}
                 },
@@ -172,7 +172,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                     key: 'more',
                     type: 'checkbox',
                     templateOptions: {
-                        label: gettext('Show extended fields')
+                        label: gettextCatalog.getString('Show extended fields')
                     },
                     hide: !operator.hasPerms('motions.can_manage')
                 },
@@ -180,13 +180,13 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                     key: 'attachments_id',
                     type: 'ui-select-multiple',
                     templateOptions: {
-                        label: gettext('Attachment'),
+                        label: gettextCatalog.getString('Attachment'),
                         optionsAttr: 'bs-options',
                         options: Mediafile.getAll(),
                         ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
                         valueProp: 'id',
                         labelProp: 'title_or_filename',
-                        placeholder: gettext('Select or search an attachment...')
+                        placeholder: gettextCatalog.getString('Select or search an attachment...')
                     },
                     hideExpression: '!model.more'
                 },
@@ -194,13 +194,13 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                     key: 'category_id',
                     type: 'ui-select-single',
                     templateOptions: {
-                        label: gettext('Category'),
+                        label: gettextCatalog.getString('Category'),
                         optionsAttr: 'bs-options',
                         options: Category.getAll(),
                         ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
                         valueProp: 'id',
                         labelProp: 'name',
-                        placeholder: gettext('Select or search a category...')
+                        placeholder: gettextCatalog.getString('Select or search a category...')
                     },
                     hideExpression: '!model.more'
                 },
@@ -208,13 +208,13 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                     key: 'tags_id',
                     type: 'ui-select-multiple',
                     templateOptions: {
-                        label: gettext('Tags'),
+                        label: gettextCatalog.getString('Tags'),
                         optionsAttr: 'bs-options',
                         options: Tag.getAll(),
                         ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
                         valueProp: 'id',
                         labelProp: 'name',
-                        placeholder: gettext('Select or search a tag...')
+                        placeholder: gettextCatalog.getString('Select or search a tag...')
                     },
                     hideExpression: '!model.more'
                 },
@@ -222,13 +222,13 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                     key: 'supporters_id',
                     type: 'ui-select-multiple',
                     templateOptions: {
-                        label: gettext('Supporters'),
+                        label: gettextCatalog.getString('Supporters'),
                         optionsAttr: 'bs-options',
                         options: User.getAll(),
                         ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
                         valueProp: 'id',
                         labelProp: 'full_name',
-                        placeholder: gettext('Select or search a supporter...')
+                        placeholder: gettextCatalog.getString('Select or search a supporter...')
                     },
                     hideExpression: '!model.more'
                 },
@@ -236,13 +236,13 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                     key: 'workflow_id',
                     type: 'ui-select-single',
                     templateOptions: {
-                        label: gettext('Workflow'),
+                        label: gettextCatalog.getString('Workflow'),
                         optionsAttr: 'bs-options',
                         options: Workflow.getAll(),
                         ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
                         valueProp: 'id',
                         labelProp: 'name',
-                        placeholder: gettext('Select or search a workflow...')
+                        placeholder: gettextCatalog.getString('Select or search a workflow...')
                     },
                     hideExpression: '!model.more',
                 }];
@@ -504,7 +504,6 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
 .controller('MotionUpdateCtrl', [
     '$scope',
     '$state',
-    'gettext',
     'Motion',
     'Category',
     'Config',
@@ -514,7 +513,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     'User',
     'Workflow',
     'motion',
-    function($scope, $state, gettext, Motion, Category, Config, Mediafile, MotionFormFieldFactory, Tag, User, Workflow, motion) {
+    function($scope, $state, Motion, Category, Config, Mediafile, MotionFormFieldFactory, Tag, User, Workflow, motion) {
         Category.bindAll({}, $scope, 'categories');
         Mediafile.bindAll({}, $scope, 'mediafiles');
         Tag.bindAll({}, $scope, 'tags');

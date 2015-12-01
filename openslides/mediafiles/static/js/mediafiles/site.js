@@ -6,11 +6,12 @@ angular.module('OpenSlidesApp.mediafiles.site', ['ngFileUpload', 'OpenSlidesApp.
 
 .config([
     'mainMenuProvider',
-    function (mainMenuProvider) {
+    'gettext',
+    function (mainMenuProvider, gettext) {
         mainMenuProvider.register({
             'ui_sref': 'mediafiles.mediafile.list',
             'img_class': 'paperclip',
-            'title': 'Files',
+            'title': gettext('Files'),
             'weight': 600,
             'perm': 'mediafiles.can_see',
         });

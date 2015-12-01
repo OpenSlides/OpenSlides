@@ -82,6 +82,16 @@ img {
     color: #999;
 }
 
+#header a.headerlink {
+    text-decoration: none;
+}
+#header a.headerlink {
+    color: #999;
+}
+#header a.headerlink:hover, #header a.headerlink:active, #header a.headerlink.active {
+    color: #e8eaed;
+}
+
 #header .title {
     float: left;
     margin: 2px 0 0 -5px;
@@ -716,4 +726,9 @@ tr.selected td {
     #nav .navbar .button i { padding-top: 15px;}
     #nav .searchbar { margin-top: 15px; }
     .searchbar .input-medium { width: 150px; }
+
+    #chatbox { width: 100%; top: 130px; }
+    .optional { /* hide optional column */
+        display: none;
+    }
 }

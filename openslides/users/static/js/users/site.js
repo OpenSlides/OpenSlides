@@ -6,11 +6,12 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
 
 .config([
     'mainMenuProvider',
-    function (mainMenuProvider) {
+    'gettext',
+    function (mainMenuProvider, gettext) {
         mainMenuProvider.register({
             'ui_sref': 'users.user.list',
             'img_class': 'user',
-            'title': 'Participants',
+            'title': gettext('Participants'),
             'weight': 500,
             'perm': 'users.can_see_name',
         });
@@ -249,9 +250,9 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
 // Provide generic user form fields for create and update view
 .factory('UserFormFieldFactory', [
     '$http',
-    'gettext',
+    'gettextCatalog',
     'Group',
-    function ($http, gettext, Group) {
+    function ($http, gettextCatalog, Group) {
         return {
             getFormFields: function () {
                 return [
@@ -259,48 +260,48 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     key: 'title',
                     type: 'input',
                     templateOptions: {
-                        label: gettext('Title'),
+                        label: gettextCatalog.getString('Title'),
                     }
                 },
                 {
                     key: 'first_name',
                     type: 'input',
                     templateOptions: {
-                        label: gettext('First name')
+                        label: gettextCatalog.getString('First name')
                     }
                 },
                 {
                     key: 'last_name',
                     type: 'input',
                     templateOptions: {
-                        label: gettext('Last name')
+                        label: gettextCatalog.getString('Last name')
                     }
                 },
                 {
                     key: 'structure_level',
                     type: 'input',
                     templateOptions: {
-                        label: gettext('Structure level')
+                        label: gettextCatalog.getString('Structure level')
                     }
                 },
                 {
                     key: 'groups',
                     type: 'ui-select-multiple',
                     templateOptions: {
-                        label: gettext('Groups'),
+                        label: gettextCatalog.getString('Groups'),
                         optionsAttr: 'bs-options',
                         options: Group.getAll(),
                         ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
                         valueProp: 'id',
                         labelProp: 'name',
-                        placeholder: gettext('Select or search a group...')
+                        placeholder: gettextCatalog.getString('Select or search a group...')
                     }
                 },
                 {
                     key: 'default_password',
                     type: 'input',
                     templateOptions: {
-                        label: gettext('Default password'),
+                        label: gettextCatalog.getString('Default password'),
                         addonRight: { text: 'Reset', class: 'fa fa-undo', onClick: function () {
                             // TODO: find a way to get user.id
                             //$http.post('/rest/users/user/' + model.id + '/reset_password/', {})
@@ -312,14 +313,14 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     key: 'comment',
                     type: 'input',
                     templateOptions: {
-                        label: gettext('Comment')
+                        label: gettextCatalog.getString('Comment')
                     }
                 },
                 {
                     key: 'about_me',
                     type: 'textarea',
                     templateOptions: {
-                        label: gettext('About me')
+                        label: gettextCatalog.getString('About me')
                     },
                     ngModelElAttrs: {'ckeditor': 'CKEditorOptions'}
                 },
@@ -327,14 +328,14 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     key: 'is_present',
                     type: 'checkbox',
                     templateOptions: {
-                        label: gettext('Is present')
+                        label: gettextCatalog.getString('Is present')
                     }
                 },
                 {
                     key: 'is_active',
                     type: 'checkbox',
                     templateOptions: {
-                        label: gettext('Is active')
+                        label: gettextCatalog.getString('Is active')
                     }
                 }];
             }
@@ -709,17 +710,17 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     '$scope',
     '$http',
     'operator',
-    'gettext',
+    'gettextCatalog',
     'Config',
-    function ($scope, $http, operator, gettext, Config) {
+    function ($scope, $http, operator, gettextCatalog, Config) {
         $scope.alerts = [];
 
         // TODO: add welcome message only on first time (or if admin password not changed)
         $scope.alerts.push({
             type: 'success',
-            msg: gettext("Installation was successfully.") + "<br>" +
-                 gettext("Use <strong>admin</strong> and <strong>admin</strong> for first login.") + "<br>" +
-                 gettext("Important: Please change your password!")
+            msg: gettextCatalog.getString("Installation was successfully.") + "<br>" +
+                 gettextCatalog.getString("Use <strong>admin</strong> and <strong>admin</strong> for first login.") + "<br>" +
+                 gettextCatalog.getString("Important: Please change your password!")
         });
         // close alert function
         $scope.closeAlert = function(index) {
@@ -739,7 +740,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                 } else {
                     $scope.alerts.push({
                         type: 'danger',
-                        msg: gettext('Username or password was not correct.')
+                        msg: gettextCatalog.getString('Username or password was not correct.')
                     });
                     //Username or password is not correct.
                 }
