@@ -450,9 +450,9 @@ angular.module('OpenSlidesApp.core.site', [
 
 // Provide generic customslide form fields for create and update view
 .factory('CustomslideFormFieldFactory', [
-    'gettext',
+    'gettextCatalog',
     'CKEditorOptions',
-    function (gettext, CKEditorOptions) {
+    function (gettextCatalog, CKEditorOptions) {
         return {
             getFormFields: function () {
                 return [
@@ -460,7 +460,7 @@ angular.module('OpenSlidesApp.core.site', [
                     key: 'title',
                     type: 'input',
                     templateOptions: {
-                        label: gettext('Title'),
+                        label: gettextCatalog.getString('Title'),
                         required: true
                     }
                 },
@@ -468,7 +468,7 @@ angular.module('OpenSlidesApp.core.site', [
                     key: 'text',
                     type: 'textarea',
                     templateOptions: {
-                        label: gettext('Text')
+                        label: gettextCatalog.getString('Text')
                     },
                     ngModelElAttrs: {'ckeditor': 'CKEditorOptions'}
                 }];

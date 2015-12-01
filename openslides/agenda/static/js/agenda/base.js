@@ -26,7 +26,8 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
     'Speaker',
     'jsDataModel',
     'Projector',
-    function(DS, Speaker, jsDataModel, Projector) {
+    'gettextCatalog',
+    function(DS, Speaker, jsDataModel, Projector, gettextCatalog) {
         var name = 'agenda/item';
         return DS.defineResource({
             name: name,
@@ -50,11 +51,10 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                         // in the DS store.
                         title = this.title;
                     }
-                    return _.trim(
-                        title + ' ' + (
-                            this.getContentResource().agendaSupplement || ''
-                        )
-                    );
+                    if (this.getContentResource().agendaSupplement) {
+                        title = title + ' (' + gettextCatalog.getString(this.getContentResource().agendaSupplement) + ')';
+                    }
+                    return title;
                 },
                 isProjected: function () {
                     var projector = Projector.get(1);
