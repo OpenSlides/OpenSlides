@@ -71,7 +71,8 @@ angular.module('OpenSlidesApp.core.site', [
         // set detected browser language as default language (fallback: 'en')
         Languages.setCurrentLanguage(Languages.getBrowserLanguage());
 
-        //TODO: for debug only! (helps to find untranslated strings by adding "[MISSING]:")
+        // Set this to true for debug. Helps to find untranslated strings by
+        // adding "[MISSING]:".
         gettextCatalog.debug = false;
     }
 ])
