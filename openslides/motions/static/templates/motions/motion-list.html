@@ -74,10 +74,10 @@
     </div>
   </div>
 
-  <i class="spacer">
+  <div class="spacer-top-lg italic">
     {{ motions.length }} {{ "motions" | translate }}<span ng-if="(motions|filter:{selected:true}).length > 0">,
     {{(motions|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
-  </i>
+  </div>
   <table class="table table-striped table-bordered table-hover">
     <thead>
       <tr>

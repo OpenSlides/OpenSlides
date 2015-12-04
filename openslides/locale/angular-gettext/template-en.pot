@@ -86,10 +86,6 @@ msgstr ""
 msgid "Attachment"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-list.html:54
-msgid "Auto numbering"
-msgstr ""
-
 #: agenda/static/templates/agenda/item-detail.html:6
 msgid "Back to agenda"
 msgstr ""
@@ -675,6 +671,10 @@ msgstr ""
 #: motions/static/templates/motions/motion-detail.html:131
 #: motions/static/templates/motions/motion-detail.html:177
 msgid "No"
+msgstr ""
+
+#: agenda/static/templates/agenda/item-list.html:54
+msgid "Number agenda"
 msgstr ""
 
 #: assignments/static/js/assignments/site.js:92
