@@ -276,10 +276,9 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
 
 .controller('AgendaImportCtrl', [
     '$scope',
-    '$state',
     'Agenda',
     'Customslide',
-    function($scope, $state, Agenda, Customslide) {
+    function($scope, Agenda, Customslide) {
         // import from textarea
         $scope.importByLine = function () {
             $scope.items = $scope.itemlist[0].split("\n");

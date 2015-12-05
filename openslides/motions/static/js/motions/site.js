@@ -75,9 +75,20 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                 });
             }]
         })
-        .state('motions.motion.csv-import', {
-            url: '/csv-import',
-            controller: 'MotionCSVImportCtrl',
+        .state('motions.motion.import', {
+            url: '/import',
+            controller: 'MotionImportCtrl',
+            resolve: {
+                motions: function(Motion) {
+                    return Motion.findAll();
+                },
+                categories: function(Category) {
+                    return Category.findAll();
+                },
+                users: function(User) {
+                    return User.findAll();
+                }
+            }
         })
         // categories
         .state('motions.category', {
@@ -560,9 +571,160 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
     }
 ])
 
-.controller('MotionCSVImportCtrl', function($scope, Motion) {
-    // TODO
-})
+.controller('MotionImportCtrl', [
+    '$scope',
+    'gettext',
+    'Category',
+    'Motion',
+    'User',
+    function($scope, gettext, Category, Motion, User) {
+        // set initial data for csv import
+        $scope.motions = []
+        $scope.separator = ',';
+        $scope.encoding = 'UTF-8';
+        $scope.encodingOptions = ['UTF-8', 'ISO-8859-1'];
+        $scope.csv = {
+            content: null,
+            header: true,
+            headerVisible: false,
+            separator: $scope.separator,
+            separatorVisible: false,
+            encoding: $scope.encoding,
+            encodingVisible: false,
+            result: null
+        };
+        // set csv file encoding
+        $scope.setEncoding = function () {
+            $scope.csv.encoding = $scope.encoding;
+        };
+        // set csv file encoding
+        $scope.setSeparator = function () {
+            $scope.csv.separator = $scope.separator;
+        };
+        // detect if csv file is loaded
+        $scope.$watch('csv.result', function () {
+            $scope.motions = [];
+            var quotionRe = /^"(.*)"$/;
+            angular.forEach($scope.csv.result, function (motion) {
+                if (motion.identifier) {
+                    motion.identifier = motion.identifier.replace(quotionRe, '$1');
+                    if (motion.identifier != '') {
+                        // All motion objects are already loaded via the resolve statement from ui-router.
+                        var motions = Motion.getAll();
+                        if (_.find(motions, function (item) {
+                            return item.identifier == motion.identifier;
+                        })) {
+                            motion.importerror = true;
+                            motion.identifier_error = gettext('Error: Identifier already exists.');
+                        }
+                    }
+                }
+                // title
+                if (motion.title) {
+                    motion.title = motion.title.replace(quotionRe, '$1');
+                }
+                if (!motion.title) {
+                    motion.importerror = true;
+                    motion.title_error = gettext('Error: Title is required.');
+                }
+                // text
+                if (motion.text) {
+                    motion.text = motion.text.replace(quotionRe, '$1');
+                }
+                if (!motion.text) {
+                    motion.importerror = true;
+                    motion.text_error = gettext('Error: Text is required.');
+                }
+                // reason
+                if (motion.reason) {
+                    motion.reason = motion.reason.replace(quotionRe, '$1');
+                }
+                // submitter
+                if (motion.submitter) {
+                    motion.submitter = motion.submitter.replace(quotionRe, '$1');
+                    if (motion.submitter != '') {
+                        // All user objects are already loaded via the resolve statement from ui-router.
+                        var users = User.getAll();
+                        angular.forEach(users, function (user) {
+                            if (user.short_name == motion.submitter) {
+                                motion.submitters_id = [user.id];
+                                motion.submitter = User.get(user.id).full_name;
+                            }
+                        });
+                    }
+                }
+                if (motion.submitter && motion.submitter != '' && !motion.submitters_id) {
+                    motion.submitter_create = gettext('New participant will be created.');
+                }
+                // category
+                if (motion.category) {
+                    motion.category = motion.category.replace(quotionRe, '$1');
+                    if (motion.category != '') {
+                        // All categore objects are already loaded via the resolve statement from ui-router.
+                        var categories = Category.getAll();
+                        angular.forEach(categories, function (category) {
+                            // search for existing category
+                            if (category.name == motion.category) {
+                                motion.category_id = category.id;
+                                motion.category = Category.get(category.id).name;
+                            }
+                        });
+                    }
+                }
+                if (motion.category && motion.category != '' && !motion.category_id) {
+                    motion.category_create = gettext('New category will be created.');
+                }
+                $scope.motions.push(motion);
+            });
+        });
+
+        // import from csv file
+        $scope.import = function () {
+            $scope.csvImporting = true;
+            angular.forEach($scope.motions, function (motion) {
+                if (!motion.importerror) {
+                    // create new user if not exist
+                    if (!motion.submitters_id) {
+                        var index = motion.submitter.indexOf(' ');
+                        var user = {
+                            first_name: motion.submitter.substr(0, index),
+                            last_name: motion.submitter.substr(index+1),
+                            groups: []
+                        }
+                        User.create(user).then(
+                            function(success) {
+                                // set new user id
+                                motion.submitters_id = [success.id];
+                            }
+                        );
+                    }
+                    // create new category if not exist
+                    if (!motion.category_id) {
+                        var category = {
+                            name: motion.category,
+                            prefix: motion.category.charAt(0)
+                        }
+                        Category.create(category).then(
+                            function(success) {
+                                // set new category id
+                                motion.category_id = [success.id];
+                            }
+                        );
+                    }
+                    Motion.create(motion).then(
+                        function(success) {
+                            motion.imported = true;
+                        }
+                    );
+                }
+            });
+            $scope.csvimported = true;
+        };
+        $scope.clear = function () {
+            $scope.csv.result = null;
+        };
+    }
+])
 
 .controller('CategoryListCtrl', function($scope, Category) {
     Category.bindAll({}, $scope, 'categories');

@@ -13,6 +13,10 @@
         <i class="fa fa-tags fa-lg"></i>
         <translate>Tags</translate>
       </a>
+      <a ui-sref="motions.motion.import" os-perms="motions.can_manage" class="btn btn-default btn-sm">
+        <i class="fa fa-download fa-lg"></i>
+        <translate>Import</translate>
+      </a>
       <a ui-sref="motions_pdf" target="_blank" class="btn btn-default btn-sm">
         <i class="fa fa-file-pdf-o fa-lg"></i>
         <translate>PDF</translate>
@@ -62,10 +66,10 @@
     <div class="col-sm-12 text-left">
       <!-- delete button -->
       <a ng-show="isDeleteMode"
-          os-perms="motions.can_manage" ng-click="delete()"
+          os-perms="motions.can_manage" ng-click="deleteMultiple()"
           class="btn btn-primary">
         <i class="fa fa-trash fa-lg"></i>
-        <translate>Delete selected items</translate>
+        <translate>Delete selected motions</translate>
       </a>
     </div>
   </div>
@@ -153,7 +157,7 @@
           </span>
         <!-- quickEdit columns -->
         <td ng-if="motion.quickEdit && motion.isAllowed('quickedit')" colspan="5">
-          <h4>{{ motion.getTitle() }} <span class="text-muted">&ndash; Quick Edit</span></h4>
+          <h4>{{ motion.getTitle() }} <span class="text-muted">&ndash; <translate>QuickEdit</translate></span></h4>
             <alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
               {{alert.msg}}
             </alert>
