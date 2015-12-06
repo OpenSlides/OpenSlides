@@ -155,7 +155,7 @@
           </div>
         <td ng-if="!item.quickEdit" class="optional">
           {{ item.duration }}
-          <span ng-if="item.duration" translate>h</span>
+          <span ng-if="item.duration" translate-comment="'h' means time in hours" translate>h</span>
         <td ng-if="!item.quickEdit">
           <input type="checkbox" ng-model="item.closed" ng-change="save(item.id);">
         <!-- quickEdit columns -->
