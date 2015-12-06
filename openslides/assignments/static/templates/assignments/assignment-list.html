@@ -68,10 +68,10 @@
     </div>
   </div>
 
-  <i class="spacer">
+  <div class="spacer-top-lg italic">
     {{ assignments.length }} {{ "elections" | translate }}<span ng-if="(assignments|filter:{selected:true}).length > 0">,
     {{(assignments|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
-  </i>
+  </div>
   <table class="table table-striped table-bordered table-hover">
     <thead>
       <tr>

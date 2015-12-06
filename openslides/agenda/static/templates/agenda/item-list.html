@@ -51,7 +51,7 @@
               class="btn btn-default form-control"
               ng-click="autoNumbering()">
             <i class="fa fa-sort-numeric-asc"></i>
-            <translate>Auto numbering</translate>
+            <translate>Number agenda</translate>
           </a>
         </div>
       </form>
@@ -94,10 +94,10 @@
     </div>
   </div>
 
-  <i class="spacer">
+  <div class="spacer-top-lg italic">
     {{ items.length }} {{ "items" | translate }}<span ng-if="(items|filter:{selected:true}).length > 0">,
     {{(items|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
-  </i>
+  </div>
   <table class="table table-striped table-bordered table-hover">
     <thead>
       <tr>

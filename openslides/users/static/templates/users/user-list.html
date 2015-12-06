@@ -82,10 +82,10 @@
     </div>
   </div>
 
-  <i class="spacer">
+  <div class="spacer-top-lg italic">
     {{ users.length }} {{ "participants" | translate }}<span ng-if="(users|filter:{selected:true}).length > 0">,
     {{(users|filter:{selected:true}).length}} {{ "selected" | translate }}</span>
-  </i>
+  </div>
   <table class="table table-striped table-bordered table-hover">
     <thead>
       <tr>
