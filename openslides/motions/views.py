@@ -249,7 +249,7 @@ class MotionViewSet(ModelViewSet):
                 motion.create_poll()
         except WorkflowError as e:
             raise ValidationError({'detail': e})
-        return Response({'detail': _('Poll created successfully.')})
+        return Response({'detail': _('Vote created successfully.')})
 
 
 class MotionPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
@@ -348,7 +348,7 @@ class PollPDFView(PDFView):
         """
         Return the filename for the PDF.
         """
-        return u'%s%s_%s' % (_("Motion"), str(self.get_object().poll_number), _("Poll"))
+        return u'%s%s_%s' % (_("Motion"), str(self.get_object().poll_number), _("Vote"))
 
     def get_template(self, buffer):
         return SimpleDocTemplate(

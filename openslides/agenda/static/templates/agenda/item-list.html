@@ -76,7 +76,7 @@
     <div class="col-sm-12 text-right">
       <!-- hidden item filter -->
       <input type="checkbox" ng-model="filter.noHiddenItems" ng-true-value="1" ng-false-value="">
-      <translate> Hide internal agenda items</translate>
+      <translate> Hide internal items</translate>
       <!-- closed filter -->
       <input type="checkbox" ng-model="filter.noClosedItems" ng-true-value="false" ng-false-value="">
       <translate> Hide closed items</translate>
@@ -132,7 +132,7 @@
           <input type="checkbox" ng-model="item.selected">
         <!-- agenda data columns -->
         <td ng-if="!item.quickEdit" ng-mouseover="item.hover=true" ng-mouseleave="item.hover=false">
-          <span ng-if="item.type == 2" title="'Hidden agenda item'|translate"><i class="fa fa-ban"></i></span>
+          <span ng-if="item.type == 2" title="'Hidden item'|translate"><i class="fa fa-ban"></i></span>
           <strong>
             <a href="" ng-click="open(item)">
               <span ng-repeat="n in [].constructor(item.parentCount) track by $index">&ndash;</span>
@@ -190,7 +190,7 @@
                 <label>
                   <!-- item type: AGENDA_ITEM = 1, HIDDEN_ITEM = 2 -->
                   <input type="checkbox" ng-model="item.type" ng-true-value="2" ng-false-value="1">
-                  <translate> Hidden agenda item</translate>
+                  <translate> Hidden item</translate>
                 </label>
               </div>
               <div class="col-xs-6">

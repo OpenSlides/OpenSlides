@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-30 20:59+0100\n"
+"POT-Creation-Date: 2015-12-07 13:31+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -228,24 +228,6 @@ msgstr ""
 msgid "Comment on the ballot paper"
 msgstr ""
 
-#: assignments/models.py:362 assignments/views.py:523 motions/models.py:691
-#: motions/pdf.py:125 motions/pdf.py:270
-msgid "Yes"
-msgstr ""
-
-#: assignments/models.py:362 assignments/views.py:524 motions/models.py:691
-#: motions/pdf.py:125 motions/pdf.py:272
-msgid "No"
-msgstr ""
-
-#: assignments/models.py:362 motions/models.py:691
-msgid "Abstain"
-msgstr ""
-
-#: assignments/models.py:364
-msgid "Votes"
-msgstr ""
-
 #: assignments/serializers.py:119
 #, python-format
 msgid "You have to submit data for %d candidates."
@@ -437,11 +419,11 @@ msgid "User %s was successfully unelected."
 msgstr ""
 
 #: assignments/views.py:218
-msgid "Can not create poll because there are no candidates."
+msgid "Can not create ballot because there are no candidates."
 msgstr ""
 
-#: assignments/views.py:221 motions/views.py:252
-msgid "Poll created successfully."
+#: assignments/views.py:221
+msgid "Ballot created successfully."
 msgstr ""
 
 #: assignments/views.py:275
@@ -504,8 +486,16 @@ msgid_plural "%d available posts"
 msgstr[0] ""
 msgstr[1] ""
 
+#: assignments/views.py:523 motions/pdf.py:125 motions/pdf.py:270
+msgid "Yes"
+msgstr ""
+
+#: assignments/views.py:524 motions/pdf.py:125 motions/pdf.py:272
+msgid "No"
+msgstr ""
+
 #: assignments/views.py:525 motions/pdf.py:125 motions/pdf.py:274
-msgid "Abstention"
+msgid "Abstain"
 msgstr ""
 
 #: core/config.py:28 core/config.py:59
@@ -803,7 +793,7 @@ msgstr ""
 msgid "Vote result"
 msgstr ""
 
-#: motions/pdf.py:121
+#: motions/pdf.py:121 motions/views.py:351
 msgid "Vote"
 msgstr ""
 
@@ -1097,8 +1087,8 @@ msgstr ""
 msgid "State set to"
 msgstr ""
 
-#: motions/views.py:351
-msgid "Poll"
+#: motions/views.py:252
+msgid "Vote created successfully."
 msgstr ""
 
 #: poll/models.py:71
@@ -1111,10 +1101,6 @@ msgstr ""
 
 #: poll/models.py:73
 msgid "Disabled (no percents)"
-msgstr ""
-
-#: poll/models.py:152
-msgid "votes"
 msgstr ""
 
 #: users/models.py:99 users/pdf.py:114

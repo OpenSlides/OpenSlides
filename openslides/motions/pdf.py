@@ -122,7 +122,7 @@ def motion_to_pdf(pdf, motion):
                                         stylesheet['Bold']))
             cell6b.append(Paragraph(
                 "%s: %s <br/> %s: %s <br/> %s: %s <br/> %s %s %s" %
-                (_("Yes"), yes, _("No"), no, _("Abstention"), abstain, valid, invalid, votescast),
+                (_("Yes"), yes, _("No"), no, _("Abstain"), abstain, valid, invalid, votescast),
                 stylesheet['Normal']))
             cell6b.append(Spacer(0, 0.2 * cm))
         motion_data.append([cell6a, cell6b])
@@ -271,7 +271,7 @@ def motion_poll_to_pdf(pdf, poll):
     cell.append(Paragraph("<font name='circlefont' size='15'>%s</font> <font name='Ubuntu'>%s</font>"
                 % (circle, _("No")), stylesheet['Ballot_option']))
     cell.append(Paragraph("<font name='circlefont' size='15'>%s</font> <font name='Ubuntu'>%s</font>"
-                % (circle, _("Abstention")), stylesheet['Ballot_option']))
+                % (circle, _("Abstain")), stylesheet['Ballot_option']))
     data = []
     # get ballot papers config values
     ballot_papers_selection = config["motions_pdf_ballot_papers_selection"]

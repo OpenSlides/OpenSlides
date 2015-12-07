@@ -3,7 +3,7 @@ import locale
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy, ugettext_noop
+from django.utils.translation import ugettext_lazy
 
 from openslides.utils.models import MinMaxIntegerField
 
@@ -149,7 +149,7 @@ class BasePoll(models.Model):
     """
     Base poll class.
     """
-    vote_values = [ugettext_noop('votes')]
+    vote_values = ['Votes']
 
     class Meta:
         abstract = True
