@@ -3,13 +3,14 @@
 # Copyright (C) 2011–2015 by OpenSlides team, see AUTHORS.
 # This file is distributed under the same license as the OpenSlides package.
 # Translators:
+# Emanuel Schütze <emanuel.schuetze@intevation.de>, 2015
 # Norman Jäckel <transifex16062013@normanjaeckel.de>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: OpenSlides\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-11-30 20:59+0100\n"
-"PO-Revision-Date: 2015-11-30 20:10+0000\n"
+"POT-Creation-Date: 2015-12-07 15:41+0100\n"
+"PO-Revision-Date: 2015-12-07 19:00+0000\n"
 "Last-Translator: Norman Jäckel <transifex16062013@normanjaeckel.de>\n"
 "Language-Team: German (http://www.transifex.com/openslides/openslides/language/de/)\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +21,7 @@ msgstr ""
 
 #: agenda/models.py:160
 msgid "Agenda item"
-msgstr "Tagesordnungseintrag"
+msgstr "Tagesordnungspunkt"
 
 #: agenda/models.py:161
 msgid "Hidden item"
@@ -48,7 +49,7 @@ msgstr "Gewichtung"
 
 #: agenda/models.py:219
 msgid "List of speakers is closed"
-msgstr "Rednerliste ist geschlossen"
+msgstr "Redeliste ist geschlossen"
 
 #: agenda/models.py:226
 msgid "Can see agenda"
@@ -64,16 +65,16 @@ msgstr "Darf versteckte Einträge und Zeitplan der Tagesordnung sehen"
 
 #: agenda/models.py:303
 #, python-format
-msgid "%(user)s is already on the list of speakers of item %(id)s."
-msgstr "%(user)s ist bereits auf der Rednerliste von Eintrag %(id)s."
+msgid "%(user)s is already on the list of speakers of %(id)s."
+msgstr "%(user)s ist bereits auf der Redeliste von %(id)s."
 
 #: agenda/models.py:307
 msgid "An anonymous user can not be on lists of speakers."
-msgstr "Anonyme Gast-Benutzer können nicht auf Rednerlisten stehen."
+msgstr "Anonyme Gast-Benutzer können nicht auf Redelisten stehen."
 
 #: agenda/models.py:347
 msgid "Can put oneself on the list of speakers"
-msgstr "Darf sich selbst auf die Rednerliste setzen"
+msgstr "Darf sich selbst auf die Redeliste setzen"
 
 #: agenda/signals.py:18
 msgid "Invalid input."
@@ -95,11 +96,11 @@ msgstr "Tagesordnung"
 
 #: agenda/signals.py:41
 msgid "Number of last speakers to be shown on the projector"
-msgstr "Anzahl der dargestellten letzten Redner auf dem Projektor"
+msgstr "Anzahl der dargestellten letzten Redner/innen auf dem Projektor"
 
 #: agenda/signals.py:50
 msgid "Couple countdown with the list of speakers"
-msgstr "Countdown mit der Rednerliste verkoppeln"
+msgstr "Countdown mit der Redeliste verkoppeln"
 
 #: agenda/signals.py:51
 msgid "[Begin speech] starts the countdown, [End speech] stops the countdown."
@@ -107,11 +108,11 @@ msgstr "[Rede beginnen] startet den Countdown, [Rede beenden] stoppt den Countdo
 
 #: agenda/signals.py:58
 msgid "Numbering prefix for agenda items"
-msgstr "Präfix für Nummerierung von Tagesordnungseinträgen"
+msgstr "Präfix für Nummerierung von Tagesordnungspunkten"
 
 #: agenda/signals.py:67
 msgid "Numeral system for agenda items"
-msgstr "Nummerierungssystem für Tagesordnungseinträge"
+msgstr "Nummerierungssystem für Tagesordnungspunkte"
 
 #: agenda/signals.py:69
 msgid "Arabic"
@@ -123,7 +124,7 @@ msgstr "Römisch"
 
 #: agenda/views.py:105
 msgid "The list of speakers is closed."
-msgstr "Die Rednerliste ist geschlossen."
+msgstr "Die Redeliste ist geschlossen."
 
 #: agenda/views.py:114
 msgid "User does not exist."
@@ -132,24 +133,24 @@ msgstr "Benutzer existiert nicht."
 #: agenda/views.py:122
 #, python-format
 msgid "User %s was successfully added to the list of speakers."
-msgstr "Benutzer %s wurde erfolgreich zur Rednerliste hinzugefügt."
+msgstr "Benutzer %s wurde erfolgreich zur Redeliste hinzugefügt."
 
 #: agenda/views.py:140
 msgid "You are not on the list of speakers."
-msgstr "Sie stehen nicht auf der Rednerliste."
+msgstr "Sie stehen nicht auf der Redeliste."
 
 #: agenda/views.py:148 agenda/views.py:178
 msgid "Speaker does not exist."
-msgstr "Redner existiert nicht."
+msgstr "Redner/in existiert nicht."
 
 #: agenda/views.py:152
 #, python-format
 msgid "Speaker %s was successfully removed from the list of speakers."
-msgstr "Redner %s wurde erfolgreich von der Rednerliste entfernt."
+msgstr "Redner/in %s wurde erfolgreich von der Redeliste entfernt."
 
 #: agenda/views.py:173
 msgid "The list of speakers is empty."
-msgstr "Die Rednerliste ist leer."
+msgstr "Die Redeliste ist leer."
 
 #: agenda/views.py:180
 msgid "User is now speaking."
@@ -158,7 +159,7 @@ msgstr "Benutzer redet jetzt."
 #: agenda/views.py:191
 #, python-format
 msgid "There is no one speaking at the moment according to %(item)s."
-msgstr "Es spricht derzeit kein Redner zu %(item)s."
+msgstr "Es spricht derzeit kein/e Redner/in zu %(item)s."
 
 #: agenda/views.py:193
 msgid "The speech is finished now."
@@ -174,11 +175,11 @@ msgstr "Kandidaten/in"
 
 #: assignments/models.py:30 assignments/views.py:414
 msgid "elected"
-msgstr "Gewählt"
+msgstr "gewählt"
 
 #: assignments/models.py:31
 msgid "blocked"
-msgstr "Geblockt"
+msgstr "geblockt"
 
 #: assignments/models.py:64
 msgid "Searching for candidates"
@@ -234,24 +235,6 @@ msgstr "Wahl"
 #: assignments/models.py:355
 msgid "Comment on the ballot paper"
 msgstr "Kommentar für den Stimmzettel"
-
-#: assignments/models.py:362 assignments/views.py:523 motions/models.py:691
-#: motions/pdf.py:125 motions/pdf.py:270
-msgid "Yes"
-msgstr "Ja"
-
-#: assignments/models.py:362 assignments/views.py:524 motions/models.py:691
-#: motions/pdf.py:125 motions/pdf.py:272
-msgid "No"
-msgstr "Nein"
-
-#: assignments/models.py:362 motions/models.py:691
-msgid "Abstain"
-msgstr "Enthaltung"
-
-#: assignments/models.py:364
-msgid "Votes"
-msgstr "Stimmen"
 
 #: assignments/serializers.py:119
 #, python-format
@@ -444,11 +427,11 @@ msgid "User %s was successfully unelected."
 msgstr "Der Status als Gewählte/r von Benutzer %s wurde erfolgreich aufgehoben."
 
 #: assignments/views.py:218
-msgid "Can not create poll because there are no candidates."
+msgid "Can not create ballot because there are no candidates."
 msgstr "Kann keinen Wahlgang anlegen, weil es keine Kandidaten gibt."
 
-#: assignments/views.py:221 motions/views.py:252
-msgid "Poll created successfully."
+#: assignments/views.py:221
+msgid "Ballot created successfully."
 msgstr "Wahlgang erfolgreich angelegt."
 
 #: assignments/views.py:275
@@ -511,8 +494,16 @@ msgid_plural "%d available posts"
 msgstr[0] "%d verfügbarer Posten"
 msgstr[1] "%d verfügbare Posten"
 
+#: assignments/views.py:523 motions/pdf.py:125 motions/pdf.py:270
+msgid "Yes"
+msgstr "Ja"
+
+#: assignments/views.py:524 motions/pdf.py:125 motions/pdf.py:272
+msgid "No"
+msgstr "Nein"
+
 #: assignments/views.py:525 motions/pdf.py:125 motions/pdf.py:274
-msgid "Abstention"
+msgid "Abstain"
 msgstr "Enthaltung"
 
 #: core/config.py:28 core/config.py:59
@@ -810,7 +801,7 @@ msgstr "Version"
 msgid "Vote result"
 msgstr "Abstimmungsergebnis"
 
-#: motions/pdf.py:121
+#: motions/pdf.py:121 motions/views.py:351
 msgid "Vote"
 msgstr "Stimme"
 
@@ -1104,9 +1095,9 @@ msgstr "Der Status des Antrags wurde auf %s gesetzt."
 msgid "State set to"
 msgstr "Status gesetzt auf"
 
-#: motions/views.py:351
-msgid "Poll"
-msgstr "Abstimmung"
+#: motions/views.py:252
+msgid "Vote created successfully."
+msgstr "Abstimmung erfolgreich angelegt."
 
 #: poll/models.py:71
 msgid "Only all valid votes"
@@ -1119,10 +1110,6 @@ msgstr "Alle abgegebenen Stimmen (einschließlich ungültiger Stimmen)"
 #: poll/models.py:73
 msgid "Disabled (no percents)"
 msgstr "Deaktiviert (keine Prozente)"
-
-#: poll/models.py:152
-msgid "votes"
-msgstr ""
 
 #: users/models.py:99 users/pdf.py:114
 msgid "Username"
@@ -1338,7 +1325,7 @@ msgstr "Passwort wurde erfolgreich zurückgesetzt."
 
 #: users/views.py:253
 msgid "Password does not match."
-msgstr ""
+msgstr "Passwort stimmt nicht überein."
 
 #: users/views.py:264
 msgid "user-list"
