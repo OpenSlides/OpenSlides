@@ -131,15 +131,14 @@ To start OpenSlides simply run on command line::
     openslides
 
 If you run this command the first time, a new database and the admin account
-(Username: `admin`) will be created. Please change the password (Password:
-`admin`) after first login!
+(Username: `admin`, Password: `admin`) will be created. Please change the password
+after first login!
 
 OpenSlides will start using the integrated Tornado webserver. It will also
 try to open the webinterface in your default webbrowser. The server will
-try to listen on the local ip address on port 80 or port 8000 if you do not
-have admin permissions. That means that the server will be available to
-everyone on your local network (at least for commonly used network
-configurations).
+try to listen on the local ip address on port 8000. That means that the server
+will be available to everyone on your local network (at least for commonly used
+network configurations).
 
 If you use a virtual environment (see install instructions, step 2), do not
 forget to activate the environment before restart after you have closed the
@@ -242,22 +241,23 @@ VI. Used software
 
 OpenSlides uses the following projects or parts of them:
 
-* `backports.ssl_match_hostname <https://bitbucket.org/brandon/backports.ssl_match_hostname>`_,
+* `backports-abc <https://github.com/cython/backports_abc>`_,
   License: Python Software Foundation License
 
 * `Beautiful Soup <http://www.crummy.com/software/BeautifulSoup/>`_,
   License: MIT
 
-* `Bootstrap <http://getbootstrap.com/2.3.2/>`_, License: Apache
-  License v2.0
-
 * `Django <https://www.djangoproject.com>`_, License: BSD
-
-* `Django CKEditor <https://github.com/riklaunim/django-ckeditor>`_, License: BSD
 
 * `Django haystack <http://haystacksearch.org>`_, License: BSD
 
-* `pdf.js <http://mozilla.github.io/pdf.js/>`_, License: Apache License v2.0
+* `Django REST framework <http://www.django-rest-framework.org>`_, License: BSD
+
+* `html5-lib <https://github.com/html5lib/html5lib-python>`_, License: MIT
+
+* `jsonfield <https://github.com/bradjasper/django-jsonfield/>`_, License: MIT
+
+* `natsort <https://github.com/SethMMorton/natsort/>`_, License: MIT
 
 * `ReportLab <http://www.reportlab.com/software/opensource/rl-toolkit/>`_,
   License: BSD
@@ -270,23 +270,45 @@ OpenSlides uses the following projects or parts of them:
 * `sockjs-tornado <https://github.com/mrjoes/sockjs-tornado>`_,
   License: MIT
 
-* `Sphinx <http://sphinx-doc.org/>`_, License: BSD
-
-* Sphinx extension `autoimage <https://gist.github.com/kroger/3856821/>`_,
-  License: MIT
-
-* `Sphinx Bootstrap Theme
-  <http://ryan-roemer.github.io/sphinx-bootstrap-theme/>`_, License: MIT
-
 * `Tornado <http://www.tornadoweb.org/en/stable/>`_, License: Apache
   License v2.0
 
-* `Ubuntu TrueType Font <http://font.ubuntu.com>`_, License: Ubuntu Font
-  Licence 1.0
-
-* `Whoosh <https://bitbucket.org/mchaput/whoosh/wiki/Home/>`_, License: BSD
-
 * Several JavaScript packages (see bower.json)
+
+  * `angular <https://angularjs.org>`_, License: MIT
+  * `angular-animate <https://github.com/angular/bower-angular-animate>`_, License: MIT
+  * `angular-bootstrap <https://angular-ui.github.io/bootstrap>`_, License: MIT
+  * `angular-ckeditor <https://github.com/lemonde/angular-ckeditor>`_, License: MIT
+  * `angular-csv-import <https://github.com/cybadave/angular-csv-import>`_, License: MIT
+  * `angular-formly <http://angular-formly.com/>`_, License: MIT
+  * `angular-formly-templates-bootstrap <http://angular-formly.com/>`_, License: MIT
+  * `angular-gettext <https://angular-gettext.rocketeer.be/>`_, License: MIT
+  * `angular-loading-bar <https://chieffancypants.github.io/angular-loading-bar/>`_, License: MIT
+  * `angular-messages <https://github.com/angular/bower-angular-messages>`_, License: MIT
+  * `angular-sanitize <https://github.com/angular/bower-angular-sanitize>`_, License: MIT
+  * `angular-scroll-glue <https://github.com/Luegg/angularjs-scroll-glue>`_, License: MIT
+  * `angular-ui-router <http://angular-ui.github.io/ui-router>`_, License: MIT
+  * `angular-ui-select <https://github.com/angular-ui/ui-select>`_, License: MIT
+  * `angular-ui-switch <https://github.com/xpepermint/angular-ui-switch>`_, License: MIT
+  * `angular-ui-tree <https://github.com/JimLiu/angular-ui-tree>`_, License: MIT
+  * `api-check <https://github.com/kentcdodds/apiCheck.js>`_, License: MIT
+  * `bootbox <http://bootboxjs.com/>`_, License: MIT
+  * `bootstrap <http://getbootstrap.com>`_, License: MIT
+  * `bootstrap-css-only <http://getbootstrap.com>`_, License: MIT
+  * `ckeditor <http://ckeditor.com>`_, License: For licensing, see LICENSE.md or http://ckeditor.com/license.
+  * `font-awesome-bower <https://github.com/interval-braining/font-awesome-bower>`_, License: MIT
+  * `jquery <https://jquery.com>`_, License: MIT
+  * `jquery.cookie <https://plugins.jquery.com/cookie>`_, License: MIT
+  * `js-data <http://www.js-data.io>`_, License: MIT
+  * `js-data-angular <http://www.js-data.io/docs/js-data-angular>`_, License: MIT
+  * `js-data-http <http://www.js-data.io/docs/dshttpadapter>`_, License: MIT
+  * `lodash <https://lodash.com/>`_, License: MIT
+  * `ng-dialog <https://github.com/likeastore/ngDialog>`_, License: MIT
+  * `ng-file-upload <https://github.com/danialfarid/ng-file-upload>`_, License: MIT
+  * `ngBootbox <https://github.com/eriktufvesson/ngBootbox>`_, License: MIT
+  * `open-sans-fontface <https://github.com/FontFaceKit/open-sans>`_, License: Apache License version 2.0
+  * `roboto-condensed <https://github.com/davidcunningham/roboto-condensed>`_, License: Apache-2.0
+  * `sockjs <https://github.com/sockjs/sockjs-client>`_, License: MIT
 
 
 VII. License and authors

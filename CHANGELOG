@@ -10,6 +10,8 @@ Version 2.0.0 (unreleased)
 
 Agenda:
 - Updated the tests and changed internal parts of method of the agenda model.
+- Changed API of related objects. All assignments, motions and custom slides
+  are now agenda items and can be hidden.
 - Removed mptt.
 Assignments:
 - Renamed app from assignment to assignments.
@@ -25,6 +27,7 @@ Users:
 - Used authentication frontend via AngularJS.
 Other:
 - New OpenSlides logo.
+- New design for web interface.
 - Added multiple countdown support.
 - Changed supported Python version to >= 3.3.
 - Used Django 1.7 as lowest requirement.
@@ -53,6 +56,8 @@ Other:
 - Used setup.cfg for development tools.
 - Removed code for Windows portable version with GUI. Used new repository for
   this.
+Translations:
+- Added DE and FR translations.
 
 
 Version 1.7 (2015-02-16)
