@@ -10,4 +10,3 @@ reportlab>=3.0,<3.3
 roman>=2.0,<2.1
 setuptools>=2.2,<19.0
 sockjs-tornado>=1.0,<1.1
-
