@@ -114,14 +114,18 @@
       </div>
       <div class="results">
         <div ng-repeat="option in poll.options">
-          <strong>{{ option.candidate.get_full_name() }}</strong>
-          <div ng-if="option.votes.length > 0">
-            <div ng-repeat="vote in option.votes">
-              {{ vote.value}}: {{ vote.weight}}
-            </div>
+          <div ng-if="poll.yesnoabstain && option.votes.length > 0">
+            <strong>{{ option.candidate.get_full_name() }}</strong><br>
+            {{ option.votes[0].value | translate }}: {{ option.votes[0].weight }}<br>
+            {{ option.votes[1].value | translate }}: {{ option.votes[1].weight }}<br>
+            {{ option.votes[2].value | translate }}: {{ option.votes[2].weight }}
+            <hr class="smallhr">
+          </div>
+          <div ng-if="!poll.yesnoabstain && option.votes.length > 0">
+            {{ option.candidate.get_full_name() }}: {{ option.votes[0].weight}}
+            <hr class="smallhr">
           </div>
         </div>
-        <hr>
         Valid votes: {{ poll.votesvalid }}<br>
         Invalid votes: {{ poll.votesinvalid }}<br>
         Votes cast:  {{ poll.votescast }}

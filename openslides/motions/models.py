@@ -687,8 +687,7 @@ class MotionPoll(RESTModelMixin, CollectDefaultVotesMixin, BasePoll):
     option_class = MotionOption
     """The option class, witch links between this object the the votes."""
 
-    vote_values = [
-        ugettext_noop('Yes'), ugettext_noop('No'), ugettext_noop('Abstain')]
+    vote_values = ['Yes', 'No', 'Abstain']
     """The possible anwers for the poll. 'Yes, 'No' and 'Abstain'."""
 
     def __str__(self):

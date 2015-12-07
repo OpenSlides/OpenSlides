@@ -300,7 +300,7 @@ class SpeakerManager(models.Manager):
         """
         if self.filter(user=user, item=item, begin_time=None).exists():
             raise OpenSlidesError(
-                _('%(user)s is already on the list of speakers of item %(id)s.')
+                _('%(user)s is already on the list of speakers of %(id)s.')
                 % {'user': user, 'id': item.id})
         if isinstance(user, AnonymousUser):
             raise OpenSlidesError(

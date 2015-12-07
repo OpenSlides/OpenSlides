@@ -26,7 +26,8 @@ msgstr ""
 msgid "About me"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:437
+#: assignments/static/js/assignments/site.js:351
+#: assignments/static/js/assignments/site.js:440
 #: motions/static/templates/motions/motion-detail.html:135
 #: motions/static/templates/motions/motion-detail.html:136
 #: motions/static/templates/motions/motion-detail.html:186
@@ -191,7 +192,7 @@ msgid "Comment"
 msgstr ""
 
 #: assignments/static/js/assignments/site.js:120
-#: assignments/static/js/assignments/site.js:487
+#: assignments/static/js/assignments/site.js:490
 msgid "Comment on the ballot paper"
 msgstr ""
 
@@ -450,7 +451,7 @@ msgstr ""
 
 #: agenda/static/templates/agenda/item-list.html:135
 #: agenda/static/templates/agenda/item-list.html:193
-msgid "Hidden agenda item"
+msgid "Hidden item"
 msgstr ""
 
 #: agenda/static/templates/agenda/item-list.html:82
@@ -458,7 +459,7 @@ msgid "Hide closed items"
 msgstr ""
 
 #: agenda/static/templates/agenda/item-list.html:79
-msgid "Hide internal agenda items"
+msgid "Hide internal items"
 msgstr ""
 
 #: core/static/js/core/site.js:86
@@ -654,19 +655,20 @@ msgstr ""
 msgid "New password"
 msgstr ""
 
-#: motions/static/templates/motions/motion-detail.html:222
-msgid "New poll"
-msgstr ""
-
 #: core/static/templates/core/tag-form.html:10
 msgid "New tag"
+msgstr ""
+
+#: motions/static/templates/motions/motion-detail.html:222
+msgid "New vote"
 msgstr ""
 
 #: agenda/static/templates/agenda/item-detail.html:67
 msgid "Next speakers:"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:428
+#: assignments/static/js/assignments/site.js:351
+#: assignments/static/js/assignments/site.js:431
 #: motions/static/templates/motions/motion-detail.html:130
 #: motions/static/templates/motions/motion-detail.html:131
 #: motions/static/templates/motions/motion-detail.html:177
@@ -1137,18 +1139,18 @@ msgstr ""
 msgid "Vote"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:477
+#: assignments/static/js/assignments/site.js:480
 #: motions/static/templates/motions/motion-detail.html:150
 #: motions/static/templates/motions/motion-detail.html:151
 #: motions/static/templates/motions/motion-detail.html:214
 msgid "Votes cast"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:469
+#: assignments/static/js/assignments/site.js:472
 msgid "Votes invalid"
 msgstr ""
 
-#: assignments/static/js/assignments/site.js:461
+#: assignments/static/js/assignments/site.js:464
 msgid "Votes valid"
 msgstr ""
 
@@ -1161,7 +1163,8 @@ msgid "Workflow"
 msgstr ""
 
 #: assignments/static/js/assignments/site.js:127
-#: assignments/static/js/assignments/site.js:419
+#: assignments/static/js/assignments/site.js:351
+#: assignments/static/js/assignments/site.js:422
 #: motions/static/templates/motions/motion-detail.html:125
 #: motions/static/templates/motions/motion-detail.html:126
 #: motions/static/templates/motions/motion-detail.html:168

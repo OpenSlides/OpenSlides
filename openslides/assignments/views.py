@@ -215,10 +215,10 @@ class AssignmentViewSet(ModelViewSet):
         """
         assignment = self.get_object()
         if not assignment.candidates.exists():
-            raise ValidationError({'detail': _('Can not create poll because there are no candidates.')})
+            raise ValidationError({'detail': _('Can not create ballot because there are no candidates.')})
         with transaction.atomic():
             assignment.create_poll()
-        return Response({'detail': _('Poll created successfully.')})
+        return Response({'detail': _('Ballot created successfully.')})
 
 
 class AssignmentPollViewSet(UpdateModelMixin, DestroyModelMixin, GenericViewSet):
@@ -522,7 +522,7 @@ class AssignmentPollPDF(PDFView):
                             {'circle': circle,
                              'yes': _("Yes"),
                              'no': _("No"),
-                             'abstain': _("Abstention")},
+                             'abstain': _("Abstain")},
                             stylesheet['Ballot_option_circle_YNA']))
                 if counter == 13:
                     cellcolumnA = cell

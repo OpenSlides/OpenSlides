@@ -359,9 +359,9 @@ class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,
 
     def get_vote_values(self):
         if self.yesnoabstain:
-            return [ugettext_noop('Yes'), ugettext_noop('No'), ugettext_noop('Abstain')]
+            return ['Yes', 'No', 'Abstain']
         else:
-            return [ugettext_noop('Votes')]
+            return ['Votes']
 
     def get_ballot(self):
         return self.assignment.polls.filter(id__lte=self.pk).count()

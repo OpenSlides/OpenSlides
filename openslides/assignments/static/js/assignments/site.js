@@ -346,6 +346,9 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                     $scope.alert = { type: 'danger', msg: data.detail, show: true };
                 });
         };
+
+        // Just mark some vote value strings for translation.
+        gettext('Yes'), gettext('No'), gettext('Abstain');
     }
 ])
 
