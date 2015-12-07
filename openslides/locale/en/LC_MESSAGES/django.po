@@ -5,7 +5,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-12-07 13:31+0100\n"
+"POT-Creation-Date: 2015-12-07 15:41+0100\n"
 "Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -57,7 +57,7 @@ msgstr ""
 
 #: agenda/models.py:303
 #, python-format
-msgid "%(user)s is already on the list of speakers of item %(id)s."
+msgid "%(user)s is already on the list of speakers of %(id)s."
 msgstr ""
 
 #: agenda/models.py:307
