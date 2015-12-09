@@ -98,6 +98,7 @@ class Motion(RESTModelMixin, models.Model):
     """
 
     class Meta:
+        default_permissions = ()
         permissions = (
             ('can_see', ugettext_noop('Can see motions')),
             ('can_create', ugettext_noop('Can create motions')),
@@ -567,6 +568,7 @@ class MotionVersion(RESTModelMixin, models.Model):
     # note = models.TextField(null=True, blank=True)
 
     class Meta:
+        default_permissions = ()
         unique_together = ("motion", "version_number")
 
     def __str__(self):
@@ -596,11 +598,12 @@ class Category(RESTModelMixin, models.Model):
     Used to build the identifier of a motion.
     """
 
+    class Meta:
+        default_permissions = ()
+        ordering = ['prefix']
+
     def __str__(self):
         return self.name
-
-    class Meta:
-        ordering = ['prefix']
 
 
 class MotionLog(RESTModelMixin, models.Model):
@@ -621,6 +624,7 @@ class MotionLog(RESTModelMixin, models.Model):
     """The Time, when the loged action was performed."""
 
     class Meta:
+        default_permissions = ()
         ordering = ['-time']
 
     def __str__(self):
@@ -650,6 +654,9 @@ class MotionVote(RESTModelMixin, BaseVote):
     option = models.ForeignKey('MotionOption')
     """The option object, to witch the vote belongs."""
 
+    class Meta:
+        default_permissions = ()
+
     def get_root_rest_element(self):
         """
         Returns the motion to this instance which is the root REST element.
@@ -667,6 +674,9 @@ class MotionOption(RESTModelMixin, BaseOption):
 
     vote_class = MotionVote
     """The VoteClass, to witch this Class links."""
+
+    class Meta:
+        default_permissions = ()
 
     def get_root_rest_element(self):
         """
@@ -689,6 +699,9 @@ class MotionPoll(RESTModelMixin, CollectDefaultVotesMixin, BasePoll):
 
     vote_values = ['Yes', 'No', 'Abstain']
     """The possible anwers for the poll. 'Yes, 'No' and 'Abstain'."""
+
+    class Meta:
+        default_permissions = ()
 
     def __str__(self):
         """
@@ -782,6 +795,9 @@ class State(RESTModelMixin, models.Model):
     this one, else it does.
     """
 
+    class Meta:
+        default_permissions = ()
+
     def __str__(self):
         """Returns the name of the state."""
         return self.name
@@ -822,6 +838,9 @@ class Workflow(RESTModelMixin, models.Model):
 
     first_state = models.OneToOneField(State, related_name='+', null=True)
     """A one-to-one relation to a state, the starting point for the workflow."""
+
+    class Meta:
+        default_permissions = ()
 
     def __str__(self):
         """Returns the name of the workflow."""

@@ -41,6 +41,7 @@ class AssignmentRelatedUser(RESTModelMixin, models.Model):
         default=STATUS_CANDIDATE)
 
     class Meta:
+        default_permissions = ()
         unique_together = ('assignment', 'user')
 
     def __str__(self):
@@ -116,6 +117,7 @@ class Assignment(RESTModelMixin, models.Model):
     """
 
     class Meta:
+        default_permissions = ()
         permissions = (
             ('can_see', ugettext_noop('Can see elections')),
             ('can_nominate_other', ugettext_noop('Can nominate another participant')),
@@ -320,6 +322,9 @@ class Assignment(RESTModelMixin, models.Model):
 class AssignmentVote(RESTModelMixin, BaseVote):
     option = models.ForeignKey('AssignmentOption', related_name='votes')
 
+    class Meta:
+        default_permissions = ()
+
     def get_root_rest_element(self):
         """
         Returns the assignment to this instance which is the root REST element.
@@ -331,6 +336,9 @@ class AssignmentOption(RESTModelMixin, BaseOption):
     poll = models.ForeignKey('AssignmentPoll', related_name='options')
     candidate = models.ForeignKey(settings.AUTH_USER_MODEL)
     vote_class = AssignmentVote
+
+    class Meta:
+        default_permissions = ()
 
     def __str__(self):
         return str(self.candidate)
@@ -353,6 +361,9 @@ class AssignmentPoll(RESTModelMixin, CollectDefaultVotesMixin,
         max_length=79,
         blank=True,
         verbose_name=ugettext_lazy("Comment on the ballot paper"))
+
+    class Meta:
+        default_permissions = ()
 
     def get_assignment(self):
         return self.assignment
