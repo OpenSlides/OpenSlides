@@ -229,12 +229,12 @@ class WhoAmIView(APIView):
 
     def get_context_data(self, **context):
         """
-        Appends the user id to the context.
-
-        Uses None for the anonymous user.
+        Appends the user id to the context. Uses None for the anonymous
+        user. Appends also a flag if guest users are enabled in the config.
         """
         return super().get_context_data(
             user_id=self.request.user.pk,
+            guest_enabled=config['general_system_enable_anonymous'],
             **context)
 
 
