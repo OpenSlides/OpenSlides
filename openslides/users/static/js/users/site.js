@@ -117,6 +117,15 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                 return $http({ 'method': 'OPTIONS', 'url': '/rest/users/group/' });
             }
         }
+    })
+    .state('login', {
+        template: null,
+        onEnter: ['$stateParams', 'ngDialog', function($stateParams, ngDialog) {
+            ngDialog.open({
+                template: 'static/templates/core/login-form.html',
+                controller: 'LoginFormCtrl',
+            });
+        }]
     });
 })
 
@@ -124,11 +133,16 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     'operator',
     '$rootScope',
     '$http',
+    '$state',
     'Group',
-    function(operator, $rootScope, $http, Group) {
+    function(operator, $rootScope, $http, $state, Group) {
         // Put the operator into the root scope
         $http.get('/users/whoami/').success(function(data) {
             operator.setUser(data.user_id);
+            if (data.user_id == null) {
+                // redirect to login dialog if use is not logged in
+                $state.go('login');
+            }
         });
         $rootScope.operator = operator;
         // Load all Groups. They are needed later
@@ -694,12 +708,6 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                 operator.setUser(null);
                 // TODO: remove all data from cache and reload page
                 // DS.flush();
-            });
-        };
-        $scope.openLoginForm = function () {
-            ngDialog.open({
-                template: 'static/templates/core/login-form.html',
-                controller: 'LoginFormCtrl',
             });
         };
     }
