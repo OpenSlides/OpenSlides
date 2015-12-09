@@ -5,10 +5,10 @@
         <i class="fa fa-angle-double-left fa-lg"></i>
         <translate>Back to agenda</translate>
       </a>
-      <!-- TODO: project list
-           ng-class="{ 'btn-primary': item.isListOfSpeakersProjected() }"-->
+      <!-- project list of speakers -->
       <a os-perms="core.can_manage_projector" class="btn btn-default btn-sm"
-          ng-click="projectListOfSpeakers()">
+          ng-class="{ 'btn-primary': item.isListOfSpeakersProjected() }"
+          ng-click="item.projectListOfSpeakers()">
         <i class="fa fa-video-camera"></i>
         <translate>List of speakers</translate>
       </a>

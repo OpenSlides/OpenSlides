@@ -86,15 +86,6 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         $scope.alert = {};
         $scope.isFilter = true;
 
-        // project related item (content object)
-        $scope.project = function (item) {
-            item.getContentResource().find(item.content_object.id).then(
-                function(object) {
-                    object.project();
-                }
-            );
-        };
-
         // open new dialog
         $scope.newDialog = function () {
             ngDialog.open({
@@ -243,11 +234,6 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
                 .error(function(data){
                     $scope.alert = { type: 'danger', msg: data.detail, show: true };
                 });
-        };
-        // project list of speakers
-        $scope.projectListOfSpeakers = function () {
-            $http.post('/rest/core/projector/1/prune_elements/',
-                    [{name: 'agenda/item', id: item.id, list_of_speakers: true}]);
         };
     }
 ])
