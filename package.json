@@ -12,6 +12,8 @@
     "main-bower-files": "~2.4.1",
     "yargs": "~1.3.3",
     "po2json": "~0.3.2",
-    "gulp-jshint": "~1.11.2"
+    "gulp-jshint": "~1.11.2",
+    "through2": "~2.0.0",
+    "sprintf-js": "~1.0.3"
   }
 }
