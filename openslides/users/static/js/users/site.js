@@ -316,9 +316,9 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     type: 'input',
                     templateOptions: {
                         label: gettextCatalog.getString('Default password'),
-                        addonRight: { text: 'Reset', class: 'fa fa-undo', onClick: function () {
-                            // TODO: find a way to get user.id
-                            //$http.post('/rest/users/user/' + model.id + '/reset_password/', {})
+                        addonRight: { text: 'Reset', class: 'fa fa-undo', onClick:
+                            function (options, scope) {
+                                $http.post('/rest/users/user/' + scope.model.id + '/reset_password/', {})
                             }
                         }
                     }
