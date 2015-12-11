@@ -120,10 +120,16 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     })
     .state('login', {
         template: null,
-        onEnter: ['$stateParams', 'ngDialog', function($stateParams, ngDialog) {
+        url: '/login',
+        params: { guest_enabled: false },
+        onEnter: ['$state', 'ngDialog', function($state, ngDialog) {
             ngDialog.open({
                 template: 'static/templates/core/login-form.html',
                 controller: 'LoginFormCtrl',
+                preCloseCallback: function() {
+                    $state.go('dashboard');
+                    return true;
+                }
             });
         }]
     });
@@ -139,9 +145,9 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         // Put the operator into the root scope
         $http.get('/users/whoami/').success(function(data) {
             operator.setUser(data.user_id);
-            if (data.user_id == null) {
+            if (data.user_id === null) {
                 // redirect to login dialog if use is not logged in
-                $state.go('login');
+                $state.go('login', {guest_enabled: data.guest_enabled});
             }
         });
         $rootScope.operator = operator;
@@ -716,10 +722,11 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
 .controller('LoginFormCtrl', [
     '$scope',
     '$http',
+    '$stateParams',
     'operator',
     'gettextCatalog',
     'Config',
-    function ($scope, $http, operator, gettextCatalog, Config) {
+    function ($scope, $http, $stateParams, operator, gettextCatalog, Config) {
         $scope.alerts = [];
 
         // TODO: add welcome message only on first time (or if admin password not changed)
@@ -734,7 +741,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             $scope.alerts.splice(index, 1);
         };
         // check if guest login is allowed
-        $scope.guestAllowed = true; //TODO Config.get('general_system_enable_anonymous').value;
+        $scope.guestAllowed = $stateParams.guest_enabled;
         // login
         $scope.login = function () {
             $http.post(
