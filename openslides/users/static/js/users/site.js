@@ -555,14 +555,14 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                     '/users/setpassword/',
                     {'old_password': $scope.oldPassword, 'new_password': $scope.newPassword}
                 ).then(
-                    function(data) {
+                    function (response) {
                         // Success.
                         $state.go('users.user.list');
                     },
-                    function(data) {
+                    function (response) {
                         // Error, e. g. wrong old password.
                         $scope.oldPassword = $scope.newPassword = $scope.newPassword2 = '';
-                        $scope.formError = data;
+                        $scope.formError = response.data.detail;
                     }
                 );
             }
@@ -709,8 +709,8 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     'operator',
     'ngDialog',
     function($scope, $http, DS, User, operator, ngDialog) {
-        $scope.logout = function() {
-            $http.post('/users/logout/').success(function(data) {
+        $scope.logout = function () {
+            $http.post('/users/logout/').then(function (response) {
                 operator.setUser(null);
                 // TODO: remove all data from cache and reload page
                 // DS.flush();
@@ -747,18 +747,20 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             $http.post(
                 '/users/login/',
                 {'username': $scope.username, 'password': $scope.password}
-            ).success(function(data) {
-                if (data.success) {
-                    operator.setUser(data.user_id);
+            ).then(
+                function (response) {
+                    // Success: User logged in.
+                    operator.setUser(response.data.user_id);
                     $scope.closeThisDialog();
-                } else {
+                },
+                function (response) {
+                    // Error: Username or password is not correct.
                     $scope.alerts.push({
                         type: 'danger',
-                        msg: gettextCatalog.getString('Username or password was not correct.')
+                        msg: response.data.detail
                     });
-                    //Username or password is not correct.
                 }
-            });
+            );
         };
         // guest login
         $scope.guestLogin = function () {
