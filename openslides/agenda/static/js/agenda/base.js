@@ -22,12 +22,13 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
 ])
 
 .factory('Agenda', [
+    '$http',
     'DS',
     'Speaker',
     'jsDataModel',
     'Projector',
     'gettextCatalog',
-    function(DS, Speaker, jsDataModel, Projector, gettextCatalog) {
+    function($http, DS, Speaker, jsDataModel, Projector, gettextCatalog) {
         var name = 'agenda/item';
         return DS.defineResource({
             name: name,
@@ -56,6 +57,14 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                     }
                     return title;
                 },
+                // override project function of jsDataModel factory
+                project: function() {
+                    return $http.post(
+                        '/rest/core/projector/1/prune_elements/',
+                        [{name: this.content_object.collection, id: this.content_object.id}]
+                    );
+                },
+                // override isProjected function of jsDataModel factory
                 isProjected: function () {
                     var projector = Projector.get(1);
                     if (typeof projector === 'undefined') return false;
@@ -64,6 +73,27 @@ angular.module('OpenSlidesApp.agenda', ['OpenSlidesApp.users'])
                         return element.name == self.content_object.collection &&
                                typeof element.id !== 'undefined' &&
                                element.id == self.content_object.id;
+                    };
+                    return typeof _.findKey(projector.elements, predicate) === 'string';
+                },
+                // project list of speakers
+                projectListOfSpeakers: function() {
+                    return $http.post(
+                        '/rest/core/projector/1/prune_elements/',
+                        [{name: 'agenda/item', id: this.id, list_of_speakers: true}]
+                    );
+                },
+                // check if list of speakers is projected
+                isListOfSpeakersProjected: function () {
+                    // Returns true if there is a projector element with the same
+                    // name and agenda is active.
+                    var projector = Projector.get(1);
+                    if (typeof projector === 'undefined') return false;
+                    var self = this;
+                    var predicate = function (element) {
+                        return element.name == 'agenda/item' &&
+                            element.id == self.id &&
+                            element.list_of_speakers;
                     };
                     return typeof _.findKey(projector.elements, predicate) === 'string';
                 }

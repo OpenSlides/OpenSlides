@@ -123,7 +123,7 @@
         <td ng-show="!isDeleteMode" os-perms="core.can_manage_projector">
           <a class="btn btn-default btn-sm"
               ng-class="{ 'btn-primary': item.isProjected() }"
-              ng-click="project(item)"
+              ng-click="item.project()"
               title="{{ 'Project item' | translate }}">
             <i class="fa fa-video-camera"></i>
           </a>
