@@ -44,10 +44,7 @@ class ItemDetailSlide(ProjectorElement):
     """
     Slide definitions for Item model.
 
-    This is only for detail slides. You have to set 'id'.
-
-    To activate a detail slide as list of speakers slide, set 'id' and set
-    'list_of_speakers' true.
+    This is only for list of speakers slide. You have to set 'id'.
     """
     name = 'agenda/item'
 
@@ -61,7 +58,7 @@ class ItemDetailSlide(ProjectorElement):
     def get_requirements(self, config_entry):
         pk = config_entry.get('id')
         if pk is not None:
-            # Detail slide.
+            # List of speakers slide.
             try:
                 item = Item.objects.get(pk=pk)
             except Item.DoesNotExist:
