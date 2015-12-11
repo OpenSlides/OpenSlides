@@ -139,9 +139,9 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         // Put the operator into the root scope
         $http.get('/users/whoami/').success(function(data) {
             operator.setUser(data.user_id);
-            if (data.user_id == null) {
+            if (data.user_id === null) {
                 // redirect to login dialog if use is not logged in
-                $state.go('login');
+                $state.go('login', {guest_enabled: data.guest_enabled});
             }
         });
         $rootScope.operator = operator;

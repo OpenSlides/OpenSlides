@@ -12,7 +12,9 @@ class TestWhoAmIView(TestCase):
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, b'{"user_id":null}')
+        self.assertEqual(
+            json.loads(response.content.decode('utf-8')),
+            {'user_id': None, 'guest_enabled': False})
 
     def test_get_authenticated_user(self):
         self.client.login(username='admin', password='admin')
@@ -20,7 +22,9 @@ class TestWhoAmIView(TestCase):
         response = self.client.get(self.url)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, b'{"user_id":1}')
+        self.assertEqual(
+            json.loads(response.content.decode('utf-8')),
+            {'user_id': 1, 'guest_enabled': False})
 
     def test_post(self):
         response = self.client.post(self.url)
