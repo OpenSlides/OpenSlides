@@ -84,7 +84,7 @@
     </alert>
     <div os-perms="agenda.can_manage" class="input-group">
       <ui-select ng-model="speaker.selected" ng-change="addSpeaker(speaker.selected.id)">
-        <ui-select-match placeholder="{{ 'Select or search a participant...' | translate }}">
+        <ui-select-match placeholder="{{ 'Select or search a participant ...' | translate }}">
           {{ $select.selected.get_full_name() }}
         </ui-select-match>
         <ui-select-choices repeat="user in users | filter: $select.search">
