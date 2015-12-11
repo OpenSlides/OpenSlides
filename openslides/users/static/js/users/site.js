@@ -122,10 +122,13 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         template: null,
         url: '/login',
         params: { guest_enabled: false },
-        onEnter: ['$state', 'ngDialog', function($state, ngDialog) {
+        onEnter: ['$state', '$stateParams', 'ngDialog', function($state, $stateParams, ngDialog) {
             ngDialog.open({
                 template: 'static/templates/core/login-form.html',
                 controller: 'LoginFormCtrl',
+                showClose: $stateParams.guest_enabled,
+                closeByEscape: $stateParams.guest_enabled,
+                closeByDocument: $stateParams.guest_enabled,
                 preCloseCallback: function() {
                     $state.go('dashboard');
                     return true;
@@ -145,7 +148,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         // Put the operator into the root scope
         $http.get('/users/whoami/').success(function(data) {
             operator.setUser(data.user_id);
-            if (data.user_id === null) {
+            if (data.user_id === null && !data.guest_enabled) {
                 // redirect to login dialog if use is not logged in
                 $state.go('login', {guest_enabled: data.guest_enabled});
             }
