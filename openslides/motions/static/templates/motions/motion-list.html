@@ -45,14 +45,14 @@
                placeholder="{{ 'Search' | translate}}">
           </div>
         </div>
-        <button class="btn btn-default" ng-click="isFilter = !isFilter">
+        <button class="btn btn-default" ng-click="isFilterOpen = !isFilterOpen">
           <i class="fa fa-filter"></i>
           <translate>Filter</translate>...
         </button>
       </div>
     </div>
   </div>
-  <div uib-collapse="!isFilter" class="row">
+  <div uib-collapse="!isFilterOpen" class="row spacer">
     <div class="col-sm-6 text-right"></div>
     <div class="col-sm-6 text-right">
       <!-- state filter -->

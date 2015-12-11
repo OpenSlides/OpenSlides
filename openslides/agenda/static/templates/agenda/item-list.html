@@ -65,14 +65,14 @@
                placeholder="{{ 'Search' | translate}}">
           </div>
         </div>
-        <button class="btn btn-default" ng-click="isFilter = !isFilter">
+        <button class="btn btn-default" ng-click="isFilterOpen = !isFilterOpen">
           <i class="fa fa-filter"></i>
           <translate>Filter</translate>...
         </button>
       </div>
     </div>
   </div>
-  <div uib-collapse="isFilter" class="row">
+  <div uib-collapse="!isFilterOpen" class="row spacer">
     <div class="col-sm-12 text-right">
       <!-- hidden item filter -->
       <input type="checkbox" ng-model="filter.noHiddenItems" ng-true-value="1" ng-false-value="">
