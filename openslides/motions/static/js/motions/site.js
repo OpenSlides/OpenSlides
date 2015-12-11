@@ -485,20 +485,17 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         User.bindAll({}, $scope, 'users');
         Workflow.bindAll({}, $scope, 'workflows');
 
+        $scope.model = {};
+        // set default values for create form
+        // ... set preamble config value as text
+        $scope.model.text = Config.get('motions_preamble').value;
+        // ... preselect default workflow
+        $scope.model.workflow_id = Config.get('motions_workflow').value;
         // get all form fields
         $scope.formFields = MotionFormFieldFactory.getFormFields();
-        // override default values for create form
         for (var i = 0; i < $scope.formFields.length; i++) {
             if ($scope.formFields[i].key == "identifier") {
                $scope.formFields[i].hide = true;
-            }
-            if ($scope.formFields[i].key == "text") {
-               // set  preamble config value as default text
-               $scope.formFields[i].defaultValue = Config.get('motions_preamble').value;
-            }
-            if ($scope.formFields[i].key == "workflow_id") {
-               // preselect default workflow
-               $scope.formFields[i].defaultValue = Config.get('motions_workflow').value;
             }
         }
         // save motion

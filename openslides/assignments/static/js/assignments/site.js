@@ -358,6 +358,9 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
     'Assignment',
     'AssignmentFormFieldFactory',
     function($scope, $state, Assignment, AssignmentFormFieldFactory) {
+        $scope.model = {};
+        // set default value for open posts form field
+        $scope.model.open_posts = 1;
         // get all form fields
         $scope.formFields = AssignmentFormFieldFactory.getFormFields();
 

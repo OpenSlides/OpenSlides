@@ -396,9 +396,12 @@ img {
 }
 
 .col2 .projector_full .details .section {
-    padding: 10px 20px;
+    padding: 1px 20px;
     width: auto;
     border-bottom: 1px solid #c2c2c2;
+}
+.col2 .projector_full .details .section div.in.collapse {
+    padding-bottom: 15px;
 }
 
 #content .col2 .section a:hover {
@@ -409,6 +412,7 @@ img {
 #content .toggle-icon {
     font-size: 20px;
     float: right;
+    margin-top: 10px;
 }
 
 /* countdown and message controls */
