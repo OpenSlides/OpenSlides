@@ -262,14 +262,15 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
 
 .controller('AgendaImportCtrl', [
     '$scope',
+    'gettext',
     'Agenda',
     'Customslide',
-    function($scope, Agenda, Customslide) {
+    function($scope, gettext, Agenda, Customslide) {
         // import from textarea
         $scope.importByLine = function () {
-            $scope.items = $scope.itemlist[0].split("\n");
+            $scope.titleItems = $scope.itemlist[0].split("\n");
             $scope.importcounter = 0;
-            $scope.items.forEach(function(title) {
+            $scope.titleItems.forEach(function(title) {
                 var item = {title: title};
                 // TODO: create all items in bulk mode
                 Customslide.create(item).then(
@@ -280,29 +281,63 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             });
         };
 
-        // import from csv file
+        // *** CSV import ***
+        // set initial data for csv import
+        $scope.items = []
+        $scope.separator = ',';
+        $scope.encoding = 'UTF-8';
+        $scope.encodingOptions = ['UTF-8', 'ISO-8859-1'];
         $scope.csv = {
             content: null,
             header: true,
-            separator: ',',
+            headerVisible: false,
+            separator: $scope.separator,
+            separatorVisible: false,
+            encoding: $scope.encoding,
+            encodingVisible: false,
             result: null
         };
-        $scope.importByCSV = function (result) {
-            var obj = JSON.parse(JSON.stringify(result));
-            $scope.csvimporting = true;
-            $scope.csvlines = Object.keys(obj).length;
-            $scope.csvimportcounter = 0;
-            for (var i = 0; i < obj.length; i++) {
-                var item = {};
-                item.title = obj[i].title;
-                item.text = obj[i].text;
-                // TODO: save also 'duration' in related agenda item
-                Customslide.create(item).then(
-                    function(success) {
-                        $scope.csvimportcounter++;
-                    }
-                );
-            }
+        // set csv file encoding
+        $scope.setEncoding = function () {
+            $scope.csv.encoding = $scope.encoding;
+        };
+        // set csv file encoding
+        $scope.setSeparator = function () {
+            $scope.csv.separator = $scope.separator;
+        };
+        // detect if csv file is loaded
+        $scope.$watch('csv.result', function () {
+            $scope.items = [];
+            var quotionRe = /^"(.*)"$/;
+            angular.forEach($scope.csv.result, function (item) {
+                // title
+                if (item.title) {
+                    item.title = item.title.replace(quotionRe, '$1');
+                }
+                if (!item.title) {
+                    item.importerror = true;
+                    item.title_error = gettext('Error: Title is required.');
+                }
+                // text
+                if (item.text) {
+                    item.text = item.text.replace(quotionRe, '$1');
+                }
+                $scope.items.push(item);
+            });
+        });
+
+        // import from csv file
+        $scope.import = function () {
+            $scope.csvImporting = true;
+            angular.forEach($scope.items, function (item) {
+                if (!item.importerror) {
+                    Customslide.create(item).then(
+                        function(success) {
+                            item.imported = true;
+                        }
+                    );
+                }
+            });
             $scope.csvimported = true;
         };
         $scope.clear = function () {

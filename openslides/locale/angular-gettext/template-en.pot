@@ -4,14 +4,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Project-Id-Version: \n"
 
-#: users/static/templates/users/user-import.html:41
-msgid "'title, first_name, last_name, structure level, groups, comment, is active'"
-msgstr ""
-
-#: agenda/static/templates/agenda/item-import.html:41
-msgid "'title, text'"
-msgstr ""
-
 #: assignments/static/templates/assignments/assignment-list.html:54
 msgid "--- Select phase ---"
 msgstr ""
@@ -20,7 +12,7 @@ msgstr ""
 msgid "--- Select state ---"
 msgstr ""
 
-#: users/static/js/users/site.js:323
+#: users/static/js/users/site.js:348
 #: users/static/templates/users/user-detail-profile.html:39
 #: users/static/templates/users/user-detail.html:37
 msgid "About me"
@@ -77,7 +69,7 @@ msgstr ""
 msgid "Agenda item"
 msgstr ""
 
-#: users/static/templates/users/user-import.html:45
+#: users/static/templates/users/user-import.html:74
 msgid ""
 "At least first name or last name have to be filled in. All\n"
 "        other fields are optional and may be empty."
@@ -88,11 +80,9 @@ msgid "Attachment"
 msgstr ""
 
 #: agenda/static/templates/agenda/item-detail.html:6
+#: agenda/static/templates/agenda/item-import.html:139
+#: agenda/static/templates/agenda/item-import.html:36
 msgid "Back to agenda"
-msgstr ""
-
-#: agenda/static/templates/agenda/item-import.html:83
-msgid "Back to agenda overview"
 msgstr ""
 
 #: motions/static/templates/motions/motion-import.html:136
@@ -118,7 +108,8 @@ msgstr ""
 msgid "Back to overview"
 msgstr ""
 
-#: users/static/templates/users/user-import.html:93
+#: users/static/templates/users/user-import.html:166
+#: users/static/templates/users/user-import.html:36
 msgid "Back to users overview"
 msgstr ""
 
@@ -167,12 +158,9 @@ msgstr ""
 msgid "Category"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-import.html:88
-#: users/static/templates/users/user-import.html:98
-msgid "Clear"
-msgstr ""
-
+#: agenda/static/templates/agenda/item-import.html:129
 #: motions/static/templates/motions/motion-import.html:126
+#: users/static/templates/users/user-import.html:156
 msgid "Clear preview"
 msgstr ""
 
@@ -185,9 +173,9 @@ msgid "Closed"
 msgstr ""
 
 #: agenda/static/templates/agenda/item-list.html:174
-#: users/static/js/users/site.js:316
+#: users/static/js/users/site.js:341
 #: users/static/templates/users/user-detail.html:45
-#: users/static/templates/users/user-import.html:72
+#: users/static/templates/users/user-import.html:94
 msgid "Comment"
 msgstr ""
 
@@ -233,15 +221,15 @@ msgstr ""
 msgid "Default comment on the ballot paper"
 msgstr ""
 
-#: users/static/templates/users/user-import.html:42
+#: users/static/templates/users/user-import.html:71
 msgid "Default groups"
 msgstr ""
 
-#: users/static/js/users/site.js:304
+#: users/static/js/users/site.js:329
 msgid "Default password"
 msgstr ""
 
-#: users/static/templates/users/user-import.html:43
+#: users/static/templates/users/user-import.html:72
 msgid "Delegate"
 msgstr ""
 
@@ -287,7 +275,6 @@ msgstr ""
 msgid "Drag and drop items to change the order of the agenda. Your modification will be saved immediately."
 msgstr ""
 
-#: agenda/static/templates/agenda/item-import.html:65
 #: agenda/static/templates/agenda/item-list.html:114
 #: agenda/static/templates/agenda/item-list.html:184
 msgid "Duration"
@@ -379,12 +366,18 @@ msgstr ""
 msgid "Elections"
 msgstr ""
 
+#: agenda/static/templates/agenda/item-import.html:51
 #: motions/static/templates/motions/motion-import.html:23
+#: users/static/templates/users/user-import.html:52
 msgid "Encoding"
 msgstr ""
 
 #: core/static/js/core/site.js:368
 msgid "English"
+msgstr ""
+
+#: users/static/js/users/site.js:652
+msgid "Error: First or last name is required."
 msgstr ""
 
 #: motions/static/js/motions/site.js:618
@@ -395,6 +388,7 @@ msgstr ""
 msgid "Error: Text is required."
 msgstr ""
 
+#: agenda/static/js/agenda/site.js:319
 #: motions/static/js/motions/site.js:628
 msgid "Error: Title is required."
 msgstr ""
@@ -422,9 +416,9 @@ msgstr ""
 msgid "Filter"
 msgstr ""
 
-#: users/static/js/users/site.js:270
+#: users/static/js/users/site.js:295
 #: users/static/templates/users/user-detail-profile.html:26
-#: users/static/templates/users/user-import.html:68
+#: users/static/templates/users/user-import.html:90
 msgid "First name"
 msgstr ""
 
@@ -440,10 +434,10 @@ msgstr ""
 msgid "Group"
 msgstr ""
 
-#: users/static/js/users/site.js:291
+#: users/static/js/users/site.js:316
 #: users/static/templates/users/group-list.html:13
 #: users/static/templates/users/user-detail.html:33
-#: users/static/templates/users/user-import.html:71
+#: users/static/templates/users/user-import.html:93
 #: users/static/templates/users/user-list.html:10
 #: users/static/templates/users/user-list.html:109
 msgid "Groups"
@@ -482,11 +476,9 @@ msgid "Identifier, reason, submitter and category are optional and may be empty.
 msgstr ""
 
 #: agenda/static/templates/agenda/item-import.html:25
-#: agenda/static/templates/agenda/item-import.html:75
 #: agenda/static/templates/agenda/item-list.html:14
 #: motions/static/templates/motions/motion-list.html:18
 #: users/static/templates/users/user-import.html:25
-#: users/static/templates/users/user-import.html:85
 #: users/static/templates/users/user-list.html:14
 msgid "Import"
 msgstr ""
@@ -495,8 +487,8 @@ msgstr ""
 msgid "Import agenda items"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-import.html:35
-#: users/static/templates/users/user-import.html:35
+#: agenda/static/templates/agenda/item-import.html:42
+#: users/static/templates/users/user-import.html:42
 msgid "Import by CSV file"
 msgstr ""
 
@@ -513,15 +505,23 @@ msgstr ""
 msgid "Import participants"
 msgstr ""
 
+#: agenda/static/templates/agenda/item-import.html:132
+msgid "Import {{ items.length - itemsFailed.length }} items"
+msgstr ""
+
 #: motions/static/templates/motions/motion-import.html:129
 msgid "Import {{ motions.length - motionsFailed.length }} motions"
 msgstr ""
 
-#: users/static/js/users/site.js:722
+#: users/static/templates/users/user-import.html:159
+msgid "Import {{ users.length - usersFailed.length }} participants"
+msgstr ""
+
+#: users/static/js/users/site.js:809
 msgid "Important: Please change your password!"
 msgstr ""
 
-#: users/static/js/users/site.js:720
+#: users/static/js/users/site.js:807
 msgid "Installation was successfully."
 msgstr ""
 
@@ -531,11 +531,12 @@ msgstr ""
 msgid "Invalid votes"
 msgstr ""
 
-#: users/static/js/users/site.js:338
+#: users/static/js/users/site.js:363
+#: users/static/templates/users/user-import.html:95
 msgid "Is active"
 msgstr ""
 
-#: users/static/js/users/site.js:331
+#: users/static/js/users/site.js:356
 #: users/static/templates/users/user-list.html:70
 msgid "Is present"
 msgstr ""
@@ -544,9 +545,9 @@ msgstr ""
 msgid "Item number"
 msgstr ""
 
-#: users/static/js/users/site.js:277
+#: users/static/js/users/site.js:302
 #: users/static/templates/users/user-detail-profile.html:30
-#: users/static/templates/users/user-import.html:69
+#: users/static/templates/users/user-import.html:91
 msgid "Last name"
 msgstr ""
 
@@ -692,7 +693,9 @@ msgstr ""
 msgid "Old speakers:"
 msgstr ""
 
+#: agenda/static/templates/agenda/item-import.html:71
 #: motions/static/templates/motions/motion-import.html:43
+#: users/static/templates/users/user-import.html:76
 msgid "Only double quotes are accepted as text delimiter (no single quotes)."
 msgstr ""
 
@@ -743,9 +746,9 @@ msgstr ""
 msgid "Phase"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-import.html:38
+#: agenda/static/templates/agenda/item-import.html:66
 #: motions/static/templates/motions/motion-import.html:38
-#: users/static/templates/users/user-import.html:38
+#: users/static/templates/users/user-import.html:67
 msgid "Please note:"
 msgstr ""
 
@@ -766,9 +769,9 @@ msgstr ""
 msgid "Present"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-import.html:58
+#: agenda/static/templates/agenda/item-import.html:78
 #: motions/static/templates/motions/motion-import.html:50
-#: users/static/templates/users/user-import.html:62
+#: users/static/templates/users/user-import.html:83
 msgid "Preview"
 msgstr ""
 
@@ -838,18 +841,10 @@ msgstr ""
 msgid "Remove message"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-import.html:44
-#: users/static/templates/users/user-import.html:48
-msgid "Required CSV file encoding is UTF-8."
-msgstr ""
-
+#: agenda/static/templates/agenda/item-import.html:68
 #: motions/static/templates/motions/motion-import.html:40
+#: users/static/templates/users/user-import.html:69
 msgid "Required comma or semicolon separated values with these column header names in the first row"
-msgstr ""
-
-#: agenda/static/templates/agenda/item-import.html:40
-#: users/static/templates/users/user-import.html:40
-msgid "Required comma separated values"
 msgstr ""
 
 #: core/static/templates/core/projector-controls.html:99
@@ -899,23 +894,17 @@ msgstr ""
 msgid "Select"
 msgstr ""
 
+#: agenda/static/templates/agenda/item-import.html:45
 #: motions/static/templates/motions/motion-import.html:17
+#: users/static/templates/users/user-import.html:46
 msgid "Select a CSV file"
-msgstr ""
-
-#: agenda/static/templates/agenda/item-import.html:36
-msgid "Select a CSV file to import agenda items!"
-msgstr ""
-
-#: users/static/templates/users/user-import.html:36
-msgid "Select a CSV file to import users!"
 msgstr ""
 
 #: motions/static/js/motions/site.js:214
 msgid "Select or search a category..."
 msgstr ""
 
-#: users/static/js/users/site.js:297
+#: users/static/js/users/site.js:322
 msgid "Select or search a group..."
 msgstr ""
 
@@ -947,7 +936,9 @@ msgstr ""
 msgid "Select or search an attachment..."
 msgstr ""
 
+#: agenda/static/templates/agenda/item-import.html:48
 #: motions/static/templates/motions/motion-import.html:20
+#: users/static/templates/users/user-import.html:49
 msgid "Separator"
 msgstr ""
 
@@ -980,7 +971,7 @@ msgstr ""
 msgid "Special values"
 msgstr ""
 
-#: users/static/templates/users/user-import.html:44
+#: users/static/templates/users/user-import.html:73
 msgid "Staff"
 msgstr ""
 
@@ -1005,10 +996,10 @@ msgstr ""
 msgid "Stop current speaker"
 msgstr ""
 
-#: users/static/js/users/site.js:284
+#: users/static/js/users/site.js:309
 #: users/static/templates/users/user-detail-profile.html:35
 #: users/static/templates/users/user-detail.html:31
-#: users/static/templates/users/user-import.html:70
+#: users/static/templates/users/user-import.html:92
 #: users/static/templates/users/user-list.html:104
 msgid "Structure level"
 msgstr ""
@@ -1052,7 +1043,7 @@ msgstr ""
 msgid "Tags"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-import.html:64
+#: agenda/static/templates/agenda/item-import.html:85
 #: core/static/js/core/site.js:472
 #: motions/static/js/motions/site.js:169
 #: motions/static/templates/motions/motion-detail.html:232
@@ -1060,17 +1051,12 @@ msgstr ""
 msgid "Text"
 msgstr ""
 
-#: agenda/static/templates/agenda/item-import.html:42
-msgid "Text and duration are optional and may be empty."
-msgstr ""
-
-#: agenda/static/templates/agenda/item-import.html:43
-#: users/static/templates/users/user-import.html:47
-msgid "The header in first line is required."
+#: agenda/static/templates/agenda/item-import.html:70
+msgid "Text is optional and may be empty."
 msgstr ""
 
 #. academic degree
-#: agenda/static/templates/agenda/item-import.html:63
+#: agenda/static/templates/agenda/item-import.html:84
 #: agenda/static/templates/agenda/item-list.html:170
 #: assignments/static/js/assignments/site.js:77
 #: assignments/static/templates/assignments/assignment-list.html:140
@@ -1081,9 +1067,9 @@ msgstr ""
 #: motions/static/js/motions/site.js:161
 #: motions/static/templates/motions/motion-import.html:57
 #: motions/static/templates/motions/motion-list.html:95
-#: users/static/js/users/site.js:263
+#: users/static/js/users/site.js:288
 #: users/static/templates/users/user-detail-profile.html:22
-#: users/static/templates/users/user-import.html:67
+#: users/static/templates/users/user-import.html:89
 msgid "Title"
 msgstr ""
 
@@ -1109,13 +1095,13 @@ msgstr ""
 msgid "Uploaded by"
 msgstr ""
 
-#: users/static/js/users/site.js:721
+#: users/static/js/users/site.js:808
 msgid "Use <strong>admin</strong> and <strong>admin</strong> for first login."
 msgstr ""
 
-#: agenda/static/templates/agenda/item-import.html:45
+#: agenda/static/templates/agenda/item-import.html:72
 #: motions/static/templates/motions/motion-import.html:44
-#: users/static/templates/users/user-import.html:49
+#: users/static/templates/users/user-import.html:77
 msgid "Use the CSV example file from OpenSlides Wiki."
 msgstr ""
 
@@ -1125,7 +1111,7 @@ msgstr ""
 msgid "Username"
 msgstr ""
 
-#: users/static/js/users/site.js:742
+#: users/static/js/users/site.js:829
 msgid "Username or password was not correct."
 msgstr ""
 
@@ -1171,6 +1157,10 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
+#: agenda/static/templates/agenda/item-import.html:112
+msgid "agenda items will be not imported."
+msgstr ""
+
 #: assignments/static/templates/assignments/assignment-list.html:72
 msgid "elections"
 msgstr ""
@@ -1181,14 +1171,20 @@ msgid "h"
 msgstr ""
 
 #: agenda/static/templates/agenda/item-import.html:28
-#: agenda/static/templates/agenda/item-import.html:78
 #: users/static/templates/users/user-import.html:28
-#: users/static/templates/users/user-import.html:88
 msgid "imported"
 msgstr ""
 
 #: agenda/static/templates/agenda/item-list.html:98
 msgid "items"
+msgstr ""
+
+#: agenda/static/templates/agenda/item-import.html:125
+msgid "items were successfully imported."
+msgstr ""
+
+#: agenda/static/templates/agenda/item-import.html:118
+msgid "items will be imported."
 msgstr ""
 
 #: motions/static/templates/motions/motion-detail.html:117
@@ -1215,6 +1211,18 @@ msgstr ""
 msgid "participants"
 msgstr ""
 
+#: users/static/templates/users/user-import.html:152
+msgid "participants were successfully imported."
+msgstr ""
+
+#: users/static/templates/users/user-import.html:145
+msgid "participants will be imported."
+msgstr ""
+
+#: users/static/templates/users/user-import.html:139
+msgid "participants will be not imported."
+msgstr ""
+
 #: agenda/static/templates/agenda/item-list.html:99
 #: assignments/static/templates/assignments/assignment-list.html:73
 #: motions/static/templates/motions/motion-list.html:79
@@ -1224,4 +1232,8 @@ msgstr ""
 
 #: motions/static/templates/motions/motion-detail.html:118
 msgid "undocumented"
+msgstr ""
+
+#: users/static/templates/users/user-import.html:127
+msgid "{{ groupname }}"
 msgstr ""
