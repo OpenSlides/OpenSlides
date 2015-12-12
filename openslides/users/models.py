@@ -161,6 +161,7 @@ class User(RESTModelMixin, PermissionsMixin, AbstractBaseUser):
     objects = UserManager()
 
     class Meta:
+        default_permissions = ()
         permissions = (
             ('can_see_name', ugettext_noop('Can see names of users')),
             ('can_see_extra_data', ugettext_noop('Can see extra data of users')),

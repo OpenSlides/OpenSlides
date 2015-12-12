@@ -30,6 +30,7 @@ class Mediafile(RESTModelMixin, models.Model):
         Meta class for the mediafile model.
         """
         ordering = ['title']
+        default_permissions = ()
         permissions = (
             ('can_see', ugettext_noop('Can see the list of files')),
             ('can_upload', ugettext_noop('Can upload files')),

@@ -222,6 +222,7 @@ class Item(RESTModelMixin, models.Model):
     """
 
     class Meta:
+        default_permissions = ()
         permissions = (
             ('can_see', ugettext_noop("Can see agenda")),
             ('can_manage', ugettext_noop("Can manage agenda")),
@@ -343,6 +344,7 @@ class Speaker(RESTModelMixin, models.Model):
     """
 
     class Meta:
+        default_permissions = ()
         permissions = (
             ('can_be_speaker', ugettext_noop('Can put oneself on the list of speakers')),
         )

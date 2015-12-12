@@ -61,6 +61,7 @@ class Projector(RESTModelMixin, models.Model):
         """
         Contains general permissions that can not be placed in a specific app.
         """
+        default_permissions = ()
         permissions = (
             ('can_see_projector', ugettext_noop('Can see the projector')),
             ('can_manage_projector', ugettext_noop('Can manage the projector')),
@@ -131,6 +132,7 @@ class CustomSlide(RESTModelMixin, models.Model):
         default=0)
 
     class Meta:
+        default_permissions = ()
         ordering = ('weight', 'title', )
 
     def __str__(self):
@@ -169,8 +171,9 @@ class Tag(RESTModelMixin, models.Model):
 
     class Meta:
         ordering = ('name',)
+        default_permissions = ()
         permissions = (
-            ('can_manage_tags', ugettext_noop('Can manage tags')), )
+            ('can_manage_tags', ugettext_noop('Can manage tags')),)
 
     def __str__(self):
         return self.name
@@ -188,7 +191,9 @@ class ConfigStore(models.Model):
     """The value of the config variable. """
 
     class Meta:
-        permissions = (('can_manage_config', ugettext_noop('Can manage configuration')),)
+        default_permissions = ()
+        permissions = (
+            ('can_manage_config', ugettext_noop('Can manage configuration')),)
 
 
 class ChatMessage(RESTModelMixin, models.Model):
@@ -207,6 +212,7 @@ class ChatMessage(RESTModelMixin, models.Model):
         verbose_name=ugettext_lazy('User'))
 
     class Meta:
+        default_permissions = ()
         permissions = (
             ('can_use_chat', ugettext_noop('Can use the chat')),)
 
