@@ -43,7 +43,7 @@ class TestUserLogoutView(TestCase):
     def test_post_anonymous(self):
         response = self.client.post(self.url)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400)
 
     def test_post_authenticated_user(self):
         self.client.login(username='admin', password='admin')
@@ -69,8 +69,7 @@ class TestUserLoginView(TestCase):
     def test_post_no_data(self):
         response = self.client.post(self.url)
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.content, b'{"success":false}')
+        self.assertEqual(response.status_code, 400)
 
     def test_post_correct_data(self):
         response = self.client.post(
@@ -80,17 +79,14 @@ class TestUserLoginView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             json.loads(response.content.decode('utf-8')),
-            {'success': True, 'user_id': 1})
+            {'user_id': 1})
 
     def test_post_incorrect_data(self):
         response = self.client.post(
             self.url,
             {'username': 'wrong', 'password': 'wrong'})
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            json.loads(response.content.decode('utf-8')),
-            {'success': False})
+        self.assertEqual(response.status_code, 400)
 
 
 class TestUsersPasswordsPDF(TestCase):

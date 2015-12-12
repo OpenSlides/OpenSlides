@@ -195,18 +195,14 @@ class UserLoginView(APIView):
 
     def post(self, *args, **kwargs):
         form = AuthenticationForm(self.request, data=self.request.data)
-        if form.is_valid():
-            self.user = form.get_user()
-            auth_login(self.request, self.user)
-            self.success = True
-        else:
-            self.success = False
+        if not form.is_valid():
+            raise ValidationError({'detail': _('Username or password is not correct.')})
+        self.user = form.get_user()
+        auth_login(self.request, self.user)
         return super().post(*args, **kwargs)
 
     def get_context_data(self, **context):
-        context['success'] = self.success
-        if self.success:
-            context['user_id'] = self.user.pk
+        context['user_id'] = self.user.pk
         return super().get_context_data(**context)
 
 
@@ -217,6 +213,8 @@ class UserLogoutView(APIView):
     http_method_names = ['post']
 
     def post(self, *args, **kwargs):
+        if not self.request.user.is_authenticated():
+            raise ValidationError({'detail': _('You are not authenticated.')})
         auth_logout(self.request)
         return super().post(*args, **kwargs)
 
@@ -250,7 +248,7 @@ class SetPasswordView(APIView):
             user.set_password(request.data['new_password'])
             user.save()
         else:
-            raise ValidationError(_('Password does not match.'))
+            raise ValidationError({'detail': _('Old password does not match.')})
         return super().post(request, *args, **kwargs)
 
 
