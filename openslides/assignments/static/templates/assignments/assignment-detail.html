@@ -53,7 +53,7 @@
     </alert>
     <div os-perms="assignments.can_nominate_other" class="input-group">
       <ui-select ng-model="candidate.selected" ng-change="addCandidate(candidate.selected.id)">
-        <ui-select-match placeholder="{{ 'Select or search a participant...' | translate }}">
+        <ui-select-match placeholder="{{ 'Select or search a participant ...' | translate }}">
           {{ $select.selected.get_full_name() }}
         </ui-select-match>
         <ui-select-choices repeat="user in users | filter: $select.search">

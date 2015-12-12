@@ -322,7 +322,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
                         ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
                         valueProp: 'id',
                         labelProp: 'name',
-                        placeholder: gettextCatalog.getString('Select or search a group...')
+                        placeholder: gettextCatalog.getString('Select or search a group ...')
                     }
                 },
                 {

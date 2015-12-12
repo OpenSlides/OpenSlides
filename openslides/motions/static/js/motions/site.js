@@ -150,7 +150,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                         ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
                         valueProp: 'id',
                         labelProp: 'full_name',
-                        placeholder: gettextCatalog.getString('Select or search a submitter...')
+                        placeholder: gettextCatalog.getString('Select or search a submitter ...')
                     },
                     hide: !operator.hasPerms('motions.can_manage')
                 },
@@ -197,7 +197,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                         ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
                         valueProp: 'id',
                         labelProp: 'title_or_filename',
-                        placeholder: gettextCatalog.getString('Select or search an attachment...')
+                        placeholder: gettextCatalog.getString('Select or search an attachment ...')
                     },
                     hideExpression: '!model.more'
                 },
@@ -211,7 +211,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                         ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
                         valueProp: 'id',
                         labelProp: 'name',
-                        placeholder: gettextCatalog.getString('Select or search a category...')
+                        placeholder: gettextCatalog.getString('Select or search a category ...')
                     },
                     hideExpression: '!model.more'
                 },
@@ -225,7 +225,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                         ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
                         valueProp: 'id',
                         labelProp: 'name',
-                        placeholder: gettextCatalog.getString('Select or search a tag...')
+                        placeholder: gettextCatalog.getString('Select or search a tag ...')
                     },
                     hideExpression: '!model.more'
                 },
@@ -239,7 +239,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                         ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
                         valueProp: 'id',
                         labelProp: 'full_name',
-                        placeholder: gettextCatalog.getString('Select or search a supporter...')
+                        placeholder: gettextCatalog.getString('Select or search a supporter ...')
                     },
                     hideExpression: '!model.more'
                 },
@@ -253,7 +253,7 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
                         ngOptions: 'option[to.valueProp] as option in to.options | filter: $select.search',
                         valueProp: 'id',
                         labelProp: 'name',
-                        placeholder: gettextCatalog.getString('Select or search a workflow...')
+                        placeholder: gettextCatalog.getString('Select or search a workflow ...')
                     },
                     hideExpression: '!model.more',
                 }];

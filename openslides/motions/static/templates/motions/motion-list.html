@@ -33,7 +33,7 @@
       <button os-perms-lite="motions.can_manage" class="btn btn-default"
           ng-click="isDeleteMode = !isDeleteMode; uncheckAll()">
         <i class="fa fa-check-square-o"></i>
-        <translate>Select</translate>...
+        <translate>Select ...</translate>
       </button>
     </div>
     <div class="col-sm-6">
@@ -47,7 +47,7 @@
         </div>
         <button class="btn btn-default" ng-click="isFilterOpen = !isFilterOpen">
           <i class="fa fa-filter"></i>
-          <translate>Filter</translate>...
+          <translate>Filter ...</translate>
         </button>
       </div>
     </div>
@@ -178,7 +178,7 @@
               <div class="col-xs-6">
                 <label for="selectSubmitter" translate>Submitters</label>
                 <ui-select multiple ng-model="motion.submitters_id" name="selectSubmitter">
-                  <ui-select-match placeholder="{{ 'Select or search a submitter...' | translate }}">
+                  <ui-select-match placeholder="{{ 'Select or search a submitter ...' | translate }}">
                     {{ $item.get_full_name() }}
                   </ui-select-match>
                   <ui-select-choices repeat="user.id as user in users | filter: $select.search">
@@ -189,7 +189,7 @@
               <div class="col-xs-6">
                 <label for="selectTags" translate>Tags</label>
                 <ui-select multiple ng-model="motion.tags_id">
-                  <ui-select-match placeholder="{{ 'Select or search a tag...' | translate }}">
+                  <ui-select-match placeholder="{{ 'Select or search a tag ...' | translate }}">
                     {{ $item.name }}
                   </ui-select-match>
                   <ui-select-choices repeat="tag.id as tag in tags | filter: $select.search">
@@ -203,7 +203,7 @@
                 <div ng-if="config('motions_min_supporters') > 0">
                   <label for="selectSubmitter" translate>Supporters</label>
                   <ui-select multiple ng-model="motion.supporters_id">
-                    <ui-select-match placeholder="{{ 'Select or search a supporter...' | translate }}">
+                    <ui-select-match placeholder="{{ 'Select or search a supporter ...' | translate }}">
                       {{ $item.get_full_name() }}
                     </ui-select-match>
                     <ui-select-choices repeat="user.id as user in users | filter: $select.search">
@@ -221,7 +221,7 @@
                 Update
               </button>
               <a ng-if="motion.isAllowed('update')" ui-sref="motions.motion.detail.update({id: motion.id })"
-                  class="pull-right" translate>Edit motion...</a>
+                  class="pull-right" translate>Edit motion ...</a>
             </div>
   </table>
 </div>
