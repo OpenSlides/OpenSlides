@@ -11,7 +11,7 @@
 </div>
 
 <div class="details">
-  <h3 translate>Import by copy/paste</h3>
+  <h2 translate>Import by copy/paste</h2>
   <p translate>Copy and paste your participant names in this textbox.
   Keep each person in a single line.</p>
 
@@ -23,81 +23,148 @@
 
   <div class="clearfix">
     <button ng-click="importByLine()" class="btn btn-primary pull-left" translate>Import</button>
-    <div class="col-xs-5" ng-if="users">
-      <progressbar animate="false" type="success" max="users.length" value="importcounter">
-        <i>{{ importcounter }} / {{ users.length }} {{ "imported" | translate }}</i>
+    <div class="col-xs-5" ng-if="usernames">
+      <progressbar animate="false" type="success" max="usernames.length" value="importcounter">
+        <i>{{ importcounter }} / {{ usernames.length }} {{ "imported" | translate }}</i>
       </progressbar>
     </div>
+  </div>
+  <div class="spacer">
+    <a ng-if="importcounter > 0 && importcounter == usernames.length" ui-sref="users.user.list"
+        class="btn btn-default">
+      <i class="fa fa-angle-double-left fa-lg"></i>
+      <translate>Back to users overview</translate>
+    </a>
   </div>
 
   <hr>
 
-  <h3 translate>Import by CSV file</h3>
-  <p translate>Select a CSV file to import users!
+  <h2 translate>Import by CSV file</h2>
 
-  <p translate>Please note:</p>
+  <div class="block row">
+    <div class="title">
+      <h3 translate>Select a CSV file
+    </div>
+    <div class="block right import">
+      <label class="label" for="inputSeparator" translate>Separator</label>
+      <input type="text" ng-model="separator" ng-change="setSeparator()" ng-init="separator=separator" id="inputSeparator">
+      <br>
+      <label class="label" for="selectEncoding" translate>Encoding</label>
+      <select ng-model="encoding" ng-options="enc as enc for enc in encodingOptions"
+          ng-selected="setEncoding()" ng-init="encoding=encoding" id="selectEncoding"></select>
+      <ng-csv-import
+          content="csv.content"
+          header="csv.header"
+          header-visible="csv.headerVisible"
+          separator="csv.separator"
+          separator-visible="csv.separatorVisible"
+          result="csv.result"
+          encoding="csv.encoding"
+          encoding-visible="csv.encodingVisible"></ng-csv-import>
+    </div>
+  </div>
+
+  <h4 translate>Please note:</h4>
   <ul>
-      <li><translate>Required comma separated values</translate>:<br>
-          <code translate>'title, first_name, last_name, structure level, groups, comment, is active'</code>
+      <li><translate>Required comma or semicolon separated values with these column header names in the first row</translate>:<br>
+          <code>'title, first_name, last_name, structure level, groups, comment, is active'</code>
       <li><translate>Default groups</translate>:
           <translate>Delegate</translate> <code>3</code>,
           <translate>Staff</translate> <code>4</code>
       <li translate>At least first name or last name have to be filled in. All
         other fields are optional and may be empty.
-      <li translate>The header in first line is required.
-      <li translate>Required CSV file encoding is UTF-8.
+      <li translate>Only double quotes are accepted as text delimiter (no single quotes).
       <li><a href="https://github.com/OpenSlides/OpenSlides/wiki/CSV-Import" translate>
             Use the CSV example file from OpenSlides Wiki.
           </a>
   </ul>
 
-  <ng-csv-import
-    content="csv.content"
-    class="import"
-    header="csv.header"
-    separator="csv.separator"
-    result="csv.result"></ng-csv-import>
-
-  <div ng-if="csv.result" class="col-sm-10 well">
+  <div ng-if="csv.result">
     <h3 translate>Preview</h3>
     <table class="table table-striped table-bordered table-condensed">
       <thead>
         <tr>
+          <th>
           <th>#
           <th translate>Title
           <th translate>First name
           <th translate>Last name
           <th translate>Structure level
           <th translate>Groups
-          <th translate>Comment</th>
-      <tbody ng-repeat="user in csv.result">
+          <th translate>Comment
+          <th translate>Is active</th>
+      <tbody ng-repeat="user in users">
         <tr>
-          <td>{{ $index+1 }}
-          <td>{{ user.title }}
-          <td>{{ user.first_name }}
-          <td>{{ user.last_name }}
-          <td>{{ user.structure_level }}
-          <td>{{ user.groups }}
-          <td>{{ user.comment }}
+          <td class="minimum"
+              ng-class="{ 'text-danger': user.importerror, 'text-success': user.imported }">
+            <span ng-if="user.importerror">
+              <i class="fa fa-exclamation-triangle fa-lg"></i>
+            </span>
+            <span ng-if="!user.importerror && !user.imported">
+              <i class="fa fa-check-circle-o fa-lg"></i>
+            </span>
+            <span ng-if="user.imported">
+              <i class="fa fa-check-circle fa-lg"></i>
+            </span>
+          <td>
+            {{ $index + 1 }}
+          <td>
+            {{ user.title }}
+          <td ng-class="{ 'text-danger': user.name_error }">
+            <span ng-if="!user.first_name && user.name_error" title="{{ user.name_error | translate }}">
+              <i class="fa fa-exclamation-triangle"></i>
+            </span>
+            {{ user.first_name }}
+          <td ng-class="{ 'text-danger': user.name_error }">
+            <span ng-if="!user.last_name && user.name_error" title="{{ user.name_error | translate }}">
+              <i class="fa fa-exclamation-triangle"></i>
+            </span>
+            {{ user.last_name }}
+          <td>
+            {{ user.structure_level }}
+          <td>
+            <div ng-repeat="groupname in user.groupnames">
+              <translate>{{ groupname }}</translate>
+            </div>
+          <td>
+            {{ user.comment }}
+          <td>
+            <i ng-if="user.is_active" class="fa fa-check-square-o"></i>
     </table>
 
-  <div class="clearfix">
-    <button ng-if="!csvimporting" ng-click="importByCSV(csv.result)" class="btn btn-primary pull-left" translate>Import</button>
-    <div ng-if="csvimporting">
-      <progressbar animate="false"  type="success" max="csvlines" value="csvimportcounter">
-        <i>{{ csvimportcounter }} / {{ csvlines }} {{ "imported" | translate }}</i>
-      </progressbar>
+    <div class="text-danger">
+      <div ng-repeat="user in usersFailed = (users | filter:{importerror:true})"></div>
+      <i class="fa fa-exclamation-triangle"></i>
+      {{ usersFailed.length }}
+      <translate>participants will be not imported.</translate>
     </div>
-    <a ng-if="csvimported" ui-sref="users.user.list" class="btn btn-sm btn-default">
-      <i class="fa fa-angle-double-left fa-lg"></i>
-      <translate>Back to users overview</translate>
-    </a>
-  </div>
-    <p>
-      <div class="form-group">
-        <button ng-if="!csvimporting" ng-click="clear()" class="btn btn-default" translate>
-          Clear
-        </button>
-      </div>
+    <div>
+      <div ng-repeat="user in usersPassed = (users | filter:{importerror:false})"></div>
+      <i class="fa fa-check-circle-o fa-lg"></i>
+      {{ users.length - usersFailed.length }}
+      <translate>participants will be imported.</translate>
+    </div>
+    <div ng-repeat="user in usersImported = (users | filter:{imported:true})"></div>
+    <div ng-if="usersImported.length > 0" class="text-success">
+      <hr class="smallhr">
+      <i class="fa fa-check-circle fa-lg"></i>
+      {{ usersImported.length }}
+      <translate>participants were successfully imported.</translate>
+    </div>
+
+    <div class="spacer">
+      <button ng-click="clear()" class="btn btn-default" translate>
+        Clear preview
+      </button>
+      <button ng-if="!csvImporting" ng-click="import()" class="btn btn-primary" translate>
+        Import {{ users.length - usersFailed.length }} participants
+      </button>
+    </div>
+    <div class="spacer">
+      <a ng-if="csvimported" ui-sref="users.user.list" class="btn btn-default">
+        <i class="fa fa-angle-double-left fa-lg"></i>
+        <translate>Back to users overview</translate>
+      </a>
+    </div>
   </div>
 </div>

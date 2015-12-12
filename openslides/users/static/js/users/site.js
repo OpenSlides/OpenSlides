@@ -80,6 +80,11 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     .state('users.user.import', {
         url: '/import',
         controller: 'UserImportCtrl',
+        resolve: {
+            groups: function(Group) {
+                return Group.findAll();
+            }
+        }
     })
     // groups
     .state('users.group', {
@@ -375,6 +380,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
     function($scope, $state, ngDialog, User, Group) {
         User.bindAll({}, $scope, 'users');
         Group.bindAll({}, $scope, 'groups');
+        $scope.alert = {};
 
         // setup table sorting
         $scope.sortColumn = 'first_name'; //TODO: sort by first OR last name
@@ -411,7 +417,7 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         };
         // save changed user
         $scope.save = function (user) {
-            Assignment.save(user).then(
+            User.save(user).then(
                 function(success) {
                     //user.quickEdit = false;
                     $scope.alert.show = false;
@@ -575,13 +581,15 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
 
 .controller('UserImportCtrl', [
     '$scope',
+    'gettext',
     'User',
-    function($scope, User) {
+    'Group',
+    function($scope, gettext, User, Group) {
         // import from textarea
         $scope.importByLine = function () {
-            $scope.users = $scope.userlist[0].split("\n");
+            $scope.usernames = $scope.userlist[0].split("\n");
             $scope.importcounter = 0;
-            $scope.users.forEach(function(name) {
+            $scope.usernames.forEach(function(name) {
                 // Split each full name in first and last name.
                 // The last word is set as last name, rest is the first name(s).
                 // (e.g.: "Max Martin Mustermann" -> last_name = "Mustermann")
@@ -601,42 +609,106 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
             });
         };
 
-        // import from csv file
+        // *** csv import ***
+        // set initial data for csv import
+        $scope.users = []
+        $scope.separator = ',';
+        $scope.encoding = 'UTF-8';
+        $scope.encodingOptions = ['UTF-8', 'ISO-8859-1'];
         $scope.csv = {
             content: null,
             header: true,
-            separator: ',',
+            headerVisible: false,
+            separator: $scope.separator,
+            separatorVisible: false,
+            encoding: $scope.encoding,
+            encodingVisible: false,
             result: null
         };
-
-        $scope.importByCSV = function (result) {
-            var obj = JSON.parse(JSON.stringify(result));
-            $scope.csvimporting = true;
-            $scope.csvlines = Object.keys(obj).length;
-            $scope.csvimportcounter = 0;
-            for (var i = 0; i < obj.length; i++) {
-                var user = {};
-                user.title = obj[i].titel;
-                user.first_name = obj[i].first_name;
-                user.last_name = obj[i].last_name;
-                user.structure_level = obj[i].structure_level;
-                user.groups = [];
-                if (obj[i].groups !== '') {
-                    var groups = obj[i].groups.replace('"','').split(",");
-                    groups.forEach(function(group) {
-                        user.groups.push(group);
-                    });
+        // set csv file encoding
+        $scope.setEncoding = function () {
+            $scope.csv.encoding = $scope.encoding;
+        };
+        // set csv file encoding
+        $scope.setSeparator = function () {
+            $scope.csv.separator = $scope.separator;
+        };
+        // detect if csv file is loaded
+        $scope.$watch('csv.result', function () {
+            $scope.users = [];
+            var quotionRe = /^"(.*)"$/;
+            angular.forEach($scope.csv.result, function (user) {
+                // title
+                if (user.title) {
+                    user.title = user.title.replace(quotionRe, '$1');
                 }
-                user.comment = obj[i].comment;
-                User.create(user).then(
-                    function(success) {
-                        $scope.csvimportcounter++;
+                // first name
+                if (user.first_name) {
+                    user.first_name = user.first_name.replace(quotionRe, '$1');
+                }
+                // last name
+                if (user.last_name) {
+                    user.last_name = user.last_name.replace(quotionRe, '$1');
+                }
+                if (!user.first_name && !user.last_name) {
+                    user.importerror = true;
+                    user.name_error = gettext('Error: First or last name is required.');
+                }
+                // structure level
+                if (user.structure_level) {
+                    user.structure_level = user.structure_level.replace(quotionRe, '$1');
+                }
+                // groups
+                if (user.groups) {
+                    var csvGroups = user.groups.replace(quotionRe, '$1').split(",");
+                    user.groups = [];
+                    user.groupnames = [];
+                    if (csvGroups != '') {
+                        // All group objects are already loaded via the resolve statement from ui-router.
+                        var allGroups = Group.getAll();
+                        csvGroups.forEach(function(csvGroup) {
+                            allGroups.forEach(function (allGroup) {
+                                if (csvGroup == allGroup.id) {
+                                    user.groups.push(allGroup.id);
+                                    user.groupnames.push(allGroup.name);
+                                }
+                            });
+                        });
                     }
-                );
-            }
+                } else {
+                    user.groups = [];
+                }
+                // comment
+                if (user.comment) {
+                    user.comment = user.comment.replace(quotionRe, '$1');
+                }
+                // is active
+                if (user.is_active) {
+                    user.is_active = user.is_active.replace(quotionRe, '$1');
+                    if (user.is_active == '1') {
+                        user.is_active = true;
+                    } else {
+                        user.is_active = false;
+                    }
+                }
+                $scope.users.push(user);
+            });
+        });
+
+        // import from csv file
+        $scope.import = function () {
+            $scope.csvImporting = true;
+            angular.forEach($scope.users, function (user) {
+                if (!user.importerror) {
+                    User.create(user).then(
+                        function(success) {
+                            user.imported = true;
+                        }
+                    );
+                }
+            });
             $scope.csvimported = true;
         };
-
         $scope.clear = function () {
             $scope.csv.result = null;
         };
