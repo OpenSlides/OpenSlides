@@ -162,8 +162,8 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         };
         // check if agenda is projected
         $scope.isAgendaProjected = function () {
-            // Returns true if there is a projector element with the same
-            // name and agenda is active.
+            // Returns true if there is a projector element with the name
+            // 'agenda/item-list'.
             var projector = Projector.get(1);
             if (typeof projector === 'undefined') return false;
             var self = this;

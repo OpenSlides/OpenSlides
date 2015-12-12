@@ -28,8 +28,6 @@ angular.module('OpenSlidesApp.agenda.projector', ['OpenSlidesApp.agenda'])
         Agenda.find(id);
         User.findAll();
         Agenda.bindOne(id, $scope, 'item');
-        // get flag for list-of-speakers-slide (true/false)
-        $scope.is_list_of_speakers = $scope.element.list_of_speakers;
     }
 ])
 
