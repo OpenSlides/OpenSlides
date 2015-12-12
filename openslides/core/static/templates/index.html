@@ -91,7 +91,7 @@
         </div>
         <!-- Login button -->
         <div ng-if="!operator.isAuthenticated()">
-          <a href ui-sref="login" class="headerlink" uib-dropdown-toggle>
+          <a href ui-sref="login({guest_enabled: true})" class="headerlink" uib-dropdown-toggle>
             <i class="fa fa-sign-in"></i>
             <translate>Login</translate>
           </a>
