@@ -235,12 +235,13 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
 .controller('AssignmentDetailCtrl', [
     '$scope',
     '$http',
+    'gettext',
     'ngDialog',
     'operator',
     'Assignment',
     'User',
     'assignment',
-    function($scope, $http, ngDialog, operator, Assignment, User, assignment) {
+    function($scope, $http, gettext, ngDialog, operator, Assignment, User, assignment) {
         User.bindAll({}, $scope, 'users');
         Assignment.bindOne(assignment.id, $scope, 'assignment');
         Assignment.loadRelations(assignment, 'agenda_item');
@@ -336,15 +337,21 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
             });
         };
         // publish ballot
-        $scope.publishBallot = function () {
-            // TODO poll.DSUpdate()
-            $http.put('/rest/assignments/assignment/' + assignment.id + '/publish_poll/')
-                .success(function(data){
-                    $scope.alert.show = false;
-                })
-                .error(function(data){
-                    $scope.alert = { type: 'danger', msg: data.detail, show: true };
-                });
+        $scope.publishBallot = function (poll, isPublished) {
+            poll.DSUpdate({
+                    assignment_id: assignment.id,
+                    published: isPublished,
+            })
+            .then(function(success) {
+                $scope.alert.show = false;
+            })
+            .catch(function(error) {
+                var message = '';
+                for (var e in error.data) {
+                    message += e + ': ' + error.data[e] + ' ';
+                }
+                $scope.alert = { type: 'danger', msg: message, show: true };
+            });
         };
 
         // Just mark some vote value strings for translation.

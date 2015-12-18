@@ -79,7 +79,8 @@ class AssignmentAllPollSerializer(ModelSerializer):
     votes = ListField(
         child=DictField(
             child=IntegerField(min_value=-2)),
-        write_only=True)
+        write_only=True,
+        required=False)
 
     class Meta:
         model = AssignmentPoll
