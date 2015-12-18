@@ -65,20 +65,26 @@
   </strong>
 
   <h3 translate>Next speakers:</h3>
-  <ol>
-    <li ng-repeat="speaker in item.speakers | filter: {begin_time: null}">
-      {{ speaker.user.get_full_name() }}
-      <button os-perms="agenda.can_manage" ng-click="removeSpeaker(speaker.id)"
-          class="btn btn-default btn-xs">
-        <i class="fa fa-times"></i>
-      </button>
-      <button os-perms="agenda.can_manage" ng-click="beginSpeech(speaker.id)"
-          class="btn btn-default btn-xs">
-        <i class="fa fa-play"></i>
-      </button>
-  </ol>
+  <div class="row">
+    <div ui-tree="treeOptions" class="col-sm-6">
+      <ol ui-tree-nodes="" ng-model="speakers">
+        <li ng-repeat="speaker in speakers | filter: {begin_time: null}" ui-tree-node>
+          <i ui-tree-handle="" class="fa fa-arrows-v"></i>
+          {{ $index + 1 }}.
+          {{ speaker.user.get_full_name() }}
+          <button os-perms="agenda.can_manage" ng-click="removeSpeaker(speaker.id)"
+              class="btn btn-default btn-xs">
+            <i class="fa fa-times"></i>
+          </button>
+          <button os-perms="agenda.can_manage" ng-click="beginSpeech(speaker.id)"
+              class="btn btn-default btn-xs">
+            <i class="fa fa-play"></i>
+          </button>
+      </ol>
+    </div>
+  </div>
 
-  <div class="form-group">
+  <div class="form-group spacer">
     <alert ng-show="alert.show" type="{{ alert.type }}" ng-click="alert={}" close="alert={}">
       {{alert.msg}}
     </alert>

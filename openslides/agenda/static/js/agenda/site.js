@@ -181,16 +181,22 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
 
 .controller('ItemDetailCtrl', [
     '$scope',
+    '$filter',
     '$http',
     'Agenda',
     'User',
     'item',
-    function ($scope, $http, Agenda, User, item) {
+    function ($scope, $filter, $http, Agenda, User, item) {
         Agenda.bindOne(item.id, $scope, 'item');
         User.bindAll({}, $scope, 'users');
         $scope.speaker = {};
         $scope.alert = {};
-
+        $scope.speakers = $filter('orderBy')(item.speakers, 'weight');
+        $scope.$watch(function () {
+            return Agenda.lastModified();
+        }, function () {
+            $scope.speakers = $filter('orderBy')(item.speakers, 'weight');
+        });
         // close/open list of speakers of current item
         $scope.closeList = function (listClosed) {
             item.speaker_list_closed = listClosed;
@@ -201,6 +207,7 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             $http.post('/rest/agenda/item/' + item.id + '/manage_speaker/', {'user': userId})
                 .success(function(data){
                     $scope.alert.show = false;
+                    $scope.speakers = item.speakers;
                 })
                 .error(function(data){
                     $scope.alert = { type: 'danger', msg: data.detail, show: true };
@@ -211,9 +218,13 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
             $http.delete('/rest/agenda/item/' + item.id + '/manage_speaker/',
                     {headers: {'Content-Type': 'application/json'},
                      data: JSON.stringify({speaker: speakerId})})
+                .success(function(data){
+                       $scope.speakers = item.speakers;
+                })
                 .error(function(data){
                     $scope.alert = { type: 'danger', msg: data.detail, show: true };
                 });
+            $scope.speakers = item.speakers;
         };
         // begin speech of selected/next speaker
         $scope.beginSpeech = function (speakerId) {
@@ -233,6 +244,18 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
                 .error(function(data){
                     $scope.alert = { type: 'danger', msg: data.detail, show: true };
                 });
+        };
+        // save reordered list of speakers
+        $scope.treeOptions = {
+            dropped: function (event) {
+                var sortedSpeakers = [];
+                var nextSpeakers = $filter('filter')($scope.speakers, {'begin_time': null});
+                angular.forEach(nextSpeakers, function (speaker) {
+                    sortedSpeakers.push(speaker.id);
+                });
+                $http.post('/rest/agenda/item/' + item.id + '/sort_speakers/',
+                    {speakers: sortedSpeakers});
+            }
         };
     }
 ])

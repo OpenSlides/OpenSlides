@@ -1,6 +1,7 @@
 from cgi import escape
 
 from django.contrib.auth import get_user_model
+from django.db import transaction
 from django.utils.translation import ugettext as _
 from django.utils.translation import ugettext_lazy
 from reportlab.platypus import Paragraph
@@ -209,23 +210,26 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
         speaker_ids = request.data.get('speakers')
         if not isinstance(speaker_ids, list):
             raise ValidationError(
-                    {'detail': _('Invalid data.')})
+                {'detail': _('Invalid data.')})
 
         # Get all speakers
         speakers = {}
         for speaker in item.speakers.filter(begin_time=None):
             speakers[speaker.pk] = speaker
 
-        # Sort speakers
-        weight = 0
+        # Check and sort speakers
+        valid_speakers = []
         for speaker_id in speaker_ids:
-            if not isinstance(speaker_id, int):
+            if not isinstance(speaker_id, int) or speakers.get(speaker_id) is None:
                 raise ValidationError(
                     {'detail': _('Invalid data.')})
-            speaker = speakers[speaker_id]
-            speaker.weight = weight
-            speaker.save()
-            weight += 1
+            valid_speakers.append(speakers[speaker_id])
+        weight = 0
+        with transaction.atomic():
+            for speaker in valid_speakers:
+                speaker.weight = weight
+                speaker.save()
+                weight += 1
 
         # Initiate response.
         return Response({'detail': _('List of speakers successfully sorted.')})
