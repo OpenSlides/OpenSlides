@@ -4,11 +4,11 @@
   <div ng-controller="ProjectorControlCtrl">
     <!-- live view -->
     <div class="section" os-perms-lite="core.can_see_projector">
-      <a href="#" ng-click="isLiveView = !isLiveView">
-        <i class="fa toggle-icon" ng-class="isLiveView ? 'fa-angle-up' : 'fa-angle-down'"></i>
+      <a href="#" ng-click="isLiveViewClosed = !isLiveViewClosed">
+        <i class="fa toggle-icon" ng-class="isLiveViewClosed ? 'fa-angle-up' : 'fa-angle-down'"></i>
         <h4 translate>Live view</h4>
       </a>
-      <div uib-collapse="!isLiveView">
+      <div uib-collapse="isLiveViewClosed">
         <a ui-sref="projector" target="_blank">
           <div id="iframewrapper">
             <iframe id="iframe" src="/projector" frameborder="0"></iframe>
@@ -16,7 +16,7 @@
           </div>
         </a>
         <!-- projector control buttons -->
-        <p os-perms="core.can_manage_projector">
+        <div os-perms="core.can_manage_projector">
           <a ng-click="editCurrentSlide()"
               class="btn btn-default btn-sm"
               title="{{ 'Edit current slide' | translate}}">
@@ -51,7 +51,7 @@
             <i class="fa fa-undo"></i>
           </a>
           <span ng-class="{ 'notNull': scrollLevel != 0 }">{{ scrollLevel }}</span>
-        </p>
+        </div>
       </div>
     </div>
 

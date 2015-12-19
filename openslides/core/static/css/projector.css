@@ -159,7 +159,7 @@ hr {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 200;
+    z-index: 300;
 }
 .message {
     position: fixed;
@@ -172,7 +172,7 @@ hr {
     font-size: 2.75em;
     padding: 0.2em 0;
     line-height: normal !important;
-    z-index: 201;
+    z-index: 301;
 }
 
 
