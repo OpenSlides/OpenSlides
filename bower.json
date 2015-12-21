@@ -18,7 +18,7 @@
     "angular-ui-router": "~0.2.15",
     "angular-ui-select": "~0.13.1",
     "angular-ui-switch": "~0.1.1",
-    "angular-ui-tree": "~2.2.0",
+    "angular-ui-tree": "~2.5.0",
     "angular-gettext": "~2.1.2",
     "angular-scroll-glue": "~2.0.6",
     "ngBootbox": "~0.1.2",
