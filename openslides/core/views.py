@@ -2,6 +2,7 @@ import re
 import uuid
 from collections import OrderedDict
 from operator import attrgetter
+from urllib.parse import unquote
 
 from django.apps import apps
 from django.conf import settings
@@ -27,6 +28,7 @@ from openslides.utils.rest_api import (
     ViewSet,
     detail_route,
 )
+from openslides.utils.search import search
 
 from .config import config
 from .exceptions import ConfigError, ConfigNotFound
@@ -561,3 +563,22 @@ class VersionView(utils_views.APIView):
                 'description': get_plugin_description(plugin),
                 'version': get_plugin_version(plugin)})
         return result
+
+
+class SearchView(utils_views.APIView):
+    """
+    Accepts a search string and returns a list of objects where each object
+    is a dictonary with the keywords collection and id.
+
+    This view expects a get argument 'q' with a search string.
+
+    See: https://pythonhosted.org/Whoosh/querylang.html for the format of the
+    search string.
+    """
+    http_method_names = ['get']
+
+    def get_context_data(self, **context):
+        query = self.request.GET.get('q', '')
+        return super().get_context_data(
+            elements=search(unquote(query)),
+            **context)

@@ -18,6 +18,7 @@ from openslides.poll.models import (
     CollectDefaultVotesMixin,
 )
 from openslides.utils.models import RESTModelMixin
+from openslides.utils.search import user_name_helper
 
 from .exceptions import WorkflowError
 
@@ -536,6 +537,19 @@ class Motion(RESTModelMixin, models.Model):
         the motion has a parent.
         """
         return config['motions_amendments_enabled'] and self.parent is not None
+
+    def get_search_index_string(self):
+        """
+        Returns a string that can be indexed for the search.
+        """
+        return " ".join((
+            self.title or '',
+            self.text or '',
+            self.reason or '',
+            str(self.category) if self.category else '',
+            user_name_helper(self.submitters.all()),
+            user_name_helper(self.supporters.all()),
+            " ".join(tag.name for tag in self.tags.all())))
 
 
 class MotionVersion(RESTModelMixin, models.Model):

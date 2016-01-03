@@ -63,4 +63,5 @@ TEMPLATE_DIRS = (
 
 STATICFILES_DIRS = [os.path.join(OPENSLIDES_USER_DATA_PATH, 'static')] + STATICFILES_DIRS
 
-HAYSTACK_CONNECTIONS['default']['PATH'] = os.path.join(OPENSLIDES_USER_DATA_PATH, 'whoosh_index', '')
+
+SEARCH_INDEX = os.path.join(OPENSLIDES_USER_DATA_PATH, 'search_index')

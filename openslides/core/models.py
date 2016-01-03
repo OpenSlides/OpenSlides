@@ -158,6 +158,14 @@ class CustomSlide(RESTModelMixin, models.Model):
     def get_agenda_title(self):
         return self.title
 
+    def get_search_index_string(self):
+        """
+        Returns a string that can be indexed for the search.
+        """
+        return " ".join((
+            self.title,
+            self.text))
+
 
 class Tag(RESTModelMixin, models.Model):
     """
