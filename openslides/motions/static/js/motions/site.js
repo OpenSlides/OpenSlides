@@ -720,6 +720,23 @@ angular.module('OpenSlidesApp.motions.site', ['OpenSlidesApp.motions'])
         $scope.clear = function () {
             $scope.csv.result = null;
         };
+        // download CSV example file
+        $scope.downloadCSVExample = function () {
+            var element = document.getElementById('downloadLink');
+            var csvRows = [
+                // column header line
+                ['identifier', 'title', 'text', 'reason', 'submitter', 'category'],
+                // example entries
+                ['A1', 'title 1', 'text 1', 'reason 1', 'Submitter A', 'Category A'],
+                ['B1', 'title 2', 'text 2', 'reason 2', 'Submitter B', 'Category B'],
+                [''  , 'title 3', 'text 3', '', '', '']
+
+            ];
+            var csvString = csvRows.join("%0A");
+            element.href = 'data:text/csv;charset=utf-8,' + csvString;
+            element.download = 'motions-example.csv';
+            element.target = '_blank';
+        }
     }
 ])
 

@@ -712,6 +712,23 @@ angular.module('OpenSlidesApp.users.site', ['OpenSlidesApp.users'])
         $scope.clear = function () {
             $scope.csv.result = null;
         };
+        // download CSV example file
+        $scope.downloadCSVExample = function () {
+            var element = document.getElementById('downloadLink');
+            var csvRows = [
+                // column header line
+                ['title', 'first_name', 'last_name', 'structure_level', 'groups', 'comment', 'is_active'],
+                // example entries
+                ['Dr.', 'Max', 'Mustermann', 'Berlin', '"3,4"', 'xyz', '1'],
+                ['', 'John', 'Doe', 'Washington', '3', 'abc', '1'],
+                ['', 'Fred', 'Bloggs', 'London', '', '', ''],
+
+            ];
+            var csvString = csvRows.join("%0A");
+            element.href = 'data:text/csv;charset=utf-8,' + csvString;
+            element.download = 'users-example.csv';
+            element.target = '_blank';
+        }
     }
 ])
 

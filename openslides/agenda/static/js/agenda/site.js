@@ -342,6 +342,22 @@ angular.module('OpenSlidesApp.agenda.site', ['OpenSlidesApp.agenda'])
         $scope.clear = function () {
             $scope.csv.result = null;
         };
+        // download CSV example file
+        $scope.downloadCSVExample = function () {
+            var element = document.getElementById('downloadLink');
+            var csvRows = [
+                // column header line
+                ['title', 'text'],
+                // example entries
+                ['Demo 1', 'Demo text 1'],
+                ['Demo 2', 'Demo text 2']
+
+            ];
+            var csvString = csvRows.join("%0A");
+            element.href = 'data:text/csv;charset=utf-8,' + csvString;
+            element.download = 'agenda-example.csv';
+            element.target = '_blank';
+        }
      }
 ]);
 
