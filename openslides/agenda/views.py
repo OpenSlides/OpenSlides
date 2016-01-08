@@ -48,7 +48,7 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
             result = (self.request.user.has_perm('agenda.can_see') and
                       self.request.user.has_perm('agenda.can_see_hidden_items') and
                       self.request.user.has_perm('agenda.can_manage'))
-        elif self.action in ('speak', 'numbering'):
+        elif self.action in ('speak', 'sort_speakers', 'numbering'):
             result = (self.request.user.has_perm('agenda.can_see') and
                       self.request.user.has_perm('agenda.can_manage'))
         else:
@@ -194,6 +194,41 @@ class ItemViewSet(ListModelMixin, RetrieveModelMixin, UpdateModelMixin, GenericV
 
         # Initiate response.
         return Response({'detail': message})
+
+    @detail_route(methods=['POST'])
+    def sort_speakers(self, request, pk=None):
+        """
+        Special view endpoint to sort the list of speakers.
+
+        Expects a list of IDs of the speakers.
+        """
+        # Retrieve item.
+        item = self.get_object()
+
+        # Check data
+        speaker_ids = request.data.get('speakers')
+        if not isinstance(speaker_ids, list):
+            raise ValidationError(
+                    {'detail': _('Invalid data.')})
+
+        # Get all speakers
+        speakers = {}
+        for speaker in item.speakers.filter(begin_time=None):
+            speakers[speaker.pk] = speaker
+
+        # Sort speakers
+        weight = 0
+        for speaker_id in speaker_ids:
+            if not isinstance(speaker_id, int):
+                raise ValidationError(
+                    {'detail': _('Invalid data.')})
+            speaker = speakers[speaker_id]
+            speaker.weight = weight
+            speaker.save()
+            weight += 1
+
+        # Initiate response.
+        return Response({'detail': _('List of speakers successfully sorted.')})
 
     @list_route(methods=['get', 'put'])
     def tree(self, request):
