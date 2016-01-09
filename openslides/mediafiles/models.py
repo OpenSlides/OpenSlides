@@ -18,7 +18,7 @@ class Mediafile(RESTModelMixin, models.Model):
     for more information.
     """
 
-    title = models.CharField(max_length=255, unique=True, blank=True)
+    title = models.CharField(max_length=255, unique=True)
     """A string representing the title of the file."""
 
     uploader = models.ForeignKey(
