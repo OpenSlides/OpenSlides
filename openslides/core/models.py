@@ -1,8 +1,7 @@
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
-from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy, ugettext_noop
+from django.utils.translation import ugettext_noop
 from jsonfield import JSONField
 
 from openslides.utils.models import RESTModelMixin
@@ -87,7 +86,7 @@ class Projector(RESTModelMixin, models.Model):
             result[key]['uuid'] = key
             element = elements.get(value['name'])
             if element is None:
-                result[key]['error'] = _('Projector element does not exist.')
+                result[key]['error'] = 'Projector element does not exist.'
             else:
                 try:
                     result[key].update(element.get_data(
@@ -122,13 +121,10 @@ class CustomSlide(RESTModelMixin, models.Model):
     Model for slides with custom content.
     """
     title = models.CharField(
-        verbose_name=ugettext_lazy('Title'),
         max_length=256)
     text = models.TextField(
-        verbose_name=ugettext_lazy('Text'),
         blank=True)
     weight = models.IntegerField(
-        verbose_name=ugettext_lazy('Weight'),
         default=0)
 
     class Meta:
@@ -173,7 +169,6 @@ class Tag(RESTModelMixin, models.Model):
     motions or assignments.
     """
     name = models.CharField(
-        verbose_name=ugettext_lazy('Tag'),
         max_length=255,
         unique=True)
 
@@ -210,15 +205,13 @@ class ChatMessage(RESTModelMixin, models.Model):
 
     At the moment we only have one global chat room for managers.
     """
-    message = models.TextField(
-        verbose_name=ugettext_lazy('Message'))
+    message = models.TextField()
 
     timestamp = models.DateTimeField(auto_now_add=True)
 
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        verbose_name=ugettext_lazy('User'))
+        on_delete=models.CASCADE)
 
     class Meta:
         default_permissions = ()

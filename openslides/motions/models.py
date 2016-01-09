@@ -583,20 +583,17 @@ class MotionVersion(RESTModelMixin, models.Model):
     Is unique for each motion.
     """
 
-    title = models.CharField(max_length=255, verbose_name=ugettext_lazy("Title"))
+    title = models.CharField(max_length=255)
     """The title of a motion."""
 
-    text = models.TextField(verbose_name=ugettext_lazy("Text"))
+    text = models.TextField()
     """The text of a motion."""
 
-    reason = models.TextField(null=True, blank=True, verbose_name=ugettext_lazy("Reason"))
+    reason = models.TextField(null=True, blank=True)
     """The reason for a motion."""
 
     creation_time = models.DateTimeField(auto_now=True)
     """Time when the version was saved."""
-
-    # identifier = models.CharField(max_length=255, verbose_name=ugettext_lazy("Version identifier"))
-    # note = models.TextField(null=True, blank=True)
 
     class Meta:
         default_permissions = ()
@@ -620,10 +617,10 @@ class MotionVersion(RESTModelMixin, models.Model):
 
 
 class Category(RESTModelMixin, models.Model):
-    name = models.CharField(max_length=255, verbose_name=ugettext_lazy("Category name"))
+    name = models.CharField(max_length=255)
     """Name of the category."""
 
-    prefix = models.CharField(blank=True, max_length=32, verbose_name=ugettext_lazy("Prefix"))
+    prefix = models.CharField(blank=True, max_length=32)
     """Prefix of the category.
 
     Used to build the identifier of a motion.

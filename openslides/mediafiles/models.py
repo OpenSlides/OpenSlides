@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.utils.translation import ugettext as _
-from django.utils.translation import ugettext_lazy, ugettext_noop
+from django.utils.translation import ugettext_noop
 
 from openslides.utils.search import user_name_helper
 
@@ -12,21 +12,20 @@ class Mediafile(RESTModelMixin, models.Model):
     """
     Class for uploaded files which can be delivered under a certain url.
     """
-    mediafile = models.FileField(upload_to='file', verbose_name=ugettext_lazy('File'))
+    mediafile = models.FileField(upload_to='file')
     """
     See https://docs.djangoproject.com/en/dev/ref/models/fields/#filefield
     for more information.
     """
 
-    title = models.CharField(max_length=255, unique=True, blank=True, verbose_name=ugettext_lazy('Title'))
+    title = models.CharField(max_length=255, unique=True, blank=True)
     """A string representing the title of the file."""
 
     uploader = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         null=True,
-        blank=True,
-        verbose_name=ugettext_lazy('Uploaded by'))
+        blank=True)
     """A user – the uploader of a file."""
 
     timestamp = models.DateTimeField(auto_now_add=True)
