@@ -30,33 +30,42 @@ angular.module('OpenSlidesApp.core', [
     DSHttpAdapterProvider.defaults.forceTrailingSlash = true;
 }])
 
-.factory('autoupdate', function() {
-    var url = location.origin + "/sockjs";
+.factory('autoupdate', [
+    'DS',
+    function (DS) {
+        var url = location.origin + "/sockjs";
+        var socket;
+        var Autoupdate = {
+            socket: null,
+            message_receivers: [],
+            connect: function () {
+                var autoupdate = this;
+                socket = this.socket = new SockJS(url);
 
-    var Autoupdate = {
-        socket: null,
-        message_receivers: [],
-        connect: function() {
-            var autoupdate = this;
-            this.socket = new SockJS(url);
 
-            this.socket.onmessage = function(event) {
-                _.forEach(autoupdate.message_receivers, function(receiver) {
-                    receiver(event.data);
-                });
-            };
+                this.socket.onmessage = function (event) {
+                    _.forEach(autoupdate.message_receivers, function (receiver) {
+                        receiver(event.data);
+                    });
+                };
 
-            this.socket.onclose = function() {
-                setTimeout(autoupdate.connect, 5000);
-            };
-        },
-        on_message: function(receiver) {
-            this.message_receivers.push(receiver);
-        }
-    };
-    Autoupdate.connect();
-    return Autoupdate;
-})
+                this.socket.onclose = function () {
+                    setTimeout(autoupdate.connect, 5000);
+                };
+            },
+            on_message: function (receiver) {
+                this.message_receivers.push(receiver);
+            },
+            reconnect: function () {
+                socket.close();
+                DS.clear();
+                Autoupdate.connect();
+            }
+        };
+        Autoupdate.connect();
+        return Autoupdate;
+    }
+])
 
 .run(['DS', 'autoupdate', function(DS, autoupdate) {
     autoupdate.on_message(function(data) {
