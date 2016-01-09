@@ -34,8 +34,8 @@ angular.module('OpenSlidesApp.assignments.site', ['OpenSlidesApp.assignments'])
                 assignments: function(Assignment) {
                     return Assignment.findAll();
                 },
-                phases: function($http) {
-                    return $http({ 'method': 'OPTIONS', 'url': '/rest/assignments/assignment/' });
+                phases: function(Assignment) {
+                    return Assignment.getPhases();
                 }
             }
         })
