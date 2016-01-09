@@ -64,7 +64,9 @@ class TestUserLoginView(TestCase):
     def test_get(self):
         response = self.client.get(self.url)
 
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(
+            json.loads(response.content.decode()).get('info_text'))
 
     def test_post_no_data(self):
         response = self.client.post(self.url)
